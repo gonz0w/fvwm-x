@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <X11/extensions/randr.h>
@@ -101,28 +102,45 @@ static void
 monitor_scan_edges(struct monitor *m)
 {
 	struct monitor	*m_loop;
+	int64_t		 m_right;
+	int64_t		 m_bottom;
 
 	if (m == NULL)
 		return;
 
 	m->edge.top = m->edge.bottom = m->edge.left = m->edge.right =
 		MONITOR_OUTSIDE_EDGE;
+	if (m->flags & MONITOR_DISABLED)
+		return;
+	m_right = (int64_t)m->si->x + m->si->w;
+	m_bottom = (int64_t)m->si->y + m->si->h;
 
 	RB_FOREACH(m_loop, monitors, &monitor_q) {
-		if (m_loop == m)
+		int64_t loop_right;
+		int64_t loop_bottom;
+		bool horizontal_overlap;
+		bool vertical_overlap;
+
+		if (m_loop == m || (m_loop->flags & MONITOR_DISABLED))
 			continue;
+		loop_right = (int64_t)m_loop->si->x + m_loop->si->w;
+		loop_bottom = (int64_t)m_loop->si->y + m_loop->si->h;
+		horizontal_overlap =
+			m->si->x < loop_right && m_loop->si->x < m_right;
+		vertical_overlap =
+			m->si->y < loop_bottom && m_loop->si->y < m_bottom;
 
 		/* Top Edge */
-		if ( m->si->y == m_loop->si->y + m_loop->si->h )
+		if (m->si->y == loop_bottom && horizontal_overlap)
 			m->edge.top = MONITOR_INSIDE_EDGE;
 		/* Bottom Edge */
-		if ( m->si->y + m->si->h == m_loop->si->y )
+		if (m_bottom == m_loop->si->y && horizontal_overlap)
 			m->edge.bottom = MONITOR_INSIDE_EDGE;
 		/* Left Edge */
-		if ( m->si->x == m_loop->si->x + m_loop->si->w )
+		if (m->si->x == loop_right && vertical_overlap)
 			m->edge.left = MONITOR_INSIDE_EDGE;
 		/* Right Edge */
-		if ( m->si->x + m->si->w == m_loop->si->x )
+		if (m_right == m_loop->si->x && vertical_overlap)
 			m->edge.right = MONITOR_INSIDE_EDGE;
 	}
 }
@@ -412,7 +430,7 @@ monitor_set_coords(struct monitor *m, XRRMonitorInfo rrm)
 	m->si->y = rrm.y;
 	m->si->w = rrm.width;
 	m->si->h = rrm.height;
-	m->si->rr_output = *rrm.outputs;
+	m->si->rr_output = rrm.noutput > 0 ? *rrm.outputs : None;
 	if (rrm.primary > 0) {
 		m->flags |= MONITOR_PRIMARY;
 		m->was_primary = false;
@@ -511,13 +529,20 @@ monitor_add(XRRMonitorInfo *rrm)
 static bool
 monitor_mark_changed(struct monitor *m, XRRMonitorInfo *rrm)
 {
+	bool is_primary;
+	RROutput output;
+
 	if (m == NULL || rrm == NULL)
 		return (false);
+	is_primary = (m->flags & MONITOR_PRIMARY) != 0;
+	output = rrm->noutput > 0 ? *rrm->outputs : None;
 
 	if (m->si->x != rrm->x ||
 	    m->si->y != rrm->y ||
 	    m->si->w != rrm->width ||
-	    m->si->h != rrm->height) {
+	    m->si->h != rrm->height ||
+	    m->si->rr_output != output ||
+	    is_primary != (rrm->primary != 0)) {
 		m->flags |= MONITOR_CHANGED;
 
 		fvwm_debug(__func__, "%s: x: %d, y: %d, w: %d, h: %d "
@@ -664,6 +689,8 @@ out:
 	 */
 	monitor_assign_number();
 	monitor_check_primary();
+	RB_FOREACH(m, monitors, &monitor_q)
+		monitor_scan_edges(m);
 	XRRFreeMonitors(rrm);
 }
 
@@ -693,7 +720,7 @@ void FScreenInit(Display *dpy)
 		goto randr_fail;
 	}
 
-	if (major == 1 && minor >= 5)
+	if (major > 1 || (major == 1 && minor >= 5))
 		is_randr_present = true;
 
 

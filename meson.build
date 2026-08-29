@@ -8,16 +8,15 @@ project(
         'c_std=c11',
         'warning_level=2',
         'werror=false',
+        'b_pie=true',
     ],
 )
 
 add_project_arguments(
     [
         '-fno-common',
-        '-Wno-error=format-security',
         '-Wno-sign-compare',
         '-Wno-unused-parameter',
-        '-Wno-extra',
     ],
     language: 'c',
 )
@@ -28,9 +27,44 @@ meson.add_dist_script('meson-scripts/dist-tarball.sh')
 
 cc = meson.get_compiler('c')
 
-# Undefine _FOTIFY_SOURCE explicitly.  fvwm3 needs work to support this.
-cc_flags = ['-U_FORTIFY_SOURCE']
-foreach flag : cc_flags
+# Apply defenses that are independent of distributor CFLAGS.
+hardening_flags = ['-fstack-protector-strong']
+if host_machine.system() == 'linux'
+    hardening_flags += '-fstack-clash-protection'
+endif
+if (
+    get_option('optimization') != '0' and
+    cc.get_define('_FORTIFY_SOURCE') == ''
+)
+    fortify_level_3 = '''
+        #include <features.h>
+        #if !defined(__USE_FORTIFY_LEVEL) || __USE_FORTIFY_LEVEL < 3
+        #error Fortify level 3 is unavailable
+        #endif
+        int main(void) { return 0; }
+    '''
+    fortify_level_2 = '''
+        #include <features.h>
+        #if !defined(__USE_FORTIFY_LEVEL) || __USE_FORTIFY_LEVEL < 2
+        #error Fortify level 2 is unavailable
+        #endif
+        int main(void) { return 0; }
+    '''
+    if cc.compiles(
+        fortify_level_3,
+        args: ['-O2', '-D_FORTIFY_SOURCE=3'],
+        name: '_FORTIFY_SOURCE=3 support',
+    )
+        hardening_flags += '-D_FORTIFY_SOURCE=3'
+    elif cc.compiles(
+        fortify_level_2,
+        args: ['-O2', '-D_FORTIFY_SOURCE=2'],
+        name: '_FORTIFY_SOURCE=2 support',
+    )
+        hardening_flags += '-D_FORTIFY_SOURCE=2'
+    endif
+endif
+foreach flag : hardening_flags
     if cc.has_argument(flag)
         add_project_arguments(flag, language: 'c')
     endif
@@ -182,7 +216,13 @@ all_found_deps = []
 summary_depvals = {}
 all_req_deps = ['fontconfig', 'ice', 'libevent', 'x11', 'xft', 'xrandr', 'xt', 'xtrans']
 foreach rd : all_req_deps
-    this_dep = dependency(rd, required: true)
+    dep_version = []
+    if rd == 'libevent'
+        dep_version = '>=2.0'
+    elif rd == 'xrandr'
+        dep_version = '>=1.5'
+    endif
+    this_dep = dependency(rd, required: true, version: dep_version)
     summary_depvals += {rd: this_dep}
     conf.set10('HAVE_' + rd.to_upper().underscorify(), true)
     all_found_deps += this_dep
@@ -218,10 +258,10 @@ golang = find_program('go', required: get_option('golang'))
 if golang.found()
     gover = run_command('go', 'version', check: true).stdout().split(' ')
     gover = gover[2].replace('go', '')
-    if gover.version_compare('<1.20.0')
+    if gover.version_compare('<1.21.0')
         error(
-            '''A version of Go >= 1.20.0 is required to use the FVWM3 meson build Go modules.
-               Either disable Go for this build (`-Dgolang=disabled`) or upgrade Go to a version >= 1.20.0.''',
+            '''A version of Go >= 1.21.0 is required to use the FVWM3 meson build Go modules.
+               Either disable Go for this build (`-Dgolang=disabled`) or upgrade Go to a version >= 1.21.0.''',
         )
     endif
 endif
@@ -490,6 +530,7 @@ endforeach
 
 # FvwmPrompt and FvwmCommand
 subdir('bin')
+subdir('tests')
 
 # Contrib
 # Provide a freedesktop-compilant, minimal xsession.

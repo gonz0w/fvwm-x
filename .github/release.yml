@@ -11,8 +11,10 @@ changelog:
         - "type:enhancement"
         - "type:new-feature"
     - title: Internal Improvements
+      labels:
         - "type:internal-improvements"
     - title: Bug Fixes
+      labels:
         - "type:bug"
     - title: Other Changes
       labels:

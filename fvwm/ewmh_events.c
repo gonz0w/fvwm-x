@@ -16,6 +16,7 @@
 
 #include "config.h"
 
+#include <limits.h>
 #include <stdio.h>
 
 #include "libs/fvwm_x11.h"
@@ -307,7 +308,7 @@ int ewmh_WMDesktop(
 			execute_function_override_window(
 				NULL, NULL, "Stick on", NULL, 0, fw);
 		}
-		else if (d >= 0)
+		else if (d <= INT_MAX)
 		{
 			if (IS_STICKY_ACROSS_PAGES(fw) ||
 			    IS_STICKY_ACROSS_DESKS(fw))

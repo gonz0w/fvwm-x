@@ -64,23 +64,23 @@ typedef struct
 #define ModuleUnlockResponse          "NOP UNLOCK"
 
 /* Possible values of type */
-#define M_NEW_PAGE               (1)
-#define M_NEW_DESK               (1<<1)
-#define M_OLD_ADD_WINDOW         (1<<2)
-#define M_RAISE_WINDOW           (1<<3)
-#define M_LOWER_WINDOW           (1<<4)
-#define M_OLD_CONFIGURE_WINDOW   (1<<5)
-#define M_FOCUS_CHANGE           (1<<6)
-#define M_DESTROY_WINDOW         (1<<7)
-#define M_ICONIFY                (1<<8)
-#define M_DEICONIFY              (1<<9)
-#define M_WINDOW_NAME            (1<<10)
-#define M_ICON_NAME              (1<<11)
-#define M_RES_CLASS              (1<<12)
-#define M_RES_NAME               (1<<13)
-#define M_END_WINDOWLIST         (1<<14)
-#define M_ICON_LOCATION          (1<<15)
-#define M_MAP                    (1<<16)
+#define M_NEW_PAGE               (1UL)
+#define M_NEW_DESK               (1UL<<1)
+#define M_OLD_ADD_WINDOW         (1UL<<2)
+#define M_RAISE_WINDOW           (1UL<<3)
+#define M_LOWER_WINDOW           (1UL<<4)
+#define M_OLD_CONFIGURE_WINDOW   (1UL<<5)
+#define M_FOCUS_CHANGE           (1UL<<6)
+#define M_DESTROY_WINDOW         (1UL<<7)
+#define M_ICONIFY                (1UL<<8)
+#define M_DEICONIFY              (1UL<<9)
+#define M_WINDOW_NAME            (1UL<<10)
+#define M_ICON_NAME              (1UL<<11)
+#define M_RES_CLASS              (1UL<<12)
+#define M_RES_NAME               (1UL<<13)
+#define M_END_WINDOWLIST         (1UL<<14)
+#define M_ICON_LOCATION          (1UL<<15)
+#define M_MAP                    (1UL<<16)
 
 /* It turns out this is defined by <sys/stream.h> on Solaris 2.6.
    I suspect that simply redefining this will lead to trouble;
@@ -88,22 +88,22 @@ typedef struct
 #ifdef M_ERROR
 #  undef M_ERROR
 #endif
-#define M_ERROR              (1<<17)
+#define M_ERROR              (1UL<<17)
 
-#define M_CONFIG_INFO        (1<<18)
-#define M_END_CONFIG_INFO    (1<<19)
-#define M_ICON_FILE          (1<<20)
-#define M_DEFAULTICON        (1<<21)
-#define M_STRING             (1<<22)
-#define M_MINI_ICON          (1<<23)
-#define M_WINDOWSHADE        (1<<24)
-#define M_DEWINDOWSHADE      (1<<25)
-#define M_VISIBLE_NAME       (1<<26)
-#define M_SENDCONFIG         (1<<27)
-#define M_RESTACK            (1<<28)
-#define M_ADD_WINDOW         (1<<29)
-#define M_CONFIGURE_WINDOW   (1<<30)
-#define M_EXTENDED_MSG       (1<<31)
+#define M_CONFIG_INFO        (1UL<<18)
+#define M_END_CONFIG_INFO    (1UL<<19)
+#define M_ICON_FILE          (1UL<<20)
+#define M_DEFAULTICON        (1UL<<21)
+#define M_STRING             (1UL<<22)
+#define M_MINI_ICON          (1UL<<23)
+#define M_WINDOWSHADE        (1UL<<24)
+#define M_DEWINDOWSHADE      (1UL<<25)
+#define M_VISIBLE_NAME       (1UL<<26)
+#define M_SENDCONFIG         (1UL<<27)
+#define M_RESTACK            (1UL<<28)
+#define M_ADD_WINDOW         (1UL<<29)
+#define M_CONFIGURE_WINDOW   (1UL<<30)
+#define M_EXTENDED_MSG       (1UL<<31)
 #define MAX_MESSAGES         31
 #define MAX_MSG_MASK         0x7fffffff
 
@@ -114,16 +114,16 @@ typedef struct
  * separate call has to be made that ors the MX_... macros.  The normal
  * M_... and MX_... macros must *never* be or'ed in one of these operations'
  */
-#define MX_VISIBLE_ICON_NAME      ((1<<1) | M_EXTENDED_MSG)
-#define MX_ENTER_WINDOW           ((1<<2) | M_EXTENDED_MSG)
-#define MX_LEAVE_WINDOW           ((1<<3) | M_EXTENDED_MSG)
-#define MX_PROPERTY_CHANGE        ((1<<4) | M_EXTENDED_MSG)
-#define MX_MONITOR_ENABLED        ((1<<5) | M_EXTENDED_MSG)
-#define MX_MONITOR_DISABLED       ((1<<6) | M_EXTENDED_MSG)
-#define MX_MONITOR_CHANGED        ((1<<7) | M_EXTENDED_MSG)
-#define MX_MONITOR_FOCUS	  ((1<<8) | M_EXTENDED_MSG)
-#define MX_ECHO			  ((1<<9) | M_EXTENDED_MSG)
-#define MX_REPLY		  ((1<<10) | M_EXTENDED_MSG)
+#define MX_VISIBLE_ICON_NAME      ((1UL<<1) | M_EXTENDED_MSG)
+#define MX_ENTER_WINDOW           ((1UL<<2) | M_EXTENDED_MSG)
+#define MX_LEAVE_WINDOW           ((1UL<<3) | M_EXTENDED_MSG)
+#define MX_PROPERTY_CHANGE        ((1UL<<4) | M_EXTENDED_MSG)
+#define MX_MONITOR_ENABLED        ((1UL<<5) | M_EXTENDED_MSG)
+#define MX_MONITOR_DISABLED       ((1UL<<6) | M_EXTENDED_MSG)
+#define MX_MONITOR_CHANGED        ((1UL<<7) | M_EXTENDED_MSG)
+#define MX_MONITOR_FOCUS	  ((1UL<<8) | M_EXTENDED_MSG)
+#define MX_ECHO			  ((1UL<<9) | M_EXTENDED_MSG)
+#define MX_REPLY		  ((1UL<<10) | M_EXTENDED_MSG)
 #define MAX_EXTENDED_MESSAGES     10
 #define DEFAULT_XMSG_MASK         0x00000000
 #define MAX_XMSG_MASK             0x0000001f

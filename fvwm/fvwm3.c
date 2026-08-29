@@ -162,6 +162,7 @@ Bool Restarting = False;
 int x_fd;
 char *display_name = NULL;
 char *fvwm_userdir;
+static volatile sig_atomic_t toggle_logging_requested;
 char const *Fvwm_VersionInfo;
 char const *Fvwm_LicenseInfo;
 char *Fvwm_SupportInfo;
@@ -292,9 +293,18 @@ Restart(int sig)
 static RETSIGTYPE
 ToggleLogging(int sig)
 {
-	log_toggle(fvwm_userdir);
+	toggle_logging_requested = 1;
 
 	SIGNAL_RETURN;
+}
+
+void fvwm_process_deferred_signals(void)
+{
+	if (toggle_logging_requested)
+	{
+		toggle_logging_requested = 0;
+		log_toggle(fvwm_userdir);
+	}
 }
 
 static RETSIGTYPE
@@ -694,8 +704,13 @@ InstallSignals(void)
 	sigact.sa_handler = Restart;
 	sigaction(SIGUSR1, &sigact, NULL);
 
+	sigact.sa_flags = 0;
 	sigact.sa_handler = ToggleLogging;
 	sigaction(SIGUSR2, &sigact, NULL);
+
+#ifdef SA_RESTART
+	sigact.sa_flags = SA_RESTART;
+#endif
 
 	sigact.sa_handler = SigDone;
 	sigaction(SIGINT,  &sigact, NULL);
@@ -736,6 +751,7 @@ InstallSignals(void)
 	signal(SIGUSR2, ToggleLogging);
 #ifdef HAVE_SIGINTERRUPT
 	siginterrupt(SIGUSR1, 0);
+	siginterrupt(SIGUSR2, 1);
 #endif
 
 	signal(SIGINT, SigDone);

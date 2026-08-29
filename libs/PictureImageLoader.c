@@ -28,6 +28,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdint.h>
 #include <signal.h>
 #include <ctype.h>
 
@@ -49,6 +50,7 @@
 #include "FRenderInit.h"
 #include "Fcursor.h"
 #include "FImage.h"
+#include "ImageSafety.h"
 
 /* ---------------------------- local definitions -------------------------- */
 #define FIMAGE_CMD_ARGS \
@@ -90,6 +92,9 @@ PImageLoader Loaders[] =
 	{ "png", PImageLoadPng },
 	{NULL,0}
 };
+
+#define PIMAGE_MAX_DIMENSION 32768U
+#define PIMAGE_MAX_PIXELS (64U * 1024U * 1024U)
 
 /* ---------------------------- exported variables (globals) --------------- */
 
@@ -153,6 +158,8 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 	Fcairo_surface_t *surface;
 	Fcairo_t *cr;
 	int i;
+	size_t pixel_count;
+	size_t pixel_index;
 	int j;
 	int b1;
 	int b2;
@@ -288,7 +295,7 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 
 	/* Keep the original aspect ratio when either w or h is 0 */
 #if LIBRSVG_CHECK_VERSION(2,52,0)
-	double		ddw, ddh;
+	double		ddw = 0, ddh = 0;
 	gboolean	has_out_w, has_out_h, has_vb;
 	RsvgLength	out_w, out_h;
 	RsvgRectangle	viewbox;
@@ -306,6 +313,8 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 		dim.height = viewbox.height;
 	}
 
+	dim.em = dim.width;
+	dim.ex = dim.height;
 	if (has_out_w)
 		dim.em = out_w.length <= dim.width ? dim.width : out_w.length;
 	if (has_out_h)
@@ -315,6 +324,11 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 #else
         Frsvg_handle_get_dimensions(rsvg, &dim);
 #endif
+	if (dim.width <= 0 || dim.height <= 0 || dim.em <= 0 || dim.ex <= 0)
+	{
+		Fg_object_unref(FG_OBJECT(rsvg));
+		return False;
+	}
 	if (!w && !h)
 	{
 		w = dim.width;
@@ -348,9 +362,17 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 
 		angle += 90;
 	}
+	if (w <= 0 || h <= 0 ||
+	    !FImageSizeIsSafe(
+		    (uint64_t)w, (uint64_t)h, PIMAGE_MAX_DIMENSION,
+		    PIMAGE_MAX_PIXELS, &pixel_count))
+	{
+		Fg_object_unref(FG_OBJECT(rsvg));
+		return False;
+	}
 
-	fvwm_debug(__func__, "SIZE: %ld", w * h * sizeof(CARD32));
-	data = fxcalloc(1, w * h * sizeof(CARD32));
+	fvwm_debug(__func__, "SIZE: %zu", pixel_count * sizeof(CARD32));
+	data = fxcalloc(pixel_count, sizeof(CARD32));
 	surface = Fcairo_image_surface_create_for_data((unsigned char *)data,
 		FCAIRO_FORMAT_ARGB32, w, h, w * sizeof(CARD32));
 	if (Fcairo_surface_status(surface) != FCAIRO_STATUS_SUCCESS)
@@ -406,15 +428,18 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 
 	/* Cairo gave us alpha prescaled RGB values, hence we need
 	 * to rescale them for PImageCreatePixmapFromArgbData() */
-	for (i = 0; i < w * h; i++)
+	for (pixel_index = 0; pixel_index < pixel_count; pixel_index++)
 	{
-		if ((a_value = (data[i] >> 030) & 0xff))
+		if ((a_value = (data[pixel_index] >> 030) & 0xff))
 		{
-			r_value = ((data[i] >> 020) & 0xff) * 0xff / a_value;
-			g_value = ((data[i] >> 010) & 0xff) * 0xff / a_value;
-			b_value =  (data[i]         & 0xff) * 0xff / a_value;
+			r_value = ((data[pixel_index] >> 020) & 0xff) * 0xff /
+				a_value;
+			g_value = ((data[pixel_index] >> 010) & 0xff) * 0xff /
+				a_value;
+			b_value =  (data[pixel_index]         & 0xff) * 0xff /
+				a_value;
 
-			data[i] =
+			data[pixel_index] =
 				(a_value << 030) | (r_value << 020) |
 				(g_value << 010) | b_value;
 		}
@@ -455,6 +480,7 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	unsigned char buf[FPNG_BYTES_TO_CHECK];
 	unsigned char **lines;
 	int i;
+	size_t pixel_count;
 
 	if (!PngSupport)
 	{
@@ -511,6 +537,14 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 		Fpng_ptr, Finfo_ptr, (Fpng_uint_32 *) (&w32),
 		(Fpng_uint_32 *) (&h32), &bit_depth, &color_type,
 		&interlace_type, NULL, NULL);
+	if (!FImageSizeIsSafe(
+		    w32, h32, PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS,
+		    &pixel_count))
+	{
+		Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, NULL);
+		fclose(f);
+		return False;
+	}
 	interlace_type = 0; /* not used */
 	*width = w = (int) w32;
 	*height = h = (int) h32;
@@ -568,8 +602,8 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 		Fpng_set_expand(Fpng_ptr);
 	}
 
-	data = fxmalloc(w * h * sizeof(CARD32));
-	lines = fxmalloc(h * sizeof(unsigned char *));
+	data = fxcalloc(pixel_count, sizeof(CARD32));
+	lines = fxcalloc((size_t)h, sizeof(unsigned char *));
 
 	if (hasg)
 	{
@@ -611,6 +645,8 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 	int w;
 	int h;
 	int rc;
+	size_t pixel_count;
+	size_t pixel_index;
 #ifdef HAVE_SIGACTION
 	struct sigaction defaultHandler;
 	struct sigaction originalHandler;
@@ -655,6 +691,13 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 		FxpmFreeXpmImage(&xpm_im);
 		return False;
 	}
+	if (!FImageSizeIsSafe(
+		    xpm_im.width, xpm_im.height, PIMAGE_MAX_DIMENSION,
+		    PIMAGE_MAX_PIXELS, &pixel_count))
+	{
+		FxpmFreeXpmImage(&xpm_im);
+		return False;
+	}
 	colors = fxmalloc(xpm_im.ncolors * sizeof(CARD32));
 	for (i=0; i < xpm_im.ncolors; i++)
 	{
@@ -689,10 +732,10 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 	}
 	*width = w = xpm_im.width;
 	*height = h = xpm_im.height;
-	data = fxmalloc(w * h * sizeof(CARD32));
-	for (i=0; i < w * h; i++)
+	data = fxcalloc(pixel_count, sizeof(CARD32));
+	for (pixel_index = 0; pixel_index < pixel_count; pixel_index++)
 	{
-		data[i] = colors[xpm_im.data[i]];
+		data[pixel_index] = colors[xpm_im.data[pixel_index]];
 	}
 	free(colors);
 	*argb_data = data;
@@ -743,8 +786,8 @@ Pixmap PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage *fimage)
  *
  */
 Bool PImageCreatePixmapFromArgbData(
-	Display *dpy, Window win, CARD32 *data, int start, int width,
-	int height, Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
+	Display *dpy, Window win, CARD32 *data, size_t data_len, int start,
+	int width, int height, Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
 	int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
 	FvwmPictureAttributes fpa)
 {
@@ -760,6 +803,16 @@ Bool PImageCreatePixmapFromArgbData(
 	int alpha_depth = FRenderGetAlphaDepth();
 	Bool have_mask = False;
 	Bool have_alpha = False;
+	size_t pixel_count;
+
+	if (data == NULL || start < 0 || width <= 0 || height <= 0 ||
+	    !FImageSizeIsSafe(
+		    (uint64_t)width, (uint64_t)height, PIMAGE_MAX_DIMENSION,
+		    PIMAGE_MAX_PIXELS, &pixel_count) ||
+	    (size_t)start > data_len || pixel_count > data_len - (size_t)start)
+	{
+		return False;
+	}
 
 	fim = FCreateFImage(
 		dpy, Pvisual, (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth,
@@ -881,9 +934,19 @@ Bool PImageLoadPixmapFromFile(
 
 	if (PImageLoadArgbDataFromFile(dpy, path, &data, width, height))
 	{
+		size_t pixel_count;
+
+		if (*width <= 0 || *height <= 0 ||
+		    !FImageSizeIsSafe(
+			    (uint64_t)*width, (uint64_t)*height,
+			    PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS, &pixel_count))
+		{
+			free(data);
+			return False;
+		}
 		*depth = (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth;
 		if (PImageCreatePixmapFromArgbData(
-			dpy, win, data, 0, *width, *height, pixmap, mask,
+			dpy, win, data, pixel_count, 0, *width, *height, pixmap, mask,
 			alpha, nalloc_pixels, alloc_pixels, no_limit, fpa))
 		{
 			free(data);
@@ -1063,7 +1126,8 @@ Cursor PImageLoadCursorFromFile(
 		}
 		/* Create monochrome cursor from argb data */
 		else if (PImageCreatePixmapFromArgbData(
-			dpy, win, data, 0, width, height,
+			dpy, win, data, (size_t)width * (size_t)height, 0,
+			width, height,
 			&src, &msk, 0, 0, 0, 0, fpa))
 		{
 			XColor c[2];

@@ -17,6 +17,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include "libs/fvwmlib.h"
 #include "libs/FShape.h"
@@ -26,6 +27,7 @@
 #include "libs/PictureImageLoader.h"
 #include "libs/FRenderInit.h"
 #include "libs/Graphics.h"
+#include "libs/ImageSafety.h"
 #include "libs/Strings.h"
 #include "libs/log.h"
 #include "fvwm.h"
@@ -623,53 +625,35 @@ void EWMH_DeleteWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon)
  * Create an x image from a NET icon
  */
 
-#define SQUARE(X) ((X)*(X))
+#define EWMH_ICON_MAX_DIMENSION 4096U
+#define EWMH_ICON_MAX_PIXELS (16U * 1024U * 1024U)
 static
 void extract_wm_icon(
 	CARD32 *list, int size, int wanted_w, int wanted_h,
 	int *start_best, int *best_w, int *best_h)
 {
-	int i;
-	int dist = 0;
+	size_t pixel_start;
+	uint32_t width;
+	uint32_t height;
 
 	*start_best = 0;
 	*best_w = 0;
 	*best_h = 0;
-	size = size / (sizeof(CARD32));
-
-	for (i = 0; i < size - 1; )
+	if (list == NULL || size < 0)
 	{
-		if (i + 1 + list[i]*list[i+1] < size)
-		{
-			if (*best_w == 0 && *best_h == 0)
-			{
-				*start_best = i+2;
-				*best_w = list[i];
-				*best_h = list[i+1];
-				dist = SQUARE(
-					list[i]-wanted_w) +
-					SQUARE(list[i+1]-wanted_h);
-			}
-			else if (SQUARE(list[i]-wanted_w) +
-				 SQUARE(list[i+1]-wanted_h) < dist)
-			{
-				*start_best = i+2;
-				*best_w = list[i];
-				*best_h = list[i+1];
-				dist = SQUARE(
-					list[i]-wanted_w) +
-					SQUARE(list[i+1]-wanted_h);
-			}
-		}
-		if (list[i]*list[i+1] > 0)
-		{
-			i = i + 2 + list[i]*list[i+1];
-		}
-		else
-		{
-			i = size;
-		}
+		return;
 	}
+	if (!FEwmhIconFindBest(
+		    (const uint32_t *)list, (size_t)size / sizeof(CARD32),
+		    (uint32_t)wanted_w, (uint32_t)wanted_h,
+		    EWMH_ICON_MAX_DIMENSION, EWMH_ICON_MAX_PIXELS,
+		    &pixel_start, &width, &height))
+	{
+		return;
+	}
+	*start_best = (int)pixel_start;
+	*best_w = (int)width;
+	*best_h = (int)height;
 
 	return;
 }
@@ -716,7 +700,7 @@ int EWMH_SetIconFromWMIcon(
 		wanted_w = MINI_ICON_WANTED_WIDTH;
 		wanted_h = MINI_ICON_WANTED_HEIGHT;
 		max_w = MINI_ICON_MAX_WIDTH;
-		max_h = ICON_MAX_HEIGHT;
+		max_h = MINI_ICON_MAX_HEIGHT;
 		fpa.mask = 0;
 	}
 	else
@@ -747,7 +731,8 @@ int EWMH_SetIconFromWMIcon(
 	}
 
 	if (!PImageCreatePixmapFromArgbData(
-		dpy, Scr.NoFocusWin, list, start, width, height,
+		dpy, Scr.NoFocusWin, list, (size_t)size / sizeof(CARD32),
+		start, width, height,
 		&pixmap, &mask, &alpha, &nalloc_pixels,
 		&alloc_pixels, &no_limit, fpa))
 	{

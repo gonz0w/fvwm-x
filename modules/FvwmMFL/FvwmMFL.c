@@ -30,6 +30,7 @@
 #include <err.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <unistd.h>
 
 #ifdef HOST_MACOS
@@ -60,7 +61,6 @@ struct client {
 	struct bufferevent	*comms;
 	unsigned long		 flags_m;
 	unsigned long		 flags_mx;
-	struct fvwm_msg		*fm;
 
 	TAILQ_ENTRY(client)	 entry;
 };
@@ -78,7 +78,6 @@ struct fvwm_comms	 fc;
 struct fvwm_msg {
 	cJSON	*j_obj;
 	char	*msg;
-	int	 fw;
 };
 
 struct event_flag {
@@ -132,8 +131,8 @@ static void
 fm_to_json(struct fvwm_msg *fm)
 {
 	if ((fm->msg = cJSON_PrintUnformatted(fm->j_obj)) == NULL) {
-		fm->msg = NULL;
 		cJSON_Delete(fm->j_obj);
+		fm->j_obj = NULL;
 	}
 }
 
@@ -154,6 +153,8 @@ fvwm_msg_new(void)
 static void
 fvwm_msg_free(struct fvwm_msg *fm)
 {
+	if (fm == NULL)
+		return;
 	cJSON_free(fm->msg);
 	cJSON_Delete(fm->j_obj);
 	free(fm);
@@ -227,8 +228,13 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 	const char		*type_name = flag_to_event(type);
 	char			 xwid[20];
 	cJSON			*content;
+	size_t			 body_len;
 
-	if (type_name == NULL) {
+	if (len < FvwmPacketHeaderSize)
+		return (NULL);
+	body_len = len - FvwmPacketHeaderSize;
+
+	if (type_name == NULL || body_len == 0) {
 		fprintf(stderr, "Couldn't find type_name\n");
 		goto out;
 	}
@@ -252,6 +258,10 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 		return (fm);
 	}
 	case MX_ECHO: {
+		if (body_len < 4 ||
+		    memchr(&body[3], '\0',
+			(body_len - 3) * sizeof(unsigned long)) == NULL)
+			goto out;
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
 		cJSON_AddStringToObject(content, "message", (char *)&body[3]);
@@ -264,6 +274,9 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 	case M_CONFIGURE_WINDOW: {
 		struct ConfigWinPacket	*cwp = (void *)body;
 		cJSON			*hints, *ewmh, *frame;
+
+		if (body_len * sizeof(unsigned long) < sizeof(*cwp))
+			goto out;
 
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
@@ -321,6 +334,9 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 	case M_FOCUS_CHANGE: {
 		cJSON	*hilight;
 
+		if (body_len < 5)
+			goto out;
+
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
 
@@ -344,6 +360,10 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 	case M_ICON_NAME:
 	case M_RES_CLASS:
 	case M_RES_NAME: {
+		if (body_len < 4 ||
+		    memchr(&body[3], '\0',
+			(body_len - 3) * sizeof(unsigned long)) == NULL)
+			goto out;
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
 		cJSON_AddStringToObject(content, "window", xwid);
@@ -355,6 +375,8 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 		return (fm);
 	}
 	case M_NEW_DESK: {
+		if (body_len < 2)
+			goto out;
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
 		cJSON_AddNumberToObject(content, "desk", body[0]);
@@ -367,6 +389,9 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 	}
 	case M_NEW_PAGE: {
 		cJSON	*virtual, *display;
+
+		if (body_len < 8)
+			goto out;
 
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
@@ -393,6 +418,8 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 		return (fm);
 	}
 	case M_ICON_LOCATION: {
+		if (body_len < 7)
+			goto out;
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
 		cJSON_AddStringToObject(content, "window", xwid);
@@ -409,6 +436,9 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 	case M_ICONIFY: {
 		cJSON	*icon, *frame;
 
+		if (body_len < 7)
+			goto out;
+
 		if ((content = cJSON_CreateObject()) == NULL)
 			goto out;
 		cJSON_AddStringToObject(content, "window", xwid);
@@ -421,13 +451,15 @@ handle_packet(unsigned long type, unsigned long *body, unsigned long len)
 		cJSON_AddNumberToObject(icon, "height", body[6]);
 		cJSON_AddItemToObject(content, "icon", icon);
 
-		if ((frame = cJSON_CreateObject()) == NULL)
-			goto out;
-		cJSON_AddNumberToObject(frame, "x", body[7]);
-		cJSON_AddNumberToObject(frame, "y", body[8]);
-		cJSON_AddNumberToObject(frame, "width", body[9]);
-		cJSON_AddNumberToObject(frame, "height", body[1]);
-		cJSON_AddItemToObject(content, "frame", frame);
+		if (body_len >= 11) {
+			if ((frame = cJSON_CreateObject()) == NULL)
+				goto out;
+			cJSON_AddNumberToObject(frame, "x", body[7]);
+			cJSON_AddNumberToObject(frame, "y", body[8]);
+			cJSON_AddNumberToObject(frame, "width", body[9]);
+			cJSON_AddNumberToObject(frame, "height", body[10]);
+			cJSON_AddItemToObject(content, "frame", frame);
+		}
 
 		cJSON_AddItemToObject(fm->j_obj, type_name, content);
 
@@ -562,18 +594,8 @@ broadcast_to_client(FvwmPacket *packet)
 	bool			 enact_change = false;
 
 	TAILQ_FOREACH(c, &clientq, entry) {
-		if (is_extended) {
-			if (c->flags_mx == type)
-				enact_change = true;
-			else
-				enact_change = false;
-		}
-		if (!is_extended || !enact_change) {
-			if (c->flags_m & type)
-				enact_change = true;
-			else
-				enact_change = false;
-		}
+		enact_change = is_extended ?
+			(c->flags_mx & type) == type : (c->flags_m & type) != 0;
 		/* This packet really isn't for this client; move on to the
 		 * next client.
 		 */
@@ -589,8 +611,6 @@ broadcast_to_client(FvwmPacket *packet)
 			fvwm_msg_free(fm);
 			continue;
 		}
-		c->fm = fm;
-
 		/* Ensure there's a newline at the end of the string, so that
 		 * buffered output can be sent.
 		 */
@@ -618,8 +638,8 @@ client_read_cb(struct bufferevent *bev, void *ctx)
 		fprintf(stderr, "%s: DATA: <%s>, LEN: <%zu>\n", __func__, data, len);
 
 	/* Remove the newline if there is one. */
-	if (data[strlen(data) - 1] == '\n')
-		data[strlen(data) - 1] = '\0';
+	if (len > 0 && data[len - 1] == '\n')
+		data[len - 1] = '\0';
 
 	if (*data == '\0')
 		goto out;
@@ -630,7 +650,7 @@ client_read_cb(struct bufferevent *bev, void *ctx)
 			split = strtok(NULL, "\n");
 			continue;
 		}
-		SendText(fc.fd, split, c->fm ? c->fm->fw : 0);
+		SendText(fc.fd, split, 0);
 		split = strtok(NULL, "\n");
 	}
 out:
@@ -648,15 +668,12 @@ client_write_cb(struct bufferevent *bev, void *ctx)
 
 static void client_err_cb(struct bufferevent *bev, short events, void *ctx)
 {
-	struct client	*c = (struct client *)ctx, *clook;
+	struct client	*c = ctx;
 
 	if (events & (BEV_EVENT_EOF|BEV_EVENT_ERROR)) {
-		TAILQ_FOREACH(clook, &clientq, entry) {
-			if (c == clook) {
-				TAILQ_REMOVE(&clientq, c, entry);
-				bufferevent_free(bev);
-			}
-		}
+		TAILQ_REMOVE(&clientq, c, entry);
+		bufferevent_free(bev);
+		free(c);
 	}
 }
 
@@ -672,9 +689,13 @@ accept_conn_cb(struct evconnlistener *l, evutil_socket_t fd,
 	c = fxmalloc(sizeof *c);
 
 	c->comms = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+	if (c->comms == NULL) {
+		close(fd);
+		free(c);
+		return;
+	}
 	c->flags_m = 0;
 	c->flags_mx = 0;
-	c->fm = NULL;
 
 	bufferevent_setcb(c->comms, client_read_cb, client_write_cb,
 	    client_err_cb, c);
@@ -715,9 +736,10 @@ fvwm_read(int efd, short ev, void *data)
 void
 set_pathnames(void)
 {
-	char		*mflsock_env, *display_env, *tmpdir;
+	char		*mflsock_env, *display_env, *tmpdir, *display_name;
 	const char	*unrolled_path;
 	struct stat	 sb;
+	size_t		 i;
 
 	/* Figure out if we are using default MFL socket path or we should
 	 * respect environment variable FVWMMFL_SOCKET for FvwmMFL socket path
@@ -727,12 +749,14 @@ set_pathnames(void)
 	display_env = getenv("DISPLAY");
 
 	if (mflsock_env == NULL) {
-		/* Check if TMPDIR is defined.  If so, use that, otherwise
-		 * default to /tmp for the directory name.
-		 */
-		if ((tmpdir = getenv("TMPDIR")) == NULL)
-			tmpdir = "/tmp";
-		xasprintf(&socket_basepath, "%s/fvwmmfl", tmpdir);
+		if ((tmpdir = getenv("XDG_RUNTIME_DIR")) != NULL) {
+			xasprintf(&socket_basepath, "%s/fvwmmfl", tmpdir);
+		} else {
+			if ((tmpdir = getenv("TMPDIR")) == NULL)
+				tmpdir = "/tmp";
+			xasprintf(&socket_basepath, "%s/fvwmmfl-%lu", tmpdir,
+			    (unsigned long)getuid());
+		}
 		goto check_dir;
 	}
 
@@ -747,29 +771,38 @@ set_pathnames(void)
 	free((void *)unrolled_path);
 
 check_dir:
-	/* Check if what we've been given is a directory */
-	if (lstat(socket_basepath, &sb) != 0 && errno == ENOTDIR) {
-		fprintf(stderr, "Not a directory: socket_basepath: %s\n",
-			socket_basepath);
+	if (lstat(socket_basepath, &sb) == 0) {
+		if (!S_ISDIR(sb.st_mode) || sb.st_uid != getuid() ||
+		    (sb.st_mode & 077) != 0) {
+			fprintf(stderr, "Unsafe FvwmMFL socket directory: %s\n",
+			    socket_basepath);
+			free(socket_basepath);
+			exit(1);
+		}
+	} else if (errno != ENOENT) {
+		fprintf(stderr, "Couldn't inspect socket_basepath: %s: %s\n",
+		    socket_basepath, strerror(errno));
 		free(socket_basepath);
 		exit(1);
-	}
-
-	/* Try and create the directory.  Only complain if this failed, and
-	 * the directory doesn't already exist.
-	 */
-	if (mkdir(socket_basepath, S_IRWXU) != 0 && errno != EEXIST) {
-		fprintf(stderr, "Coudln't create socket_basepath: %s: %s\n",
+	} else if (mkdir(socket_basepath, S_IRWXU) != 0) {
+		fprintf(stderr, "Couldn't create socket_basepath: %s: %s\n",
 			socket_basepath, strerror(errno));
 		free(socket_basepath);
 		exit(1);
 	}
 
+	display_name = fxstrdup(display_env != NULL ? display_env : "default");
+	for (i = 0; display_name[i] != '\0'; i++) {
+		if (!isalnum((unsigned char)display_name[i]) &&
+		    display_name[i] != '-' && display_name[i] != '_')
+			display_name[i] = '_';
+	}
 	xasprintf(&socket_name, "%s/fvwm_mfl_%s.sock", socket_basepath,
-		display_env);
+		display_name);
 
 	xasprintf(&lockfile, "%s/fvwmmfl_lockfile_%s.lock", socket_basepath,
-	   display_env);
+	   display_name);
+	free(display_name);
 
 }
 
@@ -800,6 +833,7 @@ int main(int argc, char **argv)
 	struct evconnlistener *fmd_cfd;
 	struct sockaddr_un    sin;
 	char		     *pe;
+	size_t		      socket_name_len;
 
 	TAILQ_INIT(&clientq);
 
@@ -825,7 +859,13 @@ int main(int argc, char **argv)
 
 	memset(&sin, 0, sizeof(sin));
 	sin.sun_family = AF_LOCAL;
-	strcpy(sin.sun_path, socket_name);
+	socket_name_len = strlen(socket_name);
+	if (socket_name_len >= sizeof(sin.sun_path)) {
+		fprintf(stderr, "FvwmMFL socket path is too long: %s\n",
+		    socket_name);
+		return (1);
+	}
+	memcpy(sin.sun_path, socket_name, socket_name_len + 1);
 
 	/* Create a new listener */
 	fmd_cfd = evconnlistener_new_bind(base, accept_conn_cb, NULL,

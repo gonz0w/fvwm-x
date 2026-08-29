@@ -41,6 +41,7 @@
 #include "screen.h"
 #include "module_interface.h"
 #include "module_list.h"
+#include "event_loop_policy.h"
 #include "events.h"
 #include "geometry.h"
 #include "libs/fvwmsignal.h"
@@ -50,6 +51,8 @@
 
 /* A queue of commands from the modules */
 static fqueue cqueue = FQUEUE_INIT;
+static fvwm_queue_drain_state cqueue_drain_state =
+	FVWM_QUEUE_DRAIN_STATE_INIT;
 
 static const unsigned long dummy = 0;
 
@@ -792,27 +795,31 @@ void module_input_enqueue(struct fmodule_input *input)
  *
  */
 
-void ExecuteCommandQueue(void)
+static void execute_queued_module_input(void *object, void *context)
 {
-	fmodule_input *input;
+	fmodule_input *input = object;
 
-	while (fqueue_get_first(&cqueue, (void **)&input) == 1)
+	if (input->command)
 	{
-		/* remove from queue */
-		fqueue_remove_or_operate_from_front(
-			&cqueue, NULL, NULL, NULL, NULL);
-		/* execute and destroy */
-		if (input->command)
-		{
-			module_input_execute(input);
-		}
-		else
-		{
-			module_input_discard(input);
-		}
+		module_input_execute(input);
 	}
+	else
+	{
+		module_input_discard(input);
+	}
+}
 
-	return;
+Bool ExecuteCommandQueue(void)
+{
+	return fvwm_bounded_queue_drain(
+		&cqueue, &cqueue_drain_state, FVWM_MODULE_COMMAND_BUDGET,
+		execute_queued_module_input, NULL);
+}
+
+void ModuleCommandQueueAfterPoll(void)
+{
+	fvwm_queue_drain_after_poll(
+		&cqueue_drain_state, FVWM_MODULE_COMMAND_BUDGET);
 }
 
 /*

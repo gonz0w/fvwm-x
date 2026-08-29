@@ -43,6 +43,7 @@ void SendName(
 void module_input_enqueue(struct fmodule_input *input);
 void module_input_execute(struct fmodule_input *input);
 
-void ExecuteCommandQueue(void);
+Bool ExecuteCommandQueue(void);
+void ModuleCommandQueueAfterPoll(void);
 
 #endif /* MODULE_INTERFACE_H */

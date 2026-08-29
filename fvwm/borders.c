@@ -3017,7 +3017,7 @@ static void border_draw_decor_to_pixmap(
 				break;
 			}
 			p = fw->mini_icon;
-			if (cd->cs >= 0)
+			if (cd->cs[0] >= 0)
 			{
 				bg.pixmap.fra.mask |= FRAM_HAVE_ICON_CSET;
 				bg.pixmap.fra.colorset = &Colorset[cd->cs[0]];
@@ -3895,7 +3895,7 @@ static void border_get_titlebar_draw_descr(
 		tdd->fstr.x = td->offset;
 		tdd->fstr.y = fw->title_text_offset + 1;
 	}
-	if (td->cd->cs >= 0)
+	if (td->cd->cs[0] >= 0)
 	{
 		tdd->fstr.colorset = &Colorset[td->cd->cs[0]];
 		tdd->fstr.flags.has_colorset = 1;

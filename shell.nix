@@ -6,7 +6,9 @@ pkgs.mkShell {
     freetype
     fribidi
     go
+    gnused
     libevent
+    libice
     libpng
     librsvg
     libsm
@@ -21,8 +23,12 @@ pkgs.mkShell {
     libxrandr
     libxrender
     libxt
+    meson
     ncurses
+    ninja
+    perl
     pkg-config
+    python3
     readline
     sharutils
     xtrans

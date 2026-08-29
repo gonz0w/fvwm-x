@@ -24,22 +24,28 @@ system in use.
 
 ## Core dependencies
 
+* meson (>= 1.5.1)
+* ninja-build
+* pkg-config
+* python3
+* perl
+* sed
 * libevent-dev (>= 2.0)
 * libfontconfig-dev
-* libfreetype6-dev
+* libice-dev
 * libx11-dev
 * libxext-dev
 * libxft-dev
 * libxkbcommon-dev
 * libxrandr-dev (>= 1.5)
-* libxrender-dev
 * libxt-dev
 * xtrans-dev
 
 ## Optional dependencies
 
 * asciidoctor
-* golang
+* golang (>= 1.21)
+* libfreetype6-dev
 * libfribidi-dev
 * libncurses5-dev
 * libpng-dev
@@ -50,6 +56,7 @@ system in use.
 * libxfixes-dev
 * libxi-dev
 * libxpm-dev
+* libxrender-dev
 * sharutils
 
 Generating documentation

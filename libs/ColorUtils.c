@@ -36,6 +36,7 @@
 #include <X11/Xproto.h>                 /* for X functions in general */
 #include "fvwmlib.h"                    /* prototype GetShadow GetHilit */
 #include "Parse.h"
+#include "Strings.h"
 #include "Colorset.h"
 #include "PictureBase.h"
 #include "PictureUtils.h"
@@ -455,7 +456,7 @@ Pixel GetSimpleColor(char *name)
 	memset(&color, 0, sizeof(color));
 	/* This is necessary because some X servers coredump when presented a
 	 * malformed rgb colour name. */
-	if (name && strncasecmp(name, "rgb:", 4) == 0)
+	if (StrHasPrefix(name, "rgb:"))
 	{
 		int i;
 		char *s;

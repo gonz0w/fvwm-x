@@ -3,11 +3,13 @@
 #ifndef FVWM_MODULE_LIST_H
 #define FVWM_MODULE_LIST_H
 
+#include <stddef.h>
+
 #include "libs/Module.h"
 #include "libs/fqueue.h"
 
-/* for F_CMD_ARGS */
-#include "fvwm/fvwm.h"
+/* for F_CMD_ARGS and exec_context_t */
+#include "fvwm/execcontext.h"
 
 /* please don't use msg_masks_t and PipeMask outside of module_interface.c.
  * They are only global to allow to access the IS_MESSAGE_SELECTED macro without
@@ -29,6 +31,13 @@ typedef struct fmodule
 	int xreadPipe;
 	int xwritePipe;
 	fqueue xpipeQueue;
+	size_t xpipeQueueBytes;
+	unsigned char xinputBuffer[
+		MAX_MODULE_INPUT_TEXT_LEN + sizeof(Window) +
+		2 * sizeof(unsigned long)];
+	size_t xinputBytes;
+	size_t xinputExpected;
+	size_t xinputRefs;
 	msg_masks_t xPipeMask;
 	msg_masks_t xNoGrabMask;
 	msg_masks_t xSyncMask;
@@ -54,9 +63,11 @@ typedef fmodule_store* fmodule_list_itr;
 #define MOD_READFD(m) ((m)->xreadPipe)
 #define MOD_WRITEFD(m) ((m)->xwritePipe)
 #define MOD_PIPEQUEUE(m) ((m)->xpipeQueue)
+#define MOD_PIPEQUEUE_BYTES(m) ((m)->xpipeQueueBytes)
 #define MOD_PIPEMASK(m) ((m)->xPipeMask)
 #define MOD_NAME(m) ((m)->xname)
 #define MOD_ALIAS(m) ((m)->xalias)
+#define MODULE_QUEUE_MAX_BYTES (8U * 1024U * 1024U)
 
 /* this is a bit long winded to allow MAX_MESSAGE to be 32 and not get an
  * integer overflow with (1 << MAX_MESSAGES) and even with
@@ -92,6 +103,13 @@ typedef struct fmodule_input
 	char *command;
 } fmodule_input;
 
+typedef enum
+{
+	FMODULE_INPUT_ERROR = -1,
+	FMODULE_INPUT_INCOMPLETE = 0,
+	FMODULE_INPUT_READY = 1
+} fmodule_input_status;
+
 
 /*
  *	Basic Module Handling Functions
@@ -99,6 +117,13 @@ typedef struct fmodule_input
 
 /* kill all modules */
 void module_kill_all(void);
+
+/* create, register, or destroy a module record */
+fmodule *module_create(void);
+void module_register(fmodule *module);
+void module_destroy(fmodule *module);
+Bool module_output_queue_reserve(fmodule *module, size_t entry_size);
+void module_output_queue_release(fmodule *module, size_t entry_size);
 
 /* kill a module */
 void module_kill(fmodule *module);
@@ -115,9 +140,9 @@ fmodule *executeModuleDesperate(F_CMD_ARGS);
 /* module_send(fmodule *module, unsigned long *ptr, int size); */
 void PositiveWrite(fmodule *module, unsigned long *ptr, int size);
 
-/* returns a dynamically allocated struct with the received data
- * or NULL on error */
-fmodule_input *module_receive(fmodule *module);
+/* Incrementally receives one command from a nonblocking module pipe. */
+fmodule_input_status module_receive(
+	fmodule *module, fmodule_input **ret_input);
 
 /* frees an input data struct */
 void module_input_discard(fmodule_input *input);

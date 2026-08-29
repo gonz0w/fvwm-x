@@ -9,19 +9,26 @@ on:
         description: 'Make a draft release, rather than an official release'
         type: boolean
         required: true
+permissions:
+  contents: write
+concurrency:
+  group: release
+  cancel-in-progress: false
 jobs:
   createrelease:
+    if: github.ref == 'refs/heads/main'
     runs-on: blacksmith-4vcpu-ubuntu-2404
     container: fvwmorg/fvwm3-build:latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
         path: fvwm3
+        ref: main
     - name: Make workspace safe for git
-      run: git config --global --add safe.directory ${GITHUB_WORKSPACE}
+      run: git config --global --add safe.directory "${GITHUB_WORKSPACE}/fvwm3"
     - name: Repo Settings
       run:  |
         git config --global user.name "Thomas Adam"
@@ -29,72 +36,149 @@ jobs:
     - name: Get Current Version (for release...)
       id: versionRelease
       run: |
+        set -euo pipefail
         cd fvwm3
         git fetch -q -n origin
-        echo "versionRelease=$(git show HEAD:./.current-version)" >> $GITHUB_ENV
+        version_release=$(git show "$GITHUB_SHA:./.current-version")
+        [[ "$version_release" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.]+)?$ ]]
+        printf 'versionRelease=%s\n' "$version_release" >> "$GITHUB_ENV"
+    - name: Validate release inputs
+      shell: bash
+      env:
+        RELEASE_VERSION: ${{ env.versionRelease }}
+        NEXT_VERSION: ${{ inputs.nextVersion }}
+      run: |
+        set -euo pipefail
+        cd fvwm3
+        version_pattern='^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.]+)?$'
+        [[ "$RELEASE_VERSION" =~ $version_pattern ]]
+        [[ "$NEXT_VERSION" =~ $version_pattern ]]
+        test "$RELEASE_VERSION" != "$NEXT_VERSION"
+        current_version=$(cat .current-version)
+        current_status=$(cat .release-status)
+        echo "releaseComplete=false" >> "$GITHUB_ENV"
+        if git rev-parse --verify --quiet "refs/tags/$RELEASE_VERSION"; then
+          release_commit=$(git rev-list -n 1 "$RELEASE_VERSION")
+          git merge-base --is-ancestor "$release_commit" HEAD
+          test "$(git show "$release_commit:./.release-status")" = "ISRELEASED=yes"
+          echo "resumeRelease=true" >> "$GITHUB_ENV"
+          if [[ "$current_version" == "$NEXT_VERSION" ]] && \
+             [[ "$current_status" == "ISRELEASED=no" ]]; then
+            echo "releaseComplete=true" >> "$GITHUB_ENV"
+          else
+            test "$current_version" = "$RELEASE_VERSION"
+            test "$current_status" = "ISRELEASED=yes"
+          fi
+        else
+          test "$current_version" = "$RELEASE_VERSION"
+          test "$current_status" = "ISRELEASED=no"
+          echo "resumeRelease=false" >> "$GITHUB_ENV"
+        fi
     - name: Create release branch
+      if: env.releaseComplete != 'true' && env.resumeRelease != 'true'
+      env:
+        RELEASE_VERSION: ${{ env.versionRelease }}
       run: |
         cd fvwm3
-        git checkout -b release/${{ env.versionRelease }}
+        git checkout -b "release/$RELEASE_VERSION"
     - name: Get date
+      if: env.releaseComplete != 'true'
       id: date
-      run: cd fvwm3 && echo "date=$(date -d 'now' +'%Y-%m-%d')" >> $GITHUB_ENV
+      run: cd fvwm3 && echo "date=$(date -d 'now' +'%Y-%m-%d')" >> "$GITHUB_ENV"
     - name: Generate changelog
+      if: env.releaseComplete != 'true' && env.resumeRelease != 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_DATE: ${{ env.date }}
+        RELEASE_VERSION: ${{ env.versionRelease }}
       run: |
+        set -euo pipefail
         cd fvwm3
-        printf "## [${{ env.versionRelease }}](https://github.com/fvwmorg/fvwm3/tree/${{ env.versionRelease }}) (${{ env.date }})\n" >./tmp.out
+        printf '## [%s](https://github.com/fvwmorg/fvwm3/tree/%s) (%s)\n' \
+          "$RELEASE_VERSION" "$RELEASE_VERSION" "$RELEASE_DATE" >./tmp.out
+        jq -n \
+          --arg tag_name "$RELEASE_VERSION" \
+          '{tag_name: $tag_name, target_commitish: "main", configuration_file_path: ".github/release.yml"}' \
+          >./release-request.json
         curl \
+          --fail-with-body \
           --silent \
+          --show-error \
           -X POST \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Authorization: Bearer $GH_TOKEN" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
           https://api.github.com/repos/fvwmorg/fvwm3/releases/generate-notes \
-          -d '{"tag_name":"${{ env.versionRelease }}","target_commitish":"main","configuration_file_path":".github/release.yml"}' | \
-                jq -r '.body' >> ./tmp.out
+          --data-binary @./release-request.json \
+          -o ./release-notes.json
+        jq -er '.body | strings' ./release-notes.json >> ./tmp.out
         sed -i '2d' ./tmp.out
         sed -i "2r tmp.out" CHANGELOG.md
+        rm -f ./release-notes.json ./release-request.json ./tmp.out
     - name: Create release commit
+      if: env.releaseComplete != 'true' && env.resumeRelease != 'true'
+      env:
+        RELEASE_VERSION: ${{ env.versionRelease }}
       run: |
         cd fvwm3
         echo "ISRELEASED=yes" > .release-status
         git add .release-status
         git add CHANGELOG.md
-        git commit -a --author="Thomas Adam <thomas@fvwm.org>" -m "[AUTO]: release ${{ env.versionRelease }}"
+        git commit -a --author="Thomas Adam <thomas@fvwm.org>" -m "[AUTO]: release $RELEASE_VERSION"
         git checkout main
-        git merge --ff-only release/${{ env.versionRelease }}
-        git tag -am "Release ${{ env.versionRelease }}" ${{ env.versionRelease }}
-        git push
-        git push origin --tags ${{ env.versionRelease }}
+        git merge --ff-only "release/$RELEASE_VERSION"
+        git tag -am "Release $RELEASE_VERSION" "$RELEASE_VERSION"
+    - name: Restore release commit for retry
+      if: env.releaseComplete != 'true' && env.resumeRelease == 'true'
+      env:
+        RELEASE_VERSION: ${{ env.versionRelease }}
+      run: |
+        cd fvwm3
+        git checkout --detach "$RELEASE_VERSION"
     - name: Build artefacts
+      if: env.releaseComplete != 'true'
       run: |
+        set -euo pipefail
         cd fvwm3
-        meson setup --reconfigure compile -Dmandoc=true -Dhtmldoc=true -Dgolang=enabled && \
-        meson compile -C compile && meson dist --formats gztar -C compile
-    - name: Create a draft release
+        meson setup compile --buildtype=release -Dmandoc=true -Dhtmldoc=true -Dgolang=enabled
+        meson compile -C compile
+        meson dist --formats gztar -C compile
+    - name: Publish release commit and tag
+      if: env.releaseComplete != 'true' && env.resumeRelease != 'true'
+      env:
+        RELEASE_VERSION: ${{ env.versionRelease }}
       run: |
+        set -euo pipefail
         cd fvwm3
-        echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-        gh \
-        release \
-        create ${{ env.versionRelease }} \
-        ${{ github.event.inputs.isDraft == 'true' && '--draft' || '' }} \
-        --target main \
-        --generate-notes \
-        ./compile/meson-dist/fvwm3-${{ env.versionRelease }}.tar.gz
-    - name: Bump next version
+        git push --atomic origin main "refs/tags/$RELEASE_VERSION"
+    - name: Create or resume release
+      if: env.releaseComplete != 'true'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RELEASE_VERSION: ${{ env.versionRelease }}
+        REQUEST_DRAFT: ${{ inputs.isDraft }}
       run: |
+        set -euo pipefail
         cd fvwm3
-        git clean -dfx
-        git checkout main
-        git pull -q
-        echo "${{ github.event.inputs.nextVersion }}" > .current-version
-        git add .current-version
-        echo "ISRELEASED=no" > .release-status
-        git commit -am "build: set next version"
-        git push
+        archive="./compile/meson-dist/fvwm3-$RELEASE_VERSION.tar.gz"
+        checksum="$archive.sha256sum"
+        if ! gh release view "$RELEASE_VERSION" >/dev/null 2>&1; then
+          gh release create "$RELEASE_VERSION" \
+            --draft \
+            --target main \
+            --generate-notes
+        fi
+        release_is_draft=$(gh release view "$RELEASE_VERSION" --json isDraft --jq .isDraft)
+        if [[ "$release_is_draft" == "true" ]]; then
+          gh release upload "$RELEASE_VERSION" "$archive" "$checksum" --clobber
+          if [[ "$REQUEST_DRAFT" != "true" ]]; then
+            gh release edit "$RELEASE_VERSION" --draft=false --latest
+          fi
+        fi
     - name: Clone docs repository
-      uses: actions/checkout@v4
+      if: env.releaseComplete != 'true'
+      uses: actions/checkout@v5
       with:
         repository: fvwmorg/fvwmorg.github.io
         token: ${{ secrets.FVWM_PUBLISH_DOCS }}
@@ -102,11 +186,15 @@ jobs:
         fetch-depth: 0
 
     - name: Generate & Commit manpages on website
+      if: env.releaseComplete != 'true'
       working-directory: ./fvwmorg.github.io
+      env:
+        RELEASE_VERSION: ${{ env.versionRelease }}
+        REQUEST_DRAFT: ${{ inputs.isDraft }}
       run: |
         set -euo pipefail
-        ${GITHUB_WORKSPACE}/fvwm3/meson-scripts/generate-manpages-website.sh \
-            ${GITHUB_WORKSPACE}/fvwm3
+        "$GITHUB_WORKSPACE/fvwm3/meson-scripts/generate-manpages-website.sh" \
+            "$GITHUB_WORKSPACE/fvwm3"
 
         # Only commit/push if there are changes
         git add -A
@@ -114,9 +202,38 @@ jobs:
           echo "No changes to commit"
         else
           # Update the website version...
-          sed -i 's/^\(fvwm3-version: \).*/\1${{ env.versionRelease }}/' _config.yml
+          sed -i "s/^\(fvwm3-version: \).*/\1$RELEASE_VERSION/" _config.yml
 
-          git commit -a --author="Thomas Adam <thomas@fvwm.org>" -m "[AUTO]: Update manpages for release ${{ env.versionRelease }}"
+          git commit -a --author="Thomas Adam <thomas@fvwm.org>" -m "[AUTO]: Update manpages for release $RELEASE_VERSION"
           git show
-          git push origin ${{ github.event.inputs.isDraft == 'true' && '--dry-run' || '' }}
+          if [[ "$REQUEST_DRAFT" == "true" ]]; then
+            git push --dry-run origin
+          else
+            git push origin
+          fi
+        fi
+    - name: Bump next version
+      if: env.releaseComplete != 'true'
+      env:
+        NEXT_VERSION: ${{ inputs.nextVersion }}
+        RELEASE_VERSION: ${{ env.versionRelease }}
+      run: |
+        set -euo pipefail
+        cd fvwm3
+        git clean -dfx
+        git checkout main
+        git pull -q
+        if [[ "$(cat .current-version)" == "$NEXT_VERSION" ]] && \
+           [[ "$(cat .release-status)" == "ISRELEASED=no" ]]; then
+          exit 0
+        fi
+        test "$(cat .current-version)" = "$RELEASE_VERSION"
+        test "$(cat .release-status)" = "ISRELEASED=yes"
+        printf '%s\n' "$NEXT_VERSION" > .current-version
+        git add .current-version
+        echo "ISRELEASED=no" > .release-status
+        git commit -am "build: set next version"
+        if ! git push; then
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
         fi

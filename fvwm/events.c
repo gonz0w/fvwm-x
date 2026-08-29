@@ -87,6 +87,7 @@
 #include "libs/fvwmsignal.h"
 #include "module_list.h"
 #include "module_interface.h"
+#include "event_loop_policy.h"
 #include "session.h"
 #include "borders.h"
 #include "frame.h"
@@ -1788,7 +1789,7 @@ static void monitor_update_ewmh(void)
 	mref = RB_MIN(monitors, &monitor_q);
 
 	RB_FOREACH(m, monitors, &monitor_q) {
-		if (m->flags == MONITOR_CHANGED) {
+		if (m->flags & MONITOR_CHANGED) {
 			apply_desktops_monitor(m);
 			calculate_page_sizes(m, mref->dx, mref->dy);
 			initPanFrames(m);
@@ -4117,8 +4118,6 @@ void dispatch_event(XEvent *e)
 	Window w = e->xany.window;
 	FvwmWindow *fw;
 	event_group_t *event_group;
-	static unsigned long prev_serial = 0;
-
 	XFlush(dpy);
 
 	switch (e->type - randr_event) {
@@ -4128,17 +4127,13 @@ void dispatch_event(XEvent *e)
 		monitor_update_ewmh();
 		monitor_emit_broadcast();
 		initPanFrames(NULL);
-
-		/* Avoid processing identical RandR events twice. */
-		if (e->xany.serial == prev_serial)
-		{
-			fvwm_debug(__func__, "Ignoring duplicate event %lu\n",
-				 e->xany.serial);
-			break;
-		}
-		prev_serial = e->xany.serial;
-
-		break;
+		return;
+	case RRNotify:
+		monitor_output_change(e->xany.display, NULL);
+		monitor_update_ewmh();
+		monitor_emit_broadcast();
+		initPanFrames(NULL);
+		return;
 	}
 
 	if (w == Scr.Root)
@@ -4151,6 +4146,7 @@ void dispatch_event(XEvent *e)
 			{
 				w = e->xbutton.subwindow;
 			}
+			break;
 		case MapRequest:
 			w = e->xmaprequest.window;
 			break;
@@ -4215,6 +4211,7 @@ void HandleEvents(void)
 
 	while (!isTerminated)
 	{
+		fvwm_process_deferred_signals();
 		last_event_type = 0;
 		if (Scr.flags.is_window_scheduled_for_destroy)
 		{
@@ -4261,16 +4258,30 @@ int My_XNextEvent(Display *disp, XEvent *event)
 	fmodule_input *input;
 	static struct timeval timeout;
 	static struct timeval *timeoutP = &timeout;
+	static unsigned int consecutive_x_events;
+	fvwm_x_event_action x_event_action;
+	Bool force_poll;
+	struct timeval poll_timeout = {0, 0};
+
+	/* Remaining module work forces a descriptor poll before the next batch. */
+	force_poll = ExecuteCommandQueue();
+	module_cleanup();
 
 	/* check for any X events already queued up.
 	 * Side effect: this does an XFlush if no events are queued
 	 * Make sure nothing between here and the select causes further
 	 * X requests to be sent or the select may block even though
 	 * there are events in the queue */
-	if (FPending(disp))
+	x_event_action = fvwm_x_event_policy(
+		FPending(disp), &consecutive_x_events);
+	if (x_event_action == FVWM_X_EVENT_DELIVER)
 	{
 		FNextEvent(disp, event);
 		return 1;
+	}
+	if (x_event_action == FVWM_X_EVENT_POLL)
+	{
+		force_poll = True;
 	}
 
 	/* check for termination of all startup modules */
@@ -4362,7 +4373,9 @@ int My_XNextEvent(Display *disp, XEvent *event)
 		}
 
 		num_fd = fvwmSelect(
-			fvwmlib_max_fd, &in_fdset, &out_fdset, 0, timeoutP);
+			fvwmlib_max_fd, &in_fdset, &out_fdset, 0,
+			force_poll ? &poll_timeout : timeoutP);
+		fvwm_process_deferred_signals();
 		if (is_waiting_for_scheduled_command)
 		{
 			timeoutP = old_timeoutP;
@@ -4374,6 +4387,7 @@ int My_XNextEvent(Display *disp, XEvent *event)
 			return 0;
 		}
 	} while (num_fd < 0);
+	ModuleCommandQueueAfterPoll();
 
 	if (num_fd > 0)
 	{
@@ -4383,9 +4397,13 @@ int My_XNextEvent(Display *disp, XEvent *event)
 		{
 			if (FD_ISSET(MOD_READFD(module), &in_fdset))
 			{
-				input = module_receive(module);
-				/* enqueue the received command */
-				module_input_enqueue(input);
+				if (
+					module_receive(module, &input) ==
+					FMODULE_INPUT_READY)
+				{
+					/* enqueue the received command */
+					module_input_enqueue(input);
+				}
 			}
 			if (
 				MOD_WRITEFD(module) >= 0 &&
@@ -4395,10 +4413,7 @@ int My_XNextEvent(Display *disp, XEvent *event)
 			}
 		}
 
-		/* execute any commands queued up */
-		ExecuteCommandQueue();
-
-		/* cleanup dead modules */
+		/* Queued inputs pin dead modules until the next bounded drain. */
 		module_cleanup();
 
 		/* nothing is done here if fvwm was compiled without session
@@ -4409,7 +4424,7 @@ int My_XNextEvent(Display *disp, XEvent *event)
 		}
 
 	}
-	else
+	else if (!force_poll)
 	{
 		/* select has timed out, things must have calmed down so let's
 		 * decorate */
@@ -4432,6 +4447,7 @@ int My_XNextEvent(Display *disp, XEvent *event)
 	 */
 	if (FPending(disp))
 	{
+		consecutive_x_events++;
 		FNextEvent(disp,event);
 		return 1;
 	}

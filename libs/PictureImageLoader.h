@@ -6,6 +6,8 @@
 
 /* ---------------------------- included header files ---------------------- */
 
+#include <stddef.h>
+
 #include "fvwm_x11.h"
 #include "PictureBase.h"
 
@@ -22,8 +24,8 @@
  * </description>
  */
 Bool PImageCreatePixmapFromArgbData(
-	Display *dpy, Window win, CARD32 *data, int start, int width,
-	int height, Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
+	Display *dpy, Window win, CARD32 *data, size_t data_len, int start,
+	int width, int height, Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
 	int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
 	FvwmPictureAttributes fpa);
 /*

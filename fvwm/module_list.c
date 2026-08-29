@@ -87,144 +87,38 @@ typedef struct
 } mqueue_object_type;
 
 
-/* the linked list pointers to the first and last modules */
-static fmodule_list module_list = NULL;
-/* keep to-be-deleted modules in a deathrow until they are deleted safely. */
-static fmodule_list death_row = NULL;
-
 extern int moduleTimeout;
 
 /*
  * static functions
  */
-static fmodule *module_alloc(void);
-static void module_free(fmodule *module);
-
-/*
- * list handling functions
- */
-static inline void module_list_insert(fmodule *module, fmodule_list *list);
-static inline fmodule *module_list_remove(fmodule *module, fmodule_list *list);
-static inline void module_list_destroy(fmodule_list *list);
-
 static void KillModuleByName(char *name, char *alias);
 static char *get_pipe_name(fmodule *module);
 static void DeleteMessageQueueBuff(fmodule *module);
+static void flush_message_queue(fmodule *module, Bool wait_for_writable);
+static Bool set_nonblocking(int fd);
 
 static inline void msg_mask_set(
 	msg_masks_t *msg_mask, unsigned long m1, unsigned long m2);
 static void set_message_mask(msg_masks_t *mask, unsigned long msg);
 
-
-void module_kill_all(void)
+static Bool set_nonblocking(int fd)
 {
-	module_list_destroy(&module_list);
+	int flags;
 
-	return;
+	if (fd < 0)
+	{
+		return True;
+	}
+	flags = fcntl(fd, F_GETFL);
+	if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
+	{
+		return False;
+	}
+
+	return True;
 }
 
-static fmodule *module_alloc(void)
-{
-	fmodule *module;
-
-	module = fxmalloc(sizeof(fmodule));
-	MOD_SET_CMDLINE(module, 0);
-	MOD_READFD(module) = -1;
-	MOD_WRITEFD(module) = -1;
-	fqueue_init(&MOD_PIPEQUEUE(module));
-	msg_mask_set(&MOD_PIPEMASK(module), DEFAULT_MASK, DEFAULT_MASK);
-	msg_mask_set(&MOD_NOGRABMASK(module), 0, 0);
-	msg_mask_set(&MOD_SYNCMASK(module), 0, 0);
-	MOD_NAME(module) = NULL;
-	MOD_ALIAS(module) = NULL;
-
-	return module;
-}
-
-/* closes the pipes and frees every data associated with a module record */
-static void module_free(fmodule *module)
-{
-	if (module == NULL)
-	{
-		return;
-	}
-	close(MOD_WRITEFD(module));
-	close(MOD_READFD(module));
-
-	if (MOD_NAME(module) != NULL)
-	{
-		free(MOD_NAME(module));
-	}
-	if (MOD_ALIAS(module) != NULL)
-	{
-		free(MOD_ALIAS(module));
-	}
-	while (!FQUEUE_IS_EMPTY(&(MOD_PIPEQUEUE(module))))
-	{
-		DeleteMessageQueueBuff(module);
-	}
-	free(module);
-
-	return;
-}
-
-static inline void module_list_insert(fmodule *module, fmodule_list *list)
-{
-	fmodule_store *new_store;
-	if (module == NULL)
-	{
-		return;
-	}
-	new_store = fxmalloc(sizeof(fmodule_store));
-	new_store->module = module;
-	new_store->next = *list;
-	*list = new_store;
-
-	return;
-}
-
-static inline fmodule *module_list_remove(fmodule *module, fmodule_list *list)
-{
-	fmodule_store **pos;
-
-	if (module == NULL)
-	{
-		return NULL;
-	}
-
-	for (pos = list; *pos != NULL; pos = &((*pos)->next))
-	{
-		if ((*pos)->module == module)
-		{
-			/* found it */
-			fmodule_store *current;
-
-			current = *pos;
-			*pos = (*pos)->next;
-			free(current);
-
-			return module;
-		}
-	}
-
-	return NULL;
-}
-
-static inline void module_list_destroy(fmodule_list *list)
-{
-	fmodule_store *current;
-	fmodule_store *next;
-
-	for (current = *list; current != NULL; current = next)
-	{
-		next = current->next;
-		module_free(current->module);
-		free(current);
-	}
-	*list = NULL;
-
-	return;
-}
 
 static fmodule *do_execute_module(
 	F_CMD_ARGS, Bool desperate, Bool do_listen_only)
@@ -322,7 +216,7 @@ static fmodule *do_execute_module(
 	}
 
 	/* all ok, create the space and fill up */
-	module = module_alloc();
+	module = module_create();
 
 	MOD_NAME(module) = stripcpy(cptr);
 	free(cptr);
@@ -381,28 +275,33 @@ static fmodule *do_execute_module(
 			MOD_SET_CMDLINE(module, 1);
 		}
 
-		/* make the PositiveWrite pipe non-blocking. Don't want to jam
-		 * up fvwm because of an uncooperative module */
-		if (MOD_WRITEFD(module) >= 0)
+		/* Incremental framing requires both directions to be nonblocking. */
+		if (!set_nonblocking(MOD_WRITEFD(module)) ||
+		    !set_nonblocking(MOD_READFD(module)))
 		{
-			fcntl(MOD_WRITEFD(module), F_SETFL, O_NONBLOCK);
+			fvwm_debug(__func__, "module nonblocking setup failed");
+			module_destroy(module);
+			module = NULL;
 		}
 		/* Mark the pipes close-on exec so other programs
 		 * won`t inherit them */
-		if (fcntl(MOD_READFD(module), F_SETFD, 1) == -1)
+		if (module != NULL && fcntl(MOD_READFD(module), F_SETFD, 1) == -1)
 		{
 			fvwm_debug(__func__,
 				   "module close-on-exec failed");
 		}
 		if (
-			MOD_WRITEFD(module) >= 0 &&
+			module != NULL && MOD_WRITEFD(module) >= 0 &&
 			fcntl(MOD_WRITEFD(module), F_SETFD, 1) == -1)
 		{
 			fvwm_debug(__func__,
 				   "module close-on-exec failed");
 		}
 		/* module struct is completed, insert into the list */
-		module_list_insert(module, &module_list);
+		if (module != NULL)
+		{
+			module_register(module);
+		}
 
 	}
 	else if (val == 0)
@@ -453,7 +352,7 @@ static fmodule *do_execute_module(
 	else
 	{
 		fvwm_debug(__func__, "Fork failed");
-		module_free(module);
+		module_destroy(module);
 		module = NULL;
 	}
 	free(arg1);
@@ -510,22 +409,6 @@ fmodule *executeModuleDesperate(F_CMD_ARGS)
 	return m;
 }
 
-void module_kill(fmodule *module)
-{
-	module_list_insert(
-		module_list_remove(module, &module_list), &death_row);
-
-	return;
-}
-
-/* free modules in the deathrow */
-void module_cleanup(void)
-{
-	module_list_destroy(&death_row);
-
-	return;
-}
-
 /* void module_send(fmodule *module, unsigned long *ptr, int size) */
 /* This used to be marked "fvwm_inline".  I removed this
    when I added the lockonsend logic.  The routine seems too big to
@@ -535,8 +418,9 @@ extern char *ModuleUnlock;              /* defined in libs/Module.c */
 void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 {
 	msg_masks_t mask;
+	size_t queue_entry_size;
 
-	if (ptr == NULL)
+	if (ptr == NULL || size <= 0)
 	{
 		return;
 	}
@@ -565,8 +449,17 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 	{
 		mqueue_object_type *c;
 
+		queue_entry_size = sizeof(*c) + (size_t)size;
+		if (!module_output_queue_reserve(module, queue_entry_size))
+		{
+			fvwm_debug(__func__,
+				"module %p exceeded the %u-byte output queue limit",
+				module, MODULE_QUEUE_MAX_BYTES);
+			module_kill(module);
+			return;
+		}
 		c = (mqueue_object_type *)malloc(
-			sizeof(mqueue_object_type) + size);
+			queue_entry_size);
 		if (c == NULL)
 		{
 			fvwm_debug(__func__, "malloc failed\n");
@@ -600,7 +493,7 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 		Bool done = False;
 		fmodule_input *input;
 
-		FlushMessageQueue(module);
+		flush_message_queue(module, True);
 
 		while (!done)
 		{
@@ -637,16 +530,22 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 
 			if (rc > 0)
 			{
-				input = module_receive(module);
-				if (
-					input == NULL ||
-					module_input_expect(input,
-						ModuleUnlockResponse))
+				fmodule_input_status status;
+
+				status = module_receive(module, &input);
+				if (status == FMODULE_INPUT_ERROR)
+				{
+					done = True;
+				}
+				else if (
+					status == FMODULE_INPUT_READY &&
+					module_input_expect(
+						input, ModuleUnlockResponse))
 				{
 					module_input_discard(input);
 					done = True;
 				}
-				else
+				else if (status == FMODULE_INPUT_READY)
 				{
 					module_input_execute(input);
 				}
@@ -695,90 +594,6 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 	return;
 }
 
-fmodule_input *module_receive(fmodule *module)
-{
-	unsigned long size;
-	unsigned long cont;
-	Window win;
-	int n;
-	fmodule_input *input = NULL;
-
-	n = read(MOD_READFD(module), &win, sizeof(Window));
-	if (n < sizeof(Window))
-	{
-		/* exit silently, module should have died.. */
-		goto err;
-	}
-
-	n = read(MOD_READFD(module), &size, sizeof(size));
-	if (n < sizeof(size))
-	{
-		fvwm_debug(__func__,
-			   "Fail to read command size (Module: %p, read: %i, "
-			   "size: %i)", module, n, (int)sizeof(size));
-		goto err;
-	}
-
-	if (size > MAX_MODULE_INPUT_TEXT_LEN)
-	{
-		fvwm_debug(__func__,
-			   "Module(%p) command is too big (%ld), limit is %d",
-			   module, size, MAX_MODULE_INPUT_TEXT_LEN);
-		/* The rest of the output from this module is going to be
-		 * scrambled so let's kill it rather than risk interpreting
-		 * garbage */
-		goto err;
-	}
-
-	/* allocate all storage at once */
-	/* also save space for the '\0' termination character */
-	input = fxmalloc(sizeof(fmodule_input) + sizeof(char)*(size + 1));
-
-	input->module = module;
-	input->window = win;
-	input->command = (char*)input + sizeof(fmodule_input);
-
-	n = read(MOD_READFD(module), input->command, size);
-	if (n < size)
-	{
-		fvwm_debug(__func__,
-			   "Fail to read command (Module: %p, read: %i, size:"
-			   " %ld)", module, n, size);
-		goto err;
-	}
-	input->command[n] = '\0';
-	n = read(MOD_READFD(module), &cont, sizeof(cont));
-	if (n < sizeof(cont))
-	{
-		fvwm_debug(__func__,
-			   "Module %p, Size Problems (read: %d, size: %d)",
-			   module, n, (int)sizeof(cont));
-		goto err;
-	}
-	if (cont == 0)
-	{
-		/* this is documented as a valid way for a module to quit
-		 * so let's not complain */
-		module_kill(module);
-	}
-
-	return input;
-err:
-	module_kill(module);
-	module_input_discard(input);
-	return NULL;
-}
-
-/* frees the module input data struct */
-void module_input_discard(fmodule_input *input)
-{
-	if (input==NULL)
-	{
-		return;
-	}
-	free(input);
-}
-
 /* returns true if the module command matches "expect", false otherwise */
 Bool module_input_expect(fmodule_input *input, char *expect)
 {
@@ -794,27 +609,6 @@ Bool module_input_expect(fmodule_input *input, char *expect)
 	}
 
 	return False;
-}
-
-void module_list_itr_init(fmodule_list_itr *itr)
-{
-	*itr = module_list;
-
-	return;
-}
-
-fmodule *module_list_itr_next(fmodule_list_itr *itr)
-{
-	fmodule *module;
-
-	if (*itr == NULL)
-	{
-		return NULL;
-	}
-	module = (*itr)->module;
-	*itr = (*itr)->next;
-
-	return module;
 }
 
 static void KillModuleByName(char *name, char *alias)
@@ -939,6 +733,8 @@ static void DeleteMessageQueueBuff(fmodule *module)
 		/* remove from queue */
 		fqueue_remove_or_operate_from_front(
 			&(MOD_PIPEQUEUE(module)), NULL, NULL, NULL, NULL);
+		module_output_queue_release(
+			module, sizeof(*obj) + (size_t)obj->size);
 		/* we don't need to free the obj->data here because it's in the
 		 * same malloced block as the obj itself. */
 		free(obj);
@@ -947,7 +743,7 @@ static void DeleteMessageQueueBuff(fmodule *module)
 	return;
 }
 
-void FlushMessageQueue(fmodule *module)
+static void flush_message_queue(fmodule *module, Bool wait_for_writable)
 {
 	mqueue_object_type *obj;
 	char *dptr;
@@ -965,9 +761,14 @@ void FlushMessageQueue(fmodule *module)
 		{
 			a = write(MOD_WRITEFD(module), &dptr[obj->done],
 				  obj->size - obj->done);
-			if (a >=0)
+			if (a > 0)
 			{
 				obj->done += a;
+			}
+			else if (a == 0)
+			{
+				module_kill(module);
+				return;
 			}
 			/* the write returns EWOULDBLOCK or EAGAIN if the pipe
 			 * is full. (This is non-blocking I/O). SunOS returns
@@ -982,6 +783,10 @@ void FlushMessageQueue(fmodule *module)
 				int channel = MOD_WRITEFD(module);
 				int rc = 0;
 
+				if (!wait_for_writable)
+				{
+					return;
+				}
 				do
 				{
 					/* Wait until the pipe accepts further
@@ -1036,6 +841,11 @@ void FlushMessageQueue(fmodule *module)
 	}
 
 	return;
+}
+
+void FlushMessageQueue(fmodule *module)
+{
+	flush_message_queue(module, False);
 }
 
 void FlushAllMessageQueues(void)
@@ -1202,15 +1012,21 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 				fmodule_input * input;
 
 				/* Check for module input. */
-				input = module_receive(module);
-				if (
-					input == NULL ||
-					module_input_expect(input,expect))
+				fmodule_input_status status;
+
+				status = module_receive(module, &input);
+				if (status == FMODULE_INPUT_ERROR)
+				{
+					done = True;
+				}
+				else if (
+					status == FMODULE_INPUT_READY &&
+					module_input_expect(input, expect))
 				{
 					module_input_discard(input);
 					done = True;
 				}
-				else
+				else if (status == FMODULE_INPUT_READY)
 				{
 					module_input_execute(input);
 				}

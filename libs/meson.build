@@ -22,6 +22,7 @@ libfvwm3_sources = files(
     'FlocaleCharset.c',
     'Grab.c',
     'Graphics.c',
+    'ImageSafety.c',
     'Module.c',
     'Parse.c',
     'Picture.c',

@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 01
 current_phase_name: Topology Snapshot and Live-X Harness
 status: executing
-stopped_at: Completed 01-06-PLAN.md
-last_updated: "2026-08-30T14:07:35.917Z"
+stopped_at: Completed 01-07-PLAN.md
+last_updated: "2026-08-30T14:36:47.172Z"
 last_activity: 2026-08-30
 last_activity_desc: Completed 01-06 isolated live-X harness and fault probe
-state_head: 01ec34ee645fa14f520dcd7e1c16ef6dfbffe30c
+state_head: 96c16759a49b8ac571e94ce774e7a567c05e046e
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 ## Current Position
 
 Phase: 01 (Topology Snapshot and Live-X Harness) — EXECUTING
-Plan: 7 of 8
+Plan: 8 of 8
 Status: Ready to execute
 Last activity: 2026-08-30 — Completed 01-06 isolated live-X harness and fault probe
 
@@ -64,6 +64,7 @@ Progress: [████████░░] 75%
 | Phase 01 P05 | 8min | 2 tasks | 6 files |
 | Phase 01 P04 | 12min | 3 tasks | 8 files |
 | Phase 01 P06 | 17min | 2 tasks | 4 files |
+| Phase 01 P07 | 21min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 01]: Only the test shim reads and atomically unlinks FVWM_TEST_XRR_FAIL_FILE; production source and ordinary FVWM environments expose no fault switch.
 - [Phase 01]: Each fault-bearing invocation probes LD_PRELOAD against actual production FVWM first and runs the non-installed linker-wrap executable only when preload is not proven.
 - [Phase 01]: Nested X processes use display-fd allocation, disabled TCP, isolated sessions, monotonic deadlines, and bounded reverse-order cleanup.
+- [Phase 01]: Xvfb Monitor mutation support is established only when repeated xrandr --listmonitors queries expose the requested Monitor; command exit status is retained solely as evidence.
+- [Phase 01]: The literal delete/recreate mutation is presented to FVWM as one settled server transition by briefly stopping event consumption until both argv operations complete.
+- [Phase 01]: An unsupported Xvfb still receives every literal create/delete/recreate/delete command and must retain the exact baseline Status record and epoch.
 
 ### Pending Todos
 
@@ -113,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T14:07:35.907Z
-Stopped at: Completed 01-06-PLAN.md
+Last session: 2026-08-30T14:36:47.162Z
+Stopped at: Completed 01-07-PLAN.md
 Resume file: None

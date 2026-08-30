@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 02
 current_phase_name: Scale Policy and Configuration
-status: executing
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-08-30T20:13:54.172Z"
+status: verifying
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-08-30T22:53:04.585Z"
 last_activity: 2026-08-30
 last_activity_desc: Completed Phase 02 Plan 01 exact monitor scale policy
-state_head: e109b627b8d6ff62b832b16107d703b0347ae40a
+state_head: 9c755836d06baaf4aebe8a858bd431e437e81286
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 13
-  completed_plans: 12
+  completed_plans: 13
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 
 Phase: 02 (Scale Policy and Configuration) — EXECUTING
 Plan: 5 of 5
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-30 — Completed Phase 02 Plan 01 exact monitor scale policy
 
 Progress: [███████░░░] 69%
@@ -71,6 +71,7 @@ Progress: [███████░░░] 69%
 | Phase 02 P02 | 15min | 3 tasks | 8 files |
 | Phase 02 P03 | 14min | 3 tasks | 9 files |
 | Phase 02 P04 | 9min | 2 tasks | 5 files |
+| Phase 02 P05 | 21 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 02]: Use one changed-refresh callback coordinator to guarantee scale recomputation precedes EWMH, broadcast, pan-frame, and Status effects.
 - [Phase 02]: PrintInfo Scale reads the core-owned monitor_scale_config state and attached effective_scale values rather than creating a parallel policy path.
 - [Phase 02]: Status v4 and module packets remain actual-pixel interfaces without scale metadata; PrintInfo Scale is the inspection boundary.
+- [Phase 02]: Scenario-owned startup directives execute as separate argv -c command pairs in exact order, including names with spaces and quotes. — Quotes and spaces must survive as one argv element with no shell interpretation.
+- [Phase 02]: add_post_finalize_scale_inspection() appends a separate -c, Schedule 0 PrintInfo Scale pair so evidence is emitted after initial finalization. — Assertions must wait for the scheduled post-finalization record rather than earlier unrelated log output.
+- [Phase 02]: Status v4 and module packets remain actual-pixel interfaces; live-X scale proof reads PrintInfo Scale and queried Xorg-dummy facts only. — Phase 2 must not expand Status or module protocol while proving initial scale policy.
 
 ### Pending Todos
 
@@ -138,6 +142,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T20:13:54.110Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-08-30T22:52:51.232Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None

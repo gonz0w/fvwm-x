@@ -76,7 +76,7 @@ Plans:
   3. Invalid scale input or ambiguous monitor matching produces a visible diagnostic with the chosen fallback rather than silent coercion.
   4. Supported quarter-step factors from 1x through 2x and higher convert deterministically without cumulative rounding drift.
 
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans executed
 
 Plans:
 **Wave 1**
@@ -97,7 +97,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 02-05-PLAN.md — Prove the initial scale matrix through authoritative Xorg-dummy coverage
+- [x] 02-05-PLAN.md — Prove the initial scale matrix through authoritative Xorg-dummy coverage
 
 ### Phase 3: Geometry and Ownership Contracts
 
@@ -188,7 +188,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
-| 2. Scale Policy and Configuration | 4/5 | In Progress|  |
+| 2. Scale Policy and Configuration | 5/5 | In Progress|  |
 | 3. Geometry and Ownership Contracts | 0/TBD | Not started | - |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |

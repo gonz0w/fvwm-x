@@ -24,6 +24,7 @@ typedef struct
 	int  mark_count;
 	int  refresh_count;
 	int  downstream_count;
+	int  scale_recompute_count;
 	int  ewmh_count;
 	int  broadcast_count;
 	int  pan_frame_count;
@@ -244,22 +245,63 @@ test_only_changed_requests_downstream_work(void)
 }
 
 static void
+record_scale_recompute(void *context)
+{
+	callback_state *state = context;
+
+	state->scale_recompute_count++;
+	state->trace[state->trace_length++] = 'r';
+}
+
+static void
+record_ewmh(void *context)
+{
+	callback_state *state = context;
+
+	state->ewmh_count++;
+	state->trace[state->trace_length++] = 'e';
+}
+
+static void
+record_broadcast(void *context)
+{
+	callback_state *state = context;
+
+	state->broadcast_count++;
+	state->trace[state->trace_length++] = 'b';
+}
+
+static void
+record_pan_frames(void *context)
+{
+	callback_state *state = context;
+
+	state->pan_frame_count++;
+	state->trace[state->trace_length++] = 'p';
+}
+
+static void
+record_status(void *context)
+{
+	callback_state *state = context;
+
+	state->status_count++;
+	state->trace[state->trace_length++] = 's';
+}
+
+static void
 dispatch_refresh_result(
     fscreen_topology_refresh_result result, callback_state *state)
 {
-	if (!fvwm_topology_refresh_requests_downstream(result)) {
-		return;
-	}
+	const fvwm_topology_downstream_callbacks callbacks = {
+	    .recompute_scale	   = record_scale_recompute,
+	    .update_ewmh	   = record_ewmh,
+	    .emit_broadcast	   = record_broadcast,
+	    .initialize_pan_frames = record_pan_frames,
+	    .send_status	   = record_status,
+	};
 
-	state->trace[state->trace_length++] = 'r';
-	state->ewmh_count++;
-	state->trace[state->trace_length++] = 'e';
-	state->broadcast_count++;
-	state->trace[state->trace_length++] = 'b';
-	state->pan_frame_count++;
-	state->trace[state->trace_length++] = 'p';
-	state->status_count++;
-	state->trace[state->trace_length++] = 's';
+	fvwm_topology_dispatch_refresh_result(result, &callbacks, state);
 }
 
 static void
@@ -270,6 +312,7 @@ test_changed_orders_each_downstream_helper_once(void)
 	callback_state failed	 = {0};
 
 	dispatch_refresh_result(FSCREEN_TOPOLOGY_REFRESH_CHANGED, &changed);
+	assert(changed.scale_recompute_count == 1);
 	assert(changed.ewmh_count == 1);
 	assert(changed.broadcast_count == 1);
 	assert(changed.pan_frame_count == 1);
@@ -278,6 +321,7 @@ test_changed_orders_each_downstream_helper_once(void)
 	assert(memcmp(changed.trace, "rebps", 5) == 0);
 
 	dispatch_refresh_result(FSCREEN_TOPOLOGY_REFRESH_UNCHANGED, &unchanged);
+	assert(unchanged.scale_recompute_count == 0);
 	assert(unchanged.ewmh_count == 0);
 	assert(unchanged.broadcast_count == 0);
 	assert(unchanged.pan_frame_count == 0);
@@ -285,6 +329,7 @@ test_changed_orders_each_downstream_helper_once(void)
 	assert(unchanged.trace_length == 0);
 
 	dispatch_refresh_result(FSCREEN_TOPOLOGY_REFRESH_FAILED, &failed);
+	assert(failed.scale_recompute_count == 0);
 	assert(failed.ewmh_count == 0);
 	assert(failed.broadcast_count == 0);
 	assert(failed.pan_frame_count == 0);

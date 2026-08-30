@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import platform
+import shlex
 import shutil
 import subprocess
 import sys
@@ -33,10 +34,31 @@ LIVE_X_PACKAGES = (
     "xserver-xorg-core",
     "xserver-xorg-video-dummy",
 )
+LIVE_X_TEST_NAMES = (
+    "topology-fault-injection-probe",
+    "topology-xorg-dummy",
+    "topology-xorg-dummy-failed-query",
+    "topology-xvfb",
+)
 INSTALL_LIVE_X = (
     "apt-get update && apt-get install -y "
     + " ".join(LIVE_X_PACKAGES)
-    + ' && exec "$@"'
+    + " && "
+)
+LIVE_X_TEST_CHECK = (
+    "import json,pathlib;"
+    "tests=json.loads(pathlib.Path('builddir/meson-info/intro-tests.json').read_text());"
+    f"expected={LIVE_X_TEST_NAMES!r};"
+    "names={test['name'] for test in tests};"
+    "missing=sorted(set(expected)-names);"
+    "assert not missing, f'missing live-X Meson tests: {missing}'"
+)
+LIVE_X_PREFLIGHT = (
+    "if test -d builddir/meson-private; then "
+    "meson setup builddir --reconfigure -Dlive-x-tests=true; "
+    "else meson setup builddir -Dlive-x-tests=true; fi && "
+    "meson compile -C builddir && "
+    f"python3 -c {shlex.quote(LIVE_X_TEST_CHECK)} && "
 )
 SYNC_SOURCE = (
     "find /workspace -mindepth 1 -maxdepth 1 ! -name builddir "
@@ -61,6 +83,8 @@ def build_command(
     if not caller_argv:
         raise ValueError("a command is required after --")
     if host == "Linux":
+        if live_x:
+            return ["sh", "-ec", LIVE_X_PREFLIGHT + 'exec "$@"', "sh", *caller_argv]
         return list(caller_argv)
     if host != "Darwin":
         raise UnsupportedHostError(f"unsupported host: {host}")
@@ -85,7 +109,7 @@ def build_command(
     ]
     container_script = SYNC_SOURCE
     if live_x:
-        container_script += INSTALL_LIVE_X
+        container_script += INSTALL_LIVE_X + LIVE_X_PREFLIGHT + 'exec "$@"'
     else:
         container_script += 'exec "$@"'
     command.extend([container_script, "sh"])
@@ -99,6 +123,11 @@ def self_test() -> None:
     caller_argv = ["sh", "-ec", "exit 23"]
 
     assert build_command("Linux", repository, caller_argv) == caller_argv
+    linux_live_x = build_command("Linux", repository, caller_argv, live_x=True)
+    assert linux_live_x[:2] == ["sh", "-ec"]
+    assert "-Dlive-x-tests=true" in linux_live_x[2]
+    assert all(name in linux_live_x[2] for name in LIVE_X_TEST_NAMES)
+    assert linux_live_x[-len(caller_argv) :] == caller_argv
 
     darwin = build_command(
         "Darwin", repository, caller_argv, podman="/usr/local/bin/podman"
@@ -121,7 +150,8 @@ def self_test() -> None:
     package_start = install_words.index("-y") + 1
     package_end = install_words.index("&&", package_start)
     assert tuple(install_words[package_start:package_end]) == LIVE_X_PACKAGES
-    assert all(install_fragment.count(package) == 1 for package in LIVE_X_PACKAGES)
+    assert "-Dlive-x-tests=true" in install_fragment
+    assert all(name in install_fragment for name in LIVE_X_TEST_NAMES)
     assert hostile_argv[-1] not in install_fragment
     assert live_x[-len(hostile_argv) :] == hostile_argv
 

@@ -15,14 +15,72 @@
 
 #include "config.h"
 
+#include "fvwm/fvwm.h"
 #include "fvwm/status_json.h"
 #include "libs/cJSON.h"
 
 #include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define RETAINED_MONITOR_COUNT 1025
+
+typedef struct
+{
+	size_t attempts;
+	size_t fail_at;
+	size_t allocations;
+	size_t frees;
+} cjson_failure_tracker;
+
+static cjson_failure_tracker *active_failure_tracker;
+
+static void *
+failure_malloc(size_t size)
+{
+	cjson_failure_tracker *tracker = active_failure_tracker;
+	void		      *pointer;
+
+	assert(tracker != NULL);
+	if (tracker->attempts++ == tracker->fail_at) {
+		return NULL;
+	}
+	pointer = malloc(size);
+	if (pointer != NULL) {
+		tracker->allocations++;
+	}
+	return pointer;
+}
+
+static void
+failure_free(void *pointer)
+{
+	assert(active_failure_tracker != NULL);
+	if (pointer != NULL) {
+		active_failure_tracker->frees++;
+	}
+	free(pointer);
+}
+
+static void
+use_failure_tracker(cjson_failure_tracker *tracker)
+{
+	cJSON_Hooks hooks = {
+	    .malloc_fn = failure_malloc,
+	    .free_fn   = failure_free,
+	};
+
+	active_failure_tracker = tracker;
+	cJSON_InitHooks(&hooks);
+}
+
+static void
+reset_cjson_hooks(void)
+{
+	cJSON_InitHooks(NULL);
+	active_failure_tracker = NULL;
+}
 
 static bool
 desk_is_urgent(struct monitor *monitor, int desk)
@@ -117,9 +175,66 @@ test_more_than_1024_retained_monitors_are_serialized(void)
 	free(monitors);
 }
 
+static void
+test_complete_status_construction_is_allocation_failure_atomic(void)
+{
+	struct monitors	   legacy_monitors;
+	struct screen_info screen	= {.name = "screen"};
+	DesktopsInfo	   desktop	= {.desk = 4, .name = "desk"};
+	DesktopsInfo	   desktop_root = {.next = &desktop};
+	struct monitor	   monitor	= {
+		     .si       = &screen,
+		     .Desktops = &desktop_root,
+		     .number   = 3,
+	 };
+	FvwmWindow focused_window = {
+	    .m		  = &monitor,
+	    .visible_name = "focused-client",
+	};
+	monitor_topology_monitor  topology_monitor;
+	monitor_topology_snapshot topology   = make_topology(&topology_monitor);
+	cjson_failure_tracker	  successful = {.fail_at = SIZE_MAX};
+	cJSON			 *message;
+	size_t			  allocation_count;
+	size_t			  fail_at;
+
+	RB_INIT(&legacy_monitors);
+	assert(RB_INSERT(monitors, &legacy_monitors, &monitor) == NULL);
+	use_failure_tracker(&successful);
+	message = fvwm_status_json_create("screen", "per-monitor", &topology,
+	    &legacy_monitors, &focused_window, desk_is_urgent,
+	    desk_client_count);
+	assert(message != NULL);
+	allocation_count = successful.attempts;
+	assert(allocation_count > 0);
+	assert(cJSON_GetObjectItemCaseSensitive(message, "version") != NULL);
+	assert(cJSON_GetObjectItemCaseSensitive(message, "current_screen")
+	       != NULL);
+	assert(
+	    cJSON_GetObjectItemCaseSensitive(message, "desktop_mode") != NULL);
+	assert(cJSON_GetObjectItemCaseSensitive(message, "topology") != NULL);
+	assert(cJSON_GetObjectItemCaseSensitive(message, "screens") != NULL);
+	cJSON_Delete(message);
+	assert(successful.allocations == successful.frees);
+	reset_cjson_hooks();
+
+	for (fail_at = 0; fail_at < allocation_count; fail_at++) {
+		cjson_failure_tracker failed = {.fail_at = fail_at};
+
+		use_failure_tracker(&failed);
+		message = fvwm_status_json_create("screen", "per-monitor",
+		    &topology, &legacy_monitors, &focused_window,
+		    desk_is_urgent, desk_client_count);
+		assert(message == NULL);
+		assert(failed.allocations == failed.frees);
+		reset_cjson_hooks();
+	}
+}
+
 int
 main(void)
 {
 	test_more_than_1024_retained_monitors_are_serialized();
+	test_complete_status_construction_is_allocation_failure_atomic();
 	return 0;
 }

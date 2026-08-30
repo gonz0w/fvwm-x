@@ -3449,6 +3449,13 @@ and mouse bindings. _verbose_ has no effect with this option.
 _infostore_ which prints information on all entries in the infostore,
 listing the key and its value. _verbose_ has no effect with this
 option.
++
+_Topology_ prints the current committed monitor-topology epoch followed
+by one concise line for each monitor in canonical order.  Each line
+contains the same identity, raw primary state, root-pixel geometry, raw
+physical dimensions, and complete sorted output membership emitted by
+*Status*.  Use `PrintInfo Topology` to request this view.  _verbose_ has
+no effect with this option.
 
 *Schedule* [_Periodic_] _delay_ms_ [_command_id_] _command_::
 	The _command_ is executed after about _delay_ms_ milliseconds. This
@@ -8084,7 +8091,8 @@ the first modifier). To redefine this key sequence see the *EscapeFunc* command.
 
 *Status* _On | Off_::
 	Turns status either On or Off. This sends information in JSON format
-	down a named pipe (set via FVWM_STATUS_PIPE env var) about the current
+	down the existing named pipe (set via the `FVWM_STATUS_PIPE`
+	environment variable) about the current
 	desks and number of windows, etc. This is meant to provide a fast
 	means of supplying third-party tools information about what's
 	happening in Fvwm. For example, the JSON could be manipulated and sent
@@ -8095,8 +8103,30 @@ The format of the JSON blob looks like this:
 
 ....
 {
-    "version": 3,
+    "version": 4,
     "current_screen": "HDMI2",
+    "desktop_mode": "global",
+    "topology": {
+        "epoch": 7,
+        "monitors": [
+            {
+                "name": "HDMI2",
+                "name_atom": 225,
+                "primary": true,
+                "geometry": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 1920,
+                    "height": 1080
+                },
+                "physical_mm": {
+                    "width": 508,
+                    "height": 286
+                },
+                "outputs": [63]
+            }
+        ]
+    },
     "screens": {
         "HDMI2": {
 	    "randr_order": 0,
@@ -8107,16 +8137,39 @@ The format of the JSON blob looks like this:
                     "is_urgent": false,
                     "is_current": true,
                     "number_of_clients": 5
-                },
-            },
-        },
-     },
+                }
+            }
+        }
+    }
 }
 ....
 
 +
 These sections repeat for all screens/groups/etc, depending on how
 many there are of each.
++
+Version 4 adds the `topology` object while retaining `current_screen`,
+`desktop_mode`, `screens`, newline-delimited output, and the
+`FVWM_STATUS_PIPE` transport from earlier versions.  `topology.epoch` is
+1 for the first committed snapshot.  It advances exactly once when a
+semantic monitor fact changes; duplicate events, enumeration or output
+ordering changes, unchanged refreshes, and failed refreshes do not
+advance it.
++
+`topology.monitors` is ordered by stable monitor identity.  Within one X
+server session, numeric `name_atom` is that RandR Monitor identity and
+`name` is its UTF-8 readable form.  Renaming a Monitor therefore appears
+as removal of one identity and addition of another.  `primary` is the
+raw server primary value rather than a synthesized fallback.
++
+The `geometry` members `x`, `y`, `width`, and `height` are numeric actual
+root pixels, including negative origins.  The numeric
+`physical_mm.width` and `physical_mm.height` members are raw,
+uncoerced millimetres; zero or implausible server values remain visible
+unchanged for later policy to interpret.  `outputs` contains every
+numeric output XID belonging to the Monitor, sorted in ascending order,
+and may be empty.  Objects always use the key order shown above, and the
+monitor and output order is deterministic.
 
 === Conditional Commands
 

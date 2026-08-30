@@ -23,10 +23,10 @@ static void
 test_valid_committed_dpi_resolves_automatic_factor(void)
 {
 	monitor_topology_monitor monitor = {
-		.width = 1920,
-		.height = 1080,
-		.mm_width = 254,
-		.mm_height = 143,
+	    .width     = 1920,
+	    .height    = 1080,
+	    .mm_width  = 254,
+	    .mm_height = 143,
 	};
 	monitor_scale_result result;
 

@@ -529,23 +529,32 @@ test_epoch_overflow_refuses_replacement(void)
 static void
 test_every_allocator_failure_is_recoverable(void)
 {
-	RROutput		 outputs_a[] = {10, 20};
-	RROutput		 outputs_b[] = {30};
-	monitor_topology_monitor monitors[2] = {
-	    make_monitor(10, "monitor-a", 0, 0, 1920, 1080, 510, 290, True,
-		outputs_a, 2),
-	    make_monitor(20, "monitor-b", 1920, 0, 1280, 1024, 340, 270, False,
-		outputs_b, 1),
-	};
+	allocation_tracker	 committed_tracker = {0};
+	RROutput		 outputs_a[]	   = {10, 20};
+	RROutput		 outputs_b[]	   = {30};
+	monitor_topology_monitor monitors[2]	   = {
+		  make_monitor(10, "monitor-a", 0, 0, 1920, 1080, 510, 290, True,
+		      outputs_a, 2),
+		  make_monitor(20, "monitor-b", 1920, 0, 1280, 1024, 340, 270, False,
+		      outputs_b, 1),
+	      };
 	failure_tracker		   successful = {.fail_at = SIZE_MAX};
 	monitor_topology_allocator successful_allocator =
 	    make_failure_allocator(&successful);
 	monitor_topology_snapshot *snapshot = monitor_topology_snapshot_create(
 	    monitors, 2, &successful_allocator);
-	size_t allocation_count;
-	size_t fail_at;
+	monitor_topology_snapshot *initial =
+	    make_snapshot(&committed_tracker, 0, outputs_a, 2);
+	monitor_topology_snapshot *committed = NULL;
+	monitor_topology_snapshot *original;
+	size_t			   allocation_count;
+	size_t			   fail_at;
 
 	assert(snapshot != NULL);
+	assert(initial != NULL);
+	assert(monitor_topology_snapshot_publish(&committed, initial)
+	       == MONITOR_TOPOLOGY_PUBLISH_INITIAL);
+	original	 = committed;
 	allocation_count = successful.attempts;
 	assert(allocation_count > 0);
 	monitor_topology_snapshot_destroy(snapshot);
@@ -555,14 +564,14 @@ test_every_allocator_failure_is_recoverable(void)
 		failure_tracker		   tracker = {.fail_at = fail_at};
 		monitor_topology_allocator allocator =
 		    make_failure_allocator(&tracker);
-		monitor_topology_snapshot *committed = NULL;
 		monitor_topology_snapshot *candidate =
 		    monitor_topology_snapshot_create(monitors, 2, &allocator);
 
 		assert(candidate == NULL);
 		assert(monitor_topology_snapshot_publish(&committed, candidate)
 		       == MONITOR_TOPOLOGY_PUBLISH_INVALID);
-		assert(committed == NULL);
+		assert(committed == original);
+		assert(committed->epoch == 1);
 		monitor_topology_snapshot_destroy(candidate);
 		assert(tracker.allocations == tracker.frees);
 	}
@@ -574,6 +583,9 @@ test_every_allocator_failure_is_recoverable(void)
 			   monitors, 2, &invalid_allocator)
 		       == NULL);
 	}
+
+	monitor_topology_snapshot_destroy(committed);
+	assert(committed_tracker.allocations == committed_tracker.frees);
 }
 
 int

@@ -17,6 +17,7 @@
 
 #include "monitor_topology.h"
 
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -66,6 +67,14 @@ static bool
 allocation_count_is_safe(size_t count, size_t element_size)
 {
 	return element_size != 0 && count <= SIZE_MAX / element_size;
+}
+
+static bool
+geometry_is_representable(const monitor_topology_monitor *monitor)
+{
+	return monitor->width > 0 && monitor->height > 0
+	       && monitor->x <= INT_MAX - monitor->width
+	       && monitor->y <= INT_MAX - monitor->height;
 }
 
 static bool
@@ -169,8 +178,8 @@ monitor_is_valid(const monitor_topology_monitor *monitor)
 	int output_index;
 
 	if (monitor == NULL || monitor->name_atom == None
-	    || !is_valid_utf8(monitor->name) || monitor->width <= 0
-	    || monitor->height <= 0 || monitor->mm_width < 0
+	    || !is_valid_utf8(monitor->name)
+	    || !geometry_is_representable(monitor) || monitor->mm_width < 0
 	    || monitor->mm_height < 0
 	    || (monitor->primary != False && monitor->primary != True)
 	    || monitor->output_count < 0
@@ -228,7 +237,7 @@ monitor_topology_snapshot_create(const monitor_topology_monitor *monitors,
 		size_t name_size;
 
 		if (source->name_atom == None || !is_valid_utf8(source->name)
-		    || source->width <= 0 || source->height <= 0
+		    || !geometry_is_representable(source)
 		    || source->mm_width < 0 || source->mm_height < 0
 		    || (source->primary != False && source->primary != True)
 		    || source->output_count < 0
@@ -401,12 +410,14 @@ monitor_topology_snapshot_destroy(monitor_topology_snapshot *snapshot)
 		allocator.context = NULL;
 		allocator.free_fn = default_free;
 	}
-	for (monitor_index = 0; monitor_index < snapshot->monitor_count;
-	    monitor_index++) {
-		allocator.free_fn(
-		    allocator.context, snapshot->monitors[monitor_index].name);
-		allocator.free_fn(allocator.context,
-		    snapshot->monitors[monitor_index].outputs);
+	if (snapshot->monitors != NULL) {
+		for (monitor_index = 0; monitor_index < snapshot->monitor_count;
+		    monitor_index++) {
+			allocator.free_fn(allocator.context,
+			    snapshot->monitors[monitor_index].name);
+			allocator.free_fn(allocator.context,
+			    snapshot->monitors[monitor_index].outputs);
+		}
 	}
 	allocator.free_fn(allocator.context, snapshot->monitors);
 	allocator.free_fn(allocator.context, snapshot);

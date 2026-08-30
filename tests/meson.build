@@ -57,3 +57,14 @@ topology_refresh_policy_test = executable(
 )
 
 test('topology-refresh-policy', topology_refresh_policy_test)
+
+topology_event_adapter_test = executable(
+    'test-topology-event-adapter',
+    ['test_topology_event_adapter.c', '../fvwm/topology_event_adapter.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
+test('topology-event-adapter', topology_event_adapter_test)

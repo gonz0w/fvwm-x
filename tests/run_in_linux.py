@@ -18,8 +18,8 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import platform
-import shlex
 import shutil
 import subprocess
 import sys
@@ -40,25 +40,19 @@ LIVE_X_TEST_NAMES = (
     "topology-xorg-dummy-failed-query",
     "topology-xvfb",
 )
+LIVE_X_SUITE = "fvwm3:live-x"
 INSTALL_LIVE_X = (
     "apt-get update && apt-get install -y "
     + " ".join(LIVE_X_PACKAGES)
     + " && "
-)
-LIVE_X_TEST_CHECK = (
-    "import json,pathlib;"
-    "tests=json.loads(pathlib.Path('builddir/meson-info/intro-tests.json').read_text());"
-    f"expected={LIVE_X_TEST_NAMES!r};"
-    "names={test['name'] for test in tests};"
-    "missing=sorted(set(expected)-names);"
-    "assert not missing, f'missing live-X Meson tests: {missing}'"
 )
 LIVE_X_PREFLIGHT = (
     "if test -d builddir/meson-private; then "
     "meson setup builddir --reconfigure -Dlive-x-tests=true; "
     "else meson setup builddir -Dlive-x-tests=true; fi && "
     "meson compile -C builddir && "
-    f"python3 -c {shlex.quote(LIVE_X_TEST_CHECK)} && "
+    "python3 tests/run_in_linux.py --check-live-x-tests "
+    "builddir/meson-info/intro-tests.json && "
 )
 SYNC_SOURCE = (
     "find /workspace -mindepth 1 -maxdepth 1 ! -name builddir "
@@ -70,6 +64,22 @@ SYNC_SOURCE = (
 
 class UnsupportedHostError(RuntimeError):
     """Raised when no supported native-Linux execution route exists."""
+
+
+def validate_live_x_tests(tests: Sequence[dict[str, object]]) -> None:
+    """Require the exact audited membership of Meson's qualified suite."""
+    names = [
+        test.get("name")
+        for test in tests
+        if LIVE_X_SUITE in test.get("suite", [])
+    ]
+    missing = sorted(set(LIVE_X_TEST_NAMES) - set(names))
+    extra = sorted(set(names) - set(LIVE_X_TEST_NAMES))
+    if missing or extra or len(names) != len(LIVE_X_TEST_NAMES):
+        raise ValueError(
+            f"invalid {LIVE_X_SUITE} suite membership: "
+            f"missing={missing}, extra={extra}, members={sorted(names)}"
+        )
 
 
 def build_command(
@@ -122,11 +132,31 @@ def self_test() -> None:
     repository = Path("/work/fvwm3")
     caller_argv = ["sh", "-ec", "exit 23"]
 
+    introspection = [
+        {"name": name, "suite": [LIVE_X_SUITE]} for name in LIVE_X_TEST_NAMES
+    ]
+    validate_live_x_tests(introspection)
+    invalid_introspection = (
+        introspection[:-1]
+        + [{"name": LIVE_X_TEST_NAMES[-1], "suite": ["other:live-x"]}]
+    )
+    for invalid in (
+        invalid_introspection,
+        introspection[:-1],
+        introspection + [{"name": "unexpected-live-x", "suite": [LIVE_X_SUITE]}],
+    ):
+        try:
+            validate_live_x_tests(invalid)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid live-X suite membership must be rejected")
+
     assert build_command("Linux", repository, caller_argv) == caller_argv
     linux_live_x = build_command("Linux", repository, caller_argv, live_x=True)
     assert linux_live_x[:2] == ["sh", "-ec"]
     assert "-Dlive-x-tests=true" in linux_live_x[2]
-    assert all(name in linux_live_x[2] for name in LIVE_X_TEST_NAMES)
+    assert "--check-live-x-tests" in linux_live_x[2]
     assert linux_live_x[-len(caller_argv) :] == caller_argv
 
     darwin = build_command(
@@ -151,7 +181,7 @@ def self_test() -> None:
     package_end = install_words.index("&&", package_start)
     assert tuple(install_words[package_start:package_end]) == LIVE_X_PACKAGES
     assert "-Dlive-x-tests=true" in install_fragment
-    assert all(name in install_fragment for name in LIVE_X_TEST_NAMES)
+    assert "--check-live-x-tests" in install_fragment
     assert hostile_argv[-1] not in install_fragment
     assert live_x[-len(hostile_argv) :] == hostile_argv
 
@@ -178,11 +208,12 @@ def parse_args(argv: Sequence[str]) -> tuple[argparse.Namespace, list[str]]:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--live-x", action="store_true")
+    parser.add_argument("--check-live-x-tests", type=Path)
     options = parser.parse_args(before_separator)
-    if not options.self_test and not command:
+    if not options.self_test and options.check_live_x_tests is None and not command:
         parser.error("a command is required after --")
-    if options.self_test and command:
-        parser.error("--self-test does not accept a command")
+    if (options.self_test or options.check_live_x_tests is not None) and command:
+        parser.error("self-tests and preflight checks do not accept a command")
     return options, command
 
 
@@ -191,6 +222,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     options, caller_argv = parse_args(sys.argv[1:] if argv is None else argv)
     if options.self_test:
         self_test()
+        return 0
+    if options.check_live_x_tests is not None:
+        try:
+            validate_live_x_tests(
+                json.loads(options.check_live_x_tests.read_text(encoding="utf-8"))
+            )
+        except (OSError, json.JSONDecodeError, TypeError, ValueError) as error:
+            print(f"error: {error}", file=sys.stderr)
+            return 1
         return 0
 
     host = platform.system()

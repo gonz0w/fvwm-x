@@ -549,7 +549,16 @@ test_every_legacy_staging_allocation_failure_retains_state(void)
 		&legacy_monitors, &legacy_screens, &adapter, &allocator)
 	    == FSCREEN_TOPOLOGY_REFRESH_CHANGED);
 	assert(first_monitor->flags & MONITOR_DISABLED);
+	assert(first_monitor->emit == MONITOR_DISABLED);
 	assert(legacy_alloc.allocation_count == 0);
+
+	replies[1].x++;
+	assert(
+	    fscreen_refresh_topology_with_adapters(NULL, (Window)99, &committed,
+		&legacy_monitors, &legacy_screens, &adapter, &allocator)
+	    == FSCREEN_TOPOLOGY_REFRESH_CHANGED);
+	assert(first_monitor->flags & MONITOR_DISABLED);
+	assert(first_monitor->emit == 0);
 
 	destroy_legacy(&legacy_monitors, &legacy_screens, &allocator);
 	destroy_committed(&committed, &randr);

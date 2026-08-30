@@ -1012,6 +1012,7 @@ legacy_reconcile_apply(const monitor_topology_snapshot *snapshot,
 
 	RB_FOREACH(monitor, monitors, legacy_monitors)
 	{
+		monitor->emit = 0;
 		monitor->flags &=
 		    ~(MONITOR_NEW | MONITOR_CHANGED | MONITOR_FOUND);
 	}
@@ -1066,8 +1067,6 @@ legacy_reconcile_apply(const monitor_topology_snapshot *snapshot,
 			monitor->flags &= ~MONITOR_PRIMARY;
 			monitor->emit = MONITOR_DISABLED;
 			RB_INSERT(monitors, legacy_monitors, monitor);
-		} else {
-			monitor->emit = 0;
 		}
 	}
 	monitor_assign_number(legacy_monitors);

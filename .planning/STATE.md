@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 01
 current_phase_name: Topology Snapshot and Live-X Harness
 status: executing
-stopped_at: Completed 01-05-PLAN.md
-last_updated: "2026-08-30T13:27:24.058Z"
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-08-30T13:44:22.420Z"
 last_activity: 2026-08-30
-last_activity_desc: Completed 01-05 Status v4 topology inspection contract
-state_head: 0ffb5f196cfce2d19b057657964c08cb8935e0b4
+last_activity_desc: Completed 01-04 deferred topology event commit
+state_head: 1a48f7896deb423d3f8dd003649b826525e700f1
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 8
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -29,29 +29,29 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 ## Current Position
 
 Phase: 01 (Topology Snapshot and Live-X Harness) — EXECUTING
-Plan: 4 of 8
+Plan: 6 of 8
 Status: Ready to execute
-Last activity: 2026-08-30 — Completed 01-05 Status v4 topology inspection contract
+Last activity: 2026-08-30 — Completed 01-04 deferred topology event commit
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 62%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 4
-- Average duration: 16 min
-- Total execution time: 1.07 hours
+- Total plans completed: 5
+- Average duration: 15 min
+- Total execution time: 1.27 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 4 | 64 min | 16 min |
+| 01 | 5 | 76 min | 15 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 32 min, 18 min, 6 min, 8 min
+- Last 5 plans: 32 min, 18 min, 6 min, 8 min, 12 min
 - Trend: Faster
 
 **Per-Plan Metrics:**
@@ -62,6 +62,7 @@ Progress: [█████░░░░░] 50%
 | Phase 01 P02 | 18min | 2 tasks | 4 files |
 | Phase 01 P03 | 6min | 2 tasks | 5 files |
 | Phase 01 P05 | 8min | 2 tasks | 6 files |
+| Phase 01 P04 | 12min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 01]: Build the complete topology cJSON tree detached and transfer it to the Status parent only after every allocation succeeds.
 - [Phase 01]: Status v4 and PrintInfo Topology both read FScreenGetTopologySnapshot(), while existing screen fields and FVWM_STATUS_PIPE transport remain unchanged.
 - [Phase 01]: PrintInfo quotes monitor names through cJSON escaping so valid UTF-8 control and quote bytes cannot forge additional log lines.
+- [Phase 01]: Only root ConfigureNotify plus RandR screen, CRTC, output, output-property, and resource events arm topology refreshes; provider and lease events remain unrelated. — Keeps event marking complete but narrow and constant-time.
+- [Phase 01]: Service due topology generations at the top of HandleEvents before consuming another queued X event. — Preserves the 250 ms hard cap under sustained event pressure.
+- [Phase 01]: Only changed FScreen refreshes run EWMH, broadcast, pan-frame, and Status effects. — Unchanged and failed generations must preserve epoch and avoid duplicate downstream work.
 
 ### Pending Todos
 
@@ -105,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T13:27:24.051Z
-Stopped at: Completed 01-05-PLAN.md
+Last session: 2026-08-30T13:43:59.910Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None

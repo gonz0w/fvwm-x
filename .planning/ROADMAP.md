@@ -32,12 +32,12 @@ FVWM-X v0.1 proceeds through dependency-ordered technical layers: establish an a
   2. A burst of topology events produces one validated atomic commit, and a failed monitor query leaves the last good topology active.
   3. Maintainers can reproduce monitor creation, mutation, and removal with Xvfb smoke scenarios and authoritative Xorg-dummy scenarios.
 
-**Plans**: 8 plans
+**Plans**: 1/8 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Trace detached RandR facts through canonical atomic epoch publication
+- [x] 01-01-PLAN.md — Trace detached RandR facts through canonical atomic epoch publication
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -166,7 +166,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Topology Snapshot and Live-X Harness | 0/8 | Not started | - |
+| 1. Topology Snapshot and Live-X Harness | 1/8 | In Progress|  |
 | 2. Scale Policy and Configuration | 0/TBD | Not started | - |
 | 3. Geometry and Ownership Contracts | 0/TBD | Not started | - |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |

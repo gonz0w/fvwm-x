@@ -7,9 +7,9 @@
 
 ### Topology
 
-- [ ] **TOP-01**: User can inspect one committed RandR 1.5 Monitor snapshot containing stable identity, root-pixel geometry, physical dimensions, primary state, output membership, and topology epoch.
+- [x] **TOP-01**: User can inspect one committed RandR 1.5 Monitor snapshot containing stable identity, root-pixel geometry, physical dimensions, primary state, output membership, and topology epoch.
 - [ ] **TOP-02**: User gets deterministic monitor identity and ownership behavior for negative origins, gaps, exact clones, partial overlaps, rotations, and output reordering.
-- [ ] **TOP-03**: User sees topology event bursts coalesced into one validated atomic commit, with the last good topology retained after query failure.
+- [x] **TOP-03**: User sees topology event bursts coalesced into one validated atomic commit, with the last good topology retained after query failure.
 - [ ] **TOP-04**: User's windows remain reachable and retain normal, maximized, or fullscreen intent when their monitor is removed.
 - [ ] **TOP-05**: User can inspect and simulate topology, scale inputs, fallback reasons, ownership, transition epochs, and constraint outcomes.
 - [ ] **TOP-06**: Maintainers can reproduce monitor creation, changes, and removal through Xvfb smoke tests and authoritative Xorg-dummy scenarios.
@@ -85,9 +85,9 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TOP-01 | Phase 1 | Pending |
+| TOP-01 | Phase 1 | Complete |
 | TOP-02 | Phase 3 | Pending |
-| TOP-03 | Phase 1 | Pending |
+| TOP-03 | Phase 1 | Complete |
 | TOP-04 | Phase 6 | Pending |
 | TOP-05 | Phase 6 | Pending |
 | TOP-06 | Phase 1 | Pending |
@@ -120,6 +120,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | TEST-05 | Phase 4 | Pending |
 
 **Coverage:**
+
 - v0.1 requirements: 33 total
 - Mapped to phases: 33
 - Unmapped: 0

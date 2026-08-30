@@ -3450,6 +3450,20 @@ _infostore_ which prints information on all entries in the infostore,
 listing the key and its value. _verbose_ has no effect with this
 option.
 +
+_Scale_ prints one line for each active monitor in committed canonical
+order, followed by retained unmatched overrides in exact-name order.  Use
+`PrintInfo Scale` to request this view.  Each monitor line contains the
+JSON-escaped exact `name`, canonical `factor`, selected `source`, raw
+`pixels` and `physical_mm`, `match_status`, automatic-policy
+`auto_status`, endpoint `boundary`, and selected `reason`.  Thus a
+configured fallback or safe 1x result also states why its higher-priority
+automatic candidate was rejected, while low and high endpoint-bound
+results remain identified as valid automatic selections.  Retained
+override lines contain their escaped exact name, canonical factor, no-match
+status, and retained-unmatched state.  Escaping keeps quotes, newlines,
+control bytes, and valid UTF-8 names on one physical diagnostic line.
+_verbose_ has no effect with this option.
++
 _Topology_ prints the current committed monitor-topology epoch followed
 by one concise line for each monitor in canonical order.  Each line
 contains the same identity, raw primary state, root-pixel geometry, raw
@@ -7422,6 +7436,69 @@ This concept is similar to how spectrwm or xmonad handles desktops.
 +
 **Note:** these each *DesktopConfiguration* mode can be changed on-the-fly.
 
+*MonitorScale* _exact-name_ _factor_::
+	Assigns an initial scale override to the RandR Monitor whose name is
+	an exact, case-sensitive byte match for _exact-name_.  Numeric monitor
+	indexes and dynamic aliases such as current, global, and primary are
+	not interpreted specially.  Exactly two arguments are required.  An
+	active name that is ambiguous is rejected rather than resolved by
+	enumeration order.
++
+_factor_ must be the shortest canonical decimal spelling of an exact
+quarter step from 1 through 4 inclusive: `1`, `1.25`, `1.5`, `1.75`,
+`2`, and so on through `4`.  Signs, percentages, fractions, exponents,
+leading zeroes, trailing zeroes, values between quarter steps, and values
+outside the range are rejected.  Declarations are sequential: the last
+valid declaration for an exact name wins.  A malformed or unsupported
+later declaration emits a diagnostic and leaves the last valid value
+unchanged.  A valid declaration for a disconnected monitor is retained
+and reported as unmatched so the same initial configuration can describe
+docked layouts.
++
+Scale configuration is finalized after startup configuration has run.
+Later *MonitorScale* and *MonitorScaleFallback* commands are rejected and
+leave both policy and effective results unchanged; runtime scale reload is
+not provided by this initial-only contract.
+
+*MonitorScaleFallback* _factor_::
+	Sets the initial global fallback, using the same canonical factor
+	grammar as *MonitorScale*.  Exactly one argument is required.  The
+	last valid declaration wins, while an invalid later declaration leaves
+	the prior fallback unchanged.  This fallback is independent of all
+	per-monitor overrides.
++
+For every active monitor the selected precedence is: unique exact-name
+override, valid automatic DPI, configured global fallback, then safe 1x.
+Rejected input or an ambiguous override never suppresses a lower-priority
+source.
++
+Automatic DPI uses the committed raw pixel and millimetre dimensions on
+both axes and a 96-DPI 1x baseline.  For each axis, DPI is exactly
+`pixels * 25.4 / millimetres`.  Both millimetre axes must be present; both
+axis DPIs must be within the inclusive 50 through 500 range; and their
+symmetric difference must satisfy the exact arithmetic-mean agreement
+rule `20 * abs(dpi_x - dpi_y) <= dpi_x + dpi_y` (within 10 percent).
+One valid axis is never used alone.  Missing, implausible, or inconsistent
+facts reject the complete automatic candidate.
++
+When both axes are valid, their exact arithmetic mean is divided by the
+96-DPI baseline and bucketed to the nearest quarter step.  An exact
+midpoint selects the higher quarter.  A valid result below 1x or above 4x
+selects the nearest supported endpoint and is reported as a low- or
+high-bound automatic result, not as fallback.
++
+Scale-sensitive integer conversion rounds to nearest with exact half ties
+away from zero for both signs.  Overflow is an explicit failure and never
+wraps or clamps.  Each conversion uses the retained exact source value;
+a previously rounded result is never fed back as a new source, preventing
+cumulative drift.
++
+These scales apply to FVWM-owned UI and later FVWM geometry policy.  X11,
+ICCCM, EWMH, and existing module geometry remain actual root pixels, and
+FVWM does not scale arbitrary client pixels.  This contract adds no scale
+keys to *Status* version 4 and no scale metadata to module packets; use
+`PrintInfo Scale` and the immediate startup diagnostics for inspection.
+
 *DesktopSize* __Horizontal__x__Vertical__::
 	Defines the virtual desktop size in units of the physical screen size.
 
@@ -8170,6 +8247,10 @@ unchanged for later policy to interpret.  `outputs` contains every
 numeric output XID belonging to the Monitor, sorted in ascending order,
 and may be empty.  Objects always use the key order shown above, and the
 monitor and output order is deterministic.
++
+Version 4 does not contain effective monitor scale, scale source, or scale
+reason fields.  Existing module packets likewise contain no scale metadata.
+Use `PrintInfo Scale` for the initial scale-policy explanation.
 
 === Conditional Commands
 

@@ -29,11 +29,13 @@ visually consistent across changing monitor layouts and scale factors.
   external compositors — existing optional rendering stack
 - ✓ Builds with Meson and exercises focused native tests under GCC, Clang,
   ASan, and UBSan CI — hardened before v0.1
+- ✓ Derive a safe automatic scale for each active monitor and permit an
+  explicit per-monitor configuration override — Phase 2
+- ✓ Verify scale and topology policy with deterministic unit tests and live
+  X11 integration scenarios — Phase 1–2
 
 ### Active
 
-- [ ] Derive a safe automatic scale for each active monitor and permit an
-  explicit per-monitor configuration override
 - [ ] Apply monitor scale consistently to decorations, fonts, icons, cursors,
   and interactive hit targets
 - [ ] Keep placement, maximize, fullscreen, edge, and work-area geometry
@@ -42,8 +44,6 @@ visually consistent across changing monitor layouts and scale factors.
   scales
 - [ ] Reconcile monitor ownership and scaled geometry safely after hotplug,
   removal, primary changes, negative coordinates, and overlapping layouts
-- [ ] Verify scale and topology policy with deterministic unit tests and live
-  X11 integration scenarios
 
 ### Out of Scope
 
@@ -70,11 +70,12 @@ framing, output backpressure, event-loop fairness, deferred signal work,
 sanitizer CI, release safety, and focused native tests. The formal repository
 map is in `.planning/codebase/`.
 
-Mixed-DPI support currently has no unified scale abstraction. Geometry and
-drawing policy are spread across large, tightly coupled files including
+Phase 2 added a unified exact-quarter scale domain in `libs/monitor_scale.c`
+and a core-owned transactional store in `fvwm/monitor_scale_config.c`. Geometry
+and drawing policy remain spread across large, tightly coupled files including
 `fvwm/move_resize.c`, `fvwm/borders.c`, `fvwm/placement.c`, and
-`libs/FScreen.c`. v0.1 should extract pure scale and geometry policy where
-possible before wiring X11 side effects.
+`libs/FScreen.c`. v0.1 should extract remaining geometry and ownership policy
+before wiring scaled X11 side effects.
 
 ## Constraints
 
@@ -98,7 +99,7 @@ possible before wiring X11 side effects.
 |----------|-----------|---------|
 | Name the internal product FVWM-X and start milestones at v0.1 | Treat modernization as a new product line rather than an upstream patch release | — Pending |
 | Start with monitor and HiDPI foundations | Later rendering, input, and configuration work needs one authoritative scale model | — Pending |
-| Use explicit per-monitor scale with automatic DPI fallback | Overrides provide deterministic control while automatic behavior gives a usable default | — Pending |
+| Use explicit per-monitor scale with automatic DPI fallback | Overrides provide deterministic control while automatic behavior gives a usable default | Shipped in Phase 2 |
 | Preserve logical window size across scale changes | Perceived size should remain stable when users move windows between monitors | — Pending |
 | Remain X11-only with external compositing | Limits scope to improving the current architecture instead of building a compositor platform | — Pending |
 | Permit configuration and module compatibility breaks | Legacy constraints must not prevent a coherent modern runtime model | — Pending |
@@ -121,4 +122,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-29 after initialization*
+*Last updated: 2026-08-30 after Phase 2*

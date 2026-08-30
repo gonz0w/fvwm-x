@@ -1689,6 +1689,28 @@ monitor_emit_broadcast(void)
 	}
 }
 
+static void
+topology_refresh_if_due(void)
+{
+	fscreen_topology_refresh_result result;
+	uint64_t			now_ns = topology_monotonic_ns();
+
+	if (!fvwm_topology_refresh_is_due(&topology_refresh_state, now_ns)) {
+		return;
+	}
+
+	result = FScreenRefreshTopology(dpy);
+	fvwm_topology_refresh_complete(&topology_refresh_state);
+	if (!fvwm_topology_refresh_requests_downstream(result)) {
+		return;
+	}
+
+	monitor_update_ewmh();
+	monitor_emit_broadcast();
+	initPanFrames(NULL);
+	status_send();
+}
+
 void
 HandleButtonPress(const evh_args_t *ea)
 {
@@ -3686,6 +3708,7 @@ HandleEvents(void)
 
 	while (!isTerminated) {
 		fvwm_process_deferred_signals();
+		topology_refresh_if_due();
 		last_event_type = 0;
 		if (Scr.flags.is_window_scheduled_for_destroy) {
 			destroy_scheduled_windows();
@@ -3778,35 +3801,40 @@ My_XNextEvent(Display *disp, XEvent *event)
 	 * fvwm to die, some might be harmless. Harmless interruptions
 	 * mean we have to start waiting all over again ... */
 	do {
+		int		       scheduler_ms;
+		int		       topology_ms;
 		int		       ms;
-		Bool		       is_waiting_for_scheduled_command = False;
-		static struct timeval *old_timeoutP			= NULL;
+		Bool		       is_waiting_with_timeout = False;
+		static struct timeval *old_timeoutP	       = NULL;
 
 		/* The timeouts become undefined whenever the select returns,
 		 * and so we have to reinitialise them */
-		ms = squeue_get_next_ms();
-		if (ms == 0) {
+		scheduler_ms = squeue_get_next_ms();
+		if (scheduler_ms == 0) {
 			/* run scheduled commands */
 			squeue_execute();
-			ms = squeue_get_next_ms();
+			scheduler_ms = squeue_get_next_ms();
 			/* should not happen anyway.
 			 * get_next_schedule_queue_ms() can't return 0 after a
 			 * call to execute_schedule_queue(). */
-			if (ms == 0) {
-				ms = 1;
+			if (scheduler_ms == 0) {
+				scheduler_ms = 1;
 			}
 		}
+		topology_ms = fvwm_topology_refresh_timeout_ms(
+		    &topology_refresh_state, topology_monotonic_ns());
+		ms = fvwm_topology_timeout_min(scheduler_ms, topology_ms);
 		if (ms < 0) {
 			timeout.tv_sec	= 42;
 			timeout.tv_usec = 0;
 		} else {
 			/* scheduled commands are pending - don't wait too
 			 * long */
-			timeout.tv_sec			 = ms / 1000;
-			timeout.tv_usec			 = 1000 * (ms % 1000);
-			old_timeoutP			 = timeoutP;
-			timeoutP			 = &timeout;
-			is_waiting_for_scheduled_command = True;
+			timeout.tv_sec		= ms / 1000;
+			timeout.tv_usec		= 1000 * (ms % 1000);
+			old_timeoutP		= timeoutP;
+			timeoutP		= &timeout;
+			is_waiting_with_timeout = True;
 		}
 
 		FD_ZERO(&in_fdset);
@@ -3831,7 +3859,7 @@ My_XNextEvent(Display *disp, XEvent *event)
 		num_fd = fvwmSelect(fvwmlib_max_fd, &in_fdset, &out_fdset, 0,
 		    force_poll ? &poll_timeout : timeoutP);
 		fvwm_process_deferred_signals();
-		if (is_waiting_for_scheduled_command) {
+		if (is_waiting_with_timeout) {
 			timeoutP = old_timeoutP;
 		}
 

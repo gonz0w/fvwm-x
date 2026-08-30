@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 01
 current_phase_name: Topology Snapshot and Live-X Harness
 status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-08-30T13:14:26.131Z"
+stopped_at: Completed 01-05-PLAN.md
+last_updated: "2026-08-30T13:27:24.058Z"
 last_activity: 2026-08-30
-last_activity_desc: Completed 01-03 bounded topology burst settling policy
-state_head: c4c9f9d87657e7a0ba48c88c186bdf6ca2182368
+last_activity_desc: Completed 01-05 Status v4 topology inspection contract
+state_head: 0ffb5f196cfce2d19b057657964c08cb8935e0b4
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 8
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -31,27 +31,27 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 Phase: 01 (Topology Snapshot and Live-X Harness) — EXECUTING
 Plan: 4 of 8
 Status: Ready to execute
-Last activity: 2026-08-30 — Completed 01-03 bounded topology burst settling policy
+Last activity: 2026-08-30 — Completed 01-05 Status v4 topology inspection contract
 
-Progress: [████░░░░░░] 38%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 3
-- Average duration: 19 min
-- Total execution time: 0.93 hours
+- Total plans completed: 4
+- Average duration: 16 min
+- Total execution time: 1.07 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 3 | 56 min | 19 min |
+| 01 | 4 | 64 min | 16 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 32 min, 18 min, 6 min
+- Last 5 plans: 32 min, 18 min, 6 min, 8 min
 - Trend: Faster
 
 **Per-Plan Metrics:**
@@ -61,6 +61,7 @@ Progress: [████░░░░░░] 38%
 | Phase 01 P01 | 32min | 3 tasks | 7 files |
 | Phase 01 P02 | 18min | 2 tasks | 4 files |
 | Phase 01 P03 | 6min | 2 tasks | 5 files |
+| Phase 01 P05 | 8min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 01]: Topology refresh due time is the earlier of a trailing 50 ms quiet deadline and a first-event 250 ms hard cap. — Bounds burst coalescing latency while preserving one deferred generation.
 - [Phase 01]: Clean refresh policy state returns -1, due state returns 0, and every positive fractional millisecond rounds up. — Distinguishes no deadline from due work and prevents zero-time busy looping.
 - [Phase 01]: Refresh completion resets the entire generation regardless of changed, unchanged, or failed refresh outcome. — Keeps the pure policy independent of publication semantics while allowing later events to rearm cleanly.
+- [Phase 01]: Build the complete topology cJSON tree detached and transfer it to the Status parent only after every allocation succeeds.
+- [Phase 01]: Status v4 and PrintInfo Topology both read FScreenGetTopologySnapshot(), while existing screen fields and FVWM_STATUS_PIPE transport remain unchanged.
+- [Phase 01]: PrintInfo quotes monitor names through cJSON escaping so valid UTF-8 control and quote bytes cannot forge additional log lines.
 
 ### Pending Todos
 
@@ -101,6 +105,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T13:14:26.124Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-08-30T13:27:24.051Z
+Stopped at: Completed 01-05-PLAN.md
 Resume file: None

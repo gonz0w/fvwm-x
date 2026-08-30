@@ -17,6 +17,17 @@ monitor_topology_test = executable(
 
 test('monitor-topology', monitor_topology_test)
 
+monitor_scale_test = executable(
+    'test-monitor-scale',
+    'test_monitor_scale.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
+test('monitor-scale', monitor_scale_test)
+
 status_json_test = executable(
     'test-status-json',
     ['test_status_json.c', '../fvwm/status_json.c'],

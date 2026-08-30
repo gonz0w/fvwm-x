@@ -256,6 +256,8 @@ fscreen_refresh_topology_with_adapters(Display *, Window,
 struct monitor *
 fscreen_monitor_by_output(
     const monitor_topology_snapshot *, struct monitors *, RROutput);
+int64_t
+fscreen_monitor_distance_to_point(const struct monitor *, int, int);
 #endif
 
 /* Screen info */

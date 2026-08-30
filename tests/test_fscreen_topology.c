@@ -17,6 +17,7 @@
 #include "libs/FScreen.h"
 
 #include <assert.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -447,6 +448,36 @@ test_equal_and_changed_candidates_have_exact_generation_results(void)
 }
 
 static void
+test_extreme_legacy_coordinates_do_not_overflow(void)
+{
+	struct screen_info minimum_screen = {
+	    .name = "minimum",
+	    .x	  = INT_MIN,
+	    .y	  = INT_MIN,
+	    .w	  = 1,
+	    .h	  = 1,
+	};
+	struct screen_info zero_screen = {
+	    .name = "zero",
+	    .x	  = 0,
+	    .y	  = 0,
+	    .w	  = INT_MAX,
+	    .h	  = INT_MAX,
+	};
+	struct monitor minimum = {.si = &minimum_screen};
+	struct monitor zero    = {.si = &zero_screen};
+
+	assert(monitor_compare(&minimum, &zero) < 0);
+	assert(monitor_compare(&zero, &minimum) > 0);
+	minimum_screen.y = zero_screen.y;
+	assert(monitor_compare(&minimum, &zero) < 0);
+	assert(monitor_compare(&zero, &minimum) > 0);
+	minimum_screen.y = INT_MIN;
+	assert(fscreen_monitor_distance_to_point(&minimum, INT_MAX, INT_MAX)
+	       == INT64_C(8589934588));
+}
+
+static void
 test_every_legacy_staging_allocation_failure_retains_state(void)
 {
 	RROutput       first_outputs[]	= {32, 31};
@@ -532,6 +563,7 @@ main(void)
 {
 	test_failed_empty_unresolved_and_invalid_queries_retain_state();
 	test_equal_and_changed_candidates_have_exact_generation_results();
+	test_extreme_legacy_coordinates_do_not_overflow();
 	test_every_legacy_staging_allocation_failure_retains_state();
 	return 0;
 }

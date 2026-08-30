@@ -840,6 +840,8 @@ monitor_compare(struct monitor *a, struct monitor *b)
 {
 	int adisable = a->flags & MONITOR_DISABLED;
 	int bdisable = b->flags & MONITOR_DISABLED;
+	int coord_comp;
+	int size_comp;
 
 	if (adisable && !bdisable)
 		return 1;
@@ -847,19 +849,45 @@ monitor_compare(struct monitor *a, struct monitor *b)
 	if (!adisable && bdisable)
 		return -1;
 
-	int coord_comp = (a->si->y == b->si->y) ? (a->si->x - b->si->x)
-						: (a->si->y - b->si->y);
+	coord_comp = a->si->y == b->si->y ? (a->si->x < b->si->x      ? -1
+						: a->si->x > b->si->x ? 1
+								      : 0)
+					  : (a->si->y < b->si->y ? -1 : 1);
 
 	if (coord_comp != 0)
 		return coord_comp;
 
-	int size_comp = (a->si->w == b->si->w) ? (a->si->h - b->si->h)
-					       : (a->si->w - b->si->w);
+	size_comp = a->si->w == b->si->w ? (a->si->h < b->si->h	     ? -1
+					       : a->si->h > b->si->h ? 1
+								     : 0)
+					 : (a->si->w < b->si->w ? -1 : 1);
 
 	if (size_comp != 0)
 		return size_comp;
 
 	return strcmp(a->si->name, b->si->name);
+}
+
+int64_t
+fscreen_monitor_distance_to_point(const struct monitor *monitor, int x, int y)
+{
+	int64_t left	 = monitor->si->x;
+	int64_t top	 = monitor->si->y;
+	int64_t right	 = left + monitor->si->w;
+	int64_t bottom	 = top + monitor->si->h;
+	int64_t point_x	 = x;
+	int64_t point_y	 = y;
+	int64_t distance = 0;
+
+	if (point_x < left)
+		distance += left - point_x;
+	else if (point_x > right)
+		distance += point_x - right;
+	if (point_y < top)
+		distance += top - point_y;
+	else if (point_y > bottom)
+		distance += point_y - bottom;
+	return distance;
 }
 
 static bool
@@ -1219,7 +1247,7 @@ struct monitor *
 FindScreenOfXY(int x, int y)
 {
 	struct monitor *m, *m_min = NULL;
-	int		dmin	    = INT_MAX;
+	int64_t		dmin	    = INT64_MAX;
 	int		all_widths  = monitor_get_all_widths();
 	int		all_heights = monitor_get_all_heights();
 
@@ -1253,7 +1281,7 @@ FindScreenOfXY(int x, int y)
 	 */
 	RB_FOREACH(m, monitors, &monitor_q)
 	{
-		int d = 0;
+		int64_t d;
 
 		/* Skip global screen */
 		if (nr_monitors > 0
@@ -1263,14 +1291,7 @@ FindScreenOfXY(int x, int y)
 		if (m->flags & MONITOR_DISABLED)
 			continue;
 
-		if (x < m->si->x)
-			d += m->si->x - x;
-		if (x > m->si->x + m->si->w)
-			d += x - m->si->x - m->si->w;
-		if (y < m->si->y)
-			d += m->si->y - y;
-		if (y > m->si->y + m->si->h)
-			d += y - m->si->y - m->si->h;
+		d = fscreen_monitor_distance_to_point(m, x, y);
 		if (d < dmin) {
 			dmin  = d;
 			m_min = m;

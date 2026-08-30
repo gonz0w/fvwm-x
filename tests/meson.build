@@ -133,6 +133,28 @@ if get_option('live-x-tests') and host_machine.system() == 'linux'
         timeout: 90,
     )
     test(
+        'topology-xorg-dummy-failed-query',
+        py,
+        args: [
+            files('live_x/live_x_harness.py'),
+            '--backend=xorg-dummy',
+            '--scenario=failed-query-recovery',
+            '--fvwm',
+            fvwm3.full_path(),
+            '--wrapped-fvwm',
+            fvwm3_live_x_wrap.full_path(),
+            '--fault-library',
+            xrr_query_fault_preload.full_path(),
+            '--xorg-config',
+            files('live_x/xorg-dummy.conf'),
+            '--artifacts-dir',
+            live_x_artifacts / 'topology-xorg-dummy-failed-query',
+        ],
+        suite: 'live-x',
+        is_parallel: false,
+        timeout: 90,
+    )
+    test(
         'topology-fault-injection-probe',
         py,
         args: [

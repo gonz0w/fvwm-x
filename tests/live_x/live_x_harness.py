@@ -45,7 +45,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument("--backend", choices=("xvfb", "xorg-dummy"))
     parser.add_argument(
-        "--scenario", choices=("fault-injection-probe", "topology"), default=None
+        "--scenario",
+        choices=("failed-query-recovery", "fault-injection-probe", "topology"),
+        default=None,
     )
     parser.add_argument("--fvwm", type=Path)
     parser.add_argument("--wrapped-fvwm", type=Path)
@@ -898,6 +900,22 @@ def topology_epoch(status: dict[str, object]) -> int:
     if type(epoch) is not int:
         raise HarnessError("Status topology epoch has an invalid type")
     return epoch
+
+
+def assert_topology_retained(
+    known_good: dict[str, object], retained: dict[str, object]
+) -> None:
+    """Require byte-canonical and semantic equality of last-good topology."""
+    known_topology = status_topology(known_good)
+    retained_topology = status_topology(retained)
+    known_bytes = json.dumps(
+        known_topology, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    retained_bytes = json.dumps(
+        retained_topology, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    if retained_topology != known_topology or retained_bytes != known_bytes:
+        raise HarnessError("failed query changed last-good topology or epoch")
 
 
 def topology_monitor(
@@ -1964,6 +1982,330 @@ def run_xorg_dummy_topology(options: argparse.Namespace) -> None:
                 raise
 
 
+def run_xorg_dummy_failed_query(options: argparse.Namespace) -> None:
+    """Prove one failed runtime query retains state and later recovers."""
+    required_paths = {
+        "--fvwm": options.fvwm,
+        "--wrapped-fvwm": options.wrapped_fvwm,
+        "--fault-library": options.fault_library,
+        "--xorg-config": options.xorg_config,
+    }
+    for option_name, path in required_paths.items():
+        if path is None or not path.is_file():
+            raise ValueError(f"{option_name} must name an existing file")
+    if options.artifacts_dir is None:
+        raise ValueError("--artifacts-dir is required")
+    if options.backend != "xorg-dummy":
+        raise ValueError("failed-query recovery requires --backend=xorg-dummy")
+
+    fvwm_path = options.fvwm.resolve()
+    wrapped_fvwm = options.wrapped_fvwm.resolve()
+    fault_library = options.fault_library.resolve()
+    config_path = options.xorg_config.resolve()
+    artifact_dir = options.artifacts_dir.resolve()
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    for artifact_name in (
+        "failure.json",
+        "fvwm.log",
+        "last-status.json",
+        "result.json",
+        "scenario.json",
+        "server.log",
+        "xrandr.txt",
+    ):
+        (artifact_dir / artifact_name).unlink(missing_ok=True)
+
+    runtime = HarnessRuntime(prefix="fvwm-xorg-dummy-failed-query-")
+    server: ManagedProcess | None = None
+    fvwm_process: ManagedProcess | None = None
+    collector: StatusCollector | None = None
+    last_status: dict[str, object] | None = None
+    xrandr_text: str | None = None
+    active_error: BaseException | None = None
+    operations: list[dict[str, object]] = []
+    attempts: list[dict[str, object]] = []
+    metadata: dict[str, object] = {
+        "backend": "xorg-dummy",
+        "scenario": "failed-query-recovery",
+    }
+    try:
+        server, display = start_xorg_dummy(
+            runtime, config_path, time.monotonic() + 10.0
+        )
+        wait_for_randr(runtime, display, time.monotonic() + 10.0)
+
+        def mutate(arguments: list[str], operation: str) -> None:
+            run_required_xrandr(
+                runtime, display, arguments, operation, operations
+            )
+
+        mutate(
+            [
+                "--addmode", "DUMMY1", "1280x1024",
+                "--addmode", "DUMMY1", "1024x768",
+            ],
+            "assign-dummy1-modes",
+        )
+        mutate(
+            [
+                "--output", "DUMMY0", "--mode", "1920x1080", "--pos", "0x0",
+                "--primary", "--output", "DUMMY1", "--mode", "1280x1024",
+                "--pos", "1920x0", "--fb", "3200x1080", "--fbmm", "846x286",
+            ],
+            "baseline",
+        )
+        baseline_state = wait_for_authoritative_state(
+            runtime,
+            display,
+            "failed-query baseline",
+            lambda state: set(state_monitors(state)) == {"DUMMY0", "DUMMY1"}
+            and state.get("root") == {
+                "width": 3200,
+                "height": 1080,
+                "mm_width": 846,
+                "mm_height": 286,
+            },
+            time.monotonic() + 5.0,
+            "xrandr-failed-query-baseline",
+        )
+        xrandr_text = str(baseline_state["text"])
+        output_ids = state_output_ids(baseline_state)
+        selected_mechanism: str | None = None
+
+        for mechanism, executable in (
+            ("preload", fvwm_path),
+            ("link-wrap", wrapped_fvwm),
+        ):
+            failed_name = f"fvwm-failed-{mechanism}"
+            recovered_name = f"fvwm-recovered-{mechanism}"
+            sentinel = runtime.root / f"{mechanism}-runtime.sentinel"
+            sentinel.unlink(missing_ok=True)
+            overrides = {FAULT_ENV: str(sentinel)}
+            if mechanism == "preload":
+                overrides[PRELOAD_ENV] = str(fault_library)
+            environment = runtime.environment(overrides)
+            fvwm_process, collector = start_fvwm(
+                runtime,
+                executable,
+                display,
+                time.monotonic() + 10.0,
+                environment=environment,
+            )
+            try:
+                known_good = wait_for_status_monitors(
+                    collector,
+                    fvwm_process,
+                    state_monitors(baseline_state),
+                    output_ids,
+                    1,
+                    time.monotonic() + 10.0,
+                )
+                last_status = known_good
+                status_position = collector_position(collector)
+                sentinel.touch(mode=0o600, exist_ok=False)
+                mutate(
+                    [
+                        "--setmonitor", failed_name,
+                        "800/212x600/159+40+30", "none",
+                    ],
+                    f"{mechanism}-failed-generation",
+                )
+                failed_state = wait_for_authoritative_state(
+                    runtime,
+                    display,
+                    f"{mechanism} failed-generation server state",
+                    lambda state: failed_name in state_monitors(state),
+                    time.monotonic() + 2.0,
+                    f"xrandr-{mechanism}-failed-generation",
+                )
+                xrandr_text = str(failed_state["text"])
+
+                diagnostic = (
+                    "RandR monitor query failed; retaining last topology"
+                )
+                observation_deadline = time.monotonic() + 1.0
+                observed = False
+                with selectors.DefaultSelector() as selector:
+                    selector.register(
+                        collector.file_descriptor, selectors.EVENT_READ
+                    )
+                    while time.monotonic() < observation_deadline:
+                        collector.read_available()
+                        log_text = _combined_fvwm_log(
+                            fvwm_process, runtime.root / "fvwm.log"
+                        )
+                        diagnostic_count = log_text.count(diagnostic)
+                        if not sentinel.exists() and diagnostic_count:
+                            observed = True
+                            break
+                        if sentinel.exists() \
+                                and len(collector.records) > status_position:
+                            break
+                        selector.select(
+                            min(
+                                0.01,
+                                observation_deadline - time.monotonic(),
+                            )
+                        )
+
+                log_text = _combined_fvwm_log(
+                    fvwm_process, runtime.root / "fvwm.log"
+                )
+                diagnostic_count = log_text.count(diagnostic)
+                attempt = {
+                    "diagnostics": diagnostic_count,
+                    "mechanism": mechanism,
+                    "observed": observed,
+                    "sentinel_consumed": not sentinel.exists(),
+                }
+                attempts.append(attempt)
+                (artifact_dir / f"{mechanism}-probe.log").write_text(log_text)
+
+                if not observed:
+                    if not sentinel.exists() or diagnostic_count:
+                        raise HarnessError(
+                            f"{mechanism} fault observation was inconsistent"
+                        )
+                    # The unaffected attempt changed server state.  Restore
+                    # the baseline before a fresh FVWM starts at epoch 1.
+                    mutate(
+                        ["--delmonitor", failed_name],
+                        f"{mechanism}-restore-baseline",
+                    )
+                    baseline_state = wait_for_authoritative_state(
+                        runtime,
+                        display,
+                        f"baseline restored after {mechanism}",
+                        lambda state: set(state_monitors(state))
+                        == {"DUMMY0", "DUMMY1"},
+                        time.monotonic() + 2.0,
+                        f"xrandr-{mechanism}-restored-baseline",
+                    )
+                    continue
+                if diagnostic_count != 1:
+                    raise HarnessError(
+                        f"{mechanism} emitted {diagnostic_count} query diagnostics"
+                    )
+                collector.read_available()
+                if len(collector.records) != status_position:
+                    raise HarnessError("failed query emitted downstream Status")
+                if collector.last_status is None:
+                    raise HarnessError("failed query lost the last-good Status")
+                assert_topology_retained(known_good, collector.last_status)
+                assert_no_status_after(
+                    collector,
+                    status_position,
+                    time.monotonic() + 0.15,
+                    fvwm_process,
+                    "failed-query retention",
+                )
+
+                mutate(
+                    [
+                        "--delmonitor", failed_name,
+                        "--setmonitor", recovered_name,
+                        "960/254x700/185+80+50", "none",
+                    ],
+                    f"{mechanism}-recovery-generation",
+                )
+                recovered_state = wait_for_authoritative_state(
+                    runtime,
+                    display,
+                    f"{mechanism} recovered server state",
+                    lambda state: failed_name not in state_monitors(state)
+                    and recovered_name in state_monitors(state),
+                    time.monotonic() + 2.0,
+                    f"xrandr-{mechanism}-recovered",
+                )
+                xrandr_text = str(recovered_state["text"])
+                last_status = wait_for_status_monitors(
+                    collector,
+                    fvwm_process,
+                    state_monitors(recovered_state),
+                    state_output_ids(recovered_state),
+                    2,
+                    time.monotonic() + 2.0,
+                )
+                if sentinel.exists():
+                    raise HarnessError("selected fault sentinel was not consumed")
+
+                stable_position = collector_position(collector)
+                mutate(
+                    [
+                        "--delmonitor", recovered_name,
+                        "--setmonitor", recovered_name,
+                        "960/254x700/185+80+50", "none",
+                    ],
+                    f"{mechanism}-post-recovery-equal-generation",
+                )
+                assert_no_status_after(
+                    collector,
+                    stable_position,
+                    time.monotonic() + 0.15,
+                    fvwm_process,
+                    "post-recovery equal generation",
+                )
+                if topology_epoch(collector.last_status or {}) != 2:
+                    raise HarnessError("post-recovery query advanced the epoch")
+                selected_mechanism = mechanism
+                break
+            finally:
+                if collector is not None:
+                    collector.close()
+                    collector = None
+                fvwm_process.close(time.monotonic() + 2.0)
+                fvwm_process = None
+
+        if selected_mechanism is None:
+            raise HarnessError("neither preload nor link-wrap failed a runtime query")
+        metadata.update(
+            {
+                "attempts": attempts,
+                "mechanism": selected_mechanism,
+                "operations": operations,
+                "output_ids": output_ids,
+                "retained_epoch": 1,
+                "recovered_epoch": topology_epoch(last_status or {}),
+            }
+        )
+        (artifact_dir / "result.json").write_text(
+            json.dumps(metadata, indent=2, sort_keys=True) + "\n"
+        )
+    except BaseException as error:
+        active_error = error
+        if collector is not None:
+            last_status = collector.last_status
+        metadata["attempts"] = attempts
+        metadata["operations"] = operations
+        capture_failure(
+            artifact_dir,
+            error=error,
+            server_log=server.log_path if server is not None else None,
+            fvwm_log=runtime.root / "fvwm.log",
+            xrandr_text=xrandr_text,
+            last_status=last_status,
+            metadata=metadata,
+        )
+        raise
+    finally:
+        if collector is not None:
+            collector.close()
+        try:
+            runtime.close()
+        except BaseException as cleanup_error:
+            capture_failure(
+                artifact_dir,
+                error=cleanup_error,
+                server_log=server.log_path if server is not None else None,
+                fvwm_log=runtime.root / "fvwm.log",
+                xrandr_text=xrandr_text,
+                last_status=last_status,
+                metadata=metadata,
+            )
+            if active_error is None:
+                raise
+
+
 def run_xvfb_topology(options: argparse.Namespace) -> None:
     """Prove the mandatory Xvfb startup and epoch-1 inspection baseline."""
     if options.fvwm is None or not options.fvwm.is_file():
@@ -2609,6 +2951,9 @@ def main() -> int:
         build_parser().error("--backend and --scenario are required")
     if options.scenario == "fault-injection-probe":
         run_fault_injection_probe(options)
+        return 0
+    if options.scenario == "failed-query-recovery":
+        run_xorg_dummy_failed_query(options)
         return 0
     if options.scenario == "topology":
         if options.backend == "xvfb":

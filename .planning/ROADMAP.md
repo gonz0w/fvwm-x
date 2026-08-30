@@ -29,7 +29,17 @@ FVWM-X v0.1 proceeds through dependency-ordered technical layers: establish an a
   1. User can inspect a committed monitor snapshot containing stable identity, root-pixel geometry, physical dimensions, primary state, complete output membership, and topology epoch.
   2. A burst of topology events produces one validated atomic commit, and a failed monitor query leaves the last good topology active.
   3. Maintainers can reproduce monitor creation, mutation, and removal with Xvfb smoke scenarios and authoritative Xorg-dummy scenarios.
-**Plans**: TBD
+**Plans**: 8 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Trace detached RandR facts through canonical atomic epoch publication
+- [ ] 01-02-PLAN.md — Make FScreen the failure-safe live-X snapshot publisher
+- [ ] 01-03-PLAN.md — Define and test bounded two-deadline burst settling
+- [ ] 01-04-PLAN.md — Wire complete topology events to one deferred semantic commit
+- [ ] 01-05-PLAN.md — Expose and document Status v4 plus PrintInfo Topology
+- [ ] 01-06-PLAN.md — Build the isolated live-X harness and prove failed-query injection
+- [ ] 01-07-PLAN.md — Add capability-aware mandatory Xvfb smoke coverage
+- [ ] 01-08-PLAN.md — Add authoritative Xorg-dummy recovery coverage and native-Linux CI
 
 ### Phase 2: Scale Policy and Configuration
 **Goal**: Every active monitor has one explainable, safe, and exact effective scale before any geometry or rendering consumer uses it.
@@ -112,7 +122,7 @@ FVWM-X v0.1 proceeds through dependency-ordered technical layers: establish an a
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Topology Snapshot and Live-X Harness | 0/TBD | Not started | - |
+| 1. Topology Snapshot and Live-X Harness | 0/8 | Not started | - |
 | 2. Scale Policy and Configuration | 0/TBD | Not started | - |
 | 3. Geometry and Ownership Contracts | 0/TBD | Not started | - |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |

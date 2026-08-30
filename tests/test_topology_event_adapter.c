@@ -24,7 +24,11 @@ typedef struct
 	int  mark_count;
 	int  refresh_count;
 	int  downstream_count;
-	char trace[3];
+	int  ewmh_count;
+	int  broadcast_count;
+	int  pan_frame_count;
+	int  status_count;
+	char trace[8];
 	int  trace_length;
 } callback_state;
 
@@ -239,6 +243,55 @@ test_only_changed_requests_downstream_work(void)
 	    FSCREEN_TOPOLOGY_REFRESH_CHANGED));
 }
 
+static void
+dispatch_refresh_result(
+    fscreen_topology_refresh_result result, callback_state *state)
+{
+	if (!fvwm_topology_refresh_requests_downstream(result)) {
+		return;
+	}
+
+	state->trace[state->trace_length++] = 'r';
+	state->ewmh_count++;
+	state->trace[state->trace_length++] = 'e';
+	state->broadcast_count++;
+	state->trace[state->trace_length++] = 'b';
+	state->pan_frame_count++;
+	state->trace[state->trace_length++] = 'p';
+	state->status_count++;
+	state->trace[state->trace_length++] = 's';
+}
+
+static void
+test_changed_orders_each_downstream_helper_once(void)
+{
+	callback_state changed	 = {0};
+	callback_state unchanged = {0};
+	callback_state failed	 = {0};
+
+	dispatch_refresh_result(FSCREEN_TOPOLOGY_REFRESH_CHANGED, &changed);
+	assert(changed.ewmh_count == 1);
+	assert(changed.broadcast_count == 1);
+	assert(changed.pan_frame_count == 1);
+	assert(changed.status_count == 1);
+	assert(changed.trace_length == 5);
+	assert(memcmp(changed.trace, "rebps", 5) == 0);
+
+	dispatch_refresh_result(FSCREEN_TOPOLOGY_REFRESH_UNCHANGED, &unchanged);
+	assert(unchanged.ewmh_count == 0);
+	assert(unchanged.broadcast_count == 0);
+	assert(unchanged.pan_frame_count == 0);
+	assert(unchanged.status_count == 0);
+	assert(unchanged.trace_length == 0);
+
+	dispatch_refresh_result(FSCREEN_TOPOLOGY_REFRESH_FAILED, &failed);
+	assert(failed.ewmh_count == 0);
+	assert(failed.broadcast_count == 0);
+	assert(failed.pan_frame_count == 0);
+	assert(failed.status_count == 0);
+	assert(failed.trace_length == 0);
+}
+
 int
 main(void)
 {
@@ -247,5 +300,6 @@ main(void)
 	test_dispatch_marks_only_accepted_events();
 	test_timeout_min_preserves_absent_zero_and_positive();
 	test_only_changed_requests_downstream_work();
+	test_changed_orders_each_downstream_helper_once();
 	return 0;
 }

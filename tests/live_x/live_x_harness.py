@@ -55,8 +55,108 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--xorg-config", type=Path)
     parser.add_argument("--policy-header", type=Path)
     parser.add_argument("--artifacts-dir", type=Path)
+    parser.add_argument("--check-workflow", type=Path)
     parser.add_argument("--self-test", action="store_true")
     return parser
+
+
+def check_live_x_workflow(workflow_path: Path) -> None:
+    """Validate syntax and the dedicated native-Linux live-X CI contract."""
+    if not workflow_path.is_file():
+        raise HarnessError(f"workflow does not exist: {workflow_path}")
+
+    try:
+        syntax = subprocess.run(
+            [
+                "ruby",
+                "-e",
+                "require 'psych'; Psych.parse_file(ARGV.fetch(0))",
+                str(workflow_path),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            text=True,
+        )
+    except FileNotFoundError as error:
+        raise HarnessError("Ruby is required for workflow syntax validation") from error
+    if syntax.returncode != 0:
+        diagnostic = syntax.stderr.strip() or "Ruby Psych rejected the workflow"
+        raise HarnessError(f"invalid workflow YAML: {diagnostic}")
+
+    workflow = workflow_path.read_text()
+    if "\t" in workflow:
+        raise HarnessError("workflow must not contain tab indentation")
+
+    job_matches = list(re.finditer(r"(?m)^  live-x:\s*$", workflow))
+    if len(job_matches) != 1:
+        raise HarnessError("workflow must contain exactly one live-x job")
+    job_start = job_matches[0].start()
+    next_job = re.search(
+        r"(?m)^  [A-Za-z0-9_-]+:\s*$", workflow[job_start + 1 :]
+    )
+    job_end = (
+        job_start + 1 + next_job.start() if next_job is not None else len(workflow)
+    )
+    job = workflow[job_start:job_end]
+
+    if "matrix:" in job or "${{ matrix." in job:
+        raise HarnessError("live-x job must be a dedicated non-matrix job")
+    for native_linux_anchor in (
+        "runs-on: blacksmith-4vcpu-ubuntu-2404",
+        "image: fvwmorg/fvwm3-build:latest",
+    ):
+        if job.count(native_linux_anchor) != 1:
+            raise HarnessError(
+                f"live-x native Linux job anchor missing: {native_linux_anchor}"
+            )
+    required_packages = {
+        "x11-xserver-utils",
+        "xserver-xorg-core",
+        "xserver-xorg-video-dummy",
+        "xvfb",
+    }
+    installs = re.findall(r"(?m)^\s*apt-get install -y ([^\n]+)$", job)
+    if (
+        len(installs) != 1
+        or len(installs[0].split()) != len(required_packages)
+        or set(installs[0].split()) != required_packages
+    ):
+        raise HarnessError("live-x job must install exactly the four audited X packages")
+
+    commands = (
+        "meson setup builddir -Dlive-x-tests=true -Dgolang=disabled",
+        "meson compile -C builddir",
+        "meson test -C builddir --suite live-x --print-errorlogs",
+    )
+    for command in commands:
+        if job.count(command) != 1:
+            raise HarnessError(f"live-x job must run exactly once: {command}")
+
+    artifact_contract = (
+        "if: failure()",
+        "uses: actions/upload-artifact@v4",
+        "builddir/tests/live-x-artifacts/",
+        "builddir/meson-logs/",
+        "if-no-files-found: error",
+        "retention-days: 7",
+    )
+    for requirement in artifact_contract:
+        if job.count(requirement) != 1:
+            raise HarnessError(
+                f"live-x failure artifact contract missing: {requirement}"
+            )
+
+    preserved_anchors = (
+        "os: [blacksmith-4vcpu-ubuntu-2404, alpine]",
+        "compiler: [gcc, clang]",
+        "-Dhtmldoc=true -Dmandoc=true",
+        "  sanitizers:",
+        "-Db_sanitize=address,undefined",
+    )
+    for anchor in preserved_anchors:
+        if workflow.count(anchor) != 1:
+            raise HarnessError(f"existing CI anchor changed or missing: {anchor}")
 
 
 def sanitized_environment(
@@ -783,6 +883,7 @@ def run_fault_injection_probe(options: argparse.Namespace) -> None:
             fvwm_log=runtime.root / "fvwm.log",
             xrandr_text=xrandr_text,
             last_status=last_status,
+            metadata={"backend": "xvfb", "scenario": "fault-injection-probe"},
         )
         raise
     finally:
@@ -2635,6 +2736,7 @@ def run_xvfb_topology(options: argparse.Namespace) -> None:
             fvwm_log=runtime.root / "fvwm.log",
             xrandr_text=xrandr_text,
             last_status=last_status,
+            metadata={"backend": "xvfb", "scenario": "topology"},
         )
         raise
     finally:
@@ -2650,6 +2752,7 @@ def run_xvfb_topology(options: argparse.Namespace) -> None:
                 fvwm_log=runtime.root / "fvwm.log",
                 xrandr_text=xrandr_text,
                 last_status=last_status,
+                metadata={"backend": "xvfb", "scenario": "topology"},
             )
             if active_error is None:
                 raise
@@ -2944,6 +3047,9 @@ screen connected 1280x720+0+0 (0x3a) normal (normal) 0mm x 0mm
 def main() -> int:
     """Run self-tests or a selected live-X scenario."""
     options = build_parser().parse_args()
+    if options.check_workflow is not None:
+        check_live_x_workflow(options.check_workflow)
+        return 0
     if options.self_test:
         self_test()
         return 0

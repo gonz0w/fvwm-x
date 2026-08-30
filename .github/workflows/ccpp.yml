@@ -64,3 +64,40 @@ jobs:
             -Db_sanitize=address,undefined
           meson compile -C builddir
           meson test -C builddir --print-errorlogs
+
+  live-x:
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 20
+    container:
+      image: fvwmorg/fvwm3-build:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set Safe Directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Install live-X dependencies
+        run: |
+          apt-get update
+          apt-get install -y xvfb x11-xserver-utils xserver-xorg-core xserver-xorg-video-dummy
+
+      - name: Configure live-X tests
+        run: meson setup builddir -Dlive-x-tests=true -Dgolang=disabled
+
+      - name: Compile live-X tests
+        run: meson compile -C builddir
+
+      - name: Run live-X suite
+        run: meson test -C builddir --suite live-x --print-errorlogs
+
+      - name: Upload live-X failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-x-failure-artifacts
+          path: |
+            builddir/tests/live-x-artifacts/
+            builddir/meson-logs/
+          if-no-files-found: error
+          retention-days: 7

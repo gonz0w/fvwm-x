@@ -55,6 +55,7 @@
 #include "screen.h"
 #include "builtins.h"
 #include "module_list.h"
+#include "monitor_scale_config.h"
 #include "colorset.h"
 #include "events.h"
 #include "eventhandler.h"
@@ -663,6 +664,7 @@ void Done(int restart, char *command)
 	 * in nirvana. This explicitly happened with windows unswallowed by
 	 * FvwmButtons. */
 	module_kill_all();
+	monitor_scale_config_shutdown();
 
 	exit(0);
 }
@@ -1699,6 +1701,7 @@ int main(int argc, char **argv)
 	struct monitor	*m = NULL;
 
 	functions_init();
+	monitor_scale_config_initialize();
 	fvwmlib_init_max_fd();
 	/* Tell the FEvent module an event type that is not used by fvwm. */
 	fev_init_invalid_event_type(KeymapNotify);

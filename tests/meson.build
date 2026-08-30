@@ -48,3 +48,12 @@ event_loop_policy_test = executable(
 )
 
 test('event-loop-policy', event_loop_policy_test)
+
+topology_refresh_policy_test = executable(
+    'test-topology-refresh-policy',
+    ['test_topology_refresh_policy.c', '../fvwm/topology_refresh_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+
+test('topology-refresh-policy', topology_refresh_policy_test)

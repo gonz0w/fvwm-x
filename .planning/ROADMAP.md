@@ -76,7 +76,7 @@ Plans:
   3. Invalid scale input or ambiguous monitor matching produces a visible diagnostic with the chosen fallback rather than silent coercion.
   4. Supported quarter-step factors from 1x through 2x and higher convert deterministically without cumulative rounding drift.
 
-**Plans**: 2/5 plans executed
+**Plans**: 3/5 plans executed
 
 Plans:
 **Wave 1**
@@ -89,7 +89,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02-03-PLAN.md — Finalize and recompute effective scales before downstream topology effects
+- [x] 02-03-PLAN.md — Finalize and recompute effective scales before downstream topology effects
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -188,7 +188,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
-| 2. Scale Policy and Configuration | 2/5 | In Progress | - |
+| 2. Scale Policy and Configuration | 3/5 | In Progress | - |
 | 3. Geometry and Ownership Contracts | 0/TBD | Not started | - |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |

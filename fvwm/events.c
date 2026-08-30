@@ -102,6 +102,7 @@
 #include "misc.h"
 #include "module_interface.h"
 #include "module_list.h"
+#include "monitor_scale_config.h"
 #include "schedule.h"
 #include "screen.h"
 #include "session.h"
@@ -1690,8 +1691,50 @@ monitor_emit_broadcast(void)
 }
 
 static void
+topology_recompute_scale(void *context)
+{
+	(void)context;
+	(void)monitor_scale_config_recompute();
+}
+
+static void
+topology_update_ewmh(void *context)
+{
+	(void)context;
+	monitor_update_ewmh();
+}
+
+static void
+topology_emit_broadcast(void *context)
+{
+	(void)context;
+	monitor_emit_broadcast();
+}
+
+static void
+topology_initialize_pan_frames(void *context)
+{
+	(void)context;
+	initPanFrames(NULL);
+}
+
+static void
+topology_send_status(void *context)
+{
+	(void)context;
+	status_send();
+}
+
+static void
 topology_refresh_if_due(void)
 {
+	const fvwm_topology_downstream_callbacks callbacks = {
+	    .recompute_scale	   = topology_recompute_scale,
+	    .update_ewmh	   = topology_update_ewmh,
+	    .emit_broadcast	   = topology_emit_broadcast,
+	    .initialize_pan_frames = topology_initialize_pan_frames,
+	    .send_status	   = topology_send_status,
+	};
 	fscreen_topology_refresh_result result;
 	uint64_t			now_ns = topology_monotonic_ns();
 
@@ -1701,14 +1744,7 @@ topology_refresh_if_due(void)
 
 	result = FScreenRefreshTopology(dpy);
 	fvwm_topology_refresh_complete(&topology_refresh_state);
-	if (!fvwm_topology_refresh_requests_downstream(result)) {
-		return;
-	}
-
-	monitor_update_ewmh();
-	monitor_emit_broadcast();
-	initPanFrames(NULL);
-	status_send();
+	fvwm_topology_dispatch_refresh_result(result, &callbacks, NULL);
 }
 
 void

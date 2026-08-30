@@ -86,3 +86,28 @@ fvwm_topology_refresh_requests_downstream(
 {
 	return result == FSCREEN_TOPOLOGY_REFRESH_CHANGED;
 }
+
+void
+fvwm_topology_dispatch_refresh_result(fscreen_topology_refresh_result result,
+    const fvwm_topology_downstream_callbacks *callbacks, void *context)
+{
+	if (!fvwm_topology_refresh_requests_downstream(result)
+	    || callbacks == NULL) {
+		return;
+	}
+	if (callbacks->recompute_scale != NULL) {
+		callbacks->recompute_scale(context);
+	}
+	if (callbacks->update_ewmh != NULL) {
+		callbacks->update_ewmh(context);
+	}
+	if (callbacks->emit_broadcast != NULL) {
+		callbacks->emit_broadcast(context);
+	}
+	if (callbacks->initialize_pan_frames != NULL) {
+		callbacks->initialize_pan_frames(context);
+	}
+	if (callbacks->send_status != NULL) {
+		callbacks->send_status(context);
+	}
+}

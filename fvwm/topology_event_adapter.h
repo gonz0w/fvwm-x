@@ -31,6 +31,15 @@ typedef struct
 	void (*mark_dirty)(void *context);
 } fvwm_topology_event_callbacks;
 
+typedef struct
+{
+	void (*recompute_scale)(void *context);
+	void (*update_ewmh)(void *context);
+	void (*emit_broadcast)(void *context);
+	void (*initialize_pan_frames)(void *context);
+	void (*send_status)(void *context);
+} fvwm_topology_downstream_callbacks;
+
 fvwm_topology_event_class
 fvwm_topology_event_classify(const fvwm_topology_event_input *input);
 fvwm_topology_event_class
@@ -42,5 +51,8 @@ fvwm_topology_timeout_min(int scheduler_timeout_ms, int topology_timeout_ms);
 bool
 fvwm_topology_refresh_requests_downstream(
     fscreen_topology_refresh_result result);
+void
+fvwm_topology_dispatch_refresh_result(fscreen_topology_refresh_result result,
+    const fvwm_topology_downstream_callbacks *callbacks, void *context);
 
 #endif

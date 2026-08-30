@@ -34,7 +34,7 @@ monitor_scale_config_test = executable(
     include_directories: includedirs,
     dependencies: all_found_deps,
     link_with: libfvwm3,
-    c_args: ['-UNDEBUG'],
+    c_args: ['-UNDEBUG', '-DMONITOR_SCALE_CONFIG_TESTING'],
 )
 
 test('monitor-scale-config', monitor_scale_config_test)

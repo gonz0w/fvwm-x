@@ -20,6 +20,7 @@
 
 #include "fvwm/commands.h"
 #include "fvwm/monitor_scale_config.h"
+#include "libs/FScreen.h"
 #include "libs/Parse.h"
 
 #include <assert.h>
@@ -135,6 +136,227 @@ find_override(monitor_scale_config *config, const char *name)
 		}
 	}
 	return NULL;
+}
+
+static bool
+scale_results_equal(
+    const monitor_scale_result *left, const monitor_scale_result *right)
+{
+	return left->factor.quarters == right->factor.quarters
+	       && left->source == right->source
+	       && left->match_status == right->match_status
+	       && left->auto_status == right->auto_status
+	       && left->boundary == right->boundary
+	       && left->reason == right->reason;
+}
+
+static monitor_topology_monitor
+make_monitor_fact(const char *name, Atom name_atom, int width, int height,
+    int mm_width, int mm_height)
+{
+	monitor_topology_monitor fact = {
+	    .name      = (char *)name,
+	    .name_atom = name_atom,
+	    .width     = width,
+	    .height    = height,
+	    .mm_width  = mm_width,
+	    .mm_height = mm_height,
+	};
+
+	return fact;
+}
+
+static struct monitor
+make_runtime_monitor(
+    struct screen_info *screen, const char *name, Atom name_atom, int x)
+{
+	struct monitor monitor = {0};
+
+	screen->name	  = name;
+	screen->name_atom = name_atom;
+	screen->x	  = x;
+	screen->w	  = 100;
+	screen->h	  = 100;
+	monitor.si	  = screen;
+	monitor.effective_scale =
+	    (monitor_scale_result)MONITOR_SCALE_RESULT_SAFE_INIT;
+	return monitor;
+}
+
+static void
+test_association_resolves_every_source_and_retains_rejection_metadata(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	monitor_topology_monitor	  facts[] = {
+	     make_monitor_fact("override", 1, 1920, 1080, 254, 143),
+	     make_monitor_fact("automatic", 2, 1920, 1080, 254, 143),
+	     make_monitor_fact("fallback", 3, 1920, 1080, 0, 0),
+	     make_monitor_fact("safe", 4, 1920, 1080, 0, 0),
+	 };
+	monitor_topology_snapshot snapshot = {
+	    .monitors	   = facts,
+	    .monitor_count = 4,
+	};
+	struct screen_info screens[4] = {0};
+	struct monitor	   monitors[4];
+	int		   i;
+
+	assert(
+	    monitor_scale_config_declare_override(config, "override", "1.25"));
+	assert(monitor_scale_config_declare_fallback(config, "1.75"));
+	for (i = 0; i < 4; i++) {
+		monitors[i] = make_runtime_monitor(
+		    &screens[i], facts[i].name, facts[i].name_atom, i * 100);
+		monitor_scale_config_associate_monitor(
+		    config, &facts[i], &snapshot, &monitors[i]);
+	}
+	assert(monitors[0].effective_scale.source
+	       == MONITOR_SCALE_SOURCE_OVERRIDE);
+	assert(monitors[0].effective_scale.factor.quarters == 5);
+	assert(monitors[0].effective_scale.match_status
+	       == MONITOR_SCALE_MATCH_UNIQUE);
+	assert(monitors[1].effective_scale.source
+	       == MONITOR_SCALE_SOURCE_AUTOMATIC);
+	assert(monitors[1].effective_scale.factor.quarters == 8);
+	assert(monitors[2].effective_scale.source
+	       == MONITOR_SCALE_SOURCE_FALLBACK);
+	assert(monitors[2].effective_scale.auto_status
+	       == MONITOR_SCALE_AUTO_MISSING_AXIS);
+	assert(monitors[2].effective_scale.reason
+	       == MONITOR_SCALE_REASON_CONFIGURED_FALLBACK);
+
+	config->has_fallback = false;
+	monitor_scale_config_associate_monitor(
+	    config, &facts[3], &snapshot, &monitors[3]);
+	assert(monitors[3].effective_scale.source == MONITOR_SCALE_SOURCE_SAFE);
+	assert(monitors[3].effective_scale.factor.quarters == 4);
+	assert(monitors[3].effective_scale.auto_status
+	       == MONITOR_SCALE_AUTO_MISSING_AXIS);
+
+	monitor_scale_config_shutdown();
+	assert(fixture.live_allocations == 0);
+}
+
+static void
+test_association_rejects_ambiguous_and_retains_unmatched_overrides(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	monitor_topology_monitor	  facts[] = {
+	     make_monitor_fact("duplicate", 1, 1920, 1080, 0, 0),
+	     make_monitor_fact("duplicate", 2, 1920, 1080, 0, 0),
+	     make_monitor_fact("active", 3, 1920, 1080, 0, 0),
+	 };
+	monitor_topology_snapshot snapshot = {
+	    .monitors	   = facts,
+	    .monitor_count = 3,
+	};
+	struct screen_info duplicate_screen = {0};
+	struct screen_info active_screen    = {0};
+	struct monitor	   duplicate =
+	    make_runtime_monitor(&duplicate_screen, "duplicate", 1, 0);
+	struct monitor active =
+	    make_runtime_monitor(&active_screen, "active", 3, 100);
+
+	assert(monitor_scale_config_declare_override(config, "duplicate", "2"));
+	assert(monitor_scale_config_declare_override(config, "docked", "3"));
+	assert(monitor_scale_config_declare_fallback(config, "1.5"));
+	monitor_scale_config_associate_monitor(
+	    config, &facts[0], &snapshot, &duplicate);
+	assert(
+	    duplicate.effective_scale.source == MONITOR_SCALE_SOURCE_FALLBACK);
+	assert(duplicate.effective_scale.match_status
+	       == MONITOR_SCALE_MATCH_AMBIGUOUS);
+	monitor_scale_config_associate_monitor(
+	    config, &facts[2], &snapshot, &active);
+	assert(active.effective_scale.source == MONITOR_SCALE_SOURCE_FALLBACK);
+	assert(active.effective_scale.match_status == MONITOR_SCALE_MATCH_NONE);
+	assert(find_override(config, "docked") != NULL);
+
+	monitor_scale_config_shutdown();
+	assert(fixture.live_allocations == 0);
+}
+
+static void
+test_association_preserves_automatic_endpoint_reasons(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	monitor_topology_monitor	  facts[] = {
+	     make_monitor_fact("low", 1, 500, 500, 254, 254),
+	     make_monitor_fact("high", 2, 5000, 5000, 254, 254),
+	 };
+	monitor_topology_snapshot snapshot = {
+	    .monitors	   = facts,
+	    .monitor_count = 2,
+	};
+	struct screen_info screens[2] = {0};
+	struct monitor	   low = make_runtime_monitor(&screens[0], "low", 1, 0);
+	struct monitor high = make_runtime_monitor(&screens[1], "high", 2, 100);
+
+	monitor_scale_config_associate_monitor(
+	    config, &facts[0], &snapshot, &low);
+	monitor_scale_config_associate_monitor(
+	    config, &facts[1], &snapshot, &high);
+	assert(low.effective_scale.source == MONITOR_SCALE_SOURCE_AUTOMATIC);
+	assert(low.effective_scale.boundary == MONITOR_SCALE_BOUNDARY_LOW);
+	assert(low.effective_scale.reason
+	       == MONITOR_SCALE_REASON_AUTOMATIC_BOUND_LOW);
+	assert(high.effective_scale.source == MONITOR_SCALE_SOURCE_AUTOMATIC);
+	assert(high.effective_scale.boundary == MONITOR_SCALE_BOUNDARY_HIGH);
+	assert(high.effective_scale.reason
+	       == MONITOR_SCALE_REASON_AUTOMATIC_BOUND_HIGH);
+
+	monitor_scale_config_shutdown();
+}
+
+static void
+test_recompute_is_allocation_free_total_and_idempotent(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	monitor_topology_monitor	  facts[] = {
+	     make_monitor_fact("left", 1, 1920, 1080, 254, 143),
+	     make_monitor_fact("right", 2, 1920, 1080, 0, 0),
+	 };
+	monitor_topology_snapshot snapshot = {
+	    .monitors	   = facts,
+	    .monitor_count = 2,
+	    .epoch	   = 19,
+	};
+	struct monitors	   runtime_monitors;
+	struct screen_info screens[2] = {0};
+	struct monitor	   runtime[]  = {
+		 make_runtime_monitor(&screens[0], "left", 1, 0),
+		 make_runtime_monitor(&screens[1], "right", 2, 100),
+	     };
+	monitor_scale_result	  first[2];
+	monitor_topology_monitor *snapshot_pointer = snapshot.monitors;
+	size_t			  allocations;
+	uint64_t		  epoch = snapshot.epoch;
+
+	RB_INIT(&runtime_monitors);
+	assert(RB_INSERT(monitors, &runtime_monitors, &runtime[0]) == NULL);
+	assert(RB_INSERT(monitors, &runtime_monitors, &runtime[1]) == NULL);
+	assert(monitor_scale_config_declare_fallback(config, "1.5"));
+	allocations = fixture.allocation_count;
+	assert(monitor_scale_config_recompute_with(
+	    config, &snapshot, &runtime_monitors));
+	assert(fixture.allocation_count == allocations);
+	assert(monitor_scale_config_results_valid_with(
+	    &snapshot, &runtime_monitors));
+	first[0] = runtime[0].effective_scale;
+	first[1] = runtime[1].effective_scale;
+	assert(monitor_scale_config_recompute_with(
+	    config, &snapshot, &runtime_monitors));
+	assert(scale_results_equal(&first[0], &runtime[0].effective_scale));
+	assert(scale_results_equal(&first[1], &runtime[1].effective_scale));
+	assert(snapshot.monitors == snapshot_pointer);
+	assert(snapshot.epoch == epoch);
+
+	monitor_scale_config_shutdown();
+	assert(fixture.live_allocations == 0);
 }
 
 static void
@@ -369,5 +591,9 @@ main(void)
 	test_zero_unique_and_ambiguous_active_match_outcomes();
 	test_command_callbacks_enforce_exact_arity_and_canonical_factors();
 	test_command_callbacks_retain_alias_control_and_long_name_bytes();
+	test_association_resolves_every_source_and_retains_rejection_metadata();
+	test_association_rejects_ambiguous_and_retains_unmatched_overrides();
+	test_association_preserves_automatic_endpoint_reasons();
+	test_recompute_is_allocation_free_total_and_idempotent();
 	return 0;
 }

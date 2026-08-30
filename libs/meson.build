@@ -51,6 +51,7 @@ libfvwm3_sources = files(
     'gravity.c',
     'log.c',
     'modifiers.c',
+    'monitor_topology.c',
     'safemalloc.c',
     'setpgrp.c',
     'strtonum.c',

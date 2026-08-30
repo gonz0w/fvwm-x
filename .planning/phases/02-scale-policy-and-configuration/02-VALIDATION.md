@@ -24,6 +24,7 @@ created: 2026-08-30
 | **Full suite command** | `python3 tests/run_in_linux.py -- meson test -C builddir --print-errorlogs` |
 | **Focused live-X command** | `python3 tests/run_in_linux.py --live-x -- meson test -C builddir scale-policy-xorg-dummy --print-errorlogs` |
 | **Full live-X command** | `python3 tests/run_in_linux.py --live-x -- meson test -C builddir --suite live-x --print-errorlogs` |
+| **Phase format command (local macOS)** | `xcrun clang-format --dry-run --Werror libs/FScreen.c libs/FScreen.h libs/monitor_scale.c libs/monitor_scale.h fvwm/builtins.c fvwm/commands.h fvwm/events.c fvwm/functable.c fvwm/fvwm3.c fvwm/monitor_scale_config.c fvwm/monitor_scale_config.h fvwm/topology_event_adapter.c fvwm/topology_event_adapter.h tests/test_fscreen_topology.c tests/test_monitor_scale.c tests/test_monitor_scale_config.c tests/test_topology_event_adapter.c` |
 | **Estimated runtime** | <10 seconds for focused native policy tests; live-X and full-suite timing is environment-dependent |
 
 ---
@@ -33,7 +34,7 @@ created: 2026-08-30
 - **After every task commit:** Run the narrow named test target affected by the task through `tests/run_in_linux.py`.
 - **After every plan wave:** Run `python3 tests/run_in_linux.py -- meson test -C builddir --print-errorlogs`.
 - **After every live-X task:** Run only the focused Xorg-dummy scale test; run the complete `live-x` suite at plan/phase completion.
-- **Before `/gsd-verify-work`:** Full native and live-X suites, documentation build, and format checks must be green; ASan remains native Linux CI responsibility.
+- **Before `/gsd-verify-work`:** Full native and live-X suites and the documentation build must be green; run `xcrun clang-format --dry-run --Werror libs/FScreen.c libs/FScreen.h libs/monitor_scale.c libs/monitor_scale.h fvwm/builtins.c fvwm/commands.h fvwm/events.c fvwm/functable.c fvwm/fvwm3.c fvwm/monitor_scale_config.c fvwm/monitor_scale_config.h fvwm/topology_event_adapter.c fvwm/topology_event_adapter.h tests/test_fscreen_topology.c tests/test_monitor_scale.c tests/test_monitor_scale_config.c tests/test_topology_event_adapter.c` for the phase format gate on local macOS. ASan remains native Linux CI responsibility.
 - **Max feedback latency:** 10 seconds for focused pure-policy tests.
 
 ---

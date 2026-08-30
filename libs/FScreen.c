@@ -907,6 +907,8 @@ legacy_monitor_initialize(
 {
 	monitor->flags	       = MONITOR_NEW;
 	monitor->si->name_atom = fact->name_atom;
+	monitor->effective_scale =
+	    (monitor_scale_result)MONITOR_SCALE_RESULT_SAFE_INIT;
 	monitor_set_topology_coords(monitor, fact);
 	monitor->virtual_scr.edge_thickness	 = 2;
 	monitor->virtual_scr.last_edge_thickness = 2;

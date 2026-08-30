@@ -5,6 +5,7 @@
 #include "config.h"
 #include "fvwm_x11.h"
 #include "fvwmrect.h"
+#include "monitor_scale.h"
 #include "monitor_topology.h"
 
 #include "queue.h"
@@ -94,12 +95,13 @@ screen_info_by_name(const char *);
 
 struct monitor
 {
-	struct screen_info *si;
-	int		    flags;
-	int		    emit;
-	int		    number;
-	int		    dx, dy;
-	bool		    is_prev, was_primary;
+	struct screen_info  *si;
+	int		     flags;
+	int		     emit;
+	int		     number;
+	int		     dx, dy;
+	bool		     is_prev, was_primary;
+	monitor_scale_result effective_scale;
 
 	/* info for some desktops; the first entries should be generic info
 	 * correct for any desktop not in the list

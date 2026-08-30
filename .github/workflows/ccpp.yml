@@ -30,6 +30,12 @@ jobs:
       - name: Set Safe Directory
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+      - name: Validate live-X tooling contracts
+        run: |
+          python3 tests/run_in_linux.py --self-test
+          python3 tests/live_x/live_x_harness.py --self-test
+          python3 tests/live_x/live_x_harness.py --check-workflow .github/workflows/ccpp.yml
+
       - name: Configure and Build
         run: |
           export CC=${{ matrix.compiler }}
@@ -76,6 +82,12 @@ jobs:
 
       - name: Set Safe Directory
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Validate live-X tooling contracts
+        run: |
+          python3 tests/run_in_linux.py --self-test
+          python3 tests/live_x/live_x_harness.py --self-test
+          python3 tests/live_x/live_x_harness.py --check-workflow .github/workflows/ccpp.yml
 
       - name: Install live-X dependencies
         run: |

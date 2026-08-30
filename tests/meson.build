@@ -80,6 +80,17 @@ topology_event_adapter_test = executable(
 
 test('topology-event-adapter', topology_event_adapter_test)
 
+test(
+    'linux-router-self-test',
+    py,
+    args: [files('run_in_linux.py'), '--self-test'],
+)
+test(
+    'live-x-harness-self-test',
+    py,
+    args: [files('live_x/live_x_harness.py'), '--self-test'],
+)
+
 if get_option('live-x-tests') and host_machine.system() == 'linux'
     dl_dependency = cc.find_library('dl', required: true)
     xrr_query_fault_preload = shared_library(

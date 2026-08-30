@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 02
 current_phase_name: Scale Policy and Configuration
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-08-30T19:24:21.173Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-08-30T19:44:12.201Z"
 last_activity: 2026-08-30
 last_activity_desc: Completed Phase 02 Plan 01 exact monitor scale policy
-state_head: 2110a2932edf29bae53e0356f1eba57cf8218321
+state_head: 7ed146ba0da1d3aa36ba2cc501795ba5b85497e7
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 13
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 ## Current Position
 
 Phase: 02 (Scale Policy and Configuration) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-08-30 — Completed Phase 02 Plan 01 exact monitor scale policy
 
@@ -68,6 +68,7 @@ Progress: [███████░░░] 69%
 | Phase 01 P07 | 21min | 2 tasks | 2 files |
 | Phase 01 P08 | 46min | 3 tasks | 4 files |
 | Phase 02 P01 | 59min | 3 tasks | 8 files |
+| Phase 02 P02 | 15min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -107,6 +108,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 02]: Represent scale as quarter units from 4 through 16 so policy and conversion paths never require floating-point arithmetic.
 - [Phase 02]: Resolve automatic DPI only when both axes are 50..500 DPI inclusive and differ by at most 10% relative to their arithmetic mean.
 - [Phase 02]: Initialize every staged monitor to an explicit safe 1x result before publication so failure paths retain a total value.
+- [Phase 02]: Treat RandR Monitor names as exact case-sensitive bytes; numeric and g/c/p tokens receive no legacy alias interpretation.
+- [Phase 02]: Stage complete replacement entries before mutating the authoritative store so invalid input and allocation failure retain prior policy.
+- [Phase 02]: Encode control and backslash bytes before diagnostics cross the logging seam, while retaining the original exact name in policy storage.
 
 ### Pending Todos
 
@@ -127,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T19:24:21.120Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-08-30T19:44:12.159Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

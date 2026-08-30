@@ -2,9 +2,9 @@
 schema_version: 1
 open_count: 0
 waived_count: 0
-fixed_count: 5
-total_count: 5
-last_updated: 2026-08-30T14:08:49.103Z
+fixed_count: 6
+total_count: 6
+last_updated: 2026-08-30T19:44:58.650Z
 ---
 
 # Broken Windows Ledger
@@ -20,6 +20,7 @@ last_updated: 2026-08-30T14:08:49.103Z
 | 3 | 01 | deviation | tests/run_in_linux.py |  | Reusable Darwin staging required stale-source cleanup before each copy | fixed |  | 2026-08-30T12:36:38.307Z | 2026-08-30T12:37:49.565Z |
 | 4 | 01 | deviation | tests/meson.build |  | Rebased wrapped FVWM sources for tests subdirectory resolution | fixed |  | 2026-08-30T14:08:25.377Z | 2026-08-30T14:08:49.026Z |
 | 5 | 01 | deviation | tests/live_x/live_x_harness.py |  | Corrected ordinary FVWM readiness after Status FIFO attachment | fixed |  | 2026-08-30T14:08:25.463Z | 2026-08-30T14:08:49.103Z |
+| 6 | 02 | deviation | fvwm/fvwm3.c |  | Initialized the monitor scale configuration lifecycle so startup directives can mutate the production store | fixed |  | 2026-08-30T19:44:36.032Z | 2026-08-30T19:44:58.650Z |
 
 ````json
 [
@@ -82,6 +83,18 @@ last_updated: 2026-08-30T14:08:49.103Z
     "reason": "",
     "recorded_at": "2026-08-30T14:08:25.463Z",
     "resolved_at": "2026-08-30T14:08:49.103Z"
+  },
+  {
+    "id": 6,
+    "kind": "deviation",
+    "phase": "02",
+    "file": "fvwm/fvwm3.c",
+    "line": null,
+    "description": "Initialized the monitor scale configuration lifecycle so startup directives can mutate the production store",
+    "status": "fixed",
+    "reason": "",
+    "recorded_at": "2026-08-30T19:44:36.032Z",
+    "resolved_at": "2026-08-30T19:44:58.650Z"
   }
 ]
 ````

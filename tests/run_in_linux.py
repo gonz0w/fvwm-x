@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import platform
 import shutil
 import subprocess
@@ -36,6 +37,10 @@ INSTALL_LIVE_X = (
     "apt-get update && apt-get install -y "
     + " ".join(LIVE_X_PACKAGES)
     + ' && exec "$@"'
+)
+SYNC_SOURCE = (
+    "tar -C /source --exclude=./builddir --exclude=./.git -cf - . "
+    "| tar -C /workspace -xf - && "
 )
 
 
@@ -59,6 +64,7 @@ def build_command(
         raise UnsupportedHostError(f"unsupported host: {host}")
 
     repository = repository.resolve()
+    volume_suffix = hashlib.sha256(str(repository).encode()).hexdigest()[:12]
     command = [
         podman,
         "run",
@@ -66,13 +72,21 @@ def build_command(
         "--platform",
         "linux/amd64",
         "--volume",
-        f"{repository}:{repository}",
+        f"{repository}:/source:ro",
+        "--volume",
+        f"fvwm3-linux-{volume_suffix}:/workspace",
         "--workdir",
-        str(repository),
+        "/workspace",
         IMAGE,
+        "sh",
+        "-ec",
     ]
+    container_script = SYNC_SOURCE
     if live_x:
-        command.extend(["sh", "-ec", INSTALL_LIVE_X, "sh"])
+        container_script += INSTALL_LIVE_X
+    else:
+        container_script += 'exec "$@"'
+    command.extend([container_script, "sh"])
     command.extend(caller_argv)
     return command
 
@@ -89,7 +103,9 @@ def self_test() -> None:
     )
     assert darwin[:3] == ["/usr/local/bin/podman", "run", "--rm"]
     assert darwin[darwin.index("--platform") + 1] == "linux/amd64"
-    assert darwin[darwin.index("--workdir") + 1] == str(repository)
+    assert darwin[darwin.index("--workdir") + 1] == "/workspace"
+    assert f"{repository}:/source:ro" in darwin
+    assert any(argument.startswith("fvwm3-linux-") for argument in darwin)
     assert darwin[-len(caller_argv) :] == caller_argv
     assert IMAGE in darwin
 

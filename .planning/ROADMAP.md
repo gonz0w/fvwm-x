@@ -32,7 +32,7 @@ FVWM-X v0.1 proceeds through dependency-ordered technical layers: establish an a
   2. A burst of topology events produces one validated atomic commit, and a failed monitor query leaves the last good topology active.
   3. Maintainers can reproduce monitor creation, mutation, and removal with Xvfb smoke scenarios and authoritative Xorg-dummy scenarios.
 
-**Plans**: 1/8 plans executed
+**Plans**: 2/8 plans executed
 
 Plans:
 **Wave 1**
@@ -41,7 +41,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Make FScreen the failure-safe live-X snapshot publisher
+- [x] 01-02-PLAN.md — Make FScreen the failure-safe live-X snapshot publisher
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -166,7 +166,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Topology Snapshot and Live-X Harness | 1/8 | In Progress|  |
+| 1. Topology Snapshot and Live-X Harness | 2/8 | In Progress|  |
 | 2. Scale Policy and Configuration | 0/TBD | Not started | - |
 | 3. Geometry and Ownership Contracts | 0/TBD | Not started | - |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |

@@ -28,6 +28,17 @@ monitor_scale_test = executable(
 
 test('monitor-scale', monitor_scale_test)
 
+monitor_scale_config_test = executable(
+    'test-monitor-scale-config',
+    ['test_monitor_scale_config.c', '../fvwm/monitor_scale_config.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
+test('monitor-scale-config', monitor_scale_config_test)
+
 status_json_test = executable(
     'test-status-json',
     ['test_status_json.c', '../fvwm/status_json.c'],

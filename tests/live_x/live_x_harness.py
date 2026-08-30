@@ -17,6 +17,8 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
+import ctypes.util
 import json
 import os
 from pathlib import Path
@@ -48,6 +50,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--fvwm", type=Path)
     parser.add_argument("--wrapped-fvwm", type=Path)
     parser.add_argument("--fault-library", type=Path)
+    parser.add_argument("--xorg-config", type=Path)
+    parser.add_argument("--policy-header", type=Path)
     parser.add_argument("--artifacts-dir", type=Path)
     parser.add_argument("--self-test", action="store_true")
     return parser
@@ -325,6 +329,47 @@ def start_display_server(
         os.close(read_fd)
 
 
+def xorg_dummy_server_argv(config_path: Path, display_fd: int) -> list[str]:
+    """Return the exact private authoritative-server launch vector."""
+    if display_fd < 0:
+        raise ValueError("display fd must be nonnegative")
+    return [
+        "Xorg",
+        "-config",
+        str(config_path),
+        "-displayfd",
+        str(display_fd),
+        "-nolisten",
+        "tcp",
+        "-noreset",
+    ]
+
+
+def start_xorg_dummy(
+    runtime: HarnessRuntime,
+    config_path: Path,
+    deadline: float,
+) -> tuple[ManagedProcess, str]:
+    """Launch Xorg-dummy with its required exact argv ordering."""
+    read_fd, write_fd = os.pipe()
+    process: ManagedProcess | None = None
+    try:
+        process = runtime.start(
+            "Xorg-dummy",
+            xorg_dummy_server_argv(config_path, write_fd),
+            "xserver.log",
+            pass_fds=(write_fd,),
+        )
+    finally:
+        os.close(write_fd)
+    try:
+        if process is None:
+            raise HarnessError("failed to start Xorg-dummy")
+        return process, read_display_fd(read_fd, process, deadline)
+    finally:
+        os.close(read_fd)
+
+
 def run_command(
     runtime: HarnessRuntime,
     name: str,
@@ -453,6 +498,79 @@ def parse_xrandr_output_ids(output: str) -> dict[str, int]:
     if not output_ids:
         raise HarnessError("xrandr --verbose returned no output Identifiers")
     return output_ids
+
+
+def parse_topology_policy_constants(header_text: str) -> tuple[int, int]:
+    """Read live timing bounds from the production policy header text."""
+    values: list[int] = []
+    for name in ("FVWM_TOPOLOGY_QUIET_MS", "FVWM_TOPOLOGY_MAX_LATENCY_MS"):
+        match = re.search(rf"^#define\s+{name}\s+(\d+)\s*$", header_text,
+                          re.MULTILINE)
+        if match is None:
+            raise HarnessError(f"policy header does not define {name}")
+        values.append(int(match.group(1)))
+    quiet_ms, maximum_ms = values
+    if quiet_ms <= 0 or maximum_ms < quiet_ms:
+        raise HarnessError("topology policy timing constants are invalid")
+    return quiet_ms, maximum_ms
+
+
+def parse_xrandr_root_dimensions(output: str) -> dict[str, int]:
+    """Parse framebuffer pixels and the aggregate connected-output millimetres."""
+    screen = re.search(
+        r"^Screen \d+: .* current (\d+) x (\d+),", output, re.MULTILINE
+    )
+    if screen is None:
+        raise HarnessError("xrandr query did not report current screen dimensions")
+    output_sizes = [
+        (int(match.group(1)), int(match.group(2)))
+        for match in re.finditer(
+            r"^\S+ connected(?: primary)? .*? (\d+)mm x (\d+)mm\s*$",
+            output,
+            re.MULTILINE,
+        )
+    ]
+    if not output_sizes:
+        raise HarnessError("xrandr query did not report connected output sizes")
+    return {
+        "width": int(screen.group(1)),
+        "height": int(screen.group(2)),
+        "mm_width": sum(width for width, _ in output_sizes),
+        "mm_height": max(height for _, height in output_sizes),
+    }
+
+
+def query_xlib_root_dimensions(display: str) -> dict[str, int]:
+    """Query authoritative root pixel and physical dimensions through Xlib."""
+    library_name = ctypes.util.find_library("X11")
+    if library_name is None:
+        raise HarnessError("libX11 is unavailable for root-dimension queries")
+    xlib = ctypes.CDLL(library_name)
+    xlib.XOpenDisplay.argtypes = [ctypes.c_char_p]
+    xlib.XOpenDisplay.restype = ctypes.c_void_p
+    xlib.XDefaultScreen.argtypes = [ctypes.c_void_p]
+    xlib.XDefaultScreen.restype = ctypes.c_int
+    for name in ("XDisplayWidth", "XDisplayHeight", "XDisplayWidthMM",
+                 "XDisplayHeightMM"):
+        function = getattr(xlib, name)
+        function.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        function.restype = ctypes.c_int
+    xlib.XCloseDisplay.argtypes = [ctypes.c_void_p]
+    xlib.XCloseDisplay.restype = ctypes.c_int
+
+    handle = xlib.XOpenDisplay(display.encode("ascii"))
+    if not handle:
+        raise HarnessError(f"XOpenDisplay failed for {display}")
+    try:
+        screen = xlib.XDefaultScreen(handle)
+        return {
+            "width": xlib.XDisplayWidth(handle, screen),
+            "height": xlib.XDisplayHeight(handle, screen),
+            "mm_width": xlib.XDisplayWidthMM(handle, screen),
+            "mm_height": xlib.XDisplayHeightMM(handle, screen),
+        }
+    finally:
+        xlib.XCloseDisplay(handle)
 
 
 def start_fvwm(
@@ -908,7 +1026,7 @@ def assert_status_matches_monitors(
         ):
             raise HarnessError("queried RandR Monitor membership is invalid")
         try:
-            expected_outputs = [output_ids[name] for name in output_names]
+            expected_outputs = sorted({output_ids[name] for name in output_names})
         except KeyError as error:
             raise HarnessError(
                 f"queried output {error.args[0]!r} has no XID"
@@ -987,6 +1105,863 @@ def wait_for_status_monitors(
         deadline,
         process=process,
     )
+
+
+def query_authoritative_state(
+    runtime: HarnessRuntime,
+    display: str,
+    deadline: float,
+    log_prefix: str,
+) -> dict[str, object]:
+    """Query complete Monitor, output-XID, and root-dimension authority."""
+    outputs: dict[str, str] = {}
+    for name, arguments in (
+        ("query", ["--query"]),
+        ("monitors", ["--listmonitors"]),
+        ("verbose", ["--verbose"]),
+    ):
+        return_code, text = query_xrandr(
+            runtime,
+            display,
+            arguments,
+            deadline,
+            f"{log_prefix}-{name}.log",
+        )
+        if return_code != 0:
+            raise HarnessError(f"xrandr {name} query failed")
+        outputs[name] = text
+    root_dimensions = query_xlib_root_dimensions(display)
+    parsed_query = parse_xrandr_root_dimensions(outputs["query"])
+    if any(root_dimensions[key] != parsed_query[key]
+           for key in ("width", "height")):
+        raise HarnessError("Xlib and xrandr root pixel dimensions differ")
+    return {
+        "monitors": parse_xrandr_monitors(outputs["monitors"]),
+        "output_ids": parse_xrandr_output_ids(outputs["verbose"]),
+        "root": root_dimensions,
+        "text": "\n".join(outputs.values()),
+    }
+
+
+def wait_for_authoritative_state(
+    runtime: HarnessRuntime,
+    display: str,
+    label: str,
+    predicate: object,
+    deadline: float,
+    log_prefix: str,
+) -> dict[str, object]:
+    """Poll the complete queried server state to one hard deadline."""
+    attempt = 0
+
+    def query() -> dict[str, object] | None:
+        nonlocal attempt
+        attempt += 1
+        try:
+            state = query_authoritative_state(
+                runtime, display, deadline, f"{log_prefix}-{attempt}"
+            )
+        except HarnessError:
+            return None
+        return state if predicate(state) else None
+
+    result = wait_for_predicate(label, query, deadline)
+    if type(result) is not dict:
+        raise HarnessError("authoritative-state predicate returned invalid data")
+    return result
+
+
+def state_monitors(state: dict[str, object]) -> dict[str, dict[str, object]]:
+    monitors = state.get("monitors")
+    if type(monitors) is not dict:
+        raise HarnessError("queried state has invalid Monitor data")
+    return monitors
+
+
+def state_output_ids(state: dict[str, object]) -> dict[str, int]:
+    output_ids = state.get("output_ids")
+    if type(output_ids) is not dict or any(
+        type(name) is not str or type(value) is not int
+        for name, value in output_ids.items()
+    ):
+        raise HarnessError("queried state has invalid output XIDs")
+    return output_ids
+
+
+def expected_monitor(
+    name: str,
+    *,
+    primary: bool,
+    width: int,
+    height: int,
+    x: int,
+    y: int,
+    mm_width: int,
+    mm_height: int,
+    output_names: list[str],
+) -> dict[str, object]:
+    return {
+        "name": name,
+        "primary": primary,
+        "width": width,
+        "height": height,
+        "x": x,
+        "y": y,
+        "mm_width": mm_width,
+        "mm_height": mm_height,
+        "output_names": output_names,
+    }
+
+
+def collector_position(collector: StatusCollector) -> int:
+    collector.read_available()
+    return len(collector.records)
+
+
+def assert_no_status_after(
+    collector: StatusCollector,
+    position: int,
+    deadline: float,
+    process: ManagedProcess,
+    label: str,
+) -> None:
+    """Prove no downstream Status emission through a predicate deadline."""
+    with selectors.DefaultSelector() as selector:
+        selector.register(collector.file_descriptor, selectors.EVENT_READ)
+        while True:
+            collector.read_available()
+            if len(collector.records) != position:
+                raise HarnessError(f"unexpected Status emission during {label}")
+            if process.poll() is not None:
+                raise HarnessError(f"FVWM exited during {label}")
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return
+            selector.select(min(remaining, POLL_QUANTUM_SECONDS))
+
+
+def assert_print_info_topology(
+    log_path: Path,
+    status: dict[str, object],
+    deadline: float,
+    process: ManagedProcess,
+) -> None:
+    """Require PrintInfo text to describe the same epoch and monitor facts."""
+    topology = status_topology(status)
+    monitors = topology["monitors"]
+    if type(monitors) is not list:
+        raise HarnessError("Status monitor array is invalid")
+
+    def matches() -> bool:
+        if not log_path.is_file():
+            return False
+        text = log_path.read_text(errors="replace")
+        if f"Topology epoch={topology['epoch']} monitors={len(monitors)}" not in text:
+            return False
+        for monitor in monitors:
+            if type(monitor) is not dict:
+                return False
+            geometry = monitor.get("geometry")
+            physical = monitor.get("physical_mm")
+            outputs = monitor.get("outputs")
+            if type(geometry) is not dict or type(physical) is not dict:
+                return False
+            if type(outputs) is not list:
+                return False
+            fragment = (
+                f"Topology monitor name={json.dumps(monitor.get('name'))} "
+                f"name_atom={monitor.get('name_atom')} "
+                f"primary={str(monitor.get('primary')).lower()} "
+                f"geometry={geometry.get('width')}x{geometry.get('height')}"
+                f"{geometry.get('x'):+d}{geometry.get('y'):+d} "
+                f"physical_mm={physical.get('width')}x{physical.get('height')} "
+                f"outputs=[{','.join(str(value) for value in outputs)}]"
+            )
+            if fragment not in text:
+                return False
+        return True
+
+    wait_for_predicate(
+        "PrintInfo exact topology facts", matches, deadline, process=process
+    )
+
+
+def run_required_xrandr(
+    runtime: HarnessRuntime,
+    display: str,
+    arguments: list[str],
+    operation: str,
+    operations: list[dict[str, object]],
+    *,
+    maximum_seconds: float = 5.0,
+) -> tuple[float, float]:
+    """Run one required mutation and retain argv, result, and monotonic timing."""
+    started = time.monotonic()
+    return_code, output = query_xrandr(
+        runtime,
+        display,
+        arguments,
+        started + maximum_seconds,
+        f"xrandr-{len(operations):03d}-{operation}.log",
+    )
+    completed = time.monotonic()
+    operations.append(
+        {
+            "argv": ["xrandr", "--display", display, *arguments],
+            "completed": completed,
+            "duration_ms": (completed - started) * 1000.0,
+            "operation": operation,
+            "output": output,
+            "returncode": return_code,
+            "started": started,
+        }
+    )
+    if return_code != 0:
+        raise HarnessError(f"required xrandr operation failed: {operation}")
+    if completed - started >= maximum_seconds:
+        raise HarnessError(f"xrandr operation exceeded deadline: {operation}")
+    return started, completed
+
+
+def run_xorg_dummy_topology(options: argparse.Namespace) -> None:
+    """Prove authoritative facts, canonical equality, and bounded settling."""
+    required_paths = {
+        "--fvwm": options.fvwm,
+        "--xorg-config": options.xorg_config,
+        "--policy-header": options.policy_header,
+    }
+    for option_name, path in required_paths.items():
+        if path is None or not path.is_file():
+            raise ValueError(f"{option_name} must name an existing file")
+    if options.artifacts_dir is None:
+        raise ValueError("--artifacts-dir is required")
+    if options.backend != "xorg-dummy":
+        raise ValueError("authoritative topology requires --backend=xorg-dummy")
+
+    fvwm_path = options.fvwm.resolve()
+    config_path = options.xorg_config.resolve()
+    policy_header = options.policy_header.resolve()
+    artifact_dir = options.artifacts_dir.resolve()
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    for artifact_name in (
+        "failure.json",
+        "fvwm.log",
+        "last-status.json",
+        "result.json",
+        "scenario.json",
+        "server.log",
+        "xrandr.txt",
+    ):
+        (artifact_dir / artifact_name).unlink(missing_ok=True)
+
+    quiet_ms, maximum_ms = parse_topology_policy_constants(
+        policy_header.read_text()
+    )
+    quiet_seconds = quiet_ms / 1000.0
+    runtime = HarnessRuntime(prefix="fvwm-xorg-dummy-topology-")
+    server: ManagedProcess | None = None
+    fvwm_process: ManagedProcess | None = None
+    collector: StatusCollector | None = None
+    xrandr_text: str | None = None
+    last_status: dict[str, object] | None = None
+    active_error: BaseException | None = None
+    operations: list[dict[str, object]] = []
+    scenario_metadata: dict[str, object] = {
+        "backend": "xorg-dummy",
+        "maximum_latency_ms": maximum_ms,
+        "quiet_ms": quiet_ms,
+        "scenario": "topology",
+    }
+    try:
+        server, display = start_xorg_dummy(
+            runtime, config_path, time.monotonic() + 10.0
+        )
+        expected_argv = xorg_dummy_server_argv(
+            config_path, int(server.argv[server.argv.index("-displayfd") + 1])
+        )
+        if server.argv != expected_argv:
+            raise HarnessError(f"unexpected Xorg-dummy argv: {server.argv!r}")
+        wait_for_randr(runtime, display, time.monotonic() + 10.0)
+
+        def mutate(arguments: list[str], operation: str,
+                   maximum_seconds: float = 5.0) -> tuple[float, float]:
+            return run_required_xrandr(
+                runtime,
+                display,
+                arguments,
+                operation,
+                operations,
+                maximum_seconds=maximum_seconds,
+            )
+
+        def settle(
+            label: str,
+            expected_epoch: int,
+            predicate: object,
+            timeout: float = 3.0,
+        ) -> tuple[dict[str, object], dict[str, object]]:
+            nonlocal last_status, xrandr_text
+            state = wait_for_authoritative_state(
+                runtime,
+                display,
+                label,
+                predicate,
+                time.monotonic() + timeout,
+                f"xrandr-state-{len(operations):03d}",
+            )
+            xrandr_text = state["text"] if type(state.get("text")) is str else None
+            if collector is None or fvwm_process is None:
+                raise HarnessError("FVWM is not ready for Status comparison")
+            last_status = wait_for_status_monitors(
+                collector,
+                fvwm_process,
+                state_monitors(state),
+                state_output_ids(state),
+                expected_epoch,
+                time.monotonic() + timeout,
+            )
+            return state, last_status
+
+        mutate(
+            [
+                "--addmode", "DUMMY1", "1280x1024",
+                "--addmode", "DUMMY1", "1024x768",
+            ],
+            "assign-dummy1-modes",
+        )
+        baseline_arguments = [
+            "--output", "DUMMY0", "--mode", "1920x1080", "--pos", "0x0",
+            "--primary", "--output", "DUMMY1", "--mode", "1280x1024",
+            "--pos", "1920x0", "--fb", "3200x1080", "--fbmm", "846x286",
+        ]
+        mutate(baseline_arguments, "baseline")
+
+        def baseline_matches(state: dict[str, object]) -> bool:
+            monitors = state_monitors(state)
+            root = state.get("root")
+            return (
+                type(root) is dict
+                and root == {
+                    "width": 3200,
+                    "height": 1080,
+                    "mm_width": 846,
+                    "mm_height": 286,
+                }
+                and set(monitors) == {"DUMMY0", "DUMMY1"}
+                and all(
+                    monitors[name][key] == value
+                    for name, expected in (
+                        (
+                            "DUMMY0",
+                            expected_monitor(
+                                "DUMMY0", primary=True, width=1920,
+                                height=1080, x=0, y=0,
+                                mm_width=monitors["DUMMY0"]["mm_width"],
+                                mm_height=monitors["DUMMY0"]["mm_height"],
+                                output_names=["DUMMY0"],
+                            ),
+                        ),
+                        (
+                            "DUMMY1",
+                            expected_monitor(
+                                "DUMMY1", primary=False, width=1280,
+                                height=1024, x=1920, y=0,
+                                mm_width=monitors["DUMMY1"]["mm_width"],
+                                mm_height=monitors["DUMMY1"]["mm_height"],
+                                output_names=["DUMMY1"],
+                            ),
+                        ),
+                    )
+                    for key, value in expected.items()
+                )
+            )
+
+        baseline_state = wait_for_authoritative_state(
+            runtime,
+            display,
+            "exact Xorg-dummy baseline",
+            baseline_matches,
+            time.monotonic() + 5.0,
+            "xrandr-baseline",
+        )
+        output_ids = state_output_ids(baseline_state)
+        if not {"DUMMY0", "DUMMY1"}.issubset(output_ids):
+            raise HarnessError("Xorg-dummy did not expose required output XIDs")
+        baseline_monitors = state_monitors(baseline_state)
+        baseline_mm = {
+            name: (monitor["mm_width"], monitor["mm_height"])
+            for name, monitor in baseline_monitors.items()
+        }
+        xrandr_text = str(baseline_state["text"])
+
+        fvwm_process, collector = start_fvwm(
+            runtime, fvwm_path, display, time.monotonic() + 10.0
+        )
+        last_status = wait_for_status_monitors(
+            collector,
+            fvwm_process,
+            baseline_monitors,
+            output_ids,
+            1,
+            time.monotonic() + 10.0,
+        )
+        assert_print_info_topology(
+            runtime.root / "fvwm.log",
+            last_status,
+            time.monotonic() + 5.0,
+            fvwm_process,
+        )
+        baseline_status = json.loads(json.dumps(last_status))
+
+        mutate(["--fbmm", "900x300"], "physical-mm-900x300")
+        wait_for_authoritative_state(
+            runtime,
+            display,
+            "root physical size command 900x300",
+            lambda state: state.get("root") == {
+                "width": 3200,
+                "height": 1080,
+                "mm_width": 900,
+                "mm_height": 300,
+            },
+            time.monotonic() + 2.0,
+            "xrandr-root-mm-900",
+        )
+        # Xorg-dummy's automatic Monitors retain their output millimetres when
+        # only the Screen size changes.  Update the driver's explicit physical
+        # properties in the same generation so both levels expose the change.
+        mutate(
+            [
+                "--output", "DUMMY0", "--set", "WIDTH_MM", "540",
+                "--set", "HEIGHT_MM", "300",
+                "--output", "DUMMY1", "--set", "WIDTH_MM", "360",
+                "--set", "HEIGHT_MM", "284",
+            ],
+            "physical-mm-900x300-output-properties",
+        )
+        state_mm_900, _ = settle(
+            "root physical size 900x300",
+            2,
+            lambda state: state.get("root") == {
+                "width": 3200,
+                "height": 1080,
+                "mm_width": 900,
+                "mm_height": 300,
+            }
+            and set(state_monitors(state)) == {"DUMMY0", "DUMMY1"}
+            and any(
+                (monitor["mm_width"], monitor["mm_height"])
+                != baseline_mm[name]
+                for name, monitor in state_monitors(state).items()
+            ),
+        )
+
+        mutate(["--fbmm", "846x286"], "physical-mm-846x286")
+        mutate(
+            [
+                "--output", "DUMMY0", "--set", "WIDTH_MM",
+                str(baseline_mm["DUMMY0"][0]), "--set", "HEIGHT_MM",
+                str(baseline_mm["DUMMY0"][1]),
+                "--output", "DUMMY1", "--set", "WIDTH_MM",
+                str(baseline_mm["DUMMY1"][0]), "--set", "HEIGHT_MM",
+                str(baseline_mm["DUMMY1"][1]),
+            ],
+            "physical-mm-846x286-output-properties",
+        )
+        state_mm_restored, _ = settle(
+            "restored root physical size",
+            3,
+            lambda state: state.get("root") == {
+                "width": 3200,
+                "height": 1080,
+                "mm_width": 846,
+                "mm_height": 286,
+            }
+            and set(state_monitors(state)) == {"DUMMY0", "DUMMY1"}
+            and all(
+                (monitor["mm_width"], monitor["mm_height"])
+                == baseline_mm[name]
+                for name, monitor in state_monitors(state).items()
+            ),
+        )
+
+        span_name = "fvwm-test-span"
+        span_846 = [
+            "--setmonitor", span_name, "3200/846x1080/286+0+0",
+            "DUMMY0,DUMMY1",
+        ]
+        mutate(span_846, "span-create")
+        state_span, _ = settle(
+            "multi-output Monitor creation",
+            4,
+            lambda state: state_monitors(state).get(span_name)
+            == expected_monitor(
+                span_name, primary=False, width=3200, height=1080, x=0, y=0,
+                mm_width=846, mm_height=286,
+                output_names=["DUMMY0", "DUMMY1"],
+            ),
+        )
+        expected_span_outputs = sorted(output_ids[name]
+                                       for name in ("DUMMY0", "DUMMY1"))
+        if topology_monitor(last_status, span_name)["outputs"] != expected_span_outputs:
+            raise HarnessError("span Status membership is not canonical")
+
+        span_900 = [
+            "--setmonitor", span_name, "3200/900x1080/300+0+0",
+            "DUMMY0,DUMMY1",
+        ]
+        pair_position = collector_position(collector)
+        mutate(
+            ["--delmonitor", span_name, *span_900],
+            "span-mm-delete-recreate",
+        )
+        collector.read_available()
+        if len(collector.records) != pair_position:
+            raise HarnessError("span mutation emitted an intermediate Status epoch")
+        state_span_900, _ = settle(
+            "same-name Monitor millimetre mutation",
+            5,
+            lambda state: state_monitors(state).get(span_name)
+            == expected_monitor(
+                span_name, primary=False, width=3200, height=1080, x=0, y=0,
+                mm_width=900, mm_height=300,
+                output_names=["DUMMY0", "DUMMY1"],
+            ),
+        )
+
+        # A user Monitor claiming both outputs suppresses Xorg's automatic
+        # per-output Monitors.  Release it before proving automatic output
+        # mutations, then restore the forward membership before the canonical
+        # reorder assertions below.
+        mutate(["--delmonitor", span_name], "span-release-automatic-monitors")
+        state_automatic, _ = settle(
+            "automatic Monitors restored after span release",
+            6,
+            lambda state: set(state_monitors(state)) == {"DUMMY0", "DUMMY1"},
+        )
+
+        mutate(
+            ["--output", "DUMMY1", "--mode", "1024x768", "--pos", "1920x0"],
+            "dummy1-mode-position",
+        )
+        state_mode, _ = settle(
+            "DUMMY1 automatic Monitor mode and position",
+            7,
+            lambda state: state_monitors(state).get("DUMMY1", {}).get("width")
+            == 1024
+            and state_monitors(state).get("DUMMY1", {}).get("height") == 768
+            and state_monitors(state).get("DUMMY1", {}).get("x") == 1920
+            and state_monitors(state).get("DUMMY1", {}).get("y") == 0,
+        )
+        mutate(["--output", "DUMMY1", "--primary"], "dummy1-primary")
+        state_primary, status_primary = settle(
+            "DUMMY1 automatic Monitor primary",
+            8,
+            lambda state: state_monitors(state).get("DUMMY1", {}).get("primary")
+            is True
+            and state_monitors(state).get("DUMMY0", {}).get("primary") is False,
+        )
+        mutate(span_900, "span-restore-forward-membership")
+        state_span_forward, status_span_forward = settle(
+            "forward multi-output Monitor before reorder",
+            9,
+            lambda state: state_monitors(state).get(span_name)
+            == expected_monitor(
+                span_name, primary=False, width=3200, height=1080, x=0, y=0,
+                mm_width=900, mm_height=300,
+                output_names=["DUMMY0", "DUMMY1"],
+            ),
+        )
+        reorder_epoch = topology_epoch(status_span_forward)
+        canonical_before_reorder = json.loads(
+            json.dumps(status_topology(status_span_forward))
+        )
+
+        reversed_span = [
+            "--setmonitor", span_name, "3200/900x1080/300+0+0",
+            "DUMMY1,DUMMY0",
+        ]
+        reorder_position = collector_position(collector)
+        mutate(
+            ["--delmonitor", span_name, *reversed_span],
+            "span-reorder-delete-recreate",
+        )
+        reversed_state = wait_for_authoritative_state(
+            runtime,
+            display,
+            "reversed textual Monitor membership",
+            lambda state: state_monitors(state).get(span_name, {}).get(
+                "output_names"
+            )
+            == ["DUMMY1", "DUMMY0"],
+            time.monotonic() + 2.0,
+            "xrandr-reversed-membership",
+        )
+        xrandr_text = str(reversed_state["text"])
+        assert_no_status_after(
+            collector,
+            reorder_position,
+            time.monotonic() + quiet_seconds,
+            fvwm_process,
+            "canonical membership reorder",
+        )
+        if collector.last_status is None:
+            raise HarnessError("Status disappeared during canonical reorder")
+        if status_topology(collector.last_status) != canonical_before_reorder:
+            raise HarnessError("canonical reorder changed Status topology")
+
+        for duplicate_index in range(2):
+            mutate(
+                ["--delmonitor", span_name, *reversed_span],
+                f"span-duplicate-{duplicate_index}-delete-recreate",
+            )
+        assert_no_status_after(
+            collector,
+            reorder_position,
+            time.monotonic() + quiet_seconds,
+            fvwm_process,
+            "duplicate equal Monitor notifications",
+        )
+        if topology_epoch(collector.last_status or {}) != reorder_epoch:
+            raise HarnessError("equal duplicate notifications advanced epoch")
+
+        mutate(["--delmonitor", span_name], "span-remove")
+        state_removed, _ = settle(
+            "user Monitor removal",
+            reorder_epoch + 1,
+            lambda state: span_name not in state_monitors(state),
+        )
+
+        reset_arguments = [
+            "--output", "DUMMY0", "--primary", "--output", "DUMMY1",
+            "--mode", "1280x1024", "--pos", "1920x0",
+        ]
+        mutate(reset_arguments, "burst-reset")
+        state_reset, status_reset = settle(
+            "rapid-burst starting state",
+            reorder_epoch + 2,
+            lambda state: state_monitors(state).get("DUMMY0", {}).get("primary")
+            is True
+            and state_monitors(state).get("DUMMY1", {}).get("width") == 1280
+            and state_monitors(state).get("DUMMY1", {}).get("height") == 1024
+            and state_monitors(state).get("DUMMY1", {}).get("x") == 1920
+            and state_monitors(state).get("DUMMY1", {}).get("y") == 0,
+        )
+        burst_epoch = topology_epoch(status_reset)
+        burst_position = collector_position(collector)
+        burst_steps = (
+            (["--output", "DUMMY1", "--pos", "1600x0"], 1280, 1024, 1600, 0),
+            (["--output", "DUMMY1", "--mode", "1024x768"], 1024, 768, 1600, 0),
+            (["--output", "DUMMY1", "--pos", "1800x120"], 1024, 768, 1800, 120),
+            (["--output", "DUMMY1", "--primary"], 1024, 768, 1800, 120),
+        )
+        burst_started: float | None = None
+        final_burst_state: dict[str, object] | None = None
+        os.kill(fvwm_process.process.pid, signal.SIGSTOP)
+        try:
+            for burst_index, (arguments, width, height, x, y) in enumerate(
+                burst_steps
+            ):
+                started, _ = mutate(
+                    arguments, f"rapid-burst-{burst_index}"
+                )
+                if burst_started is None:
+                    burst_started = started
+                final_burst_state = wait_for_authoritative_state(
+                    runtime,
+                    display,
+                    f"rapid-burst intermediate {burst_index}",
+                    lambda state, width=width, height=height, x=x, y=y,
+                    burst_index=burst_index: (
+                        state_monitors(state).get("DUMMY1", {}).get("width")
+                        == width
+                        and state_monitors(state).get("DUMMY1", {}).get("height")
+                        == height
+                        and state_monitors(state).get("DUMMY1", {}).get("x") == x
+                        and state_monitors(state).get("DUMMY1", {}).get("y") == y
+                        and (
+                            burst_index != len(burst_steps) - 1
+                            or state_monitors(state).get("DUMMY1", {}).get(
+                                "primary"
+                            )
+                            is True
+                        )
+                    ),
+                    time.monotonic() + 1.0,
+                    f"xrandr-burst-{burst_index}",
+                )
+                collector.read_available()
+                if len(collector.records) != burst_position:
+                    raise HarnessError(
+                        "rapid burst emitted an intermediate Status epoch"
+                    )
+        finally:
+            os.kill(fvwm_process.process.pid, signal.SIGCONT)
+        if burst_started is None:
+            raise HarnessError("rapid burst did not start")
+        if final_burst_state is None:
+            raise HarnessError("rapid burst produced no final queried state")
+        last_status = wait_for_status_monitors(
+            collector,
+            fvwm_process,
+            state_monitors(final_burst_state),
+            state_output_ids(final_burst_state),
+            burst_epoch + 1,
+            time.monotonic() + 2.0,
+        )
+
+        pressure_name = "fvwm-pressure"
+        pressure_forward = [
+            "--delmonitor", pressure_name, "--setmonitor", pressure_name,
+            "3200/900x1080/300+0+0", "none",
+        ]
+        pressure_reverse = [
+            "--delmonitor", pressure_name, "--setmonitor", pressure_name,
+            "3200/900x1080/300+0+0", "none",
+        ]
+        mutate(
+            ["--setmonitor", pressure_name, "3200/900x1080/300+0+0",
+             "none"],
+            "pressure-create",
+        )
+        state_pressure, status_pressure = settle(
+            "pressure Monitor creation",
+            burst_epoch + 2,
+            lambda state: pressure_name in state_monitors(state),
+        )
+        pressure_epoch = topology_epoch(status_pressure)
+        pressure_position = collector_position(collector)
+        pressure_started, pressure_completed = mutate(
+            ["--output", "DUMMY1", "--pos", "1700x60"],
+            "pressure-semantic-position",
+            maximum_seconds=0.1,
+        )
+        pressure_deadline = pressure_started + 0.4
+        commit_deadline = pressure_started + maximum_ms / 1000.0 + 0.1
+        matching_commit_time: float | None = None
+        pressure_index = 0
+        previous_completed = pressure_completed
+        while time.monotonic() < pressure_deadline:
+            arguments = pressure_forward if pressure_index % 2 == 0 else pressure_reverse
+            started, completed = mutate(
+                arguments,
+                f"pressure-noise-{pressure_index}",
+                maximum_seconds=0.1,
+            )
+            if started - previous_completed >= quiet_seconds:
+                raise HarnessError("sustained pressure command gap reached quiet period")
+            previous_completed = completed
+            pressure_index += 1
+            if fvwm_process.poll() is not None:
+                raise HarnessError("FVWM exited during sustained pressure")
+            collector.read_available()
+            for record in collector.records[pressure_position:]:
+                if topology_epoch(record) != pressure_epoch + 1:
+                    raise HarnessError("sustained pressure advanced more than one epoch")
+                try:
+                    monitor = topology_monitor(record, "DUMMY1")
+                except HarnessError:
+                    continue
+                geometry = monitor.get("geometry")
+                if type(geometry) is dict and geometry.get("x") == 1700 \
+                        and geometry.get("y") == 60:
+                    if matching_commit_time is None:
+                        matching_commit_time = time.monotonic()
+            if matching_commit_time is None and time.monotonic() > commit_deadline:
+                raise HarnessError("hard-cap semantic commit missed bounded deadline")
+        if pressure_index < 2:
+            raise HarnessError("sustained pressure did not issue enough notifications")
+        if matching_commit_time is None or matching_commit_time > commit_deadline:
+            raise HarnessError("sustained pressure did not expose the bounded commit")
+
+        final_pressure_state = wait_for_authoritative_state(
+            runtime,
+            display,
+            "final canonical pressure state",
+            lambda state: pressure_name in state_monitors(state)
+            and state_monitors(state).get("DUMMY1", {}).get("x") == 1700
+            and state_monitors(state).get("DUMMY1", {}).get("y") == 60,
+            time.monotonic() + 2.0,
+            "xrandr-pressure-final",
+        )
+        xrandr_text = str(final_pressure_state["text"])
+        last_status = wait_for_status_monitors(
+            collector,
+            fvwm_process,
+            state_monitors(final_pressure_state),
+            state_output_ids(final_pressure_state),
+            pressure_epoch + 1,
+            time.monotonic() + 2.0,
+        )
+        assert_no_status_after(
+            collector,
+            collector_position(collector),
+            time.monotonic() + quiet_seconds,
+            fvwm_process,
+            "settled pressure equality",
+        )
+
+        scenario_metadata.update(
+            {
+                "baseline_epoch": 1,
+                "final_epoch": topology_epoch(last_status),
+                "operations": operations,
+                "output_ids": output_ids,
+                "pressure_commands": pressure_index,
+                "pressure_duration_ms":
+                    (previous_completed - pressure_started) * 1000.0,
+                "pressure_commit_latency_ms":
+                    (matching_commit_time - pressure_started) * 1000.0,
+            }
+        )
+        (artifact_dir / "result.json").write_text(
+            json.dumps(scenario_metadata, indent=2, sort_keys=True) + "\n"
+        )
+    except BaseException as error:
+        active_error = error
+        if collector is not None:
+            last_status = collector.last_status
+        if server is not None and server.poll() is None:
+            try:
+                failed_state = query_authoritative_state(
+                    runtime,
+                    display,
+                    time.monotonic() + 2.0,
+                    "xrandr-failure-state",
+                )
+                xrandr_text = str(failed_state["text"])
+                scenario_metadata["failure_root"] = failed_state["root"]
+                scenario_metadata["failure_monitors"] = failed_state["monitors"]
+            except BaseException as evidence_error:
+                scenario_metadata["evidence_error"] = str(evidence_error)
+        scenario_metadata["operations"] = operations
+        capture_failure(
+            artifact_dir,
+            error=error,
+            server_log=server.log_path if server is not None else None,
+            fvwm_log=runtime.root / "fvwm.log",
+            xrandr_text=xrandr_text,
+            last_status=last_status,
+            metadata=scenario_metadata,
+        )
+        raise
+    finally:
+        if collector is not None:
+            collector.close()
+        try:
+            runtime.close()
+        except BaseException as cleanup_error:
+            capture_failure(
+                artifact_dir,
+                error=cleanup_error,
+                server_log=server.log_path if server is not None else None,
+                fvwm_log=runtime.root / "fvwm.log",
+                xrandr_text=xrandr_text,
+                last_status=last_status,
+                metadata=scenario_metadata,
+            )
+            if active_error is None:
+                raise
 
 
 def run_xvfb_topology(options: argparse.Namespace) -> None:
@@ -1346,6 +2321,7 @@ def capture_failure(
     fvwm_log: Path | None,
     xrandr_text: str | None,
     last_status: dict[str, object] | None,
+    metadata: dict[str, object] | None = None,
 ) -> None:
     """Retain bounded diagnostic inputs before callers tear processes down."""
     artifact_dir.mkdir(parents=True, exist_ok=True)
@@ -1353,6 +2329,10 @@ def capture_failure(
     (artifact_dir / "failure.json").write_text(
         json.dumps(failure, indent=2, sort_keys=True) + "\n"
     )
+    if metadata is not None:
+        (artifact_dir / "scenario.json").write_text(
+            json.dumps(metadata, indent=2, sort_keys=True) + "\n"
+        )
     for source, destination in (
         (server_log, artifact_dir / "server.log"),
         (fvwm_log, artifact_dir / "fvwm.log"),
@@ -1608,7 +2588,12 @@ def main() -> int:
         run_fault_injection_probe(options)
         return 0
     if options.scenario == "topology":
-        run_xvfb_topology(options)
+        if options.backend == "xvfb":
+            run_xvfb_topology(options)
+        elif options.backend == "xorg-dummy":
+            run_xorg_dummy_topology(options)
+        else:
+            raise AssertionError(f"unhandled topology backend: {options.backend}")
         return 0
     raise AssertionError(f"unhandled live-X scenario: {options.scenario}")
 

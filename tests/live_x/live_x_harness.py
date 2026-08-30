@@ -865,17 +865,17 @@ def assert_status_monitor_matches(
 
 def assert_status_stable(
     collector: StatusCollector,
-    expected_topology: dict[str, object],
+    expected_status: dict[str, object],
     deadline: float,
     process: ManagedProcess,
 ) -> None:
-    """Observe through a predicate deadline without accepting a false epoch."""
+    """Observe through a predicate deadline without accepting Status changes."""
     with selectors.DefaultSelector() as selector:
         selector.register(collector.file_descriptor, selectors.EVENT_READ)
         while True:
             collector.read_available()
             for record in collector.records:
-                if status_topology(record) != expected_topology:
+                if record != expected_status:
                     raise HarnessError("Status changed without queried topology change")
             if process.poll() is not None:
                 raise HarnessError(
@@ -885,6 +885,108 @@ def assert_status_stable(
             if remaining <= 0:
                 return
             selector.select(min(remaining, POLL_QUANTUM_SECONDS))
+
+
+def assert_status_matches_monitors(
+    status: dict[str, object],
+    queried_monitors: dict[str, dict[str, object]],
+    output_ids: dict[str, int],
+    *,
+    expected_epoch: int,
+) -> None:
+    """Require one exact Status Monitor for every queried RandR Monitor."""
+    topology = status_topology(status)
+    status_monitors = topology["monitors"]
+    if type(status_monitors) is not list:
+        raise HarnessError("Status topology monitor collection has an invalid type")
+    if len(status_monitors) != len(queried_monitors):
+        raise HarnessError("Status and queried RandR Monitor counts differ")
+    for monitor in queried_monitors.values():
+        output_names = monitor.get("output_names")
+        if type(output_names) is not list or any(
+            type(name) is not str for name in output_names
+        ):
+            raise HarnessError("queried RandR Monitor membership is invalid")
+        try:
+            expected_outputs = [output_ids[name] for name in output_names]
+        except KeyError as error:
+            raise HarnessError(
+                f"queried output {error.args[0]!r} has no XID"
+            ) from error
+        assert_status_monitor_matches(
+            status,
+            monitor,
+            expected_outputs,
+            expected_epoch=expected_epoch,
+        )
+
+
+def poll_xrandr_monitors(
+    runtime: HarnessRuntime,
+    display: str,
+    label: str,
+    predicate: object,
+    deadline: float,
+    log_prefix: str,
+) -> tuple[dict[str, dict[str, object]], str] | None:
+    """Poll parsed Monitor state; command status never proves capability."""
+    attempt = 0
+    successful_queries = 0
+    with selectors.DefaultSelector() as selector:
+        while True:
+            attempt += 1
+            _, output = query_xrandr(
+                runtime,
+                display,
+                ["--listmonitors"],
+                deadline,
+                f"{log_prefix}-{attempt}.log",
+            )
+            try:
+                monitors = parse_xrandr_monitors(output)
+            except HarnessError:
+                monitors = None
+            if monitors is not None:
+                successful_queries += 1
+                if predicate(monitors):
+                    return monitors, output
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                if successful_queries == 0:
+                    raise HarnessError(
+                        f"no parseable Monitor state while waiting for {label}"
+                    )
+                return None
+            selector.select(min(remaining, POLL_QUANTUM_SECONDS))
+
+
+def wait_for_status_monitors(
+    collector: StatusCollector,
+    process: ManagedProcess,
+    queried_monitors: dict[str, dict[str, object]],
+    output_ids: dict[str, int],
+    expected_epoch: int,
+    deadline: float,
+) -> dict[str, object]:
+    """Poll Status until it exactly matches one queried Monitor state."""
+    def matches(record: dict[str, object]) -> bool:
+        try:
+            assert_status_matches_monitors(
+                record,
+                queried_monitors,
+                output_ids,
+                expected_epoch=expected_epoch,
+            )
+        except HarnessError:
+            return False
+        return True
+
+    return collector.wait_for(
+        f"Status topology epoch {expected_epoch}",
+        matches,
+        deadline,
+        process=process,
+    )
 
 
 def run_xvfb_topology(options: argparse.Namespace) -> None:
@@ -899,6 +1001,15 @@ def run_xvfb_topology(options: argparse.Namespace) -> None:
     fvwm_path = options.fvwm.resolve()
     artifact_dir = options.artifacts_dir.resolve()
     artifact_dir.mkdir(parents=True, exist_ok=True)
+    for artifact_name in (
+        "failure.json",
+        "fvwm.log",
+        "last-status.json",
+        "result.json",
+        "server.log",
+        "xrandr.txt",
+    ):
+        (artifact_dir / artifact_name).unlink(missing_ok=True)
     runtime = HarnessRuntime(prefix="fvwm-xvfb-topology-")
     server: ManagedProcess | None = None
     fvwm_process: ManagedProcess | None = None
@@ -1001,7 +1112,7 @@ def run_xvfb_topology(options: argparse.Namespace) -> None:
             time.monotonic() + 10.0,
             process=fvwm_process,
         )
-        baseline_topology = status_topology(last_status)
+        baseline_status_record = last_status
 
         fvwm_log = runtime.root / "fvwm.log"
 
@@ -1022,15 +1133,174 @@ def run_xvfb_topology(options: argparse.Namespace) -> None:
         )
         assert_status_stable(
             collector,
-            baseline_topology,
+            baseline_status_record,
             time.monotonic() + 0.35,
             fvwm_process,
         )
         last_status = collector.last_status
+
+        operations: list[dict[str, object]] = []
+
+        def run_mutation(arguments: list[str], operation: str) -> None:
+            return_code, output = query_xrandr(
+                runtime,
+                display,
+                arguments,
+                time.monotonic() + 5.0,
+                f"xrandr-{operation}.log",
+            )
+            operations.append(
+                {
+                    "argv": ["xrandr", "--display", display, *arguments],
+                    "operation": operation,
+                    "returncode": return_code,
+                    "output": output,
+                }
+            )
+
+        probe_name = "fvwm-xvfb-probe"
+        create_arguments = [
+            "--setmonitor",
+            probe_name,
+            "640/170x720/191+0+0",
+            "screen",
+        ]
+        delete_arguments = ["--delmonitor", probe_name]
+        recreate_arguments = [
+            "--setmonitor",
+            probe_name,
+            "800/212x600/159+0+0",
+            "none",
+        ]
+        run_mutation(create_arguments, "create")
+        created = poll_xrandr_monitors(
+            runtime,
+            display,
+            "Xvfb Monitor creation capability",
+            lambda state: probe_name in state,
+            time.monotonic() + 2.0,
+            "xrandr-create-state",
+        )
+
+        if created is None:
+            mutation_capability = "unsupported"
+            for operation, arguments in (
+                ("mutation-delete", delete_arguments),
+                ("mutation-recreate", recreate_arguments),
+                ("remove", delete_arguments),
+            ):
+                run_mutation(arguments, operation)
+                unchanged = poll_xrandr_monitors(
+                    runtime,
+                    display,
+                    f"unchanged baseline after {operation}",
+                    lambda state: state == monitors,
+                    time.monotonic() + 2.0,
+                    f"xrandr-{operation}-state",
+                )
+                if unchanged is None:
+                    raise HarnessError(
+                        f"Xvfb Monitor state changed after unsupported {operation}"
+                    )
+                _, xrandr_text = unchanged
+                assert_status_stable(
+                    collector,
+                    baseline_status_record,
+                    time.monotonic() + 0.35,
+                    fvwm_process,
+                )
+            print("UNSUPPORTED: xvfb-monitor-mutation")
+        else:
+            mutation_capability = "supported"
+            created_monitors, xrandr_text = created
+            expected_created = {
+                "name": probe_name,
+                "primary": False,
+                "x": 0,
+                "y": 0,
+                "width": 640,
+                "height": 720,
+                "mm_width": 170,
+                "mm_height": 191,
+                "output_names": ["screen"],
+            }
+            if created_monitors.get(probe_name) != expected_created:
+                raise HarnessError("created Xvfb Monitor facts are not exact")
+            last_status = wait_for_status_monitors(
+                collector,
+                fvwm_process,
+                created_monitors,
+                output_ids,
+                2,
+                time.monotonic() + 2.0,
+            )
+
+            if fvwm_process.poll() is not None:
+                raise HarnessError("FVWM exited before supported Monitor mutation")
+            os.kill(fvwm_process.process.pid, signal.SIGSTOP)
+            try:
+                run_mutation(delete_arguments, "mutation-delete")
+                run_mutation(recreate_arguments, "mutation-recreate")
+            finally:
+                os.kill(fvwm_process.process.pid, signal.SIGCONT)
+            expected_mutated = {
+                "name": probe_name,
+                "primary": False,
+                "x": 0,
+                "y": 0,
+                "width": 800,
+                "height": 600,
+                "mm_width": 212,
+                "mm_height": 159,
+                "output_names": [],
+            }
+            mutated = poll_xrandr_monitors(
+                runtime,
+                display,
+                "exact mutated Xvfb Monitor facts",
+                lambda state: state.get(probe_name) == expected_mutated,
+                time.monotonic() + 2.0,
+                "xrandr-mutation-state",
+            )
+            if mutated is None:
+                raise HarnessError("supported Xvfb Monitor mutation did not settle")
+            mutated_monitors, xrandr_text = mutated
+            last_status = wait_for_status_monitors(
+                collector,
+                fvwm_process,
+                mutated_monitors,
+                output_ids,
+                3,
+                time.monotonic() + 2.0,
+            )
+
+            run_mutation(delete_arguments, "remove")
+            removed = poll_xrandr_monitors(
+                runtime,
+                display,
+                "removed Xvfb Monitor",
+                lambda state: probe_name not in state,
+                time.monotonic() + 2.0,
+                "xrandr-remove-state",
+            )
+            if removed is None:
+                raise HarnessError("supported Xvfb Monitor removal did not settle")
+            removed_monitors, xrandr_text = removed
+            last_status = wait_for_status_monitors(
+                collector,
+                fvwm_process,
+                removed_monitors,
+                output_ids,
+                4,
+                time.monotonic() + 2.0,
+            )
+
         result = {
             "backend": "xvfb",
             "baseline_epoch": 1,
             "monitor": baseline_monitor,
+            "mutation_capability": mutation_capability,
+            "operations": operations,
             "output_ids": output_ids,
             "randr_version": list(randr_version),
         }

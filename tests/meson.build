@@ -141,6 +141,24 @@ if get_option('live-x-tests') and host_machine.system() == 'linux'
 
     live_x_artifacts = meson.current_build_dir() / 'live-x-artifacts'
     test(
+        'scale-policy-xorg-dummy',
+        py,
+        args: [
+            files('live_x/live_x_harness.py'),
+            '--backend=xorg-dummy',
+            '--scenario=scale-policy',
+            '--fvwm',
+            fvwm3.full_path(),
+            '--xorg-config',
+            files('live_x/xorg-dummy.conf'),
+            '--artifacts-dir',
+            live_x_artifacts / 'scale-policy-xorg-dummy',
+        ],
+        suite: 'live-x',
+        is_parallel: false,
+        timeout: 90,
+    )
+    test(
         'topology-xvfb',
         py,
         args: [

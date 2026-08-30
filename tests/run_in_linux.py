@@ -35,6 +35,7 @@ LIVE_X_PACKAGES = (
     "xserver-xorg-video-dummy",
 )
 LIVE_X_TEST_NAMES = (
+    "scale-policy-xorg-dummy",
     "topology-fault-injection-probe",
     "topology-xorg-dummy",
     "topology-xorg-dummy-failed-query",

@@ -46,7 +46,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--backend", choices=("xvfb", "xorg-dummy"))
     parser.add_argument(
         "--scenario",
-        choices=("failed-query-recovery", "fault-injection-probe", "topology"),
+        choices=(
+            "failed-query-recovery",
+            "fault-injection-probe",
+            "scale-policy",
+            "topology",
+        ),
         default=None,
     )
     parser.add_argument("--fvwm", type=Path)
@@ -3148,6 +3153,34 @@ def test_print_info_scale_parser() -> None:
             raise AssertionError(f"malformed scale line must be rejected: {line!r}")
 
 
+def test_scale_policy_case_contract() -> None:
+    """Specify the isolated authoritative initial-policy case matrix."""
+    cases = scale_policy_cases()
+    assert [case["name"] for case in cases] == [
+        "exact-override",
+        "valid-automatic",
+        "invalid-dpi-fallback",
+        "invalid-dpi-safe",
+        "invalid-replacement-retained",
+        "automatic-low-bound",
+        "automatic-low-adjacent",
+        "automatic-high-bound",
+        "automatic-high-adjacent",
+        "retained-unmatched-override",
+    ]
+    assert all(type(case["commands"]) is tuple for case in cases)
+    assert all(case["width_mm"] > 0 and case["height_mm"] > 0 for case in cases)
+    assert cases[0]["expected"]["source"] == "override"
+    assert cases[1]["expected"]["source"] == "automatic"
+    assert cases[2]["expected"]["source"] == "fallback"
+    assert cases[3]["expected"]["source"] == "safe"
+    assert cases[5]["expected"]["boundary"] == "low"
+    assert cases[6]["expected"]["boundary"] == "none"
+    assert cases[7]["expected"]["boundary"] == "high"
+    assert cases[8]["expected"]["boundary"] == "none"
+    assert cases[9]["unmatched"] == ('Dock "Left"', "3")
+
+
 def self_test() -> None:
     """Specify lifecycle behavior without requiring an X server."""
     test_xorg_dummy_contract()
@@ -3155,6 +3188,7 @@ def self_test() -> None:
     test_fvwm_arguments_extra_commands()
     test_post_finalize_scale_inspection_argv()
     test_print_info_scale_parser()
+    test_scale_policy_case_contract()
 
     version_text = """\
 xrandr program version       1.5.1
@@ -3364,6 +3398,9 @@ def main() -> int:
         return 0
     if options.scenario == "failed-query-recovery":
         run_xorg_dummy_failed_query(options)
+        return 0
+    if options.scenario == "scale-policy":
+        run_xorg_dummy_scale_policy(options)
         return 0
     if options.scenario == "topology":
         if options.backend == "xvfb":

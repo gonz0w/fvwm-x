@@ -567,8 +567,13 @@ fvwm_sources = [
 ]
 ```
 
-Add `fvwm/topology_refresh_policy.c` adjacent to the existing policy source,
-preserving the source-root-relative path convention. Do not list the header.
+Add both `fvwm/topology_refresh_policy.c` and
+`fvwm/topology_event_adapter.c` exactly once to `fvwm_sources`, keeping the
+two topology units adjacent to the existing event policy source and preserving
+the source-root-relative path convention. Plan 03 owns refresh-policy
+registration; ordered Plan 04 owns event-adapter registration. Do not list the
+headers. The 25-file classification count already includes this shared build
+file and remains unchanged.
 
 ---
 

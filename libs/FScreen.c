@@ -56,19 +56,28 @@ static bool			  is_randr_present;
 static bool			  randr_initialised;
 static monitor_topology_snapshot *committed_topology;
 
+typedef struct
+{
+	struct monitors			monitors;
+	const fscreen_legacy_allocator *allocator;
+} fscreen_legacy_stage;
+
 static struct monitor *
 monitor_new(const char *);
-static void
-monitor_mark_new(struct monitor *);
 static struct monitor *
 monitor_by_name(const char *);
 static void
 monitor_set_topology_coords(struct monitor *, const monitor_topology_monitor *);
 static void
-monitor_assign_number(void);
+monitor_assign_number(struct monitors *);
+static bool
+legacy_stage_prepare(const monitor_topology_snapshot *, struct monitors *,
+    const fscreen_legacy_allocator *, fscreen_legacy_stage *);
 static void
-legacy_reconcile_unstaged(const monitor_topology_snapshot *, struct monitors *,
-    struct screen_infos *, bool);
+legacy_stage_destroy(fscreen_legacy_stage *);
+static void
+legacy_reconcile_apply(const monitor_topology_snapshot *, struct monitors *,
+    struct screen_infos *, fscreen_legacy_stage *, bool);
 
 enum monitor_tracking  monitor_mode;
 bool		       is_tracking_shared;
@@ -106,7 +115,7 @@ monitor_new(const char *name)
 }
 
 static void
-monitor_scan_edges(struct monitor *m)
+monitor_scan_edges(struct monitors *legacy_monitors, struct monitor *m)
 {
 	struct monitor *m_loop;
 	int64_t		m_right;
@@ -122,7 +131,7 @@ monitor_scan_edges(struct monitor *m)
 	m_right	 = (int64_t)m->si->x + m->si->w;
 	m_bottom = (int64_t)m->si->y + m->si->h;
 
-	RB_FOREACH(m_loop, monitors, &monitor_q)
+	RB_FOREACH(m_loop, monitors, legacy_monitors)
 	{
 		int64_t loop_right;
 		int64_t loop_bottom;
@@ -326,28 +335,98 @@ monitor_by_name(const char *name)
 	return (mret);
 }
 
+static bool
+legacy_identity_matches(
+    const struct monitor *monitor, const monitor_topology_monitor *fact)
+{
+	if (monitor == NULL || monitor->si == NULL || fact == NULL) {
+		return false;
+	}
+	if (monitor->si->name_atom != None) {
+		return monitor->si->name_atom == fact->name_atom
+		       && strcmp(monitor->si->name, fact->name) == 0;
+	}
+	return strcmp(monitor->si->name, fact->name) == 0;
+}
+
+static struct monitor *
+legacy_monitor_by_identity(
+    struct monitors *legacy_monitors, const monitor_topology_monitor *fact)
+{
+	struct monitor *monitor;
+
+	RB_FOREACH(monitor, monitors, legacy_monitors)
+	{
+		if (legacy_identity_matches(monitor, fact)) {
+			return monitor;
+		}
+	}
+	return NULL;
+}
+
+struct monitor *
+fscreen_monitor_by_output(const monitor_topology_snapshot *snapshot,
+    struct monitors *legacy_monitors, RROutput output)
+{
+	int monitor_index;
+	int output_index;
+
+	if (snapshot == NULL || legacy_monitors == NULL) {
+		return NULL;
+	}
+	for (monitor_index = 0; monitor_index < snapshot->monitor_count;
+	    monitor_index++) {
+		const monitor_topology_monitor *fact =
+		    &snapshot->monitors[monitor_index];
+
+		for (output_index = 0; output_index < fact->output_count;
+		    output_index++) {
+			if (fact->outputs[output_index] == output) {
+				return legacy_monitor_by_identity(
+				    legacy_monitors, fact);
+			}
+		}
+	}
+	return RB_MIN(monitors, legacy_monitors);
+}
+
+static bool
+topology_has_output(const monitor_topology_snapshot *snapshot, RROutput output)
+{
+	int monitor_index;
+	int output_index;
+
+	if (snapshot == NULL) {
+		return false;
+	}
+	for (monitor_index = 0; monitor_index < snapshot->monitor_count;
+	    monitor_index++) {
+		const monitor_topology_monitor *fact =
+		    &snapshot->monitors[monitor_index];
+
+		for (output_index = 0; output_index < fact->output_count;
+		    output_index++) {
+			if (fact->outputs[output_index] == output) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 struct monitor *
 monitor_by_output(int output)
 {
-	struct monitor *m, *mret = NULL;
+	struct monitor *monitor = fscreen_monitor_by_output(
+	    committed_topology, &monitor_q, (RROutput)output);
 
-	RB_FOREACH(m, monitors, &monitor_q)
-	{
-		if (m->si->rr_output == output) {
-			mret = m;
-			break;
-		}
-	}
-
-	if (mret == NULL) {
+	if (!topology_has_output(committed_topology, (RROutput)output)) {
 		fvwm_debug(__func__,
 		    "%s: couldn't find monitor with output '%d', "
 		    "returning first output.\n",
 		    __func__, output);
-		mret = RB_MIN(monitors, &monitor_q);
 	}
-
-	return (mret);
+	return monitor;
 }
 
 struct monitor *
@@ -383,13 +462,20 @@ monitor_by_last_primary(void)
 }
 
 static void
-monitor_check_primary(void)
+monitor_check_primary(struct monitors *legacy_monitors)
 {
-	if (monitor_by_primary() == NULL) {
-		struct monitor *m;
+	struct monitor *monitor;
 
-		m = RB_MIN(monitors, &monitor_q);
-		m->flags |= MONITOR_PRIMARY;
+	RB_FOREACH(monitor, monitors, legacy_monitors)
+	{
+		if (!(monitor->flags & MONITOR_DISABLED)
+		    && (monitor->flags & MONITOR_PRIMARY)) {
+			return;
+		}
+	}
+	monitor = RB_MIN(monitors, legacy_monitors);
+	if (monitor != NULL && !(monitor->flags & MONITOR_DISABLED)) {
+		monitor->flags |= MONITOR_PRIMARY;
 	}
 }
 
@@ -488,6 +574,58 @@ static const fscreen_randr_adapter real_randr_adapter = {
 	},
 };
 
+static struct monitor *
+legacy_allocate_monitor(void *context)
+{
+	return calloc(1, sizeof(struct monitor));
+}
+
+static struct screen_info *
+legacy_allocate_screen(void *context)
+{
+	return calloc(1, sizeof(struct screen_info));
+}
+
+static char *
+legacy_copy_name(void *context, const char *source)
+{
+	size_t size = strlen(source) + 1;
+	char  *copy = malloc(size);
+
+	if (copy != NULL) {
+		memcpy(copy, source, size);
+	}
+	return copy;
+}
+
+static void
+legacy_free_monitor(void *context, struct monitor *monitor)
+{
+	free(monitor);
+}
+
+static void
+legacy_free_screen(void *context, struct screen_info *screen)
+{
+	free(screen);
+}
+
+static void
+legacy_free_name(void *context, char *name)
+{
+	free(name);
+}
+
+static const fscreen_legacy_allocator real_legacy_allocator = {
+    .context	      = NULL,
+    .allocate_monitor = legacy_allocate_monitor,
+    .allocate_screen  = legacy_allocate_screen,
+    .copy_name	      = legacy_copy_name,
+    .free_monitor     = legacy_free_monitor,
+    .free_screen      = legacy_free_screen,
+    .free_name	      = legacy_free_name,
+};
+
 const monitor_topology_snapshot *
 FScreenGetTopologySnapshot(void)
 {
@@ -508,8 +646,11 @@ fscreen_refresh_topology_with_adapters(Display *dpy, Window root,
 	int				monitor_count  = -1;
 	int				i;
 	bool				initial;
+	bool				needs_reconcile;
+	fscreen_legacy_stage		stage;
 
-	(void)legacy_allocator;
+	RB_INIT(&stage.monitors);
+	stage.allocator = NULL;
 	if (committed == NULL || randr_adapter == NULL
 	    || randr_adapter->get_monitors == NULL
 	    || randr_adapter->get_atom_name == NULL
@@ -584,18 +725,37 @@ fscreen_refresh_topology_with_adapters(Display *dpy, Window root,
 	randr_adapter->topology_allocator.free_fn(
 	    randr_adapter->topology_allocator.context, source_monitors);
 	randr_adapter->free_monitors(randr_adapter->context, randr_monitors);
+	needs_reconcile =
+	    initial || !monitor_topology_snapshot_equal(*committed, candidate);
+	if (needs_reconcile
+	    && (legacy_monitors != NULL || legacy_screens != NULL)) {
+		if (legacy_monitors == NULL || legacy_screens == NULL
+		    || !legacy_stage_prepare(
+			candidate, legacy_monitors, legacy_allocator, &stage)) {
+			fvwm_debug(__func__, "legacy topology staging failed; "
+					     "retaining last topology");
+			monitor_topology_snapshot_destroy(candidate);
+			legacy_stage_destroy(&stage);
+			return FSCREEN_TOPOLOGY_REFRESH_FAILED;
+		}
+	}
 
 	publish_result =
 	    monitor_topology_snapshot_publish(committed, candidate);
 	if (publish_result == MONITOR_TOPOLOGY_PUBLISH_INITIAL
 	    || publish_result == MONITOR_TOPOLOGY_PUBLISH_CHANGED) {
-		legacy_reconcile_unstaged(
-		    *committed, legacy_monitors, legacy_screens, initial);
+		if (legacy_monitors != NULL) {
+			legacy_reconcile_apply(*committed, legacy_monitors,
+			    legacy_screens, &stage, initial);
+		}
+		legacy_stage_destroy(&stage);
 		return FSCREEN_TOPOLOGY_REFRESH_CHANGED;
 	}
 	if (publish_result == MONITOR_TOPOLOGY_PUBLISH_UNCHANGED) {
+		legacy_stage_destroy(&stage);
 		return FSCREEN_TOPOLOGY_REFRESH_UNCHANGED;
 	}
+	legacy_stage_destroy(&stage);
 	fvwm_debug(
 	    __func__, "topology publication failed; retaining last topology");
 	return FSCREEN_TOPOLOGY_REFRESH_FAILED;
@@ -624,7 +784,8 @@ FScreenRefreshTopology(Display *dpy)
 {
 	return fscreen_refresh_topology_with_adapters(dpy,
 	    RootWindow(dpy, DefaultScreen(dpy)), &committed_topology,
-	    &monitor_q, &screen_info_q, &real_randr_adapter, NULL);
+	    &monitor_q, &screen_info_q, &real_randr_adapter,
+	    &real_legacy_allocator);
 }
 
 void
@@ -659,12 +820,12 @@ monitor_set_topology_coords(
 }
 
 static void
-monitor_assign_number(void)
+monitor_assign_number(struct monitors *legacy_monitors)
 {
 	struct monitor *m;
 	int		n = 0;
 
-	RB_FOREACH(m, monitors, &monitor_q)
+	RB_FOREACH(m, monitors, legacy_monitors)
 	{
 		if (m->flags & MONITOR_DISABLED)
 			continue;
@@ -699,41 +860,126 @@ monitor_compare(struct monitor *a, struct monitor *b)
 	return strcmp(a->si->name, b->si->name);
 }
 
-static void
-monitor_mark_new(struct monitor *m)
+static bool
+legacy_allocator_is_valid(const fscreen_legacy_allocator *allocator)
 {
-	if (m == NULL)
-		return;
-
-	m->flags |= MONITOR_NEW;
-
-	memset(&m->virtual_scr, 0, sizeof(m->virtual_scr));
-	m->virtual_scr.edge_thickness	   = 2;
-	m->virtual_scr.last_edge_thickness = 2;
-
-	memset(&m->ewmhc, 0, sizeof(m->ewmhc));
-	m->Desktops    = NULL;
-	m->is_prev     = false;
-	m->was_primary = false;
-
-	TAILQ_INSERT_TAIL(&screen_info_q, m->si, entry);
-
-	fvwm_debug(__func__, "Added new monitor: %s (%p)", m->si->name, m);
+	return allocator != NULL && allocator->allocate_monitor != NULL
+	       && allocator->allocate_screen != NULL
+	       && allocator->copy_name != NULL
+	       && allocator->free_monitor != NULL
+	       && allocator->free_screen != NULL
+	       && allocator->free_name != NULL;
 }
 
 static void
-legacy_reconcile_unstaged(const monitor_topology_snapshot *snapshot,
+legacy_monitor_initialize(
+    struct monitor *monitor, const monitor_topology_monitor *fact)
+{
+	monitor->flags	       = MONITOR_NEW;
+	monitor->si->name_atom = fact->name_atom;
+	monitor_set_topology_coords(monitor, fact);
+	monitor->virtual_scr.edge_thickness	 = 2;
+	monitor->virtual_scr.last_edge_thickness = 2;
+}
+
+static void
+legacy_stage_destroy(fscreen_legacy_stage *stage)
+{
+	struct monitor *monitor;
+	struct monitor *next;
+
+	if (stage == NULL || stage->allocator == NULL) {
+		return;
+	}
+	RB_FOREACH_SAFE(monitor, monitors, &stage->monitors, next)
+	{
+		RB_REMOVE(monitors, &stage->monitors, monitor);
+		stage->allocator->free_name(
+		    stage->allocator->context, (char *)monitor->si->name);
+		stage->allocator->free_screen(
+		    stage->allocator->context, monitor->si);
+		stage->allocator->free_monitor(
+		    stage->allocator->context, monitor);
+	}
+	stage->allocator = NULL;
+	RB_INIT(&stage->monitors);
+}
+
+static bool
+legacy_stage_prepare(const monitor_topology_snapshot *snapshot,
+    struct monitors *legacy_monitors, const fscreen_legacy_allocator *allocator,
+    fscreen_legacy_stage *stage)
+{
+	int i;
+
+	if (snapshot == NULL || legacy_monitors == NULL || stage == NULL
+	    || !legacy_allocator_is_valid(allocator)) {
+		return false;
+	}
+	RB_INIT(&stage->monitors);
+	stage->allocator = allocator;
+	for (i = 0; i < snapshot->monitor_count; i++) {
+		const monitor_topology_monitor *fact = &snapshot->monitors[i];
+		struct monitor		       *monitor;
+		struct screen_info	       *screen = NULL;
+		char			       *name   = NULL;
+
+		if (legacy_monitor_by_identity(legacy_monitors, fact) != NULL) {
+			continue;
+		}
+		monitor = allocator->allocate_monitor(allocator->context);
+		if (monitor != NULL) {
+			screen = allocator->allocate_screen(allocator->context);
+		}
+		if (screen != NULL) {
+			name = allocator->copy_name(
+			    allocator->context, fact->name);
+		}
+		if (monitor == NULL || screen == NULL || name == NULL) {
+			allocator->free_name(allocator->context, name);
+			allocator->free_screen(allocator->context, screen);
+			allocator->free_monitor(allocator->context, monitor);
+			legacy_stage_destroy(stage);
+			return false;
+		}
+		monitor->si	  = screen;
+		monitor->si->name = name;
+		legacy_monitor_initialize(monitor, fact);
+		if (RB_INSERT(monitors, &stage->monitors, monitor) != NULL) {
+			allocator->free_name(allocator->context, name);
+			allocator->free_screen(allocator->context, screen);
+			allocator->free_monitor(allocator->context, monitor);
+			legacy_stage_destroy(stage);
+			return false;
+		}
+	}
+	return true;
+}
+
+static bool
+legacy_monitor_changed(
+    const struct monitor *monitor, const monitor_topology_monitor *fact)
+{
+	RROutput first_output =
+	    fact->output_count > 0 ? fact->outputs[0] : None;
+
+	return monitor->si->x != fact->x || monitor->si->y != fact->y
+	       || monitor->si->w != fact->width
+	       || monitor->si->h != fact->height
+	       || monitor->si->rr_output != first_output
+	       || ((monitor->flags & MONITOR_PRIMARY) != 0)
+		      != (fact->primary != False);
+}
+
+static void
+legacy_reconcile_apply(const monitor_topology_snapshot *snapshot,
     struct monitors *legacy_monitors, struct screen_infos *legacy_screens,
-    bool initial)
+    fscreen_legacy_stage *stage, bool initial)
 {
 	struct monitor *monitor;
 	struct monitor *next;
 	int		i;
 
-	if (snapshot == NULL || legacy_monitors == NULL
-	    || legacy_screens == NULL) {
-		return;
-	}
 	RB_FOREACH(monitor, monitors, legacy_monitors)
 	{
 		monitor->flags &=
@@ -742,34 +988,30 @@ legacy_reconcile_unstaged(const monitor_topology_snapshot *snapshot,
 	for (i = 0; i < snapshot->monitor_count; i++) {
 		const monitor_topology_monitor *fact = &snapshot->monitors[i];
 		bool				changed;
+		bool				was_disabled;
 
-		monitor = NULL;
-		RB_FOREACH(monitor, monitors, legacy_monitors)
-		{
-			if (strcmp(monitor->si->name, fact->name) == 0) {
-				break;
-			}
-		}
+		monitor = legacy_monitor_by_identity(legacy_monitors, fact);
 		if (monitor == NULL) {
-			monitor = monitor_new(fact->name);
-			monitor_set_topology_coords(monitor, fact);
-			monitor_mark_new(monitor);
+			monitor =
+			    legacy_monitor_by_identity(&stage->monitors, fact);
+			RB_REMOVE(monitors, &stage->monitors, monitor);
 			monitor->flags |= MONITOR_FOUND;
 			monitor->emit = initial ? 0 : MONITOR_ENABLED;
+			TAILQ_INSERT_TAIL(legacy_screens, monitor->si, entry);
 			RB_INSERT(monitors, legacy_monitors, monitor);
+			fvwm_debug(__func__, "Added new monitor: %s (%p)",
+			    monitor->si->name, monitor);
 			continue;
 		}
-		changed =
-		    monitor->si->x != fact->x || monitor->si->y != fact->y
-		    || monitor->si->w != fact->width
-		    || monitor->si->h != fact->height
-		    || monitor->si->rr_output
-			   != (fact->output_count > 0 ? fact->outputs[0] : None)
-		    || ((monitor->flags & MONITOR_PRIMARY) != 0)
-			   != (fact->primary != False);
+		changed	     = legacy_monitor_changed(monitor, fact);
+		was_disabled = (monitor->flags & MONITOR_DISABLED) != 0;
 		RB_REMOVE(monitors, legacy_monitors, monitor);
+		monitor->flags &=
+		    ~(MONITOR_NEW | MONITOR_CHANGED | MONITOR_DISABLED);
 		monitor->flags |= MONITOR_FOUND;
-		if (monitor->flags & MONITOR_DISABLED) {
+		monitor->si->name_atom = fact->name_atom;
+		monitor_set_topology_coords(monitor, fact);
+		if (was_disabled) {
 			monitor->emit = MONITOR_ENABLED;
 		} else if (changed) {
 			monitor->flags |= MONITOR_CHANGED;
@@ -777,8 +1019,6 @@ legacy_reconcile_unstaged(const monitor_topology_snapshot *snapshot,
 		} else {
 			monitor->emit = 0;
 		}
-		monitor->flags &= ~MONITOR_DISABLED;
-		monitor_set_topology_coords(monitor, fact);
 		RB_INSERT(monitors, legacy_monitors, monitor);
 	}
 	RB_FOREACH_SAFE(monitor, monitors, legacy_monitors, next)
@@ -789,6 +1029,9 @@ legacy_reconcile_unstaged(const monitor_topology_snapshot *snapshot,
 		}
 		if (!(monitor->flags & MONITOR_DISABLED)) {
 			RB_REMOVE(monitors, legacy_monitors, monitor);
+			if (monitor->flags & MONITOR_PRIMARY) {
+				monitor->was_primary = true;
+			}
 			monitor->flags |= MONITOR_DISABLED;
 			monitor->flags &= ~MONITOR_PRIMARY;
 			monitor->emit = MONITOR_DISABLED;
@@ -797,11 +1040,11 @@ legacy_reconcile_unstaged(const monitor_topology_snapshot *snapshot,
 			monitor->emit = 0;
 		}
 	}
-	monitor_assign_number();
-	monitor_check_primary();
+	monitor_assign_number(legacy_monitors);
+	monitor_check_primary(legacy_monitors);
 	RB_FOREACH(monitor, monitors, legacy_monitors)
 	{
-		monitor_scan_edges(monitor);
+		monitor_scan_edges(legacy_monitors, monitor);
 	}
 }
 
@@ -864,7 +1107,7 @@ FScreenInit(Display *dpy)
 	is_tracking_shared = false;
 
 	RB_FOREACH(m, monitors, &monitor_q)
-	monitor_scan_edges(m);
+	monitor_scan_edges(&monitor_q, m);
 
 	return;
 

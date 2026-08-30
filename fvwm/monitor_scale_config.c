@@ -449,6 +449,41 @@ results_valid_with(const monitor_topology_snapshot *snapshot,
 	return true;
 }
 
+static void
+diagnose_unmatched_overrides(
+    monitor_scale_config *config, const monitor_topology_snapshot *snapshot)
+{
+	monitor_scale_override *override;
+
+	for (override = config->overrides; override != NULL;
+	    override  = override->next) {
+		monitor_scale_factor factor;
+
+		(void)monitor_scale_config_match_override(
+		    config, override->name, snapshot, &factor);
+	}
+}
+
+static bool
+finalize_initial_with(monitor_scale_config *config,
+    const monitor_topology_snapshot	   *snapshot,
+    struct monitors			   *runtime_monitors)
+{
+	if (config == NULL || config->finalized) {
+		return false;
+	}
+	if (!recompute_with(config, snapshot, runtime_monitors)
+	    || !results_valid_with(snapshot, runtime_monitors)) {
+		diagnose(config,
+		    "MonitorScale: initial scale association is incomplete",
+		    NULL);
+		return false;
+	}
+	diagnose_unmatched_overrides(config, snapshot);
+	config->finalized = true;
+	return true;
+}
+
 bool
 monitor_scale_config_recompute(void)
 {
@@ -460,6 +495,13 @@ bool
 monitor_scale_config_results_valid(void)
 {
 	return results_valid_with(FScreenGetTopologySnapshot(), &monitor_q);
+}
+
+bool
+monitor_scale_config_finalize_initial(void)
+{
+	return finalize_initial_with(monitor_scale_config_get(),
+	    FScreenGetTopologySnapshot(), &monitor_q);
 }
 
 #ifdef MONITOR_SCALE_CONFIG_TESTING
@@ -477,6 +519,14 @@ monitor_scale_config_results_valid_with(
     struct monitors		    *runtime_monitors)
 {
 	return results_valid_with(snapshot, runtime_monitors);
+}
+
+bool
+monitor_scale_config_finalize_initial_with(monitor_scale_config *config,
+    const monitor_topology_snapshot				*snapshot,
+    struct monitors *runtime_monitors)
+{
+	return finalize_initial_with(config, snapshot, runtime_monitors);
 }
 #endif
 

@@ -536,6 +536,7 @@ void Done(int restart, char *command)
 		exc_destroy_context(exc);
 		free(action);
 	}
+	monitor_scale_config_shutdown();
 	/* XFree freeze hack */
 	XUngrabPointer(dpy, CurrentTime);
 	XUngrabKeyboard(dpy, CurrentTime);
@@ -664,7 +665,6 @@ void Done(int restart, char *command)
 	 * in nirvana. This explicitly happened with windows unswallowed by
 	 * FvwmButtons. */
 	module_kill_all();
-	monitor_scale_config_shutdown();
 
 	exit(0);
 }
@@ -1701,7 +1701,6 @@ int main(int argc, char **argv)
 	struct monitor	*m = NULL;
 
 	functions_init();
-	monitor_scale_config_initialize();
 	fvwmlib_init_max_fd();
 	/* Tell the FEvent module an event type that is not used by fvwm. */
 	fev_init_invalid_event_type(KeymapNotify);
@@ -2278,6 +2277,7 @@ int main(int argc, char **argv)
 	}
 
 	InitVariables();
+	monitor_scale_config_initialize();
 	if (visualClass != -1 || visualId != -1)
 	{
 		/* this is so that menus use the (non-default) fvwm colormap */
@@ -2379,6 +2379,7 @@ int main(int argc, char **argv)
 			free(cfg_loc[nl]);
 	}
 	exc_destroy_context(exc);
+	(void)monitor_scale_config_finalize_initial();
 
 	if (Pdepth<2)
 	{

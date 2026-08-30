@@ -12,7 +12,7 @@
 - [x] **TOP-03**: User sees topology event bursts coalesced into one validated atomic commit, with the last good topology retained after query failure.
 - [ ] **TOP-04**: User's windows remain reachable and retain normal, maximized, or fullscreen intent when their monitor is removed.
 - [ ] **TOP-05**: User can inspect and simulate topology, scale inputs, fallback reasons, ownership, transition epochs, and constraint outcomes.
-- [ ] **TOP-06**: Maintainers can reproduce monitor creation, changes, and removal through Xvfb smoke tests and authoritative Xorg-dummy scenarios.
+- [x] **TOP-06**: Maintainers can reproduce monitor creation, changes, and removal through Xvfb smoke tests and authoritative Xorg-dummy scenarios.
 
 ### Scale Policy
 
@@ -90,7 +90,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | TOP-03 | Phase 1 | Complete |
 | TOP-04 | Phase 6 | Pending |
 | TOP-05 | Phase 6 | Pending |
-| TOP-06 | Phase 1 | Pending |
+| TOP-06 | Phase 1 | Complete |
 | SCALE-01 | Phase 2 | Pending |
 | SCALE-02 | Phase 2 | Pending |
 | SCALE-03 | Phase 2 | Pending |

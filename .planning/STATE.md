@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 01
 current_phase_name: Topology Snapshot and Live-X Harness
 status: executing
-stopped_at: Completed 01-04-PLAN.md
-last_updated: "2026-08-30T13:44:22.420Z"
+stopped_at: Completed 01-06-PLAN.md
+last_updated: "2026-08-30T14:07:35.917Z"
 last_activity: 2026-08-30
-last_activity_desc: Completed 01-04 deferred topology event commit
-state_head: 1a48f7896deb423d3f8dd003649b826525e700f1
+last_activity_desc: Completed 01-06 isolated live-X harness and fault probe
+state_head: 01ec34ee645fa14f520dcd7e1c16ef6dfbffe30c
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 8
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -29,29 +29,29 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 ## Current Position
 
 Phase: 01 (Topology Snapshot and Live-X Harness) — EXECUTING
-Plan: 6 of 8
+Plan: 7 of 8
 Status: Ready to execute
-Last activity: 2026-08-30 — Completed 01-04 deferred topology event commit
+Last activity: 2026-08-30 — Completed 01-06 isolated live-X harness and fault probe
 
-Progress: [██████░░░░] 62%
+Progress: [████████░░] 75%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5
-- Average duration: 15 min
-- Total execution time: 1.27 hours
+- Total plans completed: 6
+- Average duration: 16 min
+- Total execution time: 1.55 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 5 | 76 min | 15 min |
+| 01 | 6 | 93 min | 16 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 32 min, 18 min, 6 min, 8 min, 12 min
+- Last 5 plans: 18 min, 6 min, 8 min, 12 min, 17 min
 - Trend: Faster
 
 **Per-Plan Metrics:**
@@ -63,6 +63,7 @@ Progress: [██████░░░░] 62%
 | Phase 01 P03 | 6min | 2 tasks | 5 files |
 | Phase 01 P05 | 8min | 2 tasks | 6 files |
 | Phase 01 P04 | 12min | 3 tasks | 8 files |
+| Phase 01 P06 | 17min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 01]: Only root ConfigureNotify plus RandR screen, CRTC, output, output-property, and resource events arm topology refreshes; provider and lease events remain unrelated. — Keeps event marking complete but narrow and constant-time.
 - [Phase 01]: Service due topology generations at the top of HandleEvents before consuming another queued X event. — Preserves the 250 ms hard cap under sustained event pressure.
 - [Phase 01]: Only changed FScreen refreshes run EWMH, broadcast, pan-frame, and Status effects. — Unchanged and failed generations must preserve epoch and avoid duplicate downstream work.
+- [Phase 01]: Only the test shim reads and atomically unlinks FVWM_TEST_XRR_FAIL_FILE; production source and ordinary FVWM environments expose no fault switch.
+- [Phase 01]: Each fault-bearing invocation probes LD_PRELOAD against actual production FVWM first and runs the non-installed linker-wrap executable only when preload is not proven.
+- [Phase 01]: Nested X processes use display-fd allocation, disabled TCP, isolated sessions, monotonic deadlines, and bounded reverse-order cleanup.
 
 ### Pending Todos
 
@@ -109,6 +113,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T13:43:59.910Z
-Stopped at: Completed 01-04-PLAN.md
+Last session: 2026-08-30T14:07:35.907Z
+Stopped at: Completed 01-06-PLAN.md
 Resume file: None

@@ -146,6 +146,77 @@ test_dispatch_orders_update_before_mark(void)
 }
 
 static void
+test_dispatch_marks_only_accepted_events(void)
+{
+	const int    randr_base	      = 80;
+	const Window root	      = 0x100;
+	const int    accepted_types[] = {
+	       ConfigureNotify,
+	       randr_base + RRNotify,
+	       randr_base + RRNotify,
+	       randr_base + RRNotify,
+	       randr_base + RRNotify,
+	   };
+	const int accepted_subtypes[] = {
+	    0,
+	    RRNotify_CrtcChange,
+	    RRNotify_OutputChange,
+	    RRNotify_OutputProperty,
+	    RRNotify_ResourceChange,
+	};
+	const int rejected_subtypes[] = {
+	    RRNotify_ProviderChange,
+	    RRNotify_ProviderProperty,
+	    RRNotify_Lease,
+	};
+	size_t i;
+
+	for (i = 0; i < sizeof(accepted_types) / sizeof(*accepted_types); i++) {
+		callback_state		  state = {0};
+		fvwm_topology_event_input input = make_input(accepted_types[i],
+		    randr_base, accepted_subtypes[i], root, root);
+
+		assert(dispatch_input(&input, &state)
+		       != FVWM_TOPOLOGY_EVENT_REJECTED);
+		assert(state.update_count == 0);
+		assert(state.mark_count == 1);
+		assert(state.trace_length == 1);
+		assert(state.trace[0] == 'm');
+		assert(state.refresh_count == 0);
+		assert(state.downstream_count == 0);
+	}
+
+	for (i = 0; i < sizeof(rejected_subtypes) / sizeof(*rejected_subtypes);
+	    i++) {
+		callback_state		  state = {0};
+		fvwm_topology_event_input input =
+		    make_input(randr_base + RRNotify, randr_base,
+			rejected_subtypes[i], root, root);
+
+		assert(dispatch_input(&input, &state)
+		       == FVWM_TOPOLOGY_EVENT_REJECTED);
+		assert(state.update_count == 0);
+		assert(state.mark_count == 0);
+		assert(state.trace_length == 0);
+		assert(state.refresh_count == 0);
+		assert(state.downstream_count == 0);
+	}
+
+	{
+		callback_state		  state = {0};
+		fvwm_topology_event_input input =
+		    make_input(ConfigureNotify, randr_base, 0, root + 1, root);
+
+		assert(dispatch_input(&input, &state)
+		       == FVWM_TOPOLOGY_EVENT_REJECTED);
+		assert(state.update_count == 0);
+		assert(state.mark_count == 0);
+		assert(state.refresh_count == 0);
+		assert(state.downstream_count == 0);
+	}
+}
+
+static void
 test_timeout_min_preserves_absent_zero_and_positive(void)
 {
 	assert(fvwm_topology_timeout_min(-1, -1) == -1);
@@ -173,6 +244,7 @@ main(void)
 {
 	test_classifies_topology_events();
 	test_dispatch_orders_update_before_mark();
+	test_dispatch_marks_only_accepted_events();
 	test_timeout_min_preserves_absent_zero_and_positive();
 	test_only_changed_requests_downstream_work();
 	return 0;

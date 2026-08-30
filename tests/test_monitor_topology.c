@@ -15,6 +15,7 @@
 
 #include "config.h"
 
+#include "libs/cJSON.h"
 #include "libs/monitor_topology.h"
 
 #include <assert.h>
@@ -36,6 +37,56 @@ typedef struct
 	size_t allocations;
 	size_t frees;
 } failure_tracker;
+
+static failure_tracker *cjson_failure_tracker;
+
+static void *
+cjson_failure_malloc(size_t size)
+{
+	failure_tracker *tracker = cjson_failure_tracker;
+	void		*pointer;
+
+	assert(tracker != NULL);
+	if (tracker->attempts++ == tracker->fail_at) {
+		return NULL;
+	}
+	pointer = malloc(size);
+	if (pointer != NULL) {
+		tracker->allocations++;
+	}
+	return pointer;
+}
+
+static void
+cjson_failure_free(void *pointer)
+{
+	failure_tracker *tracker = cjson_failure_tracker;
+
+	assert(tracker != NULL);
+	if (pointer != NULL) {
+		tracker->frees++;
+	}
+	free(pointer);
+}
+
+static void
+cjson_use_failure_tracker(failure_tracker *tracker)
+{
+	cJSON_Hooks hooks = {
+	    .malloc_fn = cjson_failure_malloc,
+	    .free_fn   = cjson_failure_free,
+	};
+
+	cjson_failure_tracker = tracker;
+	cJSON_InitHooks(&hooks);
+}
+
+static void
+cjson_reset_hooks(void)
+{
+	cJSON_InitHooks(NULL);
+	cjson_failure_tracker = NULL;
+}
 
 static void *
 tracked_malloc(void *context, size_t size)
@@ -171,6 +222,262 @@ create_snapshot(allocation_tracker *tracker,
 
 	return monitor_topology_snapshot_create(
 	    monitors, monitor_count, &allocator);
+}
+
+static monitor_topology_snapshot *
+make_status_fixture(allocation_tracker *tracker)
+{
+	RROutput		 outputs[]   = {30, 10, 20, 10};
+	monitor_topology_monitor monitors[2] = {
+	    make_monitor(20, "monitor-b", 1920, 100, 1280, 1024, 340, 270,
+		False, NULL, 0),
+	    make_monitor(10, "monitor-\xc3\xa9\n\"\\", -10, 0, 1920, 1080, 0, 0,
+		True, outputs, 4),
+	};
+	monitor_topology_snapshot *snapshot =
+	    create_snapshot(tracker, monitors, 2);
+
+	assert(snapshot != NULL);
+	snapshot->epoch = 7;
+	return snapshot;
+}
+
+static void
+assert_object_keys(
+    const cJSON *object, const char *const *keys, size_t key_count)
+{
+	const cJSON *item = object->child;
+	size_t	     index;
+
+	assert(cJSON_IsObject(object));
+	for (index = 0; index < key_count; index++) {
+		assert(item != NULL);
+		assert(strcmp(item->string, keys[index]) == 0);
+		item = item->next;
+	}
+	assert(item == NULL);
+}
+
+static void
+test_status_topology_json_schema(void)
+{
+	static const char *const topology_keys[] = {"epoch", "monitors"};
+	static const char *const monitor_keys[]	 = {
+	     "name",
+	     "name_atom",
+	     "primary",
+	     "geometry",
+	     "physical_mm",
+	     "outputs",
+	 };
+	static const char *const geometry_keys[] = {
+	    "x", "y", "width", "height"};
+	static const char *const   physical_keys[] = {"width", "height"};
+	allocation_tracker	   tracker	   = {0};
+	monitor_topology_snapshot *snapshot = make_status_fixture(&tracker);
+	cJSON			  *root	    = cJSON_CreateObject();
+	cJSON			  *topology;
+	cJSON			  *monitors;
+	cJSON			  *monitor;
+	cJSON			  *geometry;
+	cJSON			  *physical;
+	cJSON			  *outputs;
+	char			  *encoded;
+	char			  *line;
+	cJSON			  *parsed;
+	const char		  *parse_end = NULL;
+	size_t			   encoded_length;
+
+	assert(root != NULL);
+	assert(monitor_topology_json_add(root, "topology", snapshot));
+	topology = cJSON_GetObjectItemCaseSensitive(root, "topology");
+	assert_object_keys(topology, topology_keys,
+	    sizeof(topology_keys) / sizeof(topology_keys[0]));
+	assert(cJSON_IsNumber(
+	    cJSON_GetObjectItemCaseSensitive(topology, "epoch")));
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(topology, "epoch"))
+	       == 7);
+	monitors = cJSON_GetObjectItemCaseSensitive(topology, "monitors");
+	assert(cJSON_IsArray(monitors));
+	assert(cJSON_GetArraySize(monitors) == 2);
+	monitor = cJSON_GetArrayItem(monitors, 0);
+	assert_object_keys(monitor, monitor_keys,
+	    sizeof(monitor_keys) / sizeof(monitor_keys[0]));
+	assert(
+	    cJSON_IsString(cJSON_GetObjectItemCaseSensitive(monitor, "name")));
+	assert(strcmp(cJSON_GetStringValue(
+			  cJSON_GetObjectItemCaseSensitive(monitor, "name")),
+		   "monitor-\xc3\xa9\n\"\\")
+	       == 0);
+	assert(cJSON_IsNumber(
+	    cJSON_GetObjectItemCaseSensitive(monitor, "name_atom")));
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(monitor, "name_atom"))
+	       == 10);
+	assert(
+	    cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(monitor, "primary")));
+	geometry = cJSON_GetObjectItemCaseSensitive(monitor, "geometry");
+	assert_object_keys(geometry, geometry_keys,
+	    sizeof(geometry_keys) / sizeof(geometry_keys[0]));
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(geometry, "x"))
+	       == -10);
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(geometry, "y"))
+	       == 0);
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(geometry, "width"))
+	       == 1920);
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(geometry, "height"))
+	       == 1080);
+	physical = cJSON_GetObjectItemCaseSensitive(monitor, "physical_mm");
+	assert_object_keys(physical, physical_keys,
+	    sizeof(physical_keys) / sizeof(physical_keys[0]));
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(physical, "width"))
+	       == 0);
+	assert(cJSON_GetNumberValue(
+		   cJSON_GetObjectItemCaseSensitive(physical, "height"))
+	       == 0);
+	outputs = cJSON_GetObjectItemCaseSensitive(monitor, "outputs");
+	assert(cJSON_IsArray(outputs));
+	assert(cJSON_GetArraySize(outputs) == 3);
+	assert(cJSON_GetNumberValue(cJSON_GetArrayItem(outputs, 0)) == 10);
+	assert(cJSON_GetNumberValue(cJSON_GetArrayItem(outputs, 1)) == 20);
+	assert(cJSON_GetNumberValue(cJSON_GetArrayItem(outputs, 2)) == 30);
+
+	monitor = cJSON_GetArrayItem(monitors, 1);
+	assert(cJSON_IsFalse(
+	    cJSON_GetObjectItemCaseSensitive(monitor, "primary")));
+	assert(cJSON_IsArray(
+	    cJSON_GetObjectItemCaseSensitive(monitor, "outputs")));
+	assert(cJSON_GetArraySize(
+		   cJSON_GetObjectItemCaseSensitive(monitor, "outputs"))
+	       == 0);
+
+	encoded = cJSON_PrintUnformatted(root);
+	assert(encoded != NULL);
+	assert(strcmp(encoded,
+		   "{\"topology\":{\"epoch\":7,\"monitors\":[{\"name\":"
+		   "\"monitor-\xc3\xa9\\n\\\"\\\\\",\"name_atom\":10,"
+		   "\"primary\":true,\"geometry\":{\"x\":-10,\"y\":0,"
+		   "\"width\":1920,\"height\":1080},\"physical_mm\":{"
+		   "\"width\":0,\"height\":0},\"outputs\":[10,20,30]},"
+		   "{\"name\":\"monitor-b\",\"name_atom\":20,\"primary\":"
+		   "false,\"geometry\":{\"x\":1920,\"y\":100,\"width\":"
+		   "1280,\"height\":1024},\"physical_mm\":{\"width\":340,"
+		   "\"height\":270},\"outputs\":[]}]}}")
+	       == 0);
+
+	encoded_length = strlen(encoded);
+	line	       = malloc(encoded_length + 2);
+	assert(line != NULL);
+	memcpy(line, encoded, encoded_length);
+	line[encoded_length]	 = '\n';
+	line[encoded_length + 1] = '\0';
+	parsed			 = cJSON_ParseWithLengthOpts(
+	      line, encoded_length + 2, &parse_end, true);
+	assert(parsed != NULL);
+	assert(parse_end == line + encoded_length + 1);
+
+	cJSON_Delete(parsed);
+	free(line);
+	cJSON_free(encoded);
+	cJSON_Delete(root);
+	monitor_topology_snapshot_destroy(snapshot);
+	assert(tracker.allocations == tracker.frees);
+}
+
+static void
+test_topology_json_is_canonical_for_input_permutations(void)
+{
+	allocation_tracker	 tracker	= {0};
+	RROutput		 outputs_a[]	= {30, 10, 20, 10};
+	RROutput		 outputs_b[]	= {20, 30, 10};
+	monitor_topology_monitor first_order[2] = {
+	    make_monitor(20, "monitor-b", 1920, 100, 1280, 1024, 340, 270,
+		False, NULL, 0),
+	    make_monitor(
+		10, "monitor-a", -10, 0, 1920, 1080, 0, 0, True, outputs_a, 4),
+	};
+	monitor_topology_monitor second_order[2] = {
+	    make_monitor(
+		10, "monitor-a", -10, 0, 1920, 1080, 0, 0, True, outputs_b, 3),
+	    make_monitor(20, "monitor-b", 1920, 100, 1280, 1024, 340, 270,
+		False, NULL, 0),
+	};
+	monitor_topology_snapshot *first =
+	    create_snapshot(&tracker, first_order, 2);
+	monitor_topology_snapshot *second =
+	    create_snapshot(&tracker, second_order, 2);
+	cJSON *first_root  = cJSON_CreateObject();
+	cJSON *second_root = cJSON_CreateObject();
+	char  *first_json;
+	char  *second_json;
+
+	assert(first != NULL);
+	assert(second != NULL);
+	first->epoch = second->epoch = 9;
+	assert(first_root != NULL);
+	assert(second_root != NULL);
+	assert(monitor_topology_json_add(first_root, "topology", first));
+	assert(monitor_topology_json_add(second_root, "topology", second));
+	first_json  = cJSON_PrintUnformatted(first_root);
+	second_json = cJSON_PrintUnformatted(second_root);
+	assert(first_json != NULL);
+	assert(second_json != NULL);
+	assert(strcmp(first_json, second_json) == 0);
+
+	cJSON_free(first_json);
+	cJSON_free(second_json);
+	cJSON_Delete(first_root);
+	cJSON_Delete(second_root);
+	monitor_topology_snapshot_destroy(first);
+	monitor_topology_snapshot_destroy(second);
+	assert(tracker.allocations == tracker.frees);
+}
+
+static void
+test_topology_json_allocation_failure_is_atomic(void)
+{
+	allocation_tracker	   tracker    = {0};
+	monitor_topology_snapshot *snapshot   = make_status_fixture(&tracker);
+	failure_tracker		   successful = {.fail_at = SIZE_MAX};
+	cJSON			  *root;
+	size_t			   allocation_count;
+	size_t			   fail_at;
+
+	cjson_use_failure_tracker(&successful);
+	root = cJSON_CreateObject();
+	assert(root != NULL);
+	successful.attempts = 0;
+	assert(monitor_topology_json_add(root, "topology", snapshot));
+	allocation_count = successful.attempts;
+	assert(allocation_count > 0);
+	cJSON_Delete(root);
+	assert(successful.allocations == successful.frees);
+	cjson_reset_hooks();
+
+	for (fail_at = 0; fail_at < allocation_count; fail_at++) {
+		failure_tracker failed = {.fail_at = SIZE_MAX};
+
+		cjson_use_failure_tracker(&failed);
+		root = cJSON_CreateObject();
+		assert(root != NULL);
+		failed.attempts = 0;
+		failed.fail_at	= fail_at;
+		assert(!monitor_topology_json_add(root, "topology", snapshot));
+		assert(
+		    cJSON_GetObjectItemCaseSensitive(root, "topology") == NULL);
+		cJSON_Delete(root);
+		assert(failed.allocations == failed.frees);
+		cjson_reset_hooks();
+	}
+
+	monitor_topology_snapshot_destroy(snapshot);
+	assert(tracker.allocations == tracker.frees);
 }
 
 static void
@@ -591,6 +898,9 @@ test_every_allocator_failure_is_recoverable(void)
 int
 main(void)
 {
+	test_status_topology_json_schema();
+	test_topology_json_is_canonical_for_input_permutations();
+	test_topology_json_allocation_failure_is_atomic();
 	test_first_publication_has_epoch_one();
 	test_equal_publication_preserves_pointer_and_epoch();
 	test_changed_publication_advances_epoch_once();

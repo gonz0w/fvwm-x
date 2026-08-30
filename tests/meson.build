@@ -9,7 +9,7 @@ test('image-safety', image_safety_test)
 
 monitor_topology_test = executable(
     'test-monitor-topology',
-    ['test_monitor_topology.c', '../libs/monitor_topology.c'],
+    ['test_monitor_topology.c', '../libs/monitor_topology.c', '../libs/cJSON.c'],
     include_directories: includedirs,
     dependencies: all_found_deps,
     c_args: ['-UNDEBUG'],

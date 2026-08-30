@@ -19,6 +19,7 @@
 #include "libs/monitor_topology.h"
 
 #include <assert.h>
+#include <inttypes.h>
 #include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -293,11 +294,12 @@ test_status_topology_json_schema(void)
 	topology = cJSON_GetObjectItemCaseSensitive(root, "topology");
 	assert_object_keys(topology, topology_keys,
 	    sizeof(topology_keys) / sizeof(topology_keys[0]));
-	assert(cJSON_IsNumber(
-	    cJSON_GetObjectItemCaseSensitive(topology, "epoch")));
-	assert(cJSON_GetNumberValue(
-		   cJSON_GetObjectItemCaseSensitive(topology, "epoch"))
-	       == 7);
+	assert(
+	    cJSON_IsRaw(cJSON_GetObjectItemCaseSensitive(topology, "epoch")));
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(topology, "epoch")
+			  ->valuestring,
+		   "7")
+	       == 0);
 	monitors = cJSON_GetObjectItemCaseSensitive(topology, "monitors");
 	assert(cJSON_IsArray(monitors));
 	assert(cJSON_GetArraySize(monitors) == 2);
@@ -386,6 +388,42 @@ test_status_topology_json_schema(void)
 	free(line);
 	cJSON_free(encoded);
 	cJSON_Delete(root);
+	monitor_topology_snapshot_destroy(snapshot);
+	assert(tracker.allocations == tracker.frees);
+}
+
+static void
+test_epoch_json_preserves_uint64_boundaries(void)
+{
+	static const uint64_t epochs[] = {
+	    UINT64_C(9007199254740993),
+	    UINT64_MAX,
+	};
+	allocation_tracker	   tracker  = {0};
+	monitor_topology_snapshot *snapshot = make_status_fixture(&tracker);
+	size_t			   index;
+
+	for (index = 0; index < sizeof(epochs) / sizeof(epochs[0]); index++) {
+		cJSON *root = cJSON_CreateObject();
+		cJSON *parsed;
+		char  *encoded;
+		char   expected[64];
+
+		assert(root != NULL);
+		snapshot->epoch = epochs[index];
+		assert(monitor_topology_json_add(root, "topology", snapshot));
+		encoded = cJSON_PrintUnformatted(root);
+		assert(encoded != NULL);
+		(void)snprintf(expected, sizeof(expected),
+		    "\"epoch\":%" PRIu64 ",", epochs[index]);
+		assert(strstr(encoded, expected) != NULL);
+		parsed = cJSON_Parse(encoded);
+		assert(parsed != NULL);
+
+		cJSON_Delete(parsed);
+		cJSON_free(encoded);
+		cJSON_Delete(root);
+	}
 	monitor_topology_snapshot_destroy(snapshot);
 	assert(tracker.allocations == tracker.frees);
 }
@@ -899,6 +937,7 @@ int
 main(void)
 {
 	test_status_topology_json_schema();
+	test_epoch_json_preserves_uint64_boundaries();
 	test_topology_json_is_canonical_for_input_permutations();
 	test_topology_json_allocation_failure_is_atomic();
 	test_first_publication_has_epoch_one();

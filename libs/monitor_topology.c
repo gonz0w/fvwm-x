@@ -18,7 +18,9 @@
 #include "cJSON.h"
 #include "monitor_topology.h"
 
+#include <inttypes.h>
 #include <limits.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -431,6 +433,17 @@ json_add_number(cJSON *object, const char *key, double value)
 }
 
 static bool
+json_add_uint64(cJSON *object, const char *key, uint64_t value)
+{
+	char encoded[sizeof("18446744073709551615")];
+	int  length;
+
+	length = snprintf(encoded, sizeof(encoded), "%" PRIu64, value);
+	return length > 0 && (size_t)length < sizeof(encoded)
+	       && cJSON_AddRawToObject(object, key, encoded) != NULL;
+}
+
+static bool
 json_add_monitor(cJSON *monitors, const monitor_topology_monitor *monitor)
 {
 	cJSON *item	= NULL;
@@ -514,7 +527,7 @@ monitor_topology_json_add(
 	}
 	topology = cJSON_CreateObject();
 	if (topology == NULL
-	    || !json_add_number(topology, "epoch", (double)snapshot->epoch)) {
+	    || !json_add_uint64(topology, "epoch", snapshot->epoch)) {
 		goto fail;
 	}
 	monitors = cJSON_CreateArray();

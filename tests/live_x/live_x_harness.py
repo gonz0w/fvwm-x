@@ -746,6 +746,71 @@ def capture_failure(
 
 def self_test() -> None:
     """Specify lifecycle behavior without requiring an X server."""
+    version_text = """\
+xrandr program version       1.5.1
+Server reports RandR version 1.6
+"""
+    assert parse_randr_version(version_text) == (1, 6)
+
+    monitor_text = """\
+Monitors: 1
+ 0: +screen 1280/339x720/190+0+0  screen
+"""
+    monitors = parse_xrandr_monitors(monitor_text)
+    assert monitors == {
+        "screen": {
+            "name": "screen",
+            "primary": False,
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 720,
+            "mm_width": 339,
+            "mm_height": 190,
+            "output_names": ["screen"],
+        }
+    }
+
+    verbose_text = """\
+screen connected 1280x720+0+0 (0x3a) normal (normal) 0mm x 0mm
+\tIdentifier: 0x3b
+\tTimestamp:  1
+"""
+    assert parse_xrandr_output_ids(verbose_text) == {"screen": 0x3B}
+
+    status_fixture = {
+        "version": 4,
+        "topology": {
+            "epoch": 1,
+            "monitors": [
+                {
+                    "name": "screen",
+                    "name_atom": 240,
+                    "primary": False,
+                    "geometry": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 1280,
+                        "height": 720,
+                    },
+                    "physical_mm": {"width": 339, "height": 190},
+                    "outputs": [0x3B],
+                }
+            ],
+        },
+    }
+    assert_status_monitor_matches(
+        status_fixture,
+        monitors["screen"],
+        [0x3B],
+        expected_epoch=1,
+    )
+
+    topology_options = build_parser().parse_args(
+        ["--backend=xvfb", "--scenario=topology"]
+    )
+    assert topology_options.scenario == "topology"
+
     with tempfile.TemporaryDirectory(prefix="fvwm-live-x-self-test-") as name:
         private_tmpdir = Path(name)
         old_fault = os.environ.get(FAULT_ENV)

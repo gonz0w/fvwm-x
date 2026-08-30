@@ -299,6 +299,22 @@ digest_value(uint64_t digest, uintptr_t value)
 	return digest * UINT64_C(1099511628211);
 }
 
+static void
+assert_safe_effective_scale(const struct monitor *monitor)
+{
+	assert(monitor->effective_scale.factor.quarters
+	       == MONITOR_SCALE_QUARTERS_MIN);
+	assert(monitor->effective_scale.source == MONITOR_SCALE_SOURCE_SAFE);
+	assert(
+	    monitor->effective_scale.match_status == MONITOR_SCALE_MATCH_NONE);
+	assert(monitor->effective_scale.auto_status
+	       == MONITOR_SCALE_AUTO_MISSING_AXIS);
+	assert(
+	    monitor->effective_scale.boundary == MONITOR_SCALE_BOUNDARY_NONE);
+	assert(monitor->effective_scale.reason
+	       == MONITOR_SCALE_REASON_SAFE_DEFAULT);
+}
+
 static uint64_t
 legacy_digest(
     struct monitors *legacy_monitors, struct screen_infos *legacy_screens)
@@ -324,6 +340,14 @@ legacy_digest(
 		digest = digest_value(digest, (unsigned int)monitor->si->w);
 		digest = digest_value(digest, (unsigned int)monitor->si->h);
 		digest = digest_value(digest, monitor->si->rr_output);
+		digest = digest_value(
+		    digest, monitor->effective_scale.factor.quarters);
+		digest = digest_value(digest, monitor->effective_scale.source);
+		digest =
+		    digest_value(digest, monitor->effective_scale.auto_status);
+		digest =
+		    digest_value(digest, monitor->effective_scale.boundary);
+		digest = digest_value(digest, monitor->effective_scale.reason);
 		while (*name != '\0') {
 			digest = digest_value(digest, *name++);
 		}
@@ -495,6 +519,7 @@ test_every_legacy_staging_allocation_failure_retains_state(void)
 	struct monitors			 legacy_monitors;
 	struct screen_infos		 legacy_screens;
 	struct monitor			*first_monitor;
+	struct monitor			*iter;
 	const monitor_topology_snapshot *before;
 	uint64_t			 before_digest;
 	size_t				 fail_index;
@@ -510,6 +535,7 @@ test_every_legacy_staging_allocation_failure_retains_state(void)
 	first_monitor = RB_MIN(monitors, &legacy_monitors);
 	assert(first_monitor != NULL);
 	assert(first_monitor->si->name_atom == (Atom)12);
+	assert_safe_effective_scale(first_monitor);
 	before	      = committed;
 	before_digest = legacy_digest(&legacy_monitors, &legacy_screens);
 
@@ -524,6 +550,7 @@ test_every_legacy_staging_allocation_failure_retains_state(void)
 		assert(committed == before && committed->epoch == 1);
 		assert(legacy_digest(&legacy_monitors, &legacy_screens)
 		       == before_digest);
+		assert_safe_effective_scale(first_monitor);
 		assert(legacy_alloc.live_monitors == 1);
 		assert(legacy_alloc.live_screens == 1);
 		assert(legacy_alloc.live_names == 1);
@@ -537,6 +564,10 @@ test_every_legacy_staging_allocation_failure_retains_state(void)
 	    == FSCREEN_TOPOLOGY_REFRESH_CHANGED);
 	assert(committed->epoch == 2);
 	assert(RB_MIN(monitors, &legacy_monitors) == first_monitor);
+	RB_FOREACH(iter, monitors, &legacy_monitors)
+	{
+		assert_safe_effective_scale(iter);
+	}
 	assert(
 	    fscreen_monitor_by_output(committed, &legacy_monitors, (RROutput)32)
 	    == first_monitor);

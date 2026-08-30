@@ -15,6 +15,7 @@
 
 #include "config.h"
 
+#include "cJSON.h"
 #include "monitor_topology.h"
 
 #include <limits.h>
@@ -421,4 +422,123 @@ monitor_topology_snapshot_destroy(monitor_topology_snapshot *snapshot)
 	}
 	allocator.free_fn(allocator.context, snapshot->monitors);
 	allocator.free_fn(allocator.context, snapshot);
+}
+
+static bool
+json_add_number(cJSON *object, const char *key, double value)
+{
+	return cJSON_AddNumberToObject(object, key, value) != NULL;
+}
+
+static bool
+json_add_monitor(cJSON *monitors, const monitor_topology_monitor *monitor)
+{
+	cJSON *item	= NULL;
+	cJSON *geometry = NULL;
+	cJSON *physical = NULL;
+	cJSON *outputs	= NULL;
+	int    output_index;
+
+	item = cJSON_CreateObject();
+	if (item == NULL
+	    || cJSON_AddStringToObject(item, "name", monitor->name) == NULL
+	    || !json_add_number(item, "name_atom", (double)monitor->name_atom)
+	    || cJSON_AddBoolToObject(item, "primary", monitor->primary)
+		   == NULL) {
+		goto fail;
+	}
+
+	geometry = cJSON_CreateObject();
+	if (geometry == NULL || !json_add_number(geometry, "x", monitor->x)
+	    || !json_add_number(geometry, "y", monitor->y)
+	    || !json_add_number(geometry, "width", monitor->width)
+	    || !json_add_number(geometry, "height", monitor->height)
+	    || !cJSON_AddItemToObject(item, "geometry", geometry)) {
+		goto fail;
+	}
+	geometry = NULL;
+
+	physical = cJSON_CreateObject();
+	if (physical == NULL
+	    || !json_add_number(physical, "width", monitor->mm_width)
+	    || !json_add_number(physical, "height", monitor->mm_height)
+	    || !cJSON_AddItemToObject(item, "physical_mm", physical)) {
+		goto fail;
+	}
+	physical = NULL;
+
+	outputs = cJSON_CreateArray();
+	if (outputs == NULL) {
+		goto fail;
+	}
+	for (output_index = 0; output_index < monitor->output_count;
+	    output_index++) {
+		cJSON *output =
+		    cJSON_CreateNumber((double)monitor->outputs[output_index]);
+
+		if (output == NULL || !cJSON_AddItemToArray(outputs, output)) {
+			cJSON_Delete(output);
+			goto fail;
+		}
+	}
+	if (!cJSON_AddItemToObject(item, "outputs", outputs)) {
+		goto fail;
+	}
+	outputs = NULL;
+
+	if (!cJSON_AddItemToArray(monitors, item)) {
+		goto fail;
+	}
+	return true;
+
+fail:
+	cJSON_Delete(outputs);
+	cJSON_Delete(physical);
+	cJSON_Delete(geometry);
+	cJSON_Delete(item);
+	return false;
+}
+
+bool
+monitor_topology_json_add(
+    cJSON *parent, const char *key, const monitor_topology_snapshot *snapshot)
+{
+	cJSON *topology = NULL;
+	cJSON *monitors = NULL;
+	int    monitor_index;
+
+	if (parent == NULL || key == NULL || snapshot == NULL
+	    || snapshot->epoch == 0
+	    || !monitor_topology_snapshot_validate(snapshot)) {
+		return false;
+	}
+	topology = cJSON_CreateObject();
+	if (topology == NULL
+	    || !json_add_number(topology, "epoch", (double)snapshot->epoch)) {
+		goto fail;
+	}
+	monitors = cJSON_CreateArray();
+	if (monitors == NULL) {
+		goto fail;
+	}
+	for (monitor_index = 0; monitor_index < snapshot->monitor_count;
+	    monitor_index++) {
+		if (!json_add_monitor(
+			monitors, &snapshot->monitors[monitor_index])) {
+			goto fail;
+		}
+	}
+	if (!cJSON_AddItemToObject(topology, "monitors", monitors)) {
+		goto fail;
+	}
+	monitors = NULL;
+	if (!cJSON_AddItemToObject(parent, key, topology)) {
+		goto fail;
+	}
+	return true;
+
+fail:
+	cJSON_Delete(monitors);
+	cJSON_Delete(topology);
+	return false;
 }

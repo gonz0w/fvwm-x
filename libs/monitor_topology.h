@@ -8,6 +8,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+typedef struct cJSON cJSON;
+
 typedef struct
 {
 	void *context;
@@ -60,5 +62,8 @@ monitor_topology_snapshot_publish(monitor_topology_snapshot **committed,
     monitor_topology_snapshot				     *candidate);
 void
 monitor_topology_snapshot_destroy(monitor_topology_snapshot *snapshot);
+bool
+monitor_topology_json_add(
+    cJSON *parent, const char *key, const monitor_topology_snapshot *snapshot);
 
 #endif

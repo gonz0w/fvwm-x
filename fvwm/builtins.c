@@ -17,113 +17,102 @@
 
 #include "config.h"
 
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
+#include "add_window.h"
+#include "bindings.h"
+#include "borders.h"
+#include "builtins.h"
+#include "colorset.h"
+#include "commands.h"
+#include "cursor.h"
+#include "decorations.h"
+#include "events.h"
+#include "ewmh.h"
+#include "externs.h"
+#include "focus.h"
+#include "frame.h"
+#include "functions.h"
+#include "fvwm.h"
+#include "infostore.h"
+#include "libs/ClientMsg.h"
+#include "libs/ColorUtils.h"
+#include "libs/FEvent.h"
+#include "libs/FGettext.h"
+#include "libs/FScreen.h"
+#include "libs/Ficonv.h"
+#include "libs/Flocale.h"
+#include "libs/Grab.h"
+#include "libs/Graphics.h"
+#include "libs/Parse.h"
+#include "libs/Picture.h"
+#include "libs/PictureUtils.h"
+#include "libs/cJSON.h"
+#include "libs/charmap.h"
+#include "libs/envvar.h"
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
 #include "libs/fvwmsignal.h"
 #include "libs/log.h"
-#include "libs/cJSON.h"
+#include "libs/monitor_topology.h"
 #include "libs/setpgrp.h"
-#include "libs/Grab.h"
-#include "libs/Parse.h"
-#include "libs/ColorUtils.h"
-#include "libs/Graphics.h"
-#include "libs/wild.h"
-#include "libs/envvar.h"
-#include "libs/ClientMsg.h"
-#include "libs/Picture.h"
-#include "libs/PictureUtils.h"
-#include "libs/FGettext.h"
-#include "libs/charmap.h"
 #include "libs/wcontext.h"
-#include "libs/Flocale.h"
-#include "libs/FEvent.h"
-#include "libs/Ficonv.h"
-#include "fvwm.h"
-#include "externs.h"
-#include "colorset.h"
-#include "bindings.h"
-#include "misc.h"
-#include "cursor.h"
-#include "functions.h"
-#include "commands.h"
-#include "screen.h"
-#include "builtins.h"
-#include "module_interface.h"
-#include "borders.h"
-#include "frame.h"
-#include "events.h"
-#include "ewmh.h"
-#include "virtual.h"
-#include "decorations.h"
-#include "add_window.h"
-#include "update.h"
-#include "style.h"
-#include "move_resize.h"
+#include "libs/wild.h"
 #include "menus.h"
-#include "infostore.h"
-#include "focus.h"
+#include "misc.h"
+#include "module_interface.h"
+#include "move_resize.h"
+#include "screen.h"
+#include "style.h"
+#include "update.h"
+#include "virtual.h"
 
 /* ---------------------------- local definitions -------------------------- */
 
-static void status_init_pipe(void);
+static void
+status_init_pipe(void);
 
 /* ---------------------------- local macros ------------------------------- */
 
 /* ---------------------------- imports ------------------------------------ */
 
 extern float rgpctMovementDefault[32];
-extern int cpctMovementDefault;
-extern int cmsDelayDefault;
+extern int   cpctMovementDefault;
+extern int   cmsDelayDefault;
 
 /* ---------------------------- included code files ------------------------ */
 
 /* ---------------------------- local types -------------------------------- */
-typedef enum {FakeMouseEvent, FakeKeyEvent} FakeEventType;
+typedef enum
+{
+	FakeMouseEvent,
+	FakeKeyEvent
+} FakeEventType;
 /* ---------------------------- forward declarations ----------------------- */
 
 /* ---------------------------- local variables ---------------------------- */
 
-static char *exec_shell_name="/bin/sh";
+static char *exec_shell_name = "/bin/sh";
 
 /* button state strings must match the enumerated states */
-static char *button_states[BS_MaxButtonStateName + 1] =
-{
-	"ActiveUp",
-	"ActiveDown",
-	"InactiveUp",
-	"InactiveDown",
-	"ToggledActiveUp",
-	"ToggledActiveDown",
-	"ToggledInactiveUp",
-	"ToggledInactiveDown",
-	"Active",
-	"Inactive",
-	"ToggledActive",
-	"ToggledInactive",
-	"AllNormal",
-	"AllToggled",
-	"AllActive",
-	"AllInactive",
-	"AllUp",
-	"AllDown",
-	"AllActiveUp",
-	"AllActiveDown",
-	"AllInactiveUp",
-	"AllInactiveDown",
-	NULL
-};
+static char *button_states[BS_MaxButtonStateName + 1] = {"ActiveUp",
+    "ActiveDown", "InactiveUp", "InactiveDown", "ToggledActiveUp",
+    "ToggledActiveDown", "ToggledInactiveUp", "ToggledInactiveDown", "Active",
+    "Inactive", "ToggledActive", "ToggledInactive", "AllNormal", "AllToggled",
+    "AllActive", "AllInactive", "AllUp", "AllDown", "AllActiveUp",
+    "AllActiveDown", "AllInactiveUp", "AllInactiveDown", NULL};
 
 /* ---------------------------- exported variables (globals) --------------- */
 
-char *ModulePath = FVWM_MODULEDIR;
-int moduleTimeout = DEFAULT_MODULE_TIMEOUT;
+char	    *ModulePath	   = FVWM_MODULEDIR;
+int	     moduleTimeout = DEFAULT_MODULE_TIMEOUT;
 static FILE *status_fp;
 
 /* ---------------------------- local functions ---------------------------- */
@@ -131,13 +120,14 @@ static FILE *status_fp;
 void
 status_send(void)
 {
-	cJSON		*msg = NULL, *screens = NULL;
-	cJSON		*desk_doc[1024], *individual_d[1024];
-	int 		 m_count, d_count;
-	FvwmWindow	*fw_cur;
-	DesktopsInfo 	*di;
-	struct monitor	*m, *m_cur;
-	char		*as_json = NULL;
+	cJSON				*msg = NULL, *screens = NULL;
+	cJSON				*desk_doc[1024], *individual_d[1024];
+	int				 m_count, d_count;
+	FvwmWindow			*fw_cur;
+	DesktopsInfo			*di;
+	struct monitor			*m, *m_cur;
+	const monitor_topology_snapshot *topology;
+	char				*as_json = NULL;
 
 	if (status_fp == NULL || !Scr.flags.are_windows_captured)
 		return;
@@ -150,41 +140,49 @@ status_send(void)
 
 	m_cur = monitor_get_current();
 
-	cJSON_AddNumberToObject(msg, "version", 3);
+	cJSON_AddNumberToObject(msg, "version", 4);
 	cJSON_AddStringToObject(msg, "current_screen", m_cur->si->name);
 	cJSON_AddStringToObject(msg, "desktop_mode",
-	    monitor_mode == MONITOR_TRACKING_G && is_tracking_shared ? "shared" :
-	    monitor_mode == MONITOR_TRACKING_G ? "global" :
-	    monitor_mode == MONITOR_TRACKING_M ? "per-monitor" :
-	    "unknown");
+	    monitor_mode == MONITOR_TRACKING_G && is_tracking_shared ? "shared"
+	    : monitor_mode == MONITOR_TRACKING_G		     ? "global"
+	    : monitor_mode == MONITOR_TRACKING_M ? "per-monitor"
+						 : "unknown");
+	topology = FScreenGetTopologySnapshot();
+	if (!monitor_topology_json_add(msg, "topology", topology))
+		goto out;
 
 	screens = cJSON_AddObjectToObject(msg, "screens");
 
 	d_count = 0, m_count = 0;
-	RB_FOREACH(m, monitors, &monitor_q) {
-		cJSON	*this_desktop;
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
+		cJSON *this_desktop;
 		if ((desk_doc[d_count] = cJSON_CreateObject()) == NULL)
 			goto out;
 
 		if (m->Desktops == NULL)
 			goto out;
 
-		this_desktop = cJSON_AddObjectToObject(desk_doc[d_count],
-		    "desktops");
+		this_desktop =
+		    cJSON_AddObjectToObject(desk_doc[d_count], "desktops");
 
 		di = m->Desktops->next;
 		while (di != NULL) {
-			if ((individual_d[d_count] = cJSON_CreateObject()) == NULL)
+			if ((individual_d[d_count] = cJSON_CreateObject())
+			    == NULL)
 				goto out;
-			cJSON_AddNumberToObject(individual_d[d_count], "number",
-				di->desk);
-			cJSON_AddBoolToObject(individual_d[d_count], "is_current",
-				di->desk == m->virtual_scr.CurrentDesk);
-			cJSON_AddBoolToObject(individual_d[d_count], "is_urgent",
-				desk_get_fw_urgent(m, di->desk));
+			cJSON_AddNumberToObject(
+			    individual_d[d_count], "number", di->desk);
+			cJSON_AddBoolToObject(individual_d[d_count],
+			    "is_current",
+			    di->desk == m->virtual_scr.CurrentDesk);
+			cJSON_AddBoolToObject(individual_d[d_count],
+			    "is_urgent", desk_get_fw_urgent(m, di->desk));
 			cJSON_AddNumberToObject(individual_d[d_count],
-				"number_of_clients", desk_get_fw_count(m, di->desk));
-			cJSON_AddItemToObject(this_desktop, di->name, individual_d[d_count]);
+			    "number_of_clients",
+			    desk_get_fw_count(m, di->desk));
+			cJSON_AddItemToObject(
+			    this_desktop, di->name, individual_d[d_count]);
 
 			di = di->next;
 		}
@@ -196,8 +194,8 @@ status_send(void)
 		}
 
 		cJSON_AddItemToObject(screens, m->si->name, desk_doc[d_count]);
-		cJSON_AddNumberToObject(desk_doc[d_count], "randr_order",
-		    m->number);
+		cJSON_AddNumberToObject(
+		    desk_doc[d_count], "randr_order", m->number);
 
 		d_count++;
 		m_count++;
@@ -216,10 +214,11 @@ out:
 
 #define PIPENAME "fvwm3.pipe"
 #define STATUSENV "FVWM_STATUS_PIPE"
-static void status_init_pipe(void)
+static void
+status_init_pipe(void)
 {
-	char	*tmpdir, *pipename, *addenv;
-	int	 status_fd = -1;
+	char *tmpdir, *pipename, *addenv;
+	int   status_fd = -1;
 
 	if ((tmpdir = getenv("TMPDIR")) == NULL)
 		tmpdir = "/tmp";
@@ -233,9 +232,9 @@ static void status_init_pipe(void)
 		return;
 	}
 
-	if ((status_fd = open(pipename, O_RDWR|O_NONBLOCK)) == -1) {
+	if ((status_fd = open(pipename, O_RDWR | O_NONBLOCK)) == -1) {
 		fvwm_debug(__func__, "Couldn't open pipe '%s': %s", pipename,
-			strerror(errno));
+		    strerror(errno));
 		free(pipename);
 		return;
 	}
@@ -250,8 +249,8 @@ static void status_init_pipe(void)
 	flib_putenv(STATUSENV, addenv);
 	free(addenv);
 
-	fvwm_debug(__func__, "Pipe opened: %s (fd: %d)", pipename,
-		fileno(status_fp));
+	fvwm_debug(
+	    __func__, "Pipe opened: %s (fd: %d)", pipename, fileno(status_fp));
 
 	free(pipename);
 }
@@ -261,142 +260,103 @@ static void status_init_pipe(void)
  * Reads a title button description (veliaa@rpi.edu)
  *
  */
-static char *ReadTitleButton(
-	char *s, TitleButton *tb, Bool append, int button)
+static char *
+ReadTitleButton(char *s, TitleButton *tb, Bool append, int button)
 {
-	char *end = NULL;
-	char *spec;
-	char *t;
-	int i;
-	int bs;
-	int bs_start, bs_end;
-	int pstyle = 0;
+	char	 *end = NULL;
+	char	 *spec;
+	char	 *t;
+	int	  i;
+	int	  bs;
+	int	  bs_start, bs_end;
+	int	  pstyle = 0;
 	DecorFace tmpdf;
 
 	Bool multiple;
-	int use_mask = 0;
-	int set_mask = 0;
+	int  use_mask = 0;
+	int  set_mask = 0;
 
 	s = SkipSpaces(s, NULL, 0);
 	t = GetNextTokenIndex(s, button_states, 0, &bs);
-	if (bs != BS_All)
-	{
+	if (bs != BS_All) {
 		s = SkipSpaces(t, NULL, 0);
 	}
 
-	if (bs == BS_All)
-	{
+	if (bs == BS_All) {
 		use_mask = 0;
 		set_mask = 0;
-	}
-	else if (bs == BS_Active)
-	{
+	} else if (bs == BS_Active) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_TOGGLED;
 		set_mask = 0;
-	}
-	else if (bs == BS_Inactive)
-	{
+	} else if (bs == BS_Inactive) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_TOGGLED;
 		set_mask = BS_MASK_INACTIVE;
-	}
-	else if (bs == BS_ToggledActive)
-	{
+	} else if (bs == BS_ToggledActive) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_TOGGLED;
 		set_mask = BS_MASK_TOGGLED;
-	}
-	else if (bs == BS_ToggledInactive)
-	{
+	} else if (bs == BS_ToggledInactive) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_TOGGLED;
 		set_mask = BS_MASK_INACTIVE | BS_MASK_TOGGLED;
-	}
-	else if (bs == BS_AllNormal)
-	{
+	} else if (bs == BS_AllNormal) {
 		use_mask = BS_MASK_TOGGLED;
 		set_mask = 0;
-	}
-	else if (bs == BS_AllToggled)
-	{
+	} else if (bs == BS_AllToggled) {
 		use_mask = BS_MASK_TOGGLED;
 		set_mask = BS_MASK_TOGGLED;
-	}
-	else if (bs == BS_AllActive)
-	{
+	} else if (bs == BS_AllActive) {
 		use_mask = BS_MASK_INACTIVE;
 		set_mask = 0;
-	}
-	else if (bs == BS_AllInactive)
-	{
+	} else if (bs == BS_AllInactive) {
 		use_mask = BS_MASK_INACTIVE;
 		set_mask = BS_MASK_INACTIVE;
-	}
-	else if (bs == BS_AllUp)
-	{
+	} else if (bs == BS_AllUp) {
 		use_mask = BS_MASK_DOWN;
 		set_mask = 0;
-	}
-	else if (bs == BS_AllDown)
-	{
+	} else if (bs == BS_AllDown) {
 		use_mask = BS_MASK_DOWN;
 		set_mask = BS_MASK_DOWN;
-	}
-	else if (bs == BS_AllActiveUp)
-	{
+	} else if (bs == BS_AllActiveUp) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_DOWN;
 		set_mask = 0;
-	}
-	else if (bs == BS_AllActiveDown)
-	{
+	} else if (bs == BS_AllActiveDown) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_DOWN;
 		set_mask = BS_MASK_DOWN;
-	}
-	else if (bs == BS_AllInactiveUp)
-	{
+	} else if (bs == BS_AllInactiveUp) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_DOWN;
 		set_mask = BS_MASK_INACTIVE;
-	}
-	else if (bs == BS_AllInactiveDown)
-	{
+	} else if (bs == BS_AllInactiveDown) {
 		use_mask = BS_MASK_INACTIVE | BS_MASK_DOWN;
 		set_mask = BS_MASK_INACTIVE | BS_MASK_DOWN;
 	}
 
-	if ((bs & BS_MaxButtonStateMask) == bs)
-	{
+	if ((bs & BS_MaxButtonStateMask) == bs) {
 		multiple = False;
 		bs_start = bs;
-		bs_end = bs;
-	}
-	else
-	{
+		bs_end	 = bs;
+	} else {
 		multiple = True;
 		bs_start = 0;
-		bs_end = BS_MaxButtonState - 1;
+		bs_end	 = BS_MaxButtonState - 1;
 		for (i = bs_start; (i & use_mask) != set_mask && i <= bs_end;
-			i++)
-		{
+		    i++) {
 			bs_start++;
 		}
 	}
 
-	if (*s == '(')
-	{
+	if (*s == '(') {
 		int len;
 		pstyle = 1;
-		if (!(end = strchr(++s, ')')))
-		{
-			fvwm_debug(__func__,
-				   "missing parenthesis: %s", s);
+		if (!(end = strchr(++s, ')'))) {
+			fvwm_debug(__func__, "missing parenthesis: %s", s);
 			return NULL;
 		}
-		s = SkipSpaces(s, NULL, 0);
+		s   = SkipSpaces(s, NULL, 0);
 		len = end - s + 1;
 		/* TA:  FIXME!  xasprintf() */
 		spec = fxmalloc(len);
 		strncpy(spec, s, len - 1);
 		spec[len - 1] = 0;
-	}
-	else
-	{
+	} else {
 		spec = s;
 	}
 
@@ -405,105 +365,83 @@ static char *ReadTitleButton(
 	memset(&tmpdf, 0, sizeof(DecorFace));
 	DFS_FACE_TYPE(tmpdf.style) = SimpleButton;
 
-	if (strncmp(spec, "--", 2) == 0)
-	{
+	if (strncmp(spec, "--", 2) == 0) {
 		/* only change flags */
 		Bool verbose = True;
-		for (i = bs_start; i <= bs_end; ++i)
-		{
-			if (multiple && (i & use_mask) != set_mask)
-			{
+		for (i = bs_start; i <= bs_end; ++i) {
+			if (multiple && (i & use_mask) != set_mask) {
 				continue;
 			}
 			ReadDecorFace(spec, &TB_STATE(*tb)[i], button, verbose);
 			verbose = False;
 		}
-	}
-	else if (ReadDecorFace(spec, &tmpdf, button, True))
-	{
-		if (append)
-		{
+	} else if (ReadDecorFace(spec, &tmpdf, button, True)) {
+		if (append) {
 			DecorFace *head = &TB_STATE(*tb)[bs_start];
 			DecorFace *tail = head;
 			DecorFace *next;
 
-			while (tail->next)
-			{
+			while (tail->next) {
 				tail = tail->next;
 			}
 			tail->next = fxmalloc(sizeof(DecorFace));
 			memcpy(tail->next, &tmpdf, sizeof(DecorFace));
-			if (DFS_FACE_TYPE(tail->next->style) == VectorButton &&
-			    DFS_FACE_TYPE((&TB_STATE(*tb)[bs_start])->style) ==
-			    DefaultVectorButton)
-			{
+			if (DFS_FACE_TYPE(tail->next->style) == VectorButton
+			    && DFS_FACE_TYPE((&TB_STATE(*tb)[bs_start])->style)
+				   == DefaultVectorButton) {
 				/* override the default vector style */
-				memcpy(
-					&tail->next->style, &head->style,
-					sizeof(DecorFaceStyle));
+				memcpy(&tail->next->style, &head->style,
+				    sizeof(DecorFaceStyle));
 				DFS_FACE_TYPE(tail->next->style) = VectorButton;
-				next = head->next;
-				head->next = NULL;
+				next				 = head->next;
+				head->next			 = NULL;
 				FreeDecorFace(dpy, head);
 				memcpy(head, next, sizeof(DecorFace));
 				free(next);
 			}
-			for (i = bs_start + 1; i <= bs_end; ++i)
-			{
-				if (multiple && (i & use_mask) != set_mask)
-				{
+			for (i = bs_start + 1; i <= bs_end; ++i) {
+				if (multiple && (i & use_mask) != set_mask) {
 					continue;
 				}
 				head = &TB_STATE(*tb)[i];
 				tail = head;
-				while (tail->next)
-				{
+				while (tail->next) {
 					tail = tail->next;
 				}
 				tail->next = fxcalloc(1, sizeof(DecorFace));
-				DFS_FACE_TYPE(tail->next->style) =
-					SimpleButton;
-				tail->next->next = NULL;
+				DFS_FACE_TYPE(tail->next->style) = SimpleButton;
+				tail->next->next		 = NULL;
 				ReadDecorFace(spec, tail->next, button, False);
-				if (DFS_FACE_TYPE(tail->next->style) ==
-				    VectorButton &&
-				    DFS_FACE_TYPE((&TB_STATE(*tb)[i])->style) ==
-				    DefaultVectorButton)
-				{
+				if (DFS_FACE_TYPE(tail->next->style)
+					== VectorButton
+				    && DFS_FACE_TYPE((&TB_STATE(*tb)[i])->style)
+					   == DefaultVectorButton) {
 					/* override the default vector style */
-					memcpy(
-						&tail->next->style,
-						&head->style,
-						sizeof(DecorFaceStyle));
+					memcpy(&tail->next->style, &head->style,
+					    sizeof(DecorFaceStyle));
 					DFS_FACE_TYPE(tail->next->style) =
-						VectorButton;
-					next = head->next;
+					    VectorButton;
+					next	   = head->next;
 					head->next = NULL;
 					FreeDecorFace(dpy, head);
 					memcpy(head, next, sizeof(DecorFace));
 					free(next);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			FreeDecorFace(dpy, &TB_STATE(*tb)[bs_start]);
-			memcpy(
-				&(TB_STATE(*tb)[bs_start]), &tmpdf,
-				sizeof(DecorFace));
-			for (i = bs_start + 1; i <= bs_end; ++i)
-			{
-				if (multiple && (i & use_mask) != set_mask)
-				{
+			memcpy(&(TB_STATE(*tb)[bs_start]), &tmpdf,
+			    sizeof(DecorFace));
+			for (i = bs_start + 1; i <= bs_end; ++i) {
+				if (multiple && (i & use_mask) != set_mask) {
 					continue;
 				}
 				ReadDecorFace(
-					spec, &TB_STATE(*tb)[i], button, False);
+				    spec, &TB_STATE(*tb)[i], button, False);
 			}
 		}
 	}
-	if (pstyle)
-	{
+	if (pstyle) {
 		free(spec);
 		end++;
 		end = SkipSpaces(end, NULL, 0);
@@ -513,26 +451,25 @@ static char *ReadTitleButton(
 }
 
 /* Remove the given decor from all windows */
-static void _remove_window_decors(F_CMD_ARGS, FvwmDecor *d)
+static void
+_remove_window_decors(F_CMD_ARGS, FvwmDecor *d)
 {
-	const exec_context_t *exc2;
+	const exec_context_t  *exc2;
 	exec_context_changes_t ecc;
-	FvwmWindow *t;
+	FvwmWindow	      *t;
 
-	for (t = Scr.FvwmRoot.next; t; t = t->next)
-	{
-		if (t->decor == d)
-		{
+	for (t = Scr.FvwmRoot.next; t; t = t->next) {
+		if (t->decor == d) {
 			/* remove the extra title height now because we delete
 			 * the current decor before calling ChangeDecor(). */
 			t->g.frame.height -= t->decor->title_height;
-			t->decor = NULL;
-			ecc.w.fw = t;
+			t->decor       = NULL;
+			ecc.w.fw       = t;
 			ecc.w.wcontext = C_WINDOW;
-			exc2 = exc_clone_context(
-				exc, &ecc, ECC_FW | ECC_WCONTEXT);
+			exc2 =
+			    exc_clone_context(exc, &ecc, ECC_FW | ECC_WCONTEXT);
 			execute_function(
-				cond_rc, exc2, "ChangeDecor Default", pc, 0);
+			    cond_rc, exc2, "ChangeDecor Default", pc, 0);
 			exc_destroy_context(exc2);
 		}
 	}
@@ -540,86 +477,71 @@ static void _remove_window_decors(F_CMD_ARGS, FvwmDecor *d)
 	return;
 }
 
-static void do_title_style(F_CMD_ARGS, Bool do_add)
+static void
+do_title_style(F_CMD_ARGS, Bool do_add)
 {
-	char *parm;
-	char *prev;
+	char	  *parm;
+	char	  *prev;
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
-	Scr.flags.do_need_window_update = 1;
-	decor->flags.has_changed = 1;
+	Scr.flags.do_need_window_update	  = 1;
+	decor->flags.has_changed	  = 1;
 	decor->titlebar.flags.has_changed = 1;
 
-	for (prev = action ; (parm = PeekToken(action, &action)); prev = action)
-	{
-		if (!do_add && StrEquals(parm,"centered"))
-		{
+	for (prev = action; (parm = PeekToken(action, &action));
+	    prev  = action) {
+		if (!do_add && StrEquals(parm, "centered")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_CENTER;
-		}
-		else if (!do_add && StrEquals(parm,"leftjustified"))
-		{
+		} else if (!do_add && StrEquals(parm, "leftjustified")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_LEFT;
-		}
-		else if (!do_add && StrEquals(parm,"rightjustified"))
-		{
+		} else if (!do_add && StrEquals(parm, "rightjustified")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_RIGHT;
-		}
-		else if (!do_add && StrEquals(parm,"height"))
-		{
+		} else if (!do_add && StrEquals(parm, "height")) {
 			int height = 0;
-			int next = 0;
+			int next   = 0;
 
-			if (!action ||
-			    sscanf(action, "%d%n", &height, &next) <= 0 ||
-			    height < MIN_FONT_HEIGHT ||
-			    height > MAX_FONT_HEIGHT)
-			{
-				if (height != 0)
-				{
+			if (!action
+			    || sscanf(action, "%d%n", &height, &next) <= 0
+			    || height < MIN_FONT_HEIGHT
+			    || height > MAX_FONT_HEIGHT) {
+				if (height != 0) {
 					fvwm_debug(__func__,
-						   "bad height argument (height"
-						   " must be from 5 to 256)");
+					    "bad height argument (height"
+					    " must be from 5 to 256)");
 					height = 0;
 				}
 			}
-			if (decor->title_height != height ||
-			    decor->min_title_height != 0)
-			{
-				decor->title_height = height;
-				decor->min_title_height = 0;
+			if (decor->title_height != height
+			    || decor->min_title_height != 0) {
+				decor->title_height		      = height;
+				decor->min_title_height		      = 0;
 				decor->flags.has_title_height_changed = 1;
 			}
 			if (action)
 				action += next;
-		}
-		else if (!do_add && StrEquals(parm,"MinHeight"))
-		{
+		} else if (!do_add && StrEquals(parm, "MinHeight")) {
 			int height = 0;
-			int next = 0;
+			int next   = 0;
 
-			if (!action ||
-			    sscanf(action, "%d%n", &height, &next) <= 0 ||
-			    height < MIN_FONT_HEIGHT ||
-			    height > MAX_FONT_HEIGHT)
-			{
+			if (!action
+			    || sscanf(action, "%d%n", &height, &next) <= 0
+			    || height < MIN_FONT_HEIGHT
+			    || height > MAX_FONT_HEIGHT) {
 				if (height < MIN_FONT_HEIGHT)
 					height = MIN_FONT_HEIGHT;
 				else if (height > MAX_FONT_HEIGHT)
 					height = 0;
 			}
-			if (decor->min_title_height != height)
-			{
-				decor->title_height = 0;
-				decor->min_title_height = height;
+			if (decor->min_title_height != height) {
+				decor->title_height		      = 0;
+				decor->min_title_height		      = height;
 				decor->flags.has_title_height_changed = 1;
 			}
 			if (action)
 				action += next;
-		}
-		else
-		{
-			action = ReadTitleButton(
-				prev, &decor->titlebar, do_add, -1);
+		} else {
+			action =
+			    ReadTitleButton(prev, &decor->titlebar, do_add, -1);
 		}
 	}
 
@@ -631,187 +553,144 @@ static void do_title_style(F_CMD_ARGS, Bool do_add)
  * Reads a multi-pixmap titlebar config. (tril@igs.net)
  *
  */
-static char *ReadMultiPixmapDecor(char *s, DecorFace *df)
+static char *
+ReadMultiPixmapDecor(char *s, DecorFace *df)
 {
-	static char *pm_names[TBMP_NUM_PIXMAPS+1] =
-		{
-			"Main",
-			"LeftMain",
-			"RightMain",
-			"LeftButtons",
-			"RightButtons",
-			"UnderText",
-			"LeftOfText",
-			"RightOfText",
-			"LeftEnd",
-			"RightEnd",
-			"Buttons",
-			NULL
-		};
+	static char  *pm_names[TBMP_NUM_PIXMAPS + 1] = {"Main", "LeftMain",
+	     "RightMain", "LeftButtons", "RightButtons", "UnderText",
+	     "LeftOfText", "RightOfText", "LeftEnd", "RightEnd", "Buttons",
+	     NULL};
 	FvwmPicture **pm;
-	FvwmAcs *acs;
-	Pixel *pixels;
-	char *token;
-	Bool stretched;
-	Bool load_pixmap = False;
-	int pm_id, i = 0;
+	FvwmAcs	     *acs;
+	Pixel	     *pixels;
+	char	     *token;
+	Bool	      stretched;
+	Bool	      load_pixmap = False;
+	int	      pm_id, i = 0;
 	FvwmPictureAttributes fpa;
 
 	df->style.face_type = MultiPixmap;
-	df->u.mp.pixmaps = pm = fxcalloc(TBMP_NUM_PIXMAPS, sizeof(FvwmPicture*));
+	df->u.mp.pixmaps    = pm =
+	    fxcalloc(TBMP_NUM_PIXMAPS, sizeof(FvwmPicture *));
 	df->u.mp.acs = acs = fxmalloc(TBMP_NUM_PIXMAPS * sizeof(FvwmAcs));
 	df->u.mp.pixels = pixels = fxmalloc(TBMP_NUM_PIXMAPS * sizeof(Pixel));
-	for(i=0; i < TBMP_NUM_PIXMAPS; i++)
-	{
-		acs[i].cs = -1;
+	for (i = 0; i < TBMP_NUM_PIXMAPS; i++) {
+		acs[i].cs	     = -1;
 		acs[i].alpha_percent = 100;
 	}
 	s = GetNextTokenIndex(s, pm_names, 0, &pm_id);
-	while (pm_id >= 0)
-	{
-		stretched = False;
+	while (pm_id >= 0) {
+		stretched   = False;
 		load_pixmap = False;
-		s = DoPeekToken(s, &token, ",()", NULL, NULL);
-		if (StrEquals(token, "stretched"))
-		{
+		s	    = DoPeekToken(s, &token, ",()", NULL, NULL);
+		if (StrEquals(token, "stretched")) {
 			stretched = True;
+			s	  = DoPeekToken(s, &token, ",", NULL, NULL);
+		} else if (StrEquals(token, "tiled")) {
 			s = DoPeekToken(s, &token, ",", NULL, NULL);
 		}
-		else if (StrEquals(token, "tiled"))
-		{
-			s = DoPeekToken(s, &token, ",", NULL, NULL);
-		}
-		if (!token)
-		{
+		if (!token) {
 			break;
 		}
-		if (pm[pm_id] || acs[pm_id].cs >= 0 ||
-		    (df->u.mp.solid_flags & (1 << pm_id)))
-		{
-			fvwm_debug(__func__,
-				   "Ignoring: already-specified %s",
-				   pm_names[i]);
+		if (pm[pm_id] || acs[pm_id].cs >= 0
+		    || (df->u.mp.solid_flags & (1 << pm_id))) {
+			fvwm_debug(__func__, "Ignoring: already-specified %s",
+			    pm_names[i]);
 			continue;
 		}
-		if (stretched)
-		{
+		if (stretched) {
 			df->u.mp.stretch_flags |= (1 << pm_id);
 		}
-		if (strncasecmp (token, "Colorset", 8) == 0)
-		{
-			int val;
+		if (strncasecmp(token, "Colorset", 8) == 0) {
+			int   val;
 			char *tmp;
 
 			tmp = DoPeekToken(s, &token, ",", NULL, NULL);
-			if (!GetIntegerArguments(token, NULL, &val, 1) ||
-			    val < 0)
-			{
+			if (!GetIntegerArguments(token, NULL, &val, 1)
+			    || val < 0) {
 				fvwm_debug(__func__,
-					   "Colorset should take one or two "
-					   "positive integers as argument");
-			}
-			else
-			{
+				    "Colorset should take one or two "
+				    "positive integers as argument");
+			} else {
 				acs[pm_id].cs = val;
 				alloc_colorset(val);
-				s = tmp;
+				s   = tmp;
 				tmp = DoPeekToken(s, &token, ",", NULL, NULL);
-				if (GetIntegerArguments(token, NULL, &val, 1))
-				{
+				if (GetIntegerArguments(token, NULL, &val, 1)) {
 					acs[pm_id].alpha_percent =
-						max(0, min(100,val));
+					    max(0, min(100, val));
 					s = tmp;
 				}
 			}
-		}
-		else if (strncasecmp(token, "TiledPixmap", 11) == 0)
-		{
-			s = DoPeekToken(s, &token, ",", NULL, NULL);
+		} else if (strncasecmp(token, "TiledPixmap", 11) == 0) {
+			s	    = DoPeekToken(s, &token, ",", NULL, NULL);
 			load_pixmap = True;
-		}
-		else if (strncasecmp(token, "AdjustedPixmap", 14) == 0)
-		{
-			s = DoPeekToken(s, &token, ",", NULL, NULL);
+		} else if (strncasecmp(token, "AdjustedPixmap", 14) == 0) {
+			s	    = DoPeekToken(s, &token, ",", NULL, NULL);
 			load_pixmap = True;
 			df->u.mp.stretch_flags |= (1 << pm_id);
-		}
-		else if (strncasecmp(token, "Solid", 5) == 0)
-		{
+		} else if (strncasecmp(token, "Solid", 5) == 0) {
 			s = DoPeekToken(s, &token, ",", NULL, NULL);
-			if (token)
-			{
+			if (token) {
 				df->u.mp.pixels[pm_id] = GetColor(token);
 				df->u.mp.solid_flags |= (1 << pm_id);
 			}
-		}
-		else
-		{
+		} else {
 			load_pixmap = True;
 		}
-		if (load_pixmap && token)
-		{
-			fpa.mask = (Pdepth <= 8)? FPAM_DITHER:0; /* ? */
+		if (load_pixmap && token) {
+			fpa.mask  = (Pdepth <= 8) ? FPAM_DITHER : 0; /* ? */
 			pm[pm_id] = PCacheFvwmPicture(
-				dpy, Scr.NoFocusWin, NULL, token, fpa);
-			if (!pm[pm_id])
-			{
+			    dpy, Scr.NoFocusWin, NULL, token, fpa);
+			if (!pm[pm_id]) {
 				fvwm_debug(__func__,
-					   "Pixmap '%s' could not be loaded",
-					   token);
+				    "Pixmap '%s' could not be loaded", token);
 			}
 		}
-		if (pm_id == TBMP_BUTTONS)
-		{
-			if (pm[TBMP_LEFT_BUTTONS])
-			{
+		if (pm_id == TBMP_BUTTONS) {
+			if (pm[TBMP_LEFT_BUTTONS]) {
 				PDestroyFvwmPicture(dpy, pm[TBMP_LEFT_BUTTONS]);
 			}
-			if (pm[TBMP_RIGHT_BUTTONS])
-			{
-				PDestroyFvwmPicture(dpy, pm[TBMP_RIGHT_BUTTONS]);
+			if (pm[TBMP_RIGHT_BUTTONS]) {
+				PDestroyFvwmPicture(
+				    dpy, pm[TBMP_RIGHT_BUTTONS]);
 			}
 			df->u.mp.stretch_flags &= ~(1 << TBMP_LEFT_BUTTONS);
 			df->u.mp.stretch_flags &= ~(1 << TBMP_RIGHT_BUTTONS);
 			df->u.mp.solid_flags &= ~(1 << TBMP_LEFT_BUTTONS);
 			df->u.mp.solid_flags &= ~(1 << TBMP_RIGHT_BUTTONS);
-			if (pm[TBMP_BUTTONS])
-			{
+			if (pm[TBMP_BUTTONS]) {
 				pm[TBMP_LEFT_BUTTONS] =
-					PCloneFvwmPicture(pm[TBMP_BUTTONS]);
+				    PCloneFvwmPicture(pm[TBMP_BUTTONS]);
 				acs[TBMP_LEFT_BUTTONS].cs = -1;
 				pm[TBMP_RIGHT_BUTTONS] =
-					PCloneFvwmPicture(pm[TBMP_BUTTONS]);
+				    PCloneFvwmPicture(pm[TBMP_BUTTONS]);
 				acs[TBMP_RIGHT_BUTTONS].cs = -1;
-			}
-			else
-			{
-				pm[TBMP_RIGHT_BUTTONS] =
-					pm[TBMP_LEFT_BUTTONS] = NULL;
+			} else {
+				pm[TBMP_RIGHT_BUTTONS] = pm[TBMP_LEFT_BUTTONS] =
+				    NULL;
 				acs[TBMP_RIGHT_BUTTONS].cs =
-					acs[TBMP_LEFT_BUTTONS].cs =
+				    acs[TBMP_LEFT_BUTTONS].cs =
 					acs[TBMP_BUTTONS].cs;
 				acs[TBMP_RIGHT_BUTTONS].alpha_percent =
-					acs[TBMP_LEFT_BUTTONS].alpha_percent =
+				    acs[TBMP_LEFT_BUTTONS].alpha_percent =
 					acs[TBMP_BUTTONS].alpha_percent;
 				pixels[TBMP_LEFT_BUTTONS] =
-					pixels[TBMP_RIGHT_BUTTONS] =
+				    pixels[TBMP_RIGHT_BUTTONS] =
 					pixels[TBMP_BUTTONS];
 			}
-			if (stretched)
-			{
+			if (stretched) {
 				df->u.mp.stretch_flags |=
-					(1 << TBMP_LEFT_BUTTONS) |
-					(1 << TBMP_RIGHT_BUTTONS);
+				    (1 << TBMP_LEFT_BUTTONS)
+				    | (1 << TBMP_RIGHT_BUTTONS);
 			}
-			if (df->u.mp.solid_flags & (1 << TBMP_BUTTONS))
-			{
+			if (df->u.mp.solid_flags & (1 << TBMP_BUTTONS)) {
 				df->u.mp.solid_flags |=
-					(1 << TBMP_LEFT_BUTTONS);
+				    (1 << TBMP_LEFT_BUTTONS);
 				df->u.mp.solid_flags |=
-					(1 << TBMP_RIGHT_BUTTONS);
+				    (1 << TBMP_RIGHT_BUTTONS);
 			}
-			if (pm[TBMP_BUTTONS])
-			{
+			if (pm[TBMP_BUTTONS]) {
 				PDestroyFvwmPicture(dpy, pm[TBMP_BUTTONS]);
 				pm[TBMP_BUTTONS] = NULL;
 			}
@@ -822,30 +701,22 @@ static char *ReadMultiPixmapDecor(char *s, DecorFace *df)
 		s = GetNextTokenIndex(s, pm_names, 0, &pm_id);
 	}
 
-	if (!(pm[TBMP_MAIN] || acs[TBMP_MAIN].cs >= 0 ||
-	      (df->u.mp.solid_flags & TBMP_MAIN))
-	    &&
-	    !(pm[TBMP_LEFT_MAIN] || acs[TBMP_LEFT_MAIN].cs >= 0 ||
-	      (df->u.mp.solid_flags & TBMP_LEFT_MAIN))
-	      &&
-	    !(pm[TBMP_RIGHT_MAIN] || acs[TBMP_RIGHT_MAIN].cs >= 0 ||
-	      (df->u.mp.solid_flags & TBMP_RIGHT_MAIN)))
-	{
+	if (!(pm[TBMP_MAIN] || acs[TBMP_MAIN].cs >= 0
+		|| (df->u.mp.solid_flags & TBMP_MAIN))
+	    && !(pm[TBMP_LEFT_MAIN] || acs[TBMP_LEFT_MAIN].cs >= 0
+		 || (df->u.mp.solid_flags & TBMP_LEFT_MAIN))
+	    && !(pm[TBMP_RIGHT_MAIN] || acs[TBMP_RIGHT_MAIN].cs >= 0
+		 || (df->u.mp.solid_flags & TBMP_RIGHT_MAIN))) {
 		fvwm_debug(__func__,
-			   "No Main pixmap/colorset/solid found for TitleStyle "
-			   "MultiPixmap  (you must specify either Main, "
-			   "or both LeftMain and RightMain)");
-		for (i=0; i < TBMP_NUM_PIXMAPS; i++)
-		{
-			if (pm[i])
-			{
+		    "No Main pixmap/colorset/solid found for TitleStyle "
+		    "MultiPixmap  (you must specify either Main, "
+		    "or both LeftMain and RightMain)");
+		for (i = 0; i < TBMP_NUM_PIXMAPS; i++) {
+			if (pm[i]) {
 				PDestroyFvwmPicture(dpy, pm[i]);
-			}
-			else if (!!(df->u.mp.solid_flags & i))
-			{
-				PictureFreeColors(
-					dpy, Pcmap, &df->u.mp.pixels[i], 1, 0,
-					False);
+			} else if (!!(df->u.mp.solid_flags & i)) {
+				PictureFreeColors(dpy, Pcmap,
+				    &df->u.mp.pixels[i], 1, 0, False);
 			}
 		}
 		free(pm);
@@ -863,13 +734,13 @@ static char *ReadMultiPixmapDecor(char *s, DecorFace *df)
  *      structure, but does not free the FvwmDecor itself
  *
  */
-static void DestroyFvwmDecor(FvwmDecor *decor)
+static void
+DestroyFvwmDecor(FvwmDecor *decor)
 {
 	int i;
 	/* reset to default button set (frees allocated mem) */
 	DestroyAllButtons(decor);
-	for (i = 0; i < BS_MaxButtonState; ++i)
-	{
+	for (i = 0; i < BS_MaxButtonState; ++i) {
 		FreeDecorFace(dpy, &TB_STATE(decor->titlebar)[i]);
 	}
 	FreeDecorFace(dpy, &decor->BorderStyle.active);
@@ -880,45 +751,33 @@ static void DestroyFvwmDecor(FvwmDecor *decor)
 	return;
 }
 
-static void SetLayerButtonFlag(
-	int layer, int multi, int set, FvwmDecor *decor, TitleButton *tb)
+static void
+SetLayerButtonFlag(
+    int layer, int multi, int set, FvwmDecor *decor, TitleButton *tb)
 {
 	int i;
 	int start = 0;
-	int add = 2;
+	int add	  = 2;
 
-	if (multi)
-	{
-		if (multi == 2)
-		{
+	if (multi) {
+		if (multi == 2) {
 			start = 1;
-		}
-		else if (multi == 3)
-		{
+		} else if (multi == 3) {
 			add = 1;
 		}
-		for (i = start; i < NUMBER_OF_TITLE_BUTTONS; i += add)
-		{
-			if (set)
-			{
+		for (i = start; i < NUMBER_OF_TITLE_BUTTONS; i += add) {
+			if (set) {
 				TB_FLAGS(decor->buttons[i]).has_layer = 1;
-				TB_LAYER(decor->buttons[i]) = layer;
-			}
-			else
-			{
+				TB_LAYER(decor->buttons[i])	      = layer;
+			} else {
 				TB_FLAGS(decor->buttons[i]).has_layer = 0;
 			}
 		}
-	}
-	else
-	{
-		if (set)
-		{
+	} else {
+		if (set) {
 			TB_FLAGS(*tb).has_layer = 1;
-			TB_LAYER(*tb) = layer;
-		}
-		else
-		{
+			TB_LAYER(*tb)		= layer;
+		} else {
 			TB_FLAGS(*tb).has_layer = 0;
 		}
 	}
@@ -931,43 +790,31 @@ static void SetLayerButtonFlag(
  * Changes a button decoration style (changes by veliaa@rpi.edu)
  *
  */
-static void SetMWMButtonFlag(
-	mwm_flags flag, int multi, int set, FvwmDecor *decor, TitleButton *tb)
+static void
+SetMWMButtonFlag(
+    mwm_flags flag, int multi, int set, FvwmDecor *decor, TitleButton *tb)
 {
 	int i;
 	int start = 0;
-	int add = 2;
+	int add	  = 2;
 
-	if (multi)
-	{
-		if (multi == 2)
-		{
+	if (multi) {
+		if (multi == 2) {
 			start = 1;
-		}
-		else if (multi == 3)
-		{
+		} else if (multi == 3) {
 			add = 1;
 		}
-		for (i = start; i < NUMBER_OF_TITLE_BUTTONS; i += add)
-		{
-			if (set)
-			{
+		for (i = start; i < NUMBER_OF_TITLE_BUTTONS; i += add) {
+			if (set) {
 				TB_MWM_DECOR_FLAGS(decor->buttons[i]) |= flag;
-			}
-			else
-			{
+			} else {
 				TB_MWM_DECOR_FLAGS(decor->buttons[i]) &= ~flag;
 			}
 		}
-	}
-	else
-	{
-		if (set)
-		{
+	} else {
+		if (set) {
 			TB_MWM_DECOR_FLAGS(*tb) |= flag;
-		}
-		else
-		{
+		} else {
 			TB_MWM_DECOR_FLAGS(*tb) &= ~flag;
 		}
 	}
@@ -975,240 +822,188 @@ static void SetMWMButtonFlag(
 	return;
 }
 
-static void do_button_style(F_CMD_ARGS, Bool do_add)
+static void
+do_button_style(F_CMD_ARGS, Bool do_add)
 {
-	int i;
-	int multi = 0;
-	int button = 0;
-	int do_return;
-	char *text = NULL;
-	char *prev = NULL;
-	char *parm = NULL;
-	TitleButton *tb = NULL;
-	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
+	int	     i;
+	int	     multi  = 0;
+	int	     button = 0;
+	int	     do_return;
+	char	    *text  = NULL;
+	char	    *prev  = NULL;
+	char	    *parm  = NULL;
+	TitleButton *tb	   = NULL;
+	FvwmDecor   *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
 	parm = PeekToken(action, &text);
-	if (parm && isdigit(*parm))
-	{
+	if (parm && isdigit(*parm)) {
 		button = atoi(parm);
 		button = BUTTON_INDEX(button);
 	}
 
-	if (parm == NULL || button >= NUMBER_OF_TITLE_BUTTONS || button < 0)
-	{
-		fvwm_debug(__func__, "Bad button style (1) in line %s",
-			   action);
+	if (parm == NULL || button >= NUMBER_OF_TITLE_BUTTONS || button < 0) {
+		fvwm_debug(__func__, "Bad button style (1) in line %s", action);
 		return;
 	}
 
 	Scr.flags.do_need_window_update = 1;
 
 	do_return = 0;
-	if (!isdigit(*parm))
-	{
-		if (StrEquals(parm,"left"))
-		{
+	if (!isdigit(*parm)) {
+		if (StrEquals(parm, "left")) {
 			multi = 1; /* affect all left buttons */
-		}
-		else if (StrEquals(parm,"right"))
-		{
+		} else if (StrEquals(parm, "right")) {
 			multi = 2; /* affect all right buttons */
-		}
-		else if (StrEquals(parm,"all"))
-		{
+		} else if (StrEquals(parm, "all")) {
 			multi = 3; /* affect all buttons */
-		}
-		else
-		{
+		} else {
 			/* we're either resetting buttons or an invalid button
 			 * set was specified */
-			if (StrEquals(parm,"reset"))
-			{
+			if (StrEquals(parm, "reset")) {
 				ResetAllButtons(decor);
-			}
-			else
-			{
+			} else {
 				fvwm_debug(__func__,
-					   "Bad button style (2) in line %s",
-					   action);
+				    "Bad button style (2) in line %s", action);
 			}
-			multi = 3;
+			multi	  = 3;
 			do_return = 1;
 		}
 	}
 	/* mark button style and decor as changed */
 	decor->flags.has_changed = 1;
-	if (multi == 0)
-	{
+	if (multi == 0) {
 		/* a single button was specified */
-		tb = &decor->buttons[button];
+		tb			  = &decor->buttons[button];
 		TB_FLAGS(*tb).has_changed = 1;
-	}
-	else
-	{
-		for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i)
-		{
-			if (((multi & 1) && !(i & 1)) ||
-			    ((multi & 2) && (i & 1)))
-			{
+	} else {
+		for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i) {
+			if (((multi & 1) && !(i & 1))
+			    || ((multi & 2) && (i & 1))) {
 				TB_FLAGS(decor->buttons[i]).has_changed = 1;
 			}
 		}
 	}
-	if (do_return == 1)
-	{
+	if (do_return == 1) {
 		return;
 	}
-	for (prev = text; (parm = PeekToken(text, &text)); prev = text)
-	{
-		if (!do_add && strcmp(parm,"-") == 0)
-		{
+	for (prev = text; (parm = PeekToken(text, &text)); prev = text) {
+		if (!do_add && strcmp(parm, "-") == 0) {
 			char *tok;
 			text = GetNextToken(text, &tok);
-			while (tok)
-			{
-				int set = 1;
+			while (tok) {
+				int   set     = 1;
 				char *old_tok = NULL;
 
-				if (*tok == '!')
-				{
+				if (*tok == '!') {
 					/* flag negate */
-					set = 0;
+					set	= 0;
 					old_tok = tok;
 					tok++;
 				}
-				if (StrEquals(tok,"Clear"))
-				{
-					if (multi)
-					{
+				if (StrEquals(tok, "Clear")) {
+					if (multi) {
 						for (i = 0;
-						     i < NUMBER_OF_TITLE_BUTTONS; ++i)
-						{
-							if (((multi & 1) &&
-							     !(i & 1)) ||
-							    ((multi & 2) &&
-							     (i & 1)))
-							{
-								TB_JUSTIFICATION(decor->buttons[i]) =
-									(set) ? JUST_CENTER : JUST_RIGHT;
-								memset(&TB_FLAGS(decor->buttons[i]), (set) ? 0 : 0xff,
-								       sizeof(TB_FLAGS(decor->buttons[i])));
-								/* ? not very useful if set == 0 ? */
+						    i < NUMBER_OF_TITLE_BUTTONS;
+						    ++i) {
+							if (((multi & 1)
+								&& !(i & 1))
+							    || ((multi & 2)
+								&& (i & 1))) {
+								TB_JUSTIFICATION(
+								    decor->buttons
+									[i]) =
+								    (set)
+									? JUST_CENTER
+									: JUST_RIGHT;
+								memset(
+								    &TB_FLAGS(
+									decor->buttons
+									    [i]),
+								    (set)
+									? 0
+									: 0xff,
+								    sizeof(TB_FLAGS(
+									decor->buttons
+									    [i])));
+								/* ? not very
+								 * useful if set
+								 * == 0 ? */
 							}
 						}
-					}
-					else
-					{
-						TB_JUSTIFICATION(*tb) = (set) ?
-							JUST_CENTER :
-							JUST_RIGHT;
-						memset(&TB_FLAGS(*tb), (set) ?
-						       0 : 0xff,
-						       sizeof(TB_FLAGS(*tb)));
+					} else {
+						TB_JUSTIFICATION(*tb) =
+						    (set) ? JUST_CENTER
+							  : JUST_RIGHT;
+						memset(&TB_FLAGS(*tb),
+						    (set) ? 0 : 0xff,
+						    sizeof(TB_FLAGS(*tb)));
 						/* ? not very useful if
 						 * set == 0 ? */
 					}
-				}
-				else if (StrEquals(tok, "MWMDecorMenu"))
-				{
-					SetMWMButtonFlag(
-						MWM_DECOR_MENU, multi, set,
-						decor, tb);
-				}
-				else if (StrEquals(tok, "MWMDecorMin"))
-				{
-					SetMWMButtonFlag(
-						MWM_DECOR_MINIMIZE, multi, set,
-						decor, tb);
-				}
-				else if (StrEquals(tok, "MWMDecorMax"))
-				{
-					SetMWMButtonFlag(
-						MWM_DECOR_MAXIMIZE, multi, set,
-						decor, tb);
-				}
-				else if (StrEquals(tok, "MWMDecorShade"))
-				{
-					SetMWMButtonFlag(
-						MWM_DECOR_SHADE, multi, set,
-						decor, tb);
-				}
-				else if (StrEquals(tok, "MWMDecorStick"))
-				{
-					SetMWMButtonFlag(
-						MWM_DECOR_STICK, multi, set,
-						decor, tb);
-				}
-				else if (StrEquals(tok, "MwmDecorLayer"))
-				{
-					int layer, got_number;
+				} else if (StrEquals(tok, "MWMDecorMenu")) {
+					SetMWMButtonFlag(MWM_DECOR_MENU, multi,
+					    set, decor, tb);
+				} else if (StrEquals(tok, "MWMDecorMin")) {
+					SetMWMButtonFlag(MWM_DECOR_MINIMIZE,
+					    multi, set, decor, tb);
+				} else if (StrEquals(tok, "MWMDecorMax")) {
+					SetMWMButtonFlag(MWM_DECOR_MAXIMIZE,
+					    multi, set, decor, tb);
+				} else if (StrEquals(tok, "MWMDecorShade")) {
+					SetMWMButtonFlag(MWM_DECOR_SHADE, multi,
+					    set, decor, tb);
+				} else if (StrEquals(tok, "MWMDecorStick")) {
+					SetMWMButtonFlag(MWM_DECOR_STICK, multi,
+					    set, decor, tb);
+				} else if (StrEquals(tok, "MwmDecorLayer")) {
+					int   layer, got_number;
 					char *ltok;
 					text = GetNextToken(text, &ltok);
-					if (ltok)
-					{
+					if (ltok) {
 						got_number =
-							(sscanf(ltok, "%d",
-								&layer) == 1);
-						free (ltok);
-					}
-					else
-					{
+						    (sscanf(ltok, "%d", &layer)
+							== 1);
+						free(ltok);
+					} else {
 						got_number = 0;
 					}
-					if (!ltok || !got_number)
-					{
+					if (!ltok || !got_number) {
 						fvwm_debug(__func__,
-							   "could not read"
-							   " integer value for"
-							   " layer -- line: %s",
-							   text);
-					}
-					else
-					{
-						SetLayerButtonFlag(
-							layer, multi, set,
-							decor, tb);
+						    "could not read"
+						    " integer value for"
+						    " layer -- line: %s",
+						    text);
+					} else {
+						SetLayerButtonFlag(layer, multi,
+						    set, decor, tb);
 					}
 
-				}
-				else
-				{
+				} else {
 					fvwm_debug(__func__,
-						   "unknown title button flag"
-						   " %s -- line: %s", tok,
-						   text);
+					    "unknown title button flag"
+					    " %s -- line: %s",
+					    tok, text);
 				}
-				if (set)
-				{
+				if (set) {
 					free(tok);
-				}
-				else
-				{
+				} else {
 					free(old_tok);
 				}
 				text = GetNextToken(text, &tok);
 			}
 			break;
-		}
-		else
-		{
-			if (multi)
-			{
-				for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i)
-				{
-					if (((multi & 1) && !(i & 1)) ||
-					    ((multi & 2) && (i & 1)))
-					{
-						text = ReadTitleButton(
-							prev,
-							&decor->buttons[i],
-							do_add, i);
+		} else {
+			if (multi) {
+				for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i) {
+					if (((multi & 1) && !(i & 1))
+					    || ((multi & 2) && (i & 1))) {
+						text = ReadTitleButton(prev,
+						    &decor->buttons[i], do_add,
+						    i);
 					}
 				}
-			}
-			else if (!(text = ReadTitleButton(
-					   prev, tb, do_add, button)))
-			{
+			} else if (!(text = ReadTitleButton(
+					 prev, tb, do_add, button))) {
 				break;
 			}
 		}
@@ -1217,112 +1012,95 @@ static void do_button_style(F_CMD_ARGS, Bool do_add)
 	return;
 }
 
-static
-int update_decorface_colorset(DecorFace *df, int cset)
+static int
+update_decorface_colorset(DecorFace *df, int cset)
 {
 	DecorFace *tdf;
-	int has_changed = 0;
+	int	   has_changed = 0;
 
-	for(tdf = df; tdf != NULL; tdf = tdf->next)
-	{
-		if (DFS_FACE_TYPE(tdf->style) == ColorsetButton &&
-		    tdf->u.acs.cs == cset)
-		{
+	for (tdf = df; tdf != NULL; tdf = tdf->next) {
+		if (DFS_FACE_TYPE(tdf->style) == ColorsetButton
+		    && tdf->u.acs.cs == cset) {
 			tdf->flags.has_changed = 1;
-			has_changed = 1;
-		}
-		else if (DFS_FACE_TYPE(tdf->style) == MultiPixmap)
-		{
+			has_changed	       = 1;
+		} else if (DFS_FACE_TYPE(tdf->style) == MultiPixmap) {
 			int i;
 
-			for (i = 0; i < TBMP_NUM_PIXMAPS; i++)
-			{
-				if (tdf->u.mp.acs[i].cs == cset)
-				{
+			for (i = 0; i < TBMP_NUM_PIXMAPS; i++) {
+				if (tdf->u.mp.acs[i].cs == cset) {
 					tdf->flags.has_changed = 1;
-					has_changed = 1;
+					has_changed	       = 1;
 				}
 			}
 		}
-}
+	}
 
 	return has_changed;
 }
 
-static
-int update_titlebutton_colorset(TitleButton *tb, int cset)
+static int
+update_titlebutton_colorset(TitleButton *tb, int cset)
 {
 	int i;
 	int has_changed = 0;
 
-	for(i = 0; i < BS_MaxButtonState; i++)
-	{
+	for (i = 0; i < BS_MaxButtonState; i++) {
 		tb->state[i].flags.has_changed =
-			update_decorface_colorset(&(tb->state[i]), cset);
+		    update_decorface_colorset(&(tb->state[i]), cset);
 		has_changed |= tb->state[i].flags.has_changed;
 	}
 	return has_changed;
 }
 
-static
-void update_decors_colorset(int cset)
+static void
+update_decors_colorset(int cset)
 {
-	int i;
+	int	   i;
 	FvwmDecor *decor = &Scr.DefaultDecor;
 
-	for(decor = &Scr.DefaultDecor; decor != NULL; decor = decor->next)
-	{
-		for(i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++)
-		{
+	for (decor = &Scr.DefaultDecor; decor != NULL; decor = decor->next) {
+		for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++) {
 			decor->flags.has_changed |= update_titlebutton_colorset(
-				&(decor->buttons[i]), cset);
+			    &(decor->buttons[i]), cset);
 		}
-		decor->flags.has_changed |= update_titlebutton_colorset(
-			&(decor->titlebar), cset);
+		decor->flags.has_changed |=
+		    update_titlebutton_colorset(&(decor->titlebar), cset);
 		decor->flags.has_changed |= update_decorface_colorset(
-			&(decor->BorderStyle.active), cset);
+		    &(decor->BorderStyle.active), cset);
 		decor->flags.has_changed |= update_decorface_colorset(
-			&(decor->BorderStyle.inactive), cset);
-		if (decor->flags.has_changed)
-		{
+		    &(decor->BorderStyle.inactive), cset);
+		if (decor->flags.has_changed) {
 			Scr.flags.do_need_window_update = 1;
 		}
 	}
 }
 
-static Bool _parse_vector_line_one_coord(
-	char **ret_action, int *pcoord, int *poff, char *action)
+static Bool
+_parse_vector_line_one_coord(
+    char **ret_action, int *pcoord, int *poff, char *action)
 {
 	int offset;
 	int n;
 
 	*ret_action = action;
-	n = sscanf(action, "%d%n", pcoord, &offset);
-	if (n < 1)
-	{
+	n	    = sscanf(action, "%d%n", pcoord, &offset);
+	if (n < 1) {
 		return False;
 	}
 	action += offset;
 	/* check for offest */
-	if (*action == '+' || *action == '-')
-	{
+	if (*action == '+' || *action == '-') {
 		n = sscanf(action, "%dp%n", poff, &offset);
-		if (n < 1)
-		{
+		if (n < 1) {
 			return False;
 		}
-		if (*poff < -128)
-		{
+		if (*poff < -128) {
 			*poff = -128;
-		}
-		else if (*poff > 127)
-		{
+		} else if (*poff > 127) {
 			*poff = 127;
 		}
 		action += offset;
-	}
-	else
-	{
+	} else {
 		*poff = 0;
 	}
 	*ret_action = action;
@@ -1330,37 +1108,32 @@ static Bool _parse_vector_line_one_coord(
 	return True;
 }
 
-static Bool _parse_vector_line(
-	char **ret_action, int *px, int *py, int *pxoff, int *pyoff, int *pc,
-	char *action)
+static Bool
+_parse_vector_line(char **ret_action, int *px, int *py, int *pxoff, int *pyoff,
+    int *pc, char *action)
 {
 	Bool is_valid = True;
-	int offset;
-	int n;
+	int  offset;
+	int  n;
 
 	*ret_action = action;
-	if (_parse_vector_line_one_coord(&action, px, pxoff, action) == False)
-	{
+	if (_parse_vector_line_one_coord(&action, px, pxoff, action) == False) {
 		return False;
 	}
-	if (*action != 'x')
-	{
+	if (*action != 'x') {
 		return False;
 	}
 	action++;
-	if (_parse_vector_line_one_coord(&action, py, pyoff, action) == False)
-	{
+	if (_parse_vector_line_one_coord(&action, py, pyoff, action) == False) {
 		return False;
 	}
-	if (*action != '@')
-	{
+	if (*action != '@') {
 		return False;
 	}
 	action++;
 	/* read the line style */
 	n = sscanf(action, "%d%n", pc, &offset);
-	if (n < 1)
-	{
+	if (n < 1) {
 		return False;
 	}
 	action += offset;
@@ -1371,25 +1144,23 @@ static Bool _parse_vector_line(
 
 /* ---------------------------- interface functions ------------------------ */
 
-void refresh_window(Window w, Bool window_update)
+void
+refresh_window(Window w, Bool window_update)
 {
 	XSetWindowAttributes attributes;
-	unsigned long valuemask;
+	unsigned long	     valuemask;
 
-	valuemask = CWOverrideRedirect | CWBackingStore | CWSaveUnder |
-		CWBackPixmap;
+	valuemask =
+	    CWOverrideRedirect | CWBackingStore | CWSaveUnder | CWBackPixmap;
 	attributes.override_redirect = True;
-	attributes.save_under = False;
+	attributes.save_under	     = False;
 	attributes.background_pixmap = None;
-	attributes.backing_store = NotUseful;
-	w = XCreateWindow(
-		dpy, w, 0, 0, monitor_get_all_widths(),
-		monitor_get_all_heights(), 0,
-		CopyFromParent, CopyFromParent, CopyFromParent, valuemask,
-		&attributes);
+	attributes.backing_store     = NotUseful;
+	w = XCreateWindow(dpy, w, 0, 0, monitor_get_all_widths(),
+	    monitor_get_all_heights(), 0, CopyFromParent, CopyFromParent,
+	    CopyFromParent, valuemask, &attributes);
 	XMapWindow(dpy, w);
-	if (Scr.flags.do_need_window_update && window_update)
-	{
+	if (Scr.flags.do_need_window_update && window_update) {
 		flush_window_updates();
 	}
 	XDestroyWindow(dpy, w);
@@ -1399,17 +1170,17 @@ void refresh_window(Window w, Bool window_update)
 	return;
 }
 
-void ApplyDefaultFontAndColors(void)
+void
+ApplyDefaultFontAndColors(void)
 {
-	XGCValues gcv;
+	XGCValues     gcv;
 	unsigned long gcm;
-	int cset = 0;
+	int	      cset = 0;
 
 	/* make GC's */
-	gcm = GCFunction|GCLineWidth|GCForeground|GCBackground;
+	gcm	     = GCFunction | GCLineWidth | GCForeground | GCBackground;
 	gcv.function = GXcopy;
-	if (Scr.DefaultFont->font)
-	{
+	if (Scr.DefaultFont->font) {
 		gcm |= GCFont;
 		gcv.font = Scr.DefaultFont->font->fid;
 	}
@@ -1417,41 +1188,31 @@ void ApplyDefaultFontAndColors(void)
 	gcv.foreground = Colorset[cset].fg;
 	gcv.background = Colorset[cset].bg;
 
-	if (Scr.StdGC)
-	{
+	if (Scr.StdGC) {
 		XChangeGC(dpy, Scr.StdGC, gcm, &gcv);
-	}
-	else
-	{
+	} else {
 		Scr.StdGC = fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, &gcv);
 	}
 
-	gcm = GCFunction|GCLineWidth|GCForeground;
+	gcm	       = GCFunction | GCLineWidth | GCForeground;
 	gcv.foreground = Colorset[cset].hilite;
 
-	if (Scr.StdReliefGC)
-	{
+	if (Scr.StdReliefGC) {
 		XChangeGC(dpy, Scr.StdReliefGC, gcm, &gcv);
-	}
-	else
-	{
-		Scr.StdReliefGC = fvwmlib_XCreateGC(
-			dpy, Scr.NoFocusWin, gcm, &gcv);
+	} else {
+		Scr.StdReliefGC =
+		    fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, &gcv);
 	}
 
 	gcv.foreground = Colorset[cset].shadow;
-	if (Scr.StdShadowGC)
-	{
+	if (Scr.StdShadowGC) {
 		XChangeGC(dpy, Scr.StdShadowGC, gcm, &gcv);
-	}
-	else
-	{
-		Scr.StdShadowGC = fvwmlib_XCreateGC(
-			dpy, Scr.NoFocusWin, gcm, &gcv);
+	} else {
+		Scr.StdShadowGC =
+		    fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, &gcv);
 	}
 	/* update the geometry window for move/resize */
-	if (Scr.SizeWindow.win != None)
-	{
+	if (Scr.SizeWindow.win != None) {
 		resize_geometry_window();
 	}
 	UpdateAllMenuStyles();
@@ -1459,35 +1220,29 @@ void ApplyDefaultFontAndColors(void)
 	return;
 }
 
-void FreeDecorFace(Display *disp, DecorFace *df)
+void
+FreeDecorFace(Display *disp, DecorFace *df)
 {
-	switch (DFS_FACE_TYPE(df->style))
-	{
+	switch (DFS_FACE_TYPE(df->style)) {
 	case GradientButton:
-		if (df->u.grad.d_pixels != NULL && df->u.grad.d_npixels)
-		{
-			PictureFreeColors(
-				disp, Pcmap, df->u.grad.d_pixels,
-				df->u.grad.d_npixels, 0, False);
+		if (df->u.grad.d_pixels != NULL && df->u.grad.d_npixels) {
+			PictureFreeColors(disp, Pcmap, df->u.grad.d_pixels,
+			    df->u.grad.d_npixels, 0, False);
 			free(df->u.grad.d_pixels);
-		}
-		else if (Pdepth <= 8 && df->u.grad.xcs != NULL &&
-			 df->u.grad.npixels > 0 && !df->u.grad.do_dither)
-		{
+		} else if (Pdepth <= 8 && df->u.grad.xcs != NULL
+			   && df->u.grad.npixels > 0 && !df->u.grad.do_dither) {
 			Pixel *p;
-			int i;
+			int    i;
 
 			p = fxmalloc(df->u.grad.npixels * sizeof(Pixel));
-			for(i=0; i < df->u.grad.npixels; i++)
-			{
+			for (i = 0; i < df->u.grad.npixels; i++) {
 				p[i] = df->u.grad.xcs[i].pixel;
 			}
 			PictureFreeColors(
-				disp, Pcmap, p, df->u.grad.npixels, 0, False);
+			    disp, Pcmap, p, df->u.grad.npixels, 0, False);
 			free(p);
 		}
-		if (df->u.grad.xcs != NULL)
-		{
+		if (df->u.grad.xcs != NULL) {
 			free(df->u.grad.xcs);
 		}
 		break;
@@ -1497,64 +1252,50 @@ void FreeDecorFace(Display *disp, DecorFace *df)
 	case StretchedPixmapButton:
 	case AdjustedPixmapButton:
 	case ShrunkPixmapButton:
-		if (df->u.p)
-		{
+		if (df->u.p) {
 			PDestroyFvwmPicture(disp, df->u.p);
 		}
 		break;
 
 	case MultiPixmap:
-		if (df->u.mp.pixmaps)
-		{
+		if (df->u.mp.pixmaps) {
 			int i;
 
-			for (i = 0; i < TBMP_NUM_PIXMAPS; i++)
-			{
-				if (df->u.mp.pixmaps[i])
-				{
+			for (i = 0; i < TBMP_NUM_PIXMAPS; i++) {
+				if (df->u.mp.pixmaps[i]) {
 					PDestroyFvwmPicture(
-						disp, df->u.mp.pixmaps[i]);
-				}
-				else if (!!(df->u.mp.solid_flags & i))
-				{
-					PictureFreeColors(
-						disp, Pcmap, &df->u.mp.pixels[i],
-						1, 0, False);
+					    disp, df->u.mp.pixmaps[i]);
+				} else if (!!(df->u.mp.solid_flags & i)) {
+					PictureFreeColors(disp, Pcmap,
+					    &df->u.mp.pixels[i], 1, 0, False);
 				}
 			}
 			free(df->u.mp.pixmaps);
 		}
-		if (df->u.mp.acs)
-		{
+		if (df->u.mp.acs) {
 			free(df->u.mp.acs);
 		}
-		if (df->u.mp.pixels)
-		{
+		if (df->u.mp.pixels) {
 			free(df->u.mp.pixels);
 		}
 		break;
 	case VectorButton:
 	case DefaultVectorButton:
-		if (df->u.vector.x)
-		{
-			free (df->u.vector.x);
+		if (df->u.vector.x) {
+			free(df->u.vector.x);
 		}
-		if (df->u.vector.y)
-		{
-			free (df->u.vector.y);
+		if (df->u.vector.y) {
+			free(df->u.vector.y);
 		}
 		/* free offsets for coord */
-		if (df->u.vector.xoff)
-		{
+		if (df->u.vector.xoff) {
 			free(df->u.vector.xoff);
 		}
-		if (df->u.vector.yoff)
-		{
+		if (df->u.vector.yoff) {
 			free(df->u.vector.yoff);
 		}
-		if (df->u.vector.c)
-		{
-			free (df->u.vector.c);
+		if (df->u.vector.c) {
+			free(df->u.vector.c);
 		}
 		break;
 	default:
@@ -1562,8 +1303,7 @@ void FreeDecorFace(Display *disp, DecorFace *df)
 		break;
 	}
 	/* delete any compound styles */
-	if (df->next)
-	{
+	if (df->next) {
 		FreeDecorFace(disp, df->next);
 		free(df->next);
 	}
@@ -1580,115 +1320,95 @@ void FreeDecorFace(Display *disp, DecorFace *df)
  * Reads a button face line into a structure (veliaa@rpi.edu)
  *
  */
-Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
+Bool
+ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 {
-	int offset;
-	char style[256], *file;
+	int   offset;
+	char  style[256], *file;
 	char *action = s;
 
 	/* some variants of scanf do not increase the assign count when %n is
 	 * used, so a return value of 1 is no error. */
-	if (sscanf(s, "%255s%n", style, &offset) < 1)
-	{
-		if (verbose)
-		{
+	if (sscanf(s, "%255s%n", style, &offset) < 1) {
+		if (verbose) {
 			fvwm_debug(__func__, "error in face `%s'", s);
 		}
 		return False;
 	}
 	style[255] = 0;
 
-	if (strncasecmp(style, "--", 2) != 0)
-	{
+	if (strncasecmp(style, "--", 2) != 0) {
 		s += offset;
 
 		FreeDecorFace(dpy, df);
 
 		/* determine button style */
-		if (strncasecmp(style,"Simple",6)==0)
-		{
+		if (strncasecmp(style, "Simple", 6) == 0) {
 			memset(&df->style, 0, sizeof(df->style));
 			DFS_FACE_TYPE(df->style) = SimpleButton;
-		}
-		else if (strncasecmp(style,"Default",7)==0)
-		{
+		} else if (strncasecmp(style, "Default", 7) == 0) {
 			int b = -1, n = sscanf(s, "%d%n", &b, &offset);
 
-			if (n < 1)
-			{
-				if (button == -1)
-				{
-					if (verbose)
-					{
+			if (n < 1) {
+				if (button == -1) {
+					if (verbose) {
 						fvwm_debug(__func__,
-							   "need default button"
-							   " number to load");
+						    "need default button"
+						    " number to load");
 					}
 					return False;
 				}
 				b = button;
-			}
-			else
-			{
+			} else {
 				b = BUTTON_INDEX(b);
 				s += offset;
 			}
-			if (b >= 0 && b < NUMBER_OF_TITLE_BUTTONS)
-			{
+			if (b >= 0 && b < NUMBER_OF_TITLE_BUTTONS) {
 				LoadDefaultButton(df, b);
-			}
-			else
-			{
-				if (verbose)
-				{
+			} else {
+				if (verbose) {
 					fvwm_debug(__func__,
-						   "button number out of range:"
-						   " %d", b);
+					    "button number out of range:"
+					    " %d",
+					    b);
 				}
 				return False;
 			}
-		}
-		else if (strncasecmp(style,"Vector",6)==0 ||
-			 (strlen(style)<=2 && isdigit(*style)))
-		{
+		} else if (strncasecmp(style, "Vector", 6) == 0
+			   || (strlen(style) <= 2 && isdigit(*style))) {
 			/* normal coordinate list button style */
-			int i, num_coords, num;
+			int		      i, num_coords, num;
 			struct vector_coords *vc = &df->u.vector;
 
 			/* get number of points */
-			if (strncasecmp(style,"Vector",6)==0)
-			{
-				num = sscanf(s,"%d%n",&num_coords,&offset);
+			if (strncasecmp(style, "Vector", 6) == 0) {
+				num = sscanf(s, "%d%n", &num_coords, &offset);
 				s += offset;
-			}
-			else
-			{
-				num = sscanf(style,"%d",&num_coords);
+			} else {
+				num = sscanf(style, "%d", &num_coords);
 			}
 
-			if (num < 1 || num_coords<2 ||
-			    num_coords > MAX_TITLE_BUTTON_VECTOR_LINES)
-			{
-				if (verbose)
-				{
+			if (num < 1 || num_coords < 2
+			    || num_coords > MAX_TITLE_BUTTON_VECTOR_LINES) {
+				if (verbose) {
 					fvwm_debug(__func__,
-						   "Bad button style (2) in line:"
-						   " %s",action);
+					    "Bad button style (2) in line:"
+					    " %s",
+					    action);
 				}
 				return False;
 			}
 
-			vc->num = num_coords;
+			vc->num	     = num_coords;
 			vc->use_fgbg = 0;
-			vc->x = fxmalloc(sizeof(char) * num_coords);
-			vc->y = fxmalloc(sizeof(char) * num_coords);
-			vc->xoff = fxmalloc(sizeof(char) * num_coords);
-			vc->yoff = fxmalloc(sizeof(char) * num_coords);
-			vc->c = fxmalloc(sizeof(char) * num_coords);
+			vc->x	     = fxmalloc(sizeof(char) * num_coords);
+			vc->y	     = fxmalloc(sizeof(char) * num_coords);
+			vc->xoff     = fxmalloc(sizeof(char) * num_coords);
+			vc->yoff     = fxmalloc(sizeof(char) * num_coords);
+			vc->c	     = fxmalloc(sizeof(char) * num_coords);
 
 			/* get the points */
-			for (i = 0; i < vc->num; ++i)
-			{
+			for (i = 0; i < vc->num; ++i) {
 				int x;
 				int y;
 				int xoff = 0;
@@ -1696,146 +1416,123 @@ Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 				int c;
 
 				if (_parse_vector_line(
-					    &s, &x, &y, &xoff, &yoff, &c, s) ==
-				    False)
-				{
+					&s, &x, &y, &xoff, &yoff, &c, s)
+				    == False) {
 					break;
 				}
-				if (x < 0)
-				{
+				if (x < 0) {
 					x = 0;
 				}
-				if (x > 100)
-				{
+				if (x > 100) {
 					x = 100;
 				}
-				if (y < 0)
-				{
+				if (y < 0) {
 					y = 0;
 				}
-				if (y > 100)
-				{
+				if (y > 100) {
 					y = 100;
 				}
-				if (c < 0 || c > 4)
-				{
+				if (c < 0 || c > 4) {
 					c = 4;
 				}
-				vc->x[i] = x;
-				vc->y[i] = y;
-				vc->c[i] = c;
+				vc->x[i]    = x;
+				vc->y[i]    = y;
+				vc->c[i]    = c;
 				vc->xoff[i] = xoff;
 				vc->yoff[i] = yoff;
-				if (c == 2 || c == 3)
-				{
+				if (c == 2 || c == 3) {
 					vc->use_fgbg = 1;
 				}
 			}
-			if (i < vc->num)
-			{
-				if (verbose)
-				{
+			if (i < vc->num) {
+				if (verbose) {
 					fvwm_debug(__func__,
-						   "Bad button style (3) in line"
-						   " %s", action);
+					    "Bad button style (3) in line"
+					    " %s",
+					    action);
 				}
 				free(vc->x);
 				free(vc->y);
 				free(vc->c);
 				free(vc->xoff);
 				free(vc->yoff);
-				vc->x = NULL;
-				vc->y = NULL;
-				vc->c = NULL;
+				vc->x	 = NULL;
+				vc->y	 = NULL;
+				vc->c	 = NULL;
 				vc->xoff = NULL;
 				vc->yoff = NULL;
 				return False;
 			}
 			memset(&df->style, 0, sizeof(df->style));
 			DFS_FACE_TYPE(df->style) = VectorButton;
-		}
-		else if (strncasecmp(style,"Solid",5)==0)
-		{
+		} else if (strncasecmp(style, "Solid", 5) == 0) {
 			s = GetNextToken(s, &file);
-			if (file)
-			{
+			if (file) {
 				memset(&df->style, 0, sizeof(df->style));
 				DFS_FACE_TYPE(df->style) = SolidButton;
-				df->u.back = GetColor(file);
+				df->u.back		 = GetColor(file);
 				free(file);
-			}
-			else
-			{
-				if (verbose)
-				{
+			} else {
+				if (verbose) {
 					fvwm_debug(__func__,
-						   "no color given for Solid"
-						   " face type: %s", action);
+					    "no color given for Solid"
+					    " face type: %s",
+					    action);
 				}
 				return False;
 			}
-		}
-		else if (strncasecmp(style+1, "Gradient", 8)==0)
-		{
-			char **s_colors;
-			int npixels, nsegs, *perc;
+		} else if (strncasecmp(style + 1, "Gradient", 8) == 0) {
+			char  **s_colors;
+			int	npixels, nsegs, *perc;
 			XColor *xcs;
-			Bool do_dither = False;
+			Bool	do_dither = False;
 
-			if (!IsGradientTypeSupported(style[0]))
-			{
+			if (!IsGradientTypeSupported(style[0])) {
 				return False;
 			}
 			/* translate the gradient string into an array of
 			 * colors etc */
-			npixels = ParseGradient(
-				s, &s, &s_colors, &perc, &nsegs);
-			while (*s && isspace(*s))
-			{
+			npixels =
+			    ParseGradient(s, &s, &s_colors, &perc, &nsegs);
+			while (*s && isspace(*s)) {
 				s++;
 			}
-			if (npixels <= 0)
-			{
+			if (npixels <= 0) {
 				return False;
 			}
 			/* grab the colors */
-			if (Pdepth <= 16)
-			{
+			if (Pdepth <= 16) {
 				do_dither = True;
 			}
 			xcs = AllocAllGradientColors(
-				s_colors, perc, nsegs, npixels, do_dither);
+			    s_colors, perc, nsegs, npixels, do_dither);
 			if (xcs == None)
 				return False;
-			df->u.grad.xcs = xcs;
-			df->u.grad.npixels = npixels;
+			df->u.grad.xcs	     = xcs;
+			df->u.grad.npixels   = npixels;
 			df->u.grad.do_dither = do_dither;
-			df->u.grad.d_pixels = NULL;
+			df->u.grad.d_pixels  = NULL;
 			memset(&df->style, 0, sizeof(df->style));
 			DFS_FACE_TYPE(df->style) = GradientButton;
 			df->u.grad.gradient_type = toupper(style[0]);
-		}
-		else if (strncasecmp(style,"Pixmap",6)==0
-			 || strncasecmp(style,"TiledPixmap",11)==0
-			 || strncasecmp(style,"StretchedPixmap",15)==0
-			 || strncasecmp(style,"AdjustedPixmap",14)==0
-			 || strncasecmp(style,"ShrunkPixmap",12)==0)
-		{
+		} else if (strncasecmp(style, "Pixmap", 6) == 0
+			   || strncasecmp(style, "TiledPixmap", 11) == 0
+			   || strncasecmp(style, "StretchedPixmap", 15) == 0
+			   || strncasecmp(style, "AdjustedPixmap", 14) == 0
+			   || strncasecmp(style, "ShrunkPixmap", 12) == 0) {
 			FvwmPictureAttributes fpa;
 
-			s = GetNextToken(s, &file);
-			fpa.mask = (Pdepth <= 8)? FPAM_DITHER:0; /* ? */
-			df->u.p = PCacheFvwmPicture(
-				dpy, Scr.NoFocusWin, NULL, file, fpa);
-			if (df->u.p == NULL)
-			{
-				if (file)
-				{
-					if (verbose)
-					{
+			s	 = GetNextToken(s, &file);
+			fpa.mask = (Pdepth <= 8) ? FPAM_DITHER : 0; /* ? */
+			df->u.p	 = PCacheFvwmPicture(
+			     dpy, Scr.NoFocusWin, NULL, file, fpa);
+			if (df->u.p == NULL) {
+				if (file) {
+					if (verbose) {
 						fvwm_debug(__func__,
-							   "couldn't load pixmap"
-							   " %s", file);
+						    "couldn't load pixmap"
+						    " %s",
+						    file);
 					}
 					free(file);
 				}
@@ -1845,88 +1542,61 @@ Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 			file = NULL;
 
 			memset(&df->style, 0, sizeof(df->style));
-			if (strncasecmp(style,"Tiled",5)==0)
-			{
+			if (strncasecmp(style, "Tiled", 5) == 0) {
 				DFS_FACE_TYPE(df->style) = TiledPixmapButton;
-			}
-			else if (strncasecmp(style,"Stretched",9)==0)
-			{
+			} else if (strncasecmp(style, "Stretched", 9) == 0) {
 				DFS_FACE_TYPE(df->style) =
-					StretchedPixmapButton;
-			}
-			else if (strncasecmp(style,"Adjusted",8)==0)
-			{
-				DFS_FACE_TYPE(df->style) =
-					AdjustedPixmapButton;
-			}
-			else if (strncasecmp(style,"Shrunk",6)==0)
-			{
-				DFS_FACE_TYPE(df->style) =
-					ShrunkPixmapButton;
-			}
-			else
-			{
+				    StretchedPixmapButton;
+			} else if (strncasecmp(style, "Adjusted", 8) == 0) {
+				DFS_FACE_TYPE(df->style) = AdjustedPixmapButton;
+			} else if (strncasecmp(style, "Shrunk", 6) == 0) {
+				DFS_FACE_TYPE(df->style) = ShrunkPixmapButton;
+			} else {
 				DFS_FACE_TYPE(df->style) = PixmapButton;
 			}
-		}
-		else if (strncasecmp(style,"MultiPixmap",11)==0)
-		{
-			if (button != -1)
-			{
-				if (verbose)
-				{
+		} else if (strncasecmp(style, "MultiPixmap", 11) == 0) {
+			if (button != -1) {
+				if (verbose) {
 					fvwm_debug(__func__,
-						   "MultiPixmap is only valid"
-						   " for TitleStyle");
+					    "MultiPixmap is only valid"
+					    " for TitleStyle");
 				}
 				return False;
 			}
 			s = ReadMultiPixmapDecor(s, df);
-			if (!s)
-			{
+			if (!s) {
 				return False;
 			}
-		}
-		else if (FMiniIconsSupported &&
-			 strncasecmp (style, "MiniIcon", 8) == 0)
-		{
+		} else if (FMiniIconsSupported
+			   && strncasecmp(style, "MiniIcon", 8) == 0) {
 			memset(&df->style, 0, sizeof(df->style));
 			DFS_FACE_TYPE(df->style) = MiniIconButton;
 			/* pixmap read in when the window is created */
 			df->u.p = NULL;
-		}
-		else if (strncasecmp (style, "Colorset", 8) == 0)
-		{
+		} else if (strncasecmp(style, "Colorset", 8) == 0) {
 			int val[2];
 			int n;
 
 			n = GetIntegerArguments(s, NULL, val, 2);
-			if (n == 0)
-			{
+			if (n == 0) {
 			}
 			memset(&df->style, 0, sizeof(df->style));
-			if (n > 0 && val[0] >= 0)
-			{
+			if (n > 0 && val[0] >= 0) {
 
 				df->u.acs.cs = val[0];
 				alloc_colorset(val[0]);
 				DFS_FACE_TYPE(df->style) = ColorsetButton;
 			}
 			df->u.acs.alpha_percent = 100;
-			if (n > 1)
-			{
+			if (n > 1) {
 				df->u.acs.alpha_percent =
-					max(0, min(100,val[1]));
+				    max(0, min(100, val[1]));
 			}
 			s = SkipNTokens(s, n);
-		}
-		else
-		{
-			if (verbose)
-			{
-				fvwm_debug(__func__,
-					   "unknown style %s: %s", style,
-					   action);
+		} else {
+			if (verbose) {
+				fvwm_debug(__func__, "unknown style %s: %s",
+				    style, action);
 			}
 			return False;
 		}
@@ -1935,174 +1605,115 @@ Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 	/* Process button flags ("--" signals start of flags,
 	   it is also checked for above) */
 	s = GetNextToken(s, &file);
-	if (file && (strcmp(file,"--")==0))
-	{
+	if (file && (strcmp(file, "--") == 0)) {
 		char *tok;
 		s = GetNextToken(s, &tok);
-		while (tok && *tok)
-		{
-			int set = 1;
+		while (tok && *tok) {
+			int   set     = 1;
 			char *old_tok = NULL;
 
-			if (*tok == '!')
-			{ /* flag negate */
-				set = 0;
+			if (*tok == '!') { /* flag negate */
+				set	= 0;
 				old_tok = tok;
 				tok++;
 			}
-			if (StrEquals(tok,"Clear"))
-			{
+			if (StrEquals(tok, "Clear")) {
 				memset(&DFS_FLAGS(df->style), (set) ? 0 : 0xff,
-				       sizeof(DFS_FLAGS(df->style)));
+				    sizeof(DFS_FLAGS(df->style)));
 				/* ? what is set == 0 good for ? */
-			}
-			else if (StrEquals(tok,"Left"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "Left")) {
+				if (set) {
 					DFS_H_JUSTIFICATION(df->style) =
-						JUST_LEFT;
-				}
-				else
-				{
+					    JUST_LEFT;
+				} else {
 					DFS_H_JUSTIFICATION(df->style) =
-						JUST_RIGHT;
+					    JUST_RIGHT;
 				}
-			}
-			else if (StrEquals(tok,"Right"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "Right")) {
+				if (set) {
 					DFS_H_JUSTIFICATION(df->style) =
-						JUST_RIGHT;
-				}
-				else
-				{
+					    JUST_RIGHT;
+				} else {
 					DFS_H_JUSTIFICATION(df->style) =
-						JUST_LEFT;
+					    JUST_LEFT;
 				}
-			}
-			else if (StrEquals(tok,"Centered"))
-			{
+			} else if (StrEquals(tok, "Centered")) {
 				DFS_H_JUSTIFICATION(df->style) = JUST_CENTER;
 				DFS_V_JUSTIFICATION(df->style) = JUST_CENTER;
-			}
-			else if (StrEquals(tok,"Top"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "Top")) {
+				if (set) {
 					DFS_V_JUSTIFICATION(df->style) =
-						JUST_TOP;
-				}
-				else
-				{
+					    JUST_TOP;
+				} else {
 					DFS_V_JUSTIFICATION(df->style) =
-						JUST_BOTTOM;
+					    JUST_BOTTOM;
 				}
-			}
-			else if (StrEquals(tok,"Bottom"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "Bottom")) {
+				if (set) {
 					DFS_V_JUSTIFICATION(df->style) =
-						JUST_BOTTOM;
-				}
-				else
-				{
+					    JUST_BOTTOM;
+				} else {
 					DFS_V_JUSTIFICATION(df->style) =
-						JUST_TOP;
+					    JUST_TOP;
 				}
-			}
-			else if (StrEquals(tok,"Flat"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "Flat")) {
+				if (set) {
 					DFS_BUTTON_RELIEF(df->style) =
-						DFS_BUTTON_IS_FLAT;
-				}
-				else if (DFS_BUTTON_RELIEF(df->style) ==
-					 DFS_BUTTON_IS_FLAT)
-				{
+					    DFS_BUTTON_IS_FLAT;
+				} else if (DFS_BUTTON_RELIEF(df->style)
+					   == DFS_BUTTON_IS_FLAT) {
 					DFS_BUTTON_RELIEF(df->style) =
-						DFS_BUTTON_IS_UP;
+					    DFS_BUTTON_IS_UP;
 				}
-			}
-			else if (StrEquals(tok,"Sunk"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "Sunk")) {
+				if (set) {
 					DFS_BUTTON_RELIEF(df->style) =
-						DFS_BUTTON_IS_SUNK;
-				}
-				else if (DFS_BUTTON_RELIEF(df->style) ==
-					 DFS_BUTTON_IS_SUNK)
-				{
+					    DFS_BUTTON_IS_SUNK;
+				} else if (DFS_BUTTON_RELIEF(df->style)
+					   == DFS_BUTTON_IS_SUNK) {
 					DFS_BUTTON_RELIEF(df->style) =
-						DFS_BUTTON_IS_UP;
+					    DFS_BUTTON_IS_UP;
 				}
-			}
-			else if (StrEquals(tok,"Raised"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "Raised")) {
+				if (set) {
 					DFS_BUTTON_RELIEF(df->style) =
-						DFS_BUTTON_IS_UP;
-				}
-				else
-				{
+					    DFS_BUTTON_IS_UP;
+				} else {
 					DFS_BUTTON_RELIEF(df->style) =
-						DFS_BUTTON_IS_SUNK;
+					    DFS_BUTTON_IS_SUNK;
 				}
-			}
-			else if (StrEquals(tok,"UseTitleStyle"))
-			{
-				if (set)
-				{
-					DFS_USE_TITLE_STYLE(df->style) = 1;
+			} else if (StrEquals(tok, "UseTitleStyle")) {
+				if (set) {
+					DFS_USE_TITLE_STYLE(df->style)	= 1;
 					DFS_USE_BORDER_STYLE(df->style) = 0;
-				}
-				else
+				} else
 					DFS_USE_TITLE_STYLE(df->style) = 0;
-			}
-			else if (StrEquals(tok,"HiddenHandles"))
-			{
+			} else if (StrEquals(tok, "HiddenHandles")) {
 				DFS_HAS_HIDDEN_HANDLES(df->style) = !!set;
-			}
-			else if (StrEquals(tok,"NoInset"))
-			{
+			} else if (StrEquals(tok, "NoInset")) {
 				DFS_HAS_NO_INSET(df->style) = !!set;
-			}
-			else if (StrEquals(tok,"UseBorderStyle"))
-			{
-				if (set)
-				{
+			} else if (StrEquals(tok, "UseBorderStyle")) {
+				if (set) {
 					DFS_USE_BORDER_STYLE(df->style) = 1;
-					DFS_USE_TITLE_STYLE(df->style) = 0;
-				}
-				else
-				{
+					DFS_USE_TITLE_STYLE(df->style)	= 0;
+				} else {
 					DFS_USE_BORDER_STYLE(df->style) = 0;
 				}
-			}
-			else if (verbose)
-			{
+			} else if (verbose) {
 				fvwm_debug(__func__,
-					   "unknown button face flag '%s'"
-					   " -- line: %s", tok, action);
+				    "unknown button face flag '%s'"
+				    " -- line: %s",
+				    tok, action);
 			}
-			if (set)
-			{
+			if (set) {
 				free(tok);
-			}
-			else
-			{
+			} else {
 				free(old_tok);
 			}
 			s = GetNextToken(s, &tok);
 		}
 	}
-	if (file)
-	{
+	if (file) {
 		free(file);
 	}
 
@@ -2114,18 +1725,16 @@ Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
  * Diverts a style definition to an FvwmDecor structure (veliaa@rpi.edu)
  *
  */
-void AddToDecor(F_CMD_ARGS, FvwmDecor *decor)
+void
+AddToDecor(F_CMD_ARGS, FvwmDecor *decor)
 {
-	if (!action)
-	{
+	if (!action) {
 		return;
 	}
-	while (*action && isspace((unsigned char)*action))
-	{
+	while (*action && isspace((unsigned char)*action)) {
 		++action;
 	}
-	if (!*action)
-	{
+	if (!*action) {
 		return;
 	}
 	Scr.cur_decor = decor;
@@ -2140,47 +1749,45 @@ void AddToDecor(F_CMD_ARGS, FvwmDecor *decor)
  *  InitFvwmDecor -- initializes an FvwmDecor structure to defaults
  *
  */
-void InitFvwmDecor(FvwmDecor *decor)
+void
+InitFvwmDecor(FvwmDecor *decor)
 {
-	int i;
+	int	  i;
 	DecorFace tmpdf;
 
 	/* zero out the structures */
-	memset(decor, 0, sizeof (FvwmDecor));
+	memset(decor, 0, sizeof(FvwmDecor));
 	memset(&tmpdf, 0, sizeof(DecorFace));
 
 	/* initialize title-bar button styles */
 	DFS_FACE_TYPE(tmpdf.style) = SimpleButton;
-	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i)
-	{
+	for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i) {
 		int j = 0;
-		for (; j < BS_MaxButtonState; ++j)
-		{
+		for (; j < BS_MaxButtonState; ++j) {
 			TB_STATE(decor->buttons[i])[j] = tmpdf;
 		}
 	}
 	/* reset to default button set */
 	ResetAllButtons(decor);
 	/* initialize title-bar styles */
-	for (i = 0; i < BS_MaxButtonState; ++i)
-	{
-		DFS_FACE_TYPE(
-			TB_STATE(decor->titlebar)[i].style) = SimpleButton;
+	for (i = 0; i < BS_MaxButtonState; ++i) {
+		DFS_FACE_TYPE(TB_STATE(decor->titlebar)[i].style) =
+		    SimpleButton;
 	}
 
 	/* initialize border texture styles */
-	DFS_FACE_TYPE(decor->BorderStyle.active.style) = SimpleButton;
+	DFS_FACE_TYPE(decor->BorderStyle.active.style)	 = SimpleButton;
 	DFS_FACE_TYPE(decor->BorderStyle.inactive.style) = SimpleButton;
 
 	return;
 }
 
-void reset_decor_changes(void)
+void
+reset_decor_changes(void)
 {
 	FvwmDecor *decor;
-	for (decor = &Scr.DefaultDecor; decor; decor = decor->next)
-	{
-		decor->flags.has_changed = 0;
+	for (decor = &Scr.DefaultDecor; decor; decor = decor->next) {
+		decor->flags.has_changed	      = 0;
 		decor->flags.has_title_height_changed = 0;
 	}
 	/* todo: must reset individual change flags too */
@@ -2188,7 +1795,8 @@ void reset_decor_changes(void)
 	return;
 }
 
-void update_fvwm_colorset(int cset)
+void
+update_fvwm_colorset(int cset)
 {
 	Scr.flags.do_need_window_update = 1;
 
@@ -2201,7 +1809,8 @@ void update_fvwm_colorset(int cset)
 
 /* ---------------------------- builtin commands --------------------------- */
 
-void CMD_Status(F_CMD_ARGS)
+void
+CMD_Status(F_CMD_ARGS)
 {
 	if ((strcasecmp(action, "on") == 0) && status_fp == NULL) {
 		status_init_pipe();
@@ -2220,54 +1829,52 @@ void CMD_Status(F_CMD_ARGS)
 	status_send();
 }
 
-void CMD_Beep(F_CMD_ARGS)
+void
+CMD_Beep(F_CMD_ARGS)
 {
 	XBell(dpy, 0);
 
 	return;
 }
 
-void CMD_Nop(F_CMD_ARGS)
+void
+CMD_Nop(F_CMD_ARGS)
 {
 	return;
 }
 
-void CMD_EscapeFunc(F_CMD_ARGS)
+void
+CMD_EscapeFunc(F_CMD_ARGS)
 {
 	return;
 }
 
-void CMD_Delete(F_CMD_ARGS)
+void
+CMD_Delete(F_CMD_ARGS)
 {
-	FvwmWindow * const fw = exc->w.fw;
+	FvwmWindow *const fw = exc->w.fw;
 
-	if (!is_function_allowed(F_DELETE, NULL, fw, RQORIG_PROGRAM_US, True))
-	{
+	if (!is_function_allowed(F_DELETE, NULL, fw, RQORIG_PROGRAM_US, True)) {
 		XBell(dpy, 0);
 
 		return;
 	}
-	if (IS_TEAR_OFF_MENU(fw))
-	{
+	if (IS_TEAR_OFF_MENU(fw)) {
 		/* 'soft' delete tear off menus.  Note: we can't send the
 		 * message to the menu window directly because it was created
 		 * using a different display.  The client message would never
 		 * be read from there. */
 		send_clientmessage(
-			dpy, FW_W_PARENT(fw), _XA_WM_DELETE_WINDOW,
-			CurrentTime);
+		    dpy, FW_W_PARENT(fw), _XA_WM_DELETE_WINDOW, CurrentTime);
 
 		return;
 	}
-	if (WM_DELETES_WINDOW(fw))
-	{
+	if (WM_DELETES_WINDOW(fw)) {
 		send_clientmessage(
-			dpy, FW_W(fw), _XA_WM_DELETE_WINDOW, CurrentTime);
+		    dpy, FW_W(fw), _XA_WM_DELETE_WINDOW, CurrentTime);
 
 		return;
-	}
-	else
-	{
+	} else {
 		XBell(dpy, 0);
 	}
 	XFlush(dpy);
@@ -2275,27 +1882,23 @@ void CMD_Delete(F_CMD_ARGS)
 	return;
 }
 
-void CMD_Destroy(F_CMD_ARGS)
+void
+CMD_Destroy(F_CMD_ARGS)
 {
-	FvwmWindow * const fw = exc->w.fw;
+	FvwmWindow *const fw = exc->w.fw;
 
-	if (IS_TEAR_OFF_MENU(fw))
-	{
+	if (IS_TEAR_OFF_MENU(fw)) {
 		CMD_Delete(F_PASS_ARGS);
 		return;
 	}
-	if (!is_function_allowed(F_DESTROY, NULL, fw, True, True))
-	{
+	if (!is_function_allowed(F_DESTROY, NULL, fw, True, True)) {
 		XBell(dpy, 0);
 		return;
 	}
-	if (
-		XGetGeometry(
-			dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
-			(unsigned int*)&JunkWidth, (unsigned int*)&JunkHeight,
-			(unsigned int*)&JunkBW, (unsigned int*)&JunkDepth)
-		!= 0)
-	{
+	if (XGetGeometry(dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
+		(unsigned int *)&JunkWidth, (unsigned int *)&JunkHeight,
+		(unsigned int *)&JunkBW, (unsigned int *)&JunkDepth)
+	    != 0) {
 		XKillClient(dpy, FW_W(fw));
 	}
 	destroy_window(fw);
@@ -2304,33 +1907,28 @@ void CMD_Destroy(F_CMD_ARGS)
 	return;
 }
 
-void CMD_Close(F_CMD_ARGS)
+void
+CMD_Close(F_CMD_ARGS)
 {
-	FvwmWindow * const fw = exc->w.fw;
+	FvwmWindow *const fw = exc->w.fw;
 
-	if (IS_TEAR_OFF_MENU(fw))
-	{
+	if (IS_TEAR_OFF_MENU(fw)) {
 		CMD_Delete(F_PASS_ARGS);
 		return;
 	}
-	if (!is_function_allowed(F_CLOSE, NULL, fw, True, True))
-	{
+	if (!is_function_allowed(F_CLOSE, NULL, fw, True, True)) {
 		XBell(dpy, 0);
 		return;
 	}
-	if (WM_DELETES_WINDOW(fw))
-	{
+	if (WM_DELETES_WINDOW(fw)) {
 		send_clientmessage(
-			dpy, FW_W(fw), _XA_WM_DELETE_WINDOW, CurrentTime);
+		    dpy, FW_W(fw), _XA_WM_DELETE_WINDOW, CurrentTime);
 		return;
 	}
-	if (
-		XGetGeometry(
-			dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
-			(unsigned int*)&JunkWidth, (unsigned int*)&JunkHeight,
-			(unsigned int*)&JunkBW, (unsigned int*)&JunkDepth)
-		!= 0)
-	{
+	if (XGetGeometry(dpy, FW_W(fw), &JunkRoot, &JunkX, &JunkY,
+		(unsigned int *)&JunkWidth, (unsigned int *)&JunkHeight,
+		(unsigned int *)&JunkBW, (unsigned int *)&JunkDepth)
+	    != 0) {
 		XKillClient(dpy, FW_W(fw));
 	}
 
@@ -2340,45 +1938,43 @@ void CMD_Close(F_CMD_ARGS)
 	return;
 }
 
-void CMD_Restart(F_CMD_ARGS)
+void
+CMD_Restart(F_CMD_ARGS)
 {
 	Done(1, action);
 
 	return;
 }
 
-void CMD_ExecUseShell(F_CMD_ARGS)
+void
+CMD_ExecUseShell(F_CMD_ARGS)
 {
-	char *arg=NULL;
+	char	   *arg	      = NULL;
 	static char shell_set = 0;
 
-	if (shell_set)
-	{
+	if (shell_set) {
 		free(exec_shell_name);
 	}
 	shell_set = 1;
-	action = GetNextToken(action,&arg);
+	action	  = GetNextToken(action, &arg);
 	if (arg) /* specific shell was specified */
 	{
 		exec_shell_name = arg;
-	}
-	else /* no arg, so use $SHELL -- not working??? */
+	} else /* no arg, so use $SHELL -- not working??? */
 	{
-		if (getenv("SHELL"))
-		{
+		if (getenv("SHELL")) {
 			exec_shell_name = fxstrdup(getenv("SHELL"));
-		}
-		else
-		{
+		} else {
 			/* if $SHELL not set, use default */
 			exec_shell_name = fxstrdup("/bin/sh");
 		}
 	}
 }
 
-void CMD_Exec(F_CMD_ARGS)
+void
+CMD_Exec(F_CMD_ARGS)
 {
-	char *cmd=NULL;
+	char *cmd = NULL;
 
 	/* if it doesn't already have an 'exec' as the first word, add that
 	 * to keep down number of procs started */
@@ -2396,8 +1992,7 @@ void CMD_Exec(F_CMD_ARGS)
 	{
 		cmd = fxstrdup(action);
 	}
-	if (!cmd)
-	{
+	if (!cmd) {
 		return;
 	}
 	/* Use to grab the pointer here, but the fork guarantees that
@@ -2417,22 +2012,20 @@ void CMD_Exec(F_CMD_ARGS)
 
 		fvmm_deinstall_signals();
 		fd = open("/dev/null", O_RDONLY, 0);
-		dup2(fd,STDIN_FILENO);
+		dup2(fd, STDIN_FILENO);
 
 		if (fd != STDIN_FILENO)
 			close(fd);
 
-		if (fvwm_setpgrp() == -1)
-		{
-			fvwm_debug(__func__, "setpgrp failed (%s)",
-				   strerror(errno));
+		if (fvwm_setpgrp() == -1) {
+			fvwm_debug(
+			    __func__, "setpgrp failed (%s)", strerror(errno));
 			exit(100);
 		}
-		if (execl(exec_shell_name, exec_shell_name, "-c", cmd, NULL) ==
-		    -1)
-		{
-			fvwm_debug(__func__, "execl failed (%s)",
-				   strerror(errno));
+		if (execl(exec_shell_name, exec_shell_name, "-c", cmd, NULL)
+		    == -1) {
+			fvwm_debug(
+			    __func__, "execl failed (%s)", strerror(errno));
 			exit(100);
 		}
 	}
@@ -2441,32 +2034,35 @@ void CMD_Exec(F_CMD_ARGS)
 	return;
 }
 
-void CMD_Refresh(F_CMD_ARGS)
+void
+CMD_Refresh(F_CMD_ARGS)
 {
 	refresh_window(Scr.Root, True);
 
 	return;
 }
 
-void CMD_RefreshWindow(F_CMD_ARGS)
+void
+CMD_RefreshWindow(F_CMD_ARGS)
 {
-	FvwmWindow * const fw = exc->w.fw;
+	FvwmWindow *const fw = exc->w.fw;
 
 	refresh_window(
-		(exc->w.wcontext == C_ICON) ?
-		FW_W_ICON_TITLE(fw) : FW_W_FRAME(fw), True);
+	    (exc->w.wcontext == C_ICON) ? FW_W_ICON_TITLE(fw) : FW_W_FRAME(fw),
+	    True);
 
 	return;
 }
 
-void CMD_Wait(F_CMD_ARGS)
+void
+CMD_Wait(F_CMD_ARGS)
 {
-	Bool done = False;
-	Bool redefine_cursor = False;
-	Bool is_ungrabbed;
-	char *escape;
-	Window nonewin = None;
-	char *wait_string, *rest;
+	Bool	    done	    = False;
+	Bool	    redefine_cursor = False;
+	Bool	    is_ungrabbed;
+	char	   *escape;
+	Window	    nonewin = None;
+	char	   *wait_string, *rest;
 	FvwmWindow *t;
 
 	if (!Scr.flags.are_windows_captured)
@@ -2474,86 +2070,67 @@ void CMD_Wait(F_CMD_ARGS)
 
 	/* try to get a single token */
 	rest = GetNextToken(action, &wait_string);
-	if (wait_string)
-	{
-		while (*rest && isspace((unsigned char)*rest))
-		{
+	if (wait_string) {
+		while (*rest && isspace((unsigned char)*rest)) {
 			rest++;
 		}
-		if (*rest)
-		{
-			int i;
+		if (*rest) {
+			int   i;
 			char *temp;
 
 			/* nope, multiple tokens - try old syntax */
 
 			/* strip leading and trailing whitespace */
 			temp = action;
-			while (*temp && isspace((unsigned char)*temp))
-			{
+			while (*temp && isspace((unsigned char)*temp)) {
 				temp++;
 			}
 			free(wait_string);
 			wait_string = fxstrdup(temp);
-			for (i = strlen(wait_string) - 1; i >= 0 &&
-				     isspace(wait_string[i]); i--)
-			{
+			for (i = strlen(wait_string) - 1;
+			    i >= 0 && isspace(wait_string[i]); i--) {
 				wait_string[i] = 0;
 			}
 		}
-	}
-	else
-	{
+	} else {
 		wait_string = fxstrdup("");
 	}
 
 	is_ungrabbed = UngrabEm(GRAB_NORMAL);
-	while (!done && !isTerminated)
-	{
+	while (!done && !isTerminated) {
 		XEvent e;
-		if (BUSY_WAIT & Scr.BusyCursor)
-		{
+		if (BUSY_WAIT & Scr.BusyCursor) {
 			XDefineCursor(dpy, Scr.Root, Scr.FvwmCursors[CRS_WAIT]);
 			redefine_cursor = True;
 		}
-		if (My_XNextEvent(dpy, &e))
-		{
+		if (My_XNextEvent(dpy, &e)) {
 			dispatch_event(&e);
 			if (XFindContext(
-				    dpy, e.xmap.window, FvwmContext,
-				    (caddr_t *)&t) == XCNOENT)
-			{
+				dpy, e.xmap.window, FvwmContext, (caddr_t *)&t)
+			    == XCNOENT) {
 				t = NULL;
 			}
 
-			if (e.type == MapNotify && e.xmap.event == Scr.Root)
-			{
-				if (!*wait_string)
-				{
+			if (e.type == MapNotify && e.xmap.event == Scr.Root) {
+				if (!*wait_string) {
 					done = True;
 				}
-				if (t && matchWildcards(
-					    wait_string, t->name.name) == True)
-				{
+				if (t
+				    && matchWildcards(wait_string, t->name.name)
+					   == True) {
+					done = True;
+				} else if (t && t->class.res_class
+					   && matchWildcards(wait_string,
+						  t->class.res_class)
+						  == True) {
+					done = True;
+				} else if (t && t->class.res_name
+					   && matchWildcards(wait_string,
+						  t->class.res_name)
+						  == True) {
 					done = True;
 				}
-				else if (t && t->class.res_class &&
-					 matchWildcards(
-						 wait_string,
-						 t->class.res_class) == True)
-				{
-					done = True;
-				}
-				else if (t && t->class.res_name &&
-					 matchWildcards(
-						 wait_string,
-						 t->class.res_name) == True)
-				{
-					done = True;
-				}
-			}
-			else if (e.type == KeyPress)
-			{
+			} else if (e.type == KeyPress) {
 				/* should I be using <t> or <exc->w.fw>?
 				 * DV: t
 				 */
@@ -2562,37 +2139,29 @@ void CMD_Wait(F_CMD_ARGS)
 				char *name;
 
 				context = GetContext(&t, t, &e, &nonewin);
-				if (t != NULL)
-				{
+				if (t != NULL) {
 					class = &(t->class);
-					name = t->name.name;
-				}
-				else
-				{
+					name  = t->name.name;
+				} else {
 					class = NULL;
-					name = NULL;
+					name  = NULL;
 				}
-				escape = CheckBinding(
-					Scr.AllBindings,
-					e.xkey.keycode, e.xkey.state,
-					GetUnusedModifiers(), context,
-					BIND_KEYPRESS, class, name);
-				if (escape != NULL)
-				{
-					if (!strcasecmp(escape,"escapefunc"))
-					{
+				escape = CheckBinding(Scr.AllBindings,
+				    e.xkey.keycode, e.xkey.state,
+				    GetUnusedModifiers(), context,
+				    BIND_KEYPRESS, class, name);
+				if (escape != NULL) {
+					if (!strcasecmp(escape, "escapefunc")) {
 						done = True;
 					}
 				}
 			}
 		}
 	}
-	if (redefine_cursor)
-	{
+	if (redefine_cursor) {
 		XDefineCursor(dpy, Scr.Root, Scr.FvwmCursors[CRS_ROOT]);
 	}
-	if (is_ungrabbed)
-	{
+	if (is_ungrabbed) {
 		GrabEm(CRS_NONE, GRAB_NORMAL);
 	}
 	free(wait_string);
@@ -2600,27 +2169,26 @@ void CMD_Wait(F_CMD_ARGS)
 	return;
 }
 
-void CMD_Quit(F_CMD_ARGS)
+void
+CMD_Quit(F_CMD_ARGS)
 {
-	Done(0,NULL);
+	Done(0, NULL);
 
 	return;
 }
 
-void CMD_Echo(F_CMD_ARGS)
+void
+CMD_Echo(F_CMD_ARGS)
 {
 	int len;
 
-	if (!action)
-	{
+	if (!action) {
 		action = "";
 	}
 	len = strlen(action);
-	if (len != 0)
-	{
-		if (action[len-1]=='\n')
-		{
-			action[len-1]='\0';
+	if (len != 0) {
+		if (action[len - 1] == '\n') {
+			action[len - 1] = '\0';
 		}
 	}
 	BroadcastName(MX_ECHO, -1, -1, -1, action);
@@ -2629,135 +2197,220 @@ void CMD_Echo(F_CMD_ARGS)
 	return;
 }
 
-void CMD_PrintInfo(F_CMD_ARGS)
+static char *
+topology_encoded_name(const char *name)
 {
-	int verbose;
+	cJSON *string;
+	char  *encoded;
+
+	string = cJSON_CreateString(name);
+	if (string == NULL) {
+		return NULL;
+	}
+	encoded = cJSON_PrintUnformatted(string);
+	cJSON_Delete(string);
+	return encoded;
+}
+
+static void
+print_topology_info(void)
+{
+	const monitor_topology_snapshot *snapshot;
+	int				 monitor_index;
+
+	snapshot = FScreenGetTopologySnapshot();
+	if (snapshot == NULL) {
+		fvwm_debug(__func__, "No committed topology");
+		return;
+	}
+	fvwm_debug(__func__, "Topology epoch=%" PRIu64 " monitors=%d",
+	    snapshot->epoch, snapshot->monitor_count);
+	for (monitor_index = 0; monitor_index < snapshot->monitor_count;
+	    monitor_index++) {
+		const monitor_topology_monitor *monitor =
+		    &snapshot->monitors[monitor_index];
+		const size_t output_size = sizeof(RROutput) * CHAR_BIT + 2;
+		char	    *encoded_name;
+		char	    *line;
+		size_t	     line_size;
+		size_t	     used;
+		int	     output_index;
+		int	     written;
+
+		encoded_name = topology_encoded_name(monitor->name);
+		if (encoded_name == NULL) {
+			fvwm_debug(__func__,
+			    "Unable to format topology monitor name_atom=%lu",
+			    (unsigned long)monitor->name_atom);
+			continue;
+		}
+		if ((size_t)monitor->output_count
+		    > (SIZE_MAX - strlen(encoded_name) - 256) / output_size) {
+			cJSON_free(encoded_name);
+			fvwm_debug(__func__,
+			    "Topology monitor output list is too large");
+			continue;
+		}
+		line_size = strlen(encoded_name) + 256
+			    + (size_t)monitor->output_count * output_size;
+		line = malloc(line_size);
+		if (line == NULL) {
+			cJSON_free(encoded_name);
+			fvwm_debug(
+			    __func__, "Unable to format topology monitor");
+			continue;
+		}
+		written = snprintf(line, line_size,
+		    "Topology monitor name=%s name_atom=%lu primary=%s "
+		    "geometry=%dx%d%+d%+d physical_mm=%dx%d outputs=[",
+		    encoded_name, (unsigned long)monitor->name_atom,
+		    monitor->primary ? "true" : "false", monitor->width,
+		    monitor->height, monitor->x, monitor->y, monitor->mm_width,
+		    monitor->mm_height);
+		cJSON_free(encoded_name);
+		if (written < 0 || (size_t)written >= line_size) {
+			free(line);
+			fvwm_debug(
+			    __func__, "Unable to format topology monitor");
+			continue;
+		}
+		used = (size_t)written;
+		for (output_index = 0; output_index < monitor->output_count;
+		    output_index++) {
+			written = snprintf(line + used, line_size - used,
+			    "%s%lu", output_index == 0 ? "" : ",",
+			    (unsigned long)monitor->outputs[output_index]);
+			if (written < 0
+			    || (size_t)written >= line_size - used) {
+				break;
+			}
+			used += (size_t)written;
+		}
+		if (output_index != monitor->output_count
+		    || snprintf(line + used, line_size - used, "]") != 1) {
+			free(line);
+			fvwm_debug(
+			    __func__, "Unable to format topology monitor");
+			continue;
+		}
+		fvwm_debug(__func__, "%s", line);
+		free(line);
+	}
+}
+
+void
+CMD_PrintInfo(F_CMD_ARGS)
+{
+	int   verbose;
 	char *rest, *subject = NULL;
 
 	rest = GetNextToken(action, &subject);
-	if (!rest || GetIntegerArguments(rest, NULL, &verbose, 1) != 1)
-	{
+	if (!rest || GetIntegerArguments(rest, NULL, &verbose, 1) != 1) {
 		verbose = 0;
 	}
-	if (StrEquals(subject, "Colors"))
-	{
+	if (StrEquals(subject, "Colors")) {
 		PicturePrintColorInfo(verbose);
-	}
-	else if (StrEquals(subject, "Locale"))
-	{
+	} else if (StrEquals(subject, "Locale")) {
 		FlocalePrintLocaleInfo(dpy, verbose);
-	}
-	else if (StrEquals(subject, "NLS"))
-	{
+	} else if (StrEquals(subject, "NLS")) {
 		FGettextPrintLocalePath(verbose);
-	}
-	else if (StrEquals(subject, "ImageCache"))
-	{
+	} else if (StrEquals(subject, "ImageCache")) {
 		PicturePrintImageCache(verbose);
-	}
-	else if (StrEquals(subject, "Bindings"))
-	{
+	} else if (StrEquals(subject, "Bindings")) {
 		print_bindings();
-	}
-	else if (StrEquals(subject, "InfoStore"))
-	{
+	} else if (StrEquals(subject, "InfoStore")) {
 		print_infostore();
+	} else if (StrEquals(subject, "Topology")) {
+		print_topology_info();
+	} else {
+		fvwm_debug(__func__, "Unknown subject '%s'", action);
 	}
-	else
-	{
-		fvwm_debug(__func__,
-			   "Unknown subject '%s'", action);
-	}
-	if (subject)
-	{
+	if (subject) {
 		free(subject);
 	}
 	return;
 }
 
-void CMD_ColormapFocus(F_CMD_ARGS)
+void
+CMD_ColormapFocus(F_CMD_ARGS)
 {
-	if (MatchToken(action,"FollowsFocus"))
-	{
+	if (MatchToken(action, "FollowsFocus")) {
 		Scr.ColormapFocus = COLORMAP_FOLLOWS_FOCUS;
-	}
-	else if (MatchToken(action,"FollowsMouse"))
-	{
+	} else if (MatchToken(action, "FollowsMouse")) {
 		Scr.ColormapFocus = COLORMAP_FOLLOWS_MOUSE;
-	}
-	else
-	{
+	} else {
 		fvwm_debug(__func__,
-			   "ColormapFocus requires 1 arg: FollowsFocus or"
-			   " FollowsMouse");
+		    "ColormapFocus requires 1 arg: FollowsFocus or"
+		    " FollowsMouse");
 		return;
 	}
 
 	return;
 }
 
-void CMD_ClickTime(F_CMD_ARGS)
+void
+CMD_ClickTime(F_CMD_ARGS)
 {
 	int val;
 
-	if (GetIntegerArguments(action, NULL, &val, 1) != 1)
-	{
+	if (GetIntegerArguments(action, NULL, &val, 1) != 1) {
 		Scr.ClickTime = DEFAULT_CLICKTIME;
-	}
-	else
-	{
-		Scr.ClickTime = (val < 0)? 0 : val;
+	} else {
+		Scr.ClickTime = (val < 0) ? 0 : val;
 	}
 
 	/* Use a negative value during startup and change sign afterwards. This
 	 * speeds things up quite a bit. */
-	if (fFvwmInStartup)
-	{
+	if (fFvwmInStartup) {
 		Scr.ClickTime = -Scr.ClickTime;
 	}
 
 	return;
 }
 
-
-void CMD_ImagePath(F_CMD_ARGS)
+void
+CMD_ImagePath(F_CMD_ARGS)
 {
-	PictureSetImagePath( action );
+	PictureSetImagePath(action);
 
 	return;
 }
 
-void CMD_LocalePath(F_CMD_ARGS)
+void
+CMD_LocalePath(F_CMD_ARGS)
 {
-	FGettextSetLocalePath( action );
+	FGettextSetLocalePath(action);
 
 	return;
 }
 
-void CMD_ModulePath(F_CMD_ARGS)
+void
+CMD_ModulePath(F_CMD_ARGS)
 {
 	static int need_to_free = 0;
 
-	setPath( &ModulePath, action, need_to_free );
+	setPath(&ModulePath, action, need_to_free);
 	need_to_free = 1;
 
 	return;
 }
 
-void CMD_ModuleTimeout(F_CMD_ARGS)
+void
+CMD_ModuleTimeout(F_CMD_ARGS)
 {
 	int timeout;
 
 	moduleTimeout = DEFAULT_MODULE_TIMEOUT;
-	if (GetIntegerArguments(action, NULL, &timeout, 1) == 1 && timeout > 0)
-	{
+	if (GetIntegerArguments(action, NULL, &timeout, 1) == 1
+	    && timeout > 0) {
 		moduleTimeout = timeout;
 	}
 
 	return;
 }
 
-void CMD_TitleStyle(F_CMD_ARGS)
+void
+CMD_TitleStyle(F_CMD_ARGS)
 {
 	do_title_style(F_PASS_ARGS, False);
 
@@ -2769,60 +2422,55 @@ void CMD_TitleStyle(F_CMD_ARGS)
  * Appends a titlestyle (veliaa@rpi.edu)
  *
  */
-void CMD_AddTitleStyle(F_CMD_ARGS)
+void
+CMD_AddTitleStyle(F_CMD_ARGS)
 {
 	do_title_style(F_PASS_ARGS, True);
 
 	return;
 }
 
-void CMD_PropertyChange(F_CMD_ARGS)
+void
+CMD_PropertyChange(F_CMD_ARGS)
 {
-	char string[256];
-	char *token;
-	char *rest;
-	int ret;
+	char	      string[256];
+	char	     *token;
+	char	     *rest;
+	int	      ret;
 	unsigned long argument;
 	unsigned long data1;
 	unsigned long data2;
 
 	/* argument */
 	token = PeekToken(action, &rest);
-	if (token == NULL)
-	{
+	if (token == NULL) {
 		return;
 	}
 	ret = sscanf(token, "%lu", &argument);
-	if (ret < 1)
-	{
+	if (ret < 1) {
 		return;
 	}
 	/* data1 */
 	data1 = 0;
 	token = PeekToken(rest, &rest);
-	if (token != NULL)
-	{
+	if (token != NULL) {
 		ret = sscanf(token, "%lu", &data1);
-		if (ret < 1)
-		{
+		if (ret < 1) {
 			rest = NULL;
 		}
 	}
 	/* data2 */
 	data2 = 0;
 	token = PeekToken(rest, &rest);
-	if (token != NULL)
-	{
+	if (token != NULL) {
 		ret = sscanf(token, "%lu", &data2);
-		if (ret < 1)
-		{
+		if (ret < 1) {
 			rest = NULL;
 		}
 	}
 	/* string */
 	memset(string, 0, 256);
-	if (rest != NULL)
-	{
+	if (rest != NULL) {
 		ret = sscanf(rest, "%255c", &(string[0]));
 	}
 	BroadcastPropertyChange(argument, data1, data2, string);
@@ -2830,10 +2478,10 @@ void CMD_PropertyChange(F_CMD_ARGS)
 	return;
 }
 
-void CMD_DefaultIcon(F_CMD_ARGS)
+void
+CMD_DefaultIcon(F_CMD_ARGS)
 {
-	if (Scr.DefaultIcon)
-	{
+	if (Scr.DefaultIcon) {
 		free(Scr.DefaultIcon);
 	}
 	GetNextToken(action, &Scr.DefaultIcon);
@@ -2841,25 +2489,21 @@ void CMD_DefaultIcon(F_CMD_ARGS)
 	return;
 }
 
-void CMD_DefaultFont(F_CMD_ARGS)
+void
+CMD_DefaultFont(F_CMD_ARGS)
 {
-	char *font;
+	char	    *font;
 	FlocaleFont *new_font;
-	FvwmWindow *t;
+	FvwmWindow  *t;
 
 	font = PeekToken(action, &action);
-	if (!font)
-	{
+	if (!font) {
 		/* Try 'fixed', pass NULL font name */
 	}
-	if (!(new_font = FlocaleLoadFont(dpy, font, "fvwm")))
-	{
-		if (Scr.DefaultFont == NULL)
-		{
+	if (!(new_font = FlocaleLoadFont(dpy, font, "fvwm"))) {
+		if (Scr.DefaultFont == NULL) {
 			exit(1);
-		}
-		else
-		{
+		} else {
 			return;
 		}
 	}
@@ -2867,19 +2511,16 @@ void CMD_DefaultFont(F_CMD_ARGS)
 	Scr.DefaultFont = new_font;
 	/* we should do that here because a redraw can happen before
 	   flush_window_updates is called ... */
-	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next)
-	{
-		if (USING_DEFAULT_ICON_FONT(t))
-		{
+	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next) {
+		if (USING_DEFAULT_ICON_FONT(t)) {
 			t->icon_font = Scr.DefaultFont;
 		}
-		if (USING_DEFAULT_WINDOW_FONT(t))
-		{
+		if (USING_DEFAULT_WINDOW_FONT(t)) {
 			t->title_font = Scr.DefaultFont;
 		}
 	}
 	/* set flags to indicate that the font has changed */
-	Scr.flags.do_need_window_update = 1;
+	Scr.flags.do_need_window_update	   = 1;
 	Scr.flags.has_default_font_changed = 1;
 
 	return;
@@ -2890,29 +2531,26 @@ void CMD_DefaultFont(F_CMD_ARGS)
  * Changes the window's FvwmDecor pointer (veliaa@rpi.edu)
  *
  */
-void CMD_ChangeDecor(F_CMD_ARGS)
+void
+CMD_ChangeDecor(F_CMD_ARGS)
 {
-	char *item;
-	FvwmDecor *decor = &Scr.DefaultDecor;
-	FvwmDecor *found = NULL;
-	FvwmWindow * const fw = exc->w.fw;
+	char		 *item;
+	FvwmDecor	 *decor = &Scr.DefaultDecor;
+	FvwmDecor	 *found = NULL;
+	FvwmWindow *const fw	= exc->w.fw;
 
 	item = PeekToken(action, &action);
-	if (!action || !item)
-	{
+	if (!action || !item) {
 		return;
 	}
 	/* search for tag */
-	for (; decor; decor = decor->next)
-	{
-		if (decor->tag && StrEquals(item, decor->tag))
-		{
+	for (; decor; decor = decor->next) {
+		if (decor->tag && StrEquals(item, decor->tag)) {
 			found = decor;
 			break;
 		}
 	}
-	if (!found)
-	{
+	if (!found) {
 		XBell(dpy, 0);
 		return;
 	}
@@ -2928,63 +2566,53 @@ void CMD_ChangeDecor(F_CMD_ARGS)
  * Destroys an FvwmDecor (veliaa@rpi.edu)
  *
  */
-void CMD_DestroyDecor(F_CMD_ARGS)
+void
+CMD_DestroyDecor(F_CMD_ARGS)
 {
-	char *item;
+	char	  *item;
 	FvwmDecor *decor = Scr.DefaultDecor.next;
 	FvwmDecor *prev = &Scr.DefaultDecor, *found = NULL;
-	Bool do_recreate = False;
+	Bool	   do_recreate = False;
 
 	item = PeekToken(action, &action);
-	if (!item)
-	{
+	if (!item) {
 		return;
 	}
-	if (StrEquals(item, "recreate"))
-	{
+	if (StrEquals(item, "recreate")) {
 		do_recreate = True;
-		item = PeekToken(action, NULL);
+		item	    = PeekToken(action, NULL);
 	}
-	if (!item)
-	{
+	if (!item) {
 		return;
 	}
 
 	/* search for tag */
-	for (; decor; decor = decor->next)
-	{
-		if (decor->tag && StrEquals(item, decor->tag))
-		{
+	for (; decor; decor = decor->next) {
+		if (decor->tag && StrEquals(item, decor->tag)) {
 			found = decor;
 			break;
 		}
 		prev = decor;
 	}
 
-	if (found && (found != &Scr.DefaultDecor || do_recreate))
-	{
-		if (!do_recreate)
-		{
+	if (found && (found != &Scr.DefaultDecor || do_recreate)) {
+		if (!do_recreate) {
 			_remove_window_decors(F_PASS_ARGS, found);
 		}
 		DestroyFvwmDecor(found);
-		if (do_recreate)
-		{
+		if (do_recreate) {
 			int i;
 
 			InitFvwmDecor(found);
-			found->tag = fxstrdup(item);
-			Scr.flags.do_need_window_update = 1;
-			found->flags.has_changed = 1;
+			found->tag			      = fxstrdup(item);
+			Scr.flags.do_need_window_update	      = 1;
+			found->flags.has_changed	      = 1;
 			found->flags.has_title_height_changed = 0;
-			found->titlebar.flags.has_changed = 1;
-			for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i)
-			{
+			found->titlebar.flags.has_changed     = 1;
+			for (i = 0; i < NUMBER_OF_TITLE_BUTTONS; ++i) {
 				TB_FLAGS(found->buttons[i]).has_changed = 1;
 			}
-		}
-		else
-		{
+		} else {
 			prev->next = found->next;
 			free(found);
 		}
@@ -2998,52 +2626,44 @@ void CMD_DestroyDecor(F_CMD_ARGS)
  * Initiates an AddToDecor (veliaa@rpi.edu)
  *
  */
-void CMD_AddToDecor(F_CMD_ARGS)
+void
+CMD_AddToDecor(F_CMD_ARGS)
 {
 	FvwmDecor *decor;
 	FvwmDecor *found = NULL;
-	char *item = NULL;
+	char	  *item	 = NULL;
 
 	action = GetNextToken(action, &item);
-	if (!item)
-	{
+	if (!item) {
 		return;
 	}
-	if (!action)
-	{
+	if (!action) {
 		free(item);
 		return;
 	}
 	/* search for tag */
-	for (decor = &Scr.DefaultDecor; decor; decor = decor->next)
-	{
-		if (decor->tag && StrEquals(item, decor->tag))
-		{
+	for (decor = &Scr.DefaultDecor; decor; decor = decor->next) {
+		if (decor->tag && StrEquals(item, decor->tag)) {
 			found = decor;
 			break;
 		}
 	}
-	if (!found)
-	{
+	if (!found) {
 		/* then make a new one */
 		found = fxmalloc(sizeof *found);
 		InitFvwmDecor(found);
 		found->tag = item; /* tag it */
 		/* add it to list */
 		for (decor = &Scr.DefaultDecor; decor->next;
-		     decor = decor->next)
-		{
+		    decor  = decor->next) {
 			/* nop */
 		}
 		decor->next = found;
-	}
-	else
-	{
+	} else {
 		free(item);
 	}
 
-	if (found)
-	{
+	if (found) {
 		AddToDecor(F_PASS_ARGS, found);
 		/* Set + state to last decor */
 		set_last_added_item(ADDED_DECOR, found);
@@ -3052,28 +2672,25 @@ void CMD_AddToDecor(F_CMD_ARGS)
 	return;
 }
 
-
 /*
  *
  * Updates window decoration styles (veliaa@rpi.edu)
  *
  */
-void CMD_UpdateDecor(F_CMD_ARGS)
+void
+CMD_UpdateDecor(F_CMD_ARGS)
 {
 	FvwmWindow *fw2;
 
-	FvwmDecor *decor, *found = NULL;
+	FvwmDecor  *decor, *found = NULL;
 	FvwmWindow *hilight = Scr.Hilite;
-	char *item = NULL;
+	char	   *item    = NULL;
 
 	action = GetNextToken(action, &item);
-	if (item)
-	{
+	if (item) {
 		/* search for tag */
-		for (decor = &Scr.DefaultDecor; decor; decor = decor->next)
-		{
-			if (decor->tag && StrEquals(item, decor->tag))
-			{
+		for (decor = &Scr.DefaultDecor; decor; decor = decor->next) {
+			if (decor->tag && StrEquals(item, decor->tag)) {
 				found = decor;
 				break;
 			}
@@ -3081,36 +2698,28 @@ void CMD_UpdateDecor(F_CMD_ARGS)
 		free(item);
 	}
 
-	for (fw2 = Scr.FvwmRoot.next; fw2; fw2 = fw2->next)
-	{
+	for (fw2 = Scr.FvwmRoot.next; fw2; fw2 = fw2->next) {
 		/* update specific decor, or all */
-		if (found)
-		{
-			if (fw2->decor == found)
-			{
-				border_draw_decorations(
-					fw2, PART_ALL, True, True, CLEAR_ALL,
-					NULL, NULL);
-				border_draw_decorations(
-					fw2, PART_ALL, False, True, CLEAR_ALL,
-					NULL, NULL);
+		if (found) {
+			if (fw2->decor == found) {
+				border_draw_decorations(fw2, PART_ALL, True,
+				    True, CLEAR_ALL, NULL, NULL);
+				border_draw_decorations(fw2, PART_ALL, False,
+				    True, CLEAR_ALL, NULL, NULL);
 			}
-		}
-		else
-		{
+		} else {
 			border_draw_decorations(
-				fw2, PART_ALL, True, True, CLEAR_ALL, NULL,
-				NULL);
+			    fw2, PART_ALL, True, True, CLEAR_ALL, NULL, NULL);
 			border_draw_decorations(
-				fw2, PART_ALL, False, True, CLEAR_ALL, NULL,
-				NULL);
+			    fw2, PART_ALL, False, True, CLEAR_ALL, NULL, NULL);
 		}
 	}
 	border_draw_decorations(
-		hilight, PART_ALL, True, True, CLEAR_ALL, NULL, NULL);
+	    hilight, PART_ALL, True, True, CLEAR_ALL, NULL, NULL);
 }
 
-void CMD_ButtonStyle(F_CMD_ARGS)
+void
+CMD_ButtonStyle(F_CMD_ARGS)
 {
 	do_button_style(F_PASS_ARGS, False);
 
@@ -3122,22 +2731,23 @@ void CMD_ButtonStyle(F_CMD_ARGS)
  * Appends a button decoration style (veliaa@rpi.edu)
  *
  */
-void CMD_AddButtonStyle(F_CMD_ARGS)
+void
+CMD_AddButtonStyle(F_CMD_ARGS)
 {
 	do_button_style(F_PASS_ARGS, True);
 
 	return;
 }
 
-void CMD_SetEnv(F_CMD_ARGS)
+void
+CMD_SetEnv(F_CMD_ARGS)
 {
-	char *szVar = NULL;
-	char *szValue = NULL;
+	char *szVar    = NULL;
+	char *szValue  = NULL;
 	char *szPutenv = NULL;
 
 	action = GetNextToken(action, &szVar);
-	if (!szVar)
-	{
+	if (!szVar) {
 		return;
 	}
 
@@ -3147,8 +2757,7 @@ void CMD_SetEnv(F_CMD_ARGS)
 	}
 
 	action = GetNextToken(action, &szValue);
-	if (!szValue)
-	{
+	if (!szValue) {
 		szValue = fxstrdup("");
 	}
 	xasprintf(&szPutenv, "%s=%s", szVar, szValue);
@@ -3161,13 +2770,13 @@ out:
 	return;
 }
 
-void CMD_UnsetEnv(F_CMD_ARGS)
+void
+CMD_UnsetEnv(F_CMD_ARGS)
 {
 	char *szVar = NULL;
 
 	szVar = PeekToken(action, &action);
-	if (!szVar)
-	{
+	if (!szVar) {
 		return;
 	}
 	flib_unsetenv(szVar);
@@ -3175,36 +2784,32 @@ void CMD_UnsetEnv(F_CMD_ARGS)
 	return;
 }
 
-void CMD_BugOpts(F_CMD_ARGS)
+void
+CMD_BugOpts(F_CMD_ARGS)
 {
 	char *opt;
-	int toggle;
+	int   toggle;
 	char *optstring;
 
 	/* fvwm_msg(DBG,"SetGlobalOptions","init action == '%s'\n",action); */
-	while (action && *action && *action != '\n')
-	{
+	while (action && *action && *action != '\n') {
 		action = GetNextFullOption(action, &optstring);
-		if (!optstring)
-		{
+		if (!optstring) {
 			/* no more options */
 			return;
 		}
 		toggle = ParseToggleArgument(
-			SkipNTokens(optstring,1), NULL, 2, False);
+		    SkipNTokens(optstring, 1), NULL, 2, False);
 		opt = PeekToken(optstring, NULL);
 		free(optstring);
 
-		if (!opt)
-		{
+		if (!opt) {
 			return;
 		}
 		/* toggle = ParseToggleArgument(rest, &rest, 2, False);*/
 
-		if (StrEquals(opt, "FlickeringMoveWorkaround"))
-		{
-			switch (toggle)
-			{
+		if (StrEquals(opt, "FlickeringMoveWorkaround")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_disable_configure_notify ^= 1;
 				break;
@@ -3216,11 +2821,8 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.do_disable_configure_notify = 0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "MixedVisualWorkaround"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "MixedVisualWorkaround")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_install_root_cmap ^= 1;
 				break;
@@ -3232,11 +2834,8 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.do_install_root_cmap = 0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "ModalityIsEvil"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "ModalityIsEvil")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.is_modality_evil ^= 1;
 				break;
@@ -3248,15 +2847,11 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.is_modality_evil = 0;
 				break;
 			}
-			if (Scr.bo.is_modality_evil)
-			{
+			if (Scr.bo.is_modality_evil) {
 				SetMWM_INFO(Scr.NoFocusWin);
 			}
-		}
-		else if (StrEquals(opt, "RaiseOverNativeWindows"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "RaiseOverNativeWindows")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.is_raise_hack_needed ^= 1;
 				break;
@@ -3268,11 +2863,8 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.is_raise_hack_needed = 0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "RaiseOverUnmanaged"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "RaiseOverUnmanaged")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_raise_over_unmanaged ^= 1;
 				break;
@@ -3284,47 +2876,43 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.do_raise_over_unmanaged = 0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "FlickeringQtDialogsWorkaround"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "FlickeringQtDialogsWorkaround")) {
+			switch (toggle) {
 			case -1:
-				Scr.bo.do_enable_flickering_qt_dialogs_workaround ^= 1;
+				Scr.bo
+				    .do_enable_flickering_qt_dialogs_workaround ^=
+				    1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_enable_flickering_qt_dialogs_workaround = toggle;
+				Scr.bo
+				    .do_enable_flickering_qt_dialogs_workaround =
+				    toggle;
 				break;
 			default:
-				Scr.bo.do_enable_flickering_qt_dialogs_workaround = 0;
+				Scr.bo
+				    .do_enable_flickering_qt_dialogs_workaround =
+				    0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "QtDragnDropWorkaround") )
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "QtDragnDropWorkaround")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_enable_qt_drag_n_drop_workaround ^= 1;
 				break;
 			case 0:
 			case 1:
-				Scr.bo.do_enable_qt_drag_n_drop_workaround = toggle;
+				Scr.bo.do_enable_qt_drag_n_drop_workaround =
+				    toggle;
 				break;
 			default:
 				Scr.bo.do_enable_qt_drag_n_drop_workaround = 0;
 				break;
 			}
-		}
-		else if (EWMH_BugOpts(opt, toggle))
-		{
+		} else if (EWMH_BugOpts(opt, toggle)) {
 			/* work is done in EWMH_BugOpts */
-		}
-		else if (StrEquals(opt, "DisplayNewWindowNames"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "DisplayNewWindowNames")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_display_new_window_names ^= 1;
 				break;
@@ -3336,11 +2924,8 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.do_display_new_window_names = 0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "ExplainWindowPlacement"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "ExplainWindowPlacement")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_explain_window_placement ^= 1;
 				break;
@@ -3352,11 +2937,8 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.do_explain_window_placement = 0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "DebugCRMotionMethod"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "DebugCRMotionMethod")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_debug_cr_motion_method ^= 1;
 				break;
@@ -3368,11 +2950,8 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.do_debug_cr_motion_method = 0;
 				break;
 			}
-		}
-		else if (StrEquals(opt, "DebugRandR"))
-		{
-			switch (toggle)
-			{
+		} else if (StrEquals(opt, "DebugRandR")) {
+			switch (toggle) {
 			case -1:
 				Scr.bo.do_debug_randr ^= 1;
 				break;
@@ -3384,47 +2963,35 @@ void CMD_BugOpts(F_CMD_ARGS)
 				Scr.bo.do_debug_randr = 0;
 				break;
 			}
-			if (Scr.bo.do_debug_randr)
-			{
+			if (Scr.bo.do_debug_randr) {
 				monitor_dump_state(NULL);
 			}
-		}
-		else if (StrEquals(opt, "TransliterateUtf8"))
-		{
+		} else if (StrEquals(opt, "TransliterateUtf8")) {
 			FiconvSetTransliterateUtf8(toggle);
-		}
-		else
-		{
-			fvwm_debug(__func__,
-				   "Unknown Bug Option '%s'", opt);
+		} else {
+			fvwm_debug(__func__, "Unknown Bug Option '%s'", opt);
 		}
 	}
 
 	return;
 }
 
-void CMD_Emulate(F_CMD_ARGS)
+void
+CMD_Emulate(F_CMD_ARGS)
 {
 	char *style;
 
 	style = PeekToken(action, NULL);
-	if (!style || StrEquals(style, "fvwm"))
-	{
+	if (!style || StrEquals(style, "fvwm")) {
 		Scr.gs.do_emulate_mwm = False;
 		Scr.gs.do_emulate_win = False;
-	}
-	else if (StrEquals(style, "mwm"))
-	{
+	} else if (StrEquals(style, "mwm")) {
 		Scr.gs.do_emulate_mwm = True;
 		Scr.gs.do_emulate_win = False;
-	}
-	else if (StrEquals(style, "win"))
-	{
+	} else if (StrEquals(style, "win")) {
 		Scr.gs.do_emulate_mwm = False;
 		Scr.gs.do_emulate_win = True;
-	}
-	else
-	{
+	} else {
 		fvwm_debug(__func__, "Unknown style '%s'", style);
 		return;
 	}
@@ -3432,51 +2999,47 @@ void CMD_Emulate(F_CMD_ARGS)
 	 * commands, in which case set those values to their defaults.
 	 */
 	Scr.SizeWindow.is_configured = false;
-	Scr.SizeWindow.m = NULL;
+	Scr.SizeWindow.m	     = NULL;
 
-	Scr.flags.do_need_window_update = 1;
+	Scr.flags.do_need_window_update	   = 1;
 	Scr.flags.has_default_font_changed = 1;
 
 	return;
 }
 
 /* set animation parameters */
-void CMD_SetAnimation(F_CMD_ARGS)
+void
+CMD_SetAnimation(F_CMD_ARGS)
 {
 	char *opt;
-	int delay;
+	int   delay;
 	float pct;
-	int i = 0;
+	int   i = 0;
 
 	opt = PeekToken(action, &action);
-	if (!opt || sscanf(opt,"%d",&delay) != 1)
-	{
-		fvwm_debug(__func__,
-			   "Improper milli-second delay as first argument");
+	if (!opt || sscanf(opt, "%d", &delay) != 1) {
+		fvwm_debug(
+		    __func__, "Improper milli-second delay as first argument");
 		return;
 	}
-	if (delay > 500)
-	{
+	if (delay > 500) {
 		fvwm_debug(__func__,
-			   "Using longer than .5 seconds as between frame"
-			   " animation delay");
+		    "Using longer than .5 seconds as between frame"
+		    " animation delay");
 	}
 	cmsDelayDefault = delay;
 	for (opt = PeekToken(action, &action); opt;
-	     opt = PeekToken(action, &action))
-	{
-		if (sscanf(opt,"%f",&pct) != 1)
-		{
+	    opt	 = PeekToken(action, &action)) {
+		if (sscanf(opt, "%f", &pct) != 1) {
 			fvwm_debug(__func__,
-				   "Use fractional values ending in 1.0 as args"
-				   " 2 and on");
+			    "Use fractional values ending in 1.0 as args"
+			    " 2 and on");
 			return;
 		}
 		rgpctMovementDefault[i++] = pct;
 	}
 	/* No pct entries means don't change them at all */
-	if (i > 0 && rgpctMovementDefault[i-1] != 1.0)
-	{
+	if (i > 0 && rgpctMovementDefault[i - 1] != 1.0) {
 		rgpctMovementDefault[i++] = 1.0;
 	}
 
@@ -3484,30 +3047,28 @@ void CMD_SetAnimation(F_CMD_ARGS)
 }
 
 /* Determine which modifiers are required with a keycode to make <keysym>. */
-static Bool FKeysymToKeycode (Display *disp, KeySym keysym,
-	unsigned int *keycode, unsigned int *modifiers)
+static Bool
+FKeysymToKeycode(Display *disp, KeySym keysym, unsigned int *keycode,
+    unsigned int *modifiers)
 {
 	int m;
 
-	*keycode = XKeysymToKeycode(disp, keysym);
+	*keycode   = XKeysymToKeycode(disp, keysym);
 	*modifiers = 0;
 
-	for (m = 0; m <= 8; ++m)
-	{
+	for (m = 0; m <= 8; ++m) {
 		KeySym ks = fvwm_KeycodeToKeysym(disp, *keycode, m, 0);
-		if (ks == keysym)
-		{
-			switch (m)
-			{
-				case 0: /* No modifiers */
-					break;
-				case 1: /* Shift modifier */
-					*modifiers |= ShiftMask;
-					break;
-				default:
-					fvwm_debug(__func__,
-						   "Unhandled modifier %d", m);
-					break;
+		if (ks == keysym) {
+			switch (m) {
+			case 0: /* No modifiers */
+				break;
+			case 1: /* Shift modifier */
+				*modifiers |= ShiftMask;
+				break;
+			default:
+				fvwm_debug(
+				    __func__, "Unhandled modifier %d", m);
+				break;
 			}
 			return True;
 		}
@@ -3515,48 +3076,40 @@ static Bool FKeysymToKeycode (Display *disp, KeySym keysym,
 	return False;
 }
 
-static void _fake_event(F_CMD_ARGS, FakeEventType type)
+static void
+_fake_event(F_CMD_ARGS, FakeEventType type)
 {
-	char *token;
-	char *optlist[] = {
-		"press", "p",
-		"release", "r",
-		"wait", "w",
-		"modifiers", "m",
-		"depth", "d",
-		NULL
-	};
-	unsigned int mask = 0;
-	Window root = Scr.Root;
-	int maxdepth = 0;
-	static char args[128];
+	char	    *token;
+	char	    *optlist[] = {"press", "p", "release", "r", "wait", "w",
+		   "modifiers", "m", "depth", "d", NULL};
+	unsigned int mask      = 0;
+	Window	     root      = Scr.Root;
+	int	     maxdepth  = 0;
+	static char  args[128];
 	strncpy(args, action, sizeof(args) - 1);
 
 	/* get the mask of pressed/released buttons/keys */
-	FQueryPointer(
-		dpy, Scr.Root, &root, &JunkRoot, &JunkX, &JunkY, &JunkX,
-		&JunkY, &mask);
+	FQueryPointer(dpy, Scr.Root, &root, &JunkRoot, &JunkX, &JunkY, &JunkX,
+	    &JunkY, &mask);
 
 	token = PeekToken(action, &action);
-	while (token && action)
-	{
-		int index = GetTokenIndex(token, optlist, 0, NULL);
-		int val, depth;
+	while (token && action) {
+		int    index = GetTokenIndex(token, optlist, 0, NULL);
+		int    val, depth;
 		XEvent e;
 		Window w;
 		Window child_w;
-		int x = 0;
-		int y = 0;
-		int rx = 0;
-		int ry = 0;
-		Bool do_unset;
-		long add_mask = 0;
-		KeySym keysym = NoSymbol;
+		int    x  = 0;
+		int    y  = 0;
+		int    rx = 0;
+		int    ry = 0;
+		Bool   do_unset;
+		long   add_mask = 0;
+		KeySym keysym	= NoSymbol;
 
 		XFlush(dpy);
 		do_unset = True;
-		switch (index)
-		{
+		switch (index) {
 		case 0:
 		case 1:
 			do_unset = False;
@@ -3564,72 +3117,65 @@ static void _fake_event(F_CMD_ARGS, FakeEventType type)
 		case 2:
 		case 3:
 			/* key/button press or release */
-			if (type == FakeMouseEvent)
-			{
+			if (type == FakeMouseEvent) {
 				if ((GetIntegerArguments(
-					     action, &action, &val, 1) != 1) ||
-				    val < 1 ||
-				    val > NUMBER_OF_EXTENDED_MOUSE_BUTTONS)
-				{
+					 action, &action, &val, 1)
+					!= 1)
+				    || val < 1
+				    || val > NUMBER_OF_EXTENDED_MOUSE_BUTTONS) {
 					fvwm_debug(__func__,
-						   "Invalid button specifier in"
-						   " \"%s\" for FakeClick.",
-						   args);
+					    "Invalid button specifier in"
+					    " \"%s\" for FakeClick.",
+					    args);
 					return; /* error */
 				}
-			}
-			else /* type == FakeKeyEvent */
+			} else /* type == FakeKeyEvent */
 			{
 				char *key = PeekToken(action, &action);
-				if (key == NULL)
-				{
+				if (key == NULL) {
 					fvwm_debug(__func__,
-						   "No keysym specifier in \"%s\""
-						   " for FakeKeypress.", args);
+					    "No keysym specifier in \"%s\""
+					    " for FakeKeypress.",
+					    args);
 					return;
 				}
 
 				/* Do *NOT* use FvwmStringToKeysym() as it is
 				 * case insensitive. */
 				keysym = XStringToKeysym(key);
-				if (keysym == NoSymbol)
-				{
+				if (keysym == NoSymbol) {
 					fvwm_debug(__func__,
-						   "Invalid keysym specifier (%s)"
-						   " in \"%s\" for FakeKeypress.",
-						   key, args);
+					    "Invalid keysym specifier (%s)"
+					    " in \"%s\" for FakeKeypress.",
+					    key, args);
 					return;
 				}
 			}
 
-			w = None;
+			w	= None;
 			child_w = root;
-			for (depth = 1;
-				 depth != maxdepth &&
-				     w != child_w && child_w != None;
-				 depth++)
-			{
+			for (depth = 1; depth != maxdepth && w != child_w
+					&& child_w != None;
+			    depth++) {
 				w = child_w;
-				FQueryPointer(
-						dpy, w, &root, &child_w,
-						&rx, &ry, &x, &y, &JunkMask);
+				FQueryPointer(dpy, w, &root, &child_w, &rx, &ry,
+				    &x, &y, &JunkMask);
 			}
 
-			if (type == FakeMouseEvent)
-			{
-				e.type = (do_unset) ?
-					ButtonRelease : ButtonPress;
-				e.xbutton.display = dpy;
-				e.xbutton.window = w;
-				e.xbutton.subwindow = None;
-				e.xbutton.root = root;
-				e.xbutton.time = fev_get_evtime();
-				e.xbutton.x = x;
-				e.xbutton.y = y;
-				e.xbutton.x_root = rx;
-				e.xbutton.y_root = ry;
-				e.xbutton.button = val;
-				e.xbutton.state = mask;
+			if (type == FakeMouseEvent) {
+				e.type =
+				    (do_unset) ? ButtonRelease : ButtonPress;
+				e.xbutton.display     = dpy;
+				e.xbutton.window      = w;
+				e.xbutton.subwindow   = None;
+				e.xbutton.root	      = root;
+				e.xbutton.time	      = fev_get_evtime();
+				e.xbutton.x	      = x;
+				e.xbutton.y	      = y;
+				e.xbutton.x_root      = rx;
+				e.xbutton.y_root      = ry;
+				e.xbutton.button      = val;
+				e.xbutton.state	      = mask;
 				e.xbutton.same_screen = (Scr.Root == root);
 				/* SS: I think this mask handling code is
 				 * buggy.
@@ -3640,135 +3186,108 @@ static void _fake_event(F_CMD_ARGS, FakeEventType type)
 				/* DV: Button1Mask is actually a bit.  Shifting
 				 * it by (val -1) bits to the left gives
 				 * Button2Mask, Button3Mask etc. */
-				if (do_unset)
-				{
+				if (do_unset) {
 					mask &= ~(Button1Mask << (val - 1));
-				}
-				else
-				{
+				} else {
 					mask |= (Button1Mask << (val - 1));
 				}
-				add_mask = (do_unset) ?
-					ButtonPressMask : ButtonReleaseMask;
-			}
-			else
-			{
+				add_mask = (do_unset) ? ButtonPressMask
+						      : ButtonReleaseMask;
+			} else {
 				/* type == FakeKeyEvent */
 				e.type = (do_unset ? KeyRelease : KeyPress);
-				e.xkey.display = dpy;
-				e.xkey.subwindow = None;
-				e.xkey.root = root;
-				e.xkey.time = fev_get_evtime();
-				e.xkey.x = x;
-				e.xkey.y = y;
-				e.xkey.x_root = rx;
-				e.xkey.y_root = ry;
+				e.xkey.display	   = dpy;
+				e.xkey.subwindow   = None;
+				e.xkey.root	   = root;
+				e.xkey.time	   = fev_get_evtime();
+				e.xkey.x	   = x;
+				e.xkey.y	   = y;
+				e.xkey.x_root	   = rx;
+				e.xkey.y_root	   = ry;
 				e.xkey.same_screen = (Scr.Root == root);
 
 				w = e.xkey.window = exc->w.w;
 
-				if (FKeysymToKeycode(
-					    dpy, keysym, &(e.xkey.keycode),
-					    &(e.xkey.state)) != True)
-				{
+				if (FKeysymToKeycode(dpy, keysym,
+					&(e.xkey.keycode), &(e.xkey.state))
+				    != True) {
 					fvwm_debug(__func__,
-						   "FKeysymToKeycode failed");
+					    "FKeysymToKeycode failed");
 					return;
 				}
 				e.xkey.state |= mask;
-				add_mask = (do_unset) ?
-					KeyReleaseMask : KeyPressMask;
+				add_mask =
+				    (do_unset) ? KeyReleaseMask : KeyPressMask;
 			}
 			FSendEvent(dpy, w, True,
-				SubstructureNotifyMask | add_mask, &e);
+			    SubstructureNotifyMask | add_mask, &e);
 			XFlush(dpy);
 			break;
 		case 4:
 		case 5:
 			/* wait */
-			if ((GetIntegerArguments(
-				     action, &action, &val, 1) != 1) ||
-			    val <= 0 || val > 1000000)
-			{
+			if ((GetIntegerArguments(action, &action, &val, 1) != 1)
+			    || val <= 0 || val > 1000000) {
 				fvwm_debug(__func__,
-					   "Invalid wait value in \"%s\"",
-					   args);
+				    "Invalid wait value in \"%s\"", args);
 				return;
 			}
 
 			usleep(1000 * val);
-			FQueryPointer(
-				dpy, Scr.Root, &root, &JunkRoot,
-				&JunkX, &JunkY, &JunkX, &JunkY, &mask);
+			FQueryPointer(dpy, Scr.Root, &root, &JunkRoot, &JunkX,
+			    &JunkY, &JunkX, &JunkY, &mask);
 			break;
 		case 6:
 		case 7:
 			/* set modifier */
-			if (GetIntegerArguments(action, &action, &val, 1) != 1)
-			{
+			if (GetIntegerArguments(action, &action, &val, 1)
+			    != 1) {
 				fvwm_debug(__func__,
-					   "Invalid modifier value in \"%s\"",
-					   args);
+				    "Invalid modifier value in \"%s\"", args);
 				return;
 			}
 			do_unset = False;
-			if (val < 0)
-			{
+			if (val < 0) {
 				do_unset = True;
-				val = -val;
+				val	 = -val;
 			}
-			if (val == 6)
-			{
+			if (val == 6) {
 				val = ShiftMask;
-			}
-			else if (val == 7)
-			{
+			} else if (val == 7) {
 				val = LockMask;
-			}
-			else if (val == 8)
-			{
+			} else if (val == 8) {
 				val = ControlMask;
-			}
-			else if (val >=1 && val <= 5)
-			{
+			} else if (val >= 1 && val <= 5) {
 				val = (Mod1Mask << (val - 1));
-			}
-			else
-			{
+			} else {
 				/* error */
 				return;
 			}
 			/* SS: Could be buggy if a "modifier" operation
 			 * preceeds a "wait" operation. */
-			if (do_unset)
-			{
+			if (do_unset) {
 				mask &= ~val;
-			}
-			else
-			{
+			} else {
 				mask |= val;
 			}
 			break;
 		case 8:
 		case 9:
 			/* new max depth */
-			if (GetIntegerArguments(action, &action, &val, 1) != 1)
-			{
+			if (GetIntegerArguments(action, &action, &val, 1)
+			    != 1) {
 				fvwm_debug(__func__,
-					   "Invalid depth value in \"%s\"",
-					   args);
+				    "Invalid depth value in \"%s\"", args);
 				return;
 			}
 			maxdepth = val;
 			break;
 		default:
-			fvwm_debug(__func__,
-				   "Invalid command (%s) in \"%s\"", token,
-				   args);
+			fvwm_debug(__func__, "Invalid command (%s) in \"%s\"",
+			    token, args);
 			return;
 		}
-		if (action)
-		{
+		if (action) {
 			token = PeekToken(action, &action);
 		}
 	}
@@ -3776,41 +3295,41 @@ static void _fake_event(F_CMD_ARGS, FakeEventType type)
 	return;
 }
 
-void CMD_FakeClick(F_CMD_ARGS)
+void
+CMD_FakeClick(F_CMD_ARGS)
 {
 	_fake_event(F_PASS_ARGS, FakeMouseEvent);
 
 	return;
 }
 
-void CMD_FakeKeypress(F_CMD_ARGS)
+void
+CMD_FakeKeypress(F_CMD_ARGS)
 {
 	_fake_event(F_PASS_ARGS, FakeKeyEvent);
 
 	return;
 }
 
-void CMD_State(F_CMD_ARGS)
+void
+CMD_State(F_CMD_ARGS)
 {
-	unsigned int state;
-	int toggle;
-	int n;
-	FvwmWindow * const fw = exc->w.fw;
+	unsigned int	  state;
+	int		  toggle;
+	int		  n;
+	FvwmWindow *const fw = exc->w.fw;
 
 	n = GetIntegerArguments(action, &action, (int *)&state, 1);
-	if (n <= 0)
-	{
+	if (n <= 0) {
 		return;
 	}
-	if (state > 31)
-	{
+	if (state > 31) {
 		fvwm_debug(__func__, "Illegal state %d\n", state);
 		return;
 	}
 	toggle = ParseToggleArgument(action, NULL, -1, 0);
-	state = (1 << state);
-	switch (toggle)
-	{
+	state  = (1 << state);
+	switch (toggle) {
 	case -1:
 		TOGGLE_USER_STATES(fw, state);
 		break;

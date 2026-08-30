@@ -18,6 +18,7 @@ fvwm_sources = [
     'fvwm/ewmh_names.c',
     'fvwm/event_loop_policy.c',
     'fvwm/topology_refresh_policy.c',
+    'fvwm/topology_event_adapter.c',
     'fvwm/execcontext.c',
     'fvwm/expand.c',
     'fvwm/focus.c',

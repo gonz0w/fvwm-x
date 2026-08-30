@@ -513,7 +513,9 @@ void
 FScreenSelect(Display *dpy)
 {
 	XRRSelectInput(dpy, DefaultRootWindow(dpy),
-	    RRScreenChangeNotifyMask | RROutputChangeNotifyMask);
+	    RRScreenChangeNotifyMask | RRCrtcChangeNotifyMask
+		| RROutputChangeNotifyMask | RROutputPropertyNotifyMask
+		| RRResourceChangeNotifyMask);
 }
 
 static void *

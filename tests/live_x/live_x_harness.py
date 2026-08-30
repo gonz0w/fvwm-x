@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
 import selectors
 import signal
 import subprocess
@@ -42,7 +43,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument("--backend", choices=("xvfb", "xorg-dummy"))
     parser.add_argument(
-        "--scenario", choices=("fault-injection-probe",), default=None
+        "--scenario", choices=("fault-injection-probe", "topology"), default=None
     )
     parser.add_argument("--fvwm", type=Path)
     parser.add_argument("--wrapped-fvwm", type=Path)
@@ -297,8 +298,16 @@ def start_display_server(
     read_fd, write_fd = os.pipe()
     process: ManagedProcess | None = None
     try:
-        argv = list(argv_prefix)
-        argv.extend(["-displayfd", str(write_fd), "-nolisten", "tcp"])
+        if not argv_prefix:
+            raise ValueError("X server argv prefix must not be empty")
+        argv = [
+            argv_prefix[0],
+            "-displayfd",
+            str(write_fd),
+            "-nolisten",
+            "tcp",
+            *argv_prefix[1:],
+        ]
         process = runtime.start(
             name,
             argv,
@@ -374,6 +383,78 @@ def wait_for_randr(runtime: HarnessRuntime, display: str, deadline: float) -> st
     return result
 
 
+def parse_randr_version(output: str) -> tuple[int, int]:
+    """Return the server RandR version reported by xrandr."""
+    match = re.search(r"^Server reports RandR version (\d+)\.(\d+)\s*$", output,
+                      re.MULTILINE)
+    if match is None:
+        raise HarnessError("xrandr did not report the server RandR version")
+    return int(match.group(1)), int(match.group(2))
+
+
+def parse_xrandr_monitors(output: str) -> dict[str, dict[str, object]]:
+    """Parse strict xrandr --listmonitors state keyed by Monitor name."""
+    lines = output.splitlines()
+    if not lines:
+        raise HarnessError("xrandr --listmonitors returned no output")
+    count_match = re.fullmatch(r"Monitors:\s+(\d+)", lines[0].strip())
+    if count_match is None:
+        raise HarnessError("xrandr --listmonitors returned an invalid header")
+
+    pattern = re.compile(
+        r"^\s*\d+:\s+([+*]*)(\S+)\s+"
+        r"(\d+)/(\d+)x(\d+)/(\d+)([+-]\d+)([+-]\d+)"
+        r"(?:\s+(.*?))?\s*$"
+    )
+    monitors: dict[str, dict[str, object]] = {}
+    for line in lines[1:]:
+        if not line.strip():
+            continue
+        match = pattern.fullmatch(line)
+        if match is None:
+            raise HarnessError(f"invalid xrandr Monitor line: {line!r}")
+        flags, name = match.group(1), match.group(2)
+        if name in monitors:
+            raise HarnessError(f"duplicate xrandr Monitor name: {name!r}")
+        output_text = match.group(9)
+        monitors[name] = {
+            "name": name,
+            "primary": "*" in flags,
+            "width": int(match.group(3)),
+            "mm_width": int(match.group(4)),
+            "height": int(match.group(5)),
+            "mm_height": int(match.group(6)),
+            "x": int(match.group(7)),
+            "y": int(match.group(8)),
+            "output_names": output_text.split() if output_text else [],
+        }
+    if len(monitors) != int(count_match.group(1)):
+        raise HarnessError("xrandr Monitor count does not match its header")
+    return monitors
+
+
+def parse_xrandr_output_ids(output: str) -> dict[str, int]:
+    """Parse output XIDs from xrandr --verbose Identifier records."""
+    output_ids: dict[str, int] = {}
+    current_name: str | None = None
+    for line in output.splitlines():
+        output_match = re.match(
+            r"^(\S+)\s+(?:connected|disconnected)\b", line
+        )
+        if output_match is not None:
+            current_name = output_match.group(1)
+            continue
+        identifier_match = re.match(r"^\s+Identifier:\s+(0x[0-9a-fA-F]+)\s*$", line)
+        if identifier_match is None:
+            continue
+        if current_name is None or current_name in output_ids:
+            raise HarnessError("xrandr --verbose returned an invalid Identifier")
+        output_ids[current_name] = int(identifier_match.group(1), 16)
+    if not output_ids:
+        raise HarnessError("xrandr --verbose returned no output Identifiers")
+    return output_ids
+
+
 def start_fvwm(
     runtime: HarnessRuntime,
     fvwm_path: Path,
@@ -409,7 +490,9 @@ def fvwm_arguments(
         str(fvwm_log),
         "-v",
         "-c",
-        "Status On",
+        "Schedule 0 Status On",
+        "-c",
+        "PrintInfo Topology",
     ]
 
 
@@ -715,6 +798,276 @@ def topology_monitor(
     return matches[0]
 
 
+def assert_status_monitor_matches(
+    status: dict[str, object],
+    queried_monitor: dict[str, object],
+    expected_outputs: list[int],
+    *,
+    expected_epoch: int,
+) -> None:
+    """Require exact Status v4 facts for one queried RandR Monitor."""
+    topology = status_topology(status)
+    if topology["epoch"] != expected_epoch:
+        raise HarnessError(
+            f"expected topology epoch {expected_epoch}, got {topology['epoch']}"
+        )
+    name = queried_monitor.get("name")
+    if type(name) is not str:
+        raise HarnessError("queried Monitor has an invalid name")
+    monitor = topology_monitor(status, name)
+    required_keys = {
+        "name",
+        "name_atom",
+        "primary",
+        "geometry",
+        "physical_mm",
+        "outputs",
+    }
+    if set(monitor) != required_keys:
+        raise HarnessError(f"Status monitor {name!r} has unexpected keys")
+    if type(monitor["name_atom"]) is not int or monitor["name_atom"] <= 0:
+        raise HarnessError(f"Status monitor {name!r} has an invalid name Atom")
+    if type(monitor["primary"]) is not bool:
+        raise HarnessError(f"Status monitor {name!r} primary is not boolean")
+    if monitor["primary"] != queried_monitor.get("primary"):
+        raise HarnessError(f"Status monitor {name!r} primary does not match RandR")
+
+    geometry = monitor["geometry"]
+    physical = monitor["physical_mm"]
+    if type(geometry) is not dict or set(geometry) != {
+        "x",
+        "y",
+        "width",
+        "height",
+    }:
+        raise HarnessError(f"Status monitor {name!r} geometry is invalid")
+    if type(physical) is not dict or set(physical) != {"width", "height"}:
+        raise HarnessError(f"Status monitor {name!r} physical size is invalid")
+    expected_geometry = {
+        key: queried_monitor.get(key) for key in ("x", "y", "width", "height")
+    }
+    expected_physical = {
+        "width": queried_monitor.get("mm_width"),
+        "height": queried_monitor.get("mm_height"),
+    }
+    if any(type(value) is not int for value in geometry.values()):
+        raise HarnessError(f"Status monitor {name!r} geometry is not integral")
+    if any(type(value) is not int for value in physical.values()):
+        raise HarnessError(f"Status monitor {name!r} physical size is not integral")
+    if geometry != expected_geometry or physical != expected_physical:
+        raise HarnessError(f"Status monitor {name!r} dimensions do not match RandR")
+    outputs = monitor["outputs"]
+    if type(outputs) is not list or any(type(value) is not int for value in outputs):
+        raise HarnessError(f"Status monitor {name!r} outputs are invalid")
+    if outputs != expected_outputs:
+        raise HarnessError(f"Status monitor {name!r} outputs do not match RandR")
+
+
+def assert_status_stable(
+    collector: StatusCollector,
+    expected_topology: dict[str, object],
+    deadline: float,
+    process: ManagedProcess,
+) -> None:
+    """Observe through a predicate deadline without accepting a false epoch."""
+    with selectors.DefaultSelector() as selector:
+        selector.register(collector.file_descriptor, selectors.EVENT_READ)
+        while True:
+            collector.read_available()
+            for record in collector.records:
+                if status_topology(record) != expected_topology:
+                    raise HarnessError("Status changed without queried topology change")
+            if process.poll() is not None:
+                raise HarnessError(
+                    f"{process.name} exited with {process.poll()} during stability check"
+                )
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return
+            selector.select(min(remaining, POLL_QUANTUM_SECONDS))
+
+
+def run_xvfb_topology(options: argparse.Namespace) -> None:
+    """Prove the mandatory Xvfb startup and epoch-1 inspection baseline."""
+    if options.fvwm is None or not options.fvwm.is_file():
+        raise ValueError("--fvwm must name an existing file")
+    if options.artifacts_dir is None:
+        raise ValueError("--artifacts-dir is required")
+    if options.backend != "xvfb":
+        raise ValueError("topology scenario currently requires --backend=xvfb")
+
+    fvwm_path = options.fvwm.resolve()
+    artifact_dir = options.artifacts_dir.resolve()
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    runtime = HarnessRuntime(prefix="fvwm-xvfb-topology-")
+    server: ManagedProcess | None = None
+    fvwm_process: ManagedProcess | None = None
+    collector: StatusCollector | None = None
+    xrandr_text: str | None = None
+    last_status: dict[str, object] | None = None
+    active_error: BaseException | None = None
+    try:
+        server, display = start_display_server(
+            runtime,
+            "Xvfb",
+            ["Xvfb", "-screen", "0", "1280x720x24"],
+            "xserver.log",
+            time.monotonic() + 10.0,
+        )
+        expected_server_argv = [
+            "Xvfb",
+            "-displayfd",
+            server.argv[server.argv.index("-displayfd") + 1],
+            "-nolisten",
+            "tcp",
+            "-screen",
+            "0",
+            "1280x720x24",
+        ]
+        if server.argv != expected_server_argv:
+            raise HarnessError(f"unexpected Xvfb argv: {server.argv!r}")
+        wait_for_randr(runtime, display, time.monotonic() + 10.0)
+
+        return_code, version_text = query_xrandr(
+            runtime,
+            display,
+            ["--version"],
+            time.monotonic() + 5.0,
+            "xrandr-version.log",
+        )
+        if return_code != 0:
+            raise HarnessError("xrandr --version failed")
+        randr_version = parse_randr_version(version_text)
+        if randr_version < (1, 5):
+            raise HarnessError(
+                f"RandR 1.5 or newer is required, server has {randr_version}"
+            )
+
+        return_code, xrandr_text = query_xrandr(
+            runtime,
+            display,
+            ["--listmonitors"],
+            time.monotonic() + 5.0,
+            "xrandr-listmonitors-baseline.log",
+        )
+        if return_code != 0:
+            raise HarnessError("xrandr --listmonitors failed")
+        monitors = parse_xrandr_monitors(xrandr_text)
+        if set(monitors) != {"screen"}:
+            raise HarnessError("Xvfb baseline must expose only Monitor 'screen'")
+        baseline_monitor = monitors["screen"]
+        expected_geometry = {"x": 0, "y": 0, "width": 1280, "height": 720}
+        if any(
+            baseline_monitor[key] != value
+            for key, value in expected_geometry.items()
+        ):
+            raise HarnessError("Xvfb screen Monitor has unexpected geometry")
+        if baseline_monitor["output_names"] != ["screen"]:
+            raise HarnessError("Xvfb screen Monitor has unexpected membership")
+
+        return_code, verbose_text = query_xrandr(
+            runtime,
+            display,
+            ["--verbose"],
+            time.monotonic() + 5.0,
+            "xrandr-verbose-baseline.log",
+        )
+        if return_code != 0:
+            raise HarnessError("xrandr --verbose failed")
+        output_ids = parse_xrandr_output_ids(verbose_text)
+        if "screen" not in output_ids:
+            raise HarnessError("Xvfb output 'screen' has no queried XID")
+        baseline_outputs = [output_ids["screen"]]
+
+        fvwm_process, collector = start_fvwm(
+            runtime, fvwm_path, display, time.monotonic() + 10.0
+        )
+
+        def baseline_status(record: dict[str, object]) -> bool:
+            try:
+                assert_status_monitor_matches(
+                    record,
+                    baseline_monitor,
+                    baseline_outputs,
+                    expected_epoch=1,
+                )
+            except HarnessError:
+                return False
+            return len(status_topology(record)["monitors"]) == 1
+
+        last_status = collector.wait_for(
+            "strict Status v4 epoch 1",
+            baseline_status,
+            time.monotonic() + 10.0,
+            process=fvwm_process,
+        )
+        baseline_topology = status_topology(last_status)
+
+        fvwm_log = runtime.root / "fvwm.log"
+
+        def print_info_visible() -> bool:
+            if not fvwm_log.is_file():
+                return False
+            text = fvwm_log.read_text(errors="replace")
+            return (
+                "Topology epoch=1 monitors=1" in text
+                and 'Topology monitor name="screen"' in text
+            )
+
+        wait_for_predicate(
+            "PrintInfo Topology epoch and Monitor",
+            print_info_visible,
+            time.monotonic() + 5.0,
+            process=fvwm_process,
+        )
+        assert_status_stable(
+            collector,
+            baseline_topology,
+            time.monotonic() + 0.35,
+            fvwm_process,
+        )
+        last_status = collector.last_status
+        result = {
+            "backend": "xvfb",
+            "baseline_epoch": 1,
+            "monitor": baseline_monitor,
+            "output_ids": output_ids,
+            "randr_version": list(randr_version),
+        }
+        (artifact_dir / "result.json").write_text(
+            json.dumps(result, indent=2, sort_keys=True) + "\n"
+        )
+    except BaseException as error:
+        active_error = error
+        if collector is not None:
+            last_status = collector.last_status
+        capture_failure(
+            artifact_dir,
+            error=error,
+            server_log=server.log_path if server is not None else None,
+            fvwm_log=runtime.root / "fvwm.log",
+            xrandr_text=xrandr_text,
+            last_status=last_status,
+        )
+        raise
+    finally:
+        if collector is not None:
+            collector.close()
+        try:
+            runtime.close()
+        except BaseException as cleanup_error:
+            capture_failure(
+                artifact_dir,
+                error=cleanup_error,
+                server_log=server.log_path if server is not None else None,
+                fvwm_log=runtime.root / "fvwm.log",
+                xrandr_text=xrandr_text,
+                last_status=last_status,
+            )
+            if active_error is None:
+                raise
+
+
 def capture_failure(
     artifact_dir: Path,
     *,
@@ -856,14 +1209,20 @@ screen connected 1280x720+0+0 (0x3a) normal (normal) 0mm x 0mm
 
         with HarnessRuntime(prefix="fvwm-live-x-display-self-test-") as runtime:
             display_script = (
-                "import os,signal,sys;"
-                "fd=int(sys.argv[sys.argv.index('-displayfd')+1]);"
-                "os.write(fd,b'77\\n');os.close(fd);signal.pause()"
+                "#!/usr/bin/env python3\n"
+                "import os, signal, sys\n"
+                "fd = int(sys.argv[sys.argv.index('-displayfd') + 1])\n"
+                "os.write(fd, b'77\\n')\n"
+                "os.close(fd)\n"
+                "signal.pause()\n"
             )
+            fake_server = runtime.root / "fake-xserver"
+            fake_server.write_text(display_script)
+            fake_server.chmod(0o700)
             server, display = start_display_server(
                 runtime,
                 "fake-Xserver",
-                [os.sys.executable, "-c", display_script],
+                [str(fake_server)],
                 "server.log",
                 time.monotonic() + 2.0,
             )
@@ -942,6 +1301,9 @@ def main() -> int:
         build_parser().error("--backend and --scenario are required")
     if options.scenario == "fault-injection-probe":
         run_fault_injection_probe(options)
+        return 0
+    if options.scenario == "topology":
+        run_xvfb_topology(options)
         return 0
     raise AssertionError(f"unhandled live-X scenario: {options.scenario}")
 

@@ -97,6 +97,22 @@ if get_option('live-x-tests') and host_machine.system() == 'linux'
 
     live_x_artifacts = meson.current_build_dir() / 'live-x-artifacts'
     test(
+        'topology-xvfb',
+        py,
+        args: [
+            files('live_x/live_x_harness.py'),
+            '--backend=xvfb',
+            '--scenario=topology',
+            '--fvwm',
+            fvwm3.full_path(),
+            '--artifacts-dir',
+            live_x_artifacts / 'topology-xvfb',
+        ],
+        suite: 'live-x',
+        is_parallel: false,
+        timeout: 45,
+    )
+    test(
         'topology-fault-injection-probe',
         py,
         args: [

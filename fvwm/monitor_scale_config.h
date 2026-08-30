@@ -6,6 +6,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+struct monitor;
+struct monitors;
+
 typedef struct monitor_scale_override
 {
 	char			      *name;
@@ -57,5 +60,24 @@ monitor_scale_config_match_override(const monitor_scale_config *config,
     monitor_scale_factor *factor);
 bool
 monitor_scale_config_is_finalized(const monitor_scale_config *config);
+void
+monitor_scale_config_associate_monitor(const monitor_scale_config *config,
+    const monitor_topology_monitor				  *fact,
+    const monitor_topology_snapshot *snapshot, struct monitor *monitor);
+bool
+monitor_scale_config_recompute(void);
+bool
+monitor_scale_config_results_valid(void);
+
+#ifdef MONITOR_SCALE_CONFIG_TESTING
+bool
+monitor_scale_config_recompute_with(const monitor_scale_config *config,
+    const monitor_topology_snapshot			       *snapshot,
+    struct monitors *runtime_monitors);
+bool
+monitor_scale_config_results_valid_with(
+    const monitor_topology_snapshot *snapshot,
+    struct monitors		    *runtime_monitors);
+#endif
 
 #endif

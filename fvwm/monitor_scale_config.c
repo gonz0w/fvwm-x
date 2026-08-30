@@ -21,6 +21,7 @@
 #include "commands.h"
 #include "monitor_scale_config.h"
 
+#include "libs/FScreen.h"
 #include "libs/Parse.h"
 #include "libs/log.h"
 
@@ -326,6 +327,158 @@ monitor_scale_config_is_finalized(const monitor_scale_config *config)
 {
 	return config != NULL && config->finalized;
 }
+
+void
+monitor_scale_config_associate_monitor(const monitor_scale_config *config,
+    const monitor_topology_monitor				  *fact,
+    const monitor_topology_snapshot *snapshot, struct monitor *monitor)
+{
+	monitor_scale_factor	    override_factor;
+	monitor_scale_match_status  match_status;
+	const monitor_scale_factor *override = NULL;
+	const monitor_scale_factor *fallback = NULL;
+
+	if (monitor == NULL) {
+		return;
+	}
+	monitor->effective_scale =
+	    (monitor_scale_result)MONITOR_SCALE_RESULT_SAFE_INIT;
+	if (config == NULL || fact == NULL) {
+		return;
+	}
+	match_status = monitor_scale_config_match_override(
+	    config, fact->name, snapshot, &override_factor);
+	if (match_status == MONITOR_SCALE_MATCH_UNIQUE) {
+		override = &override_factor;
+	}
+	if (config->has_fallback) {
+		fallback = &config->fallback;
+	}
+	monitor->effective_scale =
+	    monitor_scale_resolve(fact, override, fallback);
+	monitor->effective_scale.match_status = match_status;
+}
+
+static bool
+runtime_monitor_matches(
+    const struct monitor *monitor, const monitor_topology_monitor *fact)
+{
+	if (monitor == NULL || monitor->si == NULL || monitor->si->name == NULL
+	    || fact == NULL || fact->name == NULL) {
+		return false;
+	}
+	if (monitor->si->name_atom != None) {
+		return monitor->si->name_atom == fact->name_atom
+		       && strcmp(monitor->si->name, fact->name) == 0;
+	}
+	return strcmp(monitor->si->name, fact->name) == 0;
+}
+
+static struct monitor *
+unique_runtime_monitor(
+    struct monitors *runtime_monitors, const monitor_topology_monitor *fact)
+{
+	struct monitor *candidate = NULL;
+	struct monitor *monitor;
+
+	if (runtime_monitors == NULL || fact == NULL) {
+		return NULL;
+	}
+	RB_FOREACH(monitor, monitors, runtime_monitors)
+	{
+		if (!runtime_monitor_matches(monitor, fact)) {
+			continue;
+		}
+		if (candidate != NULL) {
+			return NULL;
+		}
+		candidate = monitor;
+	}
+	return candidate;
+}
+
+static bool
+recompute_with(const monitor_scale_config *config,
+    const monitor_topology_snapshot	  *snapshot,
+    struct monitors			  *runtime_monitors)
+{
+	int i;
+
+	if (config == NULL || snapshot == NULL || snapshot->monitor_count < 0
+	    || (snapshot->monitor_count > 0 && snapshot->monitors == NULL)
+	    || runtime_monitors == NULL) {
+		return false;
+	}
+	for (i = 0; i < snapshot->monitor_count; i++) {
+		const monitor_topology_monitor *fact = &snapshot->monitors[i];
+		struct monitor		       *monitor =
+		    unique_runtime_monitor(runtime_monitors, fact);
+
+		if (monitor == NULL) {
+			return false;
+		}
+		monitor_scale_config_associate_monitor(
+		    config, fact, snapshot, monitor);
+	}
+	return true;
+}
+
+static bool
+results_valid_with(const monitor_topology_snapshot *snapshot,
+    struct monitors				   *runtime_monitors)
+{
+	int i;
+
+	if (snapshot == NULL || snapshot->monitor_count < 0
+	    || (snapshot->monitor_count > 0 && snapshot->monitors == NULL)
+	    || runtime_monitors == NULL) {
+		return false;
+	}
+	for (i = 0; i < snapshot->monitor_count; i++) {
+		struct monitor *monitor = unique_runtime_monitor(
+		    runtime_monitors, &snapshot->monitors[i]);
+
+		if (monitor == NULL
+		    || monitor->effective_scale.factor.quarters
+			   < MONITOR_SCALE_QUARTERS_MIN
+		    || monitor->effective_scale.factor.quarters
+			   > MONITOR_SCALE_QUARTERS_MAX) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool
+monitor_scale_config_recompute(void)
+{
+	return recompute_with(monitor_scale_config_get(),
+	    FScreenGetTopologySnapshot(), &monitor_q);
+}
+
+bool
+monitor_scale_config_results_valid(void)
+{
+	return results_valid_with(FScreenGetTopologySnapshot(), &monitor_q);
+}
+
+#ifdef MONITOR_SCALE_CONFIG_TESTING
+bool
+monitor_scale_config_recompute_with(const monitor_scale_config *config,
+    const monitor_topology_snapshot			       *snapshot,
+    struct monitors *runtime_monitors)
+{
+	return recompute_with(config, snapshot, runtime_monitors);
+}
+
+bool
+monitor_scale_config_results_valid_with(
+    const monitor_topology_snapshot *snapshot,
+    struct monitors		    *runtime_monitors)
+{
+	return results_valid_with(snapshot, runtime_monitors);
+}
+#endif
 
 void
 CMD_MonitorScale(F_CMD_ARGS)

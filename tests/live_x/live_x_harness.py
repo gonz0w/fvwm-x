@@ -699,10 +699,13 @@ def start_fvwm(
 
 
 def fvwm_arguments(
-    fvwm_path: Path, display: str, fvwm_log: Path
+    fvwm_path: Path,
+    display: str,
+    fvwm_log: Path,
+    extra_commands: tuple[str, ...] = (),
 ) -> list[str]:
     """Build the fixed FVWM startup argv used by live-X probes."""
-    return [
+    arguments = [
         str(fvwm_path),
         "-d",
         display,
@@ -714,6 +717,195 @@ def fvwm_arguments(
         "-c",
         "PrintInfo Topology",
     ]
+    for command in extra_commands:
+        if type(command) is not str or "\0" in command:
+            raise ValueError("FVWM startup commands must be NUL-free strings")
+        arguments.extend(("-c", command))
+    return arguments
+
+
+def add_post_finalize_scale_inspection(arguments: list[str]) -> None:
+    """Append one scheduled inspection after all initial config directives."""
+    arguments.extend(("-c", "Schedule 0 PrintInfo Scale"))
+
+
+_SCALE_FACTORS = {
+    "1", "1.25", "1.5", "1.75", "2", "2.25", "2.5", "2.75",
+    "3", "3.25", "3.5", "3.75", "4",
+}
+_SCALE_SOURCES = {"override", "automatic", "fallback", "safe"}
+_SCALE_MATCH_STATUSES = {"none", "unique", "ambiguous"}
+_SCALE_AUTO_STATUSES = {
+    "valid", "missing-axis", "x-implausible", "y-implausible", "inconsistent",
+}
+_SCALE_BOUNDARIES = {"none", "low", "high"}
+_SCALE_REASONS = {
+    "exact-override", "valid-automatic", "automatic-bound-low",
+    "automatic-bound-high", "configured-fallback", "safe-default",
+}
+
+
+def _parse_scale_name(line: str, prefix: str) -> tuple[str, str]:
+    if not line.startswith(prefix):
+        raise HarnessError("PrintInfo Scale line has an invalid prefix")
+    decoder = json.JSONDecoder()
+    try:
+        name, end = decoder.raw_decode(line, len(prefix))
+    except json.JSONDecodeError as error:
+        raise HarnessError("PrintInfo Scale name is not valid JSON") from error
+    if type(name) is not str:
+        raise HarnessError("PrintInfo Scale name must decode to a string")
+    return name, line[end:]
+
+
+def parse_print_info_scale_line(line: str) -> dict[str, object]:
+    """Parse one complete reason-bearing PrintInfo Scale evidence line."""
+    if line.startswith("Scale monitor name="):
+        name, remainder = _parse_scale_name(line, "Scale monitor name=")
+        match = re.fullmatch(
+            r" factor=(\S+) source=(\S+) pixels=(\d+)x(\d+) "
+            r"physical_mm=(\d+)x(\d+) match_status=(\S+) "
+            r"auto_status=(\S+) boundary=(\S+) reason=(\S+)",
+            remainder,
+        )
+        if match is None:
+            raise HarnessError("PrintInfo Scale monitor fields are malformed")
+        (factor, source, width, height, mm_width, mm_height, match_status,
+         auto_status, boundary, reason) = match.groups()
+        if (
+            factor not in _SCALE_FACTORS
+            or source not in _SCALE_SOURCES
+            or match_status not in _SCALE_MATCH_STATUSES
+            or auto_status not in _SCALE_AUTO_STATUSES
+            or boundary not in _SCALE_BOUNDARIES
+            or reason not in _SCALE_REASONS
+        ):
+            raise HarnessError("PrintInfo Scale monitor field value is invalid")
+        return {
+            "kind": "monitor",
+            "name": name,
+            "factor": factor,
+            "source": source,
+            "pixels": (int(width), int(height)),
+            "physical_mm": (int(mm_width), int(mm_height)),
+            "match_status": match_status,
+            "auto_status": auto_status,
+            "boundary": boundary,
+            "reason": reason,
+        }
+    if line.startswith("Scale override name="):
+        name, remainder = _parse_scale_name(line, "Scale override name=")
+        match = re.fullmatch(
+            r" factor=(\S+) match_status=(\S+) state=(\S+)", remainder
+        )
+        if match is None:
+            raise HarnessError("PrintInfo Scale override fields are malformed")
+        factor, match_status, state = match.groups()
+        if (
+            factor not in _SCALE_FACTORS
+            or match_status != "none"
+            or state != "retained-unmatched"
+        ):
+            raise HarnessError("PrintInfo Scale override field value is invalid")
+        return {
+            "kind": "override",
+            "name": name,
+            "factor": factor,
+            "match_status": match_status,
+            "state": state,
+        }
+    raise HarnessError("line is not PrintInfo Scale evidence")
+
+
+def wait_for_print_info_scale(
+    log_path: Path,
+    name: str,
+    deadline: float,
+    process: ManagedProcess,
+    *,
+    kind: str = "monitor",
+    occurrence: int = 2,
+) -> dict[str, object]:
+    """Wait for the scheduled post-finalization scale record for one name."""
+    if occurrence < 1:
+        raise ValueError("scale evidence occurrence must be positive")
+
+    def inspect() -> dict[str, object] | None:
+        if not log_path.is_file():
+            return None
+        matches: list[dict[str, object]] = []
+        for physical_line in log_path.read_text(errors="replace").splitlines():
+            positions = [
+                position
+                for marker in ("Scale monitor name=", "Scale override name=")
+                if (position := physical_line.find(marker)) >= 0
+            ]
+            if not positions:
+                continue
+            record = parse_print_info_scale_line(physical_line[min(positions):])
+            if record["kind"] == kind and record["name"] == name:
+                matches.append(record)
+        return matches[occurrence - 1] if len(matches) >= occurrence else None
+
+    result = wait_for_predicate(
+        f"scheduled PrintInfo Scale {kind} {json.dumps(name)}",
+        inspect,
+        deadline,
+        process=process,
+    )
+    if type(result) is not dict:
+        raise HarnessError("PrintInfo Scale predicate returned invalid evidence")
+    return result
+
+
+def assert_print_info_scale(
+    record: dict[str, object],
+    *,
+    name: str,
+    factor: str,
+    source: str,
+    reason: str,
+    pixels: tuple[int, int],
+    physical_mm: tuple[int, int],
+    match_status: str = "none",
+    auto_status: str = "valid",
+    boundary: str = "none",
+) -> None:
+    """Require one parsed active scale record to match all policy evidence."""
+    expected = {
+        "kind": "monitor",
+        "name": name,
+        "factor": factor,
+        "source": source,
+        "pixels": pixels,
+        "physical_mm": physical_mm,
+        "match_status": match_status,
+        "auto_status": auto_status,
+        "boundary": boundary,
+        "reason": reason,
+    }
+    if record != expected:
+        raise HarnessError(
+            f"PrintInfo Scale mismatch: expected={expected!r}, actual={record!r}"
+        )
+
+
+def assert_scale_diagnostic(
+    log_path: Path,
+    fragment: str,
+    deadline: float,
+    process: ManagedProcess,
+) -> None:
+    """Wait boundedly for one exact diagnostic fragment in retained FVWM logs."""
+    def contains_fragment() -> bool:
+        return log_path.is_file() and fragment in log_path.read_text(errors="replace")
+
+    wait_for_predicate(
+        f"scale diagnostic {fragment!r}",
+        contains_fragment,
+        deadline,
+        process=process,
+    )
 
 
 def fault_probe_metadata(mechanism: str) -> dict[str, str]:

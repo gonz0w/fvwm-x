@@ -76,7 +76,28 @@ Plans:
   3. Invalid scale input or ambiguous monitor matching produces a visible diagnostic with the chosen fallback rather than silent coercion.
   4. Supported quarter-step factors from 1x through 2x and higher convert deterministically without cumulative rounding drift.
 
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Trace committed DPI facts into an exact total scale domain and runtime association
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Add transactional MonitorScale and MonitorScaleFallback configuration
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — Finalize and recompute effective scales before downstream topology effects
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 02-04-PLAN.md — Expose escaped reason-complete PrintInfo Scale diagnostics and documentation
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 02-05-PLAN.md — Prove the initial scale matrix through authoritative Xorg-dummy coverage
 
 ### Phase 3: Geometry and Ownership Contracts
 

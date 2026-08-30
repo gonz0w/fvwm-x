@@ -68,6 +68,7 @@
 #include "menus.h"
 #include "misc.h"
 #include "module_interface.h"
+#include "monitor_scale_config.h"
 #include "move_resize.h"
 #include "screen.h"
 #include "status_json.h"
@@ -2262,6 +2263,8 @@ CMD_PrintInfo(F_CMD_ARGS)
 		print_bindings();
 	} else if (StrEquals(subject, "InfoStore")) {
 		print_infostore();
+	} else if (StrEquals(subject, "Scale")) {
+		monitor_scale_config_print_info();
 	} else if (StrEquals(subject, "Topology")) {
 		print_topology_info();
 	} else {

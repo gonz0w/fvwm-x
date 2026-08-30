@@ -70,6 +70,8 @@ bool
 monitor_scale_config_results_valid(void);
 bool
 monitor_scale_config_finalize_initial(void);
+void
+monitor_scale_config_print_info(void);
 
 #ifdef MONITOR_SCALE_CONFIG_TESTING
 bool
@@ -82,6 +84,10 @@ monitor_scale_config_results_valid_with(
     struct monitors		    *runtime_monitors);
 bool
 monitor_scale_config_finalize_initial_with(monitor_scale_config *config,
+    const monitor_topology_snapshot				*snapshot,
+    struct monitors *runtime_monitors);
+bool
+monitor_scale_config_print_info_with(const monitor_scale_config *config,
     const monitor_topology_snapshot				*snapshot,
     struct monitors *runtime_monitors);
 #endif

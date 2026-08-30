@@ -23,9 +23,12 @@
 
 #include "libs/FScreen.h"
 #include "libs/Parse.h"
+#include "libs/cJSON.h"
 #include "libs/log.h"
 
 #include <ctype.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -397,6 +400,261 @@ unique_runtime_monitor(
 	return candidate;
 }
 
+static char *
+monitor_scale_encode_name(const char *name)
+{
+	cJSON *string;
+	char  *encoded;
+
+	string = cJSON_CreateString(name);
+	if (string == NULL) {
+		return NULL;
+	}
+	encoded = cJSON_PrintUnformatted(string);
+	cJSON_Delete(string);
+	return encoded;
+}
+
+static const char *
+source_name(monitor_scale_source source)
+{
+	switch (source) {
+	case MONITOR_SCALE_SOURCE_OVERRIDE:
+		return "override";
+	case MONITOR_SCALE_SOURCE_AUTOMATIC:
+		return "automatic";
+	case MONITOR_SCALE_SOURCE_FALLBACK:
+		return "fallback";
+	case MONITOR_SCALE_SOURCE_SAFE:
+		return "safe";
+	}
+	return "unknown";
+}
+
+static const char *
+match_status_name(monitor_scale_match_status status)
+{
+	switch (status) {
+	case MONITOR_SCALE_MATCH_NONE:
+		return "none";
+	case MONITOR_SCALE_MATCH_UNIQUE:
+		return "unique";
+	case MONITOR_SCALE_MATCH_AMBIGUOUS:
+		return "ambiguous";
+	}
+	return "unknown";
+}
+
+static const char *
+auto_status_name(monitor_scale_auto_status status)
+{
+	switch (status) {
+	case MONITOR_SCALE_AUTO_VALID:
+		return "valid";
+	case MONITOR_SCALE_AUTO_MISSING_AXIS:
+		return "missing-axis";
+	case MONITOR_SCALE_AUTO_X_IMPLAUSIBLE:
+		return "x-implausible";
+	case MONITOR_SCALE_AUTO_Y_IMPLAUSIBLE:
+		return "y-implausible";
+	case MONITOR_SCALE_AUTO_INCONSISTENT:
+		return "inconsistent";
+	}
+	return "unknown";
+}
+
+static const char *
+boundary_name(monitor_scale_boundary boundary)
+{
+	switch (boundary) {
+	case MONITOR_SCALE_BOUNDARY_NONE:
+		return "none";
+	case MONITOR_SCALE_BOUNDARY_LOW:
+		return "low";
+	case MONITOR_SCALE_BOUNDARY_HIGH:
+		return "high";
+	}
+	return "unknown";
+}
+
+static const char *
+reason_name(monitor_scale_reason reason)
+{
+	switch (reason) {
+	case MONITOR_SCALE_REASON_EXACT_OVERRIDE:
+		return "exact-override";
+	case MONITOR_SCALE_REASON_VALID_AUTOMATIC:
+		return "valid-automatic";
+	case MONITOR_SCALE_REASON_AUTOMATIC_BOUND_LOW:
+		return "automatic-bound-low";
+	case MONITOR_SCALE_REASON_AUTOMATIC_BOUND_HIGH:
+		return "automatic-bound-high";
+	case MONITOR_SCALE_REASON_CONFIGURED_FALLBACK:
+		return "configured-fallback";
+	case MONITOR_SCALE_REASON_SAFE_DEFAULT:
+		return "safe-default";
+	}
+	return "unknown";
+}
+
+static monitor_scale_match_status
+override_match_status(
+    const char *name, const monitor_topology_snapshot *snapshot)
+{
+	int i;
+	int matches = 0;
+
+	if (name == NULL || snapshot == NULL) {
+		return MONITOR_SCALE_MATCH_NONE;
+	}
+	for (i = 0; i < snapshot->monitor_count; i++) {
+		if (snapshot->monitors[i].name != NULL
+		    && strcmp(snapshot->monitors[i].name, name) == 0) {
+			matches++;
+		}
+	}
+	return matches == 0   ? MONITOR_SCALE_MATCH_NONE
+	       : matches == 1 ? MONITOR_SCALE_MATCH_UNIQUE
+			      : MONITOR_SCALE_MATCH_AMBIGUOUS;
+}
+
+static bool
+print_monitor_scale(const monitor_scale_config *config,
+    const monitor_topology_monitor *fact, const struct monitor *monitor)
+{
+	char   factor[8];
+	char  *line;
+	char  *encoded_name;
+	size_t line_size;
+	int    written;
+
+	if (config == NULL || fact == NULL || monitor == NULL
+	    || !monitor_scale_format_factor(
+		monitor->effective_scale.factor, factor, sizeof(factor))) {
+		return false;
+	}
+	encoded_name = monitor_scale_encode_name(fact->name);
+	if (encoded_name == NULL) {
+		return false;
+	}
+	if (strlen(encoded_name) > SIZE_MAX - 256) {
+		cJSON_free(encoded_name);
+		return false;
+	}
+	line_size = strlen(encoded_name) + 256;
+	line	  = malloc(line_size);
+	if (line == NULL) {
+		cJSON_free(encoded_name);
+		return false;
+	}
+	written = snprintf(line, line_size,
+	    "Scale monitor name=%s factor=%s source=%s pixels=%dx%d "
+	    "physical_mm=%dx%d match_status=%s auto_status=%s boundary=%s "
+	    "reason=%s",
+	    encoded_name, factor, source_name(monitor->effective_scale.source),
+	    fact->width, fact->height, fact->mm_width, fact->mm_height,
+	    match_status_name(monitor->effective_scale.match_status),
+	    auto_status_name(monitor->effective_scale.auto_status),
+	    boundary_name(monitor->effective_scale.boundary),
+	    reason_name(monitor->effective_scale.reason));
+	cJSON_free(encoded_name);
+	if (written < 0 || (size_t)written >= line_size) {
+		free(line);
+		return false;
+	}
+	diagnose(config, line, NULL);
+	free(line);
+	return true;
+}
+
+static bool
+print_unmatched_overrides(const monitor_scale_config *config,
+    const monitor_topology_snapshot		     *snapshot)
+{
+	const monitor_scale_override *last = NULL;
+
+	for (;;) {
+		const monitor_scale_override *current;
+		const monitor_scale_override *selected = NULL;
+		char			      factor[8];
+		char			     *line;
+		char			     *encoded_name;
+		size_t			      line_size;
+		int			      written;
+
+		for (current = config->overrides; current != NULL;
+		    current  = current->next) {
+			if (override_match_status(current->name, snapshot)
+				!= MONITOR_SCALE_MATCH_NONE
+			    || (last != NULL
+				&& strcmp(current->name, last->name) <= 0)
+			    || (selected != NULL
+				&& strcmp(current->name, selected->name)
+				       >= 0)) {
+				continue;
+			}
+			selected = current;
+		}
+		if (selected == NULL) {
+			return true;
+		}
+		if (!monitor_scale_format_factor(
+			selected->factor, factor, sizeof(factor))) {
+			return false;
+		}
+		encoded_name = monitor_scale_encode_name(selected->name);
+		if (encoded_name == NULL) {
+			return false;
+		}
+		if (strlen(encoded_name) > SIZE_MAX - 128) {
+			cJSON_free(encoded_name);
+			return false;
+		}
+		line_size = strlen(encoded_name) + 128;
+		line	  = malloc(line_size);
+		if (line == NULL) {
+			cJSON_free(encoded_name);
+			return false;
+		}
+		written = snprintf(line, line_size,
+		    "Scale override name=%s factor=%s match_status=none "
+		    "state=retained-unmatched",
+		    encoded_name, factor);
+		cJSON_free(encoded_name);
+		if (written < 0 || (size_t)written >= line_size) {
+			free(line);
+			return false;
+		}
+		diagnose(config, line, NULL);
+		free(line);
+		last = selected;
+	}
+}
+
+static bool
+print_info_with(const monitor_scale_config *config,
+    const monitor_topology_snapshot	   *snapshot,
+    struct monitors			   *runtime_monitors)
+{
+	int i;
+
+	if (config == NULL || snapshot == NULL || snapshot->monitor_count < 0
+	    || (snapshot->monitor_count > 0 && snapshot->monitors == NULL)
+	    || runtime_monitors == NULL) {
+		return false;
+	}
+	for (i = 0; i < snapshot->monitor_count; i++) {
+		struct monitor *monitor = unique_runtime_monitor(
+		    runtime_monitors, &snapshot->monitors[i]);
+
+		if (!print_monitor_scale(
+			config, &snapshot->monitors[i], monitor)) {
+			return false;
+		}
+	}
+	return print_unmatched_overrides(config, snapshot);
+}
+
 static bool
 recompute_with(const monitor_scale_config *config,
     const monitor_topology_snapshot	  *snapshot,
@@ -449,21 +707,6 @@ results_valid_with(const monitor_topology_snapshot *snapshot,
 	return true;
 }
 
-static void
-diagnose_unmatched_overrides(
-    monitor_scale_config *config, const monitor_topology_snapshot *snapshot)
-{
-	monitor_scale_override *override;
-
-	for (override = config->overrides; override != NULL;
-	    override  = override->next) {
-		monitor_scale_factor factor;
-
-		(void)monitor_scale_config_match_override(
-		    config, override->name, snapshot, &factor);
-	}
-}
-
 static bool
 finalize_initial_with(monitor_scale_config *config,
     const monitor_topology_snapshot	   *snapshot,
@@ -479,7 +722,11 @@ finalize_initial_with(monitor_scale_config *config,
 		    NULL);
 		return false;
 	}
-	diagnose_unmatched_overrides(config, snapshot);
+	if (!print_info_with(config, snapshot, runtime_monitors)) {
+		diagnose(config,
+		    "MonitorScale: initial scale diagnostic is unavailable",
+		    NULL);
+	}
 	config->finalized = true;
 	return true;
 }
@@ -502,6 +749,18 @@ monitor_scale_config_finalize_initial(void)
 {
 	return finalize_initial_with(monitor_scale_config_get(),
 	    FScreenGetTopologySnapshot(), &monitor_q);
+}
+
+void
+monitor_scale_config_print_info(void)
+{
+	monitor_scale_config *config = monitor_scale_config_get();
+
+	if (!print_info_with(
+		config, FScreenGetTopologySnapshot(), &monitor_q)) {
+		diagnose(config,
+		    "PrintInfo Scale: scale inspection is unavailable", NULL);
+	}
 }
 
 #ifdef MONITOR_SCALE_CONFIG_TESTING
@@ -527,6 +786,14 @@ monitor_scale_config_finalize_initial_with(monitor_scale_config *config,
     struct monitors *runtime_monitors)
 {
 	return finalize_initial_with(config, snapshot, runtime_monitors);
+}
+
+bool
+monitor_scale_config_print_info_with(const monitor_scale_config *config,
+    const monitor_topology_snapshot				*snapshot,
+    struct monitors *runtime_monitors)
+{
+	return print_info_with(config, snapshot, runtime_monitors);
 }
 #endif
 

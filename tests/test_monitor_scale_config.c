@@ -40,11 +40,6 @@ typedef struct
 	char   lines[16][512];
 } monitor_scale_config_test_fixture;
 
-bool
-monitor_scale_config_print_info_with(const monitor_scale_config *config,
-    const monitor_topology_snapshot				*snapshot,
-    struct monitors *runtime_monitors);
-
 static void *
 test_scale_alloc(void *context, size_t size)
 {
@@ -410,9 +405,9 @@ test_finalize_owns_one_store_and_rejects_late_mutation(void)
 	    &snapshot, &runtime_monitors));
 	assert(runtime.effective_scale.source == MONITOR_SCALE_SOURCE_OVERRIDE);
 	assert(runtime.effective_scale.factor.quarters == 5);
-	assert(fixture.diagnostic_count == diagnostics_before + 1);
-	assert(strstr(fixture.reason, "no active match") != NULL);
-	assert(strcmp(fixture.name, "docked") == 0);
+	assert(fixture.diagnostic_count == diagnostics_before + 2);
+	assert(strstr(fixture.reason, "retained-unmatched") != NULL);
+	assert(strcmp(fixture.name, "") == 0);
 
 	config_before	   = config_digest(config);
 	result_before	   = runtime.effective_scale;
@@ -487,6 +482,37 @@ test_print_info_emits_authoritative_reason_complete_escaped_output(void)
 		MONITOR_SCALE_AUTO_X_IMPLAUSIBLE, MONITOR_SCALE_BOUNDARY_NONE,
 		MONITOR_SCALE_REASON_CONFIGURED_FALLBACK},
 	};
+	const char *expected[] = {
+	    "Scale monitor name=\"override\" factor=1.25 source=override "
+	    "pixels=1920x1080 physical_mm=254x143 match_status=unique "
+	    "auto_status=valid boundary=none reason=exact-override",
+	    "Scale monitor name=\"automatic\" factor=2 source=automatic "
+	    "pixels=1920x1080 physical_mm=254x143 match_status=none "
+	    "auto_status=valid boundary=none reason=valid-automatic",
+	    "Scale monitor name=\"low\" factor=1 source=automatic "
+	    "pixels=500x500 physical_mm=254x254 match_status=none "
+	    "auto_status=valid boundary=low reason=automatic-bound-low",
+	    "Scale monitor name=\"high\" factor=4 source=automatic "
+	    "pixels=5000x5000 physical_mm=254x254 match_status=none "
+	    "auto_status=valid boundary=high reason=automatic-bound-high",
+	    "Scale monitor name=\"fallback\" factor=1.75 source=fallback "
+	    "pixels=1920x1080 physical_mm=0x0 match_status=none "
+	    "auto_status=missing-axis boundary=none reason=configured-fallback",
+	    "Scale monitor name=\"safe\" factor=1 source=safe "
+	    "pixels=1920x1080 physical_mm=0x0 match_status=none "
+	    "auto_status=missing-axis boundary=none reason=safe-default",
+	    "Scale monitor name=\"ambiguous\" factor=1.5 source=fallback "
+	    "pixels=1920x1080 physical_mm=0x0 match_status=ambiguous "
+	    "auto_status=missing-axis boundary=none reason=configured-fallback",
+	    "Scale monitor name=\"quote\\\"line\\n\\t\\u0001-\303\251\" "
+	    "factor=1.5 source=fallback pixels=1920x1080 physical_mm=10x143 "
+	    "match_status=none auto_status=x-implausible boundary=none "
+	    "reason=configured-fallback",
+	    "Scale override name=\"a-docked\" factor=1.25 match_status=none "
+	    "state=retained-unmatched",
+	    "Scale override name=\"z-docked\" factor=3 match_status=none "
+	    "state=retained-unmatched",
+	};
 	int i;
 
 	RB_INIT(&runtime_monitors);
@@ -505,40 +531,8 @@ test_print_info_emits_authoritative_reason_complete_escaped_output(void)
 	assert(monitor_scale_config_print_info_with(
 	    config, &snapshot, &runtime_monitors));
 	assert(fixture.diagnostic_count == 10);
-	assert(
-	    strcmp(fixture.lines[0],
-		"Scale monitor name=\"override\" factor=1.25 source=override "
-		"pixels=1920x1080 physical_mm=254x143 match_status=unique "
-		"auto_status=valid boundary=none reason=exact-override")
-	    == 0);
-	assert(strstr(fixture.lines[1], "factor=2 source=automatic") != NULL);
-	assert(
-	    strstr(fixture.lines[2], "boundary=low reason=automatic-bound-low")
-	    != NULL);
-	assert(strstr(fixture.lines[3],
-		   "boundary=high reason=automatic-bound-high")
-	       != NULL);
-	assert(strstr(fixture.lines[4], "source=fallback") != NULL);
-	assert(strstr(fixture.lines[4], "auto_status=missing-axis") != NULL);
-	assert(strstr(fixture.lines[5], "source=safe") != NULL);
-	assert(strstr(fixture.lines[5], "reason=safe-default") != NULL);
-	assert(strstr(fixture.lines[6], "match_status=ambiguous") != NULL);
-	assert(strcmp(fixture.lines[7],
-		   "Scale monitor name=\"quote\\\"line\\n\\t\\u0001-\303\251\" "
-		   "factor=1.5 source=fallback pixels=1920x1080 "
-		   "physical_mm=10x143 match_status=none "
-		   "auto_status=x-implausible boundary=none "
-		   "reason=configured-fallback")
-	       == 0);
-	assert(strcmp(fixture.lines[8],
-		   "Scale override name=\"a-docked\" factor=1.25 "
-		   "match_status=none state=retained-unmatched")
-	       == 0);
-	assert(strcmp(fixture.lines[9],
-		   "Scale override name=\"z-docked\" factor=3 "
-		   "match_status=none state=retained-unmatched")
-	       == 0);
 	for (i = 0; i < 10; i++) {
+		assert(strcmp(fixture.lines[i], expected[i]) == 0);
 		assert(strchr(fixture.lines[i], '\n') == NULL);
 		assert(strchr(fixture.lines[i], '\r') == NULL);
 	}

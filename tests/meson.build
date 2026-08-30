@@ -7,6 +7,16 @@ image_safety_test = executable(
 
 test('image-safety', image_safety_test)
 
+monitor_topology_test = executable(
+    'test-monitor-topology',
+    ['test_monitor_topology.c', '../libs/monitor_topology.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+)
+
+test('monitor-topology', monitor_topology_test)
+
 module_runtime_test = executable(
     'test-module-runtime',
     ['test_module_runtime.c', '../fvwm/module_runtime.c'],

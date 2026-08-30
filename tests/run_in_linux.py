@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see: <http://www.gnu.org/licenses/>
+
+"""Run native verification directly on Linux or in Podman on macOS."""
+
+from __future__ import annotations
+
+import argparse
+import platform
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from typing import Sequence
+
+
+IMAGE = "fvwmorg/fvwm3-build:latest"
+LIVE_X_PACKAGES = (
+    "xvfb",
+    "x11-xserver-utils",
+    "xserver-xorg-core",
+    "xserver-xorg-video-dummy",
+)
+INSTALL_LIVE_X = (
+    "apt-get update && apt-get install -y "
+    + " ".join(LIVE_X_PACKAGES)
+    + ' && exec "$@"'
+)
+
+
+class UnsupportedHostError(RuntimeError):
+    """Raised when no supported native-Linux execution route exists."""
+
+
+def build_command(
+    host: str,
+    repository: Path,
+    caller_argv: Sequence[str],
+    live_x: bool = False,
+    podman: str = "podman",
+) -> list[str]:
+    """Construct the command without executing it."""
+    if not caller_argv:
+        raise ValueError("a command is required after --")
+    if host == "Linux":
+        return list(caller_argv)
+    if host != "Darwin":
+        raise UnsupportedHostError(f"unsupported host: {host}")
+
+    repository = repository.resolve()
+    command = [
+        podman,
+        "run",
+        "--rm",
+        "--platform",
+        "linux/amd64",
+        "--volume",
+        f"{repository}:{repository}",
+        "--workdir",
+        str(repository),
+        IMAGE,
+    ]
+    if live_x:
+        command.extend(["sh", "-ec", INSTALL_LIVE_X, "sh"])
+    command.extend(caller_argv)
+    return command
+
+
+def self_test() -> None:
+    """Exercise every routing branch without starting a subprocess."""
+    repository = Path("/work/fvwm3")
+    caller_argv = ["sh", "-ec", "exit 23"]
+
+    assert build_command("Linux", repository, caller_argv) == caller_argv
+
+    darwin = build_command(
+        "Darwin", repository, caller_argv, podman="/usr/local/bin/podman"
+    )
+    assert darwin[:3] == ["/usr/local/bin/podman", "run", "--rm"]
+    assert darwin[darwin.index("--platform") + 1] == "linux/amd64"
+    assert darwin[darwin.index("--workdir") + 1] == str(repository)
+    assert darwin[-len(caller_argv) :] == caller_argv
+    assert IMAGE in darwin
+
+    hostile_argv = ["printf", "%s", "not; shell $(input)"]
+    live_x = build_command("Darwin", repository, hostile_argv, live_x=True)
+    install_fragment = live_x[live_x.index("-ec") + 1]
+    install_words = install_fragment.split()
+    package_start = install_words.index("-y") + 1
+    package_end = install_words.index("&&", package_start)
+    assert tuple(install_words[package_start:package_end]) == LIVE_X_PACKAGES
+    assert all(install_fragment.count(package) == 1 for package in LIVE_X_PACKAGES)
+    assert hostile_argv[-1] not in install_fragment
+    assert live_x[-len(hostile_argv) :] == hostile_argv
+
+    try:
+        build_command("Windows", repository, caller_argv)
+    except UnsupportedHostError:
+        pass
+    else:
+        raise AssertionError("unsupported hosts must be rejected")
+
+
+def parse_args(argv: Sequence[str]) -> tuple[argparse.Namespace, list[str]]:
+    """Parse router options and require a literal -- before caller argv."""
+    before_separator: Sequence[str]
+    command: list[str]
+    if "--" in argv:
+        separator = argv.index("--")
+        before_separator = argv[:separator]
+        command = list(argv[separator + 1 :])
+    else:
+        before_separator = argv
+        command = []
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--live-x", action="store_true")
+    options = parser.parse_args(before_separator)
+    if not options.self_test and not command:
+        parser.error("a command is required after --")
+    if options.self_test and command:
+        parser.error("--self-test does not accept a command")
+    return options, command
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Run self-tests or route the requested command."""
+    options, caller_argv = parse_args(sys.argv[1:] if argv is None else argv)
+    if options.self_test:
+        self_test()
+        return 0
+
+    host = platform.system()
+    podman = shutil.which("podman") if host == "Darwin" else None
+    if host == "Darwin" and podman is None:
+        print("error: Podman is required for Linux verification on macOS", file=sys.stderr)
+        return 127
+
+    try:
+        command = build_command(
+            host,
+            Path(__file__).resolve().parents[1],
+            caller_argv,
+            live_x=options.live_x,
+            podman=podman or "podman",
+        )
+    except (UnsupportedHostError, ValueError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    return subprocess.run(command, check=False).returncode
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

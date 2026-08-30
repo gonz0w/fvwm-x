@@ -2847,10 +2847,122 @@ def test_failed_query_recovery_contract() -> None:
         raise AssertionError("changed failed-query topology must be rejected")
 
 
+def test_fvwm_arguments_extra_commands() -> None:
+    """Specify argv-only startup command ordering and byte preservation."""
+    fvwm_path = Path("/private/fvwm3")
+    log_path = Path("/private/fvwm.log")
+    baseline = [
+        str(fvwm_path),
+        "-d",
+        ":77",
+        "-o",
+        str(log_path),
+        "-v",
+        "-c",
+        "Schedule 0 Status On",
+        "-c",
+        "PrintInfo Topology",
+    ]
+    assert fvwm_arguments(fvwm_path, ":77", log_path) == baseline
+    assert fvwm_arguments(
+        fvwm_path,
+        ":77",
+        log_path,
+        extra_commands=("MonitorScale DUMMY0 1.25",),
+    ) == [*baseline, "-c", "MonitorScale DUMMY0 1.25"]
+    quoted = 'MonitorScale "name with spaces and \\"quotes\\"" 2.5'
+    assert fvwm_arguments(
+        fvwm_path,
+        ":77",
+        log_path,
+        extra_commands=("MonitorScaleFallback 1.75", quoted),
+    ) == [
+        *baseline,
+        "-c",
+        "MonitorScaleFallback 1.75",
+        "-c",
+        quoted,
+    ]
+
+
+def test_post_finalize_scale_inspection_argv() -> None:
+    """Specify the scheduled inspection as one final argv command pair."""
+    arguments = fvwm_arguments(
+        Path("/private/fvwm3"),
+        ":77",
+        Path("/private/fvwm.log"),
+        extra_commands=(
+            "MonitorScaleFallback 1.5",
+            'MonitorScale "DUMMY 0" 2',
+        ),
+    )
+    expected_prefix = list(arguments)
+    add_post_finalize_scale_inspection(arguments)
+    assert arguments == [
+        *expected_prefix,
+        "-c",
+        "Schedule 0 PrintInfo Scale",
+    ]
+
+
+def test_print_info_scale_parser() -> None:
+    """Specify strict active/unmatched parsing and escaped-name identity."""
+    escaped_name = 'quote"line\n\t\x01-é'
+    active = (
+        f"Scale monitor name={json.dumps(escaped_name)} factor=1.25 "
+        "source=override pixels=1920x1080 physical_mm=254x143 "
+        "match_status=unique auto_status=valid boundary=none "
+        "reason=exact-override"
+    )
+    assert parse_print_info_scale_line(active) == {
+        "kind": "monitor",
+        "name": escaped_name,
+        "factor": "1.25",
+        "source": "override",
+        "pixels": (1920, 1080),
+        "physical_mm": (254, 143),
+        "match_status": "unique",
+        "auto_status": "valid",
+        "boundary": "none",
+        "reason": "exact-override",
+    }
+    unmatched = (
+        f"Scale override name={json.dumps(escaped_name)} factor=2.75 "
+        "match_status=none state=retained-unmatched"
+    )
+    assert parse_print_info_scale_line(unmatched) == {
+        "kind": "override",
+        "name": escaped_name,
+        "factor": "2.75",
+        "match_status": "none",
+        "state": "retained-unmatched",
+    }
+    malformed = (
+        active.replace(" reason=exact-override", "")
+        + " source=automatic reason=exact-override"
+    )
+    for line in (
+        active.replace(" reason=exact-override", ""),
+        active.replace("factor=1.25", "factor=1.30"),
+        active.replace("source=override", "source=override source=automatic"),
+        malformed,
+        unmatched.replace(" state=retained-unmatched", ""),
+    ):
+        try:
+            parse_print_info_scale_line(line)
+        except HarnessError:
+            pass
+        else:
+            raise AssertionError(f"malformed scale line must be rejected: {line!r}")
+
+
 def self_test() -> None:
     """Specify lifecycle behavior without requiring an X server."""
     test_xorg_dummy_contract()
     test_failed_query_recovery_contract()
+    test_fvwm_arguments_extra_commands()
+    test_post_finalize_scale_inspection_argv()
+    test_print_info_scale_parser()
 
     version_text = """\
 xrandr program version       1.5.1

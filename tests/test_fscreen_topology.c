@@ -34,6 +34,15 @@ typedef struct
 	size_t		live_allocations;
 } randr_fixture;
 
+typedef struct
+{
+	size_t allocation_count;
+	size_t fail_allocation;
+	size_t live_monitors;
+	size_t live_screens;
+	size_t live_names;
+} legacy_fixture;
+
 static void *
 fixture_malloc(void *context, size_t size)
 {
@@ -148,6 +157,114 @@ make_adapter(randr_fixture *fixture)
 	};
 }
 
+static bool
+legacy_should_fail(legacy_fixture *fixture)
+{
+	fixture->allocation_count++;
+	return fixture->allocation_count == fixture->fail_allocation;
+}
+
+static struct monitor *
+legacy_allocate_monitor(void *context)
+{
+	legacy_fixture *fixture = context;
+	struct monitor *monitor;
+
+	if (legacy_should_fail(fixture)) {
+		return NULL;
+	}
+	monitor = calloc(1, sizeof(*monitor));
+	if (monitor != NULL) {
+		fixture->live_monitors++;
+	}
+	return monitor;
+}
+
+static struct screen_info *
+legacy_allocate_screen(void *context)
+{
+	legacy_fixture	   *fixture = context;
+	struct screen_info *screen;
+
+	if (legacy_should_fail(fixture)) {
+		return NULL;
+	}
+	screen = calloc(1, sizeof(*screen));
+	if (screen != NULL) {
+		fixture->live_screens++;
+	}
+	return screen;
+}
+
+static char *
+legacy_copy_name(void *context, const char *source)
+{
+	legacy_fixture *fixture = context;
+	size_t		size;
+	char	       *name;
+
+	if (legacy_should_fail(fixture)) {
+		return NULL;
+	}
+	size = strlen(source) + 1;
+	name = malloc(size);
+	if (name != NULL) {
+		memcpy(name, source, size);
+		fixture->live_names++;
+	}
+	return name;
+}
+
+static void
+legacy_free_monitor(void *context, struct monitor *monitor)
+{
+	legacy_fixture *fixture = context;
+
+	if (monitor != NULL) {
+		assert(fixture->live_monitors > 0);
+		fixture->live_monitors--;
+	}
+	free(monitor);
+}
+
+static void
+legacy_free_screen(void *context, struct screen_info *screen)
+{
+	legacy_fixture *fixture = context;
+
+	if (screen != NULL) {
+		assert(fixture->live_screens > 0);
+		fixture->live_screens--;
+	}
+	free(screen);
+}
+
+static void
+legacy_free_name(void *context, char *name)
+{
+	legacy_fixture *fixture = context;
+
+	if (name != NULL) {
+		assert(fixture->live_names > 0);
+		fixture->live_names--;
+	}
+	free(name);
+}
+
+static fscreen_legacy_allocator
+make_legacy_allocator(legacy_fixture *fixture)
+{
+	return (fscreen_legacy_allocator){
+	    .context	      = fixture,
+	    .allocate_monitor = legacy_allocate_monitor,
+	    .allocate_screen  = legacy_allocate_screen,
+	    .copy_name	      = legacy_copy_name,
+	    .free_monitor     = legacy_free_monitor,
+	    .free_screen      = legacy_free_screen,
+	    .free_name	      = legacy_free_name,
+	};
+}
+
 static XRRMonitorInfo
 make_monitor(Atom atom, RROutput *outputs, int output_count)
 {
@@ -172,6 +289,68 @@ destroy_committed(monitor_topology_snapshot **committed, randr_fixture *fixture)
 	monitor_topology_snapshot_destroy(*committed);
 	*committed = NULL;
 	assert(fixture->live_allocations == 0);
+}
+
+static uint64_t
+digest_value(uint64_t digest, uintptr_t value)
+{
+	digest ^= (uint64_t)value;
+	return digest * UINT64_C(1099511628211);
+}
+
+static uint64_t
+legacy_digest(
+    struct monitors *legacy_monitors, struct screen_infos *legacy_screens)
+{
+	uint64_t	    digest = UINT64_C(1469598103934665603);
+	struct monitor	   *monitor;
+	struct screen_info *screen;
+
+	RB_FOREACH(monitor, monitors, legacy_monitors)
+	{
+		const unsigned char *name =
+		    (const unsigned char *)monitor->si->name;
+
+		digest = digest_value(digest, (uintptr_t)monitor);
+		digest = digest_value(digest, (uintptr_t)monitor->si);
+		digest = digest_value(digest, (uintptr_t)monitor->si->name);
+		digest = digest_value(digest, monitor->si->name_atom);
+		digest = digest_value(digest, (unsigned int)monitor->flags);
+		digest = digest_value(digest, (unsigned int)monitor->emit);
+		digest = digest_value(digest, (unsigned int)monitor->number);
+		digest = digest_value(digest, (unsigned int)monitor->si->x);
+		digest = digest_value(digest, (unsigned int)monitor->si->y);
+		digest = digest_value(digest, (unsigned int)monitor->si->w);
+		digest = digest_value(digest, (unsigned int)monitor->si->h);
+		digest = digest_value(digest, monitor->si->rr_output);
+		while (*name != '\0') {
+			digest = digest_value(digest, *name++);
+		}
+	}
+	TAILQ_FOREACH(screen, legacy_screens, entry)
+	{
+		digest = digest_value(digest, (uintptr_t)screen);
+	}
+	return digest;
+}
+
+static void
+destroy_legacy(struct monitors	   *legacy_monitors,
+    struct screen_infos		   *legacy_screens,
+    const fscreen_legacy_allocator *allocator)
+{
+	struct monitor *monitor;
+	struct monitor *next;
+
+	RB_FOREACH_SAFE(monitor, monitors, legacy_monitors, next)
+	{
+		RB_REMOVE(monitors, legacy_monitors, monitor);
+		TAILQ_REMOVE(legacy_screens, monitor->si, entry);
+		allocator->free_name(
+		    allocator->context, (char *)monitor->si->name);
+		allocator->free_screen(allocator->context, monitor->si);
+		allocator->free_monitor(allocator->context, monitor);
+	}
 }
 
 static void
@@ -267,10 +446,92 @@ test_equal_and_changed_candidates_have_exact_generation_results(void)
 	destroy_committed(&committed, &fixture);
 }
 
+static void
+test_every_legacy_staging_allocation_failure_retains_state(void)
+{
+	RROutput       first_outputs[]	= {32, 31};
+	RROutput       second_outputs[] = {41};
+	XRRMonitorInfo replies[]	= {
+		   make_monitor((Atom)12, first_outputs, 2),
+		   make_monitor((Atom)13, second_outputs, 1),
+	       };
+	randr_fixture		 randr = {.reply = replies, .monitor_count = 1};
+	legacy_fixture		 legacy_alloc = {0};
+	fscreen_randr_adapter	 adapter      = make_adapter(&randr);
+	fscreen_legacy_allocator allocator =
+	    make_legacy_allocator(&legacy_alloc);
+	monitor_topology_snapshot	*committed = NULL;
+	struct monitors			 legacy_monitors;
+	struct screen_infos		 legacy_screens;
+	struct monitor			*first_monitor;
+	const monitor_topology_snapshot *before;
+	uint64_t			 before_digest;
+	size_t				 fail_index;
+
+	RB_INIT(&legacy_monitors);
+	TAILQ_INIT(&legacy_screens);
+	assert(
+	    fscreen_refresh_topology_with_adapters(NULL, (Window)99, &committed,
+		&legacy_monitors, &legacy_screens, &adapter, &allocator)
+	    == FSCREEN_TOPOLOGY_REFRESH_CHANGED);
+	assert(committed->epoch == 1);
+	assert(legacy_alloc.allocation_count == 3);
+	first_monitor = RB_MIN(monitors, &legacy_monitors);
+	assert(first_monitor != NULL);
+	assert(first_monitor->si->name_atom == (Atom)12);
+	before	      = committed;
+	before_digest = legacy_digest(&legacy_monitors, &legacy_screens);
+
+	randr.monitor_count = 2;
+	for (fail_index = 1; fail_index <= 3; fail_index++) {
+		legacy_alloc.allocation_count = 0;
+		legacy_alloc.fail_allocation  = fail_index;
+		assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+			   &committed, &legacy_monitors, &legacy_screens,
+			   &adapter, &allocator)
+		       == FSCREEN_TOPOLOGY_REFRESH_FAILED);
+		assert(committed == before && committed->epoch == 1);
+		assert(legacy_digest(&legacy_monitors, &legacy_screens)
+		       == before_digest);
+		assert(legacy_alloc.live_monitors == 1);
+		assert(legacy_alloc.live_screens == 1);
+		assert(legacy_alloc.live_names == 1);
+	}
+
+	legacy_alloc.allocation_count = 0;
+	legacy_alloc.fail_allocation  = 0;
+	assert(
+	    fscreen_refresh_topology_with_adapters(NULL, (Window)99, &committed,
+		&legacy_monitors, &legacy_screens, &adapter, &allocator)
+	    == FSCREEN_TOPOLOGY_REFRESH_CHANGED);
+	assert(committed->epoch == 2);
+	assert(RB_MIN(monitors, &legacy_monitors) == first_monitor);
+	assert(
+	    fscreen_monitor_by_output(committed, &legacy_monitors, (RROutput)32)
+	    == first_monitor);
+
+	randr.reply		      = &replies[1];
+	randr.monitor_count	      = 1;
+	legacy_alloc.allocation_count = 0;
+	assert(
+	    fscreen_refresh_topology_with_adapters(NULL, (Window)99, &committed,
+		&legacy_monitors, &legacy_screens, &adapter, &allocator)
+	    == FSCREEN_TOPOLOGY_REFRESH_CHANGED);
+	assert(first_monitor->flags & MONITOR_DISABLED);
+	assert(legacy_alloc.allocation_count == 0);
+
+	destroy_legacy(&legacy_monitors, &legacy_screens, &allocator);
+	destroy_committed(&committed, &randr);
+	assert(legacy_alloc.live_monitors == 0);
+	assert(legacy_alloc.live_screens == 0);
+	assert(legacy_alloc.live_names == 0);
+}
+
 int
 main(void)
 {
 	test_failed_empty_unresolved_and_invalid_queries_retain_state();
 	test_equal_and_changed_candidates_have_exact_generation_results();
+	test_every_legacy_staging_allocation_failure_retains_state();
 	return 0;
 }

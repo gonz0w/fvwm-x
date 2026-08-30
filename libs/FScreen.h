@@ -67,6 +67,7 @@ extern bool		     is_tracking_shared;
 struct screen_info
 {
 	const char *name;
+	Atom	    name_atom;
 	int	    x, y, w, h;
 	RROutput    rr_output;
 
@@ -252,6 +253,9 @@ fscreen_topology_refresh_result
 fscreen_refresh_topology_with_adapters(Display *, Window,
     monitor_topology_snapshot **, struct monitors *, struct screen_infos *,
     const fscreen_randr_adapter *, const fscreen_legacy_allocator *);
+struct monitor *
+fscreen_monitor_by_output(
+    const monitor_topology_snapshot *, struct monitors *, RROutput);
 #endif
 
 /* Screen info */

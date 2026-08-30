@@ -51,6 +51,7 @@ fvwm_sources = [
     'fvwm/session.c',
     'fvwm/stack.c',
     'fvwm/style.c',
+    'fvwm/status_json.c',
     'fvwm/update.c',
     'fvwm/virtual.c',
     'fvwm/windowlist.c',

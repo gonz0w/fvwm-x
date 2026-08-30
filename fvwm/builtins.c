@@ -70,6 +70,7 @@
 #include "module_interface.h"
 #include "move_resize.h"
 #include "screen.h"
+#include "status_json.h"
 #include "style.h"
 #include "update.h"
 #include "virtual.h"
@@ -120,86 +121,27 @@ static FILE *status_fp;
 void
 status_send(void)
 {
-	cJSON				*msg = NULL, *screens = NULL;
-	cJSON				*desk_doc[1024], *individual_d[1024];
-	int				 m_count, d_count;
-	FvwmWindow			*fw_cur;
-	DesktopsInfo			*di;
-	struct monitor			*m, *m_cur;
+	cJSON				*msg = NULL;
+	struct monitor			*m_cur;
 	const monitor_topology_snapshot *topology;
 	char				*as_json = NULL;
+	const char			*desktop_mode;
 
 	if (status_fp == NULL || !Scr.flags.are_windows_captured)
 		return;
 
-	memset(individual_d, 0, sizeof(cJSON));
-	memset(desk_doc, 0, sizeof(cJSON));
-
-	if ((msg = cJSON_CreateObject()) == NULL)
+	m_cur	     = monitor_get_current();
+	topology     = FScreenGetTopologySnapshot();
+	desktop_mode = monitor_mode == MONITOR_TRACKING_G && is_tracking_shared
+			   ? "shared"
+		       : monitor_mode == MONITOR_TRACKING_G ? "global"
+		       : monitor_mode == MONITOR_TRACKING_M ? "per-monitor"
+							    : "unknown";
+	msg = fvwm_status_json_create(m_cur->si->name, desktop_mode, topology,
+	    &monitor_q, get_focus_window(), desk_get_fw_urgent,
+	    desk_get_fw_count);
+	if (msg == NULL)
 		return;
-
-	m_cur = monitor_get_current();
-
-	cJSON_AddNumberToObject(msg, "version", 4);
-	cJSON_AddStringToObject(msg, "current_screen", m_cur->si->name);
-	cJSON_AddStringToObject(msg, "desktop_mode",
-	    monitor_mode == MONITOR_TRACKING_G && is_tracking_shared ? "shared"
-	    : monitor_mode == MONITOR_TRACKING_G		     ? "global"
-	    : monitor_mode == MONITOR_TRACKING_M ? "per-monitor"
-						 : "unknown");
-	topology = FScreenGetTopologySnapshot();
-	if (!monitor_topology_json_add(msg, "topology", topology))
-		goto out;
-
-	screens = cJSON_AddObjectToObject(msg, "screens");
-
-	d_count = 0, m_count = 0;
-	RB_FOREACH(m, monitors, &monitor_q)
-	{
-		cJSON *this_desktop;
-		if ((desk_doc[d_count] = cJSON_CreateObject()) == NULL)
-			goto out;
-
-		if (m->Desktops == NULL)
-			goto out;
-
-		this_desktop =
-		    cJSON_AddObjectToObject(desk_doc[d_count], "desktops");
-
-		di = m->Desktops->next;
-		while (di != NULL) {
-			if ((individual_d[d_count] = cJSON_CreateObject())
-			    == NULL)
-				goto out;
-			cJSON_AddNumberToObject(
-			    individual_d[d_count], "number", di->desk);
-			cJSON_AddBoolToObject(individual_d[d_count],
-			    "is_current",
-			    di->desk == m->virtual_scr.CurrentDesk);
-			cJSON_AddBoolToObject(individual_d[d_count],
-			    "is_urgent", desk_get_fw_urgent(m, di->desk));
-			cJSON_AddNumberToObject(individual_d[d_count],
-			    "number_of_clients",
-			    desk_get_fw_count(m, di->desk));
-			cJSON_AddItemToObject(
-			    this_desktop, di->name, individual_d[d_count]);
-
-			di = di->next;
-		}
-
-		fw_cur = get_focus_window();
-		if (fw_cur != NULL && fw_cur->m == m) {
-			cJSON_AddStringToObject(desk_doc[d_count],
-			    "current_client", fw_cur->visible_name);
-		}
-
-		cJSON_AddItemToObject(screens, m->si->name, desk_doc[d_count]);
-		cJSON_AddNumberToObject(
-		    desk_doc[d_count], "randr_order", m->number);
-
-		d_count++;
-		m_count++;
-	}
 	if ((as_json = cJSON_PrintUnformatted(msg)) == NULL)
 		goto out;
 

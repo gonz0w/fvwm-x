@@ -37,7 +37,13 @@ typedef struct
 	size_t diagnostic_count;
 	char   reason[128];
 	char   name[128];
+	char   lines[16][512];
 } monitor_scale_config_test_fixture;
+
+bool
+monitor_scale_config_print_info_with(const monitor_scale_config *config,
+    const monitor_topology_snapshot				*snapshot,
+    struct monitors *runtime_monitors);
 
 static void *
 test_scale_alloc(void *context, size_t size)
@@ -72,12 +78,19 @@ static void
 test_scale_diagnostic(void *context, const char *reason, const char *name)
 {
 	monitor_scale_config_test_fixture *fixture = context;
+	size_t line_index			   = fixture->diagnostic_count;
 
 	fixture->diagnostic_count++;
 	(void)snprintf(fixture->reason, sizeof(fixture->reason), "%s",
 	    reason == NULL ? "" : reason);
 	(void)snprintf(fixture->name, sizeof(fixture->name), "%s",
 	    name == NULL ? "" : name);
+	if (line_index < 16) {
+		(void)snprintf(fixture->lines[line_index],
+		    sizeof(fixture->lines[line_index]), "%s%s%s",
+		    reason == NULL ? "" : reason, name == NULL ? "" : " ",
+		    name == NULL ? "" : name);
+	}
 }
 
 static monitor_scale_config *
@@ -426,6 +439,115 @@ test_finalize_owns_one_store_and_rejects_late_mutation(void)
 }
 
 static void
+test_print_info_emits_authoritative_reason_complete_escaped_output(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	monitor_topology_monitor	  facts[] = {
+	     make_monitor_fact("override", 1, 1920, 1080, 254, 143),
+	     make_monitor_fact("automatic", 2, 1920, 1080, 254, 143),
+	     make_monitor_fact("low", 3, 500, 500, 254, 254),
+	     make_monitor_fact("high", 4, 5000, 5000, 254, 254),
+	     make_monitor_fact("fallback", 5, 1920, 1080, 0, 0),
+	     make_monitor_fact("safe", 6, 1920, 1080, 0, 0),
+	     make_monitor_fact("ambiguous", 7, 1920, 1080, 0, 0),
+	     make_monitor_fact(
+		 "quote\"line\n\t\001-\303\251", 8, 1920, 1080, 10, 143),
+	 };
+	monitor_topology_snapshot snapshot = {
+	    .monitors	   = facts,
+	    .monitor_count = 8,
+	};
+	struct monitors	     runtime_monitors;
+	struct screen_info   screens[8] = {0};
+	struct monitor	     runtime[8];
+	monitor_scale_result results[] = {
+	    {{5}, MONITOR_SCALE_SOURCE_OVERRIDE, MONITOR_SCALE_MATCH_UNIQUE,
+		MONITOR_SCALE_AUTO_VALID, MONITOR_SCALE_BOUNDARY_NONE,
+		MONITOR_SCALE_REASON_EXACT_OVERRIDE},
+	    {{8}, MONITOR_SCALE_SOURCE_AUTOMATIC, MONITOR_SCALE_MATCH_NONE,
+		MONITOR_SCALE_AUTO_VALID, MONITOR_SCALE_BOUNDARY_NONE,
+		MONITOR_SCALE_REASON_VALID_AUTOMATIC},
+	    {{4}, MONITOR_SCALE_SOURCE_AUTOMATIC, MONITOR_SCALE_MATCH_NONE,
+		MONITOR_SCALE_AUTO_VALID, MONITOR_SCALE_BOUNDARY_LOW,
+		MONITOR_SCALE_REASON_AUTOMATIC_BOUND_LOW},
+	    {{16}, MONITOR_SCALE_SOURCE_AUTOMATIC, MONITOR_SCALE_MATCH_NONE,
+		MONITOR_SCALE_AUTO_VALID, MONITOR_SCALE_BOUNDARY_HIGH,
+		MONITOR_SCALE_REASON_AUTOMATIC_BOUND_HIGH},
+	    {{7}, MONITOR_SCALE_SOURCE_FALLBACK, MONITOR_SCALE_MATCH_NONE,
+		MONITOR_SCALE_AUTO_MISSING_AXIS, MONITOR_SCALE_BOUNDARY_NONE,
+		MONITOR_SCALE_REASON_CONFIGURED_FALLBACK},
+	    {{4}, MONITOR_SCALE_SOURCE_SAFE, MONITOR_SCALE_MATCH_NONE,
+		MONITOR_SCALE_AUTO_MISSING_AXIS, MONITOR_SCALE_BOUNDARY_NONE,
+		MONITOR_SCALE_REASON_SAFE_DEFAULT},
+	    {{6}, MONITOR_SCALE_SOURCE_FALLBACK, MONITOR_SCALE_MATCH_AMBIGUOUS,
+		MONITOR_SCALE_AUTO_MISSING_AXIS, MONITOR_SCALE_BOUNDARY_NONE,
+		MONITOR_SCALE_REASON_CONFIGURED_FALLBACK},
+	    {{6}, MONITOR_SCALE_SOURCE_FALLBACK, MONITOR_SCALE_MATCH_NONE,
+		MONITOR_SCALE_AUTO_X_IMPLAUSIBLE, MONITOR_SCALE_BOUNDARY_NONE,
+		MONITOR_SCALE_REASON_CONFIGURED_FALLBACK},
+	};
+	int i;
+
+	RB_INIT(&runtime_monitors);
+	for (i = 0; i < 8; i++) {
+		runtime[i] = make_runtime_monitor(
+		    &screens[i], facts[i].name, facts[i].name_atom, i * 100);
+		runtime[i].effective_scale = results[i];
+		assert(RB_INSERT(monitors, &runtime_monitors, &runtime[i])
+		       == NULL);
+	}
+	assert(monitor_scale_config_declare_override(config, "z-docked", "3"));
+	assert(
+	    monitor_scale_config_declare_override(config, "a-docked", "1.25"));
+	fixture.diagnostic_count = 0;
+
+	assert(monitor_scale_config_print_info_with(
+	    config, &snapshot, &runtime_monitors));
+	assert(fixture.diagnostic_count == 10);
+	assert(
+	    strcmp(fixture.lines[0],
+		"Scale monitor name=\"override\" factor=1.25 source=override "
+		"pixels=1920x1080 physical_mm=254x143 match_status=unique "
+		"auto_status=valid boundary=none reason=exact-override")
+	    == 0);
+	assert(strstr(fixture.lines[1], "factor=2 source=automatic") != NULL);
+	assert(
+	    strstr(fixture.lines[2], "boundary=low reason=automatic-bound-low")
+	    != NULL);
+	assert(strstr(fixture.lines[3],
+		   "boundary=high reason=automatic-bound-high")
+	       != NULL);
+	assert(strstr(fixture.lines[4], "source=fallback") != NULL);
+	assert(strstr(fixture.lines[4], "auto_status=missing-axis") != NULL);
+	assert(strstr(fixture.lines[5], "source=safe") != NULL);
+	assert(strstr(fixture.lines[5], "reason=safe-default") != NULL);
+	assert(strstr(fixture.lines[6], "match_status=ambiguous") != NULL);
+	assert(strcmp(fixture.lines[7],
+		   "Scale monitor name=\"quote\\\"line\\n\\t\\u0001-\303\251\" "
+		   "factor=1.5 source=fallback pixels=1920x1080 "
+		   "physical_mm=10x143 match_status=none "
+		   "auto_status=x-implausible boundary=none "
+		   "reason=configured-fallback")
+	       == 0);
+	assert(strcmp(fixture.lines[8],
+		   "Scale override name=\"a-docked\" factor=1.25 "
+		   "match_status=none state=retained-unmatched")
+	       == 0);
+	assert(strcmp(fixture.lines[9],
+		   "Scale override name=\"z-docked\" factor=3 "
+		   "match_status=none state=retained-unmatched")
+	       == 0);
+	for (i = 0; i < 10; i++) {
+		assert(strchr(fixture.lines[i], '\n') == NULL);
+		assert(strchr(fixture.lines[i], '\r') == NULL);
+	}
+
+	monitor_scale_config_shutdown();
+	assert(fixture.live_allocations == 0);
+}
+
+static void
 test_valid_sequential_declarations_and_exact_matching(void)
 {
 	monitor_scale_config_test_fixture fixture = {0};
@@ -662,5 +784,6 @@ main(void)
 	test_association_preserves_automatic_endpoint_reasons();
 	test_recompute_is_allocation_free_total_and_idempotent();
 	test_finalize_owns_one_store_and_rejects_late_mutation();
+	test_print_info_emits_authoritative_reason_complete_escaped_output();
 	return 0;
 }

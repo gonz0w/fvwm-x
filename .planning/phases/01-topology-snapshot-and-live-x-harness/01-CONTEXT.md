@@ -78,6 +78,13 @@ window recovery, and module scale metadata remain in later phases.
 - **D-15:** Avoid fixed sleeps. Poll explicit readiness and state predicates
   until bounded deadlines. On failure retain server logs, FVWM logs, `xrandr`
   state, and the last committed snapshot.
+- **D-16:** Treat Xvfb monitor mutation as capability-gated because the verified
+  backend accepts `--setmonitor` without changing queried Monitor state. The
+  Xvfb scenario must attempt creation, mutation, and removal, assert the state
+  transitions when the capability probe succeeds, and otherwise record only
+  the mutation subscenario as unsupported while retaining mandatory startup,
+  query, inspection, epoch, and cleanup checks. Xorg-dummy remains the
+  non-skippable authority for all topology mutation behavior.
 
 ### The Agent's Discretion
 - Choose the existing command/status integration point and exact command name

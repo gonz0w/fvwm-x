@@ -1,9 +1,9 @@
 ---
 phase: 1
 slug: topology-snapshot-and-live-x-harness
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: ready
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-08-29
 ---
 
@@ -18,23 +18,25 @@ created: 2026-08-29
 | Property | Value |
 |----------|-------|
 | **Framework** | Meson test runner; plain C assertion executables; Python 3 standard-library live-X harness |
-| **Config file** | `tests/meson.build`; Wave 0 adds a `live-x-tests` option to `meson.options` |
-| **Quick run command** | `meson test -C builddir monitor-topology topology-refresh-policy --print-errorlogs` |
-| **Full suite command** | `meson test -C builddir --print-errorlogs` |
-| **Live-X command** | `meson test -C builddir --suite live-x --print-errorlogs` |
+| **Platform router** | `tests/run_in_linux.py`: native argv execution on Linux; Podman `--platform linux/amd64` on Darwin; `--live-x` installs the four audited X packages in the container |
+| **Config file** | `tests/meson.build`; default-false `live-x-tests` option in `meson.options` |
+| **Quick run command** | `python3 tests/run_in_linux.py -- meson test -C builddir monitor-topology fscreen-topology-adapter topology-refresh-policy topology-event-adapter --print-errorlogs` |
+| **Full suite command** | `python3 tests/run_in_linux.py -- meson test -C builddir --print-errorlogs` |
+| **Live-X command** | `python3 tests/run_in_linux.py --live-x -- meson test -C builddir --suite live-x --print-errorlogs` |
+| **Native Linux/CI equivalents** | Direct `meson test` commands are retained in the dedicated Linux workflow after package installation |
 | **Estimated runtime** | Quick unit suite under 10 seconds; live-X suite under 90 seconds |
 
 ---
 
 ## Sampling Rate
 
-- **After every task commit:** Run the narrowest applicable named test, with
-  `meson test -C builddir monitor-topology topology-refresh-policy --print-errorlogs`
-  as the default once both unit executables exist.
-- **After every plan wave:** Run `meson test -C builddir --print-errorlogs`.
+- **After every task commit:** Run the narrowest named target through
+  `tests/run_in_linux.py`; code-producing tasks marked `tdd="true"` create their
+  focused assertion first, observe RED, then implement to GREEN.
+- **After every plan wave:** Run the wrapped full native suite.
 - **After live-X harness or integration changes:** Run
-  `meson test -C builddir --suite live-x --print-errorlogs` in the native-Linux
-  environment.
+  the wrapped named scenario and then the wrapped `live-x` suite. The wrapper
+  supplies Podman x86_64 plus X packages on macOS and executes directly on Linux.
 - **Before `/gsd-verify-work`:** The native full suite, sanitizer CI suite,
   Xvfb smoke scenario, and authoritative Xorg-dummy suite must be green.
 - **Max feedback latency:** 10 seconds for pure policy tasks and 90 seconds for
@@ -44,45 +46,44 @@ created: 2026-08-29
 
 ## Per-Task Verification Map
 
-| Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
-|---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| 01-01-01 | 01 | 0 | TOP-01, TOP-03 | T-01, T-02, T-03 | Reject malformed candidates and retain the last committed snapshot | unit | `meson test -C builddir monitor-topology --print-errorlogs` | No - Wave 0 | pending |
-| 01-01-02 | 01 | 0 | TOP-03 | T-02 | Bound event-storm work without sleeping or starving commits | unit | `meson test -C builddir topology-refresh-policy --print-errorlogs` | No - Wave 0 | pending |
-| 01-02-01 | 02 | 1 | TOP-01, TOP-03 | T-01, T-03 | Publish only complete validated topology data and serialize valid JSON | unit + integration | `meson test -C builddir monitor-topology topology-refresh-policy --print-errorlogs` | No - Wave 0 | pending |
-| 01-03-01 | 03 | 1 | TOP-06 | T-04, T-05, T-06 | Isolate nested servers, avoid shell injection, and clean up bounded child processes | integration | `meson test -C builddir --suite live-x --print-errorlogs` | No - Wave 0 | pending |
-| 01-03-02 | 03 | 2 | TOP-01, TOP-03, TOP-06 | T-01, T-02, T-07 | Verify authoritative snapshots, epochs, coalescing, and test-only failed-query recovery | integration | `meson test -C builddir topology-xorg-dummy --print-errorlogs` | No - Wave 0 | pending |
-
-Threat references:
-
-- **T-01:** Malformed or hostile X reply counts, dimensions, identities, or
-  output arrays cause unsafe arithmetic or partial publication.
-- **T-02:** A continuous topology event storm causes denial of service or
-  indefinitely postpones a committed refresh.
-- **T-03:** Invalid Atom-name bytes produce invalid JSON or unsafe diagnostics.
-- **T-04:** Harness command construction permits shell or argument injection.
-- **T-05:** A nested X server is exposed over TCP.
-- **T-06:** Timed-out child processes survive test teardown.
-- **T-07:** Failed-query fault injection becomes reachable in production.
+| Task ID | Plan | Wave | Requirement | Threat Ref | Behavior Under Test | Test Type | Automated Command | Test Creation |
+|---------|------|------|-------------|------------|---------------------|-----------|-------------------|---------------|
+| 01-01-01 | 01 | 1 | TOP-01, TOP-03 | T-01-01..03 | Wrapper routing plus detached epoch-1 tracer | unit/tracer | wrapped `monitor-topology` | TDD: wrapper self-test and model RED first |
+| 01-01-02 | 01 | 1 | TOP-01, TOP-03 | T-01-01..03 | Malformed facts, canonical equality, exhaustive model allocation failure | unit | wrapped `monitor-topology` | TDD expansion in `test_monitor_topology.c` |
+| 01-01-03 | 01 | 1 | TOP-01, TOP-03 | T-01-03 | Production/test linkage exactly once | build + unit | wrapped configure/compile/`monitor-topology` | Existing tests become registered |
+| 01-02-01 | 02 | 2 | TOP-01, TOP-03 | T-01-04..06 | One-query X adapter, ownership, changed/equal/failed retention | focused unit | wrapped `fscreen-topology-adapter` | TDD in new adapter test |
+| 01-02-02 | 02 | 2 | TOP-01, TOP-03 | T-01-05 | Every legacy node/name/screen staging allocation fails before publication without state change | focused unit | wrapped `fscreen-topology-adapter` + full suite | TDD fail-index loop before seam implementation |
+| 01-03-01 | 03 | 3 | TOP-03 | T-01-07..09 | Quiet/hard-cap boundaries, ceiling, reset/rearm | unit | wrapped `topology-refresh-policy` | TDD in new policy test |
+| 01-03-02 | 03 | 3 | TOP-03 | T-01-07..09 | Production/test policy linkage | build + unit | wrapped quick native sample | Registration after RED/GREEN unit |
+| 01-04-01 | 04 | 4 | TOP-03 | T-01-10..12 | Exact accepted/rejected event classes, timeout choice, refresh-result dispatch | focused unit | wrapped `topology-event-adapter` | TDD in new event adapter test |
+| 01-04-02 | 04 | 4 | TOP-03 | T-01-10 | Notifications mark only; no immediate refresh/downstream callbacks | focused unit + build | wrapped quick native sample | TDD callback counters before wiring |
+| 01-04-03 | 04 | 4 | TOP-03 | T-01-11..12 | Top-of-loop due ordering and changed-only once side effects | focused unit + full | wrapped event adapter + full suite | TDD ordering trace/counters before integration |
+| 01-05-01 | 05 | 3 | TOP-01 | T-01-13..15 | Exact Status v4 schema, strict UTF-8 JSON, common snapshot source | unit + build | wrapped `monitor-topology` | TDD serializer assertions before implementation |
+| 01-05-02 | 05 | 3 | TOP-01 | T-01-15 | Manual schema/epoch/PrintInfo contract matches fixture | docs + build | wrapped mandoc compile + `monitor-topology` | Existing serializer fixture anchors docs |
+| 01-06-01 | 06 | 5 | TOP-03, TOP-06 | T-01-16..19 | argv-only process lifecycle, deadlines, evidence, bounded teardown | harness self-test | wrapped Python compile/`--self-test` | TDD standard-library self-tests |
+| 01-06-02 | 06 | 5 | TOP-03, TOP-06 | T-01-19, T-01-SC | Per-invocation preload probe and wrap fallback; no production seam | live-X | wrapped `topology-fault-injection-probe` | TDD scenario assertions before target wiring |
+| 01-07-01 | 07 | 6 | TOP-01, TOP-06 | T-01-20..22 | Actual Xvfb startup, Status/PrintInfo epoch 1, evidence, cleanup | live-X | wrapped `topology-xvfb` | TDD baseline predicates before scenario implementation |
+| 01-07-02 | 07 | 6 | TOP-01, TOP-03, TOP-06 | T-01-20..22 | Observed-state capability branch and no false epoch | live-X | wrapped `topology-xvfb` + live suite | TDD transition/unsupported assertions |
+| 01-08-01 | 08 | 7 | TOP-01, TOP-03, TOP-06 | T-01-23,25,26 | Exact Xorg-dummy mutations, reorder/duplicates, burst and sustained cap | live-X | wrapped `topology-xorg-dummy` | TDD predicates/scenario metadata before implementation |
+| 01-08-02 | 08 | 7 | TOP-03, TOP-06 | T-01-24,28 | Standalone probe/select, last-good retention, one later recovery | live-X | wrapped `topology-xorg-dummy-failed-query` | TDD independent invocation; no prior-test state |
+| 01-08-03 | 08 | 7 | TOP-01, TOP-03, TOP-06 | T-01-27,28 | Workflow source contract, one native lane, retained evidence | source + full/live | wrapped `--check-workflow`, full and live suites | Source checker added before CI reliance |
 
 ---
 
-## Wave 0 Requirements
+## Test-Creation and Execution Ordering
 
-- [ ] `tests/test_monitor_topology.c` covers candidate ownership, structural
-  validation, canonical equality, epoch publication, allocation failures, and
-  deterministic serialization for TOP-01 and TOP-03.
-- [ ] `tests/test_topology_refresh_policy.c` covers quiet and maximum deadlines,
-  timeout rounding, reset, and re-arming for TOP-03.
-- [ ] `tests/live_x/live_x_harness.py` provides dependency-free process
-  lifecycle, readiness predicates, scenario execution, state comparison,
-  diagnostics, and bounded cleanup for TOP-06.
-- [ ] `tests/live_x/xorg-dummy.conf` defines deterministic outputs and modes.
-- [ ] `tests/live_x/xrr_query_fault.c` supplies Linux-only, test-process-only
-  failure injection without a production runtime switch.
-- [ ] `tests/meson.build` and `meson.options` register unit tests and an opt-in
-  nonparallel `live-x` suite.
-- [ ] `.github/workflows/ccpp.yml` adds one native-Linux live-X job with required
-  X server packages and failure artifact upload.
+- Wave 1's leading tracer creates `tests/run_in_linux.py` before any Meson/X
+  verification relies on it, then creates `test_monitor_topology.c` RED first.
+- Every production behavior task marked `tdd="true"` names the focused test
+  file and behavior written before implementation; there is no obsolete Wave 0.
+- Plan 02 creates call-scoped FScreen query/allocation seams and exhaustive
+  fail-index tests before claiming runtime/staging retention.
+- Plan 04 creates a focused event adapter test before `events.c` wiring, so real
+  event classes, timeout selection, and changed-only side effects have native
+  evidence independent of live-X timing.
+- Each live-X Meson test owns setup/probe/teardown within its invocation.
+  `topology-xorg-dummy-failed-query` probes preload and chooses link-wrap itself;
+  it has no test-order or durable-state dependency.
 
 ---
 
@@ -94,6 +95,10 @@ Threat references:
   idempotent and every recoverable allocation failure leaves no partial state.
 - Failed query, empty active topology, invalid or duplicate identity, invalid
   UTF-8, unsafe dimensions/counts, and incomplete outputs are rejected.
+- FScreen's call-scoped RandR adapter distinguishes query failure/empty/equal/
+  changed outcomes and releases all X-owned data exactly once.
+- Every recoverable legacy node, name, and screen-record allocation failure
+  preserves the committed pointer, epoch, and complete `monitor_q` digest.
 - Zero or implausible physical dimensions remain unchanged observable facts.
 - Monitor and output permutations compare equal; changing each semantic field
   compares unequal; a rename is remove/add.
@@ -101,6 +106,8 @@ Threat references:
   advance; each semantic change advances exactly once.
 - Refresh policy exercises quiet extension, exact boundaries, hard cap,
   positive timeout ceiling, due reset, equal refresh, and re-arming.
+- Event adapter exercises root/RandR accepted and rejected classes, minimum
+  timeout selection, no immediate query, and changed-only once side effects.
 - Status v4 serialization has exact keys/types, canonical order, and strict JSON
   parser acceptance.
 
@@ -113,10 +120,14 @@ Threat references:
 - Xorg-dummy must authoritatively prove output/mode/position/mm changes, primary
   changes, Monitor create/remove, automatic Monitor mutation, multi-output
   membership, membership reordering without an epoch, and one epoch for a rapid
-  burst.
+  burst. User Monitor reordering uses explicit delete/recreate with the same
+  name and reversed membership because same-name mutation returns `BadValue`.
+- Sustained relevant delete/recreate pressure must not postpone a semantic
+  commit beyond the 250 ms policy cap plus bounded scheduler tolerance.
 - The failed-query scenario must start from a good snapshot, fail exactly one
   `XRRGetMonitors` call in the spawned test FVWM process, retain JSON and epoch,
-  emit a diagnostic, then recover on the next topology event.
+  emit a diagnostic, then recover on the next topology event. The invocation
+  itself probes preload and falls back to link-wrap; it reads no prior result.
 - Failures must retain server logs, FVWM logs, `xrandr` state, and the last
   committed snapshot before bounded child teardown.
 
@@ -132,14 +143,15 @@ does not define scale policy.
 
 ## Validation Sign-Off
 
-- [ ] All tasks have automated verification or explicit Wave 0 dependencies.
-- [ ] Sampling continuity has no three consecutive tasks without an automated
+- [x] All 19 tasks have independently runnable automated verification.
+- [x] Sampling continuity has no three consecutive tasks without an automated
   check.
-- [ ] Wave 0 covers every missing test or harness reference.
-- [ ] No watch-mode flags or fixed sleeps are used.
-- [ ] Pure-policy feedback latency is under 10 seconds.
-- [ ] Live-X feedback latency is under 90 seconds.
-- [ ] `nyquist_compliant: true` and `wave_0_complete: true` are set after the
-  planned test infrastructure exists and passes.
+- [x] Every missing test/harness is created TDD-style in the task that first
+  relies on it; the platform wrapper is first in the tracer.
+- [x] No watch-mode flags or fixed sleeps are used.
+- [x] Pure-policy target feedback latency is under 10 seconds.
+- [x] Live-X target feedback latency is under 90 seconds.
+- [x] `nyquist_compliant: true` reflects complete task-to-command coverage;
+  `wave_0_complete: true` records that no separate Wave 0 is required.
 
-**Approval:** pending
+**Approval:** ready for execution

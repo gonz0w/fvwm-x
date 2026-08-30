@@ -67,6 +67,11 @@
 - **D-15:** Avoid fixed sleeps. Poll explicit readiness and state predicates
   until bounded deadlines. On failure retain server logs, FVWM logs, `xrandr`
   state, and the last committed snapshot.
+- **D-16:** Treat Xvfb Monitor mutation as observed-state capability-gated:
+  attempt create/mutate/remove, require transitions when the probe succeeds,
+  otherwise record only that mutation subscenario unsupported while startup,
+  query, inspection, epoch, and cleanup remain mandatory. Xorg-dummy is the
+  non-skippable mutation authority.
 
 ### the agent's Discretion
 - Choose the existing command/status integration point and exact command name
@@ -730,31 +735,31 @@ finally:
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
 | A1 | A 50 ms quiet period and 250 ms maximum latency are suitable initial UX/performance values on supported real hardware. [ASSUMED] | Architecture Pattern 2 | Bursts may split into extra queries or visible topology may lag; constants are named, unit-tested, and tuned from live evidence before lock-in. |
-| A2 | The target native-Linux GitHub container permits `LD_PRELOAD` interposition for the FVWM test process. [ASSUMED] | Validation Architecture | If blocked, the planner needs a test-build-only link wrapper rather than a production fault hook. |
-| A3 | Xvfb Monitor mutation capability may differ across distributions even though Debian 21.1.16 ignores it. [ASSUMED] | Pattern 5 / Open Questions | Harness must capability-probe rather than hard-code either support or non-support. |
+| A2 | `LD_PRELOAD` interposition is not assumed as a prerequisite. [RESOLVED] Every fault-bearing test invocation probes it against actual FVWM and automatically proves/uses a test-build-only link wrapper when interposition cannot affect the call. | Validation Architecture | Neither path adds a production fault hook, and no Meson test consumes another test's selection side effect. |
+| A3 | Xvfb Monitor mutation capability may differ across distributions even though Debian 21.1.16 ignores it. [RESOLVED by D-16] | Pattern 5 | Harness capability-probes queried state; only the mutation subscenario may be unsupported, while Xorg-dummy remains mandatory. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Does D-14 require successful Monitor mutation on Xvfb, or scenario coverage with a capability-gated subscenario?**
+1. **RESOLVED by D-16 — Does D-14 require successful Monitor mutation on Xvfb, or scenario coverage with a capability-gated subscenario?**
    - What we know: Debian Xvfb 21.1.16 reports RandR 1.6, returns success from
      `xrandr --setmonitor`, but `--listmonitors` remains unchanged and delete
      reports no such Monitor. [VERIFIED: empirical Podman probe, 2026-08-29]
-   - What's unclear: Xvfb cannot satisfy successful create/mutate/remove on the
-     verified CI image, while D-14 says both backends cover those operations.
-   - Recommendation: execute all operations in the Xvfb scenario, state-gate the
-     mutation assertions, and record only that subscenario unsupported; make
-     Xorg-dummy mandatory and authoritative. If “both” means both must mutate
-     successfully, this locked decision needs user revision before planning.
+   - Resolution: D-16 binds the interpretation. Execute all operations in the
+     Xvfb scenario, state-gate assertions from queried state, and record only
+     that mutation subscenario unsupported when the state does not change.
+     Startup, query, inspection, epoch, and cleanup remain mandatory, and
+     Xorg-dummy is the non-skippable mutation authority.
 
-2. **Will the Linux CI environment allow the preload query-failure shim?**
+2. **RESOLVED by mandatory executable probe/fallback — Will the Linux CI environment allow the preload query-failure shim?**
    - What we know: the repository's Linux jobs run inside the Debian build image,
      and the proposed shim affects only the spawned FVWM child. [VERIFIED:
      `.github/workflows/ccpp.yml:13-20,45-66`]
-   - What's unclear: no end-to-end preload probe was run against the final
-     Phase-1 executable.
-   - Recommendation: make this the first live-X Wave 0 spike. Fall back to a
-     test-build-only `--wrap=XRRGetMonitors` executable if interposition fails;
-     do not expose a production command/environment failure switch.
+   - Resolution: every fault-bearing invocation first probes the actual
+     production FVWM call under scoped preload. If the call is unaffected, that
+     same invocation must prove and use the non-installed test-build-only
+     `--wrap=XRRGetMonitors` executable. It fails if neither mechanism works,
+     never reads another Meson test's state, and exposes no production
+     command/environment failure switch.
 
 ## Environment Availability
 
@@ -787,17 +792,17 @@ by the project build image under Podman, as required by AGENTS.md.
 |----------|-------|
 | Framework | Meson 1.7.0 runner; plain C `<assert.h>` unit executables; Python 3 stdlib live harness [VERIFIED: `tests/meson.build:1-29`; Podman image probe] |
 | Config file | `tests/meson.build`; add opt-in `live-x-tests` boolean to `meson.options` so default matrix/sanitizer runs do not duplicate nested-X work |
-| Quick run command | `meson test -C builddir monitor-topology topology-refresh-policy --print-errorlogs` |
-| Full suite command | `meson test -C builddir --print-errorlogs` |
-| Live suite command | `meson test -C builddir --suite live-x --print-errorlogs` in one dedicated Linux job |
+| Quick run command | `python3 tests/run_in_linux.py -- meson test -C builddir monitor-topology fscreen-topology-adapter topology-refresh-policy topology-event-adapter --print-errorlogs` |
+| Full suite command | `python3 tests/run_in_linux.py -- meson test -C builddir --print-errorlogs` |
+| Live suite command | `python3 tests/run_in_linux.py --live-x -- meson test -C builddir --suite live-x --print-errorlogs`; CI uses the direct Meson equivalent after package installation |
 
 ### Phase Requirements → Test Map
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists? |
 |--------|----------|-----------|-------------------|-------------|
-| TOP-01 | Deep-copy all facts; preserve zero/implausible mm; complete/sorted output set; deterministic monitor order; epoch 1; exact Status v4 JSON | Unit + Xorg-dummy integration | `meson test -C builddir monitor-topology topology-xorg-dummy --print-errorlogs` | ❌ Wave 0 |
-| TOP-03 | Equal/reordered candidates do not advance; changes advance once; query/validation/allocation failure retains pointer+epoch; quiet and max deadlines coalesce fairly | Unit + Xorg-dummy integration | `meson test -C builddir monitor-topology topology-refresh-policy topology-xorg-dummy --print-errorlogs` | ❌ Wave 0 |
-| TOP-06 | Start/ready/cleanup Xvfb and Xorg-dummy; create/mutate/remove; compare server and FVWM state; retain diagnostics | Integration | `meson test -C builddir --suite live-x --print-errorlogs` | ❌ Wave 0 |
+| TOP-01 | Deep-copy all facts; preserve zero/implausible mm; complete/sorted output set; deterministic monitor order; epoch 1; exact Status v4 JSON | Unit + Xorg-dummy integration | wrapped `monitor-topology` and `topology-xorg-dummy` | Planned TDD in Plans 01, 05, 08 |
+| TOP-03 | Equal/reordered candidates do not advance; query/staging failure retains snapshot+legacy view; quiet/max deadlines and event-result dispatch coalesce fairly | Focused unit + Xorg-dummy integration | wrapped `fscreen-topology-adapter`, `topology-refresh-policy`, `topology-event-adapter`, and Xorg scenarios | Planned TDD in Plans 02-04, 08 |
+| TOP-06 | Start/ready/cleanup Xvfb and Xorg-dummy; create/mutate/remove; compare server and FVWM state; retain diagnostics | Integration | wrapped `live-x` suite | Planned TDD in Plans 06-08 |
 
 ### Native Unit Scenario Matrix
 
@@ -820,16 +825,19 @@ by the project build image under Podman, as required by AGENTS.md.
 
 ### Sampling Rate
 
-- **Per task commit:** `meson test -C builddir monitor-topology topology-refresh-policy --print-errorlogs`
-- **Per wave merge:** `meson test -C builddir --print-errorlogs`
-- **Dedicated live-X CI:** `meson test -C builddir --suite live-x --print-errorlogs`
+- **Per task commit:** narrowest target through `tests/run_in_linux.py`
+- **Per wave merge:** wrapped full native suite
+- **Dedicated live-X CI:** direct `meson test -C builddir --suite live-x --print-errorlogs` after the job installs the four audited packages
 - **Phase gate:** native full suite, sanitizer suite, Xvfb smoke, and authoritative
   Xorg-dummy suite green before `/gsd-verify-work`.
 
-### Wave 0 Gaps
+### Planned Test Artifacts (created TDD-first; no separate Wave 0)
 
 - [ ] `tests/test_monitor_topology.c` — TOP-01 snapshot/epoch/validation/allocator tests.
+- [ ] `tests/test_fscreen_topology.c` — call-scoped RandR adapter and exhaustive legacy-staging failure tests.
 - [ ] `tests/test_topology_refresh_policy.c` — TOP-03 deterministic time tests.
+- [ ] `tests/test_topology_event_adapter.c` — exact event classes, timeout selection, and changed-only side-effect decisions.
+- [ ] `tests/run_in_linux.py` — Linux-direct/Darwin-Podman linux/amd64 verification router.
 - [ ] `tests/live_x/live_x_harness.py` — stdlib lifecycle, predicates, scenarios,
   state comparison, diagnostics.
 - [ ] `tests/live_x/xorg-dummy.conf` — deterministic modes and virtual screen.

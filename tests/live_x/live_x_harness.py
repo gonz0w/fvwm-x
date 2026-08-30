@@ -387,16 +387,7 @@ def start_fvwm(
     fvwm_log = runtime.root / "fvwm.log"
     process = runtime.start(
         "fvwm3",
-        [
-            str(fvwm_path),
-            "-d",
-            display,
-            "-o",
-            str(fvwm_log),
-            "-v",
-            "-c",
-            "Status On",
-        ],
+        fvwm_arguments(fvwm_path, display, fvwm_log),
         "fvwm-process.log",
         environment=environment,
     )
@@ -404,6 +395,195 @@ def start_fvwm(
         runtime.root / "fvwm3.pipe", deadline, process=process
     )
     return process, collector
+
+
+def fvwm_arguments(
+    fvwm_path: Path, display: str, fvwm_log: Path
+) -> list[str]:
+    """Build the fixed FVWM startup argv used by live-X probes."""
+    return [
+        str(fvwm_path),
+        "-d",
+        display,
+        "-o",
+        str(fvwm_log),
+        "-v",
+        "-c",
+        "Status On",
+    ]
+
+
+def fault_probe_metadata(mechanism: str) -> dict[str, str]:
+    """Return per-invocation metadata for exactly one proven mechanism."""
+    if mechanism not in ("preload", "link-wrap"):
+        raise ValueError(f"unknown fault mechanism: {mechanism}")
+    return {"mechanism": mechanism}
+
+
+def _combined_fvwm_log(process: ManagedProcess, fvwm_log: Path) -> str:
+    output = process.log_path.read_text(errors="replace")
+    if fvwm_log.is_file():
+        output += fvwm_log.read_text(errors="replace")
+    return output
+
+
+def _attempt_fault_mechanism(
+    runtime: HarnessRuntime,
+    *,
+    mechanism: str,
+    executable: Path,
+    display: str,
+    fault_library: Path,
+    deadline: float,
+    artifact_dir: Path,
+) -> bool:
+    """Prove one failed real query from exit, diagnostic, and sentinel claim."""
+    sentinel = runtime.root / f"{mechanism}.sentinel"
+    sentinel.touch(mode=0o600, exist_ok=False)
+    fvwm_log = runtime.root / f"fvwm-{mechanism}.log"
+    environment_overrides = {FAULT_ENV: str(sentinel)}
+    if mechanism == "preload":
+        environment_overrides[PRELOAD_ENV] = str(fault_library)
+    environment = runtime.environment(environment_overrides)
+    process = runtime.start(
+        f"fvwm3-{mechanism}",
+        fvwm_arguments(executable, display, fvwm_log),
+        f"fvwm-{mechanism}-process.log",
+        environment=environment,
+    )
+    return_code: int | None = None
+    try:
+        return_code = process.wait_until_exit(deadline)
+    except HarnessError:
+        pass
+    finally:
+        process.close(time.monotonic() + 2.0)
+
+    output = _combined_fvwm_log(process, fvwm_log)
+    (artifact_dir / f"{mechanism}.log").write_text(output)
+    diagnostic = "RandR monitor query failed; retaining last topology"
+    observed = (
+        return_code == 101
+        and not sentinel.exists()
+        and output.count(diagnostic) == 1
+        and output.count("Unable to initialise RandR") >= 1
+    )
+    attempt = {
+        "mechanism": mechanism,
+        "observed": observed,
+        "returncode": return_code,
+        "sentinel_consumed": not sentinel.exists(),
+        "query_failure_diagnostics": output.count(diagnostic),
+    }
+    (artifact_dir / f"{mechanism}.json").write_text(
+        json.dumps(attempt, indent=2, sort_keys=True) + "\n"
+    )
+    return observed
+
+
+def _prove_ordinary_production_startup(
+    runtime: HarnessRuntime,
+    fvwm_path: Path,
+    display: str,
+    deadline: float,
+) -> None:
+    """Prove the production target starts without either fault control."""
+    environment = runtime.environment()
+    if FAULT_ENV in environment or PRELOAD_ENV in environment:
+        raise HarnessError("ordinary FVWM environment contains fault controls")
+    if b"__wrap_XRRGetMonitors" in fvwm_path.read_bytes():
+        raise HarnessError("production FVWM contains the test-only wrapper symbol")
+
+    process, collector = start_fvwm(
+        runtime, fvwm_path, display, deadline, environment=environment
+    )
+    try:
+        if process.poll() is not None:
+            raise HarnessError(
+                f"ordinary production FVWM exited with {process.poll()}"
+            )
+    finally:
+        collector.close()
+        process.close(time.monotonic() + 2.0)
+
+
+def run_fault_injection_probe(options: argparse.Namespace) -> None:
+    """Probe preload first, then prove linker wrapping only as fallback."""
+    required_paths = {
+        "--fvwm": options.fvwm,
+        "--wrapped-fvwm": options.wrapped_fvwm,
+        "--fault-library": options.fault_library,
+    }
+    for option_name, path in required_paths.items():
+        if path is None or not path.is_file():
+            raise ValueError(f"{option_name} must name an existing file")
+    if options.artifacts_dir is None:
+        raise ValueError("--artifacts-dir is required")
+    if options.backend != "xvfb":
+        raise ValueError("fault-injection-probe requires --backend=xvfb")
+
+    fvwm_path = options.fvwm.resolve()
+    wrapped_fvwm = options.wrapped_fvwm.resolve()
+    fault_library = options.fault_library.resolve()
+    artifact_dir = options.artifacts_dir.resolve()
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+
+    runtime = HarnessRuntime(prefix="fvwm-fault-probe-")
+    server: ManagedProcess | None = None
+    xrandr_text: str | None = None
+    last_status: dict[str, object] | None = None
+    try:
+        server, display = start_display_server(
+            runtime,
+            "Xvfb",
+            ["Xvfb", "-screen", "0", "1024x768x24"],
+            "xserver.log",
+            time.monotonic() + 10.0,
+        )
+        xrandr_text = wait_for_randr(runtime, display, time.monotonic() + 10.0)
+
+        if _attempt_fault_mechanism(
+            runtime,
+            mechanism="preload",
+            executable=fvwm_path,
+            display=display,
+            fault_library=fault_library,
+            deadline=time.monotonic() + 10.0,
+            artifact_dir=artifact_dir,
+        ):
+            mechanism = "preload"
+        elif _attempt_fault_mechanism(
+            runtime,
+            mechanism="link-wrap",
+            executable=wrapped_fvwm,
+            display=display,
+            fault_library=fault_library,
+            deadline=time.monotonic() + 10.0,
+            artifact_dir=artifact_dir,
+        ):
+            mechanism = "link-wrap"
+        else:
+            raise HarnessError("neither XRR fault mechanism affected actual FVWM")
+
+        _prove_ordinary_production_startup(
+            runtime, fvwm_path, display, time.monotonic() + 10.0
+        )
+        metadata = fault_probe_metadata(mechanism)
+        (artifact_dir / "probe-result.json").write_text(
+            json.dumps(metadata, indent=2, sort_keys=True) + "\n"
+        )
+    except BaseException as error:
+        capture_failure(
+            artifact_dir,
+            error=error,
+            server_log=server.log_path if server is not None else None,
+            fvwm_log=runtime.root / "fvwm.log",
+            xrandr_text=xrandr_text,
+            last_status=last_status,
+        )
+        raise
+    finally:
+        runtime.close()
 
 
 class StatusCollector:
@@ -695,7 +875,10 @@ def main() -> int:
         return 0
     if options.backend is None or options.scenario is None:
         build_parser().error("--backend and --scenario are required")
-    raise NotImplementedError("live-X scenarios are not implemented")
+    if options.scenario == "fault-injection-probe":
+        run_fault_injection_probe(options)
+        return 0
+    raise AssertionError(f"unhandled live-X scenario: {options.scenario}")
 
 
 if __name__ == "__main__":

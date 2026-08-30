@@ -52,6 +52,12 @@ option(
     description: 'Use librsvg as a librsvg backend',
 )
 option(
+    'live-x-tests',
+    type: 'boolean',
+    value: false,
+    description: 'Build non-installed live-X integration test targets',
+)
+option(
     'mandoc',
     type: 'boolean',
     value: false,

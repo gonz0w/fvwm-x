@@ -19,8 +19,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#if defined(FVWM_XRR_QUERY_FAULT_PRELOAD) ==                                \
-    defined(FVWM_XRR_QUERY_FAULT_WRAP)
+#if defined(FVWM_XRR_QUERY_FAULT_PRELOAD) == defined(FVWM_XRR_QUERY_FAULT_WRAP)
 #error "select exactly one XRR query fault mode"
 #endif
 
@@ -71,8 +70,8 @@ XRRGetMonitors(Display *display, Window window, Bool active, int *nmonitors)
 #endif
 
 #if defined(FVWM_XRR_QUERY_FAULT_WRAP)
-extern XRRMonitorInfo *__real_XRRGetMonitors(
-    Display *, Window, Bool, int *);
+extern XRRMonitorInfo *
+__real_XRRGetMonitors(Display *, Window, Bool, int *);
 
 XRRMonitorInfo *
 __wrap_XRRGetMonitors(

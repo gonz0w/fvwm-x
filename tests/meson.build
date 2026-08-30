@@ -17,6 +17,17 @@ monitor_topology_test = executable(
 
 test('monitor-topology', monitor_topology_test)
 
+fscreen_topology_test = executable(
+    'test-fscreen-topology',
+    'test_fscreen_topology.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
+test('fscreen-topology-adapter', fscreen_topology_test)
+
 module_runtime_test = executable(
     'test-module-runtime',
     ['test_module_runtime.c', '../fvwm/module_runtime.c'],

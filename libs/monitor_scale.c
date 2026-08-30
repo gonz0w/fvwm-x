@@ -17,6 +17,9 @@
 
 #include "libs/monitor_scale.h"
 
+#include <limits.h>
+#include <string.h>
+
 typedef __int128 monitor_scale_wide;
 
 static bool
@@ -24,6 +27,70 @@ factor_is_valid(monitor_scale_factor factor)
 {
 	return factor.quarters >= MONITOR_SCALE_QUARTERS_MIN
 	       && factor.quarters <= MONITOR_SCALE_QUARTERS_MAX;
+}
+
+static const char *const canonical_factors[] = {
+    "1",
+    "1.25",
+    "1.5",
+    "1.75",
+    "2",
+    "2.25",
+    "2.5",
+    "2.75",
+    "3",
+    "3.25",
+    "3.5",
+    "3.75",
+    "4",
+};
+
+bool
+monitor_scale_parse_factor(const char *text, monitor_scale_factor *factor)
+{
+	size_t i;
+
+	if (factor == NULL) {
+		return false;
+	}
+	factor->quarters = MONITOR_SCALE_QUARTERS_MIN;
+	if (text == NULL) {
+		return false;
+	}
+	for (i = 0;
+	    i < sizeof(canonical_factors) / sizeof(canonical_factors[0]); i++) {
+		if (strcmp(text, canonical_factors[i]) == 0) {
+			factor->quarters = MONITOR_SCALE_QUARTERS_MIN + i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool
+monitor_scale_format_factor(
+    monitor_scale_factor factor, char *buffer, size_t buffer_size)
+{
+	const char *canonical;
+	size_t	    length;
+
+	if (buffer == NULL || buffer_size == 0) {
+		return false;
+	}
+	buffer[0] = '\0';
+	if (!factor_is_valid(factor)) {
+		return false;
+	}
+	canonical =
+	    canonical_factors[factor.quarters - MONITOR_SCALE_QUARTERS_MIN];
+	length = strlen(canonical);
+	if (length >= buffer_size) {
+		return false;
+	}
+	memcpy(buffer, canonical, length + 1);
+
+	return true;
 }
 
 static monitor_scale_auto_status
@@ -129,4 +196,72 @@ monitor_scale_resolve(const monitor_topology_monitor *monitor,
 	}
 
 	return result;
+}
+
+static monitor_scale_conversion_status
+convert_ratio(int source, unsigned int numerator, unsigned int denominator,
+    int *converted)
+{
+	monitor_scale_wide value;
+	monitor_scale_wide magnitude;
+	monitor_scale_wide quotient;
+	monitor_scale_wide remainder;
+	monitor_scale_wide maximum;
+	bool		   negative;
+
+	if (converted == NULL) {
+		return MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT;
+	}
+	*converted = 0;
+	if (denominator == 0) {
+		return MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT;
+	}
+
+	value	  = (monitor_scale_wide)source * numerator;
+	negative  = value < 0;
+	magnitude = negative ? -value : value;
+	quotient  = magnitude / denominator;
+	remainder = magnitude % denominator;
+	if (2 * remainder >= denominator) {
+		quotient++;
+	}
+	maximum = negative ? (monitor_scale_wide)INT_MAX + 1 : INT_MAX;
+	if (quotient > maximum) {
+		return MONITOR_SCALE_CONVERSION_OVERFLOW;
+	}
+	if (negative && quotient == (monitor_scale_wide)INT_MAX + 1) {
+		*converted = INT_MIN;
+	} else if (negative) {
+		*converted = -(int)quotient;
+	} else {
+		*converted = (int)quotient;
+	}
+
+	return MONITOR_SCALE_CONVERSION_OK;
+}
+
+monitor_scale_conversion_status
+monitor_scale_apply(int source, monitor_scale_factor factor, int *converted)
+{
+	if (converted != NULL) {
+		*converted = 0;
+	}
+	if (!factor_is_valid(factor)) {
+		return MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT;
+	}
+
+	return convert_ratio(source, factor.quarters, 4, converted);
+}
+
+monitor_scale_conversion_status
+monitor_scale_remove(int source, monitor_scale_factor factor, int *converted)
+{
+	if (converted != NULL) {
+		*converted = 0;
+	}
+	if (!factor_is_valid(factor)) {
+		return MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT;
+	}
+
+	return convert_ratio(source, 4, factor.quarters, converted);
 }

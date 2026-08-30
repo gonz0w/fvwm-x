@@ -248,6 +248,11 @@ test_resolver_precedence_and_rejected_auto_metadata(void)
 	assert(result.factor.quarters == 8);
 	assert(result.source == MONITOR_SCALE_SOURCE_AUTOMATIC);
 
+	override.quarters = MONITOR_SCALE_QUARTERS_MIN - 1;
+	result		  = monitor_scale_resolve(&valid, &override, &fallback);
+	assert(result.factor.quarters == 8);
+	assert(result.source == MONITOR_SCALE_SOURCE_AUTOMATIC);
+
 	result = monitor_scale_resolve(&invalid, NULL, &fallback);
 	assert(result.factor.quarters == fallback.quarters);
 	assert(result.source == MONITOR_SCALE_SOURCE_FALLBACK);
@@ -269,12 +274,27 @@ test_apply_and_remove_round_half_away_from_zero(void)
 	assert(monitor_scale_apply(1, (monitor_scale_factor){6}, &converted)
 	       == MONITOR_SCALE_CONVERSION_OK);
 	assert(converted == 2);
+	assert(monitor_scale_apply(0, (monitor_scale_factor){16}, &converted)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(converted == 0);
 	assert(monitor_scale_apply(-1, (monitor_scale_factor){6}, &converted)
 	       == MONITOR_SCALE_CONVERSION_OK);
 	assert(converted == -2);
 	assert(monitor_scale_apply(3, (monitor_scale_factor){6}, &converted)
 	       == MONITOR_SCALE_CONVERSION_OK);
 	assert(converted == 5);
+	assert(monitor_scale_apply(1, (monitor_scale_factor){5}, &converted)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(converted == 1);
+	assert(monitor_scale_apply(2, (monitor_scale_factor){5}, &converted)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(converted == 3);
+	assert(monitor_scale_apply(-2, (monitor_scale_factor){5}, &converted)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(converted == -3);
+	assert(monitor_scale_apply(-3, (monitor_scale_factor){5}, &converted)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(converted == -4);
 
 	assert(monitor_scale_remove(1, (monitor_scale_factor){8}, &converted)
 	       == MONITOR_SCALE_CONVERSION_OK);
@@ -298,6 +318,14 @@ test_conversion_limits_overflow_and_invalid_outputs(void)
 	assert(converted == INT_MAX);
 	assert(
 	    monitor_scale_apply(INT_MIN, (monitor_scale_factor){4}, &converted)
+	    == MONITOR_SCALE_CONVERSION_OK);
+	assert(converted == INT_MIN);
+	assert(
+	    monitor_scale_remove(INT_MAX, (monitor_scale_factor){4}, &converted)
+	    == MONITOR_SCALE_CONVERSION_OK);
+	assert(converted == INT_MAX);
+	assert(
+	    monitor_scale_remove(INT_MIN, (monitor_scale_factor){4}, &converted)
 	    == MONITOR_SCALE_CONVERSION_OK);
 	assert(converted == INT_MIN);
 

@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 02
 current_phase_name: Scale Policy and Configuration
 status: executing
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-08-30T20:00:47.190Z"
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-08-30T20:13:54.172Z"
 last_activity: 2026-08-30
 last_activity_desc: Completed Phase 02 Plan 01 exact monitor scale policy
-state_head: d471a24a6e33ed8f594fc6bac108886f40444978
+state_head: e109b627b8d6ff62b832b16107d703b0347ae40a
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 ## Current Position
 
 Phase: 02 (Scale Policy and Configuration) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-08-30 — Completed Phase 02 Plan 01 exact monitor scale policy
 
@@ -70,6 +70,7 @@ Progress: [███████░░░] 69%
 | Phase 02 P01 | 59min | 3 tasks | 8 files |
 | Phase 02 P02 | 15min | 3 tasks | 8 files |
 | Phase 02 P03 | 14min | 3 tasks | 9 files |
+| Phase 02 P04 | 9min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 02]: Associate topology facts with runtime monitors by exact name and RandR Atom when available, rejecting missing or duplicate associations.
 - [Phase 02]: Finalize the sole scale configuration after startup directives and reject later direct declarations until reload support exists.
 - [Phase 02]: Use one changed-refresh callback coordinator to guarantee scale recomputation precedes EWMH, broadcast, pan-frame, and Status effects.
+- [Phase 02]: PrintInfo Scale reads the core-owned monitor_scale_config state and attached effective_scale values rather than creating a parallel policy path.
+- [Phase 02]: Status v4 and module packets remain actual-pixel interfaces without scale metadata; PrintInfo Scale is the inspection boundary.
 
 ### Pending Todos
 
@@ -135,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T20:00:47.134Z
-Stopped at: Completed 02-03-PLAN.md
+Last session: 2026-08-30T20:13:54.110Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None

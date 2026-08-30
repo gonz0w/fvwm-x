@@ -677,6 +677,15 @@ def self_test() -> None:
         stubborn.close(time.monotonic() + 1.0)
         assert stubborn.poll() == -signal.SIGKILL
 
+        metadata = fault_probe_metadata("preload")
+        assert metadata == {"mechanism": "preload"}
+        try:
+            fault_probe_metadata("invalid")
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid fault mechanisms must be rejected")
+
 
 def main() -> int:
     """Run self-tests or a selected live-X scenario."""

@@ -81,16 +81,51 @@
 
 ## Traceability
 
-Roadmap creation maps each v0.1 requirement to exactly one phase.
+Each v0.1 requirement maps to exactly one roadmap phase.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| TOP-01 | Phase 1 | Pending |
+| TOP-02 | Phase 3 | Pending |
+| TOP-03 | Phase 1 | Pending |
+| TOP-04 | Phase 6 | Pending |
+| TOP-05 | Phase 6 | Pending |
+| TOP-06 | Phase 1 | Pending |
+| SCALE-01 | Phase 2 | Pending |
+| SCALE-02 | Phase 2 | Pending |
+| SCALE-03 | Phase 2 | Pending |
+| SCALE-04 | Phase 2 | Pending |
+| SCALE-05 | Phase 2 | Pending |
+| SCALE-06 | Phase 6 | Pending |
+| UI-01 | Phase 4 | Pending |
+| UI-02 | Phase 4 | Pending |
+| UI-03 | Phase 4 | Pending |
+| UI-04 | Phase 4 | Pending |
+| UI-05 | Phase 4 | Pending |
+| UI-06 | Phase 4 | Pending |
+| GEO-01 | Phase 3 | Pending |
+| GEO-02 | Phase 5 | Pending |
+| GEO-03 | Phase 3 | Pending |
+| GEO-04 | Phase 5 | Pending |
+| GEO-05 | Phase 3 | Pending |
+| GEO-06 | Phase 5 | Pending |
+| GEO-07 | Phase 3 | Pending |
+| MOD-01 | Phase 7 | Pending |
+| MOD-02 | Phase 7 | Pending |
+| MOD-03 | Phase 7 | Pending |
+| TEST-01 | Phase 3 | Pending |
+| TEST-02 | Phase 8 | Pending |
+| TEST-03 | Phase 8 | Pending |
+| TEST-04 | Phase 8 | Pending |
+| TEST-05 | Phase 4 | Pending |
 
 **Coverage:**
 - v0.1 requirements: 33 total
-- Mapped to phases: 0
-- Unmapped: 33
+- Mapped to phases: 33
+- Unmapped: 0
+- Duplicate mappings: 0
+- Coverage: 100%
 
 ---
 *Requirements defined: 2026-08-29*
-*Last updated: 2026-08-29 after initial definition*
+*Last updated: 2026-08-29 after roadmap creation*

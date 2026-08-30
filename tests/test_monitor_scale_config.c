@@ -138,6 +138,9 @@ find_override(monitor_scale_config *config, const char *name)
 	return NULL;
 }
 
+static void
+run_scale_command(void (*command)(F_CMD_ARGS), char *action);
+
 static bool
 scale_results_equal(
     const monitor_scale_result *left, const monitor_scale_result *right)
@@ -357,6 +360,69 @@ test_recompute_is_allocation_free_total_and_idempotent(void)
 
 	monitor_scale_config_shutdown();
 	assert(fixture.live_allocations == 0);
+}
+
+static void
+test_finalize_owns_one_store_and_rejects_late_mutation(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	monitor_topology_monitor	  fact =
+	    make_monitor_fact("active", 1, 1920, 1080, 0, 0);
+	monitor_topology_snapshot snapshot = {
+	    .monitors	   = &fact,
+	    .monitor_count = 1,
+	};
+	struct monitors	   runtime_monitors;
+	struct screen_info screen = {0};
+	struct monitor runtime = make_runtime_monitor(&screen, "active", 1, 0);
+	monitor_scale_result result_before;
+	uint64_t	     config_before;
+	char		     late_override[] = "active 2";
+	char		     late_fallback[] = "2";
+	size_t		     diagnostics_before;
+
+	RB_INIT(&runtime_monitors);
+	assert(RB_INSERT(monitors, &runtime_monitors, &runtime) == NULL);
+	assert(monitor_scale_config_get() == config);
+	assert(monitor_scale_config_declare_override(config, "active", "1.25"));
+	assert(monitor_scale_config_declare_override(config, "docked", "3"));
+	assert(monitor_scale_config_declare_fallback(config, "1.5"));
+	diagnostics_before = fixture.diagnostic_count;
+	assert(monitor_scale_config_finalize_initial_with(
+	    config, &snapshot, &runtime_monitors));
+	assert(monitor_scale_config_get() == config);
+	assert(monitor_scale_config_is_finalized(config));
+	assert(monitor_scale_config_results_valid_with(
+	    &snapshot, &runtime_monitors));
+	assert(runtime.effective_scale.source == MONITOR_SCALE_SOURCE_OVERRIDE);
+	assert(runtime.effective_scale.factor.quarters == 5);
+	assert(fixture.diagnostic_count == diagnostics_before + 1);
+	assert(strstr(fixture.reason, "no active match") != NULL);
+	assert(strcmp(fixture.name, "docked") == 0);
+
+	config_before	   = config_digest(config);
+	result_before	   = runtime.effective_scale;
+	diagnostics_before = fixture.diagnostic_count;
+	run_scale_command(CMD_MonitorScale, late_override);
+	run_scale_command(CMD_MonitorScaleFallback, late_fallback);
+	assert(monitor_scale_config_get() == config);
+	assert(config_digest(config) == config_before);
+	assert(scale_results_equal(&result_before, &runtime.effective_scale));
+	assert(fixture.diagnostic_count == diagnostics_before + 2);
+	assert(strstr(fixture.reason, "finalized") != NULL);
+
+	monitor_scale_config_shutdown();
+	assert(monitor_scale_config_get() == config);
+	assert(config->overrides == NULL);
+	assert(!config->has_fallback);
+	assert(!config->finalized);
+	assert(config->fallback.quarters == 0);
+	assert(fixture.live_allocations == 0);
+	assert(initialize_fixture(&fixture) == config);
+	assert(config->fallback.quarters == MONITOR_SCALE_QUARTERS_MIN);
+	assert(!config->has_fallback && !config->finalized);
+	monitor_scale_config_shutdown();
 }
 
 static void
@@ -595,5 +661,6 @@ main(void)
 	test_association_rejects_ambiguous_and_retains_unmatched_overrides();
 	test_association_preserves_automatic_endpoint_reasons();
 	test_recompute_is_allocation_free_total_and_idempotent();
+	test_finalize_owns_one_store_and_rejects_late_mutation();
 	return 0;
 }

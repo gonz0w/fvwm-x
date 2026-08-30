@@ -2380,9 +2380,32 @@ DUMMY1 connected 1280x1024+1920+0 (normal) 338mm x 271mm
     }
 
 
+def test_failed_query_recovery_contract() -> None:
+    """Specify independent recovery selection and last-good retention."""
+    options = build_parser().parse_args(
+        ["--backend=xorg-dummy", "--scenario=failed-query-recovery"]
+    )
+    assert options.scenario == "failed-query-recovery"
+
+    known_good = {
+        "version": 4,
+        "topology": {"epoch": 7, "monitors": [{"name": "DUMMY0"}]},
+    }
+    retained = json.loads(json.dumps(known_good))
+    assert_topology_retained(known_good, retained)
+    retained["topology"]["epoch"] = 8
+    try:
+        assert_topology_retained(known_good, retained)
+    except HarnessError:
+        pass
+    else:
+        raise AssertionError("changed failed-query topology must be rejected")
+
+
 def self_test() -> None:
     """Specify lifecycle behavior without requiring an X server."""
     test_xorg_dummy_contract()
+    test_failed_query_recovery_contract()
 
     version_text = """\
 xrandr program version       1.5.1

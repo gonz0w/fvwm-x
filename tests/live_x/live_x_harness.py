@@ -1639,6 +1639,355 @@ def run_required_xrandr(
     return started, completed
 
 
+def scale_policy_cases() -> tuple[dict[str, object], ...]:
+    """Return the complete isolated initial scale-policy matrix."""
+    valid_automatic = {
+        "factor": "2",
+        "source": "automatic",
+        "reason": "valid-automatic",
+        "match_status": "none",
+        "auto_status": "valid",
+        "boundary": "none",
+    }
+    return (
+        {
+            "name": "exact-override",
+            "width_mm": 254,
+            "height_mm": 143,
+            "commands": ("MonitorScale DUMMY0 1.25",),
+            "expected": {
+                **valid_automatic,
+                "factor": "1.25",
+                "source": "override",
+                "reason": "exact-override",
+                "match_status": "unique",
+            },
+        },
+        {
+            "name": "valid-automatic",
+            "width_mm": 254,
+            "height_mm": 143,
+            "commands": (),
+            "expected": valid_automatic,
+        },
+        {
+            "name": "invalid-dpi-fallback",
+            "width_mm": 508,
+            "height_mm": 143,
+            "commands": ("MonitorScaleFallback 1.75",),
+            "expected": {
+                "factor": "1.75",
+                "source": "fallback",
+                "reason": "configured-fallback",
+                "match_status": "none",
+                "auto_status": "inconsistent",
+                "boundary": "none",
+            },
+        },
+        {
+            "name": "invalid-dpi-safe",
+            "width_mm": 508,
+            "height_mm": 143,
+            "commands": (),
+            "expected": {
+                "factor": "1",
+                "source": "safe",
+                "reason": "safe-default",
+                "match_status": "none",
+                "auto_status": "inconsistent",
+                "boundary": "none",
+            },
+        },
+        {
+            "name": "invalid-replacement-retained",
+            "width_mm": 254,
+            "height_mm": 143,
+            "commands": (
+                "MonitorScale DUMMY0 2.5",
+                "MonitorScale DUMMY0 1.30",
+            ),
+            "expected": {
+                **valid_automatic,
+                "factor": "2.5",
+                "source": "override",
+                "reason": "exact-override",
+                "match_status": "unique",
+            },
+            "diagnostics": (
+                "MonitorScale: scale factor is not canonical or supported",
+            ),
+        },
+        {
+            "name": "automatic-low-bound",
+            "width_mm": 960,
+            "height_mm": 540,
+            "commands": (),
+            "expected": {
+                **valid_automatic,
+                "factor": "1",
+                "reason": "automatic-bound-low",
+                "boundary": "low",
+            },
+        },
+        {
+            "name": "automatic-low-adjacent",
+            "width_mm": 508,
+            "height_mm": 286,
+            "commands": (),
+            "expected": {
+                **valid_automatic,
+                "factor": "1",
+            },
+        },
+        {
+            "name": "automatic-high-bound",
+            "width_mm": 98,
+            "height_mm": 55,
+            "commands": (),
+            "expected": {
+                **valid_automatic,
+                "factor": "4",
+                "reason": "automatic-bound-high",
+                "boundary": "high",
+            },
+        },
+        {
+            "name": "automatic-high-adjacent",
+            "width_mm": 127,
+            "height_mm": 71,
+            "commands": (),
+            "expected": {
+                **valid_automatic,
+                "factor": "4",
+            },
+        },
+        {
+            "name": "retained-unmatched-override",
+            "width_mm": 254,
+            "height_mm": 143,
+            "commands": ('MonitorScale "Dock \\"Left\\"" 3',),
+            "expected": valid_automatic,
+            "unmatched": ('Dock "Left"', "3"),
+            "diagnostics": (
+                'Scale override name="Dock \\"Left\\"" factor=3 '
+                "match_status=none state=retained-unmatched",
+            ),
+        },
+    )
+
+
+def run_xorg_dummy_scale_policy(options: argparse.Namespace) -> None:
+    """Prove all initial scale sources against authoritative Xorg facts."""
+    required_paths = {
+        "--fvwm": options.fvwm,
+        "--xorg-config": options.xorg_config,
+    }
+    for option_name, path in required_paths.items():
+        if path is None or not path.is_file():
+            raise ValueError(f"{option_name} must name an existing file")
+    if options.artifacts_dir is None:
+        raise ValueError("--artifacts-dir is required")
+    if options.backend != "xorg-dummy":
+        raise ValueError("scale-policy requires --backend=xorg-dummy")
+
+    fvwm_path = options.fvwm.resolve()
+    config_path = options.xorg_config.resolve()
+    artifact_dir = options.artifacts_dir.resolve()
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    runtime = HarnessRuntime(prefix="fvwm-xorg-dummy-scale-")
+    server: ManagedProcess | None = None
+    last_status: dict[str, object] | None = None
+    xrandr_text: str | None = None
+    active_error: BaseException | None = None
+    operations: list[dict[str, object]] = []
+    results: list[dict[str, object]] = []
+    scenario_metadata: dict[str, object] = {
+        "backend": "xorg-dummy",
+        "scenario": "scale-policy",
+    }
+    try:
+        server, display = start_xorg_dummy(
+            runtime, config_path, time.monotonic() + 10.0
+        )
+        wait_for_randr(runtime, display, time.monotonic() + 10.0)
+        run_required_xrandr(
+            runtime,
+            display,
+            ["--addmode", "DUMMY1", "1280x1024"],
+            "assign-dummy1-mode",
+            operations,
+        )
+
+        for case in scale_policy_cases():
+            case_name = str(case["name"])
+            width_mm = int(case["width_mm"])
+            height_mm = int(case["height_mm"])
+            run_required_xrandr(
+                runtime,
+                display,
+                [
+                    "--output", "DUMMY0", "--mode", "1920x1080",
+                    "--pos", "0x0", "--primary", "--set", "WIDTH_MM",
+                    str(width_mm), "--set", "HEIGHT_MM", str(height_mm),
+                    "--output", "DUMMY1", "--off", "--fb", "1920x1080",
+                    "--fbmm", f"{width_mm}x{height_mm}",
+                ],
+                f"{case_name}-physical-facts",
+                operations,
+            )
+            state = wait_for_authoritative_state(
+                runtime,
+                display,
+                f"{case_name} authoritative physical facts",
+                lambda value, width_mm=width_mm, height_mm=height_mm: (
+                    set(state_monitors(value)) == {"DUMMY0"}
+                    and state_monitors(value)["DUMMY0"]["width"] == 1920
+                    and state_monitors(value)["DUMMY0"]["height"] == 1080
+                    and state_monitors(value)["DUMMY0"]["mm_width"] == width_mm
+                    and state_monitors(value)["DUMMY0"]["mm_height"] == height_mm
+                ),
+                time.monotonic() + 5.0,
+                f"xrandr-scale-{case_name}",
+            )
+            xrandr_text = str(state["text"])
+            fvwm_log = runtime.root / f"fvwm-{case_name}.log"
+            commands = case["commands"]
+            if type(commands) is not tuple:
+                raise HarnessError(f"invalid command fixture for {case_name}")
+            arguments = fvwm_arguments(
+                fvwm_path, display, fvwm_log, extra_commands=commands
+            )
+            add_post_finalize_scale_inspection(arguments)
+            # Each fresh FVWM unlinks and recreates the same private FIFO.
+            # Remove the previous inode before polling so the collector cannot
+            # attach to stale scenario evidence during the next startup.
+            (runtime.root / "fvwm3.pipe").unlink(missing_ok=True)
+            process = runtime.start(
+                f"fvwm3-{case_name}",
+                arguments,
+                f"fvwm-{case_name}-process.log",
+            )
+            collector: StatusCollector | None = None
+            try:
+                collector = StatusCollector.open(
+                    runtime.root / "fvwm3.pipe",
+                    time.monotonic() + 10.0,
+                    process=process,
+                )
+                last_status = wait_for_status_monitors(
+                    collector,
+                    process,
+                    state_monitors(state),
+                    state_output_ids(state),
+                    1,
+                    time.monotonic() + 10.0,
+                )
+                assert_print_info_topology(
+                    fvwm_log,
+                    last_status,
+                    time.monotonic() + 5.0,
+                    process,
+                )
+                record = wait_for_print_info_scale(
+                    fvwm_log,
+                    "DUMMY0",
+                    time.monotonic() + 5.0,
+                    process,
+                )
+                expected = case["expected"]
+                if type(expected) is not dict:
+                    raise HarnessError(f"invalid expectation for {case_name}")
+                assert_print_info_scale(
+                    record,
+                    name="DUMMY0",
+                    factor=str(expected["factor"]),
+                    source=str(expected["source"]),
+                    reason=str(expected["reason"]),
+                    pixels=(1920, 1080),
+                    physical_mm=(width_mm, height_mm),
+                    match_status=str(expected["match_status"]),
+                    auto_status=str(expected["auto_status"]),
+                    boundary=str(expected["boundary"]),
+                )
+                for diagnostic in case.get("diagnostics", ()):
+                    assert_scale_diagnostic(
+                        fvwm_log,
+                        str(diagnostic),
+                        time.monotonic() + 5.0,
+                        process,
+                    )
+                unmatched = case.get("unmatched")
+                if unmatched is not None:
+                    unmatched_name, unmatched_factor = unmatched
+                    unmatched_record = wait_for_print_info_scale(
+                        fvwm_log,
+                        str(unmatched_name),
+                        time.monotonic() + 5.0,
+                        process,
+                        kind="override",
+                    )
+                    expected_unmatched = {
+                        "kind": "override",
+                        "name": unmatched_name,
+                        "factor": unmatched_factor,
+                        "match_status": "none",
+                        "state": "retained-unmatched",
+                    }
+                    if unmatched_record != expected_unmatched:
+                        raise HarnessError(
+                            f"unmatched override mismatch: {unmatched_record!r}"
+                        )
+                results.append(
+                    {
+                        "case": case_name,
+                        "commands": list(commands),
+                        "record": record,
+                        "server_monitor": state_monitors(state)["DUMMY0"],
+                    }
+                )
+            finally:
+                if collector is not None:
+                    collector.close()
+                process.close(time.monotonic() + 2.0)
+                if fvwm_log.is_file():
+                    (artifact_dir / f"{case_name}.log").write_bytes(
+                        fvwm_log.read_bytes()
+                    )
+
+        scenario_metadata.update({"operations": operations, "results": results})
+        (artifact_dir / "result.json").write_text(
+            json.dumps(scenario_metadata, indent=2, sort_keys=True) + "\n"
+        )
+    except BaseException as error:
+        active_error = error
+        scenario_metadata.update({"operations": operations, "results": results})
+        capture_failure(
+            artifact_dir,
+            error=error,
+            server_log=server.log_path if server is not None else None,
+            fvwm_log=None,
+            xrandr_text=xrandr_text,
+            last_status=last_status,
+            metadata=scenario_metadata,
+        )
+        raise
+    finally:
+        try:
+            runtime.close()
+        except BaseException as cleanup_error:
+            capture_failure(
+                artifact_dir,
+                error=cleanup_error,
+                server_log=server.log_path if server is not None else None,
+                fvwm_log=None,
+                xrandr_text=xrandr_text,
+                last_status=last_status,
+                metadata=scenario_metadata,
+            )
+            if active_error is None:
+                raise
+
+
 def run_xorg_dummy_topology(options: argparse.Namespace) -> None:
     """Prove authoritative facts, canonical equality, and bounded settling."""
     required_paths = {

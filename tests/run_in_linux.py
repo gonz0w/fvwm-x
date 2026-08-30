@@ -39,6 +39,8 @@ INSTALL_LIVE_X = (
     + ' && exec "$@"'
 )
 SYNC_SOURCE = (
+    "find /workspace -mindepth 1 -maxdepth 1 ! -name builddir "
+    "-exec rm -rf -- {} + && "
     "tar -C /source --exclude=./builddir --exclude=./.git -cf - . "
     "| tar -C /workspace -xf - && "
 )
@@ -106,6 +108,9 @@ def self_test() -> None:
     assert darwin[darwin.index("--workdir") + 1] == "/workspace"
     assert f"{repository}:/source:ro" in darwin
     assert any(argument.startswith("fvwm3-linux-") for argument in darwin)
+    container_script = darwin[darwin.index("-ec") + 1]
+    assert container_script.index("find /workspace") < container_script.index("tar -C")
+    assert "! -name builddir" in container_script
     assert darwin[-len(caller_argv) :] == caller_argv
     assert IMAGE in darwin
 

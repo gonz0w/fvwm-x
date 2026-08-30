@@ -15,6 +15,8 @@
 
 #include "config.h"
 
+#include <X11/extensions/Xrandr.h>
+#include <X11/extensions/randr.h>
 #include <ctype.h>
 #include <err.h>
 #include <errno.h>
@@ -23,76 +25,81 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <X11/extensions/randr.h>
-#include <X11/extensions/Xrandr.h>
 
-#include "defaults.h"
 #include "FEvent.h"
 #include "FScreen.h"
-#include "fvwmlib.h"
-#include "log.h"
 #include "Parse.h"
 #include "PictureBase.h"
+#include "defaults.h"
+#include "fvwmlib.h"
+#include "log.h"
 #include "queue.h"
 #include "strtonum.h"
 
 #define GLOBAL_SCREEN_NAME "_global"
 
 /* In fact, only corners matter -- there will never be GRAV_NONE */
-enum {GRAV_POS = 0, GRAV_NONE = 1, GRAV_NEG = 2};
-static int grav_matrix[3][3] =
+enum
 {
-	{ NorthWestGravity, NorthGravity,  NorthEastGravity },
-	{ WestGravity,      CenterGravity, EastGravity },
-	{ SouthWestGravity, SouthGravity,  SouthEastGravity }
+	GRAV_POS  = 0,
+	GRAV_NONE = 1,
+	GRAV_NEG  = 2
 };
+static int grav_matrix[3][3] = {
+    {NorthWestGravity, NorthGravity, NorthEastGravity},
+    {WestGravity, CenterGravity, EastGravity},
+    {SouthWestGravity, SouthGravity, SouthEastGravity}};
 #define DEFAULT_GRAVITY NorthWestGravity
 
-static Display *disp;
-static bool		 is_randr_present;
-static bool		 randr_initialised;
+static Display			 *disp;
+static bool			  is_randr_present;
+static bool			  randr_initialised;
+static monitor_topology_snapshot *committed_topology;
 
-static void		 scan_screens(Display *);
-static struct monitor	*monitor_new(const char *);
-static void		 monitor_mark_new(struct monitor *);
-static void		 monitor_mark_inlist(const char *);
-static bool		 monitor_mark_changed(struct monitor *, XRRMonitorInfo *);
-static struct monitor	*monitor_by_name(const char *);
-static void		 monitor_set_coords(struct monitor *, XRRMonitorInfo);
-static void		 monitor_assign_number(void);
-static void		 monitor_add(XRRMonitorInfo *);
+static struct monitor *
+monitor_new(const char *);
+static void
+monitor_mark_new(struct monitor *);
+static struct monitor *
+monitor_by_name(const char *);
+static void
+monitor_set_topology_coords(struct monitor *, const monitor_topology_monitor *);
+static void
+monitor_assign_number(void);
+static void
+legacy_reconcile_unstaged(const monitor_topology_snapshot *, struct monitors *,
+    struct screen_infos *, bool);
 
-enum monitor_tracking monitor_mode;
-bool			 is_tracking_shared;
-struct screen_infos	 screen_info_q, screen_info_q_temp;
-struct monitors		 monitor_q;
-int randr_event;
-const char *prev_focused_monitor;
-static struct monitor	*monitor_global = NULL;
+enum monitor_tracking  monitor_mode;
+bool		       is_tracking_shared;
+struct screen_infos    screen_info_q, screen_info_q_temp;
+struct monitors	       monitor_q;
+int		       randr_event;
+const char	      *prev_focused_monitor;
+static struct monitor *monitor_global = NULL;
 
 RB_GENERATE(monitors, monitor, entry, monitor_compare);
 
-static void GetMouseXY(XEvent *eventp, int *x, int *y)
+static void
+GetMouseXY(XEvent *eventp, int *x, int *y)
 {
 	XEvent e;
 
-	if (eventp == NULL)
-	{
+	if (eventp == NULL) {
 		eventp = &e;
 		e.type = 0;
 	}
-	fev_get_evpos_or_query(
-		disp, DefaultRootWindow(disp), eventp, x, y);
+	fev_get_evpos_or_query(disp, DefaultRootWindow(disp), eventp, x, y);
 }
 
 static struct monitor *
 monitor_new(const char *name)
 {
-	struct monitor	*m;
+	struct monitor *m;
 
-	m = fxcalloc(1, sizeof *m);
-	m->flags = 0;
-	m->si = screen_info_new();
+	m	    = fxcalloc(1, sizeof *m);
+	m->flags    = 0;
+	m->si	    = screen_info_new();
 	m->si->name = fxstrdup(name);
 
 	return (m);
@@ -101,34 +108,35 @@ monitor_new(const char *name)
 static void
 monitor_scan_edges(struct monitor *m)
 {
-	struct monitor	*m_loop;
-	int64_t		 m_right;
-	int64_t		 m_bottom;
+	struct monitor *m_loop;
+	int64_t		m_right;
+	int64_t		m_bottom;
 
 	if (m == NULL)
 		return;
 
 	m->edge.top = m->edge.bottom = m->edge.left = m->edge.right =
-		MONITOR_OUTSIDE_EDGE;
+	    MONITOR_OUTSIDE_EDGE;
 	if (m->flags & MONITOR_DISABLED)
 		return;
-	m_right = (int64_t)m->si->x + m->si->w;
+	m_right	 = (int64_t)m->si->x + m->si->w;
 	m_bottom = (int64_t)m->si->y + m->si->h;
 
-	RB_FOREACH(m_loop, monitors, &monitor_q) {
+	RB_FOREACH(m_loop, monitors, &monitor_q)
+	{
 		int64_t loop_right;
 		int64_t loop_bottom;
-		bool horizontal_overlap;
-		bool vertical_overlap;
+		bool	horizontal_overlap;
+		bool	vertical_overlap;
 
 		if (m_loop == m || (m_loop->flags & MONITOR_DISABLED))
 			continue;
-		loop_right = (int64_t)m_loop->si->x + m_loop->si->w;
+		loop_right  = (int64_t)m_loop->si->x + m_loop->si->w;
 		loop_bottom = (int64_t)m_loop->si->y + m_loop->si->h;
 		horizontal_overlap =
-			m->si->x < loop_right && m_loop->si->x < m_right;
+		    m->si->x < loop_right && m_loop->si->x < m_right;
 		vertical_overlap =
-			m->si->y < loop_bottom && m_loop->si->y < m_bottom;
+		    m->si->y < loop_bottom && m_loop->si->y < m_bottom;
 
 		/* Top Edge */
 		if (m->si->y == loop_bottom && horizontal_overlap)
@@ -148,9 +156,10 @@ monitor_scan_edges(struct monitor *m)
 struct monitor *
 monitor_by_number(int n)
 {
-	struct monitor	*m_loop;
+	struct monitor *m_loop;
 
-	RB_FOREACH(m_loop, monitors, &monitor_q) {
+	RB_FOREACH(m_loop, monitors, &monitor_q)
+	{
 		if (m_loop->number == n)
 			return (m_loop);
 	}
@@ -184,7 +193,7 @@ monitor_refresh_global(void)
 struct screen_info *
 screen_info_new(void)
 {
-	struct screen_info	*si;
+	struct screen_info *si;
 
 	si = fxcalloc(1, sizeof *si);
 
@@ -194,9 +203,10 @@ screen_info_new(void)
 struct screen_info *
 screen_info_by_name(const char *name)
 {
-	struct screen_info	*si;
+	struct screen_info *si;
 
-	TAILQ_FOREACH(si, &screen_info_q, entry) {
+	TAILQ_FOREACH(si, &screen_info_q, entry)
+	{
 		if (strcmp(si->name, name) == 0)
 			return (si);
 	}
@@ -215,10 +225,11 @@ monitor_get_global(void)
 struct monitor *
 monitor_get_prev(void)
 {
-	struct monitor	*m, *mret = NULL;
-	struct monitor  *this = monitor_get_current();
+	struct monitor *m, *mret = NULL;
+	struct monitor *this = monitor_get_current();
 
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		if (m == this)
 			continue;
 		if (m->is_prev) {
@@ -234,16 +245,16 @@ monitor_get_prev(void)
 struct monitor *
 monitor_get_current(void)
 {
-	int		 JunkX = 0, JunkY = 0, x, y;
-	Window		 JunkRoot, JunkChild;
-	unsigned int	 JunkMask;
+	int		   JunkX = 0, JunkY = 0, x, y;
+	Window		   JunkRoot, JunkChild;
+	unsigned int	   JunkMask;
 	struct monitor	  *mon;
 	static const char *cur_mon;
 
 	prev_focused_monitor = cur_mon;
 
 	FQueryPointer(disp, DefaultRootWindow(disp), &JunkRoot, &JunkChild,
-			&JunkX, &JunkY, &x, &y, &JunkMask);
+	    &JunkX, &JunkY, &x, &y, &JunkMask);
 
 	mon = FindScreenOfXY(x, y);
 
@@ -256,12 +267,11 @@ monitor_get_current(void)
 struct monitor *
 monitor_resolve_name(const char *scr)
 {
-	struct monitor	*m = NULL;
-	int		 pos = -1;
-	const char	*errstr;
+	struct monitor *m   = NULL;
+	int		pos = -1;
+	const char     *errstr;
 
-	if (scr == NULL)
-	{
+	if (scr == NULL) {
 		return NULL;
 	}
 
@@ -294,16 +304,19 @@ monitor_resolve_name(const char *scr)
 static struct monitor *
 monitor_by_name(const char *name)
 {
-	struct monitor	*m, *mret;
+	struct monitor *m, *mret;
 
 	if (name == NULL) {
-		fvwm_debug(__func__, "%s: name is NULL; shouldn't happen.  "
-			   "Returning current monitor\n", __func__);
+		fvwm_debug(__func__,
+		    "%s: name is NULL; shouldn't happen.  "
+		    "Returning current monitor\n",
+		    __func__);
 		return (monitor_get_current());
 	}
 
 	mret = NULL;
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		if (strcmp(m->si->name, name) == 0) {
 			mret = m;
 			break;
@@ -316,19 +329,21 @@ monitor_by_name(const char *name)
 struct monitor *
 monitor_by_output(int output)
 {
-	struct monitor	*m, *mret = NULL;
+	struct monitor *m, *mret = NULL;
 
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		if (m->si->rr_output == output) {
-		       mret = m;
-		       break;
+			mret = m;
+			break;
 		}
 	}
 
 	if (mret == NULL) {
 		fvwm_debug(__func__,
-			   "%s: couldn't find monitor with output '%d', "
-			   "returning first output.\n", __func__, output);
+		    "%s: couldn't find monitor with output '%d', "
+		    "returning first output.\n",
+		    __func__, output);
 		mret = RB_MIN(monitors, &monitor_q);
 	}
 
@@ -338,9 +353,10 @@ monitor_by_output(int output)
 struct monitor *
 monitor_by_primary(void)
 {
-	struct monitor	*m = NULL, *m_loop;
+	struct monitor *m = NULL, *m_loop;
 
-	RB_FOREACH(m_loop, monitors, &monitor_q) {
+	RB_FOREACH(m_loop, monitors, &monitor_q)
+	{
 		if (m_loop->flags & MONITOR_PRIMARY) {
 			m = m_loop;
 			break;
@@ -353,9 +369,10 @@ monitor_by_primary(void)
 struct monitor *
 monitor_by_last_primary(void)
 {
-	struct monitor	*m = NULL, *m_loop;
+	struct monitor *m = NULL, *m_loop;
 
-	RB_FOREACH(m_loop, monitors, &monitor_q) {
+	RB_FOREACH(m_loop, monitors, &monitor_q)
+	{
 		if (m_loop->was_primary && !(m_loop->flags & MONITOR_PRIMARY)) {
 			m = m_loop;
 			break;
@@ -369,7 +386,7 @@ static void
 monitor_check_primary(void)
 {
 	if (monitor_by_primary() == NULL) {
-		struct monitor	*m;
+		struct monitor *m;
 
 		m = RB_MIN(monitors, &monitor_q);
 		m->flags |= MONITOR_PRIMARY;
@@ -391,47 +408,246 @@ monitor_get_all_heights(void)
 void
 monitor_assign_virtual(struct monitor *ref)
 {
-	struct monitor	*m;
+	struct monitor *m;
 
 	if (monitor_mode == MONITOR_TRACKING_M || is_tracking_shared)
 		return;
 
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		if (m == ref)
 			continue;
 
 		memcpy(
-			&m->virtual_scr, &ref->virtual_scr,
-			sizeof(m->virtual_scr));
+		    &m->virtual_scr, &ref->virtual_scr, sizeof(m->virtual_scr));
 	}
 }
-
 
 void
 FScreenSelect(Display *dpy)
 {
 	XRRSelectInput(dpy, DefaultRootWindow(dpy),
-		RRScreenChangeNotifyMask | RROutputChangeNotifyMask);
+	    RRScreenChangeNotifyMask | RROutputChangeNotifyMask);
+}
+
+static void *
+topology_malloc(void *context, size_t size)
+{
+	return malloc(size);
+}
+
+static void *
+topology_calloc(void *context, size_t count, size_t size)
+{
+	return calloc(count, size);
+}
+
+static void
+topology_free(void *context, void *pointer)
+{
+	free(pointer);
+}
+
+static XRRMonitorInfo *
+randr_get_monitors(
+    void *context, Display *dpy, Window root, Bool active, int *count)
+{
+	return XRRGetMonitors(dpy, root, active, count);
+}
+
+static char *
+randr_get_atom_name(void *context, Display *dpy, Atom atom)
+{
+	return XGetAtomName(dpy, atom);
+}
+
+static void
+randr_free_atom_name(void *context, char *name)
+{
+	XFree(name);
+}
+
+static void
+randr_free_monitors(void *context, XRRMonitorInfo *monitors)
+{
+	XRRFreeMonitors(monitors);
+}
+
+static const fscreen_randr_adapter real_randr_adapter = {
+    .context	    = NULL,
+    .get_monitors   = randr_get_monitors,
+    .get_atom_name  = randr_get_atom_name,
+    .free_atom_name = randr_free_atom_name,
+    .free_monitors  = randr_free_monitors,
+    .topology_allocator =
+	{
+	    .context   = NULL,
+	    .malloc_fn = topology_malloc,
+	    .calloc_fn = topology_calloc,
+	    .free_fn   = topology_free,
+	},
+};
+
+const monitor_topology_snapshot *
+FScreenGetTopologySnapshot(void)
+{
+	return committed_topology;
+}
+
+fscreen_topology_refresh_result
+fscreen_refresh_topology_with_adapters(Display *dpy, Window root,
+    monitor_topology_snapshot **committed, struct monitors *legacy_monitors,
+    struct screen_infos		   *legacy_screens,
+    const fscreen_randr_adapter	   *randr_adapter,
+    const fscreen_legacy_allocator *legacy_allocator)
+{
+	monitor_topology_monitor       *source_monitors = NULL;
+	monitor_topology_snapshot      *candidate	= NULL;
+	monitor_topology_publish_result publish_result;
+	XRRMonitorInfo		       *randr_monitors = NULL;
+	int				monitor_count  = -1;
+	int				i;
+	bool				initial;
+
+	(void)legacy_allocator;
+	if (committed == NULL || randr_adapter == NULL
+	    || randr_adapter->get_monitors == NULL
+	    || randr_adapter->get_atom_name == NULL
+	    || randr_adapter->free_atom_name == NULL
+	    || randr_adapter->free_monitors == NULL
+	    || randr_adapter->topology_allocator.malloc_fn == NULL
+	    || randr_adapter->topology_allocator.calloc_fn == NULL
+	    || randr_adapter->topology_allocator.free_fn == NULL) {
+		fvwm_debug(__func__, "invalid topology adapter");
+		return FSCREEN_TOPOLOGY_REFRESH_FAILED;
+	}
+	initial	       = *committed == NULL;
+	randr_monitors = randr_adapter->get_monitors(
+	    randr_adapter->context, dpy, root, True, &monitor_count);
+	if (randr_monitors == NULL || monitor_count <= 0
+	    || (size_t)monitor_count > SIZE_MAX / sizeof(*source_monitors)) {
+		fvwm_debug(__func__,
+		    monitor_count == -1
+			? "RandR monitor query failed; retaining last topology"
+			: "RandR returned no valid active topology; retaining "
+			  "last topology");
+		goto fail;
+	}
+	source_monitors = randr_adapter->topology_allocator.calloc_fn(
+	    randr_adapter->topology_allocator.context, (size_t)monitor_count,
+	    sizeof(*source_monitors));
+	if (source_monitors == NULL) {
+		fvwm_debug(__func__, "could not allocate topology source "
+				     "facts; retaining last topology");
+		goto fail;
+	}
+	for (i = 0; i < monitor_count; i++) {
+		XRRMonitorInfo		 *source = &randr_monitors[i];
+		monitor_topology_monitor *target = &source_monitors[i];
+
+		if (source->name == None || source->noutput < 0
+		    || (source->noutput > 0 && source->outputs == NULL)) {
+			fvwm_debug(__func__,
+			    "RandR monitor facts are incomplete; "
+			    "retaining last topology");
+			goto fail;
+		}
+		target->name = randr_adapter->get_atom_name(
+		    randr_adapter->context, dpy, source->name);
+		if (target->name == NULL) {
+			fvwm_debug(__func__, "could not resolve RandR monitor "
+					     "name; retaining last topology");
+			goto fail;
+		}
+		target->name_atom    = source->name;
+		target->x	     = source->x;
+		target->y	     = source->y;
+		target->width	     = source->width;
+		target->height	     = source->height;
+		target->mm_width     = source->mwidth;
+		target->mm_height    = source->mheight;
+		target->primary	     = source->primary ? True : False;
+		target->outputs	     = source->outputs;
+		target->output_count = source->noutput;
+	}
+	candidate = monitor_topology_snapshot_create(
+	    source_monitors, monitor_count, &randr_adapter->topology_allocator);
+	if (candidate == NULL) {
+		fvwm_debug(__func__, "topology copy or validation failed; "
+				     "retaining last topology");
+		goto fail;
+	}
+	for (i = 0; i < monitor_count; i++) {
+		randr_adapter->free_atom_name(
+		    randr_adapter->context, source_monitors[i].name);
+	}
+	randr_adapter->topology_allocator.free_fn(
+	    randr_adapter->topology_allocator.context, source_monitors);
+	randr_adapter->free_monitors(randr_adapter->context, randr_monitors);
+
+	publish_result =
+	    monitor_topology_snapshot_publish(committed, candidate);
+	if (publish_result == MONITOR_TOPOLOGY_PUBLISH_INITIAL
+	    || publish_result == MONITOR_TOPOLOGY_PUBLISH_CHANGED) {
+		legacy_reconcile_unstaged(
+		    *committed, legacy_monitors, legacy_screens, initial);
+		return FSCREEN_TOPOLOGY_REFRESH_CHANGED;
+	}
+	if (publish_result == MONITOR_TOPOLOGY_PUBLISH_UNCHANGED) {
+		return FSCREEN_TOPOLOGY_REFRESH_UNCHANGED;
+	}
+	fvwm_debug(
+	    __func__, "topology publication failed; retaining last topology");
+	return FSCREEN_TOPOLOGY_REFRESH_FAILED;
+
+fail:
+	if (source_monitors != NULL) {
+		for (i = 0; i < monitor_count; i++) {
+			if (source_monitors[i].name != NULL) {
+				randr_adapter->free_atom_name(
+				    randr_adapter->context,
+				    source_monitors[i].name);
+			}
+		}
+		randr_adapter->topology_allocator.free_fn(
+		    randr_adapter->topology_allocator.context, source_monitors);
+	}
+	if (randr_monitors != NULL) {
+		randr_adapter->free_monitors(
+		    randr_adapter->context, randr_monitors);
+	}
+	return FSCREEN_TOPOLOGY_REFRESH_FAILED;
+}
+
+fscreen_topology_refresh_result
+FScreenRefreshTopology(Display *dpy)
+{
+	return fscreen_refresh_topology_with_adapters(dpy,
+	    RootWindow(dpy, DefaultScreen(dpy)), &committed_topology,
+	    &monitor_q, &screen_info_q, &real_randr_adapter, NULL);
 }
 
 void
 monitor_output_change(Display *dpy, XRRScreenChangeNotifyEvent *e)
 {
-	scan_screens(dpy);
+	(void)FScreenRefreshTopology(dpy);
 }
 
 static void
-monitor_set_coords(struct monitor *m, XRRMonitorInfo rrm)
+monitor_set_topology_coords(
+    struct monitor *m, const monitor_topology_monitor *topology_monitor)
 {
-	if (m == NULL)
+	if (m == NULL || topology_monitor == NULL)
 		return;
 
-	m->si->x = rrm.x;
-	m->si->y = rrm.y;
-	m->si->w = rrm.width;
-	m->si->h = rrm.height;
-	m->si->rr_output = rrm.noutput > 0 ? *rrm.outputs : None;
-	if (rrm.primary > 0) {
+	m->si->x	 = topology_monitor->x;
+	m->si->y	 = topology_monitor->y;
+	m->si->w	 = topology_monitor->width;
+	m->si->h	 = topology_monitor->height;
+	m->si->rr_output = topology_monitor->output_count > 0
+			       ? topology_monitor->outputs[0]
+			       : None;
+	if (topology_monitor->primary) {
 		m->flags |= MONITOR_PRIMARY;
 		m->was_primary = false;
 	} else {
@@ -445,10 +661,11 @@ monitor_set_coords(struct monitor *m, XRRMonitorInfo rrm)
 static void
 monitor_assign_number(void)
 {
-	struct monitor	*m;
-	int		 n = 0;
+	struct monitor *m;
+	int		n = 0;
 
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		if (m->flags & MONITOR_DISABLED)
 			continue;
 		m->number = n++;
@@ -467,20 +684,19 @@ monitor_compare(struct monitor *a, struct monitor *b)
 	if (!adisable && bdisable)
 		return -1;
 
-	int coord_comp = (a->si->y == b->si->y) ?
-		(a->si->x - b->si->x) : (a->si->y - b->si->y);
+	int coord_comp = (a->si->y == b->si->y) ? (a->si->x - b->si->x)
+						: (a->si->y - b->si->y);
 
 	if (coord_comp != 0)
 		return coord_comp;
 
-	int size_comp = (a->si->w == b->si->w) ?
-		(a->si->h - b->si->h) : (a->si->w - b->si->w);
+	int size_comp = (a->si->w == b->si->w) ? (a->si->h - b->si->h)
+					       : (a->si->w - b->si->w);
 
 	if (size_comp != 0)
 		return size_comp;
 
 	return strcmp(a->si->name, b->si->name);
-
 }
 
 static void
@@ -492,12 +708,12 @@ monitor_mark_new(struct monitor *m)
 	m->flags |= MONITOR_NEW;
 
 	memset(&m->virtual_scr, 0, sizeof(m->virtual_scr));
-	m->virtual_scr.edge_thickness = 2;
+	m->virtual_scr.edge_thickness	   = 2;
 	m->virtual_scr.last_edge_thickness = 2;
 
 	memset(&m->ewmhc, 0, sizeof(m->ewmhc));
-	m->Desktops = NULL;
-	m->is_prev = false;
+	m->Desktops    = NULL;
+	m->is_prev     = false;
 	m->was_primary = false;
 
 	TAILQ_INSERT_TAIL(&screen_info_q, m->si, entry);
@@ -506,206 +722,102 @@ monitor_mark_new(struct monitor *m)
 }
 
 static void
-monitor_add(XRRMonitorInfo *rrm)
+legacy_reconcile_unstaged(const monitor_topology_snapshot *snapshot,
+    struct monitors *legacy_monitors, struct screen_infos *legacy_screens,
+    bool initial)
 {
-	struct monitor	*m = NULL;
-	char		*name = NULL;
+	struct monitor *monitor;
+	struct monitor *next;
+	int		i;
 
-	if ((name = XGetAtomName(disp, rrm->name)) == NULL) {
-		fvwm_debug(__func__, "Tried detecting monitor "
-		    "with output '%d' but it has no name.  Skipping.",
-		    (int)*rrm->outputs);
+	if (snapshot == NULL || legacy_monitors == NULL
+	    || legacy_screens == NULL) {
 		return;
 	}
-	m = monitor_new(name);
-	monitor_set_coords(m, *rrm);
-	monitor_mark_new(m);
-
-	XFree(name);
-
-	RB_INSERT(monitors, &monitor_q, m);
-}
-
-static bool
-monitor_mark_changed(struct monitor *m, XRRMonitorInfo *rrm)
-{
-	bool is_primary;
-	RROutput output;
-
-	if (m == NULL || rrm == NULL)
-		return (false);
-	is_primary = (m->flags & MONITOR_PRIMARY) != 0;
-	output = rrm->noutput > 0 ? *rrm->outputs : None;
-
-	if (m->si->x != rrm->x ||
-	    m->si->y != rrm->y ||
-	    m->si->w != rrm->width ||
-	    m->si->h != rrm->height ||
-	    m->si->rr_output != output ||
-	    is_primary != (rrm->primary != 0)) {
-		m->flags |= MONITOR_CHANGED;
-
-		fvwm_debug(__func__, "%s: x: %d, y: %d, w: %d, h: %d "
-			"comp: x: %d, y: %d, w: %d, h: %d\n",
-			m->si->name, m->si->x, m->si->y, m->si->w, m->si->h,
-			rrm->x, rrm->y, rrm->width, rrm->height);
-
-		monitor_set_coords(m, *rrm);
-
-		return (true);
+	RB_FOREACH(monitor, monitors, legacy_monitors)
+	{
+		monitor->flags &=
+		    ~(MONITOR_NEW | MONITOR_CHANGED | MONITOR_FOUND);
 	}
-	return (false);
-}
+	for (i = 0; i < snapshot->monitor_count; i++) {
+		const monitor_topology_monitor *fact = &snapshot->monitors[i];
+		bool				changed;
 
-static void
-monitor_mark_inlist(const char *name)
-{
-	struct monitor	 *m = NULL;
-
-	if (name == NULL)
-		return;
-
-	RB_FOREACH(m, monitors, &monitor_q) {
-		if (strcmp(m->si->name, name) == 0) {
-			m->flags |= MONITOR_FOUND;
-			break;
+		monitor = NULL;
+		RB_FOREACH(monitor, monitors, legacy_monitors)
+		{
+			if (strcmp(monitor->si->name, fact->name) == 0) {
+				break;
+			}
 		}
-	}
-}
-
-static void
-scan_screens(Display *dpy)
-{
-	struct monitor		*m = NULL, *m1 = NULL;
-	XRRMonitorInfo		*rrm;
-	char			*name = NULL;
-    	int			 i, n = 0;
-	Window			 root = RootWindow(dpy, DefaultScreen(dpy));
-
-	RB_FOREACH(m, monitors, &monitor_q) {
-		m->flags &= ~(MONITOR_NEW|MONITOR_CHANGED);
-	}
-
-	rrm = XRRGetMonitors(dpy, root, true, &n);
-	if (n <= 0 && (!randr_initialised && monitor_get_count() == 0)) {
-		fvwm_debug(__func__, "get monitors failed\n");
-		exit(101);
-	}
-
-	/*
-	 * 1. Handle the case where we have no monitors at all.  This is going
-	 * to happen at init time.  In such cases, we can say that the
-	 * monitor_q is empty.
-	 *
-	 * To handle this case, we create all entries, marking them as new.
-	 */
-	if (!randr_initialised && monitor_get_count() == 0) {
-		fvwm_debug(__func__, "Case 1: Add new monitors");
-		for (i = 0; i < n; i++) {
-			monitor_add(&rrm[i]);
-		}
-		goto out;
-	}
-
-	/*
-	 * 2. Handle the case where an event has occurred for a monitor.  It
-	 * could be that:
-	 *   - It's a new monitor.
-	 *   - It's an existing monitor (position changed)
-	 *   - It's an existing monitor which has been toggled on or off.
-	 *
-	 * In such cases, we must detect if the monitor exists and what state it
-	 * is in.  Regardless of how the monitor state has changed, we flag all
-	 * monitors reported by XRRGetMonitors with flag MONITOR_FOUND, which we
-	 * use below to determine its new state.
-	 */
-        fvwm_debug(__func__, "Case 2: processing %d monitors", n);
-	for (i = 0; i < n; i++) {
-		if ((name = XGetAtomName(dpy, rrm[i].name)) == NULL) {
-			fvwm_debug(__func__, "NAME WAS NULL!");
+		if (monitor == NULL) {
+			monitor = monitor_new(fact->name);
+			monitor_set_topology_coords(monitor, fact);
+			monitor_mark_new(monitor);
+			monitor->flags |= MONITOR_FOUND;
+			monitor->emit = initial ? 0 : MONITOR_ENABLED;
+			RB_INSERT(monitors, legacy_monitors, monitor);
 			continue;
 		}
-		if ((m = monitor_by_name(name)) == NULL) {
-			/* Case 2.1 -- new monitor. */
-			fvwm_debug(__func__, "Case 2.1: new monitor (%s)",
-			    name);
-			monitor_add(&rrm[i]);
+		changed =
+		    monitor->si->x != fact->x || monitor->si->y != fact->y
+		    || monitor->si->w != fact->width
+		    || monitor->si->h != fact->height
+		    || monitor->si->rr_output
+			   != (fact->output_count > 0 ? fact->outputs[0] : None)
+		    || ((monitor->flags & MONITOR_PRIMARY) != 0)
+			   != (fact->primary != False);
+		RB_REMOVE(monitors, legacy_monitors, monitor);
+		monitor->flags |= MONITOR_FOUND;
+		if (monitor->flags & MONITOR_DISABLED) {
+			monitor->emit = MONITOR_ENABLED;
+		} else if (changed) {
+			monitor->flags |= MONITOR_CHANGED;
+			monitor->emit = MONITOR_CHANGED;
+		} else {
+			monitor->emit = 0;
 		}
-
-		/* Flag monitor as MONITOR_FOUND. */
-		monitor_mark_inlist(name);
-
-		if (monitor_mark_changed(m, &rrm[i])) {
-			fvwm_debug(__func__, "Case 2.2: %s changed", m->si->name);
-		}
-
-		XFree(name);
+		monitor->flags &= ~MONITOR_DISABLED;
+		monitor_set_topology_coords(monitor, fact);
+		RB_INSERT(monitors, legacy_monitors, monitor);
 	}
-
-out:
-	/* Update monitor order after changes.  If a monitor is disabled, its
-	 * key in the rbtree also changes.
-	 */
-	RB_FOREACH_SAFE(m, monitors, &monitor_q, m1) {
-		int  flags = m->flags;
-		bool found = m->flags & MONITOR_FOUND;
-		bool should_update = false;
-
-		/* Check for monitor connection status -- whether a monitor is
-		 * active or not.  Clearing the MONITOR_FOUND flag is
-		 * important here so that the monitor is reconsidered again.
-		 */
-		if (found && (flags & MONITOR_NEW)) {
-			m->flags &= ~MONITOR_DISABLED;
-			m->emit   = MONITOR_ENABLED;
-		} else if (found && (flags & MONITOR_CHANGED)) {
-			m->flags &= ~MONITOR_DISABLED;
-			m->emit   = MONITOR_CHANGED;
-			should_update = true;
-		} else if (found && (flags & MONITOR_DISABLED)) {
-			m->flags &= ~MONITOR_DISABLED;
-			m->emit   = MONITOR_ENABLED;
-		} else if (found && (! (flags & MONITOR_DISABLED))) {
-			m->emit   = 0;
-		} else if (!found && (flags & MONITOR_NEW)) {
-			/* This case happens if !randr_initialised. */
-			m->emit   = 0;
-		} else if (!found && (flags & MONITOR_DISABLED)) {
-			m->emit   = 0;
-		} else /* (!found && (! (flags & MONITOR_DISABLED))) */ {
-			m->flags |= MONITOR_DISABLED;
-			m->emit   = MONITOR_DISABLED;
-			should_update = true;
+	RB_FOREACH_SAFE(monitor, monitors, legacy_monitors, next)
+	{
+		if (monitor->flags & MONITOR_FOUND) {
+			monitor->flags &= ~MONITOR_FOUND;
+			continue;
 		}
-		m->flags &= ~MONITOR_FOUND;
-
-		if (should_update) {
-			RB_REMOVE(monitors, &monitor_q, m);
-			RB_INSERT(monitors, &monitor_q, m);
+		if (!(monitor->flags & MONITOR_DISABLED)) {
+			RB_REMOVE(monitors, legacy_monitors, monitor);
+			monitor->flags |= MONITOR_DISABLED;
+			monitor->flags &= ~MONITOR_PRIMARY;
+			monitor->emit = MONITOR_DISABLED;
+			RB_INSERT(monitors, legacy_monitors, monitor);
+		} else {
+			monitor->emit = 0;
 		}
 	}
-	/* Now that all monitors have been inserted, assign them a number from
-	 * 0 -> n so that they can be referenced in order.
-	 */
 	monitor_assign_number();
 	monitor_check_primary();
-	RB_FOREACH(m, monitors, &monitor_q)
-		monitor_scan_edges(m);
-	XRRFreeMonitors(rrm);
+	RB_FOREACH(monitor, monitors, legacy_monitors)
+	{
+		monitor_scan_edges(monitor);
+	}
 }
 
-void FScreenInit(Display *dpy)
+void
+FScreenInit(Display *dpy)
 {
-	XRRScreenResources	*res = NULL;
-	struct monitor		*m;
-	int			 err_base = 0, major, minor;
+	XRRScreenResources *res = NULL;
+	struct monitor	   *m;
+	int		    err_base = 0, major, minor;
 
 	if (randr_initialised)
 		return;
 
-	disp = dpy;
-	randr_event = 0;
-	is_randr_present = false;
+	disp		  = dpy;
+	randr_event	  = 0;
+	is_randr_present  = false;
 	randr_initialised = false;
 
 	if (RB_EMPTY(&monitor_q))
@@ -714,8 +826,8 @@ void FScreenInit(Display *dpy)
 	if (TAILQ_EMPTY(&screen_info_q))
 		TAILQ_INIT(&screen_info_q);
 
-	if (!XRRQueryExtension(dpy, &randr_event, &err_base) ||
-	    !XRRQueryVersion (dpy, &major, &minor)) {
+	if (!XRRQueryExtension(dpy, &randr_event, &err_base)
+	    || !XRRQueryVersion(dpy, &major, &minor)) {
 		fvwm_debug(__func__, "RandR not present");
 		goto randr_fail;
 	}
@@ -723,11 +835,10 @@ void FScreenInit(Display *dpy)
 	if (major > 1 || (major == 1 && minor >= 5))
 		is_randr_present = true;
 
-
 	if (!is_randr_present) {
 		/* Something went wrong. */
 		fvwm_debug(__func__, "Couldn't initialise XRandR: %s\n",
-			   strerror(errno));
+		    strerror(errno));
 		goto randr_fail;
 	}
 
@@ -743,12 +854,17 @@ void FScreenInit(Display *dpy)
 	}
 	XRRFreeScreenResources(res);
 
-	scan_screens(dpy);
-	randr_initialised = true;
+	if (FScreenRefreshTopology(dpy) != FSCREEN_TOPOLOGY_REFRESH_CHANGED
+	    || committed_topology == NULL || committed_topology->epoch != 1) {
+		fvwm_debug(__func__,
+		    "Unable to commit initial RandR monitor topology");
+		goto randr_fail;
+	}
+	randr_initialised  = true;
 	is_tracking_shared = false;
 
 	RB_FOREACH(m, monitors, &monitor_q)
-		monitor_scan_edges(m);
+	monitor_scan_edges(m);
 
 	return;
 
@@ -760,14 +876,15 @@ randr_fail:
 void
 monitor_refresh_module(Display *dpy)
 {
-	struct monitor	*m = NULL;
+	struct monitor *m = NULL;
 
 	RB_FOREACH(m, monitors, &monitor_q)
-		m->flags &= ~MONITOR_NEW;
+	m->flags &= ~MONITOR_NEW;
 
-	scan_screens(dpy);
+	(void)FScreenRefreshTopology(dpy);
 
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		if (m->flags & MONITOR_NEW)
 			fprintf(stderr, "MON: %s is NEW...\n", m->si->name);
 	}
@@ -776,82 +893,76 @@ monitor_refresh_module(Display *dpy)
 void
 monitor_dump_state(struct monitor *m)
 {
-	struct monitor	*mcur, *m2;
+	struct monitor *mcur, *m2;
 
 	mcur = monitor_get_current();
 
 	fvwm_debug(__func__, "Monitor Debug\n");
 	fvwm_debug(__func__, "\tnumber of outputs: %d\n", monitor_get_count());
-	RB_FOREACH(m2, monitors, &monitor_q) {
+	RB_FOREACH(m2, monitors, &monitor_q)
+	{
 		if (m2 == NULL) {
-			fvwm_debug(__func__,
-				   "monitor in list is NULL.  Bug!\n");
+			fvwm_debug(
+			    __func__, "monitor in list is NULL.  Bug!\n");
 			continue;
 		}
 		if (m != NULL && m2 != m)
 			continue;
-		fvwm_debug(
-			__func__,
-			"\tNumber:\t%d\n"
-			"\tName:\t%s\n"
-			"\tDisabled:\t%s\n"
-			"\tIs Primary:\t%s\n"
-			"\tIs Current:\t%s\n"
-			"\tIs Previous:\t%s\n"
-			"\tOutput:\t%d\n"
-			"\tCoords:\t{x: %d, y: %d, w: %d, h: %d}\n"
-			"\tVirtScr: {\n"
-			"\t\tVxMax: %d, VyMax: %d, Vx: %d, Vy: %d\n"
-			"\t\tEdgeScrollX: %d, EdgeScrollY: %d\n"
-			"\t\tCurrentDesk: %d\n"
-			"\t\tCurrentPage: {x: %d, y: %d}\n"
-			"\t\tMyDisplayWidth: %d, MyDisplayHeight: %d\n\t}\n"
-			"\tEWMH: {\n"
-			"\t\tBaseStrut Top:    %d\n"
-			"\t\tBaseStrut Bottom: %d\n"
-			"\t\tBaseStrut Left:   %d\n"
-			"\t\tBaseStrut Right:  %d\n\t}\n"
-			"\tDesktops:\t%s\n"
-			"\tFlags:%s\n\n",
-			m2->number,
-			m2->si->name,
-			(m2->flags & MONITOR_DISABLED) ? "true" : "false",
-			(m2->flags & MONITOR_PRIMARY) ? "yes" : "no",
-			(mcur && m2 == mcur) ? "yes" : "no",
-			m2->is_prev ? "yes" : "no",
-			(int)m2->si->rr_output,
-			m2->si->x, m2->si->y, m2->si->w, m2->si->h,
-			m2->virtual_scr.VxMax, m2->virtual_scr.VyMax,
-			m2->virtual_scr.Vx, m2->virtual_scr.Vy,
-			m2->virtual_scr.EdgeScrollX,
-			m2->virtual_scr.EdgeScrollY,
-			m2->virtual_scr.CurrentDesk,
-			(int)(m2->virtual_scr.Vx / monitor_get_all_widths()),
-			(int)(m2->virtual_scr.Vy / monitor_get_all_heights()),
-			monitor_get_all_widths(),
-			monitor_get_all_heights(),
-			m2->ewmhc.BaseStrut.top,
-			m2->ewmhc.BaseStrut.bottom,
-			m2->ewmhc.BaseStrut.left,
-			m2->ewmhc.BaseStrut.right,
-			m2->Desktops ? "yes" : "no",
-			monitor_mode == MONITOR_TRACKING_G ? "global" :
-			monitor_mode == MONITOR_TRACKING_M ? "per-monitor" :
-			"Unknown"
-		);
+		fvwm_debug(__func__,
+		    "\tNumber:\t%d\n"
+		    "\tName:\t%s\n"
+		    "\tDisabled:\t%s\n"
+		    "\tIs Primary:\t%s\n"
+		    "\tIs Current:\t%s\n"
+		    "\tIs Previous:\t%s\n"
+		    "\tOutput:\t%d\n"
+		    "\tCoords:\t{x: %d, y: %d, w: %d, h: %d}\n"
+		    "\tVirtScr: {\n"
+		    "\t\tVxMax: %d, VyMax: %d, Vx: %d, Vy: %d\n"
+		    "\t\tEdgeScrollX: %d, EdgeScrollY: %d\n"
+		    "\t\tCurrentDesk: %d\n"
+		    "\t\tCurrentPage: {x: %d, y: %d}\n"
+		    "\t\tMyDisplayWidth: %d, MyDisplayHeight: %d\n\t}\n"
+		    "\tEWMH: {\n"
+		    "\t\tBaseStrut Top:    %d\n"
+		    "\t\tBaseStrut Bottom: %d\n"
+		    "\t\tBaseStrut Left:   %d\n"
+		    "\t\tBaseStrut Right:  %d\n\t}\n"
+		    "\tDesktops:\t%s\n"
+		    "\tFlags:%s\n\n",
+		    m2->number, m2->si->name,
+		    (m2->flags & MONITOR_DISABLED) ? "true" : "false",
+		    (m2->flags & MONITOR_PRIMARY) ? "yes" : "no",
+		    (mcur && m2 == mcur) ? "yes" : "no",
+		    m2->is_prev ? "yes" : "no", (int)m2->si->rr_output,
+		    m2->si->x, m2->si->y, m2->si->w, m2->si->h,
+		    m2->virtual_scr.VxMax, m2->virtual_scr.VyMax,
+		    m2->virtual_scr.Vx, m2->virtual_scr.Vy,
+		    m2->virtual_scr.EdgeScrollX, m2->virtual_scr.EdgeScrollY,
+		    m2->virtual_scr.CurrentDesk,
+		    (int)(m2->virtual_scr.Vx / monitor_get_all_widths()),
+		    (int)(m2->virtual_scr.Vy / monitor_get_all_heights()),
+		    monitor_get_all_widths(), monitor_get_all_heights(),
+		    m2->ewmhc.BaseStrut.top, m2->ewmhc.BaseStrut.bottom,
+		    m2->ewmhc.BaseStrut.left, m2->ewmhc.BaseStrut.right,
+		    m2->Desktops ? "yes" : "no",
+		    monitor_mode == MONITOR_TRACKING_G	 ? "global"
+		    : monitor_mode == MONITOR_TRACKING_M ? "per-monitor"
+							 : "Unknown");
 	}
 }
 
 int
 monitor_get_count(void)
 {
-	struct monitor	*m = NULL;
-	int		 c = 0;
+	struct monitor *m = NULL;
+	int		c = 0;
 
 	if (RB_EMPTY(&monitor_q))
 		return c;
 
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		if (m->flags & MONITOR_DISABLED)
 			continue;
 		c++;
@@ -862,10 +973,10 @@ monitor_get_count(void)
 struct monitor *
 FindScreenOfXY(int x, int y)
 {
-	struct monitor	*m, *m_min = NULL;
-	int dmin = INT_MAX;
-	int all_widths = monitor_get_all_widths();
-	int all_heights = monitor_get_all_heights();
+	struct monitor *m, *m_min = NULL;
+	int		dmin	    = INT_MAX;
+	int		all_widths  = monitor_get_all_widths();
+	int		all_heights = monitor_get_all_heights();
 
 	x %= all_widths;
 	y %= all_heights;
@@ -876,36 +987,39 @@ FindScreenOfXY(int x, int y)
 
 	int nr_monitors = monitor_get_count();
 
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		/* If we have more than one screen configured, then don't match
 		 * on the global screen, as that's separate to XY positioning
 		 * which is only concerned with the *specific* screen.
 		 */
-		if (nr_monitors > 0 &&
-		    strcmp(m->si->name, GLOBAL_SCREEN_NAME) == 0)
+		if (nr_monitors > 0
+		    && strcmp(m->si->name, GLOBAL_SCREEN_NAME) == 0)
 			continue;
 		if (m->flags & MONITOR_DISABLED)
 			continue;
-		if (x >= m->si->x && x < m->si->x + m->si->w &&
-		    y >= m->si->y && y < m->si->y + m->si->h)
+		if (x >= m->si->x && x < m->si->x + m->si->w && y >= m->si->y
+		    && y < m->si->y + m->si->h)
 			return (m);
 	}
 
 	/* No monitor found, point is in a dead area.
 	 * Find closest monitor using the taxi cab metric.
 	 */
-	RB_FOREACH(m, monitors, &monitor_q) {
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
 		int d = 0;
 
 		/* Skip global screen */
-		if (nr_monitors > 0 && strcmp(m->si->name, GLOBAL_SCREEN_NAME) == 0)
+		if (nr_monitors > 0
+		    && strcmp(m->si->name, GLOBAL_SCREEN_NAME) == 0)
 			continue;
 
 		if (m->flags & MONITOR_DISABLED)
 			continue;
 
 		if (x < m->si->x)
-			d += m->si->x  - x;
+			d += m->si->x - x;
 		if (x > m->si->x + m->si->w)
 			d += x - m->si->x - m->si->w;
 		if (y < m->si->y)
@@ -913,7 +1027,7 @@ FindScreenOfXY(int x, int y)
 		if (y > m->si->y + m->si->h)
 			d += y - m->si->y - m->si->h;
 		if (d < dmin) {
-			dmin = d;
+			dmin  = d;
 			m_min = m;
 		}
 	}
@@ -930,15 +1044,14 @@ FindScreenOfXY(int x, int y)
 static struct monitor *
 FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
 {
-	struct monitor	*m = NULL;
-	fscreen_scr_arg  tmp;
+	struct monitor *m = NULL;
+	fscreen_scr_arg tmp;
 
 	if (monitor_get_count() == 0) {
 		return (monitor_get_global());
 	}
 
-	switch (screen)
-	{
+	switch (screen) {
 	case FSCREEN_GLOBAL:
 		m = monitor_get_global();
 		break;
@@ -947,30 +1060,25 @@ FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
 		break;
 	case FSCREEN_CURRENT:
 		/* translate to xypos format */
-		if (!arg)
-		{
+		if (!arg) {
 			tmp.mouse_ev = NULL;
-			arg = &tmp;
+			arg	     = &tmp;
 		}
 		GetMouseXY(arg->mouse_ev, &arg->xypos.x, &arg->xypos.y);
 		/* fall through */
 	case FSCREEN_XYPOS:
 		/* translate to screen number */
-		if (!arg)
-		{
+		if (!arg) {
 			tmp.xypos.x = 0;
 			tmp.xypos.y = 0;
-			arg = &tmp;
+			arg	    = &tmp;
 		}
 		m = FindScreenOfXY(arg->xypos.x, arg->xypos.y);
 		break;
 	case FSCREEN_BY_NAME:
-		if (arg == NULL || arg->name == NULL)
-		{
+		if (arg == NULL || arg->name == NULL) {
 			m = monitor_by_primary();
-		}
-		else
-		{
+		} else {
 			m = monitor_resolve_name(arg->name);
 		}
 		break;
@@ -989,7 +1097,7 @@ FindScreen(fscreen_scr_arg *arg, fscreen_scr_t screen)
 const char *
 FScreenOfPointerXY(int x, int y)
 {
-	struct monitor	*m;
+	struct monitor *m;
 
 	m = FindScreenOfXY(x, y);
 
@@ -1017,10 +1125,11 @@ FScreenOfPointerXY(int x, int y)
  * The function returns False if the global screen was returned and more than
  * one screen is configured.  Otherwise it returns True.
  */
-Bool FScreenGetScrRect(fscreen_scr_arg *arg, fscreen_scr_t screen,
-			int *x, int *y, int *w, int *h)
+Bool
+FScreenGetScrRect(
+    fscreen_scr_arg *arg, fscreen_scr_t screen, int *x, int *y, int *w, int *h)
 {
-	struct monitor	*m = FindScreen(arg, screen);
+	struct monitor *m = FindScreen(arg, screen);
 	if (m == NULL) {
 		fvwm_debug(__func__, "m is NULL, using global screen\n");
 		m = monitor_get_global();
@@ -1041,10 +1150,9 @@ Bool FScreenGetScrRect(fscreen_scr_arg *arg, fscreen_scr_t screen,
 /* Translates the coodinates *x *y from the screen specified by arg_src and
  * screen_src to coordinates on the screen specified by arg_dest and
  * screen_dest. (see FScreenGetScrRect for more details). */
-void FScreenTranslateCoordinates(
-	fscreen_scr_arg *arg_src, fscreen_scr_t screen_src,
-	fscreen_scr_arg *arg_dest, fscreen_scr_t screen_dest,
-	int *x, int *y)
+void
+FScreenTranslateCoordinates(fscreen_scr_arg *arg_src, fscreen_scr_t screen_src,
+    fscreen_scr_arg *arg_dest, fscreen_scr_t screen_dest, int *x, int *y)
 {
 	int x_src;
 	int y_src;
@@ -1054,12 +1162,10 @@ void FScreenTranslateCoordinates(
 	FScreenGetScrRect(arg_src, screen_src, &x_src, &y_src, NULL, NULL);
 	FScreenGetScrRect(arg_dest, screen_dest, &x_dest, &y_dest, NULL, NULL);
 
-	if (x)
-	{
+	if (x) {
 		*x = *x + x_src - x_dest;
 	}
-	if (y)
-	{
+	if (y) {
 		*y = *y + y_src - y_dest;
 	}
 
@@ -1067,45 +1173,40 @@ void FScreenTranslateCoordinates(
 }
 
 /* Arguments work exactly like for FScreenGetScrRect() */
-int FScreenClipToScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
-			int *x, int *y, int w, int h)
+int
+FScreenClipToScreen(
+    fscreen_scr_arg *arg, fscreen_scr_t screen, int *x, int *y, int w, int h)
 {
-	int sx = 0;
-	int sy = 0;
-	int sw = 0;
-	int sh = 0;
-	int lx = (x) ? *x : 0;
-	int ly = (y) ? *y : 0;
+	int sx	   = 0;
+	int sy	   = 0;
+	int sw	   = 0;
+	int sh	   = 0;
+	int lx	   = (x) ? *x : 0;
+	int ly	   = (y) ? *y : 0;
 	int x_grav = GRAV_POS;
 	int y_grav = GRAV_POS;
 
 	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
-	if (lx + w > sx + sw)
-	{
-		lx = sx + sw  - w;
+	if (lx + w > sx + sw) {
+		lx     = sx + sw - w;
 		x_grav = GRAV_NEG;
 	}
-	if (ly + h > sy + sh)
-	{
-		ly = sy + sh - h;
+	if (ly + h > sy + sh) {
+		ly     = sy + sh - h;
 		y_grav = GRAV_NEG;
 	}
-	if (lx < sx)
-	{
-		lx = sx;
+	if (lx < sx) {
+		lx     = sx;
 		x_grav = GRAV_POS;
 	}
-	if (ly < sy)
-	{
-		ly = sy;
+	if (ly < sy) {
+		ly     = sy;
 		y_grav = GRAV_POS;
 	}
-	if (x)
-	{
+	if (x) {
 		*x = lx;
 	}
-	if (y)
-	{
+	if (y) {
 		*y = ly;
 	}
 
@@ -1113,8 +1214,9 @@ int FScreenClipToScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
 }
 
 /* Arguments work exactly like for FScreenGetScrRect() */
-void FScreenCenterOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
-			   int *x, int *y, int w, int h)
+void
+FScreenCenterOnScreen(
+    fscreen_scr_arg *arg, fscreen_scr_t screen, int *x, int *y, int w, int h)
 {
 	int sx = 0;
 	int sy = 0;
@@ -1124,7 +1226,7 @@ void FScreenCenterOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
 	int ly;
 
 	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
-	lx = (sw  - w) / 2;
+	lx = (sw - w) / 2;
 	ly = (sh - h) / 2;
 	if (lx < 0)
 		lx = 0;
@@ -1132,19 +1234,17 @@ void FScreenCenterOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
 		ly = 0;
 	lx += sx;
 	ly += sy;
-	if (x)
-	{
+	if (x) {
 		*x = lx;
 	}
-	if (y)
-	{
+	if (y) {
 		*y = ly;
 	}
 }
 
-void FScreenGetResistanceRect(
-	int wx, int wy, unsigned int ww, unsigned int wh, int *x0, int *y0,
-	int *x1, int *y1)
+void
+FScreenGetResistanceRect(int wx, int wy, unsigned int ww, unsigned int wh,
+    int *x0, int *y0, int *x1, int *y1)
 {
 	fscreen_scr_arg arg;
 
@@ -1156,8 +1256,9 @@ void FScreenGetResistanceRect(
 }
 
 /* Arguments work exactly like for FScreenGetScrRect() */
-Bool FScreenIsRectangleOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
-				rectangle *rec)
+Bool
+FScreenIsRectangleOnScreen(
+    fscreen_scr_arg *arg, fscreen_scr_t screen, rectangle *rec)
 {
 	int sx = 0;
 	int sy = 0;
@@ -1166,8 +1267,10 @@ Bool FScreenIsRectangleOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
 
 	FScreenGetScrRect(arg, screen, &sx, &sy, &sw, &sh);
 
-	return (rec->x + rec->width > sx && rec->x < sx + sw &&
-		rec->y + rec->height > sy && rec->y < sy + sh) ? True : False;
+	return (rec->x + rec->width > sx && rec->x < sx + sw
+		   && rec->y + rec->height > sy && rec->y < sy + sh)
+		   ? True
+		   : False;
 }
 
 /*
@@ -1179,54 +1282,47 @@ Bool FScreenIsRectangleOnScreen(fscreen_scr_arg *arg, fscreen_scr_t screen,
  *     present in parse_string.
  *
  */
-int FScreenParseGeometryWithScreen(
-	char *parsestring, int *x_return, int *y_return,
-	unsigned int *width_return, unsigned int *height_return,
-	char **screen_return)
+int
+FScreenParseGeometryWithScreen(char *parsestring, int *x_return, int *y_return,
+    unsigned int *width_return, unsigned int *height_return,
+    char **screen_return)
 {
 	char *geom_str;
 	int   ret;
 	char *at;
 
-	if (screen_return != NULL)
-	{
+	if (screen_return != NULL) {
 		*screen_return = NULL;
 	}
 	/* Safety net */
-	if (parsestring == NULL || *parsestring == '\0')
-	{
+	if (parsestring == NULL || *parsestring == '\0') {
 		return 0;
 	}
 
 	/* No screen specified; parse geometry as standard. */
 	at = strchr(parsestring, '@');
-	if (at == NULL)
-	{
+	if (at == NULL) {
 		geom_str = parsestring;
-	}
-	else
-	{
+	} else {
 		/* If the geometry specification contains an '@' symbol, assume
 		 * the screen is specified.  This must be the name of the
 		 * monitor in question.
 		 */
 		int atpos;
 
-		if (screen_return != NULL)
-		{
+		if (screen_return != NULL) {
 			*screen_return = at + 1;
 		}
-		atpos = (int)(at - parsestring);
-		geom_str = fxstrdup(parsestring);
+		atpos		= (int)(at - parsestring);
+		geom_str	= fxstrdup(parsestring);
 		geom_str[atpos] = 0;
 	}
 
 	/* Do the parsing */
 	ret = XParseGeometry(
-		geom_str, x_return, y_return, width_return, height_return);
+	    geom_str, x_return, y_return, width_return, height_return);
 
-	if (geom_str != parsestring)
-	{
+	if (geom_str != parsestring) {
 		free(geom_str);
 	}
 
@@ -1235,12 +1331,12 @@ int FScreenParseGeometryWithScreen(
 
 /* Same as above, but dump screen return value to keep compatible with the X
  * function. */
-int FScreenParseGeometry(
-	char *parsestring, int *x_return, int *y_return,
-	unsigned int *width_return, unsigned int *height_return)
+int
+FScreenParseGeometry(char *parsestring, int *x_return, int *y_return,
+    unsigned int *width_return, unsigned int *height_return)
 {
-	struct monitor	*m = NULL;
-	int		 rc, x, y, w, h;
+	struct monitor *m = NULL;
+	int		rc, x, y, w, h;
 
 	x = 0;
 	y = 0;
@@ -1250,9 +1346,8 @@ int FScreenParseGeometry(
 	{
 		char *scr;
 
-		rc = FScreenParseGeometryWithScreen(
-			parsestring, x_return, y_return, width_return,
-			height_return, &scr);
+		rc = FScreenParseGeometryWithScreen(parsestring, x_return,
+		    y_return, width_return, height_return, &scr);
 
 		if ((m = monitor_resolve_name(scr)) == NULL) {
 			/* If the monitor we tried to look up is NULL, it will
@@ -1272,15 +1367,13 @@ int FScreenParseGeometry(
 	}
 
 	/* adapt geometry to selected screen */
-	if (rc & XValue)
-	{
+	if (rc & XValue) {
 		if (rc & XNegative)
 			*x_return -= (monitor_get_all_widths() - w - x);
 		else
 			*x_return += x;
 	}
-	if (rc & YValue)
-	{
+	if (rc & YValue) {
 		if (rc & YNegative)
 			*y_return -= (monitor_get_all_heights() - h - y);
 		else
@@ -1288,7 +1381,6 @@ int FScreenParseGeometry(
 	}
 	return rc;
 }
-
 
 /*  FScreenGetGeometry
  *      Parses the geometry in a form: XGeometry[@screen], i.e.
@@ -1324,32 +1416,32 @@ int FScreenParseGeometry(
  *          This option can be also useful in cases where dimensions are
  *      specified not in pixels but in some other units (e.g., charcells).
  */
-int FScreenGetGeometry(
-	char *parsestring, int *x_return, int *y_return,
-	int *width_return, int *height_return, XSizeHints *hints, int flags)
+int
+FScreenGetGeometry(char *parsestring, int *x_return, int *y_return,
+    int *width_return, int *height_return, XSizeHints *hints, int flags)
 {
-	fscreen_scr_arg	 arg;
-	int		 ret;
-	int		 saved;
-	int		 x, y;
-	unsigned int	 w = 0, h = 0;
-	int		 grav, x_grav, y_grav;
-	int		 scr_x, scr_y;
-	int		 scr_w, scr_h;
+	fscreen_scr_arg arg;
+	int		ret;
+	int		saved;
+	int		x, y;
+	unsigned int	w = 0, h = 0;
+	int		grav, x_grav, y_grav;
+	int		scr_x, scr_y;
+	int		scr_w, scr_h;
 
 	/* I. Do the parsing and strip off extra bits */
 	{
 		char *scr;
 
 		ret = FScreenParseGeometryWithScreen(
-			parsestring, &x, &y, &w, &h, &scr);
+		    parsestring, &x, &y, &w, &h, &scr);
 		saved = ret & (XNegative | YNegative);
-		ret  &= flags;
+		ret &= flags;
 
 		arg.mouse_ev = NULL;
-		arg.name = scr;
+		arg.name     = scr;
 		FScreenGetScrRect(
-			&arg, FSCREEN_BY_NAME, &scr_x, &scr_y, &scr_w, &scr_h);
+		    &arg, FSCREEN_BY_NAME, &scr_x, &scr_y, &scr_w, &scr_h);
 	}
 
 	/* II. Interpret and fill in the values */
@@ -1358,27 +1450,20 @@ int FScreenGetGeometry(
 	 * omitted/forbidden */
 	/* Maybe should use *x_return,*y_return if hints==NULL?
 	 * Unreliable... */
-	if (hints != NULL  &&  hints->flags & PSize)
-	{
-		if ((ret & WidthValue)  == 0)
-		{
+	if (hints != NULL && hints->flags & PSize) {
+		if ((ret & WidthValue) == 0) {
 			w = hints->width;
 		}
-		if ((ret & HeightValue) == 0)
-		{
+		if ((ret & HeightValue) == 0) {
 			h = hints->height;
 		}
-	}
-	else
-	{
+	} else {
 		/* This branch is required for case when size *is* specified,
 		 * but masked off */
-		if ((ret & WidthValue)  == 0)
-		{
+		if ((ret & WidthValue) == 0) {
 			w = 0;
 		}
-		if ((ret & HeightValue) == 0)
-		{
+		if ((ret & HeightValue) == 0) {
 			h = 0;
 		}
 	}
@@ -1388,20 +1473,16 @@ int FScreenGetGeometry(
 	y += scr_y;
 
 	/* ...and process negative geometries */
-	if (saved & XNegative)
-	{
+	if (saved & XNegative) {
 		x += scr_w;
 	}
-	if (saved & YNegative)
-	{
+	if (saved & YNegative) {
 		y += scr_h;
 	}
-	if (ret & XNegative)
-	{
+	if (ret & XNegative) {
 		x -= w;
 	}
-	if (ret & YNegative)
-	{
+	if (ret & YNegative) {
 		y -= h;
 	}
 
@@ -1409,51 +1490,41 @@ int FScreenGetGeometry(
 	ret |= saved;
 
 	/* Guess orientation */
-	x_grav = (ret & XNegative)? GRAV_NEG : GRAV_POS;
-	y_grav = (ret & YNegative)? GRAV_NEG : GRAV_POS;
+	x_grav = (ret & XNegative) ? GRAV_NEG : GRAV_POS;
+	y_grav = (ret & YNegative) ? GRAV_NEG : GRAV_POS;
 	grav   = grav_matrix[y_grav][x_grav];
 
 	/* Return the values */
-	if (ret & XValue)
-	{
+	if (ret & XValue) {
 		*x_return = x;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->x = x;
 		}
 	}
-	if (ret & YValue)
-	{
+	if (ret & YValue) {
 		*y_return = y;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->y = y;
 		}
 	}
-	if (ret & WidthValue)
-	{
+	if (ret & WidthValue) {
 		*width_return = w;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->width = w;
 		}
 	}
-	if (ret & HeightValue)
-	{
+	if (ret & HeightValue) {
 		*height_return = h;
-		if (hints != NULL)
-		{
+		if (hints != NULL) {
 			hints->height = h;
 		}
 	}
-	if (1 /*flags & GravityValue*/  &&  grav != DEFAULT_GRAVITY)
-	{
-		if (hints != NULL  &&  hints->flags & PWinGravity)
-		{
+	if (1 /*flags & GravityValue*/ && grav != DEFAULT_GRAVITY) {
+		if (hints != NULL && hints->flags & PWinGravity) {
 			hints->win_gravity = grav;
 		}
 	}
-	if (hints != NULL  &&  ret & XValue  &&  ret & YValue)
+	if (hints != NULL && ret & XValue && ret & YValue)
 		hints->flags |= USPosition;
 
 	return ret;
@@ -1469,15 +1540,13 @@ int FScreenGetGeometry(
  *  their windows and have the StartsOnScreen style set for them at the same
  *  time.  Do *not* rely on the mechanism described above.
  */
-void FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints *hints)
+void
+FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints *hints)
 {
-	if (hints->flags & USPosition)
-	{
+	if (hints->flags & USPosition) {
 		hints->x = FSCREEN_MANGLE_USPOS_HINTS_MAGIC;
 		hints->y = (short)screen;
-	}
-	else
-	{
+	} else {
 		hints->x = 0;
 		hints->y = 0;
 	}
@@ -1495,13 +1564,13 @@ void FScreenMangleScreenIntoUSPosHints(fscreen_scr_t screen, XSizeHints *hints)
  *  their windows and have the StartsOnScreen style set for them at the same
  *  time.  Do *not* rely on the mechanism described above.
  */
-int FScreenFetchMangledScreenFromUSPosHints(XSizeHints *hints)
+int
+FScreenFetchMangledScreenFromUSPosHints(XSizeHints *hints)
 {
 	int screen;
 
-	if ((hints->flags & USPosition) &&
-	    hints->x == FSCREEN_MANGLE_USPOS_HINTS_MAGIC)
-	{
+	if ((hints->flags & USPosition)
+	    && hints->x == FSCREEN_MANGLE_USPOS_HINTS_MAGIC) {
 		screen = hints->y;
 	} else
 		screen = 0;

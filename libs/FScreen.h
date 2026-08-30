@@ -226,7 +226,6 @@ FScreenGetTopologySnapshot(void);
 fscreen_topology_refresh_result
 FScreenRefreshTopology(Display *dpy);
 
-#ifdef FSCREEN_TESTING
 typedef struct
 {
 	void *context;
@@ -248,6 +247,7 @@ typedef struct
 	void (*free_name)(void *, char *);
 } fscreen_legacy_allocator;
 
+#ifdef FSCREEN_TESTING
 fscreen_topology_refresh_result
 fscreen_refresh_topology_with_adapters(Display *, Window,
     monitor_topology_snapshot **, struct monitors *, struct screen_infos *,

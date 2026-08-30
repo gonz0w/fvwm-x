@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 02
 current_phase_name: Scale Policy and Configuration
 status: executing
-stopped_at: Phase 2 context gathered
-last_updated: "2026-08-30T18:22:53.291Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-08-30T19:24:21.173Z"
 last_activity: 2026-08-30
-last_activity_desc: Phase 01 complete, transitioned to Phase 2
-state_head: 201c039367b5ea8863f812a148124e0db3b728a5
+last_activity_desc: Completed Phase 02 Plan 01 exact monitor scale policy
+state_head: 2110a2932edf29bae53e0356f1eba57cf8218321
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 13
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -24,34 +24,35 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 
 **Core value:** Users can depend on a responsive X11 desktop whose windows remain usable and visually consistent across changing monitor layouts and scale factors.
 **Current milestone:** v0.1 Monitor and HiDPI Foundations
-**Current focus:** Phase 01 — Topology Snapshot and Live-X Harness
+**Current focus:** Phase 02 — Scale Policy and Configuration
 
 ## Current Position
 
-Phase: 02 (Scale Policy and Configuration) — READY TO EXECUTE
-Plan: Not started
+Phase: 02 (Scale Policy and Configuration) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-08-30 — Phase 01 complete, transitioned to Phase 2
+Last activity: 2026-08-30 — Completed Phase 02 Plan 01 exact monitor scale policy
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 69%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 8
-- Average duration: 20 min
-- Total execution time: 2.67 hours
+- Total plans completed: 9
+- Average duration: 24 min
+- Total execution time: 3.65 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 | 8 | - | - |
+| 02 | 1 | 59 min | 59 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 12 min, 8 min, 17 min, 21 min, 46 min
+- Last 5 plans: 8 min, 17 min, 21 min, 46 min, 59 min
 - Trend: Slower
 
 **Per-Plan Metrics:**
@@ -66,6 +67,7 @@ Progress: [██████████] 100%
 | Phase 01 P06 | 17min | 2 tasks | 4 files |
 | Phase 01 P07 | 21min | 2 tasks | 2 files |
 | Phase 01 P08 | 46min | 3 tasks | 4 files |
+| Phase 02 P01 | 59min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -102,6 +104,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 01]: Rapid multi-command XRandR transitions briefly suspend FVWM event consumption so each operation is observed as one settled semantic generation.
 - [Phase 01]: Failed-query verification selects preload first and uses a fresh wrapped-FVWM run only when that invocation proves preload cannot intercept the real query.
 - [Phase 01]: Live-X CI remains a separate non-matrix Debian-container job with failure-only immutable evidence upload.
+- [Phase 02]: Represent scale as quarter units from 4 through 16 so policy and conversion paths never require floating-point arithmetic.
+- [Phase 02]: Resolve automatic DPI only when both axes are 50..500 DPI inclusive and differ by at most 10% relative to their arithmetic mean.
+- [Phase 02]: Initialize every staged monitor to an explicit safe 1x result before publication so failure paths retain a total value.
 
 ### Pending Todos
 
@@ -122,6 +127,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T17:11:46.899Z
-Stopped at: Phase 2 context gathered
-Resume file: /Users/cam/DEV/fvwm3/.planning/phases/02-scale-policy-and-configuration/02-CONTEXT.md
+Last session: 2026-08-30T19:24:21.120Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None

@@ -17,10 +17,10 @@
 ### Scale Policy
 
 - [ ] **SCALE-01**: User can assign an explicit rational scale to a uniquely named monitor.
-- [ ] **SCALE-02**: User can rely on automatic scale derived from validated pixel and millimetre dimensions when no override exists.
-- [ ] **SCALE-03**: User gets deterministic precedence: monitor override, validated automatic DPI, configured global fallback, then safe 1x.
+- [x] **SCALE-02**: User can rely on automatic scale derived from validated pixel and millimetre dimensions when no override exists.
+- [x] **SCALE-03**: User gets deterministic precedence: monitor override, validated automatic DPI, configured global fallback, then safe 1x.
 - [ ] **SCALE-04**: User receives a visible diagnostic when scale input or monitor matching is invalid instead of silent coercion.
-- [ ] **SCALE-05**: User can use 1x, 1.25x, 1.5x, 1.75x, 2x, and higher supported quarter-step factors without cumulative rounding drift.
+- [x] **SCALE-05**: User can use 1x, 1.25x, 1.5x, 1.75x, 2x, and higher supported quarter-step factors without cumulative rounding drift.
 - [ ] **SCALE-06**: User can reload scale configuration and have only affected monitors and windows update once without restarting FVWM-X.
 
 ### WM-Owned UI
@@ -92,10 +92,10 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | TOP-05 | Phase 6 | Pending |
 | TOP-06 | Phase 1 | Complete |
 | SCALE-01 | Phase 2 | Pending |
-| SCALE-02 | Phase 2 | Pending |
-| SCALE-03 | Phase 2 | Pending |
+| SCALE-02 | Phase 2 | Complete |
+| SCALE-03 | Phase 2 | Complete |
 | SCALE-04 | Phase 2 | Pending |
-| SCALE-05 | Phase 2 | Pending |
+| SCALE-05 | Phase 2 | Complete |
 | SCALE-06 | Phase 6 | Pending |
 | UI-01 | Phase 4 | Pending |
 | UI-02 | Phase 4 | Pending |

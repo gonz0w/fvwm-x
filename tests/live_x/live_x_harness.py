@@ -70,7 +70,7 @@ def check_live_x_workflow(workflow_path: Path) -> None:
             [
                 "ruby",
                 "-e",
-                "require 'psych'; Psych.parse_file(ARGV.fetch(0))",
+                'require "yaml"; YAML.parse_file(ARGV.fetch(0))',
                 str(workflow_path),
             ],
             stdout=subprocess.PIPE,

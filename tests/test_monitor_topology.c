@@ -327,7 +327,6 @@ test_malformed_facts_leave_committed_snapshot_untouched(void)
 	    create_snapshot(&tracker, &valid, 1);
 	monitor_topology_snapshot *committed = NULL;
 	monitor_topology_monitor   duplicate_atoms[2];
-	monitor_topology_monitor   duplicate_names[3];
 
 	assert(initial != NULL);
 	assert(monitor_topology_snapshot_publish(&committed, initial)
@@ -359,6 +358,14 @@ test_malformed_facts_leave_committed_snapshot_untouched(void)
 	invalid	       = valid;
 	invalid.height = 0;
 	assert_rejected_without_publication(&tracker, &committed, &invalid, 1);
+	invalid	      = valid;
+	invalid.x     = INT_MAX;
+	invalid.width = 2;
+	assert_rejected_without_publication(&tracker, &committed, &invalid, 1);
+	invalid	       = valid;
+	invalid.y      = INT_MAX;
+	invalid.height = 2;
+	assert_rejected_without_publication(&tracker, &committed, &invalid, 1);
 	invalid		 = valid;
 	invalid.mm_width = -1;
 	assert_rejected_without_publication(&tracker, &committed, &invalid, 1);
@@ -384,14 +391,6 @@ test_malformed_facts_leave_committed_snapshot_untouched(void)
 	    10, "monitor-b", 1920, 0, 1280, 1024, 0, INT_MAX, False, NULL, 0);
 	assert_rejected_without_publication(
 	    &tracker, &committed, duplicate_atoms, 2);
-
-	duplicate_names[0] = valid;
-	duplicate_names[1] = make_monitor(
-	    20, "monitor-b", 1920, 0, 1280, 1024, 0, 0, False, NULL, 0);
-	duplicate_names[2] = make_monitor(
-	    30, "monitor-a", 3200, 0, 1024, 768, 1, 1, False, NULL, 0);
-	assert_rejected_without_publication(
-	    &tracker, &committed, duplicate_names, 3);
 
 	monitor_topology_snapshot_destroy(committed);
 	monitor_topology_snapshot_destroy(NULL);

@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 01
 current_phase_name: Topology Snapshot and Live-X Harness
-status: executing
-stopped_at: Completed 01-07-PLAN.md
-last_updated: "2026-08-30T14:36:47.172Z"
+status: verifying
+stopped_at: Completed 01-08-PLAN.md
+last_updated: "2026-08-30T15:32:25.661Z"
 last_activity: 2026-08-30
-last_activity_desc: Completed 01-06 isolated live-X harness and fault probe
-state_head: 96c16759a49b8ac571e94ce774e7a567c05e046e
+last_activity_desc: Completed 01-08 authoritative Xorg-dummy and native live-X CI
+state_head: 80800fbbbd94f11f2aa2d4b593d65244edc0db84
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -28,31 +28,31 @@ See: .planning/PROJECT.md (updated 2026-08-29)
 
 ## Current Position
 
-Phase: 01 (Topology Snapshot and Live-X Harness) — EXECUTING
+Phase: 01 (Topology Snapshot and Live-X Harness) — VERIFYING
 Plan: 8 of 8
-Status: Ready to execute
-Last activity: 2026-08-30 — Completed 01-06 isolated live-X harness and fault probe
+Status: Phase complete — ready for verification
+Last activity: 2026-08-30 — Completed 01-08 authoritative Xorg-dummy and native live-X CI
 
-Progress: [████████░░] 75%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 6
-- Average duration: 16 min
-- Total execution time: 1.55 hours
+- Total plans completed: 8
+- Average duration: 20 min
+- Total execution time: 2.67 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 | 6 | 93 min | 16 min |
+| 01 | 8 | 160 min | 20 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 18 min, 6 min, 8 min, 12 min, 17 min
-- Trend: Faster
+- Last 5 plans: 12 min, 8 min, 17 min, 21 min, 46 min
+- Trend: Slower
 
 **Per-Plan Metrics:**
 
@@ -65,6 +65,7 @@ Progress: [████████░░] 75%
 | Phase 01 P04 | 12min | 3 tasks | 8 files |
 | Phase 01 P06 | 17min | 2 tasks | 4 files |
 | Phase 01 P07 | 21min | 2 tasks | 2 files |
+| Phase 01 P08 | 46min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 01]: Xvfb Monitor mutation support is established only when repeated xrandr --listmonitors queries expose the requested Monitor; command exit status is retained solely as evidence.
 - [Phase 01]: The literal delete/recreate mutation is presented to FVWM as one settled server transition by briefly stopping event consumption until both argv operations complete.
 - [Phase 01]: An unsupported Xvfb still receives every literal create/delete/recreate/delete command and must retain the exact baseline Status record and epoch.
+- [Phase 01]: Xorg-dummy physical-size authority combines root --fbmm mutation with per-output WIDTH_MM and HEIGHT_MM properties because the dummy DDX does not propagate root millimeters into automatic Monitor facts.
+- [Phase 01]: Rapid multi-command XRandR transitions briefly suspend FVWM event consumption so each operation is observed as one settled semantic generation.
+- [Phase 01]: Failed-query verification selects preload first and uses a fresh wrapped-FVWM run only when that invocation proves preload cannot intercept the real query.
+- [Phase 01]: Live-X CI remains a separate non-matrix Debian-container job with failure-only immutable evidence upload.
 
 ### Pending Todos
 
@@ -117,6 +122,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T14:36:47.162Z
-Stopped at: Completed 01-07-PLAN.md
+Last session: 2026-08-30T15:32:25.640Z
+Stopped at: Completed 01-08-PLAN.md
 Resume file: None

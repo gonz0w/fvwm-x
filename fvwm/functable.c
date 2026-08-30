@@ -351,6 +351,12 @@ const func_t func_table[] =
 	CMD_ENT("moduletimeout", CMD_ModuleTimeout, F_NOP, 0, 0),
 	/* - Set timeout value for response from module */
 
+	CMD_ENT("monitorscale", CMD_MonitorScale, F_NOP, 0, 0),
+	/* - Set the scale for an exact RandR Monitor name */
+
+	CMD_ENT("monitorscalefallback", CMD_MonitorScaleFallback, F_NOP, 0, 0),
+	/* - Set the global monitor scale fallback */
+
 	CMD_ENT("mouse", CMD_Mouse, F_MOUSE, 0, 0),
 	/* - Bind or unbind a mouse button press to an fvwm action */
 

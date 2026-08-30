@@ -15,10 +15,16 @@
 
 #include "config.h"
 
+#include "execcontext.h"
+#include "fvwm.h"
+
+#include "commands.h"
 #include "monitor_scale_config.h"
 
+#include "libs/Parse.h"
 #include "libs/log.h"
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -42,15 +48,48 @@ static void
 scale_config_diagnostic(void *context, const char *reason, const char *name)
 {
 	(void)context;
-	(void)name;
-	fvwm_debug(__func__, "%s", reason);
+	if (name == NULL) {
+		fvwm_debug(__func__, "%s", reason);
+		return;
+	}
+	fvwm_debug(__func__, "%s (monitor \"%s\")", reason, name);
+}
+
+static void
+encode_monitor_name(const char *name, char *encoded_name, size_t encoded_size)
+{
+	size_t		  destination = 0;
+	size_t		  source;
+	unsigned char	  byte;
+	static const char hex[] = "0123456789abcdef";
+
+	for (source = 0; name[source] != '\0' && destination + 4 < encoded_size;
+	    source++) {
+		byte = (unsigned char)name[source];
+		if (isprint(byte) && byte != '\\') {
+			encoded_name[destination++] = (char)byte;
+		} else {
+			encoded_name[destination++] = '\\';
+			encoded_name[destination++] = 'x';
+			encoded_name[destination++] = hex[byte >> 4];
+			encoded_name[destination++] = hex[byte & 0x0f];
+		}
+	}
+	encoded_name[destination] = '\0';
 }
 
 static void
 diagnose(
     const monitor_scale_config *config, const char *reason, const char *name)
 {
+	char encoded_name[(MAX_TOKEN_LENGTH * 4) + 1];
+
 	if (config != NULL && config->diagnostic != NULL) {
+		if (name != NULL) {
+			encode_monitor_name(
+			    name, encoded_name, sizeof(encoded_name));
+			name = encoded_name;
+		}
 		config->diagnostic(config->diagnostic_context, reason, name);
 	}
 }
@@ -159,24 +198,27 @@ monitor_scale_config_declare_override(
 		return false;
 	}
 	if (config->finalized) {
-		diagnose(
-		    config, "scale configuration is already finalized", name);
+		diagnose(config,
+		    "MonitorScale: scale configuration is already finalized",
+		    name);
 		return false;
 	}
 	if (name == NULL || name[0] == '\0') {
-		diagnose(config, "monitor name is missing", name);
+		diagnose(config, "MonitorScale: monitor name is missing", name);
 		return false;
 	}
 	if (!monitor_scale_parse_factor(factor_text, &factor)) {
-		diagnose(
-		    config, "scale factor is not canonical or supported", name);
+		diagnose(config,
+		    "MonitorScale: scale factor is not canonical or supported",
+		    name);
 		return false;
 	}
 
 	candidate = config->allocator.allocate(
 	    config->allocator.context, sizeof(*candidate));
 	if (candidate == NULL) {
-		diagnose(config, "could not allocate scale override", name);
+		diagnose(config,
+		    "MonitorScale: could not allocate scale override", name);
 		return false;
 	}
 	memset(candidate, 0, sizeof(*candidate));
@@ -186,7 +228,8 @@ monitor_scale_config_declare_override(
 	if (candidate->name == NULL) {
 		config->allocator.deallocate(
 		    config->allocator.context, candidate);
-		diagnose(config, "could not copy scale override name", name);
+		diagnose(config,
+		    "MonitorScale: could not copy scale override name", name);
 		return false;
 	}
 	memcpy(candidate->name, name, name_size);
@@ -219,13 +262,17 @@ monitor_scale_config_declare_fallback(
 		return false;
 	}
 	if (config->finalized) {
-		diagnose(
-		    config, "scale configuration is already finalized", NULL);
+		diagnose(config,
+		    "MonitorScaleFallback: scale configuration is already "
+		    "finalized",
+		    NULL);
 		return false;
 	}
 	if (!monitor_scale_parse_factor(factor_text, &candidate)) {
 		diagnose(config,
-		    "fallback factor is not canonical or supported", NULL);
+		    "MonitorScaleFallback: fallback factor is not canonical or "
+		    "supported",
+		    NULL);
 		return false;
 	}
 	config->fallback     = candidate;
@@ -278,4 +325,52 @@ bool
 monitor_scale_config_is_finalized(const monitor_scale_config *config)
 {
 	return config != NULL && config->finalized;
+}
+
+void
+CMD_MonitorScale(F_CMD_ARGS)
+{
+	monitor_scale_config *config = monitor_scale_config_get();
+	char		     *name   = NULL;
+	char		     *factor = NULL;
+	char		     *extra  = NULL;
+	char		     *rest;
+
+	rest = GetNextToken(action, &name);
+	rest = GetNextToken(rest, &factor);
+	(void)GetNextToken(rest, &extra);
+	if (name == NULL || factor == NULL || extra != NULL) {
+		diagnose(config,
+		    "MonitorScale: requires exactly a monitor name and factor",
+		    name);
+	} else if (strlen(name) >= MAX_TOKEN_LENGTH - 1) {
+		diagnose(
+		    config, "MonitorScale: monitor name is too long", name);
+	} else {
+		(void)monitor_scale_config_declare_override(
+		    config, name, factor);
+	}
+	free(name);
+	free(factor);
+	free(extra);
+}
+
+void
+CMD_MonitorScaleFallback(F_CMD_ARGS)
+{
+	monitor_scale_config *config = monitor_scale_config_get();
+	char		     *factor = NULL;
+	char		     *extra  = NULL;
+	char		     *rest;
+
+	rest = GetNextToken(action, &factor);
+	(void)GetNextToken(rest, &extra);
+	if (factor == NULL || extra != NULL) {
+		diagnose(config,
+		    "MonitorScaleFallback: requires exactly one factor", NULL);
+	} else {
+		(void)monitor_scale_config_declare_fallback(config, factor);
+	}
+	free(factor);
+	free(extra);
 }

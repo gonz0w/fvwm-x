@@ -344,7 +344,8 @@ test_command_callbacks_retain_alias_control_and_long_name_bytes(void)
 	before = config_digest(config);
 	run_scale_command(CMD_MonitorScale, control_name);
 	assert(config_digest(config) == before);
-	assert(strcmp(fixture.name, "line\nbreak") == 0);
+	assert(strstr(fixture.reason, "MonitorScale") != NULL);
+	assert(strcmp(fixture.name, "line\\x0abreak") == 0);
 
 	for (i = 0; i < MAX_TOKEN_LENGTH + 16; i++) {
 		long_name[i] = 'A';

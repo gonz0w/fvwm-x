@@ -1367,8 +1367,43 @@ def capture_failure(
         )
 
 
+def test_xorg_dummy_contract() -> None:
+    """Specify the authoritative backend's argv and parsing contracts."""
+    config_path = Path("/private/xorg-dummy.conf")
+    assert xorg_dummy_server_argv(config_path, 19) == [
+        "Xorg",
+        "-config",
+        str(config_path),
+        "-displayfd",
+        "19",
+        "-nolisten",
+        "tcp",
+        "-noreset",
+    ]
+
+    policy_header = """\
+#define FVWM_TOPOLOGY_QUIET_MS 50
+#define FVWM_TOPOLOGY_MAX_LATENCY_MS 250
+"""
+    assert parse_topology_policy_constants(policy_header) == (50, 250)
+
+    query_text = """\
+Screen 0: minimum 64 x 64, current 3200 x 1080, maximum 32767 x 32767
+DUMMY0 connected primary 1920x1080+0+0 (normal) 508mm x 286mm
+DUMMY1 connected 1280x1024+1920+0 (normal) 338mm x 271mm
+"""
+    assert parse_xrandr_root_dimensions(query_text) == {
+        "width": 3200,
+        "height": 1080,
+        "mm_width": 846,
+        "mm_height": 286,
+    }
+
+
 def self_test() -> None:
     """Specify lifecycle behavior without requiring an X server."""
+    test_xorg_dummy_contract()
+
     version_text = """\
 xrandr program version       1.5.1
 Server reports RandR version 1.6

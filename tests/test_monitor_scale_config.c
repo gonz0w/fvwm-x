@@ -15,7 +15,12 @@
 
 #include "config.h"
 
+#include "fvwm/execcontext.h"
+#include "fvwm/fvwm.h"
+
+#include "fvwm/commands.h"
 #include "fvwm/monitor_scale_config.h"
+#include "libs/Parse.h"
 
 #include <assert.h>
 #include <stdint.h>
@@ -260,6 +265,100 @@ test_zero_unique_and_ambiguous_active_match_outcomes(void)
 	assert(fixture.live_allocations == 0);
 }
 
+static void
+run_scale_command(void (*command)(F_CMD_ARGS), char *action)
+{
+	command(NULL, NULL, action, NULL);
+}
+
+static void
+test_command_callbacks_enforce_exact_arity_and_canonical_factors(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	char				  valid_override[] = "DP-1 1.25";
+	char				  valid_fallback[] = "1.75";
+	char				  missing_name[]   = "";
+	char				  missing_factor[] = "DP-1";
+	char	 extra_override[]   = "DP-1 2 extra another";
+	char	 missing_fallback[] = "";
+	char	 extra_fallback[]   = "2 extra another";
+	char	 unsupported[]	    = "DP-1 4.25";
+	char	 alternate[]	    = "DP-1 2.50";
+	uint64_t before;
+
+	run_scale_command(CMD_MonitorScale, valid_override);
+	assert(find_override(config, "DP-1")->factor.quarters == 5);
+	run_scale_command(CMD_MonitorScaleFallback, valid_fallback);
+	assert(config->has_fallback && config->fallback.quarters == 7);
+
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScale, missing_name);
+	assert(config_digest(config) == before);
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScale, missing_factor);
+	assert(config_digest(config) == before);
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScale, extra_override);
+	assert(config_digest(config) == before);
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScaleFallback, missing_fallback);
+	assert(config_digest(config) == before);
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScaleFallback, extra_fallback);
+	assert(config_digest(config) == before);
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScale, unsupported);
+	assert(config_digest(config) == before);
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScale, alternate);
+	assert(config_digest(config) == before);
+
+	monitor_scale_config_shutdown();
+	assert(fixture.live_allocations == 0);
+}
+
+static void
+test_command_callbacks_retain_alias_control_and_long_name_bytes(void)
+{
+	monitor_scale_config_test_fixture fixture = {0};
+	monitor_scale_config		 *config = initialize_fixture(&fixture);
+	char				  numeric_name[]  = "0 1.25";
+	char				  global_alias[]  = "g 1.5";
+	char				  current_alias[] = "c 1.75";
+	char				  primary_alias[] = "p 2";
+	char	 control_name[] = "\"line\nbreak\" invalid";
+	char	 long_name[MAX_TOKEN_LENGTH + 32];
+	uint64_t before;
+	size_t	 i;
+
+	run_scale_command(CMD_MonitorScale, numeric_name);
+	run_scale_command(CMD_MonitorScale, global_alias);
+	run_scale_command(CMD_MonitorScale, current_alias);
+	run_scale_command(CMD_MonitorScale, primary_alias);
+	assert(find_override(config, "0")->factor.quarters == 5);
+	assert(find_override(config, "g")->factor.quarters == 6);
+	assert(find_override(config, "c")->factor.quarters == 7);
+	assert(find_override(config, "p")->factor.quarters == 8);
+
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScale, control_name);
+	assert(config_digest(config) == before);
+	assert(strcmp(fixture.name, "line\nbreak") == 0);
+
+	for (i = 0; i < MAX_TOKEN_LENGTH + 16; i++) {
+		long_name[i] = 'A';
+	}
+	(void)snprintf(long_name + i, sizeof(long_name) - i, " 1.25");
+	before = config_digest(config);
+	run_scale_command(CMD_MonitorScale, long_name);
+	assert(config_digest(config) == before);
+	assert(strstr(fixture.reason, "long") != NULL);
+
+	monitor_scale_config_shutdown();
+	assert(fixture.live_allocations == 0);
+}
+
 int
 main(void)
 {
@@ -267,5 +366,7 @@ main(void)
 	test_invalid_and_allocation_failed_replacements_retain_store();
 	test_fallback_replacement_is_independent_and_transactional();
 	test_zero_unique_and_ambiguous_active_match_outcomes();
+	test_command_callbacks_enforce_exact_arity_and_canonical_factors();
+	test_command_callbacks_retain_alias_control_and_long_name_bytes();
 	return 0;
 }

@@ -278,6 +278,8 @@ void CMD_ModuleListenOnly(F_CMD_ARGS);
 void CMD_ModulePath(F_CMD_ARGS);
 void CMD_ModuleSynchronous(F_CMD_ARGS);
 void CMD_ModuleTimeout(F_CMD_ARGS);
+void CMD_MonitorScale(F_CMD_ARGS);
+void CMD_MonitorScaleFallback(F_CMD_ARGS);
 void CMD_Mouse(F_CMD_ARGS);
 void CMD_Move(F_CMD_ARGS);
 void CMD_MoveThreshold(F_CMD_ARGS);

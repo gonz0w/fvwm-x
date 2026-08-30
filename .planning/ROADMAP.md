@@ -10,7 +10,7 @@ FVWM-X v0.1 proceeds through dependency-ordered technical layers: establish an a
 
 ## Phases
 
-- [ ] **Phase 1: Topology Snapshot and Live-X Harness** - Establish trustworthy committed RandR Monitor facts and reproducible live-X topology scenarios.
+- [x] **Phase 1: Topology Snapshot and Live-X Harness** - Establish trustworthy committed RandR Monitor facts and reproducible live-X topology scenarios. (completed 2026-08-30)
 - [ ] **Phase 2: Scale Policy and Configuration** - Resolve one deterministic rational scale per monitor from overrides, validated DPI, and safe fallbacks.
 - [ ] **Phase 3: Geometry and Ownership Contracts** - Define deterministic ownership, constrained sizing, placement, and pixel-protocol boundaries.
 - [ ] **Phase 4: WM-Owned UI Metrics and Resources** - Scale all FVWM-owned visual and interaction resources exactly once.
@@ -166,7 +166,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Topology Snapshot and Live-X Harness | 8/8 | In Progress|  |
+| 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
 | 2. Scale Policy and Configuration | 0/TBD | Not started | - |
 | 3. Geometry and Ownership Contracts | 0/TBD | Not started | - |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |

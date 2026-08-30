@@ -1,0 +1,53 @@
+{
+  "contract": "1.0.0",
+  "flavor": "core",
+  "milestone": "v0.1 Monitor and HiDPI Foundations",
+  "phases": [
+    {
+      "number": "1",
+      "name": "Topology Snapshot and Live-X Harness",
+      "status": "complete"
+    },
+    {
+      "number": "2",
+      "name": "Scale Policy and Configuration",
+      "status": "pending"
+    },
+    {
+      "number": "3",
+      "name": "Geometry and Ownership Contracts",
+      "status": "pending"
+    },
+    {
+      "number": "4",
+      "name": "WM-Owned UI Metrics and Resources",
+      "status": "pending"
+    },
+    {
+      "number": "5",
+      "name": "Logical-Size Transition Coordinator",
+      "status": "pending"
+    },
+    {
+      "number": "6",
+      "name": "Hotplug, Reload, and Observability",
+      "status": "pending"
+    },
+    {
+      "number": "7",
+      "name": "Module Scale Protocol and Consumers",
+      "status": "pending"
+    },
+    {
+      "number": "8",
+      "name": "Release Verification Matrix",
+      "status": "pending"
+    }
+  ],
+  "next": {
+    "command": "/gsd:progress --next",
+    "label": "Advance to the next step (plan phase 2)",
+    "reason": "Phase 2 of 8 — needs a plan"
+  },
+  "updated_at": "2026-08-30T16:43:55.249Z"
+}

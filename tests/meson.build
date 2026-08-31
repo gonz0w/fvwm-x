@@ -39,6 +39,17 @@ monitor_ownership_test = executable(
 
 test('monitor-ownership', monitor_ownership_test)
 
+icccm_size_hints_test = executable(
+    'test-icccm-size-hints',
+    'test_icccm_size_hints.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
+test('icccm-size-hints', icccm_size_hints_test)
+
 monitor_scale_config_test = executable(
     'test-monitor-scale-config',
     ['test_monitor_scale_config.c', '../fvwm/monitor_scale_config.c'],

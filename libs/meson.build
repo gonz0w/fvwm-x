@@ -23,6 +23,7 @@ libfvwm3_sources = files(
     'Grab.c',
     'Graphics.c',
     'ImageSafety.c',
+    'icccm_size_hints.c',
     'Module.c',
     'Parse.c',
     'Picture.c',

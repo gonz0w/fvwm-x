@@ -7508,6 +7508,17 @@ wraps or clamps.  Each conversion uses the retained exact source value;
 a previously rounded result is never fed back as a new source, preventing
 cumulative drift.
 +
+FVWM-owned chrome pixel metrics follow the owning or active monitor scale
+and remain actual X11 pixels after conversion.  Title thickness, borders,
+handles, title fonts, and window buttons use the owning monitor.  Menus,
+cursors and hot spots, move/resize feedback, and *MoveThreshold* use the
+active or pointer monitor.  Iconified UI uses the icon-geometry monitor,
+else the pointer.  Mapped *EdgeThickness* pan-frame size uses that pan
+frame's monitor; the *EdgeThickness* command remains a source integer in
+the range 0-2.  Snap distances use the owning monitor.  Display-wide font
+DPI and cursor default size are not mutated and are not the scale
+mechanism.
++
 These scales apply to FVWM-owned UI and later FVWM geometry policy.  X11,
 ICCCM, EWMH, and existing module geometry remain actual root pixels, and
 FVWM does not scale arbitrary client pixels.  This contract adds no scale

@@ -164,6 +164,78 @@ test_overflow_initializes_output_zero(void)
 	       == MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT);
 }
 
+static void
+test_hotspot_scaled_then_clamped(void)
+{
+	monitor_scale_factor two_x = {8};
+	int hot = 99;
+
+	assert(wm_ui_scale_hotspot(4, 16, two_x, &hot)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(hot == 8);
+	assert(wm_ui_scale_hotspot(8, 16, two_x, &hot)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(hot == 15);
+	hot = 99;
+	assert(wm_ui_scale_hotspot(4, 0, two_x, &hot)
+	       == MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT);
+	assert(hot == 0);
+	assert(wm_ui_scale_hotspot(4, 16, two_x, NULL)
+	       == MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT);
+}
+
+static void
+test_edge_zero_stays_zero(void)
+{
+	static const unsigned int quarters[] = {4, 6, 8, 16};
+	size_t i;
+	int px = 99;
+
+	for (i = 0; i < sizeof(quarters) / sizeof(quarters[0]); i++) {
+		monitor_scale_factor factor = {quarters[i]};
+
+		px = 99;
+		assert(wm_ui_scale_edge_thickness(0, factor, &px)
+		       == MONITOR_SCALE_CONVERSION_OK);
+		assert(px == 0);
+	}
+	assert(wm_ui_scale_edge_thickness(1, (monitor_scale_factor){8}, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 2);
+}
+
+static void
+test_move_threshold_and_snap_sources(void)
+{
+	int px = 99;
+
+	assert(wm_ui_scale_px(
+		   DEFAULT_MOVE_THRESHOLD, (monitor_scale_factor){6}, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 5);
+	assert(wm_ui_scale_px(8, (monitor_scale_factor){8}, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 16);
+}
+
+static void
+test_menu_and_icon_wanted_sizes(void)
+{
+	monitor_scale_factor two_x = {8};
+	int px = 99;
+
+	assert(wm_ui_scale_px(16, two_x, &px) == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 32);
+	assert(wm_ui_scale_px(56, two_x, &px) == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 112);
+	assert(wm_ui_scale_px(MENU_TRIANGLE_WIDTH, two_x, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 10);
+	assert(wm_ui_scale_px(DEFAULT_MENU_BORDER_WIDTH, two_x, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 4);
+}
+
 int
 main(void)
 {
@@ -173,6 +245,10 @@ main(void)
 	test_explicit_title_below_font_is_raised();
 	test_explicit_title_above_font_centers();
 	test_overflow_initializes_output_zero();
+	test_hotspot_scaled_then_clamped();
+	test_edge_zero_stays_zero();
+	test_move_threshold_and_snap_sources();
+	test_menu_and_icon_wanted_sizes();
 
 	return 0;
 }

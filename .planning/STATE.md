@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 03
 current_phase_name: Geometry and Ownership Contracts
-status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-08-31T01:30:47.607Z"
+status: verifying
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-08-31T01:39:25.605Z"
 last_activity: 2026-08-30
 last_activity_desc: Phase 03 execution started
-state_head: d526b680661ca2da717f30ea902925fefcca5afa
+state_head: b52ecd956b7af08ff7d3ac7830c56cd76b539360
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-30)
 
 Phase: 03 (Geometry and Ownership Contracts) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-30 — Phase 03 execution started
 
 Progress: [██░░░░░░░░] 25%
@@ -75,6 +75,7 @@ Progress: [██░░░░░░░░] 25%
 | Phase 03 P01 | 13 min | 3 tasks | 6 files |
 | Phase 03 P02 | 8 min | 2 tasks | 3 files |
 | Phase 03 P03 | 14 min | 3 tasks | 6 files |
+| Phase 03 P04 | 5 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,12 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 03]: Increment snap without CS_ROUND_UP uses nearest multiple of inc with halfway rounding away from zero; CS_ROUND_UP ceiling snap stays in constrain_size. — PA-08 plus interactive MotionNotify edge checks must not move into libs.
 - [Phase 03]: Aspect uses checked __int128 cross-products; PBaseSize is subtracted only when that flag is set and base is not greater than min. — GEO-03 forbids double aspect and using min as the aspect base.
 - [Phase 03]: On ICCCM_CONSTRAIN_OVERFLOW or INVALID_ARGUMENT, constrain_size logs and restores the pre-constrain client size rather than inventing a plausible size. — T-03-01: untrusted hint arithmetic must not produce a plausible size after overflow.
+- [Phase 03]: Work rect is the snapshot monitor rectangle inset by that monitor's strut integers in root pixels, including negative si->x.
+- [Phase 03]: Negative remaining width or height, or invalid insets, initialize the output rectangle to zeros and return MONITOR_OWNERSHIP_INVALID_ARGUMENT.
+- [Phase 03]: Stored ewmh_working_area is already in root pixels, so EWMH_GetWorkAreaIntersection intersects without adding m->si->x again.
+- [Phase 03]: Strut strips use monitor si extents; they do not wrap through DisplayWidth or DisplayHeight.
+- [Phase 03]: When StartsOnScreen is set but not honored, screen_g comes from FScreenGetScrRect CURRENT rather than 0,0,DisplayWidth,DisplayHeight.
+- [Phase 03]: EWMH, ICCCM, configure, frame extents, work area, and module packets stay actual X11 pixels; Status and module packets were not expanded.
 
 ### Pending Todos
 
@@ -155,6 +162,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T01:30:47.535Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-08-31T01:39:13.247Z
+Stopped at: Completed 03-04-PLAN.md
 Resume file: None

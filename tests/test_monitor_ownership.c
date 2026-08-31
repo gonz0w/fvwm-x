@@ -606,6 +606,222 @@ test_work_rect_invalid_insets_initialize_outputs(void)
 }
 
 static void
+test_work_insets_negative_origin(void)
+{
+	rectangle monitor_rect = {
+	    .x	    = -1920,
+	    .y	    = 0,
+	    .width  = 1920,
+	    .height = 1080,
+	};
+	rectangle		 work;
+	boundingbox		 box = {
+	    .left   = 99,
+	    .right  = 99,
+	    .top    = 99,
+	    .bottom = 99,
+	};
+	monitor_ownership_status status;
+
+	status = monitor_ownership_work_rect(
+	    &monitor_rect, 64, 0, 32, 0, &work);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(work.x == -1856);
+	assert(work.y == 32);
+	assert(work.width == 1856);
+	assert(work.height == 1048);
+
+	status = monitor_ownership_work_insets(&monitor_rect, &work, &box);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(box.left == 64);
+	assert(box.right == 0);
+	assert(box.top == 32);
+	assert(box.bottom == 0);
+}
+
+static void
+test_work_insets_right_hand_origin(void)
+{
+	rectangle monitor_rect = {
+	    .x	    = 1920,
+	    .y	    = 0,
+	    .width  = 1920,
+	    .height = 1080,
+	};
+	rectangle		 work;
+	boundingbox		 box;
+	monitor_ownership_status status;
+
+	status = monitor_ownership_work_rect(
+	    &monitor_rect, 64, 0, 32, 0, &work);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(work.x == 1984);
+	assert(work.y == 32);
+	assert(work.width == 1856);
+	assert(work.height == 1048);
+
+	status = monitor_ownership_work_insets(&monitor_rect, &work, &box);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(box.left == 64);
+	assert(box.right == 0);
+	assert(box.top == 32);
+	assert(box.bottom == 0);
+}
+
+static void
+test_work_rect_paged_negative_origin(void)
+{
+	rectangle monitor_rect = {
+	    .x	    = -1920,
+	    .y	    = 0,
+	    .width  = 1920,
+	    .height = 1080,
+	};
+	rectangle		 work;
+	rectangle		 paged;
+	monitor_ownership_status status;
+
+	status = monitor_ownership_work_rect(
+	    &monitor_rect, 64, 0, 32, 0, &work);
+	assert(status == MONITOR_OWNERSHIP_OK);
+
+	status = monitor_ownership_work_rect_paged(&work, 0, 0, &paged);
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(paged.x == -1856);
+	assert(paged.y == 32);
+	assert(paged.width == 1856);
+	assert(paged.height == 1048);
+
+	status = monitor_ownership_work_rect_paged(&work, 1920, 0, &paged);
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(paged.x == 64);
+	assert(paged.y == 32);
+	assert(paged.width == 1856);
+	assert(paged.height == 1048);
+}
+
+static void
+test_minoverlap_edges_use_insets(void)
+{
+	rectangle monitor_rect = {
+	    .x	    = -1920,
+	    .y	    = 0,
+	    .width  = 1920,
+	    .height = 1080,
+	};
+	rectangle		 work;
+	boundingbox		 box;
+	int			 page_p1_x;
+	int			 xtest;
+
+	assert(monitor_ownership_work_rect(
+		   &monitor_rect, 64, 0, 32, 0, &work)
+	       == MONITOR_OWNERSHIP_OK);
+	assert(monitor_ownership_work_insets(&monitor_rect, &work, &box)
+	       == MONITOR_OWNERSHIP_OK);
+	assert(box.left == 64);
+
+	page_p1_x = -1920;
+	xtest	  = page_p1_x + box.left;
+	assert(xtest == -1856);
+	assert(xtest == work.x);
+
+	page_p1_x = 1920;
+	xtest	  = page_p1_x + box.left;
+	assert(xtest == 1984);
+}
+
+static void
+test_work_insets_null_args_initialize_outputs(void)
+{
+	rectangle monitor_rect = {
+	    .x	    = -1920,
+	    .y	    = 0,
+	    .width  = 1920,
+	    .height = 1080,
+	};
+	rectangle work = {
+	    .x	    = -1856,
+	    .y	    = 32,
+	    .width  = 1856,
+	    .height = 1048,
+	};
+	boundingbox box = {
+	    .left   = 99,
+	    .right  = 99,
+	    .top    = 99,
+	    .bottom = 99,
+	};
+
+	assert(monitor_ownership_work_insets(NULL, &work, &box)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+	assert(box.left == 0);
+	assert(box.right == 0);
+	assert(box.top == 0);
+	assert(box.bottom == 0);
+
+	box = (boundingbox){
+	    .left   = 99,
+	    .right  = 99,
+	    .top    = 99,
+	    .bottom = 99,
+	};
+	assert(monitor_ownership_work_insets(&monitor_rect, NULL, &box)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+	assert(box.left == 0);
+	assert(box.right == 0);
+	assert(box.top == 0);
+	assert(box.bottom == 0);
+
+	assert(monitor_ownership_work_insets(&monitor_rect, &work, NULL)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+}
+
+static void
+test_work_rect_paged_overflow_initializes_outputs(void)
+{
+	rectangle work = {
+	    .x	    = INT_MAX,
+	    .y	    = 32,
+	    .width  = 1856,
+	    .height = 1048,
+	};
+	rectangle paged = {
+	    .x	    = 99,
+	    .y	    = 99,
+	    .width  = 99,
+	    .height = 99,
+	};
+
+	assert(monitor_ownership_work_rect_paged(&work, 1, 0, &paged)
+	       == MONITOR_OWNERSHIP_OVERFLOW);
+	assert(paged.x == 0);
+	assert(paged.y == 0);
+	assert(paged.width == 0);
+	assert(paged.height == 0);
+
+	paged = (rectangle){
+	    .x	    = 99,
+	    .y	    = 99,
+	    .width  = 99,
+	    .height = 99,
+	};
+	assert(monitor_ownership_work_rect_paged(NULL, 0, 0, &paged)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+	assert(paged.x == 0);
+	assert(paged.y == 0);
+	assert(paged.width == 0);
+	assert(paged.height == 0);
+
+	assert(monitor_ownership_work_rect_paged(&work, 0, 0, NULL)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+}
+
+static void
 test_incumbent_ignored_when_it_no_longer_overlaps(void)
 {
 	monitor_topology_monitor monitors[2];
@@ -648,6 +864,12 @@ main(void)
 	test_incumbent_ignored_when_it_no_longer_overlaps();
 	test_work_rect_negative_origin_struts();
 	test_work_rect_invalid_insets_initialize_outputs();
+	test_work_insets_negative_origin();
+	test_work_insets_right_hand_origin();
+	test_work_rect_paged_negative_origin();
+	test_minoverlap_edges_use_insets();
+	test_work_insets_null_args_initialize_outputs();
+	test_work_rect_paged_overflow_initializes_outputs();
 
 	return 0;
 }

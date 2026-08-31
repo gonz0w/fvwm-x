@@ -312,3 +312,89 @@ monitor_ownership_work_rect(const rectangle *monitor_rect, int strut_left,
 
 	return MONITOR_OWNERSHIP_OK;
 }
+
+static void
+zero_boundingbox(boundingbox *out)
+{
+	if (out == NULL) {
+		return;
+	}
+	out->left   = 0;
+	out->right  = 0;
+	out->top    = 0;
+	out->bottom = 0;
+}
+
+monitor_ownership_status
+monitor_ownership_work_insets(const rectangle *monitor_rect,
+    const rectangle *work_rect, boundingbox *out)
+{
+	monitor_ownership_wide left;
+	monitor_ownership_wide right;
+	monitor_ownership_wide top;
+	monitor_ownership_wide bottom;
+	monitor_ownership_wide mon_right;
+	monitor_ownership_wide mon_bottom;
+	monitor_ownership_wide work_right;
+	monitor_ownership_wide work_bottom;
+
+	if (out == NULL) {
+		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
+	}
+	zero_boundingbox(out);
+	if (monitor_rect == NULL || work_rect == NULL) {
+		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
+	}
+
+	left	    = (monitor_ownership_wide)work_rect->x - monitor_rect->x;
+	top	    = (monitor_ownership_wide)work_rect->y - monitor_rect->y;
+	mon_right   = (monitor_ownership_wide)monitor_rect->x
+	    + monitor_rect->width;
+	mon_bottom  = (monitor_ownership_wide)monitor_rect->y
+	    + monitor_rect->height;
+	work_right  = (monitor_ownership_wide)work_rect->x + work_rect->width;
+	work_bottom = (monitor_ownership_wide)work_rect->y + work_rect->height;
+	right	    = mon_right - work_right;
+	bottom	    = mon_bottom - work_bottom;
+	if (left < INT_MIN || left > INT_MAX || right < INT_MIN
+	    || right > INT_MAX || top < INT_MIN || top > INT_MAX
+	    || bottom < INT_MIN || bottom > INT_MAX) {
+		return MONITOR_OWNERSHIP_OVERFLOW;
+	}
+
+	out->left   = (int)left;
+	out->right  = (int)right;
+	out->top    = (int)top;
+	out->bottom = (int)bottom;
+
+	return MONITOR_OWNERSHIP_OK;
+}
+
+monitor_ownership_status
+monitor_ownership_work_rect_paged(const rectangle *work_rect, int page_x,
+    int page_y, rectangle *out)
+{
+	monitor_ownership_wide x;
+	monitor_ownership_wide y;
+
+	if (out == NULL) {
+		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
+	}
+	zero_work_rect(out);
+	if (work_rect == NULL) {
+		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
+	}
+
+	x = (monitor_ownership_wide)work_rect->x + page_x;
+	y = (monitor_ownership_wide)work_rect->y + page_y;
+	if (x < INT_MIN || x > INT_MAX || y < INT_MIN || y > INT_MAX) {
+		return MONITOR_OWNERSHIP_OVERFLOW;
+	}
+
+	out->x	    = (int)x;
+	out->y	    = (int)y;
+	out->width  = work_rect->width;
+	out->height = work_rect->height;
+
+	return MONITOR_OWNERSHIP_OK;
+}

@@ -1280,19 +1280,27 @@ float EWMH_GetBaseStrutIntersection(struct monitor *m,
 float EWMH_GetStrutIntersection(struct monitor *m,
 	int x11, int y11, int x12, int y12, Bool use_percent)
 {
-	int left, right, top, bottom;
+	rectangle monitor_rect;
+	boundingbox box = {0};
+	monitor_ownership_status status;
 
-	left = m->Desktops->ewmh_working_area.x - m->si->x;
-	right = (m->si->x + m->si->w) -
-		(m->Desktops->ewmh_working_area.x
-		 + m->Desktops->ewmh_working_area.width);
-	top = m->Desktops->ewmh_working_area.y - m->si->y;
-	bottom = (m->si->y + m->si->h) -
-		(m->Desktops->ewmh_working_area.y
-		 + m->Desktops->ewmh_working_area.height);
+	monitor_rect.x = m->si->x;
+	monitor_rect.y = m->si->y;
+	monitor_rect.width = m->si->w;
+	monitor_rect.height = m->si->h;
+	status = monitor_ownership_work_insets(
+		&monitor_rect, &m->Desktops->ewmh_working_area, &box);
+	if (status != MONITOR_OWNERSHIP_OK)
+	{
+		box.left = 0;
+		box.right = 0;
+		box.top = 0;
+		box.bottom = 0;
+	}
 
 	return ewmh_GetStrutIntersection(m,
-		x11, y11, x12, y12, left, right, top, bottom, use_percent);
+		x11, y11, x12, y12, box.left, box.right, box.top, box.bottom,
+		use_percent);
 }
 
 /*
@@ -2101,21 +2109,21 @@ boundingbox
 get_ewmhc_boundingbox(struct monitor *m)
 {
 	boundingbox r = {0};
-	int left = 0, right = 0, top = 0, bottom = 0;
+	rectangle monitor_rect;
+	monitor_ownership_status status;
 
 	EWMH_UpdateWorkArea(m);
 
-	left = m->Desktops->ewmh_working_area.x;
-	right = m->si->w - left -
-		m->Desktops->ewmh_working_area.width;
-	top = m->Desktops->ewmh_working_area.y;
-	bottom = m->si->h - top -
-		 m->Desktops->ewmh_working_area.height;
-
-	r.left = left;
-	r.right = right;
-	r.top = top;
-	r.bottom = bottom;
+	monitor_rect.x = m->si->x;
+	monitor_rect.y = m->si->y;
+	monitor_rect.width = m->si->w;
+	monitor_rect.height = m->si->h;
+	status = monitor_ownership_work_insets(
+		&monitor_rect, &m->Desktops->ewmh_working_area, &r);
+	if (status != MONITOR_OWNERSHIP_OK)
+	{
+		return r;
+	}
 
 	return r;
 }

@@ -42,4 +42,12 @@ monitor_ownership_status
 monitor_ownership_work_rect(const rectangle *monitor_rect, int strut_left,
     int strut_right, int strut_top, int strut_bottom, rectangle *out);
 
+monitor_ownership_status
+monitor_ownership_work_insets(const rectangle *monitor_rect,
+    const rectangle *work_rect, boundingbox *out);
+
+monitor_ownership_status
+monitor_ownership_work_rect_paged(const rectangle *work_rect, int page_x,
+    int page_y, rectangle *out);
+
 #endif

@@ -259,3 +259,56 @@ monitor_ownership_resolve(const rectangle *window,
 
 	return MONITOR_OWNERSHIP_OK;
 }
+
+static void
+zero_work_rect(rectangle *out)
+{
+	if (out == NULL) {
+		return;
+	}
+	out->x	    = 0;
+	out->y	    = 0;
+	out->width  = 0;
+	out->height = 0;
+}
+
+monitor_ownership_status
+monitor_ownership_work_rect(const rectangle *monitor_rect, int strut_left,
+    int strut_right, int strut_top, int strut_bottom, rectangle *out)
+{
+	monitor_ownership_wide x;
+	monitor_ownership_wide y;
+	monitor_ownership_wide width;
+	monitor_ownership_wide height;
+
+	if (out == NULL) {
+		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
+	}
+	zero_work_rect(out);
+	if (monitor_rect == NULL || strut_left < 0 || strut_right < 0
+	    || strut_top < 0 || strut_bottom < 0 || monitor_rect->width < 0
+	    || monitor_rect->height < 0) {
+		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
+	}
+
+	x      = (monitor_ownership_wide)monitor_rect->x + strut_left;
+	y      = (monitor_ownership_wide)monitor_rect->y + strut_top;
+	width  = (monitor_ownership_wide)monitor_rect->width - strut_left
+	    - strut_right;
+	height = (monitor_ownership_wide)monitor_rect->height - strut_top
+	    - strut_bottom;
+	if (width < 0 || height < 0) {
+		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
+	}
+	if (x < INT_MIN || x > INT_MAX || y < INT_MIN || y > INT_MAX
+	    || width > INT_MAX || height > INT_MAX) {
+		return MONITOR_OWNERSHIP_OVERFLOW;
+	}
+
+	out->x	    = (int)x;
+	out->y	    = (int)y;
+	out->width  = (int)width;
+	out->height = (int)height;
+
+	return MONITOR_OWNERSHIP_OK;
+}

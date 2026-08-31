@@ -59,6 +59,7 @@
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
 #include "libs/log.h"
+#include "libs/monitor_ownership.h"
 #include "fvwm.h"
 #include "cmdparser.h"
 #include "execcontext.h"
@@ -1030,11 +1031,26 @@ void ewmh_ComputeAndSetWorkArea(struct monitor *m)
 		bottom = max(bottom, fw->strut.bottom);
 	}
 
-	x = left;
-	y = top;
+	{
+		rectangle monitor_rect;
+		rectangle work;
+		monitor_ownership_status status;
 
-	width =  m->si->w - (left + right);
-	height = m->si->h - (top + bottom);
+		monitor_rect.x = m->si->x;
+		monitor_rect.y = m->si->y;
+		monitor_rect.width = m->si->w;
+		monitor_rect.height = m->si->h;
+		status = monitor_ownership_work_rect(
+			&monitor_rect, left, right, top, bottom, &work);
+		if (status != MONITOR_OWNERSHIP_OK)
+		{
+			return;
+		}
+		x = work.x;
+		y = work.y;
+		width = work.width;
+		height = work.height;
+	}
 
 	if (Scr.bo.do_debug_randr)
 	{
@@ -1088,11 +1104,27 @@ void ewmh_HandleDynamicWorkArea(struct monitor *m)
 		dyn_bottom = max(dyn_bottom, fw->dyn_strut.bottom);
 	}
 
-	x = dyn_left;
-	y = dyn_top;
+	{
+		rectangle monitor_rect;
+		rectangle work;
+		monitor_ownership_status status;
 
-	width  = m->si->w - (dyn_left + dyn_right);
-	height = m->si->h - (dyn_top + dyn_bottom);
+		monitor_rect.x = m->si->x;
+		monitor_rect.y = m->si->y;
+		monitor_rect.width = m->si->w;
+		monitor_rect.height = m->si->h;
+		status = monitor_ownership_work_rect(
+			&monitor_rect, dyn_left, dyn_right, dyn_top,
+			dyn_bottom, &work);
+		if (status != MONITOR_OWNERSHIP_OK)
+		{
+			return;
+		}
+		x = work.x;
+		y = work.y;
+		width = work.width;
+		height = work.height;
+	}
 
 	if (
 		m->Desktops->ewmh_dyn_working_area.x != x ||
@@ -1149,10 +1181,10 @@ void EWMH_GetWorkAreaIntersection(
 		area_w = m->Desktops->ewmh_dyn_working_area.width;
 		area_h = m->Desktops->ewmh_dyn_working_area.height;
 	}
-	nx = max(*x, area_x + m->si->x);
-	ny = max(*y, area_y + m->si->y);
-	nw = min(*x + *w, area_x + area_w) - nx + m->si->x;
-	nh = min(*y + *h, area_y + area_h) - ny + m->si->y;
+	nx = max(*x, area_x);
+	ny = max(*y, area_y);
+	nw = min(*x + *w, area_x + area_w) - nx;
+	nh = min(*y + *h, area_y + area_h) - ny;
 
 	*x = nx;
 	*y = ny;
@@ -1205,31 +1237,31 @@ float ewmh_GetStrutIntersection(struct monitor *m,
 	int x21, y21, x22, y22;
 
 	/* left */
-	x21 = 0;
-	y21 = 0;
-	x22 = left;
-	y22 = monitor_get_all_heights();
+	x21 = m->si->x;
+	y21 = m->si->y;
+	x22 = m->si->x + left;
+	y22 = m->si->y + m->si->h;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 	/* right */
-	x21 = monitor_get_all_widths() - right;
-	y21 = 0;
-	x22 = monitor_get_all_widths();
-	y22 = monitor_get_all_heights();
+	x21 = m->si->x + m->si->w - right;
+	y21 = m->si->y;
+	x22 = m->si->x + m->si->w;
+	y22 = m->si->y + m->si->h;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 	/* top */
-	x21 = 0;
-	y21 = 0;
-	x22 = monitor_get_all_widths();
-	y22 = top;
+	x21 = m->si->x;
+	y21 = m->si->y;
+	x22 = m->si->x + m->si->w;
+	y22 = m->si->y + top;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 	/* bottom */
-	x21 = 0;
-	y21 = monitor_get_all_heights() - bottom;
-	x22 = monitor_get_all_widths();
-	y22 = monitor_get_all_heights();
+	x21 = m->si->x;
+	y21 = m->si->y + m->si->h - bottom;
+	x22 = m->si->x + m->si->w;
+	y22 = m->si->y + m->si->h;
 	ret += get_intersection(
 		x11, y11, x12, y12, x21, y21, x22, y22, use_percent);
 
@@ -1250,12 +1282,12 @@ float EWMH_GetStrutIntersection(struct monitor *m,
 {
 	int left, right, top, bottom;
 
-	left = m->Desktops->ewmh_working_area.x;
-	right = monitor_get_all_widths() -
+	left = m->Desktops->ewmh_working_area.x - m->si->x;
+	right = (m->si->x + m->si->w) -
 		(m->Desktops->ewmh_working_area.x
 		 + m->Desktops->ewmh_working_area.width);
-	top = m->Desktops->ewmh_working_area.y;
-	bottom = monitor_get_all_heights() -
+	top = m->Desktops->ewmh_working_area.y - m->si->y;
+	bottom = (m->si->y + m->si->h) -
 		(m->Desktops->ewmh_working_area.y
 		 + m->Desktops->ewmh_working_area.height);
 

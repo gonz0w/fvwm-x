@@ -145,7 +145,7 @@ Plans:
   4. Fonts and source images are scaled exactly once with target-aware caches, and fractional chrome has no clipped text, gaps, stale resources, or displaced cursor hot spots.
   5. Maintainers can build the supported profile with Xcursor, XRender, PNG, and SVG acceptance paths explicitly enabled.
 
-**Plans**: 6/9 plans executed
+**Plans**: 7/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -163,7 +163,7 @@ Plans:
 
 - [x] 04-05-PLAN.md — Wire owning-monitor scale into title, border, and handle chrome
 - [x] 04-06-PLAN.md — Scale menus and icons at the active or icon-geometry monitor
-- [ ] 04-07-PLAN.md — Raster images once and load cursors with clamped hot spots
+- [x] 04-07-PLAN.md — Raster images once and load cursors with clamped hot spots
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -230,7 +230,7 @@ Plans:
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
 | 3. Geometry and Ownership Contracts | 5/5 | Complete    | 2026-08-31 |
-| 4. WM-Owned UI Metrics and Resources | 6/9 | In Progress|  |
+| 4. WM-Owned UI Metrics and Resources | 7/9 | In Progress|  |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |
 | 7. Module Scale Protocol and Consumers | 0/TBD | Not started | - |

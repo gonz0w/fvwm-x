@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
 status: executing
-stopped_at: Completed 04-04-PLAN.md
-last_updated: "2026-08-31T14:37:07.807Z"
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-08-31T14:49:38.644Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: d745018e97de6a14b4a165a11ce3bfcd01fc9d4e
+state_head: 1ebe0a3459de5e60cedc06753027332c35f782a3
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 27
-  completed_plans: 22
+  completed_plans: 23
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
-Plan: 5 of 9
+Plan: 6 of 9
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 04 execution started
 
@@ -82,6 +82,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 04-wm-owned-ui-metrics-and-resources P02 | 4 min | 2 tasks | 4 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P03 | 6 min | 2 tasks | 4 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P04 | 8 min | 2 tasks | 5 files |
+| Phase 04-wm-owned-ui-metrics-and-resources P05 | 8 min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -164,6 +165,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: FftGetFontAtScale rewrites FC_PIXEL_SIZE after XftFontMatch from wm_ui_scale_px; FftGetFont stays the 1x wrapper.
 - [Phase 04]: XLFD pixel-field rewrite is best-effort; parse or load failure keeps 1x and fvwm_debug.
 - [Phase 04]: Display-wide fontconfig DPI is not the scale mechanism.
+- [Phase 04]: Clamp BorderWidth/HandleWidth against MAX_BORDER_WIDTH first, then wm_ui_scale_px; keep the clamped source and fvwm_debug on conversion failure or SHRT_MAX overflow.
+- [Phase 04]: Use fw->m->effective_scale.factor when fw->m is non-NULL, else MONITOR_SCALE_QUARTERS_MIN.
+- [Phase 04]: Pass already-loaded title_font->height as scaled_font_height; EXTRA_TITLE_FONT_HEIGHT is a source argument to wm_ui_compose_title_thickness.
+- [Phase 04]: Title and icon fonts both open through FlocaleLoadFontAtScale at generation 1.
 
 ### Pending Todos
 
@@ -183,6 +188,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T14:37:07.688Z
-Stopped at: Completed 04-04-PLAN.md
+Last session: 2026-08-31T14:49:38.530Z
+Stopped at: Completed 04-05-PLAN.md
 Resume file: None

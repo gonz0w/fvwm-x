@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
-status: executing
-stopped_at: Completed 04-10-PLAN.md
-last_updated: "2026-08-31T16:55:04.955Z"
+status: verifying
+stopped_at: Completed 04-11-PLAN.md
+last_updated: "2026-08-31T17:01:27.428Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: f170c46ffbb84119d1939e390b211e066b85449e
+state_head: 2a03656b9ec929f12a64f9d91aad4acc8635fa23
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 29
-  completed_plans: 28
+  completed_plans: 29
 ---
 
 # Project State
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
 Plan: 11 of 11
-Status: Executing Phase 04
-Last activity: 2026-08-31 — Completed 04-10-PLAN.md
+Status: Phase complete — ready for verification
+Last activity: 2026-08-31 — Completed 04-11-PLAN.md
 
 Progress: [███░░░░░░░] 38%
 
@@ -88,6 +88,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 04-wm-owned-ui-metrics-and-resources P08 | 8 min | 3 tasks | 5 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P09 | 10 min | 2 tasks | 2 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P10 | 4 min | 2 tasks | 3 files |
+| Phase 04-wm-owned-ui-metrics-and-resources P11 | 4 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -192,6 +193,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: bind_default_font_at_scale result becomes fw->title_font and fw->icon_font; Scr.DefaultFont remains the 1x fallback only when AtScale returns NULL. — Default-config never sets WindowFont, so compose must see a scaled DefaultFont height rather than mixing 1x font height with scaled extra pixels.
 - [Phase 04]: Keep SET_USING_DEFAULT_WINDOW_FONT / SET_USING_DEFAULT_ICON_FONT at 1 on the default-name path so CMD_DefaultFont and has_default_font_changed still select those windows. — USING_DEFAULT_* is the rebind selector, not a promise that the slot pointer equals Scr.DefaultFont.
 - [Phase 04]: CMD_DefaultFont still loads the process-global face with FlocaleLoadFont and rebinds USING_DEFAULT_* windows before unloading the previous 1x face. — Unloading the shared 1x face while window slots still hold it is use-after-free; Scr.DefaultFont stays a 1x identity.
+- [Phase 04]: HandlePaging local edge_thickness comes from mapped_edge_thickness(m, m->virtual_scr.edge_thickness); the stored EdgeThickness field stays source 0-2.
+- [Phase 04]: checkPanFrames writes m->virtual_scr.last_edge_thickness = source_thickness after map/unmap/resize, never mapped pixels.
 
 ### Pending Todos
 
@@ -211,6 +214,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T16:54:06.323Z
-Stopped at: Completed 04-10-PLAN.md
+Last session: 2026-08-31T17:01:27.294Z
+Stopped at: Completed 04-11-PLAN.md
 Resume file: None

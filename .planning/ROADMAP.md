@@ -145,7 +145,7 @@ Plans:
   4. Fonts and source images are scaled exactly once with target-aware caches, and fractional chrome has no clipped text, gaps, stale resources, or displaced cursor hot spots.
   5. Maintainers can build the supported profile with Xcursor, XRender, PNG, and SVG acceptance paths explicitly enabled.
 
-**Plans**: 10/11 plans executed (9 executed, 2 gap closure)
+**Plans**: 11/11 plans executed (9 executed, 2 gap closure)
 **UI hint**: yes
 
 Plans:
@@ -173,7 +173,7 @@ Plans:
 **Wave 5** *(gap closure)*
 
 - [x] 04-10-PLAN.md — Load default title/icon fonts at owning-monitor scale
-- [ ] 04-11-PLAN.md — Map HandlePaging and last_edge_thickness to scaled pan frames
+- [x] 04-11-PLAN.md — Map HandlePaging and last_edge_thickness to scaled pan frames
 
 ### Phase 5: Logical-Size Transition Coordinator
 
@@ -235,7 +235,7 @@ Plans:
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
 | 3. Geometry and Ownership Contracts | 5/5 | Complete    | 2026-08-31 |
-| 4. WM-Owned UI Metrics and Resources | 10/11 | In Progress|  |
+| 4. WM-Owned UI Metrics and Resources | 11/11 | In Progress|  |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |
 | 7. Module Scale Protocol and Consumers | 0/TBD | Not started | - |

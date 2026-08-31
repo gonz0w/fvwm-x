@@ -596,6 +596,10 @@ static void broadcast_mini_icon(FvwmWindow *fw)
 static void setup_mini_icon(FvwmWindow *fw, window_style *pstyle)
 {
 	FvwmPictureAttributes fpa;
+	monitor_scale_factor factor;
+	monitor_scale_conversion_status status;
+	int wanted_w;
+	int wanted_h;
 
 	if (!FMiniIconsSupported)
 	{
@@ -612,8 +616,43 @@ static void setup_mini_icon(FvwmWindow *fw, window_style *pstyle)
 	if (fw->mini_pixmap_file)
 	{
 		fpa.mask = 0;
-		fw->mini_icon = PCacheFvwmPicture(
-			dpy, Scr.NoFocusWin, NULL, fw->mini_pixmap_file, fpa);
+		if (fw->m != NULL)
+		{
+			factor = fw->m->effective_scale.factor;
+		}
+		else
+		{
+			factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+		}
+		wanted_w = 0;
+		wanted_h = 0;
+		status = wm_ui_scale_px(16, factor, &wanted_w);
+		if (status != MONITOR_SCALE_CONVERSION_OK)
+		{
+			fvwm_debug(__func__,
+				"failed to scale MiniIcon width 16 (%d); "
+				"using intrinsic size",
+				(int)status);
+			wanted_w = 0;
+			wanted_h = 0;
+		}
+		else
+		{
+			status = wm_ui_scale_px(16, factor, &wanted_h);
+			if (status != MONITOR_SCALE_CONVERSION_OK)
+			{
+				fvwm_debug(__func__,
+					"failed to scale MiniIcon height 16 "
+					"(%d); using intrinsic size",
+					(int)status);
+				wanted_w = 0;
+				wanted_h = 0;
+			}
+		}
+		fw->mini_icon = PCacheFvwmPictureAtScale(
+			dpy, Scr.NoFocusWin, NULL, fw->mini_pixmap_file, fpa,
+			factor, (unsigned)wanted_w, (unsigned)wanted_h,
+			WM_UI_RESOURCE_GENERATION_INITIAL);
 	}
 	else
 	{

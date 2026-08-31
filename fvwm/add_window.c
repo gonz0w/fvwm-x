@@ -61,6 +61,7 @@
 #include "libs/Strings.h"
 #include "libs/XResource.h"
 #include "libs/safemalloc.h"
+#include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "cursor.h"
@@ -1695,6 +1696,16 @@ void setup_title_geometry(
 void setup_window_font(
 	FvwmWindow *fw, window_style *pstyle, Bool do_destroy)
 {
+	monitor_scale_factor factor;
+
+	if (fw->m != NULL)
+	{
+		factor = fw->m->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
 	/* get rid of old font */
 	if (do_destroy)
 	{
@@ -1707,7 +1718,9 @@ void setup_window_font(
 		if (S_HAS_WINDOW_FONT(SCF(*pstyle)) &&
 		    SGET_WINDOW_FONT(*pstyle) &&
 		    (fw->title_font =
-		     FlocaleLoadFont(dpy, SGET_WINDOW_FONT(*pstyle), "fvwm")))
+		     FlocaleLoadFontAtScale(
+			     dpy, SGET_WINDOW_FONT(*pstyle), "fvwm",
+			     factor, WM_UI_RESOURCE_GENERATION_INITIAL)))
 		{
 			SET_USING_DEFAULT_WINDOW_FONT(fw, 0);
 		}
@@ -1729,7 +1742,16 @@ void setup_icon_font(
 	FvwmWindow *fw, window_style *pstyle, Bool do_destroy)
 {
 	int height = 0;
+	monitor_scale_factor factor;
 
+	if (fw->m != NULL)
+	{
+		factor = fw->m->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
 	if (IS_ICON_SUPPRESSED(fw) || HAS_NO_ICON_TITLE(fw))
 	{
 		if (IS_ICON_FONT_LOADED(fw))
@@ -1751,7 +1773,9 @@ void setup_icon_font(
 	{
 		if (S_HAS_ICON_FONT(SCF(*pstyle)) && SGET_ICON_FONT(*pstyle) &&
 		    (fw->icon_font =
-		     FlocaleLoadFont(dpy, SGET_ICON_FONT(*pstyle), "fvwm")))
+		     FlocaleLoadFontAtScale(
+			     dpy, SGET_ICON_FONT(*pstyle), "fvwm",
+			     factor, WM_UI_RESOURCE_GENERATION_INITIAL)))
 		{
 			SET_USING_DEFAULT_ICON_FONT(fw, 0);
 		}

@@ -32,6 +32,7 @@
 #include "PictureBase.h"
 #include "defaults.h"
 #include "fvwmlib.h"
+#include "libs/monitor_ownership.h"
 #include "log.h"
 #include "queue.h"
 #include "strtonum.h"
@@ -1247,64 +1248,47 @@ monitor_get_count(void)
 struct monitor *
 FindScreenOfXY(int x, int y)
 {
-	struct monitor *m, *m_min = NULL;
-	int64_t		dmin	    = INT64_MAX;
-	int		all_widths  = monitor_get_all_widths();
-	int		all_heights = monitor_get_all_heights();
+	const monitor_topology_snapshot *snapshot;
+	monitor_ownership_result	 result;
+	monitor_ownership_status	 status;
+	struct monitor			*mapped;
+	struct monitor			*fallback;
+	rectangle			 window;
 
-	x %= all_widths;
-	y %= all_heights;
-	if (x < 0)
-		x += all_widths;
-	if (y < 0)
-		y += all_heights;
-
-	int nr_monitors = monitor_get_count();
-
-	RB_FOREACH(m, monitors, &monitor_q)
-	{
-		/* If we have more than one screen configured, then don't match
-		 * on the global screen, as that's separate to XY positioning
-		 * which is only concerned with the *specific* screen.
-		 */
-		if (nr_monitors > 0
-		    && strcmp(m->si->name, GLOBAL_SCREEN_NAME) == 0)
-			continue;
-		if (m->flags & MONITOR_DISABLED)
-			continue;
-		if (x >= m->si->x && x < m->si->x + m->si->w && y >= m->si->y
-		    && y < m->si->y + m->si->h)
-			return (m);
-	}
-
-	/* No monitor found, point is in a dead area.
-	 * Find closest monitor using the taxi cab metric.
-	 */
-	RB_FOREACH(m, monitors, &monitor_q)
-	{
-		int64_t d;
-
-		/* Skip global screen */
-		if (nr_monitors > 0
-		    && strcmp(m->si->name, GLOBAL_SCREEN_NAME) == 0)
-			continue;
-
-		if (m->flags & MONITOR_DISABLED)
-			continue;
-
-		d = fscreen_monitor_distance_to_point(m, x, y);
-		if (d < dmin) {
-			dmin  = d;
-			m_min = m;
+	window.x      = x;
+	window.y      = y;
+	window.width  = 1;
+	window.height = 1;
+	snapshot      = FScreenGetTopologySnapshot();
+	status	      = monitor_ownership_resolve(&window,
+		  snapshot != NULL ? snapshot->monitors : NULL,
+		  snapshot != NULL ? snapshot->monitor_count : 0, None, 0,
+		  &result);
+	if (status == MONITOR_OWNERSHIP_OK && result.name != NULL) {
+		mapped = monitor_resolve_name(result.name);
+		if (mapped != NULL) {
+			return mapped;
 		}
 	}
 
-	/* Shouldn't happen. */
-	if (m_min == NULL) {
-		fvwm_debug(__func__, "Couldn't find any monitor");
-		exit(106);
+	fvwm_debug(__func__, "Couldn't find any monitor");
+	fallback = monitor_by_primary();
+	if (fallback != NULL) {
+		return fallback;
 	}
-	return (m_min);
+	RB_FOREACH(fallback, monitors, &monitor_q)
+	{
+		if (fallback->flags & MONITOR_DISABLED) {
+			continue;
+		}
+		if (fallback->si != NULL && fallback->si->name != NULL
+		    && strcmp(fallback->si->name, GLOBAL_SCREEN_NAME) == 0) {
+			continue;
+		}
+		return fallback;
+	}
+
+	return NULL;
 }
 
 /* Returns the primary screen if arg.name is NULL. */

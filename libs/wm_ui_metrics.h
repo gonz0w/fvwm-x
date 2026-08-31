@@ -25,6 +25,11 @@ typedef struct
 monitor_scale_conversion_status
 wm_ui_scale_px(int source, monitor_scale_factor factor, int *px);
 
+monitor_scale_conversion_status
+wm_ui_compose_title_thickness(int scaled_font_height, int extra_source,
+    int explicit_title_source, int min_title_source,
+    monitor_scale_factor factor, int *thickness, int *offset);
+
 bool
 wm_ui_cache_key_equal(const wm_ui_cache_key *a, const wm_ui_cache_key *b);
 

@@ -647,20 +647,23 @@ test_repeated_conversions_start_from_the_original_source(void)
 | A5 | `_NET_WM_STRUT_PARTIAL` stays unimplemented. | Pattern 4 | Panels that only set PARTIAL remain invisible to work area. |
 | A6 | No new PrintInfo subject for ownership in this phase. | Discretion | TOP-05 observability is Phase 6. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **What hysteresis constant and reference rectangle should discuss-phase lock?**
+1. **RESOLVED — What hysteresis constant and reference rectangle should discuss-phase lock?**
    - What we know: GEO-01 requires incumbent + seam hysteresis; current code has neither. [VERIFIED: fvwm/update.c:665-671]
    - What's unclear: 8px vs percent-of-window; frame vs client vs pointer.
    - Recommendation: lock frame rectangle + 8px extra overlap before planning.
+   - Adopted resolution: reference geometry is the mapped frame rectangle (`fw->g.frame` when `IS_MAPPED`, else `g.max`/`g.normal`) and hysteresis is 8 root pixels of extra overlap (`MONITOR_OWNERSHIP_HYSTERESIS_PX` 8; steal strictly greater than 8). This is PA-04 and PA-05 in the executable plans.
 
-2. **Should `FindScreenOfXY` remain a public point API wrapping ownership, or die?**
+2. **RESOLVED — Should `FindScreenOfXY` remain a public point API wrapping ownership, or die?**
    - What we know: pointer, placement, and modules call it. [VERIFIED: libs/FScreen.c:254-268]
    - Recommendation: keep the symbol as a point query with no incumbent and no wrap.
+   - Adopted resolution: keep `FindScreenOfXY` as a public no-incumbent point wrapper: 1x1 rectangle over committed snapshot rectangles, incumbent `None`, hysteresis 0. This is PA-03 in the executable plans.
 
-3. **How much live `constrain_size` behavior must the pure function reproduce?**
+3. **RESOLVED — How much live `constrain_size` behavior must the pure function reproduce?**
    - What we know: wrapper also applies style min/max, borders, CS_ROUND_UP, max defect. [VERIFIED: fvwm/geometry.c:841-1024]
    - Recommendation: pure function = ICCCM client size only; wrapper keeps the rest.
+   - Adopted resolution: `icccm_constrain_size` implements ICCCM client size only; the `constrain_size` wrapper keeps style Min/Max WindowSize, borders, `HAS_NEW_WM_NORMAL_HINTS` XSync, `CS_ROUND_UP`, and max defect. This is PA-07 in the executable plans.
 
 ## Environment Availability
 

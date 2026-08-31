@@ -316,6 +316,17 @@ test_flocale_wrapper_forwards_1x_generation_1(void)
 }
 
 static void
+test_fft_get_font_at_scale_exists(void)
+{
+	FftFontType *(*unscaled)(Display *, char *, char *) = FftGetFont;
+	FftFontType *(*scaled)(Display *, char *, char *,
+	    monitor_scale_factor) = FftGetFontAtScale;
+
+	assert(unscaled != NULL);
+	assert(scaled != NULL);
+}
+
+static void
 test_menu_and_icon_wanted_sizes(void)
 {
 	monitor_scale_factor two_x = {8};
@@ -350,6 +361,7 @@ main(void)
 	test_pcache_wrapper_forwards_1x_generation_1();
 	test_flocale_lookup_requires_scale_and_generation();
 	test_flocale_wrapper_forwards_1x_generation_1();
+	test_fft_get_font_at_scale_exists();
 
 	return 0;
 }

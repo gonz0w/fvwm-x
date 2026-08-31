@@ -537,6 +537,75 @@ test_incumbent_kept_when_one_pixel_overlap_remains(void)
 }
 
 static void
+test_work_rect_negative_origin_struts(void)
+{
+	rectangle monitor_rect = {
+	    .x	    = -1920,
+	    .y	    = 0,
+	    .width  = 1920,
+	    .height = 1080,
+	};
+	rectangle		 work = {
+	    .x	    = 99,
+	    .y	    = 99,
+	    .width  = 99,
+	    .height = 99,
+	};
+	monitor_ownership_status status;
+
+	status = monitor_ownership_work_rect(
+	    &monitor_rect, 64, 0, 32, 0, &work);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(work.x == -1856);
+	assert(work.y == 32);
+	assert(work.width == 1856);
+	assert(work.height == 1048);
+}
+
+static void
+test_work_rect_invalid_insets_initialize_outputs(void)
+{
+	rectangle monitor_rect = {
+	    .x	    = -1920,
+	    .y	    = 0,
+	    .width  = 1920,
+	    .height = 1080,
+	};
+	rectangle work = {
+	    .x	    = 99,
+	    .y	    = 99,
+	    .width  = 99,
+	    .height = 99,
+	};
+
+	assert(monitor_ownership_work_rect(
+		   &monitor_rect, 2000, 0, 0, 0, &work)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+	assert(work.x == 0);
+	assert(work.y == 0);
+	assert(work.width == 0);
+	assert(work.height == 0);
+
+	work = (rectangle){
+	    .x	    = 99,
+	    .y	    = 99,
+	    .width  = 99,
+	    .height = 99,
+	};
+	assert(monitor_ownership_work_rect(NULL, 0, 0, 0, 0, &work)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+	assert(work.x == 0);
+	assert(work.y == 0);
+	assert(work.width == 0);
+	assert(work.height == 0);
+
+	assert(monitor_ownership_work_rect(
+		   &monitor_rect, 0, 0, 0, 0, NULL)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+}
+
+static void
 test_incumbent_ignored_when_it_no_longer_overlaps(void)
 {
 	monitor_topology_monitor monitors[2];
@@ -577,6 +646,8 @@ main(void)
 	test_challenger_wins_beyond_hysteresis();
 	test_incumbent_kept_when_one_pixel_overlap_remains();
 	test_incumbent_ignored_when_it_no_longer_overlaps();
+	test_work_rect_negative_origin_struts();
+	test_work_rect_invalid_insets_initialize_outputs();
 
 	return 0;
 }

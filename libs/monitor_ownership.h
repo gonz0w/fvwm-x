@@ -38,4 +38,8 @@ monitor_ownership_resolve(const rectangle *window,
     const monitor_topology_monitor *monitors, int monitor_count,
     Atom incumbent_atom, int hysteresis_px, monitor_ownership_result *result);
 
+monitor_ownership_status
+monitor_ownership_work_rect(const rectangle *monitor_rect, int strut_left,
+    int strut_right, int strut_top, int strut_bottom, rectangle *out);
+
 #endif

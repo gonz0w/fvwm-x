@@ -232,9 +232,11 @@ static void
 test_gravity_northwest_default(void)
 {
 	icccm_size_hints hints = {
-	    .flags	= PMinSize,
+	    .flags	= PMinSize | PMaxSize,
 	    .min_width	= 50,
 	    .min_height = 40,
+	    .max_width	= 50,
+	    .max_height = 40,
 	};
 	rectangle	     frame  = {.x = 10, .y = 20, .width = 100,
 		    .height					= 80};

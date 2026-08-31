@@ -17,6 +17,7 @@
 
 #include "config.h"
 
+#include <limits.h>
 #include <stdio.h>
 
 #include "libs/fvwmlib.h"
@@ -24,6 +25,7 @@
 #include "libs/icccm_size_hints.h"
 #include "libs/log.h"
 #include "libs/wcontext.h"
+#include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
 #include "fvwm/ewmh.h"
 #include "externs.h"
@@ -250,16 +252,15 @@ void get_title_font_size_and_offset(
 	Bool is_top_title_rotated, Bool is_bottom_title_rotated,
 	int *size, int *offset)
 {
-	int decor_size;
-	int extra_size;
 	int font_size;
 	int min_offset;
+	int thickness;
+	int compose_offset;
 	Bool is_rotated_cw, is_rotated;
 	rotation_t draw_rotation;
+	monitor_scale_factor factor;
+	monitor_scale_conversion_status status;
 
-	/* adjust font offset according to height specified in title style */
-	decor_size = fw->decor->title_height;
-	font_size = fw->title_font->height + EXTRA_TITLE_FONT_HEIGHT;
 	switch (title_dir)
 	{
 	case DIR_W:
@@ -300,18 +301,40 @@ void get_title_font_size_and_offset(
 	}
 	min_offset =  FlocaleGetMinOffset(
 		fw->title_font, draw_rotation);
-	extra_size = (decor_size > 0) ? decor_size - font_size : 0;
+	/* Last-good fallback: unscaled font height plus extra, no clip math. */
+	font_size = fw->title_font->height + EXTRA_TITLE_FONT_HEIGHT;
+	*size = font_size;
 	*offset = min_offset;
-	if (fw->decor->min_title_height > 0 &&
-	    font_size + extra_size < fw->decor->min_title_height)
+	if (fw->m != NULL)
 	{
-		extra_size = fw->decor->min_title_height - font_size;
+		factor = fw->m->effective_scale.factor;
 	}
-	if (extra_size > 0)
+	else
 	{
-		*offset += extra_size / 2;
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
 	}
-	*size = font_size + extra_size;
+	thickness = 0;
+	compose_offset = 0;
+	status = wm_ui_compose_title_thickness(
+		fw->title_font->height, EXTRA_TITLE_FONT_HEIGHT,
+		fw->decor->title_height, fw->decor->min_title_height,
+		factor, &thickness, &compose_offset);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"title thickness composition failed (%d)",
+			(int)status);
+		return;
+	}
+	if (thickness > SHRT_MAX)
+	{
+		fvwm_debug(__func__,
+			"title thickness %d overflows short; keeping last-good",
+			thickness);
+		return;
+	}
+	*size = thickness;
+	*offset = min_offset + compose_offset;
 
 	return;
 }

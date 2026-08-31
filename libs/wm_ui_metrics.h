@@ -30,6 +30,14 @@ wm_ui_compose_title_thickness(int scaled_font_height, int extra_source,
     int explicit_title_source, int min_title_source,
     monitor_scale_factor factor, int *thickness, int *offset);
 
+monitor_scale_conversion_status
+wm_ui_scale_hotspot(
+    int source_hot, int extent, monitor_scale_factor factor, int *hot);
+
+monitor_scale_conversion_status
+wm_ui_scale_edge_thickness(
+    int source, monitor_scale_factor factor, int *px);
+
 bool
 wm_ui_cache_key_equal(const wm_ui_cache_key *a, const wm_ui_cache_key *b);
 

@@ -105,6 +105,50 @@ wm_ui_compose_title_thickness(int scaled_font_height, int extra_source,
 	return MONITOR_SCALE_CONVERSION_OK;
 }
 
+monitor_scale_conversion_status
+wm_ui_scale_hotspot(
+    int source_hot, int extent, monitor_scale_factor factor, int *hot)
+{
+	monitor_scale_conversion_status status;
+	int scaled = 0;
+
+	if (hot != NULL) {
+		*hot = 0;
+	}
+	if (hot == NULL || extent <= 0) {
+		return MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT;
+	}
+
+	status = wm_ui_scale_px(source_hot, factor, &scaled);
+	if (status != MONITOR_SCALE_CONVERSION_OK) {
+		return status;
+	}
+	if (scaled < 0) {
+		scaled = 0;
+	} else if (scaled >= extent) {
+		scaled = extent - 1;
+	}
+	*hot = scaled;
+
+	return MONITOR_SCALE_CONVERSION_OK;
+}
+
+monitor_scale_conversion_status
+wm_ui_scale_edge_thickness(int source, monitor_scale_factor factor, int *px)
+{
+	if (px != NULL) {
+		*px = 0;
+	}
+	if (px == NULL) {
+		return MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT;
+	}
+	if (source == 0) {
+		return MONITOR_SCALE_CONVERSION_OK;
+	}
+
+	return wm_ui_scale_px(source, factor, px);
+}
+
 bool
 wm_ui_cache_key_equal(const wm_ui_cache_key *a, const wm_ui_cache_key *b)
 {

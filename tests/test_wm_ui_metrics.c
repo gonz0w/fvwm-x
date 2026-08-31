@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include "libs/defaults.h"
+#include "libs/Flocale.h"
 #include "libs/Picture.h"
 #include "libs/PictureBase.h"
 #include "libs/wm_ui_metrics.h"
@@ -274,6 +275,46 @@ test_pcache_wrapper_forwards_1x_generation_1(void)
 	assert(scaled != NULL);
 }
 
+static int
+flocale_cache_extras_agree(const FlocaleFont *flf, unsigned int scale_quarters,
+    unsigned int generation)
+{
+	return flf->scale_quarters == scale_quarters
+	    && flf->generation == generation;
+}
+
+static void
+test_flocale_lookup_requires_scale_and_generation(void)
+{
+	FlocaleFont cached = {0};
+
+	cached.scale_quarters = MONITOR_SCALE_QUARTERS_MIN;
+	cached.generation = WM_UI_RESOURCE_GENERATION_INITIAL;
+
+	assert(offsetof(FlocaleFont, scale_quarters)
+	    > offsetof(FlocaleFont, count));
+	assert(flocale_cache_extras_agree(&cached, MONITOR_SCALE_QUARTERS_MIN,
+	    WM_UI_RESOURCE_GENERATION_INITIAL));
+
+	/* Same name at 2x must miss the 1x face. */
+	assert(!flocale_cache_extras_agree(&cached, 8U,
+	    WM_UI_RESOURCE_GENERATION_INITIAL));
+	/* A later generation must miss even at 1x. */
+	assert(!flocale_cache_extras_agree(&cached, MONITOR_SCALE_QUARTERS_MIN,
+	    2U));
+}
+
+static void
+test_flocale_wrapper_forwards_1x_generation_1(void)
+{
+	FlocaleFont *(*unscaled)(Display *, char *, char *) = FlocaleLoadFont;
+	FlocaleFont *(*scaled)(Display *, char *, char *, monitor_scale_factor,
+	    unsigned) = FlocaleLoadFontAtScale;
+
+	assert(unscaled != NULL);
+	assert(scaled != NULL);
+}
+
 static void
 test_menu_and_icon_wanted_sizes(void)
 {
@@ -307,6 +348,8 @@ main(void)
 	test_menu_and_icon_wanted_sizes();
 	test_picture_lookup_requires_scale_and_generation();
 	test_pcache_wrapper_forwards_1x_generation_1();
+	test_flocale_lookup_requires_scale_and_generation();
+	test_flocale_wrapper_forwards_1x_generation_1();
 
 	return 0;
 }

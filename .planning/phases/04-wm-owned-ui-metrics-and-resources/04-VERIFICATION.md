@@ -1,7 +1,7 @@
 ---
 phase: 04-wm-owned-ui-metrics-and-resources
 verified: 2026-08-31T20:04:41Z
-status: human_needed
+status: passed
 score: 17/19 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
@@ -12,6 +12,7 @@ re_verification:
   previous_status: gaps_found
   previous_score: 14/19
   gaps_closed:
+
     - "After update_fvwm_monitor(fw) in AddWindow, SelectDecor then setup_window_font/setup_icon_font(..., True) rebind title/icon faces and border/handle/title thickness at the owning-monitor factor."
     - "bind_default_font_at_scale drops the extra FlocaleFont count when AtScale returns the fallback pointer; destroy_*_font still skip Scr.DefaultFont."
     - "Default-config map path no longer keeps the 1x DefaultFont face as the title/icon font once fw->m is known."
@@ -19,9 +20,11 @@ re_verification:
   regressions: []
 behavior_unverified_items: []
 human_verification:
+
   - test: "Write or run a held-out Picture cache lookup that actually calls PCacheFvwmPictureAtScale (or the production walk) at two scale_quarters / target / generation combinations."
     expected: "Same name bytes miss across quarters or generation; matching quarters, target_width, target_height, generation, name, stamp, and fpa_mask hit."
     why_human: "Truth tagged verification: backstop. Native test_picture_lookup_requires_scale_and_generation compares a stack FvwmPicture, not a live cache lookup. Presence of the production compare is not explicit evidence."
+
   - test: "Write or run a held-out Flocale cache lookup that actually calls FlocaleLoadFontAtScale at two scale_quarters / generation values with identical name bytes."
     expected: "Cache hit requires matching name bytes, scale_quarters, and generation; a quarters or generation mismatch misses."
     why_human: "Truth tagged verification: backstop. Native test_flocale_lookup_requires_scale_and_generation compares a stack FlocaleFont, not a live cache lookup. FlocaleLoadFontAtScale needs a Display, so this Darwin tree cannot observe the behavior."

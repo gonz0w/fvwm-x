@@ -35,11 +35,11 @@ visually consistent across changing monitor layouts and scale factors.
   X11 integration scenarios — Phase 1–2
 - ✓ Resolve window ownership, ICCCM size constraints, and work-area, strut,
   and placement geometry in literal root pixels — Phase 3
+- ✓ Apply monitor scale consistently to decorations, fonts, icons, cursors,
+  and interactive hit targets — Phase 4
 
 ### Active
 
-- [ ] Apply monitor scale consistently to decorations, fonts, icons, cursors,
-  and interactive hit targets
 - [ ] Keep placement, maximize, fullscreen, edge, and work-area geometry
   correct in mixed-scale layouts
 - [ ] Preserve a window's logical size when it crosses monitors with different
@@ -77,8 +77,9 @@ and a core-owned transactional store in `fvwm/monitor_scale_config.c`. Phase 3
 extracted monitor ownership, ICCCM size constraints, and root-pixel work-area
 contracts into `libs/monitor_ownership.c` and `libs/icccm_size_hints.c`.
 Drawing and chrome policy remain in `fvwm/move_resize.c`, `fvwm/borders.c`,
-and `fvwm/placement.c`. Phase 4 wires scaled FVWM-owned UI metrics onto that
-geometry contract.
+and `fvwm/placement.c`. Phase 4 added `wm_ui_scale_px` plus scale-aware
+Picture/Flocale caches so FVWM-owned chrome, fonts, icons, cursors, and hit
+targets convert once into actual X11 pixels.
 
 ## Constraints
 
@@ -104,6 +105,7 @@ geometry contract.
 | Start with monitor and HiDPI foundations | Later rendering, input, and configuration work needs one authoritative scale model | — Pending |
 | Use explicit per-monitor scale with automatic DPI fallback | Overrides provide deterministic control while automatic behavior gives a usable default | Shipped in Phase 2 |
 | Keep EWMH, ICCCM, configure, frame-extents, work-area, and module geometry in actual X11 pixels; derive work-area insets from stored root-pixel rectangles | Prevents double-counting monitor origin on negative-origin layouts | Shipped in Phase 3 |
+| Scale FVWM-owned chrome once through wm_ui_scale_px; cache fonts and pictures by scale_quarters, target size, and generation; do not mutate display-wide font DPI or cursor default size | Keeps mixed-DPI chrome internally consistent without retargeting client pixels | Shipped in Phase 4 |
 | Preserve logical window size across scale changes | Perceived size should remain stable when users move windows between monitors | — Pending |
 | Remain X11-only with external compositing | Limits scope to improving the current architecture instead of building a compositor platform | — Pending |
 | Permit configuration and module compatibility breaks | Legacy constraints must not prevent a coherent modern runtime model | — Pending |
@@ -126,4 +128,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-31 after Phase 3*
+*Last updated: 2026-08-31 after Phase 4*

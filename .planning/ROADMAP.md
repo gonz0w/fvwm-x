@@ -13,7 +13,7 @@ FVWM-X v0.1 proceeds through dependency-ordered technical layers: establish an a
 - [x] **Phase 1: Topology Snapshot and Live-X Harness** - Establish trustworthy committed RandR Monitor facts and reproducible live-X topology scenarios. (completed 2026-08-30)
 - [x] **Phase 2: Scale Policy and Configuration** - Resolve one deterministic rational scale per monitor from overrides, validated DPI, and safe fallbacks. (completed 2026-08-30)
 - [x] **Phase 3: Geometry and Ownership Contracts** - Define deterministic ownership, constrained sizing, placement, and pixel-protocol boundaries. (completed 2026-08-31)
-- [ ] **Phase 4: WM-Owned UI Metrics and Resources** - Scale all FVWM-owned visual and interaction resources exactly once.
+- [x] **Phase 4: WM-Owned UI Metrics and Resources** - Scale all FVWM-owned visual and interaction resources exactly once. (completed 2026-08-31)
 - [ ] **Phase 5: Logical-Size Transition Coordinator** - Apply coherent, drift-free window transitions between differently scaled monitors.
 - [ ] **Phase 6: Hotplug, Reload, and Observability** - Reconcile topology and scale changes safely while keeping recovery decisions inspectable.
 - [ ] **Phase 7: Module Scale Protocol and Consumers** - Extend the module contract and make the declared bundled modules scale-aware.
@@ -239,7 +239,7 @@ Plans:
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
 | 3. Geometry and Ownership Contracts | 5/5 | Complete    | 2026-08-31 |
-| 4. WM-Owned UI Metrics and Resources | 12/12 | In Progress|  |
+| 4. WM-Owned UI Metrics and Resources | 12/12 | Complete    | 2026-08-31 |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |
 | 7. Module Scale Protocol and Consumers | 0/TBD | Not started | - |

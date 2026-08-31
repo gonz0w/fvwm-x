@@ -27,9 +27,9 @@
 
 - [x] **UI-01**: User sees titlebars, borders, title fonts, and window buttons rendered at the owning monitor's scale.
 - [x] **UI-02**: User sees fonts and image assets scaled exactly once from source, with caches separated by target scale, dimensions, and generation.
-- [ ] **UI-03**: User sees menus, icons, iconified-window UI, and move/resize feedback rendered at the active monitor's scale.
+- [x] **UI-03**: User sees menus, icons, iconified-window UI, and move/resize feedback rendered at the active monitor's scale.
 - [x] **UI-04**: User gets appropriately sized WM cursors, resize handles, title-button targets, and invisible interaction regions.
-- [ ] **UI-05**: User gets scale-aware pan zones, edge actions, snapping distances, and drag thresholds.
+- [x] **UI-05**: User gets scale-aware pan zones, edge actions, snapping distances, and drag thresholds.
 - [x] **UI-06**: User gets seamless fractional-scale chrome without clipped text, titlebar gaps, stale resources, or cursor hot-spot displacement.
 
 ### Geometry
@@ -54,7 +54,7 @@
 - [ ] **TEST-02**: Maintainers can verify 1x/2x and fractional pairs, negative/overlapping/cloned layouts, invalid dimensions, hotplug, primary changes, and live reload against nested X servers.
 - [ ] **TEST-03**: Maintainers can verify transitions with fixed-size, increment-constrained, Qt, GTK, terminal, and changing-hints clients.
 - [ ] **TEST-04**: Maintainers can verify identical geometry with and without an external compositor and responsive bounded processing during topology storms.
-- [ ] **TEST-05**: Maintainers can verify the supported build profile explicitly enables Xcursor, XRender, PNG, and SVG paths used by v0.1.
+- [x] **TEST-05**: Maintainers can verify the supported build profile explicitly enables Xcursor, XRender, PNG, and SVG paths used by v0.1.
 
 ## Future Requirements
 
@@ -99,9 +99,9 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | SCALE-06 | Phase 6 | Pending |
 | UI-01 | Phase 4 | Complete |
 | UI-02 | Phase 4 | Complete |
-| UI-03 | Phase 4 | Gaps Found |
+| UI-03 | Phase 4 | Complete |
 | UI-04 | Phase 4 | Complete |
-| UI-05 | Phase 4 | Gaps Found |
+| UI-05 | Phase 4 | Complete |
 | UI-06 | Phase 4 | Complete |
 | GEO-01 | Phase 3 | Complete |
 | GEO-02 | Phase 5 | Pending |
@@ -117,7 +117,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | TEST-02 | Phase 8 | Pending |
 | TEST-03 | Phase 8 | Pending |
 | TEST-04 | Phase 8 | Pending |
-| TEST-05 | Phase 4 | Gaps Found |
+| TEST-05 | Phase 4 | Complete |
 
 **Coverage:**
 

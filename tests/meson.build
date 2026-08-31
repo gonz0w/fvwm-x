@@ -39,6 +39,15 @@ wm_ui_metrics_test = executable(
 
 test('wm-ui-metrics', wm_ui_metrics_test)
 
+supported_features_test = executable(
+    'test-supported-features',
+    'test_supported_features.c',
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+
+test('supported-features', supported_features_test)
+
 monitor_ownership_test = executable(
     'test-monitor-ownership',
     'test_monitor_ownership.c',

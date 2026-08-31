@@ -44,7 +44,7 @@ jobs:
           else
             export CC_LD=lld
           fi
-          meson setup builddir --buildtype=debugoptimized -Dhtmldoc=true -Dmandoc=true
+          meson setup builddir --buildtype=debugoptimized -Dhtmldoc=true -Dmandoc=true -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled -Dsvg=enabled -Dcairo=enabled
           meson compile -C builddir
           meson test -C builddir --print-errorlogs
 
@@ -67,7 +67,8 @@ jobs:
           meson setup builddir \
             --buildtype=debug \
             -Dgolang=disabled \
-            -Db_sanitize=address,undefined
+            -Db_sanitize=address,undefined \
+            -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled -Dsvg=enabled -Dcairo=enabled
           meson compile -C builddir
           meson test -C builddir --print-errorlogs
 
@@ -95,7 +96,7 @@ jobs:
           apt-get install -y xvfb x11-xserver-utils xserver-xorg-core xserver-xorg-video-dummy
 
       - name: Configure live-X tests
-        run: meson setup builddir -Dlive-x-tests=true -Dgolang=disabled
+        run: meson setup builddir -Dlive-x-tests=true -Dgolang=disabled -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled -Dsvg=enabled -Dcairo=enabled
 
       - name: Compile live-X tests
         run: meson compile -C builddir

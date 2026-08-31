@@ -18,7 +18,35 @@
 #include "libs/monitor_ownership.h"
 
 #include <assert.h>
+#include <limits.h>
 #include <string.h>
+
+static monitor_ownership_status
+resolve_owner(const rectangle *window,
+    const monitor_topology_monitor *monitors, int monitor_count,
+    monitor_ownership_result *result)
+{
+	return monitor_ownership_resolve(
+	    window, monitors, monitor_count, None, 0, result);
+}
+
+static void
+assert_owner(const monitor_ownership_result *result, Atom name_atom,
+    const char *name, monitor_ownership_reason reason)
+{
+	assert(result->name_atom == name_atom);
+	assert(result->name != NULL);
+	assert(strcmp(result->name, name) == 0);
+	assert(result->reason == reason);
+}
+
+static void
+assert_safe_init(const monitor_ownership_result *result)
+{
+	assert(result->name_atom == None);
+	assert(result->name == NULL);
+	assert(result->extra_overlap == 0);
+}
 
 static void
 test_negative_origin_monitor_owns_contained_window(void)
@@ -49,27 +77,331 @@ test_negative_origin_monitor_owns_contained_window(void)
 	    .height = 600,
 	};
 	monitor_ownership_result result = {
-	    .name_atom	    = 99,
-	    .name	    = "garbage",
-	    .reason	    = MONITOR_OWNERSHIP_REASON_GAP,
-	    .extra_overlap  = 123,
+	    .name_atom	   = 99,
+	    .name	   = "garbage",
+	    .reason	   = MONITOR_OWNERSHIP_REASON_GAP,
+	    .extra_overlap = 123,
 	};
 	monitor_ownership_status status;
 
-	status = monitor_ownership_resolve(&window, monitors, 2, None, 0,
-	    &result);
+	status = resolve_owner(&window, monitors, 2, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(&result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_CONTAINMENT);
+}
+
+static void
+test_partial_overlap_unique_max_wins(void)
+{
+	monitor_topology_monitor monitors[] = {
+	    {
+		.name_atom = 1,
+		.name	   = "HDMI-1",
+		.x	   = 0,
+		.y	   = 0,
+		.width	   = 150,
+		.height	   = 100,
+	    },
+	    {
+		.name_atom = 2,
+		.name	   = "DP-1",
+		.x	   = 160,
+		.y	   = 0,
+		.width	   = 200,
+		.height	   = 100,
+	    },
+	};
+	rectangle		 window = {
+	    .x	    = 50,
+	    .y	    = 0,
+	    .width  = 150,
+	    .height = 100,
+	};
+	monitor_ownership_result result;
+	monitor_ownership_status status;
+
+	status = resolve_owner(&window, monitors, 2, &result);
 
 	assert(status == MONITOR_OWNERSHIP_OK);
 	assert(result.name_atom == 1);
 	assert(result.name != NULL);
 	assert(strcmp(result.name, "HDMI-1") == 0);
-	assert(result.reason == MONITOR_OWNERSHIP_REASON_CONTAINMENT);
+	assert(result.reason == MONITOR_OWNERSHIP_REASON_OVERLAP
+	       || result.reason == MONITOR_OWNERSHIP_REASON_CONTAINMENT);
+}
+
+static void
+test_exact_clones_identity_tie_independent_of_order(void)
+{
+	monitor_topology_monitor ab[] = {
+	    {
+		.name_atom = 2,
+		.name	   = "DP-1",
+		.x	   = 0,
+		.y	   = 0,
+		.width	   = 1920,
+		.height	   = 1080,
+	    },
+	    {
+		.name_atom = 1,
+		.name	   = "HDMI-1",
+		.x	   = 0,
+		.y	   = 0,
+		.width	   = 1920,
+		.height	   = 1080,
+	    },
+	};
+	monitor_topology_monitor ba[] = {
+	    ab[1],
+	    ab[0],
+	};
+	rectangle		 window = {
+	    .x	    = 100,
+	    .y	    = 100,
+	    .width  = 400,
+	    .height = 300,
+	};
+	monitor_ownership_result result_ab;
+	monitor_ownership_result result_ba;
+	monitor_ownership_status status_ab;
+	monitor_ownership_status status_ba;
+
+	status_ab = resolve_owner(&window, ab, 2, &result_ab);
+	status_ba = resolve_owner(&window, ba, 2, &result_ba);
+
+	assert(status_ab == MONITOR_OWNERSHIP_OK);
+	assert(status_ba == MONITOR_OWNERSHIP_OK);
+	assert_owner(&result_ab, 1, "HDMI-1", result_ab.reason);
+	assert_owner(&result_ba, 1, "HDMI-1", result_ba.reason);
+	assert(result_ab.name_atom == result_ba.name_atom);
+}
+
+static void
+test_output_reorder_preserves_owner(void)
+{
+	monitor_topology_monitor ab[] = {
+	    {
+		.name_atom = 1,
+		.name	   = "HDMI-1",
+		.x	   = -1920,
+		.y	   = 0,
+		.width	   = 1920,
+		.height	   = 1080,
+	    },
+	    {
+		.name_atom = 2,
+		.name	   = "DP-1",
+		.x	   = 0,
+		.y	   = 0,
+		.width	   = 1920,
+		.height	   = 1080,
+	    },
+	};
+	monitor_topology_monitor ba[] = {
+	    ab[1],
+	    ab[0],
+	};
+	rectangle		 window = {
+	    .x	    = -1600,
+	    .y	    = 40,
+	    .width  = 800,
+	    .height = 600,
+	};
+	monitor_ownership_result result_ab;
+	monitor_ownership_result result_ba;
+
+	assert(resolve_owner(&window, ab, 2, &result_ab)
+	       == MONITOR_OWNERSHIP_OK);
+	assert(resolve_owner(&window, ba, 2, &result_ba)
+	       == MONITOR_OWNERSHIP_OK);
+	assert_owner(
+	    &result_ab, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_CONTAINMENT);
+	assert_owner(
+	    &result_ba, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_CONTAINMENT);
+}
+
+static void
+test_rotation_swapped_extents_still_contain(void)
+{
+	monitor_topology_monitor monitors[] = {
+	    {
+		.name_atom = 1,
+		.name	   = "HDMI-1",
+		.x	   = 0,
+		.y	   = 0,
+		.width	   = 1080,
+		.height	   = 1920,
+	    },
+	    {
+		.name_atom = 2,
+		.name	   = "DP-1",
+		.x	   = 1080,
+		.y	   = 0,
+		.width	   = 1920,
+		.height	   = 1080,
+	    },
+	};
+	rectangle		 window = {
+	    .x	    = 40,
+	    .y	    = 100,
+	    .width  = 800,
+	    .height = 1600,
+	};
+	monitor_ownership_result result;
+
+	assert(resolve_owner(&window, monitors, 2, &result)
+	       == MONITOR_OWNERSHIP_OK);
+	assert_owner(
+	    &result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_CONTAINMENT);
+}
+
+static void
+test_gap_uses_manhattan_then_identity(void)
+{
+	monitor_topology_monitor monitors[] = {
+	    {
+		.name_atom = 2,
+		.name	   = "DP-1",
+		.x	   = 100,
+		.y	   = 0,
+		.width	   = 1920,
+		.height	   = 1080,
+	    },
+	    {
+		.name_atom = 1,
+		.name	   = "HDMI-1",
+		.x	   = -1920,
+		.y	   = 0,
+		.width	   = 1920,
+		.height	   = 1080,
+	    },
+	};
+	rectangle		 window = {
+	    .x	    = 20,
+	    .y	    = 100,
+	    .width  = 10,
+	    .height = 10,
+	};
+	monitor_ownership_result result;
+
+	assert(resolve_owner(&window, monitors, 2, &result)
+	       == MONITOR_OWNERSHIP_OK);
+	assert_owner(&result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_GAP);
+}
+
+static void
+test_empty_input_initialized_fallback(void)
+{
+	rectangle		 window = {
+	    .x	    = 10,
+	    .y	    = 10,
+	    .width  = 20,
+	    .height = 20,
+	};
+	monitor_ownership_result result = {
+	    .name_atom	   = 99,
+	    .name	   = "garbage",
+	    .reason	   = MONITOR_OWNERSHIP_REASON_GAP,
+	    .extra_overlap = 123,
+	};
+	monitor_ownership_status status;
+
+	status = resolve_owner(&window, NULL, 0, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert(result.reason == MONITOR_OWNERSHIP_REASON_FALLBACK);
+	assert_safe_init(&result);
+}
+
+static void
+test_invalid_arguments_initialize_outputs(void)
+{
+	rectangle		 window = {
+	    .x	    = 0,
+	    .y	    = 0,
+	    .width  = 10,
+	    .height = 10,
+	};
+	monitor_topology_monitor monitors[] = {
+	    {
+		.name_atom = 1,
+		.name	   = "HDMI-1",
+		.x	   = 0,
+		.y	   = 0,
+		.width	   = 100,
+		.height	   = 100,
+	    },
+	};
+	monitor_ownership_result result = {
+	    .name_atom	   = 99,
+	    .name	   = "garbage",
+	    .reason	   = MONITOR_OWNERSHIP_REASON_GAP,
+	    .extra_overlap = 123,
+	};
+
+	assert(resolve_owner(NULL, monitors, 1, &result)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+	assert_safe_init(&result);
+	assert(result.reason == MONITOR_OWNERSHIP_REASON_FALLBACK);
+
+	result = (monitor_ownership_result){
+	    .name_atom	   = 99,
+	    .name	   = "garbage",
+	    .reason	   = MONITOR_OWNERSHIP_REASON_GAP,
+	    .extra_overlap = 123,
+	};
+	assert(resolve_owner(&window, monitors, -1, &result)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+	assert_safe_init(&result);
+
+	assert(monitor_ownership_resolve(
+		   &window, monitors, 1, None, 0, NULL)
+	       == MONITOR_OWNERSHIP_INVALID_ARGUMENT);
+}
+
+static void
+test_overlap_area_overflow_initializes_outputs(void)
+{
+	monitor_topology_monitor monitors[] = {
+	    {
+		.name_atom = 1,
+		.name	   = "HDMI-1",
+		.x	   = 0,
+		.y	   = 0,
+		.width	   = INT_MAX,
+		.height	   = 2,
+	    },
+	};
+	rectangle		 window = {
+	    .x	    = 0,
+	    .y	    = 0,
+	    .width  = INT_MAX,
+	    .height = 2,
+	};
+	monitor_ownership_result result = {
+	    .name_atom	   = 99,
+	    .name	   = "garbage",
+	    .reason	   = MONITOR_OWNERSHIP_REASON_GAP,
+	    .extra_overlap = 123,
+	};
+
+	assert(resolve_owner(&window, monitors, 1, &result)
+	       == MONITOR_OWNERSHIP_OVERFLOW);
+	assert_safe_init(&result);
 }
 
 int
 main(void)
 {
 	test_negative_origin_monitor_owns_contained_window();
+	test_partial_overlap_unique_max_wins();
+	test_exact_clones_identity_tie_independent_of_order();
+	test_output_reorder_preserves_owner();
+	test_rotation_swapped_extents_still_contain();
+	test_gap_uses_manhattan_then_identity();
+	test_empty_input_initialized_fallback();
+	test_invalid_arguments_initialize_outputs();
+	test_overlap_area_overflow_initializes_outputs();
 
 	return 0;
 }

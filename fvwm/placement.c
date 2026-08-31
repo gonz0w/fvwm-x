@@ -1787,12 +1787,13 @@ static int _place_window(
 		}
 		else
 		{
-			/* use global screen */
-			screen_g.x = 0;
-			screen_g.y = 0;
-			screen_g.width = monitor_get_all_widths();
-			screen_g.height = monitor_get_all_heights();
-			reason->screen.screen = "global";
+			/* StartsOnScreen is set but not honored; use the
+			 * current monitor snapshot rectangle rather than the
+			 * root framebuffer. */
+			FScreenGetScrRect(NULL, FSCREEN_CURRENT,
+				&screen_g.x, &screen_g.y,
+				&screen_g.width, &screen_g.height);
+			reason->screen.screen = "current";
 		}
 	}
 	else

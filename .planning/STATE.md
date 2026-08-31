@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
 status: executing
-stopped_at: Completed 04-07-PLAN.md
-last_updated: "2026-08-31T15:28:54.059Z"
+stopped_at: Completed 04-08-PLAN.md
+last_updated: "2026-08-31T15:40:29.371Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: 8db4ab7dabbe7a39506c7f1f32879505ec6fb4f7
+state_head: 013ab0e87f348501558fce4a35dc9af1a5d35762
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 27
-  completed_plans: 25
+  completed_plans: 26
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
-Plan: 8 of 9
+Plan: 9 of 9
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 04 execution started
 
@@ -85,6 +85,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 04-wm-owned-ui-metrics-and-resources P05 | 8 min | 3 tasks | 3 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P06 | 19 min | 3 tasks | 7 files |
 | Phase 04 P07 | 14 min | 2 tasks | 6 files |
+| Phase 04-wm-owned-ui-metrics-and-resources P08 | 8 min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -180,6 +181,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: librsvg 2.52+ renders into the destination viewport; cairo does not scale a 1x raster into a 2x surface.
 - [Phase 04]: PImageLoadCursorFromFile loads at wm_ui_scale_px(WM_UI_XCURSOR_NOMINAL_SOURCE_PX, factor) and clamps hot spots with wm_ui_scale_hotspot.
 - [Phase 04]: CreateCursors caches theme cursors per CRS index, quarters, and WM_UI_RESOURCE_GENERATION_INITIAL using XcursorShapeLoadImages(shape, theme, size).
+- [Phase 04]: initPanFrames and checkPanFrames size pan-frame X windows with wm_ui_scale_edge_thickness; source 0 still creates dummy 2px windows then unmaps.
+- [Phase 04]: Snap proximity and grid convert from style source with fw->m->effective_scale.factor at use; edge-resistance snapd converts the same way.
+- [Phase 04]: MoveThreshold converts from Scr source with the pointer-monitor factor at drag start; CMD_MoveThreshold still stores source.
+- [Phase 04]: Manpage lists owning versus active chrome metrics as actual X11 pixels and states display-wide font DPI is not mutated.
 
 ### Pending Todos
 
@@ -199,6 +204,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T15:28:44.243Z
-Stopped at: Completed 04-07-PLAN.md
+Last session: 2026-08-31T15:40:29.242Z
+Stopped at: Completed 04-08-PLAN.md
 Resume file: None

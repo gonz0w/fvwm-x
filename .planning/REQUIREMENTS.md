@@ -29,7 +29,7 @@
 - [ ] **UI-02**: User sees fonts and image assets scaled exactly once from source, with caches separated by target scale, dimensions, and generation.
 - [x] **UI-03**: User sees menus, icons, iconified-window UI, and move/resize feedback rendered at the active monitor's scale.
 - [x] **UI-04**: User gets appropriately sized WM cursors, resize handles, title-button targets, and invisible interaction regions.
-- [ ] **UI-05**: User gets scale-aware pan zones, edge actions, snapping distances, and drag thresholds.
+- [x] **UI-05**: User gets scale-aware pan zones, edge actions, snapping distances, and drag thresholds.
 - [x] **UI-06**: User gets seamless fractional-scale chrome without clipped text, titlebar gaps, stale resources, or cursor hot-spot displacement.
 
 ### Geometry
@@ -101,7 +101,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | UI-02 | Phase 4 | Pending |
 | UI-03 | Phase 4 | Complete |
 | UI-04 | Phase 4 | Complete |
-| UI-05 | Phase 4 | Pending |
+| UI-05 | Phase 4 | Complete |
 | UI-06 | Phase 4 | Complete |
 | GEO-01 | Phase 3 | Complete |
 | GEO-02 | Phase 5 | Pending |

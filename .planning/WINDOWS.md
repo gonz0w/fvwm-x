@@ -2,9 +2,9 @@
 schema_version: 1
 open_count: 0
 waived_count: 0
-fixed_count: 6
-total_count: 6
-last_updated: 2026-08-30T19:44:58.650Z
+fixed_count: 8
+total_count: 8
+last_updated: 2026-08-31T15:40:57.836Z
 ---
 
 # Broken Windows Ledger
@@ -21,6 +21,8 @@ last_updated: 2026-08-30T19:44:58.650Z
 | 4 | 01 | deviation | tests/meson.build |  | Rebased wrapped FVWM sources for tests subdirectory resolution | fixed |  | 2026-08-30T14:08:25.377Z | 2026-08-30T14:08:49.026Z |
 | 5 | 01 | deviation | tests/live_x/live_x_harness.py |  | Corrected ordinary FVWM readiness after Status FIFO attachment | fixed |  | 2026-08-30T14:08:25.463Z | 2026-08-30T14:08:49.103Z |
 | 6 | 02 | deviation | fvwm/fvwm3.c |  | Initialized the monitor scale configuration lifecycle so startup directives can mutate the production store | fixed |  | 2026-08-30T19:44:36.032Z | 2026-08-30T19:44:58.650Z |
+| 7 | 04 | deviation | fvwm/virtual.c |  | checkPanFrames also converts mapped pan-frame thickness so X resizes keep scaled pixels | fixed |  | 2026-08-31T15:40:29.638Z | 2026-08-31T15:40:57.765Z |
+| 8 | 04 | deviation | fvwm/move_resize.c |  | DoSnapWindow also converts snap proximity at owning-monitor factor | fixed |  | 2026-08-31T15:40:29.708Z | 2026-08-31T15:40:57.836Z |
 
 ````json
 [
@@ -95,6 +97,30 @@ last_updated: 2026-08-30T19:44:58.650Z
     "reason": "",
     "recorded_at": "2026-08-30T19:44:36.032Z",
     "resolved_at": "2026-08-30T19:44:58.650Z"
+  },
+  {
+    "id": 7,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "fvwm/virtual.c",
+    "line": null,
+    "description": "checkPanFrames also converts mapped pan-frame thickness so X resizes keep scaled pixels",
+    "status": "fixed",
+    "reason": "",
+    "recorded_at": "2026-08-31T15:40:29.638Z",
+    "resolved_at": "2026-08-31T15:40:57.765Z"
+  },
+  {
+    "id": 8,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "fvwm/move_resize.c",
+    "line": null,
+    "description": "DoSnapWindow also converts snap proximity at owning-monitor factor",
+    "status": "fixed",
+    "reason": "",
+    "recorded_at": "2026-08-31T15:40:29.708Z",
+    "resolved_at": "2026-08-31T15:40:57.836Z"
   }
 ]
 ````

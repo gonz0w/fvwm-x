@@ -534,7 +534,7 @@ static void destroy_window_font(FvwmWindow *fw)
 
 static void destroy_icon_font(FvwmWindow *fw)
 {
-	if (IS_ICON_FONT_LOADED(fw) && !USING_DEFAULT_ICON_FONT(fw) &&
+	if (IS_ICON_FONT_LOADED(fw) && fw->icon_font != NULL &&
 	    fw->icon_font != Scr.DefaultFont)
 	{
 		FlocaleUnloadFont(dpy, fw->icon_font);
@@ -1850,9 +1850,10 @@ void setup_icon_font(
 		}
 		else
 		{
-			/* no explicit font or failed to load, use default font
-			 * instead */
-			fw->icon_font = Scr.DefaultFont;
+			/* no explicit font or failed to load, open DefaultFont
+			 * at the owning-monitor factor */
+			fw->icon_font = bind_default_font_at_scale(
+				Scr.DefaultFont, fw->m);
 			SET_USING_DEFAULT_ICON_FONT(fw, 1);
 		}
 		SET_ICON_FONT_LOADED(fw, 1);

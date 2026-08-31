@@ -2439,6 +2439,7 @@ CMD_DefaultFont(F_CMD_ARGS)
 {
 	char	    *font;
 	FlocaleFont *new_font;
+	FlocaleFont *old_font;
 	FvwmWindow  *t;
 
 	font = PeekToken(action, &action);
@@ -2452,18 +2453,30 @@ CMD_DefaultFont(F_CMD_ARGS)
 			return;
 		}
 	}
-	FlocaleUnloadFont(dpy, Scr.DefaultFont);
+	old_font = Scr.DefaultFont;
 	Scr.DefaultFont = new_font;
 	/* we should do that here because a redraw can happen before
 	   flush_window_updates is called ... */
 	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next) {
 		if (USING_DEFAULT_ICON_FONT(t)) {
-			t->icon_font = Scr.DefaultFont;
+			if (t->icon_font != NULL && t->icon_font != old_font &&
+			    t->icon_font != Scr.DefaultFont) {
+				FlocaleUnloadFont(dpy, t->icon_font);
+			}
+			t->icon_font = bind_default_font_at_scale(
+				Scr.DefaultFont, t->m);
 		}
 		if (USING_DEFAULT_WINDOW_FONT(t)) {
-			t->title_font = Scr.DefaultFont;
+			if (t->title_font != NULL &&
+			    t->title_font != old_font &&
+			    t->title_font != Scr.DefaultFont) {
+				FlocaleUnloadFont(dpy, t->title_font);
+			}
+			t->title_font = bind_default_font_at_scale(
+				Scr.DefaultFont, t->m);
 		}
 	}
+	FlocaleUnloadFont(dpy, old_font);
 	/* set flags to indicate that the font has changed */
 	Scr.flags.do_need_window_update	   = 1;
 	Scr.flags.has_default_font_changed = 1;

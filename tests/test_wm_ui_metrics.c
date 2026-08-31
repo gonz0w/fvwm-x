@@ -337,6 +337,30 @@ test_pimage_load_fvwm_picture_from_file_takes_scale_and_targets(void)
 }
 
 static void
+test_pimage_load_cursor_from_file_takes_scale_factor(void)
+{
+	Cursor (*loader)(Display *, Window, char *, int, int,
+	    monitor_scale_factor) = PImageLoadCursorFromFile;
+
+	assert(loader != NULL);
+}
+
+static void
+test_xcursor_nominal_source_scales_at_1x_and_2x(void)
+{
+	monitor_scale_factor one_x = {MONITOR_SCALE_QUARTERS_MIN};
+	monitor_scale_factor two_x = {8};
+	int px = 99;
+
+	assert(wm_ui_scale_px(WM_UI_XCURSOR_NOMINAL_SOURCE_PX, one_x, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 16);
+	assert(wm_ui_scale_px(WM_UI_XCURSOR_NOMINAL_SOURCE_PX, two_x, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 32);
+}
+
+static void
 test_zero_targets_convert_intrinsic_with_factor(void)
 {
 	monitor_scale_factor one_x = {MONITOR_SCALE_QUARTERS_MIN};
@@ -397,6 +421,8 @@ main(void)
 	test_fft_get_font_at_scale_exists();
 	test_pimage_load_fvwm_picture_from_file_takes_scale_and_targets();
 	test_zero_targets_convert_intrinsic_with_factor();
+	test_pimage_load_cursor_from_file_takes_scale_factor();
+	test_xcursor_nominal_source_scales_at_1x_and_2x();
 
 	return 0;
 }

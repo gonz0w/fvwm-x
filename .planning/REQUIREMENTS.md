@@ -8,7 +8,7 @@
 ### Topology
 
 - [x] **TOP-01**: User can inspect one committed RandR 1.5 Monitor snapshot containing stable identity, root-pixel geometry, physical dimensions, primary state, output membership, and topology epoch.
-- [ ] **TOP-02**: User gets deterministic monitor identity and ownership behavior for negative origins, gaps, exact clones, partial overlaps, rotations, and output reordering.
+- [x] **TOP-02**: User gets deterministic monitor identity and ownership behavior for negative origins, gaps, exact clones, partial overlaps, rotations, and output reordering.
 - [x] **TOP-03**: User sees topology event bursts coalesced into one validated atomic commit, with the last good topology retained after query failure.
 - [ ] **TOP-04**: User's windows remain reachable and retain normal, maximized, or fullscreen intent when their monitor is removed.
 - [ ] **TOP-05**: User can inspect and simulate topology, scale inputs, fallback reasons, ownership, transition epochs, and constraint outcomes.
@@ -86,7 +86,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | TOP-01 | Phase 1 | Complete |
-| TOP-02 | Phase 3 | Pending |
+| TOP-02 | Phase 3 | Complete |
 | TOP-03 | Phase 1 | Complete |
 | TOP-04 | Phase 6 | Pending |
 | TOP-05 | Phase 6 | Pending |

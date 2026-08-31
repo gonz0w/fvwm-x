@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 03
 current_phase_name: Geometry and Ownership Contracts
 status: executing
-stopped_at: Phase 02 complete, ready to plan Phase 3
-last_updated: "2026-08-31T00:27:35.978Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-08-31T01:01:16.609Z"
 last_activity: 2026-08-30
-last_activity_desc: Phase 02 complete, transitioned to Phase 3
-state_head: 38dd21977a80f51e75ece420e1d91f91cfe5f268
+last_activity_desc: Phase 03 execution started
+state_head: 5d211707e0fb10e1af6f14499ea66ae413326659
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 17
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-08-30)
 
 ## Current Position
 
-Phase: 03 (Geometry and Ownership Contracts) — READY TO EXECUTE
-Plan: Not started
+Phase: 03 (Geometry and Ownership Contracts) — EXECUTING
+Plan: 2 of 4
 Status: Ready to execute
-Last activity: 2026-08-30 — Phase 02 complete, transitioned to Phase 3
+Last activity: 2026-08-30 — Phase 03 execution started
 
 Progress: [██░░░░░░░░] 25%
 
@@ -72,6 +72,7 @@ Progress: [██░░░░░░░░] 25%
 | Phase 02 P03 | 14min | 3 tasks | 9 files |
 | Phase 02 P04 | 9min | 2 tasks | 5 files |
 | Phase 02 P05 | 21 min | 2 tasks | 3 files |
+| Phase 03 P01 | 13 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -122,6 +123,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 02]: Scenario-owned startup directives execute as separate argv -c command pairs in exact order, including names with spaces and quotes. — Quotes and spaces must survive as one argv element with no shell interpretation.
 - [Phase 02]: add_post_finalize_scale_inspection() appends a separate -c, Schedule 0 PrintInfo Scale pair so evidence is emitted after initial finalization. — Assertions must wait for the scheduled post-finalization record rather than earlier unrelated log output.
 - [Phase 02]: Status v4 and module packets remain actual-pixel interfaces; live-X scale proof reads PrintInfo Scale and queried Xorg-dummy facts only. — Phase 2 must not expand Status or module protocol while proving initial scale policy.
+- [Phase 03]: Ownership compares literal snapshot x,y,width,height and never folds through DisplayWidth.
+- [Phase 03]: Equal overlap and clone ties compare name_atom then strcmp(name), independent of array order.
+- [Phase 03]: Empty input returns an initialized FALLBACK result without aborting; overlap area that does not fit in int returns MONITOR_OWNERSHIP_OVERFLOW.
+- [Phase 03]: FindScreenOfXY is a 1x1 point wrapper with incumbent None and hysteresis 0, then a logged primary or enabled non-global fallback.
 
 ### Pending Todos
 
@@ -141,6 +146,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-30T23:21:03.983Z
-Stopped at: Phase 02 complete, ready to plan Phase 3
+Last session: 2026-08-31T01:01:16.531Z
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None

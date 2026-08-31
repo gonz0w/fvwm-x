@@ -33,6 +33,8 @@ visually consistent across changing monitor layouts and scale factors.
   explicit per-monitor configuration override — Phase 2
 - ✓ Verify scale and topology policy with deterministic unit tests and live
   X11 integration scenarios — Phase 1–2
+- ✓ Resolve window ownership, ICCCM size constraints, and work-area, strut,
+  and placement geometry in literal root pixels — Phase 3
 
 ### Active
 
@@ -71,11 +73,12 @@ sanitizer CI, release safety, and focused native tests. The formal repository
 map is in `.planning/codebase/`.
 
 Phase 2 added a unified exact-quarter scale domain in `libs/monitor_scale.c`
-and a core-owned transactional store in `fvwm/monitor_scale_config.c`. Geometry
-and drawing policy remain spread across large, tightly coupled files including
-`fvwm/move_resize.c`, `fvwm/borders.c`, `fvwm/placement.c`, and
-`libs/FScreen.c`. v0.1 should extract remaining geometry and ownership policy
-before wiring scaled X11 side effects.
+and a core-owned transactional store in `fvwm/monitor_scale_config.c`. Phase 3
+extracted monitor ownership, ICCCM size constraints, and root-pixel work-area
+contracts into `libs/monitor_ownership.c` and `libs/icccm_size_hints.c`.
+Drawing and chrome policy remain in `fvwm/move_resize.c`, `fvwm/borders.c`,
+and `fvwm/placement.c`. Phase 4 wires scaled FVWM-owned UI metrics onto that
+geometry contract.
 
 ## Constraints
 
@@ -100,6 +103,7 @@ before wiring scaled X11 side effects.
 | Name the internal product FVWM-X and start milestones at v0.1 | Treat modernization as a new product line rather than an upstream patch release | — Pending |
 | Start with monitor and HiDPI foundations | Later rendering, input, and configuration work needs one authoritative scale model | — Pending |
 | Use explicit per-monitor scale with automatic DPI fallback | Overrides provide deterministic control while automatic behavior gives a usable default | Shipped in Phase 2 |
+| Keep EWMH, ICCCM, configure, frame-extents, work-area, and module geometry in actual X11 pixels; derive work-area insets from stored root-pixel rectangles | Prevents double-counting monitor origin on negative-origin layouts | Shipped in Phase 3 |
 | Preserve logical window size across scale changes | Perceived size should remain stable when users move windows between monitors | — Pending |
 | Remain X11-only with external compositing | Limits scope to improving the current architecture instead of building a compositor platform | — Pending |
 | Permit configuration and module compatibility breaks | Legacy constraints must not prevent a coherent modern runtime model | — Pending |
@@ -122,4 +126,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-30 after Phase 2*
+*Last updated: 2026-08-31 after Phase 3*

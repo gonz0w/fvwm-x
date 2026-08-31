@@ -20,11 +20,11 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-30)
+See: .planning/PROJECT.md (updated 2026-08-31)
 
 **Core value:** Users can depend on a responsive X11 desktop whose windows remain usable and visually consistent across changing monitor layouts and scale factors.
 **Current milestone:** v0.1 Monitor and HiDPI Foundations
-**Current focus:** Phase 03 — Geometry and Ownership Contracts
+**Current focus:** Phase 4 — WM-Owned UI Metrics and Resources
 
 ## Current Position
 
@@ -33,7 +33,7 @@ Plan: Not started
 Status: Ready to plan
 Last activity: 2026-08-31 — Phase 03 complete, transitioned to Phase 4
 
-Progress: [██░░░░░░░░] 25%
+Progress: [███░░░░░░░] 38%
 
 ## Performance Metrics
 
@@ -167,6 +167,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T11:23:33.209Z
+Last session: 2026-08-31T11:44:05.425Z
 Stopped at: Phase 03 complete, ready to plan Phase 4
 Resume file: None

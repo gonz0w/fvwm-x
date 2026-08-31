@@ -39,15 +39,15 @@ created: 2026-08-31
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| W0-trips | TBD | 0 | GEO-02 | T-05-01 | Stored logical 7 stays 7 after 1,000 trips through 5/6/7/8 quarters; dest pixels match one `apply` | native unit | `python3 tests/run_in_linux.py -- meson test -C builddir geometry-transition --print-errorlogs` | No - Wave 0 | pending |
-| W0-inc | TBD | 0 | GEO-02 | T-05-01 | Increment snap does not rewrite logical source | native unit | same | No - Wave 0 | pending |
-| W0-ovf | TBD | 0 | GEO-02 | T-05-02 | Overflow/invalid dest outputs stay 0; last-good policy documented | native unit | same | No - Wave 0 | pending |
-| W0-freeze | TBD | 0 | GEO-04 | T-05-03 | Pointer 1x1 dest freeze: frame resize that would flip overlap does not change dest | native unit | same | No - Wave 0 | pending |
-| W0-grab | TBD | 0 | GEO-04 | T-05-03 | Grab offset converts with apply-from-source; origin = pointer + dest_offset | native unit | same | No - Wave 0 | pending |
-| W0-max | TBD | 0 | GEO-06 | T-05-01 | Maximize dest = dest work rect, not scaled `g.max` | native unit | same | No - Wave 0 | pending |
-| W0-fs | TBD | 0 | GEO-06 | T-05-01 | Fullscreen dest = dest monitor rect; restore uses stored logical | native unit | same | No - Wave 0 | pending |
-| W0-fixed | TBD | 0 | GEO-06 | T-05-02 | Fixed-size client pixels unchanged; chrome totals follow dest | native unit | same | No - Wave 0 | pending |
-| W0-px | TBD | 0 | GEO-07 | T-05-04 | No logical fields in `vpacket.h` / Status | source audit | `git diff` of `libs/vpacket.h`, `fvwm/module_interface.c`, `fvwm/status_json.c` | Yes | pending |
+| W0-trips | 05-01 Task 2 | 0 | GEO-02 | T-05-01 | Stored logical 7 stays 7 after 1,000 trips through 5/6/7/8 quarters; dest pixels match one `apply` | native unit | `python3 tests/run_in_linux.py -- meson test -C builddir geometry-transition --print-errorlogs` | No - Wave 0 | pending |
+| W0-inc | 05-01 Task 2 | 0 | GEO-02 | T-05-01 | Increment snap does not rewrite logical source | native unit | same | No - Wave 0 | pending |
+| W0-ovf | 05-01 Task 2 | 0 | GEO-02 | T-05-02 | Overflow/invalid dest outputs stay 0; last-good policy documented | native unit | same | No - Wave 0 | pending |
+| W0-freeze | 05-01 Task 3 | 0 | GEO-04 | T-05-03 | Pointer 1x1 dest freeze: frame resize that would flip overlap does not change dest | native unit | same | No - Wave 0 | pending |
+| W0-grab | 05-01 Task 3 | 0 | GEO-04 | T-05-03 | Grab offset converts with apply-from-source; origin = pointer + dest_offset | native unit | same | No - Wave 0 | pending |
+| W0-max | 05-01 Task 3 | 0 | GEO-06 | T-05-01 | Maximize dest = dest work rect, not scaled `g.max` | native unit | same | No - Wave 0 | pending |
+| W0-fs | 05-01 Task 3 | 0 | GEO-06 | T-05-01 | Fullscreen dest = dest monitor rect; restore uses stored logical | native unit | same | No - Wave 0 | pending |
+| W0-fixed | 05-01 Task 3 | 0 | GEO-06 | T-05-02 | Fixed-size client pixels unchanged; chrome totals follow dest | native unit | same | No - Wave 0 | pending |
+| W0-px | 05-06 Task 2 | 0 | GEO-07 | T-05-04 | No logical fields in `vpacket.h` / Status | source audit | `git diff` of `libs/vpacket.h`, `fvwm/module_interface.c`, `fvwm/status_json.c` | Yes | pending |
 
 *Status: pending, green, red, or flaky.*
 

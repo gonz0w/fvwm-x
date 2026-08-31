@@ -751,22 +751,25 @@ void frame_setup_window(
 
 A1–A5 need planner lock, not user product confirmation. No CONTEXT.md means these are research recommendations, not user decisions.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should dest chrome rebind run on every motion dest-cross or only ButtonRelease?**
    - What we know: Phase 4 caches by quarters; X-visible transitions should follow dest UI metrics. [VERIFIED: .planning/STATE.md:103]
    - What's unclear: AtScale miss cost under a live grab on slow X.
    - Recommendation: Commit chrome+geometry on dest identity change (not every motion). If profiling later shows stalls, defer chrome to release but still convert client size immediately so the grab anchor stays correct.
+   - **RESOLVED:** dest-identity chrome commit. `update_fvwm_monitor` rebinds dest chrome then calls `geometry_transition_plan` then `frame_setup_window` when dest `name_atom` or dest quarters change, not on every motion. Plan 05-02 Task 2.
 
 2. **Exact storage field names on `FvwmWindow`.**
    - What we know: `g` is pixel `window_g`; `fullscreen.g` copies it. [VERIFIED: fvwm/fvwm.h:699-712; fvwm/fvwm.h:962-968]
    - What's unclear: Whether `logical_client` plus `logical_client_valid` is enough versus also storing src quarters.
    - Recommendation: store `size_rect logical_client` and `Bool logical_client_valid`. Dest/src quarters come from `fw->m_prev` / `fw->m` at commit time. Do not store quarters on the window unless a crossing can happen with `m_prev == NULL`.
+   - **RESOLVED:** `size_rect logical_client`, `Bool logical_client_valid`, and last-transition tuple `last_transition_name_atom`, `last_transition_quarters`, `last_transition_kind`, plus `last_wm_sent_client`, all on `FvwmWindow` beside `m`/`m_prev`, not inside `window_g`. Plan 05-02 Task 1.
 
 3. **Grow-to / partial maximize (`growup`, horizontal-only).**
    - What we know: `CMD_Maximize` has grow and percent forms. [VERIFIED: fvwm/move_resize.c:5433-5497]
    - What's unclear: Whether GEO-06 includes grow-to as "maximize".
    - Recommendation: Treat 100% maximize / EWMH max / fullscreen / restore as in-scope. Leave grow-to using existing pixel closest-window logic unless it already goes through `maximize_fvwm_window`.
+   - **RESOLVED:** PA-06 grow-to out of GEO-06. Grow, growleft, and percent forms stay on the existing pixel closest-window path unless they already call `maximize_fvwm_window`. Plan 05-03 Task 2 and PA-06 / PA-08.
 
 ## Environment Availability
 

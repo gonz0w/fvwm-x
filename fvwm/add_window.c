@@ -2541,6 +2541,23 @@ FvwmWindow *AddWindow(
 	/****** inform modules of new window ******/
 	fw->UpdateDesk = -1; /* Initialize to ensure desk update. */
 	update_fvwm_monitor(fw);
+	SelectDecor(fw, &style, &buttons);
+	if (IS_TRANSIENT(fw) && !style.flags.do_decorate_transient)
+	{
+		SET_HAS_HANDLES(fw, 0);
+		SET_HAS_TITLE(fw, 0);
+	}
+	if (FHaveShapeExtension)
+	{
+		if (fw->wShaped)
+		{
+			set_window_border_size(fw, fw->unshaped_boundary_width);
+			SET_HAS_NO_BORDER(fw, 1);
+			SET_HAS_HANDLES(fw, 0);
+		}
+	}
+	setup_window_font(fw, &style, True);
+	setup_icon_font(fw, &style, True);
 	BroadcastConfig(M_ADD_WINDOW,fw);
 	BroadcastWindowIconNames(fw, True, False);
 

@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
 status: executing
-stopped_at: Completed 04-11-PLAN.md
-last_updated: "2026-08-31T17:53:30.156Z"
+stopped_at: Completed 04-12-PLAN.md
+last_updated: "2026-08-31T19:47:24.497Z"
 last_activity: 2026-08-31
-last_activity_desc: Phase 04 execution started
-state_head: f64acb2aa0ebb2c3948b19b9780b667f7d156767
+last_activity_desc: Completed 04-12-PLAN.md
+state_head: 40429438eca7ee7645d617b3588f7c1d345956e0
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 30
-  completed_plans: 29
+  completed_plans: 30
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 ## Current Position
 
-Phase: 04 (WM-Owned UI Metrics and Resources) — READY TO EXECUTE
-Plan: 11 of 11
-Status: Ready to execute
-Last activity: 2026-08-31 — Completed 04-11-PLAN.md
+Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
+Plan: 12 of 12
+Status: Phase 04 plans complete
+Last activity: 2026-08-31 — Completed 04-12-PLAN.md
 
 Progress: [███░░░░░░░] 38%
 
@@ -89,6 +89,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 04-wm-owned-ui-metrics-and-resources P09 | 10 min | 2 tasks | 2 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P10 | 4 min | 2 tasks | 3 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P11 | 4 min | 2 tasks | 2 files |
+| Phase 04 P12 | 5 min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -195,6 +196,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: CMD_DefaultFont still loads the process-global face with FlocaleLoadFont and rebinds USING_DEFAULT_* windows before unloading the previous 1x face. — Unloading the shared 1x face while window slots still hold it is use-after-free; Scr.DefaultFont stays a 1x identity.
 - [Phase 04]: HandlePaging local edge_thickness comes from mapped_edge_thickness(m, m->virtual_scr.edge_thickness); the stored EdgeThickness field stays source 0-2.
 - [Phase 04]: checkPanFrames writes m->virtual_scr.last_edge_thickness = source_thickness after map/unmap/resize, never mapped pixels.
+- [Phase 04]: Always call setup_window_font and setup_icon_font with True after ownership, not only when USING_DEFAULT_* is set, so explicit WindowFont/IconFont also reopen at the owning factor.
+- [Phase 04]: Re-run SelectDecor before the True font setup so setup_title_geometry consumes the owning-factor boundary_width; re-apply IS_TRANSIENT and wShaped follow-ups; do not call setup_style_and_decor again.
+- [Phase 04]: When bind_default_font_at_scale cache-hits the fallback pointer, call FlocaleUnloadFont on that pointer and still return fallback so FlocaleFont->count is not leaked.
 
 ### Pending Todos
 
@@ -214,6 +218,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T17:01:27.294Z
-Stopped at: Completed 04-11-PLAN.md
+Last session: 2026-08-31T19:47:24.375Z
+Stopped at: Completed 04-12-PLAN.md
 Resume file: None

@@ -27,6 +27,7 @@
 #include "libs/Parse.h"
 #include "libs/FEvent.h"
 #include "libs/FScreen.h"
+#include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "cmdparser.h"
@@ -954,6 +955,34 @@ int HandlePaging(
  */
 
 /*
+ * Map-time pan-frame thickness from the retained 0-2 source.  Source 0 stays
+ * disabled.  Conversion failure keeps the unscaled source.
+ */
+static int
+mapped_edge_thickness(struct monitor *m, int source)
+{
+	int px;
+	monitor_scale_conversion_status status;
+
+	if (source == 0)
+	{
+		return 0;
+	}
+	px = source;
+	status = wm_ui_scale_edge_thickness(
+		source, m->effective_scale.factor, &px);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale EdgeThickness %d (%d); keeping source",
+			source, (int)status);
+		return source;
+	}
+
+	return px;
+}
+
+/*
  * checkPanFrames hides PanFrames if they are on the very border of the
  * VIRTUAL screen and EdgeWrap for that direction is off.
  * (A special cursor for the EdgeWrap border could be nice) HEDU
@@ -970,14 +999,19 @@ void checkPanFrames(struct monitor *m)
 	int x = m->si->x;
 	int y = m->si->y;
 
-	int edge_thickness = m->virtual_scr.edge_thickness;
+	int source_thickness = m->virtual_scr.edge_thickness;
 	int last_edge_thickness = m->virtual_scr.last_edge_thickness;
+	int edge_thickness;
+	int last_mapped;
+
+	edge_thickness = mapped_edge_thickness(m, source_thickness);
+	last_mapped = mapped_edge_thickness(m, last_edge_thickness);
 
 	if (!Scr.flags.are_windows_captured)
 		return;
 
 	/* thickness of 0 means remove the pan frames */
-	if (edge_thickness == 0)
+	if (source_thickness == 0)
 	{
 		do_unmap_l = true;
 		do_unmap_r = true;
@@ -1029,7 +1063,7 @@ void checkPanFrames(struct monitor *m)
 	}
 
 	/* correct the unmap variables if pan frame commands are set */
-	if (edge_thickness != 0) {
+	if (source_thickness != 0) {
 		if (m->PanFrameLeft.command != NULL ||
 		    m->PanFrameLeft.command_leave != NULL) {
 			do_unmap_l = false;
@@ -1062,7 +1096,7 @@ void checkPanFrames(struct monitor *m)
 	}
 	else
 	{
-		if (edge_thickness != last_edge_thickness)
+		if (edge_thickness != last_mapped)
 		{
 			XResizeWindow(
 				dpy, m->PanFrameLeft.win, edge_thickness,
@@ -1085,7 +1119,7 @@ void checkPanFrames(struct monitor *m)
 	}
 	else
 	{
-		if (edge_thickness != last_edge_thickness)
+		if (edge_thickness != last_mapped)
 		{
 			XMoveResizeWindow(
 				dpy, m->PanFrameRight.win,
@@ -1109,7 +1143,7 @@ void checkPanFrames(struct monitor *m)
 	}
 	else
 	{
-		if (edge_thickness != last_edge_thickness)
+		if (edge_thickness != last_mapped)
 		{
 			XResizeWindow( dpy, m->PanFrameTop.win, w,
 			    edge_thickness);
@@ -1131,7 +1165,7 @@ void checkPanFrames(struct monitor *m)
 	}
 	else
 	{
-		if (edge_thickness != last_edge_thickness)
+		if (edge_thickness != last_mapped)
 		{
 			XMoveResizeWindow(
 				dpy, m->PanFrameBottom.win, x,
@@ -1233,10 +1267,6 @@ void initPanFrames(struct monitor *ref)
 	 * later*/
 	/* if (edge_thickness == 0) return; */
 	saved_thickness = edge_thickness;
-	if (edge_thickness == 0)
-	{
-		edge_thickness = 2;
-	}
 
 	/* Free panframes here for all monitors. */
 	RB_FOREACH(m, monitors, &monitor_q) {
@@ -1267,6 +1297,18 @@ void initPanFrames(struct monitor *ref)
 	RB_FOREACH(m, monitors, &monitor_q) {
 		if (ref != NULL && m != ref)
 			continue;
+		/* Source 0 still creates dummy windows so later XMap is not
+		 * on None, then checkPanFrames unmaps them.  Do not convert
+		 * 0 into a positive mapped thickness. */
+		if (saved_thickness == 0)
+		{
+			edge_thickness = 2;
+		}
+		else
+		{
+			edge_thickness = mapped_edge_thickness(
+				m, saved_thickness);
+		}
 		init_one_panframe(&m->PanFrameTop, m->si->x, m->si->y, m->si->w,
 		    edge_thickness, CRS_TOP_EDGE);
 		init_one_panframe(&m->PanFrameLeft, m->si->x, m->si->y,

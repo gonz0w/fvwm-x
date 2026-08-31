@@ -138,7 +138,7 @@ Each task was committed atomically:
 5. **Task 3 RED: Hotspot, edge, and wanted-size fixtures** - `5db06a903` (test)
 6. **Task 3 GREEN: Scale hotspots, edges, and wanted sizes** - `2f9218c75` (feat)
 
-**Plan metadata:** pending (docs: complete plan)
+**Plan metadata:** `83b00a7f8` (docs: complete plan)
 
 _Note: TDD tasks produced RED then GREEN commits; no REFACTOR was needed._
 

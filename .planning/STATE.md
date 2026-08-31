@@ -5,10 +5,10 @@ current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
 status: executing
 stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-08-31T14:08:30.088Z"
+last_updated: "2026-08-31T14:09:10.005Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: 2f9218c758accf4de31e3192226cdc71401ea4bf
+state_head: 83b00a7f812392c4ca1ffc102d0775c41132a476
 progress:
   total_phases: 8
   completed_phases: 3
@@ -149,6 +149,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 03]: Work-area insets are work origin minus si origin; consumers must not add si origin onto stored ewmh_working_area. — CR-01: stored ewmh_working_area is already root pixels after 03-04.
 - [Phase 03]: Snap copies the stored root-pixel work rect plus page offset only. — Adding si origin onto an already-absolute work origin double-counts (e.g. -1920 + -1856 = -3776).
 - [Phase 03]: $[wa.x]/$[wa.y] remain the stored root-pixel origin and are documented as such, not strut insets. — PA-12: prefer the coherent FVWM-X root-pixel work-area rectangle over the pre-03-04 inset meaning.
+- [Phase 04]: Promote scaled actual pixels as the primary chrome representation; configured 1x integers remain the unscaled source to monitor_scale_apply.
+- [Phase 04]: wm_ui_cache_key identity is scale_quarters, target_width, target_height, and generation; name-byte walks stay in Picture/Flocale.
+- [Phase 04]: Resource generation starts at WM_UI_RESOURCE_GENERATION_INITIAL and is not incremented in this phase.
+- [Phase 04]: Explicit title source below the scaled font raises thickness to the font; surplus above font-plus-extra is centered into offset.
 
 ### Pending Todos
 

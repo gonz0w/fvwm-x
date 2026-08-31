@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include "libs/defaults.h"
+#include "libs/Picture.h"
 #include "libs/PictureBase.h"
 #include "libs/wm_ui_metrics.h"
 
@@ -261,6 +262,19 @@ test_picture_lookup_requires_scale_and_generation(void)
 }
 
 static void
+test_pcache_wrapper_forwards_1x_generation_1(void)
+{
+	FvwmPicture *(*unscaled)(Display *, Window, char *, const char *,
+	    FvwmPictureAttributes) = PCacheFvwmPicture;
+	FvwmPicture *(*scaled)(Display *, Window, char *, const char *,
+	    FvwmPictureAttributes, monitor_scale_factor, unsigned, unsigned,
+	    unsigned) = PCacheFvwmPictureAtScale;
+
+	assert(unscaled != NULL);
+	assert(scaled != NULL);
+}
+
+static void
 test_menu_and_icon_wanted_sizes(void)
 {
 	monitor_scale_factor two_x = {8};
@@ -292,6 +306,7 @@ main(void)
 	test_move_threshold_and_snap_sources();
 	test_menu_and_icon_wanted_sizes();
 	test_picture_lookup_requires_scale_and_generation();
+	test_pcache_wrapper_forwards_1x_generation_1();
 
 	return 0;
 }

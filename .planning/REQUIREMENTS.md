@@ -34,7 +34,7 @@
 
 ### Geometry
 
-- [ ] **GEO-01**: User's window has one deterministic owning monitor with incumbent tie-breaking and seam hysteresis.
+- [x] **GEO-01**: User's window has one deterministic owning monitor with incumbent tie-breaking and seam hysteresis.
 - [ ] **GEO-02**: User's eligible window preserves logical client size across scale transitions and repeated round trips without drift.
 - [ ] **GEO-03**: User's scaled target size obeys ICCCM minimum, maximum, base, increment, aspect, fixed-size, and gravity constraints.
 - [ ] **GEO-04**: User can drag a window across scales without losing the grabbed pointer anchor or causing ownership oscillation.
@@ -103,7 +103,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | UI-04 | Phase 4 | Pending |
 | UI-05 | Phase 4 | Pending |
 | UI-06 | Phase 4 | Pending |
-| GEO-01 | Phase 3 | Pending |
+| GEO-01 | Phase 3 | Complete |
 | GEO-02 | Phase 5 | Pending |
 | GEO-03 | Phase 3 | Pending |
 | GEO-04 | Phase 5 | Pending |

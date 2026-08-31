@@ -112,7 +112,7 @@ Plans:
   4. Clients and modules continue to receive EWMH, ICCCM, configure, frame-extents, work-area, and geometry values in actual X11 pixels.
   5. Maintainers can run deterministic native tests for scale arithmetic, signed rounding, invalid physical data, snapshot diffs, ownership ties, ICCCM constraints, and 1,000 repeated round trips.
 
-**Plans**: 4/4 plans executed
+**Plans**: 5 plans (4 executed, 1 gap closure)
 
 Plans:
 **Wave 1**
@@ -127,6 +127,10 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 03-04-PLAN.md — Root-pixel work areas, placement, MoveToScreen, and actual-pixel protocol docs
+
+**Wave 4** *(gap closure, blocked on Wave 3 completion)*
+
+- [ ] 03-05-PLAN.md — Convert work-area consumers to root-pixel rectangles
 
 ### Phase 4: WM-Owned UI Metrics and Resources
 
@@ -203,7 +207,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
-| 3. Geometry and Ownership Contracts | 4/4 | In Progress|  |
+| 3. Geometry and Ownership Contracts | 4/5 | In Progress|  |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |

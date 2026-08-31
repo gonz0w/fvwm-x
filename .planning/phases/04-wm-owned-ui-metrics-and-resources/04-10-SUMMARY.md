@@ -98,8 +98,6 @@ Each task was committed atomically:
 1. **Task 1: End-to-end default title font at owning scale** - `2c4acfc67` (feat)
 2. **Task 2: Scale default icon fonts and DefaultFont rebind** - `654dacc9b` (feat)
 
-**Plan metadata:** (pending docs commit)
-
 _Note: Tasks carried `tdd="true"` but the plan forbids new test symbols because `FlocaleLoadFontAtScale` requires a Display. Proof is the source-contract python in each `<verify>` plus existing `meson test wm-ui-metrics`._
 
 ## Files Created/Modified

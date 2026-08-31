@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 03
 current_phase_name: Geometry and Ownership Contracts
 status: executing
-stopped_at: Completed 03-02-PLAN.md
-last_updated: "2026-08-31T01:13:29.140Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-08-31T01:30:47.607Z"
 last_activity: 2026-08-30
 last_activity_desc: Phase 03 execution started
-state_head: ec221d76bcaf6be289be1a229d7f3950c4a49d2c
+state_head: d526b680661ca2da717f30ea902925fefcca5afa
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 17
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-30)
 ## Current Position
 
 Phase: 03 (Geometry and Ownership Contracts) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-08-30 — Phase 03 execution started
 
@@ -74,6 +74,7 @@ Progress: [██░░░░░░░░] 25%
 | Phase 02 P05 | 21 min | 2 tasks | 3 files |
 | Phase 03 P01 | 13 min | 3 tasks | 6 files |
 | Phase 03 P02 | 8 min | 2 tasks | 3 files |
+| Phase 03 P03 | 14 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -132,6 +133,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 03]: An overlapping incumbent wins before name_atom/name identity on equal overlap. — Identity tie-break applies only when there is no overlapping incumbent.
 - [Phase 03]: Mapped windows resolve over fw->g.frame; unmapped windows keep the maximized-or-normal rectangle. — PA-05 reference geometry for update_fvwm_monitor.
 - [Phase 03]: Unresolved ownership names fall back to existing fw->m or monitor_by_primary without aborting. — T-03-07: NULL snapshot or unresolved name must not abort.
+- [Phase 03]: Increment snap without CS_ROUND_UP uses nearest multiple of inc with halfway rounding away from zero; CS_ROUND_UP ceiling snap stays in constrain_size. — PA-08 plus interactive MotionNotify edge checks must not move into libs.
+- [Phase 03]: Aspect uses checked __int128 cross-products; PBaseSize is subtracted only when that flag is set and base is not greater than min. — GEO-03 forbids double aspect and using min as the aspect base.
+- [Phase 03]: On ICCCM_CONSTRAIN_OVERFLOW or INVALID_ARGUMENT, constrain_size logs and restores the pre-constrain client size rather than inventing a plausible size. — T-03-01: untrusted hint arithmetic must not produce a plausible size after overflow.
 
 ### Pending Todos
 
@@ -151,6 +155,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T01:13:29.059Z
-Stopped at: Completed 03-02-PLAN.md
+Last session: 2026-08-31T01:30:47.535Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None

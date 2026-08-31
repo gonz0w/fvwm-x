@@ -112,7 +112,7 @@ Plans:
   4. Clients and modules continue to receive EWMH, ICCCM, configure, frame-extents, work-area, and geometry values in actual X11 pixels.
   5. Maintainers can run deterministic native tests for scale arithmetic, signed rounding, invalid physical data, snapshot diffs, ownership ties, ICCCM constraints, and 1,000 repeated round trips.
 
-**Plans**: 2/4 plans executed
+**Plans**: 3/4 plans executed
 
 Plans:
 **Wave 1**
@@ -122,7 +122,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 03-02-PLAN.md — Add incumbent hysteresis and wire update_fvwm_monitor to frame ownership
-- [ ] 03-03-PLAN.md — Extract integer ICCCM constrain and wrap constrain_size
+- [x] 03-03-PLAN.md — Extract integer ICCCM constrain and wrap constrain_size
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -203,7 +203,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
-| 3. Geometry and Ownership Contracts | 2/4 | In Progress|  |
+| 3. Geometry and Ownership Contracts | 3/4 | In Progress|  |
 | 4. WM-Owned UI Metrics and Resources | 0/TBD | Not started | - |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |

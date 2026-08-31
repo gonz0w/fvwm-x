@@ -17,6 +17,7 @@
 
 #include "config.h"
 
+#include <limits.h>
 #include <stdio.h>
 
 #include <X11/Xlib.h>
@@ -31,6 +32,7 @@
 #include "FRenderInit.h"
 #include "PictureBase.h"
 #include "log.h"
+#include "libs/wm_ui_metrics.h"
 
 /* ---------------------------- local definitions -------------------------- */
 
@@ -152,13 +154,20 @@ void FftCloseFont(Display *dpy, FftFontType *fftf)
 	}
 }
 
-FftFontType *FftGetFont(Display *dpy, char *fontname, char *module)
+FftFontType *FftGetFontAtScale(
+	Display *dpy, char *fontname, char *module,
+	monitor_scale_factor factor)
 {
 	XftFont *fftfont = NULL;
 	FftFontType *fftf = NULL;
 	FcPattern *src_pat = NULL, *load_pat = NULL;
 	FcMatrix *a = NULL;
 	FcResult result = 0;
+	double src_px = 0.0;
+	int source_px;
+	int scaled_px;
+
+	(void)module;
 
 	if (!FftSupport || !fontname)
 		return NULL;
@@ -170,6 +179,34 @@ FftFontType *FftGetFont(Display *dpy, char *fontname, char *module)
 	    (load_pat = XftFontMatch(dpy, fftscreen, src_pat, &result)) == NULL)
 		goto cleanup;
 
+	if (FcPatternGetDouble(src_pat, FC_PIXEL_SIZE, 0, &src_px)
+	    != FcResultMatch || src_px <= 0.0)
+	{
+		if (FcPatternGetDouble(load_pat, FC_PIXEL_SIZE, 0, &src_px)
+		    != FcResultMatch || src_px <= 0.0)
+		{
+			src_px = 0.0;
+		}
+	}
+	if (src_px > 0.0)
+	{
+		if (src_px > (double)INT_MAX)
+		{
+			source_px = INT_MAX;
+		}
+		else
+		{
+			source_px = (int)(src_px + 0.5);
+		}
+		if (source_px > 0 &&
+		    wm_ui_scale_px(source_px, factor, &scaled_px)
+		    == MONITOR_SCALE_CONVERSION_OK && scaled_px > 0)
+		{
+			FcPatternDel(load_pat, FC_PIXEL_SIZE);
+			FcPatternAddDouble(
+			    load_pat, FC_PIXEL_SIZE, (double)scaled_px);
+		}
+	}
 
 	/* safety check */
 	if (FcPatternGetMatrix(load_pat, FC_MATRIX, 0, &a) == FcResultMatch && a != NULL)
@@ -227,6 +264,13 @@ FftFontType *FftGetFont(Display *dpy, char *fontname, char *module)
 	if (!fftf && load_pat)
 		FcPatternDestroy(load_pat);
 	return fftf;
+}
+
+FftFontType *FftGetFont(Display *dpy, char *fontname, char *module)
+{
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
+
+	return FftGetFontAtScale(dpy, fontname, module, factor);
 }
 
 #define CACHE_ENTIRES 63

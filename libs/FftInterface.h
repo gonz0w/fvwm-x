@@ -4,6 +4,7 @@
 #define FVWMLIB_FFT_INTERFACE_H
 
 #include "fvwm_x11.h"
+#include "libs/monitor_scale.h"
 
 #ifdef HAVE_XFT
 #define FftSupport 1
@@ -28,6 +29,9 @@ void FftGetFontHeights(
 	FftFontType *fftf, int *height, int *ascent, int *descent);
 
 FftFontType *FftGetFont(Display *dpy, char *fontname, char *module);
+FftFontType *FftGetFontAtScale(
+	Display *dpy, char *fontname, char *module,
+	monitor_scale_factor factor);
 void FftCloseFont(Display *dpy, FftFontType *fftf);
 
 void FftDrawString(

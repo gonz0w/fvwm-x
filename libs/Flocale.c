@@ -37,6 +37,8 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <X11/Xlib.h>
@@ -1081,9 +1083,89 @@ char *FlocaleFixNameForFontSet(Display *dpy, char *name, char *module)
  * Fonts loading
  */
 
+static char *
+flocale_rewrite_xlfd_pixel(
+	const char *name, monitor_scale_factor factor, char *module)
+{
+	const char *p;
+	const char *pixel_start = NULL;
+	const char *pixel_end = NULL;
+	char *endptr;
+	char *out;
+	int field = 0;
+	int source_px;
+	int scaled_px;
+	int n;
+	size_t prefix_len;
+	size_t suffix_len;
+
+	if (name == NULL || name[0] != '-' ||
+	    factor.quarters == MONITOR_SCALE_QUARTERS_MIN)
+	{
+		return NULL;
+	}
+
+	for (p = name; *p != '\0'; p++)
+	{
+		if (*p != '-')
+		{
+			continue;
+		}
+		field++;
+		if (field == 7)
+		{
+			pixel_start = p + 1;
+		}
+		else if (field == 8)
+		{
+			pixel_end = p;
+			break;
+		}
+	}
+	if (pixel_start == NULL || pixel_end == NULL ||
+	    pixel_end <= pixel_start)
+	{
+		return NULL;
+	}
+
+	source_px = (int)strtol(pixel_start, &endptr, 10);
+	if (endptr != pixel_end || source_px <= 0)
+	{
+		return NULL;
+	}
+
+	if (wm_ui_scale_px(source_px, factor, &scaled_px)
+	    != MONITOR_SCALE_CONVERSION_OK || scaled_px <= 0)
+	{
+		fvwm_debug(__func__,
+			   "[%s] XLFD pixelsize overflow, keeping 1x '%s'\n",
+			   (module) ? module : "fvwmlibs", name);
+		return NULL;
+	}
+	if (scaled_px == source_px)
+	{
+		return NULL;
+	}
+
+	prefix_len = (size_t)(pixel_start - name);
+	suffix_len = strlen(pixel_end);
+	out = fxmalloc(prefix_len + 16 + suffix_len + 1);
+	memcpy(out, name, prefix_len);
+	n = snprintf(out + prefix_len, 16, "%d", scaled_px);
+	if (n < 0 || n >= 16)
+	{
+		free(out);
+		return NULL;
+	}
+	memcpy(out + prefix_len + (size_t)n, pixel_end, suffix_len + 1);
+
+	return out;
+}
+
 static
 FlocaleFont *FlocaleGetFftFont(
-	Display *dpy, char *fontname, char *encoding, char *module)
+	Display *dpy, char *fontname, char *encoding, char *module,
+	monitor_scale_factor factor)
 {
 	FftFontType *fftf = NULL;
 	FlocaleFont *flf = NULL;
@@ -1099,7 +1181,7 @@ FlocaleFont *FlocaleGetFftFont(
 		free(fn);
 		fn = fft_fallback_font;
 	}
-	fftf = FftGetFont(dpy, fn, module);
+	fftf = FftGetFontAtScale(dpy, fn, module, factor);
 	if (fftf == NULL)
 	{
 		if (fn != NULL && fn != fft_fallback_font)
@@ -1126,16 +1208,18 @@ FlocaleFont *FlocaleGetFftFont(
 
 static
 FlocaleFont *FlocaleGetFontSet(
-	Display *dpy, char *fontname, char *encoding, char *module)
+	Display *dpy, char *fontname, char *encoding, char *module,
+	monitor_scale_factor factor)
 {
 	static int mc_errors = 0;
 	FlocaleFont *flf = NULL;
-	XFontSet fontset;
-	char **ml;
-	int mc,i;
+	XFontSet fontset = NULL;
+	char **ml = NULL;
+	int mc = 0,i;
 	char *ds;
 	XFontSetExtents *fset_extents;
 	char *fn, *hints = NULL, *fn_fixed = NULL;
+	char *scaled_fn = NULL;
 
 	hints = GetQuotedString(fontname, &fn, "/", NULL, NULL, NULL);
 	if (*fn == '\0')
@@ -1156,7 +1240,29 @@ FlocaleFont *FlocaleGetFontSet(
 	 * XFreeFontSet() leaks some memory.  See
 	 * https://gitlab.freedesktop.org/xorg/lib/libx11/-/issues/143
 	 */
-	if (!(fontset = XCreateFontSet(dpy, fn_fixed, &ml, &mc, &ds)))
+	scaled_fn = flocale_rewrite_xlfd_pixel(fn_fixed, factor, module);
+	if (scaled_fn != NULL)
+	{
+		fontset = XCreateFontSet(dpy, scaled_fn, &ml, &mc, &ds);
+		if (fontset == NULL)
+		{
+			fvwm_debug(__func__,
+				   "[%s] scaled XLFD failed, keeping 1x '%s'\n",
+				   (module) ? module : "fvwmlibs", fn_fixed);
+			if (ml != NULL)
+			{
+				XFreeStringList(ml);
+				ml = NULL;
+			}
+			mc = 0;
+		}
+		free(scaled_fn);
+	}
+	if (fontset == NULL)
+	{
+		fontset = XCreateFontSet(dpy, fn_fixed, &ml, &mc, &ds);
+	}
+	if (fontset == NULL)
 	{
 		if (fn_fixed && fn_fixed != fn)
 		{
@@ -1224,12 +1330,14 @@ FlocaleFont *FlocaleGetFontSet(
 
 static
 FlocaleFont *FlocaleGetFont(
-	Display *dpy, char *fontname, char *encoding, char *module)
+	Display *dpy, char *fontname, char *encoding, char *module,
+	monitor_scale_factor factor)
 {
 	XFontStruct *font = NULL;
 	FlocaleFont *flf;
 	char *str,*fn,*tmp;
 	char *hints = NULL;
+	char *scaled_fn;
 
 	hints = GetQuotedString(fontname, &tmp, "/", NULL, NULL, NULL);
 	str = GetQuotedString(tmp, &fn, ",", NULL, NULL, NULL);
@@ -1240,7 +1348,24 @@ FlocaleFont *FlocaleGetFont(
 			free(fn);
 			fn = fallback_font;
 		}
-		font = XLoadQueryFont(dpy, fn);
+		scaled_fn = flocale_rewrite_xlfd_pixel(fn, factor, module);
+		if (scaled_fn != NULL)
+		{
+			font = XLoadQueryFont(dpy, scaled_fn);
+			if (font == NULL)
+			{
+				fvwm_debug(__func__,
+					   "[%s] scaled XLFD failed, "
+					   "keeping 1x '%s'\n",
+					   (module) ? module : "fvwmlibs",
+					   fn);
+			}
+			free(scaled_fn);
+		}
+		if (font == NULL)
+		{
+			font = XLoadQueryFont(dpy, fn);
+		}
 		if (fn != NULL && fn != fallback_font)
 		{
 			free(fn);
@@ -1290,7 +1415,7 @@ FlocaleFont *FlocaleGetFont(
 static
 FlocaleFont *FlocaleGetFontOrFontSet(
 	Display *dpy, char *fontname, char *encoding, char *fullname,
-	char *module)
+	char *module, monitor_scale_factor factor)
 {
 	FlocaleFont *flf = NULL;
 
@@ -1303,7 +1428,7 @@ FlocaleFont *FlocaleGetFontOrFontSet(
 		if (FftSupport)
 		{
 			flf = FlocaleGetFftFont(
-				dpy, fontname+4, encoding, module);
+				dpy, fontname+4, encoding, module, factor);
 		}
 		if (flf)
 		{
@@ -1313,11 +1438,13 @@ FlocaleFont *FlocaleGetFontOrFontSet(
 	}
 	if (flf == NULL && Flocale != NULL)
 	{
-		flf = FlocaleGetFontSet(dpy, fontname, encoding, module);
+		flf = FlocaleGetFontSet(
+			dpy, fontname, encoding, module, factor);
 	}
 	if (flf == NULL)
 	{
-		flf = FlocaleGetFont(dpy, fontname, encoding, module);
+		flf = FlocaleGetFont(
+			dpy, fontname, encoding, module, factor);
 	}
 	if (flf == NULL)
 	{
@@ -1491,7 +1618,7 @@ FlocaleFont *FlocaleLoadFontAtScale(
 	while (!flf && (fn && *fn))
 	{
 		flf = FlocaleGetFontOrFontSet(
-			dpy, fn, encoding, fontname, module);
+			dpy, fn, encoding, fontname, module, factor);
 		if (fn != NULL && fn != mb_fallback_font &&
 		    fn != fallback_font)
 		{
@@ -1532,7 +1659,7 @@ FlocaleFont *FlocaleLoadFontAtScale(
 			}
 			if ((flf = FlocaleGetFontSet(
 				     dpy, mb_fallback_font, NULL,
-				     module)) != NULL)
+				     module, factor)) != NULL)
 			{
 				flf->name = mb_fallback_font;
 			}
@@ -1547,7 +1674,7 @@ FlocaleFont *FlocaleLoadFontAtScale(
 			if ((flf =
 			     FlocaleGetFont(
 				     dpy, fallback_font, NULL,
-				     module)) != NULL)
+				     module, factor)) != NULL)
 			{
 				flf->name = fallback_font;
 			}

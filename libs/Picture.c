@@ -87,17 +87,15 @@ void PFreeFvwmPictureData(FvwmPicture *p)
 	return;
 }
 
-FvwmPicture *PCacheFvwmPicture(
+FvwmPicture *PCacheFvwmPictureAtScale(
 	Display *dpy, Window win, char *ImagePath, const char *name,
-	FvwmPictureAttributes fpa)
+	FvwmPictureAttributes fpa, monitor_scale_factor factor,
+	unsigned target_width, unsigned target_height, unsigned generation)
 {
 	char *path;
 	char *real_path;
 	FvwmPicture *p = FvwmPictureList;
-	unsigned int scale_quarters = MONITOR_SCALE_QUARTERS_MIN;
-	unsigned int target_width = 0;
-	unsigned int target_height = 0;
-	unsigned int generation = WM_UI_RESOURCE_GENERATION_INITIAL;
+	unsigned int scale_quarters = factor.quarters;
 
 	/* First find the full pathname */
 	if ((path = PictureFindImageFile(name, ImagePath, R_OK)) == NULL)
@@ -161,6 +159,17 @@ FvwmPicture *PCacheFvwmPicture(
 	}
 
 	return p;
+}
+
+FvwmPicture *PCacheFvwmPicture(
+	Display *dpy, Window win, char *ImagePath, const char *name,
+	FvwmPictureAttributes fpa)
+{
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
+
+	return PCacheFvwmPictureAtScale(
+		dpy, win, ImagePath, name, fpa, factor, 0, 0,
+		WM_UI_RESOURCE_GENERATION_INITIAL);
 }
 
 void PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
@@ -276,6 +285,10 @@ FvwmPicture *PCacheFvwmPictureFromPixmap(
 		nalloc_pixels, alloc_pixels, no_limit);
 	if(p)
 	{
+		p->scale_quarters = MONITOR_SCALE_QUARTERS_MIN;
+		p->target_width = 0;
+		p->target_height = 0;
+		p->generation = WM_UI_RESOURCE_GENERATION_INITIAL;
 		p->next = FvwmPictureList;
 		FvwmPictureList = p;
 	}

@@ -5,6 +5,7 @@
 
 #include "PictureBase.h"
 #include "PictureImageLoader.h"
+#include "libs/monitor_scale.h"
 
 /** Manipulating FvwmPictures **/
 
@@ -44,6 +45,18 @@ void PFreeFvwmPictureData(FvwmPicture *p);
 FvwmPicture* PCacheFvwmPicture(
 	Display *dpy, Window win, char* ImagePath, const char* pictureName,
 	FvwmPictureAttributes fpa);
+
+/* <pubfunc>PCacheFvwmPictureAtScale
+ * <description>
+ * Same as PCacheFvwmPicture, keyed additionally by scale quarters, optional
+ * target dimensions, and resource generation. Target 0,0 means intrinsic
+ * decoded size after the scale factor is applied to the source raster.
+ * </description>
+ */
+FvwmPicture* PCacheFvwmPictureAtScale(
+	Display *dpy, Window win, char* ImagePath, const char* pictureName,
+	FvwmPictureAttributes fpa, monitor_scale_factor factor,
+	unsigned target_width, unsigned target_height, unsigned generation);
 
 /* <pubfunc>PLoadFvwmPictureFromPixmap
  * <description>

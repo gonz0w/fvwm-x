@@ -29,6 +29,8 @@
 #include "libs/log.h"
 #include "fvwm.h"
 #include "libs/PictureImageLoader.h"
+#include "libs/Fcursor.h"
+#include "libs/wm_ui_metrics.h"
 #include "externs.h"
 #include "cursor.h"
 #include "functions.h"
@@ -135,7 +137,15 @@ void destroy_barrier_n(int n)
 
 /* ---------------------------- local variables ---------------------------- */
 
+typedef struct
+{
+	Cursor cursor;
+	unsigned quarters;
+	unsigned generation;
+} wm_ui_scaled_cursor;
+
 static Cursor cursors[CRS_MAX];
+static wm_ui_scaled_cursor cursor_table[CRS_MAX];
 static const unsigned int default_cursors[CRS_MAX] =
 {
 	None,
@@ -284,17 +294,95 @@ static void cursor_move_screen(struct monitor *m, int x_unit, int y_unit,
 	return;
 }
 
+static monitor_scale_factor
+cursor_active_factor(Display *disp)
+{
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
+	struct monitor *mon = NULL;
+	Window junk_root;
+	Window junk_child;
+	int x = 0;
+	int y = 0;
+	int junk_x;
+	int junk_y;
+	unsigned int junk_mask;
+
+	FQueryPointer(
+		disp, DefaultRootWindow(disp), &junk_root, &junk_child, &x,
+		&y, &junk_x, &junk_y, &junk_mask);
+	mon = FindScreenOfXY(x, y);
+	if (mon == NULL)
+	{
+		mon = monitor_get_current();
+	}
+	if (mon != NULL)
+	{
+		factor = mon->effective_scale.factor;
+	}
+
+	return factor;
+}
+
+static int
+cursor_nominal_px(monitor_scale_factor factor)
+{
+	int nominal = WM_UI_XCURSOR_NOMINAL_SOURCE_PX;
+
+	if (wm_ui_scale_px(WM_UI_XCURSOR_NOMINAL_SOURCE_PX, factor,
+		&nominal) != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale cursor nominal %d; using 1x",
+			WM_UI_XCURSOR_NOMINAL_SOURCE_PX);
+		return WM_UI_XCURSOR_NOMINAL_SOURCE_PX;
+	}
+
+	return nominal;
+}
+
+static void
+cursor_store_slot(int index, Cursor cursor, monitor_scale_factor factor)
+{
+	cursors[index] = cursor;
+	cursor_table[index].cursor = cursor;
+	cursor_table[index].quarters = factor.quarters;
+	cursor_table[index].generation = WM_UI_RESOURCE_GENERATION_INITIAL;
+}
+
 /* ---------------------------- interface functions ------------------------ */
 
 /* CreateCursors - Loads fvwm cursors */
 Cursor *CreateCursors(Display *disp)
 {
 	int i;
+	monitor_scale_factor factor;
+	int nominal;
+
+	factor = cursor_active_factor(disp);
+	nominal = cursor_nominal_px(factor);
 	/* define cursors */
-	cursors[0] = None;
+	cursor_store_slot(0, None, factor);
 	for (i = 1; i < CRS_MAX; i++)
 	{
-		cursors[i] = XCreateFontCursor(disp, default_cursors[i]);
+		Cursor cursor = None;
+
+#ifdef HAVE_XCURSOR
+		FcursorImages *fcis;
+
+		fcis = FcursorShapeLoadImages(
+			default_cursors[i], FcursorGetTheme(disp),
+			nominal);
+		if (fcis != NULL)
+		{
+			cursor = FcursorImagesLoadCursor(disp, fcis);
+			FcursorImagesDestroy(fcis);
+		}
+#endif
+		if (cursor == None)
+		{
+			cursor = XCreateFontCursor(disp, default_cursors[i]);
+		}
+		cursor_store_slot(i, cursor, factor);
 	}
 
 	return cursors;
@@ -555,7 +643,8 @@ void CMD_CursorStyle(F_CMD_ARGS)
 				action = tmp;
 			}
 			cursor = PImageLoadCursorFromFile(
-				dpy, Scr.Root, path, hotspot[0], hotspot[1]);
+				dpy, Scr.Root, path, hotspot[0], hotspot[1],
+				cursor_active_factor(dpy));
 			free(path);
 		}
 	}
@@ -575,7 +664,7 @@ void CMD_CursorStyle(F_CMD_ARGS)
 	{
 		XFreeCursor(dpy, Scr.FvwmCursors[index]);
 	}
-	Scr.FvwmCursors[index] = cursor;
+	cursor_store_slot(index, cursor, cursor_active_factor(dpy));
 
 	/* look for optional color arguments */
 	action = GetNextToken(action, &fore);

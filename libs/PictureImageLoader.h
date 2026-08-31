@@ -59,7 +59,8 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
  * </description>
  */
 Cursor PImageLoadCursorFromFile(
-	Display *dpy, Window win, char *path, int x_hot, int y_hot);
+	Display *dpy, Window win, char *path, int x_hot, int y_hot,
+	monitor_scale_factor factor);
 
 /*
  * <pubfunc>PImageLoadPixmapFromFile

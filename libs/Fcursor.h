@@ -9,6 +9,8 @@
 	typedef XcursorPixel			FcursorPixel;
 
 #	define FcursorFilenameLoadImages(a,b)	XcursorFilenameLoadImages(a,b)
+#	define FcursorShapeLoadImages(a,b,c)	XcursorShapeLoadImages(a,b,c)
+#	define FcursorGetTheme(a)		XcursorGetTheme(a)
 #	define FcursorGetDefaultSize(a)		XcursorGetDefaultSize(a)
 #	define FcursorImageCreate(a,b)		XcursorImageCreate(a,b)
 #	define FcursorImageDestroy(a)		XcursorImageDestroy(a)
@@ -31,6 +33,8 @@
 	typedef void FcursorPixel;
 
 #	define FcursorFilenameLoadImages(a,b) 0
+#	define FcursorShapeLoadImages(a,b,c) 0
+#	define FcursorGetTheme(a) 0
 #	define FcursorGetDefaultSize(a) 0
 #	define FcursorImageCreate(a,b) 0
 #	define FcursorImageDestroy(a)

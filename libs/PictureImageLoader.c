@@ -1225,30 +1225,94 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	return p;
 }
 
+static int
+pimage_cursor_nominal_px(monitor_scale_factor factor)
+{
+	int nominal = WM_UI_XCURSOR_NOMINAL_SOURCE_PX;
+
+	if (wm_ui_scale_px(WM_UI_XCURSOR_NOMINAL_SOURCE_PX, factor,
+		&nominal) != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale cursor nominal %d; using 1x",
+			WM_UI_XCURSOR_NOMINAL_SOURCE_PX);
+		return WM_UI_XCURSOR_NOMINAL_SOURCE_PX;
+	}
+
+	return nominal;
+}
+
+static void
+pimage_cursor_scale_hotspot(
+	int source_hot, int extent, monitor_scale_factor factor, int *hot)
+{
+	if (wm_ui_scale_hotspot(source_hot, extent, factor, hot)
+	    != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale cursor hotspot %d extent %d; using 1x",
+			source_hot, extent);
+		*hot = source_hot;
+		if (*hot < 0)
+		{
+			*hot = 0;
+		}
+		else if (extent > 0 && *hot >= extent)
+		{
+			*hot = extent - 1;
+		}
+	}
+}
+
 Cursor PImageLoadCursorFromFile(
-	Display *dpy, Window win, char *path, int x_hot, int y_hot)
+	Display *dpy, Window win, char *path, int x_hot, int y_hot,
+	monitor_scale_factor factor)
 {
 	Cursor cursor = 0;
 	CARD32 *data;
 	int width;
 	int height;
 	int i;
+	int nominal;
 	FcursorImages *fcis;
 	FcursorImage *fci;
-	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
+	monitor_scale_factor one_x = {MONITOR_SCALE_QUARTERS_MIN};
 
+	nominal = pimage_cursor_nominal_px(factor);
 	/* First try the Xcursor loader (animated cursors) */
-	if ((fcis = FcursorFilenameLoadImages(
-		path, FcursorGetDefaultSize(dpy))))
+	if ((fcis = FcursorFilenameLoadImages(path, nominal)))
 	{
 		for (i = 0; i < fcis->nimage; i++)
 		{
-			if (x_hot < fcis->images[i]->width && x_hot >= 0 &&
-			    y_hot < fcis->images[i]->height && y_hot >= 0)
+			int hx;
+			int hy;
+			int extent_w = fcis->images[i]->width;
+			int extent_h = fcis->images[i]->height;
+
+			if (x_hot >= 0)
 			{
-				fcis->images[i]->xhot = x_hot;
-				fcis->images[i]->yhot = y_hot;
+				pimage_cursor_scale_hotspot(
+					x_hot, extent_w, factor, &hx);
 			}
+			else
+			{
+				pimage_cursor_scale_hotspot(
+					fcis->images[i]->xhot, extent_w,
+					one_x, &hx);
+			}
+			if (y_hot >= 0)
+			{
+				pimage_cursor_scale_hotspot(
+					y_hot, extent_h, factor, &hy);
+			}
+			else
+			{
+				pimage_cursor_scale_hotspot(
+					fcis->images[i]->yhot, extent_h,
+					one_x, &hy);
+			}
+			fcis->images[i]->xhot = hx;
+			fcis->images[i]->yhot = hy;
 		}
 		cursor = FcursorImagesLoadCursor(dpy, fcis);
 		FcursorImagesDestroy(fcis);
@@ -1264,9 +1328,7 @@ Cursor PImageLoadCursorFromFile(
 		fpa.mask = FPAM_NO_ALPHA | FPAM_MONOCHROME;
 
 		/* Adjust the hot-spot if necessary */
-		if (
-			x_hot < 0 || x_hot >= width ||
-			y_hot < 0 || y_hot >= height)
+		if (x_hot < 0 || y_hot < 0)
 		{
 			FxpmImage xpm_im;
 			FxpmInfo xpm_info;
@@ -1278,20 +1340,36 @@ Cursor PImageLoadCursorFromFile(
 			{
 				if (xpm_info.valuemask & FxpmHotspot)
 				{
-					x_hot = xpm_info.x_hotspot;
-					y_hot = xpm_info.y_hotspot;
+					if (x_hot < 0)
+					{
+						x_hot = xpm_info.x_hotspot;
+					}
+					if (y_hot < 0)
+					{
+						y_hot = xpm_info.y_hotspot;
+					}
 				}
 				FxpmFreeXpmImage(&xpm_im);
 				FxpmFreeXpmInfo(&xpm_info);
 			}
-			if (x_hot < 0 || x_hot >= width)
-			{
-				x_hot = width / 2;
-			}
-			if (y_hot < 0 || y_hot >= height)
-			{
-				y_hot = height / 2;
-			}
+		}
+		if (x_hot >= 0)
+		{
+			pimage_cursor_scale_hotspot(
+				x_hot, width, factor, &x_hot);
+		}
+		else
+		{
+			x_hot = width / 2;
+		}
+		if (y_hot >= 0)
+		{
+			pimage_cursor_scale_hotspot(
+				y_hot, height, factor, &y_hot);
+		}
+		else
+		{
+			y_hot = height / 2;
 		}
 		/* Use the Xcursor library to create the argb cursor */
 		if ((fci = FcursorImageCreate(width, height)))

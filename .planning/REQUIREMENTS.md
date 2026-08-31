@@ -54,7 +54,7 @@
 - [ ] **TEST-02**: Maintainers can verify 1x/2x and fractional pairs, negative/overlapping/cloned layouts, invalid dimensions, hotplug, primary changes, and live reload against nested X servers.
 - [ ] **TEST-03**: Maintainers can verify transitions with fixed-size, increment-constrained, Qt, GTK, terminal, and changing-hints clients.
 - [ ] **TEST-04**: Maintainers can verify identical geometry with and without an external compositor and responsive bounded processing during topology storms.
-- [ ] **TEST-05**: Maintainers can verify the supported build profile explicitly enables Xcursor, XRender, PNG, and SVG paths used by v0.1.
+- [x] **TEST-05**: Maintainers can verify the supported build profile explicitly enables Xcursor, XRender, PNG, and SVG paths used by v0.1.
 
 ## Future Requirements
 
@@ -117,7 +117,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | TEST-02 | Phase 8 | Pending |
 | TEST-03 | Phase 8 | Pending |
 | TEST-04 | Phase 8 | Pending |
-| TEST-05 | Phase 4 | Pending |
+| TEST-05 | Phase 4 | Complete |
 
 **Coverage:**
 

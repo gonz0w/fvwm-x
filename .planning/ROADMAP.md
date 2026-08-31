@@ -145,7 +145,7 @@ Plans:
   4. Fonts and source images are scaled exactly once with target-aware caches, and fractional chrome has no clipped text, gaps, stale resources, or displaced cursor hot spots.
   5. Maintainers can build the supported profile with Xcursor, XRender, PNG, and SVG acceptance paths explicitly enabled.
 
-**Plans**: 1/9 plans executed
+**Plans**: 2/9 plans executed
 **UI hint**: yes
 
 Plans:
@@ -155,7 +155,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — Assert supported-profile HAVE_* macros and explicit CI Meson flags
+- [x] 04-02-PLAN.md — Assert supported-profile HAVE_* macros and explicit CI Meson flags
 - [ ] 04-03-PLAN.md — Extend Picture cache keys with scale, target size, and generation
 - [ ] 04-04-PLAN.md — Open Xft fonts at pixelsize and key Flocale by scale
 
@@ -230,7 +230,7 @@ Plans:
 | 1. Topology Snapshot and Live-X Harness | 8/8 | Complete    | 2026-08-30 |
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
 | 3. Geometry and Ownership Contracts | 5/5 | Complete    | 2026-08-31 |
-| 4. WM-Owned UI Metrics and Resources | 1/9 | In Progress|  |
+| 4. WM-Owned UI Metrics and Resources | 2/9 | In Progress|  |
 | 5. Logical-Size Transition Coordinator | 0/TBD | Not started | - |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |
 | 7. Module Scale Protocol and Consumers | 0/TBD | Not started | - |

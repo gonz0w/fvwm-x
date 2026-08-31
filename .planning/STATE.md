@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-08-31T14:09:10.005Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-08-31T14:17:00.829Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: 83b00a7f812392c4ca1ffc102d0775c41132a476
+state_head: 9f64427496c8ce3c01b38840aa2921dfd74f682c
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 27
-  completed_plans: 19
+  completed_plans: 20
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
-Plan: 2 of 9
+Plan: 3 of 9
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 04 execution started
 
@@ -79,6 +79,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 03 P04 | 5 min | 3 tasks | 6 files |
 | Phase 03 P05 | 6 min | 3 tasks | 7 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P01 | 10 min | 3 tasks | 5 files |
+| Phase 04-wm-owned-ui-metrics-and-resources P02 | 4 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: wm_ui_cache_key identity is scale_quarters, target_width, target_height, and generation; name-byte walks stay in Picture/Flocale.
 - [Phase 04]: Resource generation starts at WM_UI_RESOURCE_GENERATION_INITIAL and is not incremented in this phase.
 - [Phase 04]: Explicit title source below the scaled font raises thickness to the font; surplus above font-plus-extra is centered into offset.
+- [Phase 04]: Explicit enabled plus HAVE_* == 1 is the supported profile; meson.options defaults stay auto. — TEST-05 is a configure-time contract; auto can silently drop features when a pkg-config file is missing.
+- [Phase 04]: cairo is enabled alongside svg because librsvg needs a cairo backend. — PA-11: librsvg SVG support requires at least one cairo backend; CI enables cairo with svg.
 
 ### Pending Todos
 
@@ -172,6 +175,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T14:08:29.965Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-08-31T14:17:00.702Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

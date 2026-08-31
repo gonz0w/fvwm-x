@@ -1753,12 +1753,17 @@ FlocaleFont *bind_default_font_at_scale(
 	loaded = FlocaleLoadFontAtScale(
 		dpy, fallback->name, "fvwm", factor,
 		WM_UI_RESOURCE_GENERATION_INITIAL);
-	if (loaded != NULL)
+	if (loaded == NULL)
 	{
-		return loaded;
+		return fallback;
+	}
+	if (loaded == fallback)
+	{
+		FlocaleUnloadFont(dpy, loaded);
+		return fallback;
 	}
 
-	return fallback;
+	return loaded;
 }
 
 void setup_window_font(

@@ -40,6 +40,9 @@ typedef struct MenuRootStatic
 	int popup_border_width;
 	int popup_triangle_width;
 	int popup_triangle_height;
+	/* Popup-time scaled fonts; MenuStyle look fonts stay 1x source. */
+	struct _FlocaleFont *popup_std_font;
+	struct _FlocaleFont *popup_title_font;
 	Pixel sideColor;
 	int used_mini_icons;
 	/* Menu Face */
@@ -85,6 +88,8 @@ typedef struct MenuRootStatic
 #define MR_POPUP_BORDER_WIDTH(m) ((m)->s->popup_border_width)
 #define MR_POPUP_TRIANGLE_WIDTH(m)  ((m)->s->popup_triangle_width)
 #define MR_POPUP_TRIANGLE_HEIGHT(m) ((m)->s->popup_triangle_height)
+#define MR_POPUP_STD_FONT(m)     ((m)->s->popup_std_font)
+#define MR_POPUP_TITLE_FONT(m)   ((m)->s->popup_title_font)
 #define MR_SIDECOLOR(m)          ((m)->s->sideColor)
 #define MR_USED_MINI_ICONS(m)    ((m)->s->used_mini_icons)
 #define MR_STYLE(m)              ((m)->s->ms)

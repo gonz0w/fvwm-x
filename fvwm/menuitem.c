@@ -366,7 +366,7 @@ void menuitem_paint(
 	int sx2;
 	FlocaleFont* font;
 
-	if (!mi)
+	if (!mi || mpip->cb_mr == NULL)
 	{
 		return;
 	}
@@ -374,11 +374,11 @@ void menuitem_paint(
 
 	if (MI_IS_TITLE(mi))
 	{
-		font = ST_PTITLEFONT(ms);
+		font = MST_PTITLEFONT(mpip->cb_mr);
 	}
 	else
 	{
-		font = ST_PSTDFONT(ms);
+		font = MST_PSTDFONT(mpip->cb_mr);
 	}
 
 	y_offset = MI_Y_OFFSET(mi);
@@ -762,8 +762,8 @@ void menuitem_paint(
 				    MI_HOTKEY_COLUMN(mi) == i)
 				{
 					FlocaleDrawUnderline(
-						dpy, ST_PSTDFONT(ms), fws,
-						MI_HOTKEY_COFFSET(mi));
+						dpy, MST_PSTDFONT(mpip->cb_mr),
+						fws, MI_HOTKEY_COFFSET(mi));
 				}
 			}
 		}

@@ -929,8 +929,14 @@ static Bool _scan_for_pixmap(
 	}
 
 	fpa.mask = 0;
-	p = PCacheFvwmPicture(
-		dpy, Scr.NoFocusWin, NULL, name, fpa);
+	{
+		monitor_scale_factor factor;
+
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+		p = PCacheFvwmPictureAtScale(
+			dpy, Scr.NoFocusWin, NULL, name, fpa, factor,
+			0, 0, WM_UI_RESOURCE_GENERATION_INITIAL);
+	}
 	if (!p)
 	{
 		fvwm_debug(__func__,
@@ -1991,6 +1997,64 @@ static void make_menu(MenuRoot *mr, Bool is_tear_off)
 	return;
 }
 
+static FvwmPicture *reload_picture_at_scale(
+	FvwmPicture *old, monitor_scale_factor factor)
+{
+	FvwmPicture *p;
+	FvwmPictureAttributes fpa;
+
+	if (old == NULL || old->name == NULL)
+	{
+		return old;
+	}
+	fpa.mask = 0;
+	p = PCacheFvwmPictureAtScale(
+		dpy, Scr.NoFocusWin, NULL, old->name, fpa, factor,
+		0, 0, WM_UI_RESOURCE_GENERATION_INITIAL);
+	if (p == NULL)
+	{
+		fvwm_debug(__func__,
+			"Couldn't load scaled image from %s; keeping 1x",
+			old->name);
+		return old;
+	}
+	if (p != old)
+	{
+		PDestroyFvwmPicture(dpy, old);
+	}
+
+	return p;
+}
+
+static void bind_popup_font(
+	struct _FlocaleFont **slot, char *name,
+	struct _FlocaleFont *fallback, monitor_scale_factor factor)
+{
+	FlocaleFont *loaded;
+
+	loaded = FlocaleLoadFontAtScale(
+		dpy, name, "fvwm", factor,
+		WM_UI_RESOURCE_GENERATION_INITIAL);
+	if (loaded != NULL)
+	{
+		if (*slot != NULL && *slot != fallback &&
+		    *slot != Scr.DefaultFont && *slot != loaded)
+		{
+			FlocaleUnloadFont(dpy, *slot);
+		}
+		*slot = loaded;
+	}
+	else
+	{
+		fvwm_debug(__func__,
+			"Couldn't load scaled menu font '%s'; keeping 1x",
+			(name != NULL) ? name : "(default)");
+		*slot = fallback;
+	}
+
+	return;
+}
+
 /* Convert 1x MenuStyle/source integers onto MenuRoot popup pixels. */
 static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 {
@@ -2066,6 +2130,89 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 	}
 	mr->s->popup_triangle_height = scaled;
 
+	{
+		char *item_name;
+		char *title_name;
+		struct _FlocaleFont *title_fallback;
+		MenuItem *mi;
+		int i;
+		FvwmPicture *style_side;
+
+		item_name = NULL;
+		title_name = NULL;
+		title_fallback = ST_PTITLEFONT(MR_STYLE(mr));
+		if (ST_PSTDFONT(MR_STYLE(mr)) != NULL)
+		{
+			item_name = ST_PSTDFONT(MR_STYLE(mr))->name;
+		}
+		if (title_fallback != NULL)
+		{
+			title_name = title_fallback->name;
+		}
+		else
+		{
+			title_name = item_name;
+			title_fallback = ST_PSTDFONT(MR_STYLE(mr));
+		}
+		bind_popup_font(
+			&mr->s->popup_std_font, item_name,
+			ST_PSTDFONT(MR_STYLE(mr)), factor);
+		bind_popup_font(
+			&mr->s->popup_title_font, title_name,
+			title_fallback, factor);
+
+		if (MR_SIDEPIC(mr) != NULL)
+		{
+			MR_SIDEPIC(mr) = reload_picture_at_scale(
+				MR_SIDEPIC(mr), factor);
+		}
+		else
+		{
+			style_side = ST_SIDEPIC(MR_STYLE(mr));
+			if (style_side != NULL && style_side->name != NULL)
+			{
+				FvwmPictureAttributes fpa;
+				FvwmPicture *p;
+
+				fpa.mask = 0;
+				p = PCacheFvwmPictureAtScale(
+					dpy, Scr.NoFocusWin, NULL,
+					style_side->name, fpa, factor,
+					0, 0,
+					WM_UI_RESOURCE_GENERATION_INITIAL);
+				if (p != NULL)
+				{
+					MR_SIDEPIC(mr) = p;
+				}
+				else
+				{
+					fvwm_debug(__func__,
+						"Couldn't load scaled "
+						"sidepic; keeping 1x");
+				}
+			}
+		}
+		for (mi = MR_FIRST_ITEM(mr); mi != NULL;
+		     mi = MI_NEXT_ITEM(mi))
+		{
+			if (MI_PICTURE(mi) != NULL)
+			{
+				MI_PICTURE(mi) = reload_picture_at_scale(
+					MI_PICTURE(mi), factor);
+			}
+			for (i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++)
+			{
+				if (MI_MINI_ICON(mi)[i] != NULL)
+				{
+					MI_MINI_ICON(mi)[i] =
+						reload_picture_at_scale(
+							MI_MINI_ICON(mi)[i],
+							factor);
+				}
+			}
+		}
+	}
+
 	return;
 }
 
@@ -2077,6 +2224,8 @@ static void update_menu(MenuRoot *mr, MenuParameters *pmp)
 	int old_border;
 	int old_tw;
 	int old_th;
+	struct _FlocaleFont *old_std_font;
+	struct _FlocaleFont *old_title_font;
 	Bool has_screen_size_changed = False;
 	fscreen_scr_arg fscr;
 
@@ -2102,11 +2251,15 @@ static void update_menu(MenuRoot *mr, MenuParameters *pmp)
 	old_border = mr->s->popup_border_width;
 	old_tw = mr->s->popup_triangle_width;
 	old_th = mr->s->popup_triangle_height;
+	old_std_font = mr->s->popup_std_font;
+	old_title_font = mr->s->popup_title_font;
 	apply_popup_menu_metrics(
 		mr, pmp->screen_origin_x, pmp->screen_origin_y);
 	if (old_border != mr->s->popup_border_width ||
 	    old_tw != mr->s->popup_triangle_width ||
-	    old_th != mr->s->popup_triangle_height)
+	    old_th != mr->s->popup_triangle_height ||
+	    old_std_font != mr->s->popup_std_font ||
+	    old_title_font != mr->s->popup_title_font)
 	{
 		has_screen_size_changed = True;
 	}
@@ -6696,6 +6849,12 @@ MenuRoot *NewMenuRoot(char *name)
 	mr->s->popup_border_width = ST_BORDER_WIDTH(MR_STYLE(mr));
 	mr->s->popup_triangle_width = MENU_TRIANGLE_WIDTH;
 	mr->s->popup_triangle_height = MENU_TRIANGLE_HEIGHT;
+	mr->s->popup_std_font = ST_PSTDFONT(MR_STYLE(mr));
+	mr->s->popup_title_font = ST_PTITLEFONT(MR_STYLE(mr));
+	if (mr->s->popup_title_font == NULL)
+	{
+		mr->s->popup_title_font = mr->s->popup_std_font;
+	}
 	MR_ORIGINAL_MENU(mr) = mr;
 	MR_COPIES(mr) = 1;
 	MR_IS_UPDATED(mr) = 1;

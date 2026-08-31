@@ -129,6 +129,10 @@ typedef struct FvwmPictureThing
 	Pixel *alloc_pixels;
 	int nalloc_pixels;
 	Bool no_limit;
+	unsigned int scale_quarters;
+	unsigned int target_width;
+	unsigned int target_height;
+	unsigned int generation;
 } FvwmPicture;
 
 typedef struct

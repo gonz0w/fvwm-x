@@ -44,6 +44,7 @@
 #include "PictureUtils.h"
 #include "Fsvg.h"
 #include "log.h"
+#include "libs/wm_ui_metrics.h"
 
 static FvwmPicture *FvwmPictureList=NULL;
 
@@ -93,6 +94,10 @@ FvwmPicture *PCacheFvwmPicture(
 	char *path;
 	char *real_path;
 	FvwmPicture *p = FvwmPictureList;
+	unsigned int scale_quarters = MONITOR_SCALE_QUARTERS_MIN;
+	unsigned int target_width = 0;
+	unsigned int target_height = 0;
+	unsigned int generation = WM_UI_RESOURCE_GENERATION_INITIAL;
 
 	/* First find the full pathname */
 	if ((path = PictureFindImageFile(name, ImagePath, R_OK)) == NULL)
@@ -125,7 +130,11 @@ FvwmPicture *PCacheFvwmPicture(
 
 		/* If we have found a picture with the wanted name and stamp */
 		if (!*p1 && !*p2 && !isFileStampChanged(&p->stamp, real_path)
-		    && PICTURE_FPA_AGREE(p,fpa))
+		    && PICTURE_FPA_AGREE(p,fpa)
+		    && p->scale_quarters == scale_quarters
+		    && p->target_width == target_width
+		    && p->target_height == target_height
+		    && p->generation == generation)
 		{
 			p->count++; /* Put another weight on the picture */
 			free(path);
@@ -139,6 +148,10 @@ FvwmPicture *PCacheFvwmPicture(
 	p = PImageLoadFvwmPictureFromFile(dpy, win, path, fpa);
 	if(p)
 	{
+		p->scale_quarters = scale_quarters;
+		p->target_width = target_width;
+		p->target_height = target_height;
+		p->generation = generation;
 		p->next=FvwmPictureList;
 		FvwmPictureList=p;
 	}

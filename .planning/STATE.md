@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
-status: executing
-stopped_at: Completed 04-08-PLAN.md
-last_updated: "2026-08-31T15:40:29.371Z"
+status: verifying
+stopped_at: Completed 04-09-PLAN.md
+last_updated: "2026-08-31T15:53:45.010Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: 013ab0e87f348501558fce4a35dc9af1a5d35762
+state_head: abd34131ca4fa0e7906bd54e71a3c3c0d69dcd23
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 27
-  completed_plans: 26
+  completed_plans: 27
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
 Plan: 9 of 9
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-31 — Phase 04 execution started
 
 Progress: [███░░░░░░░] 38%
@@ -86,6 +86,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 04-wm-owned-ui-metrics-and-resources P06 | 19 min | 3 tasks | 7 files |
 | Phase 04 P07 | 14 min | 2 tasks | 6 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P08 | 8 min | 3 tasks | 5 files |
+| Phase 04-wm-owned-ui-metrics-and-resources P09 | 10 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -185,6 +186,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: Snap proximity and grid convert from style source with fw->m->effective_scale.factor at use; edge-resistance snapd converts the same way.
 - [Phase 04]: MoveThreshold converts from Scr source with the pointer-monitor factor at drag start; CMD_MoveThreshold still stores source.
 - [Phase 04]: Manpage lists owning versus active chrome metrics as actual X11 pixels and states display-wide font DPI is not mutated.
+- [Phase 04]: setup_mini_icon calls PCacheFvwmPictureAtScale with fw->m->effective_scale.factor else MONITOR_SCALE_QUARTERS_MIN, converted 16-pixel wanted size, and generation 1; overflow passes target 0,0.
+- [Phase 04]: TitleStyle/ButtonStyle command-time loads stay PCacheFvwmPicture 1x source identity; borders.c resolves PCacheFvwmPictureAtScale at draw with targets 0,0 and does not write the local back onto df->u.p.
 
 ### Pending Todos
 
@@ -204,6 +207,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T15:40:29.242Z
-Stopped at: Completed 04-08-PLAN.md
+Last session: 2026-08-31T15:53:44.881Z
+Stopped at: Completed 04-09-PLAN.md
 Resume file: None

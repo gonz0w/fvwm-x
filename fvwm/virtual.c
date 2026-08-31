@@ -1182,7 +1182,7 @@ void checkPanFrames(struct monitor *m)
 		}
 	}
 
-	last_edge_thickness = edge_thickness;
+	m->virtual_scr.last_edge_thickness = source_thickness;
 	monitor_assign_virtual(m);
 }
 

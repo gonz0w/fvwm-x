@@ -22,6 +22,7 @@
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
 #include "libs/Grab.h"
+#include "libs/monitor_ownership.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "execcontext.h"
@@ -666,9 +667,35 @@ Bool update_fvwm_monitor(FvwmWindow *fw)
 {
 	rectangle g;
 	struct monitor *mnew;
+	const monitor_topology_snapshot *snapshot;
+	monitor_ownership_result result;
+	monitor_ownership_status status;
+	Atom incumbent_atom;
 
-	g = IS_MAXIMIZED(fw) ? fw->g.max : fw->g.normal;
-	mnew = FindScreenOfXY(g.x, g.y);
+	if (IS_MAPPED(fw))
+	{
+		g = fw->g.frame;
+	}
+	else
+	{
+		g = IS_MAXIMIZED(fw) ? fw->g.max : fw->g.normal;
+	}
+	incumbent_atom = (fw->m != NULL && fw->m->si != NULL) ?
+		fw->m->si->name_atom : None;
+	snapshot = FScreenGetTopologySnapshot();
+	status = monitor_ownership_resolve(&g,
+	    snapshot != NULL ? snapshot->monitors : NULL,
+	    snapshot != NULL ? snapshot->monitor_count : 0, incumbent_atom,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+	mnew = NULL;
+	if (status == MONITOR_OWNERSHIP_OK && result.name != NULL)
+	{
+		mnew = monitor_resolve_name(result.name);
+	}
+	if (mnew == NULL)
+	{
+		mnew = (fw->m != NULL) ? fw->m : monitor_by_primary();
+	}
 
 	/* Avoid unnecessary updates. */
 	if (mnew == fw->m && fw->UpdateDesk < 0)

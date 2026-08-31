@@ -31,7 +31,9 @@
 #endif
 
 #include "libs/log.h"
+#include "libs/FScreen.h"
 #include "libs/fvwm_x11.h"
+#include "libs/wm_ui_metrics.h"
 #include "libs/fvwmlib.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
@@ -747,6 +749,36 @@ static void _execute_command_line(
  * Waits Scr.ClickTime, or until it is evident that the user is not
  * clicking, but is moving the cursor
  */
+static int
+scaled_move_threshold(int x, int y)
+{
+	struct monitor *mon;
+	monitor_scale_factor factor;
+	int dist;
+	monitor_scale_conversion_status status;
+
+	mon = FindScreenOfXY(x, y);
+	if (mon != NULL)
+	{
+		factor = mon->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
+	dist = Scr.MoveThreshold;
+	status = wm_ui_scale_px(Scr.MoveThreshold, factor, &dist);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale MoveThreshold %d (%d); keeping source",
+			Scr.MoveThreshold, (int)status);
+		return Scr.MoveThreshold;
+	}
+
+	return dist;
+}
+
 static cfunc_action_t CheckActionType(
 	int x, int y, XEvent *d, Bool may_time_out, Bool is_button_pressed,
 	int *ret_button)
@@ -759,7 +791,7 @@ static cfunc_action_t CheckActionType(
 	xcurrent = x;
 	ycurrent = y;
 	t0 = fev_get_evtime();
-	dist = Scr.MoveThreshold;
+	dist = scaled_move_threshold(x, y);
 
 	while ((total < Scr.ClickTime &&
 		fev_get_evtime() - t0 < Scr.ClickTime) || !may_time_out)

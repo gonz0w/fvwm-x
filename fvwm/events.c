@@ -86,6 +86,7 @@
 #include "libs/Colorset.h"
 #include "libs/FEvent.h"
 #include "libs/FScreen.h"
+#include "libs/wm_ui_metrics.h"
 #include "libs/FShape.h"
 #include "libs/Grab.h"
 #include "libs/Parse.h"
@@ -1222,6 +1223,36 @@ _pred_button_click(Display *display, XEvent *event, XPointer arg)
 }
 
 /* Helper function for _handle_focus_raise_click(). */
+static int
+scaled_move_threshold(int x, int y)
+{
+	struct monitor *mon;
+	monitor_scale_factor factor;
+	int dist;
+	monitor_scale_conversion_status status;
+
+	mon = FindScreenOfXY(x, y);
+	if (mon != NULL)
+	{
+		factor = mon->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
+	dist = Scr.MoveThreshold;
+	status = wm_ui_scale_px(Scr.MoveThreshold, factor, &dist);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale MoveThreshold %d (%d); keeping source",
+			Scr.MoveThreshold, (int)status);
+		return Scr.MoveThreshold;
+	}
+
+	return dist;
+}
+
 static Bool
 _test_for_motion(int x0, int y0)
 {
@@ -1229,6 +1260,7 @@ _test_for_motion(int x0, int y0)
 	int	     y;
 	unsigned int mask;
 	XEvent	     e;
+	int	     dist = scaled_move_threshold(x0, y0);
 
 	/* Query the pointer to do this. We can't check for events here since
 	 * the events are still needed if the pointer moves. */
@@ -1249,8 +1281,7 @@ _test_for_motion(int x0, int y0)
 		if ((mask & DEFAULT_ALL_BUTTONS_MASK) == 0) {
 			/* all buttons are released */
 			return False;
-		} else if (abs(x - x0) >= Scr.MoveThreshold
-			   || abs(y - y0) >= Scr.MoveThreshold) {
+		} else if (abs(x - x0) >= dist || abs(y - y0) >= dist) {
 			/* the pointer has moved */
 			return True;
 		}

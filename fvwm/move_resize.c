@@ -28,6 +28,7 @@
 #include "libs/FScreen.h"
 #include "libs/log.h"
 #include "libs/fvwmlib.h"
+#include "libs/wm_ui_metrics.h"
 #include "libs/monitor_ownership.h"
 #include "libs/Picture.h"
 #include "libs/Grab.h"
@@ -122,19 +123,69 @@ static bool set_geom_win_position_val(char *, int *, bool *, bool *);
  *      geom        - outline rectangle
  *
  */
+static monitor_scale_factor
+move_resize_active_factor(void)
+{
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
+	struct monitor *mon = NULL;
+	Window junk_root;
+	Window junk_child;
+	int x = 0;
+	int y = 0;
+	int junk_x;
+	int junk_y;
+	unsigned int junk_mask;
+
+	FQueryPointer(
+		dpy, Scr.Root, &junk_root, &junk_child, &x, &y, &junk_x,
+		&junk_y, &junk_mask);
+	mon = FindScreenOfXY(x, y);
+	if (mon == NULL)
+	{
+		mon = monitor_get_current();
+	}
+	if (mon != NULL)
+	{
+		factor = mon->effective_scale.factor;
+	}
+
+	return factor;
+}
+
+static int
+move_resize_scale_px(int source, monitor_scale_factor factor)
+{
+	int px = source;
+
+	if (wm_ui_scale_px(source, factor, &px)
+	    != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale move/resize metric %d; keeping source",
+			source);
+		return source;
+	}
+
+	return px;
+}
+
 static int get_outline_rects(XRectangle *rects, rectangle geom)
 {
 	int i;
 	int n;
 	int m;
+	monitor_scale_factor factor = move_resize_active_factor();
+	int nest = move_resize_scale_px(3, factor);
+	int min_inner = move_resize_scale_px(5, factor);
+	int split = move_resize_scale_px(10, factor);
 
-	n = 3;
-	m = (geom.width - 5) / 2;
+	n = nest;
+	m = (geom.width - min_inner) / 2;
 	if (m < n)
 	{
 		n = m;
 	}
-	m = (geom.height - 5) / 2;
+	m = (geom.height - min_inner) / 2;
 	if (m < n)
 	{
 		n = m;
@@ -151,9 +202,10 @@ static int get_outline_rects(XRectangle *rects, rectangle geom)
 		rects[i].width = geom.width - (i << 1);
 		rects[i].height = geom.height - (i << 1);
 	}
-	if (geom.width - (n << 1) >= 5 && geom.height - (n << 1) >= 5)
+	if (geom.width - (n << 1) >= min_inner &&
+	    geom.height - (n << 1) >= min_inner)
 	{
-		if (geom.width - (n << 1) >= 10)
+		if (geom.width - (n << 1) >= split)
 		{
 			int off = (geom.width - (n << 1)) / 3 + n;
 			rects[i].x = geom.x + off;
@@ -162,7 +214,7 @@ static int get_outline_rects(XRectangle *rects, rectangle geom)
 			rects[i].height = geom.height - (n << 1);
 			i++;
 		}
-		if (geom.height - (n << 1) >= 10)
+		if (geom.height - (n << 1) >= split)
 		{
 			int off = (geom.height - (n << 1)) / 3 + n;
 			rects[i].x = geom.x + n;
@@ -2364,18 +2416,50 @@ static void update_pos(
  * (*px and *py) and returns the snapped values. */
 #define NOSNAP -99999
 #define MAXSCORE 99999999
+static monitor_scale_factor
+snap_owning_factor(const FvwmWindow *fw)
+{
+	monitor_scale_factor factor;
+
+	if (fw != NULL && fw->m != NULL)
+	{
+		return fw->m->effective_scale.factor;
+	}
+	factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	return factor;
+}
+
+static int
+snap_scale_px(const FvwmWindow *fw, int source)
+{
+	int px = source;
+
+	if (wm_ui_scale_px(source, snap_owning_factor(fw), &px)
+	    != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale snap metric %d; keeping source",
+			source);
+		return source;
+	}
+
+	return px;
+}
+
 static void DoSnapGrid(FvwmWindow *fw, rectangle self, position *new)
 {
-	int grid_x = self.x / fw->snap_grid_x * fw->snap_grid_x;
-	int grid_y = self.y / fw->snap_grid_y * fw->snap_grid_y;
+	int snap_grid_x = snap_scale_px(fw, fw->snap_grid_x);
+	int snap_grid_y = snap_scale_px(fw, fw->snap_grid_y);
+	int grid_x = self.x / snap_grid_x * snap_grid_x;
+	int grid_y = self.y / snap_grid_y * snap_grid_y;
 
-	if (fw->snap_grid_x > 1 && self.x != grid_x)
-		new->x = (self.x - grid_x <= fw->snap_grid_x / 2) ? grid_x :
-			grid_x + fw->snap_grid_x;
+	if (snap_grid_x > 1 && self.x != grid_x)
+		new->x = (self.x - grid_x <= snap_grid_x / 2) ? grid_x :
+			grid_x + snap_grid_x;
 
-	if (fw->snap_grid_y > 1 && self.y != grid_y)
-		new->y = (self.y - grid_y <= fw->snap_grid_y / 2) ? grid_y :
-			grid_y + fw->snap_grid_y;
+	if (snap_grid_y > 1 && self.y != grid_y)
+		new->y = (self.y - grid_y <= snap_grid_y / 2) ? grid_y :
+			grid_y + snap_grid_y;
 }
 static void DoSnapMonitor(
 	FvwmWindow *fw, rectangle self, position *new,
@@ -2384,6 +2468,7 @@ static void DoSnapMonitor(
 	position mon;
 	position mon_br;
 	int tmp;
+	int proximity = snap_scale_px(fw, snapd);
 	position br = { self.x + self.width, self.y + self.height };
 	struct
 	{
@@ -2403,16 +2488,16 @@ static void DoSnapMonitor(
 		if (!(br.x < mon.x || self.x > mon_br.x) &&
 		    (all_edges || m->edge.bottom == MONITOR_OUTSIDE_EDGE))
 		{
-			tmp = resist ? mon_br.y : mon_br.y - snapd;
-			if (br.y <= mon_br.y + snapd && br.y >= tmp)
+			tmp = resist ? mon_br.y : mon_br.y - proximity;
+			if (br.y <= mon_br.y + proximity && br.y >= tmp)
 				update_pos(&score.y, &(new->y), self.y,
 					mon_br.y - self.height);
 		}
 		if (!(br.x < mon.x || self.x > mon_br.x) &&
 		    (all_edges || m->edge.top == MONITOR_OUTSIDE_EDGE))
 		{
-			tmp = resist ? mon.y : mon.y + snapd;
-			if (self.y <= tmp && self.y >= mon.y - snapd)
+			tmp = resist ? mon.y : mon.y + proximity;
+			if (self.y <= tmp && self.y >= mon.y - proximity)
 				update_pos(&score.y, &(new->y),
 					self.y, mon.y);
 		}
@@ -2421,16 +2506,16 @@ static void DoSnapMonitor(
 		if (!(br.y < mon.y || self.y > mon_br.y) &&
 		    (all_edges || m->edge.right == MONITOR_OUTSIDE_EDGE))
 		{
-			tmp = resist ? mon_br.x : mon_br.x - snapd;
-			if (br.x <= mon_br.x + snapd && br.x >= tmp)
+			tmp = resist ? mon_br.x : mon_br.x - proximity;
+			if (br.x <= mon_br.x + proximity && br.x >= tmp)
 				update_pos(&score.x, &(new->x), self.x,
 					mon_br.x - self.width);
 		}
 		if (!(br.y < mon.y || self.y > mon_br.y) &&
 		    (all_edges || m->edge.left == MONITOR_OUTSIDE_EDGE))
 		{
-			tmp = resist ? mon.x : mon.x + snapd;
-			if (self.x <= tmp && self.x >= mon.x - snapd)
+			tmp = resist ? mon.x : mon.x + proximity;
+			if (self.x <= tmp && self.x >= mon.x - proximity)
 				update_pos(&score.x, &(new->x),
 					self.x, mon.x);
 		}
@@ -2447,6 +2532,7 @@ static void DoSnapWindow(FvwmWindow *fw, rectangle self, position *new)
 	int maskout = (SNAP_SCREEN | SNAP_SCREEN_WINDOWS |
 			SNAP_SCREEN_ICONS | SNAP_SCREEN_ALL);
 	size_rect scr;
+	int proximity = snap_scale_px(fw, fw->snap_attraction.proximity);
 
 	scr.width = monitor_get_all_widths();
 	scr.height = monitor_get_all_heights();
@@ -2494,17 +2580,17 @@ static void DoSnapWindow(FvwmWindow *fw, rectangle self, position *new)
 			other.y < self.y + self.height)
 		{
 			if (self.x + self.width >= other.x -
-			    fw->snap_attraction.proximity &&
+			    proximity &&
 			    self.x + self.width <= other.x +
-			    fw->snap_attraction.proximity)
+			    proximity)
 			{
 				update_pos(&score.x, &(new->x), self.x,
 					other.x - self.width);
 			}
 			if (self.x <= other.x + other.width +
-			    fw->snap_attraction.proximity &&
+			    proximity &&
 			    self.x >= other.x + other.width -
-			    fw->snap_attraction.proximity)
+			    proximity)
 			{
 				update_pos(&score.x, &(new->x), self.x,
 					other.x + other.width);
@@ -2516,17 +2602,17 @@ static void DoSnapWindow(FvwmWindow *fw, rectangle self, position *new)
 			other.x < self.x + self.width)
 		{
 			if (self.y + self.height >= other.y -
-			    fw->snap_attraction.proximity &&
+			    proximity &&
 			    self.y + self.height <= other.y +
-			    fw->snap_attraction.proximity)
+			    proximity)
 			{
 				update_pos(&score.y, &(new->y), self.y,
 					other.y - self.height);
 			}
 			if (self.y <= other.y + other.height +
-			    fw->snap_attraction.proximity &&
+			    proximity &&
 			    self.y >= other.y + other.height -
-			    fw->snap_attraction.proximity)
+			    proximity)
 			{
 				update_pos(&score.y, &(new->y), self.y,
 					other.y + other.height);

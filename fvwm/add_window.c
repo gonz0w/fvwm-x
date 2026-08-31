@@ -517,7 +517,7 @@ static void setup_window_attr(
 
 static void destroy_window_font(FvwmWindow *fw)
 {
-	if (IS_WINDOW_FONT_LOADED(fw) && !USING_DEFAULT_WINDOW_FONT(fw) &&
+	if (IS_WINDOW_FONT_LOADED(fw) && fw->title_font != NULL &&
 	    fw->title_font != Scr.DefaultFont)
 	{
 		FlocaleUnloadFont(dpy, fw->title_font);
@@ -1732,6 +1732,35 @@ void setup_title_geometry(
 	return;
 }
 
+FlocaleFont *bind_default_font_at_scale(
+	FlocaleFont *fallback, struct monitor *m)
+{
+	FlocaleFont *loaded;
+	monitor_scale_factor factor;
+
+	if (fallback == NULL)
+	{
+		return NULL;
+	}
+	if (m != NULL)
+	{
+		factor = m->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
+	loaded = FlocaleLoadFontAtScale(
+		dpy, fallback->name, "fvwm", factor,
+		WM_UI_RESOURCE_GENERATION_INITIAL);
+	if (loaded != NULL)
+	{
+		return loaded;
+	}
+
+	return fallback;
+}
+
 void setup_window_font(
 	FvwmWindow *fw, window_style *pstyle, Bool do_destroy)
 {
@@ -1765,9 +1794,10 @@ void setup_window_font(
 		}
 		else
 		{
-			/* no explicit font or failed to load, use default font
-			 * instead */
-			fw->title_font = Scr.DefaultFont;
+			/* no explicit font or failed to load, open DefaultFont
+			 * at the owning-monitor factor */
+			fw->title_font = bind_default_font_at_scale(
+				Scr.DefaultFont, fw->m);
 			SET_USING_DEFAULT_WINDOW_FONT(fw, 1);
 		}
 		SET_WINDOW_FONT_LOADED(fw, 1);

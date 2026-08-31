@@ -36,6 +36,8 @@ void setup_numeric_vals(FvwmWindow *fw, window_style *pstyle);
 Bool validate_transientfor(FvwmWindow *fw);
 void setup_title_geometry(
 	FvwmWindow *fw, window_style *pstyle);
+FlocaleFont *bind_default_font_at_scale(
+	FlocaleFont *fallback, struct monitor *m);
 void setup_window_font(
 	FvwmWindow *fw, window_style *pstyle, Bool do_destroy);
 void setup_icon_font(

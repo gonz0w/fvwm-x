@@ -28,6 +28,17 @@ monitor_scale_test = executable(
 
 test('monitor-scale', monitor_scale_test)
 
+wm_ui_metrics_test = executable(
+    'test-wm-ui-metrics',
+    'test_wm_ui_metrics.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
+test('wm-ui-metrics', wm_ui_metrics_test)
+
 monitor_ownership_test = executable(
     'test-monitor-ownership',
     'test_monitor_ownership.c',

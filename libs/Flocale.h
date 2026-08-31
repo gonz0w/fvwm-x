@@ -15,6 +15,7 @@
 #include "gravity.h"
 #include "FftInterface.h"
 #include "Colorset.h"
+#include "libs/monitor_scale.h"
 
 /* FlocaleCharset.h and Ficonv.h should not be included */
 
@@ -142,6 +143,8 @@ typedef struct _FlocaleFont
 	struct _FlocaleFont *next;
 	char *name;
 	int count;
+	unsigned int scale_quarters;
+	unsigned int generation;
 	XFontStruct *font;      /* font structure */
 	XFontSet fontset;       /* font set */
 	FftFontType fftf;       /* fvwm xft font */
@@ -261,6 +264,9 @@ void FlocaleInit(
  *
  */
 FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module);
+FlocaleFont *FlocaleLoadFontAtScale(
+	Display *dpy, char *fontname, char *module,
+	monitor_scale_factor factor, unsigned generation);
 
 /*
  * unload the flf FlocaleFont

@@ -58,6 +58,8 @@
 #include "Ficonv.h"
 #include "CombineChars.h"
 #include "log.h"
+#include "libs/monitor_scale.h"
+#include "libs/wm_ui_metrics.h"
 
 /* ---------------------------- local definitions -------------------------- */
 
@@ -1402,7 +1404,9 @@ char *prefix_list[] =
 	NULL
 };
 
-FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
+FlocaleFont *FlocaleLoadFontAtScale(
+	Display *dpy, char *fontname, char *module,
+	monitor_scale_factor factor, unsigned generation)
 {
 	FlocaleFont *flf = FlocaleFontList;
 	Bool ask_default = False;
@@ -1439,7 +1443,9 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 				break;
 			}
 		}
-		if (!*c1 && !*c2)
+		if (!*c1 && !*c2 &&
+		    flf->scale_quarters == factor.quarters &&
+		    flf->generation == generation)
 		{
 			flf->count++;
 			return flf;
@@ -1598,6 +1604,8 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 			flf->str_fc =
 				FlocaleCharsetGetDefaultCharset(dpy, module);
 		}
+		flf->scale_quarters = factor.quarters;
+		flf->generation = generation;
 		flf->next = FlocaleFontList;
 		FlocaleFontList = flf;
 	}
@@ -1607,6 +1615,15 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 	}
 
 	return flf;
+}
+
+FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
+{
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
+
+	return FlocaleLoadFontAtScale(
+		dpy, fontname, module, factor,
+		WM_UI_RESOURCE_GENERATION_INITIAL);
 }
 
 void FlocaleUnloadFont(Display *dpy, FlocaleFont *flf)

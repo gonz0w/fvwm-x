@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
 status: executing
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-08-31T14:25:49.000Z"
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-08-31T14:37:07.807Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: 0b2b25594073bb8f8f7d2330755af7dd3dc4ae14
+state_head: d745018e97de6a14b4a165a11ce3bfcd01fc9d4e
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 27
-  completed_plans: 21
+  completed_plans: 22
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
-Plan: 4 of 9
+Plan: 5 of 9
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 04 execution started
 
@@ -81,6 +81,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 04-wm-owned-ui-metrics-and-resources P01 | 10 min | 3 tasks | 5 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P02 | 4 min | 2 tasks | 4 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P03 | 6 min | 2 tasks | 4 files |
+| Phase 04-wm-owned-ui-metrics-and-resources P04 | 8 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -159,6 +160,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: cairo is enabled alongside svg because librsvg needs a cairo backend. — PA-11: librsvg SVG support requires at least one cairo backend; CI enables cairo with svg.
 - [Phase 04]: New PCacheFvwmPictureAtScale rather than breaking PCacheFvwmPicture; missing extras equal quarters 4 and generation 1.
 - [Phase 04]: Do not reorder pixmap members on FvwmPicture; append the four unsigned cache-key fields after existing ones.
+- [Phase 04]: New FlocaleLoadFontAtScale rather than breaking FlocaleLoadFont; missing extras equal quarters 4 and generation 1.
+- [Phase 04]: FftGetFontAtScale rewrites FC_PIXEL_SIZE after XftFontMatch from wm_ui_scale_px; FftGetFont stays the 1x wrapper.
+- [Phase 04]: XLFD pixel-field rewrite is best-effort; parse or load failure keeps 1x and fvwm_debug.
+- [Phase 04]: Display-wide fontconfig DPI is not the scale mechanism.
 
 ### Pending Todos
 
@@ -178,6 +183,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T14:25:48.870Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-08-31T14:37:07.688Z
+Stopped at: Completed 04-04-PLAN.md
 Resume file: None

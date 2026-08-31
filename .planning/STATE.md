@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 04
 current_phase_name: WM-Owned UI Metrics and Resources
 status: executing
-stopped_at: Completed 04-05-PLAN.md
-last_updated: "2026-08-31T14:49:38.644Z"
+stopped_at: Completed 04-06-PLAN.md
+last_updated: "2026-08-31T15:11:37.540Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04 execution started
-state_head: 1ebe0a3459de5e60cedc06753027332c35f782a3
+state_head: fa1463f03f4951516982c947920fbcc300976ac6
 progress:
   total_phases: 8
   completed_phases: 3
   total_plans: 27
-  completed_plans: 23
+  completed_plans: 24
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 04 (WM-Owned UI Metrics and Resources) — EXECUTING
-Plan: 6 of 9
+Plan: 7 of 9
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 04 execution started
 
@@ -83,6 +83,7 @@ Progress: [███░░░░░░░] 38%
 | Phase 04-wm-owned-ui-metrics-and-resources P03 | 6 min | 2 tasks | 4 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P04 | 8 min | 2 tasks | 5 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P05 | 8 min | 3 tasks | 3 files |
+| Phase 04-wm-owned-ui-metrics-and-resources P06 | 19 min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -169,6 +170,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: Use fw->m->effective_scale.factor when fw->m is non-NULL, else MONITOR_SCALE_QUARTERS_MIN.
 - [Phase 04]: Pass already-loaded title_font->height as scaled_font_height; EXTRA_TITLE_FONT_HEIGHT is a source argument to wm_ui_compose_title_thickness.
 - [Phase 04]: Title and icon fonts both open through FlocaleLoadFontAtScale at generation 1.
+- [Phase 04]: Convert ST_BORDER_WIDTH and MENU_TRIANGLE_* through wm_ui_scale_px onto MenuRoot ints at FSCREEN_XYPOS; ST_BORDER_WIDTH stays the 0-50 MenuStyle source.
+- [Phase 04]: MST_BORDER_WIDTH, MST_PSTDFONT, and MST_PTITLEFONT read MenuRoot popup fields so layout and paint consume active-monitor pixels without further call-site edits.
+- [Phase 04]: menuitem_get_size takes MenuRoot *mr; menuitem_paint reads popup triangle ints and fonts via mpip->cb_mr.
+- [Phase 04]: Icon wanted sizes and file-icon cache targets use the icon-geometry monitor, else the pointer; PIXMAP_OURS stays false for cache-backed file icons.
 
 ### Pending Todos
 
@@ -188,6 +193,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T14:49:38.530Z
-Stopped at: Completed 04-05-PLAN.md
+Last session: 2026-08-31T15:11:29.245Z
+Stopped at: Completed 04-06-PLAN.md
 Resume file: None

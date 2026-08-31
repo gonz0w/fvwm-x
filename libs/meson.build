@@ -55,6 +55,7 @@ libfvwm3_sources = files(
     'monitor_ownership.c',
     'monitor_scale.c',
     'monitor_topology.c',
+    'wm_ui_metrics.c',
     'safemalloc.c',
     'setpgrp.c',
     'strtonum.c',

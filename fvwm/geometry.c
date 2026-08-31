@@ -21,6 +21,8 @@
 
 #include "libs/fvwmlib.h"
 #include "libs/charmap.h"
+#include "libs/icccm_size_hints.h"
+#include "libs/log.h"
 #include "libs/wcontext.h"
 #include "fvwm.h"
 #include "fvwm/ewmh.h"
@@ -690,133 +692,6 @@ void maximize_adjust_offset(FvwmWindow *fw)
 	return;
 }
 
-#define MAKEMULT(a,b) ((b==1) ? (a) : (((int)((a)/(b))) * (b)) )
-static void _cs_handle_aspect_ratio(
-	size_rect *ret_s, FvwmWindow *fw, size_rect s, const size_rect base,
-	const size_rect inc, size_rect min, size_rect max, int xmotion,
-	int ymotion, int flags)
-{
-	volatile double odefect;
-	volatile double defect;
-	volatile double rmax;
-	volatile double rmin;
-	volatile int delta;
-	volatile int ow;
-	volatile int oh;
-
-	if (fw->hints.flags & PBaseSize)
-	{
-		/*
-		 * ICCCM 2 demands that aspect ratio should apply to width -
-		 * base_width. To prevent funny results, we reset PBaseSize in
-		 * GetWindowSizeHints, if base is not smaller than min.
-		 */
-		s.width -= base.width;
-		max.width -= base.width;
-		min.width -= base.width;
-		s.height -= base.height;
-		max.height -= base.height;
-		min.height -= base.height;
-	}
-	rmin = (double)fw->hints.min_aspect.x / (double)fw->hints.min_aspect.y;
-	rmax = (double)fw->hints.max_aspect.x / (double)fw->hints.max_aspect.y;
-	do
-	{
-		double r;
-
-		r = (double)s.width / (double)s.height;
-		ow = s.width;
-		oh = s.height;
-		odefect = 0;
-		if (r < rmin)
-		{
-			odefect = rmin - r;
-		}
-		else if (r > rmax)
-		{
-			odefect = r - rmax;
-		}
-		if (r < rmin && (flags & CS_ROUND_UP) && xmotion == 0)
-		{
-			/* change width to match */
-			delta = MAKEMULT(s.height * rmin - s.width, inc.width);
-			if (s.width + delta <= max.width)
-			{
-				s.width += delta;
-			}
-			r = (double)s.width / (double)s.height;
-		}
-		if (r < rmin)
-		{
-			/* change height to match */
-			delta = MAKEMULT(
-				s.height - s.width / rmin, inc.height);
-			if (s.height - delta >= min.height)
-			{
-				s.height -= delta;
-			}
-			else
-			{
-				delta = MAKEMULT(
-					s.height * rmin - s.width, inc.width);
-				if (s.width + delta <= max.width)
-				{
-					s.width += delta;
-				}
-			}
-			r = (double)s.width / (double)s.height;
-		}
-
-		if (r > rmax && (flags & CS_ROUND_UP) && ymotion == 0)
-		{
-			/* change height to match */
-			delta = MAKEMULT(s.width /rmax - s.height, inc.height);
-			if (s.height + delta <= max.height)
-			{
-				s.height += delta;
-			}
-			r = (double)s.width / (double)s.height;
-		}
-		if (r > rmax)
-		{
-			/* change width to match */
-			delta = MAKEMULT(s.width - s.height * rmax, inc.width);
-			if (s.width - delta >= min.width)
-			{
-				s.width -= delta;
-			}
-			else
-			{
-				delta = MAKEMULT(
-					s.width / rmax - s.height, inc.height);
-				if (s.height + delta <= max.height)
-				{
-					s.height += delta;
-				}
-			}
-			r = (double)s.width / (double)s.height;
-		}
-		defect = 0;
-		if (r < rmin)
-		{
-			defect = rmin - r;
-		}
-		else if (r > rmax)
-		{
-			defect = r - rmax;
-		}
-	} while (odefect > defect);
-	if (fw->hints.flags & PBaseSize)
-	{
-		ow += base.width;
-		oh += base.height;
-	}
-	ret_s->width = ow;
-	ret_s->height = oh;
-
-	return;
-}
-
 /*
  *
  *  Procedure:
@@ -837,6 +712,11 @@ void constrain_size(
 	size_rect d;
 	size_rect old;
 	size_borders b;
+	icccm_size_hints icccm_hints;
+	icccm_constrain_status icccm_status;
+	int client_width;
+	int client_height;
+	long icccm_flags;
 
 	if (DO_DISABLE_CONSTRAIN_SIZE_FULLSCREEN(fw) == 1)
 	{
@@ -911,38 +791,7 @@ void constrain_size(
 	inc.width = fw->hints.width_inc;
 	inc.height = fw->hints.height_inc;
 
-	/*
-	 * First, clamp to min and max values
-	 */
-	if (d.width < min.width)
-	{
-		d.width = min.width;
-	}
-	if (d.height < min.height)
-	{
-		d.height = min.height;
-	}
-	if (d.width > max.width)
-	{
-		d.width = max.width;
-	}
-	if (d.height > max.height)
-	{
-		d.height = max.height;
-	}
-
-	/*
-	 * Second, round to base + N * inc (up or down depending on resize
-	 * type) if rounding up store amount
-	 */
-	if (!(flags & CS_ROUND_UP))
-	{
-		d.width = ((d.width - base.width) / inc.width) *
-			inc.width + base.width;
-		d.height = ((d.height - base.height) / inc.height) *
-			inc.height + base.height;
-	}
-	else
+	if ((flags & CS_ROUND_UP) && inc.width > 0 && inc.height > 0)
 	{
 		round_up.width = d.width;
 		round_up.height = d.height;
@@ -952,64 +801,78 @@ void constrain_size(
 			    inc.height) * inc.height + base.height;
 		round_up.width = d.width - round_up.width;
 		round_up.height = d.height - round_up.height;
-	}
-
-	/*
-	 * Step 2a: check we didn't move the edge off screen in interactive
-	 * moves
-	 */
-	if ((flags & CS_ROUND_UP) && e != NULL && e->type == MotionNotify)
-	{
-		if (xmotion > 0 && e->xmotion.x_root < round_up.width)
+		if (e != NULL && e->type == MotionNotify)
+		{
+			if (xmotion > 0 && e->xmotion.x_root < round_up.width)
+			{
+				d.width -= inc.width;
+			}
+			else if (
+				xmotion < 0 && e->xmotion.x_root >=
+				monitor_get_all_widths() - round_up.width)
+			{
+				d.width -= inc.width;
+			}
+			if (ymotion > 0 && e->xmotion.y_root <
+				round_up.height)
+			{
+				d.height -= inc.height;
+			}
+			else if (
+				ymotion < 0 && e->xmotion.y_root >=
+				monitor_get_all_heights() - round_up.height)
+			{
+				d.height -= inc.height;
+			}
+		}
+		if (d.width < min.width)
+		{
+			d.width += inc.width;
+		}
+		if (d.height < min.height)
+		{
+			d.height += inc.height;
+		}
+		if (d.width > max.width)
 		{
 			d.width -= inc.width;
 		}
-		else if (
-			xmotion < 0 && e->xmotion.x_root >=
-			monitor_get_all_widths() - round_up.width)
-		{
-			d.width -= inc.width;
-		}
-		if (ymotion > 0 && e->xmotion.y_root < round_up.height)
-		{
-			d.height -= inc.height;
-		}
-		else if (
-			ymotion < 0 && e->xmotion.y_root >=
-			monitor_get_all_heights() - round_up.height)
+		if (d.height > max.height)
 		{
 			d.height -= inc.height;
 		}
 	}
 
-	/*
-	 * Step 2b: Check that we didn't violate min and max.
-	 */
-	if (d.width < min.width)
+	icccm_flags = fw->hints.flags | PMinSize | PMaxSize;
+	if (flags & CS_ROUND_UP)
 	{
-		d.width += inc.width;
+		icccm_flags &= ~PResizeInc;
 	}
-	if (d.height < min.height)
-	{
-		d.height += inc.height;
-	}
-	if (d.width > max.width)
-	{
-		d.width -= inc.width;
-	}
-	if (d.height > max.height)
-	{
-		d.height -= inc.height;
-	}
+	icccm_hints.flags = icccm_flags;
+	icccm_hints.min_width = min.width;
+	icccm_hints.min_height = min.height;
+	icccm_hints.max_width = max.width;
+	icccm_hints.max_height = max.height;
+	icccm_hints.width_inc = inc.width;
+	icccm_hints.height_inc = inc.height;
+	icccm_hints.min_aspect.x = fw->hints.min_aspect.x;
+	icccm_hints.min_aspect.y = fw->hints.min_aspect.y;
+	icccm_hints.max_aspect.x = fw->hints.max_aspect.x;
+	icccm_hints.max_aspect.y = fw->hints.max_aspect.y;
+	icccm_hints.base_width = base.width;
+	icccm_hints.base_height = base.height;
+	icccm_hints.win_gravity = fw->hints.win_gravity;
 
-	/*
-	 * Third, adjust for aspect ratio
-	 */
-	if (fw->hints.flags & PAspect)
+	client_width = d.width;
+	client_height = d.height;
+	icccm_status = icccm_constrain_size(
+		&icccm_hints, &d.width, &d.height, NULL);
+	if (icccm_status != ICCCM_CONSTRAIN_OK)
 	{
-		_cs_handle_aspect_ratio(
-			&d, fw, d, base, inc, min, max, xmotion, ymotion,
-			flags);
+		fvwm_debug(__func__, "ICCCM size constrain failed (%d)",
+			(int)icccm_status);
+		d.width = client_width;
+		d.height = client_height;
 	}
 
 	/*

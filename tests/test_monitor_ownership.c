@@ -390,6 +390,176 @@ test_overlap_area_overflow_initializes_outputs(void)
 	assert_safe_init(&result);
 }
 
+static void
+fill_seam_monitors(monitor_topology_monitor monitors[2])
+{
+	monitors[0] = (monitor_topology_monitor){
+	    .name_atom = 1,
+	    .name      = "HDMI-1",
+	    .x	       = 0,
+	    .y	       = 0,
+	    .width     = 1000,
+	    .height    = 1000,
+	};
+	monitors[1] = (monitor_topology_monitor){
+	    .name_atom = 2,
+	    .name      = "DP-1",
+	    .x	       = 1000,
+	    .y	       = 0,
+	    .width     = 1000,
+	    .height    = 1000,
+	};
+}
+
+static void
+test_incumbent_kept_on_equal_seam(void)
+{
+	monitor_topology_monitor monitors[2];
+	rectangle		 window = {
+	    .x	    = 900,
+	    .y	    = 0,
+	    .width  = 200,
+	    .height = 100,
+	};
+	monitor_ownership_result result;
+	monitor_ownership_status status;
+
+	fill_seam_monitors(monitors);
+
+	status = monitor_ownership_resolve(&window, monitors, 2, 1,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(
+	    &result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_INCUMBENT);
+	assert(result.extra_overlap == 0);
+
+	status = monitor_ownership_resolve(&window, monitors, 2, 2,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(&result, 2, "DP-1", MONITOR_OWNERSHIP_REASON_INCUMBENT);
+	assert(result.extra_overlap == 0);
+}
+
+static void
+test_incumbent_kept_when_extra_overlap_equals_hysteresis(void)
+{
+	monitor_topology_monitor monitors[2];
+	/*
+	 * 100-wide strip along the x=1000 seam: height 1 at x=954 overlaps
+	 * A by 46 and B by 54, so extra_overlap is 8.
+	 */
+	rectangle		 window = {
+	    .x	    = 954,
+	    .y	    = 0,
+	    .width  = 100,
+	    .height = 1,
+	};
+	monitor_ownership_result result;
+	monitor_ownership_status status;
+
+	fill_seam_monitors(monitors);
+
+	status = monitor_ownership_resolve(&window, monitors, 2, 1,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(
+	    &result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_INCUMBENT);
+	assert(result.extra_overlap == MONITOR_OWNERSHIP_HYSTERESIS_PX);
+	assert(result.extra_overlap == 8);
+}
+
+static void
+test_challenger_wins_beyond_hysteresis(void)
+{
+	monitor_topology_monitor monitors[2];
+	rectangle		 strip = {
+	    .x	    = 954,
+	    .y	    = 0,
+	    .width  = 101,
+	    .height = 1,
+	};
+	rectangle		 window = {
+	    .x	    = 891,
+	    .y	    = 0,
+	    .width  = 200,
+	    .height = 100,
+	};
+	monitor_ownership_result result;
+	monitor_ownership_status status;
+
+	fill_seam_monitors(monitors);
+
+	status = monitor_ownership_resolve(&strip, monitors, 2, 1,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(&result, 2, "DP-1", MONITOR_OWNERSHIP_REASON_OVERLAP);
+	assert(result.extra_overlap == 9);
+
+	status = monitor_ownership_resolve(&window, monitors, 2, 2,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(&result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_OVERLAP);
+	assert(result.extra_overlap == 1800);
+}
+
+static void
+test_incumbent_kept_when_one_pixel_overlap_remains(void)
+{
+	monitor_topology_monitor monitors[2];
+	/*
+	 * Incumbent overlap area is exactly 1 (x=999..1000) while the
+	 * challenger has 9, so extra_overlap is 8 — at most hysteresis.
+	 */
+	rectangle		 window = {
+	    .x	    = 999,
+	    .y	    = 0,
+	    .width  = 10,
+	    .height = 1,
+	};
+	monitor_ownership_result result;
+	monitor_ownership_status status;
+
+	fill_seam_monitors(monitors);
+
+	status = monitor_ownership_resolve(&window, monitors, 2, 1,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(
+	    &result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_INCUMBENT);
+	assert(result.extra_overlap <= MONITOR_OWNERSHIP_HYSTERESIS_PX);
+	assert(result.extra_overlap == 8);
+}
+
+static void
+test_incumbent_ignored_when_it_no_longer_overlaps(void)
+{
+	monitor_topology_monitor monitors[2];
+	rectangle		 window = {
+	    .x	    = 100,
+	    .y	    = 100,
+	    .width  = 200,
+	    .height = 100,
+	};
+	monitor_ownership_result result;
+	monitor_ownership_status status;
+
+	fill_seam_monitors(monitors);
+
+	status = monitor_ownership_resolve(&window, monitors, 2, 2,
+	    MONITOR_OWNERSHIP_HYSTERESIS_PX, &result);
+
+	assert(status == MONITOR_OWNERSHIP_OK);
+	assert_owner(
+	    &result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_CONTAINMENT);
+	assert(result.reason != MONITOR_OWNERSHIP_REASON_INCUMBENT);
+}
+
 int
 main(void)
 {
@@ -402,6 +572,11 @@ main(void)
 	test_empty_input_initialized_fallback();
 	test_invalid_arguments_initialize_outputs();
 	test_overlap_area_overflow_initializes_outputs();
+	test_incumbent_kept_on_equal_seam();
+	test_incumbent_kept_when_extra_overlap_equals_hysteresis();
+	test_challenger_wins_beyond_hysteresis();
+	test_incumbent_kept_when_one_pixel_overlap_remains();
+	test_incumbent_ignored_when_it_no_longer_overlaps();
 
 	return 0;
 }

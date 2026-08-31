@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 03
 current_phase_name: Geometry and Ownership Contracts
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-08-31T01:01:16.609Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-08-31T01:13:29.140Z"
 last_activity: 2026-08-30
 last_activity_desc: Phase 03 execution started
-state_head: 5d211707e0fb10e1af6f14499ea66ae413326659
+state_head: ec221d76bcaf6be289be1a229d7f3950c4a49d2c
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 17
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-30)
 ## Current Position
 
 Phase: 03 (Geometry and Ownership Contracts) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-08-30 — Phase 03 execution started
 
@@ -73,6 +73,7 @@ Progress: [██░░░░░░░░] 25%
 | Phase 02 P04 | 9min | 2 tasks | 5 files |
 | Phase 02 P05 | 21 min | 2 tasks | 3 files |
 | Phase 03 P01 | 13 min | 3 tasks | 6 files |
+| Phase 03 P02 | 8 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -127,6 +128,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 03]: Equal overlap and clone ties compare name_atom then strcmp(name), independent of array order.
 - [Phase 03]: Empty input returns an initialized FALLBACK result without aborting; overlap area that does not fit in int returns MONITOR_OWNERSHIP_OVERFLOW.
 - [Phase 03]: FindScreenOfXY is a 1x1 point wrapper with incumbent None and hysteresis 0, then a logged primary or enabled non-global fallback.
+- [Phase 03]: Keep an overlapping incumbent when extra_overlap is at most MONITOR_OWNERSHIP_HYSTERESIS_PX; steal only when extra_overlap is strictly greater. — GEO-01 seam stability: extra_overlap 8 keeps, extra_overlap 9 steals.
+- [Phase 03]: An overlapping incumbent wins before name_atom/name identity on equal overlap. — Identity tie-break applies only when there is no overlapping incumbent.
+- [Phase 03]: Mapped windows resolve over fw->g.frame; unmapped windows keep the maximized-or-normal rectangle. — PA-05 reference geometry for update_fvwm_monitor.
+- [Phase 03]: Unresolved ownership names fall back to existing fw->m or monitor_by_primary without aborting. — T-03-07: NULL snapshot or unresolved name must not abort.
 
 ### Pending Todos
 
@@ -146,6 +151,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T01:01:16.531Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-08-31T01:13:29.059Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None

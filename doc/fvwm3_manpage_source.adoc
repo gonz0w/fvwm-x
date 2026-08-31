@@ -4033,7 +4033,12 @@ MoveToPage wrapx wrapy +2p -1p
 
 *MoveToScreen* [_screen_]::
 	Moves the selected window to another screen. The _screen_ argument
-	must be a valid RandR name.
+	must be a valid RandR name. The destination is that monitor's
+	literal RandR rectangle in root-pixel coordinates. After the
+	move, the owning monitor is the unique root-pixel overlap result
+	with incumbent extra-overlap hysteresis of 8 pixels. EWMH,
+	ICCCM, configure events, frame extents, work areas, struts, and
+	module geometry remain actual X11 pixels.
 
 *OpaqueMoveSize* [_percentage_]::
 	Tells fvwm the maximum size window with which opaque window movement
@@ -6334,6 +6339,11 @@ windows on the screen that contains the mouse pointer at the time the
 window is created. However, those windows which are not placed by fvwm
 (i.e., those with a USPosition hint from a user specified geometry)
 are normally placed in a position relative to all identified screens.
+The owning monitor is the unique root-pixel overlap result against
+literal RandR Monitor rectangles, with incumbent extra-overlap
+hysteresis of 8 pixels. Placement uses those rectangles. EWMH, ICCCM,
+configure, frame extents, work area, and module packets stay actual
+X11 pixels.
 +
 _StartsOnPageIncludesTransients_ causes the _StartsOnPage_ style to be
 applied even for transient windows. This is not usually useful, since

@@ -132,14 +132,28 @@ gap_distance(
 	return distance;
 }
 
+static int
+saturate_extra_overlap(monitor_ownership_wide extra)
+{
+	if (extra > INT_MAX) {
+		return INT_MAX;
+	}
+	if (extra < INT_MIN) {
+		return INT_MIN;
+	}
+
+	return (int)extra;
+}
+
 static void
 assign_owner(monitor_ownership_result *result,
-    const monitor_topology_monitor *monitor, monitor_ownership_reason reason)
+    const monitor_topology_monitor *monitor, monitor_ownership_reason reason,
+    int extra_overlap)
 {
 	result->name_atom     = monitor->name_atom;
 	result->name	      = monitor->name;
 	result->reason	      = reason;
-	result->extra_overlap = 0;
+	result->extra_overlap = extra_overlap;
 }
 
 monitor_ownership_status
@@ -149,11 +163,15 @@ monitor_ownership_resolve(const rectangle *window,
 {
 	int			 i;
 	int			 best_index;
+	int			 incumbent_index;
+	int			 hysteresis;
+	int			 extra_overlap;
 	monitor_ownership_wide	 best_area;
+	monitor_ownership_wide	 incumbent_area;
 	monitor_ownership_wide	 best_distance;
+	monitor_ownership_wide	 extra;
+	monitor_ownership_reason reason;
 
-	(void)incumbent_atom;
-	(void)hysteresis_px;
 	if (result == NULL) {
 		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
 	}
@@ -169,8 +187,11 @@ monitor_ownership_resolve(const rectangle *window,
 		return MONITOR_OWNERSHIP_INVALID_ARGUMENT;
 	}
 
-	best_index = -1;
-	best_area  = 0;
+	hysteresis	= hysteresis_px < 0 ? 0 : hysteresis_px;
+	best_index	= -1;
+	best_area	= 0;
+	incumbent_index = -1;
+	incumbent_area	= 0;
 	for (i = 0; i < monitor_count; i++) {
 		monitor_ownership_wide	 area;
 		monitor_ownership_status area_status;
@@ -184,6 +205,11 @@ monitor_ownership_resolve(const rectangle *window,
 		if (area <= 0) {
 			continue;
 		}
+		if (incumbent_atom != None
+		    && monitors[i].name_atom == incumbent_atom) {
+			incumbent_index = i;
+			incumbent_area	= area;
+		}
 		if (best_index < 0 || area > best_area
 		    || (area == best_area
 			&& identity_cmp(&monitors[i], &monitors[best_index])
@@ -193,10 +219,24 @@ monitor_ownership_resolve(const rectangle *window,
 		}
 	}
 	if (best_index >= 0) {
-		assign_owner(result, &monitors[best_index],
-		    window_is_contained(window, &monitors[best_index])
-			? MONITOR_OWNERSHIP_REASON_CONTAINMENT
-			: MONITOR_OWNERSHIP_REASON_OVERLAP);
+		reason = window_is_contained(window, &monitors[best_index]) ?
+		    MONITOR_OWNERSHIP_REASON_CONTAINMENT :
+		    MONITOR_OWNERSHIP_REASON_OVERLAP;
+		if (incumbent_index >= 0) {
+			extra	      = best_area - incumbent_area;
+			extra_overlap = saturate_extra_overlap(extra);
+			if (extra <= hysteresis) {
+				assign_owner(result,
+				    &monitors[incumbent_index],
+				    MONITOR_OWNERSHIP_REASON_INCUMBENT,
+				    extra_overlap);
+				return MONITOR_OWNERSHIP_OK;
+			}
+			assign_owner(result, &monitors[best_index], reason,
+			    extra_overlap);
+			return MONITOR_OWNERSHIP_OK;
+		}
+		assign_owner(result, &monitors[best_index], reason, 0);
 		return MONITOR_OWNERSHIP_OK;
 	}
 
@@ -215,7 +255,7 @@ monitor_ownership_resolve(const rectangle *window,
 		}
 	}
 	assign_owner(
-	    result, &monitors[best_index], MONITOR_OWNERSHIP_REASON_GAP);
+	    result, &monitors[best_index], MONITOR_OWNERSHIP_REASON_GAP, 0);
 
 	return MONITOR_OWNERSHIP_OK;
 }

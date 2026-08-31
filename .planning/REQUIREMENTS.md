@@ -8,7 +8,7 @@
 ### Topology
 
 - [x] **TOP-01**: User can inspect one committed RandR 1.5 Monitor snapshot containing stable identity, root-pixel geometry, physical dimensions, primary state, output membership, and topology epoch.
-- [x] **TOP-02**: User gets deterministic monitor identity and ownership behavior for negative origins, gaps, exact clones, partial overlaps, rotations, and output reordering.
+- [ ] **TOP-02**: User gets deterministic monitor identity and ownership behavior for negative origins, gaps, exact clones, partial overlaps, rotations, and output reordering.
 - [x] **TOP-03**: User sees topology event bursts coalesced into one validated atomic commit, with the last good topology retained after query failure.
 - [ ] **TOP-04**: User's windows remain reachable and retain normal, maximized, or fullscreen intent when their monitor is removed.
 - [ ] **TOP-05**: User can inspect and simulate topology, scale inputs, fallback reasons, ownership, transition epochs, and constraint outcomes.
@@ -34,13 +34,13 @@
 
 ### Geometry
 
-- [x] **GEO-01**: User's window has one deterministic owning monitor with incumbent tie-breaking and seam hysteresis.
+- [ ] **GEO-01**: User's window has one deterministic owning monitor with incumbent tie-breaking and seam hysteresis.
 - [ ] **GEO-02**: User's eligible window preserves logical client size across scale transitions and repeated round trips without drift.
-- [x] **GEO-03**: User's scaled target size obeys ICCCM minimum, maximum, base, increment, aspect, fixed-size, and gravity constraints.
+- [ ] **GEO-03**: User's scaled target size obeys ICCCM minimum, maximum, base, increment, aspect, fixed-size, and gravity constraints.
 - [ ] **GEO-04**: User can drag a window across scales without losing the grabbed pointer anchor or causing ownership oscillation.
-- [x] **GEO-05**: User gets correct initial placement, work areas, struts, and monitor-targeted movement in root-pixel coordinates.
+- [ ] **GEO-05**: User gets correct initial placement, work areas, struts, and monitor-targeted movement in root-pixel coordinates.
 - [ ] **GEO-06**: User gets correct maximize, fullscreen, unmaximize, restore, and monitor-transition behavior at every supported scale.
-- [x] **GEO-07**: Clients and modules continue receiving EWMH, ICCCM, configure, frame-extents, work-area, and geometry values in actual X11 pixels.
+- [ ] **GEO-07**: Clients and modules continue receiving EWMH, ICCCM, configure, frame-extents, work-area, and geometry values in actual X11 pixels.
 
 ### Modules
 
@@ -50,7 +50,7 @@
 
 ### Verification
 
-- [x] **TEST-01**: Maintainers can verify scale arithmetic, signed rounding, invalid physical data, snapshot diffs, ownership ties, ICCCM constraints, and 1,000 repeated round trips with deterministic native tests.
+- [ ] **TEST-01**: Maintainers can verify scale arithmetic, signed rounding, invalid physical data, snapshot diffs, ownership ties, ICCCM constraints, and 1,000 repeated round trips with deterministic native tests.
 - [ ] **TEST-02**: Maintainers can verify 1x/2x and fractional pairs, negative/overlapping/cloned layouts, invalid dimensions, hotplug, primary changes, and live reload against nested X servers.
 - [ ] **TEST-03**: Maintainers can verify transitions with fixed-size, increment-constrained, Qt, GTK, terminal, and changing-hints clients.
 - [ ] **TEST-04**: Maintainers can verify identical geometry with and without an external compositor and responsive bounded processing during topology storms.
@@ -86,7 +86,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | TOP-01 | Phase 1 | Complete |
-| TOP-02 | Phase 3 | Complete |
+| TOP-02 | Phase 3 | Gaps Found |
 | TOP-03 | Phase 1 | Complete |
 | TOP-04 | Phase 6 | Pending |
 | TOP-05 | Phase 6 | Pending |
@@ -103,17 +103,17 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | UI-04 | Phase 4 | Pending |
 | UI-05 | Phase 4 | Pending |
 | UI-06 | Phase 4 | Pending |
-| GEO-01 | Phase 3 | Complete |
+| GEO-01 | Phase 3 | Gaps Found |
 | GEO-02 | Phase 5 | Pending |
-| GEO-03 | Phase 3 | Complete |
+| GEO-03 | Phase 3 | Gaps Found |
 | GEO-04 | Phase 5 | Pending |
-| GEO-05 | Phase 3 | Complete |
+| GEO-05 | Phase 3 | Gaps Found |
 | GEO-06 | Phase 5 | Pending |
-| GEO-07 | Phase 3 | Complete |
+| GEO-07 | Phase 3 | Gaps Found |
 | MOD-01 | Phase 7 | Pending |
 | MOD-02 | Phase 7 | Pending |
 | MOD-03 | Phase 7 | Pending |
-| TEST-01 | Phase 3 | Complete |
+| TEST-01 | Phase 3 | Gaps Found |
 | TEST-02 | Phase 8 | Pending |
 | TEST-03 | Phase 8 | Pending |
 | TEST-04 | Phase 8 | Pending |

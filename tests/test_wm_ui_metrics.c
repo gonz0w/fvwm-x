@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include "libs/defaults.h"
+#include "libs/PictureBase.h"
 #include "libs/wm_ui_metrics.h"
 
 #include <assert.h>
@@ -218,6 +219,47 @@ test_move_threshold_and_snap_sources(void)
 	assert(px == 16);
 }
 
+static int
+picture_cache_extras_agree(const FvwmPicture *p, unsigned int scale_quarters,
+    unsigned int target_width, unsigned int target_height,
+    unsigned int generation)
+{
+	return p->scale_quarters == scale_quarters
+	    && p->target_width == target_width
+	    && p->target_height == target_height
+	    && p->generation == generation;
+}
+
+static void
+test_picture_lookup_requires_scale_and_generation(void)
+{
+	FvwmPicture cached = {0};
+	FvwmPictureAttributes fpa = {0};
+	unsigned int scale_quarters = MONITOR_SCALE_QUARTERS_MIN;
+	unsigned int target_width = 0;
+	unsigned int target_height = 0;
+	unsigned int generation = WM_UI_RESOURCE_GENERATION_INITIAL;
+
+	cached.fpa_mask = 0;
+	cached.scale_quarters = MONITOR_SCALE_QUARTERS_MIN;
+	cached.target_width = 0;
+	cached.target_height = 0;
+	cached.generation = WM_UI_RESOURCE_GENERATION_INITIAL;
+
+	assert(offsetof(FvwmPicture, scale_quarters)
+	    > offsetof(FvwmPicture, alpha));
+	assert(PICTURE_FPA_AGREE((&cached), fpa));
+	assert(picture_cache_extras_agree(&cached, scale_quarters,
+	    target_width, target_height, generation));
+
+	/* Same name/stamp/fpa at 2x must miss the 1x pixmap. */
+	assert(!picture_cache_extras_agree(&cached, 8U, target_width,
+	    target_height, generation));
+	/* A later generation must miss even at 1x and 0,0. */
+	assert(!picture_cache_extras_agree(&cached, scale_quarters,
+	    target_width, target_height, 2U));
+}
+
 static void
 test_menu_and_icon_wanted_sizes(void)
 {
@@ -249,6 +291,7 @@ main(void)
 	test_edge_zero_stays_zero();
 	test_move_threshold_and_snap_sources();
 	test_menu_and_icon_wanted_sizes();
+	test_picture_lookup_requires_scale_and_generation();
 
 	return 0;
 }

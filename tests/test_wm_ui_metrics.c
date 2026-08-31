@@ -208,6 +208,19 @@ test_edge_zero_stays_zero(void)
 }
 
 static void
+test_paging_edge_source_two_at_2x_is_four(void)
+{
+	int px = 99;
+
+	assert(wm_ui_scale_edge_thickness(2, (monitor_scale_factor){8}, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 4);
+	assert(wm_ui_scale_edge_thickness(2, (monitor_scale_factor){4}, &px)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(px == 2);
+}
+
+static void
 test_move_threshold_and_snap_sources(void)
 {
 	int px = 99;
@@ -412,6 +425,7 @@ main(void)
 	test_overflow_initializes_output_zero();
 	test_hotspot_scaled_then_clamped();
 	test_edge_zero_stays_zero();
+	test_paging_edge_source_two_at_2x_is_four();
 	test_move_threshold_and_snap_sources();
 	test_menu_and_icon_wanted_sizes();
 	test_picture_lookup_requires_scale_and_generation();

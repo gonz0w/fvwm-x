@@ -1456,10 +1456,15 @@ $[vp.x] $[vp.y] $[vp.width] $[vp.height]::
 	Either coordinate or the width or height of the current viewport.
 
 $[wa.x] $[wa.y] $[wa.width] $[wa.height]::
-	Either coordinate or the width or height of the EWMH working area.
+	x and y are the root-pixel origin of that EWMH working-area rectangle,
+	and width and height are that rectangle's size in actual X11 pixels,
+	not left/top strut insets. A monitor at x=-1920 with a 64-pixel left
+	strut yields $[wa.x] of -1856.
 
 $[dwa.x] $[dwa.y] $[dwa.width] $[dwa.height]::
-	Either coordinate or the width or height of the dynamic EWMH working area.
+	x and y are the root-pixel origin of that dynamic EWMH working-area
+	rectangle, and width and height are that rectangle's size in actual
+	X11 pixels, not left/top strut insets.
 
 $[desk.count]::
 	The number of desktops defined with the *DesktopName* command.

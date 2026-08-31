@@ -10,6 +10,7 @@
 
 #include "fvwm_x11.h"
 #include "PictureBase.h"
+#include "libs/monitor_scale.h"
 
 /* ---------------------------- global macros ------------------------------ */
 
@@ -47,7 +48,9 @@ Bool PImageLoadPixmapFromFile(
  * </description>
  */
 FvwmPicture *PImageLoadFvwmPictureFromFile(
-	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa);
+	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa,
+	monitor_scale_factor factor, unsigned target_width,
+	unsigned target_height);
 
 /*
  * <pubfunc>PImageLoadPixmapFromFile

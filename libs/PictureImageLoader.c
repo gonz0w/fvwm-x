@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <limits.h>
 #include <signal.h>
 #include <ctype.h>
 
@@ -51,13 +52,18 @@
 #include "Fcursor.h"
 #include "FImage.h"
 #include "ImageSafety.h"
+#include "libs/monitor_scale.h"
+#include "libs/wm_ui_metrics.h"
 
 /* ---------------------------- local definitions -------------------------- */
 #define FIMAGE_CMD_ARGS \
-	Display *dpy, char *path, CARD32 **argb_data, int *width, int *height
+	Display *dpy, char *path, CARD32 **argb_data, int *width, int *height, \
+	monitor_scale_factor factor, unsigned target_width, \
+	unsigned target_height
 
 #define FIMAGE_PASS_ARGS \
-	dpy, path, argb_data, width, height
+	dpy, path, argb_data, width, height, factor, target_width, \
+	target_height
 
 typedef struct PImageLoader
 {
@@ -78,7 +84,7 @@ typedef struct PImageLoader
 #ifdef USE_SVG
 static Bool PImageLoadSvg(FIMAGE_CMD_ARGS);
 #else
-#define PImageLoadSvg(a,b,c,d,e) (0)
+#define PImageLoadSvg(a,b,c,d,e,f,g,h) (0)
 #endif
 static Bool PImageLoadPng(FIMAGE_CMD_ARGS);
 static Bool PImageLoadXpm(FIMAGE_CMD_ARGS);
@@ -99,6 +105,91 @@ PImageLoader Loaders[] =
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* ---------------------------- local functions ---------------------------- */
+
+static Bool
+pimage_resolve_destination(
+	int src_w, int src_h, unsigned target_width, unsigned target_height,
+	monitor_scale_factor factor, int *dst_w, int *dst_h)
+{
+	if (dst_w == NULL || dst_h == NULL || src_w <= 0 || src_h <= 0)
+	{
+		return False;
+	}
+	if (target_width > 0 && target_height > 0)
+	{
+		if (target_width > (unsigned)INT_MAX ||
+		    target_height > (unsigned)INT_MAX)
+		{
+			return False;
+		}
+		*dst_w = (int)target_width;
+		*dst_h = (int)target_height;
+		return True;
+	}
+	if (wm_ui_scale_px(src_w, factor, dst_w) !=
+		MONITOR_SCALE_CONVERSION_OK ||
+	    wm_ui_scale_px(src_h, factor, dst_h) !=
+		MONITOR_SCALE_CONVERSION_OK ||
+	    *dst_w <= 0 || *dst_h <= 0)
+	{
+		return False;
+	}
+
+	return True;
+}
+
+static Bool
+pimage_blit_argb_once(
+	CARD32 *src, int src_w, int src_h, int dst_w, int dst_h,
+	CARD32 **dst_out)
+{
+	CARD32 *dst;
+	size_t pixel_count;
+	int y;
+	int x;
+
+	if (src == NULL || dst_out == NULL || src_w <= 0 || src_h <= 0 ||
+	    dst_w <= 0 || dst_h <= 0)
+	{
+		return False;
+	}
+	if (!FImageSizeIsSafe(
+		    (uint64_t)dst_w, (uint64_t)dst_h, PIMAGE_MAX_DIMENSION,
+		    PIMAGE_MAX_PIXELS, &pixel_count))
+	{
+		return False;
+	}
+	if (src_w == dst_w && src_h == dst_h)
+	{
+		*dst_out = src;
+		return True;
+	}
+	dst = fxcalloc(pixel_count, sizeof(CARD32));
+	for (y = 0; y < dst_h; y++)
+	{
+		int src_y = (int)(((int64_t)y * src_h) / dst_h);
+
+		if (src_y >= src_h)
+		{
+			src_y = src_h - 1;
+		}
+		for (x = 0; x < dst_w; x++)
+		{
+			int src_x = (int)(((int64_t)x * src_w) / dst_w);
+
+			if (src_x >= src_w)
+			{
+				src_x = src_w - 1;
+			}
+			dst[(size_t)y * (size_t)dst_w + (size_t)x] =
+				src[(size_t)src_y * (size_t)src_w +
+				    (size_t)src_x];
+		}
+	}
+	*dst_out = dst;
+
+	return True;
+}
 
 static
 Bool PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
@@ -172,6 +263,8 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 	double angle = 0;
 	double w_scale = 1;
 	double h_scale = 1;
+	double extra_w_scale = 1;
+	double extra_h_scale = 1;
 	double buf;
 	Bool transpose = False;
 	unsigned char a_value;
@@ -329,10 +422,32 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 		Fg_object_unref(FG_OBJECT(rsvg));
 		return False;
 	}
-	if (!w && !h)
+	if (target_width > 0 && target_height > 0)
 	{
-		w = dim.width;
-		h = dim.height;
+		if (target_width > (unsigned)INT_MAX ||
+		    target_height > (unsigned)INT_MAX)
+		{
+			Fg_object_unref(FG_OBJECT(rsvg));
+			return False;
+		}
+		w = (int)target_width;
+		h = (int)target_height;
+	}
+	else if (!w && !h)
+	{
+		int scaled_w = 0;
+		int scaled_h = 0;
+
+		if (wm_ui_scale_px(dim.width, factor, &scaled_w) !=
+			MONITOR_SCALE_CONVERSION_OK ||
+		    wm_ui_scale_px(dim.height, factor, &scaled_h) !=
+			MONITOR_SCALE_CONVERSION_OK)
+		{
+			Fg_object_unref(FG_OBJECT(rsvg));
+			return False;
+		}
+		w = scaled_w;
+		h = scaled_h;
 	}
 	else if (!w)
 	{
@@ -343,6 +458,8 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 		h = w * dim.ex / dim.em;
 	}
 
+	extra_w_scale = w_scale;
+	extra_h_scale = h_scale;
 	w_scale *= w;
 	h_scale *= h;
 
@@ -400,8 +517,26 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 		return False;
 	}
 
-	/* Affine transformations ...
-	 * mirroring, rotation, scaling and translation */
+#if LIBRSVG_CHECK_VERSION(2,52,0)
+	GError *err = NULL;
+	RsvgRectangle vp;
+
+	/* Render once into the destination viewport. Extra * / path
+	 * scales, mirrors, and rotation stay as cairo drawing ops. */
+	Fcairo_translate(cr, .5 * w, .5 * h);
+	Fcairo_scale(cr, w_sgn * extra_w_scale, h_sgn * extra_h_scale);
+	Fcairo_translate(cr, dw, dh);
+	Fcairo_rotate(cr, angle * M_PI / 180);
+	Fcairo_translate(cr, -.5 * w, -.5 * h);
+
+	vp.x = 0;
+	vp.y = 0;
+	vp.width = w;
+	vp.height = h;
+
+	rsvg_handle_render_document(rsvg, cr, &vp, &err);
+#else
+	/* Affine transformations scale drawing ops, not a 1x raster. */
 	Fcairo_translate(cr, .5 * w, .5 * h);
 	Fcairo_scale(cr, w_sgn, h_sgn);
 	Fcairo_translate(cr, dw, dh);
@@ -409,18 +544,6 @@ Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
 	Fcairo_scale(cr, w_scale, h_scale);
 	Fcairo_translate(cr, -.5, -.5);
 	Fcairo_scale(cr, 1 / dim.em, 1 / dim.ex);
-
-#if LIBRSVG_CHECK_VERSION(2,52,0)
-	GError *err = NULL;
-	RsvgRectangle vp;
-
-	vp.x = 0;
-	vp.y = 0;
-	vp.width = dim.width;
-	vp.height = dim.height;
-
-	rsvg_handle_render_document(rsvg, cr, &vp, &err);
-#else
 	Frsvg_handle_render_cairo(rsvg, cr);
 #endif
 	Fg_object_unref(FG_OBJECT(rsvg));
@@ -481,6 +604,9 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	unsigned char **lines;
 	int i;
 	size_t pixel_count;
+	int dst_w;
+	int dst_h;
+	CARD32 *scaled;
 
 	if (!PngSupport)
 	{
@@ -537,7 +663,8 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 		Fpng_ptr, Finfo_ptr, (Fpng_uint_32 *) (&w32),
 		(Fpng_uint_32 *) (&h32), &bit_depth, &color_type,
 		&interlace_type, NULL, NULL);
-	if (!FImageSizeIsSafe(
+	if (w32 > (Fpng_uint_32)INT_MAX || h32 > (Fpng_uint_32)INT_MAX ||
+	    !FImageSizeIsSafe(
 		    w32, h32, PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS,
 		    &pixel_count))
 	{
@@ -546,8 +673,8 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 		return False;
 	}
 	interlace_type = 0; /* not used */
-	*width = w = (int) w32;
-	*height = h = (int) h32;
+	w = (int) w32;
+	h = (int) h32;
 	if (color_type == FPNG_COLOR_TYPE_PALETTE)
 	{
 		Fpng_set_expand(Fpng_ptr);
@@ -622,7 +749,21 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, (png_infopp) NULL);
 	fclose(f);
 	free(lines);
-	*argb_data = data;
+	if (!pimage_resolve_destination(
+		    w, h, target_width, target_height, factor, &dst_w,
+		    &dst_h) ||
+	    !pimage_blit_argb_once(data, w, h, dst_w, dst_h, &scaled))
+	{
+		free(data);
+		return False;
+	}
+	if (scaled != data)
+	{
+		free(data);
+	}
+	*width = dst_w;
+	*height = dst_h;
+	*argb_data = scaled;
 
 	return True;
 }
@@ -647,6 +788,9 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 	int rc;
 	size_t pixel_count;
 	size_t pixel_index;
+	int dst_w;
+	int dst_h;
+	CARD32 *scaled;
 #ifdef HAVE_SIGACTION
 	struct sigaction defaultHandler;
 	struct sigaction originalHandler;
@@ -730,15 +874,29 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 			colors[i] = 0;
 		}
 	}
-	*width = w = xpm_im.width;
-	*height = h = xpm_im.height;
+	w = xpm_im.width;
+	h = xpm_im.height;
 	data = fxcalloc(pixel_count, sizeof(CARD32));
 	for (pixel_index = 0; pixel_index < pixel_count; pixel_index++)
 	{
 		data[pixel_index] = colors[xpm_im.data[pixel_index]];
 	}
 	free(colors);
-	*argb_data = data;
+	if (!pimage_resolve_destination(
+		    w, h, target_width, target_height, factor, &dst_w,
+		    &dst_h) ||
+	    !pimage_blit_argb_once(data, w, h, dst_w, dst_h, &scaled))
+	{
+		free(data);
+		return False;
+	}
+	if (scaled != data)
+	{
+		free(data);
+	}
+	*width = dst_w;
+	*height = dst_h;
+	*argb_data = scaled;
 
 	return True;
 }
@@ -931,8 +1089,10 @@ Bool PImageLoadPixmapFromFile(
 	int *no_limit, FvwmPictureAttributes fpa)
 {
 	CARD32 *data;
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
 
-	if (PImageLoadArgbDataFromFile(dpy, path, &data, width, height))
+	if (PImageLoadArgbDataFromFile(
+		    dpy, path, &data, width, height, factor, 0, 0))
 	{
 		size_t pixel_count;
 
@@ -983,7 +1143,9 @@ Bool PImageLoadPixmapFromFile(
 }
 
 FvwmPicture *PImageLoadFvwmPictureFromFile(
-	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa)
+	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa,
+	monitor_scale_factor factor, unsigned target_width,
+	unsigned target_height)
 {
 	FvwmPicture *p;
 	Pixmap pixmap = None;
@@ -994,6 +1156,8 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	int nalloc_pixels = 0;
 	Pixel *alloc_pixels = NULL;
 	char *real_path;
+	CARD32 *data;
+	size_t pixel_count;
 
         /* Remove any svg rendering options from real_path */
 	if (USE_SVG && *path == ':' &&
@@ -1005,9 +1169,40 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	{
 		real_path = path;
 	}
-	if (!PImageLoadPixmapFromFile(
-		dpy, win, path, &pixmap, &mask, &alpha, &width, &height,
-		&depth, &nalloc_pixels, &alloc_pixels, &no_limit, fpa))
+	if (PImageLoadArgbDataFromFile(
+		    dpy, path, &data, &width, &height, factor, target_width,
+		    target_height))
+	{
+		if (width <= 0 || height <= 0 ||
+		    !FImageSizeIsSafe(
+			    (uint64_t)width, (uint64_t)height,
+			    PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS,
+			    &pixel_count))
+		{
+			free(data);
+			return NULL;
+		}
+		depth = (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth;
+		if (!PImageCreatePixmapFromArgbData(
+			    dpy, win, data, pixel_count, 0, width, height,
+			    &pixmap, &mask, &alpha, &nalloc_pixels,
+			    &alloc_pixels, &no_limit, fpa))
+		{
+			free(data);
+			return NULL;
+		}
+		free(data);
+	}
+	else if (
+		XReadBitmapFile(
+			dpy, win, path, (unsigned int *)&width,
+			(unsigned int *)&height, &pixmap, NULL, NULL) ==
+		BitmapSuccess)
+	{
+		depth = 1;
+		mask = None;
+	}
+	else
 	{
 		return NULL;
 	}
@@ -1040,6 +1235,7 @@ Cursor PImageLoadCursorFromFile(
 	int i;
 	FcursorImages *fcis;
 	FcursorImage *fci;
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
 
 	/* First try the Xcursor loader (animated cursors) */
 	if ((fcis = FcursorFilenameLoadImages(
@@ -1058,7 +1254,8 @@ Cursor PImageLoadCursorFromFile(
 		FcursorImagesDestroy(fcis);
 	}
 	/* Get cursor data from the regular image loader */
-	else if (PImageLoadArgbDataFromFile(dpy, path, &data, &width, &height))
+	else if (PImageLoadArgbDataFromFile(
+		    dpy, path, &data, &width, &height, factor, 0, 0))
 	{
 		Pixmap src;
 		Pixmap msk = None;

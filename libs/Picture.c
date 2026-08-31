@@ -54,12 +54,14 @@ FvwmPicture *PGetFvwmPicture(
 {
 	char *path = PictureFindImageFile(name, ImagePath, R_OK);
 	FvwmPicture *p;
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
 
 	if (path == NULL)
 	{
 		return NULL;
 	}
-	p = PImageLoadFvwmPictureFromFile(dpy, win, path, fpa);
+	p = PImageLoadFvwmPictureFromFile(
+		dpy, win, path, fpa, factor, 0, 0);
 	if (p == NULL)
 	{
 		free(path);
@@ -143,7 +145,8 @@ FvwmPicture *PCacheFvwmPictureAtScale(
 
 	/* Not previously cached, have to load it ourself. Put it first in list
 	 */
-	p = PImageLoadFvwmPictureFromFile(dpy, win, path, fpa);
+	p = PImageLoadFvwmPictureFromFile(
+		dpy, win, path, fpa, factor, target_width, target_height);
 	if(p)
 	{
 		p->scale_quarters = scale_quarters;

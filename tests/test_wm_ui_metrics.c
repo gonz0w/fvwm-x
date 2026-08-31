@@ -15,9 +15,12 @@
 
 #include "config.h"
 
+#include "libs/defaults.h"
 #include "libs/wm_ui_metrics.h"
 
 #include <assert.h>
+#include <limits.h>
+#include <stddef.h>
 #include <stdbool.h>
 
 static void
@@ -70,11 +73,106 @@ test_cache_key_misses_across_quarters_and_generation(void)
 	assert(current.generation == WM_UI_RESOURCE_GENERATION_INITIAL);
 }
 
+static void
+test_chrome_sources_match_apply_at_supported_factors(void)
+{
+	static const int sources[] = {1, 7, 13};
+	static const unsigned int quarters[] = {4, 5, 6, 8, 16};
+	size_t i;
+	size_t j;
+
+	for (i = 0; i < sizeof(sources) / sizeof(sources[0]); i++) {
+		for (j = 0; j < sizeof(quarters) / sizeof(quarters[0]); j++) {
+			monitor_scale_factor factor = {quarters[j]};
+			int expected = 99;
+			int scaled = 99;
+
+			assert(monitor_scale_apply(
+				   sources[i], factor, &expected)
+			       == MONITOR_SCALE_CONVERSION_OK);
+			assert(wm_ui_scale_px(sources[i], factor, &scaled)
+			       == MONITOR_SCALE_CONVERSION_OK);
+			assert(scaled == expected);
+		}
+	}
+}
+
+static void
+test_explicit_title_below_font_is_raised(void)
+{
+	monitor_scale_factor one_x = {4};
+	int extra = 99;
+	int thickness = 99;
+	int offset = 99;
+
+	assert(wm_ui_scale_px(EXTRA_TITLE_FONT_HEIGHT, one_x, &extra)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(wm_ui_compose_title_thickness(16, EXTRA_TITLE_FONT_HEIGHT, 0, 0,
+		   one_x, &thickness, &offset)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(thickness == 16 + extra);
+	assert(offset == 0);
+
+	assert(wm_ui_compose_title_thickness(16, EXTRA_TITLE_FONT_HEIGHT, 10, 0,
+		   one_x, &thickness, &offset)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(thickness == 16);
+	assert(offset == 0);
+}
+
+static void
+test_explicit_title_above_font_centers(void)
+{
+	monitor_scale_factor one_x = {4};
+	int extra = 99;
+	int thickness = 99;
+	int offset = 99;
+	int base;
+
+	assert(wm_ui_scale_px(EXTRA_TITLE_FONT_HEIGHT, one_x, &extra)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	base = 16 + extra;
+	assert(wm_ui_compose_title_thickness(16, EXTRA_TITLE_FONT_HEIGHT, 40, 0,
+		   one_x, &thickness, &offset)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(thickness == 40);
+	assert(offset == (40 - base) / 2);
+}
+
+static void
+test_overflow_initializes_output_zero(void)
+{
+	monitor_scale_factor one_x = {4};
+	monitor_scale_factor factor = {5};
+	int px = 99;
+	int thickness = 99;
+	int offset = 99;
+
+	assert(wm_ui_scale_px(INT_MAX, factor, &px)
+	       == MONITOR_SCALE_CONVERSION_OVERFLOW);
+	assert(px == 0);
+	assert(wm_ui_scale_px(1, one_x, NULL)
+	       == MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT);
+
+	assert(wm_ui_compose_title_thickness(16, EXTRA_TITLE_FONT_HEIGHT,
+		   INT_MAX, 0, factor, &thickness, &offset)
+	       == MONITOR_SCALE_CONVERSION_OVERFLOW);
+	assert(thickness == 0);
+	assert(offset == 0);
+	assert(wm_ui_compose_title_thickness(16, EXTRA_TITLE_FONT_HEIGHT, 0, 0,
+		   one_x, NULL, &offset)
+	       == MONITOR_SCALE_CONVERSION_INVALID_ARGUMENT);
+}
+
 int
 main(void)
 {
 	test_source_handle_width_scales_at_1x_and_2x();
 	test_cache_key_misses_across_quarters_and_generation();
+	test_chrome_sources_match_apply_at_supported_factors();
+	test_explicit_title_below_font_is_raised();
+	test_explicit_title_above_font_centers();
+	test_overflow_initializes_output_zero();
 
 	return 0;
 }

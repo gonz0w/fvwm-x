@@ -38,7 +38,7 @@
 - [ ] **GEO-02**: User's eligible window preserves logical client size across scale transitions and repeated round trips without drift.
 - [ ] **GEO-03**: User's scaled target size obeys ICCCM minimum, maximum, base, increment, aspect, fixed-size, and gravity constraints.
 - [ ] **GEO-04**: User can drag a window across scales without losing the grabbed pointer anchor or causing ownership oscillation.
-- [ ] **GEO-05**: User gets correct initial placement, work areas, struts, and monitor-targeted movement in root-pixel coordinates.
+- [x] **GEO-05**: User gets correct initial placement, work areas, struts, and monitor-targeted movement in root-pixel coordinates.
 - [ ] **GEO-06**: User gets correct maximize, fullscreen, unmaximize, restore, and monitor-transition behavior at every supported scale.
 - [ ] **GEO-07**: Clients and modules continue receiving EWMH, ICCCM, configure, frame-extents, work-area, and geometry values in actual X11 pixels.
 
@@ -50,7 +50,7 @@
 
 ### Verification
 
-- [ ] **TEST-01**: Maintainers can verify scale arithmetic, signed rounding, invalid physical data, snapshot diffs, ownership ties, ICCCM constraints, and 1,000 repeated round trips with deterministic native tests.
+- [x] **TEST-01**: Maintainers can verify scale arithmetic, signed rounding, invalid physical data, snapshot diffs, ownership ties, ICCCM constraints, and 1,000 repeated round trips with deterministic native tests.
 - [ ] **TEST-02**: Maintainers can verify 1x/2x and fractional pairs, negative/overlapping/cloned layouts, invalid dimensions, hotplug, primary changes, and live reload against nested X servers.
 - [ ] **TEST-03**: Maintainers can verify transitions with fixed-size, increment-constrained, Qt, GTK, terminal, and changing-hints clients.
 - [ ] **TEST-04**: Maintainers can verify identical geometry with and without an external compositor and responsive bounded processing during topology storms.
@@ -107,13 +107,13 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | GEO-02 | Phase 5 | Pending |
 | GEO-03 | Phase 3 | Gaps Found |
 | GEO-04 | Phase 5 | Pending |
-| GEO-05 | Phase 3 | Gaps Found |
+| GEO-05 | Phase 3 | Complete |
 | GEO-06 | Phase 5 | Pending |
 | GEO-07 | Phase 3 | Gaps Found |
 | MOD-01 | Phase 7 | Pending |
 | MOD-02 | Phase 7 | Pending |
 | MOD-03 | Phase 7 | Pending |
-| TEST-01 | Phase 3 | Gaps Found |
+| TEST-01 | Phase 3 | Complete |
 | TEST-02 | Phase 8 | Pending |
 | TEST-03 | Phase 8 | Pending |
 | TEST-04 | Phase 8 | Pending |

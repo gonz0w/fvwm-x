@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 03
-current_phase_name: geometry-and-ownership-contracts
+current_phase_name: Geometry and Ownership Contracts
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-08-31T11:09:59.467Z"
-last_activity: 2026-08-30
+stopped_at: Completed 03-05-PLAN.md
+last_updated: "2026-08-31T11:23:33.779Z"
+last_activity: 2026-08-31
 last_activity_desc: Phase 03 execution started
-state_head: 6222e70023764c34c975572f8d4c3903757b8f74
+state_head: 0afd3f97cec208a1a9d5b3116d24334cfff1972e
 progress:
   total_phases: 8
   completed_phases: 2
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-08-30)
 
 ## Current Position
 
-Phase: 03 (geometry-and-ownership-contracts) — READY TO EXECUTE
-Plan: 4 of 4
-Status: Ready to execute
-Last activity: 2026-08-30 — Phase 03 execution started
+Phase: 03 (Geometry and Ownership Contracts) — EXECUTING
+Plan: 5 of 5
+Status: Phase 03 plans complete
+Last activity: 2026-08-31 — Completed 03-05-PLAN.md
 
 Progress: [██░░░░░░░░] 25%
 
@@ -76,6 +76,7 @@ Progress: [██░░░░░░░░] 25%
 | Phase 03 P02 | 8 min | 2 tasks | 3 files |
 | Phase 03 P03 | 14 min | 3 tasks | 6 files |
 | Phase 03 P04 | 5 min | 3 tasks | 6 files |
+| Phase 03 P05 | 6 min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 03]: Strut strips use monitor si extents; they do not wrap through DisplayWidth or DisplayHeight.
 - [Phase 03]: When StartsOnScreen is set but not honored, screen_g comes from FScreenGetScrRect CURRENT rather than 0,0,DisplayWidth,DisplayHeight.
 - [Phase 03]: EWMH, ICCCM, configure, frame extents, work area, and module packets stay actual X11 pixels; Status and module packets were not expanded.
+- [Phase 03]: Work-area insets are work origin minus si origin; consumers must not add si origin onto stored ewmh_working_area. — CR-01: stored ewmh_working_area is already root pixels after 03-04.
+- [Phase 03]: Snap copies the stored root-pixel work rect plus page offset only. — Adding si origin onto an already-absolute work origin double-counts (e.g. -1920 + -1856 = -3776).
+- [Phase 03]: $[wa.x]/$[wa.y] remain the stored root-pixel origin and are documented as such, not strut insets. — PA-12: prefer the coherent FVWM-X root-pixel work-area rectangle over the pre-03-04 inset meaning.
 
 ### Pending Todos
 
@@ -162,6 +166,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T01:39:13.247Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-08-31T11:23:33.209Z
+Stopped at: Completed 03-05-PLAN.md
 Resume file: None

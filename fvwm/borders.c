@@ -36,6 +36,7 @@
 #include "libs/Graphics.h"
 #include "libs/Picture.h"
 #include "libs/PictureGraphics.h"
+#include "libs/wm_ui_metrics.h"
 #include "libs/FRenderInit.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
@@ -2196,11 +2197,46 @@ static void border_free_bar_pixmaps(
 #define TBMP_HAS_PART(p, pm, acs, sf) \
        (pm[p] || acs[p].cs >= 0 || (sf & (1 << p)))
 
+/* Resolve a scale-once raster for a 1x DecorFace pixmap. The local is not
+ * written back onto the process-global face. */
+static FvwmPicture *border_picture_at_owning_scale(
+	FvwmWindow *fw, const FvwmPicture *src)
+{
+	monitor_scale_factor factor;
+	FvwmPictureAttributes fpa = {0};
+	FvwmPicture *scaled;
+
+	if (src == NULL || src->name == NULL)
+	{
+		return NULL;
+	}
+	if (fw != NULL && fw->m != NULL)
+	{
+		factor = fw->m->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
+	fpa.mask = src->fpa_mask;
+	scaled = PCacheFvwmPictureAtScale(
+		dpy, Scr.NoFocusWin, NULL, src->name, fpa, factor,
+		0, 0, WM_UI_RESOURCE_GENERATION_INITIAL);
+	if (scaled == NULL)
+	{
+		fvwm_debug(__func__,
+			"failed to load scaled pixmap '%s'", src->name);
+	}
+
+	return scaled;
+}
+
 /*  Tile or stretch src into dest, starting at the given location and
  *  continuing for the given width and height. This is a utility function used
  *  by border_mp_draw_mp_titlebar. (tril@igs.net) */
 static void border_mp_render_into_pixmap(
-	titlebar_descr *td, common_decorations_type *cd, FvwmPicture **src,
+	FvwmWindow *fw, titlebar_descr *td, common_decorations_type *cd,
+	FvwmPicture **src,
 	FvwmAcs *acs, Pixel *pixels, unsigned short solid_flags,
 	unsigned short stretch_flags, int part, Pixmap dest, Window w,
 	rectangle *full_g, rectangle *title_g, ButtonState bs, rectangle *g)
@@ -2304,12 +2340,18 @@ static void border_mp_render_into_pixmap(
 	else if (src[part])
 	{
 		FvwmPicture *full_pic = NULL;
+		FvwmPicture *scaled;
 		Pixmap p;
 
+		scaled = border_picture_at_owning_scale(fw, src[part]);
+		if (scaled == NULL)
+		{
+			return;
+		}
 		if (full_g != NULL)
 		{
 			p = border_get_bar_pixmaps(
-				dcd, full_g, bs, -1, src[part], part,
+				dcd, full_g, bs, -1, scaled, part,
 				(stretch_flags & (1 << part)), &full_pic);
 			if (p && full_pic)
 			{
@@ -2339,12 +2381,12 @@ static void border_mp_render_into_pixmap(
 			{
 				bg.pixmap.flags.is_tiled = 1;
 			}
-			bg.pixmap.p = src[part]->picture;
-			bg.pixmap.shape = src[part]->mask;
-			bg.pixmap.alpha = src[part]->alpha;
-			bg.pixmap.depth = src[part]->depth;
-			bg.pixmap.g.width = src[part]->width;
-			bg.pixmap.g.height = src[part]->height;
+			bg.pixmap.p = scaled->picture;
+			bg.pixmap.shape = scaled->mask;
+			bg.pixmap.alpha = scaled->alpha;
+			bg.pixmap.depth = scaled->depth;
+			bg.pixmap.g.width = scaled->width;
+			bg.pixmap.g.height = scaled->height;
 			bg.pixmap.stretch_w = dest_g.width - dest_g.x;
 			bg.pixmap.stretch_h = dest_g.height - dest_g.y;
 
@@ -2353,6 +2395,7 @@ static void border_mp_render_into_pixmap(
 		{
 			border_fill_pixmap_background(dest, &dest_g, &bg, cd);
 		}
+		PDestroyFvwmPicture(dpy, scaled);
 	}
 
 	return;
@@ -2866,14 +2909,16 @@ static void border_mp_draw_mp_titlebar(
 	if (TBMP_HAS_PART(TBMP_MAIN, pm, acs, solid_flags))
 	{
 		border_mp_render_into_pixmap(
-			td, td->cd, pm, acs, pixels, solid_flags, stretch_flags,
+			fw, td, td->cd, pm, acs, pixels, solid_flags,
+			stretch_flags,
 			TBMP_MAIN, dest_pix, w, &td->bar_g, &td->layout.title_g,
 			bs, &tmp_g);
 	}
 	else if (td->length <= 0)
 	{
 		border_mp_render_into_pixmap(
-			td, td->cd, pm, acs, pixels, solid_flags, stretch_flags,
+			fw, td, td->cd, pm, acs, pixels, solid_flags,
+			stretch_flags,
 			TBMP_LEFT_MAIN, dest_pix, w, NULL, &td->layout.title_g,
 			bs, &tmp_g);
 	}
@@ -2888,7 +2933,7 @@ static void border_mp_draw_mp_titlebar(
 		    td->left_main_g.width > 0 && td->left_main_g.height > 0)
 		{
 			border_mp_render_into_pixmap(
-				td, td->cd, pm, acs, pixels, solid_flags,
+				fw, td, td->cd, pm, acs, pixels, solid_flags,
 				stretch_flags, TBMP_LEFT_MAIN, dest_pix, w,
 				&td->full_left_main_g, &td->layout.title_g, bs,
 				&td->left_main_g);
@@ -2897,7 +2942,7 @@ static void border_mp_draw_mp_titlebar(
 		    td->right_main_g.width > 0 && td->right_main_g.height > 0)
 		{
 			border_mp_render_into_pixmap(
-				td, td->cd, pm, acs, pixels, solid_flags,
+				fw, td, td->cd, pm, acs, pixels, solid_flags,
 				stretch_flags, TBMP_RIGHT_MAIN, dest_pix, w,
 				&td->full_right_main_g, &td->layout.title_g, bs,
 				&td->right_main_g);
@@ -2906,7 +2951,7 @@ static void border_mp_draw_mp_titlebar(
 		    td->under_text_g.width > 0 && td->under_text_g.height > 0)
 		{
 			border_mp_render_into_pixmap(
-				td, td->cd, pm, acs, pixels, solid_flags,
+				fw, td, td->cd, pm, acs, pixels, solid_flags,
 				stretch_flags, TBMP_UNDER_TEXT, dest_pix, w,
 				NULL, &td->layout.title_g, bs,
 				&td->under_text_g);
@@ -2914,14 +2959,14 @@ static void border_mp_draw_mp_titlebar(
 		if (left_of_text_g.width > 0 && left_of_text_g.height > 0)
 		{
 			border_mp_render_into_pixmap(
-				td, td->cd, pm, acs, pixels, solid_flags,
+				fw, td, td->cd, pm, acs, pixels, solid_flags,
 				stretch_flags, TBMP_LEFT_OF_TEXT, dest_pix, w,
 				NULL, &td->layout.title_g, bs, &left_of_text_g);
 		}
 		if (right_of_text_g.width > 0 && right_of_text_g.height > 0)
 		{
 			border_mp_render_into_pixmap(
-				td, td->cd, pm, acs, pixels, solid_flags,
+				fw, td, td->cd, pm, acs, pixels, solid_flags,
 				stretch_flags, TBMP_RIGHT_OF_TEXT, dest_pix, w,
 				NULL, &td->layout.title_g, bs, &right_of_text_g);
 		}
@@ -2929,14 +2974,16 @@ static void border_mp_draw_mp_titlebar(
 	if (left_end_g.width > 0 && left_end_g.height > 0)
 	{
 		border_mp_render_into_pixmap(
-			td, td->cd, pm, acs, pixels, solid_flags, stretch_flags,
+			fw, td, td->cd, pm, acs, pixels, solid_flags,
+			stretch_flags,
 			TBMP_LEFT_END, dest_pix, w, NULL, &td->layout.title_g,
 			bs, &left_end_g);
 	}
 	if (right_end_g.width > 0 && right_end_g.height > 0)
 	{
 		border_mp_render_into_pixmap(
-			td, td->cd, pm, acs, pixels, solid_flags, stretch_flags,
+			fw, td, td->cd, pm, acs, pixels, solid_flags,
+			stretch_flags,
 			TBMP_RIGHT_END, dest_pix, w, NULL, &td->layout.title_g,
 			bs, &right_end_g);
 	}
@@ -2959,6 +3006,7 @@ static void border_draw_decor_to_pixmap(
 	pixmap_background_type bg;
 	rectangle dest_g;
 	FvwmPicture *p;
+	FvwmPicture *scaled = NULL;
 	int width,height;
 	int border;
 	int lr_just, tb_just;
@@ -3025,7 +3073,16 @@ static void border_draw_decor_to_pixmap(
 		}
 		else
 		{
-			p = df->u.p;
+			if (df->u.p == NULL)
+			{
+				break;
+			}
+			scaled = border_picture_at_owning_scale(fw, df->u.p);
+			if (scaled == NULL)
+			{
+				break;
+			}
+			p = scaled;
 		}
 		width = p->width;
 		height = p->height;
@@ -3185,6 +3242,11 @@ static void border_draw_decor_to_pixmap(
 		bg.pixmap.g.width = p->width;
 		bg.pixmap.g.height = p->height;
 		border_fill_pixmap_background(dest_pix, &dest_g, &bg, cd);
+		if (scaled != NULL)
+		{
+			PDestroyFvwmPicture(dpy, scaled);
+			scaled = NULL;
+		}
 		break;
 	case TiledPixmapButton:
 	case AdjustedPixmapButton:
@@ -3192,7 +3254,16 @@ static void border_draw_decor_to_pixmap(
 		{
 			break;
 		}
-		p = df->u.p;
+		if (df->u.p == NULL)
+		{
+			break;
+		}
+		scaled = border_picture_at_owning_scale(fw, df->u.p);
+		if (scaled == NULL)
+		{
+			break;
+		}
+		p = scaled;
 		if (type == TiledPixmapButton)
 		{
 			bg.pixmap.flags.is_tiled = 1;
@@ -3211,6 +3282,8 @@ static void border_draw_decor_to_pixmap(
 		bg.pixmap.g.width = p->width;
 		bg.pixmap.g.height = p->height;
 		border_fill_pixmap_background(dest_pix, &dest_g, &bg, cd);
+		PDestroyFvwmPicture(dpy, scaled);
+		scaled = NULL;
 		break;
 	case MultiPixmap: /* for UseTitleStyle only */
 	{
@@ -3313,39 +3386,47 @@ static void border_draw_decor_to_pixmap(
 			bg.pixmap.depth = Pdepth;
 			bg.pixmap.flags.is_tiled = 1;
 		}
-		else if (pm[part] && g.width > 0 && g.height > 0 &&
-			 border_get_bar_pixmaps(
-				 dcd, &g, bs, -1, pm[part], part, stretch,
-				 &full_pic) != None && full_pic)
-		{
-			bg.pixmap.p = full_pic->picture;
-			bg.pixmap.shape = full_pic->mask;
-			bg.pixmap.alpha = full_pic->alpha;
-			bg.pixmap.depth = full_pic->depth;
-			bg.pixmap.g.width = full_pic->width;
-			bg.pixmap.g.height = full_pic->height;
-			bg.pixmap.g.x = w_g->x - g.x;
-			bg.pixmap.g.y = w_g->y - g.y;
-		}
 		else if (pm[part])
 		{
-			p = pm[part];
-			if (df->u.mp.stretch_flags & (1 << part))
+			scaled = border_picture_at_owning_scale(fw, pm[part]);
+			if (scaled == NULL)
 			{
-				bg.pixmap.flags.is_stretched = 1;
+				break;
+			}
+			if (g.width > 0 && g.height > 0 &&
+			    border_get_bar_pixmaps(
+				    dcd, &g, bs, -1, scaled, part, stretch,
+				    &full_pic) != None && full_pic)
+			{
+				bg.pixmap.p = full_pic->picture;
+				bg.pixmap.shape = full_pic->mask;
+				bg.pixmap.alpha = full_pic->alpha;
+				bg.pixmap.depth = full_pic->depth;
+				bg.pixmap.g.width = full_pic->width;
+				bg.pixmap.g.height = full_pic->height;
+				bg.pixmap.g.x = w_g->x - g.x;
+				bg.pixmap.g.y = w_g->y - g.y;
 			}
 			else
 			{
-				bg.pixmap.flags.is_tiled = 1;
+				p = scaled;
+				if (df->u.mp.stretch_flags & (1 << part))
+				{
+					bg.pixmap.flags.is_stretched = 1;
+				}
+				else
+				{
+					bg.pixmap.flags.is_tiled = 1;
+				}
+				bg.pixmap.p = p->picture;
+				bg.pixmap.shape = p->mask;
+				bg.pixmap.alpha = p->alpha;
+				bg.pixmap.depth = p->depth;
+				bg.pixmap.g.width = p->width;
+				bg.pixmap.g.height = p->height;
+				bg.pixmap.stretch_w = dest_g.width - dest_g.x;
+				bg.pixmap.stretch_h = dest_g.height - dest_g.y;
 			}
-			bg.pixmap.p = p->picture;
-			bg.pixmap.shape = p->mask;
-			bg.pixmap.alpha = p->alpha;
-			bg.pixmap.depth = p->depth;
-			bg.pixmap.g.width = p->width;
-			bg.pixmap.g.height = p->height;
-			bg.pixmap.stretch_w = dest_g.width - dest_g.x;
-			bg.pixmap.stretch_h = dest_g.height - dest_g.y;
 		}
 		else
 		{
@@ -3360,6 +3441,11 @@ static void border_draw_decor_to_pixmap(
 		if (tmp != None)
 		{
 			XFreePixmap(dpy, tmp);
+		}
+		if (scaled != NULL)
+		{
+			PDestroyFvwmPicture(dpy, scaled);
+			scaled = NULL;
 		}
 		break;
 	}

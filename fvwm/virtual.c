@@ -662,6 +662,8 @@ static void MapDesk(struct monitor *m, int desk, Bool grab)
 
 /* ---------------------------- interface functions ------------------------ */
 
+static int mapped_edge_thickness(struct monitor *m, int source);
+
 /*
  *
  * Check to see if the pointer is on the edge of the screen, and scroll/page
@@ -687,7 +689,8 @@ int HandlePaging(
 	static Bool is_last_position_valid = False;
 	struct monitor	*m = monitor_get_current();
 	int mwidth, mheight;
-	int edge_thickness = m->virtual_scr.edge_thickness;
+	int edge_thickness = mapped_edge_thickness(
+		m, m->virtual_scr.edge_thickness);
 
 	mwidth = monitor_get_all_widths();
 	mheight = monitor_get_all_heights();

@@ -17,6 +17,7 @@
 
 #include "config.h"
 
+#include <limits.h>
 #include <stdio.h>
 
 #include "libs/fvwm_x11.h"
@@ -24,6 +25,8 @@
 #include "libs/FShape.h"
 #include "libs/Parse.h"
 #include "libs/lang-strings.h"
+#include "libs/log.h"
+#include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "execcontext.h"
@@ -314,6 +317,9 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 	int border_width;
 	int handle_width;
 	int used_width;
+	int scaled_width;
+	monitor_scale_factor factor;
+	monitor_scale_conversion_status status;
 	PropMwmHints *prop;
 	style_flags *sflags = &(pstyle->flags);
 
@@ -328,6 +334,50 @@ void SelectDecor(FvwmWindow *t, window_style *pstyle, short *buttons)
 	if (handle_width > MAX_HANDLE_WIDTH)
 	{
 		handle_width = MAX_HANDLE_WIDTH;
+	}
+	if (t->m != NULL)
+	{
+		factor = t->m->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
+	scaled_width = 0;
+	status = wm_ui_scale_px(border_width, factor, &scaled_width);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale BorderWidth %d (%d); keeping source",
+			border_width, (int)status);
+	}
+	else if (scaled_width > SHRT_MAX)
+	{
+		fvwm_debug(__func__,
+			"scaled BorderWidth %d overflows short; keeping %d",
+			scaled_width, border_width);
+	}
+	else
+	{
+		border_width = scaled_width;
+	}
+	scaled_width = 0;
+	status = wm_ui_scale_px(handle_width, factor, &scaled_width);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale HandleWidth %d (%d); keeping source",
+			handle_width, (int)status);
+	}
+	else if (scaled_width > SHRT_MAX)
+	{
+		fvwm_debug(__func__,
+			"scaled HandleWidth %d overflows short; keeping %d",
+			scaled_width, handle_width);
+	}
+	else
+	{
+		handle_width = scaled_width;
 	}
 
 	*buttons = (1 << NUMBER_OF_TITLE_BUTTONS) - 1;

@@ -145,7 +145,7 @@ Plans:
   4. Fonts and source images are scaled exactly once with target-aware caches, and fractional chrome has no clipped text, gaps, stale resources, or displaced cursor hot spots.
   5. Maintainers can build the supported profile with Xcursor, XRender, PNG, and SVG acceptance paths explicitly enabled.
 
-**Plans**: 8 plans
+**Plans**: 9 plans
 **UI hint**: yes
 
 Plans:
@@ -168,6 +168,7 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [ ] 04-08-PLAN.md — Scale pan, snap, and drag thresholds and document the chrome contract
+- [ ] 04-09-PLAN.md — Scale MiniIcon and TitleStyle/ButtonStyle pixmaps at owning or pointer factor
 
 ### Phase 5: Logical-Size Transition Coordinator
 

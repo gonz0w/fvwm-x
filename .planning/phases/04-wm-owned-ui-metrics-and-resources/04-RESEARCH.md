@@ -763,20 +763,19 @@ typedef struct
 | A8 | Core `XC_*` cursors are replaced by Xcursor theme shapes when Xcursor is enabled. | Pattern 5 | Theme may lack FVWM shapes; fallback to core glyphs at 1x. |
 | A9 | cairo is enabled alongside svg in the supported profile. | Pattern 7 | A different SVG backend (`cairo-svg` / `libsvg-cairo`) could satisfy meson. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **What is the locked titlebar composition rule for fractional scale?**
    - What we know: unscaled code adds `EXTRA_TITLE_FONT_HEIGHT` then optional explicit height. [VERIFIED: fvwm/geometry.c:261-314]
-   - What's unclear: whether discuss-phase prefers "never clip, may grow" versus "exact scaled TitleStyle even if font clips".
-   - Recommendation: never clip (Pattern 2). UI-06 forbids clipped text.
+   - **RESOLVED:** never-clip composition. Thickness is scaled font height plus a fresh conversion of `EXTRA_TITLE_FONT_HEIGHT`; an explicit TitleStyle height that scales below the font is raised to the font. UI-06 forbids clipped text. Plan 04-01 `wm_ui_compose_title_thickness` and plan 04-05 `get_title_font_size_and_offset` implement this.
 
 2. **Which monitor scales cursors and MoveThreshold?**
    - What we know: UI-04/UI-05 say "appropriately sized" without owning vs active.
-   - Recommendation: pointer/active, because both are interaction-local.
+   - **RESOLVED:** pointer/active for cursors and MoveThreshold. Both are interaction-local (plan 04-07 CreateCursors / `PImageLoadCursorFromFile`; plan 04-08 CheckActionType and events.c motion). Snap remains owning-monitor (A4).
 
 3. **Should XLFD/core fonts be rewritten or rejected for scaled chrome?**
    - What we know: Xft is required; Flocale still loads `XFontStruct`/`XFontSet`. [VERIFIED: libs/Flocale.h:145-147]
-   - Recommendation: Xft `pixelsize` is the supported path; XLFD best-effort pixel field rewrite; if that fails, keep 1x and diagnose.
+   - **RESOLVED:** Xft `pixelsize` is the supported path (`FC_PIXEL_SIZE` after match; do not write display-wide fontconfig DPI). XLFD/core is best-effort pixel-field rewrite; on parse or load failure keep 1x and `fvwm_debug`. Plan 04-04 Fft/Flocale implements this.
 
 ## Environment Availability
 

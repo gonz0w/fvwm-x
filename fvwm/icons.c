@@ -39,6 +39,7 @@
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
 #include "libs/safemalloc.h"
+#include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "cursor.h"
@@ -2079,10 +2080,57 @@ do_all_iconboxes(FvwmWindow *t, icon_boxes **icon_boxes_ptr)
  * Looks for icon from a file
  *
  */
+#define ICON_WANTED_WIDTH 56
+#define ICON_WANTED_HEIGHT 56
+
+static monitor_scale_factor
+icon_file_ui_factor(FvwmWindow *fw)
+{
+	monitor_scale_factor factor;
+	struct monitor *mon;
+	rectangle g;
+	int x;
+	int y;
+	Window child;
+
+	factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	mon = NULL;
+	if (fw != NULL)
+	{
+		get_icon_geometry(fw, &g);
+		if (g.width > 0 && g.height > 0)
+		{
+			mon = FindScreenOfXY(
+				g.x + g.width / 2, g.y + g.height / 2);
+		}
+	}
+	if (mon == NULL)
+	{
+		x = 0;
+		y = 0;
+		child = None;
+		FQueryPointer(
+			dpy, Scr.Root, &JunkRoot, &child, &x, &y,
+			&JunkX, &JunkY, &JunkMask);
+		mon = FindScreenOfXY(x, y);
+	}
+	if (mon != NULL)
+	{
+		factor = mon->effective_scale.factor;
+	}
+
+	return factor;
+}
+
 static void GetIconFromFile(FvwmWindow *fw)
 {
 	char *path = NULL;
 	FvwmPictureAttributes fpa;
+	FvwmPicture *pic;
+	monitor_scale_factor factor;
+	monitor_scale_conversion_status status;
+	int wanted_w;
+	int wanted_h;
 
 	fpa.mask = 0;
 	if (fw->cs >= 0 && Colorset[fw->cs].do_dither_icon)
@@ -2096,18 +2144,46 @@ static void GetIconFromFile(FvwmWindow *fw)
 	{
 		return;
 	}
-	if (!PImageLoadPixmapFromFile(
-		dpy, Scr.NoFocusWin, path, &fw->iconPixmap,
-		&fw->icon_maskPixmap, &fw->icon_alphaPixmap,
-		&fw->icon_g.picture_w_g.width, &fw->icon_g.picture_w_g.height,
-		&fw->iconDepth, &fw->icon_nalloc_pixels, &fw->icon_alloc_pixels,
-		&fw->icon_no_limit, fpa))
+	factor = icon_file_ui_factor(fw);
+	wanted_w = ICON_WANTED_WIDTH;
+	wanted_h = ICON_WANTED_HEIGHT;
+	status = wm_ui_scale_px(ICON_WANTED_WIDTH, factor, &wanted_w);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale icon width %d (%d); keeping source",
+			ICON_WANTED_WIDTH, (int)status);
+		wanted_w = ICON_WANTED_WIDTH;
+	}
+	status = wm_ui_scale_px(ICON_WANTED_HEIGHT, factor, &wanted_h);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale icon height %d (%d); keeping source",
+			ICON_WANTED_HEIGHT, (int)status);
+		wanted_h = ICON_WANTED_HEIGHT;
+	}
+	pic = PCacheFvwmPictureAtScale(
+		dpy, Scr.NoFocusWin, NULL, path, fpa, factor,
+		(unsigned)wanted_w, (unsigned)wanted_h,
+		WM_UI_RESOURCE_GENERATION_INITIAL);
+	if (pic == NULL)
 	{
 		fvwm_debug(__func__, "Failed to load %s", path);
 		free(path);
 		return;
 	}
-	SET_PIXMAP_OURS(fw, 1);
+	fw->iconPixmap = pic->picture;
+	fw->icon_maskPixmap = pic->mask;
+	fw->icon_alphaPixmap = pic->alpha;
+	fw->icon_g.picture_w_g.width = pic->width;
+	fw->icon_g.picture_w_g.height = pic->height;
+	fw->iconDepth = pic->depth;
+	fw->icon_nalloc_pixels = pic->nalloc_pixels;
+	fw->icon_alloc_pixels = pic->alloc_pixels;
+	fw->icon_no_limit = pic->no_limit;
+	/* Cache owns the pixmaps; do not XFree them in destroy_icon. */
+	SET_PIXMAP_OURS(fw, 0);
 	free(path);
 	if (FShapesSupported && fw->icon_maskPixmap)
 	{

@@ -30,6 +30,8 @@
 #include "libs/ImageSafety.h"
 #include "libs/Strings.h"
 #include "libs/log.h"
+#include "libs/wm_ui_metrics.h"
+#include "libs/FEvent.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "window_flags.h"
@@ -42,6 +44,7 @@
 #include "icons.h"
 #include "ewmh.h"
 #include "ewmh_intern.h"
+#include "geometry.h"
 
 /*
  * net icon handler
@@ -667,6 +670,64 @@ void extract_wm_icon(
 #define ICON_MAX_WIDTH 100
 #define ICON_MAX_HEIGHT 100
 
+static monitor_scale_factor
+icon_ui_factor(FvwmWindow *fw)
+{
+	monitor_scale_factor factor;
+	struct monitor *mon;
+	rectangle g;
+	int x;
+	int y;
+	Window child;
+
+	factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	mon = NULL;
+	if (fw != NULL)
+	{
+		get_icon_geometry(fw, &g);
+		if (g.width > 0 && g.height > 0)
+		{
+			mon = FindScreenOfXY(
+				g.x + g.width / 2, g.y + g.height / 2);
+		}
+	}
+	if (mon == NULL)
+	{
+		x = 0;
+		y = 0;
+		child = None;
+		FQueryPointer(
+			dpy, Scr.Root, &JunkRoot, &child, &x, &y,
+			&JunkX, &JunkY, &JunkMask);
+		mon = FindScreenOfXY(x, y);
+	}
+	if (mon != NULL)
+	{
+		factor = mon->effective_scale.factor;
+	}
+
+	return factor;
+}
+
+static int
+scale_icon_source(int source, monitor_scale_factor factor)
+{
+	int scaled;
+	monitor_scale_conversion_status status;
+
+	scaled = source;
+	status = wm_ui_scale_px(source, factor, &scaled);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale icon size %d (%d); keeping source",
+			source, (int)status);
+		return source;
+	}
+
+	return scaled;
+}
+
 int EWMH_SetIconFromWMIcon(
 	FvwmWindow *fw, CARD32 *list, int size, Bool is_mini_icon)
 {
@@ -695,27 +756,38 @@ int EWMH_SetIconFromWMIcon(
 		}
 	}
 
-	if (is_mini_icon)
 	{
-		wanted_w = MINI_ICON_WANTED_WIDTH;
-		wanted_h = MINI_ICON_WANTED_HEIGHT;
-		max_w = MINI_ICON_MAX_WIDTH;
-		max_h = MINI_ICON_MAX_HEIGHT;
-		fpa.mask = 0;
-	}
-	else
-	{
-		wanted_w = ICON_WANTED_WIDTH;
-		wanted_h = ICON_WANTED_HEIGHT;
-		max_w = ICON_MAX_WIDTH;
-		max_h = ICON_MAX_HEIGHT;
-		if (fw->cs >= 0 && Colorset[fw->cs].do_dither_icon)
+		monitor_scale_factor factor;
+
+		factor = icon_ui_factor(fw);
+		if (is_mini_icon)
 		{
-			fpa.mask = FPAM_DITHER;
+			wanted_w = scale_icon_source(
+				MINI_ICON_WANTED_WIDTH, factor);
+			wanted_h = scale_icon_source(
+				MINI_ICON_WANTED_HEIGHT, factor);
+			max_w = scale_icon_source(
+				MINI_ICON_MAX_WIDTH, factor);
+			max_h = scale_icon_source(
+				MINI_ICON_MAX_HEIGHT, factor);
+			fpa.mask = 0;
 		}
 		else
 		{
-			fpa.mask = 0;
+			wanted_w = scale_icon_source(
+				ICON_WANTED_WIDTH, factor);
+			wanted_h = scale_icon_source(
+				ICON_WANTED_HEIGHT, factor);
+			max_w = scale_icon_source(ICON_MAX_WIDTH, factor);
+			max_h = scale_icon_source(ICON_MAX_HEIGHT, factor);
+			if (fw->cs >= 0 && Colorset[fw->cs].do_dither_icon)
+			{
+				fpa.mask = FPAM_DITHER;
+			}
+			else
+			{
+				fpa.mask = 0;
+			}
 		}
 	}
 

@@ -21,6 +21,7 @@
 
 #include "libs/fvwmlib.h"
 #include "libs/log.h"
+#include "libs/monitor_ownership.h"
 #include "libs/Grab.h"
 #include "libs/Parse.h"
 #include "libs/XResource.h"
@@ -699,18 +700,32 @@ static int _pl_minoverlap_get_next_x(const pl_arg_t *arg)
 		xnew = xtest;
 	}
 	/* test the borders of the working area */
-	xtest = arg->page_p1.x + m->Desktops->ewmh_working_area.x;
-	if (xtest > x)
 	{
-		xnew = MIN(xnew, xtest);
-	}
-	xtest = arg->page_p1.x +
-		(m->Desktops->ewmh_working_area.x +
-		 m->Desktops->ewmh_working_area.width) -
-		arg->place_g.width;
-	if (xtest > x)
-	{
-		xnew = MIN(xnew, xtest);
+		rectangle monitor_rect;
+		boundingbox box;
+		monitor_ownership_status status;
+
+		monitor_rect.x = m->si->x;
+		monitor_rect.y = m->si->y;
+		monitor_rect.width = m->si->w;
+		monitor_rect.height = m->si->h;
+		status = monitor_ownership_work_insets(
+			&monitor_rect, &m->Desktops->ewmh_working_area, &box);
+		if (status == MONITOR_OWNERSHIP_OK)
+		{
+			xtest = arg->page_p1.x + box.left;
+			if (xtest > x)
+			{
+				xnew = MIN(xnew, xtest);
+			}
+			xtest = arg->page_p1.x + box.left +
+				m->Desktops->ewmh_working_area.width -
+				arg->place_g.width;
+			if (xtest > x)
+			{
+				xnew = MIN(xnew, xtest);
+			}
+		}
 	}
 	/* Test the values of the right edges of every window */
 	for (
@@ -837,18 +852,33 @@ static int _pl_minoverlap_get_next_y(const pl_arg_t *arg)
 		ynew = ytest;
 	}
 	/* test the borders of the working area */
-	ytest = arg->page_p1.y + mon->Desktops->ewmh_working_area.y;
-	if (ytest > y)
 	{
-		ynew = MIN(ynew, ytest);
-	}
-	ytest = arg->screen_g.y +
-		(mon->Desktops->ewmh_working_area.y +
-		 mon->Desktops->ewmh_working_area.height) -
-		arg->place_g.height;
-	if (ytest > y)
-	{
-		ynew = MIN(ynew, ytest);
+		rectangle monitor_rect;
+		boundingbox box;
+		monitor_ownership_status status;
+
+		monitor_rect.x = mon->si->x;
+		monitor_rect.y = mon->si->y;
+		monitor_rect.width = mon->si->w;
+		monitor_rect.height = mon->si->h;
+		status = monitor_ownership_work_insets(
+			&monitor_rect, &mon->Desktops->ewmh_working_area,
+			&box);
+		if (status == MONITOR_OWNERSHIP_OK)
+		{
+			ytest = arg->page_p1.y + box.top;
+			if (ytest > y)
+			{
+				ynew = MIN(ynew, ytest);
+			}
+			ytest = arg->page_p1.y + box.top +
+				mon->Desktops->ewmh_working_area.height -
+				arg->place_g.height;
+			if (ytest > y)
+			{
+				ynew = MIN(ynew, ytest);
+			}
+		}
 	}
 	/* Test the values of the bottom edge of every window */
 	for (

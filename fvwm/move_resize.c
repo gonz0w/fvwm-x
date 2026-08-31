@@ -28,6 +28,7 @@
 #include "libs/FScreen.h"
 #include "libs/log.h"
 #include "libs/fvwmlib.h"
+#include "libs/monitor_ownership.h"
 #include "libs/Picture.h"
 #include "libs/Grab.h"
 #include "libs/Parse.h"
@@ -429,11 +430,17 @@ static void shuffle_win_to_closest(
 	wa.height = fw->m->si->h;
 	if (ewmh)
 	{
+		rectangle paged;
+		monitor_ownership_status status;
+
 		EWMH_UpdateWorkArea(fw->m);
-		wa.x += fw->m->Desktops->ewmh_working_area.x;
-		wa.y += fw->m->Desktops->ewmh_working_area.y;
-		wa.width = fw->m->Desktops->ewmh_working_area.width;
-		wa.height = fw->m->Desktops->ewmh_working_area.height;
+		status = monitor_ownership_work_rect_paged(
+			&fw->m->Desktops->ewmh_working_area, page.x, page.y,
+			&paged);
+		if (status == MONITOR_OWNERSHIP_OK)
+		{
+			wa = paged;
+		}
 	}
 
 	/* Get direction(s) */

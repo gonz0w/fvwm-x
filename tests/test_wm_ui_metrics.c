@@ -327,6 +327,39 @@ test_fft_get_font_at_scale_exists(void)
 }
 
 static void
+test_pimage_load_fvwm_picture_from_file_takes_scale_and_targets(void)
+{
+	FvwmPicture *(*loader)(Display *, Window, char *,
+	    FvwmPictureAttributes, monitor_scale_factor, unsigned,
+	    unsigned) = PImageLoadFvwmPictureFromFile;
+
+	assert(loader != NULL);
+}
+
+static void
+test_zero_targets_convert_intrinsic_with_factor(void)
+{
+	monitor_scale_factor one_x = {MONITOR_SCALE_QUARTERS_MIN};
+	monitor_scale_factor two_x = {8};
+	int width = 99;
+	int height = 99;
+
+	/* 0,0 destination is wm_ui_scale_px of intrinsic. 1x is intrinsic. */
+	assert(wm_ui_scale_px(48, one_x, &width)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(width == 48);
+	assert(wm_ui_scale_px(32, one_x, &height)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(height == 32);
+	assert(wm_ui_scale_px(48, two_x, &width)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(width == 96);
+	assert(wm_ui_scale_px(32, two_x, &height)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(height == 64);
+}
+
+static void
 test_menu_and_icon_wanted_sizes(void)
 {
 	monitor_scale_factor two_x = {8};
@@ -362,6 +395,8 @@ main(void)
 	test_flocale_lookup_requires_scale_and_generation();
 	test_flocale_wrapper_forwards_1x_generation_1();
 	test_fft_get_font_at_scale_exists();
+	test_pimage_load_fvwm_picture_from_file_takes_scale_and_targets();
+	test_zero_targets_convert_intrinsic_with_factor();
 
 	return 0;
 }

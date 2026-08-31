@@ -31,6 +31,7 @@
 #include "screen.h"
 #include "menudim.h"
 #include "menustyle.h"
+#include "menuroot.h"
 #include "menuitem.h"
 #include "decorations.h"
 
@@ -244,16 +245,16 @@ struct MenuItem *menuitem_clone(struct MenuItem *mi)
  * through mipst. */
 void menuitem_get_size(
 	struct MenuItem *mi, struct MenuItemPartSizesT *mipst,
-	FlocaleFont *font, Bool do_reverse_icon_order)
+	FlocaleFont *font, Bool do_reverse_icon_order, struct MenuRoot *mr)
 {
 	int i;
 	int j;
 	int w;
 
 	memset(mipst, 0, sizeof(MenuItemPartSizesT));
-	if (MI_IS_POPUP(mi))
+	if (MI_IS_POPUP(mi) && mr != NULL)
 	{
-		mipst->triangle_width = MENU_TRIANGLE_WIDTH;
+		mipst->triangle_width = mr->s->popup_triangle_width;
 	}
 	else if (MI_IS_TITLE(mi) && !MI_HAS_PICTURE(mi))
 	{
@@ -780,7 +781,7 @@ void menuitem_paint(
 	 * Draw the submenu triangle.
 	 */
 
-	if (MI_IS_POPUP(mi))
+	if (MI_IS_POPUP(mi) && mpip->cb_mr != NULL)
 	{
 		GC tmp_gc;
 
@@ -810,7 +811,8 @@ void menuitem_paint(
 				tmp_gc = off_gcs.hilight_gc;
 			}
 		}
-		y = y_offset + (y_height - MENU_TRIANGLE_HEIGHT +
+		y = y_offset + (y_height -
+				mpip->cb_mr->s->popup_triangle_height +
 				relief_thickness) / 2;
 
 		if (ST_TRIANGLES_USE_FORE(ms))
@@ -818,7 +820,8 @@ void menuitem_paint(
 			DrawTrianglePattern(
 				dpy, mpip->w, tmp_gc, tmp_gc, tmp_gc,
 				MDIM_TRIANGLE_X_OFFSET(*dim), y,
-				MENU_TRIANGLE_WIDTH, MENU_TRIANGLE_HEIGHT, 0,
+				mpip->cb_mr->s->popup_triangle_width,
+				mpip->cb_mr->s->popup_triangle_height, 0,
 				(mpip->flags.is_left_triangle) ? 'l' : 'r',
 				ST_HAS_TRIANGLE_RELIEF(ms),
 				!ST_HAS_TRIANGLE_RELIEF(ms), is_item_selected);
@@ -829,7 +832,8 @@ void menuitem_paint(
 			DrawTrianglePattern(
 				dpy, mpip->w, gcs.hilight_gc, gcs.shadow_gc,
 				tmp_gc,	MDIM_TRIANGLE_X_OFFSET(*dim), y,
-				MENU_TRIANGLE_WIDTH, MENU_TRIANGLE_HEIGHT, 0,
+				mpip->cb_mr->s->popup_triangle_width,
+				mpip->cb_mr->s->popup_triangle_height, 0,
 				(mpip->flags.is_left_triangle) ? 'l' : 'r',
 				ST_HAS_TRIANGLE_RELIEF(ms),
 				!ST_HAS_TRIANGLE_RELIEF(ms), is_item_selected);

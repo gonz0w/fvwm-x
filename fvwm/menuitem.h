@@ -135,7 +135,7 @@ struct MenuItem *menuitem_create(void);
 void menuitem_free(struct MenuItem *mi);
 void menuitem_get_size(
 	struct MenuItem *mi, struct MenuItemPartSizesT *mipst,
-	FlocaleFont *font, Bool do_reverse_icon_order);
+	FlocaleFont *font, Bool do_reverse_icon_order, struct MenuRoot *mr);
 void menuitem_paint(
 	struct MenuItem *mi, struct MenuPaintItemParameters *mpip);
 int menuitem_middle_y_offset(struct MenuItem *mi, struct MenuStyle *ms);

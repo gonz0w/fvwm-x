@@ -36,6 +36,10 @@ typedef struct MenuRootStatic
 	struct MenuDimensions dim;
 	int items;
 	FvwmPicture *sidePic;
+	/* Popup-time converted pixels; ST_BORDER_WIDTH stays 1x source. */
+	int popup_border_width;
+	int popup_triangle_width;
+	int popup_triangle_height;
 	Pixel sideColor;
 	int used_mini_icons;
 	/* Menu Face */
@@ -78,6 +82,9 @@ typedef struct MenuRootStatic
 #define MR_SCREEN_Y(m)           MDIM_SCREEN_Y((m)->s->dim)
 #define MR_ITEMS(m)              ((m)->s->items)
 #define MR_SIDEPIC(m)            ((m)->s->sidePic)
+#define MR_POPUP_BORDER_WIDTH(m) ((m)->s->popup_border_width)
+#define MR_POPUP_TRIANGLE_WIDTH(m)  ((m)->s->popup_triangle_width)
+#define MR_POPUP_TRIANGLE_HEIGHT(m) ((m)->s->popup_triangle_height)
 #define MR_SIDECOLOR(m)          ((m)->s->sideColor)
 #define MR_USED_MINI_ICONS(m)    ((m)->s->used_mini_icons)
 #define MR_STYLE(m)              ((m)->s->ms)

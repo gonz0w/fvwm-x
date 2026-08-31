@@ -61,6 +61,7 @@
 #include "menuparameters.h"
 #include "menus.h"
 #include "libs/FGettext.h"
+#include "libs/wm_ui_metrics.h"
 
 /* ---------------------------- local definitions -------------------------- */
 
@@ -1093,13 +1094,13 @@ static void calculate_item_sizes(MenuSizingParameters *msp)
 		{
 			menuitem_get_size(
 				mi, &mipst, MST_PTITLEFONT(msp->menu),
-				do_reverse_icon_order);
+				do_reverse_icon_order, msp->menu);
 		}
 		else
 		{
 			menuitem_get_size(
 				mi, &mipst, MST_PSTDFONT(msp->menu),
-				do_reverse_icon_order);
+				do_reverse_icon_order, msp->menu);
 		}
 		/* adjust maximums */
 		if (msp->max.i.triangle_width < mipst.triangle_width)
@@ -1990,11 +1991,92 @@ static void make_menu(MenuRoot *mr, Bool is_tear_off)
 	return;
 }
 
+/* Convert 1x MenuStyle/source integers onto MenuRoot popup pixels. */
+static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
+{
+	struct monitor *mon;
+	monitor_scale_factor factor;
+	monitor_scale_conversion_status status;
+	int scaled;
+	int scaled_max;
+	int source_border;
+
+	mon = FindScreenOfXY(origin_x, origin_y);
+	if (mon != NULL)
+	{
+		factor = mon->effective_scale.factor;
+	}
+	else
+	{
+		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
+
+	source_border = ST_BORDER_WIDTH(MR_STYLE(mr));
+	scaled = source_border;
+	status = wm_ui_scale_px(source_border, factor, &scaled);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale menu BorderWidth %d (%d); "
+			"keeping source",
+			source_border, (int)status);
+		scaled = source_border;
+	}
+	else
+	{
+		scaled_max = MAX_MENU_BORDER_WIDTH;
+		status = wm_ui_scale_px(
+			MAX_MENU_BORDER_WIDTH, factor, &scaled_max);
+		if (status != MONITOR_SCALE_CONVERSION_OK)
+		{
+			scaled_max = MAX_MENU_BORDER_WIDTH;
+		}
+		if (scaled > scaled_max)
+		{
+			fvwm_debug(__func__,
+				"scaled menu BorderWidth %d exceeds max "
+				"%d; clamping",
+				scaled, scaled_max);
+			scaled = scaled_max;
+		}
+	}
+	mr->s->popup_border_width = scaled;
+
+	scaled = MENU_TRIANGLE_WIDTH;
+	status = wm_ui_scale_px(MENU_TRIANGLE_WIDTH, factor, &scaled);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale menu triangle width %d (%d); "
+			"keeping source",
+			MENU_TRIANGLE_WIDTH, (int)status);
+		scaled = MENU_TRIANGLE_WIDTH;
+	}
+	mr->s->popup_triangle_width = scaled;
+
+	scaled = MENU_TRIANGLE_HEIGHT;
+	status = wm_ui_scale_px(MENU_TRIANGLE_HEIGHT, factor, &scaled);
+	if (status != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__,
+			"failed to scale menu triangle height %d (%d); "
+			"keeping source",
+			MENU_TRIANGLE_HEIGHT, (int)status);
+		scaled = MENU_TRIANGLE_HEIGHT;
+	}
+	mr->s->popup_triangle_height = scaled;
+
+	return;
+}
+
 /* Make sure the menu is properly rebuilt when the style or the menu has
  * changed. */
 static void update_menu(MenuRoot *mr, MenuParameters *pmp)
 {
 	int sw, sh, sx, sy;
+	int old_border;
+	int old_tw;
+	int old_th;
 	Bool has_screen_size_changed = False;
 	fscreen_scr_arg fscr;
 
@@ -2017,6 +2099,17 @@ static void update_menu(MenuRoot *mr, MenuParameters *pmp)
 	fscr.xypos.x = pmp->screen_origin_x;
 	fscr.xypos.y = pmp->screen_origin_y;
 	FScreenGetScrRect(&fscr, FSCREEN_XYPOS, &sx, &sy, &sw, &sh);
+	old_border = mr->s->popup_border_width;
+	old_tw = mr->s->popup_triangle_width;
+	old_th = mr->s->popup_triangle_height;
+	apply_popup_menu_metrics(
+		mr, pmp->screen_origin_x, pmp->screen_origin_y);
+	if (old_border != mr->s->popup_border_width ||
+	    old_tw != mr->s->popup_triangle_width ||
+	    old_th != mr->s->popup_triangle_height)
+	{
+		has_screen_size_changed = True;
+	}
 	if (sw != MR_SCREEN_WIDTH(mr) || sh != MR_SCREEN_HEIGHT(mr)
 	    || sx != MR_SCREEN_X(mr) || sy != MR_SCREEN_Y(mr))
 	{
@@ -4092,13 +4185,38 @@ static mloop_ret_code_t _mloop_handle_event(
 
 		if (in->mif.has_mouse_moved == False)
 		{
+			struct monitor *mon;
+			monitor_scale_factor factor;
+			monitor_scale_conversion_status status;
+			int move_threshold;
+
 			FQueryPointer(
 				    dpy, Scr.Root, &JunkRoot, &p_child, &p_rx,
 				    &p_ry, &JunkX, &JunkY, &JunkMask);
-			if (p_rx - msi->x_init > Scr.MoveThreshold ||
-			    msi->x_init - p_rx > Scr.MoveThreshold ||
-			    p_ry - msi->y_init > Scr.MoveThreshold ||
-			    msi->y_init - p_ry > Scr.MoveThreshold)
+			mon = FindScreenOfXY(p_rx, p_ry);
+			if (mon != NULL)
+			{
+				factor = mon->effective_scale.factor;
+			}
+			else
+			{
+				factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+			}
+			move_threshold = Scr.MoveThreshold;
+			status = wm_ui_scale_px(
+				Scr.MoveThreshold, factor, &move_threshold);
+			if (status != MONITOR_SCALE_CONVERSION_OK)
+			{
+				fvwm_debug(__func__,
+					"failed to scale MoveThreshold %d "
+					"(%d); keeping source",
+					Scr.MoveThreshold, (int)status);
+				move_threshold = Scr.MoveThreshold;
+			}
+			if (p_rx - msi->x_init > move_threshold ||
+			    msi->x_init - p_rx > move_threshold ||
+			    p_ry - msi->y_init > move_threshold ||
+			    msi->y_init - p_ry > move_threshold)
 			{
 				/* remember that this isn't just a click any
 				 * more since the pointer moved */
@@ -6575,6 +6693,9 @@ MenuRoot *NewMenuRoot(char *name)
 	scanForStrings(
 		MR_NAME(mr), root_strings, &ctx);
 	MR_STYLE(mr) = menustyle_get_default_style();
+	mr->s->popup_border_width = ST_BORDER_WIDTH(MR_STYLE(mr));
+	mr->s->popup_triangle_width = MENU_TRIANGLE_WIDTH;
+	mr->s->popup_triangle_height = MENU_TRIANGLE_HEIGHT;
 	MR_ORIGINAL_MENU(mr) = mr;
 	MR_COPIES(mr) = 1;
 	MR_IS_UPDATED(mr) = 1;

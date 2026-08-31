@@ -58,7 +58,7 @@
 #define ST_TITLE_UNDERLINES(s)        ((s)->look.TitleUnderlines)
 #define MST_TITLE_UNDERLINES(m)       ((m)->s->ms->look.TitleUnderlines)
 #define ST_BORDER_WIDTH(s)            ((s)->look.BorderWidth)
-#define MST_BORDER_WIDTH(m)           ((m)->s->ms->look.BorderWidth)
+#define MST_BORDER_WIDTH(m)           ((m)->s->popup_border_width)
 #define ST_ITEM_GAP_ABOVE(s)          ((s)->look.vertical_spacing.item_above)
 #define MST_ITEM_GAP_ABOVE(m)				\
 	((m)->s->ms->look.vertical_spacing.item_above)

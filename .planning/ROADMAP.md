@@ -190,7 +190,7 @@ Plans:
   2. User can drag a window across scales without losing the grabbed pointer anchor or triggering ownership oscillation.
   3. Maximize, fullscreen, unmaximize, restore, and monitor-transition behavior produces correct destination geometry at every supported scale.
 
-**Plans**: 7/8 plans executed
+**Plans**: 8/8 plans executed
 
 Plans:
 **Wave 1**
@@ -214,7 +214,7 @@ Plans:
 
 **Gap Wave 2** *(blocked on 05-07)*
 
-- [ ] 05-08-PLAN.md — Commit last-transition only after a real client-size plan; convert shaded g.normal
+- [x] 05-08-PLAN.md — Commit last-transition only after a real client-size plan; convert shaded g.normal
 
 ### Phase 6: Hotplug, Reload, and Observability
 
@@ -264,7 +264,7 @@ Plans:
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
 | 3. Geometry and Ownership Contracts | 5/5 | Complete    | 2026-08-31 |
 | 4. WM-Owned UI Metrics and Resources | 12/12 | Complete    | 2026-08-31 |
-| 5. Logical-Size Transition Coordinator | 7/8 | In Progress|  |
+| 5. Logical-Size Transition Coordinator | 8/8 | In Progress|  |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |
 | 7. Module Scale Protocol and Consumers | 0/TBD | Not started | - |
 | 8. Release Verification Matrix | 0/TBD | Not started | - |

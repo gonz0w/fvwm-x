@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 05
 current_phase_name: Logical-Size Transition Coordinator
-status: executing
-stopped_at: Completed 05-07-PLAN.md
-last_updated: "2026-09-01T10:05:23.630Z"
+status: verifying
+stopped_at: Completed 05-08-PLAN.md
+last_updated: "2026-09-01T10:15:27.294Z"
 last_activity: 2026-09-01
 last_activity_desc: Phase 05 execution started
-state_head: c15e7130f05fc449da65d6c450bca51a19befb14
+state_head: 7ab69c998c388aeb5f91d2e6df8a03c3f16821fd
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 38
-  completed_plans: 37
+  completed_plans: 38
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 Phase: 05 (Logical-Size Transition Coordinator) — EXECUTING
 Plan: 8 of 8
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-09-01 — Completed 05-07-PLAN.md
 
 Progress: [█████░░░░░] 50%
@@ -98,6 +98,7 @@ Progress: [█████░░░░░] 50%
 | Phase 05 P04 | 4 min | 2 tasks | 1 files |
 | Phase 05 P05 | 10 min | 2 tasks | 1 files |
 | Phase 05 P07 | 4 min | 2 tasks | 3 files |
+| Phase 05 P08 | 6 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -231,6 +232,11 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 05]: After successful GEOMETRY_TRANSITION_RESTORE, last_wm_sent_client holds dest client pixels (dest_frame minus dest_chrome.total_size, floored at 0) and SET_FORCE_NEXT_CR(fw, 1) runs before frame_setup_window. — SET_MAXIMIZED is already 0 before frame_setup_window, so an ICCCM echo of increment-snapped dest client is treated as a user resize unless the echo gate is armed the same way update_fvwm_monitor already does.
 - [Phase 05]: _handle_cr_on_client initializes skip_logical_client from IS_MAXIMIZED or IS_EWMH_FULLSCREEN only; a later last_wm_sent_client width/height match still sets skip_logical_client. — WR-01: blanket DO_FORCE_NEXT_CR skip is broader than the 05-05 contract; dest-sized CR after restore must match last_wm_sent_client even when SET_MAXIMIZED is 0.
 - [Phase 05]: OVERFLOW and INVALID_ARGUMENT restore keep get_relative_geometry and do not arm the echo gate. — T-05-01: restore overflow must not invent dest pixels; only a successful RESTORE commit is an echo the client might send back.
+- [Phase 05]: update_fvwm_monitor assigns last_transition_name_atom, last_transition_quarters, and last_transition_kind only after geometry_transition_plan returns OK, INELIGIBLE, or NOOP.
+- [Phase 05]: After OK, INELIGIBLE, or NOOP on the IS_SHADED dest g.normal plan, store dest_atom, dest_quarters, and kind the same as the non-shaded success path.
+- [Phase 05]: On dest change while IS_SHADED and logical_client_valid, fw->g.normal size becomes monitor_scale_apply(logical_client, dest_factor) plus dest chrome, without frame_setup_window on the shaded strip.
+- [Phase 05]: IS_WINDOW_BEING_MOVED_OPAQUE still resolves dest from a 1x1 pointer rectangle; dest-scale drag still uses GrabEm rather than a second XGrabPointer.
+- [Phase 05]: CMD_WindowShade is not modified; converted g.normal is the unshade size.
 
 ### Pending Todos
 
@@ -250,6 +256,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T10:05:23.508Z
-Stopped at: Completed 05-07-PLAN.md
+Last session: 2026-09-01T10:15:27.163Z
+Stopped at: Completed 05-08-PLAN.md
 Resume file: None

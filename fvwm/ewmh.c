@@ -2023,8 +2023,7 @@ void EWMH_ExitStuff(void)
 
 void EWMH_fullscreen(FvwmWindow *fw)
 {
-	fscreen_scr_arg fscr;
-	rectangle scr_g;
+	rectangle scr_g = {0};
 	size_borders b;
 	int page_x;
 	int page_y;
@@ -2069,18 +2068,24 @@ void EWMH_fullscreen(FvwmWindow *fw)
 	}
 	SET_EWMH_FULLSCREEN(fw,True);
 	apply_decor_change(fw);
-	fscr.xypos.x = fw->g.frame.x + fw->g.frame.width / 2;
-	fscr.xypos.y = fw->g.frame.y + fw->g.frame.height / 2;
-	FScreenGetScrRect(
-		&fscr, FSCREEN_XYPOS, &scr_g.x, &scr_g.y,
-		&scr_g.width, &scr_g.height);
+	if (fw->m == NULL)
+	{
+		update_fvwm_monitor(fw);
+	}
 	get_window_borders(fw, &b);
-	get_page_offset_check_visible(&page_x, &page_y, fw);
-	snprintf(cmd, sizeof(cmd),
-		"ResizeMoveMaximize %dp %dp +%dp +%dp ewmhiwa",
-		scr_g.width, scr_g.height,
-		scr_g.x - b.top_left.width + page_x,
-		scr_g.y - b.top_left.height + page_y);
+	if (fw->m != NULL && fw->m->si != NULL)
+	{
+		scr_g.x = fw->m->si->x;
+		scr_g.y = fw->m->si->y;
+		scr_g.width = fw->m->si->w;
+		scr_g.height = fw->m->si->h;
+		get_page_offset_check_visible(&page_x, &page_y, fw);
+		snprintf(cmd, sizeof(cmd),
+			"ResizeMoveMaximize %dp %dp +%dp +%dp ewmhiwa",
+			scr_g.width, scr_g.height,
+			scr_g.x - b.top_left.width + page_x,
+			scr_g.y - b.top_left.height + page_y);
+	}
 	if (DO_EWMH_USE_STACKING_HINTS(fw))
 	{
 		int sl = fw->ewmh_normal_layer;

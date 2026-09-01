@@ -23,6 +23,9 @@
 #include "libs/wcontext.h"
 #include "libs/Grab.h"
 #include "libs/monitor_ownership.h"
+#include "libs/FEvent.h"
+#include "libs/geometry_transition.h"
+#include "libs/log.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "execcontext.h"
@@ -40,6 +43,7 @@
 #include "geometry.h"
 #include "move_resize.h"
 #include "add_window.h"
+#include "decorations.h"
 #include "module_interface.h"
 #include "focus.h"
 #include "stack.h"
@@ -671,8 +675,30 @@ Bool update_fvwm_monitor(FvwmWindow *fw)
 	monitor_ownership_result result;
 	monitor_ownership_status status;
 	Atom incumbent_atom;
+	window_style style;
+	size_borders src_borders;
+	size_borders dest_chrome;
+	size_rect src_client;
+	rectangle dest_frame;
+	icccm_size_hints hints;
+	geometry_transition_kind kind;
+	geometry_transition_status plan_status;
+	Atom dest_atom;
+	unsigned int dest_quarters;
+	short buttons;
+	bool eligible;
+	Bool dest_changed;
+	Bool do_plan;
 
-	if (IS_MAPPED(fw))
+	if (IS_WINDOW_BEING_MOVED_OPAQUE(fw))
+	{
+		FQueryPointer(
+			dpy, Scr.Root, &JunkRoot, &JunkChild, &g.x, &g.y,
+			&JunkX, &JunkY, &JunkMask);
+		g.width = 1;
+		g.height = 1;
+	}
+	else if (IS_MAPPED(fw))
 	{
 		g = fw->g.frame;
 	}
@@ -731,9 +757,156 @@ Bool update_fvwm_monitor(FvwmWindow *fw)
 	fw->UpdateDesk = -1;
 
 out:
+	dest_changed = False;
 	if (fw->m != mnew) {
 		fw->m_prev = fw->m;
 		fw->m = mnew;
+		dest_changed = True;
+	}
+	do_plan = False;
+	if (dest_changed && fw->m != NULL && !IS_ICONIFIED(fw))
+	{
+		dest_atom = (fw->m->si != NULL) ?
+			fw->m->si->name_atom : None;
+		dest_quarters = fw->m->effective_scale.factor.quarters;
+		if (IS_EWMH_FULLSCREEN(fw))
+		{
+			kind = GEOMETRY_TRANSITION_FULLSCREEN;
+		}
+		else if (IS_MAXIMIZED(fw))
+		{
+			kind = GEOMETRY_TRANSITION_MAXIMIZED;
+		}
+		else
+		{
+			kind = GEOMETRY_TRANSITION_NORMAL;
+		}
+		if (dest_atom != fw->last_transition_name_atom ||
+		    dest_quarters != fw->last_transition_quarters ||
+		    (int)kind != fw->last_transition_kind)
+		{
+			do_plan = True;
+		}
+	}
+	if (do_plan)
+	{
+		get_window_borders(fw, &src_borders);
+		src_client.width = fw->g.frame.width -
+			src_borders.total_size.width;
+		src_client.height = fw->g.frame.height -
+			src_borders.total_size.height;
+		if (src_client.width < 0)
+		{
+			src_client.width = 0;
+		}
+		if (src_client.height < 0)
+		{
+			src_client.height = 0;
+		}
+
+		lookup_style(fw, &style);
+		SelectDecor(fw, &style, &buttons);
+		setup_window_font(fw, &style, True);
+		setup_icon_font(fw, &style, True);
+		fw->last_transition_name_atom = dest_atom;
+		fw->last_transition_quarters = dest_quarters;
+		fw->last_transition_kind = (int)kind;
+		if (!IS_SHADED(fw) &&
+		    (kind != GEOMETRY_TRANSITION_NORMAL ||
+		     fw->logical_client_valid))
+		{
+			get_window_borders(fw, &dest_chrome);
+			eligible = HAS_OVERRIDE_SIZE_HINTS(fw) ||
+				!(IS_SIZE_FIXED(fw) || IS_PSIZE_FIXED(fw) ||
+				((fw->hints.flags & (PMinSize | PMaxSize)) ==
+				 (PMinSize | PMaxSize) &&
+				 fw->hints.min_width ==
+				 fw->hints.max_width &&
+				 fw->hints.min_height ==
+				 fw->hints.max_height));
+			hints.flags = fw->hints.flags;
+			hints.min_width = fw->hints.min_width;
+			hints.min_height = fw->hints.min_height;
+			hints.max_width = fw->hints.max_width;
+			hints.max_height = fw->hints.max_height;
+			hints.width_inc = fw->hints.width_inc;
+			hints.height_inc = fw->hints.height_inc;
+			hints.min_aspect.x = fw->hints.min_aspect.x;
+			hints.min_aspect.y = fw->hints.min_aspect.y;
+			hints.max_aspect.x = fw->hints.max_aspect.x;
+			hints.max_aspect.y = fw->hints.max_aspect.y;
+			hints.base_width = fw->hints.base_width;
+			hints.base_height = fw->hints.base_height;
+			hints.win_gravity = fw->hints.win_gravity;
+
+			if (kind == GEOMETRY_TRANSITION_MAXIMIZED)
+			{
+				EWMH_GetWorkAreaIntersection(
+					fw->m, &dest_frame.x, &dest_frame.y,
+					&dest_frame.width, &dest_frame.height,
+					EWMH_MAXIMIZE_MODE(fw));
+			}
+			else if (kind == GEOMETRY_TRANSITION_FULLSCREEN &&
+				 fw->m->si != NULL)
+			{
+				dest_frame.x = fw->m->si->x;
+				dest_frame.y = fw->m->si->y;
+				dest_frame.width = fw->m->si->w;
+				dest_frame.height = fw->m->si->h;
+			}
+			else
+			{
+				dest_frame = fw->g.frame;
+			}
+
+			plan_status = geometry_transition_plan(
+				kind, fw->logical_client, src_client,
+				eligible, fw->m->effective_scale.factor,
+				&dest_chrome, &hints, &dest_frame);
+			if (plan_status == GEOMETRY_TRANSITION_OVERFLOW ||
+			    plan_status ==
+			    GEOMETRY_TRANSITION_INVALID_ARGUMENT)
+			{
+				fvwm_debug(__func__,
+					"geometry transition failed (%d)",
+					(int)plan_status);
+			}
+			else if (plan_status != GEOMETRY_TRANSITION_NOOP)
+			{
+				frame_setup_window(
+					fw, dest_frame.x, dest_frame.y,
+					dest_frame.width, dest_frame.height,
+					True);
+				if (kind == GEOMETRY_TRANSITION_FULLSCREEN)
+				{
+					fw->last_wm_sent_client.width =
+						dest_frame.width;
+					fw->last_wm_sent_client.height =
+						dest_frame.height;
+				}
+				else
+				{
+					fw->last_wm_sent_client.width =
+						dest_frame.width -
+						dest_chrome.total_size.width;
+					fw->last_wm_sent_client.height =
+						dest_frame.height -
+						dest_chrome.total_size.height;
+					if (fw->last_wm_sent_client.width < 0)
+					{
+						fw->last_wm_sent_client.width =
+							0;
+					}
+					if (fw->last_wm_sent_client.height < 0)
+					{
+						fw->last_wm_sent_client.height =
+							0;
+					}
+				}
+				SET_FORCE_NEXT_CR(fw, 1);
+			}
+		}
+		EWMH_SetFrameStrut(fw);
 	}
 	EWMH_SetCurrentDesktop(fw->m);
 	desk_add_fw(fw);

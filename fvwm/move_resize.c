@@ -5493,7 +5493,7 @@ void CMD_Maximize(F_CMD_ARGS)
 		 */
 		possibly_new_monitor = FindScreenOfXY(scr.x, scr.y);
 		if (possibly_new_monitor != fw->m)
-			fw->m = possibly_new_monitor;
+			update_fvwm_monitor(fw);
 	}
 
 	if (!ignore_working_area)

@@ -7508,6 +7508,17 @@ wraps or clamps.  Each conversion uses the retained exact source value;
 a previously rounded result is never fed back as a new source, preventing
 cumulative drift.
 +
+Eligible windows preserve logical client size across monitor scale
+changes by converting from that retained exact source at the dest factor
+and then applying ICCCM size constraints.  Fixed-size windows keep their
+client pixels and still receive dest chrome.  Dragging a window across
+scales keeps the pointer grab and the grabbed titlebar point.  Maximize
+fills the dest work area.  Fullscreen fills the dest monitor and has no
+decorations.  Unmaximize and leave-fullscreen restore stored logical
+client size plus dest chrome.  `_NET_FRAME_EXTENTS` is dest chrome
+pixels.  *Status* version 4 and module packets remain actual X11 pixels
+with no scale metadata.
++
 FVWM-owned chrome pixel metrics follow the owning or active monitor scale
 and remain actual X11 pixels after conversion.  Title thickness, borders,
 handles, title fonts, and window buttons use the owning monitor.  Menus,

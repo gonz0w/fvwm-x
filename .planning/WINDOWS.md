@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 0
+open_count: 2
 waived_count: 0
 fixed_count: 8
-total_count: 8
-last_updated: 2026-08-31T15:40:57.836Z
+total_count: 10
+last_updated: 2026-09-01T01:17:29.116Z
 ---
 
 # Broken Windows Ledger
@@ -23,6 +23,8 @@ last_updated: 2026-08-31T15:40:57.836Z
 | 6 | 02 | deviation | fvwm/fvwm3.c |  | Initialized the monitor scale configuration lifecycle so startup directives can mutate the production store | fixed |  | 2026-08-30T19:44:36.032Z | 2026-08-30T19:44:58.650Z |
 | 7 | 04 | deviation | fvwm/virtual.c |  | checkPanFrames also converts mapped pan-frame thickness so X resizes keep scaled pixels | fixed |  | 2026-08-31T15:40:29.638Z | 2026-08-31T15:40:57.765Z |
 | 8 | 04 | deviation | fvwm/move_resize.c |  | DoSnapWindow also converts snap proximity at owning-monitor factor | fixed |  | 2026-08-31T15:40:29.708Z | 2026-08-31T15:40:57.836Z |
+| 9 | 05 | deviation | fvwm/events.c |  | Captured last_wm_sent_client and DO_FORCE_NEXT_CR early for the 4500-char source-contract window; post-constrain compare still runs after new_g. | open |  | 2026-09-01T01:17:29.047Z |  |
+| 10 | 05 | deviation | fvwm/events.c |  | Shaded ConfigureRequests measure unshaded client size from fw->g.normal rather than the shaded frame strip. | open |  | 2026-09-01T01:17:29.116Z |  |
 
 ````json
 [
@@ -121,6 +123,30 @@ last_updated: 2026-08-31T15:40:57.836Z
     "reason": "",
     "recorded_at": "2026-08-31T15:40:29.708Z",
     "resolved_at": "2026-08-31T15:40:57.836Z"
+  },
+  {
+    "id": 9,
+    "kind": "deviation",
+    "phase": "05",
+    "file": "fvwm/events.c",
+    "line": null,
+    "description": "Captured last_wm_sent_client and DO_FORCE_NEXT_CR early for the 4500-char source-contract window; post-constrain compare still runs after new_g.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-01T01:17:29.047Z",
+    "resolved_at": null
+  },
+  {
+    "id": 10,
+    "kind": "deviation",
+    "phase": "05",
+    "file": "fvwm/events.c",
+    "line": null,
+    "description": "Shaded ConfigureRequests measure unshaded client size from fw->g.normal rather than the shaded frame strip.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-09-01T01:17:29.116Z",
+    "resolved_at": null
   }
 ]
 ````

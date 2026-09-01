@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 05
 current_phase_name: Logical-Size Transition Coordinator
-status: executing
-stopped_at: Completed 05-04-PLAN.md
-last_updated: "2026-09-01T01:04:48.051Z"
+status: verifying
+stopped_at: Completed 05-05-PLAN.md
+last_updated: "2026-09-01T01:17:28.789Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 05 execution started
-state_head: a301e30b17ce7df8e8fc9654af899209690b74c7
+state_head: 195f6c462aafc3eb3b71d53ade778b3d0a46361f
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 36
-  completed_plans: 35
+  completed_plans: 36
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 Phase: 05 (Logical-Size Transition Coordinator) — EXECUTING
 Plan: 6 of 6
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-08-31 — Phase 05 execution started
 
 Progress: [█████░░░░░] 50%
@@ -96,6 +96,7 @@ Progress: [█████░░░░░] 50%
 | Phase 05 P06 | 3 min | 2 tasks | 1 files |
 | Phase 05 P03 | 8 min | 3 tasks | 1 files |
 | Phase 05 P04 | 4 min | 2 tasks | 1 files |
+| Phase 05 P05 | 10 min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -222,6 +223,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 05]: EWMH_fullscreen fills ResizeMoveMaximize from fw->m->si after apply_decor_change, not a scaled copy of the current fullscreen frame. — PA-07: dest monitor comes from fw->m after ownership, not a second FScreenGetScrRect that can disagree with fw->m consumers.
 - [Phase 05]: EWMH_fullscreen does not assign logical_client or logical_client_valid. — GEO-06 fullscreen is derived dest-monitor state; restore already routes through stored logical client in unmaximize_fvwm_window.
 - [Phase 05]: EWMH_SetFrameStrut stays dest chrome pixels from get_window_borders; no extra post-maximize strut write. — GEO-02: _NET_FRAME_EXTENTS must remain dest chrome pixels. apply_decor_change already refreshes struts before ResizeMoveMaximize.
+- [Phase 05]: Reuse SET_FORCE_NEXT_CR plus an explicit last_wm_sent_client compare. Do not add a second echo detector type. — PA-04: ICCCM clients may echo dest size; a second detector type is forbidden.
+- [Phase 05]: logical_client updates only when a ConfigureRequest actually changes client width or height. — GEO-02: CWX/CWY-only and equal-size requests must not become a new logical source.
+- [Phase 05]: A ConfigureRequest whose client size equals last_wm_sent_client does not rewrite logical_client. — Echo of last WM-sent client pixels must not drift the next crossing.
+- [Phase 05]: Maximize, fullscreen, chrome-only dest rebind, and WM scale transitions do not write logical_client from events.c. — Derived dest states and dest-scale commits are not user/client resizes.
 
 ### Pending Todos
 
@@ -241,6 +246,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T01:04:47.908Z
-Stopped at: Completed 05-04-PLAN.md
+Last session: 2026-09-01T01:17:28.647Z
+Stopped at: Completed 05-05-PLAN.md
 Resume file: None

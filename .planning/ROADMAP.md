@@ -190,7 +190,7 @@ Plans:
   2. User can drag a window across scales without losing the grabbed pointer anchor or triggering ownership oscillation.
   3. Maximize, fullscreen, unmaximize, restore, and monitor-transition behavior produces correct destination geometry at every supported scale.
 
-**Plans**: 2/6 plans executed
+**Plans**: 3/6 plans executed
 
 Plans:
 **Wave 1**
@@ -200,7 +200,7 @@ Plans:
 **Wave 2** *(blocked on Wave 1 completion)*
 
 - [x] 05-02-PLAN.md — Store logical_client and commit dest chrome, plan, and frame from update_fvwm_monitor
-- [ ] 05-06-PLAN.md — Document the logical-size transition contract and keep protocol files actual-pixel
+- [x] 05-06-PLAN.md — Document the logical-size transition contract and keep protocol files actual-pixel
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -256,7 +256,7 @@ Plans:
 | 2. Scale Policy and Configuration | 5/5 | Complete    | 2026-08-30 |
 | 3. Geometry and Ownership Contracts | 5/5 | Complete    | 2026-08-31 |
 | 4. WM-Owned UI Metrics and Resources | 12/12 | Complete    | 2026-08-31 |
-| 5. Logical-Size Transition Coordinator | 2/6 | In Progress|  |
+| 5. Logical-Size Transition Coordinator | 3/6 | In Progress|  |
 | 6. Hotplug, Reload, and Observability | 0/TBD | Not started | - |
 | 7. Module Scale Protocol and Consumers | 0/TBD | Not started | - |
 | 8. Release Verification Matrix | 0/TBD | Not started | - |

@@ -2212,6 +2212,54 @@ Bool setup_transientfor(FvwmWindow *fw)
 	return rc;
 }
 
+static void setup_logical_client(FvwmWindow *fw)
+{
+	size_borders borders;
+	int client_w;
+	int client_h;
+	int logical_w;
+	int logical_h;
+
+	get_window_borders(fw, &borders);
+	client_w = fw->g.frame.width - borders.total_size.width;
+	client_h = fw->g.frame.height - borders.total_size.height;
+	if (client_w < 0)
+	{
+		client_w = 0;
+	}
+	if (client_h < 0)
+	{
+		client_h = 0;
+	}
+	fw->logical_client.width = client_w;
+	fw->logical_client.height = client_h;
+	if (fw->m != NULL &&
+	    fw->m->effective_scale.factor.quarters !=
+	    MONITOR_SCALE_QUARTERS_MIN)
+	{
+		if (monitor_scale_remove(
+			    client_w, fw->m->effective_scale.factor,
+			    &logical_w) == MONITOR_SCALE_CONVERSION_OK)
+		{
+			fw->logical_client.width = logical_w;
+		}
+		if (monitor_scale_remove(
+			    client_h, fw->m->effective_scale.factor,
+			    &logical_h) == MONITOR_SCALE_CONVERSION_OK)
+		{
+			fw->logical_client.height = logical_h;
+		}
+	}
+	fw->logical_client_valid = True;
+	fw->last_transition_name_atom = None;
+	fw->last_transition_quarters = 0;
+	fw->last_transition_kind = 0;
+	fw->last_wm_sent_client.width = 0;
+	fw->last_wm_sent_client.height = 0;
+
+	return;
+}
+
 /*
  *
  *  Procedure:
@@ -2420,6 +2468,7 @@ FvwmWindow *AddWindow(
 		constrain_size(
 			fw, NULL, &fw->g.frame.width,
 			&fw->g.frame.height, 0, 0, 0);
+		setup_logical_client(fw);
 
 		/****** maximize ******/
 		if (state_args.do_max)
@@ -2478,6 +2527,7 @@ FvwmWindow *AddWindow(
 		fw->g.frame.height = wattr.height + b.total_size.height;
 		gravity_constrain_size(
 			fw->hints.win_gravity, fw, &fw->g.frame, 0);
+		setup_logical_client(fw);
 		update_absolute_geometry(fw);
 	}
 

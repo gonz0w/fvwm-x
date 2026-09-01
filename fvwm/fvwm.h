@@ -976,6 +976,12 @@ typedef struct FvwmWindow
 
 	struct monitor *m;
 	struct monitor *m_prev;
+	size_rect logical_client;
+	Bool logical_client_valid;
+	Atom last_transition_name_atom;
+	unsigned int last_transition_quarters;
+	int last_transition_kind;
+	size_rect last_wm_sent_client;
 } FvwmWindow;
 
 /* ---------------------------- exported variables (globals) --------------- */

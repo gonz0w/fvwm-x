@@ -73,6 +73,9 @@
 #define MOVE_PAGE    0x01
 #define MOVE_SCREEN  0x02
 
+static position grab_logical_offset;
+static Bool grab_logical_offset_valid = False;
+
 /* Animated move stuff added by Greg J. Badros, gjb@cs.washington.edu */
 
 float rgpctMovementDefault[32] =
@@ -1720,6 +1723,28 @@ static void InteractiveMove(
 
 	offset.x = orig_drag.x - drag.x;
 	offset.y = orig_drag.y - drag.y;
+	grab_logical_offset = offset;
+	if (exc->w.fw->m != NULL &&
+	    exc->w.fw->m->effective_scale.factor.quarters !=
+	    MONITOR_SCALE_QUARTERS_MIN)
+	{
+		int lx;
+		int ly;
+
+		if (monitor_scale_remove(
+			    offset.x, exc->w.fw->m->effective_scale.factor,
+			    &lx) == MONITOR_SCALE_CONVERSION_OK)
+		{
+			grab_logical_offset.x = lx;
+		}
+		if (monitor_scale_remove(
+			    offset.y, exc->w.fw->m->effective_scale.factor,
+			    &ly) == MONITOR_SCALE_CONVERSION_OK)
+		{
+			grab_logical_offset.y = ly;
+		}
+	}
+	grab_logical_offset_valid = True;
 	if (!Scr.gs.do_hide_position_window)
 	{
 		resize_geometry_window();
@@ -1731,6 +1756,7 @@ static void InteractiveMove(
 
 		move_loop(exc, offset, sz, pFinal, do_move_opaque, CRS_MOVE);
 	}
+	grab_logical_offset_valid = False;
 	if (!Scr.gs.do_hide_position_window)
 	{
 		XUnmapWindow(dpy,Scr.SizeWindow.win);
@@ -2745,6 +2771,20 @@ static void DoSnapAttract(FvwmWindow *fw, size_rect sz, position *p)
 
 extern Window bad_window;
 
+static void change_grab_cursor(int cursor)
+{
+	if (cursor != None)
+	{
+		XChangeActivePointerGrab(
+			dpy, ButtonPressMask | ButtonReleaseMask |
+			ButtonMotionMask | PointerMotionMask |
+			EnterWindowMask | LeaveWindowMask,
+			Scr.FvwmCursors[cursor], CurrentTime);
+	}
+
+	return;
+}
+
 /*
  *
  * Move the rubberband around, return with the new window location
@@ -2785,10 +2825,21 @@ Bool move_loop(
 	unsigned int draw_parts = PART_NONE;
 	XEvent e;
 	struct monitor	*m = NULL;
+	unsigned int last_quarters = MONITOR_SCALE_QUARTERS_MIN;
+	position logical_offset;
 
 	if (fw->m == NULL)
 		update_fvwm_monitor(fw);
 	m = fw->m;
+	if (m != NULL)
+	{
+		last_quarters = m->effective_scale.factor.quarters;
+	}
+	logical_offset = offset;
+	if (grab_logical_offset_valid)
+	{
+		logical_offset = grab_logical_offset;
+	}
 	v.x = m->virtual_scr.Vx;
 	v.y = m->virtual_scr.Vy;
 	d.x = m->virtual_scr.EdgeScrollX ?
@@ -2896,6 +2947,44 @@ Bool move_loop(
 			int delay;
 
 			update_fvwm_monitor(fw);
+			if (fw->m != NULL &&
+			    fw->m->effective_scale.factor.quarters !=
+			    last_quarters)
+			{
+				position old_offset;
+				int dx;
+				int dy;
+
+				old_offset = offset;
+				if (grab_logical_offset_valid &&
+				    monitor_scale_apply(
+					    logical_offset.x,
+					    fw->m->effective_scale.factor,
+					    &dx) ==
+				    MONITOR_SCALE_CONVERSION_OK)
+				{
+					offset.x = dx;
+				}
+				if (grab_logical_offset_valid &&
+				    monitor_scale_apply(
+					    logical_offset.y,
+					    fw->m->effective_scale.factor,
+					    &dy) ==
+				    MONITOR_SCALE_CONVERSION_OK)
+				{
+					offset.y = dy;
+				}
+				p.x = p.x - old_offset.x + offset.x;
+				p.y = p.y - old_offset.y + offset.y;
+				if (!IS_ICONIFIED(fw))
+				{
+					sz.width = fw->g.frame.width;
+					sz.height = fw->g.frame.height;
+				}
+				change_grab_cursor(cursor);
+				last_quarters =
+					fw->m->effective_scale.factor.quarters;
+			}
 
 			fev_get_last_event(&le);
 

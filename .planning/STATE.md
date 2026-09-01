@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 05
 current_phase_name: Logical-Size Transition Coordinator
 status: executing
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-09-01T00:24:02.087Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-09-01T00:39:02.690Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 05 execution started
-state_head: 1666fd59c3b117fe5a58fd09944d2e17bfa16cab
+state_head: 3d86cee4229888ca8e80440f071ce8a0d3a69876
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 36
-  completed_plans: 31
+  completed_plans: 32
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 05 (Logical-Size Transition Coordinator) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 05 execution started
 
@@ -92,6 +92,7 @@ Progress: [█████░░░░░] 50%
 | Phase 04-wm-owned-ui-metrics-and-resources P11 | 4 min | 2 tasks | 2 files |
 | Phase 04 P12 | 5 min | 2 tasks | 1 files |
 | Phase 05 P01 | 11 min | 3 tasks | 5 files |
+| Phase 05 P02 | 11 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -205,6 +206,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 05]: Extra status enumerators are GEOMETRY_TRANSITION_INELIGIBLE and GEOMETRY_TRANSITION_NOOP.
 - [Phase 05]: Maximize dest equals the supplied dest work rect; fullscreen dest copies the dest monitor rect.
 - [Phase 05]: Pointer dest freeze reuses monitor_ownership_resolve on a 1x1 rectangle; the planner does not reimplement ownership.
+- [Phase 05]: logical_client, logical_client_valid, last-transition tuple, and last_wm_sent_client sit after m_prev, not inside window_g. — fullscreen.g copies window_g into pixel restore state, so logical units must not live there.
+- [Phase 05]: update_fvwm_monitor is the single dest-change commit: SelectDecor and fonts, then geometry_transition_plan, then frame_setup_window. — Phase 4 leftover rebound dest chrome after ownership without converting g.normal/g.frame.
+- [Phase 05]: IS_WINDOW_BEING_MOVED_OPAQUE resolves ownership from a 1x1 pointer rectangle; IS_SHADED rebinds dest title chrome and skips client resize. — GEO-04 dest freeze must not feed the post-resize frame back into monitor_ownership_resolve; shaded frames must not expand to dest client size.
 
 ### Pending Todos
 
@@ -224,6 +228,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T00:24:01.961Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-09-01T00:39:02.547Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None

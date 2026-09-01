@@ -70,6 +70,17 @@ icccm_size_hints_test = executable(
 
 test('icccm-size-hints', icccm_size_hints_test)
 
+geometry_transition_test = executable(
+    'test-geometry-transition',
+    'test_geometry_transition.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
+test('geometry-transition', geometry_transition_test)
+
 monitor_scale_config_test = executable(
     'test-monitor-scale-config',
     ['test_monitor_scale_config.c', '../fvwm/monitor_scale_config.c'],

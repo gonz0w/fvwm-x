@@ -965,8 +965,7 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 		}
 	}
 	skip_logical_client = False;
-	if (DO_FORCE_NEXT_CR(fw) || IS_MAXIMIZED(fw)
-	    || IS_EWMH_FULLSCREEN(fw)) {
+	if (IS_MAXIMIZED(fw) || IS_EWMH_FULLSCREEN(fw)) {
 		skip_logical_client = True;
 	}
 	last_sent_w = fw->last_wm_sent_client.width;

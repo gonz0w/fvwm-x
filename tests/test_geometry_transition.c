@@ -313,6 +313,48 @@ test_restore_uses_stored_logical_plus_dest_chrome(void)
 }
 
 static void
+test_restore_echo_keeps_stored_logical_seven(void)
+{
+	size_rect		   logical     = {.width = 7, .height = 7};
+	size_rect		   src	       = {.width = 7, .height = 7};
+	monitor_scale_factor	   dest_factor = {5};
+	size_borders		   dest_chrome = {0};
+	icccm_size_hints	   hints       = {
+		  .flags      = PResizeInc,
+		  .width_inc  = 10,
+		  .height_inc = 10,
+	};
+	rectangle		   dest_frame  = {
+		  .x	  = 100,
+		  .y	  = 200,
+		  .width  = 0,
+		  .height = 0,
+	};
+	geometry_transition_status status;
+	int			   converted = 0;
+	int			   removed   = 0;
+	int			   last_sent_w;
+	int			   last_sent_h;
+
+	assert(monitor_scale_apply(7, dest_factor, &converted)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	status = geometry_transition_plan(GEOMETRY_TRANSITION_RESTORE,
+	    logical, src, true, dest_factor, &dest_chrome, &hints,
+	    &dest_frame);
+	assert(status == GEOMETRY_TRANSITION_OK);
+	assert(dest_frame.width != converted);
+	assert(monitor_scale_remove(dest_frame.width, dest_factor, &removed)
+	       == MONITOR_SCALE_CONVERSION_OK);
+	assert(removed != 7);
+	last_sent_w = dest_frame.width;
+	last_sent_h = dest_frame.height;
+	assert(last_sent_w == dest_frame.width);
+	assert(last_sent_h == dest_frame.height);
+	assert(logical.width == 7);
+	assert(logical.height == 7);
+}
+
+static void
 test_grab_offset_apply_from_source(void)
 {
 	monitor_scale_factor dest_factor   = {5};
@@ -435,6 +477,7 @@ main(void)
 	test_maximized_dest_equals_work_rect();
 	test_fullscreen_dest_equals_monitor_rect();
 	test_restore_uses_stored_logical_plus_dest_chrome();
+	test_restore_echo_keeps_stored_logical_seven();
 	test_grab_offset_apply_from_source();
 	test_pointer_one_by_one_freeze_ignores_post_resize_frame();
 

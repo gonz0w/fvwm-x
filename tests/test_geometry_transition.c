@@ -355,6 +355,31 @@ test_restore_echo_keeps_stored_logical_seven(void)
 }
 
 static void
+test_unshaded_dest_from_logical_seven_replaces_source_sized_normal(void)
+{
+	size_rect		   logical     = {.width = 7, .height = 7};
+	size_rect		   src	       = {.width = 7, .height = 7};
+	monitor_scale_factor	   dest_factor = {5};
+	size_borders		   dest_chrome = {0};
+	rectangle		   dest_frame  = {
+		  .x	  = 100,
+		  .y	  = 200,
+		  .width  = 7,
+		  .height = 7,
+	};
+	geometry_transition_status status;
+
+	status = geometry_transition_plan(GEOMETRY_TRANSITION_NORMAL,
+	    logical, src, true, dest_factor, &dest_chrome, NULL,
+	    &dest_frame);
+	assert(status == GEOMETRY_TRANSITION_OK);
+	assert(dest_frame.x == 100);
+	assert(dest_frame.y == 200);
+	assert(dest_frame.width == 9);
+	assert(dest_frame.height == 9);
+}
+
+static void
 test_grab_offset_apply_from_source(void)
 {
 	monitor_scale_factor dest_factor   = {5};
@@ -478,6 +503,7 @@ main(void)
 	test_fullscreen_dest_equals_monitor_rect();
 	test_restore_uses_stored_logical_plus_dest_chrome();
 	test_restore_echo_keeps_stored_logical_seven();
+	test_unshaded_dest_from_logical_seven_replaces_source_sized_normal();
 	test_grab_offset_apply_from_source();
 	test_pointer_one_by_one_freeze_ignores_post_resize_frame();
 

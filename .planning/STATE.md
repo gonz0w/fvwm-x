@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
 milestone: v0.1 Monitor and HiDPI Foundations
-current_phase: 5
+current_phase: 05
 current_phase_name: Logical-Size Transition Coordinator
 status: executing
-stopped_at: Phase 04 complete, ready to plan Phase 5
-last_updated: "2026-08-31T22:19:35.143Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-09-01T00:24:02.087Z"
 last_activity: 2026-08-31
-last_activity_desc: Phase 04 complete, transitioned to Phase 5
-state_head: e78efb54fd73eece0ded2bbce5ae8d5a7e2a712f
+last_activity_desc: Phase 05 execution started
+state_head: 1666fd59c3b117fe5a58fd09944d2e17bfa16cab
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 36
-  completed_plans: 30
+  completed_plans: 31
 ---
 
 # Project State
@@ -24,14 +24,14 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 **Core value:** Users can depend on a responsive X11 desktop whose windows remain usable and visually consistent across changing monitor layouts and scale factors.
 **Current milestone:** v0.1 Monitor and HiDPI Foundations
-**Current focus:** Phase 5 — Logical-Size Transition Coordinator
+**Current focus:** Phase 05 — Logical-Size Transition Coordinator
 
 ## Current Position
 
-Phase: 5 (Logical-Size Transition Coordinator) — READY TO EXECUTE
-Plan: Not started
+Phase: 05 (Logical-Size Transition Coordinator) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-08-31 — Phase 04 complete, transitioned to Phase 5
+Last activity: 2026-08-31 — Phase 05 execution started
 
 Progress: [█████░░░░░] 50%
 
@@ -91,6 +91,7 @@ Progress: [█████░░░░░] 50%
 | Phase 04-wm-owned-ui-metrics-and-resources P10 | 4 min | 2 tasks | 3 files |
 | Phase 04-wm-owned-ui-metrics-and-resources P11 | 4 min | 2 tasks | 2 files |
 | Phase 04 P12 | 5 min | 2 tasks | 1 files |
+| Phase 05 P01 | 11 min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -200,6 +201,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 04]: Always call setup_window_font and setup_icon_font with True after ownership, not only when USING_DEFAULT_* is set, so explicit WindowFont/IconFont also reopen at the owning factor.
 - [Phase 04]: Re-run SelectDecor before the True font setup so setup_title_geometry consumes the owning-factor boundary_width; re-apply IS_TRANSIENT and wShaped follow-ups; do not call setup_style_and_decor again.
 - [Phase 04]: When bind_default_font_at_scale cache-hits the fallback pointer, call FlocaleUnloadFont on that pointer and still return fallback so FlocaleFont->count is not leaked.
+- [Phase 05]: Canonical logical size is a size_rect plus eligibility bool on the planner API, not a field inside window_g.
+- [Phase 05]: Extra status enumerators are GEOMETRY_TRANSITION_INELIGIBLE and GEOMETRY_TRANSITION_NOOP.
+- [Phase 05]: Maximize dest equals the supplied dest work rect; fullscreen dest copies the dest monitor rect.
+- [Phase 05]: Pointer dest freeze reuses monitor_ownership_resolve on a 1x1 rectangle; the planner does not reimplement ownership.
 
 ### Pending Todos
 
@@ -219,6 +224,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T20:56:16.317Z
-Stopped at: Phase 04 complete, ready to plan Phase 5
+Last session: 2026-09-01T00:24:01.961Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None

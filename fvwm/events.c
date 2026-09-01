@@ -928,6 +928,11 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 	size_rect		oldnew_dim;
 	size_borders		b;
 	int			gravity;
+	int			new_client_w;
+	int			new_client_h;
+	int			last_sent_w;
+	int			last_sent_h;
+	Bool			skip_logical_client;
 
 	if (ea) {
 		cre = &ea->exc->x.etrigger->xconfigurerequest;
@@ -955,6 +960,12 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 			return 0;
 		}
 	}
+	skip_logical_client = False;
+	if (DO_FORCE_NEXT_CR(fw)) {
+		skip_logical_client = True;
+	}
+	last_sent_w = fw->last_wm_sent_client.width;
+	last_sent_h = fw->last_wm_sent_client.height;
 	if (DEBUG_CRE) {
 		fvwm_debug(__func__,
 		    "cre: %d(%d) %d(%d) %d(%d)x%d(%d) fw 0x%08x w 0x%08x "
@@ -1129,6 +1140,18 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 		gravity_resize(gravity, &new_g, 0, d_g.height);
 	}
 
+	new_client_w = new_g.width - b.total_size.width;
+	new_client_h = new_g.height - b.total_size.height;
+	if (new_client_w < 0) {
+		new_client_w = 0;
+	}
+	if (new_client_h < 0) {
+		new_client_h = 0;
+	}
+	if (new_client_w == last_sent_w && new_client_h == last_sent_h) {
+		skip_logical_client = True;
+	}
+
 	if (new_g.x == current_g.x && new_g.y == current_g.y
 	    && new_g.width == current_g.width
 	    && new_g.height == current_g.height) {
@@ -1146,6 +1169,8 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 		/* make sure the window structure has the new position */
 		update_absolute_geometry(fw);
 		maximize_adjust_offset(fw);
+		if (!skip_logical_client) {
+		}
 	} else if (DO_FORCE_NEXT_CR(fw)) {
 		*ret_do_send_event = 1;
 	}

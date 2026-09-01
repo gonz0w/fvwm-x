@@ -930,8 +930,12 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 	int			gravity;
 	int			new_client_w;
 	int			new_client_h;
+	int			prev_client_w;
+	int			prev_client_h;
 	int			last_sent_w;
 	int			last_sent_h;
+	int			logical_w;
+	int			logical_h;
 	Bool			skip_logical_client;
 
 	if (ea) {
@@ -961,7 +965,8 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 		}
 	}
 	skip_logical_client = False;
-	if (DO_FORCE_NEXT_CR(fw)) {
+	if (DO_FORCE_NEXT_CR(fw) || IS_MAXIMIZED(fw)
+	    || IS_EWMH_FULLSCREEN(fw)) {
 		skip_logical_client = True;
 	}
 	last_sent_w = fw->last_wm_sent_client.width;
@@ -1049,6 +1054,14 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 		gravity	    = gravity_dir_to_grav(gravity_dir);
 	} else {
 		current_g = fw->g.frame;
+	}
+	prev_client_w = current_g.width - b.total_size.width;
+	prev_client_h = current_g.height - b.total_size.height;
+	if (prev_client_w < 0) {
+		prev_client_w = 0;
+	}
+	if (prev_client_h < 0) {
+		prev_client_h = 0;
 	}
 	if (!(cre->value_mask & (CWX | CWY))) {
 		/* nothing */
@@ -1169,7 +1182,51 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 		/* make sure the window structure has the new position */
 		update_absolute_geometry(fw);
 		maximize_adjust_offset(fw);
-		if (!skip_logical_client) {
+		if (!skip_logical_client && (d_g.width || d_g.height)) {
+			get_window_borders(fw, &b);
+			if (IS_SHADED(fw)) {
+				new_client_w = fw->g.normal.width
+				    - b.total_size.width;
+				new_client_h = fw->g.normal.height
+				    - b.total_size.height;
+			} else {
+				new_client_w = fw->g.frame.width
+				    - b.total_size.width;
+				new_client_h = fw->g.frame.height
+				    - b.total_size.height;
+			}
+			if (new_client_w < 0) {
+				new_client_w = 0;
+			}
+			if (new_client_h < 0) {
+				new_client_h = 0;
+			}
+			if ((new_client_w != prev_client_w
+				|| new_client_h != prev_client_h)
+			    && !IS_MAXIMIZED(fw)
+			    && !IS_EWMH_FULLSCREEN(fw)) {
+				fw->logical_client.width  = new_client_w;
+				fw->logical_client.height = new_client_h;
+				if (fw->m != NULL
+				    && fw->m->effective_scale.factor.quarters
+					!= MONITOR_SCALE_QUARTERS_MIN) {
+					if (monitor_scale_remove(new_client_w,
+						fw->m->effective_scale.factor,
+						&logical_w)
+					    == MONITOR_SCALE_CONVERSION_OK) {
+						fw->logical_client.width =
+						    logical_w;
+					}
+					if (monitor_scale_remove(new_client_h,
+						fw->m->effective_scale.factor,
+						&logical_h)
+					    == MONITOR_SCALE_CONVERSION_OK) {
+						fw->logical_client.height =
+						    logical_h;
+					}
+				}
+				fw->logical_client_valid = True;
+			}
 		}
 	} else if (DO_FORCE_NEXT_CR(fw)) {
 		*ret_do_send_event = 1;

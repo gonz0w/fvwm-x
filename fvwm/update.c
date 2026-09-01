@@ -912,6 +912,69 @@ out:
 				SET_FORCE_NEXT_CR(fw, 1);
 			}
 		}
+		else if (IS_SHADED(fw) && fw->logical_client_valid)
+		{
+			dest_frame = fw->g.normal;
+			get_window_borders(fw, &dest_chrome);
+			src_client.width = fw->g.normal.width -
+				dest_chrome.total_size.width;
+			src_client.height = fw->g.normal.height -
+				dest_chrome.total_size.height;
+			if (src_client.width < 0)
+			{
+				src_client.width = 0;
+			}
+			if (src_client.height < 0)
+			{
+				src_client.height = 0;
+			}
+			eligible = HAS_OVERRIDE_SIZE_HINTS(fw) ||
+				!(IS_SIZE_FIXED(fw) || IS_PSIZE_FIXED(fw) ||
+				((fw->hints.flags & (PMinSize | PMaxSize)) ==
+				 (PMinSize | PMaxSize) &&
+				 fw->hints.min_width ==
+				 fw->hints.max_width &&
+				 fw->hints.min_height ==
+				 fw->hints.max_height));
+			hints.flags = fw->hints.flags;
+			hints.min_width = fw->hints.min_width;
+			hints.min_height = fw->hints.min_height;
+			hints.max_width = fw->hints.max_width;
+			hints.max_height = fw->hints.max_height;
+			hints.width_inc = fw->hints.width_inc;
+			hints.height_inc = fw->hints.height_inc;
+			hints.min_aspect.x = fw->hints.min_aspect.x;
+			hints.min_aspect.y = fw->hints.min_aspect.y;
+			hints.max_aspect.x = fw->hints.max_aspect.x;
+			hints.max_aspect.y = fw->hints.max_aspect.y;
+			hints.base_width = fw->hints.base_width;
+			hints.base_height = fw->hints.base_height;
+			hints.win_gravity = fw->hints.win_gravity;
+
+			plan_status = geometry_transition_plan(
+				GEOMETRY_TRANSITION_NORMAL,
+				fw->logical_client, src_client, eligible,
+				fw->m->effective_scale.factor, &dest_chrome,
+				&hints, &dest_frame);
+			if (plan_status == GEOMETRY_TRANSITION_OVERFLOW ||
+			    plan_status ==
+			    GEOMETRY_TRANSITION_INVALID_ARGUMENT)
+			{
+				fvwm_debug(__func__,
+					"geometry transition failed (%d)",
+					(int)plan_status);
+			}
+			else
+			{
+				fw->last_transition_name_atom = dest_atom;
+				fw->last_transition_quarters = dest_quarters;
+				fw->last_transition_kind = (int)kind;
+				if (plan_status != GEOMETRY_TRANSITION_NOOP)
+				{
+					fw->g.normal = dest_frame;
+				}
+			}
+		}
 		EWMH_SetFrameStrut(fw);
 	}
 	EWMH_SetCurrentDesktop(fw->m);

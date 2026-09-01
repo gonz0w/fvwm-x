@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 05
 current_phase_name: Logical-Size Transition Coordinator
 status: executing
-stopped_at: Completed 05-06-PLAN.md
-last_updated: "2026-09-01T00:46:40.199Z"
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-09-01T00:58:30.027Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 05 execution started
-state_head: f16a0b13a40c9f83c9e31a257a6da260687bb1c5
+state_head: 3a9bcffc4f3699b021ca1345090c524f7031905f
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 36
-  completed_plans: 33
+  completed_plans: 34
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 05 (Logical-Size Transition Coordinator) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 05 execution started
 
@@ -94,6 +94,7 @@ Progress: [█████░░░░░] 50%
 | Phase 05 P01 | 11 min | 3 tasks | 5 files |
 | Phase 05 P02 | 11 min | 2 tasks | 3 files |
 | Phase 05 P06 | 3 min | 2 tasks | 1 files |
+| Phase 05 P03 | 8 min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -213,6 +214,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 05]: Extend the existing MonitorScale retained-source paragraph; do not replace it or start a second contract. — User-visible geometry policy must sit beside the Phase 2 conversion sentence so readers do not get a second conflicting contract.
 - [Phase 05]: Grow-to maximize remains undocumented as dest-scale policy (PA-08). — 100 percent maximize, EWMH max, fullscreen, restore, and drag crossings are the documented GEO-06/GEO-04 surface.
 - [Phase 05]: Protocol writers stay unmodified; the Status actual-pixel sentence lives in AsciiDoc only. — GEO-07 keeps EWMH, Status v4, and module packets in actual X11 pixels; empty git diff on vpacket, module_interface, and status_json is the guardrail.
+- [Phase 05]: InteractiveMove stores logical grab offset in file-static state so monitor_scale_remove runs before any later update_fvwm_monitor without changing the move_loop signature used by placement.c. — MoveToPage's update_fvwm_monitor sits between InteractiveMove and move_loop; the source-contract requires remove before that first call.
+- [Phase 05]: Dest quarters change keeps the original GrabEm and calls a local change_grab_cursor (XChangeActivePointerGrab), never a second XGrabPointer. — GEO-04 dest-scale resize must not drop GrabEm; misc.c change_grab_cursor is static so move_resize.c owns a local helper.
+- [Phase 05]: CMD_Maximize FindScreenOfXY dest assignment routes through update_fvwm_monitor. — One coordinator; do not write fw->m directly.
+- [Phase 05]: unmaximize_fvwm_window plans GEOMETRY_TRANSITION_RESTORE when logical_client_valid; OVERFLOW and INVALID_ARGUMENT keep get_relative_geometry. — T-05-01: restore overflow must not invent dest pixels.
 
 ### Pending Todos
 
@@ -232,6 +237,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T00:46:40.061Z
-Stopped at: Completed 05-06-PLAN.md
+Last session: 2026-09-01T00:58:20.829Z
+Stopped at: Completed 05-03-PLAN.md
 Resume file: None

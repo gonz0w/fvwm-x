@@ -37,7 +37,7 @@
 - [x] **GEO-01**: User's window has one deterministic owning monitor with incumbent tie-breaking and seam hysteresis.
 - [ ] **GEO-02**: User's eligible window preserves logical client size across scale transitions and repeated round trips without drift.
 - [x] **GEO-03**: User's scaled target size obeys ICCCM minimum, maximum, base, increment, aspect, fixed-size, and gravity constraints.
-- [ ] **GEO-04**: User can drag a window across scales without losing the grabbed pointer anchor or causing ownership oscillation.
+- [x] **GEO-04**: User can drag a window across scales without losing the grabbed pointer anchor or causing ownership oscillation.
 - [x] **GEO-05**: User gets correct initial placement, work areas, struts, and monitor-targeted movement in root-pixel coordinates.
 - [ ] **GEO-06**: User gets correct maximize, fullscreen, unmaximize, restore, and monitor-transition behavior at every supported scale.
 - [x] **GEO-07**: Clients and modules continue receiving EWMH, ICCCM, configure, frame-extents, work-area, and geometry values in actual X11 pixels.
@@ -106,7 +106,7 @@ Each v0.1 requirement maps to exactly one roadmap phase.
 | GEO-01 | Phase 3 | Complete |
 | GEO-02 | Phase 5 | Pending |
 | GEO-03 | Phase 3 | Complete |
-| GEO-04 | Phase 5 | Pending |
+| GEO-04 | Phase 5 | Complete |
 | GEO-05 | Phase 3 | Complete |
 | GEO-06 | Phase 5 | Pending |
 | GEO-07 | Phase 3 | Complete |

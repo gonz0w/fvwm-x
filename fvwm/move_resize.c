@@ -5319,6 +5319,21 @@ static void unmaximize_fvwm_window(
 		else
 		{
 			new_g = dest_frame;
+			fw->last_wm_sent_client.width =
+				dest_frame.width -
+				dest_chrome.total_size.width;
+			fw->last_wm_sent_client.height =
+				dest_frame.height -
+				dest_chrome.total_size.height;
+			if (fw->last_wm_sent_client.width < 0)
+			{
+				fw->last_wm_sent_client.width = 0;
+			}
+			if (fw->last_wm_sent_client.height < 0)
+			{
+				fw->last_wm_sent_client.height = 0;
+			}
+			SET_FORCE_NEXT_CR(fw, 1);
 		}
 	}
 

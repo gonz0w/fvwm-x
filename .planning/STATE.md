@@ -4,16 +4,16 @@ milestone: v0.1 Monitor and HiDPI Foundations
 current_phase: 05
 current_phase_name: Logical-Size Transition Coordinator
 status: executing
-stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-09-01T00:58:30.027Z"
+stopped_at: Completed 05-04-PLAN.md
+last_updated: "2026-09-01T01:04:48.051Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 05 execution started
-state_head: 3a9bcffc4f3699b021ca1345090c524f7031905f
+state_head: a301e30b17ce7df8e8fc9654af899209690b74c7
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 36
-  completed_plans: 34
+  completed_plans: 35
 ---
 
 # Project State
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 ## Current Position
 
 Phase: 05 (Logical-Size Transition Coordinator) — EXECUTING
-Plan: 5 of 6
+Plan: 6 of 6
 Status: Ready to execute
 Last activity: 2026-08-31 — Phase 05 execution started
 
@@ -95,6 +95,7 @@ Progress: [█████░░░░░] 50%
 | Phase 05 P02 | 11 min | 2 tasks | 3 files |
 | Phase 05 P06 | 3 min | 2 tasks | 1 files |
 | Phase 05 P03 | 8 min | 3 tasks | 1 files |
+| Phase 05 P04 | 4 min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -218,6 +219,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 05]: Dest quarters change keeps the original GrabEm and calls a local change_grab_cursor (XChangeActivePointerGrab), never a second XGrabPointer. — GEO-04 dest-scale resize must not drop GrabEm; misc.c change_grab_cursor is static so move_resize.c owns a local helper.
 - [Phase 05]: CMD_Maximize FindScreenOfXY dest assignment routes through update_fvwm_monitor. — One coordinator; do not write fw->m directly.
 - [Phase 05]: unmaximize_fvwm_window plans GEOMETRY_TRANSITION_RESTORE when logical_client_valid; OVERFLOW and INVALID_ARGUMENT keep get_relative_geometry. — T-05-01: restore overflow must not invent dest pixels.
+- [Phase 05]: EWMH_fullscreen fills ResizeMoveMaximize from fw->m->si after apply_decor_change, not a scaled copy of the current fullscreen frame. — PA-07: dest monitor comes from fw->m after ownership, not a second FScreenGetScrRect that can disagree with fw->m consumers.
+- [Phase 05]: EWMH_fullscreen does not assign logical_client or logical_client_valid. — GEO-06 fullscreen is derived dest-monitor state; restore already routes through stored logical client in unmaximize_fvwm_window.
+- [Phase 05]: EWMH_SetFrameStrut stays dest chrome pixels from get_window_borders; no extra post-maximize strut write. — GEO-02: _NET_FRAME_EXTENTS must remain dest chrome pixels. apply_decor_change already refreshes struts before ResizeMoveMaximize.
 
 ### Pending Todos
 
@@ -237,6 +241,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-09-01T00:58:20.829Z
-Stopped at: Completed 05-03-PLAN.md
+Last session: 2026-09-01T01:04:47.908Z
+Stopped at: Completed 05-04-PLAN.md
 Resume file: None

@@ -808,9 +808,6 @@ out:
 		SelectDecor(fw, &style, &buttons);
 		setup_window_font(fw, &style, True);
 		setup_icon_font(fw, &style, True);
-		fw->last_transition_name_atom = dest_atom;
-		fw->last_transition_quarters = dest_quarters;
-		fw->last_transition_kind = (int)kind;
 		if (!IS_SHADED(fw) &&
 		    (kind != GEOMETRY_TRANSITION_NORMAL ||
 		     fw->logical_client_valid))
@@ -871,7 +868,16 @@ out:
 					"geometry transition failed (%d)",
 					(int)plan_status);
 			}
-			else if (plan_status != GEOMETRY_TRANSITION_NOOP)
+			else
+			{
+				fw->last_transition_name_atom = dest_atom;
+				fw->last_transition_quarters = dest_quarters;
+				fw->last_transition_kind = (int)kind;
+			}
+			if (plan_status != GEOMETRY_TRANSITION_OVERFLOW &&
+			    plan_status !=
+			    GEOMETRY_TRANSITION_INVALID_ARGUMENT &&
+			    plan_status != GEOMETRY_TRANSITION_NOOP)
 			{
 				frame_setup_window(
 					fw, dest_frame.x, dest_frame.y,

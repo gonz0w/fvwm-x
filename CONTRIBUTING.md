@@ -26,6 +26,8 @@ Run it once for the combined candidate, not after each story or documentation
 edit. During development, use affected tests and an owner-controlled incremental
 build per compiler/feature profile. Docs/status-only updates use `make check`
 and whitespace/link checks; retain unchanged source-bound runtime evidence.
+The offline link check covers current inline-Markdown file references; archived
+plans, remote URLs, anchors and HTML keep their separate review scopes.
 Add the affected native checks:
 
 ```sh

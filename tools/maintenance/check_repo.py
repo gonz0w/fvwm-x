@@ -4,8 +4,9 @@
 # the Free Software Foundation; either version 2, or any later version.
 """Check the local repository foundation; not a native/runtime acceptance gate."""
 from pathlib import Path
-import re
 import sys
+
+from repository_links import check_markdown_links
 
 ROOT = Path(__file__).resolve().parents[2]
 REQUIRED = (
@@ -42,12 +43,7 @@ def main():
         text = path.read_text()
         if '\r' in text or not text.endswith('\n'):
             errors.append('expected LF and final newline: ' + name)
-        for link in re.findall(r'\]\(([^)]+)\)', text):
-            if '://' in link or link.startswith('#'):
-                continue
-            target = link.split('#', 1)[0]
-            if target and not (path.parent / target).exists():
-                errors.append('missing local link in ' + name + ': ' + target)
+    errors.extend(check_markdown_links(ROOT))
     if errors:
         for error in errors:
             print('Repository check: ' + error, file=sys.stderr)

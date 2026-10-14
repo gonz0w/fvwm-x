@@ -1,0 +1,111 @@
+{
+  "profile": "all",
+  "lock_sha256": "967f7245299fc02c82fb7c9968271ca0c2b21e67968b695bc59c2b2bf68a94c7",
+  "status": "verified inputs; no extraction, execution or boot",
+  "assets": [
+    {
+      "name": "anyvm.py",
+      "url": "https://github.com/anyvm-org/anyvm/releases/download/v0.7.2/anyvm.py",
+      "size": 618865,
+      "sha256": "40a16e846bc07030759936d792343e770acdeb14d4c9991af7409648661a650d",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "freebsd-15.1-aarch64.profile.json",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-aarch64.profile.json",
+      "size": 516,
+      "sha256": "b6bab26e70531d993c3799e33c4cfc4b1e913376539428b2edf14f35a6d78f9f",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "freebsd-15.1-aarch64.qcow2.zst",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-aarch64.qcow2.zst",
+      "size": 982630977,
+      "sha256": "8d66347311ffe4b262df1deae2d257a23c65dc16845a979fbe1d7871d912bfcf",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "freebsd-15.1-aarch64.qemu",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-aarch64.qemu",
+      "size": 986,
+      "sha256": "868b2132a13f3d4ed1d72d4fdc3ab865d097ba3f637fccde1e0a8a8b9dcf80b0",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "freebsd-15.1.profile.json",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1.profile.json",
+      "size": 525,
+      "sha256": "1027509a2541c4b1bc5fb9e5f3b6ebfd9d2d293572789a513ff9a3cd1e04c91f",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "freebsd-15.1.qcow2.zst",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1.qcow2.zst",
+      "size": 1023058365,
+      "sha256": "42b6377c065d8291f82e3c93c95e95fc7ef0cb1f321947946df4e240b8183bd3",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "freebsd-15.1.qemu",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1.qemu",
+      "size": 889,
+      "sha256": "0c295d462947e62b6f51bb4736aea09f0539660e89faddcdae2268e69c6ff92f",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "openbsd-7.9-aarch64.profile.json",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9-aarch64.profile.json",
+      "size": 532,
+      "sha256": "5ad1b6b2d65133b8435ac83dca097a378f379aed79260e9e6e23b75fb91d2b75",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "openbsd-7.9-aarch64.qcow2.zst",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9-aarch64.qcow2.zst",
+      "size": 1231406153,
+      "sha256": "031022c4195f01d36a061ed338caeafcae89ca6e3cc8a3140e59812f95a25704",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "openbsd-7.9-aarch64.qemu",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9-aarch64.qemu",
+      "size": 1003,
+      "sha256": "2ee9c1409df7f886759b7c752787553098040f653355ae37c5a4c072dfc7992f",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "openbsd-7.9.profile.json",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9.profile.json",
+      "size": 524,
+      "sha256": "98db0bcbe669dcce5af367371891a3f402f8ee45cb93087a2f1f52c6a9a46ebd",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "openbsd-7.9.qcow2.zst",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9.qcow2.zst",
+      "size": 594986682,
+      "sha256": "d0a3a481488a1bdb4eccd4d24f0e4770714ea0f5d1c7c07ee92982ea5a6865b4",
+      "origin": "verified-cache",
+      "mode": "0600"
+    },
+    {
+      "name": "openbsd-7.9.qemu",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9.qemu",
+      "size": 889,
+      "sha256": "8d8e64b9d3e4c6fda7f9a75b7b7aa1f2ca7834b5d7dce0153d5e5855cf150082",
+      "origin": "verified-cache",
+      "mode": "0600"
+    }
+  ]
+}

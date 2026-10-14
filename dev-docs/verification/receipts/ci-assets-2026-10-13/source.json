@@ -1,0 +1,26 @@
+{
+  "archive_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a",
+  "files": [
+    {
+      "path": "tools/maintenance/ci_assets.py",
+      "sha256": "57a4d8ddce3b618531919e351e844407e0f2d55e770be61da46a2aaa76aaaccd",
+      "mode": "0o644"
+    },
+    {
+      "path": "tools/maintenance/common.py",
+      "sha256": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+      "mode": "0o644"
+    },
+    {
+      "path": "tests/test_ci_assets.py",
+      "sha256": "49e55cc95f6309f038993c9a0bc42e630adfeeb3c1d9e02fa616d4ab8becbd0e",
+      "mode": "0o644"
+    },
+    {
+      "path": "dev-docs/ci/ASSET-PINS-2026-10-12.json",
+      "sha256": "967f7245299fc02c82fb7c9968271ca0c2b21e67968b695bc59c2b2bf68a94c7",
+      "mode": "0o644"
+    }
+  ],
+  "meson_registration": "test('ci-asset-contract', py, args: [files('test_ci_assets.py')],\n    timeout: 30)"
+}

@@ -511,6 +511,13 @@
       "url": "https://github.com/gonz0w/fvwm-x/issues/87",
       "stage": 2,
       "scope": "Incremental build reuse and consolidated PR checkpoints"
+    },
+    {
+      "parent_tracker_id": "MAINT-02",
+      "number": 89,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/89",
+      "stage": 2,
+      "scope": "Referenced documentation/evidence restoration and local file-link checks"
     }
   ]
 }

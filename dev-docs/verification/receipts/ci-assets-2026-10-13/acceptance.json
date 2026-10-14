@@ -1,0 +1,78 @@
+{
+  "status": "affected local checkpoint passed; provider integration and native CI not qualified",
+  "source_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a",
+  "targets": [
+    {
+      "target": "freebsd-amd64",
+      "platform": {
+        "system": "FreeBSD",
+        "machine": "amd64",
+        "python": "3.12.14 (main, Aug 27 2026, 01:12:26) [Clang 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd7080",
+        "source_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a"
+      },
+      "tests": 23,
+      "evidence_sha256": "bc6e2898cb25621e614a4c3a240b05ad7cd240f25ea68f85013f4ff8f2e50bfa"
+    },
+    {
+      "target": "freebsd-arm64",
+      "platform": {
+        "system": "FreeBSD",
+        "machine": "arm64",
+        "python": "3.12.14 (main, Aug 27 2026, 01:37:23) [Clang 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd7080",
+        "source_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a"
+      },
+      "tests": 23,
+      "evidence_sha256": "00deca4b4492665e4c3c936ba518bb3ff305e3ea590d9b7837436d384e394aaf"
+    },
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "platform": {
+        "system": "Linux",
+        "machine": "aarch64",
+        "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+        "source_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a"
+      },
+      "tests": 23,
+      "evidence_sha256": "710e645bd4b9b1f5996376c59ddfda77ab109cb2e9c0b539aca2d53d2b4cd55c"
+    },
+    {
+      "target": "linux-amd64",
+      "platform": {
+        "system": "Linux",
+        "machine": "x86_64",
+        "python": "3.13.5 (main, Aug 10 2026, 12:06:59) [GCC 14.2.0]",
+        "source_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a"
+      },
+      "tests": 23,
+      "evidence_sha256": "e4ed64e2b0e4c7db4340ba38e76fd14f1157462ef252ebcffa68e3b3984a554c"
+    },
+    {
+      "target": "openbsd-amd64",
+      "platform": {
+        "system": "OpenBSD",
+        "machine": "amd64",
+        "python": "3.13.15 (main, Oct  1 2026, 01:10:19) [Clang 19.1.7 ]",
+        "source_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a"
+      },
+      "tests": 23,
+      "evidence_sha256": "1058a0d512f49da40ee59f3232afaed96ff6ae70e053569364d6ac49d0bca91d"
+    },
+    {
+      "target": "openbsd-arm64",
+      "platform": {
+        "system": "OpenBSD",
+        "machine": "arm64",
+        "python": "3.13.13 (main, Apr 24 2026, 15:25:43) [Clang 19.1.7 ]",
+        "source_sha256": "4bd0566feb58b853594d086ddb14336bc513755d4de85857459607f5a0e66a2a"
+      },
+      "tests": 23,
+      "evidence_sha256": "c72388d0e0a70a5ea41e1107e08a0586b9bfd74f87076f925ed71da94b3db587"
+    }
+  ],
+  "native_test_executions": 138,
+  "distinct_tests": 23,
+  "downloaded_assets": 13,
+  "verified_cache_assets": 13,
+  "each_asset_set_bytes": 3832706906,
+  "this_batch_changes_wm_runtime_sources": false
+}

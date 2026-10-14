@@ -171,6 +171,18 @@ Recorded adoption checks and limitations are in the
 
 ## Verification and limits
 
+### Repository documentation links
+
+`make check` includes an offline inline-Markdown file-link check for root guides,
+current dev-docs/decisions/evidence, the archive index and maintenance/CI/PR
+guides. It skips fenced/indented/inline code, retired archive contents and
+vendored documentation; it handles titles, angle/escaped targets and URI paths.
+Repository-local file targets must exist inside the checkout. This is not a
+full Markdown/HTML parser, anchor validator or external URL check. It requires
+no renderer, network access, VM boot or WM build. Restored dated reports retain
+their source identities and limitations; their availability is not new runtime
+qualification.
+
 ### CI asset preflight
 
 `ci_assets.py` materializes CI-01's recorded AnyVM/BSD release inputs into a

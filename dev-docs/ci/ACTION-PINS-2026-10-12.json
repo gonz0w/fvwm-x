@@ -1,0 +1,65 @@
+{
+  "reviewed": "2026-10-12",
+  "status": "candidate entry-point review; not activated or executed in GitHub Actions",
+  "actions": [
+    {
+      "repository": "actions/checkout",
+      "observed_tag": "v5",
+      "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+      "tag_api": "https://api.github.com/repos/actions/checkout/git/refs/tags/v5",
+      "source_url": "https://github.com/actions/checkout/tree/fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+      "reviewed_files_sha256": {
+        "actions-checkout-action.yml": "d59219cb79590abdb877deaa14e3b65a00c05318bf5a6f3b989b9162b5d08c35",
+        "actions-checkout-package.json": "6f9a9f3ae7d8047d049b011c42373e2d97bd5c2fb4633317f44796809661cf87"
+      }
+    },
+    {
+      "repository": "actions/upload-artifact",
+      "observed_tag": "v4",
+      "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+      "tag_api": "https://api.github.com/repos/actions/upload-artifact/git/refs/tags/v4",
+      "source_url": "https://github.com/actions/upload-artifact/tree/ea165f8d65b6e75b540449e92b4886f43607fa02",
+      "reviewed_files_sha256": {
+        "actions-upload-artifact-action.yml": "29b21270ff44638a165ea12abb4481796770c629e513217af7b4df1aa3821177",
+        "actions-upload-artifact-package.json": "221abbd5b3bbff2d44a509a2ebd7b9e35ed772ee7ac464027e86527d928b95d1"
+      }
+    },
+    {
+      "repository": "vmactions/freebsd-vm",
+      "observed_tag": "v1",
+      "commit": "c46abacb49f09938ca4e1702d15d836285d694cc",
+      "tag_api": "https://api.github.com/repos/vmactions/freebsd-vm/git/refs/tags/v1",
+      "source_url": "https://github.com/vmactions/freebsd-vm/tree/c46abacb49f09938ca4e1702d15d836285d694cc",
+      "reviewed_files_sha256": {
+        "vmactions-freebsd-vm-15.1-aarch64.conf": "c99d9cb09d082fd97d5206be50a19ed8105b5894128f994da694f5fd376189cb",
+        "vmactions-freebsd-vm-15.1.conf": "7979cdfa6380fb55b0d0de013a7c635a9a7ed2a89d2b17c6e6ead7e31a82ccb1",
+        "vmactions-freebsd-vm-action.yml": "ddf98eaec926d9dd304b435741af7777cb2907784482f32da3417df0a8ee3ef3",
+        "vmactions-freebsd-vm-default.release.conf": "115cdbd790d8a12cbce6cd1ebfcf0c6eb7569ca92f73bf2878d346ef26caadaa",
+        "vmactions-freebsd-vm-index.js": "c1e821ad07b8d5957a87298790de4bd50de9f6de87dcd6d91662ec943249d85f",
+        "vmactions-freebsd-vm-package.json": "5f25a4ca728041d9b5d74af775bc148d687fdbd0d5c579d2cbabff3b4f410489"
+      }
+    },
+    {
+      "repository": "vmactions/openbsd-vm",
+      "observed_tag": "v1",
+      "commit": "5f7b2c933b8846a138361d6843c52af4bef5d945",
+      "tag_api": "https://api.github.com/repos/vmactions/openbsd-vm/git/refs/tags/v1",
+      "source_url": "https://github.com/vmactions/openbsd-vm/tree/5f7b2c933b8846a138361d6843c52af4bef5d945",
+      "reviewed_files_sha256": {
+        "vmactions-openbsd-vm-7.9-aarch64.conf": "3359de876ff173bfb6c25dfef3b9d001c40d061adc7350d603d36f2c2332ae56",
+        "vmactions-openbsd-vm-7.9.conf": "3359de876ff173bfb6c25dfef3b9d001c40d061adc7350d603d36f2c2332ae56",
+        "vmactions-openbsd-vm-action.yml": "cdbddf82ba4c449fefe0b6963b6762286d6af50980c19e1d92e17b4bb95b7d37",
+        "vmactions-openbsd-vm-default.release.conf": "cf3749d5f7a52a961333077162c073646f8201770132c5fcf19f96bee081a8fb",
+        "vmactions-openbsd-vm-index.js": "4baa5065795cbd133b04c84b6d9a77f91da55e864094c0d235da2a6bf272ae35",
+        "vmactions-openbsd-vm-package.json": "a9e10f0e82caa19f311b0ef5517f3d0bd7d7ebf713c4ff2ff66d1439bd1d4fc6"
+      }
+    }
+  ],
+  "remaining": [
+    "BSD VM runtime and image asset hash verification",
+    "Reviewed digests or replacement for inherited Ubuntu/Alpine containers",
+    "Native Linux sanitizer runs",
+    "BSD default-server jobs and Prompt/Go release coverage",
+    "FVWM-X release destinations and notification ownership"
+  ]
+}

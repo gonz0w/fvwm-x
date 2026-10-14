@@ -4,10 +4,10 @@ The initial native baseline is FreeBSD 15.1 and OpenBSD 7.9. ARM64 guests
 run under hardware-accelerated QEMU on the macOS development host; AMD64
 guests use QEMU CPU emulation on the same host.
 The approved release matrix is Linux, FreeBSD, and OpenBSD on both AMD64
-and ARM64, initially using current BSD releases. The GitHub workflow covers
-both BSD architectures, but those jobs have not been run from this checkout
-because it has no Git remote. Local results are recorded separately from
-configured CI coverage.
+and ARM64, initially using current BSD releases. Verification runs locally;
+GitHub hosts code and review with Actions disabled. The owned QEMU recipes
+cover all four BSD profiles. Record exact source, guest, patch and feature
+identities separately from native-CPU and physical-hardware release coverage.
 
 Run `sh tests/run_on_bsd.sh` inside a guest with this source tree. It builds
 the core and all modules, runs policy tests and a native Xvfb session, then
@@ -132,6 +132,22 @@ ssh -p 2241 -i builddir/qemu-bsd/id_ed25519 \
 Transfer changed source files before testing; the guest source is a copy,
 not a live mount. Use port 2242 for OpenBSD. Shut guests down through SSH
 after verification. A QEMU process whose OS has halted can then be stopped.
+
+## Independent server startup checks
+
+Use the [local startup recipes](ci/README.md) to separate an Xorg startup
+failure from installed WM/client behavior. On an isolated existing guest:
+
+```sh
+python3 tests/run_bsd_default_x.py --server-only --repeat 8 \
+    --disposable-vm --artifacts-dir builddir-bsd/server-startup
+```
+
+Each attempt has its own result and authentication. One failure fails the
+aggregate; later successes retain their own evidence. The updated-image
+comparison uses signed system updates and an explicit verified reboot in a
+fresh owned image. It preserves retained guests, earlier failed evidence and
+the configured default driver. No FVWM configuration changes are needed.
 
 ## Coverage limits
 

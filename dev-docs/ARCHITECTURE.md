@@ -616,8 +616,10 @@ scoped evidence and process/cancellation cleanup. `BOOT-PINS-2026-10-13.json`
 adds independently verified published bootstrap keys and ARM firmware. OpenBSD
 job storage uses `/home`; only the owned disposable image is changed. Its
 inactive candidate replaces the downloaded AnyVM runtime and mutable prepared
-cache path. Default-server/package and actual remote-CI qualification remain
-explicit gates; see [CI upkeep](ci/README.md).
+cache path. Optional `reboot_prepared_guest` requires a changed, validated BSD
+boot identity before accepting updated guest preparation. Default-server/package
+qualification remains profile-specific; review runs locally with Actions
+disabled. See [CI upkeep](ci/README.md).
 
 CI-01’s `tools/maintenance/ci_png.py` owns the approved fixed PNG tar payload,
 private native Linux/BSD build/upstream tests and core/SVG transitive loader receipts.
@@ -639,7 +641,10 @@ unchanged.
 `tests/run_bsd_default_x.py` owns an isolated authenticated default
 Xorg through the existing bounded harness; `_x11` receives authority access on
 OpenBSD. It checks a cookie-less client's refusal and reuses installed
-Command/Prompt fixtures. Its `--xlock-only` and `--directory-only` modes qualify the installed utilities
+Command/Prompt fixtures. Server-only repetition starts no WM/client fixture;
+each attempt owns its result, phase, server/module/patch identities and final
+teardown logs. A stale vendor log cannot stand in for a failed new start; any
+failed attempt fails the aggregate and cancellation stops further attempts. Its `--xlock-only` and `--directory-only` modes qualify the installed utilities
 through real PipeRead/menu map/dismiss checks without executing lock actions.
 Prompt fixture readiness requires a successful MFL
 connection; the shared Connection closes failed construction. No core or native

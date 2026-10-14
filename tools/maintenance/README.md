@@ -195,6 +195,17 @@ It uses Python's standard library and the existing fresh-output owner. See
 It is a developer preflight, not an installed runtime helper or proof of passing
 Actions, VM boot or upstream provider cache enforcement.
 
+### Default BSD server diagnostics
+
+`tests/run_bsd_default_x.py --server-only` separates server readiness and
+authentication from WM/application fixtures. Independent repetition retains
+failed attempts and cancellation; installed server/module hashes, patch inventory
+and final teardown logs identify what ran. The owned QEMU runner's optional
+`--reboot-after-prepare` requires a changed validated native boot identity.
+The [OpenBSD comparison recipes](../../dev-docs/ci/README.md) apply signed updates
+only in a fresh owned image. Ordinary jobs keep their existing lifecycle; no
+WM rebuild or new runtime dependency is required for these diagnostic checks.
+
 ### Initial candidate evidence
 
 The initial 2026-10-05 candidate checkpoint passed all 20 isolated tool tests

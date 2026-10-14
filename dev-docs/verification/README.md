@@ -1,5 +1,7 @@
 # Verification reports
 
+- [2026-10-14 default BSD X startup diagnostics](VERIFICATION-2026-10-14-BSD-X-STARTUP.md): four related stories, six-target policy/teardown, retained/fresh authenticated startup controls and unchanged installed clients; original VESA cause remains open.
+
 - [2026-10-14 patched optional Go compiler adoption](VERIFICATION-2026-10-14-GO-BASELINE.md).
 
 - [2026-10-14 optional Go dependency audit and vendor cleanup](VERIFICATION-2026-10-14-GO-DEPENDENCIES.md).

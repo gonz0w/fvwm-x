@@ -9,6 +9,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from pathlib import Path, PurePosixPath
 import resource
 import signal
@@ -275,7 +276,50 @@ def wait_ssh(vm, argv, job, seconds, prefix='boot'):
     raise TimeoutError('SSH boot deadline expired')
 
 
+def boot_identity(path):
+    value = path.read_text().strip()
+    if re.fullmatch(r'[0-9]+', value):
+        seconds, micros = int(value), 0
+    else:
+        match = re.fullmatch(
+            r'\{ sec = ([0-9]+), usec = ([0-9]+) \} [^\r\n]+', value)
+        if not match:
+            raise RuntimeError('invalid prepared guest boot identity')
+        seconds, micros = map(int, match.groups())
+    if seconds <= 0 or micros >= 1000000:
+        raise RuntimeError('invalid prepared guest boot identity')
+    return seconds, micros
+
+
+def reboot_prepared_guest(vm, ssh, job, seconds):
+    """Require a new boot identity before accepting a prepared guest again."""
+    identity = ['sysctl -n kern.boottime']
+    command(ssh + identity, job / 'prepare-boot-before.log', 15, watch=vm.check)
+    before = boot_identity(job / 'prepare-boot-before.log')
+    code = command(ssh + ['/sbin/shutdown -r now'],
+                   job / 'prepare-reboot.log', 30, check=False, watch=vm.check)
+    if code not in (0, 255):
+        raise RuntimeError('prepared guest reboot request failed')
+    deadline = time.monotonic() + seconds
+    attempt = 0
+    while time.monotonic() < deadline:
+        vm.check()
+        attempt += 1
+        log = job / ('prepare-reboot-%03d.log' % attempt)
+        code = command(ssh + identity, log,
+                       min(10, max(0.1, deadline - time.monotonic())),
+                       check=False, watch=vm.check)
+        current = boot_identity(log) if code == 0 else None
+        # SSH can answer once more before shutdown. It is not a completed boot.
+        if code == 0 and current and current != before:
+            return {'before': before, 'after': current}
+        time.sleep(min(1, max(0, deadline - time.monotonic())))
+    raise TimeoutError('prepared guest reboot deadline expired')
+
+
 def run(args):
+    if getattr(args, 'reboot_after_prepare', False) and not args.prepare_script:
+        raise ValueError('--reboot-after-prepare requires --prepare-script')
     if not 1 <= args.boot_timeout <= 1800 or not 1 <= args.run_timeout <= 21600:
         raise ValueError('boot/run timeout outside finite range')
     vga_test = getattr(args, 'openbsd_vga_test', False)
@@ -421,6 +465,10 @@ def run(args):
             command(ssh + ['cd /root/fvwm-ci/source && '
                 'exec sh /root/fvwm-ci/prepare.sh'], job / 'prepare.log',
                 7200, watch=vm.check)
+        if getattr(args, 'reboot_after_prepare', False):
+            result['phase'] = 'prepare-reboot'
+            result['prepared_boot'] = reboot_prepared_guest(
+                vm, ssh, job, args.boot_timeout)
         result['phase'] = 'run'
         code = command(ssh + ['cd /root/fvwm-ci/source && '
             'exec sh /root/fvwm-ci/run.sh'], job / 'run.log', args.run_timeout,
@@ -484,6 +532,8 @@ def main():
     parser.add_argument('--source-archive', type=Path, required=True)
     parser.add_argument('--prepare-script', type=Path)
     parser.add_argument('--run-script', type=Path, required=True)
+    parser.add_argument('--reboot-after-prepare', action='store_true',
+        help='Reboot the owned guest after preparation; require a new boot identity')
     parser.add_argument('--cache', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--offline', action='store_true')

@@ -53,6 +53,61 @@ class QemuTests(unittest.TestCase):
         path.chmod(0o755)
         return str(path)
 
+    def test_boot_identity_accepts_native_formats_and_refuses_diagnostics(self):
+        path = self.root / 'identity'
+        for text, expected in [
+                ('1791901720\n', (1791901720, 0)),
+                ('{ sec = 1791901717, usec = 481717 } Tue Oct 13 14:28:37 2026\n',
+                 (1791901717, 481717))]:
+            path.write_text(text)
+            self.assertEqual(qemu.boot_identity(path), expected)
+        for text in ['', '0', '-1', 'old boot', 'warning\n1791901720',
+                     '{ sec = 1791901717, usec = 1000000 } date']:
+            path.write_text(text)
+            with self.assertRaises(RuntimeError):
+                qemu.boot_identity(path)
+
+    def test_preparation_reboot_requires_a_changed_boot_identity(self):
+        replies = iter([(0, '1791901720'), (255, ''), (0, '1791901720'),
+                        (255, 'connection closed'), (0, '1791901820')])
+        def reply(argv, output, timeout, **kwargs):
+            status, text = next(replies)
+            output.write_text(text)
+            return status
+        vm = argparse.Namespace(check=lambda: None)
+        with patch.object(qemu, 'command', side_effect=reply) as command, patch.object(
+                qemu.time, 'sleep'):
+            result = qemu.reboot_prepared_guest(vm, ['ssh'], self.root, 30)
+        self.assertEqual(result, {'before': (1791901720, 0), 'after': (1791901820, 0)})
+        self.assertEqual(command.call_count, 5)
+        self.assertEqual(command.call_args.args[0], ['ssh', 'sysctl -n kern.boottime'])
+
+    def test_preparation_reboot_timeout_keeps_the_old_boot_unaccepted(self):
+        def reply(argv, output, timeout, **kwargs):
+            output.write_text('1791901720')
+            return 0
+        clock = iter([0, 0, 0, 1, 1, 1, 2])
+        with patch.object(qemu, 'command', side_effect=reply), patch.object(
+                qemu.time, 'sleep'), patch.object(qemu.time, 'monotonic',
+                                                 side_effect=lambda: next(clock)):
+            with self.assertRaises(TimeoutError):
+                qemu.reboot_prepared_guest(argparse.Namespace(check=lambda: None),
+                                          ['ssh'], self.root, 1)
+
+    def test_preparation_reboot_refuses_missing_identity_and_bad_request(self):
+        for initial, status in [('', 0), ('1791901720', 1)]:
+            def reply(argv, output, timeout, **kwargs):
+                output.write_text(initial)
+                return status if '-r now' in argv[-1] else 0
+            with patch.object(qemu, 'command', side_effect=reply):
+                with self.assertRaises(RuntimeError):
+                    qemu.reboot_prepared_guest(argparse.Namespace(check=lambda: None),
+                                              ['ssh'], self.root, 30)
+
+    def test_reboot_without_preparation_is_refused_before_vm_work(self):
+        with self.assertRaisesRegex(ValueError, 'requires --prepare-script'):
+            qemu.run(argparse.Namespace(reboot_after_prepare=True, prepare_script=None))
+
     def test_source_identity(self):
         result = qemu.validate_source(self.source())
         self.assertEqual(result['members'], 1)

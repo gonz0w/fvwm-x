@@ -135,6 +135,37 @@ keeps large compiler bytes out of the 2 GiB evidence collection. Standard/core
 profiles still disable Go. Native SDK/affected client qualification does not
 repeat or relabel the earlier fresh-image PNG/package checkpoint.
 
+For an intermittent default-server failure, use server-only checks before
+attributing it to a client. `--server-only --repeat 8 --disposable-vm` needs
+no build directory and starts no WM or application fixture. Repetition accepts
+1–32 independent attempts with private authentication and separate evidence;
+any failed attempt fails the whole run, even if later attempts succeed.
+Cancellation stops repetition. Normal fixture modes still require their build
+directory and accept one invocation. Results record the failing phase, server
+status before/after teardown, installed executable/module hashes and OpenBSD's
+installed patch inventory. A stale vendor log is not copied as new evidence;
+authentication files and process cores are excluded.
+
+The OpenBSD comparison recipes below apply signed vendor updates only inside
+the runner's new disposable image. Preparation waits finitely for the system's
+kernel-reordering task; it does not bypass the task or syspatch's lock. Pair
+preparation with `--reboot-after-prepare`. The runner compares validated native
+`kern.boottime` identities and refuses an unchanged boot, failed request or
+expired boot deadline. Ordinary jobs retain their existing boot lifecycle.
+
+```sh
+python3 tools/maintenance/qemu_bsd.py --profile openbsd-amd64 \
+    --source-archive /tmp/reviewed-startup-source.tgz \
+    --prepare-script dev-docs/ci/bsd-prepare-x-startup.sh \
+    --run-script dev-docs/ci/bsd-run-x-startup.sh \
+    --reboot-after-prepare --openbsd-vga-test \
+    --cache builddir/ci-assets/cache --output builddir/x-startup-job
+```
+
+The archive must include the startup/QEMU tests, their helpers and asset pin
+files. These checks compare server startup and authentication; they do not
+qualify installed WM/client behavior or identify a crash's cause by themselves.
+
 Default-X startup probes are distinct from installed core/module/client
 qualification. Neither a boot nor a package-name check establishes the patched
 libpng baseline; current unverified 1.6.58 packages must fail configure. Host

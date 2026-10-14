@@ -6,7 +6,6 @@
 import argparse
 import gzip
 import hashlib
-import io
 import json
 import os
 import re
@@ -15,6 +14,7 @@ import stat
 import subprocess
 import sys
 import tarfile
+import tempfile
 
 from common import ROOT, fresh_output, source_file
 
@@ -26,6 +26,53 @@ DEPENDENCIES = ['x11', 'xrandr', 'xext', 'xft', 'fontconfig', 'xt', 'ice',
                 'xtrans', 'xkbcommon', 'libevent', 'libpng', 'librsvg-2.0',
                 'cairo', 'freetype2', 'fribidi', 'sm', 'xcursor', 'xfixes',
                 'xpm', 'xrender']
+
+
+def file_identity(path):
+    """Hash regular input with fixed-size reads, including large assets."""
+    digest = hashlib.sha256()
+    size = 0
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(128 * 1024), b''):
+            size += len(chunk)
+            digest.update(chunk)
+    return {'bytes': size, 'sha256': digest.hexdigest()}
+
+
+def go_metadata(root, name):
+    """Observe directive text; leave resolution/grammar checks to Go tooling."""
+    path = source_file(root, name)
+    result = {'path': name, **file_identity(path), 'directives': [],
+              'note': 'Text observation, not a resolved module graph or Go validation.'}
+    block = None
+    for line, text in enumerate(path.read_text().splitlines(), 1):
+        text = text.strip()
+        if not text or text.startswith('//'):
+            continue
+        if block:
+            if text.split('//', 1)[0].strip() == ')':
+                block = None
+            else:
+                result['directives'].append({'kind': block, 'text': text,
+                                             'line': line})
+            continue
+        match = re.match(r'^(module|go|toolchain|require|replace|exclude)\s+(.+)$', text)
+        if match:
+            kind, value = match.groups()
+            if value.split('//', 1)[0].strip() == '(':
+                block = kind
+            else:
+                result['directives'].append({'kind': kind, 'text': value,
+                                             'line': line})
+    if block:
+        result['unfinished_block'] = block
+    result['companions'] = []
+    for suffix in ('go.sum', 'vendor/modules.txt'):
+        companion = str(Path(name).parent / suffix)
+        if (root / companion).exists() or (root / companion).is_symlink():
+            result['companions'].append({'path': companion,
+                                         **file_identity(source_file(root, companion))})
+    return result
 
 
 def git(root, *args):
@@ -44,6 +91,7 @@ def maintenance_metadata(root):
             result['vendored']['cJSON'] = '.'.join(match.group(1) for match in numbers)
     gomod = root / 'bin/FvwmPrompt/go.mod'
     if gomod.is_file():
+        result['go_manifest'] = go_metadata(root, 'bin/FvwmPrompt/go.mod')
         result['vendored']['go_modules'] = dict(re.findall(
             r'^(?:\s*require\s+|\s*)([\w./-]+)\s+(v[0-9][^\s]+)', source_file(root, 'bin/FvwmPrompt/go.mod').read_text(), re.M))
     workflows = root / '.github/workflows'
@@ -78,17 +126,17 @@ def inventory(root, untracked=False, dependencies=False):
         if path.is_symlink():
             data = os.fsencode(os.readlink(path))
             kind = 'symlink'
+            identity = {'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
         elif stat.S_ISREG(info.st_mode):
             # Refuse parent-directory links before reading file data.
             if root not in path.resolve().parents:
                 raise ValueError(f'source escapes checkout: {name}')
-            data = path.read_bytes()
+            identity = file_identity(path)
             kind = 'file'
         else:
             raise ValueError(f'unsupported source type: {name}')
-        entries.append({'path': name, 'kind': kind, 'bytes': len(data),
-                        'mode': oct(stat.S_IMODE(info.st_mode)),
-                        'sha256': hashlib.sha256(data).hexdigest()})
+        entries.append({'path': name, 'kind': kind, **identity,
+                        'mode': oct(stat.S_IMODE(info.st_mode))})
     result = {'schema': 1, 'commit': git(root, 'rev-parse', 'HEAD').decode().strip(),
               'status': git(root, 'status', '--porcelain=v1', '-z').decode('utf-8', 'surrogateescape'),
               'files': entries,
@@ -96,9 +144,15 @@ def inventory(root, untracked=False, dependencies=False):
               'maintenance': maintenance_metadata(root)}
     if dependencies:
         result['pkg_config'] = {}
+        result['pkg_config_available'] = True
         for name in DEPENDENCIES:
-            check = subprocess.run(['pkg-config', '--modversion', name],
-                                   capture_output=True, text=True)
+            try:
+                check = subprocess.run(['pkg-config', '--modversion', name],
+                                       capture_output=True, text=True)
+            except FileNotFoundError:
+                result['pkg_config_available'] = False
+                result['pkg_config'] = {name: None for name in DEPENDENCIES}
+                break
             result['pkg_config'][name] = check.stdout.strip() if check.returncode == 0 else None
     return result
 
@@ -117,13 +171,19 @@ def safe_member(member):
 
 
 def archive(root, output, ref='HEAD', epoch=0, allow_dirty=False):
+    if epoch < 0:
+        raise ValueError('archive epoch must be nonnegative')
     if git(root, 'status', '--porcelain=v1', '-z') and not allow_dirty:
         raise ValueError('dirty checkout: commit a reviewed snapshot first; --allow-dirty is for development archives only')
     commit = git(root, 'rev-parse', '--verify', ref + '^{commit}').decode().strip()
-    raw = git(root, 'archive', '--format=tar', commit)
-    with fresh_output(output, root) as stage:
+    with fresh_output(output, root) as stage, tempfile.TemporaryFile() as raw:
+        # Git writes to disk, rather than retaining the complete tar in RAM.
+        # Check completion before opening it or publishing the fresh output.
+        subprocess.run(['git', '-C', str(root), 'archive', '--format=tar', commit],
+                       stdout=raw, check=True)
+        raw.seek(0)
         target = stage / 'source.tar.gz'
-        with tarfile.open(fileobj=io.BytesIO(raw), mode='r:') as source:
+        with tarfile.open(fileobj=raw, mode='r:') as source:
             with target.open('wb') as stream, gzip.GzipFile(filename='', fileobj=stream, mode='wb', mtime=0) as zipped:
                 with tarfile.open(fileobj=zipped, mode='w', format=tarfile.PAX_FORMAT) as dest:
                     for member in sorted(source.getmembers(), key=lambda item: item.name):
@@ -142,7 +202,7 @@ def archive(root, output, ref='HEAD', epoch=0, allow_dirty=False):
                         dest.addfile(member, source.extractfile(member) if member.isfile() else None)
         (stage / 'archive.json').write_text(json.dumps(
             {'schema': 1, 'commit': commit, 'epoch': epoch,
-             'sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
+             **file_identity(target),
              'excluded_top_level': sorted(EXCLUDE),
              'development_only': allow_dirty}, indent=2) + '\n')
 

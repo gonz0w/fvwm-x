@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Source-tool maintenance](VERIFICATION-2026-10-13-SOURCE-TOOLS.md): bounded file/archive memory, Go manifest provenance and explicit dependency-tool availability; affected six-target policy checks, with real-Git capability gaps retained.
+
 - [Owned QEMU BSD runner](VERIFICATION-2026-10-13-QEMU-PROVIDER.md): six-target affected Python policy/ownership, actual pinned boot/teardown and four authenticated default-X startup profiles; fresh dependency/build/install/native CI acceptance remains gated.
 
 - [CI fixed asset preflight](VERIFICATION-2026-10-13-CI-ASSETS.md): six-target private checked asset/cache materialization and finite acquisition; actual provider execution enforcement remains open.

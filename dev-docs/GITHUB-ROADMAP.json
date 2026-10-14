@@ -489,5 +489,21 @@
       "url": "https://github.com/gonz0w/fvwm-x/issues/81",
       "stage": 10
     }
+  ],
+  "subissues": [
+    {
+      "parent_tracker_id": "MAINT-02",
+      "number": 84,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/84",
+      "stage": 2,
+      "scope": "Source inventory/archive memory"
+    },
+    {
+      "parent_tracker_id": "MAINT-02",
+      "number": 85,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/85",
+      "stage": 2,
+      "scope": "Dependency manifest provenance"
+    }
   ]
 }

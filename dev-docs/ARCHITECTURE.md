@@ -69,7 +69,8 @@ this scope. Concrete entry points and dependency profiles remain queued.
 | Standalone xlock menu | [Go producer](../bin/FvwmPrompt/cmd/fvwmmenuxlock/main.go), [Perl fallback](../bin/fvwm-menu-xlock.in), [utility fixtures](../tests/test_utility_contracts.py), [probe checks](../tests/test_xlock_menu.py) | Go-enabled installs use a direct five-second/1 MiB xlock help probe, byte-based streaming formatting and escaped external label values. Existing CLI/menu actions remain; Go-disabled builds retain Perl. Meson owns a separate xlock-menu install tag. Other utility ports and runtime retirement have separate gates. |
 | Standalone directory menu | [Go producer](../bin/FvwmPrompt/cmd/fvwmmenudirectory/main.go), [renderer](../bin/FvwmPrompt/cmd/fvwmmenudirectory/render.go), [navigation state](../bin/FvwmPrompt/cmd/fvwmmenudirectory/state.go), [CLI/filesystem checks](../tests/test_directory_menu.py), [live navigation](../tests/live_x/directory_menu_live.py) | Optional Go utility caches entry metadata and format plans, preserves sorting/actions and bounds enumeration. Reuse navigation replaces shell writes with an owned atomic mode-0600 state helper; the existing plain-text state remains readable. All generated managed actions go through FVWM commands. Go-disabled retains Perl under the directory-menu install tag. |
 | Configuration converter | [Go CLI](../bin/FvwmPrompt/cmd/fvwmconvert26/main.go), [conversion policy](../bin/FvwmPrompt/cmd/fvwmconvert26/convert.go), [file ownership](../bin/FvwmPrompt/cmd/fvwmconvert26/files.go), [byte/filesystem fixtures](../tests/test_config_converter.py), [Perl fallback](../bin/fvwm-convert-2.6.in) | Optional standard-library utility preserves the historical conversion heuristics and literal Read search. It bounds source/logical-line/reference data, keeps function context within a conversion job and publishes complete mode-0600 outputs without replacing an existing path. It never executes configuration commands. Go-disabled retains Perl under the config-converter install tag. |
-| Full XDG menu service | [Go CLI/worker](../bin/FvwmPrompt/cmd/fvwmmenudesktop), [pure menu policy](../bin/FvwmPrompt/internal/xdgmenu), [acquisition/publication](../bin/FvwmPrompt/internal/xdgsource), [native Form](../modules/FvwmForm/FvwmForm.c), [CLI checks](../tests/test_xdg_desktop.py), [native-X checks](../tests/live_x/xdg_menu_live.py) | Coordinated optional Go candidate: bounded file merging, allocation, presentation, icon lookup/conversion and completed native menu output. Application actions reference private literal argv records; record locking/atomic union preserves existing menus. Native Form uses encoded fields, bounded command/input appends, per-invocation result identities and the existing local-command/core Read paths. Source/worker/X state remain separate; no new GUI library. Disabled-Go retains the [Python provider](../bin/fvwm-menu-desktop.in) and [Perl frontend](../bin/fvwm-menu-desktop-config.fpl). [Development](verification/DEVELOPMENT-2026-10-12-XDG-PROVIDER.md) passes focused checks; six-target/install/native-X qualification and later Perl retirement remain open, separate from the launcher/controller. |
+| Shared token lookup | [Parse.c](../libs/Parse.c), [Parse.h](../libs/Parse.h), [direct units](../tests/test_parse_token.c) | Standard bsearch callback over string pointers or records whose first member is a string pointer. Unsigned-byte ctype preserves valid token matching; Form, Animate and Event are the shipped consumers. The [XDG checkpoint](verification/VERIFICATION-2026-10-12-XDG-PORT.md) qualifies the real scoped callback correction and affected native installs. |
+| Full XDG menu service | [Go CLI/worker](../bin/FvwmPrompt/cmd/fvwmmenudesktop), [pure menu policy](../bin/FvwmPrompt/internal/xdgmenu), [acquisition/publication](../bin/FvwmPrompt/internal/xdgsource), [native Form](../modules/FvwmForm/FvwmForm.c), [CLI checks](../tests/test_xdg_desktop.py), [native-X checks](../tests/live_x/xdg_menu_live.py) | Coordinated optional Go service: bounded file merging, allocation, presentation, icon lookup/conversion and completed native menu output. Application actions reference private literal argv records; record locking/atomic union preserves existing menus. Native Form uses encoded fields, bounded command/input appends, per-invocation result identities and the existing local-command/core Read paths. Source/worker/X state remain separate; no new GUI library. Disabled-Go retains the [Python provider](../bin/fvwm-menu-desktop.in) and [Perl frontend](../bin/fvwm-menu-desktop-config.fpl). [Combined qualification](verification/VERIFICATION-2026-10-12-XDG-PORT.md) adopts the optional Go profile across six targets; disabled-Go predecessors and later Perl retirement remain separate from the launcher/controller. |
 | Script communication example | [Go helper](../bin/FvwmPrompt/cmd/fvwmscriptcom/main.go), [FIFO/CLI checks](../tests/test_script_com_example.py), [native widget interaction](../tests/live_x/script_com_example_live.py), [paired template](../modules/FvwmScript/Scripts/FvwmScript-ComExample.in) | Optional stdlib helper keeps count/Parse/exit framing, pins its user directory and owns private FIFO entries. Connected reads and reply delivery have finite deadlines; peer departure and signals clean up without terminating Script. The legacy Perl file stays installed for explicit interpreter invocations and Go-disabled templates. The script-com-example install tag owns the paired consumer/helper. |
 | Commands | [functions.c](../fvwm/functions.c), [functable.c](../fvwm/functable.c), [execcontext.c](../fvwm/execcontext.c), [read.c](../fvwm/read.c) | Shared parsing/expansion/execution and triggering context lifetime |
 | Window lifetime / stack | [add_window.c](../fvwm/add_window.c), [fvwm.h](../fvwm/fvwm.h), [stack.c](../fvwm/stack.c) | Managed records, XID identities, transient relationships and ordering |
@@ -604,13 +605,38 @@ service preserves the existing requestor/deadline and event queue.
 
 ## Native verification and protocol inventory — 2026-10-12
 
+CI-01's `tools/maintenance/ci_assets.py` owns checked materialization of the
+fixed release-asset lock into private independent files. `common.fresh_output`
+owns complete-directory publication; one acquisition subprocess owns the total
+download deadline. Cache bytes are opened relative to a pinned private directory
+and hashed from the descriptor copied to output. This helper does not execute downloaded inputs. The approved
+`tools/maintenance/qemu_bsd.py` owns four fixed BSD profiles, bounded private
+source/script snapshots, fresh disk expansion, loopback SSH, job-key rotation,
+scoped evidence and process/cancellation cleanup. `BOOT-PINS-2026-10-13.json`
+adds independently verified published bootstrap keys and ARM firmware. OpenBSD
+job storage uses `/home`; only the owned disposable image is changed. Its
+inactive candidate replaces the downloaded AnyVM runtime and mutable prepared
+cache path. Default-server/package and actual remote-CI qualification remain
+explicit gates; see [CI upkeep](ci/README.md).
+
+CI-01’s `tools/maintenance/ci_png.py` owns the approved fixed PNG tar payload,
+private native Linux/BSD build/upstream tests and core/SVG transitive loader receipts.
+`ci_assets.py` acquires the pinned release; `qemu_bsd.py --png-bootstrap`
+transfers its verified payload. CI recipes apply the environment only within
+the disposable job. System package installation and production policy remain
+separate from the private prefix.
+
 `tests/run_native_gate.sh` owns shared Linux/BSD setup, test and staged-install
 behavior; the platform wrappers retain their entry points. Linux sanitizer mode
 uses the same feature/dependency assertions and tests instrumented binaries.
 `tests/test_native_gate.py` checks orchestration failure/path/profile contracts.
 Its optional `--go-clients` profile delegates to `tests/run_go_clients.sh` for
-bounded transport/client tests, four tagged client/utility stages and Linux actual-client
-race checks. `tests/run_bsd_default_x.py` owns an isolated authenticated default
+bounded transport/client tests, seven tagged client/utility stages and Linux actual-client
+race checks. Meson producers and tests share one cache inside their own build
+directory; a non-installed build target also compiles test-only dependencies
+before the runtime gate. Vendored inputs and offline toolchain policy remain
+unchanged.
+`tests/run_bsd_default_x.py` owns an isolated authenticated default
 Xorg through the existing bounded harness; `_x11` receives authority access on
 OpenBSD. It checks a cookie-less client's refusal and reuses installed
 Command/Prompt fixtures. Its `--xlock-only` and `--directory-only` modes qualify the installed utilities
@@ -625,3 +651,12 @@ dispatch state. `ewmh_inventory_live.py` is an independent publication observer,
 with explicit required-clause findings rather than blanket conformance status.
 See the [affected checkpoint](verification/VERIFICATION-2026-10-12-COVERAGE-CI.md)
 and [32-row reconciliation](verification/RECONCILIATION-2026-10-12-STAGE3.md).
+
+## Local repository review — 2026-10-13
+
+`Makefile` and `tools/maintenance/check_repo.py` own portable foundation checks;
+existing native gate/QEMU recipes still own platform builds, X11 and installs.
+GitHub Actions is disabled; inherited workflow metadata is archived. The
+[GitHub workflow](GITHUB-WORKFLOW.md) and [stable issue index](GITHUB-ROADMAP.md)
+mirror tracker execution manually, with source-bound local evidence and signed
+PR review. These entry points do not establish unrun runtime/hardware acceptance.

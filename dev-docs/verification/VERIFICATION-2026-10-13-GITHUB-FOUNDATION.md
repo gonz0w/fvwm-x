@@ -1,7 +1,7 @@
 # GitHub foundation and local review — 2026-10-13
 
 Status: repository administration is configured; the versioned foundation awaits
-maintainer PR review. No release, deployment or broader native/hardware acceptance
+maintainer [PR #83](https://github.com/gonz0w/fvwm-x/pull/83) review. No release, deployment or broader native/hardware acceptance
 is claimed. The [hosting decision](../decisions/LOCAL-REVIEW-GITHUB-2026-10-13.md)
 retires remote-CI/workflow-adoption requirements without changing test evidence.
 

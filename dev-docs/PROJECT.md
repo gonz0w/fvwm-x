@@ -104,7 +104,7 @@ collide with current compatibility/Perl entries. Never import those IDs directly
 | v0.1/UI-01 through UI-06 | WM chrome/fonts/images/cursors/interaction scaling and resource keys. COMPAT-01 and IMAGE-01/DRAW-01/CACHE-01 retain the relevant contracts; MODULE-SCALE-01 audits bundled UI consumers. |
 | v0.1/GEO-01 through GEO-07 | Ownership, logical size, ICCCM constraints, drag anchor, work areas, restore/fullscreen and physical-pixel protocol. Existing geometry/interaction tests are retained; MONITOR-01 reconciles hotplug/reload, with INPUT-01 for lifetime/interaction changes. |
 | v0.1/MOD-01 through MOD-03 | Additive monitor/scale metadata and bundled module consumers. MODULE-SCALE-01 audits coverage before extending contracts, coordinated with IPC-02 and COMPAT-01. |
-| v0.1/TEST-01 through TEST-05 | Arithmetic/geometry policies, nested-X topology and client/compositor/build profiles. VERIFY-01/COMPAT-01 and SUPPORT.md own qualification; no archived claim closes remaining physical-GPU/toolkit/native-CI gaps. |
+| v0.1/TEST-01 through TEST-05 | Arithmetic/geometry policies, nested-X topology and client/compositor/build profiles. VERIFY-01/COMPAT-01 and SUPPORT.md own qualification; no archived claim closes remaining physical-GPU/toolkit/native-execution gaps. |
 
 Future ideas from the archived milestone remain candidates: per-application
 pixel preservation, scale percentages outside the supported buckets,

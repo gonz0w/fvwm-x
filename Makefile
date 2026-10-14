@@ -19,6 +19,7 @@ test:
 	python3 tests/test_ci_assets.py
 	python3 tests/test_qemu_bsd.py
 	python3 tests/test_ci_png.py
+	python3 tests/test_go_sdk_recipe.py
 
 verify: check lint test
 

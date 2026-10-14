@@ -285,17 +285,22 @@ endif
 # Perl is a required dependency, we generate shebangs at buildtime
 perl = find_program('perl', required: true)
 
+# Optional Go compiler policy; keep this block independent of native libraries.
 golang = find_program('go', required: get_option('golang'))
 if golang.found()
-    gover = run_command('go', 'version', check: true).stdout().split(' ')
-    gover = gover[2].replace('go', '')
-    if gover.version_compare('<1.21.0')
-        error(
-            '''A version of Go >= 1.21.0 is required to use the FVWM3 meson build Go modules.
-               Either disable Go for this build (`-Dgolang=disabled`) or upgrade Go to a version >= 1.21.0.''',
-        )
+    go_env = run_command(
+        'env', 'GOTOOLCHAIN=local', golang, 'env', 'GOVERSION', check: true,
+    )
+    go_policy = run_command(
+        py, files('tools/maintenance/go_version.py'),
+        go_env.stdout().strip(), check: false,
+    )
+    if go_policy.returncode() != 0
+        error(go_policy.stderr().strip())
     endif
+    gover = go_policy.stdout().strip()
 endif
+# End optional Go compiler policy.
 
 # Sed is used for substitution in several configure_file calls
 sed = find_program('sed', required: true)

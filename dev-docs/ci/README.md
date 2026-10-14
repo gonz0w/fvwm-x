@@ -112,12 +112,28 @@ recipe also runs default-X command, prompt, xlock, directory, Script helper and
 desktop-menu fixtures. System packages and production loader settings stay
 outside this bootstrap.
 
-In the local provider trials, OpenBSD's streamed Meson and Go packages ended
-early. Preparation now downloads those ordinary packages completely before
-`pkg_add` reads them, with finite file limits, gzip/tar integrity checks and normal
-package signature/dependency verification. It retains package bytes, SHA256 and members
-with the job evidence. This is the same official release package feed, with no
-trusted-package override or signature bypass.
+In the earlier provider trials, OpenBSD's streamed Meson and Go packages ended
+early. The Meson bootstrap still completes its ordinary signed package before
+`pkg_add` reads it, with finite file limits and archive integrity checks. The
+older Go package path is retired after approval of the patched compiler baseline.
+
+Go profiles now use [bsd-go-sdk.sh](bsd-go-sdk.sh) for official Go 1.27.2 SDKs
+on both BSD systems/architectures. Fixed archive sizes/SHA256 come from the
+[official Go download metadata](https://go.dev/dl/?mode=json), recorded with the
+owning dependency evidence. This is explicit verification preparation, not a
+configure/build-time fetch. The recipe accepts an optional existing regular
+archive for offline preparation, checks exact size/hash before extraction,
+refuses an existing SDK directory, and leaves system/earlier SDKs intact.
+Fresh acquisition has finite base-tool socket waits, three attempts and a file
+limit; the provider's overall preparation deadline still applies. No separate
+hard total-download deadline is claimed by this shell recipe.
+
+The job's `builddir-bsd-go-sdk` is outside the collected build trees. Its
+version, archive/compiler/license identities, license and local environment file
+are retained under `builddir-bsd`; the run recipe selects that same SDK. This
+keeps large compiler bytes out of the 2 GiB evidence collection. Standard/core
+profiles still disable Go. Native SDK/affected client qualification does not
+repeat or relabel the earlier fresh-image PNG/package checkpoint.
 
 Default-X startup probes are distinct from installed core/module/client
 qualification. Neither a boot nor a package-name check establishes the patched

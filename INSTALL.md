@@ -49,10 +49,18 @@ system in use.
 ## Optional dependencies
 
 * asciidoctor
-* golang (>= 1.21); enables FvwmPrompt, the Go FvwmCommand client and
-  fvwm-menu-xlock, fvwm-menu-directory, fvwm-convert-2.6, fvwm-menu-desktop
-  and the installed Script communication example helper. Go-disabled builds
-  retain the corresponding legacy utilities.
+* golang (stable 1.26.9 or newer in the 1.26 series, or stable 1.27.2 or
+  newer); enables FvwmPrompt, the Go FvwmCommand client and fvwm-menu-xlock,
+  fvwm-menu-directory, fvwm-convert-2.6, fvwm-menu-desktop and the installed
+  Script communication example helper. Go-disabled builds retain the
+  corresponding legacy utilities. An installed older/prerelease compiler is
+  refused even with the automatic feature selection: upgrade it or select
+  `-Dgolang=disabled`. An absent compiler remains optional. Configuration checks
+  the actual selected compiler with `GOTOOLCHAIN=local` and never downloads one.
+  The module's `go 1.21` directive preserves its source-language setting; it is
+  not the supported compiler baseline. See the [approved baseline](dev-docs/decisions/GO-TOOLCHAIN-BASELINE-PROPOSAL.md).
+  If BSD packages lag, use a checksum-verified official SDK in a private prefix
+  and put its `bin` directory first in `PATH`; system packages need not change.
 * libfreetype6-dev
 * libfribidi-dev
 * gettext runtime/development files and `msgfmt` (for NLS)

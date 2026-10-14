@@ -518,6 +518,20 @@
       "url": "https://github.com/gonz0w/fvwm-x/issues/89",
       "stage": 2,
       "scope": "Referenced documentation/evidence restoration and local file-link checks"
+    },
+    {
+      "parent_tracker_id": "LIB-03",
+      "number": 91,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/91",
+      "stage": 2,
+      "scope": "Target advisory reachability, unused dependency removal, patched optional compiler/SDK policy and offline/native qualification"
+    },
+    {
+      "parent_tracker_id": "LIB-07",
+      "number": 93,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/93",
+      "stage": 2,
+      "scope": "Intermittent OpenBSD AMD64 Xorg/VESA startup faults before clients"
     }
   ]
 }

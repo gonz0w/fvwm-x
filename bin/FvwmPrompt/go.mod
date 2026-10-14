@@ -5,7 +5,6 @@ go 1.21
 require (
 	github.com/ergochat/readline v0.1.3
 	github.com/fatih/color v1.13.0
-	github.com/sirupsen/logrus v1.9.4
 )
 
 require (

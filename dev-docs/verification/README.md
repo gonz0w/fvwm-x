@@ -1,5 +1,9 @@
 # Verification reports
 
+- [2026-10-14 patched optional Go compiler adoption](VERIFICATION-2026-10-14-GO-BASELINE.md).
+
+- [2026-10-14 optional Go dependency audit and vendor cleanup](VERIFICATION-2026-10-14-GO-DEPENDENCIES.md).
+
 - [Published developer documentation/evidence](VERIFICATION-2026-10-13-DOCUMENTATION-EVIDENCE.md): frozen referenced guides/decisions/reports restored with portable navigation and import hashes; 96 native Python link-policy passes, zero current local-link errors, runtime unchanged.
 
 - [Build reuse and PR batching](VERIFICATION-2026-10-13-BUILD-EFFICIENCY.md): exact option/source identity reuse, retained test prerequisites and no redundant install rebuild; 72 actual affected Meson/policy passes on six targets.

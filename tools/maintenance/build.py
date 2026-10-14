@@ -5,6 +5,7 @@
 """Meson wrapper with explicit installation and compatible ./build options."""
 import argparse
 import getopt
+import json
 import os
 from pathlib import Path
 import shlex
@@ -55,6 +56,41 @@ def legacy_arguments(argv):
     return translated
 
 
+def options_unchanged(args, builddir):
+    """Skip setup only for exact scalar matches in Meson's own option report."""
+    requested = {}
+    for definition in args.define:
+        name, separator, value = definition.partition('=')
+        if not separator or not name:
+            return False
+        requested[name] = value
+    if args.prefix:
+        requested['prefix'] = args.prefix
+    try:
+        info = json.loads((builddir / 'meson-info/meson-info.json').read_text())
+        directories = info['directories']
+        if (Path(directories['source']).resolve() != args.source.resolve() or
+                Path(directories['build']).resolve() != builddir or
+                info.get('error')):
+            return False
+        entries = json.loads((builddir / 'meson-info/intro-buildoptions.json').read_text())
+        current = {}
+        for entry in entries:
+            name = entry['name']
+            if entry.get('subproject'):
+                name = entry['subproject'] + ':' + name
+            value = entry['value']
+            if isinstance(value, bool):
+                current[name] = 'true' if value else 'false'
+            elif isinstance(value, (str, int)):
+                current[name] = str(value)
+    except (OSError, ValueError, KeyError, TypeError):
+        # Missing/old/malformed introspection must retain ordinary Meson setup.
+        return False
+    return all(name in current and current[name] == value
+               for name, value in requested.items())
+
+
 def plan(args):
     source = args.source.resolve()
     builddir = args.builddir.resolve()
@@ -64,7 +100,9 @@ def plan(args):
     if builddir.exists() and not configured and any(builddir.iterdir()):
         raise ValueError('build directory is nonempty and is not a Meson build')
     commands = []
-    if not configured or args.reconfigure or args.wipe or args.define or args.prefix:
+    options_changed = ((args.define or args.prefix) and
+                       not options_unchanged(args, builddir))
+    if not configured or args.reconfigure or args.wipe or options_changed:
         setup = [args.meson, 'setup']
         if configured:
             setup.append('--reconfigure')
@@ -78,10 +116,13 @@ def plan(args):
     commands.append([args.meson, 'compile', '-C', str(builddir),
                      '-j', str(args.jobs)])
     if args.test:
+        # Tests may depend on targets intentionally excluded from the default
+        # build (including Go test binaries); retain Meson's prerequisite step.
         commands.append([args.meson, 'test', '-C', str(builddir),
                          '--print-errorlogs'])
     if args.install:
-        commands.append([args.meson, 'install', '-C', str(builddir)])
+        commands.append([args.meson, 'install', '-C', str(builddir),
+                         '--no-rebuild'])
     return commands
 
 

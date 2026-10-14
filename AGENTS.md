@@ -77,6 +77,10 @@ instructions; retired GSD plans and graph data are historical references.
   Check platform-sensitive changes early on the affected target. Track focused
   passes separately from full qualification; compatibility approvals and required
   acceptance/release coverage remain unchanged.
+- Default to one PR per coherent checkpoint, usually three to five related
+  stories. Keep related implementation, tests, docs, evidence and review fixes
+  together. Reuse owner-controlled incremental builds per compiler/feature
+  profile; do not rebuild or run a full matrix solely because a PR is created.
 - Local macOS uses emulated Linux/BSD where appropriate. Native Linux ASan/UBSan
   execution is a separate qualification; emulated passes are not evidence of
   native execution. Run review, tests, lint and validation locally; do not add

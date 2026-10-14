@@ -54,6 +54,16 @@ needed to complete one ownership/behavior contract. Keep individual changes
 reviewable and track each story separately. Do not expand a batch into unrelated
 rewrites, or wait for the entire backlog before qualification.
 
+Use one PR for that coherent checkpoint, rather than one PR per story. Keep
+related code, tests, docs, tracker updates and evidence in the same PR; add
+related corrections to it while it is open. Split only for an independent
+contract, different ownership/dependencies, a configuration decision or a diff
+that cannot reasonably be reviewed together. A PR count is not a progress goal.
+Prepare docs and evidence before freezing the final candidate so routine upkeep
+does not create a separate follow-up PR. Record the final commit/tree in the PR
+and tested input identities in the report; reports need not embed their own
+commit hash. An already merged PR gets a new batch when further work is needed.
+
 | Stage | Checks and status |
 | --- | --- |
 | Each story | Compile affected targets in the existing Linux development environment; run affected policy tests and the relevant reproducer. Run focused nested-X checks for changed X behavior and scoped sanitizers when memory/lifetime changes warrant them. Record implementation and focused evidence; keep full qualification pending. |
@@ -75,6 +85,25 @@ profile and reuse incremental builds; do not clear caches, rebuild all modules,
 boot all guests or repeat the full matrix solely for a small local change.
 Serialize source sync, configure, build and test within each guest/build directory;
 parallel platform gates must use independent environments.
+
+Keep a stable build directory per owner, target, compiler and feature profile
+during development. Ninja tracks changed inputs; repeated identical scalar
+`./build -D` options now reuse Meson's configured options. Changed or unknown
+options, arrays and unavailable option metadata use ordinary Meson setup.
+`--reconfigure` and `-f` remain explicit refresh/wipe requests. Use fresh builds
+when changing compiler/ABI or when invalidation cannot be established; refresh
+dependency detection when dependency inputs change. The native qualification
+gate deliberately retains its dependency-cache refresh contract.
+
+Source synchronization must give changed files fresh modification times. Do
+not restore old archive timestamps over a reused source tree and expect Ninja
+to infer changes from file hashes. Preserve another owner's tree, logs and
+artifacts. The wrapper compiles default targets, and tests retain Meson's
+prerequisite build for targets excluded from that default (such as Go test
+binaries). Install uses `--no-rebuild` after compilation/testing, and failures
+still prevent installation. Full portable
+checks run once at the combined checkpoint. Docs/status-only corrections use
+repository/link/branch-diff checks and retain unchanged runtime evidence.
 
 ## Replacing the graph
 

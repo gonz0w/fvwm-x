@@ -1,0 +1,175 @@
+{
+  "base_commit": "867418c81d3620dd8ef945d40932413ef92da325",
+  "inputs": {
+    "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+    "tools/maintenance/build.py": "d9be2a18740b934af973cd1cf1ac398f5226d9c1150a9a6d40ab91d8a2af0ae0",
+    "tools/maintenance/tests/test_build_reuse.py": "bfdfd3906f83cd9920857b370f549440d12c790445b7424b4babd798fd9e6799"
+  },
+  "native": [
+    [
+      "fvwm-x-linux-arm64-svg",
+      0,
+      {
+        "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+        "machine": "aarch64",
+        "python": "3.12.3",
+        "meson": "/workspace/meson-env/bin/meson",
+        "cc": "/usr/bin/cc",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/build.py": "d9be2a18740b934af973cd1cf1ac398f5226d9c1150a9a6d40ab91d8a2af0ae0",
+          "tools/maintenance/tests/test_build_reuse.py": "bfdfd3906f83cd9920857b370f549440d12c790445b7424b4babd798fd9e6799"
+        },
+        "tests_run": 12,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 12
+      }
+    ],
+    [
+      "linux-amd64",
+      0,
+      {
+        "platform": "Linux-6.12.111+deb13-cloud-amd64-x86_64-with-glibc2.41",
+        "machine": "x86_64",
+        "python": "3.13.5",
+        "meson": "/usr/bin/meson",
+        "cc": "/usr/bin/cc",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/build.py": "d9be2a18740b934af973cd1cf1ac398f5226d9c1150a9a6d40ab91d8a2af0ae0",
+          "tools/maintenance/tests/test_build_reuse.py": "bfdfd3906f83cd9920857b370f549440d12c790445b7424b4babd798fd9e6799"
+        },
+        "tests_run": 12,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 12
+      }
+    ],
+    [
+      "freebsd-arm64",
+      0,
+      {
+        "platform": "FreeBSD-15.1-RELEASE-p4-arm64-aarch64-64bit-ELF",
+        "machine": "arm64",
+        "python": "3.12.14",
+        "meson": "/usr/local/bin/meson",
+        "cc": "/usr/bin/cc",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/build.py": "d9be2a18740b934af973cd1cf1ac398f5226d9c1150a9a6d40ab91d8a2af0ae0",
+          "tools/maintenance/tests/test_build_reuse.py": "bfdfd3906f83cd9920857b370f549440d12c790445b7424b4babd798fd9e6799"
+        },
+        "tests_run": 12,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 12
+      }
+    ],
+    [
+      "openbsd-arm64",
+      0,
+      {
+        "platform": "OpenBSD-7.9-arm64-aarch64-64bit-ELF",
+        "machine": "arm64",
+        "python": "3.13.13",
+        "meson": "/usr/local/bin/meson",
+        "cc": "/usr/bin/cc",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/build.py": "d9be2a18740b934af973cd1cf1ac398f5226d9c1150a9a6d40ab91d8a2af0ae0",
+          "tools/maintenance/tests/test_build_reuse.py": "bfdfd3906f83cd9920857b370f549440d12c790445b7424b4babd798fd9e6799"
+        },
+        "tests_run": 12,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 12
+      }
+    ],
+    [
+      "freebsd-amd64",
+      0,
+      {
+        "platform": "FreeBSD-15.1-RELEASE-p4-amd64-64bit-ELF",
+        "machine": "amd64",
+        "python": "3.12.14",
+        "meson": "/usr/local/bin/meson",
+        "cc": "/usr/bin/cc",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/build.py": "d9be2a18740b934af973cd1cf1ac398f5226d9c1150a9a6d40ab91d8a2af0ae0",
+          "tools/maintenance/tests/test_build_reuse.py": "bfdfd3906f83cd9920857b370f549440d12c790445b7424b4babd798fd9e6799"
+        },
+        "tests_run": 12,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 12
+      }
+    ],
+    [
+      "openbsd-amd64",
+      0,
+      {
+        "platform": "OpenBSD-7.9-amd64-64bit-ELF",
+        "machine": "amd64",
+        "python": "3.13.15",
+        "meson": "/usr/local/bin/meson",
+        "cc": "/usr/bin/cc",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/build.py": "d9be2a18740b934af973cd1cf1ac398f5226d9c1150a9a6d40ab91d8a2af0ae0",
+          "tools/maintenance/tests/test_build_reuse.py": "bfdfd3906f83cd9920857b370f549440d12c790445b7424b4babd798fd9e6799"
+        },
+        "tests_run": 12,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 12
+      }
+    ]
+  ],
+  "capabilities": [
+    [
+      "fvwm-x-linux-arm64-svg",
+      0,
+      "1.7.0\nusage: meson test [-h] [--maxfail MAXFAIL] [--repeat REPEAT] [--no-rebuild]\n  --no-rebuild                          Do not rebuild before running tests.\nusage: meson install [-h] [-C WD] [--no-rebuild] [--only-changed] [-q]\n  --no-rebuild                          Do not rebuild before installing.\n",
+      ""
+    ],
+    [
+      "linux-amd64",
+      0,
+      "1.7.0\nusage: meson test [-h] [--maxfail MAXFAIL] [--repeat REPEAT] [--no-rebuild]\n  --no-rebuild                          Do not rebuild before running tests.\nusage: meson install [-h] [-C WD] [--no-rebuild] [--only-changed] [-q]\n  --no-rebuild                          Do not rebuild before installing.\n",
+      ""
+    ],
+    [
+      "freebsd-arm64",
+      0,
+      "1.10.2\nusage: meson test [-h] [--maxfail MAXFAIL] [--repeat REPEAT] [--no-rebuild]\n  --no-rebuild                          Do not rebuild before running tests.\nusage: meson install [-h] [-C WD] [--no-rebuild] [--only-changed] [-q]\n  --no-rebuild                          Do not rebuild before installing.\n",
+      ""
+    ],
+    [
+      "openbsd-arm64",
+      0,
+      "1.10.2\nusage: meson test [-h] [--maxfail MAXFAIL] [--repeat REPEAT] [--no-rebuild]\n  --no-rebuild                          Do not rebuild before running tests.\nusage: meson install [-h] [-C WD] [--no-rebuild] [--only-changed] [-q]\n  --no-rebuild                          Do not rebuild before installing.\n",
+      ""
+    ],
+    [
+      "freebsd-amd64",
+      0,
+      "1.10.2\nusage: meson test [-h] [--maxfail MAXFAIL] [--repeat REPEAT] [--no-rebuild]\n  --no-rebuild                          Do not rebuild before running tests.\nusage: meson install [-h] [-C WD] [--no-rebuild] [--only-changed] [-q]\n  --no-rebuild                          Do not rebuild before installing.\n",
+      ""
+    ],
+    [
+      "openbsd-amd64",
+      0,
+      "1.10.2\nusage: meson test [-h] [--maxfail MAXFAIL] [--repeat REPEAT] [--no-rebuild]\n  --no-rebuild                          Do not rebuild before running tests.\nusage: meson install [-h] [-C WD] [--no-rebuild] [--only-changed] [-q]\n  --no-rebuild                          Do not rebuild before installing.\n",
+      ""
+    ]
+  ],
+  "scope": "Build wrapper and PR/checkpoint cadence; no runtime C/Go, configuration, dependency or native qualification-gate change."
+}

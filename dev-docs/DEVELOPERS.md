@@ -1,233 +1,129 @@
-<!--- IF THIS DOCUMENT IS UPDATED THEN ALSO UPDATE THE FVWM WEB REPO --->
+# Developing FVWM-X
 
-Developing for FVWM
-===================
+Use the [project tracker](PROJECT-TRACKER.md) for the next bounded change and
+current evidence. [PROJECT.md](PROJECT.md) records scope;
+[ARCHITECTURE.md](ARCHITECTURE.md) identifies subsystem owners. Archived
+upstream branch/release/parser instructions are history, not current policy.
 
-This document aims to help the developer with the expectations when dealing
-with the FVWM3 source code.
+## Change contract
 
-The FVWM3 source conforms to the [Linux kernel style guide](
-https://www.kernel.org/doc/html/latest/process/coding-style.html).
+Compatibility is limited to existing FVWM configuration files and their format.
+Keep supported names, arguments, bindings, functions and theme directives usable
+without requiring a configuration rewrite. Obtain a user decision only when a
+change breaks that contract or requires a configuration migration. Internal
+APIs/ABIs, module protocols, exact legacy rendering, incidental timing and error
+or allocation-failure handling do not need separate compatibility approval.
+Update shipped consumers, document changed behavior and run affected checks.
+This does not waive other explicit product, safety or verification requirements.
+See the [clarified scope](decisions/CONFIG-COMPATIBILITY-SCOPE-2026-10-07.md).
+Keep authoritative X/window state single-threaded and preserve event ordering.
+Bound external data, queues, callbacks and service work before use/allocation.
+Do not add a compositor, Wayland backend or mandatory desktop packages.
 
-Command Parsing
-===============
+The user-approved [runtime language migration](decisions/RUNTIME-GO-LUA-2026-10-06.md)
+selects Go for first-party Python/Perl runtime helper replacements and optional
+Go-hosted Lua for primitive policies/workflows. C retains native core/UI/resource
+ownership. Explicit retirement of FvwmPerl/perllib/Perl-specific APIs is the
+approved configuration exception; preserve unrelated configured FVWM/FvwmScript
+behavior and document exact migration impacts. Qualify ports before default/install
+switches and keep current hardening first. Python build/test tooling remains
+until its separate checkpoint; no interpreter has been removed by scoping.
 
-The internal representation of how fvwm3 parses commands in undergoing a
-rewrite.  [Some notes on how fvwm3 parses commands exists](PARSING.md).
+Follow [STANDARDS.md](STANDARDS.md) for adopted protocol/UI requirements. Record
+the specification section/revision, advertised behavior, owner and independent
+acceptance evidence for affected changes. Preserve required clauses and truthful
+capability reporting. [THEME-STANDARDS.md](THEME-STANDARDS.md) applies to generated
+assets and default native UI; web exports have their own HTML/accessibility gate.
+An existing atom, dependency or palette ratio is not complete conformance proof.
 
-Branch Workflows / Submitting Code Changes
-==========================================
+Read the affected source and tests before choosing an abstraction. Reuse local
+X contexts, existing policy/transport helpers and cache generations. Keep
+ownership explicit across callbacks, recursive commands, X window destruction
+and module death-row cleanup. A count/time budget cannot preempt a blocking
+handler; identify that limitation when changing scheduling.
 
-The main FVWM3 repository treats the `main` branch as stable, in that it's the
-branch which has the most tested code on it, and the branch from which releases
-are made.  Formal releases of FVWM3 are tagged, in the form `x.y.z`, historical
-versions of FVWM3 are tagged as `version-x_y_z`.  Untagged code may well
-accumulate on `main`, which will go to form the next release.
+## Coding conventions
 
-Other branches in the repository will reflect on-going development from core
-fvwm-workers.   As such, these branches are often in a state of flux, and likely
-to be rebased against other branches.  *NO* code should be based off topic
-branches, unless explicitly agreed with other developers, who might need to
-collaborate.
+- C is C11. Include generated `config.h` as the first non-comment line of each
+  implementation file. Use source-root-relative quoted headers where appropriate.
+- Follow `.clang-format` and `.editorconfig`: tabs in C/headers, 80-column
+  limit, opening braces on their own lines, LF and a final newline. Match
+  surrounding legacy code; avoid unrelated formatting churn.
+- New C helpers/files use descriptive lower snake case; file-private helpers
+  are `static`. Preserve compatibility-facing exported names and subsystem
+  prefixes. Reserve `F` filenames in `libs/` for wrappers/FVWM abstractions.
+- Use `void` for no-argument functions, `const` for read-only inputs, domain
+  result types and initialized output parameters. Keep state explicit rather
+  than introducing unprefixed globals. Preserve local Xlib Bool/Window conventions
+  and standard-C bool conventions in pure helpers.
+- Check arithmetic before allocation and indexing. Use project allocation and
+  diagnostic helpers where appropriate; clean up owned resources exactly once.
+  Recoverable errors return explicit status; do not silently swallow malformed
+  external input or add unconditional debug prints.
+- Follow four-space Meson indentation, gofmt for project Go, and established
+  Perl/Python style. New Perl uses strict/warnings. Treat vendored dependencies
+  as third-party source; preserve their licenses and formatting.
+- Preserve the GPL notice in new C implementations and scripts, not headers.
+  Comments explain invariants, ownership and non-obvious policy.
+- Define module packet changes with all producers/consumers together, including
+  installed Perl metadata. Never infer native packet layout is a portable
+  network format or bypass the shared command engine.
 
-### Branch naming
+## Build and verification
 
-Branch names are used to try and indicate the feature, and who is working on
-them.  So for example, a topic-branch will be named as:
+Follow [INSTALL.md](../INSTALL.md) for dependencies and supported options.
+The compatible `./build` entry point delegates to Python stdlib tooling;
+direct Meson use remains supported. Use an isolated build directory, especially
+while another thread owns a runtime batch. Do not wipe its build or VM state.
 
-`initials/rough-description-of-branch`
-
-For example:
-
-`ta/fix-clang-warnings`
-
-denotes that the branch is worked on by someone with the initials `TA` and that
-the branch is about fixing warnings from Clang.
-
-Sometimes, if more than one person is collaborating on a branch, the initials
-prefix might not be needed.
-
-### Submitting Pull-requests
-
-External contributions are always welcomed and encouraged.  If you're thinking
-of writing a new feature, it is worthwhile opening an issue against the `fvwm3`
-repository to discuss whether it's a good idea, and to check no one else is
-working on that feature.
-
-Those wishing to submit code/bug-fixes should:
-
-* [Fork the FVWM3-repository](https://github.com/fvwmorg/fvwm3#fork-destination-box)
-* Add the [FVWM3-repo](https://github.com/fvwmorg/fvwm3.git) as an upstream
-  remote:
-  * `git remote add fvwmorg https://github.com/fvwmorg/fvwm3.git &&
-    git fetch fvwmorg`
-* Create a topic-branch to house your work:
-  * `git switch -b initial/mybranch`
-  * [ hack, hack, hack... ] && commit
-* Rebase it against `fvwmorg/main`:
-  * `git fetch && git rebase -i fvwmorg/main`
-* Push the latest changes to your fork:
-  * If you've never pushed this branch before:  `git push -u origin HEAD`
-  * Or, if updating an existing branch: `git push origin -f`
-* Open a pull-request
-
-### Protected branches and the use of Github Actions
-
-Pull-requests made will result in the use of Github Actions being run against the
-branch.  This builds the copy of the pushed code in a Debian environment, with
-all the additional libraries FVWM could use, loaded in.  If a build fails this
-check, it is recommend to fix this by rebasing the commits with the additional
-fixes
-
-The FVWM3 repository also treats the `main` branch as protected.  This is a
-[GitHub feature](https://help.github.com/articles/about-protected-branches/)
-which means the `main` branch in this case cannot have changes merged into it
-until Github Actions has verified the builds do not fail.
-
-This has merit since not every developer will be using the same operating
-systems (Linux versus BSD for instance), and that `main` is meant to try and
-be as release-worthy as can be.
-
-**NOTE**:  This means that no work can be committed to `main` directly.  ALL
-work that needs to appear on `main`---including the release
-process---**MUST** go via a separate topic-branch, with a PR (pull-request).
-Not even fvwmorg owners are an exception to this.
-
-### Merging changes / Pull Requests
-
-The history of `main` should be as linear as possible, therefore when
-merging changes to it the branch(es) in question should be rebased against
-main first of all.  This will stop a merge commit from happening.
-
-If using github this process is easy, since the `Merge pull request` button
-has an option to `Rebase and Merge`.  This is what should be used.  See also
-[the documentation on Github](https://github.com/blog/2243-rebase-and-merge-pull-requests)
-
-If this is manual (which will only work when the Github Actions checks have
-passed), then:
-
-```
-git checkout topic/branch
-git fetch --all
-git rebase -i origin/main
-git checkout main
-git merge topic/branch
-git push
-```
-Conventions
-===========
-
-The following tries to list all the conventions that the fvwm developers
-adhere to, either by consensus through discussion, common practice or unspoken
-agreement.  It is hopefully useful for the fvwm development newbie.
-
-Programming Languages
---------------------
-
- The following programming languages are allowed:
-
-- ANSI C
-- Perl
-- Portable /bin/sh scripts for examples.
-
-Editorconfig
-------------
-
-At the top-level of the `fvwm3` git repo, is a [.editorconfig](../.editorconfig)
-file which sets some options which can be used across different editors.  See
-the [editorconfig webpage](https://editorconfig.org/) for more information and
-to see whether your editor is supported.
-
-New Code Files
---------------
-
-- All .c files *must* have
-
-```
-#include "config.h"
+```sh
+./build -b builddir-local --test
+./build -b builddir-man -m --test
 ```
 
-as the first non-comment line.
+These commands use the documented wrapper; they do not install unless `-i`
+is supplied. PNG-enabled builds must follow the audited dependency/backport
+policy in INSTALL.md; an option is not proof of a vendor patch.
 
-File Names
-----------
+Pure policy needs native unit tests; X-visible changes need nested-X integration
+on native Linux and the relevant [six-target matrix](SUPPORT.md). Local macOS
+uses emulated Linux/BSD verification where appropriate. Native Linux ASan/UBSan
+CI remains separate; configured workflows or emulated passes are not that result.
+Use [BSD.md](BSD.md) for the BSD harness. Run appropriate tests once, then broaden
+when failures, new changes or unresolved concerns justify it.
+Use the [batch cadence](WORKFLOW.md#implementation-batches-and-test-cadence):
+focused checks per related story, affected-platform checks when needed, then one
+extensive qualification pass for the combined checkpoint. A story may be
+implemented and locally checked while full matrix qualification remains pending.
 
-- The names of the code files in the fvwm directory are in lower case.
-- Files in the libs directory may begin with a capital 'F'.  This letter is
-  reserved for wrapper files for third party libraries or modules.  For
-  example, FShape is an abstraction of the XShape X server extension and FBidi
-  is a wrapper for the fribidi library.  Do not use the 'F' for other
-  purposes.
+Record source/profile scope, actual checks, retained failures and remaining gaps
+in a dated [verification report](verification/README.md). Do not mark audit,
+candidate tooling, native CI, physical hardware or third-party themes complete
+without the corresponding evidence.
 
-Copyright Notices
------------------
+## Documentation and handoff
 
-- A copy of the GPL should be at the beginning of all code files (.c) and
-  scripts, but not at the beginning of header files (.h).
+Document every user-visible feature and option in the relevant AsciiDoc manual
+under `doc/`. [DOCUMENTATION.md](DOCUMENTATION.md) defines man-page quality and
+optional HTML output. Update the architecture map only when its ownership or
+entry points change; add a decision record for an accepted cross-cutting contract.
 
-Maintaining Man Pages
----------------------
+Use `codex/` for newly requested development branches unless the user specifies
+otherwise. Keep commits/review changes bounded and descriptions focused on the
+problem, final behavior and validation. Publishing/release destinations and
+credentials are distinct from build/test work; inherited upstream workflows
+do not establish FVWM-X publication ownership.
 
-- Every feature must be described with all options in the man page.  Man pages
-  are generated via Asciidoctor from files in `doc/`
+The [workflow](WORKFLOW.md) replaces GSD phase automation and the stale graph.
+It does not require a plugin, generated graph, or reading every document before
+a small edit.
 
-Creating a release
-==================
+## Local review and GitHub hosting
 
-Releases are created entirely automatically from Github Actions.
-
-The `.github/workflows/release.yml` contains the code which underpins this.
-
-To create an actual release, means going to the following:
-
-https://github.com/fvwmorg/fvwm3/actions/workflows/release.yml
-
-The branch defaults to `main` which is where we want to generate the release
-from. Don't change this.
-
-The input will ask for the next version fvwm3 will be after release.  For
-instance, if the current version is `1.1.3`, then the correct input to use is
-`1.1.4`.
-
-If you want to find the current release fvwm3 is at, see the
-`.current-release` file.
-
-**Unfortunately there is no way of programatically showing the current version,
-so this needs to be looked up manually before confirming the new versioon
-befpre running this workflow.**
-
-There's a second input, defaulting to "false", asking whether the release
-should be published as a draft or not.  Generally, this shouldn't need to be
-set to `true` -- but it's left in as a means of allowing the person doing the
-release some degree of flexibility.
-
-Note that the act of publishing a release -- whether it's a draft or not, will
-still tag the release and bump `fvwm3` to the next version,.  This is also by
-design.
-
-If a release has to be re-rolled, then it is up to the person doing that
-release to delete it and recreate it, perhaps via the following commands:
-
-```
-git tag -d <TAG_OF_RELEASE> ; git push origin --delete <TAG_OF_RELEASE>
-```
-
-The specific release of `<TAG_OF_RELEASE>` would also have to be removed.
-This can be done directly on GitHub, or via the `gh` client:
-
-```
-gh release delete <TAG_OF_RELEASE>
-```
-
-Updating fvwm-web
-=================
-
-1.  Ensure you've a checkout of the repository:
-
-    ```
-    git clone git@github.com:fvwmorg/fvwmorg.github.io.git
-    ```
-2.  Update the `RELEASE` variable in `Makefile` to the desired version which
-    has been released.
-3.  Run `make`.  This will update all relevant files.
-4.  `git commit -a` the result, and push it out.
+GitHub hosts `gonz0w/fvwm-x`, its roadmap issues and PR review. All checks run
+locally; Actions and remote status publishers are disabled. Follow
+[CONTRIBUTING.md](../CONTRIBUTING.md) for the quick foundation check and affected
+native gates. `make verify` is not full runtime/platform acceptance. Keep the
+brief README status current and preserve failed/skipped evidence. The tracker
+remains authoritative for scope and execution; mirror issue/Project state
+manually. See the [hosting decision](decisions/LOCAL-REVIEW-GITHUB-2026-10-13.md).

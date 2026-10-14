@@ -1,0 +1,7 @@
+#!/bin/sh
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or any later version.
+set -eu
+git diff --cached --check
+python3 tools/maintenance/check_repo.py

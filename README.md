@@ -17,8 +17,8 @@ qualification and release acceptance remain open. This is not a stable release.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)
-- [Roadmap issues](https://github.com/gonz0w/fvwm-x/issues)
-- [Development guide](dev-docs/DEVELOPERS.md)
+- [Roadmap and review board](https://github.com/users/gonz0w/projects/6)
+- [Contribute and validate locally](CONTRIBUTING.md)
 
 Review, tests, lint and validation run locally. GitHub hosts code, issues and
 PR review; GitHub Actions is disabled. Preserve original failed evidence and

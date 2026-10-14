@@ -1,0 +1,136 @@
+{
+  "base": "553ce61aa3e1b3e506e256397f158bb530235b75",
+  "inputs": {
+    "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+    "tools/maintenance/repository_links.py": "eedab8aa96eda56a0737c991d3c738a2c9c486aac7a7c816d3c197bddc5287c2",
+    "tools/maintenance/tests/test_repository_links.py": "b3f0b7c0bd5d50f994b7546b5ed1e80486d7d8026ebf3dd53558c75654235d5b"
+  },
+  "native": [
+    [
+      "fvwm-x-linux-arm64-svg",
+      0,
+      {
+        "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+        "machine": "aarch64",
+        "python": "3.12.3",
+        "git": "/usr/bin/git",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/repository_links.py": "eedab8aa96eda56a0737c991d3c738a2c9c486aac7a7c816d3c197bddc5287c2",
+          "tools/maintenance/tests/test_repository_links.py": "b3f0b7c0bd5d50f994b7546b5ed1e80486d7d8026ebf3dd53558c75654235d5b"
+        },
+        "tests_run": 16,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 16
+      }
+    ],
+    [
+      "linux-amd64",
+      0,
+      {
+        "platform": "Linux-6.12.111+deb13-cloud-amd64-x86_64-with-glibc2.41",
+        "machine": "x86_64",
+        "python": "3.13.5",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/repository_links.py": "eedab8aa96eda56a0737c991d3c738a2c9c486aac7a7c816d3c197bddc5287c2",
+          "tools/maintenance/tests/test_repository_links.py": "b3f0b7c0bd5d50f994b7546b5ed1e80486d7d8026ebf3dd53558c75654235d5b"
+        },
+        "tests_run": 16,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 16
+      }
+    ],
+    [
+      "freebsd-arm64",
+      0,
+      {
+        "platform": "FreeBSD-15.1-RELEASE-p4-arm64-aarch64-64bit-ELF",
+        "machine": "arm64",
+        "python": "3.12.14",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/repository_links.py": "eedab8aa96eda56a0737c991d3c738a2c9c486aac7a7c816d3c197bddc5287c2",
+          "tools/maintenance/tests/test_repository_links.py": "b3f0b7c0bd5d50f994b7546b5ed1e80486d7d8026ebf3dd53558c75654235d5b"
+        },
+        "tests_run": 16,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 16
+      }
+    ],
+    [
+      "openbsd-arm64",
+      0,
+      {
+        "platform": "OpenBSD-7.9-arm64-aarch64-64bit-ELF",
+        "machine": "arm64",
+        "python": "3.13.13",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/repository_links.py": "eedab8aa96eda56a0737c991d3c738a2c9c486aac7a7c816d3c197bddc5287c2",
+          "tools/maintenance/tests/test_repository_links.py": "b3f0b7c0bd5d50f994b7546b5ed1e80486d7d8026ebf3dd53558c75654235d5b"
+        },
+        "tests_run": 16,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 16
+      }
+    ],
+    [
+      "freebsd-amd64",
+      0,
+      {
+        "platform": "FreeBSD-15.1-RELEASE-p4-amd64-64bit-ELF",
+        "machine": "amd64",
+        "python": "3.12.14",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/repository_links.py": "eedab8aa96eda56a0737c991d3c738a2c9c486aac7a7c816d3c197bddc5287c2",
+          "tools/maintenance/tests/test_repository_links.py": "b3f0b7c0bd5d50f994b7546b5ed1e80486d7d8026ebf3dd53558c75654235d5b"
+        },
+        "tests_run": 16,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 16
+      }
+    ],
+    [
+      "openbsd-amd64",
+      0,
+      {
+        "platform": "OpenBSD-7.9-amd64-64bit-ELF",
+        "machine": "amd64",
+        "python": "3.13.15",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/repository_links.py": "eedab8aa96eda56a0737c991d3c738a2c9c486aac7a7c816d3c197bddc5287c2",
+          "tools/maintenance/tests/test_repository_links.py": "b3f0b7c0bd5d50f994b7546b5ed1e80486d7d8026ebf3dd53558c75654235d5b"
+        },
+        "tests_run": 16,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 16
+      }
+    ]
+  ],
+  "document_scope_count_before_report": 269,
+  "imported_original_documents": 370,
+  "archived_documents": 138,
+  "original_documents_archive_sha256": "d4bb98b9ec6b3bccbcf699c8e9a7522fae76b7264c468106a7fcc44c1c7a331b",
+  "current_local_link_errors": 0,
+  "scope": "Developer documentation and offline link policy only; dated reports not recertified; runtime/source/build/defaults unchanged."
+}

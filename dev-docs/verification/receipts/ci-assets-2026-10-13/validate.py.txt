@@ -1,0 +1,45 @@
+from pathlib import Path
+import hashlib,json,stat,tarfile
+ROOT=Path('/Users/cam/DEV/fvwm3');WORK=Path(__file__).resolve().parent
+m=json.loads((WORK/'source.json').read_text());digest=m['archive_sha256']
+rows=[]
+for p in sorted(WORK.glob('*-evidence.tgz')):
+ with tarfile.open(p) as archive:
+  source=archive.extractfile('source.tgz').read()
+  assert hashlib.sha256(source).hexdigest()==digest,p
+  import io
+  with tarfile.open(fileobj=io.BytesIO(source)) as nested:
+   assert sorted(nested.getnames())==sorted(row['path'] for row in m['files'])
+   for row in m['files']:
+    item=nested.getmember(row['path']);assert item.isfile()
+    assert hashlib.sha256(nested.extractfile(item).read()).hexdigest()==row['sha256']
+    assert oct(item.mode & 0o777)==row['mode']
+  platform=json.loads(archive.extractfile('platform.json').read())
+  assert platform['source_sha256']==digest
+  log=archive.extractfile('test.log').read().decode()
+  assert '\nRan 23 tests in ' in log and log.rstrip().endswith('OK')
+  assert log.count(' ... ok\n')==23 and 'FAILED' not in log
+  rows.append(dict(target=p.name.removesuffix('-evidence.tgz'),platform=platform,tests=23,evidence_sha256=hashlib.sha256(p.read_bytes()).hexdigest()))
+assert len(rows)==6
+assert sum(r['tests'] for r in rows)==138
+for row in m['files']:
+ p=ROOT/row['path'];assert hashlib.sha256(p.read_bytes()).hexdigest()==row['sha256'];assert oct(p.stat().st_mode & 0o777)==row['mode']
+assert m['meson_registration'] in (ROOT/'tests/meson.build').read_text()
+a=json.loads((WORK/'downloaded/manifest.json').read_text());b=json.loads((WORK/'offline/manifest.json').read_text())
+assert a['lock_sha256']==b['lock_sha256']==hashlib.sha256((ROOT/'dev-docs/ci/ASSET-PINS-2026-10-12.json').read_bytes()).hexdigest()
+assert len(a['assets'])==len(b['assets'])==13
+for first,second in zip(a['assets'],b['assets']):
+ assert {k:v for k,v in first.items() if k!='origin'}=={k:v for k,v in second.items() if k!='origin'}
+ assert first['origin']=='verified-download' and second['origin']=='verified-cache'
+ for directory in ('downloaded','offline'):
+  p=WORK/directory/first['name'];hasher=hashlib.sha256()
+  with p.open('rb') as stream:
+   for chunk in iter(lambda:stream.read(1024*1024),b''):hasher.update(chunk)
+  assert p.stat().st_size==first['size'] and hasher.hexdigest()==first['sha256']
+  assert stat.S_IMODE(p.stat().st_mode)==0o600
+ assert (WORK/'downloaded'/first['name']).stat().st_ino!=(WORK/'offline'/first['name']).stat().st_ino
+ p=WORK/'download-cache'/first['sha256'];assert p.stat().st_nlink==1 and stat.S_IMODE(p.stat().st_mode)==0o600
+ assert p.stat().st_ino!=(WORK/'downloaded'/first['name']).stat().st_ino
+result={'status':'affected local checkpoint passed; provider integration and native CI not qualified','source_sha256':digest,'targets':rows,'native_test_executions':138,'distinct_tests':23,'downloaded_assets':13,'verified_cache_assets':13,'each_asset_set_bytes':sum(a['size'] for a in a['assets']),'this_batch_changes_wm_runtime_sources':False}
+(WORK/'acceptance.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k!='targets'},indent=2))

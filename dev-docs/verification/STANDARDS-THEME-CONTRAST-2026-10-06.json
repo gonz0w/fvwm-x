@@ -1,0 +1,2209 @@
+{
+  "date": "2026-10-06",
+  "scope": "command-capture opaque sRGB contrast; modeled translucency, no native qualification",
+  "source_sha256": {
+    "default-config/palettes.json": "1ec9c29cb3028bf72051a2885b8febd341584bd4e18428f5e5dafae2c72c7e31",
+    "default-config/config": "557a8eb0e6e533a77a88db5b9b7b38f630502d2ad23daa605616a78a8f87b26a",
+    "default-config/desktop.py": "931c6cdeab32292cef2ed3bd6f1cbd2b69920539541a0e93f1a65a8fa2646efa",
+    "default-config/generate_icons.py": "37d156e9b89dc6abb00be2cd6cacd8674812d5b54ab28dd1970f41ab92cec199",
+    "default-config/appearance.fvwm": "46d1836f0f39f55b751771b1e8c475837aa3ee430e5aa1a8adf0a84f0d83a18f",
+    "default-config/session.fvwm": "befeb3c7f54922d119011bd35017d902076f4ae4f63d14752b454ca85bc38a33",
+    "default-config/desktop.fvwm": "6e9d54c69ab4b50efe2b0ddc499258c8b1d9898825cb102e2f74fcf9733b0bc2",
+    "default-config/bar.fvwm": "9a5d9818dd51c701cb8f5f379d09b402bbeffe379cec9e73b5614cb759e6a567",
+    "default-config/density-comfortable.fvwm": "01e29c644c047c873123cd6c8eea8328ee10f0b565e15948366af9dbc983f97b",
+    "default-config/density-compact.fvwm": "ab1b2d4cabef95fdabb0f3decdb8fe7a7dac7b6671416872cb4ea6f130ea94c7",
+    "default-config/SlateLauncher": "65b72b813a3c9fad3a5592995299920e230a682d32d4d18d4cdb6f9ea5ac6f98",
+    "contrib/compositors/slate-picom.conf": "96b212e25280435c8eff12bb7b54ac05c95c7506c17e651d1e5205632bd2ea95"
+  },
+  "palette_results": [
+    {
+      "palette": "slate",
+      "mode": "dark",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#e5edf0",
+          "bg": "#202a31",
+          "ratio": 12.320203839524467
+        },
+        {
+          "colorset": 1,
+          "fg": "#a8b6be",
+          "bg": "#202a31",
+          "ratio": 7.028552400017397
+        },
+        {
+          "colorset": 2,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 5,
+          "fg": "#e5edf0",
+          "bg": "#202a31",
+          "ratio": 12.320203839524467
+        },
+        {
+          "colorset": 6,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 7,
+          "fg": "#a8b6be",
+          "bg": "#202a31",
+          "ratio": 7.028552400017397
+        },
+        {
+          "colorset": 8,
+          "fg": "#63b7bb",
+          "bg": "#202a31",
+          "ratio": 6.278219903965391
+        },
+        {
+          "colorset": 10,
+          "fg": "#e5edf0",
+          "bg": "#202a31",
+          "ratio": 12.320203839524467
+        },
+        {
+          "colorset": 11,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 12,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 13,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 14,
+          "fg": "#a8b6be",
+          "bg": "#202a31",
+          "ratio": 7.028552400017397
+        },
+        {
+          "colorset": 15,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 16,
+          "fg": "#adbac2",
+          "bg": "#26343d",
+          "ratio": 6.446954047761271
+        },
+        {
+          "colorset": 17,
+          "fg": "#e9bf72",
+          "bg": "#202a31",
+          "ratio": 8.462381631665366
+        },
+        {
+          "colorset": 18,
+          "fg": "#f28b86",
+          "bg": "#202a31",
+          "ratio": 6.132945092872036
+        },
+        {
+          "colorset": 19,
+          "fg": "#a3d7ad",
+          "bg": "#202a31",
+          "ratio": 8.964053681230252
+        },
+        {
+          "colorset": 21,
+          "fg": "#122128",
+          "bg": "#76c0c3",
+          "ratio": 7.926973540707801
+        },
+        {
+          "colorset": 22,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 30,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 34,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 31,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 35,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 32,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 36,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 33,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 37,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 40,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 47,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 54,
+          "fg": "#122128",
+          "bg": "#76c0c3",
+          "ratio": 7.926973540707801
+        },
+        {
+          "colorset": 41,
+          "fg": "#a8b6be",
+          "bg": "#26343d",
+          "ratio": 6.154612328182778
+        },
+        {
+          "colorset": 48,
+          "fg": "#a8b6be",
+          "bg": "#26343d",
+          "ratio": 6.154612328182778
+        },
+        {
+          "colorset": 55,
+          "fg": "#a8b6be",
+          "bg": "#26343d",
+          "ratio": 6.154612328182778
+        }
+      ],
+      "base_text_min": 6.132945092872036,
+      "session_disabled": 6.154612328182778,
+      "focus_accent_raised": 5.4975772279783035,
+      "decorative_border_surface": 2.4101323555381122,
+      "menu_model_min": 5.233563327626448,
+      "bar_model_min": 8.434787647073136
+    },
+    {
+      "palette": "slate",
+      "mode": "light",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#25343d",
+          "bg": "#f6f8f8",
+          "ratio": 12.033020063231737
+        },
+        {
+          "colorset": 1,
+          "fg": "#596974",
+          "bg": "#f6f8f8",
+          "ratio": 5.328061517721497
+        },
+        {
+          "colorset": 2,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 5,
+          "fg": "#25343d",
+          "bg": "#f6f8f8",
+          "ratio": 12.033020063231737
+        },
+        {
+          "colorset": 6,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 7,
+          "fg": "#596974",
+          "bg": "#f6f8f8",
+          "ratio": 5.328061517721497
+        },
+        {
+          "colorset": 8,
+          "fg": "#276e73",
+          "bg": "#f6f8f8",
+          "ratio": 5.527464393864069
+        },
+        {
+          "colorset": 10,
+          "fg": "#25343d",
+          "bg": "#f6f8f8",
+          "ratio": 12.033020063231737
+        },
+        {
+          "colorset": 11,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 12,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 13,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 14,
+          "fg": "#596974",
+          "bg": "#f6f8f8",
+          "ratio": 5.328061517721497
+        },
+        {
+          "colorset": 15,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 16,
+          "fg": "#54636d",
+          "bg": "#e5eef0",
+          "ratio": 5.268156511452046
+        },
+        {
+          "colorset": 17,
+          "fg": "#805411",
+          "bg": "#f6f8f8",
+          "ratio": 6.168003496768298
+        },
+        {
+          "colorset": 18,
+          "fg": "#a63232",
+          "bg": "#f6f8f8",
+          "ratio": 6.3069463362269405
+        },
+        {
+          "colorset": 19,
+          "fg": "#2e6b40",
+          "bg": "#f6f8f8",
+          "ratio": 5.982179347602565
+        },
+        {
+          "colorset": 21,
+          "fg": "#ffffff",
+          "bg": "#226165",
+          "ratio": 7.080693982664956
+        },
+        {
+          "colorset": 22,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 30,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 34,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 31,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 35,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 32,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 36,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 33,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 37,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 40,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 47,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 54,
+          "fg": "#ffffff",
+          "bg": "#226165",
+          "ratio": 7.080693982664956
+        },
+        {
+          "colorset": 41,
+          "fg": "#596974",
+          "bg": "#e5eef0",
+          "ratio": 4.819265884551968
+        },
+        {
+          "colorset": 48,
+          "fg": "#596974",
+          "bg": "#e5eef0",
+          "ratio": 4.819265884551968
+        },
+        {
+          "colorset": 55,
+          "fg": "#596974",
+          "bg": "#e5eef0",
+          "ratio": 4.819265884551968
+        }
+      ],
+      "base_text_min": 5.268156511452046,
+      "session_disabled": 4.819265884551968,
+      "focus_accent_raised": 4.9996270675223915,
+      "decorative_border_surface": 2.5904152115807975,
+      "menu_model_min": 4.665997507866587,
+      "bar_model_min": 9.163455362440912
+    },
+    {
+      "palette": "dune",
+      "mode": "dark",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#f0e9de",
+          "bg": "#2b2825",
+          "ratio": 12.153537967982121
+        },
+        {
+          "colorset": 1,
+          "fg": "#bdb1a5",
+          "bg": "#2b2825",
+          "ratio": 6.975782135628268
+        },
+        {
+          "colorset": 2,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 5,
+          "fg": "#f0e9de",
+          "bg": "#2b2825",
+          "ratio": 12.153537967982121
+        },
+        {
+          "colorset": 6,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 7,
+          "fg": "#bdb1a5",
+          "bg": "#2b2825",
+          "ratio": 6.975782135628268
+        },
+        {
+          "colorset": 8,
+          "fg": "#d0a17e",
+          "bg": "#2b2825",
+          "ratio": 6.337417991621977
+        },
+        {
+          "colorset": 10,
+          "fg": "#f0e9de",
+          "bg": "#2b2825",
+          "ratio": 12.153537967982121
+        },
+        {
+          "colorset": 11,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 12,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 13,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 14,
+          "fg": "#bdb1a5",
+          "bg": "#2b2825",
+          "ratio": 6.975782135628268
+        },
+        {
+          "colorset": 15,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 16,
+          "fg": "#c1b6aa",
+          "bg": "#37312d",
+          "ratio": 6.427619813067592
+        },
+        {
+          "colorset": 17,
+          "fg": "#e9bf72",
+          "bg": "#2b2825",
+          "ratio": 8.486015071588847
+        },
+        {
+          "colorset": 18,
+          "fg": "#f28b86",
+          "bg": "#2b2825",
+          "ratio": 6.150072964872517
+        },
+        {
+          "colorset": 19,
+          "fg": "#a3d7ad",
+          "bg": "#2b2825",
+          "ratio": 8.989088173098768
+        },
+        {
+          "colorset": 21,
+          "fg": "#27201c",
+          "bg": "#d6ac8d",
+          "ratio": 7.746294370451208
+        },
+        {
+          "colorset": 22,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 30,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 34,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 31,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 35,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 32,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 36,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 33,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 37,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 40,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 47,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 54,
+          "fg": "#27201c",
+          "bg": "#d6ac8d",
+          "ratio": 7.746294370451208
+        },
+        {
+          "colorset": 41,
+          "fg": "#bdb1a5",
+          "bg": "#37312d",
+          "ratio": 6.096341555310066
+        },
+        {
+          "colorset": 48,
+          "fg": "#bdb1a5",
+          "bg": "#37312d",
+          "ratio": 6.096341555310066
+        },
+        {
+          "colorset": 55,
+          "fg": "#bdb1a5",
+          "bg": "#37312d",
+          "ratio": 6.096341555310066
+        }
+      ],
+      "base_text_min": 6.150072964872517,
+      "session_disabled": 6.096341555310066,
+      "focus_accent_raised": 5.538456319954305,
+      "decorative_border_surface": 2.8167316462394503,
+      "menu_model_min": 5.279284170170747,
+      "bar_model_min": 8.309988594399607
+    },
+    {
+      "palette": "dune",
+      "mode": "light",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#38302b",
+          "bg": "#faf6ee",
+          "ratio": 11.98273654623892
+        },
+        {
+          "colorset": 1,
+          "fg": "#706459",
+          "bg": "#faf6ee",
+          "ratio": 5.3285927886739595
+        },
+        {
+          "colorset": 2,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 5,
+          "fg": "#38302b",
+          "bg": "#faf6ee",
+          "ratio": 11.98273654623892
+        },
+        {
+          "colorset": 6,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 7,
+          "fg": "#706459",
+          "bg": "#faf6ee",
+          "ratio": 5.3285927886739595
+        },
+        {
+          "colorset": 8,
+          "fg": "#87583e",
+          "bg": "#faf6ee",
+          "ratio": 5.573164564722328
+        },
+        {
+          "colorset": 10,
+          "fg": "#38302b",
+          "bg": "#faf6ee",
+          "ratio": 11.98273654623892
+        },
+        {
+          "colorset": 11,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 12,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 13,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 14,
+          "fg": "#706459",
+          "bg": "#faf6ee",
+          "ratio": 5.3285927886739595
+        },
+        {
+          "colorset": 15,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 16,
+          "fg": "#695e54",
+          "bg": "#eee5d9",
+          "ratio": 5.058967107291303
+        },
+        {
+          "colorset": 17,
+          "fg": "#805411",
+          "bg": "#faf6ee",
+          "ratio": 6.099352991124096
+        },
+        {
+          "colorset": 18,
+          "fg": "#a63232",
+          "bg": "#faf6ee",
+          "ratio": 6.23674938266171
+        },
+        {
+          "colorset": 19,
+          "fg": "#2e6b40",
+          "bg": "#faf6ee",
+          "ratio": 5.915597083619999
+        },
+        {
+          "colorset": 21,
+          "fg": "#ffffff",
+          "bg": "#774d37",
+          "ratio": 7.238619471080172
+        },
+        {
+          "colorset": 22,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 30,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 34,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 31,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 35,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 32,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 36,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 33,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 37,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 40,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 47,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 54,
+          "fg": "#ffffff",
+          "bg": "#774d37",
+          "ratio": 7.238619471080172
+        },
+        {
+          "colorset": 41,
+          "fg": "#706459",
+          "bg": "#eee5d9",
+          "ratio": 4.607433174109043
+        },
+        {
+          "colorset": 48,
+          "fg": "#706459",
+          "bg": "#eee5d9",
+          "ratio": 4.607433174109043
+        },
+        {
+          "colorset": 55,
+          "fg": "#706459",
+          "bg": "#eee5d9",
+          "ratio": 4.607433174109043
+        }
+      ],
+      "base_text_min": 5.058967107291303,
+      "session_disabled": 4.607433174109043,
+      "focus_accent_raised": 4.818905162888362,
+      "decorative_border_surface": 2.539316341024377,
+      "menu_model_min": 4.667035726841504,
+      "bar_model_min": 9.127602366456236
+    },
+    {
+      "palette": "grove",
+      "mode": "dark",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#e6eee3",
+          "bg": "#24322a",
+          "ratio": 11.314475731146086
+        },
+        {
+          "colorset": 1,
+          "fg": "#aebfac",
+          "bg": "#24322a",
+          "ratio": 6.932862641853524
+        },
+        {
+          "colorset": 2,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 5,
+          "fg": "#e6eee3",
+          "bg": "#24322a",
+          "ratio": 11.314475731146086
+        },
+        {
+          "colorset": 6,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 7,
+          "fg": "#aebfac",
+          "bg": "#24322a",
+          "ratio": 6.932862641853524
+        },
+        {
+          "colorset": 8,
+          "fg": "#a4c598",
+          "bg": "#24322a",
+          "ratio": 7.041917556987076
+        },
+        {
+          "colorset": 10,
+          "fg": "#e6eee3",
+          "bg": "#24322a",
+          "ratio": 11.314475731146086
+        },
+        {
+          "colorset": 11,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 12,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 13,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 14,
+          "fg": "#aebfac",
+          "bg": "#24322a",
+          "ratio": 6.932862641853524
+        },
+        {
+          "colorset": 15,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 16,
+          "fg": "#b3c3b1",
+          "bg": "#304035",
+          "ratio": 5.945036316912825
+        },
+        {
+          "colorset": 17,
+          "fg": "#e9bf72",
+          "bg": "#24322a",
+          "ratio": 7.771536581433209
+        },
+        {
+          "colorset": 18,
+          "fg": "#f28b86",
+          "bg": "#24322a",
+          "ratio": 5.632268694055165
+        },
+        {
+          "colorset": 19,
+          "fg": "#a3d7ad",
+          "bg": "#24322a",
+          "ratio": 8.232253534978215
+        },
+        {
+          "colorset": 21,
+          "fg": "#19271c",
+          "bg": "#afcca4",
+          "ratio": 8.897065772754512
+        },
+        {
+          "colorset": 22,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 30,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 34,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 31,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 35,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 32,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 36,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 33,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 37,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 40,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 47,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 54,
+          "fg": "#19271c",
+          "bg": "#afcca4",
+          "ratio": 8.897065772754512
+        },
+        {
+          "colorset": 41,
+          "fg": "#aebfac",
+          "bg": "#304035",
+          "ratio": 5.678143954002309
+        },
+        {
+          "colorset": 48,
+          "fg": "#aebfac",
+          "bg": "#304035",
+          "ratio": 5.678143954002309
+        },
+        {
+          "colorset": 55,
+          "fg": "#aebfac",
+          "bg": "#304035",
+          "ratio": 5.678143954002309
+        }
+      ],
+      "base_text_min": 5.632268694055165,
+      "session_disabled": 5.678143954002309,
+      "focus_accent_raised": 5.767461965768695,
+      "decorative_border_surface": 2.8749268154556207,
+      "menu_model_min": 5.765088712324342,
+      "bar_model_min": 7.748928690632325
+    },
+    {
+      "palette": "grove",
+      "mode": "light",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#2d3b2b",
+          "bg": "#f6f8ef",
+          "ratio": 11.056097277659354
+        },
+        {
+          "colorset": 1,
+          "fg": "#5b6b54",
+          "bg": "#f6f8ef",
+          "ratio": 5.329793323347477
+        },
+        {
+          "colorset": 2,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 5,
+          "fg": "#2d3b2b",
+          "bg": "#f6f8ef",
+          "ratio": 11.056097277659354
+        },
+        {
+          "colorset": 6,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 7,
+          "fg": "#5b6b54",
+          "bg": "#f6f8ef",
+          "ratio": 5.329793323347477
+        },
+        {
+          "colorset": 8,
+          "fg": "#486c3d",
+          "bg": "#f6f8ef",
+          "ratio": 5.6170273419947865
+        },
+        {
+          "colorset": 10,
+          "fg": "#2d3b2b",
+          "bg": "#f6f8ef",
+          "ratio": 11.056097277659354
+        },
+        {
+          "colorset": 11,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 12,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 13,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 14,
+          "fg": "#5b6b54",
+          "bg": "#f6f8ef",
+          "ratio": 5.329793323347477
+        },
+        {
+          "colorset": 15,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 16,
+          "fg": "#56654f",
+          "bg": "#e7efdf",
+          "ratio": 5.284748721156734
+        },
+        {
+          "colorset": 17,
+          "fg": "#805411",
+          "bg": "#f6f8ef",
+          "ratio": 6.133857898690497
+        },
+        {
+          "colorset": 18,
+          "fg": "#a63232",
+          "bg": "#f6f8ef",
+          "ratio": 6.272031561161087
+        },
+        {
+          "colorset": 19,
+          "fg": "#2e6b40",
+          "bg": "#f6f8ef",
+          "ratio": 5.949062457876483
+        },
+        {
+          "colorset": 21,
+          "fg": "#ffffff",
+          "bg": "#3f5f36",
+          "ratio": 7.237625049000013
+        },
+        {
+          "colorset": 22,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 30,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 34,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 31,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 35,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 32,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 36,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 33,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 37,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 40,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 47,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 54,
+          "fg": "#ffffff",
+          "bg": "#3f5f36",
+          "ratio": 7.237625049000013
+        },
+        {
+          "colorset": 41,
+          "fg": "#5b6b54",
+          "bg": "#e7efdf",
+          "ratio": 4.845018198219865
+        },
+        {
+          "colorset": 48,
+          "fg": "#5b6b54",
+          "bg": "#e7efdf",
+          "ratio": 4.845018198219865
+        },
+        {
+          "colorset": 55,
+          "fg": "#5b6b54",
+          "bg": "#e7efdf",
+          "ratio": 4.845018198219865
+        }
+      ],
+      "base_text_min": 5.284748721156734,
+      "session_disabled": 4.845018198219865,
+      "focus_accent_raised": 5.106126643344334,
+      "decorative_border_surface": 2.4948894256517065,
+      "menu_model_min": 4.667797261197347,
+      "bar_model_min": 8.420615403597285
+    },
+    {
+      "palette": "ink",
+      "mode": "dark",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#e7edf8",
+          "bg": "#222d3d",
+          "ratio": 11.826484773294624
+        },
+        {
+          "colorset": 1,
+          "fg": "#adbdd4",
+          "bg": "#222d3d",
+          "ratio": 7.285482105889062
+        },
+        {
+          "colorset": 2,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 5,
+          "fg": "#e7edf8",
+          "bg": "#222d3d",
+          "ratio": 11.826484773294624
+        },
+        {
+          "colorset": 6,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 7,
+          "fg": "#adbdd4",
+          "bg": "#222d3d",
+          "ratio": 7.285482105889062
+        },
+        {
+          "colorset": 8,
+          "fg": "#9ebded",
+          "bg": "#222d3d",
+          "ratio": 7.251833053396631
+        },
+        {
+          "colorset": 10,
+          "fg": "#e7edf8",
+          "bg": "#222d3d",
+          "ratio": 11.826484773294624
+        },
+        {
+          "colorset": 11,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 12,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 13,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 14,
+          "fg": "#adbdd4",
+          "bg": "#222d3d",
+          "ratio": 7.285482105889062
+        },
+        {
+          "colorset": 15,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 16,
+          "fg": "#b2c1d7",
+          "bg": "#2d3b51",
+          "ratio": 6.197395422612825
+        },
+        {
+          "colorset": 17,
+          "fg": "#e9bf72",
+          "bg": "#222d3d",
+          "ratio": 8.048974730288476
+        },
+        {
+          "colorset": 18,
+          "fg": "#f28b86",
+          "bg": "#222d3d",
+          "ratio": 5.833336550322782
+        },
+        {
+          "colorset": 19,
+          "fg": "#a3d7ad",
+          "bg": "#222d3d",
+          "ratio": 8.526138940743156
+        },
+        {
+          "colorset": 21,
+          "fg": "#172337",
+          "bg": "#aac5ef",
+          "ratio": 8.96547034284039
+        },
+        {
+          "colorset": 22,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 30,
+          "fg": "#e5edf0",
+          "bg": "#26343d",
+          "ratio": 10.788292399481064
+        },
+        {
+          "colorset": 34,
+          "fg": "#122128",
+          "bg": "#63b7bb",
+          "ratio": 7.081778770840406
+        },
+        {
+          "colorset": 31,
+          "fg": "#f0e9de",
+          "bg": "#37312d",
+          "ratio": 10.621334943909487
+        },
+        {
+          "colorset": 35,
+          "fg": "#27201c",
+          "bg": "#d0a17e",
+          "ratio": 6.934119372988389
+        },
+        {
+          "colorset": 32,
+          "fg": "#e6eee3",
+          "bg": "#304035",
+          "ratio": 9.26676688755755
+        },
+        {
+          "colorset": 36,
+          "fg": "#19271c",
+          "bg": "#a4c598",
+          "ratio": 8.172008490732818
+        },
+        {
+          "colorset": 33,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 37,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 40,
+          "fg": "#e7edf8",
+          "bg": "#2d3b51",
+          "ratio": 9.626679176586384
+        },
+        {
+          "colorset": 47,
+          "fg": "#172337",
+          "bg": "#9ebded",
+          "ratio": 8.224961731891169
+        },
+        {
+          "colorset": 54,
+          "fg": "#172337",
+          "bg": "#aac5ef",
+          "ratio": 8.96547034284039
+        },
+        {
+          "colorset": 41,
+          "fg": "#adbdd4",
+          "bg": "#2d3b51",
+          "ratio": 5.930333503538324
+        },
+        {
+          "colorset": 48,
+          "fg": "#adbdd4",
+          "bg": "#2d3b51",
+          "ratio": 5.930333503538324
+        },
+        {
+          "colorset": 55,
+          "fg": "#adbdd4",
+          "bg": "#2d3b51",
+          "ratio": 5.930333503538324
+        }
+      ],
+      "base_text_min": 5.833336550322782,
+      "session_disabled": 5.930333503538324,
+      "focus_accent_raised": 5.902943400802792,
+      "decorative_border_surface": 2.876275890986427,
+      "menu_model_min": 6.037720961002691,
+      "bar_model_min": 8.10158452042561
+    },
+    {
+      "palette": "ink",
+      "mode": "light",
+      "emitted_text_pairs": [
+        {
+          "colorset": 0,
+          "fg": "#293a54",
+          "bg": "#f7f9fd",
+          "ratio": 10.901891873635545
+        },
+        {
+          "colorset": 1,
+          "fg": "#586982",
+          "bg": "#f7f9fd",
+          "ratio": 5.301739429834896
+        },
+        {
+          "colorset": 2,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 5,
+          "fg": "#293a54",
+          "bg": "#f7f9fd",
+          "ratio": 10.901891873635545
+        },
+        {
+          "colorset": 6,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 7,
+          "fg": "#586982",
+          "bg": "#f7f9fd",
+          "ratio": 5.301739429834896
+        },
+        {
+          "colorset": 8,
+          "fg": "#3d5f98",
+          "bg": "#f7f9fd",
+          "ratio": 6.0581549728068955
+        },
+        {
+          "colorset": 10,
+          "fg": "#293a54",
+          "bg": "#f7f9fd",
+          "ratio": 10.901891873635545
+        },
+        {
+          "colorset": 11,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 12,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 13,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 14,
+          "fg": "#586982",
+          "bg": "#f7f9fd",
+          "ratio": 5.301739429834896
+        },
+        {
+          "colorset": 15,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 16,
+          "fg": "#53637a",
+          "bg": "#e8eef9",
+          "ratio": 5.250778755525382
+        },
+        {
+          "colorset": 17,
+          "fg": "#805411",
+          "bg": "#f7f9fd",
+          "ratio": 6.237659290484544
+        },
+        {
+          "colorset": 18,
+          "fg": "#a63232",
+          "bg": "#f7f9fd",
+          "ratio": 6.378171223373297
+        },
+        {
+          "colorset": 19,
+          "fg": "#2e6b40",
+          "bg": "#f7f9fd",
+          "ratio": 6.049736613228065
+        },
+        {
+          "colorset": 21,
+          "fg": "#ffffff",
+          "bg": "#365486",
+          "ratio": 7.583336683275008
+        },
+        {
+          "colorset": 22,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 30,
+          "fg": "#25343d",
+          "bg": "#e5eef0",
+          "ratio": 10.883943979622288
+        },
+        {
+          "colorset": 34,
+          "fg": "#ffffff",
+          "bg": "#276e73",
+          "ratio": 5.891925163399908
+        },
+        {
+          "colorset": 31,
+          "fg": "#38302b",
+          "bg": "#eee5d9",
+          "ratio": 10.361020267320736
+        },
+        {
+          "colorset": 35,
+          "fg": "#ffffff",
+          "bg": "#87583e",
+          "ratio": 6.00750275229465
+        },
+        {
+          "colorset": 32,
+          "fg": "#2d3b2b",
+          "bg": "#e7efdf",
+          "ratio": 10.050482122242014
+        },
+        {
+          "colorset": 36,
+          "fg": "#ffffff",
+          "bg": "#486c3d",
+          "ratio": 6.020723833564123
+        },
+        {
+          "colorset": 33,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 37,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 40,
+          "fg": "#293a54",
+          "bg": "#e8eef9",
+          "ratio": 9.865195500741892
+        },
+        {
+          "colorset": 47,
+          "fg": "#ffffff",
+          "bg": "#3d5f98",
+          "ratio": 6.385495586014771
+        },
+        {
+          "colorset": 54,
+          "fg": "#ffffff",
+          "bg": "#365486",
+          "ratio": 7.583336683275008
+        },
+        {
+          "colorset": 41,
+          "fg": "#586982",
+          "bg": "#e8eef9",
+          "ratio": 4.797579775653314
+        },
+        {
+          "colorset": 48,
+          "fg": "#586982",
+          "bg": "#e8eef9",
+          "ratio": 4.797579775653314
+        },
+        {
+          "colorset": 55,
+          "fg": "#586982",
+          "bg": "#e8eef9",
+          "ratio": 4.797579775653314
+        }
+      ],
+      "base_text_min": 5.250778755525382,
+      "session_disabled": 4.797579775653314,
+      "focus_accent_raised": 5.482065303276706,
+      "decorative_border_surface": 2.331020462373225,
+      "menu_model_min": 4.642376257046074,
+      "bar_model_min": 8.299853988250614
+    }
+  ],
+  "generated_icon_sha256": {
+    "default-config/icons/ink-light-swatch.png": "91ebd0bc5b82bb2786ac5170f5d7bdf4b16799e66ab77c68f5f672e1503909c8",
+    "default-config/icons/grove-light-swatch.png": "7b2a2b496eff258b1fea8b6acf11fff45b53f32219eec6f54abd9d46b71eef3a",
+    "default-config/icons/grove-dark-swatch.png": "294877634a03b20eb6a6a94ca4bc97637052d2b436cfb17ff0a0fac39dbcd5b5",
+    "default-config/icons/slate-light-swatch.png": "5d935b3d9a9ce52e760428b5faecec646aeadd6b3dc9768d293f1e08d071e30b",
+    "default-config/icons/ink-dark-swatch.png": "eb6e381420d889a8444a467bd7f341641b667cb03ccec568b92c577ccd54793f",
+    "default-config/icons/dune-dark-swatch.png": "12cedaa9d2622e6974df314f623237954fef9689249d64a2417dc819a105da56",
+    "default-config/icons/dune-light-swatch.png": "54cf8e6ba7e57bcbb0f211beb41f409175a24b90e996d64c4f20a2c0454171e0",
+    "default-config/icons/slate-dark-swatch.png": "44532f260fe88ab3933dbf21a2663de7feb918d8807132f4b84e200d4f90852d",
+    "default-config/icons/ink-dark-selected/cpu.png": "d0a6086e55c4628dfac0564ec2157fd46db483dcc3030b9e6ca60403550e03d0",
+    "default-config/icons/ink-dark-selected/session-hibernate.png": "ff91bffe6206ddccc937ddcb5ab235433a5beed2eacef5b4020507e28f79e4a7",
+    "default-config/icons/ink-dark-selected/battery.png": "d571f42288f3a2815c034e21907a9dc2f3e0cfbd8f2a96e84748d989b33dc97b",
+    "default-config/icons/ink-dark-selected/session-restart.png": "5d8bee82c77b623041f58b29a8f0f413723bfd6549acfda6c1c662ca00bc083d",
+    "default-config/icons/ink-dark-selected/apps.png": "2aa193d1be063619482cc7aff9795be8e471142546431a3b47ab4879bb00d325",
+    "default-config/icons/ink-dark-selected/settings.png": "a3370307b4c6179d2b0ea6f69c43f091922ab641831e4b08a3d464ba41920f2a",
+    "default-config/icons/ink-dark-selected/terminal.png": "d7f2cc51c5cf8e5636b620c7d2872f38fc551371b5e7d1c5c1eb7b3c7effdbdf",
+    "default-config/icons/ink-dark-selected/session.png": "b0291ae53c95886c1c309d8616b517ec406b57a1da8e566b1ab3b81ec8e789e6",
+    "default-config/icons/ink-dark-selected/session-poweroff.png": "49235150caa8c65bee12413160e987ef77a787a3207a43033d9d2cce17e22075",
+    "default-config/icons/ink-dark-selected/session-suspend.png": "db1269b79f166f3c39b33142d03468279e59851b5f718b15b5fc212e435f791e",
+    "default-config/icons/ink-dark-selected/session-lock.png": "2805937727adf452f4c04ad113ba0869c707eda497e53c669f4039e6c4d14fb0",
+    "default-config/icons/ink-dark-selected/sound.png": "5750dd41182323b1136d2e16e54e145dfaae06fd7bc7f4129b80517083349060",
+    "default-config/icons/ink-dark-selected/search.png": "af0de21ea036ff4016daa042df1a2ed0716edf81271fbc2aed6618401cbd5cad",
+    "default-config/icons/ink-dark-selected/window.png": "86c1bbd57d11037b8158fd16e8e68ad1c84592fb7de496d91a3e0b798cfc7783",
+    "default-config/icons/ink-dark-selected/session-reboot.png": "378090723aee31f70da41c42b579e28621c4743eec9c8352d2f18b84e5f63d51",
+    "default-config/icons/ink-dark-selected/memory.png": "af3b818ea0ae990bc4568bf9e73b098dda6c8db7941e62dd1cf33ea8662c093f",
+    "default-config/icons/ink-dark-selected/network.png": "50c48ea2c6fa0c8e54128b0af95fffd583378c77b6020710d822514091ad87af",
+    "default-config/icons/ink-dark-selected/session-logout.png": "14750ae14654885abe7208abbd28de627e6f6df387016e23dfbc5e877296c6c9",
+    "default-config/icons/ink-dark-selected/appearance.png": "6be5f3f28de5c29724dc8f3fc186df7b1d35cc9907e57c739bcf5279b2f929e6",
+    "default-config/icons/grove-dark-normal/session-reboot-disabled.png": "693382e1d49fa5d344f209e14bb498abe0da1650a480086885e0d92ae0892022",
+    "default-config/icons/grove-dark-normal/cpu.png": "67a62cdcc96f659d2c9944a01c2a0d1ece521334c6116ed69c8a22242666aa24",
+    "default-config/icons/grove-dark-normal/session-hibernate.png": "c63f851bc85fbd4f864356943054f145a4176d6029395ec9fdfe10c5116422f9",
+    "default-config/icons/grove-dark-normal/battery.png": "cea18402fec5dc8f0b283efd76a7b256d9fddae65cba693700de5aa294097635",
+    "default-config/icons/grove-dark-normal/session-restart.png": "4b185bf8cbead218500c188e16baa8c815e08ad92e246c6cd6a6a082184fbe24",
+    "default-config/icons/grove-dark-normal/session-logout-disabled.png": "ecdeafd7f550f07a14ec131606a1a3e60a77fce48d735079437d15335a6359ff",
+    "default-config/icons/grove-dark-normal/apps.png": "1c2c58fba7b2935375a752b989c7048695092a1b3deddb3687151006f968ae84",
+    "default-config/icons/grove-dark-normal/settings.png": "581f06c73b895f838c56635ba07a53fcce6969e026c7101cb0819bc180ba8a5b",
+    "default-config/icons/grove-dark-normal/terminal.png": "8470d35f84f57d02cc3c5843bd3d96bc922b49cde2c3a299493c723109d21a5b",
+    "default-config/icons/grove-dark-normal/session.png": "1d01afbc33c6bc0934381f2e3d44cfef2aed9cfe2a5ffbff5cac3bbebc3c28f8",
+    "default-config/icons/grove-dark-normal/session-poweroff.png": "c570e8f27d5ebeabe98164a8d290c62faf2da718ed06977061a48ef7d288e227",
+    "default-config/icons/grove-dark-normal/session-suspend.png": "05b0a06aa3bc45ffd01841a8527acc9299dd02992e4cf79df95b9b022aba0fc0",
+    "default-config/icons/grove-dark-normal/session-lock.png": "771768238b0497a5a006690ab25c2767859a2391afd44679128de3536c99ac45",
+    "default-config/icons/grove-dark-normal/sound.png": "d14d89e7c153d1775b6ef31b439ef45e279b01979b3bcdd64d9999669d9f8107",
+    "default-config/icons/grove-dark-normal/search.png": "6b6a72df58431ac1257ca7aefaadccb9ab20517910f5d22ca4c04739ca083300",
+    "default-config/icons/grove-dark-normal/session-poweroff-disabled.png": "6b912b273bf8f81d09a57814b0cd90e0e61db1506a2cbc2360963d0bdd7491e6",
+    "default-config/icons/grove-dark-normal/session-restart-disabled.png": "a9f9c4d3f2c9151d3c7e5ae6a709d4e02f3d2c82d2ce34220c5560bbe3a497da",
+    "default-config/icons/grove-dark-normal/window.png": "fd43458a09d0dcef6f3dd438dbc43875f312fdd511055f63649fd57fcdacceb3",
+    "default-config/icons/grove-dark-normal/session-hibernate-disabled.png": "063850ca3d2bc02cc498b24c178560f20834dfd3cc7391c74c0206ee29eb1646",
+    "default-config/icons/grove-dark-normal/session-lock-disabled.png": "cfd4afdac15d7f9b83101c873ce2d8c605d98927716210ff6f9d7191115f74f7",
+    "default-config/icons/grove-dark-normal/session-reboot.png": "ad45c40870cad49010cda939b4cd54a1d80c696ed464c26e5632660191bbb00f",
+    "default-config/icons/grove-dark-normal/session-suspend-disabled.png": "7df833088e1242e3ff91453ba8bdcdeb6ddf7a58101c0f920b88469854a92157",
+    "default-config/icons/grove-dark-normal/memory.png": "df12d866ad4924b2ca1a099e9e75e1f35dcb8767e0a947dba4b9c215308f204f",
+    "default-config/icons/grove-dark-normal/network.png": "ad5d9d1ccf2c7a74c9d1b9fd7f0a1e2332add4be6d2b85a1c9e1bcf5c8d53c35",
+    "default-config/icons/grove-dark-normal/session-logout.png": "6829ed1246bf512779aff222d6f7fac89ddb4fd3dbbe06de9e79e6d98556e847",
+    "default-config/icons/grove-dark-normal/appearance.png": "4104a4347ff1fc6706a432cc26d66c864c8e277690e5c88efd84e814adfccf21",
+    "default-config/icons/slate-light-selected/cpu.png": "eebf5d4dc90af935ca1afdd88212ff0aa0a6c232050c511ad5733ac979cf924d",
+    "default-config/icons/slate-light-selected/session-hibernate.png": "388f6c233535642b55fe62de3d2a33521c1fb6e85c9ae815051f76984c3c4b1f",
+    "default-config/icons/slate-light-selected/battery.png": "4f17ccb7497d91a976c9a60f3f5201ac7b92aa3e680f8d3dbe90aabc634e1582",
+    "default-config/icons/slate-light-selected/session-restart.png": "da344b9ce89ff9b340447708ef9ba5493bd39a58ba9795a79b983c75339e5b54",
+    "default-config/icons/slate-light-selected/apps.png": "24a3e953dabd57f3f0792e6ab330a71f4fb1371c0bc3445aaa9262ff9ee5bc4f",
+    "default-config/icons/slate-light-selected/settings.png": "a64fa579364bd66e684a484c8398f6c24c5cc37483660e2e15419e8ab13bf6ce",
+    "default-config/icons/slate-light-selected/terminal.png": "485a57cd5999c553f02df339e49c3404df2ea68a616b891b4b350dcffa0a6bfe",
+    "default-config/icons/slate-light-selected/session.png": "1bc09dd033499114e8ff9b13892ccad8348527f8d2c5480c80a489a047e1ca0a",
+    "default-config/icons/slate-light-selected/session-poweroff.png": "21a09eba92b8aca315ee641d3e56f279e423ea53d2c547db19324b6d7ce858e5",
+    "default-config/icons/slate-light-selected/session-suspend.png": "78ffa118e7384ab418bc1770af3d36f9858d7322729a1deee5dfea612953b147",
+    "default-config/icons/slate-light-selected/session-lock.png": "457f1daa58bcf09142bd10a70ec6bfa63418a3abb59bb06cc38d8b11a4e4be51",
+    "default-config/icons/slate-light-selected/sound.png": "f6f1913cc14c71cbdbd5e8167ccdc42c57733a767043d82ae7d6844ec31868df",
+    "default-config/icons/slate-light-selected/search.png": "ee5571cfd357f33d5d8fdb2231aa70a56d4f2287bd2074455614df021c9d23d1",
+    "default-config/icons/slate-light-selected/window.png": "f3bf96f5c99da542364c1d30a54057e0fd077fb190302730cab7ae98c8e6aac6",
+    "default-config/icons/slate-light-selected/session-reboot.png": "fd786638aba5ed1a3d9daca4c577f3be57c6d2e7bc8e69f95daacaa452ad63d6",
+    "default-config/icons/slate-light-selected/memory.png": "4f8098f8d8fe2da2cde1b1ba66e5d8e5d63060ac1f0bece0095d6b0c3cb30f6d",
+    "default-config/icons/slate-light-selected/network.png": "ac24a1063b031a6eab0014614a42ceb6cb8b1b5b30eaa5795742b199deefce75",
+    "default-config/icons/slate-light-selected/session-logout.png": "5465310058edb3f0d7f38c01cf48d9954ae1bf2312e5617a8351b2cc42b8d545",
+    "default-config/icons/slate-light-selected/appearance.png": "adf7bb74aa42743b93a745c2138cf0c1237f46bb2252920320a442b70fae4929",
+    "default-config/icons/slate-dark-normal/session-reboot-disabled.png": "ff57eac3fafd12ec339e458e5435526642ff8db567ca73dd323d7c278b3eaaf3",
+    "default-config/icons/slate-dark-normal/cpu.png": "21ce4016f50e9c8db57bf13c9784f3a80cb9ccd761e8f631fe5211a1566337c3",
+    "default-config/icons/slate-dark-normal/session-hibernate.png": "17f87a7756175bf21b80c37144fb074832c72223fe6648d6fbb05a7e1947bb9a",
+    "default-config/icons/slate-dark-normal/battery.png": "c77c2700995a96379e4af54e4f4745b407d509af634372806d836c569248af63",
+    "default-config/icons/slate-dark-normal/session-restart.png": "52e2227865bde44ad2a4aa66ee17911f8f16d936dec8bf79cb61c334a8a80579",
+    "default-config/icons/slate-dark-normal/session-logout-disabled.png": "d9f7571a1770a78ca60990027a075d5553dcb761200f1e3641f1cf7c2e5af379",
+    "default-config/icons/slate-dark-normal/apps.png": "cd1f945ecd33d2fb64821074a0cc436854f1be95b221f0bfba00c279ebb250df",
+    "default-config/icons/slate-dark-normal/settings.png": "bf33df266cea32d476be7f813052bdc974d424df933fc0750f77ca7d61d393ee",
+    "default-config/icons/slate-dark-normal/terminal.png": "c910610f25eb1c4ee1a7d9bc56a1ee54c60024116db73903ea361803e68aa236",
+    "default-config/icons/slate-dark-normal/session.png": "d0b8b99c89096cee47ea07710ae92468fb8c1c79497aa5773973c79160c1dd58",
+    "default-config/icons/slate-dark-normal/session-poweroff.png": "a5f0ee9fdc25beb3570db55aa5863f8ae2a95b86d3eccbd31b552c573be41ba0",
+    "default-config/icons/slate-dark-normal/session-suspend.png": "7c02eadab6f070f15f6c5b25d461d9740ed3ebf9457f6650ed53216da80cdd0a",
+    "default-config/icons/slate-dark-normal/session-lock.png": "6ec7a1401a3f97a54c8f577dce9899ea4e42da2a7805ff4a0e8e6198f117426f",
+    "default-config/icons/slate-dark-normal/sound.png": "14e6dbc7562d14a558a336348a2ed4b810309ed8c8f0298fa13c644de1625985",
+    "default-config/icons/slate-dark-normal/search.png": "e80a5f576f18fec9ed18b541f10d63d1b703473580a2eb4af3f01e6a169fc18a",
+    "default-config/icons/slate-dark-normal/session-poweroff-disabled.png": "70f3d96e1ff5c2d8c1be6c4f4319e2244b0356aa0cef22ada7138abc8d19cc1e",
+    "default-config/icons/slate-dark-normal/session-restart-disabled.png": "eccf4b86661e77627124ea9f91aeb539b138d7cfc80265066c2c051d0a471f79",
+    "default-config/icons/slate-dark-normal/window.png": "920245633da57a8379b455ef515a6332fc4aff81643065945d26496a614696db",
+    "default-config/icons/slate-dark-normal/session-hibernate-disabled.png": "421a3d45ccee93a1611406ab62274b2b25c1e098bc2d35f46e4398076090e591",
+    "default-config/icons/slate-dark-normal/session-lock-disabled.png": "ad1fe343f87092095c7b518a7fad23e1517e32de2e0ff66914043fd0188eedfb",
+    "default-config/icons/slate-dark-normal/session-reboot.png": "5e44317d3ddfcca308ad6f81a6e5d70836658b5695552bd1c90fb0a5d384166f",
+    "default-config/icons/slate-dark-normal/session-suspend-disabled.png": "366099614a573231baeaf1e5ef839312cc5502bfe3dba0b7d7429cb517b1e50c",
+    "default-config/icons/slate-dark-normal/memory.png": "fb493215a0c36ec8fcc394073e4442fe28ae19065b0f78f37e23cc8488d1fe86",
+    "default-config/icons/slate-dark-normal/network.png": "dd1985212a3822a5c466605fc3bfd8df5efdf13579a0fa0fdb5b36c4a8935124",
+    "default-config/icons/slate-dark-normal/session-logout.png": "b03a91419885aca0117eb1464a0d050cbb615bc508b022ce634d2485f1655003",
+    "default-config/icons/slate-dark-normal/appearance.png": "a16f2700ca1900b31c3e88dafd39c463525d1c04a1c678a3a11adada56d32771",
+    "default-config/icons/dune-dark-normal/session-reboot-disabled.png": "37b47fb80892aefcd24f72b01857cec8084a25e9957e75acaf6559561bbc2e66",
+    "default-config/icons/dune-dark-normal/cpu.png": "e40b04632cf0e9ed1e4d69e8b196748f3206ed066f3d9fdc155470415c299dad",
+    "default-config/icons/dune-dark-normal/session-hibernate.png": "b5d00dc7ffd957bbfd10f1baca5d37f362dc6a1526e3b0d61629ee1dd9f16729",
+    "default-config/icons/dune-dark-normal/battery.png": "4283d7b2077172844c3d839ec4ecd8efbda8e4c1938353440cbb445d367effdb",
+    "default-config/icons/dune-dark-normal/session-restart.png": "b69e5850b0dda7fe373bcf6cc3c4f7ddeb23a6cfb1cf1391f5de1bc06c113e1e",
+    "default-config/icons/dune-dark-normal/session-logout-disabled.png": "40df81100decf387777d1787ab33af6b25ca4cdabf2189ecec7b9f1f0d48a8c6",
+    "default-config/icons/dune-dark-normal/apps.png": "513f417644ff0b78122e2098fd7e3b4984beecff281a71dc6460606224be23e2",
+    "default-config/icons/dune-dark-normal/settings.png": "931c6621f8737601fd0ae553df6f92dfdbe052768b70d07a7f7e3cd3a9cb34fa",
+    "default-config/icons/dune-dark-normal/terminal.png": "f647f2eff9f63b1515ea94ff3cfe514adb05d112fef35904c0843d09040150bd",
+    "default-config/icons/dune-dark-normal/session.png": "a47431cf0cd46847034df1af383914b7cf8e9b42b18e3a8c199eae14927ff6d6",
+    "default-config/icons/dune-dark-normal/session-poweroff.png": "fa8e6bc836030f911b45b7812023d05b24fe37491d8a636fc7ed89c5a835a2a6",
+    "default-config/icons/dune-dark-normal/session-suspend.png": "90b7946fc06af8a265f1f919c7b106e8e7cdee1aef1a495b992b3dcdc98f3253",
+    "default-config/icons/dune-dark-normal/session-lock.png": "2918ac36151359df4d9ff9ae200544034229c7fd780301d6cfa124eb5e0e31af",
+    "default-config/icons/dune-dark-normal/sound.png": "96a0aa184221624daf5c149c66ffc0b11f6fb9ed1a7a6957bb9ddfa5bbd62d3f",
+    "default-config/icons/dune-dark-normal/search.png": "59570613abddd3233d183978fe68dad775401cf2118055efd2342144057ccf35",
+    "default-config/icons/dune-dark-normal/session-poweroff-disabled.png": "53ff0c54a7800ad582769d5ff3bd9b742a0565259dde17de425132585f842195",
+    "default-config/icons/dune-dark-normal/session-restart-disabled.png": "e77b65cb32f12cb835eb0549d9a1cafc216ce967d22321c417f1826ff8c2e8ce",
+    "default-config/icons/dune-dark-normal/window.png": "998b4737a6c264125e59b9929de7deb9d88a3d11f101b1cf8cd1bb53a00175f4",
+    "default-config/icons/dune-dark-normal/session-hibernate-disabled.png": "3c698157a91f64cc6bcf19128376112158a2e3f7c4cfada96b3f2accf7f09e02",
+    "default-config/icons/dune-dark-normal/session-lock-disabled.png": "326ca1b00a99109a4be72822e1b296ba6eb1fa2a8e08e5c584d34b367627ebd4",
+    "default-config/icons/dune-dark-normal/session-reboot.png": "f01b437c857c2aceedd4ea205d0419856260060d2d176376e0b4a89b93368194",
+    "default-config/icons/dune-dark-normal/session-suspend-disabled.png": "d04125858792ff3664b1ab5183491c57d95d7ffa6cb3cfb0c826717e95864444",
+    "default-config/icons/dune-dark-normal/memory.png": "2acfeef3afb3d84dbb9ade59dfb82180948f3bc52daf09b42b10cb69f8f0ab69",
+    "default-config/icons/dune-dark-normal/network.png": "4faf046377c352ea758cce9a59bb3649bcd039936b3827b7b004bf456d0c9f77",
+    "default-config/icons/dune-dark-normal/session-logout.png": "6ff712b583008e61659b6a0d2fe5091901af8073419ce1e9a17791be2ad410a7",
+    "default-config/icons/dune-dark-normal/appearance.png": "ba1877e47e20a901175f9d3edf42035a62942be5b53c158f9c58515d3daf06d6",
+    "default-config/icons/ink-light-normal/session-reboot-disabled.png": "76ada686a3996cecc2eac94bfaacecb76bf82f648eef5980fcbf4d10b401be22",
+    "default-config/icons/ink-light-normal/cpu.png": "90f676a518f490ae3cbcc6ce6ca106e2aa86cab47d7bac523b76cecdd5654abe",
+    "default-config/icons/ink-light-normal/session-hibernate.png": "91ffe448ac4967be7433bd91019a42fd7186bb54aa757012f30754c4ada2afcf",
+    "default-config/icons/ink-light-normal/battery.png": "83e3fdc51140b0c5a3cd3da2d3ac6c463de33881794932d4214b8509757dc8cc",
+    "default-config/icons/ink-light-normal/session-restart.png": "6e7c60301b5cfe7c776c2002c79f259b6af1a4c1b09561b8d26208c460da867c",
+    "default-config/icons/ink-light-normal/session-logout-disabled.png": "9f3a516cee359a9a4c69d6ea10036a8fa230e24a0aa977cc9fee2562630acbe2",
+    "default-config/icons/ink-light-normal/apps.png": "1e07e68b10a34adc8cb92109c2ca4f2f94b58aead6b33179aa6dd128e1a3d228",
+    "default-config/icons/ink-light-normal/settings.png": "3ff4b64431d461620ee9317919131df5fd8f7b6f7a7293e2ac6490e451b36357",
+    "default-config/icons/ink-light-normal/terminal.png": "28e697aa827d3f62ef0806f2a92763db54353be61e6ea04fd7dc8b2b2a73ee4c",
+    "default-config/icons/ink-light-normal/session.png": "1795bb97959032b31a57c522b727c5571ea95ff2a12dd8b6f39f2061c0e74614",
+    "default-config/icons/ink-light-normal/session-poweroff.png": "4fdfcf72089e033a4e93855b861e9c3b0255d1e9b7cad8ed303d47a142bc7878",
+    "default-config/icons/ink-light-normal/session-suspend.png": "b4036d526668643c8ce6798202008a2d41eea840f688bcbc00e8e98c720b4305",
+    "default-config/icons/ink-light-normal/session-lock.png": "d4b94a249d6ecb064d740f8f3c1a7a9305a18b3ce1a4005262935cc5f7aff612",
+    "default-config/icons/ink-light-normal/sound.png": "9cec4257aabcdfbf15f6ec25a5f2cc0e3baf220d4d8ed3112fa5128c89885044",
+    "default-config/icons/ink-light-normal/search.png": "87a1b4a00ba2a26404fa2caeeaefe1ef7263632455761bc7dba174a4a2826bed",
+    "default-config/icons/ink-light-normal/session-poweroff-disabled.png": "b6dbe2dcb84b312ae3b9d2dfe21523116359ac996e1ee3b071c5908de912a146",
+    "default-config/icons/ink-light-normal/session-restart-disabled.png": "bbf6db5bd507e7ca5a322c8ff12903ef6536109171af56fd0dabb5837eba8f16",
+    "default-config/icons/ink-light-normal/window.png": "bd7beef8b408e0d986f72075e7320d9901d77e1ebd78a343cb9f4545f8204931",
+    "default-config/icons/ink-light-normal/session-hibernate-disabled.png": "61ca993aaa901cbc565da056e66e303519557b03e4233102dbadd623b23343e3",
+    "default-config/icons/ink-light-normal/session-lock-disabled.png": "633db8a167dc7071b3fce8b11e9c51cee6437bbd941d344cecd9baca4071c079",
+    "default-config/icons/ink-light-normal/session-reboot.png": "519dcdd15c619af2f6bc20db7d3e90e9f307c2fc94b28ab16e800d4fc2294050",
+    "default-config/icons/ink-light-normal/session-suspend-disabled.png": "20c442d000a3303472c40c67597652f26126f53a8de404f2dd223ad0d18c9db9",
+    "default-config/icons/ink-light-normal/memory.png": "87c9bd0075831a02913dd9f8c781f05cb86e7c01f2bf3d5d67222c21767fdc1f",
+    "default-config/icons/ink-light-normal/network.png": "3143fece35e17c89640874b44d29bbb1512fd5cd91178b4c513cca2f0492dd43",
+    "default-config/icons/ink-light-normal/session-logout.png": "ebb868ee3c482575e85bffb7b9629161545226c4b245a1593c6b6ac873ea5367",
+    "default-config/icons/ink-light-normal/appearance.png": "2373681e43aeb40c490249681b9876af30172b23fa2ef2cab6abf956c5aef9e7",
+    "default-config/icons/grove-dark-selected/cpu.png": "e92370b559664f5d7e877da1792c567b8a122655e546f9e18dc5a8117383deb8",
+    "default-config/icons/grove-dark-selected/session-hibernate.png": "6ea4d0262dd79d814015d9917518ce964abb0fb8dec551b0ef4077137af4f28b",
+    "default-config/icons/grove-dark-selected/battery.png": "f9f3628d00e0f56fe2ab51f79707329c160b3c5287a99b8f92a141b64ec41b28",
+    "default-config/icons/grove-dark-selected/session-restart.png": "89e97fed2183e2fc029b36744f5216f569ffd2818f34b0407e42714392e84d97",
+    "default-config/icons/grove-dark-selected/apps.png": "fe651de80afde8e1afb76a3dee66775e5ee0b872e2277525b9897ddaf8e055ab",
+    "default-config/icons/grove-dark-selected/settings.png": "6ee1e519046eb0d67731ac1519fb12e643adb70be6475424693f3066ad839a8c",
+    "default-config/icons/grove-dark-selected/terminal.png": "deba69d25c9566539acb6a6a6d057a4da8a739cf6d24621ca861512f382beff2",
+    "default-config/icons/grove-dark-selected/session.png": "bae5a16db9f3fd3d21860ea4b905935c1b3e091e3ffd2ac4ddd5b2531bcf001c",
+    "default-config/icons/grove-dark-selected/session-poweroff.png": "1f259d686a0968fd6794a48a3bd2942fd15a76e2bc2656a90ce78ed5b2cebcbe",
+    "default-config/icons/grove-dark-selected/session-suspend.png": "688fb23eb8a08ea3ccd114d1ec36ae292cc66ad8377e74da875cac7e377d20ee",
+    "default-config/icons/grove-dark-selected/session-lock.png": "982093f76127617eb4651e51b824198148a86f91fecf69b2f56dd87426851f34",
+    "default-config/icons/grove-dark-selected/sound.png": "313ae134b21ad3af9355c673c02fbbee7c52fae1dc2db92cdb3209479cbb9230",
+    "default-config/icons/grove-dark-selected/search.png": "8b9e0cda5acf016564cb030f18e71203d96d33c40ac7b314e53055efc9707bb0",
+    "default-config/icons/grove-dark-selected/window.png": "5e5f08e0558376f2e6e0344118ad8357d1411899e55739f91dc3568d24bcd9d1",
+    "default-config/icons/grove-dark-selected/session-reboot.png": "2d82e64b0c4dbf719b15431c44e79e8bc0c49c4e105f45fcd5d42f3ed60d9694",
+    "default-config/icons/grove-dark-selected/memory.png": "f8a0e2435c5a2c8d8995952c995931cbcb505fc6bf619d92e98742981d88a6c4",
+    "default-config/icons/grove-dark-selected/network.png": "2fb9333753bb9a140cc81f8c6db192e626f74233d35376564b16b569eedf25ea",
+    "default-config/icons/grove-dark-selected/session-logout.png": "3b847a314adce6a8e6c1b1a525c7561a728e36034912f85e738512b3fb55367c",
+    "default-config/icons/grove-dark-selected/appearance.png": "4b42826ba74e6087fe661a6c72080f6dc80ad9bc292939c0857842fce25763b4",
+    "default-config/icons/slate-light-normal/session-reboot-disabled.png": "b9f2a1999aaadd42073c7a69a431b213902e93bfe727f1d6ff5251328fea0f2d",
+    "default-config/icons/slate-light-normal/cpu.png": "56fb6f432d9393b07a891d8f142261fdb70310a42a7cbf386303916d709b4b01",
+    "default-config/icons/slate-light-normal/session-hibernate.png": "9d7c324dbc7f7f4286c987972877e4fdb7ad958e2356374e99672e38f81c5f7e",
+    "default-config/icons/slate-light-normal/battery.png": "7a9a9e2072eec1f04559c24b9d8d87f21e3b8e440ceefe9b6e64dc70b36919a8",
+    "default-config/icons/slate-light-normal/session-restart.png": "018857e7c11f5879270fea3fce40062fb2331072f4512ee7a148c567b7486db6",
+    "default-config/icons/slate-light-normal/session-logout-disabled.png": "649ec32d3d2758272866173a68c7de47ea8c02cd0b79ae237db2988182b9d4c2",
+    "default-config/icons/slate-light-normal/apps.png": "40ac86fab07aef088b368c5fbb3d81154373109b03da40dad8e5437d960a0453",
+    "default-config/icons/slate-light-normal/settings.png": "e1b0665342efaa0a10a31abed0639317075316739199c14f3d67d5aec7794616",
+    "default-config/icons/slate-light-normal/terminal.png": "12951052d7e995b0776677a7153c08e3816290fb7cd9ee1e3641885187441b82",
+    "default-config/icons/slate-light-normal/session.png": "e56466cd2b787ef4c4601cd8a0e84128f2435bf73d25426e1b845e329228fe1d",
+    "default-config/icons/slate-light-normal/session-poweroff.png": "0c1384560eceefd1481c60731215ac9c656d07edbd6a72168905ea6846b6c8c2",
+    "default-config/icons/slate-light-normal/session-suspend.png": "f01740012466d752f352ad2a95ac8a272548aa9d60034a4d604f9e595a81d4a1",
+    "default-config/icons/slate-light-normal/session-lock.png": "0f80b5d654c3da2543107d023461069ab7f49a0a4c29c26bb3be647ea61d8a5c",
+    "default-config/icons/slate-light-normal/sound.png": "bc56e85765f487b472cdffdf0e97e166f975921f4b2d277b3eb5edd5101f636d",
+    "default-config/icons/slate-light-normal/search.png": "baf243a4a1dc63147b520e769d3b5f10aa9d2a113f50d45aff9422303449afff",
+    "default-config/icons/slate-light-normal/session-poweroff-disabled.png": "c4321ce34bd89ccccdbbd107b3397ca7df4921fb8b3b2693ad2287f0d8f1d8cf",
+    "default-config/icons/slate-light-normal/session-restart-disabled.png": "7b3450f8ea184623eabb1b669f3486de490e7a3113a86e5df6f2af9828f618b3",
+    "default-config/icons/slate-light-normal/window.png": "38460546b653ac3ac2782e05f09e684c5041892679b2d2816dbacdd86f0dcc32",
+    "default-config/icons/slate-light-normal/session-hibernate-disabled.png": "8bb146e9316f6f8b409347d0d78fef89cb18a1925fc6718093b160e6556ba573",
+    "default-config/icons/slate-light-normal/session-lock-disabled.png": "81778ded05cddf11d1c68bac8ec6c8e48eeb3d7139565feb14d911335f65715c",
+    "default-config/icons/slate-light-normal/session-reboot.png": "38ed43cf535d3d269a8c88a35a6192626509f651060bf37a27df942f530ba05a",
+    "default-config/icons/slate-light-normal/session-suspend-disabled.png": "0b171a865f0f8b25ff6b5126a202ce714194b43e0f63aed51dc71187350bedcf",
+    "default-config/icons/slate-light-normal/memory.png": "2209bfacebcb4d96a80747722408b4446c34bc7ece271928c3df7c6127b220e0",
+    "default-config/icons/slate-light-normal/network.png": "b531c70a0ad8afb6baf34a4d87465b6aa986b540cf2f3dbb63634706fa910795",
+    "default-config/icons/slate-light-normal/session-logout.png": "a11c375e44f23d767c1eea3b6c8694065ae1a1cdf239993b30b47bb4760a85dd",
+    "default-config/icons/slate-light-normal/appearance.png": "1b2e3e5453450fba1afddb524fa79c08d66a6b7ae6ba723c4a69b32e529e6437",
+    "default-config/icons/dune-light-selected/cpu.png": "eebf5d4dc90af935ca1afdd88212ff0aa0a6c232050c511ad5733ac979cf924d",
+    "default-config/icons/dune-light-selected/session-hibernate.png": "388f6c233535642b55fe62de3d2a33521c1fb6e85c9ae815051f76984c3c4b1f",
+    "default-config/icons/dune-light-selected/battery.png": "4f17ccb7497d91a976c9a60f3f5201ac7b92aa3e680f8d3dbe90aabc634e1582",
+    "default-config/icons/dune-light-selected/session-restart.png": "da344b9ce89ff9b340447708ef9ba5493bd39a58ba9795a79b983c75339e5b54",
+    "default-config/icons/dune-light-selected/apps.png": "24a3e953dabd57f3f0792e6ab330a71f4fb1371c0bc3445aaa9262ff9ee5bc4f",
+    "default-config/icons/dune-light-selected/settings.png": "a64fa579364bd66e684a484c8398f6c24c5cc37483660e2e15419e8ab13bf6ce",
+    "default-config/icons/dune-light-selected/terminal.png": "485a57cd5999c553f02df339e49c3404df2ea68a616b891b4b350dcffa0a6bfe",
+    "default-config/icons/dune-light-selected/session.png": "1bc09dd033499114e8ff9b13892ccad8348527f8d2c5480c80a489a047e1ca0a",
+    "default-config/icons/dune-light-selected/session-poweroff.png": "21a09eba92b8aca315ee641d3e56f279e423ea53d2c547db19324b6d7ce858e5",
+    "default-config/icons/dune-light-selected/session-suspend.png": "78ffa118e7384ab418bc1770af3d36f9858d7322729a1deee5dfea612953b147",
+    "default-config/icons/dune-light-selected/session-lock.png": "457f1daa58bcf09142bd10a70ec6bfa63418a3abb59bb06cc38d8b11a4e4be51",
+    "default-config/icons/dune-light-selected/sound.png": "f6f1913cc14c71cbdbd5e8167ccdc42c57733a767043d82ae7d6844ec31868df",
+    "default-config/icons/dune-light-selected/search.png": "ee5571cfd357f33d5d8fdb2231aa70a56d4f2287bd2074455614df021c9d23d1",
+    "default-config/icons/dune-light-selected/window.png": "f3bf96f5c99da542364c1d30a54057e0fd077fb190302730cab7ae98c8e6aac6",
+    "default-config/icons/dune-light-selected/session-reboot.png": "fd786638aba5ed1a3d9daca4c577f3be57c6d2e7bc8e69f95daacaa452ad63d6",
+    "default-config/icons/dune-light-selected/memory.png": "4f8098f8d8fe2da2cde1b1ba66e5d8e5d63060ac1f0bece0095d6b0c3cb30f6d",
+    "default-config/icons/dune-light-selected/network.png": "ac24a1063b031a6eab0014614a42ceb6cb8b1b5b30eaa5795742b199deefce75",
+    "default-config/icons/dune-light-selected/session-logout.png": "5465310058edb3f0d7f38c01cf48d9954ae1bf2312e5617a8351b2cc42b8d545",
+    "default-config/icons/dune-light-selected/appearance.png": "adf7bb74aa42743b93a745c2138cf0c1237f46bb2252920320a442b70fae4929",
+    "default-config/icons/slate-dark-selected/cpu.png": "390784b6cdc85b54a9476c886daee403301d4a08564122391e7217c7286e03ff",
+    "default-config/icons/slate-dark-selected/session-hibernate.png": "99a4273f407615b3d6ed994ac06c9ba696cc4d39c47f9ca3a9758f4d7a7adda0",
+    "default-config/icons/slate-dark-selected/battery.png": "0ee97257c9ef721fc320d16b22fb49887b76668b7335e5172cef762e20fb9191",
+    "default-config/icons/slate-dark-selected/session-restart.png": "23623a2903aa40afadb1e9588fcd68cb717b2728976cf4a70d84e9d3a7737f00",
+    "default-config/icons/slate-dark-selected/apps.png": "5e2ed7fd63192e78dbce33eb05565b22b8f03289776d60563a349d4626c6650b",
+    "default-config/icons/slate-dark-selected/settings.png": "f922ebd6c2ebbe6c632b68e061a5c789125cc3c083f9c125901abc0a99b92828",
+    "default-config/icons/slate-dark-selected/terminal.png": "ed4e6aaa801a3fa98b1c52a9033e9295e3b16a766228b7167e1d267885330183",
+    "default-config/icons/slate-dark-selected/session.png": "26ab084d4ccfeaf44e8a3dcd34971a0e0526baae4297ab5d69cd121acd096c09",
+    "default-config/icons/slate-dark-selected/session-poweroff.png": "bfcbc94ee59945ca72236be9b87d6ce34a66ab67b2f44144fc334c35ec541cce",
+    "default-config/icons/slate-dark-selected/session-suspend.png": "dd0f1ef484407ee50383070ca475bbc9c22cb7cf09ee3798e24d9f0807308a2a",
+    "default-config/icons/slate-dark-selected/session-lock.png": "87e56412979c956c1989097faaee8cfcd393499313ee761c6e69cb1d59296506",
+    "default-config/icons/slate-dark-selected/sound.png": "71cac61740bfbb9dac5533c8d1eed5c69787cd4f6e63d533767831609ecc7d0d",
+    "default-config/icons/slate-dark-selected/search.png": "d77b682a74d3329c58944054580867b4462de930b1d8f4eae50466a994fa1af3",
+    "default-config/icons/slate-dark-selected/window.png": "0ca792f97ab554e6c1e33f938934e8a30bc4d584c9ee39adb7aca78850deb95a",
+    "default-config/icons/slate-dark-selected/session-reboot.png": "ddec73b1b53f0cf8b21e9ea8aed61c78236b935aeaa93e409b00d797c9bc30e6",
+    "default-config/icons/slate-dark-selected/memory.png": "183d7836b27d391c6b66d20d1e1ba40c03c90658aec56e716cf268f7e56efeca",
+    "default-config/icons/slate-dark-selected/network.png": "752ce046c6de72a3b8368ea30d6139ee8ff9386a6b9550d046d8a93d2bd637bc",
+    "default-config/icons/slate-dark-selected/session-logout.png": "f49413bf90738489e9a01ffd9ea369ed600fa51aa52f81db9d510bec892a4bb9",
+    "default-config/icons/slate-dark-selected/appearance.png": "cbd762ed957fc0a86bb78f222bdc71311aa1d35698c067e6eaa0e6aef75b8419",
+    "default-config/icons/ink-light-selected/cpu.png": "eebf5d4dc90af935ca1afdd88212ff0aa0a6c232050c511ad5733ac979cf924d",
+    "default-config/icons/ink-light-selected/session-hibernate.png": "388f6c233535642b55fe62de3d2a33521c1fb6e85c9ae815051f76984c3c4b1f",
+    "default-config/icons/ink-light-selected/battery.png": "4f17ccb7497d91a976c9a60f3f5201ac7b92aa3e680f8d3dbe90aabc634e1582",
+    "default-config/icons/ink-light-selected/session-restart.png": "da344b9ce89ff9b340447708ef9ba5493bd39a58ba9795a79b983c75339e5b54",
+    "default-config/icons/ink-light-selected/apps.png": "24a3e953dabd57f3f0792e6ab330a71f4fb1371c0bc3445aaa9262ff9ee5bc4f",
+    "default-config/icons/ink-light-selected/settings.png": "a64fa579364bd66e684a484c8398f6c24c5cc37483660e2e15419e8ab13bf6ce",
+    "default-config/icons/ink-light-selected/terminal.png": "485a57cd5999c553f02df339e49c3404df2ea68a616b891b4b350dcffa0a6bfe",
+    "default-config/icons/ink-light-selected/session.png": "1bc09dd033499114e8ff9b13892ccad8348527f8d2c5480c80a489a047e1ca0a",
+    "default-config/icons/ink-light-selected/session-poweroff.png": "21a09eba92b8aca315ee641d3e56f279e423ea53d2c547db19324b6d7ce858e5",
+    "default-config/icons/ink-light-selected/session-suspend.png": "78ffa118e7384ab418bc1770af3d36f9858d7322729a1deee5dfea612953b147",
+    "default-config/icons/ink-light-selected/session-lock.png": "457f1daa58bcf09142bd10a70ec6bfa63418a3abb59bb06cc38d8b11a4e4be51",
+    "default-config/icons/ink-light-selected/sound.png": "f6f1913cc14c71cbdbd5e8167ccdc42c57733a767043d82ae7d6844ec31868df",
+    "default-config/icons/ink-light-selected/search.png": "ee5571cfd357f33d5d8fdb2231aa70a56d4f2287bd2074455614df021c9d23d1",
+    "default-config/icons/ink-light-selected/window.png": "f3bf96f5c99da542364c1d30a54057e0fd077fb190302730cab7ae98c8e6aac6",
+    "default-config/icons/ink-light-selected/session-reboot.png": "fd786638aba5ed1a3d9daca4c577f3be57c6d2e7bc8e69f95daacaa452ad63d6",
+    "default-config/icons/ink-light-selected/memory.png": "4f8098f8d8fe2da2cde1b1ba66e5d8e5d63060ac1f0bece0095d6b0c3cb30f6d",
+    "default-config/icons/ink-light-selected/network.png": "ac24a1063b031a6eab0014614a42ceb6cb8b1b5b30eaa5795742b199deefce75",
+    "default-config/icons/ink-light-selected/session-logout.png": "5465310058edb3f0d7f38c01cf48d9954ae1bf2312e5617a8351b2cc42b8d545",
+    "default-config/icons/ink-light-selected/appearance.png": "adf7bb74aa42743b93a745c2138cf0c1237f46bb2252920320a442b70fae4929",
+    "default-config/icons/dune-dark-selected/cpu.png": "242f6faae12a9261ffbc5e5fc2a69b8aa8f97d4d5a70b77d1f61429038e4f919",
+    "default-config/icons/dune-dark-selected/session-hibernate.png": "6cbdd6d7e0782cc6024574cf8a34d3d54927e5ad40362feb6b84d01a4b46789d",
+    "default-config/icons/dune-dark-selected/battery.png": "bd50bd96ab39ea64dcba823fc33a452c458882849c3dd95b01b88fab208cfe37",
+    "default-config/icons/dune-dark-selected/session-restart.png": "d61960f7765f1b6ed6843faf07b3dc794d1be9b782166f6b4f5d444b05c65924",
+    "default-config/icons/dune-dark-selected/apps.png": "d9b2eacc58c8f53d533887ae28659da2fc1c2cb6c3947c4839bdf0949d22d1a7",
+    "default-config/icons/dune-dark-selected/settings.png": "9bd063a44453a6251efee3499e50be481fc9584afd1ba7534d35592c24a7fd12",
+    "default-config/icons/dune-dark-selected/terminal.png": "891ce4ec19b7e5437c91868e1cc3d8ff71bf8067f3cc4bb8b80d58ea473e187c",
+    "default-config/icons/dune-dark-selected/session.png": "ca05f08d18c60cb2736d61e88ce80d7786e0430a123ad251e33568fec6ee0758",
+    "default-config/icons/dune-dark-selected/session-poweroff.png": "e2f608d6b0eb881bc0c315fd51cf9e718e0cc77024d2124f8f53d0ae7b2be096",
+    "default-config/icons/dune-dark-selected/session-suspend.png": "010262772323b079b1c8e16b90c43aa44ed122ab5677a4565ac25b21e1985858",
+    "default-config/icons/dune-dark-selected/session-lock.png": "2edb547a41d9f0aec1f8a547c9b34035b371121d5b2cef95e18068f99c7995e1",
+    "default-config/icons/dune-dark-selected/sound.png": "9e3f59a62d401f683629be8145b0bb4fe4e459ffd8a3c6b2fc546bff2acc17e8",
+    "default-config/icons/dune-dark-selected/search.png": "d98235d7c9a696e03e151762e031afb72168c585a0cc00cde16da2a432bf2a0f",
+    "default-config/icons/dune-dark-selected/window.png": "b76edcc5f42eeb0bf0031e725c8fa68adfad342e3a7ab756fabaee9e402c9c00",
+    "default-config/icons/dune-dark-selected/session-reboot.png": "cbfd6e29b77d103abde332b11fd274df6235ef3a463d4afedc752cfbdf957251",
+    "default-config/icons/dune-dark-selected/memory.png": "0e937f55fc2eabc84e29179c6bfbe99af221ec762e21bb314c6c361d64387c16",
+    "default-config/icons/dune-dark-selected/network.png": "df654ca3554ef442e26217c701224b9031a3d3106ff9664b2364093d78ec5fcc",
+    "default-config/icons/dune-dark-selected/session-logout.png": "b974e37a4a9a28c269fa2bf5757d1065ba91295a8b9f7bf85b145f92304c0e80",
+    "default-config/icons/dune-dark-selected/appearance.png": "5fce2dc3e944e7153cc76f1292610c259cb016ecf9267ec1d1ffc9100e353689",
+    "default-config/icons/dune-light-normal/session-reboot-disabled.png": "1012dc49f6db603d8b825684026508129f3a355302d77f99420d71950874b801",
+    "default-config/icons/dune-light-normal/cpu.png": "c5df40eefcadad37fb5f122852bd1cd414cb9ce065b2a7b84a7073a30a5fa2a5",
+    "default-config/icons/dune-light-normal/session-hibernate.png": "aec033737c600d9f5a3f1d3cc8f92b7e2d74d695330fa6b92d509edcc7eb7203",
+    "default-config/icons/dune-light-normal/battery.png": "84b85d7f6bd9f5587e3b0090b5d1477a9b0dfbaff06bcddb481145869212b468",
+    "default-config/icons/dune-light-normal/session-restart.png": "16c804757da66308fca8c12a7dd93d49fb61ecd346b81e4af234da531ba9adb9",
+    "default-config/icons/dune-light-normal/session-logout-disabled.png": "a66cbb67c90497066d866a80c35417e1b3d7fda8db42fd16e22226f51233922c",
+    "default-config/icons/dune-light-normal/apps.png": "4e03b69f8340145bc4f4bf4e3ebc38194ddf73bc6a22ad42a919b9d286f9fa9d",
+    "default-config/icons/dune-light-normal/settings.png": "b5fd1c45339827d462ad44e1fedd4b8491737bcb62aaf50495c28e1749b0e93c",
+    "default-config/icons/dune-light-normal/terminal.png": "aaced3e466e676734ba3014e4d93b404e2b63bfcf0c2e2cc981e75e0848e6740",
+    "default-config/icons/dune-light-normal/session.png": "c2dafb3bdfb56b8ef18b491b8e8aaaf21c460fc52d703c178a72be201e407d77",
+    "default-config/icons/dune-light-normal/session-poweroff.png": "c7c9b5566c113f73ab0a43f60341b561939b82175a877ff4bb946834a31e7b23",
+    "default-config/icons/dune-light-normal/session-suspend.png": "f788a91df173f1e4210e29713a6e6946c1b0c6d13a850b3ebf812a05ef492718",
+    "default-config/icons/dune-light-normal/session-lock.png": "db89e7f7316a0bba5c2a925027b1d708b5c89085ec1fbb49b01fc31ba967492f",
+    "default-config/icons/dune-light-normal/sound.png": "91ae720dfb7e67910fbb92413783c75669a05bfeb1f0c29480a2bfe9b82339d0",
+    "default-config/icons/dune-light-normal/search.png": "c9e36dedd89cd5e15add3161606a71b7bfd23eebf629703d54029fd69c27f3bf",
+    "default-config/icons/dune-light-normal/session-poweroff-disabled.png": "0566d17314884ea3817ff9bd2eeb07fb11960989fcb3187de7cdcc3bfac4504d",
+    "default-config/icons/dune-light-normal/session-restart-disabled.png": "8901bbb20defcd5fd3a21972aadc2f7562d1d1ac10c353013ad51470a150272a",
+    "default-config/icons/dune-light-normal/window.png": "a059ec7b7042af4bd52f63ce2789cbf4904975974d4f5ebe73449bb928e39466",
+    "default-config/icons/dune-light-normal/session-hibernate-disabled.png": "d74446d028f1d621fc0ec03ad3b91525545d445b733fb568d9aaf13f92288eca",
+    "default-config/icons/dune-light-normal/session-lock-disabled.png": "4a9ba08c65689c68e5410b1ba503450aa2b51bd8fc67b04deb2d7df5a735c399",
+    "default-config/icons/dune-light-normal/session-reboot.png": "b565610a81164c594aeb64d5c9523629f85207c537c51f8ac9b938cf3bd8dc14",
+    "default-config/icons/dune-light-normal/session-suspend-disabled.png": "9b11f0d5c1653f9a7f95491be1b7b3d134a23afc7b0e16bfb1852cd061e17227",
+    "default-config/icons/dune-light-normal/memory.png": "7760c7f8b4585ae2bbd7f3026623e3d3488504328960b6235e6c7c464abef113",
+    "default-config/icons/dune-light-normal/network.png": "2d286e173cde1d2204e0f981bab2bedccfcc91290f9c85738377dfa2b29818ae",
+    "default-config/icons/dune-light-normal/session-logout.png": "db714a35413e3aa8da5b0db15decaabd8c06bf5cc446a802ae6800958a3cf600",
+    "default-config/icons/dune-light-normal/appearance.png": "2b59218a3556671ea1a9d6d37e506fb2a6c861765d1e6e3782c6e893ae5eb864",
+    "default-config/icons/ink-dark-normal/session-reboot-disabled.png": "539849afe669473379f774563ff9cf1d02e2719c470ef095799fe358165c66c8",
+    "default-config/icons/ink-dark-normal/cpu.png": "0d91993855c4046079d18e27a28309e382480dbfdddf497ab31d100c5cadb13c",
+    "default-config/icons/ink-dark-normal/session-hibernate.png": "4d7fa7c41fbe65aa6d2bef58571957c972e925d60c5187949037c28f43b023ab",
+    "default-config/icons/ink-dark-normal/battery.png": "86b875ea84405fece7384faa52579895f56a53603f41525a46793c0e81033986",
+    "default-config/icons/ink-dark-normal/session-restart.png": "a1bc011eccf5fa06a5785b0681f16c2bb00f9f3fd34057520ff043eee30f9273",
+    "default-config/icons/ink-dark-normal/session-logout-disabled.png": "f7d60d9bb197b4a5aa9196e69c092fe24e13c14f0b872c017149d5e7a1d12ead",
+    "default-config/icons/ink-dark-normal/apps.png": "457757adde2ef5ca625559e01f10ede3ba65be4d9b745e4e95b1e296e56e2c10",
+    "default-config/icons/ink-dark-normal/settings.png": "db5ee19abbeaceb1b1c9e04be341fc12ad4225bd2ecd4841c3afe7eb08b18624",
+    "default-config/icons/ink-dark-normal/terminal.png": "9641410b67885e46a56776ad10044682309b2fd4a1f68b91eff9226ce58b708b",
+    "default-config/icons/ink-dark-normal/session.png": "ffa10b583e40d689da17329f52ba8ade1cebf5b29741accc1e61ffbe133d1bf9",
+    "default-config/icons/ink-dark-normal/session-poweroff.png": "19cafc4c82b0de5632e5a90bf6361e901b58967c23bffc8e35f1442430f8b582",
+    "default-config/icons/ink-dark-normal/session-suspend.png": "3887c840959f896f7b021accec13329e9ee0dd3614553bd5e8cd37bb8a825562",
+    "default-config/icons/ink-dark-normal/session-lock.png": "b49cc66ff7ad8d230f20669cb77104e8b931f179ec661edb4e1eea42ed8cdb60",
+    "default-config/icons/ink-dark-normal/sound.png": "80f4b06a57303066375b7e956f31142311785e324372b67f6f3dad84ffd8d4d6",
+    "default-config/icons/ink-dark-normal/search.png": "49b805fd47eb337b6a266be56737d6f28af1673242e9a054af1ddcacebc1c9c8",
+    "default-config/icons/ink-dark-normal/session-poweroff-disabled.png": "8b02e3259ddf0766fdcc23b126a2572ba195c2f310e6d6fc15fc24b185a5ede8",
+    "default-config/icons/ink-dark-normal/session-restart-disabled.png": "f865cc6d4f07cbaf72e14080e7b8529a818dbc3593bc7501012232a2b615a8f4",
+    "default-config/icons/ink-dark-normal/window.png": "23fce7e53b92ebf22abc9f987179503d5d06c083a4d67039ab41fb63375dbb81",
+    "default-config/icons/ink-dark-normal/session-hibernate-disabled.png": "f1c893a43dbda1c536312900fba9f0c1a1979d6255f3bd9f45f6ec3ffea94be3",
+    "default-config/icons/ink-dark-normal/session-lock-disabled.png": "63442e41baa6590316deca12fabfb45c7767ae5f4fdd25a126ab1d5779fab197",
+    "default-config/icons/ink-dark-normal/session-reboot.png": "c91e87c1aeb9a3e53a2dd3f18605cde1944bcb14c3ae4b8a285ff6867d202f4b",
+    "default-config/icons/ink-dark-normal/session-suspend-disabled.png": "4f535accd56173561fcadb4b94ae31297d160429a6a1b562291287f81d557cbb",
+    "default-config/icons/ink-dark-normal/memory.png": "536724463188711fca1ed41aa0c9b6ff4664e1188c72687d1c5dcfc7f97e0023",
+    "default-config/icons/ink-dark-normal/network.png": "8cff4e783c008b0d5ddd5b0f49ad758f17b5316de91b0c01c11476764440ee27",
+    "default-config/icons/ink-dark-normal/session-logout.png": "149254661c9331389373a506a1574628fd05a190984cce91558aafc3b891a313",
+    "default-config/icons/ink-dark-normal/appearance.png": "fdfa4b9d5a24c967401df9f66a01bddfafd49a0bfdaf1a50b50145a63a63722b",
+    "default-config/icons/grove-light-selected/cpu.png": "eebf5d4dc90af935ca1afdd88212ff0aa0a6c232050c511ad5733ac979cf924d",
+    "default-config/icons/grove-light-selected/session-hibernate.png": "388f6c233535642b55fe62de3d2a33521c1fb6e85c9ae815051f76984c3c4b1f",
+    "default-config/icons/grove-light-selected/battery.png": "4f17ccb7497d91a976c9a60f3f5201ac7b92aa3e680f8d3dbe90aabc634e1582",
+    "default-config/icons/grove-light-selected/session-restart.png": "da344b9ce89ff9b340447708ef9ba5493bd39a58ba9795a79b983c75339e5b54",
+    "default-config/icons/grove-light-selected/apps.png": "24a3e953dabd57f3f0792e6ab330a71f4fb1371c0bc3445aaa9262ff9ee5bc4f",
+    "default-config/icons/grove-light-selected/settings.png": "a64fa579364bd66e684a484c8398f6c24c5cc37483660e2e15419e8ab13bf6ce",
+    "default-config/icons/grove-light-selected/terminal.png": "485a57cd5999c553f02df339e49c3404df2ea68a616b891b4b350dcffa0a6bfe",
+    "default-config/icons/grove-light-selected/session.png": "1bc09dd033499114e8ff9b13892ccad8348527f8d2c5480c80a489a047e1ca0a",
+    "default-config/icons/grove-light-selected/session-poweroff.png": "21a09eba92b8aca315ee641d3e56f279e423ea53d2c547db19324b6d7ce858e5",
+    "default-config/icons/grove-light-selected/session-suspend.png": "78ffa118e7384ab418bc1770af3d36f9858d7322729a1deee5dfea612953b147",
+    "default-config/icons/grove-light-selected/session-lock.png": "457f1daa58bcf09142bd10a70ec6bfa63418a3abb59bb06cc38d8b11a4e4be51",
+    "default-config/icons/grove-light-selected/sound.png": "f6f1913cc14c71cbdbd5e8167ccdc42c57733a767043d82ae7d6844ec31868df",
+    "default-config/icons/grove-light-selected/search.png": "ee5571cfd357f33d5d8fdb2231aa70a56d4f2287bd2074455614df021c9d23d1",
+    "default-config/icons/grove-light-selected/window.png": "f3bf96f5c99da542364c1d30a54057e0fd077fb190302730cab7ae98c8e6aac6",
+    "default-config/icons/grove-light-selected/session-reboot.png": "fd786638aba5ed1a3d9daca4c577f3be57c6d2e7bc8e69f95daacaa452ad63d6",
+    "default-config/icons/grove-light-selected/memory.png": "4f8098f8d8fe2da2cde1b1ba66e5d8e5d63060ac1f0bece0095d6b0c3cb30f6d",
+    "default-config/icons/grove-light-selected/network.png": "ac24a1063b031a6eab0014614a42ceb6cb8b1b5b30eaa5795742b199deefce75",
+    "default-config/icons/grove-light-selected/session-logout.png": "5465310058edb3f0d7f38c01cf48d9954ae1bf2312e5617a8351b2cc42b8d545",
+    "default-config/icons/grove-light-selected/appearance.png": "adf7bb74aa42743b93a745c2138cf0c1237f46bb2252920320a442b70fae4929",
+    "default-config/icons/grove-light-normal/session-reboot-disabled.png": "f48659a59fa83e6391c6f32d78c911c4b22388b0986068e6e75c313694d8be28",
+    "default-config/icons/grove-light-normal/cpu.png": "74f0a9ed858955e6fcd4175bdaeee8bf8dcc97076caa7fe89f8391c4aad67629",
+    "default-config/icons/grove-light-normal/session-hibernate.png": "fb0126110563043ceed2f18e5739c4f1c87016131c93b8fc5d51f9b4dd9885f6",
+    "default-config/icons/grove-light-normal/battery.png": "50156f1de1f138f9f5775a38bb90b19c9f92a28bf83914ba9fa88fdd02b2a628",
+    "default-config/icons/grove-light-normal/session-restart.png": "b4ef9c6845e1ba29424df5f9099ab4a89c2e768f9d6e87b74b30866d3eae9f70",
+    "default-config/icons/grove-light-normal/session-logout-disabled.png": "d86139ed842485e4d7ed68a9b773bf564878b48adec01b5071504c36fb4eb3ff",
+    "default-config/icons/grove-light-normal/apps.png": "ed193255a00eaeab8108ffd8bd0e577da2305114983a409d7e51f0c794861c38",
+    "default-config/icons/grove-light-normal/settings.png": "94acbc8dad16e32ea220e595ceb51970095c339cbc97faead37dda769e5f331e",
+    "default-config/icons/grove-light-normal/terminal.png": "73cfed2e04bb2afe0df53fe4efcb577eac06dafa1fec80e5c0850c62453c3f26",
+    "default-config/icons/grove-light-normal/session.png": "728edd388b4d1da41c5facf1530f74071c6f09a5ed8f2f1c33a99c2e19fde658",
+    "default-config/icons/grove-light-normal/session-poweroff.png": "1dde4acf2463f83103d93c76392c30d09239abee2e90eaba231ddb04c1051b0b",
+    "default-config/icons/grove-light-normal/session-suspend.png": "a3ffc4cadc19663e6e9b3bba7f23eb6eeac7215d2cbbd0b16db25f6b50cec7e2",
+    "default-config/icons/grove-light-normal/session-lock.png": "a27c8eabbccfe058261bba4cf87d59297934746ff303e710b85fe86a16a60c9f",
+    "default-config/icons/grove-light-normal/sound.png": "c920ccd7af71ba7698a5d7408bd2baaa53c9c25be2dc832567af750e91b798b5",
+    "default-config/icons/grove-light-normal/search.png": "c122f3a33764c6e5196af12935c4521955048dcb7aab42c7cf6e8eb9731cc3ef",
+    "default-config/icons/grove-light-normal/session-poweroff-disabled.png": "23fe7320bc24fb6b2e7b9a58b1a86ca396ad56ff03e4c53f9b274ca056148783",
+    "default-config/icons/grove-light-normal/session-restart-disabled.png": "06dc40246af1bebe8b1e450e7215921840c8021bf3071fdfdc88a084f4531487",
+    "default-config/icons/grove-light-normal/window.png": "279e80f369f09096ebd1e221b6436ddade781fa0c065804521b64098c728541f",
+    "default-config/icons/grove-light-normal/session-hibernate-disabled.png": "40f329982da089f92fb57bba5503b224eecfde65391144dd0155ce32c7ac00bb",
+    "default-config/icons/grove-light-normal/session-lock-disabled.png": "b1c92aba25de412efb6fe9f41b5d26de81cd45a08db6b931eb8e98953f68d45d",
+    "default-config/icons/grove-light-normal/session-reboot.png": "84418e07347bab72ca1da9c4a83178c8b293846ba6b9223b372309a1a0f5f988",
+    "default-config/icons/grove-light-normal/session-suspend-disabled.png": "1ac05098b3c3fcb088eaf70e65c32daa991647631e5a4ca5a0b465c1d48a9c07",
+    "default-config/icons/grove-light-normal/memory.png": "61b572f0eb943d2615cac32aeb668ac1a440fe7591f816cf8feba37db33767da",
+    "default-config/icons/grove-light-normal/network.png": "d846992ea8cbb03d0f196dffcd720f8540f597216484f742f3f7a62791901d64",
+    "default-config/icons/grove-light-normal/session-logout.png": "bcf3945ed97f471dd944b240424cae7849d5b9212785e7ee195bbc0ad25a87a3",
+    "default-config/icons/grove-light-normal/appearance.png": "c8dd803a8f2153ba24c5b8eb66bc1d387e902b99d16ada94f0823e3695556ad2"
+  },
+  "changed_icons": [
+    "default-config/icons/dune-light-normal/session-hibernate-disabled.png",
+    "default-config/icons/dune-light-normal/session-lock-disabled.png",
+    "default-config/icons/dune-light-normal/session-logout-disabled.png",
+    "default-config/icons/dune-light-normal/session-poweroff-disabled.png",
+    "default-config/icons/dune-light-normal/session-reboot-disabled.png",
+    "default-config/icons/dune-light-normal/session-restart-disabled.png",
+    "default-config/icons/dune-light-normal/session-suspend-disabled.png",
+    "default-config/icons/grove-light-normal/session-hibernate-disabled.png",
+    "default-config/icons/grove-light-normal/session-lock-disabled.png",
+    "default-config/icons/grove-light-normal/session-logout-disabled.png",
+    "default-config/icons/grove-light-normal/session-poweroff-disabled.png",
+    "default-config/icons/grove-light-normal/session-reboot-disabled.png",
+    "default-config/icons/grove-light-normal/session-restart-disabled.png",
+    "default-config/icons/grove-light-normal/session-suspend-disabled.png",
+    "default-config/icons/ink-light-normal/session-hibernate-disabled.png",
+    "default-config/icons/ink-light-normal/session-lock-disabled.png",
+    "default-config/icons/ink-light-normal/session-logout-disabled.png",
+    "default-config/icons/ink-light-normal/session-poweroff-disabled.png",
+    "default-config/icons/ink-light-normal/session-reboot-disabled.png",
+    "default-config/icons/ink-light-normal/session-restart-disabled.png",
+    "default-config/icons/ink-light-normal/session-suspend-disabled.png"
+  ],
+  "bootstrap_text_pairs": [
+    {
+      "colorset": 0,
+      "fg": "#e5edf0",
+      "bg": "#202a31",
+      "ratio": 12.320203839524467
+    },
+    {
+      "colorset": 1,
+      "fg": "#a8b6be",
+      "bg": "#202a31",
+      "ratio": 7.028552400017397
+    },
+    {
+      "colorset": 2,
+      "fg": "#e5edf0",
+      "bg": "#26343d",
+      "ratio": 10.788292399481064
+    },
+    {
+      "colorset": 5,
+      "fg": "#e5edf0",
+      "bg": "#202a31",
+      "ratio": 12.320203839524467
+    },
+    {
+      "colorset": 6,
+      "fg": "#122128",
+      "bg": "#63b7bb",
+      "ratio": 7.081778770840406
+    },
+    {
+      "colorset": 7,
+      "fg": "#a8b6be",
+      "bg": "#202a31",
+      "ratio": 7.028552400017397
+    },
+    {
+      "colorset": 8,
+      "fg": "#63b7bb",
+      "bg": "#202a31",
+      "ratio": 6.278219903965391
+    },
+    {
+      "colorset": 10,
+      "fg": "#e5edf0",
+      "bg": "#202a31",
+      "ratio": 12.320203839524467
+    },
+    {
+      "colorset": 11,
+      "fg": "#122128",
+      "bg": "#63b7bb",
+      "ratio": 7.081778770840406
+    },
+    {
+      "colorset": 12,
+      "fg": "#e5edf0",
+      "bg": "#26343d",
+      "ratio": 10.788292399481064
+    },
+    {
+      "colorset": 13,
+      "fg": "#122128",
+      "bg": "#63b7bb",
+      "ratio": 7.081778770840406
+    },
+    {
+      "colorset": 14,
+      "fg": "#a8b6be",
+      "bg": "#202a31",
+      "ratio": 7.028552400017397
+    },
+    {
+      "colorset": 15,
+      "fg": "#e5edf0",
+      "bg": "#26343d",
+      "ratio": 10.788292399481064
+    },
+    {
+      "colorset": 16,
+      "fg": "#a8b6be",
+      "bg": "#26343d",
+      "ratio": 6.154612328182778
+    },
+    {
+      "colorset": 17,
+      "fg": "#e9bf72",
+      "bg": "#202a31",
+      "ratio": 8.462381631665366
+    },
+    {
+      "colorset": 18,
+      "fg": "#f28b86",
+      "bg": "#202a31",
+      "ratio": 6.132945092872036
+    },
+    {
+      "colorset": 19,
+      "fg": "#a3d7ad",
+      "bg": "#202a31",
+      "ratio": 8.964053681230252
+    },
+    {
+      "colorset": 21,
+      "fg": "#122128",
+      "bg": "#76bfc3",
+      "ratio": 7.858260212644522
+    },
+    {
+      "colorset": 22,
+      "fg": "#122128",
+      "bg": "#63b7bb",
+      "ratio": 7.081778770840406
+    }
+  ]
+}

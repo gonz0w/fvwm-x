@@ -1,0 +1,1507 @@
+{
+  "date": "2026-10-05",
+  "scope": "Documentation relocation; content retained, Markdown links rebased. Original bytes preserved in the migration snapshot.",
+  "moves": [
+    {
+      "path": ".planning/REQUIREMENTS.md",
+      "sha256": "4101c7ab652bfd3dd2cc84fc0086ff01ea41c24bf847712b1f86135ae72ecb50",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/REQUIREMENTS.md",
+      "migrated_sha256": "4101c7ab652bfd3dd2cc84fc0086ff01ea41c24bf847712b1f86135ae72ecb50",
+      "current_sha256": "4101c7ab652bfd3dd2cc84fc0086ff01ea41c24bf847712b1f86135ae72ecb50"
+    },
+    {
+      "path": ".planning/state.json",
+      "sha256": "ec728050edd40be8255ebbdf4c0657d67c1a114c950bcd745b747f99c8f1f4d2",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/state.json",
+      "migrated_sha256": "ec728050edd40be8255ebbdf4c0657d67c1a114c950bcd745b747f99c8f1f4d2",
+      "current_sha256": "ec728050edd40be8255ebbdf4c0657d67c1a114c950bcd745b747f99c8f1f4d2"
+    },
+    {
+      "path": ".planning/config.json",
+      "sha256": "86e8e74a95a1d7213f5bef59a73635695c717101836b5680ec107a906e660874",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/config.json",
+      "migrated_sha256": "86e8e74a95a1d7213f5bef59a73635695c717101836b5680ec107a906e660874",
+      "current_sha256": "86e8e74a95a1d7213f5bef59a73635695c717101836b5680ec107a906e660874"
+    },
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "fdb19ddb16adb2171b97d86edf17166741ca001bb4574995226a45d73f871fb0",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/PROJECT.md",
+      "migrated_sha256": "f67b51fcdf1601f88cc5fd9ce933ddabe914ec7e3304bf707986c3a956c931e6",
+      "current_sha256": "f67b51fcdf1601f88cc5fd9ce933ddabe914ec7e3304bf707986c3a956c931e6"
+    },
+    {
+      "path": ".planning/STATE.md",
+      "sha256": "141b8c90abc119c92d1a7c0e5df98a83789802b994d03c3f9aa4f4756b7e09af",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/STATE.md",
+      "migrated_sha256": "7bf43ffed1a0b8d622b6af3e3f2a8bf01fa8ab5ba2d2050bc6bb97b01aee6022",
+      "current_sha256": "7bf43ffed1a0b8d622b6af3e3f2a8bf01fa8ab5ba2d2050bc6bb97b01aee6022"
+    },
+    {
+      "path": ".planning/WINDOWS.md",
+      "sha256": "ea4ad7a45ecc1a1a2463a62d2d5d9daab50e9709c32e9aeee0f681f1f6ffe299",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/WINDOWS.md",
+      "migrated_sha256": "ea4ad7a45ecc1a1a2463a62d2d5d9daab50e9709c32e9aeee0f681f1f6ffe299",
+      "current_sha256": "ea4ad7a45ecc1a1a2463a62d2d5d9daab50e9709c32e9aeee0f681f1f6ffe299"
+    },
+    {
+      "path": ".planning/ROADMAP.md",
+      "sha256": "a9acb2743b96bb9e98d545135611dd8444a68320f9a945dfa9ce0bb9212f56d6",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/ROADMAP.md",
+      "migrated_sha256": "a9acb2743b96bb9e98d545135611dd8444a68320f9a945dfa9ce0bb9212f56d6",
+      "current_sha256": "a9acb2743b96bb9e98d545135611dd8444a68320f9a945dfa9ce0bb9212f56d6"
+    },
+    {
+      "path": ".planning/milestone.lock",
+      "sha256": "3dd815a4d24b61a5378fc2693f345963741fb68607071239f1420de5cad4afb5",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/milestone.lock",
+      "migrated_sha256": "3dd815a4d24b61a5378fc2693f345963741fb68607071239f1420de5cad4afb5",
+      "current_sha256": "3dd815a4d24b61a5378fc2693f345963741fb68607071239f1420de5cad4afb5"
+    },
+    {
+      "path": ".planning/research/STACK.md",
+      "sha256": "5fc2ded7cb998eceaf9a04d21eafa85cd402d1fef810c83655db1458e6054bea",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/research/STACK.md",
+      "migrated_sha256": "5fc2ded7cb998eceaf9a04d21eafa85cd402d1fef810c83655db1458e6054bea",
+      "current_sha256": "5fc2ded7cb998eceaf9a04d21eafa85cd402d1fef810c83655db1458e6054bea"
+    },
+    {
+      "path": ".planning/research/ARCHITECTURE.md",
+      "sha256": "af104201bd1e42415c1a4e658c18782272984f9948c476e8dbf430a339cb06e4",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/research/ARCHITECTURE.md",
+      "migrated_sha256": "af104201bd1e42415c1a4e658c18782272984f9948c476e8dbf430a339cb06e4",
+      "current_sha256": "af104201bd1e42415c1a4e658c18782272984f9948c476e8dbf430a339cb06e4"
+    },
+    {
+      "path": ".planning/research/PITFALLS.md",
+      "sha256": "456263fe2ac130b44fd9204684f19e30cbaf937e717a27737d8a9bb6bbc7e634",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/research/PITFALLS.md",
+      "migrated_sha256": "456263fe2ac130b44fd9204684f19e30cbaf937e717a27737d8a9bb6bbc7e634",
+      "current_sha256": "456263fe2ac130b44fd9204684f19e30cbaf937e717a27737d8a9bb6bbc7e634"
+    },
+    {
+      "path": ".planning/research/SUMMARY.md",
+      "sha256": "698d6cc49c3a472828438afa661b6a2c4ff034718c01329e269b24f5bd20a781",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/research/SUMMARY.md",
+      "migrated_sha256": "698d6cc49c3a472828438afa661b6a2c4ff034718c01329e269b24f5bd20a781",
+      "current_sha256": "698d6cc49c3a472828438afa661b6a2c4ff034718c01329e269b24f5bd20a781"
+    },
+    {
+      "path": ".planning/research/FEATURES.md",
+      "sha256": "a23a935587e1716536515bf2c836d1c7b323107e266b68fd4aed80887785946a",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/research/FEATURES.md",
+      "migrated_sha256": "a23a935587e1716536515bf2c836d1c7b323107e266b68fd4aed80887785946a",
+      "current_sha256": "a23a935587e1716536515bf2c836d1c7b323107e266b68fd4aed80887785946a"
+    },
+    {
+      "path": ".planning/codebase/STACK.md",
+      "sha256": "95be7d81d8b71e71299db6708043c70185004d55632937fc70b1e2b2c32a277b",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/codebase/STACK.md",
+      "migrated_sha256": "95be7d81d8b71e71299db6708043c70185004d55632937fc70b1e2b2c32a277b",
+      "current_sha256": "95be7d81d8b71e71299db6708043c70185004d55632937fc70b1e2b2c32a277b"
+    },
+    {
+      "path": ".planning/codebase/ARCHITECTURE.md",
+      "sha256": "22f50954cb2975b8d1adb8a1d2a86f5cc0b447d54b08c9f1b65407cbc6fa55cd",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/codebase/ARCHITECTURE.md",
+      "migrated_sha256": "22f50954cb2975b8d1adb8a1d2a86f5cc0b447d54b08c9f1b65407cbc6fa55cd",
+      "current_sha256": "22f50954cb2975b8d1adb8a1d2a86f5cc0b447d54b08c9f1b65407cbc6fa55cd"
+    },
+    {
+      "path": ".planning/codebase/STRUCTURE.md",
+      "sha256": "de692467399c88392263a84ec17fae8fd3b221298ee2a58868f18bb9122897fd",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/codebase/STRUCTURE.md",
+      "migrated_sha256": "de692467399c88392263a84ec17fae8fd3b221298ee2a58868f18bb9122897fd",
+      "current_sha256": "de692467399c88392263a84ec17fae8fd3b221298ee2a58868f18bb9122897fd"
+    },
+    {
+      "path": ".planning/codebase/CONVENTIONS.md",
+      "sha256": "c602229241399993a06c65b8cf0574eadc30adb4990b1c4df766a30f760ada1a",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/codebase/CONVENTIONS.md",
+      "migrated_sha256": "c602229241399993a06c65b8cf0574eadc30adb4990b1c4df766a30f760ada1a",
+      "current_sha256": "c602229241399993a06c65b8cf0574eadc30adb4990b1c4df766a30f760ada1a"
+    },
+    {
+      "path": ".planning/codebase/INTEGRATIONS.md",
+      "sha256": "47cac6a0e6bd7b8bcb71ba1e10014bc67e00eb6192986a66db5176c29097d33d",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/codebase/INTEGRATIONS.md",
+      "migrated_sha256": "47cac6a0e6bd7b8bcb71ba1e10014bc67e00eb6192986a66db5176c29097d33d",
+      "current_sha256": "47cac6a0e6bd7b8bcb71ba1e10014bc67e00eb6192986a66db5176c29097d33d"
+    },
+    {
+      "path": ".planning/codebase/TESTING.md",
+      "sha256": "2cf5de55eee0783d2e9b574db270a7c37a5f399eaa62cbf8d8fe10202fd66590",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/codebase/TESTING.md",
+      "migrated_sha256": "2cf5de55eee0783d2e9b574db270a7c37a5f399eaa62cbf8d8fe10202fd66590",
+      "current_sha256": "2cf5de55eee0783d2e9b574db270a7c37a5f399eaa62cbf8d8fe10202fd66590"
+    },
+    {
+      "path": ".planning/codebase/CONCERNS.md",
+      "sha256": "783130a50a825c7e7f8b7cef14ee41faffabb8848d3982e86b4d2981006c73ba",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/codebase/CONCERNS.md",
+      "migrated_sha256": "783130a50a825c7e7f8b7cef14ee41faffabb8848d3982e86b4d2981006c73ba",
+      "current_sha256": "783130a50a825c7e7f8b7cef14ee41faffabb8848d3982e86b4d2981006c73ba"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-CONTEXT.md",
+      "sha256": "11de7db39becb3ae101cb3a48d03e3efca8095dbedb236152309a294ac6f9287",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-CONTEXT.md",
+      "migrated_sha256": "11de7db39becb3ae101cb3a48d03e3efca8095dbedb236152309a294ac6f9287",
+      "current_sha256": "11de7db39becb3ae101cb3a48d03e3efca8095dbedb236152309a294ac6f9287"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-VALIDATION.md",
+      "sha256": "3370ac661cd89de5b3a5584e2521b1342b951864913132b0cd4c520f4e14bdc0",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-VALIDATION.md",
+      "migrated_sha256": "3370ac661cd89de5b3a5584e2521b1342b951864913132b0cd4c520f4e14bdc0",
+      "current_sha256": "3370ac661cd89de5b3a5584e2521b1342b951864913132b0cd4c520f4e14bdc0"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-05-SUMMARY.md",
+      "sha256": "98527c80603b03d3e753424c9b46bdd29b295e848d0c2f3b074982b2633ca36b",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-05-SUMMARY.md",
+      "migrated_sha256": "98527c80603b03d3e753424c9b46bdd29b295e848d0c2f3b074982b2633ca36b",
+      "current_sha256": "98527c80603b03d3e753424c9b46bdd29b295e848d0c2f3b074982b2633ca36b"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-04-PLAN.md",
+      "sha256": "a6aa1b398984feb830e67d1a6003fc521b50ac57f7d1d557b7e5b02ac25d6c10",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-04-PLAN.md",
+      "migrated_sha256": "a6aa1b398984feb830e67d1a6003fc521b50ac57f7d1d557b7e5b02ac25d6c10",
+      "current_sha256": "a6aa1b398984feb830e67d1a6003fc521b50ac57f7d1d557b7e5b02ac25d6c10"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-02-SUMMARY.md",
+      "sha256": "90eb23e465254814a078e645b3dd881cf063c11b63f7153589c5c1bcaccbdb68",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-02-SUMMARY.md",
+      "migrated_sha256": "90eb23e465254814a078e645b3dd881cf063c11b63f7153589c5c1bcaccbdb68",
+      "current_sha256": "90eb23e465254814a078e645b3dd881cf063c11b63f7153589c5c1bcaccbdb68"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-DISCUSSION-LOG.md",
+      "sha256": "a0bf5d0523918836c621abc9b12dde5d8323eeeedf627ef41667db7241576703",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-DISCUSSION-LOG.md",
+      "migrated_sha256": "a0bf5d0523918836c621abc9b12dde5d8323eeeedf627ef41667db7241576703",
+      "current_sha256": "a0bf5d0523918836c621abc9b12dde5d8323eeeedf627ef41667db7241576703"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-REVIEW.md",
+      "sha256": "3a9529bf3522f7153c8f9130a6baedebd82a58a7dbe8cf95313516f580ac9d86",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-REVIEW.md",
+      "migrated_sha256": "3a9529bf3522f7153c8f9130a6baedebd82a58a7dbe8cf95313516f580ac9d86",
+      "current_sha256": "3a9529bf3522f7153c8f9130a6baedebd82a58a7dbe8cf95313516f580ac9d86"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-PATTERNS.md",
+      "sha256": "b9fbb536bef95a3cf6220dc793d5b97721a0989da6f93cbe131165aad0cbbbf3",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-PATTERNS.md",
+      "migrated_sha256": "b9fbb536bef95a3cf6220dc793d5b97721a0989da6f93cbe131165aad0cbbbf3",
+      "current_sha256": "b9fbb536bef95a3cf6220dc793d5b97721a0989da6f93cbe131165aad0cbbbf3"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-RESEARCH.md",
+      "sha256": "821cf6e70dbe37885fd8711fb2d41b47b08a7bed32190bf3bf50c302f8173831",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-RESEARCH.md",
+      "migrated_sha256": "821cf6e70dbe37885fd8711fb2d41b47b08a7bed32190bf3bf50c302f8173831",
+      "current_sha256": "821cf6e70dbe37885fd8711fb2d41b47b08a7bed32190bf3bf50c302f8173831"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-05-PLAN.md",
+      "sha256": "8a5979549608102fd3b965d7ca029a1c3641a71f3d506b9388ae9abf83c10598",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-05-PLAN.md",
+      "migrated_sha256": "8a5979549608102fd3b965d7ca029a1c3641a71f3d506b9388ae9abf83c10598",
+      "current_sha256": "8a5979549608102fd3b965d7ca029a1c3641a71f3d506b9388ae9abf83c10598"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-04-SUMMARY.md",
+      "sha256": "78a3c54d559de1c6261c9f3b8218fe4077187b418cd2053a71f0d22e45702c83",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-04-SUMMARY.md",
+      "migrated_sha256": "78a3c54d559de1c6261c9f3b8218fe4077187b418cd2053a71f0d22e45702c83",
+      "current_sha256": "78a3c54d559de1c6261c9f3b8218fe4077187b418cd2053a71f0d22e45702c83"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-VERIFICATION.md",
+      "sha256": "02149c222d125964c9c21520213d0298bb244822a3f2387fa8695546776ef3f3",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-VERIFICATION.md",
+      "migrated_sha256": "02149c222d125964c9c21520213d0298bb244822a3f2387fa8695546776ef3f3",
+      "current_sha256": "02149c222d125964c9c21520213d0298bb244822a3f2387fa8695546776ef3f3"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-01-SUMMARY.md",
+      "sha256": "97331045bff8969833a04931daf068dddff1089eb7f67f168e85d8eb484a6023",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-01-SUMMARY.md",
+      "migrated_sha256": "97331045bff8969833a04931daf068dddff1089eb7f67f168e85d8eb484a6023",
+      "current_sha256": "97331045bff8969833a04931daf068dddff1089eb7f67f168e85d8eb484a6023"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-01-PLAN.md",
+      "sha256": "90e672b56f0885694bedeff8c20ad52e9e3052b303bedebea6abd0d31786b44c",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-01-PLAN.md",
+      "migrated_sha256": "90e672b56f0885694bedeff8c20ad52e9e3052b303bedebea6abd0d31786b44c",
+      "current_sha256": "90e672b56f0885694bedeff8c20ad52e9e3052b303bedebea6abd0d31786b44c"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-03-PLAN.md",
+      "sha256": "67d5d83e5fd8904dc564be4c6b2f21c25c5d5dc1a8ca8d66bf54647689505eed",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-03-PLAN.md",
+      "migrated_sha256": "67d5d83e5fd8904dc564be4c6b2f21c25c5d5dc1a8ca8d66bf54647689505eed",
+      "current_sha256": "67d5d83e5fd8904dc564be4c6b2f21c25c5d5dc1a8ca8d66bf54647689505eed"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-03-SUMMARY.md",
+      "sha256": "34a2fd50849645372e2c05acdfb9430317133bf038f474907f0c6be61977dd99",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-03-SUMMARY.md",
+      "migrated_sha256": "34a2fd50849645372e2c05acdfb9430317133bf038f474907f0c6be61977dd99",
+      "current_sha256": "34a2fd50849645372e2c05acdfb9430317133bf038f474907f0c6be61977dd99"
+    },
+    {
+      "path": ".planning/phases/02-scale-policy-and-configuration/02-02-PLAN.md",
+      "sha256": "2c2ad2dccc995a797e2b6088ceb9918133d699a629fedf122168107682bb3102",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/02-scale-policy-and-configuration/02-02-PLAN.md",
+      "migrated_sha256": "2c2ad2dccc995a797e2b6088ceb9918133d699a629fedf122168107682bb3102",
+      "current_sha256": "2c2ad2dccc995a797e2b6088ceb9918133d699a629fedf122168107682bb3102"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-03-SUMMARY.md",
+      "sha256": "79e547d92dee4040d952a9eba1251c2be2a8ff5dea7dc01ea2e3ac6fe34e14b2",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-03-SUMMARY.md",
+      "migrated_sha256": "79e547d92dee4040d952a9eba1251c2be2a8ff5dea7dc01ea2e3ac6fe34e14b2",
+      "current_sha256": "79e547d92dee4040d952a9eba1251c2be2a8ff5dea7dc01ea2e3ac6fe34e14b2"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-REVIEW.md",
+      "sha256": "2b2137d32487a17a760ca045c1576c622de0f1721f5f24df6e789333643ea012",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-REVIEW.md",
+      "migrated_sha256": "2b2137d32487a17a760ca045c1576c622de0f1721f5f24df6e789333643ea012",
+      "current_sha256": "2b2137d32487a17a760ca045c1576c622de0f1721f5f24df6e789333643ea012"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-01-PLAN.md",
+      "sha256": "5fc3edb149e4f253c912e24699ba193499b40355c96f48c819f46fd9539ec0d8",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-01-PLAN.md",
+      "migrated_sha256": "5fc3edb149e4f253c912e24699ba193499b40355c96f48c819f46fd9539ec0d8",
+      "current_sha256": "5fc3edb149e4f253c912e24699ba193499b40355c96f48c819f46fd9539ec0d8"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-02-PLAN.md",
+      "sha256": "422d0a9ce60489ba21f8d8e6a008d05f98d5aa2fa8d5bbdb5fd0433b88231139",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-02-PLAN.md",
+      "migrated_sha256": "422d0a9ce60489ba21f8d8e6a008d05f98d5aa2fa8d5bbdb5fd0433b88231139",
+      "current_sha256": "422d0a9ce60489ba21f8d8e6a008d05f98d5aa2fa8d5bbdb5fd0433b88231139"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-01-SUMMARY.md",
+      "sha256": "2df058a9921ff589c310f8be529607234ac5529f28c8bd89afc96ec19d09f28f",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-01-SUMMARY.md",
+      "migrated_sha256": "2df058a9921ff589c310f8be529607234ac5529f28c8bd89afc96ec19d09f28f",
+      "current_sha256": "2df058a9921ff589c310f8be529607234ac5529f28c8bd89afc96ec19d09f28f"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-03-PLAN.md",
+      "sha256": "e424b00ff01bbb14f34b83b7fa6c056b5f8d72fbcd3070a2f6476408a7eead9b",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-03-PLAN.md",
+      "migrated_sha256": "e424b00ff01bbb14f34b83b7fa6c056b5f8d72fbcd3070a2f6476408a7eead9b",
+      "current_sha256": "e424b00ff01bbb14f34b83b7fa6c056b5f8d72fbcd3070a2f6476408a7eead9b"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-04-SUMMARY.md",
+      "sha256": "e0fe024c0ee84bb555429c92484f48ba8e0aba59bdea7f85424aa66a5d52e5d9",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-04-SUMMARY.md",
+      "migrated_sha256": "e0fe024c0ee84bb555429c92484f48ba8e0aba59bdea7f85424aa66a5d52e5d9",
+      "current_sha256": "e0fe024c0ee84bb555429c92484f48ba8e0aba59bdea7f85424aa66a5d52e5d9"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-02-SUMMARY.md",
+      "sha256": "d38eac9d14a16de1eda0bcd1b0847b13dad9cbcc433bb05c74e173598ca06db0",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-02-SUMMARY.md",
+      "migrated_sha256": "d38eac9d14a16de1eda0bcd1b0847b13dad9cbcc433bb05c74e173598ca06db0",
+      "current_sha256": "d38eac9d14a16de1eda0bcd1b0847b13dad9cbcc433bb05c74e173598ca06db0"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-RESEARCH.md",
+      "sha256": "ed926879099500024eda6a7deb8eee3d14e5d5842dffff4ce9be89efa8ed5251",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-RESEARCH.md",
+      "migrated_sha256": "ed926879099500024eda6a7deb8eee3d14e5d5842dffff4ce9be89efa8ed5251",
+      "current_sha256": "ed926879099500024eda6a7deb8eee3d14e5d5842dffff4ce9be89efa8ed5251"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-05-PLAN.md",
+      "sha256": "995754ffb93be430bbc059f4cd9c7a7a8717bd2d46f879c51782e27ed8c2276b",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-05-PLAN.md",
+      "migrated_sha256": "995754ffb93be430bbc059f4cd9c7a7a8717bd2d46f879c51782e27ed8c2276b",
+      "current_sha256": "995754ffb93be430bbc059f4cd9c7a7a8717bd2d46f879c51782e27ed8c2276b"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-PATTERNS.md",
+      "sha256": "7e630b7ac4b99d91cae957495542b48f19c152ce9447595bade2c75b2b209871",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-PATTERNS.md",
+      "migrated_sha256": "7e630b7ac4b99d91cae957495542b48f19c152ce9447595bade2c75b2b209871",
+      "current_sha256": "7e630b7ac4b99d91cae957495542b48f19c152ce9447595bade2c75b2b209871"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-05-SUMMARY.md",
+      "sha256": "82749b6414d9bb9dca399f661d53d09bd4763955d616638727c1c8396d335974",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-05-SUMMARY.md",
+      "migrated_sha256": "82749b6414d9bb9dca399f661d53d09bd4763955d616638727c1c8396d335974",
+      "current_sha256": "82749b6414d9bb9dca399f661d53d09bd4763955d616638727c1c8396d335974"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-04-PLAN.md",
+      "sha256": "e6d4bb23ef379f2483dbfd338a2a3a9d8fac084936da66b5e727f944508f8703",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-04-PLAN.md",
+      "migrated_sha256": "e6d4bb23ef379f2483dbfd338a2a3a9d8fac084936da66b5e727f944508f8703",
+      "current_sha256": "e6d4bb23ef379f2483dbfd338a2a3a9d8fac084936da66b5e727f944508f8703"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-VALIDATION.md",
+      "sha256": "ad2226b9ae03089cc4748dccef422f48fdc80ad7a5c2ac6c75343a822116b2b5",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-VALIDATION.md",
+      "migrated_sha256": "ad2226b9ae03089cc4748dccef422f48fdc80ad7a5c2ac6c75343a822116b2b5",
+      "current_sha256": "ad2226b9ae03089cc4748dccef422f48fdc80ad7a5c2ac6c75343a822116b2b5"
+    },
+    {
+      "path": ".planning/phases/03-geometry-and-ownership-contracts/03-VERIFICATION.md",
+      "sha256": "f23187758077da3a5743d394fbdb4c9192437f85704c33fc43d431f87f68f417",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/03-geometry-and-ownership-contracts/03-VERIFICATION.md",
+      "migrated_sha256": "f23187758077da3a5743d394fbdb4c9192437f85704c33fc43d431f87f68f417",
+      "current_sha256": "f23187758077da3a5743d394fbdb4c9192437f85704c33fc43d431f87f68f417"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-02-PLAN.md",
+      "sha256": "e7cf6c2d18ebd6364337f21282036f8eb48f1342b0bfa7560886d74427734f45",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-02-PLAN.md",
+      "migrated_sha256": "e7cf6c2d18ebd6364337f21282036f8eb48f1342b0bfa7560886d74427734f45",
+      "current_sha256": "e7cf6c2d18ebd6364337f21282036f8eb48f1342b0bfa7560886d74427734f45"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-05-SUMMARY.md",
+      "sha256": "0e246cc4086836489368643c49d8a196ad75156178617003de08da294b5e1240",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-05-SUMMARY.md",
+      "migrated_sha256": "0e246cc4086836489368643c49d8a196ad75156178617003de08da294b5e1240",
+      "current_sha256": "0e246cc4086836489368643c49d8a196ad75156178617003de08da294b5e1240"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-RESEARCH.md",
+      "sha256": "786fdb4cacba705aeaae52ce3dca5581eabb7a90d3a11dee6e651bf112620e77",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-RESEARCH.md",
+      "migrated_sha256": "786fdb4cacba705aeaae52ce3dca5581eabb7a90d3a11dee6e651bf112620e77",
+      "current_sha256": "786fdb4cacba705aeaae52ce3dca5581eabb7a90d3a11dee6e651bf112620e77"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-08-SUMMARY.md",
+      "sha256": "4b9a6963344ad72aef235366e4c63a14d83fbc8209b1244d247a2d0f0e28b92f",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-08-SUMMARY.md",
+      "migrated_sha256": "4b9a6963344ad72aef235366e4c63a14d83fbc8209b1244d247a2d0f0e28b92f",
+      "current_sha256": "4b9a6963344ad72aef235366e4c63a14d83fbc8209b1244d247a2d0f0e28b92f"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-PATTERNS.md",
+      "sha256": "92d406ec0e3b3aec180419c6f85eb7bddf47ecbc9bdf7f89bcda39318d6a2abf",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-PATTERNS.md",
+      "migrated_sha256": "92d406ec0e3b3aec180419c6f85eb7bddf47ecbc9bdf7f89bcda39318d6a2abf",
+      "current_sha256": "92d406ec0e3b3aec180419c6f85eb7bddf47ecbc9bdf7f89bcda39318d6a2abf"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-VALIDATION.md",
+      "sha256": "0d56f76bda0d9e4272bed62df86f7b4c1cc2e528d45a36d8ef2d5b1f81eb2b0e",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-VALIDATION.md",
+      "migrated_sha256": "0d56f76bda0d9e4272bed62df86f7b4c1cc2e528d45a36d8ef2d5b1f81eb2b0e",
+      "current_sha256": "0d56f76bda0d9e4272bed62df86f7b4c1cc2e528d45a36d8ef2d5b1f81eb2b0e"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-03-PLAN.md",
+      "sha256": "ef06375ed93192184d1163b715280b9f349327db21f6c10d15f41c8537f215d8",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-03-PLAN.md",
+      "migrated_sha256": "ef06375ed93192184d1163b715280b9f349327db21f6c10d15f41c8537f215d8",
+      "current_sha256": "ef06375ed93192184d1163b715280b9f349327db21f6c10d15f41c8537f215d8"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-DISCUSSION-LOG.md",
+      "sha256": "98d169bba01ef1355490c872d35181be125a2ac2c46e8e3f87db4fb1ec2b9749",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-DISCUSSION-LOG.md",
+      "migrated_sha256": "98d169bba01ef1355490c872d35181be125a2ac2c46e8e3f87db4fb1ec2b9749",
+      "current_sha256": "98d169bba01ef1355490c872d35181be125a2ac2c46e8e3f87db4fb1ec2b9749"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-VERIFICATION.md",
+      "sha256": "2a6d8c6a7eed4058eba83e1ac6cf2022bcf3d7c842bb2589640f9f5b28412a49",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-VERIFICATION.md",
+      "migrated_sha256": "2a6d8c6a7eed4058eba83e1ac6cf2022bcf3d7c842bb2589640f9f5b28412a49",
+      "current_sha256": "2a6d8c6a7eed4058eba83e1ac6cf2022bcf3d7c842bb2589640f9f5b28412a49"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-08-PLAN.md",
+      "sha256": "d0b2fa800215ff3f2aae7d2e1c02acddf4ac86caadf02cde22668e00e1ae9a03",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-08-PLAN.md",
+      "migrated_sha256": "d0b2fa800215ff3f2aae7d2e1c02acddf4ac86caadf02cde22668e00e1ae9a03",
+      "current_sha256": "d0b2fa800215ff3f2aae7d2e1c02acddf4ac86caadf02cde22668e00e1ae9a03"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-07-SUMMARY.md",
+      "sha256": "d366cb23d6768898bbaa89d0b628cc279c656475f9a7d269d29f2545c2a148ab",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-07-SUMMARY.md",
+      "migrated_sha256": "d366cb23d6768898bbaa89d0b628cc279c656475f9a7d269d29f2545c2a148ab",
+      "current_sha256": "d366cb23d6768898bbaa89d0b628cc279c656475f9a7d269d29f2545c2a148ab"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-01-PLAN.md",
+      "sha256": "83aeb2c18790b507be397b42b893b507a5ed646a17acf0b8047d433d8050564d",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-01-PLAN.md",
+      "migrated_sha256": "83aeb2c18790b507be397b42b893b507a5ed646a17acf0b8047d433d8050564d",
+      "current_sha256": "83aeb2c18790b507be397b42b893b507a5ed646a17acf0b8047d433d8050564d"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/REVIEW-FIX.md",
+      "sha256": "b3e77151a7dcfa90ad93a847699b4dda8a48f4bf03a6d59168ed0bde4793d760",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/REVIEW-FIX.md",
+      "migrated_sha256": "b3e77151a7dcfa90ad93a847699b4dda8a48f4bf03a6d59168ed0bde4793d760",
+      "current_sha256": "b3e77151a7dcfa90ad93a847699b4dda8a48f4bf03a6d59168ed0bde4793d760"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-02-SUMMARY.md",
+      "sha256": "5635580484fa28b36803f7f0a3488c33f0210efbc61c95c726c500bc768bb28d",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-02-SUMMARY.md",
+      "migrated_sha256": "5635580484fa28b36803f7f0a3488c33f0210efbc61c95c726c500bc768bb28d",
+      "current_sha256": "5635580484fa28b36803f7f0a3488c33f0210efbc61c95c726c500bc768bb28d"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-01-SUMMARY.md",
+      "sha256": "eab3599e2505bb3ba2df99fb515157bf290734b7361b1f9ad49b42f23d031b9c",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-01-SUMMARY.md",
+      "migrated_sha256": "eab3599e2505bb3ba2df99fb515157bf290734b7361b1f9ad49b42f23d031b9c",
+      "current_sha256": "eab3599e2505bb3ba2df99fb515157bf290734b7361b1f9ad49b42f23d031b9c"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-05-PLAN.md",
+      "sha256": "9aea0c3de60a335bd3807cb47c294f8a2e387f9a0260846a8e29d05b2911b8c6",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-05-PLAN.md",
+      "migrated_sha256": "9aea0c3de60a335bd3807cb47c294f8a2e387f9a0260846a8e29d05b2911b8c6",
+      "current_sha256": "9aea0c3de60a335bd3807cb47c294f8a2e387f9a0260846a8e29d05b2911b8c6"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-04-SUMMARY.md",
+      "sha256": "f872c9e1b0749f1ce04e74ed3dfd6b16941e4c6970ced8f298dd6341058ca860",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-04-SUMMARY.md",
+      "migrated_sha256": "f872c9e1b0749f1ce04e74ed3dfd6b16941e4c6970ced8f298dd6341058ca860",
+      "current_sha256": "f872c9e1b0749f1ce04e74ed3dfd6b16941e4c6970ced8f298dd6341058ca860"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-04-PLAN.md",
+      "sha256": "8f8dae87b28b51009b1ca099807ed37e81f74fa9c5733b4923dac8edcaa6004f",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-04-PLAN.md",
+      "migrated_sha256": "8f8dae87b28b51009b1ca099807ed37e81f74fa9c5733b4923dac8edcaa6004f",
+      "current_sha256": "8f8dae87b28b51009b1ca099807ed37e81f74fa9c5733b4923dac8edcaa6004f"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-06-PLAN.md",
+      "sha256": "a14d86cdacfb913fb45a14fd7fc13c4ae0a5d0a19d4edc85d49f21169334ec62",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-06-PLAN.md",
+      "migrated_sha256": "a14d86cdacfb913fb45a14fd7fc13c4ae0a5d0a19d4edc85d49f21169334ec62",
+      "current_sha256": "a14d86cdacfb913fb45a14fd7fc13c4ae0a5d0a19d4edc85d49f21169334ec62"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/REVIEW.md",
+      "sha256": "c0daf906bd639312b05f184e4f0892068a099c8139009f57e6ac2ba8d72538c4",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/REVIEW.md",
+      "migrated_sha256": "c0daf906bd639312b05f184e4f0892068a099c8139009f57e6ac2ba8d72538c4",
+      "current_sha256": "c0daf906bd639312b05f184e4f0892068a099c8139009f57e6ac2ba8d72538c4"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-03-SUMMARY.md",
+      "sha256": "80bcee66187be158ec507b28a3f8573f3f97df2de1b114359e170d3e8471b065",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-03-SUMMARY.md",
+      "migrated_sha256": "80bcee66187be158ec507b28a3f8573f3f97df2de1b114359e170d3e8471b065",
+      "current_sha256": "80bcee66187be158ec507b28a3f8573f3f97df2de1b114359e170d3e8471b065"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-CONTEXT.md",
+      "sha256": "171d04a5bb73f1f32468b8f63ee5f577da6c72a3d741ff4ac6a7364670d3cdb9",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-CONTEXT.md",
+      "migrated_sha256": "171d04a5bb73f1f32468b8f63ee5f577da6c72a3d741ff4ac6a7364670d3cdb9",
+      "current_sha256": "171d04a5bb73f1f32468b8f63ee5f577da6c72a3d741ff4ac6a7364670d3cdb9"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-06-SUMMARY.md",
+      "sha256": "bc47602e85c27c7b8b608c9956f2537b96383ec416049fd932e5eacc02c17d94",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-06-SUMMARY.md",
+      "migrated_sha256": "bc47602e85c27c7b8b608c9956f2537b96383ec416049fd932e5eacc02c17d94",
+      "current_sha256": "bc47602e85c27c7b8b608c9956f2537b96383ec416049fd932e5eacc02c17d94"
+    },
+    {
+      "path": ".planning/phases/01-topology-snapshot-and-live-x-harness/01-07-PLAN.md",
+      "sha256": "8fd23909074d50529a300cd44d1b8a05e5aefdec002a51e547d2d23f163b1bee",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/01-topology-snapshot-and-live-x-harness/01-07-PLAN.md",
+      "migrated_sha256": "8fd23909074d50529a300cd44d1b8a05e5aefdec002a51e547d2d23f163b1bee",
+      "current_sha256": "8fd23909074d50529a300cd44d1b8a05e5aefdec002a51e547d2d23f163b1bee"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-03-PLAN.md",
+      "sha256": "ca4ea08f327257964b6e4d1d982c2a22de8c351edd4d7cf735883ea801b9f3f7",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-03-PLAN.md",
+      "migrated_sha256": "ca4ea08f327257964b6e4d1d982c2a22de8c351edd4d7cf735883ea801b9f3f7",
+      "current_sha256": "ca4ea08f327257964b6e4d1d982c2a22de8c351edd4d7cf735883ea801b9f3f7"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-06-SUMMARY.md",
+      "sha256": "87050a26bbff2a70a8dab7c2a7c5a9a5c0926d2c6b831224b98b3fc2390eaa8a",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-06-SUMMARY.md",
+      "migrated_sha256": "87050a26bbff2a70a8dab7c2a7c5a9a5c0926d2c6b831224b98b3fc2390eaa8a",
+      "current_sha256": "87050a26bbff2a70a8dab7c2a7c5a9a5c0926d2c6b831224b98b3fc2390eaa8a"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-12-SUMMARY.md",
+      "sha256": "2266cdc243d8064f1fa7b8facd7863e005b0d5c71ebb97522f987495508de5c5",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-12-SUMMARY.md",
+      "migrated_sha256": "2266cdc243d8064f1fa7b8facd7863e005b0d5c71ebb97522f987495508de5c5",
+      "current_sha256": "2266cdc243d8064f1fa7b8facd7863e005b0d5c71ebb97522f987495508de5c5"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-PATTERNS.md",
+      "sha256": "70e44d7771dfe3fa40957711c0fc63f45ac6e8b3adcb135f835e9fa072436306",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-PATTERNS.md",
+      "migrated_sha256": "70e44d7771dfe3fa40957711c0fc63f45ac6e8b3adcb135f835e9fa072436306",
+      "current_sha256": "70e44d7771dfe3fa40957711c0fc63f45ac6e8b3adcb135f835e9fa072436306"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-12-PLAN.md",
+      "sha256": "40e9c3a16a3d8aa75a685771f126055f20f8cc273ad60aca9eed3a740a19ea68",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-12-PLAN.md",
+      "migrated_sha256": "40e9c3a16a3d8aa75a685771f126055f20f8cc273ad60aca9eed3a740a19ea68",
+      "current_sha256": "40e9c3a16a3d8aa75a685771f126055f20f8cc273ad60aca9eed3a740a19ea68"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-02-PLAN.md",
+      "sha256": "6933a85bc58b7e30d8c210f49f36e6362b9d4c48e8c6a5112c8b7d4404b6cee7",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-02-PLAN.md",
+      "migrated_sha256": "6933a85bc58b7e30d8c210f49f36e6362b9d4c48e8c6a5112c8b7d4404b6cee7",
+      "current_sha256": "6933a85bc58b7e30d8c210f49f36e6362b9d4c48e8c6a5112c8b7d4404b6cee7"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-RESEARCH.md",
+      "sha256": "5232a0228d052259a1025fdb16f316b3a4aa0b9d92d9405d40e5bc0d9110fbd6",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-RESEARCH.md",
+      "migrated_sha256": "5232a0228d052259a1025fdb16f316b3a4aa0b9d92d9405d40e5bc0d9110fbd6",
+      "current_sha256": "5232a0228d052259a1025fdb16f316b3a4aa0b9d92d9405d40e5bc0d9110fbd6"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-03-SUMMARY.md",
+      "sha256": "d9cb2dbee1e081875db6cb877e808a494642c97e12bde9980f1d8861f0134f45",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-03-SUMMARY.md",
+      "migrated_sha256": "d9cb2dbee1e081875db6cb877e808a494642c97e12bde9980f1d8861f0134f45",
+      "current_sha256": "d9cb2dbee1e081875db6cb877e808a494642c97e12bde9980f1d8861f0134f45"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-04-SUMMARY.md",
+      "sha256": "6160453b6d67cf414aacf3d6f0520f33c9274af0f88343ae0d86f27a4f3f71b6",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-04-SUMMARY.md",
+      "migrated_sha256": "6160453b6d67cf414aacf3d6f0520f33c9274af0f88343ae0d86f27a4f3f71b6",
+      "current_sha256": "6160453b6d67cf414aacf3d6f0520f33c9274af0f88343ae0d86f27a4f3f71b6"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-09-PLAN.md",
+      "sha256": "1ff03642eb0d8086fdbc30225ce16349c70856d3ca030875b90127947b658730",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-09-PLAN.md",
+      "migrated_sha256": "1ff03642eb0d8086fdbc30225ce16349c70856d3ca030875b90127947b658730",
+      "current_sha256": "1ff03642eb0d8086fdbc30225ce16349c70856d3ca030875b90127947b658730"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-09-SUMMARY.md",
+      "sha256": "2124bf8d8873c111c61af2fef27197f0ced182a075ddd45ca93906126a08e675",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-09-SUMMARY.md",
+      "migrated_sha256": "2124bf8d8873c111c61af2fef27197f0ced182a075ddd45ca93906126a08e675",
+      "current_sha256": "2124bf8d8873c111c61af2fef27197f0ced182a075ddd45ca93906126a08e675"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-10-PLAN.md",
+      "sha256": "59c3099f9da2cc451ecf3a1c68be35b7c16583b6a705b08a945fe06458fafba7",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-10-PLAN.md",
+      "migrated_sha256": "59c3099f9da2cc451ecf3a1c68be35b7c16583b6a705b08a945fe06458fafba7",
+      "current_sha256": "59c3099f9da2cc451ecf3a1c68be35b7c16583b6a705b08a945fe06458fafba7"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-SECURITY.md",
+      "sha256": "8696b59a59271c1c551630d70e5f643e841d3bb140ee5018a1e4bfa0b25bb890",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-SECURITY.md",
+      "migrated_sha256": "8696b59a59271c1c551630d70e5f643e841d3bb140ee5018a1e4bfa0b25bb890",
+      "current_sha256": "8696b59a59271c1c551630d70e5f643e841d3bb140ee5018a1e4bfa0b25bb890"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-11-PLAN.md",
+      "sha256": "02f193f1976905b8e7e5d9e2198ab686125e9338826be2c509eea0a2c0ac95c3",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-11-PLAN.md",
+      "migrated_sha256": "02f193f1976905b8e7e5d9e2198ab686125e9338826be2c509eea0a2c0ac95c3",
+      "current_sha256": "02f193f1976905b8e7e5d9e2198ab686125e9338826be2c509eea0a2c0ac95c3"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-01-PLAN.md",
+      "sha256": "c79355532cdf4dcd4194734350f2e6519a950afa9f29b4d8e5ff379ee043dd53",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-01-PLAN.md",
+      "migrated_sha256": "c79355532cdf4dcd4194734350f2e6519a950afa9f29b4d8e5ff379ee043dd53",
+      "current_sha256": "c79355532cdf4dcd4194734350f2e6519a950afa9f29b4d8e5ff379ee043dd53"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-10-SUMMARY.md",
+      "sha256": "f3787b6f4dd5ebdf64a515d9fae148b4a810d3f7afcc88242a6401096f432ee6",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-10-SUMMARY.md",
+      "migrated_sha256": "f3787b6f4dd5ebdf64a515d9fae148b4a810d3f7afcc88242a6401096f432ee6",
+      "current_sha256": "f3787b6f4dd5ebdf64a515d9fae148b4a810d3f7afcc88242a6401096f432ee6"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-01-SUMMARY.md",
+      "sha256": "e1e1bf7555faef93bc7950e12bba1782585384029d7d4bd208aac1027c1be669",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-01-SUMMARY.md",
+      "migrated_sha256": "e1e1bf7555faef93bc7950e12bba1782585384029d7d4bd208aac1027c1be669",
+      "current_sha256": "e1e1bf7555faef93bc7950e12bba1782585384029d7d4bd208aac1027c1be669"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-08-PLAN.md",
+      "sha256": "62ae70b9291b5698b29d44e651eb0d3a62a0ab9b1de2bbddc215d54417a3401b",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-08-PLAN.md",
+      "migrated_sha256": "62ae70b9291b5698b29d44e651eb0d3a62a0ab9b1de2bbddc215d54417a3401b",
+      "current_sha256": "62ae70b9291b5698b29d44e651eb0d3a62a0ab9b1de2bbddc215d54417a3401b"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-REVIEW.md",
+      "sha256": "eaf1cd34ef979e755bfaa3240acf2c9a69c04f6cfa0c835f45c6c9dc338fc52a",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-REVIEW.md",
+      "migrated_sha256": "eaf1cd34ef979e755bfaa3240acf2c9a69c04f6cfa0c835f45c6c9dc338fc52a",
+      "current_sha256": "eaf1cd34ef979e755bfaa3240acf2c9a69c04f6cfa0c835f45c6c9dc338fc52a"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-04-PLAN.md",
+      "sha256": "55fcbb3d917f1b8f423e0b1d6d8d953000a03f1c0baf4cfc86445d700f9a53a0",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-04-PLAN.md",
+      "migrated_sha256": "55fcbb3d917f1b8f423e0b1d6d8d953000a03f1c0baf4cfc86445d700f9a53a0",
+      "current_sha256": "55fcbb3d917f1b8f423e0b1d6d8d953000a03f1c0baf4cfc86445d700f9a53a0"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-02-SUMMARY.md",
+      "sha256": "e8802ff2c496752ba169ac50bf762ee18606506a5d8dce820b3f1682039123be",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-02-SUMMARY.md",
+      "migrated_sha256": "e8802ff2c496752ba169ac50bf762ee18606506a5d8dce820b3f1682039123be",
+      "current_sha256": "e8802ff2c496752ba169ac50bf762ee18606506a5d8dce820b3f1682039123be"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-07-SUMMARY.md",
+      "sha256": "fd6918ce80808aa5e8fa0e846873e665d160a86e93d87919c43131888ea1c439",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-07-SUMMARY.md",
+      "migrated_sha256": "fd6918ce80808aa5e8fa0e846873e665d160a86e93d87919c43131888ea1c439",
+      "current_sha256": "fd6918ce80808aa5e8fa0e846873e665d160a86e93d87919c43131888ea1c439"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-05-PLAN.md",
+      "sha256": "ff3946233ff81ba92416542fce9e679c3c7132dbd6ccdd2c2b3e6c43c391cd07",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-05-PLAN.md",
+      "migrated_sha256": "ff3946233ff81ba92416542fce9e679c3c7132dbd6ccdd2c2b3e6c43c391cd07",
+      "current_sha256": "ff3946233ff81ba92416542fce9e679c3c7132dbd6ccdd2c2b3e6c43c391cd07"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-UAT.md",
+      "sha256": "2ead965e0f514d5f0d2ac0988653a4bb7055c10e47764a7c78fa782c4600345d",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-UAT.md",
+      "migrated_sha256": "2ead965e0f514d5f0d2ac0988653a4bb7055c10e47764a7c78fa782c4600345d",
+      "current_sha256": "2ead965e0f514d5f0d2ac0988653a4bb7055c10e47764a7c78fa782c4600345d"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/COVERAGE.md",
+      "sha256": "dd0dd128520a9876c2526bacae0791c6148d8e1a6ed705c21de1196d2d788433",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/COVERAGE.md",
+      "migrated_sha256": "dd0dd128520a9876c2526bacae0791c6148d8e1a6ed705c21de1196d2d788433",
+      "current_sha256": "dd0dd128520a9876c2526bacae0791c6148d8e1a6ed705c21de1196d2d788433"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-VERIFICATION.md",
+      "sha256": "dd8ff439dd529362e13750c2688a1af62a20d030bd2b1a26ac953344cc08f968",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-VERIFICATION.md",
+      "migrated_sha256": "dd8ff439dd529362e13750c2688a1af62a20d030bd2b1a26ac953344cc08f968",
+      "current_sha256": "dd8ff439dd529362e13750c2688a1af62a20d030bd2b1a26ac953344cc08f968"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-11-SUMMARY.md",
+      "sha256": "539408ac1ec91f0f42e835471fa61ad0a8db00f39c4cadab22492bf40d97a047",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-11-SUMMARY.md",
+      "migrated_sha256": "539408ac1ec91f0f42e835471fa61ad0a8db00f39c4cadab22492bf40d97a047",
+      "current_sha256": "539408ac1ec91f0f42e835471fa61ad0a8db00f39c4cadab22492bf40d97a047"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-VALIDATION.md",
+      "sha256": "208ff1935b01e9b79041ffdc27a966b3cbdd7aa34b229b76805d09981f7248ed",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-VALIDATION.md",
+      "migrated_sha256": "208ff1935b01e9b79041ffdc27a966b3cbdd7aa34b229b76805d09981f7248ed",
+      "current_sha256": "208ff1935b01e9b79041ffdc27a966b3cbdd7aa34b229b76805d09981f7248ed"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-07-PLAN.md",
+      "sha256": "7c42db266b67f8abf4dd5e8aceee8fafefc55e4c0e65a6870602c7c594656c33",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-07-PLAN.md",
+      "migrated_sha256": "7c42db266b67f8abf4dd5e8aceee8fafefc55e4c0e65a6870602c7c594656c33",
+      "current_sha256": "7c42db266b67f8abf4dd5e8aceee8fafefc55e4c0e65a6870602c7c594656c33"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-05-SUMMARY.md",
+      "sha256": "0bff114e29a974856f6d7273f211a3981d89bf913173793996bc54496d8c19a2",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-05-SUMMARY.md",
+      "migrated_sha256": "0bff114e29a974856f6d7273f211a3981d89bf913173793996bc54496d8c19a2",
+      "current_sha256": "0bff114e29a974856f6d7273f211a3981d89bf913173793996bc54496d8c19a2"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-08-SUMMARY.md",
+      "sha256": "359261a3779f2430adb1bf0e04d95cfe7380767a6c0ea506ab176ca4859d38b2",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-08-SUMMARY.md",
+      "migrated_sha256": "359261a3779f2430adb1bf0e04d95cfe7380767a6c0ea506ab176ca4859d38b2",
+      "current_sha256": "359261a3779f2430adb1bf0e04d95cfe7380767a6c0ea506ab176ca4859d38b2"
+    },
+    {
+      "path": ".planning/phases/04-wm-owned-ui-metrics-and-resources/04-06-PLAN.md",
+      "sha256": "3ba87f200307d223991415725c2d1170d789247cdb22a0770e2dd48d9a28e0c1",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/04-wm-owned-ui-metrics-and-resources/04-06-PLAN.md",
+      "migrated_sha256": "3ba87f200307d223991415725c2d1170d789247cdb22a0770e2dd48d9a28e0c1",
+      "current_sha256": "3ba87f200307d223991415725c2d1170d789247cdb22a0770e2dd48d9a28e0c1"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-05-SUMMARY.md",
+      "sha256": "97aecef45170876231173569298f602efc4bbc2d2434a1134e3cc8568b339c98",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-05-SUMMARY.md",
+      "migrated_sha256": "97aecef45170876231173569298f602efc4bbc2d2434a1134e3cc8568b339c98",
+      "current_sha256": "97aecef45170876231173569298f602efc4bbc2d2434a1134e3cc8568b339c98"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-05-PLAN.md",
+      "sha256": "b69a7a5c54374e4044913996768a029cec83f6ca12a6b607653638a324f323b4",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-05-PLAN.md",
+      "migrated_sha256": "b69a7a5c54374e4044913996768a029cec83f6ca12a6b607653638a324f323b4",
+      "current_sha256": "b69a7a5c54374e4044913996768a029cec83f6ca12a6b607653638a324f323b4"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-08-SUMMARY.md",
+      "sha256": "18e5cfdf9c8f39ad4f93c9317669373e0bd583605cd0a42b7efc3bbd8c920274",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-08-SUMMARY.md",
+      "migrated_sha256": "18e5cfdf9c8f39ad4f93c9317669373e0bd583605cd0a42b7efc3bbd8c920274",
+      "current_sha256": "18e5cfdf9c8f39ad4f93c9317669373e0bd583605cd0a42b7efc3bbd8c920274"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-VALIDATION.md",
+      "sha256": "d40956dfa0acd7ea7c5f2b18c47846b83b97b01115bb846170cf827fe41dbe5c",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-VALIDATION.md",
+      "migrated_sha256": "d40956dfa0acd7ea7c5f2b18c47846b83b97b01115bb846170cf827fe41dbe5c",
+      "current_sha256": "d40956dfa0acd7ea7c5f2b18c47846b83b97b01115bb846170cf827fe41dbe5c"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-REVIEW.md",
+      "sha256": "4cfe92d47fb82f9f2b04ab74110c5fdd397fff13d7021b7d8d19b58db8ead14f",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-REVIEW.md",
+      "migrated_sha256": "4cfe92d47fb82f9f2b04ab74110c5fdd397fff13d7021b7d8d19b58db8ead14f",
+      "current_sha256": "4cfe92d47fb82f9f2b04ab74110c5fdd397fff13d7021b7d8d19b58db8ead14f"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-04-PLAN.md",
+      "sha256": "5b47381412c63720e2851254b34cc891a5501b3b84993cf2206e43f0b800673e",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-04-PLAN.md",
+      "migrated_sha256": "5b47381412c63720e2851254b34cc891a5501b3b84993cf2206e43f0b800673e",
+      "current_sha256": "5b47381412c63720e2851254b34cc891a5501b3b84993cf2206e43f0b800673e"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-07-SUMMARY.md",
+      "sha256": "b22d60eec38dba4637b9df987a2e28967cc825a5eaee4b478eea00aa9fc11da9",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-07-SUMMARY.md",
+      "migrated_sha256": "b22d60eec38dba4637b9df987a2e28967cc825a5eaee4b478eea00aa9fc11da9",
+      "current_sha256": "b22d60eec38dba4637b9df987a2e28967cc825a5eaee4b478eea00aa9fc11da9"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-06-PLAN.md",
+      "sha256": "d82b98491fa7227deae8b7fd67600560c61e59b56a200949e2bd20c9493071a2",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-06-PLAN.md",
+      "migrated_sha256": "d82b98491fa7227deae8b7fd67600560c61e59b56a200949e2bd20c9493071a2",
+      "current_sha256": "d82b98491fa7227deae8b7fd67600560c61e59b56a200949e2bd20c9493071a2"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-07-PLAN.md",
+      "sha256": "164fd619095c22d6e7dd18cdead5021d0822135c8b28f4bd9cfdbb8803a7125e",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-07-PLAN.md",
+      "migrated_sha256": "164fd619095c22d6e7dd18cdead5021d0822135c8b28f4bd9cfdbb8803a7125e",
+      "current_sha256": "164fd619095c22d6e7dd18cdead5021d0822135c8b28f4bd9cfdbb8803a7125e"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-02-SUMMARY.md",
+      "sha256": "9fd953603539897219280dcc746d6e5f30c113c64c91082421a60dc9b42d1d7e",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-02-SUMMARY.md",
+      "migrated_sha256": "9fd953603539897219280dcc746d6e5f30c113c64c91082421a60dc9b42d1d7e",
+      "current_sha256": "9fd953603539897219280dcc746d6e5f30c113c64c91082421a60dc9b42d1d7e"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-RESEARCH.md",
+      "sha256": "9213fcc5db9a14e9cfed0c068a56802688bc9f492cca6547d4350f1d0a8b296b",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-RESEARCH.md",
+      "migrated_sha256": "9213fcc5db9a14e9cfed0c068a56802688bc9f492cca6547d4350f1d0a8b296b",
+      "current_sha256": "9213fcc5db9a14e9cfed0c068a56802688bc9f492cca6547d4350f1d0a8b296b"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-02-PLAN.md",
+      "sha256": "934c80704c2c3f056496cc8941e1a3584f076caf756a18df013bf23de5959e28",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-02-PLAN.md",
+      "migrated_sha256": "934c80704c2c3f056496cc8941e1a3584f076caf756a18df013bf23de5959e28",
+      "current_sha256": "934c80704c2c3f056496cc8941e1a3584f076caf756a18df013bf23de5959e28"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-PATTERNS.md",
+      "sha256": "90ca12de9410263d14191a66e32a3def04d7e147e90f6a19df85d5b6044f3a47",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-PATTERNS.md",
+      "migrated_sha256": "90ca12de9410263d14191a66e32a3def04d7e147e90f6a19df85d5b6044f3a47",
+      "current_sha256": "90ca12de9410263d14191a66e32a3def04d7e147e90f6a19df85d5b6044f3a47"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-01-SUMMARY.md",
+      "sha256": "1b358de6258b920ba85913b154e3ddbd8735e99eab922808e4eb27ef75a3894f",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-01-SUMMARY.md",
+      "migrated_sha256": "1b358de6258b920ba85913b154e3ddbd8735e99eab922808e4eb27ef75a3894f",
+      "current_sha256": "1b358de6258b920ba85913b154e3ddbd8735e99eab922808e4eb27ef75a3894f"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-03-PLAN.md",
+      "sha256": "a4f8599ccb714d8e80229c91df5a1470e311c37b64096047992ee4c52232b099",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-03-PLAN.md",
+      "migrated_sha256": "a4f8599ccb714d8e80229c91df5a1470e311c37b64096047992ee4c52232b099",
+      "current_sha256": "a4f8599ccb714d8e80229c91df5a1470e311c37b64096047992ee4c52232b099"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-VERIFICATION.md",
+      "sha256": "d594ffa6a6a7c316019e4b7a95c4e78a117352640596c6487a664a316fd9ec9e",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-VERIFICATION.md",
+      "migrated_sha256": "d594ffa6a6a7c316019e4b7a95c4e78a117352640596c6487a664a316fd9ec9e",
+      "current_sha256": "d594ffa6a6a7c316019e4b7a95c4e78a117352640596c6487a664a316fd9ec9e"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-04-SUMMARY.md",
+      "sha256": "fa1bd8901beec7cd899c7af2b9678157179d291208a5f2269788848b5f08798f",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-04-SUMMARY.md",
+      "migrated_sha256": "fa1bd8901beec7cd899c7af2b9678157179d291208a5f2269788848b5f08798f",
+      "current_sha256": "fa1bd8901beec7cd899c7af2b9678157179d291208a5f2269788848b5f08798f"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-09-SUMMARY.md",
+      "sha256": "9262542a3bcfe079324fa6d081f96538eda4a843c2fb3f540921ac6fde9d31a8",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-09-SUMMARY.md",
+      "migrated_sha256": "9262542a3bcfe079324fa6d081f96538eda4a843c2fb3f540921ac6fde9d31a8",
+      "current_sha256": "9262542a3bcfe079324fa6d081f96538eda4a843c2fb3f540921ac6fde9d31a8"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/COVERAGE.md",
+      "sha256": "a8ec6e99a5214012c47fac684944c30e3074fc7520633d176b08fdd6934ab807",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/COVERAGE.md",
+      "migrated_sha256": "a8ec6e99a5214012c47fac684944c30e3074fc7520633d176b08fdd6934ab807",
+      "current_sha256": "a8ec6e99a5214012c47fac684944c30e3074fc7520633d176b08fdd6934ab807"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-01-PLAN.md",
+      "sha256": "e6bc3f2eac82e936a26d7fcbdd8ebc6b65bfe93db3e07a78eb92f0875ef3c8bd",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-01-PLAN.md",
+      "migrated_sha256": "e6bc3f2eac82e936a26d7fcbdd8ebc6b65bfe93db3e07a78eb92f0875ef3c8bd",
+      "current_sha256": "e6bc3f2eac82e936a26d7fcbdd8ebc6b65bfe93db3e07a78eb92f0875ef3c8bd"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-08-PLAN.md",
+      "sha256": "22ea1a3f6449037c71f9a557651838346e83f1bc6529b201799ef313335d2de0",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-08-PLAN.md",
+      "migrated_sha256": "22ea1a3f6449037c71f9a557651838346e83f1bc6529b201799ef313335d2de0",
+      "current_sha256": "22ea1a3f6449037c71f9a557651838346e83f1bc6529b201799ef313335d2de0"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-03-SUMMARY.md",
+      "sha256": "c3e0168059e5add460bc36ceef9cf38d32736f6a1c1404aca394f0a0ba63b0aa",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-03-SUMMARY.md",
+      "migrated_sha256": "c3e0168059e5add460bc36ceef9cf38d32736f6a1c1404aca394f0a0ba63b0aa",
+      "current_sha256": "c3e0168059e5add460bc36ceef9cf38d32736f6a1c1404aca394f0a0ba63b0aa"
+    },
+    {
+      "path": ".planning/phases/05-logical-size-transition-coordinator/05-06-SUMMARY.md",
+      "sha256": "3fb55e19ea7bc6ba5aaac3a9d1fabb6b5d19c85fab60617ff2a1b9facaad4a02",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/phases/05-logical-size-transition-coordinator/05-06-SUMMARY.md",
+      "migrated_sha256": "3fb55e19ea7bc6ba5aaac3a9d1fabb6b5d19c85fab60617ff2a1b9facaad4a02",
+      "current_sha256": "3fb55e19ea7bc6ba5aaac3a9d1fabb6b5d19c85fab60617ff2a1b9facaad4a02"
+    },
+    {
+      "path": ".planning/research/.cache/6dec32da241537ff73f69416982f818055cde8e5abc6a7b36be83e3012b905a5.json",
+      "sha256": "9fde2974ecd1fc0adae58d6f64ccb6072291064ee02f89e2fff27b8b53a84d04",
+      "mode": 420,
+      "destination": "dev-docs/history/planning/research/.cache/6dec32da241537ff73f69416982f818055cde8e5abc6a7b36be83e3012b905a5.json",
+      "migrated_sha256": "9fde2974ecd1fc0adae58d6f64ccb6072291064ee02f89e2fff27b8b53a84d04",
+      "current_sha256": "9fde2974ecd1fc0adae58d6f64ccb6072291064ee02f89e2fff27b8b53a84d04"
+    },
+    {
+      "path": ".gsd/dispatch-isolation-sentinel.json",
+      "sha256": "a7779f0e39b9b7ded2fa64ed1b106835fc7d7a338721b92e44e18a90c0814145",
+      "mode": 420,
+      "destination": "dev-docs/history/gsd/dispatch-isolation-sentinel.json",
+      "migrated_sha256": "a7779f0e39b9b7ded2fa64ed1b106835fc7d7a338721b92e44e18a90c0814145",
+      "current_sha256": "a7779f0e39b9b7ded2fa64ed1b106835fc7d7a338721b92e44e18a90c0814145"
+    },
+    {
+      "path": "dev-docs/COMMANDS",
+      "sha256": "a7414261f548d8b64b48c1b1733ca4f43a9c8ff52113da0570563d11a64554ef",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/COMMANDS",
+      "migrated_sha256": "a7414261f548d8b64b48c1b1733ca4f43a9c8ff52113da0570563d11a64554ef",
+      "current_sha256": "a7414261f548d8b64b48c1b1733ca4f43a9c8ff52113da0570563d11a64554ef"
+    },
+    {
+      "path": "dev-docs/DESKTOPS.md",
+      "sha256": "f4c82a5f20f4b91a275fea6459e88eaacc486faae08d1c5775119b08caa4da74",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/DESKTOPS.md",
+      "migrated_sha256": "f4c82a5f20f4b91a275fea6459e88eaacc486faae08d1c5775119b08caa4da74",
+      "current_sha256": "f4c82a5f20f4b91a275fea6459e88eaacc486faae08d1c5775119b08caa4da74"
+    },
+    {
+      "path": "dev-docs/DEVELOPERS.md",
+      "sha256": "4f8009ec3f48bb69c5505e94d5a8b34f354e0142f88a0cd0a5a24200c9d8a1b4",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/DEVELOPERS.md",
+      "migrated_sha256": "439d9c567e5a122874d8635107018d14bd88ecf75fa2c2f7c6593980d35a5189",
+      "current_sha256": "439d9c567e5a122874d8635107018d14bd88ecf75fa2c2f7c6593980d35a5189"
+    },
+    {
+      "path": "dev-docs/NEW-COMMANDS.md",
+      "sha256": "8385d15091bd995977585bcde7b7184581123f3a3e40ac0b6abd5a868ec246b7",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/NEW-COMMANDS.md",
+      "migrated_sha256": "8385d15091bd995977585bcde7b7184581123f3a3e40ac0b6abd5a868ec246b7",
+      "current_sha256": "8385d15091bd995977585bcde7b7184581123f3a3e40ac0b6abd5a868ec246b7"
+    },
+    {
+      "path": "dev-docs/NEW-PARSER.md",
+      "sha256": "1cef16a881e9096dce4db9bdd06d747135acabd8417fd3e0df6bd649e2946af1",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/NEW-PARSER.md",
+      "migrated_sha256": "1cef16a881e9096dce4db9bdd06d747135acabd8417fd3e0df6bd649e2946af1",
+      "current_sha256": "1cef16a881e9096dce4db9bdd06d747135acabd8417fd3e0df6bd649e2946af1"
+    },
+    {
+      "path": "dev-docs/PARSING.md",
+      "sha256": "49a891f1de2a0fb6c8b8cdf4ab7f6630b11e19003bee19def42e77a10baf965c",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/PARSING.md",
+      "migrated_sha256": "49a891f1de2a0fb6c8b8cdf4ab7f6630b11e19003bee19def42e77a10baf965c",
+      "current_sha256": "49a891f1de2a0fb6c8b8cdf4ab7f6630b11e19003bee19def42e77a10baf965c"
+    },
+    {
+      "path": "dev-docs/TODO.md",
+      "sha256": "078a1924fafc62f754b80ab25fb9d82062c8282560a62e463b200fc6721489df",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/TODO.md",
+      "migrated_sha256": "825cae5c70cc33a6d526a428153fa8afd6d5bccff2a2e3d48baee00467c00d58",
+      "current_sha256": "825cae5c70cc33a6d526a428153fa8afd6d5bccff2a2e3d48baee00467c00d58"
+    },
+    {
+      "path": "dev-docs/shareddesks",
+      "sha256": "48ae55045360d188940eb32773ce7cab3ea33bf94abacd9820c0f60fd064d98a",
+      "mode": 420,
+      "destination": "dev-docs/history/upstream/shareddesks",
+      "migrated_sha256": "48ae55045360d188940eb32773ce7cab3ea33bf94abacd9820c0f60fd064d98a",
+      "current_sha256": "48ae55045360d188940eb32773ce7cab3ea33bf94abacd9820c0f60fd064d98a"
+    },
+    {
+      "path": "dev-docs/LAUNCHER-VERIFICATION-2026-10-04.md",
+      "sha256": "29567679d457ae8e5700d849903b66af8fe1a3cf7c8c78f6b970cb8523125208",
+      "mode": 420,
+      "destination": "dev-docs/verification/LAUNCHER-VERIFICATION-2026-10-04.md",
+      "migrated_sha256": "29567679d457ae8e5700d849903b66af8fe1a3cf7c8c78f6b970cb8523125208",
+      "current_sha256": "29567679d457ae8e5700d849903b66af8fe1a3cf7c8c78f6b970cb8523125208"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-SCRIPT-STORAGE.md",
+      "sha256": "f0cdd7000aac7e89353b342faf4d5f74fb9bc9abbd0f5b1f62b31c9a64bdb140",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-STORAGE.md",
+      "migrated_sha256": "f0cdd7000aac7e89353b342faf4d5f74fb9bc9abbd0f5b1f62b31c9a64bdb140",
+      "current_sha256": "f0cdd7000aac7e89353b342faf4d5f74fb9bc9abbd0f5b1f62b31c9a64bdb140"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-MODULE-INPUT.md",
+      "sha256": "83266ff9c5f936e5d46ff76adfd38c61d14acd8123ef31b89321b7d408119ca3",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-MODULE-INPUT.md",
+      "migrated_sha256": "83266ff9c5f936e5d46ff76adfd38c61d14acd8123ef31b89321b7d408119ca3",
+      "current_sha256": "83266ff9c5f936e5d46ff76adfd38c61d14acd8123ef31b89321b7d408119ca3"
+    },
+    {
+      "path": "dev-docs/WEBSITE-MANUALS-BRIEF.md",
+      "sha256": "df8080d9fb6a39d4918ff4a55265394b937e3d1f5c109cd29849b19f04df6117",
+      "mode": 420,
+      "destination": "dev-docs/decisions/WEBSITE-MANUALS-BRIEF.md",
+      "migrated_sha256": "d470ffcbb09bf276aed2032f1f898ad147f6da604c8de28960c73d674357c104",
+      "current_sha256": "5e608ff4fe8f25d4536e0903bd80d773feb4cd8fa85cdac52dccb4607a5702b9",
+      "subsequent_review": "Current manual/HTML direction or source-line link refined after relocation."
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-SCHEDULER.md",
+      "sha256": "6def4b3943f210e862de9655ab794009f1c265ba006299af93b2d4f533a55f7f",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-SCHEDULER.md",
+      "migrated_sha256": "6def4b3943f210e862de9655ab794009f1c265ba006299af93b2d4f533a55f7f",
+      "current_sha256": "6def4b3943f210e862de9655ab794009f1c265ba006299af93b2d4f533a55f7f"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-COMMAND-LIFETIME.md",
+      "sha256": "24bcf2cca8caea461a49a25a2b2e11c9458f21b863c652f06f8c8641035a1267",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-COMMAND-LIFETIME.md",
+      "migrated_sha256": "24bcf2cca8caea461a49a25a2b2e11c9458f21b863c652f06f8c8641035a1267",
+      "current_sha256": "24bcf2cca8caea461a49a25a2b2e11c9458f21b863c652f06f8c8641035a1267"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-SCRIPT-FIFO.md",
+      "sha256": "6a4c260b71ad5485238cd9b908d43c7b38b37b9a59b3f006ea08f9147e26c042",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-FIFO.md",
+      "migrated_sha256": "6a4c260b71ad5485238cd9b908d43c7b38b37b9a59b3f006ea08f9147e26c042",
+      "current_sha256": "6a4c260b71ad5485238cd9b908d43c7b38b37b9a59b3f006ea08f9147e26c042"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-SCRIPT-EXECUTION.md",
+      "sha256": "e8b163ff2ace80b3a7aa0c9eb59f6f9279722a83afc7e634909d8acea73269e5",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-SCRIPT-EXECUTION.md",
+      "migrated_sha256": "e09e3890963e84e19a2357208b114ec7c0dca82e143f504a2cbcf38ee30b7da8",
+      "current_sha256": "e09e3890963e84e19a2357208b114ec7c0dca82e143f504a2cbcf38ee30b7da8"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-TOOLING.md",
+      "sha256": "494c4f1ba0a47a76a38679bdf4f772841ce435c6705c84dab3e568ec15b0cbc1",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-TOOLING.md",
+      "migrated_sha256": "69c0939b5a107e63341707e80fc6e04cd6cce31759231d98aaaa6d9d78856a86",
+      "current_sha256": "69c0939b5a107e63341707e80fc6e04cd6cce31759231d98aaaa6d9d78856a86"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-HARDENING.md",
+      "sha256": "1a6eb86086765e79b58cf773afd634d37d050a0ec4521da43fafd39a81b3d418",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-HARDENING.md",
+      "migrated_sha256": "8dfbfd3eb11f69adb0745af689611a8cff59f6dd93ba2ddd93abfb22faaf3064",
+      "current_sha256": "8dfbfd3eb11f69adb0745af689611a8cff59f6dd93ba2ddd93abfb22faaf3064"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-SCRIPT-VALUES.md",
+      "sha256": "73417b5b3d3d8bda0e83d5c8e968d76a6fea2bf51832dbf513f5061ef52bba16",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-SCRIPT-VALUES.md",
+      "migrated_sha256": "73417b5b3d3d8bda0e83d5c8e968d76a6fea2bf51832dbf513f5061ef52bba16",
+      "current_sha256": "73417b5b3d3d8bda0e83d5c8e968d76a6fea2bf51832dbf513f5061ef52bba16"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-FRAME-SYNC.md",
+      "sha256": "bdd10b8477c110b1e5a6039d3164b5016e266902a6dad820fef3ac159664bcb9",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-FRAME-SYNC.md",
+      "migrated_sha256": "bdd10b8477c110b1e5a6039d3164b5016e266902a6dad820fef3ac159664bcb9",
+      "current_sha256": "bdd10b8477c110b1e5a6039d3164b5016e266902a6dad820fef3ac159664bcb9"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-SCRIPT-WIDGETS.md",
+      "sha256": "6bab2176fd5d9c5779c153e07bdfa4144d9c9a6cd5bcd6100ce373a1b9d63977",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-WIDGETS.md",
+      "migrated_sha256": "6bab2176fd5d9c5779c153e07bdfa4144d9c9a6cd5bcd6100ce373a1b9d63977",
+      "current_sha256": "6bab2176fd5d9c5779c153e07bdfa4144d9c9a6cd5bcd6100ce373a1b9d63977"
+    },
+    {
+      "path": "dev-docs/MAINTENANCE-VERIFICATION-2026-10-05.md",
+      "sha256": "2c7a5edc6e7d1a66337de0a5f6ccb8ce6c952677e36619e343b628b7b2d32500",
+      "mode": 420,
+      "destination": "dev-docs/verification/MAINTENANCE-VERIFICATION-2026-10-05.md",
+      "migrated_sha256": "806f3829d44112f629d0ea09a6d647d12e7ef33548938d55dd75c9e36ea24135",
+      "current_sha256": "806f3829d44112f629d0ea09a6d647d12e7ef33548938d55dd75c9e36ea24135"
+    },
+    {
+      "path": "dev-docs/WM-REVIEW-2026-10-03.md",
+      "sha256": "188c0d10f881282c5c79817c10e91e1fd786bcae771ecd379b43f55243199451",
+      "mode": 420,
+      "destination": "dev-docs/verification/WM-REVIEW-2026-10-03.md",
+      "migrated_sha256": "1e6e0a078a14f72cc827be0cc9c4d4f6d9e9cf4b2538e25cf67ef59d696da365",
+      "current_sha256": "1e6e0a078a14f72cc827be0cc9c4d4f6d9e9cf4b2538e25cf67ef59d696da365"
+    },
+    {
+      "path": "dev-docs/DESKTOP-VERIFICATION-2026-10-04.md",
+      "sha256": "e9fcc0e7d00ff46366c1401374dbbc6190f437c8c21e9e76dd15833a7dff1e9f",
+      "mode": 420,
+      "destination": "dev-docs/verification/DESKTOP-VERIFICATION-2026-10-04.md",
+      "migrated_sha256": "e9fcc0e7d00ff46366c1401374dbbc6190f437c8c21e9e76dd15833a7dff1e9f",
+      "current_sha256": "e9fcc0e7d00ff46366c1401374dbbc6190f437c8c21e9e76dd15833a7dff1e9f"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-SCRIPT-TEXT-LIMIT.md",
+      "sha256": "30cc0b3f680be235984971da1ad58a33a37afc1a016538d67cf930fdd4c45b2e",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-TEXT-LIMIT.md",
+      "migrated_sha256": "30cc0b3f680be235984971da1ad58a33a37afc1a016538d67cf930fdd4c45b2e",
+      "current_sha256": "30cc0b3f680be235984971da1ad58a33a37afc1a016538d67cf930fdd4c45b2e"
+    },
+    {
+      "path": "dev-docs/THEME-POLISH-VERIFICATION-2026-10-04.md",
+      "sha256": "343702040ca2773dec35eb842d89c021e4fea6dfdfb393ed96521f447a746585",
+      "mode": 420,
+      "destination": "dev-docs/verification/THEME-POLISH-VERIFICATION-2026-10-04.md",
+      "migrated_sha256": "343702040ca2773dec35eb842d89c021e4fea6dfdfb393ed96521f447a746585",
+      "current_sha256": "343702040ca2773dec35eb842d89c021e4fea6dfdfb393ed96521f447a746585"
+    },
+    {
+      "path": "dev-docs/WINDOW-CONTROLS-VERIFICATION-2026-10-04.md",
+      "sha256": "6b068074c2a2cfbebf00f9ccd71be77e44fd83be46030b94f9a9a7f58f0465e6",
+      "mode": 420,
+      "destination": "dev-docs/verification/WINDOW-CONTROLS-VERIFICATION-2026-10-04.md",
+      "migrated_sha256": "6b068074c2a2cfbebf00f9ccd71be77e44fd83be46030b94f9a9a7f58f0465e6",
+      "current_sha256": "6b068074c2a2cfbebf00f9ccd71be77e44fd83be46030b94f9a9a7f58f0465e6"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-SESSION.md",
+      "sha256": "76e8336f04501631d5d7d002373b75a27a5832d51b3a46bfee38bd4dc03e867a",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-SESSION.md",
+      "migrated_sha256": "c213794ee079fbd1ecb78ab558d5360297c79c837ed11ae5788f82d670d4dff1",
+      "current_sha256": "c213794ee079fbd1ecb78ab558d5360297c79c837ed11ae5788f82d670d4dff1"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-SCRIPT-INTERPRETER.md",
+      "sha256": "a299a41dc5c1e53c6462ec4c2c3cd192022b48f2a88847c2dd3c10ac10c691db",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-SCRIPT-INTERPRETER.md",
+      "migrated_sha256": "a299a41dc5c1e53c6462ec4c2c3cd192022b48f2a88847c2dd3c10ac10c691db",
+      "current_sha256": "a299a41dc5c1e53c6462ec4c2c3cd192022b48f2a88847c2dd3c10ac10c691db"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-INTERACTION.md",
+      "sha256": "08c10495c12d8beb174aec260483478844fdd44f0f464ba5d4d353ab327bb1ce",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-INTERACTION.md",
+      "migrated_sha256": "08c10495c12d8beb174aec260483478844fdd44f0f464ba5d4d353ab327bb1ce",
+      "current_sha256": "08c10495c12d8beb174aec260483478844fdd44f0f464ba5d4d353ab327bb1ce"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-INTERACTION-SERVICING.md",
+      "sha256": "b295e8059df4965fdb58bb0460cf416031fd309e84ae697bfb33497c7cfa0fd6",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-INTERACTION-SERVICING.md",
+      "migrated_sha256": "b295e8059df4965fdb58bb0460cf416031fd309e84ae697bfb33497c7cfa0fd6",
+      "current_sha256": "b295e8059df4965fdb58bb0460cf416031fd309e84ae697bfb33497c7cfa0fd6"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-SCRIPT-DELAYS.md",
+      "sha256": "9f39d83c6c71df36d25b98c7c48b7d95d40dad78cd1b0eabf552966f262975f0",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-DELAYS.md",
+      "migrated_sha256": "9f39d83c6c71df36d25b98c7c48b7d95d40dad78cd1b0eabf552966f262975f0",
+      "current_sha256": "9f39d83c6c71df36d25b98c7c48b7d95d40dad78cd1b0eabf552966f262975f0"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-03.md",
+      "sha256": "177f870f85effe981aad11424f41cb947fd7b386e60932dde3271b0da926bebf",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-03.md",
+      "migrated_sha256": "177f870f85effe981aad11424f41cb947fd7b386e60932dde3271b0da926bebf",
+      "current_sha256": "177f870f85effe981aad11424f41cb947fd7b386e60932dde3271b0da926bebf"
+    },
+    {
+      "path": "dev-docs/WEBSITE-OUTPUT-PROPOSAL.md",
+      "sha256": "2051cfd96f55fea673d24b33e5c5d343960b0c77ff76696b08add48cf929e00c",
+      "mode": 420,
+      "destination": "dev-docs/decisions/WEBSITE-OUTPUT-PROPOSAL.md",
+      "migrated_sha256": "2051cfd96f55fea673d24b33e5c5d343960b0c77ff76696b08add48cf929e00c",
+      "current_sha256": "2051cfd96f55fea673d24b33e5c5d343960b0c77ff76696b08add48cf929e00c"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04.md",
+      "sha256": "0c5aa96394166bc3ce92538ae6877faa2d755ce6edebcaf75fc98e3e8c8d61ac",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04.md",
+      "migrated_sha256": "dc016277fea42b301b1664336c5719a9cace82fd1ffbbcb846c17b27191abf89",
+      "current_sha256": "dc016277fea42b301b1664336c5719a9cace82fd1ffbbcb846c17b27191abf89"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-SCRIPT-RELEASE.md",
+      "sha256": "d3622820165bf68a54d75422ab23b03fda1e10dbc4b403344e861adffbe26f21",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-RELEASE.md",
+      "migrated_sha256": "b5e31f3120bb3d7e77a8ca6d00a8c614bb6dcf8eb0392a380bdff6e7c8073a8b",
+      "current_sha256": "b5e31f3120bb3d7e77a8ca6d00a8c614bb6dcf8eb0392a380bdff6e7c8073a8b"
+    },
+    {
+      "path": "dev-docs/SCRIPT-VALUE-LIMITS-PROPOSAL.md",
+      "sha256": "43ab896e5b67a8b2dd25f4a8613c08ee174cbcb680b2911e69ef3322fc3e6ff7",
+      "mode": 420,
+      "destination": "dev-docs/decisions/SCRIPT-VALUE-LIMITS-PROPOSAL.md",
+      "migrated_sha256": "1d39e925a3aa50bd49620c2a067826525ac9db05be9fe53995d239298a9bcda8",
+      "current_sha256": "1d39e925a3aa50bd49620c2a067826525ac9db05be9fe53995d239298a9bcda8"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-PNG-RECOVERY.md",
+      "sha256": "0f8e59a2aaab891810560239043344363296a9dfbe8b3e1ffc5140a770161524",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-PNG-RECOVERY.md",
+      "migrated_sha256": "a49e54db4351b30ea9aa983a04cb9ae9ffd9181f72b57a3ba72af14c6f286524",
+      "current_sha256": "a49e54db4351b30ea9aa983a04cb9ae9ffd9181f72b57a3ba72af14c6f286524"
+    },
+    {
+      "path": "dev-docs/SLATE-SESSION-PANEL-VERIFICATION-2026-10-05.md",
+      "sha256": "87eba1e2b43c91d484413340c005db507f4353e86cbd8e10193dd836bba35cb1",
+      "mode": 420,
+      "destination": "dev-docs/verification/SLATE-SESSION-PANEL-VERIFICATION-2026-10-05.md",
+      "migrated_sha256": "87eba1e2b43c91d484413340c005db507f4353e86cbd8e10193dd836bba35cb1",
+      "current_sha256": "87eba1e2b43c91d484413340c005db507f4353e86cbd8e10193dd836bba35cb1"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-COLORSETS.md",
+      "sha256": "11b052c2cbb1a44cd93fb43d21e6a93b830a843c9828e0df532ea79236608134",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-COLORSETS.md",
+      "migrated_sha256": "11b052c2cbb1a44cd93fb43d21e6a93b830a843c9828e0df532ea79236608134",
+      "current_sha256": "11b052c2cbb1a44cd93fb43d21e6a93b830a843c9828e0df532ea79236608134"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-SCRIPT-TEXT.md",
+      "sha256": "bdfc63fe3227bd3130474536be863ea16961ccca069cce8ddb829315f8507765",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-TEXT.md",
+      "migrated_sha256": "c61de0aaca46c6ce7697c08b4c2b8e4a6801dd25ca0bd80316d1957925509dc6",
+      "current_sha256": "c61de0aaca46c6ce7697c08b4c2b8e4a6801dd25ca0bd80316d1957925509dc6"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-SCRIPT-FILE.md",
+      "sha256": "c99c86e566a9e7043280466b811ae0f78fcb9edd789502226fbf4e1c1c3dbc42",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-SCRIPT-FILE.md",
+      "migrated_sha256": "c99c86e566a9e7043280466b811ae0f78fcb9edd789502226fbf4e1c1c3dbc42",
+      "current_sha256": "c99c86e566a9e7043280466b811ae0f78fcb9edd789502226fbf4e1c1c3dbc42"
+    },
+    {
+      "path": "dev-docs/SCRIPT-FIFO-PROPOSAL.md",
+      "sha256": "baed99980418b3b2d6e7c42e52fdf78fca69aabc8f9cdd95476b1b224aa60e58",
+      "mode": 420,
+      "destination": "dev-docs/decisions/SCRIPT-FIFO-PROPOSAL.md",
+      "migrated_sha256": "1a93be8d5a963b2047ccfb1e9c8e1b4125e1e59662f770d3c233ba754b2de05d",
+      "current_sha256": "1a93be8d5a963b2047ccfb1e9c8e1b4125e1e59662f770d3c233ba754b2de05d"
+    },
+    {
+      "path": "dev-docs/SCRIPT-TEXT-LIMIT-PROPOSAL.md",
+      "sha256": "504eccc993bb76f53fdbd65dba1658fa24adf2884cae4bde845de11966b5827a",
+      "mode": 420,
+      "destination": "dev-docs/decisions/SCRIPT-TEXT-LIMIT-PROPOSAL.md",
+      "migrated_sha256": "d97aed9a9bc6077ad8989c8d05e92a525c47244803309f3f0526cfbd23db1a78",
+      "current_sha256": "186f331113cb97e38008cb59bec70ed0c600dcb82780a40cf9bc60aab5137de9",
+      "subsequent_review": "Current manual/HTML direction or source-line link refined after relocation."
+    },
+    {
+      "path": "dev-docs/SLATE-APPEARANCE-VERIFICATION-2026-10-04.md",
+      "sha256": "10e7190f7b273997d937acd8fb7b15391c7cd1207311e72a8acbc8eff8d13078",
+      "mode": 420,
+      "destination": "dev-docs/verification/SLATE-APPEARANCE-VERIFICATION-2026-10-04.md",
+      "migrated_sha256": "10e7190f7b273997d937acd8fb7b15391c7cd1207311e72a8acbc8eff8d13078",
+      "current_sha256": "10e7190f7b273997d937acd8fb7b15391c7cd1207311e72a8acbc8eff8d13078"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-05-COLORSET-CANDIDATE.md",
+      "sha256": "29baefb9e934ac619bbbbfdeb43e94d66320d884dcea69b7a892f4f55a9a6711",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-05-COLORSET-CANDIDATE.md",
+      "migrated_sha256": "631e97d6847470fc4ffbf8fcc3647f819b05c9d73d80aa925070399534417f79",
+      "current_sha256": "631e97d6847470fc4ffbf8fcc3647f819b05c9d73d80aa925070399534417f79"
+    },
+    {
+      "path": "dev-docs/SLATE-SESSION-MENU-VERIFICATION-2026-10-04.md",
+      "sha256": "4f21a3170606e64403e4b767b67b0fd3a3cb62e3ee4e9a1dcbbf14736be969f4",
+      "mode": 420,
+      "destination": "dev-docs/verification/SLATE-SESSION-MENU-VERIFICATION-2026-10-04.md",
+      "migrated_sha256": "4f21a3170606e64403e4b767b67b0fd3a3cb62e3ee4e9a1dcbbf14736be969f4",
+      "current_sha256": "4f21a3170606e64403e4b767b67b0fd3a3cb62e3ee4e9a1dcbbf14736be969f4"
+    },
+    {
+      "path": "dev-docs/VERIFICATION-2026-10-04-SCRIPT-BOUNDS.md",
+      "sha256": "ab1b87f429647723de09ef9a4cd4a859dc9253d3b4cc287af2b73d31f7278295",
+      "mode": 420,
+      "destination": "dev-docs/verification/VERIFICATION-2026-10-04-SCRIPT-BOUNDS.md",
+      "migrated_sha256": "ab1b87f429647723de09ef9a4cd4a859dc9253d3b4cc287af2b73d31f7278295",
+      "current_sha256": "ab1b87f429647723de09ef9a4cd4a859dc9253d3b4cc287af2b73d31f7278295"
+    },
+    {
+      "path": "dev-docs/COLORSET-STORAGE-PROPOSAL.md",
+      "sha256": "32cec5d673145f7f6da40b752d9a92e2a0ec8bcae61bd14fa2b8b69721dcf246",
+      "mode": 420,
+      "destination": "dev-docs/decisions/COLORSET-STORAGE-PROPOSAL.md",
+      "migrated_sha256": "dc93cba4e2effafb45471b00fa4e6a0c2cd0df11ee1c48c4f45e03148d42070c",
+      "current_sha256": "dc93cba4e2effafb45471b00fa4e6a0c2cd0df11ee1c48c4f45e03148d42070c"
+    },
+    {
+      "path": "dev-docs/PNG-SECURITY-BASELINE-PROPOSAL.md",
+      "sha256": "54e446f41a79ec4084e48ca9ac3b742f5510b54502b09825a35fa8264fc74cfa",
+      "mode": 420,
+      "destination": "dev-docs/decisions/PNG-SECURITY-BASELINE-PROPOSAL.md",
+      "migrated_sha256": "43795d2f0fa8e1c45e7c984e3aff12ddb66e2ace017a063eae83ec943200cee8",
+      "current_sha256": "43795d2f0fa8e1c45e7c984e3aff12ddb66e2ace017a063eae83ec943200cee8"
+    }
+  ],
+  "links_updated": [
+    "dev-docs/PROJECT-TRACKER.md",
+    "dev-docs/CLEANUP-ROADMAP-2026-10-05.md",
+    "dev-docs/SUPPORT.md",
+    "dev-docs/SECURITY-STATUS.md",
+    "dev-docs/DEPENDENCY-AUDIT-2026-10-05.md",
+    "dev-docs/decisions/WEBSITE-MANUALS-BRIEF.md",
+    "dev-docs/decisions/SCRIPT-VALUE-LIMITS-PROPOSAL.md",
+    "dev-docs/decisions/SCRIPT-FIFO-PROPOSAL.md",
+    "dev-docs/decisions/SCRIPT-TEXT-LIMIT-PROPOSAL.md",
+    "dev-docs/decisions/COLORSET-STORAGE-PROPOSAL.md",
+    "dev-docs/decisions/PNG-SECURITY-BASELINE-PROPOSAL.md",
+    "dev-docs/verification/VERIFICATION-2026-10-04-SCRIPT-EXECUTION.md",
+    "dev-docs/verification/VERIFICATION-2026-10-05-TOOLING.md",
+    "dev-docs/verification/VERIFICATION-2026-10-04-HARDENING.md",
+    "dev-docs/verification/MAINTENANCE-VERIFICATION-2026-10-05.md",
+    "dev-docs/verification/WM-REVIEW-2026-10-03.md",
+    "dev-docs/verification/VERIFICATION-2026-10-04-SESSION.md",
+    "dev-docs/verification/VERIFICATION-2026-10-04.md",
+    "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-RELEASE.md",
+    "dev-docs/verification/VERIFICATION-2026-10-05-PNG-RECOVERY.md",
+    "dev-docs/verification/VERIFICATION-2026-10-05-SCRIPT-TEXT.md",
+    "dev-docs/verification/VERIFICATION-2026-10-05-COLORSET-CANDIDATE.md",
+    "dev-docs/history/planning/PROJECT.md",
+    "dev-docs/history/planning/STATE.md",
+    "dev-docs/history/upstream/DEVELOPERS.md",
+    "dev-docs/history/upstream/TODO.md",
+    "README.md",
+    "tools/maintenance/README.md"
+  ],
+  "agent_guide_archive": {
+    "source": "AGENTS.md",
+    "destination": "dev-docs/history/AGENTS-GSD-2026-10-05.md",
+    "sha256": "7d8ec1a9c78d2e5a06c78ebfa1ed2a48ca80d367f153e4c4961f2a0f2027005c"
+  }
+}

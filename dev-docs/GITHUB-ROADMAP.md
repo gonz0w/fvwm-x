@@ -101,3 +101,7 @@ Their limited acceptance does not close MAINT-02 or the LIB-03 audit.
 
 [MAINT-02 #87 — Incremental build reuse and consolidated PR checkpoints](https://github.com/gonz0w/fvwm-x/issues/87)
 groups build-step and review-cadence improvements into one stage 2 child batch.
+
+[MAINT-02 #89 — Restore referenced developer docs and check local links](https://github.com/gonz0w/fvwm-x/issues/89)
+groups frozen documentation/evidence, portable navigation and local checks in
+one stage 2 checkpoint.

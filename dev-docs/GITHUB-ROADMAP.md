@@ -98,3 +98,6 @@ MAINT-02 has two stage2 children consolidated into one source-tool PR:
 [#84 — Bound source inventory and archive memory](https://github.com/gonz0w/fvwm-x/issues/84)
 and [#85 — Record dependency inventory provenance and Go directives](https://github.com/gonz0w/fvwm-x/issues/85).
 Their limited acceptance does not close MAINT-02 or the LIB-03 audit.
+
+[MAINT-02 #87 — Incremental build reuse and consolidated PR checkpoints](https://github.com/gonz0w/fvwm-x/issues/87)
+groups build-step and review-cadence improvements into one stage 2 child batch.

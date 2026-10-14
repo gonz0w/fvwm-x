@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Build reuse and PR batching](VERIFICATION-2026-10-13-BUILD-EFFICIENCY.md): exact option/source identity reuse, retained test prerequisites and no redundant install rebuild; 72 actual affected Meson/policy passes on six targets.
+
 - [Source-tool maintenance](VERIFICATION-2026-10-13-SOURCE-TOOLS.md): bounded file/archive memory, Go manifest provenance and explicit dependency-tool availability; affected six-target policy checks, with real-Git capability gaps retained.
 
 - [Owned QEMU BSD runner](VERIFICATION-2026-10-13-QEMU-PROVIDER.md): six-target affected Python policy/ownership, actual pinned boot/teardown and four authenticated default-X startup profiles; fresh dependency/build/install/native CI acceptance remains gated.

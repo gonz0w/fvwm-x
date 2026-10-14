@@ -504,6 +504,13 @@
       "url": "https://github.com/gonz0w/fvwm-x/issues/85",
       "stage": 2,
       "scope": "Dependency manifest provenance"
+    },
+    {
+      "parent_tracker_id": "MAINT-02",
+      "number": 87,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/87",
+      "stage": 2,
+      "scope": "Incremental build reuse and consolidated PR checkpoints"
     }
   ]
 }

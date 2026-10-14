@@ -43,8 +43,16 @@ to CI-01. Keep incomplete issues open with exact remaining criteria.
 ## Review and acceptance
 
 Follow [CONTRIBUTING.md](../CONTRIBUTING.md): signed author-DCO `codex/` commits,
-coherent PR batches and local source-bound evidence. GitHub Actions is disabled;
-there are no hosted/self-hosted runners or success-status publishers. `make verify`
+coherent PR batches and local source-bound evidence. GitHub Actions is disabled.
+
+One coherent acceptance checkpoint normally means one PR, even when it closes
+several bounded issues. Put related implementation, tests, docs and evidence
+together; update that PR for related corrections while it remains open. Do not
+create a PR merely because one story is implemented, or repeat platform builds
+solely because a PR was created. [Batch cadence](WORKFLOW.md#implementation-batches-and-test-cadence)
+defines when to split and how to reuse the owner's incremental build/evidence.
+
+There are no hosted/self-hosted runners or success-status publishers. `make verify`
 checks portable foundation/policy only; affected native/runtime gates remain
 explicit. Preserve failures, skipped capabilities and teardown observations.
 

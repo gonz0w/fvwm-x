@@ -60,9 +60,17 @@ python3 tools/maintenance/source.py archive --ref HEAD --epoch 0 --output /tmp/f
 
 `build.py` uses argv subprocess calls, drains diagnostic output in bounded
 chunks, and returns the failed command's exit status even in verbose mode.
-A changed option or `--reconfigure` reconfigures without `--wipe`. `--install`
-retains terminal input for Meson's normal privilege handling. Quiet-mode errors
-point to the retained log. GNU `nproc`, shell `eval` and Bash are unnecessary.
+A changed option or `--reconfigure` reconfigures without `--wipe`. Identical
+requested scalar options reuse Meson's `intro-buildoptions.json` after its
+source/build identity is checked. Arrays, unknown options and absent/malformed
+metadata retain ordinary setup. Explicit
+reconfigure/wipe requests are never skipped. Tests retain Meson's prerequisite
+build for non-default targets, including Go test binaries. Install uses
+`--no-rebuild` after compilation/testing, stopping on failure.
+Keep compiler/dependency/profile changes and source timestamp invalidation under
+the [shared build cadence](../../dev-docs/WORKFLOW.md#implementation-batches-and-test-cadence).
+`--install` retains terminal input for Meson's normal privilege handling.
+Quiet-mode errors point to the retained log. GNU `nproc`, shell `eval` and Bash are unnecessary.
 A dry run performs no build, output creation or installation.
 
 `manuals.json` is the shared source list used by Meson and the standalone

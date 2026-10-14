@@ -5,8 +5,10 @@ Read [AGENTS.md](AGENTS.md), the [tracker](dev-docs/PROJECT-TRACKER.md), and the
 scope; GitHub issues and the Project mirror that order and track review.
 
 Use a bounded `codex/` branch from `origin/main`. Batch related implementation,
-tests and documentation into one reviewable PR. Preserve another chat's edits
-and run from an isolated, identified candidate. Sign contributor commits and
+tests and documentation into one reviewable PR per coherent checkpoint, usually
+three to five related stories. Keep related docs/evidence and review fixes in
+that PR while it is open; split for independent contracts or ownership. Preserve
+another chat's edits and run from an isolated, identified candidate. Sign contributor commits and
 include the author DCO trailer with `git commit -S -s`; signatures and sign-offs
 serve different purposes. Configure a trusted signing key per clone.
 
@@ -18,7 +20,13 @@ make hooks
 
 `make verify` runs local repository hygiene and portable maintenance/gate policy
 checks. It does not compile the WM or establish native platform, X11, race,
-sanitizer, hardware or release acceptance. Add the affected checks:
+sanitizer, hardware or release acceptance.
+
+Run it once for the combined candidate, not after each story or documentation
+edit. During development, use affected tests and an owner-controlled incremental
+build per compiler/feature profile. Docs/status-only updates use `make check`
+and whitespace/link checks; retain unchanged source-bound runtime evidence.
+Add the affected native checks:
 
 ```sh
 sh tests/run_on_linux.sh builddir/review-linux

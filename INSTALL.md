@@ -207,7 +207,14 @@ $ ./build -Dgolang=disabled -Dbidi=disabled -Dhtmldoc=false -mi
 
 The wrapper also accepts `--dry-run`, `--test`, `--jobs N` and `--log PATH`.
 It does not install without `-i`. Changed `-D` options reconfigure the chosen
-build without wiping it; `-f` explicitly requests Meson's wipe/reconfigure.
+build without wiping it. Repeated identical scalar options reuse the configured
+build; arrays, unknown options or missing option metadata use ordinary setup.
+`--reconfigure` forces setup and `-f` explicitly requests wipe/reconfigure.
+Tests retain their prerequisite build, including optional Go test binaries
+excluded from the default build. Installation uses `--no-rebuild` after
+compilation/testing. A compile or test failure prevents installation. Keep one owned
+build directory per compiler/feature profile and refresh dependency detection
+when dependency inputs change.
 Verbose mode returns a failed command's status, and quiet failures point to
 retained diagnostics. Values containing spaces remain one argument:
 

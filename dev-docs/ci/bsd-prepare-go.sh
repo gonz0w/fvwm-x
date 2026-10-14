@@ -6,16 +6,17 @@ set -eu
 export PATH="/usr/local/bin:/usr/X11R6/bin:$PATH"
 case $(uname -s) in
 FreeBSD)
-    pkg install -y go xorg-server xf86-video-scfb xf86-video-vesa
+    pkg install -y xorg-server xf86-video-scfb xf86-video-vesa
     ;;
 OpenBSD)
     unset TRUSTED_PKG_PATH
-    sh dev-docs/ci/openbsd-package.sh go
     ;;
 *) exit 1 ;;
 esac
-# Install the optional SDK before the expensive PNG build; transport failures
-# must not discard completed dependency qualification unnecessarily.
+# Select the pinned patched SDK before the expensive PNG build. The provider
+# installs no system Go package and keeps earlier compilers intact.
+sh dev-docs/ci/bsd-go-sdk.sh
+. builddir-bsd/go-sdk-environment.sh
 sh dev-docs/ci/bsd-prepare-core.sh
 go version > builddir-bsd/provider-go.txt
 test -x "$(command -v Xorg)"

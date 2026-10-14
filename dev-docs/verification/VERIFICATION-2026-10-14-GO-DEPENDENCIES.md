@@ -1,6 +1,10 @@
 # Optional Go dependency audit and vendor cleanup — 2026-10-14
 
 Owner: LIB-03, scoped child [#91](https://github.com/gonz0w/fvwm-x/issues/91).
+Current follow-up: the user approved the patched compiler requirement after
+this audit. See the [adoption checkpoint](VERIFICATION-2026-10-14-GO-BASELINE.md);
+the original observations and remaining-at-that-time wording below retain
+their frozen audit scope.
 The affected offline checkpoint is locally qualified. The compiler-baseline
 proposal remains a dependency decision; this report does not certify all Go
 versions accepted by the current build or close the broader LIB-03 owner.

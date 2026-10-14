@@ -2,13 +2,12 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or any later version.
-# Complete either existing CI bootstrap package before normal signed install.
+# Complete the Meson bootstrap package before normal signed install.
 set -eu
 test "$(uname -s)" = OpenBSD
 case ${1:-} in
     meson) package=meson-1.10.2v0; file_blocks=32768 ;;
-    go) package=go-1.26.2; file_blocks=1048576 ;;
-    *) echo 'Expected the Meson or Go CI package.' >&2; exit 1 ;;
+    *) echo 'Expected the Meson CI package.' >&2; exit 1 ;;
 esac
 case $(uname -m) in
     amd64) package_arch=amd64 ;;

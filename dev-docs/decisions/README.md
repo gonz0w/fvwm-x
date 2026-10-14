@@ -1,6 +1,6 @@
 # Proposals and decisions
 
-- [Proposed optional Go patched compiler baseline; dependency decision pending](GO-TOOLCHAIN-BASELINE-PROPOSAL.md).
+- [Approved optional Go patched compiler baseline](GO-TOOLCHAIN-BASELINE-PROPOSAL.md).
 
 - [CI patched PNG input](CI-PNG-INPUT-PROPOSAL-2026-10-13.md): approved verified source bootstrap for the existing dependency; implementation and fresh-provider qualification locally accepted, with actual native CI separate.
 

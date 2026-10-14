@@ -1,7 +1,10 @@
 # Optional Go compiler security baseline
 
-Status: proposed 2026-10-14; user dependency decision required. Owner: LIB-03.
-No compiler requirement or package has changed under this proposal.
+Status: approved and locally qualified 2026-10-14. Owner: LIB-03.
+The user approved the current patched Go baseline unless it causes major issues.
+The accepted patch policy below is unchanged from the reviewed proposal.
+Existing system SDKs remain intact. The [adoption report](../verification/VERIFICATION-2026-10-14-GO-BASELINE.md)
+records actual six-target results, the actual minimum and retained failures.
 
 ## Concrete change
 
@@ -55,7 +58,6 @@ when implementing; these dates are evidence, not an evergreen assertion.
 5. Update INSTALL.md, tracker, source inventory, security status and roadmap
    together. Refresh the supported patch baseline as part of dependency upkeep.
 
-Recommendation: approve the patched optional build baseline. Keeping the old
-floor with advice alone would keep default builds admitting unsupported SDKs.
-The user chose secure defaults elsewhere; this separate external requirement
-still needs an explicit decision.
+Decision: require the patched optional build baseline. Report a major SDK or
+platform problem before changing this accepted contract. Go remains optional;
+no FVWM configuration migration is required.

@@ -4,6 +4,7 @@
 # the Free Software Foundation; either version 2, or any later version.
 set -eu
 export PATH="/usr/local/bin:/usr/X11R6/bin:$PATH"
+. builddir-bsd/go-sdk-environment.sh
 . builddir-bsd/png-bootstrap/environment.sh
 sh tests/run_native_gate.sh --go-clients builddir-bsd-go
 meson compile -C builddir-bsd-go fvwm-image-svg-worker -j 2

@@ -107,5 +107,11 @@ groups frozen documentation/evidence, portable navigation and local checks in
 one stage 2 checkpoint.
 
 [LIB-03 #91 — Audit target reachability and trim unused Go vendor inputs](https://github.com/gonz0w/fvwm-x/issues/91)
-groups advisory analysis, same-pin vendor regeneration and offline native checks.
-The external compiler baseline remains a decision under LIB-03 #12.
+groups advisory analysis, same-pin vendor regeneration, the approved compiler/SDK
+policy and offline native checks.
+The approved patched optional compiler/SDK policy and affected qualification
+are included in the same PR under LIB-03 #12.
+
+[LIB-07 #93 — Investigate intermittent OpenBSD AMD64 VESA startup crashes](https://github.com/gonz0w/fvwm-x/issues/93)
+retains two pre-client server faults separately from the passing Go application
+controls. It is P1/Ready; cause is unestablished.

@@ -47,6 +47,15 @@ endif
 
 test('native-gate-contract', py, args: [files('test_native_gate.py')],
     timeout: 180)
+
+test('go-version-contract', py,
+    args: [files('../tools/maintenance/tests/test_go_version.py')],
+    timeout: 180,
+)
+test('go-sdk-recipe-contract', py,
+    args: [files('test_go_sdk_recipe.py')],
+    timeout: 60,
+)
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('ewmh-inventory-xvfb', py,
         args: [files('live_x/ewmh_inventory_live.py'),

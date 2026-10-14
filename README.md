@@ -15,8 +15,8 @@ hardening and utility-port checkpoints. The local PNG/QEMU build, install and
 BSD default-X checkpoint is complete. Broader desktop work, physical-hardware
 qualification and release acceptance remain open. Hosted source is the qualified
 core/utility snapshot; separately owned desktop/artwork publication is tracked
-in the project guides. The optional Go dependency audit is qualified; a patched
-compiler baseline awaits a dependency decision. This is not a stable release.
+in the project guides. Optional Go builds use a patched compiler baseline. An
+OpenBSD AMD64 VESA startup issue remains under investigation. This is not a stable release.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

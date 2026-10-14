@@ -1,0 +1,29 @@
+name: Roadmap work item
+description: Scope a change or qualification outcome against the project tracker.
+labels: ["type:tracking", "status:backlog"]
+body:
+  - type: input
+    id: tracker
+    attributes:
+      label: Tracker ID and owning stage
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome and boundaries
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria and local verification
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Prerequisites, decisions and existing evidence
+      description: Link actual blockers and preserve configuration/dependency decisions.
+    validations:
+      required: true

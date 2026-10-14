@@ -1,0 +1,8 @@
+changelog:
+  categories:
+    - title: Fixes and hardening
+      labels: ["type:bug", "type:hardening"]
+    - title: Features and improvements
+      labels: ["type:feature", "type:cleanup"]
+    - title: Documentation and verification
+      labels: ["type:documentation", "type:qualification", "type:tracking"]

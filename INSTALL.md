@@ -6,7 +6,8 @@ short options and delegates to `tools/maintenance/build.py`, using Python's
 standard library. Direct Meson use is supported. Documentation targets share
 one manual manifest with the standalone renderer; other maintenance tools
 remain explicit candidates. See [their guide](tools/maintenance/README.md).
-CI and release publishing workflows have not switched.
+Verification runs locally; GitHub Actions is disabled. Release publishing remains
+a separate maintainer decision.
 
 Dependencies
 ============
@@ -15,7 +16,8 @@ Docker
 ======
 
 The `fvwm3` repository has a Dockerfile which can be used to build the
-repository.  This is the same Docker image as used by Github Actions.
+repository as an optional local environment. Inherited container references
+require their own provenance review; they are not passing validation evidence.
 
 Manually
 ========

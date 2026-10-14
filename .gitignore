@@ -76,3 +76,13 @@ perllib/FVWM/Module.pm
 tags
 tests/hints/hints_test
 .gsd-graph/
+
+.DS_Store
+
+builddir-maint/
+
+builddir/
+
+builddir-*/
+
+.tools/

@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a reproducible FVWM-X defect.
+labels: ["type:bug", "status:backlog"]
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Version and environment
+      description: Commit/version, Linux or BSD version, AMD64/ARM64, X server, build features.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal steps and configuration
+      description: Use synthetic inputs and a minimal configuration; omit private data.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Local evidence and regressions
+      description: Commands, sanitized results, last working revision and affected platforms.

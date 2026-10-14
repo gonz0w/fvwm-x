@@ -1,0 +1,60 @@
+# GitHub work and local acceptance
+
+Repository: [gonz0w/fvwm-x](https://github.com/gonz0w/fvwm-x), initially private.
+Project: [FVWM-X roadmap](https://github.com/users/gonz0w/projects/6).
+The [stable issue index](GITHUB-ROADMAP.md) links every imported tracker ID.
+
+The tracker owns execution order, scope and accepted evidence. GitHub organizes
+live issue/PR review and mirrors that order manually. Pick a bounded unblocked
+outcome from the owning stage, inspect open PRs and read its decisions/evidence.
+Split broad planning into reviewed implementation slices when picked up. Do not
+restart accepted work or interpret a local checkpoint as physical/release acceptance.
+
+## Status and priority
+
+Use exactly one `status:` label, one `priority:` label and one owning stage.
+Match Project Status/Priority/Stage and the repository milestone. Bug forms start
+in Backlog; maintainer triage supplies priority/stage before pickup.
+
+| Label | Project Status | Meaning |
+| --- | --- | --- |
+| status:backlog | Backlog | Awaiting its stage, scoped design or prerequisite |
+| status:ready | Ready | Bounded and unblocked for pickup |
+| status:in-progress | In progress | Active tracker-owned work |
+| status:review | Review | Reviewable PR awaits maintainer |
+| status:validation | Validation | Remaining explicit qualification; accepted evidence stays accepted |
+| status:done | Done | Every scoped criterion accepted; issue closed |
+
+P0 is a reproduced critical defect; P1 is important current foundation work;
+P2 is later work. Execution stage precedes ordinary priority sorting; a new
+serious defect jumps ahead. The initial table orders stage, priority, then the
+tracker's row order. Update positions manually when ownership/order changes.
+Milestones follow stages1–9 plus Later, without invented due dates. Remaining
+monitor/protocol gaps and runtime-controller ports belong to stage5; their
+accepted stage3 audit/utility checkpoints are not repeated.
+
+Use native blocked-by links for actual prerequisites, not every cross-reference.
+A prerequisite contract within a broad owner need not wait for that owner's
+whole optional feature. Avoid cycles such as making notifications wait for the
+entire bus integration that itself includes notifications. Native sub-issues
+scope a bounded outcome under one owning tracker issue; foundation #82 belongs
+to CI-01. Keep incomplete issues open with exact remaining criteria.
+
+## Review and acceptance
+
+Follow [CONTRIBUTING.md](../CONTRIBUTING.md): signed author-DCO `codex/` commits,
+coherent PR batches and local source-bound evidence. GitHub Actions is disabled;
+there are no hosted/self-hosted runners or success-status publishers. `make verify`
+checks portable foundation/policy only; affected native/runtime gates remain
+explicit. Preserve failures, skipped capabilities and teardown observations.
+
+Use Refs for broader/partial work. Closes applies only when merging satisfies
+all criteria of that bounded issue. A component merge does not close a phase,
+release or physical-hardware gate. Agents leave PRs open; the maintainer reviews
+local evidence and merges deliberately. Keep source/tree/base and actual commands
+in the PR; refresh evidence when the relevant candidate changes.
+
+Versioned main/tag rules are policy inputs, not enforcement evidence by themselves.
+The [setup report](verification/VERIFICATION-2026-10-13-GITHUB-FOUNDATION.md)
+records observed remote settings and local checks. Maintain the brief README
+when scope or milestone status changes; keep details in tracker and reports.

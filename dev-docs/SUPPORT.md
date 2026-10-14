@@ -18,6 +18,12 @@ Older BSD release lines are outside this initial verification baseline.
 
 ## Required gates
 
+These gates qualify a combined acceptance checkpoint or release; they are not a
+requirement to rerun every target after each story. During a coherent development
+batch, use affected builds/tests and early checks for platform-sensitive changes.
+Follow the [test cadence](WORKFLOW.md#implementation-batches-and-test-cadence),
+and distinguish focused development passes from complete matrix qualification.
+
 | Target | Architectures | Build and X gate | CI |
 | --- | --- | --- | --- |
 | Linux | AMD64, ARM64 | `tests/run_on_linux.sh` | `linux-architectures.yml` |
@@ -37,8 +43,21 @@ requires root. See [BSD.md](BSD.md) for BSD dependencies and local QEMU use.
 
 ## Evidence and remaining release checks
 
-Configured CI jobs are not passing evidence. The checkout currently has no
-Git remote, so local logs and CI execution must be reported separately.
+Standards qualification follows [STANDARDS.md](STANDARDS.md): pin adopted clauses
+and record independent client/fixture results for named OS/build/service profiles.
+Test advertised atoms/capabilities, malformed input, ownership/lifetime and
+feature-present/absent behavior. Reuse existing tests at the owning combined
+checkpoint. The portable default and optional D-Bus/assistive profiles need
+separate results; unavailable providers cannot be reported as supported.
+
+Default theme acceptance follows [THEME-STANDARDS.md](THEME-STANDARDS.md): numeric
+role/state contrast plus actual rendered transparency, target geometry, keyboard,
+enlarged-text and scale checks. Screen-reader/IME/toolkit/browser/physical display
+behavior requires actual provider/hardware evidence. Documentation-only or token
+checks do not qualify those paths. Public HTML accessibility is DOCS-01-owned.
+
+Configured CI jobs are not passing evidence. GitHub hosts `gonz0w/fvwm-x` for code, issues and PR review; all verification
+runs locally. Record native CPU/platform results separately from emulated ones.
 The dated verification reports in `dev-docs/` record results actually
 obtained. Older planning summaries remain historical context.
 
@@ -52,5 +71,19 @@ toolkit feedback, and physical input devices remain release verification
 work. Pure policy and all authoritative X state stay single-threaded.
 
 Current priorities and decisions live in [PROJECT-TRACKER.md](PROJECT-TRACKER.md).
-The [2026-10-04 verification](VERIFICATION-2026-10-04.md) adds bounded MFL stream
+The [2026-10-04 verification](verification/VERIFICATION-2026-10-04.md) adds bounded MFL stream
 transport and configure-request regression evidence to the existing matrix.
+
+Shared native setup now lives in `tests/run_native_gate.sh`; Linux/BSD wrappers
+retain their entry points. Its Linux `--sanitizers` profile keeps installation
+separate from instrumented tests. See [CI candidates and upkeep](ci/README.md)
+and the [affected test-infrastructure checkpoint](verification/VERIFICATION-2026-10-12-COVERAGE-CI.md).
+These local results do not establish unrun native release sanitizer or hardware
+qualification. Hosted CI is not required; preserve the same evidence standards.
+
+The optional `tests/run_native_gate.sh --go-clients` gate and authenticated
+`tests/run_bsd_default_x.py --disposable-vm` driver are locally qualified on the
+six-target matrix; see the [client-profile/default-X report](verification/VERIFICATION-2026-10-12-CI-PROFILES.md).
+They reuse qualified default-server hardware setup; provider-specific VM profiles
+and actual native sanitizer execution remain separate acceptance gates.
+GitHub Actions is disabled under the [local-review decision](decisions/LOCAL-REVIEW-GITHUB-2026-10-13.md).

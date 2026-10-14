@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Confidential security reporting
+    url: https://github.com/gonz0w/fvwm-x/blob/main/SECURITY.md
+    about: Use the maintainer contact; omit private artifacts from issues.

@@ -1,0 +1,493 @@
+{
+  "repository": "gonz0w/fvwm-x",
+  "project": "https://github.com/users/gonz0w/projects/6",
+  "policy": "Manual mirror; tracker execution order remains authoritative. This is a stable ID index, not live status.",
+  "issues": [
+    {
+      "tracker_id": "IPC-01",
+      "number": 2,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/2",
+      "stage": 1
+    },
+    {
+      "tracker_id": "GEO-01",
+      "number": 1,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/1",
+      "stage": 1
+    },
+    {
+      "tracker_id": "SCRIPT-01",
+      "number": 4,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/4",
+      "stage": 1
+    },
+    {
+      "tracker_id": "VERIFY-01",
+      "number": 5,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/5",
+      "stage": 1
+    },
+    {
+      "tracker_id": "COMPAT-01",
+      "number": 3,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/3",
+      "stage": 1
+    },
+    {
+      "tracker_id": "LIB-02",
+      "number": 11,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/11",
+      "stage": 2
+    },
+    {
+      "tracker_id": "LIB-07",
+      "number": 13,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/13",
+      "stage": 2
+    },
+    {
+      "tracker_id": "LIB-01",
+      "number": 10,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/10",
+      "stage": 2
+    },
+    {
+      "tracker_id": "LIB-03",
+      "number": 12,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/12",
+      "stage": 2
+    },
+    {
+      "tracker_id": "MAINT-02",
+      "number": 14,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/14",
+      "stage": 2
+    },
+    {
+      "tracker_id": "DATA-01",
+      "number": 6,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/6",
+      "stage": 2
+    },
+    {
+      "tracker_id": "IMAGE-01",
+      "number": 8,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/8",
+      "stage": 2
+    },
+    {
+      "tracker_id": "FD-01",
+      "number": 7,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/7",
+      "stage": 2
+    },
+    {
+      "tracker_id": "PROC-01",
+      "number": 15,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/15",
+      "stage": 2
+    },
+    {
+      "tracker_id": "INPUT-01",
+      "number": 9,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/9",
+      "stage": 2
+    },
+    {
+      "tracker_id": "STANDARDS-01",
+      "number": 16,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/16",
+      "stage": 2
+    },
+    {
+      "tracker_id": "PERL-PROTO-01",
+      "number": 20,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/20",
+      "stage": 3
+    },
+    {
+      "tracker_id": "PROMPT-01",
+      "number": 21,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/21",
+      "stage": 3
+    },
+    {
+      "tracker_id": "CI-01",
+      "number": 17,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/17",
+      "stage": 3
+    },
+    {
+      "tracker_id": "UTIL-01",
+      "number": 24,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/24",
+      "stage": 3
+    },
+    {
+      "tracker_id": "QUEUE-01",
+      "number": 30,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/30",
+      "stage": 4
+    },
+    {
+      "tracker_id": "OUTPUT-01",
+      "number": 26,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/26",
+      "stage": 4
+    },
+    {
+      "tracker_id": "OUTPUT-02",
+      "number": 27,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/27",
+      "stage": 4
+    },
+    {
+      "tracker_id": "OUTPUT-03",
+      "number": 28,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/28",
+      "stage": 4
+    },
+    {
+      "tracker_id": "PERF-01",
+      "number": 29,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/29",
+      "stage": 4
+    },
+    {
+      "tracker_id": "DRAW-01",
+      "number": 25,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/25",
+      "stage": 4
+    },
+    {
+      "tracker_id": "STACK-02",
+      "number": 32,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/32",
+      "stage": 4
+    },
+    {
+      "tracker_id": "STACK-01",
+      "number": 31,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/31",
+      "stage": 4
+    },
+    {
+      "tracker_id": "CLEAN-01",
+      "number": 34,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/34",
+      "stage": 4
+    },
+    {
+      "tracker_id": "DEAD-01",
+      "number": 35,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/35",
+      "stage": 4
+    },
+    {
+      "tracker_id": "STYLE-01",
+      "number": 38,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/38",
+      "stage": 4
+    },
+    {
+      "tracker_id": "STATE-01",
+      "number": 37,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/37",
+      "stage": 4
+    },
+    {
+      "tracker_id": "CACHE-01",
+      "number": 33,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/33",
+      "stage": 4
+    },
+    {
+      "tracker_id": "LOOP-01",
+      "number": 36,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/36",
+      "stage": 4
+    },
+    {
+      "tracker_id": "XIO-01",
+      "number": 39,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/39",
+      "stage": 4
+    },
+    {
+      "tracker_id": "MONITOR-01",
+      "number": 19,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/19",
+      "stage": 5
+    },
+    {
+      "tracker_id": "EWMH-01",
+      "number": 18,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/18",
+      "stage": 5
+    },
+    {
+      "tracker_id": "SELECTION-01",
+      "number": 22,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/22",
+      "stage": 5
+    },
+    {
+      "tracker_id": "MODULE-SCALE-01",
+      "number": 51,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/51",
+      "stage": 5
+    },
+    {
+      "tracker_id": "BOX-01",
+      "number": 41,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/41",
+      "stage": 5
+    },
+    {
+      "tracker_id": "LIB-05",
+      "number": 47,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/47",
+      "stage": 5
+    },
+    {
+      "tracker_id": "LINK-01",
+      "number": 49,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/49",
+      "stage": 5
+    },
+    {
+      "tracker_id": "LIB-04",
+      "number": 46,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/46",
+      "stage": 5
+    },
+    {
+      "tracker_id": "LIB-06",
+      "number": 48,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/48",
+      "stage": 5
+    },
+    {
+      "tracker_id": "COMPAT-02",
+      "number": 42,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/42",
+      "stage": 5
+    },
+    {
+      "tracker_id": "RUNTIME-GO-01",
+      "number": 23,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/23",
+      "stage": 5
+    },
+    {
+      "tracker_id": "LUA-01",
+      "number": 50,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/50",
+      "stage": 5
+    },
+    {
+      "tracker_id": "TOOLING-GO-01",
+      "number": 55,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/55",
+      "stage": 5
+    },
+    {
+      "tracker_id": "GEN-01",
+      "number": 44,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/44",
+      "stage": 5
+    },
+    {
+      "tracker_id": "PORT-01",
+      "number": 52,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/52",
+      "stage": 5
+    },
+    {
+      "tracker_id": "I18N-01",
+      "number": 45,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/45",
+      "stage": 5
+    },
+    {
+      "tracker_id": "REPRO-01",
+      "number": 53,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/53",
+      "stage": 5
+    },
+    {
+      "tracker_id": "DOCS-01",
+      "number": 43,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/43",
+      "stage": 5
+    },
+    {
+      "tracker_id": "ARCHIVE-01",
+      "number": 40,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/40",
+      "stage": 5
+    },
+    {
+      "tracker_id": "XDG-01",
+      "number": 56,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/56",
+      "stage": 5
+    },
+    {
+      "tracker_id": "TEXT-01",
+      "number": 54,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/54",
+      "stage": 5
+    },
+    {
+      "tracker_id": "BUTTON-01",
+      "number": 58,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/58",
+      "stage": 6
+    },
+    {
+      "tracker_id": "BUTTON-02",
+      "number": 59,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/59",
+      "stage": 6
+    },
+    {
+      "tracker_id": "CFG-01",
+      "number": 60,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/60",
+      "stage": 6
+    },
+    {
+      "tracker_id": "CFG-02",
+      "number": 61,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/61",
+      "stage": 6
+    },
+    {
+      "tracker_id": "IPC-02",
+      "number": 70,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/70",
+      "stage": 6
+    },
+    {
+      "tracker_id": "SESSION-01",
+      "number": 72,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/72",
+      "stage": 6
+    },
+    {
+      "tracker_id": "FILE-VIEW-01",
+      "number": 69,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/69",
+      "stage": 6
+    },
+    {
+      "tracker_id": "FILE-DATA-01",
+      "number": 66,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/66",
+      "stage": 6
+    },
+    {
+      "tracker_id": "FILE-ACTION-01",
+      "number": 65,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/65",
+      "stage": 6
+    },
+    {
+      "tracker_id": "FILE-JOBS-01",
+      "number": 68,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/68",
+      "stage": 6
+    },
+    {
+      "tracker_id": "DESKTOP-ICONS-01",
+      "number": 64,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/64",
+      "stage": 6
+    },
+    {
+      "tracker_id": "FILE-INTEGRATION-01",
+      "number": 67,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/67",
+      "stage": 6
+    },
+    {
+      "tracker_id": "CONTENT-01",
+      "number": 63,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/63",
+      "stage": 6
+    },
+    {
+      "tracker_id": "RETENTION-01",
+      "number": 71,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/71",
+      "stage": 6
+    },
+    {
+      "tracker_id": "STORE-01",
+      "number": 74,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/74",
+      "stage": 6
+    },
+    {
+      "tracker_id": "CLIPBOARD-01",
+      "number": 62,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/62",
+      "stage": 6
+    },
+    {
+      "tracker_id": "SETTINGS-01",
+      "number": 73,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/73",
+      "stage": 6
+    },
+    {
+      "tracker_id": "A11Y-01",
+      "number": 57,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/57",
+      "stage": 6
+    },
+    {
+      "tracker_id": "THEME-01",
+      "number": 75,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/75",
+      "stage": 6
+    },
+    {
+      "tracker_id": "SESSION-02",
+      "number": 77,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/77",
+      "stage": 7
+    },
+    {
+      "tracker_id": "NOTIFY-01",
+      "number": 76,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/76",
+      "stage": 7
+    },
+    {
+      "tracker_id": "TRAY-01",
+      "number": 78,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/78",
+      "stage": 7
+    },
+    {
+      "tracker_id": "RELEASE-01",
+      "number": 79,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/79",
+      "stage": 8
+    },
+    {
+      "tracker_id": "I18N-02",
+      "number": 80,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/80",
+      "stage": 9
+    },
+    {
+      "tracker_id": "FILE-ADVANCED-01",
+      "number": 81,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/81",
+      "stage": 10
+    }
+  ]
+}

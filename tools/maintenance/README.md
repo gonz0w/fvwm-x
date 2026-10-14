@@ -2,9 +2,10 @@
 
 The documented `./build` options now delegate to the standard-library Python
 wrapper, and Meson documentation targets use `docs.py` / `manuals.json`.
-Modern parser runtime and translation maintenance are adopted. Metadata and
-source-release workflow replacements remain explicit candidates; CI and release
-workflows have not switched. The build/documentation paths use the existing
+Modern parser runtime, checked metadata and translation maintenance are adopted.
+The source-release workflow replacement remains an explicit candidate; GitHub
+Actions is disabled and release publishing remains separately owned.
+The build/documentation paths use the existing
 Meson Python requirement (3.7+); other maintenance tools retain their Python
 3.9+ developer baseline. No new desktop library is required.
 
@@ -118,12 +119,25 @@ The clean committed source fixture is not a reviewed public release.
 
 `source.py inventory` handles NUL-separated Git paths, file modes, hashes,
 symlinks, deleted and optional untracked files without reading symlink targets.
+Regular-file hashing uses 128 KiB reads. The Go manifest observation records
+the file identity and module/Go/toolchain/require/replace/exclude text with source
+lines, plus optional checksum/vendor manifest identities. It preserves the
+existing flat requirement/version map. This text is not a resolved module graph,
+Go grammar validation, package/symbol reachability or advisory evidence. When
+pkg-config is absent, `pkg_config_available` is false and package versions are
+null; a missing package with the tool available leaves that flag true.
 It is an observation while other work may change files, not an atomic source
 snapshot. The report also records vendored versions and workflow action references with
 source locations; this text inventory is not YAML validation or a security
 verdict. Dependency version strings need package/backport advisory evidence.
 `archive` uses an immutable resolved Git commit, normalizes archive ownership
 and timestamps, preserves executable bits with normalized permissions, and refuses traversal/unsafe links.
+Git tar output is spooled to a temporary file; archive contents and the completed
+gzip hash use bounded reads rather than retaining whole payloads in memory.
+Memory still scales with file-list/tar-member metadata, not just a constant
+buffer. The spool requires temporary disk space for the uncompressed tar, plus
+space for the final gzip. Process failures publish no partial output. The JSON
+manifest also records the gzip byte count; existing identity fields are retained.
 It excludes historical/developer metadata from the candidate archive without
 deleting the originals. It keeps build-required tests and `.current-version`.
 `--allow-dirty` explicitly makes a **development-only archive of the chosen

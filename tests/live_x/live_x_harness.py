@@ -41,6 +41,10 @@ class HarnessError(RuntimeError):
     """Raised when a bounded harness operation cannot complete."""
 
 
+class HarnessCancelled(HarnessError):
+    """Cancellation must unwind repeated checks without starting another one."""
+
+
 _runtime_signal_owners: list[object] = []
 _runtime_previous_sigterm = None
 _runtime_terminating = False
@@ -52,7 +56,7 @@ def _runtime_terminate(signum: int, frame: object) -> None:
     # blocks. Further TERM requests must not interrupt that bounded teardown.
     if not _runtime_terminating:
         _runtime_terminating = True
-        raise HarnessError("live-X harness termination requested")
+        raise HarnessCancelled("live-X harness termination requested")
 
 
 def _runtime_own_signal(owner: object) -> None:

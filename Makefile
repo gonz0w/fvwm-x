@@ -15,6 +15,7 @@ lint:
 
 test:
 	python3 -m unittest discover -s tools/maintenance/tests -v
+	python3 tests/test_bsd_default_x.py
 	python3 tests/test_native_gate.py
 	python3 tests/test_ci_assets.py
 	python3 tests/test_qemu_bsd.py

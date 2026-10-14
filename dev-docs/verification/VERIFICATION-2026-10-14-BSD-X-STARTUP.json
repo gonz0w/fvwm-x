@@ -1,0 +1,484 @@
+{
+  "source_scopes": {
+    "1": {
+      "files": {
+        "tests/run_bsd_default_x.py": {
+          "sha256": "aebf9ad884f224319c290e4bcfe8f95121bb67fa5c5375aa9d9c3bf1e8b435d6",
+          "mode": 420
+        },
+        "tests/test_bsd_default_x.py": {
+          "sha256": "451efdef52496ef01d44233c49b049a43723b39f979758e69eba69a3d76a39ba",
+          "mode": 420
+        },
+        "tests/live_x/live_x_harness.py": {
+          "sha256": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380",
+          "mode": 420
+        },
+        "tests/live_x/mfl_stream_live.py": {
+          "sha256": "216d70660ee42a840da133f5c457a30b6a0f1413693a5dddcb2912cd84c3104e",
+          "mode": 420
+        },
+        "tests/live_x/harness_teardown_test.py": {
+          "sha256": "40ca932b6ca1c064ea8b388744cf3c54a4da8a76bfe367bea1b0fce38af91aaf",
+          "mode": 420
+        }
+      },
+      "archive_sha256": "91ea119c93042228b42ebc5d1f9bb842489057af5913731f6b1fbb7bea50d9a2"
+    },
+    "2": {
+      "files": {
+        "tests/run_bsd_default_x.py": {
+          "sha256": "aebf9ad884f224319c290e4bcfe8f95121bb67fa5c5375aa9d9c3bf1e8b435d6",
+          "mode": 420
+        },
+        "tests/test_bsd_default_x.py": {
+          "sha256": "451efdef52496ef01d44233c49b049a43723b39f979758e69eba69a3d76a39ba",
+          "mode": 420
+        },
+        "tests/live_x/live_x_harness.py": {
+          "sha256": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380",
+          "mode": 420
+        },
+        "tests/live_x/mfl_stream_live.py": {
+          "sha256": "216d70660ee42a840da133f5c457a30b6a0f1413693a5dddcb2912cd84c3104e",
+          "mode": 420
+        },
+        "tests/live_x/harness_teardown_test.py": {
+          "sha256": "40ca932b6ca1c064ea8b388744cf3c54a4da8a76bfe367bea1b0fce38af91aaf",
+          "mode": 420
+        },
+        "tests/test_qemu_bsd.py": {
+          "sha256": "af1d5462444f2996c19256a54d2dce014fd0413b57dc1190e2fc2ea9792a5f3f",
+          "mode": 420
+        },
+        "tools/maintenance/qemu_bsd.py": {
+          "sha256": "568bbb115c38436d25ee30351e0cfbf5d0139d5a9c99932975ae0828d5d78935",
+          "mode": 420
+        },
+        "tools/maintenance/ci_assets.py": {
+          "sha256": "a786170a0eb92aacf9584a7f9bf2e7364cab22e5ee69557183affb8cbde54f4c",
+          "mode": 420
+        },
+        "tools/maintenance/ci_png.py": {
+          "sha256": "34d4f17849c44bc853f0d6de1bd56ba9e29fb028c64d26a2447485db2572678a",
+          "mode": 420
+        },
+        "tools/maintenance/common.py": {
+          "sha256": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "mode": 420
+        },
+        "dev-docs/ci/ASSET-PINS-2026-10-12.json": {
+          "sha256": "967f7245299fc02c82fb7c9968271ca0c2b21e67968b695bc59c2b2bf68a94c7",
+          "mode": 420
+        },
+        "dev-docs/ci/BOOT-PINS-2026-10-13.json": {
+          "sha256": "c2be87d3cb49960cca08cb33e197cfdea6190c9db405680015fc8ce53c2083e6",
+          "mode": 420
+        }
+      },
+      "archive_sha256": "f491e7fad74b553684287f25d1423a4f5ec0c0ff51a83779632cd879df6104aa"
+    },
+    "3": {
+      "files": {
+        "tests/run_bsd_default_x.py": {
+          "sha256": "aebf9ad884f224319c290e4bcfe8f95121bb67fa5c5375aa9d9c3bf1e8b435d6",
+          "mode": 420
+        },
+        "tests/test_bsd_default_x.py": {
+          "sha256": "451efdef52496ef01d44233c49b049a43723b39f979758e69eba69a3d76a39ba",
+          "mode": 420
+        },
+        "tests/live_x/live_x_harness.py": {
+          "sha256": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380",
+          "mode": 420
+        },
+        "tests/live_x/mfl_stream_live.py": {
+          "sha256": "216d70660ee42a840da133f5c457a30b6a0f1413693a5dddcb2912cd84c3104e",
+          "mode": 420
+        },
+        "tests/live_x/harness_teardown_test.py": {
+          "sha256": "40ca932b6ca1c064ea8b388744cf3c54a4da8a76bfe367bea1b0fce38af91aaf",
+          "mode": 420
+        },
+        "tests/test_qemu_bsd.py": {
+          "sha256": "d4958f95a67c7fef9cf17998d8ec66f906e78570eb864db8efc3ab0a1971d749",
+          "mode": 420
+        },
+        "tools/maintenance/qemu_bsd.py": {
+          "sha256": "dec61afa6e80ab2e628a38ce97d8e9e8103aadc0b40d421b8e3a869d8523f6f8",
+          "mode": 420
+        },
+        "tools/maintenance/ci_assets.py": {
+          "sha256": "a786170a0eb92aacf9584a7f9bf2e7364cab22e5ee69557183affb8cbde54f4c",
+          "mode": 420
+        },
+        "tools/maintenance/ci_png.py": {
+          "sha256": "34d4f17849c44bc853f0d6de1bd56ba9e29fb028c64d26a2447485db2572678a",
+          "mode": 420
+        },
+        "tools/maintenance/common.py": {
+          "sha256": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "mode": 420
+        },
+        "dev-docs/ci/ASSET-PINS-2026-10-12.json": {
+          "sha256": "967f7245299fc02c82fb7c9968271ca0c2b21e67968b695bc59c2b2bf68a94c7",
+          "mode": 420
+        },
+        "dev-docs/ci/BOOT-PINS-2026-10-13.json": {
+          "sha256": "c2be87d3cb49960cca08cb33e197cfdea6190c9db405680015fc8ce53c2083e6",
+          "mode": 420
+        },
+        "dev-docs/ci/bsd-prepare-x-startup.sh": {
+          "sha256": "fbba18b1c0544583b98cf13165fc5c451a0dafe9999cfe2212a5540549fd6e00",
+          "mode": 420
+        },
+        "dev-docs/ci/bsd-run-x-startup.sh": {
+          "sha256": "c3772d46cf6fce687655adf0f2069a45f3c879c8db7cb768fe6f3feb5a4feacd",
+          "mode": 420
+        }
+      },
+      "archive_sha256": "546af1f8ceceddda79efb052de702c2ee9165217cf6240dfff4f6e363a5c3888"
+    },
+    "4": {
+      "files": {
+        "tests/run_bsd_default_x.py": {
+          "sha256": "54bb164b1b7c0425f6687abdf8132f8ef0e0a44c59cf67adddc3eaff2bf36864",
+          "mode": 420
+        },
+        "tests/test_bsd_default_x.py": {
+          "sha256": "5b5c982a8f875920c830fd691ca556e1b560a1e4bc47f54258cb46f2515f7951",
+          "mode": 420
+        },
+        "tests/live_x/live_x_harness.py": {
+          "sha256": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380",
+          "mode": 420
+        },
+        "tests/live_x/mfl_stream_live.py": {
+          "sha256": "216d70660ee42a840da133f5c457a30b6a0f1413693a5dddcb2912cd84c3104e",
+          "mode": 420
+        },
+        "tests/live_x/harness_teardown_test.py": {
+          "sha256": "40ca932b6ca1c064ea8b388744cf3c54a4da8a76bfe367bea1b0fce38af91aaf",
+          "mode": 420
+        },
+        "tests/test_qemu_bsd.py": {
+          "sha256": "d4958f95a67c7fef9cf17998d8ec66f906e78570eb864db8efc3ab0a1971d749",
+          "mode": 420
+        },
+        "tools/maintenance/qemu_bsd.py": {
+          "sha256": "dec61afa6e80ab2e628a38ce97d8e9e8103aadc0b40d421b8e3a869d8523f6f8",
+          "mode": 420
+        },
+        "tools/maintenance/ci_assets.py": {
+          "sha256": "a786170a0eb92aacf9584a7f9bf2e7364cab22e5ee69557183affb8cbde54f4c",
+          "mode": 420
+        },
+        "tools/maintenance/ci_png.py": {
+          "sha256": "34d4f17849c44bc853f0d6de1bd56ba9e29fb028c64d26a2447485db2572678a",
+          "mode": 420
+        },
+        "tools/maintenance/common.py": {
+          "sha256": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "mode": 420
+        },
+        "dev-docs/ci/ASSET-PINS-2026-10-12.json": {
+          "sha256": "967f7245299fc02c82fb7c9968271ca0c2b21e67968b695bc59c2b2bf68a94c7",
+          "mode": 420
+        },
+        "dev-docs/ci/BOOT-PINS-2026-10-13.json": {
+          "sha256": "c2be87d3cb49960cca08cb33e197cfdea6190c9db405680015fc8ce53c2083e6",
+          "mode": 420
+        },
+        "dev-docs/ci/bsd-prepare-x-startup.sh": {
+          "sha256": "fbba18b1c0544583b98cf13165fc5c451a0dafe9999cfe2212a5540549fd6e00",
+          "mode": 420
+        },
+        "dev-docs/ci/bsd-run-x-startup.sh": {
+          "sha256": "c3772d46cf6fce687655adf0f2069a45f3c879c8db7cb768fe6f3feb5a4feacd",
+          "mode": 420
+        }
+      },
+      "archive_sha256": "43ad5bf62f459eb8bbbdceb22be340c834fe15163fe1a214dda036cf3dc09478"
+    }
+  },
+  "counts": {
+    "final_startup_policy": 96,
+    "final_qemu_policy": 186,
+    "owned_teardown": 6,
+    "retained_starts": 32,
+    "extra_retained_starts": 32,
+    "fresh_starts": 16,
+    "application_fixtures": 10,
+    "client_mode_server_starts": 6,
+    "unchanged_client_binaries": 36
+  },
+  "archives": {
+    "fvwm-x-linux-arm64-svg-evidence.tgz": {
+      "sha256": "a6e4a6f08804bae5b189ba7d137e619d9fb10bf5f78459764a6525fb6f044343",
+      "size": 1234
+    },
+    "fvwm-x-linux-arm64-svg-evidence-v4.tgz": {
+      "sha256": "5334a10b718eca52c1fd946a37a23ff929322c9d322e0fbd30e7b7f58d7804b7",
+      "size": 1392
+    },
+    "fvwm-x-linux-arm64-svg-evidence-final.tgz": {
+      "sha256": "c2f695bb74c7a797e04b3871e66af02ee4d82a06d33c5da1d84d46f2768fa603",
+      "size": 1535
+    },
+    "fvwm-x-linux-arm64-svg-misdispatch-evidence.tgz": {
+      "sha256": "9f4a0a4b40a39b3bfccda46392e6ec10fa1f099e0b5c0fe1d1a212df85f1f16d",
+      "size": 1230
+    },
+    "linux-amd64-evidence.tgz": {
+      "sha256": "0800fc1bc0c7db948f1625b5bea8455e52925e5c7442432a7beb04236c051fac",
+      "size": 1202
+    },
+    "linux-amd64-evidence-v4.tgz": {
+      "sha256": "5919770fdd166a9c101693ac805596227795fc9cb369dc27c3c03077a6f8849f",
+      "size": 1361
+    },
+    "linux-amd64-evidence-final.tgz": {
+      "sha256": "0583ae0fb8f6892f5627aca37b1d28740c3b2f9dd658a80fc1efcee2f30824f4",
+      "size": 1503
+    },
+    "linux-amd64-misdispatch-evidence.tgz": {
+      "sha256": "672c5502e42c4186c912a4c26619b19e1b36a242824c351fd36cb6ddb17a9fd0",
+      "size": 1204
+    },
+    "freebsd-arm64-evidence.tgz": {
+      "sha256": "33cb999a81498583f0540921d458fb9c6ea63bb5f08f3695feb67ea3890f7cca",
+      "size": 10531
+    },
+    "freebsd-arm64-evidence-v4.tgz": {
+      "sha256": "7f4989d097a2ff9ab93bbacc41503e425ebc3877482977ba78a1469ec3bdfa2b",
+      "size": 1367
+    },
+    "freebsd-arm64-evidence-final.tgz": {
+      "sha256": "7e956ff7866f8257d0bf95ba7d52c99b31297c4ff9140868cd48ec2a58bebab8",
+      "size": 1893
+    },
+    "freebsd-arm64-misdispatch-evidence.tgz": {
+      "sha256": "47fd6e219831364988869a77eea414d822199f479cf751bf4a88605629f1734e",
+      "size": 10671
+    },
+    "freebsd-amd64-evidence.tgz": {
+      "sha256": "ab605cb6a09c0c5b132efbb9e2937d1e8e754b0d25aaf610ee416a1f598876c9",
+      "size": 11391
+    },
+    "freebsd-amd64-evidence-v4.tgz": {
+      "sha256": "3b508988cff354d834f9e11b900d71cdeb03791c57e8b011d931a376a0b9705d",
+      "size": 1359
+    },
+    "freebsd-amd64-evidence-final.tgz": {
+      "sha256": "ef28f772a868a40f4743076e037159f502d2d94b6953216f776bfcf58cbf10b7",
+      "size": 1898
+    },
+    "freebsd-amd64-misdispatch-evidence.tgz": {
+      "sha256": "ba8bfcb5b1b5d296b84627c342d0c977d319625444e90b08ad3dcaeda31e79a4",
+      "size": 11347
+    },
+    "openbsd-arm64-evidence.tgz": {
+      "sha256": "825f0cd6dff2f22f53a1df540b27c75a0684066b90dcc7713a25c0697c4a947d",
+      "size": 11428
+    },
+    "openbsd-arm64-evidence-v4.tgz": {
+      "sha256": "9b0e0628daa9c41a3e21c9951a336a52e42ae6393556e60b5fc14418db065a3f",
+      "size": 1349
+    },
+    "openbsd-arm64-evidence-final.tgz": {
+      "sha256": "45902a22f2e4dfa58090cdaead96c9bb669e4ffb71a6cc177cf6ee4269fc86a4",
+      "size": 1865
+    },
+    "openbsd-arm64-misdispatch-evidence.tgz": {
+      "sha256": "8c30cf383424765c989b97c8cfa58d3dd982e5f463ffd72893034cad174d27f3",
+      "size": 10716
+    },
+    "openbsd-amd64-evidence.tgz": {
+      "sha256": "2a5b90b313bbdc6f1b187a2c28f6261f60bac83aca4ed08957a864bc8b074b48",
+      "size": 159669
+    },
+    "openbsd-amd64-evidence-v4.tgz": {
+      "sha256": "3ce6a224a18b69a1bcf99fdf4d89d179688c81dd5549ef314b9e65ae18b2f26e",
+      "size": 1350
+    },
+    "openbsd-amd64-evidence-final.tgz": {
+      "sha256": "fce589fefc50205cc4517531517259553186b32061f3e0369abcfc8b392015c4",
+      "size": 1915
+    },
+    "openbsd-amd64-misdispatch-evidence.tgz": {
+      "sha256": "5f1277763c3591d4e04f56b6146f7e38207b5d83068a7552f2949bf36a265e2f",
+      "size": 159476
+    },
+    "freebsd-arm64-clients.tgz": {
+      "sha256": "6e9611387d1a36638f9c6582adbf47846bc9cd8fda9c46f5704857303b7f4d3c",
+      "size": 5298
+    },
+    "freebsd-amd64-clients.tgz": {
+      "sha256": "d26f2307b980e6c43ce533ff93978eeddf30afd9a53aa6df2b8023f187c1a6ee",
+      "size": 5511
+    },
+    "openbsd-arm64-clients.tgz": {
+      "sha256": "348aff88f0db880a81e81cfda40c19992c367477cfe336ab06c326fb25f6d9cb",
+      "size": 9230
+    },
+    "openbsd-amd64-clients.tgz": {
+      "sha256": "2b4c6c5ab73d2349881ccb08da0e18e2477df6bbe53b16db9d445ad893698184",
+      "size": 45295
+    },
+    "guest-evidence.tgz": {
+      "sha256": "c996e578a2f4ecbdedcc9e23a32ab24c36cf13ed85d90e4749f41c3ab3785827",
+      "size": 342530
+    }
+  },
+  "fresh_comparison": {
+    "before-system.txt": "OpenBSD openbsd.my.domain 7.9 GENERIC.MP#8 amd64\n",
+    "after-boot.txt": "OpenBSD openbsd.my.domain 7.9 GENERIC.MP#16 amd64\n",
+    "before-syspatch.txt": "001_xserver\n002_smtpd\n003_vmd\n004_elf\n005_sysv\n006_nfs\n007_ipsec\n008_npppd\n009_iked\n010_ifioctl\n011_nipledge\n012_kernproc\n013_ttyioctl\n014_expat\n",
+    "after-syspatch.txt": "001_xserver\n002_smtpd\n003_vmd\n004_elf\n005_sysv\n006_nfs\n007_ipsec\n008_npppd\n009_iked\n010_ifioctl\n011_nipledge\n012_kernproc\n013_ttyioctl\n014_expat\n015_smtpd\n016_nfs\n017_wscons\n018_shmat\n019_expat\n020_xserver\n021_ldapd\n022_nsd\n023_unbound\n024_libressl\n025_procargs\n026_sysvipc\n027_iked\n028_wgbind\n029_sysvsem\n030_uidrange\n031_isakmpd\n032_xserver\n033_expat\n034_wsdisplay\n",
+    "before-server.txt": "SHA256 (/usr/X11R6/bin/Xorg) = f25518da187434d2d7f965a0a60a85721faac9982e41b2888cfa861703dabfe2\nSHA256 (/usr/X11R6/lib/modules/drivers/vesa_drv.so) = b6771240b27fc21956e8100ab1cecfe5e5827bddcba3447fa2a3920b2bf1fd69\n",
+    "after-server.txt": "SHA256 (/usr/X11R6/bin/Xorg) = 59924c9dcf291610d10b7923db4a9678cc86c46b32be1388fcd7369f238a2e9d\nSHA256 (/usr/X11R6/lib/modules/drivers/vesa_drv.so) = b6771240b27fc21956e8100ab1cecfe5e5827bddcba3447fa2a3920b2bf1fd69\n",
+    "server_dependencies": {
+      "files": [
+        {
+          "path": "/usr/X11R6/bin/Xorg",
+          "resolved": "/usr/X11R6/bin/Xorg",
+          "sha256": "59924c9dcf291610d10b7923db4a9678cc86c46b32be1388fcd7369f238a2e9d",
+          "size": 3048328
+        },
+        {
+          "path": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+          "resolved": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+          "sha256": "b6771240b27fc21956e8100ab1cecfe5e5827bddcba3447fa2a3920b2bf1fd69",
+          "size": 37112
+        },
+        {
+          "path": "/usr/X11R6/lib/modules/extensions/libglx.so",
+          "resolved": "/usr/X11R6/lib/modules/extensions/libglx.so",
+          "sha256": "0730e697a8637eb7f01a406617758d920bb2ff118d65fdbec0e6d0d426071422",
+          "size": 465944
+        },
+        {
+          "path": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+          "resolved": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+          "sha256": "6b9123c50f8e25c8163f0e57de37abc5b3d5ee72e92373c8bd16263734b2e509",
+          "size": 28240
+        },
+        {
+          "path": "/usr/X11R6/lib/modules/input/ws_drv.so",
+          "resolved": "/usr/X11R6/lib/modules/input/ws_drv.so",
+          "sha256": "a83917af05a4de48825f0b9c20e034c61dce6869b8533a8e13fb15996e9d4004",
+          "size": 32656
+        },
+        {
+          "path": "/usr/X11R6/lib/modules/libint10.so",
+          "resolved": "/usr/X11R6/lib/modules/libint10.so",
+          "sha256": "b98e9042210a26fcff38ac940a5afa8468fb920bf96ba670e5bc5fa059d09862",
+          "size": 312712
+        },
+        {
+          "path": "/usr/X11R6/lib/modules/libshadow.so",
+          "resolved": "/usr/X11R6/lib/modules/libshadow.so",
+          "sha256": "9ec7187a6ed8637a683dd3bdf75793a623b7d07d0306efdea49f6763da8b1655",
+          "size": 42624
+        }
+      ],
+      "errors": [],
+      "syspatch": {
+        "status": 0,
+        "stdout": "001_xserver\n002_smtpd\n003_vmd\n004_elf\n005_sysv\n006_nfs\n007_ipsec\n008_npppd\n009_iked\n010_ifioctl\n011_nipledge\n012_kernproc\n013_ttyioctl\n014_expat\n015_smtpd\n016_nfs\n017_wscons\n018_shmat\n019_expat\n020_xserver\n021_ldapd\n022_nsd\n023_unbound\n024_libressl\n025_procargs\n026_sysvipc\n027_iked\n028_wgbind\n029_sysvsem\n030_uidrange\n031_isakmpd\n032_xserver\n033_expat\n034_wsdisplay\n",
+        "stderr": ""
+      }
+    }
+  },
+  "prepared_boot": {
+    "before": [
+      1792009293,
+      0
+    ],
+    "after": [
+      1792009623,
+      0
+    ]
+  },
+  "fresh_inputs": {
+    "profile": "openbsd-amd64",
+    "lock_sha256": "967f7245299fc02c82fb7c9968271ca0c2b21e67968b695bc59c2b2bf68a94c7:c2be87d3cb49960cca08cb33e197cfdea6190c9db405680015fc8ce53c2083e6",
+    "status": "verified inputs; no extraction, execution or boot",
+    "assets": [
+      {
+        "name": "openbsd-7.9.profile.json",
+        "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9.profile.json",
+        "size": 524,
+        "sha256": "98db0bcbe669dcce5af367371891a3f402f8ee45cb93087a2f1f52c6a9a46ebd",
+        "origin": "verified-cache",
+        "mode": "0600"
+      },
+      {
+        "name": "openbsd-7.9.qcow2.zst",
+        "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9.qcow2.zst",
+        "size": 594986682,
+        "sha256": "d0a3a481488a1bdb4eccd4d24f0e4770714ea0f5d1c7c07ee92982ea5a6865b4",
+        "origin": "verified-cache",
+        "mode": "0600"
+      },
+      {
+        "name": "openbsd-7.9-host.id_rsa",
+        "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9-host.id_rsa",
+        "size": 411,
+        "sha256": "1ebee64506c7f6eee95c0780bf790937a9e42d3e79fe76ee42e0889477f421cb",
+        "origin": "verified-cache",
+        "mode": "0600"
+      }
+    ]
+  },
+  "fresh_qemu_argv": [
+    "qemu-system-x86_64",
+    "-machine",
+    "pc",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "max",
+    "-m",
+    "4096",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-monitor",
+    "none",
+    "-serial",
+    "stdio",
+    "-netdev",
+    "user,id=net0,ipv6=off,hostfwd=tcp:127.0.0.1:57949-:22",
+    "-device",
+    "virtio-net-pci,netdev=net0",
+    "-drive",
+    "if=none,id=root,format=qcow2,file=/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/bsd-x-startup/openbsd-amd64-fresh-v2/disk.qcow2",
+    "-device",
+    "virtio-blk-pci,drive=root,bootindex=1",
+    "-device",
+    "qemu-xhci",
+    "-device",
+    "usb-kbd",
+    "-device",
+    "usb-tablet",
+    "-vga",
+    "std"
+  ],
+  "limits": {
+    "root_cause_established": false,
+    "configuration_changes": false,
+    "WM_rebuilt": false,
+    "release_or_hardware_qualification": false
+  },
+  "evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/bsd-x-startup",
+  "owner": "LIB-07 #93",
+  "local_verification": {
+    "passed": 166,
+    "skipped": 11,
+    "reason": "native Meson unavailable on macOS",
+    "log_sha256": "56c2a99e82e24d4152968e2b697d2c8dd4f8afc34a33609e9c34f3e6b35dbf57"
+  },
+  "validation_script_sha256": "a1b2a4bcc9f183b1001fec1760a3b1044e48d7184c5bf436cf4db7b48f4a0f50"
+}

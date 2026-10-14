@@ -518,6 +518,13 @@
       "url": "https://github.com/gonz0w/fvwm-x/issues/89",
       "stage": 2,
       "scope": "Referenced documentation/evidence restoration and local file-link checks"
+    },
+    {
+      "parent_tracker_id": "LIB-03",
+      "number": 91,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/91",
+      "stage": 2,
+      "scope": "Target advisory reachability, unused Go dependency removal and offline qualification"
     }
   ]
 }

@@ -105,3 +105,7 @@ groups build-step and review-cadence improvements into one stage 2 child batch.
 [MAINT-02 #89 — Restore referenced developer docs and check local links](https://github.com/gonz0w/fvwm-x/issues/89)
 groups frozen documentation/evidence, portable navigation and local checks in
 one stage 2 checkpoint.
+
+[LIB-03 #91 — Audit target reachability and trim unused Go vendor inputs](https://github.com/gonz0w/fvwm-x/issues/91)
+groups advisory analysis, same-pin vendor regeneration and offline native checks.
+The external compiler baseline remains a decision under LIB-03 #12.

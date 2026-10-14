@@ -52,7 +52,10 @@ system in use.
 * golang (>= 1.21); enables FvwmPrompt, the Go FvwmCommand client and
   fvwm-menu-xlock, fvwm-menu-directory, fvwm-convert-2.6, fvwm-menu-desktop
   and the installed Script communication example helper. Go-disabled builds
-  retain the corresponding legacy utilities.
+  retain the corresponding legacy utilities. The 1.21 language/build floor
+  is not a guarantee that an unpatched compiler is secure. Use maintained
+  patched SDKs; the [current audit and proposed compiler requirement](dev-docs/decisions/GO-TOOLCHAIN-BASELINE-PROPOSAL.md)
+  records the pending external-dependency decision.
 * libfreetype6-dev
 * libfribidi-dev
 * gettext runtime/development files and `msgfmt` (for NLS)

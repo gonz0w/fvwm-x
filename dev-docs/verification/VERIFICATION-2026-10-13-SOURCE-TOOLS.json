@@ -1,0 +1,275 @@
+{
+  "base_commit": "5231ce3ce23216e0c6e2772b3488842f71e1b3df",
+  "implementation_commit": "168aebf62455d560971f0781f90354c0e88a4706",
+  "implementation_tree": "e2a2cbd984be63a7350d1bb146adce05e0ff9c37",
+  "inputs": {
+    "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+    "tools/maintenance/source.py": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe",
+    "tools/maintenance/tests/test_source.py": "5fa3b5fdf21a8ec52bd5c622af963b3927185f99f5c0008eff135e28444372c3"
+  },
+  "native": [
+    [
+      "fvwm-x-linux-arm64-svg",
+      0,
+      {
+        "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+        "machine": "aarch64",
+        "python": "3.12.3",
+        "git": "/usr/bin/git",
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/source.py": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe",
+          "tools/maintenance/tests/test_source.py": "5fa3b5fdf21a8ec52bd5c622af963b3927185f99f5c0008eff135e28444372c3"
+        },
+        "tests_run": 15,
+        "failures": 0,
+        "errors": 0,
+        "skips": [],
+        "passed": 15
+      }
+    ],
+    [
+      "linux-amd64",
+      0,
+      {
+        "platform": "Linux-6.12.111+deb13-cloud-amd64-x86_64-with-glibc2.41",
+        "machine": "x86_64",
+        "python": "3.13.5",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/source.py": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe",
+          "tools/maintenance/tests/test_source.py": "5fa3b5fdf21a8ec52bd5c622af963b3927185f99f5c0008eff135e28444372c3"
+        },
+        "tests_run": 15,
+        "failures": 0,
+        "errors": 0,
+        "skips": [
+          [
+            "test_archive_streams_large_payload_and_manifest_hash_matches (test_source.SourceGitTests.test_archive_streams_large_payload_and_manifest_hash_matches)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_dirty_development_archive_contains_commit_not_worktree (test_source.SourceGitTests.test_dirty_development_archive_contains_commit_not_worktree)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_invalid_commit_does_not_create_output (test_source.SourceGitTests.test_invalid_commit_does_not_create_output)",
+            "real Git controls require Git"
+          ]
+        ],
+        "passed": 12
+      }
+    ],
+    [
+      "freebsd-arm64",
+      0,
+      {
+        "platform": "FreeBSD-15.1-RELEASE-p4-arm64-aarch64-64bit-ELF",
+        "machine": "arm64",
+        "python": "3.12.14",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/source.py": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe",
+          "tools/maintenance/tests/test_source.py": "5fa3b5fdf21a8ec52bd5c622af963b3927185f99f5c0008eff135e28444372c3"
+        },
+        "tests_run": 15,
+        "failures": 0,
+        "errors": 0,
+        "skips": [
+          [
+            "test_archive_streams_large_payload_and_manifest_hash_matches (test_source.SourceGitTests.test_archive_streams_large_payload_and_manifest_hash_matches)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_dirty_development_archive_contains_commit_not_worktree (test_source.SourceGitTests.test_dirty_development_archive_contains_commit_not_worktree)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_invalid_commit_does_not_create_output (test_source.SourceGitTests.test_invalid_commit_does_not_create_output)",
+            "real Git controls require Git"
+          ]
+        ],
+        "passed": 12
+      }
+    ],
+    [
+      "openbsd-arm64",
+      0,
+      {
+        "platform": "OpenBSD-7.9-arm64-aarch64-64bit-ELF",
+        "machine": "arm64",
+        "python": "3.13.13",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/source.py": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe",
+          "tools/maintenance/tests/test_source.py": "5fa3b5fdf21a8ec52bd5c622af963b3927185f99f5c0008eff135e28444372c3"
+        },
+        "tests_run": 15,
+        "failures": 0,
+        "errors": 0,
+        "skips": [
+          [
+            "test_archive_streams_large_payload_and_manifest_hash_matches (test_source.SourceGitTests.test_archive_streams_large_payload_and_manifest_hash_matches)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_dirty_development_archive_contains_commit_not_worktree (test_source.SourceGitTests.test_dirty_development_archive_contains_commit_not_worktree)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_invalid_commit_does_not_create_output (test_source.SourceGitTests.test_invalid_commit_does_not_create_output)",
+            "real Git controls require Git"
+          ]
+        ],
+        "passed": 12
+      }
+    ],
+    [
+      "freebsd-amd64",
+      0,
+      {
+        "platform": "FreeBSD-15.1-RELEASE-p4-amd64-64bit-ELF",
+        "machine": "amd64",
+        "python": "3.12.14",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/source.py": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe",
+          "tools/maintenance/tests/test_source.py": "5fa3b5fdf21a8ec52bd5c622af963b3927185f99f5c0008eff135e28444372c3"
+        },
+        "tests_run": 15,
+        "failures": 0,
+        "errors": 0,
+        "skips": [
+          [
+            "test_archive_streams_large_payload_and_manifest_hash_matches (test_source.SourceGitTests.test_archive_streams_large_payload_and_manifest_hash_matches)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_dirty_development_archive_contains_commit_not_worktree (test_source.SourceGitTests.test_dirty_development_archive_contains_commit_not_worktree)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_invalid_commit_does_not_create_output (test_source.SourceGitTests.test_invalid_commit_does_not_create_output)",
+            "real Git controls require Git"
+          ]
+        ],
+        "passed": 12
+      }
+    ],
+    [
+      "openbsd-amd64",
+      0,
+      {
+        "platform": "OpenBSD-7.9-amd64-64bit-ELF",
+        "machine": "amd64",
+        "python": "3.13.15",
+        "git": null,
+        "inputs": {
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "tools/maintenance/source.py": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe",
+          "tools/maintenance/tests/test_source.py": "5fa3b5fdf21a8ec52bd5c622af963b3927185f99f5c0008eff135e28444372c3"
+        },
+        "tests_run": 15,
+        "failures": 0,
+        "errors": 0,
+        "skips": [
+          [
+            "test_archive_streams_large_payload_and_manifest_hash_matches (test_source.SourceGitTests.test_archive_streams_large_payload_and_manifest_hash_matches)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_dirty_development_archive_contains_commit_not_worktree (test_source.SourceGitTests.test_dirty_development_archive_contains_commit_not_worktree)",
+            "real Git controls require Git"
+          ],
+          [
+            "test_invalid_commit_does_not_create_output (test_source.SourceGitTests.test_invalid_commit_does_not_create_output)",
+            "real Git controls require Git"
+          ]
+        ],
+        "passed": 12
+      }
+    ]
+  ],
+  "memory_parity": {
+    "baseline": {
+      "rss_bytes": 95289344,
+      "files": [
+        {
+          "path": "large asset",
+          "kind": "file",
+          "bytes": 33554432,
+          "mode": "0o644",
+          "sha256": "dd3ae5662a2b0e596d7438c7d4eebed131a531cedc985279e1128cbe061bedc5"
+        }
+      ],
+      "archive": {
+        "schema": 1,
+        "commit": "463fc76f80e3a9aa5172b9ddfadeead5be4608ce",
+        "epoch": 0,
+        "sha256": "ef8a8d787edc0c16903367a88e9ce71ebeea672f16dd45c5eff8d05900ea1f66",
+        "excluded_top_level": [
+          ".DS_Store",
+          ".agents",
+          ".clang-format",
+          ".codex",
+          ".disabled-travis.yml",
+          ".editorconfig",
+          ".git",
+          ".github",
+          ".gitignore",
+          ".gsd",
+          ".mailmap",
+          ".planning",
+          "AGENTS.md",
+          "dev-docs"
+        ],
+        "development_only": false
+      }
+    },
+    "candidate": {
+      "rss_bytes": 25001984,
+      "files": [
+        {
+          "path": "large asset",
+          "kind": "file",
+          "bytes": 33554432,
+          "sha256": "dd3ae5662a2b0e596d7438c7d4eebed131a531cedc985279e1128cbe061bedc5",
+          "mode": "0o644"
+        }
+      ],
+      "archive": {
+        "schema": 1,
+        "commit": "463fc76f80e3a9aa5172b9ddfadeead5be4608ce",
+        "epoch": 0,
+        "bytes": 33564850,
+        "sha256": "ef8a8d787edc0c16903367a88e9ce71ebeea672f16dd45c5eff8d05900ea1f66",
+        "excluded_top_level": [
+          ".DS_Store",
+          ".agents",
+          ".clang-format",
+          ".codex",
+          ".disabled-travis.yml",
+          ".editorconfig",
+          ".git",
+          ".github",
+          ".gitignore",
+          ".gsd",
+          ".mailmap",
+          ".planning",
+          "AGENTS.md",
+          "dev-docs"
+        ],
+        "development_only": false
+      }
+    },
+    "fixture_bytes": 33554432,
+    "measurement": "macOS Python process peak resident bytes (RUSAGE_SELF); excludes Git child; one 32 MiB regular asset",
+    "baseline_source_sha256": "6d85f687f0ea579348c4895e3dfa95e4afb65dabbde5aafa2d1ead1656065ce0",
+    "candidate_source_sha256": "17e501d02caf3416ab53aa525e5922dbbd5b5e36c5e815ceeb0f29f8fedfbcfe"
+  },
+  "scope": "Developer source-tool checkpoint; no WM/configuration/dependency/Meson dist change."
+}

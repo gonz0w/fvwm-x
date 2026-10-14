@@ -93,3 +93,8 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 The bounded [repository-foundation review](https://github.com/gonz0w/fvwm-x/issues/82)
 is a child of CI-01. Twelve imported issues backfill accepted local components;
 they do not close broader release, hardware or remaining audit gates.
+
+MAINT-02 has two stage2 children consolidated into one source-tool PR:
+[#84 — Bound source inventory and archive memory](https://github.com/gonz0w/fvwm-x/issues/84)
+and [#85 — Record dependency inventory provenance and Go directives](https://github.com/gonz0w/fvwm-x/issues/85).
+Their limited acceptance does not close MAINT-02 or the LIB-03 audit.

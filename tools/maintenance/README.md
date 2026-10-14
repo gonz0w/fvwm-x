@@ -151,9 +151,9 @@ Recorded adoption checks and limitations are in the
 
 | Current tooling | Parallel replacement | Remaining gate |
 | --- | --- | --- |
-| `build` | Adopted `build.py` with legacy options | Six recorded Linux/BSD profile matrices pass; Linux AMD64 Go compiler has an emulation blocker |
+| `build` | Adopted `build.py` with legacy options | Original wrapper profiles pass; the [Prompt checkpoint](../../dev-docs/verification/VERIFICATION-2026-10-11-PROMPT-METADATA.md) adds native offline AMD64 Go/Meson evidence using an isolated SDK. Release/toolchain coverage remains separate |
 | `generate_ad_file.sh`, website helper, duplicated lists | Meson adopts `docs.py` / `manuals.json`; legacy helpers retained | Real Asciidoctor output and manifest-reconfiguration comparisons pass on six targets; public website migration deferred to DOCS-01, without blocking other adoption |
-| `create-constants`, `create-commands` | `generate.py metadata` | PERL-PROTO-01 wire/decode/export/POD compatibility and generation integration |
+| `create-constants`, `create-commands` | `generate.py metadata` | Locally adopted with PERL-PROTO-01; native values/decoders/dispatch, exports/POD, deterministic inputs and installed consumers pass six targets. See the [current checkpoint](../../dev-docs/verification/VERIFICATION-2026-10-11-PROMPT-METADATA.md) |
 | `fvwmscript-syntax.sh` | Portable wrapper for `generate.py parsers` | GEN-01 locally qualified: eight standard compiler profiles, staged identities, four default BSD servers and scoped feature/sanitizer checks |
 | Retired `po/fvwmpo.sh` and unused GMO binaries | Adopted `translations.py`; Meson builds PO catalogs | Six standard whole-source profiles plus two Linux ARM64 feature profiles, exact installs,138-key parity, deterministic committed-fixture export and reference checks pass |
 | `dist-tarball.sh` | `source.py archive` | Clean reviewed snapshot, source-release layout/build/install and license checks; Meson dist adoption |
@@ -162,6 +162,18 @@ Recorded adoption checks and limitations are in the
 | `conf-cmd.sh`, version helper | Retained | Already suitable for current needs; no gratuitous rewrite |
 
 ## Verification and limits
+
+### CI asset preflight
+
+`ci_assets.py` materializes CI-01's recorded AnyVM/BSD release inputs into a
+fresh private directory without executing or decompressing them. It validates
+fixed size/SHA256 values for downloads and cache hits, refuses linked/nonregular
+or shared cache files, and bounds each acquisition worker with a total deadline.
+It uses Python's standard library and the existing fresh-output owner. See
+[usage and provider limits](../../dev-docs/ci/README.md) and the
+[six-target checkpoint](../../dev-docs/verification/VERIFICATION-2026-10-13-CI-ASSETS.md).
+It is a developer preflight, not an installed runtime helper or proof of passing
+Actions, VM boot or upstream provider cache enforcement.
 
 ### Initial candidate evidence
 

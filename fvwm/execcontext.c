@@ -157,6 +157,10 @@ const exec_context_t *exc_clone_context(
 		fvwm_debug(__func__, "%p\n", exc);
 	}
 	memcpy(exc, excin, sizeof(*exc));
+	/* A clone owns its triggering event, even when no override is supplied.
+	 * Window/module references and the live last-event pointer stay borrowed. */
+	exc->private_data.te = *excin->x.etrigger;
+	exc->x.etrigger = &exc->private_data.te;
 	_exc_change_context(exc, ecc, mask);
 
 	return exc;

@@ -31,9 +31,8 @@ void DrawThumbH(struct XObj *xobj, XEvent *evp)
   XSegment segm;
   char str[20];
 
-  x = 2 +
-    (xobj->width - 36)*(xobj->value - xobj->value2) /
-    (xobj->value3 - xobj->value2);
+  x = 2 + script_widget_position(xobj->value, xobj->value2,
+    xobj->value3, xobj->width, 36, false);
   y = xobj->height/2 - 11;
   w = 32;
   h = 22;
@@ -63,9 +62,8 @@ void HideThumbH(struct XObj *xobj)
 {
   int x,y;
 
-  x = 2 +
-    (xobj->width - 36) * (xobj->value - xobj->value2) /
-    (xobj->value3-xobj->value2);
+  x = 2 + script_widget_position(xobj->value, xobj->value2,
+    xobj->value3, xobj->width, 36, false);
   y = xobj->height/2 - 11;
   XClearArea(dpy, xobj->win, x, y, 32, 22, False);
   /* clear "text" */
@@ -76,15 +74,13 @@ void InitHScrollBar(struct XObj *xobj)
 {
   unsigned long mask;
   XSetWindowAttributes Attr;
-  int i;
-  char str[20];
 
   /* Save colors and font */
   if (xobj->colorset >= 0) {
-    xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-    xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-    xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-    xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+    xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+    xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+    xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+    xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
   } else {
     xobj->TabColor[fore] = GetColor(xobj->forecolor);
     xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -108,31 +104,18 @@ void InitHScrollBar(struct XObj *xobj)
   XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
   XSetBackground(dpy, xobj->gc, xobj->TabColor[back]);
 
-  if ((xobj->Ffont = FlocaleLoadFont(dpy, xobj->font, ScriptName)) == NULL)
-  {
-    fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n", ScriptName);
-    exit(1);
-  }
   if (xobj->Ffont->font != NULL)
     XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
   XSetLineAttributes(dpy, xobj->gc, 1, LineSolid, CapRound, JoinMiter);
 
-  if ((xobj->value3 - xobj->value2) <= 0)
-    xobj->value3 = xobj->value2 + 10;
+  xobj->value3 = script_widget_initial_maximum(xobj->value2,
+    xobj->value3, 10, true);
   if (!((xobj->value >= xobj->value2) && (xobj->value <= xobj->value3)))
     xobj->value = xobj->value2;
-  xobj->height = xobj->Ffont->height * 2 + 30;
-  snprintf(str, sizeof(str), "%d", xobj->value2);
-  i = FlocaleTextWidth(xobj->Ffont, str, strlen(str));
-  snprintf(str, sizeof(str), "%d", xobj->value3);
-  i = FlocaleTextWidth(xobj->Ffont, str, strlen(str)) + i + 20;
-  if (xobj->width<i)
-    xobj->width = i;
-  XResizeWindow(dpy, xobj->win, xobj->width, xobj->height);
   if (xobj->colorset >= 0)
     SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-			&Colorset[xobj->colorset], Pdepth,
+			GetColorset(xobj->colorset), Pdepth,
 			xobj->gc, True);
   XSelectInput(dpy, xobj->win, ExposureMask);
 }
@@ -170,30 +153,29 @@ void DrawHScrollBar(struct XObj *xobj, XEvent *evp)
 
 void EvtMouseHScrollBar(struct XObj *xobj, XButtonEvent *EvtButton)
 {
-  static XEvent event;
+  XEvent event;
   int oldx = 0;
   int oldvalue = -1;
   int newvalue;
   int x1,y1,x2,y2;
   Window Win1,Win2;
   unsigned int modif;
-  fd_set in_fdset;
+
+  if (xobj->width <= 36 || xobj->value3 <= xobj->value2)
+    return;
 
   do
   {
     /* We follow mouse movements */
     FQueryPointer(dpy, *xobj->ParentWin, &Win1, &Win2, &x1, &y1, &x2, &y2, &modif);
-    x2 = x2 - xobj->x;
-    if (x2 < 15)
-      x2 = 15;
-    if (x2 > xobj->width-21)
-      x2 = xobj->width - 21;
+    x2 = script_widget_pointer_position(x2, xobj->x,
+      xobj->width);
     if (oldx!=x2)
     {
       oldx = x2;
       /* Compute xobj->value */
-      newvalue = (x2-15)*xobj->width / (xobj->width - 36) *
-	(xobj->value3 - xobj->value2) / (xobj->width) + xobj->value2;
+      newvalue = script_widget_pointer_value(x2, xobj->width,
+      xobj->value2, xobj->value3, false);
       if (newvalue!=oldvalue)
       {
 	HideThumbH(xobj);
@@ -202,14 +184,15 @@ void EvtMouseHScrollBar(struct XObj *xobj, XButtonEvent *EvtButton)
 	oldvalue = newvalue;
 	SendMsg(xobj,SingleClic);
 	XSync(dpy, 0);
-	usleep(10000);
       }
     }
-    FD_ZERO(&in_fdset);
-    FD_SET(x_fd, &in_fdset);
-    select(32, SELECT_FD_SET_CAST &in_fdset, NULL, NULL, NULL);
+    /* Return selects once; queued release precedes shared readiness. */
+    if (EvtButton == NULL || FCheckTypedEvent(dpy, ButtonRelease, &event))
+      break;
+    if (!script_widget_wait_release(xobj, 1))
+      break;
   }
-  while (!FCheckTypedEvent(dpy, ButtonRelease, &event) && EvtButton != NULL);
+  while (True);
 }
 
 void EvtKeyHScrollBar(struct XObj *xobj, XKeyEvent *EvtKey)
@@ -225,8 +208,7 @@ void EvtKeyHScrollBar(struct XObj *xobj, XKeyEvent *EvtKey)
     SendMsg(xobj,SingleClic);
   }
   else if (ks == XK_Right &&
-	   xobj->value <
-	   xobj->width*(xobj->value3-xobj->value2)/(xobj->width) + xobj->value2) {
+	   xobj->value < xobj->value3) {
     HideThumbH(xobj);
     xobj->value++;
     DrawThumbH(xobj, NULL);
@@ -235,8 +217,4 @@ void EvtKeyHScrollBar(struct XObj *xobj, XKeyEvent *EvtKey)
   else if (ks == XK_Return) {
     EvtMouseHScrollBar(xobj, NULL);
   }
-}
-
-void ProcessMsgHScrollBar(struct XObj *xobj,unsigned long type,unsigned long *body)
-{
 }

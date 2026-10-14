@@ -1,0 +1,37 @@
+{
+  "pages": [
+    "fvwm-convert-2.6",
+    "fvwm-menu-desktop",
+    "fvwm-menu-directory",
+    "fvwm-menu-xlock",
+    "fvwm-perllib",
+    "fvwm-root",
+    "fvwm3",
+    "fvwm3all",
+    "FvwmAnimate",
+    "FvwmAuto",
+    "FvwmBacker",
+    "FvwmButtons",
+    "FvwmCommand",
+    "FvwmDesktop",
+    "FvwmEvent",
+    "FvwmForm",
+    "FvwmIconMan",
+    "FvwmIdent",
+    "FvwmMFL",
+    "FvwmPager",
+    "FvwmPerl",
+    "FvwmRearrange",
+    "FvwmScript"
+  ],
+  "split_pages": [
+    "fvwm3commands",
+    "fvwm3menus",
+    "fvwm3styles"
+  ],
+  "sections": [
+    "commands",
+    "menus",
+    "styles"
+  ]
+}

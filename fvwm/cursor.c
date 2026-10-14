@@ -29,6 +29,7 @@
 #include "libs/log.h"
 #include "fvwm.h"
 #include "libs/PictureImageLoader.h"
+#include "image_async.h"
 #include "libs/Fcursor.h"
 #include "libs/wm_ui_metrics.h"
 #include "externs.h"
@@ -146,6 +147,7 @@ typedef struct
 
 static Cursor cursors[CRS_MAX];
 static wm_ui_scaled_cursor cursor_table[CRS_MAX];
+static FvwmPicture *cursor_requested[CRS_MAX];
 static const unsigned int default_cursors[CRS_MAX] =
 {
 	None,
@@ -437,6 +439,140 @@ void CMD_CursorMove(F_CMD_ARGS)
 	return;
 }
 
+typedef struct
+{
+	int index;
+	monitor_scale_factor factor;
+	Bool recolor;
+	XColor colors[2];
+} cursor_image_owner;
+
+static void cursor_cancel_request(int index)
+{
+	FvwmPicture *view = cursor_requested[index];
+
+	cursor_requested[index] = NULL;
+	PDestroyFvwmPicture(dpy, view);
+}
+
+static void cursor_apply_slot(int index, Cursor cursor,
+	monitor_scale_factor factor, XColor *colors)
+{
+	FvwmWindow *fw2;
+	struct monitor *m;
+	int i;
+
+	if (Scr.FvwmCursors[index])
+	{
+		XFreeCursor(dpy, Scr.FvwmCursors[index]);
+	}
+	cursor_store_slot(index, cursor, factor);
+	if (colors != NULL)
+	{
+		XRecolorCursor(dpy, cursor, &colors[0], &colors[1]);
+	}
+	/* redefine all the windows using cursors */
+	for (fw2 = Scr.FvwmRoot.next; fw2; fw2 = fw2->next)
+	{
+		if (!HAS_HANDLES(fw2))
+		{
+			/* Ignore windows without handles */
+			continue;
+		}
+		for (i = 0; i < 4; i++)
+		{
+			SafeDefineCursor(
+				FW_W_CORNER(fw2, i),
+				Scr.FvwmCursors[CRS_TOP_LEFT + i]);
+			SafeDefineCursor(
+				FW_W_SIDE(fw2, i),
+				Scr.FvwmCursors[CRS_TOP + i]);
+		}
+		for (i = 0; i / 2 < Scr.nr_left_buttons; i += 2)
+		{
+			SafeDefineCursor(
+				FW_W_BUTTON(fw2, i), Scr.FvwmCursors[CRS_SYS]);
+		}
+		for (i = 1; i / 2 < Scr.nr_right_buttons; i += 2)
+		{
+			SafeDefineCursor(
+				FW_W_BUTTON(fw2, i), Scr.FvwmCursors[CRS_SYS]);
+		}
+		SafeDefineCursor(FW_W_TITLE(fw2), Scr.FvwmCursors[CRS_TITLE]);
+		if (index == CRS_DEFAULT)
+		{
+			SafeDefineCursor(
+				FW_W_FRAME(fw2), Scr.FvwmCursors[CRS_DEFAULT]);
+			SafeDefineCursor(
+				FW_W_PARENT(fw2), Scr.FvwmCursors[CRS_DEFAULT]);
+			if (IS_ICONIFIED(fw2))
+			{
+				if (!HAS_NO_ICON_TITLE(fw2))
+				{
+					SafeDefineCursor(
+						FW_W_ICON_TITLE(fw2),
+						Scr.FvwmCursors[CRS_DEFAULT]);
+				}
+				if (FW_W_ICON_PIXMAP(fw2) != None)
+				{
+					SafeDefineCursor(
+						FW_W_ICON_PIXMAP(fw2),
+						Scr.FvwmCursors[CRS_DEFAULT]);
+				}
+			}
+		}
+	}
+
+	/* Do the menus for good measure */
+	SetMenuCursor(Scr.FvwmCursors[CRS_MENU]);
+
+	/* Set the cursors on all monitors. */
+	RB_FOREACH(m, monitors, &monitor_q) {
+		SafeDefineCursor(m->PanFrameTop.win,
+		   Scr.FvwmCursors[CRS_TOP_EDGE]);
+		SafeDefineCursor(m->PanFrameBottom.win,
+		   Scr.FvwmCursors[CRS_BOTTOM_EDGE]);
+		SafeDefineCursor(m->PanFrameLeft.win,
+		   Scr.FvwmCursors[CRS_LEFT_EDGE]);
+		SafeDefineCursor(
+			m->PanFrameRight.win,
+			Scr.FvwmCursors[CRS_RIGHT_EDGE]);
+	}
+	/* migo (04/Nov/1999): don't annoy users which use xsetroot */
+	if (index == CRS_ROOT)
+	{
+		SafeDefineCursor(Scr.Root, Scr.FvwmCursors[CRS_ROOT]);
+	}
+}
+
+static picture_async_commit cursor_image_policy(FvwmPicture *view,
+	void *context)
+{
+	cursor_image_owner *owner = context;
+
+	return cursor_requested[owner->index] == view ? PICTURE_ASYNC_APPLY :
+	    PICTURE_ASYNC_DISCARD;
+}
+
+static void cursor_image_settled(FvwmPicture *view, Bool applied,
+	void *context)
+{
+	cursor_image_owner *owner = context;
+
+	if (cursor_requested[owner->index] != view)
+	{
+		return;
+	}
+	Cursor cursor = applied ? picture_async_take_cursor(view) : None;
+
+	if (cursor != None)
+	{
+		cursor_apply_slot(owner->index, cursor, owner->factor,
+		    owner->recolor ? owner->colors : NULL);
+	}
+	cursor_cancel_request(owner->index);
+}
+
 void CMD_CursorStyle(F_CMD_ARGS)
 {
 	char *cname=NULL;
@@ -447,11 +583,11 @@ void CMD_CursorStyle(F_CMD_ARGS)
 	XColor colors[2];
 	int index;
 	int nc;
-	int i;
 	int my_nc;
-	FvwmWindow *fw2;
 	Cursor cursor;
-	struct monitor	*m = NULL;
+	FvwmPicture *pending = NULL;
+	monitor_scale_factor factor;
+	Bool recolor = False;
 
 	cursor = 0;
 	cname = PeekToken(action, &action);
@@ -564,6 +700,7 @@ void CMD_CursorStyle(F_CMD_ARGS)
 		return;
 	}
 	cname = 0;
+	factor = cursor_active_factor(dpy);
 
 	/* check if the cursor is given by X11 name */
 	action = GetNextToken(action, &newcursor);
@@ -642,13 +779,16 @@ void CMD_CursorStyle(F_CMD_ARGS)
 			{
 				action = tmp;
 			}
-			cursor = PImageLoadCursorFromFile(
-				dpy, Scr.Root, path, hotspot[0], hotspot[1],
-				cursor_active_factor(dpy));
+			if (!image_async_cursor(path, factor, hotspot,
+			    &pending))
+			{
+				cursor = PImageLoadCursorFromFile(dpy, Scr.Root,
+				    path, hotspot[0], hotspot[1], factor);
+			}
 			free(path);
 		}
 	}
-	if (!cursor)
+	if (!cursor && pending == NULL)
 	{
 		fvwm_debug(__func__, "Cannot load cursor: %s",
 			   newcursor);
@@ -659,13 +799,6 @@ void CMD_CursorStyle(F_CMD_ARGS)
 	free(newcursor);
 	newcursor = 0;
 
-	/* replace the cursor defn */
-	if (Scr.FvwmCursors[index])
-	{
-		XFreeCursor(dpy, Scr.FvwmCursors[index]);
-	}
-	cursor_store_slot(index, cursor, cursor_active_factor(dpy));
-
 	/* look for optional color arguments */
 	action = GetNextToken(action, &fore);
 	action = GetNextToken(action, &back);
@@ -674,9 +807,7 @@ void CMD_CursorStyle(F_CMD_ARGS)
 		colors[0].pixel = GetColor(fore);
 		colors[1].pixel = GetColor(back);
 		XQueryColors (dpy, Pcmap, colors, 2);
-		XRecolorCursor(
-			dpy, Scr.FvwmCursors[index], &(colors[0]),
-			&(colors[1]));
+		recolor = True;
 	}
 	if (fore)
 	{
@@ -687,79 +818,31 @@ void CMD_CursorStyle(F_CMD_ARGS)
 		free(back);
 	}
 
-	/* redefine all the windows using cursors */
-	for (fw2 = Scr.FvwmRoot.next; fw2; fw2 = fw2->next)
+	cursor_cancel_request(index);
+	if (pending != NULL)
 	{
-		if (!HAS_HANDLES(fw2))
+		cursor_image_owner *owner = fxcalloc(1, sizeof(*owner));
+
+		owner->index = index;
+		owner->factor = factor;
+		owner->recolor = recolor;
+		if (recolor)
 		{
-			/* Ignore windows without handles */
-			continue;
+			memcpy(owner->colors, colors, sizeof(colors));
 		}
-		for (i = 0; i < 4; i++)
+		cursor_requested[index] = pending;
+		if (!picture_async_bind(pending, cursor_image_policy,
+		    cursor_image_settled, owner, free))
 		{
-			SafeDefineCursor(
-				FW_W_CORNER(fw2, i),
-				Scr.FvwmCursors[CRS_TOP_LEFT + i]);
-			SafeDefineCursor(
-				FW_W_SIDE(fw2, i),
-				Scr.FvwmCursors[CRS_TOP + i]);
-		}
-		for (i = 0; i / 2 < Scr.nr_left_buttons; i += 2)
-		{
-			SafeDefineCursor(
-				FW_W_BUTTON(fw2, i), Scr.FvwmCursors[CRS_SYS]);
-		}
-		for (i = 1; i / 2 < Scr.nr_right_buttons; i += 2)
-		{
-			SafeDefineCursor(
-				FW_W_BUTTON(fw2, i), Scr.FvwmCursors[CRS_SYS]);
-		}
-		SafeDefineCursor(FW_W_TITLE(fw2), Scr.FvwmCursors[CRS_TITLE]);
-		if (index == CRS_DEFAULT)
-		{
-			SafeDefineCursor(
-				FW_W_FRAME(fw2), Scr.FvwmCursors[CRS_DEFAULT]);
-			SafeDefineCursor(
-				FW_W_PARENT(fw2), Scr.FvwmCursors[CRS_DEFAULT]);
-			if (IS_ICONIFIED(fw2))
-			{
-				if (!HAS_NO_ICON_TITLE(fw2))
-				{
-					SafeDefineCursor(
-						FW_W_ICON_TITLE(fw2),
-						Scr.FvwmCursors[CRS_DEFAULT]);
-				}
-				if (FW_W_ICON_PIXMAP(fw2) != None)
-				{
-					SafeDefineCursor(
-						FW_W_ICON_PIXMAP(fw2),
-						Scr.FvwmCursors[CRS_DEFAULT]);
-				}
-			}
+			free(owner);
+			cursor_cancel_request(index);
 		}
 	}
-
-	/* Do the menus for good measure */
-	SetMenuCursor(Scr.FvwmCursors[CRS_MENU]);
-
-	/* Set the cursors on all monitors. */
-	RB_FOREACH(m, monitors, &monitor_q) {
-		SafeDefineCursor(m->PanFrameTop.win,
-		   Scr.FvwmCursors[CRS_TOP_EDGE]);
-		SafeDefineCursor(m->PanFrameBottom.win,
-		   Scr.FvwmCursors[CRS_BOTTOM_EDGE]);
-		SafeDefineCursor(m->PanFrameLeft.win,
-		   Scr.FvwmCursors[CRS_LEFT_EDGE]);
-		SafeDefineCursor(
-			m->PanFrameRight.win,
-			Scr.FvwmCursors[CRS_RIGHT_EDGE]);
-	}
-	/* migo (04/Nov/1999): don't annoy users which use xsetroot */
-	if (index == CRS_ROOT)
+	else
 	{
-		SafeDefineCursor(Scr.Root, Scr.FvwmCursors[CRS_ROOT]);
+		cursor_apply_slot(index, cursor, factor,
+		    recolor ? colors : NULL);
 	}
-
 	return;
 }
 

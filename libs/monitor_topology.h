@@ -38,6 +38,7 @@ typedef struct
 	monitor_topology_monitor  *monitors;
 	int			   monitor_count;
 	uint64_t		   epoch;
+	bool root_fallback;
 	monitor_topology_allocator allocator;
 } monitor_topology_snapshot;
 

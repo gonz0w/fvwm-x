@@ -249,10 +249,10 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 	cset = buttonColorset(b);
 	if (cset >= 0)
 	{
-		fc = Colorset[cset].fg;
-		bc = Colorset[cset].bg;
-		hc = Colorset[cset].hilite;
-		sc = Colorset[cset].shadow;
+		fc = GetColorset(cset)->fg;
+		bc = GetColorset(cset)->bg;
+		hc = GetColorset(cset)->hilite;
+		sc = GetColorset(cset)->shadow;
 	}
 	else
 	{
@@ -419,7 +419,7 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 					SetClippedRectangleBackground(
 						Dpy, MyWindow,
 						x+f, y+f, BW-2*f, BH-2*f, &clip,
-						&Colorset[b->c->colorset],
+						GetColorset(b->c->colorset),
 						Pdepth, NormalGC);
 				}
 			}
@@ -489,7 +489,7 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 				cleaned = True;
 				SetClippedRectangleBackground(
 					Dpy, MyWindow, x+f, y+f, BW-2*f, BH-2*f,
-					&clip, &Colorset[b->colorset],
+					&clip, GetColorset(b->colorset),
 					Pdepth, NormalGC);
 			}
 #if 0
@@ -510,7 +510,7 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 			{
 				SetClippedRectangleBackground(
 					Dpy, MyWindow, x, y, BW, BH, &clip,
-					&Colorset[cs],Pdepth, NormalGC);
+					GetColorset(cs),Pdepth, NormalGC);
 			}
 			else if (b->flags.b_Back &&
 				!UberButton->c->flags.b_Colorset)
@@ -787,7 +787,7 @@ void DrawTitle(button_info *b,Window win,GC gc, XEvent *pev)
 		cset = buttonColorset(b);
 		if (cset >= 0)
 		{
-			FwinString.colorset = &Colorset[cset];
+			FwinString.colorset = GetColorset(cset);
 			FwinString.flags.has_colorset = 1;
 		}
 		FwinString.x = xpos;

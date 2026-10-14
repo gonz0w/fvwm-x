@@ -1,27 +1,20 @@
-adoc_sources = [
-    'fvwm-convert-2.6.adoc',
-    'fvwm-menu-desktop.adoc',
-    'fvwm-menu-directory.adoc',
-    'fvwm-menu-xlock.adoc',
-    'fvwm-perllib.adoc',
-    'fvwm-root.adoc',
-    'fvwm3.adoc',
-    'fvwm3all.adoc',
-    'FvwmAnimate.adoc',
-    'FvwmAuto.adoc',
-    'FvwmBacker.adoc',
-    'FvwmButtons.adoc',
-    'FvwmCommand.adoc',
-    'FvwmEvent.adoc',
-    'FvwmForm.adoc',
-    'FvwmIconMan.adoc',
-    'FvwmIdent.adoc',
-    'FvwmMFL.adoc',
-    'FvwmPager.adoc',
-    'FvwmPerl.adoc',
-    'FvwmRearrange.adoc',
-    'FvwmScript.adoc',
-]
+# One manual manifest drives Meson and the standalone documentation renderer.
+doc_tool = files('../tools/maintenance/docs.py')
+# configure_file registers the manifest for automatic reconfiguration.
+doc_manifest = configure_file(
+    input: '../tools/maintenance/manuals.json',
+    output: 'manuals.json',
+    copy: true,
+)
+prompt_doc_args = golang.found() ? ['--prompt'] : []
+manual_names = run_command(
+    py, doc_tool, '--list', 'pages', prompt_doc_args,
+    check: true,
+).stdout().strip().split('\n')
+adoc_sources = []
+foreach name : manual_names
+    adoc_sources += name + '.adoc'
+endforeach
 
 # The adoc files in the repo for fvwm3-commands, fvwm3-menus, and fvwm3-styles
 # are generated from the main manpage source file. We need to extract the
@@ -31,9 +24,10 @@ main_file = 'fvwm3_manpage_source.adoc'
 
 # Custom build command for each source file
 ad_build_targets = []
-sections = ['commands', 'menus', 'styles']
+sections = run_command(
+    py, doc_tool, '--list', 'sections', check: true,
+).stdout().strip().split('\n')
 
-generate_ad_cmd = '@0@/meson-scripts/generate_ad_file.sh'.format(meson.project_source_root())
 
 foreach sec : sections
     outfile = f'fvwm3_@sec@.ad'
@@ -43,7 +37,7 @@ foreach sec : sections
     ad_build_targets += custom_target(
         output: outfile,
         input: main_file,
-        command: [generate_ad_cmd, sec, '@INPUT@'],
+        command: [py, doc_tool, '--extract', sec, '--input', '@INPUT@'],
         capture: true,
         install: false,
     )
@@ -53,11 +47,13 @@ endforeach
 # so that we can generate docs from them; asciidoc includes
 # the files by path, so we need to make sure they are in the
 # same directory as the generated includes.
-needs_generated_source = [
-    'fvwm3commands.adoc',
-    'fvwm3menus.adoc',
-    'fvwm3styles.adoc',
-]
+split_names = run_command(
+    py, doc_tool, '--list', 'split_pages', check: true,
+).stdout().strip().split('\n')
+needs_generated_source = []
+foreach name : split_names
+    needs_generated_source += name + '.adoc'
+endforeach
 
 late_docs_targets = []
 foreach src : needs_generated_source
@@ -75,26 +71,12 @@ if get_option('htmldoc')
 
     index_src = 'index.adoc.in'
     index_dst = 'index.adoc'
-    if not golang.found()
-        index = configure_file(
-            input: index_src,
-            output: index_dst,
-            command: [
-                sed,
-                '-e', '/FvwmPrompt.adoc/d', '@INPUT@'
-            ],
-            capture: true,
-        )
-    else
-        index = configure_file(
-            input: index_src,
-            output: index_dst,
-            copy: true,
-        )
-
-        adoc_sources += 'FvwmPrompt.adoc'
-
-    endif
+    index = configure_file(
+        input: index_src,
+        output: index_dst,
+        command: [py, doc_tool, '--index', '--input', '@INPUT@', prompt_doc_args],
+        capture: true,
+    )
 
     html_sources = adoc_sources
 

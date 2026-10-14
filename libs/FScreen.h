@@ -236,6 +236,9 @@ typedef struct
 	char *(*get_atom_name)(void *, Display *, Atom);
 	void (*free_atom_name)(void *, char *);
 	void (*free_monitors)(void *, XRRMonitorInfo *);
+	/* Optional borrowed root facts for an empty initial/fallback topology. */
+	bool (*get_root_monitor)(void *, Display *, Window,
+	    monitor_topology_monitor *);
 	monitor_topology_allocator topology_allocator;
 } fscreen_randr_adapter;
 

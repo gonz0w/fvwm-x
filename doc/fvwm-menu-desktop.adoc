@@ -18,10 +18,26 @@ _all_|_desktop_ ] [ *--set-menus* _menu_paths_ ] [ *--all-menus* ] [
 
 == DESCRIPTION
 
-This is a python script which parses XDG menus definitions to build
-corresponding fvwm menus. This script depends on python-xdg to run.
+This utility parses XDG menu definitions to build
+corresponding FVWM menus. Go-enabled builds install the standard-library
+provider and use the native FvwmForm settings window. The executable does
+not require Go, PyXDG or an image toolkit at runtime. Builds without Go
+retain the Python/PyXDG provider and the Perl settings frontend.
 
 == MAIN OPTIONS
+
+*--configure*::
+  Output the native settings form configuration. Load it with
+  `PipeRead 'fvwm-menu-desktop --configure'`. This option is available with
+  the Go provider. The existing FvwmPerl configuration entry point also
+  opens this form in Go-enabled builds.
+
+*--timeout* _duration_::
+  Set the Go worker's total deadline. The default is 5 seconds. Use a finite
+  value from `1ms` through `5m`, for example `--timeout 10s`. The environment
+  variable `FVWM_XDG_MENU_TIMEOUT` sets the default, including application
+  record acquisition. This deadline does not limit a launched application's
+  lifetime.
 
 *--help*::
   Show the help and exit.
@@ -119,19 +135,19 @@ below for some solutions.
 By default, fvwm-menu-desktop builds menus without mini-icons. To
 enable mini-icons use the following options.
 
-If ImageMagick is installed on the system, the script will resize and
-copy the icons to $FVWM_USERDIR/.icons. This can take awhile. You should
-be prepared to wait the first time you generate the icons. Once the
-icons have been generated the script should run faster. If it is still
-to slow using icons, see *EXAMPLES* for ways to limit how often the menu
-is generated to speed things up.
+The Go provider uses native SVG size qualifiers and a simple PNG conversion.
+PNG conversion keeps alpha and uses nearest-neighbor scaling. XPM images
+keep their original size. The build's enabled image formats control lookup.
+Converted PNG files use content-based names in the configured icon directory,
+so a changed image does not reuse an old core cache entry. The Python fallback
+retains its optional ImageMagick conversion behavior.
 
 *--enable-mini-icons*::
   This option enables mini-icons in the menus. If set, 24x24 mini-icons
-  are used. If the specified icon isn't that size it will be converted
-  if *ImageMagick* is installed and saved in $HOME/.fvwm/icons or to the
-  directory specified with --mini-icon-dir option. Otherwise no icon
-  appears in the menu for that entry. With most distributions, all the
+  are used. Converted PNG files are saved in $HOME/.fvwm/icons or the
+  directory specified with --mini-icon-dir. Conversion is bounded to a
+  4096-pixel requested size; larger requests use the original PNG size.
+  With most distributions, all the
   menu entries will have mini-icons appropriate to the application.
 *--theme* _NAME_::
   Defines the used icon theme. Default is _gnome_ but all others found
@@ -240,6 +256,34 @@ $FVWM_USERDIR/.FvwmForm-XDGMenu-Config that *fvwm-menu-desktop* will
 parse for defaults when run.
 
 See the help inside of *FvwmForm-XDGMenu-Config* for more information.
+
+With the Go provider, F1 exports the menu, F2 regenerates it and F3 saves
+settings. Field values travel as encoded data. The utility writes the same
+`*FvwmForm-XDGMenu-ConfigDefault:` preference records as before. Unknown
+records are preserved. The core does not execute these saved field values
+as configuration. Settings and exports are written atomically with mode 0600.
+Existing symlinks, hard links and foreign-owned files are refused for
+publication. Output directories must be owned and must not permit other
+users to write. An owned settings symlink can still be read.
+
+Application actions refer to private typed records in
+`$FVWM_USERDIR/.XDGMenu-actions-*`. Desktop Exec values become literal argument
+arrays, including quoted spaces and field-code substitutions. Only an explicitly
+configured `--term-cmd` retains shell command syntax. Old menu actions remain
+available across regeneration. A catalog holds at most 100000 distinct actions
+and 128 MiB; a full catalog refuses regeneration and leaves existing actions
+available. Keep these files with exported menus. Removing a catalog requires
+regeneration of menus that refer to it.
+
+The Go provider limits each XML, desktop, directory-metadata and icon-index source to
+8 MiB, total acquisition to 128 MiB, nesting to 128 levels and bounded policy
+work. PNG sources are bounded to 128 MiB, dimensions to 32768 pixels per axis
+and decoded input to 64 million pixels before conversion.
+Generated streams contain at most the core's 50000-command Read limit.
+The worker runs separately from authoritative window state. Failed or incomplete
+worker output is discarded. `--menu-error` can output a complete error menu.
+Exit status 0 indicates success, 1 a worker/input/publication failure, and 2
+an invalid command-line option. Help and version do not read saved settings.
 
 == EXAMPLES
 

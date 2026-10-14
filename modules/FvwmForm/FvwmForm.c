@@ -21,16 +21,20 @@
  */
 
 #include "config.h"
+#include "libs/log.h"
 
 #include <stdio.h>
 #include <ctype.h>
 #include <event2/event.h>
+#include <errno.h>
+#include <poll.h>
 
 #include "libs/ftime.h"
 #include <fcntl.h>
 
 #include "libs/FRender.h"
 #include "libs/Module.h"		/* for headersize, etc. */
+#include "libs/module_packet_reader.h"
 #include "libs/fvwmlib.h"
 #include "libs/fvwmsignal.h"
 #include "libs/ColorUtils.h"
@@ -51,7 +55,9 @@
 #include "libs/FRenderInit.h"
 #include "libs/Rectangles.h"
 
-#include "FvwmForm.h"			/* common FvwmForm stuff */
+#include "FvwmForm.h"
+#include "form_input.h"			/* common FvwmForm stuff */
+#include <limits.h>
 
 /* globals that are exported, keep in sync with externs in FvwmForm.h */
 Form cur_form;			 /* current form */
@@ -98,6 +104,8 @@ int itemcolorset = 0;
 /* global not exported */
 const struct timeval tv_100ms = {0L, 100000L};
 static struct event *pev;
+static struct event_base *form_timer_base;
+static module_packet_reader form_packet_reader;
 
 /* prototypes */
 static void RedrawSeparator(Item *item);
@@ -108,57 +116,47 @@ static void ReadFormData(void);
 static void FormVarsCheck(char **);
 static void TimerHandler(evutil_socket_t, short int, void *);
 static int ErrorHandler(Display *dpy, XErrorEvent *error_event);
-static void SetupTimer(void)
+static void cleanup_form_timer(void)
 {
-  struct event_base *pevbase = event_base_new();
+  if (pev != NULL)
+  {
+    event_free(pev);
+    pev = NULL;
+  }
+  if (form_timer_base != NULL)
+  {
+    event_base_free(form_timer_base);
+    form_timer_base = NULL;
+  }
+}
 
-  pev = event_new(pevbase, -1, EV_PERSIST, TimerHandler, NULL);
+static Bool SetupTimer(void)
+{
+  form_timer_base = event_base_new();
+  if (form_timer_base == NULL)
+    return False;
 
-  evtimer_add(pev, &tv_100ms);
-  event_base_dispatch(pevbase);
+  pev = event_new(form_timer_base, -1, EV_PERSIST, TimerHandler, NULL);
+  if (pev == NULL || evtimer_add(pev, &tv_100ms) < 0 ||
+      atexit(cleanup_form_timer) != 0)
+  {
+    cleanup_form_timer();
+    return False;
+  }
+  return True;
 }
 
 /* copy a string until '"', or '\n', or '\0' */
-static char *CopyQuotedString (char *cp)
+static char *CopyQuotedString (const char *cp)
 {
-  char *dp, *bp, c;
-  const char *tp;
-  tp = _(cp);
-  bp = dp = fxmalloc(strlen(tp) + 1);
-  while (1) {
-    switch (c = *(tp++)) {
-    case '\\':
-      *(dp++) = *(tp++);
-      break;
-    case '\"':
-    case '\n':
-    case '\0':
-      *dp = '\0';
-      return bp;
-      break;
-    default:
-      *(dp++) = c;
-      break;
-    }
-  }
+  /* FGettext borrows input through its legacy mutable-pointer signature. */
+  return form_copy_quoted(_((char *)cp));
 }
 
-/* copy a string until the first space */
-static char *CopySolidString (char *cp)
+/* Solid tokens retain escapes, including escaped whitespace. */
+static char *CopySolidString (const char *cp)
 {
-  char *dp, *bp, c;
-  bp = dp = fxmalloc(strlen(cp) + 1);
-  while (1) {
-    c = *(cp++);
-    if (c == '\\') {
-      *(dp++) = '\\';
-      *(dp++) = *(cp++);
-    } else if (isspace((unsigned char)c) || c == '\0') {
-      *dp = '\0';
-      return bp;
-    } else
-      *(dp++) = c;
-  }
+  return form_copy_token(cp);
 }
 
 /* Command parsing section */
@@ -181,10 +179,12 @@ static void ct_ButtonPointerBack(char *);
 static void ct_ButtonPointerFore(char *);
 static void ct_Choice(char *);
 static void ct_Command(char *);
+static void ct_CommandAppend(char *);
 static void ct_Font(char *);
 static void ct_Fore(char *);
 static void ct_GrabServer(char *);
 static void ct_Input(char *);
+static void ct_InputAppend(char *);
 static void ct_InputFont(char *);
 static void ct_ItemBack(char *);
 static void ct_ItemFore(char *);
@@ -224,11 +224,13 @@ static struct CommandTable ct_table[] =
   {"Choice",ct_Choice},
   {"Colorset",ct_Colorset},
   {"Command",ct_Command},
+  {"CommandAppend",ct_CommandAppend},
   {"Font",ct_Font},
   {"Fore",ct_Fore},
   {"Geometry",ct_Geometry},
   {"GrabServer",ct_GrabServer},
   {"Input",ct_Input},
+  {"InputAppend",ct_InputAppend},
   {"InputFont",ct_InputFont},
   {"InputPointer",ct_InputPointer},
   {"InputPointerBack",ct_InputPointerBack},
@@ -300,8 +302,8 @@ static void ParseDefaults(char *buf)
 {
   char *p;
   struct CommandTable *e;
-  if (buf[strlen(buf)-1] == '\n') {	/* if line ends with newline */
-    buf[strlen(buf)-1] = '\0';	/* strip off \n */
+  if (!form_chomp_line(buf)) {
+    return;
   }
   /* Accept commands beginning with "*FvwmFormDefault".
      This is to make sure defaults are read first.
@@ -324,9 +326,10 @@ static void ParseConfigLine(char *buf)
 {
   char *p;
   struct CommandTable *e;
-  if (buf[strlen(buf)-1] == '\n') {	/* if line ends with newline */
-    buf[strlen(buf)-1] = '\0';	/* strip off \n */
+  if (!form_chomp_line(buf)) {
+    return;
   }
+
 
   if (strncasecmp(buf, "Colorset", 8) == 0) {
     LoadColorset(&buf[8]);
@@ -353,22 +356,30 @@ static void ParseConfigLine(char *buf)
   return;
 } /* end function */
 
-/* Expands item array */
-static void ExpandArray(Line *this_line)
+/* Publish capacity only after storage is ready. Counts remain legacy ints. */
+static void *form_reserve_array(void *array, int *capacity, int used,
+    int spare, int initial, size_t element_size)
 {
-  if (this_line->n + 1 >= this_line->item_array_size) { /* no empty space */
-    this_line->item_array_size += ITEMS_PER_EXPANSION; /* get bigger */
-    this_line->items =
-      fxrealloc((void *)this_line->items,
-               (sizeof(Item *) * this_line->item_array_size),
-	       sizeof(this_line->items));
-  } /* end array full */
+  int next;
+
+  if (!form_array_capacity(*capacity, used, spare, initial, element_size,
+      &next)) {
+    fprintf(stderr, "%s: array capacity is not representable\n", module->name);
+    exit(1);
+  }
+  if (next != *capacity) {
+    array = fxrealloc(array, next, element_size);
+    *capacity = next;
+  }
+  return array;
 }
 
 /* Function to add an item to the current line */
 static void AddToLine(Item *newItem)
 {
-  ExpandArray(cur_line);		/* expand item array if needed */
+  cur_line->items = form_reserve_array(cur_line->items,
+      &cur_line->item_array_size, cur_line->n, 2, ITEMS_PER_EXPANSION,
+      sizeof(*cur_line->items));
   cur_line->items[cur_line->n++] = newItem; /* add to lines item array */
   cur_line->size_x += newItem->header.size_x; /* incr lines width */
   if (cur_line->size_y < newItem->header.size_y) { /* new item bigger */
@@ -427,8 +438,7 @@ static void ct_Position(char *cp)
     CF.gx = -1 - CF.gx;
     CF.xneg = 1;
   }
-  while (!isspace((unsigned char)*cp)) cp++;
-  while (isspace((unsigned char)*cp)) cp++;
+  cp = (char *)form_next_argument(cp);
   CF.gy = atoi(cp);
   CF.yneg = 0;
   if (CF.gy < 0)
@@ -491,8 +501,12 @@ static void ct_Back(char *cp)
 }
 static void ct_Colorset(char *cp)
 {
-  sscanf(cp, "%d", &colorset);
-  AllocColorset(colorset);
+  int requested;
+  if (ParseColorsetId(cp, NULL, &requested) &&
+      (requested < 0 || AllocColorset(requested)))
+  {
+    colorset = requested;
+  }
 }
 static void ct_ItemFore(char *cp)
 {
@@ -510,8 +524,12 @@ static void ct_ItemBack(char *cp)
 }
 static void ct_ItemColorset(char *cp)
 {
-  sscanf(cp, "%d", &itemcolorset);
-  AllocColorset(itemcolorset);
+  int requested;
+  if (ParseColorsetId(cp, NULL, &requested) &&
+      (requested < 0 || AllocColorset(requested)))
+  {
+    itemcolorset = requested;
+  }
 }
 static void ct_Font(char *cp)
 {
@@ -656,10 +674,10 @@ static void CheckAlloc(Item *this_item,DrawTable *dt)
   if (dt->dt_used == 0) {		/* if nothing allocated */
     dt->dt_colors[c_fg] = (colorset < 0)
       ? GetColor(dt->dt_color_names[c_fg])
-      : Colorset[colorset].fg;
+      : GetColorset(colorset)->fg;
     dt->dt_colors[c_bg] = (colorset < 0)
       ? GetColor(dt->dt_color_names[c_bg])
-      : Colorset[colorset].bg;
+      : GetColorset(colorset)->bg;
     xgcv.foreground = dt->dt_colors[c_fg];
     xgcv.background = dt->dt_colors[c_bg];
     if (dt->dt_Ffont->font != NULL)
@@ -678,10 +696,10 @@ static void CheckAlloc(Item *this_item,DrawTable *dt)
   }
   dt->dt_colors[c_item_fg] = (itemcolorset < 0)
     ? GetColor(dt->dt_color_names[c_item_fg])
-    : Colorset[itemcolorset].fg;
+    : GetColorset(itemcolorset)->fg;
   dt->dt_colors[c_item_bg] = (itemcolorset < 0)
     ? GetColor(dt->dt_color_names[c_item_bg])
-    : Colorset[itemcolorset].bg;
+    : GetColorset(itemcolorset)->bg;
   xgcv.foreground = dt->dt_colors[c_item_fg];
   xgcv.background = dt->dt_colors[c_item_bg];
   xgcv_mask = GCForeground;
@@ -697,10 +715,10 @@ static void CheckAlloc(Item *this_item,DrawTable *dt)
   } else {
     dt->dt_colors[c_itemlo] = (itemcolorset < 0)
       ? GetShadow(dt->dt_colors[c_item_bg])
-      : Colorset[itemcolorset].shadow;
+      : GetColorset(itemcolorset)->shadow;
     dt->dt_colors[c_itemhi] = (itemcolorset < 0)
       ? GetHilite(dt->dt_colors[c_item_bg])
-      : Colorset[itemcolorset].hilite;
+      : GetColorset(itemcolorset)->hilite;
   }
   dt->dt_used = 2;		       /* fully allocated */
 }
@@ -770,6 +788,18 @@ static void AssignDrawTable(Item *adt_item)
   new_dt->dt_color_names[c_item_bg] = fxstrdup(match_item_back);
   new_dt->dt_used = 0;			/* show nothing allocated */
   new_dt->dt_Ffont = FlocaleLoadFont(dpy, new_dt->dt_font_name, module->name);
+  if (new_dt->dt_Ffont == NULL) {
+    /* A refused new table retains the preceding usable font, or the
+     * default font when this is the first startup table. Own its reference. */
+    fvwm_debug(__func__, "Cannot load form font; using previous/default font");
+    new_dt->dt_Ffont = FlocaleLoadFont(dpy,
+        last_dt && last_dt->dt_Ffont ? last_dt->dt_Ffont->name : NULL,
+        module->name);
+    if (new_dt->dt_Ffont == NULL) {
+      fvwm_debug(__func__, "Cannot load fallback form font");
+      exit(1);
+    }
+  }
   FlocaleAllocateWinString(&new_dt->dt_Fstr);
 
   myfprintf((stderr,"Created drawtable with %s %s %s %s %s\n",
@@ -843,69 +873,36 @@ static void ct_Title(char *cp)
 }
 static void ct_Timeout(char *cp)
 {
-  /* syntax: *FFTimeout tenth_of_seconds <Command> "Text" */
-  char *tmpcp, *tmpbuf;
+  /* Prepare arguments before publishing an item or the one timer slot. */
+  form_timeout_args args;
+  char *command, *text;
 
   if (timer != NULL) {
     fprintf(stderr,"Only one timeout per form allowed, skipped %s.\n",cp);
     return;
   }
+  if (!form_parse_timeout(cp, &args)) {
+    fprintf(stderr,"Improper arguments specified for FvwmForm Timeout.\n");
+    return;
+  }
+  if (args.quoted_command) {
+    command = CopyQuotedString(args.command);
+  } else {
+    command = fxmalloc(args.command_length + 1);
+    memcpy(command, args.command, args.command_length);
+    command[args.command_length] = '\0';
+  }
+  text = args.quoted_text ? CopyQuotedString(args.text) : fxstrdup("");
+
   AddItem();
-  bg_state = 'u';			/* indicate b/g color now used. */
+  bg_state = 'u';
   item->type = I_TIMEOUT;
-  /* Item now added to list of items, now it needs a pointer
-     to the correct DrawTable. */
   AssignDrawTable(item);
   item->header.name = "";
-
-  item->timeout.timeleft = atoi(cp);
-  if (item->timeout.timeleft < 0)
-  {
-    item->timeout.timeleft = 0;
-  }
-  else if (item->timeout.timeleft > 99999)
-  {
-    item->timeout.timeleft = 99999;
-  }
+  item->timeout.timeleft = args.ticks;
+  item->timeout.command = command;
+  item->timeout.text = text;
   timer = item;
-
-  while (*cp && *cp != '\n' && !isspace((unsigned char)*cp)) cp++;
-							/* skip timeout */
-  while (*cp && *cp != '\n' && isspace((unsigned char)*cp)) cp++;
-							/* move up to command */
-
-  if (!*cp || *cp == '\n') {
-    fprintf(stderr,"Improper arguments specified for FvwmForm Timeout.\n");
-    return;
-  }
-
-  if (*cp == '\"') {
-    item->timeout.command = CopyQuotedString(++cp);
-    /* skip over the whole quoted string to continue parsing */
-    cp += strlen(item->timeout.command) + 1;
-  }
-  else {
-    tmpbuf = fxstrdup(cp);
-    tmpcp = tmpbuf;
-    while (!isspace((unsigned char)*tmpcp)) tmpcp++;
-    *tmpcp = '\0';			  /* cutoff command at first word */
-    item->timeout.command = fxstrdup(tmpbuf);
-    free(tmpbuf);
-    while (!isspace((unsigned char)*cp)) cp++; /* move past command again */
-  }
-
-  while (*cp && *cp != '\n' && isspace((unsigned char)*cp)) cp++;
-						/* move up to next arg */
-
-  if (!*cp || *cp == '\n') {
-    fprintf(stderr,"Improper arguments specified for FvwmForm Timeout.\n");
-    return;
-  }
-
-  if (*cp == '\"') {
-    item->timeout.text = CopyQuotedString(++cp);
-  } else
-    item->timeout.text = "";
   item->timeout.len = strlen(item->timeout.text);
 
   item->header.size_x = FlocaleTextWidth(item->header.dt_ptr->dt_Ffont,
@@ -925,17 +922,32 @@ static void ct_padVText(char *cp)
 }
 static void ct_Input(char *cp)
 {
-  int j;
+  int size_x, size_y;
+  Item prepared = {0};
+  form_input_args args;
+
   /* syntax: *FFInput <name> <size> "<init_value>" */
+  if (!form_parse_input(cp, &args)) {
+    fprintf(stderr, "%s: Input needs a positive representable width\n",
+        module->name);
+    return;
+  }
+  prepared.type = I_INPUT;
+  AssignDrawTable(&prepared);
+  if (!form_input_geometry(args.width,
+      prepared.header.dt_ptr->dt_Ffont->height,
+      2 * TEXT_SPC + 2 * BOX_SPC, 3 * TEXT_SPC + 2 * BOX_SPC,
+      &size_x, &size_y)) {
+    fprintf(stderr, "%s: Input dimensions exceed the X11 range\n",
+        module->name);
+    return;
+  }
   AddItem();
   item->type = I_INPUT;
-  AssignDrawTable(item);
-  item->header.name = CopySolidString(cp);
-  cp += strlen(item->header.name);
-  while (isspace((unsigned char)*cp)) cp++;
-  item->input.width = atoi(cp);
-  while (!isspace((unsigned char)*cp)) cp++;
-  while (isspace((unsigned char)*cp)) cp++;
+  item->header.dt_ptr = prepared.header.dt_ptr;
+  item->header.name = CopySolidString((char *)args.name);
+  item->input.width = args.width;
+  cp = (char *)args.initial;
   item->input.init_value = fxstrdup("");	    /* init */
   if (*cp == '\"') {
     int num = -1, len;
@@ -947,18 +959,15 @@ static void ct_Input(char *cp)
     item->input.init_value = CopyQuotedString(++cp);
   }
   item->input.blanks = fxmalloc(item->input.width);
-  for (j = 0; j < item->input.width; j++)
-    item->input.blanks[j] = ' ';
+  memset(item->input.blanks, ' ', item->input.width);
   item->input.buf = strlen(item->input.init_value) + 1;
   item->input.value = fxmalloc(item->input.buf);
   item->input.value[0] = 0;		/* avoid reading unitialized data */
   item->input.size = 0;			/* value is empty */
   item->input.n = 0;			/* and contains 0 chars */
 
-  item->header.size_x = item->header.dt_ptr->dt_Ffont->height * item->input.width / 2
-			+ 2 * TEXT_SPC + 2 * BOX_SPC;
-  item->header.size_y = item->header.dt_ptr->dt_Ffont->height
-    + 3 * TEXT_SPC + 2 * BOX_SPC;
+  item->header.size_x = size_x;
+  item->header.size_y = size_y;
   myfprintf((stderr,"Input size_y is %d\n",item->header.size_y));
 
   if (CF.cur_input == 0) {		   /* first input field */
@@ -987,20 +996,20 @@ static void ct_Read(char *cp)
 */
 static void ct_UseData(char *cp)
 {
+  form_data_args args;
+  char *filename, *prefix;
+
   /* syntax: *FFUseData filename cmd_prefix */
-  CF.file_to_read = CopySolidString(cp);
-  if (*CF.file_to_read == 0) {
-    fprintf(stderr,"UseData command missing first arg, File to read\n");
+  if (!form_parse_data(cp, &args)) {
+    fprintf(stderr, "%s: UseData requires a file and prefix\n", module->name);
     return;
   }
-  cp += strlen(CF.file_to_read);
-  while (isspace((unsigned char)*cp)) cp++;
-  CF.leading = CopySolidString(cp);
-  if (*CF.leading == 0) {
-    fprintf(stderr,"UseData command missing second arg, Leading\n");
-    CF.file_to_read = 0;		   /* stop read */
-    return;
-  }
+  filename = CopySolidString((char *)args.filename);
+  prefix = CopySolidString((char *)args.prefix);
+  free(CF.file_to_read);
+  free(CF.leading);
+  CF.file_to_read = filename;
+  CF.leading = prefix;
   /* Cant do the actual reading of the data file here,
      we are already in a readconfig loop. */
 }
@@ -1008,16 +1017,15 @@ static void ReadFormData(void)
 {
   int leading_len;
   char *line_buf;			/* ptr to curr config line */
-  char cmd_buffer[200];
-  snprintf(cmd_buffer, sizeof(cmd_buffer), "read %s Quiet",CF.file_to_read);
+  char *cmd_buffer;
+  xasprintf(&cmd_buffer, "read %s Quiet", CF.file_to_read);
   SendText(Channel,cmd_buffer,0);	/* read data */
+  free(cmd_buffer);
   leading_len = strlen(CF.leading);
   InitGetConfigLine(Channel, CF.leading); /* ask for certain lines */
   while (GetConfigLine(Channel,&line_buf),line_buf) { /* while there is some */
     if (strncasecmp(line_buf, CF.leading, leading_len) == 0) { /* leading = */
-      if (line_buf[strlen(line_buf)-1] == '\n') { /* if line ends with nl */
-	line_buf[strlen(line_buf)-1] = '\0'; /* strip off \n */
-      }
+      form_chomp_line(line_buf);
       PutDataInForm(line_buf+leading_len); /* pass arg, space, value */
     } /* end match on arg 2, "leading" */
   } /* end while there is config data */
@@ -1041,6 +1049,7 @@ static void PutDataInForm(char *cp)
 
   var_name = CopySolidString(cp);	/* var */
   if (*var_name == 0) {
+    free(var_name);
     return;
   }
   cp += strlen(var_name);
@@ -1152,8 +1161,7 @@ static void ct_Choice(char *cp)
     item->choice.init_on = 1;
   else
     item->choice.init_on = 0;
-  while (!isspace((unsigned char)*cp)) cp++;
-  while (isspace((unsigned char)*cp)) cp++;
+  cp = (char *)form_next_argument(cp);
   if (*cp == '\"')
     item->choice.text = CopyQuotedString(++cp);
   else
@@ -1161,14 +1169,9 @@ static void ct_Choice(char *cp)
   item->choice.n = strlen(item->choice.text);
   item->choice.sel = cur_sel;
 
-  if (cur_sel->selection.choices_array_count
-      <= cur_sel->selection.n) {	   /* no room */
-    cur_sel->selection.choices_array_count += CHOICES_PER_SEL_EXPANSION;
-    cur_sel->selection.choices =
-      fxrealloc((void *)cur_sel->selection.choices,
-               sizeof(Item *) * cur_sel->selection.choices_array_count,
-	       sizeof(cur_sel->selection.choices)); /* expand */
-  }
+  cur_sel->selection.choices = form_reserve_array(cur_sel->selection.choices,
+      &cur_sel->selection.choices_array_count, cur_sel->selection.n, 1,
+      CHOICES_PER_SEL_EXPANSION, sizeof(*cur_sel->selection.choices));
 
   cur_sel->selection.choices[cur_sel->selection.n++] = item;
   item->header.size_y = item->header.dt_ptr->dt_Ffont->height
@@ -1184,9 +1187,17 @@ static void ct_Choice(char *cp)
 }
 static void ct_Button(char *cp)
 {
+  form_button_args args;
+
   /* syntax: *FFButton continue | restart | quit "<text>" */
+  if (!form_parse_button(cp, &args)) {
+    fprintf(stderr, "%s: incomplete Button arguments\n", module->name);
+    return;
+  }
+  cp = (char *)args.mode;
   AddItem();
   item->type = I_BUTTON;
+  item->button.command_refused = 0;
   AssignDrawTable(item);
   item->header.name = "";
   if (strncasecmp(cp, "restart", 7) == 0)
@@ -1195,14 +1206,11 @@ static void ct_Button(char *cp)
     item->button.key = IB_QUIT;
   else
     item->button.key = IB_CONTINUE;
-  while (!isspace((unsigned char)*cp)) cp++;
-  while (isspace((unsigned char)*cp)) cp++;
-  if (*cp == '\"') {
-    item->button.text = CopyQuotedString(++cp);
-    cp += strlen(item->button.text) + 1;
-    while (isspace((unsigned char)*cp)) cp++;
-  } else
+  if (args.quoted_text)
+    item->button.text = CopyQuotedString((char *)args.text);
+  else
     item->button.text = "";
+  cp = (char *)args.key;
   if (*cp == '^')
     item->button.keypress = *(++cp) - '@';
   else if (*cp == 'F')
@@ -1225,15 +1233,42 @@ static void ct_Button(char *cp)
 static void ct_Command(char *cp)
 {
   /* syntax: *FFCommand <command> */
-  if (cur_button->button.button_array_size <= cur_button->button.n)
-  {
-    cur_button->button.button_array_size += BUTTON_COMMAND_EXPANSION;
-    cur_button->button.commands =
-      fxrealloc((void *)cur_button->button.commands,
-               sizeof(char *) * cur_button->button.button_array_size,
-	       sizeof(cur_button->button.commands));
-  }
+  cur_button->button.commands = form_reserve_array(cur_button->button.commands,
+      &cur_button->button.button_array_size, cur_button->button.n, 1,
+      BUTTON_COMMAND_EXPANSION, sizeof(*cur_button->button.commands));
   cur_button->button.commands[cur_button->button.n++] = fxstrdup(cp);
+}
+
+static void ct_CommandAppend(char *cp)
+{
+  if (cur_button == NULL || cur_button->button.n == 0)
+  {
+    fvwm_debug(__func__, "CommandAppend requires a preceding button command");
+    return;
+  }
+  char *tail = fxmalloc(strlen(cp) + 2);
+  tail[0] = ' ';
+  strcpy(tail + 1, cp);
+  if (!form_append_text(&cur_button->button.commands[cur_button->button.n - 1],
+      tail, 1024U * 1024U))
+  {
+    cur_button->button.command_refused = 1;
+    fvwm_debug(__func__, "Refusing excessive appended Form command");
+  }
+  free(tail);
+}
+
+static void ct_InputAppend(char *cp)
+{
+  if (item == NULL || item->type != I_INPUT || *cp != '"')
+  {
+    fvwm_debug(__func__, "InputAppend requires a preceding Input and quoted text");
+    return;
+  }
+  char *tail = CopyQuotedString(cp + 1);
+  if (!form_append_text(&item->input.init_value, tail, 65536))
+    fvwm_debug(__func__, "Refusing excessive appended Form input");
+  free(tail);
 }
 
 /* End of ct_ routines */
@@ -1400,11 +1435,35 @@ static void MassageConfig(void)
   } while (line != &root_line);		 /* do all lines */
 }
 
+/* Keep byte storage and the legacy UTF-8 character count distinct. */
+Bool form_set_input_value(Item *item, const char *value)
+{
+  size_t bytes = strlen(value);
+  int count = -1;
+
+  if (bytes >= INT_MAX) {
+    fvwm_debug(__func__, "Input value is not representable");
+    return False;
+  }
+  find_nth_UTF8_char((char *)value, NULL, &count, NULL);
+  if (item->input.value == NULL || item->input.buf <= (int)bytes) {
+    char *copy = fxstrdup(value);
+    free(item->input.value);
+    item->input.value = copy;
+    item->input.buf = (int)bytes + 1;
+  } else {
+    memmove(item->input.value, value, bytes + 1);
+  }
+  item->input.size = (int)bytes;
+  item->input.n = count + 1;
+  item->input.left = 0;
+  return True;
+}
+
 /* reset all the values (also done on first display) */
 static void Restart(void)
 {
   Item *item;
-  int num;
 
   CF.cur_input = NULL;
   CF.abs_cursor = CF.rel_cursor = 0;
@@ -1426,17 +1485,15 @@ static void Restart(void)
 		     item->input.value_history_ptr[0]));
 	} else {			/* we have a history */
 	  int prior;
-	  prior = item->input.value_history_count - 1;
-	  if (prior < 0) {
-	    for (prior = VH_SIZE - 1;
-		 CF.cur_input->input.value_history_ptr[prior] == 0;
-		 --prior);		/* find last used slot */
-	  }
+	  Bool have_prior = form_history_position(
+	    item->input.value_history_ptr, VH_SIZE,
+	    item->input.value_history_count, -1, &prior);
 	  myfprintf((stderr,"Prior is %d, compare %s to %s\n",
 		     prior, item->input.value,
-		     item->input.value_history_ptr[prior]));
+		     have_prior ? item->input.value_history_ptr[prior] : ""));
 
-	  if ( strcmp(item->input.value, item->input.value_history_ptr[prior])
+	  if (!have_prior ||
+	      strcmp(item->input.value, item->input.value_history_ptr[prior])
 	       != 0) {			/* different value */
 	    if (item->input.value_history_ptr[item->input.value_history_count])
 	    {
@@ -1463,12 +1520,7 @@ static void Restart(void)
 		   item->input.value_history_yankat));
       } /* end something to save */
       item->input.value_history_yankat = item->input.value_history_count;
-      item->input.size = strlen(item->input.init_value);
-      strcpy(item->input.value, item->input.init_value);
-      num = -1; /* count all UTF-8 chars */
-      find_nth_UTF8_char(item->input.value, NULL, &num, NULL);
-      item->input.n = num + 1;
-      item->input.left = 0;
+      form_set_input_value(item, item->input.init_value);
       break;
     case I_CHOICE:
       item->choice.on = item->choice.init_on;
@@ -1553,7 +1605,7 @@ void RedrawFrame(XEvent *pev)
 			if (itemcolorset >= 0)
 			{
 				dt_ptr->dt_Fstr->colorset =
-					&Colorset[itemcolorset];
+					GetColorset(itemcolorset);
 				dt_ptr->dt_Fstr->flags.has_colorset
 					= True;
 			}
@@ -1596,7 +1648,7 @@ void RedrawText(Item *item)
   item->header.dt_ptr->dt_Fstr->flags.has_colorset = False;
   if (colorset >= 0)
   {
-    item->header.dt_ptr->dt_Fstr->colorset = &Colorset[colorset];
+    item->header.dt_ptr->dt_Fstr->colorset = GetColorset(colorset);
     item->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
   }
   FlocaleDrawString(dpy,
@@ -1628,7 +1680,6 @@ static void RedrawSeparator(Item *item)
 
 void RedrawTimeout(Item *item)
 {
-  char *p;
   char *tmpbuf, *tmpptr, *tmpbptr;
   int reallen;
 
@@ -1662,25 +1713,24 @@ void RedrawTimeout(Item *item)
 
   CheckAlloc(item,item->header.dt_ptr); /* alloc colors and fonts needed */
   item->header.dt_ptr->dt_Fstr->len = reallen;
-  if ((p = memchr(item->timeout.text, '\0', item->header.dt_ptr->dt_Fstr->len))
-      != NULL)
-    item->header.dt_ptr->dt_Fstr->len = p - tmpbuf;
   item->header.dt_ptr->dt_Fstr->win = CF.frame;
   item->header.dt_ptr->dt_Fstr->gc  = item->header.dt_ptr->dt_GC;
   item->header.dt_ptr->dt_Fstr->flags.has_colorset = False;
   if (colorset >= 0)
   {
-    item->header.dt_ptr->dt_Fstr->colorset = &Colorset[colorset];
+    item->header.dt_ptr->dt_Fstr->colorset = GetColorset(colorset);
     item->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
   }
-  free(item->header.dt_ptr->dt_Fstr->str);
-  item->header.dt_ptr->dt_Fstr->str = fxstrdup(tmpbuf);
+  /* The draw table is shared: its preceding string may belong to another
+   * item. Borrow this completed timeout buffer only for the draw call. */
+  item->header.dt_ptr->dt_Fstr->str = tmpbuf;
   item->header.dt_ptr->dt_Fstr->x   = item->header.pos_x + TEXT_SPC;
   item->header.dt_ptr->dt_Fstr->y   = item->header.pos_y + ( CF.padVText / 2 ) +
     item->header.dt_ptr->dt_Ffont->ascent;
   FlocaleDrawString(dpy,
 		    item->header.dt_ptr->dt_Ffont,
 		    item->header.dt_ptr->dt_Fstr, FWS_HAVE_LENGTH);
+  item->header.dt_ptr->dt_Fstr->str = NULL;
   free(tmpbuf);
   return;
 }
@@ -1815,7 +1865,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     item->header.dt_ptr->dt_Fstr->flags.has_colorset = False;
     if (itemcolorset >= 0)
     {
-      item->header.dt_ptr->dt_Fstr->colorset = &Colorset[itemcolorset];
+      item->header.dt_ptr->dt_Fstr->colorset = GetColorset(itemcolorset);
       item->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
     }
 
@@ -1945,7 +1995,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     item->header.dt_ptr->dt_Fstr->flags.has_colorset = False;
     if (itemcolorset >= 0)
     {
-      item->header.dt_ptr->dt_Fstr->colorset = &Colorset[itemcolorset];
+      item->header.dt_ptr->dt_Fstr->colorset = GetColorset(itemcolorset);
       item->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
     }
     item->header.dt_ptr->dt_Fstr->str = item->button.text;
@@ -1999,7 +2049,7 @@ void UpdateRootTransapency(Bool pr_only, Bool do_draw)
 		{
 			SetWindowBackground(
 				dpy, CF.frame, CF.max_width, CF.total_height,
-				&Colorset[(colorset)], Pdepth,
+				GetColorset((colorset)), Pdepth,
 				root_item_ptr->header.dt_ptr->dt_GC, False);
 			if (do_draw)
 			{
@@ -2037,7 +2087,7 @@ void UpdateRootTransapency(Bool pr_only, Bool do_draw)
 				SetWindowBackground(
 					dpy, item->header.win,
 					item->header.size_x, item->header.size_y,
-					&Colorset[(itemcolorset)], Pdepth,
+					GetColorset((itemcolorset)), Pdepth,
 					item->header.dt_ptr->dt_GC, False);
 				XClearArea(
 					dpy, item->header.win, 0,0,0,0, False);
@@ -2057,6 +2107,12 @@ void DoCommand (Item *cmd)
   char *sp;
   Item *item;
 
+  if (cmd->button.command_refused || !form_command_begin())
+  {
+    fvwm_debug(__func__, "Refusing incomplete Form command construction");
+    return;
+  }
+
   /* pre-command */
   if (cmd->button.key == IB_QUIT)
   {
@@ -2070,6 +2126,12 @@ void DoCommand (Item *cmd)
     char *parsed_command;
     /* construct command */
     parsed_command = ParseCommand(0, cmd->button.commands[k], '\0', &dn, &sp);
+    if (parsed_command == NULL) {
+      if (isTerminated)
+        return;
+      fvwm_debug(__func__, "Refusing incomplete or oversized Form command");
+      continue;
+    }
     myfprintf((stderr, "Final command[%d]: [%s]\n", k, parsed_command));
 
     /* send command */
@@ -2250,7 +2312,7 @@ static void OpenWindows(void)
   }
   CF.screen_background = (colorset < 0)
     ? GetColor(screen_background_color)
-    : Colorset[colorset].bg;
+    : GetColorset(colorset)->bg;
 
   if (!CF.p_c[input_back].used) {  /* if not set, use screen b/g */
     CF.p_c[input_back].pointer_color.pixel = CF.screen_background;
@@ -2259,7 +2321,7 @@ static void OpenWindows(void)
 	     "screen bg %X, getcolor bg %X, colorset bg %X colorset %d\n",
 	     (int)CF.screen_background,
 	     (int)GetColor(screen_background_color),
-	     (int)Colorset[colorset].bg,
+	     (int)GetColorset(colorset)->bg,
 	     (int)colorset));
   XQueryColor(dpy, Pcmap, &CF.p_c[input_fore].pointer_color);
   XQueryColor(dpy, Pcmap, &CF.p_c[input_back].pointer_color);
@@ -2365,7 +2427,7 @@ static void OpenWindows(void)
       {
 	SetWindowBackground(dpy, item->header.win,
 			    item->header.size_x, item->header.size_y,
-			    &Colorset[(itemcolorset)], Pdepth,
+			    GetColorset((itemcolorset)), Pdepth,
 			    item->header.dt_ptr->dt_GC, True);
       }
       break;
@@ -2385,7 +2447,7 @@ static void OpenWindows(void)
       {
 	SetWindowBackground(dpy, item->header.win,
 			    item->header.size_x, item->header.size_y,
-			    &Colorset[(itemcolorset)], Pdepth,
+			    GetColorset((itemcolorset)), Pdepth,
 			    item->header.dt_ptr->dt_GC, True);
       }
       break;
@@ -2406,7 +2468,7 @@ static void OpenWindows(void)
       {
 	SetWindowBackground(dpy, item->header.win,
 			    item->header.size_x, item->header.size_y,
-			    &Colorset[(itemcolorset)], Pdepth,
+			    GetColorset((itemcolorset)), Pdepth,
 			    item->header.dt_ptr->dt_GC, True);
       }
       break;
@@ -2427,7 +2489,7 @@ static void OpenWindows(void)
       {
 	SetWindowBackground(dpy, item->header.win,
 			    item->header.size_x, 2,
-			    &Colorset[(itemcolorset)], Pdepth,
+			    GetColorset((itemcolorset)), Pdepth,
 			    item->header.dt_ptr->dt_GC, True);
       }
       break;
@@ -2438,7 +2500,7 @@ static void OpenWindows(void)
   {
     CheckAlloc(root_item_ptr,root_item_ptr->header.dt_ptr);
     SetWindowBackground(dpy, CF.frame, CF.max_width, CF.total_height,
-			&Colorset[(colorset)], Pdepth,
+			GetColorset((colorset)), Pdepth,
 			root_item_ptr->header.dt_ptr->dt_GC, True);
   }
   if (preload_yorn != 'y') {		/* if not a preload */
@@ -2459,11 +2521,23 @@ static void ParseActiveMessage(char *); /* proto */
 static void ReadFvwm(void)
 {
 
-    FvwmPacket* packet = ReadFvwmPacket(Channel[1]);
-    if ( packet == NULL )
-	exit(0);
+    FvwmPacket *packet;
+    module_packet_read_status status =
+      module_packet_reader_read(&form_packet_reader, &packet);
+
+    if (status == MODULE_PACKET_READ_MORE)
+      return;
+    if (status != MODULE_PACKET_READ_READY) {
+      if (status == MODULE_PACKET_READ_ERROR)
+        fvwm_debug(__func__, "Unable to read Form packet: %s", strerror(errno));
+      fvwmSetTerminate(0);
+      return;
+    }
+    if (form_packet_is_valid(packet->type, packet->body,
+                                  FvwmPacketBodySize(*packet)))
+	process_message(packet->type, packet->body);
     else
-	process_message( packet->type, packet->body );
+	fvwm_debug(__func__, "Discarding incomplete Form packet body");
 }
 static void process_message(unsigned long type, unsigned long *body)
 {
@@ -2498,7 +2572,7 @@ static void process_message(unsigned long type, unsigned long *body)
 		 CF.last_error->header.size_y, False);
       msg_ptr = (char *)&body[3];
       msg_len = strlen(msg_ptr);
-      if (msg_ptr[msg_len-1] == '\n') { /* line ends w newline */
+      if (msg_len > 0 && msg_ptr[msg_len-1] == '\n') { /* line ends w newline */
 	msg_ptr[msg_len-1] = '\0'; /* strip off \n */
       }
       if (CF.last_error->text.n <= msg_len) { /* if message wont fit */
@@ -2532,16 +2606,16 @@ static void ParseActiveMessage(char *buf)
 {
 	char *p;
 	struct CommandTable *e;
-	if (buf[strlen(buf)-1] == '\n')
-	{     /* if line ends with newline */
-		buf[strlen(buf)-1] = '\0';  /* strip off \n */
+	if (!form_chomp_line(buf))
+	{
+		return;
 	}
 
 	if (strncasecmp(buf, "Colorset", 8) == 0)
 	{
 		Item *item;
 		int n = LoadColorset(&buf[8]);
-		if(n == colorset || n == itemcolorset)
+		if(n >= 0 && (n == colorset || n == itemcolorset))
 		{
 			for (item = root_item_ptr; item != 0;
 			     item = item->header.next)
@@ -2578,7 +2652,7 @@ static void ParseActiveMessage(char *buf)
 				SetWindowBackground(
 					dpy, CF.frame, CF.max_width,
 					CF.total_height,
-					&Colorset[(colorset)], Pdepth,
+					GetColorset((colorset)), Pdepth,
 					root_item_ptr->header.dt_ptr->dt_GC,
 					False);
 				RedrawFrame(NULL);
@@ -2594,7 +2668,7 @@ static void ParseActiveMessage(char *buf)
 						dpy, item->header.win,
 						item->header.size_x,
 						item->header.size_y,
-						&Colorset[(itemcolorset)],
+						GetColorset((itemcolorset)),
 						Pdepth, dt_ptr->dt_GC, True);
 					RedrawItem(item, 0, NULL);
 				} /* end item has a drawtable */
@@ -2654,29 +2728,48 @@ static void am_Stop(char *cp)
 /* main event loop */
 static void MainLoop(void)
 {
-  fd_set fds;
-  fd_set_size_t fd_width = GetFdWidth();
+  struct pollfd ready[2];
 
   while ( !isTerminated ) {
     /* TA:  20091219:  Automatically flush the buffer from the XServer and
      * process each request as we receive them.
      */
-    while(FPending(dpy))
+    if (!isTerminated && FPending(dpy))
 	    ReadXServer();
-
-    FD_ZERO(&fds);
-    FD_SET(Channel[1], &fds);
-    FD_SET(fd_x, &fds);
-
-    /* TA:  20091219:  Using XFlush() here was always a nasty hack!  See
-     * comments above.
-     */
-    /*XFlush(dpy);*/
-    if (fvwmSelect(fd_width, &fds, NULL, NULL, NULL) > 0) {
-      if (FD_ISSET(Channel[1], &fds))
+    if (isTerminated)
+      break;
+    /* Libevent owns the countdown; the ordinary input owner never enters
+     * its blocking dispatch loop. Preserve the configured tenth-second tick. */
+    if (form_timer_base != NULL &&
+        event_base_loop(form_timer_base, EVLOOP_NONBLOCK) < 0)
+    {
+      fvwm_debug(__func__, "Unable to service Form timer");
+      break;
+    }
+    int timeout_ms = form_readiness_timeout(FPending(dpy) != 0,
+      pev != NULL && event_pending(pev, EV_TIMEOUT, NULL));
+    ready[0] = (struct pollfd){ Channel[1], POLLIN, 0 };
+    ready[1] = (struct pollfd){ fd_x, POLLIN, 0 };
+    int result = fvwmPoll(ready, 2, timeout_ms);
+    if (result < 0)
+    {
+      if (errno == EINTR)
+	continue;
+      fvwm_debug(__func__, "poll failed: %s", strerror(errno));
+      break;
+    }
+    if (isTerminated)
+      break;
+    if ((ready[0].revents & POLLNVAL) ||
+        (ready[1].revents & (POLLERR | POLLHUP | POLLNVAL)))
+      break;
+    if (result > 0) {
+      if (ready[0].revents & (POLLIN | POLLHUP))
 	ReadFvwm();
-      if (FD_ISSET(fd_x, &fds))
-	ReadXServer();
+      if (isTerminated || (ready[0].revents & POLLERR))
+	break;
+      /* The next pass owns one bounded X batch. Buffered Xlib events make
+       * readiness nonblocking even when the connection fd is no longer ready. */
     }
   }
 }
@@ -2702,15 +2795,20 @@ TimerHandler(evutil_socket_t fd, short ev, void *arg)
   if (timer->timeout.timeleft <= 0) {
     evtimer_del(pev);
 
-    /* pre-command */
+    /* construct command */
+    parsed_command = ParseCommand(0, timer->timeout.command, '\0', &dn, &sp);
+    if (parsed_command == NULL) {
+      if (!isTerminated)
+        fvwm_debug(__func__, "Refusing incomplete or oversized Form timeout command");
+      return;
+    }
+    myfprintf((stderr, "Final command: %s\n", parsed_command));
+
+    /* A refused command leaves the existing form available. */
     if (!XWithdrawWindow(dpy, CF.frame, screen))
     {
       /* hm, what can we do now? just ignore this situation. */
     }
-
-    /* construct command */
-    parsed_command = ParseCommand(0, timer->timeout.command, '\0', &dn, &sp);
-    myfprintf((stderr, "Final command: %s\n", parsed_command));
 
     /* send command */
     if ( parsed_command[0] == '!') {	/* If command starts with ! */
@@ -2860,10 +2958,16 @@ int main (int argc, char **argv)
   SetMessageMask(Channel, M_SENDCONFIG|M_CONFIG_INFO|M_ERROR|M_STRING);
   SetMessageMask(Channel, MX_PROPERTY_CHANGE);
   XSetErrorHandler(ErrorHandler);
+  if (!module_packet_reader_init(&form_packet_reader, Channel[1])) {
+    fprintf(stderr, "%s: Unable to initialize runtime packet reader: %s\n",
+      module->name, strerror(errno));
+    return 1;
+  }
   OpenWindows();			/* create initial window */
   SendFinishedStartupNotification(Channel);/* tell fvwm we're running */
-  if (timer != NULL) {
-     SetupTimer();
+  if (timer != NULL && !SetupTimer()) {
+    fprintf(stderr, "%s: Unable to initialize timeout service\n", module->name);
+    return 1;
   }
   MainLoop();				/* start */
 

@@ -29,6 +29,7 @@
 #include "libs/FGettext.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
+#include "libs/picture_view.h"
 #include "fvwm.h"
 #include "externs.h"
 #include "cmdparser.h"
@@ -1010,11 +1011,9 @@ void CMD_WindowList(F_CMD_ARGS)
 			if (FMiniIconsSupported && t->mini_icon)
 			{
 				MI_MINI_ICON(MR_LAST_ITEM(mr))[0] =
-					t->mini_icon;
-				/* increase the cache count. Otherwise the
-				 * pixmap will be eventually removed from the
-				 * cache by DestroyMenu */
-				t->mini_icon->count++;
+					picture_snapshot(t->mini_icon);
+				/* Menu owns an immutable snapshot.
+				 * Mini-icon backing can change later. */
 			}
 			if (t_hot)
 			{

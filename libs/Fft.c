@@ -33,6 +33,7 @@
 #include "PictureBase.h"
 #include "log.h"
 #include "libs/wm_ui_metrics.h"
+#include "libs/font_geometry.h"
 
 /* ---------------------------- local definitions -------------------------- */
 
@@ -333,11 +334,12 @@ static void MatchFont(Display *dpy,
 {
 	FcPattern *template = NULL;
 	int codelen = 0, off = 0;
+	int64_t wide_x = *xoff, wide_y = *yoff;
 
 	for (off = 0; off < len; off += codelen) {
 		XftCharFontSpec sp;
-		sp.x = *xoff;
-		sp.y = *yoff;
+		sp.x = (short)wide_x;
+		sp.y = (short)wide_y;
 		sp.font = font;
 		sp.ucs4 = 0;
 
@@ -387,8 +389,9 @@ static void MatchFont(Display *dpy,
 		}
 		XGlyphInfo info;
 		XftTextExtents32(dpy, sp.font, &sp.ucs4, 1, &info);
-		*xoff += info.xOff;
-		*yoff += info.yOff;
+		/* len is an int; even all INT16_MAX advances fit in int64_t. */
+		wide_x += info.xOff;
+		wide_y += info.yOff;
 
 		if (render_char) {
 			render_char(user_data, &sp);
@@ -398,6 +401,8 @@ static void MatchFont(Display *dpy,
 	}
 	if (template)
 		FcPatternDestroy(template);
+	*xoff = font_geometry_int(wide_x);
+	*yoff = font_geometry_int(wide_y);
 }
 
 #define NR_CHARFONTSPEC 31

@@ -35,11 +35,13 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/FProperty.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <wchar.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -62,6 +64,9 @@
 #include "log.h"
 #include "libs/monitor_scale.h"
 #include "libs/wm_ui_metrics.h"
+#include "libs/font_geometry.h"
+#include "libs/font_text.h"
+#include "libs/font_shadow.h"
 
 /* ---------------------------- local definitions -------------------------- */
 
@@ -204,126 +209,79 @@ int FlocaleChar2bOneCharToUtf8(XChar2b c, char *buf)
    (pointed to by str) */
 int FlocaleStringNumberOfBytes(FlocaleFont *flf, const char *str)
 {
-        int bytes = 0;
-        if(FLC_ENCODING_TYPE_IS_UTF_8(flf->fc))
+	if (FLC_ENCODING_TYPE_IS_UTF_8(flf->fc))
 	{
-	        /* handle UTF-8 */
-	        if ((str[0] & 0x80) == 0)
-	        {
-		        bytes = 1;
-	        }
-		else if((str[0] & ~0xdf) == 0)
-		{
-		        bytes = 2;
-		}
-		else
-		{
-		        /* this handles only 16-bit Unicode */
-		        bytes = 3;
-		}
+		size_t available = 0;
+		uint32_t scalar;
+
+		while (available < 4 && str[available] != '\0')
+			available++;
+		return available == 0 ? 1 :
+			(int)font_text_utf8((const unsigned char *)str, available,
+				&scalar);
 	}
-	else if(flf->flags.is_mb)
-	{
-	        /* non-UTF-8 multibyte encoding */
-	        if ((str[0] & 0x80) == 0)
-		{
-			bytes = 1;
-		}
-		else
-		{
-			bytes = 2;
-		}
-	}
-	else
-	{
-	        /* we must be using an "ordinary" 8-bit encoding */
-	        bytes = 1;
-	}
-	return bytes;
+	return flf->flags.is_mb && ((unsigned char)str[0] & 0x80) &&
+		str[1] != '\0' ? 2 : 1;
 }
 
-/* given a string, font specifying its locale and a byte offset gives
-   character offset */
-int FlocaleStringByteToCharOffset(FlocaleFont *flf, const char *str,
-				  int offset)
+int FlocaleStringByteToCharOffset(FlocaleFont *flf, const char *str, int offset)
 {
-	const char *curr_ptr = str;
-	int i = 0;
-	int len = strlen(str);
-	int coffset = 0;
-	int curr_len;
+	size_t length = strlen(str), position = 0;
+	int count = 0;
 
-	for(i = 0 ;
-	    i < offset && i < len ;
-	    i += curr_len, curr_ptr += curr_len, coffset++)
+	while (offset > 0 && position < (size_t)offset && position < length)
 	{
-		curr_len = FlocaleStringNumberOfBytes(flf, curr_ptr);
+		position += FlocaleStringNumberOfBytes(flf, str + position);
+		count++;
 	}
-	return coffset;
+	return count;
 }
 
-/* like above but reversed, ie. return byte offset corresponding to given
-   charater offset */
-int FlocaleStringCharToByteOffset(FlocaleFont *flf, const char *str,
-				  int coffset)
+int FlocaleStringCharToByteOffset(FlocaleFont *flf, const char *str, int coffset)
 {
-	const char *curr_ptr = str;
-	int i;
-	int len = strlen(str);
-	int offset = 0;
-	int curr_len;
+	size_t length = strlen(str), position = 0;
 
-	for(i = 0 ;
-	    i < coffset && i < len ;
-	    offset += curr_len, curr_ptr += curr_len, i++)
-	{
-		curr_len = FlocaleStringNumberOfBytes(flf, curr_ptr);
-	}
-	return offset;
+	for (int count = 0; count < coffset && position < length; count++)
+		position += FlocaleStringNumberOfBytes(flf, str + position);
+	return position > INT_MAX ? INT_MAX : (int)position;
 }
 
-/* return length of string in characters */
 int FlocaleStringCharLength(FlocaleFont *flf, const char *str)
 {
-	int i, len;
-	int str_len = strlen(str);
-	for(i = 0, len = 0 ; i < str_len ;
-	    i += FlocaleStringNumberOfBytes(flf, str+i), len++);
-	return len;
+	size_t length = strlen(str), position = 0;
+	int count = 0;
+
+	while (position < length && count < INT_MAX)
+	{
+		position += FlocaleStringNumberOfBytes(flf, str + position);
+		count++;
+	}
+	return count;
 }
 
 static
 XChar2b *FlocaleUtf8ToUnicodeStr2b(char *str, int len, int *nl)
 {
-	XChar2b *str2b = NULL;
-	int i = 0, j = 0, t;
+	XChar2b *str2b;
+	size_t i = 0, count = 0;
 
-	str2b = fxmalloc((len + 1) * sizeof(XChar2b));
-	while (i < len && str[i] != 0)
+	*nl = 0;
+	if (len <= 0)
+		return NULL;
+	str2b = fxcalloc((size_t)len, sizeof(*str2b));
+	while (i < (size_t)len && str[i] != 0)
 	{
-		if ((str[i] & 0x80) == 0)
-		{
-			str2b[j].byte2 = str[i];
-			str2b[j].byte1 = 0;
-		}
-		else if ((str[i] & ~0xdf) == 0 && i+1 < len)
-		{
-			t = ((str[i] & 0x1f) << 6) + (str[i+1] & 0x3f);
-			str2b[j].byte2 = (unsigned char)(t & 0xff);
-			str2b[j].byte1 = (unsigned char)(t >> 8);
-			i++;
-		}
-		else if (i+2 <len)
-		{
-			t = ((str[i] & 0x0f) << 12) + ((str[i+1] & 0x3f) << 6)+
-				(str[i+2] & 0x3f);
-			str2b[j].byte2 = (unsigned char)(t & 0xff);
-			str2b[j].byte1 = (unsigned char)(t >> 8);
-			i += 2;
-		}
-		i++; j++;
+		uint32_t scalar;
+		i += font_text_utf8((const unsigned char *)str + i,
+			(size_t)len - i, &scalar);
+		/* STRING16 has no supplementary-plane representation. */
+		if (scalar > 0xffff)
+			scalar = 0xfffd;
+		str2b[count].byte1 = scalar >> 8;
+		str2b[count].byte2 = scalar & 0xff;
+		count++;
 	}
-	*nl = j;
+	*nl = (int)count;
 	return str2b;
 }
 
@@ -361,7 +319,10 @@ XChar2b *FlocaleStringToString2b(
 	{
 		euc = False;
 	}
-	str2b = fxmalloc((len + 1) * sizeof(XChar2b));
+	*nl = 0;
+	if (len <= 0)
+		return NULL;
+	str2b = fxcalloc((size_t)len, sizeof(*str2b));
 	if (euc)
 	{
 		while (i < len && str[i] != 0)
@@ -405,6 +366,7 @@ XChar2b *FlocaleStringToString2b(
 				/* a blanck char ... */
 				str2b[j].byte1 = 0x21;
 				str2b[j].byte2 = 0x21;
+			i++;
 			}
 			else if (i+1 < len)
 			{
@@ -433,6 +395,7 @@ char *FlocaleEncodeString(
 	int **l_to_v)
 {
 	char *str1, *str2, *str3;
+	int original_len = len;
 	int len1;
 	int len2;
 	int i;
@@ -491,7 +454,7 @@ char *FlocaleEncodeString(
 			else
 			{
 				/* convert back to current charset fail */
-				len = strlen(str);
+				len = original_len;
 				str1 = str;
 			}
 		}
@@ -511,8 +474,8 @@ char *FlocaleEncodeString(
 			if (*do_free && str1)
 			{
 				free(str1);
-				str1 = str2;
 			}
+			str1 = str2;
 			*do_free = True;
 			len1 = strlen(str2);
 		}
@@ -535,7 +498,7 @@ char *FlocaleEncodeString(
 		*/
 		if(l_to_v != NULL && *l_to_v == NULL)
 		{
-			*l_to_v = fxmalloc((len + 1) * sizeof(int));
+			*l_to_v = fxmalloc(((size_t)len + 1) * sizeof(int));
 			for(i = 0 ; i < len ; i++)
 				(*l_to_v)[i] = i;
 			(*l_to_v)[len] = -1;
@@ -1545,12 +1508,15 @@ FlocaleFont *FlocaleLoadFontAtScale(
 	int i;
 
 	/* removing quoting for modules */
-	if (fontname && (t = strchr("\"'`", *fontname)))
+	if (fontname && *fontname != 0 &&
+	    (t = strchr("\"'`", *fontname)))
 	{
 		char c = *t;
+		size_t length;
 		fontname++;
-		if (fontname[strlen(fontname)-1] == c)
-			fontname[strlen(fontname)-1] = 0;
+		length = strlen(fontname);
+		if (length > 0 && fontname[length - 1] == c)
+			fontname[length - 1] = 0;
 	}
 
 	if (fontname == NULL || *fontname == 0)
@@ -1606,6 +1572,26 @@ FlocaleFont *FlocaleLoadFontAtScale(
 			break;
 		}
 		free(opt_str);
+	}
+	{
+		unsigned directions = 0;
+		uint32_t positions;
+		for (unsigned bit = MULTI_DIR_FIRST; bit < MULTI_DIR_C;
+		     bit <<= 1)
+		{
+			directions += (shadow_dir & bit) != 0;
+		}
+		if (!font_shadow_count(shadow_size, shadow_offset, directions,
+		    (shadow_dir & MULTI_DIR_C) != 0, FVWM_FONT_SHADOW_LIMIT,
+		    &positions))
+		{
+			fvwm_debug(__func__, "[%s]: font shadow exceeds %u "
+			    "positions or has invalid geometry: '%s'",
+			    module != NULL ? module : "fvwmlibs",
+			    (unsigned)FVWM_FONT_SHADOW_LIMIT, fontname);
+			free(encoding);
+			return NULL;
+		}
 	}
 	if (str && *str)
 	{
@@ -1706,6 +1692,17 @@ FlocaleFont *FlocaleLoadFontAtScale(
 			flf->shadow_size = shadow_size;
 			flf->flags.shadow_dir = shadow_dir;
 			flf->shadow_offset = shadow_offset;
+			if (!font_geometry_shadow(flf->height, flf->ascent,
+			    flf->descent, shadow_size, shadow_offset,
+			    FLF_MULTIDIR_HAS_UPPER(flf), FLF_MULTIDIR_HAS_BOTTOM(flf),
+			    FLF_MULTIDIR_HAS_LEFT(flf), FLF_MULTIDIR_HAS_RIGHT(flf)))
+			{
+				fvwm_debug(__func__, "[%s]: font shadow metrics overflow",
+					module != NULL ? module : "fvwmlibs");
+				FlocaleUnloadFont(dpy, flf);
+				free(encoding);
+				return NULL;
+			}
 			flf->descent += FLF_SHADOW_DESCENT(flf);
 			flf->ascent += FLF_SHADOW_ASCENT(flf);
 			flf->height += FLF_SHADOW_HEIGHT(flf);
@@ -1833,27 +1830,28 @@ void FlocaleInitGstpArgs(
 	int start_x, int start_y)
 {
 	args->step = 0;
-	args->offset = flf->shadow_offset + 1;
-	args->outer_offset = flf->shadow_offset + flf->shadow_size;
+	args->offset = flf->shadow_size ? flf->shadow_offset + 1 : 0;
+	args->outer_offset = flf->shadow_size ?
+	    flf->shadow_offset + flf->shadow_size : 0;
 	args->size = flf->shadow_size;
 	args->sdir = flf->flags.shadow_dir;
 	switch (fws->flags.text_rotation)
 	{
 	case ROTATION_270: /* CCW */
-		args->orig_x = start_x + FLF_SHADOW_UPPER_SIZE(flf);
-		args->orig_y = start_y + FLF_SHADOW_RIGHT_SIZE(flf);
+		args->orig_x = font_geometry_int((int64_t)start_x + FLF_SHADOW_UPPER_SIZE(flf));
+		args->orig_y = font_geometry_int((int64_t)start_y + FLF_SHADOW_RIGHT_SIZE(flf));
 		break;
 	case ROTATION_180:
-		args->orig_x = start_x + FLF_SHADOW_RIGHT_SIZE(flf);
+		args->orig_x = font_geometry_int((int64_t)start_x + FLF_SHADOW_RIGHT_SIZE(flf));
 		args->orig_y = start_y;
 		break;
 	case ROTATION_90: /* CW */
-		args->orig_x = start_x + FLF_SHADOW_BOTTOM_SIZE(flf);
-		args->orig_y = start_y + FLF_SHADOW_LEFT_SIZE(flf);
+		args->orig_x = font_geometry_int((int64_t)start_x + FLF_SHADOW_BOTTOM_SIZE(flf));
+		args->orig_y = font_geometry_int((int64_t)start_y + FLF_SHADOW_LEFT_SIZE(flf));
 		break;
 	case ROTATION_0:
 	default:
-		args->orig_x = start_x + FLF_SHADOW_LEFT_SIZE(flf);
+		args->orig_x = font_geometry_int((int64_t)start_x + FLF_SHADOW_LEFT_SIZE(flf));
 		args->orig_y = start_y;
 		break;
 	}
@@ -1878,10 +1876,14 @@ Bool FlocaleGetShadowTextPosition(
 		gravity_get_next_multi_dir(args->sdir, &args->direction);
 		if (args->direction == MULTI_DIR_C)
 		{
-			int size;
-
-			size = 2 * (args->outer_offset) + 1;
-			args->num_inter_steps = size * size;
+			uint32_t positions;
+			if (!font_shadow_count(args->size, args->offset - 1,
+			    0, true, FVWM_FONT_SHADOW_LIMIT, &positions))
+			{
+				args->size = 0;
+				positions = 0;
+			}
+			args->num_inter_steps = (int)positions;
 		}
 		else
 		{
@@ -1899,46 +1901,16 @@ Bool FlocaleGetShadowTextPosition(
 	{
 		int tx;
 		int ty;
-		int size;
-		int is_finished;
-
-		size = 2 * (args->outer_offset) + 1;
-		tx = args->inter_step % size - args->outer_offset;
-		ty = args->inter_step / size - args->outer_offset;
-		for (is_finished = 0; ty <= args->outer_offset;
-		     ty++, tx = -args->outer_offset)
+		if (!font_shadow_center_position(args->size, args->offset - 1,
+		    (uint32_t)args->inter_step, &tx, &ty))
 		{
-			for (; tx <= args->outer_offset; tx++)
-			{
-				if (tx <= -args->offset ||
-				    tx >= args->offset ||
-				    ty <= -args->offset || ty >= args->offset)
-				{
-					is_finished = 1;
-					break;
-				}
-			}
-			if (is_finished)
-			{
-				break;
-			}
+			args->size = 0;
+			*x = args->orig_x;
+			*y = args->orig_y;
+			return False;
 		}
-		args->inter_step =
-			(tx + args->outer_offset) +
-			(ty + args->outer_offset) * size;
-		if (!is_finished)
-		{
-			tx = 0;
-			ty = 0;
-		}
-		*x = args->orig_x + tx;
-		*y = args->orig_y + ty;
-	}
-	else if (args->inter_step > 0)
-	{
-		/* into a directional drawing */
-		(*x) += args->x_sign;
-		(*y) += args->y_sign;
+		*x = font_geometry_int((int64_t)args->orig_x + tx);
+		*y = font_geometry_int((int64_t)args->orig_y + ty);
 	}
 	else
 	{
@@ -1953,8 +1925,10 @@ Bool FlocaleGetShadowTextPosition(
 		gravity_rotate_xy(
 			args->rot, args->x_sign, args->y_sign,
 			&args->x_sign, &args->y_sign);
-		*x = args->orig_x + args->x_sign * args->offset;
-		*y = args->orig_y + args->y_sign * args->offset;
+		*x = font_geometry_int((int64_t)args->orig_x +
+		    args->x_sign * (int64_t)(args->offset + args->inter_step));
+		*y = font_geometry_int((int64_t)args->orig_y +
+		    args->y_sign * (int64_t)(args->offset + args->inter_step));
 	}
 	args->inter_step++;
 	args->step++;
@@ -1977,8 +1951,8 @@ void FlocaleDrawString(
 	int *pixel_pos = NULL;
 	int i;
 	int j;
-	char buf[4];
-	int curr_pixel_pos;
+	char buf[5];
+	int64_t curr_pixel_pos;
 	int curr_len;
 
 	if (!fws || !fws->str)
@@ -2015,7 +1989,7 @@ void FlocaleDrawString(
 		   ending at 0 is what's expected in a correct
 		   string */
 		pixel_pos = fxmalloc(
-			(char_len != 0 ? char_len : 1) * sizeof(int));
+			(size_t)(char_len != 0 ? char_len : 1) * sizeof(int));
 
 		/* if there is 0 bytes in the encoded string, there might
 		   still be combining character to draw (at position 0) */
@@ -2035,10 +2009,10 @@ void FlocaleDrawString(
 			        buf[j] = curr_str[j];
 			}
 			buf[j] = 0;
-			pixel_pos[i] = curr_pixel_pos;
+			pixel_pos[i] = font_geometry_int(curr_pixel_pos);
 			/* need to compensate for shadow width (if any) */
 			curr_pixel_pos +=
-				FlocaleTextWidth(flf, buf, curr_len) -
+				(int64_t)FlocaleTextWidth(flf, buf, curr_len) -
 				FLF_SHADOW_WIDTH(flf);
 		}
 	}
@@ -2298,6 +2272,70 @@ void FlocaleDrawUnderline(
 	return;
 }
 
+static int flocale_core_text_width(XFontStruct *font, const char *bytes,
+	const XChar2b *wide, int length)
+{
+	int64_t width = 0;
+
+	/* Xlib accumulates short glyph advances in an int. Bound each call,
+	 * then combine in a wide accumulator, including negative advances. */
+	while (length > 0)
+	{
+		int count = length > 32768 ? 32768 : length;
+		if (wide != NULL)
+		{
+			width += XTextWidth16(font, wide, count);
+			wide += count;
+		}
+		else
+		{
+			width += XTextWidth(font, bytes, count);
+			bytes += count;
+		}
+		length -= count;
+	}
+	return font_geometry_int(width);
+}
+
+static int flocale_fontset_text_width(XFontSet fontset, const char *text,
+	int length)
+{
+	wchar_t characters[1024];
+	mbstate_t state = {0};
+	int count = 0;
+	int64_t width = 0;
+
+	/* Preserve Xlib's ordinary conversion path. Long input is converted with
+	 * one persistent locale state and measured in bounded wchar batches;
+	 * splitting byte strings could cut a character or reset a shift state. */
+	if (length <= 1024)
+		return XmbTextEscapement(fontset, text, length);
+	while (length > 0)
+	{
+		size_t consumed = mbrtowc(&characters[count], text,
+			(size_t)length, &state);
+		if (consumed == (size_t)-1 || consumed == (size_t)-2)
+		{
+			/* Invalid locale bytes never become an uninitialized wchar.
+			 * Only their presentation changes; stored/native bytes survive. */
+			memset(&state, 0, sizeof(state));
+			characters[count] = L'?';
+			consumed = 1;
+		}
+		else if (consumed == 0)
+			consumed = 1;
+		text += consumed;
+		length -= (int)consumed;
+		count++;
+		if (count == 1024 || length == 0)
+		{
+			width += XwcTextEscapement(fontset, characters, count);
+			count = 0;
+		}
+	}
+	return font_geometry_int(width);
+}
+
 int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 {
 	int result = 0;
@@ -2311,6 +2349,10 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 	if (sl < 0)
 	{
 		/* a vertical string: nothing to do! */
+		if (sl == INT_MIN)
+		{
+			return 0;
+		}
 		sl = -sl;
 	}
 
@@ -2319,7 +2361,7 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 	   don't bother to encode if string is one byte
 	   when drawing a string this function is used to calculate
 	   position of each character (for superimposition) */
-	if(sl == 1)
+	if (sl == 1 && (unsigned char)str[0] < 0x80)
 	{
 		tmp_str = str;
 		new_l = sl;
@@ -2334,7 +2376,7 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 	/* if we get zero-length, check to to see if there if there's any
 	   combining chars, if so use an imagninary space as a
 	   "base character" */
-	if (strlen(tmp_str) == 0 && comb_chars &&
+	if (new_l == 0 && comb_chars &&
 	    (comb_chars[0].c.byte1 != 0 || comb_chars[0].c.byte2 != 0))
 	{
 		if(do_free)
@@ -2353,7 +2395,7 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 	}
 	else if (flf->fontset != None)
 	{
-		result = XmbTextEscapement(flf->fontset, tmp_str, new_l);
+		result = flocale_fontset_text_width(flf->fontset, tmp_str, new_l);
 	}
 	else if (flf->font != None)
 	{
@@ -2370,13 +2412,13 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 					Pdpy, flf, tmp_str, new_l, &nl);
 			if (str2b != NULL)
 			{
-				result = XTextWidth16(flf->font, str2b, nl);
+				result = flocale_core_text_width(flf->font, NULL, str2b, nl);
 				free(str2b);
 			}
 		}
 		else
 		{
-			result = XTextWidth(flf->font, tmp_str, new_l);
+			result = flocale_core_text_width(flf->font, tmp_str, NULL, new_l);
 		}
 	}
 	if (do_free)
@@ -2388,7 +2430,8 @@ int FlocaleTextWidth(FlocaleFont *flf, char *str, int sl)
 		free(comb_chars);
 	}
 
-	return result + ((result != 0)? FLF_SHADOW_WIDTH(flf):0);
+	return font_geometry_int((int64_t)result +
+		((result != 0) ? FLF_SHADOW_WIDTH(flf) : 0));
 }
 
 int FlocaleGetMinOffset(
@@ -2447,6 +2490,14 @@ void FlocaleGetNameProperty(
 	XTextProperty text_prop;
 
 	list = NULL;
+	if (func == XGetWMName)
+	{
+		func = FGetWMName;
+	}
+	else if (func == XGetWMIconName)
+	{
+		func = FGetWMIconName;
+	}
 	if (func(dpy, w, &text_prop) == 0)
 	{
 		return;

@@ -1105,7 +1105,7 @@ void move_icon_to_position(
 			fw->icon_g.picture_w_g.x,
 			fw->icon_g.picture_w_g.y);
 		if (fw->icon_alphaPixmap ||
-		    (cs >= 0 && Colorset[cs].icon_alpha_percent < 100) ||
+		    (cs >= 0 && GetColorset(cs)->icon_alpha_percent < 100) ||
 		    CSET_IS_TRANSPARENT(fw->icon_background_cs) ||
 		    (!IS_ICON_SHAPED(fw) && fw->icon_background_padding > 0))
 		{

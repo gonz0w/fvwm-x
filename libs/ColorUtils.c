@@ -508,7 +508,12 @@ Pixel GetColor(char *name)
 				   name);
 			return 0;
 		}
-		sscanf(rest, "%d%n", &cs, &n);
+		char *end;
+		if (!ParseColorsetId(rest, &end, &cs))
+		{
+			return 0;
+		}
+		n = end - rest;
 		if (*(rest + n) != ']')
 		{
 			fvwm_debug(__func__,
@@ -523,20 +528,23 @@ Pixel GetColor(char *name)
 				   " color '%s'\n", name);
 			return 0;
 		}
-		AllocColorset(cs);
+		if (!AllocColorset(cs))
+		{
+			return 0;
+		}
 		switch (i)
 		{
 		case 0:
-			color.pixel = Colorset[cs].fg;
+			color.pixel = GetColorset(cs)->fg;
 			break;
 		case 1:
-			color.pixel = Colorset[cs].bg;
+			color.pixel = GetColorset(cs)->bg;
 			break;
 		case 2:
-			color.pixel = Colorset[cs].hilite;
+			color.pixel = GetColorset(cs)->hilite;
 			break;
 		case 3:
-			color.pixel = Colorset[cs].shadow;
+			color.pixel = GetColorset(cs)->shadow;
 			break;
 		}
 		if (!PictureAllocColor(Pdpy, Pcmap, &color, True))

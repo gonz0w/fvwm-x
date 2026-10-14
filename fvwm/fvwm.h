@@ -33,6 +33,8 @@
 
 /* ---------------------------- included header files ---------------------- */
 
+#include <stdint.h>
+
 #include "libs/fvwm_x11.h"
 #include "libs/PictureBase.h"
 #include "libs/FRender.h"
@@ -780,7 +782,7 @@ typedef struct FvwmWindow
 	Pixmap title_background_pixmap;
 
 	/* Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h too! */
+	 * make_config_packet() in module_interface.c and libs/vpacket.h. */
 	short boundary_width;
 	short unshaped_boundary_width;
 	short corner_length;
@@ -791,7 +793,7 @@ typedef struct FvwmWindow
 	short title_text_offset;
 	short title_length;
 	/* Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * make_config_packet() in module_interface.c and libs/vpacket.h.
 	 */
 	short title_thickness;
 	rotation_t title_text_rotation;
@@ -841,7 +843,7 @@ typedef struct FvwmWindow
 	XClassHint class;
 	/* Tells which desktop this window is on */
 	/* Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * make_config_packet() in module_interface.c and libs/vpacket.h.
 	 */
 	int Desk;
 	/* Where (if at all) was it focused */
@@ -854,6 +856,9 @@ typedef struct FvwmWindow
 	char *mini_pixmap_file;
 	FvwmPicture *mini_icon;
 	char *icon_bitmap_file;
+	/* Requested file lease and immutable pixels used by the icon window. */
+	FvwmPicture *file_icon_requested;
+	FvwmPicture *file_icon_picture;
 
 	struct window_g g;
 	long *mwm_hints;
@@ -883,7 +888,7 @@ typedef struct FvwmWindow
 
 	int default_layer;
 	/* Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * make_config_packet() in module_interface.c and libs/vpacket.h.
 	 */
 	int layer;
 
@@ -932,7 +937,7 @@ typedef struct FvwmWindow
 #define EWMH_WINDOW_TYPE_TOOLBAR_ID   6
 #define EWMH_WINDOW_TYPE_NOTIFICATION_ID 7
 	/* Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * make_config_packet() in module_interface.c and libs/vpacket.h.
 	 */
 	int ewmh_window_type;
 	/* icon geometry */
@@ -949,7 +954,7 @@ typedef struct FvwmWindow
 	int ewmh_mini_icon_width;
 	/* memory for the initial _NET_WM_STATE */
 	/* Note: if the type of this variable is changed, do update the
-	 * CONFIGARGSNEW macro in module_interface.c, libs/vpacket.h and too!
+	 * make_config_packet() in module_interface.c and libs/vpacket.h.
 	 */
 	int ewmh_hint_layer;
 	int ewmh_normal_layer; /* for restoring non ewmh layer */
@@ -971,7 +976,8 @@ typedef struct FvwmWindow
 	struct
 	{
 		void *p;
-		int i;
+		/* Stacking branch weights can exceed the signed 32-bit range. */
+		int64_t i;
 	} scratch;
 
 	struct monitor *m;

@@ -5,6 +5,7 @@
 
 /* ---------------------------- included header files ---------------------- */
 #include "fvwm.h"
+#include <stdint.h>
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -30,6 +31,9 @@ typedef struct
 void dispatch_event(XEvent *e);
 int GetContext(FvwmWindow **ret_fw, FvwmWindow *t, const XEvent *e, Window *w);
 int My_XNextEvent(Display *dpy, XEvent *event);
+Bool events_interaction_poll(int timeout_ms);
+/* UINT64_MAX reports a failed monotonic clock read. */
+uint64_t events_monotonic_ns(void);
 void flush_accumulate_expose(Window w, XEvent *e);
 void handle_all_expose(void);
 Bool StashEventTime(const XEvent *ev);

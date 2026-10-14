@@ -14,13 +14,37 @@
  */
 
 #include "config.h"
+#include <limits.h>
 
 #include "libs/Flocale.h"
 #include "libs/ColorUtils.h"
 #include "libs/Graphics.h"
 #include "libs/FEvent.h"
+#include "libs/FSelection.h"
 #include "libs/log.h"
 #include "Tools.h"
+#include "../script_storage.h"
+
+static Bool text_field_edit(struct XObj *xobj, const char *text,
+	size_t length, Bool replace_selection);
+
+static void text_field_normalize(struct XObj *xobj)
+{
+	int length = getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, INT_MAX);
+
+	if (xobj->value < 0)
+		xobj->value = 0;
+	else if (xobj->value > length)
+		xobj->value = length;
+	if (xobj->value2 < 0)
+		xobj->value2 = 0;
+	else if (xobj->value2 > length)
+		xobj->value2 = length;
+	if (xobj->value3 < 0)
+		xobj->value3 = 0;
+	else if (xobj->value3 > xobj->value)
+		xobj->value3 = xobj->value;
+}
 
 /*
  * Function for TextField
@@ -30,15 +54,14 @@ void InitTextField(struct XObj *xobj)
 {
 	unsigned long mask;
 	XSetWindowAttributes Attr;
-	int i;
 	int num_chars;
 
 	/* Save colors and fonts */
 	if (xobj->colorset >= 0) {
-		xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-		xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-		xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-		xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+		xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+		xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+		xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+		xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
 	} else {
 		xobj->TabColor[fore] = GetColor(xobj->forecolor);
 		xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -59,35 +82,24 @@ void InitTextField(struct XObj *xobj)
 	xobj->gc=fvwmlib_XCreateGC(dpy,xobj->win,0,NULL);
 	XSetForeground(dpy,xobj->gc,xobj->TabColor[fore]);
 
-	if ((xobj->Ffont = FlocaleLoadFont(
-		     dpy, xobj->font, ScriptName)) == NULL)
-	{
-		fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n",
-			   ScriptName);
-		exit(1);
-	}
 	if (xobj->Ffont->font != NULL)
 		XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
 	XSetLineAttributes(dpy,xobj->gc,1,LineSolid,CapRound,JoinMiter);
 	/* value2 gives the end of the selected zone */
 	/* calculate number of characters in title */
-	num_chars = FlocaleStringCharLength(xobj->Ffont, xobj->title);
+	num_chars = getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, INT_MAX);
+	if (xobj->value < 0)
+		xobj->value = 0;
 	if (xobj->value > num_chars)
 		xobj->value = num_chars;
 	xobj->value2=xobj->value;
 	/* left position of the visible title */
 	xobj->value3=0;
 
-	/* widget resizing */
-	xobj->height= xobj->Ffont->height + 10;
-	i = FlocaleTextWidth(xobj->Ffont,xobj->title,strlen(xobj->title))+40;
-	if (xobj->width<i)
-		xobj->width=i;
-	XResizeWindow(dpy,xobj->win,xobj->width,xobj->height);
 	if (xobj->colorset >= 0)
 		SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-				    &Colorset[xobj->colorset], Pdepth,
+				    GetColorset(xobj->colorset), Pdepth,
 				    xobj->gc, True);
 	XSelectInput(dpy, xobj->win, ExposureMask);
 }
@@ -108,9 +120,10 @@ void DrawPointTxt(struct XObj *xobj,unsigned int pixel)
 	XSegment segm[2];
 
 	/* calculate byte offsets */
-	offset_abs = FlocaleStringCharToByteOffset(xobj->Ffont,xobj->title,
+	text_field_normalize(xobj);
+	offset_abs = getByteOffsetBoundsCheck(xobj->Ffont,xobj->title,
 						   xobj->value);
-	offset_rel = FlocaleStringCharToByteOffset(xobj->Ffont,xobj->title,
+	offset_rel = getByteOffsetBoundsCheck(xobj->Ffont,xobj->title,
 						   xobj->value3);
 	x = FlocaleTextWidth(xobj->Ffont, xobj->title + offset_rel,
 			     offset_abs - offset_rel)+5;
@@ -132,474 +145,310 @@ void DrawPointTxt(struct XObj *xobj,unsigned int pixel)
 
 void DrawTextField(struct XObj *xobj, XEvent *evp)
 {
-	int x1,y1;
-	int x2,l;
-	int nl=0;
-	int right=0;
-	int offset,offset2,offset3;
-	int end_value;
+	int length, cursor, first, last, left, right, previous;
+	int width = script_widget_dimension(xobj->width);
+	int height = script_widget_dimension(xobj->height);
+	int x, selected_width;
 
-	fvwm_debug(__func__, "DrawTextField: value %d value2 %d value3 %d\n",
-		   xobj->value, xobj->value2, xobj->value3);
+	text_field_normalize(xobj);
+	if (width < 4 || height < 4)
+		return;
+	length = strlen(xobj->title);
+	cursor = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, xobj->value);
+	left = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, xobj->value3);
+	/* Stop at the cursor: no negative text length reaches the font API. */
+	while (left < cursor && FlocaleTextWidth(xobj->Ffont,
+	    xobj->title + left, cursor - left) > width - 10)
+	{
+		left += script_locale_text_next(xobj->Ffont, xobj->title + left,
+			length - left);
+	}
+	xobj->value3 = getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, left);
+	right = previous = left;
+	while (right < length && FlocaleTextWidth(xobj->Ffont,
+	    xobj->title + left, right - left) <= width - 10)
+	{
+		previous = right;
+		right += script_locale_text_next(xobj->Ffont, xobj->title + right,
+			length - right);
+	}
+	if (FlocaleTextWidth(xobj->Ffont, xobj->title + left,
+	    right - left) > width - 10)
+		right = previous;
 
-	y1 = xobj->Ffont->ascent;
-	l=strlen(xobj->title);
-	/* calculate byte offsets corresponding to value,value2,value3 */
-	offset = getByteOffsetBoundsCheck(xobj->Ffont,xobj->title,xobj->value);
-	offset2 = getByteOffsetBoundsCheck(xobj->Ffont,xobj->title,
-					   xobj->value2);
-	offset3 = getByteOffsetBoundsCheck(xobj->Ffont,xobj->title,
-					   xobj->value3);
-	/* value corresponding to behind last character */
-	end_value = FlocaleStringCharLength(xobj->Ffont, xobj->title );
-	if(offset == l)
-		xobj->value = end_value;
-	if(offset2 == l)
-		xobj->value2 = end_value;
-	if(offset3 == l)
-		xobj->value3 = end_value;
-
-	fvwm_debug(__func__,
-		   "DrawTextField: offset: %d offset2 %d, offset3: %d\n",
-		   offset, offset2, offset3);
-
-	/*if (offset > l)
-		xobj->value = FlocaleStringByteToCharOffset(xobj->Ffont,
-							    xobj->title,
-							    l-1) + 1;
-	if (offset2 > l)
-		xobj->value2 = FlocaleStringByteToCharOffset(xobj->Ffont,
-							     xobj->title,
-							     l-1) + 1; */
-	DrawReliefRect(0,0,xobj->width,xobj->height,xobj,shad,hili);
-	XClearArea(dpy,xobj->win,2,2,xobj->width-4,xobj->height-4,False);
-	XSetForeground(dpy,xobj->gc,xobj->TabColor[fore]);
-	/* computation of the first visible character */
-	while (l-nl >= 1 &&
-	       FlocaleTextWidth(xobj->Ffont,xobj->title + nl,
-				offset - nl) > (xobj->width-10))
-	{
-		nl += FlocaleStringNumberOfBytes(xobj->Ffont,xobj->title + nl);
-		fvwm_debug(__func__, "nl: %d\n", nl);
-	}
-	/* now nl is the byte offset of the first the first visible
-	   character */
-	if (nl > offset3) /* the first visible character needs to be updated */
-	{
-		xobj->value3 = getCharOffsetBoundsCheck(xobj->Ffont,
-							xobj->title, nl);
-		/*FlocaleStringByteToCharOffset(xobj->Ffont,
-		  xobj->title, nl);*/
-		offset3 = nl;
-	}
-	else if (xobj->value3 > xobj->value)
-	{
-		xobj->value3--;
-		offset3 = FlocaleStringCharToByteOffset(xobj->Ffont,
-							xobj->title,
-							xobj->value3);
-	}
-	fvwm_debug(__func__, "Got visible offset; %d char %d\n", offset3,
-		   xobj->value3);
-	/* computation of the length of the visible title */
-	/* increase string until it won't fit anymore into into the textbox */
-	right = offset3;
-	while(right < l && FlocaleTextWidth(xobj->Ffont, xobj->title + offset3,
-					    right - offset3) <=
-	      xobj->width - 10)
-	{
-		right += FlocaleStringNumberOfBytes(xobj->Ffont,
-						    xobj->title + right);
-	}
-	/* the string didn't fit? */
-	if(FlocaleTextWidth(xobj->Ffont, xobj->title + offset3,
-			    right - offset3) >
-	   xobj->width - 10)
-	{
-		right -= FlocaleStringNumberOfBytes(
-				xobj->Ffont,
-				xobj->title +
-				FlocaleStringCharToByteOffset(
-				       xobj->Ffont, xobj->title,
-				       FlocaleStringByteToCharOffset(
-					      xobj->Ffont, xobj->title,
-					      right) - 1));
-	}
-	/* unless we had an empty string, we would have already been at the
-	   beginning */
-	if(right < offset3)
-		right = offset3;
-
-	/*while ( l - offset3 - right >= 1 &&
-		FlocaleTextWidth(xobj->Ffont,xobj->title + offset3,
-				 l - offset3 - right) > (xobj->width-10))
-	{
-	right += FlocaleStringNumberOfBytes(xobj->Ffont,
-	xobj->title + right);
-		fprintf(stderr, "sl: %d\n", l - offset3 - right);
-		} */
-	fvwm_debug(__func__, "computed length of visible string\n");
+	DrawReliefRect(0, 0, width, height, xobj, shad, hili);
+	XClearArea(dpy, xobj->win, 2, 2, width - 4, height - 4, False);
+	XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
 	FwinString->win = xobj->win;
 	FwinString->gc = xobj->gc;
 	FwinString->x = 5;
-	FwinString->y = y1+5;
-	FwinString->str = xobj->title + offset3;
-	FwinString->len = right - offset3;
-	  /*strlen(xobj->title) - offset3 - right;*/
+	FwinString->y = xobj->Ffont->ascent + 5;
+	FwinString->str = xobj->title + left;
+	FwinString->len = right - left;
 	FlocaleDrawString(dpy, xobj->Ffont, FwinString, FWS_HAVE_LENGTH);
-#if 0
-	XmbDrawString(dpy,xobj->win,xobj->xfontset,xobj->gc,5,y1+5,
-		      xobj->title + xobj->value3,
-		      strlen(xobj->title) - xobj->value3-right);
-#endif
 
-	/* Dessin de la zone selectionnee */
-	/* selected zone drawing */
-	XSetFunction(dpy,xobj->gc,GXinvert);
-	if (xobj->value2>xobj->value)          /* Curseur avant la souris */
+	first = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, xobj->value);
+	last = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, xobj->value2);
+	if (first > last)
 	{
-		x1=FlocaleTextWidth(xobj->Ffont,&xobj->title[offset3],
-				    offset - offset3);
-		x2=FlocaleTextWidth(xobj->Ffont,&xobj->title[offset],
-				    offset2 - offset);
+		int swap = first;
+		first = last;
+		last = swap;
 	}
-	else           /* Curseur apres la souris / cursor after the mouse */
+	if (first < left)
+		first = left;
+	if (last > right)
+		last = right;
+	if (last > first && xobj->Ffont->height > 2 && height > 7)
 	{
-		x1=FlocaleTextWidth(xobj->Ffont,&xobj->title[offset3],
-				    offset2 - offset3);
-		x2=FlocaleTextWidth(xobj->Ffont,&xobj->title[offset2],
-				    offset - offset2);
+		x = FlocaleTextWidth(xobj->Ffont, xobj->title + left, first - left);
+		selected_width = FlocaleTextWidth(xobj->Ffont,
+			xobj->title + first, last - first);
+		XSetFunction(dpy, xobj->gc, GXinvert);
+		XFillRectangle(dpy, xobj->win, xobj->gc, x + 5, 7,
+			selected_width, script_widget_dimension(
+				(int64_t)xobj->Ffont->height - 2));
+		XSetFunction(dpy, xobj->gc, GXcopy);
 	}
-	XFillRectangle(
-		dpy,xobj->win,xobj->gc,x1+5,7,x2,y1+xobj->Ffont->descent-2);
-	XSetFunction(dpy,xobj->gc,GXcopy);
-
-	/* insertion point drawing */
-	DrawPointTxt(xobj,xobj->TabColor[fore]);
+	DrawPointTxt(xobj, xobj->TabColor[fore]);
 }
 
-void EvtMouseTextField(struct XObj *xobj,XButtonEvent *EvtButton)
+static int text_field_pointer(struct XObj *xobj, int pointer_x)
 {
-	unsigned int modif;
-	int x1,x2,y1,y2,i;
-	Window Win1,Win2;
-	int PosCurs=0;
-	int SizeBuf;
-	char *str;
-	int NewPos;
-	Atom type;
-	XEvent event;
-	int ButPress=1;
-	int format;
-	unsigned long longueur,octets_restant;
-	unsigned char *donnees=(unsigned char *)"";
-	XRectangle rect;
-	int start_pos, selection_pos, curs_pos;
+	int left = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
+		xobj->value3);
+	int length = strlen(xobj->title);
+	int byte = left;
+	int characters = xobj->value3;
 
-	/* We move the cursor at mouse position and we get the mouse position
-	 */
-	switch (EvtButton->button)
+	while (byte < length && pointer_x > FlocaleTextWidth(xobj->Ffont,
+	    xobj->title + left, byte - left) + 8)
 	{
-	case Button1:
-		FQueryPointer(
-			dpy,*xobj->ParentWin,&Win1,&Win2,&x1,&y1,&x2,&y2,
-			&modif);
-		x2=x2-xobj->x;
-		/* see where we clicked */
-		PosCurs=0;
-		/* byte position of first visible character */
-		start_pos = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
-						     xobj->value3);
-		/* cursor offset in bytes */
-		curs_pos = 0;
-		while ((curs_pos < strlen(xobj->title + start_pos)) &&
-		       (x2 > FlocaleTextWidth(
-				    xobj->Ffont,xobj->title + start_pos,
-				    curs_pos) + 8))
-		{
-			curs_pos += FlocaleStringNumberOfBytes(
-					  xobj->Ffont,
-					  xobj->title + start_pos + curs_pos);
-			PosCurs++;
-		}
-		DrawPointTxt(xobj,xobj->TabColor[back]);
-		/* set selection start and end where clicked */
-		/* first visible char + position clicked */
-		xobj->value = PosCurs + xobj->value3;
-		xobj->value2 = PosCurs + xobj->value3;
-		/* byte offset corresponding to the above */
-		start_pos = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
-						     xobj->value3);
-		selection_pos = getByteOffsetBoundsCheck(xobj->Ffont,
-							 xobj->title,
-							 xobj->value3);
-		DrawPointTxt(xobj,xobj->TabColor[fore]);
-		DrawTextField(xobj,NULL);
+		byte += script_locale_text_next(xobj->Ffont, xobj->title + byte,
+			length - byte);
+		characters++;
+	}
+	return characters;
+}
 
-		while (ButPress)
-		{
-			FNextEvent(dpy, &event);
-			switch (event.type)
-			{
-			case MotionNotify:
-				FQueryPointer(
-					dpy,*xobj->ParentWin,&Win1,&Win2,&x1,
-					&y1,&x2,&y2,&modif);
-				x2=x2-xobj->x;
-				PosCurs=0;
-				curs_pos = 0;
-				/* determine how far in the mouse is now */
-				while ((curs_pos < strlen(
-						xobj->title + start_pos)) &&
-				       (x2 >
-					FlocaleTextWidth(
-						xobj->Ffont,xobj->title+
-						start_pos, curs_pos) + 8))
-				{
-					curs_pos += FlocaleStringNumberOfBytes(
-							   xobj->Ffont,
-							   xobj->title +
-							   start_pos +
-							   curs_pos);
-					PosCurs++;
-				}
-				/* limitation of the drawing zone */
-				/* these 2 if-statements updates current
-				   cursor position of the widget if needed */
-				if (PosCurs > (xobj->value2 - xobj->value3))
-				{
-					/* select made "forward" */
-					rect.x=
-						FlocaleTextWidth(
-							xobj->Ffont,
-							xobj->title+
-							start_pos,
-							selection_pos -
-							start_pos);
-					rect.y=0;
-					rect.width=
-						FlocaleTextWidth(
-							xobj->Ffont,
-							xobj->title+
-							start_pos,
-							curs_pos)
-						-rect.x+1;
-					rect.height=xobj->height;
-					xobj->value2 = PosCurs + xobj->value3;
-					DrawTextField(xobj,NULL);
-				}
-				else if (PosCurs <
-					 (xobj->value2 - xobj->value3))
-				{
-					/* selection made "backwards" */
-					rect.x=FlocaleTextWidth(
-						xobj->Ffont,
-						xobj->title+
-						start_pos,
-						curs_pos) - 1;
-					rect.y=0;
-					rect.width=FlocaleTextWidth(
-						xobj->Ffont,
-						xobj->title+
-						start_pos,
-						selection_pos - start_pos) -
-						rect.x+2;
-					rect.height=xobj->height;
-					xobj->value2= PosCurs + xobj->value3;
-					DrawTextField(xobj,NULL);
-				}
+static void text_field_save_selection(struct XObj *xobj, Time time)
+{
+	char *text = GetText(xobj, xobj->value2);
+	int length = strlen(text);
+	int i;
 
-				break;
-			case ButtonRelease:
-				ButPress=0;
-				break;
-			}
-		}
+	for (i = 0; i <= 7; i++)
+		XStoreBuffer(dpy, text, length, i);
+	free(Scrapt);
+	Scrapt = text;
+	x11base->HaveXSelection = True;
+	XSetSelectionOwner(dpy, XA_PRIMARY, x11base->win, time);
+}
 
-		/* Save selection zone in clipboard */
-		/* Program becomes the selection owner */
-		/* selection stuff: get the selection */
-		if (xobj->value != xobj->value2)
-		{
-			str=(char*)GetText(xobj, xobj->value2);
-			for (i=0;i<=7;i++)
-				XStoreBuffer(dpy,str,strlen(str),i);
-			Scrapt = (char*)realloc(
-					(void*)Scrapt,
-					(strlen(str)+2)*sizeof(char));
-			Scrapt = strcpy(Scrapt,str);
-			free(str);
-			x11base->HaveXSelection=True;
-			XSetSelectionOwner(
-				dpy,XA_PRIMARY,x11base->win,EvtButton->time);
-			SelectOneTextField(xobj);
-		}
-		break;
+void EvtMouseTextField(struct XObj *xobj, XButtonEvent *EvtButton)
+{
+	unsigned int modifiers;
+	int root_x, root_y, x, y, position;
+	Window root, child;
+	XEvent event;
 
-	case Button2:                        /* Paste text */
-		/* If application has no selection, it asks for one
-		 */
-		/* else it reads its clipboard */
-		/* read the selection */
+	text_field_normalize(xobj);
+	if (EvtButton->button == Button2)
+	{
 		if (!x11base->HaveXSelection)
 		{
-			/* ask for the selection */
-			XConvertSelection(
-				dpy,XA_PRIMARY,XA_STRING,propriete,
-				*xobj->ParentWin, EvtButton->time);
-			while (!(FCheckTypedEvent(dpy,SelectionNotify,&event)))
-				;
-			if (event.xselection.property!=None)
-				if (event.xselection.selection==XA_PRIMARY)
-				{
-					XGetWindowProperty(
-						dpy,event.xselection.requestor,
-						event.xselection.property,0L,
-						8192L,False,
-						event.xselection.target,&type,
-						&format, &longueur,
-						&octets_restant,&donnees);
-					if (longueur>0)
-					{
-						Scrapt=(char*)realloc(
-							(void*)Scrapt,
-							(longueur+1)*
-							sizeof(char));
-						Scrapt=strcpy(
-							Scrapt,(char *)donnees);
-						XDeleteProperty(
-							dpy, event.xselection.
-							requestor,
-							event.xselection.
-							property);
-						XFree(donnees);
-					}
-				}
+			char *received = FSelectionRequestTextWithService(dpy, XA_PRIMARY,
+				XA_STRING, propriete, EvtButton->time,
+				FSELECTION_TIMEOUT_MS, FvwmScriptModalService, xobj);
+			if (received == NULL)
+				return;
+			free(Scrapt);
+			Scrapt = received;
 		}
-		SizeBuf=strlen(Scrapt);
-		if (SizeBuf>0)
+		if (Scrapt[0] != '\0')
 		{
-			NewPos=InsertText(xobj,Scrapt,SizeBuf);
-			DrawPointTxt(xobj,xobj->TabColor[back]);
-			xobj->value=NewPos;
-			xobj->value2=NewPos;
-			DrawPointTxt(xobj,xobj->TabColor[fore]);
-			DrawTextField(xobj,NULL);
-			SendMsg(xobj,SingleClic);
+			if (!text_field_edit(xobj, Scrapt, strlen(Scrapt), False))
+				return;
+			DrawTextField(xobj, NULL);
+			SendMsg(xobj, SingleClic);
 		}
-		break;
-
-	case Button3:                /* Push on third button */
-		FQueryPointer(
-			dpy,*xobj->ParentWin,&Win1,&Win2,&x1,&y1,&x2,&y2,
-			&modif);
-		x2=x2-xobj->x;
-		PosCurs=0;
-		while ((PosCurs<strlen(xobj->title))&&
-		       (x2>FlocaleTextWidth(
-			       xobj->Ffont,xobj->title+xobj->value3,
-			       PosCurs)+8))
-			PosCurs++;
-		if ((PosCurs<xobj->value) && (xobj->value<xobj->value2))
-			xobj->value=xobj->value2;
-		if ((PosCurs>xobj->value) && (xobj->value>xobj->value2))
-			xobj->value=xobj->value2;
-		xobj->value2=PosCurs+xobj->value3;
-		DrawTextField(xobj,NULL);
-
-		while (ButPress)
-		{
-			FNextEvent(dpy, &event);
-			switch (event.type)
-			{
-			case MotionNotify:
-				FQueryPointer(
-					dpy,*xobj->ParentWin,&Win1,&Win2,&x1,
-					&y1,&x2,&y2,&modif);
-				x2=x2-xobj->x;
-				while ((PosCurs<strlen(xobj->title))&&
-				       (x2 >
-					FlocaleTextWidth(
-						xobj->Ffont,
-						xobj->title+xobj->value3,
-						PosCurs)+8))
-					PosCurs++;
-				if (PosCurs>xobj->value2)
-				{
-					rect.x=
-						FlocaleTextWidth(
-							xobj->Ffont,
-							xobj->title+
-							xobj->value3,
-							xobj->value2);
-					rect.y=0;
-					rect.width=
-						FlocaleTextWidth(
-							xobj->Ffont,
-							xobj->title+
-							xobj->value3,PosCurs+1)
-						-rect.x+1;
-					rect.height=xobj->height;
-					xobj->value2=PosCurs;
-					DrawTextField(xobj,NULL);
-				}
-				else
-					if (PosCurs<xobj->value2)
-					{
-						rect.x=FlocaleTextWidth(
-							xobj->Ffont,
-							xobj->title+
-							xobj->value3,
-							PosCurs)-1;
-						rect.y=0;
-						rect.width=FlocaleTextWidth(
-							xobj->Ffont,
-							xobj->title+xobj->
-							value3,
-							xobj->value2+1)-
-							rect.x+2;
-						rect.height=xobj->height;
-						xobj->value2=
-							PosCurs+xobj->value3;
-						DrawTextField(xobj,NULL);
-					}
-				PosCurs=0;
-				break;
-			case ButtonRelease:
-				ButPress=0;
-				break;
-			}
-		}
-		if (xobj->value!=xobj->value2)
-		{
-			str=(char*)GetText(xobj,xobj->value2);
-			for (i=0;i<=7;i++)
-				XStoreBuffer(dpy,str,strlen(str),i);
-			Scrapt=(char*)realloc(
-				(void*)Scrapt,(strlen(str)+2)*sizeof(char));
-			Scrapt=strcpy(Scrapt,str);
-			free(str);
-			x11base->HaveXSelection=True;
-			XSetSelectionOwner(
-				dpy,XA_PRIMARY,x11base->win,EvtButton->time);
-		}
-		break;
+		return;
 	}
+	if (EvtButton->button != Button1 && EvtButton->button != Button3)
+		return;
+	FQueryPointer(dpy, *xobj->ParentWin, &root, &child,
+		&root_x, &root_y, &x, &y, &modifiers);
+	position = text_field_pointer(xobj, x - xobj->x);
+	if (EvtButton->button == Button1)
+		xobj->value = position;
+	else if ((position < xobj->value && xobj->value < xobj->value2) ||
+	    (position > xobj->value && xobj->value > xobj->value2))
+		xobj->value = xobj->value2;
+	xobj->value2 = position;
+	DrawTextField(xobj, NULL);
+	for (;;)
+	{
+		if (!script_widget_next_event(xobj, &event))
+			return;
+		if (event.type == ButtonRelease)
+			break;
+		if (event.type != MotionNotify)
+			continue;
+		FQueryPointer(dpy, *xobj->ParentWin, &root, &child,
+			&root_x, &root_y, &x, &y, &modifiers);
+		xobj->value2 = text_field_pointer(xobj, x - xobj->x);
+		DrawTextField(xobj, NULL);
+	}
+	if (xobj->value != xobj->value2)
+	{
+		text_field_save_selection(xobj, EvtButton->time);
+		if (EvtButton->button == Button1)
+			SelectOneTextField(xobj);
+	}
+}
+
+static Bool delete_keyboard_selection(struct XObj *xobj)
+{
+	int first, last, first_byte, last_byte;
+
+	if (xobj->value == xobj->value2)
+		return False;
+	first = xobj->value < xobj->value2 ? xobj->value : xobj->value2;
+	last = xobj->value > xobj->value2 ? xobj->value : xobj->value2;
+	first_byte = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, first);
+	last_byte = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, last);
+	script_text_delete(xobj->title, first_byte, last_byte);
+	xobj->value = xobj->value2 = first;
+	if (xobj->value3 > first)
+		xobj->value3 = first;
+	return True;
+}
+
+static Bool text_field_edit(struct XObj *xobj, const char *text,
+	size_t length, Bool replace_selection)
+{
+	int first = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
+		xobj->value);
+	int last = replace_selection ? getByteOffsetBoundsCheck(xobj->Ffont,
+		xobj->title, xobj->value2) : first;
+
+	if (first > last)
+	{
+		int swap = first;
+		first = last;
+		last = swap;
+	}
+	if (!script_text_edit(&xobj->title, first, last, text, length,
+	    script_storage_runtime()->value_limit))
+	{
+		fvwm_debug(__func__,
+			"Text edit refused (ValueLimit=%zu or allocation failure); "
+			"title and selection unchanged",
+			script_storage_runtime()->value_limit);
+		return False;
+	}
+	xobj->value = getCharOffsetBoundsCheck(xobj->Ffont, xobj->title,
+		first + (int)length);
+	xobj->value2 = xobj->value;
+	return True;
 }
 
 void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey)
 {
-	int i,x2;
+	int i;
 	char car[11];
 	char* carks2;
 	char* carks = NULL;
 	KeySym ks;
-	int Size;
 	int NewPos;
 	int new_value;
 
+	text_field_normalize(xobj);
 	/* Find character */
 	i=XLookupString(EvtKey,car,10,&ks,NULL);
+	if (FvwmScriptUsesKeyboardFocus())
+	{
+		/* This editor policy is opt-in; old scripts keep their input rules. */
+		if (IsModifierKey(ks))
+			return;
+		if ((EvtKey->state & ControlMask) && (ks == XK_a || ks == XK_A))
+		{
+			xobj->value = 0;
+			xobj->value2 = getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, INT_MAX);
+			DrawTextField(xobj, NULL);
+			return;
+		}
+		if ((EvtKey->state & ControlMask) && (ks == XK_v || ks == XK_V))
+		{
+			Atom clipboard = XInternAtom(dpy, "CLIPBOARD", False);
+			Atom utf8 = XInternAtom(dpy, "UTF8_STRING", False);
+			char *text = FSelectionRequestTextWithService(dpy, clipboard, utf8,
+				propriete, EvtKey->time, FSELECTION_TIMEOUT_MS,
+				FvwmScriptModalService, xobj);
+			int byte;
+
+			if (text == NULL)
+				text = FSelectionRequestTextWithService(dpy, clipboard, XA_STRING,
+					propriete, EvtKey->time, FSELECTION_TIMEOUT_MS,
+				FvwmScriptModalService, xobj);
+			if (text == NULL)
+				return;
+			for (byte = 0; text[byte] != '\0'; byte++)
+				if ((unsigned char)text[byte] < ' ')
+					text[byte] = ' ';
+			if (!text_field_edit(xobj, text, strlen(text), True))
+			{
+				free(text);
+				return;
+			}
+			free(text);
+			DrawTextField(xobj, NULL);
+			SendMsg(xobj, SingleClic);
+			return;
+		}
+		if ((ks == XK_BackSpace || ks == XK_Delete ||
+		     (i > 0 && !(EvtKey->state & ControlMask))) &&
+		    xobj->value != xobj->value2)
+		{
+			if (ks == XK_BackSpace || ks == XK_Delete)
+			{
+				delete_keyboard_selection(xobj);
+				DrawTextField(xobj, NULL);
+				SendMsg(xobj, SingleClic);
+				return;
+			}
+			if (text_field_edit(xobj, car, i, True))
+			{
+				DrawTextField(xobj, NULL);
+				SendMsg(xobj, SingleClic);
+			}
+			return;
+		}
+		if (ks == XK_Home || ks == XK_End)
+		{
+			xobj->value = ks == XK_Home ? 0 :
+				getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, INT_MAX);
+			xobj->value2 = xobj->value;
+			DrawTextField(xobj, NULL);
+			return;
+		}
+		if (ks == XK_Delete)
+		{
+			int offset = getByteOffsetBoundsCheck(xobj->Ffont,
+				xobj->title, xobj->value);
+			if (offset < strlen(xobj->title))
+			{
+				int size = script_locale_text_next(xobj->Ffont,
+					xobj->title + offset, strlen(xobj->title) - offset);
+				script_text_delete(xobj->title, offset, offset + size);
+				DrawTextField(xobj, NULL);
+				SendMsg(xobj, SingleClic);
+			}
+			return;
+		}
+		if ((EvtKey->state & ControlMask) && i > 0)
+			return;
+	}
 	/* calculate byte offset from current position */
 	NewPos = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
 					  xobj->value);
@@ -617,10 +466,8 @@ void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey)
 			/* otherwise step forward as many bytes as the
 			   next charcter at the insertion point is wide */
 			else
-				NewPos +=
-					FlocaleStringNumberOfBytes(
-					       xobj->Ffont,
-					       xobj->title + NewPos);
+				NewPos += script_locale_text_next(xobj->Ffont,
+					xobj->title + NewPos, strlen(xobj->title) - NewPos);
 		}
 		else if (strcmp(carks,"Left")==0)
 		{
@@ -631,7 +478,7 @@ void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey)
 			   behind the insertion point */
 			else
 				NewPos =
-					FlocaleStringCharToByteOffset(
+					getByteOffsetBoundsCheck(
 						   xobj->Ffont,
 						   xobj->title,
 						   xobj->value - 1);
@@ -649,43 +496,28 @@ void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey)
 				   bytes from the string, we might be using
 				   multi-byte strings */
 				int PrevPos;
-				Size=strlen(xobj->title);
-				PrevPos =
-					FlocaleStringCharToByteOffset(
-					       xobj->Ffont,
-					       xobj->title,
-					       xobj->value - 1);
-				memmove(
-					&xobj->title[PrevPos],
-					&xobj->title[NewPos],
-					Size-NewPos+1);
-				xobj->title=(char*)realloc(
-					xobj->title,
-					(Size - (NewPos - PrevPos) + 1) *
-					sizeof(char));
+				PrevPos = getByteOffsetBoundsCheck(xobj->Ffont,
+					xobj->title, xobj->value - 1);
+				script_text_delete(xobj->title, PrevPos, NewPos);
 				NewPos = PrevPos;
 				SendMsg(xobj,SingleClic);
 			}
 		}
 		else if (i!=0)        /* Normal character */
 		{
-			/* a normal character: insertion in the title */
-			/* here "i" is the number of bytes returned
-			   need not be 1 incase of MB locale */
-			Size=strlen(xobj->title);
-			fvwm_debug(__func__, "Current size: %d\n", Size);
-			/* make room for more the new text */
-			/* shouldn't fxrealloc be used here? */
-			xobj->title=(char*)realloc(
-				xobj->title,(Size+i+1)*sizeof(char));
-			/* new text will be inserted at NewPos */
-			/* move string currently in wiget's buffer to make
-			   room for new text */
-			memmove(&xobj->title[NewPos+i],&xobj->title[NewPos],
-				Size - NewPos + 1);
-			/* and insert new text */
-			memcpy(&xobj->title[NewPos],car,i);
-			NewPos += i;
+			int old_value = xobj->value;
+			int old_selection = xobj->value2;
+
+			if (!text_field_edit(xobj, car, i, False))
+			{
+				free(carks);
+				return;
+			}
+			NewPos = getByteOffsetBoundsCheck(xobj->Ffont,
+				xobj->title, xobj->value);
+			/* Legacy callbacks see the old indices and edited title. */
+			xobj->value = old_value;
+			xobj->value2 = old_selection;
 			SendMsg(xobj,SingleClic);
 		}
 
@@ -694,11 +526,7 @@ void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey)
 	new_value = getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, NewPos);
 	if ((xobj->value != new_value) || (xobj->value2 != new_value))
 	{
-		XSetForeground(dpy,xobj->gc,xobj->TabColor[back]);
-		x2=FlocaleTextWidth(
-			xobj->Ffont,xobj->title,strlen(xobj->title));
-		XFillRectangle(dpy,xobj->win,xobj->gc,x2+4,4,xobj->width-x2-8,
-			       xobj->height-8);
+
 		/* convert back to char offsets */
 		xobj->value = new_value;
 		/*FlocaleStringByteToCharOffset(xobj->Ffont,
@@ -711,9 +539,4 @@ void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey)
 		DrawTextField(xobj,NULL);
 	}
 	free(carks);
-}
-
-void ProcessMsgTextField(
-	struct XObj *xobj,unsigned long type,unsigned long *body)
-{
 }

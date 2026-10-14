@@ -1,0 +1,229 @@
+# Layout and behavior are shared by Slate, Dune, Grove, and Ink.
+# One page per workspace prevents accidental edge panning into hidden pages.
+DesktopConfiguration global
+DesktopSize 1x1
+DesktopName 0 Main
+DesktopName 1 Work
+DesktopName 2 Focus
+DesktopName 3 Other
+EdgeScroll 0 0
+EdgeThickness 0
+ClickTime 250
+MoveThreshold 3
+IgnoreModifiers L25
+DefaultFont "$[infostore.slate_font]"
+Style * Font "$[infostore.slate_font]"
+Style * ClickToFocus, MouseFocusClickRaises, MinOverlapPlacement
+Style * GrabFocusOff, !UsePPosition, DecorateTransient, StackTransientParent
+Style * FPGrabFocusTransient, FPReleaseFocusTransient
+Style * BorderWidth 1, HandleWidth 4, Colorset 1, HilightColorset 2
+Style * BorderColorset 3, HilightBorderColorset 4, !Icon
+Style * SnapAttraction 12 SameType Screen, SnapGrid 1 1
+Style * ResizeOpaque, WindowShadeSteps 0
+OpaqueMoveSize unlimited
+
+# Flat vector controls need no bitmap icons or special icon font.
+TitleStyle LeftJustified Height 28 -- Flat
+ButtonStyle All Simple -- Flat
+ButtonStyle 1 Vector 4 35x35@3 65x35@3 35x65@4 65x65@3 -- Flat
+ButtonStyle 2 Vector 4 35x35@3 65x65@3 35x65@4 65x35@3 -- Flat
+ButtonStyle 4 Vector 5 32x32@3 68x32@3 68x68@3 32x68@3 32x32@3 -- Flat
+ButtonStyle 6 Vector 2 32x65@3 68x65@3 -- Flat
+ButtonStyle 1 - MwmDecorMenu
+ButtonStyle 4 - MwmDecorMax
+ButtonStyle 6 - MwmDecorMin
+BorderStyle Simple -- NoInset Flat
+
+# Native FVWM menus support keyboard navigation and type-to-select.
+# Search opens a form and returns a filtered list. Discovery never uses PipeRead.
+MenuStyle * FVWM, Font "$[infostore.slate_font]", MenuColorset 5, \
+    ActiveColorset 6, GreyedColorset 7, TitleColorset 8, BorderWidth 1, \
+    Hilight3DOff, PopupDelay 150, PopdownDelay 150, !Animation, \
+    VerticalItemSpacing 8 8, VerticalTitleSpacing 10 10
+CopyMenuStyle * SlateLauncherStyle
+MenuStyle SlateLauncherStyle ItemFormat "%24p%l%80p%>%24p"
+DestroyFunc SlateLauncher
+AddToFunc SlateLauncher
++ I Menu SlateLauncherMenu Monitor c c
+DestroyFunc SlateMove
+AddToFunc SlateMove
++ I Raise
++ M Move
++ D Maximize
+DestroyFunc SlateResize
+AddToFunc SlateResize
++ I Raise
++ M Resize
+DestroyFunc SlateSendDesk
+AddToFunc SlateSendDesk
++ I MoveToDesk 0 $0
+DestroyFunc SlateDesk
+AddToFunc SlateDesk
++ I SendToModule SlateBar ChangeButton desk0 Colorset 10
++ I SendToModule SlateBar ChangeButton desk1 Colorset 10
++ I SendToModule SlateBar ChangeButton desk2 Colorset 10
++ I SendToModule SlateBar ChangeButton desk3 Colorset 10
++ I SendToModule SlateBar ChangeButton desk$[desk.n] Colorset 11
+
+# Rebuild the bar on topology changes, without restarting application windows.
+# Only the primary monitor reserves a top edge; other monitors remain free.
+DestroyFunc SlatePanel
+AddToFunc SlatePanel
++ I KillModule SlateBar
++ I EwmhBaseStruts 0 0 0 0
++ I EwmhBaseStruts screen $[monitor.primary] 0 0 $[infostore.slate_height] 0
++ I DestroyModuleConfig SlateBar:*
++ I *SlateBar: Geometry $[monitor.$[monitor.primary].width]x$[infostore.slate_height]+0+0@p
++ I *SlateBar: Colorset 10
++ I *SlateBar: ActiveColorset 12
++ I *SlateBar: Rows 1
++ I *SlateBar: Columns 100
++ I *SlateBar: Frame 0
++ I *SlateBar: Padding 6 0
++ I *SlateBar: Font "$[infostore.slate_font]"
++ I *SlateBar: (12x1, Title "Applications", Action SlateLauncher)
++ I *SlateBar: (3x1, Id desk0, Title "1", Action GotoDesk 0 0)
++ I *SlateBar: (3x1, Id desk1, Title "2", Action GotoDesk 0 1)
++ I *SlateBar: (3x1, Id desk2, Title "3", Action GotoDesk 0 2)
++ I *SlateBar: (3x1, Id desk3, Title "4", Action GotoDesk 0 3)
++ I *SlateBar: (10x1, Title "Windows", Action WindowList Monitor c c NoGeometry)
++ I *SlateBar: (32x1, Id clock, Title "FVWM-X", Action SendToModule FvwmDesktop calendar)
++ I *SlateBar: (16x1, Id status, Title "System", Action Menu SlateSystem Monitor c c)
++ I *SlateBar: (9x1, Id appearance, Title "Slate", Action Menu SlateAppearance Monitor c c)
++ I *SlateBar: (9x1, Title "Session", Action Menu SlateSession Monitor c c)
++ I Module FvwmButtons SlateBar
++ I SendToModule FvwmDesktop refresh $[monitor.$[monitor.primary].width]
+Style SlateBar !Title, !Borders, !Handles, Sticky, WindowListSkip, \
+    NeverFocus, Layer 6, FixedPosition, FixedSize
+Style Slate*Form PositionPlacement Center, WindowListSkip, Layer 6
+Style SlateNoticeForm !Title, WindowListSkip, Layer 6, NeverFocus, UsePPosition
+Style FvwmPager WindowListSkip, Layer 6
+Style FvwmIdent WindowListSkip
+
+# Forms share the desktop palette. They never grab the X server.
+*FvwmFormDefault: Font "$[infostore.slate_font]"
+*FvwmFormDefault: InputFont "$[infostore.slate_font]"
+*FvwmFormDefault: ButtonFont "$[infostore.slate_font]"
+*FvwmFormDefault: Colorset 0
+*FvwmFormDefault: ItemColorset 12
+*FvwmFormDefault: PadVText 12
+*SlateSearchForm: Title "Search applications"
+*SlateSearchForm: Line left
+*SlateSearchForm: Text "Find an application by name"
+*SlateSearchForm: Line left
+*SlateSearchForm: Input query 36 ""
+*SlateSearchForm: Line expand
+*SlateSearchForm: Button quit "Search" ^M
+*SlateSearchForm: Command SendToModule FvwmDesktop search $(query)
+*SlateSearchForm: Button quit "Cancel" ^[
+*SlateSearchForm: Command Nop
+*SlateRunForm: Title "Run command"
+*SlateRunForm: Line left
+*SlateRunForm: Text "Run a command with your login environment"
+*SlateRunForm: Line left
+*SlateRunForm: Input command 40 ""
+*SlateRunForm: Line expand
+*SlateRunForm: Button quit "Run" ^M
+*SlateRunForm: Command SendToModule FvwmDesktop run $(command)
+*SlateRunForm: Button quit "Cancel" ^[
+*SlateRunForm: Command Nop
+
+# Bootstrap menus remain usable before background discovery finishes.
+DestroyMenu SlateLauncherMenu
+AddToMenu SlateLauncherMenu "Applications" Title
++ "Terminal" SendToModule FvwmDesktop terminal
++ "Search applications..." Module FvwmForm SlateSearchForm
++ "Run command..." Module FvwmForm SlateRunForm
++ "Files" SendToModule FvwmDesktop files
++ "Workspaces" Module FvwmPager 0 3
++ "Appearance" Popup SlateAppearance
++ "System" Popup SlateSystem
++ "Session" Popup SlateSession
+DestroyMenu SlateAppearance
+AddToMenu SlateAppearance "Appearance" Title
++ "Loading desktop settings..." Greyed
+DestroyMenu SlateSystem
+AddToMenu SlateSystem "System" Title
++ "Loading system services..." Greyed
+DestroyMenu SlateSession
+AddToMenu SlateSession "Session" Title
++ "Lock" SendToModule FvwmDesktop lock
++ "Log out..." SendToModule FvwmDesktop confirm logout
++ "Restart FVWM" Restart
++ "Power off..." SendToModule FvwmDesktop confirm poweroff
++ "Reboot..." SendToModule FvwmDesktop confirm reboot
+DestroyMenu SlateWindow
+AddToMenu SlateWindow "Window" Title
++ "Move" Move
++ "Resize" Resize
++ "Minimize / restore" Iconify
++ "Maximize / restore" Maximize
++ "Shade / unshade" WindowShade
++ "On every workspace" Stick
++ "Workspace 1" SlateSendDesk 0
++ "Workspace 2" SlateSendDesk 1
++ "Workspace 3" SlateSendDesk 2
++ "Workspace 4" SlateSendDesk 3
++ "" Nop
++ "Close" Close
+
+# Super+Space: launcher; Super+Enter: terminal; Super+D: files; Super+P: run.
+# Ctrl+F1..F4 and Super+1..4 switch workspaces; Alt+Tab selects a window.
+Silent Key Space A 4 SlateLauncher
+Silent Key Return A 4 SendToModule FvwmDesktop terminal
+Silent Key d A 4 SendToModule FvwmDesktop files
+Silent Key p A 4 Module FvwmForm SlateRunForm
+Silent Key l A 4 SendToModule FvwmDesktop lock
+Silent Key Print A N SendToModule FvwmDesktop screenshot
+Silent Key F1 A M SlateLauncher
+Silent Key Menu A A SlateLauncher
+Silent Key Tab A M WindowList Monitor c c NoGeometry, SelectOnRelease Meta_L
+Silent Key F4 A M Close
+Silent Key F1 A C GotoDesk 0 0
+Silent Key F2 A C GotoDesk 0 1
+Silent Key F3 A C GotoDesk 0 2
+Silent Key F4 A C GotoDesk 0 3
+Silent Key 1 A 4 GotoDesk 0 0
+Silent Key 2 A 4 GotoDesk 0 1
+Silent Key 3 A 4 GotoDesk 0 2
+Silent Key 4 A 4 GotoDesk 0 3
+Silent Key XF86AudioRaiseVolume A N SendToModule FvwmDesktop volume up
+Silent Key XF86AudioLowerVolume A N SendToModule FvwmDesktop volume down
+Silent Key XF86AudioMute A N SendToModule FvwmDesktop volume mute
+Mouse 1 1 A Menu SlateWindow
+Mouse 1 2 A Close
+Mouse 1 4 A Maximize
+Mouse 1 6 A Iconify
+Mouse 1 T A SlateMove
+Mouse 1 FS A SlateResize
+Mouse 3 T A Menu SlateWindow
+Mouse 1 R N SlateLauncher
+Mouse 3 R N SlateLauncher
+Mouse 2 R N WindowList Monitor c c NoGeometry
+Mouse 1 W 4 SlateMove
+Mouse 3 W 4 SlateResize
+
+# Export a retained wallpaper pixmap for compositor-free tinted transparency.
+*FvwmBacker: RetainPixmap
+*FvwmBacker: Command (Desk *, Page * *) Colorset 20
+*FvwmPager: Geometry 640x150
+*FvwmPager: Colorset * 0
+*FvwmPager: HilightColorset * 13
+*FvwmPager: WindowColorsets 1 2
+*FvwmPager: Font "$[infostore.slate_font]"
+*FvwmPager: BalloonColorset * 0
+*FvwmPager: Balloons All
+*FvwmIdent: Colorset 0
+*FvwmIdent: Font "$[infostore.slate_font]"
+# Monitor events have no window ID; use separate event module instances.
+*SlateTopology: monitor_enabled SlatePanel
+*SlateTopology: monitor_disabled SlatePanel
+*SlateTopology: monitor_changed SlatePanel
+*SlateWorkspaces: new_desk SlateDesk
+DestroyFunc StartFunction
+AddToFunc StartFunction
++ I Module FvwmBacker
++ I Module FvwmDesktop
++ I SlatePanel
++ I Module FvwmEvent SlateTopology
++ I Module FvwmEvent SlateWorkspaces

@@ -13,8 +13,20 @@ fvwm-menu-xlock [ **--help**|**-h**|**-?** ] [ **--version**|**-V** ]
 
 == DESCRIPTION
 
-A simple perl script which parses xlock's output to build an fvwm menu
-definition of all xlock's modes.
+This utility reads xlock's help output and writes an FVWM menu definition
+for its modes. Use the output with *PipeRead*. The utility does not lock the
+display or start a selected mode. The generated menu keeps the *Exec xlock*
+actions and your supplied xlock arguments.
+
+Go-enabled builds install the Go implementation. Go-disabled builds retain
+the Perl implementation. Both use the same options and menu format.
+
+The Go implementation runs `xlock -display NONE -help` directly. It reads
+stdout and stderr, with a five-second deadline and a 1 MiB combined output
+limit. A nonzero help exit status can still supply mode information. A failed
+probe returns a nonzero status and a diagnostic, without a menu. Quotes and
+backslashes in mode descriptions are escaped for the menu label. Configured
+format text keeps its literal escapes.
 
 == OPTIONS
 
@@ -47,6 +59,9 @@ greater than 3, since the striped part is replaced with ..., example:
 `+%*30x+`. Both can be combined: `+%-10*-20x+`, this instructs to get
 only the 20 last characters, but if the length is less then 10 - to
 fill with up to 10 spaces on the right.
+
+Widths count bytes. A truncation width equal to the text length still adds
+the ellipsis. Padding is written in small chunks.
 
 *--icon-title* _icon_::
   Define menu icon for title. Default is no title icon
@@ -91,7 +106,7 @@ Mikhael Goikhman <migo@homemail.com>, from 24 Feb 1999.
 
 == COPYING
 
-The script is distributed by the same terms as fvwm itself. See GNU
+The utility is distributed by the same terms as fvwm itself. See GNU
 General Public License for details.
 
 == BUGS

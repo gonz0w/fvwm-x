@@ -51,6 +51,7 @@
  */
 
 #include "config.h"
+#include "ewmh_property_policy.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -59,6 +60,7 @@
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
 #include "libs/log.h"
+#include "libs/atom_batch.h"
 #include "libs/monitor_ownership.h"
 #include "fvwm.h"
 #include "cmdparser.h"
@@ -201,7 +203,7 @@ ewmh_atom ewmh_atom_fixed_property[] =
 {
 	ENTRY("_KDE_NET_WM_SYSTEM_TRAY_WINDOW_FOR", XA_WINDOW, None),
 	ENTRY("_NET_WM_HANDLED_ICON",               XA_ATOM,   None),
-	ENTRY("_NET_WM_PID",                        XA_ATOM,   None),
+	ENTRY("_NET_WM_PID",                        XA_CARDINAL,   None),
 	ENTRY("_NET_WM_WINDOW_TYPE",                XA_ATOM,   None),
 	{NULL,0,0,0}
 };
@@ -439,58 +441,6 @@ void ewmh_DeleteProperty(
 	return;
 }
 
-static
-void *atom_get(Window win, Atom to_get, Atom type, int *size)
-{
-	unsigned char *retval;
-	Atom  type_ret;
-	unsigned long  bytes_after, num_ret;
-	long length;
-	int  format_ret;
-	void *data;
-	int ok;
-
-	retval = NULL;
-	length = 0x7fffffff;
-	ok = XGetWindowProperty(
-		dpy, win, to_get, 0L, length, False, type, &type_ret,
-		&format_ret, &num_ret, &bytes_after, &retval);
-
-	if ((ok == Success) && (retval) && (num_ret > 0) && (format_ret > 0))
-	{
-		int asize;
-
-		asize = atom_size(format_ret);
-		data = fxmalloc(num_ret * asize + 1);
-		if (format_ret == 32 && asize * 8 != format_ret)
-		{
-			int i;
-
-			for (i = 0; i < num_ret; i++)
-			{
-				((CARD32 *)data)[i] = ((long *)retval)[i];
-			}
-		}
-		else
-		{
-			if (data)
-			{
-				memcpy(data, retval, num_ret * asize + 1);
-			}
-		}
-		XFree(retval);
-		*size = num_ret * (format_ret >> 3);
-
-		return data;
-	}
-	if (retval)
-	{
-		XFree(retval);
-	}
-
-	return NULL;
-}
-
 void *ewmh_AtomGetByName(
 	Window win, const char *atom_name, ewmh_atom_list_name list,
 	int *size)
@@ -498,9 +448,26 @@ void *ewmh_AtomGetByName(
 	ewmh_atom *a;
 	void *data = NULL;
 
+	*size = 0;
 	if ((a = get_ewmh_atom_by_name(atom_name, list)) != NULL)
 	{
-		data = atom_get(win, a->atom, a->atom_type, size);
+		size_t bytes;
+		unsigned char *reply = NULL;
+		int format = a->atom_type == XA_UTF8_STRING ? 8 : 32;
+		FPropertyLimits limits = fvwm_ewmh_property_limits(atom_name, format);
+		FPropertyResult result = FPropertyRead(dpy, win, a->atom,
+		    a->atom_type, limits, &reply, &bytes);
+		if (result == FPROPERTY_OK)
+		{
+			data = reply;
+			*size = (int)bytes;
+		}
+		else if (result != FPROPERTY_MISSING)
+		{
+			fvwm_debug(__func__,
+			    "Ignoring invalid property %s on %#lx (%d)",
+			    atom_name, win, result);
+		}
 	}
 
 	return data;
@@ -822,24 +789,6 @@ void ewmh_AddToKdeSysTray(FvwmWindow *fw)
 	return;
 }
 
-#if 0
-/* not used at present time */
-void ewmh_FreeKdeSysTray(void)
-{
-	KstItem *t;
-
-	t = ewmh_KstWinList;
-	while(t != NULL)
-	{
-		XSelectInput(dpy, t->w, NoEventMask);
-		delete_kst_item(t->w);
-		t = ewmh_KstWinList;
-	}
-	set_kde_sys_tray();
-
-	return;
-}
-#endif
 
 int EWMH_IsKdeSysTrayWindow(Window w)
 {
@@ -1886,23 +1835,48 @@ void EWMH_WindowDestroyed(void)
 /*
  * Init Stuff
  */
-static
-int set_all_atom_in_list(ewmh_atom *list)
+static int set_all_atoms(void)
 {
-	int l = 0;
+	enum { capacity = 1 + (
+		sizeof(ewmh_atom_client_root) +
+		sizeof(ewmh_atom_client_win) +
+		sizeof(ewmh_atom_wm_state) +
+		sizeof(ewmh_atom_allowed_actions) +
+		sizeof(ewmh_atom_window_type) +
+		sizeof(ewmh_atom_fixed_property) +
+		sizeof(ewmh_atom_property_notify) +
+		sizeof(ewmh_atom_fvwm_root) +
+		sizeof(ewmh_atom_fvwm_win)
+		) / sizeof(ewmh_atom) };
+	char *names[capacity];
+	Atom atoms[capacity];
+	int count = 1;
 
-	while(list->name != NULL)
+	names[0] = "UTF8_STRING";
+	for (int i = 0; i < NUMBER_OF_ATOM_LISTS; i++)
 	{
-		list->atom = XInternAtom(dpy,list->name,False);
-		if (list->atom_type == None)
+		for (ewmh_atom *entry = atom_list[i].list;
+		     entry->name != NULL; entry++)
 		{
-			list->atom_type = XA_UTF8_STRING;
+			names[count++] = entry->name;
 		}
-		l++;
-		list++;
 	}
-
-	return l;
+	atom_batch_intern(dpy, names, count, atoms);
+	XA_UTF8_STRING = atoms[0];
+	count = 1;
+	for (int i = 0; i < NUMBER_OF_ATOM_LISTS; i++)
+	{
+		for (ewmh_atom *entry = atom_list[i].list;
+		     entry->name != NULL; entry++)
+		{
+			entry->atom = atoms[count++];
+			if (entry->atom_type == None)
+			{
+				entry->atom_type = XA_UTF8_STRING;
+			}
+		}
+	}
+	return count - 1;
 }
 
 static
@@ -1942,8 +1916,7 @@ void clean_up(void)
 
 void EWMH_Init(struct monitor *m)
 {
-	int i;
-	int supported_count = 0;
+	int supported_count;
 	long val;
 	XTextProperty text;
 	char *utf_name = "FVWM3";
@@ -1951,11 +1924,7 @@ void EWMH_Init(struct monitor *m)
 	XClassHint classhints;
 
 	/* initialisation of all the atoms */
-	XA_UTF8_STRING = XInternAtom(dpy,"UTF8_STRING",False);
-	for(i=0; i < NUMBER_OF_ATOM_LISTS; i++)
-	{
-		supported_count += set_all_atom_in_list(atom_list[i].list);
-	}
+	supported_count = set_all_atoms();
 
 	/* the laws that we respect */
 	set_net_supported(supported_count);

@@ -14,6 +14,8 @@
  */
 #include "config.h"
 #include "types.h"
+#include "script_storage.h"
+#include "script_value.h"
 #include "libs/FGettext.h"
 #include "libs/log.h"
 
@@ -54,6 +56,7 @@ void InitVarGlob(void)
  TabNVar=NULL;
  TabVVar=NULL;
  NbVar=-1;
+ script_storage_runtime()->used = 0;
 
  SPileArg=-1;
  scriptprop->usegettext = False;
@@ -111,6 +114,12 @@ void InitCase(int cond)
 /* Remove a level of args in BuffArg stack */
 void RmLevelBufArg(void)
 {
+  if (SPileArg < 0 || SPileArg >= 6)
+  {
+    fvwm_debug(__func__, "[%s] Line %d: invalid argument stack",
+      ScriptName, numligne);
+    exit(1);
+  }
   SPileArg--;
 }
 
@@ -123,6 +132,12 @@ long *Depile(int NbLevelArg, int *s)
  int i;
  int size;
 
+ if (NbLevelArg < 0 || NbLevelArg > SPileArg + 1 || SPileArg >= 6)
+ {
+  fvwm_debug(__func__, "[%s] Line %d: invalid argument stack",
+    ScriptName, numligne);
+  exit(1);
+ }
  if (NbLevelArg>0)
  {
   Temp=fxcalloc(1, sizeof(long));
@@ -174,7 +189,13 @@ void AddCom(int Type, int NbLevelArg)
 /* Add a layer of arguments into stack */
 void AddLevelBufArg(void)
 {
- /* Increase stack size */
+ /* Refuse excessive nesting before accessing the fixed stack. */
+ if (SPileArg < -1 || SPileArg >= 5)
+ {
+  fvwm_debug(__func__, "[%s] Line %d: too many argument layers (>6)",
+    ScriptName, numligne);
+  exit(1);
+ }
  SPileArg++;
  NbArg[SPileArg]=-1;
 }
@@ -184,11 +205,32 @@ void AddBufArg(long *TabLong,int NbLong)
 {
  int i;
 
+ if (SPileArg < 0 || SPileArg >= 6 || NbLong < 0 ||
+     NbArg[SPileArg] < -1 || NbArg[SPileArg] >= 20 ||
+     NbLong > 19 - NbArg[SPileArg])
+ {
+  fvwm_debug(__func__, "[%s] Line %d: too many arguments (>20)",
+    ScriptName, numligne);
+  exit(1);
+ }
+
  for (i=0;i<NbLong;i++)
  {
   BuffArg[SPileArg][i+NbArg[SPileArg]+1]=TabLong[i];
  }
  NbArg[SPileArg]=NbArg[SPileArg]+NbLong;
+}
+
+static void reserve_value(size_t length)
+{
+ script_storage_result result =
+   script_storage_replace(script_storage_runtime(), 0, length);
+ if (result != SCRIPT_STORAGE_OK)
+ {
+  fprintf(stderr, "[%s] Line %d: %s exceeded\n", ScriptName, numligne,
+    result == SCRIPT_STORAGE_VALUE_LIMIT ? "ValueLimit" : "MemoryLimit");
+  exit(1);
+ }
 }
 
 /* Search for a variable name in TabVar, create it if nonexistant */
@@ -208,23 +250,25 @@ void AddVar(char *Name)		/* add a variable at the end of last pointed command */
 
  if (NbVar>MAX_VARS-2)
  {
-  fprintf(stderr,
+  fvwm_debug(__func__,
     "[%s] Line %d: too many variables (>5120)\n",ScriptName,numligne);
   exit(1);
  }
 
- /* Variable not found: create it */
+ /* Stored names are fixed; replacements account only for the old value. */
+ reserve_value(strlen(Name));
+ reserve_value(0);
  NbVar++;
 
  if (NbVar==0)
  {
-  TabNVar=fxcalloc(1, sizeof(long));
-  TabVVar=fxcalloc(1, sizeof(long));
+  TabNVar=fxcalloc(1, sizeof(*TabNVar));
+  TabVVar=fxcalloc(1, sizeof(*TabVVar));
  }
  else
  {
-  TabNVar=(char**)realloc(TabNVar,sizeof(long)*(NbVar+1));
-  TabVVar=(char**)realloc(TabVVar,sizeof(long)*(NbVar+1));
+  TabNVar=(char**)realloc(TabNVar,sizeof(*TabNVar)*(NbVar+1));
+  TabVVar=(char**)realloc(TabVVar,sizeof(*TabVVar)*(NbVar+1));
  }
 
  TabNVar[NbVar]=fxstrdup(Name);
@@ -241,17 +285,25 @@ void AddVar(char *Name)		/* add a variable at the end of last pointed command */
 /* Add a string constant as argument */
 void AddConstStr(char *Name)
 {
- /* We create a new variable and put constant in it */
+ /* Constants share the same value table as named variables. */
+ if (NbVar >= MAX_VARS - 1)
+ {
+  fvwm_debug(__func__, "[%s] Line %d: too many values (>5120)",
+    ScriptName, numligne);
+  exit(1);
+ }
+ reserve_value(0);
+ reserve_value(strlen(Name));
  NbVar++;
  if (NbVar==0)
  {
-  TabVVar=fxcalloc(1, sizeof(long));
-  TabNVar=fxcalloc(1, sizeof(long));
+  TabVVar=fxcalloc(1, sizeof(*TabVVar));
+  TabNVar=fxcalloc(1, sizeof(*TabNVar));
  }
  else
  {
-  TabVVar=(char**)realloc(TabVVar,sizeof(long)*(NbVar+1));
-  TabNVar=(char**)realloc(TabNVar,sizeof(long)*(NbVar+1));
+  TabVVar=(char**)realloc(TabVVar,sizeof(*TabVVar)*(NbVar+1));
+  TabNVar=(char**)realloc(TabNVar,sizeof(*TabNVar)*(NbVar+1));
  }
 
  TabNVar[NbVar]=fxcalloc(1, sizeof(char));
@@ -269,7 +321,7 @@ void AddConstNum(long num)
 
  /* We don't create a new variable */
  /* We code the number value to form an ID */
- l=num+200000;
+ l=script_value_encode_integer((int)num);
  /* Add the constant into the current arguments list */
  AddBufArg(&l,1);
 }
@@ -300,6 +352,7 @@ void AddFunct(int code,int NbLevelArg)
  l[0]=(long)code-150000;
 
  AddBufArg(l,size);
+ free(l);
 }
 
 /* Add a test instruction to execute one block or more */
@@ -335,6 +388,12 @@ void EmpilerBloc(void)
  TmpBloc=fxcalloc(1, sizeof(Bloc));
  TmpBloc->NbInstr=-1;
  TmpBloc->TabInstr=NULL;
+ if (TopPileB < 0 || TopPileB >= 9)
+ {
+  fvwm_debug(__func__, "[%s] Line %d: too many block layers (>10)",
+    ScriptName, numligne);
+  exit(1);
+ }
  TopPileB++;
  PileBloc[TopPileB]=TmpBloc;
 
@@ -346,6 +405,12 @@ void DepilerBloc(int IdBloc)
  Bloc *Bloc1;
  Instr *IfInstr;
 
+ if (TopPileB < 1 || TopPileB >= 10)
+ {
+  fvwm_debug(__func__, "[%s] Line %d: invalid block stack",
+    ScriptName, numligne);
+  exit(1);
+ }
  Bloc1=PileBloc[TopPileB];
  TopPileB--;
  IfInstr=&PileBloc[TopPileB]->TabInstr[PileBloc[TopPileB]->NbInstr];
@@ -355,7 +420,7 @@ void DepilerBloc(int IdBloc)
 /* Syntax error management */
 int yyerror(char *errmsg)
 {
- fprintf(stderr,"[%s] Line %d: %s\n",ScriptName,numligne,errmsg);
+ fvwm_debug(__func__, "[%s] Line %d: %s\n",ScriptName,numligne,errmsg);
  return 0;
 }
 
@@ -461,8 +526,10 @@ head:
 }
 | head COLORSET NUMBER
 {
-	scriptprop->colorset = $3;
-	AllocColorset($3);
+	if ($3 < 0 || AllocColorset($3))
+	{
+		scriptprop->colorset = $3;
+	}
 }
 | head FONT
 {
@@ -497,7 +564,7 @@ object :			/* Empty */
     ;
 
 id: NUMBER			{ nbobj++;
-				  if (nbobj>1000)
+				  if (nbobj>=1000)
 				  { yyerror("Too many items\n");
 				    exit(1);}
 				  if (($1<1)||($1>1000))
@@ -564,8 +631,10 @@ init:				/* vide */
 				 (*tabobj)[nbobj].colorset = -1;
 				}
     | init COLORSET NUMBER	{
-				 (*tabobj)[nbobj].colorset = $3;
-				 AllocColorset($3);
+				 if ($3 < 0 || AllocColorset($3))
+	{
+		(*tabobj)[nbobj].colorset = $3;
+	}
 				}
     | init FONT			{
 				 (*tabobj)[nbobj].font=$2;
@@ -638,7 +707,7 @@ instr:
     | instr CHVALUEMAX chvaluemax
     | instr CHVALUEMIN chvaluemin
     | instr CHWINDOWTITLE addlbuff gstrarg {AddCom(27,1);}
-    | instr CHWINDOWTITLEFARG numarg {AddCom(28,1);}
+    | instr CHWINDOWTITLEFARG addlbuff numarg {AddCom(28,1);}
     | instr POSITION position
     | instr SIZE size
     | instr TITLE title
@@ -668,7 +737,7 @@ oneinstr: EXEC exec
 	| CHVALUEMAX chvaluemax
 	| CHVALUEMIN chvaluemin
 	| CHWINDOWTITLE addlbuff gstrarg {AddCom(27,1);}
-	| CHWINDOWTITLEFARG numarg {AddCom(28,1);}
+	| CHWINDOWTITLEFARG addlbuff numarg {AddCom(28,1);}
 	| POSITION position
 	| SIZE size
 	| TITLE title

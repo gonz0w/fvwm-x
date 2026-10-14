@@ -53,6 +53,7 @@ typedef struct MenuRootStatic
 		unsigned has_side_color : 1;
 		unsigned is_left_triangle : 1;
 		unsigned is_updated : 1;
+		unsigned sidepic_from_style : 1;
 	} flags;
 	struct
 	{

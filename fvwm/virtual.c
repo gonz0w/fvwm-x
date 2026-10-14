@@ -50,6 +50,7 @@
 #include "frame.h"
 #include "geometry.h"
 #include "icons.h"
+#include "interaction.h"
 #include "stack.h"
 #include "functions.h"
 #include "builtins.h"
@@ -143,6 +144,8 @@ static void _drag_viewport(const exec_context_t *exc, int scroll_speed)
 	unsigned int button_mask = 0;
 	Bool is_finished = False;
 	struct monitor	*m = monitor_get_current();
+	fvwm_interaction interaction = { None, Scr.Root, False,
+		FVWM_INTERACTION_RUNNING, events_interaction_poll };
 
 	if (!GrabEm(CRS_MOVE, GRAB_NORMAL))
 	{
@@ -161,31 +164,30 @@ static void _drag_viewport(const exec_context_t *exc, int scroll_speed)
 		int old_x;
 		int old_y;
 
+		/* Service each bounded event batch, including continuous motion.
+		 * The monitor stays borrowed until this command unwinds. */
+		if (!fvwm_interaction_service(&interaction, 0))
+		{
+			break;
+		}
 		old_x = x;
 		old_y = y;
-		FMaskEvent(
-			dpy, ButtonPressMask | ButtonReleaseMask |
+		if (!fvwm_interaction_wait(
+			&interaction, ButtonPressMask | ButtonReleaseMask |
 			KeyPressMask | PointerMotionMask |
 			ButtonMotionMask | ExposureMask |
-			EnterWindowMask | LeaveWindowMask, &e);
+			EnterWindowMask | LeaveWindowMask, &e))
+		{
+			break;
+		}
 		/* discard extra events before a logical release */
 		if (e.type == MotionNotify ||
 		    e.type == EnterNotify || e.type == LeaveNotify)
 		{
-			while (FPending(dpy) > 0 &&
-			       FCheckMaskEvent(
-				       dpy, ButtonMotionMask |
-				       PointerMotionMask | ButtonPressMask |
-				       ButtonRelease | KeyPressMask |
-				       EnterWindowMask | LeaveWindowMask, &e))
-			{
-				if (e.type == ButtonPress ||
-				    e.type == ButtonRelease ||
-				    e.type == KeyPress)
-				{
-					break;
-				}
-			}
+			fvwm_interaction_coalesce(
+				ButtonMotionMask | PointerMotionMask |
+				ButtonPressMask | ButtonReleaseMask | KeyPressMask |
+				EnterWindowMask | LeaveWindowMask, &e);
 		}
 		if (e.type == EnterNotify || e.type == LeaveNotify)
 		{
@@ -225,9 +227,8 @@ static void _drag_viewport(const exec_context_t *exc, int scroll_speed)
 			}
 			break;
 		case ButtonPress:
-			if (e.xbutton.button <= NUMBER_OF_MOUSE_BUTTONS &&
-			    ((Button1Mask << (e.xbutton.button - 1)) &
-			     button_mask))
+			if (fvwm_interaction_button_mask(e.xbutton.button) &
+			    button_mask)
 			{
 				/* No new button was pressed, just a delayed
 				 * event */

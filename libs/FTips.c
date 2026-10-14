@@ -127,9 +127,9 @@ void _setup_cs(Display *dpy)
 
 	if (current_config->colorset > -1)
 	{
-		xswa.border_pixel = Colorset[current_config->colorset].fg;
-		xswa.background_pixel = Colorset[current_config->colorset].bg;
-		if (Colorset[current_config->colorset].pixmap)
+		xswa.border_pixel = GetColorset(current_config->colorset)->fg;
+		xswa.background_pixel = GetColorset(current_config->colorset)->bg;
+		if (GetColorset(current_config->colorset)->pixmap)
 		{
 			/* set later */
 			xswa.background_pixmap = None;
@@ -158,7 +158,7 @@ void _setup_gc(Display *dpy)
 	valuemask = GCForeground;
 	if (current_config->colorset > -1)
 	{
-		xgcv.foreground = Colorset[current_config->colorset].fg;
+		xgcv.foreground = GetColorset(current_config->colorset)->fg;
 	}
 	else
 	{
@@ -187,7 +187,7 @@ void _draw(Display *dpy)
 	fwin_string.gc = gc;
 	if (current_config->colorset > -1)
 	{
-		fwin_string.colorset = &Colorset[current_config->colorset];
+		fwin_string.colorset = GetColorset(current_config->colorset);
 		fwin_string.flags.has_colorset = True;
 	}
 	else
@@ -422,7 +422,7 @@ void _map_window(Display *dpy)
 	{
 		SetWindowBackground(
 			dpy, win, new_g.width, new_g.height,
-			&Colorset[current_config->colorset], Pdepth, gc, True);
+			GetColorset(current_config->colorset), Pdepth, gc, True);
 	}
 	else
 	{
@@ -431,7 +431,7 @@ void _map_window(Display *dpy)
 	if (current_config->border_width > 0)
 	{
 		XSetWindowBorder(
-			dpy, win, Colorset[current_config->colorset].fg);
+			dpy, win, GetColorset(current_config->colorset)->fg);
 	}
 
 	if (state != FVWM_TIPS_MAPPED && win_f != win_for)

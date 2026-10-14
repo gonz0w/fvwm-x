@@ -127,6 +127,7 @@ typedef union _item {
     int keypress;          /* short cut */
     int button_array_size;              /* current size of next array */
     char **commands;    /* Fvwm command to execute */
+    int command_refused; /* incomplete appended command: do not execute */
   } button;
   struct {              /* I_TIMEOUT */
     struct _head head;
@@ -265,6 +266,7 @@ void DoCommand (Item *cmd);              /* FvwmForm.c */
 int FontWidth (XFontStruct *xfs);        /* FvwmForm.c */
 void RedrawFrame (XEvent *pev);          /* FvwmForm.c */
 char * ParseCommand (int, char *, char, int *, char **s); /* ParseCommand.c */
+Bool form_set_input_value(Item *item, const char *value);
 char* find_nth_UTF8_char(char *str, char *before,
 	int *num, int *len);             /* FvwmForm.c */
 

@@ -19,7 +19,14 @@
 #include "config.h"
 #include <stdio.h>
 #include <ctype.h>
+#include <errno.h>
+#include <inttypes.h>
+#include <limits.h>
+#include <string.h>
 #include "libs/defaults.h"
+#include "libs/fd_safety.h"
+#include "libs/fvwmsignal.h"
+#include "libs/log.h"
 #include "Module.h"
 #include "Parse.h"
 
@@ -32,7 +39,11 @@ static int positive_read(int fd, char *buf, int count)
 {
 	while (count > 0)
 	{
-		int n_read = read(fd, buf, count);
+		ssize_t n_read = fvwmRead(fd, buf, count);
+		if (n_read < 0 && errno == EINTR && !isTerminated)
+		{
+			continue;
+		}
 		if (n_read <= 0)
 		{
 			return -1;
@@ -73,6 +84,11 @@ FvwmPacket *ReadFvwmPacket(int fd)
 	/* Now read the rest of the header */
 	if (positive_read(fd, (char *)(&buffer[1]), 3 * sizeof(unsigned long))
 		< 0)
+	{
+		return NULL;
+	}
+	if (packet->size < FvwmPacketHeaderSize ||
+	    packet->size > FvwmPacketMaxSize)
 	{
 		return NULL;
 	}
@@ -132,41 +148,71 @@ void SendQuitNotification(int *fd)
  * SendText - Sends arbitrary text/command back to fvwm
  *
  */
-void SendText(int *fd, const char *message, unsigned long window)
+static void send_text_bytes(
+	int *fd, const char *message, size_t message_length, unsigned long window)
 {
-	char *p, *buf;
-	unsigned int len;
+	unsigned char buffer[3 * sizeof(unsigned long) + MAX_MODULE_INPUT_TEXT_LEN];
+	unsigned char *p = buffer;
+	unsigned long len;
 
-	if (!message)
+	if (message_length > MAX_MODULE_INPUT_TEXT_LEN)
 	{
+		fvwm_debug(__func__, "Module command exceeds %d bytes",
+			MAX_MODULE_INPUT_TEXT_LEN);
 		return;
 	}
-
-	/* Get enough memory to store the entire message. */
-	len = strlen(message);
-	p = buf = fxmalloc(sizeof(long) * (3 + 1 + (len / sizeof(long))));
+	len = message_length;
 
 	/* Put the message in the buffer, and... */
-	*((unsigned long *)p) = window;
+	memcpy(p, &window, sizeof(window));
 	p += sizeof(unsigned long);
 
-	*((unsigned long *)p) = len;
+	memcpy(p, &len, sizeof(len));
 	p += sizeof(unsigned long);
 
-	strcpy(p, message);
+	memcpy(p, message, len);
 	p += len;
 
 	memcpy(p, &ModuleContinue, sizeof(unsigned long));
 	p += sizeof(unsigned long);
 
-	/* Send it! */
-	{
-		int n;
+	/* Keep partial progress; another frame must never follow an incomplete one.
+	 * Module pipes retain their blocking contract, but termination cancels the
+	 * syscall through the shared signal wrapper. The endpoint is borrowed. */
+	size_t length = p - buffer;
+	size_t written = 0;
 
-		n = write(fd[0], buf, p - buf);
-		(void)n;
+	while (written < length && !isTerminated)
+	{
+		ssize_t count = fvwmWrite(fd[0], buffer + written, length - written);
+
+		if (count > 0)
+		{
+			written += count;
+		}
+		else if (count < 0 && errno == EINTR && !isTerminated)
+		{
+			continue;
+		}
+		else
+		{
+			break;
+		}
 	}
-	free(buf);
+	if (written != length)
+	{
+		fvwm_debug(__func__, "Incomplete module command write");
+		fvwmSetTerminate(0);
+	}
+}
+
+void SendText(int *fd, const char *message, unsigned long window)
+{
+	if (message != NULL)
+	{
+		send_text_bytes(fd, message,
+			strnlen(message, MAX_MODULE_INPUT_TEXT_LEN + 1), window);
+	}
 }
 
 /*
@@ -182,29 +228,20 @@ void SendFvwmPipe(int *fd, const char *message, unsigned long window)
 	const char *hold = message;
 	const char *temp;
 
-	while ((temp = strchr(hold, ',')) != NULL)
+	if (message == NULL || isTerminated)
 	{
-		char *temp_msg = fxmalloc(temp - hold + 1);
-
-		strncpy(temp_msg, hold, (temp - hold));
-		temp_msg[(temp - hold)] = '\0';
-		hold = temp + 1;
-
-		SendText(fd, temp_msg, window);
-		free(temp_msg);
+		return;
 	}
-
-	/*
-	 * Send the last part of the string :
-	 * we don't need to copy this into separate
-	 * storage because we don't need to modify it ...
-	 *
-	 * NOTE: this makes this second call to SendText()
-	 *       distinct from the first call. Two calls is
-	 *       cleaner than hacking the loop to make only
-	 *       one call.
-	 */
-	SendText(fd, hold, window);
+	/* Keep the established literal-comma splitting, including empty fields. */
+	while (!isTerminated && (temp = strchr(hold, ',')) != NULL)
+	{
+		send_text_bytes(fd, hold, temp - hold, window);
+		hold = temp + 1;
+	}
+	if (!isTerminated)
+	{
+		SendText(fd, hold, window);
+	}
 }
 
 void SetMessageMask(int *fd, unsigned long mask)
@@ -243,12 +280,29 @@ static int first_pass = 1;
 
 void InitGetConfigLine(int *fd, char *match)
 {
-	char *buffer;
+	const char prefix[] = "Send_ConfigInfo ";
+	char buffer[MAX_MODULE_INPUT_TEXT_LEN + 1];
+	size_t prefix_length = sizeof(prefix) - 1;
+	size_t match_length;
 
-	first_pass = 0;              /* make sure get wont do this */
-	xasprintf(&buffer, "Send_ConfigInfo %s", match);
+	first_pass = 0;
+	if (match == NULL)
+	{
+		/* A null match is used by consumers requesting common/all config. */
+		match = "";
+	}
+	match_length = strnlen(match,
+		MAX_MODULE_INPUT_TEXT_LEN - prefix_length + 1);
+	if (match_length > MAX_MODULE_INPUT_TEXT_LEN - prefix_length)
+	{
+		fvwm_debug(__func__, "Configuration request exceeds %d bytes",
+			MAX_MODULE_INPUT_TEXT_LEN);
+		fvwmSetTerminate(0);
+		return;
+	}
+	memcpy(buffer, prefix, prefix_length);
+	memcpy(buffer + prefix_length, match, match_length + 1);
 	SendText(fd, buffer, 0);
-	free(buffer);
 }
 
 
@@ -265,7 +319,10 @@ void InitGetConfigLine(int *fd, char *match)
 void GetConfigLine(int *fd, char **tline)
 {
 	FvwmPacket *packet;
-	int body_count;
+	size_t body_count;
+	char *line;
+
+	*tline = NULL;
 
 	if (first_pass)
 	{
@@ -283,23 +340,55 @@ void GetConfigLine(int *fd, char **tline)
 		}
 	} while (packet->type != M_CONFIG_INFO);
 
-	/* For whatever reason CONFIG_INFO packets start with three
-	 * (unsigned long) zeros.  Skip the zeros and any whitespace that
-	 * follows */
-	*tline = (char *)&(packet->body[3]);
 	body_count = FvwmPacketBodySize(*packet) * sizeof(unsigned long);
-
-	while (body_count > 0 && isspace((unsigned char)**tline))
+	/* The three context words are outside the text. Require a terminator
+	 * in the declared payload before any consumer can inspect this view. */
+	if (body_count <= 3 * sizeof(unsigned long))
 	{
-		(*tline)++;
+		fvwm_debug(__func__, "Configuration packet has no text payload");
+		return;
+	}
+	body_count -= 3 * sizeof(unsigned long);
+	line = (char *)&packet->body[3];
+	if (memchr(line, '\0', body_count) == NULL)
+	{
+		fvwm_debug(__func__, "Configuration packet text is not terminated");
+		return;
+	}
+
+	while (body_count > 0 && isspace((unsigned char)*line))
+	{
+		line++;
 		--body_count;
 	}
+	*tline = line;
 }
 
+
+static int module_descriptor(const char *text)
+{
+	char *end;
+	long descriptor;
+
+	if (text[0] == '\0' || strspn(text, "0123456789") != strlen(text))
+	{
+		errno = EINVAL;
+		return -1;
+	}
+	errno = 0;
+	descriptor = strtol(text, &end, 10);
+	if (errno != 0 || *end != '\0' || descriptor > INT_MAX)
+	{
+		errno = ERANGE;
+		return -1;
+	}
+	return (int)descriptor;
+}
 
 ModuleArgs *ParseModuleArgs(int argc, char *argv[], int use_arg6_as_alias)
 {
 	static ModuleArgs ma;
+	ModuleArgs parsed = {0};
 
 	/* Need at least six arguments:
 	   [0] name of executable
@@ -318,47 +407,64 @@ ModuleArgs *ParseModuleArgs(int argc, char *argv[], int use_arg6_as_alias)
 	{
 		return NULL;
 	}
+	parsed.to_fvwm = module_descriptor(argv[1]);
+	if (parsed.to_fvwm < 0)
+		return NULL;
+	/* ModuleListenOnly deliberately omits the incoming endpoint. */
+	parsed.from_fvwm = strcmp(argv[2], "-1") == 0 ? -1 :
+		module_descriptor(argv[2]);
+	if (parsed.from_fvwm < 0 && strcmp(argv[2], "-1") != 0)
+		return NULL;
+	if (parsed.to_fvwm == parsed.from_fvwm)
+	{
+		errno = EINVAL;
+		return NULL;
+	}
+	/* The host passes these endpoints through the initial module exec.
+	 * Retain them here, but do not pass them to module subprocesses. On
+	 * failure leave ownership with the caller and refuse startup. */
+	if (!fvwm_fd_set_cloexec(parsed.to_fvwm, true) ||
+	    (parsed.from_fvwm >= 0 &&
+	    !fvwm_fd_set_cloexec(parsed.from_fvwm, true)))
+		return NULL;
 
 	/* Module name is (last component of) argv[0] or possibly an alias
 	   passed on the command line. */
 	if (use_arg6_as_alias && argc >= 7)
 	{
-		ma.name = argv[6];
-		ma.user_argc = argc - 7;
-		ma.user_argv = &(argv[7]);
+		parsed.name = argv[6];
+		parsed.user_argc = argc - 7;
+		parsed.user_argv = &(argv[7]);
 	}
 	else
 	{
 		char *p = strrchr(argv[0], '/');
 		if (p == NULL)
 		{
-			ma.name = argv[0];
+			parsed.name = argv[0];
 		}
 		else
 		{
-			ma.name = ++p;
+			parsed.name = ++p;
 		}
-		ma.user_argc = argc - 6;
-		ma.user_argv = &(argv[6]);
+		parsed.user_argc = argc - 6;
+		parsed.user_argv = &(argv[6]);
 	}
 
-	ma.namelen=strlen(ma.name);
+	parsed.namelen = strlen(parsed.name);
 
-	if (ma.user_argc == 0)
+	if (parsed.user_argc == 0)
 	{
-		ma.user_argv = NULL;
+		parsed.user_argv = NULL;
 	}
-
-	/* File descriptors for the pipes */
-	ma.to_fvwm = atoi(argv[1]);
-	ma.from_fvwm = atoi(argv[2]);
 
 	/* Ignore argv[3] */
 
 	/* These two are generated as long hex strings */
-	ma.window = strtoul(argv[4], NULL, 16);
-	ma.decoration = strtoul(argv[5], NULL, 16);
+	parsed.window = strtoul(argv[4], NULL, 16);
+	parsed.decoration = strtoul(argv[5], NULL, 16);
 
+	ma = parsed;
 	return &ma;
 }
 
@@ -389,7 +495,7 @@ char *module_expand_action(
 	char *dest;
 	char *string = NULL;
 	char *rest;
-	int val = 0;
+	int64_t val = 0;
 	int offset;
 	int i;
 	char *dest_org;
@@ -400,6 +506,10 @@ char *module_expand_action(
 	Bool has_bg;
 	rectangle tmpr = { 0, 0, 0, 0 };
 
+	if (in_action == NULL)
+	{
+		return NULL;
+	}
 	has_geom = (r == NULL) ? False : True;
 	has_fg = (forecolor == NULL) ? False : True;
 	has_bg = (backcolor == NULL) ? False : True;
@@ -408,11 +518,21 @@ char *module_expand_action(
 		r = &tmpr;
 	}
 	/* create a temporary storage for expanding */
-	action = fxmalloc(MAX_MODULE_INPUT_TEXT_LEN);
+	action = fxmalloc(MAX_MODULE_INPUT_TEXT_LEN + 1);
 	for (src = in_action, dest = action; *src != 0; src++)
 	{
+		/* A temporary '$' may occupy the terminator slot while a known
+		 * variable is replaced. It must never become admitted output. */
+		if (dest - action > MAX_MODULE_INPUT_TEXT_LEN)
+		{
+			goto too_long;
+		}
 		if (*src != '$')
 		{
+			if (dest - action == MAX_MODULE_INPUT_TEXT_LEN)
+			{
+				goto too_long;
+			}
 			*(dest++) = *src;
 			continue;
 		}
@@ -448,15 +568,16 @@ char *module_expand_action(
 			is_value = has_geom;
 			break;
 		case 4: /* -left */
-			val = DisplayWidth(dpy, screen) - r->x - 1;
+			val = (int64_t)DisplayWidth(dpy, screen) - r->x - 1;
 			is_value = has_geom;
 			break;
 		case 5: /* right */
-			val = r->x + r->width;
+			val = (int64_t)r->x + r->width;
 			is_value = has_geom;
 			break;
 		case 6: /* -right */
-			val = DisplayWidth(dpy, screen) - r->x - r->width - 1;
+			val = (int64_t)DisplayWidth(dpy, screen) - r->x -
+				r->width - 1;
 			is_value = has_geom;
 			break;
 		case 7: /* top */
@@ -464,15 +585,16 @@ char *module_expand_action(
 			is_value = has_geom;
 			break;
 		case 8: /* -top */
-			val = DisplayHeight(dpy, screen) - r->y - 1;
+			val = (int64_t)DisplayHeight(dpy, screen) - r->y - 1;
 			is_value = has_geom;
 			break;
 		case 9: /* bottom */
-			val = r->y + r->height;
+			val = (int64_t)r->y + r->height;
 			is_value = has_geom;
 			break;
 		case 10: /* -bottom */
-			val = DisplayHeight(dpy, screen) - r->y - r->height - 1;
+			val = (int64_t)DisplayHeight(dpy, screen) - r->y -
+				r->height - 1;
 			is_value = has_geom;
 			break;
 		case 11: /* width */
@@ -496,34 +618,40 @@ char *module_expand_action(
 		src = --rest;
 		if (is_value)
 		{
-			if (MAX_MODULE_INPUT_TEXT_LEN - (dest - action) <= 16)
-			{
-				/* out of space */
-				free(action);
-				return NULL;
-			}
 			/* print the number into the string */
-			offset = sprintf(dest, "%d", val);
+			size_t remaining = MAX_MODULE_INPUT_TEXT_LEN -
+				(dest - action);
+			offset = snprintf(dest, remaining + 1, "%" PRId64, val);
+			if (offset < 0 || (size_t)offset > remaining)
+			{
+				goto too_long;
+			}
 			dest += offset;
 		}
 		else if (is_string)
 		{
-			if (MAX_MODULE_INPUT_TEXT_LEN - (dest - action) <=
-			    strlen(string))
+			size_t remaining = MAX_MODULE_INPUT_TEXT_LEN -
+				(dest - action);
+			size_t length = strnlen(string, remaining + 1);
+			if (length > remaining)
 			{
-				/* out of space */
-				free(action);
-				return NULL;
+				goto too_long;
 			}
-			/* print the colour name into the string */
-			if (string)
-			{
-				offset = sprintf(dest, "%s", string);
-				dest += offset;
-			}
+			memcpy(dest, string, length);
+			dest += length;
 		}
 	} /* for */
+	if (dest - action > MAX_MODULE_INPUT_TEXT_LEN)
+	{
+		goto too_long;
+	}
 	*dest = 0;
 
 	return action;
+
+too_long:
+	fvwm_debug(__func__, "Expanded action exceeds %d bytes",
+		MAX_MODULE_INPUT_TEXT_LEN);
+	free(action);
+	return NULL;
 }

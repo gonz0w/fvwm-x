@@ -1,118 +1,58 @@
-# Fvwm Translations
+# FVWM translations
 
-**Help Needed:** Most of the current translations are out of date and mainly
-translate unused FvwmForms and FvwmScripts. Help is needed to update the
-translations, especially around the default-config and the tools it uses.
+Meson builds and installs catalogs from the eleven `.po` sources named in
+[`LINGUAS`](LINGUAS). Generated binary catalogs are build outputs; maintain and
+commit the `.po` sources instead. [INSTALL.md](../INSTALL.md#native-language-support)
+explains automatic, required and disabled NLS builds.
 
-Fvwm provides translations for its user interface. This includes a few
-internal commands, the default-config, and some module user interfaces.
+## Maintain translations
 
-Fvwm uses `gettext` to produce translations which are direct string
-to string translations listed in a `.po` file, which is created
-from template file, `.pot`. The `.po` file is then compiled into a
-`.gmo` file which is then installed on the system.
+Run the Python standard-library tool from the repository root. Gettext supplies
+`xgettext`, `msguniq`, `msgmerge`, `msgfmt` and `msginit`; Python handles FVWM and
+FvwmScript translation markers. Each operation publishes complete output to a
+fresh directory and preserves the existing sources.
 
-This document explains the tools to build template files, update
-translations, and to compile the `.gmo` file from the `.po` using
-the fvwm Makefile. All the commands below assume the user is in
-the `po/` directory.
-
-## fvwmpo.sh
-
-The shell script `fvwmpo.sh` is the main script to update
-the template, initialize new languages, update exist languages,
-and build the binary translation files. Each language, `LL_CC`,
-has its own translation file.
-
-### Update Template File
-
-To update the main template file, `fvwm3.pot`:
-
-```
-./fvwmpo.sh update-pot
+```sh
+python3 tools/maintenance/translations.py languages
+python3 tools/maintenance/translations.py pot --output builddir-maint/pot-1
+python3 tools/maintenance/translations.py update --all --template builddir-maint/pot-1/fvwm3.pot --output builddir-maint/po-review-1
+python3 tools/maintenance/translations.py build --all --output builddir-maint/catalogs-1
 ```
 
-### Update Existing Translation
+Review candidate updates before applying them. `--language LL_CC` selects one
+catalog instead of `--all`. Updates disable automatic fuzzy matching. Builds
+omit fuzzy translations, matching Meson; `--use-fuzzy` is available for explicit
+comparisons with older catalog builds. Do not treat fuzzy entries as reviewed
+translations.
 
-To update an existing translation:
+To add a language, generate a candidate with `init --language LL_CC --output DIR`,
+review its metadata and messages, then add its `.po` file and identifier to
+`LINGUAS`. Use a valid gettext locale identifier. Language discovery rejects
+missing catalogs and duplicate identifiers. Run a complete build before
+committing the source changes.
 
-1) Update the language file to match the current template
-   (if needed):
+## Extract messages
 
-```
-./fvwmpo.sh update LL_CC
-```
+[`POTFILES`](POTFILES) is the maintained extraction list. It covers C calls to
+`_(string)`, configuration expansion `$[gt.string]` and FvwmScript
+`WindowLocaleTitle`/`LocaleTitle` markers. Add a new source path there before
+regenerating the template. FvwmScript uses the existing `UseGettext` option.
+Unsupported literal escapes fail extraction instead of silently changing a key.
 
-2) Modify the translation file by updating or adding any
-   translation strings in the `LL_CC.po` file.
+The tool preserves source locations. Gettext owns POT timestamps, so compare
+message keys and context/plural forms rather than requiring byte-identical POT
+files. Extraction of the maintained list does not mean every new desktop string
+is translated. Translation coverage and manual/configuration language polish
+remain separate project work.
 
-3) Build the binary translation file:
+## Check translated UI
 
-```
-./fvwmpo.sh build LL_CC
-```
+Preserve leading spaces, layout spaces and substitution syntax. Menus can use
+`&` to identify a shortcut; place it at the intended translated character.
+FvwmForm and FvwmScript layouts can have fixed sizes, so test longer labels in
+the actual module. Test font coverage, text input and layout on the target X
+server; successful catalog compilation alone does not establish UI quality.
 
-4) Both the translation `.po` and binary `.gmo` file need to be
-   included in the commit to fvwm3.
-
-### Create New Translations
-
-To create a new translation from a template file:
-
-1) Add your language to the `ALL_LINGUAS` variable in `fvwmpo.sh`.
-
-2) Use the template file to create a new LL_CC (e.g., fr, zh_CN)
-   translation `.po` file.
-
-```
-./fvwmpo.sh init LL_CC
-```
-
-3) Follow the above instructions 2-4 to add strings to the translation
-   file and build the `.gmo` file to commit to fvwm3.
-
-### Translation Comments
-
-Some menus translation contain a shortcut key character, `&`, as part
-of the translation. Place this character where it is most appropriate
-in the translation.
-
-FvwmForm and FvwmScript modules are fairly fixed in size, and do not
-resize themselves based on text size. This means the translations need
-to be close to the same size as the original, otherwise they will get
-cutoff, so **be sure to test them**.
-
-FvwmForm XDG help uses spaces to position the text correctly.
-Be sure the translated strings have the exact same characters including
-spaces. Also if there are leading spaces, ensure those are included in
-the translation.
-
-There is a translation that is just a set number of spaces. This is used
-for indention in the FvwmForm XDG help. You can increase or decrease the
-number of spaces in your translation to help position the translation.
-
-## Developer Comments
-
-Adding new strings to be translated to the templates depends on where
-the string is located. Right now there are three possible file types
-the Makefiles use to build the templates:
-
-+ FVWM_FILES: This is a list of C source files that use the
-  FGettext(string) macro `_(string)`.
-
-+ FVWMRC_FILES: This is a list of files that make use of the
-  command expansion `$[gt.string]`. These are used in the default-config
-  and various FvwmForms.
-
-+ FVWMSCRIPT_FILES: This is a list of FvwmScript files that use
-  `UseGettext` option along with `WindowLocaleTitle` and `LocaleTitle`.
-
-To add new files to be translated, include them in the appropriate
-list in `fvwmpo.sh`. Then update the template using the above instructions.
-You can also update all translation files and rebuild all `.gmo` files using:
-
-```
-./fvwmpo.sh update-all
-./fvwmpo.sh build-all
-```
-
+The [maintenance guide](../tools/maintenance/README.md) explains the tools and
+historical checkpoints. The old shell helper and committed GMO removal remain
+subject to the owning I18N-01 adoption checkpoint in the project tracker.

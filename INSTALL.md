@@ -1,9 +1,12 @@
 Installation Instructions
 =========================
 
-FVWM3 uses `meson` as its build tooling.  However, there is a wrapper script
-`build` which should be used instead.  This document will use this throughout,
-although if using `meson` directly, refer to its documentation.
+FVWM3 uses Meson as its build tooling. `./build` preserves its documented
+short options and delegates to `tools/maintenance/build.py`, using Python's
+standard library. Direct Meson use is supported. Documentation targets share
+one manual manifest with the standalone renderer; other maintenance tools
+remain explicit candidates. See [their guide](tools/maintenance/README.md).
+CI and release publishing workflows have not switched.
 
 Dependencies
 ============
@@ -44,25 +47,124 @@ system in use.
 ## Optional dependencies
 
 * asciidoctor
-* golang (>= 1.21)
+* golang (>= 1.21); enables FvwmPrompt, the Go FvwmCommand client and
+  fvwm-menu-xlock, fvwm-menu-directory, fvwm-convert-2.6, fvwm-menu-desktop
+  and the installed Script communication example helper. Go-disabled builds
+  retain the corresponding legacy utilities.
 * libfreetype6-dev
 * libfribidi-dev
-* libncurses5-dev
-* libpng-dev
-* libreadline-dev
+* gettext runtime/development files and `msgfmt` (for NLS)
+* libpng-dev (>= 1.6.59, or a verified vendor security backport)
 * librsvg-dev
 * libsm-dev
 * libxcursor-dev
 * libxfixes-dev
-* libxi-dev
 * libxpm-dev
 * libxrender-dev
-* sharutils
+
+Go-enabled builds also install the coordinated `fvwm-menu-desktop` provider
+and native FvwmForm settings frontend. These use the existing standard-library
+utility build and need no Go, PyXDG or image toolkit at runtime. The existing
+`Module FvwmPerl -l fvwm-menu-desktop-config.fpl` entry point delegates to that
+frontend. Builds with `-Dgolang=disabled` retain the Python/PyXDG provider and
+original Perl frontend. The separate Perl framework retirement is not part of
+this port. See `fvwm-menu-desktop(1)` for worker deadlines, private action files,
+image conversion and safe settings publication.
+
+Native language support
+=======================
+
+`-Dnls=auto` enables translated UI when the gettext library and `msgfmt` are
+available. If `msgfmt` is missing, configuration warns and disables NLS.
+`-Dnls=enabled` requires both dependencies and fails if either is missing.
+`-Dnls=disabled` builds without translated UI or catalog build/install targets;
+it does not require gettext tools. Configuration summary reports the selected
+support, rather than library availability alone.
+
+Meson compiles the eleven catalogs listed in `po/LINGUAS` from `.po` sources.
+Committed `.gmo` files are not build inputs. Catalog compilation omits fuzzy
+translations. Template extraction and translation updates additionally need
+`xgettext`, `msguniq`, `msgmerge` and `msginit`; see [po/README.md](po/README.md).
+
+Image input limits
+==================
+
+Primary image files must be regular files; symlinks to regular files work.
+The default source cap is 128 MiB. Set `-Dimage-input-limit=N` to select 1–1024
+MiB. Compressed XPM input has a separate 128 MiB expanded cap and a 5-second
+decompression deadline. Set `-Dimage-xpm-expanded-limit=N` (1–1024 MiB) and
+`-Dimage-decompress-timeout=N` (1–60 seconds) to change these finite defaults.
+
+Meson resolves the existing system `gzip` executable. Use
+`-Dimage-gzip=/absolute/path/to/gzip` for an explicit trusted executable.
+Uncompressed XPM still works without it.
+
+SVG decoding uses the installed private `fvwm-image-svg-worker` executable.
+The default total deadline is 5 seconds and the worker memory limit is 1024
+MiB. Set `-Dimage-svg-timeout=N` (1–60 seconds) and
+`-Dimage-svg-memory-limit=N` (128–4096 MiB) to change these finite defaults.
+Linux and FreeBSD use the address-space limit; OpenBSD uses the data limit.
+Stricter inherited limits remain in force. The worker refuses startup if it
+cannot set and verify its limits. Relative SVG images and rendering options
+retain their existing behavior within these bounds.
+
+Development or relocated installations can set `FVWM_IMAGE_SVG_WORKER` to the
+absolute path of a trusted worker built for the same FVWM version. The normal
+installed path is compiled in. No shell or executable search path is used.
+
+Core SVG, compressed XPM and ambiguous image requests complete asynchronously.
+The core retains the previous image until its replacement succeeds; a first
+load has no image while pending. Other image callers keep their existing
+completion behavior. Processing remains isolated and bounded.
+The worker is not a file-system sandbox. These bounds do not guarantee storage
+latency or limit CPU time in other image decoders. See the installed `fvwm3(1)`
+manual for runtime behavior.
+
+The private worker also supports software colorset color-image effects when
+SVG support is disabled. Preparation uses `-Dimage-effect-timeout=N` (1–60
+seconds, default 5) and `-Dimage-effect-memory-limit=N` (128–4096 MiB, default
+1024). The deadline starts at worker launch and covers X connection, readback,
+color queries, blending and output. Queue wait and bounded parent upload are
+separate. The same verified OS limits apply. `FVWM_IMAGE_EFFECT_WORKER` can
+select an absolute trusted path to the matching worker for this operation.
+The worker queries retained X resources; it does not allocate or change them.
+It is not an X permission sandbox. Normal core startup enables asynchronous
+preparation and acknowledged publication for file-backed color colorset
+effects. Hardware rendering retains its existing arithmetic. Software rendering
+uses queried server colors and its existing rounding. Combined platform
+qualification is recorded in the image activation report under
+`dev-docs/verification/`; release CI and physical checks remain separate.
+
+PNG security baseline
+=====================
+
+PNG-enabled builds require libpng 1.6.59 or newer by default. An older found
+library stops configuration, including automatic detection. Supply a patched
+library to preserve PNG theme images. `-Dpng=disabled` explicitly omits PNG.
+
+For an older library with verified vendor fixes, use
+`-Dpng-security-backport=true`. This flag records the builder's assertion; it
+does not check vulnerabilities or apply fixes. Record the exact package version
+and vendor advisory in the build profile. Do not use it for an unpatched or
+unverified package. The legacy API floor of 1.2 applies only with this assertion.
+See the [dependency audit](dev-docs/DEPENDENCY-AUDIT-2026-10-05.md).
+
+The Linux/BSD verification entry points honor an explicit `PKG_CONFIG_PATH`
+before system paths. A private patched library also needs its runtime library
+path, such as `LD_LIBRARY_PATH`, when running staged binaries. The entry points
+clear cached dependency lookups on reconfiguration. To assert an audited vendor
+backport with these entry points, set `FVWM_PNG_SECURITY_BACKPORT=true`; its
+default is false. Record both library provenance and actual loaded paths.
+The existing CI dependency commands may still supply older packages: those jobs
+will fail configuration until their verified patched profile is provisioned.
 
 Generating documentation
 ========================
 
-`fvwm3` won't compile documentation by default, so it's opt-in.
+Documentation generation is opt-in. Man pages are the recommended OS-install
+output; HTML is an optional static export from the same AsciiDoc sources.
+Neither format needs a new desktop runtime service. See the
+[documentation policy](dev-docs/DOCUMENTATION.md).
 
 To generate `fvwm3`'s documentation:
 
@@ -70,7 +172,7 @@ To generate `fvwm3`'s documentation:
 2. To generate manpages:  pass `-m` to `build`
 3. To generate HTML docs: pass `-w` to `build`
 
-To compile both at once, pass `-d` to `build` (which implies `-m` and `-d`)
+To compile both at once, pass `-d` to `build` (which implies `-m` and `-w`)
 
 Installing From Git or a Release Tarball
 ===================
@@ -78,24 +180,85 @@ Installing From Git or a Release Tarball
 Compiling `fvwm3` is best used with the `./build` wrapper script.
 
 ```
-./build -fdi
+./build -Dhtmldoc=false -mi
 ```
 
-This will (re-)build, compile both man and HTML documentation, and install.
+This builds, generates man pages, and installs. HTML remains disabled unless
+explicitly enabled; use a separate build directory when reviewing another batch.
 
 It is best to see the output from `./build -h` to understand its options,
 but some common usages are:
 
 ```
-# Build fvwm3 will both man and html pages
+# Optional: build both man and HTML pages
 $ ./build -d
 
 # Build and install
 $ ./build -i
 
-# Force (re-)build, including docs and install
-$ ./build -fdi
+# Build with man pages and install
+$ ./build -Dhtmldoc=false -mi
 
 # Enable specific options (see `meson.options`), compile docs and install
-$ ./build -Dgolang=disabled -Dbidi=disabled -di
+$ ./build -Dgolang=disabled -Dbidi=disabled -Dhtmldoc=false -mi
 ```
+
+The wrapper also accepts `--dry-run`, `--test`, `--jobs N` and `--log PATH`.
+It does not install without `-i`. Changed `-D` options reconfigure the chosen
+build without wiping it; `-f` explicitly requests Meson's wipe/reconfigure.
+Verbose mode returns a failed command's status, and quiet failures point to
+retained diagnostics. Values containing spaces remain one argument:
+
+```sh
+./build -b 'build with spaces' -p '/prefix with spaces' --dry-run
+./build -b builddir-local -Dgolang=disabled --jobs 2 --test
+```
+
+Direct Meson use
+================
+
+For an isolated build without installation:
+
+```sh
+meson setup builddir-local -Dgolang=disabled
+meson compile -C builddir-local
+meson test -C builddir-local --print-errorlogs
+```
+
+Dependency detection and feature options are authoritative in `meson.build`
+and `meson.options`. Package names above vary by OS. Build and optional
+maintenance dependencies are separate from the desktop services discovered
+at runtime; the default desktop uses the existing FVWM components and Python
+standard library.
+
+Native BSD verification
+=======================
+
+FreeBSD uses Xorg from packages; OpenBSD uses the X11 libraries and server
+from its Xenocara sets. Install the build dependencies listed in
+`.github/workflows/bsd.yml`, including Xvfb and DejaVu fonts, then run:
+
+```
+sh tests/run_on_bsd.sh
+```
+
+This builds the WM and modules, runs native policy tests and a nested Xvfb
+session, and stages installation under `builddir-bsd/install-stage`. The
+session checks all eight shade directions for ordinary, fixed-size, and
+maximized clients. It requires no running desktop and does not install into
+the system. Go and documentation generation are disabled for this gate.
+
+The BSD gate checks native build and X session compatibility. Mixed-DPI
+transitions and topology changes also require the Linux Xorg dummy tests;
+physical monitor hotplug and compositor behavior still need desktop testing
+on each target BSD. CI runs both BSD gates in virtual machines.
+
+The release targets AMD64 and ARM64 on Linux, FreeBSD, and OpenBSD. See
+[the support matrix](dev-docs/SUPPORT.md) for required gates and
+[the BSD verification guide](dev-docs/BSD.md) for local QEMU use.
+
+The optional Meson setting `-Dcolorset-limit=65536` raises the per-process
+colorset count limit above the default 4096. The core and bundled modules use
+the same configured limit (1 through 65536, including set zero). Sparse IDs
+preserve large numeric theme references. This setting bounds the number of
+colorset records; images and X resources have separate costs.

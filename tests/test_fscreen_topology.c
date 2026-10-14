@@ -33,6 +33,9 @@ typedef struct
 	size_t		allocation_count;
 	size_t		fail_allocation;
 	size_t		live_allocations;
+	int root_width;
+	int root_height;
+	int root_queries;
 } randr_fixture;
 
 typedef struct
@@ -139,6 +142,24 @@ fixture_free_monitors(void *context, XRRMonitorInfo *monitors)
 	fixture->reply_free_count++;
 }
 
+static bool
+fixture_get_root_monitor(void *context, Display *display, Window root,
+    monitor_topology_monitor *monitor)
+{
+	randr_fixture *fixture = context;
+
+	assert(root == (Window)99);
+	fixture->root_queries++;
+	*monitor = (monitor_topology_monitor){
+	    .name_atom = (Atom)600,
+	    .name = "FVWM-X-Root",
+	    .width = fixture->root_width,
+	    .height = fixture->root_height,
+	    .primary = True,
+	};
+	return fixture->root_width > 0 && fixture->root_height > 0;
+}
+
 static fscreen_randr_adapter
 make_adapter(randr_fixture *fixture)
 {
@@ -148,6 +169,7 @@ make_adapter(randr_fixture *fixture)
 	    .get_atom_name  = fixture_get_atom_name,
 	    .free_atom_name = fixture_free_atom_name,
 	    .free_monitors  = fixture_free_monitors,
+	    .get_root_monitor = fixture_get_root_monitor,
 	    .topology_allocator =
 		{
 		    .context   = fixture,
@@ -598,9 +620,78 @@ test_every_legacy_staging_allocation_failure_retains_state(void)
 	assert(legacy_alloc.live_names == 0);
 }
 
+static void
+test_root_fallback_resizes_and_yields_to_real_monitors(void)
+{
+	randr_fixture fixture = {.monitor_count = -1,
+	    .root_width = 800, .root_height = 600};
+	fscreen_randr_adapter adapter = make_adapter(&fixture);
+	monitor_topology_snapshot *committed = NULL;
+	const monitor_topology_snapshot *before;
+	RROutput outputs[] = {31};
+	XRRMonitorInfo monitor = make_monitor((Atom)12, outputs, 1);
+
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_FAILED);
+	assert(committed == NULL && fixture.root_queries == 0);
+	fixture.monitor_count = 0;
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_CHANGED);
+	assert(committed->root_fallback && committed->epoch == 1);
+	assert(committed->monitor_count == 1);
+	assert(committed->monitors[0].width == 800);
+	assert(committed->monitors[0].height == 600);
+	assert(committed->monitors[0].output_count == 0);
+	assert(committed->monitors[0].primary);
+	before = committed;
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_UNCHANGED);
+	assert(committed == before && committed->epoch == 1);
+	fixture.root_width = 1024;
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_CHANGED);
+	assert(committed->root_fallback && committed->epoch == 2);
+	assert(committed->monitors[0].width == 1024);
+	before = committed;
+	fixture.root_width = 0;
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_FAILED);
+	assert(committed == before && committed->epoch == 2);
+	fixture.root_width = 1024;
+	fixture.allocation_count = 0;
+	fixture.fail_allocation = 1;
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_FAILED);
+	assert(committed == before && committed->epoch == 2);
+	fixture.fail_allocation = 0;
+	fixture.reply = &monitor;
+	fixture.monitor_count = 1;
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_CHANGED);
+	assert(!committed->root_fallback && committed->epoch == 3);
+	assert(committed->monitors[0].name_atom == (Atom)12);
+	before = committed;
+	fixture.reply = NULL;
+	fixture.monitor_count = 0;
+	int root_queries = fixture.root_queries;
+	assert(fscreen_refresh_topology_with_adapters(NULL, (Window)99,
+		&committed, NULL, NULL, &adapter, NULL) ==
+		FSCREEN_TOPOLOGY_REFRESH_FAILED);
+	assert(committed == before && fixture.root_queries == root_queries);
+	destroy_committed(&committed, &fixture);
+}
+
 int
 main(void)
 {
+	test_root_fallback_resizes_and_yields_to_real_monitors();
 	test_failed_empty_unresolved_and_invalid_queries_retain_state();
 	test_equal_and_changed_candidates_have_exact_generation_results();
 	test_extreme_legacy_coordinates_do_not_overflow();

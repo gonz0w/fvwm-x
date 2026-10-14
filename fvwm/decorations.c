@@ -23,6 +23,8 @@
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
 #include "libs/FShape.h"
+#include "libs/FProperty.h"
+#include "property_policy.h"
 #include "libs/Parse.h"
 #include "libs/lang-strings.h"
 #include "libs/log.h"
@@ -108,36 +110,52 @@ typedef PropMotifWmHints PropMwmHints;
 
 /* ---------------------------- interface functions ------------------------ */
 
-/*
- *
- * Reads the property MOTIF_WM_HINTS
- *
- */
+/* Keep Xlib's native-long representation for legacy decoration consumers.
+ * This shared boundary validates the complete reply before any indexing. */
+static unsigned long *
+get_decor_property(Window window, Atom property, Atom expected_type,
+    unsigned long min_items, unsigned long max_items, unsigned long *items)
+{
+	Atom actual_type = None;
+	int format = 0;
+	unsigned long remaining = 0;
+	unsigned char *data = NULL;
+	size_t bytes;
+	FPropertyLimits limits = {.min_bytes = min_items * 4,
+	    .max_bytes = max_items * 4, .format = 32};
+
+	*items = 0;
+	if (XGetWindowProperty(dpy, window, property, 0, max_items, False,
+	    expected_type, &actual_type, &format, items, &remaining, &data) ==
+	    Success && actual_type == expected_type && data != NULL &&
+	    FPropertySizeIsSafe(*items, format, remaining, limits, &bytes))
+	{
+		return (unsigned long *)data;
+	}
+	if (actual_type != None)
+	{
+		fvwm_debug(__func__, "Ignoring invalid decoration property %#lx",
+		    property);
+	}
+	if (data != NULL)
+	{
+		XFree(data);
+	}
+	*items = 0;
+	return NULL;
+}
+
 void GetMwmHints(FvwmWindow *t)
 {
-	int actual_format;
-	Atom actual_type;
-	unsigned long nitems, bytesafter;
+	unsigned long items;
 
-	if (t->mwm_hints)
+	if (t->mwm_hints != NULL)
 	{
-		XFree((char *)t->mwm_hints);
-		t->mwm_hints = NULL;
+		XFree(t->mwm_hints);
 	}
-	if (XGetWindowProperty(
-		    dpy, FW_W(t), _XA_MwmAtom, 0L, 32L, False,
-		    _XA_MwmAtom, &actual_type, &actual_format, &nitems,
-		    &bytesafter,(unsigned char **)&t->mwm_hints)==Success)
-	{
-		if (nitems >= PROP_MOTIF_WM_HINTS_ELEMENTS)
-		{
-			return;
-		}
-	}
-
-	t->mwm_hints = NULL;
-
-	return;
+	/* Four-field Motif records are an established FVWM compatibility case. */
+	t->mwm_hints = (long *)get_decor_property(FW_W(t), _XA_MwmAtom,
+	    _XA_MwmAtom, PROP_MOTIF_WM_HINTS_ELEMENTS, 32, &items);
 }
 
 /*
@@ -169,21 +187,18 @@ void GetMwmHints(FvwmWindow *t)
  */
 void GetOlHints(FvwmWindow *t)
 {
-	int actual_format;
-	Atom actual_type;
-	unsigned long nitems, bytesafter;
+	unsigned long nitems;
 	Atom *hints;
 	int i;
 	Atom win_type;
 
 	t->ol_hints = OL_DECOR_ALL;
 
-	if (XGetWindowProperty(
-		    dpy, FW_W(t), _XA_OL_WIN_ATTR, 0L, 32L, False,
-		    _XA_OL_WIN_ATTR, &actual_type, &actual_format,
-		    &nitems, &bytesafter, (unsigned char **)&hints) == Success)
+	hints = get_decor_property(FW_W(t), _XA_OL_WIN_ATTR,
+	    _XA_OL_WIN_ATTR, 3, 5, &nitems);
+	if (hints != NULL)
 	{
-		if (nitems > 0)
+		if (fvwm_openlook_attr_length_is_valid(nitems))
 		{
 			t->ol_hints |= OL_ANY_HINTS;
 
@@ -231,6 +246,11 @@ void GetOlHints(FvwmWindow *t)
 				t->ol_hints &= ~OL_DECOR_ICON_NAME;
 			}
 		}
+		else
+		{
+			fvwm_debug(__func__,
+			    "Ignoring invalid Open Look attribute length");
+		}
 
 		if (hints)
 		{
@@ -238,10 +258,9 @@ void GetOlHints(FvwmWindow *t)
 		}
 	}
 
-	if (XGetWindowProperty(
-		    dpy, FW_W(t), _XA_OL_DECOR_ADD, 0L, 32L, False,
-		    XA_ATOM, &actual_type, &actual_format, &nitems,
-		    &bytesafter,(unsigned char **)&hints)==Success)
+	hints = get_decor_property(FW_W(t), _XA_OL_DECOR_ADD,
+	    XA_ATOM, 0, 32, &nitems);
+	if (hints != NULL)
 	{
 		for (i = 0; i < nitems; i++)
 		{
@@ -269,10 +288,9 @@ void GetOlHints(FvwmWindow *t)
 		}
 	}
 
-	if (XGetWindowProperty(
-		    dpy, FW_W(t), _XA_OL_DECOR_DEL, 0L, 32L, False,
-		    XA_ATOM, &actual_type, &actual_format, &nitems,
-		    &bytesafter,(unsigned char **)&hints)==Success)
+	hints = get_decor_property(FW_W(t), _XA_OL_DECOR_DEL,
+	    XA_ATOM, 0, 32, &nitems);
+	if (hints != NULL)
 	{
 		for (i = 0; i < nitems; i++)
 		{

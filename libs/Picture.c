@@ -26,6 +26,7 @@
  */
 
 #include "config.h"
+#include "picture_color.h"
 
 #include <stdio.h>
 #include <signal.h>
@@ -47,6 +48,20 @@
 #include "libs/wm_ui_metrics.h"
 
 static FvwmPicture *FvwmPictureList=NULL;
+static picture_loader_fn picture_loader;
+static void *picture_loader_context;
+
+void picture_set_loader(picture_loader_fn loader, void *context)
+{
+	picture_loader = loader;
+	picture_loader_context = context;
+}
+
+void picture_cache_publish(FvwmPicture *picture)
+{
+	picture->next = FvwmPictureList;
+	FvwmPictureList = picture;
+}
 
 FvwmPicture *PGetFvwmPicture(
 	Display *dpy, Window win, char *ImagePath, const char *name,
@@ -60,8 +75,10 @@ FvwmPicture *PGetFvwmPicture(
 	{
 		return NULL;
 	}
-	p = PImageLoadFvwmPictureFromFile(
-		dpy, win, path, fpa, factor, 0, 0);
+	p = picture_loader != NULL ? picture_loader(dpy, win, path, fpa,
+	    factor, 0, 0, WM_UI_RESOURCE_GENERATION_INITIAL, False,
+	    picture_loader_context) : PImageLoadFvwmPictureFromFile(
+	    dpy, win, path, fpa, factor, 0, 0);
 	if (p == NULL)
 	{
 		free(path);
@@ -145,16 +162,20 @@ FvwmPicture *PCacheFvwmPictureAtScale(
 
 	/* Not previously cached, have to load it ourself. Put it first in list
 	 */
-	p = PImageLoadFvwmPictureFromFile(
-		dpy, win, path, fpa, factor, target_width, target_height);
+	p = picture_loader != NULL ? picture_loader(dpy, win, path, fpa,
+	    factor, target_width, target_height, generation, True,
+	    picture_loader_context) : PImageLoadFvwmPictureFromFile(
+	    dpy, win, path, fpa, factor, target_width, target_height);
 	if(p)
 	{
 		p->scale_quarters = scale_quarters;
 		p->target_width = target_width;
 		p->target_height = target_height;
 		p->generation = generation;
-		p->next=FvwmPictureList;
-		FvwmPictureList=p;
+		if (!p->is_view)
+		{
+			picture_cache_publish(p);
+		}
 	}
 	else
 	{
@@ -189,14 +210,37 @@ void PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
 		/* still too heavy? */
 		return;
 	}
+	if (p->is_view)
+	{
+		/* The subscription is removed before releasing backing. A view
+		 * never owns the aliased pixmaps or allocated-color array. */
+		if (p->view_release != NULL)
+		{
+			p->view_release(dpy, p, p->view_context);
+		}
+		if (p->view_owner_release != NULL)
+		{
+			p->view_owner_release(p->view_owner);
+		}
+		PDestroyFvwmPicture(dpy, p->backing);
+		free(p->name);
+		free(p);
+		return;
+	}
 
+	picture_color_release(dpy, p->effect_background);
 	/* Let it fly */
+	if (p->prepared_cursor != None)
+	{
+		XFreeCursor(dpy, p->prepared_cursor);
+	}
 	if (p->alloc_pixels != NULL)
 	{
 		if (p->nalloc_pixels != 0)
 		{
 			PictureFreeColors(
-				dpy, Pcmap, p->alloc_pixels, p->nalloc_pixels,
+				dpy, p->color_cmap != None ? p->color_cmap : Pcmap,
+				p->alloc_pixels, p->nalloc_pixels,
 				0, p->no_limit);
 		}
 		free(p->alloc_pixels);
@@ -259,6 +303,7 @@ FvwmPicture *PLoadFvwmPictureFromPixmap(
 	q->nalloc_pixels = nalloc_pixels;
 	q->alloc_pixels = alloc_pixels;
 	q->no_limit = no_limit;
+	q->color_cmap = Pcmap;
 	return q;
 }
 

@@ -333,19 +333,31 @@ void fev_fake_event(XEvent *ev)
 	return;
 }
 
+typedef struct
+{
+	XEvent current;
+	XEvent previous;
+} fev_saved_event;
+
 void *fev_save_event(void)
 {
-	XEvent *ev;
+	fev_saved_event *ev;
 
-	ev = fxmalloc(sizeof(XEvent));
-	*ev = fev_event;
+	ev = fxmalloc(sizeof(*ev));
+	ev->current = fev_event;
+	ev->previous = fev_event_old;
 
 	return ev;
 }
 
 void fev_restore_event(void *ev)
 {
-	fev_event = *(XEvent *)ev;
+	fev_saved_event *saved = ev;
+
+	/* Put-back uses the previous event too. Keep actual X timestamps
+	 * monotonic: temporary command contexts must not rewind that clock. */
+	fev_event = saved->current;
+	fev_event_old = saved->previous;
 	free(ev);
 
 	return;
@@ -410,7 +422,7 @@ void fev_sanitize_size_hints(XSizeHints *sh)
 	{
 		sh->x = 32767;
 	}
-	else if (sh->x > -32768)
+	else if (sh->x < -32768)
 	{
 		sh->x = -32768;
 	}
@@ -418,7 +430,7 @@ void fev_sanitize_size_hints(XSizeHints *sh)
 	{
 		sh->y = 32767;
 	}
-	else if (sh->y > -32768)
+	else if (sh->y < -32768)
 	{
 		sh->y = -32768;
 	}
@@ -507,6 +519,93 @@ void fev_sanitize_size_hints(XSizeHints *sh)
 }
 
 /* ---------------------------- Functions not present in Xlib -------------- */
+
+int FCollectQueuedExposes(
+	Display *display, Window window, XEvent *events)
+{
+	XEvent retained[FEV_EXPOSE_BATCH_MAX];
+	int queued = XEventsQueued(display, QueuedAlready);
+	int selected = 0;
+	int kept = 0;
+
+	if (queued > FEV_EXPOSE_BATCH_MAX)
+	{
+		queued = FEV_EXPOSE_BATCH_MAX;
+	}
+	/* X state has a single owner. Every next-event call below has a
+	 * queued record; none can wait for socket input. Raw queue operations
+	 * intentionally leave deferred input timestamps and caches alone. */
+	for (int index = 0; index < queued; index++)
+	{
+		XEvent event;
+
+		XNextEvent(display, &event);
+		if (event.type == Expose &&
+		    (window == None || event.xexpose.window == window))
+		{
+			events[selected++] = event;
+		}
+		else
+		{
+			retained[kept++] = event;
+		}
+	}
+	while (kept > 0)
+	{
+		XPutBackEvent(display, &retained[--kept]);
+	}
+	return selected;
+}
+
+static Bool fev_is_size_only_request(const XEvent *event)
+{
+	return event->type == ConfigureRequest &&
+		event->xconfigurerequest.value_mask != 0 &&
+		(event->xconfigurerequest.value_mask &
+		 ~(CWWidth | CWHeight)) == 0;
+}
+
+unsigned int FMergeQueuedResizeRequests(
+	Display *display, XEvent *current, unsigned int budget)
+{
+	unsigned int merged = 0;
+	int queued;
+
+	if (budget == 0 || !fev_is_size_only_request(current))
+	{
+		return 0;
+	}
+	queued = XEventsQueued(display, QueuedAlready);
+	while (queued > 0 && merged < budget)
+	{
+		XEvent next;
+		XConfigureRequestEvent *older = &current->xconfigurerequest;
+		XConfigureRequestEvent *newer = &next.xconfigurerequest;
+
+		/* Single X owner: a snapshotted record is still queued. Raw
+		 * operations preserve the current dispatch's cached input state. */
+		XPeekEvent(display, &next);
+		if (!fev_is_size_only_request(&next) ||
+		    newer->window != older->window)
+		{
+			break;
+		}
+		XNextEvent(display, &next);
+		if (!(newer->value_mask & CWWidth))
+		{
+			newer->width = older->width;
+		}
+		if (!(newer->value_mask & CWHeight))
+		{
+			newer->height = older->height;
+		}
+		newer->value_mask |= older->value_mask;
+		*current = next;
+		merged++;
+		queued--;
+	}
+	return merged;
+}
 
 int FWeedIfEvents(
 	Display *display,

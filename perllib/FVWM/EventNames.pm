@@ -493,9 +493,12 @@ $EVENTS_INFO = {
 		],
 	},
 	&MX_ECHO 		  => {
-		format => "L!a*",
+		format => "L!3a*",
 		fields => [
-			message   => string,
+			win_id       => window,
+			frame_id     => window,
+			ptr          => number,
+			message      => string,
 		],
 	},
 };

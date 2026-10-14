@@ -9,6 +9,8 @@
 
 int get_visible_icon_window_count(FvwmWindow *fw);
 void clear_icon(FvwmWindow *fw);
+void file_icon_cancel(FvwmWindow *fw, Bool preserve_picture);
+void release_icon_pixmaps(FvwmWindow *fw);
 void setup_icon_title_size(FvwmWindow *fw);
 void GetIconPicture(FvwmWindow *fw, Bool no_icon_window);
 void AutoPlaceIcon(

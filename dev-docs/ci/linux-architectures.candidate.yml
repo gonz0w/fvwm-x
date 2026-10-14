@@ -1,0 +1,124 @@
+# Review candidate only. See README.md before adoption.
+name: Native Linux architecture verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-x-session:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        compiler: [gcc, clang]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      CC: ${{ matrix.compiler }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Install native build and X dependencies
+        run: sudo sh tests/install_linux_dependencies.sh
+      - name: Install the verified Meson version
+        run: |
+          python3 -m venv builddir/meson-env
+          builddir/meson-env/bin/pip install meson==1.7.0
+          echo "$GITHUB_WORKSPACE/builddir/meson-env/bin" >> "$GITHUB_PATH"
+      - name: Build the approved patched PNG input
+        run: sh dev-docs/ci/linux-prepare-png.sh
+      - name: Run native architecture gate
+        run: |
+          . builddir/ci-png/native/environment.sh
+          sh tests/run_on_linux.sh
+          python3 tools/maintenance/ci_png.py verify --output builddir/ci-png/native --build-directory builddir/linux-native
+      - name: Preserve architecture test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-${{ matrix.runner }}-${{ matrix.compiler }}
+          path: |
+            builddir/ci-png/inputs/manifest.json
+            builddir/ci-png/native/
+            builddir/linux-native/meson-logs/
+            builddir/linux-native/tests/live-x-artifacts/
+
+  go-clients:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Install native build, X and Go dependencies
+        run: |
+          sudo sh tests/install_linux_dependencies.sh
+          sudo apt-get install -y golang-go
+          python3 -m venv builddir/meson-env
+          builddir/meson-env/bin/pip install meson==1.7.0
+          echo "$GITHUB_WORKSPACE/builddir/meson-env/bin" >> "$GITHUB_PATH"
+      - name: Build the approved patched PNG input
+        run: sh dev-docs/ci/linux-prepare-png.sh
+      - name: Qualify offline Go builds, installed clients and race checks
+        run: |
+          . builddir/ci-png/native/environment.sh
+          sh tests/run_native_gate.sh --go-clients
+          meson compile -C builddir/go-clients fvwm-image-svg-worker -j 2
+          python3 tools/maintenance/ci_png.py verify --output builddir/ci-png/native --build-directory builddir/go-clients --build-only
+      - name: Preserve Go client evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-${{ matrix.runner }}-go-clients
+          path: |
+            builddir/ci-png/inputs/manifest.json
+            builddir/ci-png/native/
+            builddir/go-clients/meson-logs/
+            builddir/go-clients/tests/live-x-artifacts/
+            builddir/go-clients/live-x-command-client/
+            builddir/go-clients/live-x-command-race/
+
+  sanitizers:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - run: sudo sh tests/install_linux_dependencies.sh
+      - name: Build and test on a native Linux CPU with sanitizers
+        env:
+          CC: gcc
+        run: |
+          python3 -m venv builddir/meson-env
+          builddir/meson-env/bin/pip install meson==1.7.0
+          export PATH="$PWD/builddir/meson-env/bin:$PATH"
+          sh dev-docs/ci/linux-prepare-png.sh
+          . builddir/ci-png/native/environment.sh
+          sh tests/run_native_gate.sh --sanitizers
+          python3 tools/maintenance/ci_png.py verify --output builddir/ci-png/native --build-directory builddir/sanitizers --build-only
+      - name: Preserve sanitizer evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-${{ matrix.runner }}-sanitizers
+          path: |
+            builddir/ci-png/inputs/manifest.json
+            builddir/ci-png/native/
+            builddir/sanitizers/meson-logs/

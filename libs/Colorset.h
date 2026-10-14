@@ -21,11 +21,11 @@ typedef struct Colorset
 	Pixel icon_tint;
 	Pixmap pixmap;
 	Pixmap shape_mask;
-	unsigned int width : 12;
-	unsigned int height : 12;
+	unsigned int width : 16;
+	unsigned int height : 16;
 	unsigned int pixmap_type: 3;
-	unsigned int shape_width : 12;
-	unsigned int shape_height : 12;
+	unsigned int shape_width : 16;
+	unsigned int shape_height : 16;
 	unsigned int shape_type : 2;
 	unsigned int do_dither_icon : 1;
 	unsigned int fg_alpha_percent : 7;
@@ -51,6 +51,19 @@ typedef struct Colorset
 	Bool dither;
 	Bool allows_buffered_transparency;
 	Bool is_maybe_root_transparent;
+	/* Core-only leases. Published resources above remain immutable while
+	 * these replacements load; module packet copies leave these zero. */
+	FvwmPicture *pending_picture;
+	FvwmPicture *pending_shape;
+	/* Own the immutable backing borrowed by shape_mask. */
+	FvwmPicture *shape_picture;
+	unsigned int pending_pixmap_type;
+	unsigned int pending_shape_type;
+	/* Core revision state and exact color allocation owners. */
+	struct colorset_preparation *preparation;
+	struct picture_color *color_owners[11];
+	FvwmPicture *rendered_picture;
+	Bool preparing;
 } colorset_t;
 
 #define PIXMAP_TILED 0
@@ -77,47 +90,55 @@ typedef struct Colorset
 #define BG_TINT_SUPPLIED  0x200
 #define ICON_TINT_SUPPLIED 0x400
 
-/* colorsets are stored as an array of structs to permit fast dereferencing */
-extern colorset_t *Colorset;
+/* Sparse records have stable addresses. Creation can refuse a new ID;
+ * callers must validate before replacing assignments or releasing resources.
+ * GetColorset is a nonallocating rendering lookup with set-zero fallback. */
+colorset_t *FindColorset(int id);
+colorset_t *GetColorset(int id);
+colorset_t *CreateColorset(int id);
+size_t ColorsetCount(void);
+int ColorsetIdAt(size_t position);
+Bool ParseColorsetId(const char *text, char **end, int *id);
+int GetColorsetArgument(char *action, char **rest, int *id);
 
 
 /* some macro for transparency */
 #define CSET_IS_TRANSPARENT(cset) \
-    (cset >= 0 && (Colorset[cset].pixmap == ParentRelative || \
-		   (Colorset[cset].pixmap != None && \
-		    (Colorset[cset].pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN ||\
-		     Colorset[cset].pixmap_type == PIXMAP_ROOT_PIXMAP_PURE))))
+    (cset >= 0 && (GetColorset(cset)->pixmap == ParentRelative || \
+		   (GetColorset(cset)->pixmap != None && \
+		    (GetColorset(cset)->pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN ||\
+		     GetColorset(cset)->pixmap_type == PIXMAP_ROOT_PIXMAP_PURE))))
 #define CSET_IS_TRANSPARENT_PR(cset) \
-    (cset >= 0 && Colorset[cset].pixmap == ParentRelative)
+    (cset >= 0 && GetColorset(cset)->pixmap == ParentRelative)
 #define CSET_IS_TRANSPARENT_ROOT(cset) \
-    (cset >= 0 && Colorset[cset].pixmap != None && \
-     (Colorset[cset].pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN ||\
-      Colorset[cset].pixmap_type == PIXMAP_ROOT_PIXMAP_PURE))
+    (cset >= 0 && GetColorset(cset)->pixmap != None && \
+     (GetColorset(cset)->pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN ||\
+      GetColorset(cset)->pixmap_type == PIXMAP_ROOT_PIXMAP_PURE))
 #define CSET_IS_TRANSPARENT_PR_PURE(cset) \
-    (cset >= 0 && Colorset[cset].pixmap == ParentRelative && \
-     Colorset[cset].tint_percent == 0)
+    (cset >= 0 && GetColorset(cset)->pixmap == ParentRelative && \
+     GetColorset(cset)->tint_percent == 0)
 #define CSET_IS_TRANSPARENT_ROOT_PURE(cset) \
-    (cset >= 0 && Colorset[cset].pixmap != None && \
-     Colorset[cset].pixmap_type == PIXMAP_ROOT_PIXMAP_PURE)
+    (cset >= 0 && GetColorset(cset)->pixmap != None && \
+     GetColorset(cset)->pixmap_type == PIXMAP_ROOT_PIXMAP_PURE)
 #define CSET_IS_TRANSPARENT_ROOT_TRAN(cset) \
-    (cset >= 0 && Colorset[cset].pixmap != None && \
-     Colorset[cset].pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN)
+    (cset >= 0 && GetColorset(cset)->pixmap != None && \
+     GetColorset(cset)->pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN)
 #define CSET_IS_TRANSPARENT_PR_TINT(cset) \
-    (cset >= 0 && Colorset[cset].pixmap == ParentRelative && \
-     Colorset[cset].tint_percent > 0)
+    (cset >= 0 && GetColorset(cset)->pixmap == ParentRelative && \
+     GetColorset(cset)->tint_percent > 0)
 #define CSET_HAS_PIXMAP(cset) \
-    (cset >= 0 && Colorset[cset].pixmap)
+    (cset >= 0 && GetColorset(cset)->pixmap)
 #define CSET_HAS_PIXMAP_TILED(cset) \
-    (CSET_HAS_PIXMAP(cset) && (Colorset[cset].pixmap_type & PIXMAP_TILED))
+    (CSET_HAS_PIXMAP(cset) && (GetColorset(cset)->pixmap_type & PIXMAP_TILED))
 #define CSET_HAS_PIXMAP_STRETCH_X(cset) \
-    (CSET_HAS_PIXMAP(cset) && (Colorset[cset].pixmap_type & PIXMAP_STRETCH_X))
+    (CSET_HAS_PIXMAP(cset) && (GetColorset(cset)->pixmap_type & PIXMAP_STRETCH_X))
 #define CSET_HAS_PIXMAP_STRETCH_Y(cset) \
-    (CSET_HAS_PIXMAP(cset) && (Colorset[cset].pixmap_type & PIXMAP_STRETCH_Y))
+    (CSET_HAS_PIXMAP(cset) && (GetColorset(cset)->pixmap_type & PIXMAP_STRETCH_Y))
 #define CSET_HAS_PIXMAP_STRETCH(cset) \
-    (CSET_HAS_PIXMAP(cset) && (Colorset[cset].pixmap_type & PIXMAP_STRETCH))
+    (CSET_HAS_PIXMAP(cset) && (GetColorset(cset)->pixmap_type & PIXMAP_STRETCH))
 #define CSET_HAS_PIXMAP_STRETCH_ASPECT(cset) \
     (CSET_HAS_PIXMAP(cset) && \
-     (Colorset[cset].pixmap_type & PIXMAP_STRETCH_ASPECT))
+     (GetColorset(cset)->pixmap_type & PIXMAP_STRETCH_ASPECT))
 #define CSET_PIXMAP_IS_XY_STRETCHED(cset) \
     (CSET_HAS_PIXMAP_STRETCH(cset) || CSET_HAS_PIXMAP_STRETCH_ASPECT(cset))
 #define CSET_PIXMAP_IS_X_STRETCHED(cset) \
@@ -150,9 +171,8 @@ extern colorset_t *Colorset;
     (cset != NULL && cset->pixmap == ParentRelative && \
      cset->tint_percent > 0)
 
-/* Create n new colorsets, fvwm/colorset.c does its own thing (different size)
- */
-void AllocColorset(int n);
+/* Modules clone default zero when first referencing an undefined ID. */
+Bool AllocColorset(int n);
 
 /* dump one */
 char *DumpColorset(int n, colorset_t *colorset);

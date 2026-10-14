@@ -1,3 +1,6 @@
+%top{
+#include "config.h"
+}
 %{
 /* This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,9 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see: <http://www.gnu.org/licenses/>
  */
-# include "config.h"
 # include "script.h"
 # include "types.h"
+# include "script_storage.h"
+# include "script_value.h"
+# include "libs/safemalloc.h"
 # include "libs/Parse.h"
 
 /* Suppress definition of yyunput() and yyinput(), as we do not use it. */
@@ -22,6 +27,28 @@
 #define YY_NO_INPUT
 
 int numligne=1;
+extern char *ScriptName;
+
+static void check_value_token(size_t length)
+{
+  if (script_storage_check_value(script_storage_runtime(), length) !=
+      SCRIPT_STORAGE_OK)
+  {
+    fprintf(stderr, "[%s] line %d: ValueLimit exceeded\n",
+            ScriptName, numligne);
+    exit(1);
+  }
+}
+
+static char *value_token(const char *text, size_t length)
+{
+  char *value;
+  check_value_token(length);
+  value = fxmalloc(length + 1);
+  memcpy(value, text, length);
+  value[length] = '\0';
+  return value;
+}
 %}
 
 
@@ -163,25 +190,29 @@ Else			{ return ELSE; }
 [\)]			{ return ENDF; }
 
 
-{nb}		{ yylval.number=atoi(yytext);
+{nb}            {
+                  if (!script_value_integer(yytext, &yylval.number))
+                  {
+                    fprintf(stderr, "[%s] line %d: number outside integer range\n",
+                            ScriptName, numligne);
+                    exit(1);
+                  }
                   return NUMBER;
                 }
 
 [\$]+{str}	{
-		  yylval.str=(char*) safestrdup(yytext+1);
-		  yylval.str[yyleng-1]='\0';
+                  yylval.str = value_token(yytext + 1, yyleng - 1);
                   return VAR;
-		}
+                }
 
-{gstr}		{ /* Str entre "" */
-		  yylval.str=(char*) safestrdup(yytext+1);
-		  yylval.str[yyleng-2]='\0';
+{gstr}		{
+                  yylval.str = value_token(yytext + 1, yyleng - 2);
                   return GSTR;
-		}
+                }
 
-{str}		{ yylval.str=(char*) safestrdup(yytext);
-		  yylval.str[yyleng]='\0';
+{str}		{
+                  yylval.str = value_token(yytext, yyleng);
                   return STR;
-		}
+                }
 
 {nl}		{ numligne++; }

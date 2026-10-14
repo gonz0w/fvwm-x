@@ -16,6 +16,8 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "image_async.h"
+#include "libs/FProperty.h"
 
 #include <stdio.h>
 #include <signal.h>
@@ -32,6 +34,7 @@
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
 #include "libs/log.h"
+#include "libs/atom_batch.h"
 #include "libs/envvar.h"
 #include "libs/Strings.h"
 #include "libs/System.h"
@@ -222,41 +225,51 @@ static void SaveDesktopState(void)
 	return;
 }
 
-static void InternUsefulAtoms (void)
+static void InternUsefulAtoms(void)
 {
-	/* Create priority colors if necessary. */
-	_XA_MIT_PRIORITY_COLORS = XInternAtom(
-		dpy, "_MIT_PRIORITY_COLORS", False);
-	_XA_WM_CHANGE_STATE = XInternAtom(dpy, "WM_CHANGE_STATE", False);
-	_XA_WM_STATE = XInternAtom(dpy, "WM_STATE", False);
-	_XA_WM_COLORMAP_WINDOWS = XInternAtom(
-		dpy, "WM_COLORMAP_WINDOWS", False);
-	_XA_WM_PROTOCOLS = XInternAtom(dpy, "WM_PROTOCOLS", False);
-	_XA_WM_TAKE_FOCUS = XInternAtom(dpy, "WM_TAKE_FOCUS", False);
-	_XA_WM_DELETE_WINDOW = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-	_XA_WM_DESKTOP = XInternAtom(dpy, "WM_DESKTOP", False);
-	_XA_MwmAtom=XInternAtom(dpy, "_MOTIF_WM_HINTS",False);
-	_XA_MOTIF_WM=XInternAtom(dpy, "_MOTIF_WM_INFO",False);
-	_XA_OL_WIN_ATTR=XInternAtom(dpy, "_OL_WIN_ATTR",False);
-	_XA_OL_WT_BASE=XInternAtom(dpy, "_OL_WT_BASE",False);
-	_XA_OL_WT_CMD=XInternAtom(dpy, "_OL_WT_CMD",False);
-	_XA_OL_WT_HELP=XInternAtom(dpy, "_OL_WT_HELP",False);
-	_XA_OL_WT_NOTICE=XInternAtom(dpy, "_OL_WT_NOTICE",False);
-	_XA_OL_WT_OTHER=XInternAtom(dpy, "_OL_WT_OTHER",False);
-	_XA_OL_DECOR_ADD=XInternAtom(dpy, "_OL_DECOR_ADD",False);
-	_XA_OL_DECOR_DEL=XInternAtom(dpy, "_OL_DECOR_DEL",False);
-	_XA_OL_DECOR_CLOSE=XInternAtom(dpy, "_OL_DECOR_CLOSE",False);
-	_XA_OL_DECOR_RESIZE=XInternAtom(dpy, "_OL_DECOR_RESIZE",False);
-	_XA_OL_DECOR_HEADER=XInternAtom(dpy, "_OL_DECOR_HEADER",False);
-	_XA_OL_DECOR_ICON_NAME=XInternAtom(dpy, "_OL_DECOR_ICON_NAME",False);
-	_XA_WM_WINDOW_ROLE=XInternAtom(dpy, "WM_WINDOW_ROLE",False);
-	_XA_WINDOW_ROLE=XInternAtom(dpy, "WINDOW_ROLE",False);
-	_XA_WM_CLIENT_LEADER=XInternAtom(dpy, "WM_CLIENT_LEADER",False);
-	_XA_SM_CLIENT_ID=XInternAtom(dpy, "SM_CLIENT_ID",False);
-	_XA_XROOTPMAP_ID=XInternAtom(dpy, "_XROOTPMAP_ID",False);
-	_XA_XSETROOT_ID=XInternAtom(dpy, "_XSETROOT_ID",False);
+	struct { char *name; Atom *destination; } entries[] = {
+		{ "_MIT_PRIORITY_COLORS", &_XA_MIT_PRIORITY_COLORS },
+		{ "WM_CHANGE_STATE", &_XA_WM_CHANGE_STATE },
+		{ "WM_STATE", &_XA_WM_STATE },
+		{ "WM_COLORMAP_WINDOWS", &_XA_WM_COLORMAP_WINDOWS },
+		{ "WM_PROTOCOLS", &_XA_WM_PROTOCOLS },
+		{ "WM_TAKE_FOCUS", &_XA_WM_TAKE_FOCUS },
+		{ "WM_DELETE_WINDOW", &_XA_WM_DELETE_WINDOW },
+		{ "WM_DESKTOP", &_XA_WM_DESKTOP },
+		{ "_MOTIF_WM_HINTS", &_XA_MwmAtom },
+		{ "_MOTIF_WM_INFO", &_XA_MOTIF_WM },
+		{ "_OL_WIN_ATTR", &_XA_OL_WIN_ATTR },
+		{ "_OL_WT_BASE", &_XA_OL_WT_BASE },
+		{ "_OL_WT_CMD", &_XA_OL_WT_CMD },
+		{ "_OL_WT_HELP", &_XA_OL_WT_HELP },
+		{ "_OL_WT_NOTICE", &_XA_OL_WT_NOTICE },
+		{ "_OL_WT_OTHER", &_XA_OL_WT_OTHER },
+		{ "_OL_DECOR_ADD", &_XA_OL_DECOR_ADD },
+		{ "_OL_DECOR_DEL", &_XA_OL_DECOR_DEL },
+		{ "_OL_DECOR_CLOSE", &_XA_OL_DECOR_CLOSE },
+		{ "_OL_DECOR_RESIZE", &_XA_OL_DECOR_RESIZE },
+		{ "_OL_DECOR_HEADER", &_XA_OL_DECOR_HEADER },
+		{ "_OL_DECOR_ICON_NAME", &_XA_OL_DECOR_ICON_NAME },
+		{ "WM_WINDOW_ROLE", &_XA_WM_WINDOW_ROLE },
+		{ "WINDOW_ROLE", &_XA_WINDOW_ROLE },
+		{ "WM_CLIENT_LEADER", &_XA_WM_CLIENT_LEADER },
+		{ "SM_CLIENT_ID", &_XA_SM_CLIENT_ID },
+		{ "_XROOTPMAP_ID", &_XA_XROOTPMAP_ID },
+		{ "_XSETROOT_ID", &_XA_XSETROOT_ID },
+	};
+	const int count = sizeof(entries) / sizeof(*entries);
+	char *names[sizeof(entries) / sizeof(*entries)];
+	Atom atoms[sizeof(entries) / sizeof(*entries)];
 
-	return;
+	for (int i = 0; i < count; i++)
+	{
+		names[i] = entries[i].name;
+	}
+	atom_batch_intern(dpy, names, count, atoms);
+	for (int i = 0; i < count; i++)
+	{
+		*entries[i].destination = atoms[i];
+	}
 }
 
 /* exit handler that will try to release any grabs */
@@ -537,6 +550,11 @@ void Done(int restart, char *command)
 		free(action);
 	}
 	monitor_scale_config_shutdown();
+	if (!image_async_shutdown())
+	{
+		fvwm_debug(__func__, "image worker shutdown handoff failed");
+		image_async_cancel_worker();
+	}
 	/* XFree freeze hack */
 	XUngrabPointer(dpy, CurrentTime);
 	XUngrabKeyboard(dpy, CurrentTime);
@@ -1298,7 +1316,7 @@ static void SetRCDefaults(void)
 	/* set up default colors, fonts, etc */
 	const char *defaults[][3] = {
 		{ "XORValue 0", "", "" },
-		{ "ImagePath "FVWM_DATADIR"/default-config/images", "", "" },
+		{ "ImagePath "FVWM_DATADIR"/default-config/wallpapers", "", "" },
 		{ "SetEnv FVWM_DATADIR "FVWM_DATADIR"", "", "" },
 		{ "SetEnv FVWM_IS_FVWM3 1", "", "" },
 		{ "Module FvwmMFL", "", "" },
@@ -1386,6 +1404,7 @@ static int CatchRedirectError(Display *disp, XErrorEvent *event)
 /* CatchFatal - Shuts down if the server connection is lost */
 static int CatchFatal(Display *disp)
 {
+	image_async_cancel_worker();
 	/* No action is taken because usually this action is caused by someone
 	   using "xlogout" to be able to switch between multiple window managers
 	*/
@@ -1400,6 +1419,11 @@ static int CatchFatal(Display *disp)
 static int FvwmErrorHandler(Display *disp, XErrorEvent *event)
 {
 	char errtext[512];
+
+	if (image_async_handle_error(event))
+	{
+		return 0;
+	}
 
 	if (event->error_code == BadWindow)
 	{
@@ -2256,19 +2280,26 @@ int main(int argc, char **argv)
 		Atom atype;
 		int aformat;
 		unsigned long nitems, bytes_remain;
-		unsigned char *prop;
+		unsigned char *prop = NULL;
+		size_t bytes;
+		FPropertyLimits limits = {4, 4, 32};
 
 		if (XGetWindowProperty(
 			    dpy, Scr.Root, _XA_WM_DESKTOP, 0L, 1L, True,
 			    _XA_WM_DESKTOP, &atype, &aformat, &nitems,
-			    &bytes_remain, &prop) == Success)
+			    &bytes_remain, &prop) == Success &&
+		    atype == _XA_WM_DESKTOP && prop != NULL &&
+		    FPropertySizeIsSafe(nitems, aformat, bytes_remain,
+			limits, &bytes))
 		{
-			if (prop != NULL)
-			{
-				Restarting = True;
-			}
+			Restarting = True;
+		}
+		if (prop != NULL)
+		{
+			XFree(prop);
 		}
 	}
+
 	xasprintf(&restart_state_filename, "%s/.fs-restart-%s", fvwm_userdir,
 	    getenv("HOSTDISPLAY"));
 	if (!state_filename && Restarting)
@@ -2286,6 +2317,13 @@ int main(int argc, char **argv)
 		Scr.FvwmRoot.cmap_windows = &Scr.NoFocusWin;
 	}
 	InitEventHandlerJumpTable();
+	/* Install the loader before defaults and user configuration request
+	 * images. Workers and publication run only at event-loop boundaries. */
+	if (!image_async_start_core(dpy, Scr.NoFocusWin))
+	{
+		fprintf(stderr, "Cannot initialize asynchronous image loading\n");
+		return 1;
+	}
 
 	Scr.gray_bitmap =
 		XCreateBitmapFromData(dpy,Scr.Root,g_bits, g_width,g_height);
@@ -2396,7 +2434,7 @@ int main(int argc, char **argv)
 
 	int cs = 0;
 
-	attributes.background_pixel = Colorset[cs].bg;
+	attributes.background_pixel = GetColorset(cs)->bg;
 	attributes.colormap = Pcmap;
 	attributes.border_pixel = 0;
 	valuemask = CWBackPixel | CWColormap | CWBorderPixel;

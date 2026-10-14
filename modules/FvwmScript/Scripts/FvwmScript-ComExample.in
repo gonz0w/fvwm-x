@@ -7,11 +7,9 @@ Begin
     # set the com name
     Set $pid = (GetPid)
     Set $ComName = {ComExample-}$pid
-    # defined when build
-    Set $DATADIR = {xFVWM_DATADIRx}
-    Set $Perl = {xPERLx}
-    # run fvwm-script-ComExample.pl
-    Do {Exec }$Perl{ -w }$DATADIR{/fvwm-script-ComExample.pl --com-name=}$ComName{ &}
+    # The build selects the optional Go helper or retained Perl fallback.
+    Set $ComHelper = {@COM_HELPER@}
+    Do {Exec }$ComHelper{ --com-name=}$ComName{ &}
 
     # startup cmd
     Set $Startup = (SendMsgAndGet $ComName {startup} 1)
@@ -200,8 +198,7 @@ Main
 Case message of
  SingleClic :
  Begin
-    # say to fvwm-script-ComExample.pl to exit the 0 says that we do not
-    # need an answer
+    # Tell the helper to exit; mode 0 does not request an answer.
     Set $dummy = (SendMsgAndGet $ComName {exit} 0)
     Quit
  End

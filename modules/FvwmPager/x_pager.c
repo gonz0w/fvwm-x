@@ -36,6 +36,9 @@
 #include "libs/FEvent.h"
 #include "fvwm/fvwm.h"
 #include "FvwmPager.h"
+#include "pager_desk_range.h"
+#include "pager_geometry.h"
+#include "pager_shape.h"
 
 /* Stash values for Scroll logic. */
 static int Wait = 0;
@@ -45,13 +48,10 @@ static struct fpmonitor *ScrollFp = NULL;
 
 static void do_scroll(
 	int sx, int sy, bool do_send_message, bool is_message_recieved);
-static int _pred_weed_window_events(
-	Display *display, XEvent *current_event, XPointer arg);
 static void discard_events(long event_type, Window w, XEvent *last_ev);
 static rectangle CalcGeom(PagerWindow *, bool);
 static void fvwmrec_to_pager(rectangle *, bool, struct fpmonitor *);
 static void pagerrec_to_fvwm(rectangle *, bool, struct fpmonitor *);
-static void UpdateWindowShape(void);
 static void HandleEnterNotify(XEvent *Event);
 static void HandleExpose(XEvent *Event);
 static void draw_desk_label(const char *label, const char *small, int desk,
@@ -124,41 +124,18 @@ void HandleScrollDone(void)
 	ScrollFp = NULL;
 }
 
-typedef struct
-{
-	int event_type;
-	XEvent *ret_last_event;
-} _weed_window_events_args;
-
-static int _pred_weed_window_events(
-	Display *display, XEvent *current_event, XPointer arg)
-{
-	_weed_window_events_args *args = (_weed_window_events_args *)arg;
-
-	if (current_event->type == args->event_type)
-	{
-		if (args->ret_last_event != NULL)
-		{
-			*args->ret_last_event = *current_event;
-		}
-
-		return 1;
-	}
-
-	return 0;
-}
-
-/* discard certain events on a window */
+/* Consume only the adjacent group admitted by the current X service pass. */
 static void discard_events(long event_type, Window w, XEvent *last_ev)
 {
-	_weed_window_events_args args;
+	XEvent next;
 
-	XSync(dpy, 0);
-	args.event_type = event_type;
-	args.ret_last_event = last_ev;
-	FWeedIfWindowEvents(dpy, w, _pred_weed_window_events, (XPointer)&args);
-
-	return;
+	while (pager_take_next_event(w, event_type, &next))
+	{
+		if (last_ev != NULL)
+		{
+			*last_ev = next;
+		}
+	}
 }
 
 static rectangle CalcGeom(PagerWindow *t, bool is_icon)
@@ -173,7 +150,7 @@ static rectangle CalcGeom(PagerWindow *t, bool is_icon)
 		if (t->m != fp->m)
 			return rec;
 	} else if (IsShared && !is_icon && monitor_to_track == NULL) {
-		int desk = t->desk - desk1;
+		int desk = pager_desk_index(t->desk, desk1, ndesks);
 		if (desk >= 0 && desk < ndesks)
 			fp = Desks[desk].fp;
 		else
@@ -186,8 +163,8 @@ static rectangle CalcGeom(PagerWindow *t, bool is_icon)
 	if (fp == NULL)
 		return rec;
 
-	rec.x = fp->virtual_scr.Vx + t->x;
-	rec.y = fp->virtual_scr.Vy + t->y;
+	rec.x = pager_integer_value((int64_t)fp->virtual_scr.Vx + t->x);
+	rec.y = pager_integer_value((int64_t)fp->virtual_scr.Vy + t->y);
 	rec.width = t->width;
 	rec.height = t->height;
 
@@ -232,82 +209,63 @@ static rectangle CalcGeom(PagerWindow *t, bool is_icon)
 }
 
 /* Computes pager size rectangle from fvwm size or visa versa */
+static bool pager_convert_rectangle(rectangle *rec, bool is_icon,
+	struct fpmonitor *fp, bool restore)
+{
+	if (fp == NULL)
+		return false;
+
+	bool tracked = monitor_to_track != NULL || (IsShared && !is_icon);
+	pager_projection_axis x = {fpmonitor_get_all_widths(), fp->m->si->w,
+		fp->m->si->x, fp->virtual_scr.VxPages,
+		is_icon ? icon.width : desk_w, tracked};
+	pager_projection_axis y = {fpmonitor_get_all_heights(), fp->m->si->h,
+		fp->m->si->y, fp->virtual_scr.VyPages,
+		is_icon ? icon.height : desk_h, tracked};
+	rectangle next;
+	bool valid;
+	if (restore)
+	{
+		valid = pager_restore_axis(rec->x, rec->width, &x,
+			&next.x, &next.width) &&
+			pager_restore_axis(rec->y, rec->height, &y,
+				&next.y, &next.height);
+	}
+	else
+	{
+		valid = pager_project_axis(rec->x, rec->width, &x,
+			&next.x, &next.width) &&
+			pager_project_axis(rec->y, rec->height, &y,
+				&next.y, &next.height);
+	}
+	if (valid)
+	{
+		*rec = next;
+	}
+	return valid;
+}
+
 static void
 fvwmrec_to_pager(rectangle *rec, bool is_icon, struct fpmonitor *fp)
 {
-	if (fp == NULL)
-		return;
-
-	int m_width = fpmonitor_get_all_widths();
-	int m_height = fpmonitor_get_all_heights();
-
-	if (monitor_to_track != NULL || (IsShared && !is_icon)) {
-		/* Offset window location based on monitor location. */
-		rec->x -= (m_width - fp->m->si->w) *
-			  (rec->x / m_width) + fp->m->si->x;
-		rec->y -= (m_height - fp->m->si->h) *
-			  (rec->y / m_height) + fp->m->si->y;
-		m_width = fp->m->si->w;
-		m_height = fp->m->si->h;
+	if (!pager_convert_rectangle(rec, is_icon, fp, false))
+	{
+		*rec = (rectangle){-32768, -32768, 1, 1};
 	}
-	m_width *= fp->virtual_scr.VxPages;
-	m_height *= fp->virtual_scr.VyPages;
-
-	int scale_w = desk_w, scale_h = desk_h;
-	if ( is_icon ) {
-		scale_w = icon.width;
-		scale_h = icon.height;
-	}
-
-	/* To deal with rounding issues, first compute the right/bottom
-	 * location of the window so the rounding is consistent for windows
-	 * of different sizes at the same position.
-	 */
-	rec->width = ((rec->x + rec->width) * scale_w) / m_width;
-	rec->height = ((rec->y + rec->height) * scale_h) / m_height;
-	rec->x = (rec->x * scale_w) / m_width;
-	rec->y = (rec->y * scale_h) / m_height;
-	rec->width -= rec->x;
-	rec->height -= rec->y;
 }
+
 static void
 pagerrec_to_fvwm(rectangle *rec, bool is_icon, struct fpmonitor *fp)
 {
-	if (fp == NULL)
-		return;
-
-	int m_width = fpmonitor_get_all_widths();
-	int m_height = fpmonitor_get_all_heights();
-	int offset_x = 0, offset_y = 0;
-
-	int scale_w = desk_w, scale_h = desk_h;
-	if ( is_icon ) {
-		scale_w = icon.width;
-		scale_h = icon.height;
+	if (!pager_convert_rectangle(rec, is_icon, fp, true))
+	{
+		*rec = (rectangle){0, 0, 1, 1};
 	}
-
-	if (monitor_to_track != NULL || (IsShared && !is_icon)) {
-		offset_x = (m_width - fp->m->si->w) *
-			   ((fp->virtual_scr.VxPages *
-			   rec->x) / scale_w) + fp->m->si->x;
-		offset_y = (m_height - fp->m->si->h) *
-			   ((fp->virtual_scr.VyPages *
-			   rec->y) / scale_h) + fp->m->si->y;
-		m_width = fp->m->si->w;
-		m_height = fp->m->si->h;
-	}
-
-	m_width = m_width * fp->virtual_scr.VxPages;
-	m_height = m_height * fp->virtual_scr.VyPages;
-	rec->width = (rec->width * m_width) / scale_w;
-	rec->height = (rec->height * m_height) / scale_h;
-	rec->x = (rec->x * m_width) / scale_w + offset_x;
-	rec->y = (rec->y * m_height) / scale_h + offset_y;
 }
 
 rectangle set_vp_size_and_loc(struct fpmonitor *m, bool is_icon)
 {
-	int Vx = 0, Vy = 0, vp_w, vp_h;
+	int vp_w, vp_h;
 	rectangle vp = {0, 0, 0, 0};
 	struct fpmonitor *fp = (m != NULL) ? m : fpmonitor_this(NULL);
 	int scale_w = desk_w, scale_h = desk_h;
@@ -316,22 +274,27 @@ rectangle set_vp_size_and_loc(struct fpmonitor *m, bool is_icon)
 		scale_h = icon.height;
 	}
 
-	Vx = fp->virtual_scr.Vx;
-	Vy = fp->virtual_scr.Vy;
+	if (fp == NULL || fp->virtual_scr.VxPages <= 0 ||
+		fp->virtual_scr.VyPages <= 0)
+	{
+		vp.width = vp.height = 1;
+		return vp;
+	}
+	int64_t viewport_x = fp->virtual_scr.Vx;
+	int64_t viewport_y = fp->virtual_scr.Vy;
 	vp_w = fp->virtual_scr.VWidth / fp->virtual_scr.VxPages;
 	vp_h = fp->virtual_scr.VHeight / fp->virtual_scr.VyPages;
 	if (m != NULL && monitor_to_track == NULL &&
 	   !(IsShared && !is_icon)) {
-		Vx += fp->m->si->x;
-		Vy += fp->m->si->y;
+		viewport_x += fp->m->si->x;
+		viewport_y += fp->m->si->y;
 		vp_w = fp->m->si->w;
 		vp_h = fp->m->si->h;
 	}
-
-	vp.x = (Vx * scale_w) / fp->virtual_scr.VWidth;
-	vp.y = (Vy * scale_h) / fp->virtual_scr.VHeight;
-	vp.width = (Vx + vp_w) * scale_w / fp->virtual_scr.VWidth - vp.x;
-	vp.height = (Vy + vp_h) * scale_h / fp->virtual_scr.VHeight - vp.y;
+	pager_prepare_viewport_axis(viewport_x, vp_w, scale_w,
+		fp->virtual_scr.VWidth, &vp.x, &vp.width);
+	pager_prepare_viewport_axis(viewport_y, vp_h, scale_h,
+		fp->virtual_scr.VHeight, &vp.y, &vp.height);
 	return vp;
 }
 
@@ -340,62 +303,23 @@ void set_desk_size(bool update_label)
 	if (update_label) {
 		label_h = 0;
 		if (use_desk_label)
-			label_h += Scr.Ffont->height + 2;
+			label_h = pager_pixel_size((int64_t)label_h +
+				Scr.Ffont->height + 2);
 		if (use_monitor_label)
-			label_h += Scr.Ffont->height + 2;
+			label_h = pager_pixel_size((int64_t)label_h +
+				Scr.Ffont->height + 2);
 	}
 
-	desk_w = (pwindow.width - Columns + 1) / Columns;
-	desk_h = (pwindow.height - Rows * label_h - Rows + 1) / Rows;
+	if (!pager_prepare_cell_size(pwindow.width, pwindow.height,
+		Rows, Columns, label_h, &desk_w, &desk_h))
+	{
+		desk_w = desk_h = 1;
+	}
 
 	return;
 }
 
-void UpdateWindowShape(void)
-{
-	if (!ShapeLabels || label_h == 0 || fAlwaysCurrentDesk)
-		return;
 
-	int i, j, cnt, x_pos, y_pos;
-	XRectangle *shape;
-	struct fpmonitor *fp;
-	shape = fxmalloc(ndesks * sizeof (XRectangle));
-
-	cnt = 0;
-	y_pos = (LabelsBelow) ? 0 : label_h;
-	for (i = 0; i < Rows; i++) {
-		x_pos = 0;
-		for (j = 0; j < Columns; j++) {
-			if (cnt >= ndesks)
-				continue;
-
-			/* Default shape/hide labels. */
-			shape[cnt].x = x_pos;
-			shape[cnt].y = y_pos;
-			shape[cnt].width = desk_w + 1;
-			shape[cnt].height = desk_h + 2;
-
-			/* Show labels for active monitors. */
-			TAILQ_FOREACH(fp, &fp_monitor_q, entry) {
-				if (fp->disabled ||
-				    (monitor_to_track != NULL &&
-				    monitor_to_track != fp) ||
-				    cnt + desk1 !=
-				    fp->m->virtual_scr.CurrentDesk)
-					continue;
-
-				shape[cnt].y -= (LabelsBelow) ? 0 : label_h;
-				shape[cnt].height += label_h;
-			}
-			cnt++;
-			x_pos += desk_w + 1;
-		}
-		y_pos += desk_h + 2 + label_h;
-	}
-	FShapeCombineRectangles(dpy, Scr.pager_w, FShapeBounding,
-				0, 0, shape, cnt, FShapeSet, 0);
-	free(shape);
-}
 
 /*
  * Decide what to do about received X events
@@ -489,8 +413,11 @@ void DispatchEvent(XEvent *Event)
 			Window junk_w;
 
 			do_ignore_next_button_release = false;
-			while (FCheckMaskEvent(dpy, PointerMotionMask |
-					       ButtonMotionMask, Event));
+			while (pager_take_next_event(
+				Event->xany.window, MotionNotify, Event))
+			{
+				/* The last adjacent motion retains its own window. */
+			}
 
 			/* Check this is for an active Scroll. */
 			if (ScrollFp == NULL ||
@@ -555,39 +482,6 @@ void HandleEnterNotify(XEvent *Event)
 		SendText(fd, "Silent FlipFocus NoWarp", t->w);
 }
 
-#if 0
-/* JS This code was getting in my way, and I'm not quite sure what
- * it was doing. I believe it was meant to just redraw part of the
- * desk label exposed, but with the addition of monitor labels, the
- * logic is a bit more complicated. Just redraw the whole label since
- * the rest of the grid is being redrawn anyways. This simplifies things
- * drastically, and this optimization might not have noticeable gain.
- * If this functionality is added back, draw_desk_grid needs to be
- * correctly updated to deal with the bound logic.
- */
-XRectangle get_expose_bound(XEvent *Event)
-{
-	XRectangle r;
-	int ex, ey, ex2, ey2;
-
-	ex = Event->xexpose.x;
-	ey = Event->xexpose.y;
-	ex2 = Event->xexpose.x + Event->xexpose.width;
-	ey2 = Event->xexpose.y + Event->xexpose.height;
-	while (FCheckTypedWindowEvent(dpy, Event->xany.window, Expose, Event))
-	{
-		ex = min(ex, Event->xexpose.x);
-		ey = min(ey, Event->xexpose.y);
-		ex2 = max(ex2, Event->xexpose.x + Event->xexpose.width);
-		ey2= max(ey2 , Event->xexpose.y + Event->xexpose.height);
-	}
-	r.x = ex;
-	r.y = ey;
-	r.width = ex2-ex;
-	r.height = ey2-ey;
-	return r;
-}
-#endif
 
 void HandleExpose(XEvent *Event)
 {
@@ -635,36 +529,35 @@ void HandleExpose(XEvent *Event)
 void ReConfigure(void)
 {
 	Window root;
-	unsigned dummy;
+	unsigned dummy, width, height;
 	int i, j, k;
 
 
 	/* Using i for a dummy, as no return needed. */
 	if (!XGetGeometry(dpy, Scr.pager_w, &root, &i, &i,
-	    (unsigned *)&pwindow.width, (unsigned *)&pwindow.height,
+	    &width, &height,
 	    &dummy, &dummy))
 		return;
 
+	pwindow.width = pager_pixel_size(width);
+	pwindow.height = pager_pixel_size(height);
 	set_desk_size(false);
-	for(k = 0; k < Rows; k++) {
-		for(j = 0; j < Columns; j++) {
-			i = k * Columns + j;
-			if (i >= ndesks)
-				continue;
+	for (i = 0; i < ndesks; i++) {
+		j = i % Columns;
+		k = i / Columns;
+		XMoveResizeWindow(dpy, Desks[i].title_w,
+				  pager_pixel_position((int64_t)(desk_w + 1) * j - 1),
+				  pager_pixel_position((int64_t)(desk_h + label_h + 1) *
+					k - 1),
+				  desk_w, pager_pixel_size((int64_t)desk_h + label_h));
+		XMoveResizeWindow(dpy, Desks[i].w, -1,
+				  (LabelsBelow) ? -1 : pager_pixel_position(label_h - 1),
+				  desk_w, desk_h);
 
-			XMoveResizeWindow(dpy, Desks[i].title_w,
-					  (desk_w + 1) * j - 1,
-					  (desk_h + label_h + 1) * k - 1,
-					  desk_w, desk_h + label_h);
-			XMoveResizeWindow(dpy, Desks[i].w, -1,
-					  (LabelsBelow) ? -1 : label_h - 1,
-					  desk_w, desk_h);
-
-			update_desk_background(i);
-			update_monitor_locations(i);
-			update_monitor_backgrounds(i);
-			draw_desk_grid(i);
-		}
+		update_desk_background(i);
+		update_monitor_locations(i);
+		update_monitor_backgrounds(i);
+		draw_desk_grid(i);
 	}
 
 	/* reconfigure all the subordinate windows */
@@ -684,36 +577,6 @@ void ReConfigure(void)
  *  |-> ballon window
  */
 
-#if 0
-/* update the hilight desk and the windows: desk color change */
-static
-void update_pr_transparent_subwindows(int i)
-{
-	int cset;
-	PagerWindow *t;
-
-	if (CSET_IS_TRANSPARENT_PR(Desks[i].style->hi_cs))
-		update_monitor_backgrounds(i);
-
-	t = Start;
-	for(t = Start; t != NULL; t = t->next)
-	{
-		cset = (t != FocusWin) ? windowcolorset : activecolorset;
-		if (t->desk != i && !CSET_IS_TRANSPARENT_PR(cset))
-		{
-			continue;
-		}
-		SetWindowBackground(
-			dpy, t->PagerView,
-			t->pager_view.width, t->pager_view.height,
-			&Colorset[cset], Pdepth, Scr.NormalGC, True);
-		SetWindowBackground(
-			dpy, t->IconView,
-			t->icon_view.width, t->icon_view.height,
-			&Colorset[cset], Pdepth, Scr.NormalGC, True);
-	}
-}
-#endif
 
 void MovePage()
 {
@@ -793,7 +656,7 @@ void draw_desk_label(const char *label, const char *small, int desk,
 		FwinString->flags.has_colorset = False;
 		if (cs >= 0)
 		{
-			FwinString->colorset = &Colorset[cs];
+			FwinString->colorset = GetColorset(cs);
 			FwinString->flags.has_colorset = True;
 		}
 		FwinString->x = x + (width - w)/2;
@@ -941,7 +804,7 @@ void draw_desk_grid(int desk)
 
 	if (FShapesSupported)
 	{
-		UpdateWindowShape();
+		pager_update_window_shape();
 	}
 }
 
@@ -956,7 +819,8 @@ void draw_icon_grid(int erase)
 	/* desk_i may not be shown, so find it's style directly. */
 	DeskStyle *style = FindDeskStyle(desk_i);
 	rectangle rec;
-	int i, tmp = (fp->m->virtual_scr.CurrentDesk - desk1);
+	int i, tmp = pager_desk_index(
+		fp->m->virtual_scr.CurrentDesk, desk1, ndesks);
 
 	if (tmp < 0 || tmp >= ndesks)
 		tmp = 0;
@@ -997,7 +861,7 @@ void draw_icon_grid(int erase)
 				continue;
 
 			style = FindDeskStyle(desk);
-			desk -= desk1;
+			desk = pager_desk_index(desk, desk1, ndesks);
 			if (desk < 0 || desk >= ndesks)
 				desk = tmp;
 
@@ -1417,7 +1281,7 @@ int is_window_visible(PagerWindow *t)
 			do_show_window |= SHOW_ICON_VIEW;
 		}
 	} else if (IsShared && monitor_to_track == NULL) {
-		int desk = t->desk - desk1;
+		int desk = pager_desk_index(t->desk, desk1, ndesks);
 
 		if (desk >= 0 && desk < ndesks && Desks[desk].fp == fp)
 			do_show_window |= SHOW_PAGER_VIEW;
@@ -1441,7 +1305,7 @@ void ChangeDeskForWindow(PagerWindow *t, long newdesk)
 
 	if (do_show_window & SHOW_PAGER_VIEW) {
 		int desk = (CurrentDeskPerMonitor && fAlwaysCurrentDesk) ?
-			0 : newdesk - desk1;
+			0 : pager_desk_index(t->desk, desk1, ndesks);
 
 		XReparentWindow(dpy, t->PagerView, Desks[desk].w,
 			t->pager_view.x, t->pager_view.y);
@@ -1710,7 +1574,7 @@ void MoveWindow(XEvent *Event)
 	if (t == NULL || !t->allowed_actions.is_movable)
 		return;
 
-	NewDesk = t->desk - desk1;
+	NewDesk = pager_desk_index(t->desk, desk1, ndesks);
 	if (NewDesk < 0 || NewDesk >= ndesks)
 		return;
 
@@ -1719,8 +1583,10 @@ void MoveWindow(XEvent *Event)
 
 	/* Reparent window into main pager window. */
 	fp = fpmonitor_this(t->m);
-	rec.x = fp->virtual_scr.Vx + t->x;
-	rec.y = fp->virtual_scr.Vy + t->y;
+	if (fp == NULL)
+		return;
+	rec.x = pager_integer_value((int64_t)fp->virtual_scr.Vx + t->x);
+	rec.y = pager_integer_value((int64_t)fp->virtual_scr.Vy + t->y);
 	rec.width = t->width;
 	rec.height = t->height;
 	fvwmrec_to_pager(&rec, false, fp);
@@ -1849,7 +1715,8 @@ void MoveWindow(XEvent *Event)
 	 */
 	if ((IS_ICONIFIED(t) && IS_ICON_STICKY_ACROSS_DESKS(t)) ||
 	    IS_STICKY_ACROSS_DESKS(t))
-		NewDesk = fp->m->virtual_scr.CurrentDesk - desk1;
+		NewDesk = pager_desk_index(
+			fp->m->virtual_scr.CurrentDesk, desk1, ndesks);
 	if (NewDesk < 0 || NewDesk >= ndesks) {
 		XReparentWindow(
 			dpy, t->PagerView, Desks[0].w, -32768, -32768);
@@ -1937,13 +1804,12 @@ void IconMoveWindow(XEvent *Event, PagerWindow *t)
 
 	/* Determine location of window. */
 	fp = fpmonitor_this(t->m);
-	rec.x = fp->virtual_scr.Vx + t->x;
-	rec.y = fp->virtual_scr.Vy + t->y;
-	rec.width = t->width;
-	rec.height = t->height;
 	if (fp == NULL)
 		return;
-
+	rec.x = pager_integer_value((int64_t)fp->virtual_scr.Vx + t->x);
+	rec.y = pager_integer_value((int64_t)fp->virtual_scr.Vy + t->y);
+	rec.width = t->width;
+	rec.height = t->height;
 	fvwmrec_to_pager(&rec, true, fp);
 
 	XRaiseWindow(dpy, t->IconView);
@@ -2072,7 +1938,7 @@ void setup_balloon_window(PagerWindow *t)
 				? style->balloon_bg
 				: (style->win_bg < ULONG_MAX)
 				  ? style->win_bg : t->back;
-	if (style->balloon_cs >= 0 && Colorset[style->balloon_cs].pixmap) {
+	if (style->balloon_cs >= 0 && GetColorset(style->balloon_cs)->pixmap) {
 		/* set later */
 		xswa.background_pixmap = None;
 		valuemask = CWBackPixmap | CWBorderPixel;;
@@ -2168,7 +2034,7 @@ void MapBalloonWindow(PagerWindow *t, bool is_icon)
 	if (Balloon.cs > -1)
 		SetWindowBackground(
 			dpy, Scr.balloon_w, new_g.width, new_g.height,
-			&Colorset[Balloon.cs], Pdepth,
+			GetColorset(Balloon.cs), Pdepth,
 			Scr.NormalGC, True);
 
 	XMapRaised(dpy, Scr.balloon_w);
@@ -2251,7 +2117,7 @@ void DrawInBalloonWindow(void)
 	FwinString->gc = Balloon.gc;
 	if (Balloon.cs >= 0)
 	{
-		FwinString->colorset = &Colorset[Balloon.cs];
+		FwinString->colorset = GetColorset(Balloon.cs);
 		FwinString->flags.has_colorset = True;
 	}
 	else

@@ -26,12 +26,15 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "picture_average.h"
 
 #include <stdio.h>
 #include <stdint.h>
 #include <limits.h>
 #include <signal.h>
 #include <ctype.h>
+#include <setjmp.h>
+#include <errno.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
@@ -52,17 +55,40 @@
 #include "Fcursor.h"
 #include "FImage.h"
 #include "ImageSafety.h"
+#include "image_input.h"
+#include "image_decompress.h"
+#include "image_xbm.h"
+#include "image_svg_client.h"
+#include "fvwmsignal.h"
 #include "libs/monitor_scale.h"
 #include "libs/wm_ui_metrics.h"
 
 /* ---------------------------- local definitions -------------------------- */
+typedef struct
+{
+	image_input raw;
+	image_input expanded;
+	struct stat metadata;
+	const image_input *xpm_input;
+	char *path;
+	char *allocated_path;
+	Bool svg_options;
+	Bool xpm_only;
+	Bool xpm_checked;
+	Bool defer_svg;
+	Bool svg_deferred;
+	Bool raw_borrowed;
+	int xpm_hotspot[2];
+} pimage_source;
+
 #define FIMAGE_CMD_ARGS \
-	Display *dpy, char *path, CARD32 **argb_data, int *width, int *height, \
+	Display *dpy, char *path, pimage_source *source, \
+	CARD32 **argb_data, int *width, int *height, \
 	monitor_scale_factor factor, unsigned target_width, \
 	unsigned target_height
 
 #define FIMAGE_PASS_ARGS \
-	dpy, path, argb_data, width, height, factor, target_width, \
+	dpy, path, source, argb_data, width, height, factor, target_width, \
 	target_height
 
 typedef struct PImageLoader
@@ -81,11 +107,7 @@ typedef struct PImageLoader
 
 /* ---------------------------- forward declarations ----------------------- */
 
-#ifdef USE_SVG
 static Bool PImageLoadSvg(FIMAGE_CMD_ARGS);
-#else
-#define PImageLoadSvg(a,b,c,d,e,f,g,h) (0)
-#endif
 static Bool PImageLoadPng(FIMAGE_CMD_ARGS);
 static Bool PImageLoadXpm(FIMAGE_CMD_ARGS);
 
@@ -105,6 +127,158 @@ PImageLoader Loaders[] =
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* ---------------------------- local functions ---------------------------- */
+
+static void
+pimage_source_destroy(pimage_source *source)
+{
+	if (!source->raw_borrowed)
+	{
+		image_input_destroy(&source->raw);
+	}
+	image_input_destroy(&source->expanded);
+	free(source->allocated_path);
+}
+
+static Bool
+pimage_source_open(char *path, pimage_source *source)
+{
+	char *options_end;
+
+	memset(source, 0, sizeof(*source));
+	if (path == NULL)
+	{
+		errno = EINVAL;
+		return False;
+	}
+	source->path = path;
+	if (USE_SVG && path[0] == ':' &&
+	    (options_end = strchr(path + 1, ':')) != NULL)
+	{
+		source->path = options_end + 1;
+		source->svg_options = True;
+	}
+	if (image_input_load(source->path, FVWM_IMAGE_INPUT_LIMIT,
+	    &source->raw, &source->metadata))
+	{
+		return True;
+	}
+	/* libXpm may try .Z/.gz when a bare filename is missing. Keep that
+	 * fallback checked and XPM-only; never substitute for a refused inode. */
+	if (errno == ENOENT && XpmSupport && !source->svg_options)
+	{
+		size_t length = strlen(path);
+
+		if (length > SIZE_MAX - 4)
+		{
+			errno = EOVERFLOW;
+			return False;
+		}
+		source->allocated_path = fxmalloc(length + 4);
+		source->path = source->allocated_path;
+		memcpy(source->path, path, length);
+		memcpy(source->path + length, ".Z", 3);
+		if (image_input_load(source->path, FVWM_IMAGE_INPUT_LIMIT,
+		    &source->raw, &source->metadata))
+		{
+			source->xpm_only = True;
+			return True;
+		}
+		if (errno == ENOENT)
+		{
+			memcpy(source->path + length, ".gz", 4);
+			if (image_input_load(source->path, FVWM_IMAGE_INPUT_LIMIT,
+			    &source->raw, &source->metadata))
+			{
+				source->xpm_only = True;
+				return True;
+			}
+		}
+	}
+	fvwm_debug(__func__, "image source refused: %s", source->path);
+	return False;
+}
+
+static bool
+pimage_decompress_cancel(void *context)
+{
+	(void)context;
+	return isTerminated != 0;
+}
+
+static const image_input *
+pimage_xpm_source(pimage_source *source)
+{
+	if (source->svg_options || !XpmSupport)
+	{
+		return NULL;
+	}
+	if (!source->xpm_checked)
+	{
+		const char *extension = strrchr(source->path, '.');
+
+		source->xpm_checked = True;
+		if (extension != NULL && (strcmp(extension, ".Z") == 0 ||
+		    strcmp(extension, ".gz") == 0))
+		{
+			char *args[] = {FVWM_IMAGE_GZIP, "-dqc", NULL};
+
+			if (image_decompress(&source->raw, FVWM_IMAGE_GZIP,
+			    args, FVWM_IMAGE_XPM_EXPANDED_LIMIT,
+			    FVWM_IMAGE_DECOMPRESS_TIMEOUT_MS,
+			    pimage_decompress_cancel, NULL, &source->expanded))
+			{
+				source->xpm_input = &source->expanded;
+			}
+			else
+			{
+				fvwm_debug(__func__, "compressed XPM input refused");
+			}
+		}
+		else
+		{
+			source->xpm_input = &source->raw;
+		}
+	}
+	return source->xpm_input;
+}
+
+static int
+pimage_xpm_read(pimage_source *source, FxpmImage *image, FxpmInfo *info)
+{
+	const image_input *input = pimage_xpm_source(source);
+
+	if (input == NULL || input->bytes == NULL || input->length == 0)
+	{
+		return FxpmOpenFailed;
+	}
+	return FxpmCreateXpmImageFromBuffer((char *)input->bytes, image, info);
+}
+
+static Bool
+pimage_bitmap(Display *display, Window window, pimage_source *source,
+	int *width, int *height, Pixmap *pixmap)
+{
+	unsigned char *bits;
+	unsigned w, h;
+	int hx, hy;
+
+	if (source->svg_options || source->xpm_only ||
+	    !image_xbm_read(&source->raw, INT_MAX, SIZE_MAX,
+		&bits, &w, &h, &hx, &hy))
+	{
+		return False;
+	}
+	*pixmap = XCreateBitmapFromData(display, window, (char *)bits, w, h);
+	free(bits);
+	if (*pixmap == None)
+	{
+		return False;
+	}
+	*width = (int)w;
+	*height = (int)h;
+	return True;
+}
+
 
 static Bool
 pimage_resolve_destination(
@@ -192,11 +366,13 @@ pimage_blit_argb_once(
 }
 
 static
-Bool PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
+Bool PImageLoadArgbDataFromInput(FIMAGE_CMD_ARGS)
 {
 	int done = 0, i = 0, tried = -1;
 	char *ext = NULL;
 
+	*argb_data = NULL;
+	*width = *height = 0;
 	if (path == NULL)
 		return False;
 
@@ -237,356 +413,68 @@ Bool PImageLoadArgbDataFromFile(FIMAGE_CMD_ARGS)
  * svg loader
  *
  */
-#if USE_SVG
-static
-Bool PImageLoadSvg(FIMAGE_CMD_ARGS)
-{
-	char *allocated_path;
-	char *render_opts;
-	FRsvgHandle *rsvg;
-	FRsvgDimensionData dim;
-	CARD32 *data;
-	Fcairo_surface_t *surface;
-	Fcairo_t *cr;
-	int i;
-	size_t pixel_count;
-	size_t pixel_index;
-	int j;
-	int b1;
-	int b2;
-	int w = 0;
-	int h = 0;
-	int dw = 0;
-	int dh = 0;
-	int w_sgn = 1;
-	int h_sgn = 1;
-	double angle = 0;
-	double w_scale = 1;
-	double h_scale = 1;
-	double extra_w_scale = 1;
-	double extra_h_scale = 1;
-	double buf;
-	Bool transpose = False;
-	unsigned char a_value;
-	unsigned char r_value;
-	unsigned char g_value;
-	unsigned char b_value;
-
-	if (!USE_SVG)
-	{
-		fvwm_debug(__func__,
-				"[PImageLoadSvg]: Tried to load SVG file "
-				"when FVWM has not been compiled with SVG support.\n");
-		return False;
-	}
-
-	/* Separate rendering options from path */
-	render_opts = path = allocated_path = fxstrdup(path);
-	if (*path == ':' && (path = strchr(path + 1, ':')))
-	{
-		*path = 0;
-		path ++;
-		render_opts ++;
-	}
-	else
-	{
-		render_opts = "";
-	}
-
-	if (!(rsvg = Frsvg_handle_new_from_file(path, NULL)))
-	{
-		free(allocated_path);
-
-		return False;
-	}
-
-	/* Parsing of rendering options */
-	while (*render_opts)
-	{
-		i = 0;
-		switch (*render_opts)
-		{
-		case '!':
-			transpose = !transpose;
-			break;
-		case '*':
-			if (sscanf(render_opts, "*%lf%n", &buf, &i) >= 1)
-			{
-				switch (render_opts[i])
-				{
-				case 'x':
-					w_scale *= buf;
-					i ++;
-					break;
-				case 'y':
-					h_scale *= buf;
-					i ++;
-					break;
-				default:
-					w_scale *= buf;
-					h_scale *= buf;
-				}
-			}
-			break;
-		case '/':
-			if (sscanf(render_opts, "/%lf%n", &buf, &i) >= 1 &&
-			    buf)
-			{
-				switch (render_opts[i])
-				{
-				case 'x':
-					w_scale /= buf;
-					i ++;
-					break;
-				case 'y':
-					h_scale /= buf;
-					i ++;
-					break;
-				default:
-					w_scale /= buf;
-					h_scale /= buf;
-				}
-			}
-			break;
-		case '@':
-			if (sscanf(render_opts, "@%lf%n", &buf, &i) >= 1)
-			{
-				angle += buf;
-			}
-			break;
-		default:
-			j = 0;
-			if (
-				sscanf(
-					render_opts, "%dx%n%d%n", &b1, &j, &b2,
-					&i) >= 2 &&
-				i > j)
-			{
-				w = b1;
-				h = b2;
-
-				if (w < 0 || (!w && render_opts[0] == '-'))
-				{
-					w *= (w_sgn = -1);
-				}
-				if (h < 0 || (!h && render_opts[j] == '-'))
-				{
-					h *= (h_sgn = -1);
-				}
-			}
-			else if (
-				sscanf(render_opts, "%d%d%n", &b1, &b2, &i) >=
-				2)
-			{
-				dw += b1;
-				dh += b2;
-			}
-		}
-		render_opts += i ? i : 1;
-	}
-	free(allocated_path);
-
-	/* Keep the original aspect ratio when either w or h is 0 */
-#if LIBRSVG_CHECK_VERSION(2,52,0)
-	double		ddw = 0, ddh = 0;
-	gboolean	has_out_w, has_out_h, has_vb;
-	RsvgLength	out_w, out_h;
-	RsvgRectangle	viewbox;
-
-	rsvg_handle_get_intrinsic_size_in_pixels(rsvg, &ddw, &ddh);
-
-	dim.width = ddw;
-	dim.height = ddh;
-
-	rsvg_handle_get_intrinsic_dimensions(rsvg, &has_out_w, &out_w,
-		&has_out_h, &out_h, &has_vb, &viewbox);
-
-	if (has_vb) {
-		dim.width = viewbox.width;
-		dim.height = viewbox.height;
-	}
-
-	dim.em = dim.width;
-	dim.ex = dim.height;
-	if (has_out_w)
-		dim.em = out_w.length <= dim.width ? dim.width : out_w.length;
-	if (has_out_h)
-		dim.ex = out_h.length <= dim.height ? dim.height : out_h.length;
-
-	fvwm_debug(__func__, "FINAL: DIM.EM: %f, DIM.EX: %f", dim.em, dim.ex);
-#else
-        Frsvg_handle_get_dimensions(rsvg, &dim);
-#endif
-	if (dim.width <= 0 || dim.height <= 0 || dim.em <= 0 || dim.ex <= 0)
-	{
-		Fg_object_unref(FG_OBJECT(rsvg));
-		return False;
-	}
-	if (target_width > 0 && target_height > 0)
-	{
-		if (target_width > (unsigned)INT_MAX ||
-		    target_height > (unsigned)INT_MAX)
-		{
-			Fg_object_unref(FG_OBJECT(rsvg));
-			return False;
-		}
-		w = (int)target_width;
-		h = (int)target_height;
-	}
-	else if (!w && !h)
-	{
-		int scaled_w = 0;
-		int scaled_h = 0;
-
-		if (wm_ui_scale_px(dim.width, factor, &scaled_w) !=
-			MONITOR_SCALE_CONVERSION_OK ||
-		    wm_ui_scale_px(dim.height, factor, &scaled_h) !=
-			MONITOR_SCALE_CONVERSION_OK)
-		{
-			Fg_object_unref(FG_OBJECT(rsvg));
-			return False;
-		}
-		w = scaled_w;
-		h = scaled_h;
-	}
-	else if (!w)
-	{
-		w = h * dim.em / dim.ex;
-	}
-	else if (!h)
-	{
-		h = w * dim.ex / dim.em;
-	}
-
-	extra_w_scale = w_scale;
-	extra_h_scale = h_scale;
-	w_scale *= w;
-	h_scale *= h;
-
-	if (transpose)
-	{
-		b1 = w;
-		w = h;
-		h = b1;
-
-		b1 = w_sgn;
-		w_sgn = - h_sgn;
-		h_sgn = b1;
-
-		b1 = dw;
-		dw = - dh;
-		dh = b1;
-
-		angle += 90;
-	}
-	if (w <= 0 || h <= 0 ||
-	    !FImageSizeIsSafe(
-		    (uint64_t)w, (uint64_t)h, PIMAGE_MAX_DIMENSION,
-		    PIMAGE_MAX_PIXELS, &pixel_count))
-	{
-		Fg_object_unref(FG_OBJECT(rsvg));
-		return False;
-	}
-
-	fvwm_debug(__func__, "SIZE: %zu", pixel_count * sizeof(CARD32));
-	data = fxcalloc(pixel_count, sizeof(CARD32));
-	surface = Fcairo_image_surface_create_for_data((unsigned char *)data,
-		FCAIRO_FORMAT_ARGB32, w, h, w * sizeof(CARD32));
-	if (Fcairo_surface_status(surface) != FCAIRO_STATUS_SUCCESS)
-	{
-		Fg_object_unref(FG_OBJECT(rsvg));
-		free(data);
-		if (surface)
-		{
-		   	Fcairo_surface_destroy(surface);
-		}
-
-		return False;
-	}
-	cr = Fcairo_create(surface);
-	Fcairo_surface_destroy(surface);
-	if (Fcairo_status(cr) != FCAIRO_STATUS_SUCCESS)
-	{
-		Fg_object_unref(FG_OBJECT(rsvg));
-		free(data);
-		if (cr)
-		{
-			Fcairo_destroy(cr);
-		}
-
-		return False;
-	}
-
-#if LIBRSVG_CHECK_VERSION(2,52,0)
-	GError *err = NULL;
-	RsvgRectangle vp;
-
-	/* Render once into the destination viewport. Extra * / path
-	 * scales, mirrors, and rotation stay as cairo drawing ops. */
-	Fcairo_translate(cr, .5 * w, .5 * h);
-	Fcairo_scale(cr, w_sgn * extra_w_scale, h_sgn * extra_h_scale);
-	Fcairo_translate(cr, dw, dh);
-	Fcairo_rotate(cr, angle * M_PI / 180);
-	Fcairo_translate(cr, -.5 * w, -.5 * h);
-
-	vp.x = 0;
-	vp.y = 0;
-	vp.width = w;
-	vp.height = h;
-
-	rsvg_handle_render_document(rsvg, cr, &vp, &err);
-#else
-	/* Affine transformations scale drawing ops, not a 1x raster. */
-	Fcairo_translate(cr, .5 * w, .5 * h);
-	Fcairo_scale(cr, w_sgn, h_sgn);
-	Fcairo_translate(cr, dw, dh);
-	Fcairo_rotate(cr, angle * M_PI / 180);
-	Fcairo_scale(cr, w_scale, h_scale);
-	Fcairo_translate(cr, -.5, -.5);
-	Fcairo_scale(cr, 1 / dim.em, 1 / dim.ex);
-	Frsvg_handle_render_cairo(rsvg, cr);
-#endif
-	Fg_object_unref(FG_OBJECT(rsvg));
-	Fcairo_destroy(cr);
-
-	/* Cairo gave us alpha prescaled RGB values, hence we need
-	 * to rescale them for PImageCreatePixmapFromArgbData() */
-	for (pixel_index = 0; pixel_index < pixel_count; pixel_index++)
-	{
-		if ((a_value = (data[pixel_index] >> 030) & 0xff))
-		{
-			r_value = ((data[pixel_index] >> 020) & 0xff) * 0xff /
-				a_value;
-			g_value = ((data[pixel_index] >> 010) & 0xff) * 0xff /
-				a_value;
-			b_value =  (data[pixel_index]         & 0xff) * 0xff /
-				a_value;
-
-			data[pixel_index] =
-				(a_value << 030) | (r_value << 020) |
-				(g_value << 010) | b_value;
-		}
-	}
-
-	*width = w;
-	*height = h;
-	*argb_data = data;
-
-	return True;
-}
-#else
 static Bool
 PImageLoadSvg(FIMAGE_CMD_ARGS)
 {
-	return (True);
-}
+#if USE_SVG
+	if (source->xpm_only)
+	{
+		return False;
+	}
+	if (source->defer_svg)
+	{
+		/* Preserve the cheap PNG rejection and non-SVG fallbacks. The
+		 * caller queues an SVG attempt only if no other format succeeds. */
+		source->svg_deferred = !(source->raw.length >= 4 &&
+		    memcmp(source->raw.bytes, "\211PNG", 4) == 0);
+		return False;
+	}
+	return image_svg_load(&source->raw, path, factor, target_width,
+	    target_height, argb_data, width, height);
+#else
+	return False;
 #endif
+}
 
 /*
  *
  * png loader
  *
  */
+#if PngSupport
+typedef struct
+{
+	jmp_buf jump;
+	CARD32 *data;
+	unsigned char **lines;
+	const image_input *input;
+	size_t position;
+} pimage_png_read;
+
+static void pimage_png_error(png_structp png, png_const_charp message)
+{
+	pimage_png_read *read = png_get_error_ptr(png);
+
+	/* Image contents are not diagnostic text. The heap-owned buffers remain
+	 * defined after longjmp, including failures during read_end. */
+	(void)message;
+	fvwm_debug(__func__, "PNG decode failed");
+	longjmp(read->jump, 1);
+}
+
+static void
+pimage_png_read_data(png_structp png, png_bytep bytes, png_size_t count)
+{
+	pimage_png_read *read = png_get_io_ptr(png);
+
+	if (count > read->input->length - read->position)
+	{
+		png_error(png, "short image input");
+	}
+	memcpy(bytes, read->input->bytes + read->position, count);
+	read->position += count;
+}
+
 static
 Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 {
@@ -595,69 +483,53 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_infop Finfo_ptr = NULL;
 	CARD32 *data;
 	int w, h;
-	char hasa = 0, hasg = 0;
-	FILE *f;
+	char hasa, hasg;
 	int bit_depth;
 	int color_type;
 	int interlace_type;
-	unsigned char buf[FPNG_BYTES_TO_CHECK];
 	unsigned char **lines;
+	pimage_png_read *read;
 	int i;
 	size_t pixel_count;
 	int dst_w;
 	int dst_h;
 	CARD32 *scaled;
 
-	if (!PngSupport)
-	{
-		/* suppress compiler warning */
-		bit_depth = 0;
-
-		fvwm_debug(__func__,
-				"[PImageLoadPng]: Tried to load PNG file "
-				"when FVWM has not been compiled with PNG support.\n");
-
-		return False;
-	}
-	if (!(f = fopen(path, "rb")))
+	if (source->svg_options || source->xpm_only ||
+	    source->raw.length < FPNG_BYTES_TO_CHECK ||
+	    !Fpng_check_sig(source->raw.bytes, FPNG_BYTES_TO_CHECK))
 	{
 		return False;
 	}
-	{
-		int n;
-
-		n = fread(buf, 1, FPNG_BYTES_TO_CHECK, f);
-		(void)n;
-	}
-	if (!Fpng_check_sig(buf, FPNG_BYTES_TO_CHECK))
-	{
-		fclose(f);
-		return False;
-	}
-	rewind(f);
+	read = fxcalloc(1, sizeof(*read));
+	read->input = &source->raw;
 	Fpng_ptr = Fpng_create_read_struct(FPNG_LIBPNG_VER_STRING,
 					   NULL, NULL, NULL);
+
 	if (!Fpng_ptr)
 	{
-		fclose(f);
+		free(read);
 		return False;
 	}
 	Finfo_ptr = Fpng_create_info_struct(Fpng_ptr);
 	if (!Finfo_ptr)
 	{
 		Fpng_destroy_read_struct(&Fpng_ptr, NULL, NULL);
-		fclose(f);
+		free(read);
 		return False;
 	}
-#if 0
-	if (setjmp(Fpng_ptr->jmpbuf))
+	if (setjmp(read->jump))
 	{
+		free(read->lines);
+		free(read->data);
 		Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, NULL);
-		fclose(f);
+		free(read);
 		return False;
 	}
-#endif
-	Fpng_init_io(Fpng_ptr, f);
+	/* Construction uses libpng's own recovery. Install our callback only
+	 * after its destination has been armed. */
+	png_set_error_fn(Fpng_ptr, read, pimage_png_error, NULL);
+	png_set_read_fn(Fpng_ptr, read, pimage_png_read_data);
 	Fpng_read_info(Fpng_ptr, Finfo_ptr);
 	Fpng_get_IHDR(
 		Fpng_ptr, Finfo_ptr, (Fpng_uint_32 *) (&w32),
@@ -669,7 +541,7 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 		    &pixel_count))
 	{
 		Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, NULL);
-		fclose(f);
+		free(read);
 		return False;
 	}
 	interlace_type = 0; /* not used */
@@ -680,30 +552,10 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 		Fpng_set_expand(Fpng_ptr);
 	}
 
-	/* TA:  XXX:  (2011-02-14) -- Happy Valentines Day.
-	 *
-	 * png_get_color_type() defined in libpng 1.5 now hides a data member
-	 * to a struct:
-	 *
-	 * Finfo_ptr->color_type
-	 *
-	 * I'm not going to wrap this up in more #ifdef madness, but should
-	 * this fail to build on much older libpng versions which we support
-	 * (pre 1.3), then I might have to.
-	 */
-	if (Fpng_get_color_type(Fpng_ptr, Finfo_ptr) == FPNG_COLOR_TYPE_RGB_ALPHA)
-	{
-		hasa = 1;
-	}
-	if (Fpng_get_color_type(Fpng_ptr, Finfo_ptr) == FPNG_COLOR_TYPE_GRAY_ALPHA)
-	{
-		hasa = 1;
-		hasg = 1;
-	}
-	if (Fpng_get_color_type(Fpng_ptr, Finfo_ptr) == FPNG_COLOR_TYPE_GRAY)
-	{
-		hasg = 1;
-	}
+	hasa = color_type == FPNG_COLOR_TYPE_RGB_ALPHA ||
+		color_type == FPNG_COLOR_TYPE_GRAY_ALPHA;
+	hasg = color_type == FPNG_COLOR_TYPE_GRAY ||
+		color_type == FPNG_COLOR_TYPE_GRAY_ALPHA;
 
 	if (hasa)
 		Fpng_set_expand(Fpng_ptr);
@@ -731,6 +583,8 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 
 	data = fxcalloc(pixel_count, sizeof(CARD32));
 	lines = fxcalloc((size_t)h, sizeof(unsigned char *));
+	read->data = data;
+	read->lines = lines;
 
 	if (hasg)
 	{
@@ -747,7 +601,7 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	Fpng_read_image(Fpng_ptr, lines);
 	Fpng_read_end(Fpng_ptr, Finfo_ptr);
 	Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, (png_infopp) NULL);
-	fclose(f);
+	free(read);
 	free(lines);
 	if (!pimage_resolve_destination(
 		    w, h, target_width, target_height, factor, &dst_w,
@@ -768,6 +622,14 @@ Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 	return True;
 }
 
+#else
+static Bool PImageLoadPng(FIMAGE_CMD_ARGS)
+{
+	fvwm_debug(__func__, "PNG support is disabled");
+	return False;
+}
+#endif
+
 /*
  *
  * xpm loader
@@ -777,6 +639,7 @@ static
 Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 {
 	FxpmImage xpm_im;
+	FxpmInfo xpm_info;
 	FxpmColor *xpm_color;
 	XColor color;
 	CARD32 *colors;
@@ -791,12 +654,6 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 	int dst_w;
 	int dst_h;
 	CARD32 *scaled;
-#ifdef HAVE_SIGACTION
-	struct sigaction defaultHandler;
-	struct sigaction originalHandler;
-#else
-	RETSIGTYPE (*originalHandler)(int);
-#endif
 
 	if (!XpmSupport)
 	{
@@ -807,30 +664,23 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 	}
 	memset(&xpm_im, 0, sizeof(FxpmImage));
 
-#ifdef HAVE_SIGACTION
-	sigemptyset(&defaultHandler.sa_mask);
-	defaultHandler.sa_flags = 0;
-	defaultHandler.sa_handler = SIG_DFL;
-	sigaction(SIGCHLD, &defaultHandler, &originalHandler);
-#else
-	originalHandler = signal(SIGCHLD, SIG_DFL);
-#endif
-
-
-	rc = FxpmReadFileToXpmImage(path, &xpm_im, NULL);
-
-#ifdef HAVE_SIGACTION
-	sigaction(SIGCHLD, &originalHandler, NULL);
-#else
-	signal(SIGCHLD, originalHandler);
-#endif
+	memset(&xpm_info, 0, sizeof(xpm_info));
+	source->xpm_hotspot[0] = source->xpm_hotspot[1] = -1;
+	rc = pimage_xpm_read(source, &xpm_im, &xpm_info);
+	if (rc == FxpmSuccess && (xpm_info.valuemask & FxpmHotspot))
+	{
+		source->xpm_hotspot[0] = xpm_info.x_hotspot;
+		source->xpm_hotspot[1] = xpm_info.y_hotspot;
+	}
+	FxpmFreeXpmInfo(&xpm_info);
 
 	if (rc != FxpmSuccess)
 	{
 		return False;
 	}
 
-	if (xpm_im.ncolors <= 0)
+	if (xpm_im.ncolors == 0 || xpm_im.ncolors > INT_MAX ||
+	    xpm_im.colorTable == NULL || xpm_im.data == NULL)
 	{
 		FxpmFreeXpmImage(&xpm_im);
 		return False;
@@ -862,7 +712,8 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 		{
 			visual_color = xpm_color->m_color;
 		}
-		if (XParseColor(dpy, Pcmap, visual_color, &color))
+		if (visual_color != NULL &&
+		    XParseColor(dpy, Pcmap, visual_color, &color))
 		{
 			colors[i] = 0xff000000 |
 				((color.red  << 8) & 0xff0000) |
@@ -879,9 +730,17 @@ Bool PImageLoadXpm(FIMAGE_CMD_ARGS)
 	data = fxcalloc(pixel_count, sizeof(CARD32));
 	for (pixel_index = 0; pixel_index < pixel_count; pixel_index++)
 	{
+		if (xpm_im.data[pixel_index] >= xpm_im.ncolors)
+		{
+			free(colors);
+			free(data);
+			FxpmFreeXpmImage(&xpm_im);
+			return False;
+		}
 		data[pixel_index] = colors[xpm_im.data[pixel_index]];
 	}
 	free(colors);
+	FxpmFreeXpmImage(&xpm_im);
 	if (!pimage_resolve_destination(
 		    w, h, target_width, target_height, factor, &dst_w,
 		    &dst_h) ||
@@ -943,11 +802,11 @@ Pixmap PImageCreatePixmapFromFImage(Display *dpy, Window win, FImage *fimage)
  * argb data to pixmaps
  *
  */
-Bool PImageCreatePixmapFromArgbData(
+static Bool pimage_create_pixmap_from_argb(
 	Display *dpy, Window win, CARD32 *data, size_t data_len, int start,
 	int width, int height, Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
 	int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
-	FvwmPictureAttributes fpa)
+	FvwmPictureAttributes fpa, picture_average *average)
 {
 	FImage *fim;
 	FImage *m_fim = NULL;
@@ -1005,6 +864,11 @@ Bool PImageCreatePixmapFromArgbData(
 	{
 		for (i = 0; i < width; i++, data++)
 		{
+			if (average != NULL &&
+			    !picture_average_add(average, *data))
+			{
+				goto average_failed;
+			}
 			a = (*data >> 030) & 0xff;
 			if (a > alpha_limit)
 			{
@@ -1073,6 +937,46 @@ Bool PImageCreatePixmapFromArgbData(
 	}
 
 	return True;
+
+average_failed:
+	/* The decoded size is already bounded, so this is an internal state
+	 * failure. Still release colors/images before refusing the picture. */
+	if (pica != NULL)
+	{
+		int allocated = 0, unlimited = 0;
+		Pixel *pixels = NULL;
+
+		PictureCloseImageColorAllocator(dpy, pica, &allocated,
+		    &pixels, &unlimited);
+		if (allocated > 0)
+		{
+			PictureFreeColors(dpy, Pcmap, pixels, allocated, 0,
+			    unlimited);
+		}
+		free(pixels);
+	}
+	FDestroyFImage(dpy, fim);
+	if (m_fim != NULL)
+	{
+		FDestroyFImage(dpy, m_fim);
+	}
+	if (a_fim != NULL)
+	{
+		FDestroyFImage(dpy, a_fim);
+	}
+	errno = EOVERFLOW;
+	return False;
+}
+
+Bool PImageCreatePixmapFromArgbData(
+	Display *dpy, Window win, CARD32 *data, size_t data_len, int start,
+	int width, int height, Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
+	int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit,
+	FvwmPictureAttributes fpa)
+{
+	return pimage_create_pixmap_from_argb(dpy, win, data, data_len,
+	    start, width, height, pixmap, mask, alpha, nalloc_pixels,
+	    alloc_pixels, no_limit, fpa, NULL);
 }
 
 
@@ -1082,54 +986,23 @@ Bool PImageCreatePixmapFromArgbData(
  *
  */
 
-Bool PImageLoadPixmapFromFile(
-	Display *dpy, Window win, char *path, Pixmap *pixmap, Pixmap *mask,
-	Pixmap *alpha, int *width, int *height, int *depth,
-	int *nalloc_pixels, Pixel **alloc_pixels,
-	int *no_limit, FvwmPictureAttributes fpa)
+static void
+pimage_reset_pixmap_outputs(Pixmap *pixmap, Pixmap *mask, Pixmap *alpha,
+	int *width, int *height, int *depth, int *nalloc_pixels,
+	Pixel **alloc_pixels, int *no_limit)
 {
-	CARD32 *data;
-	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
-
-	if (PImageLoadArgbDataFromFile(
-		    dpy, path, &data, width, height, factor, 0, 0))
+	if (pixmap != NULL)
 	{
-		size_t pixel_count;
-
-		if (*width <= 0 || *height <= 0 ||
-		    !FImageSizeIsSafe(
-			    (uint64_t)*width, (uint64_t)*height,
-			    PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS, &pixel_count))
-		{
-			free(data);
-			return False;
-		}
-		*depth = (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth;
-		if (PImageCreatePixmapFromArgbData(
-			dpy, win, data, pixel_count, 0, *width, *height, pixmap, mask,
-			alpha, nalloc_pixels, alloc_pixels, no_limit, fpa))
-		{
-			free(data);
-
-			return True;
-		}
-		free(data);
+		*pixmap = None;
 	}
-	/* Bitmap fallback */
-	else if (
-		XReadBitmapFile(
-			dpy, win, path, (unsigned int *)width,
-			(unsigned int *)height, pixmap, NULL, NULL) ==
-		BitmapSuccess)
+	if (mask != NULL)
 	{
-		*depth = 1;
 		*mask = None;
-
-		return True;
 	}
-	pixmap = None;
-	mask = None;
-	alpha = None;
+	if (alpha != NULL)
+	{
+		*alpha = None;
+	}
 	*width = *height = *depth = 0;
 	if (nalloc_pixels != NULL)
 	{
@@ -1139,39 +1012,120 @@ Bool PImageLoadPixmapFromFile(
 	{
 		*alloc_pixels = NULL;
 	}
-	return False;
+	if (no_limit != NULL)
+	{
+		*no_limit = False;
+	}
 }
 
-FvwmPicture *PImageLoadFvwmPictureFromFile(
+Bool PImageLoadPixmapFromFile(
+	Display *dpy, Window win, char *path, Pixmap *pixmap, Pixmap *mask,
+	Pixmap *alpha, int *width, int *height, int *depth,
+	int *nalloc_pixels, Pixel **alloc_pixels,
+	int *no_limit, FvwmPictureAttributes fpa)
+{
+	CARD32 *data = NULL;
+	pimage_source source = {0};
+	Bool success = False;
+	monitor_scale_factor factor = {MONITOR_SCALE_QUARTERS_MIN};
+
+	pimage_reset_pixmap_outputs(pixmap, mask, alpha, width, height, depth,
+	    nalloc_pixels, alloc_pixels, no_limit);
+	if (!pimage_source_open(path, &source))
+	{
+		goto done;
+	}
+	if (PImageLoadArgbDataFromInput(
+		    dpy, path, &source, &data, width, height, factor, 0, 0))
+	{
+		size_t pixel_count;
+
+		if (*width <= 0 || *height <= 0 ||
+		    !FImageSizeIsSafe(
+			    (uint64_t)*width, (uint64_t)*height,
+			    PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS, &pixel_count))
+		{
+			goto done;
+		}
+		*depth = (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth;
+		success = PImageCreatePixmapFromArgbData(
+		    dpy, win, data, pixel_count, 0, *width, *height, pixmap, mask,
+		    alpha, nalloc_pixels, alloc_pixels, no_limit, fpa);
+	}
+	else if (pimage_bitmap(dpy, win, &source, width, height, pixmap))
+	{
+		*depth = 1;
+		success = True;
+	}
+
+done:
+	free(data);
+	pimage_source_destroy(&source);
+	if (!success)
+	{
+		pimage_reset_pixmap_outputs(pixmap, mask, alpha, width, height,
+		    depth, nalloc_pixels, alloc_pixels, no_limit);
+	}
+	return success;
+}
+
+static FvwmPicture *picture_load_file(
 	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa,
 	monitor_scale_factor factor, unsigned target_width,
-	unsigned target_height)
+	unsigned target_height, Bool defer_svg, Bool *svg_deferred,
+	const image_input *input, const struct stat *metadata,
+	const image_input *xpm_input, Bool xpm_only)
 {
-	FvwmPicture *p;
+	FvwmPicture *p = NULL;
 	Pixmap pixmap = None;
 	Pixmap mask = None;
 	Pixmap alpha = None;
 	int width = 0, height = 0;
-	int depth = 0, no_limit;
+	int depth = 0, no_limit = 0;
 	int nalloc_pixels = 0;
 	Pixel *alloc_pixels = NULL;
-	char *real_path;
-	CARD32 *data;
+	CARD32 *data = NULL;
+	pimage_source source = {0};
+	picture_average average = {0};
 	size_t pixel_count;
 
-        /* Remove any svg rendering options from real_path */
-	if (USE_SVG && *path == ':' &&
-	    (real_path = strchr(path + 1, ':')))
+	if (input != NULL)
 	{
-		real_path ++;
+		if (metadata == NULL || input->length > FVWM_IMAGE_INPUT_LIMIT ||
+		    (input->length != 0 && input->bytes == NULL))
+		{
+			errno = EINVAL;
+			return NULL;
+		}
+		source.raw = *input;
+		source.raw_borrowed = True;
+		source.metadata = *metadata;
+		source.path = path;
+		char *options_end;
+
+		if (USE_SVG && path[0] == ':' &&
+		    (options_end = strchr(path + 1, ':')) != NULL)
+		{
+			source.path = options_end + 1;
+			source.svg_options = True;
+		}
 	}
-	else
+	else if (!pimage_source_open(path, &source))
 	{
-		real_path = path;
+		goto done;
 	}
-	if (PImageLoadArgbDataFromFile(
-		    dpy, path, &data, &width, &height, factor, target_width,
-		    target_height))
+	if (input != NULL)
+	{
+		/* The active owner has already attempted expansion. A NULL XPM
+		 * snapshot records refusal and must never trigger another wait. */
+		source.xpm_checked = True;
+		source.xpm_input = xpm_input;
+		source.xpm_only = xpm_only;
+	}
+	source.defer_svg = defer_svg;
+	if (PImageLoadArgbDataFromInput(
+		    dpy, path, &source, &data, &width, &height, factor,
+		    target_width, target_height))
 	{
 		if (width <= 0 || height <= 0 ||
 		    !FImageSizeIsSafe(
@@ -1179,32 +1133,25 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 			    PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS,
 			    &pixel_count))
 		{
-			free(data);
-			return NULL;
+			goto done;
 		}
 		depth = (fpa.mask & FPAM_MONOCHROME) ? 1 : Pdepth;
-		if (!PImageCreatePixmapFromArgbData(
+		if (!pimage_create_pixmap_from_argb(
 			    dpy, win, data, pixel_count, 0, width, height,
 			    &pixmap, &mask, &alpha, &nalloc_pixels,
-			    &alloc_pixels, &no_limit, fpa))
+			    &alloc_pixels, &no_limit, fpa,
+			    depth == 1 ? NULL : &average))
 		{
-			free(data);
-			return NULL;
+			goto done;
 		}
-		free(data);
 	}
-	else if (
-		XReadBitmapFile(
-			dpy, win, path, (unsigned int *)&width,
-			(unsigned int *)&height, &pixmap, NULL, NULL) ==
-		BitmapSuccess)
+	else if (pimage_bitmap(dpy, win, &source, &width, &height, &pixmap))
 	{
 		depth = 1;
-		mask = None;
 	}
 	else
 	{
-		return NULL;
+		goto done;
 	}
 
 	p = fxcalloc(1, sizeof(FvwmPicture));
@@ -1212,7 +1159,10 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	p->name = path;
 	p->fpa_mask = fpa.mask;
 	p->next = NULL;
-	setFileStamp(&p->stamp, real_path);
+	/* Keep the existing cache stamp formula, using the opened image's
+	 * metadata rather than stamping a possibly replaced pathname. */
+	p->stamp = ((FileStamp)source.metadata.st_mtime << 13) +
+	    (FileStamp)source.metadata.st_size;
 	p->picture = pixmap;
 	p->mask = mask;
 	p->alpha = alpha;
@@ -1222,7 +1172,102 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	p->nalloc_pixels = nalloc_pixels;
 	p->alloc_pixels = alloc_pixels;
 	p->no_limit = no_limit;
+	p->color_cmap = Pcmap;
+	if (depth != 1)
+	{
+		p->average_valid = True;
+		p->average_has_pixels = picture_average_finish(&average,
+		    p->average_rgb);
+	}
+
+done:
+	if (svg_deferred != NULL)
+	{
+		*svg_deferred = source.svg_deferred;
+	}
+	free(data);
+	pimage_source_destroy(&source);
 	return p;
+}
+
+FvwmPicture *PImageLoadFvwmPictureFromFile(
+	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa,
+	monitor_scale_factor factor, unsigned target_width,
+	unsigned target_height)
+{
+	return picture_load_file(dpy, win, path, fpa, factor, target_width,
+	    target_height, False, NULL, NULL, NULL, NULL, False);
+}
+
+FvwmPicture *picture_load_non_svg(Display *dpy, Window win, char *path,
+	FvwmPictureAttributes fpa, monitor_scale_factor factor,
+	unsigned target_width, unsigned target_height, Bool *svg_deferred)
+{
+	if (svg_deferred == NULL)
+	{
+		errno = EINVAL;
+		return NULL;
+	}
+	*svg_deferred = False;
+	return picture_load_file(dpy, win, path, fpa, factor, target_width,
+	    target_height, True, svg_deferred, NULL, NULL, NULL, False);
+}
+
+FvwmPicture *picture_load_non_svg_input(Display *dpy, Window win, char *path,
+	const image_input *input, const struct stat *metadata,
+	const image_input *xpm_input, FvwmPictureAttributes fpa,
+	monitor_scale_factor factor,
+	unsigned target_width, unsigned target_height)
+{
+	if (path == NULL || input == NULL)
+	{
+		errno = EINVAL;
+		return NULL;
+	}
+	return picture_load_file(dpy, win, path, fpa, factor, target_width,
+	    target_height, True, NULL, input, metadata, xpm_input, False);
+}
+
+Bool
+picture_decode_xpm_cursor_input(Display *dpy, char *path,
+	const image_input *input, const image_input *xpm_input,
+	monitor_scale_factor factor, unsigned target_width,
+	unsigned target_height, CARD32 **pixels, int *width, int *height, int hotspot[2])
+{
+	pimage_source source = {0};
+
+	*pixels = NULL;
+	*width = *height = 0;
+	if (input == NULL || path == NULL)
+	{
+		return False;
+	}
+	source.raw = *input;
+	source.raw_borrowed = source.xpm_only = source.xpm_checked = True;
+	source.path = path;
+	source.xpm_input = xpm_input;
+	if (USE_SVG && path[0] == ':' && strchr(path + 1, ':') != NULL)
+	{
+		source.svg_options = True;
+	}
+	Bool loaded = PImageLoadXpm(dpy, path, &source, pixels, width, height,
+	    factor, target_width, target_height);
+
+	if (hotspot != NULL)
+	{
+		hotspot[0] = loaded ? source.xpm_hotspot[0] : -1;
+		hotspot[1] = loaded ? source.xpm_hotspot[1] : -1;
+	}
+	return loaded;
+}
+
+Bool picture_decode_xpm_input(Display *dpy, char *path,
+	const image_input *input, const image_input *xpm_input,
+	monitor_scale_factor factor, unsigned target_width,
+	unsigned target_height, CARD32 **pixels, int *width, int *height)
+{
+	return picture_decode_xpm_cursor_input(dpy, path, input, xpm_input,
+	    factor, target_width, target_height, pixels, width, height, NULL);
 }
 
 static int
@@ -1264,11 +1309,97 @@ pimage_cursor_scale_hotspot(
 	}
 }
 
+#ifdef HAVE_XCURSOR
+typedef struct
+{
+	const image_input *input;
+	size_t position;
+} pimage_cursor_input;
+
+static int
+pimage_cursor_read(XcursorFile *file, unsigned char *bytes, int count)
+{
+	pimage_cursor_input *input = file->closure;
+	size_t available = input->input->length - input->position;
+
+	if (count <= 0)
+	{
+		return 0;
+	}
+	if (available > (size_t)count)
+	{
+		available = (size_t)count;
+	}
+	memcpy(bytes, input->input->bytes + input->position, available);
+	input->position += available;
+	return (int)available;
+}
+
+static int
+pimage_cursor_seek(XcursorFile *file, long offset, int whence)
+{
+	pimage_cursor_input *input = file->closure;
+	size_t base;
+
+	switch (whence)
+	{
+	case SEEK_SET:
+		base = 0;
+		break;
+	case SEEK_CUR:
+		base = input->position;
+		break;
+	case SEEK_END:
+		base = input->input->length;
+		break;
+	default:
+		return -1;
+	}
+	if (offset < 0)
+	{
+		uintmax_t magnitude = (uintmax_t)(-(offset + 1)) + 1;
+
+		if (magnitude > base)
+		{
+			return -1;
+		}
+		input->position = base - (size_t)magnitude;
+	}
+	else
+	{
+		if ((uintmax_t)offset > input->input->length - base)
+		{
+			return -1;
+		}
+		input->position = base + (size_t)offset;
+	}
+	return 0;
+}
+#endif
+
+static FcursorImages *
+pimage_cursor_images(pimage_source *source, int nominal)
+{
+#ifdef HAVE_XCURSOR
+	pimage_cursor_input input = {&source->raw, 0};
+	XcursorFile file = {&input, pimage_cursor_read, NULL, pimage_cursor_seek};
+
+	if (source->svg_options || source->xpm_only)
+	{
+		return NULL;
+	}
+	return XcursorXcFileLoadImages(&file, nominal);
+#else
+	return NULL;
+#endif
+}
+
 Cursor PImageLoadCursorFromFile(
 	Display *dpy, Window win, char *path, int x_hot, int y_hot,
 	monitor_scale_factor factor)
 {
 	Cursor cursor = 0;
+	pimage_source source = {0};
 	CARD32 *data;
 	int width;
 	int height;
@@ -1278,9 +1409,14 @@ Cursor PImageLoadCursorFromFile(
 	FcursorImage *fci;
 	monitor_scale_factor one_x = {MONITOR_SCALE_QUARTERS_MIN};
 
+	if (!pimage_source_open(path, &source))
+	{
+		pimage_source_destroy(&source);
+		return 0;
+	}
 	nominal = pimage_cursor_nominal_px(factor);
 	/* First try the Xcursor loader (animated cursors) */
-	if ((fcis = FcursorFilenameLoadImages(path, nominal)))
+	if ((fcis = pimage_cursor_images(&source, nominal)))
 	{
 		for (i = 0; i < fcis->nimage; i++)
 		{
@@ -1318,8 +1454,8 @@ Cursor PImageLoadCursorFromFile(
 		FcursorImagesDestroy(fcis);
 	}
 	/* Get cursor data from the regular image loader */
-	else if (PImageLoadArgbDataFromFile(
-		    dpy, path, &data, &width, &height, factor, 0, 0))
+	else if (PImageLoadArgbDataFromInput(
+		    dpy, path, &source, &data, &width, &height, factor, 0, 0))
 	{
 		Pixmap src;
 		Pixmap msk = None;
@@ -1335,7 +1471,7 @@ Cursor PImageLoadCursorFromFile(
 
 			memset(&xpm_im, 0, sizeof(FxpmImage));
 			memset(&xpm_info, 0, sizeof(FxpmInfo));
-			if (FxpmReadFileToXpmImage(path, &xpm_im, &xpm_info)
+			if (pimage_xpm_read(&source, &xpm_im, &xpm_info)
 			    == FxpmSuccess)
 			{
 				if (xpm_info.valuemask & FxpmHotspot)
@@ -1388,14 +1524,18 @@ Cursor PImageLoadCursorFromFile(
 				blue  = ((data[i]      ) & 0xff) * alpha/0xff;
 
 				data[i] =
-					(alpha << 24) | (red << 16) |
-					(green <<  8) | blue;
+					((CARD32)alpha << 24) |
+					((CARD32)red << 16) |
+					((CARD32)green << 8) | blue;
 			}
 
 			fci->xhot = x_hot;
 			fci->yhot = y_hot;
 			fci->delay = 0;
-			fci->pixels = (FcursorPixel *)data;
+			/* Xcursor owns its allocated pixels; do not replace that
+			 * pointer with data which this function also frees. */
+			memcpy(fci->pixels, data,
+			    (size_t)width * (size_t)height * sizeof(CARD32));
 			cursor = FcursorImageLoadCursor(dpy, fci);
 			FcursorImageDestroy(fci);
 		}
@@ -1413,11 +1553,15 @@ Cursor PImageLoadCursorFromFile(
 			cursor = XCreatePixmapCursor(
 				dpy, src, msk, &(c[0]), &(c[1]), x_hot, y_hot);
 			XFreePixmap(dpy, src);
-			XFreePixmap(dpy, msk);
+			if (msk != None)
+			{
+				XFreePixmap(dpy, msk);
+			}
 		}
 		free(data);
 	}
 
+	pimage_source_destroy(&source);
 	return cursor;
 }
 

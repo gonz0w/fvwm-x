@@ -16,6 +16,8 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "menu_image.h"
+#include "libs/picture_view.h"
 
 #include <stdio.h>
 
@@ -186,13 +188,13 @@ void menuitem_free(struct MenuItem *mi)
 	}
 	if (MI_PICTURE(mi))
 	{
-		PDestroyFvwmPicture(dpy, MI_PICTURE(mi));
+		menu_image_destroy(&MI_PICTURE(mi));
 	}
 	for (i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++)
 	{
 		if (MI_MINI_ICON(mi)[i])
 		{
-			PDestroyFvwmPicture(dpy, MI_MINI_ICON(mi)[i]);
+			menu_image_destroy(&MI_MINI_ICON(mi)[i]);
 		}
 	}
 	free(mi);
@@ -227,14 +229,14 @@ struct MenuItem *menuitem_clone(struct MenuItem *mi)
 	}
 	if (MI_PICTURE(mi) != NULL)
 	{
-		MI_PICTURE(new_mi) = PCloneFvwmPicture(MI_PICTURE(mi));
+		MI_PICTURE(new_mi) = picture_snapshot(MI_PICTURE(mi));
 	}
 	for (i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++)
 	{
 		if (MI_MINI_ICON(mi)[i] != NULL)
 		{
 			MI_MINI_ICON(new_mi)[i] =
-				PCloneFvwmPicture(MI_MINI_ICON(mi)[i]);
+				picture_snapshot(MI_MINI_ICON(mi)[i]);
 		}
 	}
 
@@ -304,13 +306,14 @@ void menuitem_get_size(
 			}
 		}
 	}
-	if (MI_PICTURE(mi) && mipst->picture_width < MI_PICTURE(mi)->width)
+	if (picture_is_usable(MI_PICTURE(mi)) &&
+	    mipst->picture_width < MI_PICTURE(mi)->width)
 	{
 		mipst->picture_width = MI_PICTURE(mi)->width;
 	}
 	for (i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++)
 	{
-		if (MI_MINI_ICON(mi)[i])
+		if (picture_is_usable(MI_MINI_ICON(mi)[i]))
 		{
 			int k;
 
@@ -393,14 +396,14 @@ void menuitem_paint(
 			ST_TITLE_GAP_ABOVE(ms);
 	}
 	/* center text vertically if the pixmap is taller */
-	if (MI_PICTURE(mi))
+	if (picture_is_usable(MI_PICTURE(mi)))
 	{
 		text_y += MI_PICTURE(mi)->height;
 	}
 	for (i = 0; i < mpip->used_mini_icons; i++)
 	{
 		y = 0;
-		if (MI_MINI_ICON(mi)[i])
+		if (picture_is_usable(MI_MINI_ICON(mi)[i]))
 		{
 			if (MI_MINI_ICON(mi)[i]->height > y)
 			{
@@ -485,7 +488,7 @@ void menuitem_paint(
 					y_offset + relief_thickness,
 					lit_x_end - lit_x_start,
 					y_height - relief_thickness,
-					&Colorset[cs], gcs.back_gc);
+					GetColorset(cs), gcs.back_gc);
 				item_cleared = True;
 			}
 		}
@@ -528,7 +531,7 @@ void menuitem_paint(
 				y_offset + relief_thickness,
 				lit_x_end - lit_x_start,
 				y_height - relief_thickness,
-				&Colorset[cs], gcs.back_gc);
+				GetColorset(cs), gcs.back_gc);
 			item_cleared = True;
 		}
 	}
@@ -713,7 +716,7 @@ void menuitem_paint(
 			}
 			if (tmp_cs >= 0)
 			{
-				fws->colorset = &Colorset[tmp_cs];
+				fws->colorset = GetColorset(tmp_cs);
 				fws->flags.has_colorset = 1;
 			}
 			fws->str = MI_LABEL(mi)[i];
@@ -844,7 +847,7 @@ void menuitem_paint(
 	 * Draw the item picture.
 	 */
 
-	if (MI_PICTURE(mi))
+	if (picture_is_usable(MI_PICTURE(mi)))
 	{
 		GC tmp_gc;
 		int tmp_cs;
@@ -867,7 +870,7 @@ void menuitem_paint(
 		if (tmp_cs >= 0)
 		{
 			fra.mask |= FRAM_HAVE_ICON_CSET;
-			fra.colorset = &Colorset[tmp_cs];
+			fra.colorset = GetColorset(tmp_cs);
 		}
 		b.x = x;
 		b.y = y;
@@ -890,7 +893,7 @@ void menuitem_paint(
 				!item_cleared &&
 				(MI_PICTURE(mi)->alpha != None ||
 				 (tmp_cs >=0 &&
-				  Colorset[tmp_cs].icon_alpha_percent < 100)))
+				  GetColorset(tmp_cs)->icon_alpha_percent < 100)))
 			{
 				XClearArea(dpy, mpip->w, b.x, b.y,
 					   b.width, b.height, False);
@@ -917,12 +920,12 @@ void menuitem_paint(
 		k = (ST_USE_LEFT_SUBMENUS(ms)) ?
 			mpip->used_mini_icons - 1 - i : i;
 
-		if (MI_MINI_ICON(mi)[i])
+		if (picture_is_usable(MI_MINI_ICON(mi)[i]))
 		{
 			GC tmp_gc;
 			int tmp_cs;
 
-			if (MI_PICTURE(mi))
+			if (picture_is_usable(MI_PICTURE(mi)))
 			{
 				y = y_offset + MI_HEIGHT(mi) -
 					MI_MINI_ICON(mi)[i]->height;
@@ -952,7 +955,7 @@ void menuitem_paint(
 			if (tmp_cs >= 0)
 			{
 				fra.mask |= FRAM_HAVE_ICON_CSET;
-				fra.colorset = &Colorset[tmp_cs];
+				fra.colorset = GetColorset(tmp_cs);
 			}
 			b.x = MDIM_ICON_X_OFFSET(*dim)[k];
 			b.y = y;
@@ -975,7 +978,7 @@ void menuitem_paint(
 				if (!item_cleared &&
 				    (MI_MINI_ICON(mi)[i]->alpha != None
 				     || (tmp_cs >=0 &&
-					 Colorset[tmp_cs].icon_alpha_percent <
+					 GetColorset(tmp_cs)->icon_alpha_percent <
 					 100)))
 				{
 					XClearArea(dpy, mpip->w, b.x, b.y,

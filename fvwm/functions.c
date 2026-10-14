@@ -391,6 +391,38 @@ static Bool DeferExecution(
 	return False;
 }
 
+const func_t *functions_interaction_builtin(const char *action)
+{
+	cmdparser_context_t pc;
+	const func_t *builtin = NULL;
+	char *name = NULL;
+
+	/* Use the command engine's prefix handling, but do not expand a
+	 * command name or speculate about complex functions/conditionals. */
+	if (cmdparser_hooks->create_context(
+		&pc, NULL, (char *)action, NULL, NULL) != 0)
+	{
+		return NULL;
+	}
+	if (cmdparser_hooks->handle_line_start(&pc) == 0)
+	{
+		cmdparser_hooks->handle_line_prefix(&pc);
+		GetNextToken(pc.cline, &name);
+		if (name != NULL && strchr(name, '$') == NULL)
+		{
+			builtin = find_builtin_function(name);
+			if (builtin != NULL &&
+			    !(builtin->flags & FUNC_INTERACTION_SAFE))
+			{
+				builtin = NULL;
+			}
+		}
+	}
+	free(name);
+	cmdparser_hooks->destroy_context(&pc);
+	return builtin;
+}
+
 static void _execute_command_line(
 	cond_rc_t *cond_rc, const exec_context_t *exc, char *xaction,
 	cmdparser_context_t *caller_pc,

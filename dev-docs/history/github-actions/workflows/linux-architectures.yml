@@ -1,0 +1,72 @@
+name: Native Linux architecture verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-x-session:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+        compiler: [gcc, clang]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      CC: ${{ matrix.compiler }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install native build and X dependencies
+        run: sudo sh tests/install_linux_dependencies.sh
+      - name: Install the verified Meson version
+        run: |
+          python3 -m venv builddir/meson-env
+          builddir/meson-env/bin/pip install meson==1.7.0
+          echo "$GITHUB_WORKSPACE/builddir/meson-env/bin" >> "$GITHUB_PATH"
+      - name: Run native architecture gate
+        run: sh tests/run_on_linux.sh
+      - name: Preserve architecture test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.runner }}-${{ matrix.compiler }}
+          path: |
+            builddir/linux-native/meson-logs/
+            builddir/linux-native/tests/live-x-artifacts/
+
+  sanitizers:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo sh tests/install_linux_dependencies.sh
+      - name: Build and test on a native Linux CPU with sanitizers
+        env:
+          CC: gcc
+        run: |
+          python3 -m venv builddir/meson-env
+          builddir/meson-env/bin/pip install meson==1.7.0
+          builddir/meson-env/bin/meson setup builddir/sanitizers \
+            --buildtype=debug -Dgolang=disabled -Dlive-x-tests=true \
+            -Db_sanitize=address,undefined \
+            -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled \
+            -Dsvg=enabled -Dcairo=enabled
+          builddir/meson-env/bin/meson compile -C builddir/sanitizers -j 2
+          builddir/meson-env/bin/meson test -C builddir/sanitizers --print-errorlogs
+      - name: Preserve sanitizer evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.runner }}-sanitizers
+          path: builddir/sanitizers/meson-logs/

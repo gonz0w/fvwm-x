@@ -5,46 +5,28 @@ default_confdir = join_paths(
 )
 
 default_conf_files = [
-    'images/background/bg1.png',
-    'images/background/bg2.png',
-    'images/background/bg3.png',
-    'images/bgicons/bg1.png',
-    'images/bgicons/bg2.png',
-    'images/bgicons/bg3.png',
-    'images/icons/win/bottom.png',
-    'images/icons/win/close.png',
-    'images/icons/win/destroy.png',
-    'images/icons/win/done.png',
-    'images/icons/win/iconify.png',
-    'images/icons/win/lower.png',
-    'images/icons/win/max.png',
-    'images/icons/win/move.png',
-    'images/icons/win/raise.png',
-    'images/icons/win/resize.png',
-    'images/icons/win/sendto.png',
-    'images/icons/win/shade.png',
-    'images/icons/win/stays.png',
-    'images/icons/win/sticky.png',
-    'images/icons/win/title.png',
-    'images/icons/win/top.png',
-    'images/icons/apps.png',
-    'images/icons/conf.png',
-    'images/icons/help.png',
-    'images/icons/info.png',
-    'images/icons/programs.png',
-    'images/icons/quit.png',
-    'images/icons/refresh.png',
-    'images/icons/restart.png',
-    'images/icons/run_arrow.png',
-    'images/icons/terminal.png',
-    'images/icons/wallpaper.png',
-    'images/fvwm-logo-small.png',
-    'FvwmScript-ConfirmCopyConfig',
-    'FvwmScript-ConfirmQuit',
-    'FvwmScript-DateTime',
-    'stalonetrayrc',
     'config',
+    'desktop.fvwm',
+    'palettes.json',
+    'fvwm-x.png',
 ]
+
+# The desktop needs only the Python runtime already required by FVWM.
+file_config.set('DESKTOP_PNG', libpng.found() ? 'true' : 'false')
+fvwm_desktop = configure_file(
+    input: 'desktop.py',
+    output: 'FvwmDesktop',
+    configuration: file_config,
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_mode: install_mask_755,
+)
+
+foreach palette : ['slate', 'dune', 'grove', 'ink']
+    foreach appearance : ['light', 'dark']
+        default_conf_files += 'wallpapers' / (palette + '-' + appearance + '.png')
+    endforeach
+endforeach
 
 install_data(
     default_conf_files,

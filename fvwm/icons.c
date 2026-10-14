@@ -20,6 +20,8 @@
  */
 
 #include "config.h"
+#include "libs/picture_async.h"
+#include "libs/picture_view.h"
 
 #include <stdio.h>
 #ifdef HAVE_FCNTL_H
@@ -31,11 +33,13 @@
 #include "libs/FShape.h"
 #include "libs/Parse.h"
 #include "libs/Picture.h"
+#include "libs/PictureUtils.h"
+#include "libs/System.h"
 #include "libs/Graphics.h"
 #include "libs/PictureGraphics.h"
 #include "libs/FRenderInit.h"
 #include "libs/FEvent.h"
-#include "libs/Rectangles.c"
+#include "libs/Rectangles.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
 #include "libs/safemalloc.h"
@@ -88,6 +92,51 @@ static void clear_icon_dimensions(FvwmWindow *fw)
 	return;
 }
 /* erase all traces of the last used icon in the window structure */
+void file_icon_cancel(FvwmWindow *fw, Bool preserve_picture)
+{
+	FvwmPicture *requested = fw->file_icon_requested;
+
+	fw->file_icon_requested = NULL;
+	PDestroyFvwmPicture(dpy, requested);
+	if (!preserve_picture)
+	{
+		FvwmPicture *picture = fw->file_icon_picture;
+
+		fw->file_icon_picture = NULL;
+		PDestroyFvwmPicture(dpy, picture);
+	}
+}
+
+void release_icon_pixmaps(FvwmWindow *fw)
+{
+	if (IS_PIXMAP_OURS(fw))
+	{
+		if (fw->iconPixmap != None)
+		{
+			XFreePixmap(dpy, fw->iconPixmap);
+		}
+		if (fw->icon_maskPixmap != None)
+		{
+			XFreePixmap(dpy, fw->icon_maskPixmap);
+		}
+		if (fw->icon_alphaPixmap != None)
+		{
+			XFreePixmap(dpy, fw->icon_alphaPixmap);
+		}
+		if (fw->icon_alloc_pixels != NULL)
+		{
+			PictureFreeColors(dpy, Pcmap, fw->icon_alloc_pixels,
+			    fw->icon_nalloc_pixels, 0, fw->icon_no_limit);
+			free(fw->icon_alloc_pixels);
+		}
+	}
+	fw->iconPixmap = fw->icon_maskPixmap = fw->icon_alphaPixmap = None;
+	fw->icon_alloc_pixels = NULL;
+	fw->icon_nalloc_pixels = 0;
+	fw->icon_no_limit = 0;
+	SET_PIXMAP_OURS(fw, 0);
+}
+
 void clear_icon(FvwmWindow *fw)
 {
 	FW_W_ICON_PIXMAP(fw) = None;
@@ -260,6 +309,10 @@ static void SetIconPixmapSize(
 	}
 
 	XFreeGC(dpy, gc);
+	if (resizedPixmap != None)
+	{
+		XFreePixmap(dpy, resizedPixmap);
+	}
 
 	if (freeOldPixmap)
 	{
@@ -277,6 +330,7 @@ void GetIconPicture(FvwmWindow *fw, Bool no_icon_window)
 {
 	char icon_order[4];
 	int i;
+	Bool tried_file = False;
 
 	/* First, see if it was specified in the .fvwmrc */
 	if (ICON_OVERRIDE_MODE(fw) == ICON_OVERRIDE)
@@ -335,6 +389,10 @@ void GetIconPicture(FvwmWindow *fw, Bool no_icon_window)
 	fw->iconPixmap = None;
 	fw->icon_maskPixmap = None;
 	fw->icon_alphaPixmap= None;
+	fw->icon_alloc_pixels = NULL;
+	fw->icon_nalloc_pixels = 0;
+	fw->icon_no_limit = 0;
+	SET_PIXMAP_OURS(fw, 0);
 	FW_W_ICON_PIXMAP(fw) = None;
 	for (i = 0; i < 4 && fw->icon_g.picture_w_g.width == 0 &&
 		     fw->icon_g.picture_w_g.height == 0; i++)
@@ -345,6 +403,7 @@ void GetIconPicture(FvwmWindow *fw, Bool no_icon_window)
 			/* Next, check for a color pixmap */
 			if (fw->icon_bitmap_file)
 			{
+				tried_file = True;
 				GetIconFromFile(fw);
 			}
 			break;
@@ -383,6 +442,15 @@ void GetIconPicture(FvwmWindow *fw, Bool no_icon_window)
 			/* can't happen */
 			break;
 		}
+		if (tried_file && fw->file_icon_requested != NULL &&
+		    fw->file_icon_requested->pending)
+		{
+			break;
+		}
+	}
+	if (!tried_file)
+	{
+		file_icon_cancel(fw, True);
 	}
 
 	/* Resize icon if necessary */
@@ -484,6 +552,7 @@ void GetIconPicture(FvwmWindow *fw, Bool no_icon_window)
 			}
 
 			/* Set the new dimensions of the icon window */
+			SET_PIXMAP_OURS(fw, 1);
 			fw->icon_g.picture_w_g.width = newWidth;
 			fw->icon_g.picture_w_g.height = newHeight;
 		}
@@ -511,7 +580,7 @@ static void set_icon_pixmap_background(FvwmWindow *fw)
 				dpy, FW_W_ICON_PIXMAP(fw),
 				fw->icon_g.picture_w_g.width,
 				fw->icon_g.picture_w_g.height,
-				&Colorset[fw->icon_background_cs],
+				GetColorset(fw->icon_background_cs),
 				Pdepth, Scr.StdGC, False);
 		}
 		else if (FShapesSupported &&
@@ -526,7 +595,7 @@ static void set_icon_pixmap_background(FvwmWindow *fw)
 				dpy, FW_W_ICON_PIXMAP(fw),
 				fw->icon_g.picture_w_g.width,
 				fw->icon_g.picture_w_g.height,
-				&Colorset[cs], Pdepth,
+				GetColorset(cs), Pdepth,
 				Scr.StdGC, False);
 		}
 	}
@@ -551,6 +620,7 @@ void CreateIconWindow(FvwmWindow *fw, int def_x, int def_y)
 
 	old_icon_w = FW_W_ICON_TITLE(fw);
 	old_icon_pixmap_w = (IS_ICON_OURS(fw)) ? FW_W_ICON_PIXMAP(fw) : None;
+	release_icon_pixmaps(fw);
 	if (!IS_ICON_OURS(fw) && FW_W_ICON_PIXMAP(fw))
 	{
 		XUnmapWindow(dpy, FW_W_ICON_PIXMAP(fw));
@@ -603,7 +673,7 @@ void CreateIconWindow(FvwmWindow *fw, int def_x, int def_y)
 	valuemask = CWColormap | CWBorderPixel | CWBackPixel | CWCursor |
 		CWEventMask;
 	attributes.colormap = Pcmap;
-	attributes.background_pixel = Colorset[cs].bg;
+	attributes.background_pixel = GetColorset(cs)->bg;
 	attributes.cursor = Scr.FvwmCursors[CRS_DEFAULT];
 	attributes.border_pixel = 0;
 	attributes.event_mask = XEVMASK_ICONW;
@@ -640,7 +710,7 @@ void CreateIconWindow(FvwmWindow *fw, int def_x, int def_y)
 	SetWindowBackground(
 		dpy, FW_W_ICON_TITLE(fw), fw->icon_g.title_w_g.width,
 		fw->icon_g.title_w_g.height,
-		&Colorset[cs], Pdepth, Scr.StdGC,
+		GetColorset(cs), Pdepth, Scr.StdGC,
 		False);
 
 	/*
@@ -922,7 +992,7 @@ void DrawIconTitleWindow(
 	{
 		SetWindowBackground(
 			dpy, FW_W_ICON_TITLE(fw), w_title_w,
-			ICON_HEIGHT(fw), &Colorset[title_cs], Pdepth,
+			ICON_HEIGHT(fw), GetColorset(title_cs), Pdepth,
 			Scr.TitleGC, False);
 	}
 	else
@@ -1041,12 +1111,12 @@ void DrawIconTitleWindow(
 		fstr.gc = Scr.TitleGC;
 		if (title_cs >= 0)
 		{
-			fstr.colorset = &Colorset[title_cs];
+			fstr.colorset = GetColorset(title_cs);
 			fstr.flags.has_colorset = 1;
 		}
 		else if (cs >= 0)
 		{
-			fstr.colorset = &Colorset[cs];
+			fstr.colorset = GetColorset(cs);
 			fstr.flags.has_colorset = 1;
 		}
 		fstr.x = x_title;
@@ -1133,7 +1203,7 @@ void DrawIconPixmapWindow(
 			if (cs >= 0)
 			{
 				fra.mask |= FRAM_HAVE_ICON_CSET;
-				fra.colorset = &Colorset[cs];
+				fra.colorset = GetColorset(cs);
 			}
 			r.x = r.y = abs(fw->icon_background_relief) +
 				fw->icon_background_padding;
@@ -1165,7 +1235,7 @@ void DrawIconPixmapWindow(
 				if (!cleared &&
 				    (fw->icon_alphaPixmap ||
 				     (cs >= 0 &&
-				      Colorset[cs].icon_alpha_percent < 100)))
+				      GetColorset(cs)->icon_alpha_percent < 100)))
 				{
 					XClearArea(
 						dpy, FW_W_ICON_PIXMAP(fw),
@@ -1245,10 +1315,10 @@ void DrawIconWindow(
 		if (fw->icon_title_cs_hi >= 0)
 		{
 			title_cs = fw->icon_title_cs_hi;
-			draw_colors.hilight = Colorset[title_cs].hilite;
-			draw_colors.shadow = Colorset[title_cs].shadow;
-			draw_colors.back = Colorset[title_cs].bg;
-			draw_colors.fore = Colorset[title_cs].fg;
+			draw_colors.hilight = GetColorset(title_cs)->hilite;
+			draw_colors.shadow = GetColorset(title_cs)->shadow;
+			draw_colors.back = GetColorset(title_cs)->bg;
+			draw_colors.fore = GetColorset(title_cs)->fg;
 		}
 		else
 		{
@@ -1260,10 +1330,10 @@ void DrawIconWindow(
 		if (fw->icon_title_cs >= 0)
 		{
 			co_title_cs = fw->icon_title_cs;
-			co_draw_colors.hilight = Colorset[co_title_cs].hilite;
-			co_draw_colors.shadow = Colorset[co_title_cs].shadow;
-			co_draw_colors.back = Colorset[co_title_cs].bg;
-			co_draw_colors.fore = Colorset[co_title_cs].fg;
+			co_draw_colors.hilight = GetColorset(co_title_cs)->hilite;
+			co_draw_colors.shadow = GetColorset(co_title_cs)->shadow;
+			co_draw_colors.back = GetColorset(co_title_cs)->bg;
+			co_draw_colors.fore = GetColorset(co_title_cs)->fg;
 		}
 		else
 		{
@@ -1280,10 +1350,10 @@ void DrawIconWindow(
 		if (fw->icon_title_cs >= 0)
 		{
 			title_cs = fw->icon_title_cs;
-			draw_colors.hilight = Colorset[title_cs].hilite;
-			draw_colors.shadow = Colorset[title_cs].shadow;
-			draw_colors.back = Colorset[title_cs].bg;
-			draw_colors.fore = Colorset[title_cs].fg;
+			draw_colors.hilight = GetColorset(title_cs)->hilite;
+			draw_colors.shadow = GetColorset(title_cs)->shadow;
+			draw_colors.back = GetColorset(title_cs)->bg;
+			draw_colors.fore = GetColorset(title_cs)->fg;
 		}
 		else
 		{
@@ -1295,10 +1365,10 @@ void DrawIconWindow(
 		if (fw->icon_title_cs_hi >= 0)
 		{
 			co_title_cs = fw->icon_title_cs_hi;
-			co_draw_colors.hilight = Colorset[co_title_cs].hilite;
-			co_draw_colors.shadow = Colorset[co_title_cs].shadow;
-			co_draw_colors.back = Colorset[co_title_cs].bg;
-			co_draw_colors.fore = Colorset[co_title_cs].fg;
+			co_draw_colors.hilight = GetColorset(co_title_cs)->hilite;
+			co_draw_colors.shadow = GetColorset(co_title_cs)->shadow;
+			co_draw_colors.back = GetColorset(co_title_cs)->bg;
+			co_draw_colors.fore = GetColorset(co_title_cs)->fg;
 		}
 		else
 		{
@@ -1385,13 +1455,13 @@ void DrawIconWindow(
 			}
 			else
 			{
-				Globalgcv.foreground = Colorset[bg_cs].hilite;
+				Globalgcv.foreground = GetColorset(bg_cs)->hilite;
 				Globalgcm = GCForeground;
 				XChangeGC(
 					dpy,Scr.ScratchGC1,Globalgcm,&Globalgcv);
 				Relief = Scr.ScratchGC1;
 			}
-			Globalgcv.foreground = Colorset[bg_cs].shadow;
+			Globalgcv.foreground = GetColorset(bg_cs)->shadow;
 			XChangeGC(dpy,Scr.ScratchGC2, Globalgcm, &Globalgcv);
 			Shadow = Scr.ScratchGC2;
 		}
@@ -1433,25 +1503,25 @@ void DrawIconWindow(
 		if (cs >= 0 && co_cs >= 0)
 		{
 			alpha_change =
-				(Colorset[cs].icon_alpha_percent !=
-				 Colorset[co_cs].icon_alpha_percent);
+				(GetColorset(cs)->icon_alpha_percent !=
+				 GetColorset(co_cs)->icon_alpha_percent);
 			tint_change =
-				(Colorset[cs].icon_tint_percent !=
-				 Colorset[co_cs].icon_tint_percent) ||
-				(Colorset[cs].icon_tint_percent > 0 &&
-				 Colorset[cs].icon_tint !=
-				 Colorset[co_cs].icon_tint);
+				(GetColorset(cs)->icon_tint_percent !=
+				 GetColorset(co_cs)->icon_tint_percent) ||
+				(GetColorset(cs)->icon_tint_percent > 0 &&
+				 GetColorset(cs)->icon_tint !=
+				 GetColorset(co_cs)->icon_tint);
 		}
 		else if (cs >= 0 && co_cs < 0)
 		{
-			alpha_change = (Colorset[cs].icon_alpha_percent < 100);
-			tint_change = (Colorset[cs].icon_tint_percent > 0);
+			alpha_change = (GetColorset(cs)->icon_alpha_percent < 100);
+			tint_change = (GetColorset(cs)->icon_tint_percent > 0);
 		}
 		else if (cs < 0 && co_cs >= 0)
 		{
 			alpha_change =
-				(Colorset[co_cs].icon_alpha_percent < 100);
-			tint_change = (Colorset[co_cs].icon_tint_percent > 0);
+				(GetColorset(co_cs)->icon_alpha_percent < 100);
+			tint_change = (GetColorset(co_cs)->icon_tint_percent > 0);
 		}
 		if (alpha_change || tint_change || relief_change ||
 		    color_change)
@@ -2122,6 +2192,75 @@ icon_file_ui_factor(FvwmWindow *fw)
 	return factor;
 }
 
+typedef struct
+{
+	Window client;
+	char *file;
+	Bool refused;
+} file_icon_owner;
+
+static FvwmWindow *file_icon_window(FvwmPicture *view, file_icon_owner *owner,
+	Bool validate_scale)
+{
+	FvwmWindow *fw = NULL;
+
+	if (XFindContext(dpy, owner->client, FvwmContext, (caddr_t *)&fw) != 0 ||
+	    fw == NULL || FW_W(fw) != owner->client ||
+	    fw->file_icon_requested != view || IS_SCHEDULED_FOR_DESTROY(fw) ||
+	    fw->icon_bitmap_file == NULL ||
+	    strcmp(fw->icon_bitmap_file, owner->file) != 0)
+	{
+		return NULL;
+	}
+	rectangle geometry;
+
+	get_icon_geometry(fw, &geometry);
+	if (validate_scale && geometry.width > 0 && geometry.height > 0)
+	{
+		struct monitor *monitor = FindScreenOfXY(
+		    geometry.x + geometry.width / 2,
+		    geometry.y + geometry.height / 2);
+
+		if (monitor != NULL && view->scale_quarters !=
+		    monitor->effective_scale.factor.quarters)
+		{
+			return NULL;
+		}
+	}
+	return fw;
+}
+
+static picture_async_commit file_icon_policy(FvwmPicture *view,
+	void *context)
+{
+	return file_icon_window(view, context, True) != NULL ?
+	    PICTURE_ASYNC_APPLY : PICTURE_ASYNC_DISCARD;
+}
+
+static void file_icon_settled(FvwmPicture *view, Bool applied, void *context)
+{
+	file_icon_owner *owner = context;
+	FvwmWindow *fw = file_icon_window(view, owner, False);
+
+	owner->refused = !applied;
+	if (fw != NULL)
+	{
+		/* A failed first request can now fall through to client hints.
+		 * Reuse its refused lease until a reload or source change, rather
+		 * than restarting the same failed decoder from this callback. */
+		ChangeIconPixmap(fw);
+		EWMH_DoUpdateWmIcon(fw, False, True);
+	}
+}
+
+static void file_icon_release(void *context)
+{
+	file_icon_owner *owner = context;
+
+	free(owner->file);
+	free(owner);
+}
+
 static void GetIconFromFile(FvwmWindow *fw)
 {
 	char *path = NULL;
@@ -2133,7 +2272,7 @@ static void GetIconFromFile(FvwmWindow *fw)
 	int wanted_h;
 
 	fpa.mask = 0;
-	if (fw->cs >= 0 && Colorset[fw->cs].do_dither_icon)
+	if (fw->cs >= 0 && GetColorset(fw->cs)->do_dither_icon)
 	{
 		fpa.mask |= FPAM_DITHER;
 	}
@@ -2142,6 +2281,7 @@ static void GetIconFromFile(FvwmWindow *fw)
 	path = PictureFindImageFile(fw->icon_bitmap_file, NULL, R_OK);
 	if (path == NULL)
 	{
+		file_icon_cancel(fw, True);
 		return;
 	}
 	factor = icon_file_ui_factor(fw);
@@ -2163,26 +2303,71 @@ static void GetIconFromFile(FvwmWindow *fw)
 			ICON_WANTED_HEIGHT, (int)status);
 		wanted_h = ICON_WANTED_HEIGHT;
 	}
-	pic = PCacheFvwmPictureAtScale(
-		dpy, Scr.NoFocusWin, NULL, path, fpa, factor,
-		(unsigned)wanted_w, (unsigned)wanted_h,
-		WM_UI_RESOURCE_GENERATION_INITIAL);
+	FvwmPicture *requested = fw->file_icon_requested;
+	file_icon_owner *owner = picture_async_context(requested,
+	    file_icon_settled);
+
+	if (requested != NULL && requested->is_view &&
+	    (requested->pending || (owner != NULL && owner->refused)) &&
+	    strcmp(requested->name, path) == 0 &&
+	    requested->scale_quarters == factor.quarters &&
+	    requested->target_width == (unsigned)wanted_w &&
+	    requested->target_height == (unsigned)wanted_h &&
+	    requested->fpa_mask == fpa.mask &&
+	    !isFileStampChanged(&requested->stamp, path))
+	{
+		pic = requested;
+	}
+	else
+	{
+		pic = PCacheFvwmPictureAtScale(dpy, Scr.NoFocusWin, NULL, path,
+		    fpa, factor, (unsigned)wanted_w, (unsigned)wanted_h,
+		    WM_UI_RESOURCE_GENERATION_INITIAL);
+		if (pic != NULL && pic->is_view && pic->pending)
+		{
+			file_icon_owner *binding = fxcalloc(1, sizeof(*binding));
+
+			binding->client = FW_W(fw);
+			binding->file = fxstrdup(fw->icon_bitmap_file);
+			picture_view_set_backing(dpy, pic, fw->file_icon_picture);
+			if (!picture_async_bind(pic, file_icon_policy,
+			    file_icon_settled, binding, file_icon_release))
+			{
+				file_icon_release(binding);
+				PDestroyFvwmPicture(dpy, pic);
+				pic = NULL;
+			}
+		}
+		fw->file_icon_requested = pic;
+		PDestroyFvwmPicture(dpy, requested);
+	}
 	if (pic == NULL)
 	{
 		fvwm_debug(__func__, "Failed to load %s", path);
 		free(path);
 		return;
 	}
+	FvwmPicture *snapshot = picture_snapshot(pic);
+
+	if (snapshot == NULL)
+	{
+		free(path);
+		return;
+	}
+	FvwmPicture *old = fw->file_icon_picture;
+
+	fw->file_icon_picture = snapshot;
+	pic = snapshot;
+	PDestroyFvwmPicture(dpy, old);
 	fw->iconPixmap = pic->picture;
 	fw->icon_maskPixmap = pic->mask;
 	fw->icon_alphaPixmap = pic->alpha;
 	fw->icon_g.picture_w_g.width = pic->width;
 	fw->icon_g.picture_w_g.height = pic->height;
 	fw->iconDepth = pic->depth;
-	fw->icon_nalloc_pixels = pic->nalloc_pixels;
-	fw->icon_alloc_pixels = pic->alloc_pixels;
-	fw->icon_no_limit = pic->no_limit;
-	/* Cache owns the pixmaps; do not XFree them in destroy_icon. */
+	/* The immutable picture owns pixels and allocated colors. Derived
+	 * resize pixmaps have separate ownership; never free cache colors as
+	 * temporary donation or icon-window allocations. */
 	SET_PIXMAP_OURS(fw, 0);
 	free(path);
 	if (FShapesSupported && fw->icon_maskPixmap)
@@ -2512,12 +2697,14 @@ void Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 	FvwmWindow *sf;
 	XWindowAttributes winattrs = {0};
 	unsigned long eventMask;
+	Window previous_icon_title;
 	rectangle icon_rect;
 
 	if (!fw)
 	{
 		return;
 	}
+	previous_icon_title = FW_W_ICON_TITLE(fw);
 	if (!XGetWindowAttributes(dpy, FW_W(fw), &winattrs))
 	{
 		return;
@@ -2634,6 +2821,13 @@ void Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 		/* if no pixmap we want icon width to change to text width
 		 * every iconify; not necessary if the icon was created above */
 		setup_icon_title_size(fw);
+	}
+
+	/* Initial state publication precedes icon creation. Publish the current
+	 * title XID if creation/replacement changed it; retain transient order. */
+	if (FW_W_ICON_TITLE(fw) != previous_icon_title)
+	{
+		SetMapStateProp(fw, IconicState);
 	}
 
 	/* this condition will be true unless we restore a window to

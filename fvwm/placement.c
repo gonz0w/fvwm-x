@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/FProperty.h"
 
 #include <stdio.h>
 
@@ -2060,7 +2061,7 @@ static void _place_handle_x_resources(
 	/* Find out if the client requested a specific desk on the command
 	 * line.
 	 *  RBW - 11/20/1998 - allow a desk of -1 to work.  */
-	if (XGetCommand(dpy, FW_W(fw), &client_argv, &client_argc) == 0)
+	if (FGetCommand(dpy, FW_W(fw), &client_argv, &client_argc) == 0)
 	{
 		return;
 	}

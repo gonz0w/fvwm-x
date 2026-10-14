@@ -38,6 +38,8 @@
 #endif
 
 #include <signal.h>
+#include <poll.h>
+#include <sys/types.h>
 #include "ftime.h"
 #ifdef HAVE_SYS_SELECT_H
 #  include <sys/select.h>
@@ -53,7 +55,18 @@ extern volatile sig_atomic_t isTerminated;
  * Module prototypes
  */
 RETSIGTYPE fvwmReapChildren(int sig);
+/* One owned asynchronous child. Call these with SIGCHLD blocked. The reaper
+ * records only atomic PID/status values; it never calls an owner callback. */
+int fvwm_child_watch_available(void);
+int fvwm_child_watch(pid_t child);
+int fvwm_child_status(pid_t child, int *status);
+void fvwm_child_unwatch(pid_t child);
 extern void fvwmSetTerminate(int sig);
+extern int fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms);
+/* Read with the same atomic termination check as fvwmPoll/fvwmSelect. */
+extern ssize_t fvwmRead(int fd, void *buffer, size_t count);
+/* Write with the same atomic termination check as fvwmRead. */
+extern ssize_t fvwmWrite(int fd, const void *buffer, size_t count);
 
 #ifdef USE_BSD_SIGNALS
 extern void fvwmSetSignalMask(int);

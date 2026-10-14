@@ -27,6 +27,13 @@ meson.add_dist_script('meson-scripts/dist-tarball.sh')
 
 cc = meson.get_compiler('c')
 
+# A missing declaration can silently narrow a returned pointer on LP64.
+foreach flag : ['-Werror=implicit-function-declaration', '-Werror=incompatible-pointer-types']
+    if cc.has_argument(flag)
+        add_project_arguments(flag, language: 'c')
+    endif
+endforeach
+
 # Apply defenses that are independent of distributor CFLAGS.
 hardening_flags = ['-fstack-protector-strong']
 if host_machine.system() == 'linux'
@@ -70,6 +77,16 @@ foreach flag : hardening_flags
     endif
 endforeach
 
+# Do not rely on GCC distribution specs: Clang/lld may default to lazy
+# binding. Require complete RELRO and a non-executable stack where supported.
+if host_machine.system() == 'linux'
+    foreach flag : ['-Wl,-z,relro', '-Wl,-z,now', '-Wl,-z,noexecstack']
+        if cc.has_link_argument(flag)
+            add_project_link_arguments(flag, language: 'c')
+        endif
+    endforeach
+endif
+
 host = host_machine.system() # This is the target system when cross compiling
 
 m_dep = cc.find_library('m', required: false)
@@ -94,6 +111,20 @@ fvwm_vcs_versioninfo = run_command(
 syslibs = []
 
 conf = configuration_data()
+conf.set('FVWM_COLORSET_LIMIT', get_option('colorset-limit'))
+conf.set('FVWM_PAGER_MAX_DESKS', get_option('pager-max-desks'))
+conf.set('FVWM_FONT_SHADOW_LIMIT', get_option('font-shadow-limit'))
+conf.set('FVWM_IMAGE_INPUT_LIMIT', get_option('image-input-limit') * 1048576)
+conf.set('FVWM_IMAGE_XPM_EXPANDED_LIMIT', get_option('image-xpm-expanded-limit') * 1048576)
+conf.set('FVWM_IMAGE_DECOMPRESS_TIMEOUT_MS', get_option('image-decompress-timeout') * 1000)
+conf.set('FVWM_IMAGE_EFFECT_TIMEOUT_MS', get_option('image-effect-timeout') * 1000)
+conf.set('FVWM_IMAGE_EFFECT_MEMORY_LIMIT', get_option('image-effect-memory-limit').to_string() + 'ULL * 1048576ULL')
+conf.set('FVWM_IMAGE_SVG_TIMEOUT_MS', get_option('image-svg-timeout') * 1000)
+conf.set('FVWM_IMAGE_SVG_MEMORY_LIMIT', get_option('image-svg-memory-limit').to_string() + 'ULL * 1048576ULL')
+conf.set_quoted('FVWM_IMAGE_SVG_WORKER', fvwm_moduledir / 'fvwm-image-svg-worker')
+conf.set10('HAVE_CLOSEFROM', cc.has_function(
+    'closefrom', prefix: '#define _DEFAULT_SOURCE 1\n#include <unistd.h>',
+))
 
 if host_machine.endian() == 'big'
     conf.set('WORDS_BIGENDIAN', true)
@@ -290,8 +321,44 @@ endif
 
 iconv_warning = false
 
-iconv = dependency('iconv', required: get_option('iconv'))
+# BSD builds also search ports headers. Meson's libc probe does not,
+# so a ports iconv.h can otherwise select libiconv symbols without
+# linking the library that supplies them. OpenBSD also needs the explicit
+# ports library directory to discover its optional iconv implementation.
+use_ports_iconv = false
+if host in ['freebsd', 'openbsd'] and not get_option('iconv').disabled()
+    use_ports_iconv = cc.has_header_symbol(
+        'iconv.h', '_LIBICONV_VERSION', args: ['-I/usr/local/include'],
+    )
+endif
+if use_ports_iconv
+    ports_iconv = cc.find_library(
+        'iconv', dirs: ['/usr/local/lib'], required: get_option('iconv'),
+    )
+    if ports_iconv.found()
+        iconv = declare_dependency(
+            dependencies: ports_iconv,
+            compile_args: ['-I/usr/local/include'],
+        )
+    else
+        iconv = dependency('iconv', required: get_option('iconv'))
+    endif
+else
+    iconv = dependency('iconv', required: get_option('iconv'))
+endif
 if iconv.found()
+    iconv_code = '''
+    #include <iconv.h>
+    int main(void) {
+        iconv_t converter = iconv_open("UTF-8", "UTF-8");
+        return converter == (iconv_t)-1 ? 1 : iconv_close(converter);
+    }
+    '''
+    if not cc.links(
+        iconv_code, dependencies: iconv, name: 'iconv header/library match',
+    )
+        error('The selected iconv header and library do not link together.')
+    endif
     conf.set10('HAVE_ICONV', true)
     all_found_deps += iconv
 
@@ -318,14 +385,55 @@ if iconv.found()
     endif
 endif
 
-libintl = dependency('intl', required: get_option('nls'))
+# BSD ports install gettext outside the compiler's default library search.
+# Select its headers and library together, as with the ports iconv above.
+nls_enabled = false
+if host in ['freebsd', 'openbsd'] and not get_option('nls').disabled()
+    ports_libintl = cc.find_library(
+        'intl', dirs: ['/usr/local/lib'], required: false,
+    )
+    if ports_libintl.found()
+        libintl = declare_dependency(
+            dependencies: ports_libintl,
+            compile_args: ['-I/usr/local/include'],
+        )
+    else
+        libintl = dependency('intl', required: get_option('nls'))
+    endif
+else
+    libintl = dependency('intl', required: get_option('nls'))
+endif
 if libintl.found()
+    nls_msgfmt = find_program('msgfmt', required: get_option('nls'))
+    nls_enabled = nls_msgfmt.found()
+endif
+if nls_enabled
+    gettext_code = '''
+    #include <libintl.h>
+    int main(void) {
+        bindtextdomain("fvwm3", ".");
+        textdomain("fvwm3");
+        return gettext("") == 0;
+    }
+    '''
+    if not cc.links(
+        gettext_code, dependencies: libintl, name: 'gettext header/library match',
+    )
+        error('The selected gettext header and library do not link together.')
+    endif
     all_found_deps += libintl
     conf.set10('HAVE_NLS', true)
+elif libintl.found()
+    warning('NLS disabled: msgfmt is required to build translation catalogs.')
 endif
 
 libpng = dependency('libpng', version: '>=1.2', required: get_option('png'))
 if libpng.found()
+    if libpng.version().version_compare('<1.6.59') and not get_option('png-security-backport')
+        error('PNG support requires libpng >=1.6.59 or a verified vendor ' +
+              'security backport. Set -Dpng-security-backport=true only for ' +
+              'an audited patched package; -Dpng=disabled explicitly omits PNG support.')
+    endif
     all_found_deps += libpng
     conf.set10('HAVE_PNG', true)
 else
@@ -403,6 +511,15 @@ if xfixes.found()
     conf.set10('HAVE_XFIXES', true)
 endif
 
+# Preserve system-decompressor support without introducing a library. A custom
+# path is a trusted build choice; it is never a theme-supplied shell command.
+image_gzip_option = get_option('image-gzip')
+image_gzip = find_program(
+    image_gzip_option == '' ? ['gzip'] : [image_gzip_option],
+    required: image_gzip_option != '',
+)
+conf.set_quoted('FVWM_IMAGE_GZIP', image_gzip.found() ? image_gzip.full_path() : '')
+
 xpm = dependency('xpm', required: get_option('xpm'))
 if xpm.found()
     all_found_deps += xpm
@@ -433,7 +550,6 @@ build_docs = false
 if get_option('htmldoc') or get_option('mandoc')
     build_docs = true
     asciidoc = find_program('asciidoctor', required: build_docs)
-    grep = find_program('grep')
     subdir('doc')
 endif
 
@@ -492,7 +608,9 @@ file_config.set('SED', sed.full_path())
 file_config.set('VERSION', meson.project_version())
 file_config.set('VERSIONINFO', fvwm_vcs_versioninfo)
 
-subdir('po')
+if nls_enabled
+    subdir('po')
+endif
 subdir('libs')
 subdir('fvwm')
 subdir('default-config')
@@ -608,7 +726,7 @@ featurevals = {
     'FreeType': freetype.found() ? freetype : false,
     'Go Modules': golang.found(),
     'iconv': iconv.found(),
-    'NLS': libintl.found(),
+    'NLS': nls_enabled,
     'PNG support': libpng.found() ? libpng : false,
     'Session Management': sm.found() ? sm : false,
     'SVG support': librsvg.found() ? librsvg : false,

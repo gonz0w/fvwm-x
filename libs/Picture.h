@@ -7,6 +7,18 @@
 #include "PictureImageLoader.h"
 #include "libs/monitor_scale.h"
 
+/* Optional process-local loader used by the core's deferred owner. On success
+ * it takes path ownership; on failure the caller frees path. Cache lookup
+ * precedes this hook. Utilities/modules leave it unset. */
+typedef FvwmPicture *(*picture_loader_fn)(Display *dpy, Window drawable,
+	char *path, FvwmPictureAttributes attributes, monitor_scale_factor factor,
+	unsigned target_width, unsigned target_height, unsigned generation,
+	Bool cache, void *context);
+void picture_set_loader(picture_loader_fn loader, void *context);
+/* Publish an owned count-one immutable result with its complete cache key.
+ * Views retain it through ordinary reference counting. */
+void picture_cache_publish(FvwmPicture *picture);
+
 /** Manipulating FvwmPictures **/
 
 /**

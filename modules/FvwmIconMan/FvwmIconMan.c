@@ -15,6 +15,7 @@
 
 #include "config.h"
 
+#include <limits.h>
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
@@ -139,73 +140,70 @@ DeadPipe(int nothing)
 }
 
 static void
-main_loop(void)
+main_loop(module_packet_reader *reader)
 {
-	fd_set readset, saveset;
-	fd_set_size_t fd_width = x_fd;
-	unsigned long ms;
-	struct timeval tv;
-
-	/*
-	 * Calculate which is descriptor is numerically higher:
-	 * this determines how wide the descriptor set needs to be ...
-	 */
-	if (fd_width < fvwm_fd[1])
-	{
-		fd_width = fvwm_fd[1];
-	}
-	++fd_width;
-
-	FD_ZERO(&saveset);
-	FD_SET(fvwm_fd[1], &saveset);
-	FD_SET(x_fd, &saveset);
-
-	tv.tv_sec  = 60;
-	tv.tv_usec = 0;
+	struct pollfd ready[2] = {
+		{ x_fd, POLLIN, 0 }, { fvwm_fd[1], POLLIN, 0 }
+	};
+	int timeout_ms = 60000;
 
 	while (!isTerminated)
 	{
-		/* Check the pipes for anything to read, and block if
-		 * there is nothing there yet ...
-		 */
-		readset = saveset;
+		unsigned long ms;
+		int result;
 
-		if (fvwmSelect(fd_width, &readset, NULL, NULL, &tv) < 0)
+		/* Queued X work keeps priority without waiting for new bytes. */
+		result = fvwmPoll(ready, 2,
+			FPending(theDisplay) ? 0 : timeout_ms);
+		if (result < 0)
 		{
-			ConsoleMessage(
-				"Internal error with select: errno=%s\n",
+			if (errno == EINTR)
+			{
+				continue;
+			}
+			ConsoleMessage("Internal error with poll: errno=%s\n",
 				strerror(errno));
+			fvwmSetTerminate(0);
+			break;
 		}
-		else
+		if (isTerminated)
 		{
-
-			if (FD_ISSET(x_fd, &readset) || FPending(theDisplay))
-			{
-				xevent_loop();
-			}
-			if (FD_ISSET(fvwm_fd[1], &readset))
-			{
-				ReadFvwmPipe();
-			}
-
+			break;
 		}
-		if ((ms = FTipsCheck(theDisplay)))
+		if (ready[0].revents & (POLLERR | POLLHUP | POLLNVAL))
 		{
-			tv.tv_sec  = ms / 1000;
-			tv.tv_usec = (ms % 1000) * 1000;
+			fvwmSetTerminate(0);
+			break;
 		}
-		else
+		if ((ready[0].revents & POLLIN) || FPending(theDisplay))
 		{
-			tv.tv_sec  = 60;
-			tv.tv_usec = 0;
+			xevent_loop();
 		}
-	} /* while */
+		if (!isTerminated &&
+			(ready[1].revents & (POLLIN | POLLHUP)))
+		{
+			ReadFvwmPipe(reader);
+		}
+		if (ready[1].revents & (POLLERR | POLLNVAL))
+		{
+			fvwmSetTerminate(0);
+		}
+		if (isTerminated)
+		{
+			break;
+		}
+		ms = FTipsCheck(theDisplay);
+		/* A large configured delay must never become an infinite poll. */
+		timeout_ms = ms == 0 ? 60000 :
+			(ms > INT_MAX ? INT_MAX : (int)ms);
+	}
 }
 
 int
 main(int argc, char **argv)
 {
 	int i;
+	module_packet_reader reader;
 
 	FlocaleInit(LC_CTYPE, "", "", "FvwmIconMan");
 
@@ -245,8 +243,14 @@ main(int argc, char **argv)
                            __func__, VERSION);
 		ShutMeDown(1);
 	}
-	fvwm_fd[0] = atoi(argv[1]);
-	fvwm_fd[1] = atoi(argv[2]);
+	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);
+	if (module == NULL)
+	{
+		fprintf(stderr, "%s: invalid module descriptors\n", argv[0]);
+		return 1;
+	}
+	fvwm_fd[0] = module->to_fvwm;
+	fvwm_fd[1] = module->from_fvwm;
 	init_display();
 
 #ifdef HAVE_SIGACTION
@@ -325,7 +329,13 @@ main(int argc, char **argv)
   SetSyncMask(fvwm_fd, M_DEICONIFY | M_ICONIFY);
   SetNoGrabMask(fvwm_fd, M_DEICONIFY | M_ICONIFY);
 
-  main_loop();
+	/* Blocking initial resources are complete before runtime reads. */
+	if (!module_packet_reader_init(&reader, fvwm_fd[1]))
+	{
+		fvwm_debug(__func__, "cannot initialize runtime packet reader");
+		return 1;
+	}
+	main_loop(&reader);
 
   return 0;
 }

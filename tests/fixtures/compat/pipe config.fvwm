@@ -1,0 +1,3 @@
+Echo compat-pipe-begin
+Module module-fd-probe $[FVWM_COMPAT_ROOT]/pipe-fds.txt $[FVWM_COMPAT_ROOT]/core.log
+Echo compat-pipe-end

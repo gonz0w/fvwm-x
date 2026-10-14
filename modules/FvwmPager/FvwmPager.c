@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <errno.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <stdbool.h>
@@ -43,6 +44,8 @@
 #include "libs/Grab.h"
 #include "libs/log.h"
 #include "libs/Module.h"
+#include "libs/module_packet_reader.h"
+#include "libs/module_x_service.h"
 #include "libs/Parse.h"
 #include "libs/Picture.h"
 #include "libs/Strings.h"
@@ -51,6 +54,7 @@
 #include "fvwm/fvwm.h"
 #include "libs/vpacket.h"
 #include "FvwmPager.h"
+#include "pager_desk_range.h"
 
 /*
  * Shared variables.
@@ -126,7 +130,7 @@ char			*preferred_monitor = NULL;
 struct fpmonitors	fp_monitor_q;
 
 static int x_fd;
-static fd_set_size_t fd_width;
+static module_packet_reader pager_packet_reader;
 
 static void Loop(int *fd);
 static RETSIGTYPE TerminateHandler(int);
@@ -194,9 +198,14 @@ int main(int argc, char **argv)
 #endif
 
 	/* Parse command line options */
-	fd[0] = atoi(argv[1]);
-	fd[1] = atoi(argv[2]);
-	fd_width = GetFdWidth();
+	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);
+	if (module == NULL)
+	{
+		fprintf(stderr, "%s: invalid module descriptors\n", argv[0]);
+		return 1;
+	}
+	fd[0] = module->to_fvwm;
+	fd[1] = module->from_fvwm;
 
 	opt_num = 6;
 	if (argc >= 7 && (StrEquals(argv[opt_num], "-transient") ||
@@ -232,20 +241,18 @@ int main(int argc, char **argv)
 		desk1 = desk2 = 0;
 		fAlwaysCurrentDesk = true;
 	} else {
-		desk1 = atoi(argv[opt_num]);
-		if (argc == opt_num+1)
-			desk2 = desk1;
-		else
-			desk2 = atoi(argv[opt_num+1]);
-		if (desk1 < 0)
-			desk1 = 0;
-		if (desk2 < 0)
-			desk2 = 0;
-		if (desk2 < desk1) {
-			int dtemp = desk1;
-			desk1 = desk2;
-			desk2 = dtemp;
+		pager_desk_range range;
+
+		if (!pager_prepare_desk_range(argv[opt_num],
+			argc == opt_num + 1 ? NULL : argv[opt_num + 1],
+			FVWM_PAGER_MAX_DESKS, &range))
+		{
+			fprintf(stderr, "%s: desk range exceeds the configured "
+				"limit or is invalid\n", MyName);
+			return 2;
 		}
+		desk1 = range.first;
+		desk2 = range.last;
 	}
 	ndesks = desk2 - desk1 + 1;
 
@@ -275,8 +282,7 @@ int main(int argc, char **argv)
 		       M_RESTACK|M_STRING);
 	SetMessageMask(fd,
 		       MX_VISIBLE_ICON_NAME|
-		       MX_PROPERTY_CHANGE|
-		       MX_MONITOR_FOCUS);
+		       MX_PROPERTY_CHANGE);
 
 	/* Initialize X connection */
 	if (!(dpy = XOpenDisplay(NULL))) {
@@ -290,6 +296,13 @@ int main(int argc, char **argv)
 
 	/* Initialize pager components. */
 	init_fvwm_pager();
+
+	/* Keep initial GetConfigLine consumers blocking until setup is done. */
+	if (!module_packet_reader_init(&pager_packet_reader, fd[1]))
+	{
+		fvwm_debug(__func__, "cannot initialize runtime packet reader");
+		return 1;
+	}
 
 	/* tell fvwm we're running */
 	SendFinishedStartupNotification(fd);
@@ -348,54 +361,120 @@ static RETSIGTYPE TerminateHandler(int sig)
 	SIGNAL_RETURN;
 }
 
-#if 0
-/* Is this used? */
-RETSIGTYPE DeadPipe(int nonsense)
-{
-	exit(0);
-	SIGNAL_RETURN;
-}
-#endif
-
 /*
  *
  * Waits for next X event, or for an auto-raise timeout.
  *
  */
+static unsigned int pager_x_serviced = MODULE_X_EVENT_BUDGET;
+static struct timespec pager_x_started;
+
+static Bool pager_x_batch_available(void)
+{
+	struct timespec now;
+
+	if (isTerminated || pager_x_serviced >= MODULE_X_EVENT_BUDGET)
+	{
+		return False;
+	}
+	if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+	{
+		fvwm_debug(__func__, "Unable to read X service clock");
+		fvwmSetTerminate(0);
+		return False;
+	}
+	return module_x_service_available(pager_x_serviced,
+		&pager_x_started, &now);
+}
+
+Bool pager_take_next_event(Window window, int type, XEvent *event)
+{
+	XEvent next;
+
+	if (!pager_x_batch_available() || !FEventsQueued(dpy, QueuedAlready))
+	{
+		return False;
+	}
+	FPeekEvent(dpy, &next);
+	if (next.type != type || next.xany.window != window)
+	{
+		return False;
+	}
+	FNextEvent(dpy, event);
+	pager_x_serviced++;
+	return True;
+}
+
 int My_XNextEvent(Display *dpy, XEvent *event)
 {
-  fd_set in_fdset;
+	struct pollfd ready[2] = {
+		{ .fd = x_fd, .events = POLLIN },
+		{ .fd = fd[1], .events = POLLIN }
+	};
+	int status;
 
-  if(FPending(dpy))
-  {
-    FNextEvent(dpy,event);
-    return 1;
-  }
-
-  FD_ZERO(&in_fdset);
-  FD_SET(x_fd,&in_fdset);
-  FD_SET(fd[1],&in_fdset);
-
-  if (fvwmSelect(fd_width, &in_fdset, 0, 0, NULL) > 0)
-  {
-  if(FD_ISSET(x_fd, &in_fdset))
-    {
-      if(FPending(dpy))
+	if (pager_x_batch_available() && FPending(dpy))
 	{
-	  FNextEvent(dpy,event);
-	  return 1;
+		FNextEvent(dpy, event);
+		pager_x_serviced++;
+		return 1;
 	}
-    }
+	if (isTerminated)
+	{
+		return 0;
+	}
+	status = fvwmPoll(ready, 2, FPending(dpy) ? 0 : -1);
+	if (status < 0)
+	{
+		if (errno != EINTR)
+		{
+			fvwm_debug(__func__, "readiness wait failed");
+			fvwmSetTerminate(0);
+		}
+		return 0;
+	}
+	if ((ready[0].revents & (POLLERR | POLLHUP | POLLNVAL)) ||
+		(ready[1].revents & (POLLERR | POLLNVAL)))
+	{
+		fvwmSetTerminate(0);
+		return 0;
+	}
+	/* Buffer newly readable X bytes, then service ready module input. */
+	if (ready[0].revents & POLLIN)
+	{
+		FPending(dpy);
+	}
+	if (ready[1].revents & (POLLIN | POLLHUP))
+	{
+		FvwmPacket *packet;
+		module_packet_read_status packet_status = module_packet_reader_read(
+			&pager_packet_reader, &packet);
 
-  if(FD_ISSET(fd[1], &in_fdset))
-    {
-      FvwmPacket* packet = ReadFvwmPacket(fd[1]);
-      if ( packet == NULL )
-	  exit(0);
-      process_message( packet );
-    }
-  }
-  return 0;
+		if (packet_status == MODULE_PACKET_READ_READY)
+		{
+			process_message(packet);
+		}
+		else if (packet_status == MODULE_PACKET_READ_ERROR ||
+			packet_status == MODULE_PACKET_READ_ENDED)
+		{
+			if (packet_status == MODULE_PACKET_READ_ERROR)
+			{
+				fvwm_debug(__func__, "runtime packet read failed");
+			}
+			fvwmSetTerminate(0);
+			return 0;
+		}
+	}
+	if (!isTerminated)
+	{
+		if (clock_gettime(CLOCK_MONOTONIC, &pager_x_started) < 0)
+		{
+			fvwm_debug(__func__, "Unable to start X service clock");
+			fvwmSetTerminate(0);
+		}
+		pager_x_serviced = 0;
+	}
+	return 0;
 }
 
 /* Returns the DeskStyle for inputted desk. */

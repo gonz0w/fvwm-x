@@ -194,11 +194,13 @@ The following commands are accepted before the form is displayed:
  ButtonPointerBack
  Choice
  Command
+ CommandAppend
  Colorset
  Font
  Fore
  GrabServer
  Input
+ InputAppend
  InputFont
  InputPointer
  ItemBack
@@ -352,8 +354,15 @@ currently be changed with commands.)
   it is the initial string when FvwmForm starts or resets itself. The
   default initial string is "".
 +
+The size must be a positive integer.
+The input dimensions must fit the X11 size range, from 1 to 65535 pixels.
+An invalid Input line does not add a field.
+Later valid Input lines remain usable.
++
 You can mouse paste into an input field using button 2. Buttons 1 and 3
-move the cursor in an input field.
+move the cursor in an input field. Pasting reads a complete STRING/8 cut
+buffer of at most 64 KiB. Missing, malformed, or oversized buffers leave
+all input fields unchanged.
 +
 Input fields are always in insert mode, overtyping is not supported.
 +
@@ -368,14 +377,16 @@ Return, Line-feed and Tab move to the next input field if any, if the
 form has one input field, for control-n and Down, restore previous input
 value. Control-h moves backward in an input field erasing a character.
 Control-d and Delete delete the next character in an input field.
-Control-k erases for the cursor to the end of an input field. Control-u
+Control-k erases from the cursor to the end of an input field. Control-u
 erases the entire input field.
 +
-When a form executes a command, all the input values are saved in a ring
-of input history 50 items deep.
+When a restart button runs, each nonempty changed input value is saved in
+that field's history. Each field can store 50 values. The fields then
+return to their initial values. Clear, truncate and recall leave the field
+ready for further input.
 +
-Meta(mod2)-"<" retrieves the previous value of an input field.
-Meta(mod2)-">" retrieves the next value of an input field.
+Meta(Mod1)-"<" retrieves the previous value of an input field.
+Meta(Mod1)-">" retrieves the next value of an input field.
 +
 (For forms with one input field, use the much easier arrow keys.)
 
@@ -420,6 +431,11 @@ buttons, with the exception of TAB (^I), RETURN (^M), LINEFEED (^J),
 which can activate a button when the cursor is in the last text input
 field.
 +
+Put the label in double quotes.
+Use a backslash before a double quote to include it in the label.
+The key follows the closing quote.
+An incomplete quoted label is ignored.
++
 The behavior of the button is determined by _type_:
 +
 continue:::
@@ -441,15 +457,18 @@ Commands starting with an exclamation mark (!) are executed by FvwmForm,
 all other commands are sent to Fvwm for execution. Before sending each
 command to Fvwm, FvwmForm recognizes variables of the following forms,
 and supply values to them.
++
+An incomplete variable expression is refused.
+A refused button command is skipped, and later commands remain usable.
+A refused timeout command keeps the form open.
 
 *$(``_name_``)*::
   If _name_ corresponds to a text input field, the result is the user's
-  input string. The special chars single-quote, double-quote and
-  backslash are preceded by a backslash.
+  input string. The result uses the input string's exact bytes.
 +
-If _name_ corresponds to a choice, the result is the value of the choice
-(as specified in *FvwmForm: Choice) if the choice is selected. If the
-choice is not selected, the result is a blank string.
+If _name_ corresponds to a choice, the result is its configured value
+(as specified in *FvwmForm: Choice). Use a conditional form to check
+whether the choice is selected.
 +
 If _name_ corresponds to a selection, the result will be a list of the
 selected values of all its choices separated by spaces.
@@ -470,10 +489,43 @@ When using the "?" and "!" forms to pass a string, the string is
 delimited by a right parenthesis. If you need to put a right parenthesis
 in a string, precede the right parenthesis with a backslash.
 
+*$(``_name_``:Base64)*::
+  Encode the field's exact bytes as URL-base64 without padding. The result
+  contains letters, digits, `_` and `-`. Input and choice values can contain
+  at most 65536 bytes. A selection encodes its space-separated selected values.
+  Refuse a larger value. Quote the substitution when an empty result must
+  remain one shell argument. This encoding does not execute the field value.
++
+An existing field named `_name_:Base64` takes priority and keeps its ordinary
+value. Plain substitutions and choice conditions keep their existing behavior.
+
+*$(``FormJob:Token``)*::
+  Return a 16-digit hexadecimal serial for the current button invocation.
+  All commands on that button receive the same serial. The next invocation
+  receives another serial. Use this with a unique form-session prefix for
+  private result files. An existing field with this full name takes priority.
+
+**FvwmForm: CommandAppend ``_text_``*::
+  Add one space and _text_ to the preceding command on the current button.
+  This permits a template to use several module configuration records.
+  The complete template can contain at most 1 MiB. If it exceeds the limit,
+  refuse the button's commands. Values substituted later are still subject
+  to the command's execution and argument limits.
+
+**FvwmForm: InputAppend "``_text_``"*::
+  Add quoted text to the preceding Input's initial value. This permits long
+  initial values to use several module configuration records. The complete
+  initial value can contain at most 65536 bytes. On refusal, keep the preceding
+  value. Reset uses the complete initial value.
+
 **FvwmForm: UseData ``_datafile_ _leading_``*::
   Tells FvwmForm to read a data file and extract data from module
   commands that match the "leading" argument and an input, choice, or
   selection variable in a form.
++
+The data file and prefix are required.
+An incomplete UseData line keeps the previous values.
+The read request preserves the filename within the module command limit.
 +
 This lets a form display current fvwm module configuration data. For an
 example of how this works, examine the file "FvwmForm-Rlogin" which is
@@ -523,6 +575,9 @@ choice.
   line is replaced automatically by the amount of time left on the
   timer. The value gets updated every tenth of second as the timer
   counts down. There can only be one timeout field per form.
+  The form processes input and module commands while the timer runs.
+  A Timeout directive with missing command or text arguments, or an incomplete
+  quoted argument, is ignored. It does not use the form's timeout field.
 
 == EXAMPLES
 

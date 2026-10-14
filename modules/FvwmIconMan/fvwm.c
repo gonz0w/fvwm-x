@@ -17,13 +17,17 @@
 
 #include "FvwmIconMan.h"
 #include "x.h"
+#include "iconman_packet.h"
 #include "xmanager.h"
 
 #include "libs/fvwmlib.h"
+#include "libs/fvwmsignal.h"
 #include "libs/FScreen.h"
 #include "libs/Module.h"
+#include "libs/log.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
+#include "libs/module_monitor.h"
 
 static WinData *fvwm_focus_win = NULL;
 
@@ -254,11 +258,22 @@ static void handle_config_info(unsigned long *body)
 	if (StrEquals(token, "Colorset"))
 	{
 		color = LoadColorset(rest);
-		change_colorset(color);
+		if (color >= 0)
+		{
+			change_colorset(color);
+		}
 	}
 	else if (StrEquals(token, "IgnoreModifiers"))
 	{
-		sscanf(rest, "%d", &mods_unused);
+		int value;
+		if (module_parse_decimal_integers(rest, &value, 1))
+		{
+			mods_unused = value;
+		}
+		else
+		{
+			fvwm_debug(__func__, "Refusing invalid modifier value");
+		}
 	}
 	else if (strncasecmp(tline, Module, ModuleLen) == 0)
 	{
@@ -676,8 +691,8 @@ static void property_change(FvwmPacketBody *body)
 		{
 			unsigned long u;
 
-			if (sscanf((char *)body->property_data.str, "%lu",
-				   &u) == 1)
+			if (iconman_parse_window_id(
+				(char *)body->property_data.str, &u))
 			{
 				man->swallower_win = (Window)u;
 			}
@@ -857,19 +872,39 @@ static void ProcessMessage(Ulong type, FvwmPacketBody *body)
 	check_managers_consistency();
 }
 
-void ReadFvwmPipe(void)
+void ReadFvwmPipe(module_packet_reader *reader)
 {
-	FvwmPacket* packet;
+	FvwmPacket *packet;
+	module_packet_read_status status;
 
 	PrintMemuse();
 	ConsoleDebug(FVWM, "DEBUG: entering ReadFvwmPipe\n");
 
-	if ((packet = ReadFvwmPacket(fvwm_fd[1])) == NULL)
+	status = module_packet_reader_read(reader, &packet);
+	if (status == MODULE_PACKET_READ_ENDED ||
+	    status == MODULE_PACKET_READ_ERROR)
 	{
-		exit(0);
+		if (status == MODULE_PACKET_READ_ERROR)
+		{
+			fvwm_debug(__func__, "runtime packet read failed");
+		}
+		fvwmSetTerminate(0);
+		return;
 	}
-	else
+	if (status == MODULE_PACKET_READ_READY)
 	{
+		if (!iconman_packet_is_valid(packet->type, packet->body,
+			FvwmPacketBodySize(*packet)))
+		{
+			fvwm_debug(__func__, "Refusing incomplete runtime packet");
+			/* These types are subscribed synchronously: refusal still
+			 * completes the producer's existing acknowledgement. */
+			if (packet->type == M_ICONIFY || packet->type == M_DEICONIFY)
+			{
+				SendUnlockNotification(fvwm_fd);
+			}
+			return;
+		}
 		ProcessMessage(packet->type, (FvwmPacketBody *)packet->body);
 	}
 

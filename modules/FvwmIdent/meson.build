@@ -3,7 +3,7 @@ install_data(
     install_dir: join_paths(datadir, meson.project_name()),
 )
 
-executable(
+fvwm_ident = executable(
     'FvwmIdent',
     sources: 'FvwmIdent.c',
     dependencies: [all_found_deps],

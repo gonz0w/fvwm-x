@@ -12,6 +12,8 @@ struct fmodule_input;
 /* Packet sending functions */
 void BroadcastPacket(unsigned long event_type, unsigned long num_datum, ...);
 void BroadcastConfig(unsigned long event_type, const FvwmWindow *t);
+/* Refresh unsent snapshots even when rollback caused a no-op frame update. */
+void module_config_refresh(const FvwmWindow *window);
 void BroadcastName(
 	unsigned long event_type, unsigned long data1, unsigned long data2,
 	unsigned long data3, const char *name);
@@ -32,6 +34,9 @@ void SendPacket(
 	unsigned long num_datum, ...);
 void SendConfig(
 	struct fmodule *module, unsigned long event_type, const FvwmWindow *t);
+void SendFvwmPicture(
+	struct fmodule *module, unsigned long event_type, unsigned long data1,
+	unsigned long data2, unsigned long data3, FvwmPicture *picture, char *name);
 void SendName(
 	struct fmodule *module, unsigned long event_type, unsigned long data1,
 	unsigned long data2, unsigned long data3, const char *name);
@@ -40,10 +45,13 @@ void SendName(
 /* command queue - module input */
 
 
+/* Takes ownership of an admitted input returned by module_receive_queued. */
 void module_input_enqueue(struct fmodule_input *input);
 void module_input_execute(struct fmodule_input *input);
 
 Bool ExecuteCommandQueue(void);
+Bool ExecuteInteractionCommandQueue(void);
+Bool interaction_command_ready(const char *command, fmodule *origin);
 void ModuleCommandQueueAfterPoll(void);
 
 #endif /* MODULE_INTERFACE_H */

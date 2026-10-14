@@ -11,6 +11,7 @@
 #include "fvwm/fvwm.h"
 
 #include "libs/Module.h"
+#include "libs/fd_safety.h"
 #include "libs/safemalloc.h"
 #include "libs/queue.h"
 #include "libs/fvwmsignal.h"
@@ -18,6 +19,8 @@
 #include "libs/getpwuid.h"
 #include "libs/envvar.h"
 #include "libs/cJSON.h"
+#include "event_flags.h"
+#include "stream.h"
 
 #include <sys/file.h>
 #include <sys/socket.h>
@@ -39,13 +42,8 @@
 #include <event2/event.h>
 #endif
 
-/* FIXME: including event_struct.h won't be binary comaptible with future
- * versions of libevent.
- */
-#include <event2/event_struct.h>
 #include <event2/buffer.h>
 #include <event2/bufferevent.h>
-#include <event2/bufferevent_compat.h>
 #include <event2/listener.h>
 #include <event2/util.h>
 
@@ -57,7 +55,11 @@ static char *socket_name, *socket_basepath;
 static char *lockfile = NULL;
 static int fvwmmfl_lock_fd = -1;
 
+static unsigned int client_count;
+
 struct client {
+	struct event *resume;
+	struct event *partial;
 	struct bufferevent	*comms;
 	unsigned long		 flags_m;
 	unsigned long		 flags_mx;
@@ -70,7 +72,9 @@ struct clients  clientq;
 
 struct fvwm_comms {
 	int		 fd[2];
-	struct event	*read_ev;
+	struct event_base *base;
+	struct bufferevent *input, *output;
+	struct event *resume;
 	ModuleArgs	*m;
 };
 struct fvwm_comms	 fc;
@@ -112,7 +116,8 @@ struct event_flag {
 };
 
 
-static void fvwm_read(int, short, void *);
+static void fvwm_read(struct bufferevent *, void *);
+static void client_destroy(struct client *);
 static void broadcast_to_client(FvwmPacket *);
 static void setup_signal_handlers(struct event_base *);
 static inline const char *flag_to_event(unsigned long);
@@ -164,9 +169,7 @@ static void
 HandleTerminate(int fd, short what, void *arg)
 {
 	fprintf(stderr, "%s: dying...\n", __func__);
-	unlink(lockfile);
-	unlink(socket_name);
-	rmdir(socket_basepath);
+	event_base_loopexit(arg, NULL);
 	fvwmSetTerminate(fd);
 }
 
@@ -178,11 +181,11 @@ setup_signal_handlers(struct event_base *base)
 	signal(SIGPIPE, SIG_IGN);
 	signal(SIGUSR2, SIG_IGN);
 
-	hup   =  evsignal_new(base, SIGHUP,  HandleTerminate, NULL);
-	term  =  evsignal_new(base, SIGTERM, HandleTerminate, NULL);
-	quit  =  evsignal_new(base, SIGQUIT, HandleTerminate, NULL);
-	child =  evsignal_new(base, SIGCHLD, HandleTerminate, NULL);
-	intrp =  evsignal_new(base, SIGINT,  HandleTerminate, NULL);
+	hup   =  evsignal_new(base, SIGHUP,  HandleTerminate, base);
+	term  =  evsignal_new(base, SIGTERM, HandleTerminate, base);
+	quit  =  evsignal_new(base, SIGQUIT, HandleTerminate, base);
+	child =  evsignal_new(base, SIGCHLD, HandleTerminate, base);
+	intrp =  evsignal_new(base, SIGINT,  HandleTerminate, base);
 
 	evsignal_add(hup, NULL);
 	evsignal_add(term, NULL);
@@ -196,7 +199,6 @@ send_version_info(struct client *c)
 {
 	struct fvwm_msg		*fm;
 	cJSON			*content;
-	char			*to_client;
 
 	fm = fvwm_msg_new();
 
@@ -211,13 +213,8 @@ send_version_info(struct client *c)
 		return;
 	}
 
-	/* Ensure there's a newline at the end of the string, so that
-	 * buffered output can be sent.
-	 */
-	xasprintf(&to_client, "%s\n", fm->msg);
-
-	bufferevent_write(c->comms, to_client, strlen(to_client));
-	bufferevent_flush(c->comms, EV_WRITE, BEV_NORMAL);
+	/* This small startup record fits the empty output queue. */
+	mfl_queue_line(bufferevent_get_output(c->comms), fm->msg);
 	fvwm_msg_free(fm);
 }
 
@@ -478,23 +475,13 @@ static inline const char *
 flag_to_event(unsigned long flag)
 {
 	size_t	 i;
-	bool is_extended = (flag & M_EXTENDED_MSG);
 
 	for (i = 0; i < (sizeof(etf) / sizeof(etf[0])); i++) {
-		int f = etf[i].flag;
-		if (is_extended && (f & M_EXTENDED_MSG) && (f == flag))
-			return (etf[i].event);
-		if (!is_extended && (f & flag))
+		if (fvwmmfl_event_flag_matches(flag, etf[i].flag))
 			return (etf[i].event);
 	}
 
 	return (NULL);
-}
-
-static inline bool
-strsw(const char *pre, const char *str)
-{
-	return (strncmp(pre, str, strlen(pre)) == 0);
 }
 
 #define EFLAGSET	0x1
@@ -509,10 +496,10 @@ client_set_interest(struct client *c, const char *event)
 #define PRESET "set"
 #define PREUNSET "unset"
 
-	if (strsw(PRESET, event)) {
+	if (strncmp(event, PRESET " ", sizeof(PRESET)) == 0) {
 		event += strlen(PRESET) + 1;
 		flag_type = EFLAGSET;
-	} else if (strsw(PREUNSET, event)) {
+	} else if (strncmp(event, PREUNSET " ", sizeof(PREUNSET)) == 0) {
 		event += strlen(PREUNSET) + 1;
 		flag_type = EFLAGUNSET;
 	}
@@ -546,7 +533,7 @@ client_set_interest(struct client *c, const char *event)
 					if (debug)
 						fprintf(stderr,
 						    "Unsetting %s\n", event);
-					c->flags_mx &= ~f;
+					c->flags_mx = fvwmmfl_event_flag_remove(c->flags_mx, f);
 				} else {
 					if (debug)
 						fprintf(stderr,
@@ -577,23 +564,26 @@ register_interest(void)
 		fprintf(stderr, "Sending: flags_m:  %lu\n", f_m);
 		fprintf(stderr, "Sending: flags_mx: %lu\n", f_mx);
 	}
-	SetMessageMask(fc.fd, f_m);
-	SetMessageMask(fc.fd, f_mx);
+	char command[64];
+	snprintf(command, sizeof(command), "SET_MASK %lu", f_m);
+	mfl_queue_command(bufferevent_get_output(fc.output), command);
+	snprintf(command, sizeof(command), "SET_MASK %lu", f_mx);
+	mfl_queue_command(bufferevent_get_output(fc.output), command);
 }
 
 static void
 broadcast_to_client(FvwmPacket *packet)
 {
-	struct client		*c;
-	struct fvwm_msg		*fm;
-	char			*to_client;
+	struct client		*c, *next;
+	struct fvwm_msg		*fm = NULL;
 	unsigned long		*body = packet->body;
 	unsigned long		 type =	packet->type;
 	unsigned long		 length = packet->size;
 	bool			 is_extended = (type & M_EXTENDED_MSG);
 	bool			 enact_change = false;
 
-	TAILQ_FOREACH(c, &clientq, entry) {
+	for (c = TAILQ_FIRST(&clientq); c != NULL; c = next) {
+		next = TAILQ_NEXT(c, entry);
 		enact_change = is_extended ?
 			(c->flags_mx & type) == type : (c->flags_m & type) != 0;
 		/* This packet really isn't for this client; move on to the
@@ -602,108 +592,131 @@ broadcast_to_client(FvwmPacket *packet)
 		if (!enact_change)
 			continue;
 
-		if ((fm = handle_packet(type, body, length)) == NULL) {
-			fprintf(stderr, "Packet was NULL...\n");
-			continue;
+		/* Event payloads are identical for all subscribers. Serialize once. */
+		if (fm == NULL) {
+			fm = handle_packet(type, body, length);
+			if (fm == NULL || fm->msg == NULL)
+				break;
 		}
-
-		if (fm->msg == NULL) {
-			fvwm_msg_free(fm);
-			continue;
+		if (!mfl_queue_line(bufferevent_get_output(c->comms), fm->msg)) {
+			/* Contain stalled readers to their own connection. */
+			client_destroy(c);
 		}
-		/* Ensure there's a newline at the end of the string, so that
-		 * buffered output can be sent.
-		 */
-		xasprintf(&to_client, "%s\n", fm->msg);
-
-		bufferevent_write(c->comms, to_client, strlen(to_client));
-		bufferevent_flush(c->comms, EV_WRITE, BEV_NORMAL);
-		fvwm_msg_free(fm);
-		free(to_client);
 	}
+	fvwm_msg_free(fm);
+}
+
+static void
+client_destroy(struct client *c)
+{
+	TAILQ_REMOVE(&clientq, c, entry);
+	client_count--;
+	event_free(c->resume);
+	event_free(c->partial);
+	bufferevent_free(c->comms);
+	free(c);
 }
 
 static void
 client_read_cb(struct bufferevent *bev, void *ctx)
 {
-	struct evbuffer	*input = bufferevent_get_input(bev);
-	struct client	*c =	 ctx;
-	size_t		 len = evbuffer_get_length(input);
-	char		 *data = fxcalloc(len + 1, sizeof (char));
-	char		 *split;
+	struct client *c = ctx;
+	struct evbuffer *input = bufferevent_get_input(bev);
+	char command[MAX_MODULE_INPUT_TEXT_LEN + 1];
+	const struct timeval timeout = {MFL_PROGRESS_TIMEOUT, 0};
+	const struct timeval yield = {0, 1000};
+	unsigned int count;
 
-	evbuffer_remove(input, data, len);
-
-	if (debug)
-		fprintf(stderr, "%s: DATA: <%s>, LEN: <%zu>\n", __func__, data, len);
-
-	/* Remove the newline if there is one. */
-	if (len > 0 && data[len - 1] == '\n')
-		data[len - 1] = '\0';
-
-	if (*data == '\0')
-		goto out;
-
-	split = strtok(data, "\n");
-	while (split != NULL) {
-		if (client_set_interest(c, split)) {
-			split = strtok(NULL, "\n");
-			continue;
+	event_del(c->resume);
+	for (count = 0; count < MFL_COMMAND_BUDGET; count++)
+	{
+		enum mfl_stream_result result = mfl_read_command(input, command);
+		if (result == MFL_STREAM_INVALID)
+		{
+			client_destroy(c);
+			return;
 		}
-		SendText(fc.fd, split, 0);
-		split = strtok(NULL, "\n");
+		if (result == MFL_STREAM_INCOMPLETE)
+		{
+			/* Idle subscribers are allowed; partial lines must progress. */
+			if (evbuffer_get_length(input) == 0)
+				event_del(c->partial);
+			else if (!evtimer_pending(c->partial, NULL))
+				evtimer_add(c->partial, &timeout);
+			return;
+		}
+		event_del(c->partial);
+		if (command[0] == '\0' || client_set_interest(c, command))
+			continue;
+		if (!mfl_queue_command(bufferevent_get_output(fc.output), command))
+		{
+			client_destroy(c);
+			return;
+		}
 	}
-out:
-	free(data);
+	/* A timer yields to pipe I/O and other clients before continuing. */
+	if (evbuffer_get_length(input) != 0)
+		evtimer_add(c->resume, &yield);
 }
 
 static void
-client_write_cb(struct bufferevent *bev, void *ctx)
+client_partial_timeout_cb(evutil_socket_t fd, short events, void *ctx)
 {
-	struct client	*c = ctx;
-
-	if (debug)
-		fprintf(stderr, "Writing... (client %p)...\n", c);
+	client_destroy(ctx);
 }
 
-static void client_err_cb(struct bufferevent *bev, short events, void *ctx)
+static void
+client_resume_cb(evutil_socket_t fd, short events, void *ctx)
 {
-	struct client	*c = ctx;
-
-	if (events & (BEV_EVENT_EOF|BEV_EVENT_ERROR)) {
-		TAILQ_REMOVE(&clientq, c, entry);
-		bufferevent_free(bev);
-		free(c);
-	}
+	struct client *c = ctx;
+	client_read_cb(c->comms, c);
 }
 
+static void
+client_err_cb(struct bufferevent *bev, short events, void *ctx)
+{
+	if (events & (BEV_EVENT_EOF | BEV_EVENT_ERROR | BEV_EVENT_TIMEOUT))
+		client_destroy(ctx);
+}
 
 static void
 accept_conn_cb(struct evconnlistener *l, evutil_socket_t fd,
 		struct sockaddr *add, int socklen, void *ctx)
 {
-	/* We got a new connection! Set up a bufferevent for it. */
-	struct client		*c;
-	struct event_base	*base = evconnlistener_get_base(l);
+	struct client *c;
+	struct event_base *base = evconnlistener_get_base(l);
+	const struct timeval timeout = {MFL_PROGRESS_TIMEOUT, 0};
 
-	c = fxmalloc(sizeof *c);
-
-	c->comms = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
-	if (c->comms == NULL) {
+	if (client_count >= MFL_CLIENT_LIMIT ||
+	    evutil_make_socket_closeonexec(fd) < 0)
+	    {
 		close(fd);
+		return;
+	}
+	c = fxcalloc(1, sizeof(*c));
+	c->comms = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
+	c->resume = evtimer_new(base, client_resume_cb, c);
+	c->partial = evtimer_new(base, client_partial_timeout_cb, c);
+	if (c->comms == NULL || c->resume == NULL || c->partial == NULL)
+	{
+		if (c->comms != NULL)
+			bufferevent_free(c->comms);
+		else
+			close(fd);
+		if (c->resume != NULL)
+			event_free(c->resume);
+		if (c->partial != NULL)
+			event_free(c->partial);
 		free(c);
 		return;
 	}
-	c->flags_m = 0;
-	c->flags_mx = 0;
-
-	bufferevent_setcb(c->comms, client_read_cb, client_write_cb,
-	    client_err_cb, c);
-	bufferevent_enable(c->comms, EV_READ|EV_WRITE|EV_PERSIST);
-
-	send_version_info(c);
-
+	bufferevent_setcb(c->comms, client_read_cb, NULL, client_err_cb, c);
+	bufferevent_setwatermark(c->comms, EV_READ, 0, MFL_INPUT_LIMIT);
+	bufferevent_set_timeouts(c->comms, NULL, &timeout);
 	TAILQ_INSERT_TAIL(&clientq, c, entry);
+	client_count++;
+	send_version_info(c);
+	bufferevent_enable(c->comms, EV_READ | EV_WRITE);
 }
 
 static void accept_error_cb(struct evconnlistener *listener, void *ctx)
@@ -717,20 +730,41 @@ static void accept_error_cb(struct evconnlistener *listener, void *ctx)
 }
 
 static void
-fvwm_read(int efd, short ev, void *data)
+fvwm_read(struct bufferevent *bev, void *data)
 {
-	FvwmPacket	*packet;
+	unsigned long packet[FvwmPacketMaxSize];
+	const struct timeval yield = {0, 1000};
+	unsigned int count;
 
-	if ((packet = ReadFvwmPacket(efd)) == NULL) {
-		if (debug)
-			fprintf(stderr, "Couldn't read from FVWM - exiting.\n");
-		unlink(lockfile);
-		unlink(socket_name);
-		rmdir(socket_basepath);
-		exit(0);
+	event_del(fc.resume);
+	for (count = 0; count < MFL_PACKET_BUDGET; count++)
+	{
+		enum mfl_stream_result result = mfl_read_packet(
+		    bufferevent_get_input(bev), packet);
+		if (result == MFL_STREAM_INCOMPLETE)
+			return;
+		if (result == MFL_STREAM_INVALID)
+		{
+			event_base_loopexit(fc.base, NULL);
+			return;
+		}
+		broadcast_to_client((FvwmPacket *)packet);
 	}
+	if (evbuffer_get_length(bufferevent_get_input(bev)) != 0)
+		evtimer_add(fc.resume, &yield);
+}
 
-	broadcast_to_client(packet);
+static void
+fvwm_resume_cb(evutil_socket_t fd, short events, void *data)
+{
+	fvwm_read(fc.input, NULL);
+}
+
+static void
+fvwm_error_cb(struct bufferevent *bev, short events, void *data)
+{
+	if (events & (BEV_EVENT_EOF | BEV_EVENT_ERROR | BEV_EVENT_TIMEOUT))
+		event_base_loopexit(fc.base, NULL);
 }
 
 void
@@ -812,7 +846,7 @@ lock_fvwmmfl(void)
 	struct flock	l;
 	int		fd = -1;
 
-	if ((fd = open(lockfile, O_CREAT|O_WRONLY, 0600)) == -1)
+	if ((fd = fvwm_open_private_lock(lockfile)) == -1)
 		return fd;
 	l.l_start = 0;
 	l.l_type = F_WRLCK;
@@ -846,7 +880,10 @@ int main(int argc, char **argv)
 
 	/* If we're already running... */
 	if ((fvwmmfl_lock_fd = lock_fvwmmfl()) == -1)
+	{
+		perror("FvwmMFL lock");
 		return (1);
+	}
 
 	unlink(socket_name);
 
@@ -869,7 +906,7 @@ int main(int argc, char **argv)
 
 	/* Create a new listener */
 	fmd_cfd = evconnlistener_new_bind(base, accept_conn_cb, NULL,
-		  LEV_OPT_CLOSE_ON_FREE, -1,
+		  LEV_OPT_CLOSE_ON_FREE | LEV_OPT_CLOSE_ON_EXEC, -1,
 		  (struct sockaddr *)&sin, sizeof(sin));
 	if (fmd_cfd == NULL) {
 		perror("Couldn't create listener");
@@ -883,6 +920,25 @@ int main(int argc, char **argv)
 	fc.fd[0] = fc.m->to_fvwm;
 	fc.fd[1] = fc.m->from_fvwm;
 
+	fc.base = base;
+	if (evutil_make_socket_nonblocking(fc.fd[0]) < 0 ||
+	    evutil_make_socket_nonblocking(fc.fd[1]) < 0 ||
+	    evutil_make_socket_closeonexec(fc.fd[0]) < 0 ||
+	    evutil_make_socket_closeonexec(fc.fd[1]) < 0)
+		err(1, "Cannot prepare module pipes");
+	fc.input = bufferevent_socket_new(base, fc.fd[1], BEV_OPT_CLOSE_ON_FREE);
+	fc.output = bufferevent_socket_new(base, fc.fd[0], BEV_OPT_CLOSE_ON_FREE);
+	fc.resume = evtimer_new(base, fvwm_resume_cb, NULL);
+	if (fc.input == NULL || fc.output == NULL || fc.resume == NULL)
+		err(1, "Cannot create module transport");
+	bufferevent_setcb(fc.input, fvwm_read, NULL, fvwm_error_cb, NULL);
+	bufferevent_setwatermark(fc.input, EV_READ, 0, MFL_INPUT_LIMIT);
+	bufferevent_setcb(fc.output, NULL, NULL, fvwm_error_cb, NULL);
+	const struct timeval timeout = {MFL_PROGRESS_TIMEOUT, 0};
+	bufferevent_set_timeouts(fc.output, NULL, &timeout);
+	bufferevent_enable(fc.input, EV_READ);
+	bufferevent_enable(fc.output, EV_WRITE);
+
 	/* If the user hasn't set FVWMMFL_SOCKET_PATH in the environment, then
 	 * tell Fvwm3 to do this.  Note that we have to get Fvwm3 to do this
 	 * so that all other windows can inherit this environment variable.
@@ -892,28 +948,31 @@ int main(int argc, char **argv)
 	if (getenv("FVWMMFL_SOCKET_PATH") == NULL) {
 
 		xasprintf(&pe, "SetEnv FVWMMFL_SOCKET_PATH %s", socket_basepath);
-		SendText(fc.fd, pe, 0);
+		if (!mfl_queue_command(bufferevent_get_output(fc.output), pe))
+			err(1, "Startup command exceeds transport limits");
 		free(pe);
 	}
 
 	xasprintf(&pe, "SetEnv FVWMMFL_SOCKET %s", socket_name);
-	SendText(fc.fd, pe, 0);
+	if (!mfl_queue_command(bufferevent_get_output(fc.output), pe))
+			err(1, "Startup command exceeds transport limits");
 	free(pe);
-
-	if (evutil_make_socket_nonblocking(fc.fd[0]) < 0)
-		fprintf(stderr, "fvwm to_fvwm socket non-blocking failed");
-	if (evutil_make_socket_nonblocking(fc.fd[1]) < 0)
-		fprintf(stderr, "fvwm to_fvwm socket non-blocking failed");
-
-	fc.read_ev = event_new(base, fc.fd[1], EV_READ|EV_PERSIST, fvwm_read, NULL);
-	event_add(fc.read_ev, NULL);
 
 	register_interest();
 
-	SendFinishedStartupNotification(fc.fd);
+	mfl_queue_command(bufferevent_get_output(fc.output),
+	    ModuleFinishedStartupResponse);
 
 	event_base_dispatch(base);
+	while (!TAILQ_EMPTY(&clientq))
+		client_destroy(TAILQ_FIRST(&clientq));
+	event_free(fc.resume);
+	bufferevent_free(fc.input);
+	bufferevent_free(fc.output);
+	evconnlistener_free(fmd_cfd);
 	unlink(socket_name);
+	/* Retain the locked inode: unlinking lets a new instance lock a
+	 * different file while this process still owns the original lock. */
 
 	return (0);
 }

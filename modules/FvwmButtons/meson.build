@@ -1,5 +1,6 @@
 module_sources = [
     'FvwmButtons.c',
+    'buttons_packet.c',
     'button.c',
     'draw.c',
     'dynamic.c',
@@ -9,7 +10,7 @@ module_sources = [
     'parse.c',
 ]
 
-executable(
+fvwm_buttons = executable(
     'FvwmButtons',
     module_sources,
     dependencies: all_found_deps,

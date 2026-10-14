@@ -207,6 +207,7 @@ char *parse_style_id(char *action, style_id_t *ret)
 		return NULL;
 
 	if (StrEquals(token, "*")) {
+		free(token);
 		/* Global style. This is to be applied first of all
 		 * this is equal to an all zero style_id, so do nothing
 		 */
@@ -2242,7 +2243,10 @@ static int style_set_border_colorset(window_style *ps, char *rest, int type)
 	int upto = 0;
 	int just_one = 0;
 
-	this_many = GetIntegerArguments(rest, &rest, vals, BP_SIZE);
+	for (this_many = 0; this_many < BP_SIZE; this_many++) {
+		if (GetColorsetArgument(rest, &rest, &vals[this_many]) != 1)
+			break;
+	}
 
 	if (this_many == 1) {
 		just_one = 1;
@@ -2251,6 +2255,12 @@ static int style_set_border_colorset(window_style *ps, char *rest, int type)
 
 	if (this_many < 2 || this_many > 8)
 		return 1;
+
+	for (upto = 0; upto < this_many; upto++) {
+		this_cs = just_one ? vals[0] : vals[upto];
+		if (this_cs < 0 || !alloc_colorset(this_cs))
+			return 1;
+	}
 
 	for (upto = 0; upto < this_many; upto++) {
 		this_cs = just_one ? vals[0] : vals[upto];
@@ -2263,7 +2273,6 @@ static int style_set_border_colorset(window_style *ps, char *rest, int type)
 		else
 			SSET_BORDER_COLORSET_HI(*ps, upto, this_cs);
 
-		alloc_colorset(this_cs);
 	}
 
 	if (type == BS_BC) {
@@ -2464,13 +2473,16 @@ static Bool style_parse_one_style_option(
 		else if (StrEquals(token, "ColorSet"))
 		{
 			*val = -1;
-			GetIntegerArguments(rest, &rest, val, 1);
+			GetColorsetArgument(rest, &rest, val);
 			if (*val < 0)
 			{
 				*val = -1;
 			}
+			if (!alloc_colorset(*val))
+			{
+				goto style_option_done;
+			}
 			SSET_COLORSET(*ps, *val);
-			alloc_colorset(*val);
 			ps->flags.use_colorset = (*val >= 0);
 			ps->flag_mask.use_colorset = 1;
 			ps->change_mask.use_colorset = 1;
@@ -2887,9 +2899,12 @@ static Bool style_parse_one_style_option(
 		else if (StrEquals(token, "HilightColorset"))
 		{
 			*val = -1;
-			GetIntegerArguments(rest, &rest, val, 1);
+			GetColorsetArgument(rest, &rest, val);
+			if (!alloc_colorset(*val))
+			{
+				goto style_option_done;
+			}
 			SSET_COLORSET_HI(*ps, *val);
-			alloc_colorset(*val);
 			ps->flags.use_colorset_hi = (*val >= 0);
 			ps->flag_mask.use_colorset_hi = 1;
 			ps->change_mask.use_colorset_hi = 1;
@@ -2906,9 +2921,12 @@ static Bool style_parse_one_style_option(
                 else if (StrEquals(token, "HilightIconTitleColorset"))
 		{
 			*val = -1;
-			GetIntegerArguments(rest, &rest, val, 1);
+			GetColorsetArgument(rest, &rest, val);
+			if (!alloc_colorset(*val))
+			{
+				goto style_option_done;
+			}
 			SSET_ICON_TITLE_COLORSET_HI(*ps, *val);
-			alloc_colorset(*val);
 			ps->flags.use_icon_title_colorset_hi = (*val >= 0);
 			ps->flag_mask.use_icon_title_colorset_hi = 1;
 			ps->change_mask.use_icon_title_colorset_hi = 1;
@@ -2946,9 +2964,12 @@ static Bool style_parse_one_style_option(
 		else if (StrEquals(token, "IconBackgroundColorset"))
 		{
 			*val = -1;
-			GetIntegerArguments(rest, &rest, val, 1);
+			GetColorsetArgument(rest, &rest, val);
+			if (!alloc_colorset(*val))
+			{
+				goto style_option_done;
+			}
 			SSET_ICON_BACKGROUND_COLORSET(*ps, *val);
-			alloc_colorset(*val);
 			ps->flags.use_icon_background_colorset = (*val >= 0);
 			ps->flag_mask.use_icon_background_colorset = 1;
 			ps->change_mask.use_icon_background_colorset = 1;
@@ -3042,9 +3063,12 @@ static Bool style_parse_one_style_option(
 		else if (StrEquals(token, "IconTitleColorset"))
 		{
 			*val = -1;
-			GetIntegerArguments(rest,&rest, val, 1);
+			GetColorsetArgument(rest, &rest, val);
+			if (!alloc_colorset(*val))
+			{
+				goto style_option_done;
+			}
 			SSET_ICON_TITLE_COLORSET(*ps, *val);
-			alloc_colorset(*val);
 			ps->flags.use_icon_title_colorset = (*val >= 0);
 			ps->flag_mask.use_icon_title_colorset = 1;
 			ps->change_mask.use_icon_title_colorset = 1;
@@ -4636,6 +4660,7 @@ static Bool style_parse_one_style_option(
 		found = False;
 		break;
 	}
+style_option_done:
 	if (ret_rest)
 	{
 		*ret_rest = rest;
@@ -5422,10 +5447,10 @@ void update_window_color_style(FvwmWindow *fw, window_style *pstyle)
 		fw->cs = cs;
 	}
 
-	fw->colors.fore = Colorset[cs].fg;
-	fw->colors.hilight = Colorset[cs].hilite;
-	fw->colors.shadow = Colorset[cs].shadow;
-	fw->colors.back = Colorset[cs].bg;
+	fw->colors.fore = GetColorset(cs)->fg;
+	fw->colors.hilight = GetColorset(cs)->hilite;
+	fw->colors.shadow = GetColorset(cs)->shadow;
+	fw->colors.back = GetColorset(cs)->bg;
 
 	if (SUSE_BORDER_COLORSET(&pstyle->flags))
 	{
@@ -5434,9 +5459,9 @@ void update_window_color_style(FvwmWindow *fw, window_style *pstyle)
 		for (i = 0; i < BP_SIZE; i++) {
 			cs = SGET_BORDER_COLORSET(*pstyle, i);
 			fw->border_cs[i] = cs;
-			fw->border_colors[i].hilight = Colorset[cs].hilite;
-			fw->border_colors[i].shadow = Colorset[cs].shadow;
-			fw->border_colors[i].back = Colorset[cs].bg;
+			fw->border_colors[i].hilight = GetColorset(cs)->hilite;
+			fw->border_colors[i].shadow = GetColorset(cs)->shadow;
+			fw->border_colors[i].back = GetColorset(cs)->bg;
 		}
 	}
 	else
@@ -5461,10 +5486,10 @@ void update_window_color_hi_style(FvwmWindow *fw, window_style *pstyle)
 		cs = SGET_COLORSET_HI(*pstyle);
 		fw->cs_hi = cs;
 	}
-	fw->hicolors.fore = Colorset[cs].fg;
-	fw->hicolors.hilight = Colorset[cs].hilite;
-	fw->hicolors.shadow = Colorset[cs].shadow;
-	fw->hicolors.back = Colorset[cs].bg;
+	fw->hicolors.fore = GetColorset(cs)->fg;
+	fw->hicolors.hilight = GetColorset(cs)->hilite;
+	fw->hicolors.shadow = GetColorset(cs)->shadow;
+	fw->hicolors.back = GetColorset(cs)->bg;
 
 	if (SUSE_BORDER_COLORSET_HI(&pstyle->flags))
 	{
@@ -5473,9 +5498,9 @@ void update_window_color_hi_style(FvwmWindow *fw, window_style *pstyle)
 		for (i = 0; i < BP_SIZE; i++) {
 			cs = SGET_BORDER_COLORSET_HI(*pstyle, i);
 			fw->border_cs_hi[i] = cs;
-			fw->border_hicolors[i].hilight = Colorset[cs].hilite;
-			fw->border_hicolors[i].shadow = Colorset[cs].shadow;
-			fw->border_hicolors[i].back = Colorset[cs].bg;
+			fw->border_hicolors[i].hilight = GetColorset(cs)->hilite;
+			fw->border_hicolors[i].shadow = GetColorset(cs)->shadow;
+			fw->border_hicolors[i].back = GetColorset(cs)->bg;
 		}
 	}
 	else

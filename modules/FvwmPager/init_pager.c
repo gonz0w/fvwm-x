@@ -14,6 +14,7 @@
  */
 
 #include "config.h"
+#include "libs/log.h"
 #include "libs/Module.h"
 #include "libs/Parse.h"
 #include "libs/Graphics.h"
@@ -24,6 +25,19 @@
 #include "libs/FGettext.h"
 #include "fvwm/fvwm.h"
 #include "FvwmPager.h"
+#include "pager_geometry.h"
+#include "libs/module_monitor.h"
+#include <stddef.h>
+
+static bool parse_desk_number(const char *text, int *desk)
+{
+	if (!module_parse_decimal_integers(text, desk, 1))
+	{
+		fvwm_debug(__func__, "Refusing invalid desk number");
+		return false;
+	}
+	return true;
+}
 
 static Pixmap default_pixmap;
 static bool usposition = false;
@@ -38,6 +52,19 @@ static void initialize_mouse_bindings(void);
 static void initialize_desks_and_monitors(void);
 static void initialize_colorsets(void);
 static int fvwm_error_handler(Display *dpy, XErrorEvent *event);
+static void replace_pager_font(FlocaleFont **slot, char *name)
+{
+	FlocaleFont *loaded = FlocaleLoadFont(dpy, name, MyName);
+
+	if (loaded == NULL)
+	{
+		fvwm_debug(__func__, "Cannot load pager font; keeping previous font");
+		return;
+	}
+	FlocaleUnloadFont(dpy, *slot);
+	*slot = loaded;
+}
+
 static void initialize_fonts(void);
 static void initialize_transient(void);
 static void initialise_common_pager_fragments(void);
@@ -45,10 +72,13 @@ static void initialize_pager_size(void);
 static void initialize_balloon_window(void);
 static void initialize_desk_windows(int desk);
 static void initialize_pager_window(void);
-static void set_desk_style_cset(char *arg1, char *arg2, void *offset_style);
-static void set_desk_style_pixel(char *arg1, char *arg2, void *offset_style);
-static void set_desk_style_bool(char *arg1, char *arg2, void *offset_style);
+static void set_desk_style_cset(char *arg1, char *arg2, size_t offset);
+static void set_desk_style_pixel(char *arg1, char *arg2, size_t offset);
+static void set_desk_style_bool(char *arg1, char *arg2, size_t offset);
 static void parse_options(void);
+
+/* Content minimum is configuration state; MinSize is bounded render geometry. */
+static unsigned int window_minimum_content = DEFAULT_PAGER_WINDOW_MIN_SIZE;
 
 void init_fvwm_pager(void)
 {
@@ -77,7 +107,7 @@ void init_fvwm_pager(void)
 	}
 	/* Initialize any non configured desks. */
 	for (i = 0; i < ndesks; i++) {
-		style = FindDeskStyle(i);
+		style = FindDeskStyle(i + desk1);
 	}
 
 	/* After DeskStyles are initialized, initialize desk windows. */
@@ -198,7 +228,7 @@ void initialize_desks_and_monitors(void)
 
 	Desks = fxcalloc(1, ndesks*sizeof(DeskInfo));
 	for(i = 0; i < ndesks; i++) {
-		Desks[i].style = FindDeskStyle(i);
+		Desks[i].style = FindDeskStyle(i + desk1);
 		Desks[i].fp = fpmonitor_from_desk(i + desk1);
 	}
 }
@@ -206,24 +236,24 @@ void initialize_desks_and_monitors(void)
 void initialize_colorset(DeskStyle *style)
 {
 	if (style->cs >= 0) {
-		style->fg = Colorset[style->cs].fg;
-		style->bg = Colorset[style->cs].bg;
+		style->fg = GetColorset(style->cs)->fg;
+		style->bg = GetColorset(style->cs)->bg;
 	}
 	if (style->hi_cs >= 0) {
-		style->hi_fg = Colorset[style->hi_cs].fg;
-		style->hi_bg = Colorset[style->hi_cs].bg;
+		style->hi_fg = GetColorset(style->hi_cs)->fg;
+		style->hi_bg = GetColorset(style->hi_cs)->bg;
 	}
 	if (style->win_cs >= 0) {
-		style->win_fg = Colorset[style->win_cs].fg;
-		style->win_bg = Colorset[style->win_cs].bg;
+		style->win_fg = GetColorset(style->win_cs)->fg;
+		style->win_bg = GetColorset(style->win_cs)->bg;
 	}
 	if (style->focus_cs >= 0) {
-		style->focus_fg = Colorset[style->focus_cs].fg;
-		style->focus_bg = Colorset[style->focus_cs].bg;
+		style->focus_fg = GetColorset(style->focus_cs)->fg;
+		style->focus_bg = GetColorset(style->focus_cs)->bg;
 	}
 	if (style->balloon_cs >= 0) {
-		style->balloon_fg = Colorset[style->balloon_cs].fg;
-		style->balloon_bg = Colorset[style->balloon_cs].bg;
+		style->balloon_fg = GetColorset(style->balloon_cs)->fg;
+		style->balloon_bg = GetColorset(style->balloon_cs)->bg;
 	}
 }
 
@@ -253,6 +283,11 @@ void initialize_fonts(void)
 
 	/* load a default font. */
 	Scr.Ffont = FlocaleLoadFont(dpy, NULL, MyName);
+	if (Scr.Ffont == NULL)
+	{
+		fvwm_debug(__func__, "Cannot load default pager font");
+		exit(1);
+	}
 
 	/* init our Flocale window string */
 	FlocaleAllocateWinString(&FwinString);
@@ -375,95 +410,57 @@ void initialise_common_pager_fragments(void)
 void initialize_pager_size(void)
 {
 	struct fpmonitor *fp = fpmonitor_this(NULL);
-	int VxPages = fp->virtual_scr.VxPages;
-	int VyPages = fp->virtual_scr.VyPages;
+	int VxPages = fp != NULL ? fp->virtual_scr.VxPages : 1;
+	int VyPages = fp != NULL ? fp->virtual_scr.VyPages : 1;
+	int vWidth = fpmonitor_get_all_widths();
+	int vHeight = fpmonitor_get_all_heights();
 
-	/* Grid size */
-	if (Rows < 0)
+	if (!pager_prepare_grid(ndesks, Rows, Columns, &Rows, &Columns))
 	{
-		if (Columns <= 0)
-		{
-			Columns = ndesks;
-			Rows = 1;
-		}
-		else
-	{
-			Rows = ndesks/Columns;
-			if(Rows*Columns < ndesks)
-			Rows++;
-		}
-	}
-	if (Columns < 0)
-	{
-		if (Rows == 0)
-			Rows = 1;
-		Columns = ndesks/Rows;
-		if(Rows*Columns < ndesks)
-			Columns++;
-	}
-
-	if (Rows*Columns < ndesks)
-	{
-		if (Columns == 0)
-			Columns = 1;
-		Rows = ndesks/Columns;
-		if (Rows*Columns < ndesks)
-			Rows++;
+		fvwm_debug(__func__, "Cannot prepare pager grid");
+		exit(2);
 	}
 	set_desk_size(true);
-
-	/* Set window size if not fully set by user to match */
-	/* aspect ratio of monitor(s) being shown. */
-	if (pwindow.width == 0 || pwindow.height == 0) {
-		int vWidth  = fpmonitor_get_all_widths();
-		int vHeight = fpmonitor_get_all_heights();
-
-		if (monitor_to_track != NULL || IsShared) {
-			vWidth = fp->m->si->w;
-			vHeight = fp->m->si->h;
-		}
-
-		if (pwindow.width > 0) {
-			pwindow.height = (pwindow.width * vHeight) /
-					 vWidth + label_h * Rows + Rows;
-		} else if (pwindow.height > label_h * Rows) {
-			pwindow.width = ((pwindow.height - label_h * Rows +
-					Rows) * vWidth) / vHeight + Columns;
-		} else {
-			pwindow.width = (VxPages * vWidth * Columns) /
-					Scr.VScale + Columns;
-			pwindow.height = (VyPages * vHeight * Rows) /
-					 Scr.VScale + label_h * Rows + Rows;
-		}
+	if (fp != NULL && (monitor_to_track != NULL || IsShared))
+	{
+		vWidth = fp->m->si->w;
+		vHeight = fp->m->si->h;
+	}
+	if (!pager_prepare_window_size(pwindow.width, pwindow.height,
+		Rows, Columns, label_h, VxPages, VyPages, vWidth, vHeight,
+		Scr.VScale, &pwindow.width, &pwindow.height))
+	{
+		fvwm_debug(__func__, "Cannot prepare pager dimensions");
+		pwindow.width = pwindow.height = 1;
 	}
 	set_desk_size(false);
 
-	/* Icon window size. */
 	if (icon.width < 1)
-		icon.width = (pwindow.width - Columns + 1) / Columns;
+		icon.width = desk_w;
 	if (icon.height < 1)
-		icon.height = (pwindow.height - Rows * label_h - Rows + 1) /
-			      Rows;
+		icon.height = desk_h;
 
 	/* Icon window location. */
 	if (icon.x != -10000) {
 		icon_usposition = true;
 		if (icon_xneg)
-			icon.x = fpmonitor_get_all_widths() + icon.x - icon.width;
+			icon.x = pager_pixel_position((int64_t)
+				fpmonitor_get_all_widths() + icon.x - icon.width);
 	} else {
 		icon.x = 0;
 	}
 	if (icon.y != -10000) {
 		icon_usposition = true;
 		if (icon_yneg)
-			icon.y = fpmonitor_get_all_heights() + icon.y - icon.height;
+			icon.y = pager_pixel_position((int64_t)
+				fpmonitor_get_all_heights() + icon.y - icon.height);
 	} else {
 		icon.y = 0;
 	}
 
 	/* Make each page have same number of pixels. */
-	icon.width = (icon.width / (VxPages + 1)) * (VxPages + 1) + VxPages;
-	icon.height = (icon.height / (VyPages + 1)) * (VyPages + 1) + VyPages;
+	icon.width = pager_round_icon_size(icon.width, VxPages);
+	icon.height = pager_round_icon_size(icon.height, VyPages);
 }
 
 /* create balloon window -- ric@giccs.georgetown.edu */
@@ -494,6 +491,11 @@ void initialize_balloon_window(void)
 		Balloon.label_format = fxstrdup("%i");
 	if (!Balloon.Ffont)
 		Balloon.Ffont = FlocaleLoadFont(dpy, NULL, MyName);
+	if (Balloon.Ffont == NULL)
+	{
+		fvwm_debug(__func__, "Cannot load default balloon font");
+		exit(1);
+	}
 
 	valuemask = CWOverrideRedirect | CWEventMask | CWColormap;
 	/* tell WM to ignore this window */
@@ -529,7 +531,7 @@ void initialize_fpmonitor_windows(struct fpmonitor *fp)
 		valuemask = CWColormap;
 		if (Desks[i].style->hiPixmap ||
 		    (Desks[i].style->hi_cs > -1 &&
-		    Colorset[Desks[i].style->hi_cs].pixmap))
+		    GetColorset(Desks[i].style->hi_cs)->pixmap))
 		{
 			valuemask |= CWBackPixmap;
 			attributes.background_pixmap = None; /* set later */
@@ -585,21 +587,21 @@ void initialize_desk_style_gcs(DeskStyle *style)
 
 	/* Window borders. */
 	gcv.foreground = (style->win_cs) ?
-			 Colorset[style->win_cs].hilite : style->fg;
+			 GetColorset(style->win_cs)->hilite : style->fg;
 	style->win_hi_gc = fvwmlib_XCreateGC(
 		dpy, Scr.pager_w, GCForeground, &gcv);
 	gcv.foreground = (style->win_cs) ?
-			 Colorset[style->win_cs].shadow : style->fg;
+			 GetColorset(style->win_cs)->shadow : style->fg;
 	style->win_sh_gc = fvwmlib_XCreateGC(
 		dpy, Scr.pager_w, GCForeground, &gcv);
 
 	/* Focus window borders. */
 	gcv.foreground = (style->focus_cs) ?
-			 Colorset[style->focus_cs].hilite : style->fg;
+			 GetColorset(style->focus_cs)->hilite : style->fg;
 	style->focus_hi_gc = fvwmlib_XCreateGC(
 		dpy, Scr.pager_w, GCForeground, &gcv);
 	gcv.foreground = (style->focus_cs) ?
-			 Colorset[style->focus_cs].shadow : style->fg;
+			 GetColorset(style->focus_cs)->shadow : style->fg;
 	style->focus_sh_gc = fvwmlib_XCreateGC(
 		dpy, Scr.pager_w, GCForeground, &gcv);
 }
@@ -618,7 +620,7 @@ void initialize_desk_windows(int desk)
 	/* Note, pixmaps are set to None to be updated later. */
 	valuemask = (CWBorderPixel | CWColormap | CWEventMask);
 	if (style->use_label_pixmap && style->cs >= 0) {
-		if (Colorset[style->cs].pixmap) {
+		if (GetColorset(style->cs)->pixmap) {
 			valuemask |= CWBackPixmap;
 			attributes.background_pixmap = None;
 		} else {
@@ -635,7 +637,7 @@ void initialize_desk_windows(int desk)
 
 	attributes.event_mask = (ExposureMask | ButtonReleaseMask);
 	Desks[desk].title_w = XCreateWindow(dpy, Scr.pager_w,
-			-1, -1, desk_w, desk_h + label_h, 1,
+			-1, -1, desk_w, pager_pixel_size((int64_t)desk_h + label_h), 1,
 			CopyFromParent, InputOutput, CopyFromParent,
 			valuemask, &attributes);
 
@@ -665,7 +667,8 @@ void initialize_desk_windows(int desk)
 	attributes.event_mask = (ExposureMask | ButtonReleaseMask |
 				 ButtonPressMask | ButtonMotionMask);
 	Desks[desk].w = XCreateWindow(dpy, Desks[desk].title_w,
-			-1, LabelsBelow ? -1 : label_h - 1, desk_w, desk_h, 1,
+			-1, LabelsBelow ? -1 : pager_pixel_position(label_h - 1),
+			desk_w, desk_h, 1,
 			CopyFromParent, InputOutput, CopyFromParent,
 			valuemask, &attributes);
 
@@ -695,15 +698,19 @@ void initialize_pager_window(void)
 
 	if (xneg) {
 		sizehints.win_gravity = NorthEastGravity;
-		pwindow.x = fpmonitor_get_all_widths() - pwindow.width + pwindow.x;
+		pwindow.x = pager_pixel_position((int64_t)
+			fpmonitor_get_all_widths() - pwindow.width + pwindow.x);
 	}
 	if (yneg) {
 		if(sizehints.win_gravity == NorthEastGravity)
 			sizehints.win_gravity = SouthEastGravity;
 		else
 			sizehints.win_gravity = SouthWestGravity;
-		pwindow.y = fpmonitor_get_all_heights() - pwindow.height + pwindow.y;
+		pwindow.y = pager_pixel_position((int64_t)
+			fpmonitor_get_all_heights() - pwindow.height + pwindow.y);
 	}
+	pwindow.x = pager_pixel_position(pwindow.x);
+	pwindow.y = pager_pixel_position(pwindow.y);
 	if (usposition)
 		sizehints.flags |= USPosition;
 
@@ -769,36 +776,35 @@ void initialize_pager_window(void)
 	XFree((char *)name.value);
 }
 
-/* These functions are really tricky. An offset of the struct member
- * in the DeskStyle strut is used to set the desired value.
- * The lines accessing this info look very ugly, but they work.
- */
-void set_desk_style_cset(char *arg1, char *arg2, void *offset_style)
+/* Callers supply offsetof for a field matching each setter's value type. */
+void set_desk_style_cset(char *arg1, char *arg2, size_t offset)
 {
 	int cset = 0;
 	int desk;
-	unsigned long offset = (unsigned long)offset_style;
 	DeskStyle *style;
 
-	sscanf(arg2, "%d", &cset);
-	AllocColorset(cset);
+	if (!ParseColorsetId(arg2, NULL, &cset) ||
+	    (cset >= 0 && !AllocColorset(cset)))
+	{
+		return;
+	}
 	if (arg1[0] == '*') {
 		TAILQ_FOREACH(style, &desk_style_q, entry) {
 			*(int *)(((char *)style) + offset) = cset;
 		}
 	} else {
 		desk = desk1;
-		sscanf(arg1, "%d", &desk);
+		if (!parse_desk_number(arg1, &desk))
+			return;
 
 		style = FindDeskStyle(desk);
 		*(int *)(((char *)style) + offset) = cset;
 	}
 }
 
-void set_desk_style_pixel(char *arg1, char *arg2, void *offset_style)
+void set_desk_style_pixel(char *arg1, char *arg2, size_t offset)
 {
 	int desk;
-	unsigned long offset = (unsigned long)offset_style;
 	DeskStyle *style;
 	Pixel pix;
 
@@ -809,17 +815,17 @@ void set_desk_style_pixel(char *arg1, char *arg2, void *offset_style)
 		}
 	} else {
 		desk = desk1;
-		sscanf(arg1, "%d", &desk);
+		if (!parse_desk_number(arg1, &desk))
+			return;
 
 		style = FindDeskStyle(desk);
 		*(unsigned long *)(((char *)style) + offset) = pix;
 	}
 }
 
-void set_desk_style_bool(char *arg1, char *arg2, void *offset_style)
+void set_desk_style_bool(char *arg1, char *arg2, size_t offset)
 {
 	int desk;
-	unsigned long offset = (unsigned long)offset_style;
 	DeskStyle *style;
 	bool val;
 
@@ -839,7 +845,8 @@ void set_desk_style_bool(char *arg1, char *arg2, void *offset_style)
 		}
 	} else {
 		desk = desk1;
-		sscanf(arg1, "%d", &desk);
+		if (!parse_desk_number(arg1, &desk))
+			return;
 
 		style = FindDeskStyle(desk);
 		*(bool *)(((char *)style) + offset) = val;
@@ -877,6 +884,10 @@ void parse_options(void)
 		char *next;
 
 		token = PeekToken(tline, &next);
+		if (token == NULL)
+		{
+			continue;
+		}
 		/* Step 1: Initial configuration broadcasts are parsed here. */
 		if (token[0] == '*') {
 			/* Module configuration item, skip to next step. */
@@ -997,102 +1008,102 @@ void parse_options(void)
 				&current_monitor, next, false);
 		} else if(StrEquals(resource, "Colorset")) {
 			set_desk_style_cset(arg1, arg2,
-				&(((DeskStyle *)(NULL))->cs));
+				offsetof(DeskStyle, cs));
 		} else if(StrEquals(resource, "BalloonColorset")) {
 			set_desk_style_cset(arg1, arg2,
-				&(((DeskStyle *)(NULL))->balloon_cs));
+				offsetof(DeskStyle, balloon_cs));
 		} else if(StrEquals(resource, "HilightColorset")) {
 			set_desk_style_cset(arg1, arg2,
-				&(((DeskStyle *)(NULL))->hi_cs));
+				offsetof(DeskStyle, hi_cs));
 		} else if (StrEquals(resource, "WindowColorset")) {
 			set_desk_style_cset(arg1, arg2,
-				&(((DeskStyle *)(NULL))->win_cs));
+				offsetof(DeskStyle, win_cs));
 		} else if (StrEquals(resource, "FocusColorset")) {
 			set_desk_style_cset(arg1, arg2,
-				&(((DeskStyle *)(NULL))->focus_cs));
+				offsetof(DeskStyle, focus_cs));
 		} else if (StrEquals(resource, "WindowColorsets")) {
 			/* Backwards compatibility. */
 			if (arg1[0] != '*') {
 				set_desk_style_cset("*", arg1,
-					&(((DeskStyle *)(NULL))->win_cs));
+					offsetof(DeskStyle, win_cs));
 				set_desk_style_cset("*", arg2,
-					&(((DeskStyle *)(NULL))->focus_cs));
+					offsetof(DeskStyle, focus_cs));
 			}
 		} else if (StrEquals(resource, "Fore")) {
 			if (Pdepth > 0)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->fg));
+					offsetof(DeskStyle, fg));
 		} else if (StrEquals(resource, "Back") ||
 			   StrEquals(resource, "DeskColor"))
 		{
 			if (Pdepth > 0)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->bg));
+					offsetof(DeskStyle, bg));
 		} else if (StrEquals(resource, "HiFore")) {
 			if (Pdepth > 0)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->hi_fg));
+					offsetof(DeskStyle, hi_fg));
 		} else if (StrEquals(resource, "HiBack") ||
 			   StrEquals(resource, "Hilight"))
 		{
 			if (Pdepth > 0)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->hi_bg));
+					offsetof(DeskStyle, hi_bg));
 		} else if (StrEquals(resource, "WindowFore")) {
 			if (Pdepth > 1)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->win_fg));
+					offsetof(DeskStyle, win_fg));
 		} else if (StrEquals(resource, "WindowBack")) {
 			if (Pdepth > 1)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->win_bg));
+					offsetof(DeskStyle, win_bg));
 		} else if (StrEquals(resource, "FocusFore")) {
 			if (Pdepth > 1)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->focus_fg));
+					offsetof(DeskStyle, focus_fg));
 		} else if (StrEquals(resource, "FocusBack")) {
 			if (Pdepth > 1)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->focus_bg));
+					offsetof(DeskStyle, focus_bg));
 		} else if (StrEquals(resource, "WindowColors")) {
 			/* Backwards compatibility. */
 			if (Pdepth > 1 && arg1[0] != '*')
 			{
 				set_desk_style_pixel("*", arg1,
-					&(((DeskStyle *)(NULL))->win_bg));
+					offsetof(DeskStyle, win_bg));
 				set_desk_style_pixel("*", arg2,
-					&(((DeskStyle *)(NULL))->win_bg));
+					offsetof(DeskStyle, win_bg));
 				free(arg2);
 				tline2 = GetNextToken(tline2, &arg2);
 				set_desk_style_pixel("*", arg2,
-					&(((DeskStyle *)(NULL))->focus_fg));
+					offsetof(DeskStyle, focus_fg));
 				free(arg2);
 				tline2 = GetNextToken(tline2, &arg2);
 				set_desk_style_pixel("*", arg2,
-					&(((DeskStyle *)(NULL))->focus_bg));
+					offsetof(DeskStyle, focus_bg));
 			}
 		} else if (StrEquals(resource, "BalloonFore")) {
 			if (Pdepth > 1)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->balloon_fg));
+					offsetof(DeskStyle, balloon_fg));
 		} else if (StrEquals(resource, "BalloonBack")) {
 			if (Pdepth > 1)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->balloon_bg));
+					offsetof(DeskStyle, balloon_bg));
 		} else if (StrEquals(resource, "BalloonBorderColor")) {
 			if (Pdepth > 1)
 				set_desk_style_pixel(arg1, arg2,
-					&(((DeskStyle *)(NULL))->balloon_border));
+					offsetof(DeskStyle, balloon_border));
 		} else if (StrEquals(resource, "LabelPixmap")) {
 			set_desk_style_bool(arg1, arg2,
-				&(((DeskStyle *)(NULL))->use_label_pixmap));
+				offsetof(DeskStyle, use_label_pixmap));
 		} else if (StrEquals(resource, "Geometry")) {
 			flags = FScreenParseGeometry(
 					next, &g_x, &g_y, &width, &height);
 			if (flags & WidthValue)
-				pwindow.width = width;
+				pwindow.width = width == 0 ? 0 : pager_pixel_size(width);
 			if (flags & HeightValue)
-				pwindow.height = height;
+				pwindow.height = height == 0 ? 0 : pager_pixel_size(height);
 			if (flags & XValue) {
 				pwindow.x = g_x;
 				usposition = true;
@@ -1109,9 +1120,9 @@ void parse_options(void)
 			flags = FScreenParseGeometry(
 					next, &g_x, &g_y, &width, &height);
 			if (flags & WidthValue)
-				icon.width = width;
+				icon.width = width == 0 ? 0 : pager_pixel_size(width);
 			if (flags & HeightValue)
-				icon.height = height;
+				icon.height = height == 0 ? 0 : pager_pixel_size(height);
 			if (flags & XValue) {
 				icon.x = g_x;
 				if (flags & XNegative)
@@ -1127,8 +1138,7 @@ void parse_options(void)
 				use_desk_label = false;
 				use_monitor_label = false;
 			} else {
-				FlocaleUnloadFont(dpy, Scr.Ffont);
-				Scr.Ffont = FlocaleLoadFont(dpy, next, MyName);
+				replace_pager_font(&Scr.Ffont, next);
 			}
 		} else if (StrEquals(resource, "Pixmap") ||
 			   StrEquals(resource, "DeskPixmap"))
@@ -1150,7 +1160,8 @@ void parse_options(void)
 				}
 			} else {
 				int desk = 0;
-				sscanf(arg1, "%d", &desk);
+				if (!parse_desk_number(arg1, &desk))
+					goto free_vars;
 				style = FindDeskStyle(desk);
 				if (style->bgPixmap != NULL) {
 					PDestroyFvwmPicture(
@@ -1178,7 +1189,8 @@ void parse_options(void)
 				}
 			} else {
 				int desk = 0;
-				sscanf(arg1, "%d", &desk);
+				if (!parse_desk_number(arg1, &desk))
+					goto free_vars;
 				style = FindDeskStyle(desk);
 				if (style->hiPixmap != NULL) {
 					PDestroyFvwmPicture(
@@ -1191,32 +1203,46 @@ void parse_options(void)
 		} else if (StrEquals(resource, "WindowFont") ||
 			   StrEquals(resource, "SmallFont"))
 		{
-			FlocaleUnloadFont(dpy, Scr.winFfont);
-			Scr.winFfont = NULL;
-			if (strncasecmp(next, "none", 4) != 0)
-				Scr.winFfont = FlocaleLoadFont(
-					dpy, next, MyName);
+			if (strncasecmp(next, "none", 4) == 0)
+			{
+				FlocaleUnloadFont(dpy, Scr.winFfont);
+				Scr.winFfont = NULL;
+			}
+			else
+			{
+				replace_pager_font(&Scr.winFfont, next);
+			}
 		} else if (StrEquals(resource, "Rows")) {
-			sscanf(next, "%d", &Rows);
+			if (!module_parse_decimal_integers(next, &Rows, 1))
+				fvwm_debug(__func__, "Refusing invalid row count");
 		} else if (StrEquals(resource, "Columns")) {
-			sscanf(next, "%d", &Columns);
+			if (!module_parse_decimal_integers(next, &Columns, 1))
+				fvwm_debug(__func__, "Refusing invalid column count");
 		} else if (StrEquals(resource, "DesktopScale")) {
-			sscanf(next, "%d", &Scr.VScale);
+			if (!pager_prepare_scale(next, &Scr.VScale))
+				fvwm_debug(__func__, "Refusing invalid desktop scale");
 		} else if (StrEquals(resource, "WindowBorderWidth")) {
-			MinSize = MinSize - 2*WindowBorderWidth;
-			sscanf(next, "%d", &WindowBorderWidth);
-			if (WindowBorderWidth > 0)
-				MinSize = 2 * WindowBorderWidth + MinSize;
-			else
-				MinSize = MinSize + 2 *
-					  DEFAULT_PAGER_WINDOW_BORDER_WIDTH;
+			unsigned int border;
+			if (!pager_prepare_window_metric(next, &border))
+			{
+				fvwm_debug(__func__, "Refusing invalid window border");
+				goto free_vars;
+			}
+			WindowBorderWidth = border > 65535 ? 65535 : border;
+			MinSize = pager_minimum_size(WindowBorderWidth > 0 ?
+				WindowBorderWidth : DEFAULT_PAGER_WINDOW_BORDER_WIDTH,
+				window_minimum_content);
 		} else if (StrEquals(resource, "WindowMinSize")) {
-			sscanf(next, "%d", &MinSize);
-			if (MinSize > 0)
-				MinSize = 2 * WindowBorderWidth + MinSize;
-			else
-				MinSize = 2 * WindowBorderWidth +
-					  DEFAULT_PAGER_WINDOW_MIN_SIZE;
+			unsigned int minimum;
+			if (!pager_prepare_window_metric(next, &minimum))
+			{
+				fvwm_debug(__func__, "Refusing invalid window minimum");
+				goto free_vars;
+			}
+			window_minimum_content = minimum > 0 ? minimum :
+				DEFAULT_PAGER_WINDOW_MIN_SIZE;
+			MinSize = pager_minimum_size(WindowBorderWidth,
+				window_minimum_content);
 		} else if (StrEquals(resource, "WindowLabelFormat")) {
 			free(WindowLabelFormat);
 			CopyString(&WindowLabelFormat, next);
@@ -1243,8 +1269,7 @@ void parse_options(void)
 				Balloon.show_in_icon = true;
 			}
 		} else if (StrEquals(resource, "BalloonFont")) {
-			FlocaleUnloadFont(dpy, Balloon.Ffont);
-			Balloon.Ffont = FlocaleLoadFont(dpy, next, MyName);
+			replace_pager_font(&Balloon.Ffont, next);
 		} else if (StrEquals(resource, "BalloonBorderWidth")) {
 			sscanf(next, "%d", &(Balloon.border_width));
 		} else if (StrEquals(resource, "BalloonYOffset")) {
@@ -1258,10 +1283,10 @@ void parse_options(void)
 			if (arg1[0] == '*')
 				goto free_vars; /* Not enough inputs. */
 
-			sscanf(arg1, "%d", &button);
-			button--;
-			if (button < 0 || button >= P_MOUSE_BUTTONS)
+			if (!module_parse_decimal_integers(arg1, &button, 1) ||
+				button <= 0 || button > P_MOUSE_BUTTONS)
 				goto free_vars;
+			button--;
 
 			/* Determine mouse action */
 			if (StrEquals(arg2, "ChangePage")) {

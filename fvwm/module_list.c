@@ -14,14 +14,12 @@
  */
 
 #include "config.h"
+#include "libs/fd_safety.h"
 
 #include <errno.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-
-/* for time(); difftime() */
-#include <time.h>
 
 /* for F_CMD_ARGS */
 #include "fvwm/fvwm.h"
@@ -44,10 +42,9 @@
 #include "externs.h"
 
 /* for module syncronous */
-#include "libs/ftime.h"
 #include "libs/fvwmsignal.h"
 #include "libs/log.h"
-#include "libs/System.c"
+#include "libs/System.h"
 #include "libs/envvar.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
@@ -55,6 +52,7 @@
 #include "libs/fvwmsignal.h"
 #include "libs/FEvent.h"
 #include "events.h"
+#include "event_loop_policy.h"
 #include "bindings.h"
 
 /* for positive write */
@@ -95,8 +93,11 @@ extern int moduleTimeout;
 static void KillModuleByName(char *name, char *alias);
 static char *get_pipe_name(fmodule *module);
 static void DeleteMessageQueueBuff(fmodule *module);
-static void flush_message_queue(fmodule *module, Bool wait_for_writable);
+static Bool flush_message_queue(fmodule *module,
+	fvwm_module_deadline *deadline, Bool synchronous);
 static Bool set_nonblocking(int fd);
+static void positive_write(fmodule *module, unsigned long *ptr, int size,
+	Bool defer_config, Bool synchronize);
 
 static inline void msg_mask_set(
 	msg_masks_t *msg_mask, unsigned long m1, unsigned long m2);
@@ -120,11 +121,30 @@ static Bool set_nonblocking(int fd)
 }
 
 
+/* These arrays remain owned by the constructor until a successful fork. */
+static void close_module_pipes(int outgoing[2], int incoming[2])
+{
+	for (unsigned i = 0; i < 2; i++)
+	{
+		if (outgoing[i] >= 0)
+		{
+			close(outgoing[i]);
+			outgoing[i] = -1;
+		}
+		if (incoming[i] >= 0)
+		{
+			close(incoming[i]);
+			incoming[i] = -1;
+		}
+	}
+}
+
 static fmodule *do_execute_module(
 	F_CMD_ARGS, Bool desperate, Bool do_listen_only)
 {
 	int fvwm_to_app[2], app_to_fvwm[2];
-	int i, val, nargs = 0;
+	int val;
+	size_t i, nargs = 0, args_capacity = 7;
 	char *cptr = NULL;
 	char **args = NULL;
 	char *arg1 = NULL;
@@ -142,7 +162,7 @@ static fmodule *do_execute_module(
 	fvwm_to_app[1] = -1;
 	app_to_fvwm[1] = -1;
 	app_to_fvwm[0] = -1;
-	args = fxmalloc(7 * sizeof(char *));
+	args = fxmalloc(args_capacity * sizeof(*args));
 	if (action == NULL)
 	{
 		goto err_exit;
@@ -195,12 +215,12 @@ static fmodule *do_execute_module(
 		fvwm_to_app[0] = -1;
 		fvwm_to_app[1] = -1;
 	}
-	else if (pipe(fvwm_to_app) != 0)
+	else if (!fvwm_pipe_cloexec(fvwm_to_app))
 	{
 		fvwm_debug(__func__, "Failed to open pipe");
 		goto err_exit;
 	}
-	if (pipe(app_to_fvwm) != 0)
+	if (!fvwm_pipe_cloexec(app_to_fvwm))
 	{
 		fvwm_debug(__func__, "Failed to open pipe2");
 		goto err_exit;
@@ -236,7 +256,14 @@ static fmodule *do_execute_module(
 	args[5] = arg6;
 	for (nargs = 6; action = GetNextToken(action, &token), token; nargs++)
 	{
-		args = fxrealloc((void *)args, (nargs + 2), sizeof(char *));
+		/* Reserve the next token and terminator without per-token growth. */
+		if (nargs + 1 == args_capacity)
+		{
+			args_capacity = args_capacity <=
+				SIZE_MAX / sizeof(*args) / 2 ?
+				args_capacity * 2 : nargs + 2;
+			args = fxrealloc(args, args_capacity, sizeof(*args));
+		}
 		args[nargs] = token;
 		if (MOD_ALIAS(module) == NULL)
 		{
@@ -250,10 +277,7 @@ static fmodule *do_execute_module(
 	}
 	args[nargs] = NULL;
 
-	/* Try vfork instead of fork. The man page says that vfork is better!
-	 */
-	/* Also, had to change exit to _exit() */
-	/* Not everyone has vfork! */
+	/* Child failure must not run the core's inherited stdio/exit handlers. */
 	val = fork();
 	if (val > 0)
 	{
@@ -283,20 +307,6 @@ static fmodule *do_execute_module(
 			module_destroy(module);
 			module = NULL;
 		}
-		/* Mark the pipes close-on exec so other programs
-		 * won`t inherit them */
-		if (module != NULL && fcntl(MOD_READFD(module), F_SETFD, 1) == -1)
-		{
-			fvwm_debug(__func__,
-				   "module close-on-exec failed");
-		}
-		if (
-			module != NULL && MOD_WRITEFD(module) >= 0 &&
-			fcntl(MOD_WRITEFD(module), F_SETFD, 1) == -1)
-		{
-			fvwm_debug(__func__,
-				   "module close-on-exec failed");
-		}
 		/* module struct is completed, insert into the list */
 		if (module != NULL)
 		{
@@ -313,6 +323,13 @@ static fmodule *do_execute_module(
 			/* dont't care that this may be -1 */
 			close(fvwm_to_app[1]);
 			close(app_to_fvwm[0]);
+		}
+		/* Only the two module endpoints may survive this exec. */
+		if (!fvwm_fd_set_cloexec(app_to_fvwm[1], false) ||
+		    (fvwm_to_app[0] >= 0 &&
+		    !fvwm_fd_set_cloexec(fvwm_to_app[0], false)))
+		{
+			_exit(1);
 		}
 		fvmm_deinstall_signals();
 		if (!Pdefault)
@@ -344,16 +361,14 @@ static fmodule *do_execute_module(
 		{
 			close(fvwm_to_app[0]);
 		}
-		if (FORK_CREATES_CHILD)
-		{
-			exit(1);
-		}
+		_exit(1);
 	}
 	else
 	{
 		fvwm_debug(__func__, "Fork failed");
 		module_destroy(module);
 		module = NULL;
+		close_module_pipes(fvwm_to_app, app_to_fvwm);
 	}
 	free(arg1);
 	for (i = 6; i < nargs; i++)
@@ -380,22 +395,7 @@ static fmodule *do_execute_module(
 	{
 		free(args);
 	}
-	if (fvwm_to_app[0] >= 0)
-	{
-		close(fvwm_to_app[0]);
-	}
-	if (fvwm_to_app[1] >= 0)
-	{
-		close(fvwm_to_app[1]);
-	}
-	if (app_to_fvwm[0] >= 0)
-	{
-		close(app_to_fvwm[0]);
-	}
-	if (app_to_fvwm[1] >= 0)
-	{
-		close(app_to_fvwm[1]);
-	}
+	close_module_pipes(fvwm_to_app, app_to_fvwm);
 
 	return NULL;
 }
@@ -415,18 +415,77 @@ fmodule *executeModuleDesperate(F_CMD_ARGS)
    want to inline.  dje 9/4/98 */
 extern int myxgrabcount;                /* defined in libs/Grab.c */
 extern char *ModuleUnlock;              /* defined in libs/Module.c */
-void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
+/* The deadline belongs to this command frame, even when input recursively
+ * enters another synchronous operation. Retirement remains on death row. */
+typedef struct
+{
+	fmodule *module;
+	fvwm_module_deadline *deadline;
+	Bool retire_on_timeout;
+} module_sync_wait;
+
+static Bool module_wait_remaining(fmodule *module,
+	fvwm_module_deadline *deadline, struct timeval *remaining,
+	Bool retire_on_timeout)
+{
+	struct timeval unused;
+	fvwm_module_deadline_status status;
+
+	if (isTerminated)
+	{
+		return False;
+	}
+	status = fvwm_module_deadline_remaining(deadline, events_monotonic_ns(),
+		remaining != NULL ? remaining : &unused);
+	if (status != FVWM_MODULE_DEADLINE_READY)
+	{
+		fvwm_debug(__func__, "module %p synchronous %s %s",
+			module, retire_on_timeout ? "handshake" : "startup",
+			status == FVWM_MODULE_DEADLINE_EXPIRED ?
+			"deadline expired" : "clock/deadline invalid");
+		if (retire_on_timeout)
+		{
+			module_kill(module);
+		}
+		return False;
+	}
+	return True;
+}
+
+static Bool module_sync_remaining(fmodule *module,
+	fvwm_module_deadline *deadline, struct timeval *remaining)
+{
+	return module_wait_remaining(module, deadline, remaining, True);
+}
+
+static Bool module_sync_receive_ready(void *context)
+{
+	module_sync_wait *wait = context;
+
+	return !MOD_IS_RETIRED(wait->module) && module_wait_remaining(
+		wait->module, wait->deadline, NULL, wait->retire_on_timeout);
+}
+
+static void positive_write(fmodule *module, unsigned long *ptr, int size,
+	Bool defer_config, Bool synchronize)
 {
 	msg_masks_t mask;
 	size_t queue_entry_size;
 
-	if (ptr == NULL || size <= 0)
+	if (ptr == NULL || size < FvwmPacketHeaderSize * sizeof(*ptr) ||
+	    size > FvwmPacketMaxSize_byte)
 	{
 		return;
 	}
-	if (MOD_WRITEFD(module) == -1)
+	if (MOD_WRITEFD(module) == -1 || MOD_IS_RETIRED(module))
 	{
 		return;
+	}
+	/* Destruction cancels any unsent snapshot even if it is unsubscribed. */
+	if (ptr[1] == M_DESTROY_WINDOW &&
+	    size >= (FvwmPacketHeaderSize + 1) * sizeof(*ptr))
+	{
+		module_config_discard(module, (Window)ptr[FvwmPacketHeaderSize]);
 	}
 	if (!IS_MESSAGE_IN_MASK(&(MOD_PIPEMASK(module)), ptr[1]))
 	{
@@ -440,6 +499,14 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 	mask.m1 = (MOD_NOGRABMASK(module).m1 & MOD_SYNCMASK(module).m1);
 	mask.m2 = (MOD_NOGRABMASK(module).m2 & MOD_SYNCMASK(module).m2);
 	if (IS_MESSAGE_IN_MASK(&mask, ptr[1]) && myxgrabcount != 0)
+	{
+		return;
+	}
+
+	if (defer_config && ptr[1] == M_CONFIGURE_WINDOW &&
+	    (IS_MESSAGE_IN_MASK(&module->xSyncMask, ptr[1]) ||
+	     module->xdeferredConfig != NULL) &&
+	    module_config_defer(module, ptr, (size_t)size))
 	{
 		return;
 	}
@@ -462,14 +529,25 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 			queue_entry_size);
 		if (c == NULL)
 		{
-			fvwm_debug(__func__, "malloc failed\n");
-			exit(1);
+			module_output_queue_release(module, queue_entry_size);
+			fvwm_debug(__func__,
+				"Output storage unavailable; retiring module");
+			module_kill(module);
+			return;
 		}
 		c->size = size;
 		c->done = 0;
 		c->data = (unsigned long *)(c + 1);
 		memcpy((void*)c->data, (const void*)ptr, size);
-		fqueue_add_at_end(&(MOD_PIPEQUEUE(module)), c);
+		if (!fqueue_try_add_at_end(&(MOD_PIPEQUEUE(module)), c))
+		{
+			module_output_queue_release(module, queue_entry_size);
+			free(c);
+			fvwm_debug(__func__,
+				"Output queue unavailable; retiring module");
+			module_kill(module);
+			return;
+		}
 	}
 
 	/* dje, from afterstep, for FvwmAnimate, allows modules to sync with
@@ -484,7 +562,7 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 	 * M_DESTROY_WINDOW handling in FvwmEvent. */
 	/*if (IS_MESSAGE_IN_MASK(&(MOD_SYNCMASK(module)), ptr[1]))*/
 	if (
-		IS_MESSAGE_IN_MASK(
+		synchronize && IS_MESSAGE_IN_MASK(
 			&(MOD_SYNCMASK(module)), ptr[1]) && !myxgrabcount)
 	{
 		fd_set readSet;
@@ -493,105 +571,100 @@ void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
 		Bool done = False;
 		fmodule_input *input;
 
-		flush_message_queue(module, True);
+		fvwm_module_deadline deadline;
+		module_sync_wait wait = { module, &deadline, True };
 
-		while (!done)
+		/* Input callbacks may retire the producer and run cleanup. Keep
+		 * its record until this entire synchronous frame unwinds. */
+		module->xinputRefs++;
+		fvwm_module_deadline_init(&deadline, events_monotonic_ns(),
+			moduleTimeout);
+		if (!flush_message_queue(module, &deadline, True))
 		{
-			int rc = 0;
-			/*
-			 * We give the read a long timeout; if the module
-			 * fails to respond within this time then it deserves
-			 * to be KILLED!
-			 *
-			 * NOTE: rather than impose an arbitrary timeout on the
-			 * user, we will make this a configuration parameter.
-			 */
+			module->xinputRefs--;
+			return;
+		}
+		while (!done && !MOD_IS_RETIRED(module))
+		{
+			int rc;
+
 			do
 			{
-				timeout.tv_sec = moduleTimeout;
-				timeout.tv_usec = 0;
+				if (!module_sync_remaining(
+					module, &deadline, &timeout))
+				{
+					goto sync_done;
+				}
 				FD_ZERO(&readSet);
 				FD_SET(channel, &readSet);
-
-				/* Wait for input to arrive on just one
-				 * descriptor, with a timeout (fvwmSelect <= 0)
-				 * or read() returning wrong size is bad news
-				 */
-				rc = fvwmSelect(
-					channel + 1, &readSet, NULL, NULL,
+				rc = fvwmSelect(channel + 1, &readSet, NULL, NULL,
 					&timeout);
-				/* retry if select() failed with EINTR */
-			} while (rc < 0 && !isTerminated && (errno == EINTR));
+			} while (rc < 0 && !isTerminated && errno == EINTR);
 
-			if ( isTerminated )
+			if (!module_sync_remaining(module, &deadline, NULL))
 			{
 				break;
 			}
-
 			if (rc > 0)
 			{
 				fmodule_input_status status;
 
-				status = module_receive(module, &input);
+				status = module_receive_checked(module, &input,
+					module_sync_receive_ready, &wait);
+				if (!module_sync_remaining(module, &deadline, NULL))
+				{
+					module_input_discard(input);
+					break;
+				}
 				if (status == FMODULE_INPUT_ERROR)
 				{
 					done = True;
 				}
-				else if (
-					status == FMODULE_INPUT_READY &&
-					module_input_expect(
-						input, ModuleUnlockResponse))
+				else if (status == FMODULE_INPUT_READY &&
+					module_input_expect(input, ModuleUnlockResponse))
 				{
 					module_input_discard(input);
 					done = True;
 				}
 				else if (status == FMODULE_INPUT_READY)
 				{
+					/* Retain execution of a final continuation=0
+					 * command, then stop the retired producer. */
 					module_input_execute(input);
 				}
-
 			}
 			else
 			{
-				char *name;
+				char *name = get_pipe_name(module);
 
-				name = get_pipe_name(module);
-				/* Doh! Something has gone wrong - get rid of
-				 * the offender! */
 				fvwm_debug(__func__,
-					   "Failed to read descriptor from"
-					   " '%s':\n"
-					   "- data available=%c\n"
-					   "- terminate signal=%c\n",
-					   name,
-					   (FD_ISSET(channel, &readSet) ?
-					    'Y' : 'N'),
-					   isTerminated ? 'Y' : 'N');
+					"Failed synchronous module read from '%s': rc=%d",
+					name, rc);
+				free(name);
 				module_kill(module);
 				break;
 			}
 
-
-			/* Execute all messages from the module until UNLOCK is
-			 * received N.B. This may cause recursion if a command
-			 * results in a sync message to another module, which
-			 * in turn may send a command that results in another
-			 * sync message to this module.
-			 * Hippo: I don't think this will cause deadlocks, but
-			 * the third time we get here the first times UNLOCK
-			 * will be read and then on returning up the third
-			 * level UNLOCK will be read at the first level. This
-			 * could be difficult to fix without turning queueing
-			 * on.  Turning queueing on may be bad because it can
-			 * be useful for modules to be able to inject commands
-			 * from modules in a synchronous manner. e.g.
-			 * FvwmIconMan can tell FvwmAnimate to do an animation
-			 * when a window is de-iconified from the IconMan,
-			 * queueing make s this happen too late. */
+			/* Execute input inline to preserve lock-on-send ordering.
+			 * Recursion gets its own frame; the parent's deadline
+			 * continues to run while nested commands execute. */
 		}
+	sync_done:
+		module->xinputRefs--;
 	}
 
 	return;
+}
+
+void PositiveWrite(fmodule *module, unsigned long *ptr, int size)
+{
+	positive_write(module, ptr, size, True, True);
+}
+
+/* Repair publication at the outer boundary without re-entering commands. */
+void module_output_enqueue(fmodule *module, unsigned long *packet, int size)
+{
+	positive_write(module, packet, size, True, False);
 }
 
 /* returns true if the module command matches "expect", false otherwise */
@@ -728,11 +801,8 @@ static void DeleteMessageQueueBuff(fmodule *module)
 {
 	mqueue_object_type *obj;
 
-	if (fqueue_get_first(&(MOD_PIPEQUEUE(module)), (void **)&obj) == 1)
+	if (fqueue_take_first(&(MOD_PIPEQUEUE(module)), (void **)&obj) == 1)
 	{
-		/* remove from queue */
-		fqueue_remove_or_operate_from_front(
-			&(MOD_PIPEQUEUE(module)), NULL, NULL, NULL, NULL);
 		module_output_queue_release(
 			module, sizeof(*obj) + (size_t)obj->size);
 		/* we don't need to free the obj->data here because it's in the
@@ -743,32 +813,63 @@ static void DeleteMessageQueueBuff(fmodule *module)
 	return;
 }
 
-static void flush_message_queue(fmodule *module, Bool wait_for_writable)
+static Bool flush_message_queue(fmodule *module,
+	fvwm_module_deadline *deadline, Bool synchronous)
 {
 	mqueue_object_type *obj;
 	char *dptr;
 	int a;
+	fvwm_output_budget budget;
 
 	if (module == NULL)
 	{
-		return;
+		return False;
 	}
+	fvwm_output_budget_init(&budget);
 
 	while (fqueue_get_first(&(MOD_PIPEQUEUE(module)), (void **)&obj) == 1)
 	{
+		if (MOD_IS_RETIRED(module))
+		{
+			return False;
+		}
+		if (!synchronous && budget.packets == 0)
+		{
+			return False;
+		}
 		dptr = (char *)obj->data;
 		while (obj->done < obj->size)
 		{
+			if (deadline != NULL &&
+			    !module_wait_remaining(module, deadline, NULL,
+				synchronous))
+			{
+				return False;
+			}
+			size_t requested = (size_t)(obj->size - obj->done);
+
+			/* Synchronous lock-on-send retains its completion barrier.
+			 * Ready asynchronous readers yield with offsets intact. */
+			if (!synchronous)
+			{
+				requested = fvwm_output_budget_request(
+					&budget, requested);
+				if (requested == 0)
+				{
+					return False;
+				}
+			}
 			a = write(MOD_WRITEFD(module), &dptr[obj->done],
-				  obj->size - obj->done);
+				  requested);
 			if (a > 0)
 			{
 				obj->done += a;
+				fvwm_output_budget_written(&budget, (size_t)a);
 			}
 			else if (a == 0)
 			{
 				module_kill(module);
-				return;
+				return False;
 			}
 			/* the write returns EWOULDBLOCK or EAGAIN if the pipe
 			 * is full. (This is non-blocking I/O). SunOS returns
@@ -783,16 +884,19 @@ static void flush_message_queue(fmodule *module, Bool wait_for_writable)
 				int channel = MOD_WRITEFD(module);
 				int rc = 0;
 
-				if (!wait_for_writable)
+				if (!synchronous)
 				{
-					return;
+					return False;
 				}
 				do
 				{
 					/* Wait until the pipe accepts further
 					 * input */
-					timeout.tv_sec = moduleTimeout;
-					timeout.tv_usec = 0;
+					if (!module_sync_remaining(
+						module, deadline, &timeout))
+					{
+						return False;
+					}
 					FD_ZERO(&writeSet);
 					FD_SET(channel, &writeSet);
 					rc = fvwmSelect(
@@ -803,11 +907,12 @@ static void flush_message_queue(fmodule *module, Bool wait_for_writable)
 				} while ((rc < 0) && !isTerminated &&
 					 (errno == EINTR));
 
-				if ( isTerminated )
+				if (!module_sync_remaining(
+					module, deadline, NULL))
 				{
-					return;
+					return False;
 				}
-				if (!FD_ISSET(channel, &writeSet))
+				if (rc <= 0 || !FD_ISSET(channel, &writeSet))
 				{
 					char *name;
 
@@ -824,7 +929,7 @@ static void flush_message_queue(fmodule *module, Bool wait_for_writable)
 					module_kill(module);
 					free(name);
 
-					return;
+					return False;
 				}
 
 				/* pipe accepts further input; continue */
@@ -834,18 +939,49 @@ static void flush_message_queue(fmodule *module, Bool wait_for_writable)
 			{
 				module_kill(module);
 
-				return;
+				return False;
 			}
 		}
 		DeleteMessageQueueBuff(module);
+		fvwm_output_budget_completed(&budget);
 	}
 
-	return;
+	return True;
+}
+
+/* Only the outer event loop calls this after command resources and grabs
+ * unwind. Detach before callbacks and pin the producer across retirement. */
+void module_config_flush_one(void)
+{
+	fmodule_list_itr iterator;
+	fmodule *module;
+	fmodule_config_packet *snapshot;
+
+	if (!module_config_pending())
+	{
+		return;
+	}
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
+	{
+		if (module->xdeferredConfig == NULL)
+		{
+			continue;
+		}
+		snapshot = module_config_take(module);
+		module->xinputRefs++;
+		positive_write(module, snapshot->data, (int)snapshot->size, False, True);
+		module->xinputRefs--;
+		free(snapshot);
+		module_list_itr_finish(&iterator);
+		module_cleanup();
+		return;
+	}
 }
 
 void FlushMessageQueue(fmodule *module)
 {
-	flush_message_queue(module, False);
+	flush_message_queue(module, NULL, False);
 }
 
 void FlushAllMessageQueues(void)
@@ -906,14 +1042,14 @@ void CMD_KillModule(F_CMD_ARGS)
 
 void CMD_ModuleSynchronous(F_CMD_ARGS)
 {
-	int sec = 0;
+	int sec = moduleTimeout;
 	char *next;
 	char *token;
 	char *expect = fxstrdup(ModuleFinishedStartupResponse);
-	fmodule *module;
+	fmodule *module = NULL;
 	fd_set in_fdset;
 	fd_set out_fdset;
-	time_t start_time;
+	fvwm_module_deadline deadline;
 	Bool done = False;
 	Bool need_ungrab = False;
 	char *escape = NULL;
@@ -921,15 +1057,15 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 
 	if (!action)
 	{
-		return;
+		goto done;
 	}
-
 	token = PeekToken(action, &next);
 	if (StrEquals(token, "expect"))
 	{
 		token = PeekToken(next, &next);
 		if (token)
 		{
+			free(expect);
 			expect = fxstrdup(token);
 		}
 		action = next;
@@ -939,7 +1075,6 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 	{
 		if (GetIntegerArguments(next, &next, &sec, 1) > 0 && sec > 0)
 		{
-			/* we have a delay, skip the number */
 			action = next;
 		}
 		else
@@ -948,105 +1083,121 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 			goto done;
 		}
 	}
-
 	if (!action)
 	{
-		/* no module name */
 		goto done;
 	}
-
 	module = do_execute_module(F_PASS_ARGS, False, False);
 	if (module == NULL)
 	{
-		/* executing the module failed, just return */
 		goto done;
 	}
 
-	/* Busy cursor stuff */
+	/* Inline input can retire the producer and run nested cleanup. The
+	 * startup frame borrows it until the command barrier unwinds. */
+	module->xinputRefs++;
+	fvwm_module_deadline_init(&deadline, events_monotonic_ns(), sec);
 	if (Scr.BusyCursor & BUSY_MODULESYNCHRONOUS)
 	{
 		if (GrabEm(CRS_WAIT, GRAB_BUSY))
+		{
 			need_ungrab = True;
+		}
 	}
 
-	/* wait for module input */
-	start_time = time(NULL);
-
-	while (!done)
+	while (!done && !MOD_IS_RETIRED(module) && !isTerminated)
 	{
 		struct timeval timeout;
+		int read_fd = MOD_READFD(module);
+		int write_fd = MOD_WRITEFD(module);
+		int x_fd = ConnectionNumber(dpy);
+		int max_fd = read_fd > x_fd ? read_fd : x_fd;
 		int num_fd;
+		int select_error;
+		module_sync_wait wait = { module, &deadline, False };
 
-		/* A signal here could interrupt the select call. We would
-		 * then need to restart our select, unless the signal was
-		 * a "terminate" signal. Note that we need to reinitialise
-		 * all of select's parameters after it has returned. */
-		do
-		{
-			FD_ZERO(&in_fdset);
-			FD_ZERO(&out_fdset);
-
-			FD_SET(MOD_READFD(module), &in_fdset);
-
-			if (!FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module)))
-			{
-				FD_SET(MOD_WRITEFD(module), &out_fdset);
-			}
-			timeout.tv_sec = 0;
-			timeout.tv_usec = 1;
-			num_fd = fvwmSelect(
-				fvwmlib_max_fd, &in_fdset, &out_fdset, 0,
-				&timeout);
-		} while (num_fd < 0 && !isTerminated);
-
-		/* Exit if we have received a "terminate" signal */
-		if (isTerminated)
+		if (!module_wait_remaining(module, &deadline, &timeout, False))
 		{
 			break;
 		}
-
-		if (num_fd > 0)
+		/* X readiness wakes Escape promptly. The finite fallback also
+		 * checks keys that Xlib already buffered; other events stay queued. */
+		if (timeout.tv_sec > 0 || timeout.tv_usec > 100000)
 		{
-			if (FD_ISSET(MOD_READFD(module), &in_fdset))
+			timeout.tv_sec = 0;
+			timeout.tv_usec = 100000;
+		}
+		FD_ZERO(&in_fdset);
+		FD_ZERO(&out_fdset);
+		FD_SET(read_fd, &in_fdset);
+		FD_SET(x_fd, &in_fdset);
+		if (write_fd >= 0 && !FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module)))
+		{
+			FD_SET(write_fd, &out_fdset);
+			if (write_fd > max_fd)
 			{
-				fmodule_input * input;
-
-				/* Check for module input. */
-				fmodule_input_status status;
-
-				status = module_receive(module, &input);
-				if (status == FMODULE_INPUT_ERROR)
-				{
-					done = True;
-				}
-				else if (
-					status == FMODULE_INPUT_READY &&
-					module_input_expect(input, expect))
-				{
-					module_input_discard(input);
-					done = True;
-				}
-				else if (status == FMODULE_INPUT_READY)
-				{
-					module_input_execute(input);
-				}
-
-			}
-
-			if ((MOD_WRITEFD(module) >= 0) &&
-			    FD_ISSET(MOD_WRITEFD(module), &out_fdset))
-			{
-				FlushMessageQueue(module);
+				max_fd = write_fd;
 			}
 		}
-
-		usleep(1000);
-		if (difftime(time(NULL), start_time) >= sec && sec)
+		num_fd = fvwmSelect(max_fd + 1, &in_fdset, &out_fdset, NULL,
+			&timeout);
+		select_error = errno;
+		if (!module_wait_remaining(module, &deadline, NULL, False))
 		{
-			/* timeout */
-			done = True;
+			break;
 		}
+		if (num_fd < 0)
+		{
+			if (select_error == EINTR)
+			{
+				continue;
+			}
+			fvwm_debug(__func__, "module %p startup select failed: %s",
+				module, strerror(select_error));
+			break;
+		}
+		if (num_fd > 0 && FD_ISSET(read_fd, &in_fdset))
+		{
+			fmodule_input *input;
+			fmodule_input_status status;
 
+			status = module_receive_checked(module, &input,
+				module_sync_receive_ready, &wait);
+			/* The checked reader tests the deadline before committing a
+			 * complete frame to this command. A declined handoff retains
+			 * the frame for ordinary asynchronous reception. */
+			if (status == FMODULE_INPUT_ERROR)
+			{
+				done = True;
+			}
+			else if (status == FMODULE_INPUT_READY &&
+				module_input_expect(input, expect))
+			{
+				module_input_discard(input);
+				done = True;
+			}
+			else if (status == FMODULE_INPUT_READY)
+			{
+				/* Execute a final continuation=0 input before stopping
+				 * its retired producer, just as ordinary input does. */
+				module_input_execute(input);
+			}
+		}
+		if (!module_wait_remaining(module, &deadline, NULL, False))
+		{
+			break;
+		}
+		if (!MOD_IS_RETIRED(module) && write_fd >= 0 &&
+		    FD_ISSET(write_fd, &out_fdset))
+		{
+			/* Retain asynchronous budgets and offsets; test the startup
+			 * deadline before retries without killing a live module. */
+			flush_message_queue(module, &deadline, False);
+		}
+		if (!module_wait_remaining(module, &deadline, NULL, False))
+		{
+			break;
+		}
 		/* Check for "escape function" */
 		if (FPending(dpy) &&
 		    FCheckMaskEvent(dpy, KeyPressMask, &tmpevent))
@@ -1081,12 +1232,13 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 				}
 			}
 		}
-	} /* while */
+	}
 
 	if (need_ungrab)
 	{
 		UngrabEm(GRAB_BUSY);
 	}
+	module->xinputRefs--;
 done:
 	free(expect);
 }

@@ -25,6 +25,8 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include <assert.h>
+#include <stdint.h>
 
 #include "libs/log.h"
 #include "libs/fvwm_x11.h"
@@ -37,6 +39,9 @@
 #include "libs/PictureUtils.h"
 #include "libs/Graphics.h"
 #include "libs/PictureGraphics.h"
+#include "libs/picture_async.h"
+#include "image_async.h"
+#include "libs/picture_color.h"
 #include "libs/FRenderInit.h"
 #include "libs/Strings.h"
 #include "libs/Grab.h"
@@ -58,7 +63,6 @@
 
 /* ---------------------------- imports ------------------------------------ */
 
-extern int nColorsets;  /* in libs/Colorset.c */
 
 /* ---------------------------- included code files ------------------------ */
 
@@ -74,6 +78,7 @@ struct junklist
 {
 	struct junklist *prev;
 	Pixmap pixmap;
+	FvwmPicture *picture;
 };
 
 struct root_pic
@@ -246,6 +251,7 @@ static void add_to_junk(Pixmap pixmap)
 	junk = fxmalloc(sizeof(struct junklist));
 	junk->prev = oldjunk;
 	junk->pixmap = pixmap;
+	junk->picture = NULL;
 	if (!cleanup_scheduled)
 	{
 		const exec_context_t *exc;
@@ -292,37 +298,465 @@ static char *get_simple_color(
 
 static void SafeDestroyPicture(Display *disp, FvwmPicture *picture)
 {
-	/* have to subvert destroy picture so that it doesn't free pixmaps,
-	 * these are added to the junk list to be cleaned up after a timeout */
-	if (picture->count < 2)
+	/* Keep the whole immutable backing, including its colors, alive for
+	 * modules that still have the previous colorset packet. Never mutate
+	 * cached/shared backing to transfer individual pixmaps into junk. */
+	FvwmPicture *snapshot = picture_snapshot(picture);
+
+	if (snapshot != NULL)
 	{
-		if (picture->picture)
+		add_to_junk(None);
+		junk->picture = snapshot;
+	}
+	PDestroyFvwmPicture(disp, picture);
+}
+
+enum colorset_color_slot
+{
+	COLORSET_FG, COLORSET_BG, COLORSET_HILITE, COLORSET_SHADOW,
+	COLORSET_FGSH, COLORSET_TINT, COLORSET_ICON_TINT,
+	COLORSET_FG_TINT, COLORSET_BG_TINT,
+	COLORSET_FG_SAVED, COLORSET_BG_SAVED, COLORSET_COLOR_COUNT
+};
+
+static Pixel *colorset_color_slot(colorset_t *cs, unsigned slot)
+{
+	Pixel *slots[] = {&cs->fg, &cs->bg, &cs->hilite, &cs->shadow,
+	    &cs->fgsh, &cs->tint, &cs->icon_tint, &cs->fg_tint, &cs->bg_tint,
+	    &cs->fg_saved, &cs->bg_saved};
+
+	return slots[slot];
+}
+
+static picture_color *colorset_color_capture(colorset_t *cs, unsigned slot)
+{
+	if (cs->color_owners[slot] == NULL)
+	{
+		cs->color_owners[slot] = picture_color_adopt(Pcmap,
+		    *colorset_color_slot(cs, slot), True);
+	}
+	return cs->color_owners[slot];
+}
+
+static void colorset_color_release(colorset_t *cs, unsigned slot)
+{
+	if (cs->color_owners[slot] != NULL)
+	{
+		picture_color_release(dpy, cs->color_owners[slot]);
+		cs->color_owners[slot] = NULL;
+	}
+	else if (slot < COLORSET_FG_SAVED)
+	{
+		PictureFreeColors(dpy, Pcmap, colorset_color_slot(cs, slot),
+		    1, 0, True);
+	}
+}
+
+static void colorset_color_save(colorset_t *cs, unsigned current,
+	unsigned saved)
+{
+	colorset_color_release(cs, saved);
+	cs->color_owners[saved] = picture_color_retain(
+	    colorset_color_capture(cs, current));
+	*colorset_color_slot(cs, saved) = *colorset_color_slot(cs, current);
+}
+
+struct colorset_preparation
+{
+	colorset_t requested;
+	colorset_t *published;
+	FvwmPicture *effect;
+	int id;
+	Bool refused;
+	Bool effect_needed;
+	size_t references;
+};
+
+static void free_colorset_background(colorset_t *cs, Bool do_free_args);
+static void free_colorset_shape(colorset_t *cs);
+static void colorset_preparation_publish(
+	struct colorset_preparation *preparation);
+
+/* Wrap already published legacy background resources once. The source picture
+ * owns its alpha; this wrapper owns only private background/mask/palette
+ * data. */
+static void colorset_background_capture(colorset_t *cs)
+{
+	if (cs->rendered_picture != NULL &&
+	    cs->rendered_picture->picture != cs->pixmap)
+	{
+		SafeDestroyPicture(dpy, cs->rendered_picture);
+		cs->rendered_picture = NULL;
+	}
+	if (cs->rendered_picture == NULL && cs->pixmap != None &&
+	    cs->pixmap != ParentRelative && cs->pixmap != root_pic.pixmap &&
+	    cs->pixmap != root_pic.old_pixmap &&
+	    (cs->picture == NULL || cs->pixmap != cs->picture->picture))
+	{
+		cs->rendered_picture = PLoadFvwmPictureFromPixmap(dpy,
+		    Scr.NoFocusWin, NULL, cs->pixmap, cs->mask, None,
+		    cs->width, cs->height, cs->nalloc_pixels, cs->pixels, False);
+		cs->pixels = NULL;
+		cs->nalloc_pixels = 0;
+	}
+}
+
+static colorset_t *colorset_preparation_begin(
+	int id, colorset_t *published)
+{
+	if (published->preparation != NULL)
+	{
+		return &published->preparation->requested;
+	}
+	colorset_background_capture(published);
+	struct colorset_preparation *preparation =
+	    fxcalloc(1, sizeof(*preparation));
+
+	preparation->references = 1; /* Published revision slot. */
+	preparation->published = published;
+	preparation->id = id;
+	preparation->requested = *published;
+	colorset_t *requested = &preparation->requested;
+
+	requested->preparing = True;
+	requested->preparation = preparation;
+	requested->pixmap_args = published->pixmap_args ?
+	    fxstrdup(published->pixmap_args) : NULL;
+	requested->gradient_args = published->gradient_args ?
+	    fxstrdup(published->gradient_args) : NULL;
+	requested->picture = picture_snapshot(published->picture);
+	requested->shape_picture = picture_snapshot(published->shape_picture);
+	requested->rendered_picture =
+	    picture_snapshot(published->rendered_picture);
+	for (unsigned i = 0; i < COLORSET_COLOR_COUNT; i++)
+	{
+		if (i < COLORSET_FG_SAVED)
 		{
-			add_to_junk(picture->picture);
-			picture->picture = None;
+			colorset_color_capture(published, i);
 		}
-		if (picture->mask)
+		requested->color_owners[i] = picture_color_retain(
+		    published->color_owners[i]);
+	}
+	published->preparation = preparation;
+	return requested;
+}
+
+/* A commit batch temporarily retains cancelled views. Their bindings must
+ * keep revision context alive even if a sibling callback publishes it. */
+static void colorset_preparation_retain(
+	struct colorset_preparation *preparation)
+{
+	if (preparation != NULL)
+	{
+		assert(preparation->references > 0 &&
+		    preparation->references < SIZE_MAX);
+		preparation->references++;
+	}
+}
+
+static void colorset_preparation_release(void *context)
+{
+	struct colorset_preparation *preparation = context;
+
+	if (preparation != NULL)
+	{
+		assert(preparation->references > 0);
+		if (--preparation->references == 0)
 		{
-			add_to_junk(picture->mask);
-			picture->mask = None;
-		}
-		if (picture->alpha)
-		{
-			add_to_junk(picture->alpha);
-			picture->alpha = None;
+			free(preparation);
 		}
 	}
-	/* all that this will now do is free the colors and the name */
-	PDestroyFvwmPicture(disp, picture);
+}
 
-	return;
+static picture_async_commit colorset_effect_policy(FvwmPicture *view,
+	void *context)
+{
+	struct colorset_preparation *preparation = context;
+
+	return preparation->published->preparation == preparation &&
+	    preparation->effect == view ? PICTURE_ASYNC_APPLY :
+	    PICTURE_ASYNC_DISCARD;
+}
+
+static void colorset_effect_settled(FvwmPicture *view, Bool applied,
+	void *context)
+{
+	struct colorset_preparation *preparation = context;
+	colorset_t *cs = &preparation->requested;
+
+	if (preparation->effect != view)
+	{
+		return;
+	}
+	preparation->effect = NULL;
+	if (applied)
+	{
+		if (cs->rendered_picture != NULL)
+		{
+			SafeDestroyPicture(dpy, cs->rendered_picture);
+		}
+		cs->rendered_picture = picture_snapshot(view);
+		cs->pixmap = cs->rendered_picture->picture;
+		cs->mask = None;
+		preparation->effect_needed = False;
+	}
+	else
+	{
+		preparation->refused = True;
+	}
+	PDestroyFvwmPicture(dpy, view);
+	colorset_preparation_publish(preparation);
+}
+
+static Bool colorset_prepare_effect(colorset_t *cs)
+{
+	struct colorset_preparation *preparation = cs->preparation;
+	preparation->effect_needed = True;
+	FvwmPicture *view = image_async_effect(cs->picture,
+	    colorset_color_capture(cs, COLORSET_BG),
+	    colorset_color_capture(cs, COLORSET_TINT), cs->tint_percent,
+	    cs->image_alpha_percent);
+
+	if (view == NULL)
+	{
+		preparation->refused = True;
+		fvwm_debug(__func__, "colorset %d effect refused",
+		    preparation->id);
+		return False;
+	}
+	preparation->effect = view;
+	colorset_preparation_retain(preparation);
+	if (!picture_async_bind(view, colorset_effect_policy,
+	    colorset_effect_settled, preparation, colorset_preparation_release))
+	{
+		preparation->effect = NULL;
+		preparation->refused = True;
+		colorset_preparation_release(preparation);
+		PDestroyFvwmPicture(dpy, view);
+		return False;
+	}
+	return True;
+}
+
+static void colorset_preparation_publish(
+	struct colorset_preparation *preparation)
+{
+	colorset_t *requested = &preparation->requested;
+	colorset_t *published = preparation->published;
+
+	if (preparation->refused || preparation->effect != NULL ||
+	    requested->pending_picture != NULL ||
+	    requested->pending_shape != NULL)
+	{
+		return;
+	}
+	/* All requested resources are acknowledged. Move the revision as one
+	 * publication; previous module resources retain their delayed owners. */
+	free_colorset_background(published, True);
+	free_colorset_shape(published);
+	for (unsigned i = 0; i < COLORSET_COLOR_COUNT; i++)
+	{
+		colorset_color_release(published, i);
+	}
+	*published = *requested;
+	published->preparation = NULL;
+	published->preparing = False;
+	int id = preparation->id;
+
+	colorset_preparation_release(preparation);
+	BroadcastColorset(id);
+	update_fvwm_colorset(id);
+}
+
+static void cancel_colorset_picture(FvwmPicture **slot)
+{
+	FvwmPicture *old = *slot;
+
+	*slot = NULL;
+	PDestroyFvwmPicture(dpy, old);
+}
+
+typedef struct
+{
+	colorset_t *colorset;
+	int id;
+	Bool shape;
+	struct colorset_preparation *preparation;
+} colorset_image_owner;
+
+static void colorset_image_owner_release(void *context)
+{
+	colorset_image_owner *owner = context;
+
+	colorset_preparation_release(owner->preparation);
+	free(owner);
+}
+
+static void parse_colorset_update(int n, char *line,
+	FvwmPicture *prepared, unsigned int prepared_type);
+
+static picture_async_commit colorset_image_policy(FvwmPicture *view,
+	void *context)
+{
+	colorset_image_owner *owner = context;
+	colorset_t *cs = owner->colorset;
+	FvwmPicture *current = owner->shape ? cs->pending_shape :
+	    cs->pending_picture;
+
+	return current == view && (owner->preparation == NULL ||
+	    owner->preparation->published->preparation == owner->preparation) ?
+	    PICTURE_ASYNC_APPLY : PICTURE_ASYNC_DISCARD;
+}
+
+static void free_colorset_shape(colorset_t *cs)
+{
+	if (cs->shape_picture != NULL)
+	{
+		/* Modules may still render a previous colorset packet. Keep its
+		 * entire backing alive through the existing delayed cleanup. */
+		SafeDestroyPicture(dpy, cs->shape_picture);
+		cs->shape_picture = NULL;
+	}
+	else if (cs->shape_mask != None)
+	{
+		add_to_junk(cs->shape_mask);
+	}
+	cs->shape_mask = None;
+}
+
+static Bool apply_colorset_shape(colorset_t *cs, FvwmPicture *picture,
+	unsigned int type)
+{
+	if (!picture_is_usable(picture))
+	{
+		return False;
+	}
+	if (picture->depth != 1 && picture->mask == None)
+	{
+		fvwm_debug(__func__, "shape pixmap must be of depth 1");
+		return False;
+	}
+	FvwmPicture *snapshot = picture_snapshot(picture);
+
+	if (snapshot == NULL)
+	{
+		return False;
+	}
+	free_colorset_shape(cs);
+	/* The loader already acknowledged this immutable mask. Borrow it
+	 * directly: no second allocation/copy or publication barrier. */
+	cs->shape_picture = snapshot;
+	cs->shape_mask = snapshot->mask != None ? snapshot->mask :
+	    snapshot->picture;
+	cs->shape_width = picture->width;
+	cs->shape_height = picture->height;
+	cs->shape_type = type;
+	return True;
+}
+
+static void colorset_image_settled(FvwmPicture *view, Bool applied,
+	void *context)
+{
+	colorset_image_owner *owner = context;
+	colorset_t *cs = owner->colorset;
+	FvwmPicture **slot = owner->shape ? &cs->pending_shape :
+	    &cs->pending_picture;
+	int id = owner->id;
+
+	if (*slot != view)
+	{
+		return;
+	}
+	*slot = NULL;
+	if (applied && owner->shape)
+	{
+		if (apply_colorset_shape(cs, view,
+		    cs->pending_shape_type))
+		{
+			if (!cs->preparing)
+			{
+				BroadcastColorset(id);
+				update_fvwm_colorset(id);
+			}
+		}
+		else if (cs->preparing)
+		{
+			cs->preparation->refused = True;
+		}
+	}
+	else if (applied)
+	{
+		Bool staged = cs->preparing;
+
+		/* Publish an immutable snapshot, not the scheduler's mutable
+		 * lease. Reuse final tint/average/color processing without
+		 * parsing or dispatching a reconstructed command. */
+		parse_colorset_update(id, NULL, picture_snapshot(view),
+		    cs->pending_pixmap_type);
+		PDestroyFvwmPicture(dpy, view);
+		if (!staged)
+		{
+			update_fvwm_colorset(id);
+		}
+		return;
+	}
+	else if (cs->preparing)
+	{
+		cs->preparation->refused = True;
+	}
+	if (owner->shape && cs->preparing)
+	{
+		struct colorset_preparation *preparation = cs->preparation;
+
+		PDestroyFvwmPicture(dpy, view);
+		colorset_preparation_publish(preparation);
+		return;
+	}
+	PDestroyFvwmPicture(dpy, view);
+}
+
+static void bind_colorset_image(int id, colorset_t *cs,
+	FvwmPicture *view, Bool shape)
+{
+	colorset_image_owner *owner = fxmalloc(sizeof(*owner));
+
+	*owner = (colorset_image_owner){cs, id, shape,
+	    cs->preparing ? cs->preparation : NULL};
+	colorset_preparation_retain(owner->preparation);
+	if (!picture_async_bind(view, colorset_image_policy,
+	    colorset_image_settled, owner, colorset_image_owner_release))
+	{
+		/* A pending loader lease can be bound only once. */
+		colorset_image_owner_release(owner);
+		PDestroyFvwmPicture(dpy, view);
+		return;
+	}
+	FvwmPicture **slot = shape ? &cs->pending_shape :
+	    &cs->pending_picture;
+
+	cancel_colorset_picture(slot);
+	*slot = view;
 }
 
 static void free_colorset_background(colorset_t *cs, Bool do_free_args)
 {
+	if (cs->rendered_picture != NULL)
+	{
+		SafeDestroyPicture(dpy, cs->rendered_picture);
+		cs->rendered_picture = NULL;
+		cs->pixmap = cs->mask = None;
+	}
+
+	if (do_free_args)
+	{
+		cancel_colorset_picture(&cs->pending_picture);
+	}
 	if (cs->picture != NULL)
 	{
-		if (cs->picture->picture != cs->pixmap)
+		if (cs->pixmap != None && cs->pixmap != ParentRelative &&
+		    cs->pixmap != root_pic.pixmap &&
+		    cs->pixmap != root_pic.old_pixmap &&
+		    cs->picture->picture != cs->pixmap)
 		{
 			add_to_junk(cs->pixmap);
 		}
@@ -366,8 +800,21 @@ static void free_colorset_background(colorset_t *cs, Bool do_free_args)
 	}
 }
 
+static Bool colorset_uses_async_effects(const colorset_t *cs)
+{
+	/* Depth-one pictures retain the legacy bitmap path. */
+	return cs->preparing && Pdepth > 1 && cs->picture != NULL &&
+	    cs->picture->depth == Pdepth;
+}
+
 static void reset_cs_pixmap(colorset_t *cs, GC gc)
 {
+	if (colorset_uses_async_effects(cs))
+	{
+		cs->pixmap = cs->picture->picture;
+		return;
+	}
+
 	if (Pdepth == cs->picture->depth)
 	{
 		XCopyArea(dpy, cs->picture->picture, cs->pixmap, gc,
@@ -383,27 +830,12 @@ static void reset_cs_pixmap(colorset_t *cs, GC gc)
 }
 
 static void parse_pixmap(
-	Window win, GC gc, colorset_t *cs, Bool *pixmap_is_a_bitmap)
+	Window win, GC gc, colorset_t *cs, FvwmPicture *picture,
+	Bool *pixmap_is_a_bitmap)
 {
-	FvwmPictureAttributes fpa;
-
-	/* dither */
-	fpa.mask = 0;
-	if (cs->dither)
+	cs->picture = picture;
+	if (!picture_is_usable(picture))
 	{
-		fpa.mask = FPAM_DITHER;
-	}
-
-	/* read filename */
-	if (!cs->pixmap_args)
-	{
-		return;
-	}
-	/* load the file */
-	cs->picture = PCacheFvwmPicture(dpy, win, NULL, cs->pixmap_args, fpa);
-	if (cs->picture == NULL)
-	{
-		fvwm_debug(__func__, "can't load picture %s", cs->pixmap_args);
 		return;
 	}
 	if (cs->picture->depth != Pdepth)
@@ -416,6 +848,11 @@ static void parse_pixmap(
 	cs->height = cs->picture->height;
 	cs->alpha_pixmap = cs->picture->alpha;
 
+	if (colorset_uses_async_effects(cs))
+	{
+		cs->pixmap = cs->picture->picture;
+		return;
+	}
 	if (!*pixmap_is_a_bitmap)
 	{
 		cs->pixmap = XCreatePixmap(dpy, win,
@@ -450,94 +887,43 @@ static void parse_pixmap(
 	}
 }
 
-static void parse_shape(Window win, colorset_t *cs, int i, char *args,
-			int *has_shape_changed)
+static void parse_shape(Window win, colorset_t *cs, int id, int i,
+	char *args, int *has_shape_changed)
 {
 	char *token;
 	FvwmPicture *picture;
-	FvwmPictureAttributes fpa;
+	FvwmPictureAttributes fpa = {.mask = FPAM_NO_ALPHA};
+	unsigned int type = csetopts[i][0] == 'T' ? SHAPE_TILED :
+	    csetopts[i][0] == 'A' ? SHAPE_STRETCH_ASPECT : SHAPE_STRETCH;
 
 	if (!FHaveShapeExtension)
 	{
-		cs->shape_mask = None;
 		return;
 	}
-
-	/* read filename */
 	token = PeekToken(args, &args);
-	*has_shape_changed = True;
-	if (cs->shape_mask)
+	picture = token != NULL ?
+	    PCacheFvwmPicture(dpy, win, NULL, token, fpa) : NULL;
+	if (picture != NULL && picture->is_view && picture->pending)
 	{
-		add_to_junk(cs->shape_mask);
-		cs->shape_mask = None;
-	}
-
-	/* set the flags */
-	if (csetopts[i][0] == 'T')
-	{
-		cs->shape_type = SHAPE_TILED;
-	}
-	else if (csetopts[i][0] == 'A')
-	{
-		cs->shape_type = SHAPE_STRETCH_ASPECT;
-	}
-	else
-	{
-		cs->shape_type = SHAPE_STRETCH;
-	}
-	fpa.mask = FPAM_NO_ALPHA;
-
-	/* try to load the shape mask */
-	if (!token)
-	{
+		cs->pending_shape_type = type;
+		bind_colorset_image(id, cs, picture, True);
 		return;
 	}
-
-	/* load the shape mask */
-	picture = PCacheFvwmPicture(dpy, win, NULL, token, fpa);
-	if (!picture)
+	cancel_colorset_picture(&cs->pending_shape);
+	/* Keep immediate non-deferred refusal/clear behavior unchanged. */
+	*has_shape_changed = True;
+	free_colorset_shape(cs);
+	cs->shape_type = type;
+	if (picture == NULL && token != NULL)
 	{
-		fvwm_debug(__func__, "can't load picture %s", token);
+		fvwm_debug(__func__,
+					    "can't load picture %s", token);
 	}
-	else if (picture->depth != 1 && picture->mask == None)
+	else if (picture != NULL)
 	{
-		fvwm_debug(__func__, "shape pixmap must be of depth 1");
+		apply_colorset_shape(cs, picture, type);
 		SafeDestroyPicture(dpy, picture);
 	}
-	else
-	{
-		Pixmap mask;
-
-		/* okay, we have what we want */
-		if (picture->mask != None)
-		{
-			mask = picture->mask;
-		}
-		else
-		{
-			mask = picture->picture;
-		}
-		cs->shape_width = picture->width;
-		cs->shape_height = picture->height;
-
-		if (mask != None)
-		{
-			cs->shape_mask = XCreatePixmap(
-				dpy, mask, picture->width, picture->height, 1);
-			if (cs->shape_mask != None)
-			{
-				XCopyPlane(dpy, mask, cs->shape_mask,
-					   Scr.MonoGC, 0, 0, picture->width,
-					   picture->height, 0, 0, 1);
-			}
-		}
-	}
-	if (picture)
-	{
-		SafeDestroyPicture(dpy, picture);
-		picture = None;
-	}
-	return;
 }
 
 static void parse_simple_tint(
@@ -581,7 +967,14 @@ void cleanup_colorsets(void)
 
 	while (junk)
 	{
-		XFreePixmap(dpy, junk->pixmap);
+		if (junk->picture != NULL)
+		{
+			PDestroyFvwmPicture(dpy, junk->picture);
+		}
+		else
+		{
+			XFreePixmap(dpy, junk->pixmap);
+		}
 		oldjunk = junk;
 		junk = junk->prev;
 		free(oldjunk);
@@ -590,7 +983,8 @@ void cleanup_colorsets(void)
 }
 
 /* translate a colorset spec into a colorset structure */
-void parse_colorset(int n, char *line)
+static void parse_colorset_update(int n, char *line,
+	FvwmPicture *prepared, unsigned int prepared_type)
 {
 	int i;
 	int w;
@@ -629,6 +1023,7 @@ void parse_colorset(int n, char *line)
 	Bool pixmap_is_a_bitmap = False;
 	Bool do_reload_pixmap = False;
 	Bool is_server_grabbed = False;
+	unsigned int requested_type;
 	XColor color;
 	XGCValues xgcv;
 	Window win = Scr.NoFocusWin;
@@ -641,8 +1036,35 @@ void parse_colorset(int n, char *line)
 	}
 
 	/* make sure it exists and has sensible contents */
-	alloc_colorset(n);
-	cs = &Colorset[n];
+	if (!alloc_colorset(n))
+	{
+		return;
+	}
+	cs = GetColorset(n);
+	if (image_async_enabled())
+	{
+		cs = colorset_preparation_begin(n, cs);
+		struct colorset_preparation *preparation = cs->preparation;
+
+		if (preparation->effect != NULL)
+		{
+			FvwmPicture *old = preparation->effect;
+
+			preparation->effect = NULL;
+			PDestroyFvwmPicture(dpy, old);
+		}
+		if (line != NULL)
+		{
+			preparation->refused = False;
+		}
+	}
+	requested_type = cs->pending_picture != NULL ?
+	    cs->pending_pixmap_type : cs->pixmap_type;
+	if (prepared != NULL)
+	{
+		requested_type = prepared_type;
+		do_reload_pixmap = True;
+	}
 
 	/*** Parse the options ***/
 	while (line && *line)
@@ -714,49 +1136,44 @@ void parse_colorset(int n, char *line)
 				has_fg_alpha_changed = True;
 			}
 			break;
-		case 15: /* TiledPixmap */
-		case 16: /* Pixmap */
+		case 15: /* Pixmap */
+		case 16: /* TiledPixmap */
 		case 17: /* AspectPixmap */
-			has_pixmap_changed = True;
-			free_colorset_background(cs, True);
+			cancel_colorset_picture(&cs->pending_picture);
+			free(cs->pixmap_args);
+			cs->pixmap_args = NULL;
+			free(cs->gradient_args);
+			cs->gradient_args = NULL;
+			cs->is_maybe_root_transparent = False;
 			tmp_str = PeekToken(args, &args);
 			if (tmp_str)
 			{
 				CopyString(&cs->pixmap_args, tmp_str);
 				do_reload_pixmap = True;
 				cs->gradient_type = 0;
-				/* set the flags */
-				if (csetopts[i][0] == 'T')
-				{
-					cs->pixmap_type = PIXMAP_TILED;
-				}
-				else if (csetopts[i][0] == 'A')
-				{
-					cs->pixmap_type = PIXMAP_STRETCH_ASPECT;
-				}
-				else
-				{
-					cs->pixmap_type = PIXMAP_STRETCH;
-				}
+				requested_type = csetopts[i][0] == 'T' ?
+				    PIXMAP_TILED : csetopts[i][0] == 'A' ?
+				    PIXMAP_STRETCH_ASPECT : PIXMAP_STRETCH;
 			}
-			/* the pixmap is build later */
+			else
+			{
+				free_colorset_background(cs, True);
+				has_pixmap_changed = True;
+			}
 			break;
 		case 18: /* Shape */
 		case 19: /* TiledShape */
 		case 20: /* AspectShape */
-			parse_shape(win, cs, i, args, &has_shape_changed);
+			parse_shape(win, cs, n, i, args, &has_shape_changed);
 			break;
 		case 21: /* Plain */
 			has_pixmap_changed = True;
 			free_colorset_background(cs, True);
 			break;
 		case 22: /* NoShape */
+			cancel_colorset_picture(&cs->pending_shape);
 			has_shape_changed = True;
-			if (cs->shape_mask)
-			{
-				add_to_junk(cs->shape_mask);
-				cs->shape_mask = None;
-			}
+			free_colorset_shape(cs);
 			break;
 		case 23: /* Transparent */
 
@@ -786,7 +1203,8 @@ void parse_colorset(int n, char *line)
 			}
 			free_colorset_background(cs, True);
 			has_pixmap_changed = True;
-			cs->pixmap_type = PIXMAP_ROOT_PIXMAP_PURE;
+			cs->pixmap_type =
+					    PIXMAP_ROOT_PIXMAP_PURE;
 			do_reload_pixmap = True;
 			tmp_str = PeekToken(args, &args);
 			if (StrEquals(tmp_str, "buffer"))
@@ -956,7 +1374,7 @@ void parse_colorset(int n, char *line)
 		if (tint != NULL)
 		{
 			Pixel old_tint = cs->tint;
-			PictureFreeColors(dpy, Pcmap, &cs->tint, 1, 0, True);
+			colorset_color_release(cs, COLORSET_TINT);
 			cs->tint = GetColor(tint);
 			if (old_tint != cs->tint)
 			{
@@ -967,7 +1385,7 @@ void parse_colorset(int n, char *line)
 		{
 			/* default */
 			Pixel old_tint = cs->tint;
-			PictureFreeColors(dpy, Pcmap, &cs->tint, 1, 0, True);
+			colorset_color_release(cs, COLORSET_TINT);
 			cs->tint = GetColor(black);
 			if (old_tint != cs->tint)
 			{
@@ -1014,38 +1432,79 @@ void parse_colorset(int n, char *line)
 	 */
 	if (do_reload_pixmap)
 	{
-		free_colorset_background(cs, False);
-		has_pixmap_changed = True;
-		if (cs->pixmap_type == PIXMAP_ROOT_PIXMAP_PURE ||
-		    cs->pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN)
+		FvwmPicture *replacement = prepared;
+
+		if (cs->pixmap_args != NULL && replacement == NULL)
 		{
-			cs->pixmap_type = 0;
-			if (root_pic.pixmap)
+			FvwmPictureAttributes fpa = {0};
+
+			fpa.mask = cs->dither ? FPAM_DITHER : 0;
+			replacement = PCacheFvwmPicture(dpy, win, NULL,
+			    cs->pixmap_args, fpa);
+		}
+		if (replacement != NULL && replacement->is_view &&
+		    replacement->pending)
+		{
+			cs->pending_pixmap_type = requested_type;
+			bind_colorset_image(n, cs, replacement, False);
+			/* Tint/alpha still affect the retained old image.
+			 * Start from its original pixels. */
+			if (cs->picture != NULL && cs->pixmap != None &&
+			    (has_tint_changed || has_image_alpha_changed ||
+			     (has_bg_changed && cs->alpha_pixmap != None)))
 			{
-				cs->pixmap = root_pic.pixmap;
-				cs->width = root_pic.width;
-				cs->height = root_pic.height;
-				cs->pixmap_type = PIXMAP_ROOT_PIXMAP_PURE;
-#if 0
-				fprintf(stderr,"Cset %i LoadRoot 0x%lx\n",
-					n, cs->pixmap);
-#endif
+				XSetClipMask(dpy, gc, cs->picture->mask);
+				reset_cs_pixmap(cs, gc);
+				XSetClipMask(dpy, gc, None);
+				has_pixmap_changed = True;
 			}
 		}
-		else if (cs->pixmap_args)
+		else if (cs->preparing && cs->pixmap_args != NULL &&
+		    replacement == NULL)
 		{
-			parse_pixmap(win, gc, cs, &pixmap_is_a_bitmap);
+			cs->preparation->refused = True;
+			fvwm_debug(__func__, "can't load picture %s", cs->pixmap_args);
 		}
-		else if (cs->gradient_args)
+		else
 		{
-			cs->pixmap = CreateGradientPixmapFromString(
-				dpy, win, gc, cs->gradient_type,
-				cs->gradient_args, &w, &h, &cs->pixels,
-				&cs->nalloc_pixels, cs->dither);
-			cs->width = w;
-			cs->height = h;
+			cancel_colorset_picture(&cs->pending_picture);
+			free_colorset_background(cs, False);
+			has_pixmap_changed = True;
+			if (cs->pixmap_args != NULL)
+			{
+				cs->pixmap_type = requested_type;
+				if (replacement == NULL)
+				{
+					fvwm_debug(__func__,
+					    "can't load picture %s",
+					    cs->pixmap_args);
+				}
+				parse_pixmap(win, gc, cs, replacement,
+				    &pixmap_is_a_bitmap);
+			}
+			else if (cs->pixmap_type == PIXMAP_ROOT_PIXMAP_PURE ||
+			    cs->pixmap_type == PIXMAP_ROOT_PIXMAP_TRAN)
+			{
+				cs->pixmap_type = 0;
+				if (root_pic.pixmap)
+				{
+					cs->pixmap = root_pic.pixmap;
+					cs->width = root_pic.width;
+					cs->height = root_pic.height;
+					cs->pixmap_type =
+					    PIXMAP_ROOT_PIXMAP_PURE;
+				}
+			}
+			else if (cs->gradient_args)
+			{
+				cs->pixmap = CreateGradientPixmapFromString(
+				    dpy, win, gc, cs->gradient_type,
+				    cs->gradient_args, &w, &h, &cs->pixels,
+				    &cs->nalloc_pixels, cs->dither);
+				cs->width = w;
+				cs->height = h;
+			}
 		}
-		has_pixmap_changed = True;
 	}
 
 	if (cs->picture != NULL && cs->picture->depth != Pdepth)
@@ -1109,7 +1568,33 @@ void parse_colorset(int n, char *line)
 		}
 
 		/* note: no average for bitmap */
-		if ((cs->color_flags & BG_AVERAGE) && average_pix)
+		if ((cs->color_flags & BG_AVERAGE) && cs->picture != NULL &&
+		    cs->picture->average_valid)
+		{
+			/* File-image summaries precede palette reduction/tint.
+			 * Conversion already ignored alpha-zero RGB. */
+			has_bg_changed = True;
+			if (!cs->picture->average_has_pixels)
+			{
+				do_set_default_background = True;
+			}
+			else
+			{
+				Pixel old_bg = cs->bg;
+
+				color.red = cs->picture->average_rgb[0];
+				color.green = cs->picture->average_rgb[1];
+				color.blue = cs->picture->average_rgb[2];
+				colorset_color_release(cs, COLORSET_BG);
+				PictureAllocColor(dpy, Pcmap, &color, True);
+				cs->bg = color.pixel;
+				if (old_bg != cs->bg)
+				{
+					have_pixels_changed = True;
+				}
+			}
+		}
+		else if ((cs->color_flags & BG_AVERAGE) && average_pix)
 		{
 			/* calculate average background color */
 			XColor *colors;
@@ -1221,9 +1706,7 @@ void parse_colorset(int n, char *line)
 				{
 					Pixel old_bg = cs->bg;
 
-					PictureFreeColors(
-						dpy, Pcmap, &cs->bg, 1, 0,
-						True);
+					colorset_color_release(cs, COLORSET_BG);
 					PictureAllocColor(
 						dpy, Pcmap, &color, True);
 					cs->bg = color.pixel;
@@ -1240,7 +1723,7 @@ void parse_colorset(int n, char *line)
 			/* user specified colour */
 			Pixel old_bg = cs->bg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->bg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_BG);
 			cs->bg = GetColor(bg);
 			if (old_bg != cs->bg)
 			{
@@ -1256,7 +1739,7 @@ void parse_colorset(int n, char *line)
 		{
 			Pixel old_bg = cs->bg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->bg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_BG);
 			cs->bg = GetColor(white);
 			if (old_bg != cs->bg)
 			{
@@ -1268,7 +1751,7 @@ void parse_colorset(int n, char *line)
 		if (has_bg_changed)
 		{
 			/* save the bg color for tinting */
-			cs->bg_saved = cs->bg;
+			colorset_color_save(cs, COLORSET_BG, COLORSET_BG_SAVED);
 		}
 	} /* has_bg_changed */
 
@@ -1278,7 +1761,7 @@ void parse_colorset(int n, char *line)
 	 */
 	if (has_bg_tint_changed && cs->bg_tint_percent > 0 && bg_tint != NULL)
 	{
-		PictureFreeColors(dpy, Pcmap, &cs->bg_tint, 1, 0, True);
+		colorset_color_release(cs, COLORSET_BG_TINT);
 		cs->bg_tint = GetColor(bg_tint);
 	}
 
@@ -1291,8 +1774,10 @@ void parse_colorset(int n, char *line)
 		{
 			Pixel old_bg = cs->bg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->bg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_BG);
 			cs->bg = cs->bg_saved;
+			cs->color_owners[COLORSET_BG] = picture_color_retain(
+			    cs->color_owners[COLORSET_BG_SAVED]);
 			if (old_bg != cs->bg)
 			{
 				have_pixels_changed = True;
@@ -1303,7 +1788,7 @@ void parse_colorset(int n, char *line)
 		{
 			Pixel old_bg = cs->bg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->bg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_BG);
 			cs->bg = GetTintedPixel(
 				cs->bg_saved, cs->bg_tint, cs->bg_tint_percent);
 			if (old_bg != cs->bg)
@@ -1319,7 +1804,7 @@ void parse_colorset(int n, char *line)
 	 */
 	if (has_fg_tint_changed && cs->fg_tint_percent > 0 && fg_tint != NULL)
 	{
-		PictureFreeColors(dpy, Pcmap, &cs->fg_tint, 1, 0, True);
+		colorset_color_release(cs, COLORSET_FG_TINT);
 		cs->fg_tint = GetColor(fg_tint);
 	}
 
@@ -1340,7 +1825,7 @@ void parse_colorset(int n, char *line)
 			color.green = (color.green > 32767) ? 0 : 65535;
 			color.blue = (color.blue > 32767) ? 0 : 65535;
 
-			PictureFreeColors(dpy, Pcmap, &cs->fg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_FG);
 			PictureAllocColor(dpy, Pcmap, &color, True);
 			cs->fg = color.pixel;
 			if (old_fg != cs->fg)
@@ -1354,7 +1839,7 @@ void parse_colorset(int n, char *line)
 			/* user specified colour */
 			Pixel old_fg = cs->fg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->fg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_FG);
 			cs->fg = GetColor(fg);
 			if (old_fg != cs->fg)
 			{
@@ -1367,7 +1852,7 @@ void parse_colorset(int n, char *line)
 			/* default */
 			Pixel old_fg = cs->fg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->fg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_FG);
 			cs->fg = GetColor(black);
 			if (old_fg != cs->fg)
 			{
@@ -1377,7 +1862,7 @@ void parse_colorset(int n, char *line)
 		}
 
 		/* save the fg color for tinting */
-		cs->fg_saved = cs->fg;
+		colorset_color_save(cs, COLORSET_FG, COLORSET_FG_SAVED);
 
 	} /* has_fg_changed */
 
@@ -1391,8 +1876,10 @@ void parse_colorset(int n, char *line)
 
 			Pixel old_fg = cs->fg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->fg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_FG);
 			cs->fg = cs->fg_saved;
+			cs->color_owners[COLORSET_FG] = picture_color_retain(
+			    cs->color_owners[COLORSET_FG_SAVED]);
 			if (old_fg != cs->fg)
 			{
 				have_pixels_changed = True;
@@ -1403,7 +1890,7 @@ void parse_colorset(int n, char *line)
 		{
 			Pixel old_fg = cs->fg;
 
-			PictureFreeColors(dpy, Pcmap, &cs->fg, 1, 0, True);
+			colorset_color_release(cs, COLORSET_FG);
 			cs->fg = GetTintedPixel(
 				cs->fg_saved, cs->fg_tint,
 				cs->fg_tint_percent);
@@ -1428,7 +1915,7 @@ void parse_colorset(int n, char *line)
 			/* user specified colour */
 			Pixel old_hilite = cs->hilite;
 
-			PictureFreeColors(dpy, Pcmap, &cs->hilite, 1, 0, True);
+			colorset_color_release(cs, COLORSET_HILITE);
 			cs->hilite = GetColor(hi);
 			if (old_hilite != cs->hilite)
 			{
@@ -1439,7 +1926,7 @@ void parse_colorset(int n, char *line)
 		{
 			Pixel old_hilite = cs->hilite;
 
-			PictureFreeColors(dpy, Pcmap, &cs->hilite, 1, 0, True);
+			colorset_color_release(cs, COLORSET_HILITE);
 			cs->hilite = GetHilite(cs->bg);
 			if (old_hilite != cs->hilite)
 			{
@@ -1460,7 +1947,7 @@ void parse_colorset(int n, char *line)
 			/* user specified colour */
 			Pixel old_shadow = cs->shadow;
 
-			PictureFreeColors(dpy, Pcmap, &cs->shadow, 1, 0, True);
+			colorset_color_release(cs, COLORSET_SHADOW);
 			cs->shadow = GetColor(sh);
 			if (old_shadow != cs->shadow)
 			{
@@ -1471,7 +1958,7 @@ void parse_colorset(int n, char *line)
 		{
 			Pixel old_shadow = cs->shadow;
 
-			PictureFreeColors(dpy, Pcmap, &cs->shadow, 1, 0, True);
+			colorset_color_release(cs, COLORSET_SHADOW);
 			cs->shadow = GetShadow(cs->bg);
 			if (old_shadow != cs->shadow)
 			{
@@ -1493,7 +1980,7 @@ void parse_colorset(int n, char *line)
 			/* user specified colour */
 			Pixel old_fgsh = cs->fgsh;
 
-			PictureFreeColors(dpy, Pcmap, &cs->fgsh, 1, 0, True);
+			colorset_color_release(cs, COLORSET_FGSH);
 			cs->fgsh = GetColor(fgsh);
 			if (old_fgsh != cs->fgsh)
 			{
@@ -1504,7 +1991,7 @@ void parse_colorset(int n, char *line)
 		{
 			Pixel old_fgsh = cs->fgsh;
 
-			PictureFreeColors(dpy, Pcmap, &cs->fgsh, 1, 0, True);
+			colorset_color_release(cs, COLORSET_FGSH);
 			cs->fgsh = GetForeShadow(cs->fg, cs->bg);
 			if (old_fgsh != cs->fgsh)
 			{
@@ -1526,10 +2013,18 @@ void parse_colorset(int n, char *line)
 		reset_cs_pixmap(cs, gc);
 	}
 
+	if (colorset_uses_async_effects(cs) &&
+	    (has_pixmap_changed || has_bg_changed || has_tint_changed ||
+	    has_image_alpha_changed || cs->preparation->effect_needed))
+	{
+		colorset_prepare_effect(cs);
+	}
+
 	/*
 	 * ------- change the masked out parts of the background pixmap -------
 	 */
-	if (cs->pixmap != None && cs->pixmap != ParentRelative &&
+	if (!colorset_uses_async_effects(cs) &&
+	    cs->pixmap != None && cs->pixmap != ParentRelative &&
 	    (!CSETS_IS_TRANSPARENT_ROOT(cs)||
 	     cs->allows_buffered_transparency) &&
 	    (cs->mask != None || cs->alpha_pixmap != None ||
@@ -1589,8 +2084,7 @@ void parse_colorset(int n, char *line)
 		if (icon_tint != NULL)
 		{
 			Pixel old_tint = cs->icon_tint;
-			PictureFreeColors(
-				dpy, Pcmap, &cs->icon_tint, 1, 0, True);
+			colorset_color_release(cs, COLORSET_ICON_TINT);
 			cs->icon_tint = GetColor(icon_tint);
 			if (old_tint != cs->icon_tint)
 			{
@@ -1601,8 +2095,7 @@ void parse_colorset(int n, char *line)
 		{
 			/* default */
 			Pixel old_tint = cs->icon_tint;
-			PictureFreeColors(
-				dpy, Pcmap, &cs->icon_tint, 1, 0, True);
+			colorset_color_release(cs, COLORSET_ICON_TINT);
 			cs->icon_tint = GetColor(black);
 			if (old_tint != cs->icon_tint)
 			{
@@ -1615,11 +2108,16 @@ void parse_colorset(int n, char *line)
 	 * ---------- send new colorset to fvwm and clean up ----------
 	 */
 	/* make sure the server has this to avoid races */
-	XSync(dpy, False);
+	if (prepared == NULL && !(colorset_uses_async_effects(cs) &&
+	    cs->preparation->effect != NULL))
+	{
+		XSync(dpy, False);
+	}
 
 	/* inform modules of the change */
-	if (have_pixels_changed || has_pixmap_changed || has_shape_changed ||
-	    has_fg_alpha_changed || has_icon_pixels_changed)
+	if (!cs->preparing &&
+	    (have_pixels_changed || has_pixmap_changed || has_shape_changed ||
+	    has_fg_alpha_changed || has_icon_pixels_changed))
 	{
 		BroadcastColorset(n);
 	}
@@ -1660,85 +2158,97 @@ void parse_colorset(int n, char *line)
 	{
 		free(icon_tint);
 	}
+	if (cs->preparing)
+	{
+		colorset_background_capture(cs);
+		colorset_preparation_publish(cs->preparation);
+	}
 	return;
 }
 
-/*
- * alloc_colorset() grows the size of the Colorset array to include set n
- * colorset_t *Colorset will be altered
- * returns the address of the member
- */
-void alloc_colorset(int n)
+void parse_colorset(int n, char *line)
 {
-	/* do nothing if it already exists */
-	if (n < nColorsets)
+	parse_colorset_update(n, line, NULL, 0);
+}
+
+/* Allocate only the requested ID. Existing records remain stable and
+ * refusal happens before any X resources or caller assignments are changed. */
+Bool alloc_colorset(int n)
+{
+	colorset_t *ncs;
+
+	if (n < 0)
 	{
-		return;
+		/* Negative style IDs disable colorset use. */
+		return True;
 	}
-	else
+	if (FindColorset(n) != NULL)
 	{
-		Colorset = fxrealloc(
-			(void *)Colorset, (n + 1), sizeof(colorset_t));
-		memset(
-			&Colorset[nColorsets], 0,
-			(n + 1 - nColorsets) * sizeof(colorset_t));
+		return True;
+	}
+	if (n != 0 && FindColorset(0) == NULL && !alloc_colorset(0))
+	{
+		return False;
+	}
+	ncs = CreateColorset(n);
+	if (ncs == NULL)
+	{
+		return False;
 	}
 	if (n == 0)
 	{
 		update_root_pixmap(0);
 	}
-
-	/* initialize new colorsets to black on gray */
-	while (nColorsets <= n)
+	if (PictureUseBWOnly())
 	{
-		colorset_t *ncs = &Colorset[nColorsets];
-
-		if (PictureUseBWOnly())
-		{
-			char g_bits[] = {0x0a, 0x05, 0x0a, 0x05,
-					 0x08, 0x02, 0x08, 0x02,
-					 0x01, 0x02, 0x04, 0x08};
-			/* monochrome monitors get black on white */
-			/* with a gray pixmap background */
-			ncs->fg = GetColor(black);
-			ncs->bg = GetColor(white);
-			ncs->hilite = GetColor(white);
-			ncs->shadow = GetColor(black);
-			ncs->fgsh = GetColor(white);
-			ncs->tint = GetColor(black);
-			ncs->icon_tint = GetColor(black);
-			ncs->pixmap = XCreatePixmapFromBitmapData(
-				dpy, Scr.NoFocusWin,
-				&g_bits[4 * (nColorsets % 3)], 4, 4,
-				PictureBlackPixel(), PictureWhitePixel(),
-				Pdepth);
-			ncs->width = 4;
-			ncs->height = 4;
-		}
-		else
-		{
-			ncs->fg = GetColor(black);
-			ncs->bg = GetColor(gray);
-			ncs->hilite = GetHilite(ncs->bg);
-			ncs->shadow = GetShadow(ncs->bg);
-			ncs->fgsh = GetForeShadow(ncs->fg, ncs->bg);
-			ncs->tint = GetColor(black);
-			ncs->icon_tint = GetColor(black);
-		}
-		ncs->fg_tint = ncs->bg_tint = GetColor(black);
-		/* set flags for fg contrast, bg average */
-		/* in case just a pixmap is given */
-		ncs->color_flags = FG_CONTRAST | BG_AVERAGE;
-		ncs->fg_saved = ncs->fg;
-		ncs->fg_alpha_percent = 100;
-		ncs->image_alpha_percent = 100;
-		ncs->icon_alpha_percent = 100;
-		ncs->tint_percent = 0;
-		ncs->icon_tint_percent = 0;
-		ncs->fg_tint_percent = ncs->bg_tint_percent = 0;
-		ncs->dither = (PictureDitherByDefault())? True:False;
-		nColorsets++;
+		char g_bits[] = {0x0a, 0x05, 0x0a, 0x05,
+				 0x08, 0x02, 0x08, 0x02,
+				 0x01, 0x02, 0x04, 0x08};
+		/* monochrome monitors get black on white */
+		/* with a gray pixmap background */
+		ncs->fg = GetColor(black);
+		ncs->bg = GetColor(white);
+		ncs->hilite = GetColor(white);
+		ncs->shadow = GetColor(black);
+		ncs->fgsh = GetColor(white);
+		ncs->tint = GetColor(black);
+		ncs->icon_tint = GetColor(black);
+		ncs->pixmap = XCreatePixmapFromBitmapData(
+			dpy, Scr.NoFocusWin,
+			&g_bits[4 * (n % 3)], 4, 4,
+			PictureBlackPixel(), PictureWhitePixel(),
+			Pdepth);
+		ncs->width = 4;
+		ncs->height = 4;
 	}
+	else
+	{
+		ncs->fg = GetColor(black);
+		ncs->bg = GetColor(gray);
+		ncs->hilite = GetHilite(ncs->bg);
+		ncs->shadow = GetShadow(ncs->bg);
+		ncs->fgsh = GetForeShadow(ncs->fg, ncs->bg);
+		ncs->tint = GetColor(black);
+		ncs->icon_tint = GetColor(black);
+	}
+	ncs->fg_tint = GetColor(black);
+	ncs->bg_tint = GetColor(black);
+	/* set flags for fg contrast, bg average */
+	/* in case just a pixmap is given */
+	ncs->color_flags = FG_CONTRAST | BG_AVERAGE;
+	colorset_color_save(ncs, COLORSET_FG, COLORSET_FG_SAVED);
+	/* Preserve the legacy initial saved background value of zero, but
+	 * never mistake that unallocated sentinel for an owned color. */
+	ncs->color_owners[COLORSET_BG_SAVED] = picture_color_borrow(Pcmap,
+	    ncs->bg_saved);
+	ncs->fg_alpha_percent = 100;
+	ncs->image_alpha_percent = 100;
+	ncs->icon_alpha_percent = 100;
+	ncs->tint_percent = 0;
+	ncs->icon_tint_percent = 0;
+	ncs->fg_tint_percent = ncs->bg_tint_percent = 0;
+	ncs->dither = (PictureDitherByDefault())? True:False;
+	return True;
 }
 
 void update_root_transparent_colorset(Atom prop)
@@ -1754,24 +2264,29 @@ void update_root_transparent_colorset(Atom prop)
 		return;
 	}
 #endif
-	for (i=0; i < nColorsets; i++)
+	for (i = 0; i < ColorsetCount(); i++)
 	{
 		Bool root_trans = False;
-		cs = &Colorset[i];
+		int id = ColorsetIdAt(i);
+		cs = GetColorset(id);
+		if (cs->preparation != NULL)
+		{
+			cs = &cs->preparation->requested;
+		}
 		if (cs->is_maybe_root_transparent &&
 		    cs->allows_buffered_transparency)
 		{
-			parse_colorset(i, "RootTransparent buffer");
+			parse_colorset(id, "RootTransparent buffer");
 			root_trans = True;
 		}
 		else if (cs->is_maybe_root_transparent)
 		{
-			parse_colorset(i, "RootTransparent");
+			parse_colorset(id, "RootTransparent");
 			root_trans = True;
 		}
-		if (root_trans)
+		if (root_trans && !image_async_enabled())
 		{
-			update_fvwm_colorset(i);
+			update_fvwm_colorset(id);
 		}
 	}
 }
@@ -1790,7 +2305,7 @@ void CMD_Colorset(F_CMD_ARGS)
 	int n;
 	char *token;
 
-	if (GetIntegerArguments(action, &token, &n, 1) != 1)
+	if (GetColorsetArgument(action, &token, &n) != 1)
 	{
 		return;
 	}
@@ -1802,8 +2317,15 @@ void CMD_Colorset(F_CMD_ARGS)
 	{
 		return;
 	}
+	if (!alloc_colorset(n))
+	{
+		return;
+	}
 	parse_colorset(n, token);
-	update_fvwm_colorset(n);
+	if (!image_async_enabled())
+	{
+		update_fvwm_colorset(n);
+	}
 
 	return;
 }

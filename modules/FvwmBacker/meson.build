@@ -3,7 +3,7 @@ module_sources = [
     'root_bits.c',
 ]
 
-executable(
+fvwm_backer = executable(
     'FvwmBacker',
     module_sources,
     dependencies: all_found_deps,

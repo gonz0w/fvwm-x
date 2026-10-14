@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include <errno.h>
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -15,6 +16,9 @@
 
 static fmodule_list module_list;
 static fmodule_list death_row;
+static unsigned int module_iteration_depth;
+static unsigned int config_interaction_depth;
+static Bool config_command_pending;
 
 static void module_list_insert(fmodule *module, fmodule_list *list)
 {
@@ -27,10 +31,11 @@ static void module_list_insert(fmodule *module, fmodule_list *list)
 	new_store = fxmalloc(sizeof(*new_store));
 	new_store->module = module;
 	new_store->next = *list;
+	new_store->retired_next = NULL;
 	*list = new_store;
 }
 
-static fmodule *module_list_remove(fmodule *module, fmodule_list *list)
+static fmodule_store *module_list_take(fmodule *module, fmodule_list *list)
 {
 	fmodule_store **pos;
 
@@ -46,8 +51,7 @@ static fmodule *module_list_remove(fmodule *module, fmodule_list *list)
 
 			current = *pos;
 			*pos = current->next;
-			free(current);
-			return module;
+			return current;
 		}
 	}
 
@@ -60,6 +64,7 @@ fmodule *module_create(void)
 
 	module = fxmalloc(sizeof(*module));
 	MOD_SET_CMDLINE(module, 0);
+	module->xflags.is_retired = 0;
 	MOD_READFD(module) = -1;
 	MOD_WRITEFD(module) = -1;
 	fqueue_init(&MOD_PIPEQUEUE(module));
@@ -67,6 +72,12 @@ fmodule *module_create(void)
 	module->xinputBytes = 0;
 	module->xinputExpected = MODULE_INPUT_HEADER_SIZE;
 	module->xinputRefs = 0;
+	module->xqueuedInputs = 0;
+	module->xactiveInputs = 0;
+	module->xdeferredConfig = NULL;
+	module->xdeferredConfigCount = 0;
+	module->xcommandHead = NULL;
+	module->xcommandTail = NULL;
 	MOD_PIPEMASK(module).m1 = DEFAULT_MASK;
 	MOD_PIPEMASK(module).m2 = DEFAULT_MASK;
 	module->xNoGrabMask.m1 = 0;
@@ -92,6 +103,10 @@ void module_destroy(fmodule *module)
 	if (MOD_READFD(module) >= 0)
 	{
 		close(MOD_READFD(module));
+	}
+	while (module->xdeferredConfig != NULL)
+	{
+		free(module_config_take(module));
 	}
 	free(MOD_NAME(module));
 	free(MOD_ALIAS(module));
@@ -129,6 +144,162 @@ void module_output_queue_release(fmodule *module, size_t entry_size)
 	}
 }
 
+void module_config_interaction_begin(void)
+{
+	config_interaction_depth++;
+	config_command_pending = True;
+}
+
+void module_config_interaction_end(void)
+{
+	assert(config_interaction_depth > 0);
+	config_interaction_depth--;
+}
+
+Bool module_config_defer(fmodule *module, const unsigned long *packet,
+	size_t size)
+{
+	fmodule_config_packet **position, *snapshot;
+	size_t allocation;
+
+	if (!config_command_pending && module->xdeferredConfig == NULL)
+	{
+		return False;
+	}
+	/* No arithmetic, key access or copy precedes complete frame validation. */
+	if (size < (FvwmPacketHeaderSize + 1) * sizeof(unsigned long) ||
+	    size > FvwmPacketMaxSize_byte || size % sizeof(unsigned long) != 0 ||
+	    packet == NULL || packet[0] != START_FLAG ||
+	    packet[1] != M_CONFIGURE_WINDOW ||
+	    packet[2] != size / sizeof(unsigned long))
+	{
+		fvwm_debug(__func__, "invalid deferred configure packet");
+		module_kill(module);
+		return True;
+	}
+	allocation = sizeof(*snapshot) + size;
+	for (position = &module->xdeferredConfig; *position != NULL;
+	     position = &(*position)->next)
+	{
+		if ((*position)->data[FvwmPacketHeaderSize] ==
+		    packet[FvwmPacketHeaderSize])
+		{
+			break;
+		}
+	}
+	snapshot = *position;
+	if (snapshot != NULL && snapshot->size == size)
+	{
+		memcpy(snapshot->data, packet, size);
+		return True;
+	}
+	if (snapshot != NULL)
+	{
+		*position = snapshot->next;
+		module_output_queue_release(module, sizeof(*snapshot) + snapshot->size);
+		module->xdeferredConfigCount--;
+		free(snapshot);
+	}
+	if (module->xdeferredConfigCount >= MODULE_DEFERRED_CONFIG_MAX_WINDOWS ||
+	    !module_output_queue_reserve(module, allocation))
+	{
+		fvwm_debug(__func__, "deferred configure queue limit reached");
+		module_kill(module);
+		return True;
+	}
+	snapshot = malloc(allocation);
+	if (snapshot == NULL)
+	{
+		module_output_queue_release(module, allocation);
+		fvwm_debug(__func__,
+			"Configure storage unavailable; retiring module");
+		module_kill(module);
+		return True;
+	}
+	snapshot->next = *position;
+	snapshot->size = size;
+	memcpy(snapshot->data, packet, size);
+	*position = snapshot;
+	module->xdeferredConfigCount++;
+	return True;
+}
+
+Bool module_config_has_window(const fmodule *module, Window window)
+{
+	const fmodule_config_packet *snapshot;
+
+	for (snapshot = module->xdeferredConfig; snapshot != NULL;
+	     snapshot = snapshot->next)
+	{
+		if (snapshot->data[FvwmPacketHeaderSize] == window)
+		{
+			return True;
+		}
+	}
+	return False;
+}
+
+void module_config_discard(fmodule *module, Window window)
+{
+	fmodule_config_packet **position;
+
+	for (position = &module->xdeferredConfig; *position != NULL;
+	     position = &(*position)->next)
+	{
+		fmodule_config_packet *snapshot = *position;
+		if (snapshot->data[FvwmPacketHeaderSize] == window)
+		{
+			*position = snapshot->next;
+			module_output_queue_release(module,
+				sizeof(*snapshot) + snapshot->size);
+			module->xdeferredConfigCount--;
+			free(snapshot);
+			return;
+		}
+	}
+}
+
+fmodule_config_packet *module_config_take(fmodule *module)
+{
+	fmodule_config_packet *snapshot = module->xdeferredConfig;
+
+	if (snapshot != NULL)
+	{
+		module->xdeferredConfig = snapshot->next;
+		module->xdeferredConfigCount--;
+		module_output_queue_release(module, sizeof(*snapshot) + snapshot->size);
+		snapshot->next = NULL;
+	}
+	return snapshot;
+}
+
+void module_config_dispatch_ready(void)
+{
+	assert(config_interaction_depth == 0);
+	config_command_pending = False;
+}
+
+Bool module_config_pending(void)
+{
+	fmodule_list_itr iterator;
+	fmodule *module;
+
+	if (config_command_pending)
+	{
+		return False;
+	}
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
+	{
+		if (module->xdeferredConfig != NULL)
+		{
+			module_list_itr_finish(&iterator);
+			return True;
+		}
+	}
+	return False;
+}
+
 void module_kill_all(void)
 {
 	while (module_list != NULL)
@@ -140,14 +311,32 @@ void module_kill_all(void)
 
 void module_kill(fmodule *module)
 {
-	module_list_insert(
-		module_list_remove(module, &module_list), &death_row);
+	fmodule_store *store;
+
+	if (module == NULL || MOD_IS_RETIRED(module))
+	{
+		return;
+	}
+	module->xflags.is_retired = 1;
+	/* Retirement must not need new storage while handling refusal. */
+	store = module_list_take(module, &module_list);
+	if (store != NULL)
+	{
+		/* Keep the old successor for iterators paused in callbacks. */
+		store->retired_next = death_row;
+		death_row = store;
+	}
 }
 
 void module_cleanup(void)
 {
 	fmodule_store **pos;
 
+	/* A synchronous callback can retire any upcoming list member. */
+	if (module_iteration_depth != 0)
+	{
+		return;
+	}
 	for (pos = &death_row; *pos != NULL;)
 	{
 		fmodule_store *current;
@@ -155,10 +344,10 @@ void module_cleanup(void)
 		current = *pos;
 		if (current->module->xinputRefs != 0)
 		{
-			pos = &current->next;
+			pos = &current->retired_next;
 			continue;
 		}
-		*pos = current->next;
+		*pos = current->retired_next;
 		module_destroy(current->module);
 		free(current);
 	}
@@ -166,6 +355,12 @@ void module_cleanup(void)
 
 fmodule_input_status module_receive(
 	fmodule *module, fmodule_input **ret_input)
+{
+	return module_receive_checked(module, ret_input, NULL, NULL);
+}
+
+fmodule_input_status module_receive_checked(fmodule *module,
+	fmodule_input **ret_input, Bool (*check)(void *), void *context)
 {
 	unsigned long size;
 	unsigned long cont;
@@ -176,6 +371,10 @@ fmodule_input_status module_receive(
 	*ret_input = NULL;
 	while (module->xinputBytes < module->xinputExpected)
 	{
+		if (check != NULL && !check(context))
+		{
+			return FMODULE_INPUT_INCOMPLETE;
+		}
 		n = read(
 			MOD_READFD(module),
 			module->xinputBuffer + module->xinputBytes,
@@ -196,6 +395,14 @@ fmodule_input_status module_receive(
 		goto err;
 	}
 
+	/* A last read can consume the remaining deadline. Keep even a complete
+	 * frame in the transport buffer until its owner permits handoff, so a
+	 * startup timeout can resume asynchronously without losing a command. */
+	if (check != NULL && !check(context))
+	{
+		return FMODULE_INPUT_INCOMPLETE;
+	}
+
 	if (module->xinputExpected == MODULE_INPUT_HEADER_SIZE)
 	{
 		memcpy(&size, module->xinputBuffer + sizeof(Window), sizeof(size));
@@ -208,7 +415,7 @@ fmodule_input_status module_receive(
 		}
 		module->xinputExpected =
 			MODULE_INPUT_HEADER_SIZE + (size_t)size + sizeof(cont);
-		return module_receive(module, ret_input);
+		return module_receive_checked(module, ret_input, check, context);
 	}
 
 	memcpy(&win, module->xinputBuffer, sizeof(win));
@@ -217,8 +424,19 @@ fmodule_input_status module_receive(
 		&cont, module->xinputBuffer + MODULE_INPUT_HEADER_SIZE + size,
 		sizeof(cont));
 
-	input = fxmalloc(sizeof(*input) + (size_t)size + 1);
+	input = malloc(sizeof(*input) + (size_t)size + 1);
+	if (input == NULL)
+	{
+		fvwm_debug(__func__,
+			"Command storage unavailable; retiring module");
+		goto err;
+	}
 	input->module = module;
+	input->is_queued = False;
+	input->in_command_queue = False;
+	input->queue_previous = NULL;
+	input->queue_next = NULL;
+	input->producer_next = NULL;
 	module->xinputRefs++;
 	input->window = win;
 	input->command = (char *)input + sizeof(*input);
@@ -242,12 +460,52 @@ err:
 	return FMODULE_INPUT_ERROR;
 }
 
+Bool module_input_queue_ready(const fmodule *module)
+{
+	return module->xqueuedInputs < MODULE_INPUT_QUEUE_MAX_COMMANDS;
+}
+
+fmodule_input_status module_receive_queued(
+	fmodule *module, fmodule_input **ret_input)
+{
+	fmodule_input_status status;
+
+	*ret_input = NULL;
+	if (!module_input_queue_ready(module))
+	{
+		return FMODULE_INPUT_INCOMPLETE;
+	}
+	status = module_receive(module, ret_input);
+	if (status == FMODULE_INPUT_READY)
+	{
+		(*ret_input)->is_queued = True;
+		module->xqueuedInputs++;
+	}
+
+	return status;
+}
+
+void module_input_dequeue(fmodule_input *input)
+{
+	if (input == NULL || !input->is_queued)
+	{
+		return;
+	}
+	if (input->module != NULL && input->module->xqueuedInputs > 0)
+	{
+		input->module->xqueuedInputs--;
+	}
+	input->is_queued = False;
+}
+
 void module_input_discard(fmodule_input *input)
 {
 	if (input == NULL)
 	{
 		return;
 	}
+	assert(!input->in_command_queue);
+	module_input_dequeue(input);
 	if (input->module != NULL && input->module->xinputRefs > 0)
 	{
 		input->module->xinputRefs--;
@@ -257,19 +515,35 @@ void module_input_discard(fmodule_input *input)
 
 void module_list_itr_init(fmodule_list_itr *itr)
 {
-	*itr = module_list;
+	itr->next = module_list;
+	itr->active = True;
+	module_iteration_depth++;
+}
+
+void module_list_itr_finish(fmodule_list_itr *itr)
+{
+	if (itr->active)
+	{
+		assert(module_iteration_depth > 0);
+		module_iteration_depth--;
+		itr->active = False;
+	}
+	itr->next = NULL;
 }
 
 fmodule *module_list_itr_next(fmodule_list_itr *itr)
 {
 	fmodule *module;
 
-	if (*itr == NULL)
+	while (itr->next != NULL)
 	{
-		return NULL;
+		module = itr->next->module;
+		itr->next = itr->next->next;
+		if (!MOD_IS_RETIRED(module))
+		{
+			return module;
+		}
 	}
-	module = (*itr)->module;
-	*itr = (*itr)->next;
-
-	return module;
+	module_list_itr_finish(itr);
+	return NULL;
 }

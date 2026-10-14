@@ -56,6 +56,7 @@ static Display			 *disp;
 static bool			  is_randr_present;
 static bool			  randr_initialised;
 static monitor_topology_snapshot *committed_topology;
+static Atom fscreen_root_monitor_atom;
 
 typedef struct
 {
@@ -562,12 +563,32 @@ randr_free_monitors(void *context, XRRMonitorInfo *monitors)
 	XRRFreeMonitors(monitors);
 }
 
+static bool
+randr_get_root_monitor(void *context, Display *dpy, Window root,
+    monitor_topology_monitor *monitor)
+{
+	int screen = DefaultScreen(dpy);
+
+	/* XRRUpdateConfiguration refreshes these cached dimensions. No extra
+	 * server round trip belongs in the topology refresh path. */
+	*monitor = (monitor_topology_monitor){
+	    .name_atom = fscreen_root_monitor_atom,
+	    .name = "FVWM-X-Root",
+	    .width = DisplayWidth(dpy, screen),
+	    .height = DisplayHeight(dpy, screen),
+	    .primary = True,
+	};
+	return monitor->name_atom != None && monitor->width > 0 &&
+	    monitor->height > 0;
+}
+
 static const fscreen_randr_adapter real_randr_adapter = {
     .context	    = NULL,
     .get_monitors   = randr_get_monitors,
     .get_atom_name  = randr_get_atom_name,
     .free_atom_name = randr_free_atom_name,
     .free_monitors  = randr_free_monitors,
+    .get_root_monitor = randr_get_root_monitor,
     .topology_allocator =
 	{
 	    .context   = NULL,
@@ -668,6 +689,28 @@ fscreen_refresh_topology_with_adapters(Display *dpy, Window root,
 	initial	       = *committed == NULL;
 	randr_monitors = randr_adapter->get_monitors(
 	    randr_adapter->context, dpy, root, True, &monitor_count);
+	if (monitor_count == 0 &&
+	    (initial || (*committed)->root_fallback) &&
+	    randr_adapter->get_root_monitor != NULL) {
+		monitor_topology_monitor root_monitor = {0};
+
+		if (!randr_adapter->get_root_monitor(
+			randr_adapter->context, dpy, root, &root_monitor)) {
+			goto fail;
+		}
+		candidate = monitor_topology_snapshot_create(&root_monitor, 1,
+		    &randr_adapter->topology_allocator);
+		if (candidate == NULL) {
+			goto fail;
+		}
+		candidate->root_fallback = true;
+		if (randr_monitors != NULL) {
+			randr_adapter->free_monitors(
+			    randr_adapter->context, randr_monitors);
+			randr_monitors = NULL;
+		}
+		goto publish_candidate;
+	}
 	if (randr_monitors == NULL || monitor_count <= 0
 	    || (size_t)monitor_count > SIZE_MAX / sizeof(*source_monitors)) {
 		fvwm_debug(__func__,
@@ -728,6 +771,7 @@ fscreen_refresh_topology_with_adapters(Display *dpy, Window root,
 	randr_adapter->topology_allocator.free_fn(
 	    randr_adapter->topology_allocator.context, source_monitors);
 	randr_adapter->free_monitors(randr_adapter->context, randr_monitors);
+publish_candidate:
 	needs_reconcile =
 	    initial || !monitor_topology_snapshot_equal(*committed, candidate);
 	if (needs_reconcile
@@ -1083,7 +1127,6 @@ legacy_reconcile_apply(const monitor_topology_snapshot *snapshot,
 void
 FScreenInit(Display *dpy)
 {
-	XRRScreenResources *res = NULL;
 	struct monitor	   *m;
 	int		    err_base = 0, major, minor;
 
@@ -1119,21 +1162,19 @@ FScreenInit(Display *dpy)
 
 	fvwm_debug(__func__, "Using RandR %d.%d\n", major, minor);
 
-	/* XRandR is present, so query the screens we have. */
-	res = XRRGetScreenResources(dpy, DefaultRootWindow(dpy));
-
-	if (res == NULL || (res != NULL && res->noutput == 0)) {
-		XRRFreeScreenResources(res);
-		fvwm_debug(__func__, "RandR present, yet no outputs found.");
+	fscreen_root_monitor_atom = XInternAtom(dpy, "FVWM-X-Root", False);
+	if (fscreen_root_monitor_atom == None) {
 		goto randr_fail;
 	}
-	XRRFreeScreenResources(res);
 
 	if (FScreenRefreshTopology(dpy) != FSCREEN_TOPOLOGY_REFRESH_CHANGED
 	    || committed_topology == NULL || committed_topology->epoch != 1) {
 		fvwm_debug(__func__,
 		    "Unable to commit initial RandR monitor topology");
 		goto randr_fail;
+	}
+	if (committed_topology->root_fallback) {
+		fvwm_debug(__func__, "Using root-sized single-screen fallback");
 	}
 	randr_initialised  = true;
 	is_tracking_shared = false;

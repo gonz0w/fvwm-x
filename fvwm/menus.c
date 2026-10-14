@@ -19,6 +19,8 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "menu_image.h"
+#include "libs/picture_view.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -50,6 +52,8 @@
 #include "screen.h"
 #include "colormaps.h"
 #include "geometry.h"
+#include "interaction.h"
+#include "menu_delay.h"
 #include "move_resize.h"
 #include "menudim.h"
 #include "menuitem.h"
@@ -203,6 +207,8 @@ typedef struct
 	int x_offset;
 	int popdown_delay_10ms;
 	int popup_delay_10ms;
+	uint64_t popup_tick_ns;
+	uint64_t popdown_tick_ns;
 } mloop_evh_data_t;
 
 typedef struct
@@ -216,13 +222,14 @@ typedef struct
 	MenuItem *miRemovedSubmenu;
 } mloop_evh_input_t;
 
-/* values that are set once when the menu loop is entered */
+/* Operation-local state initialized when the menu loop is entered. */
 typedef struct mloop_static_info_t
 {
 	int x_init;
 	int y_init;
 	Time t0;
 	unsigned int event_mask;
+	fvwm_interaction interaction;
 } mloop_static_info_t;
 
 /* ---------------------------- forward declarations ----------------------- */
@@ -954,6 +961,8 @@ static Bool _scan_for_pixmap(
 	{
 	case '@':
 		MR_SIDEPIC(SCTX_GET_MR(*context)) = p;
+		menu_image_bind_root(SCTX_GET_MR(*context),
+		    &MR_SIDEPIC(SCTX_GET_MR(*context)));
 
 		break;
 	case '*':
@@ -1008,9 +1017,19 @@ static void unlink_item_from_menu(
  * title, and the do_replace_title flag is True, the old title is deleted and
  * replaced by the new item.  Otherwise the item is appended at the end of the
  * menu. */
+static void bind_menu_item_images(MenuRoot *mr, MenuItem *mi)
+{
+	menu_image_bind_root(mr, &MI_PICTURE(mi));
+	for (unsigned i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++)
+	{
+		menu_image_bind_root(mr, &MI_MINI_ICON(mi)[i]);
+	}
+}
+
 static void append_item_to_menu(
 	MenuRoot *mr, MenuItem *mi, Bool do_replace_title)
 {
+	bind_menu_item_images(mr, mi);
 	if (MR_FIRST_ITEM(mr) == NULL)
 	{
 		MR_FIRST_ITEM(mr) = mi;
@@ -1804,6 +1823,11 @@ static Bool size_menu_vertically(MenuSizingParameters *msp)
 
 			/* use the same style for the submenu */
 			MR_STYLE(menuContinuation) = MR_STYLE(msp->menu);
+			for (MenuItem *moved = MR_FIRST_ITEM(menuContinuation);
+			    moved != NULL; moved = MI_NEXT_ITEM(moved))
+			{
+				bind_menu_item_images(menuContinuation, moved);
+			}
 			MR_IS_LEFT_TRIANGLE(menuContinuation) =
 				MR_IS_LEFT_TRIANGLE(msp->menu);
 			/* migo: propagate missing_submenu_func */
@@ -1860,6 +1884,11 @@ static void merge_continuation_menus(MenuRoot *mr)
 			MI_PREV_ITEM(MR_LAST_ITEM(mr));
 		menuitem_free(MR_LAST_ITEM(mr));
 		MR_LAST_ITEM(mr) = MR_LAST_ITEM(cont);
+		for (MenuItem *moved = MR_FIRST_ITEM(cont); moved != NULL;
+		    moved = MI_NEXT_ITEM(moved))
+		{
+			bind_menu_item_images(mr, moved);
+		}
 		MR_CONTINUATION_MENU(mr) = MR_CONTINUATION_MENU(cont);
 		/* fake an empty menu so that DestroyMenu does not destroy the
 		 * items. */
@@ -1894,7 +1923,7 @@ static void make_menu_window(MenuRoot *mr, Bool is_tear_off)
 		h = 1;
 	}
 
-	attributes.background_pixel = Colorset[MST_CSET_MENU(mr)].bg;
+	attributes.background_pixel = GetColorset(MST_CSET_MENU(mr))->bg;
 	if (MR_WINDOW(mr) != None)
 	{
 		/* just resize the existing window */
@@ -2007,6 +2036,11 @@ static FvwmPicture *reload_picture_at_scale(
 	{
 		return old;
 	}
+	if (old->is_view && old->pending &&
+	    old->scale_quarters == factor.quarters)
+	{
+		return old;
+	}
 	fpa.mask = 0;
 	p = PCacheFvwmPictureAtScale(
 		dpy, Scr.NoFocusWin, NULL, old->name, fpa, factor,
@@ -2020,7 +2054,16 @@ static FvwmPicture *reload_picture_at_scale(
 	}
 	if (p != old)
 	{
-		PDestroyFvwmPicture(dpy, old);
+		if (p->is_view && p->pending)
+		{
+			picture_view_set_backing(dpy, p, old);
+		}
+		menu_image_destroy(&old);
+	}
+	else
+	{
+		/* Cache lookup acquired another reference to the same picture. */
+		PDestroyFvwmPicture(dpy, p);
 	}
 
 	return p;
@@ -2161,10 +2204,12 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 			&mr->s->popup_title_font, title_name,
 			title_fallback, factor);
 
-		if (MR_SIDEPIC(mr) != NULL)
+		if (MR_SIDEPIC(mr) != NULL &&
+		    !mr->s->flags.sidepic_from_style)
 		{
 			MR_SIDEPIC(mr) = reload_picture_at_scale(
 				MR_SIDEPIC(mr), factor);
+			menu_image_bind_root(mr, &MR_SIDEPIC(mr));
 		}
 		else
 		{
@@ -2182,7 +2227,19 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 					WM_UI_RESOURCE_GENERATION_INITIAL);
 				if (p != NULL)
 				{
+					if (p->is_view && p->pending)
+					{
+						FvwmPicture *old_side =
+						    MR_SIDEPIC(mr);
+
+						picture_view_set_backing(dpy, p,
+						    old_side ? old_side : style_side);
+					}
+					menu_image_destroy(&MR_SIDEPIC(mr));
 					MR_SIDEPIC(mr) = p;
+					mr->s->flags.sidepic_from_style = 1;
+					menu_image_bind_root(mr,
+					    &MR_SIDEPIC(mr));
 				}
 				else
 				{
@@ -2190,6 +2247,11 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 						"Couldn't load scaled "
 						"sidepic; keeping 1x");
 				}
+			}
+			else if (mr->s->flags.sidepic_from_style)
+			{
+				menu_image_destroy(&MR_SIDEPIC(mr));
+				mr->s->flags.sidepic_from_style = 0;
 			}
 		}
 		for (mi = MR_FIRST_ITEM(mr); mi != NULL;
@@ -2199,6 +2261,7 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 			{
 				MI_PICTURE(mi) = reload_picture_at_scale(
 					MI_PICTURE(mi), factor);
+				menu_image_bind_root(mr, &MI_PICTURE(mi));
 			}
 			for (i = 0; i < MAX_MENU_ITEM_MINI_ICONS; i++)
 			{
@@ -2208,6 +2271,8 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 						reload_picture_at_scale(
 							MI_MINI_ICON(mi)[i],
 							factor);
+					menu_image_bind_root(mr,
+					    &MI_MINI_ICON(mi)[i]);
 				}
 			}
 		}
@@ -2355,7 +2420,7 @@ static void clone_menu_root_static(
 		MR_SIDECOLOR(dest_mr) =
 			fvwmlib_clone_color(MR_SIDECOLOR(src_mr));
 	}
-	MR_SIDEPIC(dest_mr) = PCloneFvwmPicture(MR_SIDEPIC(src_mr));
+	MR_SIDEPIC(dest_mr) = picture_snapshot(MR_SIDEPIC(src_mr));
 	clone_menu_item_list(dest_mr, src_mr);
 
 	return;
@@ -2565,6 +2630,10 @@ static void paint_side_pic(MenuRoot *mr, XEvent *pevent)
 	{
 		return;
 	}
+	if (!picture_is_usable(sidePic))
+	{
+		return;
+	}
 	if (Pdepth < 2)
 	{
 		/* ? */
@@ -2717,7 +2786,7 @@ static void paint_menu(
 		Pixmap trans = None;
 		FvwmRenderAttributes fra;
 		fra.mask = FRAM_HAVE_TINT;
-		fra.tint = Colorset[ST_CSET_MENU(ms)].bg;
+		fra.tint = GetColorset(ST_CSET_MENU(ms))->bg;
 		fra.tint_percent = ST_TRANSLUCENT_PERCENT(ms);
 
 		if (MR_IS_BACKGROUND_SET(mr) == False)
@@ -2753,7 +2822,7 @@ static void paint_menu(
 	{
 		SetWindowBackground(
 			dpy, MR_WINDOW(mr), MR_WIDTH(mr),
-			MR_HEIGHT(mr), &Colorset[ST_CSET_MENU(ms)],
+			MR_HEIGHT(mr), GetColorset(ST_CSET_MENU(ms)),
 			Pdepth, FORE_GC(ST_MENU_INACTIVE_GCS(ms)),
 			True);
 		MR_IS_BACKGROUND_SET(mr) = True;
@@ -3789,6 +3858,8 @@ static void _mloop_init(
 	in->mif.do_force_reposition = 1;
 	memset(med, 0, sizeof(*med));
 	msi->t0 = fev_get_evtime();
+	msi->interaction = (fvwm_interaction) { None, Scr.Root, False,
+		FVWM_INTERACTION_RUNNING, events_interaction_poll };
 	pmret->rc = MENU_NOP;
 	memset(pops, 0, sizeof(*pops));
 	/* remember where the pointer was so we can tell if it has moved */
@@ -3802,7 +3873,7 @@ static void _mloop_init(
 	return;
 }
 
-static void _mloop_get_event_timeout_loop(
+static Bool _mloop_get_event_timeout_loop(
 	MenuParameters *pmp,
 	mloop_evh_input_t *in, mloop_evh_data_t *med, mloop_static_info_t *msi)
 {
@@ -3810,15 +3881,16 @@ static void _mloop_get_event_timeout_loop(
 
 	while (!FPending(dpy) || !FCheckMaskEvent(dpy, msi->event_mask, &e))
 	{
-		Bool is_popup_timed_out =
-			(MST_POPUP_DELAY(pmp->menu) > 0 &&
-			 med->popup_delay_10ms++ >=
-			 MST_POPUP_DELAY(pmp->menu) + 1);
-		Bool is_popdown_timed_out =
-			(MST_POPDOWN_DELAY(pmp->menu) > 0 && in->mrPopdown &&
-			 med->popdown_delay_10ms++ >=
-			 MST_POPDOWN_DELAY(pmp->menu) + 1);
+		uint64_t now_ns = events_monotonic_ns();
+		Bool is_popup_timed_out = fvwm_menu_delay_expired(
+			&med->popup_delay_10ms, &med->popup_tick_ns, now_ns,
+			MST_POPUP_DELAY(pmp->menu));
+		Bool is_popdown_timed_out = in->mrPopdown &&
+			fvwm_menu_delay_expired(
+				&med->popdown_delay_10ms, &med->popdown_tick_ns,
+				now_ns, MST_POPDOWN_DELAY(pmp->menu));
 		Bool do_fake_motion = False;
+		int timeout_ms = FVWM_MENU_DELAY_INTERVAL_MS;
 
 		if (is_popup_timed_out)
 		{
@@ -3898,10 +3970,29 @@ static void _mloop_get_event_timeout_loop(
 			in->mif.is_motion_faked = True;
 			break;
 		}
-		usleep(10000 /* 10 ms*/);
+		/* Readiness may wake early for a module; only elapsed ticks
+		 * advance the configured submenu delays. */
+		if (MST_POPUP_DELAY(pmp->menu) > 0)
+		{
+			timeout_ms = fvwm_menu_delay_timeout(
+				med->popup_tick_ns, events_monotonic_ns());
+		}
+		if (in->mrPopdown && MST_POPDOWN_DELAY(pmp->menu) > 0)
+		{
+			int popdown_ms = fvwm_menu_delay_timeout(
+				med->popdown_tick_ns, events_monotonic_ns());
+			if (popdown_ms < timeout_ms)
+			{
+				timeout_ms = popdown_ms;
+			}
+		}
+		if (!fvwm_interaction_service(&msi->interaction, timeout_ms))
+		{
+			return False;
+		}
 	}
 
-	return;
+	return True;
 }
 
 static mloop_ret_code_t _mloop_get_event(
@@ -3985,13 +4076,21 @@ static mloop_ret_code_t _mloop_get_event(
 			    in->mif.is_pointer_in_active_item_area ||
 			    is_popdown_timer_active || is_popup_timer_active)
 			{
-				_mloop_get_event_timeout_loop(
-					pmp, in, med, msi);
+				if (!_mloop_get_event_timeout_loop(pmp, in, med, msi))
+				{
+					pmret->rc = MENU_ABORTED;
+					return MENU_MLOOP_RET_END;
+				}
 			}
 			else
 			{
 				/* block until there is an event */
-				FMaskEvent(dpy, msi->event_mask, &e);
+				if (!fvwm_interaction_wait(
+					&msi->interaction, msi->event_mask, &e))
+				{
+					pmret->rc = MENU_ABORTED;
+					return MENU_MLOOP_RET_END;
+				}
 				in->mif.is_popped_up_by_timeout = False;
 			}
 		}
@@ -4005,12 +4104,8 @@ static mloop_ret_code_t _mloop_get_event(
 	if (e.type == MotionNotify)
 	{
 		/* discard any extra motion events before a release */
-		while (FCheckMaskEvent(
-			       dpy, ButtonMotionMask | ButtonReleaseMask,
-			       &e) && (e.type != ButtonRelease))
-		{
-			/* nothing */
-		}
+		fvwm_interaction_coalesce(
+			ButtonMotionMask | ButtonReleaseMask | KeyPressMask, &e);
 	}
 
 	return MENU_MLOOP_RET_NORMAL;
@@ -5326,6 +5421,13 @@ static void _menu_loop(
 	_mloop_init(pmp, pmret, &mei, &med, &msi, &mops);
 	for (is_finished = False; !is_finished; )
 	{
+		/* Keep borrowed menu/window records alive until normal unwind.
+		 * Only the shared audited service runs between event batches. */
+		if (!fvwm_interaction_service(&msi.interaction, 0))
+		{
+			pmret->rc = MENU_ABORTED;
+			break;
+		}
 		mloop_ret = _mloop_get_event(pmp, pmret, &mei, &med, &msi);
 		switch (mloop_ret)
 		{
@@ -5730,7 +5832,7 @@ Bool menu_redraw_transparent_tear_off_menu(FvwmWindow *fw, Bool pr_only)
 	return UpdateBackgroundTransparency(
 		dpy, MR_WINDOW(mr), MR_WIDTH(mr),
 		MR_HEIGHT(mr),
-		&Colorset[ST_CSET_MENU(ms)],
+		GetColorset(ST_CSET_MENU(ms)),
 		Pdepth,
 		FORE_GC(MST_MENU_INACTIVE_GCS(mr)),
 		True);
@@ -6151,7 +6253,7 @@ void update_transparent_menu_bg(
 		FvwmRenderAttributes fra;
 		fra.mask = 0;
 		fra.mask = FRAM_HAVE_TINT;
-		fra.tint = Colorset[ST_CSET_MENU(ms)].bg;
+		fra.tint = GetColorset(ST_CSET_MENU(ms))->bg;
 		fra.tint_percent = ST_TRANSLUCENT_PERCENT(ms);
 		mr->d->x = step_x;
 		mr->d->y = step_y;
@@ -6235,7 +6337,7 @@ void update_transparent_menu_bg(
 		SetWindowBackgroundWithOffset(
 			dpy, MR_WINDOW(mr), step_x - current_x,
 			step_y - current_y, MR_WIDTH(mr), MR_HEIGHT(mr),
-			&Colorset[ST_CSET_MENU(ms)], Pdepth,
+			GetColorset(ST_CSET_MENU(ms)), Pdepth,
 			FORE_GC(MST_MENU_INACTIVE_GCS(mr)), False);
 	}
 }
@@ -6350,6 +6452,10 @@ void repaint_transparent_menu(
 			sidePic = MST_SIDEPIC(mr);
 		}
 		else
+		{
+			return;
+		}
+		if (!picture_is_usable(sidePic))
 		{
 			return;
 		}
@@ -6495,7 +6601,7 @@ Bool DestroyMenu(MenuRoot *mr, Bool do_recreate, Bool is_command_request)
 		free(MR_NAME(mr));
 		if (MR_SIDEPIC(mr))
 		{
-			PDestroyFvwmPicture(dpy, MR_SIDEPIC(mr));
+			menu_image_destroy(&MR_SIDEPIC(mr));
 		}
 		memset(mr->s, 0, sizeof(*(mr->s)));
 		free(mr->s);
@@ -6920,7 +7026,7 @@ void UpdateMenuColorset(int cset)
 				SetWindowBackground(
 					dpy, MR_WINDOW(mr), MR_WIDTH(mr),
 					MR_HEIGHT(mr),
-					&Colorset[ST_CSET_MENU(ms2)],
+					GetColorset(ST_CSET_MENU(ms2)),
 					Pdepth,
 					FORE_GC(MST_MENU_INACTIVE_GCS(mr)),
 					False);

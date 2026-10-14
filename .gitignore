@@ -75,3 +75,4 @@ modules/fmd/fmd
 perllib/FVWM/Module.pm
 tags
 tests/hints/hints_test
+.gsd-graph/

@@ -52,7 +52,6 @@
 #include "libs/log.h"
 #include "expand.h"
 
-extern int nColorsets;  /* in libs/Colorset.c */
 
 #define MODULE_CONFIG_DELIM ':'
 
@@ -323,11 +322,11 @@ static void send_colorsets(fmodule *module)
 	int n;
 
 	/* dump the colorsets (0 first as others copy it) */
-	for (n = 0; n < nColorsets; n++)
+	for (n = 0; n < ColorsetCount(); n++)
 	{
 		SendName(
 			module, M_CONFIG_INFO, 0, 0, 0,
-			DumpColorset(n, &Colorset[n]));
+			DumpColorset(ColorsetIdAt(n), GetColorset(ColorsetIdAt(n))));
 	}
 
 	return;

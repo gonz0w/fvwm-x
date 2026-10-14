@@ -318,10 +318,13 @@ void parse_message_line(char *line)
 				break;
 			case 6:
 				/* Colorset */
-				i = atoi(value);
+				if (!ParseColorsetId(value, NULL, &i) ||
+				    !AllocColorset(i))
+				{
+					break;
+				}
 				b->colorset = i;
 				b->flags.b_Colorset = 1;
-				AllocColorset(i);
 				break;
 			default:
 				if (

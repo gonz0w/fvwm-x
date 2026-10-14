@@ -471,9 +471,12 @@ sub invoke_handler ($$) {
 	my $type = $event->type;
 
 	my $category = $self->get_handler_category($type);
+	# The category marker is shared by every extended event. Matching it
+	# would invoke unrelated handlers for every extended packet.
+	my $bits = $category eq "extended" ? $type & ~M_EXTENDED_MSG : $type;
 	my @masks = sort { $a <=> $b } keys %{$self->{handlers}->{$category}};
 	foreach my $mask (@masks) {
-		if ($type eq $mask || $type & $mask) {
+		if ($type eq $mask || ($category ne "special" && $bits & $mask)) {
 			foreach my $handler (@{$self->{handlers}->{$category}->{$mask}}) {
 				last unless $event->propagation_allowed;
 				next unless defined $handler;  # skip deleted ones

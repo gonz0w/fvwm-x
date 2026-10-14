@@ -41,6 +41,7 @@
 #include "libs/FRenderInit.h"
 #include "libs/Graphics.h"
 #include "libs/XError.h"
+#include "libs/fvwmsignal.h"
 #include "FvwmBacker.h"
 
 /* migo (22-Nov-1999): Temporarily until fvwm_msg is moved to libs */
@@ -152,8 +153,14 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	fvwm_fd[0] = atoi(argv[1]);
-	fvwm_fd[1] = atoi(argv[2]);
+	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);
+	if (module == NULL)
+	{
+		fprintf(stderr, "%s: invalid module descriptors\n", argv[0]);
+		return 1;
+	}
+	fvwm_fd[0] = module->to_fvwm;
+	fvwm_fd[1] = module->from_fvwm;
 
 	/* Grab the X display information now. */
 
@@ -175,10 +182,16 @@ int main(int argc, char **argv)
 	XA_ESETROOT_PMAP_ID = XInternAtom(dpy, "ESETROOT_PMAP_ID", False);
 	XA_XROOTPMAP_ID = XInternAtom(dpy, "_XROOTPMAP_ID", False);
 
-	signal (SIGPIPE, DeadPipe);
+	signal(SIGPIPE, fvwmSetTerminate);
+	signal(SIGTERM, fvwmSetTerminate);
+	signal(SIGINT, fvwmSetTerminate);
 
 	/* Parse the config file */
 	ParseConfig();
+	if (isTerminated)
+	{
+		return 0;
+	}
 
 	SetMessageMask(fvwm_fd,
 		       M_NEW_PAGE | M_NEW_DESK | M_CONFIG_INFO |
@@ -195,8 +208,7 @@ int main(int argc, char **argv)
 	/* Recieve all messages from fvwm */
 	EndLessLoop();
 
-	/* Should never get here! */
-	return 1;
+	return 0;
 }
 
 /*
@@ -204,7 +216,7 @@ int main(int argc, char **argv)
 */
 void EndLessLoop(void)
 {
-	while(1)
+	while (!isTerminated)
 	{
 		ReadFvwmPipe();
 	}
@@ -216,9 +228,9 @@ void EndLessLoop(void)
 void ReadFvwmPipe(void)
 {
 	FvwmPacket* packet = ReadFvwmPacket(fvwm_fd[1]);
-	if ( packet == NULL )
+	if (packet == NULL)
 	{
-		exit(0);
+		fvwmSetTerminate(0);
 	}
 	else
 	{
@@ -231,7 +243,7 @@ void DeleteRootAtoms(Display *dpy2, Window root2)
 	Atom type;
 	int format;
 	unsigned long length, after;
-	unsigned char *data;
+	unsigned char *data = NULL;
 	Bool e_deleted = False;
 
 	XA_XSETROOT_ID = XInternAtom(dpy2, "_XSETROOT_ID", False);
@@ -242,18 +254,27 @@ void DeleteRootAtoms(Display *dpy2, Window root2)
 		    dpy2, root2, XA_XSETROOT_ID, 0L, 1L, True,
 		    XA_PIXMAP, &type, &format, &length, &after, &data) ==
 	    Success && type == XA_PIXMAP && format == 32 && length == 1 &&
-	    after == 0 && (Pixmap)(*(long *)data) != None)
+	    after == 0 && data != NULL && (Pixmap)(*(long *)data) != None)
 	{
 		XKillClient(dpy2, *((Pixmap *)data));
+	}
+	if (data != NULL)
+	{
+		XFree(data);
+		data = NULL;
 	}
 	if (XGetWindowProperty(
 		    dpy2, root2, XA_ESETROOT_PMAP_ID, 0L, 1L, True,
 		    XA_PIXMAP, &type, &format, &length, &after, &data) ==
 	    Success && type == XA_PIXMAP && format == 32 && length == 1 &&
-	    after == 0 && (Pixmap)(*(Pixmap *)data) != None)
+	    after == 0 && data != NULL && (Pixmap)(*(Pixmap *)data) != None)
 	{
 		e_deleted = True;
 		XKillClient(dpy2, *((Pixmap *)data));
+	}
+	if (data != NULL)
+	{
+		XFree(data);
 	}
 	if (e_deleted)
 	{
@@ -344,7 +365,7 @@ void SetDeskPageBackground(const Command *c)
 				pix = CreateBackgroundPixmap(
 					dpy2, root2, MyDisplayWidth,
 					MyDisplayHeight,
-					&Colorset[c->colorset],
+					GetColorset(c->colorset),
 					DefaultDepth(dpy2, screen2),
 					DefaultGC(dpy2, screen2), False);
 				if (pix != None)
@@ -359,7 +380,7 @@ void SetDeskPageBackground(const Command *c)
 				SetWindowBackground(
 					dpy2, root2, MyDisplayWidth,
 					MyDisplayHeight,
-					&Colorset[c->colorset],
+					GetColorset(c->colorset),
 					DefaultDepth(dpy2, screen2),
 					DefaultGC(dpy2, screen2), True);
 			}
@@ -496,12 +517,6 @@ void ProcessMessage(unsigned long type, unsigned long *body)
 /*
   Detected a broken pipe - time to exit
 */
-RETSIGTYPE DeadPipe(int nonsense)
-{
-	exit(1);
-	SIGNAL_RETURN;
-}
-
 /*
   ParseConfigLine - Parse the configuration line fvwm to us to use
 */
@@ -733,11 +748,15 @@ void AddCommand(char *line)
 	{
 		/* Colorset command */
 
-		if (sscanf(line + 8, "%d", &this->colorset) < 1)
+		if (!ParseColorsetId(line + 8, NULL, &this->colorset))
 		{
 			this->colorset = 0;
 		}
-		AllocColorset(this->colorset);
+		if (!AllocColorset(this->colorset))
+		{
+			free(this);
+			return;
+		}
 		this->type = 2;
 	}
 	else

@@ -23,6 +23,7 @@
  * 9-Nov-1998 Dominik Vogt
  */
 #include "config.h"
+#include "libs/module_monitor.h"
 
 #include "libs/ftime.h"
 #include <ctype.h>
@@ -35,18 +36,14 @@
 #include <sys/bsdtypes.h>
 #endif
 
-#if HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
-
 #include <X11/Xlib.h>
 
 #include "fvwm/fvwm.h"
 #include "libs/log.h"
 #include "libs/Module.h"
 #include "libs/Parse.h"
-#include "libs/System.h"
 #include "libs/fvwmlib.h"
+#include "libs/fvwmsignal.h"
 #include "libs/vpacket.h"
 
 #define MIN_CELL_SIZE 10
@@ -86,7 +83,6 @@ typedef struct window_item
 Display		  *dpy;
 static ModuleArgs *module;
 int		   fd[2];
-fd_set_size_t	   fd_width;
 window_list	   wins = NULL, wins_tail = NULL;
 int		   wins_count = 0;
 FILE		  *console;
@@ -147,21 +143,6 @@ free_resources(void)
 
 	if (console != stderr)
 		fclose(console);
-}
-
-RETSIGTYPE
-DeadPipe(int sig)
-{
-	free_resources();
-
-	exit(0);
-	SIGNAL_RETURN;
-}
-
-RETSIGTYPE
-HandleAlarm(int sig)
-{
-	DeadPipe(sig);
 }
 
 void
@@ -881,11 +862,12 @@ main(int argc, char *argv[])
 		    XDisplayName(NULL));
 		exit(-1);
 	}
-	signal(SIGPIPE, DeadPipe);
-	signal(SIGALRM, HandleAlarm);
+	signal(SIGPIPE, fvwmSetTerminate);
+	signal(SIGALRM, fvwmSetTerminate);
+	signal(SIGTERM, fvwmSetTerminate);
+	signal(SIGINT, fvwmSetTerminate);
 
 	FScreenInit(dpy);
-	fd_width = GetFdWidth();
 
 	/* Need to parse args first so we know what monitor to use. */
 	parse_args(module->user_argc, module->user_argv, 0);
@@ -903,7 +885,9 @@ main(int argc, char *argv[])
 	for (GetConfigLine(fd, &config_line); config_line != NULL;
 	     GetConfigLine(fd, &config_line)) {
 		char *token, *next, *mname;
-		int   dummy, bs_top, bs_bottom, bs_left, bs_right;
+		int values[MODULE_MONITOR_VALUES];
+		module_monitor_area prepared;
+		const module_monitor_area initial = {box_x, box_y, box_w, box_h};
 
 		token = PeekToken(config_line, &next);
 		if (!StrEquals(token, "Monitor"))
@@ -916,18 +900,29 @@ main(int argc, char *argv[])
 		 */
 		if (!StrEquals(mname, mon->si->name)
 		    && !(is_global && desk))
+		{
+			free(mname);
 			continue;
-
-		sscanf(config_line, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d",
-		    &dummy, &dummy, &dummy, &dummy, &dummy, &dummy, &dummy,
-		    &current_desk, &dummy, &dummy, &bs_left, &bs_right, &bs_top,
-		    &bs_bottom);
-		if (!do_ewmhiwa) {
-			box_x += bs_left;
-			box_y += bs_top;
-			box_w -= bs_left + bs_right;
-			box_h -= bs_top + bs_bottom;
 		}
+		free(mname);
+		if (!module_parse_decimal_integers(config_line, values,
+			MODULE_MONITOR_VALUES) ||
+			!module_monitor_prepare_area(values, &initial,
+				do_ewmhiwa, &prepared))
+		{
+			fvwm_debug(__func__, "Refusing invalid monitor work area");
+			continue;
+		}
+		current_desk = values[7];
+		box_x = prepared.x;
+		box_y = prepared.y;
+		box_w = prepared.width;
+		box_h = prepared.height;
+	}
+
+	if (isTerminated)
+	{
+		goto done;
 	}
 
 	/* Update sizes now that monitor + working area dimensions are known */
@@ -949,6 +944,8 @@ main(int argc, char *argv[])
 
 	Loop(fd);
 
+ done:
+	alarm(0);
 	free_resources();
 
 	return 0;
@@ -965,9 +962,13 @@ Loop(int *fd)
 	 */
 	alarm(10);
 
-	while (1) {
-		if ((packet = ReadFvwmPacket(fd[1])) == NULL)
-			DeadPipe(0);
+	while (!isTerminated)
+	{
+		packet = ReadFvwmPacket(fd[1]);
+		if (packet == NULL || isTerminated)
+		{
+			break;
+		}
 		process_message(packet->type, packet->body);
 	}
 }

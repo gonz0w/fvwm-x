@@ -21,8 +21,11 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/FProperty.h"
+#include "fd_safety.h"
 #include <stdio.h>
-#include <fcntl.h>
+#include <errno.h>
+#include <sys/wait.h>
 #ifdef HAVE_GETPWUID
 #include <pwd.h>
 #endif
@@ -41,6 +44,7 @@
 #include "System.h"
 #include "flist.h"
 #include "fsm.h"
+#include "ice_error_policy.h"
 
 /* #define FVWM_DEBUG_FSM */
 
@@ -175,6 +179,46 @@ unique_filename(char *path, char *prefix, int *pFd)
 	return tempFile;
 }
 
+/* Invoke iceauth with a literal pathname: session save directories can contain
+ * spaces or shell metacharacters. This helper runs only in isolated modules. */
+static Bool
+run_iceauth(const char *path)
+{
+	pid_t child = fork();
+	int status;
+
+	if (child < 0)
+	{
+		return False;
+	}
+	if (child == 0)
+	{
+		execlp("iceauth", "iceauth", "source", path, (char *)NULL);
+		_exit(127);
+	}
+	pid_t result;
+	do
+	{
+		result = waitpid(child, &status, 0);
+	} while (result < 0 && errno == EINTR);
+	return result == child && WIFEXITED(status) && WEXITSTATUS(status) == 0;
+}
+
+static void
+free_auth_entries(int count, FIceAuthDataEntry *entries)
+{
+	if (entries == NULL)
+	{
+		return;
+	}
+	for (int i = 0; i < count * 2; i++)
+	{
+		free(entries[i].network_id);
+		free(entries[i].auth_data);
+	}
+	free(entries);
+}
+
 /*
  * Provide authentication data to clients that wish to connect
  */
@@ -189,10 +233,10 @@ Status SetAuthentication(
 	FILE *removefp = NULL;
 	char *path;
 	int original_umask;
-	char command[256];
 	int i;
 	int fd;
 
+	*authDataEntries = NULL;
 	if (!SessionSupport)
 	{
 		return 0;
@@ -226,20 +270,24 @@ Status SetAuthentication(
 	{
 		goto bad;
 	}
-	if (!(addfp = fdopen(fd, "wb")))
+	if (!fvwm_fd_set_cloexec(fd, true) ||
+	    !(addfp = fdopen(fd, "wb")))
 	{
+		close(fd);
 		goto bad;
 	}
 	if ((remAuthFile = unique_filename (path, ".fsm-", &fd)) == NULL)
 	{
 		goto bad;
 	}
-	if (!(removefp = fdopen(fd, "wb")))
+	if (!fvwm_fd_set_cloexec(fd, true) ||
+	    !(removefp = fdopen(fd, "wb")))
 	{
+		close(fd);
 		goto bad;
 	}
 
-	*authDataEntries = fxmalloc(count * 2 * sizeof (FIceAuthDataEntry));
+	*authDataEntries = fxcalloc(count * 2, sizeof(FIceAuthDataEntry));
 
 	for (i = 0; i < count * 2; i += 2)
 	{
@@ -268,17 +316,21 @@ Status SetAuthentication(
 		FIceSetHostBasedAuthProc(listenObjs[i/2], HostBasedAuthProc);
 	}
 
-	fclose(addfp);
-	fclose(removefp);
+	Bool written = !ferror(addfp) && !ferror(removefp);
+	int add_status = fclose(addfp);
+	int remove_status = fclose(removefp);
 
 	umask (original_umask);
-
-	snprintf (command, sizeof(command), "iceauth source %s", addAuthFile);
+	addfp = removefp = NULL;
+	if (!written || add_status != 0 || remove_status != 0)
 	{
-		int n;
-
-		n = system(command);
-		(void)n;
+		fvwm_debug(__func__, "Cannot write session authentication files");
+		goto bad;
+	}
+	if (!run_iceauth(addAuthFile))
+	{
+		fvwm_debug(__func__, "iceauth could not install session authentication");
+		goto bad;
 	}
 
 	unlink (addAuthFile);
@@ -287,6 +339,9 @@ Status SetAuthentication(
 
  bad:
 
+	umask(original_umask);
+	free_auth_entries(count, *authDataEntries);
+	*authDataEntries = NULL;
 	if (addfp)
 	{
 		fclose (addfp);
@@ -301,49 +356,41 @@ Status SetAuthentication(
 	{
 		unlink (addAuthFile);
 		free (addAuthFile);
+		addAuthFile = NULL;
 	}
 	if (remAuthFile)
 	{
 		unlink (remAuthFile);
 		free (remAuthFile);
+		remAuthFile = NULL;
 	}
 
 	return 0;
 }
 
 static
-void FreeAuthenticationData(int count, FIceAuthDataEntry *authDataEntries)
+void FreeAuthenticationData(int count, FIceAuthDataEntry **authDataEntries)
 {
-	/* Each transport has entries for ICE and XSMP */
-
-	char command[256];
-	int i;
-
 	if (!SessionSupport)
 	{
 		return;
 	}
-
-	for (i = 0; i < count * 2; i++)
+	free_auth_entries(count, *authDataEntries);
+	*authDataEntries = NULL;
+	if (remAuthFile != NULL)
 	{
-		free(authDataEntries[i].network_id);
-		free(authDataEntries[i].auth_data);
+		if (!run_iceauth(remAuthFile))
+		{
+			fvwm_debug(__func__,
+				"iceauth could not remove session authentication");
+		}
+		unlink(remAuthFile);
 	}
-
-	free ((char *) authDataEntries);
-
-	snprintf (command, sizeof(command), "iceauth source %s", remAuthFile);
-	{
-		int n;
-
-		n = system(command);
-		(void)n;
-	}
-
-	unlink (remAuthFile);
 
 	free (addAuthFile);
 	free (remAuthFile);
+	addAuthFile = NULL;
+	remAuthFile = NULL;
 }
 
 /*
@@ -367,19 +414,17 @@ void MyIoErrorHandler(FIceConn ice_conn)
 static
 void InstallIOErrorHandler(void)
 {
-	FIceIOErrorHandler default_handler;
+	FIceIOErrorHandler default_handler, candidate;
 
 	if (!SessionSupport)
 	{
 		return;
 	}
 
-	prev_handler = FIceSetIOErrorHandler(NULL);
+	candidate = FIceSetIOErrorHandler(NULL);
 	default_handler = FIceSetIOErrorHandler(MyIoErrorHandler);
-	if (prev_handler == default_handler)
-	{
-		prev_handler = NULL;
-	}
+	prev_handler = fvwm_ice_error_previous(
+		MyIoErrorHandler, prev_handler, candidate, default_handler);
 }
 
 static void
@@ -390,7 +435,12 @@ CloseListeners(void)
 		return;
 	}
 
-	FIceFreeListenObjs(numTransports, slistenObjs);
+	if (slistenObjs != NULL)
+	{
+		FIceFreeListenObjs(numTransports, slistenObjs);
+		slistenObjs = NULL;
+		numTransports = 0;
+	}
 }
 
 static
@@ -413,11 +463,14 @@ void ice_watch_fd(
 		*watch_data = (FIcePointer) fice_conn;
 		fsm_ice_conn_list =
 			flist_append_obj(fsm_ice_conn_list, fice_conn);
-		fcntl(fice_conn->fd, F_SETFD, FD_CLOEXEC);
 	}
 	else
 	{
 		fice_conn = (fsm_ice_conn_t *)*watch_data;
+		/* IO errors can close a connection before protocol registration.
+		 * Never leave its freed handle in the pending-status queue. */
+		pending_ice_conn_list =
+			flist_remove_obj(pending_ice_conn_list, conn);
 		fsm_ice_conn_list =
 			flist_remove_obj(fsm_ice_conn_list, fice_conn);
 		free(fice_conn);
@@ -743,6 +796,7 @@ void CompletNewConnectionMsg(void)
 		}
 		else
 		{
+			l = l->next;
 			if (FIceCloseConnection (ice_conn) != FIceClosedNow)
 			{
 				/* don't care */
@@ -796,6 +850,13 @@ void NewConnectionMsg(int i)
 	}
 	else
 	{
+		/* Do not close a connection inside its libICE watch callback. */
+		if (!fvwm_fd_prepare_select(FIceConnectionNumber(ice_conn)))
+		{
+			fvwm_debug(__func__, "Cannot prepare accepted ICE descriptor");
+			FIceCloseConnection(ice_conn);
+			return;
+		}
 		pending_ice_conn_list =
 			flist_append_obj(pending_ice_conn_list, ice_conn);
 
@@ -807,6 +868,7 @@ static
 void ProcessIceMsg(fsm_ice_conn_t *fic)
 {
 	FIceProcessMessagesStatus status;
+	FIceConn connection = fic->ice_conn;
 
 	if (!SessionSupport)
 	{
@@ -818,7 +880,7 @@ void ProcessIceMsg(fsm_ice_conn_t *fic)
 		   (int)fic->fd);
 #endif
 
-	status = FIceProcessMessages(fic->ice_conn, NULL, NULL);
+	status = FIceProcessMessages(connection, NULL, NULL);
 
 	if (status == FIceProcessMessagesIOError)
 	{
@@ -835,7 +897,7 @@ void ProcessIceMsg(fsm_ice_conn_t *fic)
 		{
 			fsm_client_t *client = (fsm_client_t *) cl->object;
 
-			if (client->ice_conn == fic->ice_conn)
+			if (client->ice_conn == connection)
 			{
 				CloseDownClient (client);
 				found = 1;
@@ -851,8 +913,8 @@ void ProcessIceMsg(fsm_ice_conn_t *fic)
 			 * NewClientProc callback was invoked).
 			 */
 
-			FIceSetShutdownNegotiation (fic->ice_conn, False);
-			if ((!FIceCloseConnection(fic->ice_conn)) != FIceClosedNow)
+			FIceSetShutdownNegotiation (connection, False);
+			if ((!FIceCloseConnection(connection)) != FIceClosedNow)
 			{
 				/* do not care */
 			}
@@ -868,12 +930,6 @@ char *GetClientID(Display *dpy, Window window)
 {
 	char *client_id = NULL;
 	Window client_leader = None;
-	XTextProperty tp;
-	Atom actual_type;
-	int actual_format;
-	unsigned long nitems;
-	unsigned long bytes_after;
-	unsigned char *prop = NULL;
 
 	if (!SessionSupport)
 	{
@@ -890,39 +946,12 @@ char *GetClientID(Display *dpy, Window window)
 		_XA_SM_CLIENT_ID = XInternAtom(dpy, "SM_CLIENT_ID", False);
 	}
 
-	if (XGetWindowProperty(
-		    dpy, window, _XA_WM_CLIENT_LEADER, 0L, 1L, False,
-		    AnyPropertyType, &actual_type, &actual_format, &nitems,
-		    &bytes_after, &prop) == Success)
-	{
-		if (actual_type == XA_WINDOW && actual_format == 32 &&
-		    nitems == 1 && bytes_after == 0)
-		{
-			client_leader = (Window)(*(long *)prop);
-		}
-	}
-
+	client_leader = FGetClientLeader(dpy, window, _XA_WM_CLIENT_LEADER);
 	if (!client_leader)
 	{
 		client_leader = window;
 	}
-
-	if (client_leader)
-	{
-		if (XGetTextProperty(dpy, client_leader, &tp, _XA_SM_CLIENT_ID))
-		{
-			if (tp.encoding == XA_STRING && tp.format == 8 &&
-			    tp.nitems != 0)
-			{
-				client_id = (char *) tp.value;
-			}
-		}
-	}
-
-	if (prop)
-	{
-		XFree (prop);
-	}
+	client_id = FGetSessionString(dpy, client_leader, _XA_SM_CLIENT_ID);
 
 	return client_id;
 }
@@ -931,11 +960,6 @@ static
 void set_session_manager(Display *dpy, Window window, char *sm)
 {
 	Window client_leader = None;
-	Atom actual_type;
-	int actual_format;
-	unsigned long nitems;
-	unsigned long bytes_after;
-	unsigned char *prop = NULL;
 	char *dummy_id;
 	static Atom _XA_SESSION_MANAGER = None;
 
@@ -961,17 +985,7 @@ void set_session_manager(Display *dpy, Window window, char *sm)
 		_XA_SM_CLIENT_ID = XInternAtom(dpy, "SM_CLIENT_ID", False);
 	}
 
-	if (XGetWindowProperty(
-		    dpy, window, _XA_WM_CLIENT_LEADER, 0L, 1L, False,
-		    AnyPropertyType, &actual_type, &actual_format, &nitems,
-		    &bytes_after, &prop) == Success)
-	{
-		if (actual_type == XA_WINDOW && actual_format == 32 &&
-		    nitems == 1 && bytes_after == 0)
-		{
-			client_leader = (Window)(*(long *)prop);
-		}
-	}
+	client_leader = FGetClientLeader(dpy, window, _XA_WM_CLIENT_LEADER);
 
 	if (!client_leader)
 	{
@@ -1061,12 +1075,25 @@ int fsm_init(char *module)
 		return 0;
 	}
 
+	for (i = 0; i < numTransports; i++)
+	{
+		if (!fvwm_fd_prepare_select(
+			FIceGetListenConnectionNumber(slistenObjs[i])))
+		{
+			fvwm_debug(__func__, "Cannot prepare ICE listener descriptor");
+			FIceFreeListenObjs(numTransports, slistenObjs);
+			slistenObjs = NULL;
+			numTransports = 0;
+			return 0;
+		}
+	}
 	atexit(CloseListeners);
 
 	if (!SetAuthentication(numTransports, slistenObjs, &sauthDataEntries))
 	{
 	    fvwm_debug(__func__, "[%s][fsm_init] <<ERROR>> -- "
 		       "Could not set authorization\n", module_name);
+	    CloseListeners();
 	    return 0;
 	}
 
@@ -1075,6 +1102,8 @@ int fsm_init(char *module)
 		fvwm_debug(__func__,
 			   "[%s][fsm_init] <<ERROR>> -- "
 			   "FIceAddConnectionWatch failed\n", module_name);
+		FreeAuthenticationData(numTransports, &sauthDataEntries);
+		CloseListeners();
 		return 0;
 	}
 
@@ -1116,7 +1145,11 @@ void fsm_fdset(fd_set *in_fdset)
 	while(l != NULL)
 	{
 		fic = (fsm_ice_conn_t *)l->object;
-		FD_SET(fic->fd, in_fdset);
+		/* libICE can report other connections through its watch callback. */
+		if (fic->fd >= 0 && fic->fd < FD_SETSIZE)
+		{
+			FD_SET(fic->fd, in_fdset);
+		}
 		l = l->next;
 	}
 
@@ -1125,7 +1158,7 @@ void fsm_fdset(fd_set *in_fdset)
 Bool fsm_process(fd_set *in_fdset)
 {
 	int i;
-	flist *l = fsm_ice_conn_list;
+	flist *l;
 	fsm_ice_conn_t *fic;
 
 	if (!SessionSupport || !fsm_init_succeed)
@@ -1137,14 +1170,17 @@ Bool fsm_process(fd_set *in_fdset)
 	{
 		CompletNewConnectionMsg();
 	}
+	l = fsm_ice_conn_list;
 	while(l != NULL)
 	{
 		fic = (fsm_ice_conn_t *)l->object;
-		if (FD_ISSET(fic->fd, in_fdset))
+		/* A close callback can remove the current watch/list node. */
+		l = l->next;
+		if (fic->fd >= 0 && fic->fd < FD_SETSIZE &&
+		    FD_ISSET(fic->fd, in_fdset))
 		{
 			ProcessIceMsg(fic);
 		}
-		l = l->next;
 	}
 	for (i = 0; i < numTransports; i++)
 	{
@@ -1158,6 +1194,55 @@ Bool fsm_process(fd_set *in_fdset)
 		return True;
 	}
 	return False;
+}
+
+/* Keep session admission and watch ownership in their existing owner. */
+size_t fsm_pollfds(struct pollfd *fds, size_t capacity)
+{
+	fd_set inputs;
+	size_t count = 0;
+
+	if (!SessionSupport || !fsm_init_succeed)
+	{
+		return 0;
+	}
+	FD_ZERO(&inputs);
+	fsm_fdset(&inputs);
+	for (int fd = 0; fd < FD_SETSIZE; fd++)
+	{
+		if (!FD_ISSET(fd, &inputs))
+		{
+			continue;
+		}
+		if (fds != NULL && count < capacity)
+		{
+			fds[count].fd = fd;
+			fds[count].events = POLLIN;
+			fds[count].revents = 0;
+		}
+		count++;
+	}
+	return count;
+}
+
+Bool fsm_process_pollfds(const struct pollfd *fds, size_t count)
+{
+	fd_set inputs;
+
+	if (!SessionSupport || !fsm_init_succeed)
+	{
+		return False;
+	}
+	FD_ZERO(&inputs);
+	for (size_t i = 0; i < count; i++)
+	{
+		if (fds[i].fd >= 0 && fds[i].fd < FD_SETSIZE &&
+			(fds[i].revents & (POLLIN | POLLHUP | POLLERR)))
+		{
+			FD_SET(fds[i].fd, &inputs);
+		}
+	}
+	return fsm_process(&inputs);
 }
 
 /* this try to explain to ksmserver and various sm poxies that they should not
@@ -1190,6 +1275,7 @@ void fsm_proxy(Display *dpy, Window win, char *sm)
 		}
 	}
 
+	XFree(client_id);
 	if (found)
 	{
 		return;
@@ -1204,5 +1290,5 @@ void fsm_close(void)
 	{
 		return;
 	}
-	FreeAuthenticationData(numTransports, sauthDataEntries);
+	FreeAuthenticationData(numTransports, &sauthDataEntries);
 }

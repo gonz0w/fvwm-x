@@ -22,6 +22,9 @@
 
 /* ---------------------------- interface functions ------------------------ */
 
+/* Resolve client XIDs on the managed list; exclude decoration aliases. */
+FvwmWindow *find_managed_client(Window client);
+
 int setup_visible_names(FvwmWindow *fw, int what_changed);
 void update_window_names(FvwmWindow *fw, int which);
 void setup_wm_hints(FvwmWindow *fw);

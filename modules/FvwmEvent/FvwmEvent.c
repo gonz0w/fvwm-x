@@ -31,6 +31,7 @@
 
 #include "libs/log.h"
 #include "libs/Module.h"
+#include "libs/fvwmsignal.h"
 #include "libs/fvwmlib.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
@@ -74,9 +75,8 @@ typedef struct
 
 /* ---------------------------- forward declarations ------------------------ */
 
-void execute_event(event_entry*, short, unsigned long*);
+void execute_event(event_entry*, short, unsigned long*, const char*);
 void config(void);
-RETSIGTYPE DeadPipe(int);
 static RETSIGTYPE TerminateHandler(int);
 
 /* ---------------------------- local variables ----------------------------- */
@@ -182,8 +182,6 @@ static unsigned int m_sync = 0;
 static unsigned int mx_sync = 0;
 
 
-static volatile sig_atomic_t isTerminated = False;
-
 /* ---------------------------- local functions ----------------------------- */
 
 void unlock_event(unsigned long evtype)
@@ -209,9 +207,7 @@ void unlock_event(unsigned long evtype)
 int main(int argc, char **argv)
 {
 	char *s;
-	unsigned long header[FvwmPacketHeaderSize];
-	unsigned long body[FvwmPacketBodyMaxSize];
-	int total, remaining, count, event;
+	int event;
 	int is_extended_msg;
 
 	cmd_line = fxmalloc(1);
@@ -272,13 +268,19 @@ int main(int argc, char **argv)
 	signal(SIGTERM, TerminateHandler);
 #endif
 
-	fd[0] = atoi(argv[1]);
-	fd[1] = atoi(argv[2]);
+	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);
+	if (module == NULL)
+	{
+		fprintf(stderr, "%s: invalid module descriptors\n", argv[0]);
+		return 1;
+	}
+	fd[0] = module->to_fvwm;
+	fd[1] = module->from_fvwm;
 
 	/* configure events */
 	config();
 	/* Startup event */
-	execute_event(builtin_event_table, BUILTIN_STARTUP, NULL);
+	execute_event(builtin_event_table, BUILTIN_STARTUP, NULL, "");
 	if (start_delay)
 	{
 		last_time = time(0);
@@ -307,46 +309,20 @@ int main(int argc, char **argv)
 	{
 		unsigned long msg_bit;
 		event_entry *event_table;
+		FvwmPacket *packet = ReadFvwmPacket(fd[1]);
 
-		if ((count = read(fd[1], header, FvwmPacketHeaderSize_byte)) <=
-		    0)
+		if (packet == NULL)
 		{
-			isTerminated = 1;
-			continue;
-		}
-		/* if this read is interrrupted EINTR, the wrong event is
-		 * triggered! */
-
-		if (header[0] != START_FLAG)
-		{
-			/* should find something better for resyncing */
-			unlock_event(header[1]);
-			continue;
+			break;
 		}
 
 		/* Ignore events that occur during the delay period. */
 		now = time(0);
 
-		/* junk the event body */
-		total=0;
-		remaining = (header[2] - FvwmPacketHeaderSize) *
-			sizeof(unsigned long);
-		while (remaining)
-		{
-			if ((count=read(fd[1],&body[total],remaining)) < 0)
-			{
-				isTerminated = 1;
-				unlock_event(header[1]);
-				continue;
-			}
-			remaining -= count;
-			total +=count;
-		}
-
 		if (now < last_time + delay + start_delay)
 		{
 			/* quash event */
-			unlock_event(header[1]);
+			unlock_event(packet->type);
 			continue;
 		}
 		else
@@ -358,7 +334,7 @@ int main(int argc, char **argv)
 		 * header[1] number.  Could use log here but this should be
 		 * fast enough. */
 		event = -1;
-		msg_bit = header[1];
+		msg_bit = packet->type;
 		is_extended_msg = (msg_bit & M_EXTENDED_MSG);
 		msg_bit &= ~M_EXTENDED_MSG;
 		while (msg_bit)
@@ -386,10 +362,34 @@ int main(int argc, char **argv)
 		{
 			event_table = message_event_table;
 		}
-		execute_event(event_table, event, body);
-		unlock_event(header[1]);
+		size_t body_words = FvwmPacketBodySize(*packet);
+		int action_arg = event_table[event].action_arg;
+		const char *extra_arg = "";
+
+		if (event_table[event].action.action != NULL && action_arg != -1 &&
+			(!(action_arg & ARG_NO_WINID) || PassID) &&
+			(size_t)(action_arg & ~ARG_NO_WINID) >= body_words)
+		{
+			fvwm_debug(__func__, "Event packet lacks its action argument");
+			unlock_event(packet->type);
+			continue;
+		}
+		/* Retain terminated legacy tail bytes, but never inspect outside
+		 * the declared body. Builtin events have no packet or tail. */
+		if (body_words > 3)
+		{
+			const char *tail = (const char *)&packet->body[3];
+			size_t tail_size = (body_words - 3) * sizeof(unsigned long);
+
+			if (memchr(tail, '\0', tail_size) != NULL)
+			{
+				extra_arg = tail;
+			}
+		}
+		execute_event(event_table, event, packet->body, extra_arg);
+		unlock_event(packet->type);
 	} /* while */
-	execute_event(builtin_event_table, BUILTIN_SHUTDOWN, NULL);
+	execute_event(builtin_event_table, BUILTIN_SHUTDOWN, NULL, "");
 
 	return 0;
 }
@@ -402,7 +402,8 @@ int main(int argc, char **argv)
  *    execute_event - actually executes the actions from lookup table
  *
  */
-void execute_event(event_entry *event_table, short event, unsigned long *body)
+void execute_event(event_entry *event_table, short event, unsigned long *body,
+	const char *extra_arg)
 {
 	if (event_table[event].action.action == NULL)
 		return;
@@ -410,7 +411,7 @@ void execute_event(event_entry *event_table, short event, unsigned long *body)
 	char *buf = NULL;
 	char *action;
 	int action_arg = event_table[event].action_arg;
-	int fw = 0;
+	unsigned long fw = 0;
 
 	action = event_table[event].action.action;
 
@@ -428,11 +429,9 @@ void execute_event(event_entry *event_table, short event, unsigned long *body)
 		}
 	} else {
 		char *mon_event = "";
-		char *extra_arg = "";
 
 		if (StrHasPrefix(event_table[event].name, "monitor_"))
 			mon_event = event_table[event].name;
-		extra_arg = (char *)&body[3];
 
 		xasprintf(&buf, "%s %s %s %s", cmd_line, action, mon_event,
 				extra_arg);
@@ -595,8 +594,12 @@ void config(void)
 
 	/* get config lines with my name */
 	InitGetConfigLine(fd,MyName);
-	while (GetConfigLine(fd,&buf), buf != NULL && *buf != 0)
+	while (GetConfigLine(fd,&buf), buf != NULL)
 	{
+		if (*buf == '\0')
+		{
+			continue;
+		}
 		if (buf[strlen(buf)-1] == '\n')
 		{
 			/* if line ends with newline, strip it off */
@@ -620,20 +623,7 @@ void config(void)
 static RETSIGTYPE
 TerminateHandler(int nonsense)
 {
-	isTerminated = True;
+	fvwmSetTerminate(nonsense);
 
-	SIGNAL_RETURN;
-}
-
-/*
- *
- *  Procedure:
- *      Externally callable procedure to quit
- *
- */
-RETSIGTYPE DeadPipe(int flag)
-{
-	execute_event(builtin_event_table, BUILTIN_SHUTDOWN, NULL);
-	exit(flag);
 	SIGNAL_RETURN;
 }

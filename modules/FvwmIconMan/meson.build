@@ -4,6 +4,7 @@ iconman_sources = [
     'debug.h',
     'functions.c',
     'fvwm.c',
+    'iconman_packet.c',
     'globals.c',
     'readconfig.c',
     'winlist.c',
@@ -11,7 +12,7 @@ iconman_sources = [
     'xmanager.c',
 ]
 
-executable(
+fvwm_iconman = executable(
     'FvwmIconMan',
     sources: iconman_sources,
     dependencies: [all_found_deps],

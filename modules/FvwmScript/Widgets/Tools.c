@@ -14,29 +14,245 @@
  */
 
 #include "config.h"
+#include <errno.h>
+#include <limits.h>
 
 #include "Tools.h"
+#include "../script_delay.h"
 
 #include "libs/FEvent.h"
+#include "libs/log.h"
 
 /* helper functions */
-/* get byte offset corresponding to character offset, including
-   bounds check to represent end of text */
-int getByteOffsetBoundsCheck(FlocaleFont *flf, char *str, int offset)
+void script_geometry_diagnostic(const char *operation, int id)
 {
-	if(offset < FlocaleStringCharLength(flf,str))
-		return FlocaleStringCharToByteOffset(flf, str, offset);
+	if (log_get_fd() >= 0)
+	{
+		fvwm_debug(operation, "[%s]: widget %d has invalid geometry",
+			ScriptName, id);
+	}
 	else
-		return strlen(str);
+	{
+		fprintf(stderr, "[%s]: %s: widget %d has invalid geometry\n",
+			ScriptName, operation, id);
+	}
 }
 
-/* opposite of the above, return character offset */
+bool script_widget_layout(struct XObj *xobj, FlocaleFont *font,
+	script_layout_geometry *geometry)
+{
+	script_layout_input input = {0};
+	char *title = NULL;
+	char number[32];
+	int maximum;
+
+	/* Widget constants are the historic, consecutive 1..15 type table. */
+	input.type = (script_layout_type)(xobj->TypeWidget - 1);
+	input.width = xobj->width;
+	input.height = xobj->height;
+	input.x = xobj->x;
+	input.y = xobj->y;
+	input.icon_width = xobj->icon_w;
+	input.icon_height = xobj->icon_h;
+	input.has_icon = xobj->icon != NULL;
+	input.has_title = xobj->title[0] != '\0';
+	input.menu_x = 2;
+	if (font != NULL)
+	{
+		input.font_height = font->height;
+		/* Invalid metrics cannot safely be used by existing draw callbacks. */
+		if (font->height < 0 || font->height > UINT16_MAX ||
+		    font->ascent < 0 || font->ascent > UINT16_MAX ||
+		    font->descent < 0 || font->descent > UINT16_MAX)
+		{
+			return false;
+		}
+		switch (xobj->TypeWidget)
+		{
+		case PushButton:
+		case Menu:
+			title = GetMenuTitle(xobj->title,
+				xobj->TypeWidget == Menu ? 0 : 1);
+			input.has_title = title[0] != '\0';
+			input.text_width = FlocaleTextWidth(font, title, strlen(title));
+			free(title);
+			break;
+		case HScrollBar:
+		case VScrollBar:
+			maximum = script_widget_initial_maximum(xobj->value2,
+				xobj->value3, 10, true);
+			snprintf(number, sizeof(number), "%d", xobj->value2);
+			input.text_width = FlocaleTextWidth(font, number, strlen(number));
+			snprintf(number, sizeof(number), "%d", maximum);
+			input.second_text_width =
+				FlocaleTextWidth(font, number, strlen(number));
+			break;
+		case PopupMenu:
+			input.text_width = -4; /* No options retains legacy width 30. */
+			maximum = CountOption(xobj->title);
+			for (int i = 1; i <= maximum; i++)
+			{
+				int width;
+				title = GetMenuTitle(xobj->title, i);
+				width = FlocaleTextWidth(font, title, strlen(title));
+				if (width > input.text_width)
+				{
+					input.text_width = width;
+				}
+				free(title);
+			}
+			break;
+		default:
+			input.text_width = FlocaleTextWidth(font, xobj->title,
+				strlen(xobj->title));
+			break;
+		}
+	}
+	if (xobj->TypeWidget == Menu)
+	{
+		for (int i = 0; i < nbobj && tabxobj[i] != xobj; i++)
+		{
+			if (tabxobj[i] != NULL && tabxobj[i]->TypeWidget == Menu)
+			{
+				title = GetMenuTitle(tabxobj[i]->title, 0);
+				input.menu_x += (int64_t)FlocaleTextWidth(
+					tabxobj[i]->Ffont, title, strlen(title)) + 10;
+				free(title);
+			}
+		}
+	}
+	return script_geometry_layout(&input, geometry);
+}
+
+bool script_widget_prepare(struct XObj *xobj)
+{
+	script_layout_geometry geometry;
+	FlocaleFont *font = NULL;
+
+	if (xobj->TypeWidget <= PopupMenu || xobj->TypeWidget >= List)
+	{
+		font = FlocaleLoadFont(dpy, xobj->font, ScriptName);
+		if (font == NULL)
+		{
+			return false;
+		}
+	}
+	if (!script_widget_layout(xobj, font, &geometry))
+	{
+		FlocaleUnloadFont(dpy, font);
+		return false;
+	}
+	xobj->Ffont = font;
+	xobj->width = geometry.width;
+	xobj->height = geometry.height;
+	xobj->x = geometry.x;
+	xobj->y = geometry.y;
+	return true;
+}
+
+bool script_widget_popup(struct XObj *xobj, int first, int padding,
+	bool align_value, script_layout_geometry *geometry, int *row_height)
+{
+	int count = CountOption(xobj->title);
+	int64_t row = (int64_t)xobj->Ffont->height + 10;
+	int64_t height = ((int64_t)count - first + 1) * row;
+	int64_t width = align_value ? xobj->width : 0;
+	int64_t origin_y = align_value ? (int64_t)xobj->y -
+		((int64_t)xobj->value - 1) * row :
+		(int64_t)xobj->y + xobj->height;
+	int x, y;
+	Window child;
+
+	*geometry = (script_layout_geometry){0};
+	*row_height = 0;
+	if (!script_geometry_size(1, height))
+	{
+		return false;
+	}
+	if (!align_value)
+	{
+		for (int i = first; i <= count; i++)
+		{
+			char *title = GetMenuTitle(xobj->title, i);
+			int64_t measured = (int64_t)FlocaleTextWidth(xobj->Ffont,
+				title, strlen(title)) + padding;
+			if (measured > width)
+			{
+				width = measured;
+			}
+			free(title);
+		}
+	}
+	if (!script_geometry_size(align_value ? width : width - 5, height) ||
+	    !script_geometry_position(xobj->x, origin_y))
+	{
+		return false;
+	}
+	if (!XTranslateCoordinates(dpy, *xobj->ParentWin, Root, xobj->x,
+	    (int)origin_y, &x, &y, &child))
+	{
+		return false;
+	}
+	/* Keep legacy placement for representable menus. Screen fitting is a
+	 * separate policy; an oversized menu is refused rather than wrapped. */
+	if (x < 0)
+	{
+		x = 0;
+	}
+	if (y < 0)
+	{
+		y = 0;
+	}
+	if ((int64_t)x + width > XDisplayWidth(dpy, screen))
+	{
+		x = (int)(XDisplayWidth(dpy, screen) - width);
+	}
+	if ((int64_t)y + height > XDisplayHeight(dpy, screen))
+	{
+		int64_t adjusted = align_value ?
+			XDisplayHeight(dpy, screen) - height :
+			(int64_t)y - height - xobj->height;
+		if (!script_geometry_position(x, adjusted))
+		{
+			return false;
+		}
+		y = (int)adjusted;
+	}
+	if (!script_geometry_position(x, y))
+	{
+		return false;
+	}
+	geometry->x = x;
+	geometry->y = y;
+	geometry->width = (int)width;
+	geometry->height = (int)height;
+	*row_height = (int)row;
+	return true;
+}
+
+/* get byte offset corresponding to character offset, including
+   bounds check to represent end of text */
+static int script_locale_stride(const char *text, void *context)
+{
+	return FlocaleStringNumberOfBytes(context, text);
+}
+
+size_t script_locale_text_next(FlocaleFont *flf, const char *str,
+	size_t remaining)
+{
+	return script_text_next(str, remaining, script_locale_stride, flf);
+}
+
+int getByteOffsetBoundsCheck(FlocaleFont *flf, char *str, int offset)
+{
+	return script_text_byte_offset(str, strlen(str), offset,
+		script_locale_stride, flf);
+}
+
 int getCharOffsetBoundsCheck(FlocaleFont *flf, char *str, int offset)
 {
-	if(offset < strlen(str))
-		return FlocaleStringByteToCharOffset(flf, str, offset);
-	else
-		return FlocaleStringCharLength(flf, str);
+	return script_text_char_offset(str, strlen(str), offset,
+		script_locale_stride, flf);
 }
 
 /*
@@ -99,7 +315,7 @@ void MyDrawString(
 	FwinString->flags.has_colorset = False;
 	if (xobj->colorset >= 0)
 	{
-		FwinString->colorset = &Colorset[xobj->colorset];
+		FwinString->colorset = GetColorset(xobj->colorset);
 		FwinString->flags.has_colorset = True;
 	}
 	if (WithRelief && xobj->Ffont->shadow_size == 0)
@@ -175,29 +391,15 @@ int GetXTextPosition(struct XObj *xobj, int obj_width, int str_len,
 /*
  * Returns menu's option id title
  */
-char* GetMenuTitle(char *str, int id)
+char *GetMenuTitle(char *str, int id)
 {
-	int i=1;
-	int w=0;
-	int w2=0;
-	char* TempStr;
+	size_t length;
+	const char *option = script_text_option(str, id, &length);
+	char *title = fxmalloc(length + 1);
 
-	while ((str[w+w2] != '\0') && (str[w+w2] != '|'))
-		w2++;
-
-	while ((i < id) && (str[w] != '\0'))
-	{
-		i++;
-		if (str[w+w2] == '|')
-			w2++;
-		w = w+w2;
-		w2 = 0;
-		while ((str[w+w2] != '\0') && (str[w+w2] != '|'))
-			w2++;
-	}
-	TempStr = (char*)calloc(sizeof(char),w2+1);
-	TempStr = strncpy(TempStr,&str[w],w2);
-	return TempStr;
+	memcpy(title, option, length);
+	title[length] = '\0';
+	return title;
 }
 
 /*
@@ -315,7 +517,7 @@ int CountOption(char *str)
 
 	while (str[w] != '\0')
 	{
-		if (str[w] == '|') i++;
+		if (str[w] == '|' && i < INT_MAX) i++;
 		w++;
 	}
 
@@ -463,7 +665,7 @@ void DrawIconStr(
 		if (xobj->colorset >= 0)
 		{
 			fra.mask |= FRAM_HAVE_ICON_CSET;
-			fra.colorset = &Colorset[xobj->colorset];
+			fra.colorset = GetColorset(xobj->colorset);
 		}
 		if (do_draw_icon)
 		{
@@ -519,55 +721,26 @@ void DrawReliefRect(int x, int y, int width, int height, struct XObj *xobj,
 	XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
 }
 
-/*
- * Insert a string into an object title
- */
-int InsertText(struct XObj *xobj, char *str, int SizeStr)
-{
-	int Size;
-	int NewPos;
-	int i;
-
-	/* Insert a charactere into title */
-	NewPos = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
-					  xobj->value);
-	Size = strlen(xobj->title);
-	xobj->title = (char*)realloc(
-		xobj->title, (1+SizeStr+Size)*sizeof(char));
-	memmove(&xobj->title[NewPos+SizeStr], &xobj->title[NewPos],
-		Size-NewPos+1);
-	for (i=NewPos; i < NewPos+SizeStr; i++)
-		xobj->title[i] = str[i-NewPos];
-	NewPos = NewPos+SizeStr;
-	return getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, NewPos);
-}
-
-/*
- * Read a substring from xobj->value to End
- */
+/* Read the bounded byte interval between two character positions. */
 char *GetText(struct XObj *xobj, int End)
 {
-	char *str;
-	int a,b;
+	int first = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
+		xobj->value);
+	int last = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, End);
+	char *text;
+	size_t length;
 
-	if (End > xobj->value)
+	if (first > last)
 	{
-		a = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
-					     xobj->value);
-		b = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
-					     End);
+		int swap = first;
+		first = last;
+		last = swap;
 	}
-	else
-	{
-		b = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
-					     xobj->value);
-		a = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title,
-					     End);
-	}
-	str = (char*)calloc(b-a+2,1);
-	memcpy(str, &xobj->title[a], b-a);
-	str[b-a+1] = '\0';
-	return str;
+	length = (size_t)(last - first);
+	text = fxmalloc(length + 1);
+	memcpy(text, xobj->title + first, length);
+	text[length] = '\0';
+	return text;
 }
 
 void UnselectAllTextField(struct XObj **txobj)
@@ -787,25 +960,49 @@ int PtInRect(XPoint pt, XRectangle rect)
 		(pt.x <= rect.x+rect.width) && (pt.y <= rect.y+rect.height));
 }
 
-/* Stop for t*1/60 seconds */
-void Wait(int t)
+/* Modal callers retain the object, but not an old font/title snapshot. */
+bool script_widget_next_event(struct XObj *object, XEvent *event)
 {
-	struct timeval *tv;
-	long tus,ts;
-
-	tv = (struct timeval*)calloc(1,sizeof(struct timeval));
-	gettimeofday(tv,NULL);
-	tus = tv->tv_usec;
-	ts = tv->tv_sec;
-	while (((tv->tv_usec-tus)+(tv->tv_sec-ts)*1000000) < 16667*t)
-		gettimeofday(tv,NULL);
-	free(tv);
+	while (FvwmScriptModalEvent(object, event, 100))
+	{
+		if (event->type == KeyPress &&
+		    fvwm_KeycodeToKeysym(dpy, event->xkey.keycode, 0, 0) == XK_Escape)
+			return false;
+		if (event->type != 0)
+			return true;
+	}
+	return false;
 }
 
-int IsItDoubleClic(struct XObj *xobj)
+bool script_widget_wait_release(struct XObj *object, int ticks)
 {
-	XEvent Event;
-	XFlush(dpy);
-	Wait(12);
-	return (FCheckTypedEvent(dpy, ButtonPress, &Event));
+	struct timespec start, now, duration;
+	XEvent event;
+
+	script_delay_duration(ticks, &duration);
+	if (clock_gettime(CLOCK_MONOTONIC, &start) < 0)
+		return false;
+	for (;;)
+	{
+		/* A held repeat uses the original deadline; motion does not reset it.
+		 * Consume queued X events so unrelated input cannot cause a spin. */
+		if (!FvwmScriptModalEvent(object, &event, 20))
+			return false;
+		if (event.type == ButtonRelease)
+			return false;
+		if (event.type == KeyPress &&
+		    fvwm_KeycodeToKeysym(dpy, event.xkey.keycode, 0, 0) == XK_Escape)
+			return false;
+		if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+			return false;
+		if (now.tv_nsec < start.tv_nsec)
+		{
+			now.tv_sec--;
+			now.tv_nsec += 1000000000L;
+		}
+		if (now.tv_sec - start.tv_sec > duration.tv_sec ||
+		    (now.tv_sec - start.tv_sec == duration.tv_sec &&
+		     now.tv_nsec - start.tv_nsec >= duration.tv_nsec))
+			return true;
+	}
 }

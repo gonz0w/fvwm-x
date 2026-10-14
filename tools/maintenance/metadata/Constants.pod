@@ -1,0 +1,19 @@
+
+=head1 NAME
+
+FVWM::Constants - exports fvwm specific constants
+
+=head1 DESCRIPTION
+
+This class is used to load fvwm constants into your perl script or class.
+Note, if you use I<FVWM::Module> the constants are automatically exported.
+So you usually do not need to include this class.
+
+=head1 USAGE
+
+  use FVWM::Constants;
+
+=head1 SEE ALSO
+
+For more information, see L<FVWM::Module>.
+

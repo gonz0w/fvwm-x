@@ -680,6 +680,7 @@ Bool update_fvwm_monitor(FvwmWindow *fw)
 	size_borders dest_chrome;
 	size_rect src_client;
 	rectangle dest_frame;
+	rectangle shaded_frame;
 	icccm_size_hints hints;
 	geometry_transition_kind kind;
 	geometry_transition_status plan_status;
@@ -791,9 +792,18 @@ out:
 	if (do_plan)
 	{
 		get_window_borders(fw, &src_borders);
-		src_client.width = fw->g.frame.width -
+		get_unshaded_geometry(fw, &dest_frame);
+		if (IS_SHADED(fw))
+		{
+			/* The strip may have moved before its saved rectangle.
+			 * Recover the full origin using the source chrome. */
+			get_shaded_geometry(fw, &shaded_frame, &dest_frame);
+			dest_frame.x += fw->g.frame.x - shaded_frame.x;
+			dest_frame.y += fw->g.frame.y - shaded_frame.y;
+		}
+		src_client.width = dest_frame.width -
 			src_borders.total_size.width;
-		src_client.height = fw->g.frame.height -
+		src_client.height = dest_frame.height -
 			src_borders.total_size.height;
 		if (src_client.width < 0)
 		{
@@ -808,9 +818,8 @@ out:
 		SelectDecor(fw, &style, &buttons);
 		setup_window_font(fw, &style, True);
 		setup_icon_font(fw, &style, True);
-		if (!IS_SHADED(fw) &&
-		    (kind != GEOMETRY_TRANSITION_NORMAL ||
-		     fw->logical_client_valid))
+		if (kind != GEOMETRY_TRANSITION_NORMAL ||
+		    fw->logical_client_valid)
 		{
 			get_window_borders(fw, &dest_chrome);
 			eligible = HAS_OVERRIDE_SIZE_HINTS(fw) ||
@@ -836,24 +845,21 @@ out:
 			hints.base_height = fw->hints.base_height;
 			hints.win_gravity = fw->hints.win_gravity;
 
-			if (kind == GEOMETRY_TRANSITION_MAXIMIZED)
-			{
-				EWMH_GetWorkAreaIntersection(
-					fw->m, &dest_frame.x, &dest_frame.y,
-					&dest_frame.width, &dest_frame.height,
-					EWMH_MAXIMIZE_MODE(fw));
-			}
-			else if (kind == GEOMETRY_TRANSITION_FULLSCREEN &&
-				 fw->m->si != NULL)
+			if ((kind == GEOMETRY_TRANSITION_MAXIMIZED ||
+			     kind == GEOMETRY_TRANSITION_FULLSCREEN) &&
+			    fw->m->si != NULL)
 			{
 				dest_frame.x = fw->m->si->x;
 				dest_frame.y = fw->m->si->y;
 				dest_frame.width = fw->m->si->w;
 				dest_frame.height = fw->m->si->h;
-			}
-			else
-			{
-				dest_frame = fw->g.frame;
+				if (kind == GEOMETRY_TRANSITION_MAXIMIZED)
+				{
+					EWMH_GetWorkAreaIntersection(
+						fw->m, &dest_frame.x, &dest_frame.y,
+						&dest_frame.width, &dest_frame.height,
+						EWMH_MAXIMIZE_MODE(fw));
+				}
 			}
 
 			plan_status = geometry_transition_plan(
@@ -876,102 +882,39 @@ out:
 			}
 			if (plan_status != GEOMETRY_TRANSITION_OVERFLOW &&
 			    plan_status !=
-			    GEOMETRY_TRANSITION_INVALID_ARGUMENT &&
-			    plan_status != GEOMETRY_TRANSITION_NOOP)
+			    GEOMETRY_TRANSITION_INVALID_ARGUMENT)
 			{
-				frame_setup_window(
-					fw, dest_frame.x, dest_frame.y,
-					dest_frame.width, dest_frame.height,
-					True);
-				if (kind == GEOMETRY_TRANSITION_FULLSCREEN)
+				/* Arm before frame setup can send a ConfigureNotify.
+				 * Unshade must retain the same logical source too. */
+				fw->last_wm_sent_client.width = dest_frame.width;
+				fw->last_wm_sent_client.height = dest_frame.height;
+				if (kind != GEOMETRY_TRANSITION_FULLSCREEN)
 				{
-					fw->last_wm_sent_client.width =
-						dest_frame.width;
-					fw->last_wm_sent_client.height =
-						dest_frame.height;
+					fw->last_wm_sent_client.width -=
+						dest_chrome.total_size.width;
+					fw->last_wm_sent_client.height -=
+						dest_chrome.total_size.height;
+				}
+				SET_FORCE_NEXT_CR(fw, 1);
+				if (IS_SHADED(fw))
+				{
+					/* Keep the actual strip and saved full rectangle
+					 * coherent. update_absolute_geometry copies the
+					 * strip's uncollapsed axis back into this slot. */
+					get_absolute_geometry(fw,
+						IS_MAXIMIZED(fw) ? &fw->g.max :
+						&fw->g.normal, &dest_frame);
+					get_shaded_geometry(
+						fw, &shaded_frame, &dest_frame);
+					frame_setup_window(fw, shaded_frame.x,
+						shaded_frame.y, shaded_frame.width,
+						shaded_frame.height, False);
 				}
 				else
 				{
-					fw->last_wm_sent_client.width =
-						dest_frame.width -
-						dest_chrome.total_size.width;
-					fw->last_wm_sent_client.height =
-						dest_frame.height -
-						dest_chrome.total_size.height;
-					if (fw->last_wm_sent_client.width < 0)
-					{
-						fw->last_wm_sent_client.width =
-							0;
-					}
-					if (fw->last_wm_sent_client.height < 0)
-					{
-						fw->last_wm_sent_client.height =
-							0;
-					}
-				}
-				SET_FORCE_NEXT_CR(fw, 1);
-			}
-		}
-		else if (IS_SHADED(fw) && fw->logical_client_valid)
-		{
-			dest_frame = fw->g.normal;
-			get_window_borders(fw, &dest_chrome);
-			src_client.width = fw->g.normal.width -
-				dest_chrome.total_size.width;
-			src_client.height = fw->g.normal.height -
-				dest_chrome.total_size.height;
-			if (src_client.width < 0)
-			{
-				src_client.width = 0;
-			}
-			if (src_client.height < 0)
-			{
-				src_client.height = 0;
-			}
-			eligible = HAS_OVERRIDE_SIZE_HINTS(fw) ||
-				!(IS_SIZE_FIXED(fw) || IS_PSIZE_FIXED(fw) ||
-				((fw->hints.flags & (PMinSize | PMaxSize)) ==
-				 (PMinSize | PMaxSize) &&
-				 fw->hints.min_width ==
-				 fw->hints.max_width &&
-				 fw->hints.min_height ==
-				 fw->hints.max_height));
-			hints.flags = fw->hints.flags;
-			hints.min_width = fw->hints.min_width;
-			hints.min_height = fw->hints.min_height;
-			hints.max_width = fw->hints.max_width;
-			hints.max_height = fw->hints.max_height;
-			hints.width_inc = fw->hints.width_inc;
-			hints.height_inc = fw->hints.height_inc;
-			hints.min_aspect.x = fw->hints.min_aspect.x;
-			hints.min_aspect.y = fw->hints.min_aspect.y;
-			hints.max_aspect.x = fw->hints.max_aspect.x;
-			hints.max_aspect.y = fw->hints.max_aspect.y;
-			hints.base_width = fw->hints.base_width;
-			hints.base_height = fw->hints.base_height;
-			hints.win_gravity = fw->hints.win_gravity;
-
-			plan_status = geometry_transition_plan(
-				GEOMETRY_TRANSITION_NORMAL,
-				fw->logical_client, src_client, eligible,
-				fw->m->effective_scale.factor, &dest_chrome,
-				&hints, &dest_frame);
-			if (plan_status == GEOMETRY_TRANSITION_OVERFLOW ||
-			    plan_status ==
-			    GEOMETRY_TRANSITION_INVALID_ARGUMENT)
-			{
-				fvwm_debug(__func__,
-					"geometry transition failed (%d)",
-					(int)plan_status);
-			}
-			else
-			{
-				fw->last_transition_name_atom = dest_atom;
-				fw->last_transition_quarters = dest_quarters;
-				fw->last_transition_kind = (int)kind;
-				if (plan_status != GEOMETRY_TRANSITION_NOOP)
-				{
-					fw->g.normal = dest_frame;
+					frame_setup_window(fw, dest_frame.x,
+						dest_frame.y, dest_frame.width,
+						dest_frame.height, True);
 				}
 			}
 		}

@@ -19,6 +19,14 @@ when you switch desks. If you iconify FvwmPager, its icon on the virtual
 desktop will be a functional version of the pager only showing the current
 desktop.
 
+Each Pager can display at most 4096 desks by default. The count includes both
+endpoints. For example, `FvwmPager 0 4095` uses the full default allowance;
+`FvwmPager 0 4096` exceeds it. The limit does not restrict desk IDs, so
+`FvwmPager 300000 300001` remains valid. Reversed endpoints are put in order;
+negative endpoints become zero. Invalid integers or an excessive count cause
+Pager to exit before it creates X resources. Builders can set
+`-Dpager-max-desks=N`, where N is from 1 through 65536, to change the allowance.
+
 FvwmPager is launched via the *Module FvwmPager* command from fvwm's config
 file, and can be launched from functions, menus, key bindings, and so on. If
 the pager is started with the _-transient_ option, the next time a button is
@@ -149,7 +157,9 @@ _-Y_ from bottom edge.
   to be 1/_number_ of the actual size. The final size of the pager window
   is then based off the number of pages and/or desks shown. For example,
   A _number_ of 10 will make each page a tenth of the actual size.
-  A default of 32 is used to size the pager.
+  A default of 32 is used to size the pager. The factor must be a positive
+  signed integer. Zero, negative, malformed or out-of-range input keeps the
+  preceding valid factor.
 
 *FvwmPager: Rows rows::
   FvwmPager can show multiple virtual desktops at once. The desktops
@@ -269,6 +279,8 @@ for this option.
   Specifies the width of the border drawn around the mini windows. This
   also affects the minimum size of the mini windows, which will be
   2 * _WindowBorderWidth_ + _WindowMinSize_. The default is 1.
+  Negative, malformed or overflowing values keep the previous setting.
+  Rendering limits the border to 65535 pixels.
 
 *FvwmPager: Window3DBorders::
   Specifies that the mini windows should have a 3D borders based on the
@@ -286,6 +298,9 @@ for this option.
   Specifies the minimum size as _n_ pixels of the mini windows. This does
   not include the width of the border, so the actual minimum size is
   2 * _WindowBorderWidth_ + _WindowMinSize_. The default is 3.
+  Negative, malformed or overflowing values keep the previous setting.
+  Zero selects the default content minimum. The derived minimum size
+  is limited to 65535 pixels.
 
 *FvwmPager: HideSmallWindows::
   Tells FvwmPager to not show windows that are the minimum size. Useful
@@ -633,6 +648,15 @@ is an alias for this option and works the same.
 
 *FvwmPager: NoSeparators::
   Turns off the lines separating the pages of the virtual desktop.
+
+=== Derived geometry limits
+
+Pager keeps the configured row and column counts. It calculates window, cell,
+icon and viewport geometry with checked arithmetic. Derived X11 sizes stay
+within 1 to 65535 pixels. Derived X11 coordinates stay within -32768 to 32767.
+If a cell is smaller than one pixel, Pager uses one pixel. Large empty grid
+areas can extend beyond the visible window. Ordinary representable geometry
+keeps the existing aspect ratio and scale rules.
 
 == SENDING COMMANDS
 

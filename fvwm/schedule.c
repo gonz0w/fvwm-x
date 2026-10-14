@@ -16,9 +16,15 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <err.h>
+#include <time.h>
+
+#include "schedule_policy.h"
+#include "event_loop_policy.h"
 
 #include "libs/log.h"
 #include "libs/fvwmlib.h"
+#include "libs/fvwmsignal.h"
 #include "libs/fqueue.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
@@ -34,11 +40,12 @@
 #include "functions.h"
 #include "commands.h"
 #include "screen.h"
+#include "module_interface.h"
 
 typedef struct
 {
 	int id;
-	Time time_to_execute;
+	uint64_t deadline_ns;
 	Window window;
 	char *command;
 	int period; /* in milliseconds */
@@ -47,28 +54,17 @@ typedef struct
 static int last_schedule_id = 0;
 static int next_schedule_id = -1;
 static fqueue sq = FQUEUE_INIT;
+static unsigned int schedule_remaining = FVWM_SCHEDULE_COMMAND_BUDGET;
 
-static int cmp_times(Time t1, Time t2)
+static uint64_t schedule_monotonic_ns(void)
 {
-	unsigned long ul1 = (unsigned long)t1;
-	unsigned long ul2 = (unsigned long)t2;
-	unsigned long diff;
-	signed long udiff;
+	struct timespec now;
 
-	diff = ul1 - ul2;
-	udiff = *(signed long *)&diff;
-	if (udiff > 0)
+	if (clock_gettime(CLOCK_MONOTONIC, &now) != 0)
 	{
-		return 1;
+		err(1, "Cannot read monotonic scheduler clock");
 	}
-	else if (udiff < 0)
-	{
-		return -1;
-	}
-	else
-	{
-		return 0;
-	}
+	return (uint64_t)now.tv_sec * 1000000000ULL + now.tv_nsec;
 }
 
 static int cmp_object_time(void *object1, void *object2, void *args)
@@ -76,7 +72,8 @@ static int cmp_object_time(void *object1, void *object2, void *args)
 	sq_object_type *so1 = (sq_object_type *)object1;
 	sq_object_type *so2 = (sq_object_type *)object2;
 
-	return cmp_times(so1->time_to_execute, so2->time_to_execute);
+	return (so1->deadline_ns > so2->deadline_ns) -
+		(so1->deadline_ns < so2->deadline_ns);
 }
 
 static int check_deschedule_obj_func(void *object, void *args)
@@ -125,7 +122,7 @@ static void deschedule(int *pid)
 }
 
 static void schedule(
-	Window window, char *command, Time time_to_execute, int *pid,
+	Window window, char *command, uint64_t deadline_ns, int *pid,
 	int period)
 {
 	sq_object_type *new_obj;
@@ -138,7 +135,7 @@ static void schedule(
 	new_obj = fxcalloc(1, sizeof(sq_object_type));
 	new_obj->window = window;
 	new_obj->command = fxstrdup(command);
-	new_obj->time_to_execute = time_to_execute;
+	new_obj->deadline_ns = deadline_ns;
 	new_obj->period = period; /* 0 if this is not a periodic command */
 	/* set the job group id */
 	if (pid != NULL)
@@ -165,9 +162,9 @@ static void schedule(
 static int check_execute_obj_func(void *object, void *args)
 {
 	sq_object_type *obj = object;
-	Time *ptime = (Time *)args;
+	uint64_t *now_ns = args;
 
-	return (cmp_times(*ptime, obj->time_to_execute) >= 0);
+	return !isTerminated && *now_ns >= obj->deadline_ns;
 }
 
 static void execute_obj_func(void *object, void *args)
@@ -200,30 +197,81 @@ static void execute_obj_func(void *object, void *args)
 		sq_object_type *new_obj = fxmalloc(sizeof(sq_object_type));
 		memcpy(new_obj, obj, sizeof(sq_object_type));
 		obj->command = NULL; /* new_obj->command now points to cmd. */
-		new_obj->time_to_execute = fev_get_evtime() + new_obj->period;
+		new_obj->deadline_ns = fvwm_schedule_deadline_ns(
+			schedule_monotonic_ns(), new_obj->period);
 		/* insert into schedule queue */
 		fqueue_add_inside(&sq, new_obj, cmp_object_time, NULL);
 	}
-	XFlush(dpy);
+	destroy_obj_func(obj);
 
 	return;
 }
 
-/* executes all scheduled commands that are due for execution */
+/* Nested command waits share this budget until descriptors have been polled.
+ * The executing object is privately owned, so Deschedule or a recursive wait
+ * cannot destroy it or execute it a second time. */
 void squeue_execute(void)
 {
-	Time current_time;
+	uint64_t current_time;
 
 	if (FQUEUE_IS_EMPTY(&sq))
 	{
 		return;
 	}
-	current_time = get_server_time();
-	fqueue_remove_or_operate_all(
-		&sq, check_execute_obj_func, execute_obj_func,
-		destroy_obj_func, &current_time);
+	current_time = schedule_monotonic_ns();
+	fvwm_ready_queue_drain(
+		&sq, &schedule_remaining, check_execute_obj_func,
+		execute_obj_func, &current_time);
+	XFlush(dpy);
 
 	return;
+}
+
+void squeue_after_poll(void)
+{
+	schedule_remaining = FVWM_SCHEDULE_COMMAND_BUDGET;
+}
+
+static int check_interaction_obj(void *object, void *args)
+{
+	sq_object_type *obj = object;
+
+	return check_execute_obj_func(object, args) &&
+		interaction_command_ready(obj->command, NULL);
+}
+
+void squeue_execute_interaction(void)
+{
+	uint64_t now = schedule_monotonic_ns();
+	unsigned int remaining = schedule_remaining;
+	unsigned int initial;
+	void *saved_event;
+
+	if (remaining > FVWM_INTERACTION_COMMAND_BUDGET)
+	{
+		remaining = FVWM_INTERACTION_COMMAND_BUDGET;
+	}
+	initial = remaining;
+	saved_event = fev_save_event();
+	fvwm_ready_queue_drain(
+		&sq, &remaining, check_interaction_obj, execute_obj_func, &now);
+	schedule_remaining -= initial - remaining;
+	fev_restore_event(saved_event);
+}
+
+int squeue_get_interaction_ms(void)
+{
+	sq_object_type *obj;
+
+	/* Timer deadline order is unchanged. An unsafe head waits for release
+	 * rather than forcing a busy zero-timeout poll during the drag. */
+	if (!fqueue_get_first(&sq, (void **)&obj) ||
+	    !interaction_command_ready(obj->command, NULL))
+	{
+		return -1;
+	}
+	return fvwm_schedule_timeout_ms(
+		schedule_monotonic_ns(), obj->deadline_ns);
 }
 
 /* returns the time in milliseconds to wait before next queue command must be
@@ -237,16 +285,8 @@ int squeue_get_next_ms(void)
 	{
 		return -1;
 	}
-	if (cmp_times(fev_get_evtime(), obj->time_to_execute) >= 0)
-	{
-		/* jobs pending to be executed immediately */
-		ms = 0;
-	}
-	else
-	{
-		/* execute jobs later */
-		ms =  obj->time_to_execute - fev_get_evtime();
-	}
+	ms = fvwm_schedule_timeout_ms(
+		schedule_monotonic_ns(), obj->deadline_ns);
 
 	return ms;
 }
@@ -264,8 +304,7 @@ int squeue_get_last_id(void)
 void CMD_Schedule(F_CMD_ARGS)
 {
 	Window xw;
-	Time time;
-	Time current_time;
+	uint64_t deadline_ns;
 	char *taction;
 	char *token;
 	char *next;
@@ -294,15 +333,7 @@ void CMD_Schedule(F_CMD_ARGS)
 	{
 		ms = 0;
 	}
-#if 0
-	/* eats up way too much cpu if schedule is used excessively */
-	current_time = get_server_time();
-#else
-	/* with this version, scheduled commands may be executed earlier than
-	 * intended. */
-	current_time = fev_get_evtime();
-#endif
-	time = current_time + (Time)ms;
+	deadline_ns = fvwm_schedule_deadline_ns(schedule_monotonic_ns(), ms);
 	/* get the job group id to schedule */
 	n = GetIntegerArgumentsAnyBase(action, &taction, &id, 1);
 	if (n >= 1)
@@ -324,7 +355,7 @@ void CMD_Schedule(F_CMD_ARGS)
 		xw = None;
 	}
 	/* schedule the job */
-	schedule(xw, action, time, pid, (is_periodic == True ? ms : 0));
+	schedule(xw, action, deadline_ns, pid, (is_periodic == True ? ms : 0));
 
 	return;
 }

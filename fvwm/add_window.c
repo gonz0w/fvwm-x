@@ -45,8 +45,10 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/FProperty.h"
 
 #include <assert.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #include "libs/fvwmlib.h"
@@ -54,6 +56,8 @@
 #include "libs/FShape.h"
 #include "libs/FEvent.h"
 #include "libs/Picture.h"
+#include "libs/picture_view.h"
+#include "libs/picture_async.h"
 #include "libs/PictureUtils.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
@@ -77,6 +81,7 @@
 #include "execcontext.h"
 #include "module_interface.h"
 #include "stack.h"
+#include "parent_chain_policy.h"
 #include "update.h"
 #include "style.h"
 #include "icons.h"
@@ -117,6 +122,30 @@ char NoResource[] = "NoResource"; /* Class if no res_name in class hints */
 
 /* ---------------------------- local functions ---------------------------- */
 
+/* Client contexts also name frame/decor windows. A listed record has a
+ * non-NULL prev; destroy_window clears it before context teardown. */
+FvwmWindow *find_managed_client(Window client)
+{
+	FvwmWindow *fw = NULL;
+
+	if (XFindContext(dpy, client, FvwmContext, (caddr_t *)&fw) == 0 &&
+	    fw != NULL && FW_W(fw) == client && fw->prev != NULL)
+	{
+		return fw;
+	}
+	/* AddWindow publishes list membership before creating the client
+	 * context. Preserve lookup in that construction interval, including
+	 * a reused XID whose old record is still awaiting context teardown. */
+	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
+	{
+		if (FW_W(fw) == client)
+		{
+			return fw;
+		}
+	}
+	return NULL;
+}
+
 static void delete_client_context(FvwmWindow *fw)
 {
 	FvwmWindow *cw;
@@ -153,26 +182,28 @@ static int MappedNotOverride(
 	Window w, initial_window_options_t *win_opts)
 {
 	XWindowAttributes wa;
-	Atom atype;
-	int aformat;
-	unsigned long nitems, bytes_remain;
-	unsigned char *prop;
+	unsigned char *prop = NULL;
+	size_t bytes = 0;
+	FPropertyLimits limits = {4, 12, 32};
 
 	win_opts->initial_state = DontCareState;
 	if ((w==Scr.NoFocusWin)||(!XGetWindowAttributes(dpy, w, &wa)))
 	{
 		return 0;
 	}
-	if (XGetWindowProperty(
-		    dpy,w,_XA_WM_STATE,0L,3L,False,_XA_WM_STATE,
-		    &atype,&aformat,&nitems,&bytes_remain,&prop)==Success)
+	FPropertyResult result = FPropertyRead(dpy, w, _XA_WM_STATE,
+	    _XA_WM_STATE, limits, &prop, &bytes);
+	if (result == FPROPERTY_OK)
 	{
-		if (prop != NULL)
-		{
-			win_opts->initial_state = *(long *)prop;
-			XFree(prop);
-		}
+		/* Retain legacy one/three-field states as well as ICCCM pairs. */
+		win_opts->initial_state = ((uint32_t *)prop)[0];
 	}
+	else if (result != FPROPERTY_MISSING)
+	{
+		fvwm_debug(__func__, "Ignoring invalid WM_STATE property");
+	}
+	free(prop);
+
 	if (wa.override_redirect == True)
 	{
 		XSelectInput(dpy, w, XEVMASK_ORW);
@@ -252,6 +283,8 @@ static void setup_window_structure(
 	}
 
 	(*pfw)->cmap_windows = (Window *)NULL;
+	(*pfw)->file_icon_requested = NULL;
+	(*pfw)->file_icon_picture = NULL;
 	if (FMiniIconsSupported)
 	{
 		(*pfw)->mini_pixmap_file = NULL;
@@ -481,7 +514,7 @@ static void setup_class_and_resource(FvwmWindow *fw)
 	/* removing NoClass change for now... */
 	fw->class.res_name = NoResource;
 	fw->class.res_class = NoClass;
-	XGetClassHint(dpy, FW_W(fw), &fw->class);
+	FGetClassHint(dpy, FW_W(fw), &fw->class);
 	if (fw->class.res_name == NULL)
 	{
 		fw->class.res_name = NoResource;
@@ -582,7 +615,8 @@ static void broadcast_mini_icon(FvwmWindow *fw)
 	{
 		return;
 	}
-	if (fw->mini_pixmap_file && fw->mini_icon)
+	if (fw->mini_pixmap_file && picture_is_usable(fw->mini_icon) &&
+	    !fw->mini_icon->pending)
 	{
 		BroadcastFvwmPicture(
 			M_MINI_ICON,
@@ -591,6 +625,45 @@ static void broadcast_mini_icon(FvwmWindow *fw)
 	}
 
 	return;
+}
+
+static FvwmWindow *mini_icon_owner(FvwmPicture *view, void *context)
+{
+	Window client = *(Window *)context;
+	FvwmWindow *fw = NULL;
+
+	/* Resolve the client at commit time. The lease identity also excludes
+	 * a reused XID, overrides and windows awaiting destruction. */
+	if (XFindContext(dpy, client, FvwmContext, (caddr_t *)&fw) != 0 ||
+	    fw == NULL || FW_W(fw) != client || fw->mini_icon != view ||
+	    IS_SCHEDULED_FOR_DESTROY(fw))
+	{
+		return NULL;
+	}
+	unsigned quarters = fw->m != NULL ?
+	    fw->m->effective_scale.factor.quarters : MONITOR_SCALE_QUARTERS_MIN;
+
+	return view->scale_quarters == quarters ? fw : NULL;
+}
+
+static picture_async_commit mini_icon_policy(FvwmPicture *view,
+	void *context)
+{
+	return mini_icon_owner(view, context) != NULL ?
+	    PICTURE_ASYNC_APPLY : PICTURE_ASYNC_DISCARD;
+}
+
+static void mini_icon_settled(FvwmPicture *view, Bool applied, void *context)
+{
+	FvwmWindow *fw = mini_icon_owner(view, context);
+
+	if (!applied || fw == NULL)
+	{
+		return;
+	}
+	broadcast_mini_icon(fw);
+	EWMH_DoUpdateWmIcon(fw, True, False);
+	border_redraw_decorations(fw);
 }
 
 static void setup_mini_icon(FvwmWindow *fw, window_style *pstyle)
@@ -653,6 +726,20 @@ static void setup_mini_icon(FvwmWindow *fw, window_style *pstyle)
 			dpy, Scr.NoFocusWin, NULL, fw->mini_pixmap_file, fpa,
 			factor, (unsigned)wanted_w, (unsigned)wanted_h,
 			WM_UI_RESOURCE_GENERATION_INITIAL);
+		if (fw->mini_icon != NULL && fw->mini_icon->is_view &&
+		    fw->mini_icon->pending)
+		{
+			Window *client = fxmalloc(sizeof(*client));
+
+			*client = FW_W(fw);
+			if (!picture_async_bind(fw->mini_icon, mini_icon_policy,
+			    mini_icon_settled, client, free))
+			{
+				free(client);
+				PDestroyFvwmPicture(dpy, fw->mini_icon);
+				fw->mini_icon = NULL;
+			}
+		}
 	}
 	else
 	{
@@ -1287,7 +1374,7 @@ static void setup_icon(FvwmWindow *fw, window_style *pstyle)
 		fw->icon_name.name = NoName;
 		fw->icon_name.name_list = NULL;
 		FlocaleGetNameProperty(
-			XGetWMIconName, dpy, FW_W(fw), &(fw->icon_name));
+			FGetWMIconName, dpy, FW_W(fw), &(fw->icon_name));
 	}
 	if (fw->icon_name.name == NoName)
 	{
@@ -1311,38 +1398,11 @@ static void setup_icon(FvwmWindow *fw, window_style *pstyle)
 	return;
 }
 
-static void destroy_icon(FvwmWindow *fw)
+static void destroy_icon(FvwmWindow *fw, Bool preserve_file_picture)
 {
 	free_window_names(fw, False, True);
-	if (IS_PIXMAP_OURS(fw))
-	{
-		XFreePixmap(dpy, fw->iconPixmap);
-		fw->iconPixmap = None;
-		if (fw->icon_maskPixmap != None)
-		{
-			XFreePixmap(dpy, fw->icon_maskPixmap);
-			fw->icon_maskPixmap = None;
-		}
-		if (fw->icon_alphaPixmap != None)
-		{
-			XFreePixmap(dpy, fw->icon_alphaPixmap);
-			fw->icon_alphaPixmap = None;
-		}
-		if (fw->icon_alloc_pixels != NULL)
-		{
-			if (fw->icon_nalloc_pixels != 0)
-			{
-				PictureFreeColors(
-					dpy, Pcmap, fw->icon_alloc_pixels,
-					fw->icon_nalloc_pixels, 0,
-					fw->icon_no_limit);
-			}
-			free(fw->icon_alloc_pixels);
-			fw->icon_alloc_pixels = NULL;
-			fw->icon_nalloc_pixels = 0;
-			fw->icon_no_limit = 0;
-		}
-	}
+	release_icon_pixmaps(fw);
+	file_icon_cancel(fw, preserve_file_picture);
 	if (FW_W_ICON_TITLE(fw))
 	{
 		XDestroyWindow(dpy, FW_W_ICON_TITLE(fw));
@@ -1467,7 +1527,7 @@ static void _add_window_handle_x_resources(FvwmWindow *fw)
 	/* Find out if the client requested a specific style on the command
 	 * line.
 	 */
-	if (XGetCommand(dpy, FW_W(fw), &client_argv, &client_argc))
+	if (FGetCommand(dpy, FW_W(fw), &client_argv, &client_argc))
 	{
 		if (client_argc > 0 && client_argv != NULL)
 		{
@@ -1688,7 +1748,7 @@ void setup_window_name(FvwmWindow *fw)
 	{
 		fw->name.name = NoName;
 		fw->name.name_list = NULL;
-		FlocaleGetNameProperty(XGetWMName, dpy, FW_W(fw), &(fw->name));
+		FlocaleGetNameProperty(FGetWMName, dpy, FW_W(fw), &(fw->name));
 	}
 
 	return;
@@ -1770,6 +1830,7 @@ void setup_window_font(
 	FvwmWindow *fw, window_style *pstyle, Bool do_destroy)
 {
 	monitor_scale_factor factor;
+	FlocaleFont *candidate = NULL;
 
 	if (fw->m != NULL)
 	{
@@ -1778,6 +1839,21 @@ void setup_window_font(
 	else
 	{
 		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
+	}
+	if ((do_destroy || !IS_WINDOW_FONT_LOADED(fw)) &&
+	    S_HAS_WINDOW_FONT(SCF(*pstyle)) && SGET_WINDOW_FONT(*pstyle))
+	{
+		candidate = FlocaleLoadFontAtScale(dpy,
+		    SGET_WINDOW_FONT(*pstyle), "fvwm", factor,
+		    WM_UI_RESOURCE_GENERATION_INITIAL);
+		if (candidate == NULL && IS_WINDOW_FONT_LOADED(fw) &&
+		    fw->title_font != NULL)
+		{
+			fvwm_debug(__func__, "Cannot load replacement font; "
+			    "keeping previous font");
+			setup_title_geometry(fw, pstyle);
+			return;
+		}
 	}
 	/* get rid of old font */
 	if (do_destroy)
@@ -1788,13 +1864,9 @@ void setup_window_font(
 	/* load new font */
 	if (!IS_WINDOW_FONT_LOADED(fw))
 	{
-		if (S_HAS_WINDOW_FONT(SCF(*pstyle)) &&
-		    SGET_WINDOW_FONT(*pstyle) &&
-		    (fw->title_font =
-		     FlocaleLoadFontAtScale(
-			     dpy, SGET_WINDOW_FONT(*pstyle), "fvwm",
-			     factor, WM_UI_RESOURCE_GENERATION_INITIAL)))
+		if (candidate != NULL)
 		{
+			fw->title_font = candidate;
 			SET_USING_DEFAULT_WINDOW_FONT(fw, 0);
 		}
 		else
@@ -1817,6 +1889,7 @@ void setup_icon_font(
 {
 	int height = 0;
 	monitor_scale_factor factor;
+	FlocaleFont *candidate = NULL;
 
 	if (fw->m != NULL)
 	{
@@ -1836,6 +1909,20 @@ void setup_icon_font(
 		}
 		return;
 	}
+	if ((do_destroy || !IS_ICON_FONT_LOADED(fw)) &&
+	    S_HAS_ICON_FONT(SCF(*pstyle)) && SGET_ICON_FONT(*pstyle))
+	{
+		candidate = FlocaleLoadFontAtScale(dpy,
+		    SGET_ICON_FONT(*pstyle), "fvwm", factor,
+		    WM_UI_RESOURCE_GENERATION_INITIAL);
+		if (candidate == NULL && IS_ICON_FONT_LOADED(fw) &&
+		    fw->icon_font != NULL)
+		{
+			fvwm_debug(__func__, "Cannot load replacement font; "
+			    "keeping previous font");
+			return;
+		}
+	}
 	/* get rid of old font */
 	if (do_destroy && IS_ICON_FONT_LOADED(fw))
 	{
@@ -1845,12 +1932,9 @@ void setup_icon_font(
 	/* load new font */
 	if (!IS_ICON_FONT_LOADED(fw))
 	{
-		if (S_HAS_ICON_FONT(SCF(*pstyle)) && SGET_ICON_FONT(*pstyle) &&
-		    (fw->icon_font =
-		     FlocaleLoadFontAtScale(
-			     dpy, SGET_ICON_FONT(*pstyle), "fvwm",
-			     factor, WM_UI_RESOURCE_GENERATION_INITIAL)))
+		if (candidate != NULL)
 		{
+			fw->icon_font = candidate;
 			SET_USING_DEFAULT_ICON_FONT(fw, 0);
 		}
 		else
@@ -2121,8 +2205,12 @@ void increase_icon_hint_count(FvwmWindow *fw)
 
 void change_icon(FvwmWindow *fw, window_style *pstyle)
 {
-	destroy_icon(fw);
+	destroy_icon(fw, True);
 	setup_icon(fw, pstyle);
+	if (fw->icon_bitmap_file == NULL)
+	{
+		file_icon_cancel(fw, False);
+	}
 
 	return;
 }
@@ -2130,10 +2218,20 @@ void change_icon(FvwmWindow *fw, window_style *pstyle)
 void change_mini_icon(FvwmWindow *fw, window_style *pstyle)
 {
 	FvwmPicture *old_mi = fw->mini_icon;
-	destroy_mini_icon(fw);
+	Bool had_old = old_mi != NULL;
+
+	/* Hold the old cache reference through preparation. An unchanged key
+	 * reuses it; a pending replacement retains its immutable backing. */
+	fw->mini_icon = NULL;
 	setup_mini_icon(fw, pstyle);
+	if (fw->mini_icon != NULL && fw->mini_icon->is_view &&
+	    fw->mini_icon->pending)
+	{
+		picture_view_set_backing(dpy, fw->mini_icon, old_mi);
+	}
+	PDestroyFvwmPicture(dpy, old_mi);
 	broadcast_mini_icon(fw);
-	if (old_mi != NULL && fw->mini_icon == 0)
+	if (had_old && fw->mini_icon == NULL)
 	{
 		/* this case is not handled in setup_mini_icon, so we must
 		 * broadcast here explicitly */
@@ -2157,6 +2255,7 @@ Bool validate_transientfor(FvwmWindow *fw)
 	XWindowAttributes wa;
 	FvwmWindow *cw;
 	Window w;
+	fvwm_parent_chain_state chain;
 
 	w = FW_W_TRANSIENTFOR(fw);
 	if (w == None || w == FW_W(fw) || w == IS_EWMH_DESKTOP(w))
@@ -2172,13 +2271,16 @@ Bool validate_transientfor(FvwmWindow *fw)
 			FW_W_TRANSIENTFOR(fw) = Scr.Root;
 			return False;
 		}
+		/* Also reject an existing cycle that does not contain fw. */
+		fvwm_parent_chain_init(&chain, cw);
 		/* Check for transient loops */
 		while (XFindContext(
 			       dpy, FW_W_TRANSIENTFOR(cw), FvwmContext,
 			       (caddr_t *)&cw) != XCNOENT &&
 		       IS_TRANSIENT(cw))
 		{
-			if (FW_W_TRANSIENTFOR(cw) == FW_W(fw) || cw == fw)
+			if (FW_W_TRANSIENTFOR(cw) == FW_W(fw) || cw == fw ||
+			    fvwm_parent_chain_repeated(&chain, cw))
 			{
 				/* loop detected, ignore the hint */
 				FW_W_TRANSIENTFOR(fw) = Scr.Root;
@@ -2210,6 +2312,25 @@ Bool setup_transientfor(FvwmWindow *fw)
 	validate_transientfor(fw);
 
 	return rc;
+}
+
+static void setup_window_monitor_resources(
+	FvwmWindow *fw, window_style *style, short *buttons, Bool do_destroy)
+{
+	SelectDecor(fw, style, buttons);
+	if (IS_TRANSIENT(fw) && !style->flags.do_decorate_transient)
+	{
+		SET_HAS_HANDLES(fw, 0);
+		SET_HAS_TITLE(fw, 0);
+	}
+	if (FHaveShapeExtension && fw->wShaped)
+	{
+		set_window_border_size(fw, fw->unshaped_boundary_width);
+		SET_HAS_NO_BORDER(fw, 1);
+		SET_HAS_HANDLES(fw, 0);
+	}
+	setup_window_font(fw, style, do_destroy);
+	setup_icon_font(fw, style, do_destroy);
 }
 
 static void setup_logical_client(FvwmWindow *fw)
@@ -2448,6 +2569,10 @@ FvwmWindow *AddWindow(
 
 		char *cmd;
 
+		fw->m = tm;
+		setup_window_monitor_resources(fw, &style, &buttons, True);
+		get_window_borders(fw, &b);
+
 		xasprintf(&cmd, "GotoDesk %s 0 %d", tm->si->name, fw->Desk);
 		execute_function_override_window(NULL, NULL, cmd, NULL, 0, fw);
 		free(cmd);
@@ -2519,6 +2644,12 @@ FvwmWindow *AddWindow(
 			fw, &style, &attr_g, win_opts, PLACE_INITIAL);
 		wattr.x = attr_g.x;
 		wattr.y = attr_g.y;
+
+		/* Placement establishes the owner. Bind its chrome before
+		 * creating the frame or recording logical client dimensions. */
+		setup_window_monitor_resources(fw, &style, &buttons, True);
+		get_window_borders(fw, &b);
+		setup_frame_size_limits(fw, &style);
 
 		/* set up geometry */
 		fw->g.frame.x = wattr.x;
@@ -2596,23 +2727,9 @@ FvwmWindow *AddWindow(
 	/****** inform modules of new window ******/
 	fw->UpdateDesk = -1; /* Initialize to ensure desk update. */
 	update_fvwm_monitor(fw);
-	SelectDecor(fw, &style, &buttons);
-	if (IS_TRANSIENT(fw) && !style.flags.do_decorate_transient)
-	{
-		SET_HAS_HANDLES(fw, 0);
-		SET_HAS_TITLE(fw, 0);
-	}
-	if (FHaveShapeExtension)
-	{
-		if (fw->wShaped)
-		{
-			set_window_border_size(fw, fw->unshaped_boundary_width);
-			SET_HAS_NO_BORDER(fw, 1);
-			SET_HAS_HANDLES(fw, 0);
-		}
-	}
-	setup_window_font(fw, &style, True);
-	setup_icon_font(fw, &style, True);
+	/* Ownership transitions already rebind resources. Keep the final
+	 * geometry setup from unloading and reopening the same fonts. */
+	setup_window_monitor_resources(fw, &style, &buttons, False);
 	BroadcastConfig(M_ADD_WINDOW,fw);
 	BroadcastWindowIconNames(fw, True, False);
 
@@ -2840,70 +2957,45 @@ FvwmWindow *AddWindow(
  */
 void FetchWmProtocols(FvwmWindow *tmp)
 {
-	Atom *protocols = NULL, *ap;
-	unsigned long *l_protocols;
-	int i, n;
-	Atom atype;
-	int aformat;
-	unsigned long bytes_remain,nitems;
+	unsigned char *data = NULL;
+	size_t bytes = 0;
+	FPropertyLimits limits = {0, 16U * 1024U, 32};
 
 	if (tmp == NULL)
 	{
 		return;
 	}
-	/* First, try the Xlib function to read the protocols.
-	 * This is what Twm uses. */
-	if (XGetWMProtocols (dpy, FW_W(tmp), &protocols, &n))
+	FPropertyResult result = FPropertyRead(dpy, FW_W(tmp), _XA_WM_PROTOCOLS,
+	    XA_ATOM, limits, &data, &bytes);
+	if (result == FPROPERTY_INVALID)
 	{
-		for (i = 0, ap = protocols; i < n; i++, ap++)
+		/* Preserve Corel Mosaic's legacy WM_PROTOCOLS property type. */
+		result = FPropertyRead(dpy, FW_W(tmp), _XA_WM_PROTOCOLS,
+		    _XA_WM_PROTOCOLS, limits, &data, &bytes);
+	}
+	if (result == FPROPERTY_OK)
+	{
+		const uint32_t *protocols = (const uint32_t *)data;
+		for (size_t i = 0; i < bytes / sizeof(*protocols); i++)
 		{
-			if (*ap == (Atom)_XA_WM_TAKE_FOCUS)
+			if (protocols[i] == _XA_WM_TAKE_FOCUS)
 			{
 				SET_WM_TAKES_FOCUS(tmp, 1);
 				set_focus_model(tmp);
 			}
-			if (*ap == (Atom)_XA_WM_DELETE_WINDOW)
+			if (protocols[i] == _XA_WM_DELETE_WINDOW)
 			{
 				SET_WM_DELETES_WINDOW(tmp, 1);
 			}
 		}
-		if (protocols)
-		{
-			XFree((char *)protocols);
-		}
 	}
-	else
+	else if (result != FPROPERTY_MISSING)
 	{
-		/* Next, read it the hard way. mosaic from Coreldraw needs to
-		 * be read in this way. */
-		if ((XGetWindowProperty(
-			     dpy, FW_W(tmp), _XA_WM_PROTOCOLS, 0L, 10L, False,
-			     _XA_WM_PROTOCOLS, &atype, &aformat, &nitems,
-			     &bytes_remain,
-			     (unsigned char **)&l_protocols)) == Success)
-		{
-			for (i = 0; i < nitems; i++)
-			{
-				ap = &(l_protocols[i]);
-				if (*ap == (Atom)_XA_WM_TAKE_FOCUS)
-				{
-					SET_WM_TAKES_FOCUS(tmp, 1);
-					set_focus_model(tmp);
-				}
-				if (*ap == (Atom)_XA_WM_DELETE_WINDOW)
-				{
-					SET_WM_DELETES_WINDOW(tmp, 1);
-				}
-			}
-			if (protocols)
-			{
-				XFree((char *)protocols);
-			}
-		}
+		fvwm_debug(__func__, "Ignoring invalid WM_PROTOCOLS property");
 	}
-
-	return;
+	free(data);
 }
+
 
 void GetWindowSizeHintsWithCheck(
 	FvwmWindow *fw,
@@ -3474,7 +3566,7 @@ void destroy_window(FvwmWindow *fw)
 	/****** destroy icon ******/
 
 	destroy_icon_boxes(fw);
-	destroy_icon(fw);
+	destroy_icon(fw, False);
 
 	/****** destroy mini icon ******/
 

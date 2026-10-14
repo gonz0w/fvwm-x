@@ -20,6 +20,7 @@
 #include "fvwm/fvwm.h"
 #include "libs/vpacket.h"
 #include "libs/FTips.h"
+#include "libs/module_packet_reader.h"
 
 #ifndef DEFAULT_ACTION
 #define DEFAULT_ACTION "Iconify"
@@ -387,7 +388,7 @@ extern int ModuleLen;
 extern ContextDefaults contextDefaults[];
 extern int mods_unused;
 
-extern void ReadFvwmPipe(void);
+extern void ReadFvwmPipe(module_packet_reader *reader);
 extern void Free (void *p);
 extern void ShutMeDown (int flag) __attribute__ ((__noreturn__));
 extern RETSIGTYPE DeadPipe (int nothing);

@@ -177,7 +177,7 @@ void DrawForegroundIcon(button_info *b, XEvent *pev)
 	if (cset >= 0)
 	{
 		fra.mask |= FRAM_HAVE_ICON_CSET;
-		fra.colorset = &Colorset[cset];
+		fra.colorset = GetColorset(cset);
 	}
 
 	PGraphicsRenderPicture(

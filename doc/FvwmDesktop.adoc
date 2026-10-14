@@ -1,0 +1,180 @@
+= FvwmDesktop(1)
+
+:doctype: manpage
+:mantitle: FvwmDesktop
+:manname: FvwmDesktop
+:manmanual: FVWM Modules
+:manvolnum: 1
+
+== NAME
+
+FvwmDesktop - FVWM-X baseline appearance and desktop services
+
+== SYNOPSIS
+
+Module FvwmDesktop
+
+== DESCRIPTION
+
+The sole shipped default configuration is the Slate desktop. Its layout is
+shared by four palettes: Slate (teal), Dune (copper), Grove (green), and Ink
+(blue). Each palette has matching light and dark colors and an original
+wallpaper. Toolkit themes and settings are left alone.
+
+The primary monitor has a flat top bar with application launcher, four
+workspaces, window list, clock/calendar, status, appearance, and session
+menus. Other monitors have no reserved bar space. Monitor topology events
+rebuild the bar. Desktop workspaces are global and each has one page.
+
+The centered launcher uses native FVWM menus with arrow-key navigation,
+Enter, Escape and type-to-select. Search applications opens an input form
+and then shows matching applications. It is a submitted search, rather than
+a live fuzzy-search overlay. Discovery reads freedesktop desktop entries
+without python-xdg, honors user overrides, Hidden, NoDisplay, OnlyShowIn,
+NotShowIn and TryExec, and launches argument arrays rather than shell code.
+Run command intentionally interprets the user's input with /bin/sh.
+
+Files opens a native directory menu with folder navigation, a terminal
+shortcut, and file opening. It shows up to 100 entries. An existing xdg-open
+is used if available; otherwise files open in less in the configured terminal.
+Calendar is a native month menu. Display information opens xrandr --query in
+a terminal; this baseline does not yet include a graphical monitor editor.
+
+== CONFIGURATION
+
+Read the installed default-config/config to use the baseline. Normal FVWM
+configuration lookup is unchanged; an existing personal config still wins.
+The default reads $FVWM_USERDIR/local.config last for personal overrides.
+No personal configurations are overwritten or removed.
+
+Configuration examples for local.config:
+
+....
+*FvwmDesktop: palette slate
+*FvwmDesktop: appearance auto
+*FvwmDesktop: day 07:00
+*FvwmDesktop: night 19:00
+*FvwmDesktop: transparency on
+*FvwmDesktop: motion off
+*FvwmDesktop: keep_wallpaper off
+*FvwmDesktop: terminal xterm
+....
+
+Explicit module configuration overrides saved preferences at module startup.
+Omit an option to let the Appearance menu remember its selection. Times use
+local 24-hour HH:MM format and must be different. A day interval may cross
+midnight. Automatic appearance is checked each minute and immediately on
+startup or after the clock catches up following resume. This uses a session
+helper, so it needs no cron entries or access to another session's DISPLAY.
+Manual Light or Dark overrides the schedule until Auto is selected again.
+
+The Appearance menu saves preferences as private, atomic JSON in
+$FVWM_USERDIR/desktop-state.json. This file is data only, never executed as
+configuration. Palette choices preserve layout and bindings. Keep current
+wallpaper prevents palette and day/night changes from replacing the active
+wallpaper. The retained palette wallpaper choice survives session restarts.
+Custom wallpaper persistence remains the user's local.config responsibility.
+
+Transparency is enabled by default: the bar uses a retained root wallpaper
+with a strong tint, and menus use FVWM's snapshot translucency. This works
+without a compositor. It does not show live windows through the bar, blur
+backgrounds, or fade client windows. Opaque mode resets the bar to a solid
+surface and disables menu translucency. Motion is off by default; enabling
+it adds FVWM submenu repositioning and window-shade steps. These are native
+FVWM effects, not compositor fades.
+
+The panel height and generic font are available as InfoStore values
+slate_height and slate_font. Override them in local.config before startup.
+The frame defaults use a 28-pixel title and flat vector buttons; local Style
+and TitleStyle commands can change these independently. No proprietary or
+icon fonts are required. PNG wallpaper decoding uses FVWM's optional PNG
+support; builds without it retain solid palette backgrounds.
+
+== DESKTOP SERVICES
+
+The helper uses the Python runtime already required by FVWM, standard library
+modules, and available OS tools. It never requires pip packages, dmenu,
+stalonetray, an external notification daemon, ImageMagick, or a compositor.
+Slow discovery, metrics and capture run outside the core event loop. Subprocess
+queries have deadlines. Module queues, input packets and generated menus are
+bounded; child programs do not inherit the module protocol descriptors.
+
+Linux CPU/RAM counters come from /proc, and battery/link state from /sys.
+FreeBSD and OpenBSD counters use sysctl and base utilities. RAM accounting is
+used RAM including caches on BSD, and excludes available/reclaimable RAM on
+Linux; the values are not directly comparable. Network status reports active
+interfaces, not a guarantee of Internet access. Missing sensors show as not
+reported; no battery is fabricated for a desktop machine.
+
+Sound keys and menu actions use sndioctl on OpenBSD, mixer on FreeBSD, or an
+already installed amixer on Linux. If the backend is absent, the sound menu
+is disabled. Network information uses ifconfig or an existing ip command.
+Settings needing privileges remain the operating system's responsibility.
+No helper automatically invokes sudo or doas.
+
+Screenshots use the existing Xlib library and Python's built-in PNG encoder.
+Print captures the root display to ~/Pictures/Screenshots with a unique,
+private filename. Capture supports TrueColor visuals and a maximum of 16
+megapixels. The capture runs independently of the WM and does not include the
+pointer cursor. A small native message announces the saved file or an error.
+These messages report FVWM desktop actions; the helper is not a freedesktop
+D-Bus application-notification server.
+
+A terminal is detected from xterm, uxterm, or rxvt. Set FVWM_TERMINAL or the
+terminal option for another command. Terminal tools require a compatible
+-e option; no terminal is installed automatically.
+
+Lock delegates only to an existing xlock or slock. If neither is available,
+the Session menu disables Lock and a keyboard request explicitly reports
+that the screen has NOT been locked. No decorative lock window is presented
+as a security boundary. A portable bundled authentication locker remains
+separate work. Power off and reboot require confirmation and use existing
+session permissions; denied requests are reported. Log out quits FVWM;
+Restart FVWM reloads it without closing application windows.
+
+== KEYBOARD
+
+Super+Space:: Centered application launcher.
+Super+Enter:: Terminal.
+Super+D:: Files.
+Super+P:: Run command.
+Super+L:: Request secure screen lock.
+Super+1 through Super+4:: Select workspace.
+Ctrl+F1 through Ctrl+F4:: Select workspace.
+Alt+Tab:: Window list.
+Alt+F4:: Close window.
+Print:: Screenshot.
+Volume keys:: Raise, lower, or mute available sound backend.
+Super+left drag:: Move a window.
+Super+right drag:: Resize a window.
+
+The title bar moves a window when dragged and maximizes on double click.
+Right-click the title for operations including sending to another workspace.
+Right-click the desktop also opens the centered launcher.
+
+== REMOTE COMMANDS
+
+SendToModule FvwmDesktop accepts these commands:
+
+....
+set palette slate|dune|grove|ink
+set appearance light|dark|auto
+times 07:00 19:00
+toggle transparency
+toggle motion
+toggle keep_wallpaper
+refresh
+discover
+barrier token
+terminal
+files
+calendar
+screenshot
+....
+
+refresh reapplies the current theme and restores the clock/workspace display
+after a bar rebuild. discover refreshes installed applications. A desktop
+helper belongs to one FVWM session and has no network listener. barrier emits
+Echo token after earlier helper commands reach FVWM. Tokens contain at most
+64 letters, digits, underscores or hyphens. This orders command application;
+independent modules may still be repainting.

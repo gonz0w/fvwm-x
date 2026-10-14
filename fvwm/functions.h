@@ -25,6 +25,9 @@ typedef enum
 	FUNC_IS_UNMANAGED        = 0x40,
 	FUNC_DONT_EXPAND_COMMAND = 0x80,
 	FUNC_DONT_DEFER          = 0x100,
+	/* Direct builtins audited for use while Move/Resize owns resources.
+	 * Message-producing commands also require an asynchronous receiver. */
+	FUNC_INTERACTION_SAFE    = 0x200,
 
 	/* The values are not used internally but by external scripts parsing
 	 * functable.  Hence all the values below are 0
@@ -60,6 +63,7 @@ typedef enum
 
 /* needs to be called before any command line can be executed */
 void functions_init(void);
+const func_t *functions_interaction_builtin(const char *action);
 void find_func_t(char *action, short *func_t, func_flags_t *flags);
 void execute_function(F_CMD_ARGS, func_flags_t exec_flags);
 void execute_function_override_wcontext(

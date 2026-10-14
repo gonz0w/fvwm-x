@@ -275,20 +275,22 @@ int GetEqualSizeChildren(
 	XWindowAttributes pxwa;
 	XWindowAttributes cxwa;
 	Window JunkW;
-	Window *children;
+	Window *children = NULL;
 	unsigned int nchildren;
 	int i;
 	int j;
 
+	*ret_children = NULL;
 	if (!XGetWindowAttributes(dpy, parent, &pxwa))
-		return -1;
-	if (!XQueryTree(dpy, parent, &JunkW, &JunkW, &children, &nchildren))
 		return -1;
 	if (depth && pxwa.depth != depth)
 		return -1;
 	if (visualid && XVisualIDFromVisual(pxwa.visual) != visualid)
 		return -1;
 	if (colormap && pxwa.colormap != colormap)
+		return -1;
+	/* Validate the parent before acquiring the owned child list. */
+	if (!XQueryTree(dpy, parent, &JunkW, &JunkW, &children, &nchildren))
 		return -1;
 
 	for (i = 0, j = 0; i < nchildren; i++)

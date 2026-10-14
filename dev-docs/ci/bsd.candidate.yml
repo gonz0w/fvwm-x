@@ -1,0 +1,62 @@
+# Inactive review candidate. Actual provider/default-X and remote CI gates apply.
+name: Native BSD verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bsd:
+    strategy:
+      fail-fast: false
+      matrix:
+        guest: [freebsd-amd64, freebsd-arm64, openbsd-amd64, openbsd-arm64]
+        profile: [core, go]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Install host VM tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86 qemu-system-arm qemu-utils zstd openssh-client
+          mkdir -p builddir/ci-host
+          dpkg-query -W qemu-system-x86 qemu-system-arm qemu-utils zstd openssh-client > builddir/ci-host/packages.txt
+      - name: Run verified disposable BSD image
+        run: |
+          set --
+          if [ '${{ matrix.guest }}' = openbsd-amd64 ] && [ '${{ matrix.profile }}' = go ]; then
+            set -- --openbsd-vga-test
+          fi
+          git archive --format=tar.gz --output "$RUNNER_TEMP/fvwm-source.tgz" HEAD
+          python3 tools/maintenance/qemu_bsd.py \
+            --profile '${{ matrix.guest }}' \
+            --source-archive "$RUNNER_TEMP/fvwm-source.tgz" \
+            --prepare-script 'dev-docs/ci/bsd-prepare-${{ matrix.profile }}.sh' \
+            --run-script 'dev-docs/ci/bsd-run-${{ matrix.profile }}.sh' \
+            --cache builddir/ci-assets/cache \
+            --png-bootstrap --output builddir/ci-job "$@"
+      - name: Preserve runner and native guest evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ matrix.guest }}-${{ matrix.profile }}-verification
+          path: |
+            builddir/ci-host/packages.txt
+            builddir/ci-job/status.json
+            builddir/ci-job/image-info.json
+            builddir/ci-job/inputs/manifest.json
+            builddir/ci-job/source.tgz
+            builddir/ci-job/prepare.sh
+            builddir/ci-job/run.sh
+            builddir/ci-job/*.log
+            builddir/ci-job/*.stderr
+            builddir/ci-job/guest-evidence.tgz

@@ -34,6 +34,30 @@ suffix ".converted" added. Without an absolute path given as the
 destination path to the destination file, the program will create the
 destination file in the CWD.
 
+Go-enabled builds install a standard-library Go implementation. Builds with
+Go disabled retain the Perl implementation. The command name, options and
+ordinary conversion output stay the same. The tool reads configuration as
+data. It does not run FVWM commands, shell commands or environment expressions.
+
+The Go implementation accepts regular source files, including symbolic links
+to regular files. It refuses special files. Each source can contain at most
+128 MiB. Each logical line, including its continuation fragments, can contain
+at most 1 MiB. A conversion job can record at most 4096 literal *Read*
+references. An unfinished continuation at the end of a file is an error.
+These limits apply to this conversion tool; they do not change the WM parser.
+
+Each output is published as a complete file with mode 0600. An existing
+destination, including a dangling symbolic link, is refused. The destination
+directory must not allow group or world writes unless it has the sticky bit.
+Configured symbolic link directories are supported. Failed conversion does
+not publish that file. With *--follow-read*, outputs already completed before
+a later failure remain available. Repeated or cyclic reads can fail when the
+corresponding output already exists. Source files stay unchanged.
+
+File access is synchronous. These data limits do not guarantee a deadline
+on a slow file system. Review every converted configuration before use: the
+historical conversion rules are heuristics, not a complete FVWM parser.
+
 *fvwm-convert-2.6* makes the following changes:
 
 *Style lines*::
@@ -72,6 +96,36 @@ destination file in the CWD.
   detect and open will be converted automatically, else a list of files
   that can be followed are printed to the screen.
 
+== ENVIRONMENT
+
+*FVWM_USERDIR*::
+  Directory used to search for literal *Read* file names after the current
+  directory. The converter does not expand variables in a *Read* argument.
+*HOME*::
+  Used to search the _.fvwm_ directory for a literal *Read* file name.
+
+== EXAMPLES
+
+Create a separate output in the current directory:
+
+----
+fvwm-convert-2.6 old-config new-config
+----
+
+Convert the source and detected *Read* files to names with _.converted_:
+
+----
+fvwm-convert-2.6 --follow-read old-config
+----
+
+== EXIT STATUS
+
+Zero indicates a completed conversion or a printed usage message. The
+historical CLI also prints usage and returns zero for invalid options or
+argument counts. An existing destination returns 255. A source open error
+returns its operating system error number, such as 2 for a missing file.
+Other Go conversion or publication errors return 1 and print a diagnostic.
+
 == BUGS
 
 _InitFunction_ and _RestartFunction_ and hence _StartFunction_ are
@@ -80,6 +134,15 @@ comments before in an odd spot.
 
 When converting over FvwmTheme lines, the colorset definitions might
 well be broken, but these cannot easily be converted.
+
+The conversion heuristics retain historical handling of case, quoted text,
+style patterns and conditional expressions. They can produce incorrect
+commands. Compare the output with the source and the *fvwm3*(1) manual before
+you use it. The runtime port does not correct these historical conversions.
+
+== SEE ALSO
+
+*fvwm3*(1)
 
 Bug reports can be sent to the fvwm-workers mailing list (see the
 _FAQ_).

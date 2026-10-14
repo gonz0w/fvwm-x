@@ -81,21 +81,6 @@ static int selected_button_in_man(WinManager *man)
   return -1;
 }
 
-#if 0
-static void ClipRectangle(WinManager *man, int context,
-			   int x, int y, int w, int h)
-{
-  XRectangle r;
-
-  r.x = x;
-  r.y = y;
-  r.width = w;
-  r.height = h;
-
-  XSetClipRectangles(theDisplay, man->hiContext[context], 0, 0, &r, 1,
-		     YXBanded);
-}
-#endif
 
 static Region GetRegion(int x, int y, int w, int h)
 {
@@ -1145,7 +1130,7 @@ static void clear_empty_region(WinManager *man)
 	    {
 		    SetRectangleBackground(theDisplay, man->theWindow,
 			    rects[n].x, rects[n].y, rects[n].width,
-			    rects[n].height, &Colorset[cset], Pdepth,
+			    rects[n].height, GetColorset(cset), Pdepth,
 			    man->backContext[DEFAULT]);
 	    }
     }
@@ -1329,7 +1314,7 @@ static void resize_manager(WinManager *man, int force)
     {
 	    if (man->colorsets[i] >=0 &&
 		(i == DEFAULT || CSET_IS_TRANSPARENT(man->colorsets[i])) &&
-		Colorset[man->colorsets[i]].pixmap)
+		GetColorset(man->colorsets[i])->pixmap)
 	    {
 		    recreate_background(man, i);
 	    }
@@ -1342,7 +1327,7 @@ static void resize_manager(WinManager *man, int force)
     {
 	    if (man->colorsets[i] >= 0 && i != DEFAULT &&
 		!CSET_IS_TRANSPARENT(man->colorsets[i]) &&
-		Colorset[man->colorsets[i]].pixmap)
+		GetColorset(man->colorsets[i])->pixmap)
 	    {
 		    recreate_background(man, i);
 	    }
@@ -1438,7 +1423,7 @@ static void draw_button_background(
 			theDisplay, man->theWindow,
 			bounding.x, bounding.y,
 			bounding.width, bounding.height,
-			&Colorset[cset], Pdepth,
+			GetColorset(cset), Pdepth,
 			man->backContext[button_state]);
 	}
 	else if (man->backContext[button_state] == None)
@@ -1513,7 +1498,7 @@ static void iconify_box(WinManager *man, WinData *win, int box,
 			if (cset >= 0)
 			{
 				fra.mask |= FRAM_HAVE_ICON_CSET;
-				fra.colorset = &Colorset[cset];
+				fra.colorset = GetColorset(cset);
 			}
 			if (inter.x > g->icon_x)
 			{
@@ -1803,7 +1788,7 @@ static void draw_button(WinManager *man, int button, int force)
 				win->display_string);
 			copy_string(
 				&b->drawn_state.display_string,
-				win->display_string);
+				win->display_string ? win->display_string : "");
 			assert(b->drawn_state.display_string);
 			draw_icon = 1;
 			draw_background = 1;
@@ -1935,7 +1920,7 @@ static void draw_button(WinManager *man, int button, int force)
 			if (man->colorsets[button_state] >= 0)
 			{
 				FwinString->colorset =
-					&Colorset[man->colorsets[button_state]];
+					GetColorset(man->colorsets[button_state]);
 				FwinString->flags.has_colorset = True;
 			}
 			else
@@ -2007,7 +1992,7 @@ static void draw_empty_manager(WinManager *man)
 	FwinString->gc = man->hiContext[state];
 	if (man->colorsets[state] >= 0)
 	{
-		FwinString->colorset = &Colorset[man->colorsets[state]];
+		FwinString->colorset = GetColorset(man->colorsets[state]);
 		FwinString->flags.has_colorset = True;
 	}
 	else

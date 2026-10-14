@@ -403,10 +403,12 @@ static signed int expand_vars_extended(
 			/* not a non-negative integer without leading zeros */
 			return -1;
 		}
-		if (sscanf(rest, "%d%n", &cs, &n) < 1)
+		char *colorset_end;
+		if (!ParseColorsetId(rest, &colorset_end, &cs))
 		{
 			return -1;
 		}
+		n = colorset_end - rest;
 		if (*(rest + n) != 0)
 		{
 			/* Check for .lightenN or .darkenN */
@@ -444,23 +446,26 @@ static signed int expand_vars_extended(
 		{
 			return -1;
 		}
-		alloc_colorset(cs);
+		if (!alloc_colorset(cs))
+		{
+			return -1;
+		}
 		switch (i)
 		{
 		case VAR_FG_CS:
-			pixel = Colorset[cs].fg;
+			pixel = GetColorset(cs)->fg;
 			break;
 		case VAR_BG_CS:
-			pixel = Colorset[cs].bg;
+			pixel = GetColorset(cs)->bg;
 			break;
 		case VAR_HILIGHT_CS:
-			pixel = Colorset[cs].hilite;
+			pixel = GetColorset(cs)->hilite;
 			break;
 		case VAR_SHADOW_CS:
-			pixel = Colorset[cs].shadow;
+			pixel = GetColorset(cs)->shadow;
 			break;
 		case VAR_FGSH_CS:
-			pixel = Colorset[cs].fgsh;
+			pixel = GetColorset(cs)->fgsh;
 			break;
 		}
 		is_target = True;

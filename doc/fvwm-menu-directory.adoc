@@ -22,9 +22,35 @@ fvwm-menu-directory [ *--help*|*-h*|*-?* ] [ *--version*|*-V* ]
 
 == DESCRIPTION
 
-A perl script which provides an output to read in with PipeRead to build
-an fvwm menu containing a directory listing. Almost everything can be
-configured.
+Use this utility with *PipeRead* to build an FVWM directory menu.
+Its options control labels, sorting, icons and actions. Go-enabled builds
+install the Go implementation. Builds with Go disabled retain the Perl
+implementation until its separate retirement checkpoint.
+
+== GO IMPLEMENTATION
+
+The Go implementation uses the standard library. It adds no runtime package.
+The command names and options below remain available. Generated actions use
+FVWM commands, including *Popup*, *Menu* and *PipeRead*.
+
+One invocation reads at most 100000 directory entries, including hidden entries.
+It refuses larger listings with a diagnostic. Enumeration runs in this separate
+process. A slow filesystem call has no total deadline; *PipeRead* can still wait
+for that call. This utility is not the asynchronous file browser.
+
+In reuse mode, a private helper writes the remembered path. The helper uses an
+owned directory without group or world write permission. The state must be an
+owned regular file without group or world write permission. A missing state
+file is allowed. Symlinks and other file types are refused. Reads stop at
+64 KiB. The helper publishes a complete mode-0600 file by atomic replacement;
+it does not run a shell redirection. Existing plain-text state needs no migration.
+
+External label values are escaped once. Format tokens in a filename remain
+literal. Width and truncation use bytes, as in the Perl utility. Line breaks in
+filenames become spaces in labels, and those entries have a *Nop* action.
+A directory or menu name with a line break or NUL is refused. Quoted paths,
+dollar signs and backticks are kept as literal path data in generated actions.
+Configured command templates remain FVWM commands supplied by the user.
 
 == HINTS
 
@@ -62,7 +88,8 @@ length is less then 10 - to fill with up to 10 spaces on the right.
 *--item* _format_::
   Menu item format, default is `+'%n'+`. TAB and width modifiers for `+%n+`,
   `+%N+` and `+%s+` can be specified as described in *--title* above.
-  Note, specifying a non default format slows the script.
+  The Go implementation parses the format once. It reads file metadata
+  once per entry and sorts the cached records.
 +
 Format specifiers:
 +

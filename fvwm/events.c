@@ -45,6 +45,8 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/FProperty.h"
+#include "configure_merge.h"
 #include <X11/extensions/Xrandr.h>
 #include <X11/extensions/randr.h>
 
@@ -53,6 +55,9 @@
 #endif
 
 #include <assert.h>
+#include <errno.h>
+#include <limits.h>
+#include <poll.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -70,6 +75,7 @@
 #include "cursor.h"
 #include "decorations.h"
 #include "event_loop_policy.h"
+#include "interaction.h"
 #include "eventhandler.h"
 #include "eventmask.h"
 #include "events.h"
@@ -82,6 +88,8 @@
 #include "geometry.h"
 #include "icccm2.h"
 #include "icons.h"
+#include "image_async.h"
+#include "image_async_wait.h"
 #include "libs/ColorUtils.h"
 #include "libs/Colorset.h"
 #include "libs/FEvent.h"
@@ -202,12 +210,13 @@ static fvwm_topology_refresh_state topology_refresh_state =
 /* ---------------------------- exported variables (globals) --------------- */
 
 int    last_event_type = 0;
+static Bool deferred_config_poll;
 Window PressedW	       = None;
 
 /* ---------------------------- local functions ---------------------------- */
 
-static uint64_t
-topology_monotonic_ns(void)
+uint64_t
+events_monotonic_ns(void)
 {
 	struct timespec now;
 
@@ -230,7 +239,7 @@ topology_mark_dirty(void *context)
 {
 	fvwm_topology_refresh_state *state = context;
 
-	fvwm_topology_refresh_mark(state, topology_monotonic_ns());
+	fvwm_topology_refresh_mark(state, events_monotonic_ns());
 }
 
 static void
@@ -266,14 +275,9 @@ fake_map_unmap_notify(const FvwmWindow *fw, int event_type)
 	return;
 }
 
-static int
-_pred_weed_accumulate_expose(Display *display, XEvent *ev, XPointer arg)
+static void
+merge_expose(XEvent *em, const XEvent *ev)
 {
-	XEvent *em = (XEvent *)arg;
-
-	if (ev->type != Expose) {
-		return 0;
-	}
 	{
 		int x0;
 		int x1;
@@ -295,24 +299,6 @@ _pred_weed_accumulate_expose(Display *display, XEvent *ev, XPointer arg)
 		em->xexpose.height = y1 - y0;
 	}
 
-	return 1;
-}
-
-static int
-_pred_weed_is_expose(Display *display, XEvent *event, XPointer arg)
-{
-	return (event->type == Expose);
-}
-
-static int
-_pred_weed_handle_expose(Display *display, XEvent *event, XPointer arg)
-{
-	if (event->type == Expose) {
-		dispatch_event(event);
-		return 1;
-	} else {
-		return 0;
-	}
 }
 
 static int
@@ -846,25 +832,7 @@ _pred_merge_cr(Display *display, XEvent *event, XPointer arg)
 			/* no match, keep looking */
 			return 0;
 		}
-		/* collect the size/position changes */
-		if (lcr->value_mask & CWX) {
-			ecr->x = lcr->x;
-		}
-		if (lcr->value_mask & CWY) {
-			ecr->y = lcr->y;
-		}
-		if (lcr->value_mask & CWWidth) {
-			ecr->width = lcr->width;
-		}
-		if (lcr->value_mask & CWHeight) {
-			ecr->height = lcr->height;
-		}
-		if (lcr->value_mask & CWBorderWidth) {
-			ecr->border_width = lcr->border_width;
-		}
-		/* add to new event and remove from old event */
-		ecr->value_mask |= (lcr->value_mask & CR_MOVERESIZE_MASK);
-		lcr->value_mask &= ~CR_MOVERESIZE_MASK;
+		fvwm_merge_configure_fields(lcr, ecr);
 		if (lcr->value_mask == 0) {
 			/* The event has no useful contents anymore. */
 			FEV_INVALIDATE_EVENT(args->last_cr_event);
@@ -876,8 +844,7 @@ _pred_merge_cr(Display *display, XEvent *event, XPointer arg)
 		return 0;
 	}
 	case PropertyNotify:
-		if (event->xproperty.window == args->w
-		    && event->xproperty.atom != XA_WM_NORMAL_HINTS) {
+		if (fvwm_configure_merge_hint_barrier(event, args->w)) {
 			/* ConfigureRequest events cannot be merged past
 			 * changes of the size hints. */
 			/* don't merge and stop weeding */
@@ -950,11 +917,13 @@ _handle_cr_on_client(int *ret_do_send_event, XEvent *e, const evh_args_t *ea,
 	}
 
 	get_window_borders(fw, &b);
-	/* Merge all pending ConfigureRequests for the window into a single
-	 * event.  However, we can not do this if the window uses the motion
-	 * method autodetection because the merged event might confuse the
-	 * detection code. */
-	if (ea && CR_MOTION_METHOD(fw) != CR_MOTION_METHOD_AUTO) {
+	/* AutoDetect needs each move for gravity inference. Size-only requests
+	 * can use the latest adjacent dimensions without affecting inference.
+	 * Other events end that bounded batch and retain their dispatch order. */
+	if (ea && CR_MOTION_METHOD(fw) == CR_MOTION_METHOD_AUTO) {
+		FMergeQueuedResizeRequests(dpy, e, FVWM_X_EVENT_BUDGET);
+		fev_sanitise_configure_request(cre);
+	} else if (ea) {
 		int count;
 
 		count = _merge_cr_moveresize(ea, e, fw, &b);
@@ -1559,6 +1528,8 @@ _handle_bpress_action(const exec_context_t *exc, char *action)
 	window_parts part;
 	Bool	     do_force;
 	Bool	     rc = False;
+	fvwm_interaction interaction = { FW_W(exc->w.fw), Scr.Root, True,
+		FVWM_INTERACTION_RUNNING, NULL };
 
 	if (!action || *action == 0) {
 		PressedW = None;
@@ -1576,7 +1547,9 @@ _handle_bpress_action(const exec_context_t *exc, char *action)
 	}
 	execute_function(NULL, exc, action, NULL, 0);
 	if (exc->w.wcontext != C_WINDOW && exc->w.wcontext != C_NO_CONTEXT) {
-		WaitForButtonsUp(True);
+		if (!fvwm_interaction_cancelled(&interaction)) {
+			WaitForButtonsUp(True);
+		}
 		rc = True;
 	}
 	/* redraw decorations */
@@ -1634,6 +1607,8 @@ _handle_bpress_on_managed(const exec_context_t *exc)
 	char		 *action;
 	hfrc_ret_t	  f;
 	FvwmWindow *const fw = exc->w.fw;
+	fvwm_interaction interaction = { FW_W(fw), Scr.Root, True,
+		FVWM_INTERACTION_RUNNING, NULL };
 	XEvent		 *e;
 
 	e = exc->x.etrigger;
@@ -1682,7 +1657,8 @@ _handle_bpress_on_managed(const exec_context_t *exc)
 		/* pass the click to the application */
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		XFlush(dpy);
-	} else if (f.do_focus || f.do_raise) {
+	} else if ((f.do_focus || f.do_raise)
+	    && !fvwm_interaction_cancelled(&interaction)) {
 		WaitForButtonsUp(True);
 	}
 
@@ -1848,7 +1824,7 @@ topology_refresh_if_due(void)
 	    .send_status	   = topology_send_status,
 	};
 	fscreen_topology_refresh_result result;
-	uint64_t			now_ns = topology_monotonic_ns();
+	uint64_t			now_ns = events_monotonic_ns();
 
 	if (!fvwm_topology_refresh_is_due(&topology_refresh_state, now_ns)) {
 		return;
@@ -2432,8 +2408,8 @@ HandleFocusIn(const evh_args_t *ea)
 		}
 		/* Not very useful if no window that fvwm and its modules know
 		 * about has the focus. */
-		fc = Colorset[0].fg;
-		bc = Colorset[0].bg;
+		fc = GetColorset(0)->fg;
+		bc = GetColorset(0)->bg;
 	} else if (fw != Scr.Hilite ||
 		   /* domivogt (16-May-2000): This check is necessary to force
 		    * sending a M_FOCUS_CHANGE packet after an unmanaged window
@@ -3098,7 +3074,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 			}
 			if (t->icon_alphaPixmap != None
 			    || (cs >= 0
-				&& Colorset[cs].icon_alpha_percent < 100)
+				&& GetColorset(cs)->icon_alpha_percent < 100)
 			    || CSET_IS_TRANSPARENT_PR(b_cs)
 			    || (!IS_ICON_SHAPED(t)
 				&& t->icon_background_padding > 0)) {
@@ -3145,7 +3121,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 		if (HAS_EWMH_WM_NAME(fw)) {
 			return;
 		}
-		FlocaleGetNameProperty(XGetWMName, dpy, FW_W(fw), &new_name);
+		FlocaleGetNameProperty(FGetWMName, dpy, FW_W(fw), &new_name);
 		if (new_name.name == NULL) {
 			FlocaleFreeNameProperty(&new_name);
 			return;
@@ -3205,7 +3181,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 			return;
 		}
 		FlocaleGetNameProperty(
-		    XGetWMIconName, dpy, FW_W(fw), &new_name);
+		    FGetWMIconName, dpy, FW_W(fw), &new_name);
 		if (new_name.name == NULL) {
 			FlocaleFreeNameProperty(&new_name);
 			return;
@@ -3782,6 +3758,9 @@ dispatch_event(XEvent *e)
 	    .update_configuration = topology_update_configuration,
 	    .mark_dirty		  = topology_mark_dirty,
 	};
+	if (image_async_handle_event(e)) {
+		return;
+	}
 	XFlush(dpy);
 
 	if (fvwm_topology_event_dispatch(&topology_input, e,
@@ -3849,22 +3828,40 @@ events_handle_configure_request(
 	return;
 }
 
+static int events_next_event(Display *disp, XEvent *event, Bool outer_boundary);
+
 void
 HandleEvents(void)
 {
 	XEvent ev;
 
-	while (!isTerminated) {
+	while (!isTerminated || !image_async_shutdown_ready()) {
+		if (isTerminated) {
+			/* An effect worker borrows X resources. Cancellation alone
+			 * cannot release them or close X before actual child exit.
+			 * This terminal turn services only owned transport/reaping;
+			 * no commands, owner commits or X lifecycle handlers run. */
+			struct pollfd descriptors[2];
+
+			image_async_descriptors(descriptors);
+			(void)poll(descriptors, 2, 20);
+			continue;
+		}
 		fvwm_process_deferred_signals();
 		topology_refresh_if_due();
 		last_event_type = 0;
 		if (Scr.flags.is_window_scheduled_for_destroy) {
 			destroy_scheduled_windows();
 		}
+		image_async_outer_boundary();
 		if (Scr.flags.do_need_window_update) {
 			flush_window_updates();
 		}
-		if (My_XNextEvent(dpy, &ev)) {
+		module_config_dispatch_ready();
+		fvwm_stack_restack_publication_flush();
+		module_config_flush_one();
+		deferred_config_poll = module_config_pending();
+		if (events_next_event(dpy, &ev, True)) {
 			/* DV (19-Sep-2014): We mark events as invalid by
 			 * setting the send_event field to a bogus value in a
 			 * predicate procedure.  It's unsure whether this works
@@ -3882,6 +3879,118 @@ HandleEvents(void)
 	return;
 }
 
+/* Interactive commands and release waits retain borrowed resources. Only
+ * transport and audited direct commands run here; session and lifecycle
+ * dispatch wait until the interaction's command stack unwinds. */
+Bool events_interaction_poll(int timeout_ms)
+{
+	fmodule_list_itr iterator;
+	fmodule *module;
+	fmodule **owners;
+	struct pollfd *descriptors;
+	size_t count = 0;
+	size_t index;
+	int result;
+	int timer_ms;
+	int image_ms;
+	int poll_error;
+	Bool healthy = True;
+
+	if (ExecuteInteractionCommandQueue())
+	{
+		timeout_ms = 0;
+	}
+	squeue_execute_interaction();
+	module_cleanup();
+	image_async_transport();
+	if (isTerminated)
+	{
+		return True;
+	}
+	timer_ms = squeue_get_interaction_ms();
+	if (timer_ms >= 0 && timer_ms < timeout_ms)
+	{
+		timeout_ms = timer_ms;
+	}
+	image_ms = image_async_timeout_ms(False);
+	if (image_ms >= 0 && (timeout_ms < 0 || image_ms < timeout_ms))
+	{
+		timeout_ms = image_ms;
+	}
+	module_list_itr_init(&iterator);
+	while (module_list_itr_next(&iterator) != NULL)
+	{
+		count++;
+	}
+	if (count > (SIZE_MAX / sizeof(*descriptors) - 3) / 2 ||
+	    count > (INT_MAX - 3) / 2)
+	{
+		return False;
+	}
+	descriptors = fxcalloc(count * 2 + 3, sizeof(*descriptors));
+	owners = fxcalloc(count == 0 ? 1 : count, sizeof(*owners));
+	descriptors[0].fd = x_fd;
+	descriptors[0].events = POLLIN;
+	module_list_itr_init(&iterator);
+	for (index = 0; (module = module_list_itr_next(&iterator)) != NULL;
+	     index++)
+	{
+		owners[index] = module;
+		descriptors[2 * index + 1].fd =
+			module_input_queue_ready(module) ? MOD_READFD(module) : -1;
+		descriptors[2 * index + 1].events = POLLIN;
+		descriptors[2 * index + 2].fd =
+			FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module)) ?
+			-1 : MOD_WRITEFD(module);
+		descriptors[2 * index + 2].events = POLLOUT;
+	}
+	image_async_descriptors(&descriptors[count * 2 + 1]);
+	XFlush(dpy);
+	result = fvwmPoll(descriptors, count * 2 + 3, timeout_ms);
+	poll_error = result < 0 ? errno : 0;
+	image_async_transport();
+	if (result < 0)
+	{
+		healthy = poll_error == EINTR;
+	}
+	else
+	{
+		ModuleCommandQueueAfterPoll();
+		squeue_after_poll();
+		healthy = !(descriptors[0].revents &
+			(POLLERR | POLLHUP | POLLNVAL));
+		for (index = 0; index < count; index++)
+		{
+			fmodule_input *input;
+			short read_events = descriptors[2 * index + 1].revents;
+			short write_events = descriptors[2 * index + 2].revents;
+
+			module = owners[index];
+			if ((read_events | write_events) & POLLNVAL)
+			{
+				module_kill(module);
+				continue;
+			}
+			if (read_events & (POLLIN | POLLHUP | POLLERR))
+			{
+				if (module_receive_queued(module, &input) ==
+				    FMODULE_INPUT_READY)
+				{
+					module_input_enqueue(input);
+				}
+			}
+			if (write_events & (POLLOUT | POLLHUP | POLLERR))
+			{
+				FlushMessageQueue(module);
+			}
+		}
+	}
+	free(owners);
+	free(descriptors);
+	module_cleanup();
+	return healthy;
+}
+
 /*
  *
  * Waits for next X or module event, fires off startup routines when startup
@@ -3891,6 +4000,14 @@ HandleEvents(void)
  */
 int
 My_XNextEvent(Display *disp, XEvent *event)
+{
+	/* Wait commands retain their caller's resources. Readiness/transport is
+	 * safe here; starts and owner commits require HandleEvents. */
+	return events_next_event(disp, event, False);
+}
+
+static int
+events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 {
 	fd_set		       in_fdset, out_fdset;
 	int		       num_fd;
@@ -3903,10 +4020,19 @@ My_XNextEvent(Display *disp, XEvent *event)
 	fvwm_x_event_action    x_event_action;
 	Bool		       force_poll;
 	struct timeval	       poll_timeout = {0, 0};
+	bool image_timeout = false;
+	struct pollfd image_descriptors[2];
+
+	/* Pump even under an X-event flood, without changing any owner. */
+	image_async_transport();
 
 	/* Remaining module work forces a descriptor poll before the next batch.
 	 */
-	force_poll = ExecuteCommandQueue();
+	/* Consume the outer-loop hint before dispatching commands. Nested Wait
+	 * must not spin on snapshots it cannot deliver until its caller unwinds. */
+	force_poll = deferred_config_poll;
+	deferred_config_poll = False;
+	force_poll = ExecuteCommandQueue() || force_poll;
 	module_cleanup();
 
 	/* check for any X events already queued up.
@@ -3933,6 +4059,7 @@ My_XNextEvent(Display *disp, XEvent *event)
 				break;
 			}
 		}
+		module_list_itr_finish(&moditr);
 		module_cleanup();
 		if (module == NULL) {
 			/* set an infinite timeout to stop ticking */
@@ -3962,15 +4089,11 @@ My_XNextEvent(Display *disp, XEvent *event)
 			/* run scheduled commands */
 			squeue_execute();
 			scheduler_ms = squeue_get_next_ms();
-			/* should not happen anyway.
-			 * get_next_schedule_queue_ms() can't return 0 after a
-			 * call to execute_schedule_queue(). */
-			if (scheduler_ms == 0) {
-				scheduler_ms = 1;
-			}
+			/* A due backlog yields to descriptor I/O before another
+			 * bounded batch. Keep the timeout at zero. */
 		}
 		topology_ms = fvwm_topology_refresh_timeout_ms(
-		    &topology_refresh_state, topology_monotonic_ns());
+		    &topology_refresh_state, events_monotonic_ns());
 		ms = fvwm_topology_timeout_min(scheduler_ms, topology_ms);
 		if (ms < 0) {
 			timeout.tv_sec	= 42;
@@ -3997,15 +4120,20 @@ My_XNextEvent(Display *disp, XEvent *event)
 
 		module_list_itr_init(&moditr);
 		while ((module = module_list_itr_next(&moditr)) != NULL) {
-			FD_SET(MOD_READFD(module), &in_fdset);
+			if (module_input_queue_ready(module)) {
+				FD_SET(MOD_READFD(module), &in_fdset);
+			}
 
 			if (!FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module))) {
 				FD_SET(MOD_WRITEFD(module), &out_fdset);
 			}
 		}
 
-		num_fd = fvwmSelect(fvwmlib_max_fd, &in_fdset, &out_fdset, 0,
-		    force_poll ? &poll_timeout : timeoutP);
+		image_async_descriptors(image_descriptors);
+		num_fd = image_async_wait(fvwmlib_max_fd, &in_fdset, &out_fdset,
+		    image_descriptors, force_poll ? &poll_timeout : timeoutP,
+		    image_async_timeout_ms(outer_boundary), &image_timeout);
+		image_async_transport();
 		fvwm_process_deferred_signals();
 		if (is_waiting_with_timeout) {
 			timeoutP = old_timeoutP;
@@ -4017,13 +4145,14 @@ My_XNextEvent(Display *disp, XEvent *event)
 		}
 	} while (num_fd < 0);
 	ModuleCommandQueueAfterPoll();
+	squeue_after_poll();
 
 	if (num_fd > 0) {
 		/* Check for module input. */
 		module_list_itr_init(&moditr);
 		while ((module = module_list_itr_next(&moditr)) != NULL) {
 			if (FD_ISSET(MOD_READFD(module), &in_fdset)) {
-				if (module_receive(module, &input)
+				if (module_receive_queued(module, &input)
 				    == FMODULE_INPUT_READY) {
 					/* enqueue the received command */
 					module_input_enqueue(input);
@@ -4048,7 +4177,7 @@ My_XNextEvent(Display *disp, XEvent *event)
 	} else if (!force_poll) {
 		/* select has timed out, things must have calmed down so let's
 		 * decorate */
-		if (fFvwmInStartup) {
+		if (fFvwmInStartup && !image_timeout) {
 			fvwm_debug(__func__,
 			    "Some command line modules have not quit, "
 			    "Starting up after timeout.\n");
@@ -4155,33 +4284,37 @@ GetContext(FvwmWindow **ret_fw, FvwmWindow *t, const XEvent *e, Window *w)
 	return context;
 }
 
-/* Drops all expose events for the given window from the input queue and merges
- * the expose rectangles into a single big one (*e). */
+/* Merge only a bounded queued prefix. Remaining damage stays queued for
+ * normal dispatch; unrelated records retain their order and timestamps. */
 void
 flush_accumulate_expose(Window w, XEvent *e)
 {
-	FWeedIfWindowEvents(dpy, w, _pred_weed_accumulate_expose, (XPointer)e);
+	XEvent events[FEV_EXPOSE_BATCH_MAX];
+	int count = FCollectQueuedExposes(dpy, w, events);
 
-	return;
+	for (int index = 0; index < count; index++)
+	{
+		merge_expose(e, &events[index]);
+	}
 }
 
-/*
- *
- * Removes all expose events from the queue and does the necessary redraws
- *
- */
+/* Dispatch selected redraws outside Xlib queue traversal. Resolve window
+ * identity afresh for each event, including after a nested redraw. */
 void
 handle_all_expose(void)
 {
-	void *saved_event;
+	XEvent events[FEV_EXPOSE_BATCH_MAX];
+	void *saved_event = fev_save_event();
+	int count;
 
-	saved_event = fev_save_event();
 	FPending(dpy);
-	FWeedAndHandleIfEvents(
-	    dpy, _pred_weed_is_expose, _pred_weed_handle_expose, NULL);
+	count = FCollectQueuedExposes(dpy, None, events);
+	for (int index = 0; index < count; index++)
+	{
+		fev_fake_event(&events[index]);
+		dispatch_event(&events[index]);
+	}
 	fev_restore_event(saved_event);
-
-	return;
 }
 
 /* CoerceEnterNotifyOnCurrentWindow()
@@ -4278,11 +4411,12 @@ void
 WaitForButtonsUp(Bool do_handle_expose)
 {
 	unsigned int mask;
-	unsigned int bmask;
+	unsigned int handled_events = 0;
 	long evmask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask
 		      | KeyPressMask | KeyReleaseMask;
-	int    count;
-	int    use_wait_cursor;
+	Bool use_wait_cursor = False;
+	uint64_t started_ns;
+	uint64_t pointer_ns;
 	XEvent e;
 
 	FQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild, &JunkX, &JunkY,
@@ -4295,18 +4429,42 @@ WaitForButtonsUp(Bool do_handle_expose)
 		evmask |= ExposureMask;
 	}
 	GrabEm(None, GRAB_NORMAL);
-	for (count = 0, use_wait_cursor = 0; mask != 0; count++) {
-		/* handle expose events */
+	started_ns = pointer_ns = events_monotonic_ns();
+	while (mask != 0 && !isTerminated) {
+		uint64_t now_ns = events_monotonic_ns();
+		int timeout_ms = fvwm_button_release_timeout(pointer_ns, now_ns);
+
+		/* A failed clock read cannot turn the pointer fallback into a
+		 * query loop. Recover the timing origin after a successful read. */
+		if (now_ns != UINT64_MAX) {
+			if (started_ns == UINT64_MAX) {
+				started_ns = now_ns;
+			}
+			if (pointer_ns == UINT64_MAX) {
+				pointer_ns = now_ns;
+			}
+		}
+		if (!use_wait_cursor &&
+		    fvwm_button_release_timeout(started_ns, now_ns) == 0) {
+			GrabEm(CRS_WAIT, GRAB_NORMAL);
+			use_wait_cursor = True;
+		}
+		if (timeout_ms == 0) {
+			FQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+			    &JunkX, &JunkY, &JunkX, &JunkY, &mask);
+			mask &= DEFAULT_ALL_BUTTONS_MASK;
+			pointer_ns = events_monotonic_ns();
+			timeout_ms = FVWM_BUTTON_RELEASE_INTERVAL_MS;
+			if (mask == 0) {
+				break;
+			}
+		}
 		XAllowEvents(dpy, SyncPointer, CurrentTime);
 		if (FCheckMaskEvent(dpy, evmask, &e)) {
 			switch (e.type) {
 			case ButtonRelease:
-				if (e.xbutton.button
-				    <= NUMBER_OF_MOUSE_BUTTONS) {
-					bmask = (Button1Mask
-						 << (e.xbutton.button - 1));
-					mask  = e.xbutton.state & ~bmask;
-				}
+				mask = fvwm_button_release_mask(mask,
+				    e.xbutton.button, e.xbutton.state);
 				break;
 			case Expose:
 				dispatch_event(&e);
@@ -4314,24 +4472,25 @@ WaitForButtonsUp(Bool do_handle_expose)
 			default:
 				break;
 			}
-		} else {
-			FQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-			    &JunkX, &JunkY, &JunkX, &JunkY, &mask);
-			mask &= DEFAULT_ALL_BUTTONS_MASK;
-			usleep(1);
+			if (++handled_events < FVWM_INTERACTION_MOTION_BUDGET) {
+				continue;
+			}
+			timeout_ms = 0;
 		}
-		if (use_wait_cursor == 0 && count == 20) {
-			GrabEm(CRS_WAIT, GRAB_NORMAL);
-			use_wait_cursor = 1;
+		/* Only the audited command/timer/transport pump is reentrant.
+		 * Enclosing functions, lifecycle dispatch and image publication
+		 * remain behind physical release and the outer unwind boundary. */
+		if (mask != 0 && !events_interaction_poll(timeout_ms)) {
+			fvwm_debug(__func__, "Button-release readiness wait failed");
+			break;
 		}
+		handled_events = 0;
 	}
 	UngrabEm(GRAB_NORMAL);
 	if (use_wait_cursor) {
 		UngrabEm(GRAB_NORMAL);
 		XFlush(dpy);
 	}
-
-	return;
 }
 
 void

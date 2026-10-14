@@ -30,10 +30,10 @@ void InitRectangle(struct XObj *xobj)
 
 	/* Save colors and font */
 	if (xobj->colorset >= 0) {
-		xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-		xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-		xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-		xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+		xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+		xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+		xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+		xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
 	} else {
 		xobj->TabColor[fore] = GetColor(xobj->forecolor);
 		xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -117,10 +117,5 @@ void EvtMouseRectangle(struct XObj *xobj,XButtonEvent *EvtButton)
 }
 
 void EvtKeyRectangle(struct XObj *xobj,XKeyEvent *EvtKey)
-{
-}
-
-void ProcessMsgRectangle(
-	struct XObj *xobj,unsigned long type,unsigned long *body)
 {
 }

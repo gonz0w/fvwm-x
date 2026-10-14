@@ -1,0 +1,68 @@
+name: Native BSD verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  freebsd:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, aarch64]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build and test on FreeBSD
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: '15.1'
+          arch: ${{ matrix.arch }}
+          usesh: true
+          prepare: |
+            pkg install -y meson ninja pkgconf python3 perl5 libevent fontconfig iceauth libICE libX11 libXext libXft libXrandr libXt libxkbcommon xtrans libXcursor libXrender png librsvg2-rust cairo xorg-vfbserver xrandr dejavu
+          run: sh tests/run_on_bsd.sh
+      - name: Preserve BSD test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: freebsd-${{ matrix.arch }}-verification
+          path: |
+            builddir-bsd/meson-logs/
+            builddir-bsd/tests/live-x-artifacts/
+
+  openbsd:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, aarch64]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build and test on OpenBSD Xenocara
+        uses: vmactions/openbsd-vm@v1
+        with:
+          release: '7.9'
+          arch: ${{ matrix.arch }}
+          usesh: true
+          prepare: |
+            pkg_add -I meson ninja libevent libxkbcommon png librsvg
+            test -x /usr/X11R6/bin/Xvfb
+            test -x /usr/bin/pkg-config
+          run: sh tests/run_on_bsd.sh
+      - name: Preserve BSD test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbsd-${{ matrix.arch }}-verification
+          path: |
+            builddir-bsd/meson-logs/
+            builddir-bsd/tests/live-x-artifacts/

@@ -82,7 +82,7 @@ void update_monitor_backgrounds(int desk)
 			vp = set_vp_size_and_loc(fp, false);
 			SetWindowBackground(dpy,
 				fp->CPagerWin[desk], vp.width, vp.height,
-				&Colorset[style->hi_cs], Pdepth,
+				GetColorset(style->hi_cs), Pdepth,
 				style->hi_bg_gc, True);
 		}
 		XLowerWindow(dpy, fp->CPagerWin[desk]);
@@ -119,12 +119,12 @@ void update_desk_background(int desk)
 		if (style->use_label_pixmap)
 			SetWindowBackground(dpy,
 				Desks[desk].title_w, desk_w, desk_h + label_h,
-				&Colorset[style->cs], Pdepth, Scr.NormalGC,
+				GetColorset(style->cs), Pdepth, Scr.NormalGC,
 				True);
 		else
 			SetWindowBackground(dpy,
 				Desks[desk].w, desk_w, desk_h,
-				&Colorset[style->cs], Pdepth, Scr.NormalGC,
+				GetColorset(style->cs), Pdepth, Scr.NormalGC,
 				True);
 	}
 
@@ -187,10 +187,10 @@ void update_window_background(PagerWindow *t)
 	if (cs >= 0) {
 		SetWindowBackground(dpy, t->PagerView,
 			t->pager_view.width, t->pager_view.height,
-			&Colorset[cs], Pdepth, Scr.NormalGC, True);
+			GetColorset(cs), Pdepth, Scr.NormalGC, True);
 		SetWindowBackground(dpy, t->IconView,
 			t->icon_view.width, t->icon_view.height,
-			&Colorset[cs], Pdepth, Scr.NormalGC, True);
+			GetColorset(cs), Pdepth, Scr.NormalGC, True);
 	} else if (pix != None) {
 		XSetWindowBackground(dpy, t->PagerView, pix);
 		XSetWindowBackground(dpy, t->IconView, pix);
@@ -250,15 +250,15 @@ void update_desk_style_gcs(DeskStyle *style)
 	XSetForeground(dpy, style->hi_fg_gc, style->hi_fg);
 	if (WindowBorders3d && style->win_cs > 0) {
 		XSetForeground(dpy, style->win_hi_gc,
-			       Colorset[style->win_cs].hilite);
+			       GetColorset(style->win_cs)->hilite);
 		XSetForeground(dpy, style->win_sh_gc,
-			       Colorset[style->win_cs].shadow);
+			       GetColorset(style->win_cs)->shadow);
 	}
 	if (WindowBorders3d && style->focus_cs > 0) {
 		XSetForeground(dpy, style->focus_hi_gc,
-			       Colorset[style->focus_cs].hilite);
+			       GetColorset(style->focus_cs)->hilite);
 		XSetForeground(dpy, style->focus_sh_gc,
-			       Colorset[style->focus_cs].shadow);
+			       GetColorset(style->focus_cs)->shadow);
 	}
 }
 
@@ -311,7 +311,7 @@ void do_label_window(PagerWindow *t, Window w, rectangle r)
 	FwinString->gc = Scr.NormalGC;
 	FwinString->flags.has_colorset = False;
 	if (cs >= 0) {
-		FwinString->colorset = &Colorset[cs];
+		FwinString->colorset = GetColorset(cs);
 		FwinString->flags.has_colorset = True;
 	}
 	FwinString->x = label_border;
@@ -413,7 +413,7 @@ void do_picture_window(PagerWindow *t, Window w, rectangle r)
 
 	fra.mask = FRAM_DEST_IS_A_WINDOW;
 	if (t->mini_icon.alpha != None ||
-	    (cs >= 0 && Colorset[cs].icon_alpha_percent < 100))
+	    (cs >= 0 && GetColorset(cs)->icon_alpha_percent < 100))
 	{
 		XClearArea(dpy, w, iconX, iconY, t->mini_icon.width,
 			   t->mini_icon.height, False);
@@ -421,7 +421,7 @@ void do_picture_window(PagerWindow *t, Window w, rectangle r)
 
 	if (cs >= 0) {
 		fra.mask |= FRAM_HAVE_ICON_CSET;
-		fra.colorset = &Colorset[cs];
+		fra.colorset = GetColorset(cs);
 	}
 
 	PGraphicsRenderPicture(dpy, w, &t->mini_icon, &fra, w,

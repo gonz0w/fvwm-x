@@ -23,6 +23,9 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
+#include <stdlib.h>
 
 #include "fvwmlib.h"
 #include "Strings.h"
@@ -367,29 +370,6 @@ char *PeekToken(char *indata, char **outdata)
 }
 
 
-/**** SMR: Defined but not used -- is this for the future or a relic of the
- **** past? ****/
-/* domivogt (27-Jun-1999): It's intended for future use. I have no problem
- * commenting it out if it's not used. */
-
-/* Tries to seek up to n tokens in indata. Returns the number of tokens
- * actually found (up to a maximum of n). */
-
-#if 0
-int CheckNTokens(char *indata, unsigned int n)
-{
-	unsigned int i;
-	char *token;
-
-	for (i = 0, token = (char *)1; i < n && token != NULL; i++)
-	{
-		token = PeekToken(indata, NULL);
-	}
-
-	return i;
-}
-#endif
-
 /*
 ** MatchToken: does case-insensitive compare on next token in string, leaving
 **	       string intact (returns true if matches, false otherwise)
@@ -408,7 +388,6 @@ int MatchToken(char *pstr,char *tok)
 	return rc;
 }
 
-/* unused at the moment */
 /*
   function:	       XCmpToken
   description:	       compare 1st word of s to 1st word of t
@@ -416,9 +395,10 @@ int MatchToken(char *pstr,char *tok)
   = 0  if s = t
   > 0  if s > t
 */
-int XCmpToken(const char *s, const char **t)
+int XCmpToken(const void *key, const void *entry)
 {
-	register const char *w=*t;
+	const char *s = key;
+	const char *w = *(char *const *)entry;
 
 	if (w==NULL)
 	{
@@ -429,20 +409,24 @@ int XCmpToken(const char *s, const char **t)
 		return -1;
 	}
 
-	while (*w && (*s==*w || toupper(*s)==toupper(*w)) )
+	while (*w && (*s==*w ||
+		toupper((unsigned char)*s)==toupper((unsigned char)*w)) )
 	{
 		s++;
 		w++;
 	}
 
-	if ((*s=='\0' && (ispunct(*w) || isspace(*w)))||
-	    (*w=='\0' && (ispunct(*s) || isspace(*s))) )
+	if ((*s=='\0' && (ispunct((unsigned char)*w) ||
+		isspace((unsigned char)*w)))||
+	    (*w=='\0' && (ispunct((unsigned char)*s) ||
+		isspace((unsigned char)*s))) )
 	{
 		return 0;			/* 1st word equal */
 	}
 	else
 	{
-		return toupper(*s)-toupper(*w); /* smaller/greater */
+		return toupper((unsigned char)*s)-
+			toupper((unsigned char)*w); /* smaller/greater */
 	}
 }
 
@@ -574,13 +558,48 @@ char *GetModuleResource(char *indata, char **resource, char *module_name)
  * ret_suffixnum (0 = no suffix, 1 = first suffix in suffixlist ...).
  *
  */
+/* Match an integer prefix without relying on scanf's out-of-range conversion.
+ * An explicit base choice keeps C11 octal/hex behavior on newer C libraries. */
+static Bool parse_integer_prefix(const char *text, int base, int *value,
+	const char **end)
+{
+	char *parsed_end;
+	long parsed;
+	int saved_errno = errno;
+	int conversion_errno;
+
+	if (base == 0)
+	{
+		const char *digits = text;
+
+		while (isspace((unsigned char)*digits))
+			digits++;
+		if (*digits == '+' || *digits == '-')
+			digits++;
+		base = (*digits == '0') ?
+			((digits[1] == 'x' || digits[1] == 'X') ? 16 : 8) : 10;
+	}
+	errno = 0;
+	parsed = strtol(text, &parsed_end, base);
+	conversion_errno = errno;
+	errno = saved_errno;
+	if (parsed_end == text || conversion_errno == ERANGE ||
+		parsed < INT_MIN || parsed > INT_MAX)
+	{
+		return False;
+	}
+	*value = (int)parsed;
+	if (end != NULL)
+		*end = parsed_end;
+	return True;
+}
+
 static int _get_suffixed_integer_arguments(
 	char *action, char **ret_action, int *retvals, int num,
-	char *suffixlist, int *ret_suffixnum, char *parsestring)
+	char *suffixlist, int *ret_suffixnum, int base)
 {
 	int i;
 	int j;
-	int n;
 	char *token;
 	int suffixes;
 
@@ -599,7 +618,10 @@ static int _get_suffixed_integer_arguments(
 		{
 			break;
 		}
-		if (sscanf(token, parsestring, &(retvals[i]), &n) < 1)
+		int parsed;
+		const char *end;
+
+		if (retvals == NULL || !parse_integer_prefix(token, base, &parsed, &end))
 		{
 			break;
 		}
@@ -610,17 +632,17 @@ static int _get_suffixed_integer_arguments(
 
 			len = strlen(token) - 1;
 			c = token[len];
-			if (isupper(c))
+			if (isupper((unsigned char)c))
 			{
-				c = tolower(c);
+				c = tolower((unsigned char)c);
 			}
 			for (j = 0; j < suffixes; j++)
 			{
 				char c2 = suffixlist[j];
 
-				if (isupper(c2))
+				if (isupper((unsigned char)c2))
 				{
-					c2 = tolower(c2);
+					c2 = tolower((unsigned char)c2);
 				}
 				if (c == c2)
 				{
@@ -633,11 +655,12 @@ static int _get_suffixed_integer_arguments(
 				ret_suffixnum[i] = 0;
 			}
 		}
-		else if (token[n] != 0 && !isspace(token[n]))
+		else if (*end != 0 && !isspace((unsigned char)*end))
 		{
 			/* there is a suffix but no suffix list was specified */
 			break;
 		}
+		retvals[i] = parsed;
 	}
 	if (ret_action != NULL)
 	{
@@ -653,24 +676,7 @@ int GetSuffixedIntegerArguments(
 {
 	return _get_suffixed_integer_arguments(
 		action, ret_action, retvals, num, suffixlist, ret_suffixnum,
-		"%d%n");
-}
-
-/*
- *
- * This function converts the suffix/number pairs returned by
- * GetSuffixedIntegerArguments into pixels. The unit_table is an array of
- * integers that determine the factor to multiply with in hundredths of
- * pixels. I.e. a unit of 100 means: translate the value into pixels,
- * 50 means divide value by 2 to get the number of pixels and so on.
- * The unit used is determined by the suffix which is taken as the index
- * into the table. No size checking of the unit_table is done, so make sure
- * it is big enough before calling this function.
- *
- */
-int SuffixToPercentValue(int value, int suffix, int *unit_table)
-{
-	return (value * unit_table[suffix]) / 100;
+		10);
 }
 
 /*
@@ -683,7 +689,7 @@ int SuffixToPercentValue(int value, int suffix, int *unit_table)
 int GetIntegerArguments(char *action, char **ret_action, int *retvals,int num)
 {
 	return _get_suffixed_integer_arguments(
-		action, ret_action, retvals, num, NULL, NULL, "%d%n");
+		action, ret_action, retvals, num, NULL, NULL, 10);
 }
 
 /*
@@ -696,7 +702,7 @@ int GetIntegerArgumentsAnyBase(
 	char *action, char **ret_action, int *retvals,int num)
 {
 	return _get_suffixed_integer_arguments(
-		action, ret_action, retvals, num, NULL, NULL, "%i%n");
+		action, ret_action, retvals, num, NULL, NULL, 0);
 }
 
 /*
@@ -791,47 +797,50 @@ char *GetNextTokenIndex(char *action, char **list, int len, int *index)
  */
 int GetRectangleArguments(char *action, int *width, int *height)
 {
-	char *token;
-	int n;
+	char *token = PeekToken(action, NULL);
+	const char *end;
+	int parsed_width, parsed_height;
 
-	token = PeekToken(action, NULL);
-	if (!token)
+	if (token == NULL || width == NULL || height == NULL ||
+		!parse_integer_prefix(token, 10, &parsed_width, &end) ||
+		*end == '\0' ||
+		!parse_integer_prefix(end + 1, 10, &parsed_height, NULL))
 	{
 		return 0;
 	}
-	n = sscanf(token, "%d%*c%d", width, height);
-
-	return (n == 2) ? 2 : 0;
+	/* Keep the historical arbitrary one-byte separator and trailing text. */
+	*width = parsed_width;
+	*height = parsed_height;
+	return 2;
 }
 
 /* unit_io is input as well as output. If action has a postfix 'p' or 'P',
  * *unit_io is set to 100, otherwise it is left untouched. */
 int GetOnePercentArgument(char *action, int *value, int *unit_io)
 {
-	unsigned int len;
 	char *token;
-	int n;
+	int parsed;
+	size_t length;
+	Bool pixels;
 
+	if (value == NULL)
+		return 0;
 	*value = 0;
-	if (!action)
-	{
-		return 0;
-	}
 	token = PeekToken(action, NULL);
-	if (!token)
+	if (token == NULL)
+		return 0;
+	length = strlen(token);
+	pixels = length > 0 &&
+		(token[length - 1] == 'p' || token[length - 1] == 'P');
+	if ((pixels && unit_io == NULL) ||
+		!parse_integer_prefix(token, 10, &parsed, NULL))
 	{
 		return 0;
 	}
-	len = strlen(token);
-	/* token never contains an empty string, so this is ok */
-	if (token[len - 1] == 'p' || token[len - 1] == 'P')
-	{
+	*value = parsed;
+	if (pixels)
 		*unit_io = 100;
-		token[len - 1] = '\0';
-	}
-	n = sscanf(token, "%d", value);
-
-	return n;
+	return 1;
 }
 
 

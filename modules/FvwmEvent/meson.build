@@ -1,6 +1,6 @@
 module_sources = ['FvwmEvent.c']
 
-executable(
+fvwm_event = executable(
     'FvwmEvent',
     module_sources,
     dependencies: [all_found_deps],

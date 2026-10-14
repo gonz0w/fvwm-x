@@ -300,6 +300,13 @@ monitor_topology_snapshot_validate(const monitor_topology_snapshot *snapshot)
 		(size_t)snapshot->monitor_count, sizeof(*snapshot->monitors))) {
 		return false;
 	}
+	if (snapshot->root_fallback &&
+	    (snapshot->monitor_count != 1 || snapshot->monitors[0].x != 0 ||
+	     snapshot->monitors[0].y != 0 ||
+	     snapshot->monitors[0].output_count != 0 ||
+	     !snapshot->monitors[0].primary)) {
+		return false;
+	}
 	for (monitor_index = 0; monitor_index < snapshot->monitor_count;
 	    monitor_index++) {
 		const monitor_topology_monitor *monitor =
@@ -330,7 +337,8 @@ monitor_topology_snapshot_equal(const monitor_topology_snapshot *left,
 
 	if (!monitor_topology_snapshot_validate(left)
 	    || !monitor_topology_snapshot_validate(right)
-	    || left->monitor_count != right->monitor_count) {
+	    || left->monitor_count != right->monitor_count
+	    || left->root_fallback != right->root_fallback) {
 		return false;
 	}
 	for (monitor_index = 0; monitor_index < left->monitor_count;

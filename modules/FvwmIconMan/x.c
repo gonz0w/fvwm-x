@@ -19,6 +19,7 @@
 #include "x.h"
 #include "xmanager.h"
 #include "libs/fvwmlib.h"
+#include "libs/fvwmsignal.h"
 #include "libs/FScreen.h"
 #include "libs/FShape.h"
 #include "libs/PictureUtils.h"
@@ -29,6 +30,7 @@
 #include "libs/Graphics.h"
 #include "libs/log.h"
 #include "libs/XError.h"
+#include "libs/module_x_service.h"
 
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|\
 	EnterWindowMask|LeaveWindowMask)
@@ -197,24 +199,60 @@ static void reparentnotify_event (WinManager *man, XEvent *ev)
   }
 }
 
+static Bool iconman_x_batch_available(unsigned int serviced,
+    const struct timespec *started)
+{
+  struct timespec now;
+
+  if (isTerminated || serviced >= MODULE_X_EVENT_BUDGET)
+    return False;
+  if (clock_gettime(CLOCK_MONOTONIC, &now) < 0) {
+    fvwm_debug(__func__, "Unable to read X service clock");
+    fvwmSetTerminate(0);
+    return False;
+  }
+  return module_x_service_available(serviced, started, &now);
+}
+
+/* Preserve queue order and manager ownership when coalescing. */
+static Bool iconman_take_next_event(Window window, int type, XEvent *event)
+{
+  XEvent next;
+
+  if (!FEventsQueued(theDisplay, QueuedAlready))
+    return False;
+  FPeekEvent(theDisplay, &next);
+  if (next.type != type || next.xany.window != window)
+    return False;
+  FNextEvent(theDisplay, event);
+  return True;
+}
+
 void xevent_loop (void)
 {
   XEvent theEvent;
-  XEvent saveEvent;
   unsigned int modifier;
+  unsigned int serviced = 0;
+  struct timespec started;
   Binding *key;
   Button *b;
   static int flag = 0;
   WinManager *man;
   Bool force_redraw = False;
-  static int ex=10000, ey=10000, ex2=0, ey2=0;
 
   if (flag == 0) {
     flag = 1;
     ConsoleDebug (X11, "A virgin event loop\n");
   }
-  while (FPending(theDisplay)) {
+  if (clock_gettime(CLOCK_MONOTONIC, &started) < 0) {
+    fvwm_debug(__func__, "Unable to start X service clock");
+    fvwmSetTerminate(0);
+    return;
+  }
+  while (iconman_x_batch_available(serviced, &started) &&
+      FPending(theDisplay)) {
     FNextEvent(theDisplay, &theEvent);
+    serviced++;
     if (theEvent.type == MappingNotify) {
       ConsoleDebug (X11, "XEVENT: MappingNotify\n");
       continue;
@@ -274,6 +312,12 @@ void xevent_loop (void)
     break;
 
     case Expose:
+    {
+      int ex = theEvent.xexpose.x;
+      int ey = theEvent.xexpose.y;
+      int ex2 = ex + theEvent.xexpose.width;
+      int ey2 = ey + theEvent.xexpose.height;
+
       ConsoleDebug (X11, "XEVENT: Expose\n");
 #if 0
       fprintf (stderr, "Expose: %i,%i,%i,%i %i\n",
@@ -287,9 +331,10 @@ void xevent_loop (void)
 
       /* we use "clip redrawing": but this speedup redrawing without
        * adding to much flickering */
-      while (FCheckTypedWindowEvent(
-	      theDisplay, theEvent.xany.window, Expose, &theEvent))
+      while (iconman_x_batch_available(serviced, &started) &&
+          iconman_take_next_event(theEvent.xany.window, Expose, &theEvent))
       {
+          serviced++;
 #if 0
 	      fprintf (stderr, "\t\tExpose Purge: %i,%i,%i,%i %i\n",
 		       theEvent.xexpose.x, theEvent.xexpose.y,
@@ -306,7 +351,8 @@ void xevent_loop (void)
 	      stderr, "\tExpose Done: %i,%i,%i,%i %i\n",
 	      ex, ey, ex2-ex, ey2-ey, theEvent.xexpose.count);
 #endif
-      if (theEvent.xexpose.count == 0)
+      /* Draw this bounded region now; the remaining events retain their
+       * own regions instead of sharing clip state across managers/passes. */
       {
 	      theEvent.xexpose.x = ex;
 	      theEvent.xexpose.y = ey;
@@ -318,10 +364,9 @@ void xevent_loop (void)
 		      grab_pointer (man);
 	      }
 
-	      ex = ey = 10000;
-	      ex2 = ey2 = 0;
       }
       break;
+    }
 
     case ButtonPress:
       ConsoleDebug (X11, "XEVENT: ButtonPress\n");
@@ -375,18 +420,17 @@ void xevent_loop (void)
 		    theEvent.xconfigure.border_width);
       ConsoleDebug (X11, "\tsendevent = %d\n", theEvent.xconfigure.send_event);
 
-      saveEvent = theEvent;
-      /* eat up all but last ConfigureNotify events */
-      while (FPending(theDisplay) &&
-	     FCheckTypedEvent(theDisplay, ConfigureNotify, &theEvent))
+      /* Coalesce only adjacent notifications for this manager. */
+      while (iconman_x_batch_available(serviced, &started) &&
+          iconman_take_next_event(theEvent.xany.window,
+              ConfigureNotify, &theEvent))
       {
+        serviced++;
 	fev_sanitise_configure_notify(&theEvent.xconfigure);
-	saveEvent = theEvent;
 	/* check for movement on all events */
 	if (theEvent.xconfigure.send_event)
 	  moved = True;
       }
-      theEvent = saveEvent;
 #if 0
       fprintf (stderr, "Configure: %i,%i,%i,%i %i\n",
 	       theEvent.xconfigure.x, theEvent.xconfigure.y,
@@ -652,10 +696,10 @@ void X_init_manager (int man_id)
   for ( i = 0; i < NUM_CONTEXTS; i++ ) {
     man->pixmap[i] = None;
     if (man->colorsets[i] >= 0) {
-      man->backcolor[i] = Colorset[man->colorsets[i]].bg;
+      man->backcolor[i] = GetColorset(man->colorsets[i])->bg;
     }
     else if (man->colorsets[i] == -2) {
-      man->backcolor[i] = Colorset[man->colorsets[DEFAULT]].bg;
+      man->backcolor[i] = GetColorset(man->colorsets[DEFAULT])->bg;
     }
     else if (man->backColorName[i]) {
       if (!lookup_color (man->backColorName[i], &man->backcolor[i])) {
@@ -671,10 +715,10 @@ void X_init_manager (int man_id)
     }
 
     if (man->colorsets[i] >= 0) {
-      man->forecolor[i] = Colorset[man->colorsets[i]].fg;
+      man->forecolor[i] = GetColorset(man->colorsets[i])->fg;
     }
     else if (man->colorsets[i] == -2) {
-      man->forecolor[i] = Colorset[man->colorsets[DEFAULT]].fg;
+      man->forecolor[i] = GetColorset(man->colorsets[DEFAULT])->fg;
     }
     else if (man->foreColorName[i]) {
       if (!lookup_color (man->foreColorName[i], &man->forecolor[i])) {
@@ -691,12 +735,12 @@ void X_init_manager (int man_id)
 
     if (!PictureUseBWOnly()) {
       if (man->colorsets[i] >= 0) {
-	man->shadowcolor[i] = Colorset[man->colorsets[i]].shadow;
-	man->hicolor[i] = Colorset[man->colorsets[i]].hilite;
+	man->shadowcolor[i] = GetColorset(man->colorsets[i])->shadow;
+	man->hicolor[i] = GetColorset(man->colorsets[i])->hilite;
       }
       else if (man->colorsets[i] == -2) {
-	man->shadowcolor[i] = Colorset[man->colorsets[DEFAULT]].shadow;
-	man->hicolor[i] = Colorset[man->colorsets[DEFAULT]].hilite;
+	man->shadowcolor[i] = GetColorset(man->colorsets[DEFAULT])->shadow;
+	man->hicolor[i] = GetColorset(man->colorsets[DEFAULT])->hilite;
       }
       else
       {
@@ -1064,14 +1108,14 @@ void recreate_background(WinManager *man, Contexts i)
 		XFreePixmap(theDisplay, man->pixmap[i]);
 	}
 	man->pixmap[i]= None;
-	if ((i == DEFAULT && Colorset[cset].pixmap) ||
+	if ((i == DEFAULT && GetColorset(cset)->pixmap) ||
 	    (CSET_IS_TRANSPARENT(cset) && !CSET_IS_TRANSPARENT_PR_TINT(cset)))
 	{
 		man->pixmap[i] =
 			CreateBackgroundPixmap(
 				theDisplay, man->theWindow,
 				man->geometry.width, man->geometry.height,
-				&Colorset[cset],
+				GetColorset(cset),
 				Pdepth, man->backContext[i], False);
 		XSetTile(theDisplay, man->backContext[i], man->pixmap[i]);
 		XSetFillStyle(theDisplay, man->backContext[i], FillTiled);
@@ -1081,13 +1125,13 @@ void recreate_background(WinManager *man, Contexts i)
 				theDisplay, man->theWindow, man->pixmap[i]);
 		}
 	}
-	else if (Colorset[cset].pixmap && !CSET_IS_TRANSPARENT_PR_TINT(cset))
+	else if (GetColorset(cset)->pixmap && !CSET_IS_TRANSPARENT_PR_TINT(cset))
 	{
 		man->pixmap[i] =
 			CreateBackgroundPixmap(
 				theDisplay, man->theWindow,
 				man->geometry.boxwidth, man->geometry.boxheight,
-				&Colorset[cset],
+				GetColorset(cset),
 				Pdepth, man->backContext[i], False);
 		XSetTile(theDisplay, man->backContext[i], man->pixmap[i]);
 		XSetFillStyle(theDisplay, man->backContext[i], FillTiled);
@@ -1120,10 +1164,10 @@ void change_colorset(int color)
 			{
 				continue;
 			}
-			man->backcolor[i] = Colorset[color].bg;
-			man->forecolor[i] = Colorset[color].fg;
-			man->shadowcolor[i] = Colorset[color].shadow;
-			man->hicolor[i] = Colorset[color].hilite;
+			man->backcolor[i] = GetColorset(color)->bg;
+			man->forecolor[i] = GetColorset(color)->fg;
+			man->shadowcolor[i] = GetColorset(color)->shadow;
+			man->hicolor[i] = GetColorset(color)->hilite;
 			if (!man->hiContext[i] ||
 			    !man->flatContext[i] ||
 			    !man->reliefContext[i] ||

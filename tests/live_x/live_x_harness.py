@@ -27,6 +27,7 @@ import selectors
 import signal
 import subprocess
 import tempfile
+import threading
 import time
 
 
@@ -38,6 +39,45 @@ MAX_STATUS_LINE_BYTES = 1024 * 1024
 
 class HarnessError(RuntimeError):
     """Raised when a bounded harness operation cannot complete."""
+
+
+_runtime_signal_owners: list[object] = []
+_runtime_previous_sigterm = None
+_runtime_terminating = False
+
+
+def _runtime_terminate(signum: int, frame: object) -> None:
+    global _runtime_terminating
+    # Let the first request unwind through each scenario's evidence/cleanup
+    # blocks. Further TERM requests must not interrupt that bounded teardown.
+    if not _runtime_terminating:
+        _runtime_terminating = True
+        raise HarnessError("live-X harness termination requested")
+
+
+def _runtime_own_signal(owner: object) -> None:
+    global _runtime_previous_sigterm
+    if threading.current_thread() is not threading.main_thread():
+        return
+    if not _runtime_signal_owners:
+        previous = signal.getsignal(signal.SIGTERM)
+        if previous is None:
+            return  # A foreign C handler cannot be restored with signal.signal.
+        signal.signal(signal.SIGTERM, _runtime_terminate)
+        _runtime_previous_sigterm = previous
+    _runtime_signal_owners.append(owner)
+
+
+def _runtime_release_signal(owner: object) -> None:
+    global _runtime_previous_sigterm, _runtime_terminating
+    if owner not in _runtime_signal_owners:
+        return
+    _runtime_signal_owners.remove(owner)
+    if not _runtime_signal_owners:
+        if signal.getsignal(signal.SIGTERM) == _runtime_terminate:
+            signal.signal(signal.SIGTERM, _runtime_previous_sigterm)
+        _runtime_previous_sigterm = None
+        _runtime_terminating = False
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -275,6 +315,7 @@ class HarnessRuntime:
         self._temporary = tempfile.TemporaryDirectory(prefix=prefix)
         self.root = Path(self._temporary.name)
         self.processes: list[ManagedProcess] = []
+        _runtime_own_signal(self)
 
     def environment(
         self, overrides: dict[str, str] | None = None
@@ -302,13 +343,18 @@ class HarnessRuntime:
     def close(self, timeout_per_process: float = 2.0) -> None:
         """Tear children down in reverse launch order, each with a hard bound."""
         first_error: BaseException | None = None
-        for process in reversed(self.processes):
+        try:
+            for process in reversed(self.processes):
+                try:
+                    process.close(time.monotonic() + timeout_per_process)
+                except BaseException as error:
+                    if first_error is None:
+                        first_error = error
+        finally:
             try:
-                process.close(time.monotonic() + timeout_per_process)
-            except BaseException as error:
-                if first_error is None:
-                    first_error = error
-        self._temporary.cleanup()
+                self._temporary.cleanup()
+            finally:
+                _runtime_release_signal(self)
         if first_error is not None:
             raise first_error
 
@@ -406,6 +452,10 @@ def start_display_server(
     environment: dict[str, str] | None = None,
 ) -> tuple[ManagedProcess, str]:
     """Launch an X server with collision-safe display allocation and no TCP."""
+    if (os.sys.platform.startswith("openbsd") and argv_prefix
+            and Path(argv_prefix[0]).name == "Xvfb"):
+        return start_locked_xvfb(runtime, name, argv_prefix, log_name,
+                                 deadline, environment)
     read_fd, write_fd = os.pipe()
     process: ManagedProcess | None = None
     try:
@@ -434,6 +484,48 @@ def start_display_server(
         return process, read_display_fd(read_fd, process, deadline)
     finally:
         os.close(read_fd)
+
+
+def start_locked_xvfb(
+    runtime: HarnessRuntime, name: str, argv_prefix: list[str], log_name: str,
+    deadline: float, environment: dict[str, str] | None,
+) -> tuple[ManagedProcess, str]:
+    """Use Xenocara's server lock; displayfd permits duplicate Unix sockets."""
+    for number in range(1000, 1128):
+        if time.monotonic() >= deadline:
+            break
+        lock = Path(f"/tmp/.X{number}-lock")
+        endpoint = Path(f"/tmp/.X11-unix/X{number}")
+        if lock.exists() or endpoint.exists():
+            continue
+        display = f":{number}"
+        server = runtime.start(
+            name, [argv_prefix[0], display, "-nolisten", "tcp",
+                   *argv_prefix[1:]], log_name, environment=environment)
+
+        def owns_lock():
+            try:
+                return int(lock.read_text().strip()) == server.process.pid
+            except (OSError, ValueError):
+                return False
+
+        try:
+            wait_for_predicate("owned Xvfb lock", owns_lock, deadline,
+                               process=server)
+            wait_for_randr(runtime, display, deadline)
+            return server, display
+        except HarnessError:
+            # A concurrent server can win the normal X lock. Close only ours;
+            # retain its diagnostics and try another slot within the deadline.
+            occupied = lock.exists() and not owns_lock()
+            exited = server.poll() is not None
+            server.close(time.monotonic() + 1.0)
+            if not (occupied and exited):
+                raise
+            diagnostic = server.log_path.with_name(
+                server.log_path.stem + f"-occupied-{number}.log")
+            diagnostic.write_bytes(server.log_path.read_bytes())
+    raise HarnessError("no available owned Xvfb display before deadline")
 
 
 def xorg_dummy_server_argv(config_path: Path, display_fd: int) -> list[str]:

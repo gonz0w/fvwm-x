@@ -23,6 +23,7 @@
 #include "libs/FShape.h"
 #include "libs/PictureBase.h"
 #include "libs/Picture.h"
+#include "libs/picture_view.h"
 #include "libs/PictureUtils.h"
 #include "libs/PictureImageLoader.h"
 #include "libs/FRenderInit.h"
@@ -178,7 +179,8 @@ void EWMH_DoUpdateWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon)
 			SET_HAS_EWMH_WM_ICON_HINT(fw, EWMH_FVWM_ICON);
 		}
 	}
-	if (FMiniIconsSupported && mini_icon && DO_EWMH_DONATE_MINI_ICON(fw))
+	if (FMiniIconsSupported && mini_icon && DO_EWMH_DONATE_MINI_ICON(fw) &&
+	    picture_is_usable(fw->mini_icon) && !fw->mini_icon->pending)
 	{
 		if ((dummy = ewmh_SetWmIconFromPixmap(
 			     fw, (new_list != NULL)? new_list : list, &size,
@@ -212,7 +214,7 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 	Pixmap pixmap = None;
 	Pixmap mask = None;
 	Pixmap alpha = None;
-	XImage *image;
+	XImage *image = NULL;
 	XImage *m_image = NULL;
 	XImage *a_image = NULL;
 	int save_picture_w_g_width = 0;
@@ -229,13 +231,20 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 	Bool is_icon_ours = False;
 	Bool is_icon_shaped = False;
 	Bool destroy_icon_pix = False;
+	Bool pending_file = False;
+	FvwmPicture *sample_picture = NULL;
+	Pixel *sample_colors = NULL;
+	int sample_color_count = 0;
+	Bool sample_no_limit = False;
+	int original_size = *orig_size;
 
 	s = *orig_size / sizeof(CARD32);
 	*orig_size = 0;
 
 	if (is_mini_icon)
 	{
-		if (FMiniIconsSupported && fw->mini_icon != NULL)
+		if (FMiniIconsSupported && picture_is_usable(fw->mini_icon) &&
+		    !fw->mini_icon->pending)
 		{
 			pixmap = fw->mini_icon->picture;
 			mask = fw->mini_icon->mask;
@@ -261,7 +270,14 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		is_pixmap_ours = IS_PIXMAP_OURS(fw);
 		is_icon_ours = IS_ICON_OURS(fw);
 		is_icon_shaped = IS_ICON_SHAPED(fw);
+		FvwmPicture *save_file_picture =
+		    PCloneFvwmPicture(fw->file_icon_picture);
+
 		GetIconPicture(fw, True);
+		sample_picture = fw->file_icon_picture;
+		fw->file_icon_picture = save_file_picture;
+		pending_file = fw->file_icon_requested != NULL &&
+		    fw->file_icon_requested->pending;
 		if (IS_PIXMAP_OURS(fw))
 		{
 			destroy_icon_pix = True;
@@ -271,17 +287,9 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		alpha = fw->icon_alphaPixmap;
 		width = fw->icon_g.picture_w_g.width;
 		height = fw->icon_g.picture_w_g.height;
-		if (fw->icon_alloc_pixels != NULL)
-		{
-			if (fw->icon_nalloc_pixels != 0)
-			{
-				PictureFreeColors(
-					dpy, Pcmap, fw->icon_alloc_pixels,
-					fw->icon_nalloc_pixels, 0,
-					fw->icon_no_limit);
-			}
-			free(fw->icon_alloc_pixels);
-		}
+		sample_colors = fw->icon_alloc_pixels;
+		sample_color_count = fw->icon_nalloc_pixels;
+		sample_no_limit = fw->icon_no_limit;
 
 		fw->icon_g.picture_w_g.width = save_picture_w_g_width;
 		fw->icon_g.picture_w_g.height = save_picture_w_g_height;
@@ -298,9 +306,16 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		SET_ICON_SHAPED(fw, is_icon_shaped);
 	}
 
+	if (pending_file)
+	{
+		/* Other donations can retain the original list while this file
+		 * waits; do not publish its old or absent backing. */
+		*orig_size = original_size;
+		goto out;
+	}
 	if (pixmap == None)
 	{
-		return NULL;
+		goto out;
 	}
 
 	if (FMiniIconsSupported && orig_icon != NULL)
@@ -340,19 +355,7 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 	{
 		fvwm_debug(__func__,
 			   "cannot create XImage\n");
-		if (destroy_icon_pix)
-		{
-			XFreePixmap(dpy, pixmap);
-			if (mask != None)
-			{
-				XFreePixmap(dpy, mask);
-			}
-			if (alpha != None)
-			{
-				XFreePixmap(dpy, alpha);
-			}
-		}
-		return NULL;
+		goto out;
 	}
 
 	if (mask != None)
@@ -459,7 +462,7 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 				if (cm[m] > 0)
 				{
 					new_icon[l++] =
-						((cm[m] & 0xff) << 24) +
+						((CARD32)cm[m] << 24) +
 						(((colors[k].red >> 8) & 0xff)
 						 << 16) +
 						(((colors[k].green >> 8) &
@@ -496,7 +499,8 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		FW_W(fw), "_NET_WM_ICON", EWMH_ATOM_LIST_PROPERTY_NOTIFY,
 		(unsigned char *)new_icon, height*width + 2 + keep_length);
 
-	if (destroy_icon_pix)
+out:
+	if (destroy_icon_pix && pixmap != None)
 	{
 		XFreePixmap(dpy, pixmap);
 		if (mask != None)
@@ -509,7 +513,10 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		}
 	}
 
-	XDestroyImage(image);
+	if (image != NULL)
+	{
+		XDestroyImage(image);
+	}
 	if (m_image != None)
 	{
 		XDestroyImage(m_image);
@@ -518,6 +525,13 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 	{
 		XDestroyImage(a_image);
 	}
+	if (sample_colors != NULL)
+	{
+		PictureFreeColors(dpy, Pcmap, sample_colors, sample_color_count,
+		    0, sample_no_limit);
+		free(sample_colors);
+	}
+	PDestroyFvwmPicture(dpy, sample_picture);
 
 	return new_icon;
 }
@@ -780,7 +794,7 @@ int EWMH_SetIconFromWMIcon(
 				ICON_WANTED_HEIGHT, factor);
 			max_w = scale_icon_source(ICON_MAX_WIDTH, factor);
 			max_h = scale_icon_source(ICON_MAX_HEIGHT, factor);
-			if (fw->cs >= 0 && Colorset[fw->cs].do_dither_icon)
+			if (fw->cs >= 0 && GetColorset(fw->cs)->do_dither_icon)
 			{
 				fpa.mask = FPAM_DITHER;
 			}

@@ -26,8 +26,9 @@ visually consistent across changing monitor layouts and scale factors.
 
 - **Rendering**: Scale FVWM-owned UI and geometry, not arbitrary client pixels
 - **Compositing**: Integrate cleanly with external compositors; do not add one
-- **Compatibility**: Prefer a coherent FVWM-X contract over legacy config or
-  module compatibility when they conflict
+- **Compatibility**: Preserve FVWM themes, configuration syntax, and command
+  behavior while simplifying internals. A specific compatibility break requires
+  an explicit user decision.
 
 - **Verification**: Pure policy requires native unit coverage; X-visible
   behavior requires nested-X integration coverage on native Linux CI
@@ -416,25 +417,13 @@ visually consistent across changing monitor layouts and scale factors.
 No project skills found. Add skills to any of: `.claude/skills/`, `.agents/skills/`, `.cursor/skills/`, `.github/skills/`, or `.codex/skills/` with a `SKILL.md` index file.
 <!-- GSD:skills-end -->
 
-<!-- GSD:workflow-start source:GSD defaults -->
+## Development Workflow
 
-## GSD Workflow Enforcement
+Use the Codex harness directly for investigation, implementation, and
+verification. GSD commands and plugins are not required. Existing planning
+documents are historical context, not mandatory execution gates. Track current
+work, priorities, decisions, and verification in `dev-docs/PROJECT-TRACKER.md`.
 
-Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
-
-Use these entry points:
-
-- `/gsd-quick` for small fixes, doc updates, and ad-hoc tasks
-- `/gsd-debug` for investigation and bug fixing
-- `/gsd-execute-phase` for planned phase work
-
-Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
-<!-- GSD:workflow-end -->
-
-<!-- GSD:profile-start -->
-
-## Developer Profile
-
-> Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
-> This section is managed by `generate-claude-profile` -- do not edit manually.
-<!-- GSD:profile-end -->
+Follow the platform matrix in `dev-docs/SUPPORT.md`. Run native policy tests
+and real-X integration checks appropriate to the change. Use local QEMU
+for BSD verification and preserve the evidence for each architecture.

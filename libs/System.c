@@ -46,11 +46,19 @@ fd_set_size_t fvwmlib_max_fd = (fd_set_size_t)-9999999;
 
 fd_set_size_t GetFdWidth(void)
 {
+	long width;
+
 #if HAVE_SYSCONF
-	return min(sysconf(_SC_OPEN_MAX),FD_SETSIZE);
+	width = sysconf(_SC_OPEN_MAX);
 #else
-	return min(getdtablesize(),FD_SETSIZE);
+	width = getdtablesize();
 #endif
+	/* An unavailable limit must not become a negative select width. */
+	if (width <= 0 || width > FD_SETSIZE)
+	{
+		return FD_SETSIZE;
+	}
+	return (fd_set_size_t)width;
 }
 
 void fvwmlib_init_max_fd(void)

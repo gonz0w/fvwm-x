@@ -5,14 +5,17 @@
 :manname: FvwmCommand
 :manvolnum: 1
 :page-layout: base
+:mansource: FVWM-X
+:manmanual: FVWM-X Manual
+:revdate: 2026-10-12
 
 == NAME
 
-FvwmCommand - send commands to fvwm3.
+FvwmCommand - send commands to FVWM-X.
 
 == SYNOPSIS
 
-FvwmCommand __command__
+FvwmCommand [__options__] [__command__ ...]
 
 == DESCRIPTION
 
@@ -21,30 +24,86 @@ external use from shell-scripts or other languages.
 
 == INVOCATION
 
-FvwmCommand __command__
+FvwmCommand [__options__] [__command__ ...]
 
-== CONFIGURATION OPTIONS
+== OPTIONS
 
 FvwmCommand accepts the following command-line arguments:
 
--c::
+-c, --cmds::
 	Read and send commands from stdin
 
--f __filename__::
+-f __filename__, --socket=__filename__::
 	Use unix socket (__filename__) to connect to __FvwmMFL__
 
--i [infolevel]::
+-i __infolevel__, --info=__infolevel__::
 +
 ----
 0 - default
 >0 - print output from FvwmMFL
 ----
 
--d::
+-d, --detailed, --verbose::
 	Print detailed diagnostic messages
 
--v::
+-v, --version::
 	Print version number.
+
+-h, --help::
+	Print help and exit.
+
+Options must precede the command. Use `--` to end option processing.
+The obsolete FVWM2 options `-F`, `-m`, `-r`, `-S` and `-w value` are accepted
+and have no effect. With `-c`, command arguments are ignored.
+
+== SOCKET DISCOVERY
+
+An explicit `-f` path takes precedence over `FVWMMFL_SOCKET`.
+Otherwise, use `FVWMMFL_SOCKET_PATH`, then `XDG_RUNTIME_DIR/fvwmmfl`,
+then `TMPDIR/fvwmmfl-UID`. If `TMPDIR` is unset, use `/tmp/fvwmmfl-UID`.
+A relative `FVWMMFL_SOCKET_PATH` is relative to `FVWM_USERDIR`.
+
+The socket name is `fvwm_mfl_DISPLAY.sock`. Replace each byte in `DISPLAY`
+other than an ASCII letter, digit, hyphen or underscore with an underscore.
+For example, `:0.0` becomes `_0_0`. If `DISPLAY` is unset, use `default`.
+This follows the socket layout of FvwmMFL. Start `Module FvwmMFL` in the
+FVWM configuration before using this client.
+
+== GO CLIENT BEHAVIOR
+
+Go-enabled builds install the Go client. Builds with Go disabled retain the
+legacy Python client until the separate runtime profile migration is complete.
+The Go executable needs no interpreter at runtime.
+
+The Go client sends each command as a complete line, in input order.
+Each command can contain at most 1000 bytes, excluding its final newline.
+Embedded NUL, carriage return and newline bytes are refused. Standard-input
+lines can end with LF or CRLF; an unterminated final line is accepted.
+Empty lines are ignored. With `-c`, input continues until EOF or an error.
+
+Connection attempts and individual writes have a five-second limit. After all
+commands are sent, the client waits at most five seconds for the first complete
+MFL JSON object. Responses must be valid UTF-8 JSON objects, terminated by LF,
+with less than 256 KiB per record. Events are drained during input without an
+unbounded event queue. With `-i`, print the first object with sorted keys and
+four-space indentation. Exact JSON integers are preserved. The first object
+is usually the connection profile. It does not acknowledge command execution.
+
+The client returns status 0 on success, 1 on a connection, input or transport
+error, and 2 on an option error. Errors are printed on standard error.
+A partial command write is not retried.
+
+== EXAMPLES
+
+----
+FvwmCommand Echo hello
+printf 'Echo first\nEcho second\n' | FvwmCommand -c
+FvwmCommand -f /private/path/socket -i 1 Echo hello
+----
+
+== SEE ALSO
+
+FvwmMFL(1), FvwmPrompt(1), fvwm3(1)
 
 == AUTHOR
 

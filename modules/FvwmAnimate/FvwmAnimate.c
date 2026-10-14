@@ -699,50 +699,6 @@ static void AnimateResizeNone(
   ++animate_none;
   return;
 }
-#if 0
-/*
- * This makes a animation that looks like that light effect
- * when you turn off an old TV.
- * Used for window destruction
- *
- * This was commented out in Afterstep, I don't know why yet.  dje.
- */
-static void AnimateClose(int x, int y, int w, int h)
-{
-    int i, step;
-
-    if (!is_animation_visible(x, y, w, h, fx, fy, fw, fh)
-      return;
-
-    if (h>4) {
-	step = h*4/Animate.iterations;
-	if (step==0) {
-	    step = 2;
-	}
-	for (i=h; i>=2; i-=step) {
-	    XDrawRectangle(dpy, Scr.root, gc, x, y, w, i);
-	    XFlush(dpy);
-	    usleep(ANIM_DELAY2*600);
-	    XDrawRectangle(dpy, Scr.root, gc, x, y, w, i);
-	    y+=step/2;
-	}
-    }
-    if (w<2) return;
-    step = w*4/Animate.iterations;
-    if (step==0) {
-	step = 2;
-    }
-    for (i=w; i>=0; i-=step) {
-	XDrawRectangle(dpy, Scr.root, gc, x, y, i, 2);
-	XFlush(dpy);
-	usleep(ANIM_DELAY2*1000);
-	XDrawRectangle(dpy, Scr.root, gc, x, y, i, 2);
-	x+=step/2;
-    }
-    usleep(100000);
-    XFlush(dpy);
-}
-#endif
 
 void
 DeadPipe(int arg) {

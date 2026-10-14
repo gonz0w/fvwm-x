@@ -32,10 +32,10 @@ void InitRadioButton(struct XObj *xobj)
 
 	/* Save colors and font */
 	if (xobj->colorset >= 0) {
-		xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-		xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-		xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-		xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+		xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+		xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+		xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+		xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
 	} else {
 		xobj->TabColor[fore] = GetColor(xobj->forecolor);
 		xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -59,27 +59,15 @@ void InitRadioButton(struct XObj *xobj)
 	xobj->gc=fvwmlib_XCreateGC(dpy,xobj->win,0,NULL);
 	XSetForeground(dpy,xobj->gc,xobj->TabColor[fore]);
 
-	if ((xobj->Ffont = FlocaleLoadFont(
-		     dpy, xobj->font, ScriptName)) == NULL)
-	{
-		fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n",
-			   ScriptName);
-		exit(1);
-	}
 	if (xobj->Ffont->font != NULL)
 		XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
 	XSetLineAttributes(dpy,xobj->gc,1,LineSolid,CapRound,JoinMiter);
 
-	/* Resize widget */
-	xobj->height= xobj->Ffont->height +5;
-	xobj->width=FlocaleTextWidth(
-		xobj->Ffont,xobj->title,strlen(xobj->title))+20;
-	XResizeWindow(dpy,xobj->win,xobj->width,xobj->height);
 	if (xobj->colorset >= 0)
 		SetWindowBackground(
 			dpy, xobj->win, xobj->width, xobj->height,
-			&Colorset[xobj->colorset], Pdepth, xobj->gc, True);
+			GetColorset(xobj->colorset), Pdepth, xobj->gc, True);
 
 	XSelectInput(dpy, xobj->win, ExposureMask);
 }
@@ -115,7 +103,7 @@ void DrawRadioButton(struct XObj *xobj, XEvent *evp)
 
 void EvtMouseRadioButton(struct XObj *xobj,XButtonEvent *EvtButton)
 {
-	static XEvent event;
+	XEvent event;
 	int End=1;
 	unsigned int modif;
 	int x1,x2,y1,y2,j;
@@ -127,7 +115,11 @@ void EvtMouseRadioButton(struct XObj *xobj,XButtonEvent *EvtButton)
 
 	while (End)
 	{
-		FNextEvent(dpy, &event);
+		if (!script_widget_next_event(xobj, &event))
+		{
+			DrawRadioButton(xobj, NULL);
+			return;
+		}
 		switch (event.type)
 		{
 		case EnterNotify:
@@ -244,9 +236,4 @@ void EvtKeyRadioButton(struct XObj *xobj,XKeyEvent *EvtKey)
 			dpy, xobj->win, xobj->gc, 2, j-10, 8, 8, 0*64, 360*64);
 		SendMsg(xobj,SingleClic);
 	}
-}
-
-void ProcessMsgRadioButton(
-	struct XObj *xobj,unsigned long type,unsigned long *body)
-{
 }

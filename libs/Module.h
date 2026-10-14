@@ -126,7 +126,8 @@ typedef struct
 #define MX_REPLY		  ((1UL<<10) | M_EXTENDED_MSG)
 #define MAX_EXTENDED_MESSAGES     10
 #define DEFAULT_XMSG_MASK         0x00000000
-#define MAX_XMSG_MASK             0x0000001f
+/* All named extended event bits, excluding the category marker. */
+#define MAX_XMSG_MASK             0x000007fe
 
 #define MAX_TOTAL_MESSAGES   (MAX_MESSAGES + MAX_EXTENDED_MESSAGES)
 
@@ -235,6 +236,10 @@ char *module_expand_action(
  *
  * Returns a pointer to a ModuleArgs structure, or NULL if something
  * is not kosher.  The returned memory is a static buffer.
+ * Protocol descriptors remain caller-owned and are marked close-on-exec.
+ * An incoming descriptor of -1 retains the ModuleListenOnly contract.
+ * Malformed/closed descriptors or flag setup failure refuse startup; callers
+ * must not continue using module endpoints after a NULL result.
  **/
 
 typedef struct

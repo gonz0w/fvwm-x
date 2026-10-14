@@ -85,10 +85,10 @@ void InitSwallow(struct XObj *xobj)
 
 	/* Save colors and font */
 	if (xobj->colorset >= 0) {
-		xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-		xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-		xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-		xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+		xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+		xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+		xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+		xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
 	} else {
 		xobj->TabColor[fore] = GetColor(xobj->forecolor);
 		xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -101,6 +101,7 @@ void InitSwallow(struct XObj *xobj)
 				-1000,-1000,xobj->width,xobj->height,0,
 				CopyFromParent,InputOutput,CopyFromParent,
 				mask,&Attr);
+	xobj->swallow_placeholder = xobj->win;
 
 	/* Resize widget */
 	if (xobj->height<30)
@@ -146,10 +147,13 @@ void InitSwallow(struct XObj *xobj)
 
 void DestroySwallow(struct XObj *xobj)
 {
-	/* Stop swallow program */
-	if (xobj->win!=None)
+	/* An unfilled widget still owns its placeholder X resource. */
+	if (xobj->win != None && xobj->win != xobj->swallow_placeholder)
 		XKillClient(dpy, xobj->win);
+	if (xobj->swallow_placeholder != None)
+		XDestroyWindow(dpy, xobj->swallow_placeholder);
 	xobj->win = None;
+	xobj->swallow_placeholder = None;
 }
 
 void DrawSwallow(struct XObj *xobj, XEvent *evp)
@@ -168,18 +172,19 @@ void EvtKeySwallow(struct XObj *xobj,XKeyEvent *EvtKey)
 /* Get the Swallow window pointer */
 void CheckForHangon(struct XObj *xobj,unsigned long *body)
 {
-	char *cbody;
-
-	cbody=fxstrdup((char *)&body[3]);
-	if(strcmp(cbody,xobj->title)==0)
+	const char *cbody = (const char *)&body[3];
+	if(strcmp(cbody,xobj->title)==0 &&
+		(Window)body[0] != xobj->swallow_placeholder)
 	{
+		if (xobj->swallow_placeholder != None)
+			XDestroyWindow(dpy, xobj->swallow_placeholder);
+		xobj->swallow_placeholder = None;
 		xobj->win = (Window)body[0];
 		free(xobj->title);
 		xobj->title=fxstrdup("No window");
 		XUnmapWindow(dpy,xobj->win);
 		XSetWindowBorderWidth(dpy,xobj->win,0);
 	}
-	free(cbody);
 }
 
 void swallow(struct XObj *xobj,unsigned long *body)

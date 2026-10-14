@@ -1,13 +1,14 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
-/* Skeleton interface for Bison's Yacc-like parsers in C
+/* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
+   Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,8 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, see: <http://www.gnu.org/licenses/>
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,120 +31,142 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Tokens.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
+
+#ifndef YY_YY_SCRIPT_H_INCLUDED
+# define YY_YY_SCRIPT_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
+
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     STR = 258,
-     GSTR = 259,
-     VAR = 260,
-     FONT = 261,
-     NUMBER = 262,
-     WINDOWTITLE = 263,
-     WINDOWLOCALETITLE = 264,
-     WINDOWSIZE = 265,
-     WINDOWPOSITION = 266,
-     USEGETTEXT = 267,
-     FORECOLOR = 268,
-     BACKCOLOR = 269,
-     SHADCOLOR = 270,
-     LICOLOR = 271,
-     COLORSET = 272,
-     OBJECT = 273,
-     INIT = 274,
-     PERIODICTASK = 275,
-     QUITFUNC = 276,
-     MAIN = 277,
-     END = 278,
-     PROP = 279,
-     TYPE = 280,
-     SIZE = 281,
-     POSITION = 282,
-     VALUE = 283,
-     VALUEMIN = 284,
-     VALUEMAX = 285,
-     TITLE = 286,
-     SWALLOWEXEC = 287,
-     ICON = 288,
-     FLAGS = 289,
-     WARP = 290,
-     WRITETOFILE = 291,
-     LOCALETITLE = 292,
-     HIDDEN = 293,
-     NOFOCUS = 294,
-     NORELIEFSTRING = 295,
-     CENTER = 296,
-     LEFT = 297,
-     RIGHT = 298,
-     CASE = 299,
-     SINGLECLIC = 300,
-     DOUBLECLIC = 301,
-     BEG = 302,
-     POINT = 303,
-     EXEC = 304,
-     HIDE = 305,
-     SHOW = 306,
-     CHFONT = 307,
-     CHFORECOLOR = 308,
-     CHBACKCOLOR = 309,
-     CHCOLORSET = 310,
-     CHWINDOWTITLE = 311,
-     CHWINDOWTITLEFARG = 312,
-     KEY = 313,
-     GETVALUE = 314,
-     GETMINVALUE = 315,
-     GETMAXVALUE = 316,
-     GETFORE = 317,
-     GETBACK = 318,
-     GETHILIGHT = 319,
-     GETSHADOW = 320,
-     CHVALUE = 321,
-     CHVALUEMAX = 322,
-     CHVALUEMIN = 323,
-     ADD = 324,
-     DIV = 325,
-     MULT = 326,
-     GETTITLE = 327,
-     GETOUTPUT = 328,
-     STRCOPY = 329,
-     NUMTOHEX = 330,
-     HEXTONUM = 331,
-     QUIT = 332,
-     LAUNCHSCRIPT = 333,
-     GETSCRIPTFATHER = 334,
-     SENDTOSCRIPT = 335,
-     RECEIVFROMSCRIPT = 336,
-     GET = 337,
-     SET = 338,
-     SENDSIGN = 339,
-     REMAINDEROFDIV = 340,
-     GETTIME = 341,
-     GETSCRIPTARG = 342,
-     GETPID = 343,
-     SENDMSGANDGET = 344,
-     PARSE = 345,
-     LASTSTRING = 346,
-     GETTEXT = 347,
-     IF = 348,
-     THEN = 349,
-     ELSE = 350,
-     FOR = 351,
-     TO = 352,
-     DO = 353,
-     WHILE = 354,
-     BEGF = 355,
-     ENDF = 356,
-     EQUAL = 357,
-     INFEQ = 358,
-     SUPEQ = 359,
-     INF = 360,
-     SUP = 361,
-     DIFF = 362
-   };
+  enum yytokentype
+  {
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    STR = 258,                     /* STR  */
+    GSTR = 259,                    /* GSTR  */
+    VAR = 260,                     /* VAR  */
+    FONT = 261,                    /* FONT  */
+    NUMBER = 262,                  /* NUMBER  */
+    WINDOWTITLE = 263,             /* WINDOWTITLE  */
+    WINDOWLOCALETITLE = 264,       /* WINDOWLOCALETITLE  */
+    WINDOWSIZE = 265,              /* WINDOWSIZE  */
+    WINDOWPOSITION = 266,          /* WINDOWPOSITION  */
+    USEGETTEXT = 267,              /* USEGETTEXT  */
+    FORECOLOR = 268,               /* FORECOLOR  */
+    BACKCOLOR = 269,               /* BACKCOLOR  */
+    SHADCOLOR = 270,               /* SHADCOLOR  */
+    LICOLOR = 271,                 /* LICOLOR  */
+    COLORSET = 272,                /* COLORSET  */
+    OBJECT = 273,                  /* OBJECT  */
+    INIT = 274,                    /* INIT  */
+    PERIODICTASK = 275,            /* PERIODICTASK  */
+    QUITFUNC = 276,                /* QUITFUNC  */
+    MAIN = 277,                    /* MAIN  */
+    END = 278,                     /* END  */
+    PROP = 279,                    /* PROP  */
+    TYPE = 280,                    /* TYPE  */
+    SIZE = 281,                    /* SIZE  */
+    POSITION = 282,                /* POSITION  */
+    VALUE = 283,                   /* VALUE  */
+    VALUEMIN = 284,                /* VALUEMIN  */
+    VALUEMAX = 285,                /* VALUEMAX  */
+    TITLE = 286,                   /* TITLE  */
+    SWALLOWEXEC = 287,             /* SWALLOWEXEC  */
+    ICON = 288,                    /* ICON  */
+    FLAGS = 289,                   /* FLAGS  */
+    WARP = 290,                    /* WARP  */
+    WRITETOFILE = 291,             /* WRITETOFILE  */
+    LOCALETITLE = 292,             /* LOCALETITLE  */
+    HIDDEN = 293,                  /* HIDDEN  */
+    NOFOCUS = 294,                 /* NOFOCUS  */
+    NORELIEFSTRING = 295,          /* NORELIEFSTRING  */
+    CENTER = 296,                  /* CENTER  */
+    LEFT = 297,                    /* LEFT  */
+    RIGHT = 298,                   /* RIGHT  */
+    CASE = 299,                    /* CASE  */
+    SINGLECLIC = 300,              /* SINGLECLIC  */
+    DOUBLECLIC = 301,              /* DOUBLECLIC  */
+    BEG = 302,                     /* BEG  */
+    POINT = 303,                   /* POINT  */
+    EXEC = 304,                    /* EXEC  */
+    HIDE = 305,                    /* HIDE  */
+    SHOW = 306,                    /* SHOW  */
+    CHFONT = 307,                  /* CHFONT  */
+    CHFORECOLOR = 308,             /* CHFORECOLOR  */
+    CHBACKCOLOR = 309,             /* CHBACKCOLOR  */
+    CHCOLORSET = 310,              /* CHCOLORSET  */
+    CHWINDOWTITLE = 311,           /* CHWINDOWTITLE  */
+    CHWINDOWTITLEFARG = 312,       /* CHWINDOWTITLEFARG  */
+    KEY = 313,                     /* KEY  */
+    GETVALUE = 314,                /* GETVALUE  */
+    GETMINVALUE = 315,             /* GETMINVALUE  */
+    GETMAXVALUE = 316,             /* GETMAXVALUE  */
+    GETFORE = 317,                 /* GETFORE  */
+    GETBACK = 318,                 /* GETBACK  */
+    GETHILIGHT = 319,              /* GETHILIGHT  */
+    GETSHADOW = 320,               /* GETSHADOW  */
+    CHVALUE = 321,                 /* CHVALUE  */
+    CHVALUEMAX = 322,              /* CHVALUEMAX  */
+    CHVALUEMIN = 323,              /* CHVALUEMIN  */
+    ADD = 324,                     /* ADD  */
+    DIV = 325,                     /* DIV  */
+    MULT = 326,                    /* MULT  */
+    GETTITLE = 327,                /* GETTITLE  */
+    GETOUTPUT = 328,               /* GETOUTPUT  */
+    STRCOPY = 329,                 /* STRCOPY  */
+    NUMTOHEX = 330,                /* NUMTOHEX  */
+    HEXTONUM = 331,                /* HEXTONUM  */
+    QUIT = 332,                    /* QUIT  */
+    LAUNCHSCRIPT = 333,            /* LAUNCHSCRIPT  */
+    GETSCRIPTFATHER = 334,         /* GETSCRIPTFATHER  */
+    SENDTOSCRIPT = 335,            /* SENDTOSCRIPT  */
+    RECEIVFROMSCRIPT = 336,        /* RECEIVFROMSCRIPT  */
+    GET = 337,                     /* GET  */
+    SET = 338,                     /* SET  */
+    SENDSIGN = 339,                /* SENDSIGN  */
+    REMAINDEROFDIV = 340,          /* REMAINDEROFDIV  */
+    GETTIME = 341,                 /* GETTIME  */
+    GETSCRIPTARG = 342,            /* GETSCRIPTARG  */
+    GETPID = 343,                  /* GETPID  */
+    SENDMSGANDGET = 344,           /* SENDMSGANDGET  */
+    PARSE = 345,                   /* PARSE  */
+    LASTSTRING = 346,              /* LASTSTRING  */
+    GETTEXT = 347,                 /* GETTEXT  */
+    IF = 348,                      /* IF  */
+    THEN = 349,                    /* THEN  */
+    ELSE = 350,                    /* ELSE  */
+    FOR = 351,                     /* FOR  */
+    TO = 352,                      /* TO  */
+    DO = 353,                      /* DO  */
+    WHILE = 354,                   /* WHILE  */
+    BEGF = 355,                    /* BEGF  */
+    ENDF = 356,                    /* ENDF  */
+    EQUAL = 357,                   /* EQUAL  */
+    INFEQ = 358,                   /* INFEQ  */
+    SUPEQ = 359,                   /* SUPEQ  */
+    INF = 360,                     /* INF  */
+    SUP = 361,                     /* SUP  */
+    DIFF = 362                     /* DIFF  */
+  };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define STR 258
 #define GSTR 259
 #define VAR 260
@@ -251,22 +273,28 @@
 #define SUP 361
 #define DIFF 362
 
-
-
-
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-#line 368 "script.y"
-{  char *str;
+union YYSTYPE
+{
+#line 433 "script.y"
+  char *str;
           int number;
-       }
-/* Line 1489 of yacc.c.  */
-#line 267 "y.tab.h"
-	YYSTYPE;
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
+       
+
+#line 286 "script.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
+# define YYSTYPE_IS_DECLARED 1
 #endif
+
 
 extern YYSTYPE yylval;
 
+
+int yyparse (void);
+
+
+#endif /* !YY_YY_SCRIPT_H_INCLUDED  */

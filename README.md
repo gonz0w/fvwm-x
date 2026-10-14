@@ -1,58 +1,27 @@
-FVWM3
------
+# FVWM-X
 
-[![Codacy Status](https://api.codacy.com/project/badge/Grade/0bfafcfd16b84a96a1305e92de2d6c4c)](https://app.codacy.com/gh/fvwmorg/fvwm3?utm_source=github.com&utm_medium=referral&utm_content=fvwmorg/fvwm3&utm_campaign=Badge_Grade_Settings)
-![Build Status](https://github.com/fvwmorg/fvwm3/workflows/FVWM3%20CI/badge.svg)
-![Open issues](https://img.shields.io/github/issues-raw/fvwmorg/fvwm3)
-![GitHub contributors](https://img.shields.io/github/contributors/fvwmorg/fvwm3)
+FVWM-X is an X11 window manager derived from FVWM3, for Linux, FreeBSD Xorg
+and OpenBSD Xenocara on AMD64 and ARM64. It is for people who want a fast,
+configurable desktop and control over their own setup.
 
-Welcome to fvwm.  Version 3 is a multiple large virtual desktop window manager.
+Our goals are a simpler codebase, responsive interaction, secure resource and
+process handling, and continued use of existing FVWM configurations and themes.
+Desktop services build on FVWM's native modules and existing system facilities.
+File managers and other applications remain your choice; there is no built-in
+compositor or native Wayland backend.
 
-The successor to [fvwm-2.6.x](http://github.com/fvwmorg/fvwm).
+**Status:** active development, with locally qualified core responsiveness,
+hardening and utility-port checkpoints. The local PNG/QEMU build, install and
+BSD default-X checkpoint is complete. Broader desktop work, physical-hardware
+qualification and release acceptance remain open. This is not a stable release.
 
-Fvwm3 is intended to be extremely customizable and extendible while consuming
-a relatively small amount of resources.
+- [Install and build](INSTALL.md)
+- [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)
+- [Roadmap issues](https://github.com/gonz0w/fvwm-x/issues)
+- [Development guide](dev-docs/DEVELOPERS.md)
 
-Fvwm2 Compatibility
--------------------
+Review, tests, lint and validation run locally. GitHub hosts code, issues and
+PR review; GitHub Actions is disabled. Preserve original failed evidence and
+identify the exact source and platform behind every passing result.
 
-Although an existing fvwm2 configuration should mostly work with fvwm3, it
-isn't guaranteed to work without some modifications.  This is because fvwm3
-has changed, often removing long-standing deprecated options.
-
-More details about those changes [can be found here](https://github.com/fvwmorg/fvwm3/discussions/878)
-
-Releases / Changelog
---------------------
-
-* [See the CHANGELOG](./CHANGELOG.md)
-
-Installation
-------------
-
-See [the installation instructions](./INSTALL.md)
-
-Help & Support
---------------
-
-We have a strong community on IRC (libera.chat), in the `#fvwm` channel if you
-fancy a chat.
-
-There is also the [Fvwm Forums](https://fvwmforums.org) where you can ask
-questions.
-
-Issues (for bugs) can be opened, and any/all bug reports are appreciated!
-
-Development
------------
-
-Those interested in contributing to FVWM3 should have [a read of the developer
-documentation](./dev-docs/DEVELOPERS.md).
-
-* A [TODO file](./dev-docs/TODO.md) exists, and sometimes even things from it are
-worked on.
-
-* New commands and config file syntax thoughts [are being documented here](./dev-docs/NEW-COMMANDS.md).
-
-Please open a github issue or contact me directly if you wish to discuss a
-particular feature of issue you need help with.
+FVWM-X retains FVWM's GPL license and upstream attribution; see [COPYING](COPYING).

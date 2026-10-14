@@ -32,15 +32,13 @@ void InitPushButton(struct XObj *xobj)
 {
 	unsigned long mask;
 	XSetWindowAttributes Attr;
-	int i;
-	char *str;
 
 	/* Save colors and font */
 	if (xobj->colorset >= 0) {
-		xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-		xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-		xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-		xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+		xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+		xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+		xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+		xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
 	} else {
 		xobj->TabColor[fore] = GetColor(xobj->forecolor);
 		xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -62,57 +60,19 @@ void InitPushButton(struct XObj *xobj)
 		dpy, *xobj->ParentWin, xobj->x, xobj->y, xobj->width,
 		xobj->height, 0, CopyFromParent, InputOutput, CopyFromParent,
 		mask, &Attr);
+		if (mask & CWCursor)
+		  XFreeCursor(dpy, Attr.cursor);
 	xobj->gc = fvwmlib_XCreateGC(dpy, xobj->win, 0, NULL);
 	XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
 
-	if ((xobj->Ffont = FlocaleLoadFont(
-		     dpy, xobj->font, ScriptName)) == NULL)
-	{
-		fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n",
-			   ScriptName);
-		exit(1);
-	}
 	if (xobj->Ffont->font != NULL)
 		XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
 	XSetLineAttributes(dpy, xobj->gc, 1, LineSolid, CapRound, JoinMiter);
 
-	/* Resize widget */
-	str = (char*)GetMenuTitle(xobj->title, 1);
-	if (xobj->icon == NULL)
-	{
-		i = xobj->Ffont->height + 12;
-		if (xobj->height < i)
-			xobj->height = i;
-		i = FlocaleTextWidth(xobj->Ffont, str, strlen(str)) + 16;
-		if (xobj->width < i)
-			xobj->width = i;
-	}
-	else if (strlen(str) == 0)
-	{
-		if (xobj->height < xobj->icon_h + 10)
-			xobj->height = xobj->icon_h + 10;
-		if (xobj->width < xobj->icon_w + 10)
-			xobj->width = xobj->icon_w + 10;
-	}
-	else
-	{
-		if (xobj->icon_w + 10 > FlocaleTextWidth(
-			    xobj->Ffont, str, strlen(str)) + 16)
-			i = xobj->icon_w + 10;
-		else
-			i = FlocaleTextWidth(
-				xobj->Ffont, str, strlen(str)) + 16;
-		if (xobj->width < i)
-			xobj->width = i;
-		i = xobj->icon_h+ 2 * (xobj->Ffont->height + 10);
-		if (xobj->height < i)
-			xobj->height = i;
-	}
-	XResizeWindow(dpy, xobj->win, xobj->width, xobj->height);
 	if (xobj->colorset >= 0)
 		SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-				    &Colorset[xobj->colorset], Pdepth,
+				    GetColorset(xobj->colorset), Pdepth,
 				    xobj->gc, True);
 	xobj->value3 = CountOption(xobj->title);
 	XSelectInput(dpy, xobj->win, ExposureMask);
@@ -134,28 +94,28 @@ void DrawPushButton(struct XObj *xobj, XEvent *evp)
 
 void EvtMousePushButton(struct XObj *xobj, XButtonEvent *EvtButton)
 {
-	static XEvent event;
+	XEvent event;
 	int End = 1;
 	unsigned int modif;
-	int x1,x2,y1,y2,i;
+	int x1,x2,y1,y2;
 	Window Win1,Win2,WinPop;
 	Window WinBut = 0;
 	int In = 0;
-	char *str;
-	int x,y,hOpt,yMenu,hMenu,wMenu;
-	int oldvalue = 0,newvalue;
+	int x,y,hOpt,hMenu,wMenu;
+	int oldvalue = 0,newvalue = 0;
 	unsigned long mask;
 	XSetWindowAttributes Attr;
 
 	if (EvtButton->button == Button1)
 	{
-		i = (xobj->width -
-		     FlocaleTextWidth(
-			     xobj->Ffont, xobj->title, strlen(xobj->title)))/2;
 
 		while (End)
 		{
-			FNextEvent(dpy, &event);
+			if (!script_widget_next_event(xobj, &event))
+			{
+				DrawPushButton(xobj, NULL);
+				return;
+			}
 			switch (event.type)
 			{
 			case EnterNotify:
@@ -260,36 +220,17 @@ void EvtMousePushButton(struct XObj *xobj, XButtonEvent *EvtButton)
 	{
 		if (xobj->value3 > 1)
 		{
-			hOpt = xobj->Ffont->height + 10;
-			/* Total height of the menu */
-			hMenu = (xobj->value3 - 1) * hOpt;
-			yMenu = xobj->y + xobj->height;
-			wMenu = 0;
-			for (i = 2 ; i <= xobj->value3; i++)
+			script_layout_geometry popup;
+			if (!script_widget_popup(xobj, 2, 34, false, &popup, &hOpt))
 			{
-				str = (char*)GetMenuTitle(xobj->title, i);
-				if (wMenu < FlocaleTextWidth(
-					    xobj->Ffont, str, strlen(str))+34)
-					wMenu = FlocaleTextWidth(
-						xobj->Ffont, str,
-						strlen(str))+34;
-				free(str);
+			  script_geometry_diagnostic(__func__, xobj->id);
+			  return;
 			}
-
-			/* create the menu window */
-			XTranslateCoordinates(dpy, *xobj->ParentWin, Root,
-					      xobj->x, yMenu, &x, &y, &Win1);
-			if (x<0) x = 0;
-			if (y<0) y = 0;
-			if (x + wMenu > XDisplayWidth(dpy, screen))
-			{
-				x = XDisplayWidth(dpy, screen) - wMenu;
-			}
-			if (y + hMenu > XDisplayHeight(dpy, screen))
-			{
-				y = y-hMenu-xobj->height;
-			}
-
+			xobj->value3 = CountOption(xobj->title);
+			x = popup.x;
+			y = popup.y;
+			hMenu = popup.height;
+			wMenu = popup.width;
 			mask = 0;
 			Attr.background_pixel = xobj->TabColor[back];
 			mask |= CWBackPixel;
@@ -306,10 +247,12 @@ void EvtMousePushButton(struct XObj *xobj, XButtonEvent *EvtButton)
 			WinPop = XCreateWindow(
 				dpy, Root, x, y, wMenu-5, hMenu, 0,
 				Pdepth, InputOutput, Pvisual, mask, &Attr);
+				if (mask & CWCursor)
+				  XFreeCursor(dpy, Attr.cursor);
 			if (xobj->colorset >= 0)
 				SetWindowBackground(
 					dpy, WinPop, wMenu - 5, hMenu,
-					&Colorset[xobj->colorset], Pdepth,
+					GetColorset(xobj->colorset), Pdepth,
 					xobj->gc, True);
 			XMapRaised(dpy, WinPop);
 
@@ -344,7 +287,10 @@ void EvtMousePushButton(struct XObj *xobj, XButtonEvent *EvtButton)
 					}
 				}
 			}
-			while (!FCheckTypedEvent(dpy, ButtonRelease, &event));
+			while (FvwmScriptModalEvent(xobj, &event, 20) &&
+			       event.type != ButtonRelease && event.type != KeyPress);
+			if (event.type != ButtonRelease)
+				newvalue = 0;
 			XDestroyWindow(dpy, WinPop);
 			if (newvalue != 0)
 			{
@@ -379,9 +325,4 @@ void EvtKeyPushButton(struct XObj *xobj, XKeyEvent *EvtKey)
 		}
 		free(carks);
 	}
-}
-
-void ProcessMsgPushButton(
-	struct XObj *xobj, unsigned long type, unsigned long *body)
-{
 }

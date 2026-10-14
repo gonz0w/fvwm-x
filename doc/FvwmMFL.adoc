@@ -37,6 +37,28 @@ The path for where *fvwm_mfl_$DISPLAY.sock* is created can be changed by
 setting the *FVWMMFL_SOCKET_PATH* environment variable.  _FvwmMFL_ will create
 this if it does not exist, and set relevant permissions.
 
+The lockfile in this directory must be a regular file owned by the current
+user, with no group or other permissions and exactly one hard link. Symbolic
+links and unsafe existing lockfiles are rejected. The default lockfile mode
+is 0600. A rejected lockfile prevents this module from starting; the window
+manager continues to run.
+The private lockfile is retained after module shutdown so subsequent instances
+lock the same inode. The socket is removed on normal signal-driven shutdown.
+
+Commands are newline-delimited. A command may be split across socket writes;
+it is executed only after the newline arrives. Empty lines are ignored.
+Commands may contain at most 1000 bytes before the newline and must not contain
+NUL bytes. An invalid command closes that client's connection.
+
+The module accepts up to 32 concurrent clients. Each client has a 16 KiB input
+buffer and a 256 KiB output queue; the shared command queue to FVWM is also
+limited to 256 KiB. A client exceeding an output limit, or submitting a command
+when the shared queue is full, is disconnected. Clients must read replies;
+unwritten output has a 30-second inactivity timeout, and each incomplete
+command must be completed within 30 seconds.
+Idle subscriptions with no pending input or output remain connected.
+A stalled connection to FVWM also has a 30-second write timeout.
+
 == REGISTERING INTEREST
 
 Commands can be sent to _FvwmMFL_ to control which information is sent
@@ -91,6 +113,9 @@ unset focus_change
 
 Each packet sent to a client is in plain JSON. The information contained
 in each packet varies depending on the event.
+String values and object keys use UTF-8. Each invalid byte is printed as
+`\ufffd` (the replacement character U+FFFD). Valid UTF-8 is preserved.
+This output conversion does not change stored FVWM text or native module packets.
 
 TODO: document each JSON structure.
 

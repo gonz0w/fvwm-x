@@ -490,9 +490,41 @@ test_pointer_one_by_one_freeze_ignores_post_resize_frame(void)
 	assert_owner(&result, 1, "HDMI-1", MONITOR_OWNERSHIP_REASON_OVERLAP);
 }
 
+static void
+test_normal_noop_preserves_destination_rectangle(void)
+{
+	size_rect logical = {7, 7};
+	size_borders chrome = {.total_size = {6, 24}};
+	rectangle frame = {100, -200, 15, 33};
+
+	assert(geometry_transition_plan(GEOMETRY_TRANSITION_NORMAL,
+		logical, (size_rect){7, 7}, true,
+		(monitor_scale_factor){5}, &chrome, NULL, &frame) ==
+		GEOMETRY_TRANSITION_NOOP);
+	assert(frame.x == 100 && frame.y == -200);
+	assert(frame.width == 15 && frame.height == 33);
+}
+
+static void
+test_fixed_client_uses_source_pixels_with_destination_chrome(void)
+{
+	size_rect logical = {200, 120};
+	size_borders chrome = {.total_size = {12, 36}};
+	rectangle frame = {2000, 100, 206, 144};
+
+	assert(geometry_transition_plan(GEOMETRY_TRANSITION_NORMAL,
+		logical, (size_rect){200, 120}, false,
+		(monitor_scale_factor){8}, &chrome, NULL, &frame) ==
+		GEOMETRY_TRANSITION_INELIGIBLE);
+	assert(frame.width == 212 && frame.height == 156);
+	assert(frame.x == 2000 && frame.y == 100);
+}
+
 int
 main(void)
 {
+	test_normal_noop_preserves_destination_rectangle();
+	test_fixed_client_uses_source_pixels_with_destination_chrome();
 	test_normal_plan_logical_seven_at_five_quarters_is_nine();
 	test_repeated_plan_from_stored_logical_seven();
 	test_increment_snap_does_not_rewrite_logical();

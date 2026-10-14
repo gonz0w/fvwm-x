@@ -27,14 +27,11 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <errno.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <sys/wait.h>
 #include "libs/ftime.h"
-
-#if HAVE_SYS_SELECT_H
-#include <sys/select.h>
-#endif
 
 #include <unistd.h>
 #include <ctype.h>
@@ -44,6 +41,8 @@
 #include "libs/FShape.h"
 #include "libs/FEvent.h"
 #include "libs/Module.h"
+#include "libs/module_packet_reader.h"
+#include "libs/module_x_service.h"
 #include "libs/Colorset.h"
 #include "libs/fvwmsignal.h"
 #include "libs/Flocale.h"
@@ -60,8 +59,8 @@
 static RETSIGTYPE TerminateHandler(int);
 
 static ModuleArgs *module;
-static fd_set_size_t fd_width;
 static int fd[2];
+static module_packet_reader ident_packet_reader;
 
 static Display *dpy;                    /* which display are we talking to */
 static Window Root;
@@ -218,6 +217,7 @@ int main(int argc, char **argv)
 	{
 		if (strlen(tline) <= 1)
 		{
+			GetConfigLine(fd, &tline);
 			continue;
 		}
 		if (strncasecmp(tline, mname, module->namelen+1) == 0)
@@ -239,8 +239,12 @@ int main(int argc, char **argv)
 			}
 			else if (strncasecmp(tline, "Colorset", 8) == 0)
 			{
-				sscanf(&tline[8], "%d", &colorset);
-				AllocColorset(colorset);
+				int requested;
+				if (ParseColorsetId(&tline[8], NULL, &requested) &&
+				    (requested < 0 || AllocColorset(requested)))
+				{
+					colorset = requested;
+				}
 			}
 			else if (strncasecmp(tline, "MinimalLayer", 12) == 0)
 			{
@@ -282,7 +286,12 @@ int main(int argc, char **argv)
 			dpy, screen, module->name, &(module->window), True);
 	}
 
-	fd_width = GetFdWidth();
+	/* Configuration and interactive target selection precede runtime reads. */
+	if (!module_packet_reader_init(&ident_packet_reader, fd[1]))
+	{
+		fvwm_debug(__func__, "cannot initialize runtime packet reader");
+		return 1;
+	}
 
 	/* Create a list of all windows */
 	/* Request a list of all windows,
@@ -305,19 +314,69 @@ int main(int argc, char **argv)
  * Read the entire window list from fvwm
  *
  */
+static Bool ident_packet_is_valid(const FvwmPacket *packet)
+{
+	size_t body_size = FvwmPacketBodySize_byte(*packet);
+
+	switch (packet->type)
+	{
+	case M_CONFIGURE_WINDOW:
+		return body_size >= sizeof(ConfigWinPacket);
+	case M_WINDOW_NAME:
+	case M_ICON_NAME:
+	case M_RES_CLASS:
+	case M_RES_NAME:
+	case M_CONFIG_INFO:
+		return module_packet_body_has_text(packet->body,
+		    FvwmPacketBodySize(*packet), 3);
+	case MX_PROPERTY_CHANGE:
+		return body_size >= 3 * sizeof(unsigned long);
+	default:
+		return True;
+	}
+}
+
 void Loop(int *fd)
 {
-	while (1)
+	while (!isTerminated)
 	{
-		FvwmPacket* packet = ReadFvwmPacket(fd[1]);
-		if ( packet == NULL )
+		struct pollfd ready = {fd[1], POLLIN, 0};
+		FvwmPacket *packet;
+		module_packet_read_status status;
+		int result = fvwmPoll(&ready, 1, -1);
+
+		if (result < 0 && errno == EINTR)
 		{
-			exit(0);
+			continue;
 		}
-		else
+		if (result < 0 || (ready.revents & (POLLERR | POLLNVAL)))
 		{
-			process_message( packet->type, packet->body );
+			fvwm_debug(__func__, "runtime readiness failed");
+			return;
 		}
+		if (!(ready.revents & (POLLIN | POLLHUP)))
+		{
+			continue;
+		}
+		status = module_packet_reader_read(&ident_packet_reader, &packet);
+		if (status == MODULE_PACKET_READ_MORE)
+		{
+			continue;
+		}
+		if (status != MODULE_PACKET_READ_READY)
+		{
+			if (status == MODULE_PACKET_READ_ERROR)
+			{
+				fvwm_debug(__func__, "runtime packet read failed");
+			}
+			return;
+		}
+		if (!ident_packet_is_valid(packet))
+		{
+			fvwm_debug(__func__, "discarding incomplete packet body\n");
+			continue;
+		}
+		process_message(packet->type, packet->body);
 	}
 }
 
@@ -502,7 +561,7 @@ void list_property_change(unsigned long *body)
 			UpdateBackgroundTransparency(
 				dpy, main_win, main_width,
 				main_height,
-				&Colorset[(colorset)], Pdepth,
+				GetColorset((colorset)), Pdepth,
 				gc, True);
 		}
 	}
@@ -547,7 +606,7 @@ void list_config_info(unsigned long *body)
 			mw_events |= ExposureMask;
 		}
 		XSelectInput(dpy, main_win, mw_events);
-		XSetForeground(dpy, gc, Colorset[colorset].fg);
+		XSetForeground(dpy, gc, GetColorset(colorset)->fg);
 		if (UsePixmapDrawing)
 		{
 			PixmapDrawWindow(main_width, main_height);
@@ -556,7 +615,7 @@ void list_config_info(unsigned long *body)
 		{
 			SetWindowBackground(
 				dpy, main_win, main_width, main_height,
-				&Colorset[colorset], Pdepth, gc, True);
+				GetColorset(colorset), Pdepth, gc, True);
 		}
 	}
 	free(token);
@@ -567,26 +626,74 @@ void list_config_info(unsigned long *body)
  * Process X Events
  *
  */
+static Bool ident_x_batch_available(unsigned int serviced,
+	const struct timespec *started)
+{
+	struct timespec now;
+
+	if (isTerminated || serviced >= MODULE_X_EVENT_BUDGET)
+	{
+		return False;
+	}
+	if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+	{
+		fvwm_debug(__func__, "Unable to read X service clock");
+		fvwmSetTerminate(0);
+		return False;
+	}
+	return module_x_service_available(serviced, started, &now);
+}
+
+/* Adjacent coalescing retains input order and never scans the whole queue. */
+static Bool ident_take_next_event(Window window, int type, XEvent *event)
+{
+	XEvent next;
+
+	if (!FEventsQueued(dpy, QueuedAlready))
+	{
+		return False;
+	}
+	FPeekEvent(dpy, &next);
+	if (next.type != type || next.xany.window != window)
+	{
+		return False;
+	}
+	FNextEvent(dpy, event);
+	return True;
+}
+
 int ProcessXEvent(int x, int y)
 {
 	XEvent Event,event;
 	static int is_key_pressed = 0;
 	static int is_button_pressed = 0;
 	char buf[32];
-	static int ex=10000, ey=10000, ex2=0, ey2=0;
+	unsigned int serviced = 0;
+	struct timespec started;
 
-	while (FPending(dpy))
+	if (clock_gettime(CLOCK_MONOTONIC, &started) < 0)
+	{
+		fvwm_debug(__func__, "Unable to start X service clock");
+		fvwmSetTerminate(0);
+		return 0;
+	}
+	while (ident_x_batch_available(serviced, &started) && FPending(dpy))
 	{
 		FNextEvent(dpy,&Event);
+		serviced++;
 		switch(Event.type)
 		{
 		case Expose:
-			ex = min(ex, Event.xexpose.x);
-			ey = min(ey, Event.xexpose.y);
-			ex2 = max(ex2, Event.xexpose.x + Event.xexpose.width);
-			ey2=max(ey2 , Event.xexpose.y + Event.xexpose.height);
-			while (FCheckTypedEvent(dpy, Expose, &Event))
+		{
+			int ex = Event.xexpose.x;
+			int ey = Event.xexpose.y;
+			int ex2 = ex + Event.xexpose.width;
+			int ey2 = ey + Event.xexpose.height;
+
+			while (ident_x_batch_available(serviced, &started) &&
+			    ident_take_next_event(Event.xany.window, Expose, &Event))
 			{
+				serviced++;
 				ex = min(ex, Event.xexpose.x);
 				ey = min(ey, Event.xexpose.y);
 				ex2 = max(
@@ -602,9 +709,8 @@ int ProcessXEvent(int x, int y)
 					ex, ey, ex2-ex, ey2-ey, False);
 			}
 			DrawItems(main_win, ex, ey, ex2-ex, ey2-ey);
-			ex = ey = 10000;
-			ex2 = ey2 = 0;
 			break;
+		}
 		case KeyPress:
 			is_key_pressed = 1;
 			break;
@@ -670,9 +776,11 @@ int ProcessXEvent(int x, int y)
                        /* this only happens with transparent windows,
 			* slurp up as many events as possible before
 			* redrawing to reduce flickering */
-			while (FCheckTypedEvent(
-				dpy, ConfigureNotify, &event))
+			while (ident_x_batch_available(serviced, &started) &&
+			    ident_take_next_event(Event.xany.window,
+				ConfigureNotify, &event))
 			{
+				serviced++;
 				fev_sanitise_configure_notify(
 					&event.xconfigure);
 				if (!event.xconfigure.send_event)
@@ -706,7 +814,7 @@ int ProcessXEvent(int x, int y)
 				else if (UpdateBackgroundTransparency(
 					dpy, main_win, main_width,
 					main_height,
-					&Colorset[(colorset)], Pdepth,
+					GetColorset((colorset)), Pdepth,
 					gc, True) == True)
 				{
 					do_eat_expose = True;
@@ -714,10 +822,10 @@ int ProcessXEvent(int x, int y)
 				if (do_eat_expose == True &&
 				    is_initial_cn == False)
 				{
-					while (FCheckTypedEvent(
-						dpy, Expose, &Event))
+					while (ident_x_batch_available(serviced, &started) &&
+					    ident_take_next_event(main_win, Expose, &Event))
 					{
-						/* nothing */
+						serviced++;
 					}
 				}
 				is_initial_cn = False;
@@ -826,9 +934,9 @@ void list_end(void)
 	else
 	{
 		back_pix = (colorset < 0)?
-			GetColor(BackColor) : Colorset[colorset].bg;
+			GetColor(BackColor) : GetColorset(colorset)->bg;
 		fore_pix = (colorset < 0)?
-			GetColor(ForeColor) : Colorset[colorset].fg;
+			GetColor(ForeColor) : GetColorset(colorset)->fg;
 	}
 
 	attributes.colormap = Pcmap;
@@ -877,42 +985,76 @@ void list_end(void)
 	{
 		SetWindowBackground(
 			dpy, main_win, main_width, main_height,
-			&Colorset[(colorset)], Pdepth, gc, True);
+			GetColorset((colorset)), Pdepth, gc, True);
 	}
 	XMapWindow(dpy,main_win);
 
 	/* Window is created. Display it until the user clicks or deletes it.
 	 * also grok any dynamic config changes */
-	while(1)
+	while (!isTerminated)
 	{
 		FvwmPacket* packet;
-		int x_fd = XConnectionNumber(dpy);
-		fd_set fdset;
+		struct pollfd ready[2] = {
+			{ .fd = fd[1], .events = POLLIN },
+			{ .fd = x_fd, .events = POLLIN }
+		};
+		int status;
 
-		FD_ZERO(&fdset);
-		FD_SET(fd[1], &fdset);
-		FD_SET(x_fd, &fdset);
-
-		/* process all X events first */
+		/* Service one bounded X batch before dynamic configuration. */
 		if (ProcessXEvent(x,y) == 1)
 		{
 			return;
 		}
 
 		/* wait for X-event or config line */
-		select(fd_width, SELECT_FD_SET_CAST &fdset, NULL, NULL, NULL );
+		status = fvwmPoll(ready, 2, FPending(dpy) ? 0 : -1);
+		if (status < 0)
+		{
+			if (errno == EINTR)
+			{
+				continue;
+			}
+			fvwm_debug(__func__, "readiness wait failed\n");
+			fvwmSetTerminate(0);
+			return;
+		}
+		if ((ready[0].revents & (POLLERR | POLLNVAL)) ||
+		    (ready[1].revents & (POLLERR | POLLHUP | POLLNVAL)))
+		{
+			fvwmSetTerminate(0);
+			return;
+		}
 
 		/* parse any dynamic config lines */
-		if (FD_ISSET(fd[1], &fdset))
+		if (ready[0].revents & (POLLIN | POLLHUP))
 		{
-			packet = ReadFvwmPacket(fd[1]);
-			if (packet == NULL)
-				exit(0);
-			if (packet &&  packet->type == MX_PROPERTY_CHANGE)
+			module_packet_read_status packet_status =
+				module_packet_reader_read(&ident_packet_reader, &packet);
+
+			if (packet_status == MODULE_PACKET_READ_MORE)
+			{
+				continue;
+			}
+			if (packet_status != MODULE_PACKET_READ_READY)
+			{
+				if (packet_status == MODULE_PACKET_READ_ERROR)
+				{
+					fvwm_debug(__func__, "runtime packet read failed");
+				}
+				fvwmSetTerminate(0);
+				return;
+			}
+			if (!ident_packet_is_valid(packet))
+			{
+				fvwm_debug(__func__,
+				    "discarding incomplete packet body\n");
+				continue;
+			}
+			if (packet->type == MX_PROPERTY_CHANGE)
 			{
 				list_property_change(packet->body);
 			}
-			if (packet && packet->type == M_CONFIG_INFO)
+			if (packet->type == M_CONFIG_INFO)
 			{
 				list_config_info(packet->body);
 			}
@@ -953,7 +1095,7 @@ void DrawItems(Drawable d, int x, int y, int w, int h)
 
 	if (colorset >= 0)
 	{
-		FwinString->colorset = &Colorset[colorset];
+		FwinString->colorset = GetColorset(colorset);
 		FwinString->flags.has_colorset = True;
 	}
 	while(cur != NULL) /* may be optimised */
@@ -990,7 +1132,7 @@ void PixmapDrawWindow(int w, int h)
 	{
 		Pixmap cs_pix;
 		cs_pix = CreateBackgroundPixmap(dpy, main_win, w, h,
-						&Colorset[(colorset)],
+						GetColorset((colorset)),
 						Pdepth, gc, False);
 		if (cs_pix == ParentRelative)
 		{

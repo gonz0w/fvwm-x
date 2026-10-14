@@ -147,6 +147,7 @@ typedef struct {
 #define FXPM_COLOR XPM_COLOR
 
 #define FxpmReadFileToXpmImage(a,b,c) XpmReadFileToXpmImage(a,b,c)
+#define FxpmCreateXpmImageFromBuffer(a,b,c) XpmCreateXpmImageFromBuffer(a,b,c)
 #define FxpmCreatePixmapFromXpmImage(a,b,c,d,e,f) \
 	    XpmCreatePixmapFromXpmImage(a,b,c,d,e,f)
 #define FxpmFreeXpmImage(a) XpmFreeXpmImage(a)
@@ -199,6 +200,7 @@ typedef struct {
 #define FXPM_COLOR      5
 
 #define FxpmReadFileToXpmImage(a,b,c) 0
+#define FxpmCreateXpmImageFromBuffer(a,b,c) FxpmFileInvalid
 #define FxpmCreatePixmapFromXpmImage(a,b,c,d,e,f) 0
 #define FxpmFreeXpmImage(a)
 #define FxpmFreeXpmInfo(a)

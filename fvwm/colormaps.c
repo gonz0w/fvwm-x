@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/FProperty.h"
 
 #include <stdio.h>
 
@@ -350,7 +351,7 @@ void FetchWmColormapWindows (FvwmWindow *fw)
 		XFree((void *)fw->cmap_windows);
 	}
 
-	if (!XGetWMColormapWindows (dpy, FW_W(fw), &(fw->cmap_windows),
+	if (!FGetWMColormapWindows (dpy, FW_W(fw), &(fw->cmap_windows),
 				   &(fw->number_cmap_windows)))
 	{
 		fw->number_cmap_windows = 0;

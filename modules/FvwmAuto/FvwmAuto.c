@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <limits.h>
 #include <sys/wait.h>
 #include "libs/ftime.h"
 
@@ -44,6 +45,7 @@
 #include "libs/Module.h"
 #include "libs/fvwmlib.h"
 #include "libs/fvwmsignal.h"
+#include "libs/log.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
 #include "libs/wild.h"
@@ -63,20 +65,6 @@
 
 
 static RETSIGTYPE TerminateHandler(int signo);
-
-/*
- *
- *  Procedure:
- *  Termination procedure : *not* a signal handler
- *
- */
-RETSIGTYPE DeadPipe(int nonsense)
-{
-	(void)nonsense;
-	myfprintf((stderr,"Leaving via DeadPipe\n"));
-	exit(0);
-	SIGNAL_RETURN;
-}
 
 /*
  *
@@ -110,15 +98,10 @@ main(int argc, char **argv)
 	unsigned long last_win = 0;   /* last window handled */
 	unsigned long focus_win = 0;  /* current focus */
 	unsigned long raised_win = 0;
-	fd_set_size_t fd_width;
 	int fd[2];
 	int timeout;
-	int sec = 0;
-	int usec = 0;
 	int n;
-	struct timeval value;
-	struct timeval *delay;
-	fd_set in_fdset;
+	struct pollfd incoming;
 	Bool do_pass_id = False;
 	Bool use_enter_mode = False;
 	Bool use_leave_mode = False;
@@ -195,17 +178,23 @@ main(int argc, char **argv)
 	fd[0] = module->to_fvwm;
 	fd[1] = module->from_fvwm;
 
-	if ((timeout = atoi(module->user_argv[0]) ))
+	if (fd[1] < 0)
 	{
-		sec = timeout / 1000;
-		usec = (timeout % 1000) * 1000;
+		fvwm_debug(__func__, "Auto requires an incoming module pipe");
+		return 1;
 	}
-	else
+	/* Preserve atoi's decimal prefix/zero convention, but validate the
+	 * representable nonnegative millisecond range before readiness uses it. */
+	errno = 0;
+	long requested_timeout = strtol(module->user_argv[0], NULL, 10);
+
+	if (errno == ERANGE || requested_timeout < 0 ||
+		requested_timeout > INT_MAX)
 	{
-		sec = 0;
-		usec = 1000;
+		fvwm_debug(__func__, "Invalid Auto timeout");
+		return 1;
 	}
-	delay = &value;
+	timeout = requested_timeout == 0 ? 1 : (int)requested_timeout;
 
 	n = 1;
 	if (n < module->user_argc && module->user_argv[n])
@@ -333,43 +322,46 @@ main(int argc, char **argv)
 	SetSyncMask(fd, m_mask);
 	SetSyncMask(fd, mx_mask);
 
-	fd_width = fd[1] + 1;
-	FD_ZERO(&in_fdset);
+	incoming.fd = fd[1];
+	incoming.events = POLLIN;
 
 	while (!isTerminated)
 	{
 		char raise_window_now;
 		static char have_new_window = 0;
 
-		FD_SET(fd[1], &in_fdset);
-
 		myfprintf(
-			(stderr, "\nstart %d (hnw = %d, usec = %d)\n", count++,
-			 have_new_window, usec));
-		/* fill in struct - modified by select() */
-		delay->tv_sec = sec;
-		delay->tv_usec = usec;
+			(stderr, "\nstart %d (hnw = %d, timeout = %d ms)\n",
+			 count++, have_new_window, timeout));
 #ifdef DEBUG
 		{
 			char tmp[32];
 
-			snprintf(tmp, sizeof(tmp), "%d usecs", (delay) ?
-				(int)delay->tv_usec : -1);
-			myfprintf((stderr, "select: delay = %s\n",
+			snprintf(tmp, sizeof(tmp), "%d ms", timeout);
+			myfprintf((stderr, "poll: delay = %s\n",
 				   (have_new_window) ? tmp : "infinite" ));
 		}
 #endif
-		if (fvwmSelect(fd_width, &in_fdset, NULL, NULL,
-			       (have_new_window) ? delay : NULL) == -1)
+		int ready = fvwmPoll(&incoming, 1, have_new_window ? timeout : -1);
+
+		if (ready < 0)
 		{
+			if (errno == EINTR && !isTerminated)
+			{
+				continue;
+			}
 			myfprintf(
-				(stderr, "select: error! (%s)\n",
+				(stderr, "poll: error! (%s)\n",
 				 strerror(errno)));
+			break;
+		}
+		if (isTerminated || (incoming.revents & (POLLERR | POLLNVAL)))
+		{
 			break;
 		}
 
 		raise_window_now = 0;
-		if (FD_ISSET(fd[1], &in_fdset))
+		if (incoming.revents & (POLLIN | POLLHUP))
 		{
 			FvwmPacket *packet = ReadFvwmPacket(fd[1]);
 
@@ -379,6 +371,12 @@ main(int argc, char **argv)
 					(stderr,
 					 "Leaving because of null packet\n"));
 				break;
+			}
+			if (FvwmPacketBodySize(*packet) < 1)
+			{
+				fvwm_debug(__func__, "Auto packet lacks a window argument");
+				SendUnlockNotification(fd);
+				continue;
 			}
 
 			myfprintf(

@@ -25,6 +25,11 @@ PictureImageColorAllocator *PictureOpenImageColorAllocator(
 void PictureCloseImageColorAllocator(
 	Display *dpy, PictureImageColorAllocator *pica,
 	int *nalloc_pixels, Pixel **alloc_pixels, int *no_limit);
+/* Drop at most budget duplicate color references while keeping one per
+ * used pixel. True means ordinary close has no duplicate work left.
+ * The caller keeps the allocator alive between steps. */
+Bool picture_trim_image_color_allocator(Display *dpy,
+	PictureImageColorAllocator *pica, unsigned budget);
 void PictureFreeColors(
 	Display *dpy, Colormap cmap, Pixel *pixels, int n,
 	unsigned long planes, Bool no_limit);

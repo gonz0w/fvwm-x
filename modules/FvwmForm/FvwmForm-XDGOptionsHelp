@@ -25,13 +25,13 @@ DestroyModuleConfig  FvwmForm-XDGOptionsHelp: *
 *FvwmForm-XDGOptionsHelp:   Line    " "
 *FvwmForm-XDGOptionsHelp:   Line    Left
 *FvwmForm-XDGOptionsHelp:   Text    "$[gt.Use Icons?          ]"
-*FvwmForm-XDGOptionsHelp:   Text    "$[gt.Option enables mini-icons in the menu(s). Warning! If ImageMagick is installed]"
+*FvwmForm-XDGOptionsHelp:   Text    "$[gt.This option enables mini-icons. Supported formats depend on the build.]"
 *FvwmForm-XDGOptionsHelp:   Line    Left
 *FvwmForm-XDGOptionsHelp:   Text    "$[gt.                    ]"
-*FvwmForm-XDGOptionsHelp:   Text    "$[gt.the script may generate all the icons and pause your system until the job is]"
+*FvwmForm-XDGOptionsHelp:   Text    "$[gt.The Go provider converts PNG icons and uses native SVG scaling when available.]"
 *FvwmForm-XDGOptionsHelp:   Line    Left
 *FvwmForm-XDGOptionsHelp:   Text    "$[gt.                    ]"
-*FvwmForm-XDGOptionsHelp:   Text    "$[gt.done. After the icons are generated, it will not take as long to regenerate.]"
+*FvwmForm-XDGOptionsHelp:   Text    "$[gt.The disabled-Go Python provider can use optional ImageMagick conversion.]"
 *FvwmForm-XDGOptionsHelp:   Line    Left
 *FvwmForm-XDGOptionsHelp:   Line    " "
 *FvwmForm-XDGOptionsHelp:   Line    Left
@@ -44,7 +44,7 @@ DestroyModuleConfig  FvwmForm-XDGOptionsHelp: *
 *FvwmForm-XDGOptionsHelp:   Line    " "
 *FvwmForm-XDGOptionsHelp:   Line    Left
 *FvwmForm-XDGOptionsHelp:   Text    "$[gt.Icon directory:     ]"
-*FvwmForm-XDGOptionsHelp:   Text    "$[gt.If the specified icon isn't that size it is converted if ImageMagick is installed.]"
+*FvwmForm-XDGOptionsHelp:   Text    "$[gt.Converted icons are stored here. Existing source icons remain unchanged.]"
 *FvwmForm-XDGOptionsHelp:   Line    Left
 *FvwmForm-XDGOptionsHelp:   Text    "$[gt.                    ]"
 *FvwmForm-XDGOptionsHelp:   Text    "$[gt.Generated icons are saved in $HOME/.fvwm/icons or the directory specified here.]"

@@ -11,6 +11,7 @@
 #include "fvwm_x11.h"
 #include "PictureBase.h"
 #include "libs/monitor_scale.h"
+#include "image_input.h"
 
 /* ---------------------------- global macros ------------------------------ */
 
@@ -51,6 +52,35 @@ FvwmPicture *PImageLoadFvwmPictureFromFile(
 	Display *dpy, Window win, char *path, FvwmPictureAttributes fpa,
 	monitor_scale_factor factor, unsigned target_width,
 	unsigned target_height);
+
+/* Same file/ownership contract, with the SVG attempt reported for deferred
+ * service instead of waiting. Raster and bitmap success takes precedence. */
+FvwmPicture *picture_load_non_svg(Display *dpy, Window win, char *path,
+	FvwmPictureAttributes fpa, monitor_scale_factor factor,
+	unsigned target_width, unsigned target_height, Bool *svg_deferred);
+
+/* Preserve non-SVG format fallbacks for a deferred request using its already
+ * opened snapshot. Borrows input/metadata; takes path only on success. SVG is
+ * never retried here. Other formats keep their existing synchronous decoder. */
+FvwmPicture *picture_load_non_svg_input(Display *dpy, Window win, char *path,
+	const image_input *input, const struct stat *metadata,
+	const image_input *xpm_input, FvwmPictureAttributes fpa,
+	monitor_scale_factor factor,
+	unsigned target_width, unsigned target_height);
+
+/* XPM-only decode before an SVG attempt, preserving the existing order.
+ * Borrows both inputs; a NULL xpm_input records refused expansion. */
+Bool picture_decode_xpm_input(Display *dpy, char *path,
+	const image_input *input, const image_input *xpm_input,
+	monitor_scale_factor factor, unsigned target_width,
+	unsigned target_height, CARD32 **pixels, int *width, int *height);
+
+/* Same decode, with source XPM hotspot metadata for cursor preparation. */
+Bool picture_decode_xpm_cursor_input(Display *dpy, char *path,
+	const image_input *input, const image_input *xpm_input,
+	monitor_scale_factor factor, unsigned target_width,
+	unsigned target_height, CARD32 **pixels, int *width, int *height,
+	int hotspot[2]);
 
 /*
  * <pubfunc>PImageLoadPixmapFromFile

@@ -18,12 +18,13 @@ install_data(
 
 fvwmform_sources = [
     'FvwmForm.c',
+    'form_input.c',
     'ReadXServer.c',
     'ParseCommand.c',
 ]
 
 # TODO: Tidy up the dependencies
-executable(
+fvwm_form = executable(
     'FvwmForm',
     fvwmform_sources,
     dependencies: [all_found_deps],

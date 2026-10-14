@@ -836,12 +836,16 @@ static void ParseContainer(char **ss,button_info *b)
       break;
 
     case 12: /* Colorset */
-      i = strtol(s, &t, 10);
-      if (t > s)
+      t = s;
+      if (ParseColorsetId(s, &t, &i))
       {
+	if (!AllocColorset(i))
+	{
+		break;
+	}
 	b->c->colorset = i;
 	b->c->flags.b_Colorset = 1;
-	AllocColorset(i);
+
 	s = t;
       }
       else
@@ -1365,13 +1369,17 @@ static void ParseButton(button_info **uberb, char *s)
 				break;
 
 			case 18: /* Colorset */
-				i = strtol(s, &t, 10);
-				if (t > s)
+				t = s;
+				if (ParseColorsetId(s, &t, &i))
 				{
+					if (!AllocColorset(i))
+					{
+						break;
+					}
 					b->colorset = i;
 					b->flags.b_Colorset = 1;
 					s = t;
-					AllocColorset(i);
+
 				}
 				else
 				{
@@ -1628,13 +1636,17 @@ static void ParseButton(button_info **uberb, char *s)
 
 			/* --------------- --------------- */
 			case 25: /* ActiveColorset */
-				i = strtol(s, &t, 10);
-				if (t > s)
+				t = s;
+				if (ParseColorsetId(s, &t, &i))
 				{
+					if (!AllocColorset(i))
+					{
+						break;
+					}
 					b->activeColorset = i;
 					b->flags.b_ActiveColorset = 1;
 					s = t;
-					AllocColorset(i);
+
 				}
 				else
 				{
@@ -1644,13 +1656,17 @@ static void ParseButton(button_info **uberb, char *s)
 
 			/* --------------- --------------- */
 			case 26: /* PressColorset */
-				i = strtol(s, &t, 10);
-				if (t > s)
+				t = s;
+				if (ParseColorsetId(s, &t, &i))
 				{
+					if (!AllocColorset(i))
+					{
+						break;
+					}
 					b->pressColorset = i;
 					b->flags.b_PressColorset = 1;
 					s = t;
-					AllocColorset(i);
+
 				}
 				else
 				{
@@ -1923,12 +1939,16 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		ParseBoxSize(&s, &ub->c->flags);
 		break;
 	case 12: /* Colorset */
-		i = sscanf(s, "%d", &j);
+		i = ParseColorsetId(s, NULL, &j);
 		if (i > 0)
 		{
+			if (!AllocColorset(j))
+			{
+				break;
+			}
 			ub->c->colorset = j;
 			ub->c->flags.b_Colorset = 1;
-			AllocColorset(j);
+
 		}
 		else
 		{
@@ -1936,12 +1956,16 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		}
 		break;
 	case 13: /* ActiveColorset */
-		i = sscanf(s, "%d", &j);
+		i = ParseColorsetId(s, NULL, &j);
 		if (i > 0)
 		{
+			if (!AllocColorset(j))
+			{
+				break;
+			}
 			ub->c->activeColorset = j;
 			ub->c->flags.b_ActiveColorset = 1;
-			AllocColorset(j);
+
 		}
 		else
 		{
@@ -1949,12 +1973,16 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		}
 		break;
 	case 14: /* PressColorset */
-		i = sscanf(s, "%d", &j);
+		i = ParseColorsetId(s, NULL, &j);
 		if (i > 0)
 		{
+			if (!AllocColorset(j))
+			{
+				break;
+			}
 			ub->c->pressColorset = j;
 			ub->c->flags.b_PressColorset = 1;
-			AllocColorset(j);
+
 		}
 		else
 		{

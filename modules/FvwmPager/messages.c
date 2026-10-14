@@ -23,6 +23,10 @@
 #include "fvwm/fvwm.h"
 #include "libs/vpacket.h"
 #include "FvwmPager.h"
+#include "pager_packet.h"
+#include "pager_geometry.h"
+#include "pager_desk_range.h"
+#include "libs/module_monitor.h"
 
 static bool fp_new_block = false;
 
@@ -33,7 +37,6 @@ static void handle_config_win_package(PagerWindow *t,
 static void process_add(unsigned long *body);
 static void process_configure(unsigned long *body);
 static void process_destroy(unsigned long *body);
-static void process_monitor_focus(unsigned long *body);
 static void process_focus(unsigned long *body);
 static void process_new_page(unsigned long *body);
 static void process_new_desk(unsigned long *body);
@@ -61,6 +64,12 @@ void process_message(FvwmPacket *packet)
 	unsigned long type = packet->type;
 	unsigned long length = packet->size;
 	unsigned long* body = packet->body;
+
+	if (!pager_packet_is_valid(type, body, FvwmPacketBodySize(*packet)))
+	{
+		fvwm_debug(__func__, "Discarding incomplete packet body");
+		return;
+	}
 
 	switch (type)
 	{
@@ -116,9 +125,6 @@ void process_message(FvwmPacket *packet)
 		case MX_PROPERTY_CHANGE:
 			process_property_change(body);
 			break;
-		case MX_MONITOR_FOCUS:
-			process_monitor_focus(body);
-			break;
 		case MX_REPLY:
 			process_reply(body);
 			break;
@@ -151,8 +157,10 @@ void process_message(FvwmPacket *packet)
 			} else if (StrEquals(token, "IsNotShared")) {
 				IsShared = false;
 			} else {
+				free(token);
 				break;
 			}
+			free(token);
 			set_desk_size(true);
 			ReConfigure();
 			break;
@@ -318,11 +326,6 @@ void process_destroy(unsigned long *body)
 	}
 }
 
-void process_monitor_focus(unsigned long *body)
-{
-	return;
-}
-
 void process_focus(unsigned long *body)
 {
 	PagerWindow *t = find_pager_window(body[0]);
@@ -478,8 +481,8 @@ void process_new_desk(unsigned long *body)
 update_grid:
 	MovePage();
 	ReConfigureAll();
-	draw_desk_grid(oldDesk - desk1);
-	draw_desk_grid(newDesk - desk1);
+	draw_desk_grid(pager_desk_index(oldDesk, desk1, ndesks));
+	draw_desk_grid(pager_desk_index(newDesk, desk1, ndesks));
 	MoveStickyWindows(false, true);
 	update_window_background(FocusWin);
 }
@@ -651,11 +654,10 @@ void process_mini_icon(unsigned long *body)
 void process_restack(unsigned long *body, unsigned long length)
 {
 	PagerWindow *t;
-	PagerWindow *pager_wins[length];
-	Window *wins;
+	PagerWindow *pager_wins[FvwmPacketBodyMaxSize / 3];
+	Window wins[FvwmPacketBodyMaxSize / 3];
 	int i, j, desk;
 
-	wins = fxmalloc(length * sizeof (Window));
 
 	/* Should figure out how to do this with a single loop of the list,
 	 * not one per desk + icon window.
@@ -687,7 +689,6 @@ void process_restack(unsigned long *body, unsigned long length)
 		XRestackWindows(dpy, wins, j);
 	}
 
-	free(wins);
 }
 
 void process_end(void)
@@ -754,27 +755,26 @@ void set_desk_label(int desk, const char *label)
 
 void parse_monitor_line(char *tline)
 {
-	int		  dx, dy, Vx, Vy, VxMax, VyMax, CurrentDesk;
-	int		  bs_top, bs_bottom, bs_left, bs_right;
-	int		  scr_width, scr_height;
-	int		  flags;
-	char		 *mname;
+	pager_monitor_geometry geometry;
+	char *mname = NULL;
 	struct monitor	 *tm;
 	struct fpmonitor *fp;
 
 	tline = GetNextToken(tline, &mname);
 
-	sscanf(tline, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d", &flags,
-	    &dx, &dy, &Vx, &Vy, &VxMax, &VyMax, &CurrentDesk,
-	    &scr_width, &scr_height, &bs_left, &bs_right, &bs_top, &bs_bottom);
+	if (mname == NULL || !pager_prepare_monitor(tline, &geometry))
+	{
+		fvwm_debug(__func__, "Refusing invalid monitor geometry");
+		goto done;
+	}
 
 	monitor_refresh_module(dpy);
 
 	tm = monitor_resolve_name(mname);
 	if (tm == NULL)
-		return;
+		goto done;
 
-	if (flags & MONITOR_DISABLED) {
+	if (geometry.flags & MONITOR_DISABLED) {
 		fp = fpmonitor_by_name(mname);
 		if (fp != NULL) {
 			bool disabled = fp->disabled;
@@ -782,12 +782,12 @@ void parse_monitor_line(char *tline)
 			if (!disabled)
 				ReConfigure();
 		}
-		return;
+		goto done;
 	}
 
 	if ((fp = fpmonitor_this(tm)) == NULL) {
 		if (fp_new_block)
-			return;
+			goto done;
 		fp_new_block = true;
 		fp = fpmonitor_new(tm);
 		fp->m->flags |= MONITOR_NEW;
@@ -802,65 +802,75 @@ void parse_monitor_line(char *tline)
 		monitor_to_track = fp;
 	}
 	fp->disabled = false;
-	fp->scr_width = scr_width;
-	fp->scr_height = scr_height;
-	fp->m->dx = dx;
-	fp->m->dy = dy;
-	fp->m->virtual_scr.Vx = fp->virtual_scr.Vx = Vx;
-	fp->m->virtual_scr.Vy = fp->virtual_scr.Vy = Vy;
-	fp->m->virtual_scr.VxMax = fp->virtual_scr.VxMax = VxMax;
-	fp->m->virtual_scr.VyMax = fp->virtual_scr.VyMax = VyMax;
-	fp->m->virtual_scr.CurrentDesk = CurrentDesk;
+	fp->scr_width = geometry.screen_width;
+	fp->scr_height = geometry.screen_height;
+	fp->m->dx = geometry.x_pages;
+	fp->m->dy = geometry.y_pages;
+	fp->m->virtual_scr.Vx = fp->virtual_scr.Vx = geometry.viewport_x;
+	fp->m->virtual_scr.Vy = fp->virtual_scr.Vy = geometry.viewport_y;
+	fp->m->virtual_scr.VxMax = fp->virtual_scr.VxMax = geometry.viewport_max_x;
+	fp->m->virtual_scr.VyMax = fp->virtual_scr.VyMax = geometry.viewport_max_y;
+	fp->m->virtual_scr.CurrentDesk = geometry.desk;
 
-	fp->virtual_scr.VxMax = dx * fpmonitor_get_all_widths() - fpmonitor_get_all_widths();
-	fp->virtual_scr.VyMax = dy * fpmonitor_get_all_heights() - fpmonitor_get_all_heights();
-	if (fp->virtual_scr.VxMax < 0)
-		fp->virtual_scr.VxMax = 0;
-	if (fp->virtual_scr.VyMax < 0)
-		fp->virtual_scr.VyMax = 0;
-	fp->virtual_scr.VWidth = fp->virtual_scr.VxMax + fpmonitor_get_all_widths();
-	fp->virtual_scr.VHeight = fp->virtual_scr.VyMax + fpmonitor_get_all_heights();
-	fp->virtual_scr.VxPages = fp->virtual_scr.VWidth / fpmonitor_get_all_widths();
-	fp->virtual_scr.VyPages = fp->virtual_scr.VHeight / fpmonitor_get_all_heights();
+	/* Each core message carries the current global screen extents. */
+	fp->virtual_scr.VxMax = geometry.desktop.max_x;
+	fp->virtual_scr.VyMax = geometry.desktop.max_y;
+	fp->virtual_scr.VWidth = geometry.desktop.width;
+	fp->virtual_scr.VHeight = geometry.desktop.height;
+	fp->virtual_scr.VxPages = geometry.desktop.x_pages;
+	fp->virtual_scr.VyPages = geometry.desktop.y_pages;
 
 	if (fp->m != NULL && fp->m->flags & MONITOR_NEW) {
 		fp->m->flags &= ~MONITOR_NEW;
 		initialize_fpmonitor_windows(fp);
 	}
 	fp_new_block = false;
+done:
+	free(mname);
 }
 
 void parse_desktop_size_line(char *tline)
 {
-	int dx, dy;
 	struct fpmonitor *m;
+	pager_desktop_geometry geometry;
 
-	sscanf(tline, "%d %d", &dx, &dy);
-
-	TAILQ_FOREACH(m, &fp_monitor_q, entry) {
-		m->virtual_scr.VxMax = dx * fpmonitor_get_all_widths() - fpmonitor_get_all_widths();
-		m->virtual_scr.VyMax = dy * fpmonitor_get_all_heights() - fpmonitor_get_all_heights();
-		if (m->virtual_scr.VxMax < 0)
-			m->virtual_scr.VxMax = 0;
-		if (m->virtual_scr.VyMax < 0)
-			m->virtual_scr.VyMax = 0;
-		m->virtual_scr.VWidth = m->virtual_scr.VxMax + fpmonitor_get_all_widths();
-		m->virtual_scr.VHeight = m->virtual_scr.VyMax + fpmonitor_get_all_heights();
-		m->virtual_scr.VxPages = m->virtual_scr.VWidth / fpmonitor_get_all_widths();
-		m->virtual_scr.VyPages = m->virtual_scr.VHeight / fpmonitor_get_all_heights();
+	/* Initial configuration may precede construction of monitor records. */
+	if (TAILQ_EMPTY(&fp_monitor_q))
+	{
+		return;
+	}
+	if (!pager_prepare_desktop(tline, fpmonitor_get_all_widths(),
+		fpmonitor_get_all_heights(), &geometry))
+	{
+		fvwm_debug(__func__,
+			"Refusing incomplete or unrepresentable desktop size");
+		return;
+	}
+	TAILQ_FOREACH(m, &fp_monitor_q, entry)
+	{
+		m->virtual_scr.VxMax = geometry.max_x;
+		m->virtual_scr.VyMax = geometry.max_y;
+		m->virtual_scr.VWidth = geometry.width;
+		m->virtual_scr.VHeight = geometry.height;
+		m->virtual_scr.VxPages = geometry.x_pages;
+		m->virtual_scr.VyPages = geometry.y_pages;
 	}
 }
 
 void parse_desktop_configuration_line(char *tline)
 {
-		int mmode, is_shared;
+	int values[2];
 
-		sscanf(tline, "%d %d", &mmode, &is_shared);
-
-		if (mmode > 0) {
-			monitor_mode = mmode;
-			is_tracking_shared = is_shared;
-		}
+	if (!module_parse_decimal_integers(tline, values, 2))
+	{
+		fvwm_debug(__func__, "Refusing incomplete desktop configuration");
+		return;
+	}
+	if (values[0] > 0)
+	{
+		monitor_mode = values[0];
+		is_tracking_shared = values[1];
+	}
 }
 
 /* These methods are also used in parse_options in init_pager.c */
@@ -910,7 +920,7 @@ void process_config_info_line(char *line, bool is_init)
 		DeskStyle *style;
 		int color = LoadColorset(next);
 
-		if (is_init)
+		if (is_init || color < 0)
 			return;
 
 		TAILQ_FOREACH(style, &desk_style_q, entry) {
@@ -952,22 +962,33 @@ void update_monitor_to_track(struct fpmonitor **fp_track,
 				    char *name, bool update_prefered)
 {
 	struct fpmonitor *new_fp;
+	char *decoded = NULL;
 
 	name = SkipSpaces(name, NULL, 0);
+	if (name == NULL)
+		return;
+	/* Keep legacy raw multiword names; accept a single quoted token too. */
+	if (fpmonitor_by_name(name) == NULL && IsQuote(*name)) {
+		char *remaining = GetNextToken(name, &decoded);
+		remaining = SkipSpaces(remaining, NULL, 0);
+		if (decoded != NULL && (remaining == NULL || *remaining == '\0'))
+			name = decoded;
+	}
 	if (StrEquals(name, "none")) {
 		*fp_track = NULL;
 		if (update_prefered) {
 			free(preferred_monitor);
 			preferred_monitor = NULL;
 		}
+		free(decoded);
 		return;
 	}
 
 	new_fp = fpmonitor_by_name(name);
 	/* Fallback to current monitor, if monitor not already set. */
-	if (new_fp != NULL)
+	if (new_fp != NULL && !new_fp->disabled)
 		*fp_track = new_fp;
-	else if (*fp_track == NULL)
+	else if (*fp_track == NULL || (*fp_track)->disabled)
 		*fp_track = fpmonitor_this(NULL);
 	if (update_prefered) {
 		/* Set this even if no monitor matches given name.
@@ -976,4 +997,5 @@ void update_monitor_to_track(struct fpmonitor **fp_track,
 		free(preferred_monitor);
 		preferred_monitor = fxstrdup(name);
 	}
+	free(decoded);
 }

@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <ctype.h>
+#include <stdint.h>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -169,6 +170,8 @@ typedef struct
   char* TabScriptId[999];
   int NbChild;
   time_t BeginTime;
+  int command_timeout_ms;
+  int fifo_timeout_ms;
   char *TabArg[20];
   Bool swallowed;
   Window swallower_win;
@@ -212,6 +215,7 @@ struct XObj
   int nalloc_pixels;
   int icon_w,icon_h;            /* Icon Width and Height */
   FlocaleFont *Ffont;
+  uint64_t resource_revision;   /* Font/title replacement, including reused IDs */
   int value;                    /* Current value */
   int value2;                   /* Min value */
   int value3;                   /* Max value */
@@ -223,6 +227,7 @@ struct XObj
   void (*EvtKey) (struct XObj *xobj,XKeyEvent *EvtKey);
   void (*ProcessMsg) (struct XObj *xobj,unsigned long type,unsigned long *body);
   void *UserPtr;
+  Window swallow_placeholder; /* Owned by Script, never by the client. */
 };
 
 void ChooseFunction(struct XObj *xobj,char *type);
@@ -230,6 +235,11 @@ void ChooseFunction(struct XObj *xobj,char *type);
 void SendMsg(struct XObj *xobj,int TypeMsg);
 
 void ExecBloc(Bloc *bloc);
+
+/* Loop attempts share the current handler budget with nested instructions. */
+Bool FvwmScriptExecutionStep(void);
+Bool FvwmScriptExecutionAllowed(void);
+void FvwmScriptStopForStorage(Bool total);
 
 void UnselectAllTextField(struct XObj **xobj);
 

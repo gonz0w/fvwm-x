@@ -37,6 +37,7 @@
 #include "libs/Picture.h"
 #include "libs/PictureGraphics.h"
 #include "libs/wm_ui_metrics.h"
+#include "libs/picture_view.h"
 #include "libs/FRenderInit.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
@@ -1613,7 +1614,7 @@ static Pixmap border_create_root_transparent_pixmap(
 		my_h = height;
 	}
 	p = CreateBackgroundPixmap(
-		dpy, w, my_w, my_h, &Colorset[cs],
+		dpy, w, my_w, my_h, GetColorset(cs),
 		Pdepth, Scr.BordersGC, False);
 	if (p && td->td_is_rotated)
 	{
@@ -1647,7 +1648,7 @@ static void border_get_frame_pixmap(
 	{
 		dcd->frame_pixmap = CreateBackgroundPixmap(
 			dpy, Scr.NoFocusWin, frame_g->width, frame_g->height,
-			&Colorset[cd->bg_border_cs], Pdepth, Scr.BordersGC,
+			GetColorset(cd->bg_border_cs), Pdepth, Scr.BordersGC,
 			False);
 	}
 	return;
@@ -1675,7 +1676,7 @@ static void border_get_border_background(
 	else if (cd->bg_border_cs >= 0 &&
 		 !CSET_IS_TRANSPARENT_PR(cd->bg_border_cs))
 	{
-		colorset_t *cs_t = &Colorset[cd->bg_border_cs];
+		colorset_t *cs_t = GetColorset(cd->bg_border_cs);
 		XGCValues xgcv;
 
 		if (CSET_IS_TRANSPARENT_ROOT(cd->bg_border_cs))
@@ -2118,7 +2119,7 @@ static Pixmap border_get_bar_pixmaps(
 		{
 			dcd->bar_pixmaps[bs].bps[i].p = CreateBackgroundPixmap(
 				dpy, Scr.NoFocusWin, bar_g->width, bar_g->height,
-				&Colorset[cset], Pdepth, Scr.BordersGC, False);
+				GetColorset(cset), Pdepth, Scr.BordersGC, False);
 			dcd->bar_pixmaps[bs].bps[i].created = True;
 		}
 		else if (mp_pic && mp_ret_pic)
@@ -2200,7 +2201,7 @@ static void border_free_bar_pixmaps(
 /* Resolve a scale-once raster for a 1x DecorFace pixmap. The local is not
  * written back onto the process-global face. */
 static FvwmPicture *border_picture_at_owning_scale(
-	FvwmWindow *fw, const FvwmPicture *src)
+	FvwmWindow *fw, FvwmPicture *src)
 {
 	monitor_scale_factor factor;
 	FvwmPictureAttributes fpa = {0};
@@ -2219,6 +2220,10 @@ static FvwmPicture *border_picture_at_owning_scale(
 		factor.quarters = MONITOR_SCALE_QUARTERS_MIN;
 	}
 	fpa.mask = src->fpa_mask;
+	if (src->is_view)
+	{
+		return decor_picture_at_scale(src, factor);
+	}
 	scaled = PCacheFvwmPictureAtScale(
 		dpy, Scr.NoFocusWin, NULL, src->name, fpa, factor,
 		0, 0, WM_UI_RESOURCE_GENERATION_INITIAL);
@@ -2226,6 +2231,11 @@ static FvwmPicture *border_picture_at_owning_scale(
 	{
 		fvwm_debug(__func__,
 			"failed to load scaled pixmap '%s'", src->name);
+	}
+	else if (!picture_is_usable(scaled))
+	{
+		PDestroyFvwmPicture(dpy, scaled);
+		return NULL;
 	}
 
 	return scaled;
@@ -2317,11 +2327,11 @@ static void border_mp_render_into_pixmap(
 
 			p = CreateBackgroundPixmap(
 				dpy, w, g->width, g->height,
-				&Colorset[acs[part].cs], Pdepth, Scr.BordersGC,
+				GetColorset(acs[part].cs), Pdepth, Scr.BordersGC,
 				False);
 			bg.pixmap.p = p;
 			GetWindowBackgroundPixmapSize(
-				&Colorset[acs[part].cs], g->width, g->height,
+				GetColorset(acs[part].cs), g->width, g->height,
 				&bg_w, &bg_h);
 			bg.pixmap.g.width = bg_w;
 			bg.pixmap.g.height = bg_h;
@@ -3068,7 +3078,7 @@ static void border_draw_decor_to_pixmap(
 			if (cd->cs[0] >= 0)
 			{
 				bg.pixmap.fra.mask |= FRAM_HAVE_ICON_CSET;
-				bg.pixmap.fra.colorset = &Colorset[cd->cs[0]];
+				bg.pixmap.fra.colorset = GetColorset(cd->cs[0]);
 			}
 		}
 		else
@@ -3373,11 +3383,11 @@ static void border_draw_decor_to_pixmap(
 
 			tmp = CreateBackgroundPixmap(
 				dpy, w, w_g->width,
-				w_g->height, &Colorset[cs],
+				w_g->height, GetColorset(cs),
 				Pdepth, Scr.BordersGC, False);
 			bg.pixmap.p = tmp;
 			GetWindowBackgroundPixmapSize(
-				&Colorset[cs], w_g->width,
+				GetColorset(cs), w_g->width,
 				w_g->height, &bg_w, &bg_h);
 			bg.pixmap.g.width = bg_w;
 			bg.pixmap.g.height = bg_h;
@@ -3451,7 +3461,7 @@ static void border_draw_decor_to_pixmap(
 	}
 	case ColorsetButton:
 	{
-		colorset_t *cs_t = &Colorset[df->u.acs.cs];
+		colorset_t *cs_t = GetColorset(df->u.acs.cs);
 		int cs = df->u.acs.cs;
 		Pixmap tmp = None;
 		int bg_w, bg_h;
@@ -3983,7 +3993,7 @@ static void border_get_titlebar_draw_descr(
 	}
 	if (td->cd->cs[0] >= 0)
 	{
-		tdd->fstr.colorset = &Colorset[td->cd->cs[0]];
+		tdd->fstr.colorset = GetColorset(td->cd->cs[0]);
 		tdd->fstr.flags.has_colorset = 1;
 	}
 	tdd->fstr.gc = Scr.TitleGC;
@@ -5357,8 +5367,7 @@ void CMD_BorderStyle(F_CMD_ARGS)
 				}
 				if (ReadDecorFace(action, &tmpdf,-1,True))
 				{
-					FreeDecorFace(dpy, df);
-					*df = tmpdf;
+					replace_decor_face(df, &tmpdf);
 				}
 				break;
 			}
@@ -5400,8 +5409,8 @@ void CMD_BorderStyle(F_CMD_ARGS)
 			}
 			if (ReadDecorFace(prev, &tmpdf,-1,True))
 			{
-				FreeDecorFace(dpy,&decor->BorderStyle.active);
-				decor->BorderStyle.active = tmpdf;
+				replace_decor_face(
+				    &decor->BorderStyle.active, &tmpdf);
 				ReadDecorFace(
 					prev, &decor->BorderStyle.inactive, -1,
 					False);

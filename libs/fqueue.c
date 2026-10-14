@@ -18,6 +18,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "safemalloc.h"
 #include "fqueue.h"
@@ -197,6 +198,10 @@ void fqueue_add_at_front(
 	rec = fxcalloc(1, sizeof *rec);
 	rec->object = object;
 	rec->next = fq->first;
+	if (fq->first == NULL)
+	{
+		fq->last = rec;
+	}
 	if (fq->lock_level > 0)
 	{
 		rec->flags.is_just_created = 1;
@@ -207,12 +212,9 @@ void fqueue_add_at_front(
 	return;
 }
 
-void fqueue_add_at_end(
-	fqueue *fq, void *object)
+static void fqueue_append_record(
+	fqueue *fq, fqueue_record *rec, void *object)
 {
-	fqueue_record *rec;
-
-	rec = fxcalloc(1, sizeof *rec);
 	rec->object = object;
 	if (fq->lock_level > 0)
 	{
@@ -229,8 +231,23 @@ void fqueue_add_at_end(
 	}
 	fq->last = rec;
 	rec->next = NULL;
+}
 
-	return;
+void fqueue_add_at_end(fqueue *fq, void *object)
+{
+	fqueue_append_record(fq, fxcalloc(1, sizeof(fqueue_record)), object);
+}
+
+int fqueue_try_add_at_end(fqueue *fq, void *object)
+{
+	fqueue_record *rec = calloc(1, sizeof(*rec));
+
+	if (rec == NULL)
+	{
+		return 0;
+	}
+	fqueue_append_record(fq, rec, object);
+	return 1;
 }
 
 void fqueue_add_inside(
@@ -246,6 +263,16 @@ void fqueue_add_inside(
 	{
 		rec->flags.is_just_created = 1;
 		fq->flags.is_dirty = 1;
+	}
+
+	/* Timer deadlines commonly arrive in order. Equal keys retain FIFO
+	 * order. Locked queues keep the existing traversal because their tail
+	 * can belong to deferred callback cleanup. */
+	if (fq->lock_level == 0 && fq->last != NULL &&
+	    cmp_objects(object, fq->last->object, cmp_args) >= 0)
+	{
+		fqueue_append_record(fq, rec, object);
+		return;
 	}
 
 	/* search place to insert record */
@@ -298,6 +325,28 @@ int fqueue_get_first(
 		return 0;
 	}
 	*ret_object = rec->object;
+
+	return 1;
+}
+
+int fqueue_take_first(fqueue *fq, void **ret_object)
+{
+	fqueue_record *rec;
+
+	*ret_object = NULL;
+	if (fq->lock_level != 0 || fq->first == NULL)
+	{
+		return 0;
+	}
+	/* Outermost unlock already resolved tombstones and new-item flags. */
+	rec = fq->first;
+	fq->first = rec->next;
+	if (fq->first == NULL)
+	{
+		fq->last = NULL;
+	}
+	*ret_object = rec->object;
+	free(rec);
 
 	return 1;
 }

@@ -32,14 +32,13 @@ void InitItemDraw(struct XObj *xobj)
 {
   unsigned long mask;
   XSetWindowAttributes Attr;
-  int minHeight,minWidth;
 
   /* Save colors and font */
   if (xobj->colorset >= 0) {
-    xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-    xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-    xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-    xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+    xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+    xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+    xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+    xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
   } else {
     xobj->TabColor[fore] = GetColor(xobj->forecolor);
     xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -57,64 +56,14 @@ void InitItemDraw(struct XObj *xobj)
   xobj->gc = fvwmlib_XCreateGC(dpy, xobj->win, 0, NULL);
   XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
 
-  if ((xobj->Ffont = FlocaleLoadFont(dpy, xobj->font, ScriptName)) == NULL)
-  {
-    fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n", ScriptName);
-    exit(1);
-  }
   if (xobj->Ffont->font != NULL)
     XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
   XSetLineAttributes(dpy, xobj->gc, 1, LineSolid, CapRound, JoinMiter);
 
-  /* Resize widget */
-
-  if (xobj->icon == NULL)
-  {
-    if (strlen(xobj->title) != 0)
-    {
-      /* title but no icon */
-      minHeight = xobj->Ffont->height + 2;
-      minWidth = FlocaleTextWidth(xobj->Ffont, xobj->title, strlen(xobj->title))
-	+ 2;
-      if (xobj->height < minHeight)
-	xobj->height = minHeight;
-      if (xobj->width < minWidth)
-	xobj->width = minWidth;
-    }
-  }
-  else if (strlen(xobj->title)==0)
-  {
-    /* icon but no title */
-    if (xobj->height<xobj->icon_h)
-      xobj->height = xobj->icon_h;
-    if (xobj->width<xobj->icon_w)
-      xobj->width = xobj->icon_w;
-  }
-  else
-  {
-    /* title and icon */
-    if (xobj->icon_w >
-	FlocaleTextWidth(xobj->Ffont, xobj->title, strlen(xobj->title))+2)
-    {
-      /* icon is wider than the title */
-      if (xobj->width<xobj->icon_w)
-	xobj->width = xobj->icon_w;
-    }
-    else
-    {
-      /* title is wider than icon */
-      if (xobj->width <
-	  FlocaleTextWidth(xobj->Ffont, xobj->title, strlen(xobj->title)) + 2)
-	xobj->width =
-	  FlocaleTextWidth(xobj->Ffont, xobj->title, strlen(xobj->title)) + 2;
-    }
-    xobj->height = xobj->icon_h+ xobj->Ffont->height + 2;
-  }
-  XResizeWindow(dpy, xobj->win, xobj->width, xobj->height);
   if (xobj->colorset >= 0)
     SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-			&Colorset[xobj->colorset], Pdepth,
+			GetColorset(xobj->colorset), Pdepth,
 			xobj->gc, True);
   XSelectInput(dpy, xobj->win, ExposureMask);
   /* x and y value of a clic */
@@ -184,8 +133,4 @@ void EvtKeyItemDraw(struct XObj *xobj, XKeyEvent *EvtKey)
   else if (ks == XK_Return) {
     EvtMouseItemDraw(xobj, NULL);
   }
-}
-
-void ProcessMsgItemDraw(struct XObj *xobj,unsigned long type,unsigned long *body)
-{
 }

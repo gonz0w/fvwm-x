@@ -54,6 +54,7 @@
 #include "libs/Parse.h"
 #include "libs/Picture.h"
 #include "libs/PictureUtils.h"
+#include "libs/picture_async.h"
 #include "libs/cJSON.h"
 #include "libs/charmap.h"
 #include "libs/envvar.h"
@@ -65,6 +66,7 @@
 #include "libs/setpgrp.h"
 #include "libs/wcontext.h"
 #include "libs/wild.h"
+#include "libs/wm_ui_metrics.h"
 #include "menus.h"
 #include "misc.h"
 #include "module_interface.h"
@@ -327,8 +329,9 @@ ReadTitleButton(char *s, TitleButton *tb, Bool append, int button)
 			while (tail->next) {
 				tail = tail->next;
 			}
-			tail->next = fxmalloc(sizeof(DecorFace));
-			memcpy(tail->next, &tmpdf, sizeof(DecorFace));
+			tail->next = fxcalloc(1, sizeof(DecorFace));
+			DFS_FACE_TYPE(tail->next->style) = SimpleButton;
+			replace_decor_face(tail->next, &tmpdf);
 			if (DFS_FACE_TYPE(tail->next->style) == VectorButton
 			    && DFS_FACE_TYPE((&TB_STATE(*tb)[bs_start])->style)
 				   == DefaultVectorButton) {
@@ -338,8 +341,7 @@ ReadTitleButton(char *s, TitleButton *tb, Bool append, int button)
 				DFS_FACE_TYPE(tail->next->style) = VectorButton;
 				next				 = head->next;
 				head->next			 = NULL;
-				FreeDecorFace(dpy, head);
-				memcpy(head, next, sizeof(DecorFace));
+				replace_decor_face(head, next);
 				free(next);
 			}
 			for (i = bs_start + 1; i <= bs_end; ++i) {
@@ -366,15 +368,12 @@ ReadTitleButton(char *s, TitleButton *tb, Bool append, int button)
 					    VectorButton;
 					next	   = head->next;
 					head->next = NULL;
-					FreeDecorFace(dpy, head);
-					memcpy(head, next, sizeof(DecorFace));
+					replace_decor_face(head, next);
 					free(next);
 				}
 			}
 		} else {
-			FreeDecorFace(dpy, &TB_STATE(*tb)[bs_start]);
-			memcpy(&(TB_STATE(*tb)[bs_start]), &tmpdf,
-			    sizeof(DecorFace));
+			replace_decor_face(&TB_STATE(*tb)[bs_start], &tmpdf);
 			for (i = bs_start + 1; i <= bs_end; ++i) {
 				if (multiple && (i & use_mask) != set_mask) {
 					continue;
@@ -383,6 +382,8 @@ ReadTitleButton(char *s, TitleButton *tb, Bool append, int button)
 				    spec, &TB_STATE(*tb)[i], button, False);
 			}
 		}
+	} else {
+		FreeDecorFace(dpy, &tmpdf);
 	}
 	if (pstyle) {
 		free(spec);
@@ -496,6 +497,22 @@ do_title_style(F_CMD_ARGS, Bool do_add)
  * Reads a multi-pixmap titlebar config. (tril@igs.net)
  *
  */
+static FvwmPicture *clone_decor_picture(FvwmPicture *picture)
+{
+	if (picture->is_view && picture->pending)
+	{
+		/* MultiPixmap Buttons assigns three parts. Each needs its own
+		 * old backing and cancellation interest. Decoding coalesces. */
+		return PCacheFvwmPictureAtScale(dpy, Scr.NoFocusWin, NULL,
+		    picture->name,
+		    (FvwmPictureAttributes){.mask = picture->fpa_mask},
+		    (monitor_scale_factor){picture->scale_quarters},
+		    picture->target_width, picture->target_height,
+		    picture->generation);
+	}
+	return PCloneFvwmPicture(picture);
+}
+
 static char *
 ReadMultiPixmapDecor(char *s, DecorFace *df)
 {
@@ -549,14 +566,17 @@ ReadMultiPixmapDecor(char *s, DecorFace *df)
 			char *tmp;
 
 			tmp = DoPeekToken(s, &token, ",", NULL, NULL);
-			if (!GetIntegerArguments(token, NULL, &val, 1)
+			if (!GetColorsetArgument(token, NULL, &val)
 			    || val < 0) {
 				fvwm_debug(__func__,
 				    "Colorset should take one or two "
 				    "positive integers as argument");
 			} else {
+				if (!alloc_colorset(val))
+				{
+					return NULL;
+				}
 				acs[pm_id].cs = val;
-				alloc_colorset(val);
 				s   = tmp;
 				tmp = DoPeekToken(s, &token, ",", NULL, NULL);
 				if (GetIntegerArguments(token, NULL, &val, 1)) {
@@ -604,10 +624,10 @@ ReadMultiPixmapDecor(char *s, DecorFace *df)
 			df->u.mp.solid_flags &= ~(1 << TBMP_RIGHT_BUTTONS);
 			if (pm[TBMP_BUTTONS]) {
 				pm[TBMP_LEFT_BUTTONS] =
-				    PCloneFvwmPicture(pm[TBMP_BUTTONS]);
+				    clone_decor_picture(pm[TBMP_BUTTONS]);
 				acs[TBMP_LEFT_BUTTONS].cs = -1;
 				pm[TBMP_RIGHT_BUTTONS] =
-				    PCloneFvwmPicture(pm[TBMP_BUTTONS]);
+				    clone_decor_picture(pm[TBMP_BUTTONS]);
 				acs[TBMP_RIGHT_BUTTONS].cs = -1;
 			} else {
 				pm[TBMP_RIGHT_BUTTONS] = pm[TBMP_LEFT_BUTTONS] =
@@ -1128,8 +1148,8 @@ ApplyDefaultFontAndColors(void)
 		gcv.font = Scr.DefaultFont->font->fid;
 	}
 	gcv.line_width = 0;
-	gcv.foreground = Colorset[cset].fg;
-	gcv.background = Colorset[cset].bg;
+	gcv.foreground = GetColorset(cset)->fg;
+	gcv.background = GetColorset(cset)->bg;
 
 	if (Scr.StdGC) {
 		XChangeGC(dpy, Scr.StdGC, gcm, &gcv);
@@ -1138,7 +1158,7 @@ ApplyDefaultFontAndColors(void)
 	}
 
 	gcm	       = GCFunction | GCLineWidth | GCForeground;
-	gcv.foreground = Colorset[cset].hilite;
+	gcv.foreground = GetColorset(cset)->hilite;
 
 	if (Scr.StdReliefGC) {
 		XChangeGC(dpy, Scr.StdReliefGC, gcm, &gcv);
@@ -1147,7 +1167,7 @@ ApplyDefaultFontAndColors(void)
 		    fvwmlib_XCreateGC(dpy, Scr.NoFocusWin, gcm, &gcv);
 	}
 
-	gcv.foreground = Colorset[cset].shadow;
+	gcv.foreground = GetColorset(cset)->shadow;
 	if (Scr.StdShadowGC) {
 		XChangeGC(dpy, Scr.StdShadowGC, gcm, &gcv);
 	} else {
@@ -1163,9 +1183,301 @@ ApplyDefaultFontAndColors(void)
 	return;
 }
 
+typedef struct decor_image_owner
+{
+	DecorFace *face;
+	FvwmDecor *decor;
+	FvwmPicture *source; /* Borrowed until this lease's finalizer. */
+	unsigned references;
+	struct
+	{
+		FvwmPicture *picture;
+		FvwmPicture *source;
+	} scaled[MONITOR_SCALE_QUARTERS_MAX - MONITOR_SCALE_QUARTERS_MIN + 1];
+} decor_image_owner;
+
+typedef struct
+{
+	decor_image_owner *owner;
+	FvwmPicture *source;
+	unsigned index;
+} decor_scale_owner;
+
+static void decor_image_unref(decor_image_owner *owner)
+{
+	if (--owner->references == 0)
+	{
+		free(owner);
+	}
+}
+
+static void decor_image_release(void *context)
+{
+	decor_image_owner *owner = context;
+
+	owner->face = NULL;
+	owner->source = NULL;
+	for (unsigned i = 0; i < sizeof(owner->scaled) /
+	    sizeof(owner->scaled[0]); i++)
+	{
+		PDestroyFvwmPicture(dpy, owner->scaled[i].picture);
+		PDestroyFvwmPicture(dpy, owner->scaled[i].source);
+	}
+	decor_image_unref(owner);
+}
+
+static FvwmPicture *decor_image_part(const DecorFace *face, unsigned part)
+{
+	switch (DFS_FACE_TYPE(face->style))
+	{
+	case PixmapButton:
+	case TiledPixmapButton:
+	case StretchedPixmapButton:
+	case AdjustedPixmapButton:
+	case ShrunkPixmapButton:
+		return part == 0 ? face->u.p : NULL;
+	case MultiPixmap:
+		return face->u.mp.pixmaps != NULL ?
+		    face->u.mp.pixmaps[part] : NULL;
+	default:
+		return NULL;
+	}
+}
+
+static picture_async_commit decor_image_policy(FvwmPicture *view,
+	void *context)
+{
+	decor_image_owner *owner = context;
+
+	if (owner->face != NULL)
+	{
+		for (unsigned i = 0; i < TBMP_NUM_PIXMAPS; i++)
+		{
+			if (decor_image_part(owner->face, i) == view)
+			{
+				return PICTURE_ASYNC_APPLY;
+			}
+		}
+	}
+	return PICTURE_ASYNC_DISCARD;
+}
+
+static void decor_image_settled(FvwmPicture *view, Bool applied,
+	void *context)
+{
+	decor_image_owner *owner = context;
+
+	if (!applied ||
+	    decor_image_policy(view, context) != PICTURE_ASYNC_APPLY)
+	{
+		return;
+	}
+	owner->face->flags.has_changed = 1;
+	owner->decor->flags.has_changed = 1;
+	owner->decor->titlebar.flags.has_changed = 1;
+	for (unsigned i = 0; i < NUMBER_OF_TITLE_BUTTONS; i++)
+	{
+		TB_FLAGS(owner->decor->buttons[i]).has_changed = 1;
+	}
+	Scr.flags.do_need_window_update = 1;
+}
+
+static picture_async_commit decor_scale_policy(FvwmPicture *view,
+	void *context)
+{
+	decor_scale_owner *scale = context;
+	decor_image_owner *owner = scale->owner;
+
+	if (owner->source == NULL || owner->source->backing != scale->source ||
+	    owner->scaled[scale->index].picture != view)
+	{
+		return PICTURE_ASYNC_DISCARD;
+	}
+	return decor_image_policy(owner->source, owner);
+}
+
+static void decor_scale_settled(FvwmPicture *view, Bool applied,
+	void *context)
+{
+	decor_scale_owner *scale = context;
+
+	if (applied && decor_scale_policy(view, context) == PICTURE_ASYNC_APPLY)
+	{
+		decor_image_settled(scale->owner->source, True, scale->owner);
+	}
+}
+
+static void decor_scale_release(void *context)
+{
+	decor_scale_owner *scale = context;
+
+	PDestroyFvwmPicture(dpy, scale->source);
+	decor_image_unref(scale->owner);
+	free(scale);
+}
+
+FvwmPicture *decor_picture_at_scale(FvwmPicture *source,
+	monitor_scale_factor factor)
+{
+	decor_image_owner *owner = picture_async_context(source,
+	    decor_image_settled);
+	FvwmPicture *snapshot = picture_snapshot(source);
+
+	if (owner == NULL || snapshot == NULL)
+	{
+		return snapshot;
+	}
+	if (source->pending && source->scale_quarters == factor.quarters)
+	{
+		return snapshot;
+	}
+	if (factor.quarters < MONITOR_SCALE_QUARTERS_MIN ||
+	    factor.quarters > MONITOR_SCALE_QUARTERS_MAX)
+	{
+		PDestroyFvwmPicture(dpy, snapshot);
+		return NULL;
+	}
+	unsigned index = factor.quarters - MONITOR_SCALE_QUARTERS_MIN;
+	FvwmPicture *old = owner->scaled[index].picture;
+
+	if (owner->scaled[index].source == snapshot && old != NULL &&
+	    old->is_view && old->pending)
+	{
+		PDestroyFvwmPicture(dpy, snapshot);
+		return picture_snapshot(old);
+	}
+	FvwmPicture *input = source->pending ? snapshot : source;
+	FvwmPicture *picture = PCacheFvwmPictureAtScale(dpy, Scr.NoFocusWin,
+	    NULL, input->name, (FvwmPictureAttributes){.mask = input->fpa_mask},
+	    factor, 0, 0, WM_UI_RESOURCE_GENERATION_INITIAL);
+
+	if (picture != NULL && picture->is_view && picture->pending)
+	{
+		decor_scale_owner *scale = fxmalloc(sizeof(*scale));
+
+		picture_view_set_backing(dpy, picture, old);
+		*scale = (decor_scale_owner){owner, PCloneFvwmPicture(snapshot),
+		    index};
+		owner->references++;
+		if (!picture_async_bind(picture, decor_scale_policy,
+		    decor_scale_settled, scale, decor_scale_release))
+		{
+			decor_scale_release(scale);
+			PDestroyFvwmPicture(dpy, picture);
+			picture = NULL;
+		}
+	}
+	if (picture == NULL)
+	{
+		PDestroyFvwmPicture(dpy, snapshot);
+		return picture_snapshot(old);
+	}
+	/* Slots belong to the live face, not temporary paints or raw windows.
+	 * Resolve each window's current factor at draw time. The existing scale
+	 * domain bounds the slots. All leases share one worker. */
+	owner->scaled[index].picture = picture;
+	PDestroyFvwmPicture(dpy, old);
+	PDestroyFvwmPicture(dpy, owner->scaled[index].source);
+	owner->scaled[index].source = snapshot;
+	return picture_snapshot(picture);
+}
+
+static void inherit_decor_scales(decor_image_owner *owner,
+	decor_image_owner *old)
+{
+	for (unsigned i = 0; i < sizeof(owner->scaled) /
+	    sizeof(owner->scaled[0]); i++)
+	{
+		if (owner->scaled[i].picture == NULL)
+		{
+			owner->scaled[i].picture =
+			    picture_snapshot(old->scaled[i].picture);
+			owner->scaled[i].source =
+			    PCloneFvwmPicture(old->scaled[i].source);
+		}
+	}
+}
+
+static decor_image_owner *bind_decor_image(FvwmPicture *view, DecorFace *face)
+{
+	decor_image_owner *owner = picture_async_context(view,
+	    decor_image_settled);
+
+	if (owner == NULL)
+	{
+		owner = fxcalloc(1, sizeof(*owner));
+		owner->face = face;
+		owner->decor = Scr.cur_decor ? Scr.cur_decor :
+		    &Scr.DefaultDecor;
+		owner->source = view;
+		owner->references = 1;
+		if (!picture_async_bind(view, decor_image_policy,
+		    decor_image_settled, owner, decor_image_release))
+		{
+			free(owner);
+			return NULL;
+		}
+	}
+	return owner;
+}
+
+void replace_decor_face(DecorFace *df, DecorFace *prepared)
+{
+	/* Command parsers build temporary faces. Bind only through the final
+	 * transfer and relocate earlier bindings; callbacks must not retain
+	 * a parser's stack address after installation. */
+	for (unsigned i = 0; i < TBMP_NUM_PIXMAPS; i++)
+	{
+		FvwmPicture *view = decor_image_part(prepared, i);
+
+		if (view != NULL && view->is_view && view->pending)
+		{
+			FvwmPicture *old = decor_image_part(df, i);
+			decor_image_owner *old_owner =
+			    picture_async_context(old,
+			    decor_image_settled);
+			decor_image_owner *owner =
+			    bind_decor_image(view, prepared);
+
+			picture_view_set_backing(dpy, view, old);
+			if (owner != NULL && old_owner != NULL)
+			{
+				inherit_decor_scales(owner, old_owner);
+			}
+		}
+	}
+	FreeDecorFace(dpy, df);
+	*df = *prepared;
+	memset(prepared, 0, sizeof(*prepared));
+	DFS_FACE_TYPE(prepared->style) = SimpleButton;
+	for (unsigned i = 0; i < TBMP_NUM_PIXMAPS; i++)
+	{
+		FvwmPicture *view = decor_image_part(df, i);
+		decor_image_owner *owner = picture_async_context(view,
+		    decor_image_settled);
+
+		if (owner != NULL)
+		{
+			owner->face = df;
+		}
+	}
+}
+
 void
 FreeDecorFace(Display *disp, DecorFace *df)
 {
+	/* The commit batch may temporarily retain a cancelled lease. Invalidate
+	 * its face address before releasing resources or freeing a decor. */
+	for (unsigned i = 0; i < TBMP_NUM_PIXMAPS; i++)
+	{
+		decor_image_owner *owner = picture_async_context(
+		    decor_image_part(df, i), decor_image_settled);
+
+		if (owner != NULL && owner->face == df)
+		{
+			owner->face = NULL;
+		}
+	}
 	switch (DFS_FACE_TYPE(df->style)) {
 	case GradientButton:
 		if (df->u.grad.d_pixels != NULL && df->u.grad.d_npixels) {
@@ -1263,8 +1575,8 @@ FreeDecorFace(Display *disp, DecorFace *df)
  * Reads a button face line into a structure (veliaa@rpi.edu)
  *
  */
-Bool
-ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
+static Bool
+read_decor_face(char *s, DecorFace *df, int button, int verbose)
 {
 	int   offset;
 	char  style[256], *file;
@@ -1520,14 +1832,22 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 			int val[2];
 			int n;
 
-			n = GetIntegerArguments(s, NULL, val, 2);
+			n = GetColorsetArgument(s, NULL, val);
+			if (n > 0 && GetIntegerArguments(SkipNTokens(s, 1), NULL,
+			    &val[1], 1))
+			{
+				n = 2;
+			}
 			if (n == 0) {
+			}
+			if (n > 0 && val[0] >= 0 && !alloc_colorset(val[0]))
+			{
+				return False;
 			}
 			memset(&df->style, 0, sizeof(df->style));
 			if (n > 0 && val[0] >= 0) {
 
 				df->u.acs.cs = val[0];
-				alloc_colorset(val[0]);
 				DFS_FACE_TYPE(df->style) = ColorsetButton;
 			}
 			df->u.acs.alpha_percent = 100;
@@ -1660,6 +1980,32 @@ ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 		free(file);
 	}
 
+	return True;
+}
+
+Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
+{
+	char *start = SkipSpaces(s, NULL, 0);
+	DecorFace prepared = {0};
+
+	if (start == NULL)
+	{
+		return False;
+	}
+	if (*start == '\0' || strncasecmp(start, "--", 2) == 0)
+	{
+		return read_decor_face(s, df, button, verbose);
+	}
+	DFS_FACE_TYPE(prepared.style) = SimpleButton;
+	if (!read_decor_face(s, &prepared, button, verbose))
+	{
+		/* Preserve immediate parser-refusal behavior. Deferred worker
+		 * refusal keeps the successfully parsed face's backing. */
+		FreeDecorFace(dpy, df);
+		FreeDecorFace(dpy, &prepared);
+		return False;
+	}
+	replace_decor_face(df, &prepared);
 	return True;
 }
 

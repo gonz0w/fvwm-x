@@ -35,7 +35,7 @@
 		(char *)(table), \
 		sizeof(table) / sizeof(struct_entry), \
 		sizeof(struct_entry), \
-		(int(*)(const void*, const void*))XCmpToken)
+		XCmpToken)
 
 /* ---------------------------- type definitions --------------------------- */
 
@@ -70,7 +70,6 @@ int GetSuffixedIntegerArguments(
 	char *suffixlist, int *ret_suffixnum);
 int GetIntegerArgumentsAnyBase(
 	char *action, char **ret_action, int *retvals,int num);
-int SuffixToPercentValue(int value, int suffix, int *unit_table);
 int GetIntegerArguments(char *action, char**ret_action, int *retvals,int num);
 int GetTokenIndex(char *token, char **list, int len, char **next);
 char *GetNextTokenIndex(char *action, char **list, int len, int *index);
@@ -80,7 +79,7 @@ int GetTwoPercentArguments(
 	char *action, int *val1, int *val2, int *val1_unit, int *val2_unit);
 int ParseToggleArgument(
 	char *action, char **ret_action, int default_ret, char no_toggle);
-int XCmpToken(const char *s, const char **t);
+int XCmpToken(const void *key, const void *entry);
 char *GetFileNameFromPath(char *path);
 
 #endif

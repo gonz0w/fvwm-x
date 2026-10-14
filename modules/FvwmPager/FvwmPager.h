@@ -258,6 +258,8 @@ void ExitPager(void);
 /* x_pager.c methods */
 void HandleScrollDone(void);
 rectangle set_vp_size_and_loc(struct fpmonitor *, bool is_icon);
+/* Coalescing shares the main-loop count/time budget and preserves queue order. */
+Bool pager_take_next_event(Window window, int type, XEvent *event);
 void DispatchEvent(XEvent *Event);
 void ReConfigure(void);
 void ReConfigureAll(void);

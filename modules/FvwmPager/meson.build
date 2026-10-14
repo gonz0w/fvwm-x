@@ -9,11 +9,15 @@ fvwmpager_sources = [
     'FvwmPager.h',
     'init_pager.c',
     'messages.c',
+    'pager_packet.c',
+    'pager_geometry.c',
+    'pager_shape.c',
+    'pager_desk_range.c',
     'x_pager.c',
     'x_update.c',
 ]
 
-executable(
+fvwm_pager = executable(
     'FvwmPager',
     sources: fvwmpager_sources,
     dependencies: [all_found_deps],

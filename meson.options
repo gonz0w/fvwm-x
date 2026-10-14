@@ -106,3 +106,66 @@ option(
     value: 'auto',
     description: 'Enable X PixMap (xpm) support',
 )
+option(
+    'colorset-limit',
+    type: 'integer',
+    min: 1,
+    max: 65536,
+    value: 4096,
+    description: 'Maximum distinct colorsets per core/module process, including default zero',
+)
+
+option(
+    'png-security-backport', type: 'boolean', value: false,
+    description: 'Assert that an older libpng has verified vendor security backports; not a vulnerability check',
+)
+
+option(
+    'image-input-limit', type: 'integer', min: 1, max: 1024, value: 128,
+    description: 'Maximum regular-file image source bytes in MiB',
+)
+option(
+    'image-xpm-expanded-limit', type: 'integer', min: 1, max: 1024, value: 128,
+    description: 'Maximum expanded compressed XPM bytes in MiB',
+)
+option(
+    'image-decompress-timeout', type: 'integer', min: 1, max: 60, value: 5,
+    description: 'Overall compressed XPM decompression deadline in seconds',
+)
+option(
+    'image-gzip', type: 'string', value: '',
+    description: 'Trusted gzip-compatible executable; empty resolves gzip at configure time',
+)
+
+option(
+    'image-svg-timeout', type: 'integer', min: 1, max: 60, value: 5,
+    description: 'Overall isolated SVG decoder deadline in seconds',
+)
+option(
+    'image-svg-memory-limit', type: 'integer', min: 128, max: 4096, value: 1024,
+    description: 'SVG worker address/data allocation limit in MiB',
+)
+
+option(
+    'font-shadow-limit', type: 'integer', min: 1, max: 65536, value: 4096,
+    description: 'Maximum shadow positions per text draw, excluding foreground',
+)
+
+option(
+    'image-effect-timeout', type: 'integer', min: 1, max: 60, value: 5,
+    description: 'Isolated software colorset effect deadline in seconds',
+)
+option(
+    'image-effect-memory-limit', type: 'integer', min: 128, max: 4096,
+    value: 1024,
+    description: 'Software effect worker address/data allocation limit in MiB',
+)
+
+option(
+    'pager-max-desks',
+    type: 'integer',
+    min: 1,
+    max: 65536,
+    value: 4096,
+    description: 'Maximum displayed desks per Pager instance',
+)

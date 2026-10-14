@@ -1,4 +1,8 @@
 libwidget_sources = [
+    'script_delay.c',
+    'script_geometry.c',
+    'script_widget_math.c',
+    'script_text.c',
     'Widgets/CheckBox.c',
     'Widgets/HDipstick.c',
     'Widgets/HScrollBar.c',
@@ -32,12 +36,22 @@ libWidgets = static_library(
 fvwmscript_sources = [
     'FvwmScript.c',
     'Instructions.c',
+    'script_file.c',
+    'script_command.c',
+    'script_output.c',
+    'script_index.c',
+    'script_process.c',
+    'script_fifo.c',
+    'script_value.c',
+    'script_execution.c',
+    'script_storage.c',
+    'script_packet.c',
     'libyywrap.c',
     'scanner.c',
     'script.c',
 ]
 
-executable(
+fvwm_script = executable(
     'FvwmScript',
     sources: fvwmscript_sources,
     dependencies: all_found_deps,
@@ -68,42 +82,28 @@ install_data(
     install_dir: fvwm_datadir,
 )
 
+# Retain this filename for configurations that explicitly invoke Perl.
 install_data(
     'Scripts/fvwm-script-ComExample.pl',
     install_dir: fvwm_datadir,
+    install_tag: 'script-com-example',
 )
 
-# This sed is pulled straight from the makefile; we can do better
-# by directly using configure_file() with a proper template rather
-# than this silly sed business.
-perl_path = perl.full_path()
+# Configure the consumer before bin/ creates the optional Go target. Quote
+# each shell argument once; neither helper interpolates the communication ID.
+com_arguments = [fvwm_datadir / 'fvwm-script-ComExample']
+if not golang.found()
+    com_arguments = [perl.full_path(), '-w',
+        fvwm_datadir / 'fvwm-script-ComExample.pl']
+endif
+com_config = configuration_data()
+com_config.set('COM_HELPER', run_command(py, '-c',
+    'import shlex, sys; print(shlex.join(sys.argv[1:]))',
+    com_arguments, check: true).stdout().strip())
 configure_file(
     input: 'Scripts/FvwmScript-ComExample.in',
     output: 'FvwmScript-ComExample',
-    command: [
-        sed,
-        '-e', f's,xFVWM_DATADIRx,@fvwm_datadir@,',
-        '-e', f's,xPERLx,@perl_path@,',
-        '@INPUT@',
-    ],
-    capture: true,
-    install_dir: join_paths(fvwm_datadir),
-)
-
-install_symlink(
-    'FvwmScript-ConfirmCopyConfig',
-    pointing_to: 'default-config/FvwmScript-ConfirmCopyConfig',
+    configuration: com_config,
     install_dir: fvwm_datadir,
-)
-
-install_symlink(
-    'FvwmScript-ConfirmQuit',
-    pointing_to: 'default-config/FvwmScript-ConfirmQuit',
-    install_dir: fvwm_datadir,
-)
-
-install_symlink(
-    'FvwmScript-DateTime',
-    pointing_to: 'default-config/FvwmScript-DateTime',
-    install_dir: fvwm_datadir,
+    install_tag: 'script-com-example',
 )

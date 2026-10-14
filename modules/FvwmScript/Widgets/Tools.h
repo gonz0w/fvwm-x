@@ -4,9 +4,9 @@
 #define FVWMSCRIPT_WIDGETS_TOOLS_H
 
 #include "../types.h"
-#if HAVE_SYS_SELECT_H
-#  include <sys/select.h>
-#endif
+#include "../script_widget_math.h"
+#include "../script_text.h"
+#include "../script_geometry.h"
 
 #include "libs/Flocale.h"
 
@@ -36,12 +36,30 @@ extern FlocaleWinString *FwinString;
 #define MENU_DRAG_TIME 300
 #define GRAB_EVMASK (ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask | EnterWindowMask | LeaveWindowMask)
 
+/* Cancellation-aware modal readiness shares MainLoop packet/session ownership.
+ * A zero-type event means a finite timeout. A callback changing the active
+ * widget cancels the old interaction before its cached geometry is used. */
+bool FvwmScriptModalService(void *context);
+bool FvwmScriptModalEvent(struct XObj *object, XEvent *event, int timeout_ms);
+bool script_widget_next_event(struct XObj *object, XEvent *event);
+bool script_widget_wait_release(struct XObj *object, int ticks);
+
 /* helper functions */
+/* Measure without mutating a live widget; font ownership stays with caller. */
+bool script_widget_layout(struct XObj *xobj, FlocaleFont *font,
+	script_layout_geometry *geometry);
+bool script_widget_prepare(struct XObj *xobj);
+/* Popup sizing precedes translation, allocation and pointer grabbing. */
+bool script_widget_popup(struct XObj *xobj, int first, int padding,
+	bool align_value, script_layout_geometry *geometry, int *row_height);
+void script_geometry_diagnostic(const char *operation, int id);
 /* get byte offset corresponding to character offset, including
    bounds check to represent end of text */
 int getByteOffsetBoundsCheck(FlocaleFont *flf, char *str, int offset);
 /* opposite of the above, return character offset */
 int getCharOffsetBoundsCheck(FlocaleFont *flf, char *str, int offset);
+size_t script_locale_text_next(FlocaleFont *flf, const char *str,
+	size_t remaining);
 
 void MyDrawString(
 	Display *dpy, struct XObj *xobj, Window win, int x, int y,
@@ -68,11 +86,11 @@ void DrawIconStr(int offset, struct XObj *xobj, int DoRedraw,
 void DrawReliefRect(int x,int y,int width,int height,struct XObj *xobj,
 		unsigned int LiC, unsigned int ShadC);
 
-int InsertText(struct XObj *xobj,char *str,int SizeStr);
-
 char *GetText(struct XObj *xobj,int End);
 
 void SelectOneTextField(struct XObj *xobj);
+/* Opt-in script keyboard policy, shared with the native text editor. */
+Bool FvwmScriptUsesKeyboardFocus(void);
 
 void DrawArrowN(struct XObj *xobj,int x,int y,int Press);
 
@@ -83,9 +101,5 @@ void DrawArrowE(struct XObj *xobj,int x,int y,int Press);
 void DrawArrowW(struct XObj *xobj,int x,int y,int Press);
 
 int PtInRect(XPoint pt,XRectangle rect);
-
-void Wait(int t);
-
-int IsItDoubleClic(struct XObj *xobj);
 
 #endif /* FVWMSCRIPT_WIDGETS_TOOLS_H */

@@ -26,6 +26,18 @@
 #define FAULT_ENV "FVWM_TEST_XRR_FAIL_FILE"
 
 static Bool
+empty_query(int *nmonitors)
+{
+	const char *mode = getenv("FVWM_TEST_XRR_EMPTY_MONITORS");
+
+	if (mode == NULL || *mode != '1')
+		return False;
+	if (nmonitors != NULL)
+		*nmonitors = 0;
+	return True;
+}
+
+static Bool
 consume_failure_sentinel(void)
 {
 	const char *path;
@@ -58,6 +70,8 @@ XRRGetMonitors(Display *display, Window window, Bool active, int *nmonitors)
 
 	if (consume_failure_sentinel())
 		return fail_query(nmonitors);
+	if (empty_query(nmonitors))
+		return NULL;
 	if (real_xrr_get_monitors == NULL) {
 		real_xrr_get_monitors =
 		    (xrr_get_monitors_fn)dlsym(RTLD_NEXT, "XRRGetMonitors");
@@ -79,6 +93,8 @@ __wrap_XRRGetMonitors(
 {
 	if (consume_failure_sentinel())
 		return fail_query(nmonitors);
+	if (empty_query(nmonitors))
+		return NULL;
 
 	return __real_XRRGetMonitors(display, window, active, nmonitors);
 }

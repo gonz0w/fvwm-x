@@ -31,16 +31,14 @@ void InitPopupMenu(struct XObj *xobj)
 {
   unsigned long mask;
   XSetWindowAttributes Attr;
-  int i;
-  char *str;
 
   /* Save colors and font
    */
   if (xobj->colorset >= 0) {
-    xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-    xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-    xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-    xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+    xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+    xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+    xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+    xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
   } else {
     xobj->TabColor[fore] = GetColor(xobj->forecolor);
     xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -60,14 +58,11 @@ void InitPopupMenu(struct XObj *xobj)
 		xobj->x, xobj->y, xobj->width, xobj->height, 0,
 		CopyFromParent, InputOutput, CopyFromParent,
 		mask, &Attr);
+		if (mask & CWCursor)
+		  XFreeCursor(dpy, Attr.cursor);
   xobj->gc = fvwmlib_XCreateGC(dpy, xobj->win, 0, NULL);
   XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
 
-  if ((xobj->Ffont = FlocaleLoadFont(dpy, xobj->font, ScriptName)) == NULL)
-  {
-    fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n", ScriptName);
-    exit(1);
-  }
   if (xobj->Ffont->font != NULL)
     XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
@@ -78,20 +73,9 @@ void InitPopupMenu(struct XObj *xobj)
   if (xobj->value < 1)
     xobj->value = 1;
 
-  /* Widget resizing */
-  xobj->height = xobj->Ffont->height  +12;
-  xobj->width = 30;
-  for (i = 1; i <= xobj->value3; i++)
-  {
-    str = (char*)GetMenuTitle(xobj->title, i);
-    if (xobj->width < FlocaleTextWidth(xobj->Ffont, str, strlen(str))+34)
-      xobj->width = FlocaleTextWidth(xobj->Ffont, str, strlen(str))+34;
-    free(str);
-  }
-  XResizeWindow(dpy, xobj->win, xobj->width, xobj->height);
   if (xobj->colorset >= 0)
     SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-			&Colorset[xobj->colorset], Pdepth,
+			GetColorset(xobj->colorset), Pdepth,
 			xobj->gc, True);
   XSelectInput(dpy, xobj->win, ExposureMask);
 }
@@ -156,8 +140,8 @@ void DrawPopupMenu(struct XObj *xobj, XEvent *evp)
 
 void EvtMousePopupMenu(struct XObj *xobj, XButtonEvent *EvtButton)
 {
-  static XEvent event;
-  int x,y,hOpt,yMenu,hMenu;
+  XEvent event;
+  int x,y,hOpt,hMenu;
   int x1,y1,x2,y2;
   int oldvalue = 0;
   int newvalue = 0;
@@ -172,20 +156,16 @@ void EvtMousePopupMenu(struct XObj *xobj, XButtonEvent *EvtButton)
   Bool End = 1;
   int asc = xobj->Ffont->ascent;
 
-  hOpt = xobj->Ffont->height + 10;
+  script_layout_geometry popup;
+  if (!script_widget_popup(xobj, 1, 0, true, &popup, &hOpt))
+  {
+    script_geometry_diagnostic(__func__, xobj->id);
+    return;
+  }
   xobj->value3 = CountOption(xobj->title);
-  yMenu = xobj->y - ((xobj->value-1) * hOpt);
-  hMenu = xobj->value3 * hOpt;
-
-  /* Create menu window */
-  XTranslateCoordinates(dpy, *xobj->ParentWin, Root,
-			xobj->x, yMenu, &x, &y, &Win1);
-  if (x < 0) x = 0;
-  if (y < 0) y = 0;
-  if (x+xobj->width > XDisplayWidth(dpy, screen))
-    x = XDisplayWidth(dpy, screen) - xobj->width;
-  if (y+hMenu > XDisplayHeight(dpy, screen))
-    y = XDisplayHeight(dpy, screen) - hMenu;
+  x = popup.x;
+  y = popup.y;
+  hMenu = popup.height;
   mask = 0;
   Attr.background_pixel = xobj->TabColor[back];
   mask |= CWBackPixel;
@@ -201,16 +181,23 @@ void EvtMousePopupMenu(struct XObj *xobj, XButtonEvent *EvtButton)
   mask |= CWOverrideRedirect;
   WinPop = XCreateWindow(dpy, Root, x, y, xobj->width, hMenu, 0,
 			 Pdepth, InputOutput, Pvisual, mask, &Attr);
+			 if (mask & CWCursor)
+			   XFreeCursor(dpy, Attr.cursor);
   if (xobj->colorset >= 0)
     SetWindowBackground(dpy, WinPop, xobj->width, hMenu,
-			&Colorset[xobj->colorset], Pdepth,
+			GetColorset(xobj->colorset), Pdepth,
 			xobj->gc, True);
   XMapRaised(dpy, WinPop);
 
   /* Drawing the menu */
   DrawPMenu(xobj, WinPop, hOpt, 0);
-  XGrabPointer(dpy, WinPop, True, GRAB_EVMASK, GrabModeAsync, GrabModeAsync,
-	       None, None, CurrentTime);
+  if (XGrabPointer(dpy, WinPop, True, GRAB_EVMASK, GrabModeAsync,
+      GrabModeAsync, None, None, CurrentTime) != GrabSuccess)
+  {
+    XDestroyWindow(dpy, WinPop);
+    xobj->DrawObj(xobj, NULL);
+    return;
+  }
   if (EvtButton == NULL) {
     while_mask = ButtonPress;
   }
@@ -237,7 +224,11 @@ void EvtMousePopupMenu(struct XObj *xobj, XButtonEvent *EvtButton)
       oldvalue = newvalue;
     }
 
-    FNextEvent(dpy, &event);
+    if (!script_widget_next_event(xobj, &event))
+    {
+      newvalue = 0;
+      break;
+    }
     switch (event.type)
     {
     case KeyPress:
@@ -270,32 +261,6 @@ void EvtMousePopupMenu(struct XObj *xobj, XButtonEvent *EvtButton)
       break;
     }
   }
-#if 0
-  do
-  {
-    FQueryPointer(dpy, Root, &Win1, &Win2, &x1, &y1, &x2, &y2, &modif);
-    /* Determiner l'option courante / Current option */
-    y2 = y2 - y;
-    x2 = x2 - x;
-    {
-      /* calcule de xobj->value / compute xobj->value */
-      if ((x2 > 0) && (x2 < xobj->width) && (y2 > 0) && (y2 < hMenu))
-	newvalue = y2 / hOpt+1;
-      else
-	newvalue = 0;
-      if (newvalue != oldvalue)
-      {
-	UnselectMenu(xobj, WinPop, hOpt, oldvalue, xobj->width, asc, 0);
-	SelectMenu(xobj, WinPop, hOpt, newvalue);
-	oldvalue = newvalue;
-      }
-    }
-    FD_ZERO(&in_fdset);
-    FD_SET(x_fd, &in_fdset);
-    select(32, SELECT_FD_SET_CAST &in_fdset, NULL, NULL, NULL);
-  }
-  while (!FCheckTypedEvent(dpy, while_mask, &event));
-#endif
  XUngrabPointer(dpy, CurrentTime);
  XSync(dpy,0);
 
@@ -317,8 +282,4 @@ void EvtKeyPopupMenu(struct XObj *xobj, XKeyEvent *EvtKey)
   if (ks == XK_Return) {
     EvtMousePopupMenu(xobj, NULL);
   }
-}
-
-void ProcessMsgPopupMenu(struct XObj *xobj, unsigned long type, unsigned long *body)
-{
 }

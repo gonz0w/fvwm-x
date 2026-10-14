@@ -20,6 +20,9 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/FProperty.h"
+#include "libs/fd_safety.h"
+#include "libs/ice_error_policy.h"
 #include "window_flags.h"
 
 #include <stdio.h>
@@ -256,81 +259,28 @@ static char *get_unique_state_filename(void)
 static char *
 GetWindowRole(Window window)
 {
-	XTextProperty tp;
+	char *role = FGetSessionString(dpy, window, _XA_WM_WINDOW_ROLE);
 
-	if (XGetTextProperty (dpy, window, &tp, _XA_WM_WINDOW_ROLE))
+	if (role == NULL)
 	{
-		if (tp.encoding == XA_STRING && tp.format == 8 &&
-		    tp.nitems != 0)
-		{
-			return ((char *) tp.value);
-		}
+		role = FGetSessionString(dpy, window, _XA_WINDOW_ROLE);
 	}
-	if (XGetTextProperty (dpy, window, &tp, _XA_WINDOW_ROLE))
-	{
-		if (tp.encoding == XA_STRING && tp.format == 8 &&
-		    tp.nitems != 0)
-		{
-			return ((char *) tp.value);
-		}
-	}
-
-	return NULL;
+	return role;
 }
 
 static char *
 GetClientID(FvwmWindow *fw)
 {
-	char *client_id = NULL;
-	Window client_leader = None;
-	Window window;
-	XTextProperty tp;
-	Atom actual_type;
-	int actual_format;
-	unsigned long nitems;
-	unsigned long bytes_after;
-	unsigned char *prop = NULL;
-
-	window = FW_W(fw);
-
-	if (XGetWindowProperty(
-		    dpy, window, _XA_WM_CLIENT_LEADER, 0L, 1L, False,
-		    AnyPropertyType, &actual_type, &actual_format, &nitems,
-		    &bytes_after, &prop) == Success)
-	{
-		if (actual_type == XA_WINDOW && actual_format == 32 &&
-		    nitems == 1 && bytes_after == 0)
-		{
-			client_leader = (Window)(*(long *)prop);
-		}
-	}
+	Window client_leader = FGetClientLeader(dpy, FW_W(fw),
+	    _XA_WM_CLIENT_LEADER);
 
 	if (!client_leader && fw->wmhints &&
 	    (fw->wmhints->flags & WindowGroupHint))
 	{
 		client_leader = fw->wmhints->window_group;
 	}
-
-	if (client_leader)
-	{
-		if (
-			XGetTextProperty(
-				dpy, client_leader, &tp, _XA_SM_CLIENT_ID))
-		{
-			if (tp.encoding == XA_STRING && tp.format == 8 &&
-			    tp.nitems != 0)
-			{
-				client_id = (char *) tp.value;
-			}
-		}
-	}
-
-	if (prop)
-	{
-		XFree (prop);
-	}
-
-	return client_id;
+	return client_leader ?
+	    FGetSessionString(dpy, client_leader, _XA_SM_CLIENT_ID) : NULL;
 }
 
 /*
@@ -428,7 +378,7 @@ SaveWindowStates(FILE *f)
 		{
 			/* no client id, some session manager do not manage
 			 * such client ... this can cause problem */
-			if (XGetCommand(
+			if (FGetCommand(
 				    dpy, FW_W(ewin), &wm_command,
 				    &wm_command_count) &&
 			    wm_command && wm_command_count > 0)
@@ -611,7 +561,7 @@ static Bool matchWin(FvwmWindow *w, Match *m)
 			{
 				/* for non-SM-aware clients we also
 				 * compare WM_COMMAND */
-				if (!XGetCommand(
+				if (!FGetCommand(
 					    dpy, FW_W(w), &wm_command,
 					    &wm_command_count))
 				{
@@ -1102,19 +1052,17 @@ MyIoErrorHandler(FIceConn ice_conn)
 static void
 InstallIOErrorHandler(void)
 {
-	FIceIOErrorHandler default_handler;
+	FIceIOErrorHandler default_handler, candidate;
 
 	if (!SessionSupport)
 	{
 		return;
 	}
 
-	prev_handler = FIceSetIOErrorHandler (NULL);
+	candidate = FIceSetIOErrorHandler (NULL);
 	default_handler = FIceSetIOErrorHandler (MyIoErrorHandler);
-	if (prev_handler == default_handler)
-	{
-		prev_handler = NULL;
-	}
+	prev_handler = fvwm_ice_error_previous(
+		MyIoErrorHandler, prev_handler, candidate, default_handler);
 
 	return;
 }
@@ -1752,6 +1700,14 @@ SessionInit(void)
 	else
 	{
 		sm_fd = FIceConnectionNumber(FSmcGetIceConnection(ssm_conn));
+		if (!fvwm_fd_prepare_select(sm_fd))
+		{
+			fvwm_debug(__func__, "Cannot prepare session descriptor");
+			FSmcCloseConnection(ssm_conn, 0, NULL);
+			ssm_conn = NULL;
+			sm_fd = -1;
+			return;
+		}
 		if (FVWM_SM_DEBUG_PROTO)
 		{
 			fvwm_debug(

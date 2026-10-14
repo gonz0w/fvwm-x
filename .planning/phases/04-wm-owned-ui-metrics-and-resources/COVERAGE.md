@@ -1,1 +1,0 @@
-No external API integration: Phase 4 scales in-process FVWM-owned chrome, fonts, images, and cursors using existing Xft/Xcursor/PNG/SVG Meson features and does not call a network or third-party HTTP API.

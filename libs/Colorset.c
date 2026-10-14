@@ -20,21 +20,105 @@
 
 #include "config.h"
 
+#include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <X11/Intrinsic.h>
 
 #include "libs/fvwmlib.h"
 #include "libs/FShape.h"
 #include "libs/Colorset.h"
+#include "libs/Parse.h"
+#include "libs/log.h"
 #include "libs/PictureBase.h"
 #include "libs/Graphics.h"
 #include "libs/Grab.h"
 #include "libs/PictureGraphics.h"
 #include "libs/XError.h"
 
-/* globals */
-colorset_t *Colorset = NULL;
-int nColorsets = 0;
+#include "colorset_store.h"
+#include <limits.h>
+#include <stdbool.h>
+
+static colorset_store colorsets = {
+	.limit = FVWM_COLORSET_LIMIT, .record_size = sizeof(colorset_t)
+};
+static colorset_t empty_colorset;
+
+colorset_t *FindColorset(int id)
+{
+	return colorset_store_find(&colorsets, id);
+}
+
+colorset_t *GetColorset(int id)
+{
+	/* Consecutive field reads usually share an ID. Cache only exact hits;
+	 * sparse records are never moved or deleted during process lifetime. */
+	static int cached_id = -1;
+	static colorset_t *cached;
+	colorset_t *cs;
+
+	if (cached != NULL && cached_id == id)
+	{
+		return cached;
+	}
+	cs = FindColorset(id);
+	if (cs != NULL)
+	{
+		cached_id = id;
+		cached = cs;
+		return cs;
+	}
+	cs = FindColorset(0);
+	return cs != NULL ? cs : &empty_colorset;
+}
+
+colorset_t *CreateColorset(int id)
+{
+	bool created;
+	colorset_t *cs = colorset_store_ensure(&colorsets, id, &created);
+	if (cs == NULL)
+	{
+		fvwm_debug(__func__, "Cannot allocate colorset %d (limit %d)",
+			id, FVWM_COLORSET_LIMIT);
+	}
+	return cs;
+}
+
+size_t ColorsetCount(void)
+{
+	return colorsets.count;
+}
+
+int ColorsetIdAt(size_t position)
+{
+	return colorset_store_id_at(&colorsets, position);
+}
+
+Bool ParseColorsetId(const char *text, char **end, int *id)
+{
+	return colorset_store_parse_id(text, 10, id, end);
+}
+
+int GetColorsetArgument(char *action, char **rest, int *id)
+{
+	char *token = NULL, *tail;
+	int parsed;
+	char *next = GetNextToken(action, &token);
+	Bool valid = ParseColorsetId(token, &tail, &parsed) && *tail == '\0';
+
+	if (rest != NULL)
+	{
+		*rest = next;
+	}
+	if (valid)
+	{
+		*id = parsed;
+	}
+	free(token);
+	return valid ? 1 : 0;
+}
 
 /* stretch the src rectangle to the dest ractangle keeping its aspect so that
  * it fills the destination completely. */
@@ -62,44 +146,37 @@ static int get_aspect_dimensions(
 	}
 }
 
-/*
- * AllocColorset() grows the size of the Colorset array to include set n
- * colorset_t *Colorset will be altered
- * returns the address of the member
- */
-void AllocColorset(int n)
+/* Modules borrow resource IDs from the core and copy set zero as their
+ * undefined-set default. No intervening IDs are allocated. */
+Bool AllocColorset(int n)
 {
-	/* do nothing if it already exists */
-	if (n < nColorsets)
+	if (n < 0)
 	{
-		return;
+		return False;
 	}
-
-	/* increment n to get the required array size, get a new array */
-	Colorset = fxrealloc((void *)Colorset, ++n, sizeof(colorset_t));
-
-	/* zero out colorset 0
-	   it's always defined so will be filled in during module startup */
-	if (n == 0)
+	if (FindColorset(n) != NULL)
 	{
-		memset(
-			&Colorset[nColorsets], 0,
-			(n - nColorsets) * sizeof(colorset_t));
+		return True;
 	}
-	else
+	colorset_t *zero = FindColorset(0);
+	if (zero == NULL)
 	{
-		/* copy colorset 0 into new members so that if undefined ones
-		 * are referenced at least they don't give black on black */
-		for ( ; nColorsets < n; nColorsets++)
+		zero = CreateColorset(0);
+		if (zero == NULL)
 		{
-			memcpy(
-				&Colorset[nColorsets], Colorset,
-				sizeof(colorset_t));
+			return False;
 		}
 	}
-	nColorsets = n;
-
-	return;
+	colorset_t *cs = n == 0 ? zero : CreateColorset(n);
+	if (cs == NULL)
+	{
+		return False;
+	}
+	if (n != 0)
+	{
+		*cs = *zero;
+	}
+	return True;
 }
 
 /*
@@ -127,59 +204,75 @@ char *DumpColorset(int n, colorset_t *cs)
 int LoadColorset(char *line)
 {
 	colorset_t *cs;
-	unsigned int n, chars;
-	Pixel fg, bg, hilite, shadow, fgsh, tint, icon_tint;
-	Pixmap pixmap;
-	Pixmap shape_mask;
-	unsigned int fg_alpha_percent, width, height, pixmap_type;
-	unsigned int shape_width, shape_height, shape_type;
-	unsigned int tint_percent, do_dither_icon, icon_tint_percent;
-	unsigned int icon_alpha_percent;
+	int n;
+	char *tail;
+	unsigned long values[20];
 
 	if (line == NULL)
 	{
 		return -1;
 	}
-	if (sscanf(line, "%x%n", &n, &chars) < 1)
+	if (!colorset_store_parse_id(line, 16, &n, &tail) || n < 0)
 	{
 		return -1;
 	}
-	line += chars;
+	line = tail;
 
-	/* migo: if you modify this sscanf or other colorset definitions,
-	 * please update perllib/FVWM/Tracker/Colorsets.pm too */
-	if (sscanf(line,
-		   "%lx %lx %lx %lx %lx %lx %lx %lx %lx "
-		   "%x %x %x %x %x %x %x %x %x %x %x",
-		   &fg, &bg, &hilite, &shadow, &fgsh, &tint, &icon_tint,
-		   &pixmap, &shape_mask, &fg_alpha_percent, &width, &height,
-		   &pixmap_type, &shape_width, &shape_height, &shape_type,
-		   &tint_percent, &do_dither_icon, &icon_tint_percent,
-		   &icon_alpha_percent) != 20)
+	/* Preserve DumpColorset's 20-field order and native resource widths.
+	 * The first nine fields are pixels/pixmaps; the rest are unsigned
+	 * integer attributes. Keep Perl metadata in sync if this order changes.
+	 * Unlike scanf, strtoul reports overflow before a value can narrow. */
+	for (unsigned i = 0; i < 20; i++)
+	{
+		while (isspace((unsigned char)*line))
+		{
+			line++;
+		}
+		if (*line == '-')
+		{
+			return -1;
+		}
+		errno = 0;
+		values[i] = strtoul(line, &tail, 16);
+		if (tail == line || errno == ERANGE ||
+		    (i >= 9 && values[i] > UINT_MAX) ||
+		    (*tail != '\0' && !isspace((unsigned char)*tail)))
+		{
+			return -1;
+		}
+		line = tail;
+	}
+	/* Refuse invalid X11 extents before creating an ID/changing state. */
+	if (values[10] > UINT16_MAX || values[11] > UINT16_MAX ||
+	    values[13] > UINT16_MAX || values[14] > UINT16_MAX)
+	{
 		return -1;
-
-	AllocColorset(n);
-	cs = &Colorset[n];
-	cs->fg = fg;
-	cs->bg = bg;
-	cs->hilite = hilite;
-	cs->shadow = shadow;
-	cs->fgsh = fgsh;
-	cs->tint = tint;
-	cs->icon_tint = icon_tint;
-	cs->pixmap = pixmap;
-	cs->shape_mask = shape_mask;
-	cs->fg_alpha_percent = fg_alpha_percent;
-	cs->width = width;
-	cs->height = height;
-	cs->pixmap_type = pixmap_type;
-	cs->shape_width = shape_width;
-	cs->shape_height = shape_height;
-	cs->shape_type = shape_type;
-	cs->tint_percent = tint_percent;
-	cs->do_dither_icon = do_dither_icon;
-	cs->icon_tint_percent = icon_tint_percent;
-	cs->icon_alpha_percent = icon_alpha_percent;
+	}
+	if (!AllocColorset(n))
+	{
+		return -1;
+	}
+	cs = GetColorset(n);
+	cs->fg = values[0];
+	cs->bg = values[1];
+	cs->hilite = values[2];
+	cs->shadow = values[3];
+	cs->fgsh = values[4];
+	cs->tint = values[5];
+	cs->icon_tint = values[6];
+	cs->pixmap = values[7];
+	cs->shape_mask = values[8];
+	cs->fg_alpha_percent = values[9];
+	cs->width = values[10];
+	cs->height = values[11];
+	cs->pixmap_type = values[12];
+	cs->shape_width = values[13];
+	cs->shape_height = values[14];
+	cs->shape_type = values[15];
+	cs->tint_percent = values[16];
+	cs->do_dither_icon = values[17];
+	cs->icon_tint_percent = values[18];
+	cs->icon_alpha_percent = values[19];
 
 	return n;
 }
@@ -506,7 +599,6 @@ Pixmap CreateOffsetBackgroundPixmap(
 				0, 0, width, height, False);
 		}
 		XSync(dpy, False);
-		ferror_reset_temp_error_handler();
 		if (is_bad_gc == 1)
 		{
 			is_bad_gc = 0;
@@ -514,6 +606,12 @@ Pixmap CreateOffsetBackgroundPixmap(
 			pixmap = None;
 		}
 		XFreeGC(dpy,fill_gc);
+		/* If a replaced root pixmap prevented GC creation, releasing that
+		 * GC also produces BadGC. Drain cleanup before restoring the caller's
+		 * handler so the expected transient error stays within this scope. */
+		XSync(dpy, False);
+		ferror_reset_temp_error_handler();
+		is_bad_gc = 0;
 		return pixmap;
 	}
 	if (!is_shape_mask)

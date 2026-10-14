@@ -23,11 +23,14 @@
 
 /* ------------------------------- includes -------------------------------- */
 #include "config.h"
+#include "buttons_packet.h"
+#include "libs/FProperty.h"
 #ifdef HAVE_SYS_BSDTYPES_H
 #include <sys/bsdtypes.h> /* Saul */
 #endif
 
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <signal.h>
 #include <fcntl.h>
@@ -44,6 +47,8 @@
 #include "libs/gravity.h"
 #include "fvwm/fvwm.h"
 #include "libs/Module.h"
+#include "libs/module_packet_reader.h"
+#include "libs/module_x_service.h"
 #include "libs/fvwmsignal.h"
 #include "libs/Colorset.h"
 #include "libs/vpacket.h"
@@ -90,7 +95,6 @@
 	StructureNotifyMask | \
 	0)
 
-extern int nColorsets;  /* in libs/Colorsets.c */
 
 /* --------------------------- external functions -------------------------- */
 extern void DumpButtons(button_info *);
@@ -124,6 +128,7 @@ static void change_colorset(int colorset, XEvent *Event);
 void DebugEvents(XEvent *);
 
 static void HandlePanelPress(button_info *b);
+static module_packet_reader buttons_packet_reader;
 
 /* -------------------------------- globals ---------------------------------*/
 
@@ -134,7 +139,6 @@ char *MyName;
 int screen;
 
 static int x_fd;
-static fd_set_size_t fd_width;
 
 char *config_file = NULL;
 
@@ -184,6 +188,47 @@ Bool was_bad_access = False;
 Bool swallowed = False;
 Window swallower_win = 0;
 char windowname[128];
+
+/* The same pass budget includes coalescing performed by event handlers. */
+static unsigned int buttons_x_serviced = MODULE_X_EVENT_BUDGET;
+static struct timespec buttons_x_started;
+
+static Bool buttons_x_batch_available(void)
+{
+	struct timespec now;
+
+	if (isTerminated || buttons_x_serviced >= MODULE_X_EVENT_BUDGET)
+	{
+		return False;
+	}
+	if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+	{
+		fvwm_debug(__func__, "Unable to read X service clock");
+		fvwmSetTerminate(0);
+		return False;
+	}
+	return module_x_service_available(buttons_x_serviced,
+		&buttons_x_started, &now);
+}
+
+static Bool buttons_take_next_event(Window window, int type, XEvent *event)
+{
+	XEvent next;
+
+	if (!buttons_x_batch_available() ||
+		!FEventsQueued(Dpy, QueuedAlready))
+	{
+		return False;
+	}
+	FPeekEvent(Dpy, &next);
+	if (next.type != type || next.xany.window != window)
+	{
+		return False;
+	}
+	FNextEvent(Dpy, event);
+	buttons_x_serviced++;
+	return True;
+}
 
 /* ------------------------------ Misc functions ----------------------------*/
 
@@ -672,8 +717,14 @@ int main(int argc, char **argv)
 		}
 	}
 
-	fd[0] = atoi(argv[1]);
-	fd[1] = atoi(argv[2]);
+	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);
+	if (module == NULL)
+	{
+		fprintf(stderr, "%s: invalid module descriptors\n", argv[0]);
+		return 1;
+	}
+	fd[0] = module->to_fvwm;
+	fd[1] = module->from_fvwm;
 	if (!(Dpy = XOpenDisplay(NULL)))
 	{
 		fvwm_debug(MyName,
@@ -684,7 +735,6 @@ int main(int argc, char **argv)
 	flib_init_graphics(Dpy);
 
 	x_fd = XConnectionNumber(Dpy);
-	fd_width = GetFdWidth();
 
 	screen = DefaultScreen(Dpy);
 	Root = RootWindow(Dpy, screen);
@@ -853,6 +903,13 @@ int main(int argc, char **argv)
 	** it is safe(r) to install the clean-up handlers ...
 	*/
 	atexit(DeadPipeCleanup);
+
+	/* Startup configuration uses the blocking reader before this point. */
+	if (!module_packet_reader_init(&buttons_packet_reader, fd[1]))
+	{
+		fvwm_debug(__func__, "cannot initialize runtime packet reader");
+		return 1;
+	}
 
 	/* tell fvwm we're running */
 	SendFinishedStartupNotification(fd);
@@ -1066,14 +1123,9 @@ void Loop(void)
 						Event.xexpose.width;
 					ey2= Event.xexpose.y +
 						Event.xexpose.height;
-					while (
-						FCheckTypedWindowEvent(
-							Dpy, MyWindow, Expose,
-							&Event))
+					while (buttons_take_next_event(
+						MyWindow, Expose, &Event))
 					{
-					 /* maybe we should not purge here,
-					  * this may interfere
-					  * with configure notify */
 					 ex = min(ex, Event.xexpose.x);
 					 ey = min(ey, Event.xexpose.y);
 					 ex2 = max(ex2, Event.xexpose.x
@@ -1152,7 +1204,7 @@ void Loop(void)
 	Window root;
 
 	fev_sanitise_configure_notify(&Event.xconfigure);
-	while (FCheckTypedWindowEvent(Dpy, MyWindow, ConfigureNotify, &event))
+	while (buttons_take_next_event(MyWindow, ConfigureNotify, &event))
 	{
 	  if (!event.xconfigure.send_event &&
 	      Event.xconfigure.window != MyWindow)
@@ -1181,8 +1233,8 @@ void Loop(void)
 	  {
 	    SetTransparentBackground(UberButton, Width, Height);
 	  }
-	  for (i = 0; i < nColorsets; i++)
-		  change_colorset(i, &Event);
+	  for (i = 0; i < ColorsetCount(); i++)
+		  change_colorset(ColorsetIdAt(i), &Event);
 	  if (!UberButton->c->flags.b_Colorset)
 	  {
 		  XClearWindow(Dpy, MyWindow);
@@ -1382,7 +1434,7 @@ void Loop(void)
 	      if (b->flags.b_Title)
 		free(b->title);
 	      b->flags.b_Title = 1;
-	      FlocaleGetNameProperty(XGetWMName, Dpy, swin, &tmp);
+	      FlocaleGetNameProperty(FGetWMName, Dpy, swin, &tmp);
 	      if (tmp.name != NULL)
 	      {
 		CopyString(&b->title, tmp.name);
@@ -1548,7 +1600,7 @@ void RedrawWindow(void)
 	}
 
 	/* Flush expose events */
-	while (FCheckTypedWindowEvent(Dpy, MyWindow, Expose, &dummy))
+	while (buttons_take_next_event(MyWindow, Expose, &dummy))
 	{
 	}
 
@@ -1578,7 +1630,7 @@ int LoadIconFile(const char *s, FvwmPicture **p, int cset)
 	FvwmPictureAttributes fpa;
 
 	fpa.mask = 0;
-	if (cset >= 0 && Colorset[cset].do_dither_icon)
+	if (cset >= 0 && GetColorset(cset)->do_dither_icon)
 	{
 		fpa.mask |= FPAM_DITHER;
 	}
@@ -1626,11 +1678,11 @@ void RecursiveLoadData(button_info *b, int *maxx, int *maxy)
     b->flags.b_TransBack = 0;
 
     /* fetch the colours from the colorset */
-    b->fc = Colorset[cset].fg;
-    b->bc = Colorset[cset].bg;
-    b->hc = Colorset[cset].hilite;
-    b->sc = Colorset[cset].shadow;
-    if (Colorset[cset].pixmap != None)
+    b->fc = GetColorset(cset)->fg;
+    b->bc = GetColorset(cset)->bg;
+    b->hc = GetColorset(cset)->hilite;
+    b->sc = GetColorset(cset)->shadow;
+    if (GetColorset(cset)->pixmap != None)
     {
       /* we have a pixmap */
       b->backicon = NULL;
@@ -1671,11 +1723,11 @@ void RecursiveLoadData(button_info *b, int *maxx, int *maxy)
       b->c->flags.b_TransBack = 0;
 
       /* fetch the colours from the colorset */
-      b->c->fc = Colorset[cset].fg;
-      b->c->bc = Colorset[cset].bg;
-      b->c->hc = Colorset[cset].hilite;
-      b->c->sc = Colorset[cset].shadow;
-      if (Colorset[cset].pixmap != None)
+      b->c->fc = GetColorset(cset)->fg;
+      b->c->bc = GetColorset(cset)->bg;
+      b->c->hc = GetColorset(cset)->hilite;
+      b->c->sc = GetColorset(cset)->shadow;
+      if (GetColorset(cset)->pixmap != None)
       {
 	/* we have a pixmap */
 	b->c->backicon = NULL;
@@ -2273,7 +2325,7 @@ void CreateUberButtonWindow(button_info *ub, int maxx, int maxy)
 	{
 		SetWindowBackground(
 			Dpy, MyWindow, mysizehints.width, mysizehints.height,
-			&Colorset[ub->c->colorset], Pdepth, NormalGC, True);
+			GetColorset(ub->c->colorset), Pdepth, NormalGC, True);
 	}
 	else if (ub->c->flags.b_IconBack && !ub->c->flags.b_TransBack)
 	{
@@ -2344,79 +2396,117 @@ void DebugEvents(XEvent *event)
 **/
 int My_FNextEvent(Display *Dpy, XEvent *event)
 {
-	fd_set in_fdset;
+	struct pollfd ready[FD_SETSIZE + 2];
 	static int miss_counter = 0;
 	static Bool fsm_pending = False;
-	struct timeval tv;
+	size_t session_count;
+	int result;
 
-	if (FPending(Dpy))
+	if (isTerminated)
+	{
+		return 0;
+	}
+	if (buttons_x_batch_available() && FPending(Dpy))
 	{
 		FNextEvent(Dpy, event);
+		buttons_x_serviced++;
 #ifdef DEBUG_EVENTS
 		DebugEvents(event);
 #endif
 		return 1;
 	}
 
-	FD_ZERO(&in_fdset);
-	FD_SET(x_fd, &in_fdset);
-	FD_SET(fd[1], &in_fdset);
-	fsm_fdset(&in_fdset);
-
-	if (fsm_pending)
+	ready[0] = (struct pollfd){ x_fd, POLLIN, 0 };
+	ready[1] = (struct pollfd){ fd[1], POLLIN, 0 };
+	/* Session descriptors remain borrowed and range-admitted by fsm. */
+	session_count = fsm_pollfds(ready + 2, FD_SETSIZE);
+	result = fvwmPoll(ready, session_count + 2,
+		FPending(Dpy) ? 0 : (fsm_pending ? 10 : -1));
+	if (result < 0)
 	{
-		tv.tv_sec  = 0;
-		tv.tv_usec = 10000; /* 10 ms */
-	}
-
-	if (fvwmSelect(
-		    fd_width, SELECT_FD_SET_CAST &in_fdset, 0, 0,
-		    (fsm_pending)? &tv:NULL) > 0)
-	{
-		if (FD_ISSET(x_fd, &in_fdset))
+		if (errno != EINTR)
 		{
-			if (FPending(Dpy))
+			fvwm_debug(__func__, "poll failed: %s", strerror(errno));
+			fvwmSetTerminate(0);
+		}
+		return 0;
+	}
+	if (isTerminated)
+	{
+		return 0;
+	}
+	for (size_t i = 0; i < session_count + 2; i++)
+	{
+		if (ready[i].revents & POLLNVAL)
+		{
+			fvwmSetTerminate(0);
+			return 0;
+		}
+	}
+	if (ready[0].revents & (POLLERR | POLLHUP))
+	{
+		fvwmSetTerminate(0);
+		return 0;
+	}
+	if (ready[0].revents & POLLIN)
+	{
+		if (FPending(Dpy))
+		{
+			miss_counter = 0;
+		}
+		else if (++miss_counter > 100)
+		{
+			DeadPipe(0);
+		}
+	}
+	if (ready[1].revents & (POLLIN | POLLHUP))
+	{
+		FvwmPacket *packet;
+		module_packet_read_status packet_status = module_packet_reader_read(
+			&buttons_packet_reader, &packet);
+
+		if (packet_status == MODULE_PACKET_READ_ERROR ||
+		    packet_status == MODULE_PACKET_READ_ENDED)
+		{
+			if (packet_status == MODULE_PACKET_READ_ERROR)
 			{
-				FNextEvent(Dpy, event);
-				miss_counter = 0;
-#ifdef DEBUG_EVENTS
-				DebugEvents(event);
-#endif
-				return 1;
+				fvwm_debug(__func__, "runtime packet read failed");
+			}
+			DeadPipe(0);
+			return 0;
+		}
+		if (packet_status == MODULE_PACKET_READ_READY)
+		{
+			if (buttons_packet_is_valid(packet->type, packet->body,
+				FvwmPacketBodySize(*packet)))
+			{
+				process_message(packet->type, packet->body);
 			}
 			else
 			{
-				miss_counter++;
-			}
-			if (miss_counter > 100)
-			{
-				DeadPipe(0);
+				fvwm_debug(__func__, "Refusing incomplete runtime packet");
 			}
 		}
-
-		if (FD_ISSET(fd[1], &in_fdset))
-		{
-			FvwmPacket* packet = ReadFvwmPacket(fd[1]);
-			if ( packet == NULL )
-			{
-				DeadPipe(0);
-			}
-			else
-			{
-				process_message( packet->type, packet->body );
-			}
-		}
-
-		fsm_pending = fsm_process(&in_fdset);
-
 	}
-	else
+	if (ready[1].revents & POLLERR)
 	{
-		if (fsm_pending)
-		{
-			fsm_pending = fsm_process(&in_fdset);
-		}
+		fvwmSetTerminate(0);
 	}
+	if (!isTerminated && (result > 0 || fsm_pending))
+	{
+		fsm_pending = fsm_process_pollfds(ready + 2, session_count);
+	}
+
+	if (!isTerminated)
+	{
+		if (clock_gettime(CLOCK_MONOTONIC, &buttons_x_started) < 0)
+		{
+			fvwm_debug(__func__, "Unable to start X service clock");
+			fvwmSetTerminate(0);
+		}
+		buttons_x_serviced = 0;
+	}
+
 	return 0;
 }
 
@@ -2477,12 +2567,12 @@ void change_swallowed_window_colorset(button_info *b, Bool do_clear)
 		Dpy, w, Pdepth, XVisualIDFromVisual(Pvisual), Pcmap, &children);
 	SetWindowBackground(
 		Dpy, w, buttonWidth(b), buttonHeight(b),
-		&Colorset[b->colorset], Pdepth, NormalGC, do_clear);
+		GetColorset(b->colorset), Pdepth, NormalGC, do_clear);
 	while (nchildren-- > 0)
 	{
 		SetWindowBackground(
 			Dpy, children[nchildren], buttonWidth(b),
-			buttonHeight(b), &Colorset[b->colorset], Pdepth,
+			buttonHeight(b), GetColorset(b->colorset), Pdepth,
 			NormalGC, do_clear);
 	}
 	if (children)
@@ -2527,7 +2617,7 @@ static void update_root_transparency(XEvent *Event)
 		SetWindowBackground(
 			Dpy, MyWindow, UberButton->c->width,
 			UberButton->c->height,
-			&Colorset[UberButton->c->colorset],
+			GetColorset(UberButton->c->colorset),
 			Pdepth, NormalGC, True);
 		/* the window is redraw by exposure. It is very difficult
 		 * the clear only the needed part and then redraw the
@@ -2651,7 +2741,7 @@ static void change_colorset(int colorset, XEvent *Event)
 		SetWindowBackground(
 			Dpy, MyWindow, UberButton->c->width,
 			UberButton->c->height,
-			&Colorset[colorset], Pdepth, NormalGC, True);
+			GetColorset(colorset), Pdepth, NormalGC, True);
 
 		/* some change are done by exposing. Do the other one */
 		button = -1;
@@ -2694,7 +2784,10 @@ static void handle_config_info_packet(unsigned long *body)
 	if (StrEquals(token, "Colorset"))
 	{
 		colorset = LoadColorset(tline);
-		change_colorset(colorset, NULL);
+		if (colorset >= 0)
+		{
+			change_colorset(colorset, NULL);
+		}
 	}
 }
 
@@ -3285,7 +3378,7 @@ void swallow(unsigned long *body)
 					}
 					b->flags.b_Title = 1;
 					FlocaleGetNameProperty(
-						XGetWMName, Dpy, swin, &temp);
+						FGetWMName, Dpy, swin, &temp);
 					if (temp.name != NULL)
 					{
 						CopyString(

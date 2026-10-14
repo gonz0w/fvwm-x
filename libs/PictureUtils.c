@@ -1927,7 +1927,7 @@ int PictureAllocColorAllProp(
 			c->green = c->green << 8;
 			c->blue = c->blue << 8;
 		}
-		return PictureAllocColor(dpy, cmap, c, False);
+		return PictureAllocColor(dpy, cmap, c, no_limit);
 	}
 	return 0;
 }
@@ -1955,6 +1955,12 @@ PictureImageColorAllocator *PictureOpenImageColorAllocator(
 	PictureImageColorAllocator *pica;
 	Bool do_save_pixels = False;
 
+	/* Strict palettes override no-limit requests at allocation too. Record
+	 * that effective ownership so close uses the matching release path. */
+	if (PStrictColorLimit && Pct != NULL)
+	{
+		no_limit = False;
+	}
 	pica = fxmalloc(sizeof(PictureImageColorAllocator));
 	if (Pdepth <= 8 && !do_not_save_pixels && (Pvisual->class & 1) &&
 	    ((PUseDynamicColors && Pct) || no_limit))
@@ -1981,6 +1987,46 @@ PictureImageColorAllocator *PictureOpenImageColorAllocator(
 	pica->no_limit = no_limit;
 	pica->cmap = cmap;
 	return pica;
+}
+
+Bool picture_trim_image_color_allocator(Display *dpy,
+	PictureImageColorAllocator *pica, unsigned budget)
+{
+	Pixel pixels[256];
+	unsigned used = 0;
+	Bool complete = True;
+
+	if (pica == NULL || pica->pixels_table == NULL)
+	{
+		return True;
+	}
+	/* Recorded tables exist only at depth <= 8. Preserve one unique
+	 * reference per color for close/ownership transfer. */
+	for (int i = 0; i < pica->pixels_table_size; i++)
+	{
+		while (pica->pixels_table[i] > 1 && budget > 0)
+		{
+			pixels[used++] = i;
+			pica->pixels_table[i]--;
+			budget--;
+			if (used == sizeof(pixels) / sizeof(pixels[0]))
+			{
+				PictureFreeColors(dpy, pica->cmap, pixels, used,
+				    0, pica->no_limit);
+				used = 0;
+			}
+		}
+		if (pica->pixels_table[i] > 1)
+		{
+			complete = False;
+		}
+	}
+	if (used != 0)
+	{
+		PictureFreeColors(dpy, pica->cmap, pixels, used,
+		    0, pica->no_limit);
+	}
+	return complete;
 }
 
 void PictureCloseImageColorAllocator(

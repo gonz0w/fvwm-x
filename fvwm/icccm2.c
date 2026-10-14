@@ -21,8 +21,12 @@
 #endif
 
 #include "libs/log.h"
+#include "libs/atom_batch.h"
 #include "libs/fvwm_x11.h"
 #include "libs/FEvent.h"
+#include "libs/FProperty.h"
+#include "property_policy.h"
+#include <stdint.h>
 #include "fvwm.h"
 #include "externs.h"
 #include "execcontext.h"
@@ -56,14 +60,19 @@ SetupICCCM2(Bool replace_wm)
 	char wm_sx[25];
 
 	snprintf(wm_sx, sizeof(wm_sx), "WM_S%lu", Scr.screen);
-	_XA_WM_SX =     XInternAtom(dpy, wm_sx, False);
-	_XA_MANAGER =   XInternAtom(dpy, "MANAGER", False);
-	_XA_ATOM_PAIR = XInternAtom(dpy, "ATOM_PAIR", False);
-	_XA_TARGETS =   XInternAtom(dpy, "TARGETS", False);
-	_XA_MULTIPLE =  XInternAtom(dpy, "MULTIPLE", False);
-	_XA_TIMESTAMP = XInternAtom(dpy, "TIMESTAMP", False);
-	_XA_VERSION =   XInternAtom(dpy, "VERSION", False);
-	_XA_WM_COLORMAP_NOTIFY = XInternAtom(dpy, "WM_COLORMAP_NOTIFY", False);
+	/* All names are independent; finish interning before selection ownership. */
+	char *names[] = { wm_sx, "MANAGER", "ATOM_PAIR", "TARGETS",
+		"MULTIPLE", "TIMESTAMP", "VERSION", "WM_COLORMAP_NOTIFY" };
+	Atom atoms[sizeof(names) / sizeof(*names)];
+	atom_batch_intern(dpy, names, sizeof(names) / sizeof(*names), atoms);
+	_XA_WM_SX = atoms[0];
+	_XA_MANAGER = atoms[1];
+	_XA_ATOM_PAIR = atoms[2];
+	_XA_TARGETS = atoms[3];
+	_XA_MULTIPLE = atoms[4];
+	_XA_TIMESTAMP = atoms[5];
+	_XA_VERSION = atoms[6];
+	_XA_WM_COLORMAP_NOTIFY = atoms[7];
 
 	/* Check for a running ICCCM 2.0 compliant WM */
 	running_wm_win = XGetSelectionOwner(dpy, _XA_WM_SX);
@@ -175,11 +184,6 @@ convertProperty(Window w, Atom target, Atom property)
 void
 icccm2_handle_selection_request(const XEvent *e)
 {
-	Atom type;
-	unsigned long *adata;
-	int i, format;
-	unsigned long num, rest;
-	unsigned char *data;
 	XSelectionRequestEvent ev = e->xselectionrequest;
 	XSelectionEvent reply;
 
@@ -195,29 +199,43 @@ icccm2_handle_selection_request(const XEvent *e)
 	{
 		if (ev.property != None)
 		{
-			XGetWindowProperty(
-				dpy, ev.requestor, ev.property, 0L, 256L, False,
-				_XA_ATOM_PAIR, &type, &format, &num, &rest,
-				&data);
-			/* FIXME: to be 100% correct, should deal with
-			 * rest > 0, but since we have 4 possible targets, we
-			 * will hardly ever meet multiple requests with a
-			 * length > 8
-			 */
-			adata = (unsigned long *)data;
-			for(i = 0; i < num; i += 2)
+			unsigned char *data;
+			size_t bytes;
+			FPropertyLimits limits = {.min_bytes = 0,
+			    .max_bytes = FVWM_SELECTION_PAIR_MAX_BYTES, .format = 32};
+			FPropertyResult result = FPropertyRead(dpy, ev.requestor,
+			    ev.property, _XA_ATOM_PAIR, limits, &data, &bytes);
+
+			if (result == FPROPERTY_OK &&
+			    fvwm_selection_pair_length_is_valid(bytes))
 			{
-				if (!convertProperty(
-					    ev.requestor, adata[i],
-					    adata[i+1]))
+				const uint32_t *values = (const uint32_t *)data;
+				unsigned long pairs[FVWM_SELECTION_PAIR_MAX_BYTES / 4];
+				size_t count = bytes / 4;
+
+				/* XChangeProperty expects native longs for format 32. */
+				for (size_t i = 0; i < count; i++)
 				{
-					adata[i+1] = None;
+					pairs[i] = values[i];
 				}
+				for (size_t i = 0; i < count; i += 2)
+				{
+					if (pairs[i + 1] == None || !convertProperty(
+					    ev.requestor, pairs[i], pairs[i + 1]))
+					{
+						pairs[i + 1] = None;
+					}
+				}
+				XChangeProperty(dpy, ev.requestor, ev.property,
+				    _XA_ATOM_PAIR, 32, PropModeReplace,
+				    (unsigned char *)pairs, (int)count);
+				reply.property = ev.property;
 			}
-			XChangeProperty(
-				dpy, ev.requestor, ev.property, _XA_ATOM_PAIR,
-				32, PropModeReplace, data, num);
-			XFree(data);
+			else
+			{
+				fvwm_debug(__func__, "Ignoring invalid MULTIPLE pairs");
+			}
+			free(data);
 		}
 	}
 	else

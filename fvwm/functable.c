@@ -49,7 +49,7 @@
 /* ---------------------------- exported variables (globals) --------------- */
 
 /* IMPORTANT: command description should not be longer than 53 characters. */
-/* If you change func_table format, change also perllib/FVWM/create-commands */
+/* Format changes must update tools/maintenance/generate.py metadata. */
 /* The next line must be blank for modules to properly parse this file. */
 
 const func_t func_table[] =
@@ -90,7 +90,7 @@ const func_t func_table[] =
 	CMD_ENT("any", CMD_Any, F_ANY, 0, 0),
 	/* - Operate if there is any window matching the condition */
 
-	CMD_ENT("beep", CMD_Beep, F_BEEP, 0, 0),
+	CMD_ENT("beep", CMD_Beep, F_BEEP, FUNC_INTERACTION_SAFE, 0),
 	/* - Produce a bell */
 
 	CMD_ENT("borderstyle", CMD_BorderStyle, F_BORDERSTYLE,
@@ -165,7 +165,8 @@ const func_t func_table[] =
 		FUNC_NEEDS_WINDOW, CRS_DESTROY),
 	/* - Try to delete a window using the X delete protocol */
 
-	CMD_ENT("deschedule", CMD_Deschedule, F_DESCHEDULE, 0, 0),
+	CMD_ENT("deschedule", CMD_Deschedule, F_DESCHEDULE,
+		FUNC_INTERACTION_SAFE, 0),
 	/* - Remove commands sheduled earlier using Schedule */
 
 	CMD_ENT("desktopconfiguration", CMD_DesktopConfiguration,
@@ -209,7 +210,7 @@ const func_t func_table[] =
 	CMD_ENT("direction", CMD_Direction, F_DIRECTION, 0, 0),
 	/* - Operate on the next window in the specified direction */
 
-	CMD_ENT("echo", CMD_Echo, F_ECHO, 0, 0),
+	CMD_ENT("echo", CMD_Echo, F_ECHO, FUNC_INTERACTION_SAFE, 0),
 	/* - Print message to stderr, mainly for debugging */
 
 	CMD_ENT("echofuncdefinition", CMD_EchoFuncDefinition,
@@ -385,7 +386,7 @@ const func_t func_table[] =
 	CMD_ENT("none", CMD_None, F_NONE, 0, 0),
 	/* - Perform command if no window matches conditions */
 
-	CMD_ENT("nop", CMD_Nop, F_NOP, 0, 0),
+	CMD_ENT("nop", CMD_Nop, F_NOP, FUNC_INTERACTION_SAFE, 0),
 	/* - Do nothing (used internally) */
 
 	CMD_ENT("nowindow", CMD_NoWindow, F_NOP, 0, 0),
@@ -483,7 +484,7 @@ const func_t func_table[] =
 	CMD_ENT("scanforwindow", CMD_ScanForWindow, F_SCANFORWINDOW, 0, 0),
 	/* - Operate on the matching window in the given direction */
 
-	CMD_ENT("schedule", CMD_Schedule, F_SCHEDULE, 0, 0),
+	CMD_ENT("schedule", CMD_Schedule, F_SCHEDULE, FUNC_INTERACTION_SAFE, 0),
 	/* - Run an fvwm command after a delay */
 
 	CMD_ENT("scroll", CMD_Scroll, F_SCROLL, 0, 0),
@@ -492,17 +493,19 @@ const func_t func_table[] =
 	CMD_ENT("send_configinfo", CMD_Send_ConfigInfo, F_CONFIG_LIST, 0, 0),
 	/* - Internal, used for module communication */
 
-	CMD_ENT("send_reply", CMD_Send_Reply, F_SEND_REPLY, 0, 0),
+	CMD_ENT("send_reply", CMD_Send_Reply, F_SEND_REPLY,
+		FUNC_INTERACTION_SAFE, 0),
 	/* - Internal, used for module communication */
 
 	CMD_ENT("send_windowlist", CMD_Send_WindowList, F_SEND_WINDOW_LIST,
 		0, 0),
 	/* - Internal, used for module communication */
 
-	CMD_ENT("sendtomodule", CMD_SendToModule, F_SEND_STRING, 0, 0),
+	CMD_ENT("sendtomodule", CMD_SendToModule, F_SEND_STRING,
+		FUNC_INTERACTION_SAFE, 0),
 	/* - Send a string (action) to a module */
 
-	CMD_ENT("set_mask", CMD_set_mask, F_SET_MASK, 0, 0),
+	CMD_ENT("set_mask", CMD_set_mask, F_SET_MASK, FUNC_INTERACTION_SAFE, 0),
 	/* - Internal, used for module communication */
 
 	CMD_ENT("set_nograb_mask", CMD_set_nograb_mask, F_SET_NOGRAB_MASK,

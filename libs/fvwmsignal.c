@@ -23,6 +23,7 @@
 #include <sys/wait.h>
 #include <setjmp.h>
 #include <errno.h>
+#include <unistd.h>
 #include "fvwmsignal.h"
 
 #define true   1
@@ -34,6 +35,53 @@ typedef enum { SIG_INIT=0, SIG_DONE } SIG_STATUS;
 volatile sig_atomic_t isTerminated = false;
 
 static volatile sig_atomic_t canJump = false;
+_Static_assert(sizeof(sig_atomic_t) >= sizeof(int),
+    "child wait status must fit the atomic signal slot");
+static volatile sig_atomic_t watched_child;
+static volatile sig_atomic_t watched_status;
+static volatile sig_atomic_t watched_exited;
+
+int fvwm_child_watch_available(void)
+{
+	return watched_child == 0;
+}
+
+int fvwm_child_watch(pid_t child)
+{
+	if (child <= 0 || (pid_t)(sig_atomic_t)child != child)
+	{
+		errno = EINVAL;
+		return 0;
+	}
+	if (!fvwm_child_watch_available())
+	{
+		errno = EBUSY;
+		return 0;
+	}
+	watched_status = 0;
+	watched_exited = 0;
+	watched_child = (sig_atomic_t)child;
+	return 1;
+}
+
+int fvwm_child_status(pid_t child, int *status)
+{
+	if (watched_child != child || !watched_exited)
+	{
+		return 0;
+	}
+	*status = (int)watched_status;
+	return 1;
+}
+
+void fvwm_child_unwatch(pid_t child)
+{
+	if (watched_child == child)
+	{
+		watched_child = 0;
+		watched_exited = 0;
+	}
+}
 #ifdef HAVE_SIGSETJMP
 static sigjmp_buf deadJump;
 #define SIGSETJMP(env, savesigs) sigsetjmp(env, savesigs)
@@ -54,6 +102,9 @@ static jmp_buf deadJump;
 RETSIGTYPE
 fvwmReapChildren(int sig)
 {
+	int saved_errno = errno;
+	int status;
+	pid_t child;
 	(void)sig;
 
 	BSD_BLOCK_SIGNALS;
@@ -65,19 +116,28 @@ fvwmReapChildren(int sig)
 	 * are very few functions which are truly safe.
 	 */
 #if HAVE_WAITPID
-	while (waitpid(-1, NULL, WNOHANG) > 0)
+	while ((child = waitpid(-1, &status, WNOHANG)) > 0)
 	{
-		/* nothing to do here */
+		if (child == watched_child)
+		{
+			watched_status = status;
+			watched_exited = 1;
+		}
 	}
 #elif HAVE_WAIT3
-	while (wait3(NULL, WNOHANG, NULL) > 0)
+	while ((child = wait3(&status, WNOHANG, NULL)) > 0)
 	{
-		/* nothing to do here */
+		if (child == watched_child)
+		{
+			watched_status = status;
+			watched_exited = 1;
+		}
 	}
 #else
 # error One of waitpid or wait3 is needed.
 #endif
 	BSD_UNBLOCK_SIGNALS;
+	errno = saved_errno;
 
 	SIGNAL_RETURN;
 }
@@ -149,6 +209,59 @@ fvwmSetTerminate(int sig)
 	BSD_UNBLOCK_SIGNALS;
 }
 
+
+/* The jump is armed only across the syscall, as in fvwmSelect. In particular,
+ * callers must build their descriptor arrays before entering this wrapper. */
+ssize_t fvwmRead(int fd, void *buffer, size_t count)
+{
+	volatile ssize_t result = -1;
+
+	errno = EINTR;
+	if (SIGSETJMP(deadJump, 1) == SIG_INIT)
+	{
+		canJump = true;
+		if (!isTerminated)
+		{
+			result = read(fd, buffer, count);
+		}
+		canJump = false;
+	}
+	return result;
+}
+
+ssize_t fvwmWrite(int fd, const void *buffer, size_t count)
+{
+	volatile ssize_t result = -1;
+
+	errno = EINTR;
+	if (SIGSETJMP(deadJump, 1) == SIG_INIT)
+	{
+		canJump = true;
+		if (!isTerminated)
+		{
+			result = write(fd, buffer, count);
+		}
+		canJump = false;
+	}
+	return result;
+}
+
+int fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms)
+{
+	volatile int result = -1;
+
+	errno = EINTR;
+	if (SIGSETJMP(deadJump, 1) == SIG_INIT)
+	{
+		canJump = true;
+		if (!isTerminated)
+		{
+			result = poll(fds, count, timeout_ms);
+		}
+		canJump = false;
+	}
+	return result;
+}
 
 #ifdef HAVE_SELECT
 /*

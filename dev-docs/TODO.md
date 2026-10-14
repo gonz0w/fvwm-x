@@ -1,3 +1,6 @@
+Current FVWM-X priorities are tracked in [PROJECT-TRACKER.md](PROJECT-TRACKER.md).
+The upstream brainstorm below is historical, not the active backlog.
+
 TODO
 ====
 

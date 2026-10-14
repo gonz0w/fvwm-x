@@ -104,7 +104,9 @@ const exec_context_t *exc_create_context(
 const exec_context_t *exc_create_null_context(void);
 
 /* Works like exc_create_context(), but initialises all values with the data
- * from excin.  The ecc/mask pair overrides these values. */
+ * from excin. The triggering event is copied and owned by the clone. Window,
+ * module and live last-event references remain borrowed. The ecc/mask pair
+ * overrides these values. */
 const exec_context_t *exc_clone_context(
 	const exec_context_t *excin, exec_context_changes_t *ecc,
 	exec_context_change_mask_t mask);

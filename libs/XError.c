@@ -275,7 +275,10 @@ void ferror_set_temp_error_handler(ferror_handler_t new_handler)
 	{
 		do_coredump();
 	}
-	old_handler = XSetErrorHandler(old_handler);
+	/* Install the requested handler while retaining the caller's handler.
+	 * Root-pixmap replacement can invalidate a transparent draw mid-update;
+	 * installing the default handler here would terminate the module. */
+	old_handler = XSetErrorHandler(new_handler);
 
 	return;
 }

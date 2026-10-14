@@ -16,6 +16,8 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "menu_image.h"
+#include "libs/picture_view.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -221,7 +223,7 @@ void menustyle_free(MenuStyle *ms)
 	}
 	if (ST_SIDEPIC(ms))
 	{
-		PDestroyFvwmPicture(dpy, ST_SIDEPIC(ms));
+		menu_image_destroy(&ST_SIDEPIC(ms));
 	}
 	if (ST_HAS_SIDE_COLOR(ms) == 1)
 	{
@@ -273,10 +275,10 @@ void menustyle_update(MenuStyle *ms)
 {
 	XGCValues gcv;
 	unsigned long gcm;
-	colorset_t *menu_cs = &Colorset[ST_CSET_MENU(ms)];
-	colorset_t *active_cs = &Colorset[ST_CSET_ACTIVE(ms)];
-	colorset_t *greyed_cs = &Colorset[ST_CSET_GREYED(ms)];
-	colorset_t *title_cs = &Colorset[ST_CSET_TITLE(ms)];
+	colorset_t *menu_cs = GetColorset(ST_CSET_MENU(ms));
+	colorset_t *active_cs = GetColorset(ST_CSET_ACTIVE(ms));
+	colorset_t *greyed_cs = GetColorset(ST_CSET_GREYED(ms));
+	colorset_t *title_cs = GetColorset(ST_CSET_TITLE(ms));
 
 	if (ST_USAGE_COUNT(ms) != 0)
 	{
@@ -608,8 +610,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			ST_HAS_SIDE_COLOR(tmpms) = 0;
 			if (ST_SIDEPIC(tmpms))
 			{
-				PDestroyFvwmPicture(dpy, ST_SIDEPIC(tmpms));
-				ST_SIDEPIC(tmpms) = NULL;
+				menu_image_destroy(&ST_SIDEPIC(tmpms));
 			}
 
 			if (is_initialised == False)
@@ -759,24 +760,31 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			break;
 
 		case 23: /* SidePic */
-			if (ST_SIDEPIC(tmpms))
-			{
-				PDestroyFvwmPicture(dpy, ST_SIDEPIC(tmpms));
-				ST_SIDEPIC(tmpms) = NULL;
-			}
+		{
+			FvwmPicture *replacement = NULL;
+
 			if (arg1)
 			{
 				fpa.mask = (Pdepth <= 8)?  FPAM_DITHER:0;
-				ST_SIDEPIC(tmpms) = PCacheFvwmPicture(
+				replacement = PCacheFvwmPicture(
 					dpy, Scr.NoFocusWin, NULL, arg1, fpa);
-				if (!ST_SIDEPIC(tmpms))
+				if (!replacement)
 				{
 					fvwm_debug(__func__,
 						   "Couldn't find pixmap %s",
 						   arg1);
 				}
 			}
+			if (replacement != NULL && replacement->is_view &&
+			    replacement->pending)
+			{
+				picture_view_set_backing(dpy, replacement,
+				    ST_SIDEPIC(tmpms));
+			}
+			menu_image_destroy(&ST_SIDEPIC(tmpms));
+			ST_SIDEPIC(tmpms) = replacement;
 			break;
+		}
 
 		case 24: /* SideColor */
 			if (ST_HAS_SIDE_COLOR(tmpms) == 1)
@@ -877,43 +885,52 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			break;
 
 		case 37: /* MenuColorset */
-			if (GetIntegerArguments(args, NULL, val, 1) == 0 ||
+			if (GetColorsetArgument(args, NULL, val) == 0 ||
 			    *val < 0)
 			{
 				ST_CSET_MENU(tmpms) = 0;
 			}
 			else
 			{
+				if (!alloc_colorset(*val))
+				{
+					break;
+				}
 				ST_CSET_MENU(tmpms) = *val;
-				alloc_colorset(*val);
 			}
 			has_gc_changed = True;
 			break;
 
 		case 38: /* ActiveColorset */
-			if (GetIntegerArguments(args, NULL, val, 1) == 0 ||
+			if (GetColorsetArgument(args, NULL, val) == 0 ||
 			    *val < 0)
 			{
 				ST_CSET_ACTIVE(tmpms) = 0;
 			}
 			else
 			{
+				if (!alloc_colorset(*val))
+				{
+					break;
+				}
 				ST_CSET_ACTIVE(tmpms) = *val;
-				alloc_colorset(*val);
 			}
 			has_gc_changed = True;
 			break;
 
 		case 39: /* GreyedColorset */
-			if (GetIntegerArguments(args, NULL, val, 1) == 0 ||
+			if (GetColorsetArgument(args, NULL, val) == 0 ||
 			    *val < 0)
 			{
 				ST_CSET_GREYED(tmpms) = 0;
 			}
 			else
 			{
+				if (!alloc_colorset(*val))
+				{
+					break;
+				}
 				ST_CSET_GREYED(tmpms) = *val;
-				alloc_colorset(*val);
 			}
 			has_gc_changed = True;
 			break;
@@ -1015,15 +1032,18 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			break;
 
 		case 50: /* TitleColorset */
-			if (GetIntegerArguments(args, NULL, val, 1) == 0 ||
+			if (GetColorsetArgument(args, NULL, val) == 0 ||
 			    *val < 0)
 			{
 				ST_CSET_TITLE(tmpms) = 0;
 			}
 			else
 			{
+				if (!alloc_colorset(*val))
+				{
+					break;
+				}
 				ST_CSET_TITLE(tmpms) = *val;
-				alloc_colorset(*val);
 			}
 			has_gc_changed = True;
 			break;
@@ -1119,6 +1139,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 		/* copy our new menu face over the old one */
 		memcpy(ms, tmpms, sizeof(MenuStyle));
 		free(tmpms);
+		menu_image_bind_style(ms);
 		return ms;
 	}
 	else
@@ -1132,6 +1153,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 		ST_NEXT_STYLE(before) = tmpms;
 	}
 
+	menu_image_bind_style(tmpms);
 	return tmpms;
 }
 
@@ -1226,18 +1248,22 @@ void menustyle_copy(MenuStyle *origms, MenuStyle *destms)
 	ST_VERTICAL_MARGIN_BOTTOM(destms) = ST_VERTICAL_MARGIN_BOTTOM(origms);
 
 	/* SidePic */
-	if (ST_SIDEPIC(destms))
-	{
-		PDestroyFvwmPicture(dpy, ST_SIDEPIC(destms));
-		ST_SIDEPIC(destms) = NULL;
-	}
+	FvwmPicture *replacement = NULL;
+
 	if (ST_SIDEPIC(origms))
 	{
 		fpa.mask = (Pdepth <= 8)?  FPAM_DITHER:0;
-		ST_SIDEPIC(destms) = PCacheFvwmPicture(
+		replacement = PCacheFvwmPicture(
 			dpy, Scr.NoFocusWin, NULL, ST_SIDEPIC(origms)->name,
 			fpa);
 	}
+	if (replacement != NULL && replacement->is_view && replacement->pending)
+	{
+		picture_view_set_backing(dpy, replacement, ST_SIDEPIC(destms));
+	}
+	menu_image_destroy(&ST_SIDEPIC(destms));
+	ST_SIDEPIC(destms) = replacement;
+	menu_image_bind_style(destms);
 
 	/* side color */
 	fvwmlib_copy_color(

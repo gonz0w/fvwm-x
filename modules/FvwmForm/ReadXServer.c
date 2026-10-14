@@ -43,11 +43,44 @@
 #include "libs/fvwmlib.h"
 #include "libs/Colorset.h"
 #include "libs/FEvent.h"
+#include "libs/FProperty.h"
+#include "libs/fvwmsignal.h"
+#include "libs/log.h"
 
 #include <stdio.h>
 #include <ctype.h>
 
 #include "FvwmForm.h"
+#include "form_input.h"
+
+/* Coalesce adjacent events without searching an arbitrarily large X queue. */
+static Bool form_take_next_event(Window window, int type, XEvent *event)
+{
+  XEvent next;
+
+  if (!FEventsQueued(dpy, QueuedAlready))
+    return False;
+  FPeekEvent(dpy, &next);
+  if (next.type != type || next.xany.window != window)
+    return False;
+  FNextEvent(dpy, event);
+  return True;
+}
+
+static Bool form_x_batch_available(unsigned int serviced,
+    const struct timespec *started)
+{
+  struct timespec now;
+
+  if (isTerminated || serviced >= FORM_X_EVENT_BUDGET)
+    return False;
+  if (clock_gettime(CLOCK_MONOTONIC, &now) < 0) {
+    fvwm_debug(__func__, "Unable to read X service clock");
+    fvwmSetTerminate(0);
+    return False;
+  }
+  return form_x_service_available(serviced, started, &now);
+}
 
 static void process_regular_char_input(unsigned char *buf, int num, size_t size);
 static int process_tabtypes(unsigned char * buf);
@@ -66,9 +99,18 @@ void ReadXServer (void)
   char *sp, *dp;
   static unsigned char buf[10];         /* unsigned for international */
   static int n;
+  unsigned int serviced = 0;
+  struct timespec started;
 
-  while (FEventsQueued(dpy, QueuedAfterReading)) {
+  if (clock_gettime(CLOCK_MONOTONIC, &started) < 0) {
+    fvwm_debug(__func__, "Unable to start X service clock");
+    fvwmSetTerminate(0);
+    return;
+  }
+  while (form_x_batch_available(serviced, &started) &&
+      FEventsQueued(dpy, QueuedAfterReading)) {
     FNextEvent(dpy, &event);
+    serviced++;
     if (event.xany.window == CF.frame) {
       switch (event.type) {
       case ClientMessage:
@@ -85,9 +127,10 @@ void ReadXServer (void)
 	      XEvent tmpe;
 
 	      fev_sanitise_configure_notify(&event.xconfigure);
-	      while (FCheckTypedWindowEvent(
-		      dpy, CF.frame, ConfigureNotify, &tmpe))
+      while (form_x_batch_available(serviced, &started) &&
+          form_take_next_event(CF.frame, ConfigureNotify, &tmpe))
 	      {
+		      serviced++;
 		      fev_sanitise_configure_notify(&tmpe.xconfigure);
 		      if (!tmpe.xconfigure.send_event)
 			      continue;
@@ -131,8 +174,10 @@ void ReadXServer (void)
 	      int ey = event.xexpose.y;
 	      int ex2 = event.xexpose.x + event.xexpose.width;
 	      int ey2 = event.xexpose.y + event.xexpose.height;
-	      while (FCheckTypedWindowEvent(dpy, CF.frame, Expose, &event))
+	      while (form_x_batch_available(serviced, &started) &&
+	          form_take_next_event(CF.frame, Expose, &event))
 	      {
+		      serviced++;
 		      ex = min(ex, event.xexpose.x);
 		      ey = min(ey, event.xexpose.y);
 		      ex2 = max(ex2, event.xexpose.x + event.xexpose.width);
@@ -320,13 +365,17 @@ void ReadXServer (void)
 	  }
 	  break;
 	case '\013':  /* ^K */
+	  if (CF.rel_cursor >= CF.cur_input->input.n)
+	    goto redraw_newcursor;
 	  cn = CF.rel_cursor;
 	  dp = find_nth_UTF8_char(CF.cur_input->input.value, NULL, &cn, NULL);
 	  *dp = '\0';
 	  CF.cur_input->input.n = cn;
+	  CF.cur_input->input.size = (int)(dp - CF.cur_input->input.value);
 	  goto redraw_newcursor;
 	case '\025':  /* ^U */
 	  CF.cur_input->input.value[0] = '\0';
+	  CF.cur_input->input.size = 0;
 	  CF.cur_input->input.n = CF.cur_input->input.left = 0;
 	  CF.rel_cursor = CF.abs_cursor = 0;
 	  goto redraw_newcursor;
@@ -403,7 +452,7 @@ void ReadXServer (void)
 	  if (itemcolorset >= 0)
 	  {
 	    CF.cur_input->header.dt_ptr->dt_Fstr->colorset =
-		    &Colorset[itemcolorset];
+		    GetColorset(itemcolorset);
 	    CF.cur_input->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
 	  }
 	  CF.cur_input->header.dt_ptr->dt_Fstr->str = bstr;
@@ -444,9 +493,10 @@ void ReadXServer (void)
 		int ey = event.xexpose.y;
 		int ex2 = event.xexpose.x + event.xexpose.width;
 		int ey2 = event.xexpose.y + event.xexpose.height;
-		while (FCheckTypedWindowEvent(
-			dpy, item->header.win, Expose, &event))
+		while (form_x_batch_available(serviced, &started) &&
+		    form_take_next_event(item->header.win, Expose, &event))
 		{
+			serviced++;
 			ex = min(ex, event.xexpose.x);
 			ey = min(ey, event.xexpose.y);
 			ex2 = max(ex2, event.xexpose.x + event.xexpose.width);
@@ -564,28 +614,19 @@ void ReadXServer (void)
    yank count before extracting.
    Forward yanks increment before extracting. */
 static void process_history(int direction) {
-  int count, cn;
+  int count;
   if (!CF.cur_input                     /* no input fields */
       || !CF.cur_input->input.value_history_ptr) { /* or no history */
     return;                             /* bail out */
   }
-  /* yankat is always one beyond slot to yank from. */
-  count = CF.cur_input->input.value_history_yankat + direction;
-  if (count < 0 || count >= VH_SIZE ||
-	     CF.cur_input->input.value_history_ptr[count] == 0 ) {
-    if (direction <= 0) {               /* going down */
-      for (count = VH_SIZE - 1;
-	   CF.cur_input->input.value_history_ptr[count] == 0;
-	   --count);                    /* find last used slot */
-    } else {                            /* going up */
-      count = 0;                        /* up is the bottom */
-    }
+  if (!form_history_position(CF.cur_input->input.value_history_ptr, VH_SIZE,
+      CF.cur_input->input.value_history_yankat, direction, &count)) {
+    return;
   }
-  CF.cur_input->input.value =
-    fxstrdup(CF.cur_input->input.value_history_ptr[count]);
-  find_nth_UTF8_char(CF.cur_input->input.value, NULL, &cn, NULL);
-  CF.cur_input->input.size = strlen(CF.cur_input->input.value);
-  CF.cur_input->input.n = CF.cur_input->input.buf = cn;
+  if (!form_set_input_value(CF.cur_input,
+      CF.cur_input->input.value_history_ptr[count])) {
+    return;
+  }
   CF.cur_input->input.value_history_yankat = count; /* new yank point */
   CF.rel_cursor = 0;
   CF.abs_cursor = 0;
@@ -645,21 +686,23 @@ static int process_tabtypes(unsigned char * buf) {
 
 static void process_regular_char_input(unsigned char *buf, int num, size_t len) {
   char *sp, *dp, *ep;
-  int n;
+  int n, capacity, bytes, characters;
   /* size is the space actually used
      buf is the size of the buffer in bytes
-     width is the size of the field on the screen
-     width is used as the increment, arbitrarily */
-  CF.cur_input->input.n += num;
-  if ((CF.cur_input->input.size += len) >= CF.cur_input->input.buf) {
-    CF.cur_input->input.buf += CF.cur_input->input.width;
-    if (CF.cur_input->input.size >= CF.cur_input->input.buf) {
-      CF.cur_input->input.buf = CF.cur_input->input.size + 1;
-    }
-    CF.cur_input->input.value =
-      fxrealloc(CF.cur_input->input.value, CF.cur_input->input.buf,
-		      sizeof(char));
+     width is the size of the field on the screen */
+  if (!form_input_growth(CF.cur_input->input.buf, CF.cur_input->input.size,
+      CF.cur_input->input.n, len, num, &capacity, &bytes, &characters)) {
+    fvwm_debug(__func__, "Input insertion is not representable");
+    return;
   }
+  if (capacity != CF.cur_input->input.buf) {
+    CF.cur_input->input.value =
+      fxrealloc(CF.cur_input->input.value, capacity,
+		      sizeof(char));
+    CF.cur_input->input.buf = capacity;
+  }
+  CF.cur_input->input.size = bytes;
+  CF.cur_input->input.n = characters;
   dp = CF.cur_input->input.value + CF.cur_input->input.size;
   sp = dp - len; n = CF.rel_cursor;
   ep = find_nth_UTF8_char(CF.cur_input->input.value, NULL, &n, NULL);
@@ -676,63 +719,46 @@ static void process_regular_char_input(unsigned char *buf, int num, size_t len) 
     CF.cur_input->input.left = CF.rel_cursor - CF.abs_cursor;
   }
 }
-/* Process a paste.  This can be any size.
-   Right now, the input loop can't just be fed characters.
-   Send plain text and newlines to the 2 subroutines that want them.
-   */
+/* Read one complete bounded cut buffer before changing any input fields. */
 static void process_paste_request (XEvent *event, Item *item) {
-  Atom actual_type;
-  int actual_format;
-  unsigned long nitems, bytes_after, nread;
-  unsigned char *data;
+  unsigned char *data = NULL;
+  size_t bytes = 0;
+  FPropertyLimits limits = {0, FPROPERTY_TEXT_MAX_BYTES, 8};
   char *c;
   int num, len;
 
-  nread = 0;                            /* init read offset */
-  do {
-    if (XGetWindowProperty (dpy,
-			    DefaultRootWindow (dpy),
-			    XA_CUT_BUFFER0,
-			    nread/4, 1024L,   /* offset, length */
-			    False,           /* delete */
-			    AnyPropertyType, /* request type */
-			    &actual_type,
-			    &actual_format, &nitems, &bytes_after,
-			    (unsigned char **)&data) != Success) {
-      return;                           /* didn't work, give up */
-    } /* end didn't work */
-    if (actual_type != XA_STRING) {     /* if something other than text */
-      return;                           /* give up */
-    }
-    c = (char*)data;
-    while (num = 0, c = find_nth_UTF8_char(c, (char*)data + nitems, &num, &len), len > 0) {
-      /* each multibyte character */
-      switch (c[0]) {
-      case '\t':                        /* TAB */
+  FPropertyResult result = FPropertyRead(dpy, DefaultRootWindow(dpy),
+      XA_CUT_BUFFER0, XA_STRING, limits, &data, &bytes);
+  if (result != FPROPERTY_OK) {
+    if (result != FPROPERTY_MISSING)
+      fvwm_debug(__func__, "Ignoring invalid cut-buffer text");
+    return;
+  }
+  c = (char*)data;
+  while (num = 0, c = find_nth_UTF8_char(c, (char*)data + bytes, &num, &len), len > 0) {
+    /* each multibyte character */
+    switch (c[0]) {
+    case '\t':                        /* TAB */
 	if (CF.cur_input == CF.cur_input->input.next_input) { /* 1 ip field */
 	  process_regular_char_input((unsigned char *)" ", 1, 1); /* paste space */
 	} else {
 	  process_tabtypes((unsigned char *)c);          /* jump to the next field */
 	}
-      case '\015':                      /* LINEFEED */
-      case '\016':                      /* ^N */
+    case '\015':                      /* LINEFEED */
+    case '\016':                      /* ^N */
 	process_tabtypes((unsigned char *)c);            /* jump to the next field */
 	break;
-      case '\n':
+    case '\n':
 	/* change \n to \r for pasting */
 	process_tabtypes((unsigned char *)"\r");
 	break;
-      default:
+    default:
 	process_regular_char_input((unsigned char *)c, 1, len);
 	break;
-      } /* end switch on char type */
-      c += len;
-    } /* end each char */
-    myfprintf((stderr,"See paste data, %s, nread %d, nitems %d\n",
-	    data, (int)nread, (int)nitems));
-    nread += nitems;
-    XFree (data);
-  } while (bytes_after > 0);
+    } /* end switch on char type */
+    c += len;
+  } /* end each char */
+  free(data);
 }
 
 static void ToggleChoice (Item *item)

@@ -65,7 +65,7 @@ Bool fev_set_evpos(XEvent *e, int x, int y);
 /* announce a faked event to the FEvent module */
 void fev_fake_event(XEvent *ev);
 
-/* temporarily store the cached event in allocated memory */
+/* Temporarily store the current/previous cached events in allocated memory. */
 void *fev_save_event(void);
 
 /* restore an event saved with fev_save_event and free the memory it uses */
@@ -84,6 +84,15 @@ void fev_sanitise_configure_notify(XConfigureEvent *cn);
 void fev_sanitize_size_hints(XSizeHints *sh);
 
 /* ---------------------------- Functions not present in Xlib -------------- */
+
+#define FEV_EXPOSE_BATCH_MAX 32
+
+/* Inspect at most 32 already-queued records, without reading socket input.
+ * Remove matching Expose records into events (capacity FEV_EXPOSE_BATCH_MAX).
+ * None selects all windows. Restore other records in FIFO order before return.
+ * No callbacks run, and cached events/timestamps are unchanged. */
+int FCollectQueuedExposes(
+	Display *display, Window window, XEvent *events);
 
 /* Iterates over all events currentliy in the input queue and calls the
  * weed_predicate procedure for them.  The predicate may return
@@ -113,6 +122,12 @@ int FWeedIfEvents(
 	int (*weed_predicate) (
 		Display *display, XEvent *current_event, XPointer arg),
 	XPointer arg);
+
+/* Merge adjacent size-only ConfigureRequests already in Xlib's queue into
+ * the current request, up to budget records. Every other event is a barrier.
+ * Does not read socket input or advance cached input timestamps/events. */
+unsigned int FMergeQueuedResizeRequests(
+	Display *display, XEvent *current, unsigned int budget);
 
 /* Same as FWeedIfEvents but with a second callback out of XLockDisplay()
  * to handle events in a lock-safe manner */

@@ -1,5 +1,11 @@
 = FvwmPrompt(1)
 
+:doctype: manpage
+:mantitle: FvwmPrompt
+:manname: FvwmPrompt
+:manmanual: Fvwm Utilities
+:manvolnum: 1
+
 == NAME
 
 FvwmPrompt - a command-shell for fvwm3
@@ -7,13 +13,13 @@ FvwmPrompt - a command-shell for fvwm3
 == SYNOPSIS
 
 [verse]
-_FvwmPrompt_ <options>
+_FvwmPrompt_ [-p _prompt_] [_command_ ...]
 
 == DESCRIPTION
 
 _FvwmPrompt_ accepts the following command-line arguments:
 
- FvwmPrompt [-p <prompt>]
+ FvwmPrompt [-p <prompt>] [command ...]
 
 _FvwmPrompt_ provides a minimal shell for sending commands to **fvwm3** -- with
 the history of previous commands remembered for easier repetition.
@@ -28,6 +34,48 @@ Press ^D or type 'exit' to end this session
 
 >>>
 ....
+
+With command arguments, FvwmPrompt sends one command and exits after the full
+write. It does not open the interactive history. For example:
+
+....
+FvwmPrompt Echo hello
+....
+
+A successful exit confirms that the command was written. It does not confirm
+that the window manager executed the command.
+
+Without command arguments, FvwmPrompt opens the interactive prompt. Use *exit*
+or Ctrl-D to close it. Two consecutive Ctrl-C inputs also close it. The *Quit*
+command asks for confirmation in the prompt; enter *y* to send it to the window
+manager. Other answers keep the session open.
+
+== CONNECTION AND LIMITS
+
+Start *Module FvwmMFL* in the window manager. Set *FVWMMFL_SOCKET* to its socket
+path before starting FvwmPrompt. The connection and initial profile each have a
+five-second limit. Each command write has a five-second total limit. Idle
+interactive sessions have no read timeout.
+
+Commands must be a single line of at most 1000 bytes. NUL, carriage return and
+embedded newline bytes are refused before sending. Refused local input leaves
+the connection usable. A failed write closes it, because a partial command
+cannot be retried safely.
+
+Incoming JSON records are read through their newline, including when socket
+reads split or combine records. Records must fit within 256 KiB including the
+newline. Invalid UTF-8, invalid JSON, an incomplete record at disconnect, or an
+oversized record ends the session with an error. A normal disconnect closes the
+prompt. Connection errors return a nonzero exit status.
+
+== ENVIRONMENT
+
+*FVWMMFL_SOCKET*::
+The FvwmMFL Unix socket path.
+
+*FVWM_USERDIR*::
+The directory for *.FvwmConsole-History*. If unset or empty, the prompt does not
+use a persistent history file.
 
 == Author
 

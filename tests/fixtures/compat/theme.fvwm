@@ -1,0 +1,30 @@
+# Representative legacy FVWM syntax, including continuation and theme reload.
+Echo compat-read-begin
+Colorset 7 fg white, bg #203040
+Colorset 8 fg black, bg #c0d0e0
+DestroyDecor recreate CompatDecor
+AddToDecor CompatDecor
++ TitleStyle Centered Height 24 -- Flat
++ ButtonStyle All ActiveUp Vector 5 15x15@4 15x85@3 85x85@3 \
+    85x15@3 15x15@4
++ BorderStyle Colorset 7 -- NoInset
+Style * UseDecor CompatDecor, BorderWidth 3, HandleWidth 3, \
+    Font fixed, IconFont fixed, Colorset 7, HilightColorset 8, \
+    TileCascadePlacement
+DestroyMenu CompatMenu
+AddToMenu CompatMenu "Compatibility" Title
++ "Resize" CompatResize
++ "Close" Close
+MenuStyle CompatMenu Font fixed, MenuColorset 7, ActiveColorset 8
+DestroyFunc CompatResize
+AddToFunc CompatResize I Echo compat-function-begin
++ I Resize 280p 160p
++ I Move 120p 90p
++ I Echo compat-function-end
+DestroyFunc CompatBinding
+AddToFunc CompatBinding I Echo compat-binding
+Key F8 A N CompatBinding
+Mouse 1 R N CompatBinding
+Read "$[FVWM_COMPAT_ROOT]/nested config.fvwm"
+PipeRead "cat '$[FVWM_COMPAT_ROOT]/pipe config.fvwm'"
+Echo compat-read-end

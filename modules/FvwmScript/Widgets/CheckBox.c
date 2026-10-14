@@ -32,10 +32,10 @@ void InitCheckBox(struct XObj *xobj)
 
   /* fonts and colors */
   if (xobj->colorset >= 0) {
-    xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-    xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-    xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-    xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+    xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+    xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+    xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+    xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
   } else {
     xobj->TabColor[fore] = GetColor(xobj->forecolor);
     xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -58,24 +58,14 @@ void InitCheckBox(struct XObj *xobj)
   xobj->gc = fvwmlib_XCreateGC(dpy,xobj->win,0,NULL);
   XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
 
-  if ((xobj->Ffont = FlocaleLoadFont(dpy, xobj->font, ScriptName)) == NULL)
-  {
-    fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n", ScriptName);
-    exit(1);
-  }
   if (xobj->Ffont->font != NULL)
     XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
   XSetLineAttributes(dpy, xobj->gc, 1, LineSolid, CapRound, JoinMiter);
 
-  /* resize the widget */
-  xobj->height = xobj->Ffont->height + 5;
-  xobj->width =
-    FlocaleTextWidth(xobj->Ffont, xobj->title, strlen(xobj->title)) * 1.5;
-  XResizeWindow(dpy, xobj->win, xobj->width, xobj->height);
   if (xobj->colorset >= 0)
     SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-			&Colorset[xobj->colorset], Pdepth,
+			GetColorset(xobj->colorset), Pdepth,
 			xobj->gc, True);
   XSelectInput(dpy, xobj->win, ExposureMask);
 }
@@ -118,7 +108,7 @@ void DrawCheckBox(struct XObj *xobj, XEvent *evp)
 
 void EvtMouseCheckBox(struct XObj *xobj, XButtonEvent *EvtButton)
 {
-  static XEvent event;
+  XEvent event;
   int End = 1;
   unsigned int modif;
   int x1,x2,y1,y2;
@@ -129,7 +119,11 @@ void EvtMouseCheckBox(struct XObj *xobj, XButtonEvent *EvtButton)
 
   while (End)
   {
-    FNextEvent(dpy, &event);
+    if (!script_widget_next_event(xobj, &event))
+    {
+      DrawCheckBox(xobj, NULL);
+      return;
+    }
     switch (event.type)
     {
     case EnterNotify:
@@ -241,9 +235,4 @@ void EvtKeyCheckBox(struct XObj *xobj, XKeyEvent *EvtKey)
       XClearArea(dpy, xobj->win, 4, 4, xobj->height-8, xobj->height-8, False);
     }
   }
-}
-
-
-void ProcessMsgCheckBox(struct XObj *xobj, unsigned long type, unsigned long *body)
-{
 }

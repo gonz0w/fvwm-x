@@ -18,6 +18,8 @@
  * Its now in "modconf.c".
  */
 #include "config.h"
+#include "libs/fd_safety.h"
+#include "libs/config_line.h"
 
 #include <stdio.h>
 #ifdef HAVE_FCNTL_H
@@ -117,44 +119,51 @@ void run_command_stream(
 	cmdparser_context_t *pc)
 {
 	char *tline;
-	char line[1024];
+	char *line = NULL;
+	size_t capacity = 0;
+	int status = 0;
 	int count;
 
-	/* Set close-on-exec flag */
-	fcntl(fileno(f), F_SETFD, 1);
+	/* Do not execute commands that could leak an unprotected read stream. */
+	if (!fvwm_fd_set_cloexec(fileno(f), true))
+	{
+		fvwm_debug(__func__, "Read stream close-on-exec setup failed");
+		if (cond_rc != NULL)
+		{
+			cond_rc->rc = COND_RC_ERROR;
+		}
+		return;
+	}
 
 	/* Update window decorations in case we were called from a menu that
 	 * has now popped down. */
 	handle_all_expose();
 
-	tline = fgets(line, (sizeof line) - 1, f);
-	for (count = 0; tline && count < MAX_READ_ITEMS; count++)
+	for (count = 0; count < MAX_READ_ITEMS; count++)
 	{
-		int l;
-		while (tline && (l = strlen(line)) < sizeof(line) && l >= 2 &&
-		      line[l-2]=='\\' && line[l-1]=='\n')
-		{
-			tline = fgets(line+l-2,sizeof(line)-l+1,f);
-		}
+		status = fvwm_config_line(f, &line, &capacity);
+		if (status <= 0)
+			break;
 		tline=line;
 		while (isspace((unsigned char)*tline))
 		{
 			tline++;
 		}
-		l = strlen(tline);
-		if (l > 0 && tline[l - 1] == '\n')
-		{
-			tline[l - 1] = '\0';
-		}
 		execute_function(cond_rc, exc, tline, pc, 0);
-		tline = fgets(line, (sizeof line) - 1, f);
 	}
-	if (tline)
+	if (count == MAX_READ_ITEMS)
 	{
 		fvwm_debug(
 			__func__, "Too many lines in inpup (> %d).",
 			MAX_READ_ITEMS);
 	}
+	else if (status < 0)
+	{
+		fvwm_debug(__func__, "Invalid, excessive or unreadable configuration line");
+		if (cond_rc != NULL)
+			cond_rc->rc = COND_RC_ERROR;
+	}
+	free(line);
 
 	return;
 }

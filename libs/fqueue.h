@@ -19,7 +19,7 @@ typedef struct
 		unsigned is_dirty : 1;
 	} flags;
 } fqueue;
-#define FQUEUE_INIT { NULL, NULL, 0 }
+#define FQUEUE_INIT { 0 }
 
 
 
@@ -42,6 +42,11 @@ unsigned int fqueue_get_length(fqueue *fq);
 
 void fqueue_add_at_front(fqueue *fq, void *object);
 void fqueue_add_at_end(fqueue *fq, void *object);
+/* 1 transfers the object; 0 leaves queue and caller ownership unchanged.
+ * Locked insertion follows the same deferred visibility/cleanup rules. */
+int fqueue_try_add_at_end(fqueue *fq, void *object);
+/* The comparator defines a stable order and must not mutate the queue.
+ * Equal keys retain insertion order; unlocked ordered appends are O(1). */
 void fqueue_add_inside(
 	fqueue *fq, void *object, cmp_objects_t cmp_objects, void *cmp_args);
 
@@ -50,6 +55,11 @@ void fqueue_add_inside(
  */
 
 int fqueue_get_first(fqueue *fq, void **ret_object);
+
+/* Transfer an unlocked FIFO head without callbacks or a cleanup scan.
+ * Returns 0 for an empty/locked queue and clears the output. The caller owns
+ * the detached object; locked callback traversals retain the existing API. */
+int fqueue_take_first(fqueue *fq, void **ret_object);
 
 /*
  * Operate on queue objects and possibly remove them from the queue

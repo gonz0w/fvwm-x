@@ -32,10 +32,10 @@ void InitVDipstick(struct XObj *xobj)
 
 	/* Save colors and font */
 	if (xobj->colorset >= 0) {
-		xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-		xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-		xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-		xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+		xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+		xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+		xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+		xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
 	} else {
 		xobj->TabColor[fore] = GetColor(xobj->forecolor);
 		xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -59,13 +59,13 @@ void InitVDipstick(struct XObj *xobj)
 	xobj->gc=fvwmlib_XCreateGC(dpy,xobj->win,0,NULL);
 	if (xobj->colorset >= 0)
 		SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-				    &Colorset[xobj->colorset], Pdepth,
+				    GetColorset(xobj->colorset), Pdepth,
 				    xobj->gc, True);
 	XSetForeground(dpy,xobj->gc,xobj->TabColor[fore]);
 	XSetLineAttributes(dpy,xobj->gc,1,LineSolid,CapRound,JoinMiter);
 
-	if (xobj->value2>xobj->value3)
-		xobj->value3=xobj->value2+50;
+	xobj->value3 = script_widget_initial_maximum(xobj->value2,
+    xobj->value3, 50, false);
 	if (xobj->value<xobj->value2)
 		xobj->value=xobj->value2;
 	if (xobj->value>xobj->value3)
@@ -83,8 +83,8 @@ void DrawVDipstick(struct XObj *xobj, XEvent *evp)
 {
 	int  i;
 
-	i=(xobj->height-4)*
-		(xobj->value-xobj->value2)/(xobj->value3-xobj->value2);
+	i = script_widget_position(xobj->value, xobj->value2,
+    xobj->value3, xobj->height, 4, false);
 
 	DrawReliefRect(0,0,xobj->width,xobj->height,xobj,shad,hili);
 	if (i!=0)
@@ -92,7 +92,8 @@ void DrawVDipstick(struct XObj *xobj, XEvent *evp)
 		DrawReliefRect(
 			2,xobj->height-i-2,xobj->width-4,i,xobj,hili,shad);
 		XSetForeground(dpy,xobj->gc,xobj->TabColor[fore]);
-		XFillRectangle(
+		if (i > 4 && xobj->width > 8)
+		  XFillRectangle(
 			dpy,xobj->win,xobj->gc,4,xobj->height-i,xobj->width-8,
 			i-4);
 	}
@@ -104,10 +105,5 @@ void EvtMouseVDipstick(struct XObj *xobj,XButtonEvent *EvtButton)
 }
 
 void EvtKeyVDipstick(struct XObj *xobj,XKeyEvent *EvtKey)
-{
-}
-
-void ProcessMsgVDipstick(
-	struct XObj *xobj,unsigned long type,unsigned long *body)
 {
 }

@@ -32,6 +32,7 @@
 #include "libs/monitor_ownership.h"
 #include "libs/geometry_transition.h"
 #include "libs/Picture.h"
+#include "libs/picture_async.h"
 #include "libs/Grab.h"
 #include "libs/Parse.h"
 #include "libs/Graphics.h"
@@ -56,6 +57,7 @@
 #include "virtual.h"
 #include "decorations.h"
 #include "events.h"
+#include "interaction.h"
 #include "eventhandler.h"
 #include "eventmask.h"
 #include "colormaps.h"
@@ -1362,7 +1364,7 @@ void resize_geometry_window(void)
 	{
 		SetWindowBackground(
 			dpy, Scr.SizeWindow.win, s.width, s.height,
-			&Colorset[cset], Pdepth, Scr.StdGC, False);
+			GetColorset(cset), Pdepth, Scr.StdGC, False);
 	}
 }
 
@@ -1380,7 +1382,7 @@ static void display_string(Bool Init, char *str)
 
 	cs = Scr.SizeWindow.cset > 0 ? Scr.SizeWindow.cset : 0;
 
-	fstr.colorset = &Colorset[cs];
+	fstr.colorset = GetColorset(cs);
 	fstr.flags.has_colorset = True;
 
 	if (Init)
@@ -1615,6 +1617,33 @@ static Bool resize_move_window(F_CMD_ARGS)
 	return True;
 }
 
+static void record_resized_logical_client(FvwmWindow *fw)
+{
+	rectangle frame;
+	size_borders borders;
+	size_rect logical;
+	monitor_scale_factor factor = { MONITOR_SCALE_QUARTERS_MIN };
+
+	/* A user resize replaces the retained normal size. Monitor-driven
+	 * resizing and ResizeMaximize must preserve that restore size. */
+	get_unshaded_geometry(fw, &frame);
+	get_window_borders(fw, &borders);
+	if (fw->m != NULL)
+	{
+		factor = fw->m->effective_scale.factor;
+	}
+	if (monitor_scale_remove(frame.width - borders.total_size.width,
+		    factor, &logical.width) != MONITOR_SCALE_CONVERSION_OK ||
+	    monitor_scale_remove(frame.height - borders.total_size.height,
+		    factor, &logical.height) != MONITOR_SCALE_CONVERSION_OK)
+	{
+		fvwm_debug(__func__, "Cannot record resized logical client size");
+		return;
+	}
+	fw->logical_client = logical;
+	fw->logical_client_valid = True;
+}
+
 void CMD_ResizeMove(F_CMD_ARGS)
 {
 	FvwmWindow *fw = exc->w.fw;
@@ -1625,7 +1654,10 @@ void CMD_ResizeMove(F_CMD_ARGS)
 		CMD_ResizeMoveMaximize(F_PASS_ARGS);
 		return;
 	}
-	resize_move_window(F_PASS_ARGS);
+	if (resize_move_window(F_PASS_ARGS))
+	{
+		record_resized_logical_client(fw);
+	}
 
 	return;
 }
@@ -1752,6 +1784,7 @@ static void InteractiveMove(
 		position_geometry_window(NULL);
 		XMapRaised(dpy,Scr.SizeWindow.win);
 	}
+	module_config_interaction_begin();
 	{
 		size_rect sz = { drag.width, drag.height };
 
@@ -1781,6 +1814,7 @@ static void InteractiveMove(
 		MyXUngrabServer(dpy);
 	}
 	MyXUngrabKeyboard(dpy);
+	module_config_interaction_end();
 
 	return;
 }
@@ -2388,6 +2422,7 @@ static void _move_window(F_CMD_ARGS, Bool do_animate, int mode)
 		}
 		update_absolute_geometry(fw);
 		maximize_adjust_offset(fw);
+		module_config_refresh(fw);
 		XFlush(dpy);
 	}
 	else /* icon window */
@@ -2827,6 +2862,9 @@ Bool move_loop(
 	XEvent e;
 	struct monitor	*m = NULL;
 	unsigned int last_quarters = MONITOR_SCALE_QUARTERS_MIN;
+	fvwm_interaction interaction = { FW_W(fw), Scr.Root,
+		IS_MAPPED(fw) || IS_ICONIFIED(fw), FVWM_INTERACTION_RUNNING,
+		events_interaction_poll };
 	position logical_offset;
 
 	if (fw->m == NULL)
@@ -2879,8 +2917,10 @@ Bool move_loop(
 			(unsigned int*)&JunkWidth, (unsigned int*)&JunkHeight,
 			(unsigned int*)&JunkBW, (unsigned int*)&JunkDepth))
 	{
-		/* This is all right here since the window may not be mapped
-		 * yet. */
+		/* The window may not be mapped yet. Keep the cancellation
+		 * result initialized even if geometry could not be queried. */
+		bak.x = fw->g.frame.x;
+		bak.y = fw->g.frame.y;
 	}
 
 	if (IS_ICONIFIED(fw))
@@ -2904,6 +2944,8 @@ Bool move_loop(
 	p.y += offset.y;
 	button_mask &= DEFAULT_ALL_BUTTONS_MASK;
 	orig = p;
+	pFinal->x = bak.x;
+	pFinal->y = bak.y;
 
 	/* draw initial outline */
 	if (!IS_ICONIFIED(fw) &&
@@ -2934,9 +2976,16 @@ Bool move_loop(
 		int rc = 0;
 		position old;
 
+		if (!fvwm_interaction_service(&interaction, 0))
+		{
+			is_aborted = True;
+			break;
+		}
+
 		old = p;
 		/* wait until there is an interesting event */
 		while (rc != -1 &&
+		       !fvwm_interaction_cancelled(&interaction) &&
 		       (!FPending(dpy) ||
 			!FCheckMaskEvent(
 				dpy, ButtonPressMask | ButtonReleaseMask |
@@ -3025,6 +3074,11 @@ Bool move_loop(
 			e.xmotion.same_screen = True;
 			break;
 		}
+		if (fvwm_interaction_cancelled(&interaction))
+		{
+			is_aborted = True;
+			break;
+		}
 		if (rc == -1)
 		{
 			/* block until an event arrives */
@@ -3033,31 +3087,25 @@ Bool move_loop(
 			 * moves very fast and suddenly stops in the corner of
 			 * the screen.  Handle EnterNotify/LeaveNotify events
 			 * too to get an idea where the pointer might be. */
-			FMaskEvent(
-				dpy, ButtonPressMask | ButtonReleaseMask |
+			if (!fvwm_interaction_wait(
+				&interaction, ButtonPressMask | ButtonReleaseMask |
 				KeyPressMask | PointerMotionMask |
 				ButtonMotionMask | ExposureMask |
-				EnterWindowMask | LeaveWindowMask, &e);
+				EnterWindowMask | LeaveWindowMask, &e))
+			{
+				is_aborted = True;
+				break;
+			}
 		}
 
 		/* discard extra events before a logical release */
 		if (e.type == MotionNotify ||
 		    e.type == EnterNotify || e.type == LeaveNotify)
 		{
-			while (FPending(dpy) > 0 &&
-			       FCheckMaskEvent(
-				       dpy, ButtonMotionMask |
-				       PointerMotionMask | ButtonPressMask |
-				       ButtonRelease | KeyPressMask |
-				       EnterWindowMask | LeaveWindowMask, &e))
-			{
-				if (e.type == ButtonPress ||
-				    e.type == ButtonRelease ||
-				    e.type == KeyPress)
-				{
-					break;
-				}
-			}
+			fvwm_interaction_coalesce(
+				ButtonMotionMask | PointerMotionMask |
+				ButtonPressMask | ButtonReleaseMask | KeyPressMask |
+				EnterWindowMask | LeaveWindowMask, &e);
 		}
 		if (e.type == EnterNotify || e.type == LeaveNotify)
 		{
@@ -3129,9 +3177,8 @@ Bool move_loop(
 			}
 			break;
 		case ButtonPress:
-			if (e.xbutton.button <= NUMBER_OF_MOUSE_BUTTONS &&
-			    ((Button1Mask << (e.xbutton.button - 1)) &
-			     button_mask))
+			if (fvwm_interaction_button_mask(e.xbutton.button) &
+			    button_mask)
 			{
 				/* No new button was pressed, just a delayed
 				 * event */
@@ -3442,6 +3489,10 @@ Bool move_loop(
 	}
 	if (is_aborted || bad_window == FW_W(fw))
 	{
+		if (!do_move_opaque)
+		{
+			switch_move_resize_grid(False);
+		}
 		if (v.x != m->virtual_scr.Vx || v.y != m->virtual_scr.Vy)
 		{
 			MoveViewport(m, v.x, v.y, False);
@@ -3471,7 +3522,7 @@ Bool move_loop(
 		SET_ICON_MOVED(fw, 1);
 	}
 	UngrabEm(GRAB_NORMAL);
-	if (!do_resize_too)
+	if (!do_resize_too && interaction.result == FVWM_INTERACTION_RUNNING)
 	{
 		/* Don't wait for buttons to come up when user is placing a new
 		 * window and wants to resize it. */
@@ -3624,7 +3675,72 @@ void CMD_GeometryWindow(F_CMD_ARGS)
 	}
 }
 
-static Pixmap XorPixmap = None;
+/* The GC borrows its tile from an immutable published picture. A separate
+ * pending lease lets a replacement retain that tile until it is ready. */
+static FvwmPicture *xor_picture;
+static FvwmPicture *xor_requested;
+
+static void xor_cancel_request(void)
+{
+	FvwmPicture *requested = xor_requested;
+
+	xor_requested = NULL;
+	PDestroyFvwmPicture(dpy, requested);
+}
+
+static void xor_publish_picture(FvwmPicture *picture)
+{
+	FvwmPicture *snapshot = picture_snapshot(picture);
+	XGCValues gcv;
+	unsigned long gcm;
+
+	if (snapshot == NULL)
+	{
+		return;
+	}
+	gcm = GCFunction | GCLineWidth | GCTile | GCFillStyle |
+	    GCSubwindowMode;
+	gcv.subwindow_mode = IncludeInferiors;
+	gcv.function = GXxor;
+	gcv.line_width = 1;
+	gcv.tile = snapshot->picture;
+	gcv.fill_style = FillTiled;
+	if (Scr.XorGC)
+	{
+		XChangeGC(dpy, Scr.XorGC, gcm, &gcv);
+	}
+	else
+	{
+		Scr.XorGC = fvwmlib_XCreateGC(dpy, Scr.Root, gcm, &gcv);
+	}
+	FvwmPicture *old = xor_picture;
+
+	xor_picture = snapshot;
+	PDestroyFvwmPicture(dpy, old);
+}
+
+static picture_async_commit xor_image_policy(FvwmPicture *view,
+	void *context)
+{
+	(void)context;
+	return view == xor_requested ? PICTURE_ASYNC_APPLY :
+	    PICTURE_ASYNC_DISCARD;
+}
+
+static void xor_image_settled(FvwmPicture *view, Bool applied,
+	void *context)
+{
+	(void)context;
+	if (view != xor_requested)
+	{
+		return;
+	}
+	if (applied)
+	{
+		xor_publish_picture(view);
+	}
+	xor_cancel_request();
+}
 
 void CMD_XorValue(F_CMD_ARGS)
 {
@@ -3664,11 +3780,9 @@ void CMD_XorValue(F_CMD_ARGS)
 		Scr.XorGC = fvwmlib_XCreateGC(dpy, Scr.Root, gcm, &gcv);
 	}
 
-	/* free up XorPixmap if necessary */
-	if (XorPixmap != None) {
-		XFreePixmap(dpy, XorPixmap);
-		XorPixmap = None;
-	}
+	xor_cancel_request();
+	PDestroyFvwmPicture(dpy, xor_picture);
+	xor_picture = NULL;
 	PictureUseFvwmVisual();
 
 	return;
@@ -3677,67 +3791,44 @@ void CMD_XorValue(F_CMD_ARGS)
 
 void CMD_XorPixmap(F_CMD_ARGS)
 {
-	char *PixmapName;
-	FvwmPicture *xp;
-	XGCValues gcv;
-	unsigned long gcm;
-	FvwmPictureAttributes fpa;
+	char *pixmap_name;
+	FvwmPicture *picture;
+	FvwmPictureAttributes attributes;
 
-	action = GetNextToken(action, &PixmapName);
-	if (PixmapName == NULL)
+	action = GetNextToken(action, &pixmap_name);
+	if (pixmap_name == NULL)
 	{
-		/* return to default value. */
 		action = "0";
 		CMD_XorValue(F_PASS_ARGS);
 		return;
 	}
-	/* get the picture in the root visual, colorlimit is ignored because the
-	 * pixels will be freed */
-	fpa.mask = FPAM_NO_COLOR_LIMIT | FPAM_NO_ALPHA;
+	attributes.mask = FPAM_NO_COLOR_LIMIT | FPAM_NO_ALPHA;
 	PictureUseDefaultVisual();
-	xp = PGetFvwmPicture(dpy, Scr.Root, NULL, PixmapName, fpa);
-	if (xp == NULL)
+	picture = PGetFvwmPicture(dpy, Scr.Root, NULL, pixmap_name,
+	    attributes);
+	PictureUseFvwmVisual();
+	if (picture == NULL)
 	{
-		fvwm_debug(__func__, "Can't find pixmap %s", PixmapName);
-		free(PixmapName);
-		PictureUseFvwmVisual();
+		fvwm_debug(__func__, "Can't find pixmap %s", pixmap_name);
+		free(pixmap_name);
 		return;
 	}
-	free(PixmapName);
-	/* free up old pixmap */
-	if (XorPixmap != None)
+	free(pixmap_name);
+	xor_cancel_request();
+	if (picture->is_view && picture->pending)
 	{
-		XFreePixmap(dpy, XorPixmap);
-	}
-
-	/* make a copy of the picture pixmap */
-	XorPixmap = XCreatePixmap(dpy, Scr.Root, xp->width, xp->height, Pdepth);
-	XCopyArea(dpy, xp->picture, XorPixmap, DefaultGC(dpy, Scr.screen), 0, 0,
-		  xp->width, xp->height, 0, 0);
-	/* destroy picture and free colors */
-	PDestroyFvwmPicture(dpy, xp);
-	PictureUseFvwmVisual();
-
-	/* create Graphics context */
-	gcm = GCFunction|GCLineWidth|GCTile|GCFillStyle|GCSubwindowMode;
-	gcv.subwindow_mode = IncludeInferiors;
-	gcv.function = GXxor;
-	/* line width of 1 is necessary for Exceed servers */
-	gcv.line_width = 1;
-	gcv.tile = XorPixmap;
-	gcv.fill_style = FillTiled;
-	gcv.subwindow_mode = IncludeInferiors;
-	/* modify XorGC, only create once */
-	if (Scr.XorGC)
-	{
-		XChangeGC(dpy, Scr.XorGC, gcm, &gcv);
+		xor_requested = picture;
+		if (!picture_async_bind(picture, xor_image_policy,
+		    xor_image_settled, NULL, NULL))
+		{
+			xor_cancel_request();
+		}
 	}
 	else
 	{
-		Scr.XorGC = fvwmlib_XCreateGC(dpy, Scr.Root, gcm, &gcv);
+		xor_publish_picture(picture);
+		PDestroyFvwmPicture(dpy, picture);
 	}
-
-	return;
 }
 
 
@@ -4195,6 +4286,9 @@ static Bool _resize_window(F_CMD_ARGS)
 	frame_move_resize_args mr_args = NULL;
 	long evmask;
 	XEvent ev;
+	fvwm_interaction interaction = { FW_W(fw), Scr.Root,
+		IS_MAPPED(fw) || IS_ICONIFIED(fw), FVWM_INTERACTION_RUNNING,
+		events_interaction_poll };
 	direction_t dir;
 	/* if Alt is initially pressed don't enable "Alt" mode until the key is
 	 * released once. */
@@ -4368,6 +4462,7 @@ static Bool _resize_window(F_CMD_ARGS)
 		get_unshaded_geometry(fw, drag);
 		SET_MAXIMIZED(fw, 0);
 	}
+	module_config_interaction_begin();
 	if (do_resize_opaque)
 	{
 		mr_args = frame_create_move_resize_args(
@@ -4577,8 +4672,15 @@ static Bool _resize_window(F_CMD_ARGS)
 		int rc = 0;
 		int is_resized = False;
 
+		if (!fvwm_interaction_service(&interaction, 0))
+		{
+			is_aborted = True;
+			break;
+		}
+
 		/* block until there is an interesting event */
 		while (rc != -1 &&
+		       !fvwm_interaction_cancelled(&interaction) &&
 		       (!FPending(dpy) || !FCheckMaskEvent(dpy, evmask, &ev)))
 		{
 			int delay;
@@ -4596,12 +4698,20 @@ static Bool _resize_window(F_CMD_ARGS)
 				break;
 			}
 		}
+		if (fvwm_interaction_cancelled(&interaction))
+		{
+			is_aborted = True;
+			break;
+		}
 		if (rc == -1)
 		{
-			FMaskEvent(
-				dpy,
-				evmask | EnterWindowMask | LeaveWindowMask,
-				&ev);
+			if (!fvwm_interaction_wait(
+				&interaction,
+				evmask | EnterWindowMask | LeaveWindowMask, &ev))
+			{
+				is_aborted = True;
+				break;
+			}
 		}
 		if (ev.type == MotionNotify ||
 		    ev.type == EnterNotify || ev.type == LeaveNotify)
@@ -4612,20 +4722,10 @@ static Bool _resize_window(F_CMD_ARGS)
 			 * moves very fast and suddenly stops in the corner of
 			 * the screen.  Handle EnterNotify/LeaveNotify events
 			 * too to get an idea where the pointer might be. */
-			while (
-				FCheckMaskEvent(
-					dpy, ButtonMotionMask |
-					PointerMotionMask | ButtonReleaseMask |
-					ButtonPressMask | EnterWindowMask |
-					LeaveWindowMask, &ev) == True)
-			{
-				if (ev.type == ButtonRelease ||
-				    ev.type == ButtonPress ||
-				    ev.type == KeyPress)
-				{
-					break;
-				}
-			}
+			fvwm_interaction_coalesce(
+				ButtonMotionMask | PointerMotionMask |
+				ButtonReleaseMask | ButtonPressMask | KeyPressMask |
+				EnterWindowMask | LeaveWindowMask, &ev);
 		}
 		if (ev.type == EnterNotify || ev.type == LeaveNotify)
 		{
@@ -4665,9 +4765,8 @@ static Bool _resize_window(F_CMD_ARGS)
 		{
 		case ButtonPress:
 			is_done = True;
-			if (ev.xbutton.button <= NUMBER_OF_MOUSE_BUTTONS &&
-			    ((Button1Mask << (ev.xbutton.button - 1)) &
-			     button_mask))
+			if (fvwm_interaction_button_mask(ev.xbutton.button) &
+			    button_mask)
 			{
 				/* No new button was pressed, just a delayed
 				 * event */
@@ -4948,12 +5047,17 @@ static Bool _resize_window(F_CMD_ARGS)
 		SendConfigureNotify(fw, g.x, g.y, g.width, g.height, 0, True);
 	}
 	MyXUngrabKeyboard(dpy);
-	WaitForButtonsUp(True);
+	if (interaction.result == FVWM_INTERACTION_RUNNING)
+	{
+		WaitForButtonsUp(True);
+	}
 	UngrabEm(GRAB_NORMAL);
 	Scr.flags.do_edge_wrap_x = edge_wrap.x;
 	Scr.flags.do_edge_wrap_y = edge_wrap.y;
 	update_absolute_geometry(fw);
 	maximize_adjust_offset(fw);
+	module_config_refresh(fw);
+	module_config_interaction_end();
 	if (is_aborted)
 	{
 		return False;
@@ -4973,7 +5077,10 @@ void CMD_Resize(F_CMD_ARGS)
 		return;
 	}
 
-	_resize_window(F_PASS_ARGS);
+	if (_resize_window(F_PASS_ARGS))
+	{
+		record_resized_logical_client(fw);
+	}
 	update_fvwm_monitor(fw);
 
 	return;

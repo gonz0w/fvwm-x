@@ -388,15 +388,22 @@ XTerm*Page: 3 2 1
 
 == RANDR MULTI-SCREEN SUPPORT
 
-Fvwm best supports multiple screens using the RandR X11 protocol. If
-fvwm isn't built with the RandR protocol then the multi screen support
-is very limited, and it is suggested to rebuild with RandR. It is also
+FVWM-X requires the RandR X11 protocol, version 1.5 or newer. It is
 recommended to use 'EdgeScroll 0 0' on multi-screen displays to avoid
 changing pages when moving the mouse between screens.
 
 If Fvwm has been compiled with RandR support then it tracks the outputs
 (displays) which it finds. These outputs are stored by name, which can be
 found by running using the xrandr(1) command.
+
+Some framebuffer drivers, including OpenBSD's wsfb driver, provide RandR
+but expose no monitor topology. At startup FVWM-X creates a single monitor
+named *FVWM-X-Root* covering the root window. Its physical dimensions are
+unknown, so automatic scaling uses the configured fallback scale. Explicit
+scaling can use 'MonitorScale "FVWM-X-Root" 1.5'. The fallback follows root
+size changes and yields to a real RandR monitor topology when one becomes
+available. Failed queries, and empty queries after a real topology has
+been committed, retain the last good topology.
 
 When Fvwm detects monitors, it adds them to a tree with a defined order, and
 each monitor is assigned a number.  That order is top-down, left-to-right, so
@@ -575,6 +582,64 @@ at compile time. Optional features are described in the _config.h_ file
 that is generated during compilation.
 
 == ICONS AND IMAGES
+
+Image files must be regular files. Symbolic links to regular files are allowed.
+Fvwm refuses directories, devices, sockets and FIFOs. Each primary image file
+is opened once and checked before decoding. The default source limit is
+128 MiB (134217728 bytes). A builder can set *-Dimage-input-limit=N* in Meson,
+where _N_ is from 1 to 1024 MiB. Images over this limit are refused.
+
+Compressed XPM files (*.gz* and *.Z*) use the system *gzip* program. The
+expanded data limit is 128 MiB. The time limit is 5 seconds, including transfer
+and completion of the decompressor. A builder can set
+*-Dimage-xpm-expanded-limit=N* (1 to 1024 MiB) and
+*-Dimage-decompress-timeout=N* (1 to 60 seconds). There is no unlimited value.
+Meson finds *gzip* at build time. Use *-Dimage-gzip=/absolute/path/to/gzip* to
+select another trusted executable. Without *gzip*, uncompressed XPM files
+remain available. These options do not change FVWM configuration syntax.
+
+SVG images are decoded in a separate worker process. The default total time
+limit is 5 seconds and the worker memory limit is 1024 MiB. A builder can set
+*-Dimage-svg-timeout=N* (1 to 60 seconds) and
+*-Dimage-svg-memory-limit=N* (128 to 4096 MiB). There is no unlimited value.
+Linux and FreeBSD limit the worker's address space. OpenBSD limits its data.
+Stricter inherited limits remain in force. If the worker cannot set and verify
+its limits, Fvwm refuses the image. SVG relative paths continue to use the
+primary file's directory. Existing SVG rendering options remain available.
+
+The private *fvwm-image-svg-worker* executable is installed with Fvwm. For a
+development or relocated installation, set *FVWM_IMAGE_SVG_WORKER* to the
+absolute path of a trusted worker built for the same FVWM version. The normal
+installed path is compiled in. Fvwm does not use a shell or search *PATH* to
+start the worker.
+
+Core SVG, compressed XPM and ambiguous image requests complete asynchronously.
+The previous image remains until its replacement succeeds. A first load has no
+image while pending. The worker is not a file-system sandbox. These limits do
+not guarantee file-system latency or limit CPU time in other image decoders.
+
+Software colorset color-image preparation has a separate 5-second worker
+limit and a 1024 MiB memory limit. Builders can set
+*-Dimage-effect-timeout=N* (1 to 60 seconds) and
+*-Dimage-effect-memory-limit=N* (128 to 4096 MiB). The deadline includes the
+worker's X connection, image readback, color queries, blending and output.
+It excludes queue wait and the parent's bounded upload. The same verified OS
+memory limits apply. This operation is available without SVG support. For a
+trusted matching development worker, *FVWM_IMAGE_EFFECT_WORKER* selects its
+absolute path. The worker can query retained X resources; it is not an
+X-server permission sandbox.
+
+Normal core startup uses these limits for file-backed color colorset
+effects. It keeps the published colorset until the requested replacement is
+acknowledged. A failed replacement keeps the old image. A first load has no
+image until it succeeds. Hardware rendering keeps its existing arithmetic;
+software rendering uses queried server colors and its existing integer
+rounding. Other image callers keep their existing completion behavior.
+
+PNG-enabled builds require libpng 1.6.59 or newer. For an older library with
+verified vendor security fixes, the builder can use the Meson option
+*-Dpng-security-backport=true*. This option asserts that the fixes have been
+verified; it does not apply them. Use *-Dpng=disabled* to omit PNG support.
 
 Fvwm can load *.xbm,* *.xpm,* *.png* and *.svg* images. *XBM* images are
 monochrome. Fvwm can always display *XBM* files. *XPM* and *PNG* formats
@@ -840,6 +905,26 @@ This support is configurable with styles and commands. These styles and
 commands have EWMH as the prefix (so you can find them easily in this
 man page).
 
+Client EWMH properties must have the declared type and format. Text properties
+are limited to 64 KiB, ordinary atom/cardinal lists to 16 KiB, and icon data to
+64 MiB plus 64 KiB for additional icon entries. Fixed records such as
+_NET_WM_STRUT_ and _NET_WM_ICON_GEOMETRY_ must contain exactly four cardinals;
+desktop and process identifiers must contain exactly one. Empty text and
+ordinary lists remain valid. Malformed, partial, or oversized properties are
+ignored and logged when diagnostic logging is enabled. These limits bound
+property acquisition; they do not change FVWM configuration or theme syntax.
+
+Legacy ICCCM names, class hints, command arguments and session strings also
+require complete format-8 replies of at most 64 KiB. Name encodings retain
+STRING, COMPOUND_TEXT and UTF8_STRING conversion. Protocol and colormap-window
+lists are limited to 16 KiB of format-32 values. WM_CLASS requires an instance
+separator; the final class terminator may be supplied by Xlib. Command lists
+retain empty arguments and ignore one trailing property terminator. Session
+identifiers and roles require nonempty STRING values; client leaders require
+exactly one WINDOW value. Legacy one- and three-field WM_STATE records remain
+accepted alongside standard two-field records when their type and format match.
+
+
 There is a new Context 'D' for the *Key*, *PointerKey*, *Mouse*
 commands. This context is for desktop applications (such as kdesktop and
 Nautilus desktop).
@@ -874,6 +959,13 @@ maximizes a window. To know if an application reserves space you can
 type "xprop | grep _NET_WM_STRUT" in a terminal and select the
 application. If four numbers appear then these numbers define the
 reserved space as explained in the *EwmhBaseStruts* command.
+
+Legacy Motif and Open Look decoration properties are also checked for type,
+format and complete length before use. Four-field Motif records remain
+supported alongside standard five-field records. Open Look window attributes
+must contain three or five values. ICCCM *MULTIPLE* selection requests are
+limited to 128 complete atom pairs; invalid requests are refused, and valid
+requests receive a selection acknowledgement after the conversions finish.
 
 == CONFIGURATION
 
@@ -1184,6 +1276,18 @@ all the directions. The default _direction_ is _BottomRight_. With the
 _Center_ direction, the shadow surrounds the whole string. Since this is
 a super set of all other directions, it is a waste of time to specify
 this along with any other directions.
+
+Each text draw permits at most 4096 shadow positions by default, in addition
+to the foreground text. A directional shadow uses _size_ positions per selected
+direction. A Center shadow uses `4 * size * (size + 2 * offset + 1)` positions.
+Overlapping directions still count separately. For example, Center size 31
+with offset zero uses 3968 positions; size 32 uses 4224 and exceeds the default.
+
+A font that exceeds this limit is refused. Runtime font setters retain a
+previous usable font; startup uses the component's default-font or failure
+policy. Build with `-Dfont-shadow-limit=N` to select a finite limit from 1 to
+65536. Zero does not disable the limit. The limit bounds shadow positioning;
+it does not bound all font loading, glyph rendering or X server storage.
 
 The shadow effect only works with colorsets. The color of the shadow is
 defined by using the _fgsh_ option of the *Colorset* command. Please
@@ -2652,6 +2756,16 @@ soon as the pointer enters the item. The _PopupDelay option_ is
 ignored then. If _PopupDelayed_ is used fvwm looks at the _PopupDelay_
 option if or when this automatic popup happens.
 +
+Active menus service audited direct module commands and safe scheduled commands
+in bounded passes. Unsafe commands and producer continuations retain their order.
+Submenu delays count monotonic 10-ms ticks; an early module wake cannot shorten
+a configured delay. Quiet readiness waits are at most 100 ms and are shortened
+for safe timers, image transport and submenu ticks. Motion coalescing is bounded;
+release and key events remain barriers. Monitor changes, general window lifecycle
+events and image-owner publication wait until outer unwind. Termination cancels
+the menu through its normal cleanup. A surrounding function still waits for
+physical button release, including after Escape or keyboard selection.
++
 _PopdownDelay_ works exactly like _PopupDelay_ but determines the
 timeout of the _PopupDelayed_ style.
 +
@@ -2964,6 +3078,9 @@ _RaiseOverUnmanaged_ makes fvwm try to raise the windows it manages
 over override_redirect windows. This is used to cope with ill-mannered
 applications that use long-lived windows of this sort, contrary to
 ICCCM conventions. It is useful with the _Unmanaged_ style option too.
+If storage for this extra restack is unavailable, FVWM skips the correction
+and keeps running. Any completed managed-window raise remains in place.
+A later *Raise* can retry the correction.
 +
 _FlickeringQtDialogsWorkaround_ suppresses flickering of the focused
 window in some modules when using KDE or QT applications with
@@ -3511,6 +3628,16 @@ Schedule Periodic 10000 PipeRead '[ -N "$MAIL" ] && echo \
 
 +
 Use the *Deschedule* command to stop periodic commands.
++
+Delays use a monotonic clock and continue to advance during X event floods.
+Commands run in the main event loop, so a busy or long-running command can
+delay execution. Periodic commands wait _delay_ms_ after each execution
+finishes; missed intervals do not create a backlog.
+Due commands keep deadline order and yield to descriptor polling after at most
+64 executions. A command that enters another event wait is removed from the
+schedule before execution, so that wait cannot execute the same occurrence
+again. This limit bounds the number of commands, not the time spent within
+an individual command.
 
 *State* _state_ [_bool_]::
 	Sets, clears or toggles one of the 32 user defined states which are associated
@@ -3793,6 +3920,18 @@ As a special case, _default_ puts the window in its default layer,
 i.e. the layer it was initially in. The same happens if no or invalid
 arguments are specified.
 
++
+The layer is a non-negative signed integer. If a relative offset would exceed
+the maximum signed integer, the command keeps the previous layer and stack
+order. A negative result still selects layer zero.
++
+With _StackTransientParent_, *Layer* uses the top reachable transient parent.
+If that parent chain contains a cycle, *Layer* uses the window on which you
+invoked the command. Existing transient and group rules then apply.
++
+If FVWM cannot allocate storage for the restack, *Layer* keeps the current
+layers and stack order. FVWM continues to run. You can retry the command.
+
 *Lower*::
 	Allows the user to lower a window. Note that this lowers a window only
 	in its layer. To bring a window to the absolute bottom, use
@@ -3822,6 +3961,18 @@ without any delay.  Interactive movement can be aborted with the
 _Escape_ key or any mouse button not set to place the window. By default mouse
 button 2 is set to cancel the move operation. To change this you may
 use the *Mouse* command with special context 'P' for Placement.
++
+If the client is destroyed or withdraws its window, interactive movement
+is cancelled and releases its grabs without waiting for button release.
+Termination signals also cancel an active move, including wireframe moves.
++
+When an operation ends while a mouse button remains down, the enclosing
+function waits for physical release. This also applies after _Escape_. During
+button-release waits, audited direct commands and safe scheduled commands from
+independent producers can run in bounded passes. Other commands retain their
+order and wait for the surrounding command to return. Image transport continues;
+image changes publish at the outer event-loop boundary. The pointer-state
+fallback and wait-cursor delay are 20 milliseconds.
 +
 The window condition _PlacedByButton_ can be used to check if a
 specific button was pressed to place the window (see *Current*
@@ -4100,6 +4251,9 @@ AddToFunc raise-to-top
 
 +
 where ontop is the highest layer used in your setup.
++
+With a large redraw queue, painting can finish after *Raise* returns.
+Pending redraws continue through normal event processing.
 
 *RaiseLower*::
 	Alternately raises and lowers a window. The window is raised if it is
@@ -4119,6 +4273,10 @@ the window can be resized across the edge of the screen.
 +
 The operation can be aborted with the _Escape_ key or by pressing
 any mouse button (except button 1 which confirms it).
++
+Client destruction or withdrawal cancels an interactive resize without
+waiting for button release. Termination signals also release the resize's
+pointer, keyboard and server grabs, including wireframe resizes.
 +
 If the optional arguments _width_ and _height_ are provided, then the
 window is resized so that its dimensions are _width_ by _height_. The
@@ -4209,6 +4367,11 @@ Mouse 3 A M ResizeSE
 	the *Move* command except the _pointer_ option which is not supported
 	by the *ResizeMove* command.
 +
+An accepted *Resize* or *ResizeMove*, including an interactive resize,
+records the new normal client dimensions at the owning monitor's scale.
+Later monitor crossings use that size. *ResizeMaximize* and
+*ResizeMoveMaximize* preserve the normal size for restoration instead.
++
 Examples:
 +
 
@@ -4243,6 +4406,12 @@ _bottomright_ of the *Resize* command is used.
 	at all. When *RestackTransients* is used on a transient window with
 	the _StackTransientParent_ style set, it is redirected to the parent
 	window.
++
+If transient parent redirection contains a cycle, or FVWM cannot allocate
+storage for a deep parent chain, *Raise*, *Lower* and
+*RestackTransients* use the window on which you invoked the command.
+Existing transient and group rules then apply. Client hints remain
+unchanged.
 
 *SetAnimation* _milliseconds-delay_ [_fractions-to-move-list_]::
 	Sets the time between frames and the list of fractional offsets to
@@ -4574,6 +4743,10 @@ Values larger than 100 can be used with caution.
 	updates of all windows' styles and looks are applied immediately. E.g.
 	if *Style* or *TitleStyle* commands were issued inside a fvwm
 	function.
+
++
+Painting can finish after the command returns when many redraw events are
+queued. Pending redraws continue through normal event processing.
 
 *RefreshWindow*::
 	Causes the chosen window to redraw itself. All pending updates of the
@@ -5953,6 +6126,11 @@ Once the method was detected, it is never changed again. As long as
 fvwm can not detect the proper method, it uses _IgnoreGravity_. To
 force fvwm to retry the detection, use one of the other two options
 first and then use _AutoDetect_ again.
++
+With _AutoDetect_, adjacent application size-only requests use the latest
+requested dimensions in bounded batches. Moves, stacking requests and other X
+events retain their order and end the batch. Each batch combines at most 32
+queued requests.
 +
 Note: This option was introduced to alleviate a problem with the ICCCM
 specification. The ICCCM clearly states that the _UseGravity_ option
@@ -7514,7 +7692,10 @@ and then applying ICCCM size constraints.  Fixed-size windows keep their
 client pixels and still receive dest chrome.  Dragging a window across
 scales keeps the pointer grab and the grabbed titlebar point.  Maximize
 fills the dest work area.  Fullscreen fills the dest monitor and has no
-decorations.  Unmaximize and leave-fullscreen restore stored logical
+decorations.  Shaded windows keep their collapsed frame while their
+saved unshaded size and chrome follow the destination monitor.  Unshading
+a maximized window fills that monitor's work area.  Unmaximize and
+leave-fullscreen restore stored logical
 client size plus dest chrome.  `_NET_FRAME_EXTENTS` is dest chrome
 pixels.  *Status* version 4 and module packets remain actual X11 pixels
 with no scale metadata.
@@ -7790,6 +7971,16 @@ scrolling takes place. The viewport scrolls as the mouse is moved.
 With the _reverse_ option scrolling is done in opposite direction of
 the mouse movement, and without it scrolling in the same direction as
 the mouse.
++
+Interactive scrolling services audited direct module commands and safe scheduled
+commands in bounded passes. Mutating commands and each producer's continuation
+retain their order until the interaction returns. Motion processing is bounded;
+quiet readiness waits are at most 100 ms and wake earlier for safe timers or
+image-worker deadlines. Monitor changes, window lifecycle events and image-owner
+publication wait until the command stack unwinds. Escape ends active scrolling;
+if a button remains down, the surrounding function waits for physical release
+while the common release wait continues safe servicing. Termination signals
+cancel scrolling and release its pointer and keyboard grabs.
 +
 The binding
 +
@@ -8122,6 +8313,17 @@ section *Conditional Commands* for the meaning of return codes).
 	(see the section *Conditional Commands* for the meaning of return
 	codes).
 
++
+Before reading commands, fvwm services a bounded part of the queued redraws.
+A large redraw queue can remain pending when *Read* returns.
++
+*Read* and *PipeRead* keep each logical command line complete, up to 1 MiB
+excluding the final newline. A backslash immediately before a newline joins
+the next physical line. A final backslash without a newline remains literal.
+An embedded NUL, I/O error or excessive line stops the stream; the partial
+line is not executed. Commands completed before that failure remain applied.
+The existing command-count limit and close-on-exec protection still apply.
+
 *SetEnv* _variable_ _value_::
 	Set an environment variable to a new value, similar to the shell's
 	export or setenv command. The _variable_ and its _value_ are inherited
@@ -8211,6 +8413,9 @@ the first modifier). To redefine this key sequence see the *EscapeFunc* command.
 	means of supplying third-party tools information about what's
 	happening in Fvwm. For example, the JSON could be manipulated and sent
 	to tools such as _lemonbar_, _polybar_, etc.
++
+JSON string values and object keys use UTF-8. Each invalid byte is printed as
+`\ufffd` (U+FFFD). Valid UTF-8 and stored FVWM text remain unchanged.
 +
 The format of the JSON blob looks like this:
 +
@@ -8978,6 +9183,38 @@ can remain for the duration of the X session. Modules are terminated
 by the window manager prior to restarts and quits, if possible. See
 the introductory section on modules. The keyword *Module* may be
 omitted if _modulename_ is distinct from all fvwm commands.
++
+FVWM queues at most 256 pending commands from each module. At that limit,
+normal input polling pauses for that module until queued commands start
+executing. Commands stay in pipe order; reaching the limit does not discard
+them or terminate the module. Other module input, outgoing packets and direct
+synchronous handshake reads remain available.
++
+During interactive *Move* and *Resize*, bounded batches of direct *Nop*,
+*Beep*, *Echo*, *Schedule* and *Deschedule* commands can run. Asynchronous
+*SendToModule* and module replies can also run. Message commands wait if they
+could enter a synchronous receiver's command loop. Protocol subscription
+updates wait when the sending module has synchronous masks.
++
+Each module retains its own command order, including the continuation of its
+active command. A safe command from an independent module may pass another
+module's command that must wait for release. Outside interactions, the shared
+command queue retains its FIFO order. Complex functions, conditions, expanded
+command names and commands that change windows, styles or resources wait as
+whole commands. Scheduled jobs retain deadline order: a deferred timer also
+holds later timers until the interaction ends.
++
+Synchronous frame notifications (M_CONFIGURE_WINDOW) during *Move*/*Resize* are
+coalesced to the latest geometry per window. The final copied packet is delivered
+once the enclosing command stack and grabs have unwound; asynchronous frame
+subscribers retain intermediate updates. Destroying a window discards its unsent
+snapshot. At most 64 distinct windows per module may await delivery, within the
+existing eight-megabyte module output cap. Exceeding either limit retires that
+module. Final delivery retains the ordinary synchronous reply and ModuleTimeout
+behavior, so replies cannot reenter the held drag.
++
+The enclosing *Move*/*Resize* function continues after release or cancellation,
+as usual.
 
 *ModuleListenOnly* _modulename_ [_moduleparams_]::
 	This command works like the *Module* command, but fvwm never sends any
@@ -9009,32 +9246,50 @@ ModulePath ${HOME}/lib/fvwm/modules:+
 The directory containing the standard modules is available via the
 environment variable _$FVWM_MODULEDIR_.
 *ModuleSynchronous* [Expect _string_] [Timeout _secs_] _modulename_::
-The *ModuleSynchronous* command is very similar to *Module*. Fvwm
-stops processing any commands and user input until the module sends a
-string beginning with "NOP FINISHED STARTUP" back to fvwm. If the
-optional _Timeout_ is given fvwm gives up if the module sent no input
-back to fvwm for _secs_ seconds. If the _Expect_ option is given, fvwm
-waits for the given _string_ instead. *ModuleSynchronous* should only
-be used during fvwm startup to enforce the order in which modules are
-started. This command is intended for use with the (currently
-hypothetical) module that should be in place before other modules are
-started.
+The *ModuleSynchronous* command starts a module and waits for a string that
+begins with "NOP FINISHED STARTUP". Use _Expect_ to wait for a different prefix.
+Commands from this module run during the wait. Other commands and ordinary
+user input wait until this startup barrier ends. Use this command during
+startup when later commands need the module to be ready.
 +
-**Warning**: It is quite easy to hang fvwm with this command, even if a
-timeout is given. Be extra careful choosing the string to wait for.
-Although all modules in the fvwm distribution send back the "NOP
-FINISHED STARTUP" string once they have properly started up, this may
-not be the case for third party modules. Moreover, you can try to
-escape from a locked *ModuleSynchronous* command by using the key
-sequence
+If _Timeout_ is omitted, the command captures the current *ModuleTimeout*
+value, which defaults to 30 seconds. An explicit _Timeout_ must be greater
+than zero and overrides that value for this startup. The limit measures the
+total monotonic time of the wait. Input, partial packets and interrupted waits
+do not restart it. A nested wait has its own limit while the outer limit
+continues to run. A command already executing cannot be preempted; fvwm checks
+the limit when it returns. Use a larger _Timeout_ for slow legacy startup.
 +
-(see the *EscapeFunc*).
+On timeout, fvwm ends the startup barrier and leaves a live module running
+asynchronously. Partial input and output retain their order and resume through
+normal readiness. Clock failure also ends the barrier with a diagnostic.
+A module that disconnects or retires retains normal transport cleanup.
++
+fvwm checks readiness at most every 100 ms, or sooner when the remaining limit
+or X connection requires it. The configured *EscapeFunc* key can end the wait.
+Other X events remain queued. Choose an _Expect_ prefix that the module sends;
+an incorrect prefix makes startup wait until its time limit or Escape.
+
+Ordinary asynchronous module output yields after 64 KiB of successful writes,
+32 complete packets or 128 write attempts per module pass. Partial packets
+retain their offset and order; writable readiness resumes pending output.
+The queue memory limit remains separate. Synchronous lock-on-send delivery keeps
+its completion and reply barrier, governed by _ModuleTimeout_.
 
 *ModuleTimeout* _timeout_::
-	Specifies how many seconds fvwm waits for a module to respond. If the
-	module does not respond within the time limit then fvwm kills it.
+	Sets the total time limit, in seconds, for synchronous module packet
+	delivery and its unlock reply. fvwm uses one monotonic deadline for
+	the whole handshake. Partial input or output, interrupted waits and
+	commands from the module do not restart the deadline. On expiry,
+	fvwm retires the module and returns through normal cleanup.
 	_timeout_ must be greater than zero, or it is reset to the default
-	value of 30 seconds.
+	value of 30 seconds. Use a larger value for a slow legacy handshake.
+	This value also supplies the default startup limit for
+	*ModuleSynchronous* when its _Timeout_ option is omitted. A startup
+	timeout ends that command barrier without retiring a live module.
+	A nested handshake has its own deadline; the outer deadline continues
+	to run. A command already executing cannot be preempted; the deadline
+	is checked when it returns, before further handshake work.
 
 *SendToModule* _modulename_ _string_::
 	Sends an arbitrary string (no quotes required) to all modules, whose
@@ -9116,10 +9371,25 @@ background face and specify other color operations.
 	Creates or modifies colorset _num_. Colorsets are identified by this
 	number. The number can start at zero and can be a very large number.
 +
-Warning: The highest colorset number used determines memory
-consumption. Thus, if you define 'Colorset 100000', the memory for
-100001 colorsets is used. Keep your colorset numbers as small as
-possible.
+Colorsets use sparse storage: defining 'Colorset 100000' allocates that
+set without allocating the unused preceding numbers. Each core or bundled
+module process allows 4096 distinct defined or referenced colorsets by
+default, including set zero. Existing sets can still be updated at the
+limit. A new set beyond the limit is refused with a diagnostic, and an
+existing assignment retains its prior colors and resources. IDs must fit a
+nonnegative signed 32-bit integer; negative values retain their documented
+meaning in options that disable colorset use.
++
+An undefined colorset referenced by a bundled module initially copies set
+zero. Defining an unrelated higher ID no longer gives unused intervening IDs
+implicit gray defaults. Themes that need gray at such an ID should define it
+explicitly. Core references retain their normal default colors.
++
+The build option '-Dcolorset-limit=65536' raises the count limit for larger
+palettes; the supported setting is 1 through 65536. This limit counts sets,
+not bytes, and does not include the memory used by images, gradients or
+X-server resources. Modules receive the allocated sets in ascending ID order,
+starting with zero; unused gaps are omitted.
 +
 By convention, colorsets are numbered like this:
 +
@@ -9167,7 +9437,12 @@ _bg_, _Back_ and _Background_ take a color name as an argument and set
 the background color. It also sets the highlight and shadow colors to
 values that give a 3d effect unless these have been explicitly set
 with the options below. The special name _Average_ may be used to
-select a color that is the average color of the pixmap. If the pixmap
+select a color that is the average color of the pixmap. For file-backed
+color images, FVWM-X averages decoded RGB values before display-palette
+reduction. Fully transparent pixels are ignored. All other pixels have equal
+weight, including partially transparent pixels. An image with no such pixels
+uses white. This also applies to scaled image variants. The final background
+color uses the display's available colormap. If the pixmap
 is tinted with the _Tint_ option, the tint is not taken in account in
 the computation of the average color. You should use the _bgTint_
 option to get the "real" average color. The background color is reset

@@ -13,10 +13,13 @@ FvwmWindow *get_transientfor_fvwmwindow(const FvwmWindow *t);
 Bool position_new_window_in_stack_ring(FvwmWindow *t, Bool do_lower);
 void RaiseWindow(FvwmWindow *t, Bool is_client_request);
 void LowerWindow(FvwmWindow *t, Bool is_client_request);
+void RestackWindow(FvwmWindow *t, Bool is_client_request);
 Bool HandleUnusualStackmodes(
 	unsigned int stack_mode, FvwmWindow *r, Window rw, FvwmWindow *sib,
 	Window sibw);
 void BroadcastRestackAllWindows(void);
+/* Outer-loop repair after synchronous module callbacks reorder the ring. */
+void fvwm_stack_restack_publication_flush(void);
 void BroadcastRestackThisWindow(FvwmWindow *t);
 
 int compare_window_layers(FvwmWindow *t, FvwmWindow *s);

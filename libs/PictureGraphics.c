@@ -24,6 +24,7 @@
 
 #include <fvwmlib.h>
 #include "PictureBase.h"
+#include "picture_view.h"
 #include "Colorset.h"
 #include "FRenderInit.h"
 #include "FRenderInterface.h"
@@ -1079,6 +1080,12 @@ void PGraphicsRenderPicture(
 	int src_x, int src_y, int src_w, int src_h,
 	int dest_x, int dest_y, int dest_w, int dest_h, int do_repeat)
 {
+	/* A first asynchronous request has no backing yet. Replacements keep
+	 * their old usable backing; neither case permits a None source draw. */
+	if (!picture_is_usable(p))
+	{
+		return;
+	}
 	PGraphicsRenderPixmaps(
 		dpy, win, p->picture, p->mask, p->alpha, p->depth, fra,
 		d, gc, mono_gc, alpha_gc,

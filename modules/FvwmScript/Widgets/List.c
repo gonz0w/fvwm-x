@@ -32,15 +32,14 @@ void InitList(struct XObj *xobj)
 {
   unsigned long mask;
   XSetWindowAttributes Attr;
-  int minw,minh,resize=0;
   int NbVisCell,NbCell;
 
   /* Save font and colors */
   if (xobj->colorset >= 0) {
-    xobj->TabColor[fore] = Colorset[xobj->colorset].fg;
-    xobj->TabColor[back] = Colorset[xobj->colorset].bg;
-    xobj->TabColor[hili] = Colorset[xobj->colorset].hilite;
-    xobj->TabColor[shad] = Colorset[xobj->colorset].shadow;
+    xobj->TabColor[fore] = GetColorset(xobj->colorset)->fg;
+    xobj->TabColor[back] = GetColorset(xobj->colorset)->bg;
+    xobj->TabColor[hili] = GetColorset(xobj->colorset)->hilite;
+    xobj->TabColor[shad] = GetColorset(xobj->colorset)->shadow;
   } else {
     xobj->TabColor[fore] = GetColor(xobj->forecolor);
     xobj->TabColor[back] = GetColor(xobj->backcolor);
@@ -64,58 +63,34 @@ void InitList(struct XObj *xobj)
   XSetForeground(dpy, xobj->gc, xobj->TabColor[fore]);
   XSetLineAttributes(dpy, xobj->gc, 1, LineSolid, CapRound, JoinMiter);
 
-  if ((xobj->Ffont = FlocaleLoadFont(dpy, xobj->font, ScriptName)) == NULL)
-  {
-    fvwm_debug(__func__, "%s: Couldn't load font. Exiting!\n", ScriptName);
-    exit(1);
-  }
   if (xobj->Ffont->font != NULL)
     XSetFont(dpy, xobj->gc, xobj->Ffont->font->fid);
 
-  /* Computation of the size of the widget *
-   * min size: one line or a visible elevator */
-  minh = 8 + 3*BdWidth + 3*(xobj->Ffont->height + 3);
-  if (xobj->height<minh)
-  {
-    xobj->height = minh;
-    resize = 1;
-  }
-  minw = 12 + 3*BdWidth +SbWidth +75;
-  if (xobj->width<minw)
-  {
-    xobj->width = minw;
-    resize = 1;
-  }
-  if (resize)
-    XResizeWindow(dpy, xobj->win, xobj->width, xobj->height);
   if (xobj->colorset >= 0)
     SetWindowBackground(dpy, xobj->win, xobj->width, xobj->height,
-			&Colorset[xobj->colorset], Pdepth,
+			GetColorset(xobj->colorset), Pdepth,
 			xobj->gc, True);
 
   /* Computation of the first visible cell */
-  NbVisCell = (xobj->height - 2 - 3*BdWidth) / (xobj->Ffont->height + 3);
+  NbVisCell = (script_widget_dimension(xobj->height) - 2 - 3*BdWidth) /
+      script_list_row_height(xobj->Ffont->height);
   NbCell = CountOption(xobj->title);
-  if (NbCell > NbVisCell)
-  {
-    if (xobj->value2 > (NbCell - NbVisCell + 1))
-      xobj->value2 = NbCell - NbVisCell + 1;
-    if ((xobj->value2 < 1) || (xobj->value2 < 0))
-      xobj->value2 = 1;
-  }
-  else
-    xobj->value2 = 1;
+  xobj->value2 = script_list_first(xobj->value2, NbCell, NbVisCell);
   XSelectInput(dpy, xobj->win, ExposureMask);
 }
 
 void DrawVSbList(struct XObj *xobj, int NbCell, int NbVisCell, int press)
 {
+  int width = script_widget_dimension(xobj->width);
+  int height = script_widget_dimension(xobj->height);
   XRectangle r;
   int PosTh,SizeTh;
 
+  if (width < 24 || height < 13)
+    return;
   r.y = 2+BdWidth;
-  r.x = xobj->width - (6+BdWidth) -SbWidth;
-  r.height = xobj->height - r.y - 2*BdWidth;
+  r.x = width - (6+BdWidth) -SbWidth;
+  r.height = height - r.y - 2*BdWidth;
   r.width = SbWidth + 4;
   DrawReliefRect(r.x, r.y, r.width, r.height, xobj, shad, hili);
 
@@ -131,17 +106,17 @@ void DrawVSbList(struct XObj *xobj, int NbCell, int NbVisCell, int press)
 
   /* Compute rectangle for thumb */
   r.y = r.y + 13;
+  if (r.height <= 26)
+    return;
   r.height = r.height - 26;
 
   /* Erase */
-  XClearArea(dpy, xobj->win, r.x, r.y+1, r.width, r.height-2, False);
+  if (r.height > 2)
+    XClearArea(dpy, xobj->win, r.x, r.y+1, r.width, r.height-2, False);
 
-  /* Draw thumb */
-  if (NbVisCell < NbCell)
-    SizeTh = (NbVisCell * (r.height-8) / NbCell) + 8;
- else
-   SizeTh = r.height;
-  PosTh = (xobj->value2 - 1) * (r.height - 8) / NbCell;
+  /* Compute in wide integers, preserving the legacy count denominator. */
+  script_list_thumb(xobj->value2, NbCell, NbVisCell, r.height,
+      &PosTh, &SizeTh);
   DrawReliefRect(r.x, r.y + PosTh, r.width, SizeTh, xobj, hili, shad);
 }
 
@@ -149,20 +124,31 @@ void DrawCellule(
 	struct XObj *xobj, int NbCell, int NbVisCell, int HeightCell,
 	int asc, XEvent *evp)
 {
+  int width = script_widget_dimension(xobj->width);
+  int height = script_widget_dimension(xobj->height);
   XRectangle r,inter;
   char *Title;
-  int i;
+  int64_t i;
   int do_draw = True;
+  size_t option_length;
+  const char *option = script_text_option(xobj->title, xobj->value2,
+      &option_length);
 
+  if (width < 42 || height < 15 || HeightCell < 3)
+    return;
   /* text clipping */
   r.x = 4 + BdWidth + 4;
   r.y = 4 + BdWidth;
-  r.width =  xobj->width - 16 - SbWidth - BdWidth - 6;
-  r.height = xobj->height - r.y - 4 - 2*BdWidth;
+  r.width =  width - 16 - SbWidth - BdWidth - 6;
+  r.height = height - r.y - 4 - 2*BdWidth;
 
-  for (i = xobj->value2; i < xobj->value2 + NbVisCell; i++)
+  for (i = xobj->value2; i < (int64_t)xobj->value2 + NbVisCell; i++)
   {
-	  Title = (char*)GetMenuTitle(xobj->title, i);
+	  const char *current = option;
+	  option_length = strcspn(option, "|");
+	  option += option_length;
+	  if (*option == '|')
+		  option++;
 	  do_draw = True;
 	  if (evp)
 	  {
@@ -187,11 +173,15 @@ void DrawCellule(
 	  {
 		  continue;
 	  }
-	  if (strlen(Title)!=0)
+	  /* Allocate only rows that will be drawn, after the expose check. */
+	  Title = fxmalloc(option_length + 1);
+	  memcpy(Title, current, option_length);
+	  Title[option_length] = '\0';
+	  if (option_length != 0)
 	  {
 		  int x = GetXTextPosition(
 			  xobj, r.width,
-			  FlocaleTextWidth(xobj->Ffont,Title,strlen(Title)),
+			  FlocaleTextWidth(xobj->Ffont,Title,option_length),
 			  r.x, 0, -r.x);
 		  int y = (i - xobj->value2) * HeightCell + asc + 2 + r.y;
 
@@ -230,39 +220,39 @@ void DrawCellule(
 
 void DestroyList(struct XObj *xobj)
 {
+  FlocaleUnloadFont(dpy, xobj->Ffont);
   XFreeGC(dpy, xobj->gc);
   XDestroyWindow(dpy, xobj->win);
 }
 
 void DrawList(struct XObj *xobj, XEvent *evp)
 {
+  int width = script_widget_dimension(xobj->width);
+  int height = script_widget_dimension(xobj->height);
   int NbVisCell,NbCell;
   int HeightCell;
   XRectangle r;
 
+  HeightCell = script_list_row_height(xobj->Ffont->height);
+  NbVisCell = (height - 2 - 3*BdWidth) / HeightCell;
+  NbCell = CountOption(xobj->title);
+  xobj->value2 = script_list_first(xobj->value2, NbCell, NbVisCell);
+  if (width < 5 || height < 9)
+    return;
   /* Draw frame */
-  DrawReliefRect(0, 0, xobj->width, xobj->height, xobj, hili, shad);
+  DrawReliefRect(0, 0, width, height, xobj, hili, shad);
+  if (width < 4 + 4 + 2*BdWidth + SbWidth + 4)
+    return;
 
   /* Draw list frame */
   r.x = 2 + BdWidth;
   r.y = r.x;
-  r.width = xobj->width - r.x - 4 - 2*BdWidth - SbWidth;
-  r.height = xobj->height - r.y - 2*BdWidth;
+  r.width = width - r.x - 4 - 2*BdWidth - SbWidth;
+  r.height = height - r.y - 2*BdWidth;
   DrawReliefRect(r.x, r.y, r.width, r.height, xobj, shad, hili);
 
   /* Compute number of visible cells */
-  HeightCell = xobj->Ffont->height + 3;
   NbVisCell = r.height/HeightCell;
-  NbCell = CountOption(xobj->title);
-  if (NbCell > NbVisCell)
-  {
-    if (xobj->value2 > (NbCell - NbVisCell + 1))
-      xobj->value2 = NbCell - NbVisCell + 1;
-    if ((xobj->value2 < 1) || (xobj->value2 < 0))
-      xobj->value2 = 1;
-  }
-  else
-    xobj->value2 = 1;
 
 
   /* Draw cells */
@@ -279,36 +269,40 @@ void DrawList(struct XObj *xobj, XEvent *evp)
 
 void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
 {
+  int width = script_widget_dimension(xobj->width);
+  int height = script_widget_dimension(xobj->height);
   XRectangle rect,rectT;
   XPoint pt;
   int x1,y1,x2,y2;
   Window Win1,Win2;
   unsigned int modif;
   int In = 1;
-  static XEvent event;
   int NbVisCell,NbCell,HeightCell,NPosCell,PosMouse;
-  fd_set in_fdset;
+  int thumb_position, thumb_size, track;
 
   pt.x = EvtButton->x-xobj->x;
   pt.y = EvtButton->y-xobj->y;
 
-  HeightCell = xobj->Ffont->height + 3;
-  NbVisCell = (xobj->height-6-BdWidth)/HeightCell;
+  HeightCell = script_list_row_height(xobj->Ffont->height);
+  NbVisCell = (height-6-BdWidth)/HeightCell;
   NbCell = CountOption(xobj->title);
+  if (width < 42 || height < 15 || NbVisCell < 1)
+    return;
+  xobj->value2 = script_list_first(xobj->value2, NbCell, NbVisCell);
 
   /* Click on cell */
   rect.x = 4 + BdWidth;
   rect.y = rect.x;
-  rect.width = xobj->width - rect.x - 10 - 2*BdWidth - SbWidth;
-  rect.height = xobj->height -rect.y - 4 - 2*BdWidth;
+  rect.width = width - rect.x - 10 - 2*BdWidth - SbWidth;
+  rect.height = height -rect.y - 4 - 2*BdWidth;
   if(PtInRect(pt,rect))
   {
     /* Find cell */
     pt.y = pt.y - rect.y;
-    NPosCell = xobj->value2 + (pt.y/(xobj->Ffont->height+3));
+    NPosCell = script_list_cell(xobj->value2, pt.y/HeightCell, NbCell);
     if (NPosCell > CountOption(xobj->title))
       NPosCell = 0;
-    else if (NPosCell >= xobj->value2 + NbVisCell)
+    else if (NPosCell >= (int64_t)xobj->value2 + NbVisCell)
     {
       NPosCell--;
     }
@@ -323,7 +317,7 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
 
   /* Click on vetical scrollbar top arrow */
   rect.y = 5 + BdWidth;
-  rect.x = xobj->width - (6+BdWidth) - SbWidth+3;
+  rect.x = width - (6+BdWidth) - SbWidth+3;
   rect.height = 12;
   rect.width = 12;
   if(PtInRect(pt,rect))
@@ -339,7 +333,8 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
       {
 	if (In)
 	{
-	  Wait(8);
+	  if (!script_widget_wait_release(xobj, 8))
+	    break;
 	  xobj->value2--;
 	  if (xobj->value2 < 1)
 	    xobj->value2 = 1;
@@ -370,17 +365,14 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
 	  DrawVSbList(xobj, NbCell, NbVisCell, 0);
 	}
       }
-      FD_ZERO(&in_fdset);
-      FD_SET(x_fd, &in_fdset);
-      select(32, SELECT_FD_SET_CAST &in_fdset, NULL, NULL, NULL);
     }
-    while (!FCheckTypedEvent(dpy, ButtonRelease, &event));
+    while (script_widget_wait_release(xobj, 1));
     DrawVSbList(xobj, NbCell, NbVisCell, 0);
     return;
   }
 
   /* Click on vertical scrollbar bottom arrow */
-  rect.y = xobj->height - 2*BdWidth -16;
+  rect.y = height - 2*BdWidth -16;
   if(PtInRect(pt,rect))
   {
     DrawVSbList(xobj, NbCell, NbVisCell, 2);
@@ -394,7 +386,8 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
       {
 	if (In)
 	{
-	  Wait(8);
+	  if (!script_widget_wait_release(xobj, 8))
+	    break;
 	  if (xobj->value2 <= NbCell-NbVisCell)
 	  {
 	    xobj->value2++;
@@ -423,29 +416,28 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
 	  DrawVSbList(xobj, NbCell, NbVisCell, 0);
 	}
       }
-      FD_ZERO(&in_fdset);
-      FD_SET(x_fd, &in_fdset);
-      select(32, SELECT_FD_SET_CAST &in_fdset, NULL, NULL, NULL);
     }
-    while (!FCheckTypedEvent(dpy, ButtonRelease, &event));
+    while (script_widget_wait_release(xobj, 1));
     DrawVSbList(xobj, NbCell, NbVisCell, 0);
     return;
   }
 
   /* click on vertical scrollbar thumb zone */
   rect.y = 17 + BdWidth;
-  rect.x = xobj->width - (6+BdWidth) - SbWidth + 2;
-  rect.height = xobj->height - rect.y - 19 - 2*BdWidth;
+  rect.x = width - (6+BdWidth) - SbWidth + 2;
+  track = height - rect.y - 19 - 2*BdWidth;
+  if (track <= 0)
+    return;
+  rect.height = track;
   rect.width = SbWidth;
   if(PtInRect(pt,rect))
   {
     /* Click on thumb */
     rectT.x = rect.x;
-    rectT.y = rect.y + (xobj->value2 - 1) * (rect.height - 8) / NbCell;
-    if (NbVisCell<NbCell)
-      rectT.height = NbVisCell * (rect.height-8) / NbCell+8;
-    else
-      rectT.height = rect.height;
+    script_list_thumb(xobj->value2, NbCell, NbVisCell, track,
+        &thumb_position, &thumb_size);
+    rectT.y = rect.y + thumb_position;
+    rectT.height = thumb_size;
     rectT.width = rect.width;
     if(PtInRect(pt,rectT))
     {
@@ -456,16 +448,8 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
 		      &x1, &y1, &x2, &y2, &modif);
 	/* Compute first cell */
 	pt.y = y2-xobj->y - PosMouse;
-	NPosCell = (pt.y - rect.y)*NbCell / (rect.height);
-
-	if (NPosCell < 1) NPosCell = 1;
-	if (NbCell > NbVisCell)
-	{
-	  if (NPosCell > (NbCell - NbVisCell + 1))
-	    NPosCell = NbCell - NbVisCell + 1;
-	}
-	else
-	  NPosCell = 1;
+	NPosCell = script_list_pointer_first(pt.y, rect.y, track,
+	    NbCell, NbVisCell);
 	if (xobj->value2 != NPosCell)
 	{
 	  xobj->value2 = NPosCell;
@@ -474,15 +458,12 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
 		  NULL);
 	  DrawVSbList(xobj, NbCell, NbVisCell, 0);
 	}
-	FD_ZERO(&in_fdset);
-	FD_SET(x_fd, &in_fdset);
-	select(32, SELECT_FD_SET_CAST &in_fdset, NULL, NULL, NULL);
       }
-      while (!FCheckTypedEvent(dpy, ButtonRelease, &event));
+      while (script_widget_wait_release(xobj, 1));
     }
     else if (pt.y < rectT.y)
     {
-      NPosCell = xobj->value2 - NbVisCell;
+      NPosCell = script_list_move(xobj->value2, -NbVisCell, NbCell, NbVisCell);
       if (NPosCell < 1)
 	NPosCell = 1;
       if (xobj->value2 != NPosCell)
@@ -495,7 +476,7 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
     }
     else if (pt.y > rectT.y + rectT.height)
     {
-      NPosCell = xobj->value2+NbVisCell;
+      NPosCell = script_list_move(xobj->value2, NbVisCell, NbCell, NbVisCell);
       if (NbCell>NbVisCell)
       {
 	if (NPosCell > (NbCell - NbVisCell + 1))
@@ -516,6 +497,8 @@ void EvtMouseList(struct XObj *xobj, XButtonEvent *EvtButton)
 
 void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
 {
+  int width = script_widget_dimension(xobj->width);
+  int height = script_widget_dimension(xobj->height);
   KeySym ks;
   unsigned char buf[10];
   int NbVisCell,NbCell,HeightCell,NPosCell;
@@ -525,16 +508,19 @@ void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
   XRectangle rect;
   XPoint pt;
 
-  HeightCell = xobj->Ffont->height + 3;
-  NbVisCell = (xobj->height - 6 - BdWidth) / HeightCell;
+  HeightCell = script_list_row_height(xobj->Ffont->height);
+  NbVisCell = (height - 6 - BdWidth) / HeightCell;
   NbCell = CountOption(xobj->title);
+  if (width < 42 || height < 15 || NbVisCell < 1)
+    return;
+  xobj->value2 = script_list_first(xobj->value2, NbCell, NbVisCell);
   FQueryPointer(dpy, xobj->win, &Win1, &Win2, &x1, &y1, &x2, &y2, &modif);
   pt.x = x2;
   pt.y = y2;
   rect.x = 4 + BdWidth;
   rect.y = rect.x;
-  rect.width = xobj->width - rect.x -10 - 2*BdWidth - SbWidth;
-  rect.height= xobj->height - rect.y - 4 - 2*BdWidth;
+  rect.width = width - rect.x -10 - 2*BdWidth - SbWidth;
+  rect.height= height - rect.y - 4 - 2*BdWidth;
 
   /* Find char */
   XLookupString(EvtKey, (char *)buf, sizeof(buf), &ks, NULL);
@@ -545,10 +531,10 @@ void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
     {
       /* Find cell */
       pt.y =  pt.y - rect.y;
-      NPosCell = xobj->value2 + (pt.y/(xobj->Ffont->height + 3));
+      NPosCell = script_list_cell(xobj->value2, pt.y/HeightCell, NbCell);
       if (NPosCell > CountOption(xobj->title))
 	NPosCell = 0;
-      else if (NPosCell >= xobj->value2 + NbVisCell)
+      else if (NPosCell >= (int64_t)xobj->value2 + NbVisCell)
       {
 	NPosCell--;
       }
@@ -568,7 +554,7 @@ void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
       {
 	/* Find cell */
 	pt.y= pt.y - rect.y;
-	NPosCell = xobj->value2+(pt.y/(xobj->Ffont->height + 3));
+	NPosCell = script_list_cell(xobj->value2, pt.y/HeightCell, NbCell);
 	if (NPosCell > CountOption(xobj->title))
 	  NPosCell = 0;
 	if (NPosCell > 1)
@@ -593,7 +579,7 @@ void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
       {
 	/* Find cell */
 	pt.y =  pt.y - rect.y;
-	NPosCell =  xobj->value2 + (pt.y/(xobj->Ffont->height + 3));
+	NPosCell = script_list_cell(xobj->value2, pt.y/HeightCell, NbCell);
 	if (NPosCell > CountOption(xobj->title))
 	  NPosCell = 0;
 	if (NPosCell < NbCell && NPosCell > 0)
@@ -612,7 +598,7 @@ void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
   }
   else if (ks == XK_Prior && xobj->value2 > 1)
   {
-    xobj->value2 = xobj->value2 - NbVisCell;
+    xobj->value2 = script_list_move(xobj->value2, -NbVisCell, NbCell, NbVisCell);
     if (xobj->value2 < 1)
       xobj->value2 = 1;
     DrawCellule(
@@ -621,7 +607,7 @@ void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
   }
   else if (ks == XK_Next && xobj->value2 <= NbCell-NbVisCell)
   {
-    xobj->value2 = xobj->value2 + NbVisCell;
+    xobj->value2 = script_list_move(xobj->value2, NbVisCell, NbCell, NbVisCell);
     if (xobj->value2 > NbCell - NbVisCell + 1)
       xobj->value2 = NbCell - NbVisCell + 1;
     DrawCellule(
@@ -648,9 +634,4 @@ void EvtKeyList(struct XObj *xobj, XKeyEvent *EvtKey)
       DrawVSbList(xobj, NbCell, NbVisCell, 0);
     }
   }
-}
-
-
-void ProcessMsgList(struct XObj *xobj, unsigned long type, unsigned long *body)
-{
 }

@@ -1,0 +1,58 @@
+{
+  "reviewed": "2026-10-13",
+  "assets": [
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1-host.id_rsa",
+      "size": 411,
+      "publisher_digest": "sha256:9924efd297012529c3a79f9ea6c4dac1fbf033397b6a8bfe3e41d2790bc23208",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-host.id_rsa",
+      "verified_download": true,
+      "download_sha256": "9924efd297012529c3a79f9ea6c4dac1fbf033397b6a8bfe3e41d2790bc23208"
+    },
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1-aarch64-host.id_rsa",
+      "size": 411,
+      "publisher_digest": "sha256:cd5af1084364376d60f050090caef98b83503adfe554e48650d34ea5b381ca2c",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-aarch64-host.id_rsa",
+      "verified_download": true,
+      "download_sha256": "cd5af1084364376d60f050090caef98b83503adfe554e48650d34ea5b381ca2c"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.0",
+      "name": "openbsd-7.9-host.id_rsa",
+      "size": 411,
+      "publisher_digest": "sha256:1ebee64506c7f6eee95c0780bf790937a9e42d3e79fe76ee42e0889477f421cb",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9-host.id_rsa",
+      "verified_download": true,
+      "download_sha256": "1ebee64506c7f6eee95c0780bf790937a9e42d3e79fe76ee42e0889477f421cb"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.0",
+      "name": "openbsd-7.9-aarch64-host.id_rsa",
+      "size": 411,
+      "publisher_digest": "sha256:ea07ba629e297df97409ab72545a2442c544af13540f044c78ceceb94f4aab1e",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.0/openbsd-7.9-aarch64-host.id_rsa",
+      "verified_download": true,
+      "download_sha256": "ea07ba629e297df97409ab72545a2442c544af13540f044c78ceceb94f4aab1e"
+    },
+    {
+      "repository": "anyvm-org/firmware",
+      "release": "0.0.2",
+      "name": "QEMU_EFI-2024.02-2ubuntu0.9.fd",
+      "size": 2097152,
+      "publisher_digest": "sha256:8ff1fb8da2d8baf739bfdf020ff9ede225172c3a1b9d98e64e2b7935fd5ad4ab",
+      "url": "https://github.com/anyvm-org/firmware/releases/download/v0.0.2/QEMU_EFI-2024.02-2ubuntu0.9.fd",
+      "verified_download": true,
+      "download_sha256": "8ff1fb8da2d8baf739bfdf020ff9ede225172c3a1b9d98e64e2b7935fd5ad4ab"
+    }
+  ],
+  "source_receipts": {
+    "firmware-release.json": "6d37f0e0b677674ae8d408a5b58d911d6622926f985957b4bd0a38414eb20a45"
+  }
+}

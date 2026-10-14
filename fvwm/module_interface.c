@@ -30,6 +30,7 @@
 #include "libs/ColorUtils.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
+#include "libs/module_monitor.h"
 #include "libs/wild.h"
 #include "libs/FEvent.h"
 #include "fvwm.h"
@@ -48,26 +49,26 @@
 #include "decorations.h"
 #include "ewmh.h"
 #include "commands.h"
+#include "module_queue.h"
+#include "libs/vpacket.h"
 
 /* A queue of commands from the modules */
-static fqueue cqueue = FQUEUE_INIT;
+static module_command_queue cqueue;
 static fvwm_queue_drain_state cqueue_drain_state =
 	FVWM_QUEUE_DRAIN_STATE_INIT;
 
-static const unsigned long dummy = 0;
-
 static void send_monitor_info(fmodule *);
 
-static unsigned long *
+static unsigned long
 make_vpacket(unsigned long *body, unsigned long event_type,
 	     unsigned long num, va_list ap)
 {
 	unsigned long *bp = body;
 
 	/* truncate long packets */
-	if (num > FvwmPacketMaxSize)
+	if (num > FvwmPacketMaxSize - FvwmPacketHeaderSize)
 	{
-		num = FvwmPacketMaxSize;
+		num = FvwmPacketMaxSize - FvwmPacketHeaderSize;
 	}
 	*(bp++) = START_FLAG;
 	*(bp++) = event_type;
@@ -79,118 +80,7 @@ make_vpacket(unsigned long *body, unsigned long event_type,
 		*(bp++) = va_arg(ap, unsigned long);
 	}
 
-	return body;
-}
-
-
-
-/*
-  RBW - 04/16/1999 - new packet builder for GSFR --
-  Arguments are pairs of lengths and argument data pointers.
-  RBW - 05/01/2000 -
-  A length of zero means that an int is being passed which
-  must be stored in the packet as an unsigned long. This is
-  a special hack to accommodate the old CONFIGARGS
-  technique of sending the args for the M_CONFIGURE_WINDOW
-  packet.
-*/
-static unsigned long
-make_new_vpacket(unsigned char *body, unsigned long event_type,
-		 unsigned long num, va_list ap)
-{
-	long arglen;
-	unsigned long addlen;
-	unsigned long bodylen = 0;
-	unsigned long *bp = (unsigned long *)body;
-	unsigned long *bp1 = bp;
-	unsigned long plen = 0;
-	unsigned long dlen;
-
-	*(bp++) = START_FLAG;
-	*(bp++) = event_type;
-	/*  Skip length field, we don't know it yet. */
-	bp++;
-	*(bp++) = fev_get_evtime();
-
-	for (; num > 0; --num)
-	{
-		arglen = va_arg(ap, long);
-		if (arglen <= 0)
-		{
-			if (arglen == 0)
-			{
-				arglen = -sizeof(int);
-			}
-			addlen = sizeof(unsigned long);
-		}
-		else
-		{
-			addlen = arglen;
-		}
-		bodylen += addlen;
-		if (bodylen >= FvwmPacketMaxSize_byte)
-		{
-			fvwm_debug(__func__,
-				   "packet too long %ld %ld", (long)bodylen,
-				   (long)FvwmPacketMaxSize_byte);
-			break;
-		}
-		if (arglen > 0)
-		{
-			register char *tmp = (char *)bp;
-			memcpy(tmp, va_arg(ap, char *), arglen);
-			tmp += arglen;
-			bp = (unsigned long *)tmp;
-		}
-		else if (arglen == 0 || arglen == -sizeof(int))
-		{
-			int *tmp;
-
-			tmp = va_arg(ap, int *);
-			*bp = (unsigned long) *tmp;
-			bp++;
-		}
-		else if (arglen == -sizeof(long))
-		{
-			unsigned long *tmp;
-
-			tmp = va_arg(ap, unsigned long *);
-			*bp = (unsigned long) *tmp;
-			bp++;
-		}
-		else if (arglen == -sizeof(short))
-		{
-			short *tmp;
-
-			tmp = va_arg(ap, short *);
-			*bp = (unsigned long) *tmp;
-			bp++;
-		}
-		else
-		{
-			fvwm_debug(__func__,
-				   "can not handle arglen %ld, please contact"
-				   " fvwm-workers@fvwm.org. aborting...",
-				   arglen);
-			abort();
-		}
-	}
-
-	/*
-	  Round up to a long word boundary. Most of the module interface
-	  still thinks in terms of an array of longs, so let's humor it.
-	*/
-
-	dlen = (unsigned long) ((unsigned char *)bp - body);
-	plen = ((dlen + (sizeof(long) - 1)) / sizeof(long)) * sizeof(long);
-	if (plen > dlen)
-	{
-		/* initialise padding */
-		memset(body + dlen, 0, plen - dlen);
-	}
-	*(((unsigned long*)bp1)+2) = (plen / (sizeof(unsigned long)));
-
-	return plen;
+	return body[2];
 }
 
 
@@ -201,13 +91,14 @@ void SendPacket(
 {
 	unsigned long body[FvwmPacketMaxSize];
 	va_list ap;
+	unsigned long length;
 
 	va_start(ap, num_datum);
-	make_vpacket(body, event_type, num_datum, ap);
+	length = make_vpacket(body, event_type, num_datum, ap);
 	va_end(ap);
 	PositiveWrite(
 		module, body,
-		(num_datum+FvwmPacketHeaderSize)*sizeof(body[0]));
+		length * sizeof(body[0]));
 
 	return;
 }
@@ -216,214 +107,165 @@ void BroadcastPacket(unsigned long event_type, unsigned long num_datum, ...)
 {
 	unsigned long body[FvwmPacketMaxSize];
 	va_list ap;
+	unsigned long length;
 	fmodule_list_itr moditr;
 	fmodule *module;
 
 	va_start(ap,num_datum);
-	make_vpacket(body, event_type, num_datum, ap);
+	length = make_vpacket(body, event_type, num_datum, ap);
 	va_end(ap);
 	module_list_itr_init(&moditr);
 	while ( (module = module_list_itr_next(&moditr)) != NULL)
 	{
 		PositiveWrite(
 			module, body,
-			(num_datum+FvwmPacketHeaderSize)*sizeof(body[0]));
+			length * sizeof(body[0]));
 	}
 
 	return;
 }
 
 
-/*
-  RBW - 04/16/1999 - new style packet senders for GSFR --
-*/
-static void SendNewPacket(
-	fmodule *module, unsigned long event_type, unsigned long num_datum,
-	...)
+static void set_allowed_actions(action_flags *actions, const FvwmWindow *fw)
 {
-	unsigned char body[FvwmPacketMaxSize_byte];
-	va_list ap;
-	unsigned long plen;
-
-	va_start(ap,num_datum);
-	plen = make_new_vpacket(body, event_type, num_datum, ap);
-	va_end(ap);
-	PositiveWrite(module, (void *) &body, plen);
-
-	return;
-}
-
-static void BroadcastNewPacket(unsigned long event_type,
-			       unsigned long num_datum, ...)
-{
-	unsigned char body[FvwmPacketMaxSize_byte];
-	va_list ap;
-	fmodule_list_itr moditr;
-	fmodule *module;
-	unsigned long plen;
-
-	va_start(ap,num_datum);
-	plen = make_new_vpacket(body, event_type, num_datum, ap);
-	va_end(ap);
-	module_list_itr_init(&moditr);
-	while ( (module = module_list_itr_next(&moditr)) != NULL)
-	{
-		PositiveWrite(module, (void *) &body, plen);
-	}
-
-	return;
-}
-
-action_flags *_get_allowed_actions(const FvwmWindow *fw)
-{
-	static action_flags act;
-	act.is_movable = is_function_allowed(
+	actions->is_movable = is_function_allowed(
 		F_MOVE, NULL, fw, RQORIG_PROGRAM_US, False);
-	act.is_deletable = is_function_allowed(
+	actions->is_deletable = is_function_allowed(
 		F_DELETE, NULL, fw, RQORIG_PROGRAM_US, False);
-	act.is_destroyable = is_function_allowed(
+	actions->is_destroyable = is_function_allowed(
 		F_DESTROY, NULL, fw, RQORIG_PROGRAM_US, False);
-	act.is_closable = is_function_allowed(
+	actions->is_closable = is_function_allowed(
 		F_CLOSE, NULL, fw, RQORIG_PROGRAM_US, False);
-	act.is_maximizable = is_function_allowed(
+	actions->is_maximizable = is_function_allowed(
 		F_MAXIMIZE, NULL, fw, RQORIG_PROGRAM_US, False);
-	act.is_resizable = is_function_allowed(
+	actions->is_resizable = is_function_allowed(
 		F_RESIZE, NULL, fw, RQORIG_PROGRAM_US, False);
-	act.is_iconifiable = is_function_allowed(
+	actions->is_iconifiable = is_function_allowed(
 		F_ICONIFY, NULL, fw, RQORIG_PROGRAM_US, False);
 
-	return &act;
 }
 
-/*
-  RBW - 04/16/1999 - new version for GSFR --
-  - args are now pairs:
-  - length of arg data
-  - pointer to arg data
-  - number of arguments is the number of length/pointer pairs.
-  - the 9th field, where flags used to be, is temporarily left
-  as a dummy to preserve alignment of the other fields in the
-  old packet: we should drop this before the next release.
-*/
-#define CONFIGARGS(_fw) 34,				\
-		(unsigned long)(-sizeof(Window)),	\
-		&FW_W(*(_fw)),				\
-		(unsigned long)(-sizeof(Window)),	\
-		&FW_W_FRAME(*(_fw)),			\
-		(unsigned long)(-sizeof(void *)),	\
-		&(_fw),					\
-		(unsigned long)(0),			\
-		&(*(_fw))->g.frame.x,			\
-		(unsigned long)(0),			\
-		&(*(_fw))->g.frame.y,			\
-		(unsigned long)(0),			\
-		&(*(_fw))->g.frame.width,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->g.frame.height,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->Desk,			\
-		(unsigned long)(0),			\
-		&(*(_fw))->m->si->rr_output,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->layer,			\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.base_width,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.base_height,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.width_inc,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.height_inc,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->orig_hints.width_inc,	\
-		(unsigned long)(0),			\
-		&(*(_fw))->orig_hints.height_inc,	\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.min_width,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.min_height,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.max_width,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.max_height,		\
-		(unsigned long)(-sizeof(Window)),	\
-		&FW_W_ICON_TITLE(*(_fw)),		\
-		(unsigned long)(-sizeof(Window)),	\
-		&FW_W_ICON_PIXMAP(*(_fw)),		\
-		(unsigned long)(0),			\
-		&(*(_fw))->hints.win_gravity,		\
-		(unsigned long)(-sizeof(Pixel)),	\
-		&(*(_fw))->colors.fore,			\
-		(unsigned long)(-sizeof(Pixel)),	\
-		&(*(_fw))->colors.back,			\
-		(unsigned long)(0),			\
-		&(*(_fw))->ewmh_hint_layer,		\
-		(unsigned long)(sizeof(unsigned long)),	\
-		&(*(_fw))->ewmh_hint_desktop,		\
-		(unsigned long)(0),			\
-		&(*(_fw))->ewmh_window_type,		\
-		(unsigned long)(sizeof(short)),		\
-		&(*(_fw))->title_thickness,		\
-		(unsigned long)(sizeof(short)),		\
-		&(*(_fw))->boundary_width,		\
-		(unsigned long)(sizeof(short)),		\
-		&dummy,					\
-		(unsigned long)(sizeof(short)),		\
-		&dummy,						\
-		(unsigned long)(sizeof((*(_fw))->flags)),	\
-		&(*(_fw))->flags,				\
-		(unsigned long)(sizeof(action_flags)),		\
-		_get_allowed_actions((*(_fw)))
+/* Configure records use the same native layout as their shipped consumers. */
+_Static_assert(sizeof(ConfigWinPacket) <=
+	(FvwmPacketMaxSize - FvwmPacketHeaderSize) * sizeof(unsigned long),
+	"Configure record exceeds module packet capacity");
 
-void SendConfig(fmodule *module, unsigned long event_type, const FvwmWindow *t)
+static int make_config_packet(unsigned long *body, unsigned long event_type,
+	const FvwmWindow *fw)
 {
-	const FvwmWindow **t1 = &t;
+	ConfigWinPacket packet;
+	const size_t words = FvwmPacketHeaderSize +
+		(sizeof(packet) + sizeof(*body) - 1) / sizeof(*body);
 
-	/*  RBW-  SendPacket(module, event_type, CONFIGARGS(t)); */
-	SendNewPacket(module, event_type, CONFIGARGS(t1));
+	/* Initialize native structure and final word padding before publication. */
+	memset(&packet, 0, sizeof(packet));
+	packet.w = FW_W(fw);
+	packet.frame = FW_W_FRAME(fw);
+	packet.fvwmwin = (unsigned long *)fw;
+	packet.frame_x = fw->g.frame.x;
+	packet.frame_y = fw->g.frame.y;
+	packet.frame_width = fw->g.frame.width;
+	packet.frame_height = fw->g.frame.height;
+	packet.desk = fw->Desk;
+	packet.monitor_id = fw->m->si->rr_output;
+	packet.layer = fw->layer;
+	packet.hints_base_width = fw->hints.base_width;
+	packet.hints_base_height = fw->hints.base_height;
+	packet.hints_width_inc = fw->hints.width_inc;
+	packet.hints_height_inc = fw->hints.height_inc;
+	packet.orig_hints_width_inc = fw->orig_hints.width_inc;
+	packet.orig_hints_height_inc = fw->orig_hints.height_inc;
+	packet.hints_min_width = fw->hints.min_width;
+	packet.hints_min_height = fw->hints.min_height;
+	packet.hints_max_width = fw->hints.max_width;
+	packet.hints_max_height = fw->hints.max_height;
+	packet.icon_w = FW_W_ICON_TITLE(fw);
+	packet.icon_pixmap_w = FW_W_ICON_PIXMAP(fw);
+	packet.hints_win_gravity = fw->hints.win_gravity;
+	packet.TextPixel = fw->colors.fore;
+	packet.BackPixel = fw->colors.back;
+	packet.ewmh_hint_layer = fw->ewmh_hint_layer;
+	packet.ewmh_hint_desktop = fw->ewmh_hint_desktop;
+	packet.ewmh_window_type = fw->ewmh_window_type;
+	packet.title_height = fw->title_thickness;
+	packet.border_width = fw->boundary_width;
+	memcpy(&packet.flags, &fw->flags, sizeof(packet.flags));
+	set_allowed_actions(&packet.allowed_actions, fw);
 
-	return;
+	body[0] = START_FLAG;
+	body[1] = event_type;
+	body[2] = words;
+	body[3] = fev_get_evtime();
+	memset(body + FvwmPacketHeaderSize, 0,
+		(words - FvwmPacketHeaderSize) * sizeof(*body));
+	memcpy(body + FvwmPacketHeaderSize, &packet, sizeof(packet));
+	return words * sizeof(*body);
 }
 
-void BroadcastConfig(unsigned long event_type, const FvwmWindow *t)
+void SendConfig(fmodule *module, unsigned long event_type, const FvwmWindow *fw)
 {
-	const FvwmWindow **t1 = &t;
+	unsigned long body[FvwmPacketMaxSize];
+	int size = make_config_packet(body, event_type, fw);
 
-	/*  RBW-  BroadcastPacket(event_type, CONFIGARGS(t)); */
-	BroadcastNewPacket(event_type, CONFIGARGS(t1));
-
-	return;
+	PositiveWrite(module, body, size);
 }
 
-static unsigned long *make_named_packet(
-	int *len, unsigned long event_type, const char *name, int num, ...)
+void BroadcastConfig(unsigned long event_type, const FvwmWindow *fw)
 {
-	unsigned long *body;
-	va_list ap;
+	unsigned long body[FvwmPacketMaxSize];
+	int size = make_config_packet(body, event_type, fw);
+	fmodule_list_itr iterator;
+	fmodule *module;
 
-	/* Packet is the header plus the items plus enough items to hold the
-	 * name string. */
-	*len = FvwmPacketHeaderSize + num +
-		(strlen(name) / sizeof(unsigned long)) + 1;
-	/* truncate long packets */
-	if (*len > FvwmPacketMaxSize)
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
 	{
-		*len = FvwmPacketMaxSize;
+		PositiveWrite(module, body, size);
 	}
+}
 
-	body = fxmalloc(*len * sizeof(unsigned long));
-	/* Zero out end of memory to avoid uninit memory access. */
-	body[*len-1] = 0;
+void module_config_refresh(const FvwmWindow *window)
+{
+	fmodule_list_itr iterator;
+	fmodule *module;
 
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
+	{
+		if (module_config_has_window(module, FW_W(window)))
+		{
+			SendConfig(module, M_CONFIGURE_WINDOW, window);
+		}
+	}
+}
+
+static int make_named_packet(
+	unsigned long *body, unsigned long event_type,
+	const char *name, int num, ...)
+{
+	va_list ap;
+	size_t name_length;
+	size_t available;
+	int length;
+
+	if (name == NULL || num < 0 ||
+	    num >= FvwmPacketMaxSize - FvwmPacketHeaderSize)
+	{
+		return 0;
+	}
+	available = (FvwmPacketMaxSize - FvwmPacketHeaderSize - num) *
+		sizeof(*body);
+	/* Only bytes representable in this packet affect its length. */
+	name_length = strnlen(name, available - 1);
+	length = FvwmPacketHeaderSize + num + name_length / sizeof(*body) + 1;
 	va_start(ap, num);
 	make_vpacket(body, event_type, num, ap);
 	va_end(ap);
-
-	strncpy((char *)&body[FvwmPacketHeaderSize+num], name,
-		(*len - FvwmPacketHeaderSize - num)*sizeof(unsigned long) - 1);
-	body[2] = *len;
-
-	return (body);
+	available = (length - FvwmPacketHeaderSize - num) * sizeof(*body);
+	memset(&body[FvwmPacketHeaderSize + num], 0, available);
+	memcpy(&body[FvwmPacketHeaderSize + num], name, name_length);
+	body[2] = length;
+	return length;
 }
 
 void SendName(
@@ -431,16 +273,15 @@ void SendName(
 	unsigned long data1,unsigned long data2, unsigned long data3,
 	const char *name)
 {
-	unsigned long *body;
+	unsigned long body[FvwmPacketMaxSize];
 	int l;
 
 	if (name == NULL)
 	{
 		return;
 	}
-	body = make_named_packet(&l, event_type, name, 3, data1, data2, data3);
+	l = make_named_packet(body, event_type, name, 3, data1, data2, data3);
 	PositiveWrite(module, body, l*sizeof(unsigned long));
-	free(body);
 
 	return;
 }
@@ -450,7 +291,7 @@ void BroadcastName(
 	unsigned long data1, unsigned long data2, unsigned long data3,
 	const char *name)
 {
-	unsigned long *body;
+	unsigned long body[FvwmPacketMaxSize];
 	int l;
 	fmodule_list_itr moditr;
 	fmodule *module;
@@ -459,13 +300,12 @@ void BroadcastName(
 	{
 		return;
 	}
-	body = make_named_packet(&l, event_type, name, 3, data1, data2, data3);
+	l = make_named_packet(body, event_type, name, 3, data1, data2, data3);
 	module_list_itr_init(&moditr);
 	while ( (module = module_list_itr_next(&moditr)) != NULL)
 	{
 		PositiveWrite(module, body, l*sizeof(unsigned long));
 	}
-	free(body);
 
 	return;
 }
@@ -485,23 +325,22 @@ void send_monitor_info(fmodule *send)
 {
 	struct monitor	*m;
 	boundingbox	 r;
-	const char	*m_info;
-	char		*name;
-
-	m_info = "Monitor %s %d %d %d %d %d %d %d %d %d %d %d %d %d %d";
+	char name[(FvwmPacketBodyMaxSize - 3) * sizeof(unsigned long)];
 
 	RB_FOREACH(m, monitors, &monitor_q) {
 		r = get_ewmhc_boundingbox(m);
-		xasprintf(&name, m_info, m->si->name, m->flags,
-		    m->dx, m->dy, m->virtual_scr.Vx,
-		    m->virtual_scr.Vy, m->virtual_scr.VxMax,
-		    m->virtual_scr.VyMax, m->virtual_scr.CurrentDesk,
-		    monitor_get_all_widths(), monitor_get_all_heights(),
-		    r.left, r.right, r.top, r.bottom
-		);
+		const int values[MODULE_MONITOR_VALUES] = {m->flags, m->dx, m->dy,
+			m->virtual_scr.Vx, m->virtual_scr.Vy,
+			m->virtual_scr.VxMax, m->virtual_scr.VyMax,
+			m->virtual_scr.CurrentDesk, monitor_get_all_widths(),
+			monitor_get_all_heights(), r.left, r.right, r.top, r.bottom};
+		if (!module_monitor_format(name, sizeof(name), m->si->name, values))
+		{
+			fvwm_debug(__func__, "Monitor record cannot fit its native packet");
+			continue;
+		}
 
 		SendName(send, M_CONFIG_INFO, 0, 0, 0, name);
-		free(name);
 	}
 }
 
@@ -529,6 +368,7 @@ void BroadcastMonitorList(fmodule *this)
 		BroadcastDesktopConfiguration(module);
 	}
 out:
+	module_list_itr_finish(&moditr);
 	/* Reissue the DesktopSize command here, rather than sending
 	 * down the DesktopSize -- we want FvwmPager in particular to
 	 * react to a M_NEW_PAGE event, which DesktopSize will do; and
@@ -568,15 +408,26 @@ void BroadcastWindowIconNames(FvwmWindow *fw, Bool window, Bool icon)
 	return;
 }
 
+/* Capture borrowed picture metadata before any module callback runs. */
+static int make_picture_packet(unsigned long *body, unsigned long event_type,
+	unsigned long data1, unsigned long data2, unsigned long data3,
+	const FvwmPicture *picture, const char *name)
+{
+	return make_named_packet(body, event_type, name, 9, data1, data2, data3,
+		picture == NULL ? 0UL : picture->width,
+		picture == NULL ? 0UL : picture->height,
+		picture == NULL ? 0UL : picture->depth,
+		picture == NULL ? 0UL : picture->picture,
+		picture == NULL ? 0UL : picture->mask,
+		picture == NULL ? 0UL : picture->alpha);
+}
+
 void SendFvwmPicture(
 	fmodule *module, unsigned long event_type, unsigned long data1,
 	unsigned long data2, unsigned long data3, FvwmPicture *picture,
 	char *name)
 {
-	unsigned long *body;
-	unsigned long
-		data4 = 0, data5 = 0, data6 = 0,
-		data7 = 0, data8 = 0, data9 = 0;
+	unsigned long body[FvwmPacketMaxSize];
 	int l;
 
 	if (!FMiniIconsSupported)
@@ -588,20 +439,9 @@ void SendFvwmPicture(
 		return;
 	}
 
-	if (picture != NULL)
-	{
-		data4 = picture->width;
-		data5 = picture->height;
-		data6 = picture->depth;
-		data7 = picture->picture;
-		data8 = picture->mask;
-		data9 = picture->alpha;
-	}
-	body = make_named_packet(
-		&l, event_type, name, 9, data1, data2, data3, data4, data5,
-		data6, data7, data8, data9);
+	l = make_picture_packet(body, event_type,
+		data1, data2, data3, picture, name);
 	PositiveWrite(module, body, l*sizeof(unsigned long));
-	free(body);
 
 	return;
 }
@@ -610,43 +450,22 @@ void BroadcastFvwmPicture(
 	unsigned long event_type, unsigned long data1, unsigned long data2,
 	unsigned long data3, FvwmPicture *picture, char *name)
 {
-	unsigned long *body;
-	unsigned long data4, data5, data6, data7, data8, data9;
+	unsigned long body[FvwmPacketMaxSize];
 	int l;
 	fmodule_list_itr moditr;
 	fmodule *module;
 
-	if (!FMiniIconsSupported)
+	if (!FMiniIconsSupported || name == NULL)
 	{
 		return;
 	}
-	if (picture != NULL)
-	{
-		data4 = picture->width;
-		data5 = picture->height;
-		data6 = picture->depth;
-		data7 = picture->picture;
-		data8 = picture->mask;
-		data9 = picture->alpha;
-	}
-	else
-	{
-		data4 = 0;
-		data5 = 0;
-		data6 = 0;
-		data7 = 0;
-		data8 = 0;
-		data9 = 0;
-	}
-	body = make_named_packet(
-		&l, event_type, name, 9, data1, data2, data3, data4, data5,
-		data6, data7, data8, data9);
+	l = make_picture_packet(body, event_type,
+		data1, data2, data3, picture, name);
 	module_list_itr_init(&moditr);
 	while ( (module = module_list_itr_next(&moditr)) != NULL)
 	{
 		PositiveWrite(module, body, l*sizeof(unsigned long));
 	}
-	free(body);
 
 	return;
 }
@@ -660,7 +479,7 @@ void BroadcastColorset(int n)
 	fmodule *module;
 	char *buf;
 
-	buf = DumpColorset(n, &Colorset[n]);
+	buf = DumpColorset(n, GetColorset(n));
 	module_list_itr_init(&moditr);
 	while ( (module = module_list_itr_next(&moditr)) != NULL)
 	{
@@ -728,6 +547,9 @@ void module_input_execute(struct fmodule_input *input)
 	exec_context_changes_t ecc;
 	int flags;
 
+	/* A nested wait can receive more input; release capacity before dispatch. */
+	module_input_dequeue(input);
+	input->module->xactiveInputs++;
 	memset(&e, 0, sizeof(e));
 	if (XFindContext(dpy, input->window, FvwmContext,
 				 (caddr_t *)&ecc.w.fw) == XCNOENT)
@@ -770,6 +592,7 @@ void module_input_execute(struct fmodule_input *input)
 		ECC_MODULE);
 	execute_function(NULL, exc, input->command, NULL, flags);
 	exc_destroy_context(exc);
+	input->module->xactiveInputs--;
 	module_input_discard(input);
 
 	return;
@@ -783,7 +606,7 @@ void module_input_enqueue(struct fmodule_input *input)
 		return;
 	}
 
-	fqueue_add_at_end(&cqueue, (void*)input);
+	module_command_queue_add(&cqueue, input);
 }
 
 /*
@@ -811,9 +634,95 @@ static void execute_queued_module_input(void *object, void *context)
 
 Bool ExecuteCommandQueue(void)
 {
-	return fvwm_bounded_queue_drain(
+	return module_command_queue_drain(
 		&cqueue, &cqueue_drain_state, FVWM_MODULE_COMMAND_BUDGET,
 		execute_queued_module_input, NULL);
+}
+
+static Bool interaction_message_async(
+	const fmodule *module, unsigned long message)
+{
+	return !IS_MESSAGE_SELECTED(module, message) ||
+		!IS_MESSAGE_IN_MASK(&module->xSyncMask, message);
+}
+
+Bool interaction_command_ready(const char *command, fmodule *origin)
+{
+	const func_t *builtin = functions_interaction_builtin(command);
+	fmodule_list_itr iterator;
+	fmodule *module;
+	unsigned long message;
+
+	if (builtin == NULL)
+	{
+		return False;
+	}
+	switch (builtin->func_c)
+	{
+	case F_ECHO:
+		message = MX_ECHO;
+		break;
+	case F_SEND_STRING:
+		/* Conservatively defer if any receiver uses synchronous strings;
+		 * the target pattern may itself be expanded by the engine. */
+		message = M_STRING;
+		break;
+	case F_SET_MASK:
+		/* Enabling a subscription to an existing synchronous frame mask
+		 * could introduce an arbitrary-command wait in the drag itself. */
+		return origin == NULL ||
+			(origin->xSyncMask.m1 == 0 && origin->xSyncMask.m2 == 0);
+	case F_SEND_REPLY:
+		return origin == NULL ||
+			interaction_message_async(origin, MX_REPLY);
+	default:
+		return True;
+	}
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
+	{
+		if (!interaction_message_async(module, message))
+		{
+			module_list_itr_finish(&iterator);
+			return False;
+		}
+	}
+	return True;
+}
+
+static Bool interaction_input_ready(const fmodule_input *input)
+{
+	return interaction_command_ready(input->command, input->module);
+}
+
+Bool ExecuteInteractionCommandQueue(void)
+{
+	unsigned int scans = FVWM_MODULE_COMMAND_BUDGET;
+	unsigned int commands = FVWM_INTERACTION_COMMAND_BUDGET;
+	fmodule_input *input;
+	void *saved_event;
+
+	if (cqueue_drain_state.depth > 0 &&
+	    commands > cqueue_drain_state.remaining)
+	{
+		commands = cqueue_drain_state.remaining;
+	}
+	saved_event = fev_save_event();
+	while (commands > 0 && !isTerminated &&
+	       (input = module_command_queue_take_ready(
+		&cqueue, &scans, interaction_input_ready)) != NULL)
+	{
+		commands--;
+		if (cqueue_drain_state.depth > 0)
+		{
+			cqueue_drain_state.remaining--;
+		}
+		module_input_execute(input);
+	}
+	fev_restore_event(saved_event);
+	/* Yield to I/O, then resume an unfinished bounded scan immediately.
+	 * A completed all-deferred pass uses the normal finite wait. */
+	return cqueue.cursor != NULL;
 }
 
 void ModuleCommandQueueAfterPoll(void)
@@ -957,7 +866,7 @@ void CMD_Send_WindowList(F_CMD_ARGS)
 		{
 			SendPacket(
 				mod, M_FOCUS_CHANGE, 5, 0, 0, (unsigned long)True,
-				(long)Colorset[0].fg, (long)Colorset[0].bg);
+				(long)GetColorset(0)->fg, (long)GetColorset(0)->bg);
 		}
 		if (Scr.DefaultIcon != NULL)
 		{
@@ -1032,8 +941,8 @@ void CMD_Send_WindowList(F_CMD_ARGS)
 		{
 			BroadcastPacket(
 				M_FOCUS_CHANGE, 5, (long)0, (long)0,
-				(unsigned long)True, (long)Colorset[0].fg,
-				(long)Colorset[0].bg);
+				(unsigned long)True, (long)GetColorset(0)->fg,
+				(long)GetColorset(0)->bg);
 		}
 		else
 		{

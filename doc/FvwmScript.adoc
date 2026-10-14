@@ -38,6 +38,20 @@ command in the fvwm man page.
 The command to start FvwmScript can be placed on a line by itself, if
 FvwmScript is to be spawned during fvwm's initialization, or can be
 bound to a menu or mouse button or keystroke to invoke it later.
+Scripts that fail parsing exit before constructing a partially defined UI.
+
+During mouse interactions, FvwmScript continues to receive module messages,
+run periodic tasks and service session connections. Escape cancels a held
+interaction. If a command changes the active widget's text, font, geometry
+or state, the old interaction ends without applying its pending selection.
+The new widget state remains in effect. Selection requests retain their
+one-second timeout and can be cancelled when the module terminates.
+
+Font measurements clamp results that exceed the signed integer range.
+UTF-8 character offsets include four-byte characters. Core X fonts can
+display only Basic Multilingual Plane characters; unsupported characters
+and malformed UTF-8 bytes use a replacement glyph without changing the
+stored text.
 
 == CONFIGURATION OPTIONS
 
@@ -48,6 +62,67 @@ corresponding script commands are not used in the script.
 *FvwmScript: DefaultFont font::
   Specifies the default font to be used. If not specified with this
   command or in the script with the Font command, fixed font is assumed.
+*FvwmScript: ValueLimit bytes::
+  Limits one interpreted string or interactive TextField title to 1048576
+  bytes (1 MiB) by default,
+  excluding its terminating NUL. Sizes are checked before ordinary value
+  copying, assembly, expanded hexadecimal padding and GetOutput extraction.
+  Values from 1 through 2147483647 are accepted; invalid settings retain the
+  previous value. Set before launching scripts that need larger strings,
+  for example `*FvwmScript: ValueLimit 2097152`. A typed or pasted edit
+  that exceeds the limit is refused as a whole: title, insert point, selection
+  and viewport stay unchanged, and no SingleClic notification is sent.
+  Deletion and edits that shrink an already oversized title remain possible.
+  Interactive refusal does not stop the script handler or later input.
+*FvwmScript: MemoryLimit bytes::
+  Limits stored constant and variable text to 33554432 bytes (32 MiB) by
+  default. Names, values and their terminating NUL bytes all count. Replacement
+  credits the outgoing value before checking the new total. Values from 1
+  through 2147483647 are accepted; invalid settings retain the previous value.
+  Storage usage persists across events; smaller replacements release space.
+  Runtime refusal stops the current handler, keeps its last published value
+  and completed earlier side effects, and reports the relevant limit. Later
+  events receive a fresh work allowance and can replace existing values.
+  Excessive tokens or stored text during parsing refuse the script before
+  constructing its UI. These options do not cap the whole process: parser
+  input buffers, widget/font/image allocations, temporary protocol acquisition
+  and bounded output caches have separate ownership and limits. External
+  commands retain their existing permissions and CommandTimeout policy.
+*FvwmScript: ExecutionLimit steps::
+  Limits each top-level Init, widget case, PeriodicTasks or QuitFunc handler
+  to 10000 work steps by default. Each instruction and each For iteration
+  or While condition attempt consumes one step, including an empty loop body.
+  Nested blocks and SendSignal calls share the current handler's budget.
+  Values from 1 through 2147483647 are accepted; invalid values retain the
+  previous setting. Set larger limits before launching unusually long scripts,
+  for example `*FvwmScript: ExecutionLimit 100000`.
+*FvwmScript: RecursionLimit depth::
+  Limits active nested block executions to 64 by default, counting the
+  top-level handler as depth 1. If, For and While bodies and synchronous
+  SendSignal handlers each add a level. Values from 1 through 256 are accepted;
+  invalid values retain the previous setting.
+  Reaching either execution limit stops the current handler with a log
+  diagnostic and unwinds its nested blocks. Completed side effects remain;
+  the next event starts a fresh budget. These limits bound interpreter work
+  and stack nesting, not elapsed time, memory allocation or shell privileges.
+*FvwmScript: CommandTimeout milliseconds::
+  Limits each GetOutput command to 5000 milliseconds by default, including
+  output collection and command completion. Values from 1 through 3600000
+  are accepted; invalid values retain the previous setting. For slower
+  commands, set an explicit larger limit before launching the module, for
+  example `*FvwmScript: CommandTimeout 15000`. A timeout returns empty text,
+  discards partial output and terminates the command's own process group,
+  allowing a brief cleanup interval. Commands remain trusted shell commands.
+*FvwmScript: FIFOTimeout milliseconds::
+  Limits each SendMsgAndGet call in modes 0 and 1 to 5000 milliseconds by
+  default, including helper startup, command writing and reply collection.
+  Values from 1 through 3600000 are accepted; invalid values retain the
+  previous setting. For a slower helper, use an explicit override before
+  launching the module, for example `*FvwmScript: FIFOTimeout 20000`.
+  A timeout returns 0 and discards a partial reply. It closes the call's
+  descriptors and allows later events to continue; it does not stop the
+  external helper. A partially sent command cannot be rolled back.
+  Mode 2 retains its immediate atomic-send behavior.
 *FvwmScript: DefaultFore color::
   Specifies the default foreground color to be used. If not specified
   with this command or in the script with the ForeColor command, black
@@ -71,6 +146,18 @@ corresponding script commands are not used in the script.
   widgets. Cursor names are those defined in the include file
   X11/cursorfont.h but without XC_ prefix.
 
+*FvwmScript: KeyboardFocus "window-title"::
+  Opt in the script with this exact WindowTitle to keyboard widget focus.
+  Typing initially goes to its first visible, focusable TextField, even when
+  the pointer is outside the field. Clicking a focusable widget changes the
+  keyboard target; Tab/Shift+Tab changes targets without moving the pointer.
+  Bindings ignore Caps Lock and the actual Num Lock modifier. In this mode
+  TextField also supports Ctrl+A selection, replacement of selected text,
+  Ctrl+V clipboard paste, Home/End, and forward Delete. Clipboard requests
+  use UTF8_STRING with a STRING fallback and the existing bounded selection
+  transport (up to one second per attempt and 32 KiB per reply).
+  Other scripts retain their existing pointer-based keyboard routing.
+
 == ANATOMY OF A SCRIPT
 
 FvwmScript uses a particular programming language. A script is composed
@@ -92,9 +179,11 @@ WindowTitle string::
   This option sets the window title.
 WindowSize width height::
   This option sets window size. _width_ and _height_ are numerical
-  value.
+  values from 1 through 65535. Invalid startup geometry stops the module
+  with a diagnostic.
 WindowPosition x y::
-  This option sets window position. _x_ and _y_ are numerical value.
+  This option sets window position. Each coordinate, after the current
+  monitor origin is added, must be from -32768 through 32767.
 ForeColor \{color}::
   This option sets the default foreground color for all widgets.
 BackColor \{color}::
@@ -181,7 +270,7 @@ receive messages. All messages are identified by a number. The message
 syntax for the first part is:
 
 ....
-Widget         id   # A number between 1 and 999 inclusive
+Widget         id   # A number between 1 and 1000 inclusive
 Property
  Type          string
  Size width    height
@@ -295,6 +384,9 @@ the top of window.
 +
 A minimum height of three items is imposed and the width is made to be
 at least 108.
++
+The first visible option stays within the current list. An empty list starts
+at option 1. Very small runtime sizes omit list contents that do not fit.
 
 *Menu*: Display a menu whom lets user to choose a option.::
   Items of type Menu are layed out from left to right along the top of
@@ -371,6 +463,13 @@ The size is made to be at least 30x30
 +
 The height property is ignored, the width is made to be at least 40
 pixels wider than the initial contents.
++
+Text positions count characters from zero. Positions outside the text are
+adjusted to the nearest endpoint, and the first visible character cannot
+follow the insert point. An incomplete final multibyte character stays
+within the available bytes. If an edit cannot be allocated or its result
+cannot be represented by the widget's integer indices, the text stays
+unchanged.
 
 *VDipstick*: Display a vertical dipstick.::
   *Value*: specify the current value of the dipstick.
@@ -393,9 +492,54 @@ height should be at least the range plus 37 if all values are to be
 selectable e.g. a min of 0 and max of 10 has a range of 11 and therefore
 should have a minimum height of 48.
 
+Progress indicators and scrollbar thumbs clamp their displayed position to
+MinValue/MaxValue without changing the stored Value. Equal or inverted runtime
+endpoints produce an empty indicator or stationary thumb; mouse selection on
+such a scrollbar is inactive until its range is usable again. Startup retains
+the existing +50 dipstick and +10 scrollbar corrections for inverted ranges
+(and equal scrollbar endpoints), with an unrepresentable upper endpoint
+saturating at 2147483647. Tiny progress fills do not become unsigned rectangles.
+Scrollbar Return selects the current pointer position once and returns to the
+module event loop; pointer conversion retains its existing integer rounding.
+MiniScroll wraps at either endpoint, including the signed integer extremes.
+Widget repeat and double-click delays sleep instead of consuming a CPU core;
+their existing timing is retained. MiniScroll cancels a pending repeat when the
+mouse button is released, so scripts no longer receive that pending SingleClic
+callback after release. Its first action is immediate and its held-repeat
+cadence is unchanged. Module termination also interrupts MiniScroll repeats.
+These waits still defer ordinary module event processing until the widget
+handler returns.
+
 == INSTRUCTIONS
 
+The parser accepts at most 20 encoded arguments in each of six argument
+layers, ten block stack slots (including enclosing blocks), and 5120 values
+shared by variables and string constants. Excessive input is refused before
+accessing these fixed arrays.
+
+Numeric literals accept the signed 32-bit range -2147483648 through 2147483647.
+Literals outside that range refuse parsing. Numeric strings supplied to
+ChangeValue, ChangeMinValue, ChangeMaxValue, ChangePosition and ChangeSize
+retain numeric-prefix conversion and no-digits-as-zero behavior. Overflow
+refuses that mutation and preserves its prior widget state; it does not stop
+later instructions.
+
+X11 window sizes must be from 1 through 65535. Coordinates must be from
+-32768 through 32767. ChangeSize and ChangePosition check both arguments
+before they update the stored geometry or send an X request. A rejected
+operation preserves the previous state and permits later instructions.
+Zero or omitted widget startup sizes retain the legacy minimum of one pixel;
+normal font and icon expansion still applies. The module checks the final
+layout before it creates a widget. An impossible startup layout stops the
+module with a diagnostic. These protocol limits are not memory budgets.
+
 Here is the description of all instructions.
+
+Widget identifiers must name a declared widget in the range 1 through 1000.
+Malformed, out-of-range or undeclared identifiers leave commands unchanged;
+widget property functions return empty text. ChangeColorset also accepts
+identifier 0 for the main window; its colorset argument must be a nonnegative
+integer. Very large valid colorset numbers can still require large allocations.
 
 HideWidget id : hide the widget numbered id.::
 ShowWidget id: show the widget numbered id.::
@@ -411,7 +555,7 @@ ChangeWindowTitle string::
   Set the title of the window to _string_.
 ChangeWindowTitleFromArg numarg::
   Set the title of the window to the value of the _numarg_-th script
-  argument.
+  argument. Out-of-range or malformed indices produce an empty title.
 ChangeLocaleTitle id1 id2::
   As ChangeTitle but use the locale catalog(s) defined with UseGettext.
 ChangeIcon id1 id2::
@@ -420,7 +564,7 @@ ChangeForeColor id1 \{color}::
   Set the foreground color of the widget numbered _id1_ to {_color_}.
 ChangeBackColor id1 \{color}::
   Set the background color of the widget numbered _id1_ to {_color_}.
-ChangeColorSet id1 id2::
+ChangeColorset id1 id2::
   Set the colorset of the widget numbered _id1_ to _id2_. Specifying
   widget 0 sets the main window colorset.
 ChangePosition id1 x y::
@@ -428,17 +572,38 @@ ChangePosition id1 x y::
 ChangeSize id1 width height::
   Set the size of the widget numbered _id1_ to (_width_,_height_).
 ChangeFont id1 newfont::
-  Set the font of the widget numbered _id1_ to _newfont_.
+  Set the font of the widget numbered _id1_ to _newfont_. If the font cannot
+  load or its layout is outside X11 ranges, the previous font and geometry
+  remain in use. A valid font change retains the existing widget dimensions,
+  as in earlier versions.
++
+Font shadow work is also bounded by the shared font loader. The default is
+4096 shadow positions per text draw. The build option `-Dfont-shadow-limit=N`
+permits values from 1 through 65536. A refused ChangeFont keeps the previous
+font and widget dimensions. See the *Font Shadow Effects* section of fvwm3(1).
+
 WarpPointer id::
   Warp the mouse pointer into the widget numbered _id_.
 WriteToFile filename \{str1} \{str2} etc::
   Write to the file _filename_ the string which is the concatenation of
-  all arguments _str1_, _str2_, etc.
+  all arguments _str1_, _str2_, etc. Evaluated text is limited to 64 KiB;
+  the complete input and output file are limited to 1 MiB. Existing tagged
+  sections are appended within the same script process, or replaced by a new
+  process. Empty text adds a newline. Relative paths use HOME.
+  Malformed or unterminated sections, embedded NUL bytes, and reserved
+  section-marker lines are rejected before rewriting existing content.
+  Files must be regular files owned by the current user with one hard link;
+  a symbolic link in the final path component is refused. New files use
+  permissions 0600; existing permissions are retained.
+  Concurrent cooperating writers use a nonblocking file lock. Write errors
+  are reported. Updates write in place and are not crash-atomic; storage
+  failures can leave partial content.
 Do {command args}::
   Execute the fvwm command inside the Do block. Any fvwm command as
   described in the fvwm man page can be used. Commands are sent from
   this module to the fvwm main program for processing. The length of the
-  command and arguments can not exceed 988 characters.
+  command and arguments can not exceed 997 bytes. Each argument, including
+  function calls, is evaluated once. Oversized commands are refused.
 Set $var=\{str1} \{str2} etc::
   Concatenate all arguments to a string and set the variable $__var__ to
   this string.
@@ -447,7 +612,9 @@ SendSignal id1 id2::
   Send a message numbered _id2_ to widget _id1_.
 SendToScript id_script \{str11} \{str2} etc::
   Send a message to the script identified by id_script. The message is
-  the concatenation of str1, str2...
+  the concatenation of str1, str2... Invalid destinations are ignored;
+  messages including their terminator must fit the 32 KiB selection limit.
+
 
 Key _Keyname_ _Modifier_ _id_ _sig_ _str1_ _str2_ etc::
   Binds a keyboard key to the instruction
@@ -496,11 +663,29 @@ Here is the complete list of arguments:
 (GetOutput \{str} int1 int2)::
   Executes the command _str_, gets the standard output and returns the
   word which is in the line _int1_ and in the position _int2_. If _int2_
-  is equal to -1, GetOutput returns the complete line.
-(NumToHex int)::
-  Return the hexadecimal value of _int_.
+  is equal to -1, GetOutput returns the complete line. Zero selects the first
+  line or word, preserving existing scripts. At most the first 32,000 stdout
+  bytes are retained; long words use owned, terminated storage. Empty or missing
+  positions return an empty string. Binary output containing NUL bytes and
+  invalid numeric indices are rejected. Commands are limited to 64 KiB.
+  Commands remain synchronous in the module process, with the CommandTimeout
+  deadline described above. A timeout does not publish a cache entry.
+(NumToHex int width)::
+  Return the uppercase hexadecimal value of _int_, padded with leading
+  zeroes to at least _width_ characters. Zero or negative widths use the
+  natural length. Widths above 65536 return empty text.
 (HexToNum \{str})::
-  Return the decimal value of _str_, _str_ must be an hexadecimal value.
+  Return the decimal value of the hexadecimal numeric prefix of _str_.
+  An initial # is accepted. Values use the existing signed interpretation
+  of a 32-bit hexadecimal pattern; for example FFFFFFFF returns -1.
+  Values outside the 32-bit pattern range return empty text.
+Decimal conversions retain numerical prefixes, whitespace and optional signs;
+text with no numerical prefix converts to zero. Decimal integer overflow,
+arithmetic results outside the signed integer range, zero divisors, and the
+minimum signed integer divided by -1 return empty text with a diagnostic.
+Numeric ordering comparisons with overflowing operands are false. String
+equality and inequality compare text directly.
+
 (Add int1 int2)::
   Return the result of (__int1__+_int2_).
 (Mult int1 int2)::
@@ -514,15 +699,30 @@ Here is the complete list of arguments:
   This function launches the script named str and returns an
   identification number. This number is necessary to use the functions
   SendToScript and ReceiveFromScript. The string str contains the script
-  name and some arguments.
+  name and some arguments. Filenames are split at whitespace as before;
+  long names are handled dynamically within the 997-byte complete command
+  limit. At most 98 child scripts are tracked. Unavailable identifiers,
+  excessive children, empty names and oversized commands return -1.
+  Scripts launched from Init retain their communication IDs.
 (GetScriptArgument \{int})::
   This function returns the argument script used in the function
-  LaunchScript. If int is equal to zero, GetScriptArgument returns the
+  LaunchScript. At most 19 user arguments are retained; additional arguments
+  are ignored. Invalid indices return an empty string. If int is equal to
+  zero, GetScriptArgument returns the
   name of the script.
 (GetScriptFather)::
   This function returns the identification number of the script father.
 (ReceivFromScript \{int})::
   This function returns the message sent by the script numbered int.
+  Requests wait at most one second for a selection owner. Missing, refused,
+  malformed, or oversized replies return "No message". Messages must be
+  complete format-8 properties of at most 32 KiB.
++
+TextField requests to external selection owners use the same one-second
+timeout and 32 KiB limit. Invalid replies leave the existing text unchanged. Incremental (INCR)
+selection transfers are not supported. Root cut buffers are accepted only
+as complete STRING/8 properties of at most 64 KiB. Invalid updates preserve
+the stored clipboard text.
 (RemainderOfDiv {int1 int2}): t::
   This function returns the remainder of the division (_int1_/_int2_).
 (GetTime)::
@@ -533,16 +733,19 @@ Here is the complete list of arguments:
 (Gettext {_str_})::
   This function return the translation of _str_ by using the locale
   catalog(s) defined with UseGettext.
-(SendMsgAndGet {_comId_} {_cmd_} _bool_)::
+(SendMsgAndGet {_comId_} {_cmd_} _mode_)::
   Sends the command _cmd_ with identifier _comId_ to an external program
   ready to communicate with the script using a protocol specific to
-  FvwmScript. If _bool_ is 0 FvwmScript does not wait for an answer from
+  FvwmScript. If _mode_ is 0 FvwmScript does not wait for an answer from
   the external program. In this case the returned value is 1 if the
   message can be sent to the external program and 0 if this is not the
-  case. If _bool_ is 1, then FvwmScript waits for an answer from the
+  case. If _mode_ is 1, then FvwmScript waits for an answer from the
   external program and the return value is this answer (a line of no
   more than 32000 characters). If the communication fails, the returned
-  value is 0. See the section *A COMMUNICATION PROTOCOL* for a
+  value is 0. Mode 2 performs an immediate nonblocking atomic send and
+  returns 1 on success, otherwise 0; it never waits for startup or a reply.
+  Modes 0 and 1 share the FIFOTimeout deadline, including startup. See
+  the section *A COMMUNICATION PROTOCOL* for a
   description of the communication protocol used.
 (Parse {_str_} _int_)::
   where _str_ must be a string of the form: X1S1X2S2X3S3...SnXn
@@ -551,7 +754,8 @@ where the Xn are numbers containing four decimal digits and where Sn are
 strings of length exactly Xn. The returned value is the string S__int__.
 If _int_ is out of range (e.g., >n) the returned value is the empty
 string. If _str_ is not of the specified form, the return value is
-unpredictable (but empty in the average). This function is useful to
+empty text with a diagnostic. The complete sequence is checked, including
+records after the selected one. Zero-length records are accepted. This is useful to
 handle strings returned by the SendMsgAndGet function.
 
 (LastString)::
@@ -598,6 +802,12 @@ Begin
   Do {Exec xcalc &} 		# List of instructions
 End
 ....
+
+For ranges are ascending and inclusive. A descending range performs no
+iterations, preserving existing behavior. Invalid or overflowing bounds leave
+the loop variable unchanged. The final maximum-integer iteration completes
+without wrapping; a body may safely replace its loop variable. Execution and
+allocation budgets are not imposed by these bounds checks.
 
 == COMMANDS
 
@@ -744,30 +954,57 @@ and listen on the .tmp-com-in-_comId_ fifo. Then, when FvwmScript
 executes a function of the form:
 
 ====
-Set $answer = (SendMsgAndGet {_comId_} {_cmd_} _bool_)
+Set $answer = (SendMsgAndGet {_comId_} {_cmd_} _mode_)
 ====
 
 FvwmScript writes the _cmd_ on this fifo. This way the program can read
 the _cmd_ and can execute the appropriate action (it should remove the
-in fifo to support multi-communications). If _bool_ is 0, FvwmScript
-does not wait for an answer from the program and return 1 if the
-previous actions succeed and 0 if they failed (then the program should
-"go back" to the in fifo). If _bool_ is 1, then FvwmScript waits (20
-sec) for an answer from the program and in turn returns the answer to
-the script (note that _bool_ is not passed to the program as it must
+in fifo to support multi-communications). Mode 0 sends without waiting for
+an answer, with startup and writing bounded by FIFOTimeout. Mode 2
+opens and writes without blocking and does not wait for an answer. It
+returns 1 only when one complete atomic write succeeds, otherwise 0.
+The receiver must already be listening; a missing reader, full FIFO or
+message larger than the FIFO's PIPE_BUF limit returns immediately. Callers
+may retry later. If _mode_ is 1, then FvwmScript waits within the same FIFOTimeout
+deadline for an answer from the program and in turn returns the answer to
+the script (note that _mode_ is not passed to the program as it must
 know which commands need an answer). To answer, the program creates the
 .tmp-com-out-_comId_ fifo and writes the answer on it. The program
 should wait until FvwmScript reads the answer and then it should remove
-the out fifo and go back to the in fifo. The answer should consist of
+the out fifo and go back to the in fifo. Endpoints must be named pipes owned
+by the current user; final symlinks and other file types are refused. The communication identifier must fit both
+protocol filenames on the filesystem and must not contain a slash. An empty
+completed reply remains empty text; embedded NUL bytes are refused.
+The answer should consist of
 one line of no more than 32000 characters (take a look at the Parse
 function to handle multiple lines as one line).
 
-A simple way to understand this protocol and to write scripts and
-programs that use it is to take a look at the (not useful) example
-FvwmScript-ComExample and fvwm-script-ComExample.pl (that can found in
-the fvwm data directory). Moreover, this implementation of the protocol
-solves questions as: What to do if the script exits for a bad reason?
-What to do if the program exits for a bad reason? ...etc.
+The installed FvwmScript-ComExample demonstrates startup, counted requests,
+unknown requests, three length-prefixed lines and exit. Go-enabled builds
+run the standard-library helper fvwm-script-ComExample from the FVWM data
+directory. Builds without Go run fvwm-script-ComExample.pl through Perl.
+The Perl file remains installed so copied configurations that invoke it
+explicitly keep working.
+
+The Go helper accepts *--com-name ComExample-PID* (or a numeric PID greater
+than 1). It uses FVWM_USERDIR, or HOME/.fvwm when FVWM_USERDIR is unset.
+It creates private named pipes and refuses existing entries, including stale
+pipes. Remove stale pipes only after checking that their earlier helper has
+exited. The user directory must not be group/world writable unless it has the
+sticky bit. The helper keeps operations relative to its opened directory.
+
+Connected command reads and reply delivery each have a five-second deadline.
+*--timeout-ms MS* changes this limit to 1 through 3600000 milliseconds. Idle
+waiting continues while the Script PID exists; a connected writer that does
+not finish and a reply that is not read time out. The helper then waits for
+the next request. Commands are limited to 32000 bytes and must not contain
+NUL. The first newline, or writer closure after nonempty data, ends a command.
+The startup title identifies the Go helper. Counts and length-prefixed replies
+use the existing protocol. The helper checks peer existence but never signals
+the Script to terminate. Exit, peer departure, SIGINT, SIGTERM and SIGHUP remove only
+the helper's unchanged pipe entries. Regular files, symlinks and replacement
+entries are preserved. Filesystem metadata calls can still wait on storage;
+these deadlines cover FIFO communication, not a stalled filesystem.
 
 == BUGS
 
@@ -780,3 +1017,10 @@ Frederic Cordier (cordie97@cui.unige.ch or f-cord96@univ-lyon1.fr).
 == CONTRIBUTOR
 
 Eddy J. Gurney (eddy@gizmo.aa.ans.net).
+
+Colorset IDs use sparse storage, so a large ID does not allocate every lower
+number. Each bundled process allows 4096 distinct sets by default, including
+set zero, with a shared build-time override up to 65536. At the count limit,
+ChangeColorset refuses a new ID and preserves the widget or main window's
+previous assignment and colors; existing sets remain usable and receive live
+updates. This is a set-count limit, not an image or total-memory limit.

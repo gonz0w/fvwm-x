@@ -1,0 +1,73 @@
+{
+  "fvwm-menu-directory-version": {
+    "status": 0,
+    "stdout": "fixture-version\n",
+    "stderr": ""
+  },
+  "fvwm-menu-directory-help": {
+    "status": 0,
+    "stdout": "A perl script that builds directory listing for fvwm.\n\nUsage: <ROOT>/tools/fvwm-menu-directory [OPTIONS]\nOptions:\n\t--help             show this help and exit\n\t--version          show the version and exit\n\t--name=NAME        menu name,  default is 'MenuBrowser'\n\t--title=NAME       menu title, default is '%*-40p'\n\t--item=NAME        menu item format, default is '%n'\n\t--icon-title=XPM   menu title icon, default is none\n\t--icon-dir=XPM     menu dir   icon, default is none\n\t--icon-file=XPM    menu file  icon, default is none\n\t--icon-app=XPM     menu +x    icon, default is none\n\t--wm-icons         define icon names to use with wm-icons\n\t--dir=NAME         starting dir, default is '<ROOT>/home'\n\t--order=NUM        NUM (-6 .. 6), default is 5\n\t\t1 - do not sort,  2 - dirs first, 3 - files first\n\t\t4 - sort by name, 5 - dirs first, 6 - files first\n\t\tNegative number represents reverse order.\n\t--all              show hidden files, default is no\n\t--links            follow linked dirs, default is no\n\t--xterm=CMD        xterm call, default is 'xterm -e'\n\t--exec-title=CMD   title exec command, default is '/bin/sh'\n\t--exec-file=CMD    file exec command, default is 'fixture-editor'\n\t--exec-app[=CMD]   +x files exec command, default is '-'\n\t--command-title=CMD title fvwm command, default is '-'\n\t--command-file=CMD file fvwm command, default is '-'\n\t--command-app=CMD  +x files fvwm command, default is '-'\n\t--reuse            no popups, reuse the same menu (no)\n\t--check-subdirs    check subdir for +x permission (no)\n\t--special-dirs[=X] include .. and ~ directories (no)\n\t--memory-for-speed use speed optimization (no)\n\t--menu-style=NAME  assign specified MenuStyle name to menus\nShort options are ok if not ambiguous: -a, -icon-f.\n",
+    "stderr": ""
+  },
+  "fvwm-menu-directory-invalid": {
+    "status": 255,
+    "stdout": "",
+    "stderr": "Unknown option: not-an-option\nTry '<ROOT>/tools/fvwm-menu-directory --help' for more information.\n"
+  },
+  "fvwm-menu-xlock-version": {
+    "status": 0,
+    "stdout": "fixture-version\n",
+    "stderr": ""
+  },
+  "fvwm-menu-xlock-help": {
+    "status": 0,
+    "stdout": "A small perl script which builds xlock menu for fvwm.\n\nUsage: <ROOT>/tools/fvwm-menu-xlock [OPTIONS] [-- XLOCK-OPTIONS]\nOptions:\n\t--help           show this help and exit\n\t--version        show the version and exit\n\t--name=NAME      menu name,  default is 'XLockMenu'\n\t--title=NAME     menu title, default is 'XLock Modes'\n\t--item=NAME      menu item format, default is '%n\\t(%d)'\n\t--icon-title=XPM menu title icon, default is no\n\t--icon-item=XPM  menu item  icon, default is no\n\t--wm-icons       define icon names to use with wm-icons\n\t--special-first  put special modes first\nShort options are ok if not ambiguous: -h, -t.\n\nSome useful xlock(1) options, 'xlock -h' for more:\n\t-delay usecs     delay between batches of animations\n\t-nolock          screensaver, don't lock the display\n\t-inwindow        run in window as opposite to -inroot\n\t-sound           turn on sound if enabled\n\t-nice level      decrease the process priority (0 .. 19)\n",
+    "stderr": ""
+  },
+  "fvwm-menu-xlock-invalid": {
+    "status": 255,
+    "stdout": "",
+    "stderr": "Unknown option: not-an-option\nTry '<ROOT>/tools/fvwm-menu-xlock --help' for more information.\n"
+  },
+  "directory-default": {
+    "status": 0,
+    "stdout": "DestroyMenu recreate \"<ROOT>/files\"\nAddToMenu \"<ROOT>/files\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/files\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"Fixture\" Nop\n+ \"\" Nop\n+ \"Folder\" Popup \"<ROOT>/files/Folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/files/linked-folder\" item +100 c\n+ \"\u00c5_folder\" Popup \"<ROOT>/files/\u00c5_folder\" item +100 c\n+ \"alpha\" Exec fixture-editor \"<ROOT>/files/alpha\"\n+ \"apostrophe'file\" Exec fixture-editor \"<ROOT>/files/apostrophe'file\"\n+ \"caf\u00e9\" Exec fixture-editor \"<ROOT>/files/caf\u00e9\"\n+ \"cash$$&&file\" Exec fixture-editor \"<ROOT>/files/cash\\$$&file\"\n+ \"linked-file\" Exec fixture-editor \"<ROOT>/files/linked-file\"\n+ \"program\" Exec fixture-editor \"<ROOT>/files/program\"\n+ \"quote\\\"file\" Exec fixture-editor \"<ROOT>/files/quote\\\"file\"\n",
+    "stderr": ""
+  },
+  "directory-hidden-reverse-icons": {
+    "status": 0,
+    "stdout": "DestroyMenu recreate \"<ROOT>/files\"\nAddToMenu \"<ROOT>/files\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/files\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"%menu/folder-open.xpm%Fixture\" Nop\n+ \"\" Nop\n+ \"%menu/file.xpm%quote\\\"file [F]\" Exec fixture-editor \"<ROOT>/files/quote\\\"file\"\n+ \"%menu/utility.xpm%program [F]\" Exec fixture-editor \"<ROOT>/files/program\"\n+ \"%menu/file.xpm%linked-file [L]\" Exec fixture-editor \"<ROOT>/files/linked-file\"\n+ \"%menu/file.xpm%cash$$&&file [F]\" Exec fixture-editor \"<ROOT>/files/cash\\$$&file\"\n+ \"%menu/file.xpm%caf\u00e9 [F]\" Exec fixture-editor \"<ROOT>/files/caf\u00e9\"\n+ \"%menu/file.xpm%apostrophe'file [F]\" Exec fixture-editor \"<ROOT>/files/apostrophe'file\"\n+ \"%menu/file.xpm%alpha [F]\" Exec fixture-editor \"<ROOT>/files/alpha\"\n+ \"%menu/file.xpm%.hidden [F]\" Exec fixture-editor \"<ROOT>/files/.hidden\"\n+ \"%menu/folder.xpm%\u00c5_folder [D]\" Popup \"<ROOT>/files/\u00c5_folder\" item +100 c\n+ \"%menu/folder.xpm%linked-folder [L]\" Popup \"<ROOT>/files/linked-folder\" item +100 c\n+ \"%menu/folder.xpm%Folder [D]\" Popup \"<ROOT>/files/Folder\" item +100 c\n",
+    "stderr": ""
+  },
+  "directory-width": {
+    "status": 0,
+    "stdout": "DestroyMenu recreate \"<ROOT>/files\"\nAddToMenu \"<ROOT>/files\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/files\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"Fixture\" Nop\n+ \"\" Nop\n+ \"Folder\" Popup \"<ROOT>/files/Folder\" item +100 c\n+ \"linke...\" Popup \"<ROOT>/files/linked-folder\" item +100 c\n+ \"\u00c5_fo...\" Popup \"<ROOT>/files/\u00c5_folder\" item +100 c\n+ \"alpha\" Exec fixture-editor \"<ROOT>/files/alpha\"\n+ \"apost...\" Exec fixture-editor \"<ROOT>/files/apostrophe'file\"\n+ \"caf\u00e9\" Exec fixture-editor \"<ROOT>/files/caf\u00e9\"\n+ \"cash$$...\" Exec fixture-editor \"<ROOT>/files/cash\\$$&file\"\n+ \"linke...\" Exec fixture-editor \"<ROOT>/files/linked-file\"\n+ \"program\" Exec fixture-editor \"<ROOT>/files/program\"\n+ \"quote...\" Exec fixture-editor \"<ROOT>/files/quote\\\"file\"\n",
+    "stderr": ""
+  },
+  "xlock-default": {
+    "status": 0,
+    "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"alpha\t(Shows Alpha pattern)\" Exec xlock -mode alpha\n+ \"beta\t(Shows Beta pattern)\" Exec xlock -mode beta\n+ \"\" Nop\n+ \"blank\t(Shows Blank screen)\" Exec xlock -mode blank\n+ \"random\t(Random mode)\" Exec xlock -mode random\n",
+    "stderr": ""
+  },
+  "xlock-format-special-first": {
+    "status": 0,
+    "stdout": "DestroyMenu FixtureMenu\nAddToMenu FixtureMenu \"Fixture\" Title\n+ \"%menu/lock.xpm%blank: Blank screen\" Exec xlock -nolock -inwindow -mode blank\n+ \"%menu/lock.xpm%random: Random mode\" Exec xlock -nolock -inwindow -mode random\n+ \"\" Nop\n+ \"%menu/lock.xpm%alpha: Alpha pattern\" Exec xlock -nolock -inwindow -mode alpha\n+ \"%menu/lock.xpm%beta: Beta pattern\" Exec xlock -nolock -inwindow -mode beta\n",
+    "stderr": ""
+  },
+  "convert-config": {
+    "status": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "converted-bytes": "# retained comment\nStyle * HilightFore white\nNext [XTerm] Raise\n# UTF-8 caf\u00e9\n\nDestroyFunc StartFunction\nAddToFunc StartFunction\n+  I Test (Init)  Echo initialize\n",
+  "convert-refuse-overwrite": {
+    "status": 255,
+    "stdout": "",
+    "stderr": "Destination file:  <ROOT>/converted config exists\n"
+  },
+  "convert-missing": {
+    "status": 2,
+    "stdout": "",
+    "stderr": "Unable to open source file:  No such file or directory\n"
+  }
+}

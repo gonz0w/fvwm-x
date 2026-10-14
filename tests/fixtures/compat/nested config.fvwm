@@ -1,0 +1,3 @@
+Echo compat-nested-begin
+Module module-fd-probe $[FVWM_COMPAT_ROOT]/read-fds.txt $[FVWM_COMPAT_ROOT]/core.log
+Echo compat-nested-end

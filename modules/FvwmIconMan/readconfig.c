@@ -26,6 +26,7 @@
 #include "libs/Module.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
+#include "libs/module_monitor.h"
 
 /*
  *
@@ -844,12 +845,28 @@ static int GetConfigLineWrapper(int *fd, char **tline)
 		}
 		else if (strncasecmp(*tline, "IgnoreModifiers", 15) == 0)
 		{
-			sscanf((*tline) + 16, "%d", &mods_unused);
+			int value;
+			if (module_parse_decimal_integers((*tline) + 15,
+				&value, 1))
+			{
+				mods_unused = value;
+			}
+			else
+			{
+				fvwm_debug(__func__, "Refusing invalid modifier value");
+			}
 		}
 		else if (strncasecmp(*tline, "LoggingFD", 9) == 0) {
-			int fdl = -1;
-			sscanf((*tline + 10), "%d", &fdl);
-			log_set_fd(fdl);
+			int fdl;
+			if (module_parse_decimal_integers((*tline) + 9,
+				&fdl, 1))
+			{
+				log_set_fd(fdl);
+			}
+			else
+			{
+				fvwm_debug(__func__, "Refusing invalid logging descriptor");
+			}
 		}
 		temp = strchr(*tline, '\n');
 		if (temp)
@@ -1429,9 +1446,13 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
+	  continue;
+	}
+	if (n >= 0 && !AllocColorset(n))
+	{
 	  continue;
 	}
 	for ( i = 0; i < NUM_CONTEXTS; i++ ) {
@@ -1440,7 +1461,6 @@ void read_in_resources(void)
 		else
 			SET_MANAGER(manager, colorsets[i], n);
 	}
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "background")) {
 	p = read_next_cmd(READ_ARG);
@@ -1984,13 +2004,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
+	if (n >= 0 && !AllocColorset(n))
+	{
+	  continue;
+	}
 	SET_MANAGER(manager, colorsets[TITLE_CONTEXT], n);
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "focusandselectcolorset")) {
 	p = read_next_cmd(READ_ARG);
@@ -1998,13 +2021,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
+	if (n >= 0 && !AllocColorset(n))
+	{
+	  continue;
+	}
 	SET_MANAGER(manager, colorsets[FOCUS_SELECT_CONTEXT], n);
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "focuscolorset")) {
 	p = read_next_cmd(READ_ARG);
@@ -2012,13 +2038,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
+	if (n >= 0 && !AllocColorset(n))
+	{
+	  continue;
+	}
 	SET_MANAGER(manager, colorsets[FOCUS_CONTEXT], n);
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "selectcolorset")) {
 	p = read_next_cmd(READ_ARG);
@@ -2026,13 +2055,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
+	if (n >= 0 && !AllocColorset(n))
+	{
+	  continue;
+	}
 	SET_MANAGER(manager, colorsets[SELECT_CONTEXT], n);
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "plaincolorset")) {
 	p = read_next_cmd(READ_ARG);
@@ -2040,13 +2072,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
+	if (n >= 0 && !AllocColorset(n))
+	{
+	  continue;
+	}
 	SET_MANAGER(manager, colorsets[PLAIN_CONTEXT], n);
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "iconcolorset")) {
 	p = read_next_cmd(READ_ARG);
@@ -2054,13 +2089,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
+	if (n >= 0 && !AllocColorset(n))
+	{
+	  continue;
+	}
 	SET_MANAGER(manager, colorsets[ICON_CONTEXT], n);
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "iconandselectcolorset")) {
 	p = read_next_cmd(READ_ARG);
@@ -2068,13 +2106,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
+	if (n >= 0 && !AllocColorset(n))
+	{
+	  continue;
+	}
 	SET_MANAGER(manager, colorsets[ICON_SELECT_CONTEXT], n);
-	AllocColorset(n);
       }
       else if (!strcasecmp(option1, "usewinlist")) {
 	p = read_next_cmd(READ_ARG);
@@ -2154,16 +2195,16 @@ void read_in_resources(void)
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	if (extract_int(p, &n) == 0) {
+	if (ParseColorsetId(p, NULL, &n) == 0) {
 	  ConsoleMessage("This is not a number: %s\n", p);
 	  ConsoleMessage("Bad line: %s\n", current_line);
 	  continue;
 	}
-	SET_MANAGER(manager, tips_conf->colorset, n);
-	if (n >= 0)
+	if (n >= 0 && !AllocColorset(n))
 	{
-		AllocColorset(n);
+	  continue;
 	}
+	SET_MANAGER(manager, tips_conf->colorset, n);
       }
       else if (!strcasecmp(option1, "tipsdelays")) {
 	p = read_next_cmd(READ_ARG);

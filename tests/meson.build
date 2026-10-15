@@ -1522,6 +1522,27 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 50,
     )
+    core_readiness_fixture = executable(
+        'fvwm-core-readiness-fixture', 'core_readiness_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows', '-Wl,--wrap=poll',
+            '-Wl,--wrap=FlushMessageQueue',
+            '-Wl,--wrap=module_input_enqueue', '-Wl,--wrap=ProcessICEMsgs'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'core-readiness-xvfb', py,
+        args: [files('live_x/core_readiness_live.py'),
+            '--fvwm', core_readiness_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'core-readiness'],
+        depends: core_readiness_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 45,
+    )
     expose_service_fixture = executable(
         'fvwm-expose-service-fixture', 'expose_service_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),

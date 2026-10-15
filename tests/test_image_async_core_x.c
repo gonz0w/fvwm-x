@@ -59,33 +59,21 @@ static void changed(FvwmPicture *view, void *context)
 
 static void wait_once(Bool outer, int ready_fd)
 {
-	fd_set reads, writes;
-	struct pollfd extra[2];
+	struct pollfd descriptors[4] = {
+		{ConnectionNumber(display), POLLIN, 0}, {ready_fd, POLLIN, 0}
+	};
 	struct timeval timeout = {0, 10000};
 	bool image_timeout;
-	int x_fd = ConnectionNumber(display);
-	int limit = x_fd + 1;
 
-	FD_ZERO(&reads);
-	FD_ZERO(&writes);
-	FD_SET(x_fd, &reads);
-	if (ready_fd >= 0)
-	{
-		FD_SET(ready_fd, &reads);
-		if (ready_fd >= limit)
-		{
-			limit = ready_fd + 1;
-		}
-	}
-	image_async_descriptors(extra);
+	image_async_descriptors(&descriptors[2]);
 	XFlush(display);
-	int result = image_async_wait(limit, &reads, &writes, extra,
-	    &timeout, image_async_timeout_ms(outer), &image_timeout);
+	int result = image_async_wait(descriptors, 4, &timeout,
+		image_async_timeout_ms(outer), &image_timeout);
 
 	assert(result >= 0 || errno == EINTR);
 	if (ready_fd >= 0)
 	{
-		assert(result > 0 && FD_ISSET(ready_fd, &reads));
+		assert(result > 0 && (descriptors[1].revents & POLLIN));
 	}
 	image_async_transport();
 	while (XPending(display))

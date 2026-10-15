@@ -13,6 +13,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <sys/resource.h>
+#include <sys/select.h>
 #include <unistd.h>
 
 static unsigned poll_calls;
@@ -21,6 +22,7 @@ static int recorded_timeout;
 static bool fake_timeout;
 static bool terminate_in_poll;
 static bool synthetic_high_fd;
+static bool interrupt_poll;
 
 int __real_poll(struct pollfd *, nfds_t, int);
 int __real_select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
@@ -29,6 +31,11 @@ int __wrap_poll(struct pollfd *fds, nfds_t count, int timeout)
 {
 	poll_calls++;
 	recorded_timeout = timeout;
+	if (interrupt_poll)
+	{
+		errno = EINTR;
+		return -1;
+	}
 	if (synthetic_high_fd)
 	{
 		bool found = false;
@@ -66,25 +73,18 @@ int __wrap_select(int limit, fd_set *reads, fd_set *writes,
 
 static void test_no_worker(void)
 {
-	fd_set reads, writes;
-	struct pollfd extra[2] = {{-1, 0, 0}, {-1, 0, 0}};
 	struct timeval timeout = {0, 0};
 	bool image_timeout = true;
 
-	FD_ZERO(&reads);
-	FD_ZERO(&writes);
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, -1,
-	    &image_timeout) == 0);
-	assert(!image_timeout && select_calls == 1 && poll_calls == 0);
-	assert(image_async_wait(0, &reads, &writes, extra, NULL, 0,
-	    &image_timeout) == 0 && image_timeout);
-	assert(select_calls == 2 && poll_calls == 0);
+	assert(image_async_wait(NULL, 0, &timeout, -1, &image_timeout) == 0);
+	assert(!image_timeout && poll_calls == 1);
+	assert(image_async_wait(NULL, 0, NULL, 0, &image_timeout) == 0);
+	assert(image_timeout && poll_calls == 2 && select_calls == 0);
 }
 
 static void test_readiness_and_high_fd(void)
 {
 	int base[2], worker[2];
-	fd_set reads, writes;
 	bool image_timeout;
 	struct timeval timeout = {0, 0};
 	struct rlimit saved, raised;
@@ -98,9 +98,8 @@ static void test_readiness_and_high_fd(void)
 		raised.rlim_cur = FD_SETSIZE + 4;
 		assert(setrlimit(RLIMIT_NOFILE, &raised) == 0);
 	}
-	/* Some BSD login classes impose a hard limit below FD_SETSIZE. Exercise
-	 * real pipe readiness there too, then test the high-fd poll contract
-	 * separately without changing the administrator's hard limit. */
+	/* Retain real readiness coverage under low BSD login limits, then
+	 * exercise a synthetic high descriptor without raising a hard limit. */
 	int high_fd = fcntl(worker[0], F_DUPFD,
 	    raised.rlim_cur > FD_SETSIZE ? FD_SETSIZE : 0);
 
@@ -109,94 +108,85 @@ static void test_readiness_and_high_fd(void)
 	{
 		assert(high_fd >= FD_SETSIZE);
 	}
-	struct pollfd extra[2] = {{high_fd, POLLIN, 0}, {-1, 0, 0}};
+	struct pollfd fds[] = {{base[0], POLLIN, 0}, {-1, POLLOUT, 0},
+		{high_fd, POLLIN, 0}};
 
 	assert(write(worker[1], "w", 1) == 1);
-	FD_ZERO(&reads);
-	FD_ZERO(&writes);
-	FD_SET(base[0], &reads);
-	assert(image_async_wait(base[1] + 1, &reads, &writes, extra,
-	    &timeout, -1, &image_timeout) == 1);
-	assert(!FD_ISSET(base[0], &reads) && !image_timeout);
+	assert(image_async_wait(fds, 3, &timeout, -1, &image_timeout) == 1);
+	assert(!fds[0].revents && (fds[2].revents & POLLIN));
+	assert(!image_timeout);
 	assert(write(base[1], "b", 1) == 1);
-	FD_SET(base[0], &reads);
-	FD_SET(base[1], &writes);
-	assert(image_async_wait(base[1] + 1, &reads, &writes, extra,
-	    &timeout, -1, &image_timeout) == 3);
-	assert(FD_ISSET(base[0], &reads) && FD_ISSET(base[1], &writes));
+	fds[1].fd = base[1];
+	assert(image_async_wait(fds, 3, &timeout, -1, &image_timeout) == 3);
+	assert((fds[0].revents & POLLIN) && (fds[1].revents & POLLOUT));
 	char byte;
 
 	assert(read(base[0], &byte, 1) == 1 && byte == 'b');
 	assert(read(high_fd, &byte, 1) == 1 && byte == 'w');
 	assert(close(base[1]) == 0);
-	FD_ZERO(&writes);
-	assert(image_async_wait(base[0] + 1, &reads, &writes, extra,
-	    &timeout, -1, &image_timeout) == 1);
-	assert(FD_ISSET(base[0], &reads)); /* EOF remains readable. */
+	fds[1].fd = -1;
+	assert(image_async_wait(fds, 3, &timeout, -1, &image_timeout) == 1);
+	assert(fds[0].revents & POLLHUP);
 	assert(close(base[0]) == 0);
-	assert(image_async_wait(base[0] + 1, &reads, &writes, extra,
-	    &timeout, -1, &image_timeout) == -1 && errno == EBADF);
-	assert(FD_ISSET(base[0], &reads)); /* Error preserves input sets. */
-	FD_ZERO(&reads);
+	assert(image_async_wait(fds, 3, &timeout, -1, &image_timeout) == 1);
+	assert(fds[0].revents & POLLNVAL);
+	fds[0].fd = -1;
 	assert(close(high_fd) == 0);
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, -1,
-	    &image_timeout) == 1); /* Worker POLLNVAL yields to transport. */
+	assert(image_async_wait(fds, 3, &timeout, -1, &image_timeout) == 1);
+	assert(fds[2].revents & POLLNVAL);
 	assert(close(worker[0]) == 0 && close(worker[1]) == 0);
 	assert(setrlimit(RLIMIT_NOFILE, &saved) == 0);
-	extra[0].fd = FD_SETSIZE + 1;
+	fds[2].fd = FD_SETSIZE + 1;
 	synthetic_high_fd = true;
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, -1,
-	    &image_timeout) == 1);
+	assert(image_async_wait(fds, 3, &timeout, -1, &image_timeout) == 1);
 	synthetic_high_fd = false;
 }
 
 static void test_deadlines(void)
 {
-	fd_set reads, writes;
-	struct pollfd extra[2] = {{0, POLLIN, 0}, {-1, 0, 0}};
 	struct timeval timeout = {42, 0};
 	bool image_timeout;
 
-	FD_ZERO(&reads);
-	FD_ZERO(&writes);
 	fake_timeout = true;
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, 5,
-	    &image_timeout) == 0 && image_timeout);
-	assert(recorded_timeout == 5 && timeout.tv_sec == 42);
+	assert(image_async_wait(NULL, 0, &timeout, 5, &image_timeout) == 0);
+	assert(image_timeout && recorded_timeout == 5 && timeout.tv_sec == 42);
 	timeout = (struct timeval){0, 5000};
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, 5,
-	    &image_timeout) == 0 && !image_timeout);
+	assert(image_async_wait(NULL, 0, &timeout, 5, &image_timeout) == 0);
+	assert(!image_timeout); /* Equal deadlines retain startup ownership. */
 	timeout.tv_usec = 4999;
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, 5,
-	    &image_timeout) == 0 && !image_timeout);
-	assert(recorded_timeout == 5); /* Round up; do not busy-spin. */
-	assert(image_async_wait(0, &reads, &writes, extra, NULL, -1,
-	    &image_timeout) == 0 && !image_timeout);
-	assert(recorded_timeout == -1);
+	assert(image_async_wait(NULL, 0, &timeout, 5, &image_timeout) == 0);
+	assert(!image_timeout && recorded_timeout == 5);
+	assert(image_async_wait(NULL, 0, NULL, -1, &image_timeout) == 0);
+	assert(!image_timeout && recorded_timeout == -1);
 	timeout = (struct timeval){INT_MAX, 999999};
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, -1,
-	    &image_timeout) == 0 && recorded_timeout == INT_MAX);
+	assert(image_async_wait(NULL, 0, &timeout, -1, &image_timeout) == 0);
+	assert(recorded_timeout == INT_MAX);
 	timeout.tv_usec = 1000000;
-	assert(image_async_wait(0, &reads, &writes, extra, &timeout, 0,
-	    &image_timeout) == -1 && errno == EINVAL);
-	assert(image_async_wait(FD_SETSIZE + 1, &reads, &writes, extra,
-	    NULL, -1, &image_timeout) == -1 && errno == EINVAL);
-	assert(image_async_wait(0, &reads, &writes, extra, NULL, -2,
-	    &image_timeout) == -1 && errno == EINVAL);
+	assert(image_async_wait(NULL, 0, &timeout, 0, &image_timeout) == -1);
+	assert(errno == EINVAL && !image_timeout);
+	assert(image_async_wait(NULL, 1, NULL, -1, &image_timeout) == -1);
+	assert(errno == EINVAL);
+	assert(image_async_wait(NULL, 0, NULL, -2, &image_timeout) == -1);
+	assert(errno == EINVAL);
 	fake_timeout = false;
+	interrupt_poll = true;
+	assert(image_async_wait(NULL, 0, NULL, -1, &image_timeout) == -1);
+	assert(errno == EINTR);
+	interrupt_poll = false;
 }
 
 static void test_termination(void)
 {
 	unsigned before = poll_calls;
+	bool image_timeout;
 
 	isTerminated = 1;
-	assert(fvwmPoll(NULL, 0, -1) == -1 && errno == EINTR);
-	assert(poll_calls == before);
+	assert(image_async_wait(NULL, 0, NULL, -1, &image_timeout) == -1);
+	assert(errno == EINTR && poll_calls == before);
 	isTerminated = 0;
 	terminate_in_poll = true;
-	assert(fvwmPoll(NULL, 0, -1) == -1 && errno == EINTR);
-	assert(isTerminated && poll_calls == before + 1);
+	assert(image_async_wait(NULL, 0, NULL, -1, &image_timeout) == -1);
+	assert(errno == EINTR && isTerminated && poll_calls == before + 1);
 	isTerminated = 0;
 	terminate_in_poll = false;
 	assert(fvwmPoll(NULL, 0, 0) == 0);
@@ -209,6 +199,7 @@ int main(void)
 	test_readiness_and_high_fd();
 	test_deadlines();
 	test_termination();
-	puts("image readiness preserves base I/O, deadlines and termination");
+	assert(select_calls == 0);
+	puts("poll readiness preserves I/O, deadlines, errors and termination");
 	return 0;
 }

@@ -3,13 +3,13 @@
 
 #include <stdbool.h>
 #include <poll.h>
-#include <sys/select.h>
+#include <sys/time.h>
 
-/* Base descriptors retain the existing select contract. The two borrowed
- * decoder descriptors may exceed FD_SETSIZE. A decoder-only deadline must not
- * be interpreted as the startup-module timeout. No owner work runs here. */
-int image_async_wait(int limit, fd_set *reads, fd_set *writes,
-	const struct pollfd extra[2], struct timeval *timeout, int image_ms,
-	bool *image_timeout);
+/* Wait on the caller's owned snapshot, including borrowed decoder fds.
+ * A decoder-only deadline must not be interpreted as the startup-module
+ * timeout. Round fractional milliseconds up; no commands or owner work run
+ * here. The caller interprets each descriptor's native poll result. */
+int image_async_wait(struct pollfd *descriptors, nfds_t count,
+	const struct timeval *timeout, int image_ms, bool *image_timeout);
 
 #endif

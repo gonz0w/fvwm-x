@@ -673,3 +673,9 @@ GitHub Actions is disabled; inherited workflow metadata is archived. The
 [GitHub workflow](GITHUB-WORKFLOW.md) and [stable issue index](GITHUB-ROADMAP.md)
 mirror tracker execution manually, with source-bound local evidence and signed
 PR review. These entry points do not establish unrun runtime/hardware acceptance.
+
+Core readiness now uses one operation-local snapshot in `events.c` for ordinary
+and interactive waits, with existing module death-row pins through transport
+service. `image_async_wait.c` selects decoder deadlines over native poll arrays.
+Session callbacks stay ordinary-only; queue, scheduler and X-event boundaries
+retain their owners. See the [qualified core-readiness report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md).

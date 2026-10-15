@@ -143,7 +143,7 @@ bool parse_style_id_one_flag(char *action, style_id_t *ret)
 			fvwm_debug(__func__, "No Icon given after keyword");
 			return false;
 		}
-	} else if (!SID_GET_HAS_NAME(*ret) && StrEquals(token, "WindowID")) {
+	} else if (!SID_GET_HAS_WINDOW_ID(*ret) && StrEquals(token, "WindowID")) {
 		char *id;
 		rest = GetNextToken(rest, &id);
 		if (id) {
@@ -370,43 +370,6 @@ static bool style_id_equals_id(window_style *s, style_id_t* id)
 static bool styles_have_same_id(window_style* s, window_style* t)
 {
 	return style_ids_are_equal(&SGET_ID(*s), &SGET_ID(*t));
-}
-
-static bool fw_match_style_id(FvwmWindow *fw, style_id_t s_id)
-{
-	if (SID_GET_IS_COMPATIBILITY_MODE(s_id) &&
-	    !(matchWildcards(SID_GET_NAME(s_id), fw->class.res_name) == true ||
-	     matchWildcards(SID_GET_NAME(s_id), fw->class.res_class) == true ||
-	     matchWildcards(SID_GET_NAME(s_id), fw->name.name) == true))
-	{
-		return false;
-	}
-	if (SID_GET_HAS_RESOURCE(s_id) &&
-	    (matchWildcards(SID_GET_RESOURCE(s_id), fw->class.res_name) ==
-	     FALSE)) {
-		return false;
-	}
-	if (SID_GET_HAS_CLASS(s_id) &&
-	    (matchWildcards(SID_GET_CLASS(s_id), fw->class.res_class) == FALSE))
-	{
-		return false;
-	}
-	if (SID_GET_HAS_NAME(s_id) &&
-	    (matchWildcards(SID_GET_NAME(s_id), fw->name.name) == FALSE))
-	{
-		return false;
-	}
-	if (SID_GET_HAS_ICON(s_id) &&
-	    (matchWildcards(SID_GET_ICON(s_id), fw->icon_name.name) == FALSE))
-	{
-		return false;
-	}
-	if (SID_GET_HAS_WINDOW_ID(s_id) && SID_GET_WINDOW_ID(s_id) != (XID)FW_W(fw))
-	{
-		return false;
-	}
-
-	return true;
 }
 
 static bool one_fw_can_match_both_ids(window_style *s, window_style *t)
@@ -4846,6 +4809,9 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 	}
 	if (!merged)
 	{
+		/* IDs are immutable after publication. Merges retain the owning
+		 * ID; full record moves copy this pointer-free metadata too. */
+		style_match_prepare(&ps->id_patterns, &SGET_ID(*ps));
 		/* add temp name list to list */
 		add_style_to_list(ps);
 		cleanup_style_defaults(ps);
@@ -4936,9 +4902,12 @@ void simplify_style_list(void)
  */
 void lookup_style(FvwmWindow *fw, window_style *styles)
 {
+	style_match_subject subject;
 	window_style_list *list;
 	window_style *nptr;
 
+	style_match_subject_init(&subject, FW_W(fw), fw->class.res_name,
+		fw->class.res_class, fw->name.name, fw->icon_name.name);
 	/* clear callers return area */
 	memset(styles, 0, sizeof(window_style));
 	/* look thru all stile list in order of priority*/
@@ -4948,7 +4917,8 @@ void lookup_style(FvwmWindow *fw, window_style *styles)
 		for (nptr = list->first_style; nptr != NULL;
 		     nptr = SGET_NEXT_STYLE(*nptr))
 		{
-			if (fw_match_style_id(fw, SGET_ID(*nptr)))
+			if (style_match_id(&SGET_ID(*nptr), &nptr->id_patterns,
+				&subject))
 			{
 				merge_styles(styles, nptr, False);
 			}
@@ -5575,6 +5545,7 @@ void update_icon_background_cs_style(FvwmWindow *fw, window_style *pstyle)
 
 void style_destroy_style(style_id_t s_id)
 {
+	style_match_patterns patterns;
 	FvwmWindow *t;
 
 	if (remove_all_of_style_from_list(s_id))
@@ -5586,10 +5557,15 @@ void style_destroy_style(style_id_t s_id)
 	{
 		return;
 	}
+	style_match_prepare(&patterns, &s_id);
 	/* mark windows for update */
 	for (t = Scr.FvwmRoot.next; t != NULL; t = t->next)
 	{
-		if (fw_match_style_id(t, s_id))
+		style_match_subject subject;
+
+		style_match_subject_init(&subject, FW_W(t), t->class.res_name,
+			t->class.res_class, t->name.name, t->icon_name.name);
+		if (style_match_id(&s_id, &patterns, &subject))
 		{
 			SET_STYLE_DELETED(t, 1);
 			Scr.flags.do_need_window_update = 1;

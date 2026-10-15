@@ -17,6 +17,7 @@ def run(args):
     out = args.artifacts_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
     rows = []
+    matching = []
     with HarnessRuntime(prefix='fvwm-style-profile-') as runtime:
         try:
             display = args.display
@@ -54,8 +55,27 @@ def run(args):
                     assert (row['reference'], row['mode'], row['rules'],
                             row['windows']) == (reference, mode, size, windows)
                     rows.append(row)
+                    work = [json.loads(line.removeprefix('STYLE_MATCH_WORK '))
+                            for line in process.log_path.read_text().splitlines()
+                            if line.startswith('STYLE_MATCH_WORK ')]
+                    if mode == 'lookup' and size == 64:
+                        assert [r['case'] for r in work] == [
+                            'prefix', 'duplicate', 'window-id']
+                        for r in work:
+                            if reference:
+                                expected = (64 if r['case'] == 'window-id'
+                                            else 192)
+                            else:
+                                expected = (64 if r['case'] == 'duplicate'
+                                            else 0)
+                            assert r['reference'] == reference
+                            assert r['rules'] == 64 and r['calls'] == expected
+                        matching.extend(work)
+                    else:
+                        assert not work
             (out / 'evidence.json').write_text(
-                json.dumps({'workloads': rows}, indent=2) + '\n')
+                json.dumps({'workloads': rows, 'matching_work': matching},
+                           indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):
                 shutil.copy2(log, out / log.name)

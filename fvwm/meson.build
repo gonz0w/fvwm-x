@@ -65,6 +65,7 @@ fvwm_sources = [
     'fvwm/stack_subtree.c',
     'fvwm/style.c',
     'fvwm/style_id_filter.c',
+    'fvwm/style_match.c',
     'fvwm/status_json.c',
     'fvwm/update.c',
     'fvwm/virtual.c',

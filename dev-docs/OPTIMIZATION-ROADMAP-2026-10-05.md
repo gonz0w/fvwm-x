@@ -235,3 +235,9 @@ payload admission and whole teardown remain separate work; see the
 CACHE-01’s measured variant-filter/reload checkpoint is locally qualified.
 A 65-variant lookup now checks one file stamp instead of 65. Eight standard compiler profiles across six targets pass 1936 entries; optional profiles add 423, default BSD servers pass 12 cache/staged-WM fixtures, and instrumented cache checks pass. 150 installed code identities and 99 catalogs validate. Broader profiling and release/hardware gates remain open.
 See the [combined report](verification/VERIFICATION-2026-10-14-PICTURE-CACHE.md).
+
+## 2026-10-14 core readiness
+
+LOOP-01’s native poll/deadline, shared pinned snapshot and actual-core coverage
+checkpoint is locally qualified. Typed native poll snapshots and existing death-row pins now serve ordinary/interactive core waits. Eight standard compiler profiles pass 1944 entries across six targets; optional profiles add 425, default BSD servers pass 16 core/cache/interactive geometry fixtures, and two instrumented checks pass. 150 installed code identities and 99 catalogs validate. Broader descriptor/runtime release gates remain open.
+See the [combined report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md).

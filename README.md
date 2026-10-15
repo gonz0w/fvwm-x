@@ -16,7 +16,7 @@ BSD default-X checkpoint is complete. Broader desktop work, physical-hardware
 qualification and release acceptance remain open. Hosted source is the qualified
 core/utility snapshot; separately owned desktop/artwork publication is tracked
 in the project guides. Optional Go builds use a patched compiler baseline. The
-image-cache variant lookup checkpoint is locally qualified. The OpenBSD AMD64
+image-cache and core-readiness checkpoints are locally qualified. The OpenBSD AMD64
 VESA startup investigation is deferred while window-manager backlog work
 continues; its original failures remain recorded. This is not a stable release.
 

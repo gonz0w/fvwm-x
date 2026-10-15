@@ -3828,6 +3828,124 @@ events_handle_configure_request(
 	return;
 }
 
+enum
+{
+	EVENTS_X_WATCH,
+	EVENTS_SESSION_WATCH,
+	EVENTS_IMAGE_WATCH,
+	EVENTS_MODULE_WATCH = EVENTS_IMAGE_WATCH + 2
+};
+
+typedef struct
+{
+	struct pollfd *descriptors;
+	fmodule **modules;
+	size_t module_count;
+} events_readiness;
+
+static Bool events_readiness_init(events_readiness *readiness, Bool session)
+{
+	fmodule_list_itr iterator;
+	fmodule *module;
+	size_t count = 0;
+	size_t index = 0;
+
+	*readiness = (events_readiness){0};
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
+	{
+		if (module->xinputRefs == SIZE_MAX)
+		{
+			module_list_itr_finish(&iterator);
+			return False;
+		}
+		count++;
+	}
+	if (count > (SIZE_MAX / sizeof(*readiness->descriptors) -
+	    EVENTS_MODULE_WATCH) / 2 ||
+	    count > SIZE_MAX / sizeof(*readiness->modules) ||
+	    count > (INT_MAX - EVENTS_MODULE_WATCH) / 2)
+	{
+		return False;
+	}
+	readiness->descriptors = fxcalloc(count * 2 + EVENTS_MODULE_WATCH,
+		sizeof(*readiness->descriptors));
+	readiness->modules = fxcalloc(count == 0 ? 1 : count,
+		sizeof(*readiness->modules));
+	readiness->descriptors[EVENTS_X_WATCH] =
+		(struct pollfd){x_fd, POLLIN, 0};
+	readiness->descriptors[EVENTS_SESSION_WATCH] =
+		(struct pollfd){session ? sm_fd : -1, POLLIN, 0};
+	image_async_descriptors(&readiness->descriptors[EVENTS_IMAGE_WATCH]);
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
+	{
+		struct pollfd *watch = &readiness->descriptors[
+			EVENTS_MODULE_WATCH + 2 * index];
+
+		/* No callbacks run while building. Each pin lasts through all
+		 * transport service, including recursive output handshakes that
+		 * can retire another watched producer and run module_cleanup. */
+		module->xinputRefs++;
+		readiness->modules[index++] = module;
+		watch[0] = (struct pollfd){module_input_queue_ready(module) ?
+			MOD_READFD(module) : -1, POLLIN, 0};
+		watch[1] = (struct pollfd){
+			FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module)) ?
+			-1 : MOD_WRITEFD(module), POLLOUT, 0};
+	}
+	readiness->module_count = count;
+	return True;
+}
+
+static void events_readiness_clear(events_readiness *readiness)
+{
+	for (size_t index = 0; index < readiness->module_count; index++)
+	{
+		assert(readiness->modules[index]->xinputRefs > 0);
+		readiness->modules[index]->xinputRefs--;
+	}
+	free(readiness->modules);
+	free(readiness->descriptors);
+	*readiness = (events_readiness){0};
+}
+
+static void events_readiness_service(events_readiness *readiness)
+{
+	for (size_t index = 0; index < readiness->module_count; index++)
+	{
+		fmodule *module = readiness->modules[index];
+		fmodule_input *input;
+		const struct pollfd *watch = &readiness->descriptors[
+			EVENTS_MODULE_WATCH + 2 * index];
+
+		if (MOD_IS_RETIRED(module))
+		{
+			continue;
+		}
+		if ((watch[0].revents | watch[1].revents) & POLLNVAL)
+		{
+			fvwm_debug(__func__, "module %p has invalid readiness fd",
+				module);
+			module_kill(module);
+			continue;
+		}
+		if (watch[0].revents & (POLLIN | POLLHUP | POLLERR))
+		{
+			if (module_receive_queued(module, &input) ==
+			    FMODULE_INPUT_READY)
+			{
+				module_input_enqueue(input);
+			}
+		}
+		if (!MOD_IS_RETIRED(module) &&
+		    (watch[1].revents & (POLLOUT | POLLHUP | POLLERR)))
+		{
+			FlushMessageQueue(module);
+		}
+	}
+}
+
 static int events_next_event(Display *disp, XEvent *event, Bool outer_boundary);
 
 void
@@ -3884,16 +4002,12 @@ HandleEvents(void)
  * dispatch wait until the interaction's command stack unwinds. */
 Bool events_interaction_poll(int timeout_ms)
 {
-	fmodule_list_itr iterator;
-	fmodule *module;
-	fmodule **owners;
-	struct pollfd *descriptors;
-	size_t count = 0;
-	size_t index;
+	events_readiness readiness;
+	struct timeval timeout;
 	int result;
 	int timer_ms;
-	int image_ms;
 	int poll_error;
+	bool image_timeout;
 	Bool healthy = True;
 
 	if (ExecuteInteractionCommandQueue())
@@ -3908,45 +4022,22 @@ Bool events_interaction_poll(int timeout_ms)
 		return True;
 	}
 	timer_ms = squeue_get_interaction_ms();
-	if (timer_ms >= 0 && timer_ms < timeout_ms)
+	if (timer_ms >= 0 && (timeout_ms < 0 || timer_ms < timeout_ms))
 	{
 		timeout_ms = timer_ms;
 	}
-	image_ms = image_async_timeout_ms(False);
-	if (image_ms >= 0 && (timeout_ms < 0 || image_ms < timeout_ms))
+	if (!events_readiness_init(&readiness, False))
 	{
-		timeout_ms = image_ms;
-	}
-	module_list_itr_init(&iterator);
-	while (module_list_itr_next(&iterator) != NULL)
-	{
-		count++;
-	}
-	if (count > (SIZE_MAX / sizeof(*descriptors) - 3) / 2 ||
-	    count > (INT_MAX - 3) / 2)
-	{
+		fvwm_debug(__func__, "module readiness snapshot limit exceeded");
 		return False;
 	}
-	descriptors = fxcalloc(count * 2 + 3, sizeof(*descriptors));
-	owners = fxcalloc(count == 0 ? 1 : count, sizeof(*owners));
-	descriptors[0].fd = x_fd;
-	descriptors[0].events = POLLIN;
-	module_list_itr_init(&iterator);
-	for (index = 0; (module = module_list_itr_next(&iterator)) != NULL;
-	     index++)
-	{
-		owners[index] = module;
-		descriptors[2 * index + 1].fd =
-			module_input_queue_ready(module) ? MOD_READFD(module) : -1;
-		descriptors[2 * index + 1].events = POLLIN;
-		descriptors[2 * index + 2].fd =
-			FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module)) ?
-			-1 : MOD_WRITEFD(module);
-		descriptors[2 * index + 2].events = POLLOUT;
-	}
-	image_async_descriptors(&descriptors[count * 2 + 1]);
+	timeout.tv_sec = timeout_ms < 0 ? 0 : timeout_ms / 1000;
+	timeout.tv_usec = timeout_ms < 0 ? 0 : (timeout_ms % 1000) * 1000;
 	XFlush(dpy);
-	result = fvwmPoll(descriptors, count * 2 + 3, timeout_ms);
+	result = image_async_wait(readiness.descriptors,
+		readiness.module_count * 2 + EVENTS_MODULE_WATCH,
+		timeout_ms < 0 ? NULL : &timeout,
+		image_async_timeout_ms(False), &image_timeout);
 	poll_error = result < 0 ? errno : 0;
 	image_async_transport();
 	if (result < 0)
@@ -3957,36 +4048,11 @@ Bool events_interaction_poll(int timeout_ms)
 	{
 		ModuleCommandQueueAfterPoll();
 		squeue_after_poll();
-		healthy = !(descriptors[0].revents &
+		healthy = !(readiness.descriptors[EVENTS_X_WATCH].revents &
 			(POLLERR | POLLHUP | POLLNVAL));
-		for (index = 0; index < count; index++)
-		{
-			fmodule_input *input;
-			short read_events = descriptors[2 * index + 1].revents;
-			short write_events = descriptors[2 * index + 2].revents;
-
-			module = owners[index];
-			if ((read_events | write_events) & POLLNVAL)
-			{
-				module_kill(module);
-				continue;
-			}
-			if (read_events & (POLLIN | POLLHUP | POLLERR))
-			{
-				if (module_receive_queued(module, &input) ==
-				    FMODULE_INPUT_READY)
-				{
-					module_input_enqueue(input);
-				}
-			}
-			if (write_events & (POLLOUT | POLLHUP | POLLERR))
-			{
-				FlushMessageQueue(module);
-			}
-		}
+		events_readiness_service(&readiness);
 	}
-	free(owners);
-	free(descriptors);
+	events_readiness_clear(&readiness);
 	module_cleanup();
 	return healthy;
 }
@@ -4009,11 +4075,10 @@ My_XNextEvent(Display *disp, XEvent *event)
 static int
 events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 {
-	fd_set		       in_fdset, out_fdset;
+	events_readiness       readiness;
 	int		       num_fd;
 	fmodule_list_itr       moditr;
 	fmodule		      *module;
-	fmodule_input	      *input;
 	static struct timeval  timeout;
 	static struct timeval *timeoutP = &timeout;
 	static unsigned int    consecutive_x_events;
@@ -4021,7 +4086,6 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 	Bool		       force_poll;
 	struct timeval	       poll_timeout = {0, 0};
 	bool image_timeout = false;
-	struct pollfd image_descriptors[2];
 
 	/* Pump even under an X-event flood, without changing any owner. */
 	image_async_transport();
@@ -4037,8 +4101,8 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 
 	/* check for any X events already queued up.
 	 * Side effect: this does an XFlush if no events are queued
-	 * Make sure nothing between here and the select causes further
-	 * X requests to be sent or the select may block even though
+	 * Make sure nothing between here and the wait causes further
+	 * X requests to be sent or the wait may block even though
 	 * there are events in the queue */
 	x_event_action =
 	    fvwm_x_event_policy(FPending(disp), &consecutive_x_events);
@@ -4067,7 +4131,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 			/* This may cause X requests to be sent */
 			StartupStuff();
 
-			return 0; /* so return without select()ing */
+			return 0; /* so return without waiting */
 		}
 	}
 
@@ -4082,8 +4146,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		Bool		       is_waiting_with_timeout = False;
 		static struct timeval *old_timeoutP	       = NULL;
 
-		/* The timeouts become undefined whenever the select returns,
-		 * and so we have to reinitialise them */
+		/* Recompute deadlines after every wait, including interrupts. */
 		scheduler_ms = squeue_get_next_ms();
 		if (scheduler_ms == 0) {
 			/* run scheduled commands */
@@ -4108,31 +4171,30 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 			is_waiting_with_timeout = True;
 		}
 
-		FD_ZERO(&in_fdset);
-		FD_ZERO(&out_fdset);
-		FD_SET(x_fd, &in_fdset);
-
-		/* nothing is done here if fvwm was compiled without session
-		 * support */
-		if (sm_fd >= 0) {
-			FD_SET(sm_fd, &in_fdset);
-		}
-
-		module_list_itr_init(&moditr);
-		while ((module = module_list_itr_next(&moditr)) != NULL) {
-			if (module_input_queue_ready(module)) {
-				FD_SET(MOD_READFD(module), &in_fdset);
+		if (!events_readiness_init(&readiness, True))
+		{
+			if (is_waiting_with_timeout)
+			{
+				timeoutP = old_timeoutP;
 			}
-
-			if (!FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module))) {
-				FD_SET(MOD_WRITEFD(module), &out_fdset);
-			}
+			fvwm_debug(__func__,
+				"module readiness snapshot limit exceeded");
+			return 0;
 		}
-
-		image_async_descriptors(image_descriptors);
-		num_fd = image_async_wait(fvwmlib_max_fd, &in_fdset, &out_fdset,
-		    image_descriptors, force_poll ? &poll_timeout : timeoutP,
-		    image_async_timeout_ms(outer_boundary), &image_timeout);
+		num_fd = image_async_wait(readiness.descriptors,
+			readiness.module_count * 2 + EVENTS_MODULE_WATCH,
+			force_poll ? &poll_timeout : timeoutP,
+			image_async_timeout_ms(outer_boundary), &image_timeout);
+		/* Preserve ordinary base-connection error retry. Invalid module
+		 * endpoints instead retire that producer during shared service. */
+		if (num_fd >= 0 &&
+		    ((readiness.descriptors[EVENTS_X_WATCH].revents |
+		    readiness.descriptors[EVENTS_SESSION_WATCH].revents) &
+		    POLLNVAL))
+		{
+			num_fd = -1;
+			errno = EBADF;
+		}
 		image_async_transport();
 		fvwm_process_deferred_signals();
 		if (is_waiting_with_timeout) {
@@ -4140,55 +4202,46 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		}
 
 		/* Express route out of fvwm ... */
-		if (isTerminated) {
+		if (isTerminated)
+		{
+			events_readiness_clear(&readiness);
 			return 0;
+		}
+		if (num_fd < 0)
+		{
+			events_readiness_clear(&readiness);
 		}
 	} while (num_fd < 0);
 	ModuleCommandQueueAfterPoll();
 	squeue_after_poll();
 
 	if (num_fd > 0) {
-		/* Check for module input. */
-		module_list_itr_init(&moditr);
-		while ((module = module_list_itr_next(&moditr)) != NULL) {
-			if (FD_ISSET(MOD_READFD(module), &in_fdset)) {
-				if (module_receive_queued(module, &input)
-				    == FMODULE_INPUT_READY) {
-					/* enqueue the received command */
-					module_input_enqueue(input);
-				}
-			}
-			if (MOD_WRITEFD(module) >= 0
-			    && FD_ISSET(MOD_WRITEFD(module), &out_fdset)) {
-				FlushMessageQueue(module);
-			}
-		}
+		Bool session_ready = readiness.descriptors[EVENTS_SESSION_WATCH].
+			revents & (POLLIN | POLLHUP | POLLERR);
 
-		/* Queued inputs pin dead modules until the next bounded drain.
-		 */
+		events_readiness_service(&readiness);
+		events_readiness_clear(&readiness);
+		/* Queued inputs retain their own death-row pins. */
 		module_cleanup();
-
-		/* nothing is done here if fvwm was compiled without session
-		 * support */
-		if ((sm_fd >= 0) && (FD_ISSET(sm_fd, &in_fdset))) {
+		/* Session callbacks run only on the ordinary dispatch path. */
+		if (sm_fd >= 0 && session_ready) {
 			ProcessICEMsgs();
 		}
-
-	} else if (!force_poll) {
-		/* select has timed out, things must have calmed down so let's
-		 * decorate */
-		if (fFvwmInStartup && !image_timeout) {
-			fvwm_debug(__func__,
-			    "Some command line modules have not quit, "
-			    "Starting up after timeout.\n");
-			StartupStuff();
-			timeoutP = NULL; /* set an infinite timeout to stop
-					  * ticking */
-			reset_style_changes();
-			Scr.flags.do_need_window_update = 0;
+	} else {
+		events_readiness_clear(&readiness);
+		if (!force_poll) {
+			/* A decoder-only deadline cannot finish module startup. */
+			if (fFvwmInStartup && !image_timeout) {
+				fvwm_debug(__func__,
+				    "Some command line modules have not quit, "
+				    "Starting up after timeout.\n");
+				StartupStuff();
+				timeoutP = NULL;
+				reset_style_changes();
+				Scr.flags.do_need_window_update = 0;
+			}
+			squeue_execute();
 		}
-		/* run scheduled commands if necessary */
-		squeue_execute();
 	}
 
 	/* check for X events again, rather than return 0 and get called again

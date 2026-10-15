@@ -1,5 +1,6 @@
 # Verification reports
 
+- [2026-10-14 core descriptor readiness](VERIFICATION-2026-10-14-CORE-READINESS.md): combined six-target/eight-profile, default-X/install/optional/scoped sanitizer checkpoint locally qualified; wider descriptor and release audits remain.
 - [2026-10-14 image-cache variant lookup](VERIFICATION-2026-10-14-PICTURE-CACHE.md): combined six-target/eight-profile, optional, install, default-BSD-X and scoped sanitizer checkpoint locally qualified; broader cache profiling remains open.
 
 - [2026-10-14 default BSD X startup diagnostics](VERIFICATION-2026-10-14-BSD-X-STARTUP.md): four related stories, six-target policy/teardown, retained/fresh authenticated startup controls and unchanged installed clients; original VESA cause remains open.

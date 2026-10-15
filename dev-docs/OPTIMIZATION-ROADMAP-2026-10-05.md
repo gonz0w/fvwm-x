@@ -85,7 +85,7 @@ queue and property helpers rather than introducing parallel owners.
   passes all six targets, full-source/install/default-X and optional/scoped
   gates. Existing synchronization barriers are retained; broader PERF-01 work
   and physical latency checks remain open.
-- **DRAW-01:** define dirty-state ownership, flush points and ordering barriers
+- **DRAW-01:** the [window-update contract](decisions/WINDOW-UPDATE-BARRIERS-2026-10-15.md) records current dirty-state ownership, flush points and ordering barriers
   once. STYLE-01/STATE-01 consume that contract instead of creating independent
   deferred-update systems. Preserve resource generations and final geometry.
 - **LOOP-01:** share descriptor readiness, owner lifetime, teardown and deadline

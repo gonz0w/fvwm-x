@@ -1423,9 +1423,11 @@ exists, fvwm tries to execute a module called "HelpMe".
 **Note**: There are many commands that affect look and feel of specific,
 some or all windows, like *Style*, *Mouse*, *Colorset*, *TitleStyle* and
 many others. For performance reasons such changes are not applied
-immediately but only when fvwm is idle, i.e. no user interaction or
-module input is pending. Specifically, new *Style* options that are set
-in a function are not applied until after the function has completed.
+immediately. Pending global updates are applied at the next ordinary
+event-loop boundary, after the current command or function has completed.
+This does not require the input queues to become empty. Specifically, new
+*Style* options set in a function do not update existing windows until
+after the function has completed, unless an explicit update command is used.
 This can sometimes lead to unwanted effects.
 
 To force that all pending changes are applied immediately, use the
@@ -4749,9 +4751,14 @@ Painting can finish after the command returns when many redraw events are
 queued. Pending redraws continue through normal event processing.
 
 *RefreshWindow*::
-	Causes the chosen window to redraw itself. All pending updates of the
-	window's style and look are applied immediately. E.g. if *Style* or
-	*TitleStyle* commands were issued inside a fvwm function.
+	Causes the chosen window to redraw itself. All pending global updates
+	of windows' styles and looks are applied immediately, including those
+	for other windows. E.g. if *Style* or *TitleStyle* commands were issued
+	inside a fvwm function.
+
++
+Painting can finish after the command returns when many redraw events are
+queued. Pending redraws continue through normal event processing.
 
 *Stick* [_bool_]::
 	If the _bool_ argument is empty or "_toggle_", the *Stick* command
@@ -5230,6 +5237,10 @@ styles starting with "Application".
 	All pending updates of all windows' styles and looks are applied
 	immediately. E.g. if *Style*, _WindowStyle_ or _TitleStyle_ commands
 	were issued inside a fvwm function.
+
++
+This applies pending changes before the command returns. Resulting redraw
+events can still be pending; this command does not wait for all painting.
 
 *Style* _stylename_ _options_ ...::
 	The *Style* command is used to set attributes of a window to values

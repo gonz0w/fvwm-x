@@ -1543,6 +1543,26 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 45,
     )
+    window_update_fixture = executable(
+        'fvwm-window-update-fixture', 'window_update_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows',
+            '-Wl,--wrap=module_config_dispatch_ready'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'window-update-xvfb', py,
+        args: [files('live_x/window_update_live.py'),
+            '--fvwm', window_update_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'window-update'],
+        depends: window_update_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 45,
+    )
     expose_service_fixture = executable(
         'fvwm-expose-service-fixture', 'expose_service_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),

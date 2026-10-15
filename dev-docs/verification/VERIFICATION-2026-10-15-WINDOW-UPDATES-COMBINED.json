@@ -1,0 +1,1046 @@
+{
+  "checkpoint_status": "All affected window-update checks pass; full suite retains two unchanged timing failures",
+  "remaining_gaps": [
+    {
+      "owner": "VERIFY-01 #5",
+      "target": "linux-amd64/gcc",
+      "test": "topology-xorg-dummy",
+      "detail": "100 ms pressure-noise xrandr bound fails in original, isolated and final idle runs; code/binary/deadline unchanged"
+    },
+    {
+      "owner": "CI-01 #17",
+      "target": "openbsd-amd64/default",
+      "test": "ci-asset-contract",
+      "detail": "test_worker_refuses_unlocked_url_without_opening_it exceeds two-second subprocess bound in original and isolated runs; no source/deadline change"
+    }
+  ],
+  "runners": {
+    "fvwm-x-linux-arm64-svg": {
+      "files": {
+        "remote.py": {
+          "remote": "/tmp/window-update-remote.py",
+          "sha256": "c083da29ffda7f0b147dec99cc022258bd404df92129e06a26141b394e43005a"
+        },
+        "default.py": {
+          "remote": "/tmp/window-update-default.py",
+          "sha256": "36b11a03f1be8a85f518be832766d3aa57dcaf5231f3c9e020b762b5a4840771"
+        },
+        "sanitize.py": {
+          "remote": "/tmp/window-update-sanitize.py",
+          "sha256": "38094d8edfc873932a966ed6f458a55b4c6911e1bf9c4d3e878f89a21225b75c"
+        },
+        "final_remote.py": {
+          "remote": "/tmp/window-update-final-remote.py",
+          "sha256": "69c8f6c14bbf4460dfaf2175fe9360fee841c9a63d2548058232f0648ed7f9b5"
+        }
+      },
+      "archive_sha256": "917926a698737d251ca5270fa17654c00c1bc2361b92e0d99c6b7d0f1e27baa7",
+      "archive": "/tmp/fvwm-module-waits-20261015/window-update-runners.tgz"
+    },
+    "linux-amd64": {
+      "files": {
+        "remote.py": {
+          "remote": "/tmp/window-update-remote.py",
+          "sha256": "c083da29ffda7f0b147dec99cc022258bd404df92129e06a26141b394e43005a"
+        },
+        "default.py": {
+          "remote": "/tmp/window-update-default.py",
+          "sha256": "36b11a03f1be8a85f518be832766d3aa57dcaf5231f3c9e020b762b5a4840771"
+        },
+        "sanitize.py": {
+          "remote": "/tmp/window-update-sanitize.py",
+          "sha256": "38094d8edfc873932a966ed6f458a55b4c6911e1bf9c4d3e878f89a21225b75c"
+        },
+        "final_remote.py": {
+          "remote": "/tmp/window-update-final-remote.py",
+          "sha256": "69c8f6c14bbf4460dfaf2175fe9360fee841c9a63d2548058232f0648ed7f9b5"
+        },
+        "recover_linux.py": {
+          "remote": "/tmp/window-update-recover-linux.py",
+          "sha256": "88f443e112d5ca7f074f50868ae2d252549329e078d79a623862a39577b875e2"
+        },
+        "continue_linux.py": {
+          "remote": "/tmp/window-update-continue-linux.py",
+          "sha256": "ebbd5ed65ae2f3da24c5d6f885e070f1e8e45d73759e213434f4070f78f69fd4"
+        },
+        "finish_linux.py": {
+          "remote": "/tmp/window-update-affected-finish.py",
+          "sha256": "021d772ec067c4fda4dd11a779629d39547a84800bf0c4f008ff28c766f04fe7"
+        },
+        "finish_linux_affected.py": {
+          "remote": "/tmp/window-update-affected-evidence.py",
+          "sha256": "27080c06bc960bb9743fd634cee7071a77349c9f7af3d94c58a21fe4c3521e53"
+        }
+      },
+      "archive_sha256": "81c7e18e222c1c79c56dbaaf6973cf97f00f25bb564cae5f70e02053db480084",
+      "archive": "/root/fvwm-module-waits-20261015/window-update-runners.tgz"
+    },
+    "freebsd-arm64": {
+      "files": {
+        "remote.py": {
+          "remote": "/tmp/window-update-remote.py",
+          "sha256": "c083da29ffda7f0b147dec99cc022258bd404df92129e06a26141b394e43005a"
+        },
+        "default.py": {
+          "remote": "/tmp/window-update-default.py",
+          "sha256": "36b11a03f1be8a85f518be832766d3aa57dcaf5231f3c9e020b762b5a4840771"
+        },
+        "sanitize.py": {
+          "remote": "/tmp/window-update-sanitize.py",
+          "sha256": "38094d8edfc873932a966ed6f458a55b4c6911e1bf9c4d3e878f89a21225b75c"
+        },
+        "final_remote.py": {
+          "remote": "/tmp/window-update-final-remote.py",
+          "sha256": "69c8f6c14bbf4460dfaf2175fe9360fee841c9a63d2548058232f0648ed7f9b5"
+        },
+        "recover_freebsd.py": {
+          "remote": "/tmp/window-update-recover.py",
+          "sha256": "ddfdad849c04537624d95866af9819f51380f19c29645309af90a04a957db365"
+        }
+      },
+      "archive_sha256": "fb8b6bdf95ad231cc538c87f411d95586bd35c6a80ee5db6bfa7789ff9acaf32",
+      "archive": "/root/fvwm-module-waits-20261015/window-update-runners.tgz"
+    },
+    "openbsd-arm64": {
+      "files": {
+        "remote.py": {
+          "remote": "/tmp/window-update-remote.py",
+          "sha256": "c083da29ffda7f0b147dec99cc022258bd404df92129e06a26141b394e43005a"
+        },
+        "default.py": {
+          "remote": "/tmp/window-update-default.py",
+          "sha256": "36b11a03f1be8a85f518be832766d3aa57dcaf5231f3c9e020b762b5a4840771"
+        },
+        "sanitize.py": {
+          "remote": "/tmp/window-update-sanitize.py",
+          "sha256": "38094d8edfc873932a966ed6f458a55b4c6911e1bf9c4d3e878f89a21225b75c"
+        },
+        "final_remote.py": {
+          "remote": "/tmp/window-update-final-remote.py",
+          "sha256": "69c8f6c14bbf4460dfaf2175fe9360fee841c9a63d2548058232f0648ed7f9b5"
+        },
+        "recover_openbsd.py": {
+          "remote": "/tmp/window-update-recover.py",
+          "sha256": "edc43e1f4146eba3fe918d6b7557c42b160eafec314a668974625f5bfb3c96cc"
+        }
+      },
+      "archive_sha256": "8e02b1fa63b07bf79bb7f7e54f7314ea20bd286abd415b481da4b3658e596df1",
+      "archive": "/usr/obj/fvwm-module-waits-20261015/window-update-runners.tgz"
+    },
+    "freebsd-amd64": {
+      "files": {
+        "remote.py": {
+          "remote": "/tmp/window-update-remote.py",
+          "sha256": "c083da29ffda7f0b147dec99cc022258bd404df92129e06a26141b394e43005a"
+        },
+        "default.py": {
+          "remote": "/tmp/window-update-default.py",
+          "sha256": "36b11a03f1be8a85f518be832766d3aa57dcaf5231f3c9e020b762b5a4840771"
+        },
+        "sanitize.py": {
+          "remote": "/tmp/window-update-sanitize.py",
+          "sha256": "38094d8edfc873932a966ed6f458a55b4c6911e1bf9c4d3e878f89a21225b75c"
+        },
+        "final_remote.py": {
+          "remote": "/tmp/window-update-final-remote.py",
+          "sha256": "69c8f6c14bbf4460dfaf2175fe9360fee841c9a63d2548058232f0648ed7f9b5"
+        }
+      },
+      "archive_sha256": "affc73c484188cc768d4248b46e81cc9bde875a4b0a60eca2e61b50ad5b0923b",
+      "archive": "/root/fvwm-module-waits-20261015/window-update-runners.tgz"
+    },
+    "openbsd-amd64": {
+      "files": {
+        "remote.py": {
+          "remote": "/tmp/window-update-remote.py",
+          "sha256": "c083da29ffda7f0b147dec99cc022258bd404df92129e06a26141b394e43005a"
+        },
+        "default.py": {
+          "remote": "/tmp/window-update-default.py",
+          "sha256": "36b11a03f1be8a85f518be832766d3aa57dcaf5231f3c9e020b762b5a4840771"
+        },
+        "sanitize.py": {
+          "remote": "/tmp/window-update-sanitize.py",
+          "sha256": "38094d8edfc873932a966ed6f458a55b4c6911e1bf9c4d3e878f89a21225b75c"
+        },
+        "final_remote.py": {
+          "remote": "/tmp/window-update-final-remote.py",
+          "sha256": "69c8f6c14bbf4460dfaf2175fe9360fee841c9a63d2548058232f0648ed7f9b5"
+        },
+        "recover_openbsd_amd.py": {
+          "remote": "/tmp/window-update-serial-control.py",
+          "sha256": "700c71feb490c615f88ad5f71829a593373c109df0549c477a87d71b9bc3604c"
+        },
+        "finish_openbsd_affected.py": {
+          "remote": "/tmp/window-update-affected-finish.py",
+          "sha256": "003231a09b0c8e84dbfb2ba3de3464ebce0f6c7c79377cb5d3af7abf0ff65edd"
+        }
+      },
+      "archive_sha256": "2c931255301a12161791800bf0f7a16ddc67b9a499a4671393631c73ebbaf0cd",
+      "archive": "/usr/obj/fvwm-module-waits-20261015/window-update-runners.tgz"
+    }
+  },
+  "manuals": {
+    "inputs": {
+      "baseline": {
+        "ref": "20eda2943b1effca11174a2577cded6e58a01808",
+        "archive_sha256": "f33a4fea67e63f75b6c9dab4900d0c83fa46f63e13428b3c88c55ae4db9a9ac4"
+      },
+      "candidate": {
+        "ref": "4e102b94b",
+        "archive_sha256": "1bf4020cfff392bdefaff79f2c7ee2a50e8474ce81e5f955f4c26abc7396c13a"
+      }
+    },
+    "evidence_sha256": "712f402b8649444ae471021fb8647fa44d04af978a5023dc067c28ac2830e520",
+    "rendered_sha256": "a7e1662315dddbb1108aacd60e58df185ff4c9779c18540f47777e429671ed00",
+    "pages": {
+      "baseline": {
+        "fvwm3": {
+          "lint_status": 3,
+          "lint_lines": 67
+        },
+        "fvwm3all": {
+          "lint_status": 3,
+          "lint_lines": 218
+        },
+        "fvwm3commands": {
+          "lint_status": 3,
+          "lint_lines": 101
+        },
+        "fvwm3styles": {
+          "lint_status": 3,
+          "lint_lines": 32
+        }
+      },
+      "candidate": {
+        "fvwm3": {
+          "lint_status": 3,
+          "lint_lines": 67
+        },
+        "fvwm3all": {
+          "lint_status": 3,
+          "lint_lines": 218
+        },
+        "fvwm3commands": {
+          "lint_status": 3,
+          "lint_lines": 101
+        },
+        "fvwm3styles": {
+          "lint_status": 3,
+          "lint_lines": 32
+        }
+      }
+    },
+    "diagnostic_comparison": "Same diagnostics after normalizing source directory and shifted line/column positions; inherited lint status 3 retained.",
+    "reviewed_text": [
+      "Deferred application with input queued",
+      "RefreshWindow global style application and selected redraw",
+      "UpdateStyles painting distinction"
+    ]
+  },
+  "owner": "DRAW-01 #25",
+  "base": "20eda2943b1effca11174a2577cded6e58a01808",
+  "source_archive_sha256": "84d548afc5a31c7ef5ce83a6c620bca6673f46cf2ea452a0e94e9c45ad6d1921",
+  "regular_files": 1947,
+  "final_test_refinement": {
+    "full_source": "84d548afc5a31c7ef5ce83a6c620bca6673f46cf2ea452a0e94e9c45ad6d1921",
+    "archive_sha256": "b03c6905863767ed05701cb983c1a5c917fd3941f8b771afca960a660a1faaa7",
+    "files": {
+      "tests/window_update_start.c": {
+        "full": {
+          "sha256": "e38ba780b158127afa6006e2b8eb1750433ac35bebc32cb83c0b291aa00d3e6f",
+          "mode": 420
+        },
+        "final": {
+          "sha256": "7512dc5e66848964d01d2b2f42ae8e492e4e0a7498cd1edbfba8747602d8c602",
+          "mode": 420
+        }
+      },
+      "tests/live_x/window_update_live.py": {
+        "full": {
+          "sha256": "6498eebf76403f88d1be63d677ce601630cd82988f1d54f51b24fa487faa753b",
+          "mode": 420
+        },
+        "final": {
+          "sha256": "9cc33c1902da278f971fa1eb95505efbe3c00a21c07a3913ac200d7617ceaadb",
+          "mode": 420
+        }
+      }
+    },
+    "change": "Two test-only line wraps; C whitespace tokens and Python AST unchanged."
+  },
+  "final_affected_entries": 10,
+  "final_sanitizer_entries": 1,
+  "final_profiles": {
+    "fvwm-x-linux-arm64-svg/gcc": {
+      "tests": 1,
+      "fixture_sha256": "5f9aee464f0f349f1a5188cc5765d550a7ea87434cab735b23226e7c9c9d5262"
+    },
+    "fvwm-x-linux-arm64-svg/clang": {
+      "tests": 1,
+      "fixture_sha256": "f1c99f08a0423a2adb871ae5e4f2069933e5afacead487dff976dca2ea99db11"
+    },
+    "fvwm-x-linux-arm64-svg/software": {
+      "tests": 1,
+      "fixture_sha256": "b405358fc4f368286c788174a5618a4a130dbdcc97c416b8ace4e641e50bb93f"
+    },
+    "fvwm-x-linux-arm64-svg/minimal": {
+      "tests": 1,
+      "fixture_sha256": "0798181a5d616d1ae4289c17d8c75d95031da9d8d384bcbf46c75a517baf5357"
+    },
+    "fvwm-x-linux-arm64-svg/module-waits-asan": {
+      "tests": 1,
+      "fixture_sha256": "79e7d8e3a566349dced8501d0c9ce6145ee6a72807d49d24b7216e2eb0e4fb98"
+    },
+    "linux-amd64/gcc": {
+      "tests": 1,
+      "fixture_sha256": "28668631a8a168ea9db96051f576446d974fe7fc9b0d888516e4c9da39d69063"
+    },
+    "linux-amd64/clang": {
+      "tests": 1,
+      "fixture_sha256": "e77f730cb69a07cdb6f8294dc20010a8050e170f8f0118e51ad560cc4de7d6ad"
+    },
+    "freebsd-arm64/default": {
+      "tests": 1,
+      "fixture_sha256": "cdada7ed50f9f2a08abaa176ce4919f5a443aa12090a9c6ab5c30113c07b1fbf"
+    },
+    "openbsd-arm64/default": {
+      "tests": 1,
+      "fixture_sha256": "920b100b6236370c2e9c0bcb5274186cc4102e4c98c609a5591e3eb36e315240"
+    },
+    "freebsd-amd64/default": {
+      "tests": 1,
+      "fixture_sha256": "fbd9f26d462c9ad070380f424e69d475251ffd34b3f621a786f13736f950de57"
+    },
+    "openbsd-amd64/default": {
+      "tests": 1,
+      "fixture_sha256": "6eef0684ae30425b2e24a93cb479a2629e79f6c34d00582393799c27338c6f84"
+    }
+  },
+  "final_archives": {
+    "fvwm-x-linux-arm64-svg": {
+      "sha256": "fec2bf7095bbbfc7420c36e6a106577d24e411b53678cfce285cec45d570fe97",
+      "size": 16605136
+    },
+    "linux-amd64": {
+      "sha256": "5811f7be6772448207e58c0848fb766c90c5aec3a9523927c3a5c0b410b07116",
+      "size": 4774180
+    },
+    "freebsd-arm64": {
+      "sha256": "3a664bd283bcad432e7558a57d20c8eb425b619cf8b94f71e46879b2a678b942",
+      "size": 2130844
+    },
+    "openbsd-arm64": {
+      "sha256": "d910b2e179dc9470dd72282518313f5cdb5232b1fa8c096426b5abc6543d1dbf",
+      "size": 1985531
+    },
+    "freebsd-amd64": {
+      "sha256": "254fd921bb3d640591419a393d9f7d262eb37c67410ccead90be467af9e945d5",
+      "size": 2179318
+    },
+    "openbsd-amd64": {
+      "sha256": "c1f80df9276dcbb5f7a7dfa6140df96eb359f817c52a04a4bd0c881bcd0077f2",
+      "size": 1995861
+    }
+  },
+  "test_paths": {
+    "tests/window_update_start.c": {
+      "sha256": "e38ba780b158127afa6006e2b8eb1750433ac35bebc32cb83c0b291aa00d3e6f",
+      "mode": 420
+    },
+    "tests/live_x/window_update_live.py": {
+      "sha256": "6498eebf76403f88d1be63d677ce601630cd82988f1d54f51b24fa487faa753b",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "95f5d9c98bc6ef81c5672081fd287dfeb35baf54798b8ae00918039cee0915ce",
+      "mode": 420
+    }
+  },
+  "production_sources_unchanged_from": "9ed48f0c34d9d1bf9747b5a3589927b8e706b748059e63e676507672ae02864e",
+  "meson_change": "one additive non-installed fixture/test block; existing content byte-identical",
+  "counts": {
+    "standard_passed": 1950,
+    "standard_failed": 2,
+    "optional_passed": 427,
+    "standard_entries": 1952,
+    "optional_entries": 427,
+    "installed_code": 150,
+    "installed_catalogs": 99,
+    "default_x_fixtures": 4,
+    "default_x_clean_exits": 4,
+    "default_x_forced_cleanup": 0,
+    "sanitizer_entries": 1,
+    "named_case_observations": 120
+  },
+  "profiles": {
+    "fvwm-x-linux-arm64-svg/gcc": {
+      "full_scope_passed": 250,
+      "full_scope_remaining_failures": [],
+      "tests": 250,
+      "fixture_sha256": "ebb7551872a01f272f6c966dc36a66b83ea3ee9b90ca9f9de5683e81dd649814",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    "fvwm-x-linux-arm64-svg/clang": {
+      "full_scope_passed": 250,
+      "full_scope_remaining_failures": [],
+      "tests": 250,
+      "fixture_sha256": "1bfa89e5b739165c0634d8fcba9866ae43039804e444c6795f9e8fdeaa5a0d12",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    "fvwm-x-linux-arm64-svg/software": {
+      "full_scope_passed": 229,
+      "full_scope_remaining_failures": [],
+      "tests": 229,
+      "fixture_sha256": "a8b0f1ab1182a3bec370435ecee2b79a89d5a934640a9265b58624014365ed19",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    "fvwm-x-linux-arm64-svg/minimal": {
+      "full_scope_passed": 198,
+      "full_scope_remaining_failures": [],
+      "tests": 198,
+      "fixture_sha256": "28f6be42bd79909e9fbc5a3ce9720498cd38e5bec337d4f4262ba3930b067b12",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 0,
+      "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    "linux-amd64/clang": {
+      "full_scope_passed": 250,
+      "full_scope_remaining_failures": [],
+      "tests": 250,
+      "fixture_sha256": "451bc1343a2f2e21bd5b458ce57d7b770eb23580860f941cc79619a298f45a0a",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "Debian clang version 19.1.7 (3+b1)",
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ]
+    },
+    "linux-amd64/gcc": {
+      "full_scope_passed": 249,
+      "full_scope_remaining_failures": [
+        "fvwm3:live-x / topology-xorg-dummy"
+      ],
+      "tests": 250,
+      "fixture_sha256": "5cbd207c31df9a93a55c2430d34a2ebb66e4862ebed8b12f526a370a1e5c2a2a",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "cc (Debian 14.2.0-19) 14.2.0",
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ]
+    },
+    "freebsd-arm64/default": {
+      "full_scope_passed": 238,
+      "full_scope_remaining_failures": [],
+      "tests": 238,
+      "fixture_sha256": "ee52db28ffe7d7b675bbbed4b20ec90b044ca5f1ffeabce9e83eb36a2d20d814",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ]
+    },
+    "openbsd-arm64/default": {
+      "full_scope_passed": 238,
+      "full_scope_remaining_failures": [],
+      "tests": 238,
+      "fixture_sha256": "ad6f57d70983cac6dbf02bd1a61a58172d909651699bb8d378d50932cfa0e789",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "OpenBSD clang version 19.1.7",
+      "uname": [
+        "OpenBSD",
+        "fvwm-x-openbsd.my.domain",
+        "7.9",
+        "GENERIC.MP#222",
+        "arm64"
+      ]
+    },
+    "freebsd-amd64/default": {
+      "full_scope_passed": 238,
+      "full_scope_remaining_failures": [],
+      "tests": 238,
+      "fixture_sha256": "b22555bd6be7cda2869dfb47189667fb459f267d5c5714c8666d286bb024b0c1",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "amd64"
+      ]
+    },
+    "openbsd-amd64/default": {
+      "full_scope_passed": 237,
+      "full_scope_remaining_failures": [
+        "fvwm3:ci-asset-contract"
+      ],
+      "tests": 238,
+      "fixture_sha256": "c47a2480259229796ac74952567d19d5c5e45b45cb881510f9162fd16a73c2e2",
+      "unchanged_installed_code": 15,
+      "unchanged_catalogs": 11,
+      "compiler": "OpenBSD clang version 19.1.7",
+      "uname": [
+        "OpenBSD",
+        "fvwm-x-openbsd-amd64.my.domain",
+        "7.9",
+        "GENERIC.MP#449",
+        "amd64"
+      ]
+    }
+  },
+  "archives": {
+    "fvwm-x-linux-arm64-svg": {
+      "sha256": "89c82dcf9e38ff145818adfa36cf078847af6d632c0ce4aa72621cbf483ce781",
+      "size": 9941230
+    },
+    "linux-amd64": {
+      "sha256": "1d659c5be775ccb8a93897cf4ebea59f10e4acec5e794bb4a6de111919683fc7",
+      "size": 5049523
+    },
+    "freebsd-arm64": {
+      "sha256": "13276e87e392433a7b97dbf4a2b2edc1d550d18c5b49acd637e317a8158fcc80",
+      "size": 2288263
+    },
+    "openbsd-arm64": {
+      "sha256": "4543745b1ab25ca37744f9944587d20927596ac4edb1a528c430dc1627c73edf",
+      "size": 2152969
+    },
+    "freebsd-amd64": {
+      "sha256": "64d037807de5b628a41e146c5382e6df8ba972fff2866fcdc54f49ecd491cd71",
+      "size": 2314953
+    },
+    "openbsd-amd64": {
+      "sha256": "170a336a4e823affc9eb20a6128c64d41f417058b763b619cbf411ba5e5a4e79",
+      "size": 2906722
+    }
+  },
+  "default_x": {
+    "freebsd-arm64": {
+      "system": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ],
+      "status": "passed",
+      "phase": "complete",
+      "display": ":201",
+      "source": "84d548afc5a31c7ef5ce83a6c620bca6673f46cf2ea452a0e94e9c45ad6d1921",
+      "fixtures": {
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/window-update-full1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "randr": "Screen 0: minimum 800 x 600, current 800 x 600, maximum 800 x 600\ndefault connected 800x600+0+0 0mm x 0mm\n   800x600        0.00* \n",
+      "unauthenticated_client_refused": true,
+      "server_status_before_cleanup": null,
+      "server_status_after_cleanup": 0,
+      "vendor_log_copied": true,
+      "dependencies": {
+        "files": [
+          {
+            "path": "/usr/local/bin/Xorg",
+            "resolved": "/usr/local/bin/Xorg",
+            "sha256": "2ce7afc7434ea9f0c414622963f6775840ffb04e4f9ab9a65d7600428fb54fa2",
+            "size": 281
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "sha256": "218b667adf59e2cedee3d28a9c42dc7e1c610f880c3b2800ee8acfc6321df2d7",
+            "size": 108472
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "sha256": "7d33bc8caec25e8823996b78b7b7d2a4832da65327c9d0e110179aa430735769",
+            "size": 18520
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "resolved": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "sha256": "14c04601057c38bb65c6710b6d1c14d51736e6c708420437884c3e580c5c368d",
+            "size": 289192
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/libshadow.so",
+            "resolved": "/usr/local/lib/xorg/modules/libshadow.so",
+            "sha256": "cfd27be04a32ca3e7784ab9cd177522fe019ebfb1a2d63e0ca385833e0cf3f85",
+            "size": 31328
+          },
+          {
+            "path": "/usr/local/libexec/Xorg",
+            "resolved": "/usr/local/libexec/Xorg",
+            "sha256": "d9c3b56af4077e35d9e2aa439457fd8ebf45969accf7dfc2dd3dcdff4c78cc71",
+            "size": 2297568
+          },
+          {
+            "path": "/usr/local/libexec/Xorg.wrap",
+            "resolved": "/usr/local/libexec/Xorg.wrap",
+            "sha256": "d5726da5df3049a6dbcd68df2d9125b39161972961d66f41cc628b182b8d664c",
+            "size": 7600
+          }
+        ],
+        "errors": []
+      }
+    },
+    "openbsd-arm64": {
+      "system": [
+        "OpenBSD",
+        "fvwm-x-openbsd.my.domain",
+        "7.9",
+        "GENERIC.MP#222",
+        "arm64"
+      ],
+      "status": "passed",
+      "phase": "complete",
+      "display": ":201",
+      "source": "84d548afc5a31c7ef5ce83a6c620bca6673f46cf2ea452a0e94e9c45ad6d1921",
+      "fixtures": {
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/usr/obj/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/usr/obj/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/usr/obj/fvwm-module-waits-20261015/window-update-full1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "randr": "Screen 0: minimum 800 x 600, current 800 x 600, maximum 800 x 600\ndefault connected\n   800x600        0.00  \n",
+      "unauthenticated_client_refused": true,
+      "server_status_before_cleanup": null,
+      "server_status_after_cleanup": 0,
+      "vendor_log_copied": true,
+      "dependencies": {
+        "files": [
+          {
+            "path": "/usr/X11R6/bin/Xorg",
+            "resolved": "/usr/X11R6/bin/Xorg",
+            "sha256": "8b1d364d902618777b57c96bcbc826866c0fa61c4758d6a6302237b97b128004",
+            "size": 3199992
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/drivers/wsfb_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/drivers/wsfb_drv.so",
+            "sha256": "36e24ab6ca38ae35ac8b5d8fb6d2331e50753ebd4a4a919a8b764377832d0a4c",
+            "size": 30160
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "resolved": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "sha256": "4321c5abfc61ed155aae3dab652026d2857bec850376a5af3f1c303a83301255",
+            "size": 545440
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "sha256": "5da3c26e5b0a4fdbba7ffe973e4bf547bd5b758ae0152b92866c1b2f5ebac1a3",
+            "size": 29528
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "sha256": "1595129c4cd8b0e682bb1c0a6e02681c9ef314bc97a011f38210bc8d9f43f057",
+            "size": 34104
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libshadow.so",
+            "resolved": "/usr/X11R6/lib/modules/libshadow.so",
+            "sha256": "a260050ef64bfc69d0942e8f9092b131db23e427d31491b99f955f9e80436433",
+            "size": 44776
+          }
+        ],
+        "errors": [],
+        "syspatch": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      }
+    },
+    "freebsd-amd64": {
+      "system": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "amd64"
+      ],
+      "status": "passed",
+      "phase": "complete",
+      "display": ":201",
+      "source": "84d548afc5a31c7ef5ce83a6c620bca6673f46cf2ea452a0e94e9c45ad6d1921",
+      "fixtures": {
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/window-update-full1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "randr": "Screen 0: minimum 1280 x 800, current 1280 x 800, maximum 1280 x 800\ndefault connected 1280x800+0+0 0mm x 0mm\n   1280x800       0.00* \n",
+      "unauthenticated_client_refused": true,
+      "server_status_before_cleanup": null,
+      "server_status_after_cleanup": 0,
+      "vendor_log_copied": true,
+      "dependencies": {
+        "files": [
+          {
+            "path": "/usr/local/bin/Xorg",
+            "resolved": "/usr/local/bin/Xorg",
+            "sha256": "2ce7afc7434ea9f0c414622963f6775840ffb04e4f9ab9a65d7600428fb54fa2",
+            "size": 281
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "sha256": "b0d0c882d23297c6da0b6016e47e0c76ea10ed1c465e96262f0c2b8b88718211",
+            "size": 112264
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "sha256": "6ac37b5c63140a6c6585adad4c0b72f8a3e216554cd14ad243801e9783c491be",
+            "size": 19488
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "resolved": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "sha256": "a37221261679958ad23055c24da9c9ff8a0bb79c586d3ffc1688b961db8c44a8",
+            "size": 310992
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/libshadow.so",
+            "resolved": "/usr/local/lib/xorg/modules/libshadow.so",
+            "sha256": "1182f468a0a298f33e10abde91aedf254ac67d2568bc98b9305460659ac4ec00",
+            "size": 35648
+          },
+          {
+            "path": "/usr/local/libexec/Xorg",
+            "resolved": "/usr/local/libexec/Xorg",
+            "sha256": "c0843fd0ff7f68466faf4479473cdc7af7038fddefd4d9379292596e73673234",
+            "size": 2384432
+          },
+          {
+            "path": "/usr/local/libexec/Xorg.wrap",
+            "resolved": "/usr/local/libexec/Xorg.wrap",
+            "sha256": "0a8fa4a610a6e7fe742d403296dcd53e1e2c0cb0d5d9d1ed516f33f65530414b",
+            "size": 8064
+          }
+        ],
+        "errors": []
+      }
+    },
+    "openbsd-amd64": {
+      "system": [
+        "OpenBSD",
+        "fvwm-x-openbsd-amd64.my.domain",
+        "7.9",
+        "GENERIC.MP#449",
+        "amd64"
+      ],
+      "status": "passed",
+      "phase": "complete",
+      "display": ":201",
+      "source": "84d548afc5a31c7ef5ce83a6c620bca6673f46cf2ea452a0e94e9c45ad6d1921",
+      "fixtures": {
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/usr/obj/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/usr/obj/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/usr/obj/fvwm-module-waits-20261015/window-update-full1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "randr": "Screen 0: minimum 640 x 480, current 1920 x 1200, maximum 1920 x 1200\ndefault connected 1920x1200+0+0 0mm x 0mm\n   1920x1200      0.00* \n   1920x1080      0.00  \n   1600x1200      0.00  \n   1680x1050      0.00  \n   1400x1050      0.00  \n   1280x1024      0.00  \n   1440x900       0.00  \n   1280x960       0.00  \n   1280x800       0.00  \n   1280x768       0.00  \n   1024x768       0.00  \n   800x600        0.00  \n   640x480        0.00  \n",
+      "unauthenticated_client_refused": true,
+      "server_status_before_cleanup": null,
+      "server_status_after_cleanup": 0,
+      "vendor_log_copied": true,
+      "dependencies": {
+        "files": [
+          {
+            "path": "/usr/X11R6/bin/Xorg",
+            "resolved": "/usr/X11R6/bin/Xorg",
+            "sha256": "e208e83fc4ca547bb99c63c6a1b52baa090ddcb7b7b2846892576c4eee23a471",
+            "size": 3047096
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+            "sha256": "b6771240b27fc21956e8100ab1cecfe5e5827bddcba3447fa2a3920b2bf1fd69",
+            "size": 37112
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "resolved": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "sha256": "90a01364b3c991e2d54276c2ae243f6f24e4fd55705123e1e1f5dcce3d67c676",
+            "size": 465992
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "sha256": "6b9123c50f8e25c8163f0e57de37abc5b3d5ee72e92373c8bd16263734b2e509",
+            "size": 28240
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "sha256": "a83917af05a4de48825f0b9c20e034c61dce6869b8533a8e13fb15996e9d4004",
+            "size": 32656
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libint10.so",
+            "resolved": "/usr/X11R6/lib/modules/libint10.so",
+            "sha256": "b98e9042210a26fcff38ac940a5afa8468fb920bf96ba670e5bc5fa059d09862",
+            "size": 312712
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libshadow.so",
+            "resolved": "/usr/X11R6/lib/modules/libshadow.so",
+            "sha256": "9ec7187a6ed8637a683dd3bdf75793a623b7d07d0306efdea49f6763da8b1655",
+            "size": 42624
+          }
+        ],
+        "errors": [],
+        "syspatch": {
+          "status": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      }
+    }
+  },
+  "sanitizer": {
+    "uname": [
+      "Linux",
+      "288f898505a4",
+      "6.18.10-200.fc43.aarch64",
+      "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+      "aarch64"
+    ],
+    "commands": [
+      {
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+        ],
+        "status": 0,
+        "settings": null
+      },
+      {
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j",
+          "2",
+          "fvwm-window-update-fixture"
+        ],
+        "status": 0,
+        "settings": null
+      },
+      {
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "window-update-xvfb"
+        ],
+        "status": 0,
+        "settings": {
+          "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1",
+          "UBSAN_OPTIONS": "halt_on_error=1"
+        }
+      }
+    ],
+    "source": "84d548afc5a31c7ef5ce83a6c620bca6673f46cf2ea452a0e94e9c45ad6d1921",
+    "instrumented_library_sha256": "c5cdd7918800850ab64e2f49f8fb64d813c6bb14d3b4a0b62f7d542fcfc06134",
+    "effective_options": {
+      "b_sanitize": "address,undefined",
+      "b_lundef": true,
+      "c_link_args": [
+        "-rtlib=compiler-rt"
+      ]
+    },
+    "tests": 1
+  },
+  "retained_retries": [
+    {
+      "target": "linux-amd64/gcc",
+      "test": "topology-xorg-dummy",
+      "first_isolated_rerun": "failed unchanged 100 ms limit",
+      "idle_control": "failed unchanged 100 ms bound after other owning suites completed; retained gap"
+    }
+  ],
+  "preserved_failures": [
+    {
+      "target": "openbsd-amd64/default",
+      "test": "image-colorset-effects-xvfb",
+      "failure": "scheduled-effect MFL echo deadline",
+      "isolated_unchanged_rerun": "passed",
+      "original_full_passed": 233,
+      "original_full_failed": 5
+    },
+    {
+      "target": "openbsd-amd64/default",
+      "test": "ci-asset-contract",
+      "failure": "two-second Python negative-worker deadline",
+      "isolated_unchanged_rerun": "failed same two-second bound; retained gap",
+      "original_full_passed": 233,
+      "original_full_failed": 5
+    },
+    {
+      "target": "openbsd-amd64/default",
+      "test": "native-gate-contract",
+      "failure": "180-second pure gate-harness timeout",
+      "isolated_unchanged_rerun": "passed",
+      "original_full_passed": 233,
+      "original_full_failed": 5
+    },
+    {
+      "target": "openbsd-amd64/default",
+      "test": "module-selection-xvfb",
+      "failure": "script/form window readiness deadline",
+      "isolated_unchanged_rerun": "passed",
+      "original_full_passed": 233,
+      "original_full_failed": 5
+    },
+    {
+      "target": "openbsd-amd64/default",
+      "test": "desktop-baseline-xvfb",
+      "failure": "MFL echo socket deadline",
+      "isolated_unchanged_rerun": "passed",
+      "original_full_passed": 233,
+      "original_full_failed": 5
+    },
+    {
+      "target": "linux-amd64/gcc",
+      "test": "interactive-geometry-xorg-dummy",
+      "failure": "dummy-X display-fd startup deadline",
+      "isolated_unchanged_rerun": "passed",
+      "original_full_passed": 248,
+      "original_full_failed": 2
+    },
+    {
+      "target": "linux-amd64/gcc",
+      "test": "topology-xorg-dummy",
+      "failure": "100 ms xrandr pressure-noise deadline",
+      "isolated_unchanged_rerun": "failed first isolated and final idle control; retained gap",
+      "original_full_passed": 248,
+      "original_full_failed": 2
+    },
+    {
+      "target": "freebsd-arm64/default",
+      "test": "menu-image-boundaries-xvfb",
+      "failure": "five-second release-grab deadline",
+      "isolated_unchanged_rerun": "passed",
+      "original_full_passed": 237,
+      "original_full_failed": 1
+    },
+    {
+      "target": "openbsd-arm64/default",
+      "test": "interaction-frame-sync-xvfb",
+      "failure": "MFL socket connection refused",
+      "isolated_unchanged_rerun": "passed",
+      "original_full_passed": 237,
+      "original_full_failed": 1
+    }
+  ],
+  "portable": {
+    "passed": 166,
+    "skipped_native_meson": 11,
+    "log_sha256": "a1f6e0dd927cf1b9885d4e5ba754d317e532adc233d6cfebe776ddcaa21a0abf"
+  },
+  "limitations": [
+    "Local emulated execution; native-CPU/hardware release qualification remains separate.",
+    "Production/install target bytes unchanged; prior installed evidence is explicitly retained and hashes checked before/after these tests.",
+    "No new dirty queue/coalescing or latency/CPU benchmark; broader DRAW/STYLE/STATE work remains open."
+  ]
+}

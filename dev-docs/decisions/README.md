@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Window-update ownership and ordering barriers](WINDOW-UPDATE-BARRIERS-2026-10-15.md): current DRAW-01 application/painting, retirement and query/publication contract for measured STYLE-01/STATE-01 proposals.
+
 - [Approved optional Go patched compiler baseline](GO-TOOLCHAIN-BASELINE-PROPOSAL.md).
 
 - [CI patched PNG input](CI-PNG-INPUT-PROPOSAL-2026-10-13.md): approved verified source bootstrap for the existing dependency; implementation and fresh-provider qualification locally accepted, with actual native CI separate.

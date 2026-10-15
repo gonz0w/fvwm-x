@@ -105,6 +105,14 @@ For the concrete performance findings and dependency order, see the
 [optimization roadmap](OPTIMIZATION-ROADMAP-2026-10-05.md). For maintained
 constraints and conventions, see [DEVELOPERS.md](DEVELOPERS.md).
 
+`libs/Picture.c::PCacheFvwmPictureAtScale` retains pathname resolution and
+per-matching-entry file-stamp validation. Variant attributes, scale, target size
+and generation now reject incompatible entries before stamp reads. Reference
+counts and immutable backing/view ownership remain with the same cache/IMAGE-01
+owners. Controlled lookup and private-X reload/retained-pixel checks are in the
+[CACHE-01 qualified report](verification/VERIFICATION-2026-10-14-PICTURE-CACHE.md);
+broader cache profiling remains open.
+
 The IMAGE-01 owner continuation separates pending file-icon requests from their
 immutable published pixels, and lets XorGC borrow an acknowledged root-visual
 picture without an extra pixmap copy. Cursor preparation uses the same scheduler:

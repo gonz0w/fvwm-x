@@ -145,13 +145,14 @@ FvwmPicture *PCacheFvwmPictureAtScale(
 			}
 		}
 
-		/* If we have found a picture with the wanted name and stamp */
-		if (!*p1 && !*p2 && !isFileStampChanged(&p->stamp, real_path)
-		    && PICTURE_FPA_AGREE(p,fpa)
+		/* Only a matching variant needs a filesystem stamp check.
+		 * Check every matching entry so changed files still reload. */
+		if (!*p1 && !*p2 && PICTURE_FPA_AGREE(p,fpa)
 		    && p->scale_quarters == scale_quarters
 		    && p->target_width == target_width
 		    && p->target_height == target_height
-		    && p->generation == generation)
+		    && p->generation == generation
+		    && !isFileStampChanged(&p->stamp, real_path))
 		{
 			p->count++; /* Put another weight on the picture */
 			free(path);

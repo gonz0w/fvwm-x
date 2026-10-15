@@ -12,7 +12,8 @@ import tempfile
 import time
 import zlib
 
-from live_x_harness import HarnessError, HarnessRuntime, start_display_server
+from live_x_harness import (HarnessError, HarnessRuntime,
+                           query_xlib_root_dimensions, start_display_server)
 
 
 def chunk(kind, data):
@@ -24,6 +25,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--probe', required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
+    parser.add_argument('--display')
     args = parser.parse_args()
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     artifacts = Path(tempfile.mkdtemp(prefix='run-', dir=args.artifacts_dir))
@@ -53,9 +55,13 @@ def main():
                           'static unsigned char picture_bits[] = {\n'
                           '0xff, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0xff};\n')
         try:
-            _, display = start_display_server(
-                runtime, 'Xvfb', ['Xvfb', '-screen', '0', '1280x720x24'],
-                'xserver.log', time.monotonic() + 15)
+            if args.display:
+                display = args.display
+                query_xlib_root_dimensions(display)
+            else:
+                _, display = start_display_server(
+                    runtime, 'Xvfb', ['Xvfb', '-screen', '0', '1280x720x24'],
+                    'xserver.log', time.monotonic() + 15)
             probe = runtime.start(
                 'resource-cache', [args.probe, str(png), str(bitmap)] + refused,
                 'probe.log', runtime.environment({'DISPLAY': display}))

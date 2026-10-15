@@ -1563,6 +1563,27 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 45,
     )
+    style_profile_fixture = executable(
+        'fvwm-style-profile-fixture', 'style_profile_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows', '-Wl,--wrap=strcmp',
+            '-Wl,--wrap=matchWildcards', '-Wl,--wrap=MyXGrabServer',
+            '-Wl,--wrap=MyXUngrabServer'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'style-profile-xvfb', py,
+        args: [files('live_x/style_profile_live.py'),
+            '--fvwm', style_profile_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'style-profile'],
+        depends: style_profile_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 180,
+    )
     expose_service_fixture = executable(
         'fvwm-expose-service-fixture', 'expose_service_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),

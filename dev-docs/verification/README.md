@@ -436,3 +436,5 @@ diagnostic and execution gates remain separate.
 - [CI fixed PNG bootstrap](VERIFICATION-2026-10-13-CI-PNG-BOOTSTRAP.md): locally qualified helper/dependency and fresh-provider standard/Go/install/default-X checkpoint; exact affected completions retain application sources/limits, with actual native release CI separate.
 
 - [GitHub foundation and local review](VERIFICATION-2026-10-13-GITHUB-FOUNDATION.md): private repository, signed history/PR rules, Actions-off, roadmap mirror and local checks; runtime snapshot preserved.
+
+- [Style work baseline, 2026-10-15](VERIFICATION-2026-10-15-STYLE-PROFILE.md): actual-core simplification/lookup/server-grab measurements; affected profiles/default BSD X/scoped sanitizer, with production bytes and prior full-suite gaps retained.

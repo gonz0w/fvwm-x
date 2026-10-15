@@ -1,0 +1,3539 @@
+{
+  "archives": {
+    "freebsd-amd64": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-profile/qualification/freebsd-amd64.tgz",
+      "sha256": "34d468048620af2baef067f033d1561579a2e0ec875e23de252506726d1f58fc"
+    },
+    "freebsd-arm64": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-profile/qualification/freebsd-arm64.tgz",
+      "sha256": "7adaea674391b197909c652f0f604ed35f5b7170b1a600f94ebdef876c80e806"
+    },
+    "fvwm-x-linux-arm64-svg": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-profile/qualification/fvwm-x-linux-arm64-svg.tgz",
+      "sha256": "7483a249cd2d5de48b11865871ae6b4d16d01887b9c8f3d690e01f5ba68c384d"
+    },
+    "linux-amd64": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-profile/qualification/linux-amd64.tgz",
+      "sha256": "7ec2fbe8b5b0c8fc3381ba18cab1d78c5a1872643d98fd064d9d61df7619b665"
+    },
+    "openbsd-amd64": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-profile/qualification/openbsd-amd64.tgz",
+      "sha256": "e6b2d01343ac2980d89c4e4d4372b608713ffb7332c5f09a6067a2cc4a0b845a"
+    },
+    "openbsd-arm64": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-profile/qualification/openbsd-arm64.tgz",
+      "sha256": "4be9d0da922d2971c4aebe15887f016ddef1d03fcb41aaef0b1fba3c402db349"
+    }
+  },
+  "base": "fb1866bb7a5402d13198a50bd3910911ef07b31b",
+  "counts": {
+    "default_x_clean_exits": 4,
+    "default_x_entries": 8,
+    "focused_entries": 20,
+    "profiles": 10,
+    "sanitizer_entries": 1,
+    "unchanged_catalogs": 99,
+    "unchanged_code": 150,
+    "workloads": 165
+  },
+  "default_x": {
+    "freebsd-amd64": {
+      "dependencies": {
+        "errors": [],
+        "files": [
+          {
+            "path": "/usr/local/bin/Xorg",
+            "resolved": "/usr/local/bin/Xorg",
+            "sha256": "2ce7afc7434ea9f0c414622963f6775840ffb04e4f9ab9a65d7600428fb54fa2",
+            "size": 281
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "sha256": "b0d0c882d23297c6da0b6016e47e0c76ea10ed1c465e96262f0c2b8b88718211",
+            "size": 112264
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "sha256": "6ac37b5c63140a6c6585adad4c0b72f8a3e216554cd14ad243801e9783c491be",
+            "size": 19488
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "resolved": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "sha256": "a37221261679958ad23055c24da9c9ff8a0bb79c586d3ffc1688b961db8c44a8",
+            "size": 310992
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/libshadow.so",
+            "resolved": "/usr/local/lib/xorg/modules/libshadow.so",
+            "sha256": "1182f468a0a298f33e10abde91aedf254ac67d2568bc98b9305460659ac4ec00",
+            "size": 35648
+          },
+          {
+            "path": "/usr/local/libexec/Xorg",
+            "resolved": "/usr/local/libexec/Xorg",
+            "sha256": "c0843fd0ff7f68466faf4479473cdc7af7038fddefd4d9379292596e73673234",
+            "size": 2384432
+          },
+          {
+            "path": "/usr/local/libexec/Xorg.wrap",
+            "resolved": "/usr/local/libexec/Xorg.wrap",
+            "sha256": "0a8fa4a610a6e7fe742d403296dcd53e1e2c0cb0d5d9d1ed516f33f65530414b",
+            "size": 8064
+          }
+        ]
+      },
+      "display": ":201",
+      "fixtures": {
+        "style-profile": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/style_profile_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/tests/fvwm-style-profile-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/style-profile-combined1/default-x/style-profile"
+          ],
+          "status": 0
+        },
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/style-profile-combined1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "phase": "complete",
+      "randr": "Screen 0: minimum 1280 x 800, current 1280 x 800, maximum 1280 x 800\ndefault connected 1280x800+0+0 0mm x 0mm\n   1280x800       0.00* \n",
+      "server_status_after_cleanup": 0,
+      "server_status_before_cleanup": null,
+      "source": "1f64f3367e5f9706c86ab088c1bb25baac66ed6436169d48a65eb3f7a01f113b",
+      "status": "passed",
+      "system": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "amd64"
+      ],
+      "unauthenticated_client_refused": true,
+      "vendor_log_copied": true
+    },
+    "freebsd-arm64": {
+      "dependencies": {
+        "errors": [],
+        "files": [
+          {
+            "path": "/usr/local/bin/Xorg",
+            "resolved": "/usr/local/bin/Xorg",
+            "sha256": "2ce7afc7434ea9f0c414622963f6775840ffb04e4f9ab9a65d7600428fb54fa2",
+            "size": 281
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/modesetting_drv.so",
+            "sha256": "218b667adf59e2cedee3d28a9c42dc7e1c610f880c3b2800ee8acfc6321df2d7",
+            "size": 108472
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "resolved": "/usr/local/lib/xorg/modules/drivers/scfb_drv.so",
+            "sha256": "7d33bc8caec25e8823996b78b7b7d2a4832da65327c9d0e110179aa430735769",
+            "size": 18520
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "resolved": "/usr/local/lib/xorg/modules/extensions/libglx.so",
+            "sha256": "14c04601057c38bb65c6710b6d1c14d51736e6c708420437884c3e580c5c368d",
+            "size": 289192
+          },
+          {
+            "path": "/usr/local/lib/xorg/modules/libshadow.so",
+            "resolved": "/usr/local/lib/xorg/modules/libshadow.so",
+            "sha256": "cfd27be04a32ca3e7784ab9cd177522fe019ebfb1a2d63e0ca385833e0cf3f85",
+            "size": 31328
+          },
+          {
+            "path": "/usr/local/libexec/Xorg",
+            "resolved": "/usr/local/libexec/Xorg",
+            "sha256": "d9c3b56af4077e35d9e2aa439457fd8ebf45969accf7dfc2dd3dcdff4c78cc71",
+            "size": 2297568
+          },
+          {
+            "path": "/usr/local/libexec/Xorg.wrap",
+            "resolved": "/usr/local/libexec/Xorg.wrap",
+            "sha256": "d5726da5df3049a6dbcd68df2d9125b39161972961d66f41cc628b182b8d664c",
+            "size": 7600
+          }
+        ]
+      },
+      "display": ":201",
+      "fixtures": {
+        "style-profile": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/style_profile_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/tests/fvwm-style-profile-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/style-profile-combined1/default-x/style-profile"
+          ],
+          "status": 0
+        },
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/style-profile-combined1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "phase": "complete",
+      "randr": "Screen 0: minimum 800 x 600, current 800 x 600, maximum 800 x 600\ndefault connected 800x600+0+0 0mm x 0mm\n   800x600        0.00* \n",
+      "server_status_after_cleanup": 0,
+      "server_status_before_cleanup": null,
+      "source": "1f64f3367e5f9706c86ab088c1bb25baac66ed6436169d48a65eb3f7a01f113b",
+      "status": "passed",
+      "system": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ],
+      "unauthenticated_client_refused": true,
+      "vendor_log_copied": true
+    },
+    "openbsd-amd64": {
+      "dependencies": {
+        "errors": [],
+        "files": [
+          {
+            "path": "/usr/X11R6/bin/Xorg",
+            "resolved": "/usr/X11R6/bin/Xorg",
+            "sha256": "e208e83fc4ca547bb99c63c6a1b52baa090ddcb7b7b2846892576c4eee23a471",
+            "size": 3047096
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+            "sha256": "b6771240b27fc21956e8100ab1cecfe5e5827bddcba3447fa2a3920b2bf1fd69",
+            "size": 37112
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "resolved": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "sha256": "90a01364b3c991e2d54276c2ae243f6f24e4fd55705123e1e1f5dcce3d67c676",
+            "size": 465992
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "sha256": "6b9123c50f8e25c8163f0e57de37abc5b3d5ee72e92373c8bd16263734b2e509",
+            "size": 28240
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "sha256": "a83917af05a4de48825f0b9c20e034c61dce6869b8533a8e13fb15996e9d4004",
+            "size": 32656
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libint10.so",
+            "resolved": "/usr/X11R6/lib/modules/libint10.so",
+            "sha256": "b98e9042210a26fcff38ac940a5afa8468fb920bf96ba670e5bc5fa059d09862",
+            "size": 312712
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libshadow.so",
+            "resolved": "/usr/X11R6/lib/modules/libshadow.so",
+            "sha256": "9ec7187a6ed8637a683dd3bdf75793a623b7d07d0306efdea49f6763da8b1655",
+            "size": 42624
+          }
+        ],
+        "syspatch": {
+          "status": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      },
+      "display": ":201",
+      "fixtures": {
+        "style-profile": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/usr/obj/fvwm-module-waits-20261015/source/tests/live_x/style_profile_live.py",
+            "--fvwm",
+            "/usr/obj/fvwm-module-waits-20261015/build-default/tests/fvwm-style-profile-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/usr/obj/fvwm-module-waits-20261015/style-profile-combined1/default-x/style-profile"
+          ],
+          "status": 0
+        },
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/usr/obj/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/usr/obj/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/usr/obj/fvwm-module-waits-20261015/style-profile-combined1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "phase": "complete",
+      "randr": "Screen 0: minimum 640 x 480, current 1920 x 1200, maximum 1920 x 1200\ndefault connected 1920x1200+0+0 0mm x 0mm\n   1920x1200      0.00* \n   1920x1080      0.00  \n   1600x1200      0.00  \n   1680x1050      0.00  \n   1400x1050      0.00  \n   1280x1024      0.00  \n   1440x900       0.00  \n   1280x960       0.00  \n   1280x800       0.00  \n   1280x768       0.00  \n   1024x768       0.00  \n   800x600        0.00  \n   640x480        0.00  \n",
+      "server_status_after_cleanup": 0,
+      "server_status_before_cleanup": null,
+      "source": "1f64f3367e5f9706c86ab088c1bb25baac66ed6436169d48a65eb3f7a01f113b",
+      "status": "passed",
+      "system": [
+        "OpenBSD",
+        "fvwm-x-openbsd-amd64.my.domain",
+        "7.9",
+        "GENERIC.MP#449",
+        "amd64"
+      ],
+      "unauthenticated_client_refused": true,
+      "vendor_log_copied": true
+    },
+    "openbsd-arm64": {
+      "dependencies": {
+        "errors": [],
+        "files": [
+          {
+            "path": "/usr/X11R6/bin/Xorg",
+            "resolved": "/usr/X11R6/bin/Xorg",
+            "sha256": "8b1d364d902618777b57c96bcbc826866c0fa61c4758d6a6302237b97b128004",
+            "size": 3199992
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/drivers/wsfb_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/drivers/wsfb_drv.so",
+            "sha256": "36e24ab6ca38ae35ac8b5d8fb6d2331e50753ebd4a4a919a8b764377832d0a4c",
+            "size": 30160
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "resolved": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "sha256": "4321c5abfc61ed155aae3dab652026d2857bec850376a5af3f1c303a83301255",
+            "size": 545440
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "sha256": "5da3c26e5b0a4fdbba7ffe973e4bf547bd5b758ae0152b92866c1b2f5ebac1a3",
+            "size": 29528
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "sha256": "1595129c4cd8b0e682bb1c0a6e02681c9ef314bc97a011f38210bc8d9f43f057",
+            "size": 34104
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libshadow.so",
+            "resolved": "/usr/X11R6/lib/modules/libshadow.so",
+            "sha256": "a260050ef64bfc69d0942e8f9092b131db23e427d31491b99f955f9e80436433",
+            "size": 44776
+          }
+        ],
+        "syspatch": {
+          "status": 0,
+          "stderr": "",
+          "stdout": ""
+        }
+      },
+      "display": ":201",
+      "fixtures": {
+        "style-profile": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/usr/obj/fvwm-module-waits-20261015/source/tests/live_x/style_profile_live.py",
+            "--fvwm",
+            "/usr/obj/fvwm-module-waits-20261015/build-default/tests/fvwm-style-profile-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/usr/obj/fvwm-module-waits-20261015/style-profile-combined1/default-x/style-profile"
+          ],
+          "status": 0
+        },
+        "window-update": {
+          "command": [
+            "/usr/local/bin/python3",
+            "/usr/obj/fvwm-module-waits-20261015/source/tests/live_x/window_update_live.py",
+            "--fvwm",
+            "/usr/obj/fvwm-module-waits-20261015/build-default/tests/fvwm-window-update-fixture",
+            "--display",
+            ":201",
+            "--artifacts-dir",
+            "/usr/obj/fvwm-module-waits-20261015/style-profile-combined1/default-x/window-update"
+          ],
+          "status": 0
+        }
+      },
+      "phase": "complete",
+      "randr": "Screen 0: minimum 800 x 600, current 800 x 600, maximum 800 x 600\ndefault connected\n   800x600        0.00  \n",
+      "server_status_after_cleanup": 0,
+      "server_status_before_cleanup": null,
+      "source": "1f64f3367e5f9706c86ab088c1bb25baac66ed6436169d48a65eb3f7a01f113b",
+      "status": "passed",
+      "system": [
+        "OpenBSD",
+        "fvwm-x-openbsd.my.domain",
+        "7.9",
+        "GENERIC.MP#222",
+        "arm64"
+      ],
+      "unauthenticated_client_refused": true,
+      "vendor_log_copied": true
+    }
+  },
+  "owner": "STYLE-01 #38",
+  "portable": {
+    "log_sha256": "8d774bcca441a19bce15281a9754faa5f3b71e94cdde8b6e2f21aecd0c3584f3",
+    "passed": 166,
+    "skipped_native_meson": 11
+  },
+  "profiles": {
+    "freebsd-amd64/default": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/bin/fvwm-root",
+          "expected_after_rpath": "95f2d32c978c23473b9ea10356ba5259b6852ea64addfbda4a26a5e6952c6a13",
+          "installed": "95f2d32c978c23473b9ea10356ba5259b6852ea64addfbda4a26a5e6952c6a13",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm-root",
+          "tested": "51e2ba01e91ed0568ceb710dad9fae4b482e3f64f8c40e1764f614c5d7cece16"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+          "expected_after_rpath": "cc8a861c64573fbbc535883d98c6362b4fd5ff002008d8634f1136d55c691766",
+          "installed": "cc8a861c64573fbbc535883d98c6362b4fd5ff002008d8634f1136d55c691766",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm3",
+          "tested": "2aaee044f79a17c18bb3a8d4633348809801de0caca0f7b71311c549af08ad7e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "85c022d6fcb6415922ca3f20cfb967b591942756166505c75c8408444da60d90",
+          "installed": "85c022d6fcb6415922ca3f20cfb967b591942756166505c75c8408444da60d90",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "d30131d91bb82d09a101b54005a95bb3685e10f844bb843c5fc3a1e3a349a4e8"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "c7ac7c86f2e4046f6e4fdf85c1f0f334cb32a233888730da1a31511524e07bbc",
+          "installed": "c7ac7c86f2e4046f6e4fdf85c1f0f334cb32a233888730da1a31511524e07bbc",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "c7fd5c0e71e1e7825ee959b50ff9c9efd8073ace6280ab8dccdb7bce360d220a"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "017209563881811763ee4b06a7a0dd28bcf8a831cc8ffff880e2f6c998917730",
+          "installed": "017209563881811763ee4b06a7a0dd28bcf8a831cc8ffff880e2f6c998917730",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "161a4ab9d89b69d36cb49c07c05dd7f8db101c5e8bcafad85fafea013b406e40"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "a0fbd2664173d808cb1e092eb59ab78d506958f773905adcab9f67e4ea1df44b",
+          "installed": "a0fbd2664173d808cb1e092eb59ab78d506958f773905adcab9f67e4ea1df44b",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "f847e93a0cde7d5c35c16604a8404e42f1f9161f9cd3d6fe76584042e2ae441e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "9dd86ccd2de3d494eeee935ff4b7891a53f3bb0bca3d78115859c5173546a012",
+          "installed": "9dd86ccd2de3d494eeee935ff4b7891a53f3bb0bca3d78115859c5173546a012",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "d657509187f9ee71999ad75432ea2da215b3d22a284ce7313ef018f009342dec"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "4193a4c5ddf22a90ff1e444d226541438a80804a7f6df9c0987df9cf005222db",
+          "installed": "4193a4c5ddf22a90ff1e444d226541438a80804a7f6df9c0987df9cf005222db",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "0138e72d671709869c7ef749eb5cfee80d194dbcef29e7bf5b389e7d118f892b"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "18a78681f22a8e0ccde67e748c63e2fc77760641f407944ee721fe957809eb13",
+          "installed": "18a78681f22a8e0ccde67e748c63e2fc77760641f407944ee721fe957809eb13",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "fc595f7e477a927f14c9afc2b82a0181d7f3bed3669608ed94a41990f911b110"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "9c52d72949af11fadf332fdaf6716457a16c2655ec4847856dc8ba20f484feef",
+          "installed": "9c52d72949af11fadf332fdaf6716457a16c2655ec4847856dc8ba20f484feef",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "faa1bedd1ca11d5ec1f441aec5861bb7a321db7350c770e51a7175498fd46e47"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "fd59cf34e227ee6cb44d920c14054d7f42f93befe29789253b92824466db1cda",
+          "installed": "fd59cf34e227ee6cb44d920c14054d7f42f93befe29789253b92824466db1cda",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "1b6a9f159834347693279d554b0f61797db9de94db9d5ad68fe6ac85ec3e8305"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "0a390fb8e333f6904f962a75b1ebd4fa11b70686252a1bfbf83f98d82748452c",
+          "installed": "0a390fb8e333f6904f962a75b1ebd4fa11b70686252a1bfbf83f98d82748452c",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "4ccfbeefb372adfb1bc6c1a480471067417ba4c1017ea455a863e973084ac463"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "788063a27ea5ed6a6d6be99414a28fae7be47c06bad7d8ae193ef394c9093833",
+          "installed": "788063a27ea5ed6a6d6be99414a28fae7be47c06bad7d8ae193ef394c9093833",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "0796362fd0bb510724623e099c09b4c1ac6a015cfce35184d3e0cf6a6e65e188"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "c578f83f660a19236afa624bbc098e15e0c7f21f2c63524d0b5072d26303be0c",
+          "installed": "c578f83f660a19236afa624bbc098e15e0c7f21f2c63524d0b5072d26303be0c",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "4eba147a3538ea58883fa884aee9c41d55170146c989c7d176aae37527005fc2"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "d3b79ccc04e4ce1670fd8186754842a40935e7caa3a65019694c3d058bf854a8",
+          "installed": "d3b79ccc04e4ce1670fd8186754842a40935e7caa3a65019694c3d058bf854a8",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "30704339272d9a7247713ff4ca00da632a3d3ac3bed000acef10b538d775517b"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "amd64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 1064000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 3111000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 13178000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 24868000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 35489000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 31005000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 109789000,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 105916000,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 71074000,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 67985000,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 90982000,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 69503000,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 146925000,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 142759000,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 318417000,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 314318000,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "freebsd-arm64/default": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/bin/fvwm-root",
+          "expected_after_rpath": "d963a3a78a5cff91e7484b7902df3ffd868d021c95c6bf418fa20aaa066cc1b1",
+          "installed": "d963a3a78a5cff91e7484b7902df3ffd868d021c95c6bf418fa20aaa066cc1b1",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm-root",
+          "tested": "440d03165339b867c16563707e2eccf3c169069b6f34798916c653785e4517b4"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+          "expected_after_rpath": "b60cd1b069f9f754286daef6cf25a49a96c8b2368a3b676cadb3af7353827240",
+          "installed": "b60cd1b069f9f754286daef6cf25a49a96c8b2368a3b676cadb3af7353827240",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm3",
+          "tested": "d7b94245b61c39117b4944d1821f068a3ee4ebbc304a53723f0106c43119508f"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "aeeb1b908cfe3db977f13b581d11c157a8460dc9ce30c2806c264dbaa8394b97",
+          "installed": "aeeb1b908cfe3db977f13b581d11c157a8460dc9ce30c2806c264dbaa8394b97",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "1cbf80afcbed9e6b6012d970567ffbf08736d286d507eae58c7ac1ef90412e11"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "65cd02c5e64ac748d2cd73b054e281dac607b9a1813ed65966db144a2ab4da94",
+          "installed": "65cd02c5e64ac748d2cd73b054e281dac607b9a1813ed65966db144a2ab4da94",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "0061c88501440bda86c257bfd90960e6f511afb4a6e09c322266a4838c68509c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "c438a8794e26062a5dadb0c663b89070b4e16ada9011c2086f30c49e828b73a3",
+          "installed": "c438a8794e26062a5dadb0c663b89070b4e16ada9011c2086f30c49e828b73a3",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "11b011c3b89baa657f65501b57419b5699afda02c60261e0cb44ba73a9d26e9c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "eb36e68dbda3f0fcc85f37fe179a38c7e1fdfaec93400a4f7336ca48a39592b5",
+          "installed": "eb36e68dbda3f0fcc85f37fe179a38c7e1fdfaec93400a4f7336ca48a39592b5",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "b091dc831b531ece01dbf18eed66bc505cefb687917ec05c0a393ecb6f1c2e44"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "08a2501ec1206cbb35d141343069632a24447af2afc06fe79f1bb7c9c491c9d0",
+          "installed": "08a2501ec1206cbb35d141343069632a24447af2afc06fe79f1bb7c9c491c9d0",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "d55acb7c408120f0f957f5f794b11057ccf38efb807953b362a89568e821fb0a"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "5a0a83f5eeb4b24e2e92f1ba77c4d270f975deb78ca5be4bb42207531336bba6",
+          "installed": "5a0a83f5eeb4b24e2e92f1ba77c4d270f975deb78ca5be4bb42207531336bba6",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "95bb2bbafbf091cc34c73d085363c84756b286cc6da1a813773b4bb4fa31ded6"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "ca607f089bb3a22a7ed3d918f62e56efc4f8d4da26ffc43adb4a21a12458c849",
+          "installed": "ca607f089bb3a22a7ed3d918f62e56efc4f8d4da26ffc43adb4a21a12458c849",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "4663d3cd06f26670fe956d5ef3481921e7696cc9aaa5198f24904c7d801a7ee7"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "c618eea6ae9efafb94ba392836680d4835835674f2fe2c560d60dfac87b7fd98",
+          "installed": "c618eea6ae9efafb94ba392836680d4835835674f2fe2c560d60dfac87b7fd98",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "b3fd56b9b87358ef7cd85f487be899650b89374c2409de8b241b71e0848f07b1"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "67f151675c17fbeedafa534f57a1a947cf480c251bef2476e36672053932229d",
+          "installed": "67f151675c17fbeedafa534f57a1a947cf480c251bef2476e36672053932229d",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "bb91f9a53a2b6a37e6438523c0fb471bb889b3ae4788ae200b01b117160895a3"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "10c8e224ef7c3f199228233cb3c4f7a3aa8367c999a14062d81985e6f141d938",
+          "installed": "10c8e224ef7c3f199228233cb3c4f7a3aa8367c999a14062d81985e6f141d938",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "5420d5609b27b7a1057f192e0df7f93a398e54341876e6256293223d045b5e64"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "7ea78d66418d2099d1d8f1b22892682ce73e531cbecfc2372abed8ab3253256a",
+          "installed": "7ea78d66418d2099d1d8f1b22892682ce73e531cbecfc2372abed8ab3253256a",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "98268d4d70c6ef595ea1602d4b84af7e5397ba87c67b5ecfdf295eee52cec927"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "d2d9ffa5257db8b7a5c8fa679df6e958f9bde2c7613c11b2d5bcc17e01564a65",
+          "installed": "d2d9ffa5257db8b7a5c8fa679df6e958f9bde2c7613c11b2d5bcc17e01564a65",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "d0fa68f53b4532e8fdae4318bbb92e78c857c01179372b2cd7ab5aafa3433b20"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "a18720457bedd894106d5d2fadf30c46e763e5a499c4660ec25d54de41c82548",
+          "installed": "a18720457bedd894106d5d2fadf30c46e763e5a499c4660ec25d54de41c82548",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "1455eb1cb07bd59874e839f0e4d2a50072164c7e491ff1010b0bf1a96bfb958e"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-default/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 28042,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 108500,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 453958,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3327292,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3300208,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 2791125,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5765167,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 5503334,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5604625,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 5348500,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5443709,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 5141792,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 11715041,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 11433084,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 20944250,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 20758875,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "fvwm-x-linux-arm64-svg/clang": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/bin/fvwm-root",
+          "expected_after_rpath": "3b674703d2089452c0fcb8bd4d4e87f3a21f2e67bc28c6e543ddec1ce1b0cb7a",
+          "installed": "3b674703d2089452c0fcb8bd4d4e87f3a21f2e67bc28c6e543ddec1ce1b0cb7a",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/bin/fvwm-root",
+          "tested": "28137cde0e28efcba46853e9612dbdaf7049924df87a9bd31e81e7a5526f32d0"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/fvwm3",
+          "expected_after_rpath": "eb1ba036bbba794019e24ba160fee2488f6257cd4287521ad3347124b8646296",
+          "installed": "eb1ba036bbba794019e24ba160fee2488f6257cd4287521ad3347124b8646296",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/bin/fvwm3",
+          "tested": "415469e4b9e55d9820e3841ef0db86b673528b23268c747fef0bc4f76c1dccf0"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "d2bc6cbb5aea1156dc4437e43a8a7e59dd1029892cf32561644abee6fbcd4ada",
+          "installed": "d2bc6cbb5aea1156dc4437e43a8a7e59dd1029892cf32561644abee6fbcd4ada",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "8bf4d5148fe202fc821a9e37cb94c13fa42f5b636da7ba4e9aaafc96b90b84c0"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "2063798352dc7fdf36522e65ee1fe16dcf2b4fa44272674bb3867a224682ef7f",
+          "installed": "2063798352dc7fdf36522e65ee1fe16dcf2b4fa44272674bb3867a224682ef7f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "c7e09eb77a979bd33dbe7ce4177c644ba8ce450f7560cc712c1935e841393851"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "d4880b4511972629a2a395cdb1de72f2acc9db01ab76b44bc1a652becc7b494a",
+          "installed": "d4880b4511972629a2a395cdb1de72f2acc9db01ab76b44bc1a652becc7b494a",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "7c5f030c727ecdd9a726eca3e9a120b9302432563081ed31a0f14b6a2a26cac5"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "86870c4410f2300b12ba9dca071b0ee972b0559945044c80797424c26e758efd",
+          "installed": "86870c4410f2300b12ba9dca071b0ee972b0559945044c80797424c26e758efd",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "3c776f24ea304eb5c57cc5e2b21a1a8512bcaea0acc003b64b5cc2325ba3edbd"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "655376e825949df60a2bea80c4065bb016d9414086ca7c0a903f52315431d9e2",
+          "installed": "655376e825949df60a2bea80c4065bb016d9414086ca7c0a903f52315431d9e2",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "7f6976c56a88e8319d0a2c88ea47846b9a79a1e597aa32b8fa84b2d9b70ef91c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "11697716e3e16c87d99526f795c01ec7b516c3a112edb3eb2dd903e02e28d069",
+          "installed": "11697716e3e16c87d99526f795c01ec7b516c3a112edb3eb2dd903e02e28d069",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "4997cd0ca3b588d135e1cdc056d36b9edd19de0916c2c139de979d73dccf452f"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "86c851234419f204ff3aa16aba9e4d7d7e70c2697ac0fbcfb284f7fe51901fa0",
+          "installed": "86c851234419f204ff3aa16aba9e4d7d7e70c2697ac0fbcfb284f7fe51901fa0",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "cf9f64b415dab7ba39a0ab0eaea0c24f8319bae7d86df4ebf290f41951ddb0b1"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "4b340729bb785a0355c05e84ae5ba13cd4955de8e853a71e4481b54d795132e9",
+          "installed": "4b340729bb785a0355c05e84ae5ba13cd4955de8e853a71e4481b54d795132e9",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "f0e701abf82a51814ab454c74cbec68c7ab07c868214f5ec973f3d9761b8ec81"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "db0f120f879b393636c4a75420cf43fc127f676a902df7a3aa7400112f4a5ab7",
+          "installed": "db0f120f879b393636c4a75420cf43fc127f676a902df7a3aa7400112f4a5ab7",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "94c2b0807d6777890cbc377504642957e4603e4f57269b90709678efb6a74188"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "3d026d6bfad5a53829ad04d49d934c98c3dd1b7891d345162d4de15941a37f42",
+          "installed": "3d026d6bfad5a53829ad04d49d934c98c3dd1b7891d345162d4de15941a37f42",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "624d95584c5eed7718a3d92b1327a7c08c8cb82f895c34b068ea1327a9a12027"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "49f98089351b5d1e3ee5ce6511a3afbcbca5e67472c229099f3f98c08ef81abf",
+          "installed": "49f98089351b5d1e3ee5ce6511a3afbcbca5e67472c229099f3f98c08ef81abf",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "4517fef234bda7c1fde081c038882af66f2593b7c4e5d85eb8eb41e4d987cb71"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "9f5fb9c6dc69e518f8470cb660a1e8f565e82c38bd1066573037724382b81064",
+          "installed": "9f5fb9c6dc69e518f8470cb660a1e8f565e82c38bd1066573037724382b81064",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "b9185eab7fc4b05ba790d2d407a68432efa781b19492f72799c531ca1727d593"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "96b417fc007168042a235e2ab5dba42a0c06f61b7666ea9e2907ca4b3da65327",
+          "installed": "96b417fc007168042a235e2ab5dba42a0c06f61b7666ea9e2907ca4b3da65327",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "027b488b658acba9d062493829804e2c16ced743aa0a8f03540c8f975e4cb072"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+          "installed": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+          "installed": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+          "installed": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-clang/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 41542,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 148294,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 551298,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3795462,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3419916,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3232414,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 6132323,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 5796027,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 6047738,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 5750651,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5211312,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 4871974,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 12535940,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 12231561,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 23034522,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 22751895,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "fvwm-x-linux-arm64-svg/gcc": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-root",
+          "expected_after_rpath": "5d56e68726932bab2585e692d3255c72e647f15a75426063fc1b9756760dd9fc",
+          "installed": "5d56e68726932bab2585e692d3255c72e647f15a75426063fc1b9756760dd9fc",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/bin/fvwm-root",
+          "tested": "9529e445b7c623e0fb314bfbaf8a186f8c258919f3da15d4ff8b4d11caf21c14"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "expected_after_rpath": "5c13fa06857195deb20e51cbfd667191cf5b5c94b8c618ca81f47d07541a3423",
+          "installed": "5c13fa06857195deb20e51cbfd667191cf5b5c94b8c618ca81f47d07541a3423",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/bin/fvwm3",
+          "tested": "5dc33921450445dbd5966e130251b30355545384817fdc65a53ffc49ac610845"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "64336322d2e7fc2cdeb8f47ba2c14f2378a9008eec322f36809e21e3f0c69806",
+          "installed": "64336322d2e7fc2cdeb8f47ba2c14f2378a9008eec322f36809e21e3f0c69806",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "5fd0102cbb077170485c278b202faa167069d2d38480439f199534150f6797a5"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "3c3a367a16a128a3717b2c0623c49de4416534ae6c987f0c07c4c3b4cf2b87ea",
+          "installed": "3c3a367a16a128a3717b2c0623c49de4416534ae6c987f0c07c4c3b4cf2b87ea",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "dcbfb5900486b016b0f81a7dfbf8fb55a6000e6b875e0d97473b5d4ea4e754e4"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "93a0b50d97774e0b2f54f38a6a20ec9c42765210d7659fe2b94639bb391b3015",
+          "installed": "93a0b50d97774e0b2f54f38a6a20ec9c42765210d7659fe2b94639bb391b3015",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "7f2262a1dcfda6ec6462b63e39f871f6f47a7e8fc8e2c486168324d5d52a726e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "4400abeec8783308f3c080354f3e7b4bd2123a6c2c81c57b4b4aac384647c9b3",
+          "installed": "4400abeec8783308f3c080354f3e7b4bd2123a6c2c81c57b4b4aac384647c9b3",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "1e090e2cbe74096f22ac259a27398079394d84c7017fe90e0e8a4c39964edbe9"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "1c75770c37c1e2c6165fb9aa700bfc57980584c58277b458f443c4e12bbf72a0",
+          "installed": "1c75770c37c1e2c6165fb9aa700bfc57980584c58277b458f443c4e12bbf72a0",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "d2dc243a1fe736b5e24e77056dc9da962ec31c84de69e25466700c46fe6ebbc1"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "4f14562fec270d582b1a74e5dcfea36a07e8b145f4a7250b43e3bf55af26660c",
+          "installed": "4f14562fec270d582b1a74e5dcfea36a07e8b145f4a7250b43e3bf55af26660c",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "e2193fa25e180c7d4f845f3878cf5d9c018e262b150bfd9d6bd67448a3e45963"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "1a72bbda6187a202d258ef5a7d389fdc9168093e0a1def31a2dfdcc02aac3607",
+          "installed": "1a72bbda6187a202d258ef5a7d389fdc9168093e0a1def31a2dfdcc02aac3607",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "27816e5d7a7f5680dd4d66403c62cc095ff44e38bbcab0e4065d7601353c997e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "4d3861f923279b5230f520aee3b6f1cbb9530744a1e2e7ab134dbfe1949c5c5f",
+          "installed": "4d3861f923279b5230f520aee3b6f1cbb9530744a1e2e7ab134dbfe1949c5c5f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "b8932a093e85eb9f6093962714b9d952563c841f3f8f769608e36a0f709d451d"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "de0e54d2bf5657ae4df7a36fefb7427e56a756c397aec011d67103ce91a6dbac",
+          "installed": "de0e54d2bf5657ae4df7a36fefb7427e56a756c397aec011d67103ce91a6dbac",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "d48391ec5063f80658401fd44dc515988b7d86d7f66e49f6dd16938c1bdb3990"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "ab81e1e3580b0ae209e26260fbc8761283f7a74ab248933121295a171a641168",
+          "installed": "ab81e1e3580b0ae209e26260fbc8761283f7a74ab248933121295a171a641168",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "f172b13d11d39d896bee862ccb268ecf967eefcd44ac420c21501c7961a8933c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "1536b249c68ef9833c969479b1cc73e36d811a084da78a65649d64d9144258ef",
+          "installed": "1536b249c68ef9833c969479b1cc73e36d811a084da78a65649d64d9144258ef",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "08a2937e0d39ca44a05eb851a2b9577a94830c1274069bda8f9f7e08e13cc507"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "89aa28e88ede54fcd6d26aa54e09b62a1afbc709d230afab10e8d68f6a675e9b",
+          "installed": "89aa28e88ede54fcd6d26aa54e09b62a1afbc709d230afab10e8d68f6a675e9b",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "0b4413a1f2f194710a3ab08db04efc71ffa635d35e829ace471fa55355a0ffbb"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "4b3a2dd664acb40f5ca54649ad9eacda8a8fe692f10069c4f960bd09e946727b",
+          "installed": "4b3a2dd664acb40f5ca54649ad9eacda8a8fe692f10069c4f960bd09e946727b",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "dea104438112bf14e5e4fa858ce687df51908998a6b75194c56f77cb72e26927"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+          "installed": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+          "installed": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+          "installed": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-gcc/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 25751,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 117168,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 473631,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3050245,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3548709,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3821045,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 9699073,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 9377986,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 6314991,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 5843028,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5990571,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 5721818,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 13141614,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 12807151,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 28920509,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 27512617,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "fvwm-x-linux-arm64-svg/minimal": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/bin/fvwm-root",
+          "expected_after_rpath": "320fa26516f0b617f86b3ad9a83652f7acd0bb3b4539398b3975e7fba6451f2b",
+          "installed": "320fa26516f0b617f86b3ad9a83652f7acd0bb3b4539398b3975e7fba6451f2b",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/bin/fvwm-root",
+          "tested": "320fa26516f0b617f86b3ad9a83652f7acd0bb3b4539398b3975e7fba6451f2b"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/fvwm3",
+          "expected_after_rpath": "6e2ef96e8e344d6a1c9fb531788be4f2143a7852a547fa0a2a86a54c237d632b",
+          "installed": "6e2ef96e8e344d6a1c9fb531788be4f2143a7852a547fa0a2a86a54c237d632b",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/bin/fvwm3",
+          "tested": "6e2ef96e8e344d6a1c9fb531788be4f2143a7852a547fa0a2a86a54c237d632b"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "754a746cb815d705ade5f8812bd72f742c52e7942f186cda34013a33a5377558",
+          "installed": "754a746cb815d705ade5f8812bd72f742c52e7942f186cda34013a33a5377558",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "754a746cb815d705ade5f8812bd72f742c52e7942f186cda34013a33a5377558"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "00e774ccb91a9ce9eb6363548673793d949a6c7c2c8145386f2bfa20c8f93eb9",
+          "installed": "00e774ccb91a9ce9eb6363548673793d949a6c7c2c8145386f2bfa20c8f93eb9",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "00e774ccb91a9ce9eb6363548673793d949a6c7c2c8145386f2bfa20c8f93eb9"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "9dc44d1ca80069cc5f779c7af27f3532ca2d9a31e81b69e338fbc66bcdd34bed",
+          "installed": "9dc44d1ca80069cc5f779c7af27f3532ca2d9a31e81b69e338fbc66bcdd34bed",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "9dc44d1ca80069cc5f779c7af27f3532ca2d9a31e81b69e338fbc66bcdd34bed"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "01a9d82489492072ec948e851f7bdfe49abdb74451dd84c72a6e389b345bf1cf",
+          "installed": "01a9d82489492072ec948e851f7bdfe49abdb74451dd84c72a6e389b345bf1cf",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "01a9d82489492072ec948e851f7bdfe49abdb74451dd84c72a6e389b345bf1cf"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "967fbc347fc37b22362dd8b953e7370e46ca0e099706ad43515c27b551d9d990",
+          "installed": "967fbc347fc37b22362dd8b953e7370e46ca0e099706ad43515c27b551d9d990",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "967fbc347fc37b22362dd8b953e7370e46ca0e099706ad43515c27b551d9d990"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "b46a2fcc6d0012718b77a64fbfb699dfe3e3b52d240290b66e2c1b125339ae7c",
+          "installed": "b46a2fcc6d0012718b77a64fbfb699dfe3e3b52d240290b66e2c1b125339ae7c",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "b46a2fcc6d0012718b77a64fbfb699dfe3e3b52d240290b66e2c1b125339ae7c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "0589294cf77d9b56327927799979a963ea3c4496699461c2108847d7851d194c",
+          "installed": "0589294cf77d9b56327927799979a963ea3c4496699461c2108847d7851d194c",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "0589294cf77d9b56327927799979a963ea3c4496699461c2108847d7851d194c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "c9d68ffc50d726e535b8c03c4d48f833a682a888a69a76c2b68d1f7c74e24b9e",
+          "installed": "c9d68ffc50d726e535b8c03c4d48f833a682a888a69a76c2b68d1f7c74e24b9e",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "c9d68ffc50d726e535b8c03c4d48f833a682a888a69a76c2b68d1f7c74e24b9e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "372fabc741b1a0cca0505e007810275ea7661893c2c1accd0e6292b2668a7349",
+          "installed": "372fabc741b1a0cca0505e007810275ea7661893c2c1accd0e6292b2668a7349",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "372fabc741b1a0cca0505e007810275ea7661893c2c1accd0e6292b2668a7349"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "f86961539736432a25f3f2bf6898de1529afc6be4b92f549fa63fdb99c0962a0",
+          "installed": "f86961539736432a25f3f2bf6898de1529afc6be4b92f549fa63fdb99c0962a0",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "f86961539736432a25f3f2bf6898de1529afc6be4b92f549fa63fdb99c0962a0"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "c6e02610d7f229ffa2c725ccc3a6092971e2f5efe7e4123e6198b3dfb0972df2",
+          "installed": "c6e02610d7f229ffa2c725ccc3a6092971e2f5efe7e4123e6198b3dfb0972df2",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "c6e02610d7f229ffa2c725ccc3a6092971e2f5efe7e4123e6198b3dfb0972df2"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "5a2d5e70817fc7b6df013f36c9c49213f456d8a76aa3b1b7046652c075a65982",
+          "installed": "5a2d5e70817fc7b6df013f36c9c49213f456d8a76aa3b1b7046652c075a65982",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "5a2d5e70817fc7b6df013f36c9c49213f456d8a76aa3b1b7046652c075a65982"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-minimal/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "80a8ffd1c4661d583fc5bc3ca29a337b1cae7d0231ff76d3f66e9107cf60a310",
+          "installed": "80a8ffd1c4661d583fc5bc3ca29a337b1cae7d0231ff76d3f66e9107cf60a310",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-minimal/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "80a8ffd1c4661d583fc5bc3ca29a337b1cae7d0231ff76d3f66e9107cf60a310"
+        }
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 29417,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 110584,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 446339,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3122162,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 2625823,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3582626,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5846736,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 5540232,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5691693,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 5120477,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 6083656,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 5755276,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 12458356,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 12153102,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 25513552,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 25168214,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "fvwm-x-linux-arm64-svg/software": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/bin/fvwm-root",
+          "expected_after_rpath": "f7af447115a9808b0cd6c0a1ad6fbbda71b57e2c8ae8f62daf1e812a3f998773",
+          "installed": "f7af447115a9808b0cd6c0a1ad6fbbda71b57e2c8ae8f62daf1e812a3f998773",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/bin/fvwm-root",
+          "tested": "86c66c1063dbc78f5247b11e7f3d18197ceb0cbbbae711a131ce82c6cdf7ae53"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/fvwm3",
+          "expected_after_rpath": "2fc6a2d3011708ec53c5296d89fd2023c13c976cf0db488417776633925268fd",
+          "installed": "2fc6a2d3011708ec53c5296d89fd2023c13c976cf0db488417776633925268fd",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/bin/fvwm3",
+          "tested": "a953b1a96287f674eb9a8963e45164359d8aa893ba36a556a03e36a7ae1cce66"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "12b239ea938512ddc82643d533bf2b3775a7a0367093b8119e3cd9fbf289ebaf",
+          "installed": "12b239ea938512ddc82643d533bf2b3775a7a0367093b8119e3cd9fbf289ebaf",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "63a65122cb2e178df36e10fe350a4c190a96d8c119236d75ae778509b1281917"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "020b507f9f1b69af1f57a00a817ec4406ca448a96622ff2120c5cf5ef0b90fa3",
+          "installed": "020b507f9f1b69af1f57a00a817ec4406ca448a96622ff2120c5cf5ef0b90fa3",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "c97cec55117c7e40d4a4d0ddd8d9b2cf1f1d495dccb090981c6c90f28cf65970"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "bd517793394e33cfda4eff381cb9d286466ba1a1f100662f1cb2fab0ceb9f652",
+          "installed": "bd517793394e33cfda4eff381cb9d286466ba1a1f100662f1cb2fab0ceb9f652",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "8464a3d7ba6f70a4aba2e0da68fffc11d49f199c7f48dafe26db40ead17b1319"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "dbcc0d0edc94ef83966c221d3a9b73dd7d026dd6f7793deebf22c8a741277689",
+          "installed": "dbcc0d0edc94ef83966c221d3a9b73dd7d026dd6f7793deebf22c8a741277689",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "fe64e9101488486482426fd33ab6b97dbb526227b9f691bb0823097c727d91bf"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "1d5de0637057a33fce2a15bc72eeae9efd5c9649e3b546de79740f8ee9f992c3",
+          "installed": "1d5de0637057a33fce2a15bc72eeae9efd5c9649e3b546de79740f8ee9f992c3",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "d0ea0553a4c142d7d757396d9de887d41ab3ba11da4cd998b3602ef36816006d"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "2e8e5bdfb9aae8667150ef446750c1e00d39cba4bc8f25c25dab49c3e39fa176",
+          "installed": "2e8e5bdfb9aae8667150ef446750c1e00d39cba4bc8f25c25dab49c3e39fa176",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "23f1e55edb87a89047d7ec31a3e736a1d992aca470d5e274bcd4c21669d0da7b"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "4ec358908f81d08950a66c484e88695b96b6d4d5551263360bbeac462392c3e2",
+          "installed": "4ec358908f81d08950a66c484e88695b96b6d4d5551263360bbeac462392c3e2",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "84f167b8aace6e2046b1348aee8f1b85c4a7050988c4d69ccbe3e5c8b10a3c60"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "1b05f2c577ec88b7908005e27fb4937beaf3bf15f016e65132b24ca04d2dd0b6",
+          "installed": "1b05f2c577ec88b7908005e27fb4937beaf3bf15f016e65132b24ca04d2dd0b6",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "b7001faf3af925215fa342003cc01624f6c51621171480df5fadba250a6166ea"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "6185d272ce16fec3819542ef5c07dd8183cfb1f05bb9282ce1da31cb7ecdd955",
+          "installed": "6185d272ce16fec3819542ef5c07dd8183cfb1f05bb9282ce1da31cb7ecdd955",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "d031dd46f32fbafe1dd561390adf3af35eacc248f07b5ac816b336db0e7b184c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "fae275aefde4de7e1a31427124d54a9b7a72e80098c82d8dddf5f6a67ec73fee",
+          "installed": "fae275aefde4de7e1a31427124d54a9b7a72e80098c82d8dddf5f6a67ec73fee",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "b53085d817d4977e96763f5283d7b7b5a0c032e1a4c5eac9a19f8e19bb4b86bd"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "a5d30794a9752c76f160fcbfbeb70274b3f4217c73e3d25370d00359906a12a3",
+          "installed": "a5d30794a9752c76f160fcbfbeb70274b3f4217c73e3d25370d00359906a12a3",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "1e55b7dd3fc64124a30a31c84526dee67cfc441cbfd49877cefba4acad5a315a"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "ada03fcb4b032cc504a34677ca7a42b8a507abf9353b8a0fa41e11cb97dfd457",
+          "installed": "ada03fcb4b032cc504a34677ca7a42b8a507abf9353b8a0fa41e11cb97dfd457",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "e624a556272d99d29bb32f5bc5950a426131ca19f214cc7e6011695e469921d5"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "ff72736b95082236fddf064206176ff215208692d11b628603beac32bdfe7af6",
+          "installed": "ff72736b95082236fddf064206176ff215208692d11b628603beac32bdfe7af6",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "59fdf811a8d718859e92b77139e987e518fc0e3398193f32b1c04700d4df91a7"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+          "installed": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+          "installed": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+          "installed": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/tmp/fvwm-module-waits-20261015/build-software/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/tmp/fvwm-module-waits-20261015/stage-final-software/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 36750,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 111668,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 497755,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 2569948,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3600668,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3807795,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 7257544,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 6914457,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 6173698,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 5868319,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 10992088,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 10600126,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 19460481,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 19033559,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 35151666,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 34864788,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "linux-amd64/clang": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/bin/fvwm-root",
+          "expected_after_rpath": "ab52b81f9aee0c74cd5bf9446b7ccb0389c27ea9f62c11515b9a606a4a184ec8",
+          "installed": "ab52b81f9aee0c74cd5bf9446b7ccb0389c27ea9f62c11515b9a606a4a184ec8",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/bin/fvwm-root",
+          "tested": "d41c6332535a629669018a3912b455b9ab38bc6a68126f30dc13fc21ac90d10a"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/fvwm3",
+          "expected_after_rpath": "7bcf8db8f58a8e677f696e926bb0de3e14318bd4fc7dd37a95bbf3dbff6075b6",
+          "installed": "7bcf8db8f58a8e677f696e926bb0de3e14318bd4fc7dd37a95bbf3dbff6075b6",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/bin/fvwm3",
+          "tested": "cedc0c1e9e5851f6538aef8fbcb5080a6fc3f56ceef0e8d29e41db5464af0655"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "44e1f1c79c8cfc15d4f1fb1f950e86abc3d4a4ebf521944c60face4867f3a154",
+          "installed": "44e1f1c79c8cfc15d4f1fb1f950e86abc3d4a4ebf521944c60face4867f3a154",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "d7afde09a7d1269d771096439246a1dab44b92539890e319f01bc5b49348ebb6"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "f557d5c3ba1e655426b6dc0967d9ef25d32bd2f5abf9118981239638d3831cab",
+          "installed": "f557d5c3ba1e655426b6dc0967d9ef25d32bd2f5abf9118981239638d3831cab",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "587c93c9ce365663fdd96b67bb6031921581fadd0463fb4a6c51bc9d19e8574e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "79f926141b01fb03358ef79fd76af958e7db0d93f8de5fe2506a3b2792f8e455",
+          "installed": "79f926141b01fb03358ef79fd76af958e7db0d93f8de5fe2506a3b2792f8e455",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "aee1f3e6992ff19691ada71ada1cbedfbee87b8b81330434b61f1f718466cd59"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "1214d522751749951539855d15632a94bccff96ed94ae68946c5f3bc9972a869",
+          "installed": "1214d522751749951539855d15632a94bccff96ed94ae68946c5f3bc9972a869",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "8c61289d90d05f4254d52567d1572ef8d58144d6581327c79bb3ea68c9dcdab2"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "fcab1004b80a5d7bd40b984124241a790c0b9f1a9d26c0717e3791b282c73830",
+          "installed": "fcab1004b80a5d7bd40b984124241a790c0b9f1a9d26c0717e3791b282c73830",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "9749885cedea1b8416b60e4cde962bfd4b8b66e96ad018369d0f55a86843dd0e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "27f41d5cb26ee4459d0f8affc20577af27d4d0962a315ee993cc6645d23360e1",
+          "installed": "27f41d5cb26ee4459d0f8affc20577af27d4d0962a315ee993cc6645d23360e1",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "134229b44dc9263266827252ee2192810c12fbbec1526a0e8b7479858433fa31"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "444e597ee2eba9b2c681516c7e52560f6db42d0c0cbea0be152fa6a2a95b543e",
+          "installed": "444e597ee2eba9b2c681516c7e52560f6db42d0c0cbea0be152fa6a2a95b543e",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "aa1f0063cb28829a61ef8af935a558eb61db9c85552ad2b3cc9cf8346d7f2de1"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "d6406e125bbc13e716d174161fbf7621ad0360237a9f7970535185c10c3e4498",
+          "installed": "d6406e125bbc13e716d174161fbf7621ad0360237a9f7970535185c10c3e4498",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "f3cd7eee7284af47459977931e6229391a2eae5fd3bf0d124c90adbd005869dc"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "a49b63c0c8cd220c7057a8b8230c5df1db18761951868da24f068e91361f6714",
+          "installed": "a49b63c0c8cd220c7057a8b8230c5df1db18761951868da24f068e91361f6714",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "75fbe38a59a9589b0d40e9ee82b23c5341ed95f04f65cdfd8a781763b5b27080"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "4dfe126213be624599e92c10aaa9ad750aed43bbab1ee50444ca84733faefb35",
+          "installed": "4dfe126213be624599e92c10aaa9ad750aed43bbab1ee50444ca84733faefb35",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "79df661736d1e47fb06239591956bda45632c7ad2d70062269f1a141cf22bbb3"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "f73753f3d91f5ec8b22a7677903cc22fe331741ef63fcf287466a5be79d76e57",
+          "installed": "f73753f3d91f5ec8b22a7677903cc22fe331741ef63fcf287466a5be79d76e57",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "9cb760b753df176c1355048ef3d4732205ab47aa9a4ba4a1d64a0be8818a0072"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "e42985891b2bb36ef4b33c304100bf91768fe34814c4a1271a61388d1df2d61c",
+          "installed": "e42985891b2bb36ef4b33c304100bf91768fe34814c4a1271a61388d1df2d61c",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "e2943cc3d2d066d8fb8e5f99b4c79a51c388d52d6f01dbe3d52376c2e3ec1895"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "15996083107824db77e85a0ec3129e74316c93375a6e286c24c4db7fd6eb9f34",
+          "installed": "15996083107824db77e85a0ec3129e74316c93375a6e286c24c4db7fd6eb9f34",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "d1ba50e15e7ddc9e759e92a227111c7579451c82555ba3fb0abc95a313cdcdca"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-clang/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-clang/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 1064002,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 3131005,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 11188017,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 18996030,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 18517029,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 26084041,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 56796087,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 54122083,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 52996082,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 50524078,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 48435075,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 46397072,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 195797302,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 189541293,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 208196321,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 206066318,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "linux-amd64/gcc": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/bin/fvwm-root",
+          "expected_after_rpath": "3fa3cff0b7311e2a1a261f37a98efc70ac1abcea6cbf4ef583508ef41bbf2020",
+          "installed": "3fa3cff0b7311e2a1a261f37a98efc70ac1abcea6cbf4ef583508ef41bbf2020",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/bin/fvwm-root",
+          "tested": "e6a10bb7e0936d5ccc86e13186d34d9fbbb841c442f59ab18070e97de65f52fd"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "expected_after_rpath": "492ac0fb441a9bd16359b5b9c60db2688d8fe30bc847f8c3639c2b61e01c348b",
+          "installed": "492ac0fb441a9bd16359b5b9c60db2688d8fe30bc847f8c3639c2b61e01c348b",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/bin/fvwm3",
+          "tested": "c61ddcb9446193af9524c486addc2c4a73ec9f94693b614fedc94a8718d303a6"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "fe8e4b11cdde00b2d062893e419cf939d15e911c3fb41b74eccbc888bf09955e",
+          "installed": "fe8e4b11cdde00b2d062893e419cf939d15e911c3fb41b74eccbc888bf09955e",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "9c685ba22e8c842605154b5cd593ff76c7b1d108b453955de4589d172bf2460c"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "e29346ee305c0c653809fd26ee8b291d2eca464345b2963bdd871aeb53d112bf",
+          "installed": "e29346ee305c0c653809fd26ee8b291d2eca464345b2963bdd871aeb53d112bf",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "a50cb5def1fb196fb71413021dad503d40b8f5d3148f5f86cbbe13550edacb1b"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "fbd0d94ac34f30ffa952146e9d3a82f129111c6af2173dc43fdacf8e05cc059a",
+          "installed": "fbd0d94ac34f30ffa952146e9d3a82f129111c6af2173dc43fdacf8e05cc059a",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "e2e9f0855d3e3b0a38d3988d0d91bd0eee5ed8a412ff10060814cfbe044b4622"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "68b39ed290b450cbf365b22377eadc275ed47c9bb1e44e96266f3586a0ac8952",
+          "installed": "68b39ed290b450cbf365b22377eadc275ed47c9bb1e44e96266f3586a0ac8952",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "ec9a46c0bdacd33592de0ecbe00dfd7a3aac627a6c8ad47317b029165fdb5551"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "dfc510da22f9a6320469415668ba43213a4d0fc9db268c725351bdc8765fa849",
+          "installed": "dfc510da22f9a6320469415668ba43213a4d0fc9db268c725351bdc8765fa849",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "3acd85ce58b2192dd4e193f3bc5f71e3d5cfc012deedd7e37b5f26d1edaa77c9"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "3287418574535035745c1149cc0f6d42fa19c11e370aa3b8d84850868556af69",
+          "installed": "3287418574535035745c1149cc0f6d42fa19c11e370aa3b8d84850868556af69",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "97be7be5991f32991699c0eb5643b130655803dba38122d6ed04ba2571ddefc5"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "a31845a03135b2a6b4f036f0f5e34025d875c42d88a37966d658f22a736b076f",
+          "installed": "a31845a03135b2a6b4f036f0f5e34025d875c42d88a37966d658f22a736b076f",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "abcf4db39ec383d313a6e56cbd8a0bed7f09ac5983a61ec9d543707a79701bf0"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "cb50e0aec692cbe7a91ee4cf0639e73757ebf10cade3c08f3dd606661e49e7b3",
+          "installed": "cb50e0aec692cbe7a91ee4cf0639e73757ebf10cade3c08f3dd606661e49e7b3",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "766bb265632690913641e796d86d12a10a3cef964e079819f6f750172aba5b2e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "9223ec4863e5f9a0099000aebfe32436d5db6792165822e7d66a4f6a16275391",
+          "installed": "9223ec4863e5f9a0099000aebfe32436d5db6792165822e7d66a4f6a16275391",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "2f546db9908e04f0658a93f2f82eee88002d66143288c7a226f45c0f60b9f190"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "4065f57da05d31ed50add6a91e96ba08a900fe9bd9213f417ff01b287d93c9ae",
+          "installed": "4065f57da05d31ed50add6a91e96ba08a900fe9bd9213f417ff01b287d93c9ae",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "50d47620ebcaed2f99f49c61d07903730e43c6a5ba12d511307420b5217177cb"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "a860b379db661f2b0c6f7c960709cbfe7d3ca1f4e041b713a785511c7e2e870a",
+          "installed": "a860b379db661f2b0c6f7c960709cbfe7d3ca1f4e041b713a785511c7e2e870a",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "8d8a8deb7317313a2fc49b83455638bd084089a4b5c01710e4c244e23bc50f37"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "50854acaab8989472fe30966f09c643a1576592c4c8a82560af74ccb11ac27ee",
+          "installed": "50854acaab8989472fe30966f09c643a1576592c4c8a82560af74ccb11ac27ee",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "d16226b2152a38d2c0098565e84ca556c6bdf5d85d3d8705dfc74db183d4a05f"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "d7f242b0a5d29f0a6d01826786df5e4fc2cd55fa0fec82cc5e8a87845cf72261",
+          "installed": "d7f242b0a5d29f0a6d01826786df5e4fc2cd55fa0fec82cc5e8a87845cf72261",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "a9b0c152e7169ab90e619973c484012f9ef30a874b8a6e9369a46d0688749205"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/root/fvwm-module-waits-20261015/build-gcc/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/root/fvwm-module-waits-20261015/stage-final-gcc/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 966002,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 3117005,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 10463017,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 17877029,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 20069032,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 21136034,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 49836079,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 47687077,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 48208077,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 45581073,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 50677081,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 48834078,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 95319153,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 92567148,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 206516330,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 204121326,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "openbsd-amd64/default": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/bin/fvwm-root",
+          "expected_after_rpath": "6c157f5e8988a30899555a090f7c16ceff4939df5c8f937830afbdc97ecf4718",
+          "installed": "6c157f5e8988a30899555a090f7c16ceff4939df5c8f937830afbdc97ecf4718",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm-root",
+          "tested": "1e81ceef43c56068aa9c4fbc70fafea723720b0f18b3f36c621329072cb0d83f"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/fvwm3",
+          "expected_after_rpath": "154be7135500075f8ed585324e248f2c83aa0960f44e7982a12d1cb2efcfcb7a",
+          "installed": "154be7135500075f8ed585324e248f2c83aa0960f44e7982a12d1cb2efcfcb7a",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm3",
+          "tested": "7da5f1e13b20779d462b6daae1805fb2586d92ec2fc01b5db880d6addaca1835"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "20412096d55ca01c195c25c26acdcd31af57b7fb7c1d6f45c889ef4c01f54903",
+          "installed": "20412096d55ca01c195c25c26acdcd31af57b7fb7c1d6f45c889ef4c01f54903",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "b5e72aaa6c982d3f214b986290bdb9678707adc2b63120fd89a3de65f68369be"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "d3248f21d27fb2c2edfc1c23f080508820e48dfebc48e09bc1e7238633011bc3",
+          "installed": "d3248f21d27fb2c2edfc1c23f080508820e48dfebc48e09bc1e7238633011bc3",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "6f37393860886899e6e78f9032e36539bcc044666912b27149c1b58c0263956e"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "97510753cab8d0a50e6c481f713f58db494cce9ea224f9bfaa6d68041390c92d",
+          "installed": "97510753cab8d0a50e6c481f713f58db494cce9ea224f9bfaa6d68041390c92d",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "36ff64fb877c58297c7a635356b7884b4980b8f20f9acddbcc3fc9a333e82617"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "05e71afee852737d7fd245ce19ebed6da3b9b5c15276896376bf5ad50ed9549e",
+          "installed": "05e71afee852737d7fd245ce19ebed6da3b9b5c15276896376bf5ad50ed9549e",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "408ec5c10fe5949fb0d09cbf8eb8c27a568fd81614679113e385dd7e67469cef"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "bcda2d6d8dfcc21afe6defc1b0881d8b79a9bcc427780df5440cfdfe6820f556",
+          "installed": "bcda2d6d8dfcc21afe6defc1b0881d8b79a9bcc427780df5440cfdfe6820f556",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "63a9e00ecb7b868052edc7172fa2166cc820052026f63d3bcb59198ce4db816d"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "cfa20621c06b9b32b064328005276f5735cd92c18b6eb82afdadb8ea7e29af36",
+          "installed": "cfa20621c06b9b32b064328005276f5735cd92c18b6eb82afdadb8ea7e29af36",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "247d77b43ad53c85394f4b5c17234f9547af6ab59a2b7009799f0331bd263ef9"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "3eddecffb1729a992392f54997c6dcd04d4497855c8ac92fa1d1ce9f8073952f",
+          "installed": "3eddecffb1729a992392f54997c6dcd04d4497855c8ac92fa1d1ce9f8073952f",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "d9b6c820b96eed0f8b1cfa2fc770f6ce89e52db1e11d99ce6dd1bc8df9855ca5"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "6e742cb2def02d9634b3ed621d1039b8a5f1bd93981be1569f5402e525238a33",
+          "installed": "6e742cb2def02d9634b3ed621d1039b8a5f1bd93981be1569f5402e525238a33",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "1a7b6b822a539482a33f39105683f113250dbf05cf0ae1a79340b8cdc4354129"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "0a99f23a70d00139c831ae596b29cc92e86d3610a411a094510071d246c81baa",
+          "installed": "0a99f23a70d00139c831ae596b29cc92e86d3610a411a094510071d246c81baa",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "77f7e85d0649f78f6bb0afc19012e86391008fa93ec626abc60f02f6e78b0ce3"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "8c63f9c387bf7cc6fd3f6561334e95a86f5f681b9e80972800b5cb77674c8067",
+          "installed": "8c63f9c387bf7cc6fd3f6561334e95a86f5f681b9e80972800b5cb77674c8067",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "c51c0af663463dcaa62ebb4304e7c83cb269d4cef8a50f45acfd4d7d5e84b869"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "19ab738cbfc612a6ec9a58fed6b39813f0b1c1db16a5d34ab830eb6ba6230325",
+          "installed": "19ab738cbfc612a6ec9a58fed6b39813f0b1c1db16a5d34ab830eb6ba6230325",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "d2f47e91f417edd5759094860b58d4a691936b2ac97e4b3f4d82d776b54927f1"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "480803d11d63391266ddf948e00c7dd3b25c64437592a20d656fd689043f7e82",
+          "installed": "480803d11d63391266ddf948e00c7dd3b25c64437592a20d656fd689043f7e82",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "66f08cc49f505a926b291f4ee9bff40b6f78cea73d936da92d313655788f9cd2"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "c97a801cd1a41cc047aaf210325f1fbf8e997e392bc72d922b824ecdcd803ae2",
+          "installed": "c97a801cd1a41cc047aaf210325f1fbf8e997e392bc72d922b824ecdcd803ae2",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "5a6b072d8ddb5970096ee5509ae74085d46cdb2c9d051dd2bfd58eaaaadd5942"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "OpenBSD",
+        "fvwm-x-openbsd-amd64.my.domain",
+        "7.9",
+        "GENERIC.MP#449",
+        "amd64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 1294000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 3987000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 17790999,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 54329000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 52501000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 59819000,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 135318000,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 129038000,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 125580000,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 118975000,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 122392000,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 116140000,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 243460000,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 237153000,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 516523999,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 510467999,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    },
+    "openbsd-arm64/default": {
+      "identities": {
+        "usr/local/bin/fvwm-root": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/bin/fvwm-root",
+          "expected_after_rpath": "9f1adbda38b0a04aa6567d415bfdcbc32d5620791b91c8c8bf3c9552a48790ab",
+          "installed": "9f1adbda38b0a04aa6567d415bfdcbc32d5620791b91c8c8bf3c9552a48790ab",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm-root",
+          "tested": "26d24c49c0f98187cc5c5cedd113414e852e2c26384fd484db996924952d6312"
+        },
+        "usr/local/bin/fvwm3": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/fvwm3",
+          "expected_after_rpath": "84f2ed5c8d363111b879f3dabc207229c800ec187ea1c7f7b0b5c4753e331e7d",
+          "installed": "84f2ed5c8d363111b879f3dabc207229c800ec187ea1c7f7b0b5c4753e331e7d",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/bin/fvwm3",
+          "tested": "b47bccb5b53f7a96fc1f3a1ee96cc8ac62e7a6c27dbb56d3a8815b3770dcf004"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmAnimate/FvwmAnimate",
+          "expected_after_rpath": "76fc696488ad9b548abcab3fa5794abd40c46c584df3cb53f4f7eeb741d8a2c5",
+          "installed": "76fc696488ad9b548abcab3fa5794abd40c46c584df3cb53f4f7eeb741d8a2c5",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAnimate",
+          "tested": "59e82a19f80c785f7055747228e0ee3a63608af8e20e1c086af1eff5de53d623"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmAuto/FvwmAuto",
+          "expected_after_rpath": "59f6a03133072b0ee1697619efdaa883bc8abb49d87515d91f9c0b3f49df5ff3",
+          "installed": "59f6a03133072b0ee1697619efdaa883bc8abb49d87515d91f9c0b3f49df5ff3",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+          "tested": "e8594551a2b6bc7c168d4fd08fe9069338b9312e29d33a7aae08bd22f8c87c5a"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmBacker/FvwmBacker",
+          "expected_after_rpath": "402ecc13ddebc6cce84e9150d58a8053d2e10d7dbc6c89d565de148bdecfd2aa",
+          "installed": "402ecc13ddebc6cce84e9150d58a8053d2e10d7dbc6c89d565de148bdecfd2aa",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "tested": "416c1f96fa9394bb27810163353e68d11c76e7b88b22e9e7ffc18f66d52e4e32"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmButtons/FvwmButtons",
+          "expected_after_rpath": "da406aab00038711f0ca4730099628b5518778f51cc3d556292e93d1b64789fe",
+          "installed": "da406aab00038711f0ca4730099628b5518778f51cc3d556292e93d1b64789fe",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "tested": "df2dee1056a437781f90c4258f2c0650cba42fddf3e093792629d9c04d239afe"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmEvent/FvwmEvent",
+          "expected_after_rpath": "ea9d5296eb779e1a704575f3925911d59ceb41972feef7aa421eb3931b5550f0",
+          "installed": "ea9d5296eb779e1a704575f3925911d59ceb41972feef7aa421eb3931b5550f0",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "tested": "97c042a443d916f4ab9278ecca0c8f9966e10d4e6289f6c662331e43fff08d39"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+          "expected_after_rpath": "69ed9d0343508f45e28ae47af0a4a32b6390d85f8900a1b02af7841a2d131584",
+          "installed": "69ed9d0343508f45e28ae47af0a4a32b6390d85f8900a1b02af7841a2d131584",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "tested": "9153711a35d41470e6dddfef9e2521f18d2e08f8901b24a3bb31d752d3600e10"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmIconMan/FvwmIconMan",
+          "expected_after_rpath": "d34eddab0e9da416efc94f65fa0e00ed9196875ab5673315ef3102bbbce1bb81",
+          "installed": "d34eddab0e9da416efc94f65fa0e00ed9196875ab5673315ef3102bbbce1bb81",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIconMan",
+          "tested": "2a40b78597cd4eeaca425d69028dcad479bb1603928cfb28747bea18222373e0"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmIdent/FvwmIdent",
+          "expected_after_rpath": "5707277d2d5525f4ee6bf4aa5528b81d72c071c25dc816f671c702ec84ab8fcb",
+          "installed": "5707277d2d5525f4ee6bf4aa5528b81d72c071c25dc816f671c702ec84ab8fcb",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmIdent",
+          "tested": "e1fdef3387bdd54d73d08428377a67dddf7d2f8b3e91817c1f78fe2e0e25b5ab"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+          "expected_after_rpath": "d15c1fd7386cb4783debce9134dbb14d39255763409eb440252ac89da7ac60dc",
+          "installed": "d15c1fd7386cb4783debce9134dbb14d39255763409eb440252ac89da7ac60dc",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "tested": "b4cc552a8abe7e7cb84fe416f880167dab9699a364a5f13ea1eba3f17d576ade"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmPager/FvwmPager",
+          "expected_after_rpath": "1c8293edb43504616162a726992a8a3422ec4fc52ed78d85cefece1b07ebc773",
+          "installed": "1c8293edb43504616162a726992a8a3422ec4fc52ed78d85cefece1b07ebc773",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmPager",
+          "tested": "43fa6d500ed2356d781c6c98badd5815cd099f9beb698d91bceeae3a4209c412"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmRearrange/FvwmRearrange",
+          "expected_after_rpath": "83180bc13d79340ad9c5390479aee59f067a848915e3a99ab7675d282cea015b",
+          "installed": "83180bc13d79340ad9c5390479aee59f067a848915e3a99ab7675d282cea015b",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+          "tested": "04cd50454bf38f3d6ae0226abbeea1c4569e972b91453b3c7c223f8a02cfa9d4"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/modules/FvwmScript/FvwmScript",
+          "expected_after_rpath": "bd1ba96c32813a1f53fbec3dddf1301a21724cbe3a25d84d8afc6ad941b45149",
+          "installed": "bd1ba96c32813a1f53fbec3dddf1301a21724cbe3a25d84d8afc6ad941b45149",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/FvwmScript",
+          "tested": "0345dd39bd9546e9220923328dd2da49062d459856c9bf4dc905532c3a19b7af"
+        },
+        "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/bin/fvwm-image-svg-worker",
+          "expected_after_rpath": "a936f2ea9f9e4c51f9f43fd607f051c5009400fecd189228243b228ed3231153",
+          "installed": "a936f2ea9f9e4c51f9f43fd607f051c5009400fecd189228243b228ed3231153",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+          "tested": "af0ade7e8a5796f5b51fbbe554906bb81932b7b2d23cd5d640cbb41ac873fc3f"
+        },
+        "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/ar/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo",
+          "tested": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c"
+        },
+        "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/da/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo",
+          "tested": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da"
+        },
+        "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/de/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo",
+          "tested": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45"
+        },
+        "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/es/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo",
+          "tested": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad"
+        },
+        "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/fr/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo",
+          "tested": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d"
+        },
+        "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/ka/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo",
+          "tested": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf"
+        },
+        "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/ru/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo",
+          "tested": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030"
+        },
+        "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo",
+          "tested": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a"
+        },
+        "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/uk/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo",
+          "tested": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8"
+        },
+        "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo",
+          "tested": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca"
+        },
+        "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+          "build_path": "/home/fvwm-module-waits-20261015/build-default/po/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "expected_after_rpath": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+          "stage_path": "/home/fvwm-module-waits-20261015/stage-final-default/usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo",
+          "tested": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87"
+        }
+      },
+      "uname": [
+        "OpenBSD",
+        "fvwm-x-openbsd.my.domain",
+        "7.9",
+        "GENERIC.MP#222",
+        "arm64"
+      ],
+      "workloads": [
+        {
+          "comparisons": 2016,
+          "elapsed_ns": 71252,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 8128,
+          "elapsed_ns": 277382,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 32640,
+          "elapsed_ns": 1451037,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 0,
+          "mode": "simplify",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 2457646,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 6080,
+          "mode": "lookup",
+          "rules": 64,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 3090621,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 12224,
+          "mode": "lookup",
+          "rules": 128,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 2835114,
+          "grabbed_matches": 0,
+          "grabbed_ns": 0,
+          "grabs": 0,
+          "matches": 24512,
+          "mode": "lookup",
+          "rules": 256,
+          "windows": 1
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5429680,
+          "grabbed_matches": 1536,
+          "grabbed_ns": 5218550,
+          "grabs": 1,
+          "matches": 1536,
+          "mode": "update",
+          "rules": 64,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 5154090,
+          "grabbed_matches": 3072,
+          "grabbed_ns": 4857416,
+          "grabs": 1,
+          "matches": 3072,
+          "mode": "update",
+          "rules": 128,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 6855759,
+          "grabbed_matches": 6144,
+          "grabbed_ns": 6512875,
+          "grabs": 1,
+          "matches": 6144,
+          "mode": "update",
+          "rules": 256,
+          "windows": 8
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 9442409,
+          "grabbed_matches": 12288,
+          "grabbed_ns": 9234778,
+          "grabs": 1,
+          "matches": 12288,
+          "mode": "update",
+          "rules": 256,
+          "windows": 16
+        },
+        {
+          "comparisons": 0,
+          "elapsed_ns": 19858759,
+          "grabbed_matches": 24576,
+          "grabbed_ns": 19598253,
+          "grabs": 1,
+          "matches": 24576,
+          "mode": "update",
+          "rules": 256,
+          "windows": 32
+        }
+      ]
+    }
+  },
+  "retained_full_suite_gaps": [
+    {
+      "detail": "100 ms pressure-noise xrandr bound fails in original, isolated and final idle runs; code/binary/deadline unchanged",
+      "owner": "VERIFY-01 #5",
+      "target": "linux-amd64/gcc",
+      "test": "topology-xorg-dummy"
+    },
+    {
+      "detail": "test_worker_refuses_unlocked_url_without_opening_it exceeds two-second subprocess bound in original and isolated runs; no source/deadline change",
+      "owner": "CI-01 #17",
+      "target": "openbsd-amd64/default",
+      "test": "ci-asset-contract"
+    }
+  ],
+  "source_archive_sha256": "1f64f3367e5f9706c86ab088c1bb25baac66ed6436169d48a65eb3f7a01f113b",
+  "source_files": 1952,
+  "status": "Affected style profiling checks pass; no production optimization or full-suite green claim",
+  "test_paths": {
+    "tests/live_x/style_profile_live.py": {
+      "mode": 420,
+      "sha256": "acc188ec7be6325ee30773656b195a0c3b3f7e5147bab50869251ec4ed9ff089"
+    },
+    "tests/meson.build": {
+      "mode": 420,
+      "sha256": "a74f2458c99511258b0c995cc59f056ec396f13d84fc03935c5471554e1a56ac"
+    },
+    "tests/style_profile_start.c": {
+      "mode": 420,
+      "sha256": "e7bc965c9e92fd22d385129d4dfb872cb981c1927342c1f84425a1f2a40ccb8f"
+    }
+  }
+}

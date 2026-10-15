@@ -93,6 +93,15 @@ if golang.found() and get_option('live-x-tests') and host_machine.system() in ['
     )
 endif
 
+style_id_filter_test = executable(
+    'test-style-id-filter',
+    ['test_style_id_filter.c', '../fvwm/style_id_filter.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+)
+test('style-id-filter', style_id_filter_test)
+
 stack_restack_test = executable(
     'test-stack-restack', ['test_stack_restack.c', '../fvwm/stack_restack.c'],
     include_directories: includedirs,
@@ -1570,6 +1579,7 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         dependencies: all_found_deps,
         link_with: libfvwm3,
         link_args: ['-Wl,--wrap=CaptureAllWindows', '-Wl,--wrap=strcmp',
+            '-Wl,--wrap=style_id_filter_may_repeat',
             '-Wl,--wrap=matchWildcards', '-Wl,--wrap=MyXGrabServer',
             '-Wl,--wrap=MyXUngrabServer'],
         c_args: ['-UNDEBUG'],

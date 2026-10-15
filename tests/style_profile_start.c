@@ -21,11 +21,22 @@
 #include "fvwm/functions.h"
 #include "fvwm/screen.h"
 #include "fvwm/style.h"
+#include "fvwm/style_id_filter.h"
 
-static Bool measuring;
+static Bool measuring, force_reference;
 static unsigned long comparisons, matches, grabbed_matches, grabs;
 static unsigned grab_depth;
 static uint64_t grabbed_ns, grab_started;
+
+bool __real_style_id_filter_may_repeat(const style_id_filter *,
+	const style_id_t *);
+bool __wrap_style_id_filter_may_repeat(const style_id_filter *filter,
+	const style_id_t *id)
+{
+	/* A fully conservative answer exercises the preserved merge traversal.
+	 * The production helper is always called in the optimized mode. */
+	return force_reference || __real_style_id_filter_may_repeat(filter, id);
+}
 
 static uint64_t now_ns(void)
 {
@@ -185,6 +196,72 @@ static void check_precedence(const exec_context_t *exc, FvwmWindow *window)
 	assert(SGET_BORDER_WIDTH(style) == 4 && SGET_HANDLE_WIDTH(style) == 9);
 }
 
+static void check_structured_ids(const exec_context_t *exc, FvwmWindow *window)
+{
+	FvwmWindow sample = *window;
+	window_style style;
+	char text[128];
+
+	sample.class.res_name = "selector-window";
+	sample.class.res_class = "SelectorClass";
+	sample.name.name = "selector-name";
+	sample.icon_name.name = "selector-icon";
+	command(exc, "Style (Resource selector-*, Class SelectorClass) "
+		"BorderWidth 5");
+	command(exc, "Style (Resource selector-window, Class SelectorClass) "
+		"BorderWidth 7");
+	command(exc, "Style (Resource selector-*, Class SelectorClass) "
+		"HandleWidth 9");
+	command(exc, "Style (Name selector-name, Icon selector-icon) "
+		"TitleFormat selected %n, BorderWidth 13");
+	command(exc, "Style (Name selector-*, Icon selector-icon) HandleWidth 15");
+	command(exc, "Style (Name selector-name, Icon selector-icon) "
+		"BorderWidth 17");
+	/* Several passes exercise both merge directions, subset retirement and
+	 * rebuilding a fresh summary after selector strings have been freed. */
+	for (unsigned pass = 0; pass < 16; pass++)
+	{
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 17);
+		assert(SGET_HANDLE_WIDTH(style) == 15);
+		assert(strcmp(SGET_TITLE_FORMAT_STRING(style), "selected %n") == 0);
+		if (!Scr.flags.do_need_style_list_update)
+			break;
+		assert(pass < 15);
+		simplify_style_list();
+	}
+	snprintf(text, sizeof(text), "Style (WindowID 0x%lx) BorderWidth 21",
+		(unsigned long)FW_W(window));
+	command(exc, text);
+	snprintf(text, sizeof(text), "Style (WindowID 0x%lx) BorderWidth 25",
+		(unsigned long)Scr.NoFocusWin);
+	command(exc, text);
+	snprintf(text, sizeof(text), "Style (WindowID 0x%lx) HandleWidth 23",
+		(unsigned long)FW_W(window));
+	command(exc, text);
+	for (unsigned pass = 0; pass < 2; pass++)
+	{
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 21);
+		assert(SGET_HANDLE_WIDTH(style) == 23);
+		simplify_style_list();
+	}
+	snprintf(text, sizeof(text), "DestroyStyle (WindowID 0x%lx)",
+		(unsigned long)FW_W(window));
+	command(exc, text);
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 17 && SGET_HANDLE_WIDTH(style) == 15);
+	sample.icon_name.name = "another icon";
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 7 && SGET_HANDLE_WIDTH(style) == 9);
+	command(exc, "DestroyStyle (Resource selector-window, Class SelectorClass)");
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 5 && SGET_HANDLE_WIDTH(style) == 9);
+	sample.class.res_class = "another class";
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 3 && SGET_HANDLE_WIDTH(style) == 3);
+}
+
 void __wrap_CaptureAllWindows(const exec_context_t *exc)
 {
 	const char *mode = getenv("FVWM_STYLE_PROFILE_MODE");
@@ -197,6 +274,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 
 	alarm(30);
 	assert(mode && size && cohort);
+	force_reference = getenv("FVWM_STYLE_PROFILE_REFERENCE") != NULL;
 	count = (unsigned)strtoul(size, NULL, 10);
 	assert(count == 64 || count == 128 || count == 256);
 	fFvwmInStartup = False;
@@ -247,10 +325,12 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	assert(grab_depth == 0);
 	if (strcmp(mode, "simplify") == 0)
 	{
-		assert(comparisons == (unsigned long)count * (count - 1) / 2);
+		assert(comparisons == (force_reference ?
+			(unsigned long)count * (count - 1) / 2 : 0));
 		assert(!Scr.flags.do_need_style_list_update);
 		lookup_control(clients[0], count);
 		check_precedence(exc, clients[0]);
+		check_structured_ids(exc, clients[0]);
 	}
 	else if (strcmp(mode, "lookup") == 0)
 	{
@@ -270,11 +350,12 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 		measuring = False;
 		assert(grabs == 1 && matches == grabbed_matches);
 	}
-	printf("STYLE_PROFILE {\"mode\":\"%s\",\"rules\":%u,"
+	printf("STYLE_PROFILE {\"reference\":%s,\"mode\":\"%s\",\"rules\":%u,"
 		"\"windows\":%u,\"comparisons\":%lu,\"matches\":%lu,"
 		"\"grabbed_matches\":%lu,\"grabs\":%lu,"
 		"\"elapsed_ns\":%llu,\"grabbed_ns\":%llu}\n",
-		mode, count, windows, comparisons, matches, grabbed_matches,
+		force_reference ? "true" : "false", mode, count, windows,
+		comparisons, matches, grabbed_matches,
 		grabs, (unsigned long long)elapsed, (unsigned long long)grabbed_ns);
 	fflush(stdout);
 	_exit(0);

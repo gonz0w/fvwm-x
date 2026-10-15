@@ -10,16 +10,17 @@ Desktop services build on FVWM's native modules and existing system facilities.
 File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
-**Status:** active development, with locally qualified core responsiveness,
+**Status:** development, with locally qualified core responsiveness,
 hardening and utility-port checkpoints. PNG/QEMU build, install and BSD
 default-X checkpoints pass. Desktop work, physical-hardware qualification and
 release acceptance remain open. Hosted source is the qualified core/utility
 snapshot; separate desktop/artwork publication is tracked in the guides.
 Optional Go builds use a patched compiler baseline. The image-cache and core-
 readiness checkpoints are locally qualified, including ordinary, interactive
-and synchronous waits. Window-update coverage and style profiling pass on six
-targets; two full-suite timing gaps remain recorded. OpenBSD AMD64 VESA stays
-deferred while window-manager work continues. This is not a stable release.
+and synchronous waits. Window-update and style-filter checks pass on six
+targets; four broader OpenBSD test failures and its fresh-install gap remain
+documented. OpenBSD AMD64 VESA stays deferred while window-manager work
+continues. This is not a stable release.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

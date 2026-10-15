@@ -388,9 +388,40 @@ static void test_module_deadline_invalid_clock_and_range(void)
 	assert(remaining.tv_sec == 0 && remaining.tv_usec == 0);
 }
 
+static void test_module_poll_deadline(void)
+{
+	fvwm_module_deadline deadline;
+	int remaining_ms = -1;
+
+	assert(fvwm_module_deadline_init(&deadline, 0, 1));
+	assert(fvwm_module_deadline_poll_remaining(&deadline, 0,
+		&remaining_ms) == FVWM_MODULE_DEADLINE_READY);
+	assert(remaining_ms == 1000);
+	assert(fvwm_module_deadline_poll_remaining(&deadline, 1000001,
+		&remaining_ms) == FVWM_MODULE_DEADLINE_READY);
+	assert(remaining_ms == 999);
+	assert(fvwm_module_deadline_poll_remaining(&deadline, 999999999,
+		&remaining_ms) == FVWM_MODULE_DEADLINE_READY);
+	assert(remaining_ms == 1);
+	assert(fvwm_module_deadline_poll_remaining(&deadline, 1000000000,
+		&remaining_ms) == FVWM_MODULE_DEADLINE_EXPIRED);
+	assert(remaining_ms == 0);
+	assert(fvwm_module_deadline_init(&deadline, 1, INT_MAX));
+	assert(fvwm_module_deadline_poll_remaining(&deadline, 1,
+		&remaining_ms) == FVWM_MODULE_DEADLINE_READY);
+	assert(remaining_ms == INT_MAX);
+	assert(fvwm_module_deadline_poll_remaining(&deadline, 0,
+		&remaining_ms) == FVWM_MODULE_DEADLINE_INVALID);
+	assert(remaining_ms == 0);
+	assert(fvwm_module_deadline_poll_remaining(&deadline, UINT64_MAX,
+		&remaining_ms) == FVWM_MODULE_DEADLINE_INVALID);
+	assert(remaining_ms == 0);
+}
+
 int main(void)
 {
 	test_module_deadline();
+	test_module_poll_deadline();
 	test_module_deadline_invalid_clock_and_range();
 	test_output_service_budgets();
 	test_bounded_queue_drain();

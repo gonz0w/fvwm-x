@@ -8,12 +8,14 @@
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/resource.h>
 #include <unistd.h>
 #include "fvwm/fvwm.h"
 #include "fvwm/events.h"
@@ -33,10 +35,10 @@ typedef enum
 {
 	TIMELY, EXPECT, IDLE, ACTIVITY, READ_PARTIAL, READ_INTERRUPT,
 	DISCONNECT, READ_ERROR,
-	FRAME_BOUNDARY, FINAL_BOUNDARY, SELECT_INTERRUPT, SELECT_ERROR,
+	FRAME_BOUNDARY, FINAL_BOUNDARY, WAIT_INTERRUPT, WAIT_ERROR,
 	OUTPUT_PARTIAL, OUTPUT_INTERRUPT, OUTPUT_BUDGET, RETIRE, FINAL,
 	NESTED, TERMINATE, CLOCK_INVALID, CLOCK_REGRESSION, BUFFERED_ESCAPE,
-	REAL_ACTIVITY, REAL_ESCAPE
+	REAL_ACTIVITY, REAL_ESCAPE, HIGH_READY, WAIT_INVALID, EOF_READY
 } probe_mode;
 
 static probe_mode mode;
@@ -49,6 +51,27 @@ static size_t written;
 static pid_t child_pid;
 static const exec_context_t *command_context;
 
+static void move_endpoint_high(int *fd)
+{
+	struct rlimit limit;
+
+	assert(getrlimit(RLIMIT_NOFILE, &limit) == 0);
+	if (limit.rlim_cur > FD_SETSIZE + 2)
+	{
+		int duplicate = fcntl(*fd, F_DUPFD, FD_SETSIZE);
+
+		assert(duplicate >= FD_SETSIZE);
+		close(*fd);
+		*fd = duplicate;
+		printf("module wait high descriptor: real %d\n", duplicate);
+	}
+	else
+	{
+		puts("module wait high descriptor: "
+			"unavailable at inherited limit");
+	}
+}
+
 uint64_t __real_events_monotonic_ns(void);
 uint64_t __wrap_events_monotonic_ns(void)
 {
@@ -58,7 +81,7 @@ uint64_t __wrap_events_monotonic_ns(void)
 	}
 	/* Clock queries may affect errno. The readiness owner must save the
 	 * select failure before calling another helper. */
-	if (mode == SELECT_INTERRUPT || mode == SELECT_ERROR)
+	if (mode == WAIT_INTERRUPT || mode == WAIT_ERROR)
 	{
 		errno = EIO;
 	}
@@ -116,6 +139,11 @@ void __wrap_module_register(fmodule *module)
 	assert(pipe(input) == 0 && pipe(output) == 0);
 	close(MOD_READFD(module));
 	close(MOD_WRITEFD(module));
+	if (mode == HIGH_READY)
+	{
+		move_endpoint_high(&input[0]);
+		move_endpoint_high(&output[1]);
+	}
 	MOD_READFD(module) = input[0];
 	MOD_WRITEFD(module) = output[1];
 	sender_fd = input[1];
@@ -126,9 +154,14 @@ void __wrap_module_register(fmodule *module)
 	{
 		return;
 	}
-	if (mode == TIMELY)
+	if (mode == TIMELY || mode == HIGH_READY || mode == EOF_READY)
 	{
 		send_command("NOP FINISHED STARTUP suffix", 1);
+		if (mode == EOF_READY)
+		{
+			close(sender_fd);
+			sender_fd = -1;
+		}
 	}
 	else if (mode == EXPECT)
 	{
@@ -223,21 +256,30 @@ ssize_t __wrap_write(int fd, const void *data, size_t size)
 	return __real_write(fd, data, size);
 }
 
-int __real_fvwmSelect(int n, fd_set *r, fd_set *w, fd_set *e,
-	struct timeval *timeout);
-int __wrap_fvwmSelect(int n, fd_set *r, fd_set *w, fd_set *e,
-	struct timeval *timeout)
+int __real_fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms);
+int __wrap_fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms)
 {
 	if (!probing || mode == REAL_ACTIVITY || mode == REAL_ESCAPE)
 	{
-		return __real_fvwmSelect(n, r, w, e, timeout);
+		return __real_fvwmPoll(fds, count, timeout_ms);
 	}
 	waits++;
-	assert(timeout && timeout->tv_sec == 0 && timeout->tv_usec > 0 &&
-		timeout->tv_usec <= 100000);
-	assert(r && FD_ISSET(MOD_READFD(producer), r));
-	assert(FD_ISSET(ConnectionNumber(dpy), r));
-	assert(n > MOD_READFD(producer) && n > ConnectionNumber(dpy));
+	assert(count == 3 && timeout_ms > 0 && timeout_ms <= 100);
+	assert(fds[0].fd == MOD_READFD(producer) && fds[0].events == POLLIN);
+	assert(fds[1].fd == ConnectionNumber(dpy));
+	for (nfds_t i = 0; i < count; i++)
+	{
+		fds[i].revents = 0;
+	}
+	if (mode == HIGH_READY || mode == EOF_READY)
+	{
+		return __real_fvwmPoll(fds, count, timeout_ms);
+	}
+	if (mode == WAIT_INVALID)
+	{
+		fds[0].revents = POLLNVAL;
+		return 1;
+	}
 	if (mode == OUTPUT_BUDGET && waits > 1)
 	{
 		now_ns = UINT64_C(11000000000);
@@ -254,14 +296,14 @@ int __wrap_fvwmSelect(int n, fd_set *r, fd_set *w, fd_set *e,
 	{
 		isTerminated = 1;
 	}
-	else if (mode == SELECT_ERROR)
+	else if (mode == WAIT_ERROR)
 	{
 		errno = EBADF;
 		return -1;
 	}
-	if (mode == SELECT_INTERRUPT)
+	if (mode == WAIT_INTERRUPT)
 	{
-		now_ns += (uint64_t)timeout->tv_usec * 1000;
+		now_ns += (uint64_t)timeout_ms * 1000000;
 		errno = EINTR;
 		return -1;
 	}
@@ -269,21 +311,19 @@ int __wrap_fvwmSelect(int n, fd_set *r, fd_set *w, fd_set *e,
 	    mode == OUTPUT_PARTIAL || mode == OUTPUT_INTERRUPT ||
 	    mode == OUTPUT_BUDGET)
 	{
-		now_ns += (uint64_t)timeout->tv_usec * 1000;
-		FD_ZERO(r);
+		now_ns += (uint64_t)timeout_ms * 1000000;
 		if (inside_nested || mode == IDLE || mode == BUFFERED_ESCAPE)
 		{
-			FD_ZERO(w);
 			return 0;
 		}
+		fds[2].revents = POLLOUT;
 		return 1;
 	}
 	if (mode == ACTIVITY)
 	{
 		now_ns += UINT64_C(100000000);
 	}
-	FD_CLR(ConnectionNumber(dpy), r);
-	FD_ZERO(w);
+	fds[0].revents = POLLIN;
 	return 1;
 }
 
@@ -382,12 +422,13 @@ static void test_controlled(probe_mode selected, char *command,
 	assert(MOD_IS_RETIRED(producer) == (mode == RETIRE || mode == FINAL ||
 		mode == DISCONNECT || mode == READ_ERROR));
 	assert(waits <= 300 && reads <= 24 && writes <= 32);
-	if (mode == TIMELY || mode == EXPECT)
+	if (mode == TIMELY || mode == HIGH_READY || mode == EOF_READY ||
+	    mode == EXPECT)
 	{
 		assert(now_ns == UINT64_C(10000000000));
 		assert(commands == (mode == EXPECT ? 1 : 0));
 	}
-	if (mode == IDLE || mode == SELECT_INTERRUPT)
+	if (mode == IDLE || mode == WAIT_INTERRUPT)
 	{
 		int expected = strstr(command, "Timeout 2") ? 2 : seconds;
 		assert(now_ns == UINT64_C(10000000000) +
@@ -417,7 +458,7 @@ static void test_controlled(probe_mode selected, char *command,
 		assert(MOD_IS_RETIRED(producer) == (mode == FINAL_BOUNDARY));
 		draining = False;
 	}
-	if (mode == SELECT_ERROR)
+	if (mode == WAIT_ERROR || mode == WAIT_INVALID)
 	{
 		assert(waits == 1);
 	}
@@ -507,12 +548,9 @@ static void test_real(Bool escape, Bool override)
 			else
 			{
 				assert(status == FMODULE_INPUT_INCOMPLETE);
-				fd_set r;
-				struct timeval timeout = { 0, 100000 };
-				FD_ZERO(&r);
-				FD_SET(MOD_READFD(producer), &r);
-				assert(fvwmSelect(MOD_READFD(producer) + 1,
-					&r, NULL, NULL, &timeout) >= 0);
+				struct pollfd ready = {
+					MOD_READFD(producer), POLLIN, 0 };
+				assert(fvwmPoll(&ready, 1, 100) >= 0);
 			}
 		}
 		assert(ready && inline_commands + asynchronous_commands == 8 &&
@@ -571,8 +609,9 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 		"final-frame-at-deadline-resumes");
 	test_controlled(DISCONNECT, normal, 1, "disconnection-retires-producer");
 	test_controlled(READ_ERROR, normal, 1, "input-error-retires-producer");
-	test_controlled(SELECT_INTERRUPT, normal, 1, "interrupted-wait-bounded");
-	test_controlled(SELECT_ERROR, normal, 1, "terminal-select-error-ends-barrier");
+	test_controlled(WAIT_INTERRUPT, normal, 1, "interrupted-wait-bounded");
+	test_controlled(WAIT_ERROR, normal, 1,
+		"terminal-poll-error-ends-barrier");
 	test_controlled(OUTPUT_PARTIAL, normal, 1, "partial-output-keeps-deadline");
 	test_controlled(OUTPUT_INTERRUPT, normal, 1,
 		"interrupted-output-keeps-deadline");
@@ -586,6 +625,10 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	test_controlled(CLOCK_REGRESSION, normal, 1,
 		"clock-regression-keeps-module-live");
 	test_controlled(BUFFERED_ESCAPE, normal, 1, "buffered-escape-ends-barrier");
+	test_controlled(HIGH_READY, normal, 1, "high-endpoint-startup");
+	test_controlled(EOF_READY, normal, 1, "buffered-startup-before-eof");
+	test_controlled(WAIT_INVALID, normal, 1,
+		"invalid-descriptor-ends-barrier");
 	test_real(False, False);
 	test_real(False, True);
 	test_real(True, False);

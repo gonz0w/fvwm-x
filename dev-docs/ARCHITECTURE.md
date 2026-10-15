@@ -679,3 +679,8 @@ and interactive waits, with existing module death-row pins through transport
 service. `image_async_wait.c` selects decoder deadlines over native poll arrays.
 Session callbacks stay ordinary-only; queue, scheduler and X-event boundaries
 retain their owners. See the [qualified core-readiness report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md).
+
+Synchronous module waits in `module_list.c` use `fvwmPoll` for unlock responses,
+blocked output and startup. `event_loop_policy.c` owns absolute-deadline to poll
+millisecond conversion; owners retain retirement, inline execution and partial
+packet contracts. See the [module-wait checkpoint](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md).

@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include "event_loop_policy.h"
+#include <limits.h>
 
 void fvwm_output_budget_init(fvwm_output_budget *budget)
 {
@@ -77,6 +78,25 @@ fvwm_module_deadline_status fvwm_module_deadline_remaining(
 	remaining->tv_sec = us / 1000000;
 	remaining->tv_usec = us % 1000000;
 	return FVWM_MODULE_DEADLINE_READY;
+}
+
+fvwm_module_deadline_status fvwm_module_deadline_poll_remaining(
+	fvwm_module_deadline *deadline, uint64_t now_ns, int *remaining_ms)
+{
+	struct timeval remaining;
+	fvwm_module_deadline_status status;
+
+	*remaining_ms = 0;
+	status = fvwm_module_deadline_remaining(deadline, now_ns, &remaining);
+	if (status == FVWM_MODULE_DEADLINE_READY)
+	{
+		long fraction_ms = (remaining.tv_usec + 999) / 1000;
+
+		*remaining_ms = remaining.tv_sec >
+		    (INT_MAX - fraction_ms) / 1000 ? INT_MAX :
+		    (int)(remaining.tv_sec * 1000 + fraction_ms);
+	}
+	return status;
 }
 
 int fvwm_bounded_queue_drain(

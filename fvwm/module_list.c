@@ -425,18 +425,19 @@ typedef struct
 } module_sync_wait;
 
 static Bool module_wait_remaining(fmodule *module,
-	fvwm_module_deadline *deadline, struct timeval *remaining,
+	fvwm_module_deadline *deadline, int *remaining_ms,
 	Bool retire_on_timeout)
 {
-	struct timeval unused;
+	int unused_ms;
 	fvwm_module_deadline_status status;
 
 	if (isTerminated)
 	{
 		return False;
 	}
-	status = fvwm_module_deadline_remaining(deadline, events_monotonic_ns(),
-		remaining != NULL ? remaining : &unused);
+	status = fvwm_module_deadline_poll_remaining(
+		deadline, events_monotonic_ns(),
+		remaining_ms != NULL ? remaining_ms : &unused_ms);
 	if (status != FVWM_MODULE_DEADLINE_READY)
 	{
 		fvwm_debug(__func__, "module %p synchronous %s %s",
@@ -453,9 +454,9 @@ static Bool module_wait_remaining(fmodule *module,
 }
 
 static Bool module_sync_remaining(fmodule *module,
-	fvwm_module_deadline *deadline, struct timeval *remaining)
+	fvwm_module_deadline *deadline, int *remaining_ms)
 {
-	return module_wait_remaining(module, deadline, remaining, True);
+	return module_wait_remaining(module, deadline, remaining_ms, True);
 }
 
 static Bool module_sync_receive_ready(void *context)
@@ -565,9 +566,8 @@ static void positive_write(fmodule *module, unsigned long *ptr, int size,
 		synchronize && IS_MESSAGE_IN_MASK(
 			&(MOD_SYNCMASK(module)), ptr[1]) && !myxgrabcount)
 	{
-		fd_set readSet;
-		int channel = MOD_READFD(module);
-		struct timeval timeout;
+		struct pollfd ready = { MOD_READFD(module), POLLIN, 0 };
+		int timeout_ms;
 		Bool done = False;
 		fmodule_input *input;
 
@@ -591,21 +591,24 @@ static void positive_write(fmodule *module, unsigned long *ptr, int size,
 			do
 			{
 				if (!module_sync_remaining(
-					module, &deadline, &timeout))
+					module, &deadline, &timeout_ms))
 				{
 					goto sync_done;
 				}
-				FD_ZERO(&readSet);
-				FD_SET(channel, &readSet);
-				rc = fvwmSelect(channel + 1, &readSet, NULL, NULL,
-					&timeout);
+				rc = fvwmPoll(&ready, 1, timeout_ms);
 			} while (rc < 0 && !isTerminated && errno == EINTR);
 
 			if (!module_sync_remaining(module, &deadline, NULL))
 			{
 				break;
 			}
-			if (rc > 0)
+			/* A clamped interval can end before the deadline. */
+			if (rc == 0)
+			{
+				continue;
+			}
+			if (rc > 0 && !(ready.revents & POLLNVAL) &&
+			    (ready.revents & (POLLIN | POLLHUP | POLLERR)))
 			{
 				fmodule_input_status status;
 
@@ -879,9 +882,9 @@ static Bool flush_message_queue(fmodule *module,
 			 * page for write(2) (!) */
 			else if (errno == EWOULDBLOCK || errno == EAGAIN)
 			{
-				fd_set writeSet;
-				struct timeval timeout;
-				int channel = MOD_WRITEFD(module);
+				struct pollfd ready = {
+					MOD_WRITEFD(module), POLLOUT, 0 };
+				int timeout_ms;
 				int rc = 0;
 
 				if (!synchronous)
@@ -893,17 +896,12 @@ static Bool flush_message_queue(fmodule *module,
 					/* Wait until the pipe accepts further
 					 * input */
 					if (!module_sync_remaining(
-						module, deadline, &timeout))
+						module, deadline, &timeout_ms))
 					{
 						return False;
 					}
-					FD_ZERO(&writeSet);
-					FD_SET(channel, &writeSet);
-					rc = fvwmSelect(
-						channel + 1, NULL, &writeSet,
-						NULL, &timeout);
-					/* retry if select() failed with EINTR
-					 */
+					rc = fvwmPoll(&ready, 1, timeout_ms);
+					/* Keep the deadline on EINTR. */
 				} while ((rc < 0) && !isTerminated &&
 					 (errno == EINTR));
 
@@ -912,7 +910,13 @@ static Bool flush_message_queue(fmodule *module,
 				{
 					return False;
 				}
-				if (rc <= 0 || !FD_ISSET(channel, &writeSet))
+				if (rc == 0)
+				{
+					continue;
+				}
+				if (rc <= 0 || !(ready.revents & POLLOUT) ||
+				    (ready.revents &
+				     (POLLNVAL | POLLERR | POLLHUP)))
 				{
 					char *name;
 
@@ -922,7 +926,7 @@ static Bool flush_message_queue(fmodule *module,
 					fvwm_debug(__func__,
 						   "Failed to write descriptor to"
 						   " '%s':\n"
-						   "- select rc=%d\n"
+						   "- poll rc=%d\n"
 						   "- terminate signal=%c\n",
 						   name, rc, isTerminated ?
 						   'Y' : 'N');
@@ -1047,8 +1051,6 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 	char *token;
 	char *expect = fxstrdup(ModuleFinishedStartupResponse);
 	fmodule *module = NULL;
-	fd_set in_fdset;
-	fd_set out_fdset;
 	fvwm_module_deadline deadline;
 	Bool done = False;
 	Bool need_ungrab = False;
@@ -1107,56 +1109,57 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 
 	while (!done && !MOD_IS_RETIRED(module) && !isTerminated)
 	{
-		struct timeval timeout;
+		int timeout_ms;
 		int read_fd = MOD_READFD(module);
 		int write_fd = MOD_WRITEFD(module);
 		int x_fd = ConnectionNumber(dpy);
-		int max_fd = read_fd > x_fd ? read_fd : x_fd;
+		struct pollfd ready[3] = {
+			{ read_fd, POLLIN, 0 }, { x_fd, POLLIN, 0 },
+			{ write_fd >= 0 &&
+			  !FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module)) ?
+			  write_fd : -1, POLLOUT, 0 }
+		};
 		int num_fd;
-		int select_error;
+		int poll_error;
 		module_sync_wait wait = { module, &deadline, False };
 
-		if (!module_wait_remaining(module, &deadline, &timeout, False))
+		if (!module_wait_remaining(
+			module, &deadline, &timeout_ms, False))
 		{
 			break;
 		}
 		/* X readiness wakes Escape promptly. The finite fallback also
 		 * checks keys that Xlib already buffered; other events stay queued. */
-		if (timeout.tv_sec > 0 || timeout.tv_usec > 100000)
+		if (timeout_ms > 100)
 		{
-			timeout.tv_sec = 0;
-			timeout.tv_usec = 100000;
+			timeout_ms = 100;
 		}
-		FD_ZERO(&in_fdset);
-		FD_ZERO(&out_fdset);
-		FD_SET(read_fd, &in_fdset);
-		FD_SET(x_fd, &in_fdset);
-		if (write_fd >= 0 && !FQUEUE_IS_EMPTY(&MOD_PIPEQUEUE(module)))
-		{
-			FD_SET(write_fd, &out_fdset);
-			if (write_fd > max_fd)
-			{
-				max_fd = write_fd;
-			}
-		}
-		num_fd = fvwmSelect(max_fd + 1, &in_fdset, &out_fdset, NULL,
-			&timeout);
-		select_error = errno;
+		num_fd = fvwmPoll(ready, 3, timeout_ms);
+		poll_error = errno;
 		if (!module_wait_remaining(module, &deadline, NULL, False))
 		{
 			break;
 		}
 		if (num_fd < 0)
 		{
-			if (select_error == EINTR)
+			if (poll_error == EINTR)
 			{
 				continue;
 			}
-			fvwm_debug(__func__, "module %p startup select failed: %s",
-				module, strerror(select_error));
+			fvwm_debug(__func__,
+				"module %p startup poll failed: %s",
+				module, strerror(poll_error));
 			break;
 		}
-		if (num_fd > 0 && FD_ISSET(read_fd, &in_fdset))
+		if ((ready[0].revents | ready[1].revents |
+		    ready[2].revents) & POLLNVAL)
+		{
+			fvwm_debug(__func__,
+				"module %p startup descriptor invalid", module);
+			break;
+		}
+		if (num_fd > 0 &&
+		    (ready[0].revents & (POLLIN | POLLHUP | POLLERR)))
 		{
 			fmodule_input *input;
 			fmodule_input_status status;
@@ -1188,7 +1191,7 @@ void CMD_ModuleSynchronous(F_CMD_ARGS)
 			break;
 		}
 		if (!MOD_IS_RETIRED(module) && write_fd >= 0 &&
-		    FD_ISSET(write_fd, &out_fdset))
+		    (ready[2].revents & (POLLOUT | POLLERR | POLLHUP)))
 		{
 			/* Retain asynchronous budgets and offsets; test the startup
 			 * deadline before retries without killing a live module. */

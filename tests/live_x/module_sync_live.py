@@ -15,7 +15,12 @@ from live_x_harness import HarnessRuntime, start_display_server
 
 def run(args):
     expected = {
-        'timely-unlock', 'idle-and-interrupted-wait',
+        'buffered-unlock-before-eof', 'timely-unlock',
+        'clamped-read-wait-keeps-deadline',
+        'clamped-write-wait-keeps-deadline',
+        'high-endpoint-write-and-unlock',
+        'invalid-input-retires-producer', 'invalid-output-retires-producer',
+        'output-hangup-retires-producer', 'idle-and-interrupted-wait',
         'partial-write-deadline', 'interrupted-write-deadline',
         'blocked-write-deadline', 'interrupted-read-deadline',
         'partial-read-deadline', 'output-and-unlock-share-deadline',

@@ -15,6 +15,8 @@ from live_x_harness import HarnessRuntime, start_display_server
 
 def run(args):
     expected = {
+        'buffered-startup-before-eof', 'high-endpoint-startup',
+        'invalid-descriptor-ends-barrier',
         'disconnection-retires-producer',
         'input-error-retires-producer',
         'real-explicit-timeout-asynchronous-continuation',
@@ -40,7 +42,7 @@ def run(args):
         'partial-output-keeps-deadline',
         'real-timeout-then-asynchronous-continuation',
         'startup-output-retains-pass-budget',
-        'terminal-select-error-ends-barrier',
+        'terminal-poll-error-ends-barrier',
         'termination-ends-barrier',
         'thirty-second-default-finite-waits',
         'x-readiness-escape-real-clock',

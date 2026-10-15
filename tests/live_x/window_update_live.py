@@ -43,7 +43,8 @@ def run(args):
             assert {line[:-8] for line in text.splitlines()
                     if line.endswith(': passed')} == expected
             (out / 'evidence.json').write_text(
-                json.dumps({'observations': text.splitlines()}, indent=2) + '\n')
+                json.dumps({'observations': text.splitlines()}, indent=2) +
+                '\n')
         finally:
             for log in runtime.root.glob('*.log'):
                 shutil.copy2(log, out / log.name)

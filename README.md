@@ -11,15 +11,15 @@ File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
 **Status:** active development, with locally qualified core responsiveness,
-hardening and utility-port checkpoints. The local PNG/QEMU build, install and
-BSD default-X checkpoint is complete. Broader desktop work, physical-hardware
-qualification and release acceptance remain open. Hosted source is the qualified
-core/utility snapshot; separately owned desktop/artwork publication is tracked
-in the project guides. Optional Go builds use a patched compiler baseline. The
-image-cache and core-readiness checkpoints are locally qualified, including
-ordinary, interactive and synchronous waits. The OpenBSD AMD64 VESA startup
-investigation stays deferred while window-manager backlog work continues; its
-original failures remain recorded. This is not a stable release.
+hardening and utility-port checkpoints. PNG/QEMU build, install and BSD
+default-X checkpoints pass. Desktop work, physical-hardware qualification and
+release acceptance remain open. Hosted source is the qualified core/utility
+snapshot; separate desktop/artwork publication is tracked in the guides.
+Optional Go builds use a patched compiler baseline. The image-cache and core-
+readiness checkpoints are locally qualified, including ordinary, interactive
+and synchronous waits. Window-update coverage passes on six targets; two full-
+suite timing gaps remain recorded. OpenBSD AMD64 VESA investigation stays
+deferred while window-manager work continues. This is not a stable release.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

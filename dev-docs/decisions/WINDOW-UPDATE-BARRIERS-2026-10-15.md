@@ -3,6 +3,8 @@
 Owner: DRAW-01 [#25](https://github.com/gonz0w/fvwm-x/issues/25).
 This records the existing core contract for subsequent STYLE-01/STATE-01 work.
 It does not introduce deferred work or change configuration syntax.
+[Boundary verification](../verification/VERIFICATION-2026-10-15-WINDOW-UPDATES.md)
+records passing affected checks and the two unrelated full-suite timing gaps.
 
 ## Owners and visibility
 

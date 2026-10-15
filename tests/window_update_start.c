@@ -42,7 +42,8 @@ static void check_border(FvwmWindow *window, unsigned width)
 	assert(window->boundary_width == width);
 	assert(XGetWindowProperty(dpy, FW_W(window),
 		XInternAtom(dpy, "_NET_FRAME_EXTENTS", False), 0, 4, False,
-		XA_CARDINAL, &type, &format, &count, &remaining, &data) == Success);
+		XA_CARDINAL, &type, &format, &count, &remaining, &data) ==
+		Success);
 	assert(type == XA_CARDINAL && format == 32 && count == 4);
 	assert(remaining == 0 && data != NULL);
 	for (unsigned i = 0; i < 4; i++)

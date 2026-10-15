@@ -117,6 +117,9 @@ Local owner evidence is preserved under
 remote/default/sanitizer runners, six compressed qualification archives, raw
 Meson/driver/default-server logs and the strict combined validator. The machine
 receipt records archive hashes, profile observations and installed identities.
+OpenBSD links retain six warnings from unchanged legacy core/library string
+functions; the new fixture compiles without compiler warnings. The collector
+also retains the two Meson test-name formats used by the installed versions.
 Two initial source-sync guards stopped before configure/testing: archive mode
 normalization and the already merged manual delta. Both inputs/logs remain.
 An earlier four-profile probe passed before adding independent window scaling

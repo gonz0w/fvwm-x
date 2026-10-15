@@ -51,6 +51,11 @@ int fvwm_module_deadline_init(fvwm_module_deadline *deadline,
 fvwm_module_deadline_status fvwm_module_deadline_remaining(
 	fvwm_module_deadline *deadline, uint64_t now_ns,
 	struct timeval *remaining);
+/* Native poll waits round a positive remainder up and clamp at INT_MAX.
+ * Expired/invalid clocks initialize the output to zero; callers still check
+ * the absolute deadline after readiness and before committing a frame. */
+fvwm_module_deadline_status fvwm_module_deadline_poll_remaining(
+	fvwm_module_deadline *deadline, uint64_t now_ns, int *remaining_ms);
 
 typedef void (*fvwm_queue_consumer_t)(void *object, void *context);
 typedef int (*fvwm_queue_ready_t)(void *object, void *context);

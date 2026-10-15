@@ -8,12 +8,14 @@
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <poll.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/resource.h>
 #include <time.h>
 #include <unistd.h>
 #include "fvwm/fvwm.h"
@@ -28,9 +30,11 @@ extern volatile sig_atomic_t isTerminated;
 typedef enum
 {
 	TIMELY, IDLE, WRITE_PARTIAL, WRITE_INTERRUPT, WRITE_BLOCKED,
-	READ_INTERRUPT, READ_PARTIAL, WRITE_THEN_WAIT, DISCONNECT, SELECT_ERROR,
+	READ_INTERRUPT, READ_PARTIAL, WRITE_THEN_WAIT, DISCONNECT, WAIT_ERROR,
 	ACTIVITY, NESTED, RETIRE, FINAL, TERMINATE,
-	CLOCK_INVALID, CLOCK_REGRESSION, REAL_ACTIVITY
+	CLOCK_INVALID, CLOCK_REGRESSION, REAL_ACTIVITY, HIGH_READY,
+	WAIT_INVALID, OUTPUT_INVALID, OUTPUT_HANGUP, EOF_UNLOCK, READ_CLAMP,
+	WRITE_CLAMP
 } probe_mode;
 
 static probe_mode mode;
@@ -41,6 +45,27 @@ static unsigned write_calls, read_calls, wait_calls, commands;
 static size_t written;
 static fmodule *nested_module;
 static Bool inside_nested;
+
+static void move_endpoint_high(int *fd)
+{
+	struct rlimit limit;
+
+	assert(getrlimit(RLIMIT_NOFILE, &limit) == 0);
+	if (limit.rlim_cur > FD_SETSIZE + 2)
+	{
+		int duplicate = fcntl(*fd, F_DUPFD, FD_SETSIZE);
+
+		assert(duplicate >= FD_SETSIZE);
+		close(*fd);
+		*fd = duplicate;
+		printf("module wait high descriptor: real %d\n", duplicate);
+	}
+	else
+	{
+		puts("module wait high descriptor: "
+			"unavailable at inherited limit");
+	}
+}
 
 uint64_t __real_events_monotonic_ns(void);
 uint64_t __wrap_events_monotonic_ns(void)
@@ -65,6 +90,13 @@ ssize_t __wrap_write(int fd, const void *data, size_t size)
 	{
 		now_ns += UINT64_C(100000000);
 		errno = mode == WRITE_INTERRUPT ? EINTR : EAGAIN;
+		return -1;
+	}
+	if (mode == OUTPUT_INVALID || mode == OUTPUT_HANGUP ||
+	    ((mode == HIGH_READY || mode == WRITE_CLAMP) &&
+	     write_calls == 1))
+	{
+		errno = EAGAIN;
 		return -1;
 	}
 	if (mode == WRITE_THEN_WAIT)
@@ -96,20 +128,41 @@ ssize_t __wrap_read(int fd, void *data, size_t size)
 	return __real_read(fd, data, size);
 }
 
-int __real_fvwmSelect(int n, fd_set *r, fd_set *w, fd_set *e,
-	struct timeval *timeout);
-int __wrap_fvwmSelect(int n, fd_set *r, fd_set *w, fd_set *e,
-	struct timeval *timeout)
+int __real_fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms);
+int __wrap_fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms)
 {
-	if (mode == REAL_ACTIVITY ||
-	    !((r && FD_ISSET(input_fd, r)) ||
-	      (w && FD_ISSET(output_fd, w))))
+	if (mode == REAL_ACTIVITY || count != 1 ||
+	    (fds[0].fd != input_fd && fds[0].fd != output_fd))
 	{
-		return __real_fvwmSelect(n, r, w, e, timeout);
+		return __real_fvwmPoll(fds, count, timeout_ms);
 	}
 	wait_calls++;
-	assert(timeout && timeout->tv_sec >= 0 && timeout->tv_usec >= 0);
-	assert(timeout->tv_sec <= 1 && timeout->tv_usec < 1000000);
+	assert(count == 1 && timeout_ms > 0);
+	if (mode == READ_CLAMP || mode == WRITE_CLAMP)
+	{
+		assert(timeout_ms == INT_MAX);
+		if (wait_calls == 1)
+		{
+			now_ns += (uint64_t)INT_MAX * UINT64_C(1000000);
+			fds[0].revents = 0;
+			return 0;
+		}
+	}
+	else
+	{
+		assert(timeout_ms <= 1000);
+	}
+	fds[0].revents = fds[0].events;
+	if (mode == HIGH_READY || mode == EOF_UNLOCK)
+	{
+		return __real_fvwmPoll(fds, count, timeout_ms);
+	}
+	if (mode == WAIT_INVALID || mode == OUTPUT_INVALID ||
+	    mode == OUTPUT_HANGUP)
+	{
+		fds[0].revents = mode == OUTPUT_HANGUP ? POLLHUP : POLLNVAL;
+		return 1;
+	}
 	if (mode == CLOCK_INVALID)
 	{
 		now_ns = UINT64_MAX;
@@ -126,7 +179,7 @@ int __wrap_fvwmSelect(int n, fd_set *r, fd_set *w, fd_set *e,
 		errno = EINTR;
 		return -1;
 	}
-	if (mode == SELECT_ERROR)
+	if (mode == WAIT_ERROR)
 	{
 		errno = EBADF;
 		return -1;
@@ -195,6 +248,11 @@ static fmodule *prepare(int input[2], int output[2], Bool observe)
 	fmodule *module = module_create();
 
 	assert(pipe(input) == 0 && pipe(output) == 0);
+	if (mode == HIGH_READY)
+	{
+		move_endpoint_high(&input[0]);
+		move_endpoint_high(&output[1]);
+	}
 	MOD_READFD(module) = input[0];
 	MOD_WRITEFD(module) = output[1];
 	assert(fcntl(input[0], F_SETFL, O_NONBLOCK) == 0);
@@ -230,6 +288,7 @@ static void test_controlled(probe_mode selected_mode, const char *label)
 {
 	int input[2], output[2], nested_input[2], nested_output[2];
 	Bool observe = selected_mode != RETIRE && selected_mode != FINAL;
+	mode = selected_mode;
 	fmodule *module = prepare(input, output, observe);
 	unsigned long packet[] = { START_FLAG, M_NEW_PAGE, 4, 0 };
 
@@ -239,7 +298,7 @@ static void test_controlled(probe_mode selected_mode, const char *label)
 	now_ns = UINT64_C(10000000000);
 	write_calls = read_calls = wait_calls = commands = 0;
 	written = 0;
-	moduleTimeout = 1;
+	moduleTimeout = mode == READ_CLAMP || mode == WRITE_CLAMP ? INT_MAX : 1;
 	if (mode == NESTED)
 	{
 		nested_module = prepare(nested_input, nested_output, True);
@@ -253,13 +312,19 @@ static void test_controlled(probe_mode selected_mode, const char *label)
 		send_command(input[1], "NOP", mode == FINAL ? 0 : 1);
 	}
 	/* Timely completion gets UNLOCK first, without executing commands. */
-	if (mode == TIMELY)
+	if (mode == TIMELY || mode == HIGH_READY || mode == EOF_UNLOCK ||
+	    mode == READ_CLAMP || mode == WRITE_CLAMP)
 	{
 		unsigned char discard[256];
 		while (__real_read(input[0], discard, sizeof(discard)) > 0)
 		{
 		}
 		send_command(input[1], ModuleUnlockResponse, 1);
+	}
+	if (mode == EOF_UNLOCK)
+	{
+		close(input[1]);
+		input[1] = -1;
 	}
 	if (mode == DISCONNECT)
 	{
@@ -272,9 +337,13 @@ static void test_controlled(probe_mode selected_mode, const char *label)
 	}
 	PositiveWrite(module, packet, sizeof(packet));
 	assert(module->xinputRefs == (observe ? 1 : 0));
-	assert(MOD_IS_RETIRED(module) == (mode != TIMELY && mode != TERMINATE));
+	assert(MOD_IS_RETIRED(module) == (mode != TIMELY &&
+		mode != HIGH_READY && mode != EOF_UNLOCK &&
+		mode != READ_CLAMP && mode != WRITE_CLAMP &&
+		mode != TERMINATE));
 	assert(write_calls <= 10 && read_calls <= 10 && wait_calls <= 10);
-	if (mode == TIMELY)
+	if (mode == TIMELY || mode == HIGH_READY || mode == EOF_UNLOCK ||
+	    mode == READ_CLAMP || mode == WRITE_CLAMP)
 	{
 		assert(written == sizeof(packet) && commands == 0);
 		assert(MOD_PIPEQUEUE_BYTES(module) == 0);
@@ -321,6 +390,7 @@ static void test_real_activity(void)
 	assert(sigemptyset(&blocked) == 0);
 	assert(sigaddset(&blocked, SIGCHLD) == 0);
 	assert(sigprocmask(SIG_BLOCK, &blocked, &previous) == 0);
+	mode = REAL_ACTIVITY;
 	fmodule *module = prepare(input, output, True);
 	input_fd = input[0];
 	output_fd = output[1];
@@ -366,7 +436,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	test_controlled(READ_PARTIAL, "partial-read-deadline");
 	test_controlled(WRITE_THEN_WAIT, "output-and-unlock-share-deadline");
 	test_controlled(DISCONNECT, "disconnected-input-retires-producer");
-	test_controlled(SELECT_ERROR, "readiness-error-retires-producer");
+	test_controlled(WAIT_ERROR, "readiness-error-retires-producer");
 	test_controlled(ACTIVITY, "activity-does-not-refresh-deadline");
 	test_controlled(NESTED, "nested-deadline-preserves-parent");
 	test_controlled(RETIRE, "command-retirement-pin");
@@ -374,6 +444,13 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	test_controlled(TERMINATE, "termination-cancels-wait");
 	test_controlled(CLOCK_INVALID, "clock-failure-retires-producer");
 	test_controlled(CLOCK_REGRESSION, "clock-regression-retires-producer");
+	test_controlled(HIGH_READY, "high-endpoint-write-and-unlock");
+	test_controlled(READ_CLAMP, "clamped-read-wait-keeps-deadline");
+	test_controlled(WRITE_CLAMP, "clamped-write-wait-keeps-deadline");
+	test_controlled(EOF_UNLOCK, "buffered-unlock-before-eof");
+	test_controlled(WAIT_INVALID, "invalid-input-retires-producer");
+	test_controlled(OUTPUT_INVALID, "invalid-output-retires-producer");
+	test_controlled(OUTPUT_HANGUP, "output-hangup-retires-producer");
 	test_real_activity();
 	fflush(stdout);
 	_exit(0);

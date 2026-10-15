@@ -1,6 +1,6 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-14. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-15. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Core descriptor readiness, LOOP-01 #36 | Combined checkpoint locally qualified; ready for PR review | Typed native poll snapshots and existing death-row pins now serve ordinary/interactive core waits. Eight standard compiler profiles pass 1944 entries across six targets; optional profiles add 425, default BSD servers pass 16 core/cache/interactive geometry fixtures, and two instrumented checks pass. 150 installed code identities and 99 catalogs validate. Broader descriptor/runtime release gates remain open. [Report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md). |
+| Synchronous module readiness, LOOP-01 #36 | Implemented; focused checks pass; combined qualification running | Unlock responses, blocked output and startup now use native poll with shared deadline rounding. Preserve inline ordering, death-row pins, timeout policies and partial frames. [Report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md). |
+| Core descriptor readiness, LOOP-01 #36 | Locally qualified and merged in [PR #96](https://github.com/gonz0w/fvwm-x/pull/96) | Typed native poll snapshots and existing death-row pins now serve ordinary/interactive core waits. Eight standard compiler profiles pass 1944 entries across six targets; optional profiles add 425, default BSD servers pass 16 core/cache/interactive geometry fixtures, and two instrumented checks pass. 150 installed code identities and 99 catalogs validate. Broader descriptor/runtime release gates remain open. [Report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md). |
 | Image-cache variant lookup, CACHE-01 #33 | Locally qualified and merged in [PR #95](https://github.com/gonz0w/fvwm-x/pull/95) | A 65-variant lookup now checks one file stamp instead of 65. Eight standard compiler profiles across six targets pass 1936 entries; optional profiles add 423, default BSD servers pass 12 cache/staged-WM fixtures, and instrumented cache checks pass. 150 installed code identities and 99 catalogs validate. Broader profiling and release/hardware gates remain open. [Report](verification/VERIFICATION-2026-10-14-PICTURE-CACHE.md). |
 | Default-BSD-X startup evidence, LIB-07 #93 | Four-story diagnostic/comparison checkpoint locally qualified | Final startup/QEMU policy passes 282 checks on six targets; six real teardown probes, 80 server-only starts/refusals (including 32 retained extra controls), ten existing application fixtures and 36 unchanged executable observations pass. A fresh signed-updated OpenBSD AMD64 image verifies a new boot and 16 starts. Failed preparation/dispatch attempts remain recorded. No WM rebuild or FVWM configuration change. The original VESA/DDC fault remains open; further cause investigation is deferred until much later by user direction. [Report](verification/VERIFICATION-2026-10-14-BSD-X-STARTUP.md). |
 | Optional Go audit/compiler adoption, LIB-03 #91 | Affected implementation locally qualified and merged in PR #92 | The approved Go 1.26.9/1.27.2+ compiler policy, same-pin vendor cleanup and fixed BSD SDK recipe pass their combined affected checkpoint. Six targets pass 108 registered entries, 60 Go package results, 3114 test/subtest records, 42 staged identities and current native advisory scans; actual Go 1.26.9 passes on Linux ARM64. Required BSD default-X paths pass after unchanged replacement controls; two pre-client VESA startup crashes remain under LIB-07 #93. [Adoption report](verification/VERIFICATION-2026-10-14-GO-BASELINE.md), [earlier audit](verification/VERIFICATION-2026-10-14-GO-DEPENDENCIES.md). |
@@ -204,15 +205,15 @@ new passing native CI, package/man gates or a completed manual rewrite.
 
 ## Execution order
 
-Immediate selection, 2026-10-14: the user deferred OpenBSD/VESA cause
-investigation #93 until much later. CACHE-01's variant-filter/reload checkpoint
-is locally qualified and merged in PR #95; broader cache profiling stays open.
-The user requested continued window-manager backlog work through a reviewable
-PR. LOOP-01 now owns one bounded core-readiness checkpoint: native poll/deadline
-handling, shared pinned module snapshots, and actual-core continuation/order/
-retirement coverage. Preserve INPUT-01/OUTPUT-01 ordering, ordinary-only session
-callbacks, startup/image deadline distinctions and existing unrelated source.
-[Current report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md).
+Immediate selection, 2026-10-15: PR #96's ordinary/interactive core-readiness
+checkpoint is merged. The user requested continued window-manager backlog work
+through the next reviewable PR. LOOP-01 owns the remaining synchronous module
+waits: unlock response, blocked output and startup, with shared native-poll
+deadline conversion and actual-core coverage. Preserve INPUT-01/OUTPUT-01
+ordering, recursive/death-row ownership, startup continuation and current
+constructor/session admission limits. Combined qualification is running.
+[Current report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md).
+OpenBSD/VESA cause investigation #93 remains deferred until much later.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -1942,3 +1943,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-14: The user defers LIB-07 #93 until much later and resumes the window-manager backlog. CACHE-01 #33 qualifies measured variant filtering, reload/refusal and retained pixels in one combined checkpoint. A 65-variant lookup now checks one file stamp instead of 65. Eight standard compiler profiles across six targets pass 1936 entries; optional profiles add 423, default BSD servers pass 12 cache/staged-WM fixtures, and instrumented cache checks pass. 150 installed code identities and 99 catalogs validate. Broader profiling and release/hardware gates remain open. [Report](verification/VERIFICATION-2026-10-14-PICTURE-CACHE.md).
 
 - 2026-10-14: PR #95 is merged; the user continues window-manager backlog work. LOOP-01 qualifies native poll/deadlines, shared pinned snapshots and actual-core continuation/order/retirement coverage in one combined checkpoint. Typed native poll snapshots and existing death-row pins now serve ordinary/interactive core waits. Eight standard compiler profiles pass 1944 entries across six targets; optional profiles add 425, default BSD servers pass 16 core/cache/interactive geometry fixtures, and two instrumented checks pass. 150 installed code identities and 99 catalogs validate. Broader descriptor/runtime release gates remain open. [Report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md).
+
+- 2026-10-15: PR #96 merged; the user continues LOOP-01 with the three synchronous module waits. Native poll/deadline and actual-core coverage are implemented; focused Linux/BSD ARM64 checks pass, combined qualification running. #93 remains deferred. [Report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md).

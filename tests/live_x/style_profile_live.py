@@ -32,24 +32,28 @@ def run(args):
             # Vary rules and windows independently around (256, 8).
             workloads += [('update', size, 8) for size in (64, 128, 256)]
             workloads += [('update', 256, windows) for windows in (16, 32)]
-            for mode, size, windows in workloads:
-                label = f'{mode}-{size}-{windows}'
-                process = runtime.start(
-                    label, [str(args.fvwm), '-d', display,
-                            '-f', '/dev/null'], label + '.log',
-                    runtime.environment({
+            for reference in (False, True):
+                for mode, size, windows in workloads:
+                    label = f'{mode}-{size}-{windows}-{reference}'
+                    environment = {
                         'FVWM_STYLE_PROFILE_MODE': mode,
                         'FVWM_STYLE_PROFILE_SIZE': str(size),
-                        'FVWM_STYLE_PROFILE_WINDOWS': str(windows)}))
-                assert process.wait_until_exit(time.monotonic() + 45) == 0
-                lines = [line.removeprefix('STYLE_PROFILE ') for line in
-                         process.log_path.read_text().splitlines()
-                         if line.startswith('STYLE_PROFILE ')]
-                assert len(lines) == 1
-                row = json.loads(lines[0])
-                assert (row['mode'], row['rules'], row['windows']) == (
-                    mode, size, windows)
-                rows.append(row)
+                        'FVWM_STYLE_PROFILE_WINDOWS': str(windows)}
+                    if reference:
+                        environment['FVWM_STYLE_PROFILE_REFERENCE'] = '1'
+                    process = runtime.start(
+                        label, [str(args.fvwm), '-d', display,
+                                '-f', '/dev/null'], label + '.log',
+                        runtime.environment(environment))
+                    assert process.wait_until_exit(time.monotonic() + 45) == 0
+                    lines = [line.removeprefix('STYLE_PROFILE ') for line in
+                             process.log_path.read_text().splitlines()
+                             if line.startswith('STYLE_PROFILE ')]
+                    assert len(lines) == 1
+                    row = json.loads(lines[0])
+                    assert (row['reference'], row['mode'], row['rules'],
+                            row['windows']) == (reference, mode, size, windows)
+                    rows.append(row)
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows}, indent=2) + '\n')
         finally:

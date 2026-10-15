@@ -36,6 +36,7 @@
 #include "screen.h"
 #include "update.h"
 #include "style.h"
+#include "style_id_filter.h"
 #include "colorset.h"
 #include "ewmh.h"
 #include "placement.h"
@@ -1142,7 +1143,22 @@ static int remove_all_of_style_from_list(style_id_t style_id)
 static inline Bool _simplify_style_list(window_style_list *list)
 {
 	window_style *cur;
+	style_id_filter filter;
 	int has_modified;
+
+	if (list->first_style == list->last_style)
+	{
+		return False;
+	}
+	memset(&filter, 0, sizeof(filter));
+	for (cur = list->first_style; cur; cur = SGET_NEXT_STYLE(*cur))
+	{
+		style_id_filter_add(&filter, &SGET_ID(*cur));
+	}
+	/* Only IDs that may repeat need the backward merge/interference scan.
+	 * The filter owns bits, never rule pointers or strings. Merges remove
+	 * equal IDs only, so the original summary remains conservative while
+	 * records/strings are freed or cur moves to an older equal rule. */
 
 	/* Step 1:
 	 *   Remove styles that are completely overridden by later
@@ -1162,6 +1178,10 @@ static inline Bool _simplify_style_list(window_style_list *list)
 		style_flags interflags;
 		window_style *cmp;
 
+		if (!style_id_filter_may_repeat(&filter, &SGET_ID(*cur)))
+		{
+			continue;
+		}
 		memset(&interflags, 0, sizeof(style_flags));
 		memcpy(&sumflags, &cur->flag_mask, sizeof(style_flags));
 		memcpy(&sumdflags, &cur->flag_default, sizeof(style_flags));

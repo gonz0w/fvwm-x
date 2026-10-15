@@ -2818,6 +2818,17 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
     )
 endif
 
+picture_cache_test = executable(
+    'test-picture-cache', 'test_picture_cache.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=PictureFindImageFile',
+        '-Wl,--wrap=isFileStampChanged'],
+    c_args: ['-UNDEBUG'],
+)
+test('picture-cache', picture_cache_test)
+
 # Source-RGB summary policy shared by ordinary and deferred image conversion.
 picture_average_test = executable(
     'test-picture-average', 'test_picture_average.c',

@@ -229,3 +229,9 @@ pending session work no longer needs PeriodicTasks. A tested Swallow placeholder
 ownership repair accompanies this batch. Wider service budgets, Script packet
 payload admission and whole teardown remain separate work; see the
 [combined checkpoint](verification/VERIFICATION-2026-10-08-MODULE-READINESS.md).
+
+## 2026-10-14 picture-cache lookup
+
+CACHE-01’s measured variant-filter/reload checkpoint is locally qualified.
+A 65-variant lookup now checks one file stamp instead of 65. Eight standard compiler profiles across six targets pass 1936 entries; optional profiles add 423, default BSD servers pass 12 cache/staged-WM fixtures, and instrumented cache checks pass. 150 installed code identities and 99 catalogs validate. Broader profiling and release/hardware gates remain open.
+See the [combined report](verification/VERIFICATION-2026-10-14-PICTURE-CACHE.md).

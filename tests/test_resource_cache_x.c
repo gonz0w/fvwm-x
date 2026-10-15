@@ -8,6 +8,7 @@
 #include "libs/Picture.h"
 #include "libs/PictureBase.h"
 
+#include <X11/Xutil.h>
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -15,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 static int count_low_descriptors(void)
 {
@@ -118,6 +120,79 @@ static void test_bitmap_metadata(Display *display, const char *path)
 	PDestroyFvwmPicture(display, picture);
 }
 
+static void write_cache_bitmap(FILE *stream, unsigned value, Bool changed)
+{
+	assert(fputs("#define cache_width 8\n#define cache_height 8\n"
+		"static unsigned char cache_bits[] = {\n", stream) >= 0);
+	for (unsigned i = 0; i < 8; i++)
+	{
+		assert(fprintf(stream, "0x%02x%s", value,
+			i == 7 ? "};\n" : ", ") > 0);
+	}
+	/* Size changes make reload independent of timestamp resolution. */
+	if (changed)
+	{
+		assert(fputs("/* changed bitmap */\n", stream) >= 0);
+	}
+	assert(fclose(stream) == 0);
+}
+
+static unsigned long bitmap_pixel(Display *display, FvwmPicture *picture)
+{
+	XImage *image = XGetImage(display, picture->picture, 0, 0, 1, 1,
+		AllPlanes, ZPixmap);
+	unsigned long pixel;
+
+	assert(image != NULL);
+	pixel = XGetPixel(image, 0, 0);
+	XDestroyImage(image);
+	return pixel;
+}
+
+static void test_picture_reload(Display *display)
+{
+	char path[] = "/tmp/fvwm-picture-cache-XXXXXX";
+	FvwmPictureAttributes attributes = {0};
+	monitor_scale_factor scale = {4};
+	Window root = DefaultRootWindow(display);
+	int fd = mkstemp(path);
+	FILE *stream;
+	FvwmPicture *old, *other_generation, *replacement, *hit;
+
+	assert(fd >= 0);
+	stream = fdopen(fd, "w");
+	assert(stream != NULL);
+	write_cache_bitmap(stream, 255, False);
+	old = PCacheFvwmPictureAtScale(display, root, NULL, path,
+		attributes, scale, 0, 0, 7);
+	other_generation = PCacheFvwmPictureAtScale(display, root, NULL,
+		path, attributes, scale, 0, 0, 8);
+	assert(old && other_generation && old != other_generation);
+	assert(bitmap_pixel(display, old) == 1);
+	stream = fopen(path, "w");
+	assert(stream != NULL);
+	write_cache_bitmap(stream, 0, True);
+	replacement = PCacheFvwmPictureAtScale(display, root, NULL, path,
+		attributes, scale, 0, 0, 7);
+	assert(replacement && replacement != old);
+	assert(replacement->stamp != old->stamp);
+	assert(bitmap_pixel(display, replacement) == 0);
+	assert(bitmap_pixel(display, old) == 1);
+	assert(bitmap_pixel(display, other_generation) == 1);
+	hit = PCacheFvwmPictureAtScale(display, root, NULL, path,
+		attributes, scale, 0, 0, 7);
+	assert(hit == replacement && replacement->count == 2);
+	assert(unlink(path) == 0);
+	assert(PCacheFvwmPictureAtScale(display, root, NULL, path,
+		attributes, scale, 0, 0, 7) == NULL);
+	assert(bitmap_pixel(display, old) == 1);
+	assert(bitmap_pixel(display, replacement) == 0);
+	PDestroyFvwmPicture(display, hit);
+	PDestroyFvwmPicture(display, replacement);
+	PDestroyFvwmPicture(display, other_generation);
+	PDestroyFvwmPicture(display, old);
+}
+
 static void test_font_cache(Display *display)
 {
 	char name[] = "xft:DejaVu Sans:pixelsize=10";
@@ -156,6 +231,7 @@ int main(int argc, char **argv)
 	FlocaleInit(LC_CTYPE, "C", "", "resource-cache-test");
 	test_picture_cache(display, argv[1]);
 	test_bitmap_metadata(display, argv[2]);
+	test_picture_reload(display);
 	test_font_cache(display);
 	for (int i = 3; i < argc; i++)
 	{

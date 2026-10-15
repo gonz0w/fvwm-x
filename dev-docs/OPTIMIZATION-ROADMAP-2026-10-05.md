@@ -246,7 +246,8 @@ See the [combined report](verification/VERIFICATION-2026-10-14-CORE-READINESS.md
 
 PR #96's shared ordinary/interactive core snapshot is merged. LOOP-01 next
 consolidates the unlock, blocked-output and startup waits under native poll and
-shared absolute-deadline conversion. Focused Linux/BSD ARM64 checks pass;
-combined qualification is running. Existing constructor/session admission and
-broader runtime/release audits remain separate. See the
+shared absolute-deadline conversion. Combined qualification is locally accepted;
+Full-suite and final refinement evidence are recorded separately. Existing
+constructor/session admission and broader runtime/release audits remain
+separate. See the
 [module-wait report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md).

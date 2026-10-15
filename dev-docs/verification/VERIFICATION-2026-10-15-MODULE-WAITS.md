@@ -1,83 +1,139 @@
 # Synchronous module readiness — 2026-10-15
 
 Owner: LOOP-01 [#36](https://github.com/gonz0w/fvwm-x/issues/36).
-Status: implemented; focused Linux/BSD ARM64 checks pass. Combined qualification
-is running. PR #96's ordinary/interactive checkpoint is merged; OpenBSD/VESA
-cause investigation #93 remains deferred.
+Status: combined checkpoint locally qualified; ready for PR review.
+[Machine receipt](VERIFICATION-2026-10-15-MODULE-WAITS-COMBINED.json).
+PR #96's ordinary/interactive checkpoint is merged. The separate OpenBSD/VESA
+cause investigation #93 stays deferred until much later.
 
-## Problem and behavior
+## Problem and resulting behavior
 
 The three remaining synchronous waits in `module_list.c` built descriptor sets
-for an unlock response, a blocked output pipe and module startup. They now use
-the existing cancellation-aware `fvwmPoll` wrapper and native descriptor arrays.
-A shared pure deadline adapter rounds a positive remainder upward to milliseconds
-and clamps it at `INT_MAX`; expiration and invalid/regressing clocks initialize
-the result to zero. A clamped poll interval ending before the absolute deadline
-continues the wait. Every retry keeps its original deadline.
+for an unlock response, blocked output and startup. They now use the existing
+cancellation-aware `fvwmPoll` wrapper and native descriptor arrays. Shared pure
+deadline conversion rounds positive remainders upward and clamps at `INT_MAX`.
+Expired/invalid/regressing clocks initialize the timeout result to zero. A
+clamped poll interval ending before the absolute deadline continues the wait;
+it neither refreshes the deadline nor prematurely retires a live producer.
 
-Lock-on-send retains its output/unlock completion barrier, inline command
-execution, recursive frame lifetime, death-row pins and retire-on-timeout policy.
-Input readiness includes EOF/error notifications so buffered complete frames can
-be consumed before EOF. Invalid input, invalid output and output hangup fail
-through the existing retirement path. Startup retains read-before-write order,
-finite 100 ms X/Escape checks, asynchronous output budgets, custom Expect,
-partial-frame continuation and the live module after startup timeout or terminal
-readiness failure. The syscall errno is saved before clock/remaining helpers.
-No session callbacks or ordinary event dispatch are added to these barriers.
+Lock-on-send keeps its output/unlock barrier, inline command execution, recursive
+frame ownership, death-row pins and retire-on-timeout policy. EOF/error readiness
+allows buffered complete responses to be consumed before EOF. Invalid input,
+invalid output and output hangup use the existing retirement path. Startup keeps
+read-before-write order, finite 100 ms X/Escape checks, asynchronous output
+budgets, custom Expect, partial-frame continuation and the live module after
+startup timeout or terminal readiness failure. Syscall errno is saved before
+clock/remaining helpers. Ordinary event dispatch and session callbacks are not
+introduced into these synchronous command barriers.
 
-No configuration syntax, packet ABI, installed option or dependency changes.
-High-descriptor controls cover these waits where the inherited process limit
-permits real endpoints; module constructor and ICE/session admission limits
-elsewhere remain unchanged. This is a readiness consolidation, with no measured
-desktop-latency or whole-transport high-descriptor claim.
+No configuration syntax, packet ABI, installed option or required dependency
+changes. Constructor and ICE/session descriptor admission limits remain in
+place. Real high-endpoint controls run where inherited process limits permit;
+other guests explicitly report that limitation. This is a consolidation, with
+no whole-transport high-descriptor or measured desktop-latency claim.
 
-## Regression coverage
+## Tests and exact source
 
-The native `event-loop-policy` unit covers positive rounding, submillisecond
-remainders, expiration, maximum clamp, and invalid/regressing clocks. Existing
-actual-core synchronous and startup fixtures now intercept native poll arrays,
-retaining their deadline, partial read/write, interruption, activity, recursion,
-command ordering, retirement, buffered Escape and asynchronous handoff controls.
-They add real high endpoints where available, invalid endpoints, output hangup,
-and complete buffered responses followed by real pipe EOF. Real child producers
-still exercise elapsed deadlines and startup continuation on actual clocks.
+The native `event-loop-policy` unit covers positive and submillisecond rounding,
+expiration, maximum clamp and invalid/regressing clocks. Existing actual-core
+synchronous/startup fixtures now intercept native poll arrays. Their 25/32 named
+cases preserve partial read/write, interruption, activity, recursion, command
+ordering, retirement, buffered Escape and asynchronous handoff coverage. New
+controls cover real high endpoints where available, invalid endpoints, output
+hangup and complete responses followed by real pipe EOF. Two deterministic clock
+controls exercise maximum poll-interval expiration without waiting 24 days.
+Real child producers still exercise elapsed deadlines and startup continuation.
+Drivers accept owned nested servers and borrowed authenticated default displays.
+The fixtures use actual core objects/X/pipes with controlled transport and clock
+callbacks for deterministic cases. They end with `_exit` and do not qualify full
+shutdown leaks or a real external session manager.
 
-The fixtures run actual core objects against X and pipes, with controlled
-transport/clock callbacks for deterministic cases. Their controlled `_exit`
-completion does not qualify full shutdown leaks. Drivers support borrowed
-private-authority default displays as well as their own nested X server.
+Base commit: `9c91f1c2992983f2a8bf3490b607bfd0fc5ddc0d` (merged PR #96).
+Full-suite archive: `8cf67ca691c1c55c551de0403ffa15a1cc9059db057aee56b5af9544235cebaf`.
+Final archive: `9ed48f0c34d9d1bf9747b5a3589927b8e706b748059e63e676507672ae02864e`.
+Both contain 1943 regular files with exact hashes/modes.
+All nine final code/build paths match the publication candidate byte for byte.
 
-## Qualification
+Review while the full suite ran found that an `INT_MAX`-clamped timeout could
+return before the absolute deadline. The final three-file refinement adds
+zero-result continuation and its two regressions in `module_list.c`, the
+synchronous fixture and its driver. Every other archived source byte/mode is
+identical. The full suite is retained against its exact source; all affected
+profiles are then incrementally rebuilt, checked, freshly installed and compared
+against the final source. This preserves unaffected full-suite evidence without
+claiming the final refinement received another whole-suite run.
 
-Four target archives are strictly validated: Linux/FreeBSD/OpenBSD ARM64 and
-FreeBSD AMD64. Linux ARM64 passes all four full profiles, all final affected
-checks and three scoped sanitizer entries. Both FreeBSD targets and OpenBSD
-ARM64 pass full/final affected/install/default-X gates. Linux AMD64 GCC passes
-its full suite and install; Clang compilation and OpenBSD AMD64's full suite are
-still running. The branch remains a draft until those remaining receipts pass.
+## Combined local qualification
 
-Full-suite source: `8cf67ca691c1c55c551de0403ffa15a1cc9059db057aee56b5af9544235cebaf`.
-Final source: `9ed48f0c34d9d1bf9747b5a3589927b8e706b748059e63e676507672ae02864e`.
-The final three-file timeout refinement has its own affected checks; unaffected
-full-suite evidence remains bound to its original source. Full results,
-installed identities and default-server outcomes will be finalized after all
-artifact validation passes.
-Focused final logic (`focus04`) passes the three registered policy/core entries
-on Linux ARM64, FreeBSD ARM64 and OpenBSD ARM64. The combined candidate includes
-subsequent whitespace/comment line wrapping and will be independently checked
-as the exact final source. All failed development attempts remain local.
+| Target / profile | Full-suite entries | Final affected entries | Final installed code | Catalogs |
+| --- | ---: | ---: | ---: | ---: |
+| fvwm-x-linux-arm64-svg/gcc | 249 | 5 | 15 | 11 |
+| fvwm-x-linux-arm64-svg/clang | 249 | 5 | 15 | 11 |
+| fvwm-x-linux-arm64-svg/software | 228 | 5 | 15 | 11 |
+| fvwm-x-linux-arm64-svg/minimal | 197 | 5 | 15 | 0 |
+| linux-amd64/gcc | 249 | 5 | 15 | 11 |
+| linux-amd64/clang | 249 | 5 | 15 | 11 |
+| freebsd-arm64/default | 237 | 5 | 15 | 11 |
+| openbsd-arm64/default | 237 | 5 | 15 | 11 |
+| freebsd-amd64/default | 237 | 5 | 15 | 11 |
+| openbsd-amd64/default | 237 | 5 | 15 | 11 |
 
-The first generated focus command used a stale target name. The second build
+The full candidate passes 1944 standard entries across eight
+compiler profiles/all six OS/architectures, plus 425 optional
+software/minimal entries. The final candidate passes 50
+affected entries, covering deadline policy and the synchronous/startup/output/
+ordinary-readiness core controls wherever registered. Minimal profiles run their
+registered subset. Each final profile has fresh staged installation and installed
+version execution; 150 native-code identities and
+99 catalogs match tested outputs after normal rpath
+transformation. The same comparison also validates the retained full candidate's
+150 code identities/99 catalogs.
+Compiler/dependency/feature environments and exact argv are retained.
+
+Four private-authority BSD default servers pass
+20 full-candidate fixtures: synchronous, startup and
+ordinary-readiness probes plus installed WM/MFL interactive geometry at 1×/1.5×.
+Four final-candidate default servers add 8 affected
+synchronous/startup fixtures. All eight reject an unauthenticated client and
+stay alive through their fixtures. Actual cleanup records show
+8 clean exits and 0
+bounded forced cleanups. No separate #93 cause investigation was undertaken.
+
+Linux ARM64 Clang ASan/UBSan passes three final scoped entries with the supporting
+library/core objects instrumented. Pure deadline policy enables leak detection;
+controlled actual-core probes disable it because they use `_exit`. All halt on
+sanitizer errors. Explicit compiler-rt linkage and effective options are saved.
+These local emulated results do not establish native-CPU release qualification.
+
+Portable `make verify` passes 166 entries with
+11 explicit native-Meson skips on macOS. That foundation run
+preceded the final timeout refinement; its portable tool inputs are unchanged.
+Final repository/link/branch/staged checks pass separately. No full portable or
+native matrix is repeated merely to create a PR.
+
+## Preserved attempts and limits
+
+The first generated focus command used a stale target name. The next BSD build
 caught a duplicated adapter block returning a value from a void test function;
-the test edit was corrected before runtime checks passed. The existing Linux
-Podman machine was unavailable until restarted inside a persistent control
-session. These are retained setup/test-adapter failures, not passing evidence.
-No production source or test deadline was relaxed to recover from them.
+the test edit was corrected before runtime checks passed. Linux's existing
+Podman machine needed restarting inside a persistent control session. Final
+logic-focused checks passed on Linux/FreeBSD/OpenBSD ARM64 before the combined
+run; the maximum-interval refinement also passed an isolated FreeBSD ARM64 check.
+All failed setup/test-adapter attempts and their source snapshots remain local.
+No deadline was relaxed, and no production workaround was introduced for them.
+
+OpenBSD `/home` capacity checks showed insufficient space for further stages
+(ARM64 reported negative ordinary-user availability; AMD64 had 371 MiB free).
+After each successful full/default-X job completed, only its current owned tree
+was copied to the empty `/usr/obj` partition. Every regular-file hash/mode and
+symlink identity matched before removing that original and preserving `/home`
+through a symlink. Relocation receipts retain every identity; qualified
+predecessors, unrelated trees and VM disks are untouched. The final source
+preflight verifies the retained full source before applying its three-file delta.
 
 Native-CPU release sanitizers, physical input/GPU/toolkit/compositor acceptance,
-external session-manager behavior and broader descriptor/runtime audits remain
-separate. No #93 cause investigation, hosted CI, remote status publisher, release
-or upstream notification is added.
-
-Local source manifests, exact argv, logs and archived receipts are under
+external session-manager evidence and broader descriptor/runtime audits remain
+open. No hosted CI, remote success publisher, release or upstream notification
+is added. The exact source manifests, executed runners, argv, logs, original
+attempts, six complete evidence archives and strict validation are under
 `builddir/codex-2026-10-15/module-wait-readiness/` (ignored).

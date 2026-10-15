@@ -1,5 +1,7 @@
 # Verification reports
 
+- [2026-10-15 window-update ordering](VERIFICATION-2026-10-15-WINDOW-UPDATES.md): current ownership/commit/query contract and actual-core explicit/outer-loop regression; combined qualification running.
+
 - [2026-10-15 synchronous module readiness](VERIFICATION-2026-10-15-MODULE-WAITS.md): three native-poll waits; six-target full/final-affected, install/default-X and scoped sanitizer checkpoint locally qualified.
 
 - [2026-10-14 core descriptor readiness](VERIFICATION-2026-10-14-CORE-READINESS.md): combined six-target/eight-profile, default-X/install/optional/scoped sanitizer checkpoint locally qualified; wider descriptor and release audits remain.

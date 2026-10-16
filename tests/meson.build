@@ -1582,6 +1582,29 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 45,
     )
+    ewmh_state_fixture = executable(
+        'fvwm-ewmh-state-fixture', 'ewmh_state_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows',
+            '-Wl,--wrap=ewmh_client_list_append',
+            '-Wl,--wrap=ewmh_atom_index_find', '-Wl,--wrap=XChangeProperty',
+            '-Wl,--wrap=XInternAtoms', '-Wl,--wrap=XInternAtom',
+            '-Wl,--wrap=malloc', '-Wl,--wrap=realloc'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'ewmh-state-xvfb', py,
+        args: [files('live_x/ewmh_state_live.py'),
+            '--fvwm', ewmh_state_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'ewmh-state'],
+        depends: ewmh_state_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
+    )
     style_profile_fixture = executable(
         'fvwm-style-profile-fixture', 'style_profile_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),
@@ -3223,3 +3246,15 @@ test('ci-png-contract', py, args: [files('test_ci_png.py')],
     timeout: 30)
 test('qemu-bsd-contract', py, args: [files('test_qemu_bsd.py')],
     timeout: 60)
+
+# Client snapshots own IDs only; allocation refusal leaves their prefix intact.
+ewmh_state_policy_test = executable(
+    'test-ewmh-state-policy',
+    ['test_ewmh_state_policy.c', '../fvwm/ewmh_client_list.c',
+     '../fvwm/ewmh_atom_index.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+    link_args: ['-Wl,--wrap=malloc', '-Wl,--wrap=realloc', '-Wl,--wrap=free'],
+)
+test('ewmh-state-policy', ewmh_state_policy_test)

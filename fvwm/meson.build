@@ -12,6 +12,8 @@ fvwm_sources = [
     'fvwm/decorations.c',
     'fvwm/events.c',
     'fvwm/ewmh.c',
+    'fvwm/ewmh_atom_index.c',
+    'fvwm/ewmh_client_list.c',
     'fvwm/ewmh_conf.c',
     'fvwm/ewmh_events.c',
     'fvwm/ewmh_icons.c',

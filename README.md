@@ -17,8 +17,8 @@ release acceptance remain open. Hosted source is the qualified core/utility
 snapshot; separate desktop/artwork publication is tracked in the guides.
 Optional Go builds use a patched compiler baseline. The image-cache and core-
 readiness checkpoints are locally qualified, including ordinary, interactive
-and synchronous waits. Style matching and window-update checks pass on six
-targets; broader OpenBSD failures and its fresh-install gap remain documented.
+and synchronous waits. EWMH state and window-update checks pass on six
+targets; broader platform failures and fresh-install gaps remain documented.
 Improvements share a test checkpoint. OpenBSD AMD64 VESA remains
 deferred. This is not a stable release.
 

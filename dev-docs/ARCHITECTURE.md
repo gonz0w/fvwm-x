@@ -684,3 +684,14 @@ Synchronous module waits in `module_list.c` use `fvwmPoll` for unlock responses,
 blocked output and startup. `event_loop_policy.c` owns absolute-deadline to poll
 millisecond conversion; owners retain retirement, inline execution and partial
 packet contracts. See the [module-wait checkpoint](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md).
+
+## EWMH state traversal ownership
+
+`ewmh.c` owns immutable scoped/ALL atom-ID indexes rebuilt with its existing atom
+initialization, paired static/dynamic work-area aggregation and immediate root
+client-list publication. [Atom index policy](https://github.com/gonz0w/fvwm-x/blob/773958f73893fb8bd3e2084f4d3d881fce7f870a/fvwm/ewmh_atom_index.c)
+retains duplicate priority; [client snapshot ownership](https://github.com/gonz0w/fvwm-x/blob/773958f73893fb8bd3e2084f4d3d881fce7f870a/fvwm/ewmh_client_list.c)
+keeps only operation-local IDs, with inline storage and checked growth/refusal.
+No window references survive these operations, and current query/property
+publication barriers remain with their existing owners.
+[Checkpoint evidence](verification/VERIFICATION-2026-10-15-EWMH-STATE.md).

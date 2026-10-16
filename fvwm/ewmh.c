@@ -52,6 +52,8 @@
 
 #include "config.h"
 #include "ewmh_property_policy.h"
+#include "ewmh_client_list.h"
+#include "ewmh_atom_index.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -264,6 +266,55 @@ ewmh_atom_list atom_list[] =
 	L_ENTRY(EWMH_ATOM_LIST_END,               NULL)
 };
 
+/* Tables, including their sentinels, bound both scoped and ALL indexes. */
+enum { EWMH_ATOM_CAPACITY = (
+	sizeof(ewmh_atom_client_root) + sizeof(ewmh_atom_client_win) +
+	sizeof(ewmh_atom_wm_state) + sizeof(ewmh_atom_allowed_actions) +
+	sizeof(ewmh_atom_window_type) + sizeof(ewmh_atom_fixed_property) +
+	sizeof(ewmh_atom_property_notify) + sizeof(ewmh_atom_fvwm_root) +
+	sizeof(ewmh_atom_fvwm_win)) / sizeof(ewmh_atom) };
+
+static struct
+{
+	ewmh_atom_index_entry entries[2 * EWMH_ATOM_CAPACITY];
+	struct { size_t start, count; } lists[EWMH_ATOM_LIST_END];
+	Bool ready;
+} ewmh_atom_lookup;
+
+static void prepare_atom_lookup(void)
+{
+	size_t count = 0, scoped = EWMH_ATOM_CAPACITY;
+
+	for (unsigned i = 0; i < NUMBER_OF_ATOM_LISTS; i++)
+	{
+		unsigned list = atom_list[i].name;
+
+		ewmh_atom_lookup.lists[list].start = scoped;
+		for (ewmh_atom *entry = atom_list[i].list;
+		     entry->name != NULL; entry++)
+		{
+			ewmh_atom_index_entry value = {
+				entry->atom, count, entry };
+
+			ewmh_atom_lookup.entries[count++] = value;
+			ewmh_atom_lookup.entries[scoped++] = value;
+		}
+		ewmh_atom_lookup.lists[list].count = scoped -
+			ewmh_atom_lookup.lists[list].start;
+	}
+	ewmh_atom_lookup.lists[EWMH_ATOM_LIST_ALL].start = 0;
+	ewmh_atom_lookup.lists[EWMH_ATOM_LIST_ALL].count = count;
+	for (unsigned i = 0; i < EWMH_ATOM_LIST_END; i++)
+	{
+		ewmh_atom_index_sort(ewmh_atom_lookup.entries +
+			ewmh_atom_lookup.lists[i].start,
+			ewmh_atom_lookup.lists[i].count);
+	}
+	/* Publish only after all original identities and indexes are complete.
+	 * Entries borrow static atom records, never managed-window state. */
+	ewmh_atom_lookup.ready = True;
+}
+
 static void EWMH_DLOG(char *msg, ...)
 {
 	if (EWMH_DEBUG)
@@ -342,7 +393,8 @@ ewmh_atom *get_ewmh_atom_by_name(
 	return a;
 }
 
-ewmh_atom *ewmh_GetEwmhAtomByAtom(Atom atom, ewmh_atom_list_name list_name)
+static ewmh_atom *find_atom_in_tables(Atom atom,
+	ewmh_atom_list_name list_name)
 {
 	int i = 0;
 
@@ -369,6 +421,17 @@ ewmh_atom *ewmh_GetEwmhAtomByAtom(Atom atom, ewmh_atom_list_name list_name)
 	}
 
 	return NULL;
+}
+
+ewmh_atom *ewmh_GetEwmhAtomByAtom(Atom atom, ewmh_atom_list_name list_name)
+{
+	if (!ewmh_atom_lookup.ready)
+		return find_atom_in_tables(atom, list_name);
+	if ((unsigned)list_name >= EWMH_ATOM_LIST_END)
+		return NULL;
+	return ewmh_atom_index_find(ewmh_atom_lookup.entries +
+		ewmh_atom_lookup.lists[list_name].start,
+		ewmh_atom_lookup.lists[list_name].count, atom);
 }
 
 static int atom_size(int format)
@@ -865,69 +928,44 @@ void EWMH_ManageKdeSysTray(Window w, int type)
 
 /**** Client lists ****/
 
-void EWMH_SetClientList(struct monitor *m)
+static void set_client_list(Bool stacking)
 {
-	Window *wl = NULL;
+	ewmh_client_list list;
 	FvwmWindow *fw;
-	int nbr = 0;
-	int i = 0;
+	const char *property = stacking ?
+		"_NET_CLIENT_LIST_STACKING" : "_NET_CLIENT_LIST";
 
-	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
+	ewmh_client_list_init(&list);
+	/* Walk the ring bottom-to-top directly, preserving the old reversed
+	 * stack_next output. Both traversals borrow records synchronously. */
+	for (fw = stacking ? Scr.FvwmRoot.stack_prev : Scr.FvwmRoot.next;
+	     stacking ? fw != &Scr.FvwmRoot : fw != NULL;
+	     fw = stacking ? fw->stack_prev : fw->next)
 	{
-		nbr++;
-	}
-	if (nbr != 0)
-	{
-		wl = fxmalloc(sizeof(Window) * nbr);
-		for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
+		if (!ewmh_client_list_append(&list, FW_W(fw)))
 		{
-			wl[i++] = FW_W(fw);
+			fvwm_debug(__func__, "%s snapshot unavailable; "
+				"previous property retained", property);
+			ewmh_client_list_finish(&list);
+			return;
 		}
 	}
-	ewmh_ChangeProperty(
-		Scr.Root,"_NET_CLIENT_LIST", EWMH_ATOM_LIST_FVWM_ROOT,
-		(unsigned char *)wl, nbr);
-	if (wl != NULL)
-	{
-		free (wl);
-	}
+	/* Empty lists still replace the property; no no-op suppression. The
+	 * helper bounds the populated count to Xlib's signed element count. */
+	ewmh_ChangeProperty(Scr.Root, property, EWMH_ATOM_LIST_FVWM_ROOT,
+		list.count ? (unsigned char *)list.windows : NULL,
+		(int)list.count);
+	ewmh_client_list_finish(&list);
+}
 
-	return;
+void EWMH_SetClientList(struct monitor *m)
+{
+	set_client_list(False);
 }
 
 void EWMH_SetClientListStacking(struct monitor *m)
 {
-	Window *wl = NULL;
-	FvwmWindow *fw;
-	int nbr = 0;
-	int i = 0;
-
-	for (
-		fw = Scr.FvwmRoot.stack_next; fw != &Scr.FvwmRoot;
-		fw = fw->stack_next)
-	{
-		nbr++;
-	}
-	i = nbr-1;
-	if (nbr != 0)
-	{
-		wl = fxmalloc(sizeof(Window) * nbr);
-		for (
-			fw = Scr.FvwmRoot.stack_next; fw != &Scr.FvwmRoot;
-			fw = fw->stack_next)
-		{
-			wl[i--] = FW_W(fw);
-		}
-	}
-	ewmh_ChangeProperty(
-		Scr.Root,"_NET_CLIENT_LIST_STACKING", EWMH_ATOM_LIST_FVWM_ROOT,
-		(unsigned char *)wl, nbr);
-	if (wl != NULL)
-	{
-		free (wl);
-	}
-
-	return;
+	set_client_list(True);
 }
 
 /**** Working Area stuff ****/
@@ -955,146 +993,79 @@ void ewmh_SetWorkArea(struct monitor *m)
 		(unsigned char *)&val, i*4);
 }
 
-void ewmh_ComputeAndSetWorkArea(struct monitor *m)
+static void merge_work_area_strut(ewmh_strut *area, const ewmh_strut *value)
 {
-	int left = m->ewmhc.BaseStrut.left;
-	int right = m->ewmhc.BaseStrut.right;
-	int top = m->ewmhc.BaseStrut.top;
-	int bottom = m->ewmhc.BaseStrut.bottom;
-	int x,y,width,height;
+	area->left = max(area->left, value->left);
+	area->right = max(area->right, value->right);
+	area->top = max(area->top, value->top);
+	area->bottom = max(area->bottom, value->bottom);
+}
+
+static void update_work_area(struct monitor *m, Bool update_static,
+	Bool update_dynamic)
+{
+	ewmh_strut areas[2] = { { m->ewmhc.BaseStrut.left,
+		m->ewmhc.BaseStrut.right, m->ewmhc.BaseStrut.top,
+		m->ewmhc.BaseStrut.bottom } };
+	rectangle monitor_rect = { m->si->x, m->si->y, m->si->w, m->si->h };
 	FvwmWindow *fw;
 
+	areas[1] = areas[0];
+	/* Both owners use the same selection, but keep independent struts and
+	 * validation results. No callbacks/publication occur in this walk. */
 	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
 	{
-		if (fw->m != m)
+		if (fw->m != m || DO_EWMH_IGNORE_STRUT_HINTS(fw) ||
+		    !IS_STICKY_ACROSS_PAGES(fw))
 			continue;
-		if (
-			DO_EWMH_IGNORE_STRUT_HINTS(fw) ||
-			!IS_STICKY_ACROSS_PAGES(fw))
-		{
-			continue;
-		}
-		left = max(left, fw->strut.left);
-		right = max(right, fw->strut.right);
-		top = max(top, fw->strut.top);
-		bottom = max(bottom, fw->strut.bottom);
+		if (update_static)
+			merge_work_area_strut(areas, &fw->strut);
+		if (update_dynamic)
+			merge_work_area_strut(areas + 1, &fw->dyn_strut);
 	}
-
+	for (unsigned i = 0; i < 2; i++)
 	{
-		rectangle monitor_rect;
 		rectangle work;
-		monitor_ownership_status status;
+		rectangle *stored;
 
-		monitor_rect.x = m->si->x;
-		monitor_rect.y = m->si->y;
-		monitor_rect.width = m->si->w;
-		monitor_rect.height = m->si->h;
-		status = monitor_ownership_work_rect(
-			&monitor_rect, left, right, top, bottom, &work);
-		if (status != MONITOR_OWNERSHIP_OK)
-		{
-			return;
-		}
-		x = work.x;
-		y = work.y;
-		width = work.width;
-		height = work.height;
-	}
-
-	if (Scr.bo.do_debug_randr)
-	{
-	}
-
-	if (
-		m->Desktops->ewmh_working_area.x != x ||
-		m->Desktops->ewmh_working_area.y != y ||
-		m->Desktops->ewmh_working_area.width != width ||
-		m->Desktops->ewmh_working_area.height != height)
-	{
-		m->Desktops->ewmh_working_area.x = x;
-		m->Desktops->ewmh_working_area.y = y;
-		m->Desktops->ewmh_working_area.width = width;
-		m->Desktops->ewmh_working_area.height = height;
-
-		if (Scr.bo.do_debug_randr)
+		if (i ? !update_dynamic : !update_static)
+			continue;
+		if (monitor_ownership_work_rect(&monitor_rect, areas[i].left,
+			areas[i].right, areas[i].top, areas[i].bottom, &work) !=
+		    MONITOR_OWNERSHIP_OK)
+			continue;
+		stored = i ? &m->Desktops->ewmh_dyn_working_area :
+			&m->Desktops->ewmh_working_area;
+		if (stored->x == work.x && stored->y == work.y &&
+		    stored->width == work.width &&
+		    stored->height == work.height)
+			continue;
+		*stored = work;
+		if (!i && Scr.bo.do_debug_randr)
 		{
 			fvwm_debug(__func__, "monitor '%s': "
-			    "{l: %d, r: %d, t: %d, b: %d} "
-			    "{x: %d, y: %d, w: %d, h: %d}\n", m->si->name,
-			    left, right, top, bottom, x, y, width, height);
+				"{l: %d, r: %d, t: %d, b: %d} "
+				"{x: %d, y: %d, w: %d, h: %d}\n", m->si->name,
+				areas[i].left, areas[i].right, areas[i].top,
+				areas[i].bottom, work.x, work.y,
+				work.width, work.height);
 		}
 	}
+}
 
-	return;
+void ewmh_ComputeAndSetWorkArea(struct monitor *m)
+{
+	update_work_area(m, True, False);
 }
 
 void ewmh_HandleDynamicWorkArea(struct monitor *m)
 {
-	int dyn_left = m->ewmhc.BaseStrut.left;
-	int dyn_right = m->ewmhc.BaseStrut.right;
-	int dyn_top = m->ewmhc.BaseStrut.top;
-	int dyn_bottom = m->ewmhc.BaseStrut.bottom;
-	int x,y,width,height;
-	FvwmWindow *fw;
-
-	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
-	{
-		if (fw->m != m)
-			continue;
-		if (
-			DO_EWMH_IGNORE_STRUT_HINTS(fw) ||
-			!IS_STICKY_ACROSS_PAGES(fw))
-		{
-			continue;
-		}
-		dyn_left = max(dyn_left, fw->dyn_strut.left);
-		dyn_right = max(dyn_right, fw->dyn_strut.right);
-		dyn_top = max(dyn_top, fw->dyn_strut.top);
-		dyn_bottom = max(dyn_bottom, fw->dyn_strut.bottom);
-	}
-
-	{
-		rectangle monitor_rect;
-		rectangle work;
-		monitor_ownership_status status;
-
-		monitor_rect.x = m->si->x;
-		monitor_rect.y = m->si->y;
-		monitor_rect.width = m->si->w;
-		monitor_rect.height = m->si->h;
-		status = monitor_ownership_work_rect(
-			&monitor_rect, dyn_left, dyn_right, dyn_top,
-			dyn_bottom, &work);
-		if (status != MONITOR_OWNERSHIP_OK)
-		{
-			return;
-		}
-		x = work.x;
-		y = work.y;
-		width = work.width;
-		height = work.height;
-	}
-
-	if (
-		m->Desktops->ewmh_dyn_working_area.x != x ||
-		m->Desktops->ewmh_dyn_working_area.y != y ||
-		m->Desktops->ewmh_dyn_working_area.width != width ||
-		m->Desktops->ewmh_dyn_working_area.height != height)
-	{
-		m->Desktops->ewmh_dyn_working_area.x = x;
-		m->Desktops->ewmh_dyn_working_area.y = y;
-		m->Desktops->ewmh_dyn_working_area.width = width;
-		m->Desktops->ewmh_dyn_working_area.height = height;
-		/* here we may update the maximized window ...etc */
-	}
-
-	return;
+	update_work_area(m, False, True);
 }
 
 void EWMH_UpdateWorkArea(struct monitor *m)
 {
-	ewmh_ComputeAndSetWorkArea(m);
-	ewmh_HandleDynamicWorkArea(m);
+	update_work_area(m, True, True);
 }
 
 void EWMH_GetWorkAreaIntersection(
@@ -1826,8 +1797,7 @@ void EWMH_WindowDestroyed(void)
 	{
 		EWMH_SetNumberOfDesktops(m);
 	}
-	ewmh_ComputeAndSetWorkArea(m);
-	ewmh_HandleDynamicWorkArea(m);
+	EWMH_UpdateWorkArea(m);
 
 	return;
 }
@@ -1837,21 +1807,14 @@ void EWMH_WindowDestroyed(void)
  */
 static int set_all_atoms(void)
 {
-	enum { capacity = 1 + (
-		sizeof(ewmh_atom_client_root) +
-		sizeof(ewmh_atom_client_win) +
-		sizeof(ewmh_atom_wm_state) +
-		sizeof(ewmh_atom_allowed_actions) +
-		sizeof(ewmh_atom_window_type) +
-		sizeof(ewmh_atom_fixed_property) +
-		sizeof(ewmh_atom_property_notify) +
-		sizeof(ewmh_atom_fvwm_root) +
-		sizeof(ewmh_atom_fvwm_win)
-		) / sizeof(ewmh_atom) };
+	enum { capacity = 1 + EWMH_ATOM_CAPACITY };
 	char *names[capacity];
 	Atom atoms[capacity];
 	int count = 1;
 
+	/* Also reset on reinitialization; an intern fallback observes the same
+	 * ordered tables, never indexes from the preceding mapping. */
+	ewmh_atom_lookup.ready = False;
 	names[0] = "UTF8_STRING";
 	for (int i = 0; i < NUMBER_OF_ATOM_LISTS; i++)
 	{
@@ -1876,6 +1839,7 @@ static int set_all_atoms(void)
 			}
 		}
 	}
+	prepare_atom_lookup();
 	return count - 1;
 }
 

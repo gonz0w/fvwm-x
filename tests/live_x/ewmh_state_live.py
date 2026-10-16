@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+"""Check actual-core EWMH snapshots, work areas and atom dispatch."""
+import argparse
+import json
+from pathlib import Path
+import shutil
+import time
+
+from live_x_harness import HarnessRuntime, start_display_server
+
+
+def run(args):
+    out = args.artifacts_dir.resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    with HarnessRuntime(prefix='fvwm-ewmh-state-') as runtime:
+        try:
+            display = args.display
+            if display is None:
+                _, display = start_display_server(
+                    runtime, 'Xvfb', ['Xvfb', '-screen', '0', '800x600x24',
+                                     '-noreset'], 'server.log',
+                    time.monotonic() + 15)
+            runs = []
+            expected = {
+                'client-list order/empty/independent membership/refusal/repair',
+                'work-area paired differential/filter/invalid/single-mode',
+                'destruction publication and query refresh barriers',
+                'atom scoped/all priority/miss/None/reinitialization',
+                'ewmh state publication',
+            }
+            for missing in (False, True):
+                label = 'missing' if missing else 'normal'
+                process = runtime.start(
+                    label, [str(args.fvwm), '-d', display, '-f', '/dev/null'],
+                    label + '.log', runtime.environment(
+                        {'FVWM_STATE_ATOM_MISSING': '1'} if missing else {}))
+                assert process.wait_until_exit(time.monotonic() + 30) == 0
+                text = process.log_path.read_text()
+                assert {line[:-8] for line in text.splitlines()
+                        if line.endswith(': passed')} == expected
+                def records(prefix):
+                    return [json.loads(line.removeprefix(prefix))
+                            for line in text.splitlines()
+                            if line.startswith(prefix)]
+                clients = records('STATE_CLIENT ')
+                atoms = records('STATE_ATOM ')
+                work = records('STATE_WORK ')
+                assert len(clients) == 12 and len(atoms) == 2 and len(work) == 6
+                assert {(r['windows'], r['reference']) for r in clients} == {
+                    (n, ref) for n in (0, 1, 64, 65, 128, 256)
+                    for ref in (0, 1)}
+                assert {(r['windows'], r['reference']) for r in work} == {
+                    (n, ref) for n in (64, 128, 256) for ref in (0, 1)}
+                assert all(r['indexed_calls'] == 64 and
+                           r['reference_entry_visits'] > 64 for r in atoms)
+                runs.append({'mode': label, 'observations': sorted(expected),
+                             'clients': clients, 'atoms': atoms, 'work': work})
+            (out / 'evidence.json').write_text(
+                json.dumps({'runs': runs}, indent=2) + '\n')
+        finally:
+            for log in runtime.root.glob('*.log'):
+                shutil.copy2(log, out / log.name)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--fvwm', type=Path, required=True)
+    parser.add_argument('--artifacts-dir', type=Path, required=True)
+    parser.add_argument('--display')
+    run(parser.parse_args())

@@ -1,8 +1,9 @@
 # Governance
 
-Cam (@gonz0w) maintains FVWM-X in `gonz0w/fvwm-x`. Keep the repository private
-until deliberate publication. Repository setup does not authorize a release,
-service deployment, credential changes or upstream notifications.
+Cam (@gonz0w) maintains FVWM-X in the public `gonz0w/fvwm-x` repository.
+[Public code and PR review](dev-docs/decisions/PUBLIC-HOSTING-2026-10-16.md)
+continue with local verification. Repository hosting does not authorize a
+release, service deployment, credential changes or upstream notifications.
 
 The project tracker owns scope, priorities and execution order. Git owns design,
 decisions and exact verification evidence. Issues, milestones and the Project

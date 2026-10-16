@@ -2,9 +2,10 @@
 
 Owner: STYLE-01 [#38](https://github.com/gonz0w/fvwm-x/issues/38), following merged
 [PR #102](https://github.com/gonz0w/fvwm-x/pull/102). The three-item checkpoint is
-locally qualified through the composed source scopes below. PR publication
-awaits the repository-visibility decision; no release is authorized. VESA #93
-cause investigation remains deferred.
+locally qualified through the composed source scopes below. The prepared PR
+proceeds under the
+[public-hosting decision](../decisions/PUBLIC-HOSTING-2026-10-16.md); no release
+is authorized. VESA #93 cause investigation remains deferred.
 
 ## Three substantive improvements
 

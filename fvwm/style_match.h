@@ -20,16 +20,24 @@ enum style_match_field
 typedef struct
 {
 	size_t prefix[STYLE_MATCH_FIELDS];
+	size_t minimum[STYLE_MATCH_FIELDS];
+	size_t suffix[STYLE_MATCH_FIELDS];
+	size_t suffix_length[STYLE_MATCH_FIELDS];
 	unsigned literal;
 	unsigned universal;
+	unsigned unescaped;
+	unsigned single_star;
 } style_match_patterns;
 
-/* Borrowed only for one synchronous lookup/mark operation. */
+/* Borrowed only for one synchronous lookup/mark operation. Lengths are
+ * derived lazily, at most once per field, and reset with the identity. */
 typedef struct
 {
 	Window window;
 	const char *value[STYLE_MATCH_FIELDS];
+	size_t length[STYLE_MATCH_FIELDS];
 	unsigned compatibility_fields;
+	unsigned length_fields;
 } style_match_subject;
 
 void style_match_prepare(style_match_patterns *patterns,
@@ -37,6 +45,6 @@ void style_match_prepare(style_match_patterns *patterns,
 void style_match_subject_init(style_match_subject *subject, Window window,
 	const char *resource, const char *class, const char *name, const char *icon);
 bool style_match_id(const struct style_id_t *id,
-	const style_match_patterns *patterns, const style_match_subject *subject);
+	const style_match_patterns *patterns, style_match_subject *subject);
 
 #endif

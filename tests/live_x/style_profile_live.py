@@ -18,6 +18,7 @@ def run(args):
     out.mkdir(parents=True, exist_ok=True)
     rows = []
     matching = []
+    wildcard = []
     with HarnessRuntime(prefix='fvwm-style-profile-') as runtime:
         try:
             display = args.display
@@ -66,15 +67,31 @@ def run(args):
                                 expected = (64 if r['case'] == 'window-id'
                                             else 192)
                             else:
-                                expected = (64 if r['case'] == 'duplicate'
-                                            else 0)
+                                expected = 0
                             assert r['reference'] == reference
                             assert r['rules'] == 64 and r['calls'] == expected
                         matching.extend(work)
                     else:
                         assert not work
+                    specialized = [json.loads(line.removeprefix(
+                        'STYLE_WILDCARD_WORK '))
+                        for line in process.log_path.read_text().splitlines()
+                        if line.startswith('STYLE_WILDCARD_WORK ')]
+                    if mode == 'lookup' and size == 64 and not reference:
+                        assert len(specialized) == 6
+                        assert [(r['case'], r['previous']) for r in specialized] == [
+                            (case, previous)
+                            for case in ('minimum', 'suffix', 'single-star')
+                            for previous in (False, True)]
+                        for r in specialized:
+                            assert r['rules'] == 64
+                            assert r['calls'] == (64 if r['previous'] else 0)
+                        wildcard.extend(specialized)
+                    else:
+                        assert not specialized
             (out / 'evidence.json').write_text(
-                json.dumps({'workloads': rows, 'matching_work': matching},
+                json.dumps({'workloads': rows, 'matching_work': matching,
+                            'wildcard_work': wildcard},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

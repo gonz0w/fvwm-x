@@ -25,6 +25,7 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 	for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
 	{
 		const char *value = values[i];
+		size_t length = 0, stars = 0, questions = 0;
 		unsigned bit = 1U << i;
 
 		if (!active[i])
@@ -38,7 +39,31 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 		}
 		patterns->prefix[i] = strcspn(value, "*?\\");
 		if (value[patterns->prefix[i]] == '\0')
+		{
 			patterns->literal |= bit;
+			continue;
+		}
+		/* Escape parsing, including a trailing backslash, remains wholly
+		 * with matchWildcards. Unescaped '?' consumes one byte, not one
+		 * Unicode character; '*' alone can consume zero bytes. */
+		if (strchr(value, '\\'))
+			continue;
+		patterns->unescaped |= bit;
+
+		for (; value[length]; length++)
+		{
+			if (value[length] == '*')
+				stars++;
+			else
+				patterns->minimum[i]++;
+			if (value[length] == '?')
+				questions++;
+			if (value[length] == '*' || value[length] == '?')
+				patterns->suffix[i] = length + 1;
+		}
+		patterns->suffix_length[i] = length - patterns->suffix[i];
+		if (stars == 1 && questions == 0)
+			patterns->single_star |= bit;
 	}
 }
 
@@ -50,6 +75,7 @@ void style_match_subject_init(style_match_subject *subject, Window window,
 	subject->value[STYLE_MATCH_CLASS] = class;
 	subject->value[STYLE_MATCH_NAME] = name;
 	subject->value[STYLE_MATCH_ICON] = icon;
+	subject->length_fields = 0;
 	subject->compatibility_fields = 0;
 	/* Equality is computed once per lookup, not once per rule. Keep the
 	 * first representative, including NULL, in original evaluation order. */
@@ -70,9 +96,11 @@ void style_match_subject_init(style_match_subject *subject, Window window,
 }
 
 static bool match_pattern(const char *pattern,
-	const style_match_patterns *patterns, unsigned field, const char *value)
+	const style_match_patterns *patterns, unsigned field,
+	style_match_subject *subject, unsigned subject_field)
 {
 	unsigned bit = 1U << field;
+	const char *value = subject->value[subject_field];
 
 	if (patterns->universal & bit)
 		return true;
@@ -81,14 +109,41 @@ static bool match_pattern(const char *pattern,
 	if (patterns->literal & bit)
 		return strcmp(pattern, value) == 0;
 	/* This span contains no wildcard or escape. A mismatch cannot be
-	 * repaired by the suffix; successful prefixes still use the owner. */
+	 * repaired by the suffix; successful prefixes need the remaining checks. */
 	if (strncmp(pattern, value, patterns->prefix[field]) != 0)
 		return false;
+	if (patterns->unescaped & bit)
+	{
+		unsigned subject_bit = 1U << subject_field;
+		size_t suffix_length = patterns->suffix_length[field];
+		size_t length;
+
+		if (!(subject->length_fields & subject_bit))
+		{
+			subject->length[subject_field] = strlen(value);
+			subject->length_fields |= subject_bit;
+		}
+		length = subject->length[subject_field];
+		if (length < patterns->minimum[field])
+			return false;
+
+		/* minimum includes every suffix byte, so this subtraction cannot
+		 * underflow. Only the final literal span is anchored at the end. */
+		if (suffix_length && memcmp(pattern + patterns->suffix[field],
+		    value + length - suffix_length, suffix_length) != 0)
+			return false;
+		/* Exactly one unescaped star and no '?' leaves only the two
+		 * verified spans. minimum prevents prefix/suffix overlap. Keep
+		 * multi-star patterns with the legacy matcher: e.g. "**" does
+		 * not match an empty value under that owner's current semantics. */
+		if (patterns->single_star & bit)
+			return true;
+	}
 	return matchWildcards(pattern, value) != 0;
 }
 
 bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
-	const style_match_subject *subject)
+	style_match_subject *subject)
 {
 	/* A numeric mismatch decides this conjunction without string work. */
 	if (id->flags.has_window_id && id->window_id != subject->window)
@@ -101,7 +156,7 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 		{
 			if ((subject->compatibility_fields & (1U << i)) &&
 			    match_pattern(id->name, patterns, STYLE_MATCH_NAME,
-				subject->value[i]))
+				subject, i))
 				break;
 		}
 		if (i > STYLE_MATCH_NAME)
@@ -109,19 +164,19 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 	}
 	if (id->flags.has_resource &&
 	    !match_pattern(id->resource, patterns, STYLE_MATCH_RESOURCE,
-		subject->value[STYLE_MATCH_RESOURCE]))
+		subject, STYLE_MATCH_RESOURCE))
 		return false;
 	if (id->flags.has_class &&
 	    !match_pattern(id->class, patterns, STYLE_MATCH_CLASS,
-		subject->value[STYLE_MATCH_CLASS]))
+		subject, STYLE_MATCH_CLASS))
 		return false;
 	if (id->flags.has_name &&
 	    !match_pattern(id->name, patterns, STYLE_MATCH_NAME,
-		subject->value[STYLE_MATCH_NAME]))
+		subject, STYLE_MATCH_NAME))
 		return false;
 	if (id->flags.has_icon &&
 	    !match_pattern(id->icon, patterns, STYLE_MATCH_ICON,
-		subject->value[STYLE_MATCH_ICON]))
+		subject, STYLE_MATCH_ICON))
 		return false;
 	return true;
 }

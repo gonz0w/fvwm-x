@@ -695,3 +695,12 @@ keeps only operation-local IDs, with inline storage and checked growth/refusal.
 No window references survive these operations, and current query/property
 publication barriers remain with their existing owners.
 [Checkpoint evidence](verification/VERIFICATION-2026-10-15-EWMH-STATE.md).
+
+STYLE-01's [prepared matcher](../fvwm/style_match.c) derives unescaped minimum
+lengths, literal suffix spans and single-star classification from immutable
+selector strings. [Operation-local subjects](../fvwm/style_match.h) lazily cache
+byte lengths only when needed; fresh subjects reset them on identity changes.
+No managed record or selector string is retained across an operation. General
+wildcards/escapes retain `libs/wild.c`; lookup, destruction matching and the
+existing style/update owners consume the same predicate. See the
+[wildcard checkpoint](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md).

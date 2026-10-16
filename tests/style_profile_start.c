@@ -25,7 +25,7 @@
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 
-static Bool measuring, force_reference;
+static Bool measuring, force_reference, force_previous;
 static unsigned long comparisons, matches, grabbed_matches, grabs;
 static unsigned grab_depth;
 static uint64_t grabbed_ns, grab_started;
@@ -41,10 +41,19 @@ bool __wrap_style_id_filter_may_repeat(const style_id_filter *filter,
 }
 
 bool __real_style_match_id(const style_id_t *, const style_match_patterns *,
-	const style_match_subject *);
+	style_match_subject *);
 bool __wrap_style_match_id(const style_id_t *id,
-	const style_match_patterns *patterns, const style_match_subject *subject)
+	const style_match_patterns *patterns, style_match_subject *subject)
 {
+	if (force_previous)
+	{
+		/* Disable precisely this batch's metadata. The existing literal,
+		 * prefix, compatibility and numeric checks still execute. */
+		style_match_patterns previous = *patterns;
+
+		previous.unescaped = previous.single_star = 0;
+		return __real_style_match_id(id, &previous, subject);
+	}
 	if (!force_reference)
 		return __real_style_match_id(id, patterns, subject);
 	/* Original application predicate, including its three-field OR and
@@ -373,7 +382,7 @@ static void matching_work(const exec_context_t *exc, FvwmWindow *window,
 		measuring = False;
 		assert(SGET_BORDER_WIDTH(style) == 3 && grabbed_matches == 0);
 		assert(matches == count * (force_reference ?
-			(kind == 2 ? 1 : 3) : (kind == 1 ? 1 : 0)));
+			(kind == 2 ? 1 : 3) : 0));
 		printf("STYLE_MATCH_WORK {\"case\":\"%s\",\"reference\":%s,"
 			"\"rules\":%u,\"calls\":%lu}\n", label,
 			force_reference ? "true" : "false", count, matches);
@@ -390,6 +399,63 @@ static void matching_work(const exec_context_t *exc, FvwmWindow *window,
 					"WindowID 0x%lx)",
 					(unsigned long)FW_W(window) + 0x10000 + i);
 			command(exc, text);
+		}
+	}
+}
+
+static void wildcard_work(const exec_context_t *exc, FvwmWindow *window)
+{
+	FvwmWindow sample = *window;
+	window_style style;
+	char selector[96], text[160], name[96];
+	const char *labels[] = { "minimum", "suffix", "single-star" };
+
+	for (unsigned kind = 0; kind < 3; kind++)
+	{
+		for (unsigned previous = 0; previous < 2; previous++)
+		{
+			unsigned long total = 0;
+
+			for (unsigned i = 0; i < 64; i++)
+			{
+				if (kind == 0)
+				{
+					snprintf(selector, sizeof(selector),
+						"probe-?%04u?*", i);
+					strcpy(name, "probe-x");
+				}
+				else if (kind == 1)
+				{
+					snprintf(selector, sizeof(selector),
+						"probe-?*%04u-end", i);
+					strcpy(name, "probe-long-enough-title-wrong");
+				}
+				else
+				{
+					snprintf(selector, sizeof(selector), "probe-*%04u", i);
+					snprintf(name, sizeof(name), "probe-title-%04u", i);
+				}
+				sample.name.name = name;
+				snprintf(text, sizeof(text),
+					"Style (Name %s) BorderWidth 7", selector);
+				command(exc, text);
+				force_previous = previous;
+				matches = 0;
+				measuring = True;
+				lookup_style(&sample, &style);
+				measuring = False;
+				force_previous = False;
+				total += matches;
+				assert(SGET_BORDER_WIDTH(style) == (kind == 2 ? 7 : 3));
+				snprintf(text, sizeof(text), "DestroyStyle (Name %s)", selector);
+				command(exc, text);
+				lookup_style(&sample, &style);
+				assert(SGET_BORDER_WIDTH(style) == 3);
+			}
+			assert(total == (previous ? 64 : 0));
+			printf("STYLE_WILDCARD_WORK {\"case\":\"%s\","
+				"\"previous\":%s,\"rules\":64,\"calls\":%lu}\n",
+				labels[kind], previous ? "true" : "false", total);
 		}
 	}
 }
@@ -491,7 +557,11 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 		comparisons, matches, grabbed_matches,
 		grabs, (unsigned long long)elapsed, (unsigned long long)grabbed_ns);
 	if (strcmp(mode, "lookup") == 0 && count == 64)
+	{
 		matching_work(exc, clients[0], count);
+		if (!force_reference)
+			wildcard_work(exc, clients[0]);
+	}
 	fflush(stdout);
 	_exit(0);
 }

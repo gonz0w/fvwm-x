@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Style wildcard batch](VERIFICATION-2026-10-16-STYLE-WILDCARDS.md): three related matching improvements; focused Linux policy/core passes, combined qualification pending.
+- [Style wildcard batch](VERIFICATION-2026-10-16-STYLE-WILDCARDS.md): three related matching improvements; one retained full matrix, final affected native/installed/sanitizer passes, portable counter and supervised client corrections.
 
 - [VERIFICATION-2026-10-15-EWMH-STATE.md](VERIFICATION-2026-10-15-EWMH-STATE.md): three related EWMH traversal/index improvements; affected checks pass with exact full/install gaps and source binding in the report.
 

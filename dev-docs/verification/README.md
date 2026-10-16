@@ -440,3 +440,5 @@ diagnostic and execution gates remain separate.
 - [Style work baseline, 2026-10-15](VERIFICATION-2026-10-15-STYLE-PROFILE.md): actual-core simplification/lookup/server-grab measurements; affected profiles/default BSD X/scoped sanitizer, with production bytes and prior full-suite gaps retained.
 
 - [Distinct style-ID filter, 2026-10-15](VERIFICATION-2026-10-15-STYLE-FILTER.md): operation-owned conservative simplification filter, pure selector/collision policy and paired real-core controls pass all affected profiles/default BSD X/scoped sanitizer; four broader OpenBSD AMD64 failures and its fresh-install gap remain explicit.
+
+- [Style matching batch, 2026-10-15](VERIFICATION-2026-10-15-STYLE-MATCHING.md): five substantive selector/matching improvements with one combined checkpoint; affected checks pass, with exact full-scope outcomes/install gaps and source binding in the report.

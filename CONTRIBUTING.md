@@ -6,7 +6,11 @@ scope; GitHub issues and the Project mirror that order and track review.
 
 Use a bounded `codex/` branch from `origin/main`. Batch related implementation,
 tests and documentation into one reviewable PR per coherent checkpoint, usually
-three to five related stories. Keep related docs/evidence and review fixes in
+three to five substantive related behavior improvements. Tests, probes and
+documentation supporting one improvement count as that one item. Use focused
+incremental checks between items and one broad qualification pass at the batch
+boundary; see the [cadence](dev-docs/WORKFLOW.md#implementation-batches-and-test-cadence).
+Keep related docs/evidence and review fixes in
 that PR while it is open; split for independent contracts or ownership. Preserve
 another chat's edits and run from an isolated, identified candidate. Sign contributor commits and
 include the author DCO trailer with `git commit -S -s`; signatures and sign-offs

@@ -98,8 +98,8 @@ style_match_test = executable(
     ['test_style_match.c', '../fvwm/style_match.c', '../libs/wild.c'],
     include_directories: includedirs,
     dependencies: all_found_deps,
-    c_args: ['-UNDEBUG'],
-    link_args: ['-Wl,--wrap=matchWildcards'],
+    c_args: ['-UNDEBUG', '-fno-builtin-strlen'],
+    link_args: ['-Wl,--wrap=matchWildcards', '-Wl,--wrap=strlen'],
 )
 test('style-match', style_match_test)
 

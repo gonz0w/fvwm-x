@@ -118,6 +118,13 @@ static bool match_pattern(const char *pattern,
 		size_t suffix_length = patterns->suffix_length[field];
 		size_t length;
 
+		/* A trailing single star needs no full-value scan: the prefix
+		 * check already proves its entire minimum length. All-star
+		 * general patterns have no length/suffix test to perform. */
+		if ((patterns->single_star & bit) && suffix_length == 0)
+			return true;
+		if (patterns->minimum[field] == 0 && suffix_length == 0)
+			return matchWildcards(pattern, value) != 0;
 		if (!(subject->length_fields & subject_bit))
 		{
 			subject->length[subject_field] = strlen(value);

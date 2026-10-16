@@ -27,7 +27,7 @@
 
 static Bool measuring, force_reference, force_previous;
 static unsigned long comparisons, matches, grabbed_matches, grabs;
-static unsigned grab_depth;
+static unsigned grab_depth, wildcard_call_depth;
 static uint64_t grabbed_ns, grab_started;
 
 bool __real_style_id_filter_may_repeat(const style_id_filter *,
@@ -102,7 +102,10 @@ int __wrap_strcmp(const char *a, const char *b)
 int __real_matchWildcards(const char *, const char *);
 int __wrap_matchWildcards(const char *pattern, const char *value)
 {
-	if (measuring && pattern && strncmp(pattern, "probe-", 6) == 0)
+	int result;
+
+	if (wildcard_call_depth++ == 0 && measuring && pattern &&
+	    strncmp(pattern, "probe-", 6) == 0)
 	{
 		matches++;
 		if (grab_depth != 0)
@@ -110,7 +113,9 @@ int __wrap_matchWildcards(const char *pattern, const char *value)
 			grabbed_matches++;
 		}
 	}
-	return __real_matchWildcards(pattern, value);
+	result = __real_matchWildcards(pattern, value);
+	wildcard_call_depth--;
+	return result;
 }
 
 void __real_MyXGrabServer(Display *);

@@ -12,13 +12,27 @@
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 
-static unsigned calls;
+static unsigned calls, length_calls, call_depth;
+
+size_t __real_strlen(const char *);
+size_t __wrap_strlen(const char *value)
+{
+	length_calls++;
+	return __real_strlen(value);
+}
 
 int __real_matchWildcards(const char *, const char *);
 int __wrap_matchWildcards(const char *pattern, const char *value)
 {
-	calls++;
-	return __real_matchWildcards(pattern, value);
+	int result;
+
+	/* Some compiler/linker choices wrap wild.c's own recursion too.
+	 * Count caller invocations independently of that implementation. */
+	if (call_depth++ == 0)
+		calls++;
+	result = __real_matchWildcards(pattern, value);
+	call_depth--;
+	return result;
 }
 
 /* Preserve the original predicate as the differential oracle. */
@@ -235,10 +249,41 @@ static void wildcard_work_counts(void)
 		sizeof(patterns), sizeof(subject));
 }
 
+static void unnecessary_length_scans(void)
+{
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+	char value[16384];
+
+	memset(value, 'x', sizeof(value) - 1);
+	memcpy(value, "probe-", 6);
+	value[sizeof(value) - 1] = '\0';
+	id.flags.has_name = 1;
+	id.name = "probe-*";
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, value, NULL);
+	calls = length_calls = 0;
+	assert(style_match_id(&id, &patterns, &subject));
+	assert(calls == 0 && length_calls == 0);
+	for (unsigned empty = 0; empty < 2; empty++)
+	{
+		id.name = "**";
+		style_match_prepare(&patterns, &id);
+		style_match_subject_init(&subject, 1, NULL, NULL,
+			empty ? "" : value, NULL);
+		calls = length_calls = 0;
+		assert(style_match_id(&id, &patterns, &subject) == !empty);
+		assert(calls == 1 && length_calls == 0);
+	}
+	puts("prefix/star-only selectors avoid length scans: passed");
+}
+
 int main(void)
 {
 	differential();
 	work_counts();
 	wildcard_work_counts();
+	unnecessary_length_scans();
 	return 0;
 }

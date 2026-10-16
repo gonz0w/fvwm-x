@@ -93,6 +93,16 @@ if golang.found() and get_option('live-x-tests') and host_machine.system() in ['
     )
 endif
 
+style_match_test = executable(
+    'test-style-match',
+    ['test_style_match.c', '../fvwm/style_match.c', '../libs/wild.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+    link_args: ['-Wl,--wrap=matchWildcards'],
+)
+test('style-match', style_match_test)
+
 style_id_filter_test = executable(
     'test-style-id-filter',
     ['test_style_id_filter.c', '../fvwm/style_id_filter.c'],
@@ -1579,7 +1589,7 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         dependencies: all_found_deps,
         link_with: libfvwm3,
         link_args: ['-Wl,--wrap=CaptureAllWindows', '-Wl,--wrap=strcmp',
-            '-Wl,--wrap=style_id_filter_may_repeat',
+            '-Wl,--wrap=style_id_filter_may_repeat', '-Wl,--wrap=style_match_id',
             '-Wl,--wrap=matchWildcards', '-Wl,--wrap=MyXGrabServer',
             '-Wl,--wrap=MyXUngrabServer'],
         c_args: ['-UNDEBUG'],

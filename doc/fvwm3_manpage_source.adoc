@@ -5172,6 +5172,9 @@ A valid list of properties to test against are:
 The matching of the properties specified for any *Style* line are ANDed
 together, and for styles to be applied, *all* properties must match.
 
+Properties may appear in either order. For example, `(Name mc, WindowID 0x123)`
+and `(WindowID 0x123, Name mc)` both require the name and window ID to match.
+
 **NOTE**: To destroy a style line with window properties, *DestroyStyle*
 should be used.  For example:
 

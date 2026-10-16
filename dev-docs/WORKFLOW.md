@@ -44,6 +44,47 @@ work complete.
 
 ## Implementation batches and test cadence
 
+User clarification, 2026-10-15: optimize development throughput by batching
+three to five **substantive related behavior improvements** before broad
+qualification. Implementation, its tests, its probe and its documentation are
+one improvement, not four stories. The style-filter checkpoint was too small
+for the cost of a ten-profile full run. Do not repeat that cadence by default.
+A single-item checkpoint is justified by an urgent defect, an independently
+risky contract, a prerequisite that blocks further implementation, or a batch
+that would become difficult to review; record the concrete reason.
+
+During implementation, use one incremental Linux development profile. After a
+coherent change, compile affected targets and run its focused policy/regression
+checks. Add focused nested-X coverage for changed X-visible behavior; add an
+early affected-platform check for OS/API/ABI/build-sensitive changes. Use scoped
+sanitizers for relevant memory/lifetime changes. Do not run every compiler,
+optional feature, BSD desktop suite or full portable suite after each item.
+Fast checks still run before building dependent changes on top of an item.
+
+At the batch boundary, freeze one candidate and run the required combined
+platform/compiler/install/default-X gates once, with optional-feature and
+sanitizer coverage selected for affected dependencies and behavior. Existing
+required acceptance coverage remains in force. Keep the distinction between
+focused passes, completed batch qualification and native-CPU/hardware/release
+gaps. A later correction reruns affected checks; repeat broader gates only
+when changed inputs or a concrete unresolved concern invalidate their evidence.
+
+Preserve known unrelated failures with their owning issue and exact source/
+profile. Do not repeatedly retry them for a clean matrix or expand the current
+batch to repair them. A newly observed failure gets triage and, when useful,
+one unchanged isolated control. Unresolved failures remain explicit and can
+prevent that profile's install/qualification; a suspected or actual regression
+in the batch must be resolved before its acceptance.
+
+Reuse existing builds, guests and qualified unchanged artifacts. Bound concurrent
+VM jobs to available resources rather than starting every expensive guest at
+once. While a frozen candidate is testing, use the wait for review, next-batch
+design or independent implementation in a separate checkout; never mutate the
+source/build being tested. Consolidate reports and tracker/issue upkeep once
+per checkpoint, generate receipts from existing logs, and use documentation/
+link/whitespace checks for documentation-only edits. Creating or updating a PR
+never triggers another matrix by itself.
+
 The user requested this cadence on 2026-10-06: complete more related stories
 before extensive multi-platform testing. Use focused checks during development
 and one full qualification pass for the combined checkpoint. Required platform

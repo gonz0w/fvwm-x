@@ -44,6 +44,7 @@
 #include "window_flags.h"
 #include "condrc.h"
 #include "cmdparser.h"
+#include "style_match.h"
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -618,6 +619,7 @@ typedef struct window_style
 	struct window_style *next;
 	struct window_style *prev;
 	style_id_t id;
+	style_match_patterns id_patterns;
 #if 0
 	WindowConditionMask *condition_mask;
 #endif

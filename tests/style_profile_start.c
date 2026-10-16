@@ -22,6 +22,8 @@
 #include "fvwm/screen.h"
 #include "fvwm/style.h"
 #include "fvwm/style_id_filter.h"
+#include "fvwm/style_match.h"
+#include "libs/wild.h"
 
 static Bool measuring, force_reference;
 static unsigned long comparisons, matches, grabbed_matches, grabs;
@@ -36,6 +38,35 @@ bool __wrap_style_id_filter_may_repeat(const style_id_filter *filter,
 	/* A fully conservative answer exercises the preserved merge traversal.
 	 * The production helper is always called in the optimized mode. */
 	return force_reference || __real_style_id_filter_may_repeat(filter, id);
+}
+
+bool __real_style_match_id(const style_id_t *, const style_match_patterns *,
+	const style_match_subject *);
+bool __wrap_style_match_id(const style_id_t *id,
+	const style_match_patterns *patterns, const style_match_subject *subject)
+{
+	if (!force_reference)
+		return __real_style_match_id(id, patterns, subject);
+	/* Original application predicate, including its three-field OR and
+	 * late numeric comparison, is independent of the prepared metadata. */
+	if (id->flags.is_compatibility_mode &&
+	    !(matchWildcards(id->name, subject->value[0]) ||
+	      matchWildcards(id->name, subject->value[1]) ||
+	      matchWildcards(id->name, subject->value[2])))
+		return false;
+	if (id->flags.has_resource &&
+	    !matchWildcards(id->resource, subject->value[0]))
+		return false;
+	if (id->flags.has_class &&
+	    !matchWildcards(id->class, subject->value[1]))
+		return false;
+	if (id->flags.has_name &&
+	    !matchWildcards(id->name, subject->value[2]))
+		return false;
+	if (id->flags.has_icon &&
+	    !matchWildcards(id->icon, subject->value[3]))
+		return false;
+	return !id->flags.has_window_id || id->window_id == subject->window;
 }
 
 static uint64_t now_ns(void)
@@ -262,6 +293,107 @@ static void check_structured_ids(const exec_context_t *exc, FvwmWindow *window)
 	assert(SGET_BORDER_WIDTH(style) == 3 && SGET_HANDLE_WIDTH(style) == 3);
 }
 
+static void matching_work(const exec_context_t *exc, FvwmWindow *window,
+	unsigned count)
+{
+	FvwmWindow sample = *window;
+	window_style style;
+	char text[160];
+	char resource[] = "probe-duplicate";
+	char class[] = "probe-duplicate";
+	char name[] = "probe-duplicate";
+
+	/* Retire the measured literal rules before isolating each next cost. */
+	for (unsigned i = 0; i < count; i++)
+	{
+		snprintf(text, sizeof(text), "DestroyStyle probe-%04u", i);
+		command(exc, text);
+	}
+	/* Both documented conjunction orders must retain the numeric selector.
+	 * Previously Name first caused the parser to discard WindowID. */
+	for (unsigned order = 0; order < 2; order++)
+	{
+		char selector[128];
+
+		snprintf(selector, sizeof(selector), order == 0 ?
+			"(Name order-name, WindowID 0x%lx)" :
+			"(WindowID 0x%lx, Name order-name)",
+			(unsigned long)FW_W(window));
+		snprintf(text, sizeof(text), "Style %s BorderWidth 31", selector);
+		command(exc, text);
+		sample.name.name = "order-name";
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 31);
+		FW_W(&sample) = Scr.NoFocusWin;
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 3);
+		FW_W(&sample) = FW_W(window);
+		sample.name.name = "other name";
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 3);
+		snprintf(text, sizeof(text), "DestroyStyle %s", selector);
+		command(exc, text);
+	}
+	command(exc, "Style metadata-template BorderWidth 33");
+	command(exc, "Style (Name metadata-owner) UseStyle metadata-template");
+	command(exc, "Style (Name metadata-owner) HandleWidth 35");
+	command(exc, "DestroyStyle metadata-template");
+	simplify_style_list();
+	sample.name.name = "metadata-owner";
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 33 && SGET_HANDLE_WIDTH(style) == 35);
+	command(exc, "DestroyStyle (Name metadata-owner)");
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 3);
+	for (unsigned kind = 0; kind < 3; kind++)
+	{
+		const char *label = kind == 0 ? "prefix" :
+			kind == 1 ? "duplicate" : "window-id";
+
+		sample.class.res_name = kind == 1 ? resource : "other resource";
+		sample.class.res_class = kind == 1 ? class : "other class";
+		sample.name.name = kind == 1 ? name : "probe-window";
+		for (unsigned i = 0; i < count; i++)
+		{
+			if (kind == 0)
+				snprintf(text, sizeof(text),
+					"Style probe-prefix-%04u* BorderWidth 5", i);
+			else if (kind == 1)
+				snprintf(text, sizeof(text),
+					"Style probe-?%04u BorderWidth 5", i);
+			else
+				snprintf(text, sizeof(text), "Style (Name probe-?*, "
+					"WindowID 0x%lx) BorderWidth 5",
+					(unsigned long)FW_W(window) + 0x10000 + i);
+			command(exc, text);
+		}
+		matches = grabbed_matches = 0;
+		measuring = True;
+		lookup_style(&sample, &style);
+		measuring = False;
+		assert(SGET_BORDER_WIDTH(style) == 3 && grabbed_matches == 0);
+		assert(matches == count * (force_reference ?
+			(kind == 2 ? 1 : 3) : (kind == 1 ? 1 : 0)));
+		printf("STYLE_MATCH_WORK {\"case\":\"%s\",\"reference\":%s,"
+			"\"rules\":%u,\"calls\":%lu}\n", label,
+			force_reference ? "true" : "false", count, matches);
+		for (unsigned i = 0; i < count; i++)
+		{
+			if (kind == 0)
+				snprintf(text, sizeof(text),
+					"DestroyStyle probe-prefix-%04u*", i);
+			else if (kind == 1)
+				snprintf(text, sizeof(text),
+					"DestroyStyle probe-?%04u", i);
+			else
+				snprintf(text, sizeof(text), "DestroyStyle (Name probe-?*, "
+					"WindowID 0x%lx)",
+					(unsigned long)FW_W(window) + 0x10000 + i);
+			command(exc, text);
+		}
+	}
+}
+
 void __wrap_CaptureAllWindows(const exec_context_t *exc)
 {
 	const char *mode = getenv("FVWM_STYLE_PROFILE_MODE");
@@ -334,12 +466,13 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	}
 	else if (strcmp(mode, "lookup") == 0)
 	{
-		assert(matches == 32 * (3 * count - 2));
+		assert(matches == (force_reference ? 32 * (3 * count - 2) : 0));
 	}
 	else
 	{
 		assert(!Scr.flags.do_need_window_update);
-		assert(grabs == 1 && grabbed_matches == 3 * count * windows);
+		assert(grabs == 1 && grabbed_matches ==
+			(force_reference ? 3 * count * windows : 0));
 		assert(matches == grabbed_matches);
 		for (unsigned i = 0; i < windows; i++)
 		{
@@ -357,6 +490,8 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 		force_reference ? "true" : "false", mode, count, windows,
 		comparisons, matches, grabbed_matches,
 		grabs, (unsigned long long)elapsed, (unsigned long long)grabbed_ns);
+	if (strcmp(mode, "lookup") == 0 && count == 64)
+		matching_work(exc, clients[0], count);
 	fflush(stdout);
 	_exit(0);
 }

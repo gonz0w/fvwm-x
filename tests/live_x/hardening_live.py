@@ -48,6 +48,16 @@ def run(options):
                      "-c", "Style * TileCascadePlacement"],
             "fvwm.log", runtime.environment({"FVWMMFL_SOCKET_PATH": str(runtime.root)}))
         endpoint = runtime.root / f"fvwm_mfl_{display.replace(':', '_')}.sock"
+
+        def connect_ready():
+            nonlocal connection
+            try:
+                connection = Connection(endpoint)
+                return True
+            except (FileNotFoundError, ConnectionRefusedError):
+                # bind() publishes the pathname before listen() is ready.
+                # Connection closes failed sockets; keep the existing bound.
+                return False
         client = Client(display)
         client.create()
         wait_for_predicate("managed window despite rejected lock",
@@ -56,9 +66,8 @@ def run(options):
         assert not endpoint.exists(), "MFL accepted a symlink lockfile"
         assert victim.read_text() == "unchanged\n"
         lock.unlink()
-        wait_for_predicate("MFL retry with private lock", endpoint.exists,
+        wait_for_predicate("MFL retry with private lock", connect_ready,
                            time.monotonic() + 7, process=process)
-        connection = Connection(endpoint)
         connection.record()
         connection.send(b"set echo\n")
         connection.echo("hardening-ready")
@@ -157,9 +166,8 @@ def run(options):
         wait_for_predicate("module socket removed", lambda: not endpoint.exists(),
                            time.monotonic() + 5, process=process)
         assert lock.exists() and lock.stat().st_ino == inode
-        wait_for_predicate("module restart", endpoint.exists,
+        wait_for_predicate("module restart", connect_ready,
                            time.monotonic() + 7, process=process)
-        connection = Connection(endpoint)
         connection.record()
         connection.send(b"set echo\n")
         connection.echo("healthy-after-module-restart")
@@ -185,9 +193,8 @@ def run(options):
         wait_for_predicate("signal removes socket", lambda: not endpoint.exists(),
                            time.monotonic() + 5, process=process)
         assert lock.stat().st_ino == inode
-        wait_for_predicate("restart after direct signal", endpoint.exists,
+        wait_for_predicate("restart after direct signal", connect_ready,
                            time.monotonic() + 7, process=process)
-        connection = Connection(endpoint)
         connection.record()
         connection.send(b"set echo\n")
         connection.echo("healthy-after-direct-signal-restart")

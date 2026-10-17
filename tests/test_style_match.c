@@ -12,13 +12,27 @@
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 
-static unsigned calls;
+static unsigned calls, length_calls, call_depth;
+
+size_t __real_strlen(const char *);
+size_t __wrap_strlen(const char *value)
+{
+	length_calls++;
+	return __real_strlen(value);
+}
 
 int __real_matchWildcards(const char *, const char *);
 int __wrap_matchWildcards(const char *pattern, const char *value)
 {
-	calls++;
-	return __real_matchWildcards(pattern, value);
+	int result;
+
+	/* Some compiler/linker choices wrap wild.c's own recursion too.
+	 * Count caller invocations independently of that implementation. */
+	if (call_depth++ == 0)
+		calls++;
+	result = __real_matchWildcards(pattern, value);
+	call_depth--;
+	return result;
 }
 
 /* Preserve the original predicate as the differential oracle. */
@@ -66,7 +80,7 @@ static void set_flags(style_id_t *id, unsigned fields)
 	id->flags.is_compatibility_mode = !!(fields & 32);
 }
 
-static void compare(const style_id_t *id, const style_match_subject *subject)
+static void compare(const style_id_t *id, style_match_subject *subject)
 {
 	style_match_patterns patterns;
 
@@ -158,7 +172,7 @@ static void work_counts(void)
 	assert(!style_match_id(&id, &patterns, &subject) && calls == 0);
 	id.name = "?different*";
 	style_match_prepare(&patterns, &id);
-	assert(!style_match_id(&id, &patterns, &subject) && calls == 1);
+	assert(!style_match_id(&id, &patterns, &subject) && calls == 0);
 	puts("prefix rejection and equal compatibility fields: passed");
 
 	id.flags.has_window_id = 1;
@@ -181,9 +195,95 @@ static void work_counts(void)
 	puts("fresh identity and selector metadata after replacement: passed");
 }
 
+static void wildcard_work_counts(void)
+{
+	style_id_t id = { 0 };
+	style_match_patterns patterns, previous;
+	style_match_subject subject;
+	const char *selectors[] = {
+		"probe-????????*", "probe-?*expected", "probe-*tail"
+	};
+	const char *values[] = {
+		"probe-x", "probe-long-enough-wrong", "probe-long-tail"
+	};
+
+	id.flags.has_name = 1;
+	for (unsigned i = 0; i < 3; i++)
+	{
+		id.name = (char *)selectors[i];
+		style_match_prepare(&patterns, &id);
+		style_match_subject_init(&subject, 1, NULL, NULL, values[i], NULL);
+		previous = patterns;
+		previous.unescaped = previous.single_star = 0;
+		calls = 0;
+		assert(style_match_id(&id, &previous, &subject) == (i == 2));
+		assert(calls == 1);
+		calls = 0;
+		assert(style_match_id(&id, &patterns, &subject) == (i == 2));
+		assert(calls == 0);
+		assert(subject.length_fields == (1U << STYLE_MATCH_NAME));
+	}
+	/* Non-overlap is required, even when both literal spans match. */
+	id.name = "aba*aba";
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, "ababa", NULL);
+	assert(!style_match_id(&id, &patterns, &subject));
+	/* Multi-star empty-string and escaped wildcard quirks stay with the
+	 * original owner. Test both positive and negative fallbacks. */
+	const char *fallbacks[] = { "**", "*?*", "a**b", "a\\*b", "a\\" };
+	const char *subjects[] = { "", "abc", "ab", "a*b", "a" };
+
+	for (unsigned i = 0; i < 5; i++)
+	{
+		id.name = (char *)fallbacks[i];
+		style_match_prepare(&patterns, &id);
+		style_match_subject_init(&subject, 1, NULL, NULL, subjects[i], NULL);
+		calls = 0;
+		bool result = style_match_id(&id, &patterns, &subject);
+
+		assert(calls == 1);
+		assert(result == reference(&id, &subject));
+	}
+	printf("wildcard minimum/suffix/single-star calls: 1 -> 0 each; "
+		"metadata %zu bytes, subject %zu bytes: passed\n",
+		sizeof(patterns), sizeof(subject));
+}
+
+static void unnecessary_length_scans(void)
+{
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+	char value[16384];
+
+	memset(value, 'x', sizeof(value) - 1);
+	memcpy(value, "probe-", 6);
+	value[sizeof(value) - 1] = '\0';
+	id.flags.has_name = 1;
+	id.name = "probe-*";
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, value, NULL);
+	calls = length_calls = 0;
+	assert(style_match_id(&id, &patterns, &subject));
+	assert(calls == 0 && length_calls == 0);
+	for (unsigned empty = 0; empty < 2; empty++)
+	{
+		id.name = "**";
+		style_match_prepare(&patterns, &id);
+		style_match_subject_init(&subject, 1, NULL, NULL,
+			empty ? "" : value, NULL);
+		calls = length_calls = 0;
+		assert(style_match_id(&id, &patterns, &subject) == !empty);
+		assert(calls == 1 && length_calls == 0);
+	}
+	puts("prefix/star-only selectors avoid length scans: passed");
+}
+
 int main(void)
 {
 	differential();
 	work_counts();
+	wildcard_work_counts();
+	unnecessary_length_scans();
 	return 0;
 }

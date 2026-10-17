@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Public repository hosting](PUBLIC-HOSTING-2026-10-16.md): continue public code and PR review with local verification; release ownership remains separate.
+
 - [Window-update ownership and ordering barriers](WINDOW-UPDATE-BARRIERS-2026-10-15.md): current DRAW-01 application/painting, retirement and query/publication contract for measured STYLE-01/STATE-01 proposals.
 
 - [Approved optional Go patched compiler baseline](GO-TOOLCHAIN-BASELINE-PROPOSAL.md).

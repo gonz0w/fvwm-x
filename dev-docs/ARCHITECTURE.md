@@ -695,3 +695,17 @@ keeps only operation-local IDs, with inline storage and checked growth/refusal.
 No window references survive these operations, and current query/property
 publication barriers remain with their existing owners.
 [Checkpoint evidence](verification/VERIFICATION-2026-10-15-EWMH-STATE.md).
+
+STYLE-01's [prepared matcher](https://github.com/gonz0w/fvwm-x/blob/ee180b0684f74c10984ddec75a43099987211139/fvwm/style_match.c) derives unescaped minimum
+lengths, literal suffix spans and single-star classification from immutable
+selector strings. [Operation-local subjects](https://github.com/gonz0w/fvwm-x/blob/ee180b0684f74c10984ddec75a43099987211139/fvwm/style_match.h) lazily cache
+byte lengths only when needed; fresh subjects reset them on identity changes.
+No managed record or selector string is retained across an operation. General
+wildcards/escapes retain `libs/wild.c`; lookup, destruction matching and the
+existing style/update owners consume the same predicate. See the
+[wildcard checkpoint](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md).
+
+The wildcard checkpoint preserves cheap prefix/all-star handling and uses explicit
+outer-call counters in policy/core probes. Its standalone real-client observer
+runs Xlib calls in a supervised worker; the controller retains bounded child
+teardown and automatic placement. Current status/evidence remain in the tracker.

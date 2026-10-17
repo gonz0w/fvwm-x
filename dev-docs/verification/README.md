@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Style wildcard batch](VERIFICATION-2026-10-16-STYLE-WILDCARDS.md): three related matching improvements; one retained full matrix, final affected native/installed/sanitizer passes, portable counter and supervised client corrections.
+
 - [VERIFICATION-2026-10-15-EWMH-STATE.md](VERIFICATION-2026-10-15-EWMH-STATE.md): three related EWMH traversal/index improvements; affected checks pass with exact full/install gaps and source binding in the report.
 
 - [2026-10-15 window-update ordering](VERIFICATION-2026-10-15-WINDOW-UPDATES.md): current ownership/commit/query contract and actual-core explicit/outer-loop regression; all affected six-target/default-X/scoped sanitizer checks pass, with two unchanged full-suite timing gaps retained.

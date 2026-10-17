@@ -95,6 +95,29 @@ def client_checks(args):
             check(3)
             evidence['cases'].append({'case': label, 'selector': selector,
                 'applied_width': width, 'removed_width': 3})
+        evidence['simplification'] = []
+        pairs = [
+            ('literal', '"FVWM transition probe"', '"other client"'),
+            ('prefix', 'FVWM*probe', 'Other*probe'),
+            ('suffix', '*transition*probe', '*other')]
+        for label, selected, other in pairs:
+            # Both fields conflict with the middle rule. Disjointness permits
+            # the equal selectors to merge without changing this client.
+            connection.send((
+                f'Style (Name {selected}) BorderWidth 5, HandleWidth 5\n'
+                f'Style (Name {other}) BorderWidth 9, HandleWidth 9, '
+                'TitleFormat other %n\n'
+                f'Style (Name {selected}) TitleFormat merged %n\n'
+                'UpdateStyles\n').encode())
+            connection.echo('simplify-' + label + '-applied')
+            check(5)
+            connection.send((f'DestroyStyle (Name {selected})\n'
+                f'DestroyStyle (Name {other})\nUpdateStyles\n').encode())
+            connection.echo('simplify-' + label + '-removed')
+            check(3)
+            evidence['simplification'].append({
+                'case': label, 'selected': selected, 'other': other,
+                'applied_width': 5, 'removed_width': 3})
         evidence['status'] = 'passed'
     finally:
         # Persist partial observations before potentially blocking X cleanup.
@@ -103,7 +126,7 @@ def client_checks(args):
             connection.close()
         if client:
             client.close()
-    print('Real-client style wildcard application/removal: seven cases passed')
+    print('Real-client styles: seven wildcard and three simplification cases passed')
 
 
 def run(args):

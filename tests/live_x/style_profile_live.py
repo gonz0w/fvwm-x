@@ -34,6 +34,8 @@ def run(args):
             # Vary rules and windows independently around (256, 8).
             workloads += [('update', size, 8) for size in (64, 128, 256)]
             workloads += [('update', 256, windows) for windows in (16, 32)]
+            if args.simplify_only:
+                workloads = []
             for reference in (False, True):
                 for mode, size, windows in workloads:
                     label = f'{mode}-{size}-{windows}-{reference}'
@@ -89,9 +91,30 @@ def run(args):
                         wildcard.extend(specialized)
                     else:
                         assert not specialized
+            repeated = []
+            for collision in (False, True):
+                label = f'repeat-{collision}'
+                environment = {
+                    'FVWM_STYLE_PROFILE_MODE': 'repeat',
+                    'FVWM_STYLE_PROFILE_SIZE': '64',
+                    'FVWM_STYLE_PROFILE_WINDOWS': '1'}
+                if collision:
+                    environment['FVWM_STYLE_HASH_COLLISION'] = '1'
+                process = runtime.start(label, [str(args.fvwm), '-d', display,
+                    '-f', '/dev/null'], label + '.log',
+                    runtime.environment(environment))
+                assert process.wait_until_exit(time.monotonic() + 45) == 0
+                work = [json.loads(line.removeprefix('STYLE_SIMPLIFY_WORK '))
+                        for line in process.log_path.read_text().splitlines()
+                        if line.startswith('STYLE_SIMPLIFY_WORK ')]
+                assert [r['case'] for r in work] == [
+                    'fingerprint', 'prefix-cutoff', 'disjoint']
+                assert all(r['hash_collision'] == collision for r in work)
+                repeated.extend(work)
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,
-                            'wildcard_work': wildcard},
+                            'wildcard_work': wildcard,
+                            'simplify_work': repeated},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):
@@ -103,4 +126,5 @@ if __name__ == '__main__':
     parser.add_argument('--fvwm', type=Path, required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--display')
+    parser.add_argument('--simplify-only', action='store_true')
     run(parser.parse_args())

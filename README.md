@@ -10,18 +10,14 @@ Desktop services build on FVWM's native modules and existing system facilities.
 File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
-**Status:** development, with locally qualified core responsiveness,
-hardening and utility-port checkpoints. Desktop work, physical-hardware qualification and
-release acceptance remain open. Hosted source is the qualified core/utility
-snapshot; separate desktop/artwork publication is tracked in the guides.
-Optional Go builds use a patched compiler baseline. The image-cache and core-
-readiness checkpoints are locally qualified, including ordinary, interactive
-and synchronous waits. EWMH state and window-update checks pass on six
-targets; broader platform failures and fresh-install gaps remain documented.
-OpenBSD AMD64 VESA remains
-deferred. This is not a stable release.
-[Style wildcard optimization](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md)
-is locally qualified; broader release gates remain open.
+**Status:** development. The hosted core/utility snapshot has locally qualified
+hardening, responsiveness and utility-port checkpoints.
+[Repeated-ID style simplification](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md)
+passes its combined six-target checkpoint. Optional Go builds use a patched
+compiler baseline. Separate desktop/artwork publication is tracked in the guides.
+Physical hardware, toolkits/compositors, native-CPU sanitizers and release
+acceptance remain open. Earlier source-scope failures stay documented.
+OpenBSD AMD64 VESA cause work is deferred. This is not a stable release.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

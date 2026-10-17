@@ -620,6 +620,8 @@ typedef struct window_style
 	struct window_style *prev;
 	style_id_t id;
 	style_match_patterns id_patterns;
+	/* Reassigned before each simplification; never a retained lookup key. */
+	size_t simplify_ordinal;
 #if 0
 	WindowConditionMask *condition_mask;
 #endif

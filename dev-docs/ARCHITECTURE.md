@@ -710,7 +710,7 @@ outer-call counters in policy/core probes. Its standalone real-client observer
 runs Xlib calls in a supervised worker; the controller retains bounded child
 teardown and automatic placement. Current status/evidence remain in the tracker.
 
-STYLE-01's repeated-ID simplifier reuses immutable selector fingerprints and
+STYLE-01's [repeated-ID simplifier](https://github.com/gonz0w/fvwm-x/blob/122b03bf10f9c77fe17528636c692c938fd1951e/fvwm/style.c) reuses immutable selector fingerprints and
 an 8-KiB operation-local filter with conservative first-occurrence bounds.
 `window_style.simplify_ordinal` is scratch for one pass; full record moves retain
 the destination position. No summary retains a pointer into a retired rule.

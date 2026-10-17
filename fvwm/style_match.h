@@ -17,7 +17,7 @@ enum style_match_field
 	STYLE_MATCH_FIELDS
 };
 
-/* Derived only from the owning immutable selector strings; no pointers. */
+/* Derived from the owning immutable selector ID; no pointers. */
 typedef struct
 {
 	uint64_t fingerprint;

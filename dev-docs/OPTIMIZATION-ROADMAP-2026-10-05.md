@@ -259,3 +259,12 @@ multi-star patterns retain the original matcher. The three-item checkpoint is lo
 [combined qualification](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md)
 records exact full/corrected source scopes and retained failures. This does not
 alter rule order, update plans or server grabs.
+
+## 2026-10-16 repeated-ID simplification
+
+After merged PR #103, STYLE-01 batches cached immutable ID fingerprints,
+conservative earliest-occurrence scan bounds and explicit-selector disjointness.
+Focused actual-core workloads reduce equality work, unrelated prefix visits and
+surviving records while preserving lookup outcomes. Combined qualification is
+pending; general wildcard costs, lookup indexes, update plans and narrower grabs
+remain separate. [Evidence](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md).

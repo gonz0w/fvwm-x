@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Style wildcard batch, STYLE-01 #38 | Locally qualified; ready for PR review | Three related wildcard improvements are locally qualified. The original matrix records 1988/1992 standard and 437/437 optional passes; its four BSD counter assertions are resolved by portable outer-call accounting. Final affected scope passes 30 native entries, three scoped sanitizer entries and ten staged client probes / 70 cases; all ten stages verify 150 code/99 catalogs. Four final default BSD displays add eight geometry invocations / 56 cases. One full matrix serves the batch; corrected results and failures retain exact source scopes. [Report](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md). |
+| Style simplification batch, STYLE-01 #38 | Implemented; focused Linux checks pass; combined qualification pending | Cache immutable ID fingerprints, stop backward scans before any possible earlier equal ID, and prove structured selector disjointness from anchored spans. Three measured workloads reduce 65 string comparisons to one, 65 unrelated prefix visits to one, and three conflicting records to two while retaining lookup results. [Report](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md). |
+| Style wildcard batch, STYLE-01 #38 | Merged in [PR #103](https://github.com/gonz0w/fvwm-x/pull/103); locally qualified | Three related wildcard improvements are locally qualified. The original matrix records 1988/1992 standard and 437/437 optional passes; its four BSD counter assertions are resolved by portable outer-call accounting. Final affected scope passes 30 native entries, three scoped sanitizer entries and ten staged client probes / 70 cases; all ten stages verify 150 code/99 catalogs. Four final default BSD displays add eight geometry invocations / 56 cases. One full matrix serves the batch; corrected results and failures retain exact source scopes. [Report](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md). |
 | EWMH state traversal, STATE-01 #37 | Merged in [PR #102](https://github.com/gonz0w/fvwm-x/pull/102); affected checks pass; full platform gaps retained | Three related improvements share one checkpoint. Eight affected/retained entries pass ten profiles; core probes pass four default BSD X targets, and three scoped sanitizer entries pass. Original full runs pass 1990/1992 standard and 437/437 optional entries. Fresh 8 stages verify 120 code/77 catalog identities; 16 geometry invocations pass. Exact broader failures/install gaps remain in the report. [Report](verification/VERIFICATION-2026-10-15-EWMH-STATE.md). |
 | Style matching batch, STYLE-01 #38 | Merged in [PR #101](https://github.com/gonz0w/fvwm-x/pull/101); affected checks pass; full platform gaps retained | Five related matching improvements share one checkpoint. All four affected tests pass ten profiles; core/update probes pass four default BSD X targets, and four scoped sanitizer checks pass. Original full runs pass 1967/1976 standard and 433/433 optional entries. Controls leave five OpenBSD AMD64 gaps and its fresh-install gap open. Nine fresh stages verify 135 code/88 catalog identities; 18 geometry invocations, 330 workloads and 90 matching-cost rows pass. [Report](verification/VERIFICATION-2026-10-15-STYLE-MATCHING.md). |
 | Distinct style-ID filter, STYLE-01 #38 | Merged in [PR #100](https://github.com/gonz0w/fvwm-x/pull/100); affected checks pass; full platform gaps retained | Fixed 4-KiB operation-owned storage reduces measured 64/128/256-rule backward comparisons from 2016/8128/32640 to zero. Policy/paired-core/update checks pass ten profiles, four default BSD X targets and scoped sanitizer. Full scope executes 1968 standard/431 optional entries; after seven unchanged controls, 1964 standard and all optional pass, with four OpenBSD AMD64 failures remaining. Nine fresh stages validate 135 code/88 catalog identities; OpenBSD AMD64 fresh install/staged geometry are unperformed. Eighteen staged geometry invocations, 330 workloads and 120 update observations pass. [Report](verification/VERIFICATION-2026-10-15-STYLE-FILTER.md). |
@@ -221,16 +222,15 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-16: PR #102 is merged. STYLE-01's three-item
-wildcard checkpoint is locally qualified: minimum-length rejection, anchored
-suffix rejection and direct single-star matching, with lazy operation-local
-lengths and cheap prefix/all-star handling preserved. One original full matrix
-and final affected corrections retain exact failures and source scopes. The
-prepared PR proceeds under the
-[public-hosting decision](decisions/PUBLIC-HOSTING-2026-10-16.md). Broader
-matching/state/grab work and native-CPU/hardware/release gates remain open.
-VESA #93 stays
-deferred. [Evidence](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md).
+Immediate selection, 2026-10-16: PR #103 is merged. STYLE-01 continues with
+three related repeated-ID simplification improvements: cached immutable
+fingerprints, conservative earliest-ID scan bounds and explicit-selector
+interference rejection. Focused Linux policy/core checks pass; combined
+qualification is pending. Preserve precedence, owned strings, merge directions
+and DRAW-01 update/grab barriers. No configuration migration is introduced.
+General wildcard worst cases, broad lookup indexes, update plans and narrowing
+grabs remain separate measured work. VESA #93 stays deferred.
+[Evidence](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md).
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -1980,3 +1980,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-16: PR #102 merged. STYLE-01 implements a three-item wildcard batch with focused Linux checks passed; one combined checkpoint is pending. VESA #93 remains deferred. [Report](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md).
 
 - 2026-10-16: STYLE-01 wildcard checkpoint is locally qualified; Three related wildcard improvements are locally qualified. The original matrix records 1988/1992 standard and 437/437 optional passes; its four BSD counter assertions are resolved by portable outer-call accounting. Final affected scope passes 30 native entries, three scoped sanitizer entries and ten staged client probes / 70 cases; all ten stages verify 150 code/99 catalogs. Four final default BSD displays add eight geometry invocations / 56 cases. One full matrix serves the batch; corrected results and failures retain exact source scopes. [Report](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md). Public PR review proceeds under the [hosting decision](decisions/PUBLIC-HOSTING-2026-10-16.md). VESA #93 remains deferred.
+
+- 2026-10-16: PR #103 merged. STYLE-01 continues with one three-story repeated-ID simplification batch. Native Linux baseline records 65 string comparisons, 65 unrelated prefix visits and three surviving records; focused candidates reduce these to one, one and two with unchanged lookup outcomes. Combined six-target qualification follows the focused checks; VESA #93 remains deferred. [Report](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md).

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Repeated-ID style simplification](VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md): three related improvements with measured focused Linux passes; combined qualification pending.
+
 - [Style wildcard batch](VERIFICATION-2026-10-16-STYLE-WILDCARDS.md): three related matching improvements; one retained full matrix, final affected native/installed/sanitizer passes, portable counter and supervised client corrections.
 
 - [VERIFICATION-2026-10-15-EWMH-STATE.md](VERIFICATION-2026-10-15-EWMH-STATE.md): three related EWMH traversal/index improvements; affected checks pass with exact full/install gaps and source binding in the report.

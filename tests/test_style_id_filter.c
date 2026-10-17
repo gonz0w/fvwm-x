@@ -14,12 +14,44 @@ static void check_equal(style_id_t a, style_id_t b)
 {
 	style_id_filter filter = { 0 };
 
+	assert(style_id_hash(&a) == style_id_hash(&b));
 	assert(!style_id_filter_may_repeat(&filter, &a));
 	style_id_filter_add(&filter, &a);
 	assert(!style_id_filter_may_repeat(&filter, &a));
 	style_id_filter_add(&filter, &b);
 	assert(style_id_filter_may_repeat(&filter, &a));
 	assert(style_id_filter_may_repeat(&filter, &b));
+}
+
+static void check_first_ordinals(void)
+{
+	style_id_filter filter = { 0 };
+	uint64_t a = UINT64_C(0x0000000700000001);
+	uint64_t b = UINT64_C(0x0000000800000001);
+
+	assert(style_id_filter_first(&filter, a) == 0);
+	style_id_filter_record(&filter, a, 10);
+	style_id_filter_record(&filter, b, 20);
+	style_id_filter_record(&filter, b, 30);
+	assert(style_id_filter_first(&filter, a) == 10);
+	assert(style_id_filter_first(&filter, b) == 20);
+	assert(style_id_filter_hash_may_repeat(&filter, b));
+	memset(&filter, 0, sizeof(filter));
+	style_id_filter_record(&filter, a, (size_t)UINT16_MAX + 123);
+	assert(style_id_filter_first(&filter, a) == UINT16_MAX);
+	memset(&filter, 0, sizeof(filter));
+	/* A dense collision workload may weaken a bound, never move it past
+	 * an earlier equal ID. Removal leaves that original bound safe. */
+	for (size_t i = 1; i <= 32768; i++)
+		style_id_filter_record(&filter, i * UINT64_C(0x100000001), i);
+	for (size_t i = 1; i <= 32768; i++)
+	{
+		size_t first = style_id_filter_first(&filter,
+			i * UINT64_C(0x100000001));
+
+		assert(first > 0 && first <= i);
+	}
+	puts("first-ID bounds survive collisions and ordinal clamping: passed");
 }
 
 int main(void)
@@ -90,5 +122,6 @@ int main(void)
 	memset(&filter, 0xff, sizeof(filter));
 	assert(style_id_filter_may_repeat(&filter, &other));
 	puts("collisions and saturated fallback retain repeated IDs: passed");
+	check_first_ordinals();
 	return 0;
 }

@@ -8,6 +8,7 @@
 #include <string.h>
 #include "fvwm.h"
 #include "style_match.h"
+#include "style_id_filter.h"
 #include "libs/wild.h"
 
 void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
@@ -22,6 +23,7 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 	};
 
 	memset(patterns, 0, sizeof(*patterns));
+	patterns->fingerprint = style_id_hash(id);
 	for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
 	{
 		const char *value = values[i];
@@ -185,5 +187,69 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 	    !match_pattern(id->icon, patterns, STYLE_MATCH_ICON,
 		subject, STYLE_MATCH_ICON))
 		return false;
+	return true;
+}
+
+static bool pattern_spans_may_overlap(const char *a,
+	const style_match_patterns *ap, const char *b,
+	const style_match_patterns *bp, unsigned field)
+{
+	unsigned bit = 1U << field;
+	size_t common, alength, blength;
+	const char *asuffix, *bsuffix;
+
+	if ((ap->universal | bp->universal) & bit)
+		return true;
+	common = ap->prefix[field] < bp->prefix[field] ?
+		ap->prefix[field] : bp->prefix[field];
+	if (common && memcmp(a, b, common) != 0)
+		return false;
+	if ((ap->literal & bp->literal & bit) &&
+	    ap->prefix[field] != bp->prefix[field])
+		return false;
+	/* An escaped pattern has no prepared anchored suffix. Its initial
+	 * unescaped prefix remains necessary; everything else is uncertain. */
+	alength = ap->literal & bit ? ap->prefix[field] :
+		ap->unescaped & bit ? ap->suffix_length[field] : 0;
+	blength = bp->literal & bit ? bp->prefix[field] :
+		bp->unescaped & bit ? bp->suffix_length[field] : 0;
+	common = alength < blength ? alength : blength;
+	if (!common)
+		return true;
+	asuffix = a + (ap->literal & bit ? 0 : ap->suffix[field]);
+	bsuffix = b + (bp->literal & bit ? 0 : bp->suffix[field]);
+	return memcmp(asuffix + alength - common,
+		bsuffix + blength - common, common) == 0;
+}
+
+/* False proves that no window can satisfy both conjunctions. Compatibility
+ * selectors OR resource/class/name, so their name spans alone prove nothing.
+ * Only constraints on the same explicit field can establish disjointness. */
+bool style_match_ids_may_overlap(const style_id_t *a,
+	const style_match_patterns *ap, const style_id_t *b,
+	const style_match_patterns *bp)
+{
+	const char *av[STYLE_MATCH_FIELDS] = {
+		a->resource, a->class, a->name, a->icon
+	};
+	const char *bv[STYLE_MATCH_FIELDS] = {
+		b->resource, b->class, b->name, b->icon
+	};
+	bool shared[STYLE_MATCH_FIELDS] = {
+		a->flags.has_resource && b->flags.has_resource,
+		a->flags.has_class && b->flags.has_class,
+		a->flags.has_name && b->flags.has_name,
+		a->flags.has_icon && b->flags.has_icon
+	};
+
+	if (a->flags.has_window_id && b->flags.has_window_id &&
+	    a->window_id != b->window_id)
+		return false;
+	for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
+	{
+		if (shared[i] && !pattern_spans_may_overlap(
+		    av[i], ap, bv[i], bp, i))
+			return false;
+	}
 	return true;
 }

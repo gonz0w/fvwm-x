@@ -20,8 +20,8 @@ and synchronous waits. EWMH state and window-update checks pass on six
 targets; broader platform failures and fresh-install gaps remain documented.
 OpenBSD AMD64 VESA remains
 deferred. This is not a stable release.
-[Style wildcard optimization](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md)
-is locally qualified; broader release gates remain open.
+[Repeated-ID style simplification](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md)
+passes focused checks; combined qualification remains pending.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

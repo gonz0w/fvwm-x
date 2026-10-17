@@ -369,18 +369,14 @@ static bool style_id_equals_id(window_style *s, style_id_t* id)
 
 static bool styles_have_same_id(window_style* s, window_style* t)
 {
-	return style_ids_are_equal(&SGET_ID(*s), &SGET_ID(*t));
+	return s->id_patterns.fingerprint == t->id_patterns.fingerprint &&
+		style_ids_are_equal(&SGET_ID(*s), &SGET_ID(*t));
 }
 
 static bool one_fw_can_match_both_ids(window_style *s, window_style *t)
 {
-	if (SGET_ID_HAS_WINDOW_ID(*s) && SGET_ID_HAS_WINDOW_ID(*t) &&
-	    SGET_WINDOW_ID(*s) != SGET_WINDOW_ID(*t))
-	{
-		return false;
-	}
-
-	return true;
+	return style_match_ids_may_overlap(&SGET_ID(*s), &s->id_patterns,
+		&SGET_ID(*t), &t->id_patterns);
 }
 
 static void remove_icon_boxes_from_style(window_style *pstyle)
@@ -1107,6 +1103,7 @@ static inline Bool _simplify_style_list(window_style_list *list)
 {
 	window_style *cur;
 	style_id_filter filter;
+	size_t ordinal = 0;
 	int has_modified;
 
 	if (list->first_style == list->last_style)
@@ -1116,7 +1113,11 @@ static inline Bool _simplify_style_list(window_style_list *list)
 	memset(&filter, 0, sizeof(filter));
 	for (cur = list->first_style; cur; cur = SGET_NEXT_STYLE(*cur))
 	{
-		style_id_filter_add(&filter, &SGET_ID(*cur));
+		if (ordinal != SIZE_MAX)
+			ordinal++;
+		cur->simplify_ordinal = ordinal;
+		style_id_filter_record(&filter, cur->id_patterns.fingerprint,
+			ordinal);
 	}
 	/* Only IDs that may repeat need the backward merge/interference scan.
 	 * The filter owns bits, never rule pointers or strings. Merges remove
@@ -1140,8 +1141,11 @@ static inline Bool _simplify_style_list(window_style_list *list)
 		/* incremental flags set in styles with other names */
 		style_flags interflags;
 		window_style *cmp;
+		size_t first = style_id_filter_first(&filter,
+			cur->id_patterns.fingerprint);
 
-		if (!style_id_filter_may_repeat(&filter, &SGET_ID(*cur)))
+		if (!style_id_filter_hash_may_repeat(&filter,
+		    cur->id_patterns.fingerprint))
 		{
 			continue;
 		}
@@ -1149,7 +1153,10 @@ static inline Bool _simplify_style_list(window_style_list *list)
 		memcpy(&sumflags, &cur->flag_mask, sizeof(style_flags));
 		memcpy(&sumdflags, &cur->flag_default, sizeof(style_flags));
 		cmp = SGET_PREV_STYLE(*cur);
-		while (cmp)
+		/* No equal ID precedes this lower bound. Ordinals stay attached
+		 * to list positions when equal records move; retired records only
+		 * leave gaps. The summary retains no pointers into freed styles. */
+		while (cmp && cmp->simplify_ordinal >= first)
 		{
 			if (!styles_have_same_id(cur, cmp))
 			{
@@ -1205,6 +1212,7 @@ static inline Bool _simplify_style_list(window_style_list *list)
 				window_style *tmp = SGET_PREV_STYLE(*cmp);
 				window_style *prev = SGET_PREV_STYLE(*cur);
 				window_style *next = SGET_NEXT_STYLE(*cur);
+				size_t position = cur->simplify_ordinal;
 
 				/* Add the style to the set */
 				blockor((char *)&sumflags,
@@ -1223,6 +1231,7 @@ static inline Bool _simplify_style_list(window_style_list *list)
 				/* restore fields overwritten by memcpy */
 				SSET_PREV_STYLE(*cur, prev);
 				SSET_NEXT_STYLE(*cur, next);
+				cur->simplify_ordinal = position;
 				/* remove the style without freeing the
 				 * memory */
 				remove_style_from_list(list, cmp, False);
@@ -4794,6 +4803,10 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 			SSET_ICON_NAME(*ps, NULL);
 		}
 	}
+	/* IDs are immutable after publication. Prepare the temporary ID too:
+	 * the immediate-tail equality check uses its fingerprint. Equal-ID
+	 * merges retain the owner; full record moves copy this metadata. */
+	style_match_prepare(&ps->id_patterns, &SGET_ID(*ps));
 	for (list = all_styles; list != NULL; list = SLGET_NEXT_LIST(*list))
 	{
 		if (list->last_style &&
@@ -4809,9 +4822,6 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 	}
 	if (!merged)
 	{
-		/* IDs are immutable after publication. Merges retain the owning
-		 * ID; full record moves copy this pointer-free metadata too. */
-		style_match_prepare(&ps->id_patterns, &SGET_ID(*ps));
 		/* add temp name list to list */
 		add_style_to_list(ps);
 		cleanup_style_defaults(ps);

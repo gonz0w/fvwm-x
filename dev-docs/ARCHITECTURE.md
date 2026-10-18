@@ -753,3 +753,12 @@ remain shared by the actual-core fixtures, with `-UNDEBUG` retained.
 
 The [affected build-reuse checkpoint](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
 records the actual graphs, code/data section parity and retained qualification scope.
+
+
+STYLE-01's unescaped wildcard families use two immutable classification masks
+in `style_match_types.h`. `style_match.c` checks exact-width question patterns,
+anchors one-star question spans and matches general unescaped patterns with
+operation-local latest-star cursors. Exact remaining-star exhaustion preserves
+the legacy empty-tail semantics; escaped patterns still use `libs/wild.c`.
+No cursor survives a synchronous match or moves an X/update barrier. See the
+[family checkpoint](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md).

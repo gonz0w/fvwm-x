@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "fvwm/fvwm.h"
 #include "fvwm/style_match.h"
@@ -236,7 +237,8 @@ static void wildcard_work_counts(void)
 	{
 		id.name = (char *)selectors[i];
 		style_match_prepare(&patterns, &id);
-		style_match_subject_init(&subject, 1, NULL, NULL, values[i], NULL);
+		style_match_subject_init(&subject, 1, NULL, NULL,
+			values[i], NULL);
 		previous = patterns;
 		previous.unescaped = previous.single_star = 0;
 		calls = 0;
@@ -252,8 +254,8 @@ static void wildcard_work_counts(void)
 	style_match_prepare(&patterns, &id);
 	style_match_subject_init(&subject, 1, NULL, NULL, "ababa", NULL);
 	assert(!style_match_id(&id, &patterns, &subject));
-	/* Multi-star empty-string and escaped wildcard quirks stay with the
-	 * original owner. Test both positive and negative fallbacks. */
+	/* Unescaped cursors retain the empty-string quirks. Escaped patterns
+	 * still call the original owner for both hits and misses. */
 	const char *fallbacks[] = { "**", "*?*", "a**b", "a\\*b", "a\\" };
 	const char *subjects[] = { "", "abc", "ab", "a*b", "a" };
 
@@ -265,12 +267,174 @@ static void wildcard_work_counts(void)
 		calls = 0;
 		bool result = style_match_id(&id, &patterns, &subject);
 
-		assert(calls == 1);
+		assert(calls == (i >= 3 ? 1U : 0U));
 		assert(result == reference(&id, &subject));
 	}
 	printf("wildcard minimum/suffix/single-star calls: 1 -> 0 each; "
 		"metadata %zu bytes, subject %zu bytes: passed\n",
 		sizeof(patterns), sizeof(subject));
+}
+
+static void fixed_width_patterns(void)
+{
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+	char pattern[263], value[264];
+
+	id.flags.has_name = 1;
+	id.name = pattern;
+	strcpy(pattern, "probe-");
+	memset(pattern + 6, '?', 256);
+	pattern[262] = '\0';
+	strcpy(value, "probe-");
+	memset(value + 6, 'a', 257);
+	value[263] = '\0';
+	style_match_prepare(&patterns, &id);
+	assert(patterns.fixed_width == (1U << STYLE_MATCH_NAME));
+	for (unsigned extra = 0; extra < 2; extra++)
+	{
+		value[262] = extra ? 'a' : '\0';
+		style_match_subject_init(&subject, 1, NULL, NULL, value, NULL);
+		bool expected = reference(&id, &subject);
+
+		calls = 0;
+		assert(style_match_id(&id, &patterns, &subject) == expected);
+		assert(expected == !extra && calls == 0);
+	}
+	const char *selectors[] = { "a?b?c", "??", "?\377?", "a\\?b" };
+	const char *values[] = { "axbyc", "\303\251", "a\377b", "a?b" };
+
+	for (unsigned i = 0; i < 4; i++)
+	{
+		id.name = (char *)selectors[i];
+		style_match_prepare(&patterns, &id);
+		style_match_subject_init(&subject, 1, NULL, NULL,
+			values[i], NULL);
+		calls = 0;
+		assert(style_match_id(&id, &patterns, &subject));
+		assert(calls == (i == 3 ? 1U : 0U));
+		assert(!!patterns.fixed_width == (i != 3));
+	}
+	puts("fixed-width questions reject unequal byte counts: passed");
+}
+
+static void single_star_questions(void)
+{
+	const char *selectors[] = { "*?", "?*", "a?b*cd?e", "?*?",
+		"*?\377?", "?*a?" };
+	const char *values[] = { "x", "x", "axb-long-cdye", "x",
+		"long-a\377b", "aaa" };
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+	char name[16385];
+
+	id.flags.has_name = 1;
+	for (unsigned i = 0; i < 6; i++)
+	{
+		id.name = (char *)selectors[i];
+		style_match_prepare(&patterns, &id);
+		assert(patterns.single_star_questions ==
+			(1U << STYLE_MATCH_NAME));
+		style_match_subject_init(&subject, 1, NULL, NULL,
+			values[i], NULL);
+		bool expected = reference(&id, &subject);
+
+		calls = 0;
+		assert(style_match_id(&id, &patterns, &subject) == expected);
+		assert(expected == (i != 3) && calls == 0);
+	}
+	memset(name, 'a', sizeof(name) - 1);
+	name[sizeof(name) - 1] = '\0';
+	id.name = "*?a?";
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, name, NULL);
+	calls = 0;
+	assert(style_match_id(&id, &patterns, &subject) && calls == 0);
+	name[sizeof(name) - 2] = 'b';
+	id.name = "*?b?";
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, name, NULL);
+	assert(!reference(&id, &subject));
+	calls = 0;
+	assert(!style_match_id(&id, &patterns, &subject) && calls == 0);
+	puts("one-star question spans avoid suffix retries: passed");
+}
+
+static void unescaped_cursors(void)
+{
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+	const char alphabet[] = "ab*?";
+	unsigned long checked = 0;
+
+	id.flags.has_name = 1;
+	for (unsigned length = 0, count = 1; length <= 6;
+	     length++, count *= 4)
+	{
+		for (unsigned word = 0; word < count; word++)
+		{
+			char pattern[7];
+			unsigned digits = word;
+
+			for (unsigned i = 0; i < length; i++, digits /= 4)
+				pattern[i] = alphabet[digits % 4];
+			pattern[length] = '\0';
+			id.name = pattern;
+			style_match_prepare(&patterns, &id);
+			for (unsigned size = 0, values = 1; size <= 5;
+			     size++, values *= 2)
+			{
+				for (unsigned value = 0; value < values;
+				     value++)
+				{
+					char name[6];
+					unsigned bits = value;
+
+					for (unsigned i = 0; i < size;
+					     i++, bits /= 2)
+						name[i] = "ab"[bits % 2];
+					name[size] = '\0';
+					style_match_subject_init(&subject, 1,
+						NULL, NULL, name, NULL);
+					bool expected =
+						reference(&id, &subject);
+
+					calls = 0;
+					assert(style_match_id(&id, &patterns,
+						&subject) == expected);
+					assert(calls == 0);
+					checked++;
+				}
+			}
+		}
+	}
+	/* A closed-form family checks deep input without asking the recursive
+	 * oracle to consume a corresponding call stack. Short forms above use
+	 * the unchanged legacy implementation as their independent oracle. */
+	char *deep = malloc(65538);
+
+	assert(deep != NULL);
+	memset(deep, '*', 65536);
+	strcpy(deep + 65536, "?");
+	id.name = deep;
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, "a", NULL);
+	calls = 0;
+	assert(style_match_id(&id, &patterns, &subject) && calls == 0);
+	style_match_subject_init(&subject, 1, NULL, NULL, "", NULL);
+	assert(!style_match_id(&id, &patterns, &subject) && calls == 0);
+	deep[65536] = '\0';
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, "a", NULL);
+	assert(style_match_id(&id, &patterns, &subject));
+	style_match_subject_init(&subject, 1, NULL, NULL, "", NULL);
+	assert(!style_match_id(&id, &patterns, &subject));
+	free(deep);
+	printf("%lu unescaped legacy comparisons and deep cursors: passed\n",
+		checked);
 }
 
 static void unnecessary_length_scans(void)
@@ -298,7 +462,7 @@ static void unnecessary_length_scans(void)
 			empty ? "" : value, NULL);
 		calls = length_calls = 0;
 		assert(style_match_id(&id, &patterns, &subject) == !empty);
-		assert(calls == 1 && length_calls == 0);
+		assert(calls == 0 && length_calls == 0);
 	}
 	puts("prefix/star-only selectors avoid length scans: passed");
 }
@@ -554,6 +718,9 @@ int main(void)
 	differential();
 	work_counts();
 	wildcard_work_counts();
+	fixed_width_patterns();
+	single_star_questions();
+	unescaped_cursors();
 	unnecessary_length_scans();
 	overlap_policy();
 	return 0;

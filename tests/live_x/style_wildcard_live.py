@@ -94,9 +94,13 @@ def client_checks(args):
                  ('minimum', 'FVWM' + '?'*40 + '*', 3),
                  ('suffix', 'FVWM?*wrong', 3),
                  ('single-star', 'FVWM*probe', 7),
-                 ('question-fallback', 'FVWM?*probe', 9),
-                 ('multi-star-fallback', 'FVWM**probe', 11),
-                 ('non-overlap', '"FVWM transition *transition probe"', 3)]
+                 ('one-star-questions', 'FVWM?*probe', 9),
+                 ('multi-star-cursors', 'FVWM**probe', 11),
+                 ('non-overlap', '"FVWM transition *transition probe"', 3),
+                 ('fixed-width-hit', 'FVWM?transition?probe', 17),
+                 ('fixed-width-miss', 'FVWM?transition?pro?', 3),
+                 ('empty-tail', '"FVWM transition probe**"', 3),
+                 ('deep-stars', 'FVWM' + '*'*512 + '?probe', 19)]
         for label, selector, width in cases:
             connection.send((f'Style (Name {selector}) BorderWidth {width if width != 3 else 13}, '
                 f'HandleWidth {width if width != 3 else 13}\nUpdateStyles\n').encode())
@@ -153,7 +157,8 @@ def client_checks(args):
             connection.close()
         if client:
             client.close()
-    print('Real-client styles: seven wildcard and three simplification cases passed')
+    print(f'Real-client styles: {len(cases)} wildcard and '
+          'three simplification cases passed')
 
 
 def run(args):

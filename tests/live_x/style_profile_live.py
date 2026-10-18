@@ -93,6 +93,7 @@ def run(args):
                         assert not specialized
             index_work = []
             subject_work = []
+            cursor_work = []
             for reference, collision in ((False, False), (True, False),
                                          (False, True)):
                 for size in (64, 256):
@@ -134,6 +135,20 @@ def run(args):
                         'domain_transitions': 3, 'reference': reference,
                         'collision': collision}
                     subject_work.extend(subject)
+                    cursor = [json.loads(line.removeprefix('STYLE_CURSOR_WORK '))
+                              for line in process.log_path.read_text().splitlines()
+                              if line.startswith('STYLE_CURSOR_WORK ')]
+                    assert [r['case'] for r in cursor] == [
+                        'fixed-miss', 'fixed-hit', 'question-hit', 'question-miss',
+                        'star-depth', 'middle-miss', 'empty-tail']
+                    for r in cursor:
+                        assert not r['baseline']
+                        assert r['reference'] == reference
+                        assert r['collision'] == collision
+                        assert r['calls'] == int(reference)
+                        assert r['hit'] == (r['case'] in (
+                            'fixed-hit', 'question-hit', 'star-depth'))
+                    cursor_work.extend(cursor)
                     index_work.extend(work)
             repeated = []
             for collision in (False, True):
@@ -159,7 +174,8 @@ def run(args):
                 json.dumps({'workloads': rows, 'matching_work': matching,
                             'wildcard_work': wildcard,
                             'simplify_work': repeated, 'index_work': index_work,
-                            'subject_work': subject_work},
+                            'subject_work': subject_work,
+                            'cursor_work': cursor_work},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

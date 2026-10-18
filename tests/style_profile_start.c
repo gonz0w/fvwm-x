@@ -617,6 +617,97 @@ static void index_compare(FvwmWindow *sample)
 	assert(memcmp(&candidate, &original, sizeof(candidate)) == 0);
 }
 
+static void cursor_work(const exec_context_t *exc, FvwmWindow *window)
+{
+	const char *labels[] = { "fixed-miss", "fixed-hit", "question-hit",
+		"question-miss", "star-depth", "middle-miss", "empty-tail" };
+	Bool baseline = getenv("FVWM_STYLE_CURSOR_BASELINE") != NULL;
+	FvwmWindow sample = *window;
+	window_style style;
+	char pattern[520], text[640], name[16391];
+
+	/* Literal candidates and wildcard fallbacks share an indexed list.
+	 * Each new rule/removal invalidates its derived chains. */
+	for (unsigned i = 0; i < 32; i++)
+	{
+		snprintf(text, sizeof(text),
+			"Style (Name cursor-no-client-%04u) BorderWidth 19", i);
+		command(exc, text);
+	}
+	command(exc, "Style (Name *) BorderWidth 5, HandleWidth 9");
+	for (unsigned kind = 0; kind < 7; kind++)
+	{
+		strcpy(pattern, "probe-");
+		strcpy(name, "probe-");
+		if (kind < 2)
+		{
+			memset(pattern + 6, '?', 256);
+			pattern[262] = '\0';
+			memset(name + 6, 'a', 256 + (kind == 0));
+			name[262 + (kind == 0)] = '\0';
+		}
+		else if (kind < 4)
+		{
+			strcpy(pattern, kind == 2 ?
+				"probe-*?a?" : "probe-*?b?");
+			memset(name + 6, 'a', 16384);
+			name[16390] = '\0';
+			if (kind == 3)
+				name[16389] = 'b';
+		}
+		else if (kind == 4)
+		{
+			memset(pattern + 6, '*', 512);
+			strcpy(pattern + 518, "?");
+			strcpy(name + 6, "a");
+		}
+		else if (kind == 5)
+		{
+			strcpy(pattern, "probe-*a*a*a*a*b?");
+			memset(name + 6, 'a', 24);
+			name[30] = '\0';
+		}
+		else
+			strcpy(pattern, "probe-**");
+		sample.name.name = name;
+		snprintf(text, sizeof(text),
+			"Style (Name %s) BorderWidth 7, TitleFormat cursor %%n",
+			pattern);
+		command(exc, text);
+		matches = 0;
+		measuring = True;
+		lookup_style(&sample, &style);
+		measuring = False;
+		assert(matches == (baseline || force_reference ? 1 : 0));
+		Bool hit = kind == 1 || kind == 2 || kind == 4;
+
+		assert(SGET_BORDER_WIDTH(style) == (hit ? 7 : 5));
+		assert(SGET_HANDLE_WIDTH(style) == 9);
+		index_compare(&sample);
+		printf("STYLE_CURSOR_WORK {\"case\":\"%s\",\"calls\":%lu,"
+			"\"pattern_bytes\":%zu,\"name_bytes\":%zu,\"hit\":%s,"
+			"\"baseline\":%s,\"reference\":%s,\"collision\":%s}\n",
+			labels[kind], matches, strlen(pattern), strlen(name),
+			hit ? "true" : "false", baseline ? "true" : "false",
+			force_reference ? "true" : "false",
+			force_index_collision ? "true" : "false");
+		snprintf(text, sizeof(text), "DestroyStyle (Name %s)", pattern);
+		command(exc, text);
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 5);
+		index_compare(&sample);
+	}
+	command(exc, "DestroyStyle (Name *)");
+	for (unsigned i = 0; i < 32; i++)
+	{
+		snprintf(text, sizeof(text),
+			"DestroyStyle (Name cursor-no-client-%04u)", i);
+		command(exc, text);
+	}
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 3);
+}
+
 static void mixed_domain_work(const exec_context_t *exc, FvwmWindow *window)
 {
 	FvwmWindow sample = *window;
@@ -849,6 +940,7 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 		assert(SGET_BORDER_WIDTH(style) == 3);
 	}
 	mixed_domain_work(exc, window);
+	cursor_work(exc, window);
 }
 
 void __wrap_CaptureAllWindows(const exec_context_t *exc)

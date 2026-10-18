@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Development build reuse, MAINT-02 / CLEAN-01 | Affected checkpoint locally qualified; [PR #107](https://github.com/gonz0w/fvwm-x/pull/107) ready for review | Three build/dependency improvements remove 74 duplicate Linux core compilations, reduce operation-API fanout to 7 objects, and keep private index edits in 2 owner objects. All 70 affected entries pass ten profiles/six targets; 1502 core/probe objects and ten WM executables retain identical allocated code/data sections. Ten fresh stages verify 249 code/catalog identities. Collector repairs preserve successful phases; unchanged broader runtime evidence stays with PR106. [Report](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md). |
+| Style wildcard families, STYLE-01 #38 | Implemented; focused checks pass; combined checkpoint pending | Exact-width question matching, anchored one-star question spans and constant-stack unescaped cursors form one batch. Linux/OpenBSD ARM policy/core/update and 17 real-client cases pass; original empty-tail and escaped semantics remain covered by the independent legacy predicate. [Report](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md). |
+| Development build reuse, MAINT-02 / CLEAN-01 | Merged in [PR #107](https://github.com/gonz0w/fvwm-x/pull/107); affected checkpoint locally qualified | Three build/dependency improvements remove 74 duplicate Linux core compilations, reduce operation-API fanout to 7 objects, and keep private index edits in 2 owner objects. All 70 affected entries pass ten profiles/six targets; 1502 core/probe objects and ten WM executables retain identical allocated code/data sections. Ten fresh stages verify 249 code/catalog identities. Collector repairs preserve successful phases; unchanged broader runtime evidence stays with PR106. [Report](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md). |
 | Style subject work, STYLE-01 #38 | Merged in [PR #106](https://github.com/gonz0w/fvwm-x/pull/106); locally qualified with composed evidence | Deferred compatibility work, domain-selective index queries and shared hash/length scans form one batch. The measured numeric-only string work drops to zero; explicit-name hashing drops from 114,688 to 16,384 byte steps and avoids a separate 16,384-byte length scan. One combined checkpoint passes 1991 standard/437 optional entries, four scoped sanitizers, ten fresh stages and five default BSD displays; the one original failed entry passes an unchanged isolated control. No universal latency claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md). |
 | Ordered style candidate lookup, STYLE-01 #38 | Merged in [PR #105](https://github.com/gonz0w/fvwm-x/pull/105); locally qualified with composed evidence | Three ordered candidate paths share one checkpoint. Original observations pass 1989/1992 standard and 437/437 optional entries across six targets / ten profiles; 4 scoped sanitizer entries pass. 10 fresh stages bind 150 code/99 catalog identities. 5 authenticated default BSD displays and 10 staged real-client invocations pass. One full matrix serves the batch; hashing/collision/cold-build and release limitations remain explicit. [Report](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md). |
 | Style simplification batch, STYLE-01 #38 | Merged in [PR #104](https://github.com/gonz0w/fvwm-x/pull/104); locally qualified | Three repeated-ID improvements are locally qualified. Original observations pass 1991/1992 standard and 437/437 optional entries across six targets / ten profiles. The one failed startup fixture is corrected and passes on unchanged binaries; its original failure remains visible. 4 scoped sanitizer entries pass. 10 fresh stages bind 150 code/99 catalogs; four default BSD displays and 10 staged real-client invocations pass. One full checkpoint serves the batch; preparation failures and scoped limitations remain explicit. [Report](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md). |
@@ -225,15 +226,16 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-18: PR #106 is merged. The interleaved three-story
-MAINT-02/CLEAN-01 development-speed batch is locally qualified in
-[PR #107](https://github.com/gonz0w/fvwm-x/pull/107): production core reuse in
-the Linux linker-wrap fixture, separate immutable style metadata/API headers,
-and an owner-private derived style index. One affected six-target/ten-profile
-build/policy/install checkpoint passes 70 entries; broader unchanged runtime
-and default-X evidence stays with PR106. Review and merge before the next
-measured STYLE/STATE batch. Keep assertion-enabled core fixtures, batching and
-warm owner builds; VESA #93 stays deferred.
+Immediate selection, 2026-10-18: PR #107 is merged. Continue STYLE-01 with
+three related wildcard families: exact-width question patterns, one-star
+question spans and constant-stack cursors for general unescaped matching.
+The unchanged actual-core baseline reaches the recursive matcher in all seven
+selected cases; isolated fallback counts also show 16-KiB suffix retries and
+512-star recursion depth. Preserve the original predicate as an independent
+oracle, including empty-tail quirks; escaped patterns remain with `libs/wild.c`.
+Use focused policy checks, actual-core/real-client coverage and early BSD checks,
+then freeze one combined checkpoint. Keep matching/precedence and DRAW/INPUT
+barriers; no new configuration limit is selected. VESA #93 stays deferred.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

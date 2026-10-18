@@ -92,6 +92,7 @@ def run(args):
                     else:
                         assert not specialized
             index_work = []
+            subject_work = []
             for reference, collision in ((False, False), (True, False),
                                          (False, True)):
                 for size in (64, 256):
@@ -125,6 +126,14 @@ def run(args):
                             assert r['visits'] == 32 * (size + 1)
                         else:
                             assert 64 <= r['visits'] < 32 * (size + 1)
+                    subject = [json.loads(line.removeprefix('STYLE_SUBJECT_WORK '))
+                               for line in process.log_path.read_text().splitlines()
+                               if line.startswith('STYLE_SUBJECT_WORK ')]
+                    assert len(subject) == 1
+                    assert subject[0] == {'long_name_bytes': 16384,
+                        'domain_transitions': 3, 'reference': reference,
+                        'collision': collision}
+                    subject_work.extend(subject)
                     index_work.extend(work)
             repeated = []
             for collision in (False, True):
@@ -149,7 +158,8 @@ def run(args):
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,
                             'wildcard_work': wildcard,
-                            'simplify_work': repeated, 'index_work': index_work},
+                            'simplify_work': repeated, 'index_work': index_work,
+                            'subject_work': subject_work},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

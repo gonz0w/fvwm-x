@@ -12,7 +12,14 @@
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 
-static unsigned calls, length_calls, call_depth;
+static unsigned calls, length_calls, equality_calls, call_depth;
+
+int __real_strcmp(const char *, const char *);
+int __wrap_strcmp(const char *a, const char *b)
+{
+	equality_calls++;
+	return __real_strcmp(a, b);
+}
 
 size_t __real_strlen(const char *);
 size_t __wrap_strlen(const char *value)
@@ -87,7 +94,8 @@ static void compare(const style_id_t *id, style_match_subject *subject)
 	style_match_prepare(&patterns, id);
 	bool matches = reference(id, subject);
 	unsigned buckets[STYLE_LOOKUP_STREAMS];
-	unsigned count = style_match_lookup_subject(subject, buckets);
+	unsigned count = style_match_lookup_subject(subject,
+		patterns.lookup_domain, buckets);
 	bool candidate = false;
 
 	assert(count > 0 && count <= STYLE_LOOKUP_STREAMS);
@@ -173,10 +181,11 @@ static void work_counts(void)
 	id.flags.is_compatibility_mode = 1;
 	id.name = "equal";
 	style_match_subject_init(&subject, 19, resource, class, name, "icon");
-	assert(subject.compatibility_fields == 1);
+	assert(subject.compatibility_fields == 0);
 	style_match_prepare(&patterns, &id);
 	calls = 0;
 	assert(style_match_id(&id, &patterns, &subject) && calls == 0);
+	assert(subject.compatibility_fields == 1);
 	id.name = "*";
 	style_match_prepare(&patterns, &id);
 	assert(style_match_id(&id, &patterns, &subject) && calls == 0);
@@ -404,6 +413,134 @@ static void overlap_policy(void)
 		"literal/prefix/suffix controls passed\n", common_matches);
 }
 
+static void deferred_compatibility(void)
+{
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+	char a[] = "equal", b[] = "equal", c[] = "equal";
+
+	equality_calls = 0;
+	style_match_subject_init(&subject, 19, a, b, c, NULL);
+	assert(equality_calls == 0 && subject.compatibility_fields == 0);
+	id.flags.has_window_id = 1;
+	id.window_id = 19;
+	style_match_prepare(&patterns, &id);
+	assert(style_match_id(&id, &patterns, &subject));
+	assert(equality_calls == 0 && subject.compatibility_fields == 0);
+	id.flags.is_compatibility_mode = 1;
+	id.name = "equal";
+	id.window_id = 23;
+	style_match_prepare(&patterns, &id);
+	assert(!style_match_id(&id, &patterns, &subject));
+	assert(equality_calls == 0 && subject.compatibility_fields == 0);
+	id.window_id = 19;
+	id.name = "*";
+	style_match_prepare(&patterns, &id);
+	assert(style_match_id(&id, &patterns, &subject));
+	assert(equality_calls == 0 && subject.compatibility_fields == 0);
+	id.name = "miss*";
+	style_match_prepare(&patterns, &id);
+	assert(!style_match_id(&id, &patterns, &subject));
+	assert(equality_calls == 2 && subject.compatibility_fields == 1);
+	assert(!style_match_id(&id, &patterns, &subject));
+	assert(equality_calls == 2);
+	style_match_subject_init(&subject, 19, NULL, "", NULL, NULL);
+	assert(!style_match_id(&id, &patterns, &subject));
+	assert(subject.compatibility_fields == 3);
+	puts("compatibility comparisons deferred and reused: passed");
+}
+
+static void subject_domains(void)
+{
+	const char *values[] = { NULL, "", "alpha", "beta", "alpha" };
+	style_match_subject subject;
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	unsigned buckets[STYLE_LOOKUP_STREAMS];
+
+	/* Every subset may be requested in any list order. Query results
+	 * must contain each matching necessary key in the requested domains. */
+	for (unsigned tuple = 0; tuple < 625; tuple++)
+	{
+		unsigned n = tuple;
+		const char *v[STYLE_MATCH_FIELDS];
+
+		for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++, n /= 5)
+			v[i] = values[n % 5];
+		for (unsigned domains = 0; domains <= STYLE_LOOKUP_ALL;
+		     domains++)
+		{
+			style_match_subject_init(&subject, 19,
+				v[0], v[1], v[2], v[3]);
+			unsigned count = style_match_lookup_subject(&subject,
+				domains, buckets);
+
+			assert(count && count <= STYLE_LOOKUP_STREAMS);
+			for (unsigned flags = 0; flags < 64; flags++)
+			{
+				id.resource = id.class = id.name = id.icon =
+					"alpha";
+				id.window_id = 19;
+				set_flags(&id, flags);
+				style_match_prepare(&patterns, &id);
+				if (!(patterns.lookup_domain & domains) &&
+				    patterns.lookup_bucket)
+					continue;
+				if (!reference(&id, &subject))
+					continue;
+				bool found = false;
+
+				for (unsigned i = 0; i < count; i++)
+					found |= buckets[i] ==
+						patterns.lookup_bucket;
+				assert(found);
+			}
+		}
+	}
+	style_match_subject_init(&subject, 19, "a", "b", "name", "icon");
+	style_match_lookup_subject(&subject, STYLE_LOOKUP_WINDOW, buckets);
+	assert(subject.hash_fields == 0 && subject.length_fields == 0);
+	assert(subject.compatibility_fields == 0);
+	style_match_lookup_subject(&subject, 1U << STYLE_MATCH_NAME, buckets);
+	assert(subject.hash_fields == (1U << STYLE_MATCH_NAME));
+	assert(subject.length_fields == (1U << STYLE_MATCH_NAME));
+	assert(subject.compatibility_fields == 0);
+	assert(subject.length[STYLE_MATCH_NAME] == 4);
+	id = (style_id_t){ 0 };
+	id.flags.has_name = 1;
+	id.name = "?*e";
+	style_match_prepare(&patterns, &id);
+	length_calls = 0;
+	assert(style_match_id(&id, &patterns, &subject));
+	assert(length_calls == 0);
+	style_match_lookup_subject(&subject, STYLE_LOOKUP_ALL, buckets);
+	assert(subject.hash_fields == 15 && subject.length_fields == 15);
+	for (unsigned i = 0; i < 16; i++)
+	{
+		style_match_lookup_subject(&subject, i, buckets);
+		assert(style_match_id(&id, &patterns, &subject));
+	}
+	assert(length_calls == 0);
+	/* Reinitializing even the same pointers discards all derived data. */
+	style_match_subject_init(&subject, 23, NULL, "", NULL, "x");
+	assert(subject.hash_fields == 0 && subject.length_fields == 0);
+	assert(subject.compatibility_fields == 0 && subject.window_bucket == 0);
+	style_match_lookup_subject(&subject, STYLE_LOOKUP_ALL, buckets);
+	assert(subject.hash_fields == 10 && subject.length_fields == 10);
+	assert(subject.length[STYLE_MATCH_CLASS] == 0);
+	assert(subject.length[STYLE_MATCH_ICON] == 1);
+	char a[] = "equal", b[] = "equal", c[] = "equal";
+
+	style_match_subject_init(&subject, 19, a, b, c, NULL);
+	equality_calls = 0;
+	style_match_lookup_subject(&subject, 1U << STYLE_MATCH_FIELDS, buckets);
+	assert(equality_calls == 2 && subject.hash_fields == 1);
+	style_match_lookup_subject(&subject, 1U << STYLE_MATCH_FIELDS, buckets);
+	assert(equality_calls == 2 && subject.hash_fields == 1);
+	puts("all domain subsets retain matching keys; hash lengths shared");
+}
+
 int main(void)
 {
 	assert(!style_match_lookup_enabled(31, 31));
@@ -412,6 +549,8 @@ int main(void)
 	assert(!style_match_lookup_enabled(65, 32));
 	assert(!style_match_lookup_enabled(SIZE_MAX, 32));
 	assert(style_match_lookup_enabled(SIZE_MAX, SIZE_MAX));
+	subject_domains();
+	deferred_compatibility();
 	differential();
 	work_counts();
 	wildcard_work_counts();

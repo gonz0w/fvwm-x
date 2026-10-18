@@ -1006,6 +1006,7 @@ static void prepare_style_lookup(window_style_list *list)
 		style->lookup_ordinal = ordinal--;
 		style->lookup_next = list->lookup_index->head[bucket];
 		list->lookup_index->head[bucket] = style;
+		list->lookup_index->domains |= style->id_patterns.lookup_domain;
 	}
 }
 
@@ -4950,7 +4951,6 @@ void lookup_style(FvwmWindow *fw, window_style *styles)
 	window_style_list *list;
 	window_style *nptr;
 	unsigned buckets[STYLE_LOOKUP_STREAMS];
-	unsigned bucket_count = 0;
 
 	style_match_subject_init(&subject, FW_W(fw), fw->class.res_name,
 		fw->class.res_class, fw->name.name, fw->icon_name.name);
@@ -4964,11 +4964,11 @@ void lookup_style(FvwmWindow *fw, window_style *styles)
 		{
 			window_style *streams[STYLE_LOOKUP_STREAMS];
 			unsigned active = 0;
+			unsigned bucket_count;
 
 			prepare_style_lookup(list);
-			if (!bucket_count)
-				bucket_count = style_match_lookup_subject(
-					&subject, buckets);
+			bucket_count = style_match_lookup_subject(&subject,
+				list->lookup_index->domains, buckets);
 			for (unsigned i = 0; i < bucket_count; i++)
 			{
 				nptr = list->lookup_index->head[buckets[i]];

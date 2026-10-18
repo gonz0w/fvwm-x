@@ -24,6 +24,7 @@
 #include "fvwm/style_id_filter.h"
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
+#include "libs/Parse.h"
 
 static Bool measuring, force_reference, force_previous, force_collision;
 static Bool force_index_collision;
@@ -733,6 +734,66 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 	force_reference = saved;
 }
 
+static void escaped_work(const exec_context_t *exc, FvwmWindow *window)
+{
+	const char *labels[] = { "fixed-hit", "fixed-miss", "star-hit",
+		"star-miss", "cursor-hit", "cursor-miss", "empty-tail",
+		"trailing-escape", "star-depth" };
+	const char *patterns[] = { "probe-\\a?\\*", "probe-\\a?\\*",
+		"probe-\\a?*\\?z", "probe-\\a?*\\?z", "probe-\\a**?\\*",
+		"probe-\\a*b*\\?z", "probe-\\a**", "probe-\\a*\\" };
+	const char *names[] = { "probe-ab*", "probe-ab*x", "probe-ab-long-?z",
+		"probe-ab-long-xz", "probe-ab*", "probe-ab-long-xz", "probe-a",
+		"probe-ab", "probe-ab" };
+	Bool baseline = getenv("FVWM_STYLE_ESCAPED_BASELINE") != NULL;
+	FvwmWindow sample = *window;
+	window_style style;
+	char deep[523], text[1200];
+
+	strcpy(deep, "probe-\\a");
+	memset(deep + 8, '*', 512);
+	strcpy(deep + 520, "?");
+	command(exc, "Style (Name *) BorderWidth 5, HandleWidth 9");
+	for (unsigned kind = 0; kind < 9; kind++)
+	{
+		const char *pattern = kind == 8 ? deep : patterns[kind];
+		char *quoted = EscapeString((char *)pattern, "\\\"", '\\');
+		Bool hit = kind == 0 || kind == 2 || kind == 4 || kind == 8;
+
+		sample.name.name = (char *)names[kind];
+		snprintf(text, sizeof(text),
+			"Style (Name \"%s\") BorderWidth 7, "
+			"TitleFormat escaped %%n", quoted);
+		command(exc, text);
+		matches = 0;
+		measuring = True;
+		lookup_style(&sample, &style);
+		measuring = False;
+		assert(matches == (baseline || force_reference ? 1 : 0));
+		assert(SGET_BORDER_WIDTH(style) == (hit ? 7 : 5));
+		assert(SGET_HANDLE_WIDTH(style) == 9);
+		index_compare(&sample);
+		printf("STYLE_ESCAPED_WORK {\"case\":\"%s\",\"calls\":%lu,"
+			"\"pattern_bytes\":%zu,\"name_bytes\":%zu,\"hit\":%s,"
+			"\"baseline\":%s,\"reference\":%s,\"collision\":%s}\n",
+			labels[kind], matches, strlen(pattern),
+			strlen(names[kind]),
+			hit ? "true" : "false", baseline ? "true" : "false",
+			force_reference ? "true" : "false",
+			force_index_collision ? "true" : "false");
+		snprintf(text, sizeof(text),
+			"DestroyStyle (Name \"%s\")", quoted);
+		free(quoted);
+		command(exc, text);
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 5);
+		index_compare(&sample);
+	}
+	command(exc, "DestroyStyle (Name *)");
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 3);
+}
+
 static void cursor_work(const exec_context_t *exc, FvwmWindow *window)
 {
 	const char *labels[] = { "fixed-miss", "fixed-hit", "question-hit",
@@ -1057,6 +1118,7 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 	}
 	mixed_domain_work(exc, window);
 	cursor_work(exc, window);
+	escaped_work(exc, window);
 }
 
 void __wrap_CaptureAllWindows(const exec_context_t *exc)

@@ -94,6 +94,7 @@ def run(args):
             index_work = []
             subject_work = []
             cursor_work = []
+            escaped_work = []
             for reference, collision in ((False, False), (True, False),
                                          (False, True)):
                 for size in (64, 256):
@@ -149,6 +150,21 @@ def run(args):
                         assert r['hit'] == (r['case'] in (
                             'fixed-hit', 'question-hit', 'star-depth'))
                     cursor_work.extend(cursor)
+                    escaped = [json.loads(line.removeprefix('STYLE_ESCAPED_WORK '))
+                               for line in process.log_path.read_text().splitlines()
+                               if line.startswith('STYLE_ESCAPED_WORK ')]
+                    assert [r['case'] for r in escaped] == [
+                        'fixed-hit', 'fixed-miss', 'star-hit', 'star-miss',
+                        'cursor-hit', 'cursor-miss', 'empty-tail',
+                        'trailing-escape', 'star-depth']
+                    for r in escaped:
+                        assert not r['baseline']
+                        assert r['reference'] == reference
+                        assert r['collision'] == collision
+                        assert r['calls'] == int(reference)
+                        assert r['hit'] == (r['case'] in (
+                            'fixed-hit', 'star-hit', 'cursor-hit', 'star-depth'))
+                    escaped_work.extend(escaped)
                     index_work.extend(work)
             repeated = []
             overlap_work = []
@@ -188,7 +204,8 @@ def run(args):
                             'wildcard_work': wildcard,
                             'simplify_work': repeated, 'index_work': index_work,
                             'subject_work': subject_work,
-                            'cursor_work': cursor_work, 'overlap_work': overlap_work},
+                            'cursor_work': cursor_work, 'overlap_work': overlap_work,
+                            'escaped_work': escaped_work},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

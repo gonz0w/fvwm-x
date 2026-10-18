@@ -115,6 +115,40 @@ unsigned style_match_lookup_subject(style_match_subject *subject,
 	return used;
 }
 
+static void prepare_escaped_pattern(style_match_patterns *patterns,
+	const char *value, unsigned field)
+{
+	size_t stars = 0, width = 0, before = 0;
+	unsigned bit = 1U << field;
+
+	for (size_t i = 0; value[i]; i++)
+	{
+		if (value[i] == '\\')
+		{
+			/* A trailing escape has an impossible literal slot.
+			 * Matching never reads past its terminator. */
+			if (value[i + 1])
+				i++;
+			width++;
+		}
+		else if (value[i] == '*')
+		{
+			stars++;
+			before = width;
+			patterns->suffix[field] = i + 1;
+		}
+		else
+			width++;
+	}
+	patterns->escaped |= bit;
+	patterns->minimum[field] = width;
+	patterns->suffix_length[field] = width - before;
+	if (stars == 0)
+		patterns->escaped_fixed_width |= bit;
+	if (stars == 1)
+		patterns->escaped_single_star |= bit;
+}
+
 void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 {
 	const char *values[STYLE_MATCH_FIELDS] = {
@@ -137,7 +171,7 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 		if (!active[i])
 			continue;
 		/* Preserve the wildcard owner's NULL and exact-"*" semantics.
-		 * Any escape stays on its original parser/matcher path. */
+		 * Escaped fields retain separate decoded metadata. */
 		if (!value || (value[0] == '*' && value[1] == '\0'))
 		{
 			patterns->universal |= bit;
@@ -149,11 +183,13 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 			patterns->literal |= bit;
 			continue;
 		}
-		/* Escape parsing, including a trailing backslash, remains wholly
-		 * with matchWildcards. Unescaped '?' consumes one byte, not one
-		 * Unicode character; '*' alone can consume zero bytes. */
+		/* Wildcards consume bytes. Escapes quote exactly the next
+		 * byte; a trailing escape remains a non-match. */
 		if (strchr(value, '\\'))
+		{
+			prepare_escaped_pattern(patterns, value, i);
 			continue;
+		}
 		patterns->unescaped |= bit;
 
 		for (; value[length]; length++)
@@ -295,6 +331,70 @@ static bool match_unescaped_cursors(const char *pattern, const char *value)
 	return !*pattern || (*pattern == '*' && !pattern[1]);
 }
 
+/* Preparation proves that width decoded bytes fit in the value. */
+static bool match_escaped_span(const char *pattern, const char *value,
+	size_t width)
+{
+	for (size_t i = 0; i < width; i++, pattern++, value++)
+	{
+		bool question = *pattern == '?';
+
+		if (*pattern == '\\')
+		{
+			pattern++;
+			question = false;
+		}
+		if (!*pattern || (!question && *pattern != *value))
+			return false;
+	}
+	return true;
+}
+
+static bool match_escaped_cursors(const char *pattern, const char *value)
+{
+	const char *retry_pattern = NULL, *retry_value = NULL;
+
+	while (*value)
+	{
+		if (*pattern == '*')
+		{
+			pattern++;
+			if (!*pattern)
+				return true;
+			retry_pattern = pattern;
+			retry_value = value;
+		}
+		else
+		{
+			const char *literal = pattern;
+			bool question = *literal == '?';
+
+			if (*literal == '\\')
+			{
+				literal++;
+				question = false;
+			}
+			/* A trailing escape reaches only the terminator.
+			 * Quoted wildcards are ordinary literal bytes here. */
+			if (*literal && (question || *literal == *value))
+			{
+				pattern = literal + 1;
+				value++;
+			}
+			else if (retry_pattern)
+			{
+				pattern = retry_pattern;
+				value = ++retry_value;
+			}
+			else
+				return false;
+		}
+	}
+	/* The original owner accepts only a single raw trailing star on
+	 * exhaustion. A quoted star or multiple remaining stars still fail. */
+	return !*pattern || (*pattern == '*' && !pattern[1]);
+}
+
 static bool match_pattern(const char *pattern,
 	const style_match_patterns *patterns, unsigned field,
 	style_match_subject *subject, unsigned subject_field)
@@ -367,6 +467,35 @@ static bool match_pattern(const char *pattern,
 				value + length - after, after - suffix_length);
 		}
 		return match_unescaped_cursors(pattern, value);
+	}
+	if (patterns->escaped & bit)
+	{
+		unsigned subject_bit = 1U << subject_field;
+
+		if (!(subject->length_fields & subject_bit))
+		{
+			subject->length[subject_field] = strlen(value);
+			subject->length_fields |= subject_bit;
+		}
+		size_t length = subject->length[subject_field];
+
+		if (length < patterns->minimum[field] ||
+		    ((patterns->escaped_fixed_width & bit) &&
+		     length != patterns->minimum[field]))
+			return false;
+		if (patterns->escaped_fixed_width & bit)
+			return match_escaped_span(
+				pattern, value, patterns->minimum[field]);
+		if (!(patterns->escaped_single_star & bit))
+			return match_escaped_cursors(pattern, value);
+		size_t after = patterns->suffix_length[field];
+		size_t before = patterns->minimum[field] - after;
+
+		/* One unescaped star separates two decoded fixed-width spans.
+		 * The minimum keeps them apart, including quoted wildcards. */
+		return match_escaped_span(pattern, value, before) &&
+			match_escaped_span(pattern + patterns->suffix[field],
+				value + length - after, after);
 	}
 	return matchWildcards(pattern, value) != 0;
 }

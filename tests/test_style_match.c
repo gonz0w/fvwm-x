@@ -254,8 +254,7 @@ static void wildcard_work_counts(void)
 	style_match_prepare(&patterns, &id);
 	style_match_subject_init(&subject, 1, NULL, NULL, "ababa", NULL);
 	assert(!style_match_id(&id, &patterns, &subject));
-	/* Unescaped cursors retain the empty-string quirks. Escaped patterns
-	 * still call the original owner for both hits and misses. */
+	/* Preserve empty tails, escaped literals and trailing escapes. */
 	const char *fallbacks[] = { "**", "*?*", "a**b", "a\\*b", "a\\" };
 	const char *subjects[] = { "", "abc", "ab", "a*b", "a" };
 
@@ -267,7 +266,7 @@ static void wildcard_work_counts(void)
 		calls = 0;
 		bool result = style_match_id(&id, &patterns, &subject);
 
-		assert(calls == (i >= 3 ? 1U : 0U));
+		assert(calls == 0);
 		assert(result == reference(&id, &subject));
 	}
 	printf("wildcard minimum/suffix/single-star calls: 1 -> 0 each; "
@@ -313,7 +312,7 @@ static void fixed_width_patterns(void)
 			values[i], NULL);
 		calls = 0;
 		assert(style_match_id(&id, &patterns, &subject));
-		assert(calls == (i == 3 ? 1U : 0U));
+		assert(calls == 0);
 		assert(!!patterns.fixed_width == (i != 3));
 	}
 	puts("fixed-width questions reject unequal byte counts: passed");
@@ -434,6 +433,167 @@ static void unescaped_cursors(void)
 	assert(!style_match_id(&id, &patterns, &subject));
 	free(deep);
 	printf("%lu unescaped legacy comparisons and deep cursors: passed\n",
+		checked);
+}
+
+static void escaped_fixed_width(void)
+{
+	const char *patterns[] = { "a\\?b", "a\\*?", "\\\\?", "\\a\\b", "a\\",
+		"\\?\\*?", "\\\377?" };
+	const char *values[] = { "a?b", "a*x", "\\x", "ab", "a", "?*x",
+		"\377x", "", "other", "a?bx", "\\" };
+	style_id_t id = { 0 };
+	style_match_patterns prepared, previous;
+	style_match_subject subject;
+
+	id.flags.has_name = 1;
+	for (unsigned i = 0; i < sizeof(patterns) / sizeof(*patterns); i++)
+	{
+		id.name = (char *)patterns[i];
+		style_match_prepare(&prepared, &id);
+		assert(prepared.escaped_fixed_width ==
+			(1U << STYLE_MATCH_NAME));
+		assert(!prepared.fixed_width && !prepared.unescaped);
+		previous = prepared;
+		previous.escaped = previous.escaped_fixed_width = 0;
+		for (unsigned j = 0; j < sizeof(values) / sizeof(*values); j++)
+		{
+			style_match_subject_init(&subject, 1, NULL, NULL,
+				values[j], NULL);
+			bool expected = reference(&id, &subject);
+
+			calls = 0;
+			assert(style_match_id(&id, &prepared,
+				&subject) == expected);
+			assert(calls == 0);
+			assert(style_match_id(&id, &previous,
+				&subject) == expected);
+		}
+	}
+	puts("escaped fixed widths preserve quoted bytes "
+		"and trailing escapes: passed");
+}
+
+static void escaped_single_star(void)
+{
+	const char *patterns[] = { "\\a?*\\?z", "*\\*?", "\\a*", "*\\",
+		"\\?*\\?", "\\\\?*?\\\\", "\\a*\\a" };
+	const char *values[] = { "ab-long-?z", "ab-long-xz", "*x", "a", "",
+		"?x?", "?", "\\a-long-b\\", "aa", "a-long-a" };
+	style_id_t id = { 0 };
+	style_match_patterns prepared;
+	style_match_subject subject;
+
+	id.flags.has_name = 1;
+	for (unsigned i = 0; i < sizeof(patterns) / sizeof(*patterns); i++)
+	{
+		id.name = (char *)patterns[i];
+		style_match_prepare(&prepared, &id);
+		assert(prepared.escaped_single_star ==
+			(1U << STYLE_MATCH_NAME));
+		assert(!prepared.single_star &&
+			!prepared.single_star_questions);
+		for (unsigned j = 0; j < sizeof(values) / sizeof(*values); j++)
+		{
+			style_match_subject_init(&subject, 1, NULL, NULL,
+				values[j], NULL);
+			bool expected = reference(&id, &subject);
+
+			calls = 0;
+			assert(style_match_id(&id, &prepared,
+				&subject) == expected);
+			assert(calls == 0);
+		}
+	}
+	puts("escaped one-star spans preserve quoted wildcards "
+		"and non-overlap: passed");
+}
+
+static void escaped_cursors(void)
+{
+	const char alphabet[] = "ab*?\\";
+	style_id_t id = { 0 };
+	style_match_patterns prepared;
+	style_match_subject subject;
+	unsigned long checked = 0;
+
+	id.flags.has_name = 1;
+	for (unsigned length = 1, count = 5; length <= 5;
+	     length++, count *= 5)
+	{
+		for (unsigned word = 0; word < count; word++)
+		{
+			char pattern[6];
+			unsigned digits = word;
+
+			for (unsigned i = 0; i < length; i++, digits /= 5)
+				pattern[i] = alphabet[digits % 5];
+			pattern[length] = '\0';
+			if (!strchr(pattern, '\\'))
+				continue;
+			id.name = pattern;
+			style_match_prepare(&prepared, &id);
+			for (unsigned size = 0, values = 1; size <= 3;
+			     size++, values *= 5)
+			{
+				for (unsigned value = 0; value < values;
+				     value++)
+				{
+					char name[4];
+					unsigned parts = value;
+
+					for (unsigned i = 0; i < size;
+					     i++, parts /= 5)
+						name[i] = alphabet[parts % 5];
+					name[size] = '\0';
+					style_match_subject_init(&subject, 1,
+						NULL, NULL, name, NULL);
+					bool expected =
+						reference(&id, &subject);
+
+					calls = 0;
+					assert(style_match_id(&id, &prepared,
+						&subject) == expected);
+					assert(calls == 0);
+					checked++;
+				}
+			}
+		}
+	}
+	/* Closed forms avoid sending the deep inputs to the recursive oracle.
+	 * Short forms above retain its independent legacy escape semantics. */
+	char *deep = malloc(131077), *name = malloc(65538);
+
+	assert(deep && name);
+	for (unsigned i = 0; i < 65536; i++)
+	{
+		deep[2 * i] = '\\';
+		deep[2 * i + 1] = 'a';
+		name[i] = 'a';
+	}
+	deep[131072] = name[65536] = '\0';
+	id.name = deep;
+	style_match_prepare(&prepared, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, name, NULL);
+	calls = 0;
+	assert(style_match_id(&id, &prepared, &subject) && calls == 0);
+	strcpy(deep, "\\a");
+	memset(deep + 2, '*', 65536);
+	strcpy(deep + 65538, "?\\*");
+	style_match_prepare(&prepared, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, "ab*", NULL);
+	assert(style_match_id(&id, &prepared, &subject) && calls == 0);
+	style_match_subject_init(&subject, 1, NULL, NULL, "a*", NULL);
+	assert(!style_match_id(&id, &prepared, &subject) && calls == 0);
+	deep[65538] = '\0';
+	style_match_prepare(&prepared, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, "a", NULL);
+	assert(!style_match_id(&id, &prepared, &subject) && calls == 0);
+	style_match_subject_init(&subject, 1, NULL, NULL, "ab", NULL);
+	assert(style_match_id(&id, &prepared, &subject) && calls == 0);
+	free(name);
+	free(deep);
+	printf("%lu escaped legacy comparisons and deep cursors: passed\n",
 		checked);
 }
 
@@ -853,6 +1013,9 @@ int main(void)
 	fixed_width_patterns();
 	single_star_questions();
 	unescaped_cursors();
+	escaped_fixed_width();
+	escaped_single_star();
+	escaped_cursors();
 	unnecessary_length_scans();
 	overlap_policy();
 	overlap_languages();

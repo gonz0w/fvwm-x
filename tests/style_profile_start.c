@@ -612,7 +612,7 @@ static void index_compare(FvwmWindow *sample)
 	lookup_style(sample, &original);
 	force_reference = saved;
 	/* Both results borrow the same owned fields; compare the complete
-	 * initialized result, not just the border field used by the workload. */
+	 * initialized result, including fields beyond the workload border. */
 	assert(memcmp(&candidate, &original, sizeof(candidate)) == 0);
 }
 
@@ -654,17 +654,26 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 			snprintf(key, sizeof(key), "index-%04u", target);
 			if (kind == 1)
 			{
-				sample.class.res_name = target == 0 ? key : "miss";
-				sample.class.res_class = target == 1 ? key : "miss";
+				sample.class.res_name =
+					target == 0 ? key : "miss";
+				sample.class.res_class =
+					target == 1 ? key : "miss";
 				sample.name.name = target == 2 ? key : "miss";
-				sample.icon_name.name = target == 3 ? key : "miss";
+				sample.icon_name.name =
+					target == 3 ? key : "miss";
 			}
 			else if (kind == 2)
 			{
-				/* Equal values must not enqueue one bucket twice. */
-				sample.class.res_name = target == 0 || target == 3 ? key : "miss";
-				sample.class.res_class = target == 1 || target == 3 ? key : "miss";
-				sample.name.name = target == 2 || target == 3 ? key : "miss";
+				/* Equal fields must not duplicate a bucket. */
+				sample.class.res_name =
+					target == 0 || target == 3 ?
+					key : "miss";
+				sample.class.res_class =
+					target == 1 || target == 3 ?
+					key : "miss";
+				sample.name.name =
+					target == 2 || target == 3 ?
+					key : "miss";
 			}
 			lookup_visits = 0;
 			measuring = True;
@@ -677,26 +686,30 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 			printf("STYLE_INDEX_WORK {\"case\":\"%s\","
 				"\"collision\":%s,\"reference\":%s,"
 				"\"rules\":%u,\"target\":%u,"
-				"\"lookups\":32,\"visits\":%lu}\n", labels[kind],
+				"\"lookups\":32,\"visits\":%lu}\n",
+				labels[kind],
 				force_index_collision ? "true" : "false",
-				force_reference ? "true" : "false", count, target,
+				force_reference ? "true" : "false",
+				count, target,
 				lookup_visits);
 			index_compare(&sample);
 		}
 		const char *identities[] = { NULL, "", "miss", "index-0000",
-			"index-0001", "index-0002", "index-0003", "index-0255" };
+			"index-0001", "index-0002", "index-0003",
+			"index-0255" };
 
 		for (unsigned i = 0; i < 128; i++)
 		{
 			sample.class.res_name = (char *)identities[i % 8];
-			sample.class.res_class = (char *)identities[(i / 2) % 8];
+			sample.class.res_class =
+				(char *)identities[(i / 2) % 8];
 			sample.name.name = (char *)identities[(i / 4) % 8];
 			sample.icon_name.name = (char *)identities[(i / 8) % 8];
 			index_compare(&sample);
 		}
-		/* Exercise a live index across same-ID tail merges, interference,
-		 * both simplification move paths, removal and immediate reinsertion.
-		 * The original matcher/traversal runs these same assertions too. */
+		/* Exercise live-index tail merges, interference, both move
+		 * paths, removal and reinsertion. The original traversal
+		 * runs these same assertions. */
 		sample.class.res_name = sample.class.res_class = "index-0000";
 		sample.name.name = sample.icon_name.name = "index-0000";
 		if (kind == 0)
@@ -711,12 +724,14 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 		if (kind == 0)
 			snprintf(text, sizeof(text),
 				"Style (WindowID 0x%lx) HandleWidth 11, "
-				"TitleFormat index-owned %%n", (unsigned long)FW_W(window));
+				"TitleFormat index-owned %%n",
+				(unsigned long)FW_W(window));
 		else
 			snprintf(text, sizeof(text), kind == 1 ?
 				"Style (Resource index-0000) HandleWidth 11, "
 				"TitleFormat index-owned %%n" :
-				"Style index-0000 HandleWidth 11, TitleFormat index-owned %%n");
+				"Style index-0000 HandleWidth 11, "
+				"TitleFormat index-owned %%n");
 		command(exc, text);
 		for (unsigned pass = 0; pass < 4; pass++)
 		{
@@ -724,7 +739,8 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 			assert(SGET_BORDER_WIDTH(style) == 9);
 			assert(SGET_HANDLE_WIDTH(style) == 11);
 			index_compare(&sample);
-			assert(strcmp(SGET_TITLE_FORMAT_STRING(style), "index-owned %n") == 0);
+			assert(strcmp(SGET_TITLE_FORMAT_STRING(style),
+				"index-owned %n") == 0);
 			simplify_style_list();
 		}
 		if (kind == 2)
@@ -750,7 +766,8 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 				(unsigned long)FW_W(window));
 		else
 			snprintf(text, sizeof(text), kind == 1 ?
-				"DestroyStyle (Resource index-*)" : "DestroyStyle index-*");
+				"DestroyStyle (Resource index-*)" :
+				"DestroyStyle index-*");
 		command(exc, text);
 		for (unsigned i = 0; i < count; i++)
 		{
@@ -760,9 +777,11 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 					(unsigned long)FW_W(window) + i);
 			else if (kind == 1)
 				snprintf(text, sizeof(text),
-					"DestroyStyle (%s index-%04u)", fields[i % 4], i);
+					"DestroyStyle (%s index-%04u)",
+					fields[i % 4], i);
 			else
-				snprintf(text, sizeof(text), "DestroyStyle index-%04u", i);
+				snprintf(text, sizeof(text),
+					"DestroyStyle index-%04u", i);
 			command(exc, text);
 		}
 		lookup_style(&sample, &style);

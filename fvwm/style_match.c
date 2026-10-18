@@ -41,7 +41,7 @@ static unsigned window_bucket(Window window)
 
 bool style_match_lookup_enabled(size_t count, size_t indexed)
 {
-	/* Small and predominantly general-wildcard lists retain a linear walk. */
+	/* Small and mostly general-wildcard lists retain a linear walk. */
 	return indexed >= 32 && indexed >= count - indexed;
 }
 
@@ -65,7 +65,7 @@ unsigned style_match_lookup_subject(const style_match_subject *subject,
 				subject->value[i]);
 	}
 	/* Hash collisions and equal subject fields must never visit a chain
-	 * twice: merging the same matching rule twice can duplicate ownership. */
+	 * twice: duplicate matching merges can duplicate ownership. */
 	unsigned used = 0;
 
 	for (unsigned i = 0; i < count; i++)
@@ -148,14 +148,16 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 			if (active[i] && (patterns->literal & (1U << i)) &&
 			    (i != STYLE_MATCH_NAME || id->flags.has_name))
 			{
-				patterns->lookup_bucket = string_bucket(i, values[i]);
+				patterns->lookup_bucket =
+					string_bucket(i, values[i]);
 				break;
 			}
 		}
-		if (!patterns->lookup_bucket && id->flags.is_compatibility_mode &&
+		if (!patterns->lookup_bucket &&
+		    id->flags.is_compatibility_mode &&
 		    (patterns->literal & (1U << STYLE_MATCH_NAME)))
-			patterns->lookup_bucket = string_bucket(STYLE_MATCH_FIELDS,
-				id->name);
+			patterns->lookup_bucket =
+				string_bucket(STYLE_MATCH_FIELDS, id->name);
 	}
 
 }

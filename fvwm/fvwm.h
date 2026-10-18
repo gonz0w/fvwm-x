@@ -622,7 +622,7 @@ typedef struct window_style
 	style_match_patterns id_patterns;
 	/* Reassigned before each simplification; never a retained lookup key. */
 	size_t simplify_ordinal;
-	/* Derived lookup chains, valid only while the owning list has an index. */
+	/* Derived chains are valid only while the owning list has an index. */
 	struct window_style *lookup_next;
 	size_t lookup_ordinal;
 #if 0

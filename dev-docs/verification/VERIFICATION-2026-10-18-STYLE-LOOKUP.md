@@ -81,3 +81,14 @@ Pending one frozen six-target/ten-profile checkpoint, fresh installs, authentica
 BSD default displays, staged client checks and affected scoped sanitizers.
 Native-CPU sanitizer, physical GPU/input, toolkit/compositor and release coverage
 retain their separate owners. A PR does not trigger another matrix.
+
+## Source binding after formatting review
+
+The combined run consumes the exact `f49b9d3e1` archive throughout. A subsequent
+publication-only correction wraps new lines in four C/header files to the
+80-column convention and tightens equivalent comments. A retained normalized
+C token/concatenated-string proof binds both byte hashes for each file; no
+executable token or string value changes. Debug/assert line locations can differ.
+Guest source/builds and frozen archives remain unchanged. Formatting uses source
+review/hygiene checks and does not trigger another matrix. Final evidence will
+identify this delta separately from the qualified runtime.

@@ -622,6 +622,9 @@ typedef struct window_style
 	style_match_patterns id_patterns;
 	/* Reassigned before each simplification; never a retained lookup key. */
 	size_t simplify_ordinal;
+	/* Derived lookup chains, valid only while the owning list has an index. */
+	struct window_style *lookup_next;
+	size_t lookup_ordinal;
 #if 0
 	WindowConditionMask *condition_mask;
 #endif
@@ -694,12 +697,20 @@ typedef struct window_style
 	unsigned has_icon_title_format_string : 1;
 } window_style;
 
+typedef struct
+{
+	window_style *head[STYLE_LOOKUP_BUCKETS];
+} style_lookup_index;
+
 typedef struct window_style_list
 {
 	struct window_style_list	*next;
 	style_id_t			 flags;
 	window_style			*first_style;
 	window_style			*last_style;
+	size_t style_count;
+	size_t indexed_count;
+	style_lookup_index *lookup_index;
 } window_style_list;
 
 typedef struct window_g

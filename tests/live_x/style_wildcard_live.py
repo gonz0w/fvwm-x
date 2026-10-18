@@ -77,6 +77,19 @@ def client_checks(args):
                 time.monotonic() + 10, process=None)
 
         check(3)
+        noise = ''.join(f'Style {selector} BorderWidth 19\n'
+                        for field in ('compatibility', 'Resource', 'Class',
+                                      'Name', 'Icon')
+                        for i in range(40)
+                        for selector in [f'index-no-client-{i}' if
+                                         field == 'compatibility' else
+                                         f'({field} index-no-client-{i})'])
+        noise += ''.join(f'Style (WindowID 0x{0x7f000000+i:x}) BorderWidth 19\n'
+                         for i in range(40))
+        connection.send((noise + 'UpdateStyles\n').encode())
+        connection.echo('index-noise-ready')
+        check(3)
+        evidence['index_noise_rules'] = 240
         cases = [('quoted-literal', '"FVWM transition probe"', 15),
                  ('minimum', 'FVWM' + '?'*40 + '*', 3),
                  ('suffix', 'FVWM?*wrong', 3),
@@ -95,6 +108,20 @@ def client_checks(args):
             check(3)
             evidence['cases'].append({'case': label, 'selector': selector,
                 'applied_width': width, 'removed_width': 3})
+        evidence['lookup_candidates'] = []
+        for label, selector in (
+                ('compatibility', '"FVWM transition probe"'),
+                ('explicit', '(Name "FVWM transition probe", Resource *)'),
+                ('window-id', f'(WindowID 0x{client.window:x})')):
+            connection.send((f'Style {selector} BorderWidth 13, HandleWidth 13\n'
+                             'UpdateStyles\n').encode())
+            connection.echo('index-' + label + '-applied')
+            check(13)
+            connection.send((f'DestroyStyle {selector}\nUpdateStyles\n').encode())
+            connection.echo('index-' + label + '-removed')
+            check(3)
+            evidence['lookup_candidates'].append({'case': label,
+                'applied_width': 13, 'removed_width': 3})
         evidence['simplification'] = []
         pairs = [
             ('literal', '"FVWM transition probe"', '"other client"'),

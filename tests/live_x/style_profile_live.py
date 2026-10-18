@@ -91,6 +91,41 @@ def run(args):
                         wildcard.extend(specialized)
                     else:
                         assert not specialized
+            index_work = []
+            for reference, collision in ((False, False), (True, False),
+                                         (False, True)):
+                for size in (64, 256):
+                    label = f'index-{size}-{reference}-{collision}'
+                    environment = {
+                        'FVWM_STYLE_PROFILE_MODE': 'index',
+                        'FVWM_STYLE_PROFILE_SIZE': str(size),
+                        'FVWM_STYLE_PROFILE_WINDOWS': '1'}
+                    if reference:
+                        environment['FVWM_STYLE_PROFILE_REFERENCE'] = '1'
+                    if collision:
+                        environment['FVWM_STYLE_INDEX_COLLISION'] = '1'
+                    process = runtime.start(label,
+                        [str(args.fvwm), '-d', display, '-f', '/dev/null'],
+                        label + '.log', runtime.environment(environment))
+                    assert process.wait_until_exit(time.monotonic() + 45) == 0
+                    work = [json.loads(line.removeprefix('STYLE_INDEX_WORK '))
+                            for line in process.log_path.read_text().splitlines()
+                            if line.startswith('STYLE_INDEX_WORK ')]
+                    assert len(work) == 12
+                    assert [(r['case'], r['target']) for r in work] == [
+                        (kind, target) for kind in
+                        ('window-id', 'explicit', 'compatibility')
+                        for target in range(4)]
+                    for r in work:
+                        assert r['reference'] == reference
+                        assert r['collision'] == collision
+                        assert r['rules'] == size and r['lookups'] == 32
+                        if reference or collision or (size == 64 and
+                                                     r['case'] == 'explicit'):
+                            assert r['visits'] == 32 * (size + 1)
+                        else:
+                            assert 64 <= r['visits'] < 32 * (size + 1)
+                    index_work.extend(work)
             repeated = []
             for collision in (False, True):
                 label = f'repeat-{collision}'
@@ -114,7 +149,7 @@ def run(args):
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,
                             'wildcard_work': wildcard,
-                            'simplify_work': repeated},
+                            'simplify_work': repeated, 'index_work': index_work},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

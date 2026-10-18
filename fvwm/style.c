@@ -982,6 +982,33 @@ static void free_style_mask(window_style *style, style_flags *mask)
 	return;
 }
 
+/* Discard the only roots before retiring or moving rule records. Stale
+ * intrusive links are never read without a live index; rebuilding overwrites
+ * all of them. No pending callback or window retains an index pointer. */
+static void invalidate_style_lookup(window_style_list *list)
+{
+	free(list->lookup_index);
+	list->lookup_index = NULL;
+}
+
+static void prepare_style_lookup(window_style_list *list)
+{
+	window_style *style;
+	size_t ordinal = list->style_count;
+
+	if (list->lookup_index)
+		return;
+	list->lookup_index = fxcalloc(1, sizeof(*list->lookup_index));
+	for (style = list->last_style; style; style = SGET_PREV_STYLE(*style))
+	{
+		unsigned bucket = style->id_patterns.lookup_bucket;
+
+		style->lookup_ordinal = ordinal--;
+		style->lookup_next = list->lookup_index->head[bucket];
+		list->lookup_index->head[bucket] = style;
+	}
+}
+
 static void add_style_to_list(window_style *new_style)
 {
 	/* This used to contain logic that returned if the style didn't contain
@@ -1014,6 +1041,9 @@ static void add_style_to_list(window_style *new_style)
 		return;
 	}
 
+	invalidate_style_lookup(list);
+	list->style_count++;
+	list->indexed_count += new_style->id_patterns.lookup_bucket != 0;
 	if (list->last_style != NULL)
 	{
 		/* not first entry in list chain this entry to the list */
@@ -1038,6 +1068,9 @@ static void remove_style_from_list(window_style_list *list,
 	window_style *prev;
 	window_style *next;
 
+	invalidate_style_lookup(list);
+	list->style_count--;
+	list->indexed_count -= style->id_patterns.lookup_bucket != 0;
 	prev = SGET_PREV_STYLE(*style);
 	next = SGET_NEXT_STYLE(*style);
 	if (!prev)
@@ -1226,6 +1259,7 @@ static inline Bool _simplify_style_list(window_style_list *list)
 				/* merge cmp into cur and delete it
 				 * afterwards */
 				merge_styles(cmp, cur, True);
+				invalidate_style_lookup(list);
 				free_style(cur);
 				memcpy(cur, cmp, sizeof(window_style));
 				/* restore fields overwritten by memcpy */
@@ -4915,6 +4949,8 @@ void lookup_style(FvwmWindow *fw, window_style *styles)
 	style_match_subject subject;
 	window_style_list *list;
 	window_style *nptr;
+	unsigned buckets[STYLE_LOOKUP_STREAMS];
+	unsigned bucket_count = 0;
 
 	style_match_subject_init(&subject, FW_W(fw), fw->class.res_name,
 		fw->class.res_class, fw->name.name, fw->icon_name.name);
@@ -4923,14 +4959,54 @@ void lookup_style(FvwmWindow *fw, window_style *styles)
 	/* look thru all stile list in order of priority*/
 	for (list = all_styles; list != NULL; list =SLGET_NEXT_LIST(*list))
 	{
-		/* look thru all styles in order defined. */
-		for (nptr = list->first_style; nptr != NULL;
-		     nptr = SGET_NEXT_STYLE(*nptr))
+		if (style_match_lookup_enabled(list->style_count, list->indexed_count))
 		{
-			if (style_match_id(&SGET_ID(*nptr), &nptr->id_patterns,
-				&subject))
+			window_style *streams[STYLE_LOOKUP_STREAMS];
+			unsigned active = 0;
+
+			prepare_style_lookup(list);
+			if (!bucket_count)
+				bucket_count = style_match_lookup_subject(&subject, buckets);
+			for (unsigned i = 0; i < bucket_count; i++)
 			{
-				merge_styles(styles, nptr, False);
+				nptr = list->lookup_index->head[buckets[i]];
+				if (nptr)
+					streams[active++] = nptr;
+			}
+			/* At most nine ordered chains. A rule has one owner chain;
+			 * merging their heads by ordinal preserves exact precedence. */
+			for (;;)
+			{
+				unsigned first = 0;
+
+				nptr = NULL;
+				for (unsigned i = 0; i < active; i++)
+				{
+					if (!nptr ||
+					    streams[i]->lookup_ordinal < nptr->lookup_ordinal)
+					{
+						nptr = streams[i];
+						first = i;
+					}
+				}
+				if (!nptr)
+					break;
+				streams[first] = nptr->lookup_next;
+				if (!streams[first])
+					streams[first] = streams[--active];
+				if (style_match_id(&SGET_ID(*nptr), &nptr->id_patterns,
+				    &subject))
+					merge_styles(styles, nptr, False);
+			}
+		}
+		else
+		{
+			for (nptr = list->first_style; nptr;
+			     nptr = SGET_NEXT_STYLE(*nptr))
+			{
+				if (style_match_id(&SGET_ID(*nptr), &nptr->id_patterns,
+				    &subject))
+					merge_styles(styles, nptr, False);
 			}
 		}
 	}

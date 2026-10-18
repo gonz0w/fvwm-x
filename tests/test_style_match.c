@@ -85,7 +85,22 @@ static void compare(const style_id_t *id, style_match_subject *subject)
 	style_match_patterns patterns;
 
 	style_match_prepare(&patterns, id);
-	assert(style_match_id(id, &patterns, subject) == reference(id, subject));
+	bool matches = reference(id, subject);
+	unsigned buckets[STYLE_LOOKUP_STREAMS];
+	unsigned count = style_match_lookup_subject(subject, buckets);
+	bool candidate = false;
+
+	assert(count > 0 && count <= STYLE_LOOKUP_STREAMS);
+	assert(patterns.lookup_bucket < STYLE_LOOKUP_BUCKETS);
+	for (unsigned i = 0; i < count; i++)
+	{
+		assert(buckets[i] < STYLE_LOOKUP_BUCKETS);
+		for (unsigned j = 0; j < i; j++)
+			assert(buckets[i] != buckets[j]);
+		candidate |= buckets[i] == patterns.lookup_bucket;
+	}
+	assert(!matches || candidate);
+	assert(style_match_id(id, &patterns, subject) == matches);
 }
 
 static void differential(void)
@@ -391,6 +406,12 @@ static void overlap_policy(void)
 
 int main(void)
 {
+	assert(!style_match_lookup_enabled(31, 31));
+	assert(style_match_lookup_enabled(32, 32));
+	assert(style_match_lookup_enabled(64, 32));
+	assert(!style_match_lookup_enabled(65, 32));
+	assert(!style_match_lookup_enabled(SIZE_MAX, 32));
+	assert(style_match_lookup_enabled(SIZE_MAX, SIZE_MAX));
 	differential();
 	work_counts();
 	wildcard_work_counts();

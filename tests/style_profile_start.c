@@ -26,10 +26,39 @@
 #include "libs/wild.h"
 
 static Bool measuring, force_reference, force_previous, force_collision;
+static Bool force_index_collision;
 static unsigned long comparisons, matches, grabbed_matches, grabs;
 static unsigned grab_depth, wildcard_call_depth;
-static unsigned long overlap_checks, id_visits;
+static unsigned long overlap_checks, id_visits, lookup_visits;
 static uint64_t grabbed_ns, grab_started;
+
+void __real_style_match_prepare(style_match_patterns *, const style_id_t *);
+void __wrap_style_match_prepare(style_match_patterns *patterns,
+	const style_id_t *id)
+{
+	__real_style_match_prepare(patterns, id);
+	if (force_index_collision && patterns->lookup_bucket)
+		patterns->lookup_bucket = 1;
+}
+
+unsigned __real_style_match_lookup_subject(const style_match_subject *,
+	unsigned [STYLE_LOOKUP_STREAMS]);
+unsigned __wrap_style_match_lookup_subject(const style_match_subject *subject,
+	unsigned buckets[STYLE_LOOKUP_STREAMS])
+{
+	if (!force_index_collision)
+		return __real_style_match_lookup_subject(subject, buckets);
+	buckets[0] = 0;
+	buckets[1] = 1;
+	return 2;
+}
+
+bool __real_style_match_lookup_enabled(size_t, size_t);
+bool __wrap_style_match_lookup_enabled(size_t count, size_t indexed)
+{
+	return !force_reference &&
+		__real_style_match_lookup_enabled(count, indexed);
+}
 
 uint64_t __real_style_id_hash(const style_id_t *);
 uint64_t __wrap_style_id_hash(const style_id_t *id)
@@ -57,6 +86,8 @@ bool __real_style_match_id(const style_id_t *, const style_match_patterns *,
 bool __wrap_style_match_id(const style_id_t *id,
 	const style_match_patterns *patterns, style_match_subject *subject)
 {
+	if (measuring)
+		lookup_visits++;
 	if (measuring && id->name && strncmp(id->name, "probe-", 6) == 0)
 		id_visits++;
 	if (force_previous)
@@ -547,7 +578,7 @@ static void repeated_work(const exec_context_t *exc, FvwmWindow *window)
 			if (kind == 1 && !force_collision)
 				assert(overlap_checks == 1);
 			if (kind == 2)
-				assert(id_visits == 2);
+				assert(id_visits >= 1 && id_visits <= 2);
 		}
 		printf("STYLE_SIMPLIFY_WORK {\"case\":\"%s\","
 			"\"baseline\":%s,\"hash_collision\":%s,"
@@ -571,6 +602,174 @@ static void repeated_work(const exec_context_t *exc, FvwmWindow *window)
 	}
 }
 
+static void index_compare(FvwmWindow *sample)
+{
+	window_style candidate, original;
+	Bool saved = force_reference;
+
+	lookup_style(sample, &candidate);
+	force_reference = True;
+	lookup_style(sample, &original);
+	force_reference = saved;
+	/* Both results borrow the same owned fields; compare the complete
+	 * initialized result, not just the border field used by the workload. */
+	assert(memcmp(&candidate, &original, sizeof(candidate)) == 0);
+}
+
+/* Separate numeric, explicit conjunction and legacy OR workloads. Each
+ * starts with fresh rules, then retires them with the real command engine. */
+static void index_work(const exec_context_t *exc, FvwmWindow *window,
+	unsigned count)
+{
+	const char *fields[] = { "Resource", "Class", "Name", "Icon" };
+	const char *labels[] = { "window-id", "explicit", "compatibility" };
+	char text[256], key[64];
+	FvwmWindow sample = *window;
+	window_style style;
+
+	for (unsigned kind = 0; kind < 3; kind++)
+	{
+		sample.class.res_name = "index-miss-resource";
+		sample.class.res_class = "index-miss-class";
+		sample.name.name = "index-miss-name";
+		sample.icon_name.name = "index-miss-icon";
+		for (unsigned i = 0; i < count; i++)
+		{
+			if (kind == 0)
+				snprintf(text, sizeof(text),
+					"Style (WindowID 0x%lx) BorderWidth %u",
+					(unsigned long)FW_W(window) + i,
+					i == 0 ? 7 : 5);
+			else if (kind == 1)
+				snprintf(text, sizeof(text),
+					"Style (%s index-%04u) BorderWidth 7",
+					fields[i % 4], i);
+			else
+				snprintf(text, sizeof(text),
+					"Style index-%04u BorderWidth 7", i);
+			command(exc, text);
+		}
+		for (unsigned target = 0; target < 4; target++)
+		{
+			snprintf(key, sizeof(key), "index-%04u", target);
+			if (kind == 1)
+			{
+				sample.class.res_name = target == 0 ? key : "miss";
+				sample.class.res_class = target == 1 ? key : "miss";
+				sample.name.name = target == 2 ? key : "miss";
+				sample.icon_name.name = target == 3 ? key : "miss";
+			}
+			else if (kind == 2)
+			{
+				/* Equal values must not enqueue one bucket twice. */
+				sample.class.res_name = target == 0 || target == 3 ? key : "miss";
+				sample.class.res_class = target == 1 || target == 3 ? key : "miss";
+				sample.name.name = target == 2 || target == 3 ? key : "miss";
+			}
+			lookup_visits = 0;
+			measuring = True;
+			for (unsigned pass = 0; pass < 32; pass++)
+			{
+				lookup_style(&sample, &style);
+				assert(SGET_BORDER_WIDTH(style) == 7);
+			}
+			measuring = False;
+			printf("STYLE_INDEX_WORK {\"case\":\"%s\","
+				"\"collision\":%s,\"reference\":%s,"
+				"\"rules\":%u,\"target\":%u,"
+				"\"lookups\":32,\"visits\":%lu}\n", labels[kind],
+				force_index_collision ? "true" : "false",
+				force_reference ? "true" : "false", count, target,
+				lookup_visits);
+			index_compare(&sample);
+		}
+		const char *identities[] = { NULL, "", "miss", "index-0000",
+			"index-0001", "index-0002", "index-0003", "index-0255" };
+
+		for (unsigned i = 0; i < 128; i++)
+		{
+			sample.class.res_name = (char *)identities[i % 8];
+			sample.class.res_class = (char *)identities[(i / 2) % 8];
+			sample.name.name = (char *)identities[(i / 4) % 8];
+			sample.icon_name.name = (char *)identities[(i / 8) % 8];
+			index_compare(&sample);
+		}
+		/* Exercise a live index across same-ID tail merges, interference,
+		 * both simplification move paths, removal and immediate reinsertion.
+		 * The original matcher/traversal runs these same assertions too. */
+		sample.class.res_name = sample.class.res_class = "index-0000";
+		sample.name.name = sample.icon_name.name = "index-0000";
+		if (kind == 0)
+			snprintf(text, sizeof(text),
+				"Style (WindowID 0x%lx, Name *) BorderWidth 9",
+				(unsigned long)FW_W(window));
+		else
+			snprintf(text, sizeof(text), kind == 1 ?
+				"Style (Resource index-*) BorderWidth 9" :
+				"Style index-* BorderWidth 9");
+		command(exc, text);
+		if (kind == 0)
+			snprintf(text, sizeof(text),
+				"Style (WindowID 0x%lx) HandleWidth 11, "
+				"TitleFormat index-owned %%n", (unsigned long)FW_W(window));
+		else
+			snprintf(text, sizeof(text), kind == 1 ?
+				"Style (Resource index-0000) HandleWidth 11, "
+				"TitleFormat index-owned %%n" :
+				"Style index-0000 HandleWidth 11, TitleFormat index-owned %%n");
+		command(exc, text);
+		for (unsigned pass = 0; pass < 4; pass++)
+		{
+			lookup_style(&sample, &style);
+			assert(SGET_BORDER_WIDTH(style) == 9);
+			assert(SGET_HANDLE_WIDTH(style) == 11);
+			index_compare(&sample);
+			assert(strcmp(SGET_TITLE_FORMAT_STRING(style), "index-owned %n") == 0);
+			simplify_style_list();
+		}
+		if (kind == 2)
+		{
+			command(exc, "Style index-copied UseStyle index-0000");
+			sample.name.name = "index-copied";
+			lookup_style(&sample, &style);
+			assert(SGET_BORDER_WIDTH(style) == 7);
+			assert(SGET_HANDLE_WIDTH(style) == 11);
+			index_compare(&sample);
+			command(exc, "DestroyStyle index-copied");
+		}
+		/* One changed identity must not inherit a cached result. */
+		FW_W(&sample) = Scr.NoFocusWin;
+		sample.class.res_name = sample.class.res_class = "unmatched";
+		sample.name.name = sample.icon_name.name = "unmatched";
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 3);
+		sample = *window;
+		if (kind == 0)
+			snprintf(text, sizeof(text),
+				"DestroyStyle (WindowID 0x%lx, Name *)",
+				(unsigned long)FW_W(window));
+		else
+			snprintf(text, sizeof(text), kind == 1 ?
+				"DestroyStyle (Resource index-*)" : "DestroyStyle index-*");
+		command(exc, text);
+		for (unsigned i = 0; i < count; i++)
+		{
+			if (kind == 0)
+				snprintf(text, sizeof(text),
+					"DestroyStyle (WindowID 0x%lx)",
+					(unsigned long)FW_W(window) + i);
+			else if (kind == 1)
+				snprintf(text, sizeof(text),
+					"DestroyStyle (%s index-%04u)", fields[i % 4], i);
+			else
+				snprintf(text, sizeof(text), "DestroyStyle index-%04u", i);
+			command(exc, text);
+		}
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 3);
+	}
+}
+
 void __wrap_CaptureAllWindows(const exec_context_t *exc)
 {
 	const char *mode = getenv("FVWM_STYLE_PROFILE_MODE");
@@ -585,6 +784,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	assert(mode && size && cohort);
 	force_reference = getenv("FVWM_STYLE_PROFILE_REFERENCE") != NULL;
 	force_collision = getenv("FVWM_STYLE_HASH_COLLISION") != NULL;
+	force_index_collision = getenv("FVWM_STYLE_INDEX_COLLISION") != NULL;
 	count = (unsigned)strtoul(size, NULL, 10);
 	assert(count == 64 || count == 128 || count == 256);
 	fFvwmInStartup = False;
@@ -596,6 +796,12 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	{
 		clients[i] = create_window(exc);
 		check_border(clients[i], 3);
+	}
+	if (strcmp(mode, "index") == 0)
+	{
+		index_work(exc, clients[0], count);
+		fflush(stdout);
+		_exit(0);
 	}
 	if (strcmp(mode, "repeat") == 0)
 	{

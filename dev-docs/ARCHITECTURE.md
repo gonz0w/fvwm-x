@@ -780,3 +780,8 @@ Optional fixed-position and literal-membership proofs use a conservative work
 budget. Larger pairs remain unknown and keep their original records; normal
 configuration parsing/matching is not capped. The policy bounds extra proof work
 without a new state owner, cached result or configuration directive.
+
+The [combined disjointness receipt](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP-COMBINED.json)
+keeps original broad and final bounded source scopes separate. The optional
+proof budget is per field (4096 fixed positions or matcher size product);
+existing merge copy/free allocation and normal long-pattern matching remain.

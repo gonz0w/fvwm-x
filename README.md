@@ -19,7 +19,7 @@ have merged with combined six-target checkpoints.
 [Build reuse](dev-docs/verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
 now shares test objects and narrows style dependencies.
 Three [style-overlap proofs](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md)
-pass focused checks; combined qualification is pending.
+pass their combined affected checkpoint; an SVG startup/install gap remains.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

@@ -2,8 +2,8 @@
 
 STYLE-01 #38 continues from merged PR #108,
 `b011bb7effe2757cb1338a55ab3ba44ac7d84192`, as one three-story checkpoint.
-Implementation and focused checks pass; one combined qualification checkpoint
-is pending. This report does not yet claim its completion.
+The original combined checkpoint and final affected completion are complete.
+Owning checks pass; the original SVG startup/install gap remains explicit.
 
 ## Three related improvements
 
@@ -24,9 +24,9 @@ same explicit field or conflicting numeric IDs can establish disjointness;
 legacy compatibility ORs and different identity fields remain conservative.
 Rule precedence and all original update/publication/grab/lifetime owners remain.
 No configuration name, argument, format or wildcard byte meaning changes.
-`libs/wild.c` is unchanged. No per-rule metadata, allocation or retained result
-is added. Fixed-position checking scans pattern width; literal matching can
-revisit spans. Lower record counts are not a universal elapsed-time claim.
+`libs/wild.c` is unchanged. The proof helpers add no per-rule metadata or heap
+storage; eligible merges retain their existing copy/free allocation paths.
+Fixed-position checking scans pattern width; literal matching can revisit spans. Lower record counts are not a universal elapsed-time claim.
 
 ## Review refinement: bounded optional work
 
@@ -46,11 +46,9 @@ matching; a fourth actual-core control retains three records for an over-budget
 driver emits sixteen rows, including the four budget-control rows. Borrowed title,
 reference, collision, repetition and removal checks remain.
 
-The running broad results are retained with their original source. The corrected
-candidate receives a separate affected six-target/ten-profile/scoped/install/X
-completion rather than another full suite. Its exact source and results remain
-pending; this report does not claim final qualification yet. Proof helpers add no
-heap storage or retained metadata; eligible merges keep existing copy/free paths.
+The broad results retain their original source. The corrected candidate passes
+a separate affected six-target/ten-profile/scoped/install/X completion. The
+correction repeats no full suite; both exact scopes appear below.
 
 ## Measured baseline and candidate
 
@@ -67,7 +65,7 @@ prefix/suffix-only proof. The source-bound baseline records six observations
 | Different literal at an internal fixed position | 3 | 2 | 3 |
 | Literal excluded by a general star pattern | 3 | 2 | 3 |
 
-Each candidate driver supplies twelve new rows across normal/reference and
+Each original driver supplies twelve new rows across normal/reference and
 forced hash-collision streams. Before/after simplification, all three witness
 names retain expected border/handle/title results; complete initialized lookups
 are compared with the independent original predicate. Borrowed strings are
@@ -75,7 +73,7 @@ consumed before merging/retirement. Repeated simplification and selector removal
 retain the original ownership and restore defaults. These deliberately small
 workloads measure three-to-two records; they do not establish session-wide speed.
 
-## Focused evidence and pending checkpoint
+## Focused evidence and completed checkpoints
 
 - Incremental Linux policy tests pass after each coherent proof. Existing
   NULL/empty/escape/high-byte/all-selector, matcher, overlap and index checks
@@ -89,9 +87,89 @@ workloads measure three-to-two records; they do not establish session-wide speed
   extents through the existing command/update/removal path.
 - No registration or semantic deadline is weakened. New core work is collected
   inside the two existing repeated-ID children; no extra child is needed.
-- One frozen six-target/ten-profile build/test/install/default-X and scoped
-  sanitizer checkpoint follows. Reuse warm profiles and preserve original
-  failures instead of rerunning known unrelated failures for a clean result.
+- One broad six-target/ten-profile matrix runs for the three-story batch. A
+  review correction adds bounds and repeats only four affected entries per
+  profile, relevant sanitizer/install/default-X and real-client checks.
+
+## Exact source scopes
+
+| Scope | Signed/DCO commit | Tree | Archive SHA256 |
+| --- | --- | --- | --- |
+| Original broad | `97c728358660675353de35f866c833c926b4f203` | `94ed5a0205c52276daa63b4cd21be004885d218c` | `c5a8dc9783c78e30a16ae790397e304148bf7388318081b77e7ac028e7b0451a` |
+| Final bounded implementation | `da60c4f3eeaca9521b2b71973fe661546f374810` | `118742b51b2db1c3006b5ba61b49e6afea65dcbb` | `9cdcaeb286263468781d1f057f214858bcc5fa587e7bff89a5f09c08115f5995` |
+
+Each archive has 1989 regular inputs matching normalized Git bytes and modes.
+Guest pre/postchecks bind the executed source. Final documentation/evidence
+changes leave every tested non-Markdown input unchanged. The final correction
+changes only the optional proof work and its coverage; the broader generic
+geometry/EWMH observations retain their original source, rather than claiming
+a repeated full matrix for the final source.
+
+| Profile | Original broad passed / entries | Final affected passed / entries | Final fresh stage |
+| --- | --- | --- | --- |
+| freebsd-amd64/default | 243 / 243 | 4 / 4 | yes |
+| freebsd-arm64/default | 243 / 243 | 4 / 4 | yes |
+| fvwm-x-linux-arm64-svg/clang | 255 / 255 | 4 / 4 | yes |
+| fvwm-x-linux-arm64-svg/gcc | 255 / 255 | 4 / 4 | yes |
+| fvwm-x-linux-arm64-svg/minimal | 203 / 203 | 4 / 4 | yes |
+| fvwm-x-linux-arm64-svg/software | 234 / 234 | 4 / 4 | yes |
+| linux-amd64/clang | 255 / 255 | 4 / 4 | yes |
+| linux-amd64/gcc | 255 / 255 | 4 / 4 | yes |
+| openbsd-amd64/default | 242 / 243 | 4 / 4 | prevented by original SVG failure |
+| openbsd-arm64/default | 243 / 243 | 4 / 4 | yes |
+
+The original source passes **1991/1992 standard and 437/437 optional** entries.
+All eight owning/retained style/update/EWMH entries pass all ten profiles.
+Its scoped Linux ARM Clang/compiler-rt ASan+UBSan passes four entries, nine fresh
+stages bind 135 code/88 catalog identities, and four authenticated BSD default
+displays pass 22 fixture invocations with clean teardown. Nine staged clients
+pass 180 style cases; 18 generic geometry invocations pass 126 cases at 1x/1.5x.
+
+The final bounded source passes **40/40 affected entries** (32 standard, eight
+optional): style-match, style-id-filter, style-profile-xvfb, window-update-xvfb.
+Four final scoped ASan+UBSan entries pass; policy retains leak detection while
+`_exit` core probes retain leak-disabled scope. Nine fresh stages bind 135 code/
+88 catalogs to tested builds and Meson's expected install-rpath transformation.
+Four authenticated BSD default displays pass twelve style/update/real-client
+fixtures, fresh vendor logs, cookie-less refusal and clean teardown. Ten actual
+client invocations pass 200 style cases: **nine staged and one built** (OpenBSD
+AMD64). No fresh OpenBSD AMD64 install or staged geometry is claimed.
+
+Final actual-core evidence contains 240 overlap rows: 180 three-family rows and
+60 budget controls. Normal/collision streams reduce each selected list to two;
+reference streams retain three. Over-budget controls retain three in all modes.
+There are also 630 retained cursor rows, 1080 candidate rows (360 collision),
+90 mixed-domain/long-name rows, 330 workloads, 120 update-barrier observations
+and 22 policy unit executions. Repeated observer vectors are not independent
+mutations. Original registrations, semantic checks and deadlines remain.
+
+`make verify` runs once on the original source: 166 passes / eleven native-Meson
+capability skips on macOS. Its portable inputs are unchanged by the correction.
+Both sets of eleven compiler logs have zero affected-file/changed-line
+diagnostics; unrelated legacy warnings remain recorded. Source arithmetic,
+borrowed lifetimes, merge/removal ownership, C line widths and final repository
+hygiene receive local review. Maintainer review remains pending.
+
+## Retained broad failure
+
+OpenBSD AMD64 `bsd-x - fvwm3:image-svg-isolation-xvfb` fails after 7.6338 seconds
+with `ConnectionRefusedError [Errno 61]` at `image_svg_live.py:84`, opening the
+MFL endpoint after pathname existence. The unchanged fixture uses path readiness
+then a direct connection. Its startup configuration uses only
+`Style * TileCascadePlacement` plus MFL; it does not exercise the new proofs.
+The observation belongs to IMAGE-01 and remains unresolved. The readiness
+pattern resembles the separate hardening fixture repaired in PR #104, but that
+is not evidence of this fixture's cause. No unchanged SVG retry or repair is
+added to this batch, and no graphics/VESA cause is established.
+
+The original failed row/guard and prevented fresh install remain. Its original
+authenticated default server passes built style/update/EWMH/real-client checks;
+the final bounded built source passes all four affected entries and twenty
+real-client cases. The missing fresh stage and two staged geometry invocations
+remain gaps. No broad all-green qualification is claimed.
+
+[Machine receipt](VERIFICATION-2026-10-18-STYLE-OVERLAP-COMBINED.json) contains
+both raw scopes, archive identities, measurements and diagnostic reviews.
 
 The first affected Linux build caught a test-only undeclared reverse-result
 variable introduced during formatting cleanup. Its log/source/archive remain;

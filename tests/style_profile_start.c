@@ -25,19 +25,31 @@
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 
-static Bool measuring, force_reference, force_previous;
+static Bool measuring, force_reference, force_previous, force_collision;
 static unsigned long comparisons, matches, grabbed_matches, grabs;
 static unsigned grab_depth, wildcard_call_depth;
+static unsigned long overlap_checks, id_visits;
 static uint64_t grabbed_ns, grab_started;
 
-bool __real_style_id_filter_may_repeat(const style_id_filter *,
-	const style_id_t *);
-bool __wrap_style_id_filter_may_repeat(const style_id_filter *filter,
-	const style_id_t *id)
+uint64_t __real_style_id_hash(const style_id_t *);
+uint64_t __wrap_style_id_hash(const style_id_t *id)
 {
-	/* A fully conservative answer exercises the preserved merge traversal.
-	 * The production helper is always called in the optimized mode. */
-	return force_reference || __real_style_id_filter_may_repeat(filter, id);
+	return force_collision ? 0 : __real_style_id_hash(id);
+}
+
+bool __real_style_id_filter_hash_may_repeat(const style_id_filter *, uint64_t);
+bool __wrap_style_id_filter_hash_may_repeat(const style_id_filter *filter,
+	uint64_t hash)
+{
+	return force_reference ||
+		__real_style_id_filter_hash_may_repeat(filter, hash);
+}
+
+size_t __real_style_id_filter_first(const style_id_filter *, uint64_t);
+size_t __wrap_style_id_filter_first(const style_id_filter *filter,
+	uint64_t hash)
+{
+	return force_reference ? 0 : __real_style_id_filter_first(filter, hash);
 }
 
 bool __real_style_match_id(const style_id_t *, const style_match_patterns *,
@@ -45,6 +57,8 @@ bool __real_style_match_id(const style_id_t *, const style_match_patterns *,
 bool __wrap_style_match_id(const style_id_t *id,
 	const style_match_patterns *patterns, style_match_subject *subject)
 {
+	if (measuring && id->name && strncmp(id->name, "probe-", 6) == 0)
+		id_visits++;
 	if (force_previous)
 	{
 		/* Disable precisely this batch's metadata. The existing literal,
@@ -76,6 +90,21 @@ bool __wrap_style_match_id(const style_id_t *id,
 	    !matchWildcards(id->icon, subject->value[3]))
 		return false;
 	return !id->flags.has_window_id || id->window_id == subject->window;
+}
+
+bool __real_style_match_ids_may_overlap(const style_id_t *,
+	const style_match_patterns *, const style_id_t *,
+	const style_match_patterns *);
+bool __wrap_style_match_ids_may_overlap(const style_id_t *a,
+	const style_match_patterns *ap, const style_id_t *b,
+	const style_match_patterns *bp)
+{
+	if (measuring)
+		overlap_checks++;
+	if (force_reference)
+		return !a->flags.has_window_id || !b->flags.has_window_id ||
+			a->window_id == b->window_id;
+	return __real_style_match_ids_may_overlap(a, ap, b, bp);
 }
 
 static uint64_t now_ns(void)
@@ -465,6 +494,83 @@ static void wildcard_work(const exec_context_t *exc, FvwmWindow *window)
 	}
 }
 
+static void repeated_work(const exec_context_t *exc, FvwmWindow *window)
+{
+	Bool baseline = getenv("FVWM_STYLE_SIMPLIFY_BASELINE") != NULL;
+	FvwmWindow sample = *window;
+	window_style style;
+	char text[160];
+
+	for (unsigned kind = 0; kind < 3; kind++)
+	{
+		const char *labels[] = {
+			"fingerprint", "prefix-cutoff", "disjoint"
+		};
+		unsigned long scan_comparisons;
+
+		if (kind != 1)
+			command(exc, "Style (Name probe-repeat) BorderWidth 5");
+		for (unsigned i = 0; i < (kind == 2 ? 1U : 64U); i++)
+		{
+			snprintf(text, sizeof(text),
+				"Style (Name probe-other-%04u) "
+				"BorderWidth 9, HandleWidth 11", i);
+			command(exc, text);
+		}
+		if (kind == 1)
+		{
+			command(exc, "Style (Name probe-repeat) BorderWidth 5");
+			command(exc, "Style (Name probe-gap) BorderWidth 9");
+		}
+		command(exc, kind == 2 ?
+			"Style (Name probe-repeat) HandleWidth 7" :
+			"Style (Name probe-repeat) BorderWidth 7");
+		sample.name.name = "probe-repeat";
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == (kind == 2 ? 5 : 7));
+		comparisons = overlap_checks = id_visits = 0;
+		measuring = True;
+		simplify_style_list();
+		measuring = False;
+		scan_comparisons = comparisons;
+
+		measuring = True;
+		lookup_style(&sample, &style);
+		measuring = False;
+		assert(SGET_BORDER_WIDTH(style) == (kind == 2 ? 5 : 7));
+		if (kind == 2)
+			assert(SGET_HANDLE_WIDTH(style) == 7);
+		if (!baseline)
+		{
+			if (!force_collision)
+				assert(scan_comparisons == 1);
+			if (kind == 1 && !force_collision)
+				assert(overlap_checks == 1);
+			if (kind == 2)
+				assert(id_visits == 2);
+		}
+		printf("STYLE_SIMPLIFY_WORK {\"case\":\"%s\","
+			"\"baseline\":%s,\"hash_collision\":%s,"
+			"\"comparisons\":%lu,"
+			"\"overlap_checks\":%lu,\"lookup_rules\":%lu}\n",
+			labels[kind], baseline ? "true" : "false",
+			force_collision ? "true" : "false", scan_comparisons, overlap_checks, id_visits);
+		/* Repeat/deletion must see the same surviving owners. */
+		simplify_style_list();
+		command(exc, "DestroyStyle (Name probe-repeat)");
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 3);
+		for (unsigned i = 0; i < (kind == 2 ? 1U : 64U); i++)
+		{
+			snprintf(text, sizeof(text),
+				"DestroyStyle (Name probe-other-%04u)", i);
+			command(exc, text);
+		}
+		command(exc, "DestroyStyle (Name probe-gap)");
+		simplify_style_list();
+	}
+}
+
 void __wrap_CaptureAllWindows(const exec_context_t *exc)
 {
 	const char *mode = getenv("FVWM_STYLE_PROFILE_MODE");
@@ -478,6 +584,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	alarm(30);
 	assert(mode && size && cohort);
 	force_reference = getenv("FVWM_STYLE_PROFILE_REFERENCE") != NULL;
+	force_collision = getenv("FVWM_STYLE_HASH_COLLISION") != NULL;
 	count = (unsigned)strtoul(size, NULL, 10);
 	assert(count == 64 || count == 128 || count == 256);
 	fFvwmInStartup = False;
@@ -489,6 +596,12 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	{
 		clients[i] = create_window(exc);
 		check_border(clients[i], 3);
+	}
+	if (strcmp(mode, "repeat") == 0)
+	{
+		repeated_work(exc, clients[0]);
+		fflush(stdout);
+		_exit(0);
 	}
 	for (unsigned i = 0; i < count; i++)
 	{
@@ -528,7 +641,8 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	assert(grab_depth == 0);
 	if (strcmp(mode, "simplify") == 0)
 	{
-		assert(comparisons == (force_reference ?
+		assert(comparisons == 0);
+		assert(overlap_checks == (force_reference ?
 			(unsigned long)count * (count - 1) / 2 : 0));
 		assert(!Scr.flags.do_need_style_list_update);
 		lookup_control(clients[0], count);
@@ -557,10 +671,13 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	printf("STYLE_PROFILE {\"reference\":%s,\"mode\":\"%s\",\"rules\":%u,"
 		"\"windows\":%u,\"comparisons\":%lu,\"matches\":%lu,"
 		"\"grabbed_matches\":%lu,\"grabs\":%lu,"
-		"\"elapsed_ns\":%llu,\"grabbed_ns\":%llu}\n",
+		"\"elapsed_ns\":%llu,\"grabbed_ns\":%llu,"
+		"\"overlap_checks\":%lu}\n",
 		force_reference ? "true" : "false", mode, count, windows,
 		comparisons, matches, grabbed_matches,
-		grabs, (unsigned long long)elapsed, (unsigned long long)grabbed_ns);
+		grabs, (unsigned long long)elapsed,
+		(unsigned long long)grabbed_ns,
+		overlap_checks);
 	if (strcmp(mode, "lookup") == 0 && count == 64)
 	{
 		matching_work(exc, clients[0], count);

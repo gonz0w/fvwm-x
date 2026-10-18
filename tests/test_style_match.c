@@ -279,11 +279,122 @@ static void unnecessary_length_scans(void)
 	puts("prefix/star-only selectors avoid length scans: passed");
 }
 
+static void overlap_policy(void)
+{
+	const char *values[] = { NULL, "", "a", "b", "aa", "ab", "ba", "bb",
+		"aba", "*", "?", "\\", "a*", "b?", "ab-tail", "other" };
+	const char alphabet[] = "ab*?\\";
+	char patterns[156][4];
+	unsigned total = 0, common_matches = 0;
+	style_match_patterns ap, bp;
+	style_match_subject subject;
+	style_id_t a = { 0 }, b = { 0 };
+
+	for (unsigned length = 0, count = 1; length <= 3; length++, count *= 5)
+	{
+		for (unsigned word = 0; word < count; word++)
+		{
+			unsigned value = word;
+
+			for (unsigned i = 0; i < length; i++, value /= 5)
+				patterns[total][i] = alphabet[value % 5];
+			patterns[total++][length] = '\0';
+		}
+	}
+	assert(total == 156);
+	for (unsigned field = 0; field < STYLE_MATCH_FIELDS; field++)
+	{
+		set_flags(&a, 1U << field);
+		set_flags(&b, 1U << field);
+		for (unsigned i = 0; i < total; i++)
+		{
+			a.name = a.resource = a.class = a.icon = patterns[i];
+			style_match_prepare(&ap, &a);
+			for (unsigned j = 0; j < total; j++)
+			{
+				bool may_overlap;
+
+				b.name = b.resource = b.class = b.icon =
+					patterns[j];
+				style_match_prepare(&bp, &b);
+				may_overlap = style_match_ids_may_overlap(&a,
+					&ap, &b, &bp);
+
+				assert(may_overlap ==
+					style_match_ids_may_overlap(&b, &bp, &a, &ap));
+				for (unsigned v = 0;
+				     v < sizeof(values) / sizeof(*values); v++)
+				{
+					style_match_subject_init(&subject, 1,
+						values[v], values[v],
+						values[v], values[v]);
+					if (reference(&a, &subject) &&
+					    reference(&b, &subject))
+					{
+						assert(may_overlap);
+						common_matches++;
+					}
+				}
+			}
+		}
+	}
+	/* A compatibility selector can match a different identity field from
+	 * its neighbour. Explicit constraints on different fields can too. */
+	for (unsigned af = 0; af < 64; af++)
+	{
+		set_flags(&a, af);
+		a.name = a.resource = a.class = a.icon = "a";
+		a.window_id = 1;
+		style_match_prepare(&ap, &a);
+		for (unsigned bf = 0; bf < 64; bf++)
+		{
+			bool may_overlap;
+
+			set_flags(&b, bf);
+			b.name = b.resource = b.class = b.icon = "b";
+			b.window_id = 1;
+			style_match_prepare(&bp, &b);
+			may_overlap = style_match_ids_may_overlap(
+				&a, &ap, &b, &bp);
+
+			for (unsigned fields = 0; fields < 16; fields++)
+			{
+				style_match_subject_init(&subject, 1,
+					fields & 1 ? "a" : "b",
+					fields & 2 ? "a" : "b",
+					fields & 4 ? "a" : "b",
+					fields & 8 ? "a" : "b");
+				if (reference(&a, &subject) &&
+				    reference(&b, &subject))
+					assert(may_overlap);
+			}
+		}
+	}
+	set_flags(&a, 4);
+	set_flags(&b, 4);
+	const char *disjoint[][2] = {
+		{ "alpha", "beta" }, { "alpha*", "beta*" },
+		{ "*-alpha", "*-beta" }, { "a", "aa" }
+	};
+
+	for (unsigned i = 0; i < sizeof(disjoint) / sizeof(*disjoint); i++)
+	{
+		a.name = (char *)disjoint[i][0];
+		b.name = (char *)disjoint[i][1];
+		style_match_prepare(&ap, &a);
+		style_match_prepare(&bp, &b);
+		assert(!style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	}
+	printf("selector overlap: %u common-match witnesses retained; "
+		"literal/prefix/suffix controls passed\n", common_matches);
+}
+
 int main(void)
 {
 	differential();
 	work_counts();
 	wildcard_work_counts();
 	unnecessary_length_scans();
+	overlap_policy();
 	return 0;
 }

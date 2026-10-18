@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <X11/Xlib.h>
 
 struct style_id_t;
@@ -16,9 +17,10 @@ enum style_match_field
 	STYLE_MATCH_FIELDS
 };
 
-/* Derived only from the owning immutable selector strings; no pointers. */
+/* Derived from the owning immutable selector ID; no pointers. */
 typedef struct
 {
+	uint64_t fingerprint;
 	size_t prefix[STYLE_MATCH_FIELDS];
 	size_t minimum[STYLE_MATCH_FIELDS];
 	size_t suffix[STYLE_MATCH_FIELDS];
@@ -44,6 +46,9 @@ void style_match_prepare(style_match_patterns *patterns,
 	const struct style_id_t *id);
 void style_match_subject_init(style_match_subject *subject, Window window,
 	const char *resource, const char *class, const char *name, const char *icon);
+bool style_match_ids_may_overlap(const struct style_id_t *a,
+	const style_match_patterns *ap, const struct style_id_t *b,
+	const style_match_patterns *bp);
 bool style_match_id(const struct style_id_t *id,
 	const style_match_patterns *patterns, style_match_subject *subject);
 

@@ -768,3 +768,20 @@ The [combined family receipt](verification/VERIFICATION-2026-10-18-STYLE-CURSORS
 binds the matcher, enlarged inline metadata and normal/reference/collision probes
 to the qualified source. Subject ownership and every X/update barrier are
 unchanged.
+
+STYLE-01's [selector disjointness](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md)
+uses existing prepared lengths for exact/minimum rejection, fixed byte positions
+for question-only patterns, and the existing matcher for literal membership in
+an unescaped star pattern. Only shared explicit fields can establish disjointness.
+The literal subject borrows its string synchronously and retains its known length;
+no metadata, resource, update barrier or lifetime owner changes.
+
+Optional fixed-position and literal-membership proofs use a conservative work
+budget. Larger pairs remain unknown and keep their original records; normal
+configuration parsing/matching is not capped. The policy bounds extra proof work
+without a new state owner, cached result or configuration directive.
+
+The [combined disjointness receipt](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP-COMBINED.json)
+keeps original broad and final bounded source scopes separate. The optional
+proof budget is per field (4096 fixed positions or matcher size product);
+existing merge copy/free allocation and normal long-pattern matching remain.

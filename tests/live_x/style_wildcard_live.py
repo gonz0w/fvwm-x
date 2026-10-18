@@ -130,7 +130,10 @@ def client_checks(args):
         pairs = [
             ('literal', '"FVWM transition probe"', '"other client"'),
             ('prefix', 'FVWM*probe', 'Other*probe'),
-            ('suffix', '*transition*probe', '*other')]
+            ('suffix', '*transition*probe', '*other'),
+            ('length', 'FVWM?transition?probe', 'FVWM' + '?'*18 + '*'),
+            ('position', 'FVWM?t???????????????', 'FVWM?x???????????????'),
+            ('literal-member', '"FVWM transition probe"', 'FVWM*other*probe')]
         for label, selected, other in pairs:
             # Both fields conflict with the middle rule. Disjointness permits
             # the equal selectors to merge without changing this client.
@@ -158,7 +161,7 @@ def client_checks(args):
         if client:
             client.close()
     print(f'Real-client styles: {len(cases)} wildcard and '
-          'three simplification cases passed')
+          f'{len(pairs)} simplification cases passed')
 
 
 def run(args):

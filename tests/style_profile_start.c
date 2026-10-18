@@ -617,6 +617,122 @@ static void index_compare(FvwmWindow *sample)
 	assert(memcmp(&candidate, &original, sizeof(candidate)) == 0);
 }
 
+static void overlap_check_sample(FvwmWindow *sample, const char *name,
+	unsigned which)
+{
+	const unsigned borders[] = { 5, 9, 3 }, handles[] = { 7, 11, 3 };
+	const char *formats[] = { "overlap-older %n", "overlap-middle %n" };
+	window_style style;
+
+	assert(which < 3);
+	sample->name.name = (char *)name;
+	lookup_style(sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == borders[which]);
+	assert(SGET_HANDLE_WIDTH(style) == handles[which]);
+	if (which < 2)
+	{
+		const char *format = SGET_TITLE_FORMAT_STRING(style);
+
+		assert(strcmp(format, formats[which]) == 0);
+	}
+	index_compare(sample);
+}
+
+static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
+{
+	const char *labels[] = { "length", "position", "literal-member",
+		"budget-member" };
+	char long_name[225];
+	const char *patterns[][2] = {
+		{ "probe-overlap-??", "probe-overlap-???*" },
+		{ "probe-overlap-?a?", "probe-overlap-?b?" },
+		{ "probe-overlap-middle-plain-end",
+		  "probe-overlap-*other*-end" },
+		{ long_name, "probe-overlap-*other*-end" }
+	};
+	const char *names[][3] = {
+		{ "probe-overlap-aa", "probe-overlap-aaa", "probe-overlap-a" },
+		{ "probe-overlap-xay", "probe-overlap-xby",
+		  "probe-overlap-xcy" },
+		{ "probe-overlap-middle-plain-end",
+		  "probe-overlap-some-other-part-end",
+		  "probe-overlap-none-end" },
+		{ long_name, "probe-overlap-some-other-part-end",
+		  "probe-overlap-none-end" }
+	};
+	Bool baseline = getenv("FVWM_STYLE_OVERLAP_BASELINE") != NULL;
+	Bool saved = force_reference;
+	FvwmWindow sample = *window;
+	window_style style;
+	char text[640];
+
+	memset(long_name, 'x', 224);
+	memcpy(long_name, "probe-overlap-", 14);
+	memcpy(long_name + 220, "-end", 4);
+	long_name[224] = '\0';
+
+	for (unsigned reference = 0; reference < 2; reference++)
+	{
+		force_reference = reference;
+		for (unsigned kind = 0; kind < 4; kind++)
+		{
+			unsigned long visits;
+
+			snprintf(text, sizeof(text), "Style (Name %s) "
+				"BorderWidth 5, TitleFormat overlap-older %%n",
+				patterns[kind][0]);
+			command(exc, text);
+			snprintf(text, sizeof(text), "Style (Name %s) "
+				"BorderWidth 9, HandleWidth 11, "
+				"TitleFormat overlap-middle %%n",
+				patterns[kind][1]);
+			command(exc, text);
+			snprintf(text, sizeof(text),
+				"Style (Name %s) HandleWidth 7",
+				patterns[kind][0]);
+			command(exc, text);
+			for (unsigned pass = 0; pass < 2; pass++)
+			{
+				for (unsigned name = 0; name < 3; name++)
+					overlap_check_sample(&sample,
+						names[kind][name], name);
+				/* No borrowed view crosses this call. */
+				if (!pass)
+					simplify_style_list();
+			}
+			id_visits = 0;
+			measuring = True;
+			lookup_style(&sample, &style);
+			measuring = False;
+			visits = id_visits;
+			assert(visits ==
+				(baseline || reference || kind == 3 ? 3 : 2));
+			printf("STYLE_OVERLAP_WORK {\"case\":\"%s\","
+				"\"baseline\":%s,\"reference\":%s,"
+				"\"collision\":%s,\"rules\":%lu}\n",
+				labels[kind],
+				baseline ? "true" : "false",
+				reference ? "true" : "false",
+				force_collision ? "true" : "false", visits);
+			/* Repeat and delete both selectors. */
+			simplify_style_list();
+			for (unsigned which = 0; which < 2; which++)
+			{
+				snprintf(text, sizeof(text),
+					"DestroyStyle (Name %s)",
+					patterns[kind][which]);
+				command(exc, text);
+			}
+			sample.name.name = (char *)names[kind][0];
+			lookup_style(&sample, &style);
+			assert(SGET_BORDER_WIDTH(style) == 3);
+			assert(SGET_HANDLE_WIDTH(style) == 3);
+			index_compare(&sample);
+		}
+	}
+	force_reference = saved;
+}
+
 static void cursor_work(const exec_context_t *exc, FvwmWindow *window)
 {
 	const char *labels[] = { "fixed-miss", "fixed-hit", "question-hit",
@@ -979,6 +1095,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	if (strcmp(mode, "repeat") == 0)
 	{
 		repeated_work(exc, clients[0]);
+		overlap_work(exc, clients[0]);
 		fflush(stdout);
 		_exit(0);
 	}

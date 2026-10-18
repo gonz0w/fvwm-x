@@ -151,6 +151,7 @@ def run(args):
                     cursor_work.extend(cursor)
                     index_work.extend(work)
             repeated = []
+            overlap_work = []
             for collision in (False, True):
                 label = f'repeat-{collision}'
                 environment = {
@@ -170,12 +171,24 @@ def run(args):
                     'fingerprint', 'prefix-cutoff', 'disjoint']
                 assert all(r['hash_collision'] == collision for r in work)
                 repeated.extend(work)
+                overlaps = [json.loads(line.removeprefix('STYLE_OVERLAP_WORK '))
+                            for line in process.log_path.read_text().splitlines()
+                            if line.startswith('STYLE_OVERLAP_WORK ')]
+                assert [(r['reference'], r['case']) for r in overlaps] == [
+                    (reference, case) for reference in (False, True)
+                    for case in ('length', 'position', 'literal-member',
+                                 'budget-member')]
+                for r in overlaps:
+                    assert not r['baseline'] and r['collision'] == collision
+                    assert r['rules'] == (3 if r['reference'] or
+                                         r['case'] == 'budget-member' else 2)
+                overlap_work.extend(overlaps)
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,
                             'wildcard_work': wildcard,
                             'simplify_work': repeated, 'index_work': index_work,
                             'subject_work': subject_work,
-                            'cursor_work': cursor_work},
+                            'cursor_work': cursor_work, 'overlap_work': overlap_work},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

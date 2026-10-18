@@ -500,7 +500,7 @@ static void overlap_policy(void)
 			style_match_prepare(&ap, &a);
 			for (unsigned j = 0; j < total; j++)
 			{
-				bool may_overlap;
+				bool may_overlap, reverse;
 
 				b.name = b.resource = b.class = b.icon =
 					patterns[j];
@@ -508,8 +508,9 @@ static void overlap_policy(void)
 				may_overlap = style_match_ids_may_overlap(&a,
 					&ap, &b, &bp);
 
-				assert(may_overlap ==
-					style_match_ids_may_overlap(&b, &bp, &a, &ap));
+				reverse = style_match_ids_may_overlap(
+					&b, &bp, &a, &ap);
+				assert(may_overlap == reverse);
 				for (unsigned v = 0;
 				     v < sizeof(values) / sizeof(*values); v++)
 				{
@@ -562,7 +563,12 @@ static void overlap_policy(void)
 	set_flags(&b, 4);
 	const char *disjoint[][2] = {
 		{ "alpha", "beta" }, { "alpha*", "beta*" },
-		{ "*-alpha", "*-beta" }, { "a", "aa" }
+		{ "*-alpha", "*-beta" }, { "a", "aa" },
+		{ "a??", "a???*" }, { "??", "???" },
+		{ "aa", "a??*" }, { "", "?*" },
+		{ "?a?", "?b?" }, { "a?b?", "a?c?" },
+		{ "ac", "a*b?*" }, { "abc", "a*d*c" },
+		{ "", "**" }, { "a", "a**" }
 	};
 
 	for (unsigned i = 0; i < sizeof(disjoint) / sizeof(*disjoint); i++)
@@ -575,6 +581,132 @@ static void overlap_policy(void)
 	}
 	printf("selector overlap: %u common-match witnesses retained; "
 		"literal/prefix/suffix controls passed\n", common_matches);
+}
+
+static void overlap_languages(void)
+{
+	const char alphabet[] = "ab?*";
+	char patterns[85][4], value[7];
+	uint64_t witnesses[85][2] = { { 0 } };
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+	unsigned total = 0, comparisons = 0;
+
+	for (unsigned length = 0, count = 1; length <= 3; length++, count *= 4)
+	{
+		for (unsigned word = 0; word < count; word++)
+		{
+			unsigned bits = word;
+
+			for (unsigned i = 0; i < length; i++, bits /= 4)
+				patterns[total][i] = alphabet[bits % 4];
+			patterns[total++][length] = '\0';
+		}
+	}
+	assert(total == 85);
+	for (unsigned pattern = 0; pattern < total; pattern++)
+	{
+		unsigned ordinal = 0;
+
+		for (unsigned length = 0; length <= 6; length++)
+		{
+			for (unsigned word = 0; word < (1U << length); word++)
+			{
+				for (unsigned i = 0; i < length; i++)
+					value[i] = word & (1U << i) ? 'a' : 'b';
+				value[length] = '\0';
+				if (matchWildcards(patterns[pattern], value))
+					witnesses[pattern][ordinal / 64] |=
+						UINT64_C(1) << (ordinal % 64);
+				ordinal++;
+			}
+		}
+		assert(ordinal == 127);
+	}
+	for (unsigned field = 0; field < STYLE_MATCH_FIELDS; field++)
+	{
+		set_flags(&a, 1U << field);
+		set_flags(&b, 1U << field);
+		for (unsigned i = 0; i < total; i++)
+		{
+			a.name = a.class = a.resource = a.icon = patterns[i];
+			style_match_prepare(&ap, &a);
+			for (unsigned j = 0; j < total; j++)
+			{
+				bool common, may_overlap, reverse;
+
+				b.name = b.class = b.resource = b.icon =
+					patterns[j];
+				style_match_prepare(&bp, &b);
+				common = (witnesses[i][0] & witnesses[j][0]) ||
+					(witnesses[i][1] & witnesses[j][1]);
+				may_overlap = style_match_ids_may_overlap(
+					&a, &ap, &b, &bp);
+				assert(!common || may_overlap);
+				reverse = style_match_ids_may_overlap(
+					&b, &bp, &a, &ap);
+				assert(may_overlap == reverse);
+				/* Fixed pairs/literals have complete witnesses
+				 * in this finite domain. */
+				if ((!strchr(patterns[i], '*') &&
+				     !strchr(patterns[j], '*')) ||
+				    !strpbrk(patterns[i], "?*") ||
+				    !strpbrk(patterns[j], "?*"))
+					assert(may_overlap == common);
+				comparisons++;
+			}
+		}
+	}
+	assert(comparisons == 28900);
+	puts("overlap languages: 28900 pairs, "
+		"127 independent legacy witnesses");
+}
+
+static void overlap_proof_budgets(void)
+{
+	char a_text[4098], b_text[4098], value[4098];
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+	style_match_subject subject;
+
+	set_flags(&a, 4);
+	set_flags(&b, 4);
+	memset(a_text, '?', sizeof(a_text));
+	memset(b_text, '?', sizeof(b_text));
+	a_text[2048] = 'a';
+	b_text[2048] = 'b';
+	a_text[4096] = b_text[4096] = '\0';
+	a.name = a_text;
+	b.name = b_text;
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(!style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	/* Beyond the optional scan budget, unknown retains both rules. */
+	a_text[4096] = b_text[4096] = '?';
+	a_text[4097] = b_text[4097] = '\0';
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	memset(value, 'x', 4097);
+	value[2048] = 'a';
+	value[4097] = '\0';
+	style_match_subject_init(&subject, 1, value, value, value, value);
+	assert(style_match_id(&a, &ap, &subject) && reference(&a, &subject));
+	assert(!style_match_id(&b, &bp, &subject) && !reference(&b, &subject));
+	/* Literal membership also stays unknown for a large retry product.
+	 * Normal matching accepts the literal and rejects the star rule. */
+	value[0] = 'a';
+	value[2048] = 'x';
+	value[4096] = 'z';
+	a.name = value;
+	b.name = "a*other*z";
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	style_match_subject_init(&subject, 1, value, value, value, value);
+	assert(style_match_id(&a, &ap, &subject) && reference(&a, &subject));
+	assert(!style_match_id(&b, &bp, &subject) && !reference(&b, &subject));
+	puts("bounded overlap proofs retain long-pattern matching: passed");
 }
 
 static void deferred_compatibility(void)
@@ -723,5 +855,7 @@ int main(void)
 	unescaped_cursors();
 	unnecessary_length_scans();
 	overlap_policy();
+	overlap_languages();
+	overlap_proof_budgets();
 	return 0;
 }

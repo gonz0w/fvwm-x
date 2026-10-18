@@ -224,17 +224,15 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-18: PR #105 is merged. Continue STYLE-01 with
-three related subject-work improvements: deferred compatibility comparisons,
-domain-selective candidate queries and shared hash/length scans. The measured
-16-KiB-string baseline performs 114,688 hash-byte steps and 49,152 equality-byte
-steps even for numeric-only lookup; explicit wildcard matching adds a 16,384-byte
-length scan. All three improvements complete one combined six-target/ten-profile
-checkpoint
-in [PR #106](https://github.com/gonz0w/fvwm-x/pull/106); review and merge before
-selecting the next measured STYLE/STATE batch. Preserve matching, precedence and
-DRAW-01 barriers. Broader
-update plans/narrower grabs remain separate; VESA #93 stays deferred.
+Immediate selection, 2026-10-18: PR #106 is merged. Interleave one bounded
+MAINT-02/CLEAN-01 development-speed batch: reuse the production core objects
+in the Linux linker-wrap fixture, separate embedded style metadata from the
+operation API, and make the derived style index private to its owner. Preserve
+the assertion-enabled core fixtures. Measure build/dependency savings and use
+one affected six-target build/policy/install checkpoint plus Linux wrapper
+regressions; retain source-bound unchanged runtime evidence. No compiler cache,
+new dependency, configuration migration or test removal is selected. Return to
+the next measured STYLE/STATE batch afterward; VESA #93 stays deferred.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

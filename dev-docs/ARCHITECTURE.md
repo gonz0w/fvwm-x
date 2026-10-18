@@ -734,3 +734,19 @@ original matcher still decides every candidate. Invalidation discards the index
 and its domain union together before mutation; identity initialization discards
 all subject caches. No X state, style result or callback retains them.
 [Current scope](verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md).
+
+
+## Development build dependency boundaries
+
+`fvwm/style_match_types.h` contains only immutable selector metadata embedded
+in the shared style records. `fvwm/style_match.h` owns the synchronous subject
+and matching/query API; consumers include it directly. The derived
+`style_lookup_index` is opaque outside `style.c`, which owns its definition,
+allocation, invalidation and release. These boundaries preserve inline metadata
+and record layouts while avoiding operation/index edits in the common header.
+
+The Linux `fvwm3-live-x-wrap` fixture extracts the production executable's core
+objects and compiles only its two link-wrap probes separately. The XRR mode
+macro belongs to its probe; queue and XRR interception remain linker wrappers.
+The distinct assertion-enabled core objects owned by `module_output_fixture`
+remain shared by the actual-core fixtures, with `-UNDEBUG` retained.

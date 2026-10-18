@@ -136,6 +136,12 @@ when changing compiler/ABI or when invalidation cannot be established; refresh
 dependency detection when dependency inputs change. The native qualification
 gate deliberately retains its dependency-cache refresh contract.
 
+The Linux linker-wrap WM fixture shares production core objects; its fault
+macro applies only to the probe. Actual-core fixtures retain their separate
+assertion-enabled core build. Keep operation-only APIs and private derived
+indexes out of broadly included record headers where their layout is not needed.
+Measure actual Ninja dependencies and compiler work when changing these boundaries.
+
 Source synchronization must give changed files fresh modification times. Do
 not restore old archive timestamps over a reused source tree and expect Ninja
 to infer changes from file hashes. Preserve another owner's tree, logs and

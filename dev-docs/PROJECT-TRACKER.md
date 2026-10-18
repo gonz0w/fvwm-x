@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Escaped style matching, STYLE-01 #38 | Affected checkpoint passes; [PR #110](https://github.com/gonz0w/fvwm-x/pull/110) ready for review | Three escaped matching families replace recursive entries with decoded fixed widths, anchored one-star spans and constant-stack general cursors. Nine selected legacy calls become zero with unchanged results/removal. 1991/1991 executed standard and 437/437 optional entries pass; one known required OpenBSD AMD64 SVG test stays omitted under IMAGE-01, preserving its install/staged-geometry gap. Four scoped sanitizers, nine fresh stages, four authenticated BSD displays and 810 family rows pass. Metadata adds sixteen inline bytes; no universal latency/linear-time claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md). |
+| Escaped selector disjointness, STYLE-01 #38 | Implemented; combined checkpoint pending | Three related proofs reuse decoded minimum/exact widths, quoted fixed positions and bounded literal membership. Three selected lists retain two records instead of three with matching/removal owners preserved. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md). |
+| Escaped style matching, STYLE-01 #38 | Merged in [PR #110](https://github.com/gonz0w/fvwm-x/pull/110); affected checkpoint passes | Three escaped matching families replace recursive entries with decoded fixed widths, anchored one-star spans and constant-stack general cursors. Nine selected legacy calls become zero with unchanged results/removal. 1991/1991 executed standard and 437/437 optional entries pass; one known required OpenBSD AMD64 SVG test stays omitted under IMAGE-01, preserving its install/staged-geometry gap. Four scoped sanitizers, nine fresh stages, four authenticated BSD displays and 810 family rows pass. Metadata adds sixteen inline bytes; no universal latency/linear-time claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md). |
 | Style selector disjointness, STYLE-01 #38 | Merged in [PR #109](https://github.com/gonz0w/fvwm-x/pull/109); affected checkpoint passes | Three selector proofs reduce three selected lists from three records to two, preserving reference/collision/matching/removal owners. Final bounded source passes 40/40 affected entries plus four scoped sanitizers, nine fresh stages and four authenticated BSD displays; original broad source passes 1991/1992 standard and 437/437 optional entries. The unchanged OpenBSD AMD64 SVG startup failure and its fresh-install/staged-geometry gap remain under IMAGE-01. No universal latency claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md). |
 | Style wildcard families, STYLE-01 #38 | Merged in [PR #108](https://github.com/gonz0w/fvwm-x/pull/108); locally qualified | Three families share one combined checkpoint: exact-width questions, anchored one-star question spans and constant-stack general unescaped cursors. Original results pass 1992/1992 standard and 437/437 optional entries; four scoped sanitizers pass. 10 fresh stages, 4 authenticated default BSD displays and 630 family observations retain exact scope. Legacy empty-tail/escaped behavior and all ordering barriers remain. [Report](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md). |
 | Development build reuse, MAINT-02 / CLEAN-01 | Merged in [PR #107](https://github.com/gonz0w/fvwm-x/pull/107); affected checkpoint locally qualified | Three build/dependency improvements remove 74 duplicate Linux core compilations, reduce operation-API fanout to 7 objects, and keep private index edits in 2 owner objects. All 70 affected entries pass ten profiles/six targets; 1502 core/probe objects and ten WM executables retain identical allocated code/data sections. Ten fresh stages verify 249 code/catalog identities. Collector repairs preserve successful phases; unchanged broader runtime evidence stays with PR106. [Report](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md). |
@@ -228,15 +229,15 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-18: PR #109 is merged. The three STYLE-01 escaped
-matching families pass their combined affected checkpoint in
-[PR #110](https://github.com/gonz0w/fvwm-x/pull/110). The known required SVG
-startup/install gap stays explicit under IMAGE-01 without retrying it for green.
-Review and merge before the next measured STYLE/STATE batch. Keep byte/escape
-and empty-tail semantics, precedence, compatibility ORs, DRAW/INPUT barriers and
-warm build reuse. Shared-glob work, update plans and narrower grabs need separate
+Immediate selection, 2026-10-18: PR #110 is merged. STYLE-01 continues with
+three escaped selector proofs: decoded lengths, fixed positions and bounded
+literal membership. Implementation is complete; one combined checkpoint follows
+focused native checks. Preserve quoting/byte and empty-tail semantics, precedence,
+compatibility ORs and DRAW/INPUT/ordering/lifetime owners. Keep the known required
+OpenBSD AMD64 SVG startup/install gap explicit under IMAGE-01 without retrying it
+for green. Shared-glob work, update plans and narrower grabs need separate
 measurements. VESA #93 stays deferred.
-[Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md).
+[Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md).
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -2016,3 +2017,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-18: PR #109 merged. STYLE-01 batches three escaped matching families: decoded fixed widths, anchored one-star spans and constant-stack general cursors. Focused Linux checks pass, including 396396 independent legacy comparisons and 26 real-client cases. Nine measured legacy matcher calls become zero with unchanged results/removal; metadata adds sixteen inline bytes. One combined checkpoint follows; IMAGE-01's SVG startup/install gap remains, and #93 stays deferred. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md).
 
 - 2026-10-18: PR #110 is ready for review after merged PR #109. Three escaped matching families replace recursive entries with decoded fixed widths, anchored one-star spans and constant-stack general cursors. Nine selected legacy calls become zero with unchanged results/removal. 1991/1991 executed standard and 437/437 optional entries pass; one known required OpenBSD AMD64 SVG test stays omitted under IMAGE-01, preserving its install/staged-geometry gap. Four scoped sanitizers, nine fresh stages, four authenticated BSD displays and 810 family rows pass. Metadata adds sixteen inline bytes; no universal latency/linear-time claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md). One full matrix serves all three stories; no repeat for a story, PR or documentation update. VESA #93 stays deferred.
+
+- 2026-10-18: PR #110 merged. STYLE-01 batches three escaped selector disjointness proofs using decoded lengths, quoted fixed positions and bounded literal membership. Three selected lists reduce from three records to two while reference ownership/results/removal remain asserted. Combined qualification pending; IMAGE-01's known required SVG omission/install gap and deferred #93 stay separate. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md).

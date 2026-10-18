@@ -796,3 +796,10 @@ The [escaped-family receipt](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-
 binds the decoded metadata and normal/reference/collision streams to one frozen
 source. Existing inline style allocations/copies can grow with the sixteen-byte
 record increase; no separate heap buffer or retained matching state is added.
+
+STYLE-01's [escaped selector proofs](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md)
+extend decoded exact/minimum, fixed-position and literal-membership rejection
+to escaped patterns. They reuse existing metadata and synchronous matcher owners.
+Fixed proofs bound raw bytes as well as decoded positions; membership bounds raw
+width before its retry product. Unknown retains records without capping normal
+matching. Compatibility ORs, ordering and update/lifetime barriers stay intact.

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Escaped selector disjointness](VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md): three related proofs implemented; combined qualification pending.
+
 - [Escaped style matching](VERIFICATION-2026-10-18-STYLE-ESCAPED.md): three paths pass 1991 standard/437 optional executed entries, scoped sanitizers and exact install/default-X/client checks; one known required SVG test/install gap stays explicit.
 
 - [Style selector disjointness](VERIFICATION-2026-10-18-STYLE-OVERLAP.md): exact/minimum lengths, fixed positions and literal membership; final bounded source passes 40/40 affected checks plus scoped sanitizers; original broad source passes 1991/1992 standard and 437/437 optional entries. The SVG startup/install gap and separate source scopes remain explicit.

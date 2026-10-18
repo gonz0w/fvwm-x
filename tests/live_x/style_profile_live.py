@@ -193,7 +193,8 @@ def run(args):
                 assert [(r['reference'], r['case']) for r in overlaps] == [
                     (reference, case) for reference in (False, True)
                     for case in ('length', 'position', 'literal-member',
-                                 'budget-member')]
+                                 'budget-member', 'escaped-length',
+                                 'escaped-position', 'escaped-member')]
                 for r in overlaps:
                     assert not r['baseline'] and r['collision'] == collision
                     assert r['rules'] == (3 if r['reference'] or

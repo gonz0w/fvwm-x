@@ -139,7 +139,13 @@ def client_checks(args):
             ('suffix', '*transition*probe', '*other'),
             ('length', 'FVWM?transition?probe', 'FVWM' + '?'*18 + '*'),
             ('position', 'FVWM?t???????????????', 'FVWM?x???????????????'),
-            ('literal-member', '"FVWM transition probe"', 'FVWM*other*probe')]
+            ('literal-member', '"FVWM transition probe"', 'FVWM*other*probe'),
+            ('escaped-length', r'"FVWM \\transition pro?e"',
+             r'"FVWM \\transition pro??e*"'),
+            ('escaped-position', r'"FVWM \\transition pro?e"',
+             r'"FVWM \\transition prx?e"'),
+            ('escaped-member', '"FVWM transition probe"',
+             r'"FVWM *\\other*probe"')]
         for label, selected, other in pairs:
             # Both fields conflict with the middle rule. Disjointness permits
             # the equal selectors to merge without changing this client.

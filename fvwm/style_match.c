@@ -597,7 +597,11 @@ static bool fixed_patterns_may_overlap(const char *a,
 	const char *astart = a, *bstart = b;
 	size_t a_length, b_length;
 
-	if (!(afixed & bfixed & bit))
+	/* Equal literal pairs were decided by the initial spans. Retain
+	 * their existing fast path without decoding those bytes again. */
+	if (!(afixed & bfixed & bit) ||
+	    !((ap->fixed_width | ap->escaped_fixed_width |
+	       bp->fixed_width | bp->escaped_fixed_width) & bit))
 		return true;
 	a_length = ap->literal & bit ? ap->prefix[field] : ap->minimum[field];
 	b_length = bp->literal & bit ? bp->prefix[field] : bp->minimum[field];

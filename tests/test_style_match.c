@@ -898,7 +898,8 @@ static void escaped_overlap_languages(void)
 					&a, &ap, &b, &bp);
 				assert(!common || may_overlap);
 				assert(may_overlap ==
-					style_match_ids_may_overlap(&b, &bp, &a, &ap));
+					style_match_ids_may_overlap(
+						&b, &bp, &a, &ap));
 				afixed = ap.literal | ap.fixed_width |
 					ap.escaped_fixed_width;
 				bfixed = bp.literal | bp.fixed_width |

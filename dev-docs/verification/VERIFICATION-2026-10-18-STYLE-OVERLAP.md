@@ -28,6 +28,30 @@ No configuration name, argument, format or wildcard byte meaning changes.
 is added. Fixed-position checking scans pattern width; literal matching can
 revisit spans. Lower record counts are not a universal elapsed-time claim.
 
+## Review refinement: bounded optional work
+
+The broad checkpoint remains bound to signed source
+`97c728358660675353de35f866c833c926b4f203`. Review adds a conservative work
+policy to the final candidate: at most 4096 fixed positions, or a 4096 product
+of `(pattern bytes + 1) * (literal bytes + 1)`, per optional field proof.
+The division/addition guards avoid overflow. A larger proof returns unknown and
+retains the existing records; ordinary pattern parsing and matching are not
+limited. Existing prefix/suffix and exact/minimum checks retain their semantics.
+This bounds added proof work, not total simplification or wall-clock latency.
+
+Focused Linux policy/core/update and twenty real-client cases pass the correction.
+New policy checks cover fixed-width budget boundaries and unchanged long-pattern
+matching; a fourth actual-core control retains three records for an over-budget
+224-byte literal while the original three cases still merge to two. Each corrected
+driver emits sixteen rows, including the four budget-control rows. Borrowed title,
+reference, collision, repetition and removal checks remain.
+
+The running broad results are retained with their original source. The corrected
+candidate receives a separate affected six-target/ten-profile/scoped/install/X
+completion rather than another full suite. Its exact source and results remain
+pending; this report does not claim final qualification yet. Proof helpers add no
+heap storage or retained metadata; eligible merges keep existing copy/free paths.
+
 ## Measured baseline and candidate
 
 Before production edits, the unchanged merged matcher retains three records in

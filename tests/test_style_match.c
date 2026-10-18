@@ -662,6 +662,53 @@ static void overlap_languages(void)
 		"127 independent legacy witnesses");
 }
 
+static void overlap_proof_budgets(void)
+{
+	char a_text[4098], b_text[4098], value[4098];
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+	style_match_subject subject;
+
+	set_flags(&a, 4);
+	set_flags(&b, 4);
+	memset(a_text, '?', sizeof(a_text));
+	memset(b_text, '?', sizeof(b_text));
+	a_text[2048] = 'a';
+	b_text[2048] = 'b';
+	a_text[4096] = b_text[4096] = '\0';
+	a.name = a_text;
+	b.name = b_text;
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(!style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	/* Beyond the optional scan budget, unknown retains both rules. */
+	a_text[4096] = b_text[4096] = '?';
+	a_text[4097] = b_text[4097] = '\0';
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	memset(value, 'x', 4097);
+	value[2048] = 'a';
+	value[4097] = '\0';
+	style_match_subject_init(&subject, 1, value, value, value, value);
+	assert(style_match_id(&a, &ap, &subject) && reference(&a, &subject));
+	assert(!style_match_id(&b, &bp, &subject) && !reference(&b, &subject));
+	/* Literal membership also stays unknown for a large retry product.
+	 * Normal matching accepts the literal and rejects the star rule. */
+	value[0] = 'a';
+	value[2048] = 'x';
+	value[4096] = 'z';
+	a.name = value;
+	b.name = "a*other*z";
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	style_match_subject_init(&subject, 1, value, value, value, value);
+	assert(style_match_id(&a, &ap, &subject) && reference(&a, &subject));
+	assert(!style_match_id(&b, &bp, &subject) && !reference(&b, &subject));
+	puts("bounded overlap proofs retain long-pattern matching: passed");
+}
+
 static void deferred_compatibility(void)
 {
 	style_id_t id = { 0 };
@@ -809,5 +856,6 @@ int main(void)
 	unnecessary_length_scans();
 	overlap_policy();
 	overlap_languages();
+	overlap_proof_budgets();
 	return 0;
 }

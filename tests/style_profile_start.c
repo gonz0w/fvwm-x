@@ -640,12 +640,15 @@ static void overlap_check_sample(FvwmWindow *sample, const char *name,
 
 static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 {
-	const char *labels[] = { "length", "position", "literal-member" };
+	const char *labels[] = { "length", "position", "literal-member",
+		"budget-member" };
+	char long_name[225];
 	const char *patterns[][2] = {
 		{ "probe-overlap-??", "probe-overlap-???*" },
 		{ "probe-overlap-?a?", "probe-overlap-?b?" },
 		{ "probe-overlap-middle-plain-end",
-		  "probe-overlap-*other*-end" }
+		  "probe-overlap-*other*-end" },
+		{ long_name, "probe-overlap-*other*-end" }
 	};
 	const char *names[][3] = {
 		{ "probe-overlap-aa", "probe-overlap-aaa", "probe-overlap-a" },
@@ -653,18 +656,25 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 		  "probe-overlap-xcy" },
 		{ "probe-overlap-middle-plain-end",
 		  "probe-overlap-some-other-part-end",
+		  "probe-overlap-none-end" },
+		{ long_name, "probe-overlap-some-other-part-end",
 		  "probe-overlap-none-end" }
 	};
 	Bool baseline = getenv("FVWM_STYLE_OVERLAP_BASELINE") != NULL;
 	Bool saved = force_reference;
 	FvwmWindow sample = *window;
 	window_style style;
-	char text[256];
+	char text[640];
+
+	memset(long_name, 'x', 224);
+	memcpy(long_name, "probe-overlap-", 14);
+	memcpy(long_name + 220, "-end", 4);
+	long_name[224] = '\0';
 
 	for (unsigned reference = 0; reference < 2; reference++)
 	{
 		force_reference = reference;
-		for (unsigned kind = 0; kind < 3; kind++)
+		for (unsigned kind = 0; kind < 4; kind++)
 		{
 			unsigned long visits;
 
@@ -695,7 +705,8 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 			lookup_style(&sample, &style);
 			measuring = False;
 			visits = id_visits;
-			assert(visits == (baseline || reference ? 3 : 2));
+			assert(visits ==
+				(baseline || reference || kind == 3 ? 3 : 2));
 			printf("STYLE_OVERLAP_WORK {\"case\":\"%s\","
 				"\"baseline\":%s,\"reference\":%s,"
 				"\"collision\":%s,\"rules\":%lu}\n",

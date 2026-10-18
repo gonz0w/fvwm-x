@@ -176,10 +176,12 @@ def run(args):
                             if line.startswith('STYLE_OVERLAP_WORK ')]
                 assert [(r['reference'], r['case']) for r in overlaps] == [
                     (reference, case) for reference in (False, True)
-                    for case in ('length', 'position', 'literal-member')]
+                    for case in ('length', 'position', 'literal-member',
+                                 'budget-member')]
                 for r in overlaps:
                     assert not r['baseline'] and r['collision'] == collision
-                    assert r['rules'] == (3 if r['reference'] else 2)
+                    assert r['rules'] == (3 if r['reference'] or
+                                         r['case'] == 'budget-member' else 2)
                 overlap_work.extend(overlaps)
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,

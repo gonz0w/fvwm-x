@@ -775,3 +775,8 @@ for question-only patterns, and the existing matcher for literal membership in
 an unescaped star pattern. Only shared explicit fields can establish disjointness.
 The literal subject borrows its string synchronously and retains its known length;
 no metadata, resource, update barrier or lifetime owner changes.
+
+Optional fixed-position and literal-membership proofs use a conservative work
+budget. Larger pairs remain unknown and keep their original records; normal
+configuration parsing/matching is not capped. The policy bounds extra proof work
+without a new state owner, cached result or configuration directive.

@@ -413,6 +413,10 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 	return true;
 }
 
+/* These optional proofs must not add unbounded scanning/retry work.
+ * Larger patterns remain conservative without limiting normal matching. */
+#define STYLE_OVERLAP_PROOF_WORK 4096U
+
 static bool pattern_lengths_may_overlap(const style_match_patterns *a,
 	const style_match_patterns *b, unsigned field)
 {
@@ -448,6 +452,8 @@ static bool fixed_patterns_may_overlap(const char *a,
 	b_length = bp->literal & bit ? bp->prefix[field] : bp->minimum[field];
 	if (a_length != b_length)
 		return false;
+	if (a_length > STYLE_OVERLAP_PROOF_WORK)
+		return true;
 	/* These unescaped patterns consume exactly one byte per position.
 	 * Two different literal bytes at one position cannot share a value. */
 	for (size_t i = 0; i < a_length; i++)
@@ -463,7 +469,20 @@ static bool literal_member_may_overlap(const char *literal, size_t length,
 	unsigned field)
 {
 	style_match_subject subject;
+	size_t offset = patterns->suffix[field];
+	size_t tail = patterns->suffix_length[field];
+	size_t width;
 
+	/* The final wildcard offset plus its literal tail is the raw width.
+	 * Bound additions before forming the conservative cursor-work product.
+	 * Division avoids overflow; normal matching is not capped. */
+	if (length >= STYLE_OVERLAP_PROOF_WORK ||
+	    offset >= STYLE_OVERLAP_PROOF_WORK ||
+	    tail >= STYLE_OVERLAP_PROOF_WORK - offset)
+		return true;
+	width = offset + tail;
+	if (width + 1 > STYLE_OVERLAP_PROOF_WORK / (length + 1))
+		return true;
 	/* The literal describes exactly one possible field value. Reuse the
 	 * prepared matcher rather than treating wildcard bytes as literals.
 	 * The subject borrows that value only for this synchronous proof. */

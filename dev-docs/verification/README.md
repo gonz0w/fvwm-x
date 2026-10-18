@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Style wildcard families](VERIFICATION-2026-10-18-STYLE-CURSORS.md): exact-width questions, anchored one-star question spans and constant-stack unescaped cursors; focused policy/core/real-client checks pass, combined qualification pending.
+- [Style wildcard families](VERIFICATION-2026-10-18-STYLE-CURSORS.md): exact-width questions, anchored one-star question spans and constant-stack unescaped cursors; 1992 standard/437 optional passes, scoped sanitizers and source-bound install/default-X evidence; physical native-CPU/hardware/release gates remain separate.
 
 - [Development build reuse](VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md): shared Linux core objects, narrow operation headers and a private style index; 70 affected six-target entries, unchanged allocated code/data sections and fresh installs, with collector-only continuations retained.
 

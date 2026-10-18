@@ -19,7 +19,7 @@ have merged with combined six-target checkpoints.
 [Build reuse](dev-docs/verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
 now shares test objects and narrows style dependencies.
 A [wildcard-family batch](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md)
-has passed focused checks; combined qualification is pending.
+has completed its combined local checkpoint.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

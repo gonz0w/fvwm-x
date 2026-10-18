@@ -46,7 +46,7 @@ queue and property helpers rather than introducing parallel owners.
 | OUTPUT-01 | P1 / locally qualified | Approved 64-KiB/32-packet/128-attempt ordinary asynchronous service bounds preserve partial offsets, packet order, accounting, writable continuation and death-row lifetime. Pure policy, controlled actual-core and fast/delayed real-pipe tests pass with Linux/BSD integration. Synchronous ordering remains intact; OUTPUT-02 separately qualifies the approved total deadline. See the combined FIFO/stack/output report. |
 | STACK-02 | P1 / locally qualified | Per-window EWMH layer publication and title-highlight identity are corrected in new_layer. Parent/child invocation, focused decorations, sticky/unrelated state, actual stack order and destroyed-parent survivors pass on Linux/BSD and default servers. Baseline child ABOVE/BELOW states were stale. STACK-01 identity/traversal optimization remains separate. See the combined FIFO/stack/output report. |
 | STACK-01 | P1 / identity, arithmetic and traversal locally qualified; storage batch locally qualified | Shared X-context identity, invoked-target parent guards, widened ranks, stable ring merging and parent-only worklist closure are locally qualified. Operation-local deep-parent continuation, initialized lists and Layer ownership are locally qualified too. The qualified storage checkpoint includes checked unmanaged storage, bounded ordinary/full restacks and suppressed-icon sibling repair. Group-free closure and proven dead-source removal pass focused checks; callback ownership work is in progress. Retirement/lifecycle work remains queued. [Tracker](PROJECT-TRACKER.md), [traversal](verification/VERIFICATION-2026-10-07-STACK-TRAVERSAL.md), [storage batch](verification/VERIFICATION-2026-10-07-STACK-BATCH.md). |
-| STYLE-01 | P2 / repeated-ID checkpoint locally qualified; broader work open | Cached ID fingerprints, conservative first-occurrence bounds and explicit-selector disjointness share one qualified checkpoint. [Evidence](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md). Earlier filter, matching and wildcard batches are merged. Ordered numeric/explicit/compatibility candidate lookup is merged in PR #105 with one combined six-target checkpoint. The related subject-work batch implements deferred compatibility comparisons, domain-selective queries and shared hash/length scans; one combined checkpoint is locally qualified in PR #106. [Subject scope](verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md). [Current batch](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md). General wildcard costs, safe update plans and narrower grabs remain separately measured. |
+| STYLE-01 | P2 / unescaped wildcard checkpoint locally qualified; broader work open | Distinct/repeated-ID simplification, ordered candidates and lazy subject/hash/length work remain accepted in PRs #100–#106. [PR #108](https://github.com/gonz0w/fvwm-x/pull/108) adds exact-width question spans, anchored one-star question spans and constant-stack general unescaped cursors in one combined checkpoint. [Current evidence](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md). Escaped/shared-glob costs, safe update plans and narrower grabs remain separately measured; matching/precedence and DRAW/INPUT barriers remain. |
 | CACHE-01 | P2 / source-confirmed lookup ordering; benefit unmeasured | `libs/Picture.c:PCacheFvwmPictureAtScale` resolves paths before lookup and can check file stamps before rejecting cheap variant-key mismatches. Keep the existing cache. Profile path/stat counts; compare cheap key fields before filesystem work where equivalent. Preserve path, file-stamp, image attributes, rational scale, target dimensions and generation semantics. Test explicit reload, changed/missing files, multiple variants, scale transitions and resource lifetime. Consider an index only if cache population justifies it; no indefinite filesystem cache. Coordinate IMAGE-01 and LIB-04 without duplicating decoder work. 1–3 days initial optimization; larger indexing separately justified. |
 | STATE-01 | P2 / three-item traversal batch merged; coalescing remains open | [PR #102](verification/VERIFICATION-2026-10-15-EWMH-STATE.md) uses operation-owned inline client snapshots, one paired work-area walk and bounded atom-ID indexes while retaining original publications, query refresh and duplicate priority. Affected compiler/default-X/scoped checks pass; exact broader gaps remain visible. Larger buffers can allocate more and duplicate-key rewind retains a linear bound; no universal speedup is claimed. Further burst/coalescing work requires measured invalidators and DRAW-01 barriers, without a second window-state authority. |
 
@@ -269,3 +269,21 @@ and surviving probe rules while preserving outcomes. One combined six-target
 checkpoint is locally qualified; general wildcard costs, lookup indexes, update
 plans and narrower grabs
 remain separate. [Evidence](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md).
+
+## 2026-10-18 unescaped wildcard families
+
+The three-family checkpoint in PR #108 completes the style-specific unescaped
+paths: exact-width question spans, anchored one-star question spans and general
+constant-stack cursors. Escaped style patterns and other users retain unchanged
+`libs/wild.c`. The legacy predicate remains an independent oracle, including its
+empty-tail semantics. Two inline masks add eight bytes on the measured ABI;
+general cursor retries can revisit spans, so no universal linear-time or latency
+claim follows. One combined checkpoint serves all three families; exact original
+results and remaining gaps are in the
+[report](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md).
+
+Earlier paragraphs describe their dated checkpoints. Ordered candidate and lazy
+subject work are accepted in PRs #105/#106. Remaining update plans and narrower
+grabs require measured work, invalidators, ownership and observer contracts.
+`check_window_style_change` mutates flags and deletion state; moving it outside
+its current owner is a separate change requiring proof and revalidation.

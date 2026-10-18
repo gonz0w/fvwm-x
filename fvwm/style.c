@@ -37,6 +37,7 @@
 #include "update.h"
 #include "style.h"
 #include "style_id_filter.h"
+#include "style_match.h"
 #include "colorset.h"
 #include "ewmh.h"
 #include "placement.h"
@@ -55,6 +56,14 @@
 /* ---------------------------- included code files ------------------------ */
 
 /* ---------------------------- local types -------------------------------- */
+
+/* Derived chains belong to this file; shared style records retain only the
+ * owning pointer. Layout changes must not invalidate unrelated core objects. */
+struct style_lookup_index
+{
+	window_style *head[STYLE_LOOKUP_BUCKETS];
+	unsigned domains;
+};
 
 /* ---------------------------- forward declarations ----------------------- */
 

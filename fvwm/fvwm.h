@@ -33,6 +33,7 @@
 
 /* ---------------------------- included header files ---------------------- */
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "libs/fvwm_x11.h"
@@ -44,7 +45,7 @@
 #include "window_flags.h"
 #include "condrc.h"
 #include "cmdparser.h"
-#include "style_match.h"
+#include "style_match_types.h"
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -697,11 +698,7 @@ typedef struct window_style
 	unsigned has_icon_title_format_string : 1;
 } window_style;
 
-typedef struct
-{
-	window_style *head[STYLE_LOOKUP_BUCKETS];
-	unsigned domains;
-} style_lookup_index;
+typedef struct style_lookup_index style_lookup_index;
 
 typedef struct window_style_list
 {

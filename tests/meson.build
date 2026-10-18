@@ -848,13 +848,11 @@ if get_option('live-x-tests') and host_machine.system() == 'linux'
         name_prefix: '',
         install: false,
     )
-    wrapped_fvwm_sources = []
-    foreach source : fvwm_sources
-        wrapped_fvwm_sources += '../' / source
-    endforeach
     fvwm3_live_x_wrap = executable(
         'fvwm3-live-x-wrap',
-        [wrapped_fvwm_sources, 'live_x/xrr_query_fault.c', 'live_x/module_queue_limits.c'],
+        ['live_x/xrr_query_fault.c', 'live_x/module_queue_limits.c'],
+        # Faults are injected at link time; only the probe needs the macro.
+        objects: fvwm3.extract_all_objects(recursive: false),
         include_directories: includedirs,
         dependencies: all_found_deps,
         link_with: libfvwm3,

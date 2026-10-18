@@ -116,3 +116,9 @@ are included in the same PR under LIB-03 #12.
 retains two pre-client server faults separately from the passing Go application
 controls. Cause is unestablished. The user deferred this investigation until
 much later on 2026-10-14; preserve it open while runtime backlog work resumes.
+
+[MAINT-02/CLEAN-01 PR #107](https://github.com/gonz0w/fvwm-x/pull/107)
+interleaves production core object reuse and narrow style dependency boundaries.
+Its [affected checkpoint](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
+retains the separate assertion-enabled build and all test registrations; the broad
+owners #14/#34 and release gates remain open.

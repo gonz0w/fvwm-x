@@ -12,12 +12,12 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Repeated-ID style simplification](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md)
-is merged with its combined six-target checkpoint.
-[Ordered style candidate lookup](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md)
-is merged with its combined checkpoint. A related
-[style subject-work batch](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md)
-has completed its combined six-target checkpoint.
+Style [simplification](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md),
+[candidate lookup](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md)
+and [subject work](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md)
+have merged with combined six-target checkpoints.
+[Build reuse](dev-docs/verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
+now shares test objects and narrows style dependencies.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

@@ -170,6 +170,10 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 		patterns->suffix_length[i] = length - patterns->suffix[i];
 		if (stars == 1 && questions == 0)
 			patterns->single_star |= bit;
+		if (stars == 0)
+			patterns->fixed_width |= bit;
+		if (stars == 1 && questions != 0)
+			patterns->single_star_questions |= bit;
 	}
 	/* Pick one necessary predicate, never a sufficient match. Numeric
 	 * identities win; explicit literal conjunctions precede the legacy OR.
@@ -244,6 +248,53 @@ static void prepare_compatibility_fields(style_match_subject *subject)
 	}
 }
 
+/* The caller proves that this unescaped fixed-width span fits in value. */
+static bool match_fixed_span(const char *pattern, const char *value,
+	size_t length)
+{
+	for (size_t i = 0; i < length; i++)
+	{
+		if (pattern[i] != '?' && pattern[i] != value[i])
+			return false;
+	}
+	return true;
+}
+
+static bool match_unescaped_cursors(const char *pattern, const char *value)
+{
+	const char *retry_pattern = NULL, *retry_value = NULL;
+
+	while (*value)
+	{
+		if (*pattern == '*')
+		{
+			pattern++;
+			if (!*pattern)
+				return true;
+			retry_pattern = pattern;
+			retry_value = value;
+		}
+		else if (*pattern == '?' || *pattern == *value)
+		{
+			pattern++;
+			value++;
+		}
+		else if (retry_pattern)
+		{
+			/* Retry the latest star with one more byte. Its cursor
+			 * never passes the current non-NUL value, so advancing
+			 * can reach the terminator but cannot pass it. */
+			pattern = retry_pattern;
+			value = ++retry_value;
+		}
+		else
+			return false;
+	}
+	/* Preserve legacy exhaustion instead of skipping all remaining stars:
+	 * "**" fails empty text, as does "a**" after consuming exactly "a". */
+	return !*pattern || (*pattern == '*' && !pattern[1]);
+}
+
 static bool match_pattern(const char *pattern,
 	const style_match_patterns *patterns, unsigned field,
 	style_match_subject *subject, unsigned subject_field)
@@ -264,6 +315,7 @@ static bool match_pattern(const char *pattern,
 	if (patterns->unescaped & bit)
 	{
 		unsigned subject_bit = 1U << subject_field;
+		size_t prefix = patterns->prefix[field];
 		size_t suffix_length = patterns->suffix_length[field];
 		size_t length;
 
@@ -273,14 +325,16 @@ static bool match_pattern(const char *pattern,
 		if ((patterns->single_star & bit) && suffix_length == 0)
 			return true;
 		if (patterns->minimum[field] == 0 && suffix_length == 0)
-			return matchWildcards(pattern, value) != 0;
+			return match_unescaped_cursors(pattern, value);
 		if (!(subject->length_fields & subject_bit))
 		{
 			subject->length[subject_field] = strlen(value);
 			subject->length_fields |= subject_bit;
 		}
 		length = subject->length[subject_field];
-		if (length < patterns->minimum[field])
+		if (length < patterns->minimum[field] ||
+		    ((patterns->fixed_width & bit) &&
+		     length != patterns->minimum[field]))
 			return false;
 
 		/* minimum includes every suffix byte, so this subtraction cannot
@@ -289,11 +343,30 @@ static bool match_pattern(const char *pattern,
 		    value + length - suffix_length, suffix_length) != 0)
 			return false;
 		/* Exactly one unescaped star and no '?' leaves only the two
-		 * verified spans. minimum prevents prefix/suffix overlap. Keep
-		 * multi-star patterns with the legacy matcher: e.g. "**" does
-		 * not match an empty value under that owner's current semantics. */
+		 * verified spans. minimum prevents prefix/suffix overlap. */
 		if (patterns->single_star & bit)
 			return true;
+		/* No star leaves an exact byte count. Prefix/suffix literals
+		 * are already verified; compare only the intervening span. */
+		if (patterns->fixed_width & bit)
+			return match_fixed_span(
+				pattern + prefix, value + prefix,
+				length - prefix - suffix_length);
+		if (patterns->single_star_questions & bit)
+		{
+			const char *star = strchr(pattern, '*');
+			size_t before = star - pattern;
+			size_t after = patterns->minimum[field] - before;
+
+			/* The minimum keeps these two fixed-width spans apart.
+			 * Their literal ends were checked above. */
+			if (!match_fixed_span(pattern + prefix,
+			    value + prefix, before - prefix))
+				return false;
+			return match_fixed_span(star + 1,
+				value + length - after, after - suffix_length);
+		}
+		return match_unescaped_cursors(pattern, value);
 	}
 	return matchWildcards(pattern, value) != 0;
 }

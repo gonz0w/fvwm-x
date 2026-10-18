@@ -27,6 +27,8 @@ typedef struct
 	unsigned universal;
 	unsigned unescaped;
 	unsigned single_star;
+	unsigned fixed_width;
+	unsigned single_star_questions;
 } style_match_patterns;
 
 #endif

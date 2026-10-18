@@ -700,9 +700,10 @@ STYLE-01's [prepared matcher](https://github.com/gonz0w/fvwm-x/blob/ee180b0684f7
 lengths, literal suffix spans and single-star classification from immutable
 selector strings. [Operation-local subjects](https://github.com/gonz0w/fvwm-x/blob/ee180b0684f74c10984ddec75a43099987211139/fvwm/style_match.h) lazily cache
 byte lengths only when needed; fresh subjects reset them on identity changes.
-No managed record or selector string is retained across an operation. General
-wildcards/escapes retain `libs/wild.c`; lookup, destruction matching and the
-existing style/update owners consume the same predicate. See the
+No managed record or selector string is retained across an operation. Escaped
+patterns retain `libs/wild.c`; unescaped families now use the spans/cursors below.
+Lookup, destruction matching and existing style/update owners share the same
+predicate. See the
 [wildcard checkpoint](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md).
 
 The wildcard checkpoint preserves cheap prefix/all-star handling and uses explicit
@@ -753,3 +754,17 @@ remain shared by the actual-core fixtures, with `-UNDEBUG` retained.
 
 The [affected build-reuse checkpoint](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
 records the actual graphs, code/data section parity and retained qualification scope.
+
+
+STYLE-01's unescaped wildcard families use two immutable classification masks
+in `style_match_types.h`. `style_match.c` checks exact-width question patterns,
+anchors one-star question spans and matches general unescaped patterns with
+operation-local latest-star cursors. Exact remaining-star exhaustion preserves
+the legacy empty-tail semantics; escaped patterns still use `libs/wild.c`.
+No cursor survives a synchronous match or moves an X/update barrier. See the
+[family checkpoint](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md).
+
+The [combined family receipt](verification/VERIFICATION-2026-10-18-STYLE-CURSORS-COMBINED.json)
+binds the matcher, enlarged inline metadata and normal/reference/collision probes
+to the qualified source. Subject ownership and every X/update barrier are
+unchanged.

@@ -785,3 +785,14 @@ The [combined disjointness receipt](verification/VERIFICATION-2026-10-18-STYLE-O
 keeps original broad and final bounded source scopes separate. The optional
 proof budget is per field (4096 fixed positions or matcher size product);
 existing merge copy/free allocation and normal long-pattern matching remain.
+
+STYLE-01's [escaped matching batch](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md)
+prepares decoded widths separately from unescaped overlap proofs. Fixed and
+one-star spans avoid recursive matching; general escaped matching uses local
+retry cursors. Three masks add sixteen inline bytes on the measured ABI; no
+retained pointer/result, shared-glob change or update/lifetime owner is added.
+
+The [escaped-family receipt](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-COMBINED.json)
+binds the decoded metadata and normal/reference/collision streams to one frozen
+source. Existing inline style allocations/copies can grow with the sixteen-byte
+record increase; no separate heap buffer or retained matching state is added.

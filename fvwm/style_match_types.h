@@ -29,6 +29,11 @@ typedef struct
 	unsigned single_star;
 	unsigned fixed_width;
 	unsigned single_star_questions;
+	/* Escaped fields keep decoded minimum/after-star widths and the raw
+	 * star offset in the existing arrays; unescaped masks stay separate. */
+	unsigned escaped;
+	unsigned escaped_fixed_width;
+	unsigned escaped_single_star;
 } style_match_patterns;
 
 #endif

@@ -100,7 +100,13 @@ def client_checks(args):
                  ('fixed-width-hit', 'FVWM?transition?probe', 17),
                  ('fixed-width-miss', 'FVWM?transition?pro?', 3),
                  ('empty-tail', '"FVWM transition probe**"', 3),
-                 ('deep-stars', 'FVWM' + '*'*512 + '?probe', 19)]
+                 ('deep-stars', 'FVWM' + '*'*512 + '?probe', 19),
+                 ('escaped-fixed-hit', r'"FVWM \\transition pro?e"', 17),
+                 ('escaped-fixed-miss', r'"FVWM \\transition pro?"', 3),
+                 ('escaped-star-hit', r'"FVWM \\transition*pro?e"', 7),
+                 ('escaped-star-miss', r'"FVWM \\transition*pr\\?be"', 3),
+                 ('escaped-cursor-hit', r'"FVWM \\t**r*probe"', 11),
+                 ('escaped-empty-tail', r'"FVWM \\transition probe**"', 3)]
         for label, selector, width in cases:
             connection.send((f'Style (Name {selector}) BorderWidth {width if width != 3 else 13}, '
                 f'HandleWidth {width if width != 3 else 13}\nUpdateStyles\n').encode())

@@ -452,5 +452,5 @@ diagnostic and execution gates remain separate.
 - [Style matching batch, 2026-10-15](VERIFICATION-2026-10-15-STYLE-MATCHING.md): five substantive selector/matching improvements with one combined checkpoint; affected checks pass, with exact full-scope outcomes/install gaps and source binding in the report.
 
 - [2026-10-18 style subject work](VERIFICATION-2026-10-18-STYLE-SUBJECT.md):
-  three related string-work improvements; focused checks pass, combined
-  qualification pending.
+  three related string-work improvements; one combined six-target checkpoint
+  is locally qualified, with exact source and remaining release limits.

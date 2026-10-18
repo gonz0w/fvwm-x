@@ -17,7 +17,7 @@ is merged with its combined six-target checkpoint.
 [Ordered style candidate lookup](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md)
 is merged with its combined checkpoint. A related
 [style subject-work batch](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md)
-passes focused checks; combined qualification is pending.
+has completed its combined six-target checkpoint.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

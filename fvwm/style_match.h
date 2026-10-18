@@ -8,6 +8,9 @@
 
 struct style_id_t;
 
+#define STYLE_LOOKUP_BUCKETS 256
+#define STYLE_LOOKUP_STREAMS 9
+
 enum style_match_field
 {
 	STYLE_MATCH_RESOURCE,
@@ -21,6 +24,7 @@ enum style_match_field
 typedef struct
 {
 	uint64_t fingerprint;
+	unsigned lookup_bucket;
 	size_t prefix[STYLE_MATCH_FIELDS];
 	size_t minimum[STYLE_MATCH_FIELDS];
 	size_t suffix[STYLE_MATCH_FIELDS];
@@ -49,6 +53,9 @@ void style_match_subject_init(style_match_subject *subject, Window window,
 bool style_match_ids_may_overlap(const struct style_id_t *a,
 	const style_match_patterns *ap, const struct style_id_t *b,
 	const style_match_patterns *bp);
+bool style_match_lookup_enabled(size_t count, size_t indexed);
+unsigned style_match_lookup_subject(const style_match_subject *subject,
+	unsigned buckets[STYLE_LOOKUP_STREAMS]);
 bool style_match_id(const struct style_id_t *id,
 	const style_match_patterns *patterns, style_match_subject *subject);
 

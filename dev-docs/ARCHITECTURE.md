@@ -717,3 +717,11 @@ the destination position. No summary retains a pointer into a retired rule.
 The pure `style_match_ids_may_overlap` policy rejects only proven conflicts in
 same-field literal/anchored spans, preserving compatibility-selector ORs.
 See the [batch scope](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md).
+
+STYLE-01's ordered candidate lookup uses one necessary numeric/literal predicate
+per immutable rule and deduplicated operation-local subject buckets. Derived
+per-list chains merge by ordinal before the existing matcher, preserving priority
+and command order. Add/remove and full-record moves invalidate the only roots;
+lazy rebuilds replace intrusive links before reading them. Small/wildcard-heavy
+lists remain linear; no window result or X state is cached. See the
+[current batch](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md).

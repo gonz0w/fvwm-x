@@ -13,8 +13,10 @@ compositor or native Wayland backend.
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
 [Repeated-ID style simplification](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md)
-passes its combined six-target checkpoint. Optional Go builds use a patched
-compiler baseline. Separate desktop/artwork publication is tracked in the guides.
+is merged with its combined six-target checkpoint.
+[Ordered style candidate lookup](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md)
+has completed its combined checkpoint with exact source and platform scope.
+Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.
 OpenBSD AMD64 VESA cause work is deferred. This is not a stable release.

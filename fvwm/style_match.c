@@ -11,6 +11,74 @@
 #include "style_id_filter.h"
 #include "libs/wild.h"
 
+/* Zero is the ordered fallback chain. All other chains are conservative
+ * hash candidates: equality and every remaining constraint still use the
+ * matcher. Field tags keep explicit predicates separate from the legacy OR. */
+static unsigned lookup_bucket(uint64_t hash)
+{
+	return 1 + hash % (STYLE_LOOKUP_BUCKETS - 1);
+}
+
+static unsigned string_bucket(unsigned field, const char *value)
+{
+	uint64_t hash = UINT64_C(14695981039346656037) ^ field;
+
+	for (; *value; value++)
+		hash = (hash ^ (unsigned char)*value) * UINT64_C(1099511628211);
+	return lookup_bucket(hash);
+}
+
+static unsigned window_bucket(Window window)
+{
+	uint64_t hash = (uint64_t)window;
+
+	hash ^= hash >> 30;
+	hash *= UINT64_C(0xbf58476d1ce4e5b9);
+	hash ^= hash >> 27;
+	hash *= UINT64_C(0x94d049bb133111eb);
+	return lookup_bucket(hash ^ (hash >> 31));
+}
+
+bool style_match_lookup_enabled(size_t count, size_t indexed)
+{
+	/* Small and mostly general-wildcard lists retain a linear walk. */
+	return indexed >= 32 && indexed >= count - indexed;
+}
+
+unsigned style_match_lookup_subject(const style_match_subject *subject,
+	unsigned buckets[STYLE_LOOKUP_STREAMS])
+{
+	unsigned count = 0;
+	unsigned possible[STYLE_LOOKUP_STREAMS];
+
+	possible[count++] = 0;
+	possible[count++] = window_bucket(subject->window);
+	for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
+	{
+		if (subject->value[i])
+			possible[count++] = string_bucket(i, subject->value[i]);
+	}
+	for (unsigned i = 0; i <= STYLE_MATCH_NAME; i++)
+	{
+		if (subject->value[i])
+			possible[count++] = string_bucket(STYLE_MATCH_FIELDS,
+				subject->value[i]);
+	}
+	/* Hash collisions and equal subject fields must never visit a chain
+	 * twice: duplicate matching merges can duplicate ownership. */
+	unsigned used = 0;
+
+	for (unsigned i = 0; i < count; i++)
+	{
+		unsigned j;
+
+		for (j = 0; j < used && buckets[j] != possible[i]; j++);
+		if (j == used)
+			buckets[used++] = possible[i];
+	}
+	return used;
+}
+
 void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 {
 	const char *values[STYLE_MATCH_FIELDS] = {
@@ -67,6 +135,31 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 		if (stars == 1 && questions == 0)
 			patterns->single_star |= bit;
 	}
+	/* Pick one necessary predicate, never a sufficient match. Numeric
+	 * identities win; explicit literal conjunctions precede the legacy OR.
+	 * NULL, universal, wildcard and escaped selectors remain on fallback
+	 * unless another independent necessary predicate can index the rule. */
+	if (id->flags.has_window_id)
+		patterns->lookup_bucket = window_bucket(id->window_id);
+	else
+	{
+		for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
+		{
+			if (active[i] && (patterns->literal & (1U << i)) &&
+			    (i != STYLE_MATCH_NAME || id->flags.has_name))
+			{
+				patterns->lookup_bucket =
+					string_bucket(i, values[i]);
+				break;
+			}
+		}
+		if (!patterns->lookup_bucket &&
+		    id->flags.is_compatibility_mode &&
+		    (patterns->literal & (1U << STYLE_MATCH_NAME)))
+			patterns->lookup_bucket =
+				string_bucket(STYLE_MATCH_FIELDS, id->name);
+	}
+
 }
 
 void style_match_subject_init(style_match_subject *subject, Window window,

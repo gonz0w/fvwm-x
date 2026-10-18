@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Ordered style candidate lookup](VERIFICATION-2026-10-18-STYLE-LOOKUP.md): three numeric/explicit/compatibility dispatch improvements; one combined six-target/ten-profile checkpoint with installed/default-X clients, scoped sanitizers and exact formatting/source binding.
+
 - [Repeated-ID style simplification](VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md): three related improvements qualified in one six-target/ten-profile checkpoint, with staged/default-X clients, scoped sanitizer passes and retained preparation failures.
 
 - [Style wildcard batch](VERIFICATION-2026-10-16-STYLE-WILDCARDS.md): three related matching improvements; one retained full matrix, final affected native/installed/sanitizer passes, portable counter and supervised client corrections.

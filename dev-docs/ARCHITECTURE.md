@@ -791,3 +791,8 @@ prepares decoded widths separately from unescaped overlap proofs. Fixed and
 one-star spans avoid recursive matching; general escaped matching uses local
 retry cursors. Three masks add sixteen inline bytes on the measured ABI; no
 retained pointer/result, shared-glob change or update/lifetime owner is added.
+
+The [escaped-family receipt](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-COMBINED.json)
+binds the decoded metadata and normal/reference/collision streams to one frozen
+source. Existing inline style allocations/copies can grow with the sixteen-byte
+record increase; no separate heap buffer or retained matching state is added.

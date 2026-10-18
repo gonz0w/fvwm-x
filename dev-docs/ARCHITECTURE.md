@@ -750,3 +750,6 @@ objects and compiles only its two link-wrap probes separately. The XRR mode
 macro belongs to its probe; queue and XRR interception remain linker wrappers.
 The distinct assertion-enabled core objects owned by `module_output_fixture`
 remain shared by the actual-core fixtures, with `-UNDEBUG` retained.
+
+The [affected build-reuse checkpoint](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
+records the actual graphs, code/data section parity and retained qualification scope.

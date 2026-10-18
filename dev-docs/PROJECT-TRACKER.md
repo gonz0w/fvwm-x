@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Style wildcard families, STYLE-01 #38 | Locally qualified; [PR #108](https://github.com/gonz0w/fvwm-x/pull/108) ready for review | Three families share one combined checkpoint: exact-width questions, anchored one-star question spans and constant-stack general unescaped cursors. Original results pass 1992/1992 standard and 437/437 optional entries; four scoped sanitizers pass. 10 fresh stages, 4 authenticated default BSD displays and 630 family observations retain exact scope. Legacy empty-tail/escaped behavior and all ordering barriers remain. [Report](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md). |
+| Style selector disjointness, STYLE-01 #38 | Implemented; focused checks pass; combined checkpoint pending | Exact/minimum lengths, fixed-position conflicts and literal membership form one batch. Three selected actual-core lists shrink from three records to two; reference controls retain three. Linux/OpenBSD ARM policy/core/update and 20 real-client cases pass. No new metadata or allocation; ordering, compatibility ORs and X/update owners remain. [Report](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md). |
+| Style wildcard families, STYLE-01 #38 | Merged in [PR #108](https://github.com/gonz0w/fvwm-x/pull/108); locally qualified | Three families share one combined checkpoint: exact-width questions, anchored one-star question spans and constant-stack general unescaped cursors. Original results pass 1992/1992 standard and 437/437 optional entries; four scoped sanitizers pass. 10 fresh stages, 4 authenticated default BSD displays and 630 family observations retain exact scope. Legacy empty-tail/escaped behavior and all ordering barriers remain. [Report](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md). |
 | Development build reuse, MAINT-02 / CLEAN-01 | Merged in [PR #107](https://github.com/gonz0w/fvwm-x/pull/107); affected checkpoint locally qualified | Three build/dependency improvements remove 74 duplicate Linux core compilations, reduce operation-API fanout to 7 objects, and keep private index edits in 2 owner objects. All 70 affected entries pass ten profiles/six targets; 1502 core/probe objects and ten WM executables retain identical allocated code/data sections. Ten fresh stages verify 249 code/catalog identities. Collector repairs preserve successful phases; unchanged broader runtime evidence stays with PR106. [Report](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md). |
 | Style subject work, STYLE-01 #38 | Merged in [PR #106](https://github.com/gonz0w/fvwm-x/pull/106); locally qualified with composed evidence | Deferred compatibility work, domain-selective index queries and shared hash/length scans form one batch. The measured numeric-only string work drops to zero; explicit-name hashing drops from 114,688 to 16,384 byte steps and avoids a separate 16,384-byte length scan. One combined checkpoint passes 1991 standard/437 optional entries, four scoped sanitizers, ten fresh stages and five default BSD displays; the one original failed entry passes an unchanged isolated control. No universal latency claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md). |
 | Ordered style candidate lookup, STYLE-01 #38 | Merged in [PR #105](https://github.com/gonz0w/fvwm-x/pull/105); locally qualified with composed evidence | Three ordered candidate paths share one checkpoint. Original observations pass 1989/1992 standard and 437/437 optional entries across six targets / ten profiles; 4 scoped sanitizer entries pass. 10 fresh stages bind 150 code/99 catalog identities. 5 authenticated default BSD displays and 10 staged real-client invocations pass. One full matrix serves the batch; hashing/collision/cold-build and release limitations remain explicit. [Report](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md). |
@@ -226,16 +227,15 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-18: PR #107 is merged. The three-family STYLE-01
-wildcard batch has completed one combined checkpoint in
-[PR #108](https://github.com/gonz0w/fvwm-x/pull/108): exact-width questions,
-one-star question spans and constant-stack general unescaped matching. Original
-results, scoped sanitizers, fresh-stage/default-X coverage and any broader gaps
-are recorded in its [report](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md).
-Review and merge before selecting the next measured STYLE/STATE batch. Retain
-matching/precedence, escaped semantics, DRAW/INPUT barriers and warm build reuse.
-Larger update plans/narrower grabs remain separately measured; VESA #93 stays
-deferred.
+Immediate selection, 2026-10-18: PR #108 is merged. Continue STYLE-01 with
+three conservative selector-disjointness proofs: exact/minimum lengths, fixed
+positions and literal membership. The actual-core baseline retains three records
+in all three selected cases; focused candidates retain two with unchanged
+border/handle/title results and removal ownership. Linux/OpenBSD ARM policy,
+actual-core/update and twenty real-client cases pass. Freeze one combined
+checkpoint; retain matching/precedence, compatibility ORs, DRAW/INPUT barriers
+and warm build reuse. Escaped/shared-glob work and larger update plans/narrower
+grabs remain separately measured; VESA #93 stays deferred.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -2007,3 +2007,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-18: MAINT-02/CLEAN-01 interleaves one three-story development-speed checkpoint after merged PR106. PR107 shares 74 production core objects, reduces operation-only style header fanout to 7 and makes index-layout changes private to 2 owner objects. One affected six-target/ten-profile checkpoint passes 70 entries, preserves allocated sections in 1502 core/probe objects and ten WM executables, and verifies 249 fresh staged identities. Four continuations retain earlier successful commands and finish remaining profiles without rerunning passed phases. Portable 166 passes/11 capability skips and exact source/failed-collection scopes are recorded. Broader runtime/default-X/sanitizer evidence and its original failure/control stay with PR106; native-CPU/hardware/release gaps and VESA93 remain separate. [Report](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md).
 
 - 2026-10-18: STYLE-01's three unescaped wildcard families complete one combined checkpoint in PR #108 after merged PR #107. Exact-width question rejection, anchored one-star question spans and constant-stack general matching retain the independent legacy predicate and empty-tail/escape behavior. Original runs pass 1992/1992 standard and 437/437 optional entries; four scoped sanitizers, 10 fresh stages, 4 authenticated BSD displays and 630 family rows retain exact source scope. Metadata adds eight bytes per rule on the measured ABI; no universal linear-time/latency claim. Historical failures and release/native-CPU/hardware gaps remain explicit. No full suite is repeated per story/PR/report; VESA #93 stays deferred. [Report](verification/VERIFICATION-2026-10-18-STYLE-CURSORS.md).
+
+- 2026-10-18: PR #108 merged. STYLE-01 batches exact/minimum length, fixed-position and literal-membership disjointness proofs. Three measured actual-core lists shrink from three records to two with unchanged witness results and deletion; focused Linux/OpenBSD ARM pass four affected entries and twenty real-client cases each. One combined checkpoint follows; no update/grab/lifetime change or global glob replacement is implied. [Report](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md). VESA #93 stays deferred.

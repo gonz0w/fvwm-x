@@ -768,3 +768,10 @@ The [combined family receipt](verification/VERIFICATION-2026-10-18-STYLE-CURSORS
 binds the matcher, enlarged inline metadata and normal/reference/collision probes
 to the qualified source. Subject ownership and every X/update barrier are
 unchanged.
+
+STYLE-01's [selector disjointness](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md)
+uses existing prepared lengths for exact/minimum rejection, fixed byte positions
+for question-only patterns, and the existing matcher for literal membership in
+an unescaped star pattern. Only shared explicit fields can establish disjointness.
+The literal subject borrows its string synchronously and retains its known length;
+no metadata, resource, update barrier or lifetime owner changes.

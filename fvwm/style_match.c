@@ -413,6 +413,67 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 	return true;
 }
 
+static bool pattern_lengths_may_overlap(const style_match_patterns *a,
+	const style_match_patterns *b, unsigned field)
+{
+	unsigned bit = 1U << field;
+	size_t a_minimum, b_minimum;
+
+	/* Only unescaped patterns have a prepared byte minimum. A literal
+	 * or question-only pattern also bounds the entire matching value. */
+	if (!((a->literal | a->unescaped) & bit) ||
+	    !((b->literal | b->unescaped) & bit))
+		return true;
+	a_minimum = a->literal & bit ? a->prefix[field] : a->minimum[field];
+	b_minimum = b->literal & bit ? b->prefix[field] : b->minimum[field];
+	if (((a->literal | a->fixed_width) & bit) && a_minimum < b_minimum)
+		return false;
+	if (((b->literal | b->fixed_width) & bit) && b_minimum < a_minimum)
+		return false;
+	return true;
+}
+
+static bool fixed_patterns_may_overlap(const char *a,
+	const style_match_patterns *ap, const char *b,
+	const style_match_patterns *bp, unsigned field)
+{
+	unsigned bit = 1U << field;
+	size_t a_length, b_length;
+
+	if (!((ap->literal | ap->fixed_width) & bit) ||
+	    !((bp->literal | bp->fixed_width) & bit) ||
+	    !((ap->fixed_width | bp->fixed_width) & bit))
+		return true;
+	a_length = ap->literal & bit ? ap->prefix[field] : ap->minimum[field];
+	b_length = bp->literal & bit ? bp->prefix[field] : bp->minimum[field];
+	if (a_length != b_length)
+		return false;
+	/* These unescaped patterns consume exactly one byte per position.
+	 * Two different literal bytes at one position cannot share a value. */
+	for (size_t i = 0; i < a_length; i++)
+	{
+		if (a[i] != '?' && b[i] != '?' && a[i] != b[i])
+			return false;
+	}
+	return true;
+}
+
+static bool literal_member_may_overlap(const char *literal, size_t length,
+	const char *pattern, const style_match_patterns *patterns,
+	unsigned field)
+{
+	style_match_subject subject;
+
+	/* The literal describes exactly one possible field value. Reuse the
+	 * prepared matcher rather than treating wildcard bytes as literals.
+	 * The subject borrows that value only for this synchronous proof. */
+	style_match_subject_init(
+		&subject, 0, literal, literal, literal, literal);
+	subject.length[field] = length;
+	subject.length_fields = 1U << field;
+	return match_pattern(pattern, patterns, field, &subject, field);
+}
+
 static bool pattern_spans_may_overlap(const char *a,
 	const style_match_patterns *ap, const char *b,
 	const style_match_patterns *bp, unsigned field)
@@ -430,6 +491,8 @@ static bool pattern_spans_may_overlap(const char *a,
 	if ((ap->literal & bp->literal & bit) &&
 	    ap->prefix[field] != bp->prefix[field])
 		return false;
+	if (!pattern_lengths_may_overlap(ap, bp, field))
+		return false;
 	/* An escaped pattern has no prepared anchored suffix. Its initial
 	 * unescaped prefix remains necessary; everything else is uncertain. */
 	alength = ap->literal & bit ? ap->prefix[field] :
@@ -437,12 +500,27 @@ static bool pattern_spans_may_overlap(const char *a,
 	blength = bp->literal & bit ? bp->prefix[field] :
 		bp->unescaped & bit ? bp->suffix_length[field] : 0;
 	common = alength < blength ? alength : blength;
-	if (!common)
-		return true;
-	asuffix = a + (ap->literal & bit ? 0 : ap->suffix[field]);
-	bsuffix = b + (bp->literal & bit ? 0 : bp->suffix[field]);
-	return memcmp(asuffix + alength - common,
-		bsuffix + blength - common, common) == 0;
+	if (common)
+	{
+		asuffix = a + (ap->literal & bit ? 0 : ap->suffix[field]);
+		bsuffix = b + (bp->literal & bit ? 0 : bp->suffix[field]);
+		if (memcmp(asuffix + alength - common,
+		    bsuffix + blength - common, common) != 0)
+			return false;
+	}
+	if (!fixed_patterns_may_overlap(a, ap, b, bp, field))
+		return false;
+	/* Fixed-width pairs were decided above. An escaped pattern retains
+	 * the conservative result and never enters a recursive proof here. */
+	if ((ap->literal & bit) && (bp->unescaped & bit) &&
+	    !(bp->fixed_width & bit))
+		return literal_member_may_overlap(a, ap->prefix[field],
+			b, bp, field);
+	if ((bp->literal & bit) && (ap->unescaped & bit) &&
+	    !(ap->fixed_width & bit))
+		return literal_member_may_overlap(b, bp->prefix[field],
+			a, ap, field);
+	return true;
 }
 
 /* False proves that no window can satisfy both conjunctions. Compatibility

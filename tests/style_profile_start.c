@@ -41,13 +41,14 @@ void __wrap_style_match_prepare(style_match_patterns *patterns,
 		patterns->lookup_bucket = 1;
 }
 
-unsigned __real_style_match_lookup_subject(const style_match_subject *,
+unsigned __real_style_match_lookup_subject(style_match_subject *, unsigned,
 	unsigned [STYLE_LOOKUP_STREAMS]);
-unsigned __wrap_style_match_lookup_subject(const style_match_subject *subject,
-	unsigned buckets[STYLE_LOOKUP_STREAMS])
+unsigned __wrap_style_match_lookup_subject(style_match_subject *subject,
+	unsigned domains, unsigned buckets[STYLE_LOOKUP_STREAMS])
 {
 	if (!force_index_collision)
-		return __real_style_match_lookup_subject(subject, buckets);
+		return __real_style_match_lookup_subject(
+			subject, domains, buckets);
 	buckets[0] = 0;
 	buckets[1] = 1;
 	return 2;
@@ -616,6 +617,66 @@ static void index_compare(FvwmWindow *sample)
 	assert(memcmp(&candidate, &original, sizeof(candidate)) == 0);
 }
 
+static void mixed_domain_work(const exec_context_t *exc, FvwmWindow *window)
+{
+	FvwmWindow sample = *window;
+	window_style style;
+	char command_text[256], name[16385];
+
+	/* One flag/priority list contains two necessary-key domains. Its
+	 * domain union must be rebuilt when the last name-key rule retires. */
+	for (unsigned i = 0; i < 64; i++)
+	{
+		snprintf(command_text, sizeof(command_text), i < 32 ?
+			"Style (Resource domain-%04u, Name *tail) "
+			"BorderWidth 7" :
+			"Style (Resource *, Name domain-name-%04u-tail) "
+			"BorderWidth 9", i);
+		command(exc, command_text);
+	}
+	sample.class.res_name = "domain-0000";
+	sample.name.name = "domain-name-0032-tail";
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 9);
+	index_compare(&sample);
+	memset(name, 'a', sizeof(name) - 1);
+	memcpy(name + sizeof(name) - 5, "tail", 5);
+	sample.name.name = name;
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 7);
+	index_compare(&sample);
+	for (unsigned i = 32; i < 64; i++)
+	{
+		snprintf(command_text, sizeof(command_text),
+			"DestroyStyle (Resource *, Name domain-name-%04u-tail)",
+			i);
+		command(exc, command_text);
+	}
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 7);
+	index_compare(&sample);
+	command(exc, "Style (Resource *, Name domain-name-0032-tail) "
+		"BorderWidth 9");
+	sample.name.name = "domain-name-0032-tail";
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 9);
+	index_compare(&sample);
+	command(exc, "DestroyStyle (Resource *, Name domain-name-0032-tail)");
+	for (unsigned i = 0; i < 32; i++)
+	{
+		snprintf(command_text, sizeof(command_text),
+			"DestroyStyle (Resource domain-%04u, Name *tail)", i);
+		command(exc, command_text);
+	}
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 3);
+	index_compare(&sample);
+	printf("STYLE_SUBJECT_WORK {\"long_name_bytes\":16384,"
+		"\"domain_transitions\":3,\"reference\":%s,\"collision\":%s}\n",
+		force_reference ? "true" : "false",
+		force_index_collision ? "true" : "false");
+}
+
 /* Separate numeric, explicit conjunction and legacy OR workloads. Each
  * starts with fresh rules, then retires them with the real command engine. */
 static void index_work(const exec_context_t *exc, FvwmWindow *window,
@@ -787,6 +848,7 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 		lookup_style(&sample, &style);
 		assert(SGET_BORDER_WIDTH(style) == 3);
 	}
+	mixed_domain_work(exc, window);
 }
 
 void __wrap_CaptureAllWindows(const exec_context_t *exc)

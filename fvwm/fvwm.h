@@ -700,6 +700,7 @@ typedef struct window_style
 typedef struct
 {
 	window_style *head[STYLE_LOOKUP_BUCKETS];
+	unsigned domains;
 } style_lookup_index;
 
 typedef struct window_style_list

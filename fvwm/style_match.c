@@ -19,13 +19,20 @@ static unsigned lookup_bucket(uint64_t hash)
 	return 1 + hash % (STYLE_LOOKUP_BUCKETS - 1);
 }
 
+static uint64_t string_hash(const char *value, size_t *length)
+{
+	uint64_t hash = UINT64_C(14695981039346656037);
+
+	for (*length = 0; *value; value++, (*length)++)
+		hash = (hash ^ (unsigned char)*value) * UINT64_C(1099511628211);
+	return hash;
+}
+
 static unsigned string_bucket(unsigned field, const char *value)
 {
-	uint64_t hash = UINT64_C(14695981039346656037) ^ field;
+	size_t length;
 
-	for (; *value; value++)
-		hash = (hash ^ (unsigned char)*value) * UINT64_C(1099511628211);
-	return lookup_bucket(hash);
+	return lookup_bucket(string_hash(value, &length) ^ field);
 }
 
 static unsigned window_bucket(Window window)
@@ -45,24 +52,53 @@ bool style_match_lookup_enabled(size_t count, size_t indexed)
 	return indexed >= 32 && indexed >= count - indexed;
 }
 
-unsigned style_match_lookup_subject(const style_match_subject *subject,
-	unsigned buckets[STYLE_LOOKUP_STREAMS])
+static void prepare_compatibility_fields(style_match_subject *subject);
+
+static unsigned subject_bucket(style_match_subject *subject, unsigned field,
+	unsigned domain)
+{
+	unsigned bit = 1U << field;
+
+	if (!(subject->hash_fields & bit))
+	{
+		/* Hashing already reaches the terminator. Publish its length
+		 * for later wildcard checks in this same borrowed identity. */
+		subject->hash[field] = string_hash(subject->value[field],
+			&subject->length[field]);
+		subject->length_fields |= bit;
+		subject->hash_fields |= bit;
+	}
+	return lookup_bucket(subject->hash[field] ^ domain);
+}
+
+unsigned style_match_lookup_subject(style_match_subject *subject,
+	unsigned domains, unsigned buckets[STYLE_LOOKUP_STREAMS])
 {
 	unsigned count = 0;
 	unsigned possible[STYLE_LOOKUP_STREAMS];
 
 	possible[count++] = 0;
-	possible[count++] = window_bucket(subject->window);
+	if (domains & STYLE_LOOKUP_WINDOW)
+	{
+		if (!subject->window_bucket)
+			subject->window_bucket = window_bucket(subject->window);
+		possible[count++] = subject->window_bucket;
+	}
 	for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
 	{
-		if (subject->value[i])
-			possible[count++] = string_bucket(i, subject->value[i]);
+		if ((domains & (1U << i)) && subject->value[i])
+			possible[count++] = subject_bucket(subject, i, i);
 	}
-	for (unsigned i = 0; i <= STYLE_MATCH_NAME; i++)
+	if (domains & (1U << STYLE_MATCH_FIELDS))
 	{
-		if (subject->value[i])
-			possible[count++] = string_bucket(STYLE_MATCH_FIELDS,
-				subject->value[i]);
+		prepare_compatibility_fields(subject);
+		for (unsigned i = 0; i <= STYLE_MATCH_NAME; i++)
+		{
+			if ((subject->compatibility_fields & (1U << i)) &&
+			    subject->value[i])
+				possible[count++] = subject_bucket(subject, i,
+					STYLE_MATCH_FIELDS);
+		}
 	}
 	/* Hash collisions and equal subject fields must never visit a chain
 	 * twice: duplicate matching merges can duplicate ownership. */
@@ -140,7 +176,10 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 	 * NULL, universal, wildcard and escaped selectors remain on fallback
 	 * unless another independent necessary predicate can index the rule. */
 	if (id->flags.has_window_id)
+	{
 		patterns->lookup_bucket = window_bucket(id->window_id);
+		patterns->lookup_domain = STYLE_LOOKUP_WINDOW;
+	}
 	else
 	{
 		for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
@@ -150,14 +189,18 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 			{
 				patterns->lookup_bucket =
 					string_bucket(i, values[i]);
+				patterns->lookup_domain = 1U << i;
 				break;
 			}
 		}
 		if (!patterns->lookup_bucket &&
 		    id->flags.is_compatibility_mode &&
 		    (patterns->literal & (1U << STYLE_MATCH_NAME)))
+		{
 			patterns->lookup_bucket =
 				string_bucket(STYLE_MATCH_FIELDS, id->name);
+			patterns->lookup_domain = 1U << STYLE_MATCH_FIELDS;
+		}
 	}
 
 }
@@ -172,6 +215,17 @@ void style_match_subject_init(style_match_subject *subject, Window window,
 	subject->value[STYLE_MATCH_ICON] = icon;
 	subject->length_fields = 0;
 	subject->compatibility_fields = 0;
+	subject->hash_fields = 0;
+	subject->window_bucket = 0;
+}
+
+static void prepare_compatibility_fields(style_match_subject *subject)
+{
+	/* Bit zero is always a representative, including NULL, so zero also
+	 * means unprepared. Explicit-only and numeric rejects do no equality
+	 * work; compatibility rules share one ordered representative set. */
+	if (subject->compatibility_fields)
+		return;
 	/* Equality is computed once per lookup, not once per rule. Keep the
 	 * first representative, including NULL, in original evaluation order. */
 	for (unsigned i = 0; i <= STYLE_MATCH_NAME; i++)
@@ -250,9 +304,12 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 	/* A numeric mismatch decides this conjunction without string work. */
 	if (id->flags.has_window_id && id->window_id != subject->window)
 		return false;
-	if (id->flags.is_compatibility_mode)
+	if (id->flags.is_compatibility_mode &&
+	    !(patterns->universal & (1U << STYLE_MATCH_NAME)))
 	{
 		unsigned i;
+
+		prepare_compatibility_fields(subject);
 
 		for (i = 0; i <= STYLE_MATCH_NAME; i++)
 		{

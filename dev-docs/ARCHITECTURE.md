@@ -725,3 +725,12 @@ and command order. Add/remove and full-record moves invalidate the only roots;
 lazy rebuilds replace intrusive links before reading them. Small/wildcard-heavy
 lists remain linear; no window result or X state is cached. See the
 [current batch](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md).
+
+STYLE-01's subject-work batch makes compatibility representatives lazy. Each
+rebuilt ordered index records the union of its necessary-key domains; each list
+queries only that union. One synchronous borrowed subject shares untagged hashes
+and hash-derived lengths across explicit/compatibility domains and lists. The
+original matcher still decides every candidate. Invalidation discards the index
+and its domain union together before mutation; identity initialization discards
+all subject caches. No X state, style result or callback retains them.
+[Current scope](verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md).

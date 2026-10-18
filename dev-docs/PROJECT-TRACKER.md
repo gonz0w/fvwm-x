@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Ordered style candidate lookup, STYLE-01 #38 | Locally qualified with composed evidence; [PR #105](https://github.com/gonz0w/fvwm-x/pull/105) ready for review | Three ordered candidate paths share one checkpoint. Original observations pass 1989/1992 standard and 437/437 optional entries across six targets / ten profiles; 4 scoped sanitizer entries pass. 10 fresh stages bind 150 code/99 catalog identities. 5 authenticated default BSD displays and 10 staged real-client invocations pass. One full matrix serves the batch; hashing/collision/cold-build and release limitations remain explicit. [Report](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md). |
+| Style subject work, STYLE-01 #38 | Implemented; focused Linux checks pass; combined qualification pending | Deferred compatibility work, domain-selective index queries and shared hash/length scans form one batch. The measured numeric-only string work drops to zero; explicit-name hashing drops from 114,688 to 16,384 byte steps and avoids a separate 16,384-byte length scan. No universal latency claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md). |
+| Ordered style candidate lookup, STYLE-01 #38 | Merged in [PR #105](https://github.com/gonz0w/fvwm-x/pull/105); locally qualified with composed evidence | Three ordered candidate paths share one checkpoint. Original observations pass 1989/1992 standard and 437/437 optional entries across six targets / ten profiles; 4 scoped sanitizer entries pass. 10 fresh stages bind 150 code/99 catalog identities. 5 authenticated default BSD displays and 10 staged real-client invocations pass. One full matrix serves the batch; hashing/collision/cold-build and release limitations remain explicit. [Report](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md). |
 | Style simplification batch, STYLE-01 #38 | Merged in [PR #104](https://github.com/gonz0w/fvwm-x/pull/104); locally qualified | Three repeated-ID improvements are locally qualified. Original observations pass 1991/1992 standard and 437/437 optional entries across six targets / ten profiles. The one failed startup fixture is corrected and passes on unchanged binaries; its original failure remains visible. 4 scoped sanitizer entries pass. 10 fresh stages bind 150 code/99 catalogs; four default BSD displays and 10 staged real-client invocations pass. One full checkpoint serves the batch; preparation failures and scoped limitations remain explicit. [Report](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md). |
 | Style wildcard batch, STYLE-01 #38 | Merged in [PR #103](https://github.com/gonz0w/fvwm-x/pull/103); locally qualified | Three related wildcard improvements are locally qualified. The original matrix records 1988/1992 standard and 437/437 optional passes; its four BSD counter assertions are resolved by portable outer-call accounting. Final affected scope passes 30 native entries, three scoped sanitizer entries and ten staged client probes / 70 cases; all ten stages verify 150 code/99 catalogs. Four final default BSD displays add eight geometry invocations / 56 cases. One full matrix serves the batch; corrected results and failures retain exact source scopes. [Report](verification/VERIFICATION-2026-10-16-STYLE-WILDCARDS.md). |
 | EWMH state traversal, STATE-01 #37 | Merged in [PR #102](https://github.com/gonz0w/fvwm-x/pull/102); affected checks pass; full platform gaps retained | Three related improvements share one checkpoint. Eight affected/retained entries pass ten profiles; core probes pass four default BSD X targets, and three scoped sanitizer entries pass. Original full runs pass 1990/1992 standard and 437/437 optional entries. Fresh 8 stages verify 120 code/77 catalog identities; 16 geometry invocations pass. Exact broader failures/install gaps remain in the report. [Report](verification/VERIFICATION-2026-10-15-EWMH-STATE.md). |
@@ -223,14 +224,14 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-18: PR #104 is merged. Continue STYLE-01 with
-one three-story ordered candidate-lookup batch: numeric selectors, explicit
-literals and compatibility-selector ORs. One combined six-target/ten-profile
-checkpoint is complete in
-[PR #105](https://github.com/gonz0w/fvwm-x/pull/105); review and merge before
-selecting the next measured STYLE/STATE batch. Preserve matcher/order and
-DRAW-01 barriers; safe update plans and narrower grabs remain separate. VESA #93 stays deferred.
-[Evidence](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md).
+Immediate selection, 2026-10-18: PR #105 is merged. Continue STYLE-01 with
+three related subject-work improvements: deferred compatibility comparisons,
+domain-selective candidate queries and shared hash/length scans. The measured
+16-KiB-string baseline performs 114,688 hash-byte steps and 49,152 equality-byte
+steps even for numeric-only lookup; explicit wildcard matching adds a 16,384-byte
+length scan. All three improvements are implemented and focused Linux checks pass; one
+combined checkpoint is pending. Preserve matching, precedence and DRAW-01 barriers. Broader
+update plans/narrower grabs remain separate; VESA #93 stays deferred.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

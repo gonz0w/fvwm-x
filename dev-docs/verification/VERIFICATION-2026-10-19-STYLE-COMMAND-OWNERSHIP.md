@@ -58,3 +58,22 @@ subsequent style/removal still applies exact frame/client geometry. Existing
 style matching, filter, lookup/profile, window-update and colorset/context
 regressions pass. These are selected operation counts, not a universal timing
 claim. One combined checkpoint follows on the frozen candidate.
+
+## Scheduler fixture ordering correction
+
+The original broad checkpoint records 2013/2014 executed standard and 443/443
+optional passes. Linux AMD64 Clang's scheduler-dispatch fixture fails its
+cancellation-barrier assertion; its profile is not installed. One unchanged
+isolated control passes on identical binaries and limits. The original failure
+and control retain separate source/evidence identities.
+
+The fixture sends two 40-ms jobs and Deschedule as separate module commands;
+that sequence does not establish cancellation before timer dispatch. The
+corrected fixture installs/cancels the group within one synchronous Read, using
+the same boundary its existing overdue-backlog control already relies on.
+All 40/80-ms schedules, periodic/overdue assertions and connection/test limits
+remain unchanged. A controlled 100-ms producer pause compares the old separate
+commands with the corrected atomic admission; this is diagnostic timing, not a
+production deadline change. Only this Python fixture/report change after the
+frozen production checkpoint. Targeted fixture checks and the missing Clang
+install/client probes follow; no full suite repeats.

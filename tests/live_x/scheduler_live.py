@@ -68,9 +68,14 @@ def run(args):
         assert messages.count("entered") == messages.count("finished") == 1
         evidence["nested_wait_exactly_once"] = messages.copy()
 
-        connection.send(b"Schedule 40 777 Echo cancelled-a\n"
-                        b"Schedule 40 777 Echo cancelled-b\n"
-                        b"Deschedule 777\nSchedule 80 Echo cancellation-barrier\n")
+        # Install and cancel before returning to the multiplexer. Separate
+        # module commands can cross the 40-ms deadline before Deschedule runs.
+        cancellation = runtime.root / "cancellation.fvwm"
+        cancellation.write_text("Schedule 40 777 Echo cancelled-a\n"
+                                "Schedule 40 777 Echo cancelled-b\n"
+                                "Deschedule 777\n"
+                                "Schedule 80 Echo cancellation-barrier\n")
+        connection.send(f'Read "{cancellation}"\n'.encode())
         assert next_echo() == "cancellation-barrier"
         connection.send(b"Schedule Periodic 10 778 Echo periodic\n")
         for _ in range(3):

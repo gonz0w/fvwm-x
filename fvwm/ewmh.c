@@ -1312,15 +1312,72 @@ Bool ewmh_AllowsResize(
 	return is_function_allowed(F_RESIZE, NULL, fw, RQORIG_PROGRAM_US, False);
 }
 
+/* Permission predicates only read this window. Results belong to this one
+ * publication, including the separate fullscreen resize override request. */
+typedef enum
+{
+	EWMH_ACTION_CLOSE,
+	EWMH_ACTION_MAXIMIZE,
+	EWMH_ACTION_MOVE,
+	EWMH_ACTION_RESIZE,
+	EWMH_ACTION_FULLSCREEN_RESIZE,
+	EWMH_ACTION_MINIMIZE
+} allowed_action_request;
+
+typedef struct
+{
+	FvwmWindow *window;
+	unsigned tested;
+	unsigned allowed;
+} allowed_action_policy;
+
+static Bool action_permission(allowed_action_policy *policy,
+	allowed_action_request request)
+{
+	static const int functions[] = { F_CLOSE, F_MAXIMIZE, F_MOVE,
+		F_RESIZE, F_RESIZE, F_ICONIFY };
+	unsigned bit = 1U << request;
+
+	if (!(policy->tested & bit))
+	{
+		if (is_function_allowed(functions[request], NULL, policy->window,
+			RQORIG_PROGRAM_US,
+			request == EWMH_ACTION_FULLSCREEN_RESIZE))
+			policy->allowed |= bit;
+		policy->tested |= bit;
+	}
+	return !!(policy->allowed & bit);
+}
+
+static Bool allowed_action(allowed_action_policy *policy, const ewmh_atom *atom)
+{
+	if (atom->action == ewmh_AllowsClose)
+		return action_permission(policy, EWMH_ACTION_CLOSE);
+	if (atom->action == ewmh_AllowsMaximize)
+		return action_permission(policy, EWMH_ACTION_MAXIMIZE);
+	if (atom->action == ewmh_AllowsMove)
+		return action_permission(policy, EWMH_ACTION_MOVE);
+	if (atom->action == ewmh_AllowsResize)
+		return action_permission(policy, EWMH_ACTION_RESIZE);
+	if (atom->action == ewmh_AllowsMinimize)
+		return action_permission(policy, EWMH_ACTION_MINIMIZE);
+	if (atom->action == ewmh_AllowsFullScreen)
+		return action_permission(policy, EWMH_ACTION_MAXIMIZE) &&
+			action_permission(policy, EWMH_ACTION_MOVE) &&
+			action_permission(policy, EWMH_ACTION_FULLSCREEN_RESIZE);
+	return atom->action(policy->window, NULL, NULL, 0);
+}
+
 void EWMH_SetAllowedActions(FvwmWindow *fw)
 {
 	Atom wm_actions[EWMH_NUMBER_OF_ALLOWED_ACTIONS];
 	int i = 0;
+	allowed_action_policy policy = { fw, 0, 0 };
 	ewmh_atom *list = ewmh_atom_allowed_actions;
 
 	while(list->name != NULL)
 	{
-		if (list->action(fw, NULL, NULL, 0))
+		if (allowed_action(&policy, list))
 			wm_actions[i++] = list->atom;
 		list++;
 	}

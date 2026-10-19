@@ -31,6 +31,9 @@ def run(args):
                 'destruction publication and query refresh barriers',
                 'atom scoped/all priority/miss/None/reinitialization',
                 'ewmh state publication',
+                'allowed-action local policy/order/override/refresh',
+                'strut paired/static/dynamic/zero/missing/filter',
+                'desktop-name lengths/UTF8/empty/refusal/ownership',
                 'atom names scoped/all/duplicate/unsorted/reentrant',
                 'atom duplicate lower-bound priority',
                 'atom named property cardinal/UTF8/read/delete/invalid',
@@ -56,6 +59,17 @@ def run(args):
                 coverage = records('STATE_NAME_COVERAGE ')
                 duplicates = records('STATE_DUPLICATE ')
                 supported = records('STATE_SUPPORTED ')
+                actions = records('STATE_ACTION_WORK ')
+                struts = records('STATE_STRUT_WORK ')
+                desktop_names = records('STATE_DESKTOP_NAME_WORK ')
+                assert len(actions) == len(struts) == len(desktop_names) == 1
+                assert actions[0]['cases'] == 80 and struts[0]['cases'] == 7
+                baseline = actions[0]['baseline']
+                assert actions[0]['selected_policy_calls'] == (9 if baseline else 6)
+                assert struts[0]['selected_walks'] == (2 if baseline else 1)
+                if desktop_names[0]['supported']:
+                    assert (desktop_names[0]['selected_scans'] >= 126 if baseline
+                            else desktop_names[0]['selected_scans'] == 63)
                 assert len(names) == 4 and len(coverage) == 1
                 assert all(r['indexed'] < r['legacy'] for r in names if r['key'] < 3)
                 assert len(duplicates) == 3 and len(supported) == 3
@@ -71,7 +85,9 @@ def run(args):
                 runs.append({'mode': label, 'observations': sorted(expected),
                              'clients': clients, 'atoms': atoms, 'work': work,
                              'names': names, 'name_coverage': coverage,
-                             'duplicates': duplicates, 'supported': supported})
+                             'duplicates': duplicates, 'supported': supported,
+                             'actions': actions, 'struts': struts,
+                             'desktop_names': desktop_names})
             (out / 'evidence.json').write_text(
                 json.dumps({'runs': runs}, indent=2) + '\n')
         finally:

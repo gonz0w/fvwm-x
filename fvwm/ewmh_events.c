@@ -1558,6 +1558,7 @@ int ewmh_WMStrut(
 	int size = 0;
 	CARD32 *val;
 	struct monitor	*m;
+	Bool update_static = False, update_dynamic = False;
 
 	m = (fw && fw->m) ? fw->m : monitor_get_current();
 
@@ -1587,7 +1588,7 @@ int ewmh_WMStrut(
 		fw->strut.right  = val[1];
 		fw->strut.top    = val[2];
 		fw->strut.bottom = val[3];
-		ewmh_ComputeAndSetWorkArea(m);
+		update_static = True;
 	}
 	if (val[0] !=  fw->dyn_strut.left ||
 	    val[1] != fw->dyn_strut.right ||
@@ -1598,8 +1599,16 @@ int ewmh_WMStrut(
 		fw->dyn_strut.right  = val[1];
 		fw->dyn_strut.top    = val[2];
 		fw->dyn_strut.bottom = val[3];
-		ewmh_HandleDynamicWorkArea(m);
+		update_dynamic = True;
 	}
+	/* Both records are current before the synchronous refresh. No callback or
+	 * property publication separates the old two walks. */
+	if (update_static && update_dynamic)
+		EWMH_UpdateWorkArea(m);
+	else if (update_static)
+		ewmh_ComputeAndSetWorkArea(m);
+	else if (update_dynamic)
+		ewmh_HandleDynamicWorkArea(m);
 	free(val);
 
 	return 0;

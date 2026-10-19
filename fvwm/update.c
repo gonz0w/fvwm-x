@@ -94,7 +94,7 @@ static void apply_window_updates(
 	short buttons;
 	Bool is_style_initialised = False;
 	rectangle frame_g;
-	const exec_context_t *exc;
+	const exec_context_t *exc = NULL;
 	exec_context_changes_t ecc;
 
 	frame_g.x = t->g.frame.x;
@@ -138,12 +138,19 @@ static void apply_window_updates(
 	 *
 	 * These are a bit complicated because they can move windows to a
 	 * different page or desk. */
-	ecc.type = EXCT_NULL;
-	ecc.w.fw = t;
-	ecc.w.w = FW_W_FRAME(t);
-	ecc.w.wcontext = C_FRAME;
-	exc = exc_create_context(
-		&ecc, ECC_TYPE | ECC_FW | ECC_W | ECC_WCONTEXT);
+	/* Only the sticky handlers consume a command context. Keep its
+	 * creation at the existing application point, inside the same grab. */
+	if ((flags->do_update_stick_icon && IS_ICONIFIED(t) &&
+	     !(IS_STICKY_ACROSS_PAGES(t) || IS_STICKY_ACROSS_DESKS(t))) ||
+	    flags->do_update_stick)
+	{
+		ecc.type = EXCT_NULL;
+		ecc.w.fw = t;
+		ecc.w.w = FW_W_FRAME(t);
+		ecc.w.wcontext = C_FRAME;
+		exc = exc_create_context(
+			&ecc, ECC_TYPE | ECC_FW | ECC_W | ECC_WCONTEXT);
+	}
 	if (flags->do_update_stick_icon && IS_ICONIFIED(t) &&
 	    !(IS_STICKY_ACROSS_PAGES(t) || IS_STICKY_ACROSS_DESKS(t)))
 	{
@@ -167,7 +174,8 @@ static void apply_window_updates(
 			S_IS_STICKY_ACROSS_PAGES(SCF(*pstyle)),
 			S_IS_STICKY_ACROSS_DESKS(SCF(*pstyle)), 0, 0);
 	}
-	exc_destroy_context(exc);
+	if (exc)
+		exc_destroy_context(exc);
 	if (FMiniIconsSupported && flags->do_update_mini_icon)
 	{
 		if (!HAS_EWMH_MINI_ICON(t) || DO_EWMH_MINI_ICON_OVERRIDE(t))

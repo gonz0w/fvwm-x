@@ -1570,6 +1570,26 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 45,
     )
+    style_update_work_fixture = executable(
+        'fvwm-style-update-work-fixture', 'style_update_work_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows',
+            '-Wl,--wrap=exc_create_context', '-Wl,--wrap=MyXGrabServer'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'style-update-work-xvfb', py,
+        args: [files('live_x/style_update_work_live.py'),
+            '--fvwm', style_update_work_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'style-update-work'],
+        depends: style_update_work_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
+    )
     window_update_fixture = executable(
         'fvwm-window-update-fixture', 'window_update_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),

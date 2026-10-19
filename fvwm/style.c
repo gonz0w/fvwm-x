@@ -57,8 +57,21 @@
 
 /* ---------------------------- local types -------------------------------- */
 
-/* Derived chains belong to this file; shared style records retain only the
- * owning pointer. Layout changes must not invalidate unrelated core objects. */
+/* Owning lists and their derived indexes never escape this file. Layout
+ * changes must not invalidate unrelated core objects. */
+typedef struct style_lookup_index style_lookup_index;
+
+typedef struct window_style_list
+{
+	struct window_style_list	*next;
+	style_id_t			 flags;
+	window_style			*first_style;
+	window_style			*last_style;
+	size_t style_count;
+	size_t indexed_count;
+	style_lookup_index *lookup_index;
+} window_style_list;
+
 struct style_lookup_index
 {
 	window_style *head[STYLE_LOOKUP_BUCKETS];

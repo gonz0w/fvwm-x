@@ -45,6 +45,7 @@
 #include "libs/safemalloc.h"
 #include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
+#include "style_types.h"
 #include "externs.h"
 #include "cursor.h"
 #include "execcontext.h"

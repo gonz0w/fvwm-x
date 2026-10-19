@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Style type dependency boundaries](VERIFICATION-2026-10-19-STYLE-TYPE-BOUNDARIES.md): smaller style-record/metadata fanout, standalone selector types and private owning lists; 70 affected native passes and production section parity support retained runtime evidence.
+
 - [Incremental style indexes](VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md): three related maintenance improvements; one broad checkpoint plus three unchanged isolated controls; original failure and known required CI/SVG/install gaps remain documented.
 
 - [Style command ownership](VERIFICATION-2026-10-19-STYLE-COMMAND-OWNERSHIP.md):

@@ -6,7 +6,6 @@
 #include "config.h"
 
 #include <string.h>
-#include "fvwm.h"
 #include "style_match.h"
 #include "style_id_filter.h"
 #include "libs/wild.h"

@@ -3,7 +3,7 @@
 #ifndef FVWM_STYLE_H
 #define FVWM_STYLE_H
 
-#include "fvwm.h"
+#include "style_types.h"
 #include "update.h"
 
 /* access to the special flags of a style */

@@ -5,9 +5,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <X11/Xlib.h>
+#include "style_id.h"
 #include "style_match_types.h"
-
-struct style_id_t;
 
 #define STYLE_LOOKUP_BUCKETS 256
 #define STYLE_LOOKUP_STREAMS 9

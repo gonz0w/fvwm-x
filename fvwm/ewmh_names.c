@@ -23,6 +23,7 @@
 #include "libs/FlocaleCharset.h"
 #include "libs/Ficonv.h"
 #include "fvwm.h"
+#include "style_types.h"
 #include "window_flags.h"
 #include "cursor.h"
 #include "functions.h"

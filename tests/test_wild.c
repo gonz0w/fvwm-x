@@ -126,7 +126,8 @@ static void differential(void)
 		"*?*", "*a", "*a?", "*a*b", "*\\a*b", "*a\\*b"};
 
 	for (unsigned p = 0; p < sizeof(special) / sizeof(*special); p++)
-		for (unsigned v = 0; v < sizeof(special) / sizeof(*special); v++)
+		for (unsigned v = 0;
+		     v < sizeof(special) / sizeof(*special); v++)
 			compare(special[p], special[v]);
 	for (unsigned p = 0; p < 3906; p++)
 	{
@@ -171,7 +172,8 @@ static void bounded_stack(void)
 	assert(matchWildcards(pattern, "a"));
 	assert(!matchWildcards(pattern, "b"));
 	free(pattern);
-	puts("65536 plain/escaped stars retain constant cursor storage: passed");
+	puts("65536 plain/escaped stars retain "
+		"constant cursor storage: passed");
 }
 
 static void measured_cases(void)
@@ -195,7 +197,8 @@ static void measured_cases(void)
 	suffix[sizeof(suffix) - 1] = 0;
 	reference_calls = 0;
 	compare(suffix, value);
-	printf("anchored literal suffix: legacy entries=%lu\n", reference_calls);
+	printf("anchored literal suffix: legacy entries=%lu\n",
+		reference_calls);
 	suffix[sizeof(suffix) - 2] = 'c';
 	compare(suffix, value);
 	compare("*abcd", "abc");

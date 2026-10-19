@@ -42,7 +42,8 @@ int matchWildcards(const char *pattern, const char *string)
 			size_t length = strlen(string);
 
 			return length >= width &&
-				strcmp(string + length - width, pattern + 1) == 0;
+				strcmp(string + length - width,
+					pattern + 1) == 0;
 		}
 	}
 
@@ -73,10 +74,11 @@ int matchWildcards(const char *pattern, const char *string)
 			}
 			else if (retry_pattern)
 			{
-				/* The latest star owns the retry. Its saved text
-				 * never passes the current non-NUL byte, so this
-				 * increment can reach, but not pass, the terminator.
-				 * No recursive frame or heap state is retained. */
+				/* The latest star owns the retry. Its text
+				 * stays at or before the current non-NUL
+				 * byte. Advancing can reach the terminator
+				 * but cannot pass it. No recursive frame
+				 * or heap state is retained. */
 				pattern = retry_pattern;
 				string = ++retry_string;
 			}

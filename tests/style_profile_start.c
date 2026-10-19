@@ -1218,7 +1218,7 @@ static void field_order_work(const exec_context_t *exc, FvwmWindow *window)
 	/* The preceding wildcard owns the one fresh length scan. */
 	sample.name.name = "field-work-long-tail";
 	command(exc, "Style (Name field-*?tail) HandleWidth 11");
-	command(exc, "Style (Name field-work-????????-far-too-long) "
+	command(exc, "Style (Name field-work-??????~far-too-long) "
 		"BorderWidth 7");
 	field_subject = sample.name.name;
 	field_length_calls = field_prefix_calls = 0;
@@ -1238,7 +1238,7 @@ static void field_order_work(const exec_context_t *exc, FvwmWindow *window)
 	assert(field_prefix_calls == (baseline ? 32U : 0U));
 	index_compare(&sample);
 	command(exc, "DestroyStyle (Name field-*?tail)");
-	command(exc, "DestroyStyle (Name field-work-????????-far-too-long)");
+	command(exc, "DestroyStyle (Name field-work-??????~far-too-long)");
 	lookup_style(&sample, &style);
 	assert(SGET_BORDER_WIDTH(style) == 3 && SGET_HANDLE_WIDTH(style) == 3);
 	index_compare(&sample);

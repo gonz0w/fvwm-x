@@ -24,6 +24,7 @@
 #include "libs/monitor_ownership.h"
 
 extern ewmh_atom_list atom_list[];
+void ewmh_publication_probe(struct monitor *monitor);
 static Bool measuring, refuse;
 static unsigned appends, allocations, publications, index_calls;
 static unsigned reference_visits;
@@ -802,6 +803,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	duplicate_atoms();
 	atoms(monitor);
 	assert(supported_publications == 3);
+	ewmh_publication_probe(monitor);
 	puts("ewmh state publication: passed");
 	fflush(stdout);
 	_exit(0);

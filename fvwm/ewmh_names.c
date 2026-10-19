@@ -17,11 +17,13 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <limits.h>
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
 #include "libs/Flocale.h"
 #include "libs/FlocaleCharset.h"
 #include "libs/Ficonv.h"
+#include "libs/log.h"
 #include "fvwm.h"
 #include "style_types.h"
 #include "window_flags.h"
@@ -263,7 +265,11 @@ void EWMH_SetDesktopNames(struct monitor *m)
 	int i;
 	int j = 0;
 	DesktopsInfo *d,*s;
-	unsigned char **names;
+	struct converted_name
+	{
+		unsigned char *bytes;
+		size_t length;
+	} *names;
 	unsigned char *val;
 
 	/* FIXME: broadcast to all monitors if global is in use. */
@@ -282,6 +288,11 @@ void EWMH_SetDesktopNames(struct monitor *m)
 	s = d;
 	while (d != NULL && d->name != NULL && d->desk == nbr)
 	{
+		if (nbr == INT_MAX)
+		{
+			fvwm_debug(__func__, "too many desktop names");
+			return;
+		}
 		nbr++;
 		d = d->next;
 	}
@@ -292,29 +303,39 @@ void EWMH_SetDesktopNames(struct monitor *m)
 
 	m->ewmhc.NumberOfDesktops = nbr;
 
-	names = fxmalloc(sizeof(*names)*nbr);
+	if ((size_t)nbr > SIZE_MAX / sizeof(*names))
+	{
+		fvwm_debug(__func__, "desktop name array is too large");
+		return;
+	}
+	names = fxmalloc(sizeof(*names) * (size_t)nbr);
 	for (i = 0; i < nbr; i++)
 	{
-		names[i] = (unsigned char *)FiconvCharsetToUtf8(
+		names[i].bytes = (unsigned char *)FiconvCharsetToUtf8(
 			dpy, NULL, s->name, strlen(s->name));
-		if (names[i])
+		names[i].length = names[i].bytes ?
+			strlen((char *)names[i].bytes) : 0;
+		/* Xlib's property element count is signed. Refuse before adding
+		 * the terminator or allocating the combined value. */
+		if (names[i].length >= (size_t)(INT_MAX - len))
 		{
-			len += strlen((char *)names[i]) + 1;
+			fvwm_debug(__func__, "desktop names exceed property size");
+			for (int n = 0; n <= i; n++)
+				free(names[n].bytes);
+			free(names);
+			return;
 		}
-		else
-		{
-			len++;
-		}
+		len += (int)names[i].length + 1;
 		s = s->next;
 	}
 	val = fxmalloc(len);
 	for (i = 0; i < nbr; i++)
 	{
-		if (names[i] != NULL)
+		if (names[i].bytes != NULL)
 		{
-			memcpy(&val[j], names[i], strlen((char *)names[i]));
-			j += strlen((char *)names[i]);
-			free(names[i]);
+			memcpy(&val[j], names[i].bytes, names[i].length);
+			j += (int)names[i].length;
+			free(names[i].bytes);
 		}
 		val[j++] = '\0';
 	}

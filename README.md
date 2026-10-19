@@ -12,11 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Command/update dependency boundaries](dev-docs/verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md) reduce layout-change
-compilations to six, four and four objects. Their affected checkpoint passes
-100 entries across six targets/ten profiles with unchanged compiled code/data.
-Known required OpenBSD runtime gaps remain
-[documented](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md).
+[EWMH publication work](dev-docs/verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md) reduces repeated strut walks,
+permission queries and desktop-name scans. Its combined local checkpoint passes;
+known required OpenBSD gaps remain [documented](dev-docs/verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md).
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

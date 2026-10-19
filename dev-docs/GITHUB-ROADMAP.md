@@ -128,4 +128,6 @@ follows merged PR119 with live-domain counts, empty-table release and typed
 category flags. One combined checkpoint serves all three improvements; required
 OpenBSD CI/SVG/install and physical/release gaps remain. STYLE-01 stays open.
 
-MAINT-02 #14 / CLEAN-01 #34: the [command/update dependency checkpoint](verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md) is ready for review after merged PR120. Three layouts compile six/four/four objects; 100 affected native entries and exact allocated-section parity pass. Broader owners and retained runtime gaps stay open.
+MAINT-02 #14 / CLEAN-01 #34: the [command/update dependency checkpoint](verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md) is merged in [PR #121](https://github.com/gonz0w/fvwm-x/pull/121). Three layouts compile six/four/four objects; 100 affected native entries and exact allocated-section parity pass. Broader owners and retained runtime gaps stay open.
+
+STATE-01 #37: [EWMH publication work](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md) is ready for review after merged PR121. Three related improvements share one combined checkpoint. Broader state-burst work, native-CPU/hardware/release checks and required OpenBSD gaps remain open.

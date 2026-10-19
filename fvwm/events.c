@@ -68,7 +68,7 @@
 #include "bindings.h"
 #include "borders.h"
 #include "builtins.h"
-#include "cmdparser.h"
+
 #include "colormaps.h"
 #include "colorset.h"
 #include "commands.h"

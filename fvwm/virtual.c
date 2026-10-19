@@ -31,7 +31,7 @@
 #include "fvwm.h"
 #include "style.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "execcontext.h"
 #include "expand.h"
 #include "cursor.h"

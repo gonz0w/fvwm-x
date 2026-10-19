@@ -32,7 +32,7 @@
 #include "libs/picture_view.h"
 #include "fvwm.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "functions.h"
 #include "misc.h"
 #include "screen.h"

@@ -39,7 +39,7 @@
 #include "libs/FEvent.h"
 #include "fvwm.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "cursor.h"
 #include "execcontext.h"
 #include "commands.h"

@@ -29,7 +29,7 @@
 #include "libs/log.h"
 #include "fvwm.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "execcontext.h"
 #include "functions.h"
 #include "conditional.h"

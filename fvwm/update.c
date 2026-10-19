@@ -33,7 +33,7 @@
 #include "bindings.h"
 #include "misc.h"
 #include "screen.h"
-#include "update.h"
+#include "update_types.h"
 #include "style.h"
 #include "builtins.h"
 #include "borders.h"

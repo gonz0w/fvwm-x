@@ -34,7 +34,7 @@
 #include "execcontext.h"
 #include "misc.h"
 #include "screen.h"
-#include "update.h"
+#include "update_types.h"
 #include "style.h"
 #include "style_id_filter.h"
 #include "style_match.h"

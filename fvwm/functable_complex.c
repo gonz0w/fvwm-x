@@ -24,11 +24,11 @@
 #include "libs/Strings.h"
 
 #include "fvwm.h"
-#include "cmdparser.h"
+
 #include "execcontext.h"
 #include "functable.h"
 #include "functable.h"
-#include "functable_complex.h"
+#include "functable_complex_types.h"
 #include "misc.h"
 #include "screen.h"
 

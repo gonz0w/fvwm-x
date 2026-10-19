@@ -28,7 +28,7 @@
 #include "libs/Strings.h"
 #include "fvwm.h"
 #include "functions.h"
-#include "cmdparser.h"
+
 #include "misc.h"
 #include "move_resize.h"
 #include "screen.h"

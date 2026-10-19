@@ -32,7 +32,7 @@
 #include "libs/FEvent.h"
 #include "fvwm.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "colorset.h"
 #include "bindings.h"
 #include "misc.h"

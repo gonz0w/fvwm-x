@@ -35,7 +35,7 @@
 #include "libs/FEvent.h"
 #include "fvwm.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "functions.h"
 #include "bindings.h"
 #include "misc.h"

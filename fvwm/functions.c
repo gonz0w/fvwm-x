@@ -47,7 +47,7 @@
 #include "cursor.h"
 #include "execcontext.h"
 #include "functable.h"
-#include "functable_complex.h"
+#include "functable_complex_types.h"
 #include "cmdparser.h"
 #include "cmdparser_hooks.h"
 #include "cmdparser_old.h"

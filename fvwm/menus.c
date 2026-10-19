@@ -40,7 +40,7 @@
 #include "libs/wcontext.h"
 #include "fvwm.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "execcontext.h"
 #include "events.h"
 #include "eventhandler.h"

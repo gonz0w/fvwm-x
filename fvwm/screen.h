@@ -33,7 +33,6 @@
 
 #include "config.h"
 
-#include "update.h"
 #include "fvwm.h"
 #include "misc.h"
 

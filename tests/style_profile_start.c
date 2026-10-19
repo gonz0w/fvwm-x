@@ -643,7 +643,7 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 {
 	const char *labels[] = { "length", "position", "literal-member",
 		"budget-member", "escaped-length", "escaped-position",
-		"escaped-member" };
+		"escaped-member", "anchor-head", "anchor-tail", "zero-slack" };
 	char long_name[225];
 	const char *patterns[][2] = {
 		{ "probe-overlap-??", "probe-overlap-???*" },
@@ -654,7 +654,10 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 		{ "probe-overlap-\\a?", "probe-overlap-\\a??*" },
 		{ "probe-overlap-\\?a?", "probe-overlap-?b?" },
 		{ "probe-overlap-middle-plain-end",
-		  "probe-overlap-*\\other*-end" }
+		  "probe-overlap-*\\other*-end" },
+		{ "probe-overlap-\\?a*", "probe-overlap-\\?b*" },
+		{ "probe-overlap-*a\\?", "probe-overlap-*b\\?" },
+		{ "probe-overlap-a?b?c", "probe-overlap-*a?x?c*" }
 	};
 	const char *names[][3] = {
 		{ "probe-overlap-aa", "probe-overlap-aaa", "probe-overlap-a" },
@@ -670,11 +673,19 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 		  "probe-overlap-xcy" },
 		{ "probe-overlap-middle-plain-end",
 		  "probe-overlap-some-other-part-end",
-		  "probe-overlap-none-end" }
+		  "probe-overlap-none-end" },
+		{ "probe-overlap-?a-tail", "probe-overlap-?b-tail",
+		  "probe-overlap-?c-tail" },
+		{ "probe-overlap-tail-a?", "probe-overlap-tail-b?",
+		  "probe-overlap-tail-c?" },
+		{ "probe-overlap-aybzc", "probe-overlap-ayxzc",
+		  "probe-overlap-ayqzc" }
 	};
 	Bool baseline = getenv("FVWM_STYLE_OVERLAP_BASELINE") != NULL;
 	Bool escaped_baseline =
 		getenv("FVWM_STYLE_ESCAPED_OVERLAP_BASELINE") != NULL;
+	Bool anchor_baseline =
+		getenv("FVWM_STYLE_ANCHOR_BASELINE") != NULL;
 	Bool saved = force_reference;
 	FvwmWindow sample = *window;
 	window_style style;
@@ -698,7 +709,9 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 				EscapeString((char *)patterns[kind][1],
 					"\\\"", '\\')
 			};
-			Bool old = baseline || (escaped_baseline && kind >= 4);
+			Bool old = baseline ||
+				(escaped_baseline && kind >= 4) ||
+				(anchor_baseline && kind >= 7);
 
 			snprintf(text, sizeof(text), "Style (Name \"%s\") "
 				"BorderWidth 5, TitleFormat overlap-older %%n",
@@ -727,8 +740,6 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 			lookup_style(&sample, &style);
 			measuring = False;
 			visits = id_visits;
-			assert(visits ==
-				(old || reference || kind == 3 ? 3 : 2));
 			printf("STYLE_OVERLAP_WORK {\"case\":\"%s\","
 				"\"baseline\":%s,\"reference\":%s,"
 				"\"collision\":%s,\"rules\":%lu}\n",
@@ -736,6 +747,9 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 				old ? "true" : "false",
 				reference ? "true" : "false",
 				force_collision ? "true" : "false", visits);
+			fflush(stdout);
+			assert(visits ==
+				(old || reference || kind == 3 ? 3 : 2));
 			/* Repeat and delete both selectors. */
 			simplify_style_list();
 			for (unsigned which = 0; which < 2; which++)

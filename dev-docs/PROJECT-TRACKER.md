@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| EWMH atom work, STATE-01 #37 | Combined checkpoint locally qualified; ready for PR review | Three EWMH atom improvements pass one combined checkpoint: 1991/1991 executed standard and 437/437 optional entries across six targets/ten profiles, three scoped sanitizers, nine fresh stages, four authenticated default BSD displays and 18 geometry invocations/126 cases. The known required OpenBSD AMD64 SVG omission/install gap remains under IMAGE-01. Duplicate priority, configuration and publication barriers remain. [Report](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md). |
+| Decoded style anchors, STYLE-01 #38 | Implemented; focused checks passed; combined qualification pending | Three selected lists retain two records instead of three using decoded head/tail conflicts and zero-slack interior contradictions. Independent reference/collision/precedence/removal owners remain. No retained metadata/allocation or ordinary matching limit is added. [Report](verification/VERIFICATION-2026-10-19-STYLE-ANCHORS.md). |
+| EWMH atom work, STATE-01 #37 | Merged in [PR #112](https://github.com/gonz0w/fvwm-x/pull/112); combined checkpoint locally qualified | Three EWMH atom improvements pass one combined checkpoint: 1991/1991 executed standard and 437/437 optional entries across six targets/ten profiles, three scoped sanitizers, nine fresh stages, four authenticated default BSD displays and 18 geometry invocations/126 cases. The known required OpenBSD AMD64 SVG omission/install gap remains under IMAGE-01. Duplicate priority, configuration and publication barriers remain. [Report](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md). |
 | Escaped selector disjointness, STYLE-01 #38 | Merged in [PR #111](https://github.com/gonz0w/fvwm-x/pull/111); composed affected checkpoint passes | Three escaped selector proofs use decoded lengths, quoted fixed positions and bounded literal membership. Three selected lists retain two records instead of three, preserving initialized lookup, precedence and removal. Original breadth passes 1991/1991 executed standard and 437/437 optional entries; the final literal-fast-path correction passes 40/40 affected entries plus four scoped sanitizers. Nine final stages, four authenticated BSD displays and 290 final client cases pass. One required OpenBSD AMD64 SVG test stays omitted under IMAGE-01 with its install/staged-geometry gap. No metadata/allocation owner change or universal latency claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md). |
 | Escaped style matching, STYLE-01 #38 | Merged in [PR #110](https://github.com/gonz0w/fvwm-x/pull/110); affected checkpoint passes | Three escaped matching families replace recursive entries with decoded fixed widths, anchored one-star spans and constant-stack general cursors. Nine selected legacy calls become zero with unchanged results/removal. 1991/1991 executed standard and 437/437 optional entries pass; one known required OpenBSD AMD64 SVG test stays omitted under IMAGE-01, preserving its install/staged-geometry gap. Four scoped sanitizers, nine fresh stages, four authenticated BSD displays and 810 family rows pass. Metadata adds sixteen inline bytes; no universal latency/linear-time claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md). |
 | Style selector disjointness, STYLE-01 #38 | Merged in [PR #109](https://github.com/gonz0w/fvwm-x/pull/109); affected checkpoint passes | Three selector proofs reduce three selected lists from three records to two, preserving reference/collision/matching/removal owners. Final bounded source passes 40/40 affected entries plus four scoped sanitizers, nine fresh stages and four authenticated BSD displays; original broad source passes 1991/1992 standard and 437/437 optional entries. The unchanged OpenBSD AMD64 SVG startup failure and its fresh-install/staged-geometry gap remain under IMAGE-01. No universal latency claim. [Report](verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md). |
@@ -230,19 +231,17 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-19: PR #111 is merged. STATE-01 #37 batches
-three EWMH atom improvements: duplicate-ID lower bounds, scoped/ALL name
-indexes and operation-owned startup publication. The combined six-target checkpoint
-passes executed standard/optional scope, three scoped sanitizers and four
-authenticated default BSD displays. Review/merge before the next measured batch. Name
-indexes preserve original duplicate priority and cover unsorted table names;
-selected early-table ALL lookups can do more comparisons. Publication/query,
-DRAW/INPUT and configuration owners remain unchanged. The known required
-OpenBSD AMD64 SVG omission/install gap stays IMAGE-01 without retrying for green.
-Before the next OpenBSD AMD64 source/build write, address the full `/home`
-filesystem with owner-controlled relocation or verified duplicates; this batch
-relocates only its artifact directory to `/usr/obj`. VESA #93 stays deferred.
-[Report](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md).
+Immediate selection, 2026-10-19: PR #112 is merged. STYLE-01 #38 batches
+decoded head contradictions, decoded tail contradictions and zero-slack interior
+alignment. Focused Linux policy/core/update and 32 real-client cases pass; the
+relocated OpenBSD AMD64 warm build passes its early affected checks. One combined
+checkpoint follows. Existing literal/fixed/raw-anchor paths retain their owners;
+new optional scans are bounded and larger patterns stay conservative without
+limiting ordinary matching. Metadata, precedence, compatibility ORs and DRAW/
+INPUT/publication barriers remain unchanged. The OpenBSD owner tree is relocated
+with verified bytes/modes/mtimes and original aliases; no other owner's data or
+VM disk is changed. Known required SVG omission/install gap stays IMAGE-01 and
+VESA #93 stays deferred. [Report](verification/VERIFICATION-2026-10-19-STYLE-ANCHORS.md).
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -2030,3 +2029,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-19: PR #111 merged. STATE-01 batches three EWMH atom changes; focused Linux checks pass. The combined checkpoint passes in its executed scope, preserving IMAGE-01's known required SVG omission/install gap and deferred VESA #93. [Report](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md).
 
 - 2026-10-19: STATE-01 atom checkpoint is ready for review. Three EWMH atom improvements pass one combined checkpoint: 1991/1991 executed standard and 437/437 optional entries across six targets/ten profiles, three scoped sanitizers, nine fresh stages, four authenticated default BSD displays and 18 geometry invocations/126 cases. The known required OpenBSD AMD64 SVG omission/install gap remains under IMAGE-01. Warm builds and one matrix serve the three items; no full tests repeat for publication. [Report](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md).
+
+- 2026-10-19: PR #112 merged. STYLE-01 batches decoded head/tail conflicts and zero-slack interior contradictions; three measured lists reduce from three records to two with unchanged initialized results/removal. Focused checks pass; one combined checkpoint follows. OpenBSD owner storage is byte/mode/mtime-verified and relocated before writes. Known IMAGE-01 required SVG/install gap and deferred VESA #93 remain. [Report](verification/VERIFICATION-2026-10-19-STYLE-ANCHORS.md).

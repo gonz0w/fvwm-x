@@ -14,8 +14,8 @@ compositor or native Wayland backend.
 hardening, responsiveness and utility-port checkpoints.
 Three [EWMH atom improvements](dev-docs/verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md)
 are merged with a combined six-target checkpoint.
-Three [decoded style proofs](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-ANCHORS.md) pass focused checks;
-the combined checkpoint is pending.
+Three [decoded style proofs](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-ANCHORS.md) pass their affected six-target checks;
+the broader checkpoint retains CI-worker and SVG/install gaps.
 The merged [style selector checkpoint](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md)
 retains the known OpenBSD AMD64 SVG/install gap.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.

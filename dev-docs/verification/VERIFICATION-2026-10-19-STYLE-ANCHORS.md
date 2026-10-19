@@ -1,7 +1,8 @@
 # Decoded style anchors and zero-slack disjointness
 
-STYLE-01 #38; 2026-10-19. Implemented and focused checks passed;
-one combined six-target checkpoint is pending. Base is merged PR #112,
+STYLE-01 #38; 2026-10-19. Affected local checks pass; the broader checkpoint
+retains the unchanged CI-01 worker timeout and required IMAGE-01 SVG
+omission/install gap. Base is merged PR #112,
 `fe4a3ee5e891f3874554fa0f30ddf9a0f167e6ab`.
 
 Three related improvements share this checkpoint:
@@ -47,7 +48,7 @@ finite witnesses do not establish complete wildcard-language intersection.
 Actual-core probes and 32 real-client cases pass on Linux. Early OpenBSD AMD64
 checks pass in its relocated warm build (nine affected compile/link steps).
 
-Before qualification, the inactive owner-controlled OpenBSD AMD64 tree moves
+Before qualification, the inactive owner-controlled OpenBSD AMD64 tree moved
 from `/home/fvwm-style-wildcards-recovery-20261016` to
 `/usr/obj/fvwm-style-owner-20261019`. All 8680 entries / 731609402 regular bytes,
 file modes/mtimes and symlink targets are verified before removing the duplicate;
@@ -66,3 +67,58 @@ Original source `97c728358660675353de35f866c833c926b4f203`, archive
 No retry for green, SVG root-cause or VESA cause work is included; #93 stays
 deferred. Native-CPU sanitizer, physical hardware/toolkit/compositor and release
 qualification remain separate.
+
+## Frozen checkpoint and results
+
+Three decoded style proofs pass the affected scope of one combined checkpoint:
+1990/1991 executed standard (one retained CI-worker timeout) and 437/437
+optional entries across six targets/ten profiles, four scoped sanitizers, nine
+fresh stages and four authenticated default BSD displays. OpenBSD AMD64 retains
+the unchanged CI-01 two-second worker failure and IMAGE-01 required SVG
+omission/install gap.
+
+Signed author-DCO runtime: `2cf1f2f470d65cf1ebfb44dfe69a5edce11e7118`.
+Tree: `134d13801d3c9da9747fb32c45fd51525b04bed4`.
+Archive SHA256: `1da503ccf2609ac8f94baa287d5c21705ab7a74c1f3adf1969f53dddede4d73a`; all 1997 regular inputs
+match exact Git bytes/modes. Pre/post source hashes, script identities, captured
+logs, fixtures and installed bytes are checked. Final upkeep changes only docs
+and evidence; tested non-Markdown inputs remain exact.
+[Machine receipt](VERIFICATION-2026-10-19-STYLE-ANCHORS-COMBINED.json).
+
+| Scope | Result |
+| --- | --- |
+| Affected style/update entries | 40/40 across all ten profiles |
+| Standard executed / required | 1990/1991 executed; 1990/1992 including one CI-worker failure and one required SVG omission |
+| Optional software/minimal | 437/437 |
+| Scoped Linux ARM64 Clang ASan/UBSan | 4/4; two pure policy checks leak-enabled, process-owning style/update fixtures leak-disabled |
+| Fresh stage identities | 9 stages, 135 code and 88 catalogs |
+| Authenticated default BSD X | 4 displays / 22 fixture invocations; clean server exits and unauthenticated-client refusal |
+| Staged geometry | 18 invocations / 126 cases |
+| Actual-core style overlap observations | 600 rows, including 180 new head/tail/zero-slack rows |
+| Actual-client cases | 320 cases, including 120 simplification cases |
+| Retained EWMH regression | 14 complete drivers / 28 normal and missing-intern modes |
+| Portable repository checks | 166 passes / eleven explicit native-Meson skips |
+| Compiler review | 11 logs / zero affected-file or changed-line diagnostics |
+
+One matrix serves all three stories. Six existing owner-controlled environments
+run at most six independent jobs (Ninja two jobs, Meson tests serial), following
+a capacity check on 18 logical CPUs / 128 GiB. Source/build work stays serialized
+within each guest and warm builds are reused. Source/archive space is checked
+before writes and capture resolves its owner path. No guest restart, package
+refresh, VM hardware/graphics change or functional deadline adjustment occurs.
+No full-suite retry or repeat for documentation/PR creation is required. The
+unchanged CI asset worker times out at its two-second subprocess bound in
+`test_worker_refuses_unlocked_url_without_opening_it`. This same failure is
+retained under CI-01 in the earlier window-update/style-filter reports. Its
+Python inputs are unchanged and do not invoke this batch's C runtime. The cause
+is unproved; no retry for green is performed. The original 241/242 OpenBSD
+executed passes and failing traceback remain captured.
+
+The OpenBSD AMD64 broad gate retains its nonzero exit for the CI-worker failure
+and omitted required entry; successful artifact collection is separate. Every other execution phase
+passes. The omitted SVG entry is not an executed pass. Its fresh install
+and two staged geometry invocations remain unperformed; built style, update,
+EWMH and real-client checks pass on its authenticated Xenocara display. Earlier
+focused baseline-counter failures remain captured separately. No SVG or VESA
+cause follows from this work. Broader STYLE-01 shared-glob/update-plan/grab work
+remains open for separately measured ownership and observer contracts.

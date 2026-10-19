@@ -467,4 +467,4 @@ diagnostic and execution gates remain separate.
 
 - [EWMH atom dispatch/name/startup checkpoint](VERIFICATION-2026-10-19-EWMH-ATOMS.md) — STATE-01, combined local checkpoint; retained required SVG/install gap.
 
-- [Decoded style anchors and zero-slack overlap](VERIFICATION-2026-10-19-STYLE-ANCHORS.md) — STYLE-01, combined qualification pending.
+- [Decoded style anchors and zero-slack overlap](VERIFICATION-2026-10-19-STYLE-ANCHORS.md) — STYLE-01, affected checks pass; retained CI-worker/SVG/install gaps.

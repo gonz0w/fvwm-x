@@ -752,12 +752,16 @@ all subject caches. No X state, style result or callback retains them.
 
 ## Development build dependency boundaries
 
-`fvwm/style_match_types.h` contains only immutable selector metadata embedded
-in the shared style records. `fvwm/style_match.h` owns the synchronous subject
-and matching/query API; consumers include it directly. The derived
-`style_lookup_index` is opaque outside `style.c`, which owns its definition,
-allocation, invalidation and release. These boundaries preserve inline metadata
-and record layouts while avoiding operation/index edits in the common header.
+`fvwm/fvwm.h` forward-declares borrowed `window_style` pointers. Complete rule
+and special-flag layouts live in `fvwm/style_types.h`, included by field/constant
+consumers and `style.h`. `fvwm/style_id.h` supplies selector IDs without shared
+window state; the pure matcher/filter APIs consume it directly.
+`fvwm/style_match_types.h` contains immutable inline metadata, while
+`fvwm/style_match.h` owns the synchronous subject and matching/query API.
+Owning `window_style_list` and `style_lookup_index` are private to `style.c`,
+which owns their allocation, mutation, invalidation and release. These boundaries
+preserve field types/order and avoid unrelated style-layout rebuilds.
+[Measured checkpoint](verification/VERIFICATION-2026-10-19-STYLE-TYPE-BOUNDARIES.md).
 
 The Linux `fvwm3-live-x-wrap` fixture extracts the production executable's core
 objects and compiles only its two link-wrap probes separately. The XRR mode

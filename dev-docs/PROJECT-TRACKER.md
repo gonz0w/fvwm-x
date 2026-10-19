@@ -34,6 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
+| Style type boundaries, MAINT-02 / CLEAN-01 | Affected checkpoint passes; ready for PR review | Three style dependency boundaries pass 70/70 affected native entries across six targets/ten profiles. 5844 object pairs and all production WM/module outputs retain allocated code/data sections; ten matcher-test objects have separately proved assertion-line-only differences. Ten scoped stages verify 249 code/catalog identities. Broader PR118 runtime failures/controls, required OpenBSD CI/SVG omissions and install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-TYPE-BOUNDARIES.md). |
 | Incremental style indexes, STYLE-01 #38 | Merged in [PR #118](https://github.com/gonz0w/fvwm-x/pull/118); composed affected checkpoint passes; required gaps retained | Three incremental style-index improvements pass a composed checkpoint: one original broad run across six targets/ten profiles (2019/2022 executed standard, 445/445 optional), followed by three unchanged isolated fixture controls. Fifteen actual-core index drivers retain zero selected lookup allocations after append, deletion and all three simplification paths. Three scoped sanitizers, nine fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md). |
 | Style command ownership, STYLE-01 #38 | Merged in [PR #117](https://github.com/gonz0w/fvwm-x/pull/117); composed affected checkpoint passes; required gaps retained | Three style-command fixes pass a composed checkpoint: one original broad run (2013/2014 executed standard, 443/443 optional), then ten scheduler-fixture correction checks on unchanged production binaries. Fifteen ownership drivers retain zero selected fields and perform zero refused-input grabs. Three scoped sanitizer checks, nine composed fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-COMMAND-OWNERSHIP.md). |
 | Style update work, STYLE-01 #38 | Merged in [PR #116](https://github.com/gonz0w/fvwm-x/pull/116); composed affected checkpoint passes; CI/SVG gaps retained | Three style-update improvements pass a composed affected checkpoint: one original broad run (2005/2006 executed standard, 441/441 optional), seventy production-correction checks and eighteen fixture-correction checks. The original image-effects timeout is traced to a discarded early acknowledgement and corrected without changing production deadlines. Six original sanitizer checks, three corrected actual-core checks, nine final fresh stages and four final authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-UPDATE-WORK.md). |
@@ -238,12 +239,12 @@ inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 Immediate selection, 2026-10-19: PR #118 is merged. MAINT-02 / CLEAN-01
 batches style-record dependency isolation, standalone selector identity types,
-and private style-list ownership. Measure actual Ninja dependency changes and
-prove unchanged native allocated code/data sections across six targets/ten
-profiles, with focused style/core checks and fresh install identities. Reuse
-PR118's broader runtime/default-X/sanitizer evidence only where that parity is
-proved; retain its failures, controls and required CI/SVG/install gaps. VESA #93
-stays deferred. Implementation is in progress; no qualification is claimed yet.
+and private style-list ownership. One composed affected six-target/ten-profile
+checkpoint passes 70 selected tests, with measured Ninja reduction, production
+code/data parity and fresh scoped install identities. PR #119 is ready for review;
+PR118's broader runtime/default-X/sanitizer evidence and its original failures,
+controls and required CI/SVG/install gaps remain. VESA #93 stays deferred.
+[Report](verification/VERIFICATION-2026-10-19-STYLE-TYPE-BOUNDARIES.md).
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -2053,3 +2054,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-19: PR #117 merged. STYLE-01 batches incremental index append, retirement and simplification moves; seven focused entries and 41 real-client cases pass, followed by the extended fixture only. One combined checkpoint follows; known CI/SVG required gaps and deferred VESA #93 remain. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md).
 
 - 2026-10-19: Incremental style-index checkpoint is ready for review. Three incremental style-index improvements pass a composed checkpoint: one original broad run across six targets/ten profiles (2019/2022 executed standard, 445/445 optional), followed by three unchanged isolated fixture controls. Fifteen actual-core index drivers retain zero selected lookup allocations after append, deletion and all three simplification paths. Three scoped sanitizers, nine fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md). One matrix serves the three items; no full test repeats for report or publication. VESA #93 stays deferred.
+
+- 2026-10-19: After merged PR #118, MAINT-02/CLEAN-01 completes a three-boundary style dependency checkpoint. Three style dependency boundaries pass 70/70 affected native entries across six targets/ten profiles. 5844 object pairs and all production WM/module outputs retain allocated code/data sections; ten matcher-test objects have separately proved assertion-line-only differences. Ten scoped stages verify 249 code/catalog identities. Broader PR118 runtime failures/controls, required OpenBSD CI/SVG omissions and install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-TYPE-BOUNDARIES.md). No full runtime tests repeat for publication; the dependency/indentation amendments retain passing tests with native code/data parity.

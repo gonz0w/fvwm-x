@@ -21,7 +21,7 @@ now shares test objects and narrows style dependencies.
 [Selector proofs](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md)
 and [escaped matching](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md)
 are merged. Three [escaped selector proofs](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md)
-are implemented; combined qualification is pending.
+pass; the prior SVG/install gap remains.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

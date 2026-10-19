@@ -129,7 +129,9 @@ def run(args):
             wait_for_predicate('client managed while effect stalled',
                 lambda: client.frame() is not None,
                 time.monotonic() + 2, process=core)
-            command('Schedule 30 Echo effect-scheduled')
+            # The scheduled echo acknowledges this command itself. A second
+            # echo can arrive later and make command() discard the first one.
+            connection.send(b'Schedule 30 Echo effect-scheduled\n')
             connection.expect_echo('effect-scheduled')
             elapsed = time.monotonic() - start
             assert elapsed < 2, elapsed

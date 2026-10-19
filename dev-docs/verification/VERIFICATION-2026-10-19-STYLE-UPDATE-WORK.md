@@ -69,3 +69,24 @@ The original combined checkpoint continues on its frozen `1eca95fdd` source.
 Final correction gets affected-only checks, fresh stages/client probes and default
 BSD X coverage after each original target finishes. No full matrix repeats; broad
 results and final affected results retain distinct source/archive identities.
+
+## Image-effects fixture acknowledgement correction
+
+The original OpenBSD AMD64 broad run records one new image-effects timeout.
+An unchanged isolated control reproduces it; the pre-batch core passes while
+the corrected production core initially fails. A passive record trace passes,
+showing sensitivity to observation timing. A deterministic 100-ms diagnostic
+delay before the immediate acknowledgement proves the ordering error: the
+scheduled echo arrives first, command() discards it while waiting for the later
+immediate acknowledgement, and the following wait times out. Production
+scheduling delivers the required echo; this is not evidence of a VESA defect.
+
+The shipped fixture sends Schedule directly and waits for its scheduled echo,
+which is its own acknowledgement. The 30-ms schedule, two-second responsiveness
+assertion, five-second connection/effect limits and all worker/publication
+controls remain. Only this Python fixture changes after the seventy-entry
+production correction checkpoint. The two affected image-effects registrations
+will run on their nine registered profiles; the minimal profile has neither.
+No full matrix, production rebuild or install repetition is required for this
+fixture-only change. Original failures, trace/control sources, rejected runner/
+object-mapping preparations and corrected affected results remain distinct.

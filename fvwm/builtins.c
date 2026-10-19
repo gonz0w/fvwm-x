@@ -2088,7 +2088,9 @@ void
 update_fvwm_colorset(int cset)
 {
 	/* Menus update through their own owner. Styles and decors mark the
-	 * global pass only when referenced; existing pending work stays set. */
+	 * global pass only when referenced; zero keeps its legacy fallback. */
+	if (cset == 0)
+		Scr.flags.do_need_window_update = 1;
 
 	UpdateMenuColorset(cset);
 	update_style_colorset(cset);

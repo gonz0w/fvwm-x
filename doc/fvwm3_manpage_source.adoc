@@ -1434,8 +1434,9 @@ To force that all pending changes are applied immediately, use the
 *UpdateStyles*, *Refresh* or *RefreshWindow* commands.
 
 A colorset change schedules a global window update when a style or decoration
-references that colorset. An unused or menu-only colorset does not force a
-global window pass. Menu updates retain their own immediate update path, and
+references that colorset. An unused or menu-only nonzero colorset does not force a
+global window pass. Colorset zero retains the existing fallback update path
+for inherited colors. Menu updates retain their own immediate update path, and
 other pending style changes still apply at the boundaries described above.
 
 == QUOTING

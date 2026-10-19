@@ -40,6 +40,7 @@ def run(args):
                 'unrelated-colorset-preserves-pending-style-update',
                 'decor-reference-and-pending-work-preserved',
                 'ordinary-colorset-references-still-update',
+                'implicit-zero-colors-preserve-legacy-border-refresh',
                 'style update work',
             }
             assert {line[:-8] for line in text.splitlines()

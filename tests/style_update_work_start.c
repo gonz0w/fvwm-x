@@ -256,6 +256,22 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 		command(exc, "UpdateStyles", NULL);
 	}
 	passed("ordinary-colorset-references-still-update");
+
+	/* Border refresh also updates colors inherited implicitly from zero. */
+	command(exc, "DestroyStyle *", NULL);
+	command(exc, "Style * NoTitle, BorderWidth 9, HandleWidth 9, "
+		"BorderColorset 201, HilightBorderColorset 211", NULL);
+	command(exc, "UpdateStyles", NULL);
+	command(exc, "Colorset 0 fg green", NULL);
+	update_fvwm_colorset(0);
+	assert(Scr.flags.do_need_window_update);
+	lookup_style(sample, &style);
+	assert(style.change_mask.use_border_colorset);
+	assert(style.change_mask.use_border_colorset_hi);
+	command(exc, "UpdateStyles", NULL);
+	assert(sample->colors.fore == GetColorset(0)->fg);
+	assert(sample->hicolors.fore == GetColorset(0)->fg);
+	passed("implicit-zero-colors-preserve-legacy-border-refresh");
 	puts("style update work: passed");
 	fflush(stdout);
 	_exit(0);

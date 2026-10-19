@@ -5465,6 +5465,9 @@ void reset_style_changes(void)
  * zero-filled remainder of a partial configuration. */
 static Bool border_colorset_uses(const int colorsets[BP_SIZE], int colorset)
 {
+	/* Border refresh also updates colors inherited implicitly from zero. */
+	if (colorset == 0)
+		return True;
 	for (int i = 0; i < BP_SIZE; i++)
 	{
 		if (colorsets[i] == colorset)

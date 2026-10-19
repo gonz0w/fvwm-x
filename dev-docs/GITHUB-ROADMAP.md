@@ -131,3 +131,5 @@ OpenBSD CI/SVG/install and physical/release gaps remain. STYLE-01 stays open.
 MAINT-02 #14 / CLEAN-01 #34: the [command/update dependency checkpoint](verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md) is merged in [PR #121](https://github.com/gonz0w/fvwm-x/pull/121). Three layouts compile six/four/four objects; 100 affected native entries and exact allocated-section parity pass. Broader owners and retained runtime gaps stay open.
 
 STATE-01 #37: [EWMH publication work](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md) is ready for review after merged PR121. Three related improvements share one combined checkpoint. Broader state-burst work, native-CPU/hardware/release checks and required OpenBSD gaps remain open.
+
+MAINT-02 #14 / CLEAN-01 #34: [font/picture/monitor boundaries](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md) are ready for review after merged PR122. ARM GCC layout fanout falls 252/289/226→49/66/92; 170 affected entries and exact native code/data parity pass. PR122 manual review is closed on request. Broad owners and required OpenBSD/release gaps stay open.

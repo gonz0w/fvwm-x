@@ -48,7 +48,7 @@
 #include "module_list.h"
 #include "module_interface.h"
 #include "colorset.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/log.h"
 #include "expand.h"
 

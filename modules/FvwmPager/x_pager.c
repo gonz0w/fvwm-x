@@ -25,7 +25,6 @@
  */
 
 #include "config.h"
-
 #include <stdio.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -39,7 +38,8 @@
 #include "pager_desk_range.h"
 #include "pager_geometry.h"
 #include "pager_shape.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/monitor_types.h"
 /* Stash values for Scroll logic. */
 static int Wait = 0;
 static int ScrollVx, ScrollVy;

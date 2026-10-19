@@ -27,7 +27,6 @@
 
 #include "config.h"
 #include "picture_color.h"
-
 #include <stdio.h>
 #include <signal.h>
 #include <ctype.h>
@@ -42,6 +41,7 @@
 #include "System.h"
 #include "Colorset.h"
 #include "Picture.h"
+#include "picture_types.h"
 #include "PictureUtils.h"
 #include "Fsvg.h"
 #include "log.h"

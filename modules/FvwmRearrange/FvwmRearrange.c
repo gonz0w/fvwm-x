@@ -45,7 +45,7 @@
 #include "libs/fvwmlib.h"
 #include "libs/fvwmsignal.h"
 #include "libs/vpacket.h"
-
+#include "libs/monitor_types.h"
 #define MIN_CELL_SIZE 10
 
 enum window_order_methods

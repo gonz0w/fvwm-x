@@ -8,7 +8,7 @@
 #include "safemalloc.h"
 
 #include <assert.h>
-
+#include "libs/picture_types.h"
 Bool picture_is_usable(const FvwmPicture *picture)
 {
 	return picture != NULL && picture->picture != None &&

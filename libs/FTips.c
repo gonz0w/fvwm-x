@@ -29,7 +29,7 @@
 #include "fvwmlib.h"
 #include "Strings.h"
 #include "PictureBase.h"
-#include "Flocale.h"
+#include "flocale_font_types.h"
 #include "Graphics.h"
 #include "Colorset.h"
 #include "FEvent.h"

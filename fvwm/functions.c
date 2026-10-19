@@ -31,7 +31,7 @@
 #endif
 
 #include "libs/log.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/fvwm_x11.h"
 #include "libs/wm_ui_metrics.h"
 #include "libs/fvwmlib.h"

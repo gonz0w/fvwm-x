@@ -69,8 +69,8 @@
 #include "parse.h" /* ParseConfiguration(), parse_window_geometry() */
 #include "draw.h"
 #include "dynamic.h"
-
-
+#include "libs/flocale_font_types.h"
+#include "libs/picture_types.h"
 #define MW_EVENTS ( \
 	ExposureMask | \
 	StructureNotifyMask | \

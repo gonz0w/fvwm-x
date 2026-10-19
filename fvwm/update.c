@@ -49,7 +49,7 @@
 #include "stack.h"
 #include "icons.h"
 #include "virtual.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

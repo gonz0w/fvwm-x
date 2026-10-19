@@ -26,7 +26,7 @@
 #include "libs/Grab.h"
 #include "libs/Parse.h"
 #include "libs/FEvent.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
 #include "style.h"

@@ -20,7 +20,7 @@
 #include "fvwm/ewmh_intern.h"
 #include "fvwm/externs.h"
 #include "fvwm/screen.h"
-
+#include "libs/monitor_types.h"
 extern ewmh_atom ewmh_atom_allowed_actions[];
 
 static Bool measure_work, measure_policy, measure_names, large_name;

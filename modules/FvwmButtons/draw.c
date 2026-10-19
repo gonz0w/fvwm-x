@@ -24,7 +24,6 @@
 /* ------------------------------- includes -------------------------------- */
 
 #include "config.h"
-
 #ifdef HAVE_SYS_BSDTYPES_H
 #include <sys/bsdtypes.h> /* Saul */
 #endif
@@ -45,7 +44,8 @@
 #include "icons.h" /* ConfigureIconWindow() */
 #include "button.h"
 #include "draw.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/picture_types.h"
 extern Pixmap shapeMask;
 extern GC transGC;
 

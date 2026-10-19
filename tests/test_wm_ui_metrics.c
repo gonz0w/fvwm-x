@@ -16,9 +16,9 @@
 #include "config.h"
 
 #include "libs/defaults.h"
-#include "libs/Flocale.h"
+#include "libs/flocale_font_types.h"
 #include "libs/Picture.h"
-#include "libs/PictureBase.h"
+#include "libs/picture_types.h"
 #include "libs/wm_ui_metrics.h"
 
 #include <assert.h>

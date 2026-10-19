@@ -15,7 +15,7 @@
 
 #include <errno.h>
 #include <stdlib.h>
-
+#include "libs/picture_types.h"
 struct picture_argb_builder
 {
 	Display *dpy;

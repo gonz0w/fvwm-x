@@ -18,7 +18,6 @@
 #include "config.h"
 #include "menu_image.h"
 #include "libs/picture_view.h"
-
 #include <stdio.h>
 #include <assert.h>
 #include "libs/log.h"
@@ -37,7 +36,8 @@
 #include "screen.h"
 #include "colorset.h"
 #include "menustyle.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

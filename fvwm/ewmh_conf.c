@@ -36,7 +36,7 @@
 #include "ewmh.h"
 #include "ewmh_intern.h"
 #include "move_resize.h"
-
+#include "libs/monitor_types.h"
 /* Forward declarations */
 static void set_ewmhc_desktop_values(struct monitor *, int, int *);
 

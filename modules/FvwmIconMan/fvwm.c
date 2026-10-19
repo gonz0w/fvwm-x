@@ -22,7 +22,7 @@
 
 #include "libs/fvwmlib.h"
 #include "libs/fvwmsignal.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/Module.h"
 #include "libs/log.h"
 #include "libs/Parse.h"

@@ -16,7 +16,6 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
-
 #include <limits.h>
 #include <stdio.h>
 
@@ -39,7 +38,8 @@
 #include "icons.h"
 #include "add_window.h"
 #include "virtual.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

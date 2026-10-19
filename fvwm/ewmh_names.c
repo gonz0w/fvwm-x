@@ -20,7 +20,7 @@
 #include <limits.h>
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
-#include "libs/Flocale.h"
+#include "libs/flocale_font_types.h"
 #include "libs/FlocaleCharset.h"
 #include "libs/Ficonv.h"
 #include "libs/log.h"
@@ -38,7 +38,7 @@
 #include "ewmh.h"
 #include "ewmh_intern.h"
 #include "externs.h"
-
+#include "libs/monitor_types.h"
 /*
  * set the visibale window name and icon name
  */

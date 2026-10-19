@@ -15,7 +15,7 @@
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
 #include "fvwm/module_list.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 #define MAX_RECORDS 170
 static FvwmWindow *windows;

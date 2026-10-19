@@ -42,7 +42,7 @@
 #include "geometry.h"
 #include "colormaps.h"
 #include "add_window.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

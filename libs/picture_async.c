@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-
+#include "libs/picture_types.h"
 #define PICTURE_ASYNC_COMMIT_VIEWS 32U
 
 typedef struct

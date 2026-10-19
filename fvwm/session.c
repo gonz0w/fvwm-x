@@ -53,7 +53,7 @@
 #include "geometry.h"
 #include "move_resize.h"
 #include "infostore.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 #define FVWM_SM_DEBUG_PROTO 0

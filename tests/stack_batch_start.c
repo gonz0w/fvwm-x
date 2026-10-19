@@ -14,7 +14,7 @@
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
 #include "fvwm/stack_window_list.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 static Bool active;
 static unsigned calls, edges, resizes;

@@ -16,7 +16,7 @@
 #include "libs/safemalloc.h"
 
 #include <stdlib.h>
-
+#include "libs/picture_types.h"
 typedef struct
 {
 	FvwmPicture **slot;

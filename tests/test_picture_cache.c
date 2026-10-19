@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "libs/picture_types.h"
 static unsigned stamp_checks, loads;
 static FileStamp current_stamp = 1;
 static Bool file_missing, load_failed;

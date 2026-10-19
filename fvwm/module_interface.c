@@ -19,7 +19,6 @@
  *
  */
 #include "config.h"
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <errno.h>
@@ -51,7 +50,8 @@
 #include "commands.h"
 #include "module_queue.h"
 #include "libs/vpacket.h"
-
+#include "libs/monitor_types.h"
+#include "libs/picture_types.h"
 /* A queue of commands from the modules */
 static module_command_queue cqueue;
 static fvwm_queue_drain_state cqueue_drain_state =

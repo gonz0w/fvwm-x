@@ -14,7 +14,6 @@
  */
 
 #include "config.h"
-
 #include <time.h>
 #include <errno.h>
 #include <limits.h>
@@ -43,6 +42,7 @@
 #include "libs/ColorUtils.h"
 #include "libs/Strings.h"
 #include "libs/log.h"
+#include "libs/flocale_font_types.h"
 #ifdef HAVE_GETPWUID
 #  include <pwd.h>
 #endif

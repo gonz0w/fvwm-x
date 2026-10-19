@@ -18,7 +18,7 @@
 #include <time.h>
 #include <sys/wait.h>
 #include <unistd.h>
-
+#include "libs/picture_types.h"
 static unsigned forks;
 static pid_t last_child;
 static Display *display;

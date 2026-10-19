@@ -27,7 +27,7 @@
 #include <stdlib.h>
 
 #include "FEvent.h"
-#include "FScreen.h"
+#include "monitor_types.h"
 #include "Parse.h"
 #include "PictureBase.h"
 #include "defaults.h"

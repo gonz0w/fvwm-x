@@ -27,7 +27,6 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
-
 #include <stdio.h>
 
 #include "libs/fvwmlib.h"
@@ -51,7 +50,8 @@
 #include "builtins.h"
 #include "icons.h"
 #include "frame.h"
-
+#include "libs/monitor_types.h"
+#include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

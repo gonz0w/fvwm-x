@@ -32,7 +32,7 @@
 #include "libs/fvwm_x11.h"
 #include "libs/fvwmlib.h"
 #include "libs/Parse.h"
-#include "libs/PictureBase.h"
+#include "libs/picture_types.h"
 #include "libs/FShape.h"
 #include "libs/ColorUtils.h"
 #include "libs/Picture.h"

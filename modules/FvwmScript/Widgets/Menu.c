@@ -21,7 +21,7 @@
 #include "libs/FEvent.h"
 #include "libs/log.h"
 #include "Tools.h"
-
+#include "libs/flocale_font_types.h"
 /* left, center and right offsets for title 0 (not very useful here) */
 #define MENU_LCR_OFFSETS 2,0,2
 

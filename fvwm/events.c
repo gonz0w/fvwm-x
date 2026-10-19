@@ -93,7 +93,7 @@
 #include "libs/ColorUtils.h"
 #include "libs/Colorset.h"
 #include "libs/FEvent.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/wm_ui_metrics.h"
 #include "libs/FShape.h"
 #include "libs/Grab.h"

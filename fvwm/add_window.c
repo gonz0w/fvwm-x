@@ -46,11 +46,9 @@
 
 #include "config.h"
 #include "libs/FProperty.h"
-
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
-
 #include "libs/fvwmlib.h"
 #include "libs/log.h"
 #include "libs/FShape.h"
@@ -99,7 +97,9 @@
 #include "virtual.h"
 #include "builtins.h"
 #include "expand.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/monitor_types.h"
+#include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

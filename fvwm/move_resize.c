@@ -20,12 +20,11 @@
  */
 
 #include "config.h"
-
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
 
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/log.h"
 #include "libs/fvwmlib.h"
 #include "libs/wm_ui_metrics.h"
@@ -67,7 +66,8 @@
 #include "functions.h"
 #include "style.h"
 #include "externs.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/picture_types.h"
 #define DEBUG_CONFIGURENOTIFY 0
 
 /* ----- move globals ----- */

@@ -22,7 +22,7 @@
 
 #include "libs/FEvent.h"
 #include "libs/log.h"
-
+#include "libs/flocale_font_types.h"
 /* helper functions */
 void script_geometry_diagnostic(const char *operation, int id)
 {

@@ -3,6 +3,8 @@
 #ifndef FVWMPAGER_H
 #define FVWMPAGER_H
 
+#include "libs/picture_types.h"
+
 #define DEFAULT_PAGER_WINDOW_BORDER_WIDTH 1
 #define DEFAULT_PAGER_WINDOW_MIN_SIZE 3
 #define DEFAULT_PAGER_MOVE_THRESHOLD 3

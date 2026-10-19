@@ -47,7 +47,7 @@
 #include "focus.h"
 #include "virtual.h"
 #include "geometry.h"
-
+#include "libs/monitor_types.h"
 #define SHOW_GEOMETRY		(1<<0)
 #define SHOW_ALLDESKS		(1<<1)
 #define SHOW_NORMAL		(1<<2)

@@ -15,7 +15,7 @@
 
 #include "config.h"
 #include <stdbool.h>
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/fvwmlib.h"
 #include "libs/log.h"
 #include "libs/Module.h"

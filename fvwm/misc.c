@@ -36,7 +36,7 @@
 #include "module_interface.h"
 #include "events.h"
 #include "eventmask.h"
-
+#include "libs/flocale_font_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

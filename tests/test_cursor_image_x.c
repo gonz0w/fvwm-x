@@ -26,7 +26,7 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-
+#include "libs/picture_types.h"
 static unsigned errors;
 static unsigned forks;
 static pid_t last_child;

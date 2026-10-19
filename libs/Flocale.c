@@ -54,7 +54,7 @@
 #include "Strings.h"
 #include "Parse.h"
 #include "PictureBase.h"
-#include "Flocale.h"
+#include "flocale_font_types.h"
 #include "FlocaleCharset.h"
 #include "FBidi.h"
 #include "FftInterface.h"

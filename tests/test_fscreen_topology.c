@@ -14,7 +14,7 @@
  */
 
 #define FSCREEN_TESTING 1
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 #include <assert.h>
 #include <limits.h>

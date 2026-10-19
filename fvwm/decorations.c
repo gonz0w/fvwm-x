@@ -39,7 +39,7 @@
 #include "style.h"
 #include "geometry.h"
 #include "decorations.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* Motif window hints */

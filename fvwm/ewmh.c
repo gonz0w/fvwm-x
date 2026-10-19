@@ -81,7 +81,7 @@
 #include "geometry.h"
 #include "virtual.h"
 #include "window_flags.h"
-
+#include "libs/monitor_types.h"
 #define EWMH_DEBUG 0
 
 typedef struct kst_item

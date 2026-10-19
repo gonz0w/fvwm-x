@@ -11,6 +11,7 @@
 #include "libs/fvwmlib.h"
 #include "libs/Flocale.h"
 #include "libs/Picture.h"
+#include "libs/picture_types.h"
 #include "libs/Colorset.h"
 #include "libs/Bindings.h"
 #include "libs/charmap.h"

@@ -41,7 +41,7 @@
 #include "virtual.h"
 #include "cursor.h"
 #include "menus.h"
-
+#include "libs/monitor_types.h"
 #ifdef HAVE_XFIXES
 #include <X11/extensions/Xfixes.h>
 #define MAX_BARRIERS 16

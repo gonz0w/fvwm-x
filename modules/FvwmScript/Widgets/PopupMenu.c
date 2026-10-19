@@ -22,7 +22,7 @@
 #include "libs/FEvent.h"
 #include "libs/log.h"
 #include "Tools.h"
-
+#include "libs/flocale_font_types.h"
 /*
  * function for PopupMenu
  */

@@ -30,7 +30,7 @@
 #include "libs/log.h"
 #include "libs/Strings.h"
 #include "libs/wild.h"
-
+#include "libs/flocale_font_types.h"
 extern FlocaleWinString *FwinString;
 
 /* button dirty bits: */

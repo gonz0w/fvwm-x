@@ -52,7 +52,7 @@
 
 #include "FvwmForm.h"
 #include "form_input.h"
-
+#include "libs/flocale_font_types.h"
 /* Coalesce adjacent events without searching an arbitrarily large X queue. */
 static Bool form_take_next_event(Window window, int type, XEvent *event)
 {

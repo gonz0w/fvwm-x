@@ -45,7 +45,7 @@
 #include "libs/wcontext.h"
 #include "libs/Fsvg.h"
 #include "libs/log.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

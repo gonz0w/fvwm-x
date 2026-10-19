@@ -12,7 +12,7 @@
 #include "fvwm/externs.h"
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 #define WINDOW_COUNT 4
 static FvwmWindow windows[WINDOW_COUNT];

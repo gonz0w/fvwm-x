@@ -4,9 +4,9 @@
  * (at your option) any later version.
  */
 #include "config.h"
-#include "libs/Flocale.h"
+#include "libs/flocale_font_types.h"
 #include "libs/Picture.h"
-#include "libs/PictureBase.h"
+#include "libs/picture_types.h"
 
 #include <X11/Xutil.h>
 #include <assert.h>

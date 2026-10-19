@@ -24,7 +24,7 @@
 
 #include "Strings.h"
 #include "Parse.h"
-#include "Flocale.h"
+#include "flocale_font_types.h"
 #include "FlocaleCharset.h"
 #include "Ficonv.h"
 

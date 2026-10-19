@@ -21,10 +21,8 @@
 #include "config.h"
 #include "menu_image.h"
 #include "libs/picture_view.h"
-
 #include <stdio.h>
 #include <assert.h>
-
 #include "libs/log.h"
 #include "libs/ftime.h"
 #include "libs/fvwmlib.h"
@@ -66,7 +64,9 @@
 #include "menus.h"
 #include "libs/FGettext.h"
 #include "libs/wm_ui_metrics.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/monitor_types.h"
+#include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* used in float to int arithmetic */

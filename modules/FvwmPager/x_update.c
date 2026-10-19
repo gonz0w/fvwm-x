@@ -12,14 +12,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see: <http://www.gnu.org/licenses/>
  */
-
 #include "config.h"
 #include "libs/Module.h"
 #include "libs/Graphics.h"
 #include "libs/PictureGraphics.h"
 #include "fvwm/fvwm.h"
 #include "FvwmPager.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/monitor_types.h"
 #define label_border 2
 
 static void do_label_window(PagerWindow *t, Window w, rectangle r);

@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include "libs/picture_types.h"
 static Bool bounded_step;
 static unsigned upload_calls;
 static size_t uploaded_pixels;

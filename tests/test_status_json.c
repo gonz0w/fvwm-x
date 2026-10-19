@@ -23,7 +23,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "libs/monitor_types.h"
 #define RETAINED_MONITOR_COUNT 1025
 
 typedef struct

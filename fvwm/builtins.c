@@ -46,9 +46,9 @@
 #include "libs/ColorUtils.h"
 #include "libs/FEvent.h"
 #include "libs/FGettext.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/Ficonv.h"
-#include "libs/Flocale.h"
+#include "libs/flocale_font_types.h"
 #include "libs/Grab.h"
 #include "libs/Graphics.h"
 #include "libs/Parse.h"
@@ -77,7 +77,7 @@
 #include "style.h"
 #include "update.h"
 #include "virtual.h"
-
+#include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 static void

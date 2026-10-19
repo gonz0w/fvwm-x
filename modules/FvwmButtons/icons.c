@@ -43,8 +43,8 @@
 #include "libs/PictureGraphics.h"
 #include "libs/Colorset.h"
 #include "libs/Rectangles.h"
-
-
+#include "libs/flocale_font_types.h"
+#include "libs/picture_types.h"
 /*
  *
  * Combines icon shape masks after a resize

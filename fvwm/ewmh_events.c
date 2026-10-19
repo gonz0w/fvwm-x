@@ -42,7 +42,7 @@
 #include "geometry.h"
 #include "borders.h"
 #include "module_interface.h"
-
+#include "libs/monitor_types.h"
 extern ewmh_atom ewmh_atom_wm_state[];
 
 #define DEBUG_EWMH_INIT_STATE 0

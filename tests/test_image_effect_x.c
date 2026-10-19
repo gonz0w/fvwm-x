@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include "libs/picture_types.h"
 static Bool force_software = True;
 Bool __real_FRenderGetExtensionSupported(void);
 

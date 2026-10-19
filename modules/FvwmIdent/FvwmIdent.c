@@ -45,7 +45,7 @@
 #include "libs/module_x_service.h"
 #include "libs/Colorset.h"
 #include "libs/fvwmsignal.h"
-#include "libs/Flocale.h"
+#include "libs/flocale_font_types.h"
 #include "libs/Parse.h"
 #include "libs/FRenderInit.h"
 #include "libs/Graphics.h"
@@ -55,7 +55,7 @@
 #include "libs/log.h"
 
 #include "FvwmIdent.h"
-
+#include "libs/monitor_types.h"
 static RETSIGTYPE TerminateHandler(int);
 
 static ModuleArgs *module;

@@ -62,7 +62,7 @@
 #include "fvwmsignal.h"
 #include "libs/monitor_scale.h"
 #include "libs/wm_ui_metrics.h"
-
+#include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
 typedef struct
 {

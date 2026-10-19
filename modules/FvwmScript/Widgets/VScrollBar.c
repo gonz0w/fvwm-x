@@ -21,7 +21,7 @@
 #include "libs/Graphics.h"
 #include "libs/log.h"
 #include "Tools.h"
-
+#include "libs/flocale_font_types.h"
 /*
  * Function for VScrollBar
  */

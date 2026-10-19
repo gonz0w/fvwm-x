@@ -21,7 +21,7 @@
 #include "libs/FEvent.h"
 #include "libs/log.h"
 #include "Tools.h"
-
+#include "libs/flocale_font_types.h"
 /* left, center and right offsets */
 #define PUSH_BUTTON_LCR_OFFSETS 4,0,4
 

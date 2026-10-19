@@ -25,7 +25,7 @@
 #include "fvwmlib.h"
 #include "wild.h"
 #include "Strings.h"
-#include "Flocale.h"
+#include "flocale_font_types.h"
 #include "FlocaleCharset.h"
 #include "Ficonv.h"
 #include "FftInterface.h"

@@ -44,7 +44,7 @@
 #include "decorations.h"
 #include "virtual.h"
 #include "infostore.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

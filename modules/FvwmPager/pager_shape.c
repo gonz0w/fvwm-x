@@ -3,7 +3,7 @@
  * the Free Software Foundation; either version 2, or any later version.
  */
 #include "config.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/FShape.h"
 #include "libs/Module.h"
 #include "libs/fvwmlib.h"

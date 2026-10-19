@@ -14,7 +14,7 @@
  */
 
 #include "config.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/fvwmlib.h"
 #include "libs/Module.h"
 #include "libs/Strings.h"

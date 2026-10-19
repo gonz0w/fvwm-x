@@ -4,7 +4,7 @@
  * (at your option) any later version.
  */
 #include "config.h"
-#include "libs/Flocale.h"
+#include "libs/flocale_font_types.h"
 #include "libs/font_shadow.h"
 #include "libs/font_text.h"
 #include "libs/FlocaleCharset.h"

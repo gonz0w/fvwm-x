@@ -28,7 +28,7 @@
 #include "pager_geometry.h"
 #include "libs/module_monitor.h"
 #include <stddef.h>
-
+#include "libs/monitor_types.h"
 static bool parse_desk_number(const char *text, int *desk)
 {
 	if (!module_parse_decimal_integers(text, desk, 1))

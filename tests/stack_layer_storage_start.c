@@ -16,7 +16,7 @@
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
 #include "fvwm/borders.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 static FvwmWindow windows[4];
 static Bool active;

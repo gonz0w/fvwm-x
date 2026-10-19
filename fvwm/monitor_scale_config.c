@@ -21,7 +21,7 @@
 #include "commands.h"
 #include "monitor_scale_config.h"
 
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/Parse.h"
 #include "libs/cJSON.h"
 #include "libs/log.h"

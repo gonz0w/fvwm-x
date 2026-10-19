@@ -18,7 +18,6 @@
 #include "config.h"
 #include "menu_image.h"
 #include "libs/picture_view.h"
-
 #include <stdio.h>
 
 #include "libs/fvwmlib.h"
@@ -36,7 +35,8 @@
 #include "menuroot.h"
 #include "menuitem.h"
 #include "decorations.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* ---------------------------- local macros ------------------------------- */

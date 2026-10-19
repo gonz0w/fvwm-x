@@ -14,7 +14,7 @@
 #include "fvwm/externs.h"
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 #define CHILD_COUNT 108
 static FvwmWindow target;

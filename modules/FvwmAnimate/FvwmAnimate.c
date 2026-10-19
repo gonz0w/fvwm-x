@@ -63,7 +63,7 @@
 #include "libs/Parse.h"
 #include "libs/Strings.h"
 #include "FvwmAnimate.h"
-
+#include "libs/picture_types.h"
 #define AS_PI 3.14159265358979323846
 
 static Display *dpy;

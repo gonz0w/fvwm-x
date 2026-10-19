@@ -21,7 +21,7 @@
 
 #include "libs/fvwmlib.h"
 #include "libs/FShape.h"
-#include "libs/PictureBase.h"
+#include "libs/picture_types.h"
 #include "libs/Picture.h"
 #include "libs/picture_view.h"
 #include "libs/PictureUtils.h"
@@ -47,7 +47,7 @@
 #include "ewmh.h"
 #include "ewmh_intern.h"
 #include "geometry.h"
-
+#include "libs/monitor_types.h"
 /*
  * net icon handler
  */

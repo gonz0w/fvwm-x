@@ -22,12 +22,10 @@
 #include "config.h"
 #include "libs/picture_async.h"
 #include "libs/picture_view.h"
-
 #include <stdio.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-
 #include "libs/log.h"
 #include "libs/fvwmlib.h"
 #include "libs/FShape.h"
@@ -67,7 +65,9 @@
 #include "module_interface.h"
 #include "ewmh.h"
 #include "geometry.h"
-
+#include "libs/flocale_font_types.h"
+#include "libs/monitor_types.h"
+#include "libs/picture_types.h"
 static int do_all_iconboxes(FvwmWindow *t, icon_boxes **icon_boxes_ptr);
 static void GetIconFromFile(FvwmWindow *fw);
 static void GetIconWindow(FvwmWindow *fw);

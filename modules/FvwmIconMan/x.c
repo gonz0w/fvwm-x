@@ -31,7 +31,7 @@
 #include "libs/log.h"
 #include "libs/XError.h"
 #include "libs/module_x_service.h"
-
+#include "libs/flocale_font_types.h"
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|\
 	EnterWindowMask|LeaveWindowMask)
 

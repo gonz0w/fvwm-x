@@ -21,7 +21,7 @@
 #include "libs/log.h"
 #include "libs/defaults.h"
 #include "libs/fvwmlib.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 #include "libs/FShape.h"
 #include "libs/Module.h"
 #include "libs/Parse.h"

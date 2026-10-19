@@ -45,7 +45,7 @@
 #include "icons.h"
 #include "add_window.h"
 #include "expand.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 #define MAX_NUM_PLACEMENT_ALGOS 31

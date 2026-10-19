@@ -19,7 +19,7 @@
 
 #include "fvwm.h"
 #include "libs/cJSON.h"
-
+#include "libs/monitor_types.h"
 static bool
 status_json_add_screen(cJSON *screens, struct monitor *monitor,
     const FvwmWindow *focused_window, fvwm_status_desk_urgent_fn desk_is_urgent,

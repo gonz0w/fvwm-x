@@ -78,7 +78,7 @@
 #include "menus.h"
 #include "menubindings.h"
 #include "libs/FGettext.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 #define MAXHOSTNAME 255

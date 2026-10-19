@@ -4,7 +4,6 @@
  * (at your option) any later version.
  */
 #include "config.h"
-
 #include <assert.h>
 #include <limits.h>
 #include <stdio.h>
@@ -24,7 +23,8 @@
 #include "fvwm/execcontext.h"
 #include "fvwm/module_list.h"
 #include "fvwm/module_interface.h"
-
+#include "libs/monitor_types.h"
+#include "libs/picture_types.h"
 #define WORDS_16 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL, \
 	8UL, 9UL, 10UL, 11UL, 12UL, 13UL, 14UL, 15UL
 #define WORDS_256 WORDS_16, WORDS_16, WORDS_16, WORDS_16, \

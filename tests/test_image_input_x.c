@@ -20,7 +20,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
+#include "libs/picture_types.h"
 static const char *swap_path;
 static struct stat swap_metadata;
 static int swapped;

@@ -47,7 +47,7 @@
 #include "libs/XError.h"
 #include "libs/FEvent.h"
 
-#include "libs/Flocale.h"               /* for font definition stuff */
+#include "libs/flocale_font_types.h"               /* for font definition stuff */
 #include "libs/PictureBase.h"		 /* for PictureInitCMap */
 #include "libs/Colorset.h"
 #include "libs/FScreen.h"

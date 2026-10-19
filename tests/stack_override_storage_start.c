@@ -14,7 +14,7 @@
 #include "fvwm/externs.h"
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 static FvwmWindow target, higher;
 static Window popup;

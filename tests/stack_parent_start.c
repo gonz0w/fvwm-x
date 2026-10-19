@@ -14,7 +14,7 @@
 #include "fvwm/externs.h"
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
-#include "libs/FScreen.h"
+#include "libs/monitor_types.h"
 
 /* Synthetic managed records use real unmapped X frames. Existing real-client
  * drivers separately cover lifetime, layer/group hints and window retirement. */

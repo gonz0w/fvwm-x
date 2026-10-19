@@ -57,7 +57,7 @@
 #include "stack_subtree.h"
 #include "stack_window_list.h"
 #include "stack_window_buffer.h"
-
+#include "libs/monitor_types.h"
 /* ---------------------------- local definitions -------------------------- */
 
 /* If more than this many transients are in a single branch of a transient

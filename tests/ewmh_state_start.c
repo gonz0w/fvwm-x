@@ -22,7 +22,7 @@
 #include "fvwm/ewmh_client_list.h"
 #include "fvwm/ewmh_atom_index.h"
 #include "libs/monitor_ownership.h"
-
+#include "libs/monitor_types.h"
 extern ewmh_atom_list atom_list[];
 void ewmh_publication_probe(struct monitor *monitor);
 static Bool measuring, refuse;

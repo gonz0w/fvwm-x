@@ -18,7 +18,7 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-
+#include "libs/picture_types.h"
 static unsigned worker_forks;
 static unsigned changes;
 static unsigned unexpected_errors;

@@ -860,3 +860,16 @@ property assembly/free; representability refusal retains the previous property.
 The [publication checkpoint](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md) records independent callback/vector,
 work-area/filter and converted-byte/ownership probes. Command configuration,
 actual-pixel geometry and existing update/publication barriers are unchanged.
+
+
+## Font, picture and monitor layout ownership
+
+`Flocale.h`, `PictureBase.h` and `FScreen.h` expose tagged pointer types and
+APIs. Field owners explicitly include `flocale_font_types.h`, `picture_types.h`
+and `monitor_types.h` respectively. Native IconMan/Pager embedded picture
+records import the complete definition. Existing tags, members, order, native
+packet layout, lifetime and command/configuration behavior remain unchanged.
+The [UI boundary checkpoint](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md) measures actual Ninja dependencies and
+verifies exact native allocated-section parity across ten profiles. API header
+changes can still invalidate their consumers; the narrower dependency applies
+to record-layout edits in the new headers.

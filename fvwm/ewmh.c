@@ -65,7 +65,7 @@
 #include "libs/atom_batch.h"
 #include "libs/monitor_ownership.h"
 #include "fvwm.h"
-#include "cmdparser.h"
+
 #include "execcontext.h"
 #include "functions.h"
 #include "commands.h"

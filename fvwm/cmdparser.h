@@ -35,7 +35,7 @@ typedef enum
 
 /* move this to the implementation file and use void* instead??? */
 
-typedef struct
+typedef struct cmdparser_context
 {
 	/* !!!note: need to define which bits in here may be accessed by the
 	 * user and which are internal */

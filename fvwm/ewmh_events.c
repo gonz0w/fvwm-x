@@ -26,7 +26,7 @@
 #include "fvwm.h"
 #include "externs.h"
 #include "execcontext.h"
-#include "cmdparser.h"
+
 #include "functions.h"
 #include "misc.h"
 #include "screen.h"

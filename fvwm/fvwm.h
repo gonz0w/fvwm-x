@@ -44,7 +44,6 @@
 #include "libs/FScreen.h"
 #include "window_flags.h"
 #include "condrc.h"
-#include "cmdparser.h"
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -87,6 +86,8 @@ struct FvwmDecor;
 
 /* Complete record in style_types.h; most interfaces only borrow a pointer. */
 typedef struct window_style window_style;
+/* Complete parser state is needed only by command parsing/expansion. */
+typedef struct cmdparser_context cmdparser_context_t;
 
 /* ---------------------------- type definitions --------------------------- */
 

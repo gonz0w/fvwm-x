@@ -12,9 +12,10 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Style index retention](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md)
-avoids retired selector hashing, releases empty indexes and shrinks category
-records. Its composed affected checkpoint passes; known required OpenBSD gaps remain
+[Command/update dependency boundaries](dev-docs/verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md) reduce layout-change
+compilations to six, four and four objects. Their affected checkpoint passes
+100 entries across six targets/ten profiles with unchanged compiled code/data.
+Known required OpenBSD runtime gaps remain
 [documented](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md).
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release

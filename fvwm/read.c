@@ -31,7 +31,7 @@
 #include "libs/Strings.h"
 #include "fvwm.h"
 #include "externs.h"
-#include "cmdparser.h"
+
 #include "cursor.h"
 #include "functions.h"
 #include "events.h"

@@ -194,7 +194,8 @@ def run(args):
                     (reference, case) for reference in (False, True)
                     for case in ('length', 'position', 'literal-member',
                                  'budget-member', 'escaped-length',
-                                 'escaped-position', 'escaped-member')]
+                                 'escaped-position', 'escaped-member',
+                                 'anchor-head', 'anchor-tail', 'zero-slack')]
                 for r in overlaps:
                     assert not r['baseline'] and r['collision'] == collision
                     assert r['rules'] == (3 if r['reference'] or

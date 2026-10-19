@@ -918,6 +918,156 @@ static void escaped_overlap_languages(void)
 		"781 independent legacy witnesses");
 }
 
+static void anchor_overlap_languages(void)
+{
+	const char *patterns[] = {
+		"?a*", "?b*", "*a?", "*b?", "\\?a*", "\\?b*",
+		"*a\\?", "*b\\?", "a?b?", "*a?a?*", "*a?b?*",
+		"\\*a*", "\\*b*", "*a\\*", "*b\\*", "?\\?a*",
+		"?\\?b*", "*a\\??", "*b\\??", "a?\\??", "*a?\\??*",
+		"*b?\\??*", "", "*", "**", "a**", "a*?", "a\\",
+		"a*\\", "*\\a*", "a?", "b?"
+	};
+	const char alphabet[] = "ab?*\\";
+	uint64_t witnesses[32][62] = { { 0 } };
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+	char value[6];
+	unsigned pairs = 0;
+
+	assert(sizeof(patterns) / sizeof(*patterns) == 32);
+	for (unsigned pattern = 0; pattern < 32; pattern++)
+	{
+		unsigned ordinal = 0;
+
+		for (unsigned length = 0, count = 1;
+		     length <= 5; length++, count *= 5)
+			for (unsigned word = 0; word < count; word++)
+			{
+				unsigned bits = word;
+
+				for (unsigned i = 0; i < length; i++, bits /= 5)
+					value[i] = alphabet[bits % 5];
+				value[length] = '\0';
+				if (matchWildcards(patterns[pattern], value))
+					witnesses[pattern][ordinal / 64] |=
+						UINT64_C(1) << (ordinal % 64);
+				ordinal++;
+			}
+		assert(ordinal == 3906);
+	}
+	for (unsigned field = 0; field < STYLE_MATCH_FIELDS; field++)
+	{
+		set_flags(&a, 1U << field);
+		set_flags(&b, 1U << field);
+		for (unsigned i = 0; i < 32; i++)
+		{
+			a.name = a.class = a.resource = a.icon =
+				(char *)patterns[i];
+			style_match_prepare(&ap, &a);
+			for (unsigned j = 0; j < 32; j++)
+			{
+				bool common = false, overlap;
+
+				b.name = b.class = b.resource = b.icon =
+					(char *)patterns[j];
+				style_match_prepare(&bp, &b);
+				for (unsigned word = 0; word < 62; word++)
+					common |= (witnesses[i][word] &
+						witnesses[j][word]) != 0;
+				overlap = style_match_ids_may_overlap(
+					&a, &ap, &b, &bp);
+				assert(!common || overlap);
+				assert(overlap == style_match_ids_may_overlap(
+					&b, &bp, &a, &ap));
+				pairs++;
+			}
+		}
+	}
+	assert(pairs == 4096);
+	puts("anchor overlap languages: 4096 pairs, "
+		"3906 independent legacy witnesses");
+}
+
+static void anchor_overlap_policy(void)
+{
+	const char *pairs[][2] = {
+		{ "\\?a*", "\\?b*" }, { "*a\\?", "*b\\?" },
+		{ "a?b?c", "*a?a?c*" }, { "?a*", "?b*" },
+		{ "*a?", "*b?" }, { "\\*a*", "\\*b*" },
+		{ "\\\377a*", "\\\377b*" }, { "*a\\?", "*bb\\?" }
+	};
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+
+	for (unsigned field = 0; field < STYLE_MATCH_FIELDS; field++)
+	{
+		set_flags(&a, 1U << field);
+		set_flags(&b, 1U << field);
+		for (unsigned i = 0; i < sizeof(pairs) / sizeof(*pairs); i++)
+		{
+			a.name = a.class = a.resource = a.icon =
+				(char *)pairs[i][0];
+			b.name = b.class = b.resource = b.icon =
+				(char *)pairs[i][1];
+			style_match_prepare(&ap, &a);
+			style_match_prepare(&bp, &b);
+			assert(!style_match_ids_may_overlap(&a, &ap, &b, &bp));
+			assert(!style_match_ids_may_overlap(&b, &bp, &a, &ap));
+		}
+	}
+	/* An extra value byte gives stars room to move literal positions. */
+	a.name = a.class = a.resource = a.icon = "a?b?c?";
+	b.name = b.class = b.resource = b.icon = "*a?a?c*";
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	puts("decoded anchors and zero-slack contradictions: passed");
+}
+
+static void anchor_overlap_budgets(void)
+{
+	char a_text[4097], b_text[4097], value[4096];
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+	style_match_subject subject;
+
+	set_flags(&a, 4);
+	set_flags(&b, 4);
+	memset(a_text, 'x', 4096);
+	memset(b_text, 'x', 4096);
+	a_text[0] = b_text[0] = '\\';
+	a_text[1] = b_text[1] = 'a';
+	a_text[4093] = 'a';
+	b_text[4093] = 'b';
+	a_text[4094] = b_text[4094] = '*';
+	a_text[4095] = b_text[4095] = '\0';
+	a.name = a_text;
+	b.name = b_text;
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(!style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	assert(!style_match_ids_may_overlap(&b, &bp, &a, &ap));
+	/* The next terminator is outside the raw proof scan. Keep unknown,
+	 * while normal matching still accepts and distinguishes both rules. */
+	a_text[4093] = b_text[4093] = 'x';
+	a_text[4094] = 'a';
+	b_text[4094] = 'b';
+	a_text[4095] = b_text[4095] = '*';
+	a_text[4096] = b_text[4096] = '\0';
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	assert(style_match_ids_may_overlap(&b, &bp, &a, &ap));
+	value[0] = 'a';
+	memcpy(value + 1, a_text + 2, 4093);
+	value[4094] = '\0';
+	style_match_subject_init(&subject, 0, value, value, value, value);
+	assert(style_match_id(&a, &ap, &subject));
+	assert(!style_match_id(&b, &bp, &subject));
+	puts("anchor raw allowance retains long ordinary matching: passed");
+}
+
 static void escaped_overlap_proof_budgets(void)
 {
 	char a_text[4099], b_text[4099], value[2050];
@@ -1176,6 +1326,9 @@ int main(void)
 	overlap_policy();
 	overlap_languages();
 	escaped_overlap_languages();
+	anchor_overlap_policy();
+	anchor_overlap_languages();
+	anchor_overlap_budgets();
 	escaped_overlap_proof_budgets();
 	overlap_proof_budgets();
 	return 0;

@@ -702,6 +702,12 @@ The caller-owned interning vector supplies `_NET_SUPPORTED` before returning,
 preserving duplicates, failed-intern `None`, format and publication order.
 [Atom checkpoint](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md).
 
+STYLE-01's optional decoded anchor views borrow pattern strings for one
+synchronous overlap proof. Head/tail literal contradictions and fixed-length
+zero-slack alignment can prove disjointness without changing the matcher,
+retained metadata or update ownership. Raw scans are bounded; uncertain larger
+patterns retain their records. [Anchor checkpoint](verification/VERIFICATION-2026-10-19-STYLE-ANCHORS.md).
+
 STYLE-01's [prepared matcher](https://github.com/gonz0w/fvwm-x/blob/ee180b0684f74c10984ddec75a43099987211139/fvwm/style_match.c) derives unescaped minimum
 lengths, literal suffix spans and single-star classification from immutable
 selector strings. [Operation-local subjects](https://github.com/gonz0w/fvwm-x/blob/ee180b0684f74c10984ddec75a43099987211139/fvwm/style_match.h) lazily cache

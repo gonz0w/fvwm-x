@@ -675,6 +675,141 @@ static bool literal_member_may_overlap(const char *literal, size_t length,
 	return match_pattern(pattern, patterns, field, &subject, field);
 }
 
+/* Views borrow their pattern only for this synchronous optional proof. */
+typedef struct
+{
+	const char *tail;
+	size_t head_width, tail_width;
+} overlap_spans;
+
+static bool prepare_overlap_spans(const char *pattern, overlap_spans *spans)
+{
+	bool star = false;
+	size_t raw = 0;
+
+	spans->tail = pattern;
+	spans->head_width = spans->tail_width = 0;
+	while (raw < STYLE_OVERLAP_PROOF_WORK && pattern[raw])
+	{
+		if (pattern[raw] == '*')
+		{
+			star = true;
+			spans->tail = pattern + raw + 1;
+			spans->tail_width = 0;
+			raw++;
+			continue;
+		}
+		if (pattern[raw] == '\\')
+		{
+			if (++raw == STYLE_OVERLAP_PROOF_WORK || !pattern[raw])
+				return false;
+		}
+		if (!star)
+			spans->head_width++;
+		spans->tail_width++;
+		raw++;
+	}
+	/* Refuse an incomplete raw scan, including its unobserved terminator.
+	 * Ordinary matching is independent of this optional allowance. */
+	return raw < STYLE_OVERLAP_PROOF_WORK;
+}
+
+static bool decoded_spans_may_overlap(const char *a, const char *b,
+	size_t width)
+{
+	for (size_t i = 0; i < width; i++)
+	{
+		bool aq, bq;
+		unsigned char av = fixed_pattern_byte(&a, &aq);
+		unsigned char bv = fixed_pattern_byte(&b, &bq);
+
+		if (!aq && !bq && av != bv)
+			return false;
+	}
+	return true;
+}
+
+static const char *advance_decoded_span(const char *pattern, size_t width)
+{
+	for (size_t i = 0; i < width; i++)
+	{
+		bool question;
+
+		fixed_pattern_byte(&pattern, &question);
+	}
+	return pattern;
+}
+
+static bool zero_slack_may_overlap(const char *a, const char *b, size_t width)
+{
+	/* One pattern fixes the value length to the other's byte minimum.
+	 * Every unquoted star must consume zero bytes in any common value. */
+	for (size_t i = 0; i < width; i++)
+	{
+		bool aq, bq;
+		unsigned char av, bv;
+
+		while (*a == '*')
+			a++;
+		while (*b == '*')
+			b++;
+		av = fixed_pattern_byte(&a, &aq);
+		bv = fixed_pattern_byte(&b, &bq);
+		if (!aq && !bq && av != bv)
+			return false;
+	}
+	return true;
+}
+
+static bool anchored_patterns_may_overlap(const char *a,
+	const style_match_patterns *ap, const char *b,
+	const style_match_patterns *bp, unsigned field)
+{
+	unsigned bit = 1U << field;
+	bool afixed = (ap->fixed_width | ap->escaped_fixed_width) & bit;
+	bool bfixed = (bp->fixed_width | bp->escaped_fixed_width) & bit;
+	overlap_spans as, bs;
+	size_t common;
+	const char *at, *bt;
+	bool decoded_edges, head, tail, slack;
+
+	/* Literal membership and fixed pairs already have their own paths.
+	 * Do not decode their verified bytes again. */
+	if (((ap->literal | bp->literal) & bit) || (afixed && bfixed) ||
+	    (ap->single_star & bp->single_star & bit) ||
+	    !((ap->unescaped | ap->escaped) & bit) ||
+	    !((bp->unescaped | bp->escaped) & bit))
+		return true;
+	/* Raw literal anchors already passed above. Decode only edges whose
+	 * quotes/questions can expose further necessary positions, or a
+	 * fixed-length pair whose stars have no room to expand. */
+	decoded_edges = (ap->escaped | bp->escaped) & bit;
+	head = decoded_edges || a[ap->prefix[field]] == '?' ||
+		b[bp->prefix[field]] == '?';
+	tail = decoded_edges ||
+		(ap->suffix[field] && a[ap->suffix[field] - 1] == '?') ||
+		(bp->suffix[field] && b[bp->suffix[field] - 1] == '?');
+	slack = (afixed || bfixed) && ap->minimum[field] == bp->minimum[field];
+	if (!head && !tail && !slack)
+		return true;
+	if (!prepare_overlap_spans(a, &as) || !prepare_overlap_spans(b, &bs))
+		return true;
+	common = as.head_width < bs.head_width ? as.head_width : bs.head_width;
+	if (head && !decoded_spans_may_overlap(a, b, common))
+		return false;
+	common = as.tail_width < bs.tail_width ? as.tail_width : bs.tail_width;
+	if (tail && common)
+	{
+		at = advance_decoded_span(as.tail, as.tail_width - common);
+		bt = advance_decoded_span(bs.tail, bs.tail_width - common);
+		if (!decoded_spans_may_overlap(at, bt, common))
+			return false;
+	}
+	if (slack)
+		return zero_slack_may_overlap(a, b, ap->minimum[field]);
+	return true;
+}
+
 static bool pattern_spans_may_overlap(const char *a,
 	const style_match_patterns *ap, const char *b,
 	const style_match_patterns *bp, unsigned field)
@@ -721,7 +856,7 @@ static bool pattern_spans_may_overlap(const char *a,
 	    !((ap->fixed_width | ap->escaped_fixed_width) & bit))
 		return literal_member_may_overlap(b, bp->prefix[field],
 			a, ap, field);
-	return true;
+	return anchored_patterns_may_overlap(a, ap, b, bp, field);
 }
 
 /* False proves that no window can satisfy both conjunctions. Compatibility

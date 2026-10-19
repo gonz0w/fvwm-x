@@ -145,7 +145,13 @@ def client_checks(args):
             ('escaped-position', r'"FVWM \\transition pro?e"',
              r'"FVWM \\transition prx?e"'),
             ('escaped-member', '"FVWM transition probe"',
-             r'"FVWM *\\other*probe"')]
+             r'"FVWM *\\other*probe"'),
+            ('anchor-head', r'"FVWM \\transition pr?be*"',
+             r'"FVWM \\transition px?be*"'),
+            ('anchor-tail', r'"*transition pr?b\\e"',
+             r'"*transition px?b\\e"'),
+            ('zero-slack', 'FVWM?transition?probe',
+             '*FVWM?transition?pxobe*')]
         for label, selected, other in pairs:
             # Both fields conflict with the middle rule. Disjointness permits
             # the equal selectors to merge without changing this client.

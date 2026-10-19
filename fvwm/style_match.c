@@ -406,6 +406,27 @@ static bool match_pattern(const char *pattern,
 		return true;
 	if (!value)
 		return false;
+	/* An earlier hash/match may already know this byte count. Reject
+	 * impossible widths before revisiting literal or prefix bytes; never
+	 * add a length scan for a rule that previously needed none. */
+	if (subject->length_fields & (1U << subject_field))
+	{
+		size_t length = subject->length[subject_field];
+
+		if (patterns->literal & bit)
+		{
+			if (length != patterns->prefix[field])
+				return false;
+		}
+		else if ((patterns->unescaped | patterns->escaped) & bit)
+		{
+			if (length < patterns->minimum[field] ||
+			    (((patterns->fixed_width |
+			       patterns->escaped_fixed_width) & bit) &&
+			     length != patterns->minimum[field]))
+				return false;
+		}
+	}
 	if (patterns->literal & bit)
 		return strcmp(pattern, value) == 0;
 	/* This span contains no wildcard or escape. A mismatch cannot be
@@ -466,7 +487,9 @@ static bool match_pattern(const char *pattern,
 			return match_fixed_span(star + 1,
 				value + length - after, after - suffix_length);
 		}
-		return match_unescaped_cursors(pattern, value);
+		/* No retry point precedes the verified initial literal span. */
+		return match_unescaped_cursors(
+			pattern + prefix, value + prefix);
 	}
 	if (patterns->escaped & bit)
 	{
@@ -478,26 +501,56 @@ static bool match_pattern(const char *pattern,
 			subject->length_fields |= subject_bit;
 		}
 		size_t length = subject->length[subject_field];
+		/* Initial literal bytes have equal raw and decoded widths. */
+		size_t prefix = patterns->prefix[field];
 
 		if (length < patterns->minimum[field] ||
 		    ((patterns->escaped_fixed_width & bit) &&
 		     length != patterns->minimum[field]))
 			return false;
 		if (patterns->escaped_fixed_width & bit)
-			return match_escaped_span(
-				pattern, value, patterns->minimum[field]);
+			return match_escaped_span(pattern + prefix,
+				value + prefix,
+				patterns->minimum[field] - prefix);
 		if (!(patterns->escaped_single_star & bit))
-			return match_escaped_cursors(pattern, value);
+			return match_escaped_cursors(
+				pattern + prefix, value + prefix);
 		size_t after = patterns->suffix_length[field];
 		size_t before = patterns->minimum[field] - after;
 
 		/* One unescaped star separates two decoded fixed-width spans.
 		 * The minimum keeps them apart, including quoted wildcards. */
-		return match_escaped_span(pattern, value, before) &&
+		return match_escaped_span(pattern + prefix,
+			value + prefix, before - prefix) &&
 			match_escaped_span(pattern + patterns->suffix[field],
 				value + length - after, after);
 	}
 	return matchWildcards(pattern, value) != 0;
+}
+
+/* Only explicit conjunctions are reordered. Within each group preserve
+ * resource/class/name/icon order; the compatibility OR stays separate. */
+static bool match_explicit_fields(const style_id_t *id,
+	const style_match_patterns *patterns, style_match_subject *subject,
+	unsigned fields)
+{
+	if ((fields & (1U << STYLE_MATCH_RESOURCE)) &&
+	    !match_pattern(id->resource, patterns, STYLE_MATCH_RESOURCE,
+		subject, STYLE_MATCH_RESOURCE))
+		return false;
+	if ((fields & (1U << STYLE_MATCH_CLASS)) &&
+	    !match_pattern(id->class, patterns, STYLE_MATCH_CLASS,
+		subject, STYLE_MATCH_CLASS))
+		return false;
+	if ((fields & (1U << STYLE_MATCH_NAME)) &&
+	    !match_pattern(id->name, patterns, STYLE_MATCH_NAME,
+		subject, STYLE_MATCH_NAME))
+		return false;
+	if ((fields & (1U << STYLE_MATCH_ICON)) &&
+	    !match_pattern(id->icon, patterns, STYLE_MATCH_ICON,
+		subject, STYLE_MATCH_ICON))
+		return false;
+	return true;
 }
 
 bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
@@ -523,21 +576,20 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 		if (i > STYLE_MATCH_NAME)
 			return false;
 	}
-	if (id->flags.has_resource &&
-	    !match_pattern(id->resource, patterns, STYLE_MATCH_RESOURCE,
-		subject, STYLE_MATCH_RESOURCE))
+	unsigned fields =
+		(id->flags.has_resource << STYLE_MATCH_RESOURCE) |
+		(id->flags.has_class << STYLE_MATCH_CLASS) |
+		(id->flags.has_name << STYLE_MATCH_NAME) |
+		(id->flags.has_icon << STYLE_MATCH_ICON);
+	unsigned literals = fields & patterns->literal;
+
+	/* A failed exact field can decide the conjunction before a longer
+	 * wildcard field scans its subject. Universal fields remain harmless
+	 * in the second group, including their existing NULL semantics. */
+	if (literals && !match_explicit_fields(id, patterns, subject, literals))
 		return false;
-	if (id->flags.has_class &&
-	    !match_pattern(id->class, patterns, STYLE_MATCH_CLASS,
-		subject, STYLE_MATCH_CLASS))
-		return false;
-	if (id->flags.has_name &&
-	    !match_pattern(id->name, patterns, STYLE_MATCH_NAME,
-		subject, STYLE_MATCH_NAME))
-		return false;
-	if (id->flags.has_icon &&
-	    !match_pattern(id->icon, patterns, STYLE_MATCH_ICON,
-		subject, STYLE_MATCH_ICON))
+	fields &= ~literals;
+	if (fields && !match_explicit_fields(id, patterns, subject, fields))
 		return false;
 	return true;
 }

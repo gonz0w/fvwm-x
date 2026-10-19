@@ -201,13 +201,28 @@ def run(args):
                     assert r['rules'] == (3 if r['reference'] or
                                          r['case'] == 'budget-member' else 2)
                 overlap_work.extend(overlaps)
+            process = runtime.start('fields',
+                [str(args.fvwm), '-d', display, '-f', '/dev/null'],
+                'fields.log', runtime.environment({
+                    'FVWM_STYLE_PROFILE_MODE': 'fields',
+                    'FVWM_STYLE_PROFILE_SIZE': '64',
+                    'FVWM_STYLE_PROFILE_WINDOWS': '1'}))
+            assert process.wait_until_exit(time.monotonic() + 45) == 0
+            fields = [json.loads(line.removeprefix('STYLE_FIELD_WORK '))
+                      for line in process.log_path.read_text().splitlines()
+                      if line.startswith('STYLE_FIELD_WORK ')]
+            assert fields == [
+                {'case': 'literal-first', 'lookups': 32,
+                 'lengths': 0, 'prefixes': 0},
+                {'case': 'cached-length', 'lookups': 32,
+                 'lengths': 32, 'prefixes': 0}]
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,
                             'wildcard_work': wildcard,
                             'simplify_work': repeated, 'index_work': index_work,
                             'subject_work': subject_work,
                             'cursor_work': cursor_work, 'overlap_work': overlap_work,
-                            'escaped_work': escaped_work},
+                            'escaped_work': escaped_work, 'field_work': fields},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

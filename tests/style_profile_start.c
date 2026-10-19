@@ -28,6 +28,9 @@
 
 static Bool measuring, force_reference, force_previous, force_collision;
 static Bool force_index_collision;
+static Bool field_measuring;
+static const char *field_subject;
+static unsigned field_length_calls, field_prefix_calls;
 static unsigned long comparisons, matches, grabbed_matches, grabs;
 static unsigned grab_depth, wildcard_call_depth;
 static unsigned long overlap_checks, id_visits, lookup_visits;
@@ -146,6 +149,23 @@ static uint64_t now_ns(void)
 
 	assert(clock_gettime(CLOCK_MONOTONIC, &value) == 0);
 	return (uint64_t)value.tv_sec * 1000000000 + value.tv_nsec;
+}
+
+int __real_strncmp(const char *, const char *, size_t);
+int __wrap_strncmp(const char *a, const char *b, size_t n)
+{
+	if (field_measuring && n >= 11 &&
+	    __real_strncmp(a, "field-work-", 11) == 0)
+		field_prefix_calls++;
+	return __real_strncmp(a, b, n);
+}
+
+size_t __real_strlen(const char *);
+size_t __wrap_strlen(const char *value)
+{
+	if (field_measuring && value == field_subject)
+		field_length_calls++;
+	return __real_strlen(value);
 }
 
 int __real_strcmp(const char *, const char *);
@@ -1158,6 +1178,72 @@ static void index_work(const exec_context_t *exc, FvwmWindow *window,
 	escaped_work(exc, window);
 }
 
+static void field_order_work(const exec_context_t *exc, FvwmWindow *window)
+{
+	FvwmWindow sample = *window;
+	window_style style;
+	Bool baseline = getenv("FVWM_STYLE_FIELD_BASELINE") != NULL;
+
+	sample.class.res_name = "field-work-long-tail";
+	sample.class.res_class = "OtherClass";
+	command(exc, "Style (Resource field-work-*?tail, Class FieldClass) "
+		"BorderWidth 7");
+	field_subject = sample.class.res_name;
+	field_length_calls = field_prefix_calls = 0;
+	field_measuring = True;
+	for (unsigned i = 0; i < 32; i++)
+	{
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 3);
+	}
+	field_measuring = False;
+	printf("STYLE_FIELD_WORK {\"case\":\"literal-first\","
+		"\"lookups\":32,\"lengths\":%u,\"prefixes\":%u}\n",
+		field_length_calls, field_prefix_calls);
+	fflush(stdout);
+	assert(field_length_calls == (baseline ? 32U : 0U));
+	assert(field_prefix_calls == (baseline ? 32U : 0U));
+	index_compare(&sample);
+	sample.class.res_class = "FieldClass";
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 7);
+	index_compare(&sample);
+	sample.class.res_name = "field-work-other";
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 3);
+	index_compare(&sample);
+	command(exc, "DestroyStyle (Resource field-work-*?tail, "
+		"Class FieldClass)");
+
+	/* The preceding wildcard owns the one fresh length scan. */
+	sample.name.name = "field-work-long-tail";
+	command(exc, "Style (Name field-*?tail) HandleWidth 11");
+	command(exc, "Style (Name field-work-????????-far-too-long) "
+		"BorderWidth 7");
+	field_subject = sample.name.name;
+	field_length_calls = field_prefix_calls = 0;
+	field_measuring = True;
+	for (unsigned i = 0; i < 32; i++)
+	{
+		lookup_style(&sample, &style);
+		assert(SGET_BORDER_WIDTH(style) == 3);
+		assert(SGET_HANDLE_WIDTH(style) == 11);
+	}
+	field_measuring = False;
+	printf("STYLE_FIELD_WORK {\"case\":\"cached-length\","
+		"\"lookups\":32,\"lengths\":%u,\"prefixes\":%u}\n",
+		field_length_calls, field_prefix_calls);
+	fflush(stdout);
+	assert(field_length_calls == 32);
+	assert(field_prefix_calls == (baseline ? 32U : 0U));
+	index_compare(&sample);
+	command(exc, "DestroyStyle (Name field-*?tail)");
+	command(exc, "DestroyStyle (Name field-work-????????-far-too-long)");
+	lookup_style(&sample, &style);
+	assert(SGET_BORDER_WIDTH(style) == 3 && SGET_HANDLE_WIDTH(style) == 3);
+	index_compare(&sample);
+}
+
 void __wrap_CaptureAllWindows(const exec_context_t *exc)
 {
 	const char *mode = getenv("FVWM_STYLE_PROFILE_MODE");
@@ -1184,6 +1270,12 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	{
 		clients[i] = create_window(exc);
 		check_border(clients[i], 3);
+	}
+	if (strcmp(mode, "fields") == 0)
+	{
+		field_order_work(exc, clients[0]);
+		fflush(stdout);
+		_exit(0);
 	}
 	if (strcmp(mode, "index") == 0)
 	{

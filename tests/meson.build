@@ -99,9 +99,10 @@ style_match_test = executable(
         '../fvwm/style_id_filter.c', '../libs/wild.c'],
     include_directories: includedirs,
     dependencies: all_found_deps,
-    c_args: ['-UNDEBUG', '-fno-builtin-strlen', '-fno-builtin-strcmp'],
+    c_args: ['-UNDEBUG', '-fno-builtin-strlen', '-fno-builtin-strcmp',
+        '-fno-builtin-strncmp'],
     link_args: ['-Wl,--wrap=matchWildcards', '-Wl,--wrap=strlen',
-        '-Wl,--wrap=strcmp'],
+        '-Wl,--wrap=strcmp', '-Wl,--wrap=strncmp'],
 )
 test('style-match', style_match_test)
 
@@ -1614,6 +1615,7 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         dependencies: all_found_deps,
         link_with: libfvwm3,
         link_args: ['-Wl,--wrap=CaptureAllWindows', '-Wl,--wrap=strcmp',
+            '-Wl,--wrap=strlen', '-Wl,--wrap=strncmp',
             '-Wl,--wrap=style_id_hash', '-Wl,--wrap=style_match_lookup_enabled',
             '-Wl,--wrap=style_match_prepare',
             '-Wl,--wrap=style_match_lookup_subject',

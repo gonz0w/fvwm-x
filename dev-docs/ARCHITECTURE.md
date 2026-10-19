@@ -821,3 +821,10 @@ separates original broad and final affected source scopes. Final review retains
 the plain-literal fast path without decoding verified bytes again; existing
 metadata, shared-glob consumers and X/update/lifetime owners remain unchanged.
 Optional raw/retry budgets retain unknown without capping ordinary matching.
+
+Style matching evaluates explicit literals before other explicit predicates,
+retaining order within each group and the separate preceding compatibility OR.
+Known subject lengths can reject impossible fields before comparing their bytes;
+unknown lengths stay lazy. Cursor/escaped-span walks reuse the verified raw
+prefix, whose raw/decoded widths agree. These are synchronous borrowed-identity
+operations; rule/update/publication order and retained metadata owners remain.

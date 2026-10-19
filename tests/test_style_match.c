@@ -13,7 +13,7 @@
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 
-static unsigned calls, length_calls, equality_calls, call_depth;
+static unsigned calls, length_calls, equality_calls, prefix_calls, call_depth;
 
 int __real_strcmp(const char *, const char *);
 int __wrap_strcmp(const char *a, const char *b)
@@ -27,6 +27,13 @@ size_t __wrap_strlen(const char *value)
 {
 	length_calls++;
 	return __real_strlen(value);
+}
+
+int __real_strncmp(const char *, const char *, size_t);
+int __wrap_strncmp(const char *a, const char *b, size_t n)
+{
+	prefix_calls++;
+	return __real_strncmp(a, b, n);
 }
 
 int __real_matchWildcards(const char *, const char *);
@@ -1303,8 +1310,153 @@ static void subject_domains(void)
 	puts("all domain subsets retain matching keys; hash lengths shared");
 }
 
+static void cold_warm_field_orders(void)
+{
+	const char *patterns[] = { NULL, "", "*", "a", "b", "a*?",
+		"*?a", "a??", "\\?*", "a**", "*\\", "?a*?b*" };
+	const char *values[] = { NULL, "", "a", "b", "ab", "aa",
+		"?a", "aaa", "\\", "\377", "other" };
+	style_id_t id = { 0 };
+	style_match_patterns prepared;
+	style_match_subject subject;
+
+	for (unsigned n = 0; n < 12000; n++)
+	{
+		set_flags(&id, random_value() & 63);
+		id.window_id = random_value() & 1 ? 19 : 23;
+		id.resource = (char *)patterns[random_value() % 12];
+		id.class = (char *)patterns[random_value() % 12];
+		id.name = (char *)patterns[random_value() % 12];
+		id.icon = (char *)patterns[random_value() % 12];
+		const char *v[4];
+
+		for (unsigned i = 0; i < 4; i++)
+			v[i] = values[random_value() % 11];
+		style_match_prepare(&prepared, &id);
+		for (unsigned warm = 0; warm < 2; warm++)
+		{
+			style_match_subject_init(&subject, 19,
+				v[0], v[1], v[2], v[3]);
+			bool expected = reference(&id, &subject);
+			unsigned buckets[STYLE_LOOKUP_STREAMS];
+
+			if (warm)
+				style_match_lookup_subject(&subject,
+					STYLE_LOOKUP_ALL, buckets);
+			assert(style_match_id(&id, &prepared, &subject) ==
+				expected);
+			assert(style_match_id(&id, &prepared, &subject) ==
+				expected);
+		}
+	}
+	puts("24000 cold/warm mixed-field oracle cases and repeated matches");
+}
+
+static void field_order_work(void)
+{
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+	bool baseline = getenv("FVWM_STYLE_FIELD_BASELINE") != NULL;
+
+	id.flags.has_resource = id.flags.has_class = 1;
+	id.resource = "probe-field-*?tail";
+	id.class = "probe-field-missing";
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, "probe-field-long-tail",
+		"probe-field-present", NULL, NULL);
+	length_calls = prefix_calls = equality_calls = 0;
+	assert(!style_match_id(&id, &patterns, &subject));
+	printf("FIELD_ORDER_WORK literal-first lengths=%u prefixes=%u\n",
+		length_calls, prefix_calls);
+	assert(length_calls == (baseline ? 1U : 0U));
+	assert(prefix_calls == (baseline ? 1U : 0U));
+	assert(equality_calls == 1);
+	/* Literal success must still run the other necessary predicate. */
+	id.class = "probe-field-present";
+	style_match_prepare(&patterns, &id);
+	assert(style_match_id(&id, &patterns, &subject));
+	style_match_subject_init(&subject, 1, "probe-field-wrong",
+		"probe-field-present", NULL, NULL);
+	assert(!style_match_id(&id, &patterns, &subject));
+
+	/* The lookup index can already have reached this terminator. */
+	id.flags.has_resource = 0;
+	const char *selectors[] = { "probe-field-short", "probe-field-???",
+		"probe-field-\\?tail", "probe-field-*?far-too-long" };
+	for (unsigned i = 0; i < 4; i++)
+	{
+		id.class = (char *)selectors[i];
+		style_match_prepare(&patterns, &id);
+		style_match_subject_init(&subject, 1, NULL, "probe-field-x",
+			NULL, NULL);
+		unsigned buckets[STYLE_LOOKUP_STREAMS];
+
+		style_match_lookup_subject(&subject,
+			1U << STYLE_MATCH_CLASS, buckets);
+		assert(subject.length_fields == (1U << STYLE_MATCH_CLASS));
+		length_calls = prefix_calls = equality_calls = 0;
+		assert(!style_match_id(&id, &patterns, &subject));
+		assert(length_calls == 0);
+		assert(equality_calls == (baseline && i == 0 ? 1U : 0U));
+		printf("FIELD_ORDER_WORK cached-length case=%u equal=%u "
+			"prefixes=%u\n", i, equality_calls, prefix_calls);
+		fflush(stdout);
+		assert(prefix_calls == (baseline && i != 0 ? 1U : 0U));
+	}
+	puts("literal-first conjunctions and cached length refusals: passed");
+}
+
+static void verified_prefix_work(void)
+{
+	char pattern[4160], value[4160];
+	const char *tails[][2] = {
+		{ "?*?*tail", "a-middle-btail" },
+		{ "\\?", "?" }, { "?*\\?", "a-middle-?" },
+		{ "?*?\\?*?tail", "ab?-middle-ctail" },
+		{ "**", "" }, { "*\\", "" }
+	};
+	style_id_t id = { 0 };
+	style_match_patterns prepared;
+	style_match_subject subject;
+
+	for (unsigned field = 0; field < STYLE_MATCH_FIELDS; field++)
+	{
+		set_flags(&id, 1U << field);
+		for (unsigned i = 0; i < sizeof(tails) / sizeof(*tails); i++)
+		{
+			memset(pattern, 'x', 4096);
+			memset(value, 'x', 4096);
+			strcpy(pattern + 4096, tails[i][0]);
+			strcpy(value + 4096, tails[i][1]);
+			id.resource = id.class = id.name = id.icon = pattern;
+			style_match_prepare(&prepared, &id);
+			assert(prepared.prefix[field] == 4096);
+			style_match_subject_init(&subject, 1,
+				value, value, value, value);
+			bool expected = reference(&id, &subject);
+
+			assert(style_match_id(&id, &prepared, &subject) ==
+				expected);
+			value[2048] = 'z';
+			style_match_subject_init(&subject, 1,
+				value, value, value, value);
+			assert(!style_match_id(&id, &prepared, &subject));
+		}
+	}
+	puts("verified prefixes preserve span/cursor and empty-tail semantics");
+}
+
 int main(void)
 {
+	if (getenv("FVWM_STYLE_PREFIX_PROBE"))
+	{
+		verified_prefix_work();
+		return 0;
+	}
+	field_order_work();
+	verified_prefix_work();
+	cold_warm_field_orders();
 	assert(!style_match_lookup_enabled(31, 31));
 	assert(style_match_lookup_enabled(32, 32));
 	assert(style_match_lookup_enabled(64, 32));

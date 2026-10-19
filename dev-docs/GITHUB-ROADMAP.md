@@ -122,3 +122,8 @@ interleaves production core object reuse and narrow style dependency boundaries.
 Its [affected checkpoint](verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
 retains the separate assertion-enabled build and all test registrations; the broad
 owners #14/#34 and release gates remain open.
+
+STYLE-01 #38's [style index retention checkpoint](verification/VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md)
+follows merged PR119 with live-domain counts, empty-table release and typed
+category flags. One combined checkpoint serves all three improvements; required
+OpenBSD CI/SVG/install and physical/release gaps remain. STYLE-01 stays open.

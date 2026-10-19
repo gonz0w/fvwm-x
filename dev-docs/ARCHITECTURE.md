@@ -733,21 +733,21 @@ same-field literal/anchored spans, preserving compatibility-selector ORs.
 See the [batch scope](verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md).
 
 STYLE-01's ordered candidate lookup uses one necessary numeric/literal predicate
-per immutable rule and deduplicated operation-local subject buckets. Derived
-per-list chains merge by ordinal before the existing matcher, preserving priority
-and command order. Add/remove and full-record moves invalidate the only roots;
-lazy rebuilds replace intrusive links before reading them. Small/wildcard-heavy
-lists remain linear; no window result or X state is cached. See the
-[current batch](verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md).
+per immutable rule and deduplicated operation-local subject buckets. Private
+per-list chains merge by ordinal before the existing matcher, preserving category
+priority and command order. Append/unlink and all three simplification paths
+maintain borrowed links; ordinal exhaustion discards the table for a compact
+lazy rebuild. Small/wildcard-heavy lists stay linear, retaining a nonempty table
+across threshold crossings. Empty lists release it; no window result or X state
+is cached. The seven category records store only `style_id_flags`.
 
-STYLE-01's subject-work batch makes compatibility representatives lazy. Each
-rebuilt ordered index records the union of its necessary-key domains; each list
-queries only that union. One synchronous borrowed subject shares untagged hashes
-and hash-derived lengths across explicit/compatibility domains and lists. The
-original matcher still decides every candidate. Invalidation discards the index
-and its domain union together before mutation; identity initialization discards
-all subject caches. No X state, style result or callback retains them.
-[Current scope](verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md).
+Each live indexed rule contributes to one of six domain counts. The last unlink
+clears that domain before the next query, avoiding hashes of retired identity
+fields without rescanning survivors. One synchronous borrowed subject shares
+untagged hashes and hash-derived lengths across explicit/compatibility domains
+and lists. Compatibility representatives are lazy; the existing matcher still
+decides every candidate. Identity initialization discards subject caches; no
+callback retains borrowed strings. [Retention checkpoint](verification/VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md).
 
 
 ## Development build dependency boundaries

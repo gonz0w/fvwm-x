@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Style command ownership](VERIFICATION-2026-10-19-STYLE-COMMAND-OWNERSHIP.md):
+  three related fixes; seven focused entries and 41 real-client cases pass; combined checkpoint pending.
+
+
 - [Style update work](VERIFICATION-2026-10-19-STYLE-UPDATE-WORK.md): three related improvements; composed broad/final affected checkpoint with retained CI/SVG/install gaps.
 
 - [Shared wildcard matching](VERIFICATION-2026-10-19-SHARED-WILDCARDS.md): STYLE-01, three related families; affected combined checkpoint passes with retained CI/SVG/install gaps.

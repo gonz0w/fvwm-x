@@ -189,6 +189,11 @@ char *parse_style_id(char *action, style_id_t *ret)
 	char *token;
 	char *option;
 
+	if (action == NULL)
+	{
+		fvwm_debug(__func__, "Missing style selector");
+		return NULL;
+	}
 	style_flags = CreateFlagString(action, &action);
 	if (!action) {
 		free(style_flags);
@@ -213,8 +218,13 @@ char *parse_style_id(char *action, style_id_t *ret)
 		goto out;
 	}
 
-	if ((action = GetNextToken(action, &token)) == NULL)
+	action = GetNextToken(action, &token);
+	if (action == NULL || token == NULL)
+	{
+		free(token);
+		fvwm_debug(__func__, "Missing style selector");
 		return NULL;
+	}
 
 	if (StrEquals(token, "*")) {
 		free(token);
@@ -4527,6 +4537,7 @@ static Bool style_parse_one_style_option(
 			{
 				fvwm_debug(__func__,
 					 "UseStyle needs an argument");
+				free_style_id(&match_id);
 				break;
 			}
 			hit = 0;
@@ -4538,7 +4549,7 @@ static Bool style_parse_one_style_option(
 
 			/* changed to accum multiple Style definitions
 			 * (veliaa@rpi.edu) */
-			for (add_style = list->first_style; add_style;
+			for (add_style = list ? list->first_style : NULL; add_style;
 			     add_style = SGET_NEXT_STYLE(*add_style))
 			{
 				if (style_id_equals_id(add_style,&match_id))
@@ -4548,6 +4559,9 @@ static Bool style_parse_one_style_option(
 					merge_styles(ps, add_style, True);
 				} /* end found matching style */
 			} /* end looking at all styles */
+			/* Matching borrows the selector; copied rule resources have
+			 * their own ownership after merge_styles. */
+			free_style_id(&match_id);
 			/* move forward one word */
 			if (!hit)
 			{
@@ -4800,8 +4814,6 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 	fpol_init_default_fp(&S_FOCUS_POLICY(SCF(*ps)));
 	/* mark style as changed */
 	ps->has_style_changed = 1;
-	/* set global flag */
-	Scr.flags.do_need_window_update = 1;
 	/* default StartsOnPage behavior for initial capture */
 	ps->flags.capture_honors_starts_on_page = 1;
 
@@ -4811,6 +4823,7 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 		action = parse_style_id(action, &SGET_ID(*ps));
 		if (action == NULL)
 		{
+			free_style(ps);
 			free(ps);
 			return;
 		}
@@ -4824,11 +4837,13 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 
 	if (action == NULL)
 	{
-		free(SGET_NAME(*ps));
+		free_style(ps);
 		free(ps);
 		return;
 	}
 
+	/* Rejected input creates no pass and never clears pending work. */
+	Scr.flags.do_need_window_update = 1;
 	parse_and_set_window_style(action, prefix, ps);
 
 	/* capture default icons */
@@ -5721,11 +5736,13 @@ void CMD_DestroyStyle(F_CMD_ARGS)
 
 	action = parse_style_id(action, &s_id);
 	if (action == NULL) {
+		free_style_id(&s_id);
 		return;
 	}
 
 	/* Do it */
 	style_destroy_style(s_id);
+	free_style_id(&s_id);
 }
 
 void CMD_DestroyWindowStyle(F_CMD_ARGS)

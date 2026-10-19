@@ -1570,6 +1570,27 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 45,
     )
+    style_command_owner_fixture = executable(
+        'fvwm-style-command-owner-fixture', 'style_command_owner_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows',
+            '-Wl,--wrap=GetNextToken', '-Wl,--wrap=free',
+            '-Wl,--wrap=MyXGrabServer'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'style-command-owner-xvfb', py,
+        args: [files('live_x/style_command_owner_live.py'),
+            '--fvwm', style_command_owner_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'style-command-owner'],
+        depends: style_command_owner_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
+    )
     style_update_work_fixture = executable(
         'fvwm-style-update-work-fixture', 'style_update_work_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),

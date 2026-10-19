@@ -465,4 +465,4 @@ diagnostic and execution gates remain separate.
   three related string-work improvements; one combined six-target checkpoint
   is locally qualified, with exact source and remaining release limits.
 
-- [EWMH atom dispatch/name/startup checkpoint](VERIFICATION-2026-10-19-EWMH-ATOMS.md) — STATE-01, combined qualification pending.
+- [EWMH atom dispatch/name/startup checkpoint](VERIFICATION-2026-10-19-EWMH-ATOMS.md) — STATE-01, combined local checkpoint; retained required SVG/install gap.

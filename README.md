@@ -13,7 +13,7 @@ compositor or native Wayland backend.
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
 Three [EWMH atom improvements](dev-docs/verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md)
-pass focused checks; the combined checkpoint is pending.
+pass a combined six-target checkpoint; the prior SVG/install gap remains.
 The merged [style selector checkpoint](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md)
 retains the known OpenBSD AMD64 SVG/install gap.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.

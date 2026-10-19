@@ -62,6 +62,8 @@
 struct style_lookup_index
 {
 	window_style *head[STYLE_LOOKUP_BUCKETS];
+	window_style *tail[STYLE_LOOKUP_BUCKETS];
+	size_t last_ordinal;
 	unsigned domains;
 };
 
@@ -1018,15 +1020,66 @@ static void prepare_style_lookup(window_style_list *list)
 	if (list->lookup_index)
 		return;
 	list->lookup_index = fxcalloc(1, sizeof(*list->lookup_index));
+	list->lookup_index->last_ordinal = ordinal;
 	for (style = list->last_style; style; style = SGET_PREV_STYLE(*style))
 	{
 		unsigned bucket = style->id_patterns.lookup_bucket;
 
 		style->lookup_ordinal = ordinal--;
 		style->lookup_next = list->lookup_index->head[bucket];
+		style->lookup_prev = NULL;
+		if (style->lookup_next)
+			style->lookup_next->lookup_prev = style;
+		else
+			list->lookup_index->tail[bucket] = style;
 		list->lookup_index->head[bucket] = style;
 		list->lookup_index->domains |= style->id_patterns.lookup_domain;
 	}
+}
+
+/* Derived links borrow rule records. Unlink before retirement; gaps in the
+ * ordinals preserve precedence. Domain bits may conservatively outlive the
+ * last rule in a domain until a cold rebuild, retaining no borrowed strings. */
+static void unlink_style_lookup(window_style_list *list, window_style *style)
+{
+	struct style_lookup_index *index = list->lookup_index;
+	unsigned bucket = style->id_patterns.lookup_bucket;
+
+	if (!index)
+		return;
+	if (style->lookup_prev)
+		style->lookup_prev->lookup_next = style->lookup_next;
+	else
+		index->head[bucket] = style->lookup_next;
+	if (style->lookup_next)
+		style->lookup_next->lookup_prev = style->lookup_prev;
+	else
+		index->tail[bucket] = style->lookup_prev;
+	style->lookup_next = style->lookup_prev = NULL;
+}
+
+static void append_style_lookup(window_style_list *list, window_style *style)
+{
+	struct style_lookup_index *index = list->lookup_index;
+	unsigned bucket = style->id_patterns.lookup_bucket;
+
+	if (!index)
+		return;
+	/* Rebuilding compacts ordinal gaps before an increment can overflow. */
+	if (index->last_ordinal == SIZE_MAX)
+	{
+		invalidate_style_lookup(list);
+		return;
+	}
+	style->lookup_ordinal = ++index->last_ordinal;
+	style->lookup_next = NULL;
+	style->lookup_prev = index->tail[bucket];
+	if (style->lookup_prev)
+		style->lookup_prev->lookup_next = style;
+	else
+		index->head[bucket] = style;
+	index->tail[bucket] = style;
+	index->domains |= style->id_patterns.lookup_domain;
 }
 
 static void add_style_to_list(window_style *new_style)
@@ -1061,7 +1114,7 @@ static void add_style_to_list(window_style *new_style)
 		return;
 	}
 
-	invalidate_style_lookup(list);
+	append_style_lookup(list, new_style);
 	list->style_count++;
 	list->indexed_count += new_style->id_patterns.lookup_bucket != 0;
 	if (list->last_style != NULL)
@@ -1088,7 +1141,7 @@ static void remove_style_from_list(window_style_list *list,
 	window_style *prev;
 	window_style *next;
 
-	invalidate_style_lookup(list);
+	unlink_style_lookup(list, style);
 	list->style_count--;
 	list->indexed_count -= style->id_patterns.lookup_bucket != 0;
 	prev = SGET_PREV_STYLE(*style);
@@ -1263,9 +1316,9 @@ static inline Bool _simplify_style_list(window_style_list *list)
 			{
 				/* merge old style into new style */
 				window_style *tmp = SGET_PREV_STYLE(*cmp);
-				window_style *prev = SGET_PREV_STYLE(*cur);
-				window_style *next = SGET_NEXT_STYLE(*cur);
+				window_style *prev, *next, *lookup_prev, *lookup_next;
 				size_t position = cur->simplify_ordinal;
+				size_t lookup_position = cur->lookup_ordinal;
 
 				/* Add the style to the set */
 				blockor((char *)&sumflags,
@@ -1279,16 +1332,22 @@ static inline Bool _simplify_style_list(window_style_list *list)
 				/* merge cmp into cur and delete it
 				 * afterwards */
 				merge_styles(cmp, cur, True);
-				invalidate_style_lookup(list);
+				/* Remove the old owner first, including an adjacent
+				 * bucket link, then preserve the surviving position. */
+				remove_style_from_list(list, cmp, False);
+				prev = SGET_PREV_STYLE(*cur);
+				next = SGET_NEXT_STYLE(*cur);
+				lookup_prev = cur->lookup_prev;
+				lookup_next = cur->lookup_next;
 				free_style(cur);
 				memcpy(cur, cmp, sizeof(window_style));
 				/* restore fields overwritten by memcpy */
 				SSET_PREV_STYLE(*cur, prev);
 				SSET_NEXT_STYLE(*cur, next);
 				cur->simplify_ordinal = position;
-				/* remove the style without freeing the
-				 * memory */
-				remove_style_from_list(list, cmp, False);
+				cur->lookup_prev = lookup_prev;
+				cur->lookup_next = lookup_next;
+				cur->lookup_ordinal = lookup_position;
 				/* release the style structure */
 				free(cmp);
 				cmp = tmp;

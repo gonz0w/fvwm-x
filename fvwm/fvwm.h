@@ -625,6 +625,7 @@ typedef struct window_style
 	size_t simplify_ordinal;
 	/* Derived chains are valid only while the owning list has an index. */
 	struct window_style *lookup_next;
+	struct window_style *lookup_prev;
 	size_t lookup_ordinal;
 #if 0
 	WindowConditionMask *condition_mask;

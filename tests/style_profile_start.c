@@ -642,14 +642,19 @@ static void overlap_check_sample(FvwmWindow *sample, const char *name,
 static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 {
 	const char *labels[] = { "length", "position", "literal-member",
-		"budget-member" };
+		"budget-member", "escaped-length", "escaped-position",
+		"escaped-member" };
 	char long_name[225];
 	const char *patterns[][2] = {
 		{ "probe-overlap-??", "probe-overlap-???*" },
 		{ "probe-overlap-?a?", "probe-overlap-?b?" },
 		{ "probe-overlap-middle-plain-end",
 		  "probe-overlap-*other*-end" },
-		{ long_name, "probe-overlap-*other*-end" }
+		{ long_name, "probe-overlap-*other*-end" },
+		{ "probe-overlap-\\a?", "probe-overlap-\\a??*" },
+		{ "probe-overlap-\\?a?", "probe-overlap-?b?" },
+		{ "probe-overlap-middle-plain-end",
+		  "probe-overlap-*\\other*-end" }
 	};
 	const char *names[][3] = {
 		{ "probe-overlap-aa", "probe-overlap-aaa", "probe-overlap-a" },
@@ -659,9 +664,17 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 		  "probe-overlap-some-other-part-end",
 		  "probe-overlap-none-end" },
 		{ long_name, "probe-overlap-some-other-part-end",
+		  "probe-overlap-none-end" },
+		{ "probe-overlap-aa", "probe-overlap-aaa", "probe-overlap-a" },
+		{ "probe-overlap-?ay", "probe-overlap-xby",
+		  "probe-overlap-xcy" },
+		{ "probe-overlap-middle-plain-end",
+		  "probe-overlap-some-other-part-end",
 		  "probe-overlap-none-end" }
 	};
 	Bool baseline = getenv("FVWM_STYLE_OVERLAP_BASELINE") != NULL;
+	Bool escaped_baseline =
+		getenv("FVWM_STYLE_ESCAPED_OVERLAP_BASELINE") != NULL;
 	Bool saved = force_reference;
 	FvwmWindow sample = *window;
 	window_style style;
@@ -675,22 +688,30 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 	for (unsigned reference = 0; reference < 2; reference++)
 	{
 		force_reference = reference;
-		for (unsigned kind = 0; kind < 4; kind++)
+		for (unsigned kind = 0;
+		     kind < sizeof(labels) / sizeof(labels[0]); kind++)
 		{
 			unsigned long visits;
+			char *quoted[2] = {
+				EscapeString((char *)patterns[kind][0],
+					"\\\"", '\\'),
+				EscapeString((char *)patterns[kind][1],
+					"\\\"", '\\')
+			};
+			Bool old = baseline || (escaped_baseline && kind >= 4);
 
-			snprintf(text, sizeof(text), "Style (Name %s) "
+			snprintf(text, sizeof(text), "Style (Name \"%s\") "
 				"BorderWidth 5, TitleFormat overlap-older %%n",
-				patterns[kind][0]);
+				quoted[0]);
 			command(exc, text);
-			snprintf(text, sizeof(text), "Style (Name %s) "
+			snprintf(text, sizeof(text), "Style (Name \"%s\") "
 				"BorderWidth 9, HandleWidth 11, "
 				"TitleFormat overlap-middle %%n",
-				patterns[kind][1]);
+				quoted[1]);
 			command(exc, text);
 			snprintf(text, sizeof(text),
-				"Style (Name %s) HandleWidth 7",
-				patterns[kind][0]);
+				"Style (Name \"%s\") HandleWidth 7",
+				quoted[0]);
 			command(exc, text);
 			for (unsigned pass = 0; pass < 2; pass++)
 			{
@@ -707,12 +728,12 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 			measuring = False;
 			visits = id_visits;
 			assert(visits ==
-				(baseline || reference || kind == 3 ? 3 : 2));
+				(old || reference || kind == 3 ? 3 : 2));
 			printf("STYLE_OVERLAP_WORK {\"case\":\"%s\","
 				"\"baseline\":%s,\"reference\":%s,"
 				"\"collision\":%s,\"rules\":%lu}\n",
 				labels[kind],
-				baseline ? "true" : "false",
+				old ? "true" : "false",
 				reference ? "true" : "false",
 				force_collision ? "true" : "false", visits);
 			/* Repeat and delete both selectors. */
@@ -720,8 +741,8 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 			for (unsigned which = 0; which < 2; which++)
 			{
 				snprintf(text, sizeof(text),
-					"DestroyStyle (Name %s)",
-					patterns[kind][which]);
+					"DestroyStyle (Name \"%s\")",
+					quoted[which]);
 				command(exc, text);
 			}
 			sample.name.name = (char *)names[kind][0];
@@ -729,6 +750,8 @@ static void overlap_work(const exec_context_t *exc, FvwmWindow *window)
 			assert(SGET_BORDER_WIDTH(style) == 3);
 			assert(SGET_HANDLE_WIDTH(style) == 3);
 			index_compare(&sample);
+			free(quoted[0]);
+			free(quoted[1]);
 		}
 	}
 	force_reference = saved;

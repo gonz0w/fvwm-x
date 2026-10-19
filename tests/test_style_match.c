@@ -728,7 +728,15 @@ static void overlap_policy(void)
 		{ "aa", "a??*" }, { "", "?*" },
 		{ "?a?", "?b?" }, { "a?b?", "a?c?" },
 		{ "ac", "a*b?*" }, { "abc", "a*d*c" },
-		{ "", "**" }, { "a", "a**" }
+		{ "", "**" }, { "a", "a**" },
+		{ "\\a?", "\\a??*" }, { "a?", "\\a??*" },
+		{ "\\?", "??" }, { "\\a?", "aaa" },
+		{ "\\?a?", "?b?" }, { "\\*a?", "?b?" },
+		{ "\\?", "a" }, { "\\*", "\\?" },
+		{ "\\\\a?", "?b?" }, { "\\", "?" },
+		{ "plain", "*\\other*" }, { "a", "\\a**" },
+		{ "", "*\\a" }, { "ab", "\\a*c" },
+		{ "\\?", "\\?" }
 	};
 
 	for (unsigned i = 0; i < sizeof(disjoint) / sizeof(*disjoint); i++)
@@ -820,6 +828,154 @@ static void overlap_languages(void)
 	assert(comparisons == 28900);
 	puts("overlap languages: 28900 pairs, "
 		"127 independent legacy witnesses");
+}
+
+static void escaped_overlap_languages(void)
+{
+	const char alphabet[] = "ab*?\\";
+	char patterns[156][4], value[5];
+	uint64_t witnesses[156][13] = { { 0 } };
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+	unsigned total = 0, comparisons = 0;
+
+	for (unsigned length = 0, count = 1; length <= 3; length++, count *= 5)
+	{
+		for (unsigned word = 0; word < count; word++)
+		{
+			unsigned bits = word;
+
+			for (unsigned i = 0; i < length; i++, bits /= 5)
+				patterns[total][i] = alphabet[bits % 5];
+			patterns[total++][length] = '\0';
+		}
+	}
+	assert(total == 156);
+	for (unsigned pattern = 0; pattern < total; pattern++)
+	{
+		unsigned ordinal = 0;
+
+		for (unsigned length = 0, count = 1;
+		     length <= 4; length++, count *= 5)
+		{
+			for (unsigned word = 0; word < count; word++)
+			{
+				unsigned bits = word;
+
+				for (unsigned i = 0; i < length; i++, bits /= 5)
+					value[i] = alphabet[bits % 5];
+				value[length] = '\0';
+				if (matchWildcards(patterns[pattern], value))
+					witnesses[pattern][ordinal / 64] |=
+						UINT64_C(1) << (ordinal % 64);
+				ordinal++;
+			}
+		}
+		assert(ordinal == 781);
+	}
+	for (unsigned field = 0; field < STYLE_MATCH_FIELDS; field++)
+	{
+		unsigned bit = 1U << field;
+
+		set_flags(&a, bit);
+		set_flags(&b, bit);
+		for (unsigned i = 0; i < total; i++)
+		{
+			a.name = a.class = a.resource = a.icon = patterns[i];
+			style_match_prepare(&ap, &a);
+			for (unsigned j = 0; j < total; j++)
+			{
+				bool common = false, may_overlap;
+				unsigned afixed, bfixed;
+
+				b.name = b.class = b.resource = b.icon =
+					patterns[j];
+				style_match_prepare(&bp, &b);
+				for (unsigned word = 0; word < 13; word++)
+					common |= (witnesses[i][word] &
+						witnesses[j][word]) != 0;
+				may_overlap = style_match_ids_may_overlap(
+					&a, &ap, &b, &bp);
+				assert(!common || may_overlap);
+				assert(may_overlap ==
+					style_match_ids_may_overlap(
+						&b, &bp, &a, &ap));
+				afixed = ap.literal | ap.fixed_width |
+					ap.escaped_fixed_width;
+				bfixed = bp.literal | bp.fixed_width |
+					bp.escaped_fixed_width;
+				/* Fixed pairs and literal membership have
+				 * complete witnesses in this finite domain. */
+				if ((afixed & bfixed & bit) ||
+				    ((ap.literal | bp.literal) & bit))
+					assert(may_overlap == common);
+				comparisons++;
+			}
+		}
+	}
+	assert(comparisons == 97344);
+	puts("escaped overlap languages: 97344 pairs, "
+		"781 independent legacy witnesses");
+}
+
+static void escaped_overlap_proof_budgets(void)
+{
+	char a_text[4099], b_text[4099], value[2050];
+	style_id_t a = { 0 }, b = { 0 };
+	style_match_patterns ap, bp;
+	style_match_subject subject;
+
+	set_flags(&a, 4);
+	set_flags(&b, 4);
+	for (unsigned i = 0; i < 4098; i += 2)
+	{
+		a_text[i] = b_text[i] = '\\';
+		a_text[i + 1] = b_text[i + 1] = 'a';
+	}
+	a_text[4095] = 'b';
+	a_text[4096] = b_text[4096] = '\0';
+	a.name = a_text;
+	b.name = b_text;
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(!style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	/* Decoded width fits, but the last raw token exceeds the allowance. */
+	a_text[4095] = 'a';
+	a_text[4096] = b_text[4096] = '\\';
+	a_text[4097] = 'b';
+	a_text[4098] = b_text[4098] = '\0';
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	memset(value, 'a', 2049);
+	value[2048] = 'b';
+	value[2049] = '\0';
+	style_match_subject_init(&subject, 1, value, value, value, value);
+	assert(style_match_id(&a, &ap, &subject));
+	assert(!style_match_id(&b, &bp, &subject));
+	/* Use raw bytes, not a decoded suffix width, in the retry product. */
+	memset(value, 'a', 60);
+	value[60] = '\0';
+	b_text[0] = '*';
+	for (unsigned i = 1; i < 81; i += 2)
+	{
+		b_text[i] = '\\';
+		b_text[i + 1] = 'x';
+	}
+	b_text[81] = '\0';
+	a.name = value;
+	style_match_prepare(&ap, &a);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	style_match_subject_init(&subject, 1, value, value, value, value);
+	assert(!style_match_id(&b, &bp, &subject) && !reference(&b, &subject));
+	/* A long star run cannot evade the bounded raw-width scan. */
+	memset(b_text, '*', 4096);
+	memcpy(b_text + 4096, "\\b", 3);
+	style_match_prepare(&bp, &b);
+	assert(style_match_ids_may_overlap(&a, &ap, &b, &bp));
+	assert(!style_match_id(&b, &bp, &subject));
+	puts("escaped overlap raw-byte and retry budgets: passed");
 }
 
 static void overlap_proof_budgets(void)
@@ -1019,6 +1175,8 @@ int main(void)
 	unnecessary_length_scans();
 	overlap_policy();
 	overlap_languages();
+	escaped_overlap_languages();
+	escaped_overlap_proof_budgets();
 	overlap_proof_budgets();
 	return 0;
 }

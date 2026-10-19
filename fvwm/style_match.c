@@ -552,18 +552,37 @@ static bool pattern_lengths_may_overlap(const style_match_patterns *a,
 	unsigned bit = 1U << field;
 	size_t a_minimum, b_minimum;
 
-	/* Only unescaped patterns have a prepared byte minimum. A literal
-	 * or question-only pattern also bounds the entire matching value. */
-	if (!((a->literal | a->unescaped) & bit) ||
-	    !((b->literal | b->unescaped) & bit))
+	/* Both wildcard families have decoded byte minima. A literal or
+	 * fixed-width pattern also bounds the entire matching value. */
+	if (!((a->literal | a->unescaped | a->escaped) & bit) ||
+	    !((b->literal | b->unescaped | b->escaped) & bit))
 		return true;
 	a_minimum = a->literal & bit ? a->prefix[field] : a->minimum[field];
 	b_minimum = b->literal & bit ? b->prefix[field] : b->minimum[field];
-	if (((a->literal | a->fixed_width) & bit) && a_minimum < b_minimum)
+	if (((a->literal | a->fixed_width | a->escaped_fixed_width) & bit) &&
+	    a_minimum < b_minimum)
 		return false;
-	if (((b->literal | b->fixed_width) & bit) && b_minimum < a_minimum)
+	if (((b->literal | b->fixed_width | b->escaped_fixed_width) & bit) &&
+	    b_minimum < a_minimum)
 		return false;
 	return true;
+}
+
+/* Fixed-width metadata proves that each token consumes one value byte. */
+static unsigned char fixed_pattern_byte(const char **pattern, bool *question)
+{
+	unsigned char byte = **pattern;
+
+	*question = byte == '?';
+	if (byte == '\\')
+	{
+		(*pattern)++;
+		byte = **pattern;
+		*question = false;
+	}
+	if (byte)
+		(*pattern)++;
+	return byte;
 }
 
 static bool fixed_patterns_may_overlap(const char *a,
@@ -571,11 +590,18 @@ static bool fixed_patterns_may_overlap(const char *a,
 	const style_match_patterns *bp, unsigned field)
 {
 	unsigned bit = 1U << field;
+	unsigned afixed =
+		ap->literal | ap->fixed_width | ap->escaped_fixed_width;
+	unsigned bfixed =
+		bp->literal | bp->fixed_width | bp->escaped_fixed_width;
+	const char *astart = a, *bstart = b;
 	size_t a_length, b_length;
 
-	if (!((ap->literal | ap->fixed_width) & bit) ||
-	    !((bp->literal | bp->fixed_width) & bit) ||
-	    !((ap->fixed_width | bp->fixed_width) & bit))
+	/* Equal literal pairs were decided by the initial spans. Retain
+	 * their existing fast path without decoding those bytes again. */
+	if (!(afixed & bfixed & bit) ||
+	    !((ap->fixed_width | ap->escaped_fixed_width |
+	       bp->fixed_width | bp->escaped_fixed_width) & bit))
 		return true;
 	a_length = ap->literal & bit ? ap->prefix[field] : ap->minimum[field];
 	b_length = bp->literal & bit ? bp->prefix[field] : bp->minimum[field];
@@ -583,11 +609,25 @@ static bool fixed_patterns_may_overlap(const char *a,
 		return false;
 	if (a_length > STYLE_OVERLAP_PROOF_WORK)
 		return true;
-	/* These unescaped patterns consume exactly one byte per position.
-	 * Two different literal bytes at one position cannot share a value. */
 	for (size_t i = 0; i < a_length; i++)
 	{
-		if (a[i] != '?' && b[i] != '?' && a[i] != b[i])
+		bool aq, bq;
+		unsigned char av, bv;
+
+		/* Bound raw-byte work as well as decoded positions. A quoted
+		 * token needs both bytes inside the proof allowance. */
+		if ((size_t)(a - astart) >= STYLE_OVERLAP_PROOF_WORK ||
+		    (size_t)(b - bstart) >= STYLE_OVERLAP_PROOF_WORK ||
+		    (*a == '\\' &&
+		     a - astart == STYLE_OVERLAP_PROOF_WORK - 1) ||
+		    (*b == '\\' &&
+		     b - bstart == STYLE_OVERLAP_PROOF_WORK - 1))
+			return true;
+		av = fixed_pattern_byte(&a, &aq);
+		bv = fixed_pattern_byte(&b, &bq);
+		/* A trailing escape describes no value. Quoted '?' and '*'
+		 * are literals; an unquoted question can bridge a byte. */
+		if (!av || !bv || (!aq && !bq && av != bv))
 			return false;
 	}
 	return true;
@@ -605,11 +645,24 @@ static bool literal_member_may_overlap(const char *literal, size_t length,
 	/* The final wildcard offset plus its literal tail is the raw width.
 	 * Bound additions before forming the conservative cursor-work product.
 	 * Division avoids overflow; normal matching is not capped. */
-	if (length >= STYLE_OVERLAP_PROOF_WORK ||
-	    offset >= STYLE_OVERLAP_PROOF_WORK ||
-	    tail >= STYLE_OVERLAP_PROOF_WORK - offset)
+	if (length >= STYLE_OVERLAP_PROOF_WORK)
 		return true;
-	width = offset + tail;
+	if (patterns->escaped & (1U << field))
+	{
+		/* Escaped suffix widths count decoded bytes. Bound the raw
+		 * pattern before using it in the retry product. */
+		for (width = 0; width < STYLE_OVERLAP_PROOF_WORK &&
+		     pattern[width]; width++);
+		if (width == STYLE_OVERLAP_PROOF_WORK)
+			return true;
+	}
+	else
+	{
+		if (offset >= STYLE_OVERLAP_PROOF_WORK ||
+		    tail >= STYLE_OVERLAP_PROOF_WORK - offset)
+			return true;
+		width = offset + tail;
+	}
 	if (width + 1 > STYLE_OVERLAP_PROOF_WORK / (length + 1))
 		return true;
 	/* The literal describes exactly one possible field value. Reuse the
@@ -658,14 +711,14 @@ static bool pattern_spans_may_overlap(const char *a,
 	}
 	if (!fixed_patterns_may_overlap(a, ap, b, bp, field))
 		return false;
-	/* Fixed-width pairs were decided above. An escaped pattern retains
-	 * the conservative result and never enters a recursive proof here. */
-	if ((ap->literal & bit) && (bp->unescaped & bit) &&
-	    !(bp->fixed_width & bit))
+	/* Fixed-width pairs were decided above. Bounded membership reuses
+	 * the prepared matcher and its constant-stack escaped cursors. */
+	if ((ap->literal & bit) && ((bp->unescaped | bp->escaped) & bit) &&
+	    !((bp->fixed_width | bp->escaped_fixed_width) & bit))
 		return literal_member_may_overlap(a, ap->prefix[field],
 			b, bp, field);
-	if ((bp->literal & bit) && (ap->unescaped & bit) &&
-	    !(ap->fixed_width & bit))
+	if ((bp->literal & bit) && ((ap->unescaped | ap->escaped) & bit) &&
+	    !((ap->fixed_width | ap->escaped_fixed_width) & bit))
 		return literal_member_may_overlap(b, bp->prefix[field],
 			a, ap, field);
 	return true;

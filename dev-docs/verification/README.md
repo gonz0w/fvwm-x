@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Incremental style indexes](VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md): three related maintenance improvements; focused checks pass, combined qualification pending.
+- [Incremental style indexes](VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md): three related maintenance improvements; one broad checkpoint plus three unchanged isolated controls; original failure and known required CI/SVG/install gaps remain documented.
 
 - [Style command ownership](VERIFICATION-2026-10-19-STYLE-COMMAND-OWNERSHIP.md):
   three related fixes; composed broad/fixture checkpoint passes; required CI/SVG/install gaps remain.

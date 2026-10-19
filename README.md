@@ -12,16 +12,10 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-Style [simplification](dev-docs/verification/VERIFICATION-2026-10-16-STYLE-SIMPLIFICATION.md),
-[candidate lookup](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-LOOKUP.md)
-and [subject work](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-SUBJECT.md)
-have merged with combined six-target checkpoints.
-[Build reuse](dev-docs/verification/VERIFICATION-2026-10-18-DEVELOPMENT-BUILD-REUSE.md)
-now shares test objects and narrows style dependencies.
-[Selector proofs](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-OVERLAP.md)
-and [escaped matching](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-ESCAPED.md)
-are merged. Three [escaped selector proofs](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md)
-pass; the prior SVG/install gap remains.
+Three [EWMH atom improvements](dev-docs/verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md)
+pass focused checks; the combined checkpoint is pending.
+The merged [style selector checkpoint](dev-docs/verification/VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md)
+retains the known OpenBSD AMD64 SVG/install gap.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

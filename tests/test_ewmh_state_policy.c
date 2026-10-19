@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "fvwm/ewmh_client_list.h"
 #include "fvwm/ewmh_atom_index.h"
 
@@ -77,6 +78,44 @@ static void test_atom_index(void)
 		"passed");
 }
 
+static void test_atom_names(void)
+{
+	ewmh_atom_name_entry entries[128], original[128];
+	const char *names[] = { "", "a", "aa", "z", "_NET_WM_STATE",
+		"_NET_WM_WINDOW_TYPE_NOTIFICATION", "\377" };
+	unsigned state = 0x7a5f1921U;
+
+	assert(ewmh_atom_name_find(NULL, 0, "") == NULL);
+	for (size_t count = 0; count <= 128; count++)
+	{
+		for (size_t i = 0; i < count; i++)
+		{
+			state = state * 1664525U + 1013904223U;
+			entries[i].name = names[state % 7];
+			entries[i].order = i;
+			entries[i].value = &original[i];
+			original[i] = entries[i];
+		}
+		ewmh_atom_name_sort(entries, count);
+		for (size_t key = 0; key < 8; key++)
+		{
+			const char *name = key == 7 ? "missing" : names[key];
+			void *expected = NULL;
+
+			for (size_t i = 0; i < count; i++)
+				if (strcmp(original[i].name, name) == 0)
+				{
+					expected = original[i].value;
+					break;
+				}
+			assert(ewmh_atom_name_find(entries, count, name) ==
+				expected);
+		}
+	}
+	puts("atom name differential empty/byte/duplicate/miss/rebuild: "
+		"passed");
+}
+
 int main(void)
 {
 	ewmh_client_list list;
@@ -127,5 +166,6 @@ int main(void)
 	assert(releases == 1);
 	puts("finish is idempotent and fresh empty owner is reusable: passed");
 	test_atom_index();
+	test_atom_names();
 	return 0;
 }

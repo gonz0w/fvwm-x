@@ -99,7 +99,7 @@ KstItem *ewmh_KstWinList = NULL;
  */
 #define ENTRY(name, type, func) {name, None, type, func}
 
-/* WARNING: lists must be in "name" alphabetic order! */
+/* Table order defines duplicate priority and supported-atom publication. */
 
 /* EWMH_ATOM_LIST_CLIENT_ROOT
  * net atoms that can be send (Client Message) by a client and do not
@@ -277,6 +277,7 @@ enum { EWMH_ATOM_CAPACITY = (
 static struct
 {
 	ewmh_atom_index_entry entries[2 * EWMH_ATOM_CAPACITY];
+	ewmh_atom_name_entry names[2 * EWMH_ATOM_CAPACITY];
 	struct { size_t start, count; } lists[EWMH_ATOM_LIST_END];
 	Bool ready;
 } ewmh_atom_lookup;
@@ -295,7 +296,11 @@ static void prepare_atom_lookup(void)
 		{
 			ewmh_atom_index_entry value = {
 				entry->atom, count, entry };
+			ewmh_atom_name_entry name = {
+				entry->name, count, entry };
 
+			ewmh_atom_lookup.names[count] = name;
+			ewmh_atom_lookup.names[scoped] = name;
 			ewmh_atom_lookup.entries[count++] = value;
 			ewmh_atom_lookup.entries[scoped++] = value;
 		}
@@ -307,6 +312,9 @@ static void prepare_atom_lookup(void)
 	for (unsigned i = 0; i < EWMH_ATOM_LIST_END; i++)
 	{
 		ewmh_atom_index_sort(ewmh_atom_lookup.entries +
+			ewmh_atom_lookup.lists[i].start,
+			ewmh_atom_lookup.lists[i].count);
+		ewmh_atom_name_sort(ewmh_atom_lookup.names +
 			ewmh_atom_lookup.lists[i].start,
 			ewmh_atom_lookup.lists[i].count);
 	}
@@ -359,38 +367,28 @@ static void EWMH_DLOG(char *msg, ...)
  * Atoms utilities
  */
 
-static
-int compare(const void *a, const void *b)
-{
-	return (strcmp((char *)a, ((ewmh_atom *)b)->name));
-}
-
-static
-ewmh_atom *get_ewmh_atom_by_name(
+static ewmh_atom *get_ewmh_atom_by_name(
 	const char *atom_name, ewmh_atom_list_name list_name)
 {
-	ewmh_atom *a = NULL;
-	Bool done = 0;
-	int i = 0;
-
-	while(!done && atom_list[i].name != EWMH_ATOM_LIST_END)
+	if ((unsigned)list_name >= EWMH_ATOM_LIST_END)
+		return NULL;
+	if (ewmh_atom_lookup.ready)
+		return ewmh_atom_name_find(ewmh_atom_lookup.names +
+			ewmh_atom_lookup.lists[list_name].start,
+			ewmh_atom_lookup.lists[list_name].count, atom_name);
+	/* Reentrant interning sees original records while indexes are absent.
+	 * Do not depend on table name order (window types are not sorted). */
+	for (unsigned i = 0; i < NUMBER_OF_ATOM_LISTS; i++)
 	{
-		if (atom_list[i].name == list_name ||
-		    list_name == EWMH_ATOM_LIST_ALL)
-		{
-			a = (ewmh_atom *)bsearch(
-				atom_name, atom_list[i].list,
-				atom_list[i].size - 1, sizeof(ewmh_atom),
-				compare);
-			if (a != NULL || list_name != EWMH_ATOM_LIST_ALL)
-			{
-				done = 1;
-			}
-		}
-		i++;
+		if (list_name != EWMH_ATOM_LIST_ALL &&
+		    list_name != atom_list[i].name)
+			continue;
+		for (ewmh_atom *entry = atom_list[i].list;
+		     entry->name != NULL; entry++)
+			if (strcmp(entry->name, atom_name) == 0)
+				return entry;
 	}
-
-	return a;
+	return NULL;
 }
 
 static ewmh_atom *find_atom_in_tables(Atom atom,
@@ -1805,11 +1803,10 @@ void EWMH_WindowDestroyed(void)
 /*
  * Init Stuff
  */
-static int set_all_atoms(void)
+static int set_all_atoms(Atom *atoms)
 {
 	enum { capacity = 1 + EWMH_ATOM_CAPACITY };
 	char *names[capacity];
-	Atom atoms[capacity];
 	int count = 1;
 
 	/* Also reset on reinitialization; an intern fallback observes the same
@@ -1844,31 +1841,6 @@ static int set_all_atoms(void)
 }
 
 static
-void set_net_supported(int l)
-{
-	Atom *supported;
-	int i, k = 0;
-
-	supported = fxmalloc(l*sizeof(Atom));
-	for(i=0; i < NUMBER_OF_ATOM_LISTS; i++)
-	{
-		ewmh_atom *list = atom_list[i].list;
-		while(list->name != NULL)
-		{
-			supported[k++] = list->atom;
-			list++;
-		}
-	}
-
-	ewmh_ChangeProperty(
-		Scr.Root, "_NET_SUPPORTED", EWMH_ATOM_LIST_FVWM_ROOT,
-		(unsigned char *)supported, k);
-	free(supported);
-
-	return;
-}
-
-static
 void clean_up(void)
 {
 	ewmh_ChangeProperty(
@@ -1880,6 +1852,7 @@ void clean_up(void)
 
 void EWMH_Init(struct monitor *m)
 {
+	Atom atoms[1 + EWMH_ATOM_CAPACITY];
 	int supported_count;
 	long val;
 	XTextProperty text;
@@ -1888,10 +1861,15 @@ void EWMH_Init(struct monitor *m)
 	XClassHint classhints;
 
 	/* initialisation of all the atoms */
-	supported_count = set_all_atoms();
+	supported_count = set_all_atoms(atoms);
 
 	/* the laws that we respect */
-	set_net_supported(supported_count);
+	/* Reuse the operation-owned intern result in original table order,
+	 * including duplicate names and None from the fallback path. Xlib
+	 * consumes the bytes before this initialization frame returns. */
+	ewmh_ChangeProperty(
+		Scr.Root, "_NET_SUPPORTED", EWMH_ATOM_LIST_FVWM_ROOT,
+		(unsigned char *)(atoms + 1), supported_count);
 
 	/*  use the Scr.NoFocusWin as the WM_CHECK window */
 	val = Scr.NoFocusWin;

@@ -31,6 +31,42 @@ static Atom client_atom, stack_atom;
 static Atom published[4];
 static FvwmWindow windows[256];
 
+static Bool checking_name, startup_counting;
+static unsigned name_comparisons, deleted, startup_allocations, sort_calls;
+static Atom deleted_atom;
+static unsigned supported_publications;
+static void atom_names(Bool reentrant);
+
+int __real_strcmp(const char *, const char *);
+int __wrap_strcmp(const char *left, const char *right)
+{
+	name_comparisons += checking_name;
+	return __real_strcmp(left, right);
+}
+
+int __real_XDeleteProperty(Display *, Window, Atom);
+int __wrap_XDeleteProperty(Display *display, Window window, Atom atom)
+{
+	if (checking_name)
+	{
+		deleted++;
+		deleted_atom = atom;
+		return 0;
+	}
+	return __real_XDeleteProperty(display, window, atom);
+}
+
+void __real_ewmh_atom_index_sort(ewmh_atom_index_entry *, size_t);
+void __wrap_ewmh_atom_index_sort(ewmh_atom_index_entry *entries, size_t count)
+{
+	__real_ewmh_atom_index_sort(entries, count);
+	if (++sort_calls % EWMH_ATOM_LIST_END == 0)
+	{
+		startup_counting = True;
+		startup_allocations = 0;
+	}
+}
+
 static unsigned atom_generation;
 static ewmh_atom *reference_atom(Atom atom, ewmh_atom_list_name selected);
 Status __real_XInternAtoms(Display *, char **, int, Bool, Atom *);
@@ -56,6 +92,7 @@ Status __wrap_XInternAtoms(Display *display, char **names, int count,
 		for (unsigned list = 0; list < EWMH_ATOM_LIST_END; list++)
 			assert(ewmh_GetEwmhAtomByAtom(None, list) ==
 				reference_atom(None, list));
+		atom_names(True);
 		atom_generation++;
 	}
 	status = __real_XInternAtoms(display, names, count, exists, values);
@@ -81,6 +118,7 @@ void *__real_malloc(size_t);
 void *__real_realloc(void *, size_t);
 void *__wrap_malloc(size_t bytes)
 {
+	startup_allocations += startup_counting;
 	if (measuring)
 	{
 		allocations++;
@@ -91,6 +129,7 @@ void *__wrap_malloc(size_t bytes)
 }
 void *__wrap_realloc(void *old, size_t bytes)
 {
+	startup_allocations += startup_counting;
 	if (measuring)
 	{
 		allocations++;
@@ -119,6 +158,27 @@ int __real_XChangeProperty(Display *, Window, Atom, Atom, int, int,
 int __wrap_XChangeProperty(Display *display, Window window, Atom property,
 	Atom type, int format, int mode, const unsigned char *data, int length)
 {
+	if (startup_counting)
+	{
+		unsigned count = 0;
+
+		startup_counting = False;
+		assert(property == XInternAtom(
+			display, "_NET_SUPPORTED", False));
+		assert(window == Scr.Root && format == 32 && type == XA_ATOM);
+		assert(mode == PropModeReplace);
+		for (ewmh_atom_list *list = atom_list; list->list; list++)
+			for (ewmh_atom *entry = list->list;
+			     entry->name; entry++)
+			{
+				assert(count < (unsigned)length);
+				assert(((const Atom *)data)[count++] ==
+					entry->atom);
+			}
+		assert(count == (unsigned)length);
+		assert(startup_allocations == 0);
+		supported_publications++;
+	}
 	if (measuring && (property == client_atom || property == stack_atom))
 	{
 		assert(publications < 4 && format == 32 && type == XA_WINDOW);
@@ -422,12 +482,254 @@ static ewmh_atom *reference_atom(Atom atom, ewmh_atom_list_name selected)
 	return NULL;
 }
 
+static ewmh_atom *reference_name(const char *name,
+	ewmh_atom_list_name selected)
+{
+	for (ewmh_atom_list *list = atom_list; list->list; list++)
+	{
+		if (selected != EWMH_ATOM_LIST_ALL && selected != list->name)
+			continue;
+		for (ewmh_atom *entry = list->list;
+			     entry->name; entry++)
+			if (strcmp(name, entry->name) == 0)
+				return entry;
+	}
+	return NULL;
+}
+
+static int reference_compare_name(const void *key, const void *entry)
+{
+	/* Explicit counted call: strcmp purity can hoist reference work out
+	 * of the measurement window even when its return value is used. */
+	return __wrap_strcmp(key, ((const ewmh_atom *)entry)->name);
+}
+
+static ewmh_atom *legacy_name(const char *name,
+	ewmh_atom_list_name selected)
+{
+	for (ewmh_atom_list *list = atom_list; list->list; list++)
+	{
+		ewmh_atom *entry;
+
+		if (selected != EWMH_ATOM_LIST_ALL && selected != list->name)
+			continue;
+		entry = bsearch(name, list->list, list->size - 1,
+			sizeof(*entry), reference_compare_name);
+		if (entry)
+			return entry;
+	}
+	return NULL;
+}
+
+static void check_name(const char *name, ewmh_atom_list_name selected)
+{
+	ewmh_atom *expected = reference_name(name, selected);
+
+	deleted = 0;
+	checking_name = True;
+	ewmh_DeleteProperty(Scr.NoFocusWin, name, selected);
+	checking_name = False;
+	assert(deleted == (expected != NULL));
+	if (expected)
+		assert(deleted_atom == expected->atom);
+}
+
+static void atom_names(Bool reentrant)
+{
+	unsigned queries = 0, legacy_misses = 0;
+
+	for (unsigned selected = 0; selected <= EWMH_ATOM_LIST_END;
+	     selected++)
+	{
+		for (ewmh_atom_list *list = atom_list; list->list; list++)
+			for (ewmh_atom *entry = list->list;
+			     entry->name; entry++)
+			{
+				check_name(entry->name, selected);
+				queries++;
+				legacy_misses += reference_name(entry->name,
+					selected) != legacy_name(
+					entry->name, selected);
+			}
+		check_name("", selected);
+		check_name("_FVWM_STATE_NAME_MISSING", selected);
+		check_name("\377", selected);
+		check_name("_NET_WM_WINDOW_TYPE_NOTIFICATIONx", selected);
+	}
+	check_name("_NET_WM_STATE", (ewmh_atom_list_name)-1);
+	if (!reentrant)
+	{
+		const char *keys[] = { "_NET_WORKAREA", "_NET_WM_PID",
+			"_FVWM_STATE_NAME_MISSING", "_NET_CURRENT_DESKTOP" };
+		unsigned capacity = 0;
+
+		for (unsigned key = 0; key < 4; key++)
+		{
+			unsigned indexed, legacy;
+			ewmh_atom *expected = reference_name(keys[key],
+				EWMH_ATOM_LIST_ALL);
+
+			name_comparisons = 0;
+			for (unsigned i = 0; i < 64; i++)
+				check_name(keys[key], EWMH_ATOM_LIST_ALL);
+			indexed = name_comparisons;
+			name_comparisons = 0;
+			checking_name = True;
+			for (unsigned i = 0; i < 64; i++)
+				assert(legacy_name(keys[key],
+					EWMH_ATOM_LIST_ALL)
+					== expected);
+			checking_name = False;
+			legacy = name_comparisons;
+			printf("STATE_NAME {\"key\":%u,\"indexed\":%u,"
+				"\"legacy\":%u}\n", key, indexed, legacy);
+			fflush(stdout);
+			if (key < 3)
+				assert(indexed < legacy);
+		}
+
+		for (ewmh_atom_list *list = atom_list; list->list; list++)
+			capacity += list->size;
+		printf("STATE_NAME_COVERAGE {\"queries\":%u,"
+			"\"legacy_misses\":%u,\"metadata_bytes\":%zu}\n",
+			queries, legacy_misses,
+			2 * capacity * sizeof(ewmh_atom_name_entry));
+		puts("atom names scoped/all/duplicate/unsorted/reentrant: "
+			"passed");
+	}
+}
+
+static int compare_duplicate(const void *key, const void *value)
+{
+	Atom atom = *(const Atom *)key;
+	const ewmh_atom_index_entry *entry = value;
+
+	return (atom > entry->atom) - (atom < entry->atom);
+}
+
+static void duplicate_atoms(void)
+{
+	for (size_t count = 128; count <= 65536; count *= 16)
+	{
+		ewmh_atom_index_entry *entries =
+			malloc(count * sizeof(*entries));
+		Atom atom = None;
+		unsigned bound = 1;
+		uint64_t start, indexed, legacy;
+		size_t visits = 0;
+
+		assert(entries);
+		for (size_t n = count; n; n /= 2)
+			bound++;
+		for (size_t i = 0; i < count; i++)
+			entries[i] = (ewmh_atom_index_entry){
+				atom, i, entries + i };
+		start = now_ns();
+		for (unsigned i = 0; i < 64; i++)
+			assert(ewmh_atom_index_find(entries, count, atom) ==
+				entries);
+		indexed = now_ns() - start;
+		start = now_ns();
+		for (unsigned i = 0; i < 64; i++)
+		{
+			ewmh_atom_index_entry *entry = bsearch(&atom, entries,
+				count, sizeof(*entries), compare_duplicate);
+
+			assert(entry);
+			while (entry != entries && entry[-1].atom == atom)
+			{
+				entry--;
+				visits++;
+			}
+			assert(entry->value == entries);
+		}
+		legacy = now_ns() - start;
+		printf("STATE_DUPLICATE {\"count\":%zu,\"repeats\":64,"
+			"\"legacy_rewind_visits\":%zu,\"comparison_bound\":%u,"
+			"\"indexed_ns\":%llu,\"legacy_ns\":%llu}\n", count,
+			visits, bound, (unsigned long long)indexed,
+			(unsigned long long)legacy);
+		free(entries);
+	}
+	puts("atom duplicate lower-bound priority: passed");
+}
+
+static void check_supported(void)
+{
+	Atom type, property = XInternAtom(dpy, "_NET_SUPPORTED", False);
+	int format;
+	unsigned long length, remaining;
+	unsigned char *bytes = NULL;
+	Atom *reference;
+	unsigned count = 0;
+
+	assert(XGetWindowProperty(dpy, Scr.Root, property, 0, 1024, False,
+		XA_ATOM, &type, &format, &length, &remaining, &bytes)
+		== Success);
+	assert(type == XA_ATOM && format == 32 && !remaining && length);
+	/* Execute the preceding publisher's allocation/copy with its supplied
+	 * count; compare the resulting vector against the server's property. */
+	allocations = 0;
+	measuring = True;
+	reference = __wrap_malloc(length * sizeof(*reference));
+	measuring = False;
+	assert(reference && allocations == 1);
+	for (ewmh_atom_list *list = atom_list; list->list; list++)
+		for (ewmh_atom *entry = list->list;
+			     entry->name; entry++)
+		{
+			assert(count < length);
+			reference[count++] = entry->atom;
+		}
+	assert(count == length);
+	assert(memcmp(reference, bytes, length * sizeof(*reference)) == 0);
+	printf("STATE_SUPPORTED {\"generation\":%u,\"atoms\":%u,"
+		"\"allocations\":%u,\"reference_allocations\":%u,"
+		"\"reference_copy_visits\":%u}\n", atom_generation, count,
+		startup_allocations, allocations, count);
+	free(reference);
+	XFree(bytes);
+}
+
+static void name_properties(void)
+{
+	Window window = XCreateSimpleWindow(dpy, Scr.Root, 0, 0, 1, 1,
+		0, 0, 0);
+	unsigned long value = 1234;
+	const char text[] = "probe";
+	int size = -1;
+	void *bytes;
+
+	ewmh_ChangeProperty(window, "_NET_WM_PID", EWMH_ATOM_LIST_ALL,
+		(unsigned char *)&value, 1);
+	bytes = ewmh_AtomGetByName(window, "_NET_WM_PID",
+		EWMH_ATOM_LIST_FIXED_PROPERTY, &size);
+	assert(bytes && size == 4 && *(uint32_t *)bytes == value);
+	free(bytes);
+	ewmh_DeleteProperty(window, "_NET_WM_PID", EWMH_ATOM_LIST_ALL);
+	bytes = ewmh_AtomGetByName(window, "_NET_WM_PID",
+		EWMH_ATOM_LIST_FIXED_PROPERTY, &size);
+	assert(bytes == NULL && size == 0);
+	ewmh_ChangeProperty(window, "_NET_WM_NAME",
+		EWMH_ATOM_LIST_PROPERTY_NOTIFY, (unsigned char *)text, 5);
+	bytes = ewmh_AtomGetByName(window, "_NET_WM_NAME",
+		EWMH_ATOM_LIST_ALL, &size);
+	assert(bytes && size == 5 && memcmp(bytes, text, 5) == 0);
+	free(bytes);
+	bytes = ewmh_AtomGetByName(window, "_NET_WM_NAME",
+		EWMH_ATOM_LIST_END, &size);
+	assert(bytes == NULL && size == 0);
+	XDestroyWindow(dpy, window);
+	puts("atom named property cardinal/UTF8/read/delete/invalid: passed");
+}
+
 static void atoms(struct monitor *monitor)
 {
 	Atom missing = XInternAtom(dpy, "_FVWM_STATE_PROBE_MISSING", False);
 
 	for (unsigned pass = 0; pass < 2; pass++)
 	{
+		check_supported();
 		for (unsigned selected = 0; selected < EWMH_ATOM_LIST_END + 1;
 		     selected++)
 		{
@@ -466,6 +768,7 @@ static void atoms(struct monitor *monitor)
 		/* Rebuild the same owner, including duplicated names. */
 		EWMH_Init(monitor);
 	}
+	check_supported();
 	puts("atom scoped/all priority/miss/None/reinitialization: passed");
 }
 
@@ -494,7 +797,11 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 		monitor->si->x + 11);
 	puts("destruction publication and query refresh barriers: passed");
 	configure_windows(0, 0, monitor);
+	name_properties();
+	atom_names(False);
+	duplicate_atoms();
 	atoms(monitor);
+	assert(supported_publications == 3);
 	puts("ewmh state publication: passed");
 	fflush(stdout);
 	_exit(0);

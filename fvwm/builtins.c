@@ -2087,7 +2087,8 @@ reset_decor_changes(void)
 void
 update_fvwm_colorset(int cset)
 {
-	Scr.flags.do_need_window_update = 1;
+	/* Menus update through their own owner. Styles and decors mark the
+	 * global pass only when referenced; existing pending work stays set. */
 
 	UpdateMenuColorset(cset);
 	update_style_colorset(cset);

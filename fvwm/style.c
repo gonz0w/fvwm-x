@@ -5461,6 +5461,18 @@ void reset_style_changes(void)
 	return;
 }
 
+/* Border styles own eight actual colorset references, including any
+ * zero-filled remainder of a partial configuration. */
+static Bool border_colorset_uses(const int colorsets[BP_SIZE], int colorset)
+{
+	for (int i = 0; i < BP_SIZE; i++)
+	{
+		if (colorsets[i] == colorset)
+			return True;
+	}
+	return False;
+}
+
 /* Mark styles as updated if their colorset changed. */
 void update_style_colorset(int colorset)
 {
@@ -5485,13 +5497,17 @@ void update_style_colorset(int colorset)
 				temp->change_mask.use_colorset_hi = 1;
 				Scr.flags.do_need_window_update = 1;
 			}
-			if (SUSE_BORDER_COLORSET(&temp->flags))
+			if (SUSE_BORDER_COLORSET(&temp->flags) &&
+			    border_colorset_uses(temp->border_colorset,
+				colorset))
 			{
 				temp->has_style_changed = 1;
 				temp->change_mask.use_border_colorset = 1;
 				Scr.flags.do_need_window_update = 1;
 			}
-			if (SUSE_BORDER_COLORSET_HI(&temp->flags))
+			if (SUSE_BORDER_COLORSET_HI(&temp->flags) &&
+			    border_colorset_uses(temp->border_colorset_hi,
+				colorset))
 			{
 				temp->has_style_changed = 1;
 				temp->change_mask.use_border_colorset_hi = 1;

@@ -1433,6 +1433,11 @@ This can sometimes lead to unwanted effects.
 To force that all pending changes are applied immediately, use the
 *UpdateStyles*, *Refresh* or *RefreshWindow* commands.
 
+A colorset change schedules a global window update when a style or decoration
+references that colorset. An unused or menu-only colorset does not force a
+global window pass. Menu updates retain their own immediate update path, and
+other pending style changes still apply at the boundaries described above.
+
 == QUOTING
 
 Quotes are required only when needed to make fvwm consider two or more

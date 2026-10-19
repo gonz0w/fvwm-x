@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Style update work](VERIFICATION-2026-10-19-STYLE-UPDATE-WORK.md): three related improvements; focused qualification in progress.
+
 - [Shared wildcard matching](VERIFICATION-2026-10-19-SHARED-WILDCARDS.md): STYLE-01, three related families; affected combined checkpoint passes with retained CI/SVG/install gaps.
 
 - [Escaped selector disjointness](VERIFICATION-2026-10-18-STYLE-ESCAPED-OVERLAP.md): three proofs pass original 1991 standard/437 optional executed entries plus 40 final affected entries; the required SVG omission/install gap remains explicit.

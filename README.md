@@ -12,9 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-Three [shared wildcard improvements](dev-docs/verification/VERIFICATION-2026-10-19-SHARED-WILDCARDS.md)
-pass their combined affected checks; known OpenBSD CI/SVG/install gaps remain.
-[Style field work](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-FIELDS.md)
+Three [style update improvements](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-UPDATE-WORK.md)
+are in focused qualification; one combined checkpoint follows.
+[Shared wildcard work](dev-docs/verification/VERIFICATION-2026-10-19-SHARED-WILDCARDS.md)
 is merged, retaining the known OpenBSD CI/SVG/install gaps.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release

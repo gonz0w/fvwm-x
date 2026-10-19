@@ -833,3 +833,16 @@ Known subject lengths can reject impossible fields before comparing their bytes;
 unknown lengths stay lazy. Cursor/escaped-span walks reuse the verified raw
 prefix, whose raw/decoded widths agree. These are synchronous borrowed-identity
 operations; rule/update/publication order and retained metadata owners remain.
+
+
+## Command and update layout ownership
+
+`fvwm.h` exposes a borrowed `cmdparser_context_t` pointer; `cmdparser.h` defines
+its fields only for parsing, expansion and the command engine. Complex-function
+records belong to `functions.c` / `functable_complex.c` through
+`functable_complex_types.h`; the existing API retains opaque pointers.
+`update.h` retains update APIs and a plan forward declaration. Only `style.c`
+and `update.c` import `update_types.h` for the complete operation-owned plan.
+No record fields, command behavior, update barriers or configuration change.
+The [affected checkpoint](verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md) measures actual layout-header dependencies
+and verifies exact native allocated-section parity across ten profiles.

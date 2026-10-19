@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Command/update type boundaries](VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md): three dependency improvements; 100 affected six-target entries, exact native code/data parity and ten scoped installs, retaining PR120 runtime evidence/gaps.
+
 - [Style index retention](VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md): live-domain counts, empty table release and smaller category records; combined checkpoint passes; required OpenBSD CI/SVG/install gaps remain.
 
 - [Style type dependency boundaries](VERIFICATION-2026-10-19-STYLE-TYPE-BOUNDARIES.md): smaller style-record/metadata fanout, standalone selector types and private owning lists; 70 affected native passes and production section parity support retained runtime evidence.

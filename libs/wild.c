@@ -15,79 +15,74 @@
 
 #include "config.h"
 
-#include <stdio.h>
+#include <stddef.h>
+#include <string.h>
 
 #include "wild.h"
 
-/*
- *      Does `string' match `pattern'? '*' in pattern matches any sub-string
- *      (including the null string) '?' matches any single char. For use
- *      by filenameforall. Note that '*' matches across directory boundaries
- *
- *      This code donated by  Paul Hudson <paulh@harlequin.co.uk>
- *      It is public domain, no strings attached. No guarantees either.
- *
- */
+/* Keep the original NULL and exhaustion rules. In particular, "**" does
+ * not match empty text, and a final escape cannot consume a terminator. */
 int matchWildcards(const char *pattern, const char *string)
 {
-	if(string == NULL)
-	{
-		if(pattern == NULL)
-			return 1;
-		else if(strcmp(pattern,"*")==0)
-			return 1;
-		else
-			return 0;
-	}
-	if(pattern == NULL)
+	const char *retry_pattern = NULL, *retry_string = NULL;
+
+	if (string == NULL)
+		return pattern == NULL || strcmp(pattern, "*") == 0;
+	if (pattern == NULL)
 		return 1;
 
-	while (*string && *pattern)
+	/* A leading star followed by a nonempty literal must end at the
+	 * subject's end. No escaping or empty-tail rule is involved here. */
+	if (*pattern == '*' && pattern[1])
 	{
-		if (*pattern == '?')
+		size_t width = strcspn(pattern + 1, "*?\\");
+
+		if (!pattern[width + 1])
 		{
-			/* match any character */
-			pattern += 1;
-			string += 1;
+			size_t length = strlen(string);
+
+			return length >= width &&
+				strcmp(string + length - width, pattern + 1) == 0;
 		}
-		else if (*pattern == '*')
+	}
+
+	while (*string)
+	{
+		if (*pattern == '*')
 		{
-			/* see if the rest of the pattern matches any trailing
-			 * substring of the string. */
-			pattern += 1;
-			if (*pattern == 0)
+			pattern++;
+			if (!*pattern)
+				return 1;
+			retry_pattern = pattern;
+			retry_string = string;
+		}
+		else
+		{
+			const char *literal = pattern;
+			int question = *literal == '?';
+
+			if (*literal == '\\')
 			{
-				return 1; /* trailing * must match rest */
+				literal++;
+				question = 0;
 			}
-			while (*string)
+			if (*literal && (question || *literal == *string))
 			{
-				if (matchWildcards(pattern,string))
-				{
-					return 1;
-				}
+				pattern = literal + 1;
 				string++;
 			}
-			return 0;
-		}
-		else
-		{
-			if (*pattern == '\\')
+			else if (retry_pattern)
 			{
-				/* has strange, but harmless effects if the
-				 * last character is a '\\' */
-				pattern ++;
+				/* The latest star owns the retry. Its saved text
+				 * never passes the current non-NUL byte, so this
+				 * increment can reach, but not pass, the terminator.
+				 * No recursive frame or heap state is retained. */
+				pattern = retry_pattern;
+				string = ++retry_string;
 			}
-			if  (*pattern++ != *string++)
-			{
+			else
 				return 0;
-			}
 		}
 	}
-	if((*pattern == 0)&&(*string == 0))
-		return 1;
-	if((*string == 0)&&(strcmp(pattern,"*")==0))
-		return 1;
-
-	return 0;
+	return !*pattern || (*pattern == '*' && !pattern[1]);
 }
-

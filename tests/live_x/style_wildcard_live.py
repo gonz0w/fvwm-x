@@ -170,6 +170,29 @@ def client_checks(args):
             evidence['simplification'].append({
                 'case': label, 'selected': selected, 'other': other,
                 'applied_width': 5, 'removed_width': 3})
+        evidence['shared_conditions'] = []
+        conditions = [
+            ('suffix-hit', '*probe', 13),
+            ('suffix-miss', '*prope', 3),
+            ('plain-hit', 'FVWM**probe', 13),
+            ('plain-miss', 'FVWM*a*a*a*absent', 3),
+            ('escaped-hit', r'FVWM*\\probe', 13),
+            ('escaped-miss', r'FVWM*\\?probe', 3),
+            ('legacy-empty-tail', 'FVWM*probe**', 3),
+            ('deep-plain', 'FVWM' + '*'*512 + '?probe', 13),
+            ('deep-escaped', r'FVWM\\ t' + '*'*512 + '?probe', 13),
+        ]
+        for label, pattern, width in conditions:
+            connection.send((f'All ("{pattern}") WindowStyle '
+                'BorderWidth 13, HandleWidth 13\nUpdateStyles\n').encode())
+            connection.echo('condition-' + label + '-applied')
+            check(width)
+            connection.send((f'WindowId {client.window} DestroyWindowStyle\n'
+                'UpdateStyles\n').encode())
+            connection.echo('condition-' + label + '-removed')
+            check(3)
+            evidence['shared_conditions'].append({'case': label,
+                'applied_width': width, 'removed_width': 3})
         evidence['status'] = 'passed'
     finally:
         # Persist partial observations before potentially blocking X cleanup.

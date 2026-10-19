@@ -93,6 +93,13 @@ if golang.found() and get_option('live-x-tests') and host_machine.system() in ['
     )
 endif
 
+wild_test = executable(
+    'test-wild', ['test_wild.c', '../libs/wild.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('wild', wild_test)
+
 style_match_test = executable(
     'test-style-match',
     ['test_style_match.c', '../fvwm/style_match.c',

@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "fvwm/fvwm.h"
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 

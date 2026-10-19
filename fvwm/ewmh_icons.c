@@ -34,6 +34,7 @@
 #include "libs/wm_ui_metrics.h"
 #include "libs/FEvent.h"
 #include "fvwm.h"
+#include "style_types.h"
 #include "externs.h"
 #include "window_flags.h"
 #include "cursor.h"

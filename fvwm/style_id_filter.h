@@ -2,8 +2,9 @@
 #define FVWM_STYLE_ID_FILTER_H
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
-#include "fvwm.h"
+#include "style_id.h"
 
 /* Fixed operation-owned storage. Collisions only retain the existing scan.
  * first stores conservative lower bounds on one-based list ordinals. Ranks

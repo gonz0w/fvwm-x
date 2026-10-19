@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Incremental style indexes, STYLE-01 #38 | Composed affected checkpoint passes; ready for PR review; required gaps retained | Three incremental style-index improvements pass a composed checkpoint: one original broad run across six targets/ten profiles (2019/2022 executed standard, 445/445 optional), followed by three unchanged isolated fixture controls. Fifteen actual-core index drivers retain zero selected lookup allocations after append, deletion and all three simplification paths. Three scoped sanitizers, nine fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md). |
+| Incremental style indexes, STYLE-01 #38 | Merged in [PR #118](https://github.com/gonz0w/fvwm-x/pull/118); composed affected checkpoint passes; required gaps retained | Three incremental style-index improvements pass a composed checkpoint: one original broad run across six targets/ten profiles (2019/2022 executed standard, 445/445 optional), followed by three unchanged isolated fixture controls. Fifteen actual-core index drivers retain zero selected lookup allocations after append, deletion and all three simplification paths. Three scoped sanitizers, nine fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md). |
 | Style command ownership, STYLE-01 #38 | Merged in [PR #117](https://github.com/gonz0w/fvwm-x/pull/117); composed affected checkpoint passes; required gaps retained | Three style-command fixes pass a composed checkpoint: one original broad run (2013/2014 executed standard, 443/443 optional), then ten scheduler-fixture correction checks on unchanged production binaries. Fifteen ownership drivers retain zero selected fields and perform zero refused-input grabs. Three scoped sanitizer checks, nine composed fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-COMMAND-OWNERSHIP.md). |
 | Style update work, STYLE-01 #38 | Merged in [PR #116](https://github.com/gonz0w/fvwm-x/pull/116); composed affected checkpoint passes; CI/SVG gaps retained | Three style-update improvements pass a composed affected checkpoint: one original broad run (2005/2006 executed standard, 441/441 optional), seventy production-correction checks and eighteen fixture-correction checks. The original image-effects timeout is traced to a discarded early acknowledgement and corrected without changing production deadlines. Six original sanitizer checks, three corrected actual-core checks, nine final fresh stages and four final authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-UPDATE-WORK.md). |
 | Shared wildcard matching, STYLE-01 #38 | Merged in [PR #115](https://github.com/gonz0w/fvwm-x/pull/115); affected checks pass; CI/SVG gaps retained | Three shared wildcard improvements pass 50/50 affected entries across six targets/ten profiles. One combined checkpoint passes 1998/1998 executed standard and 439/439 optional entries, five scoped sanitizers, nine fresh stages and four authenticated default BSD displays. Two known required OpenBSD AMD64 CI/SVG entries stay omitted, preserving its install/staged-geometry gap without retries. [Report](verification/VERIFICATION-2026-10-19-SHARED-WILDCARDS.md). |
@@ -236,12 +236,14 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-19: PR #117 is merged. STYLE-01 batches
-incremental lookup-index append, deletion and simplification maintenance. Measure
-lookup allocations and compare full initialized results against the linear owner;
-preserve rule/resource lifetime, exact predicates and precedence. Affected checks and one combined checkpoint pass. Known CI/SVG required omissions and the
-OpenBSD AMD64 install gap remain without retries. VESA #93 stays deferred.
-[Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md).
+Immediate selection, 2026-10-19: PR #118 is merged. MAINT-02 / CLEAN-01
+batches style-record dependency isolation, standalone selector identity types,
+and private style-list ownership. Measure actual Ninja dependency changes and
+prove unchanged native allocated code/data sections across six targets/ten
+profiles, with focused style/core checks and fresh install identities. Reuse
+PR118's broader runtime/default-X/sanitizer evidence only where that parity is
+proved; retain its failures, controls and required CI/SVG/install gaps. VESA #93
+stays deferred. Implementation is in progress; no qualification is claimed yet.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

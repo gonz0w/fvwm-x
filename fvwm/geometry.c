@@ -27,6 +27,7 @@
 #include "libs/wcontext.h"
 #include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
+#include "style_types.h"
 #include "fvwm/ewmh.h"
 #include "externs.h"
 #include "execcontext.h"

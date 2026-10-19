@@ -1,7 +1,7 @@
 # Verification reports
 
 - [Style command ownership](VERIFICATION-2026-10-19-STYLE-COMMAND-OWNERSHIP.md):
-  three related fixes; seven focused entries and 41 real-client cases pass; combined checkpoint pending.
+  three related fixes; composed broad/fixture checkpoint passes; required CI/SVG/install gaps remain.
 
 
 - [Style update work](VERIFICATION-2026-10-19-STYLE-UPDATE-WORK.md): three related improvements; composed broad/final affected checkpoint with retained CI/SVG/install gaps.

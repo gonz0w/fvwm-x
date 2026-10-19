@@ -31,6 +31,9 @@ def run(args):
                 'destruction publication and query refresh barriers',
                 'atom scoped/all priority/miss/None/reinitialization',
                 'ewmh state publication',
+                'atom names scoped/all/duplicate/unsorted/reentrant',
+                'atom duplicate lower-bound priority',
+                'atom named property cardinal/UTF8/read/delete/invalid',
             }
             for missing in (False, True):
                 label = 'missing' if missing else 'normal'
@@ -49,6 +52,14 @@ def run(args):
                 clients = records('STATE_CLIENT ')
                 atoms = records('STATE_ATOM ')
                 work = records('STATE_WORK ')
+                names = records('STATE_NAME ')
+                coverage = records('STATE_NAME_COVERAGE ')
+                duplicates = records('STATE_DUPLICATE ')
+                supported = records('STATE_SUPPORTED ')
+                assert len(names) == 4 and len(coverage) == 1
+                assert all(r['indexed'] < r['legacy'] for r in names if r['key'] < 3)
+                assert len(duplicates) == 3 and len(supported) == 3
+                assert all(r['allocations'] == 0 for r in supported)
                 assert len(clients) == 12 and len(atoms) == 2 and len(work) == 6
                 assert {(r['windows'], r['reference']) for r in clients} == {
                     (n, ref) for n in (0, 1, 64, 65, 128, 256)
@@ -58,7 +69,9 @@ def run(args):
                 assert all(r['indexed_calls'] == 64 and
                            r['reference_entry_visits'] > 64 for r in atoms)
                 runs.append({'mode': label, 'observations': sorted(expected),
-                             'clients': clients, 'atoms': atoms, 'work': work})
+                             'clients': clients, 'atoms': atoms, 'work': work,
+                             'names': names, 'name_coverage': coverage,
+                             'duplicates': duplicates, 'supported': supported})
             (out / 'evidence.json').write_text(
                 json.dumps({'runs': runs}, indent=2) + '\n')
         finally:

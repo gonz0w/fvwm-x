@@ -16,4 +16,16 @@ void ewmh_atom_index_sort(ewmh_atom_index_entry *entries, size_t count);
 void *ewmh_atom_index_find(const ewmh_atom_index_entry *entries, size_t count,
 	Atom atom);
 
+/* Names borrow static table strings; equal names keep table priority. */
+typedef struct
+{
+	const char *name;
+	size_t order;
+	void *value;
+} ewmh_atom_name_entry;
+
+void ewmh_atom_name_sort(ewmh_atom_name_entry *entries, size_t count);
+void *ewmh_atom_name_find(const ewmh_atom_name_entry *entries, size_t count,
+	const char *name);
+
 #endif

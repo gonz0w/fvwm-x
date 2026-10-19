@@ -6,6 +6,7 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include "ewmh_atom_index.h"
 
 static int compare_entries(const void *left, const void *right)
@@ -17,14 +18,6 @@ static int compare_entries(const void *left, const void *right)
 	return (a->order > b->order) - (a->order < b->order);
 }
 
-static int compare_atom(const void *key, const void *value)
-{
-	Atom atom = *(const Atom *)key;
-	const ewmh_atom_index_entry *entry = value;
-
-	return (atom > entry->atom) - (atom < entry->atom);
-}
-
 void ewmh_atom_index_sort(ewmh_atom_index_entry *entries, size_t count)
 {
 	if (count > 1)
@@ -34,16 +27,52 @@ void ewmh_atom_index_sort(ewmh_atom_index_entry *entries, size_t count)
 void *ewmh_atom_index_find(const ewmh_atom_index_entry *entries, size_t count,
 	Atom atom)
 {
-	const ewmh_atom_index_entry *entry;
+	size_t low = 0, high = count;
 
-	if (count == 0)
-		return NULL;
-	entry = bsearch(&atom, entries, count, sizeof(*entries), compare_atom);
-	if (entry == NULL)
-		return NULL;
-	/* bsearch may return any equal element. Restore the original priority,
-	 * including None and duplicate identities from failed interning. */
-	while (entry != entries && entry[-1].atom == atom)
-		entry--;
-	return entry->value;
+	/* Lower bound retains first-entry priority without a duplicate walk,
+	 * including None identities from failed interning. */
+	while (low < high)
+	{
+		size_t middle = low + (high - low) / 2;
+
+		if (entries[middle].atom < atom)
+			low = middle + 1;
+		else
+			high = middle;
+	}
+	return low < count && entries[low].atom == atom ?
+		entries[low].value : NULL;
+}
+
+static int compare_names(const void *left, const void *right)
+{
+	const ewmh_atom_name_entry *a = left, *b = right;
+	int result = strcmp(a->name, b->name);
+
+	return result ? result :
+		(a->order > b->order) - (a->order < b->order);
+}
+
+void ewmh_atom_name_sort(ewmh_atom_name_entry *entries, size_t count)
+{
+	if (count > 1)
+		qsort(entries, count, sizeof(*entries), compare_names);
+}
+
+void *ewmh_atom_name_find(const ewmh_atom_name_entry *entries, size_t count,
+	const char *name)
+{
+	size_t low = 0, high = count;
+
+	while (low < high)
+	{
+		size_t middle = low + (high - low) / 2;
+
+		if (strcmp(entries[middle].name, name) < 0)
+			low = middle + 1;
+		else
+			high = middle;
+	}
+	return low < count && strcmp(entries[low].name, name) == 0 ?
+		entries[low].value : NULL;
 }

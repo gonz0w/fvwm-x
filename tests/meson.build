@@ -1570,6 +1570,29 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 45,
     )
+    style_index_retention_fixture = executable(
+        'fvwm-style-index-retention-fixture', 'style_index_retention_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows',
+            '-Wl,--wrap=fxcalloc', '-Wl,--wrap=free',
+            '-Wl,--wrap=style_match_prepare',
+            '-Wl,--wrap=style_match_lookup_enabled',
+            '-Wl,--wrap=style_match_lookup_subject'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'style-index-retention-xvfb', py,
+        args: [files('live_x/style_index_retention_live.py'),
+            '--fvwm', style_index_retention_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'style-index-retention'],
+        depends: style_index_retention_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
+    )
     style_index_maintenance_fixture = executable(
         'fvwm-style-index-maintenance-fixture', 'style_index_maintenance_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),

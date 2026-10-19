@@ -1,5 +1,7 @@
 # Verification reports
 
+- [EWMH publication work](VERIFICATION-2026-10-19-EWMH-PUBLICATION.md): three runtime improvements, one six-target/ten-profile checkpoint, selected 2→1 walks / 9→6 permission queries / 189→63 name scans; original attempts and required gaps retained.
+
 - [Command/update type boundaries](VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md): three dependency improvements; 100 affected six-target entries, exact native code/data parity and ten scoped installs, retaining PR120 runtime evidence/gaps.
 
 - [Style index retention](VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md): live-domain counts, empty table release and smaller category records; combined checkpoint passes; required OpenBSD CI/SVG/install gaps remain.

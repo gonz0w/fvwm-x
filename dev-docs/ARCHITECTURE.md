@@ -846,3 +846,17 @@ and `update.c` import `update_types.h` for the complete operation-owned plan.
 No record fields, command behavior, update barriers or configuration change.
 The [affected checkpoint](verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md) measures actual layout-header dependencies
 and verifies exact native allocated-section parity across ten profiles.
+
+
+## EWMH publication operation ownership
+
+`ewmh_WMStrut` prepares both records before one existing paired work-area
+refresh when both change; independent single-mode and query-refresh owners
+remain. `EWMH_SetAllowedActions` shares six typed permission requests within
+one publication against the fixed read-only predicate table, preserving the
+fullscreen resize override as a distinct key. No result survives the call.
+`EWMH_SetDesktopNames` keeps converted buffers and lengths together until one
+property assembly/free; representability refusal retains the previous property.
+The [publication checkpoint](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md) records independent callback/vector,
+work-area/filter and converted-byte/ownership probes. Command configuration,
+actual-pixel geometry and existing update/publication barriers are unchanged.

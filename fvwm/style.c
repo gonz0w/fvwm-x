@@ -64,7 +64,7 @@ typedef struct style_lookup_index style_lookup_index;
 typedef struct window_style_list
 {
 	struct window_style_list	*next;
-	style_id_t			 flags;
+	style_id_flags			flags;
 	window_style			*first_style;
 	window_style			*last_style;
 	size_t style_count;
@@ -77,6 +77,7 @@ struct style_lookup_index
 	window_style *head[STYLE_LOOKUP_BUCKETS];
 	window_style *tail[STYLE_LOOKUP_BUCKETS];
 	size_t last_ordinal;
+	size_t domain_count[STYLE_MATCH_FIELDS + 2];
 	unsigned domains;
 };
 
@@ -265,7 +266,7 @@ static void init_window_style_list(window_style_list **list,
 				   style_id_flags flags)
 {
 	*list = fxcalloc(1, sizeof(**list));
-	memcpy(&((*list)->flags), &flags, sizeof flags);
+	(*list)->flags = flags;
 
 	/* The order in which the styles are initialized define the order used
 	 * when applying styles.
@@ -1025,6 +1026,31 @@ static void invalidate_style_lookup(window_style_list *list)
 	list->lookup_index = NULL;
 }
 
+/* Each indexed rule contributes one necessary selector domain. Counts are
+ * bounded by live rule allocations; retiring a domain stops borrowing its
+ * subject strings for hashing without scanning the remaining rule chain. */
+static void add_style_lookup_domain(style_lookup_index *index, unsigned domain)
+{
+	for (unsigned i = 0; i < STYLE_MATCH_FIELDS + 2; i++)
+	{
+		if (domain & (1U << i))
+		{
+			index->domain_count[i]++;
+			index->domains |= 1U << i;
+		}
+	}
+}
+
+static void remove_style_lookup_domain(style_lookup_index *index,
+	unsigned domain)
+{
+	for (unsigned i = 0; i < STYLE_MATCH_FIELDS + 2; i++)
+	{
+		if ((domain & (1U << i)) && --index->domain_count[i] == 0)
+			index->domains &= ~(1U << i);
+	}
+}
+
 static void prepare_style_lookup(window_style_list *list)
 {
 	window_style *style;
@@ -1046,13 +1072,14 @@ static void prepare_style_lookup(window_style_list *list)
 		else
 			list->lookup_index->tail[bucket] = style;
 		list->lookup_index->head[bucket] = style;
-		list->lookup_index->domains |= style->id_patterns.lookup_domain;
+		add_style_lookup_domain(list->lookup_index,
+			style->id_patterns.lookup_domain);
 	}
 }
 
 /* Derived links borrow rule records. Unlink before retirement; gaps in the
- * ordinals preserve precedence. Domain bits may conservatively outlive the
- * last rule in a domain until a cold rebuild, retaining no borrowed strings. */
+ * ordinals preserve precedence. Domain counts follow the same lifetime as
+ * the intrusive links, including both simplification survivor moves. */
 static void unlink_style_lookup(window_style_list *list, window_style *style)
 {
 	struct style_lookup_index *index = list->lookup_index;
@@ -1069,6 +1096,7 @@ static void unlink_style_lookup(window_style_list *list, window_style *style)
 	else
 		index->tail[bucket] = style->lookup_prev;
 	style->lookup_next = style->lookup_prev = NULL;
+	remove_style_lookup_domain(index, style->id_patterns.lookup_domain);
 }
 
 static void append_style_lookup(window_style_list *list, window_style *style)
@@ -1092,7 +1120,7 @@ static void append_style_lookup(window_style_list *list, window_style *style)
 	else
 		index->head[bucket] = style;
 	index->tail[bucket] = style;
-	index->domains |= style->id_patterns.lookup_domain;
+	add_style_lookup_domain(index, style->id_patterns.lookup_domain);
 }
 
 static void add_style_to_list(window_style *new_style)
@@ -1157,6 +1185,10 @@ static void remove_style_from_list(window_style_list *list,
 	unlink_style_lookup(list, style);
 	list->style_count--;
 	list->indexed_count -= style->id_patterns.lookup_bucket != 0;
+	/* Empty lists have no borrowed records to accelerate. Keep nonempty
+	 * tables through threshold crossings, but release a retired owner. */
+	if (!list->style_count)
+		invalidate_style_lookup(list);
 	prev = SGET_PREV_STYLE(*style);
 	next = SGET_NEXT_STYLE(*style);
 	if (!prev)

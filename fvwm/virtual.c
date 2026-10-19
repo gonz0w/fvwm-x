@@ -29,7 +29,7 @@
 #include "libs/FScreen.h"
 #include "libs/wm_ui_metrics.h"
 #include "fvwm.h"
-#include "style_types.h"
+#include "style.h"
 #include "externs.h"
 #include "cmdparser.h"
 #include "execcontext.h"

@@ -34,7 +34,6 @@
 #include "config.h"
 
 #include "update.h"
-#include "style.h"
 #include "fvwm.h"
 #include "misc.h"
 

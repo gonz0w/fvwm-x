@@ -24,6 +24,7 @@
 #include "libs/monitor_ownership.h"
 #include "libs/monitor_types.h"
 extern ewmh_atom_list atom_list[];
+#include "ewmh_tray_probe.h"
 void ewmh_publication_probe(struct monitor *monitor);
 static Bool measuring, refuse;
 static unsigned appends, allocations, publications, index_calls;
@@ -144,6 +145,8 @@ bool __real_ewmh_client_list_append(ewmh_client_list *, Window);
 bool __wrap_ewmh_client_list_append(ewmh_client_list *list, Window window)
 {
 	appends += measuring;
+	if (ewmh_tray_append_refused(list, window))
+		return false;
 	return __real_ewmh_client_list_append(list, window);
 }
 void *__real_ewmh_atom_index_find(const ewmh_atom_index_entry *, size_t, Atom);
@@ -159,6 +162,8 @@ int __real_XChangeProperty(Display *, Window, Atom, Atom, int, int,
 int __wrap_XChangeProperty(Display *display, Window window, Atom property,
 	Atom type, int format, int mode, const unsigned char *data, int length)
 {
+	ewmh_tray_publication(window, property, type, format, mode, data,
+		length);
 	if (startup_counting)
 	{
 		unsigned count = 0;
@@ -804,6 +809,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	atoms(monitor);
 	assert(supported_publications == 3);
 	ewmh_publication_probe(monitor);
+	ewmh_tray_probe();
 	puts("ewmh state publication: passed");
 	fflush(stdout);
 	_exit(0);

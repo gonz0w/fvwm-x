@@ -31,6 +31,7 @@ def run(args):
                 'destruction publication and query refresh barriers',
                 'atom scoped/all priority/miss/None/reinitialization',
                 'ewmh state publication',
+                'legacy-tray membership/order/events/inline/refusal/repair',
                 'allowed-action local policy/order/override/refresh',
                 'strut paired/static/dynamic/zero/missing/filter',
                 'desktop-name lengths/UTF8/empty/refusal/ownership',
@@ -52,6 +53,14 @@ def run(args):
                     return [json.loads(line.removeprefix(prefix))
                             for line in text.splitlines()
                             if line.startswith(prefix)]
+                tray = records('STATE_TRAY_WORK ')
+                assert len(tray) == 1
+                assert tray[0]['cases'] == (141 if tray[0]['baseline'] else 145)
+                assert (tray[0]['add_64_snapshot_allocations'] ==
+                        tray[0]['baseline'])
+                assert (tray[0]['remove_64_snapshot_allocations'] ==
+                        tray[0]['baseline'])
+                assert tray[0]['refusals'] == (0 if tray[0]['baseline'] else 2)
                 clients = records('STATE_CLIENT ')
                 atoms = records('STATE_ATOM ')
                 work = records('STATE_WORK ')
@@ -87,7 +96,7 @@ def run(args):
                              'names': names, 'name_coverage': coverage,
                              'duplicates': duplicates, 'supported': supported,
                              'actions': actions, 'struts': struts,
-                             'desktop_names': desktop_names})
+                             'desktop_names': desktop_names, 'tray': tray})
             (out / 'evidence.json').write_text(
                 json.dumps({'runs': runs}, indent=2) + '\n')
         finally:

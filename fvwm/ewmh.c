@@ -725,105 +725,54 @@ void EWMH_SetWMState(FvwmWindow *fw, Bool do_restore)
 
 /*** kde system tray ***/
 #define DEBUG_KST 0
-static
-void add_kst_item(Window w)
+/* Borrow the matching link, or the insertion link at the end. Callers use
+ * it synchronously; it never survives event/command dispatch. */
+static KstItem **find_kst_item_link(Window w)
 {
-	KstItem *t,**prev;
+	KstItem **link = &ewmh_KstWinList;
 
-	t = ewmh_KstWinList;
-	prev = &ewmh_KstWinList;
-
-	while(t != NULL)
-	{
-		prev = &(t->next);
-		t = t->next;
-	}
-	*prev = fxmalloc(sizeof(KstItem));
-	(*prev)->w = w;
-	(*prev)->next = NULL;
-
-	return;
-}
-
-static
-void delete_kst_item(Window w)
-{
-	KstItem *t,**prev;
-
-	t = ewmh_KstWinList;
-	prev = &ewmh_KstWinList;
-	while((t!= NULL)&&(t->w != w))
-	{
-		prev = &(t->next);
-		t = t->next;
-	}
-	if (t == NULL)
-	{
-		return;
-	}
-	if(prev != NULL)
-	{
-		*prev = t->next;
-	}
-	free(t);
-
-	return;
+	while (*link != NULL && (*link)->w != w)
+		link = &(*link)->next;
+	return link;
 }
 
 static
 void set_kde_sys_tray(void)
 {
-	Window *wins = NULL;
+	ewmh_client_list list;
 	KstItem *t;
-	int i = 0, nbr = 0;
 
-	t = ewmh_KstWinList;
-	while(t != NULL)
-	{
-		nbr++;
-		t = t->next;
-	}
-
-	if (nbr > 0)
-	{
-		wins = fxmalloc(sizeof(Window) * nbr);
-	}
-
-	t = ewmh_KstWinList;
+	ewmh_client_list_init(&list);
 	if (DEBUG_KST)
-	{
 		fvwm_debug(__func__, "ADD_TO_KST: ");
-	}
-	while (t != NULL)
+	for (t = ewmh_KstWinList; t != NULL; t = t->next)
 	{
 		if (DEBUG_KST)
+			fvwm_debug(__func__, "0x%lx ", t->w);
+		if (!ewmh_client_list_append(&list, t->w))
 		{
-			fvwm_debug(__func__, "0x%lx ",t->w);
+			fvwm_debug(__func__, "legacy tray snapshot unavailable; "
+				"previous property retained");
+			ewmh_client_list_finish(&list);
+			return;
 		}
-		wins[i++] = t->w;
-		t = t->next;
 	}
 	if (DEBUG_KST)
-	{
 		fvwm_debug(__func__, "\n");
-	}
-
-	ewmh_ChangeProperty(Scr.Root,"_KDE_NET_SYSTEM_TRAY_WINDOWS",
-			    EWMH_ATOM_LIST_FVWM_ROOT,
-			    (unsigned char *)wins,i);
-	if (wins != NULL)
-	{
-		free(wins);
-	}
-
-	return;
+	/* Keep insertion order and publish empty snapshots. The shared helper
+	 * bounds the count to Xlib's signed element count before conversion. */
+	ewmh_ChangeProperty(Scr.Root, "_KDE_NET_SYSTEM_TRAY_WINDOWS",
+		EWMH_ATOM_LIST_FVWM_ROOT,
+		list.count ? (unsigned char *)list.windows : NULL,
+		(int)list.count);
+	ewmh_client_list_finish(&list);
 }
 
 void ewmh_AddToKdeSysTray(FvwmWindow *fw)
 {
 	int size = 0;
 	CARD32 *val;
-	KstItem *t;
+	KstItem **link;
 
 	val = ewmh_AtomGetByName(
 		FW_W(fw), "_KDE_NET_WM_SYSTEM_TRAY_WINDOW_FOR",
@@ -835,16 +784,13 @@ void ewmh_AddToKdeSysTray(FvwmWindow *fw)
 	}
 	free(val);
 
-	t = ewmh_KstWinList;
-	while(t != NULL && t->w != FW_W(fw))
-		t = t->next;
-
-	if (t != NULL)
-	{
+	link = find_kst_item_link(FW_W(fw));
+	if (*link != NULL)
 		return; /* already in the list */
-	}
 
-	add_kst_item(FW_W(fw));
+	*link = fxmalloc(sizeof(**link));
+	(*link)->w = FW_W(fw);
+	(*link)->next = NULL;
 	set_kde_sys_tray();
 
 	return;
@@ -853,17 +799,8 @@ void ewmh_AddToKdeSysTray(FvwmWindow *fw)
 
 int EWMH_IsKdeSysTrayWindow(Window w)
 {
-	KstItem *t;
-
-	t = ewmh_KstWinList;
-	while(t != NULL && t->w != w)
-	{
-		t = t->next;
-	}
-	if (t == NULL)
-	{
+	if (*find_kst_item_link(w) == NULL)
 		return 0;
-	}
 	if (DEBUG_KST)
 	{
 		fvwm_debug(__func__, "IsKdeSysTrayWindow: 0x%lx\n", w);
@@ -874,17 +811,11 @@ int EWMH_IsKdeSysTrayWindow(Window w)
 
 void EWMH_ManageKdeSysTray(Window w, int type)
 {
-	KstItem *t;
+	KstItem **link = find_kst_item_link(w);
+	KstItem *t = *link;
 
-	t = ewmh_KstWinList;
-	while(t != NULL && t->w != w)
-	{
-		t = t->next;
-	}
 	if (t == NULL)
-	{
 		return;
-	}
 	switch(type)
 	{
 	case UnmapNotify:
@@ -902,7 +833,10 @@ void EWMH_ManageKdeSysTray(Window w, int type)
 		}
 		XSelectInput(dpy, t->w, NoEventMask);
 		XFlush(dpy);
-		delete_kst_item(w);
+		/* These X calls do not dispatch events/commands. Retain their
+		 * order before unlinking the already found record. */
+		*link = t->next;
+		free(t);
 		set_kde_sys_tray();
 		break;
 	case ReparentNotify:

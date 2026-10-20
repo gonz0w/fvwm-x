@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| UI record type boundaries, MAINT-02 / CLEAN-01 | Affected checkpoint passes; ready for PR review | Three font/picture/monitor dependency improvements pass 170/170 affected native entries across six targets/ten profiles (17 focused entries retained by exact source/binary identity, 153 fresh). All 5874 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities. ARM GCC layout fanout falls from 252/289/226 to 49/66/92 objects. Broader runtime evidence and required OpenBSD gaps remain source-scoped to PR122. [Report](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md). |
+| Legacy tray membership, STATE-01 / CLEAN-01 | Implemented; focused Linux checks pass; combined qualification pending | Three insertion/retirement/publication improvements reuse operation-local links and the existing bounded snapshot helper. Selected 64-window snapshot heap requests fall from one to zero; ordered properties and event/flush barriers remain. |
+| UI record type boundaries, MAINT-02 / CLEAN-01 | Merged in [PR #123](https://github.com/gonz0w/fvwm-x/pull/123); affected checkpoint passes | Three font/picture/monitor dependency improvements pass 170/170 affected native entries across six targets/ten profiles (17 focused entries retained by exact source/binary identity, 153 fresh). All 5874 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities. ARM GCC layout fanout falls from 252/289/226 to 49/66/92 objects. Broader runtime evidence and required OpenBSD gaps remain source-scoped to PR122. [Report](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md). |
 | EWMH publication work, STATE-01 #37 | Merged in [PR #122](https://github.com/gonz0w/fvwm-x/pull/122); affected checkpoint passes | Three EWMH publication improvements pass one combined checkpoint: 2029/2029 executed standard and 447/447 optional entries across six targets/ten profiles. Selected strut walks fall from two to one, permission queries from nine to six and converted-name length scans from 189 to 63. Four scoped sanitizers, 9 fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md). |
 | Command/update type boundaries, MAINT-02 / CLEAN-01 | Merged in [PR #121](https://github.com/gonz0w/fvwm-x/pull/121); affected checkpoint passes | Three command/update dependency improvements pass 100/100 affected native entries across six targets/ten profiles. All 5864 object pairs and ten WM executables retain identical allocated code/data sections; 249 installed-output pairs preserve their code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities. Parser, complex-function and update-plan layout edits now compile six, four and four objects instead of 204–209, 71 and 116–121. Broader PR120 runtime evidence/failures and required OpenBSD CI/SVG/install gaps remain without retries. [Report](verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md). |
 | Style index retention, STYLE-01 #38 | Merged in [PR #120](https://github.com/gonz0w/fvwm-x/pull/120); affected checkpoint passes | Three related improvements pass a composed affected checkpoint: one original broad run records 2029/2030 executed standard and 447/447 optional entries across six targets/ten profiles, plus one unchanged isolated legacy-property control. Fifteen actual-core retention drivers verify live-domain counts, empty-table release and seven-category precedence; fifteen retained maintenance drivers cover incremental mutation and simplification. Four scoped sanitizers, nine fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-RETENTION.md). |
@@ -241,16 +242,18 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-19: PR #122 is merged. The user reports its
-isolated QEMU/VNC desktop is very fast and working well; review VM/bridge are
-closed on request, with disk/logs and qualification VM preserved. MAINT-02 /
-CLEAN-01 completes one three-story font/picture/monitor record checkpoint.
-170 affected entries pass six targets/ten profiles, with strict code/data
-parity over 5874 object pairs and ten scoped install stages. ARM GCC
-record-layout fanout falls from 252/289/226 to 49/66/92 objects. Ready for PR
-review. Broader runtime/default-X/sanitizer evidence and required OpenBSD gaps
-retain PR122 source scope; no full matrix repeats. Broader STATE/STYLE work
-stays open and VESA #93 stays deferred. [Report](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md).
+Immediate selection, 2026-10-19: PR #123 is merged. STATE-01 #37 / CLEAN-01
+#34 batches three existing legacy tray operations: reuse the insertion search
+link, retire through the already found link and publish one bounded inline
+snapshot. Focused Linux checks pass; two selected 64-window snapshot allocations
+become zero, and source review confirms duplicate list scans are removed.
+The probe preserves membership/ordering, missing and fixed-size markers,
+Unmap/Reparent/Destroy event-mask/flush/publication order, empty/spilled output
+and allocation-refusal recovery. The initial probe's empty-marker assumption
+was corrected against the existing four-byte policy; original failure retained.
+Combined six-target qualification is pending. This cleans the existing legacy
+path; new TRAY-01 desktop features retain their later-stage ownership. Required
+OpenBSD gaps and VESA #93 remain unchanged.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -2070,3 +2073,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-19: After merged PR #121, STATE-01 completes three EWMH publication improvements. Three EWMH publication improvements pass one combined checkpoint: 2029/2029 executed standard and 447/447 optional entries across six targets/ten profiles. Selected strut walks fall from two to one, permission queries from nine to six and converted-name length scans from 189 to 63. Four scoped sanitizers, 9 fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. Original compile/capacity attempts and detached-job recovery are preserved; no completed suites repeat for publication. The user requested an isolated interactive QEMU/VNC desktop left running after PR readiness. [Report](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md).
 
 - 2026-10-19: PR122 merged; user reports a fast, working interactive WM and requests shutdown/continuation. Review-only VM/VNC stopped with disk/logs retained. MAINT-02/CLEAN-01 completes three UI record boundaries. Three font/picture/monitor dependency improvements pass 170/170 affected native entries across six targets/ten profiles (17 focused entries retained by exact source/binary identity, 153 fresh). All 5874 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities. ARM GCC layout fanout falls from 252/289/226 to 49/66/92 objects. Broader runtime evidence and required OpenBSD gaps remain source-scoped to PR122. One affected checkpoint serves the batch. [Report](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md).
+
+- 2026-10-19: PR123 merged. STATE-01/CLEAN-01 starts one bounded existing-tray membership batch: reuse insertion and retirement links and the inline snapshot helper. Four focused Linux entries pass, with 141 baseline / 145 candidate cases per mode. Two selected 64-window snapshot requests become zero; source-structural duplicate scans disappear. Combined qualification remains pending; required OpenBSD gaps and deferred VESA remain.

@@ -2266,64 +2266,40 @@ CMD_ExecUseShell(F_CMD_ARGS)
 void
 CMD_Exec(F_CMD_ARGS)
 {
-	char *cmd = NULL;
+	pid_t child = fork();
 
-	/* if it doesn't already have an 'exec' as the first word, add that
-	 * to keep down number of procs started */
-	/* need to parse string better to do this right though, so not doing
-	 * this for now... */
-#if 0
-	if (strncasecmp(action,"exec",4)!=0)
+	if (child < 0)
 	{
-		cmd = fxmalloc(strlen(action)+6);
-		strcpy(cmd,"exec ");
-		strcat(cmd,action);
-	}
-	else
-#endif
-	{
-		cmd = fxstrdup(action);
-	}
-	if (!cmd) {
+		fvwm_debug(__func__, "fork failed (%s)", strerror(errno));
 		return;
 	}
-	/* Use to grab the pointer here, but the fork guarantees that
-	 * we wont be held up waiting for the function to finish,
-	 * so the pointer-gram just caused needless delay and flashing
-	 * on the screen */
-	/* Thought I'd try vfork and _exit() instead of regular fork().
-	 * The man page says that its better. */
-	/* Not everyone has vfork! */
-	/* According to the man page, vfork should never be used at all.
-	 */
-
-	if (!(fork())) /* child process */
+	if (child == 0)
 	{
-		/* This is for fixing a problem with rox filer */
 		int fd;
 
 		fvmm_deinstall_signals();
-		fd = open("/dev/null", O_RDONLY, 0);
-		dup2(fd, STDIN_FILENO);
-
+		fd = open("/dev/null", O_RDONLY | O_NOCTTY);
+		if (fd < 0 || dup2(fd, STDIN_FILENO) < 0)
+		{
+			fvwm_debug(__func__, "stdin setup failed (%s)",
+				strerror(errno));
+			_exit(100);
+		}
 		if (fd != STDIN_FILENO)
 			close(fd);
 
-		if (fvwm_setpgrp() == -1) {
-			fvwm_debug(
-			    __func__, "setpgrp failed (%s)", strerror(errno));
-			exit(100);
+		if (fvwm_setpgrp() == -1)
+		{
+			fvwm_debug(__func__, "setpgrp failed (%s)", strerror(errno));
+			_exit(100);
 		}
-		if (execl(exec_shell_name, exec_shell_name, "-c", cmd, NULL)
-		    == -1) {
-			fvwm_debug(
-			    __func__, "execl failed (%s)", strerror(errno));
-			exit(100);
-		}
+		/* fork owns a copy of the command; no extra string allocation is
+		 * needed. Failed children must not run inherited exit callbacks or
+		 * flush the window manager's copied stdio buffers. */
+		execl(exec_shell_name, exec_shell_name, "-c", action, (char *)NULL);
+		fvwm_debug(__func__, "execl failed (%s)", strerror(errno));
+		_exit(100);
 	}
-	free(cmd);
-
-	return;
 }
 
 void

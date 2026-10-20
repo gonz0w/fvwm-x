@@ -1258,6 +1258,29 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
 endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd'] and sm.found()
+    session_startup_probe = executable(
+        'test-session-startup', 'test_session_startup.c',
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=SmsInitialize',
+            '-Wl,--wrap=IceListenForConnections',
+            '-Wl,--wrap=IceGetListenConnectionNumber',
+            '-Wl,--wrap=IceFreeListenObjs',
+            '-Wl,--wrap=IceGetListenConnectionString',
+            '-Wl,--wrap=IceGenerateMagicCookie',
+            '-Wl,--wrap=IceSetPaAuthData',
+            '-Wl,--wrap=IceSetHostBasedAuthProc',
+            '-Wl,--wrap=IceComposeNetworkIdList',
+            '-Wl,--wrap=IceAddConnectionWatch',
+            '-Wl,--wrap=IceRemoveConnectionWatch',
+            '-Wl,--wrap=fork', '-Wl,--wrap=waitpid', '-Wl,--wrap=setenv'],
+        c_args: ['-UNDEBUG'],
+    )
+    foreach fault : range(7)
+        test('session-startup-' + fault.to_string(), session_startup_probe,
+            args: [fault.to_string()], timeout: 30)
+    endforeach
     session_probe = executable(
         'session-probe', 'session_probe.c',
         include_directories: includedirs,
@@ -1848,6 +1871,19 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 40,
     )
+    exec_startup_probe = executable(
+        'test-exec-startup', 'test_exec_startup.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=main', '-Wl,--wrap=fork',
+            '-Wl,--wrap=open', '-Wl,--wrap=open64', '-Wl,--wrap=dup2',
+            '-Wl,--wrap=fvwm_setpgrp', '-Wl,--wrap=execl',
+            '-Wl,--wrap=fvwm_debug'],
+        c_args: ['-UNDEBUG'],
+    )
+    test('exec-startup', exec_startup_probe, timeout: 30)
     module_sync_fixture = executable(
         'fvwm-module-sync-fixture', 'module_sync_start.c',
         objects: module_output_fixture.extract_objects(module_output_core_sources),

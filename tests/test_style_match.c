@@ -9,10 +9,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 
 static unsigned calls, length_calls, equality_calls, prefix_calls, call_depth;
+static bool preparation_measuring;
+static unsigned escape_scans;
+
+char *__real_strchr(const char *, int);
+char *__wrap_strchr(const char *value, int character)
+{
+	if (preparation_measuring)
+		escape_scans++;
+	return __real_strchr(value, character);
+}
 
 int __real_strcmp(const char *, const char *);
 int __wrap_strcmp(const char *a, const char *b)
@@ -1446,8 +1457,80 @@ static void verified_prefix_work(void)
 	puts("verified prefixes preserve span/cursor and empty-tail semantics");
 }
 
+static void preparation_work(void)
+{
+	char *values[] = { NULL, "", "*", "abc", "abc*", "*tail",
+		"abc?tail", "a*b?c", "a\\*b", "a\\?*b", "a\\\\b", "a\\" };
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+
+	id.flags.has_name = 1;
+	preparation_measuring = true;
+	for (unsigned i = 0; i < sizeof(values) / sizeof(*values); i++)
+	{
+		id.name = values[i];
+		style_match_prepare(&patterns, &id);
+	}
+	preparation_measuring = false;
+	assert(escape_scans == (getenv("FVWM_STYLE_PREPARE_BASELINE") ? 8 : 0));
+	printf("STYLE_PREPARE_WORK {\"preparations\":12,"
+		"\"escape_scans\":%u}\n", escape_scans);
+}
+
+static uint64_t now_ns(void)
+{
+	struct timespec time;
+
+	assert(clock_gettime(CLOCK_MONOTONIC, &time) == 0);
+	return (uint64_t)time.tv_sec * UINT64_C(1000000000) + time.tv_nsec;
+}
+
+static void matching_bench(void)
+{
+	char text[2049];
+	style_id_t id = { 0 };
+	style_match_patterns patterns;
+	style_match_subject subject;
+
+	memset(text, 'a', sizeof(text));
+	memcpy(text + 2000, "*?\\*tail", 9);
+	id.name = text;
+	id.flags.has_name = 1;
+	for (unsigned sample = 0; sample < 3; sample++)
+	{
+		uint64_t start = now_ns();
+
+		for (unsigned i = 0; i < 20000; i++)
+			style_match_prepare(&patterns, &id);
+		printf("STYLE_MATCH_BENCH {\"operation\":\"prepare\","
+			"\"sample\":%u,\"iterations\":20000,"
+			"\"nanoseconds\":%llu}\n", sample,
+			(unsigned long long)(now_ns() - start));
+	}
+	id.resource = id.class = id.name = id.icon = "*";
+	id.flags.has_resource = id.flags.has_class = id.flags.has_icon = 1;
+	style_match_prepare(&patterns, &id);
+	style_match_subject_init(&subject, 1, NULL, NULL, NULL, NULL);
+	for (unsigned sample = 0; sample < 3; sample++)
+	{
+		unsigned matches = 0;
+		uint64_t start = now_ns();
+
+		for (unsigned i = 0; i < 500000; i++)
+			matches += style_match_id(&id, &patterns, &subject);
+		assert(matches == 500000);
+		printf("STYLE_MATCH_BENCH {\"operation\":\"universal\","
+			"\"sample\":%u,\"iterations\":500000,"
+			"\"nanoseconds\":%llu}\n", sample,
+			(unsigned long long)(now_ns() - start));
+	}
+}
+
 int main(void)
 {
+	preparation_work();
+	if (getenv("FVWM_STYLE_MATCH_BENCH"))
+		matching_bench();
 	if (getenv("FVWM_STYLE_PREFIX_PROBE"))
 	{
 		verified_prefix_work();

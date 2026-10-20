@@ -25,9 +25,11 @@
 #include "fvwm/style_match.h"
 #include "libs/wild.h"
 #include "libs/Parse.h"
+#include "style_merge_probe.h"
 
 static Bool measuring, force_reference, force_previous, force_collision;
 static Bool force_index_collision;
+static Bool force_work_streams;
 static Bool field_measuring;
 static const char *field_subject;
 static unsigned field_length_calls, field_prefix_calls;
@@ -43,6 +45,9 @@ void __wrap_style_match_prepare(style_match_patterns *patterns,
 	__real_style_match_prepare(patterns, id);
 	if (force_index_collision && patterns->lookup_bucket)
 		patterns->lookup_bucket = 1;
+	if (force_work_streams && patterns->lookup_bucket)
+		patterns->lookup_bucket = 1 +
+			(patterns->fingerprint ^ (patterns->fingerprint >> 32)) % 8;
 }
 
 unsigned __real_style_match_lookup_subject(style_match_subject *, unsigned,
@@ -50,6 +55,12 @@ unsigned __real_style_match_lookup_subject(style_match_subject *, unsigned,
 unsigned __wrap_style_match_lookup_subject(style_match_subject *subject,
 	unsigned domains, unsigned buckets[STYLE_LOOKUP_STREAMS])
 {
+	if (force_work_streams)
+	{
+		for (unsigned i = 0; i < STYLE_LOOKUP_STREAMS; i++)
+			buckets[i] = i;
+		return STYLE_LOOKUP_STREAMS;
+	}
 	if (!force_index_collision)
 		return __real_style_match_lookup_subject(
 			subject, domains, buckets);
@@ -91,6 +102,7 @@ bool __real_style_match_id(const style_id_t *, const style_match_patterns *,
 bool __wrap_style_match_id(const style_id_t *id,
 	const style_match_patterns *patterns, style_match_subject *subject)
 {
+	style_merge_visit(id, patterns->lookup_bucket);
 	if (measuring)
 		lookup_visits++;
 	if (measuring && id->name && strncmp(id->name, "probe-", 6) == 0)
@@ -1244,6 +1256,21 @@ static void field_order_work(const exec_context_t *exc, FvwmWindow *window)
 	index_compare(&sample);
 }
 
+static void work_lookup(FvwmWindow *window, window_style *style, Bool reference)
+{
+	Bool saved = force_reference;
+
+	force_reference = reference;
+	lookup_style(window, style);
+	force_reference = saved;
+}
+
+static void work_distribution(unsigned distribution)
+{
+	force_index_collision = distribution == 1;
+	force_work_streams = distribution == 2;
+}
+
 void __wrap_CaptureAllWindows(const exec_context_t *exc)
 {
 	const char *mode = getenv("FVWM_STYLE_PROFILE_MODE");
@@ -1273,6 +1300,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	}
 	if (strcmp(mode, "fields") == 0)
 	{
+		style_merge_probe(exc, clients[0], work_lookup, work_distribution);
 		field_order_work(exc, clients[0]);
 		fflush(stdout);
 		_exit(0);

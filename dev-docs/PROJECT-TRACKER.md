@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Legacy tray membership, STATE-01 / CLEAN-01 | Combined affected checkpoint passes; ready for PR review | Three existing legacy-tray insertion/retirement/publication improvements pass one combined checkpoint: 2029/2029 standard results, fresh or retained after source/binary verification, and 447/447 optional entries across six targets/ten profiles. Four focused standard entries are retained; 2025 standard entries run fresh. Selected 64-window add/remove snapshots each reduce heap requests from one to zero. Source review shows two insertion/retirement searches become one, and two publication walks become one. Four scoped sanitizers, 9 fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md). |
+| Style matching work, STYLE-01 / CLEAN-01 | Implemented; eight focused Linux checks pass; combined qualification pending | Three related operations: reuse verified selector prefixes during metadata preparation, omit universal explicit predicates and merge ordered candidates with an operation-local bounded heap. Existing configuration, matching/priority semantics and update/grab barriers remain. Independent linear visit/result and nine-slot probes are capturing unchanged-production evidence. |
+| Legacy tray membership, STATE-01 / CLEAN-01 | Merged in [PR #124](https://github.com/gonz0w/fvwm-x/pull/124); combined checkpoint passes | Three existing legacy-tray insertion/retirement/publication improvements pass one combined checkpoint: 2029/2029 standard results, fresh or retained after source/binary verification, and 447/447 optional entries across six targets/ten profiles. Four focused standard entries are retained; 2025 standard entries run fresh. Selected 64-window add/remove snapshots each reduce heap requests from one to zero. Source review shows two insertion/retirement searches become one, and two publication walks become one. Four scoped sanitizers, 9 fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md). |
 | UI record type boundaries, MAINT-02 / CLEAN-01 | Merged in [PR #123](https://github.com/gonz0w/fvwm-x/pull/123); affected checkpoint passes | Three font/picture/monitor dependency improvements pass 170/170 affected native entries across six targets/ten profiles (17 focused entries retained by exact source/binary identity, 153 fresh). All 5874 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities. ARM GCC layout fanout falls from 252/289/226 to 49/66/92 objects. Broader runtime evidence and required OpenBSD gaps remain source-scoped to PR122. [Report](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md). |
 | EWMH publication work, STATE-01 #37 | Merged in [PR #122](https://github.com/gonz0w/fvwm-x/pull/122); affected checkpoint passes | Three EWMH publication improvements pass one combined checkpoint: 2029/2029 executed standard and 447/447 optional entries across six targets/ten profiles. Selected strut walks fall from two to one, permission queries from nine to six and converted-name length scans from 189 to 63. Four scoped sanitizers, 9 fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md). |
 | Command/update type boundaries, MAINT-02 / CLEAN-01 | Merged in [PR #121](https://github.com/gonz0w/fvwm-x/pull/121); affected checkpoint passes | Three command/update dependency improvements pass 100/100 affected native entries across six targets/ten profiles. All 5864 object pairs and ten WM executables retain identical allocated code/data sections; 249 installed-output pairs preserve their code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities. Parser, complex-function and update-plan layout edits now compile six, four and four objects instead of 204–209, 71 and 116–121. Broader PR120 runtime evidence/failures and required OpenBSD CI/SVG/install gaps remain without retries. [Report](verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md). |
@@ -242,16 +243,19 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-19: PR #123 is merged. STATE-01 #37 / CLEAN-01
-#34 completes one three-operation existing-tray checkpoint: reuse insertion
-and retirement links, and one bounded inline publication snapshot. Standard
-scope passes 2029 entries (2025 fresh / four
-retained focused); 447 optional entries, four scoped sanitizers,
-nine fresh full stages and four authenticated BSD displays pass. Ready for PR
-review. Code review confirms duplicate searches/walks are removed; selected 64-ID
-snapshot heap requests fall one to zero. Required OpenBSD omissions/full-install
-gaps remain without retries. New TRAY-01 features keep their later-stage scope;
-VESA #93 stays deferred. [Report](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md).
+Immediate selection, 2026-10-19: PR #124 is merged. STYLE-01 #38 / CLEAN-01
+#34 completes three related style-matching improvements: reuse the verified
+literal prefix while preparing quoted/unquoted metadata, omit always-true
+explicit predicates, and merge ordered candidate streams with a bounded
+operation-local heap. Eight focused Linux unit/actual-core ownership, index,
+style and window-update checks pass. Instrumented preparation escape scans
+fall eight to zero; timing observations remain environment-specific. Exact
+linear visit order and complete results pass grouped/interleaved, collision,
+retirement/append and nine-slot probes. The initial baseline probe's incorrect
+empty repeated-star assumption was corrected against existing wildcard rules;
+failed evidence remains. Combined six-target qualification is pending. Larger
+update plans/grabs, broader scope, required OpenBSD gaps and deferred VESA #93
+remain separate; no persistent match cache or configuration change.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -2075,3 +2079,7 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-19: PR123 merged. STATE-01/CLEAN-01 starts one bounded existing-tray membership batch: reuse insertion and retirement links and the inline snapshot helper. Four focused Linux entries pass, with 141 baseline / 145 candidate cases per mode. Two selected 64-window snapshot requests become zero; source-structural duplicate scans disappear. Combined qualification remains pending; required OpenBSD gaps and deferred VESA remain.
 
 - 2026-10-19: STATE-01/CLEAN-01 existing-tray membership checkpoint is ready for review after PR123. Three existing legacy-tray insertion/retirement/publication improvements pass one combined checkpoint: 2029/2029 standard results, fresh or retained after source/binary verification, and 447/447 optional entries across six targets/ten profiles. Four focused standard entries are retained; 2025 standard entries run fresh. Selected 64-window add/remove snapshots each reduce heap requests from one to zero. Source review shows two insertion/retirement searches become one, and two publication walks become one. Four scoped sanitizers, 9 fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. One full checkpoint serves the batch; focused GCC results are retained through exact source/binary identity. Original probe failure/correction and all required gaps remain explicit. [Report](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md).
+
+- 2026-10-19: PR124 merged. STYLE-01/CLEAN-01 selects three style-matching operations for one combined checkpoint: selector preparation, universal explicit predicates and ordered candidate merging. Production remains unchanged while independent baseline probes are captured; focused and combined qualification remain pending.
+
+- 2026-10-19: The three STYLE-01/CLEAN-01 matching changes pass eight focused Linux entries. Unchanged-production unit and corrected actual-core baselines are source-bound; the first probe assumption and diagnostic remain. Preparation escape scans fall eight to zero. Linear rule/result equivalence and all nine stream slots pass; one combined checkpoint remains pending.

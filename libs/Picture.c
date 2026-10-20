@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include "picture_color.h"
+#include "picture_cache_name.h"
 #include <stdio.h>
 #include <signal.h>
 #include <ctype.h>
@@ -59,8 +60,31 @@ void picture_set_loader(picture_loader_fn loader, void *context)
 
 void picture_cache_publish(FvwmPicture *picture)
 {
+	/* Complete both links without callbacks before publishing the head. */
 	picture->next = FvwmPictureList;
+	picture->cache_link = &FvwmPictureList;
+	picture->cache_name_hash = picture->name != NULL ?
+		picture_cache_name_hash(picture->name) : 0;
+	if (picture->next != NULL)
+	{
+		picture->next->cache_link = &picture->next;
+	}
 	FvwmPictureList = picture;
+}
+
+static void picture_cache_unlink(FvwmPicture *picture)
+{
+	if (picture->cache_link == NULL)
+	{
+		return;
+	}
+	*picture->cache_link = picture->next;
+	if (picture->next != NULL)
+	{
+		picture->next->cache_link = picture->cache_link;
+	}
+	picture->next = NULL;
+	picture->cache_link = NULL;
 }
 
 FvwmPicture *PGetFvwmPicture(
@@ -93,6 +117,7 @@ void PFreeFvwmPictureData(FvwmPicture *p)
 	{
 		return;
 	}
+	picture_cache_unlink(p);
 	if (p->alloc_pixels != NULL)
 	{
 		free(p->alloc_pixels);
@@ -115,6 +140,8 @@ FvwmPicture *PCacheFvwmPictureAtScale(
 	char *real_path;
 	FvwmPicture *p = FvwmPictureList;
 	unsigned int scale_quarters = factor.quarters;
+	uint64_t path_hash = 0;
+	Bool compared_name = False, have_path_hash = False;
 
 	/* First find the full pathname */
 	if ((path = PictureFindImageFile(name, ImagePath, R_OK)) == NULL)
@@ -135,23 +162,36 @@ FvwmPicture *PCacheFvwmPictureAtScale(
 	/* See if the picture is already cached */
 	while (p)
 	{
-		register char *p1, *p2;
-
-		for (p1 = path, p2 = p->name; *p1 && *p2; ++p1, ++p2)
+		/* Reject incompatible variants before reading any name bytes. */
+		if (!PICTURE_FPA_AGREE(p,fpa) ||
+		    p->scale_quarters != scale_quarters ||
+		    p->target_width != target_width ||
+		    p->target_height != target_height ||
+		    p->generation != generation || p->name == NULL)
 		{
-			if (*p1 != *p2)
+			p = p->next;
+			continue;
+		}
+		/* The first compatible entry keeps the usual head-hit path cheap.
+		 * Only a longer search computes the request's fingerprint. */
+		if (compared_name)
+		{
+			if (!have_path_hash)
 			{
-				break;
+				path_hash = picture_cache_name_hash(path);
+				have_path_hash = True;
+			}
+			if (p->cache_name_hash != path_hash)
+			{
+				p = p->next;
+				continue;
 			}
 		}
+		compared_name = True;
 
 		/* Only a matching variant needs a filesystem stamp check.
 		 * Check every matching entry so changed files still reload. */
-		if (!*p1 && !*p2 && PICTURE_FPA_AGREE(p,fpa)
-		    && p->scale_quarters == scale_quarters
-		    && p->target_width == target_width
-		    && p->target_height == target_height
-		    && p->generation == generation
+		if (strcmp(path, p->name) == 0
 		    && !isFileStampChanged(&p->stamp, real_path))
 		{
 			p->count++; /* Put another weight on the picture */
@@ -199,8 +239,6 @@ FvwmPicture *PCacheFvwmPicture(
 
 void PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
 {
-	FvwmPicture *q = FvwmPictureList;
-
 	if (!p)
 	{
 		return;
@@ -211,6 +249,9 @@ void PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
 		/* still too heavy? */
 		return;
 	}
+	/* Withdraw the dying record before resource release or view callbacks.
+	 * Neighbour retirement repairs the link of every surviving record. */
+	picture_cache_unlink(p);
 	if (p->is_view)
 	{
 		/* The subscription is removed before releasing backing. A view
@@ -262,22 +303,6 @@ void PDestroyFvwmPicture(Display *dpy, FvwmPicture *p)
 	{
 		XFreePixmap(dpy, p->alpha);
 	}
-	/* Link it out of the list (it might not be there) */
-	if(p==q) /* in head? simple */
-	{
-		FvwmPictureList = p->next;
-	}
-	else
-	{
-		while(q && q->next!=p) /* fast forward until end or found */
-		{
-			q = q->next;
-		}
-		if(q) /* not end? means we found it in there, possibly at end */
-		{
-			q->next = p->next; /* link around it */
-		}
-	}
 	free(p);
 
 	return;
@@ -313,20 +338,7 @@ FvwmPicture *PCacheFvwmPictureFromPixmap(
 	Pixmap mask, Pixmap alpha, int width, int height, int nalloc_pixels,
 	Pixel *alloc_pixels, int no_limit)
 {
-	FvwmPicture *p = FvwmPictureList;
-
-	/* See if the picture is already cached */
-	for(; p != NULL; p = p->next)
-	{
-#if 0
-		/* at th present time no good way to cache a pixmap */
-		if (!strcmp(p->name,name))
-		{
-			p->count++;
-			return p;
-		}
-#endif
-	}
+	FvwmPicture *p;
 
 	/* Not previously cached, have to load. Put it first in list */
 	p = PLoadFvwmPictureFromPixmap(
@@ -338,8 +350,7 @@ FvwmPicture *PCacheFvwmPictureFromPixmap(
 		p->target_width = 0;
 		p->target_height = 0;
 		p->generation = WM_UI_RESOURCE_GENERATION_INITIAL;
-		p->next = FvwmPictureList;
-		FvwmPictureList = p;
+		picture_cache_publish(p);
 	}
 
 	return p;

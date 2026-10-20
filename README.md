@@ -12,9 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Private record boundaries](dev-docs/verification/VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md) reduce rebuilds for condition matching,
-initial-window options and monitor adapters. One affected checkpoint preserves
-native executable/data sections across six targets; required gaps remain.
+[Picture-cache lookup and retirement](dev-docs/verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md) reduce repeated name comparisons
+and final-release walks while preserving file reloads and deferred ownership.
+One combined checkpoint covers six targets; required gaps remain explicit.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

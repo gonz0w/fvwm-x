@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Picture-cache lookup and retirement](VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md): three measured operations, one six-target/ten-profile combined checkpoint, seven focused results retained by exact source/nine binaries; ownership/reload coverage and required gaps explicit.
+
 - [Private condition/startup/monitor records](VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md): three dependency improvements, 149 affected native entries, strict code/data parity and ten scoped installs; PR127 runtime evidence/gaps retained.
 
 - [Style flag mutations](VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md): three typed operations; one six-target/ten-profile checkpoint, ten focused results retained by twelve binary identities, required gaps explicit.

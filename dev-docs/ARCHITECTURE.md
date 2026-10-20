@@ -920,3 +920,11 @@ Condition matching owns [condition_names.h](../fvwm/condition_names.h); common
 window interfaces retain opaque condition pointers. Startup/placement option
 layouts and monitor adapter layouts are likewise private to complete consumers.
 See the [measured dependency checkpoint](verification/VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md).
+
+The [picture cache](../libs/Picture.c) owns immutable published names and explicit
+incoming list links in [picture_types.h](../libs/picture_types.h). Cheap variant
+keys precede names; [name fingerprints](../libs/picture_cache_name.h) reject only
+after the first compatible candidate, with full equality/stamp checks retained.
+Final release withdraws membership before resource/view teardown. Ordinary and
+acknowledged async pictures share publication; views remain unlinked. See the
+[picture-cache checkpoint](verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md).

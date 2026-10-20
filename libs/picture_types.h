@@ -42,6 +42,10 @@ struct FvwmPictureThing
 	void (*view_owner_release)(void *);
 	Bool is_view;
 	Bool pending;
+	/* Only published cache records own a link; all constructors zero it.
+	 * Names are immutable during membership. Views/snapshots stay unlinked. */
+	struct FvwmPictureThing **cache_link;
+	uint64_t cache_name_hash;
 };
 
 #endif

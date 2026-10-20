@@ -17,6 +17,8 @@ typedef FvwmPicture *(*picture_loader_fn)(Display *dpy, Window drawable,
 void picture_set_loader(picture_loader_fn loader, void *context);
 /* Publish an owned count-one immutable result with its complete cache key.
  * Views retain it through ordinary reference counting. */
+/* Publish one new, zero-initialized, non-view record. Its name remains
+ * immutable until final release; clones retain the same record. */
 void picture_cache_publish(FvwmPicture *picture);
 
 /** Manipulating FvwmPictures **/

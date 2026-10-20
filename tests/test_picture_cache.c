@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "libs/picture_types.h"
+#include "libs/picture_cache_name.h"
+#include "libs/picture_view.h"
 static unsigned stamp_checks, loads;
 static FileStamp current_stamp = 1;
 static Bool file_missing, load_failed;
@@ -191,6 +193,132 @@ static void test_svg_stamp_path(void)
 #endif
 }
 
+static void check_membership(FvwmPicture *picture)
+{
+	assert(picture->cache_link != NULL);
+	assert(*picture->cache_link == picture);
+	if (picture->next != NULL)
+	{
+		assert(picture->next->cache_link == &picture->next);
+	}
+}
+
+static void test_name_collisions(void)
+{
+	const char *names[] = { "/virtual/target", "/virtual/collision",
+		"/virtual/head", "", "/virtual/\200\377" };
+	FvwmPicture *pictures[5], *hit;
+
+	for (unsigned i = 0; i < 5; i++)
+	{
+		stamp_path = names[i];
+		pictures[i] = cached_picture(names[i], 0, 4, 0, 0, 7);
+		assert(pictures[i] != NULL);
+		check_membership(pictures[i]);
+	}
+	/* A rejection fingerprint must never replace full name equality. */
+	pictures[1]->cache_name_hash = picture_cache_name_hash(names[0]);
+	stamp_path = names[0];
+	stamp_checks = 0;
+	hit = cached_picture(names[0], 0, 4, 0, 0, 7);
+	assert(hit == pictures[0] && stamp_checks == 1);
+	PDestroyFvwmPicture(NULL, hit);
+	for (unsigned i = 3; i < 5; i++)
+	{
+		stamp_path = names[i];
+		hit = cached_picture(names[i], 0, 4, 0, 0, 7);
+		assert(hit == pictures[i]);
+		PDestroyFvwmPicture(NULL, hit);
+	}
+	for (unsigned i = 0; i < 5; i++)
+	{
+		check_membership(pictures[i]);
+		PDestroyFvwmPicture(NULL, pictures[i]);
+	}
+}
+
+static void test_retirement_orders(void)
+{
+	FvwmPicture *pictures[129];
+	unsigned state = 0x43524355;
+
+	stamp_path = "/virtual/retirement";
+	for (unsigned mode = 0; mode < 4; mode++)
+	{
+		for (unsigned i = 0; i < 129; i++)
+		{
+			pictures[i] = cached_picture(stamp_path, 0, 4,
+				0, 0, 7 + i);
+			check_membership(pictures[i]);
+		}
+		for (unsigned remaining = 129; remaining != 0; remaining--)
+		{
+			unsigned slot = mode == 0 ? 0 : remaining - 1;
+			FvwmPicture *hit;
+
+			if (mode >= 2)
+			{
+				state = state * 1664525u + 1013904223u;
+				slot = mode == 2 ? remaining / 2 : state % remaining;
+			}
+			FvwmPicture *picture = pictures[slot];
+
+			/* A retained reference keeps its cache membership. */
+			hit = PCloneFvwmPicture(picture);
+			PDestroyFvwmPicture(NULL, hit);
+			assert(picture->count == 1);
+			check_membership(picture);
+			PDestroyFvwmPicture(NULL, picture);
+			pictures[slot] = pictures[remaining - 1];
+			for (unsigned i = 0; i + 1 < remaining; i++)
+			{
+				check_membership(pictures[i]);
+				hit = cached_picture(stamp_path, 0, 4, 0, 0,
+					pictures[i]->generation);
+				assert(hit == pictures[i] && hit->count == 2);
+				PDestroyFvwmPicture(NULL, hit);
+			}
+		}
+	}
+}
+
+static void retire_neighbour(Display *display, FvwmPicture *view, void *data)
+{
+	FvwmPicture **picture = data;
+
+	(void)view;
+	PDestroyFvwmPicture(display, *picture);
+	*picture = NULL;
+}
+
+static void test_unpublished_and_recursive_release(void)
+{
+	FvwmPicture *cached, *uncached, *view, *pixmap, *hit;
+
+	stamp_path = "/virtual/retained";
+	cached = cached_picture(stamp_path, 0, 4, 0, 0, 7);
+	uncached = PLoadFvwmPictureFromPixmap(NULL, None, strdup("uncached"),
+		None, None, None, 1, 1, 0, NULL, 0);
+	assert(uncached->cache_link == NULL);
+	PDestroyFvwmPicture(NULL, uncached);
+	check_membership(cached);
+	pixmap = PCacheFvwmPictureFromPixmap(NULL, None, strdup("pixmap"),
+		None, None, None, 1, 1, 0, NULL, 0);
+	check_membership(pixmap);
+	/* Raw-record cleanup also withdraws a published data-only record. */
+	PFreeFvwmPictureData(pixmap);
+	check_membership(cached);
+	view = picture_view_create(strdup("view"),
+		(FvwmPictureAttributes){0}, (monitor_scale_factor){4},
+		0, 0, 7, retire_neighbour, &cached);
+	assert(view->cache_link == NULL);
+	PDestroyFvwmPicture(NULL, view);
+	assert(cached == NULL);
+	hit = cached_picture(stamp_path, 0, 4, 0, 0, 7);
+	assert(hit != NULL && hit->count == 1);
+	PDestroyFvwmPicture(NULL, hit);
+}
+
 int main(void)
 {
 	picture_set_loader(load_picture, NULL);
@@ -198,6 +326,9 @@ int main(void)
 	test_key_fields();
 	test_reload_and_refusal();
 	test_svg_stamp_path();
+	test_name_collisions();
+	test_retirement_orders();
+	test_unpublished_and_recursive_release();
 	picture_set_loader(NULL, NULL);
 	return 0;
 }

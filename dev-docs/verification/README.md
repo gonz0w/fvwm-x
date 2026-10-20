@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Private condition/startup/monitor records](VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md): three dependency improvements, 149 affected native entries, strict code/data parity and ten scoped installs; PR127 runtime evidence/gaps retained.
+
 - [Style flag mutations](VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md): three typed operations; one six-target/ten-profile checkpoint, ten focused results retained by twelve binary identities, required gaps explicit.
 
 - [Style flag predicates](VERIFICATION-2026-10-19-STYLE-FLAGS.md): three related read-only operations; one six-target/ten-profile checkpoint, nine focused results retained by eleven binary identities, required gaps explicit.

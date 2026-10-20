@@ -17,7 +17,7 @@
 
 #include "config.h"
 #include <stdio.h>
-
+#include "fvwm/initial_window_options.h"
 #include "libs/fvwmlib.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"

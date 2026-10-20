@@ -31,7 +31,7 @@
 	WORDS_16, WORDS_16, WORDS_16, WORDS_16, \
 	WORDS_16, WORDS_16, WORDS_16, WORDS_16, \
 	WORDS_16, WORDS_16, WORDS_16, WORDS_16
-
+#include "fvwm/initial_window_options.h"
 static unsigned long captured[FvwmPacketMaxSize];
 static size_t captured_size;
 static unsigned captures;

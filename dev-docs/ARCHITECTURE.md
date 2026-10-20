@@ -928,3 +928,10 @@ after the first compatible candidate, with full equality/stamp checks retained.
 Final release withdraws membership before resource/view teardown. Ordinary and
 acknowledged async pictures share publication; views remain unlinked. See the
 [picture-cache checkpoint](verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md).
+
+Donated icon retention uses the [ImageSafety policy](../libs/ImageSafety.h)
+for checked first-exact packed records and combined output sizing.
+[ewmh_icons.c](../fvwm/ewmh_icons.c) retains sampled resource ownership, leaves
+old hints/counts on refusal and publishes a retained reply span before freeing
+the owned reply. The best-icon selector keeps its complete-list validation.
+See the [donated-icon checkpoint](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md).

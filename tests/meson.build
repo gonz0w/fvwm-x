@@ -122,6 +122,14 @@ style_id_filter_test = executable(
 )
 test('style-id-filter', style_id_filter_test)
 
+style_flags_test = executable(
+    'test-style-flags', 'test_style_flags.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+)
+test('style-flags', style_flags_test, timeout: 120)
+
 stack_restack_test = executable(
     'test-stack-restack', ['test_stack_restack.c', '../fvwm/stack_restack.c'],
     include_directories: includedirs,

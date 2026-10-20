@@ -12,9 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Style matching work](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md) removes redundant scans/predicates
-and merges ordered candidates with a bounded heap. Its combined local checkpoint
-passes; required OpenBSD gaps remain [documented](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md).
+[Style flag predicates](dev-docs/verification/VERIFICATION-2026-10-19-STYLE-FLAGS.md) reduce full-span comparison work in
+style selection, simplification and window conditions. One combined checkpoint
+covers six targets; required OpenBSD and hardware/release gaps remain documented.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

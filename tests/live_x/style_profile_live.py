@@ -222,6 +222,12 @@ def run(args):
                      if line.startswith('STYLE_MERGE_WORK ')]
             assert merge == [{'cases': 12, 'rules': 160, 'shapes': 4,
                               'linear_reference': True}]
+            flags = [json.loads(line.removeprefix('STYLE_FLAGS_CORE '))
+                     for line in process.log_path.read_text().splitlines()
+                     if line.startswith('STYLE_FLAGS_CORE ')]
+            assert len(flags) == 1
+            assert flags[0]['conditions'] == 128
+            assert flags[0]['wrapper_cases'] == flags[0]['window_bytes'] * 24 + 2
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,
                             'wildcard_work': wildcard,
@@ -229,7 +235,7 @@ def run(args):
                             'subject_work': subject_work,
                             'cursor_work': cursor_work, 'overlap_work': overlap_work,
                             'escaped_work': escaped_work, 'field_work': fields,
-                            'merge_work': merge},
+                            'merge_work': merge, 'flags_work': flags},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):

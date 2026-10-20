@@ -23,6 +23,7 @@
 #include "fvwm/style.h"
 #include "fvwm/style_id_filter.h"
 #include "fvwm/style_match.h"
+#include "fvwm/conditional.h"
 #include "libs/wild.h"
 #include "libs/Parse.h"
 #include "style_merge_probe.h"
@@ -1271,6 +1272,68 @@ static void work_distribution(unsigned distribution)
 	force_work_streams = distribution == 2;
 }
 
+static void flag_predicate_work(FvwmWindow *window)
+{
+	unsigned char a[sizeof(window_flags)], b[sizeof(a)], mask[sizeof(a)];
+	unsigned wrapper_cases = 0, conditions = 0;
+	const char *names[] = {
+		"Maximized", "StickyAcrossPages", "Iconic", "Shaded"
+	};
+
+	assert(blockcmpmask(NULL, NULL, NULL, 0));
+	assert(blockcmpmask(NULL, NULL, NULL, -1));
+	wrapper_cases += 2;
+	for (size_t i = 0; i < sizeof(a); i++)
+		for (unsigned bit = 1; bit <= 128; bit <<= 1)
+		{
+			memset(a, 0, sizeof(a));
+			memset(b, 0, sizeof(b));
+			memset(mask, 0xff, sizeof(mask));
+			a[i] = bit;
+			assert(!blockcmpmask((char *)a, (char *)b,
+				(char *)mask, sizeof(a)));
+			mask[i] = (unsigned char)~bit;
+			assert(blockcmpmask((char *)a, (char *)b,
+				(char *)mask, sizeof(a)));
+			mask[i] = 0xff;
+			b[i] = bit;
+			assert(blockcmpmask((char *)a, (char *)b,
+				(char *)mask, sizeof(a)));
+			wrapper_cases += 3;
+		}
+	for (unsigned state = 0; state < 16; state++)
+	{
+		FvwmWindow sample = *window;
+
+		memset(&sample.flags, 0, sizeof(sample.flags));
+		SET_MAXIMIZED(&sample, !!(state & 1));
+		SET_STICKY_ACROSS_PAGES(&sample, !!(state & 2));
+		SET_ICONIFIED(&sample, !!(state & 4));
+		SET_SHADED(&sample, !!(state & 8));
+		for (unsigned flag = 0; flag < 4; flag++)
+			for (unsigned on = 0; on < 2; on++)
+			{
+				WindowConditionMask condition;
+				char text[64];
+
+				DefaultConditionMask(&condition);
+				condition.my_flags.use_circulate_hit = 1;
+				condition.my_flags.use_circulate_hit_icon = 1;
+				condition.my_flags.use_circulate_hit_shaded = 1;
+				snprintf(text, sizeof(text), "%s%s",
+					on ? "" : "!", names[flag]);
+				CreateConditionMask(text, &condition);
+				assert(!!MatchesConditionMask(&sample, &condition) ==
+					(!!(state & (1U << flag)) == on));
+				FreeConditionMask(&condition);
+				conditions++;
+			}
+	}
+	printf("STYLE_FLAGS_CORE {\"wrapper_cases\":%u,"
+		"\"conditions\":%u,\"window_bytes\":%zu}\n",
+		wrapper_cases, conditions, sizeof(window_flags));
+}
+
 void __wrap_CaptureAllWindows(const exec_context_t *exc)
 {
 	const char *mode = getenv("FVWM_STYLE_PROFILE_MODE");
@@ -1300,6 +1363,7 @@ void __wrap_CaptureAllWindows(const exec_context_t *exc)
 	}
 	if (strcmp(mode, "fields") == 0)
 	{
+		flag_predicate_work(clients[0]);
 		style_merge_probe(exc, clients[0], work_lookup, work_distribution);
 		field_order_work(exc, clients[0]);
 		fflush(stdout);

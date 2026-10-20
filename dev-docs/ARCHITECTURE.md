@@ -901,3 +901,10 @@ index invalidation/retirement owners. The heap ends before `EWMH_GetStyle`;
 no work moves across update/server-grab or event/command boundaries. The
 [matching checkpoint](verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md) records independent linear visit/result evidence,
 source bounds, measured escape scans and limited guest timing observations.
+
+The [flag-predicate checkpoint](verification/VERIFICATION-2026-10-19-STYLE-FLAGS.md) keeps read-only subset/intersection/
+masked equality in private fvwm/style_flags_predicate.h. It reads complete
+words through memcpy, then byte tails; zero/negative lengths and read-only
+overlap retain their contracts. style.c owns the wrappers/callers; conditional
+selection still uses blockcmpmask. No mutable flags, records, list/index
+lifetimes or update/grab barrier owners change.

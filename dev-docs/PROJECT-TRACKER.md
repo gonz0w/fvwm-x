@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Window-tree walks, DATA-01 / CLEAN-01 | Combined checkpoint passes; ready for PR review | Three ancestor/pointer/frame lookup improvements pass one combined checkpoint: 2061/2061 standard results (2055 fresh / six retained by unchanged runtime/test/build inputs and eight binary identities), plus 455/455 optional entries across six targets/ten profiles. Fifteen real-X drivers verify 45 hierarchy/pointer/reparent observations; ten boundary-policy profiles and three scoped guest sanitizers pass. Nine fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md). |
+| Visual startup ownership, DATA-01 / IMAGE-01 / CLEAN-01 | Implemented; focused Linux passes; combined qualification pending | Checked inherited ID pair, owned visual replies and transactional initial colors. First paired performance observation recorded; regular comparisons every five merged implementation checkpoints. [Runtime report](verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md), [performance reference](verification/PERFORMANCE-2026-10-20.md). |
+| Window-tree walks, DATA-01 / CLEAN-01 | Merged in [PR #131](https://github.com/gonz0w/fvwm-x/pull/131); combined checkpoint passes | Three ancestor/pointer/frame lookup improvements pass one combined checkpoint: 2061/2061 standard results (2055 fresh / six retained by unchanged runtime/test/build inputs and eight binary identities), plus 455/455 optional entries across six targets/ten profiles. Fifteen real-X drivers verify 45 hierarchy/pointer/reparent observations; ten boundary-policy profiles and three scoped guest sanitizers pass. Nine fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md). |
 | Donated icon retention, DATA-01 / IMAGE-01 / CLEAN-01 | Merged in [PR #130](https://github.com/gonz0w/fvwm-x/pull/130); combined checkpoint passes | Three donated-icon record/size/retirement improvements pass one combined checkpoint: 2045/2045 standard results (2037 fresh / eight retained by unchanged production/test/build inputs and nine binary identities), plus 451/451 optional entries across six targets/ten profiles. Selected partial deletion allocations fall three to two. Fifteen actual-core drivers verify 510 icon cases; four scoped guest sanitizers, nine fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md). |
 | Picture-cache lookup and retirement, CACHE-01 / CLEAN-01 | Merged in [PR #129](https://github.com/gonz0w/fvwm-x/pull/129); combined checkpoint passes | Three picture-cache variant/name/retirement improvements pass one combined checkpoint: 2045/2045 standard results (2038 fresh / seven retained by exact source and nine binary identities), plus 451/451 optional entries across six targets/ten profiles. Selected pathname comparisons fall 65 to one/two; two predecessor walks fall 16,384/32,385 to zero. Five scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md). |
 | Private condition/startup/monitor records, MAINT-02 / CLEAN-01 | Merged in [PR #128](https://github.com/gonz0w/fvwm-x/pull/128); affected checkpoint passes | Three condition/startup/monitor-adapter dependency improvements pass 149/149 affected native entries across six targets/ten profiles (15 retained focused / 134 fresh). All 5914 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 identities. ARM GCC layout fanout falls 214/214/230 to 2/22/2 objects. Broader PR127 runtime evidence and required OpenBSD gaps remain source-scoped. [Report](verification/VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md). |
@@ -249,19 +250,22 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-20: PR #130 is merged. DATA-01 #6 / CLEAN-01 #34
-completes one ancestor/pointer/frame walk batch.
-Three ancestor/pointer/frame lookup improvements pass one combined checkpoint:
-2061/2061 standard results (2055 fresh / six retained by unchanged
-runtime/test/build inputs and eight binary identities), plus 455/455 optional
-entries across six targets/ten profiles. Fifteen real-X drivers verify 45
-hierarchy/pointer/reparent observations; ten boundary-policy profiles and three
-scoped guest sanitizers pass. Nine fresh stages and four authenticated BSD
-displays pass. Three required OpenBSD AMD64 omissions and its full-install/two
-staged-geometry gap remain without retries.
-[Report](verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md). DATA-01 is in Review for this component; CLEAN-01 remains
-In progress. IMAGE-01 retains Validation for broader required gaps. CACHE-01,
-MAINT-02, STYLE-01 and STATE-01 remain Ready. VESA #93 stays deferred.
+Immediate selection, 2026-10-20: PR #131 is merged. DATA-01 #6 / IMAGE-01 #8 /
+CLEAN-01 #34 takes one visual-startup ownership batch: checked inherited
+visual/colormap pair, complete screen-local lookup/reply ownership and atomic
+white/black allocation with explicit refusal handling. Focused Linux checks
+pass; one combined qualification remains pending. No configuration migration.
+[Report](verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md).
+
+Performance tracking requested 2026-10-20: the first paired reference compares
+PR #131 and this candidate on one Linux ARM64 GCC default profile, reusing
+existing binaries. Three paired runs record latency/CPU/Linux peak RSS and
+executable sizes. No steady-state speedup is claimed for startup ownership.
+[Reference](verification/PERFORMANCE-2026-10-20.md),
+[cadence](WORKFLOW.md#periodic-performance-comparisons). After this reference
+merges, the next regular comparison is due after five subsequent merged
+implementation checkpoints (0/5 completed); earlier expected hot-path or memory
+changes can reset the reference. VESA #93 remains deferred.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

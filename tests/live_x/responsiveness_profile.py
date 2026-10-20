@@ -71,6 +71,17 @@ def cpu_seconds(pid):
     return (int(fields[11]) + int(fields[12])) / os.sysconf("SC_CLK_TCK")
 
 
+def peak_rss_kib(pid):
+    path = Path(f"/proc/{pid}/status")
+    if not path.exists():
+        return None
+    for line in path.read_text().splitlines():
+        fields = line.split()
+        if len(fields) == 3 and fields[0] == "VmHWM:" and fields[2] == "kB":
+            return int(fields[1])
+    return None
+
+
 def summary(samples):
     ordered = sorted(samples)
     return {"samples": len(samples), "median_ms": statistics.median(samples),
@@ -198,6 +209,7 @@ def profile(args):
                         case.update(commands=summary(commands),
                                     scheduled_10ms=summary(timers),
                                     wm_cpu_percent=cpu_percent,
+                                    wm_peak_rss_kib=peak_rss_kib(process.process.pid),
                                     elapsed_seconds=elapsed,
                                     command_samples_ms=commands, timer_samples_ms=timers)
                         print(json.dumps({key: value for key, value in case.items()

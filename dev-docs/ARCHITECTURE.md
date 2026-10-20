@@ -942,3 +942,12 @@ parent-query state: finite query admission, stable-root checks and reply cleanup
 [IconMan](../modules/FvwmIconMan/x.c) commits only complete representable frame
 offsets. No persistent hierarchy cache is introduced. See the
 [window-tree checkpoint](verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md).
+
+
+Native module visual startup is owned by [PictureBase.c](../libs/PictureBase.c).
+Inherited visual/colormap IDs are admitted as a pair, screen-local visual query
+arrays are released while their Visual pointers remain Display-owned, and
+white/black pixels commit together. Modules save screen defaults on allocation
+refusal; core startup checks the shared result explicitly. Existing X error
+policy still owns stale/mismatched resource IDs. See the
+[ownership checkpoint](verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md).

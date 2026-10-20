@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Visual startup ownership](VERIFICATION-2026-10-20-VISUAL-STARTUP.md): inherited ID admission, visual reply ownership and initial-color refusal; combined qualification pending.
+
+- [Periodic performance reference](PERFORMANCE-2026-10-20.md): alternating paired observations from existing binaries; future comparisons every five merged implementation checkpoints.
+
 - [Window-tree walks](VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md): bounded ancestor/pointer queries and complete checked frame offsets; one combined six-target/ten-profile checkpoint, six focused entries retained and required gaps explicit.
 
 - [Donated icon retention](VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md): checked first-exact records, bounded output and direct partial deletion; one combined six-target/ten-profile checkpoint, eight focused results retained, scoped ownership/refusal coverage and required gaps explicit.

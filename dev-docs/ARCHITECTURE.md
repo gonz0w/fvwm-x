@@ -935,3 +935,10 @@ for checked first-exact packed records and combined output sizing.
 old hints/counts on refusal and publishes a retained reply span before freeing
 the owned reply. The best-icon selector keeps its complete-list validation.
 See the [donated-icon checkpoint](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md).
+
+Window hierarchy operations use [WinMagic](../libs/WinMagic.h) operation-local
+parent-query state: finite query admission, stable-root checks and reply cleanup.
+[Pointer lookup](../fvwm/misc.c) preserves context-before-query order;
+[IconMan](../modules/FvwmIconMan/x.c) commits only complete representable frame
+offsets. No persistent hierarchy cache is introduced. See the
+[window-tree checkpoint](verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md).

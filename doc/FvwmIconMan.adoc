@@ -41,8 +41,9 @@ FvwmIconMan can be set to display which window currently has the
 keyboard focus, and by binding the select event (see below) to the fvwm
 Focus function, you can emulate the TWM icon manager's behavior.
 
-Frame lookup follows at most 4096 parent links. If the hierarchy changes,
-lookup fails, or its coordinate sum cannot be represented, FvwmIconMan keeps
+Frame lookup follows at most 4096 parent links. If lookup fails,
+the query budget is exhausted, or its coordinate sum cannot be represented,
+FvwmIconMan keeps
 its own window as the geometry reference without a partial offset adjustment.
 
 == INITIALIZATION

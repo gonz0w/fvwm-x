@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Window-tree walks](VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md): bounded ancestor/pointer queries and complete checked frame offsets; one combined six-target/ten-profile checkpoint, six focused entries retained and required gaps explicit.
+
 - [Donated icon retention](VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md): checked first-exact records, bounded output and direct partial deletion; one combined six-target/ten-profile checkpoint, eight focused results retained, scoped ownership/refusal coverage and required gaps explicit.
 
 - [Picture-cache lookup and retirement](VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md): three measured operations, one six-target/ten-profile combined checkpoint, seven focused results retained by exact source/nine binaries; ownership/reload coverage and required gaps explicit.

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Style matching work](VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md): three preparation/predicate/merge improvements, one six-target/ten-profile checkpoint; eight focused results retained through ten binary identities, required gaps explicit.
+
 - [Existing legacy tray membership](VERIFICATION-2026-10-19-EWMH-TRAY.md): three mutation/publication improvements, one six-target/ten-profile checkpoint, 64-ID snapshot heap requests 1→0, four focused results retained by exact identity; required gaps preserved.
 
 - [UI record boundaries](VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md): three build-speed improvements, 170 affected six-target/ten-profile entries (17 retained focused / 153 fresh), exact code/data parity and ten scoped installs; PR122 runtime evidence/gaps retained.

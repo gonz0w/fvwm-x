@@ -887,3 +887,17 @@ membership mutation committed for later publication repair. No persistent cache
 or new TRAY-01 feature is added. The [tray checkpoint](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md) distinguishes
 search reduction established by code review from selected allocation measurements and
 records actual property/order/event-mask, spill/refusal and lifetime checks.
+
+
+## Style preparation and candidate merge ownership
+
+`style_match.c` reuses the verified literal prefix while classifying the
+quoted/unquoted remainder; raw offsets and decoded widths remain distinct.
+Explicit universal predicates are known true, including NULL subjects, and
+are omitted without moving the compatibility OR. Selector/subject layouts do
+not grow. `style.c` merges borrowed necessary-key chains through a synchronous
+heap of at most nine heads, retaining exact ordinal precedence and existing
+index invalidation/retirement owners. The heap ends before `EWMH_GetStyle`;
+no work moves across update/server-grab or event/command boundaries. The
+[matching checkpoint](verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md) records independent linear visit/result evidence,
+source bounds, measured escape scans and limited guest timing observations.

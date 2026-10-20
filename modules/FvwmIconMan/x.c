@@ -31,6 +31,7 @@
 #include "libs/log.h"
 #include "libs/XError.h"
 #include "libs/module_x_service.h"
+#include "libs/WinMagic.h"
 #include "libs/flocale_font_types.h"
 #define GRAB_EVENTS (ButtonPressMask|ButtonReleaseMask|ButtonMotionMask|\
 	EnterWindowMask|LeaveWindowMask)
@@ -149,40 +150,14 @@ static void handle_buttonevent (XEvent *theEvent, WinManager *man)
 
 Window find_frame_window (Window win, int *off_x, int *off_y)
 {
-  Window root, parent, *junkw;
-  unsigned int junki;
-  XWindowAttributes attr;
+  Window frame = FGetFrameWindow(theDisplay, win, off_x, off_y);
 
-  ConsoleDebug (X11, "In find_frame_window: 0x%lx\n", win);
-
-  while (1)
+  if (frame == None)
   {
-    if (!XQueryTree (theDisplay, win, &root, &parent, &junkw, &junki))
-    {
-      fvwm_debug(MyName, "%s: find_frame_window: XQueryTree failed.\n",
-                 __func__);
-      return win;
-    }
-    if (junkw)
-      XFree (junkw);
-    if (parent == root)
-      break;
-    if (!XGetWindowAttributes (theDisplay, win, &attr))
-    {
-      fvwm_debug(MyName,
-                 "%s: find_frame_window: XGetWindowAttrigutes failed.\n",
-                 __func__);
-      return win;
-    }
-    ConsoleDebug (X11, "Adding (%d, %d) += (%d, %d)\n",
-		  *off_x, *off_y, attr.x + attr.border_width,
-		  attr.y + attr.border_width);
-    *off_x += attr.x + attr.border_width;
-    *off_y += attr.y + attr.border_width;
-    win = parent;
+    fvwm_debug(MyName, "%s: cannot resolve frame window.\n", __func__);
+    return win;
   }
-
-  return win;
+  return frame;
 }
 
 /*

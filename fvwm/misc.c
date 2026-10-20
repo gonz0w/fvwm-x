@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "libs/WinMagic.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -448,6 +449,7 @@ FvwmWindow *get_pointer_fvwm_window(void)
 	int x,y;
 	Window win;
 	Window ancestor;
+	FWindowTreeWalk walk = {0};
 	FvwmWindow *t;
 
 	FQueryPointer(
@@ -455,9 +457,6 @@ FvwmWindow *get_pointer_fvwm_window(void)
 		    &x, &y, &JunkMask);
 	for (t = NULL ; win != Scr.Root && win != None; win = ancestor)
 	{
-		Window root = None;
-		Window *children;
-		unsigned int nchildren;
 
 		if (XFindContext(dpy, win, FvwmContext, (caddr_t *) &t) !=
 		    XCNOENT)
@@ -465,17 +464,8 @@ FvwmWindow *get_pointer_fvwm_window(void)
 			/* found a matching window context */
 			return t;
 		}
-		/* get next higher ancestor window */
-		children = NULL;
-		if (!XQueryTree(
-			    dpy, win, &root, &ancestor, &children, &nchildren))
-		{
+		if (!FQueryWindowParent(dpy, win, &walk, &ancestor))
 			return NULL;
-		}
-		if (children)
-		{
-			XFree(children);
-		}
 	}
 
 	return t;

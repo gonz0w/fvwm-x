@@ -22,6 +22,9 @@
 
 #include "config.h"
 
+#include <limits.h>
+#include <stdint.h>
+
 #include <X11/Xlib.h>
 #include <stdio.h>
 
@@ -226,37 +229,75 @@ void SlideWindow(
 	return;
 }
 
-/* This function returns the top level ancestor of the window 'child'. It
- * returns None if an error occurs or if the window is a top level window. */
-Window GetTopAncestorWindow(Display *dpy, Window child)
+/* Each reply is owned only for this query. The root must remain stable;
+ * concurrent reparenting can otherwise make an ancestor walk revisit windows. */
+Bool FQueryWindowParent(
+	Display *dpy, Window window, FWindowTreeWalk *walk, Window *parent)
 {
 	Window root = None;
-	Window ancestor = child;
-	Window last_child = child;
-	Window *children;
-	unsigned int nchildren;
+	Window next = None;
+	Window *children = NULL;
+	unsigned int count = 0;
+	Status status;
 
-	if (child == None)
-		return None;
+	*parent = None;
+	if (window == None || walk->queries >= F_WINDOW_TREE_MAX_QUERIES)
+		return False;
+	walk->queries++;
+	status = XQueryTree(dpy, window, &root, &next, &children, &count);
+	if (children != NULL)
+		XFree(children);
+	if (!status || root == None || next == None || next == window ||
+	    (walk->root != None && walk->root != root))
+		return False;
+	walk->root = root;
+	*parent = next;
+	return True;
+}
 
-	while (ancestor != root)
+/* Returns None for a top-level input, failed query or exhausted walk. */
+Window GetTopAncestorWindow(Display *dpy, Window child)
+{
+	FWindowTreeWalk walk = {0};
+	Window window = child;
+	Window parent;
+
+	while (FQueryWindowParent(dpy, window, &walk, &parent))
 	{
-		last_child = ancestor;
-		children = NULL;
-		if (
-			!XQueryTree(
-				dpy, last_child, &root, &ancestor, &children,
-				&nchildren))
-		{
-			return None;
-		}
-		if (children)
-		{
-			XFree(children);
-		}
+		if (parent == walk.root)
+			return window == child ? None : window;
+		window = parent;
 	}
+	return None;
+}
 
-	return (last_child == child) ? None : last_child;
+/* Publish offsets only after a complete walk. A failed/racing hierarchy must
+ * not leave the caller with a partial translation or overflowing coordinates. */
+Window FGetFrameWindow(Display *dpy, Window window, int *off_x, int *off_y)
+{
+	FWindowTreeWalk walk = {0};
+	Window parent;
+	int64_t x = *off_x;
+	int64_t y = *off_y;
+	XWindowAttributes attributes;
+
+	while (FQueryWindowParent(dpy, window, &walk, &parent))
+	{
+		if (parent == walk.root)
+		{
+			*off_x = (int)x;
+			*off_y = (int)y;
+			return window;
+		}
+		if (!XGetWindowAttributes(dpy, window, &attributes))
+			return None;
+		x += (int64_t)attributes.x + attributes.border_width;
+		y += (int64_t)attributes.y + attributes.border_width;
+		if (x < INT_MIN || x > INT_MAX || y < INT_MIN || y > INT_MAX)
+			return None;
+		window = parent;
+	}
+	return None;
 }
 
 /* Given a parent window this function returns a list of children of the

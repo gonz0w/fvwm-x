@@ -12,9 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Donated icon retention](dev-docs/verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md) checks retained records and output sizes,
-and removes an extra partial-deletion copy while preserving owned replies.
-One combined checkpoint covers six targets; required gaps remain explicit.
+[Window-tree walks](dev-docs/verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md) bound ancestor and pointer lookups and keep
+IconMan frame offsets unchanged when lookup fails. One combined checkpoint
+covers six targets; required gaps remain explicit.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

@@ -30,6 +30,10 @@ key and mouse function bindings, while action commands do things like
 raising and lowering windows. Fvwm makes no such distinction and allows
 anything to be changed at any time.
 
+Ancestor lookups for pointer targets and native panel windows follow at most
+4096 parent links. A failed query, inconsistent root or exhausted query budget ends the lookup
+without selecting a partial ancestor.
+
 == OPTIONS
 
 These are the command line options that are recognized by fvwm:

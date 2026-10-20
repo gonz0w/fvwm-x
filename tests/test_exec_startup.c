@@ -53,6 +53,18 @@ int __wrap_open(const char *path, int flags, ...)
 	return __real_open(path, flags);
 }
 
+/* Fortified Clang/glibc builds can call these instead of open/open64.
+ * Inject the same refusal without changing production hardening flags. */
+int __wrap___open_2(const char *path, int flags)
+{
+	return __wrap_open(path, flags);
+}
+
+int __wrap___open64_2(const char *path, int flags)
+{
+	return __wrap_open(path, flags);
+}
+
 int __real_dup2(int, int);
 int __wrap_dup2(int from, int to)
 {
@@ -80,7 +92,7 @@ int __real_execl(const char *, const char *, ...);
 int __wrap_execl(const char *shell, const char *first, ...)
 {
 	va_list args;
-	const char *option, *command;
+	char *option, *command;
 	struct stat input, null_device;
 	int fd = __real_open("/dev/null", O_RDONLY);
 
@@ -98,8 +110,8 @@ int __wrap_execl(const char *shell, const char *first, ...)
 		return -1;
 	}
 	va_start(args, first);
-	option = va_arg(args, const char *);
-	command = va_arg(args, const char *);
+	option = va_arg(args, char *);
+	command = va_arg(args, char *);
 	assert(va_arg(args, char *) == NULL);
 	va_end(args);
 	assert(strcmp(option, "-c") == 0);

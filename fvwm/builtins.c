@@ -2290,13 +2290,14 @@ CMD_Exec(F_CMD_ARGS)
 
 		if (fvwm_setpgrp() == -1)
 		{
-			fvwm_debug(__func__, "setpgrp failed (%s)", strerror(errno));
+			fvwm_debug(
+			    __func__, "setpgrp failed (%s)", strerror(errno));
 			_exit(100);
 		}
-		/* fork owns a copy of the command; no extra string allocation is
-		 * needed. Failed children must not run inherited exit callbacks or
-		 * flush the window manager's copied stdio buffers. */
-		execl(exec_shell_name, exec_shell_name, "-c", action, (char *)NULL);
+		/* fork owns the command copy. Failed children must not run the
+		 * parent's exit callbacks or flush its copied stdio buffers. */
+		execl(exec_shell_name, exec_shell_name, "-c", action,
+			(char *)NULL);
 		fvwm_debug(__func__, "execl failed (%s)", strerror(errno));
 		_exit(100);
 	}

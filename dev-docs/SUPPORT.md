@@ -113,3 +113,5 @@ three repetitions in alternating order. Preserve `comparison.json`, all raw
 run directories and the source/compiler/dependency receipts for both builds.
 RSS is unavailable outside Linux `/proc`; CPU/memory and latency reflect the
 recorded environment. Physical hardware remains separate qualification.
+
+The [process/session startup checkpoint](verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md) records six-target/ten-profile constructor qualification, real session integration, scoped guest sanitizers and unchanged inherited OpenBSD gaps. Its source/profile scope does not establish native-CPU or physical/release acceptance.

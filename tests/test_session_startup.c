@@ -172,7 +172,8 @@ int main(int argc, char **argv)
 	{
 		assert(fsm_init("constructor-test"));
 		assert(published == 2 && watches == 1 && !released);
-		assert(strcmp(getenv("SESSION_MANAGER"), "local/complete:1") == 0);
+		assert(strcmp(getenv("SESSION_MANAGER"),
+			"local/complete:1") == 0);
 		assert(fsm_pollfds(ready, 2) == 2);
 		assert(temporary_files(directory) == 1);
 		fsm_close();
@@ -183,10 +184,11 @@ int main(int argc, char **argv)
 		assert(strcmp(getenv("SESSION_MANAGER"), "prior-manager") == 0);
 		assert(released == 1 && fsm_pollfds(ready, 2) == 0);
 		assert(removals == (fault == ENV_FAIL));
-		if (fault == NAME_FAIL || fault == COOKIE_FAIL || fault == AUTH_FAIL)
+		if (fault == NAME_FAIL || fault == COOKIE_FAIL ||
+		    fault == AUTH_FAIL)
 			assert(published == 0);
 		assert(temporary_files(directory) == 0);
-		/* Failure must leave a usable retry path, with no stale watch. */
+		/* Failure leaves a usable retry path, with no stale watch. */
 		fault = NORMAL;
 		name_calls = cookie_calls = helper_calls = watches = 0;
 		assert(fsm_init("constructor-retry"));

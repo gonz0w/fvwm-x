@@ -320,7 +320,7 @@ Status SetAuthentication(
 		}
 	}
 	/* Prepare every entry before writing files or publishing any listener's
-	 * credentials. A later allocation failure must leave no partial setup. */
+	 * credentials. Allocation failure must leave no partial setup. */
 	for (i = 0; i < count * 2; i++)
 	{
 		write_iceauth(addfp, removefp, &(*authDataEntries)[i]);
@@ -1091,7 +1091,7 @@ int fsm_init(char *module)
 	}
 
 	/* Each listener needs a distinct selectable descriptor. This also
-	 * bounds authentication's two entries per transport before arithmetic. */
+	 * bounds the two auth entries per transport before arithmetic. */
 	if (numTransports < 1 || numTransports > FD_SETSIZE ||
 	    slistenObjs == NULL)
 	{
@@ -1124,7 +1124,8 @@ int fsm_init(char *module)
 	networkIds = FIceComposeNetworkIdList(numTransports, slistenObjs);
 	if (networkIds == NULL)
 	{
-		fvwm_debug(__func__, "Cannot compose session network identifiers");
+		fvwm_debug(__func__,
+			"Cannot compose session network identifiers");
 		goto failed;
 	}
 	ice_fd = fxcalloc(numTransports, sizeof(*ice_fd));
@@ -1139,7 +1140,7 @@ int fsm_init(char *module)
 	}
 	watching = True;
 	/* Publish only a usable manager, preserving the caller's environment
-	 * if allocation fails. setenv copies the value; no putenv buffer leaks. */
+	 * on failure. setenv copies the value; no putenv buffer leaks. */
 	if (setenv("SESSION_MANAGER", networkIds, 1) != 0)
 	{
 		fvwm_debug(__func__, "Cannot publish session manager (%s)",

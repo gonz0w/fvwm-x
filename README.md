@@ -12,8 +12,8 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Picture-cache lookup and retirement](dev-docs/verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md) reduce repeated name comparisons
-and final-release walks while preserving file reloads and deferred ownership.
+[Donated icon retention](dev-docs/verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md) checks retained records and output sizes,
+and removes an extra partial-deletion copy while preserving owned replies.
 One combined checkpoint covers six targets; required gaps remain explicit.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release

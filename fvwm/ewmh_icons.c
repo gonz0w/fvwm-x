@@ -46,8 +46,29 @@
 #include "icons.h"
 #include "ewmh.h"
 #include "ewmh_intern.h"
+#include "ewmh_property_policy.h"
 #include "geometry.h"
 #include "libs/monitor_types.h"
+
+
+static void find_retained_icon(const CARD32 *icons, int bytes,
+	int width, int height, size_t *start, size_t *words)
+{
+	FEwmhIconResult result;
+
+	*start = *words = 0;
+	if (bytes < 0 || bytes % sizeof(CARD32) != 0)
+	{
+		fvwm_debug(__func__, "Ignoring incomplete icon record bytes");
+		return;
+	}
+	result = FEwmhIconFindExact((const uint32_t *)icons,
+		(size_t)bytes / sizeof(CARD32), (uint32_t)width,
+		(uint32_t)height, start, words);
+	if (result == F_EWMH_ICON_INVALID)
+		fvwm_debug(__func__, "Ignoring malformed icon retention records");
+}
+
 /*
  * net icon handler
  */
@@ -208,10 +229,10 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 	FvwmWindow *fw, CARD32 *orig_icon, int *orig_size, Bool is_mini_icon)
 {
 	CARD32 *new_icon = NULL;
-	int keep_start = 0, keep_length = 0;
+	size_t keep_start = 0, keep_length = 0;
 	int width = 0, height = 0;
 	int i,j,k,l,m;
-	int s;
+	size_t pixel_count, word_count;
 	Pixmap pixmap = None;
 	Pixmap mask = None;
 	Pixmap alpha = None;
@@ -239,7 +260,6 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 	Bool sample_no_limit = False;
 	int original_size = *orig_size;
 
-	s = *orig_size / sizeof(CARD32);
 	*orig_size = 0;
 
 	if (is_mini_icon)
@@ -326,28 +346,18 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		int k_height = (is_mini_icon)?
 			fw->ewmh_icon_height : fw->ewmh_mini_icon_height;
 
-		for (i = 0; i < s - 1 && i >= 0; )
-		{
-			if (i + 1 + orig_icon[i]*orig_icon[i+1] < s)
-			{
-				if (orig_icon[i] == k_width &&
-				    orig_icon[i+1] == k_height)
-				{
-					keep_start = i;
-					keep_length = 2 +
-						orig_icon[i] * orig_icon[i+1];
-					i = s;
-				}
-			}
-			if (i != s && orig_icon[i]*orig_icon[i+1] > 0)
-			{
-				i = i + 2 + orig_icon[i]*orig_icon[i+1];
-			}
-			else
-			{
-				i = s;
-			}
-		}
+		find_retained_icon(orig_icon, original_size, k_width, k_height,
+			&keep_start, &keep_length);
+	}
+
+	/* Match the acquisition/render ceilings before touching the drawable.
+	 * The complete property must remain readable by our bounded owner. */
+	if (!FEwmhIconSizeIsSafe((uint64_t)width, (uint64_t)height,
+	    keep_length, FVWM_EWMH_ICON_MAX_BYTES, &pixel_count, &word_count) ||
+	    pixel_count > SIZE_MAX / sizeof(XColor))
+	{
+		fvwm_debug(__func__, "Ignoring oversized icon donation");
+		goto out;
 	}
 
 	image = XGetImage(
@@ -369,7 +379,7 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		a_image = XGetImage(dpy, alpha, 0, 0, width, height,
 				    AllPlanes, ZPixmap);
 	}
-	*orig_size = (height*width + 2 + keep_length) * sizeof(CARD32);
+	*orig_size = (int)(word_count * sizeof(CARD32));
 	new_icon = fxmalloc(*orig_size);
 	if (keep_length > 0)
 	{
@@ -426,8 +436,8 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 		unsigned char *cm;
 		XColor *colors;
 
-		colors = fxmalloc(width * height * sizeof(XColor));
-		cm = fxmalloc(width * height * sizeof(char));
+		colors = fxmalloc(pixel_count * sizeof(XColor));
+		cm = fxmalloc(pixel_count * sizeof(char));
 		for (j = 0; j < height; j++)
 		{
 			for (i = 0; i < width; i++)
@@ -498,9 +508,13 @@ CARD32 *ewmh_SetWmIconFromPixmap(
 
 	ewmh_ChangeProperty(
 		FW_W(fw), "_NET_WM_ICON", EWMH_ATOM_LIST_PROPERTY_NOTIFY,
-		(unsigned char *)new_icon, height*width + 2 + keep_length);
+		(unsigned char *)new_icon, (int)word_count);
 
 out:
+	/* A refused replacement leaves the original list usable by the other
+	 * donation owner; only a returned allocation changes its byte count. */
+	if (new_icon == NULL)
+		*orig_size = original_size;
 	if (destroy_icon_pix && pixmap != None)
 	{
 		XFreePixmap(dpy, pixmap);
@@ -543,10 +557,8 @@ out:
 void EWMH_DeleteWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon)
 {
 	CARD32 *list;
-	CARD32 *new_list = NULL;
-	int keep_start = 0, keep_length = 0;
+	size_t keep_start = 0, keep_length = 0;
 	int s;
-	int i;
 
 	if (mini_icon && icon)
 	{
@@ -567,7 +579,6 @@ void EWMH_DeleteWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon)
 	{
 		return;
 	}
-	s = s / sizeof(CARD32);
 
 	if (FMiniIconsSupported && list != NULL)
 	{
@@ -576,43 +587,18 @@ void EWMH_DeleteWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon)
 		int k_height = (mini_icon) ? fw->ewmh_icon_height :
 			fw->ewmh_mini_icon_height;
 
-		for (i = 0; i < s - 1; )
-		{
-			if (i + 1 + list[i]*list[i+1] < s)
-			{
-				if (list[i] == k_width &&
-				    list[i+1] == k_height)
-				{
-					keep_start = i;
-					keep_length =  2 + list[i]*list[i+1];
-					i = s;
-				}
-			}
-			if (i != s && list[i]*list[i+1] > 0)
-			{
-				i = i + 2 + list[i]*list[i+1];
-			}
-			else
-			{
-				i = s;
-			}
-		}
+		find_retained_icon(list, s, k_width, k_height,
+			&keep_start, &keep_length);
 	}
 
 	if (keep_length > 0)
 	{
-		new_list = fxmalloc(keep_length * sizeof(CARD32));
-		memcpy(
-			new_list, &list[keep_start],
-			keep_length * sizeof(CARD32));
-	}
-
-	if (new_list != NULL)
-	{
+		/* Xlib consumes this owned reply span synchronously. Keep the
+		 * reply alive through publication; no second copy is needed. */
 		ewmh_ChangeProperty(
-			FW_W(fw),"_NET_WM_ICON",
+			FW_W(fw), "_NET_WM_ICON",
 			EWMH_ATOM_LIST_PROPERTY_NOTIFY,
-			(unsigned char *)new_list, keep_length);
+			(unsigned char *)(list + keep_start), (int)keep_length);
 	}
 	else
 	{
@@ -632,10 +618,6 @@ void EWMH_DeleteWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon)
 		fw->ewmh_icon_width = 0;
 		fw->ewmh_icon_height = 0;
 	}
-	if (new_list != NULL)
-	{
-		free(new_list);
-	}
 	free(list);
 }
 
@@ -643,8 +625,6 @@ void EWMH_DeleteWmIcon(FvwmWindow *fw, Bool mini_icon, Bool icon)
  * Create an x image from a NET icon
  */
 
-#define EWMH_ICON_MAX_DIMENSION 4096U
-#define EWMH_ICON_MAX_PIXELS (16U * 1024U * 1024U)
 static
 void extract_wm_icon(
 	CARD32 *list, int size, int wanted_w, int wanted_h,
@@ -664,7 +644,7 @@ void extract_wm_icon(
 	if (!FEwmhIconFindBest(
 		    (const uint32_t *)list, (size_t)size / sizeof(CARD32),
 		    (uint32_t)wanted_w, (uint32_t)wanted_h,
-		    EWMH_ICON_MAX_DIMENSION, EWMH_ICON_MAX_PIXELS,
+		    F_EWMH_ICON_MAX_DIMENSION, F_EWMH_ICON_MAX_PIXELS,
 		    &pixel_start, &width, &height))
 	{
 		return;

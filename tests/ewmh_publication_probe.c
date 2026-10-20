@@ -12,6 +12,8 @@
 #include <string.h>
 #include "libs/fvwmlib.h"
 #include "libs/Ficonv.h"
+#include "libs/picture_types.h"
+#include "libs/Picture.h"
 #include "fvwm/fvwm.h"
 #include "fvwm/execcontext.h"
 #include "fvwm/commands.h"
@@ -25,10 +27,25 @@
 extern ewmh_atom ewmh_atom_allowed_actions[];
 
 static Bool measure_work, measure_policy, measure_names, large_name;
+static Bool measure_icons;
+static unsigned icon_allocations, icon_image_reads;
+static Bool refuse_icon_image;
 static unsigned static_walks, dynamic_walks, paired_walks, permissions[6];
 static unsigned name_count, name_frees, name_scans, name_allocations;
 static size_t name_array_bytes;
 static char *converted_names[64];
+
+XImage *__real_XGetImage(Display *, Drawable, int, int, unsigned, unsigned,
+	unsigned long, int);
+XImage *__wrap_XGetImage(Display *display, Drawable drawable, int x, int y,
+	unsigned width, unsigned height, unsigned long planes, int format)
+{
+	icon_image_reads += measure_icons;
+	if (measure_icons && refuse_icon_image)
+		return NULL;
+	return __real_XGetImage(display, drawable, x, y, width, height,
+		planes, format);
+}
 
 static Bool baseline(void)
 {
@@ -132,6 +149,7 @@ void *__real_fxmalloc(size_t);
 void *__wrap_fxmalloc(size_t bytes)
 {
 	ewmh_tray_allocation(bytes);
+	icon_allocations += measure_icons;
 	if (measure_names && name_allocations++ == 0)
 		name_array_bytes = bytes;
 	return __real_fxmalloc(bytes);
@@ -400,6 +418,195 @@ static void desktop_names(struct monitor *live)
 	puts("desktop-name lengths/UTF8/empty/refusal/ownership: passed");
 }
 
+static void check_icon_words(Window window, const CARD32 *expected,
+	unsigned count)
+{
+	Atom type;
+	int format;
+	unsigned long length, after;
+	unsigned char *data = NULL;
+	Atom property = XInternAtom(dpy, "_NET_WM_ICON", False);
+
+	assert(XGetWindowProperty(dpy, window, property, 0, 128, False,
+		XA_CARDINAL, &type, &format, &length, &after, &data) == Success);
+	assert(!after && length == count);
+	if (count)
+	{
+		assert(type == XA_CARDINAL && format == 32);
+		for (unsigned i = 0; i < count; i++)
+			assert((CARD32)((unsigned long *)data)[i] == expected[i]);
+	}
+	else
+		assert(type == None);
+	XFree(data);
+}
+
+static void set_icon_words(Window window, const CARD32 *words, unsigned count)
+{
+	unsigned long values[128];
+
+	assert(count <= 128);
+	for (unsigned i = 0; i < count; i++)
+		values[i] = words[i];
+	XChangeProperty(dpy, window, XInternAtom(dpy, "_NET_WM_ICON", False),
+		XA_CARDINAL, 32, PropModeReplace,
+		(unsigned char *)values, count);
+}
+
+static void icon_donation(Window window)
+{
+	const CARD32 original[] = { 2, 1, 0xff112233, 0xff445566,
+		1, 1, 0xff778899 };
+	const CARD32 malformed[] = { UINT32_MAX, UINT32_MAX, 0 };
+	Pixmap pixmap = XCreatePixmap(dpy, Scr.Root, 1, 1, Pdepth);
+	GC gc = XCreateGC(dpy, pixmap, 0, NULL);
+
+	assert(pixmap != None && gc != None);
+	XSetForeground(dpy, gc, BlackPixel(dpy, DefaultScreen(dpy)));
+	XFillRectangle(dpy, pixmap, gc, 0, 0, 1, 1);
+	for (unsigned mode = 0; mode < 10; mode++)
+	{
+		FvwmWindow fw = { 0 };
+		FvwmPicture picture = { .picture = pixmap,
+			.width = 1, .height = 1, .count = 1 };
+		CARD32 input[7], expected[7], *donation;
+		int bytes = sizeof(input), input_bytes;
+		Bool success = mode == 0 || mode >= 8;
+
+		memcpy(input, original, sizeof(input));
+		memcpy(expected, original, 4 * sizeof(CARD32));
+		FW_W(&fw) = window;
+		fw.mini_icon = &picture;
+		fw.ewmh_icon_width = 2;
+		fw.ewmh_icon_height = 1;
+		fw.ewmh_mini_icon_width = fw.ewmh_mini_icon_height = 7;
+		switch (mode)
+		{
+		case 1: picture.pending = True; break;
+		case 2: picture.picture = None; break;
+		case 3: picture.width = 0; break;
+		case 4: picture.width = 4097; break;
+		case 5: picture.height = 4097; break;
+		case 6: picture.width = UINT32_MAX; break;
+		case 7: refuse_icon_image = True; break;
+		case 8:
+			memcpy(input, malformed, sizeof(malformed));
+			bytes = sizeof(malformed);
+			break;
+		case 9: bytes--; break;
+		}
+		input_bytes = bytes;
+		set_icon_words(window, original, 7);
+		icon_image_reads = icon_allocations = 0;
+		measure_icons = True;
+		donation = ewmh_SetWmIconFromPixmap(&fw, input, &bytes, True);
+		measure_icons = False;
+		refuse_icon_image = False;
+		assert(memcmp(input, mode == 8 ? malformed : original,
+			mode == 8 ? sizeof(malformed) : sizeof(original)) == 0);
+		assert(picture.count == 1 && fw.mini_icon == &picture);
+		assert(fw.ewmh_icon_width == 2 && fw.ewmh_icon_height == 1);
+		if (success)
+		{
+			unsigned retained = mode == 0 ? 4 : 0;
+
+			assert(donation != NULL && icon_image_reads == 1);
+			assert(bytes == (int)((retained + 3) * sizeof(CARD32)));
+			expected[retained] = expected[retained + 1] = 1;
+			expected[retained + 2] = 0xff000000;
+			assert(memcmp(donation, expected, bytes) == 0);
+			check_icon_words(window, expected, retained + 3);
+			assert(fw.ewmh_mini_icon_width == 1 &&
+				fw.ewmh_mini_icon_height == 1);
+			free(donation);
+		}
+		else
+		{
+			assert(donation == NULL && bytes == input_bytes);
+			assert(icon_image_reads == (mode == 7 ? 1U : 0U));
+			assert(icon_allocations == 0);
+			check_icon_words(window, original, 7);
+			assert(fw.ewmh_mini_icon_width == 7 &&
+				fw.ewmh_mini_icon_height == 7);
+		}
+	}
+	XFreeGC(dpy, gc);
+	XFreePixmap(dpy, pixmap);
+}
+
+static void icon_malformed_retention(Window window)
+{
+	const CARD32 records[][4] = { { UINT32_MAX, UINT32_MAX, 0, 0 },
+		{ 0, 1, 0, 0 }, { 2, 2, 0, 0 }, { 1, 1, 0xff112233, 2 } };
+
+	for (unsigned mode = 0; mode < 4; mode++)
+	{
+		FvwmWindow fw = { 0 };
+
+		FW_W(&fw) = window;
+		fw.ewmh_icon_width = fw.ewmh_icon_height = 1;
+		fw.ewmh_mini_icon_width = fw.ewmh_mini_icon_height = 2;
+		set_icon_words(window, records[mode], 4);
+		EWMH_DeleteWmIcon(&fw, True, False);
+		/* The first complete exact record still wins before a bad suffix. */
+		check_icon_words(window, mode == 3 ? records[mode] : NULL,
+			mode == 3 ? 3 : 0);
+		assert(fw.ewmh_icon_width == 1 && fw.ewmh_icon_height == 1);
+		assert(!fw.ewmh_mini_icon_width && !fw.ewmh_mini_icon_height);
+	}
+}
+
+static void icon_retention(Window window)
+{
+	const CARD32 icons[] = { 2, 1, 0xff112233, 0xff445566,
+		1, 1, 0xff778899 };
+	unsigned selected = 0;
+	Bool old = getenv("FVWM_ICON_RETENTION_BASELINE") != NULL;
+
+	if (!FMiniIconsSupported)
+		return;
+	for (unsigned mode = 0; mode < 3; mode++)
+	{
+		FvwmWindow fw = { 0 };
+		Bool mini = mode != 1, icon = mode != 0;
+
+		FW_W(&fw) = window;
+		fw.ewmh_icon_width = 2;
+		fw.ewmh_icon_height = 1;
+		fw.ewmh_mini_icon_width = fw.ewmh_mini_icon_height = 1;
+		set_icon_words(window, icons, 7);
+		icon_allocations = 0;
+		measure_icons = True;
+		EWMH_DeleteWmIcon(&fw, mini, icon);
+		measure_icons = False;
+		if (mode == 2)
+		{
+			assert(icon_allocations == 0);
+			check_icon_words(window, NULL, 0);
+		}
+		else
+		{
+			assert(icon_allocations == (old ? 3U : 2U));
+			check_icon_words(window, icons + (mode ? 4 : 0),
+				mode ? 3 : 4);
+			selected = icon_allocations;
+		}
+		assert(fw.ewmh_icon_width == (icon ? 0 : 2));
+		assert(fw.ewmh_icon_height == (icon ? 0 : 1));
+		assert(fw.ewmh_mini_icon_width == (mini ? 0 : 1));
+		assert(fw.ewmh_mini_icon_height == (mini ? 0 : 1));
+	}
+	if (!old)
+	{
+		icon_donation(window);
+		icon_malformed_retention(window);
+	}
+	printf("STATE_ICON_RETENTION_WORK {\"cases\":%u,"
+		"\"partial_delete_allocations\":%u,\"baseline\":%u}\n",
+		old ? 3U : 17U, selected, old);
+	puts("icon retained-span deletion/pixels/metadata/ownership: passed");
+}
+
 void ewmh_publication_probe(struct monitor *monitor)
 {
 	Window window;
@@ -409,6 +616,7 @@ void ewmh_publication_probe(struct monitor *monitor)
 	action_publications(window);
 	strut_publications(monitor, window);
 	desktop_names(monitor);
+	icon_retention(window);
 	XDestroyWindow(dpy, window);
 	XSync(dpy, False);
 }

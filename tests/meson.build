@@ -656,7 +656,7 @@ test('fevent-hints', fevent_hints_test)
 image_safety_test = executable(
     'test-image-safety',
     ['test_image_safety.c', '../libs/ImageSafety.c'],
-    include_directories: include_directories('../libs'),
+    include_directories: include_directories('..', '../libs'),
     c_args: ['-UNDEBUG'],
 )
 
@@ -1713,6 +1713,7 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '-Wl,--wrap=ewmh_HandleDynamicWorkArea',
             '-Wl,--wrap=XDeleteProperty',
             '-Wl,--wrap=XInternAtoms', '-Wl,--wrap=XInternAtom',
+            '-Wl,--wrap=XGetImage',
             '-Wl,--wrap=malloc', '-Wl,--wrap=realloc'],
         c_args: ['-UNDEBUG'],
     )

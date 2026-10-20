@@ -39,6 +39,7 @@
 #include "style_id_filter.h"
 #include "style_match.h"
 #include "style_flags_predicate.h"
+#include "style_flags_mutate.h"
 #include "colorset.h"
 #include "ewmh.h"
 #include "placement.h"
@@ -290,48 +291,6 @@ static void init_window_style_list(window_style_list **list,
 	init_window_style_list(&SLGET_NEXT_LIST(**list),flags);
 }
 
-static Bool blockor(char *dest, char *blk1, char *blk2, int length)
-{
-	int i;
-	char result = 0;
-
-	for (i = 0; i < length; i++)
-	{
-		dest[i] = (blk1[i] | blk2[i]);
-		result |= dest[i];
-	}
-
-	return (result) ? 1 : 0;
-}
-
-static int blockand(char *dest, char *blk1, char *blk2, int length)
-{
-	int i;
-	char result = 0;
-
-	for (i = 0; i < length; i++)
-	{
-		dest[i] = (blk1[i] & blk2[i]);
-		result |= dest[i];
-	}
-
-	return (result) ? 1 : 0;
-}
-
-static int blockunmask(char *dest, char *blk1, char *blk2, int length)
-{
-	int i;
-	char result = (char)0xff;
-
-	for (i = 0; i < length; i++)
-	{
-		dest[i] = (blk1[i] & ~blk2[i]);
-		result |= dest[i];
-	}
-
-	return (result) ? 1 : 0;
-}
-
 static int blockissubset(char *sub, char *super, int length)
 {
 	return style_flags_subset(sub, super, length);
@@ -471,18 +430,8 @@ static int Get_TBLR(char *token, unsigned char *IconFill)
 
 static void cleanup_style_defaults(window_style *style)
 {
-	int i;
-	char *dflt;
-	char *mask;
-
-	mask = (char *)&(style->flag_mask);
-	dflt = (char *)&(style->flag_default);
-	for (i = 0; i < sizeof(style_flags); i++)
-	{
-		dflt[i] &= ~mask[i];
-	}
-
-	return;
+	style_flags_without(&style->flag_default, &style->flag_default,
+		&style->flag_mask);
 }
 
 /* merge_styles - For a matching style, merge window_style to window_style
@@ -959,8 +908,7 @@ static void free_style_mask(window_style *style, style_flags *mask)
 
 	/* mask out all bits that are not set in the target style */
 	pmask =&local_mask;
-	blockand((char *)pmask, (char *)&style->flag_mask, (char *)mask,
-		 sizeof(style_flags));
+	style_flags_intersection(pmask, &style->flag_mask, mask);
 
 	/* Free contents of style */
 	if (pmask->has_decor)
@@ -988,12 +936,9 @@ static void free_style_mask(window_style *style, style_flags *mask)
 		remove_icon_boxes_from_style(style);
 	}
 	/* remove styles from definitiion */
-	blockunmask((char *)&style->flag_mask, (char *)&style->flag_mask,
-		    (char *)pmask, sizeof(style_flags));
-	blockunmask((char *)&style->flag_default, (char *)&style->flag_default,
-		    (char *)pmask, sizeof(style_flags));
-	blockunmask((char *)&style->change_mask, (char *)&style->change_mask,
-		    (char *)pmask, sizeof(style_flags));
+	style_flags_without(&style->flag_mask, &style->flag_mask, pmask);
+	style_flags_without(&style->flag_default, &style->flag_default, pmask);
+	style_flags_without(&style->change_mask, &style->change_mask, pmask);
 
 	return;
 }
@@ -1294,14 +1239,10 @@ static inline Bool _simplify_style_list(window_style_list *list)
 			{
 				if (one_fw_can_match_both_ids(cur, cmp))
 				{
-					blockor((char *)&interflags,
-						(char *)&interflags,
-						(char *)&cmp->flag_mask,
-						sizeof(style_flags));
-					blockor((char *)&interflags,
-						(char *)&interflags,
-						(char *)&cmp->flag_default,
-						sizeof(style_flags));
+					style_flags_union(&interflags,
+						&interflags, &cmp->flag_mask);
+					style_flags_union(&interflags,
+						&interflags, &cmp->flag_default);
 				}
 				cmp = SGET_PREV_STYLE(*cmp);
 				continue;
@@ -1325,10 +1266,7 @@ static inline Bool _simplify_style_list(window_style_list *list)
 			}
 			/* remove all styles that are overridden later from the
 			 * style */
-			blockor((char *)&dummyflags,
-				(char *)&sumdflags,
-				(char *)&sumflags,
-				sizeof(style_flags));
+			style_flags_union(&dummyflags, &sumdflags, &sumflags);
 			free_style_mask(cmp, &dummyflags);
 			if (
 				!blocksintersect(
@@ -1347,14 +1285,10 @@ static inline Bool _simplify_style_list(window_style_list *list)
 				size_t lookup_position = cur->lookup_ordinal;
 
 				/* Add the style to the set */
-				blockor((char *)&sumflags,
-					(char *)&sumflags,
-					(char *)&cmp->flag_mask,
-					sizeof(style_flags));
-				blockor((char *)&sumdflags,
-					(char *)&sumflags,
-					(char *)&cmp->flag_default,
-					sizeof(style_flags));
+				style_flags_union(&sumflags,
+					&sumflags, &cmp->flag_mask);
+				style_flags_union(&sumdflags,
+					&sumflags, &cmp->flag_default);
 				/* merge cmp into cur and delete it
 				 * afterwards */
 				merge_styles(cmp, cur, True);
@@ -1393,14 +1327,10 @@ static inline Bool _simplify_style_list(window_style_list *list)
 				window_style *tmp = SGET_PREV_STYLE(*cmp);
 
 				/* Add the style to the set */
-				blockor((char *)&sumflags,
-					(char *)&sumflags,
-					(char *)&cur->flag_mask,
-					sizeof(style_flags));
-				blockor((char *)&sumdflags,
-					(char *)&sumflags,
-					(char *)&cur->flag_default,
-					sizeof(style_flags));
+				style_flags_union(&sumflags,
+					&sumflags, &cur->flag_mask);
+				style_flags_union(&sumdflags,
+					&sumflags, &cur->flag_default);
 				/* merge cur into cmp and delete it
 				 * afterwards */
 				merge_styles(cmp, cur, True);
@@ -1414,14 +1344,10 @@ static inline Bool _simplify_style_list(window_style_list *list)
 			else
 			{
 				/* Add it to the set of interfering styles. */
-				blockor((char *)&interflags,
-					(char *)&interflags,
-					(char *)&cmp->flag_mask,
-					sizeof(style_flags));
-				blockor((char *)&interflags,
-					(char *)&interflags,
-					(char *)&cmp->flag_default,
-					sizeof(style_flags));
+				style_flags_union(&interflags,
+					&interflags, &cmp->flag_mask);
+				style_flags_union(&interflags,
+					&interflags, &cmp->flag_default);
 				cmp = SGET_PREV_STYLE(*cmp);
 			}
 		}

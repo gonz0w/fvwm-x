@@ -21,6 +21,7 @@
 #include "fvwm/externs.h"
 #include "fvwm/screen.h"
 #include "libs/monitor_types.h"
+#include "ewmh_tray_probe.h"
 extern ewmh_atom ewmh_atom_allowed_actions[];
 
 static Bool measure_work, measure_policy, measure_names, large_name;
@@ -130,6 +131,7 @@ void __wrap_free(void *memory)
 void *__real_fxmalloc(size_t);
 void *__wrap_fxmalloc(size_t bytes)
 {
+	ewmh_tray_allocation(bytes);
 	if (measure_names && name_allocations++ == 0)
 		name_array_bytes = bytes;
 	return __real_fxmalloc(bytes);

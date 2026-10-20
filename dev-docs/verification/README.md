@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Style flag predicates](VERIFICATION-2026-10-19-STYLE-FLAGS.md): three related read-only operations; one six-target/ten-profile checkpoint, nine focused results retained by eleven binary identities, required gaps explicit.
+
 - [Style matching work](VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md): three preparation/predicate/merge improvements, one six-target/ten-profile checkpoint; eight focused results retained through ten binary identities, required gaps explicit.
 
 - [Existing legacy tray membership](VERIFICATION-2026-10-19-EWMH-TRAY.md): three mutation/publication improvements, one six-target/ten-profile checkpoint, 64-ID snapshot heap requests 1→0, four focused results retained by exact identity; required gaps preserved.

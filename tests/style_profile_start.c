@@ -4,7 +4,7 @@
  * (at your option) any later version.
  */
 #include "config.h"
-
+#include "fvwm/initial_window_options.h"
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>

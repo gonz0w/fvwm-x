@@ -17,7 +17,7 @@
 
 #include "config.h"
 #include "libs/FProperty.h"
-
+#include "fvwm/initial_window_options.h"
 #include <stdio.h>
 
 #include "libs/fvwmlib.h"

@@ -101,7 +101,7 @@
 #include "libs/monitor_types.h"
 #include "libs/picture_types.h"
 /* ---------------------------- local definitions -------------------------- */
-
+#include "fvwm/initial_window_options.h"
 /* ---------------------------- local macros ------------------------------- */
 
 /* ---------------------------- imports ------------------------------------ */

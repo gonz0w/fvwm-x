@@ -72,7 +72,7 @@ static int do_all_iconboxes(FvwmWindow *t, icon_boxes **icon_boxes_ptr);
 static void GetIconFromFile(FvwmWindow *fw);
 static void GetIconWindow(FvwmWindow *fw);
 static void GetIconBitmap(FvwmWindow *fw);
-
+#include "fvwm/initial_window_options.h"
 static void clear_icon_dimensions(FvwmWindow *fw)
 {
 	int px;

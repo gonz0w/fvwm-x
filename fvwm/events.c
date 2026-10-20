@@ -49,7 +49,7 @@
 #include "configure_merge.h"
 #include <X11/extensions/Xrandr.h>
 #include <X11/extensions/randr.h>
-
+#include "fvwm/initial_window_options.h"
 #if HAVE_SYS_BSDTYPES_H
 #include <sys/bsdtypes.h>
 #endif

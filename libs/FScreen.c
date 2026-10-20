@@ -14,7 +14,7 @@
  */
 
 #include "config.h"
-
+#include "libs/fscreen_adapters.h"
 #include <X11/extensions/Xrandr.h>
 #include <X11/extensions/randr.h>
 #include <ctype.h>

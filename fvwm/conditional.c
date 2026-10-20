@@ -16,7 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
-
+#include "fvwm/condition_names.h"
 #include <stdio.h>
 #include <math.h>
 

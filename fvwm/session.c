@@ -24,7 +24,7 @@
 #include "libs/fd_safety.h"
 #include "libs/ice_error_policy.h"
 #include "window_flags.h"
-
+#include "fvwm/initial_window_options.h"
 #include <stdio.h>
 #ifdef HAVE_GETPWUID
 #include <pwd.h>

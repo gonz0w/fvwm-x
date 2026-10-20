@@ -16,7 +16,7 @@
 #include "fvwm/screen.h"
 #include "fvwm/stack.h"
 #include "fvwm/module_list.h"
-
+#include "fvwm/initial_window_options.h"
 static FvwmWindow *victim;
 static unsigned mode, removed, raises;
 static Bool inside, ready;

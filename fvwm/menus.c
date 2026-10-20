@@ -38,7 +38,7 @@
 #include "libs/wcontext.h"
 #include "fvwm.h"
 #include "externs.h"
-
+#include "fvwm/initial_window_options.h"
 #include "execcontext.h"
 #include "events.h"
 #include "eventhandler.h"

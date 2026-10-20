@@ -908,3 +908,10 @@ words through memcpy, then byte tails; zero/negative lengths and read-only
 overlap retain their contracts. style.c owns the wrappers/callers; conditional
 selection still uses blockcmpmask. No mutable flags, records, list/index
 lifetimes or update/grab barrier owners change.
+
+The [flag-mutation checkpoint](verification/VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md) keeps typed union/intersection/clearing
+in private fvwm/style_flags_mutate.h. Complete records may alias exactly or be
+disjoint; bounded memcpy words and byte tails preserve object-representation
+operations. style.c retains simplification, selected-field resource cleanup and
+normalization ownership. Default accumulation, record layout and update/grab
+barriers retain their existing behavior; generic unused mutation statuses go.

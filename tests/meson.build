@@ -130,6 +130,14 @@ style_flags_test = executable(
 )
 test('style-flags', style_flags_test, timeout: 120)
 
+style_flags_mutate_test = executable(
+    'test-style-flags-mutate', 'test_style_flags_mutate.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+)
+test('style-flags-mutate', style_flags_mutate_test, timeout: 120)
+
 stack_restack_test = executable(
     'test-stack-restack', ['test_stack_restack.c', '../fvwm/stack_restack.c'],
     include_directories: includedirs,

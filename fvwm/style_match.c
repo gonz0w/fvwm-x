@@ -114,38 +114,67 @@ unsigned style_match_lookup_subject(style_match_subject *subject,
 	return used;
 }
 
-static void prepare_escaped_pattern(style_match_patterns *patterns,
+static void prepare_pattern_remainder(style_match_patterns *patterns,
 	const char *value, unsigned field)
 {
-	size_t stars = 0, width = 0, before = 0;
+	size_t raw = patterns->prefix[field], width = raw;
+	size_t stars = 0, questions = 0, before = 0;
+	size_t last_star = 0, last_special = 0;
 	unsigned bit = 1U << field;
+	bool escaped = false;
 
-	for (size_t i = 0; value[i]; i++)
+	/* strcspn already verified the initial literal span. Classify only
+	 * its remainder, decoding quotes without a separate escape scan. */
+	for (; value[raw]; raw++)
 	{
-		if (value[i] == '\\')
+		if (value[raw] == '\\')
 		{
+			escaped = true;
 			/* A trailing escape has an impossible literal slot.
 			 * Matching never reads past its terminator. */
-			if (value[i + 1])
-				i++;
+			if (value[raw + 1])
+				raw++;
 			width++;
 		}
-		else if (value[i] == '*')
+		else if (value[raw] == '*')
 		{
 			stars++;
 			before = width;
-			patterns->suffix[field] = i + 1;
+			last_star = last_special = raw + 1;
 		}
 		else
+		{
 			width++;
+			if (value[raw] == '?')
+			{
+				questions++;
+				last_special = raw + 1;
+			}
+		}
 	}
-	patterns->escaped |= bit;
 	patterns->minimum[field] = width;
-	patterns->suffix_length[field] = width - before;
-	if (stars == 0)
-		patterns->escaped_fixed_width |= bit;
-	if (stars == 1)
-		patterns->escaped_single_star |= bit;
+	if (escaped)
+	{
+		patterns->escaped |= bit;
+		patterns->suffix[field] = last_star;
+		patterns->suffix_length[field] = width - before;
+		if (stars == 0)
+			patterns->escaped_fixed_width |= bit;
+		if (stars == 1)
+			patterns->escaped_single_star |= bit;
+	}
+	else
+	{
+		patterns->unescaped |= bit;
+		patterns->suffix[field] = last_special;
+		patterns->suffix_length[field] = raw - last_special;
+		if (stars == 1 && questions == 0)
+			patterns->single_star |= bit;
+		if (stars == 0)
+			patterns->fixed_width |= bit;
+		if (stars == 1 && questions != 0)
+			patterns->single_star_questions |= bit;
+	}
 }
 
 void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
@@ -164,7 +193,6 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 	for (unsigned i = 0; i < STYLE_MATCH_FIELDS; i++)
 	{
 		const char *value = values[i];
-		size_t length = 0, stars = 0, questions = 0;
 		unsigned bit = 1U << i;
 
 		if (!active[i])
@@ -182,33 +210,7 @@ void style_match_prepare(style_match_patterns *patterns, const style_id_t *id)
 			patterns->literal |= bit;
 			continue;
 		}
-		/* Wildcards consume bytes. Escapes quote exactly the next
-		 * byte; a trailing escape remains a non-match. */
-		if (strchr(value, '\\'))
-		{
-			prepare_escaped_pattern(patterns, value, i);
-			continue;
-		}
-		patterns->unescaped |= bit;
-
-		for (; value[length]; length++)
-		{
-			if (value[length] == '*')
-				stars++;
-			else
-				patterns->minimum[i]++;
-			if (value[length] == '?')
-				questions++;
-			if (value[length] == '*' || value[length] == '?')
-				patterns->suffix[i] = length + 1;
-		}
-		patterns->suffix_length[i] = length - patterns->suffix[i];
-		if (stars == 1 && questions == 0)
-			patterns->single_star |= bit;
-		if (stars == 0)
-			patterns->fixed_width |= bit;
-		if (stars == 1 && questions != 0)
-			patterns->single_star_questions |= bit;
+		prepare_pattern_remainder(patterns, value, i);
 	}
 	/* Pick one necessary predicate, never a sufficient match. Numeric
 	 * identities win; explicit literal conjunctions precede the legacy OR.
@@ -580,6 +582,9 @@ bool style_match_id(const style_id_t *id, const style_match_patterns *patterns,
 		(id->flags.has_class << STYLE_MATCH_CLASS) |
 		(id->flags.has_name << STYLE_MATCH_NAME) |
 		(id->flags.has_icon << STYLE_MATCH_ICON);
+	/* Universal predicates also accept NULL subjects. Their result is
+	 * already known; keep the separate compatibility OR above unchanged. */
+	fields &= ~patterns->universal;
 	unsigned literals = fields & patterns->literal;
 
 	/* A failed exact field can decide the conjunction before a longer

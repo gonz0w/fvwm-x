@@ -92,8 +92,10 @@ repeat baseline execution.
 - Linux ARM GCC retains exactly four successful focused results only after all
   six actual binaries and all frozen non-Markdown inputs match. Its raw fresh
   log and retained rows/bindings remain separate; the combined receipt validates
-  their unique-name composition and exact retained state evidence. Meson's
-  prerequisite build remains for fresh tests. No ordinary focused suite repeats
+  their unique-name composition and exact retained state evidence. That gate
+  compiled targets before invoking fresh tests with `--no-rebuild`; its original
+  report incorrectly described automatic prerequisite builds. The subsequent
+  style-matching checkpoint restores those builds. No ordinary focused suite repeats
   just for publication or to fill the combined count.
 - 15 EWMH invocations / 30 modes verify
   4350 tray cases and 60 refused-publication repairs,

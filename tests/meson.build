@@ -107,9 +107,9 @@ style_match_test = executable(
     include_directories: includedirs,
     dependencies: all_found_deps,
     c_args: ['-UNDEBUG', '-fno-builtin-strlen', '-fno-builtin-strcmp',
-        '-fno-builtin-strncmp'],
+        '-fno-builtin-strncmp', '-fno-builtin-strchr'],
     link_args: ['-Wl,--wrap=matchWildcards', '-Wl,--wrap=strlen',
-        '-Wl,--wrap=strcmp', '-Wl,--wrap=strncmp'],
+        '-Wl,--wrap=strcmp', '-Wl,--wrap=strncmp', '-Wl,--wrap=strchr'],
 )
 test('style-match', style_match_test)
 
@@ -1711,7 +1711,8 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         is_parallel: false, timeout: 60,
     )
     style_profile_fixture = executable(
-        'fvwm-style-profile-fixture', 'style_profile_start.c',
+        'fvwm-style-profile-fixture',
+        ['style_profile_start.c', 'style_merge_probe.c'],
         objects: module_output_fixture.extract_objects(module_output_core_sources),
         include_directories: includedirs,
         dependencies: all_found_deps,

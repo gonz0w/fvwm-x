@@ -34,7 +34,7 @@ def run(args):
             # Vary rules and windows independently around (256, 8).
             workloads += [('update', size, 8) for size in (64, 128, 256)]
             workloads += [('update', 256, windows) for windows in (16, 32)]
-            if args.simplify_only:
+            if args.simplify_only or args.matching_work_only:
                 workloads = []
             for reference in (False, True):
                 for mode, size, windows in workloads:
@@ -95,8 +95,9 @@ def run(args):
             subject_work = []
             cursor_work = []
             escaped_work = []
-            for reference, collision in ((False, False), (True, False),
-                                         (False, True)):
+            distributions = [] if args.matching_work_only else [
+                (False, False), (True, False), (False, True)]
+            for reference, collision in distributions:
                 for size in (64, 256):
                     label = f'index-{size}-{reference}-{collision}'
                     environment = {
@@ -168,7 +169,7 @@ def run(args):
                     index_work.extend(work)
             repeated = []
             overlap_work = []
-            for collision in (False, True):
+            for collision in (() if args.matching_work_only else (False, True)):
                 label = f'repeat-{collision}'
                 environment = {
                     'FVWM_STYLE_PROFILE_MODE': 'repeat',
@@ -216,13 +217,19 @@ def run(args):
                  'lengths': 0, 'prefixes': 0},
                 {'case': 'cached-length', 'lookups': 32,
                  'lengths': 32, 'prefixes': 0}]
+            merge = [json.loads(line.removeprefix('STYLE_MERGE_WORK '))
+                     for line in process.log_path.read_text().splitlines()
+                     if line.startswith('STYLE_MERGE_WORK ')]
+            assert merge == [{'cases': 12, 'rules': 160, 'shapes': 4,
+                              'linear_reference': True}]
             (out / 'evidence.json').write_text(
                 json.dumps({'workloads': rows, 'matching_work': matching,
                             'wildcard_work': wildcard,
                             'simplify_work': repeated, 'index_work': index_work,
                             'subject_work': subject_work,
                             'cursor_work': cursor_work, 'overlap_work': overlap_work,
-                            'escaped_work': escaped_work, 'field_work': fields},
+                            'escaped_work': escaped_work, 'field_work': fields,
+                            'merge_work': merge},
                            indent=2) + '\n')
         finally:
             for log in runtime.root.glob('*.log'):
@@ -235,4 +242,5 @@ if __name__ == '__main__':
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--display')
     parser.add_argument('--simplify-only', action='store_true')
+    parser.add_argument('--matching-work-only', action='store_true')
     run(parser.parse_args())

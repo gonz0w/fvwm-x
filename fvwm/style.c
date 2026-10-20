@@ -5064,6 +5064,51 @@ void simplify_style_list(void)
 	return;
 }
 
+/* The operation-local heap borrows at most STYLE_LOOKUP_STREAMS heads.
+ * Every chain is ordinal-ordered and each rule has exactly one owner.
+ * No pointer survives this synchronous lookup or any command dispatch. */
+static void style_lookup_push(window_style **streams, unsigned count,
+	window_style *style)
+{
+	unsigned slot = count;
+
+	while (slot)
+	{
+		unsigned parent = (slot - 1) / 2;
+
+		if (streams[parent]->lookup_ordinal <= style->lookup_ordinal)
+			break;
+		streams[slot] = streams[parent];
+		slot = parent;
+	}
+	streams[slot] = style;
+}
+
+static window_style *style_lookup_pop(window_style **streams, unsigned *count)
+{
+	window_style *first = streams[0];
+	window_style *next = first->lookup_next;
+	unsigned parent = 0;
+
+	if (!next)
+		next = streams[--*count];
+	if (!*count)
+		return first;
+	for (unsigned child = 1; child < *count; child = 2 * parent + 1)
+	{
+		if (child + 1 < *count &&
+		    streams[child + 1]->lookup_ordinal <
+		    streams[child]->lookup_ordinal)
+			child++;
+		if (next->lookup_ordinal <= streams[child]->lookup_ordinal)
+			break;
+		streams[parent] = streams[child];
+		parent = child;
+	}
+	streams[parent] = next;
+	return first;
+}
+
 /* lookup_style - look through a list for a window name, or class
  *
  *  Returned Value:
@@ -5101,30 +5146,16 @@ void lookup_style(FvwmWindow *fw, window_style *styles)
 			{
 				nptr = list->lookup_index->head[buckets[i]];
 				if (nptr)
-					streams[active++] = nptr;
-			}
-			/* Each rule has one owner chain. Merge at most nine
-			 * heads by ordinal to preserve exact precedence. */
-			for (;;)
-			{
-				unsigned first = 0;
-
-				nptr = NULL;
-				for (unsigned i = 0; i < active; i++)
 				{
-					if (!nptr ||
-					    streams[i]->lookup_ordinal <
-					    nptr->lookup_ordinal)
-					{
-						nptr = streams[i];
-						first = i;
-					}
+					style_lookup_push(streams, active, nptr);
+					active++;
 				}
-				if (!nptr)
-					break;
-				streams[first] = nptr->lookup_next;
-				if (!streams[first])
-					streams[first] = streams[--active];
+			}
+			/* Pop one minimum and repair only its heap path, rather
+			 * than searching every head for every candidate. */
+			while (active)
+			{
+				nptr = style_lookup_pop(streams, &active);
 				if (style_match_id(&SGET_ID(*nptr),
 				    &nptr->id_patterns, &subject))
 					merge_styles(styles, nptr, False);

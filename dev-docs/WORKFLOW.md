@@ -173,6 +173,10 @@ need a new reference. Peak RSS is the process high-water mark at each case,
 not isolated per-case allocation. File bytes include debug information;
 `size` text/data/bss totals describe a different, narrower measure.
 
+When changing the comparison wrapper, run the opt-in process controls with
+`python3 tests/test_performance_comparison.py`; they verify normal completion
+and timeout cleanup without starting a WM or measuring performance.
+
 Keep reports under `dev-docs/verification/` and link their machine-readable
 receipts and canonical logs. Record source C/header deltas separately from
 tests/docs and binary/runtime memory. Report noise and unavailable metrics;

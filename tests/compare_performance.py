@@ -11,12 +11,32 @@ output directory with the source/build receipts that identify both revisions.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import platform
 import shutil
 import statistics
 import subprocess
 import sys
+import time
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / "live_x"))
+from live_x_harness import HarnessRuntime
+
+
+def run_profile(command, log_path, timeout=900):
+    # TERM lets the profiler's HarnessRuntime unwind evidence and owned X
+    # children before the existing bounded session-kill fallback is needed.
+    with HarnessRuntime(prefix="fvwm-comparison-") as runtime:
+        process = runtime.start("performance-profile", command, "profile.log",
+                                dict(os.environ))
+        try:
+            return process.wait_until_exit(time.monotonic() + timeout)
+        finally:
+            try:
+                process.close(time.monotonic() + 15)
+            finally:
+                shutil.copyfile(process.log_path, log_path)
 
 
 def identity(path):
@@ -112,12 +132,11 @@ def main():
                     "--mfl", str(binaries[side]["mfl"]),
                     "--samples", str(args.samples), "--rate", str(args.rate),
                     "--artifacts-dir", str(output)]
-                with (args.artifacts_dir / f"{output.name}.log").open("x") as log:
-                    result = subprocess.run(command, stdout=log,
-                                            stderr=subprocess.STDOUT, timeout=900)
+                status = run_profile(command, args.artifacts_dir /
+                                     f"{output.name}.log")
                 record["runs"].append({"side": side, "repetition": repetition + 1,
-                                       "command": command, "status": result.returncode})
-                if result.returncode != 0:
+                                       "command": command, "status": status})
+                if status != 0:
                     raise RuntimeError(f"{output.name} failed; preserve its logs")
                 profiles = list(output.glob("run-*/profile.json"))
                 if len(profiles) != 1:

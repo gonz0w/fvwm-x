@@ -30,9 +30,12 @@ Linux process peak RSS is 7,200 / 7,192 KiB (reference/candidate). It is a
 cumulative high-water mark, not per-case allocation or evidence of an eight-KiB
 memory optimization. GNU `size` reports text 1,066,455 / 1,075,279 bytes; data
 26,460 and bss 39,520 bytes remain equal. ELF .text grows 8,576 bytes, while
-changed function-symbol sizes sum to +388 bytes; layout/padding contributes to
-the larger section total. This checkpoint does not shrink the executable.
+changed function-symbol sizes sum to +388 bytes. The section contains 2,040
+additional aligned zero words (8,160 bytes). Function sizes and section totals
+measure different aspects of executable size. This checkpoint does not shrink the executable.
 File bytes, including debug sections, are retained separately in the receipt.
+Production C/header sources under fvwm/libs/modules add 110 and remove 45 lines
+(+65 net) against PR131; test and documentation growth is separate.
 
 Canonical raw observations:
 `builddir/codex-2026-10-20/visual-startup-ownership/performance-evidence.tgz`.

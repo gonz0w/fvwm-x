@@ -330,8 +330,11 @@
     "baseline_commit": "7f6f8e04e04737681c56c508271b8c9684b4e6eb",
     "baseline_archive": "04b2e9c870c3d6e31e43e4eaf2d5af0f0e1805297418a24891ba12451577a3bc",
     "candidate_focused_source_archive": "fd77086ddea978309ee56013e3ade95fcb4a421e41c985f68dcd25d3fddc8690",
-    "candidate_commit": "pending signed checkpoint; runtime inputs must match focused archive",
-    "canonical_observations_sha256": "b4d082646d13497e5453c3dc97e9571c8035a04df2b37da14497bb3360308193"
+    "candidate_commit": "ee1dcc46e257664dc7088a361d1ca7637b8172e6",
+    "canonical_observations_sha256": "b4d082646d13497e5453c3dc97e9571c8035a04df2b37da14497bb3360308193",
+    "qualification_archive": "93ccd2554846ceb1f3b011af083786d7a0297b6262dc2ea9f71e4c3c8319df74",
+    "comparison_tool_final_sha256": "63cc1faa90ceccfe26f49d8b95a80505cd5682d7b8ad9237c9808a47016a7640",
+    "comparison_tool_at_measurement_sha256": "26260136542ec0cd0311a91de46e788b7885df8db9a28e845f841a9d7b65485e"
   },
   "size_diagnostics": {
     "symbols": [
@@ -417,6 +420,104 @@
         15668,
         8
       ]
+    },
+    "text_contents": {
+      "baseline": {
+        "text_bytes": 765692,
+        "aligned_aarch64_nop_instructions": 2242,
+        "nop_bytes": 8968,
+        "other_text_bytes": 756724,
+        "zero_words": 1018,
+        "zero_bytes": 96631
+      },
+      "candidate": {
+        "text_bytes": 774268,
+        "aligned_aarch64_nop_instructions": 2243,
+        "nop_bytes": 8972,
+        "other_text_bytes": 765296,
+        "zero_words": 3058,
+        "zero_bytes": 104923
+      },
+      "delta": {
+        "text_bytes": 8576,
+        "aligned_aarch64_nop_instructions": 1,
+        "nop_bytes": 4,
+        "other_text_bytes": 8572,
+        "zero_words": 2040,
+        "zero_bytes": 8292
+      }
     }
+  },
+  "production_source_delta": {
+    "baseline_commit": "7f6f8e04e04737681c56c508271b8c9684b4e6eb",
+    "candidate_commit": "ee1dcc46e257664dc7088a361d1ca7637b8172e6",
+    "scope": "production C/header files under fvwm, libs and modules; excludes tests/docs",
+    "added_lines": 110,
+    "removed_lines": 45,
+    "net_lines": 65
+  },
+  "comparison_tool_correction": {
+    "status": "pass",
+    "inputs": {
+      "tests/compare_performance.py": "63cc1faa90ceccfe26f49d8b95a80505cd5682d7b8ad9237c9808a47016a7640",
+      "tests/test_performance_comparison.py": "457050e0bd35a03c3ed8af663d8b02ac805b5f587453b0f6afd6fedeb04622b5",
+      "tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e",
+      "tests/live_x/geometry_transition_live.py": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357",
+      "tests/live_x/live_x_harness.py": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380"
+    },
+    "linux_controls": {
+      "tests": 2,
+      "status": 0,
+      "log_sha256": "b711bbf9acd59b7b9cb8a42674b8e3e566bcee589ed6473ef9504a55514d1637"
+    },
+    "host_controls": {
+      "tests": 2,
+      "status": 0,
+      "evidence": "Observed tool-returned unittest output: Ran 2 tests in 0.181s; OK"
+    },
+    "same_binary_smoke": {
+      "profiler_runs": 2,
+      "samples_per_case": 2,
+      "status": "observed; tool integration only, not a performance reference"
+    },
+    "commands": [
+      {
+        "command": [
+          "python3",
+          "/tmp/visual-startup-tool-check2/test_performance_comparison.py"
+        ],
+        "status": 0
+      },
+      {
+        "command": [
+          "python3",
+          "/tmp/visual-startup-tool-check2/compare_performance.py",
+          "--baseline-fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--baseline-mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--baseline-revision",
+          "same-binary-control",
+          "--candidate-fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--candidate-mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--candidate-revision",
+          "same-binary-control",
+          "--profile",
+          "linux-arm64-gcc-tool-smoke",
+          "--samples",
+          "2",
+          "--repetitions",
+          "1",
+          "--artifacts-dir",
+          "/tmp/visual-startup-tool-check2/smoke"
+        ],
+        "status": 0
+      }
+    ],
+    "archive_sha256": "e945bc7a332c5dcea0f4357303597e302302cfdf144229a1a6cfbb3157c1570c",
+    "full_gzip_crc_and_input_hashes": true,
+    "scope": "Final opt-in wrapper owns its profiler through HarnessRuntime and ManagedProcess; timeout/interrupt/TERM can unwind owned children. No production, registered native test, Meson, profiler or gate changes. First helper attempt is preserved separately."
   }
 }

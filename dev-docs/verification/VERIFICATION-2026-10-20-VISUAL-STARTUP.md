@@ -1,8 +1,7 @@
 # Visual startup ownership — 2026-10-20
 
 DATA-01 #6 / IMAGE-01 #8 / CLEAN-01 #34. Base: merged PR #131,
-`7f6f8e04e`. Three related startup ownership improvements; combined qualification
-is pending. ROOT's separately owned runtime/index work is preserved.
+`7f6f8e04e`. Three related startup ownership improvements; one combined checkpoint passes. ROOT's separately owned runtime/index work is preserved.
 
 ## Operations and behavior
 
@@ -67,11 +66,30 @@ The tracker records the next regular comparison after five merged checkpoints.
 
 ## Combined checkpoint
 
-Pending: one six-target/ten-profile combined checkpoint, relevant scoped guest
-sanitizers, fresh install/default-BSD-X and portable/local review checks. Existing
-OpenBSD AMD64 CI asset/SVG/legacy-property omissions and full-install/two staged
-geometry gaps stay explicit without retries. Native-CPU Linux sanitizers,
-physical hardware, toolkit/compositor and release qualification remain separate.
+Three startup ownership improvements pass one combined checkpoint: 2077 standard results (2071 fresh / six retained by unchanged runtime/test/build inputs and six exact binary identities), plus 459 optional results across six targets/ten profiles. Eleven pure policy drivers verify 352 observations; fifteen real-X drivers verify 60 initialization observations. Three scoped guest ASan/UBSan checks, nine fresh stages and four authenticated default BSD displays pass. Three inherited required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries.
+
+All 2,519 predecessor registrations retain relative order, with two new entries
+per profile (2,539 total). Nine full stages verify 135 code and 88 catalog
+identities: 90 changed / 133 unchanged against PR131, with zero
+uncompared outputs. Four authenticated default BSD displays execute 62 commands;
+18 staged geometry invocations cover 126 cases. Pure and real-X visual sanitizer
+checks enable leak detection; IconMan transport retains its scoped no-leak-scan
+profile. The sanitizer gate records address/undefined instrumentation options
+and the instrumented library identity. Guest execution is not native-CPU
+qualification.
+
+Portable verification runs once: 166 passes / eleven native-Meson capability
+skips (177 total). All 26 manuals render without diagnostics from exact frozen
+inputs. Local source/ownership review and compiler diagnostics pass; 1,312 inherited
+warnings remain counted in the machine receipt; none are in changed C/header
+lines. Full warning text is preserved in canonical logs. All six canonical archives pass
+full gzip EOF/CRC, capture payload hashes, source/mode/script binding, exact
+registration, native binary and installed-RPATH identity checks. See the
+[machine receipt](VERIFICATION-2026-10-20-VISUAL-STARTUP-COMBINED.json). No matrix repeats for publication.
+
+Existing OpenBSD AMD64 omissions and its install/geometry gaps remain required
+and unqualified. Native-CPU Linux sanitizers, physical hardware,
+toolkit/compositor and release qualification remain separate.
 
 Canonical evidence is retained under
 `builddir/codex-2026-10-20/visual-startup-ownership/`. Storage retirement is limited
@@ -80,3 +98,16 @@ hash/size agreement; canonical host archives, source/build/stage/VM trees and
 another owner's work are preserved. The absent PR129 duplicate fails its guard
 without deletion. PR131 and PR118 completed duplicates supply the required
 space; the unchanged 1-GiB source/build and 256-MiB archive floors remain.
+
+## Isolated benchmark review correction
+
+Review found that the opt-in comparison wrapper used a hard subprocess timeout,
+which could stop the profiler before its owned-child cleanup. The final wrapper
+uses the existing ManagedProcess TERM/grace/kill owner. Two standalone lifetime
+controls pass on macOS and Linux; two short same-binary profiler runs verify the
+updated entry point. The correction archive binds both final helper/control
+files and the unchanged profiler/harness inputs. These controls are opt-in and
+add no matrix registration. The original six performance observations remain
+valid and are not repeated. Production C, registered native tests, Meson,
+manuals and all seven running gate scripts retain their frozen bytes. The final
+commit includes this independently checked tool correction plus docs/receipts.

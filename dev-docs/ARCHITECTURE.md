@@ -951,3 +951,10 @@ white/black pixels commit together. Modules save screen defaults on allocation
 refusal; core startup checks the shared result explicitly. Existing X error
 policy still owns stale/mismatched resource IDs. See the
 [ownership checkpoint](verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md).
+
+Process/session startup ownership: `fvwm/builtins.c::CMD_Exec` checks child
+creation and stdin setup, and failed children use `_exit`. Session construction
+in `libs/fsm.c` prepares complete authentication data before publishing it,
+then admits the network identifier, watch and copied environment value as one
+startup operation. Failed publication removes the watch and frees constructor
+resources; configured Exec shell interpretation is unchanged.

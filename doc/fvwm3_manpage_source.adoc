@@ -8194,6 +8194,11 @@ Read /tmp/file
 
 +
 do not work reliably (see the *PipeRead* command).
++
+The child reads standard input from _/dev/null_.  If this setup or creation
+of the child process fails, the command is not launched.  Failed child setup
+or shell execution does not run the window manager's exit callbacks.
+
 
 *ExecUseShell* [_shell_]::
 	Makes the *Exec* command use the specified shell, or the value of the

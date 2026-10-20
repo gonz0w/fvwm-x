@@ -700,6 +700,7 @@ typedef struct {
 #define FIceProcessMessages(a,b,c) IceProcessMessages(a,b,c)
 #define FIceListenForConnections(a,b,c,d) IceListenForConnections(a,b,c,d)
 #define FIceAddConnectionWatch(a,b) IceAddConnectionWatch(a,b)
+#define FIceRemoveConnectionWatch(a,b) IceRemoveConnectionWatch(a,b)
 #define FIceGetListenConnectionNumber(a) IceGetListenConnectionNumber(a)
 #define FIceComposeNetworkIdList(a,b) IceComposeNetworkIdList(a,b)
 #define FIceGetListenConnectionString(a) IceGetListenConnectionString(a)
@@ -770,6 +771,7 @@ typedef struct {
 #define FIceProcessMessages(a,b,c) 0
 #define FIceListenForConnections(a,b,c,d) 0
 #define FIceAddConnectionWatch(a,b) 0
+#define FIceRemoveConnectionWatch(a,b)
 #define FIceGetListenConnectionNumber(a) 0
 #define FIceComposeNetworkIdList(a,b) NULL
 #define FIceGetListenConnectionString(a) NULL

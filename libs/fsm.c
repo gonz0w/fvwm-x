@@ -309,11 +309,21 @@ Status SetAuthentication(
 			FIceGenerateMagicCookie (MAGIC_COOKIE_LEN);
 		(*authDataEntries)[i+1].auth_data_length = MAGIC_COOKIE_LEN;
 
+		if ((*authDataEntries)[i].network_id == NULL ||
+		    (*authDataEntries)[i].auth_data == NULL ||
+		    (*authDataEntries)[i+1].network_id == NULL ||
+		    (*authDataEntries)[i+1].auth_data == NULL)
+		{
+			fvwm_debug(__func__,
+				"Cannot prepare session authentication data");
+			goto bad;
+		}
+	}
+	/* Prepare every entry before writing files or publishing any listener's
+	 * credentials. Allocation failure must leave no partial setup. */
+	for (i = 0; i < count * 2; i++)
+	{
 		write_iceauth(addfp, removefp, &(*authDataEntries)[i]);
-		write_iceauth(addfp, removefp, &(*authDataEntries)[i+1]);
-
-		FIceSetPaAuthData(2, &(*authDataEntries)[i]);
-		FIceSetHostBasedAuthProc(listenObjs[i/2], HostBasedAuthProc);
 	}
 
 	Bool written = !ferror(addfp) && !ferror(removefp);
@@ -333,6 +343,11 @@ Status SetAuthentication(
 		goto bad;
 	}
 
+	for (i = 0; i < count * 2; i += 2)
+	{
+		FIceSetPaAuthData(2, &(*authDataEntries)[i]);
+		FIceSetHostBasedAuthProc(listenObjs[i/2], HostBasedAuthProc);
+	}
 	unlink (addAuthFile);
 
 	return 1;
@@ -1022,7 +1037,7 @@ int fsm_init(char *module)
 {
 	char errormsg[256];
 	int i;
-	char *p;
+	Bool watching = False;
 
 	if (!SessionSupport)
 	{
@@ -1075,6 +1090,15 @@ int fsm_init(char *module)
 		return 0;
 	}
 
+	/* Each listener needs a distinct selectable descriptor. This also
+	 * bounds the two auth entries per transport before arithmetic. */
+	if (numTransports < 1 || numTransports > FD_SETSIZE ||
+	    slistenObjs == NULL)
+	{
+		fvwm_debug(__func__, "Invalid ICE listener set");
+		CloseListeners();
+		return 0;
+	}
 	for (i = 0; i < numTransports; i++)
 	{
 		if (!fvwm_fd_prepare_select(
@@ -1097,34 +1121,48 @@ int fsm_init(char *module)
 	    return 0;
 	}
 
-	if (FIceAddConnectionWatch(&ice_watch_fd, NULL) == 0)
+	networkIds = FIceComposeNetworkIdList(numTransports, slistenObjs);
+	if (networkIds == NULL)
 	{
 		fvwm_debug(__func__,
-			   "[%s][fsm_init] <<ERROR>> -- "
-			   "FIceAddConnectionWatch failed\n", module_name);
-		FreeAuthenticationData(numTransports, &sauthDataEntries);
-		CloseListeners();
-		return 0;
+			"Cannot compose session network identifiers");
+		goto failed;
 	}
-
-	ice_fd = fxmalloc(sizeof(int) * numTransports + 1);
+	ice_fd = fxcalloc(numTransports, sizeof(*ice_fd));
 	for (i = 0; i < numTransports; i++)
 	{
 		ice_fd[i] = FIceGetListenConnectionNumber(slistenObjs[i]);
 	}
-
-	networkIds = FIceComposeNetworkIdList(numTransports, slistenObjs);
-	xasprintf(&p, "SESSION_MANAGER=%s", networkIds);
-	putenv(p);
-
-#ifdef FVWM_DEBUG_FSM
-	fvwm_debug(__func__, "[%s][fsm_init] OK: %i\n", module_name,
-		   numTransports);
-	fvwm_debug(__func__, "\t%s\n", p);
-#endif
+	if (FIceAddConnectionWatch(&ice_watch_fd, NULL) == 0)
+	{
+		fvwm_debug(__func__, "FIceAddConnectionWatch failed");
+		goto failed;
+	}
+	watching = True;
+	/* Publish only a usable manager, preserving the caller's environment
+	 * on failure. setenv copies the value; no putenv buffer leaks. */
+	if (setenv("SESSION_MANAGER", networkIds, 1) != 0)
+	{
+		fvwm_debug(__func__, "Cannot publish session manager (%s)",
+			strerror(errno));
+		goto failed;
+	}
 
 	fsm_init_succeed = True;
 	return 1;
+
+failed:
+	if (watching)
+	{
+		FIceRemoveConnectionWatch(&ice_watch_fd, NULL);
+	}
+	free(ice_fd);
+	ice_fd = NULL;
+	free(networkIds);
+	networkIds = NULL;
+	FreeAuthenticationData(numTransports, &sauthDataEntries);
+	CloseListeners();
+	return 0;
 }
 
 void fsm_fdset(fd_set *in_fdset)

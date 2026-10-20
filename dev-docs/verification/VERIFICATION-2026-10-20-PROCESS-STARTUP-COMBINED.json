@@ -1,0 +1,899 @@
+{
+  "corrected_fixture": {
+    "test": "exec-startup",
+    "target": "linux-amd64",
+    "profile": "clang",
+    "original_failure_retained": true,
+    "original_other_passes": 273,
+    "recovery_archive_sha256": "780d66dbea2b8c42e56c8059d2f8fb3d9960636270b445552ecd95b8ebe54dbb",
+    "corrected_probe": "exec-validation.json",
+    "recovered_stage": true,
+    "full_matrix_repeated": false
+  },
+  "status": "pass",
+  "complete": true,
+  "publication_ready": true,
+  "source_archive_sha256": "919f3824b64d9806f00d69d895ad4258a7c0a54da9622a30164607217cd9726c",
+  "source_files": 2077,
+  "runtime_commit": {
+    "commit": "a91fe79b7a28a5373af8879442be7fdfb3fa6fce",
+    "tree": "c3a881b6728a69c38c4d60f38a01d69b28710d48",
+    "base": "e64a64947d47b8ca025caa36fe83ca91d83c2138",
+    "source": "919f3824b64d9806f00d69d895ad4258a7c0a54da9622a30164607217cd9726c",
+    "regular_inputs": 2077
+  },
+  "counts": {
+    "standard": 2141,
+    "standard_passed": 2141,
+    "optional": 468,
+    "optional_passed": 468,
+    "retained_standard": 24,
+    "profiles": 10,
+    "registered": 2612,
+    "fresh_stages": 9,
+    "installed_code": 135,
+    "installed_catalogs": 88,
+    "changed_installed": 27,
+    "unchanged_installed": 196,
+    "omitted_required": 3,
+    "visual_policy_drivers": 10,
+    "visual_policy_cases": 320,
+    "visual_x_drivers": 14,
+    "visual_x_cases": 56,
+    "exec_drivers": 11,
+    "exec_cases": 77,
+    "session_unit_entries": 70,
+    "session_integrations": 19,
+    "sanitizer": 9,
+    "default_displays": 4,
+    "default_commands": 66,
+    "geometry_invocations": 18,
+    "geometry_cases": 126,
+    "corrected_standard": 1
+  },
+  "profiles": {
+    "fvwm-x-linux-arm64-svg": {
+      "gcc": {
+        "executed": 274,
+        "registered": 274,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "environment": {
+          "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "CC": "cc"
+        }
+      },
+      "clang": {
+        "executed": 274,
+        "registered": 274,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+        "environment": {
+          "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "CC": "clang"
+        }
+      },
+      "software": {
+        "executed": 253,
+        "registered": 253,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "environment": {
+          "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "CC": "cc"
+        }
+      },
+      "minimal": {
+        "executed": 215,
+        "registered": 215,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "environment": {
+          "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "CC": "cc"
+        }
+      }
+    },
+    "linux-amd64": {
+      "gcc": {
+        "executed": 274,
+        "registered": 274,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "cc (Debian 14.2.0-19) 14.2.0",
+        "environment": {
+          "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+          "CC": "cc"
+        }
+      },
+      "clang": {
+        "executed": 274,
+        "registered": 274,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": null,
+        "environment": {
+          "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+          "CC": "clang"
+        }
+      }
+    },
+    "freebsd-arm64": {
+      "default": {
+        "executed": 262,
+        "registered": 262,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+        "environment": {
+          "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib",
+          "CC": "cc"
+        }
+      }
+    },
+    "openbsd-arm64": {
+      "default": {
+        "executed": 262,
+        "registered": 262,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "OpenBSD clang version 19.1.7",
+        "environment": {
+          "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib",
+          "CC": "cc"
+        }
+      }
+    },
+    "freebsd-amd64": {
+      "default": {
+        "executed": 262,
+        "registered": 262,
+        "omitted": [],
+        "fresh_stage": true,
+        "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+        "environment": {
+          "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib",
+          "CC": "cc"
+        }
+      }
+    },
+    "openbsd-amd64": {
+      "default": {
+        "executed": 259,
+        "registered": 262,
+        "omitted": [
+          "ci-asset-contract",
+          "image-svg-isolation-xvfb",
+          "legacy-property-xvfb"
+        ],
+        "fresh_stage": false,
+        "compiler": null,
+        "environment": {
+          "PKG_CONFIG_PATH": "/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+          "LD_LIBRARY_PATH": null,
+          "CC": "cc"
+        }
+      }
+    }
+  },
+  "archives": {
+    "fvwm-x-linux-arm64-svg": {
+      "sha256": "be20ba9182d1f3c9ebb785d6054354ac9b0cf18f48e0f15914f84e4f404948e2",
+      "bytes": 155134805,
+      "capture_files": 2151,
+      "full_gzip_crc_and_payload_hashes": true
+    },
+    "linux-amd64": {
+      "sha256": "6c718a82024523adb2faec85f15562b01710260223c9217b579accae8206d114",
+      "bytes": 70401793,
+      "capture_files": 1322,
+      "full_gzip_crc_and_payload_hashes": true
+    },
+    "freebsd-arm64": {
+      "sha256": "510fcc41a9b1e5540874450097ffef7bbaae719e0abc6ab8612bd4dd6921efad",
+      "bytes": 35013290,
+      "capture_files": 760,
+      "full_gzip_crc_and_payload_hashes": true
+    },
+    "openbsd-arm64": {
+      "sha256": "e520f00fee6940e3619ed0b673bb489c2f97bb27ff80eec3b8e7f5008fc86aa6",
+      "bytes": 32580467,
+      "capture_files": 1013,
+      "full_gzip_crc_and_payload_hashes": true
+    },
+    "freebsd-amd64": {
+      "sha256": "52f5a348f4e981224c1a2bcc4285313c564db807deb676dcbfa067306ed98d54",
+      "bytes": 35816162,
+      "capture_files": 662,
+      "full_gzip_crc_and_payload_hashes": true
+    },
+    "openbsd-amd64": {
+      "sha256": "4fe7386434a13eaf8daedd42e707c0c045908c62fe7e99d5e29c3c270d566672",
+      "bytes": 25623424,
+      "capture_files": 862,
+      "full_gzip_crc_and_payload_hashes": true
+    }
+  },
+  "inherited_gaps": [
+    "OpenBSD AMD64 required ci-asset-contract/image-svg-isolation-xvfb/legacy-property-xvfb omissions",
+    "OpenBSD AMD64 full install/two staged geometry checks unqualified"
+  ],
+  "separate_gates": [
+    "native-CPU sanitizer execution",
+    "physical hardware/toolkit/compositor",
+    "release acceptance"
+  ],
+  "storage": {
+    "initial_retired_duplicate_bytes": 941665141,
+    "final_check_retired_duplicate_bytes": 329459172,
+    "canonical_host_archives_preserved": true,
+    "source_build_stage_vm_trees_untouched": true
+  },
+  "local_review": {
+    "status": "pass",
+    "method": "local production/source/caller/regression review; no external reviewer",
+    "checks": [
+      "Exec fork ownership permits borrowed command after fork; checked null-device setup before exec; _exit preserves parent callbacks/buffers",
+      "configured shell text and stdout/stderr/log inheritance preserved",
+      "complete auth entries before files/credentials; every null refusal frees partial fields and files",
+      "listener bound before count arithmetic; calloc avoids unaligned +1 byte sizing",
+      "network ID and copied environment admitted before success; watch removed and resources cleared on failure; successful retry verified",
+      "new remove-watch API mapped for session-disabled builds",
+      "no extra scheduler, queue, X barrier, dependencies or config migration",
+      "focused results retained only with exact runtime/native test/build inputs and eight binaries per target",
+      "Verified shipped fsm_init callers are isolated Buttons/Script modules, before any ICE connection acceptance; the only SmcOpenConnection caller is the separate core process. Failed startup removes the new watch before listeners are exposed to the module loop.",
+      "Reviewed ICE watch registration semantics against the X.Org ICE specification; installed-library removal implementation confirms watcher registration removal. The checkpoint does not add support for constructing a manager around preexisting ICE connections."
+    ],
+    "findings": [
+      {
+        "area": "Exec fault interposition on Clang AMD64",
+        "status": "resolved",
+        "finding": "Fortified __open64_2 bypassed the initial open/open64 test hook; the actual production negative-fd guard remains present.",
+        "resolution": "Wrap both fortified open entry points in the test only; preserve production hardening and all original failure evidence.",
+        "verification": "All 11 final profiles/77 observations pass; retain 273 other original Clang results and recover the withheld stage without rebuild or full rerun."
+      }
+    ],
+    "reference": {
+      "specification": "https://xorg.freedesktop.org/archive/X11R7.7/doc/libICE/ICElib.html",
+      "installed_library_disassembly": "reference-ice-remove-disassembly.txt",
+      "source_retrieval": "Upstream raw/contents retrieval unavailable; installed-library implementation read instead."
+    }
+  },
+  "baseline": {
+    "status": "pass",
+    "accepted_controls": {
+      "exec-control": -6,
+      "session-control-1": -6,
+      "session-control-2": -11,
+      "session-control-3": -6,
+      "session-control-6": -6,
+      "session-control-5-corrected": -6
+    },
+    "unchanged_main_source_exact": true,
+    "corrected_environment_control": {
+      "status": "pass",
+      "control_exit": -6,
+      "old_fsm_object_sha256": "33dfde8c00f5741e4093b85c775159a086ae683e29495fb894285564f6e8c580",
+      "probe_source_sha256": "c155800947a718fdec10ea659d0762f5cc92d6de63e28997ab01fd5f9d234d1b",
+      "actual_old_putenv_refusal_injected": true,
+      "old_call_ignores_failure": true,
+      "prior_control": "Initial old-code ENV control wrapped only new setenv and did not inject putenv failure; exclude that result and replace only this control."
+    },
+    "archives": {
+      "baseline-evidence.tgz": {
+        "sha256": "34ab23b624b59b3302ac0bed49255ce909b41988bcd292d77682881b341caf36",
+        "full_gzip_crc_verified": true,
+        "payload_files": 23
+      },
+      "baseline-env-evidence.tgz": {
+        "sha256": "bb89e82df2007a7546c30744b5cd2e47361dd76c6be0a4b8c1358a081c036b47",
+        "full_gzip_crc_verified": true,
+        "payload_files": 9
+      }
+    }
+  },
+  "format_correction": {
+    "complete": true,
+    "status": "pass",
+    "inputs": {
+      "files": {
+        "fvwm/builtins.c": {
+          "before": "de5425d8394ccc520c92ea196446b474a4d5cca6b9e3e373d632eb279dd59644",
+          "after": "3d93cf7097fac4dda01509222d9cb64f4a3bf0cec88c37dc46ce09c870bfb020"
+        },
+        "libs/fsm.c": {
+          "before": "d34f7b08601079e3d9e2c8473f0d8eb9e41c7ec77d9908952616eb34ee9df3c4",
+          "after": "d2b6d4b3fc391467751764b3398718f04feb7608516d1c25ee20b275ed2dfd38"
+        },
+        "tests/test_session_startup.c": {
+          "before": "acc4294cdc46d2c99411807625877309b4c3e11aa456846aaf37df6fe93e211b",
+          "after": "b9860889cc2599ff6be0eadbcbc4018c77fdf6a5ce6149ab8394268534999299"
+        },
+        "tests/test_exec_startup.c": {
+          "before": "3696068cad667309c1291deb8d37a742ab14595dbb2e11e46e826be4da6c6239",
+          "after": "fa4f187feeb8ea71d8fa400d9ca097586b42bc5d7692d222e6cea8b1a1d07507"
+        }
+      },
+      "frozen_source": "919f3824b64d9806f00d69d895ad4258a7c0a54da9622a30164607217cd9726c",
+      "reason": "Final C line wraps/comments plus matching the Exec probe va_arg types to the actual char-pointer arguments. Verify production preprocessing and recompile/recheck both final probes in isolation; frozen native sources/builds remain untouched."
+    },
+    "production_translation_units": 33,
+    "affected_session_entries": 70,
+    "superseded_initial_exec_entries": 7,
+    "final_affected_session_entries": 70,
+    "final_exec_proof": "exec-validation.json",
+    "profiles_including_sanitizer": 11,
+    "archives": {
+      "fvwm-x-linux-arm64-svg": {
+        "archive_sha256": "644a6503efadd882411b1958bacf81397917a37140c690e2b088ec5ecfa13d9f",
+        "archive_bytes": 20790682,
+        "production_translation_units": 15,
+        "affected_session_entries": 28,
+        "affected_exec_entries": 5,
+        "all_payload_files": 160,
+        "compiler_diagnostics": [],
+        "full_gzip_crc_verified": true,
+        "executed_runner_exact": true,
+        "qualified_build_bases": {
+          "gcc": {
+            "wm_sha256": "73afb2f2e9b36618fe240b3396b07e375eafd31eadb77cf261638a19130f7c3c",
+            "library_sha256": "f9fc7d8be4d787c0b952caa742c5ae832e90dbb16308034b0ef10eb05497234f"
+          },
+          "clang": {
+            "wm_sha256": "78cab42500d67c31dc3c8f73d1e8e532efeaa3805c7de52ab19731d053e2f8cb",
+            "library_sha256": "34c9194ab592a6114c188a0bcbdd5e302ad358013d07bb1a02ad5de34b313ea1"
+          },
+          "software": {
+            "wm_sha256": "4a21941b26717bccce8a9af80e8028707f7c6648afca399aa1e9b3daf481c607",
+            "library_sha256": "8ffc7f63b9e0bf7b61ffb3f81ad8ed36d468a657468665153c4e390e5424a574"
+          },
+          "minimal": {
+            "wm_sha256": "498eccb9cb91d00c35222c2584ee48d804d7863894dd9a234dc5f2846408872c",
+            "library_sha256": "7f634b7cddf22127d4e935b46bf910398ce1c5c09df36eadd03560165786f6ff"
+          },
+          "module-waits-asan": {
+            "wm_sha256": "77d850450e436803b7fd0e6d87f6ad11f163a491a8949b86e54984e3b8fc7ef0",
+            "library_sha256": "697b7824dfdf5a4c3789037117b98fdbf9ecc07dedd8628c5e5b8216de145bf5"
+          }
+        }
+      },
+      "linux-amd64": {
+        "archive_sha256": "7e62cc8ed0d4357a1b2a860313063e57f28416d21fee7b4cbc975fab027eccf1",
+        "archive_bytes": 1486038,
+        "production_translation_units": 6,
+        "affected_session_entries": 14,
+        "affected_exec_entries": 0,
+        "all_payload_files": 61,
+        "compiler_diagnostics": [],
+        "full_gzip_crc_verified": true,
+        "executed_runner_exact": true,
+        "qualified_build_bases": {
+          "gcc": {
+            "wm_sha256": "fc2483cc9ca1a2ca2404dcb32f66be551dfd0c4c5c956997019c330e33ac7838",
+            "library_sha256": "e3d729b85ca2b5660f8b8217deb777d72152d856f61e9d1206604db214bcd353"
+          },
+          "clang": {
+            "wm_sha256": "342cf3dc7633304b257075fc8aa3c454ee164e8e062a19b393c44ba987c88e12",
+            "library_sha256": "72e19a53abac6bdaca5d330e818e1ebc26f7df21f5782b9cc963920659b29884"
+          }
+        }
+      },
+      "freebsd-arm64": {
+        "archive_sha256": "7b9d43383be1a2b4f5a7fc265ef71309c9abdd48f5dcf6cc47e41722b571c834",
+        "archive_bytes": 696032,
+        "production_translation_units": 3,
+        "affected_session_entries": 7,
+        "affected_exec_entries": 0,
+        "all_payload_files": 34,
+        "compiler_diagnostics": [],
+        "full_gzip_crc_verified": true,
+        "executed_runner_exact": true,
+        "qualified_build_bases": {
+          "default": {
+            "wm_sha256": "14b49fcfae3054e7d0a3e9f4d5b9ef75be87f33ccfa955f00e4edb9f07101476",
+            "library_sha256": "47bb668db7d3a122c4cb5fa8c04c128fe658d413ab45ed01ca137efea6df65e6"
+          }
+        }
+      },
+      "freebsd-amd64": {
+        "archive_sha256": "0337bb8945da5c6f10b67e25589237b28087e830b0e7710a1a7feb12814933ec",
+        "archive_bytes": 2881660,
+        "production_translation_units": 3,
+        "affected_session_entries": 7,
+        "affected_exec_entries": 1,
+        "all_payload_files": 40,
+        "compiler_diagnostics": [],
+        "full_gzip_crc_verified": true,
+        "executed_runner_exact": true,
+        "qualified_build_bases": {
+          "default": {
+            "wm_sha256": "55b188abd952a17b2232026a02be1d9a6912bbb252c8e714622acfdfed1ad125",
+            "library_sha256": "0b750746445d14e561e9d6ee9d6fc091132b7dec4e75a95682ed9da54ffd5346"
+          }
+        }
+      },
+      "openbsd-arm64": {
+        "archive_sha256": "852284c93d29d73b7dc934afeb9098fb5bfcfcefcc7e11c3ac71635108720107",
+        "archive_bytes": 671336,
+        "production_translation_units": 3,
+        "affected_session_entries": 7,
+        "affected_exec_entries": 0,
+        "all_payload_files": 34,
+        "compiler_diagnostics": [
+          {
+            "log": "evidence/default-probe-link.log",
+            "sha256": "66d1a744c68df7c4c3eb470fb53b01f99bc94831d1abf370096b6d1d112bd4ec",
+            "warning_count": 2,
+            "inherited_warnings": [
+              "ld: warning: envvar.c:332 (../source/libs/envvar.c:332)(libfvwm3.a.p/envvar.c.o:(envDupExpand) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()",
+              "ld: warning: System.c:214 (../source/libs/System.c:214)(libfvwm3.a.p/System.c.o:(searchPath) in archive libs/libfvwm3.a): warning: strcat() is almost always misused, please use strlcat()"
+            ]
+          }
+        ],
+        "full_gzip_crc_verified": true,
+        "executed_runner_exact": true,
+        "qualified_build_bases": {
+          "default": {
+            "wm_sha256": "317668c6c59e115c22b1268ff2802b39a02b493c8cfc9e05c1b7826843921d24",
+            "library_sha256": "ec7955bc4b352cc1f54bc95541faa58e07ed5a02e3e1cfde455a60511bda2a89"
+          }
+        }
+      },
+      "openbsd-amd64": {
+        "archive_sha256": "a20982b036e006c85055ee006488fc0c7105c7a2bd1eeab565878e7f38b972a3",
+        "archive_bytes": 2650444,
+        "production_translation_units": 3,
+        "affected_session_entries": 7,
+        "affected_exec_entries": 1,
+        "all_payload_files": 40,
+        "compiler_diagnostics": [
+          {
+            "log": "evidence/default-exec-link.log",
+            "sha256": "3279caa707d2a628c9ed6672f822d4693e8216e9cd447588b8055dffc6af972e",
+            "warning_count": 3,
+            "inherited_warnings": [
+              "ld: warning: envvar.c:332 (../source/libs/envvar.c:332)(libfvwm3.a.p/envvar.c.o:(envDupExpand) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()",
+              "ld: warning: charmap.c:130 (../source/libs/charmap.c:130)(libfvwm3.a.p/charmap.c.o:(charmap_table_to_string) in archive libs/libfvwm3.a): warning: strcat() is almost always misused, please use strlcat()",
+              "ld: warning: cJSON.c:130 (../source/libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()"
+            ]
+          },
+          {
+            "log": "evidence/default-probe-link.log",
+            "sha256": "66d1a744c68df7c4c3eb470fb53b01f99bc94831d1abf370096b6d1d112bd4ec",
+            "warning_count": 2,
+            "inherited_warnings": [
+              "ld: warning: envvar.c:332 (../source/libs/envvar.c:332)(libfvwm3.a.p/envvar.c.o:(envDupExpand) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()",
+              "ld: warning: System.c:214 (../source/libs/System.c:214)(libfvwm3.a.p/System.c.o:(searchPath) in archive libs/libfvwm3.a): warning: strcat() is almost always misused, please use strlcat()"
+            ]
+          }
+        ],
+        "full_gzip_crc_verified": true,
+        "executed_runner_exact": true,
+        "qualified_build_bases": {
+          "default": {
+            "wm_sha256": "63475481e8be7f5e0c401ab2940721c8e2f17132ab8157084b2cd680f6b32034",
+            "library_sha256": "3834927fe4557e1630b34ad0ee7f766d10786c23db05f490211d1349241ed30b"
+          }
+        }
+      }
+    },
+    "scope": "Final line wraps/comments and probe vararg type correction; production compiler preprocessing identical; final session probe recompiled separately; final Exec probe is qualified in the separate fortified-entry-point correction. Original source/build/stage outputs untouched; full matrix retained without rerun."
+  },
+  "exec_fixture_correction": {
+    "status": "pass",
+    "profiles_including_sanitizer": 11,
+    "entries": 11,
+    "observations": 77,
+    "inputs": {
+      "files": {
+        "tests/test_exec_startup.c": {
+          "before": "3696068cad667309c1291deb8d37a742ab14595dbb2e11e46e826be4da6c6239",
+          "after": "5802dad3113f20e154d7be97b4b85d5fc51b423bf584644a0d5cd42fea3fa10f"
+        },
+        "tests/meson.build": {
+          "before": "191a4bbe878dfb840f82c206454f31af65837d4e6f5a9d125e5dac451a8b178f",
+          "after": "08aec0f299619c7412d0d7bce69ec42d742987fc75d38963031cc24200981eb3"
+        }
+      },
+      "frozen_source": "919f3824b64d9806f00d69d895ad4258a7c0a54da9622a30164607217cd9726c",
+      "reason": "Correct Exec probe argument types and interpose Clang/glibc fortified open entry points; production hardening and code remain unchanged. Both final test link options and source are recorded."
+    },
+    "archives": {
+      "fvwm-x-linux-arm64-svg": {
+        "sha256": "af4c00ed3b9e32816caaeab764f5c0b1039b2fde62f7e9260a4c00dc1a3a06b3",
+        "bytes": 16737242,
+        "full_gzip_crc_verified": true,
+        "profiles": {
+          "gcc": {
+            "observations": 7,
+            "probe_sha256": "0ba625d71df0d6e71965a0702b0c26038182f6f9089429f2173db413303b9445",
+            "build_basis": {
+              "wm": "73afb2f2e9b36618fe240b3396b07e375eafd31eadb77cf261638a19130f7c3c",
+              "library": "f9fc7d8be4d787c0b952caa742c5ae832e90dbb16308034b0ef10eb05497234f"
+            },
+            "inherited_linker_warnings": []
+          },
+          "clang": {
+            "observations": 7,
+            "probe_sha256": "a006da2d47d2cf830c677b226ef6b1c79d922b8b58de730891cb3ccb15ccad6f",
+            "build_basis": {
+              "wm": "78cab42500d67c31dc3c8f73d1e8e532efeaa3805c7de52ab19731d053e2f8cb",
+              "library": "34c9194ab592a6114c188a0bcbdd5e302ad358013d07bb1a02ad5de34b313ea1"
+            },
+            "inherited_linker_warnings": []
+          },
+          "software": {
+            "observations": 7,
+            "probe_sha256": "5b2799862bbfc720e98d4bd04ba9a55ed1b99b1865174f86fb40f55739d09351",
+            "build_basis": {
+              "wm": "4a21941b26717bccce8a9af80e8028707f7c6648afca399aa1e9b3daf481c607",
+              "library": "8ffc7f63b9e0bf7b61ffb3f81ad8ed36d468a657468665153c4e390e5424a574"
+            },
+            "inherited_linker_warnings": []
+          },
+          "minimal": {
+            "observations": 7,
+            "probe_sha256": "4ae873f64b812be23f8cd01c1469a561d5c3e887cdc7046ad982d6d22d35fe02",
+            "build_basis": {
+              "wm": "498eccb9cb91d00c35222c2584ee48d804d7863894dd9a234dc5f2846408872c",
+              "library": "7f634b7cddf22127d4e935b46bf910398ce1c5c09df36eadd03560165786f6ff"
+            },
+            "inherited_linker_warnings": []
+          },
+          "module-waits-asan": {
+            "observations": 7,
+            "probe_sha256": "86b9c09f93218fe339b8bee225cba91ac11651c8e9edfc520a4490f1e0a80caf",
+            "build_basis": {
+              "wm": "77d850450e436803b7fd0e6d87f6ad11f163a491a8949b86e54984e3b8fc7ef0",
+              "library": "697b7824dfdf5a4c3789037117b98fdbf9ecc07dedd8628c5e5b8216de145bf5"
+            },
+            "inherited_linker_warnings": []
+          }
+        }
+      },
+      "linux-amd64": {
+        "sha256": "9aaa9a143fe6a65b052771fbea3c8a976884fc562cb78f6e711c8bec62615d3b",
+        "bytes": 4820076,
+        "full_gzip_crc_verified": true,
+        "profiles": {
+          "gcc": {
+            "observations": 7,
+            "probe_sha256": "c6f5070595cf37ee4ddb23c1fa4a01b455d6ed9af1a037c82bc2a42799167512",
+            "build_basis": {
+              "wm": "fc2483cc9ca1a2ca2404dcb32f66be551dfd0c4c5c956997019c330e33ac7838",
+              "library": "e3d729b85ca2b5660f8b8217deb777d72152d856f61e9d1206604db214bcd353"
+            },
+            "inherited_linker_warnings": []
+          },
+          "clang": {
+            "observations": 7,
+            "probe_sha256": "fcb0e7d9f81dfbe22a464e016934422d1a3d29dfd4f93b4e94a2be5817ab41f9",
+            "build_basis": {
+              "wm": "342cf3dc7633304b257075fc8aa3c454ee164e8e062a19b393c44ba987c88e12",
+              "library": "72e19a53abac6bdaca5d330e818e1ebc26f7df21f5782b9cc963920659b29884"
+            },
+            "inherited_linker_warnings": []
+          }
+        }
+      },
+      "freebsd-arm64": {
+        "sha256": "4f7d0d4d539dd743c8ff54b2a8bbf5b68db8b3ad9f243019b52ee4c83582d0a4",
+        "bytes": 2154331,
+        "full_gzip_crc_verified": true,
+        "profiles": {
+          "default": {
+            "observations": 7,
+            "probe_sha256": "c02fc0bcf0ea86b900ab66d97726ba6a2264be6374c58eb8662563fbb4401c72",
+            "build_basis": {
+              "wm": "14b49fcfae3054e7d0a3e9f4d5b9ef75be87f33ccfa955f00e4edb9f07101476",
+              "library": "47bb668db7d3a122c4cb5fa8c04c128fe658d413ab45ed01ca137efea6df65e6"
+            },
+            "inherited_linker_warnings": []
+          }
+        }
+      },
+      "openbsd-arm64": {
+        "sha256": "c6bed6c8222367e87715cfc9ea403954737a94e308bdb31811af26535afb56c3",
+        "bytes": 1991929,
+        "full_gzip_crc_verified": true,
+        "profiles": {
+          "default": {
+            "observations": 7,
+            "probe_sha256": "592a3ad1eabad14308a56e43b7d669ffcae14b8d961b3582a788d4d69b1b39a4",
+            "build_basis": {
+              "wm": "317668c6c59e115c22b1268ff2802b39a02b493c8cfc9e05c1b7826843921d24",
+              "library": "ec7955bc4b352cc1f54bc95541faa58e07ed5a02e3e1cfde455a60511bda2a89"
+            },
+            "inherited_linker_warnings": [
+              "ld: warning: menus.c:5526 (../source/fvwm/menus.c:5526)(tests/fvwm-module-output-fixture.p/.._fvwm_menus.c.o:(do_menu)): warning: strcat() is almost always misused, please use strlcat()",
+              "ld: warning: menus.c:1804 (../source/fvwm/menus.c:1804)(tests/fvwm-module-output-fixture.p/.._fvwm_menus.c.o:(make_menu)): warning: strcpy() is almost always misused, please use strlcpy()",
+              "ld: warning: cJSON.c:130 (../source/libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()"
+            ]
+          }
+        }
+      },
+      "freebsd-amd64": {
+        "sha256": "646349c95b3e03f9a6b7d7650c2e2919e1842fad31c489a6d6bedd969c79e1ae",
+        "bytes": 2204243,
+        "full_gzip_crc_verified": true,
+        "profiles": {
+          "default": {
+            "observations": 7,
+            "probe_sha256": "f572a36bbf56b7701220249eff3252e22929f4c4809b80dff73afeef2aadc2d2",
+            "build_basis": {
+              "wm": "55b188abd952a17b2232026a02be1d9a6912bbb252c8e714622acfdfed1ad125",
+              "library": "0b750746445d14e561e9d6ee9d6fc091132b7dec4e75a95682ed9da54ffd5346"
+            },
+            "inherited_linker_warnings": []
+          }
+        }
+      },
+      "openbsd-amd64": {
+        "sha256": "4fef78e054d86859391a621cc385497569fb3b65e210386132867aa911b6ddb9",
+        "bytes": 1998117,
+        "full_gzip_crc_verified": true,
+        "profiles": {
+          "default": {
+            "observations": 7,
+            "probe_sha256": "d78e92e954841adb31d885dcf521af9b273b607920b050fbd8394c167c218614",
+            "build_basis": {
+              "wm": "63475481e8be7f5e0c401ab2940721c8e2f17132ab8157084b2cd680f6b32034",
+              "library": "3834927fe4557e1630b34ad0ee7f766d10786c23db05f490211d1349241ed30b"
+            },
+            "inherited_linker_warnings": [
+              "ld: warning: menus.c:5526 (../source/fvwm/menus.c:5526)(tests/fvwm-module-output-fixture.p/.._fvwm_menus.c.o:(do_menu)): warning: strcat() is almost always misused, please use strlcat()",
+              "ld: warning: menus.c:1804 (../source/fvwm/menus.c:1804)(tests/fvwm-module-output-fixture.p/.._fvwm_menus.c.o:(make_menu)): warning: strcpy() is almost always misused, please use strlcpy()",
+              "ld: warning: cJSON.c:130 (../source/libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()"
+            ]
+          }
+        }
+      }
+    },
+    "root_cause": "Original Clang AMD64 object references __open64_2; original probe did not interpose that entry point. Corrected probe wraps it and __open_2, preserving hardening. All seven observations pass on every profile."
+  },
+  "compile_diagnostics": {
+    "status": "pass",
+    "changed_line_ranges": {
+      "builtins.c": [
+        [
+          2269,
+          2271
+        ],
+        [
+          2273,
+          2273
+        ],
+        [
+          2276,
+          2276
+        ],
+        [
+          2281,
+          2287
+        ],
+        [
+          2291,
+          2294
+        ],
+        [
+          2296,
+          2301
+        ]
+      ],
+      "FSMlib.h": [
+        [
+          703,
+          703
+        ],
+        [
+          774,
+          774
+        ]
+      ],
+      "fsm.c": [
+        [
+          312,
+          325
+        ],
+        [
+          346,
+          350
+        ],
+        [
+          1040,
+          1040
+        ],
+        [
+          1093,
+          1101
+        ],
+        [
+          1124,
+          1125
+        ],
+        [
+          1127,
+          1128
+        ],
+        [
+          1130,
+          1130
+        ],
+        [
+          1135,
+          1148
+        ],
+        [
+          1152,
+          1164
+        ]
+      ],
+      "test_exec_startup.c": [
+        [
+          1,
+          180
+        ]
+      ],
+      "test_session_startup.c": [
+        [
+          1,
+          199
+        ]
+      ]
+    },
+    "scope": "All eleven compile logs retained; no warnings in changed C/header lines.",
+    "logs": [
+      {
+        "target": "freebsd-amd64",
+        "log": "evidence/default-compile.log",
+        "sha256": "ae965979491e7165db08be93b25b897b292ca29934334d2fa32f2523e6e63732",
+        "affected_diagnostics": [],
+        "warning_count": 0
+      },
+      {
+        "target": "freebsd-arm64",
+        "log": "evidence/default-compile.log",
+        "sha256": "0c38edb45f926a659ca063303284d0199773012d1c3972d94f705f9d4364e465",
+        "affected_diagnostics": [],
+        "warning_count": 0
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "log": "evidence/asan-compile.log",
+        "sha256": "43e3d5a4e104bc0410680d0b2ea978ed934b1de82527c7dcf3d5e744ff1a7b4e",
+        "affected_diagnostics": [],
+        "warning_count": 6
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "log": "evidence/clang-compile.log",
+        "sha256": "73de38c1ce067386684a2a4e62d0946ff5c6ba839fd5ce7844c94a73fcdcd943",
+        "affected_diagnostics": [],
+        "warning_count": 0
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "log": "evidence/gcc-compile.log",
+        "sha256": "aa8d6bf94b6716af33f90a265137bf876774fb195c870d7e656501c616acefb5",
+        "affected_diagnostics": [],
+        "warning_count": 0
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "log": "evidence/minimal-compile.log",
+        "sha256": "52a53ce5e550c38b691afd37d1f5c56e24ac975d9e0795e0a8bb022906cd7de9",
+        "affected_diagnostics": [],
+        "warning_count": 5
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "log": "evidence/software-compile.log",
+        "sha256": "118332b7428cf8bc4474986c760b13e22ed468889fc72a7aa8454f7d27c8be43",
+        "affected_diagnostics": [],
+        "warning_count": 2
+      },
+      {
+        "target": "linux-amd64",
+        "log": "evidence/clang-compile.log",
+        "sha256": "6691897fc7688f73cf0de4ec9286fc44120e9f5c2807d1528ff2a7cc1e096d67",
+        "affected_diagnostics": [],
+        "warning_count": 0
+      },
+      {
+        "target": "linux-amd64",
+        "log": "evidence/gcc-compile.log",
+        "sha256": "fc012c1916c4d8e47b0ddec551388b28875ceb771281308822c274be91e7bf06",
+        "affected_diagnostics": [],
+        "warning_count": 2
+      },
+      {
+        "target": "openbsd-amd64",
+        "log": "evidence/default-compile.log",
+        "sha256": "00efa3754f59d6d105f46d04e723ba40e2130c7c69e807a72300ee4c0edf3d36",
+        "affected_diagnostics": [],
+        "warning_count": 230
+      },
+      {
+        "target": "openbsd-arm64",
+        "log": "evidence/default-compile.log",
+        "sha256": "9cecb6ede547a9ba3ec6c375753f17a49791c96586a93efb340e559bfafd5c64",
+        "affected_diagnostics": [],
+        "warning_count": 230
+      }
+    ],
+    "total_warning_count": 475
+  },
+  "portable": {
+    "command": [
+      "make",
+      "verify"
+    ],
+    "status": 0,
+    "total": 177,
+    "passed": 166,
+    "capability_skips": 11,
+    "runs": 1,
+    "log_scope": "completion output and all unittest totals retained in portable-completion.log; initial terminal chunk is in the tool transcript"
+  },
+  "manual": {
+    "status": 0,
+    "render_command": [
+      "python3",
+      "/tmp/fvwm-module-waits-20261015/process-startup-manuals/source/tools/maintenance/docs.py",
+      "--source",
+      "/tmp/fvwm-module-waits-20261015/process-startup-manuals/source",
+      "--output",
+      "/tmp/fvwm-module-waits-20261015/process-startup-manuals/rendered",
+      "--format",
+      "man"
+    ],
+    "manuals": 26,
+    "inputs_exact_before_and_after": true,
+    "diagnostic_bytes": 0,
+    "version": "Asciidoctor 2.0.20 [https://asciidoctor.org]\nRuntime Environment (ruby 3.2.3 (2024-01-18 revision 52bb2ac0a6) [aarch64-linux-gnu]) (lc:UTF-8 fs:UTF-8 in:UTF-8 ex:UTF-8)",
+    "render_runs": 1,
+    "initial_receipt_assertion": "The render completed; its follow-up assertion looked for Exec text in fvwm3.1 instead of fvwm3commands.1/fvwm3all.1. Existing output validated; no rerender.",
+    "archive_sha256": "551d8b0c6bfa2f49adef91565141fadf7225b9242adb71876685e3cca5b65810",
+    "full_gzip_crc_and_all_output_hashes": true
+  },
+  "production_source_delta": {
+    "production_c_header_added": 84,
+    "production_c_header_removed": 67,
+    "files": [
+      [
+        "21",
+        "44",
+        "fvwm/builtins.c"
+      ],
+      [
+        "2",
+        "0",
+        "libs/FSMlib.h"
+      ],
+      [
+        "61",
+        "23",
+        "libs/fsm.c"
+      ]
+    ]
+  },
+  "performance": {
+    "reference_pr": 132,
+    "subsequent_merged_implementation_checkpoints": 0,
+    "next_regular_comparison_after": 5,
+    "comparison_due": false
+  }
+}

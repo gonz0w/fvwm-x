@@ -10,6 +10,19 @@ void SlideWindow(
 	int steps, int delay_ms, float *ppctMovement,
 	Bool do_sync, Bool use_hints);
 
+/* Per-operation work limits, independent of the server's tree depth. */
+#define F_WINDOW_TREE_MAX_QUERIES 4096U
+
+typedef struct
+{
+	Window root;
+	unsigned int queries;
+} FWindowTreeWalk;
+
+Bool FQueryWindowParent(
+	Display *dpy, Window window, FWindowTreeWalk *walk, Window *parent);
+Window FGetFrameWindow(Display *dpy, Window window, int *off_x, int *off_y);
+
 Window GetTopAncestorWindow(Display *dpy, Window child);
 
 int GetEqualSizeChildren(

@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Donated icon retention, DATA-01 / IMAGE-01 / CLEAN-01 | Combined checkpoint passes; ready for PR review | Three donated-icon record/size/retirement improvements pass one combined checkpoint: 2045/2045 standard results (2037 fresh / eight retained by unchanged production/test/build inputs and nine binary identities), plus 451/451 optional entries across six targets/ten profiles. Selected partial deletion allocations fall three to two. Fifteen actual-core drivers verify 510 icon cases; four scoped guest sanitizers, nine fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md). |
+| Donated icon retention, DATA-01 / IMAGE-01 / CLEAN-01 | Merged in [PR #130](https://github.com/gonz0w/fvwm-x/pull/130); combined checkpoint passes | Three donated-icon record/size/retirement improvements pass one combined checkpoint: 2045/2045 standard results (2037 fresh / eight retained by unchanged production/test/build inputs and nine binary identities), plus 451/451 optional entries across six targets/ten profiles. Selected partial deletion allocations fall three to two. Fifteen actual-core drivers verify 510 icon cases; four scoped guest sanitizers, nine fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md). |
 | Picture-cache lookup and retirement, CACHE-01 / CLEAN-01 | Merged in [PR #129](https://github.com/gonz0w/fvwm-x/pull/129); combined checkpoint passes | Three picture-cache variant/name/retirement improvements pass one combined checkpoint: 2045/2045 standard results (2038 fresh / seven retained by exact source and nine binary identities), plus 451/451 optional entries across six targets/ten profiles. Selected pathname comparisons fall 65 to one/two; two predecessor walks fall 16,384/32,385 to zero. Five scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md). |
 | Private condition/startup/monitor records, MAINT-02 / CLEAN-01 | Merged in [PR #128](https://github.com/gonz0w/fvwm-x/pull/128); affected checkpoint passes | Three condition/startup/monitor-adapter dependency improvements pass 149/149 affected native entries across six targets/ten profiles (15 retained focused / 134 fresh). All 5914 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 identities. ARM GCC layout fanout falls 214/214/230 to 2/22/2 objects. Broader PR127 runtime evidence and required OpenBSD gaps remain source-scoped. [Report](verification/VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md). |
 | Style flag mutations, STYLE-01 / CLEAN-01 | Merged in [PR #127](https://github.com/gonz0w/fvwm-x/pull/127); combined checkpoint passes | Three typed flag union/intersection/clearing operations pass one combined checkpoint: 2045/2045 standard results (2035 fresh / ten retained by exact source and twelve binary identities), plus 451/451 optional entries across six targets/ten profiles. Eleven mutation drivers verify 10,982,730 reference cases; fifteen actual-core drivers retain independent style-order/simplification coverage. Four scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md). |
@@ -248,20 +248,12 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-20: PR #129 is merged. DATA-01 #6 / IMAGE-01 #8 /
-CLEAN-01 #34 completes one donated-icon record/size/retirement batch.
-Three donated-icon record/size/retirement improvements pass one combined
-checkpoint: 2045/2045 standard results (2037 fresh / eight retained by
-unchanged production/test/build inputs and nine binary identities), plus
-451/451 optional entries across six targets/ten profiles. Selected partial
-deletion allocations fall three to two. Fifteen actual-core drivers verify 510
-icon cases; four scoped guest sanitizers, nine fresh stages and four
-authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its
-full-install/two staged-geometry gap remain without retries.
-[Report](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md). DATA-01 is in Review for this component; IMAGE-01 remains
-in Validation for its broader required gaps; CLEAN-01 stays In progress.
-CACHE-01, MAINT-02, STYLE-01 and STATE-01 are Ready for their remaining scope.
-VESA #93 stays deferred.
+Immediate selection, 2026-10-20: PR #130 is merged. DATA-01 #6 / CLEAN-01
+#34 begins one window-tree walk checkpoint: bounded ancestor lookup, bounded
+core pointer lookup, and checked IconMan frame translation. Existing query/context
+order and configuration syntax remain. The uncalled recursive client-window
+helper is outside this batch. Six focused incremental Linux checks pass; one
+combined checkpoint follows. Required OpenBSD gaps and deferred VESA #93 remain.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

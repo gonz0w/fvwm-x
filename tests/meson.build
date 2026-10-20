@@ -235,6 +235,18 @@ window_children_test = executable(
 )
 test('window-children', window_children_test)
 
+window_tree_test = executable(
+    'test-window-tree', 'test_window_tree.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=XGetWindowAttributes',
+        '-Wl,--wrap=XQueryTree', '-Wl,--wrap=XFree'],
+    c_args: ['-UNDEBUG'],
+)
+test('window-tree', window_tree_test)
+
+
 property_policy_test = executable(
     'test-property-policy', 'test_property_policy.c',
     include_directories: includedirs,
@@ -1690,6 +1702,25 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '--artifacts-dir', meson.current_build_dir() /
                 'live-x-artifacts' / 'window-update'],
         depends: window_update_fixture,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 45,
+    )
+    window_tree_fixture = executable(
+        'fvwm-window-tree-fixture', 'window_tree_start.c',
+        objects: module_output_fixture.extract_objects(module_output_core_sources),
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=CaptureAllWindows'],
+        c_args: ['-UNDEBUG'],
+    )
+    test(
+        'window-tree-xvfb', py,
+        args: [files('live_x/window_tree_live.py'),
+            '--fvwm', window_tree_fixture.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'window-tree'],
+        depends: window_tree_fixture,
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 45,
     )

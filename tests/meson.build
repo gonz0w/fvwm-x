@@ -246,6 +246,18 @@ window_tree_test = executable(
 )
 test('window-tree', window_tree_test)
 
+picture_visual_test = executable(
+    'test-picture-visual', 'test_picture_visual.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=XGetVisualInfo', '-Wl,--wrap=XFree',
+        '-Wl,--wrap=XAllocColor', '-Wl,--wrap=XFreeColors',
+        '-Wl,--wrap=PictureInitColors'],
+    c_args: ['-UNDEBUG'],
+)
+test('picture-visual', picture_visual_test)
+
 
 property_policy_test = executable(
     'test-property-policy', 'test_property_policy.c',
@@ -261,6 +273,15 @@ test('responsiveness-profile-evidence', py,
     args: [files('test_responsiveness_profile.py')])
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test(
+        'picture-visual-xvfb', py,
+        args: [files('live_x/picture_visual_live.py'),
+            '--probe', picture_visual_test.full_path(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'picture-visual'],
+        depends: [picture_visual_test],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 45,
+    )
     test(
         'display-ownership-xvfb', py,
         args: [files('live_x/display_ownership_live.py'),

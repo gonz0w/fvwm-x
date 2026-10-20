@@ -87,3 +87,29 @@ six-target matrix; see the [client-profile/default-X report](verification/VERIFI
 They reuse qualified default-server hardware setup; provider-specific VM profiles
 and actual native sanitizer execution remain separate acceptance gates.
 GitHub Actions is disabled under the [local-review decision](decisions/LOCAL-REVIEW-GITHUB-2026-10-13.md).
+
+## Performance observations
+
+The opt-in comparison consumes two already qualified builds on the same quiet
+Linux profile. Run it every five merged implementation checkpoints, or earlier
+for a change expected to affect responsiveness or memory; see the
+[workflow cadence](WORKFLOW.md#periodic-performance-comparisons).
+
+```sh
+python3 tests/compare_performance.py \
+    --baseline-fvwm /path/to/reference/fvwm3 \
+    --baseline-mfl /path/to/reference/FvwmMFL \
+    --baseline-revision REFERENCE_COMMIT \
+    --candidate-fvwm /path/to/current/fvwm3 \
+    --candidate-mfl /path/to/current/FvwmMFL \
+    --candidate-revision CURRENT_COMMIT \
+    --profile linux-arm64-gcc-default \
+    --artifacts-dir /path/to/new-comparison-directory
+```
+
+No build, install, correctness matrix or timing threshold is added. Each side
+uses an owned Xvfb server with the same profiler, 128 samples per workload and
+three repetitions in alternating order. Preserve `comparison.json`, all raw
+run directories and the source/compiler/dependency receipts for both builds.
+RSS is unavailable outside Linux `/proc`; CPU/memory and latency reflect the
+recorded environment. Physical hardware remains separate qualification.

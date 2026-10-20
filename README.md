@@ -12,9 +12,11 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Window-tree walks](dev-docs/verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md) bound ancestor and pointer lookups and keep
-IconMan frame offsets unchanged when lookup fails. One combined checkpoint
-covers six targets; required gaps remain explicit.
+[Visual startup ownership](dev-docs/verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md) validates inherited visual/colormap pairs,
+releases lookup replies and handles initial-color refusal. One combined
+checkpoint covers six targets; required gaps remain explicit.
+[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-20.md)
+track latency, CPU, memory and executable size every five implementation batches.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

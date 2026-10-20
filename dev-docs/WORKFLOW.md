@@ -152,6 +152,40 @@ still prevent installation. Full portable
 checks run once at the combined checkpoint. Docs/status-only corrections use
 repository/link/branch-diff checks and retain unchanged runtime evidence.
 
+## Periodic performance comparisons
+
+User request, 2026-10-20: track responsiveness, CPU, memory and executable size
+without adding a benchmark run to every batch. Establish the first paired
+observation at the visual-startup checkpoint after PR #131, then compare every
+five merged implementation checkpoints against the last recorded reference.
+Record the reference revision, completed-checkpoint count and next comparison
+in the tracker. A change expected to affect hot-path cost or retained memory
+can bring the comparison forward and reset the count. Documentation-only PRs
+do not advance it. This is checkpoint upkeep, not a scheduled background job.
+
+Use `tests/compare_performance.py` on one quiet Linux development profile with
+already built reference/current binaries. It alternates three paired runs of
+the existing idle/title/resize profiler and keeps raw samples, achieved load,
+command/timer median and p95, CPU, Linux peak RSS and `size` output. The same
+current profiler drives both binaries; retain their source/build identities,
+compiler/options, dependencies and VM/server settings. Different environments
+need a new reference. Peak RSS is the process high-water mark at each case,
+not isolated per-case allocation. File bytes include debug information;
+`size` text/data/bss totals describe a different, narrower measure.
+
+When changing the comparison wrapper, run the opt-in process controls with
+`python3 tests/test_performance_comparison.py`; they verify normal completion
+and timeout cleanup without starting a WM or measuring performance.
+
+Keep reports under `dev-docs/verification/` and link their machine-readable
+receipts and canonical logs. Record source C/header deltas separately from
+tests/docs and binary/runtime memory. Report noise and unavailable metrics;
+timing ratios are observations, not pass thresholds or universal desktop-speed
+claims. A concrete regression warrants focused investigation. Reuse existing
+micro-work measurements when relevant; do not rebuild both references, run a
+six-target performance matrix, or repeat correctness qualification merely to
+refresh the comparison. See [SUPPORT.md](SUPPORT.md#performance-observations).
+
 ## Replacing the graph
 
 The old graph mostly indexed documentation, including retired planning files.

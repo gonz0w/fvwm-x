@@ -9877,6 +9877,18 @@ _FVWM_DATADIR_::
 _FVWM_MODULEDIR_::
 	Set by fvwm to the directory containing the standard fvwm modules.
 
+_FVWM_VISUALID_, _FVWM_COLORMAP_::
+	Set together by fvwm for native modules using its private visual and
+	colormap. Values are nonzero hexadecimal X resource IDs, with at most
+	eight digits and an optional `0x` prefix. Normally users need not set
+	them. An incomplete or malformed pair, or a visual absent from the
+	module's screen, selects that screen's default visual and colormap.
+	Modules also use those defaults if their initial white/black colors
+	cannot both be allocated. A well-formed colormap ID still depends on
+	the live X server; ordinary X error handling applies to invalid or
+	destroyed resources. If fvwm itself cannot allocate its selected
+	visual's initial colors, startup stops with a diagnostic.
+
 _SESSION_MANAGER_::
 	Fvwm tries to contact this session manager.
 

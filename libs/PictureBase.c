@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include <X11/Xlib.h>
 
@@ -38,6 +39,7 @@
 #include "PictureUtils.h"
 #include "Fsvg.h"
 #include "Strings.h"
+#include "log.h"
 
 Bool Pdefault;
 Visual *Pvisual;
@@ -54,34 +56,94 @@ Pixel PBlackPixel;
 Pixel FvwmWhitePixel;
 Pixel FvwmBlackPixel;
 
-void PictureInitCMap(Display *dpy) {
-	char *envp;
+static Bool picture_parse_xid(const char *text, unsigned long *value)
+{
+	uint32_t parsed = 0;
+	unsigned int digits = 0;
+
+	*value = None;
+	if (text == NULL)
+		return False;
+	if (text[0] == '0' && (text[1] == 'x' || text[1] == 'X'))
+		text += 2;
+	while (*text != '\0' && digits < 8)
+	{
+		unsigned int digit;
+
+		if (*text >= '0' && *text <= '9')
+			digit = *text - '0';
+		else if (*text >= 'a' && *text <= 'f')
+			digit = *text - 'a' + 10;
+		else if (*text >= 'A' && *text <= 'F')
+			digit = *text - 'A' + 10;
+		else
+			return False;
+		parsed = (parsed << 4) | digit;
+		digits++;
+		text++;
+	}
+	if (digits == 0 || *text != '\0' || parsed == None)
+		return False;
+	*value = parsed;
+	return True;
+}
+
+static void picture_set_default_visual(Display *dpy)
+{
+	int screen = DefaultScreen(dpy);
+
+	Pvisual = DefaultVisual(dpy, screen);
+	Pdepth = DefaultDepth(dpy, screen);
+	Pcmap = DefaultColormap(dpy, screen);
+	Pdefault = True;
+}
+
+void PictureInitCMap(Display *dpy)
+{
+	const char *visual_text = getenv("FVWM_VISUALID");
+	const char *colormap_text = getenv("FVWM_COLORMAP");
+	unsigned long visual_id, colormap;
 
 	Pdpy = dpy;
-	/* if fvwm has not set this env-var it is using the default visual */
-	envp = getenv("FVWM_VISUALID");
-	if (envp != NULL && *envp > 0) {
-		/* convert the env-vars to a visual and colormap */
-		int viscount;
-		XVisualInfo vizinfo, *xvi;
+	picture_set_default_visual(dpy);
+	/* The module producer supplies two nonzero hexadecimal X protocol IDs.
+	 * Admit the complete pair before querying or publishing either value. */
+	if (visual_text != NULL || colormap_text != NULL)
+	{
+		if (picture_parse_xid(visual_text, &visual_id) &&
+		    picture_parse_xid(colormap_text, &colormap))
+		{
+			int count = 0;
+			XVisualInfo query = {0}, *reply;
 
-		sscanf(envp, "%lx", &vizinfo.visualid);
-		xvi = XGetVisualInfo(dpy, VisualIDMask, &vizinfo, &viscount);
-		Pvisual = xvi->visual;
-		Pdepth = xvi->depth;
-		/* Note: if FVWM_VISUALID is set, FVWM_COLORMAP is set too */
-		sscanf(getenv("FVWM_COLORMAP"), "%lx", &Pcmap);
-		Pdefault = False;
-	} else {
-		int screen = DefaultScreen(dpy);
-
-		Pvisual = DefaultVisual(dpy, screen);
-		Pdepth = DefaultDepth(dpy, screen);
-		Pcmap = DefaultColormap(dpy, screen);
-		Pdefault = True;
+			query.visualid = visual_id;
+			query.screen = DefaultScreen(dpy);
+			reply = XGetVisualInfo(dpy, VisualIDMask | VisualScreenMask,
+				&query, &count);
+			if (reply != NULL && count > 0 && reply->visual != NULL &&
+			    reply->depth > 0)
+			{
+				/* Visual belongs to the Display; only the reply is owned. */
+				Pvisual = reply->visual;
+				Pdepth = reply->depth;
+				Pcmap = colormap;
+				Pdefault = False;
+			}
+			if (reply != NULL)
+				XFree(reply);
+		}
+		if (Pdefault)
+			fvwm_debug(__func__, "Invalid inherited visual/colormap; "
+				"using screen defaults");
 	}
 
-	PictureSetupWhiteAndBlack();
+	if (!PictureSetupWhiteAndBlack())
+	{
+		fvwm_debug(__func__, "Cannot allocate inherited visual colors; "
+			"using screen defaults");
+		picture_set_default_visual(dpy);
+		PictureSetupWhiteAndBlack();
+	}
 	PictureSaveFvwmVisual();
 
 	/* initialise color limit */
@@ -94,14 +156,8 @@ void PictureInitCMapRoot(
 	Display *dpy, Bool init_color_limit, PictureColorLimitOption *opt,
 	Bool use_my_color_limit, Bool init_dither)
 {
-	int screen = DefaultScreen(dpy);
-
 	Pdpy = dpy;
-
-	Pvisual = DefaultVisual(dpy, screen);
-	Pdepth = DefaultDepth(dpy, screen);
-	Pcmap = DefaultColormap(dpy, screen);
-	Pdefault = True;
+	picture_set_default_visual(dpy);
 
 	PictureSetupWhiteAndBlack();
 	PictureSaveFvwmVisual();
@@ -113,19 +169,24 @@ void PictureInitCMapRoot(
 	return;
 }
 
-void PictureSetupWhiteAndBlack(void)
+Bool PictureSetupWhiteAndBlack(void)
 {
-	XColor c;
+	XColor white = {0}, black = {0};
 
 	if (!Pdefault)
 	{
-		c.flags = DoRed|DoGreen|DoBlue;
-		c.red = c.green = c.blue = 65535;
-		XAllocColor(Pdpy, Pcmap, &c);
-		PWhitePixel = c.pixel;
-		c.red = c.green = c.blue = 0;
-		XAllocColor(Pdpy, Pcmap, &c);
-		PBlackPixel = c.pixel;
+		white.flags = black.flags = DoRed | DoGreen | DoBlue;
+		white.red = white.green = white.blue = 65535;
+		if (!XAllocColor(Pdpy, Pcmap, &white))
+			return False;
+		if (!XAllocColor(Pdpy, Pcmap, &black))
+		{
+			XFreeColors(Pdpy, Pcmap, &white.pixel, 1, 0);
+			return False;
+		}
+		/* Commit both pixels only after both allocations succeed. */
+		PWhitePixel = white.pixel;
+		PBlackPixel = black.pixel;
 	}
 	else
 	{
@@ -133,7 +194,7 @@ void PictureSetupWhiteAndBlack(void)
 		PBlackPixel = BlackPixel(Pdpy, DefaultScreen(Pdpy));
 	}
 
-	return;
+	return True;
 }
 
 void PictureUseDefaultVisual(void)

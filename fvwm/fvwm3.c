@@ -2203,7 +2203,11 @@ int main(int argc, char **argv)
 		}
 	}
 
-	PictureSetupWhiteAndBlack();
+	if (!PictureSetupWhiteAndBlack())
+	{
+		fvwm_debug(__func__, "Cannot allocate visual black/white colors");
+		exit(1);
+	}
 
 	/* make a copy of the visual stuff so that XorPixmap can swap with root
 	 */

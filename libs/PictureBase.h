@@ -81,9 +81,9 @@ void PictureInitCMapRoot(
 Pixel PictureWhitePixel(void);
 Pixel PictureBlackPixel(void);
 
-/* for initialization of the white and black pixel (for fvwm as PictureInitCMap*
- * do this) */
-void PictureSetupWhiteAndBlack(void);
+/* Initialize both pixels, or retain both old values and return False.
+ * PictureInitCMap* handles initialization for modules. */
+Bool PictureSetupWhiteAndBlack(void);
 
 /* Analogue of the Xlib DefaultGC function but take care of the Pdepth:
    - If Pdepth == DefaultDepth return the DefaultGC

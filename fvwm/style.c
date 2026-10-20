@@ -38,6 +38,7 @@
 #include "style.h"
 #include "style_id_filter.h"
 #include "style_match.h"
+#include "style_flags_predicate.h"
 #include "colorset.h"
 #include "ewmh.h"
 #include "placement.h"
@@ -333,32 +334,12 @@ static int blockunmask(char *dest, char *blk1, char *blk2, int length)
 
 static int blockissubset(char *sub, char *super, int length)
 {
-	int i;
-
-	for (i = 0; i < length; i++)
-	{
-		if ((sub[i] & super[i]) != sub[i])
-		{
-			return 0;
-		}
-	}
-
-	return 1;
+	return style_flags_subset(sub, super, length);
 }
 
 static int blocksintersect(char *blk1, char *blk2, int length)
 {
-	int i;
-
-	for (i = 0; i < length; i++)
-	{
-		if (blk1[i] & blk2[i])
-		{
-			return 1;
-		}
-	}
-
-	return 0;
+	return style_flags_intersect(blk1, blk2, length);
 }
 
 static bool style_ids_are_equal(style_id_t *a, style_id_t *b)
@@ -4999,8 +4980,7 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
  * the mask.
  *
  *  Returned Value:
- *	zero if the flags are the same
- *	non-zero otherwise
+ *	True if the masked flags are the same; False otherwise
  *
  *  Inputs:
  *	flags1 - first byte array of flags to compare
@@ -5009,17 +4989,7 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
  *	len    - number of bytes to compare */
 Bool blockcmpmask(char *blk1, char *blk2, char *mask, int length)
 {
-	int i;
-
-	for (i = 0; i < length; i++)
-	{
-		if ((blk1[i] & mask[i]) != (blk2[i] & mask[i]))
-		{
-			/* flags are not the same, return 1 */
-			return False;
-		}
-	}
-	return True;
+	return style_flags_equal_masked(blk1, blk2, mask, length) ? True : False;
 }
 
 void free_icon_boxes(icon_boxes *ib)

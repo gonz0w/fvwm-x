@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Style matching work, STYLE-01 / CLEAN-01 | Combined checkpoint passes; ready for PR review | Three related style preparation/predicate/candidate-merge improvements pass one combined checkpoint: 2029/2029 standard results (2021 fresh / eight retained by exact source and ten binary identities), plus 447/447 optional entries across six targets/ten profiles. Instrumented escape scans fall eight to zero for twelve preparations. 180 actual-core merge cases and 132 preparation cases pass. Four scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md). |
+| Style matching work, STYLE-01 / CLEAN-01 | Merged in [PR #125](https://github.com/gonz0w/fvwm-x/pull/125); combined checkpoint passes | Three related style preparation/predicate/candidate-merge improvements pass one combined checkpoint: 2029/2029 standard results (2021 fresh / eight retained by exact source and ten binary identities), plus 447/447 optional entries across six targets/ten profiles. Instrumented escape scans fall eight to zero for twelve preparations. 180 actual-core merge cases and 132 preparation cases pass. Four scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md). |
 | Legacy tray membership, STATE-01 / CLEAN-01 | Merged in [PR #124](https://github.com/gonz0w/fvwm-x/pull/124); combined checkpoint passes | Three existing legacy-tray insertion/retirement/publication improvements pass one combined checkpoint: 2029/2029 standard results, fresh or retained after source/binary verification, and 447/447 optional entries across six targets/ten profiles. Four focused standard entries are retained; 2025 standard entries run fresh. Selected 64-window add/remove snapshots each reduce heap requests from one to zero. Source review shows two insertion/retirement searches become one, and two publication walks become one. Four scoped sanitizers, 9 fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md). |
 | UI record type boundaries, MAINT-02 / CLEAN-01 | Merged in [PR #123](https://github.com/gonz0w/fvwm-x/pull/123); affected checkpoint passes | Three font/picture/monitor dependency improvements pass 170/170 affected native entries across six targets/ten profiles (17 focused entries retained by exact source/binary identity, 153 fresh). All 5874 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities. ARM GCC layout fanout falls from 252/289/226 to 49/66/92 objects. Broader runtime evidence and required OpenBSD gaps remain source-scoped to PR122. [Report](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md). |
 | EWMH publication work, STATE-01 #37 | Merged in [PR #122](https://github.com/gonz0w/fvwm-x/pull/122); affected checkpoint passes | Three EWMH publication improvements pass one combined checkpoint: 2029/2029 executed standard and 447/447 optional entries across six targets/ten profiles. Selected strut walks fall from two to one, permission queries from nine to six and converted-name length scans from 189 to 63. Four scoped sanitizers, 9 fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its broader install/staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md). |
@@ -243,17 +243,15 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-19: PR #124 is merged. STYLE-01 #38 / CLEAN-01
-#34 completes one three-operation matching checkpoint: selector preparation,
-universal explicit predicates and bounded ordinal merging. Eight focused
-results are retained through exact non-Markdown source and ten binary identities;
-2021 standard entries run fresh. One combined six-target/ten-profile
-checkpoint passes 2029 standard / 447 optional
-results, four scoped sanitizers, nine fresh full stages and four authenticated
-BSD displays. Ready for PR review. The initial baseline probe assumption,
-corrected wildcard workload, timing limits and required OpenBSD gaps remain
-explicit. Larger update plans/grabs and broader scope stay open; VESA #93 is
-deferred. [Report](verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md).
+Immediate selection, 2026-10-19: [PR #125](https://github.com/gonz0w/fvwm-x/pull/125)
+is merged. STYLE-01 #38 / CLEAN-01 #34 now evaluates a related three-operation
+flag-predicate checkpoint: subset checks for list selection/simplification,
+intersection checks for simplification, and masked equality for conditional
+window selection. Capture actual record widths, byte-reference comparisons,
+boundary/unaligned/overlap witnesses and compiler/workload evidence before
+retaining the wider reads. All three operations are implemented; nine focused entries pass. One combined
+qualification is pending. [Report](verification/VERIFICATION-2026-10-19-STYLE-FLAGS.md). Mutable flag operations, update/grab barriers and larger update plans
+remain outside this checkpoint. VESA #93 stays deferred.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

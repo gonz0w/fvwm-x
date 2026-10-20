@@ -53,6 +53,12 @@ display only Basic Multilingual Plane characters; unsupported characters
 and malformed UTF-8 bytes use a replacement glyph without changing the
 stored text.
 
+Swallowed applications use an isolated session proxy. It rejects IDs from
+previous sessions and accepts a fresh registration, then requests an initial
+local save without interaction or shutdown. Applications may write their own
+checkpoint files during this exchange. The proxy discards session properties
+and answers property queries with an empty list; it does not restore sessions.
+
 == CONFIGURATION OPTIONS
 
 The following commands can be used in the config file (see _fvwm_(1),

@@ -502,7 +502,6 @@ Status RegisterClientProc(
 {
 	fsm_client_t *client = (fsm_client_t *) managerData;
 	char *id;
-	int send_save = 0;
 
 	if (!SessionSupport)
 	{
@@ -516,18 +515,20 @@ Status RegisterClientProc(
 		   previousId ? previousId : "NULL");
 #endif
 
-	/* ignore previousID!! (we are dummy) */
-	id = FSmsGenerateClientID(smsConn);
-	if (!FSmsRegisterClientReply(smsConn, id))
+	/* This proxy has no restored sessions. Reject an old ID so libSM
+	 * retries as a fresh client, and release the callback-owned string. */
+	if (previousId != NULL)
 	{
-		/* cannot happen ? */
-		if (id)
-		{
-			free(id);
-		}
+		free(previousId);
+		return 0;
+	}
+	id = FSmsGenerateClientID(smsConn);
+	if (id == NULL || !FSmsRegisterClientReply(smsConn, id))
+	{
+		free(id);
 		fvwm_debug(__func__,
-			   "[%s][RegisterClientProc] ERR -- fail to register "
-			   "client", module_name);
+			"[%s][RegisterClientProc] Cannot register client",
+			module_name);
 		return 0;
 	}
 
@@ -541,13 +542,10 @@ Status RegisterClientProc(
 	client->clientId = id;
 	/* client->clientHostname = FSmsClientHostName (smsConn); */
 
-	/* we are dummy ... do not do that */
-	if (send_save)
-	{
-		FSmsSaveYourself(
-			smsConn, FSmSaveLocal, False, FSmInteractStyleNone,
-			False);
-	}
+	/* Complete fresh registration with the local, non-interactive save
+	 * exchange. SaveYourselfDoneProc sends its completion reply. */
+	FSmsSaveYourself(
+		smsConn, FSmSaveLocal, False, FSmInteractStyleNone, False);
 
 	return 1;
 }
@@ -687,6 +685,13 @@ void DeletePropertiesProc(
 static
 void GetPropertiesProc(FSmsConn smsConn, FSmPointer managerData)
 {
+	if (!SessionSupport)
+	{
+		return;
+	}
+	/* The swallow proxy discards session properties, but clients still
+	 * need a reply to complete their asynchronous request. */
+	FSmsReturnProperties(smsConn, 0, NULL);
 }
 
 static Status

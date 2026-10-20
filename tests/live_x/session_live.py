@@ -85,6 +85,18 @@ os.execv(os.environ['FVWM_REAL_ICEAUTH'], ['iceauth'] + sys.argv[1:])
             time.sleep(0.03)
             assert server.poll() is None, "early ICE disconnect crashed the listener"
         evidence["early_ice_disconnects_survive"] = "passed"
+        if options.client_probe is not None:
+            for index, registration in enumerate(("fresh", "previous", "fresh")):
+                peer = runtime.start(
+                    f"session-client-{index}",
+                    [str(options.client_probe), registration],
+                    f"session-client-{index}.log",
+                    dict(environment, SESSION_MANAGER=manager))
+                assert peer.wait_until_exit(time.monotonic() + 10) == 0
+                assert "three-property-replies passed" in peer.log_path.read_text()
+            evidence["real_client_registration_save_and_property_replies"] = {
+                "connections": 3, "previous_id_retry": 1,
+                "initial_save_phase2_and_completion": 3, "property_replies": 9}
         log = runtime.root / "core.log"
         environment.update({"SESSION_MANAGER": manager,
                             "FVWMMFL_SOCKET_PATH": str(runtime.root)})
@@ -128,7 +140,14 @@ os.execv(os.environ['FVWM_REAL_ICEAUTH'], ['iceauth'] + sys.argv[1:])
             assert len(record["argv"]) == 2 and record["argv"][0] == "source"
             assert Path(record["argv"][1]).parent == save_dir
             assert record["leaks"] == [], record
-        assert not list(save_dir.iterdir()), "temporary authentication files survived cleanup"
+        remaining = list(save_dir.iterdir())
+        assert not any(path.name.startswith(".fsm-") for path in remaining), \
+            "temporary authentication files survived cleanup"
+        assert len(remaining) == 1 and remaining[0].name.startswith(".fs-"), \
+            [path.name for path in remaining]
+        assert "[FVWM_VERSION]" in remaining[0].read_text()
+        evidence["core_initial_local_save_file"] = remaining[0].name
+        shutil.copy2(remaining[0], artifact / "initial-core-state")
         assert not (runtime.root / "UNEXPECTED").exists()
         evidence["literal_authentication_paths_no_exec_fd_leaks_and_cleanup"] = "passed"
         shutil.copy2(calls, artifact / calls.name)
@@ -148,6 +167,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("fvwm", "mfl", "session-probe", "module-probe", "artifacts-dir"):
         parser.add_argument(f"--{name}", required=True, type=Path)
+    parser.add_argument("--client-probe", type=Path)
     parser.add_argument("--display")
     run(parser.parse_args())
 

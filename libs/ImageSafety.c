@@ -1,4 +1,71 @@
+/* This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+#include "config.h"
 #include "ImageSafety.h"
+#include <limits.h>
+
+bool FEwmhIconSizeIsSafe(uint64_t width, uint64_t height,
+	size_t retained_words, size_t max_bytes, size_t *pixels, size_t *words)
+{
+	size_t count;
+	size_t limit = max_bytes / sizeof(uint32_t);
+
+	if (pixels != NULL)
+		*pixels = 0;
+	if (words != NULL)
+		*words = 0;
+	if (pixels == NULL || words == NULL)
+		return false;
+	if (limit > INT_MAX / sizeof(uint32_t))
+		limit = INT_MAX / sizeof(uint32_t);
+	if (!FImageSizeIsSafe(width, height, F_EWMH_ICON_MAX_DIMENSION,
+	    F_EWMH_ICON_MAX_PIXELS, &count) || limit < 2 ||
+	    retained_words > limit - 2 || count > limit - 2 - retained_words)
+		return false;
+	*pixels = count;
+	*words = count + retained_words + 2;
+	return true;
+}
+
+FEwmhIconResult FEwmhIconFindExact(
+	const uint32_t *data, size_t data_len, uint32_t wanted_width,
+	uint32_t wanted_height, size_t *record_start, size_t *record_words)
+{
+	size_t offset = 0;
+
+	if (record_start != NULL)
+		*record_start = 0;
+	if (record_words != NULL)
+		*record_words = 0;
+	if (record_start == NULL || record_words == NULL ||
+	    (data == NULL && data_len != 0))
+		return F_EWMH_ICON_INVALID;
+	while (offset < data_len)
+	{
+		uint64_t pixels;
+		size_t words;
+
+		if (data_len - offset < 2)
+			return F_EWMH_ICON_INVALID;
+		pixels = (uint64_t)data[offset] * data[offset + 1];
+		if (data[offset] == 0 || data[offset + 1] == 0 ||
+		    pixels > data_len - offset - 2)
+			return F_EWMH_ICON_INVALID;
+		words = 2 + (size_t)pixels;
+		if (data[offset] == wanted_width &&
+		    data[offset + 1] == wanted_height)
+		{
+			*record_start = offset;
+			*record_words = words;
+			return F_EWMH_ICON_FOUND;
+		}
+		offset += words;
+	}
+	return F_EWMH_ICON_NOT_FOUND;
+}
 
 bool FImageSizeIsSafe(
 	uint64_t width, uint64_t height, uint64_t max_dimension,

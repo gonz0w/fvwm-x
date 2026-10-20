@@ -35,6 +35,7 @@ def run(args):
                 'allowed-action local policy/order/override/refresh',
                 'strut paired/static/dynamic/zero/missing/filter',
                 'desktop-name lengths/UTF8/empty/refusal/ownership',
+                'icon retained-span deletion/pixels/metadata/ownership',
                 'atom names scoped/all/duplicate/unsorted/reentrant',
                 'atom duplicate lower-bound priority',
                 'atom named property cardinal/UTF8/read/delete/invalid',
@@ -53,6 +54,12 @@ def run(args):
                     return [json.loads(line.removeprefix(prefix))
                             for line in text.splitlines()
                             if line.startswith(prefix)]
+                icon_retention = records('STATE_ICON_RETENTION_WORK ')
+                assert len(icon_retention) == 1
+                assert icon_retention[0]['cases'] == (
+                    3 if icon_retention[0]['baseline'] else 17)
+                assert icon_retention[0]['partial_delete_allocations'] == (
+                    3 if icon_retention[0]['baseline'] else 2)
                 tray = records('STATE_TRAY_WORK ')
                 assert len(tray) == 1
                 assert tray[0]['cases'] == (141 if tray[0]['baseline'] else 145)
@@ -96,7 +103,8 @@ def run(args):
                              'names': names, 'name_coverage': coverage,
                              'duplicates': duplicates, 'supported': supported,
                              'actions': actions, 'struts': struts,
-                             'desktop_names': desktop_names, 'tray': tray})
+                             'desktop_names': desktop_names, 'tray': tray,
+                             'icon_retention': icon_retention})
             (out / 'evidence.json').write_text(
                 json.dumps({'runs': runs}, indent=2) + '\n')
         finally:

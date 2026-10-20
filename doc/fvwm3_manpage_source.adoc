@@ -6664,7 +6664,11 @@ _EWMHDonateMiniIcon_ does the same thing for mini icons. This allows
 compliant pager, taskbar, iconbox ...etc to display the same (mini)
 icons as fvwm. Note that on some hardware (e.g., 8-bit displays) these
 styles can slow down window mapping and that in general only one of
-these styles is needed by a compliant application.
+these styles is needed by a compliant application. Donated images are
+limited to 4096 pixels per dimension and 16,777,216 pixels. The complete
+icon hint, including a retained other-size icon, is limited to 64 MiB plus
+64 KiB. A refused replacement leaves the existing hint available; malformed
+retention records are ignored before copying or publishing their pixels.
 _EWMHDontDonateIcon_ and _EWMHDontDonateMiniIcon_ restore the defaults
 which are to not set any ewmh (mini) icons hints.
 +

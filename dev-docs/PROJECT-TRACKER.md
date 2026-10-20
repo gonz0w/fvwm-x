@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Picture-cache lookup and retirement, CACHE-01 / CLEAN-01 | Combined checkpoint passes; ready for PR review | Three picture-cache variant/name/retirement improvements pass one combined checkpoint: 2045/2045 standard results (2038 fresh / seven retained by exact source and nine binary identities), plus 451/451 optional entries across six targets/ten profiles. Selected pathname comparisons fall 65 to one/two; two predecessor walks fall 16,384/32,385 to zero. Five scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md). |
+| Donated icon retention, DATA-01 / IMAGE-01 / CLEAN-01 | Implemented; focused and combined qualification pending | Checked exact retained records, bounded donation sizes before X reads/allocation and direct retained-span publication on partial deletion. Original-core normal baseline passes after two probe-only corrections. [Report](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md). |
+| Picture-cache lookup and retirement, CACHE-01 / CLEAN-01 | Merged in [PR #129](https://github.com/gonz0w/fvwm-x/pull/129); combined checkpoint passes | Three picture-cache variant/name/retirement improvements pass one combined checkpoint: 2045/2045 standard results (2038 fresh / seven retained by exact source and nine binary identities), plus 451/451 optional entries across six targets/ten profiles. Selected pathname comparisons fall 65 to one/two; two predecessor walks fall 16,384/32,385 to zero. Five scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md). |
 | Private condition/startup/monitor records, MAINT-02 / CLEAN-01 | Merged in [PR #128](https://github.com/gonz0w/fvwm-x/pull/128); affected checkpoint passes | Three condition/startup/monitor-adapter dependency improvements pass 149/149 affected native entries across six targets/ten profiles (15 retained focused / 134 fresh). All 5914 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 identities. ARM GCC layout fanout falls 214/214/230 to 2/22/2 objects. Broader PR127 runtime evidence and required OpenBSD gaps remain source-scoped. [Report](verification/VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md). |
 | Style flag mutations, STYLE-01 / CLEAN-01 | Merged in [PR #127](https://github.com/gonz0w/fvwm-x/pull/127); combined checkpoint passes | Three typed flag union/intersection/clearing operations pass one combined checkpoint: 2045/2045 standard results (2035 fresh / ten retained by exact source and twelve binary identities), plus 451/451 optional entries across six targets/ten profiles. Eleven mutation drivers verify 10,982,730 reference cases; fifteen actual-core drivers retain independent style-order/simplification coverage. Four scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md). |
 | Style flag predicates, STYLE-01 / CLEAN-01 | Merged in [PR #126](https://github.com/gonz0w/fvwm-x/pull/126); combined checkpoint passes | Three read-only subset/intersection/masked-equality improvements pass one combined checkpoint: 2037/2037 standard results (2028 fresh / nine retained by exact non-Markdown source and eleven binary identities), plus 449/449 optional entries across six targets/ten profiles. Eleven pure drivers verify 14,864,729 reference cases; fifteen actual-core drivers verify 17,310 wrapper cases and 1,920 parsed conditions. Four scoped guest sanitizers, nine fresh full stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-19-STYLE-FLAGS.md). |
@@ -247,19 +248,14 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-20: PR #128 is merged. CACHE-01 #33 / CLEAN-01 #34
-completes one measured variant/name/retirement batch.
-Three picture-cache variant/name/retirement improvements pass one combined
-checkpoint: 2045/2045 standard results (2038 fresh / seven retained by exact
-source and nine binary identities), plus 451/451 optional entries across six
-targets/ten profiles. Selected pathname comparisons fall 65 to one/two; two
-predecessor walks fall 16,384/32,385 to zero. Five scoped guest sanitizers,
-nine fresh full stages and four authenticated BSD displays pass. Three required
-OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain
-without retries.
-[Report](verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md). CACHE-01 is in Review; MAINT-02, STYLE-01 and STATE-01
-are Ready for their broader separately measured scope. Larger update plans/grabs,
-cache population/path profiling and VESA #93 remain separate.
+Immediate selection, 2026-10-20: PR #129 is merged. DATA-01 / IMAGE-01 /
+CLEAN-01 implements one three-operation donated-icon retention batch: checked
+first-exact record selection, checked donated geometry/combined output bounds,
+and direct retained-span publication on partial deletion. Focused policy and
+real-X ownership/refusal checks are being prepared; combined qualification is
+pending. [Report](verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md).
+Broader cache/path profiling, STYLE/STATE plans/grabs, native acceptance and
+VESA #93 retain their separate scopes.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

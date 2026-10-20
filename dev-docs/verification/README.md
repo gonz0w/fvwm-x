@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Style flag mutations](VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md): three typed operations; one six-target/ten-profile checkpoint, ten focused results retained by twelve binary identities, required gaps explicit.
+
 - [Style flag predicates](VERIFICATION-2026-10-19-STYLE-FLAGS.md): three related read-only operations; one six-target/ten-profile checkpoint, nine focused results retained by eleven binary identities, required gaps explicit.
 
 - [Style matching work](VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md): three preparation/predicate/merge improvements, one six-target/ten-profile checkpoint; eight focused results retained through ten binary identities, required gaps explicit.

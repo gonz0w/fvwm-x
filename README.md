@@ -12,10 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Font/picture/monitor record boundaries](dev-docs/verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md) reduce ARM GCC
-layout recompilations from 252/289/226 to 49/66/92 objects. The affected local
-checkpoint passes 170 entries across six targets/ten profiles with unchanged
-compiled code/data. Required OpenBSD gaps remain [documented](dev-docs/verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md).
+[Legacy tray membership work](dev-docs/verification/VERIFICATION-2026-10-19-EWMH-TRAY.md) removes duplicate list scans
+and selected snapshot heap requests. Its combined local checkpoint passes;
+required OpenBSD gaps remain [documented](dev-docs/verification/VERIFICATION-2026-10-19-EWMH-TRAY.md).
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
 Physical hardware, toolkits/compositors, native-CPU sanitizers and release
 acceptance remain open. Earlier source-scope failures stay documented.

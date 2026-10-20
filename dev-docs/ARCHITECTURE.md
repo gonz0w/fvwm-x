@@ -873,3 +873,17 @@ The [UI boundary checkpoint](verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDA
 verifies exact native allocated-section parity across ten profiles. API header
 changes can still invalidate their consumers; the narrower dependency applies
 to record-layout edits in the new headers.
+
+
+## Existing legacy tray membership ownership
+
+The KDE legacy tray list in `ewmh.c` borrows one matching/end link per mutation.
+Insertion reuses the membership search; retirement keeps the existing event-mask
+selection/flush before unlink/free/publication. These links never cross event or
+command dispatch. Root publication uses the existing `ewmh_client_list` buffer
+for ordered window IDs, inline storage and checked spill/count growth. Refused
+publication releases only its snapshot, retains the property and leaves the
+membership mutation committed for later publication repair. No persistent cache
+or new TRAY-01 feature is added. The [tray checkpoint](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md) distinguishes
+search reduction established by code review from selected allocation measurements and
+records actual property/order/event-mask, spill/refusal and lifetime checks.

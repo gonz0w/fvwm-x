@@ -12,8 +12,8 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Core record dependencies](dev-docs/verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md)
-reduce rebuild scope with verified code/data parity.
+[Shared string copies](dev-docs/verification/VERIFICATION-2026-10-21-STRING-COPIES.md)
+use checked indices and reuse quoted lengths, preserving configuration behavior.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

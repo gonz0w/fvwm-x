@@ -93,6 +93,14 @@ if golang.found() and get_option('live-x-tests') and host_machine.system() in ['
     )
 endif
 
+string_copy_test = executable(
+    'test-string-copy', ['test_string_copy.c', '../libs/Strings.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG', '-fno-builtin-strlen'],
+    link_args: ['-Wl,--wrap=strlen'],
+)
+test('string-copy', string_copy_test)
+
 wild_test = executable(
     'test-wild', ['test_wild.c', '../libs/wild.c'],
     include_directories: includedirs,

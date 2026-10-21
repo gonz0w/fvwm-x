@@ -19,68 +19,56 @@
 #include "config.h"
 
 #include <ctype.h>
+#include <string.h>
+#include <strings.h>
 
 #include "safemalloc.h"
 #include "Strings.h"
 
-void CopyString(char **dest, const char *source)
+/* Return the owned first-line length so quoted consumers need no rescan.
+ * Keep indices within the string even when the trimmed result is empty. */
+static size_t copy_string_line(char **dest, const char *source)
 {
-	int len;
-	const char *start;
+	size_t len;
 
+	*dest = NULL;
 	if (source == NULL)
 	{
-		*dest = NULL;
-		return;
+		return 0;
 	}
-
-	/* set 'start' to the first character of the string,
-	   skipping over spaces, but not newlines
-	   (newline terminates the string) */
-
-	while ( isspace((unsigned char)*source) && (*source != '\n') )
+	while (isspace((unsigned char)*source) && *source != '\n')
 	{
 		source++;
 	}
-	start = source;
-
-	/* set 'len' to the length of the string, ignoring
-	   trailing spaces */
-
-	len = 0;
-	while ( (*source != '\n') && (*source != 0) )
-	{
-		len++;
-		source++;
-	}
-	source--;
-
-	while( len > 0 && isspace((unsigned char)*source) )
+	len = strcspn(source, "\n");
+	while (len > 0 && isspace((unsigned char)source[len - 1]))
 	{
 		len--;
-		source--;
 	}
+	*dest = fxmalloc(len + 1);
+	memcpy(*dest, source, len);
+	(*dest)[len] = '\0';
 
-	/* TA:  FIXME!  xasprintf() */
-	*dest = fxmalloc(len+1);
-	strncpy(*dest,start,len);
-	(*dest)[len]=0;
+	return len;
 }
 
+void CopyString(char **dest, const char *source)
+{
+	copy_string_line(dest, source);
+}
 
 void CopyStringWithQuotes(char **dest, const char *src)
 {
+	/* Only ASCII spaces admit the optional opening quote, as in existing
+	 * font/configuration consumers. A preceding tab must retain quotes. */
 	while (src && src[0] == ' ')
 	{
 		src++;
 	}
 	if (src && src[0] == '"')
 	{
-		int len;
+		size_t len = copy_string_line(dest, src + 1);
 
-		src++;
-		CopyString(dest, src);
-		len = strlen(*dest);
 		if (len > 0 && (*dest)[len - 1] == '"')
 		{
 			(*dest)[len - 1] = '\0';
@@ -88,52 +76,36 @@ void CopyStringWithQuotes(char **dest, const char *src)
 	}
 	else
 	{
-		CopyString(dest, src);
+		copy_string_line(dest, src);
 	}
 }
 
-
-/*
- *
- * Copies a string into a new, malloc'ed string
- * Strips leading spaces and trailing spaces and new lines
- *
- */
-char *stripcpy( const char *source )
+/* Unlike CopyString, trim whitespace across the whole string, including
+ * newlines. The caller owns a distinct allocation, also for an empty result. */
+char *stripcpy(const char *source)
 {
-	const char* tmp;
-	char* ptr;
-	int len;
+	char *result;
+	size_t len;
 
-	if(source == NULL)
+	if (source == NULL)
 	{
 		return NULL;
 	}
-
-	while(isspace((unsigned char)*source))
+	while (isspace((unsigned char)*source))
 	{
 		source++;
 	}
 	len = strlen(source);
-	tmp = source + len -1;
-
-	while( (tmp >= source) && ((isspace((unsigned char)*tmp)) ||
-				   (*tmp == '\n')) )
+	while (len > 0 && isspace((unsigned char)source[len - 1]))
 	{
-		tmp--;
 		len--;
 	}
-	/* TA:  FIXME!  xasprintf() */
-	ptr = fxmalloc(len+1);
-	if (len)
-	{
-		strncpy(ptr,source,len);
-	}
-	ptr[len]=0;
+	result = fxmalloc(len + 1);
+	memcpy(result, source, len);
+	result[len] = '\0';
 
-	return ptr;
+	return result;
 }
-
 
 int StrEquals( const char *s1, const char *s2 )
 {

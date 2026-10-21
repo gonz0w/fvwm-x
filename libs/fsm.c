@@ -458,6 +458,35 @@ CloseListeners(void)
 	}
 }
 
+/* A close watch can retire the same pending connection as the status
+ * sweep. Absence must not discard the other pending connections. */
+static void remove_pending_connection(FIceConn connection)
+{
+	flist *entry;
+
+	for (entry = pending_ice_conn_list; entry != NULL; entry = entry->next)
+	{
+		if (entry->object != connection)
+		{
+			continue;
+		}
+		if (entry->prev != NULL)
+		{
+			entry->prev->next = entry->next;
+		}
+		else
+		{
+			pending_ice_conn_list = entry->next;
+		}
+		if (entry->next != NULL)
+		{
+			entry->next->prev = entry->prev;
+		}
+		free(entry);
+		return;
+	}
+}
+
 static
 void ice_watch_fd(
 	FIceConn conn, FIcePointer client_data, Bool opening,
@@ -484,8 +513,7 @@ void ice_watch_fd(
 		fice_conn = (fsm_ice_conn_t *)*watch_data;
 		/* IO errors can close a connection before protocol registration.
 		 * Never leave its freed handle in the pending-status queue. */
-		pending_ice_conn_list =
-			flist_remove_obj(pending_ice_conn_list, conn);
+		remove_pending_connection(conn);
 		fsm_ice_conn_list =
 			flist_remove_obj(fsm_ice_conn_list, fice_conn);
 		free(fice_conn);
@@ -542,10 +570,8 @@ Status RegisterClientProc(
 	client->clientId = id;
 	/* client->clientHostname = FSmsClientHostName (smsConn); */
 
-	/* Complete fresh registration with the local, non-interactive save
-	 * exchange. SaveYourselfDoneProc sends its completion reply. */
-	FSmsSaveYourself(
-		smsConn, FSmSaveLocal, False, FSmInteractStyleNone, False);
+	/* The swallow proxy keeps no session state. An initial save would
+	 * create client checkpoint files whose discard commands we do not keep. */
 
 	return 1;
 }
@@ -798,10 +824,7 @@ void CompletNewConnectionMsg(void)
 		else if (cstatus == (int)FIceConnectAccepted)
 		{
 			l = l->next;
-			pending_ice_conn_list =
-				flist_remove_obj(
-					pending_ice_conn_list,
-					ice_conn);
+			remove_pending_connection(ice_conn);
 #ifdef FVWM_DEBUG_FSM
 			char *connstr;
 
@@ -821,10 +844,7 @@ void CompletNewConnectionMsg(void)
 			{
 				/* don't care */
 			}
-			pending_ice_conn_list =
-				flist_remove_obj(
-					pending_ice_conn_list,
-					ice_conn);
+			remove_pending_connection(ice_conn);
 #ifdef FVWM_DEBUG_FSM
 			if (cstatus == FIceConnectIOError)
 			{

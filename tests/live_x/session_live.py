@@ -96,7 +96,7 @@ os.execv(os.environ['FVWM_REAL_ICEAUTH'], ['iceauth'] + sys.argv[1:])
                 assert "three-property-replies passed" in peer.log_path.read_text()
             evidence["real_client_registration_save_and_property_replies"] = {
                 "connections": 3, "previous_id_retry": 1,
-                "initial_save_phase2_and_completion": 3, "property_replies": 9}
+                "automatic_saves": 0, "property_replies": 9}
         log = runtime.root / "core.log"
         environment.update({"SESSION_MANAGER": manager,
                             "FVWMMFL_SOCKET_PATH": str(runtime.root)})
@@ -140,14 +140,9 @@ os.execv(os.environ['FVWM_REAL_ICEAUTH'], ['iceauth'] + sys.argv[1:])
             assert len(record["argv"]) == 2 and record["argv"][0] == "source"
             assert Path(record["argv"][1]).parent == save_dir
             assert record["leaks"] == [], record
-        remaining = list(save_dir.iterdir())
-        assert not any(path.name.startswith(".fsm-") for path in remaining), \
-            "temporary authentication files survived cleanup"
-        assert len(remaining) == 1 and remaining[0].name.startswith(".fs-"), \
-            [path.name for path in remaining]
-        assert "[FVWM_VERSION]" in remaining[0].read_text()
-        evidence["core_initial_local_save_file"] = remaining[0].name
-        shutil.copy2(remaining[0], artifact / "initial-core-state")
+        assert not list(save_dir.iterdir()), \
+            "authentication or automatic checkpoint files survived cleanup"
+        evidence["no_automatic_checkpoint_files"] = "passed"
         assert not (runtime.root / "UNEXPECTED").exists()
         evidence["literal_authentication_paths_no_exec_fd_leaks_and_cleanup"] = "passed"
         shutil.copy2(calls, artifact / calls.name)

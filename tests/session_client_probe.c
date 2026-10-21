@@ -14,34 +14,20 @@
 #include <string.h>
 #include <time.h>
 
-static unsigned saved, completed, returned;
+static unsigned returned;
 
-static void phase2(SmcConn connection, SmPointer data)
-{
-	(void)data;
-	SmcSaveYourselfDone(connection, True);
-}
-
-static void save(SmcConn connection, SmPointer data, int type,
+static void unexpected_save(SmcConn connection, SmPointer data, int type,
 	Bool shutdown, int interaction, Bool fast)
 {
-	(void)data;
-	assert(type == SmSaveLocal && !shutdown &&
-		interaction == SmInteractStyleNone && !fast);
-	assert(++saved == 1);
-	assert(SmcRequestSaveYourselfPhase2(connection, phase2, NULL));
-}
-
-static void complete(SmcConn connection, SmPointer data)
-{
-	(void)connection; (void)data;
-	assert(saved == 1 && ++completed == 1);
+	(void)connection; (void)data; (void)type; (void)shutdown;
+	(void)interaction; (void)fast;
+	assert(!"discard-only proxy must not request a checkpoint");
 }
 
 static void unexpected(SmcConn connection, SmPointer data)
 {
 	(void)connection; (void)data;
-	assert(!"unexpected session termination or cancellation");
+	assert(!"unexpected session termination, save or cancellation");
 }
 
 static void properties(SmcConn connection, SmPointer data,
@@ -81,9 +67,9 @@ int main(int argc, char **argv)
 	SmcConn connection;
 
 	assert(argc == 2);
-	callbacks.save_yourself.callback = save;
+	callbacks.save_yourself.callback = unexpected_save;
 	callbacks.die.callback = unexpected;
-	callbacks.save_complete.callback = complete;
+	callbacks.save_complete.callback = unexpected;
 	callbacks.shutdown_cancelled.callback = unexpected;
 	connection = SmcOpenConnection(NULL, NULL, SmProtoMajor, SmProtoMinor,
 		SmcSaveYourselfProcMask | SmcDieProcMask | SmcSaveCompleteProcMask |
@@ -94,7 +80,6 @@ int main(int argc, char **argv)
 		fprintf(stderr, "SmcOpenConnection: %s\n", error);
 	assert(connection != NULL && id != NULL && id[0] != '\0');
 	assert(strcmp(id, "unrestored-client") != 0);
-	await_reply(connection, &completed, 1);
 	/* Mutation remains intentionally discarded by this swallow proxy. */
 	SmPropValue value = {4, "test"};
 	SmProp property = {"probe-property", SmARRAY8, 1, &value};
@@ -112,7 +97,7 @@ int main(int argc, char **argv)
 	}
 	assert(SmcCloseConnection(connection, 0, NULL) == SmcClosedNow);
 	free(id);
-	printf("session-client %s: initial-save, phase2, completion, "
+	printf("session-client %s: no automatic save, "
 		"three-property-replies passed\n", argv[1]);
 	return 0;
 }

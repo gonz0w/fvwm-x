@@ -961,7 +961,8 @@ resources; configured Exec shell interpretation is unchanged.
 
 Swallow-proxy session callbacks: `libs/fsm.c` owns callback-provided previous IDs
 and generated IDs. Failed registration publishes no ID; accepted fresh clients
-receive the local save/phase-two/completion exchange. The existing discard-only
-property owner answers get requests with an empty list. `tests/session_client_probe.c`
+retain the existing no-automatic-save policy. The existing discard-only
+property owner answers get requests with an empty list. Pending ICE retirement
+is idempotent across the status sweep and close watch, preserving other peers. `tests/session_client_probe.c`
 is an independent libSM peer for real authentication, automatic registration retry
 and response progression. This is separate from the future desktop session owner.

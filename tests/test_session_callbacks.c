@@ -13,7 +13,7 @@
 static SmsNewClientProc new_client;
 static SmsCallbacks callbacks;
 static int mode, token;
-static unsigned generated, replies, saves, phases, completions, properties;
+static unsigned generated, replies, saves, properties;
 static unsigned id_frees, previous_frees, cleanups, closes;
 static char *generated_id, *previous_id;
 static Bool refuse;
@@ -79,18 +79,6 @@ void __wrap_SmsSaveYourself(SmsConn connection, int type, Bool shutdown,
 		interaction == SmInteractStyleNone && !fast);
 	assert(generated_id != NULL);
 	saves++;
-}
-
-void __wrap_SmsSaveYourselfPhase2(SmsConn connection)
-{
-	assert(connection == (SmsConn)&token && saves == 1);
-	phases++;
-}
-
-void __wrap_SmsSaveComplete(SmsConn connection)
-{
-	assert(connection == (SmsConn)&token && saves == 1);
-	completions++;
 }
 
 void __wrap_SmsReturnProperties(SmsConn connection, int count, SmProp **props)
@@ -173,10 +161,7 @@ int main(int argc, char **argv)
 		callbacks.get_properties.callback(connection, client);
 		assert(properties == 3);
 	}
-	assert(saves == 1 && generated_id != NULL);
-	callbacks.save_yourself_phase2_request.callback(connection, client);
-	callbacks.save_yourself_done.callback(connection, client, True);
-	assert(phases == 1 && completions == 1);
+	assert(saves == 0 && generated_id != NULL);
 	callbacks.close_connection.callback(connection, client, 0, NULL);
 	assert(cleanups == 1 && closes == 1);
 	assert(generated_id == NULL && id_frees == 1 + (mode == 2));

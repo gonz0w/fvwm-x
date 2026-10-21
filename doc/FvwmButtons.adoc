@@ -32,11 +32,11 @@ invoked. Even other applications can be 'swallowed' by the button bar.
 Panels that are opened on a button press are available too. See
 _CREATING PANELS_ section for details.
 
-Swallowed applications use an isolated session proxy. It rejects IDs from
-previous sessions and accepts a fresh registration, then requests an initial
-local save without interaction or shutdown. Applications may write their own
-checkpoint files during this exchange. The proxy discards session properties
-and answers property queries with an empty list; it does not restore sessions.
+When session support is enabled and `SESSION_MANAGER` is set, newly launched
+swallowed applications use an isolated session proxy. It rejects IDs from
+previous sessions and accepts a fresh registration. The proxy discards session
+properties and answers property queries with an empty list. It does not request
+automatic checkpoints or restore sessions.
 
 == OPTIONS
 

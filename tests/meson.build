@@ -1268,8 +1268,6 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '-Wl,--wrap=SmsGenerateClientID',
             '-Wl,--wrap=SmsRegisterClientReply',
             '-Wl,--wrap=SmsSaveYourself',
-            '-Wl,--wrap=SmsSaveYourselfPhase2',
-            '-Wl,--wrap=SmsSaveComplete',
             '-Wl,--wrap=SmsReturnProperties',
             '-Wl,--wrap=SmsCleanUp',
             '-Wl,--wrap=IceSetShutdownNegotiation',
@@ -1296,10 +1294,14 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '-Wl,--wrap=IceComposeNetworkIdList',
             '-Wl,--wrap=IceAddConnectionWatch',
             '-Wl,--wrap=IceRemoveConnectionWatch',
+            '-Wl,--wrap=IceAcceptConnection',
+            '-Wl,--wrap=IceConnectionNumber',
+            '-Wl,--wrap=IceConnectionStatus',
+            '-Wl,--wrap=IceCloseConnection',
             '-Wl,--wrap=fork', '-Wl,--wrap=waitpid', '-Wl,--wrap=setenv'],
         c_args: ['-UNDEBUG'],
     )
-    foreach fault : range(7)
+    foreach fault : range(9)
         test('session-startup-' + fault.to_string(), session_startup_probe,
             args: [fault.to_string()], timeout: 30)
     endforeach

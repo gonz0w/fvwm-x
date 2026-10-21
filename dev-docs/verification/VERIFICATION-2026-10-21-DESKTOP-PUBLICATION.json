@@ -1,0 +1,1515 @@
+{
+  "status": "locally qualified; ready for maintainer review",
+  "base": "1af7d380a1e3457c2b317cf1378cccba132f0764",
+  "implementation": "ef28786fbb4d4f09c5ab67b4f34fbb0fa12f558f",
+  "source_inputs": 2128,
+  "source_archive_sha256": "df32ca01635bcfa4691bde67e8010c0d6c2f46f1468d640e75ff4936b1945788",
+  "targets": {
+    "fvwm-x-linux-arm64-svg": {
+      "archive": "fvwm-x-linux-arm64-svg-evidence.tgz",
+      "sha256": "33ae116312b727e20631b968ccacfb14f4d9944168159a27d38d5d36496c5cec",
+      "bytes": 1116475,
+      "payloads_verified": 554,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2128,
+      "profiles": {
+        "gcc": {
+          "tests": 299,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "installed_loader_sha256": "e615d9fc819f5350aa5e11355ec85dc97698ee8e8908116bef528ed7a0195d72"
+        },
+        "clang": {
+          "tests": 299,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "clang",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "installed_loader_sha256": "7b15190bbe7d591c20949ec6fa8149cb751287b8fec05325390f2ae488dac6f7"
+        },
+        "software": {
+          "tests": 11,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b",
+            "after": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "installed_loader_sha256": "aa370118ed30f5997253b94db99915a5f5e74ae1cb8bb81a6776d2c7ee527c8d"
+        },
+        "minimal": {
+          "tests": 11,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711",
+            "after": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711"
+          },
+          "installed_elf": 15,
+          "catalogs": 0,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "installed_loader_sha256": "2bef521b1abc6fabde81dc7d14bc0db8a1e27f843bf949abbd9b4a5e3bfe80b3"
+        }
+      },
+      "test_logs": {
+        "clang-testlog.json": {
+          "registered": 299,
+          "passed": 299,
+          "other": [],
+          "sha256": "e15b80a5d8a3eabf5c5526a41bc3a7dd6c83af9037468fe658dcadfdc122f05c"
+        },
+        "gcc-testlog.json": {
+          "registered": 299,
+          "passed": 299,
+          "other": [],
+          "sha256": "b6e3cbec7a542b6ed54ad1693f1020bda2fe3b0c31d1c298f7b74b2a1c5dcecd"
+        },
+        "minimal-testlog.json": {
+          "registered": 11,
+          "passed": 11,
+          "other": [],
+          "sha256": "d4dcd09ad62ee7950120c67a86648ebab779b835d17716e460e011ccf1f7dbbb"
+        },
+        "software-testlog.json": {
+          "registered": 11,
+          "passed": 11,
+          "other": [],
+          "sha256": "716d9cd325854bec20edcc12b85cf3f2d7d792f817da8d0f765b64aca1ef7277"
+        }
+      },
+      "all_commands_passed": true,
+      "affected_manual_observation_recovery": {
+        "status": "passed affected manual observation; full runtime gates retained",
+        "original_archive_sha256": "33ae116312b727e20631b968ccacfb14f4d9944168159a27d38d5d36496c5cec",
+        "original_error_retained": {
+          "error": ""
+        },
+        "cause": "The observer searched fvwm3.1 for command-section text; the correct pages are fvwm3commands.1 and fvwm3all.1.",
+        "corrected_page_checks": {
+          "fvwm3commands.1": "571c1285a6be38214488a4ba1519309852f7b683b58c2ae608f0db0ac87f25b6",
+          "fvwm3all.1": "eaa92ded23f41a78352983f781f3191a70614b978fe4785af786bfeff68dad9b"
+        },
+        "all_26_manual_pages_preserved": true,
+        "all_original_commands_and_tests_passed": true,
+        "product_source_changes": false,
+        "full_matrix_repeated": false,
+        "original_outer_log_sha256": "a14425c5a7a245652aefffc3c4688ee56b6c5b847f9d0415ccd1648943550eac"
+      },
+      "original_error_retained": {
+        "error": ""
+      }
+    },
+    "linux-amd64": {
+      "archive": "linux-amd64-evidence.tgz",
+      "sha256": "f6131e77da08ef6a096fc9e457a5275d06193603c6fc210cfedd9eb7f20d2e92",
+      "bytes": 311357,
+      "payloads_verified": 258,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2128,
+      "profiles": {
+        "gcc": {
+          "tests": 299,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.111+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+            "x86_64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib"
+          },
+          "installed_loader_sha256": "37011cfe838a006164f266c1b567f82ea5a1111fce039a3f7d01cc757cd29dbd"
+        },
+        "clang": {
+          "tests": 299,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.111+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+            "x86_64"
+          ],
+          "environment": {
+            "CC": "clang",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib"
+          },
+          "installed_loader_sha256": "ad63c444246f39b24a95ce0869e11219c018b7b549eab1e5462b519efd8812b9"
+        }
+      },
+      "test_logs": {
+        "clang-testlog.json": {
+          "registered": 299,
+          "passed": 299,
+          "other": [],
+          "sha256": "388439c88937dcf328458d4f66b14c8915bc15e843b184a6bebdc8c5202b051e"
+        },
+        "gcc-testlog.json": {
+          "registered": 299,
+          "passed": 299,
+          "other": [],
+          "sha256": "03f7c5ccd4d74d558946dd0f09d0512bda860c2edba64596c7d66200d6f8c548"
+        }
+      },
+      "all_commands_passed": true
+    },
+    "freebsd-arm64": {
+      "archive": "freebsd-arm64-evidence.tgz",
+      "sha256": "c628b46324d483d38acacdfd221b370eae114e3f235617b5e9df821c79daa447",
+      "bytes": 229033,
+      "payloads_verified": 196,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2128,
+      "profiles": {
+        "default": {
+          "tests": 286,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+            "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "FreeBSD",
+            "freebsd",
+            "15.1-RELEASE-p4",
+            "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+            "arm64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "installed_loader_sha256": "b02ce922351e214a677ae853b6bf3a0413c3ba63cb28139067380ee2e9b7c366"
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 286,
+          "passed": 286,
+          "other": [],
+          "sha256": "fe121f99c57d677a227847e6534c9a268a4e11d53750601e29b3be9641f84aa9"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "groups": 11,
+        "desktop_groups": 3,
+        "manager_groups": 3,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      }
+    },
+    "freebsd-amd64": {
+      "archive": "freebsd-amd64-evidence.tgz",
+      "sha256": "0cca17f1875544361781f94ebe159f5d3df1c8ee5ea25ce3e85e04db25fbcd4a",
+      "bytes": 232182,
+      "payloads_verified": 195,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2128,
+      "profiles": {
+        "default": {
+          "tests": 286,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+            "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "FreeBSD",
+            "freebsd",
+            "15.1-RELEASE-p4",
+            "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+            "amd64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "installed_loader_sha256": "3c60d027aa371662b27f6d9d70493c34159cb55d5e878ddefcb0e215a4be6dd1"
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 286,
+          "passed": 286,
+          "other": [],
+          "sha256": "10fd941ef5dd2b382190953e084c4665fbbcd8a6421a7a1f27032b74dc4e1dd1"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "groups": 11,
+        "desktop_groups": 3,
+        "manager_groups": 3,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      }
+    },
+    "openbsd-amd64": {
+      "archive": "openbsd-amd64-job/guest-evidence.tgz",
+      "sha256": "38d958c546f41e9018b13c5d3d37d869e4a8bbbca42c38aa45969ca22f617a88",
+      "bytes": 113384431,
+      "payloads_verified": 2898,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2128,
+      "profiles": {
+        "default": {
+          "tests": 286,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+            "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+          },
+          "installed_elf": 15,
+          "catalogs": 0,
+          "data": 70,
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#2",
+            "amd64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib:/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib"
+          },
+          "installed_loader_sha256": "4c91f5cc151a6b42da8676335ef1df7ff2b2a87754b9241774a627155d107c34"
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 286,
+          "passed": 286,
+          "other": [],
+          "sha256": "76ee9f95779b3743617e71b91773f229e86499c9d1772abd54f9ba6ff284a339"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "groups": 11,
+        "desktop_groups": 3,
+        "manager_groups": 3,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      },
+      "runner": {
+        "guest_release": [
+          "OpenBSD",
+          "8.0",
+          "amd64",
+          "OpenBSD 8.0 (GENERIC.MP) #2: Mon Oct 19 12:55:12 MDT 2026"
+        ],
+        "qemu_exit_status": 0,
+        "ephemeral_key_removed": true
+      }
+    },
+    "openbsd-arm64": {
+      "archive": "openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "0e26519766bcc0afa2c2fb18060d341053728a559d876dd5c7ec45b06f59cc39",
+      "bytes": 113145467,
+      "payloads_verified": 2895,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2128,
+      "profiles": {
+        "default": {
+          "tests": 286,
+          "pure_desktop_policy": 1,
+          "desktop_groups": 3,
+          "manager_groups": 3,
+          "generated_config": {
+            "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+            "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+          },
+          "installed_elf": 15,
+          "catalogs": 0,
+          "data": 70,
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#1",
+            "arm64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib:/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib"
+          },
+          "installed_loader_sha256": "6b9a527c857376abc5b78edbc628e8506db9be99bca97f5eb00f414ed79212e6"
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 286,
+          "passed": 286,
+          "other": [],
+          "sha256": "2c0ffe6e51e89d0a0f35322694190b9d2ba10025a48e9eb7a031f2772127babf"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "groups": 11,
+        "desktop_groups": 3,
+        "manager_groups": 3,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      },
+      "runner": {
+        "guest_release": [
+          "OpenBSD",
+          "8.0",
+          "arm64",
+          "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+        ],
+        "qemu_exit_status": 0,
+        "ephemeral_key_removed": true
+      }
+    }
+  },
+  "accepted": {
+    "standard": 2340,
+    "optional": 22,
+    "install_profiles": 10,
+    "installed_elf": 150,
+    "installed_catalogs": 77,
+    "installed_data": 700,
+    "staged_desktop_groups": 30,
+    "staged_manager_groups": 30,
+    "staged_geometry_groups": 20,
+    "staged_style_groups": 10,
+    "default_bsd_groups": 44
+  },
+  "focused": {
+    "fvwm-x-linux-arm64-svg-development": {
+      "identity": {
+        "sha256": "31b2e412c8333da20f756d4df9aca71c1a621a93196b9afc451a60c00a8e2823",
+        "bytes": 150867
+      },
+      "payloads": {
+        "changed.json": "cd36d480361994b5a6a7afc03886ce157603ace7ed18d9681888ac2d2d616eaa",
+        "configure.log": "15739556ffab514342758f60353b0fc442e2a34c18bf35bf84344ba3e23e21be",
+        "manifest.json": "38aba6cadccf20bfe11a036a2ffd82e30347a1acce44bee69521694ff367f066",
+        "result.json": "b59931e610eab64d6396a2dba3b0e60945fc3d351d6de20b1774d3d2d8c36f5d",
+        "source.json": "52b7de333c0de6211828b8500a7a23920ff6efafb5e435ed9b411e41c17d84f1",
+        "testlog.json": "ee15800a305512b3562acb2870551482b9ded84e67fe04cfb04ea07a2a5018d7",
+        "testlog.txt": "065618292f3ba55aa239c161cacde47c0e011dccaac6186c6795462ebf93eac9"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 1
+        }
+      ],
+      "tests_executed": false,
+      "retained_previous_testlog_not_executed": true
+    },
+    "fvwm-x-linux-arm64-svg-development2": {
+      "identity": {
+        "sha256": "302aa1a285f9454ca20a84050a1e12d869f9857423e43d85e5fe58eb606d7b10",
+        "bytes": 110453
+      },
+      "payloads": {
+        "changed.json": "e3afd45905069d4948e00e5766255ee287e4a7b4dffed1cc88c114b0338519cc",
+        "compile.log": "77860098fceab5dd4f5944c1635f11648ed3443640d9e6118176a2776b8e2727",
+        "configure.log": "79851318461f5078fcfb0d461a5c4e665995e578c0b96167fc9da58a966386de",
+        "live-x/arrays/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/arrays/debug.log": "e266a686411bd2e05f1e5c2766cdf3f17afcd37818060f1686f9b0094eb3b22c",
+        "live-x/arrays/evidence.json": "84cd20b6754039f8d257e13325e0ea82ff107874101f78968e7e1d9ab5494b22",
+        "live-x/arrays/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/count/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/count/debug.log": "b742e37da8762a68c9381f5c16066a999e283d017524e80e0d78e845da0fdb52",
+        "live-x/count/evidence.json": "a2d49ede8dbaf4aa991d102e785ead17209e78a7cb542f577f4f35ad4ac48dfb",
+        "live-x/count/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/current/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/current/debug.log": "fff2368487df21458caada88330c80851f1a1c18c8946816f46c71eb729393d1",
+        "live-x/current/evidence.json": "069c45ebdb7196971f0ee0e2399ae3154d3d78c4e11741dd1646874e80988edb",
+        "live-x/current/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "manifest.json": "1dd365b1ff240ffb9dce2e35a8be20e043e4256a21781f253b05b7671d02590f",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "source.json": "c7333324c8a2c4a70504e04517104c60315a4d0fee32a0563b050b57964cc1ef",
+        "testlog.json": "92c418e33d701fc88896446b80422f14dd30498202a599e3b37e4d5efd1f3556",
+        "testlog.txt": "9ecfdf1af0cd3af54f7d540bc3c682eff44d871d05ac1fe8badfc276802fcd9b",
+        "tests.log": "9f74c5cf47398ababed5738919a84fd09dd2be2f2df0d3c25d7330a19149feb6"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "fvwm3 / ewmh-desktop-policy",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / desktop-publication-count-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / desktop-publication-current-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / desktop-publication-arrays-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/arrays/evidence.json": {
+          "case": "arrays",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 1,
+              "viewport_items": 2,
+              "workarea_items": 4,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 401,
+              "viewport_items": 802,
+              "workarea_items": 1604,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 3,
+              "viewport_items": 6,
+              "workarea_items": 12,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "oversized_publication_refusal_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/count/evidence.json": {
+          "case": "count",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 4,
+              "viewport_items": 8,
+              "workarea_items": 16,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 2,
+              "viewport_items": 4,
+              "workarea_items": 8,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "populated_and_current_shrink_refused": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/current/evidence.json": {
+          "case": "current",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 3,
+              "viewport_items": 6,
+              "workarea_items": 12,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "root_request_and_real_client_desk": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      }
+    },
+    "fvwm-x-linux-arm64-svg-baselines": {
+      "identity": {
+        "sha256": "569dfbcfbfc3004b25def864c4d21be3304e607e0613796a1c7100dc002725cc",
+        "bytes": 3084
+      },
+      "payloads": {
+        "arrays/core.log": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+        "arrays/debug.log": "4ccc601dc894920bd016a4722a04cc43408714741d1a316e35cc34580bf5902a",
+        "arrays/evidence.json": "323448f5d8a7b81e68f9d868a9025e7afe3510c97d7f169a1c9f19fe94a1c0be",
+        "arrays/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "arrays.log": "1224fb7739c59bca1918d72662e048f8fcdfed62e86c06e9a36c67738ea7bb7a",
+        "count/core.log": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+        "count/debug.log": "ffe166462ad56df0cb1fd268a2565293928a89441e6968993e05be11e3ec12be",
+        "count/evidence.json": "0cb77eba30bab51d3dd2706ac4bfd788f260e97050758ba3b601f2ba082e11ff",
+        "count/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "count.log": "b6efd73b358f0eb4a0c5ff6c7f8cff7d516a2aab5e97f3726efb366537cad31e",
+        "current/core.log": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+        "current/debug.log": "e2e30c2345f1f72d10ca06e5f98aa0fef59d2210328b2531526177095f2c60f7",
+        "current/evidence.json": "72183f1a0930a1c47a856169e12fa3ecad9661a3f59625b5309ac39c6cbf833a",
+        "current/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "current.log": "4c8f31bc655d09c484a6612ed13b5eaa0a40900c596b64467138b4552f51fa9b",
+        "manifest.json": "bd15bfe6eed0e09545c41dc1556a792b5b8665c5df05a41783d60dcff23ff137",
+        "result.json": "7d95afc1de61e1693f482ae4a1547856d5975cc28c018f0294bab5d54db1cc7b"
+      },
+      "result": {
+        "core": "/tmp/fvwm-module-waits-20261015/stage-manager-handoff-gcc/usr/local/bin/fvwm3",
+        "core_sha256": "9b60ebda738b3d1f2ffd0b11877238d45ec34e0f6a2d3e18e977934af9dc1bd0",
+        "driver_sha256": "0f3960d0113c021d54c543fe13da2eca1acb255ff7f645ba6720cf059bcf9ace",
+        "cases": [
+          {
+            "case": "count",
+            "status": 1,
+            "seconds": 5.161491435021162
+          },
+          {
+            "case": "current",
+            "status": 1,
+            "seconds": 5.177682098001242
+          },
+          {
+            "case": "arrays",
+            "status": 1,
+            "seconds": 5.145637400972191
+          }
+        ]
+      },
+      "independent_failure_observations": {
+        "count": "deadline expired while waiting for _NET_NUMBER_OF_DESKTOPS",
+        "current": "deadline expired while waiting for _NET_CURRENT_DESKTOP",
+        "arrays": "deadline expired while waiting for dependent array lengths"
+      },
+      "same_driver_as_combined_candidate": true
+    },
+    "fvwm-x-linux-arm64-svg-asan-development": {
+      "identity": {
+        "sha256": "c41449ce7fba5104ae53a4e918511bcbcc69099b54d13a1c4f273aaad7da2be5",
+        "bytes": 9452
+      },
+      "payloads": {
+        "compile.log": "57de03afaf4b82f982ed732dcddbc58540183c68463a14630b96a7c10958b215",
+        "configure.log": "4a994dec983c90a55a4717101baa38ca76ee7e5dd0201bc2e2cf13852e608293",
+        "environment.json": "97e64c863dc9e28089efb924ad650e2efcf143bcc565e995b93ce8dab77aed03",
+        "live-x/arrays/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/arrays/debug.log": "51e6a6a36699cbe72429ce16c7aaea9653c6fa91b2cb28002185e2d0dd4a274e",
+        "live-x/arrays/evidence.json": "84cd20b6754039f8d257e13325e0ea82ff107874101f78968e7e1d9ab5494b22",
+        "live-x/arrays/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/count/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/count/debug.log": "3914e0d37f6e653e213db5636934679f19a9f922247eede7150ccbfa1da69f4e",
+        "live-x/count/evidence.json": "a2d49ede8dbaf4aa991d102e785ead17209e78a7cb542f577f4f35ad4ac48dfb",
+        "live-x/count/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/current/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/current/debug.log": "be560e36e9b2997873d4f3fdc09a2034eb3828274573ed697ea82b5414d0a77d",
+        "live-x/current/evidence.json": "069c45ebdb7196971f0ee0e2399ae3154d3d78c4e11741dd1646874e80988edb",
+        "live-x/current/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "options.json": "1c80d125bf668a5071d48fd27621b1cb81ed06beb61dd7d07296208b7dcf5ae6",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "testlog.json": "2ee1b6240b08b0de47b681ef644ab81526f1cdcf2bb9c2b0e0bc8778299587ea",
+        "testlog.txt": "ea6a3bb295cc4950204595733b63cf1de4b25e3900118dfbfcbbf601c8a6c217",
+        "tests.log": "c48aef0be4ee10f7fed063730734ed2ac72f2451d1cb24ec896aa3bfe0ec334c"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "fvwm3 / ewmh-desktop-policy",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / desktop-publication-count-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / desktop-publication-current-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / desktop-publication-arrays-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/arrays/evidence.json": {
+          "case": "arrays",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 1,
+              "viewport_items": 2,
+              "workarea_items": 4,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 401,
+              "viewport_items": 802,
+              "workarea_items": 1604,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 3,
+              "viewport_items": 6,
+              "workarea_items": 12,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "oversized_publication_refusal_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/count/evidence.json": {
+          "case": "count",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 4,
+              "viewport_items": 8,
+              "workarea_items": 16,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 2,
+              "viewport_items": 4,
+              "workarea_items": 8,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "populated_and_current_shrink_refused": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/current/evidence.json": {
+          "case": "current",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 3,
+              "viewport_items": 6,
+              "workarea_items": 12,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "root_request_and_real_client_desk": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      },
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+        "LSAN_OPTIONS": "exitcode=86",
+        "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+      },
+      "sanitizers": "address,undefined"
+    },
+    "freebsd-arm64-development": {
+      "identity": {
+        "sha256": "5a8eb55c8e50a0ee2860ea7a7571de2140f5b61a9273eeb66f629d893a3844c1",
+        "bytes": 146334
+      },
+      "payloads": {
+        "changed.json": "cd36d480361994b5a6a7afc03886ce157603ace7ed18d9681888ac2d2d616eaa",
+        "configure.log": "311661895cba1b3ff229290209891d82a783eb6e07181b3d6401569580ca4dbf",
+        "manifest.json": "c872a4690733bd797ba3b37679391903ca5954ee428a43c6e826194914c291d5",
+        "result.json": "b59931e610eab64d6396a2dba3b0e60945fc3d351d6de20b1774d3d2d8c36f5d",
+        "source.json": "52b7de333c0de6211828b8500a7a23920ff6efafb5e435ed9b411e41c17d84f1",
+        "testlog.json": "96c94011dc1f10dcef94b3a2c628e47f7780e46d94e6b65292595675999d4af6",
+        "testlog.txt": "41719f03f9552f429ee7af8489c0b0954ed9cdf61af064fc69d734bffcce8143"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 1
+        }
+      ],
+      "tests_executed": false,
+      "retained_previous_testlog_not_executed": true
+    },
+    "freebsd-arm64-development2": {
+      "identity": {
+        "sha256": "a9ccf01fefa2582c8574340bc61a28cc8f15b7524aa55c92122e0bc8704c7f47",
+        "bytes": 110940
+      },
+      "payloads": {
+        "changed.json": "e3afd45905069d4948e00e5766255ee287e4a7b4dffed1cc88c114b0338519cc",
+        "compile.log": "ea1738eeaea79dcb641bf103ddbe5f85046eb437c4e03aaca3e4ee53c99009b9",
+        "configure.log": "5396e6f14c887c43c5be42be59a1f58ff925e1d561cb24337c9d2c8671ea1397",
+        "live-x/arrays/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/arrays/debug.log": "16836bb393c2daed40dc05974d46a6be3e183cf038de57f4103df54039195fb0",
+        "live-x/arrays/evidence.json": "84cd20b6754039f8d257e13325e0ea82ff107874101f78968e7e1d9ab5494b22",
+        "live-x/arrays/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/count/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/count/debug.log": "76e74c3a9bf5499592a413bab18290cde71f9d2e3952e628fa99429c87de36b9",
+        "live-x/count/evidence.json": "a2d49ede8dbaf4aa991d102e785ead17209e78a7cb542f577f4f35ad4ac48dfb",
+        "live-x/count/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/current/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/current/debug.log": "052aaf828eae3b9a26982d41c728f8841c4c036eddaa751534cf3a905b7a3c4d",
+        "live-x/current/evidence.json": "069c45ebdb7196971f0ee0e2399ae3154d3d78c4e11741dd1646874e80988edb",
+        "live-x/current/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "manifest.json": "c156a6d743459592d1bce34cf31b86b7575287276738e335cd8863b671fa1a9f",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "source.json": "c7333324c8a2c4a70504e04517104c60315a4d0fee32a0563b050b57964cc1ef",
+        "testlog.json": "e7b0e991b0d9df84d499ec9f883828470b60d820f7e50249174e939e117ffe25",
+        "testlog.txt": "88bb62c02bb3249f63e893cdfa65ce7c1f330fd463eb2456feb310426a059c07",
+        "tests.log": "0e969bcf1da2a43b8fa6ce615de1070d44d5933320bbcf739700c4c57e8fec6d"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "fvwm3:ewmh-desktop-policy",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:desktop-publication-count-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:desktop-publication-current-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:desktop-publication-arrays-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/arrays/evidence.json": {
+          "case": "arrays",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 1,
+              "viewport_items": 2,
+              "workarea_items": 4,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 401,
+              "viewport_items": 802,
+              "workarea_items": 1604,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 301,
+              "viewport_items": 602,
+              "workarea_items": 1204,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 3,
+              "viewport_items": 6,
+              "workarea_items": 12,
+              "first_viewport": [
+                800,
+                600
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "oversized_publication_refusal_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/count/evidence.json": {
+          "case": "count",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 4,
+              "viewport_items": 8,
+              "workarea_items": 16,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            },
+            {
+              "count": 2,
+              "viewport_items": 4,
+              "workarea_items": 8,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "populated_and_current_shrink_refused": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/current/evidence.json": {
+          "case": "current",
+          "status": "passed",
+          "snapshots": [
+            {
+              "count": 3,
+              "viewport_items": 6,
+              "workarea_items": 12,
+              "first_viewport": [
+                0,
+                0
+              ],
+              "first_workarea": [
+                0,
+                0,
+                800,
+                600
+              ]
+            }
+          ],
+          "root_request_and_real_client_desk": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      }
+    },
+    "asan_binary_snapshot": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": "8987d5518327f341c1eeae8947a81d142bc9baaccb32da3d7101261cf5720ff5",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "0312c1ea2bc33e570a5fabe1f717a8ef4f4617cceba7e508007e34cff22e8d04",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ewmh-desktop-policy": "ee79cb2dbd1e85317a0c54648434f2348bcc4cc2514d09faba1e360cc05760a1"
+    }
+  },
+  "portable": {
+    "sha256": "bd3b211057e190d2759797ccd21f79e020caf2b67a80f3da89795000d9ba9dbb",
+    "exit_status": 0,
+    "registered": 191,
+    "passed": 177,
+    "capability_skips": 14
+  },
+  "composition": {
+    "C_headers_changed_from_base": [
+      "fvwm/ewmh.c",
+      "fvwm/ewmh_desktop_policy.h",
+      "fvwm/ewmh_events.c",
+      "fvwm/ewmh_intern.h",
+      "tests/test_ewmh_desktop_policy.c"
+    ],
+    "all_frozen_non_markdown_inputs_exact": true,
+    "all_focused_non_document_inputs_exact": 1618,
+    "changed_markdown": {
+      "README.md": {
+        "frozen": "417da21d331a04cf56af9867a4347f13812a333693e970f1b7fb69e9a35c13bb",
+        "final": "ea45a32d0bd4e2e6763c790b20ab4999e29942da1e0c9fd05f78040038b3779c"
+      },
+      "dev-docs/PROJECT-TRACKER.md": {
+        "frozen": "4ba2b0effed6bd555394447bad48137ff4a60550adf64d947bd55b89e499e6f8",
+        "final": "6ff136163204e93874d558756bc33afcb02fe05b553d397db0ccc69163c0f1a3"
+      },
+      "dev-docs/SECURITY-STATUS.md": {
+        "frozen": "21a8f1a1ab020bbf941e1880bb208719ef6e52a24b265b69c8ec2dd90a37c1cb",
+        "final": "cca633b8623ef097fda89647988acbc44b846a1acd05bc85f8ae7d8dad79d3c3"
+      },
+      "dev-docs/verification/README.md": {
+        "frozen": "a4c292a7d6f8c8f81aaa8512d3316af3369fd950b456fcf19460ef0bd7c82c66",
+        "final": "b1f302b6ec59c80e3585aa6a2b05008855ca20290eb12fbee88359964cfda2ab"
+      },
+      "dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md": {
+        "frozen": "b3d531fd708a9403be57db3d547ad7bccb3631332bbcbb4b76a66352a133707e",
+        "final": "31f858ff768b9e6d918c73287a6d9357627d2fbd0701d5bfa28fd7210d1e7e36"
+      },
+      "dev-docs/verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md": {
+        "frozen": "88da93647a8f17a798250fa865bf4545984604a4e8618290443f08946ac7d087",
+        "final": "6e3b4e73904dc40477d9f4b1e3cf67cca86d83db446946a20329c2b80db75d89"
+      }
+    }
+  },
+  "review": "Pager format/index validation precedes narrowing. Count admission refuses current/populated shrink. Pure layout bounds precede storage and indexing; one owned native-long buffer is released after ordered property writes. No event dispatch, additional XSync, configuration restriction or client relocation is introduced.",
+  "manuals": {
+    "pages": {
+      "FvwmAnimate.1": "f0f6373256acda7c7ea9d701db1c3b9beadc637ccedd2d1effcafb503856bae2",
+      "FvwmAuto.1": "d1d1362ab5521dd0df8f0112fadd84dae7f80e5b5ea5ec3a02791165387aa8d5",
+      "FvwmBacker.1": "7282d968c005bbe61e861c7a61c06eb31ec4ca697c21191df80aeb74ed1b9836",
+      "FvwmButtons.1": "ad646faafb94c61c8014fe10cc4452f7991790f5cd8ed6fe15e06e15da1678f5",
+      "FvwmCommand.1": "8f867a0445334f9e0910c987a8cc8d91643598e95a44561c637d7af8f55ebe99",
+      "FvwmDesktop.1": "de33bd55d8dfc7b51b54466ffbe933b469ab49220986aa862f5bc04041bdfb00",
+      "FvwmEvent.1": "83b6c5a7ea19612733bfa100b158a2aebe1d8c5b32ffed6ebcf3661c64383f54",
+      "FvwmForm.1": "1016216621ee1d017c0a87d01ba5a18ed9ef5c796266d4c5535c2e778871ae6e",
+      "FvwmIconMan.1": "4519ed0b07564447bfc23904997658e2b3efcf20ddf45139b1140f14c49cd657",
+      "FvwmIdent.1": "9c349e3a9a662dccf79429a145601713ee56d6be6e5066f17604ce46c919307b",
+      "FvwmMFL.1": "5480f95743ffbf8c0211698080551a2b7a524826f6cffba70101e835f474bd10",
+      "FvwmPager.1": "c1ff3dca2b67bc7c016c95122c8bc9b659c61fb6508a360a01ce8738b398aa71",
+      "FvwmPerl.1": "1bd42aed249790263bcedac49337bddaec5839d053b8f8edacb07e67c1660004",
+      "FvwmRearrange.1": "2b63436222de10149df199587472cb6fb611226891ce4ff3291f98395d6a8db8",
+      "FvwmScript.1": "224a22f919740dedcecde51a0d6a6f5f61a0075f60c55e04a9f287ce4cfbcc72",
+      "fvwm-convert-2.6.1": "dccdd9dc17658cfb7fd83be5e8c5162d672959e9c6e741aa3d203658f3c2b6e9",
+      "fvwm-menu-desktop.1": "c799846b30268ba02f341eee064818c9b66598a4c217604a2e5a8647de16ae54",
+      "fvwm-menu-directory.1": "3700d68773c4a4e663074bcb93ba96af655a321c9db4e78545694c83395dcc2d",
+      "fvwm-menu-xlock.1": "801a61195119f9b2c7c8653bceacc6881345d6a62ef0f28f1457ecbdf806eb80",
+      "fvwm-perllib.1": "a1189f0fff14dca84a9452970fdaf29307dc9af4b05c13ad5445a22ee54cc657",
+      "fvwm-root.1": "0317745c65a88ce66729adda6f90bed0c22ae8edf1beb865ca897f277c63a17e",
+      "fvwm3.1": "f8a6ab2343441090988368fa8170d3a669cd0ceda61913fb957a7f483bb9565a",
+      "fvwm3all.1": "eaa92ded23f41a78352983f781f3191a70614b978fe4785af786bfeff68dad9b",
+      "fvwm3commands.1": "571c1285a6be38214488a4ba1519309852f7b683b58c2ae608f0db0ac87f25b6",
+      "fvwm3menus.1": "6f4bea7d5f96f6eeb5c61a01b085c3d72140d96a42074af97b78883e33afc037",
+      "fvwm3styles.1": "aa54a072f586538c486b08551fd64c35880c85aa02ea050f2d2779a86e2aadeb"
+    },
+    "renders": {
+      "fvwm3commands.1": {
+        "status": 0,
+        "bytes": 230270
+      },
+      "fvwm3all.1": {
+        "status": 0,
+        "bytes": 529337
+      }
+    }
+  },
+  "asan_postcheck": {
+    "status": "exact scoped sanitizer binaries retained",
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": "8987d5518327f341c1eeae8947a81d142bc9baaccb32da3d7101261cf5720ff5",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "0312c1ea2bc33e570a5fabe1f717a8ef4f4617cceba7e508007e34cff22e8d04",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ewmh-desktop-policy": "ee79cb2dbd1e85317a0c54648434f2348bcc4cc2514d09faba1e360cc05760a1"
+    },
+    "source_identity": "full candidate inputs independently checked by combined gate"
+  },
+  "retirement": {
+    "linux-amd64": {
+      "status": "retired verified guest duplicates",
+      "name": "linux-amd64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/linux-amd64-evidence.tgz",
+          "archive_sha256": "f6131e77da08ef6a096fc9e457a5275d06193603c6fc210cfedd9eb7f20d2e92",
+          "payload_files": 258,
+          "freed_payload_bytes": 2909245,
+          "freed_archive_bytes": 311357
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "freebsd-amd64": {
+      "status": "retired verified guest duplicates",
+      "name": "freebsd-amd64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/freebsd-amd64-evidence.tgz",
+          "archive_sha256": "0cca17f1875544361781f94ebe159f5d3df1c8ee5ea25ce3e85e04db25fbcd4a",
+          "payload_files": 195,
+          "freed_payload_bytes": 1703634,
+          "freed_archive_bytes": 232182
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "openbsd-arm64": {
+      "status": "retired verified temporary host build-cache copy",
+      "bytes": 104633550,
+      "sha256": "7799a8e4b0334ea063da8fcfcfadd895ac60d7c668799f27eae8798ac5a74297",
+      "prior_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-handoff-safety/openbsd-arm64-job/guest-evidence.tgz",
+      "current_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/openbsd-arm64-job/guest-evidence.tgz",
+      "canonical_evidence_and_vm_disks_preserved": true
+    },
+    "fvwm-x-linux-arm64-svg": {
+      "status": "retired verified guest duplicates",
+      "name": "fvwm-x-linux-arm64-svg",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/fvwm-x-linux-arm64-svg-evidence.tgz",
+          "archive_sha256": "33ae116312b727e20631b968ccacfb14f4d9944168159a27d38d5d36496c5cec",
+          "payload_files": 554,
+          "freed_payload_bytes": 5793209,
+          "freed_archive_bytes": 1116475
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/fvwm-x-linux-arm64-svg-development.tgz",
+          "archive_sha256": "31b2e412c8333da20f756d4df9aca71c1a621a93196b9afc451a60c00a8e2823",
+          "payload_files": 7,
+          "freed_payload_bytes": 1089635,
+          "freed_archive_bytes": 150867
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/fvwm-x-linux-arm64-svg-development2.tgz",
+          "archive_sha256": "302aa1a285f9454ca20a84050a1e12d869f9857423e43d85e5fe58eb606d7b10",
+          "payload_files": 21,
+          "freed_payload_bytes": 334329,
+          "freed_archive_bytes": 110453
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/fvwm-x-linux-arm64-svg-baselines.tgz",
+          "archive_sha256": "569dfbcfbfc3004b25def864c4d21be3304e607e0613796a1c7100dc002725cc",
+          "payload_files": 17,
+          "freed_payload_bytes": 10021,
+          "freed_archive_bytes": 3084
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/fvwm-x-linux-arm64-svg-asan-development.tgz",
+          "archive_sha256": "c41449ce7fba5104ae53a4e918511bcbcc69099b54d13a1c4f273aaad7da2be5",
+          "payload_files": 20,
+          "freed_payload_bytes": 50421,
+          "freed_archive_bytes": 9452
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "openbsd-amd64": {
+      "status": "retired verified temporary host build-cache copy",
+      "bytes": 104833305,
+      "sha256": "7d9afc8c251c7a3286bddc28ab5b892144e91136077873045df064211704f04f",
+      "prior_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-handoff-safety/openbsd-amd64-job/guest-evidence.tgz",
+      "current_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/openbsd-amd64-job/guest-evidence.tgz",
+      "canonical_evidence_and_vm_disks_preserved": true
+    },
+    "freebsd-arm64": {
+      "status": "retired verified guest duplicates",
+      "name": "freebsd-arm64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/freebsd-arm64-evidence.tgz",
+          "archive_sha256": "c628b46324d483d38acacdfd221b370eae114e3f235617b5e9df821c79daa447",
+          "payload_files": 196,
+          "freed_payload_bytes": 1637772,
+          "freed_archive_bytes": 229033
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/freebsd-arm64-development.tgz",
+          "archive_sha256": "5a8eb55c8e50a0ee2860ea7a7571de2140f5b61a9273eeb66f629d893a3844c1",
+          "payload_files": 7,
+          "freed_payload_bytes": 1083636,
+          "freed_archive_bytes": 146334
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/freebsd-arm64-development2.tgz",
+          "archive_sha256": "a9ccf01fefa2582c8574340bc61a28cc8f15b7524aa55c92122e0bc8704c7f47",
+          "payload_files": 21,
+          "freed_payload_bytes": 338201,
+          "freed_archive_bytes": 110940
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    }
+  },
+  "performance": {
+    "reference": "PR144",
+    "subsequent_merged_implementation_checkpoints": 1,
+    "comparison_due": false,
+    "prior_report": "PERFORMANCE-2026-10-21-PR144.md"
+  },
+  "gaps": [
+    "Reserved-edge/dock work-area semantics, broader desktop geometry and multi-monitor root authority remain open.",
+    "Property writes preserve request order but are not a multi-property atomic transaction.",
+    "Oversized configured publication retains the preceding snapshot; FVWM configuration commands/desktop numbers remain usable.",
+    "Native-CPU sanitizers, physical GPU/input/toolkit/compositor and final release acceptance remain separate."
+  ],
+  "evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety"
+}

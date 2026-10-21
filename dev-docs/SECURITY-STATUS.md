@@ -9,13 +9,23 @@ is locally qualified and merged in PR143; advance approved
 feature dependencies. Remaining performance-only tuning stays deferred. Broad
 audit owners and release gates remain open.
 
+The [desktop-publication checkpoint](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md)
+qualifies three pager/publication repairs: validate indices/formats before
+conversion, adopt accepted counts with matching arrays, and bound property
+preparation before allocation/indexing. Six targets pass 2340 standard /
+22 selected optional entries, four scoped sanitizer entries, ten installs and
+four authenticated BSD displays. Original configure failures and three old-core
+controls remain preserved. Configuration commands remain usable; oversized
+publication retains the preceding snapshot. Reserved-edge/dock geometry and
+multi-monitor root authority remain open. PR146 awaits maintainer review.
+
 The [manager-handoff checkpoint](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md)
 repairs the reproduced announcement identity and old-owner wait defects.
 Initialized events, finite cancellation and ownership revalidation pass the
 six-target combined checkpoint: 2308 standard / 14 selected optional entries,
 four scoped guest sanitizer entries, ten installs and four authenticated BSD
 displays. Broader selection roles, multi-screen/race/flood coverage and release
-acceptance remain open. PR145 awaits maintainer review.
+acceptance remain open. PR145 is merged.
 
 The [function-lifetime checkpoint](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md) fixes three reproduced failures:
 selection shutdown hangs, held-classification shutdown hangs and conditional

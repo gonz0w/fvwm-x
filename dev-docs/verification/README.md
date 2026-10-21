@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Desktop root publication](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md): three bounded pager/publication repairs; focused checks pass; combined qualification pending.
+- [Desktop root publication](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md): three bounded pager/publication repairs; 2340 standard / 22 optional passes, four scoped sanitizer entries, ten installs and four default BSD displays.
 
 - [Manager startup handoff](VERIFICATION-2026-10-21-MANAGER-HANDOFF.md): three startup repairs; 2308 standard / 14 optional passes, four scoped sanitizer entries, ten installs and four default BSD displays.
 

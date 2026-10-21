@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Shared string ownership, DATA-01 / CLEAN-01 | [PR #138](https://github.com/gonz0w/fvwm-x/pull/138) ready for review; composed checkpoint passes | Three shared first-line, multiline and quoted-copy operations retain existing bytes and ownership while avoiding before-source pointers and removing one quoted strlen rescan. One composed six-target checkpoint passes 2208 standard entries, 28 affected optional entries and one scoped guest sanitizer. Ten installs, staged geometry/styles and four authenticated default BSD displays pass; harness failures and wider release limits remain explicit. [Report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md). |
+| Shared string ownership, DATA-01 / CLEAN-01 | Merged in [PR #138](https://github.com/gonz0w/fvwm-x/pull/138); composed checkpoint passes | Three shared first-line, multiline and quoted-copy operations retain existing bytes and ownership while avoiding before-source pointers and removing one quoted strlen rescan. One composed six-target checkpoint passes 2208 standard entries, 28 affected optional entries and one scoped guest sanitizer. Ten installs, staged geometry/styles and four authenticated default BSD displays pass; harness failures and wider release limits remain explicit. [Report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md). |
 | Protocol requirement register, STANDARDS-01 / EWMH-01 / SELECTION-01 | Merged on main through [PR #136](https://github.com/gonz0w/fvwm-x/pull/136), including PR #137; runtime acceptance remains open | Forty clause/role records refine the existing E/S reconciliation: root capabilities/desktops, window hints/requests and selection ownership/transfer. Historical evidence retains exact profile/source limits; manager announcement and desktop-publication source findings have concrete owner handoffs. No runtime, benchmark or full matrix repeat. [Register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md). |
 | OpenBSD 8.0 release baseline, CI-01 / COMPAT-01 / IMAGE-01 / LIB-07 | Merged in [PR #136](https://github.com/gonz0w/fvwm-x/pull/136); composed local checkpoint passes | OpenBSD follows new releases; 8.0 is the current qualified baseline on AMD64/ARM64 and 7.9 is out of scope. 538 standard and 34 optional entries pass, with full installs, 44 authenticated default servers and staged/default-X 1x/1.5x geometry. All formerly missing entries run; original failures and focused corrections remain recorded. Linux/FreeBSD scope and wider release gates remain. [Report](verification/VERIFICATION-2026-10-20-OPENBSD-80.md). |
 | Core module/icon/event records, MAINT-02 / CLEAN-01 | Merged in [PR #135](https://github.com/gonz0w/fvwm-x/pull/135); affected checkpoint passes | Three module/icon-box/event-filter dependency improvements pass 185 affected native checks across six targets/ten profiles (19 focused retained / 166 fresh). All 5981 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 identities. ARM GCC layout fanout falls 68/216/37 to 30/6/2 objects. Broader PR134 runtime evidence and inherited OpenBSD gaps remain source-scoped. [Report](verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md). |
@@ -256,14 +256,15 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Current batch, 2026-10-21: DATA-01 / CLEAN-01 shared string copies are locally
-qualified in PR #138. First-line, whole-string and quoted copies preserve NULL,
-owned empty values, unsigned-byte whitespace, newline and ASCII-space quote
-conventions. Checked indices avoid before-source pointers; quoted copies reuse
-the computed length. The independent baseline/final oracle and one composed
-six-target checkpoint pass. [Report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md).
-The forty-row standards inventory is complete as an inventory; its runtime owner
-handoffs stay open. Broader data/interpreter and cleanup audits remain queued.
+Current batch, 2026-10-21: CI-01 / MAINT-02 / CLEAN-01 preparation evidence.
+Preserve validated source modes under the private guest umask; publish atomic
+live QEMU phase snapshots with explicit failed-phase ownership; keep built and
+installed PNG loader observations in separate immutable directories with a
+fresh-output override. Focused host controls pass. Qualify affected tooling and
+actual disposable guest/loader paths without repeating unchanged WM suites.
+The shared string ownership checkpoint is merged in PR #138.
+The forty-row standards inventory remains complete as an inventory; runtime
+owner handoffs and broader data/interpreter cleanup stay queued.
 
 The module/icon-box/event-filter dependency batch is merged in PR #135.
 Its affected checkpoint and exact code/data parity remain source-scoped.
@@ -283,10 +284,11 @@ contributed its inventory through PR #136.
 
 Performance tracking requested 2026-10-20: reference PR132 compares PR131/132
 on one Linux ARM64 GCC default profile with existing binaries. Three paired
-runs record latency, CPU, Linux peak RSS and executable sizes. PR133–PR136
-are the four subsequent merged implementation checkpoints (4/5). The
-documentation-only inventory
-does not increment the implementation counter. No regular comparison is due.
+runs record latency, CPU, Linux peak RSS and executable sizes. PR133–PR136 and PR138
+are five subsequent merged implementation checkpoints. The due paired comparison
+has run on existing PR132/PR138 binaries; its report is being reconciled with
+source/build identities. The documentation-only inventory does not increment
+the implementation counter.
 Expected hot-path or memory changes can bring it forward.
 [Reference](verification/PERFORMANCE-2026-10-20.md),
 [cadence](WORKFLOW.md#periodic-performance-comparisons).

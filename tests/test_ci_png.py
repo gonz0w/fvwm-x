@@ -4,6 +4,7 @@
 # the Free Software Foundation; either version 2, or any later version.
 """Check PNG source identity, transitive loader refusal and owned deadlines."""
 import hashlib
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -11,6 +12,7 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools/maintenance'))
@@ -72,6 +74,68 @@ class PngTests(unittest.TestCase):
         alias.symlink_to(outside)
         with self.assertRaises(ValueError):
             ci_png.check_loader(str(alias), prefix)
+
+    def consumer_fixture(self):
+        output = self.root / 'bootstrap'
+        prefix = output / 'prefix'
+        library = prefix / 'lib/libpng16.so.18.2'
+        library.parent.mkdir(parents=True)
+        library.write_bytes(b'qualified PNG fixture')
+        (output / 'receipt.json').write_text(json.dumps({'installed': {
+            'lib/libpng16.so.18.2': ci_png.digest(library)}}))
+        directory = self.root / 'build'
+        for name in ['fvwm3', 'bin/fvwm-image-svg-worker',
+                'install-stage/usr/local/bin/fvwm3',
+                'install-stage/usr/local/libexec/fvwm-image-svg-worker']:
+            path = directory / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(name.encode())
+        def loader(argv, log, **kwargs):
+            self.assertNotIn('LD_BIND_NOW', kwargs['env'])
+            self.assertEqual(argv[0], 'ldd')
+            log.write_text('libpng => ' + str(library))
+        return output, directory, library, loader
+
+    def test_build_and_install_proofs_coexist_without_overwriting(self):
+        output, directory, library, loader = self.consumer_fixture()
+        with patch.object(ci_png, 'command', side_effect=loader), patch.dict(
+                os.environ, LD_BIND_NOW='1'):
+            ci_png.verify(output, directory, build_only=True)
+            built = directory / 'png-verify-built'
+            before = {p.name: p.read_bytes() for p in built.iterdir()}
+            ci_png.verify(output, directory)
+            installed = directory / 'png-verify-installed'
+            self.assertEqual(len(json.loads(
+                (built / 'png-consumers.json').read_text())), 2)
+            self.assertEqual(len(json.loads(
+                (installed / 'png-consumers.json').read_text())), 4)
+            self.assertEqual({p.name: p.read_bytes() for p in built.iterdir()}, before)
+            with self.assertRaises(FileExistsError):
+                ci_png.verify(output, directory, build_only=True)
+            self.assertEqual({p.name: p.read_bytes() for p in built.iterdir()}, before)
+            repeated = directory / 'second-installed-observation'
+            ci_png.verify(output, directory, evidence_directory=repeated)
+            self.assertEqual((installed / 'png-consumers.json').read_bytes(),
+                             (repeated / 'png-consumers.json').read_bytes())
+
+    def test_changed_consumer_library_keeps_failed_log_without_success_receipt(self):
+        output, directory, library, loader = self.consumer_fixture()
+        library.write_bytes(b'changed PNG')
+        with patch.object(ci_png, 'command', side_effect=loader):
+            with self.assertRaises(ValueError):
+                ci_png.verify(output, directory)
+        evidence = directory / 'png-verify-installed'
+        self.assertTrue((evidence / 'png-loader-0.log').is_file())
+        self.assertFalse((evidence / 'png-consumers.json').exists())
+
+    def test_missing_stage_does_not_claim_installed_qualification(self):
+        output, directory, library, loader = self.consumer_fixture()
+        (directory / 'install-stage/usr/local/bin/fvwm3').unlink()
+        with patch.object(ci_png, 'command', side_effect=loader) as run:
+            with self.assertRaises(ValueError):
+                ci_png.verify(output, directory)
+            run.assert_not_called()
+        self.assertFalse((directory / 'png-verify-installed/png-consumers.json').exists())
 
     def test_deadline_reaps_owned_process_group_and_retains_log(self):
         log = self.root / 'timeout.log'

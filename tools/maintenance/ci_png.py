@@ -207,31 +207,37 @@ def build(source, output):
         'export LD_LIBRARY_PATH=' + shlex.quote(str(prefix / 'lib')) + '\n')
 
 
-def verify(output, directory, build_only=False):
+def verify(output, directory, build_only=False, evidence_directory=None):
     prefix = output.absolute() / 'prefix'
     receipt = json.loads((output / 'receipt.json').read_text())
     expected = {value for name, value in receipt['installed'].items()
                 if '/libpng' in name and '.so' in name}
     if not expected:
         raise ValueError('PNG build receipt contains no shared library identity')
+    # Build-only and installed checks retain independent immutable receipts.
+    # A later observation needs its own fresh explicit output directory.
+    evidence = (evidence_directory if evidence_directory is not None else
+        directory / ('png-verify-built' if build_only else 'png-verify-installed'))
+    evidence.mkdir(parents=True, exist_ok=False)
     identities = {}
     env = dict(os.environ)
     env.pop('LD_BIND_NOW', None)
     paths = [directory / 'fvwm3', directory / 'bin/fvwm-image-svg-worker']
     stage = directory / 'install-stage'
     if not build_only:
-        paths += [p for p in stage.rglob('*') if p.is_file() and
-                  p.name in ('fvwm3', 'fvwm-image-svg-worker')]
+        paths += sorted(p for p in stage.rglob('*') if p.is_file() and
+                        p.name in ('fvwm3', 'fvwm-image-svg-worker'))
     if len(paths) != (2 if build_only else 4):
         raise ValueError('expected build and staged core/SVG worker consumers')
     for index, path in enumerate(paths):
-        log = directory / ('png-loader-%d.log' % index)
+        log = evidence / ('png-loader-%d.log' % index)
         command(['ldd', str(path)], log, env=env, timeout=30)
         loaded = check_loader(log.read_text(), prefix)
         if not set(loaded.values()) <= expected:
             raise ValueError('PNG consumer differs from the qualified build')
         identities[str(path)] = {'sha256': digest(path), 'loaded_png': loaded}
-    (directory / 'png-consumers.json').write_text(json.dumps(identities, indent=2) + '\n')
+    (evidence / 'png-consumers.json').write_text(
+        json.dumps(identities, indent=2) + '\n')
 
 
 def main():
@@ -245,6 +251,8 @@ def main():
     parser.add_argument('--source', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--build-directory', type=Path)
+    parser.add_argument('--evidence-directory', type=Path,
+                        help='fresh loader-proof directory; defaults by check mode')
     parser.add_argument('--build-only', action='store_true',
                         help='Go profile stages clients; core profile checks installed consumers')
     args = parser.parse_args()
@@ -259,7 +267,8 @@ def main():
     else:
         if args.build_directory is None:
             parser.error('verify requires --build-directory')
-        verify(args.output, args.build_directory, args.build_only)
+        verify(args.output, args.build_directory, args.build_only,
+               args.evidence_directory)
 
 
 if __name__ == '__main__':

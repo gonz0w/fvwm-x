@@ -243,6 +243,12 @@ Logging can also be dynamically toggled on and off using signals:
 SIGUSR1 : used as a signal to restart Fvwm
 SIGUSR2 : used as a signal to toggle opening/closing debug log file
 ....
++
+If the log stream reports a write or flush error, Fvwm disables that sink and
+continues running. After correcting a file-sink failure, toggle logging off
+and on with SIGUSR2 to reopen it. A failed replacement keeps the previous
+working stream.
+
 
 == ANATOMY OF A WINDOW
 

@@ -96,7 +96,9 @@ snapshot resumes output without retaining window pointers. Stop/restart cleanup
 retires the matching FIFO. Logging keeps one stream owner in
 [log.c](../libs/log.c), commits replacements after construction, preserves
 intentional module inheritance and retires failed diagnostic sinks. Runtime
-qualification for this stream-ownership batch is pending.
+qualification for these four repairs passes the [stream checkpoint](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md).
+Late inherited-descriptor provenance remains a bounded FD-01/PROC-01 review;
+this does not close the wider stream/input audit.
 
 ## Boundaries to strengthen within owning fixes
 

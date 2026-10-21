@@ -826,6 +826,7 @@ status_pipe_test = executable(
     dependencies: all_found_deps,
     link_with: libfvwm3,
     link_args: ['-Wl,--wrap=open', '-Wl,--wrap=open64',
+        '-Wl,--wrap=__open_2', '-Wl,--wrap=__open64_2',
         '-Wl,--wrap=write',
         '-Wl,--wrap=fvwm_fd_set_cloexec'],
     c_args: ['-UNDEBUG'],

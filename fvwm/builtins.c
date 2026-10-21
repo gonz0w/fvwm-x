@@ -136,7 +136,8 @@ status_flush(void)
 {
 	if (status_pipe_flush(&status_pipe) < 0)
 	{
-		fvwm_debug(__func__, "Status write failed: %s", strerror(errno));
+		fvwm_debug(__func__, "Status write failed: %s",
+		    strerror(errno));
 		status_close();
 	}
 	else if (status_pipe.pending == NULL && status_dirty)
@@ -162,7 +163,8 @@ status_send(void)
 	flushed = status_pipe_flush(&status_pipe);
 	if (flushed < 0)
 	{
-		fvwm_debug(__func__, "Status write failed: %s", strerror(errno));
+		fvwm_debug(__func__, "Status write failed: %s",
+		    strerror(errno));
 		status_close();
 		return;
 	}
@@ -188,7 +190,8 @@ status_send(void)
 
 	if (!status_pipe_queue(&status_pipe, as_json, strlen(as_json)))
 	{
-		fvwm_debug(__func__, "Status record refused: %s", strerror(errno));
+		fvwm_debug(__func__, "Status record refused: %s",
+		    strerror(errno));
 	}
 	else
 	{

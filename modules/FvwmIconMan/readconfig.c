@@ -864,7 +864,8 @@ static int GetConfigLineWrapper(int *fd, char **tline)
 				if (!log_set_fd(fdl))
 				{
 					fvwm_debug(__func__,
-					    "Unable to adopt logging descriptor %d", fdl);
+					    "Unable to adopt logging descriptor %d",
+					    fdl);
 				}
 			}
 			else

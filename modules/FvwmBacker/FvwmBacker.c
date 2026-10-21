@@ -557,7 +557,8 @@ int ParseConfigLine(char *line)
 			else if (!log_set_fd(fd))
 			{
 				fvwm_debug(__func__,
-				    "Unable to adopt logging descriptor %d", fd);
+				    "Unable to adopt logging descriptor %d",
+				    fd);
 			}
 		}
 	}

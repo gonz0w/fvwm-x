@@ -2021,7 +2021,8 @@ static void ParseConfigLine(button_info **ubb, char *s)
 			else if (!log_set_fd(fd))
 			{
 				fvwm_debug(__func__,
-				    "Unable to adopt logging descriptor %d", fd);
+				    "Unable to adopt logging descriptor %d",
+				    fd);
 			}
 
 			fvwm_debug(MyName, "I AM RUNNING!!!");
@@ -2173,7 +2174,8 @@ void ParseConfiguration(button_info *ub)
 			else if (!log_set_fd(fdl))
 			{
 				fvwm_debug(__func__,
-				    "Unable to adopt logging descriptor %d", fdl);
+				    "Unable to adopt logging descriptor %d",
+				    fdl);
 			}
 
 			GetConfigLine(fd,&s);

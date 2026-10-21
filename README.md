@@ -11,7 +11,8 @@ File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
 **Status:** development. The core/utility snapshot has locally qualified
-hardening, responsiveness and utility-port checkpoints. Work focuses on
+[stream hardening](dev-docs/verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md),
+responsiveness and utility-port checkpoints. Work focuses on
 [safety and maintainability closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout)
 before features; remaining performance tuning moves to the next release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)

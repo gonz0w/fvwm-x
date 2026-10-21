@@ -12,6 +12,14 @@ The closeout starts with status/log stream construction and cleanup, followed
 by selected external-input and pending interaction-lifetime boundaries. These
 are source-review scopes, not claims that every path has a demonstrated defect.
 
+The [stream ownership checkpoint](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md)
+qualifies four FIFO/output/log adoption/error repairs across six targets.
+It preserves original harness failures and uses affected continuations, with
+2236 composed standard / 58 optional passes, scoped sanitizers and ten installs.
+Late LoggingFD descriptor provenance remains a source-review concern without
+a live reproducer; selected input and interaction-lifetime reviews follow.
+Broad audit owners remain open; PR141 is for maintainer review.
+
 OpenBSD 8.0 is the current qualified release on both VM architectures;
 [its checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md) resolves
 the previously missing required entries. Follow future releases; 7.9 is out of

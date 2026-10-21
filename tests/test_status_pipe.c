@@ -56,6 +56,20 @@ __wrap_open(const char *path, int flags, ...)
 	return opened_fd;
 }
 
+/* Fortified glibc/Clang calls use these entry points. Inject at the same
+ * owner boundary without weakening the production compilation flags. */
+int
+__wrap___open_2(const char *path, int flags)
+{
+	return __wrap_open(path, flags);
+}
+
+int
+__wrap___open64_2(const char *path, int flags)
+{
+	return __wrap_open(path, flags);
+}
+
 bool
 __wrap_fvwm_fd_set_cloexec(int fd, bool enabled)
 {

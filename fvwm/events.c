@@ -3916,7 +3916,7 @@ static void events_readiness_clear(events_readiness *readiness)
 static void events_readiness_service(events_readiness *readiness)
 {
 	/* A stalled status reader resumes without requiring a new WM command.
-	 * Service is bounded, has no callbacks, and retains no window resources. */
+	 * Bounded service has no callbacks or retained window resources. */
 	if (readiness->descriptors[EVENTS_STATUS_WATCH].revents &
 	    (POLLOUT | POLLHUP | POLLERR | POLLNVAL))
 	{

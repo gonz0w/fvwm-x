@@ -63,8 +63,8 @@ log_set_fd(int fd)
 		return true;
 	}
 	/* Config broadcasts can repeat the same inherited LoggingFD. Do not
-	 * create another FILE owner for it, or close a working owner on failure.
-	 * The descriptor intentionally remains inheritable by native modules. */
+	 * create another FILE owner or close a working stream on refusal.
+	 * Native modules intentionally inherit the descriptor. */
 	candidate = fd == STDERR_FILENO ? stderr : fdopen(fd, "a");
 	if (candidate == NULL)
 	{
@@ -205,7 +205,7 @@ log_vwrite(const char *func, const char *msg, va_list ap)
 
 failed:
 	/* A full or failed diagnostic sink must not terminate the WM/module.
-	 * Retire this stream once; a later explicit reopen can recover logging. */
+	 * Retire it once; a later explicit reopen can recover logging. */
 	free(fmt);
 	log_close();
 }

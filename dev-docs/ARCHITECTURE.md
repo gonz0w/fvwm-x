@@ -111,8 +111,8 @@ Function-owned selection/classification waits now use the existing ID-only
 interaction cancellation policy. Target lifecycle events remain queued until
 unwind; shutdown releases grabs and skips pending conditional phases. A nested
 Wait can retire a retained target before classification resumes, so that record
-is checked as well. Focused Linux/FreeBSD ARM64 checks pass; combined
-qualification is pending. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md).
+is checked as well. Six-target compiler/install/default-X qualification passes, with scoped
+guest sanitizers and exact entry-point dispositions. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md).
 
 ## Boundaries to strengthen within owning fixes
 

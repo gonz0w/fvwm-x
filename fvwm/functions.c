@@ -1249,7 +1249,7 @@ static void execute_complex_function(
 		do_run_late_immediate = 0;
 	}
 	/* A late immediate Wait can dispatch the target's destruction before
-	 * the click/double-click phase resumes. Its record is still retained. */
+	 * click classification resumes. The record remains retained. */
 	if (fvwm_interaction_cancelled(&interaction) ||
 	    (ecc.w.fw != NULL && IS_SCHEDULED_FOR_DESTROY(ecc.w.fw)))
 	{

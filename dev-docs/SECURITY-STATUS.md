@@ -4,13 +4,20 @@ Updated 2026-10-21. This is an ongoing audit, not a security certification.
 The active work list and acceptance criteria are in
 [PROJECT-TRACKER.md](PROJECT-TRACKER.md).
 
-Current direction: finish the tracker's finite
-[safety/maintainability closeout](PROJECT-TRACKER.md#hardening-closeout), then
-advance the approved features. Remaining performance-only tuning moves to the
-next release; bounds, ordering, hangs and ownership defects remain safety work.
-The closeout starts with status/log stream construction and cleanup, followed
-by selected external-input and pending interaction-lifetime boundaries. These
-are source-review scopes, not claims that every path has a demonstrated defect.
+The selected finite [safety/maintainability closeout](PROJECT-TRACKER.md#hardening-closeout)
+is locally qualified, pending PR143 review/merge, before advancing approved
+feature dependencies. Remaining performance-only tuning stays deferred. Broad
+audit owners and release gates remain open.
+
+The [function-lifetime checkpoint](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md) fixes three reproduced failures:
+selection shutdown hangs, held-classification shutdown hangs and conditional
+actions after target destruction. Existing context/module/function/window
+retention guards have explicit already-covered dispositions. Six targets pass
+2276 standard / 47 selected optional entries, scoped guest sanitizers,
+ten installs and four authenticated default BSD displays. Original controls
+and orchestration errors remain in the report. No confirmed unresolved
+high-impact defect remains in the selected closeout set; this does not certify
+all historical audit paths or authorize release.
 
 The [stream ownership checkpoint](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md)
 qualifies four FIFO/output/log adoption/error repairs across six targets.
@@ -23,8 +30,8 @@ a reproduced root-context configuration crash are repaired. Six targets pass
 2252 composed standard / 117 optional entries, scoped sanitizers and ten final
 installs. Original fixture/runner failures and affected completions remain
 explicit. Selected configuration-view and Script packet/value policies are
-already covered; pending interaction lifetimes are next. Broad audit owners
-remain open; PR142 is for maintainer review.
+already covered; the selected interaction pickup is now qualified above.
+Broad audit owners remain open; PR142 is merged.
 
 OpenBSD 8.0 is the current qualified release on both VM architectures;
 [its checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md) resolves

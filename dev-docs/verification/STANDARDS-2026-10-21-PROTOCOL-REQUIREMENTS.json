@@ -1,0 +1,422 @@
+{
+  "status": "inventory-complete-runtime-acceptance-open",
+  "date": "2026-10-21",
+  "inspected_commit": "a2c3f7339e32bdbd6bd739ba5232e4a73451bdd5",
+  "runtime_tests_run": 0,
+  "vm_boots": 0,
+  "performance_comparisons": 0,
+  "requirements": [
+    {
+      "id": "R01",
+      "parent": "E01",
+      "requirement": "EWMH 3.1 MUST: `_NET_SUPPORTED` ATOM/32 lists supported hints.",
+      "status_evidence": "Verified for named profiles, I/A: exact 63 declared atoms, type/format, unique ordinary IDs.",
+      "remaining_acceptance": "Retain exact-profile scope; table equality alone does not settle R02."
+    },
+    {
+      "id": "R02",
+      "parent": "E01",
+      "requirement": "EWMH 3.1 MUST: advertised hints correspond to implemented behavior.",
+      "status_evidence": "Review pending. A checks lookup/publication, not semantics of all 63 names.",
+      "remaining_acceptance": "Check each advertised family against independent requests; preserve alias and failure-mode distinctions."
+    },
+    {
+      "id": "R03",
+      "parent": "E02",
+      "requirement": "EWMH 3.10 MUST: root check identifies a WM-created child.",
+      "status_evidence": "Implemented / unqualified. I checks WINDOW/32, one non-root ID, but does not independently query parentage.",
+      "remaining_acceptance": "QueryTree must establish that the check window is a child of this root; test stale/foreign IDs."
+    },
+    {
+      "id": "R04",
+      "parent": "E02",
+      "requirement": "EWMH 3.10 MUST: child check self-references and has WM name.",
+      "status_evidence": "Verified for named profiles, I: self-reference and nonempty UTF8_STRING name.",
+      "remaining_acceptance": "Replacement/stale-child handling is separate; branding remains RELEASE-01."
+    },
+    {
+      "id": "R05",
+      "parent": "E03",
+      "requirement": "EWMH 3.2 SHOULD: client list preserves initial mapping order.",
+      "status_evidence": "Verified for named profiles, I: three mapped clients, then destroyed-client removal.",
+      "remaining_acceptance": "Broader startup adoption, withdrawn and transient cases remain unqualified."
+    },
+    {
+      "id": "R06",
+      "parent": "E03",
+      "requirement": "EWMH 3.2 SHOULD: stacking list orders bottom to top.",
+      "status_evidence": "Verified for named profiles, I: Raise changes order and dead IDs disappear.",
+      "remaining_acceptance": "Independently check multiple layers, transient groups and restacking requests."
+    },
+    {
+      "id": "R07",
+      "parent": "E04",
+      "requirement": "EWMH 3.3 SHOULD/conditional MUST: desktop count and accepted changes agree.",
+      "status_evidence": "Implemented / unqualified. I verifies initial CARDINAL/32 count; `EWMH_SetNumberOfDesktops` uses effective count.",
+      "remaining_acceptance": "Independent accepted/refused requests and consistent dependent publications."
+    },
+    {
+      "id": "R08",
+      "parent": "E04",
+      "requirement": "EWMH 3.3 conditional MUST: shrink reconciles out-of-range desktops/windows.",
+      "status_evidence": "Review pending. A command or count assertion is insufficient.",
+      "remaining_acceptance": "Request shrink with current/populated high desks; observe current desk and each client property."
+    },
+    {
+      "id": "R09",
+      "parent": "E04",
+      "requirement": "EWMH 3.5: viewport pairs describe each desktop.",
+      "status_evidence": "Implemented / unqualified. `EWMH_SetDesktopViewPort` uses configured count, capped at 256.",
+      "remaining_acceptance": "Test effective/configured disagreement and high desks; inspect actual property length and positions."
+    },
+    {
+      "id": "R10",
+      "parent": "E05",
+      "requirement": "EWMH 3.9 MUST: work area contains a geometry per desktop.",
+      "status_evidence": "Implemented / unqualified, reproduced gap I: one desktop and an empty work-area array.",
+      "remaining_acceptance": "Repair count agreement with R07\u2013R09; the inventory currently records this finding without failing."
+    },
+    {
+      "id": "R11",
+      "parent": "E05",
+      "requirement": "EWMH 3.9 MUST/SHOULD: viewport-contained work area accounts for reserved edges.",
+      "status_evidence": "Implemented / unqualified. `ewmh_SetWorkArea` publishes global monitor geometry; P tests internal struts separately.",
+      "remaining_acceptance": "Foreign dock changes/removal, page shifts and topology must drive observable root geometry."
+    },
+    {
+      "id": "R12",
+      "parent": "E04",
+      "requirement": "EWMH 3.6 MUST: current desktop stays within advertised range.",
+      "status_evidence": "Implemented / unqualified. I verifies initial range only.",
+      "remaining_acceptance": "Accepted/refused pager requests, timestamp-zero compatibility and shrink; do not infer from command Desk."
+    },
+    {
+      "id": "W01",
+      "parent": "E06",
+      "requirement": "EWMH 5.17 MUST: CARDINAL[4]/32 reports each frame border.",
+      "status_evidence": "Implemented / unqualified. I verifies four entries and horizontal/vertical size sums, not each edge.",
+      "remaining_acceptance": "Translate client/frame root coordinates; distinguish left/right and top/bottom, including changed decorations."
+    },
+    {
+      "id": "W02",
+      "parent": "E06",
+      "requirement": "EWMH 4.3 conditional: frame-extents request produces an estimate.",
+      "status_evidence": "Planned. `_NET_REQUEST_FRAME_EXTENTS` absent in inspected tables and I output.",
+      "remaining_acceptance": "Select adoption with EWMH-01; unmapped clients, absent hints, refusal and lifetime need independent cases."
+    },
+    {
+      "id": "W03",
+      "parent": "E07",
+      "requirement": "Project validation: malformed properties/messages are refused safely.",
+      "status_evidence": "Implemented / unqualified for the whole family. L retains bounded property cases; not every message field.",
+      "remaining_acceptance": "Test format, signed/oversized values, source IDs and timestamps at each changed request owner."
+    },
+    {
+      "id": "W04",
+      "parent": "E08",
+      "requirement": "EWMH 3.8: active-window publication and activation requests.",
+      "status_evidence": "Implemented / unqualified. `ewmh_ActiveWindow` exists; command Focus is not a request oracle.",
+      "remaining_acceptance": "Observe root focus plus property; distinguish request source/time, stale/dead clients and refusal."
+    },
+    {
+      "id": "W05",
+      "parent": "E08",
+      "requirement": "EWMH 5.15/5.16: user-time hints and alternate time window.",
+      "status_evidence": "Planned. Neither atom appears in inspected tables or I advertisement.",
+      "remaining_acceptance": "Select focus policy before adoption; zero time, child death, wraparound and real application behavior."
+    },
+    {
+      "id": "W06",
+      "parent": "E09",
+      "requirement": "EWMH 5.9: legacy strut uses four root-edge distances.",
+      "status_evidence": "Implemented / unqualified for complete geometry. L malformed-property and P internal policy evidence remain narrow.",
+      "remaining_acceptance": "Independent dock mutation/destruction and maximized placement with root-property readback."
+    },
+    {
+      "id": "W07",
+      "parent": "E09",
+      "requirement": "EWMH 5.10 conditional MUST: partial strut overrides legacy strut.",
+      "status_evidence": "Planned. `_NET_WM_STRUT_PARTIAL` absent from tables/I advertisement.",
+      "remaining_acceptance": "Root coordinates, partial edge spans, both-property precedence, hotplug and malformed spans."
+    },
+    {
+      "id": "W08",
+      "parent": "E10",
+      "requirement": "EWMH 6.3 conditional: fullscreen monitor selection uses four indices.",
+      "status_evidence": "Planned. `_NET_WM_FULLSCREEN_MONITORS` absent from tables/I advertisement.",
+      "remaining_acceptance": "Validate indices/topology generations and restore; command fullscreen does not establish this protocol."
+    },
+    {
+      "id": "W09",
+      "parent": "E11",
+      "requirement": "EWMH 6.1 optional: ping correlates a client reply.",
+      "status_evidence": "Planned. `_NET_WM_PING` absent from tables/I advertisement.",
+      "remaining_acceptance": "If adopted, timestamp/window matching, unresponsive peers and bounded completion; no unsupported claim."
+    },
+    {
+      "id": "W10",
+      "parent": "E11",
+      "requirement": "EWMH 6.2 optional: resize synchronization uses client counters.",
+      "status_evidence": "Planned. `_NET_WM_SYNC_REQUEST` absent from tables/I advertisement.",
+      "remaining_acceptance": "If adopted, negotiate counter ownership, ordering, timeout, counter replacement and client death."
+    },
+    {
+      "id": "W11",
+      "parent": "E12",
+      "requirement": "ICCCM 4.1.7: focus models and TAKE_FOCUS timestamps.",
+      "status_evidence": "Implemented / unqualified. Existing property validation does not qualify focus-model transitions.",
+      "remaining_acceptance": "Four focus models with independent clients; actual server timestamps and client disappearance."
+    },
+    {
+      "id": "W12",
+      "parent": "E12",
+      "requirement": "ICCCM 4.1.3.1/4.1.4: WM_STATE follows window lifecycle.",
+      "status_evidence": "Implemented / unqualified. Legacy adoption and icon-state regressions cover narrower observations.",
+      "remaining_acceptance": "Normal/Iconic/Withdrawn transitions, icon XIDs, remap/restart and destruction with independent property reads."
+    },
+    {
+      "id": "S01",
+      "parent": "S01",
+      "requirement": "ICCCM 2.8/4.3: WM_Sn ownership is acquired and confirmed.",
+      "status_evidence": "Implemented / unqualified. `SetupICCCM2` uses server time and confirms owner.",
+      "remaining_acceptance": "Independent competing owner, multi-screen selection, refused acquisition and replacement race."
+    },
+    {
+      "id": "S02",
+      "parent": "S01",
+      "requirement": "ICCCM 2.8 SHOULD: MANAGER announcement identifies timestamp, selection and owner.",
+      "status_evidence": "Implemented / unqualified, source finding: only data slots 0/1 are assigned.",
+      "remaining_acceptance": "Observe announcement before startup, verify slot 2 equals actual owner; initialize all event fields."
+    },
+    {
+      "id": "S03",
+      "parent": "S01",
+      "requirement": "ICCCM 2.8 plus project bound: replacement releases old resources finitely.",
+      "status_evidence": "Implemented / unqualified. Old-owner DestroyNotify wait has no deadline.",
+      "remaining_acceptance": "Uncooperative/dead/replaced owner and raced destruction; bounded failure with descriptor/X ownership cleanup."
+    },
+    {
+      "id": "S04",
+      "parent": "S01",
+      "requirement": "ICCCM 2.6.2 required: owner TARGETS conversion lists supported targets.",
+      "status_evidence": "Verified for named profiles, L: legacy fixture reads exact four core targets via MULTIPLE.",
+      "remaining_acceptance": "Direct conversion and ownership epochs remain unqualified; list equality is not target semantics."
+    },
+    {
+      "id": "S05",
+      "parent": "S01",
+      "requirement": "ICCCM 2.6.2/4.3 required: TIMESTAMP and VERSION conversions return typed values.",
+      "status_evidence": "Implemented / unqualified. `convertProperty` has both branches; L does not read their successful results.",
+      "remaining_acceptance": "Direct INTEGER/32 values, lengths and acquisition epoch; repeat after replacement."
+    },
+    {
+      "id": "S06",
+      "parent": "S01",
+      "requirement": "ICCCM 2.6.2 required: MULTIPLE preserves order and marks failed pairs.",
+      "status_evidence": "Implemented / unqualified for complete target behavior. L covers malformed/empty pairs, unsupported/None results and TARGETS.",
+      "remaining_acceptance": "Successful mixed targets, sequential conversion ordering, resource refusal and vanished requestor."
+    },
+    {
+      "id": "S07",
+      "parent": "S02",
+      "requirement": "ICCCM 2.6.2 required: PRIMARY owner supports TARGETS/TIMESTAMP/MULTIPLE.",
+      "status_evidence": "Implemented / unqualified, missing branches: Script PRIMARY handles only STRING.",
+      "remaining_acceptance": "Add role-correct conversion, timestamps and failure replies while preserving stored configuration text."
+    },
+    {
+      "id": "S08",
+      "parent": "S02",
+      "requirement": "ICCCM 2.1/2.3: PRIMARY acquisition and ownership loss are handled.",
+      "status_evidence": "Implemented / unqualified. TextField uses event time; SelectionClear unselects text.",
+      "remaining_acceptance": "Foreign owner replacement, stale acquisition, selection lifetime and request-after-loss."
+    },
+    {
+      "id": "S09",
+      "parent": "S03",
+      "requirement": "ICCCM 2.5: replies correlate with the outstanding request.",
+      "status_evidence": "Implemented / unqualified for the full correlation contract. The helper checks all five fields; L tests selected mismatches and late replies, not every field independently.",
+      "remaining_acceptance": "Add wrong-selection replies as well as existing wrong-requestor/target/time/property cases; retain isolation and owner-change/flood limits."
+    },
+    {
+      "id": "S10",
+      "parent": "S03",
+      "requirement": "ICCCM 2.5/2.7 plus project bound: receive typed, complete text.",
+      "status_evidence": "Verified for named profiles, L: ordinary bounded UTF8/STRING, type/format/size refusal and recovery.",
+      "remaining_acceptance": "Negotiated targets/encodings and incremental transfer remain outside these ordinary-property cases."
+    },
+    {
+      "id": "S11",
+      "parent": "S04",
+      "requirement": "ICCCM 2.2/2.6.2: review private selection-owner target obligations.",
+      "status_evidence": "Review pending. Script private messages implement custom targets and refusal, not generic target negotiation.",
+      "remaining_acceptance": "Define this role's standard target responses without changing message ordering/bytes; do not claim clipboard ownership."
+    },
+    {
+      "id": "S12",
+      "parent": "S05",
+      "requirement": "ICCCM chapter 3: cut-buffer consumer reads STRING/8.",
+      "status_evidence": "Verified for named profiles, L: Form bounded paste and malformed/UTF8 boundary recovery.",
+      "remaining_acceptance": "Not applicable with rationale to PRIMARY owner-target obligations: this consumer owns no selection."
+    },
+    {
+      "id": "S13",
+      "parent": "S06",
+      "requirement": "ICCCM 2.5/2.7.2: requestor accepts incremental transfer.",
+      "status_evidence": "Implemented / unqualified, unsupported path: INCR currently refused.",
+      "remaining_acceptance": "Operation-local chunking, size/deadline bounds, zero terminator, cancellation and owner death."
+    },
+    {
+      "id": "S14",
+      "parent": "S06",
+      "requirement": "Project bound: silent/dead selection peers cannot stall servicing indefinitely.",
+      "status_evidence": "Verified for named profiles, L: finite helper refusal, stale requestors and high-descriptor coverage.",
+      "remaining_acceptance": "Scope remains one bounded transfer; broader interaction/flood servicing needs owner fixtures."
+    },
+    {
+      "id": "S15",
+      "parent": "S07",
+      "requirement": "Planned clipboard-manager role: persistence handoff.",
+      "status_evidence": "Planned. No CLIPBOARD_MANAGER/SAVE_TARGETS service adopted.",
+      "remaining_acceptance": "CLIPBOARD-01 selects revision, targets and protected lifetime; foreign clients must establish handoff before claims."
+    },
+    {
+      "id": "S16",
+      "parent": "S08",
+      "requirement": "Planned native XDND participants: explicit source/target roles.",
+      "status_evidence": "Planned. No native XDND event handlers found in the inspected core/modules.",
+      "remaining_acceptance": "FILE-VIEW/SELECTION selects version and exact participants; managed toolkit clients keep their own roles."
+    }
+  ],
+  "parent_coverage": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "E05",
+    "E06",
+    "E07",
+    "E08",
+    "E09",
+    "E10",
+    "E11",
+    "E12",
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08"
+  ],
+  "source_sha256": {
+    "fvwm/ewmh.c": "7f662bd3d4c3ccaabc0b9df8088814a317ccdf3149ef1353578b197fabe8a995",
+    "fvwm/ewmh_events.c": "d59ae01213fe815252b181f856618bc08e8525a6133c0e636aa2e8dae543c17f",
+    "fvwm/ewmh_conf.c": "feb98c16f3884d6ae3c3b0272d418874536d355f6f4e0d5810dacd93a4d8aef7",
+    "fvwm/ewmh_names.c": "c63fde9fe475a2fbb0750329c135001196f17516e56ca8aa17bded5b7cd85dc7",
+    "fvwm/ewmh_intern.h": "2705c8dd7e6a390f19e8e92d1e4c12c51aac5e665413fd1b6b2abb602c9b5214",
+    "fvwm/focus.c": "6e95433867f4743b846d37d817c56f65ba9caa10eddca4194331043cee084cda",
+    "fvwm/misc.c": "b0db251b9ee33c21b5a80215a5611c260d625d22a59c530254a1532a5227cdca",
+    "fvwm/icccm2.c": "a8cd03456c3d34d76e3d2049f52ab40b7eeb421751acb978827c6d3a8bf2a849",
+    "libs/FSelection.c": "7863bb1df0deac607e84e638d83cdfc897479938488e315fa9e7f3b6a678f31b",
+    "modules/FvwmScript/FvwmScript.c": "fa16b9cc305760f328999cedf9cf04d34313dfa405ca29c03303aaf1ca43d9b5",
+    "modules/FvwmScript/Widgets/TextField.c": "71752e5a0c4f80c6d627fb245a645866d3b3628875694566c187fa680089670b",
+    "modules/FvwmForm/ReadXServer.c": "148354390404ce5b0ced071a9a0f6eda03f6b791b62b6ec51804f8449c007fcb",
+    "tests/live_x/ewmh_inventory_live.py": "d2af32a5e812adb5b592243d66ba5cf3c6f0d810b692b41c2703e086429837cd",
+    "tests/live_x/legacy_property_live.py": "f1e32ab8dff05bf5b198d0084e90cd2e358353fba0a1d3306c2790a4f7e44168",
+    "tests/live_x/selection_live.py": "96e1a93ee362ffee6f7cb7b61bee09483dd24f9e5b1db3fdc8f13297de87ee32",
+    "tests/test_selection_x.c": "f2cd3992f67c78d4f78f6fb220d01d2d72206b7cfd71c1c7e04bcb946204bb40",
+    "tests/meson.build": "4d7ccfd4989ba851fe4c6c5bfdd6f7904192074762e3be2953a6b7be7a9f2131"
+  },
+  "static_advertisement": {
+    "tables": 9,
+    "names": [
+      "_NET_CURRENT_DESKTOP",
+      "_NET_DESKTOP_GEOMETRY",
+      "_NET_DESKTOP_NAMES",
+      "_NET_DESKTOP_VIEWPORT",
+      "_NET_NUMBER_OF_DESKTOPS",
+      "_NET_ACTIVE_WINDOW",
+      "_NET_CLOSE_WINDOW",
+      "_NET_MOVERESIZE_WINDOW",
+      "_NET_RESTACK_WINDOW",
+      "_NET_WM_DESKTOP",
+      "_NET_WM_MOVERESIZE",
+      "_NET_WM_STATE",
+      "_NET_WM_STATE_ABOVE",
+      "_NET_WM_STATE_BELOW",
+      "_NET_WM_STATE_FULLSCREEN",
+      "_NET_WM_STATE_HIDDEN",
+      "_NET_WM_STATE_MAXIMIZED_HORIZ",
+      "_NET_WM_STATE_MAXIMIZED_HORZ",
+      "_NET_WM_STATE_MAXIMIZED_VERT",
+      "_NET_WM_STATE_MODAL",
+      "_NET_WM_STATE_SHADED",
+      "_NET_WM_STATE_SKIP_PAGER",
+      "_NET_WM_STATE_SKIP_TASKBAR",
+      "_NET_WM_STATE_STAYS_ON_TOP",
+      "_NET_WM_STATE_STICKY",
+      "_NET_WM_ACTION_CHANGE_DESKTOP",
+      "_NET_WM_ACTION_CLOSE",
+      "_NET_WM_ACTION_FULLSCREEN",
+      "_NET_WM_ACTION_MAXIMIZE_HORZ",
+      "_NET_WM_ACTION_MAXIMIZE_VERT",
+      "_NET_WM_ACTION_MINIMIZE",
+      "_NET_WM_ACTION_MOVE",
+      "_NET_WM_ACTION_RESIZE",
+      "_NET_WM_ACTION_SHADE",
+      "_NET_WM_ACTION_STICK",
+      "_NET_WM_WINDOW_TYPE_DESKTOP",
+      "_NET_WM_WINDOW_TYPE_DIALOG",
+      "_NET_WM_WINDOW_TYPE_DOCK",
+      "_NET_WM_WINDOW_TYPE_MENU",
+      "_NET_WM_WINDOW_TYPE_NORMAL",
+      "_NET_WM_WINDOW_TYPE_TOOLBAR",
+      "_NET_WM_WINDOW_TYPE_NOTIFICATION",
+      "_KDE_NET_WM_SYSTEM_TRAY_WINDOW_FOR",
+      "_NET_WM_HANDLED_ICON",
+      "_NET_WM_PID",
+      "_NET_WM_WINDOW_TYPE",
+      "_NET_WM_ICON",
+      "_NET_WM_ICON_GEOMETRY",
+      "_NET_WM_ICON_NAME",
+      "_NET_WM_NAME",
+      "_NET_WM_STRUT",
+      "_KDE_NET_SYSTEM_TRAY_WINDOWS",
+      "_NET_CLIENT_LIST",
+      "_NET_CLIENT_LIST_STACKING",
+      "_NET_SUPPORTED",
+      "_NET_SUPPORTING_WM_CHECK",
+      "_NET_VIRTUAL_ROOTS",
+      "_NET_WORKAREA",
+      "_KDE_NET_WM_FRAME_STRUT",
+      "_NET_FRAME_EXTENTS",
+      "_NET_WM_ALLOWED_ACTIONS",
+      "_NET_WM_ICON_VISIBLE_NAME",
+      "_NET_WM_VISIBLE_NAME"
+    ],
+    "selected_absent": [
+      "_NET_WM_STRUT_PARTIAL",
+      "_NET_WM_FULLSCREEN_MONITORS",
+      "_NET_WM_USER_TIME",
+      "_NET_WM_USER_TIME_WINDOW",
+      "_NET_WM_PING",
+      "_NET_WM_SYNC_REQUEST",
+      "_NET_REQUEST_FRAME_EXTENTS"
+    ],
+    "not_a_runtime_observation": true
+  },
+  "register_sha256": "9b2693204b222c1ecdf4b8d0c202fa3976eff941bb101f1fcf0086fd28ba2428",
+  "historical_evidence_is_not_rebound_to_current_source": true,
+  "checks": {
+    "forty_unique_ordered_requirements": "passed",
+    "twenty_parent_areas": "passed",
+    "markdown_receipt_parity": "passed",
+    "seventeen_source_fingerprints": "passed",
+    "all_current_documentation_file_links": "passed",
+    "repository_foundation": "passed",
+    "diff_whitespace": "passed",
+    "runtime_changes": false,
+    "fresh_runtime_qualification": false
+  }
+}

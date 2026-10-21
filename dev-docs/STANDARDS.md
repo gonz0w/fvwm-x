@@ -1,8 +1,9 @@
 # Standards coverage and conformance policy
 
 Approved direction: 2026-10-06. Owner: STANDARDS-01 and the implementation owners
-below. Status: **requirements and test guidance recorded; conformance audit and
-new implementation gates pending**. The tracker remains the execution authority.
+below. Status: **requirements and test guidance recorded; a fixed protocol
+requirement inventory is complete; runtime conformance remains scoped or open**.
+The tracker remains the execution authority.
 
 ## Scope and claims
 
@@ -57,6 +58,17 @@ replace it or assert that all clauses within an area pass.
 | Theme/configuration | [Theme generation policy](THEME-STANDARDS.md), derived W3C guidance plus explicit FVWM design requirements | Existing palettes/density/motion/opacity controls; measurements and real UI acceptance remain separate. | THEME-01 / A11Y-01 / CFG-01: state colors, composited contrast, target/layout/keyboard checks, all default palettes and fallback rendering. |
 | HTML documentation/public web | HTML Living Standard, applicable CSS, semantic HTML/WAI-ARIA and WCAG 2.2 AA target | Optional static generated HTML exists; no complete accessibility/conformance claim. | DOCS-01 / STANDARDS-01: validate actual exports, keyboard/reader checks, landmarks/language/link text, narrow/zoomed layouts and local offline assets; website design remains separately deferred. |
 | Manuals, install and repository contracts | Existing man/AsciiDoc, Meson/install/CLI, GPL/attribution and project formatting policies | Adopted tools and scoped staged evidence; manual rewrite/release audit remain. | DOCS-01 / MAINT-02 / REPRO-01 / RELEASE-01: roff renders/lint, CLI/example accuracy, source/distribution parity, licenses and honest feature/profile claims. |
+
+## Fixed protocol requirement register
+
+The [2026-10-21 register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
+completes three bounded inventory stories: root capabilities/desktops, window
+hints/requests and selection roles. Its forty requirement IDs refine the existing
+E01–E12/S01–S08 reconciliation without reopening the twelve monitor rows. Each
+records a clause or planned role, owner, source, evidence boundary and remaining
+acceptance. Source fingerprints identify inspection; historical profile results
+do not become qualification for current binaries. Adopt runtime repairs through
+the existing owners and tracker order. Other standards areas remain queued.
 
 ## Test contract and evidence format
 

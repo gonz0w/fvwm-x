@@ -1005,3 +1005,10 @@ state. [icon_boxes.h](https://github.com/gonz0w/fvwm-x/blob/cb515d726cba7897e60c
 consumers. [event_filter.h](https://github.com/gonz0w/fvwm-x/blob/cb515d726cba7897e60c36175d684b9209a40d46/fvwm/event_filter.h) keeps property-event scratch
 arguments beside events.c. Exact code/data parity and measured dependencies
 are recorded in the [core-record report](verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md).
+
+Manager startup in `fvwm/icccm2.c::SetupICCCM2` owns the selection acquisition,
+initialized MANAGER event, old-owner watch and finite handoff. It reuses the
+monotonic deadline policy and signal-aware poll before normal event dispatch
+exists. Only old-owner destruction is consumed; failures close the startup
+connection and clear the display pointer before exit hooks. Selection transfer
+and EWMH desktop geometry remain separate owners.

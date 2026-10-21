@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Safety/maintainability closeout | Selected; implementation and qualification pending | Remaining performance-only tuning is deferred to the next release. Three bounded stream, input and lifetime review families plus explicit dispositions lead to feature handoff. Existing runtime evidence is unchanged. [Scope and criteria](#hardening-closeout). |
+| Safety/maintainability closeout | First stream batch implemented; combined qualification pending | Remaining performance-only tuning is deferred to the next release. Three bounded stream, input and lifetime review families plus explicit dispositions lead to feature handoff. Existing runtime evidence is unchanged. [Scope and criteria](#hardening-closeout). |
 | BSD preparation evidence, CI-01 / MAINT-02 / CLEAN-01 | Merged in [PR #139](https://github.com/gonz0w/fvwm-x/pull/139); affected checkpoint passes | Three preparation/evidence repairs pass 282 native policy cases on six targets, two fresh OpenBSD runner cases and six actual loader invocations; original WM/installed bytes remain exact. Live phases and an expected exit 23 case validate diagnostics/cleanup. Portable 177 passes / 11 skips; PR138 runtime evidence retained. [Report](verification/VERIFICATION-2026-10-21-BSD-PREPARATION.md). |
 | Shared string ownership, DATA-01 / CLEAN-01 | Merged in [PR #138](https://github.com/gonz0w/fvwm-x/pull/138); composed checkpoint passes | Three shared first-line, multiline and quoted-copy operations retain existing bytes and ownership while avoiding before-source pointers and removing one quoted strlen rescan. One composed six-target checkpoint passes 2208 standard entries, 28 affected optional entries and one scoped guest sanitizer. Ten installs, staged geometry/styles and four authenticated default BSD displays pass; harness failures and wider release limits remain explicit. [Report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md). |
 | Protocol requirement register, STANDARDS-01 / EWMH-01 / SELECTION-01 | Merged on main through [PR #136](https://github.com/gonz0w/fvwm-x/pull/136), including PR #137; runtime acceptance remains open | Forty clause/role records refine the existing E/S reconciliation: root capabilities/desktops, window hints/requests and selection ownership/transfer. Historical evidence retains exact profile/source limits; manager announcement and desktop-publication source findings have concrete owner handoffs. No runtime, benchmark or full matrix repeat. [Register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md). |
@@ -257,6 +257,12 @@ Retain unrelated failed evidence with its owner rather than repeatedly rerunning
 it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
+
+Current runtime batch: FD-01 / PROC-01 / CLEAN-01 stream ownership. Four
+related FIFO construction, status continuation, log adoption and log-failure
+repairs pass focused Linux and FreeBSD checks; combined qualification is
+pending. External-input and interaction-lifetime review families follow after
+the stream checkpoint's dispositions. No performance comparison is due.
 
 Current selection, 2026-10-21: finish high-impact safety and maintainability,
 then move to the approved features and milestones. Remaining performance-only

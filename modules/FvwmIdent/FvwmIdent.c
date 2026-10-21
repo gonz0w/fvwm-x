@@ -53,6 +53,7 @@
 #include "libs/Target.h"
 #include "libs/XError.h"
 #include "libs/log.h"
+#include "libs/module_monitor.h"
 
 #include "FvwmIdent.h"
 #include "libs/monitor_types.h"
@@ -274,8 +275,17 @@ int main(int argc, char **argv)
 		}
 		else if (strncasecmp(tline, "LoggingFD", 9) == 0) {
 			int fdl = -1;
-			sscanf((tline + 10), "%d", &fdl);
-			log_set_fd(fdl);
+			if (!module_parse_decimal_integers(tline + 9,
+			    &fdl, 1))
+			{
+				fvwm_debug(__func__,
+				    "Refusing invalid logging descriptor");
+			}
+			else if (!log_set_fd(fdl))
+			{
+				fvwm_debug(__func__,
+				    "Unable to adopt logging descriptor %d", fdl);
+			}
 		}
 		GetConfigLine(fd, &tline);
 	}

@@ -74,6 +74,7 @@
 #include "move_resize.h"
 #include "screen.h"
 #include "status_json.h"
+#include "status_pipe.h"
 #include "style.h"
 #include "update.h"
 #include "virtual.h"
@@ -117,9 +118,32 @@ static char *button_states[BS_MaxButtonStateName + 1] = {"ActiveUp",
 
 char	    *ModulePath	   = FVWM_MODULEDIR;
 int	     moduleTimeout = DEFAULT_MODULE_TIMEOUT;
-static FILE *status_fp;
+static fvwm_status_pipe status_pipe = FVWM_STATUS_PIPE_INIT;
+static bool status_dirty;
+
+#define STATUSENV "FVWM_STATUS_PIPE"
 
 /* ---------------------------- local functions ---------------------------- */
+
+int
+status_pending_fd(void)
+{
+	return status_pipe.pending != NULL ? status_pipe.fd : -1;
+}
+
+void
+status_flush(void)
+{
+	if (status_pipe_flush(&status_pipe) < 0)
+	{
+		fvwm_debug(__func__, "Status write failed: %s", strerror(errno));
+		status_close();
+	}
+	else if (status_pipe.pending == NULL && status_dirty)
+	{
+		status_send();
+	}
+}
 
 void
 status_send(void)
@@ -129,9 +153,23 @@ status_send(void)
 	const monitor_topology_snapshot *topology;
 	char				*as_json = NULL;
 	const char			*desktop_mode;
+	int flushed;
 
-	if (status_fp == NULL || !Scr.flags.are_windows_captured)
+	if (status_pipe.fd < 0 || !Scr.flags.are_windows_captured)
 		return;
+
+	status_dirty = true;
+	flushed = status_pipe_flush(&status_pipe);
+	if (flushed < 0)
+	{
+		fvwm_debug(__func__, "Status write failed: %s", strerror(errno));
+		status_close();
+		return;
+	}
+	if (flushed == 0)
+	{
+		return;
+	}
 
 	m_cur	     = monitor_get_current();
 	topology     = FScreenGetTopologySnapshot();
@@ -148,56 +186,64 @@ status_send(void)
 	if ((as_json = cJSON_PrintUnformatted(msg)) == NULL)
 		goto out;
 
-	fflush(status_fp);
-	fprintf(status_fp, "%s\n", as_json);
-	fflush(status_fp);
+	if (!status_pipe_queue(&status_pipe, as_json, strlen(as_json)))
+	{
+		fvwm_debug(__func__, "Status record refused: %s", strerror(errno));
+	}
+	else
+	{
+		status_dirty = false;
+		if (status_pipe_flush(&status_pipe) < 0)
+		{
+			fvwm_debug(__func__, "Status write failed: %s",
+			    strerror(errno));
+			status_close();
+		}
+	}
 
 out:
 	cJSON_free(as_json);
 	cJSON_Delete(msg);
 }
 
-#define PIPENAME "fvwm3.pipe"
-#define STATUSENV "FVWM_STATUS_PIPE"
+void
+status_close(void)
+{
+	const char *published = getenv(STATUSENV);
+
+	if (published != NULL && status_pipe.path != NULL &&
+	    strcmp(published, status_pipe.path) == 0)
+	{
+		flib_unsetenv(STATUSENV);
+	}
+	status_pipe_close(&status_pipe);
+	status_dirty = false;
+}
+
 static void
 status_init_pipe(void)
 {
-	char *tmpdir, *pipename, *addenv;
-	int   status_fd = -1;
+	const char *directory = getenv("TMPDIR");
 
-	if ((tmpdir = getenv("TMPDIR")) == NULL)
-		tmpdir = "/tmp";
-
-	xasprintf(&pipename, "%s/%s", tmpdir, PIPENAME);
-
-	unlink(pipename);
-	if ((mkfifo(pipename, 0666) == -1)) {
-		fvwm_debug(__func__, "mkfifo: %s", strerror(errno));
-		free(pipename);
-		return;
+	if (directory == NULL)
+	{
+		directory = "/tmp";
 	}
-
-	if ((status_fd = open(pipename, O_RDWR | O_NONBLOCK)) == -1) {
-		fvwm_debug(__func__, "Couldn't open pipe '%s': %s", pipename,
+	if (!status_pipe_open(&status_pipe, directory))
+	{
+		fvwm_debug(__func__, "Status pipe creation failed: %s",
 		    strerror(errno));
-		free(pipename);
 		return;
 	}
-
-	if ((status_fp = fdopen(status_fd, "w")) == NULL) {
-		fvwm_debug(__func__, "Error opening pipe: %s", strerror(errno));
-		free(pipename);
+	if (setenv(STATUSENV, status_pipe.path, 1) != 0)
+	{
+		fvwm_debug(__func__, "Status environment failed: %s",
+		    strerror(errno));
+		status_close();
 		return;
 	}
-
-	xasprintf(&addenv, "%s=%s", STATUSENV, pipename);
-	flib_putenv(STATUSENV, addenv);
-	free(addenv);
-
-	fvwm_debug(
-	    __func__, "Pipe opened: %s (fd: %d)", pipename, fileno(status_fp));
-
-	free(pipename);
+	fvwm_debug(__func__, "Pipe opened: %s (fd: %d)", status_pipe.path,
+	    status_pipe.fd);
 }
 
 /*
@@ -2104,14 +2150,13 @@ update_fvwm_colorset(int cset)
 void
 CMD_Status(F_CMD_ARGS)
 {
-	if ((strcasecmp(action, "on") == 0) && status_fp == NULL) {
-		status_init_pipe();
-	} else if (strcasecmp(action, "off") == 0) {
-		if (status_fp != NULL) {
-			fclose(status_fp);
-			status_fp = NULL;
-			fvwm_debug(__func__, "Closed pipe for status");
+	if (strcasecmp(action, "on") == 0) {
+		if (status_pipe.fd < 0)
+		{
+			status_init_pipe();
 		}
+	} else if (strcasecmp(action, "off") == 0) {
+		status_close();
 		return;
 	} else {
 		fvwm_debug(__func__, "unknown option: %s", action);

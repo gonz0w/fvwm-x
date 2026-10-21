@@ -820,6 +820,28 @@ status_json_test = executable(
 
 test('status-json', status_json_test)
 
+status_pipe_test = executable(
+    'test-status-pipe', ['test_status_pipe.c', '../fvwm/status_pipe.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=open', '-Wl,--wrap=open64',
+        '-Wl,--wrap=write',
+        '-Wl,--wrap=fvwm_fd_set_cloexec'],
+    c_args: ['-UNDEBUG'],
+)
+test('status-pipe', status_pipe_test, timeout: 30)
+
+log_stream_test = executable(
+    'test-log-stream', 'test_log_stream.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=fdopen', '-Wl,--wrap=fflush'],
+    c_args: ['-UNDEBUG'],
+)
+test('log-stream', log_stream_test)
+
 fscreen_topology_test = executable(
     'test-fscreen-topology',
     'test_fscreen_topology.c',
@@ -1638,6 +1660,24 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         depends: [fvwm3, fvwm_mfl],
         suite: 'live-x', is_parallel: false, timeout: 90,
     )
+
+    test('status-stream-xvfb', py,
+        args: [files('live_x/status_stream_live.py'), '--fvwm', fvwm3,
+            '--mfl', fvwm_mfl, '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'status-stream'],
+        depends: [fvwm3, fvwm_mfl],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 70,
+    )
+    if host_machine.system() == 'linux'
+        test('log-full-xvfb', py,
+            args: [files('live_x/status_stream_live.py'), '--full-log',
+                '--fvwm', fvwm3, '--mfl', fvwm_mfl, '--artifacts-dir',
+                meson.current_build_dir() / 'live-x-artifacts' / 'log-full'],
+            depends: [fvwm3, fvwm_mfl], suite: 'live-x',
+            is_parallel: false, timeout: 70,
+        )
+    endif
     module_output_core_sources = []
     foreach source : fvwm_sources
         module_output_core_sources += '../' / source

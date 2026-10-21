@@ -549,6 +549,7 @@ void Done(int restart, char *command)
 		exc_destroy_context(exc);
 		free(action);
 	}
+	status_close();
 	monitor_scale_config_shutdown();
 	if (!image_async_shutdown())
 	{
@@ -2046,6 +2047,7 @@ int main(int argc, char **argv)
 	Scr.screen= DefaultScreen(dpy);
 
 	atexit(catch_exit);
+	atexit(status_close);
 
 	monitor_mode = MONITOR_TRACKING_G;
 	FScreenInit(dpy);

@@ -3833,7 +3833,8 @@ enum
 	EVENTS_X_WATCH,
 	EVENTS_SESSION_WATCH,
 	EVENTS_IMAGE_WATCH,
-	EVENTS_MODULE_WATCH = EVENTS_IMAGE_WATCH + 2
+	EVENTS_STATUS_WATCH = EVENTS_IMAGE_WATCH + 2,
+	EVENTS_MODULE_WATCH
 };
 
 typedef struct
@@ -3877,6 +3878,8 @@ static Bool events_readiness_init(events_readiness *readiness, Bool session)
 	readiness->descriptors[EVENTS_SESSION_WATCH] =
 		(struct pollfd){session ? sm_fd : -1, POLLIN, 0};
 	image_async_descriptors(&readiness->descriptors[EVENTS_IMAGE_WATCH]);
+	readiness->descriptors[EVENTS_STATUS_WATCH] =
+		(struct pollfd){status_pending_fd(), POLLOUT, 0};
 	module_list_itr_init(&iterator);
 	while ((module = module_list_itr_next(&iterator)) != NULL)
 	{
@@ -3912,6 +3915,13 @@ static void events_readiness_clear(events_readiness *readiness)
 
 static void events_readiness_service(events_readiness *readiness)
 {
+	/* A stalled status reader resumes without requiring a new WM command.
+	 * Service is bounded, has no callbacks, and retains no window resources. */
+	if (readiness->descriptors[EVENTS_STATUS_WATCH].revents &
+	    (POLLOUT | POLLHUP | POLLERR | POLLNVAL))
+	{
+		status_flush();
+	}
 	for (size_t index = 0; index < readiness->module_count; index++)
 	{
 		fmodule *module = readiness->modules[index];

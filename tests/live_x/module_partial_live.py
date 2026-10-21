@@ -142,6 +142,11 @@ def run(args):
                               if args.kind == 'buttons' else
                               ['DesktopSize 1 1', 'DesktopName 0 FvwmPager',
                                '*FvwmPagerGeometry 200x100+0+0', '*FvwmPagerFont fixed'])
+                    if args.packet_only and args.kind == 'buttons':
+                        config += ['LoggingFD -1', 'LoggingFD',
+                                   'LoggingFD 2147483648',
+                                   'LoggingFD -2147483649', 'LoggingFD -2',
+                                   'LoggingFD 999999999999999999999999']
                     if args.packet_only and args.kind == 'pager':
                         config.append('*FvwmPagerNoDeskHilight')
                         for number in ['x', '2147483648', '-2147483649',

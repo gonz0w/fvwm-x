@@ -33,6 +33,7 @@
 #endif /* Saul */
 
 #include "libs/log.h"
+#include "libs/module_monitor.h"
 #include "libs/FShape.h"
 #include "libs/Module.h"
 #include "libs/Colorset.h"
@@ -547,8 +548,17 @@ int ParseConfigLine(char *line)
 			return LoadColorset(line + 8);
 		} else if (strncasecmp(line, "LoggingFD", 9) == 0) {
 			int fd = -1;
-			sscanf((line + 10), "%d", &fd);
-			log_set_fd(fd);
+			if (!module_parse_decimal_integers(line + 9,
+			    &fd, 1))
+			{
+				fvwm_debug(__func__,
+				    "Refusing invalid logging descriptor");
+			}
+			else if (!log_set_fd(fd))
+			{
+				fvwm_debug(__func__,
+				    "Unable to adopt logging descriptor %d", fd);
+			}
 		}
 	}
 	return -1;

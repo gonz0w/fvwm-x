@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Xlib dependency contract, LIB-05 / MAINT-02 | Locally qualified; PR #144 for maintainer review | 2284 standard / 33 selected optional entries pass across six targets/ten profiles; 30 native configure controls, ten fresh installs and four authenticated BSD displays pass. Generated configuration hashes remain exact; dependency introspection and emitted link commands contain no direct libxkbcommon requirement. [Report](verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md). |
+| Manager startup handoff, SELECTION-01 / DATA-01 | Implemented; focused checks pass; combined qualification pending | Three announcement, cancellation/deadline and ownership/refusal repairs; cooperative, stalled, cancelled and competing peers. [Report](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). |
+| Xlib dependency contract, LIB-05 / MAINT-02 | Merged in PR #144; bounded checkpoint locally qualified | 2284 standard / 33 selected optional entries pass across six targets/ten profiles; 30 native configure controls, ten fresh installs and four authenticated BSD displays pass. Generated configuration hashes remain exact; dependency introspection and emitted link commands contain no direct libxkbcommon requirement. [Report](verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md). |
 | Safety/maintainability closeout | All three selected review families locally qualified; merged in PR #143 | Three final cancellation repairs pass 2276 standard / 47 selected optional entries on six targets, scoped sanitizers, ten installs and four authenticated BSD displays. Every selected stream/input/lifetime entry point has a fixed/verified or already-covered disposition. Approved stage 5 dependency work is underway; broad audit/release owners remain open. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md), [handoff criteria](#hardening-closeout). |
 | BSD preparation evidence, CI-01 / MAINT-02 / CLEAN-01 | Merged in [PR #139](https://github.com/gonz0w/fvwm-x/pull/139); affected checkpoint passes | Three preparation/evidence repairs pass 282 native policy cases on six targets, two fresh OpenBSD runner cases and six actual loader invocations; original WM/installed bytes remain exact. Live phases and an expected exit 23 case validate diagnostics/cleanup. Portable 177 passes / 11 skips; PR138 runtime evidence retained. [Report](verification/VERIFICATION-2026-10-21-BSD-PREPARATION.md). |
 | Shared string ownership, DATA-01 / CLEAN-01 | Merged in [PR #138](https://github.com/gonz0w/fvwm-x/pull/138); composed checkpoint passes | Three shared first-line, multiline and quoted-copy operations retain existing bytes and ownership while avoiding before-source pointers and removing one quoted strlen rescan. One composed six-target checkpoint passes 2208 standard entries, 28 affected optional entries and one scoped guest sanitizer. Ten installs, staged geometry/styles and four authenticated default BSD displays pass; harness failures and wider release limits remain explicit. [Report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md). |
@@ -280,9 +281,12 @@ No comparison is due.
 
 Current selection, 2026-10-21: the finite safety and maintainability closeout
 is locally qualified and merged in PR141/142/143.
-Current pickup is LIB-05: remove the unused libxkbcommon requirement, check
-Xlib XKB header/symbol support and align package/install recipes. The six-target
-combined checkpoint is locally qualified; PR144 awaits maintainer review.
+The LIB-05 Xlib requirement checkpoint is merged in PR144. Current pickup is
+SELECTION-01 S01–S03: initialized MANAGER announcement, finite/cancellable
+old-owner handoff and ownership revalidation/refusal cleanup. Focused Linux and
+FreeBSD ARM64 controls and scoped guest sanitizers pass; full qualification
+is pending. Desktop-publication and broader selection-transfer gaps retain
+their separate owners.
 Then advance the remaining approved stage 5/6 dependencies and milestones.
 Remaining performance-only
 tuning moves to the next release. The finite [hardening closeout](#hardening-closeout)
@@ -312,18 +316,15 @@ contributed its inventory through PR #136.
 [Baseline decision](decisions/OPENBSD-8.0-BASELINE-2026-10-20.md),
 [checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md).
 
-Performance tracking requested 2026-10-20: the PR132 reference reaches five
-subsequent merged implementation checkpoints with PR133–136 and PR138. The due
-[paired comparison](verification/PERFORMANCE-2026-10-21.md) uses existing
-PR132/138 Linux ARM64 GCC binaries. Command timing ranges overlap, peak RSS is
-unchanged and GNU text/read-only size falls 8 KiB, mostly layout/fill. PR138 is
-the new preserved reference at 4/5 subsequent merged checkpoints after PR139,
-PR141, PR142 and PR143.
-Keep lightweight regression observations; they do not select more tuning or
-delay safety closeout for new benchmark builds. Documentation-only changes do
-not increment the counter. Investigate concrete regressions in their owning
-change; ordinary timing noise does not reopen performance work.
-[Cadence](WORKFLOW.md#periodic-performance-comparisons).
+Performance tracking: the due PR138→PR144 comparison uses preserved Linux
+ARM64 GCC binaries after five merged implementation checkpoints. Command-median
+ranges overlap; code/read-only grows 11,195 bytes, data 88 bytes and peak RSS
+one 4 KiB page across the safety/maintenance changes. No consistent latency
+regression is observed. PR144 is the preserved next reference at 0/5 subsequent
+merged implementation checkpoints; this unmerged manager batch does not count.
+[Observation and receipt](verification/PERFORMANCE-2026-10-21-PR144.md).
+Keep the [five-checkpoint cadence](WORKFLOW.md#periodic-performance-comparisons)
+without new benchmark builds or performance-only tuning.
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed

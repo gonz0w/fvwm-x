@@ -87,7 +87,11 @@ A short usage description is printed.
 *-r* | *--replace*::
 
 Try to take over from a previously running wm. This does not work unless
-the other wm is ICCCM2 2.0 compliant.
+the other wm is ICCCM2 2.0 compliant. After acquiring the manager selection,
+fvwm waits up to ten seconds for the previous manager to release its resources
+and destroy its owner window. Termination or loss of the selection cancels
+startup. A failed handoff exits without killing the previous manager or
+clearing a successor's selection.
 
 *-F* | *--restore* _state-file_::
 

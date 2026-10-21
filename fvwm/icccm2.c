@@ -16,11 +16,17 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <errno.h>
+#include <poll.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
 
 #include "libs/log.h"
+#include "libs/XError.h"
+#include "libs/fvwmsignal.h"
+#include "event_loop_policy.h"
+#include "events.h"
 #include "libs/atom_batch.h"
 #include "libs/fvwm_x11.h"
 #include "libs/FEvent.h"
@@ -50,13 +56,87 @@ long conversion_targets[MAX_TARGETS];
 
 long icccm_version[] = { 2, 0 };
 
+/* Only the old-owner watch/query may race its window's destruction. */
+static int manager_window_error(Display *display, XErrorEvent *error)
+{
+	if (error->error_code == BadWindow)
+	{
+		return 0;
+	}
+	return ferror_call_next_error_handler(display, error);
+}
+
+static Bool manager_watch_owner(Window owner)
+{
+	XWindowAttributes attributes;
+	Status exists;
+
+	XSync(dpy, False);
+	ferror_set_temp_error_handler(manager_window_error);
+	XSelectInput(dpy, owner, StructureNotifyMask);
+	exists = XGetWindowAttributes(dpy, owner, &attributes);
+	XSync(dpy, False);
+	ferror_reset_temp_error_handler();
+	return exists != 0;
+}
+
+/* Startup has no command/event dispatcher yet. Consume only the old owner's
+ * destruction, leaving every unrelated event for the normal startup loop. */
+static const char *manager_wait_for_owner(Window owner)
+{
+	fvwm_module_deadline deadline;
+	struct pollfd descriptor = { ConnectionNumber(dpy), POLLIN, 0 };
+	XEvent event;
+	int remaining;
+
+	if (!fvwm_module_deadline_init(&deadline, events_monotonic_ns(), 10))
+	{
+		return "unable to initialize manager handoff deadline";
+	}
+	for (;;)
+	{
+		if (isTerminated)
+		{
+			return "manager handoff cancelled by termination";
+		}
+		if (fvwm_module_deadline_poll_remaining(
+		    &deadline, events_monotonic_ns(), &remaining) !=
+		    FVWM_MODULE_DEADLINE_READY)
+		{
+			return "manager handoff timed out or clock failed";
+		}
+		if (XGetSelectionOwner(dpy, _XA_WM_SX) != Scr.NoFocusWin)
+		{
+			return "selection ownership lost during manager handoff";
+		}
+		if (FCheckTypedWindowEvent(dpy, owner, DestroyNotify, &event))
+		{
+			return NULL;
+		}
+		/* A short finite slice also covers signal-before-poll races. */
+		if (fvwmPoll(&descriptor, 1, remaining < 100 ? remaining : 100) < 0)
+		{
+			if (errno == EINTR)
+			{
+				continue;
+			}
+			return "manager handoff readiness wait failed";
+		}
+		if (descriptor.revents & (POLLERR | POLLHUP | POLLNVAL))
+		{
+			return "X connection lost during manager handoff";
+		}
+	}
+}
+
 void
 SetupICCCM2(Bool replace_wm)
 {
 	Window running_wm_win;
 	XSetWindowAttributes attr;
-	XEvent xev;
-	XClientMessageEvent ev;
+	XEvent event = { 0 };
+	XClientMessageEvent *ev = &event.xclient;
+	const char *failure;
 	char wm_sx[25];
 
 	snprintf(wm_sx, sizeof(wm_sx), "WM_S%lu", Scr.screen);
@@ -80,16 +160,16 @@ SetupICCCM2(Bool replace_wm)
 	{
 		if (!replace_wm)
 		{
-			fvwm_debug(__func__,
-				   "another ICCCM 2.0 compliant WM is running,"
-				   " try -replace");
-			exit(1);
+			failure = "another ICCCM 2.0 compliant WM is running,"
+				" try -replace";
+			goto failed;
 		}
 		/* We need to know when the old manager is gone.
 		   Thus we wait until it destroys running_wm_win. */
-		attr.event_mask = StructureNotifyMask;
-		XChangeWindowAttributes(
-			dpy, running_wm_win, CWEventMask, &attr);
+		if (!manager_watch_owner(running_wm_win))
+		{
+			running_wm_win = None;
+		}
 	}
 
 	/* We are not yet in the event loop, thus fev_get_evtime() will not
@@ -100,27 +180,35 @@ SetupICCCM2(Bool replace_wm)
 	XSetSelectionOwner(dpy, _XA_WM_SX, Scr.NoFocusWin, managing_since);
 	if (XGetSelectionOwner(dpy, _XA_WM_SX) != Scr.NoFocusWin)
 	{
-		fvwm_debug(__func__,
-			   "failed to acquire selection ownership");
-		exit(1);
+		failure = "failed to acquire selection ownership";
+		goto failed;
 	}
 
-	/* Announce ourself as the new wm */
-	ev.type = ClientMessage;
-	ev.window = Scr.Root;
-	ev.message_type = _XA_MANAGER;
-	ev.format = 32;
-	ev.data.l[0] = managing_since;
-	ev.data.l[1] = _XA_WM_SX;
-	FSendEvent(dpy, Scr.Root, False, StructureNotifyMask,(XEvent*)&ev);
+	/* Announce the acquisition immediately, including its actual owner. */
+	ev->type = ClientMessage;
+	ev->display = dpy;
+	ev->window = Scr.Root;
+	ev->message_type = _XA_MANAGER;
+	ev->format = 32;
+	ev->data.l[0] = managing_since;
+	ev->data.l[1] = _XA_WM_SX;
+	ev->data.l[2] = Scr.NoFocusWin;
+	FSendEvent(dpy, Scr.Root, False, StructureNotifyMask, &event);
 
-	if (running_wm_win != None) {
-		/* Wait for the old wm to finish. */
-		/* FIXME: need a timeout here. */
-		do {
-			FWindowEvent(
-				dpy, running_wm_win, StructureNotifyMask, &xev);
-		} while (xev.type != DestroyNotify);
+	if (running_wm_win != None)
+	{
+		failure = manager_wait_for_owner(running_wm_win);
+		if (failure != NULL)
+		{
+			goto failed;
+		}
+	}
+	/* The selection can change while the old manager is releasing X state. */
+	if (isTerminated ||
+	    XGetSelectionOwner(dpy, _XA_WM_SX) != Scr.NoFocusWin)
+	{
+		failure = "manager acquisition cancelled or superseded";
+		goto failed;
 	}
 
 	/* restore NoFocusWin event mask */
@@ -128,6 +216,14 @@ SetupICCCM2(Bool replace_wm)
 	XChangeWindowAttributes(dpy, Scr.NoFocusWin, CWEventMask, &attr);
 
 	return;
+
+failed:
+	fvwm_debug(__func__, "%s", failure);
+	/* Close only our startup connection/resources. Never clear a successor's
+	 * selection or destroy the old manager's window to force a takeover. */
+	XCloseDisplay(dpy);
+	dpy = NULL;
+	exit(1);
 }
 
 /* We must make sure that we have released SubstructureRedirect

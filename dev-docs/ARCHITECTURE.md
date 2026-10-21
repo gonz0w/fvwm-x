@@ -958,3 +958,11 @@ in `libs/fsm.c` prepares complete authentication data before publishing it,
 then admits the network identifier, watch and copied environment value as one
 startup operation. Failed publication removes the watch and frees constructor
 resources; configured Exec shell interpretation is unchanged.
+
+Swallow-proxy session callbacks: `libs/fsm.c` owns callback-provided previous IDs
+and generated IDs. Failed registration publishes no ID; accepted fresh clients
+retain the existing no-automatic-save policy. The existing discard-only
+property owner answers get requests with an empty list. Pending ICE retirement
+is idempotent across the status sweep and close watch, preserving other peers. `tests/session_client_probe.c`
+is an independent libSM peer for real authentication, automatic registration retry
+and response progression. This is separate from the future desktop session owner.

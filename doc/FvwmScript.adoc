@@ -53,6 +53,12 @@ display only Basic Multilingual Plane characters; unsupported characters
 and malformed UTF-8 bytes use a replacement glyph without changing the
 stored text.
 
+When session support is enabled and `SESSION_MANAGER` is set, newly launched
+swallowed applications use an isolated session proxy. It rejects IDs from
+previous sessions and accepts a fresh registration. The proxy discards session
+properties and answers property queries with an empty list. It does not request
+automatic checkpoints or restore sessions.
+
 == CONFIGURATION OPTIONS
 
 The following commands can be used in the config file (see _fvwm_(1),

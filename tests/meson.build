@@ -1258,6 +1258,26 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
 endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd'] and sm.found()
+    session_callback_probe = executable(
+        'test-session-callbacks', 'test_session_callbacks.c',
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=SmsInitialize',
+            '-Wl,--wrap=SmsGetIceConnection',
+            '-Wl,--wrap=SmsGenerateClientID',
+            '-Wl,--wrap=SmsRegisterClientReply',
+            '-Wl,--wrap=SmsSaveYourself',
+            '-Wl,--wrap=SmsReturnProperties',
+            '-Wl,--wrap=SmsCleanUp',
+            '-Wl,--wrap=IceSetShutdownNegotiation',
+            '-Wl,--wrap=IceCloseConnection', '-Wl,--wrap=free'],
+        c_args: ['-UNDEBUG'],
+    )
+    foreach scenario : range(5)
+        test('session-callbacks-' + scenario.to_string(),
+            session_callback_probe, args: [scenario.to_string()], timeout: 30)
+    endforeach
     session_startup_probe = executable(
         'test-session-startup', 'test_session_startup.c',
         include_directories: includedirs,
@@ -1274,13 +1294,23 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '-Wl,--wrap=IceComposeNetworkIdList',
             '-Wl,--wrap=IceAddConnectionWatch',
             '-Wl,--wrap=IceRemoveConnectionWatch',
+            '-Wl,--wrap=IceAcceptConnection',
+            '-Wl,--wrap=IceConnectionNumber',
+            '-Wl,--wrap=IceConnectionStatus',
+            '-Wl,--wrap=IceCloseConnection',
             '-Wl,--wrap=fork', '-Wl,--wrap=waitpid', '-Wl,--wrap=setenv'],
         c_args: ['-UNDEBUG'],
     )
-    foreach fault : range(7)
+    foreach fault : range(9)
         test('session-startup-' + fault.to_string(), session_startup_probe,
             args: [fault.to_string()], timeout: 30)
     endforeach
+    session_client_probe = executable(
+        'session-client-probe', 'session_client_probe.c',
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        c_args: ['-UNDEBUG'],
+    )
     session_probe = executable(
         'session-probe', 'session_probe.c',
         include_directories: includedirs,
@@ -1296,11 +1326,13 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             files('live_x/session_live.py'),
             '--fvwm', fvwm3.full_path(), '--mfl', fvwm_mfl.full_path(),
             '--session-probe', session_probe.full_path(),
+            '--client-probe', session_client_probe.full_path(),
             '--module-probe', module_fd_probe.full_path(),
             '--artifacts-dir',
             meson.current_build_dir() / 'live-x-artifacts' / 'session',
         ],
-        depends: [fvwm3, fvwm_mfl, session_probe, module_fd_probe],
+        depends: [fvwm3, fvwm_mfl, session_probe, session_client_probe,
+                  module_fd_probe],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false,
         timeout: 60,

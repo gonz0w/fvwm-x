@@ -17,12 +17,73 @@
 #include <unistd.h>
 
 enum fault { NORMAL, NAME_FAIL, COOKIE_FAIL, NETWORK_FAIL, WATCH_FAIL,
-	ENV_FAIL, AUTH_FAIL };
+	ENV_FAIL, AUTH_FAIL, PENDING_REJECT, PENDING_ACCEPTED };
 static enum fault fault;
 static unsigned name_calls, cookie_calls, published, helper_calls;
 static unsigned watches, removals, released;
 static int endpoints[2][2];
 static FIceListenObj listeners[2];
+
+static IceWatchProc connection_watch;
+static IcePointer watch_context;
+static unsigned accepted, closed_connections;
+static struct
+{
+	int pipe[2];
+	IceConnectStatus status;
+	IcePointer view;
+} connections[2];
+
+IceConn __wrap_IceAcceptConnection(IceListenObj listener,
+	IceAcceptStatus *status)
+{
+	(void)listener;
+	unsigned index = accepted++;
+
+	assert(index < 2 && pipe(connections[index].pipe) == 0);
+	connections[index].status =
+		fault == PENDING_ACCEPTED && index == 0 ?
+		IceConnectAccepted : IceConnectPending;
+	IceConn connection = (IceConn)&connections[index];
+	connection_watch(connection, watch_context, True,
+		&connections[index].view);
+	*status = IceAcceptSuccess;
+	return connection;
+}
+
+int __wrap_IceConnectionNumber(IceConn connection)
+{
+	for (unsigned i = 0; i < 2; i++)
+		if (connection == (IceConn)&connections[i])
+			return connections[i].pipe[0];
+	assert(!"unknown ICE connection");
+	return -1;
+}
+
+IceConnectStatus __wrap_IceConnectionStatus(IceConn connection)
+{
+	for (unsigned i = 0; i < 2; i++)
+		if (connection == (IceConn)&connections[i])
+			return connections[i].status;
+	assert(!"unknown ICE connection");
+	return IceConnectIOError;
+}
+
+IceCloseStatus __wrap_IceCloseConnection(IceConn connection)
+{
+	for (unsigned i = 0; i < 2; i++)
+		if (connection == (IceConn)&connections[i])
+		{
+			connection_watch(connection, watch_context, False,
+				&connections[i].view);
+			assert(close(connections[i].pipe[0]) == 0);
+			assert(close(connections[i].pipe[1]) == 0);
+			closed_connections++;
+			return IceClosedNow;
+		}
+	assert(!"unknown ICE connection");
+	return IceClosedNow;
+}
 
 Status __wrap_SmsInitialize(const char *vendor, const char *release,
 	SmsNewClientProc callback, SmPointer context,
@@ -122,6 +183,8 @@ Status __wrap_IceAddConnectionWatch(IceWatchProc callback, IcePointer context)
 	assert(callback != NULL && context == NULL);
 	if (fault == WATCH_FAIL)
 		return 0;
+	connection_watch = callback;
+	watch_context = context;
 	watches++;
 	return 1;
 }
@@ -164,11 +227,11 @@ int main(int argc, char **argv)
 
 	assert(argc == 2);
 	fault = atoi(argv[1]);
-	assert(fault >= NORMAL && fault <= AUTH_FAIL);
+	assert(fault >= NORMAL && fault <= PENDING_ACCEPTED);
 	assert(mkdtemp(directory) != NULL);
 	assert(__real_setenv("SM_SAVE_DIR", directory, 1) == 0);
 	assert(__real_setenv("SESSION_MANAGER", "prior-manager", 1) == 0);
-	if (fault == NORMAL)
+	if (fault == NORMAL || fault >= PENDING_REJECT)
 	{
 		assert(fsm_init("constructor-test"));
 		assert(published == 2 && watches == 1 && !released);
@@ -176,6 +239,32 @@ int main(int argc, char **argv)
 			"local/complete:1") == 0);
 		assert(fsm_pollfds(ready, 2) == 2);
 		assert(temporary_files(directory) == 1);
+		if (fault >= PENDING_REJECT)
+		{
+			fd_set inputs;
+
+			FD_ZERO(&inputs);
+			FD_SET(endpoints[0][0], &inputs);
+			FD_SET(endpoints[1][0], &inputs);
+			assert(fsm_process(&inputs) && accepted == 2);
+			FD_ZERO(&inputs);
+			if (fault == PENDING_ACCEPTED)
+			{
+				/* This accepted connection is no longer pending. */
+				__wrap_IceCloseConnection((IceConn)&connections[0]);
+			}
+			else
+			{
+				/* The status sweep and its close watch both retire it. */
+				connections[0].status = IceConnectRejected;
+			}
+			assert(fsm_process(&inputs));
+			assert(closed_connections == 1);
+			connections[1].status = IceConnectRejected;
+			assert(!fsm_process(&inputs));
+			assert(closed_connections == 2);
+			assert(fsm_pollfds(ready, 2) == 2);
+		}
 		fsm_close();
 	}
 	else

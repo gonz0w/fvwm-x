@@ -152,6 +152,17 @@ still prevent installation. Full portable
 checks run once at the combined checkpoint. Docs/status-only corrections use
 repository/link/branch-diff checks and retain unchanged runtime evidence.
 
+User direction, 2026-10-20: do not accumulate completed guest test-data
+copies. After a canonical host capture passes full archive integrity and
+payload/identity validation, retire its owner-controlled guest capture and
+duplicate archive with exact file/hash and path guards. Keep the canonical
+host evidence referenced by reports, source trees, reusable incremental builds,
+install stages (including performance references), VM disks and other owners'
+work. Failed
+attempts must remain represented in canonical evidence before guest retirement.
+Record what was removed and the preserved canonical identity; a new PR does not
+require keeping another guest copy or repeating tests.
+
 ## Periodic performance comparisons
 
 User request, 2026-10-20: track responsiveness, CPU, memory and executable size

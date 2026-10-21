@@ -512,3 +512,5 @@ diagnostic and execution gates remain separate.
 - [Style field ordering and verified-byte reuse](VERIFICATION-2026-10-19-STYLE-FIELDS.md) — STYLE-01, affected combined checkpoint; retained required CI/SVG/install gaps.
 
 - [2026-10-20 process/session startup](VERIFICATION-2026-10-20-PROCESS-STARTUP.md): complete constructor ownership, injected failures/retry, one combined six-target checkpoint; PR132 performance reference 0/5, no benchmark due.
+
+- [2026-10-20 swallowed-client session ownership](VERIFICATION-2026-10-20-SESSION-CALLBACKS.md): registration/refusal, pending-peer retention and property replies; one full run plus affected corrections, preserved no-save policy and 1/5 performance cadence.

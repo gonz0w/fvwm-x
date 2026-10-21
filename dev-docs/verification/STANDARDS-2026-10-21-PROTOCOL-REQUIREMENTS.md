@@ -54,9 +54,9 @@ Evidence keys:
 
 All statuses are limited to their cited profile/configuration and tested
 observable. QEMU/container execution is distinct from native-CPU, physical
-hardware, toolkits and compositors. No new runtime tests, VM boots, binaries,
-installs or performance measurements are claimed by this documentation batch.
-Current audited source/fixture hashes and integrity checks are in the
+hardware, toolkits and compositors. The initial inventory made no runtime-test,
+VM-boot, binary, install or performance claims. Later runtime qualification is linked in its owning rows.
+The initial inventory's audited source/fixture hashes and checks are in the
 [receipt](STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.json). They identify inspected
 files, not a retrospective proof of identical historical binaries.
 
@@ -134,9 +134,9 @@ Fixtures: [legacy_property_live.py](../../tests/live_x/legacy_property_live.py),
 
 | ID | Parent | Clause / role observable | Status and evidence | Remaining acceptance |
 | --- | --- | --- | --- | --- |
-| S01 | S01 | ICCCM 2.8/4.3: WM_Sn ownership is acquired and confirmed. | Implemented / unqualified. `SetupICCCM2` uses server time and confirms owner. | Independent competing owner, multi-screen selection, refused acquisition and replacement race. |
-| S02 | S01 | ICCCM 2.8 SHOULD: MANAGER announcement identifies timestamp, selection and owner. | Implemented / unqualified, source finding: only data slots 0/1 are assigned. | Observe announcement before startup, verify slot 2 equals actual owner; initialize all event fields. |
-| S03 | S01 | ICCCM 2.8 plus project bound: replacement releases old resources finitely. | Implemented / unqualified. Old-owner DestroyNotify wait has no deadline. | Uncooperative/dead/replaced owner and raced destruction; bounded failure with descriptor/X ownership cleanup. |
+| S01 | S01 | ICCCM 2.8/4.3: WM_Sn ownership is acquired and confirmed. | Verified for manager-handoff checkpoint profiles: server-time acquisition, competing owner and non-replacement refusal. [Report](VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). | Multi-screen selection, broader acquisition/refusal races and post-startup ownership epochs remain open. |
+| S02 | S01 | ICCCM 2.8 SHOULD: MANAGER announcement identifies timestamp, selection and owner. | Verified for manager-handoff checkpoint profiles: full initialized event and actual owner, observed before startup. [Report](VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). | Retain source/profile scope; multi-screen and wider acquisition races remain open. |
+| S03 | S01 | ICCCM 2.8 plus project bound: replacement releases old resources finitely. | Verified for manager-handoff checkpoint profiles: finite old-owner wait, SIGTERM and superseding-owner refusal; startup connection cleanup. [Report](VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). | Individual Xlib calls still require a responsive server; broader race/flood and multi-screen coverage remain open. |
 | S04 | S01 | ICCCM 2.6.2 required: owner TARGETS conversion lists supported targets. | Verified for named profiles, L: legacy fixture reads exact four core targets via MULTIPLE. | Direct conversion and ownership epochs remain unqualified; list equality is not target semantics. |
 | S05 | S01 | ICCCM 2.6.2/4.3 required: TIMESTAMP and VERSION conversions return typed values. | Implemented / unqualified. `convertProperty` has both branches; L does not read their successful results. | Direct INTEGER/32 values, lengths and acquisition epoch; repeat after replacement. |
 | S06 | S01 | ICCCM 2.6.2 required: MULTIPLE preserves order and marks failed pairs. | Implemented / unqualified for complete target behavior. L covers malformed/empty pairs, unsupported/None results and TARGETS. | Successful mixed targets, sequential conversion ordering, resource refusal and vanished requestor. |
@@ -151,14 +151,13 @@ Fixtures: [legacy_property_live.py](../../tests/live_x/legacy_property_live.py),
 | S15 | S07 | Planned clipboard-manager role: persistence handoff. | Planned. No CLIPBOARD_MANAGER/SAVE_TARGETS service adopted. | CLIPBOARD-01 selects revision, targets and protected lifetime; foreign clients must establish handoff before claims. |
 | S16 | S08 | Planned native XDND participants: explicit source/target roles. | Planned. No native XDND event handlers found in the inspected core/modules. | FILE-VIEW/SELECTION selects version and exact participants; managed toolkit clients keep their own roles. |
 
-S02 is a source inspection finding, not a reproduced security exploit or a
-passing/failing live observation. `SetupICCCM2` declares an uninitialized
-`XClientMessageEvent`, assigns the announcement type/window/message/format and
-data[0]/data[1], then sends it without assigning data[2]. The required owner
-identity is therefore not established by this code. S03 was already recorded
-in the earlier reconciliation. Keep announcement correctness and bounded old-WM
-transition together at the owning manager checkpoint; no runtime fix is included
-in this inventory.
+S02 began as a source inspection finding: the earlier `SetupICCCM2` left
+MANAGER owner data uninitialized. The subsequent
+[manager checkpoint](VERIFICATION-2026-10-21-MANAGER-HANDOFF.md) reproduces
+announcement and wait failures with the preserved old core and qualifies the
+three runtime repairs. This is not an exploit claim. The inventory receipt
+above remains the historical inspected source; the manager report records the
+later runtime inputs, peer cases and explicit remaining coverage.
 
 ## Bounded handoff and acceptance
 
@@ -173,9 +172,9 @@ The next concrete runtime candidates retain the authoritative tracker order:
 1. EWMH desktop publication: R07–R12, sharing one effective desktop-count and
    geometry contract. Add independent accepted/refused request, startup/high-desk,
    work-area/viewport and dock/topology cases before changing publication.
-2. Manager ownership: S01–S06, including the source-found announcement fields and
-   existing unbounded transition. Verify independent old/new WM clients, direct
-   targets and refusal, using bounded event servicing and existing lifetime rules.
+2. Manager targets: S04–S06 and the broader S01–S03 coverage above. The bounded
+   startup handoff is locally qualified; direct targets and wider ownership epochs
+   retain independent-client, ordering and lifetime acceptance.
 3. Script selection and transfer: S07–S14, preserving private-message ordering,
    text bytes and continued input. Negotiate owner targets before richer clipboard
    services; INCR refusal is not incremental interoperability.

@@ -9,6 +9,14 @@ is locally qualified and merged in PR143; advance approved
 feature dependencies. Remaining performance-only tuning stays deferred. Broad
 audit owners and release gates remain open.
 
+The [manager-handoff checkpoint](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md)
+repairs the reproduced announcement identity and old-owner wait defects.
+Initialized events, finite cancellation and ownership revalidation pass the
+six-target combined checkpoint: 2308 standard / 14 selected optional entries,
+four scoped guest sanitizer entries, ten installs and four authenticated BSD
+displays. Broader selection roles, multi-screen/race/flood coverage and release
+acceptance remain open. PR145 awaits maintainer review.
+
 The [function-lifetime checkpoint](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md) fixes three reproduced failures:
 selection shutdown hangs, held-classification shutdown hangs and conditional
 actions after target destruction. Existing context/module/function/window

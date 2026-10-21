@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Manager startup handoff](VERIFICATION-2026-10-21-MANAGER-HANDOFF.md): three startup safety contracts; focused native/scoped controls pass; combined qualification pending.
+- [Manager startup handoff](VERIFICATION-2026-10-21-MANAGER-HANDOFF.md): three startup repairs; 2308 standard / 14 optional passes, four scoped sanitizer entries, ten installs and four default BSD displays.
 
 - [Due PR138/144 performance observation](PERFORMANCE-2026-10-21-PR144.md): existing binaries, overlapping command ranges and recorded code/data/RSS costs; PR144 becomes the next reference.
 

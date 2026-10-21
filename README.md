@@ -11,16 +11,16 @@ File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
 **Status:** development. The
-[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) is locally
-qualified and merged. [Xlib dependency cleanup](dev-docs/verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md)
-removes an unused requirement and checks support. Approved feature
-dependencies follow; performance tuning waits until the next release.
+[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) is locally qualified
+and merged. [Manager handoff](dev-docs/verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md)
+has bounded cancellation and verified owner identity across six targets.
+Dependencies follow; performance tuning waits until the next release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.
 [Protocol requirement inventory](dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
 records remaining runtime acceptance.
-[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-21.md)
+[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-21-PR144.md)
 track regressions every five implementation batches using existing builds.
 Optional Go builds use a patched compiler baseline. Desktop/artwork publication,
 physical hardware, toolkits/compositors, native-CPU sanitizers and release

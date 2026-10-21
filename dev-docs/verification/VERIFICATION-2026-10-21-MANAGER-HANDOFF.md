@@ -42,8 +42,51 @@ that finding cannot mask the wait defects. No exploit claim is made.
 The first focused fixture used a nonexistent harness cleanup method; original
 failures are preserved, and only affected controls rerun after its correction.
 
-Combined six-target/compiler/install/default-X qualification is pending.
-[Due periodic performance observation](PERFORMANCE-2026-10-21-PR144.md) reuses
-PR138/144 binaries independently of this development build. Broader selection
-roles, direct target conversions, multi-screen/race/flood coverage and native-CPU,
-physical/provider and final release gates remain open.
+Three manager announcement, bounded/cancellable handoff and ownership/refusal
+repairs pass 2308 standard / 14 selected optional entries on six targets, four
+scoped sanitizer entries, ten fresh installs and four authenticated BSD
+displays. Original fixture failures and isolated baseline controls remain
+explicit.
+
+| Gate | Passed |
+| --- | --- |
+| Linux ARM64/AMD64, GCC/Clang | 295 standard entries per profile |
+| FreeBSD/OpenBSD 8.0, ARM64/AMD64 | 282 standard entries per target |
+| Linux software/minimal | 14 selected entries combined |
+| Fresh staged identities | 150 ELF, 77 catalogs, 700 data files |
+| Staged real-X | 30 manager groups (60 peer cases), 20 geometry and ten style groups |
+| Default BSD Xorg/Xenocara | 32 groups on four authenticated displays, including 24 manager peer cases |
+| Scoped Linux guest ASan/UBSan | Four entries, including all six manager peer cases |
+| Portable `make verify` | 177 passes / 14 capability skips, one run |
+
+Generated configuration hashes remain unchanged in all ten profiles. All 2,123
+frozen regular source inputs pass native hash/mode postchecks. Canonical archives
+pass EOF/CRC, payload, result and source-identity validation. Each staged native
+consumer matches its tested bytes after Meson's platform RPATH adjustment.
+Authenticated default displays refuse unauthorized clients and stop with status
+zero. No full matrix is repeated. Scoped sanitizer binaries and relevant inputs
+are postchecked by identity; the separate native-CPU release gate remains open.
+
+All 26 generated manual pages are verified on FreeBSD; the affected fvwm3 and
+combined manual render through native mandoc. New C lines respect 80 columns;
+source/exit-hook/error-handler and CLI/manual review pass. The final updates
+change Markdown and this receipt only; tested implementation inputs stay exact.
+
+Signed author-DCO implementation: `c4c1a3f1edc0b7fb0de021e1dae3405b8c785b2b`.
+Frozen source SHA256:
+`b43f98d99c82d336186661eacb743adc9d77a1e57b63721b531b73bf57e7b76d`.
+[Machine receipt](VERIFICATION-2026-10-21-MANAGER-HANDOFF.json) binds the actual
+source, commands/results, focused failures/repairs, old-core controls, sanitizer
+flags/binary postchecks, installs, default displays and manuals. Canonical raw
+evidence: `builddir/codex-2026-10-21/manager-handoff-safety`. Completed capture
+and archive duplicates on persistent Linux/FreeBSD guests and temporary host
+build-cache copies are retired after identity verification. Canonical evidence,
+sources, reusable builds, stages/performance references and VM disks
+remain intact. Both owned OpenBSD 8.0 jobs stop cleanly and remove ephemeral keys.
+
+[Due PR138/144 performance observation](PERFORMANCE-2026-10-21-PR144.md) uses
+preserved binaries independently of this implementation; PR144 is the new
+reference at zero subsequent merged checkpoints. This unmerged PR does not count.
+No performance-only tuning is selected. Broader selection roles, direct target
+conversions, multi-screen/adversarial race/flood coverage and native-CPU,
+physical GPU/input/provider/toolkit/compositor and release gates remain open.

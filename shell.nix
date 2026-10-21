@@ -18,7 +18,6 @@ pkgs.mkShell {
     libxfixes
     libxft
     libxi
-    libxkbcommon
     libxpm
     libxrandr
     libxrender

@@ -23,7 +23,7 @@ EXCLUDE = {'.git', '.github', '.planning', '.gsd', '.agents', '.codex',
            'dev-docs', 'AGENTS.md', '.disabled-travis.yml', '.DS_Store',
            '.clang-format', '.editorconfig', '.gitignore', '.mailmap'}
 DEPENDENCIES = ['x11', 'xrandr', 'xext', 'xft', 'fontconfig', 'xt', 'ice',
-                'xtrans', 'xkbcommon', 'libevent', 'libpng', 'librsvg-2.0',
+                'xtrans', 'libevent', 'libpng', 'librsvg-2.0',
                 'cairo', 'freetype2', 'fribidi', 'sm', 'xcursor', 'xfixes',
                 'xpm', 'xrender']
 

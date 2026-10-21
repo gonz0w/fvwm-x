@@ -12,7 +12,7 @@ FreeBSD)
     export ASSUME_ALWAYS_YES=yes
     pkg install -y meson ninja pkgconf python3 perl5 libevent fontconfig \
         iceauth libICE libX11 libXext libXft libXrandr libXt libXtst \
-        libxkbcommon xtrans libXcursor libXrender png librsvg2-rust cairo \
+        xtrans libXcursor libXrender png librsvg2-rust cairo \
         xorg-vfbserver xrandr dejavu
     pkg info > builddir-bsd/provider-packages.txt
     ;;
@@ -24,7 +24,7 @@ OpenBSD)
     sh dev-docs/ci/openbsd-package.sh meson
     meson --version > builddir-bsd/provider-meson.txt
     for attempt in 1 2 3; do
-        if pkg_add -I ninja libevent libxkbcommon png librsvg &&
+        if pkg_add -I ninja libevent png librsvg &&
             pkg-config --exists libpng librsvg-2.0 cairo; then
             break
         fi

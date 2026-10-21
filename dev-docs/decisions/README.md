@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Safety and maintainability closeout](HARDENING-CLOSEOUT-2026-10-21.md): approved priority change; defer remaining performance-only tuning to the next release and use finite safety checkpoints before feature handoff.
+
 - [OpenBSD 8.0 release baseline](OPENBSD-8.0-BASELINE-2026-10-20.md): current qualified baseline on AMD64 and ARM64; follow future OpenBSD releases, exclude 7.9, retain Linux and FreeBSD.
 
 - [Public repository hosting](PUBLIC-HOSTING-2026-10-16.md): continue public code and PR review with local verification; release ownership remains separate.

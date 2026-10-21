@@ -5,6 +5,15 @@ owns priority, status and execution order. This document expands its items;
 it does not establish another queue. Runtime implementation belongs to the
 build thread. This review changed documentation only.
 
+Current selection, 2026-10-21: remaining performance-only tuning is deferred to
+the next release under the user's
+[safety closeout decision](decisions/HARDENING-CLOSEOUT-2026-10-21.md). Keep
+accepted improvements and lightweight regression observations. Bounds,
+ordering, hangs and resource lifetime still belong to their safety owners;
+their presence in this dated optimization inventory does not defer a concrete
+safety defect. Estimates and proposed experiments below are historical inputs,
+not current-release prerequisites or a competing queue.
+
 Effort ranges are engineer-days including focused verification, not delivery
 dates or additive totals. Recheck findings against the build thread's latest
 checkpoint before implementation. Reuse existing policy, interaction, module

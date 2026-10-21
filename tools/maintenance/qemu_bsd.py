@@ -16,6 +16,7 @@ import signal
 import socket
 import subprocess
 import sys
+import tempfile
 import tarfile
 import threading
 import time
@@ -65,6 +66,36 @@ def validate_source(path):
                 raise ValueError('duplicate source archive member')
             names.add(str(name))
     return {'sha256': sha256(path), 'members': count, 'expanded_bytes': size}
+
+
+def write_status(job, result, phase=None):
+    """Publish a complete live snapshot; readers never see a partial JSON file."""
+    if phase is not None:
+        result['phase'] = phase
+        result['phase_started_at'] = time.time()
+    payload = json.dumps(result, indent=2) + '\n'
+    pending = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', dir=job,
+                prefix='.status-', delete=False) as stream:
+            pending = Path(stream.name)
+            stream.write(payload)
+        os.replace(pending, job / 'status.json')
+    finally:
+        if pending is not None:
+            pending.unlink(missing_ok=True)
+
+
+def source_copy_command(profile):
+    """The validated archive's modes override umask inside the private job."""
+    if profile not in ci_assets.PROFILES:
+        raise ValueError('unsupported source-copy profile')
+    setup = 'umask 077; mkdir -p /root/fvwm-ci/source && '
+    if profile.startswith('openbsd'):
+        setup = ('umask 077; mkdir -p /home/fvwm-ci/source && '
+            'test ! -e /root/fvwm-ci && '
+            'ln -s /home/fvwm-ci /root/fvwm-ci && ')
+    return setup + 'tar xzpf - -C /root/fvwm-ci/source'
 
 
 def stop(process):
@@ -344,10 +375,11 @@ def run(args):
     # Publish a new private job directory immediately so failed jobs retain
     # evidence. Existing output is refused by the shared publication owner.
     with fresh_output(args.output, ROOT) as stage:
-        (stage / 'status.json').write_text('{"status":"prepared"}\n')
+        write_status(stage, {'status': 'prepared'})
     job = args.output.absolute()
     result = {'profile': args.profile, 'source': source, 'status': 'running',
               'phase': 'acquisition', 'acceleration': args.accel}
+    write_status(job, result, 'acquisition')
     vm = None
     key = job / 'job-key'
     try:
@@ -393,7 +425,7 @@ def run(args):
                 profile.get('transport') != 'ssh'):
             raise ValueError('unexpected locked guest profile')
         result['published_profile'] = profile
-        result['phase'] = 'extraction'
+        write_status(job, result, 'extraction')
         command(['zstd', '-d', '-c', str(job / 'inputs' / (stem + '.qcow2.zst'))],
                 job / 'disk.qcow2', 300, limit=MAX_IMAGE, binary=True)
         result['image'] = image_info(job / 'disk.qcow2', job / 'image-info.json')
@@ -405,13 +437,13 @@ def run(args):
             port = reservation.getsockname()[1]
         argv = qemu_arguments(args.profile, job, port, args.accel)
         result['qemu_argv'] = argv
-        result['phase'] = 'boot'
+        write_status(job, result, 'boot')
         vm = LoggedVM(argv, job / 'qemu.log')
         result['qemu_pid'] = vm.process.pid
         bootstrap = job / 'inputs' / (stem + '-host.id_rsa')
         ssh = ssh_arguments(job, port, bootstrap, first=True)
         wait_ssh(vm, ssh, job, args.boot_timeout)
-        result['phase'] = 'authentication'
+        write_status(job, result, 'authentication')
         # Only this disposable image is changed. Subsequent commands must use
         # the generated job key and the first connection's private host record.
         with key.with_suffix('.pub').open('rb') as public:
@@ -428,7 +460,7 @@ def run(args):
             check_openbsd_release(args.profile, identity)
             result['guest_release'] = identity.splitlines()
         if vga_test:
-            result['phase'] = 'graphics-restart'
+            write_status(job, result, 'graphics-restart')
             # Explicit disposable legacy-VGA fixture opt-in only. VESA's
             # int10 initialization needs aperture access. Ordinary/core jobs
             # retain the pinned image's aperture setting.
@@ -459,16 +491,10 @@ def run(args):
             if aperture != '2':
                 raise RuntimeError('legacy VESA fixture aperture was not applied')
             result['disposable_vesa_aperture'] = 2
-        result['phase'] = 'source-copy'
-        guest_prepare = 'umask 077; mkdir -p /root/fvwm-ci/source && '
-        if args.profile.startswith('openbsd'):
-            guest_prepare = ('umask 077; mkdir -p /home/fvwm-ci/source && '
-                'test ! -e /root/fvwm-ci && '
-                'ln -s /home/fvwm-ci /root/fvwm-ci && ')
+        write_status(job, result, 'source-copy')
         with (job / 'source.tgz').open('rb') as archive:
-            command(ssh + [guest_prepare +
-                'tar xzf - -C /root/fvwm-ci/source'], job / 'source-copy.log',
-                120, stdin=archive, watch=vm.check)
+            command(ssh + [source_copy_command(args.profile)],
+                job / 'source-copy.log', 120, stdin=archive, watch=vm.check)
         if getattr(args, 'png_bootstrap', False):
             with (job / 'png-source.tar').open('rb') as archive:
                 command(ssh + ['umask 077; cat > /root/fvwm-ci/png-source.tar'],
@@ -480,20 +506,22 @@ def run(args):
                 command(ssh + ['umask 077; cat > /root/fvwm-ci/' + name + '.sh'],
                     job / (name + '-copy.log'), 15, stdin=script, watch=vm.check)
         if args.prepare_script:
-            result['phase'] = 'prepare'
+            write_status(job, result, 'prepare')
             command(ssh + ['cd /root/fvwm-ci/source && '
                 'exec sh /root/fvwm-ci/prepare.sh'], job / 'prepare.log',
                 7200, watch=vm.check)
         if getattr(args, 'reboot_after_prepare', False):
-            result['phase'] = 'prepare-reboot'
+            write_status(job, result, 'prepare-reboot')
             result['prepared_boot'] = reboot_prepared_guest(
                 vm, ssh, job, args.boot_timeout)
-        result['phase'] = 'run'
+        write_status(job, result, 'run')
         code = command(ssh + ['cd /root/fvwm-ci/source && '
             'exec sh /root/fvwm-ci/run.sh'], job / 'run.log', args.run_timeout,
             check=False, watch=vm.check)
         result['run_status'] = code
-        result['phase'] = 'collection'
+        if code:
+            result['failed_phase'] = 'run'
+        write_status(job, result, 'collection')
         # Collect only the source job's conventional build artifacts, never
         # guest authentication or unrelated system/user directories.
         command(ssh + ['cd /root/fvwm-ci/source && '
@@ -509,6 +537,7 @@ def run(args):
     except BaseException as error:
         result['status'] = 'failed'
         result['error'] = str(error)
+        result.setdefault('failed_phase', result['phase'])
         raise
     finally:
         finish_job(vm, key, job, result)
@@ -524,10 +553,12 @@ def finish_job(vm, key, job, result):
         except BaseException as error:
             result['status'] = 'failed'
             result['cleanup_error'] = str(error)
+            result.setdefault('failed_phase', 'cleanup')
             cleanup_error = error
     for path in (key, key.with_suffix('.pub')):
         path.unlink(missing_ok=True)
-    (job / 'status.json').write_text(json.dumps(result, indent=2) + '\n')
+    result['finished_at'] = time.time()
+    write_status(job, result)
     if cleanup_error is not None:
         raise cleanup_error
 

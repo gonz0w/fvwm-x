@@ -7,6 +7,7 @@ import argparse
 import io
 import json
 import os
+import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -107,6 +108,71 @@ class QemuTests(unittest.TestCase):
     def test_reboot_without_preparation_is_refused_before_vm_work(self):
         with self.assertRaisesRegex(ValueError, 'requires --prepare-script'):
             qemu.run(argparse.Namespace(reboot_after_prepare=True, prepare_script=None))
+
+    def test_source_copy_keeps_modes_under_private_umask(self):
+        self.source([('README', tarfile.REGTYPE, 0o644),
+            ('run me', tarfile.REGTYPE, 0o755),
+            ('private', tarfile.REGTYPE, 0o600),
+            ('directory', tarfile.DIRTYPE, 0o750)])
+        qemu.validate_source(self.archive)
+        destination = self.root / 'source with spaces'
+        command = qemu.source_copy_command('freebsd-arm64').replace(
+            '/root/fvwm-ci/source', shlex.quote(str(destination)))
+        with self.archive.open('rb') as source:
+            subprocess.run(['sh', '-c', command], stdin=source, check=True)
+        for name, mode in [('README', 0o644), ('run me', 0o755),
+                           ('private', 0o600), ('directory', 0o750)]:
+            self.assertEqual((destination / name).stat().st_mode & 0o777, mode)
+        self.assertEqual((destination / 'run me').read_bytes(), b'owned source\n')
+
+    def test_source_copy_keeps_openbsd_owned_home_boundary(self):
+        command = qemu.source_copy_command('openbsd-amd64')
+        self.assertIn('mkdir -p /home/fvwm-ci/source', command)
+        self.assertIn('test ! -e /root/fvwm-ci', command)
+        self.assertIn('ln -s /home/fvwm-ci /root/fvwm-ci', command)
+        with self.assertRaises(ValueError):
+            qemu.source_copy_command('unknown')
+
+    def test_live_status_replaces_complete_private_snapshot(self):
+        result = {'status': 'running'}
+        qemu.write_status(self.root, result, 'source-copy')
+        before = json.loads((self.root / 'status.json').read_text())
+        self.assertEqual(before['phase'], 'source-copy')
+        self.assertEqual(before['status'], 'running')
+        self.assertGreater(before['phase_started_at'], 0)
+        self.assertEqual((self.root / 'status.json').stat().st_mode & 0o777, 0o600)
+        qemu.write_status(self.root, result, 'prepare')
+        self.assertEqual(json.loads((self.root / 'status.json').read_text())['phase'],
+                         'prepare')
+        self.assertEqual(list(self.root.glob('.status-*')), [])
+
+    def test_interrupted_status_publication_keeps_previous_snapshot(self):
+        qemu.write_status(self.root, {'status': 'running'}, 'run')
+        previous = (self.root / 'status.json').read_bytes()
+        def interrupted(source, destination):
+            self.assertEqual((self.root / 'status.json').read_bytes(), previous)
+            self.assertEqual(json.loads(Path(source).read_text())['phase'],
+                             'collection')
+            raise OSError('fixture interrupted publication')
+        with patch.object(qemu.os, 'replace', side_effect=interrupted):
+            with self.assertRaises(OSError):
+                qemu.write_status(self.root, {'status': 'running'}, 'collection')
+        self.assertEqual((self.root / 'status.json').read_bytes(), previous)
+        self.assertEqual(list(self.root.glob('.status-*')), [])
+
+    def test_finish_preserves_failed_run_phase_after_collection_and_reaps_keys(self):
+        key = self.root / 'job-key'
+        key.write_text('private fixture')
+        key.with_suffix('.pub').write_text('public fixture')
+        result = {'status': 'failed', 'phase': 'collection',
+                  'failed_phase': 'run', 'run_status': 23}
+        qemu.finish_job(None, key, self.root, result)
+        status = json.loads((self.root / 'status.json').read_text())
+        self.assertEqual(status['failed_phase'], 'run')
+        self.assertEqual(status['run_status'], 23)
+        self.assertGreater(status['finished_at'], 0)
+        self.assertFalse(key.exists())
+        self.assertFalse(key.with_suffix('.pub').exists())
 
     def test_source_identity(self):
         result = qemu.validate_source(self.source())

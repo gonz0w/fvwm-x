@@ -1,5 +1,9 @@
 # Verification reports
 
+- [BSD preparation evidence](VERIFICATION-2026-10-21-BSD-PREPARATION.md): source modes, atomic live/failure snapshots and distinct PNG proofs; 282 native policy cases, two fresh runner cases and retained WM identities.
+
+- [Periodic performance comparison](PERFORMANCE-2026-10-21.md): due PR132/138 paired observation, timing ranges/RSS and code/layout/source size; preserved PR138 starts the next reference.
+
 - [Shared string copy ownership](VERIFICATION-2026-10-21-STRING-COPIES.md): three related operations, one composed six-target checkpoint with 2208 standard/28 affected optional passes, scoped sanitizer and exact install/default-X evidence.
 
 - [2026-10-21 protocol requirement register](STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md): three fixed inventory stories, forty clause/role records and explicit owner handoffs; documentation audit, with historical runtime evidence kept source-scoped.

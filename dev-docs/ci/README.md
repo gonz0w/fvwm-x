@@ -252,3 +252,44 @@ The Linux candidate uses the same approved PNG source via
 loader qualification are job-local, including the selected compiler identity.
 Native architecture/Go/sanitizer jobs still require their own actual CI evidence;
 a passing dependency build is not a sanitizer or complete workflow result.
+
+## Preparation and verification evidence
+
+The owned QEMU runner preserves each validated source file's archive permissions
+inside its private guest workspace, including executable scripts. The source
+archive policy still rejects links, special files and special permission bits;
+`umask 077` protects the parent workspace without changing the checked inputs.
+
+`status.json` is an atomic snapshot written at acquisition, extraction, boot,
+authentication, source-copy, preparation/reboot, execution and collection phase
+boundaries, and after cleanup. `phase_started_at` and `finished_at` use Unix
+seconds. Running snapshots do not imply a phase has completed. An eventual
+failure retains `failed_phase` (including a failed run followed by successful
+collection), command logs and cleanup results. Read the bounded phase log for
+progress within a phase; no overall percentage or ETA is inferred. A snapshot
+cannot prove a killed host process is still alive.
+
+PNG consumer checks keep built-only observations in
+`BUILD/png-verify-built/` and built-plus-installed observations in
+`BUILD/png-verify-installed/`. Both contain `png-loader-N.log` and a completed
+`png-consumers.json`; failed checks retain logs without a success receipt.
+The two checks may run in sequence on the same qualified build. Repeating a
+check requires a fresh `--evidence-directory PATH`; an existing directory is
+refused instead of overwriting earlier evidence. The private prefix, source
+receipt, transitive-loader and installed-consumer requirements still apply.
+For example, after applying the bootstrap environment:
+
+```sh
+python3 tools/maintenance/ci_png.py verify --output builddir-bsd/png-bootstrap \
+    --build-directory builddir-bsd --build-only
+python3 tools/maintenance/ci_png.py verify --output builddir-bsd/png-bootstrap \
+    --build-directory builddir-bsd
+# A later explicit observation, without replacing either earlier receipt:
+python3 tools/maintenance/ci_png.py verify --output builddir-bsd/png-bootstrap \
+    --build-directory builddir-bsd --evidence-directory builddir-bsd/png-check-2
+```
+
+These changes improve evidence reuse and diagnosis. They do not cache native
+builds, change package preparation, retain guest authentication between jobs,
+or relax test deadlines. Source-bound unchanged WM qualification remains with
+its original checkpoint; CI-only changes receive affected native tool checks.

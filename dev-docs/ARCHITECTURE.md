@@ -622,7 +622,9 @@ download deadline. Cache bytes are opened relative to a pinned private directory
 and hashed from the descriptor copied to output. This helper does not execute downloaded inputs. The approved
 `tools/maintenance/qemu_bsd.py` owns four fixed BSD profiles, bounded private
 source/script snapshots, fresh disk expansion, loopback SSH, job-key rotation,
-scoped evidence and process/cancellation cleanup. `BOOT-PINS-2026-10-13.json`
+scoped evidence and process/cancellation cleanup. Validated archive modes are
+preserved under the private workspace; live phase and final failure/cleanup
+status snapshots publish atomically. `BOOT-PINS-2026-10-13.json`
 adds independently verified published bootstrap keys and ARM firmware. OpenBSD
 job storage uses `/home`; only the owned disposable image is changed. Its
 inactive candidate replaces the downloaded AnyVM runtime and mutable prepared
@@ -633,6 +635,8 @@ disabled. See [CI upkeep](ci/README.md).
 
 CI-01’s `tools/maintenance/ci_png.py` owns the approved fixed PNG tar payload,
 private native Linux/BSD build/upstream tests and core/SVG transitive loader receipts.
+Built-only and installed checks have independent immutable evidence directories;
+explicit repeated observations require a fresh output.
 `ci_assets.py` acquires the pinned release; `qemu_bsd.py --png-bootstrap`
 transfers its verified payload. CI recipes apply the environment only within
 the disposable job. System package installation and production policy remain

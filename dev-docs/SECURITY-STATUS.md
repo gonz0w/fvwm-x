@@ -5,7 +5,7 @@ The active work list and acceptance criteria are in
 [PROJECT-TRACKER.md](PROJECT-TRACKER.md).
 
 The selected finite [safety/maintainability closeout](PROJECT-TRACKER.md#hardening-closeout)
-is locally qualified, pending PR143 review/merge, before advancing approved
+is locally qualified and merged in PR143; advance approved
 feature dependencies. Remaining performance-only tuning stays deferred. Broad
 audit owners and release gates remain open.
 

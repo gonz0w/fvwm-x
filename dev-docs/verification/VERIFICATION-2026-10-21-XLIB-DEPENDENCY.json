@@ -1,0 +1,4450 @@
+{
+  "status": "locally qualified; ready for maintainer review",
+  "base": "fb3762e32d62d057389d68a66ea42c2a2929c943",
+  "implementation": "1d5b8d080555c11890d4d66ff225a192a5f2389a",
+  "source_inputs": 2118,
+  "source_archive_sha256": "4b4e19b0788517f06005fb498cec2894f8e9509eadfb87013fc7c44586685f65",
+  "targets": {
+    "fvwm-x-linux-arm64-svg": {
+      "archive": "fvwm-x-linux-arm64-svg-evidence.tgz",
+      "sha256": "7547b69125918aa002ab23f5302bdaf652b30b322de63e5baf49bef4f6cd93c9",
+      "bytes": 392560,
+      "payloads_verified": 507,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2118,
+      "profiles": {
+        "gcc": {
+          "tests": 292,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "loader_sha256": "e794c45d3cc10cc83fb76bd2224eab2a07a7b4538b57ab66a6bf53277228086f",
+          "installed_loader_mentions_libxkbcommon": false
+        },
+        "clang": {
+          "tests": 292,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "clang",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "loader_sha256": "c231958407f6799027721a4c519fce8fb60b9a7161100c77106ddbd743d1ea8d",
+          "installed_loader_mentions_libxkbcommon": false
+        },
+        "software": {
+          "tests": 24,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b",
+            "after": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "loader_sha256": "9b9c932b11f186dd3cfd02fcef298e55c7e0e06fb2aacd63561207aa3a27d854",
+          "installed_loader_mentions_libxkbcommon": false
+        },
+        "minimal": {
+          "tests": 9,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711",
+            "after": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711"
+          },
+          "installed_elf": 15,
+          "catalogs": 0,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "loader_sha256": "5dd763214c0b4d6ef71bd1201ad042ce96bb874291500f71ad105f4087211fc6",
+          "installed_loader_mentions_libxkbcommon": false
+        }
+      },
+      "test_logs": {
+        "clang-testlog.json": {
+          "registered": 292,
+          "passed": 292,
+          "other": [],
+          "sha256": "63a61b8cf9776475aa6a26c2b260dc8a8a61aa90282b095fe10f0acf9772b5a2"
+        },
+        "gcc-testlog.json": {
+          "registered": 292,
+          "passed": 292,
+          "other": [],
+          "sha256": "bb4e2e8c6ab8795864a2384201627ab53ac34dc9ab9be181fbd5fafa29aef608"
+        },
+        "minimal-testlog.json": {
+          "registered": 9,
+          "passed": 9,
+          "other": [],
+          "sha256": "75d7e9b47177b7ff130be13b2adf7173d67b4a5d8af6d9190564bae1c1f2fe16"
+        },
+        "software-testlog.json": {
+          "registered": 24,
+          "passed": 24,
+          "other": [],
+          "sha256": "5192ac7452292821b6427bc1160a189b0d10ac45072b3f92683d86ad978fed0a"
+        }
+      },
+      "all_commands_passed": true
+    },
+    "linux-amd64": {
+      "archive": "linux-amd64-evidence.tgz",
+      "sha256": "2ab33d036d0529b925215453e566c34b600c65a265a5f9e4e5cad634f568aef0",
+      "bytes": 309166,
+      "payloads_verified": 264,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2118,
+      "profiles": {
+        "gcc": {
+          "tests": 292,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.111+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+            "x86_64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib"
+          },
+          "loader_sha256": "0bbe7897356a1f8ed649a2322b2148053d7ad90515a6217638cca162b22dd04f",
+          "installed_loader_mentions_libxkbcommon": false
+        },
+        "clang": {
+          "tests": 292,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+            "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.111+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+            "x86_64"
+          ],
+          "environment": {
+            "CC": "clang",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib"
+          },
+          "loader_sha256": "a41e082fe42b706bc3f8542187698a55b4d1f54f67a52076b56b61b8002939a5",
+          "installed_loader_mentions_libxkbcommon": false
+        }
+      },
+      "test_logs": {
+        "clang-testlog.json": {
+          "registered": 292,
+          "passed": 292,
+          "other": [],
+          "sha256": "b77c93d3349f568978cf23f44651ff0a3c259d7b932b79d3c2af311b39b68499"
+        },
+        "gcc-testlog.json": {
+          "registered": 292,
+          "passed": 292,
+          "other": [],
+          "sha256": "0fe8b675d61f333d0ff9c3d3eb03e2550314b605db6e1ff2735e1bfa8e9d657d"
+        }
+      },
+      "all_commands_passed": true
+    },
+    "freebsd-arm64": {
+      "archive": "freebsd-arm64-evidence.tgz",
+      "sha256": "115d53424f28ac6ceae42d9456cdb6fb2cf553e2713896668d592e495c59267e",
+      "bytes": 227626,
+      "payloads_verified": 203,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2118,
+      "profiles": {
+        "default": {
+          "tests": 279,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+            "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "FreeBSD",
+            "freebsd",
+            "15.1-RELEASE-p4",
+            "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+            "arm64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "loader_sha256": "87bfda553721f43ff237608235ec6a09082e6bb4001302bf5799738df15d7f1a",
+          "installed_loader_mentions_libxkbcommon": false
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 279,
+          "passed": 279,
+          "other": [],
+          "sha256": "7d0f747f032adf5220380c93a19b15d7513197cd9f8fddbedb992dd3b13ee6bc"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "fixture_groups": 8,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      }
+    },
+    "freebsd-amd64": {
+      "archive": "freebsd-amd64-evidence.tgz",
+      "sha256": "adc74339018d411e5675f5e9024b85e48fb62ef4e45cf436f97ad8325afb7724",
+      "bytes": 230418,
+      "payloads_verified": 203,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2118,
+      "profiles": {
+        "default": {
+          "tests": 279,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+            "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+          },
+          "installed_elf": 15,
+          "catalogs": 11,
+          "data": 70,
+          "uname": [
+            "FreeBSD",
+            "freebsd",
+            "15.1-RELEASE-p4",
+            "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+            "amd64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib"
+          },
+          "loader_sha256": "8581843523812998908f3f527276c1cbe1fbe0e1cfdd0af711642a983d0721cd",
+          "installed_loader_mentions_libxkbcommon": false
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 279,
+          "passed": 279,
+          "other": [],
+          "sha256": "36ee8acdaf828395e1f77b258cd67cae67d5c9563b8e62f74504e5f3d57a9212"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "fixture_groups": 8,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      }
+    },
+    "openbsd-amd64": {
+      "archive": "openbsd-amd64-job/guest-evidence.tgz",
+      "sha256": "8befb0c06094cf21558fe66ba96870e6fef6029bbd806a9f363bcc677771c67f",
+      "bytes": 113239549,
+      "payloads_verified": 2857,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2118,
+      "profiles": {
+        "default": {
+          "tests": 279,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+            "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+          },
+          "installed_elf": 15,
+          "catalogs": 0,
+          "data": 70,
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#2",
+            "amd64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib:/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib"
+          },
+          "loader_sha256": "c00f12f8d462db673c732f7bc3097693be255b328b33f1e7c44400186a9a088d",
+          "installed_loader_mentions_libxkbcommon": false
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 279,
+          "passed": 279,
+          "other": [],
+          "sha256": "a78822c4f75cfb404fd398f2e3d1dd2fed9dafa9300d035ceba1330c24ee44a4"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "fixture_groups": 8,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      },
+      "runner": {
+        "guest_release": [
+          "OpenBSD",
+          "8.0",
+          "amd64",
+          "OpenBSD 8.0 (GENERIC.MP) #2: Mon Oct 19 12:55:12 MDT 2026"
+        ],
+        "qemu_exit_status": 0,
+        "ephemeral_key_removed": true
+      }
+    },
+    "openbsd-arm64": {
+      "archive": "openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "3ec9542601b939a22684087d895b5710f1d569bf0aa5b7d9579e5959bb310fb5",
+      "bytes": 113016102,
+      "payloads_verified": 2854,
+      "all_payload_hashes_valid": true,
+      "source_inputs": 2118,
+      "profiles": {
+        "default": {
+          "tests": 279,
+          "xlib_contract_controls": 3,
+          "generated_config": {
+            "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+            "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+          },
+          "installed_elf": 15,
+          "catalogs": 0,
+          "data": 70,
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#1",
+            "arm64"
+          ],
+          "environment": {
+            "CC": "cc",
+            "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+            "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib:/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib"
+          },
+          "loader_sha256": "9c9f80a72ee1d5c838f4e91acc5a0eaed6ede562507b238722f6c1ca3fa9db3f",
+          "installed_loader_mentions_libxkbcommon": false
+        }
+      },
+      "test_logs": {
+        "default-testlog.json": {
+          "registered": 279,
+          "passed": 279,
+          "other": [],
+          "sha256": "c1938cc42b6c1c0cce41fd9a0a21f0f33e45829229284016e1ca786a38c5c23d"
+        }
+      },
+      "all_commands_passed": true,
+      "default_display": {
+        "fixture_groups": 8,
+        "unauthenticated_client_refused": true,
+        "server_status_after_cleanup": 0
+      },
+      "runner": {
+        "guest_release": [
+          "OpenBSD",
+          "8.0",
+          "arm64",
+          "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+        ],
+        "qemu_exit_status": 0,
+        "ephemeral_key_removed": true
+      }
+    }
+  },
+  "accepted": {
+    "standard": 2284,
+    "optional": 33,
+    "install_profiles": 10,
+    "installed_elf": 150,
+    "installed_catalogs": 77,
+    "installed_data": 700,
+    "native_configure_controls": 30,
+    "staged_function_groups": 30,
+    "staged_geometry_groups": 20,
+    "staged_style_groups": 10,
+    "default_bsd_groups": 32
+  },
+  "focused": {
+    "fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "53c10b8fa3d60b1c7e8fc8fdcd8f06e745508dc4c887b184c3c3450b96c3df18",
+      "payloads_verified": 7,
+      "commands": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "registered": 1,
+      "production_contract_controls_passed": 3,
+      "skipped": 0
+    },
+    "freebsd-arm64": {
+      "archive_sha256": "214ecd83b51976870bfedfbbd7931d591bb31976f08e28f54d9f46f9a0b597cf",
+      "payloads_verified": 7,
+      "commands": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "registered": 1,
+      "production_contract_controls_passed": 3,
+      "skipped": 0
+    }
+  },
+  "portable": {
+    "sha256": "5665d6bbb0872ce1021b44ff6221160b9003a8165e8fbbc732791b0fdea21d01",
+    "exit_status": 0,
+    "registered": 191,
+    "passed": 177,
+    "capability_skips": 14
+  },
+  "composition": {
+    "C_headers_unchanged_from_base": true,
+    "all_frozen_non_markdown_inputs_exact": true,
+    "changed_markdown": {
+      "README.md": {
+        "frozen": "ecae3406065200c4649410653aaa0962f6f67c29ae360fb3247e6150cf035a4d",
+        "final": "f81b3df3f54d1bac759ee0d6d7005095e74049801e35a9503e8d492629dd6917"
+      },
+      "dev-docs/PROJECT-TRACKER.md": {
+        "frozen": "33e5cec97cfbc1167130638087be3f9c66716e6bfd6de37b85c1d19a653ddf33",
+        "final": "e366c0abcc5e8e9382810a04753186c53f96fd56c56f3fb529cdf00a6bc67121"
+      },
+      "dev-docs/SECURITY-STATUS.md": {
+        "frozen": "6f2da59d5798d0ad05f7a352556d8325bd7f0a78249f763f58bebb989089f48b",
+        "final": "038cb0e30c49764cd0ecb286d4e656ccb1572d34eeab32ee80e34f770f5ea222"
+      },
+      "dev-docs/verification/README.md": {
+        "frozen": "9c6da23d809802f26a351f0a02f9d2582ac695f883ea2822941e6c2131cfa747",
+        "final": "5082e2a4429c37a56eefcf054b0714396dfb51980ad481df02bebb3db57d0299"
+      },
+      "dev-docs/verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md": {
+        "frozen": "4faca24a0d671d138cedae4a16e258f2935ac8f08e21bfa9b49be5019ea87879",
+        "final": "1242a853de8de8ac9f6721b8642bbc7af7f3317c0e9313ac363b9924c57679dc"
+      }
+    }
+  },
+  "dependency_attestation": {
+    "fvwm-x-linux-arm64-svg": {
+      "gcc": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.15.0",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+              "/usr/lib/aarch64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.0.10",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.12-stable",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.7",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.6",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.2",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXt.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.4.0",
+            "compile_args": [
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.1.20",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.13",
+            "compile_args": [
+              "-I/usr/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfribidi.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "iconv",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "iconv"
+            ]
+          },
+          {
+            "name": "intl",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libintl"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.58.0",
+            "compile_args": [
+              "-I/usr/include/librsvg-2.0",
+              "-I/usr/include/glib-2.0",
+              "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+              "-I/usr/include/libmount",
+              "-I/usr/include/blkid",
+              "-I/usr/include/gdk-pixbuf-2.0",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-I/usr/include/aarch64-linux-gnu",
+              "-I/usr/include/webp",
+              "-pthread",
+              "-I/usr/include/cairo",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/librsvg-2.so",
+              "-lm",
+              "/usr/lib/aarch64-linux-gnu/libgio-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libglib-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.0",
+            "compile_args": [
+              "-I/usr/include/cairo",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libSM.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXcursor.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.0",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXfixes.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xpm",
+            "type": "pkgconfig",
+            "version": "3.5.17",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXpm.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xpm"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.10",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXrender.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          },
+          {
+            "name": "m",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-lm"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "m_dep"
+            ]
+          },
+          {
+            "name": "dl",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-ldl"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "dl_dependency"
+            ]
+          }
+        ],
+        "dependency_sha256": "7743728da39f7c02626c0baacdfb3d848802b51cb3759198f136788bbaf69215",
+        "ninja_sha256": "6edaf09cf990346070de3bfcf5dde00009ba475dbf5a897470dc5d79803dfb45",
+        "has_xkbcommon_link": false
+      },
+      "clang": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.15.0",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+              "/usr/lib/aarch64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.0.10",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.12-stable",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.7",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.6",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.2",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXt.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.4.0",
+            "compile_args": [
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.1.20",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.13",
+            "compile_args": [
+              "-I/usr/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfribidi.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "iconv",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "iconv"
+            ]
+          },
+          {
+            "name": "intl",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libintl"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.58.0",
+            "compile_args": [
+              "-I/usr/include/librsvg-2.0",
+              "-I/usr/include/glib-2.0",
+              "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+              "-I/usr/include/libmount",
+              "-I/usr/include/blkid",
+              "-I/usr/include/gdk-pixbuf-2.0",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-I/usr/include/aarch64-linux-gnu",
+              "-I/usr/include/webp",
+              "-pthread",
+              "-I/usr/include/cairo",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/librsvg-2.so",
+              "-lm",
+              "/usr/lib/aarch64-linux-gnu/libgio-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libglib-2.0.so",
+              "/usr/lib/aarch64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.0",
+            "compile_args": [
+              "-I/usr/include/cairo",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libSM.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXcursor.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.0",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXfixes.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xpm",
+            "type": "pkgconfig",
+            "version": "3.5.17",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXpm.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xpm"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.10",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXrender.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          },
+          {
+            "name": "m",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-lm"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "m_dep"
+            ]
+          },
+          {
+            "name": "dl",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-ldl"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "dl_dependency"
+            ]
+          }
+        ],
+        "dependency_sha256": "7743728da39f7c02626c0baacdfb3d848802b51cb3759198f136788bbaf69215",
+        "ninja_sha256": "3deac29be3899d5379838d9821972d6c3d97e2c047535edc98285b030a4c67e8",
+        "has_xkbcommon_link": false
+      },
+      "software": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.15.0",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+              "/usr/lib/aarch64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.0.10",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.12-stable",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.7",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.6",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.2",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXt.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.4.0",
+            "compile_args": [
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.1.20",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.13",
+            "compile_args": [
+              "-I/usr/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfribidi.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "iconv",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "iconv"
+            ]
+          },
+          {
+            "name": "intl",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libintl"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libSM.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXcursor.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.0",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXfixes.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xpm",
+            "type": "pkgconfig",
+            "version": "3.5.17",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXpm.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xpm"
+            ]
+          },
+          {
+            "name": "m",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-lm"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "m_dep"
+            ]
+          },
+          {
+            "name": "dl",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-ldl"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "dl_dependency"
+            ]
+          }
+        ],
+        "dependency_sha256": "8325456fa38682259577a81c741d560246667725ab248771c89dea9bb99893dc",
+        "ninja_sha256": "bbf2bd02485aca86703ea753d67d355416373951f2710c3800de69c079b34b23",
+        "has_xkbcommon_link": false
+      },
+      "minimal": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.15.0",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+              "/usr/lib/aarch64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.0.10",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.12-stable",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.7",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.6",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.2",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXt.so",
+              "/usr/lib/aarch64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.4.0",
+            "compile_args": [
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/aarch64-linux-gnu/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng_check"
+            ]
+          },
+          {
+            "name": "m",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-lm"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "m_dep"
+            ]
+          },
+          {
+            "name": "dl",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-ldl"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "dl_dependency"
+            ]
+          }
+        ],
+        "dependency_sha256": "65a617f8373814347f96567faf9270f52748e7fdde5e8172f109ad7c9dc7ef33",
+        "ninja_sha256": "f439e44332f40f645ae80398ea170a921ff5b5a96714e2a77b58783600159766",
+        "has_xkbcommon_link": false
+      }
+    },
+    "linux-amd64": {
+      "gcc": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.15.0",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+              "/usr/lib/x86_64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.1.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.13-stable",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.12",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.6",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [
+              "-I/usr/include/uuid"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXt.so",
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.4.0",
+            "compile_args": [
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.2.20",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.16",
+            "compile_args": [
+              "-I/usr/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libfribidi.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "iconv",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "iconv"
+            ]
+          },
+          {
+            "name": "intl",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libintl"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.60.0",
+            "compile_args": [
+              "-I/usr/include/librsvg-2.0",
+              "-I/usr/include/glib-2.0",
+              "-I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+              "-I/usr/include/sysprof-6",
+              "-I/usr/include/libmount",
+              "-I/usr/include/blkid",
+              "-I/usr/include/gdk-pixbuf-2.0",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16",
+              "-I/usr/include/x86_64-linux-gnu",
+              "-I/usr/include/webp",
+              "-I/usr/include/cairo",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1",
+              "-I/usr/include/harfbuzz",
+              "-I/usr/include/libxml2",
+              "-I/usr/include/pango-1.0",
+              "-I/usr/include/fribidi",
+              "-pthread"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+              "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.4",
+            "compile_args": [
+              "-I/usr/include/cairo",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.6",
+            "compile_args": [
+              "-I/usr/include/uuid"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libSM.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXcursor.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.0",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXfixes.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xpm",
+            "type": "pkgconfig",
+            "version": "3.5.17",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXpm.so",
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xpm"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.12",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXrender.so",
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          },
+          {
+            "name": "m",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-lm"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "m_dep"
+            ]
+          },
+          {
+            "name": "dl",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-ldl"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "dl_dependency"
+            ]
+          }
+        ],
+        "dependency_sha256": "90e4b4b62be335f8c0436e1692f317975fdb2e048f484f223bfb33d4582d63da",
+        "ninja_sha256": "5c70d27d93c38c1b7cbfb7cec4e6ba181db27a00f4e073891d973b019a3638da",
+        "has_xkbcommon_link": false
+      },
+      "clang": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.15.0",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+              "/usr/lib/x86_64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.1.1",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.13-stable",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.12",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.6",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.2.1",
+            "compile_args": [
+              "-I/usr/include/uuid"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXt.so",
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.4.0",
+            "compile_args": [
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.4",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.2.20",
+            "compile_args": [
+              "-I/usr/include/freetype2",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.16",
+            "compile_args": [
+              "-I/usr/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libfribidi.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "iconv",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "iconv"
+            ]
+          },
+          {
+            "name": "intl",
+            "type": "builtin",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libintl"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.60.0",
+            "compile_args": [
+              "-I/usr/include/librsvg-2.0",
+              "-I/usr/include/glib-2.0",
+              "-I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+              "-I/usr/include/sysprof-6",
+              "-I/usr/include/libmount",
+              "-I/usr/include/blkid",
+              "-I/usr/include/gdk-pixbuf-2.0",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16",
+              "-I/usr/include/x86_64-linux-gnu",
+              "-I/usr/include/webp",
+              "-I/usr/include/cairo",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1",
+              "-I/usr/include/harfbuzz",
+              "-I/usr/include/libxml2",
+              "-I/usr/include/pango-1.0",
+              "-I/usr/include/fribidi",
+              "-pthread"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+              "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+              "/usr/lib/x86_64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.4",
+            "compile_args": [
+              "-I/usr/include/cairo",
+              "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16",
+              "-I/usr/include/freetype2",
+              "-I/usr/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.6",
+            "compile_args": [
+              "-I/usr/include/uuid"
+            ],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libSM.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXcursor.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.0",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXfixes.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xpm",
+            "type": "pkgconfig",
+            "version": "3.5.17",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXpm.so",
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xpm"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.12",
+            "compile_args": [],
+            "link_args": [
+              "/usr/lib/x86_64-linux-gnu/libXrender.so",
+              "/usr/lib/x86_64-linux-gnu/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          },
+          {
+            "name": "m",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-lm"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "m_dep"
+            ]
+          },
+          {
+            "name": "dl",
+            "type": "library",
+            "version": "unknown",
+            "compile_args": [],
+            "link_args": [
+              "-ldl"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "dl_dependency"
+            ]
+          }
+        ],
+        "dependency_sha256": "90e4b4b62be335f8c0436e1692f317975fdb2e048f484f223bfb33d4582d63da",
+        "ninja_sha256": "e2e04356d83b7cbe643d06a13ed42d9fc31457b1c80440589f4e4f32ce65dd4a",
+        "has_xkbcommon_link": false
+      }
+    },
+    "freebsd-arm64": {
+      "default": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.17.1",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfontconfig.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.1.2",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.13-stable",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.13",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.8",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.5",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.3.1",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXt.so",
+              "/usr/local/lib/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.6.0",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.7",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.6.20",
+            "compile_args": [
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.16",
+            "compile_args": [
+              "-I/usr/local/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfribidi.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.62.3",
+            "compile_args": [
+              "-I/usr/local/include/librsvg-2.0",
+              "-I/usr/local/include/gdk-pixbuf-2.0",
+              "-I/usr/local/include/cairo",
+              "-I/usr/local/include",
+              "-I/usr/local/include/libxml2",
+              "-I/usr/local/include/pango-1.0",
+              "-I/usr/local/include/fribidi",
+              "-D_THREAD_SAFE",
+              "-I/usr/local/include/pixman-1",
+              "-I/usr/local/include/harfbuzz",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-pthread",
+              "-I/usr/local/include/glib-2.0",
+              "-I/usr/local/lib/glib-2.0/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/librsvg-2.so",
+              "/usr/local/lib/libgdk_pixbuf-2.0.so",
+              "/usr/local/lib/libgio-2.0.so",
+              "/usr/local/lib/libcairo.so",
+              "/usr/local/lib/libgobject-2.0.so",
+              "/usr/local/lib/libglib-2.0.so",
+              "/usr/local/lib/libintl.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.2",
+            "compile_args": [
+              "-I/usr/local/include/cairo",
+              "-I/usr/local/include",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-D_THREAD_SAFE",
+              "-I/usr/local/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/local/lib/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.6",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libSM.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXcursor.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.1",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXfixes.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.12",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXrender.so",
+              "/usr/local/lib/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          }
+        ],
+        "dependency_sha256": "bfb5e9295298ceef512ee98fbde31ca89e455c8806a6ecd43952ce32bc539ba9",
+        "ninja_sha256": "73a754cbefe36246cdbf77d3de1d89a7b706b7a9114eda6e389f1502cc467bde",
+        "has_xkbcommon_link": false
+      }
+    },
+    "freebsd-amd64": {
+      "default": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.17.1",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfontconfig.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.1.2",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libICE.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.13-stable",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libevent.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.13",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.8",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXft.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.5",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXrandr.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.3.1",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXt.so",
+              "/usr/local/lib/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.6.0",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.7",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXext.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.6.20",
+            "compile_args": [
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfreetype.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.16",
+            "compile_args": [
+              "-I/usr/local/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfribidi.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16"
+            ],
+            "link_args": [
+              "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.62.3",
+            "compile_args": [
+              "-I/usr/local/include/librsvg-2.0",
+              "-I/usr/local/include/gdk-pixbuf-2.0",
+              "-I/usr/local/include/cairo",
+              "-I/usr/local/include",
+              "-I/usr/local/include/libxml2",
+              "-I/usr/local/include/pango-1.0",
+              "-I/usr/local/include/fribidi",
+              "-D_THREAD_SAFE",
+              "-I/usr/local/include/pixman-1",
+              "-I/usr/local/include/harfbuzz",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-pthread",
+              "-I/usr/local/include/glib-2.0",
+              "-I/usr/local/lib/glib-2.0/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/librsvg-2.so",
+              "/usr/local/lib/libgdk_pixbuf-2.0.so",
+              "/usr/local/lib/libgio-2.0.so",
+              "/usr/local/lib/libcairo.so",
+              "/usr/local/lib/libgobject-2.0.so",
+              "/usr/local/lib/libglib-2.0.so",
+              "/usr/local/lib/libintl.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.2",
+            "compile_args": [
+              "-I/usr/local/include/cairo",
+              "-I/usr/local/include",
+              "-I/usr/local/include/freetype2",
+              "-I/root/fvwm-deps/libpng-1.6.59/include/libpng16",
+              "-D_THREAD_SAFE",
+              "-I/usr/local/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/local/lib/libcairo.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.6",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libSM.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXcursor.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.1",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXfixes.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.12",
+            "compile_args": [
+              "-I/usr/local/include",
+              "-D_THREAD_SAFE"
+            ],
+            "link_args": [
+              "/usr/local/lib/libXrender.so",
+              "/usr/local/lib/libX11.so"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          }
+        ],
+        "dependency_sha256": "bfb5e9295298ceef512ee98fbde31ca89e455c8806a6ecd43952ce32bc539ba9",
+        "ninja_sha256": "f7f5fd8098c77fff4a9fdfdca65bf4ac3ca2cf5037c0e37eccf8e8825ae88d3f",
+        "has_xkbcommon_link": false
+      }
+    },
+    "openbsd-amd64": {
+      "default": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.17.1",
+            "compile_args": [
+              "-I/usr/X11R6/include",
+              "-I/usr/X11R6/include/freetype2"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libfontconfig.so.14.1",
+              "/usr/X11R6/lib/libfreetype.so.31.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.1.2",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libICE.so.12.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.13-stable",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libevent_extra.so.1.1",
+              "/usr/local/lib/libevent_core.so.2.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.13",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.9",
+            "compile_args": [
+              "-I/usr/X11R6/include",
+              "-I/usr/X11R6/include/freetype2"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXft.so.13.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.5",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXrandr.so.7.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.3.1",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXt.so.11.1",
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.6.0",
+            "compile_args": [
+              "-I/usr/X11R6/include",
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.7",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXext.so.13.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.6.20",
+            "compile_args": [
+              "-I/usr/X11R6/include/freetype2"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libfreetype.so.31.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.17",
+            "compile_args": [
+              "-I/usr/local/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfribidi.so.3.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.63.2",
+            "compile_args": [
+              "-I/usr/local/include/librsvg-2.0",
+              "-I/usr/local/include/gdk-pixbuf-2.0",
+              "-I/usr/local/include",
+              "-I/usr/local/include/cairo",
+              "-I/usr/local/include/libxml2",
+              "-I/usr/local/include/pango-1.0",
+              "-I/usr/local/include/fribidi",
+              "-I/usr/X11R6/include",
+              "-I/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/include/libpng16",
+              "-I/usr/X11R6/include/pixman-1",
+              "-I/usr/local/include/harfbuzz",
+              "-I/usr/X11R6/include/freetype2",
+              "-pthread",
+              "-I/usr/local/include/glib-2.0",
+              "-I/usr/local/lib/glib-2.0/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/librsvg-2.so.41.1",
+              "/usr/local/lib/libgdk_pixbuf-2.0.so.3200.3",
+              "/usr/local/lib/libgio-2.0.so.4200.23",
+              "/usr/local/lib/libcairo.so.13.6",
+              "-Wl,-rpath-link,/usr/X11R6/lib",
+              "/usr/local/lib/libgobject-2.0.so.4200.23",
+              "/usr/local/lib/libglib-2.0.so.4201.16",
+              "/usr/local/lib/libintl.so.8.2"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.6",
+            "compile_args": [
+              "-I/usr/local/include/cairo",
+              "-I/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/include/libpng16",
+              "-I/usr/X11R6/include",
+              "-I/usr/X11R6/include/freetype2",
+              "-I/usr/X11R6/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/local/lib/libcairo.so.13.6",
+              "-Wl,-rpath-link,/usr/X11R6/lib"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.6",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libSM.so.9.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXcursor.so.5.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.2",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXfixes.so.6.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xpm",
+            "type": "pkgconfig",
+            "version": "3.5.19",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXpm.so.10.0",
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xpm"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.12",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXrender.so.6.0",
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          }
+        ],
+        "dependency_sha256": "72af0273cbaeeca8454ca08e11daef8c7e780b89a3fa6ab8469bdc68004d0611",
+        "ninja_sha256": "0f71fc3a9156ba11090f4a6ef8c0bd3e66f69bdde347a5e01e4d93e9895507c9",
+        "has_xkbcommon_link": false
+      }
+    },
+    "openbsd-arm64": {
+      "default": {
+        "dependencies": [
+          {
+            "name": "fontconfig",
+            "type": "pkgconfig",
+            "version": "2.17.1",
+            "compile_args": [
+              "-I/usr/X11R6/include",
+              "-I/usr/X11R6/include/freetype2"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libfontconfig.so.14.1",
+              "/usr/X11R6/lib/libfreetype.so.31.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "ice",
+            "type": "pkgconfig",
+            "version": "1.1.2",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libICE.so.12.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "libevent",
+            "type": "pkgconfig",
+            "version": "2.1.13-stable",
+            "compile_args": [
+              "-I/usr/local/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/libevent_extra.so.1.1",
+              "/usr/local/lib/libevent_core.so.2.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "x11",
+            "type": "pkgconfig",
+            "version": "1.8.13",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xft",
+            "type": "pkgconfig",
+            "version": "2.3.9",
+            "compile_args": [
+              "-I/usr/X11R6/include",
+              "-I/usr/X11R6/include/freetype2"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXft.so.13.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xrandr",
+            "type": "pkgconfig",
+            "version": "1.5.5",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXrandr.so.7.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xt",
+            "type": "pkgconfig",
+            "version": "1.3.1",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXt.so.11.1",
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": []
+          },
+          {
+            "name": "xtrans",
+            "type": "pkgconfig",
+            "version": "1.6.0",
+            "compile_args": [
+              "-I/usr/X11R6/include",
+              "-D_DEFAULT_SOURCE",
+              "-D_BSD_SOURCE",
+              "-DHAS_FCHOWN",
+              "-DHAS_STICKY_DIR_BIT"
+            ],
+            "link_args": [],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "this_dep"
+            ]
+          },
+          {
+            "name": "xext",
+            "type": "pkgconfig",
+            "version": "1.3.7",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXext.so.13.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xext"
+            ]
+          },
+          {
+            "name": "freetype2",
+            "type": "pkgconfig",
+            "version": "26.6.20",
+            "compile_args": [
+              "-I/usr/X11R6/include/freetype2"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libfreetype.so.31.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "freetype"
+            ]
+          },
+          {
+            "name": "fribidi",
+            "type": "pkgconfig",
+            "version": "1.0.17",
+            "compile_args": [
+              "-I/usr/local/include/fribidi"
+            ],
+            "link_args": [
+              "/usr/local/lib/libfribidi.so.3.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "fribidi"
+            ]
+          },
+          {
+            "name": "libpng",
+            "type": "pkgconfig",
+            "version": "1.6.59",
+            "compile_args": [
+              "-I/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/include/libpng16"
+            ],
+            "link_args": [
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "libpng"
+            ]
+          },
+          {
+            "name": "librsvg-2.0",
+            "type": "pkgconfig",
+            "version": "2.63.2",
+            "compile_args": [
+              "-I/usr/local/include/librsvg-2.0",
+              "-I/usr/local/include/gdk-pixbuf-2.0",
+              "-I/usr/local/include",
+              "-I/usr/local/include/cairo",
+              "-I/usr/local/include/libxml2",
+              "-I/usr/local/include/pango-1.0",
+              "-I/usr/local/include/fribidi",
+              "-I/usr/X11R6/include",
+              "-I/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/include/libpng16",
+              "-I/usr/X11R6/include/pixman-1",
+              "-I/usr/local/include/harfbuzz",
+              "-I/usr/X11R6/include/freetype2",
+              "-pthread",
+              "-I/usr/local/include/glib-2.0",
+              "-I/usr/local/lib/glib-2.0/include"
+            ],
+            "link_args": [
+              "/usr/local/lib/librsvg-2.so.41.1",
+              "/usr/local/lib/libgdk_pixbuf-2.0.so.3200.3",
+              "/usr/local/lib/libgio-2.0.so.4200.23",
+              "/usr/local/lib/libcairo.so.13.6",
+              "-Wl,-rpath-link,/usr/X11R6/lib",
+              "/usr/local/lib/libgobject-2.0.so.4200.23",
+              "/usr/local/lib/libglib-2.0.so.4201.16",
+              "/usr/local/lib/libintl.so.8.2"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "librsvg"
+            ]
+          },
+          {
+            "name": "cairo",
+            "type": "pkgconfig",
+            "version": "1.18.6",
+            "compile_args": [
+              "-I/usr/local/include/cairo",
+              "-I/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/include/libpng16",
+              "-I/usr/X11R6/include",
+              "-I/usr/X11R6/include/freetype2",
+              "-I/usr/X11R6/include/pixman-1"
+            ],
+            "link_args": [
+              "/usr/local/lib/libcairo.so.13.6",
+              "-Wl,-rpath-link,/usr/X11R6/lib"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "svg_dep"
+            ]
+          },
+          {
+            "name": "sm",
+            "type": "pkgconfig",
+            "version": "1.2.6",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libSM.so.9.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "sm"
+            ]
+          },
+          {
+            "name": "xcursor",
+            "type": "pkgconfig",
+            "version": "1.2.3",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXcursor.so.5.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xcursor"
+            ]
+          },
+          {
+            "name": "xfixes",
+            "type": "pkgconfig",
+            "version": "6.0.2",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXfixes.so.6.1"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xfixes"
+            ]
+          },
+          {
+            "name": "xpm",
+            "type": "pkgconfig",
+            "version": "3.5.19",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXpm.so.10.0",
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xpm"
+            ]
+          },
+          {
+            "name": "xrender",
+            "type": "pkgconfig",
+            "version": "0.9.12",
+            "compile_args": [
+              "-I/usr/X11R6/include"
+            ],
+            "link_args": [
+              "/usr/X11R6/lib/libXrender.so.6.0",
+              "/usr/X11R6/lib/libX11.so.19.0"
+            ],
+            "include_directories": [],
+            "sources": [],
+            "extra_files": [],
+            "dependencies": [],
+            "depends": [],
+            "meson_variables": [
+              "xrender"
+            ]
+          }
+        ],
+        "dependency_sha256": "72af0273cbaeeca8454ca08e11daef8c7e780b89a3fa6ab8469bdc68004d0611",
+        "ninja_sha256": "0f71fc3a9156ba11090f4a6ef8c0bd3e66f69bdde347a5e01e4d93e9895507c9",
+        "has_xkbcommon_link": false
+      }
+    }
+  },
+  "review": "Actual Xlib call is linked, never run at configure time; no direct libxkbcommon include/call remains. Xtrans/Xt native header consumers are retained. No interpreter/default/runtime implementation change.",
+  "performance": {
+    "reference": "PR138",
+    "subsequent_merged_implementation_checkpoints": 4,
+    "comparison_due": false
+  },
+  "gaps": [
+    "Remaining LIB-05 dependency/interpreter floors and transitive dependency review remain open.",
+    "No new native-CPU sanitizer, physical GPU/input/toolkit/compositor or final release acceptance.",
+    "Nix package expression is updated textually; no Nix build is claimed."
+  ],
+  "evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/dependency-contracts",
+  "documentation_recovery": {
+    "guard": "README maximum 250 words",
+    "observed": 252,
+    "final": 250,
+    "original_log_sha256": "fdd8192a683d43fe2f420507ba63eeab138f3fd3a602a7e7483d018fc52645c9",
+    "product_tests_repeated": false
+  },
+  "retirement": {
+    "linux-amd64": {
+      "status": "retired verified guest duplicates",
+      "name": "linux-amd64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/dependency-contracts/linux-amd64-evidence.tgz",
+          "archive_sha256": "2ab33d036d0529b925215453e566c34b600c65a265a5f9e4e5cad634f568aef0",
+          "payload_files": 264,
+          "freed_payload_bytes": 2860665,
+          "freed_archive_bytes": 309166
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "freebsd-amd64": {
+      "status": "retired verified guest duplicates",
+      "name": "freebsd-amd64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/dependency-contracts/freebsd-amd64-evidence.tgz",
+          "archive_sha256": "adc74339018d411e5675f5e9024b85e48fb62ef4e45cf436f97ad8325afb7724",
+          "payload_files": 203,
+          "freed_payload_bytes": 1680630,
+          "freed_archive_bytes": 230418
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "fvwm-x-linux-arm64-svg": {
+      "status": "retired verified guest duplicates",
+      "name": "fvwm-x-linux-arm64-svg",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/dependency-contracts/fvwm-x-linux-arm64-svg-evidence.tgz",
+          "archive_sha256": "7547b69125918aa002ab23f5302bdaf652b30b322de63e5baf49bef4f6cd93c9",
+          "payload_files": 507,
+          "freed_payload_bytes": 3466032,
+          "freed_archive_bytes": 392560
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/dependency-contracts/fvwm-x-linux-arm64-svg-development.tgz",
+          "archive_sha256": "53c10b8fa3d60b1c7e8fc8fdcd8f06e745508dc4c887b184c3c3450b96c3df18",
+          "payload_files": 8,
+          "freed_payload_bytes": 13105,
+          "freed_archive_bytes": 4388
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "freebsd-arm64": {
+      "status": "retired verified guest duplicates",
+      "name": "freebsd-arm64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/dependency-contracts/freebsd-arm64-evidence.tgz",
+          "archive_sha256": "115d53424f28ac6ceae42d9456cdb6fb2cf553e2713896668d592e495c59267e",
+          "payload_files": 203,
+          "freed_payload_bytes": 1619205,
+          "freed_archive_bytes": 227626
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/dependency-contracts/freebsd-arm64-development.tgz",
+          "archive_sha256": "214ecd83b51976870bfedfbbd7931d591bb31976f08e28f54d9f46f9a0b597cf",
+          "payload_files": 8,
+          "freed_payload_bytes": 12945,
+          "freed_archive_bytes": 4488
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "temporary_host_build_caches": {
+      "status": "retired verified duplicate caches",
+      "removed": [
+        {
+          "path": "openbsd-amd64-build-cache.tgz",
+          "sha256": "cdb0489c8161774f0474e8ca016dac66160087b5c63483d9e94cad5eebe9595b",
+          "bytes": 104732192,
+          "prior_canonical_archive_sha256": "4572e55552e9a35925905caa8d06def0cd3ed1aae7a2e5915bb55d4c5b41c0f9"
+        },
+        {
+          "path": "openbsd-arm64-build-cache.tgz",
+          "sha256": "9fb72867e9dba2ed871a5db5670eca7e74909cc28613c29ca2533964660da6e4",
+          "bytes": 104544608,
+          "prior_canonical_archive_sha256": "5d99758128fc45d8ec9768e07fe980f07f415bc4b2fe50e5596c7af73090dd21"
+        }
+      ],
+      "canonical_archives_sources_builds_stages_disks_preserved": true
+    }
+  }
+}

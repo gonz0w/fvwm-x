@@ -10,12 +10,11 @@ Desktop services build on FVWM's native modules and existing system facilities.
 File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
-**Status:** development. This snapshot has locally qualified
-[interaction hardening](dev-docs/verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md)
-and responsiveness checkpoints. The selected
-[safety and maintainability closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout)
-is locally qualified; feature dependencies follow. Performance tuning moves
-to the next release.
+**Status:** development. The
+[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) is locally
+qualified and merged. [Xlib dependency cleanup](dev-docs/verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md)
+removes an unused requirement and checks support. Approved feature
+dependencies follow; performance tuning waits until the next release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

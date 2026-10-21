@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Xlib dependency contract](VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md): unused libxkbcommon requirement removed; focused configure controls pass; combined checkpoint pending.
+- [Xlib dependency contract](VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md): unused libxkbcommon requirement removed; 2284 standard / 33 optional passes, exact generated configuration and ten installs across six targets.
 
 - [Function-wait cancellation and retained lifetimes](VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md): three reproduced failures repaired; 2276 standard / 47 selected optional passes, scoped sanitizers, ten installs and finite closeout dispositions.
 

@@ -907,7 +907,6 @@ void SendMsg(struct XObj *xobj,int TypeMsg)
 void SendMsgAndString(char *action, char *type)
 {
   int val[2];
-  char *token = NULL;
   char *arg1 = NULL;
   char *arg2 = NULL;
   XTextProperty window_name;
@@ -920,7 +919,7 @@ void SendMsgAndString(char *action, char *type)
   }
 
   if(StrEquals(type,"SendString") || StrEquals(type,"CheckBinding")){
-    if (GetIntegerArguments(action, NULL, val, 2) == 2){
+    if (GetIntegerArguments(action, &action, val, 2) == 2){
       if (val[0] > 1000 || val[0] < 1){
 	fvwm_debug(__func__,
                    "[%s][%s]: <<WARNING>> Widget id out of range: %i\n",
@@ -930,9 +929,8 @@ void SendMsgAndString(char *action, char *type)
 
       i = TabIdObj[val[0]];
       if (i != -1) {
-	/* skip the integer argument */
-	action = GetNextToken(action, &token);
-	action = GetNextToken(action, &token);
+	/* The checked parser returns a borrowed continuation after both
+	 * integers. Do not allocate disposable tokens or lose their owners. */
 	free(LastString);
 	LastString = NULL;
 	if (action != NULL && strlen(action) > 0)
@@ -943,7 +941,6 @@ void SendMsgAndString(char *action, char *type)
 	fvwm_debug(__func__, "[%s][%s]: <<WARNING>> no Widget %i\n",
                    ScriptName,type,val[0]);
       }
-      free(token);
     }else{
       fvwm_debug(__func__, "[%s][%s]: <<WARNING>> Syntax Error: %s\n",
                  ScriptName,type,action);

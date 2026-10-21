@@ -56,7 +56,9 @@ module_packet_read_status module_packet_reader_read(
 			{
 				if (reader->words[0] != START_FLAG)
 				{
-					reader->used = 0;
+					reader->failed = true;
+					errno = EPROTO;
+					return MODULE_PACKET_READ_ERROR;
 				}
 				else
 				{
@@ -72,7 +74,7 @@ module_packet_read_status module_packet_reader_read(
 					words > FvwmPacketMaxSize)
 				{
 					reader->failed = true;
-					errno = EINVAL;
+					errno = EPROTO;
 					return MODULE_PACKET_READ_ERROR;
 				}
 				reader->wanted = words * sizeof(unsigned long);
@@ -104,7 +106,18 @@ module_packet_read_status module_packet_reader_read(
 			reader->used += (size_t)count;
 			continue;
 		}
-		if (count == 0 || isTerminated)
+		if (count == 0)
+		{
+			reader->failed = true;
+			if (reader->used != 0)
+			{
+				errno = EPROTO;
+				return MODULE_PACKET_READ_ERROR;
+			}
+			errno = 0;
+			return MODULE_PACKET_READ_ENDED;
+		}
+		if (isTerminated)
 		{
 			return MODULE_PACKET_READ_ENDED;
 		}

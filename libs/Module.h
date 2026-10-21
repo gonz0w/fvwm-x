@@ -141,6 +141,8 @@ typedef struct
  * The packet is stored into static memory that is reused during
  * the next call to ReadFvwmPacket.  Callers, therefore, must copy
  * needed data before the next call to ReadFvwmPacket.
+ * NULL ends the stream: errno is zero for clean EOF, EPROTO for bad framing
+ * or truncated EOF, otherwise the read/cancellation error. No resync scan.
  **/
 FvwmPacket* ReadFvwmPacket( int fd );
 

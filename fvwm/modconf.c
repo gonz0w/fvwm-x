@@ -370,7 +370,7 @@ send_logging_fd(fmodule *module)
 {
 	char msg[64];
 
-	snprintf(msg, sizeof(msg), "LoggingFD %d\n", log_get_fd());
+	snprintf(msg, sizeof(msg), "LoggingFD %d\n", module->xloggingFd);
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
 }
 
@@ -387,6 +387,13 @@ void CMD_Send_ConfigInfo(F_CMD_ARGS)
 	/* get length once for efficiency */
 	int match_len = 0;
 	fmodule *mod = exc->m.module;
+
+	if (mod == NULL)
+	{
+		fvwm_debug(__func__,
+		    "Ignoring configuration request outside a module context");
+		return;
+	}
 
 	send_monitor_list(mod);
 	/* send ImagePath and ColorLimit first */

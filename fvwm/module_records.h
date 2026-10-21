@@ -32,6 +32,8 @@ struct fmodule
         } xflags;
 	int xreadPipe;
 	int xwritePipe;
+	/* Numeric descriptor in the child's fork-time table; not owned here. */
+	int xloggingFd;
 	fqueue xpipeQueue;
 	size_t xpipeQueueBytes;
 	unsigned char xinputBuffer[

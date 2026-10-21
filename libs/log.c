@@ -34,6 +34,7 @@
 
 static char	*log_file_name;
 static FILE	*log_file;
+static bool	 inherited_log_seen;
 int	lib_log_level = 0;
 
 int
@@ -73,6 +74,26 @@ log_set_fd(int fd)
 	log_close();
 	log_file = candidate;
 	return true;
+}
+
+bool
+log_adopt_inherited_fd(int fd)
+{
+	if (fd < -1)
+	{
+		errno = EBADF;
+		return false;
+	}
+	/* Metadata describes one fork-time inheritance, not another transfer.
+	 * After failure/close the number may name an unrelated child resource.
+	 * Even a failed first adoption must never be retried using that number.
+	 * Explicit log_open can recover with an independently owned sink. */
+	if (inherited_log_seen)
+	{
+		return true;
+	}
+	inherited_log_seen = true;
+	return log_set_fd(fd);
 }
 
 void

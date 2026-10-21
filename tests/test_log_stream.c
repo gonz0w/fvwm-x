@@ -15,6 +15,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 static int fault, adoptions;
 FILE *__real_fdopen(int, const char *);
@@ -43,6 +44,67 @@ __wrap_fflush(FILE *file)
 	return __real_fflush(file);
 }
 
+static void test_inherited_adoption(void)
+{
+	for (int mode = 0; mode < 3; mode++)
+	{
+		pid_t child = fork();
+		int status;
+
+		assert(child >= 0);
+		if (child == 0)
+		{
+			char path[] = "/tmp/fvwm-inherited-log-XXXXXX";
+			int inherited = mkstemp(path);
+			struct stat file;
+
+			assert(inherited >= 0 && unlink(path) == 0);
+			assert(!log_adopt_inherited_fd(-2));
+			if (mode == 0)
+			{
+				assert(log_adopt_inherited_fd(-1));
+			}
+			else if (mode == 1)
+			{
+				assert(log_adopt_inherited_fd(inherited));
+				fault = 2;
+				fvwm_debug(NULL, "sink failure");
+				fault = 0;
+				assert(log_get_fd() == -1);
+				/* Reuse the log number for other storage. */
+				char other[] = "/tmp/fvwm-reused-log-XXXXXX";
+				int reused = mkstemp(other);
+
+				assert(reused >= 0 && unlink(other) == 0);
+				assert(dup2(reused, inherited) == inherited);
+				if (reused != inherited)
+					close(reused);
+			}
+			else
+			{
+				fault = 1;
+				assert(!log_adopt_inherited_fd(inherited));
+				fault = 0;
+			}
+			for (int repeat = 0; repeat < 100; repeat++)
+			{
+				assert(log_adopt_inherited_fd(inherited));
+				fvwm_debug(NULL,
+					"must not adopt another resource");
+			}
+			assert(log_get_fd() == -1);
+			assert(fstat(inherited, &file) == 0 &&
+			    file.st_size == 0);
+			log_close();
+			assert(fcntl(inherited, F_GETFD) >= 0);
+			close(inherited);
+			_exit(0);
+		}
+		assert(waitpid(child, &status, 0) == child);
+		assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+	}
+}
+
 int
 main(int argc, char **argv)
 {
@@ -51,6 +113,7 @@ main(int argc, char **argv)
 		assert(fcntl(atoi(argv[1]), F_GETFD) >= 0);
 		return 0;
 	}
+	test_inherited_adoption();
 	char directory[] = "/tmp/fvwm-log-stream-XXXXXX";
 	char first[256], second[256], absent[256], content[1024];
 

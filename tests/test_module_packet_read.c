@@ -138,8 +138,31 @@ static void test_declared_word_count(void)
 		prepare(FvwmPacketHeaderSize);
 		wire[2] = invalid[i];
 		assert(ReadFvwmPacket(FIXTURE_FD) == NULL);
-		assert(wire_offset == FvwmPacketHeaderSize_byte);
+		assert(wire_offset == FvwmPacketHeaderSize_byte &&
+		    errno == EPROTO);
 	}
+}
+
+static void test_bad_start_and_truncation(void)
+{
+	prepare(FvwmPacketHeaderSize);
+	memmove(wire + 1, wire, available);
+	wire[0] = 0;
+	available += sizeof(*wire);
+	assert(ReadFvwmPacket(FIXTURE_FD) == NULL && errno == EPROTO);
+	assert(wire_offset == sizeof(*wire));
+	/* Refuse every truncated position, including exact header EOF. */
+	for (size_t bytes = 1;
+	    bytes < (FvwmPacketHeaderSize + 2) * sizeof(*wire); bytes++)
+	{
+		prepare(FvwmPacketHeaderSize + 2);
+		available = bytes;
+		assert(ReadFvwmPacket(FIXTURE_FD) == NULL && errno == EPROTO);
+	}
+	prepare(FvwmPacketHeaderSize);
+	available = 0;
+	errno = EIO;
+	assert(ReadFvwmPacket(FIXTURE_FD) == NULL && errno == 0);
 }
 
 static void terminate(int number)
@@ -204,6 +227,7 @@ int main(void)
 	test_boundaries_and_errors();
 	test_actual_pipe();
 	test_declared_word_count();
+	test_bad_start_and_truncation();
 	test_blocked_termination();
 	return 0;
 }

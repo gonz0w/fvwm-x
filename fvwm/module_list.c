@@ -277,6 +277,9 @@ static fmodule *do_execute_module(
 	}
 	args[nargs] = NULL;
 
+	/* Config replies must describe the child's inherited table, even if
+	 * core logging closes/reopens before a delayed or repeated request. */
+	module->xloggingFd = log_get_fd();
 	/* Child failure must not run the core's inherited stdio/exit handlers. */
 	val = fork();
 	if (val > 0)
@@ -324,7 +327,7 @@ static fmodule *do_execute_module(
 			close(fvwm_to_app[1]);
 			close(app_to_fvwm[0]);
 		}
-		/* Only the two module endpoints may survive this exec. */
+		/* Pass module endpoints; log inheritance is deliberate too. */
 		if (!fvwm_fd_set_cloexec(app_to_fvwm[1], false) ||
 		    (fvwm_to_app[0] >= 0 &&
 		    !fvwm_fd_set_cloexec(fvwm_to_app[0], false)))

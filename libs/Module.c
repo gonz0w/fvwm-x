@@ -37,6 +37,8 @@
 inline
 static int positive_read(int fd, char *buf, int count)
 {
+	int requested = count;
+
 	while (count > 0)
 	{
 		ssize_t n_read = fvwmRead(fd, buf, count);
@@ -46,6 +48,10 @@ static int positive_read(int fd, char *buf, int count)
 		}
 		if (n_read <= 0)
 		{
+			if (n_read == 0)
+			{
+				errno = count == requested ? 0 : EPROTO;
+			}
 			return -1;
 		}
 		buf += n_read;
@@ -67,40 +73,44 @@ FvwmPacket *ReadFvwmPacket(int fd)
 	FvwmPacket *packet = (FvwmPacket *)buffer;
 	unsigned long length;
 
-	/* The `start flag' value supposedly exists to synchronize the
-	 * fvwm -> module communication.  However, the communication goes
-	 * through a pipe.  I don't see how any data could ever get lost,
-	 * so how would fvwm & the module become unsynchronized?
-	 */
-	do
+	/* Pipes preserve framing. Searching arbitrary words after corruption
+	 * can wait indefinitely or mistake a body word for a new header. */
+	if (positive_read(fd, (char *)buffer, sizeof(unsigned long)) < 0)
 	{
-		if (positive_read(fd, (char *)buffer, sizeof(unsigned long))
-			< 0)
-		{
-			return NULL;
-		}
-	} while (packet->start_pattern != START_FLAG);
+		return NULL;
+	}
+	if (packet->start_pattern != START_FLAG)
+	{
+		errno = EPROTO;
+		return NULL;
+	}
 
 	/* Now read the rest of the header */
 	if (positive_read(fd, (char *)(&buffer[1]), 3 * sizeof(unsigned long))
 		< 0)
 	{
+		if (errno == 0)
+			errno = EPROTO;
 		return NULL;
 	}
 	if (packet->size < FvwmPacketHeaderSize ||
 	    packet->size > FvwmPacketMaxSize)
 	{
+		errno = EPROTO;
 		return NULL;
 	}
 	length = FvwmPacketBodySize_byte(*packet);
 	if (length > FvwmPacketMaxSize_byte - FvwmPacketHeaderSize_byte)
 	{
 		/* packet too long */
+		errno = EPROTO;
 		return NULL;
 	}
 	/* Finally, read the body, and we're done */
 	if (positive_read(fd, (char *)(&buffer[4]), length) < 0)
 	{
+		if (errno == 0)
+			errno = EPROTO;
 		return NULL;
 	}
 

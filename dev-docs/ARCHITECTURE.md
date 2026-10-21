@@ -107,6 +107,13 @@ discarded skip tokens. Root Send_ConfigInfo checks its module recipient before
 module-only senders. Six-target qualification and affected final context checks
 pass; the selected already-bounded input helpers retain their exact policies.
 
+Function-owned selection/classification waits now use the existing ID-only
+interaction cancellation policy. Target lifecycle events remain queued until
+unwind; shutdown releases grabs and skips pending conditional phases. A nested
+Wait can retire a retained target before classification resumes, so that record
+is checked as well. Six-target compiler/install/default-X qualification passes, with scoped
+guest sanitizers and exact entry-point dispositions. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md).
+
 ## Boundaries to strengthen within owning fixes
 
 1. Resolve window identity and lifetime through existing ownership mechanisms;

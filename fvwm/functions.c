@@ -54,6 +54,7 @@
 #include "functions.h"
 #include "commands.h"
 #include "events.h"
+#include "interaction.h"
 #include "modconf.h"
 #include "module_list.h"
 #include "misc.h"
@@ -127,8 +128,19 @@ static Bool DeferExecution(
 	int wcontext;
 	FvwmWindow *fw;
 	int FinishEvent;
+	fvwm_interaction interaction = { None, Scr.Root, False,
+		FVWM_INTERACTION_RUNNING, NULL };
 
 	fw = ret_ecc->w.fw;
+	if (fw != NULL)
+	{
+		if (IS_SCHEDULED_FOR_DESTROY(fw))
+		{
+			return True;
+		}
+		interaction.client = FW_W(fw);
+		interaction.can_withdraw = IS_MAPPED(fw) || IS_ICONIFIED(fw);
+	}
 	w = ret_ecc->w.w;
 	original_w = w;
 	wcontext = ret_ecc->w.wcontext;
@@ -200,11 +212,17 @@ static Bool DeferExecution(
 		}
 		done = 0;
 		/* block until there is an event */
-		FMaskEvent(
-			dpy, ButtonPressMask | ButtonReleaseMask |
-			ExposureMask | KeyPressMask | VisibilityChangeMask |
-			ButtonMotionMask | PointerMotionMask
-			/* | EnterWindowMask | LeaveWindowMask*/, &e);
+		/* Keep lifecycle dispatch behind the caller's unwind. The
+		 * shared finite wait observes target loss and termination. */
+		if (!fvwm_interaction_wait(&interaction,
+			ButtonPressMask | ButtonReleaseMask | ExposureMask |
+			KeyPressMask | VisibilityChangeMask | ButtonMotionMask |
+			PointerMotionMask, &e))
+		{
+			UngrabEm(GRAB_NORMAL);
+			MyXUngrabKeyboard(dpy);
+			return True;
+		}
 
 		if (e.type == KeyPress)
 		{
@@ -813,7 +831,7 @@ scaled_move_threshold(int x, int y)
 
 static cfunc_action_t CheckActionType(
 	int x, int y, XEvent *d, Bool may_time_out, Bool is_button_pressed,
-	int *ret_button)
+	int *ret_button, fvwm_interaction *interaction)
 {
 	int xcurrent,ycurrent,total = 0;
 	Time t0;
@@ -844,6 +862,10 @@ static cfunc_action_t CheckActionType(
 			do_sleep = 1;
 		}
 		total += 20;
+		if (fvwm_interaction_cancelled(interaction))
+		{
+			return CF_CANCELLED;
+		}
 		if (FCheckMaskEvent(
 			    dpy, ButtonReleaseMask|ButtonMotionMask|
 			    PointerMotionMask|ButtonPressMask|ExposureMask, d))
@@ -890,6 +912,10 @@ static cfunc_action_t CheckActionType(
 		}
 	}
 
+	if (fvwm_interaction_cancelled(interaction))
+	{
+		return CF_CANCELLED;
+	}
 	return (is_button_pressed) ? CF_HOLD : CF_TIMEOUT;
 }
 
@@ -1013,6 +1039,8 @@ static void execute_complex_function(
 	int trigger_evtype;
 	int button;
 	XEvent *te;
+	fvwm_interaction interaction = { None, Scr.Root, False,
+		FVWM_INTERACTION_RUNNING, NULL };
 
 	if (PARSER_DEBUG)
 	{
@@ -1172,6 +1200,16 @@ static void execute_complex_function(
 		}
 	}
 
+	if (ecc.w.fw != NULL)
+	{
+		if (IS_SCHEDULED_FOR_DESTROY(ecc.w.fw))
+		{
+			goto ungrab_exit;
+		}
+		interaction.client = FW_W(ecc.w.fw);
+		interaction.can_withdraw =
+			IS_MAPPED(ecc.w.fw) || IS_ICONIFIED(ecc.w.fw);
+	}
 	te = (mask & ECC_ETRIGGER) ? ecc.x.etrigger : exc->x.elast;
 	switch (te->xany.type)
 	{
@@ -1194,7 +1232,12 @@ static void execute_complex_function(
 
 	/* Wait and see if we have a click, or a move */
 	/* wait forever, see if the user releases the button */
-	type = CheckActionType(x, y, &d, HaveHold, True, &button);
+	type = CheckActionType(
+		x, y, &d, HaveHold, True, &button, &interaction);
+	if (type == CF_CANCELLED)
+	{
+		goto ungrab_exit;
+	}
 	if (do_run_late_immediate)
 	{
 		exc2 = exc_clone_context(exc, &ecc, mask);
@@ -1205,6 +1248,13 @@ static void execute_complex_function(
 		exc_destroy_context(exc2);
 		do_run_late_immediate = 0;
 	}
+	/* A late immediate Wait can dispatch the target's destruction before
+	 * click classification resumes. The record remains retained. */
+	if (fvwm_interaction_cancelled(&interaction) ||
+	    (ecc.w.fw != NULL && IS_SCHEDULED_FOR_DESTROY(ecc.w.fw)))
+	{
+		goto ungrab_exit;
+	}
 	if (type == CF_CLICK)
 	{
 		int button2;
@@ -1213,9 +1263,11 @@ static void execute_complex_function(
 		if (HaveDoubleClick)
 		{
 			type = CheckActionType(
-				x, y, &d, True, False, &button2);
+				x, y, &d, True, False, &button2, &interaction);
 			switch (type)
 			{
+			case CF_CANCELLED:
+				goto ungrab_exit;
 			case CF_HOLD:
 			case CF_MOTION:
 			case CF_CLICK:

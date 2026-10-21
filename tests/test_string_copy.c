@@ -137,10 +137,10 @@ static void combinations(void)
 		for (unsigned code = 0; code < limit; code++)
 		{
 			unsigned remainder = code;
-
 			for (unsigned i = 0; i < length; i++)
 			{
-				text[i] = alphabet[remainder % sizeof(alphabet)];
+				text[i] =
+					alphabet[remainder % sizeof(alphabet)];
 				remainder /= sizeof(alphabet);
 			}
 			text[length] = 0;
@@ -160,12 +160,12 @@ int main(int argc, char **argv)
 	printf("C locale: %lu string cases, three operations each\n", cases);
 	unsigned long first = cases;
 	const char *locale = setlocale(LC_CTYPE, "");
-
 	if (locale && strcmp(locale, "C") != 0)
 	{
 		literals();
 		combinations();
-		printf("%s locale: %lu additional cases\n", locale, cases - first);
+		printf("%s locale: %lu additional cases\n",
+			locale, cases - first);
 	}
 	return 0;
 }

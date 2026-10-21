@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Shared string copy ownership](VERIFICATION-2026-10-21-STRING-COPIES.md): three related operations, one composed six-target checkpoint with 2208 standard/28 affected optional passes, scoped sanitizer and exact install/default-X evidence.
+
 - [2026-10-21 protocol requirement register](STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md): three fixed inventory stories, forty clause/role records and explicit owner handoffs; documentation audit, with historical runtime evidence kept source-scoped.
 
 - [OpenBSD 8.0 release baseline](VERIFICATION-2026-10-20-OPENBSD-80.md): sole supported OpenBSD release on both architectures; 538 standard/34 optional composed passes, full installs and authenticated default-X/scaling; original failures retained.

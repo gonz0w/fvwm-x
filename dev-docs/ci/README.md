@@ -22,7 +22,9 @@ The [BSD candidate](bsd.candidate.yml) now uses the approved repository-owned
 [QEMU runner](../../tools/maintenance/qemu_bsd.py), with four fixed image profiles
 and separate core/Go jobs. The original action/AnyVM candidates remain historical
 review inputs in their pin receipts; their runtime and cache lifecycle are no
-longer used by this inactive candidate. [Current asset pins](ASSET-PINS-2026-10-20.json) select OpenBSD 8.0 only;
+longer used by this inactive candidate. [Current asset pins](ASSET-PINS-2026-10-20.json) select the current OpenBSD 8.0 baseline;
+OpenBSD follows new releases, with fixed inputs and both architecture gates
+refreshed and qualified together before support claims advance;
 the original dated locks retain historical inputs. The runner consumes only the selected
 image/profile, plus the independently verified [bootstrap key and ARM firmware
 pins](BOOT-PINS-2026-10-20.json). It does not execute downloaded launch scripts.

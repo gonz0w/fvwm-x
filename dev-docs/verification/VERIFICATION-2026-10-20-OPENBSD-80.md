@@ -8,7 +8,10 @@ Base: merged PR #134, `3bb05ac2e79edfac9ae4bb0cec5ed36d2baf1f7e`.
 PR #135 remains independently open.
 
 The [accepted baseline](../decisions/OPENBSD-8.0-BASELINE-2026-10-20.md)
-selects **OpenBSD 8.0 only**, on AMD64 and ARM64, retaining Linux and FreeBSD.
+selects **OpenBSD 8.0** for this checkpoint on AMD64 and ARM64, retaining
+Linux and FreeBSD. The user clarified on 2026-10-21 that OpenBSD follows new
+releases; 8.0 is the current qualified baseline, with 7.9 out of scope. This
+report qualifies 8.0, not future release inputs.
 The [official release](https://www.openbsd.org/80.html) dates 8.0 to October 20.
 The previously missing CI asset, SVG isolation and legacy-property entries run
 and pass on both architectures, without omissions. Full configured installs,

@@ -1,8 +1,17 @@
-# OpenBSD 8.0 release target — 2026-10-20
+# OpenBSD release baseline — 2026-10-20, clarified 2026-10-21
 
-Accepted by direct user instruction: target OpenBSD 8.0, and only that OpenBSD
-release, for FVWM-X. Keep AMD64 and ARM64, default Xenocara, Linux and FreeBSD.
-No release publication is authorized.
+Accepted by direct user instruction on 2026-10-20: qualify OpenBSD 8.0 and
+exclude 7.9. Clarified by the user on 2026-10-21: follow future OpenBSD releases;
+8.0 is the current qualified baseline, not a permanent product restriction.
+Keep AMD64 and ARM64, default Xenocara, Linux and FreeBSD. No release
+publication is authorized.
+
+Maintain one current OpenBSD release baseline rather than backporting to 7.9.
+When advancing it, refresh fixed image/bootstrap/package inputs, exact guest
+identity checks and their fixtures together. Qualify both architectures with
+the owning combined checkpoint before updating support claims. Keep dated
+locks and results as historical evidence; a version-policy change alone does
+not qualify new artifacts or development snapshots.
 
 The [official announcement](https://www.openbsd.org/80.html) dates 8.0 to
 October 20, 2026. Use fixed, verified 8.0 image/bootstrap inputs, release packages

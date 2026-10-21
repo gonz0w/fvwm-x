@@ -1,6 +1,6 @@
 # Proposals and decisions
 
-- [OpenBSD 8.0 release baseline](OPENBSD-8.0-BASELINE-2026-10-20.md): accepted sole OpenBSD release on AMD64 and ARM64; Linux and FreeBSD remain.
+- [OpenBSD 8.0 release baseline](OPENBSD-8.0-BASELINE-2026-10-20.md): current qualified baseline on AMD64 and ARM64; follow future OpenBSD releases, exclude 7.9, retain Linux and FreeBSD.
 
 - [Public repository hosting](PUBLIC-HOSTING-2026-10-16.md): continue public code and PR review with local verification; release ownership remains separate.
 

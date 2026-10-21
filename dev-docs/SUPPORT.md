@@ -11,8 +11,10 @@ framebuffer servers with no monitor topology use a root-sized monitor
 named `FVWM-X-Root`. Real RandR topology replaces it when available.
 See the dated verification report for native default-Xorg evidence.
 
-The release targets are FreeBSD 15.1 with packaged Xorg and **OpenBSD 8.0
-only**, with the compiler and Xenocara sets. Both OpenBSD 8.0 VM architectures
+The current baselines are FreeBSD 15.1 with packaged Xorg and **OpenBSD 8.0**,
+with the compiler and Xenocara sets. OpenBSD follows new releases; 7.9 is out
+of scope. Advance its fixed inputs and both architecture gates together,
+recording fresh qualification before making support claims. Both OpenBSD 8.0 VM architectures
 pass the [local baseline checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md).
 Earlier 7.9 results remain historical evidence.
 Linux architecture gates use Ubuntu 24.04. Existing GCC/Clang Ubuntu and Alpine coverage remains in place.

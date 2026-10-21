@@ -1,6 +1,10 @@
 # Native BSD verification
 
-The release targets are FreeBSD 15.1 and OpenBSD 8.0 only. Both OpenBSD 8.0
+The current baselines are FreeBSD 15.1 and OpenBSD 8.0. OpenBSD follows new
+releases; 7.9 is out of scope. Refresh fixed image/bootstrap/package inputs
+and both architecture gates together, then record qualification for the new
+release. The exact 8.0 checks below identify this tested baseline, rather than
+a permanent version restriction. Both OpenBSD 8.0
 VM profiles pass the [baseline checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md);
 retained 7.9 results are historical. ARM64 guests
 run under hardware-accelerated QEMU on the macOS development host; AMD64

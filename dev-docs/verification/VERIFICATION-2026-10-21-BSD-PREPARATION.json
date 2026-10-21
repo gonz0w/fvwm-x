@@ -1,0 +1,1018 @@
+{
+  "status": "passed",
+  "runtime_binding": {
+    "commit": "d2db98fc782cda284d0eabeb144dddcfc0456a05",
+    "archive": "0d1c1d127a31b1ec0ca2a312bcffe8e389eb54a6d8def6f42a63506d3792871b",
+    "files": 2097,
+    "status": "passed"
+  },
+  "base": "f1b4bc0e43dd3a65525463979d81d0a7e199af71",
+  "affected": [
+    "dev-docs/ARCHITECTURE.md",
+    "dev-docs/PROJECT-TRACKER.md",
+    "dev-docs/ci/README.md",
+    "tests/test_ci_png.py",
+    "tests/test_qemu_bsd.py",
+    "tools/maintenance/ci_png.py",
+    "tools/maintenance/qemu_bsd.py"
+  ],
+  "native_policy_cases": 282,
+  "target_count": 6,
+  "units": [
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "cases": 47,
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/fvwm-x-linux-arm64-svg-policy-evidence.tgz",
+      "sha256": "8e2fda7f6550f92827f14a8dc478ef22384ac2e98a84e224b18ad8dbc0171879",
+      "payload": {
+        "evidence/qemu_bsd.log": {
+          "sha256": "57114dc42592df2cc2e1523b0e25b5cdd2c84ad689d88b29174e40a49f9fc098",
+          "mode": 420,
+          "bytes": 136,
+          "elf": false
+        },
+        "evidence/ci_png.log": {
+          "sha256": "5c7e974748351059d000555e64c94f8fef9dc70fca8a06e45ef8a9bc5cba46fa",
+          "mode": 420,
+          "bytes": 110,
+          "elf": false
+        },
+        "evidence/result.json": {
+          "sha256": "9e7a534ec86f975f5809f6e8006b57e9a1ee082ec31557beb693f3c5b2ed3f33",
+          "mode": 420,
+          "bytes": 1169,
+          "elf": false
+        }
+      },
+      "result": {
+        "status": "passed",
+        "uname": [
+          "Linux",
+          "288f898505a4",
+          "6.18.10-200.fc43.aarch64",
+          "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+          "aarch64"
+        ],
+        "inputs": {
+          "tests/test_qemu_bsd.py": "1cc5263e3e62ed5ce8724bb6edae80a349e4e12724a53e17b6d57e34bc6582d9",
+          "tests/test_ci_png.py": "1048f971af9a856211bcf919ca5ecfd7de53b95f54b380005397a893e693288f",
+          "tools/maintenance/ci_png.py": "3b889116fa941ef1dfaa416bc744d0acfff60b30f0e8443820bf4c3d8d0a888d",
+          "tools/maintenance/qemu_bsd.py": "d761a2aebb993401dfab6de6ccbd47ea9ec2998049e41776c9c6874284d887b7",
+          "tools/maintenance/ci_assets.py": "5f895a413d8ae27f1e946bd7a3e27a71e04c7b6b34ec31b153f2b62469a76c5d",
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "dev-docs/ci/ASSET-PINS-2026-10-20.json": "6f06bb151ab7e672daa2aa0f7eaaf5475839056e1c21602f22e0cb340987db60",
+          "dev-docs/ci/BOOT-PINS-2026-10-20.json": "91ed25282ae84c66603a1ab687b988fe3c3d5cd8389967bafe7f658df76a982b"
+        },
+        "commands": [
+          {
+            "name": "qemu_bsd",
+            "status": 0
+          },
+          {
+            "name": "ci_png",
+            "status": 0
+          }
+        ]
+      }
+    },
+    {
+      "target": "linux-amd64",
+      "cases": 47,
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/linux-amd64-policy-evidence.tgz",
+      "sha256": "c716d9abd852da6ef07478563615220159a7be3c3f574746a7265dc94fef8ea7",
+      "payload": {
+        "evidence/qemu_bsd.log": {
+          "sha256": "f32b71b1ccad647bde296fd12572252a341805d81ffcb1758f13584735cb5ec6",
+          "mode": 420,
+          "bytes": 136,
+          "elf": false
+        },
+        "evidence/ci_png.log": {
+          "sha256": "fa34217f3facfe620bb1c166695bee5898ad9e91a6dba0581a57b4abaa426ab4",
+          "mode": 420,
+          "bytes": 110,
+          "elf": false
+        },
+        "evidence/result.json": {
+          "sha256": "f105d4bcdba7697f533218b9923bffc88bc5c52d1b2d8d40c8c159ec98472c4b",
+          "mode": 420,
+          "bytes": 1176,
+          "elf": false
+        }
+      },
+      "result": {
+        "status": "passed",
+        "uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.111+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+          "x86_64"
+        ],
+        "inputs": {
+          "tests/test_qemu_bsd.py": "1cc5263e3e62ed5ce8724bb6edae80a349e4e12724a53e17b6d57e34bc6582d9",
+          "tests/test_ci_png.py": "1048f971af9a856211bcf919ca5ecfd7de53b95f54b380005397a893e693288f",
+          "tools/maintenance/ci_png.py": "3b889116fa941ef1dfaa416bc744d0acfff60b30f0e8443820bf4c3d8d0a888d",
+          "tools/maintenance/qemu_bsd.py": "d761a2aebb993401dfab6de6ccbd47ea9ec2998049e41776c9c6874284d887b7",
+          "tools/maintenance/ci_assets.py": "5f895a413d8ae27f1e946bd7a3e27a71e04c7b6b34ec31b153f2b62469a76c5d",
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "dev-docs/ci/ASSET-PINS-2026-10-20.json": "6f06bb151ab7e672daa2aa0f7eaaf5475839056e1c21602f22e0cb340987db60",
+          "dev-docs/ci/BOOT-PINS-2026-10-20.json": "91ed25282ae84c66603a1ab687b988fe3c3d5cd8389967bafe7f658df76a982b"
+        },
+        "commands": [
+          {
+            "name": "qemu_bsd",
+            "status": 0
+          },
+          {
+            "name": "ci_png",
+            "status": 0
+          }
+        ]
+      }
+    },
+    {
+      "target": "freebsd-arm64",
+      "cases": 47,
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/freebsd-arm64-policy-evidence.tgz",
+      "sha256": "e4b334b6d458f8f81da4cf4f886ac1d18dffcc7de6a702ab743ffbaaea59f2d7",
+      "payload": {
+        "evidence/qemu_bsd.log": {
+          "sha256": "e6ac22c2a9ac24b181807ae1f14d610f2d5aea4eaf4f1b5f58f60d9f18f5d0dd",
+          "mode": 420,
+          "bytes": 136,
+          "elf": false
+        },
+        "evidence/ci_png.log": {
+          "sha256": "fca4580d050d4b8465109c6ab965b20a5e4b40e03290fcd11b956a83f558010f",
+          "mode": 420,
+          "bytes": 110,
+          "elf": false
+        },
+        "evidence/result.json": {
+          "sha256": "f389994a216610f8c441f1eebe9dbb5fbce78347a4e734e515da60be3dce21b5",
+          "mode": 420,
+          "bytes": 1168,
+          "elf": false
+        }
+      },
+      "result": {
+        "status": "passed",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ],
+        "inputs": {
+          "tests/test_qemu_bsd.py": "1cc5263e3e62ed5ce8724bb6edae80a349e4e12724a53e17b6d57e34bc6582d9",
+          "tests/test_ci_png.py": "1048f971af9a856211bcf919ca5ecfd7de53b95f54b380005397a893e693288f",
+          "tools/maintenance/ci_png.py": "3b889116fa941ef1dfaa416bc744d0acfff60b30f0e8443820bf4c3d8d0a888d",
+          "tools/maintenance/qemu_bsd.py": "d761a2aebb993401dfab6de6ccbd47ea9ec2998049e41776c9c6874284d887b7",
+          "tools/maintenance/ci_assets.py": "5f895a413d8ae27f1e946bd7a3e27a71e04c7b6b34ec31b153f2b62469a76c5d",
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "dev-docs/ci/ASSET-PINS-2026-10-20.json": "6f06bb151ab7e672daa2aa0f7eaaf5475839056e1c21602f22e0cb340987db60",
+          "dev-docs/ci/BOOT-PINS-2026-10-20.json": "91ed25282ae84c66603a1ab687b988fe3c3d5cd8389967bafe7f658df76a982b"
+        },
+        "commands": [
+          {
+            "name": "qemu_bsd",
+            "status": 0
+          },
+          {
+            "name": "ci_png",
+            "status": 0
+          }
+        ]
+      }
+    },
+    {
+      "target": "freebsd-amd64",
+      "cases": 47,
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/freebsd-amd64-policy-evidence.tgz",
+      "sha256": "67083fc65cdb60022147293bdb6d0597e108e83b5c7cf993c52183e1060256d8",
+      "payload": {
+        "evidence/qemu_bsd.log": {
+          "sha256": "bb8e7778ff50c136e100597c598d3a1948b9b7352228d1d615c2f0a4b7be50c0",
+          "mode": 420,
+          "bytes": 136,
+          "elf": false
+        },
+        "evidence/ci_png.log": {
+          "sha256": "b7758864431b2136563b06bb99a5e8e5df1d293b88b3edd01f308edb3558013b",
+          "mode": 420,
+          "bytes": 110,
+          "elf": false
+        },
+        "evidence/result.json": {
+          "sha256": "1f7031978f3190b9aeed5cc663036c60058f8e1ff1b5364208a049ec03a5fcb9",
+          "mode": 420,
+          "bytes": 1168,
+          "elf": false
+        }
+      },
+      "result": {
+        "status": "passed",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "amd64"
+        ],
+        "inputs": {
+          "tests/test_qemu_bsd.py": "1cc5263e3e62ed5ce8724bb6edae80a349e4e12724a53e17b6d57e34bc6582d9",
+          "tests/test_ci_png.py": "1048f971af9a856211bcf919ca5ecfd7de53b95f54b380005397a893e693288f",
+          "tools/maintenance/ci_png.py": "3b889116fa941ef1dfaa416bc744d0acfff60b30f0e8443820bf4c3d8d0a888d",
+          "tools/maintenance/qemu_bsd.py": "d761a2aebb993401dfab6de6ccbd47ea9ec2998049e41776c9c6874284d887b7",
+          "tools/maintenance/ci_assets.py": "5f895a413d8ae27f1e946bd7a3e27a71e04c7b6b34ec31b153f2b62469a76c5d",
+          "tools/maintenance/common.py": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+          "dev-docs/ci/ASSET-PINS-2026-10-20.json": "6f06bb151ab7e672daa2aa0f7eaaf5475839056e1c21602f22e0cb340987db60",
+          "dev-docs/ci/BOOT-PINS-2026-10-20.json": "91ed25282ae84c66603a1ab687b988fe3c3d5cd8389967bafe7f658df76a982b"
+        },
+        "commands": [
+          {
+            "name": "qemu_bsd",
+            "status": 0
+          },
+          {
+            "name": "ci_png",
+            "status": 0
+          }
+        ]
+      }
+    }
+  ],
+  "openbsd_runner": [
+    {
+      "target": "openbsd-arm64",
+      "cases": 47,
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "edd8860193024cb4870ab435a0ec08f6f00617c05e6afb587741292182232050",
+      "bytes": 111561081,
+      "regular_files_hashed": 2572,
+      "checkpoint_files": 10,
+      "source_files": 2097,
+      "unchanged_elf_outputs": 807,
+      "unchanged_stage_files": 85,
+      "final": {
+        "dispatcher_status": 0,
+        "intentional_failed_run": false,
+        "live_reads": 237,
+        "transitions": [
+          {
+            "status": "running",
+            "phase": "acquisition",
+            "phase_started_at": 1792586378.299267,
+            "observed_at": 1792586378.4384031
+          },
+          {
+            "status": "running",
+            "phase": "extraction",
+            "phase_started_at": 1792586379.120797,
+            "observed_at": 1792586379.202178
+          },
+          {
+            "status": "running",
+            "phase": "boot",
+            "phase_started_at": 1792586382.210643,
+            "observed_at": 1792586382.2457888
+          },
+          {
+            "status": "running",
+            "phase": "authentication",
+            "phase_started_at": 1792586401.618998,
+            "observed_at": 1792586401.7567308
+          },
+          {
+            "status": "running",
+            "phase": "source-copy",
+            "phase_started_at": 1792586401.9442801,
+            "observed_at": 1792586402.010598
+          },
+          {
+            "status": "running",
+            "phase": "prepare",
+            "phase_started_at": 1792586402.9100769,
+            "observed_at": 1792586403.024283
+          },
+          {
+            "status": "running",
+            "phase": "run",
+            "phase_started_at": 1792586415.8522508,
+            "observed_at": 1792586415.9450612
+          },
+          {
+            "status": "running",
+            "phase": "collection",
+            "phase_started_at": 1792586431.7132611,
+            "observed_at": 1792586431.927296
+          }
+        ],
+        "final": {
+          "profile": "openbsd-arm64",
+          "source": {
+            "sha256": "0d1c1d127a31b1ec0ca2a312bcffe8e389eb54a6d8def6f42a63506d3792871b",
+            "members": 2097,
+            "expanded_bytes": 51173673
+          },
+          "status": "passed",
+          "phase": "collection",
+          "acceleration": "hvf",
+          "phase_started_at": 1792586431.7132611,
+          "prepare_script": {
+            "sha256": "2447ef40889011e4b9a1c50c1a3372eb34fae252b3bcb919312358db6421a62f",
+            "bytes": 3958
+          },
+          "run_script": {
+            "sha256": "03c9ff6c37bfff8174bba3ab28d9b96fb25e8c7c7658ba06c2478463126cdd80",
+            "bytes": 3593
+          },
+          "input_manifest": {
+            "profile": "openbsd-arm64",
+            "lock_sha256": "6f06bb151ab7e672daa2aa0f7eaaf5475839056e1c21602f22e0cb340987db60:91ed25282ae84c66603a1ab687b988fe3c3d5cd8389967bafe7f658df76a982b",
+            "status": "verified inputs; no extraction, execution or boot",
+            "assets": [
+              {
+                "name": "openbsd-8.0-aarch64.profile.json",
+                "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64.profile.json",
+                "size": 532,
+                "sha256": "b15cb61a452ced2c1c2d18ad9943a920e36b33a1380195c368addd98c4918c87",
+                "origin": "verified-cache",
+                "mode": "0600"
+              },
+              {
+                "name": "openbsd-8.0-aarch64.qcow2.zst",
+                "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64.qcow2.zst",
+                "size": 1295618078,
+                "sha256": "dc0a18daba9f0e6d94ded2e71c1d101634761cd5a75c3e9b552310918fbbd8a4",
+                "origin": "verified-cache",
+                "mode": "0600"
+              },
+              {
+                "name": "openbsd-8.0-aarch64-host.id_rsa",
+                "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64-host.id_rsa",
+                "size": 411,
+                "sha256": "c313890d6f3336c70b53e8c00b57c72e4dccce9998f035696cb0bc9022738ab2",
+                "origin": "verified-cache",
+                "mode": "0600"
+              },
+              {
+                "name": "QEMU_EFI-2024.02-2ubuntu0.9.fd",
+                "url": "https://github.com/anyvm-org/firmware/releases/download/v0.0.2/QEMU_EFI-2024.02-2ubuntu0.9.fd",
+                "size": 2097152,
+                "sha256": "8ff1fb8da2d8baf739bfdf020ff9ede225172c3a1b9d98e64e2b7935fd5ad4ab",
+                "origin": "verified-cache",
+                "mode": "0600"
+              }
+            ]
+          },
+          "published_profile": {
+            "anyvm_profile_version": 1,
+            "arch": "aarch64",
+            "balloon": false,
+            "console": false,
+            "cpu_cap": null,
+            "cpu_model": "neoverse-n1",
+            "disk_if": "virtio",
+            "firmware_kind": "edk2-pflash",
+            "machine_opts": "gic-version=3,usb=on,acpi=off",
+            "machine_type": "virt",
+            "mem_cap_mb": null,
+            "net_bus": null,
+            "net_card": "virtio-net-pci",
+            "os": "openbsd",
+            "qemu_min_version": null,
+            "release": "8.0",
+            "rng": "pci",
+            "rtc_base": "utc",
+            "transport": "ssh",
+            "vga": "virtio-gpu-pci",
+            "virtio_transport": "pci"
+          },
+          "image": {
+            "children": [
+              {
+                "name": "file",
+                "info": {
+                  "children": [],
+                  "virtual-size": 3066560512,
+                  "filename": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-arm64-job/disk.qcow2",
+                  "format": "file",
+                  "actual-size": 3066691584,
+                  "format-specific": {
+                    "type": "file",
+                    "data": {}
+                  },
+                  "dirty-flag": false
+                }
+              }
+            ],
+            "virtual-size": 214748364800,
+            "filename": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-arm64-job/disk.qcow2",
+            "cluster-size": 65536,
+            "format": "qcow2",
+            "actual-size": 3066691584,
+            "format-specific": {
+              "type": "qcow2",
+              "data": {
+                "compat": "1.1",
+                "compression-type": "zlib",
+                "lazy-refcounts": false,
+                "refcount-bits": 16,
+                "corrupt": false,
+                "extended-l2": false
+              }
+            },
+            "dirty-flag": false
+          },
+          "expanded_image_sha256": "18c41ee22adf15a3b134d1df555e14a2452a98f583a59e68e413ef504a5e6e70",
+          "qemu_argv": [
+            "qemu-system-aarch64",
+            "-machine",
+            "virt,gic-version=3,acpi=off",
+            "-accel",
+            "hvf",
+            "-cpu",
+            "host",
+            "-m",
+            "4096",
+            "-smp",
+            "2",
+            "-display",
+            "none",
+            "-monitor",
+            "none",
+            "-serial",
+            "stdio",
+            "-netdev",
+            "user,id=net0,ipv6=off,hostfwd=tcp:127.0.0.1:50405-:22",
+            "-device",
+            "virtio-net-pci,netdev=net0",
+            "-drive",
+            "if=none,id=root,format=qcow2,file=/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-arm64-job/disk.qcow2",
+            "-device",
+            "virtio-blk-pci,drive=root,bootindex=1",
+            "-device",
+            "qemu-xhci",
+            "-device",
+            "usb-kbd",
+            "-device",
+            "usb-tablet",
+            "-bios",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-arm64-job/inputs/QEMU_EFI-2024.02-2ubuntu0.9.fd",
+            "-device",
+            "ramfb"
+          ],
+          "qemu_pid": 41243,
+          "guest_release": [
+            "OpenBSD",
+            "8.0",
+            "arm64",
+            "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+          ],
+          "run_status": 0,
+          "qemu_exit_status": 0,
+          "finished_at": 1792586440.096525
+        }
+      },
+      "result": {
+        "status": "passed",
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#1",
+          "arm64"
+        ],
+        "native_policy_cases": 47,
+        "loader_consumers_per_observation": {
+          "png-verify-built": 2,
+          "png-verify-installed": 4,
+          "png-fresh-observation": 4
+        },
+        "prior_loader_logs_preserved": {
+          "png-loader-0.log": "3d5c19cfc6a31e735b6c6a45c16aad67a0915a63f8001edea909d3223a27592f",
+          "png-loader-1.log": "20f4b44c076bc5776fc52f7547acbab2191b71fe031d7242569601395e1863dc",
+          "png-consumers.json": "c764177b087953a135e98c1b4395103ea1f941edb386777aeb886be7d61fca39"
+        },
+        "source_files": 2097,
+        "restored_build": {
+          "archive_sha256": "80f9100f67b74bb40813785e5e6aa97eb6f19acb99de2343f47dd55c345d7fbc",
+          "regular_files_verified": 2545,
+          "standard_passes_retained": 270,
+          "compiler_sha256": "8725e31360b9c6a38907307569c97e69c2402b6d569aef14c8a2973a8174a9d9"
+        }
+      },
+      "checkpoint_payload": {
+        "source.json": "889eda21478efa90cdc70ea4e84933511e60a9ab77490bedc45411a46f0a71d2",
+        "qemu-policy.log": "fcd6ff970b24a7a919e0f7dfae3d8c62d2cc25b6e704a5fc47c3bebfe7a25a75",
+        "commands.json": "73b28947c59401a2cccb6538510b21fb1b1b9f01ed6612e7a3f9ee45733c46c9",
+        "png-policy.log": "dce82bd7b63ba499afb83cc5114baafe1bfd0e6d9c89e504e356f4d52d8f785e",
+        "qualified-png-probe.log": "39f7e85afbee15df7fcb8fdb42583ca7b293dee91f1dffcc15c194ec9cec41a6",
+        "built-loader.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "installed-loader.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "fresh-loader.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "result.json": "ed6c76fd7b1993099e95792cc7b7f31eea1e8172adeba3a2daad2804a7649680",
+        "manifest.json": "cbae46d7cdc7b3ed3ba200e87c4dc6dfabd8d9d09439dc4712c33cbe38a5b8c6"
+      },
+      "loader_receipts": {
+        "builddir-bsd/png-verify-built/png-consumers.json": {
+          "/home/fvwm-ci/source/builddir-bsd/fvwm3": {
+            "sha256": "2a2512095da27465cf392020d0932cb7371ba37cc4ca94e32761ecfa526c7fe6",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/bin/fvwm-image-svg-worker": {
+            "sha256": "197eeae99ceb666d26923a33621f98f02a036c90473e0cfac1a9299a85e419c6",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          }
+        },
+        "builddir-bsd/png-verify-installed/png-consumers.json": {
+          "/home/fvwm-ci/source/builddir-bsd/fvwm3": {
+            "sha256": "2a2512095da27465cf392020d0932cb7371ba37cc4ca94e32761ecfa526c7fe6",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/bin/fvwm-image-svg-worker": {
+            "sha256": "197eeae99ceb666d26923a33621f98f02a036c90473e0cfac1a9299a85e419c6",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/bin/fvwm3": {
+            "sha256": "c4e27d86abf04955780429cf4b7adad31158849d255ba10fbc4e612fce5b2eda",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "sha256": "3e45e610c19c7c289871b1687debbf98b3d51bc8075cef57d33d94e61d8a888a",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          }
+        },
+        "builddir-bsd/png-fresh-observation/png-consumers.json": {
+          "/home/fvwm-ci/source/builddir-bsd/fvwm3": {
+            "sha256": "2a2512095da27465cf392020d0932cb7371ba37cc4ca94e32761ecfa526c7fe6",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/bin/fvwm-image-svg-worker": {
+            "sha256": "197eeae99ceb666d26923a33621f98f02a036c90473e0cfac1a9299a85e419c6",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/bin/fvwm3": {
+            "sha256": "c4e27d86abf04955780429cf4b7adad31158849d255ba10fbc4e612fce5b2eda",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "sha256": "3e45e610c19c7c289871b1687debbf98b3d51bc8075cef57d33d94e61d8a888a",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+            }
+          }
+        }
+      }
+    },
+    {
+      "target": "openbsd-amd64",
+      "cases": 47,
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-amd64-job/guest-evidence.tgz",
+      "sha256": "21d3fd53b5ac568382f9bf4982f4539aa9639b93de12c63cdacc138f3bcf6ff5",
+      "bytes": 111810547,
+      "regular_files_hashed": 2575,
+      "checkpoint_files": 10,
+      "source_files": 2097,
+      "unchanged_elf_outputs": 807,
+      "unchanged_stage_files": 85,
+      "final": {
+        "dispatcher_status": 1,
+        "intentional_failed_run": true,
+        "live_reads": 1137,
+        "transitions": [
+          {
+            "status": "running",
+            "phase": "acquisition",
+            "phase_started_at": 1792586378.299349,
+            "observed_at": 1792586378.438304
+          },
+          {
+            "status": "running",
+            "phase": "extraction",
+            "phase_started_at": 1792586378.774648,
+            "observed_at": 1792586378.9438589
+          },
+          {
+            "status": "running",
+            "phase": "boot",
+            "phase_started_at": 1792586381.563329,
+            "observed_at": 1792586381.7292879
+          },
+          {
+            "status": "running",
+            "phase": "authentication",
+            "phase_started_at": 1792586430.344054,
+            "observed_at": 1792586430.384546
+          },
+          {
+            "status": "running",
+            "phase": "source-copy",
+            "phase_started_at": 1792586431.739041,
+            "observed_at": 1792586431.906637
+          },
+          {
+            "status": "running",
+            "phase": "prepare",
+            "phase_started_at": 1792586441.7919302,
+            "observed_at": 1792586442.0273468
+          },
+          {
+            "status": "running",
+            "phase": "run",
+            "phase_started_at": 1792586561.4511948,
+            "observed_at": 1792586561.618935
+          },
+          {
+            "status": "running",
+            "phase": "collection",
+            "phase_started_at": 1792586615.929363,
+            "observed_at": 1792586616.1845691
+          }
+        ],
+        "final": {
+          "profile": "openbsd-amd64",
+          "source": {
+            "sha256": "0d1c1d127a31b1ec0ca2a312bcffe8e389eb54a6d8def6f42a63506d3792871b",
+            "members": 2097,
+            "expanded_bytes": 51173673
+          },
+          "status": "failed",
+          "phase": "collection",
+          "acceleration": "tcg",
+          "phase_started_at": 1792586615.929363,
+          "prepare_script": {
+            "sha256": "487aff6c3563bdf07b3a1823509c2636ccdbbcdd38ffa97fb5f0b53ef2e9f70b",
+            "bytes": 3958
+          },
+          "run_script": {
+            "sha256": "03c9ff6c37bfff8174bba3ab28d9b96fb25e8c7c7658ba06c2478463126cdd80",
+            "bytes": 3593
+          },
+          "input_manifest": {
+            "profile": "openbsd-amd64",
+            "lock_sha256": "6f06bb151ab7e672daa2aa0f7eaaf5475839056e1c21602f22e0cb340987db60:91ed25282ae84c66603a1ab687b988fe3c3d5cd8389967bafe7f658df76a982b",
+            "status": "verified inputs; no extraction, execution or boot",
+            "assets": [
+              {
+                "name": "openbsd-8.0.profile.json",
+                "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0.profile.json",
+                "size": 524,
+                "sha256": "680780d59513ed60bb410e8709f7e668c0849df78fbe95f96cf2cdc69c44905c",
+                "origin": "verified-cache",
+                "mode": "0600"
+              },
+              {
+                "name": "openbsd-8.0.qcow2.zst",
+                "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0.qcow2.zst",
+                "size": 623575019,
+                "sha256": "03cbc153c0d70a32d9aee1b7f6f8e28262c28b29ee7f17147f3fe09ff2668f80",
+                "origin": "verified-cache",
+                "mode": "0600"
+              },
+              {
+                "name": "openbsd-8.0-host.id_rsa",
+                "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-host.id_rsa",
+                "size": 411,
+                "sha256": "f3a9e1bef103be5c41da8a55cb52b8a7acbb90e0e38538d0798b79aae4bb4d64",
+                "origin": "verified-cache",
+                "mode": "0600"
+              }
+            ]
+          },
+          "published_profile": {
+            "anyvm_profile_version": 1,
+            "arch": "x86_64",
+            "balloon": true,
+            "console": false,
+            "cpu_cap": null,
+            "cpu_model": null,
+            "disk_if": "virtio",
+            "firmware_kind": "default",
+            "machine_opts": "hpet=off,smm=off,graphics=on,vmport=off,usb=on",
+            "machine_type": "pc",
+            "mem_cap_mb": null,
+            "net_bus": null,
+            "net_card": "virtio-net-pci",
+            "os": "openbsd",
+            "qemu_min_version": null,
+            "release": "8.0",
+            "rng": "pci",
+            "rtc_base": "utc",
+            "transport": "ssh",
+            "vga": "virtio",
+            "virtio_transport": "pci"
+          },
+          "image": {
+            "children": [
+              {
+                "name": "file",
+                "info": {
+                  "children": [],
+                  "virtual-size": 2496659456,
+                  "filename": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-amd64-job/disk.qcow2",
+                  "format": "file",
+                  "actual-size": 2496905216,
+                  "format-specific": {
+                    "type": "file",
+                    "data": {}
+                  },
+                  "dirty-flag": false
+                }
+              }
+            ],
+            "virtual-size": 214748364800,
+            "filename": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-amd64-job/disk.qcow2",
+            "cluster-size": 65536,
+            "format": "qcow2",
+            "actual-size": 2496905216,
+            "format-specific": {
+              "type": "qcow2",
+              "data": {
+                "compat": "1.1",
+                "compression-type": "zlib",
+                "lazy-refcounts": false,
+                "refcount-bits": 16,
+                "corrupt": false,
+                "extended-l2": false
+              }
+            },
+            "dirty-flag": false
+          },
+          "expanded_image_sha256": "4cc498bc3d8f205c0468c436f59ee102557257618c5d8e83dad4e100da4d74a4",
+          "qemu_argv": [
+            "qemu-system-x86_64",
+            "-machine",
+            "pc",
+            "-accel",
+            "tcg",
+            "-cpu",
+            "max",
+            "-m",
+            "4096",
+            "-smp",
+            "2",
+            "-display",
+            "none",
+            "-monitor",
+            "none",
+            "-serial",
+            "stdio",
+            "-netdev",
+            "user,id=net0,ipv6=off,hostfwd=tcp:127.0.0.1:50402-:22",
+            "-device",
+            "virtio-net-pci,netdev=net0",
+            "-drive",
+            "if=none,id=root,format=qcow2,file=/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/openbsd-amd64-job/disk.qcow2",
+            "-device",
+            "virtio-blk-pci,drive=root,bootindex=1",
+            "-device",
+            "qemu-xhci",
+            "-device",
+            "usb-kbd",
+            "-device",
+            "usb-tablet",
+            "-vga",
+            "std"
+          ],
+          "qemu_pid": 41239,
+          "guest_release": [
+            "OpenBSD",
+            "8.0",
+            "amd64",
+            "OpenBSD 8.0 (GENERIC.MP) #2: Mon Oct 19 12:55:12 MDT 2026"
+          ],
+          "run_status": 23,
+          "failed_phase": "run",
+          "error": "guest gate failed; run and collection logs retained",
+          "qemu_exit_status": 0,
+          "finished_at": 1792586685.566069
+        }
+      },
+      "result": {
+        "status": "passed",
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#2",
+          "amd64"
+        ],
+        "native_policy_cases": 47,
+        "loader_consumers_per_observation": {
+          "png-verify-built": 2,
+          "png-verify-installed": 4,
+          "png-fresh-observation": 4
+        },
+        "prior_loader_logs_preserved": {
+          "png-loader-0.log": "8be4e15d53b045981d5fff6d22a5d9d489f8e4bfe8b02295f1474ea40cc3f829",
+          "png-loader-1.log": "5ad088690a8002e781363c690359cb7168fbf44369872a76d47a6efec4e2da4c",
+          "png-consumers.json": "9c6f66e272476c2b0480c5a6bf4c61617438c0d618fa014620a399145f314c01"
+        },
+        "source_files": 2097,
+        "restored_build": {
+          "archive_sha256": "94986e8aa0c574c695e5e723cca7b6d4d1ef2dcc69861b6865bdb849de6b7e59",
+          "regular_files_verified": 2548,
+          "standard_passes_retained": 270,
+          "compiler_sha256": "3d5e0fade0755b752fcd043c8dd348b3201ed33b2b842b8aab01ad9dd544e28a"
+        }
+      },
+      "checkpoint_payload": {
+        "source.json": "889eda21478efa90cdc70ea4e84933511e60a9ab77490bedc45411a46f0a71d2",
+        "qemu-policy.log": "6ed5f7f87721366084cc0dd4e5484ce408996f22de99007fc19ab928e9f67d79",
+        "commands.json": "e3483dd1945c89374a9a6b8d29af45a127b3ae5376ccb1f100884900d3de5b78",
+        "png-policy.log": "a4d1a6eb98e10ffd35ddc0d0e5a8e126d69fce32d0ba976357d652ba1383f24b",
+        "qualified-png-probe.log": "39f7e85afbee15df7fcb8fdb42583ca7b293dee91f1dffcc15c194ec9cec41a6",
+        "built-loader.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "installed-loader.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "fresh-loader.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "result.json": "bf9116310cfbbd4fef60243d4f4ea2602347451277979005a2b004856d40a753",
+        "manifest.json": "9b1b9c13064dcf2deca409efe6a96d79f7317bcb9f9a76b3ee77ac30b1a05ec8"
+      },
+      "loader_receipts": {
+        "builddir-bsd/png-verify-built/png-consumers.json": {
+          "/home/fvwm-ci/source/builddir-bsd/fvwm3": {
+            "sha256": "db95bf49a56b5e9c1e880a18224e2b35d191991111e21638fbf67fd71bfcf8c9",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/bin/fvwm-image-svg-worker": {
+            "sha256": "a2f2957e7bd64cbd0fd3464988632e055e8ca3bab5985ffa9adfe3fcb3298e56",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          }
+        },
+        "builddir-bsd/png-verify-installed/png-consumers.json": {
+          "/home/fvwm-ci/source/builddir-bsd/fvwm3": {
+            "sha256": "db95bf49a56b5e9c1e880a18224e2b35d191991111e21638fbf67fd71bfcf8c9",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/bin/fvwm-image-svg-worker": {
+            "sha256": "a2f2957e7bd64cbd0fd3464988632e055e8ca3bab5985ffa9adfe3fcb3298e56",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/bin/fvwm3": {
+            "sha256": "666573e12a2e1d2334ba735c55b1482d853693fb61c15aacea7d52163a79b936",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "sha256": "a530857fad346888cc204d281a5a777b5f016f3799b2d54d3f29f34f39deafe2",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          }
+        },
+        "builddir-bsd/png-fresh-observation/png-consumers.json": {
+          "/home/fvwm-ci/source/builddir-bsd/fvwm3": {
+            "sha256": "db95bf49a56b5e9c1e880a18224e2b35d191991111e21638fbf67fd71bfcf8c9",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/bin/fvwm-image-svg-worker": {
+            "sha256": "a2f2957e7bd64cbd0fd3464988632e055e8ca3bab5985ffa9adfe3fcb3298e56",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/bin/fvwm3": {
+            "sha256": "666573e12a2e1d2334ba735c55b1482d853693fb61c15aacea7d52163a79b936",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          },
+          "/home/fvwm-ci/source/builddir-bsd/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "sha256": "a530857fad346888cc204d281a5a777b5f016f3799b2d54d3f29f34f39deafe2",
+            "loaded_png": {
+              "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "7159bf410533b58020da66773522c2b01f32165adc11c598e44b9e31d815d8b9"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "portable": {
+    "registered": 188,
+    "passed": 177,
+    "skipped": 11,
+    "log_sha256": "21b1639b8e89f5a8262673757f3c96bf9f2d9c34a753cdab1673ec035eaa5fff"
+  },
+  "performance_report": "PERFORMANCE-2026-10-21.md",
+  "wm_scope": "Production C/header inputs unchanged; PR138 full WM qualification retained, not freshly rerun",
+  "limits": [
+    "No new native-CPU sanitizer, physical GPU/toolkit/compositor or release qualification",
+    "Actual owned runner checks use fresh OpenBSD8.0 AMD64/ARM64; FreeBSD native source-copy/status controls run in the existing native policy targets",
+    "The AMD64 run intentionally exits23 after all affected checks pass; failed_phase=run and clean collection/teardown are required",
+    "No dependency cache API, authentication persistence or package-policy change"
+  ],
+  "production_c_header_binding": {
+    "status": "byte-exact to merged PR138",
+    "paths": 684,
+    "base": "f1b4bc0e43dd3a65525463979d81d0a7e199af71"
+  },
+  "retirement": {
+    "status": "passed",
+    "user_authorized": true,
+    "targets": [
+      {
+        "status": "passed",
+        "rows": [
+          {
+            "directory": "/tmp/fvwm-bsd-preparation-evidence-20261021",
+            "files": 3,
+            "duplicate_bytes": 2404,
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/fvwm-x-linux-arm64-svg-policy-evidence.tgz",
+            "canonical_sha256": "8e2fda7f6550f92827f14a8dc478ef22384ac2e98a84e224b18ad8dbc0171879"
+          },
+          {
+            "directory": "/tmp/fvwm-module-waits-20261015/periodic-performance-pr138",
+            "files": 37,
+            "duplicate_bytes": 158774,
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/performance-evidence.tgz",
+            "canonical_sha256": "1ba9e10857136df5e6317ac8552409a491ec199ddffc4f341c1aacd83dcedad8"
+          }
+        ],
+        "preserved": "source inputs, builds, install/performance reference stages, VM disks and canonical host captures"
+      },
+      {
+        "status": "passed",
+        "rows": [
+          {
+            "directory": "/root/fvwm-bsd-preparation-evidence-20261021",
+            "files": 3,
+            "duplicate_bytes": 2408,
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/linux-amd64-policy-evidence.tgz",
+            "canonical_sha256": "c716d9abd852da6ef07478563615220159a7be3c3f574746a7265dc94fef8ea7"
+          }
+        ],
+        "preserved": "source inputs, builds, install/performance reference stages, VM disks and canonical host captures"
+      },
+      {
+        "status": "passed",
+        "rows": [
+          {
+            "directory": "/root/fvwm-bsd-preparation-evidence-20261021",
+            "files": 3,
+            "duplicate_bytes": 2382,
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/freebsd-arm64-policy-evidence.tgz",
+            "canonical_sha256": "e4b334b6d458f8f81da4cf4f886ac1d18dffcc7de6a702ab743ffbaaea59f2d7"
+          }
+        ],
+        "preserved": "source inputs, builds, install/performance reference stages, VM disks and canonical host captures"
+      },
+      {
+        "status": "passed",
+        "rows": [
+          {
+            "directory": "/root/fvwm-bsd-preparation-evidence-20261021",
+            "files": 3,
+            "duplicate_bytes": 2381,
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/bsd-preparation-evidence/freebsd-amd64-policy-evidence.tgz",
+            "canonical_sha256": "67083fc65cdb60022147293bdb6d0597e108e83b5c7cf993c52183e1060256d8"
+          }
+        ],
+        "preserved": "source inputs, builds, install/performance reference stages, VM disks and canonical host captures"
+      }
+    ],
+    "duplicate_bytes_removed": 168349,
+    "openbsd": "guests shut down and job keys removed; disks preserved"
+  },
+  "review": {
+    "status": "passed",
+    "scope": [
+      "Validated archive modes within private source parent; path/link/special-bit policy retained",
+      "Atomic complete snapshots retain the actual failed phase across later collection; auth cleanup preserved",
+      "Default built/installed loader receipts coexist; repeat requires new output; transitive library hashes remain required"
+    ],
+    "wm_requalification": "No C/header, native build profile, command syntax or X-visible behavior changed"
+  }
+}

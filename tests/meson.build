@@ -48,6 +48,11 @@ endif
 test('native-gate-contract', py, args: [files('test_native_gate.py')],
     timeout: 180)
 
+test('xlib-requirement-contract', py,
+    args: [files('../tools/maintenance/tests/test_xlib_requirement.py')],
+    timeout: 180,
+)
+
 test('go-version-contract', py,
     args: [files('../tools/maintenance/tests/test_go_version.py')],
     timeout: 180,

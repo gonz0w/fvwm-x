@@ -264,10 +264,26 @@ all_found_deps += xext
 summary_depvals += {'xext': xext}
 conf.set10('SHAPE', true)
 
-xkbcommon = dependency('xkbcommon', required: true)
-all_found_deps += xkbcommon
-summary_depvals += {'xkbcommon': xkbcommon}
+# Begin Xlib XKB requirement.
+# XKB key translation is part of libX11, not libxkbcommon.  Refuse an
+# incomplete Xlib development package rather than advertising an unchecked
+# capability or falling back to a different keyboard interpretation.
+xkb_probe = '''
+    #include <X11/XKBlib.h>
+    int main(void)
+    {
+        return XkbKeycodeToKeysym((Display *)0, 0, 0, 0) == NoSymbol;
+    }
+'''
+if not cc.links(
+    xkb_probe,
+    dependencies: summary_depvals['x11'],
+    name: 'Xlib XKB key translation',
+)
+    error('Xlib development files must provide X11/XKBlib.h and XkbKeycodeToKeysym')
+endif
 conf.set10('HAVE_X11_XKBLIB_H', true)
+# End Xlib XKB requirement.
 
 # Python is a required dependency, we generate shebangs at buildtime
 # This will error by default if there is no python interpreter found

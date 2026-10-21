@@ -29,7 +29,7 @@ On FreeBSD:
 
 ```sh
 pkg install -y meson ninja pkgconf python3 perl5 libevent fontconfig \
-    iceauth libICE libX11 libXext libXft libXrandr libXt libxkbcommon xtrans \
+    iceauth libICE libX11 libXext libXft libXrandr libXt xtrans \
     libXcursor libXrender png librsvg2-rust cairo xorg-vfbserver xrandr dejavu
 ```
 
@@ -37,7 +37,7 @@ On OpenBSD, install the compiler and all Xenocara sets during installation,
 then:
 
 ```sh
-pkg_add -I meson ninja libevent libxkbcommon png librsvg
+pkg_add -I meson ninja libevent png librsvg
 ```
 
 OpenBSD supplies pkg-config and DejaVu fonts in its base/Xenocara sets.

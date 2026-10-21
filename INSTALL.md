@@ -41,10 +41,14 @@ system in use.
 * libx11-dev
 * libxext-dev
 * libxft-dev
-* libxkbcommon-dev
 * libxrandr-dev (>= 1.5)
 * libxt-dev
 * xtrans-dev
+
+XKB key translation comes from libX11. Configuration checks its
+`X11/XKBlib.h` header and `XkbKeycodeToKeysym` symbol together; libxkbcommon
+is not a direct build or runtime requirement. Keep Xtrans (session transport
+headers) and Xt (X11 type headers) installed.
 
 ## Optional dependencies
 

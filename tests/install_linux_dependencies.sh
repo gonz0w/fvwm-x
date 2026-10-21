@@ -11,7 +11,7 @@ apt-get update
 apt-get install -y build-essential clang lld ninja-build pkg-config \
     python3 python3-venv perl libfontconfig1-dev libice-dev libevent-dev \
     libx11-dev libxext-dev libxft-dev libxrandr-dev libxt-dev xtrans-dev \
-    libxkbcommon-dev libfreetype6-dev libfribidi-dev libpng-dev librsvg2-dev \
+    libfreetype6-dev libfribidi-dev libpng-dev librsvg2-dev \
     libcairo2-dev libsm-dev libxcursor-dev libxfixes-dev libxrender-dev \
     libxpm-dev gettext xvfb x11-utils x11-xserver-utils xserver-xorg-core \
     xserver-xorg-video-dummy fonts-dejavu-core libxtst6

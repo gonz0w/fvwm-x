@@ -1,9 +1,10 @@
 # Module input and inherited-resource ownership
 
 2026-10-21 — DATA-01 / FD-01 / PROC-01 / CLEAN-01, with bounded-reader
-LOOP-01 coverage. PR #142. Combined qualification is running; this report's
-final outcome/counts remain pending. Broad audit owners and release acceptance
-remain open.
+LOOP-01 coverage. PR #142 is locally qualified for maintainer review. Broad
+audit owners and release acceptance remain open. The adjacent [machine
+receipt](VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.json) records source/archive
+identities and profile counts.
 
 ## Four related repairs
 
@@ -37,7 +38,7 @@ remain open.
    Check its missing module context before calling any module-only sender,
    report the refusal through existing diagnostics and return safely. The live
    fixture exercises this request before module startup. This late confirmed
-   crash gets an affected continuation after the original matrix, without
+   crash passes an affected continuation after the original matrix, without
    changing running inputs or repeating full suites.
 
 Configuration names/arguments and native packet layout remain. The main manual
@@ -117,7 +118,7 @@ them as defect reproductions or rerun passing native suites for them.
 | `script_packet_is_valid` and immediate Swallow consumers | Existing declared-word/text checks match body consumers: M_MAP uses body[0], names use text at word three, property bodies require their fields/text; helper/driver/live transport inputs match merged PR141 |
 | `script_value` helpers | Existing checked integer/tag/arithmetic, hex width, substring and record framing remain; source/header/driver match merged PR141, including malformed/truncated tail rejection; no rewrite |
 | Immediate Script incoming-message consumer | Repeated-message token ownership repaired using the existing checked parser |
-| Root Send_ConfigInfo without a module context | Confirmed old-core crash; early recipient check repaired, affected qualification pending |
+| Root Send_ConfigInfo without a module context | Confirmed old-core crash; early recipient check passes affected qualification |
 | Delayed/repeated LoggingFD producer and native consumers | Fork-time identity and once-only adoption repaired; the source concern from PR141 has a concrete old-binary mismatch and bounded new controls |
 
 These dispositions cover the selected input family, not every module, parser,
@@ -127,12 +128,61 @@ window destruction and command contexts is preparation, not new acceptance.
 
 ## Combined checkpoint
 
-Pending final six-target receipts. Run the full standard matrix once, selected
-affected optional profiles and scoped ASan/UBSan with leak detection, then
-native install/staged/default-X and manual checks. Retain original failures and
-use affected continuations only when needed. Final comments/line wrapping in
-three C/test files preserve all C tokens; test assertion failure line numbers
-may differ. Frozen native inputs are untouched.
+The combined checkpoint passes on Linux, FreeBSD Xorg and OpenBSD 8.0
+Xenocara, AMD64 and ARM64. Standard GCC/Clang Linux and default BSD profiles
+cover **2,252 distinct accepted entries**; Linux ARM64 software/minimal profiles
+cover **117**. Run the full suites once, then retain unaffected entries and
+replace only context/logging observations after the late guard. This is
+2,244 retained + eight final standard entries and 115 retained + two final
+optional entries. Five scoped ASan/UBSan entries with leak detection pass on
+the Linux ARM64 guest: four retained units and the final real-core fixture.
+This is guest-native execution, not native-CPU sanitizer qualification.
+
+| Target | Original standard entries | Final affected context/logging entries |
+| --- | ---: | ---: |
+| Linux ARM64 GCC / Clang | 288 + 288 | 2 standard + 2 optional + 1 sanitizer |
+| Linux AMD64 GCC / Clang | 288 + 288 | 2 |
+| FreeBSD ARM64 / AMD64 | 275 + 275 | 2 |
+| OpenBSD 8.0 ARM64 / AMD64 | 275 + 275 composed | 2 |
+
+Each final profile recompiles only modconf and links the core. Exactly two
+existing ELF outputs change (`fvwm3` and `fvwm_modconf.c.o`); every other
+recorded ELF stays byte-identical. Original complete test logs, changed/retained
+hashes and final fixture receipts are preserved. Ten fresh final install stages
+verify 150 ELF identities after the recorded RPATH transformation, 77 catalogs
+and 700 data files, with ten final staged context/logging invocations. Original
+staged Status (10), geometry (20), styles (10) and logging (10) results remain
+source-scoped to the primary core. They are not claimed as reruns of that final
+core. On four BSD targets, authenticated default-X checks retain twenty
+unchanged original fixture invocations and pass four final context/logging
+cases, including
+unauthenticated-client refusal and clean server shutdown.
+
+Original OpenBSD AMD64 has 274/275 passes: the probe exhausted the default
+128 descriptor limit before publishing readiness. The failed log is retained;
+one isolated recovery of the original fixture passes at 256, followed by the
+withheld install/display checks. That continuation finished its gates but
+collided with an already restored capture directory before the final guard.
+Its captured full composed test log and exact build/stage bytes, plus host
+stdout phase receipts, are retained. A later continuation repeated the install
+identity audit and ran only the withheld final guard. Detailed original root
+capture was not collected. The final fixture reserves descriptor headroom
+below its actual soft limit for receipts and passes nested/staged/default
+checks at 128. OpenBSD ARM64's first preparation failed on a duplicated Python
+`else` before native gates. Corrected preparation runs its full suite once,
+then the affected final continuation. No passing full suite is repeated.
+FreeBSD's continuation initially collided with the nested check's log name;
+a first runner correction then lacked environment metadata before Xorg startup.
+Both setup failures are retained; only missing default-display cases run after
+correction. These are runner/fixture failures, not suppressed product failures.
+
+Four final C/test comment or wrapping deltas preserve every C token. Native
+inputs stay frozen; the separate two-file guard/fixture overlay identifies the
+late functional change. The report records all 2,111 effective source hashes
+through its canonical manifests. Assertion failure line numbers may differ.
+All 26 generated manual pages verify exactly on FreeBSD; native mandoc renders
+the two affected main/combined command pages. No clean lint claim is made for
+inherited manual diagnostics.
 
 Portable `make verify` already completes with raw exit zero: 188 entries,
 177 passes and eleven capability skips in seven groups. Creating/updating the
@@ -140,9 +190,10 @@ PR does not trigger another portable suite or matrix.
 
 Canonical evidence belongs to
 `builddir/codex-2026-10-21/module-input-ownership/`. After complete capture and
-identity validation, retire exact owner-controlled guest output/archive
-duplicates. Preserve canonical host evidence, source, reusable builds, stages,
-performance references, disks and other owners' work.
+identity validation, verified completed guest output/archive duplicates are
+retired; exact receipts are retained. Canonical host evidence, source, reusable
+builds, stages, performance references, disks and other owners' work are
+preserved.
 
 PR138 remains the performance reference at 2/5 subsequent merged implementation
 checkpoints after PR139/141. This unmerged PR does not increment the count and

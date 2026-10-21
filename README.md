@@ -11,7 +11,7 @@ File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
 **Status:** development. The core/utility snapshot has locally qualified
-[stream hardening](dev-docs/verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md),
+[module/input hardening](dev-docs/verification/VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.md),
 responsiveness and utility-port checkpoints. Work focuses on
 [safety and maintainability closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout)
 before features; remaining performance tuning moves to the next release.

@@ -1,0 +1,874 @@
+{
+  "status": "locally qualified; maintainer review",
+  "base": "d65edcb24323849051a0e43ec267235ae3ef2915",
+  "primary_implementation": "3627a389b85f07a3228d80832ed83ddf22f5edfa",
+  "root_context_guard": "25e719915fb1042ad39563815010a114f4656d50",
+  "primary_source_sha256": "7669a03eaeff4cb0fb229cdee0faa854588698477854d36b1aec2fcc91feeee6",
+  "final_overlay": {
+    "fvwm/modconf.c": {
+      "before": "51a3061c13dec266509bd87251eed6663691bb29b6ba2ea296dcbf90641f227d",
+      "after": "70745b82f4348b06b90d73f83a586bf06ad933cdc15bc5b45be6e90644e74462"
+    },
+    "tests/live_x/module_logging_live.py": {
+      "before": "baa23f08e54f7fa4bc303b3196e2153e6312773645361b46d8dabac41c23ecde",
+      "after": "1a771a394434d5a3e17942dfe894f1ead416b837ad7455021000b124866e9f37"
+    }
+  },
+  "final_overlay_sha256": "d56c13fcaadfa0111a29797231742fb77bf69cf64372d45ed0a1810dda7fe065",
+  "source_inputs": 2111,
+  "profiles": {
+    "fvwm-x-linux-arm64-svg": {
+      "primary_archive": {
+        "sha256": "959b47f5c3a92838794e73906fc58b2e7de1750cb9c9525aae6503ea43fa1dd7",
+        "bytes": 1159145,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "final_archive": {
+        "sha256": "770b2420bc6ec99e9e7233ae7f9676c05cd8c9fc13e6d4be6f3e846ecbbd30bd",
+        "bytes": 472076,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "primary_profiles": {
+        "gcc": {
+          "tests": 288,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "clang": {
+          "tests": 288,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "software": {
+          "tests": 70,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "minimal": {
+          "tests": 47,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 0,
+          "data": 70
+        }
+      },
+      "final_profiles": {
+        "gcc": {
+          "retained_tests": 288,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 802,
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "clang": {
+          "retained_tests": 288,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 802,
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "software": {
+          "retained_tests": 70,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 779,
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "minimal": {
+          "retained_tests": 47,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 756,
+          "elf": 15,
+          "catalogs": 0,
+          "data": 70
+        }
+      },
+      "primary_test_logs": {
+        "asan-testlog.json": {
+          "registered": 5,
+          "passed": 5,
+          "other": [],
+          "sha256": "fd72902af60949e823135424f55b9c53c3f12134f3ad00c639251a817dc241e8"
+        },
+        "clang-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "d2c56ac9b4d24776fe4669975eb4ca7dfaa31046633af7eb19d43f10b14d9d32"
+        },
+        "gcc-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "e6c331664f8f93f392a03551b1dda3c59a7ff7d0ae1a460486cf9955afb24318"
+        },
+        "minimal-testlog.json": {
+          "registered": 47,
+          "passed": 47,
+          "other": [],
+          "sha256": "fa17e25fd48fa14f6c802694a50ef6f442d3431a2b52d799b3c5e29093aec594"
+        },
+        "software-testlog.json": {
+          "registered": 70,
+          "passed": 70,
+          "other": [],
+          "sha256": "a97a4fc17888ad6c70fa2714bea95534d3de66ea2a153630587965b83f5370bc"
+        }
+      },
+      "final_test_logs": {
+        "asan-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "ebc20c0d9b27ea8106a807a3ad9d8cac94685655cd7880e103542d89d5ba49bc"
+        },
+        "clang-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "513738f3ad80447d8493d7102f5367971407d2cce36c08fdd390981ae6a9eaae"
+        },
+        "clang-retained-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "d2c56ac9b4d24776fe4669975eb4ca7dfaa31046633af7eb19d43f10b14d9d32"
+        },
+        "gcc-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "933fab71fcecec620164c3442687943a60921c92955d4e6884baa6975ba7856f"
+        },
+        "gcc-retained-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "e6c331664f8f93f392a03551b1dda3c59a7ff7d0ae1a460486cf9955afb24318"
+        },
+        "minimal-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "4b3c27580b8a790f15f1bb42472253742a97a0f78401ad07ff1bb3c34c98b3a3"
+        },
+        "minimal-retained-testlog.json": {
+          "registered": 47,
+          "passed": 47,
+          "other": [],
+          "sha256": "fa17e25fd48fa14f6c802694a50ef6f442d3431a2b52d799b3c5e29093aec594"
+        },
+        "software-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "725ce176e1119d24e20a6bf92ea19ef2c098f2627a2a0c5a9027e42c42ea1a0f"
+        },
+        "software-retained-testlog.json": {
+          "registered": 70,
+          "passed": 70,
+          "other": [],
+          "sha256": "a97a4fc17888ad6c70fa2714bea95534d3de66ea2a153630587965b83f5370bc"
+        }
+      },
+      "default_display": false
+    },
+    "linux-amd64": {
+      "primary_archive": {
+        "sha256": "ee309dd5e9f1aa829ec939c288c2ca182b2703a87710e490f580ad98502cf67f",
+        "bytes": 314163,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "final_archive": {
+        "sha256": "7f60904d90384fcbc3d58fe19d47886089d4c469d6902b026e0a2b754910e800",
+        "bytes": 366210,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "primary_profiles": {
+        "gcc": {
+          "tests": 288,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "clang": {
+          "tests": 288,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        }
+      },
+      "final_profiles": {
+        "gcc": {
+          "retained_tests": 288,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 802,
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        },
+        "clang": {
+          "retained_tests": 288,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 802,
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        }
+      },
+      "primary_test_logs": {
+        "clang-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "8d277aa633df6946b94ecc1e8099d7f10cb51959d781a83ce654c04a11407066"
+        },
+        "gcc-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "6d9edf69a9f913060d9c6f14c068faf5f61f90fd34e053201dfc4fa54c20fa31"
+        }
+      },
+      "final_test_logs": {
+        "clang-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "bbd634490dedebba53dd368f8bbd5e7bd62a435ff4d034423111e6d2206cb69c"
+        },
+        "clang-retained-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "8d277aa633df6946b94ecc1e8099d7f10cb51959d781a83ce654c04a11407066"
+        },
+        "gcc-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "252ce2334ec935a3beafa0923c0b37553a23f5373f4bf61ecf10a66b3c8afd41"
+        },
+        "gcc-retained-testlog.json": {
+          "registered": 288,
+          "passed": 288,
+          "other": [],
+          "sha256": "6d9edf69a9f913060d9c6f14c068faf5f61f90fd34e053201dfc4fa54c20fa31"
+        }
+      },
+      "default_display": false
+    },
+    "freebsd-arm64": {
+      "primary_archive": {
+        "sha256": "4c2400bf4f42e5d3fa9f1c601b728ad47a87b758779db695a400425f6d25d3be",
+        "bytes": 223113,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "final_archive": {
+        "sha256": "5a0040fe8d51368e5c6499f9f9230e464754c062e856c9095ae045bd698d1c40",
+        "bytes": 296616,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "primary_profiles": {
+        "default": {
+          "tests": 275,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        }
+      },
+      "final_profiles": {
+        "default": {
+          "retained_tests": 275,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 796,
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        }
+      },
+      "primary_test_logs": {
+        "default-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "8b115c4c3c35541c8346c89eb6a24c0af2f81cd8cdf9c60c10a27152af473e0c"
+        }
+      },
+      "final_test_logs": {
+        "default-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "40cad1f6d04b72b7400b015247e13658b0028233209cf29b010549fca7753348"
+        },
+        "default-retained-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "8b115c4c3c35541c8346c89eb6a24c0af2f81cd8cdf9c60c10a27152af473e0c"
+        }
+      },
+      "default_display": true
+    },
+    "freebsd-amd64": {
+      "primary_archive": {
+        "sha256": "f4bd0349af26efea1444accd592413a9ec6a9cf7bba5b9129ea64a9364345de3",
+        "bytes": 227948,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "final_archive": {
+        "sha256": "8c884d0fc485f07ce509cf4ec65407c714a0592fd8b1077fb7190ca8bd7798e6",
+        "bytes": 297027,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "primary_profiles": {
+        "default": {
+          "tests": 275,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        }
+      },
+      "final_profiles": {
+        "default": {
+          "retained_tests": 275,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 795,
+          "elf": 15,
+          "catalogs": 11,
+          "data": 70
+        }
+      },
+      "primary_test_logs": {
+        "default-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "e72a0339e410e3495b3ebfc9ff5bdbf2770cdf2a8d9038857d0afb1d07c468d0"
+        }
+      },
+      "final_test_logs": {
+        "default-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "45009bcc8677cb519a0e9477ab9cbedd19db3c4d287e35208129146631fb0a3e"
+        },
+        "default-retained-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "e72a0339e410e3495b3ebfc9ff5bdbf2770cdf2a8d9038857d0afb1d07c468d0"
+        }
+      },
+      "default_display": true
+    },
+    "openbsd-amd64": {
+      "primary_archive": {
+        "sha256": "ae9f91e0094c89119578066fafa5a31e4e9573b3435ad2f75f2884dbb5bf7f28",
+        "bytes": 135579559,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "final_archive": {
+        "sha256": "ae9f91e0094c89119578066fafa5a31e4e9573b3435ad2f75f2884dbb5bf7f28",
+        "bytes": 135579559,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "primary_profiles": {
+        "default": {
+          "tests": 275,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 0,
+          "data": 70
+        }
+      },
+      "final_profiles": {
+        "default": {
+          "retained_tests": 275,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 844,
+          "elf": 15,
+          "catalogs": 0,
+          "data": 70
+        }
+      },
+      "primary_test_logs": {
+        "default-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "4be03d056ae180dbee8b5c90f0a87867cb54badfe1e869c42b8b9b27cea8572f"
+        }
+      },
+      "final_test_logs": {
+        "default-retained-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "4be03d056ae180dbee8b5c90f0a87867cb54badfe1e869c42b8b9b27cea8572f"
+        },
+        "default-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "49184e0209caccd64b197dae331aa8e3fd1cb5287632f4552cb9e56d4c1e8ae7"
+        }
+      },
+      "default_display": true,
+      "runner": {
+        "status": "passed",
+        "guest_release": [
+          "OpenBSD",
+          "8.0",
+          "amd64",
+          "OpenBSD 8.0 (GENERIC.MP) #2: Mon Oct 19 12:55:12 MDT 2026"
+        ],
+        "qemu_exit_status": 0,
+        "failed_phase": null
+      }
+    },
+    "openbsd-arm64": {
+      "primary_archive": {
+        "sha256": "718928f37fb107ba110cf535ee93c9ceb770f921eadd330f78e93ead6f237fe2",
+        "bytes": 135265005,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "final_archive": {
+        "sha256": "718928f37fb107ba110cf535ee93c9ceb770f921eadd330f78e93ead6f237fe2",
+        "bytes": 135265005,
+        "source_inputs": 2111,
+        "all_payload_hashes_valid": true
+      },
+      "primary_profiles": {
+        "default": {
+          "tests": 275,
+          "failed": [],
+          "elf": 15,
+          "catalogs": 0,
+          "data": 70
+        }
+      },
+      "final_profiles": {
+        "default": {
+          "retained_tests": 275,
+          "changed_elf": [
+            "fvwm3",
+            "fvwm3.p/fvwm_modconf.c.o"
+          ],
+          "unchanged_elf": 844,
+          "elf": 15,
+          "catalogs": 0,
+          "data": 70
+        }
+      },
+      "primary_test_logs": {
+        "default-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "1badcd54e4b2d792aad940ad203c8af232d79f11efd2f265a88186b72488413a"
+        }
+      },
+      "final_test_logs": {
+        "default-retained-testlog.json": {
+          "registered": 275,
+          "passed": 275,
+          "other": [],
+          "sha256": "1badcd54e4b2d792aad940ad203c8af232d79f11efd2f265a88186b72488413a"
+        },
+        "default-context-testlog.json": {
+          "registered": 1,
+          "passed": 1,
+          "other": [],
+          "sha256": "03c125f325a69a0aecb6b55baf8e5ad1f234069eb1cedd01859207bee8e95984"
+        }
+      },
+      "default_display": true,
+      "runner": {
+        "status": "passed",
+        "guest_release": [
+          "OpenBSD",
+          "8.0",
+          "arm64",
+          "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+        ],
+        "qemu_exit_status": 0,
+        "failed_phase": null
+      }
+    }
+  },
+  "accepted": {
+    "standard_unique": 2252,
+    "optional_unique": 117,
+    "standard_retained": 2244,
+    "standard_final_context": 8,
+    "optional_retained": 115,
+    "optional_final_context": 2,
+    "asan_unique": 5,
+    "asan_retained": 4,
+    "asan_final_context": 1,
+    "final_fresh_install_profiles": 10,
+    "final_elf_identities": 150,
+    "final_catalog_identities": 77,
+    "final_data_identities": 700,
+    "original_staged_status": 10,
+    "original_staged_logging": 10,
+    "original_staged_geometry": 20,
+    "original_staged_styles": 10,
+    "final_staged_context_logging": 10,
+    "default_bsd_original_fixtures": 24,
+    "default_bsd_retained": 20,
+    "default_bsd_final_context_logging": 4
+  },
+  "portable": {
+    "exit_status": 0,
+    "groups": [
+      90,
+      16,
+      8,
+      23,
+      37,
+      10,
+      4
+    ],
+    "registered": 188,
+    "skipped": 11,
+    "passed": 177
+  },
+  "format_composition": {
+    "fvwm/module_list.c": {
+      "frozen": "753ce51ee1f3f67e5dfd8b3da2e8fef314e32a36a93a7a9f63beff4a6d0d057d",
+      "final": "095b486c12bb96219dc20670cf945266b2e0906af1f084880a3dc94d728b7e9e",
+      "tokens_equal": true,
+      "scope": "comments/line wrapping; assertion failure line numbers may differ in test driver"
+    },
+    "libs/log.c": {
+      "frozen": "745ba3242264fcad37f34580126c30c2a02d05ff9da8c6b306af2267eae7c73b",
+      "final": "c213c36eb247ae1760d17c7bba3a8347e8ae3aafc6e7b37f6eb04bf9bb8b65bb",
+      "tokens_equal": true,
+      "scope": "comments/line wrapping; assertion failure line numbers may differ in test driver"
+    },
+    "tests/test_log_stream.c": {
+      "frozen": "5a71b983b722b36615fd9fd0e196d9fa06cbe070b226dc936c7c9d65cfd86da0",
+      "final": "445f9f1a298928ada0f7d36c3946ec40edfbe5ff5da0f2285b48f84af743a4e0",
+      "tokens_equal": true,
+      "scope": "comments/line wrapping; assertion failure line numbers may differ in test driver"
+    },
+    "tests/test_module_packet_read.c": {
+      "frozen": "01510d48cded658290cda1c5580bef2fb3385980576f29f51cd2f55e272c61ce",
+      "final": "341a920d1de90877891e74d435569d8ce12158165cda785dbfcbe53b82acdc84",
+      "tokens_equal": true,
+      "scope": "comments/line wrapping; assertion failure line numbers may differ in test driver"
+    }
+  },
+  "selected_unchanged_inputs": {
+    "modules/FvwmScript/script_packet.c": {
+      "sha256": "319d365e59cc68992e79576e90e75fc911c583f3e4637cbbe52096894ec8fc8a",
+      "unchanged_from_merged_PR141": true
+    },
+    "modules/FvwmScript/script_packet.h": {
+      "sha256": "1af22b89600b38ca108879686ed44d101e8f06d8a4eca37ba060cd7676380df1",
+      "unchanged_from_merged_PR141": true
+    },
+    "modules/FvwmScript/script_value.c": {
+      "sha256": "df1b91fe6c03071e49b07daf9487f0ff9c173ee1bbb0e1c08c1c94f673ca9047",
+      "unchanged_from_merged_PR141": true
+    },
+    "modules/FvwmScript/script_value.h": {
+      "sha256": "08d61bd142ab4e4964f9f0781a2ecc052640231ac371622aa40b26a8bc821622",
+      "unchanged_from_merged_PR141": true
+    },
+    "tests/test_script_packet.c": {
+      "sha256": "3f05e6fcacf824dc851119a7de6ceaaffa0b312bc635fed883a6dac5ccbe98ec",
+      "unchanged_from_merged_PR141": true
+    },
+    "tests/test_script_value.c": {
+      "sha256": "09f508e27325e33c7da3cbaf270eca83b6025b4bee1d16395b695e1439259b11",
+      "unchanged_from_merged_PR141": true
+    },
+    "tests/test_module_config_line.c": {
+      "sha256": "8266c17874fb8c86838e5c8510df42523127f86b30d80e792728c5fe20b76426",
+      "unchanged_from_merged_PR141": true
+    },
+    "tests/live_x/script_transport_live.py": {
+      "sha256": "b08e2496e8aca9fe7f6e4e9597ebc47804d357497569b7ab3024a44e68f5eb17",
+      "unchanged_from_merged_PR141": true
+    },
+    "libs/Module.c:GetConfigLine": {
+      "sha256": "7064fca776ad3d361836c1c604b04344814491efcfd02954c7765d8165588913",
+      "unchanged_function_from_merged_PR141": true
+    }
+  },
+  "manuals": {
+    "pages": {
+      "FvwmAnimate.1": "f0f6373256acda7c7ea9d701db1c3b9beadc637ccedd2d1effcafb503856bae2",
+      "FvwmAuto.1": "d1d1362ab5521dd0df8f0112fadd84dae7f80e5b5ea5ec3a02791165387aa8d5",
+      "FvwmBacker.1": "7282d968c005bbe61e861c7a61c06eb31ec4ca697c21191df80aeb74ed1b9836",
+      "FvwmButtons.1": "ad646faafb94c61c8014fe10cc4452f7991790f5cd8ed6fe15e06e15da1678f5",
+      "FvwmCommand.1": "8f867a0445334f9e0910c987a8cc8d91643598e95a44561c637d7af8f55ebe99",
+      "FvwmDesktop.1": "de33bd55d8dfc7b51b54466ffbe933b469ab49220986aa862f5bc04041bdfb00",
+      "FvwmEvent.1": "83b6c5a7ea19612733bfa100b158a2aebe1d8c5b32ffed6ebcf3661c64383f54",
+      "FvwmForm.1": "1016216621ee1d017c0a87d01ba5a18ed9ef5c796266d4c5535c2e778871ae6e",
+      "FvwmIconMan.1": "4519ed0b07564447bfc23904997658e2b3efcf20ddf45139b1140f14c49cd657",
+      "FvwmIdent.1": "9c349e3a9a662dccf79429a145601713ee56d6be6e5066f17604ce46c919307b",
+      "FvwmMFL.1": "5480f95743ffbf8c0211698080551a2b7a524826f6cffba70101e835f474bd10",
+      "FvwmPager.1": "c1ff3dca2b67bc7c016c95122c8bc9b659c61fb6508a360a01ce8738b398aa71",
+      "FvwmPerl.1": "1bd42aed249790263bcedac49337bddaec5839d053b8f8edacb07e67c1660004",
+      "FvwmRearrange.1": "2b63436222de10149df199587472cb6fb611226891ce4ff3291f98395d6a8db8",
+      "FvwmScript.1": "224a22f919740dedcecde51a0d6a6f5f61a0075f60c55e04a9f287ce4cfbcc72",
+      "fvwm-convert-2.6.1": "dccdd9dc17658cfb7fd83be5e8c5162d672959e9c6e741aa3d203658f3c2b6e9",
+      "fvwm-menu-desktop.1": "c799846b30268ba02f341eee064818c9b66598a4c217604a2e5a8647de16ae54",
+      "fvwm-menu-directory.1": "3700d68773c4a4e663074bcb93ba96af655a321c9db4e78545694c83395dcc2d",
+      "fvwm-menu-xlock.1": "801a61195119f9b2c7c8653bceacc6881345d6a62ef0f28f1457ecbdf806eb80",
+      "fvwm-perllib.1": "a1189f0fff14dca84a9452970fdaf29307dc9af4b05c13ad5445a22ee54cc657",
+      "fvwm-root.1": "0317745c65a88ce66729adda6f90bed0c22ae8edf1beb865ca897f277c63a17e",
+      "fvwm3.1": "446a8dc802a781d61202146c74187f540176c52e176f758c99b78c0d21b5f53f",
+      "fvwm3all.1": "1dfbfca9b3d61e1af6a3fbdcb102513ba0e59fc743953604d07c689d9bde2a4f",
+      "fvwm3commands.1": "ba1a3bf7b01e1e1841760c7dfbf70382d22b43aa874c4af1a4b6e4b9c771947b",
+      "fvwm3menus.1": "6f4bea7d5f96f6eeb5c61a01b085c3d72140d96a42074af97b78883e33afc037",
+      "fvwm3styles.1": "aa54a072f586538c486b08551fd64c35880c85aa02ea050f2d2779a86e2aadeb"
+    },
+    "renders": {
+      "fvwm3.1": {
+        "status": 0,
+        "bytes": 88847
+      },
+      "fvwm3commands.1": {
+        "status": 0,
+        "bytes": 228700
+      }
+    }
+  },
+  "gaps": [
+    "Native-CPU Linux sanitizer qualification; guest-native ARM64 execution is not a native-CPU claim.",
+    "Physical GPU/input/hotplug, third-party toolkits/compositors and final release acceptance.",
+    "Broad DATA/FD/PROC/CLEAN/LOOP owners remain open; pending interaction lifetimes are next."
+  ],
+  "failures": [
+    "Initial baseline helper import setup failures and EBADF control attempt retained, not counted as defect reproductions.",
+    "Original OpenBSD AMD64 logging probe exhausted the default128 descriptor limit: 274/275 passed; one affected original-fixture recovery at256, then corrected final fixture at128.",
+    "OpenBSD AMD64 first continuation completed tests/install/default-X but collided with a restored capture directory before the final guard. Its full composed test log and exact built/installed bytes were archived; stdout phase receipts are retained, full install identity audit repeated on those bytes, and only the withheld guard ran. Detailed original root capture was not collected.",
+    "Original OpenBSD ARM64 preparation had a duplicate Python else before native gates; corrected preparation and one full suite.",
+    "FreeBSD final continuation runner collided with an existing default-context.log before default-X; first correction lacked environment metadata, before server startup; only missing default-X cases then ran."
+  ],
+  "evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership",
+  "supporting_receipts": {
+    "baseline_script": {
+      "receipt": "baselines-verified.json",
+      "sha256": "9d5132b4a4ccb58fdd4758567d0fd95d979bea55e4abfe52e2e6c2481839df46"
+    },
+    "baseline_logging": {
+      "receipt": "logging-baseline-verified.json",
+      "sha256": "88dce914468e015266573e8b3b9f9dfc4eb5718eccc32905bfb2815b97e4c476"
+    },
+    "support_failures": {
+      "receipt": "support-verified.json",
+      "sha256": "c12d297847aa3da1d5c07464f9ec5b85d0351ad20a47e6c81b9a57beae1c4338",
+      "bytes": 5022340
+    },
+    "initial_openbsd_amd64": {
+      "receipt": "openbsd-amd64-verified.json",
+      "sha256": "29a11b7f35a1de0950438b4a563cdfe287c96973fd9e99b4c0d75fb283046dcd",
+      "bytes": 120466986,
+      "tests": {
+        "default-testlog.json": {
+          "registered": 275,
+          "passed": 274,
+          "other": [
+            {
+              "name": "bsd-x - fvwm3:module-logging-xvfb",
+              "result": "FAIL"
+            }
+          ],
+          "sha256": "3e56bffc8bb9a71a2be410b56237c46375b8771bcd5956d37c65e69b2dd54ae5"
+        }
+      }
+    }
+  },
+  "guest_retirement": {
+    "fvwm-x-linux-arm64-svg": {
+      "status": "retired verified guest duplicates",
+      "name": "fvwm-x-linux-arm64-svg",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/fvwm-x-linux-arm64-svg-evidence.tgz",
+          "archive_sha256": "959b47f5c3a92838794e73906fc58b2e7de1750cb9c9525aae6503ea43fa1dd7",
+          "payload_files": 480,
+          "freed_payload_bytes": 6213018,
+          "freed_archive_bytes": 1159145
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/fvwm-x-linux-arm64-svg-guard.tgz",
+          "archive_sha256": "770b2420bc6ec99e9e7233ae7f9676c05cd8c9fc13e6d4be6f3e846ecbbd30bd",
+          "payload_files": 102,
+          "freed_payload_bytes": 2379326,
+          "freed_archive_bytes": 472076
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/fvwm-x-linux-arm64-svg-development.tgz",
+          "archive_sha256": "05edade9563b73e4916910606ef67200b4119fdeba7471543177b6e3e5b062e5",
+          "payload_files": 9,
+          "freed_payload_bytes": 367495,
+          "freed_archive_bytes": 111401
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/baselines.tgz",
+          "archive_sha256": "9d5132b4a4ccb58fdd4758567d0fd95d979bea55e4abfe52e2e6c2481839df46",
+          "payload_files": 8,
+          "freed_payload_bytes": 2252411,
+          "freed_archive_bytes": 975097
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/logging-baseline.tgz",
+          "archive_sha256": "88dce914468e015266573e8b3b9f9dfc4eb5718eccc32905bfb2815b97e4c476",
+          "payload_files": 14,
+          "freed_payload_bytes": 5302466,
+          "freed_archive_bytes": 2511739
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/support.tgz",
+          "archive_sha256": "c12d297847aa3da1d5c07464f9ec5b85d0351ad20a47e6c81b9a57beae1c4338",
+          "payload_files": 21,
+          "freed_payload_bytes": 10602408,
+          "freed_archive_bytes": 5022340
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "linux-amd64": {
+      "status": "retired verified guest duplicates",
+      "name": "linux-amd64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/linux-amd64-evidence.tgz",
+          "archive_sha256": "ee309dd5e9f1aa829ec939c288c2ca182b2703a87710e490f580ad98502cf67f",
+          "payload_files": 218,
+          "freed_payload_bytes": 2923791,
+          "freed_archive_bytes": 314163
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/linux-amd64-guard.tgz",
+          "archive_sha256": "7f60904d90384fcbc3d58fe19d47886089d4c469d6902b026e0a2b754910e800",
+          "payload_files": 53,
+          "freed_payload_bytes": 2089865,
+          "freed_archive_bytes": 366210
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "freebsd-arm64": {
+      "status": "retired verified guest duplicates",
+      "name": "freebsd-arm64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/freebsd-arm64-evidence.tgz",
+          "archive_sha256": "4c2400bf4f42e5d3fa9f1c601b728ad47a87b758779db695a400425f6d25d3be",
+          "payload_files": 156,
+          "freed_payload_bytes": 1571797,
+          "freed_archive_bytes": 223113
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/freebsd-arm64-guard.tgz",
+          "archive_sha256": "5a0040fe8d51368e5c6499f9f9230e464754c062e856c9095ae045bd698d1c40",
+          "payload_files": 51,
+          "freed_payload_bytes": 1333030,
+          "freed_archive_bytes": 296616
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/freebsd-arm64-development.tgz",
+          "archive_sha256": "88c1f9eb15434fce88f8131ddc0069977ab872a4d17b75800d35e7f447ba84ab",
+          "payload_files": 9,
+          "freed_payload_bytes": 364436,
+          "freed_archive_bytes": 110641
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    },
+    "freebsd-amd64": {
+      "status": "retired verified guest duplicates",
+      "name": "freebsd-amd64",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/freebsd-amd64-evidence.tgz",
+          "archive_sha256": "f4bd0349af26efea1444accd592413a9ec6a9cf7bba5b9129ea64a9364345de3",
+          "payload_files": 156,
+          "freed_payload_bytes": 1666558,
+          "freed_archive_bytes": 227948
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/module-input-ownership/freebsd-amd64-guard.tgz",
+          "archive_sha256": "8c884d0fc485f07ce509cf4ec65407c714a0592fd8b1077fb7190ca8bd7798e6",
+          "payload_files": 49,
+          "freed_payload_bytes": 1354446,
+          "freed_archive_bytes": 297027
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    }
+  },
+  "final_local_checks": {
+    "repository_check": "passed",
+    "offline_links": "passed by make check",
+    "working_diff_whitespace": "passed",
+    "readme_words": 250,
+    "final_functional_inputs_match_guard": true
+  },
+  "review": {
+    "scope": "changed shared packet/log ownership and shipped callers; actual Script entry point; missing module-recipient context",
+    "confirmed_addition": "root Send_ConfigInfo SIGSEGV reproduced in preserved core; guarded and qualified",
+    "remaining": "No unresolved confirmed failure in this batch. Pending interaction lifetimes and broad audit/release owners remain open."
+  }
+}

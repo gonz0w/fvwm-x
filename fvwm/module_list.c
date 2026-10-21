@@ -327,7 +327,7 @@ static fmodule *do_execute_module(
 			close(fvwm_to_app[1]);
 			close(app_to_fvwm[0]);
 		}
-		/* Only the two module endpoints may survive this exec. */
+		/* Pass module endpoints; log inheritance is deliberate too. */
 		if (!fvwm_fd_set_cloexec(app_to_fvwm[1], false) ||
 		    (fvwm_to_app[0] >= 0 &&
 		    !fvwm_fd_set_cloexec(fvwm_to_app[0], false)))

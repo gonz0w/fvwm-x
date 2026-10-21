@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Module input and inherited-resource ownership](VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.md): four repairs, 2252 composed standard / 117 optional passes, affected final continuations, scoped sanitizers, ten installs and explicit remaining gates.
+
 - [Status and diagnostic stream ownership](VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md): four repairs, one composed six-target checkpoint with 2236 standard / 58 affected optional passes, scoped sanitizers, ten installs and explicit remaining review/release gates.
 
 - [BSD preparation evidence](VERIFICATION-2026-10-21-BSD-PREPARATION.md): source modes, atomic live/failure snapshots and distinct PNG proofs; 282 native policy cases, two fresh runner cases and retained WM identities.

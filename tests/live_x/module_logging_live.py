@@ -7,6 +7,7 @@
 import argparse
 import json
 import os
+import resource
 from pathlib import Path
 import select
 import shutil
@@ -36,10 +37,13 @@ def module_probe(directory, log_path):
             inherited = fd
     # Occupy vacant low slots with our own storage. A descriptor opened later
     # by the parent must never be advertised as a transfer to this child.
+    # Leave descriptors for receipts under OpenBSD's smaller default limit.
+    soft_limit = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+    last_slot = min(128, soft_limit - 8)
     for _ in range(128):
         fd = os.open(root / 'private-resource', os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
         holders.append(fd)
-        if fd >= 128:
+        if fd >= last_slot:
             break
     (root / 'ready.json').write_text(json.dumps({'inherited': inherited, 'pid': os.getpid()}))
     deadline = time.monotonic() + 12

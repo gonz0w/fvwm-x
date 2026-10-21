@@ -526,6 +526,7 @@ module_packet_reader_test = executable(
     include_directories: includedirs,
     dependencies: all_found_deps,
     link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=read'],
     c_args: ['-UNDEBUG'],
 )
 test('module-packet-reader', module_packet_reader_test, timeout: 15)
@@ -1662,6 +1663,14 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: 'live-x', is_parallel: false, timeout: 90,
     )
 
+    test('module-logging-xvfb', py,
+        args: [files('live_x/module_logging_live.py'), '--fvwm', fvwm3,
+            '--mfl', fvwm_mfl, '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'module-logging'],
+        depends: [fvwm3, fvwm_mfl],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
+    )
     test('status-stream-xvfb', py,
         args: [files('live_x/status_stream_live.py'), '--fvwm', fvwm3,
             '--mfl', fvwm_mfl, '--artifacts-dir', meson.current_build_dir() /
@@ -2508,6 +2517,18 @@ script_value_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('script-value', script_value_test)
+
+script_message_owner_test = executable(
+    'test-script-message-owner', 'test_script_message_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=GetNextToken', '-Wl,--wrap=free'],
+    c_args: ['-UNDEBUG'],
+)
+test('script-message-owner', script_message_owner_test)
+
 
 script_execution_test = executable(
     'test-script-execution',

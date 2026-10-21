@@ -249,6 +249,12 @@ continues running. After correcting a file-sink failure, toggle logging off
 and on with SIGUSR2 to reopen it. A failed replacement keeps the previous
 working stream.
 
+Modules inherit the log stream selected when they are launched. Toggling or
+reopening the core log does not transfer a new descriptor into an already
+running module. Restart a module to attach it to the current core log. Repeated
+configuration replies cannot reopen a failed module sink using a descriptor
+number that the module may have reused for another resource.
+
 
 == ANATOMY OF A WINDOW
 

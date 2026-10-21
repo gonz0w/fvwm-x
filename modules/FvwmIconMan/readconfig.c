@@ -861,7 +861,7 @@ static int GetConfigLineWrapper(int *fd, char **tline)
 			if (module_parse_decimal_integers((*tline) + 9,
 				&fdl, 1))
 			{
-				if (!log_set_fd(fdl))
+				if (!log_adopt_inherited_fd(fdl))
 				{
 					fvwm_debug(__func__,
 					    "Unable to adopt logging descriptor %d",

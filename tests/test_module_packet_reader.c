@@ -105,36 +105,63 @@ static void test_packet_limits_and_order(void)
 	close(descriptors[0]);
 }
 
+static int interrupted_fd = -1;
+static unsigned int interruptions;
+ssize_t __real_read(int, void *, size_t);
+
+ssize_t __wrap_read(int fd, void *buffer, size_t size)
+{
+	if (fd == interrupted_fd && interruptions != 0)
+	{
+		interruptions--;
+		errno = EINTR;
+		return -1;
+	}
+	return __real_read(fd, buffer, size);
+}
+
 static void test_sync_budget(void)
 {
 	module_packet_reader reader;
 	int descriptors[2];
-	unsigned long junk[MODULE_PACKET_READ_ATTEMPTS * 2] = {0};
-	unsigned long words[] = {START_FLAG, M_ERROR, 4, 9};
+	unsigned long words[] = {START_FLAG, M_STRING, 5, 10, 42};
 	FvwmPacket *packet;
 
 	open_reader(&reader, descriptors);
-	put_bytes(descriptors[1], junk, sizeof(junk));
 	put_bytes(descriptors[1], words, sizeof(words));
+	interrupted_fd = descriptors[0];
+	interruptions = MODULE_PACKET_READ_ATTEMPTS;
 	assert(module_packet_reader_read(&reader, &packet) ==
 		MODULE_PACKET_READ_MORE);
-	assert(packet == NULL && reader.used == 0);
-	assert(module_packet_reader_read(&reader, &packet) ==
-		MODULE_PACKET_READ_MORE);
-	assert(packet == NULL && reader.used == 0);
-	assert(module_packet_reader_read(&reader, &packet) ==
-		MODULE_PACKET_READ_READY);
-	assert(packet->timestamp == 9);
-	/* Complete on the final read, with no subsequent fd readiness. */
-	unsigned long last[MODULE_PACKET_READ_ATTEMPTS - 3] = {0};
-	unsigned long body[] = {START_FLAG, M_STRING, 5, 10, 42};
-	put_bytes(descriptors[1], last, sizeof(last));
-	put_bytes(descriptors[1], body, sizeof(body));
+	assert(packet == NULL && reader.used == 0 && interruptions == 0);
+	/* Header and body complete on the final permitted read. */
+	interruptions = MODULE_PACKET_READ_ATTEMPTS - 3;
 	assert(module_packet_reader_read(&reader, &packet) ==
 		MODULE_PACKET_READ_READY);
 	assert(packet->timestamp == 10 && packet->body[0] == 42);
 	assert(module_packet_reader_read(&reader, &packet) ==
 		MODULE_PACKET_READ_MORE);
+	interrupted_fd = -1;
+	close(descriptors[0]);
+	close(descriptors[1]);
+}
+
+static void test_bad_start_is_terminal(void)
+{
+	module_packet_reader reader;
+	int descriptors[2];
+	unsigned long words[] = {0, START_FLAG, M_ERROR, 4, 9};
+	FvwmPacket *packet;
+
+	open_reader(&reader, descriptors);
+	put_bytes(descriptors[1], words, sizeof(words));
+	assert(module_packet_reader_read(&reader, &packet) ==
+		MODULE_PACKET_READ_ERROR);
+	assert(packet == NULL && errno == EPROTO && reader.failed);
+	assert(reader.used == sizeof(unsigned long));
+	assert(module_packet_reader_read(&reader, &packet) ==
+		MODULE_PACKET_READ_ERROR);
+	assert(packet == NULL && reader.used == sizeof(unsigned long));
 	close(descriptors[0]);
 	close(descriptors[1]);
 }
@@ -156,7 +183,7 @@ static void test_invalid_counts(void)
 		errno = 0;
 		assert(module_packet_reader_read(&reader, &packet) ==
 		MODULE_PACKET_READ_ERROR);
-		assert(packet == NULL && errno == EINVAL && reader.failed);
+		assert(packet == NULL && errno == EPROTO && reader.failed);
 		assert(module_packet_reader_read(&reader, &packet) ==
 		MODULE_PACKET_READ_ERROR);
 		close(descriptors[0]);
@@ -177,8 +204,10 @@ static void test_eof_error_and_cancellation(void)
 		put_bytes(descriptors[1], words, bytes);
 		close(descriptors[1]);
 		assert(module_packet_reader_read(&reader, &packet) ==
-		MODULE_PACKET_READ_ENDED);
-		assert(packet == NULL);
+		MODULE_PACKET_READ_ERROR);
+		assert(packet == NULL && errno == EPROTO && reader.failed);
+		assert(module_packet_reader_read(&reader, &packet) ==
+			MODULE_PACKET_READ_ERROR);
 		close(descriptors[0]);
 	}
 	open_reader(&reader, descriptors);
@@ -233,6 +262,7 @@ int main(void)
 	test_fragmented_packet();
 	test_packet_limits_and_order();
 	test_sync_budget();
+	test_bad_start_is_terminal();
 	test_invalid_counts();
 	test_eof_error_and_cancellation();
 	return 0;

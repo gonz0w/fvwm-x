@@ -28,7 +28,9 @@ typedef enum
  * preserve descriptor flags and add O_NONBLOCK for runtime use. */
 bool module_packet_reader_init(module_packet_reader *reader, int descriptor);
 /* No read-ahead past one packet. A returned packet belongs to reader and stays
- * valid until its next read. MORE preserves progress without waiting. */
+ * valid until its next read. MORE preserves progress without waiting.
+ * Invalid framing or truncated EOF is terminal with EPROTO; clean EOF is
+ * ENDED. Reinitialize only for a new stream, never search a damaged body. */
 module_packet_read_status module_packet_reader_read(
 	module_packet_reader *reader, FvwmPacket **packet);
 

@@ -97,8 +97,13 @@ retires the matching FIFO. Logging keeps one stream owner in
 [log.c](../libs/log.c), commits replacements after construction, preserves
 intentional module inheritance and retires failed diagnostic sinks. Runtime
 qualification for these four repairs passes the [stream checkpoint](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md).
-Late inherited-descriptor provenance remains a bounded FD-01/PROC-01 review;
-this does not close the wider stream/input audit.
+The next input/ownership checkpoint snapshots the fork-time descriptor and
+adopts inherited metadata at most once, including disabled/failed adoption.
+Core log toggles cannot retarget another process or re-adopt its reused fd.
+Module readers terminate malformed framing/truncated EOF instead of scanning
+for a new header; valid partial/EAGAIN/EINTR continuations remain. Script
+SendString uses the checked parser's borrowed remainder without allocating
+discarded skip tokens. Focused checks pass; combined qualification is pending.
 
 ## Boundaries to strengthen within owning fixes
 

@@ -370,7 +370,7 @@ send_logging_fd(fmodule *module)
 {
 	char msg[64];
 
-	snprintf(msg, sizeof(msg), "LoggingFD %d\n", log_get_fd());
+	snprintf(msg, sizeof(msg), "LoggingFD %d\n", module->xloggingFd);
 	SendName(module, M_CONFIG_INFO, 0, 0, 0, msg);
 }
 

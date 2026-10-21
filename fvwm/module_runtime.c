@@ -67,6 +67,7 @@ fmodule *module_create(void)
 	module->xflags.is_retired = 0;
 	MOD_READFD(module) = -1;
 	MOD_WRITEFD(module) = -1;
+	module->xloggingFd = -1;
 	fqueue_init(&MOD_PIPEQUEUE(module));
 	MOD_PIPEQUEUE_BYTES(module) = 0;
 	module->xinputBytes = 0;

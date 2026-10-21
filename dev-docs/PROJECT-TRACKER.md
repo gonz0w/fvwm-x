@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Safety/maintainability closeout | Stream ownership checkpoint locally qualified; PR #141 for review | Four repairs pass 2236 composed standard and 58 affected optional entries across six targets, scoped sanitizers, ten installs and four authenticated BSD displays. Remaining performance tuning stays deferred. Descriptor-provenance review, selected Module/Script inputs and pending lifetimes remain; broad owners stay open. [Report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md), [handoff criteria](#hardening-closeout). |
+| Safety/maintainability closeout | Stream checkpoint merged in PR #141; input/ownership batch implemented, combined qualification pending | Four repairs pass 2236 composed standard and 58 affected optional entries across six targets, scoped sanitizers, ten installs and four authenticated BSD displays. Remaining performance tuning stays deferred. Descriptor-provenance review, selected Module/Script inputs and pending lifetimes remain; broad owners stay open. [Report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md), [handoff criteria](#hardening-closeout). |
 | BSD preparation evidence, CI-01 / MAINT-02 / CLEAN-01 | Merged in [PR #139](https://github.com/gonz0w/fvwm-x/pull/139); affected checkpoint passes | Three preparation/evidence repairs pass 282 native policy cases on six targets, two fresh OpenBSD runner cases and six actual loader invocations; original WM/installed bytes remain exact. Live phases and an expected exit 23 case validate diagnostics/cleanup. Portable 177 passes / 11 skips; PR138 runtime evidence retained. [Report](verification/VERIFICATION-2026-10-21-BSD-PREPARATION.md). |
 | Shared string ownership, DATA-01 / CLEAN-01 | Merged in [PR #138](https://github.com/gonz0w/fvwm-x/pull/138); composed checkpoint passes | Three shared first-line, multiline and quoted-copy operations retain existing bytes and ownership while avoiding before-source pointers and removing one quoted strlen rescan. One composed six-target checkpoint passes 2208 standard entries, 28 affected optional entries and one scoped guest sanitizer. Ten installs, staged geometry/styles and four authenticated default BSD displays pass; harness failures and wider release limits remain explicit. [Report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md). |
 | Protocol requirement register, STANDARDS-01 / EWMH-01 / SELECTION-01 | Merged on main through [PR #136](https://github.com/gonz0w/fvwm-x/pull/136), including PR #137; runtime acceptance remains open | Forty clause/role records refine the existing E/S reconciliation: root capabilities/desktops, window hints/requests and selection ownership/transfer. Historical evidence retains exact profile/source limits; manager announcement and desktop-publication source findings have concrete owner handoffs. No runtime, benchmark or full matrix repeat. [Register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md). |
@@ -258,15 +258,19 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Current runtime checkpoint: FD-01 / PROC-01 / CLEAN-01 stream ownership,
-[PR #141](https://github.com/gonz0w/fvwm-x/pull/141) for review. Four FIFO
+Stream ownership is merged in
+[PR #141](https://github.com/gonz0w/fvwm-x/pull/141). Four FIFO
 construction, status continuation, log adoption and log-failure repairs pass
 one composed six-target checkpoint: 2236 standard / 58 affected optional
 entries, four scoped sanitizer entries, ten installs and four authenticated BSD
 displays. Preserve original harness failures and affected continuations in the
 [report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). Next, finish
-the bounded LoggingFD provenance review with selected external-input boundaries,
-then pending interaction lifetimes. No performance comparison is due.
+the selected input/ownership checkpoint: fork-time LoggingFD identity and
+once-only native adoption, terminal malformed framing and Script message token
+ownership. Eight focused checks pass on Linux and FreeBSD ARM64 each; combined
+qualification is pending. Existing configuration-view and Script packet/value
+policies remain covered. Pending interaction lifetimes follow. No performance
+comparison is due.
 
 Current selection, 2026-10-21: finish high-impact safety and maintainability,
 then move to the approved features and milestones. Remaining performance-only
@@ -302,7 +306,8 @@ subsequent merged implementation checkpoints with PR133–136 and PR138. The due
 [paired comparison](verification/PERFORMANCE-2026-10-21.md) uses existing
 PR132/138 Linux ARM64 GCC binaries. Command timing ranges overlap, peak RSS is
 unchanged and GNU text/read-only size falls 8 KiB, mostly layout/fill. PR138 is
-the new preserved reference at 1/5 subsequent merged checkpoints after PR139.
+the new preserved reference at 2/5 subsequent merged checkpoints after PR139
+and PR141.
 Keep lightweight regression observations; they do not select more tuning or
 delay safety closeout for new benchmark builds. Documentation-only changes do
 not increment the counter. Investigate concrete regressions in their owning

@@ -281,7 +281,7 @@ int main(int argc, char **argv)
 				fvwm_debug(__func__,
 				    "Refusing invalid logging descriptor");
 			}
-			else if (!log_set_fd(fdl))
+			else if (!log_adopt_inherited_fd(fdl))
 			{
 				fvwm_debug(__func__,
 				    "Unable to adopt logging descriptor %d",

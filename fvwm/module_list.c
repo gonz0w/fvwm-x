@@ -277,6 +277,9 @@ static fmodule *do_execute_module(
 	}
 	args[nargs] = NULL;
 
+	/* Config replies must describe the child's inherited table, even if
+	 * core logging closes/reopens before a delayed or repeated request. */
+	module->xloggingFd = log_get_fd();
 	/* Child failure must not run the core's inherited stdio/exit handlers. */
 	val = fork();
 	if (val > 0)

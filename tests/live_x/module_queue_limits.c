@@ -7,7 +7,7 @@
 #include "config.h"
 #include "fvwm/event_loop_policy.h"
 #include "fvwm/module_queue.h"
-
+#include "fvwm/module_records.h"
 #include <stdio.h>
 #include <stdlib.h>
 

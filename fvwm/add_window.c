@@ -45,6 +45,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "fvwm/icon_boxes.h"
 #include "libs/FProperty.h"
 #include <assert.h>
 #include <stdint.h>
@@ -103,7 +104,6 @@
 /* ---------------------------- local definitions -------------------------- */
 #include "fvwm/initial_window_options.h"
 /* ---------------------------- local macros ------------------------------- */
-
 /* ---------------------------- imports ------------------------------------ */
 
 /* ---------------------------- included code files ------------------------ */

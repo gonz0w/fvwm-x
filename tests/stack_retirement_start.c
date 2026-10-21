@@ -4,6 +4,7 @@
  * (at your option) any later version.
  */
 #include "config.h"
+#include "fvwm/module_records.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +21,6 @@
 static FvwmWindow *victim;
 static unsigned mode, removed, raises;
 static Bool inside, ready;
-
 void __wrap_focus_grab_buttons_on_layer(int layer)
 {
 }

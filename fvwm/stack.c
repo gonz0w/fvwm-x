@@ -16,12 +16,12 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "fvwm/module_records.h"
 #include <stdio.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <limits.h>
 #include <err.h>
-
 #include "libs/log.h"
 #include "libs/ftime.h"
 #include "libs/fvwmlib.h"

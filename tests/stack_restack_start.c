@@ -4,6 +4,7 @@
  * (at your option) any later version.
  */
 #include "config.h"
+#include "fvwm/module_records.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +17,6 @@
 #include "fvwm/stack.h"
 #include "fvwm/module_list.h"
 #include "libs/monitor_types.h"
-
 #define MAX_RECORDS 170
 static FvwmWindow *windows;
 static unsigned count, mode, packets, next_record, refresh_offset;

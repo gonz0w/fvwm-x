@@ -45,6 +45,8 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "fvwm/event_filter.h"
+#include "fvwm/module_records.h"
 #include "libs/FProperty.h"
 #include "configure_merge.h"
 #include <X11/extensions/Xrandr.h>
@@ -53,7 +55,6 @@
 #if HAVE_SYS_BSDTYPES_H
 #include <sys/bsdtypes.h>
 #endif
-
 #include <assert.h>
 #include <errno.h>
 #include <limits.h>
@@ -63,7 +64,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
-
 #include "add_window.h"
 #include "bindings.h"
 #include "borders.h"

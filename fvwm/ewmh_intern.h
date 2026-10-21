@@ -114,6 +114,8 @@ int ewmh_DesktopGeometry(
 	FvwmWindow *fw, XEvent *ev, window_style *style, unsigned long any);
 int ewmh_DesktopViewPort(
 	FvwmWindow *fw, XEvent *ev, window_style *style, unsigned long any);
+Bool ewmh_request_desktop_count(struct monitor *, long);
+
 int ewmh_NumberOfDesktops(
 	FvwmWindow *fw, XEvent *ev, window_style *style, unsigned long any);
 

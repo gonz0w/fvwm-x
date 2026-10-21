@@ -38,6 +38,7 @@
 #include "events.h"
 #include "ewmh.h"
 #include "ewmh_intern.h"
+#include "ewmh_desktop_policy.h"
 #include "decorations.h"
 #include "geometry.h"
 #include "borders.h"
@@ -52,31 +53,15 @@ extern ewmh_atom ewmh_atom_wm_state[];
 int ewmh_CurrentDesktop(
 	FvwmWindow *fw, XEvent *ev, window_style *style, unsigned long any)
 {
-	/* If we get a request through which is for the root window, and the
-	 * intend window (fw) is NULL, disallow this.  We only want to switch
-	 * desktops on client requests for the correct desktop.
-	 */
-	if (ev->xclient.window == Scr.Root && fw == NULL) {
-		return -1;
-	}
+	struct monitor *m = (fw && fw->m) ? fw->m : monitor_get_current();
 
-	struct monitor	*m = monitor_get_current();
-	if (ev->xclient.data.l[0] < 0 || ev->xclient.data.l[0] > 0x7fffffff)
+	if (ev->xclient.format != 32 ||
+	    !fvwm_ewmh_desktop_index(ev->xclient.data.l[0],
+		m->ewmhc.CurrentNumberOfDesktops))
 	{
-		fvwm_debug(__func__,
-			   "The application window (id %#lx)\n"
-			   "  \"%s\" tried to switch to an invalid desktop (%ld)\n"
-			   "  using an EWMH client message.\n"
-			   "    fvwm is ignoring this request.\n",
-			   fw ? FW_W(fw) : 0, fw ? fw->name.name : "(none)",
-			   ev->xclient.data.l[0]);
-		fvwm_msg_report_app_and_workers();
-
+		fvwm_debug(__func__, "refusing invalid/out-of-range desktop request");
 		return -1;
 	}
-
-	if (fw != NULL)
-		m = fw->m;
 
 	goto_desk(ev->xclient.data.l[0], m);
 
@@ -143,31 +128,18 @@ int ewmh_DesktopViewPort(
 int ewmh_NumberOfDesktops(
 	FvwmWindow *fw, XEvent *ev, window_style *style, unsigned long any)
 {
-	int d = ev->xclient.data.l[0];
-	struct monitor	*m;
+	struct monitor *m;
 
-	/* not a lot of sinification for fvwm */
-	RB_FOREACH(m, monitors, &monitor_q) {
-		EWMH_SetNumberOfDesktops(m);
-
-		if (d > 0 &&
-		    (d <= m->ewmhc.MaxDesktops || m->ewmhc.MaxDesktops == 0))
-		{
-			m->ewmhc.NumberOfDesktops = d;
-		}
-		else
-		{
-			fvwm_debug(__func__,
-				   "The application window (id %#lx)\n"
-				   "  \"%s\" tried to set an invalid number of desktops"
-				   " (%ld)\n"
-				   "  using an EWMH client message.\n"
-				   "    fvwm is ignoring this request.\n",
-				   fw ? FW_W(fw) : 0,
-				   fw ? fw->name.name : "(none)",
-				   ev->xclient.data.l[0]);
-			fvwm_msg_report_app_and_workers();
-		}
+	if (ev->xclient.format != 32)
+	{
+		fvwm_debug(__func__, "refusing desktop-count message format");
+		return -1;
+	}
+	RB_FOREACH(m, monitors, &monitor_q)
+	{
+		if (!ewmh_request_desktop_count(m, ev->xclient.data.l[0]))
+			fvwm_debug(__func__, "refusing unsupported desktop count %ld",
+				ev->xclient.data.l[0]);
 	}
 
 	return -1;

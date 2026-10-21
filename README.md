@@ -11,10 +11,10 @@ File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
 **Status:** development. The
-[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) is locally qualified
-and merged. [Manager handoff](dev-docs/verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md)
-has bounded cancellation and verified owner identity across six targets.
-Dependencies follow; performance tuning waits until the next release.
+[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) is locally
+qualified and merged. [Desktop publication](dev-docs/verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md)
+validates pager requests and bounds root arrays across six targets.
+Dependencies continue; performance tuning waits until the next release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

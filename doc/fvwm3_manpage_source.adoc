@@ -7893,6 +7893,20 @@ treated as clicks on the root window.
 	itself. This is accepted by fvwm only if this number is less than or
 	equal to _max_ or if _max_ is null. Note that negative desktops are
 	not supported by the ewmh specification. The default is 4 0.
++
+Pager count requests must have format 32, be positive, fit _max_ when set,
+and retain the current and populated desktops. fvwm refuses a shrink that
+would require moving a client or the current desktop. Accepted requests update
+the desktop count, viewport pairs and work-area array together in X request
+order. Root-window current-desktop requests must identify an advertised desktop;
+a zero timestamp is accepted for older pagers.
++
+Root-property preparation is bounded to 1024 desktop records and the X server's
+request capacity. This is a publication limit: existing FVWM configuration
+commands and desktop numbers remain usable. If a configured state exceeds this
+capacity, fvwm reports the refusal and retains its preceding root snapshot.
+A later representable state can publish normally. This does not make separate
+X property changes an atomic transaction or define multi-monitor pager policy.
 
 *GotoDesk* [screen _RANDRNAME_] [prev | _arg1_ [_arg2_] [_min_ _max_]]::
 	Switches the current viewport to another desktop (workspace, room).

@@ -77,19 +77,20 @@ Independent client: [ewmh_inventory_live.py](../../tests/live_x/ewmh_inventory_l
 | R04 | E02 | EWMH 3.10 MUST: child check self-references and has WM name. | Verified for named profiles, I: self-reference and nonempty UTF8_STRING name. | Replacement/stale-child handling is separate; branding remains RELEASE-01. |
 | R05 | E03 | EWMH 3.2 SHOULD: client list preserves initial mapping order. | Verified for named profiles, I: three mapped clients, then destroyed-client removal. | Broader startup adoption, withdrawn and transient cases remain unqualified. |
 | R06 | E03 | EWMH 3.2 SHOULD: stacking list orders bottom to top. | Verified for named profiles, I: Raise changes order and dead IDs disappear. | Independently check multiple layers, transient groups and restacking requests. |
-| R07 | E04 | EWMH 3.3 SHOULD/conditional MUST: desktop count and accepted changes agree. | Implemented / unqualified. I verifies initial CARDINAL/32 count; `EWMH_SetNumberOfDesktops` uses effective count. | Independent accepted/refused requests and consistent dependent publications. |
-| R08 | E04 | EWMH 3.3 conditional MUST: shrink reconciles out-of-range desktops/windows. | Review pending. A command or count assertion is insufficient. | Request shrink with current/populated high desks; observe current desk and each client property. |
-| R09 | E04 | EWMH 3.5: viewport pairs describe each desktop. | Implemented / unqualified. `EWMH_SetDesktopViewPort` uses configured count, capped at 256. | Test effective/configured disagreement and high desks; inspect actual property length and positions. |
-| R10 | E05 | EWMH 3.9 MUST: work area contains a geometry per desktop. | Implemented / unqualified, reproduced gap I: one desktop and an empty work-area array. | Repair count agreement with R07–R09; the inventory currently records this finding without failing. |
+| R07 | E04 | EWMH 3.3 SHOULD/conditional MUST: desktop count and accepted changes agree. | Verified for desktop-publication checkpoint profiles: independent growth, empty shrink and explicit format/range/capacity refusal. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Retain snapshot/source scope; oversized configured publication and multi-monitor root authority remain explicit limits. |
+| R08 | E04 | EWMH 3.3 conditional MUST: shrink reconciles out-of-range desktops/windows. | Verified refusal policy for tested profiles: current/populated-desktop shrink is refused; accepted shrink requires no relocation. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Wider configuration/monitor transitions and alternate relocation policies remain unqualified. |
+| R09 | E04 | EWMH 3.5: viewport pairs describe each desktop. | Verified for tested profiles: effective-count array lengths at startup, 301/401 desks and actual-pixel viewport updates. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Wider desktop-specific/per-monitor geometry remains open; publication capacity is explicit. |
+| R10 | E05 | EWMH 3.9 MUST: work area contains a geometry per desktop. | Verified length/typed positive-geometry contract for tested profiles: startup empty-array gap repaired and high counts agree. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | R11 reserved-edge semantics remain open; matching lengths do not qualify dock geometry. |
 | R11 | E05 | EWMH 3.9 MUST/SHOULD: viewport-contained work area accounts for reserved edges. | Implemented / unqualified. `ewmh_SetWorkArea` publishes global monitor geometry; P tests internal struts separately. | Foreign dock changes/removal, page shifts and topology must drive observable root geometry. |
-| R12 | E04 | EWMH 3.6 MUST: current desktop stays within advertised range. | Implemented / unqualified. I verifies initial range only. | Accepted/refused pager requests, timestamp-zero compatibility and shrink; do not infer from command Desk. |
+| R12 | E04 | EWMH 3.6 MUST: current desktop stays within advertised range. | Verified for tested profiles: root pager admission, timestamp zero, actual new-client desk, high-desk growth and refusal/recovery. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Oversized configured states retain the preceding root snapshot; wider monitor/shrink/configuration cases remain open. |
 
-R09 is a **source observation**, not a newly executed failing test. R10 is an
-existing reproduced failure. R11 distinguishes internal placement constraints
-from the root property: passing `EWMH_GetWorkAreaIntersection` differential
-checks does not establish what another desktop client reads from `_NET_WORKAREA`.
-The configured-count and 256-entry limits require an explicit bounded policy at
-the owning repair; this register does not select a new configuration restriction.
+The original R09 source observation and reproduced R10 startup gap now have
+[desktop checkpoint evidence](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md).
+The old inventory receipt remains historical. The 1024-record/server-request
+publication budget bounds storage without restricting configured FVWM desktop
+numbers; refused publication retains the preceding root snapshot. R11 remains
+separate: equal array lengths and positive geometry do not establish reserved
+edges, per-desktop dock semantics or multi-monitor root authority.
 
 ## Window hints and request handling
 
@@ -169,9 +170,9 @@ including unresolved findings; STANDARDS-01 as a whole remains open.
 
 The next concrete runtime candidates retain the authoritative tracker order:
 
-1. EWMH desktop publication: R07–R12, sharing one effective desktop-count and
-   geometry contract. Add independent accepted/refused request, startup/high-desk,
-   work-area/viewport and dock/topology cases before changing publication.
+1. EWMH desktop geometry: retain qualified R07–R10/R12 admission/array scope
+   above. R11 reserved edges, dock/topology and broader per-monitor geometry need
+   independent clients before changing their owning publication policy.
 2. Manager targets: S04–S06 and the broader S01–S03 coverage above. The bounded
    startup handoff is locally qualified; direct targets and wider ownership epochs
    retain independent-client, ordering and lifetime acceptance.

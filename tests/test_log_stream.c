@@ -71,7 +71,7 @@ static void test_inherited_adoption(void)
 				fvwm_debug(NULL, "sink failure");
 				fault = 0;
 				assert(log_get_fd() == -1);
-				/* Reuse the closed log number for other storage. */
+				/* Reuse the log number for other storage. */
 				char other[] = "/tmp/fvwm-reused-log-XXXXXX";
 				int reused = mkstemp(other);
 

@@ -388,6 +388,13 @@ void CMD_Send_ConfigInfo(F_CMD_ARGS)
 	int match_len = 0;
 	fmodule *mod = exc->m.module;
 
+	if (mod == NULL)
+	{
+		fvwm_debug(__func__,
+		    "Ignoring configuration request outside a module context");
+		return;
+	}
+
 	send_monitor_list(mod);
 	/* send ImagePath and ColorLimit first */
 	send_image_path(mod);

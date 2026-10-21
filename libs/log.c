@@ -87,7 +87,7 @@ log_adopt_inherited_fd(int fd)
 	/* Metadata describes one fork-time inheritance, not another transfer.
 	 * After failure/close the number may name an unrelated child resource.
 	 * Even a failed first adoption must never be retried using that number.
-	 * Explicit log_open remains available for independently owned recovery. */
+	 * Explicit log_open can recover with an independently owned sink. */
 	if (inherited_log_seen)
 	{
 		return true;

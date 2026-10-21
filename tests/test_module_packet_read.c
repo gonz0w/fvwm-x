@@ -138,7 +138,8 @@ static void test_declared_word_count(void)
 		prepare(FvwmPacketHeaderSize);
 		wire[2] = invalid[i];
 		assert(ReadFvwmPacket(FIXTURE_FD) == NULL);
-		assert(wire_offset == FvwmPacketHeaderSize_byte && errno == EPROTO);
+		assert(wire_offset == FvwmPacketHeaderSize_byte &&
+		    errno == EPROTO);
 	}
 }
 

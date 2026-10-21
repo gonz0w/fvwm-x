@@ -103,7 +103,9 @@ def run(args):
             environment = runtime.environment({'FVWMMFL_SOCKET_PATH': str(runtime.root),
                 'FVWM_USERDIR': str(runtime.root), 'PYTHONPATH': str(Path(__file__).parent)})
             config = runtime.root / 'config'
-            config.write_text(f'ModulePath {runtime.root}:{args.mfl.parent}\n'
+            # This request has no module recipient; it must be a safe no-op.
+            config.write_text('Send_ConfigInfo\n' +
+                f'ModulePath {runtime.root}:{args.mfl.parent}\n'
                 'Style * TileCascadePlacement\nAddToFunc StartFunction I Module FvwmMFL\n')
             log = runtime.root / 'debug.log'
             core = runtime.start('core', [str(args.fvwm), '-d', display,

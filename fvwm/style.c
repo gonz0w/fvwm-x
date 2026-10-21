@@ -18,9 +18,9 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "fvwm/icon_boxes.h"
 #include <stdio.h>
 #include <stdbool.h>
-
 #include "libs/defaults.h"
 #include "libs/fvwmlib.h"
 #include "libs/FScreen.h"

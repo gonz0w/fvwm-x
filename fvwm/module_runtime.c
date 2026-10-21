@@ -1,7 +1,7 @@
 /* -*-c-*- */
 
 #include "config.h"
-
+#include "fvwm/module_records.h"
 #include <errno.h>
 #include <assert.h>
 #include <stdlib.h>

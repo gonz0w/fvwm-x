@@ -4,6 +4,7 @@
  * (at your option) any later version.
  */
 #include "config.h"
+#include "fvwm/module_records.h"
 #include <assert.h>
 #include <limits.h>
 #include <stdio.h>
@@ -40,7 +41,6 @@ static Bool watch_allocations;
 static const char *expected_monitor_name;
 static unsigned monitor_records, matching_monitor_records;
 static Bool check_monitor_records;
-
 void *__real_malloc(size_t size);
 void *__wrap_malloc(size_t size)
 {

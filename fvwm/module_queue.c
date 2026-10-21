@@ -5,9 +5,9 @@
  */
 
 #include "config.h"
+#include "fvwm/module_records.h"
 #include <assert.h>
 #include "module_queue.h"
-
 void module_command_queue_add(
 	module_command_queue *queue, fmodule_input *input)
 {

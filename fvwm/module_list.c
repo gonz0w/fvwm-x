@@ -14,8 +14,8 @@
  */
 
 #include "config.h"
+#include "fvwm/module_records.h"
 #include "libs/fd_safety.h"
-
 #include <errno.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>

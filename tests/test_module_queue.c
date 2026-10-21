@@ -3,11 +3,11 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
-
+#include "config.h"
+#include "fvwm/module_records.h"
 #include "fvwm/module_queue.h"
 #include <assert.h>
 #include <string.h>
-
 static Bool ready(const fmodule_input *input)
 {
 	return strcmp(input->command, "safe") == 0;

@@ -514,3 +514,5 @@ diagnostic and execution gates remain separate.
 - [2026-10-20 process/session startup](VERIFICATION-2026-10-20-PROCESS-STARTUP.md): complete constructor ownership, injected failures/retry, one combined six-target checkpoint; PR132 performance reference 0/5, no benchmark due.
 
 - [2026-10-20 swallowed-client session ownership](VERIFICATION-2026-10-20-SESSION-CALLBACKS.md): registration/refusal, pending-peer retention and property replies; one full run plus affected corrections, preserved no-save policy and 1/5 performance cadence.
+
+- [Core module/icon/event record dependencies](VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md): six-target affected qualification and exact code/data parity; ARM GCC fanout 68/216/37 to 30/6/2.

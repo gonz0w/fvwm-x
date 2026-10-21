@@ -31,7 +31,7 @@
  */
 
 #include "config.h"
-
+#include "fvwm/module_records.h"
 #include <stdio.h>
 
 #include "libs/fvwmlib.h"

@@ -12,9 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Process and session startup](dev-docs/verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md)
-checks Exec setup, prepares complete authentication data and rolls back failed
-session publication. One combined checkpoint covers six targets; required gaps
+[Swallowed-client session ownership](dev-docs/verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md)
+checks registration, preserves other pending peers during cleanup and completes
+property replies. One composed checkpoint covers six targets; required gaps
 remain explicit.
 [Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-20.md)
 track latency, CPU, memory and executable size every five implementation batches.

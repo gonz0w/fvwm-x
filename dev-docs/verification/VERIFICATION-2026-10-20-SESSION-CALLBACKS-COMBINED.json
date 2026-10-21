@@ -1,0 +1,1162 @@
+{
+  "qualification": {
+    "status": "pass",
+    "publication_ready": true,
+    "complete": true,
+    "source_archive_sha256": "1b8399d59ff27505ada583d1311fc5789cf55dd85e3893b6fb4de51a8610af2e",
+    "source_files": 2081,
+    "runtime_commit": {
+      "commit": "8f98be2c3661fc8982b07bad69a3061674b15665",
+      "tree": "fbd9d950c7f1ca4a9363cb278692d15bccd345e4",
+      "base": "b6755cafe919df265a592d9759025b1e4e478398",
+      "source": "1b8399d59ff27505ada583d1311fc5789cf55dd85e3893b6fb4de51a8610af2e",
+      "regular_inputs": 2081
+    },
+    "original_full_run": {
+      "runtime_commit": {
+        "commit": "34ee6e7b9835cf61d4b9f67887d1b64b580cb11a",
+        "tree": "5bab381008c336e83b5cc267c6c1760f42d04651",
+        "base": "b6755cafe919df265a592d9759025b1e4e478398",
+        "source": "c7c7ecd71b6e1d217d0f004772d4b4d3688fc2e09d23e63590f24cf937fb7885",
+        "regular_inputs": 2081
+      },
+      "source_archive_sha256": "c7c7ecd71b6e1d217d0f004772d4b4d3688fc2e09d23e63590f24cf937fb7885",
+      "counts": {
+        "standard": 2181,
+        "standard_passed": 2181,
+        "optional": 473,
+        "optional_passed": 473,
+        "retained_standard": 12,
+        "profiles": 10,
+        "registered": 2657,
+        "fresh_stages": 9,
+        "installed_code": 135,
+        "installed_catalogs": 88,
+        "changed_installed": 27,
+        "unchanged_installed": 196,
+        "omitted_required": 3,
+        "session_integrations": 19,
+        "sanitizer": 6,
+        "default_displays": 4,
+        "default_commands": 66,
+        "geometry_invocations": 18,
+        "geometry_cases": 126,
+        "callback_entries": 50,
+        "client_connections": 57,
+        "client_property_replies": 171
+      },
+      "archives": {
+        "fvwm-x-linux-arm64-svg": {
+          "sha256": "b47c27099ac007c33dacd307f64f990565894acfe3157c9f707af33538f7e8c2",
+          "bytes": 155386159,
+          "capture_files": 2228,
+          "full_gzip_crc_and_payload_hashes": true
+        },
+        "linux-amd64": {
+          "sha256": "86e4a5c53290ed5c8391f10957169e3ef569f78153bb28973f6ed30cef35f7be",
+          "bytes": 78531931,
+          "capture_files": 1423,
+          "full_gzip_crc_and_payload_hashes": true
+        },
+        "freebsd-arm64": {
+          "sha256": "878f8f26f667a38321eb74059928b97b44f47fd15e16dcee53624f4d69efbf07",
+          "bytes": 35093065,
+          "capture_files": 786,
+          "full_gzip_crc_and_payload_hashes": true
+        },
+        "openbsd-arm64": {
+          "sha256": "3bbc0b502175c32e4dbd0b14af43eacdc85cc0cc319ae7866f07ed163a41a036",
+          "bytes": 32642127,
+          "capture_files": 1047,
+          "full_gzip_crc_and_payload_hashes": true
+        },
+        "freebsd-amd64": {
+          "sha256": "9bb817e234a6a340d15208b2efdff2cc84af2863b07cd2dfe06dba522298334c",
+          "bytes": 35891099,
+          "capture_files": 688,
+          "full_gzip_crc_and_payload_hashes": true
+        },
+        "openbsd-amd64": {
+          "sha256": "934630a8c772e8038757278bb52d48adba72ffa91808f21bfc9c82c1587039ed",
+          "bytes": 25697185,
+          "capture_files": 896,
+          "full_gzip_crc_and_payload_hashes": true
+        }
+      },
+      "withdrawn_initial_save": true,
+      "all_original_evidence_preserved": true
+    },
+    "counts": {
+      "standard": 2197,
+      "optional": 475,
+      "original_unaffected_standard": 2061,
+      "original_unaffected_optional": 455,
+      "affected_standard": 136,
+      "affected_optional": 20,
+      "retained_standard": 34,
+      "profiles": 10,
+      "registered": 2675,
+      "fresh_stages": 9,
+      "installed_code": 135,
+      "installed_catalogs": 88,
+      "changed_from_original_full": 18,
+      "unchanged_from_original_full": 205,
+      "callback_entries": 50,
+      "pending_entries": 20,
+      "constructor_entries": 90,
+      "session_integrations": 19,
+      "client_connections": 57,
+      "client_property_replies": 171,
+      "sanitizer": 15,
+      "default_displays": 4,
+      "default_commands": 66,
+      "geometry_invocations": 18,
+      "geometry_cases": 126,
+      "omitted_required": 3,
+      "standard_passed": 2197,
+      "optional_passed": 475
+    },
+    "profiles": {
+      "fvwm-x-linux-arm64-svg": {
+        "gcc": {
+          "composed_results": 281,
+          "original_unaffected": 264,
+          "affected_results": 17,
+          "affected_retained": 0,
+          "registered": 281,
+          "omitted": [],
+          "fresh_stage": true
+        },
+        "clang": {
+          "composed_results": 281,
+          "original_unaffected": 264,
+          "affected_results": 17,
+          "affected_retained": 0,
+          "registered": 281,
+          "omitted": [],
+          "fresh_stage": true
+        },
+        "software": {
+          "composed_results": 260,
+          "original_unaffected": 243,
+          "affected_results": 17,
+          "affected_retained": 0,
+          "registered": 260,
+          "omitted": [],
+          "fresh_stage": true
+        },
+        "minimal": {
+          "composed_results": 215,
+          "original_unaffected": 212,
+          "affected_results": 3,
+          "affected_retained": 0,
+          "registered": 215,
+          "omitted": [],
+          "fresh_stage": true
+        }
+      },
+      "linux-amd64": {
+        "gcc": {
+          "composed_results": 281,
+          "original_unaffected": 264,
+          "affected_results": 17,
+          "affected_retained": 17,
+          "registered": 281,
+          "omitted": [],
+          "fresh_stage": true
+        },
+        "clang": {
+          "composed_results": 281,
+          "original_unaffected": 264,
+          "affected_results": 17,
+          "affected_retained": 0,
+          "registered": 281,
+          "omitted": [],
+          "fresh_stage": true
+        }
+      },
+      "freebsd-arm64": {
+        "default": {
+          "composed_results": 269,
+          "original_unaffected": 252,
+          "affected_results": 17,
+          "affected_retained": 17,
+          "registered": 269,
+          "omitted": [],
+          "fresh_stage": true
+        }
+      },
+      "openbsd-arm64": {
+        "default": {
+          "composed_results": 269,
+          "original_unaffected": 252,
+          "affected_results": 17,
+          "affected_retained": 0,
+          "registered": 269,
+          "omitted": [],
+          "fresh_stage": true
+        }
+      },
+      "freebsd-amd64": {
+        "default": {
+          "composed_results": 269,
+          "original_unaffected": 252,
+          "affected_results": 17,
+          "affected_retained": 0,
+          "registered": 269,
+          "omitted": [],
+          "fresh_stage": true
+        }
+      },
+      "openbsd-amd64": {
+        "default": {
+          "composed_results": 266,
+          "original_unaffected": 249,
+          "affected_results": 17,
+          "affected_retained": 0,
+          "registered": 269,
+          "omitted": [
+            "ci-asset-contract",
+            "image-svg-isolation-xvfb",
+            "legacy-property-xvfb"
+          ],
+          "fresh_stage": false
+        }
+      }
+    },
+    "correction_archives": {
+      "fvwm-x-linux-arm64-svg": {
+        "sha256": "20e8aff59307346a574c51ff8df25eb02fae09df5c71b81e820066ba6fb5f2de",
+        "payload_files": 248,
+        "full_crc_payloads_and_scripts_verified": true
+      },
+      "linux-amd64": {
+        "sha256": "814aa4273f0b67cd7dbff9beb3d917b5426bb08a33ec600521112085e2fdb76c",
+        "payload_files": 133,
+        "full_crc_payloads_and_scripts_verified": true
+      },
+      "freebsd-arm64": {
+        "sha256": "3ae58074dba6fbcea1d745ee24c5e4351ac28b606086bf825e2dbcc038f18773",
+        "payload_files": 73,
+        "full_crc_payloads_and_scripts_verified": true
+      },
+      "openbsd-arm64": {
+        "sha256": "d898ee8b3e58fef51d74890b61a621be0c4674137a5bb1f16e29edd57cbc4474",
+        "payload_files": 76,
+        "full_crc_payloads_and_scripts_verified": true
+      },
+      "freebsd-amd64": {
+        "sha256": "56f070ac4ecaa3ae436fe14571e686416cd7fa6b45213204e5e3b3ff4a0865cd",
+        "payload_files": 73,
+        "full_crc_payloads_and_scripts_verified": true
+      },
+      "openbsd-amd64": {
+        "sha256": "731d24e7ec12c26f9a6c35934898cf3eed2ddb82f25ddf4183f2446d3b54e4e3",
+        "payload_files": 58,
+        "full_crc_payloads_and_scripts_verified": true
+      }
+    },
+    "inherited_gaps": [
+      "OpenBSD AMD64 required ci-asset-contract/image-svg-isolation-xvfb/legacy-property-xvfb omissions",
+      "OpenBSD AMD64 full install/two staged geometry checks unqualified"
+    ],
+    "separate_gates": [
+      "native-CPU sanitizer execution",
+      "physical hardware/toolkit/compositor",
+      "release acceptance"
+    ],
+    "full_matrix_repeated": false,
+    "scope": "Final registration/property/pending ownership; original 2516 unaffected entries retained, affected session entries replaced and two cases added per SM profile. No automatic saves."
+  },
+  "baseline": {
+    "status": "pass",
+    "unchanged_main": "b6755cafe919df265a592d9759025b1e4e478398",
+    "controls": [
+      {
+        "label": "compile-old-fsm",
+        "command": [
+          "cc",
+          "-Ilibs/libfvwm3.a.p",
+          "-Ilibs",
+          "-I../source/libs",
+          "-I.",
+          "-I../source",
+          "-Ifvwm",
+          "-I../source/fvwm",
+          "-I/usr/include/freetype2",
+          "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+          "-I/usr/include/fribidi",
+          "-I/usr/include/librsvg-2.0",
+          "-I/usr/include/glib-2.0",
+          "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+          "-I/usr/include/libmount",
+          "-I/usr/include/blkid",
+          "-I/usr/include/gdk-pixbuf-2.0",
+          "-I/usr/include/aarch64-linux-gnu",
+          "-I/usr/include/webp",
+          "-I/usr/include/cairo",
+          "-I/usr/include/pixman-1",
+          "-fdiagnostics-color=always",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Winvalid-pch",
+          "-Wextra",
+          "-std=c11",
+          "-O2",
+          "-g",
+          "-fno-common",
+          "-Wno-sign-compare",
+          "-Wno-unused-parameter",
+          "-Werror=implicit-function-declaration",
+          "-Werror=incompatible-pointer-types",
+          "-fstack-protector-strong",
+          "-fstack-clash-protection",
+          "-D_FORTIFY_SOURCE=3",
+          "-fPIC",
+          "-pthread",
+          "-D_DEFAULT_SOURCE",
+          "-D_BSD_SOURCE",
+          "-DHAS_FCHOWN",
+          "-DHAS_STICKY_DIR_BIT",
+          "-MD",
+          "-MQ",
+          "libs/libfvwm3.a.p/fsm.c.o",
+          "-MF",
+          "/tmp/fvwm-module-waits-20261015/session-callback-baseline/fsm.d",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/session-callback-baseline/fsm.o",
+          "-c",
+          "/tmp/session-callback-baseline-fsm.c"
+        ],
+        "status": 0
+      },
+      {
+        "label": "link-old-fsm",
+        "command": [
+          "cc",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/session-callback-baseline/old-callbacks",
+          "tests/test-session-callbacks.p/test_session_callbacks.c.o",
+          "-Wl,--as-needed",
+          "-Wl,--no-undefined",
+          "-pie",
+          "-Wl,-z,relro",
+          "-Wl,-z,now",
+          "-Wl,-z,noexecstack",
+          "-Wl,--start-group",
+          "-lm",
+          "-Wl,-rpath,/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "-Wl,-rpath-link,/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "/tmp/fvwm-module-waits-20261015/session-callback-baseline/fsm.o",
+          "libs/libfvwm3.a",
+          "-Wl,--wrap=SmsInitialize",
+          "-Wl,--wrap=SmsGetIceConnection",
+          "-Wl,--wrap=SmsGenerateClientID",
+          "-Wl,--wrap=SmsRegisterClientReply",
+          "-Wl,--wrap=SmsSaveYourself",
+          "-Wl,--wrap=SmsSaveYourselfPhase2",
+          "-Wl,--wrap=SmsSaveComplete",
+          "-Wl,--wrap=SmsReturnProperties",
+          "-Wl,--wrap=SmsCleanUp",
+          "-Wl,--wrap=IceSetShutdownNegotiation",
+          "-Wl,--wrap=IceCloseConnection",
+          "-Wl,--wrap=free",
+          "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+          "/usr/lib/aarch64-linux-gnu/libfreetype.so",
+          "/usr/lib/aarch64-linux-gnu/libICE.so",
+          "/usr/lib/aarch64-linux-gnu/libevent.so",
+          "/usr/lib/aarch64-linux-gnu/libX11.so",
+          "/usr/lib/aarch64-linux-gnu/libXft.so",
+          "/usr/lib/aarch64-linux-gnu/libXrandr.so",
+          "/usr/lib/aarch64-linux-gnu/libXt.so",
+          "/usr/lib/aarch64-linux-gnu/libXext.so",
+          "/usr/lib/aarch64-linux-gnu/libxkbcommon.so",
+          "/usr/lib/aarch64-linux-gnu/libfribidi.so",
+          "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+          "/usr/lib/aarch64-linux-gnu/librsvg-2.so",
+          "/usr/lib/aarch64-linux-gnu/libgio-2.0.so",
+          "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so",
+          "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so",
+          "/usr/lib/aarch64-linux-gnu/libglib-2.0.so",
+          "/usr/lib/aarch64-linux-gnu/libcairo.so",
+          "/usr/lib/aarch64-linux-gnu/libSM.so",
+          "/usr/lib/aarch64-linux-gnu/libXcursor.so",
+          "/usr/lib/aarch64-linux-gnu/libXfixes.so",
+          "/usr/lib/aarch64-linux-gnu/libXpm.so",
+          "/usr/lib/aarch64-linux-gnu/libXrender.so",
+          "-Wl,--end-group"
+        ],
+        "status": 0
+      },
+      {
+        "label": "control-0",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/session-callback-baseline/old-callbacks",
+          "0"
+        ],
+        "status": -6
+      },
+      {
+        "label": "control-1",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/session-callback-baseline/old-callbacks",
+          "1"
+        ],
+        "status": -6
+      },
+      {
+        "label": "control-4",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/session-callback-baseline/old-callbacks",
+          "4"
+        ],
+        "status": -6
+      }
+    ],
+    "assertion_refusals": 5,
+    "withdrawn_control": {
+      "label": "control-3",
+      "command": [
+        "/tmp/fvwm-module-waits-20261015/session-callback-baseline/old-callbacks",
+        "3"
+      ],
+      "status": -6
+    },
+    "withdrawn_reason": "The proxy intentionally suppresses automatic saves because it discards checkpoint/discard properties.",
+    "pending_controls": [
+      {
+        "label": "compile-old-fsm",
+        "command": [
+          "cc",
+          "-Ilibs/libfvwm3.a.p",
+          "-Ilibs",
+          "-I../source/libs",
+          "-I.",
+          "-I../source",
+          "-Ifvwm",
+          "-I../source/fvwm",
+          "-I/usr/include/freetype2",
+          "-I/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/include/libpng16",
+          "-I/usr/include/uuid",
+          "-I/usr/include/fribidi",
+          "-I/usr/include/librsvg-2.0",
+          "-I/usr/include/glib-2.0",
+          "-I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+          "-I/usr/include/sysprof-6",
+          "-I/usr/include/libmount",
+          "-I/usr/include/blkid",
+          "-I/usr/include/gdk-pixbuf-2.0",
+          "-I/usr/include/x86_64-linux-gnu",
+          "-I/usr/include/webp",
+          "-I/usr/include/cairo",
+          "-I/usr/include/pixman-1",
+          "-I/usr/include/harfbuzz",
+          "-I/usr/include/libxml2",
+          "-I/usr/include/pango-1.0",
+          "-fdiagnostics-color=always",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Winvalid-pch",
+          "-Wextra",
+          "-std=c11",
+          "-O2",
+          "-g",
+          "-fno-common",
+          "-Wno-sign-compare",
+          "-Wno-unused-parameter",
+          "-Werror=implicit-function-declaration",
+          "-Werror=incompatible-pointer-types",
+          "-fstack-protector-strong",
+          "-fstack-clash-protection",
+          "-D_FORTIFY_SOURCE=3",
+          "-fPIC",
+          "-pthread",
+          "-D_DEFAULT_SOURCE",
+          "-D_BSD_SOURCE",
+          "-DHAS_FCHOWN",
+          "-DHAS_STICKY_DIR_BIT",
+          "-MD",
+          "-MQ",
+          "libs/libfvwm3.a.p/fsm.c.o",
+          "-MF",
+          "/root/fvwm-module-waits-20261015/session-pending-baseline/fsm.d",
+          "-o",
+          "/root/fvwm-module-waits-20261015/session-pending-baseline/fsm.o",
+          "-c",
+          "/tmp/session-callback-baseline-fsm.c"
+        ],
+        "status": 0
+      },
+      {
+        "label": "link-old-fsm",
+        "command": [
+          "cc",
+          "-o",
+          "/root/fvwm-module-waits-20261015/session-pending-baseline/old-pending",
+          "tests/test-session-startup.p/test_session_startup.c.o",
+          "-Wl,--as-needed",
+          "-Wl,--no-undefined",
+          "-pie",
+          "-Wl,-z,relro",
+          "-Wl,-z,now",
+          "-Wl,-z,noexecstack",
+          "-Wl,--start-group",
+          "-lm",
+          "-Wl,-rpath,/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+          "-Wl,-rpath-link,/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+          "/root/fvwm-module-waits-20261015/session-pending-baseline/fsm.o",
+          "libs/libfvwm3.a",
+          "-Wl,--wrap=SmsInitialize",
+          "-Wl,--wrap=IceListenForConnections",
+          "-Wl,--wrap=IceGetListenConnectionNumber",
+          "-Wl,--wrap=IceFreeListenObjs",
+          "-Wl,--wrap=IceGetListenConnectionString",
+          "-Wl,--wrap=IceGenerateMagicCookie",
+          "-Wl,--wrap=IceSetPaAuthData",
+          "-Wl,--wrap=IceSetHostBasedAuthProc",
+          "-Wl,--wrap=IceComposeNetworkIdList",
+          "-Wl,--wrap=IceAddConnectionWatch",
+          "-Wl,--wrap=IceRemoveConnectionWatch",
+          "-Wl,--wrap=IceAcceptConnection",
+          "-Wl,--wrap=IceConnectionNumber",
+          "-Wl,--wrap=IceConnectionStatus",
+          "-Wl,--wrap=IceCloseConnection",
+          "-Wl,--wrap=fork",
+          "-Wl,--wrap=waitpid",
+          "-Wl,--wrap=setenv",
+          "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+          "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+          "/usr/lib/x86_64-linux-gnu/libICE.so",
+          "/usr/lib/x86_64-linux-gnu/libevent.so",
+          "/usr/lib/x86_64-linux-gnu/libX11.so",
+          "/usr/lib/x86_64-linux-gnu/libXft.so",
+          "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+          "/usr/lib/x86_64-linux-gnu/libXt.so",
+          "/usr/lib/x86_64-linux-gnu/libXext.so",
+          "/usr/lib/x86_64-linux-gnu/libxkbcommon.so",
+          "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+          "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+          "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+          "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+          "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+          "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+          "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+          "/usr/lib/x86_64-linux-gnu/libcairo.so",
+          "/usr/lib/x86_64-linux-gnu/libSM.so",
+          "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+          "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+          "/usr/lib/x86_64-linux-gnu/libXpm.so",
+          "/usr/lib/x86_64-linux-gnu/libXrender.so",
+          "-Wl,--end-group"
+        ],
+        "status": 0
+      },
+      {
+        "label": "control-7",
+        "command": [
+          "/root/fvwm-module-waits-20261015/session-pending-baseline/old-pending",
+          "7"
+        ],
+        "status": -6
+      },
+      {
+        "label": "control-8",
+        "command": [
+          "/root/fvwm-module-waits-20261015/session-pending-baseline/old-pending",
+          "8"
+        ],
+        "status": -6
+      }
+    ]
+  },
+  "portable": {
+    "status": 0,
+    "registered": 177,
+    "passed": 166,
+    "capability_skips": 11,
+    "log_sha256": "d9cc91880dd1399dc249743dacbd6779508544ab777ba65aa384519031bb876c",
+    "runs": 1
+  },
+  "manual": {
+    "status": 0,
+    "command": [
+      "python3",
+      "/tmp/fvwm-module-waits-20261015/session-callback-manuals/source/tools/maintenance/docs.py",
+      "--source",
+      "/tmp/fvwm-module-waits-20261015/session-callback-manuals/source",
+      "--output",
+      "/tmp/fvwm-module-waits-20261015/session-callback-manuals/rendered",
+      "--format",
+      "man"
+    ],
+    "inputs": {
+      "doc/FvwmAnimate.adoc": {
+        "sha256": "3add57ebb4c2b4dc1ceaf2d8d6b1cb4075abab750b8c12ed020fe7fb92639327",
+        "mode": 420
+      },
+      "doc/FvwmAuto.adoc": {
+        "sha256": "ee5c65617a7e57428ea65f3079795724a73f16bfb82caef53dbf704e422f4565",
+        "mode": 420
+      },
+      "doc/FvwmBacker.adoc": {
+        "sha256": "b3d9f041817069fd80ac10ba430247b055d4152a4a2f47bc232157e2e4db9582",
+        "mode": 420
+      },
+      "doc/FvwmButtons.adoc": {
+        "sha256": "8989170ab6a94e09c3473d47727f2d7693d7b6888657d9822c85bb3ea020c5fa",
+        "mode": 420
+      },
+      "doc/FvwmCommand.adoc": {
+        "sha256": "a2707a2873c95ef3bcc6cf391fab6d80cbf938fd901554acdce318643d55b327",
+        "mode": 420
+      },
+      "doc/FvwmDesktop.adoc": {
+        "sha256": "6ebbe2422e3513de1f13d2e49c29b4f915ac1e1ee458d039d9d9c27246522434",
+        "mode": 420
+      },
+      "doc/FvwmEvent.adoc": {
+        "sha256": "2ad0fa2537a91faf0046d8213b80f9959529950770ffe25b83b716c2f129753d",
+        "mode": 420
+      },
+      "doc/FvwmForm.adoc": {
+        "sha256": "f17574e60e9713ac35a2b52c9d96b9a5e8639a1a0c17012f43e90a2c58542ee5",
+        "mode": 420
+      },
+      "doc/FvwmIconMan.adoc": {
+        "sha256": "ef6e034f1a57ff49e9666cfdd81db5d52d5cb674be3e26f0c6abd3d1d81cc5b9",
+        "mode": 420
+      },
+      "doc/FvwmIdent.adoc": {
+        "sha256": "9c12c01726150c72f77e46f601afd3c169586ad06d0a89ac47d9ad13a4123e35",
+        "mode": 420
+      },
+      "doc/FvwmMFL.adoc": {
+        "sha256": "d62c7ab6339b2f720d5bd2fdda8fc06b31c396e5737e5c911588b23407403bb7",
+        "mode": 420
+      },
+      "doc/FvwmPager.adoc": {
+        "sha256": "03666273f665b7b9820399e7f852423e9e5f5e26fe4520c8e9418aa6281ed2ee",
+        "mode": 420
+      },
+      "doc/FvwmPerl.adoc": {
+        "sha256": "c21a6bda22887a21f7198085ef9edc3f75252cc31a2a7bd7e8509d02f4f655cc",
+        "mode": 420
+      },
+      "doc/FvwmPrompt.adoc": {
+        "sha256": "4e07309bd28d7a1421025f3102ce562ce3a6545a16827d07e08fa676bbbb663f",
+        "mode": 420
+      },
+      "doc/FvwmRearrange.adoc": {
+        "sha256": "0e4d1e6355d8028021c1f6ec4d0903ea5e94b1be4af16c9a104b28c60d17d996",
+        "mode": 420
+      },
+      "doc/FvwmScript.adoc": {
+        "sha256": "c6662c84608a16345286b745207b52192b1df223ee1ef68aa3e6fcd2c3a1b16c",
+        "mode": 420
+      },
+      "doc/fvwm-convert-2.6.adoc": {
+        "sha256": "65be4c462b471e019702b496c2938ea56cf8bab1e008ac261e48b5c553b5ad3d",
+        "mode": 420
+      },
+      "doc/fvwm-menu-desktop.adoc": {
+        "sha256": "c8661b68761608bc7f6b65e2920dff9bdce6ab5971aaae2d611df471b8d3f23b",
+        "mode": 420
+      },
+      "doc/fvwm-menu-directory.adoc": {
+        "sha256": "33e42834458243e3671d87af1d97ae793b9b4a3d2ac9ad3928f019282d4ef548",
+        "mode": 420
+      },
+      "doc/fvwm-menu-xlock.adoc": {
+        "sha256": "0e50a205ebb81acd347cee0f5f8a37db857cde281cef1ab0d47900ddee126a02",
+        "mode": 420
+      },
+      "doc/fvwm-perllib.adoc": {
+        "sha256": "5ba9b9b0a5095878bf904ec1f09834c626c9b4c8313d4c93776cb0156b6d1fd5",
+        "mode": 420
+      },
+      "doc/fvwm-root.adoc": {
+        "sha256": "c52049f1284ee1773ba7b4af30f25eced14e169c0770a3e090c6f6a04c78c206",
+        "mode": 420
+      },
+      "doc/fvwm3.adoc": {
+        "sha256": "fb3fc61c0f15e6c4f8da113ee9cf1d759cd50c63b91b6b216bae9122299ad987",
+        "mode": 420
+      },
+      "doc/fvwm3_manpage_source.adoc": {
+        "sha256": "4b17b7f8510a2b5515e23775817ca8bcc7be78d76469c428f19c4408e5857621",
+        "mode": 420
+      },
+      "doc/fvwm3all.adoc": {
+        "sha256": "b5884fbb2f169e004e1329bb647f23742d3a218edb1955fe6e266c9d5d8b23c9",
+        "mode": 420
+      },
+      "doc/fvwm3commands.adoc": {
+        "sha256": "ccca6ca753c637a3ef219f00562d8ece128b1c64bc6e720cb192ac3329404a9e",
+        "mode": 420
+      },
+      "doc/fvwm3menus.adoc": {
+        "sha256": "a9d12ad8a8aafeafcc2aa1d8538649d9a8a90e1cf55dda5d5f5780913c506903",
+        "mode": 420
+      },
+      "doc/fvwm3styles.adoc": {
+        "sha256": "0d989981058b3032005e6a4a64ac77a45c0ce2c84fd98c41e37bbd9981c3d133",
+        "mode": 420
+      },
+      "doc/index.adoc.in": {
+        "sha256": "a38a0dd54e9c8c46d9bfd1be0b2ee6a53e86733406422cac1e79ac9ccda4c438",
+        "mode": 420
+      },
+      "tools/maintenance/common.py": {
+        "sha256": "8b42f45cd946c1823b2cc9bbbad36c63e2c76ed7b34ee478b1ea884442964826",
+        "mode": 420
+      },
+      "tools/maintenance/docs.py": {
+        "sha256": "dadf60b19dfa426d6dbb3ec0801131605c14248b5e297a9c9f57aaf2ad7aa9ee",
+        "mode": 420
+      },
+      "tools/maintenance/manuals.json": {
+        "sha256": "05efbf5026772ddf2211cc709d1445b96f47285a4ab26b1d9684369eec6f4f99",
+        "mode": 420
+      }
+    },
+    "outputs": {
+      "fvwm-convert-2.6.1": "dccdd9dc17658cfb7fd83be5e8c5162d672959e9c6e741aa3d203658f3c2b6e9",
+      "fvwm-menu-desktop.1": "c799846b30268ba02f341eee064818c9b66598a4c217604a2e5a8647de16ae54",
+      "fvwm-menu-directory.1": "3700d68773c4a4e663074bcb93ba96af655a321c9db4e78545694c83395dcc2d",
+      "fvwm-menu-xlock.1": "801a61195119f9b2c7c8653bceacc6881345d6a62ef0f28f1457ecbdf806eb80",
+      "fvwm-perllib.1": "a1189f0fff14dca84a9452970fdaf29307dc9af4b05c13ad5445a22ee54cc657",
+      "fvwm-root.1": "0317745c65a88ce66729adda6f90bed0c22ae8edf1beb865ca897f277c63a17e",
+      "fvwm3.1": "f6b066db28e4fba5bf0bfb2fa690c623d72c230ea8246d62d2b2ac86a11446e0",
+      "fvwm3all.1": "a39ecad7b1d838db1d642c7018c6c0fa1a6b37f968ca9e4ed30448d63e21af48",
+      "FvwmAnimate.1": "f0f6373256acda7c7ea9d701db1c3b9beadc637ccedd2d1effcafb503856bae2",
+      "FvwmAuto.1": "d1d1362ab5521dd0df8f0112fadd84dae7f80e5b5ea5ec3a02791165387aa8d5",
+      "FvwmBacker.1": "7282d968c005bbe61e861c7a61c06eb31ec4ca697c21191df80aeb74ed1b9836",
+      "FvwmButtons.1": "0325a60f5b2af58465ea984907d02abff278d19c6998a64ae26778bab239736a",
+      "FvwmCommand.1": "8f867a0445334f9e0910c987a8cc8d91643598e95a44561c637d7af8f55ebe99",
+      "FvwmDesktop.1": "de33bd55d8dfc7b51b54466ffbe933b469ab49220986aa862f5bc04041bdfb00",
+      "FvwmEvent.1": "83b6c5a7ea19612733bfa100b158a2aebe1d8c5b32ffed6ebcf3661c64383f54",
+      "FvwmForm.1": "1016216621ee1d017c0a87d01ba5a18ed9ef5c796266d4c5535c2e778871ae6e",
+      "FvwmIconMan.1": "4519ed0b07564447bfc23904997658e2b3efcf20ddf45139b1140f14c49cd657",
+      "FvwmIdent.1": "9c349e3a9a662dccf79429a145601713ee56d6be6e5066f17604ce46c919307b",
+      "FvwmMFL.1": "5480f95743ffbf8c0211698080551a2b7a524826f6cffba70101e835f474bd10",
+      "FvwmPager.1": "c1ff3dca2b67bc7c016c95122c8bc9b659c61fb6508a360a01ce8738b398aa71",
+      "FvwmPerl.1": "1bd42aed249790263bcedac49337bddaec5839d053b8f8edacb07e67c1660004",
+      "FvwmRearrange.1": "2b63436222de10149df199587472cb6fb611226891ce4ff3291f98395d6a8db8",
+      "FvwmScript.1": "5f582342f7515ff1028fcb56cacaba801ed9c46c8dfb9e38aaf6cbfe19df2460",
+      "fvwm3commands.1": "37fff9e031b8132ec9b2835df4aaef992bf8caaee94faa1d346af0a1b28b36ed",
+      "fvwm3menus.1": "6f4bea7d5f96f6eeb5c61a01b085c3d72140d96a42074af97b78883e33afc037",
+      "fvwm3styles.1": "aa54a072f586538c486b08551fd64c35880c85aa02ea050f2d2779a86e2aadeb"
+    },
+    "manuals": 26,
+    "inputs_exact_before_and_after": true,
+    "version": "Asciidoctor 2.0.20 [https://asciidoctor.org]\nRuntime Environment (ruby 3.2.3 (2024-01-18 revision 52bb2ac0a6) [aarch64-linux-gnu]) (lc:UTF-8 fs:UTF-8 in:UTF-8 ex:UTF-8)",
+    "original_full_render_pages": 26,
+    "scoped_correction": {
+      "status": 0,
+      "inputs": {
+        "doc/FvwmButtons.adoc": {
+          "sha256": "91388a5b1f9938084caca00439eb89265dfb4506744349d3d499c54289a06c4c",
+          "mode": 420
+        },
+        "doc/FvwmScript.adoc": {
+          "sha256": "1783f5f8953975c671988cf49ba751b9c42b618f8cd7294479d7f54270d5fbff",
+          "mode": 420
+        }
+      },
+      "outputs": {
+        "FvwmButtons.1": "70f227f1619f895c1bf5278324ad38993f53ef624e3a6a9a8ec48143f76dcc3e",
+        "FvwmScript.1": "41bfefb0219c501eafb6ad29033f36f35682357f851e62b9a60da6a5b639e647"
+      },
+      "commands": [
+        {
+          "command": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-a",
+            "reproducible",
+            "-a",
+            "FvwmButtons",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/session-callback-manual-correction/FvwmButtons.1",
+            "/tmp/fvwm-module-waits-20261015/session-callback-manual-correction/doc/FvwmButtons.adoc"
+          ],
+          "status": 0
+        },
+        {
+          "command": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-a",
+            "reproducible",
+            "-a",
+            "FvwmScript",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/session-callback-manual-correction/FvwmScript.1",
+            "/tmp/fvwm-module-waits-20261015/session-callback-manual-correction/doc/FvwmScript.adoc"
+          ],
+          "status": 0
+        }
+      ],
+      "scoped_manuals": 2,
+      "frozen_native_source_untouched": true,
+      "diagnostic_bytes": 0
+    },
+    "scoped_final_correction": {
+      "status": 0,
+      "inputs": {
+        "doc/FvwmButtons.adoc": {
+          "sha256": "8989170ab6a94e09c3473d47727f2d7693d7b6888657d9822c85bb3ea020c5fa",
+          "mode": 420
+        },
+        "doc/FvwmScript.adoc": {
+          "sha256": "c6662c84608a16345286b745207b52192b1df223ee1ef68aa3e6fcd2c3a1b16c",
+          "mode": 420
+        }
+      },
+      "outputs": {
+        "FvwmScript.1": "5f582342f7515ff1028fcb56cacaba801ed9c46c8dfb9e38aaf6cbfe19df2460",
+        "FvwmButtons.1": "0325a60f5b2af58465ea984907d02abff278d19c6998a64ae26778bab239736a"
+      },
+      "commands": [
+        {
+          "command": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-a",
+            "reproducible",
+            "-a",
+            "FvwmButtons",
+            "-o",
+            "/root/fvwm-module-waits-20261015/session-callback-manual-final/FvwmButtons.1",
+            "/root/fvwm-module-waits-20261015/session-callback-manual-final/doc/FvwmButtons.adoc"
+          ],
+          "status": 0
+        },
+        {
+          "command": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-a",
+            "reproducible",
+            "-a",
+            "FvwmScript",
+            "-o",
+            "/root/fvwm-module-waits-20261015/session-callback-manual-final/FvwmScript.1",
+            "/root/fvwm-module-waits-20261015/session-callback-manual-final/doc/FvwmScript.adoc"
+          ],
+          "status": 0
+        }
+      ],
+      "scoped_manuals": 2,
+      "frozen_native_source_untouched": true,
+      "diagnostic_bytes": 0
+    },
+    "scoped_rendered_pages_total": 4
+  },
+  "diagnostics": {
+    "original": "pass",
+    "correction": {
+      "status": "pass",
+      "logs": [
+        {
+          "target": "freebsd-amd64",
+          "log": "evidence/default-compile.log",
+          "sha256": "666b621dd009bd1a7be8e5add4da2eb38eb7cb25d6e1866431ab30da612809cd",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "freebsd-arm64",
+          "log": "evidence/default-compile.log",
+          "sha256": "4363066b43a8cf4af62ca8ac083db59c77f9d2c954e1cd619cafc57848b14480",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "fvwm-x-linux-arm64-svg",
+          "log": "evidence/asan-compile.log",
+          "sha256": "e69b9aefc813fcdbd8d51bf5ae8bec469702e7c2bddcb86232c6175effdb7f0f",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "fvwm-x-linux-arm64-svg",
+          "log": "evidence/clang-compile.log",
+          "sha256": "f9b1a0182c9c35585af1ce74051392f89ebca6fd105c16cb8ff0958932df46ae",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "fvwm-x-linux-arm64-svg",
+          "log": "evidence/gcc-compile.log",
+          "sha256": "f497660a219ef299470d4098bd25bc1e16bb1b378b59c355dd17f9e9720feb44",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "fvwm-x-linux-arm64-svg",
+          "log": "evidence/minimal-compile.log",
+          "sha256": "a96a55d4cdc017a2e4dfbf39ec0ef187fe80900e0fe8fcd38a49e84d993cd6f8",
+          "affected_diagnostics": [],
+          "warning_count": 1
+        },
+        {
+          "target": "fvwm-x-linux-arm64-svg",
+          "log": "evidence/software-compile.log",
+          "sha256": "7b5f17ab49e72ddf22da14904bd533d9cebbf80be7c5a38c4285d885a24912fe",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "linux-amd64",
+          "log": "evidence/clang-compile.log",
+          "sha256": "89635b7d5806e012cc3d14afc3c5fdbd50db3fb3a809a966fd3c48b3ebd3e5fd",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "linux-amd64",
+          "log": "evidence/gcc-compile.log",
+          "sha256": "78e3d807774dae36440ee2455a7da720bce861decaf03b2e34ab9b1e57659b26",
+          "affected_diagnostics": [],
+          "warning_count": 0
+        },
+        {
+          "target": "openbsd-amd64",
+          "log": "evidence/default-compile.log",
+          "sha256": "d31feea918296104b4db7878c556c2b07325362610adc7e45a26bf75f769a60c",
+          "affected_diagnostics": [],
+          "warning_count": 20
+        },
+        {
+          "target": "openbsd-arm64",
+          "log": "evidence/default-compile.log",
+          "sha256": "79cbb8b1ba7e15d489a73c6f6be3b5bc5f48b49dd948ecb2dffde93a301a2e39",
+          "affected_diagnostics": [],
+          "warning_count": 20
+        }
+      ]
+    }
+  },
+  "storage_retirement": {
+    "first_retirement": 497095507,
+    "original_capture_retirement": {
+      "status": "pass",
+      "rows": [
+        {
+          "status": "pass",
+          "target": "fvwm-x-linux-arm64-svg",
+          "removed_duplicate_bytes": 498381492,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/qualification/fvwm-x-linux-arm64-svg.tgz",
+              "sha256": "b47c27099ac007c33dacd307f64f990565894acfe3157c9f707af33538f7e8c2",
+              "payload_files": 2229
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 1525870592
+        },
+        {
+          "status": "pass",
+          "target": "linux-amd64",
+          "removed_duplicate_bytes": 467867575,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/process-startup-transactions/qualification/linux-amd64.tgz",
+              "sha256": "6c718a82024523adb2faec85f15562b01710260223c9217b579accae8206d114",
+              "payload_files": 1323
+            },
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/qualification/linux-amd64.tgz",
+              "sha256": "86e4a5c53290ed5c8391f10957169e3ef569f78153bb28973f6ed30cef35f7be",
+              "payload_files": 1424
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 16884277248
+        },
+        {
+          "status": "pass",
+          "target": "freebsd-arm64",
+          "removed_duplicate_bytes": 246103800,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/process-startup-transactions/qualification/freebsd-arm64.tgz",
+              "sha256": "510fcc41a9b1e5540874450097ffef7bbaae719e0abc6ab8612bd4dd6921efad",
+              "payload_files": 761
+            },
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/qualification/freebsd-arm64.tgz",
+              "sha256": "878f8f26f667a38321eb74059928b97b44f47fd15e16dcee53624f4d69efbf07",
+              "payload_files": 787
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 12113747968
+        },
+        {
+          "status": "pass",
+          "target": "freebsd-amd64",
+          "removed_duplicate_bytes": 246813496,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/process-startup-transactions/qualification/freebsd-amd64.tgz",
+              "sha256": "52f5a348f4e981224c1a2bcc4285313c564db807deb676dcbfa067306ed98d54",
+              "payload_files": 663
+            },
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/qualification/freebsd-amd64.tgz",
+              "sha256": "9bb817e234a6a340d15208b2efdff2cc84af2863b07cd2dfe06dba522298334c",
+              "payload_files": 689
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 12563415040
+        },
+        {
+          "status": "pass",
+          "target": "openbsd-arm64",
+          "removed_duplicate_bytes": 235298504,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/process-startup-transactions/qualification/openbsd-arm64.tgz",
+              "sha256": "e520f00fee6940e3619ed0b673bb489c2f97bb27ff80eec3b8e7f5008fc86aa6",
+              "payload_files": 1014
+            },
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/qualification/openbsd-arm64.tgz",
+              "sha256": "3bbc0b502175c32e4dbd0b14af43eacdc85cc0cc319ae7866f07ed163a41a036",
+              "payload_files": 1048
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 5373816832
+        },
+        {
+          "status": "pass",
+          "target": "openbsd-amd64",
+          "removed_duplicate_bytes": 180235231,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/process-startup-transactions/qualification/openbsd-amd64.tgz",
+              "sha256": "4fe7386434a13eaf8daedd42e707c0c045908c62fe7e99d5e29c3c270d566672",
+              "payload_files": 863
+            },
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/qualification/openbsd-amd64.tgz",
+              "sha256": "934630a8c772e8038757278bb52d48adba72ffa91808f21bfc9c82c1587039ed",
+              "payload_files": 897
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 6416371712
+        }
+      ],
+      "removed_duplicate_bytes": 1874700098,
+      "user_authorized": true
+    },
+    "final_correction_retirement": {
+      "status": "pass",
+      "rows": [
+        {
+          "status": "pass",
+          "target": "fvwm-x-linux-arm64-svg",
+          "removed_duplicate_bytes": 114186716,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/correction/fvwm-x-linux-arm64-svg.tgz",
+              "sha256": "20e8aff59307346a574c51ff8df25eb02fae09df5c71b81e820066ba6fb5f2de",
+              "payload_files": 248
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 1441857536
+        },
+        {
+          "status": "pass",
+          "target": "linux-amd64",
+          "removed_duplicate_bytes": 56936793,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/correction/linux-amd64.tgz",
+              "sha256": "814aa4273f0b67cd7dbff9beb3d917b5426bb08a33ec600521112085e2fdb76c",
+              "payload_files": 133
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 16839069696
+        },
+        {
+          "status": "pass",
+          "target": "freebsd-arm64",
+          "removed_duplicate_bytes": 28924411,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/correction/freebsd-arm64.tgz",
+              "sha256": "3ae58074dba6fbcea1d745ee24c5e4351ac28b606086bf825e2dbcc038f18773",
+              "payload_files": 73
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 12083724288
+        },
+        {
+          "status": "pass",
+          "target": "freebsd-amd64",
+          "removed_duplicate_bytes": 29096221,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/correction/freebsd-amd64.tgz",
+              "sha256": "56f070ac4ecaa3ae436fe14571e686416cd7fa6b45213204e5e3b3ff4a0865cd",
+              "payload_files": 73
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 12534312960
+        },
+        {
+          "status": "pass",
+          "target": "openbsd-arm64",
+          "removed_duplicate_bytes": 27754419,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/correction/openbsd-arm64.tgz",
+              "sha256": "d898ee8b3e58fef51d74890b61a621be0c4674137a5bb1f16e29edd57cbc4474",
+              "payload_files": 76
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 5346762752
+        },
+        {
+          "status": "pass",
+          "target": "openbsd-amd64",
+          "removed_duplicate_bytes": 2292443,
+          "canonical_host_archives": [
+            {
+              "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-20/session-callback-ownership/correction/openbsd-amd64.tgz",
+              "sha256": "731d24e7ec12c26f9a6c35934898cf3eed2ddb82f25ddf4183f2446d3b54e4e3",
+              "payload_files": 58
+            }
+          ],
+          "source_build_stage_vm_trees_untouched": true,
+          "free_after": 6408904704
+        }
+      ],
+      "removed_duplicate_bytes": 259191003,
+      "user_authorized": true
+    },
+    "canonical_host_archives_source_build_stages_vms_preserved": true
+  },
+  "performance": {
+    "reference_pr": 132,
+    "merged_implementation_checkpoints": 1,
+    "due": false
+  },
+  "full_matrix_repeated": false
+}

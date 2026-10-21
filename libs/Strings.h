@@ -11,7 +11,9 @@ void CopyString(char **dest, const char *source);
 
 
 /**
- * Like CopyString, but strips leading and trailing (double) quotes if any.
+ * Like CopyString, but accepts an opening double quote after ASCII spaces
+ * and removes a closing double quote after first-line whitespace trimming.
+ * Tabs before the opening quote do not enable quote removal.
  **/
 void CopyStringWithQuotes(char **dest, const char *src);
 

@@ -255,11 +255,13 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Current batch, 2026-10-21: the fixed protocol inventory below completes three
-STANDARDS-01 audit stories. Its forty requirements retain historical profile
-evidence and concrete runtime handoffs; broader standards acceptance stays open.
-Continue bounded runtime batches in the sequence below; do not restart the
-whole standards inventory after a repair.
+Current batch, 2026-10-21: DATA-01 / CLEAN-01 shared string copies. Repair
+empty first-line copying, whole-string action/path trimming and quoted font/
+configuration copying together. Preserve NULL, unsigned-byte whitespace, newline
+and ASCII-space quote conventions; use bounded indices and retain the computed
+quoted length. Independent expected-output/ownership/cost checks are prepared;
+focused and combined qualification remain pending. The forty-row standards
+inventory is complete as an inventory; its runtime owner handoffs stay open.
 
 The module/icon-box/event-filter dependency batch is merged in PR #135.
 Its affected checkpoint and exact code/data parity remain source-scoped.
@@ -272,16 +274,16 @@ gates together; qualification does not transfer to an untested release.
 The composed local baseline passes all selected standard, optional, install and staged/default-X gates;
 ready for maintainer review. Preserve original failures and separate native-CPU,
 physical and wider release acceptance. The older 7.9 VESA cause remains
-historical/deferred. PR #135 is merged on main; PR #137 merged its inventory
-into the still-open PR #136.
+historical/deferred. PR #135 and PR #136 are merged on main; PR #137
+contributed its inventory through PR #136.
 [Baseline decision](decisions/OPENBSD-8.0-BASELINE-2026-10-20.md),
 [checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md).
 
 Performance tracking requested 2026-10-20: reference PR132 compares PR131/132
 on one Linux ARM64 GCC default profile with existing binaries. Three paired
-runs record latency, CPU, Linux peak RSS and executable sizes. PR133, PR134 and
-PR135 are the three subsequent merged implementation checkpoints (3/5);
-this OpenBSD checkpoint remains unmerged. The documentation-only inventory
+runs record latency, CPU, Linux peak RSS and executable sizes. PR133–PR136
+are the four subsequent merged implementation checkpoints (4/5). The
+documentation-only inventory
 does not increment the implementation counter. No regular comparison is due.
 Expected hot-path or memory changes can bring it forward.
 [Reference](verification/PERFORMANCE-2026-10-20.md),

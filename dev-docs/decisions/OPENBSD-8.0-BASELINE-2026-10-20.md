@@ -1,0 +1,23 @@
+# OpenBSD 8.0 release target — 2026-10-20
+
+Accepted by direct user instruction: target OpenBSD 8.0, and only that OpenBSD
+release, for FVWM-X. Keep AMD64 and ARM64, default Xenocara, Linux and FreeBSD.
+No release publication is authorized.
+
+The [official announcement](https://www.openbsd.org/80.html) dates 8.0 to
+October 20, 2026. Use fixed, verified 8.0 image/bootstrap inputs, release packages
+and applicable signed errata. Development snapshots and 7.9 are not substitute
+release evidence. Retain original 7.9 evidence/failures without relabeling them.
+
+CI-01 / COMPAT-01 / IMAGE-01 / LIB-07 own a fresh two-architecture checkpoint.
+First run the previously missing CI asset-worker, SVG isolation and legacy
+property checks; diagnose actual failures before changing code or fixture
+policy. Then qualify builds, full install identities, staged geometry and
+authenticated default-X consumers. Reopen deferred VESA cause work only as
+needed for a reproduced 8.0 acceptance failure. Preserve functional deadlines,
+assertions and dependency checks. Native-CPU and physical hardware/toolkit/
+compositor qualification and release acceptance remain separate.
+
+The tracker records final source/profile/patch scope. Use isolated 8.0 guests;
+retain old sources/builds/disks and canonical evidence, and retire completed
+duplicate captures after canonical validation.

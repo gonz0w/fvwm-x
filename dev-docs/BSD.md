@@ -1,6 +1,8 @@
 # Native BSD verification
 
-The initial native baseline is FreeBSD 15.1 and OpenBSD 7.9. ARM64 guests
+The release targets are FreeBSD 15.1 and OpenBSD 8.0 only. Both OpenBSD 8.0
+VM profiles pass the [baseline checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md);
+retained 7.9 results are historical. ARM64 guests
 run under hardware-accelerated QEMU on the macOS development host; AMD64
 guests use QEMU CPU emulation on the same host.
 The approved release matrix is Linux, FreeBSD, and OpenBSD on both AMD64
@@ -39,7 +41,23 @@ Both systems supply GNU libiconv through the rendering dependency chain.
 Meson must select the ports header and library together: FreeBSD also has
 libc iconv, and its builtin probe does not see `/usr/local/include`.
 
-## Local QEMU guests
+## Current release recipes
+
+Use the [owned QEMU recipes](ci/README.md) for fresh pinned release inputs.
+OpenBSD profiles now select 8.0 and refuse a different release/kernel identity.
+For signed system-update preparation, run `bsd-prepare-core.sh`, then
+`bsd-prepare-x-startup.sh` and normal signed `pkg_add -u` in the job's preparation
+script; pair it with `--reboot-after-prepare`. The
+[8.0 checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md) preserves
+that exact executed script, source identities and results on both architectures.
+AMD64 default-X fixtures also require the explicit `--openbsd-vga-test` option.
+
+## Retained local lab examples
+
+The paths below describe the earlier installed lab layout. Its OpenBSD disks
+contain 7.9 and are retained historical evidence, not 8.0 release inputs.
+Use the current recipes above for OpenBSD qualification; the native gate now
+refuses 7.9. Preserve these older disks and their associated builds.
 
 The verification images, private VM key, environment records, and test
 archives are under the ignored `builddir/qemu-bsd/`. Official image SHA256
@@ -59,7 +77,7 @@ qemu-system-aarch64 -machine virt,accel=hvf -cpu host -smp 4 -m 4096 \
 
 For the installed OpenBSD guest, use the same command with the disk
 `builddir/qemu-bsd/openbsd/disk.qcow2` and SSH port 2242. Do not attach
-`install79.img` when booting the installed system.
+installation media when booting the installed system.
 
 FreeBSD AMD64 default scfb checks require UEFI's framebuffer. Boot its installed
 image with an explicit disk boot priority (a BIOS boot supports Xvfb but supplies

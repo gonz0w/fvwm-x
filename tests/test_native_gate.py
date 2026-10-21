@@ -39,7 +39,11 @@ if name == 'go':
         out.write(json.dumps(['offline-env', [os.environ.get(key) for key in
             ('GOTOOLCHAIN', 'GOPROXY', 'GOSUMDB')]])+"\\n")
 if name == 'uname':
-    print(os.environ['NATIVE_GATE_TEST_OS'])
+    print(os.environ.get('NATIVE_GATE_TEST_RELEASE', '8.0') if args == ['-r']
+          else os.environ['NATIVE_GATE_TEST_OS'])
+if name == 'sysctl':
+    print(os.environ.get('NATIVE_GATE_TEST_KERNEL',
+                         'OpenBSD 8.0 (GENERIC.MP) #1'))
 if name == 'python3':
     if args == ['--version']:
         print('Python contract stub')
@@ -63,7 +67,8 @@ if name == 'meson':
             exe.write_text('#!/bin/sh\\nexit 0\\n')
             exe.chmod(0o755)
 '''
-        for name in ('uname', 'meson', 'cc', 'readelf', 'file', 'go', 'python3'):
+        for name in ('uname', 'meson', 'cc', 'readelf', 'file', 'go',
+                     'python3', 'sysctl'):
             path = self.bin / name
             path.write_text(stub)
             path.chmod(0o755)
@@ -81,6 +86,26 @@ if name == 'meson':
     def setup_args(self, calls):
         return next(args for name, args in calls if name == 'meson' and
             args and args[0] == 'setup')
+
+    def test_openbsd_refuses_other_releases_before_build(self):
+        self.env['NATIVE_GATE_TEST_OS'] = 'OpenBSD'
+        for version in ('7.9', '8.0-current', '8.1'):
+            with self.subTest(version=version):
+                self.env['NATIVE_GATE_TEST_RELEASE'] = version
+                calls = self.run_gate(succeeds=False)
+                self.assertFalse(any(name == 'meson' for name, _ in calls))
+                self.log.unlink()
+
+    def test_openbsd_refuses_snapshot_kernel_with_release_uname(self):
+        self.env['NATIVE_GATE_TEST_OS'] = 'OpenBSD'
+        self.env['NATIVE_GATE_TEST_RELEASE'] = '8.0'
+        for kernel in ('OpenBSD 8.0-current (GENERIC.MP) #1',
+                       'OpenBSD 8.0-stable (GENERIC.MP) #1', ''):
+            with self.subTest(kernel=kernel):
+                self.env['NATIVE_GATE_TEST_KERNEL'] = kernel
+                calls = self.run_gate(succeeds=False)
+                self.assertFalse(any(name == 'meson' for name, _ in calls))
+                self.log.unlink()
 
     def test_platform_wrappers_and_staging(self):
         for system, entry in [('Linux', 'run_on_linux.sh'),

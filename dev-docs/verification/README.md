@@ -1,5 +1,7 @@
 # Verification reports
 
+- [OpenBSD 8.0 release baseline](VERIFICATION-2026-10-20-OPENBSD-80.md): sole supported OpenBSD release on both architectures; 538 standard/34 optional composed passes, full installs and authenticated default-X/scaling; original failures retained.
+
 - [Visual startup ownership](VERIFICATION-2026-10-20-VISUAL-STARTUP.md): inherited ID admission, visual reply ownership and initial-color refusal; one six-target/ten-profile checkpoint, scoped sanitizers and source-bound install/default-X coverage, with inherited gaps explicit.
 
 - [Periodic performance reference](PERFORMANCE-2026-10-20.md): alternating paired observations from existing binaries; future comparisons every five merged implementation checkpoints.

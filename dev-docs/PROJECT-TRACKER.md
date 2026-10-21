@@ -1,6 +1,6 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-20. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-21. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Swallowed-client session replies, DATA-01 / FD-01 / CLEAN-01 | Composed checkpoint passes; ready for PR review | Three registration/pending-queue/property repairs pass a composed six-target/ten-profile checkpoint after one original full run: 2197 standard and 475 optional results. The composition retains 2516 unaffected original passes and uses 156 affected entries (122 fresh / 34 retained by exact inputs and eleven binaries per focused target). Fifty callback entries, twenty pending-peer entries, nineteen real-session drivers with 57 independent clients and 171 property replies, fifteen scoped guest sanitizer entries, nine fresh stages and four final authenticated default BSD session displays pass. Three inherited required OpenBSD AMD64 omissions and its install/two staged-geometry gap remain without retries. The existing no-automatic-save policy is preserved. Performance reference PR132 remains at 1/5; no comparison is due. [Report](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md). |
+| OpenBSD 8.0 release baseline, CI-01 / COMPAT-01 / IMAGE-01 / LIB-07 | Composed local checkpoint passes; ready for PR review | OpenBSD 8.0 is the sole OpenBSD release on AMD64/ARM64. 538 standard and 34 optional entries pass, with full installs, 44 authenticated default servers and staged/default-X 1x/1.5x geometry. All formerly missing entries run; original failures and focused corrections remain recorded. Linux/FreeBSD scope and wider release gates remain. [Report](verification/VERIFICATION-2026-10-20-OPENBSD-80.md). |
+| Swallowed-client session replies, DATA-01 / FD-01 / CLEAN-01 | Merged in [PR #134](https://github.com/gonz0w/fvwm-x/pull/134); composed checkpoint passes | Three registration/pending-queue/property repairs pass a composed six-target/ten-profile checkpoint after one original full run: 2197 standard and 475 optional results. The composition retains 2516 unaffected original passes and uses 156 affected entries (122 fresh / 34 retained by exact inputs and eleven binaries per focused target). Fifty callback entries, twenty pending-peer entries, nineteen real-session drivers with 57 independent clients and 171 property replies, fifteen scoped guest sanitizer entries, nine fresh stages and four final authenticated default BSD session displays pass. Three inherited required OpenBSD AMD64 omissions and its install/two staged-geometry gap remain without retries. The existing no-automatic-save policy is preserved. Performance reference PR132 remains at 1/5; no comparison is due. [Report](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md). |
 | Process and session startup transactions, FD-01 / PROC-01 / DATA-01 | Merged in [PR #133](https://github.com/gonz0w/fvwm-x/pull/133); composed checkpoint passes | Three process/session constructor repairs pass one composed checkpoint after a single full matrix: 2141 composed standard results (2116 original fresh passes, 24 retained after unchanged-input/eight-binary checks per focused target, and one corrected Exec probe), plus 468 optional results across six targets/ten profiles. Eleven actual-core Exec drivers verify 77 observations; seventy session fault/retry entries and nineteen real session integrations pass. Nine scoped guest ASan/UBSan checks, nine fresh stages and four authenticated default BSD displays pass. Three inherited required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. Performance reference PR132 is accepted, at 1/5 subsequent merged implementation checkpoints; no comparison is due. [Report](verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md). |
 | Visual startup ownership, DATA-01 / IMAGE-01 / CLEAN-01 | Merged in [PR #132](https://github.com/gonz0w/fvwm-x/pull/132); combined checkpoint passes | Three startup ownership improvements pass one combined checkpoint: 2077 standard results (2071 fresh / six retained by unchanged runtime/test/build inputs and six exact binary identities), plus 459 optional results across six targets/ten profiles. Eleven pure policy drivers verify 352 observations; fifteen real-X drivers verify 60 initialization observations. Three scoped guest ASan/UBSan checks, nine fresh stages and four authenticated default BSD displays pass. Three inherited required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. First paired performance observation recorded; regular comparisons every five merged implementation checkpoints. [Runtime report](verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md), [performance reference](verification/PERFORMANCE-2026-10-20.md). |
 | Window-tree walks, DATA-01 / CLEAN-01 | Merged in [PR #131](https://github.com/gonz0w/fvwm-x/pull/131); combined checkpoint passes | Three ancestor/pointer/frame lookup improvements pass one combined checkpoint: 2061/2061 standard results (2055 fresh / six retained by unchanged runtime/test/build inputs and eight binary identities), plus 455/455 optional entries across six targets/ten profiles. Fifteen real-X drivers verify 45 hierarchy/pointer/reparent observations; ten boundary-policy profiles and three scoped guest sanitizers pass. Nine fresh stages and four authenticated BSD displays pass. Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. [Report](verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md). |
@@ -252,25 +253,23 @@ it. Use frozen-test wait time for independent work without modifying tested
 inputs. [Detailed cadence](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 
-Immediate selection, 2026-10-20: PR #133 is merged. DATA-01 #6 / FD-01 #7 /
-CLEAN-01 #34 takes one swallowed-client XSMP reply batch: reject unrestored
-IDs and failed ID generation before registration, preserve other pending
-connections during close callbacks, and reply to property requests under the
-existing discard policy.
-The composed checkpoint passes; ready for PR review. Configuration
-syntax is unchanged. This is the isolated swallow proxy, not SESSION-01's future
-desktop session manager.
-[Report](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md).
+Immediate selection, 2026-10-20: OpenBSD 8.0 is the sole OpenBSD release
+on AMD64/ARM64, retaining Linux/FreeBSD scope. The composed local baseline
+passes all selected standard, optional, install and staged/default-X gates;
+ready for maintainer review. Preserve original failures and separate native-CPU,
+physical and wider release acceptance. The older 7.9 VESA cause remains
+historical/deferred. PR #135 remains independently open.
+[Baseline decision](decisions/OPENBSD-8.0-BASELINE-2026-10-20.md),
+[checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md).
 
-Performance tracking requested 2026-10-20: the first paired reference compares
-PR #131 and this candidate on one Linux ARM64 GCC default profile, reusing
-existing binaries. Three paired runs record latency/CPU/Linux peak RSS and
-executable sizes. No steady-state speedup is claimed for startup ownership.
+Performance tracking requested 2026-10-20: reference PR132 compares PR131/132
+on one Linux ARM64 GCC default profile with existing binaries. Three paired
+runs record latency, CPU, Linux peak RSS and executable sizes. PR133 and PR134
+are the two subsequent merged implementation checkpoints (2/5); PR135 and
+this OpenBSD checkpoint remain unmerged. No regular comparison is due.
+Expected hot-path or memory changes can bring it forward.
 [Reference](verification/PERFORMANCE-2026-10-20.md),
-[cadence](WORKFLOW.md#periodic-performance-comparisons). After this reference
-merges, the next regular comparison is due after five subsequent merged
-implementation checkpoints (1/5 completed after merged PR #133); earlier expected hot-path or memory
-changes can reset the reference. VESA #93 remains deferred.
+[cadence](WORKFLOW.md#periodic-performance-comparisons).
 
 This is the authoritative sequence. Priority describes risk/importance;
 the table below describes dependencies and what to take next. Detailed
@@ -2121,3 +2120,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-20: Three process/session constructor repairs pass one composed checkpoint after a single full matrix: 2141 composed standard results (2116 original fresh passes, 24 retained after unchanged-input/eight-binary checks per focused target, and one corrected Exec probe), plus 468 optional results across six targets/ten profiles. Eleven actual-core Exec drivers verify 77 observations; seventy session fault/retry entries and nineteen real session integrations pass. Nine scoped guest ASan/UBSan checks, nine fresh stages and four authenticated default BSD displays pass. Three inherited required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. Performance reference PR132 is accepted, at 1/5 subsequent merged implementation checkpoints; no comparison is due. [Process-startup report](verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md). No runtime or full matrix repeat is triggered by publication.
 
 - 2026-10-20: Three registration/pending-queue/property repairs pass a composed six-target/ten-profile checkpoint after one original full run: 2197 standard and 475 optional results. The composition retains 2516 unaffected original passes and uses 156 affected entries (122 fresh / 34 retained by exact inputs and eleven binaries per focused target). Fifty callback entries, twenty pending-peer entries, nineteen real-session drivers with 57 independent clients and 171 property replies, fifteen scoped guest sanitizer entries, nine fresh stages and four final authenticated default BSD session displays pass. Three inherited required OpenBSD AMD64 omissions and its install/two staged-geometry gap remain without retries. The existing no-automatic-save policy is preserved. Performance reference PR132 remains at 1/5; no comparison is due. [Session-ownership report](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md). Final review withdrew the initial-save proposal and qualified only affected session corrections; no full matrix repeat.
+
+- 2026-10-21: OpenBSD 8.0 becomes the sole OpenBSD release baseline on both architectures. A composed local checkpoint passes 538 standard and 34 optional entries, full installs, 44 authenticated default servers and staged/default-X geometry at 1x/1.5x. One full run per profile is retained; three standard fixture entries and four optional scheduling entries run after scoped corrections. Original failures, 7.9 history and wider release limits remain explicit. [Report](verification/VERIFICATION-2026-10-20-OPENBSD-80.md).

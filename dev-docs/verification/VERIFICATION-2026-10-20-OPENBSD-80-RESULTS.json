@@ -1,0 +1,392 @@
+{
+  "status": "passed",
+  "base": "3bb05ac2e79edfac9ae4bb0cec5ed36d2baf1f7e",
+  "tested_source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+  "source_files": 2086,
+  "runtime_C_or_module_changes": false,
+  "targets": {
+    "arm64": {
+      "source_proof": {
+        "source": "8fdbbbb5d52f1328cbdec5475dcb0becc131fa5caa80f89835c7fa6f9b895108",
+        "files": 2086,
+        "status": "passed"
+      },
+      "final_scheduling": {
+        "metadata-proof": {
+          "only_test_metadata_changes": [
+            "command-client",
+            "xlock-menu"
+          ],
+          "test_commands_timeouts_and_dependency_sets_unchanged": true,
+          "compiled_binaries_unchanged": 27,
+          "ninja_output_timestamps_precede_correction": true
+        },
+        "final-source-proof": {
+          "source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+          "files": 2086,
+          "status": "passed"
+        },
+        "capture": {
+          "status": "passed",
+          "sha256": "787444b412469e28f21010b7925a46905ee46ad7c3f028e37e0ffb3ba5c6beab",
+          "bytes": 221314,
+          "nodes": 16,
+          "regular_files": 14,
+          "source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+          "manifest_sha256": "847f547d0dba0b4e47d9aa3b14f0727b2d71be7c36727dfc83b3c00657943199"
+        }
+      },
+      "release_identity": [
+        "OpenBSD",
+        "8.0",
+        "arm64",
+        "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+      ],
+      "standard_original": {
+        "registered": 269,
+        "passed": 268,
+        "failed": [
+          "fvwm3:verification-profile"
+        ],
+        "sha256": "7ca04ea6dadf0eeccc0bea442224c33c69a8232a58154ff0c2578653121c7dd7"
+      },
+      "fresh_correction_entries": 3,
+      "standard_composed": 269,
+      "go_entries": 17,
+      "full_install_code_RPATH_identities": 15,
+      "full_install_data_identities": 70,
+      "catalogs": 0,
+      "Go_install_identities": 7,
+      "staged_geometry_scales": [
+        1,
+        1.5
+      ],
+      "default_geometry_scales": [
+        1,
+        1.5
+      ],
+      "default_startup_attempts": 16,
+      "authenticated_default_servers": 22,
+      "default_Go_client_fixtures": 6,
+      "scenario_cases": {
+        "builddir-bsd/release-checkpoint/default-geometry/geometry-4/4-szd7yo5x/scenario.json": 7,
+        "builddir-bsd/release-checkpoint/default-geometry/geometry-6/6-c3nfgbk9/scenario.json": 7,
+        "builddir-bsd/release-checkpoint/staged-geometry-4/4-ppymgenr/scenario.json": 24,
+        "builddir-bsd/release-checkpoint/staged-geometry-6/6-g6gyyywq/scenario.json": 24
+      },
+      "dependencies": {
+        "files": [
+          {
+            "path": "/usr/X11R6/bin/Xorg",
+            "resolved": "/usr/X11R6/bin/Xorg",
+            "sha256": "0c82de83750c7db693af01376ff2bd324ec8421bdf10ba32b76d1e5b53dea113",
+            "size": 3274680
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/drivers/wsfb_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/drivers/wsfb_drv.so",
+            "sha256": "e017f1512193a035cb2a5bdd59e2abd5fe925b2c2623702917f3a5e0916bc34e",
+            "size": 30280
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "resolved": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "sha256": "238f022a722578a8ed163597a4fa4b43549d7cd38cb56127cd03d3c603e2e254",
+            "size": 540544
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "sha256": "eb0534d3c163142f8ae21932e175d1ebfef6cfc5a206eea39954683cdc7cb0c8",
+            "size": 29592
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "sha256": "0d6c1676d92865852edc9b63afb72f6b2ed5c935a5037654392a39ce40bb4e16",
+            "size": 34392
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libshadow.so",
+            "resolved": "/usr/X11R6/lib/modules/libshadow.so",
+            "sha256": "10dc2b068396603585c02abc6637c0eb9f3822210e5a62cc521066fb33f9cc08",
+            "size": 44584
+          }
+        ],
+        "errors": [],
+        "syspatch": {
+          "status": 0,
+          "stdout": "001_ppp\n002_nsd\n004_video\n",
+          "stderr": ""
+        }
+      },
+      "capture": {
+        "status": "passed",
+        "sha256": "2980f00ccd3200f3e1d492ef6480e6dbbd2341b7d5ff33897f9bc9b54a680419",
+        "bytes": 1052024,
+        "nodes": 2156,
+        "regular_files": 1779,
+        "source": "8fdbbbb5d52f1328cbdec5475dcb0becc131fa5caa80f89835c7fa6f9b895108",
+        "manifest_sha256": "0df945d93ab8f4880efbdcfc81614a472da9221e7e6f7d6729c8c69c608f9274"
+      },
+      "guest_test_data_retirement": {
+        "status": "passed",
+        "canonical_host_sha256": "2980f00ccd3200f3e1d492ef6480e6dbbd2341b7d5ff33897f9bc9b54a680419",
+        "paths": [
+          "builddir-bsd-go/default-x",
+          "builddir-bsd-go/default-x-desktop-menu",
+          "builddir-bsd-go/default-x-directory",
+          "builddir-bsd-go/default-x-script-com",
+          "builddir-bsd-go/default-x-xlock",
+          "builddir-bsd-go/live-x-command-client",
+          "builddir-bsd-go/live-x-directory-menu",
+          "builddir-bsd-go/live-x-script-com-example",
+          "builddir-bsd-go/live-x-xlock-menu",
+          "builddir-bsd-go/tests/live-x-artifacts",
+          "builddir-bsd-go/tests/live-x-desktop-menu",
+          "builddir-bsd/release-checkpoint",
+          "builddir-bsd/tests/live-x-artifacts"
+        ],
+        "nodes": 2156,
+        "regular_files": 1779,
+        "bytes": 3620556,
+        "source_builds_stages_and_disks_preserved": true
+      },
+      "build_capture": {
+        "status": "passed",
+        "sha256": "74c56cefe163d0a62de651753b3014d6d7e80a55096432448a9f66cf8714afcd",
+        "bytes": 201510449,
+        "members": 4693,
+        "code_and_RPATH_outputs_verified": 15,
+        "data_outputs_verified": 70,
+        "Go_outputs_verified": 7,
+        "PNG_consumers_verified": {
+          "builddir-bsd": 4,
+          "builddir-bsd-go": 2
+        },
+        "source_proof": {
+          "source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+          "files": 2086,
+          "status": "passed"
+        },
+        "run_status": 0,
+        "owned_qemu_exit_status": 0,
+        "ephemeral_auth_removed": true
+      }
+    },
+    "amd64": {
+      "source_proof": {
+        "source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+        "files": 2086,
+        "status": "passed"
+      },
+      "final_scheduling": {
+        "metadata-proof": {
+          "only_test_metadata_changes": [
+            "command-client",
+            "xlock-menu"
+          ],
+          "test_commands_timeouts_and_dependency_sets_unchanged": true,
+          "compiled_binaries_unchanged": 26,
+          "ninja_output_timestamps_precede_correction": true
+        },
+        "go-composition": {
+          "original": 17,
+          "original_pass": 15,
+          "original_fail": 2,
+          "unchanged_control_pass": 2,
+          "fresh_corrected": 2,
+          "retained": 15,
+          "composed_pass": 17,
+          "composed_fail": 0,
+          "original_source": "candidate5",
+          "final_source": "candidate6"
+        }
+      },
+      "release_identity": [
+        "OpenBSD",
+        "8.0",
+        "amd64",
+        "OpenBSD 8.0 (GENERIC.MP) #2: Mon Oct 19 12:55:12 MDT 2026"
+      ],
+      "standard_original": {
+        "registered": 269,
+        "passed": 269,
+        "failed": [],
+        "sha256": "ba3ce5e0429b510b07f33f1318cfccf8d9db22ab5d1c371dc7c734bd64c063a5"
+      },
+      "fresh_correction_entries": 0,
+      "standard_composed": 269,
+      "go_entries": 17,
+      "full_install_code_RPATH_identities": 15,
+      "full_install_data_identities": 70,
+      "catalogs": 0,
+      "Go_install_identities": 7,
+      "staged_geometry_scales": [
+        1,
+        1.5
+      ],
+      "default_geometry_scales": [
+        1,
+        1.5
+      ],
+      "default_startup_attempts": 16,
+      "authenticated_default_servers": 22,
+      "default_Go_client_fixtures": 6,
+      "scenario_cases": {
+        "builddir-bsd/release-checkpoint/default-geometry/geometry-4/4-os7aexuq/scenario.json": 7,
+        "builddir-bsd/release-checkpoint/default-geometry/geometry-6/6-qm9cw2x5/scenario.json": 7,
+        "builddir-bsd/release-checkpoint/staged-geometry-4/4-80_dolj9/scenario.json": 24,
+        "builddir-bsd/release-checkpoint/staged-geometry-6/6-wshsj8ul/scenario.json": 24
+      },
+      "dependencies": {
+        "files": [
+          {
+            "path": "/usr/X11R6/bin/Xorg",
+            "resolved": "/usr/X11R6/bin/Xorg",
+            "sha256": "dc8edd6c700bd0a4bf1edd3c68bd6060513654494ad56ff16070e0a45033c0bf",
+            "size": 3049880
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/drivers/vesa_drv.so",
+            "sha256": "f6500d7e4bd4edd5d48a59792eac5ec5fe1dcb22189269015aca6a577dd870a1",
+            "size": 37112
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "resolved": "/usr/X11R6/lib/modules/extensions/libglx.so",
+            "sha256": "1a335c1c619aaa06cd0540701eef16aedeaf0e542936d900e07e8e9315f40461",
+            "size": 465880
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/kbd_drv.so",
+            "sha256": "c2f3387015585861fd9da7fdf438a5cf9b54139d8e93208f0f58fb2e8678c675",
+            "size": 28144
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "resolved": "/usr/X11R6/lib/modules/input/ws_drv.so",
+            "sha256": "c4ff52792fa3ce18815c5d04fcbfbaba67b8740af0208649d5d9a6ff64745a0d",
+            "size": 32528
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libint10.so",
+            "resolved": "/usr/X11R6/lib/modules/libint10.so",
+            "sha256": "5d7193ec30a3ff2594bba65691c8ed601feed8a6a3c15e16904598b3d7653927",
+            "size": 311320
+          },
+          {
+            "path": "/usr/X11R6/lib/modules/libshadow.so",
+            "resolved": "/usr/X11R6/lib/modules/libshadow.so",
+            "sha256": "9a86a1249be9f117fa4236f11760981dca736bf8e16f3f856708ffb2cd23133b",
+            "size": 42624
+          }
+        ],
+        "errors": [],
+        "syspatch": {
+          "status": 0,
+          "stdout": "001_ppp\n002_nsd\n003_aesgmac\n004_video\n",
+          "stderr": ""
+        }
+      },
+      "capture": {
+        "status": "passed",
+        "sha256": "6a9c39aff87eb2ea2dbccbd7e6b5772008f01ecfd30e4c779eeba4e88ee2f535",
+        "bytes": 1527647,
+        "nodes": 2177,
+        "regular_files": 1799,
+        "source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+        "manifest_sha256": "dc839a287080ec1e4594b03d853add18b7ac074d0fe289750026429c48793d76"
+      },
+      "guest_test_data_retirement": {
+        "status": "passed",
+        "canonical_host_sha256": "6a9c39aff87eb2ea2dbccbd7e6b5772008f01ecfd30e4c779eeba4e88ee2f535",
+        "paths": [
+          "builddir-bsd-go/default-x",
+          "builddir-bsd-go/default-x-desktop-menu",
+          "builddir-bsd-go/default-x-directory",
+          "builddir-bsd-go/default-x-script-com",
+          "builddir-bsd-go/default-x-xlock",
+          "builddir-bsd-go/live-x-command-client",
+          "builddir-bsd-go/live-x-directory-menu",
+          "builddir-bsd-go/live-x-script-com-example",
+          "builddir-bsd-go/live-x-xlock-menu",
+          "builddir-bsd-go/release-scheduling",
+          "builddir-bsd-go/tests/live-x-artifacts",
+          "builddir-bsd-go/tests/live-x-desktop-menu",
+          "builddir-bsd/release-checkpoint",
+          "builddir-bsd/tests/live-x-artifacts"
+        ],
+        "nodes": 2177,
+        "regular_files": 1799,
+        "bytes": 7620566,
+        "source_builds_stages_and_disks_preserved": true
+      },
+      "build_capture": {
+        "status": "passed",
+        "sha256": "8a88843bce7086e3f0652db84c0b1825d0d7a1c058e794857de6ea3988177722",
+        "bytes": 207626114,
+        "members": 4690,
+        "code_and_RPATH_outputs_verified": 15,
+        "data_outputs_verified": 70,
+        "Go_outputs_verified": 7,
+        "PNG_consumers_verified": {
+          "builddir-bsd": 4,
+          "builddir-bsd-go": 2
+        },
+        "source_proof": {
+          "source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+          "files": 2086,
+          "status": "passed"
+        },
+        "run_status": 0,
+        "owned_qemu_exit_status": 0,
+        "ephemeral_auth_removed": true
+      }
+    }
+  },
+  "limitations": [
+    "QEMU HVF ARM64 / TCG AMD64 on macOS; not native AMD64 CPU or physical hardware qualification",
+    "NLS auto disabled because msgfmt is unavailable; no catalog or translated-UI qualification",
+    "Old 7.9 failures preserved; successful 8.0 qualification does not establish their cause or a repair",
+    "Linux/FreeBSD unchanged runtime scope retained; wider native-CPU/sanitizer/physical/toolkit/compositor/standards/theme/release acceptance remains separate"
+  ],
+  "totals": {
+    "standard_composed": 538,
+    "original_full_runs": 2,
+    "original_full_passes": 537,
+    "original_full_failures": 1,
+    "optional_original_passes": 32,
+    "optional_original_failures": 2,
+    "optional_fresh_corrected_entries": 4,
+    "optional_unchanged_control_entries": 2,
+    "fresh_affected_correction_entries": 3,
+    "optional_Go_entries": 34,
+    "code_RPATH_install_identities": 30,
+    "data_install_identities": 140,
+    "Go_install_identities": 14,
+    "authenticated_default_servers": 44,
+    "server_only_startup_attempts": 32,
+    "staged_geometry_invocations": 4,
+    "default_geometry_invocations": 4,
+    "Go_default_client_fixtures": 12
+  },
+  "host_foundation": {
+    "original_registrations": 179,
+    "original_passed": 168,
+    "skipped_native_capabilities": 11,
+    "later_focused_passes": 42,
+    "composed_foundation_registrations": 180,
+    "composed_foundation_passed": 169,
+    "additional_profile_fixture_cases": 2
+  },
+  "host_final_scope": {
+    "base": "3bb05ac2e79edfac9ae4bb0cec5ed36d2baf1f7e",
+    "tested_source": "ceccf853531842a19024efc2ce2307be6f62c79304290062becf59f50e9dbb36",
+    "only_later_guide_edits": [],
+    "C_headers_Go_Perl_runtime_changes": []
+  },
+  "qualification_completed_local": "2026-10-21"
+}

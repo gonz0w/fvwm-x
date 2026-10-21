@@ -270,7 +270,9 @@ transitions and topology changes also require the Linux Xorg dummy tests;
 physical monitor hotplug and compositor behavior still need desktop testing
 on each target BSD. CI runs both BSD gates in virtual machines.
 
-The release targets AMD64 and ARM64 on Linux, FreeBSD, and OpenBSD. See
+The release targets AMD64 and ARM64 on Linux, FreeBSD, and OpenBSD 8.0 only.
+The configured OpenBSD 8.0 VM profiles are locally qualified; older releases
+are not release targets. See
 [the support matrix](dev-docs/SUPPORT.md) for required gates and
 [the BSD verification guide](dev-docs/BSD.md) for local QEMU use.
 

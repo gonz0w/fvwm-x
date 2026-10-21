@@ -22,10 +22,10 @@ The [BSD candidate](bsd.candidate.yml) now uses the approved repository-owned
 [QEMU runner](../../tools/maintenance/qemu_bsd.py), with four fixed image profiles
 and separate core/Go jobs. The original action/AnyVM candidates remain historical
 review inputs in their pin receipts; their runtime and cache lifecycle are no
-longer used by this inactive candidate. [Asset pins](ASSET-PINS-2026-10-12.json)
-retain the original thirteen inputs. The runner consumes only the selected
+longer used by this inactive candidate. [Current asset pins](ASSET-PINS-2026-10-20.json) select OpenBSD 8.0 only;
+the original dated locks retain historical inputs. The runner consumes only the selected
 image/profile, plus the independently verified [bootstrap key and ARM firmware
-pins](BOOT-PINS-2026-10-13.json). It does not execute downloaded launch scripts.
+pins](BOOT-PINS-2026-10-20.json). It does not execute downloaded launch scripts.
 Two inherited container identities remain observations, not contents certification.
 
 The [asset preflight](../../tools/maintenance/ci_assets.py) now materializes
@@ -84,9 +84,9 @@ The runner has affected local qualification on six targets, actual failure and
 cancellation controls, and authenticated default-X startup probes on all four
 provider setups. These are not installed core/client build gates.
 
-OpenBSD AMD64's pinned kernel has no matching child driver for the non-VGA
-VirtIO GPU; VESA needs int10 aperture access. Ordinary jobs keep the image's
-setting unchanged. The explicit `--openbsd-vga-test` option is restricted to
+The OpenBSD AMD64 default-X fixture retains its approved legacy VGA hardware
+and default VESA driver, whose int10 initialization needs aperture access.
+Ordinary jobs keep the image's setting unchanged. The explicit `--openbsd-vga-test` option is restricted to
 that disposable profile: set guest `machdep.allowaperture=2`, power down cleanly,
 boot the same owned disk, verify the value, then run the default-X fixture. Only
 the candidate's OpenBSD AMD64 Go/default-X job opts in. This is an isolated test

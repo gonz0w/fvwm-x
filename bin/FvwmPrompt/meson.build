@@ -84,9 +84,11 @@ fvwmcommand = custom_target(
     install_dir: bindir,
     install_tag: 'command-client',
 )
+# Real deadline probes need an uncontended test slot, including under QEMU.
 test('command-client', py,
     args: [files('../../tests/test_command_client.py'), '--command', fvwmcommand],
     timeout: 90,
+    is_parallel: false,
 )
 
 # This standalone menu producer uses only the Go standard library.
@@ -115,6 +117,7 @@ test('xlock-menu-contracts', py,
 test('xlock-menu', py,
     args: [files('../../tests/test_xlock_menu.py'), '--xlock', fvwm_menu_xlock],
     timeout: 180,
+    is_parallel: false,
 )
 
 # Directory menus share the optional standard-library utility runtime.

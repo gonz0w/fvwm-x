@@ -6,7 +6,7 @@
 set -eu
 test "$(uname -s)" = OpenBSD
 case ${1:-} in
-    meson) package=meson-1.10.2v0; file_blocks=32768 ;;
+    meson) package=meson-1.12.1v0; file_blocks=32768 ;;
     *) echo 'Expected the Meson CI package.' >&2; exit 1 ;;
 esac
 case $(uname -m) in
@@ -16,11 +16,12 @@ case $(uname -m) in
 esac
 mkdir -p builddir-bsd
 archive=builddir-bsd/$package.tgz
+packages=https://cdn.openbsd.org/pub/OpenBSD/8.0/packages
 for attempt in 1 2 3; do
     rm -f "$archive"
     if (ulimit -f "$file_blocks"
         ftp -4 -w 30 -o "$archive" \
-            "https://cdn.openbsd.org/pub/OpenBSD/7.9/packages/$package_arch/$package.tgz") &&
+            "$packages/$package_arch/$package.tgz") &&
         test -s "$archive" && gzip -t "$archive"; then
         break
     fi

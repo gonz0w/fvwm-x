@@ -1,7 +1,7 @@
 # FVWM-X
 
 FVWM-X is an X11 window manager derived from FVWM3, for Linux, FreeBSD Xorg
-and OpenBSD Xenocara on AMD64 and ARM64. It is for people who want a fast,
+and OpenBSD 8.0 Xenocara on AMD64 and ARM64. It is for people who want a fast,
 configurable desktop and control over their own setup.
 
 Our goals are a simpler codebase, responsive interaction, secure resource and
@@ -10,18 +10,17 @@ Desktop services build on FVWM's native modules and existing system facilities.
 File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
-**Status:** development. The hosted core/utility snapshot has locally qualified
-hardening, responsiveness and utility-port checkpoints.
-[Swallowed-client session ownership](dev-docs/verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md)
-checks registration, preserves other pending peers during cleanup and completes
-property replies. One composed checkpoint covers six targets; required gaps
-remain explicit.
+**Status:** development. Core/module hardening, responsiveness and optional
+utility ports have locally qualified checkpoints.
+[OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
+passes on both VM architectures; 8.0 is the sole OpenBSD release target.
+[Session ownership](dev-docs/verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md)
+retains its source-scoped results and earlier failures.
 [Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-20.md)
 track latency, CPU, memory and executable size every five implementation batches.
-Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
-Physical hardware, toolkits/compositors, native-CPU sanitizers and release
-acceptance remain open. Earlier source-scope failures stay documented.
-OpenBSD AMD64 VESA cause work is deferred. This is not a stable release.
+Optional Go builds use a patched compiler baseline. Desktop/artwork publication,
+physical hardware, toolkits/compositors, native-CPU sanitizers and release
+acceptance remain open. This is not a stable release.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

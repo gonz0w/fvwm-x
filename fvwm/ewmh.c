@@ -54,6 +54,7 @@
 #include "ewmh_property_policy.h"
 #include "ewmh_client_list.h"
 #include "ewmh_atom_index.h"
+#include "ewmh_desktop_policy.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -574,6 +575,12 @@ void EWMH_SetCurrentDesktop(struct monitor *m)
 		EWMH_SetNumberOfDesktops(m);
 	}
 
+	if (!fvwm_ewmh_desktop_index(val, m->ewmhc.CurrentNumberOfDesktops))
+	{
+		fvwm_debug(__func__, "current desk exceeds the published range");
+		return;
+	}
+
 	ewmh_ChangeProperty(Scr.Root,"_NET_CURRENT_DESKTOP",
 			    EWMH_ATOM_LIST_CLIENT_ROOT,
 			    (unsigned char *)&val, 1);
@@ -581,59 +588,75 @@ void EWMH_SetCurrentDesktop(struct monitor *m)
 	return;
 }
 
+/* Prepare all bounded arrays before publishing dependent root properties.
+ * X request ordering is preserved; this is not an atomic server transaction. */
+static Bool publish_desktop_snapshot(struct monitor *m, unsigned count)
+{
+	struct monitor *global = monitor_get_global();
+	unsigned checked;
+	long *values, *work;
+	long number = count;
+
+	if (global == NULL || global->si == NULL ||
+	    !fvwm_ewmh_desktop_count(count, -1, -1, 0,
+		XMaxRequestSize(dpy), &checked) || checked != count)
+		return False;
+	values = fxmalloc((size_t)count * 6 * sizeof(*values));
+	work = values + (size_t)count * 2;
+	for (unsigned i = 0; i < count; i++)
+	{
+		values[i * 2] = m->virtual_scr.Vx;
+		values[i * 2 + 1] = m->virtual_scr.Vy;
+		work[i * 4] = global->si->x;
+		work[i * 4 + 1] = global->si->y;
+		work[i * 4 + 2] = global->si->w;
+		work[i * 4 + 3] = global->si->h;
+	}
+	m->ewmhc.CurrentNumberOfDesktops = count;
+	ewmh_ChangeProperty(Scr.Root, "_NET_NUMBER_OF_DESKTOPS",
+		EWMH_ATOM_LIST_CLIENT_ROOT, (unsigned char *)&number, 1);
+	ewmh_ChangeProperty(Scr.Root, "_NET_DESKTOP_VIEWPORT",
+		EWMH_ATOM_LIST_CLIENT_ROOT, (unsigned char *)values, count * 2);
+	ewmh_ChangeProperty(Scr.Root, "_NET_WORKAREA",
+		EWMH_ATOM_LIST_FVWM_ROOT, (unsigned char *)work, count * 4);
+	free(values);
+	return True;
+}
+
 void EWMH_SetNumberOfDesktops(struct monitor *m)
 {
-	long val;
+	unsigned count;
 
-	if (m->ewmhc.CurrentNumberOfDesktops < m->ewmhc.NumberOfDesktops)
+	if (!fvwm_ewmh_desktop_count(m->ewmhc.NumberOfDesktops,
+		m->virtual_scr.CurrentDesk, check_desk(), m->ewmhc.MaxDesktops,
+		XMaxRequestSize(dpy), &count) ||
+	    !publish_desktop_snapshot(m, count))
 	{
-		m->ewmhc.CurrentNumberOfDesktops = m->ewmhc.NumberOfDesktops;
+		fvwm_debug(__func__, "desktop root properties exceed the "
+			"bounded publication capacity; retaining previous snapshot");
+		return;
 	}
+	m->ewmhc.NeedsToCheckDesk = False;
+}
 
-	if (m->ewmhc.CurrentNumberOfDesktops > m->ewmhc.NumberOfDesktops ||
-	    m->ewmhc.NeedsToCheckDesk)
-	{
-		int d = check_desk();
+Bool ewmh_request_desktop_count(struct monitor *m, long value)
+{
+	unsigned count;
 
-		m->ewmhc.NeedsToCheckDesk = False;
-		if (d >= m->ewmhc.MaxDesktops && m->ewmhc.MaxDesktops != 0)
-			d = 0;
-		m->ewmhc.CurrentNumberOfDesktops =
-			max(m->ewmhc.NumberOfDesktops, d+1);
-	}
-
-	if (m->virtual_scr.CurrentDesk >= m->ewmhc.CurrentNumberOfDesktops &&
-	    (m->virtual_scr.CurrentDesk < m->ewmhc.MaxDesktops ||
-	    m->ewmhc.MaxDesktops == 0))
-	{
-		m->ewmhc.CurrentNumberOfDesktops = m->virtual_scr.CurrentDesk + 1;
-	}
-
-	val = (long)m->ewmhc.CurrentNumberOfDesktops;
-	ewmh_ChangeProperty(Scr.Root, "_NET_NUMBER_OF_DESKTOPS",
-			    EWMH_ATOM_LIST_CLIENT_ROOT,
-			    (unsigned char *)&val, 1);
-	ewmh_SetWorkArea(m);
-
-	return;
+	if (!fvwm_ewmh_desktop_request(value, m->virtual_scr.CurrentDesk,
+		check_desk(), m->ewmhc.MaxDesktops, XMaxRequestSize(dpy), &count))
+		return False;
+	if (!publish_desktop_snapshot(m, count))
+		return False;
+	m->ewmhc.NumberOfDesktops = count;
+	m->ewmhc.NeedsToCheckDesk = False;
+	return True;
 }
 
 void EWMH_SetDesktopViewPort(struct monitor *m)
 {
-	long val[256][2]; /* no more than 256 desktops */
-	int i = 0;
-
-	while(i < m->ewmhc.NumberOfDesktops && i < 256)
-	{
-		val[i][0] = m->virtual_scr.Vx;
-		val[i][1] = m->virtual_scr.Vy;
-		i++;
-	}
-	ewmh_ChangeProperty(
-		Scr.Root, "_NET_DESKTOP_VIEWPORT", EWMH_ATOM_LIST_CLIENT_ROOT,
-		(unsigned char *)&val, i*2);
-
-	return;
+	if (m->ewmhc.CurrentNumberOfDesktops != 0)
+		publish_desktop_snapshot(m, m->ewmhc.CurrentNumberOfDesktops);
 }
 
 void EWMH_SetDesktopGeometry(struct monitor *m)
@@ -905,24 +928,8 @@ void EWMH_SetClientListStacking(struct monitor *m)
 
 void ewmh_SetWorkArea(struct monitor *m)
 {
-	struct monitor	*m_global = monitor_get_global();
-	long val[256][4]; /* no more than 256 desktops */
-	int i = 0;
-
-	if (m->Desktops == NULL)
-		return;
-
-	while(i < m->ewmhc.NumberOfDesktops && i < 256)
-	{
-		val[i][0] = m_global->si->x;
-		val[i][1] = m_global->si->y;
-		val[i][2] = m_global->si->w;
-		val[i][3] = m_global->si->h;
-		i++;
-	}
-	ewmh_ChangeProperty(
-		Scr.Root, "_NET_WORKAREA", EWMH_ATOM_LIST_FVWM_ROOT,
-		(unsigned char *)&val, i*4);
+	if (m->Desktops != NULL && m->ewmhc.CurrentNumberOfDesktops != 0)
+		publish_desktop_snapshot(m, m->ewmhc.CurrentNumberOfDesktops);
 }
 
 static void merge_work_area_strut(ewmh_strut *area, const ewmh_strut *value)

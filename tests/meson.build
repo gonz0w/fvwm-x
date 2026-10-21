@@ -3610,3 +3610,23 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         )
     endforeach
 endif
+
+ewmh_desktop_policy_test = executable(
+    'test-ewmh-desktop-policy', 'test_ewmh_desktop_policy.c',
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('ewmh-desktop-policy', ewmh_desktop_policy_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    foreach desktop_case : ['count', 'current', 'arrays']
+        test('desktop-publication-' + desktop_case + '-xvfb', py,
+            args: [files('live_x/desktop_publication_live.py'),
+                '--fvwm', fvwm3, '--mfl', fvwm_mfl,
+                '--case', desktop_case,
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts/desktop-publication' / desktop_case],
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            is_parallel: false, timeout: 90,
+        )
+    endforeach
+endif

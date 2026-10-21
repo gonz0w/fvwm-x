@@ -1012,3 +1012,10 @@ monotonic deadline policy and signal-aware poll before normal event dispatch
 exists. Only old-owner destruction is consumed; failures close the startup
 connection and clear the display pointer before exit hooks. Selection transfer
 and EWMH desktop geometry remain separate owners.
+
+Desktop root publication in `fvwm/ewmh.c` prepares one bounded count/viewport/
+work-area snapshot. `ewmh_desktop_policy.h` owns pure count/index admission and
+server-request arithmetic; `ewmh_events.c` validates pager formats before owner
+adoption. Populated/current-desktop shrink requests are refused, not relocated.
+The 1024-record publication budget does not restrict configured FVWM desktops.
+Reserved-edge geometry and multi-monitor root authority remain separately owned.

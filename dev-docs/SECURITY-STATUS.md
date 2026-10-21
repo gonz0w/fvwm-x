@@ -1,8 +1,25 @@
 # FVWM-X security maintenance status
 
-Updated 2026-10-14. This is an ongoing audit, not a security certification.
+Updated 2026-10-21. This is an ongoing audit, not a security certification.
 The active work list and acceptance criteria are in
 [PROJECT-TRACKER.md](PROJECT-TRACKER.md).
+
+Current direction: finish the tracker's finite
+[safety/maintainability closeout](PROJECT-TRACKER.md#hardening-closeout), then
+advance the approved features. Remaining performance-only tuning moves to the
+next release; bounds, ordering, hangs and ownership defects remain safety work.
+The closeout starts with status/log stream construction and cleanup, followed
+by selected external-input and pending interaction-lifetime boundaries. These
+are source-review scopes, not claims that every path has a demonstrated defect.
+
+OpenBSD 8.0 is the current qualified release on both VM architectures;
+[its checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md) resolves
+the previously missing required entries. Follow future releases; 7.9 is out of
+scope. Older VESA/startup observations below remain dated historical evidence,
+not current 8.0 qualification failures. Recent
+[string ownership](verification/VERIFICATION-2026-10-21-STRING-COPIES.md) and
+[preparation evidence](verification/VERIFICATION-2026-10-21-BSD-PREPARATION.md)
+checkpoints are merged in PR138/139. Native-CPU and physical/release gates remain.
 
 Hosting note, 2026-10-13: the repository now uses private GitHub PR/issue review
 and local-only checks, with Actions disabled. Older no-remote/configured-CI

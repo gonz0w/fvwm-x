@@ -44,6 +44,16 @@ work complete.
 
 ## Implementation batches and test cadence
 
+Selection policy, 2026-10-21: use the tracker's
+[hardening closeout](PROJECT-TRACKER.md#hardening-closeout). Prioritize confirmed
+crashes, malformed-input failures, unbounded work and resource/process lifetime
+defects. Cleanup belongs with a named safety contract or upcoming feature:
+prefer explicit ownership, checked results and one cleanup path over broad
+renames or structural churn. Freeze the selected entry points and acceptance
+cases before implementation. Record already-covered paths without rewriting
+them; newly discovered serious failures advance immediately with their owner.
+Remaining performance-only tuning is deferred to the next release.
+
 User clarification, 2026-10-15: optimize development throughput by batching
 three to five **substantive related behavior improvements** before broad
 qualification. Implementation, its tests, its probe and its documentation are
@@ -164,6 +174,12 @@ Record what was removed and the preserved canonical identity; a new PR does not
 require keeping another guest copy or repeating tests.
 
 ## Periodic performance comparisons
+
+During safety closeout, retain the existing five-checkpoint observations as
+lightweight regression telemetry. They do not select tuning work or delay a
+safety batch to obtain new benchmark builds or a quieter timing result. Use
+existing binaries and record unavailable observations. Investigate a concrete
+regression in the owning change; ordinary timing noise does not reopen tuning.
 
 User request, 2026-10-20: track responsiveness, CPU, memory and executable size
 without adding a benchmark run to every batch. Establish the first paired

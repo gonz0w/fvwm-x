@@ -5,6 +5,13 @@ status. This document expands the cleanup findings and library decisions for
 the next build thread. Effort ranges are engineer-days, including focused
 verification; they are estimates, not completion dates or accumulated totals.
 
+Current selection, 2026-10-21: the user's
+[safety closeout decision](decisions/HARDENING-CLOSEOUT-2026-10-21.md) supersedes
+the historical handoff below. Select cleanup for a concrete ownership/error
+contract or named feature dependency. Defer performance-only and cosmetic work;
+do not reopen accepted migrations or turn the remaining inventory into an
+unbounded prerequisite for features. Current scope/status stays in the tracker.
+
 Updated language direction on 2026-10-06: the user requests Perl out, Python
 runtime helpers replaced by Go, and Lua/go-lua where useful. The
 [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md) supersedes earlier Python

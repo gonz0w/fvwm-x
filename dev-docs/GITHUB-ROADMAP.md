@@ -1,5 +1,13 @@
 # GitHub roadmap index
 
+Current priority, 2026-10-21: the user's [safety closeout](PROJECT-TRACKER.md#hardening-closeout)
+supersedes older performance pickup notes. PERF-01 #29's remaining tuning is
+P2 / deferred backlog for the next release. Mixed STYLE/STATE/CACHE/LOOP owners
+retain safety/correctness scope; defer only their performance-only follow-ups.
+FD-01 #7 / PROC-01 #15 stream ownership is the next review family, then bounded
+DATA-01 #6 and INPUT-01 #9 pickups. CLEAN-01 #34 accompanies named safety/feature
+contracts. The tracker owns dispositions and handoff; broad issues remain open.
+
 Stable ID mapping imported on 2026-10-13. This is not a second live backlog.
 The [tracker](PROJECT-TRACKER.md#execution-order) owns scope/execution;
 [GitHub issues](https://github.com/gonz0w/fvwm-x/issues) and the

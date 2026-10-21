@@ -10,10 +10,13 @@ requirements migration; it is not another backlog.
 
 ## Product constraints
 
-- The first release retains the full approved modernization/hardening/performance
-  and desktop-feature scope. Follow the tracker order: refine the foundation
-  before adding features, then qualify the release. A smaller release milestone
-  was not adopted; bounded checkpoints prevent drift without reducing scope.
+- User direction, 2026-10-21: finish high-impact safety and maintainability
+  checkpoints, then advance the approved features and milestones. Remaining
+  performance-only tuning moves to the next release; existing improvements and
+  lightweight regression observations remain. Preserve the approved desktop,
+  platform and configuration scope. Use the tracker's finite
+  [hardening closeout](PROJECT-TRACKER.md#hardening-closeout) before feature work,
+  then retain the separate release qualification gates.
 - X11/XRandR 1.5+; no native Wayland backend or built-in compositor.
 - OpenBSD follows new releases on AMD64 and ARM64, with 8.0 the current
   qualified baseline and 7.9 out of scope. Refresh fixed inputs and qualify

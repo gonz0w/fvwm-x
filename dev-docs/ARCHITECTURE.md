@@ -88,6 +88,18 @@ this scope. Concrete entry points and dependency profiles remain queued.
 | Native desktop UI | [modules](../modules), [default-config](../default-config), [desktop.py](../default-config/desktop.py), [wallpaper generator](../default-config/generate_wallpapers.py) | Existing modules, the frozen default configuration and portable desktop-service policy; newer artwork generators and desktop consumers retain separate source ownership and qualification |
 | Build / verification | [meson.build](../meson.build), [Go compiler policy](../tools/maintenance/go_version.py), [tests](../tests), [maintenance tools](../tools/maintenance/README.md) | Feature detection, targets, installed files and reproducible checks. Optional Go checks the actual local compiler against the approved stable patch baseline; it never fetches a toolchain. The explicit BSD verification recipe bootstraps a fixed SDK privately. |
 
+Status transport now has a dedicated owner in
+[status_pipe.c](../fvwm/status_pipe.c): newly created FIFO identity, private
+nonblocking descriptor and one bounded pending record. `builtins.c` owns
+snapshot dirtiness and environment publication; the existing shared readiness
+snapshot resumes output without retaining window pointers. Stop/restart cleanup
+retires the matching FIFO. Logging keeps one stream owner in
+[log.c](../libs/log.c), commits replacements after construction, preserves
+intentional module inheritance and retires failed diagnostic sinks. Runtime
+qualification for these four repairs passes the [stream checkpoint](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md).
+Late inherited-descriptor provenance remains a bounded FD-01/PROC-01 review;
+this does not close the wider stream/input audit.
+
 ## Boundaries to strengthen within owning fixes
 
 1. Resolve window identity and lifetime through existing ownership mechanisms;

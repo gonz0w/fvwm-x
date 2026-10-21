@@ -44,14 +44,35 @@ log_get_fd(void)
 	return fileno(log_file);
 }
 
-void
+bool
 log_set_fd(int fd)
 {
-	if (fd == -1)
-		return;
+	FILE *candidate;
 
-	/* This is enough to allow modules to be able to log. */
-	log_file = fdopen(fd, "a");
+	if (fd == -1)
+	{
+		return true;
+	}
+	if (fd < -1)
+	{
+		errno = EBADF;
+		return false;
+	}
+	if (log_file != NULL && fd == fileno(log_file))
+	{
+		return true;
+	}
+	/* Config broadcasts can repeat the same inherited LoggingFD. Do not
+	 * create another FILE owner or close a working stream on refusal.
+	 * Native modules intentionally inherit the descriptor. */
+	candidate = fd == STDERR_FILENO ? stderr : fdopen(fd, "a");
+	if (candidate == NULL)
+	{
+		return false;
+	}
+	log_close();
+	log_file = candidate;
+	return true;
 }
 
 void
@@ -72,6 +93,7 @@ log_open(const char *fvwm_userdir)
 {
 	char *path, *file_name;
 	char *expanded_path;
+	FILE *candidate;
 
 	if (lib_log_level == 0)
 		return;
@@ -88,6 +110,7 @@ log_open(const char *fvwm_userdir)
 	/* handle stderr logging */
 	if (file_name[0] == '-' && file_name[1] == 0)
 	{
+		log_close();
 		log_file = stderr;
 		return;
 	}
@@ -103,14 +126,14 @@ log_open(const char *fvwm_userdir)
 		free((char *)expanded_path);
 	}
 
-	log_close();
-
-	if ((log_file = fopen(path, "a")) == NULL) {
+	if ((candidate = fopen(path, "a")) == NULL) {
 		free(path);
 		return;
 	}
 
-	setvbuf(log_file, NULL, _IOLBF, 0);
+	setvbuf(candidate, NULL, _IOLBF, 0);
+	log_close();
+	log_file = candidate;
 
 	free(path);
 }
@@ -145,6 +168,7 @@ log_vwrite(const char *func, const char *msg, va_list ap)
 {
 	char		*fmt, *sep = ":";
 	struct timeval	 tv;
+	int length;
 
 	if (log_file == NULL)
 		return;
@@ -154,25 +178,36 @@ log_vwrite(const char *func, const char *msg, va_list ap)
 		sep = "";
 	}
 
-	if (vasprintf(&fmt, msg, ap) == -1)
+	if ((length = vasprintf(&fmt, msg, ap)) == -1)
 		exit(1);
 
 	gettimeofday(&tv, NULL);
 	if (fprintf(log_file, "[%lld.%06d] %s%s %s", (long long)tv.tv_sec,
-	    (int)tv.tv_usec, func, sep, fmt) == -1)
-		exit(1);
+	    (int)tv.tv_usec, func, sep, fmt) < 0)
+	{
+		goto failed;
+	}
 	/* Compat: some callers from conversion of printf(stderr, ...) most
 	 * likely add a newline.  But we don't want to double-up on newlines
 	 * in output.  Add one if not present.
 	 */
-	if (fmt[strlen(fmt) - 1] != '\n') {
-		if (fprintf(log_file, "\n") == -1)
-			exit(1);
+	if ((length == 0 || fmt[length - 1] != '\n') &&
+	    fputc('\n', log_file) == EOF)
+	{
+		goto failed;
 	}
-
-	fflush(log_file);
-
+	if (fflush(log_file) == EOF)
+	{
+		goto failed;
+	}
 	free(fmt);
+	return;
+
+failed:
+	/* A full or failed diagnostic sink must not terminate the WM/module.
+	 * Retire it once; a later explicit reopen can recover logging. */
+	free(fmt);
+	log_close();
 }
 
 /* Log a debug message. */

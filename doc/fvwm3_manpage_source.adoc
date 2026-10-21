@@ -243,6 +243,12 @@ Logging can also be dynamically toggled on and off using signals:
 SIGUSR1 : used as a signal to restart Fvwm
 SIGUSR2 : used as a signal to toggle opening/closing debug log file
 ....
++
+If the log stream reports a write or flush error, Fvwm disables that sink and
+continues running. After correcting a file-sink failure, toggle logging off
+and on with SIGUSR2 to reopen it. A failed replacement keeps the previous
+working stream.
+
 
 == ANATOMY OF A WINDOW
 
@@ -8446,6 +8452,23 @@ the first modifier). To redefine this key sequence see the *EscapeFunc* command.
 	means of supplying third-party tools information about what's
 	happening in Fvwm. For example, the JSON could be manipulated and sent
 	to tools such as _lemonbar_, _polybar_, etc.
++
+Status creates an owner-only FIFO at `$TMPDIR/fvwm3.pipe` (or
+`/tmp/fvwm3.pipe` if `TMPDIR` is unset) and publishes its path in
+`FVWM_STATUS_PIPE`. It refuses an existing path, including a stale FIFO,
+instead of replacing it. Use a private `TMPDIR` for concurrent sessions;
+after a crash, inspect and remove a stale FIFO before enabling Status again.
+`Status Off`, normal exit and restart remove only the FIFO still owned by
+this session and clear its published environment value. A repeated
+`Status On` requests a fresh snapshot without recreating the FIFO.
++
+Output is nonblocking. A slow reader retains at most one pending JSON record,
+limited to 1 MiB including its newline. Partial writes resume through writable
+readiness, including during interactive waits; intervening state changes
+coalesce into a fresh snapshot after the pending record completes. Oversized
+records are refused with a diagnostic. An unrecoverable output error disables
+Status until it is enabled again. Status is a snapshot stream, not a lossless
+history of every intermediate change.
 +
 JSON string values and object keys use UTF-8. Each invalid byte is printed as
 `\ufffd` (U+FFFD). Valid UTF-8 and stored FVWM text remain unchanged.

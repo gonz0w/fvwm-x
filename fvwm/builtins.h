@@ -21,5 +21,8 @@ FvwmPicture *decor_picture_at_scale(FvwmPicture *source,
 	monitor_scale_factor factor);
 void update_fvwm_colorset(int cset);
 void status_send(void);
+void status_close(void);
+int status_pending_fd(void);
+void status_flush(void);
 
 #endif /* FVWM_BUILTINS_H */

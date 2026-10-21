@@ -27,6 +27,7 @@
 #include <stdio.h>
 
 #include "libs/log.h"
+#include "libs/module_monitor.h"
 #include "libs/fvwmlib.h"
 #include "libs/Module.h"
 #include "libs/Colorset.h"
@@ -2011,8 +2012,18 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		s = trimleft(s);
 		if (strncasecmp(s, "LoggingFD", 9) == 0) {
 			int fd = -1;
-			sscanf((s + 10), "%d", &fd);
-			log_set_fd(fd);
+			if (!module_parse_decimal_integers(s + 9,
+			    &fd, 1))
+			{
+				fvwm_debug(__func__,
+				    "Refusing invalid logging descriptor");
+			}
+			else if (!log_set_fd(fd))
+			{
+				fvwm_debug(__func__,
+				    "Unable to adopt logging descriptor %d",
+				    fd);
+			}
 
 			fvwm_debug(MyName, "I AM RUNNING!!!");
 
@@ -2154,8 +2165,18 @@ void ParseConfiguration(button_info *ub)
 	{
 		if (strncasecmp(s, "LoggingFD", 9) == 0) {
 			int fdl = -1;
-			sscanf((s + 10), "%d", &fdl);
-			log_set_fd(fdl);
+			if (!module_parse_decimal_integers(s + 9,
+			    &fdl, 1))
+			{
+				fvwm_debug(__func__,
+				    "Refusing invalid logging descriptor");
+			}
+			else if (!log_set_fd(fdl))
+			{
+				fvwm_debug(__func__,
+				    "Unable to adopt logging descriptor %d",
+				    fdl);
+			}
 
 			GetConfigLine(fd,&s);
 			continue;

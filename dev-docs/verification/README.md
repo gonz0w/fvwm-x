@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Status and diagnostic stream ownership](VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md): four repairs, one composed six-target checkpoint with 2236 standard / 58 affected optional passes, scoped sanitizers, ten installs and explicit remaining review/release gates.
+
 - [BSD preparation evidence](VERIFICATION-2026-10-21-BSD-PREPARATION.md): source modes, atomic live/failure snapshots and distinct PNG proofs; 282 native policy cases, two fresh runner cases and retained WM identities.
 
 - [Periodic performance comparison](PERFORMANCE-2026-10-21.md): due PR132/138 paired observation, timing ranges/RSS and code/layout/source size; preserved PR138 starts the next reference.

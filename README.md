@@ -13,14 +13,17 @@ compositor or native Wayland backend.
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
 [Core record dependencies](dev-docs/verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md)
-reduce module/icon-box/event-filter rebuild scope, with exact compiled
-code/data parity and affected checks across all six targets.
+reduce rebuild scope with verified code/data parity.
+[OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
+passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
+current qualified baseline and 7.9 is out of scope.
+[Protocol requirement inventory](dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
+records remaining runtime acceptance.
 [Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-20.md)
 track latency, CPU, memory and executable size every five implementation batches.
-Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.
-Physical hardware, toolkits/compositors, native-CPU sanitizers and release
-acceptance remain open. Earlier source-scope failures stay documented.
-OpenBSD AMD64 VESA cause work is deferred. This is not a stable release.
+Optional Go builds use a patched compiler baseline. Desktop/artwork publication,
+physical hardware, toolkits/compositors, native-CPU sanitizers and release
+acceptance remain open. This is not a stable release.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

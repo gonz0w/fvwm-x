@@ -17,6 +17,14 @@ if [ "$#" -gt 1 ]; then
     exit 1
 fi
 system=$(uname -s)
+if [ "$system" = OpenBSD ]; then
+    kernel=$(sysctl -n kern.version)
+    case "$(uname -r)/$kernel" in
+        '8.0/OpenBSD 8.0 ('*) ;;
+        *) echo 'OpenBSD release qualification requires OpenBSD 8.0.' >&2
+            exit 1 ;;
+    esac
+fi
 case $system in
 Linux) default_dir=builddir/linux-native ;;
 FreeBSD|OpenBSD)

@@ -139,6 +139,19 @@ class QemuTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             qemu.validate_source(self.archive)
 
+    def test_openbsd_release_admission(self):
+        qemu.check_openbsd_release('openbsd-arm64',
+            'OpenBSD\n8.0\narm64\nOpenBSD 8.0 (GENERIC.MP) #1\n')
+        qemu.check_openbsd_release('openbsd-amd64',
+            'OpenBSD\n8.0\namd64\nOpenBSD 8.0 (GENERIC.MP) #1\n')
+        for identity in ('OpenBSD\n7.9\namd64\n',
+                'OpenBSD\n8.0\namd64\nOpenBSD 8.0-current (GENERIC.MP) #1\n',
+                'OpenBSD\n8.0\namd64\nOpenBSD 8.0-stable (GENERIC.MP) #1\n',
+                'OpenBSD\n8.0\narm64\n', 'OpenBSD\n8.0\n'):
+            with self.subTest(identity=identity):
+                with self.assertRaises(ValueError):
+                    qemu.check_openbsd_release('openbsd-amd64', identity)
+
     def test_qemu_profiles_have_local_forwarding_and_owned_disk(self):
         for profile in ci_assets.PROFILES:
             with self.subTest(profile=profile):

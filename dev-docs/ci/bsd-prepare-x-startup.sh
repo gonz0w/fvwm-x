@@ -6,11 +6,16 @@
 set -eu
 export PATH="/usr/local/bin:/usr/X11R6/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 test "$(uname -s)" = OpenBSD
+case $(uname -m) in
+    amd64) driver=vesa ;;
+    arm64) driver=wsfb ;;
+    *) echo 'Unsupported OpenBSD startup profile.' >&2; exit 1 ;;
+esac
 unset TRUSTED_PKG_PATH
 mkdir -p builddir-bsd
 uname -a > builddir-bsd/before-system.txt
 syspatch -l > builddir-bsd/before-syspatch.txt
-sha256 /usr/X11R6/bin/Xorg /usr/X11R6/lib/modules/drivers/vesa_drv.so \
+sha256 /usr/X11R6/bin/Xorg "/usr/X11R6/lib/modules/drivers/${driver}_drv.so" \
     > builddir-bsd/before-server.txt
 if ! command -v python3 >/dev/null; then
     FETCH_CMD='/usr/bin/ftp -4 -w 30' pkg_add -I python3
@@ -27,8 +32,23 @@ for attempt in $(jot 121 0); do
         break
     fi
 done
-syspatch
+# Exit 2 means the signed patch check found nothing new to install. Fresh
+# release images may already contain every erratum; other failures remain fatal.
+status=0
+syspatch || status=$?
+case $status in
+    0|2) ;;
+    *) echo "OpenBSD signed update failed (status $status)." >&2
+        exit "$status" ;;
+esac
+# Status 2 also covers a syspatch self-update. Never certify that as fully
+# patched while the newly installed tool still reports pending signed errata.
+syspatch -c > builddir-bsd/pending-syspatch.txt
+if test -s builddir-bsd/pending-syspatch.txt; then
+    echo 'OpenBSD still has pending signed updates; rerun preparation.' >&2
+    exit 1
+fi
 syspatch -l > builddir-bsd/after-syspatch.txt
-sha256 /usr/X11R6/bin/Xorg /usr/X11R6/lib/modules/drivers/vesa_drv.so \
+sha256 /usr/X11R6/bin/Xorg "/usr/X11R6/lib/modules/drivers/${driver}_drv.so" \
     > builddir-bsd/after-server.txt
 # Pair with qemu_bsd.py --reboot-after-prepare before running the checks.

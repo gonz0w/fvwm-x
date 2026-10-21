@@ -250,6 +250,18 @@ def qemu_arguments(profile, job, port, acceleration):
     return argv
 
 
+def check_openbsd_release(profile, identity):
+    """Admit only the selected release before modifying a disposable guest."""
+    if not profile.startswith('openbsd-'):
+        return
+    machine = 'arm64' if profile.endswith('arm64') else 'amd64'
+    lines = identity.splitlines()
+    if (len(lines) != 4 or lines[:3] != ['OpenBSD', '8.0', machine] or
+            not lines[3].startswith('OpenBSD 8.0 (')):
+        raise ValueError(
+            'OpenBSD qualification requires release 8.0 on ' + machine)
+
+
 def ssh_arguments(job, port, key, first=False):
     return ['ssh', '-F', '/dev/null', '-p', str(port), '-i', str(key),
         '-o', 'BatchMode=yes', '-o', 'IdentitiesOnly=yes',
@@ -408,11 +420,18 @@ def run(args):
                 15, stdin=public, watch=vm.check)
         ssh = ssh_arguments(job, port, key)
         command(ssh + ['true'], job / 'job-authentication.log', 15, watch=vm.check)
+        if args.profile.startswith('openbsd-'):
+            command(ssh + ['uname -s; uname -r; uname -m; '
+                "sysctl -n kern.version | sed -n '1p'"],
+                    job / 'guest-release.log', 15, watch=vm.check)
+            identity = (job / 'guest-release.log').read_text()
+            check_openbsd_release(args.profile, identity)
+            result['guest_release'] = identity.splitlines()
         if vga_test:
             result['phase'] = 'graphics-restart'
-            # Explicit disposable-fixture opt-in only. This BIOS image lacks
-            # the AMD64 viogpu child driver; VESA needs int10 aperture access.
-            # Ordinary/core jobs retain the pinned image's aperture setting.
+            # Explicit disposable legacy-VGA fixture opt-in only. VESA's
+            # int10 initialization needs aperture access. Ordinary/core jobs
+            # retain the pinned image's aperture setting.
             code = command(ssh + ["printf '\\nmachdep.allowaperture=2\\n' "
                 ">> /etc/sysctl.conf; /sbin/shutdown -p now"],
                 job / 'graphics-shutdown.log', 30, check=False)

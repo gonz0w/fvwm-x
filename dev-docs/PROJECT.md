@@ -15,6 +15,12 @@ requirements migration; it is not another backlog.
   before adding features, then qualify the release. A smaller release milestone
   was not adopted; bounded checkpoints prevent drift without reducing scope.
 - X11/XRandR 1.5+; no native Wayland backend or built-in compositor.
+- OpenBSD follows new releases on AMD64 and ARM64, with 8.0 the current
+  qualified baseline and 7.9 out of scope. Refresh fixed inputs and qualify
+  both architectures when advancing the baseline. Linux and FreeBSD remain
+  in scope; development snapshots do not substitute for release qualification.
+  See the
+  [baseline decision](decisions/OPENBSD-8.0-BASELINE-2026-10-20.md).
 - Authoritative window/X state stays in the core's single thread. Bound queues,
   event-loop work and interaction servicing; preserve dispatch/command order.
 - Scale FVWM-owned UI and geometry, not arbitrary application pixels. EWMH,

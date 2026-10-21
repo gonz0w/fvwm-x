@@ -26,7 +26,9 @@ class VerificationProfileTests(unittest.TestCase):
 import json, os, pathlib, sys
 name=pathlib.Path(sys.argv[0]).name
 args=sys.argv[1:]
-if name=='uname': print(os.environ['PROFILE_PLATFORM'])
+if name=='uname':
+    print('8.0' if args == ['-r'] else os.environ['PROFILE_PLATFORM'])
+if name=='sysctl': print('OpenBSD 8.0 (GENERIC.MP) #1')
 if name=='meson':
     with open(os.environ['PROFILE_LOG'], 'a') as log:
         log.write(json.dumps({'args':args, 'pkg_config_path':os.environ.get('PKG_CONFIG_PATH')})+'\\n')
@@ -41,7 +43,7 @@ if name=='meson':
         (path/'share/xsessions/fvwm3.desktop').touch()
 ''')
             fake.chmod(0o755)
-            for name in ['uname', 'meson', 'cc', 'readelf', 'file', 'python3']:
+            for name in ['uname', 'meson', 'cc', 'readelf', 'file', 'python3', 'sysctl']:
                 (commands / name).symlink_to(fake.name)
             # BSD prepends its standard program directories. Invoke the copied
             # entry point with those directories absent from this fixture's

@@ -1,0 +1,176 @@
+{
+  "reviewed": "2026-10-20",
+  "status": "Current verified release inputs; OpenBSD 8.0 only. Earlier dated locks remain historical.",
+  "assets": [
+    {
+      "repository": "anyvm-org/anyvm",
+      "release": "0.7.2",
+      "name": "anyvm.py",
+      "size": 618865,
+      "publisher_digest": "sha256:40a16e846bc07030759936d792343e770acdeb14d4c9991af7409648661a650d",
+      "url": "https://github.com/anyvm-org/anyvm/releases/download/v0.7.2/anyvm.py",
+      "verified_download": true,
+      "download_sha256": "40a16e846bc07030759936d792343e770acdeb14d4c9991af7409648661a650d"
+    },
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1-aarch64.profile.json",
+      "size": 516,
+      "publisher_digest": "sha256:b6bab26e70531d993c3799e33c4cfc4b1e913376539428b2edf14f35a6d78f9f",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-aarch64.profile.json",
+      "verified_download": true,
+      "download_sha256": "b6bab26e70531d993c3799e33c4cfc4b1e913376539428b2edf14f35a6d78f9f"
+    },
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1-aarch64.qcow2.zst",
+      "size": 982630977,
+      "publisher_digest": "sha256:8d66347311ffe4b262df1deae2d257a23c65dc16845a979fbe1d7871d912bfcf",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-aarch64.qcow2.zst",
+      "verified_download": true,
+      "download_sha256": "8d66347311ffe4b262df1deae2d257a23c65dc16845a979fbe1d7871d912bfcf",
+      "streamed_bytes": 982630977,
+      "download_seconds": 18.056,
+      "image_booted": false
+    },
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1-aarch64.qemu",
+      "size": 986,
+      "publisher_digest": "sha256:868b2132a13f3d4ed1d72d4fdc3ab865d097ba3f637fccde1e0a8a8b9dcf80b0",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1-aarch64.qemu",
+      "verified_download": true,
+      "download_sha256": "868b2132a13f3d4ed1d72d4fdc3ab865d097ba3f637fccde1e0a8a8b9dcf80b0"
+    },
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1.profile.json",
+      "size": 525,
+      "publisher_digest": "sha256:1027509a2541c4b1bc5fb9e5f3b6ebfd9d2d293572789a513ff9a3cd1e04c91f",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1.profile.json",
+      "verified_download": true,
+      "download_sha256": "1027509a2541c4b1bc5fb9e5f3b6ebfd9d2d293572789a513ff9a3cd1e04c91f"
+    },
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1.qcow2.zst",
+      "size": 1023058365,
+      "publisher_digest": "sha256:42b6377c065d8291f82e3c93c95e95fc7ef0cb1f321947946df4e240b8183bd3",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1.qcow2.zst",
+      "verified_download": true,
+      "download_sha256": "42b6377c065d8291f82e3c93c95e95fc7ef0cb1f321947946df4e240b8183bd3",
+      "streamed_bytes": 1023058365,
+      "download_seconds": 30.863,
+      "image_booted": false
+    },
+    {
+      "repository": "anyvm-org/freebsd-builder",
+      "release": "2.2.8",
+      "name": "freebsd-15.1.qemu",
+      "size": 889,
+      "publisher_digest": "sha256:0c295d462947e62b6f51bb4736aea09f0539660e89faddcdae2268e69c6ff92f",
+      "url": "https://github.com/anyvm-org/freebsd-builder/releases/download/v2.2.8/freebsd-15.1.qemu",
+      "verified_download": true,
+      "download_sha256": "0c295d462947e62b6f51bb4736aea09f0539660e89faddcdae2268e69c6ff92f"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.1",
+      "name": "openbsd-8.0-aarch64.profile.json",
+      "size": 532,
+      "publisher_digest": "sha256:b15cb61a452ced2c1c2d18ad9943a920e36b33a1380195c368addd98c4918c87",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64.profile.json",
+      "verified_download": true,
+      "download_sha256": "b15cb61a452ced2c1c2d18ad9943a920e36b33a1380195c368addd98c4918c87"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.1",
+      "name": "openbsd-8.0-aarch64.qcow2.zst",
+      "size": 1295618078,
+      "publisher_digest": "sha256:dc0a18daba9f0e6d94ded2e71c1d101634761cd5a75c3e9b552310918fbbd8a4",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64.qcow2.zst",
+      "verified_download": true,
+      "download_sha256": "dc0a18daba9f0e6d94ded2e71c1d101634761cd5a75c3e9b552310918fbbd8a4"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.1",
+      "name": "openbsd-8.0-aarch64.qemu",
+      "size": 1003,
+      "publisher_digest": "sha256:2ee9c1409df7f886759b7c752787553098040f653355ae37c5a4c072dfc7992f",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64.qemu",
+      "verified_download": true,
+      "download_sha256": "2ee9c1409df7f886759b7c752787553098040f653355ae37c5a4c072dfc7992f"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.1",
+      "name": "openbsd-8.0.profile.json",
+      "size": 524,
+      "publisher_digest": "sha256:680780d59513ed60bb410e8709f7e668c0849df78fbe95f96cf2cdc69c44905c",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0.profile.json",
+      "verified_download": true,
+      "download_sha256": "680780d59513ed60bb410e8709f7e668c0849df78fbe95f96cf2cdc69c44905c"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.1",
+      "name": "openbsd-8.0.qcow2.zst",
+      "size": 623575019,
+      "publisher_digest": "sha256:03cbc153c0d70a32d9aee1b7f6f8e28262c28b29ee7f17147f3fe09ff2668f80",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0.qcow2.zst",
+      "verified_download": true,
+      "download_sha256": "03cbc153c0d70a32d9aee1b7f6f8e28262c28b29ee7f17147f3fe09ff2668f80"
+    },
+    {
+      "repository": "anyvm-org/openbsd-builder",
+      "release": "2.1.1",
+      "name": "openbsd-8.0.qemu",
+      "size": 889,
+      "publisher_digest": "sha256:8d8e64b9d3e4c6fda7f9a75b7b7aa1f2ca7834b5d7dce0153d5e5855cf150082",
+      "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0.qemu",
+      "verified_download": true,
+      "download_sha256": "8d8e64b9d3e4c6fda7f9a75b7b7aa1f2ca7834b5d7dce0153d5e5855cf150082"
+    }
+  ],
+  "inherited_containers": [
+    {
+      "repository": "fvwmorg/fvwm3-build",
+      "observed_tag": "latest",
+      "manifest_digest": "sha256:ea102496ec8c831cefcf20c6e71ea9364ed8eadfcfc3e5cbca57a63541522a7d",
+      "media_type": "application/vnd.docker.distribution.manifest.v2+json",
+      "registry_url": "https://registry-1.docker.io/v2/fvwmorg/fvwm3-build/manifests/latest",
+      "platforms": [],
+      "image_pulled_or_executed": false,
+      "status": "observed identity; inherited container not qualified or changed"
+    },
+    {
+      "repository": "fvwmorg/fvwm3-build-alpine",
+      "observed_tag": "latest",
+      "manifest_digest": "sha256:e7d145638b1e9eaa033fdaef1669039dc37818dc860b0fe9ad6cafd84da14f8a",
+      "media_type": "application/vnd.docker.distribution.manifest.v2+json",
+      "registry_url": "https://registry-1.docker.io/v2/fvwmorg/fvwm3-build-alpine/manifests/latest",
+      "platforms": [],
+      "image_pulled_or_executed": false,
+      "status": "observed identity; inherited container not qualified or changed"
+    }
+  ],
+  "remaining": [
+    "Enforce fixed runtime/image/profile hashes before execution, including cache hits, in the selected VM provider",
+    "Review remaining AnyVM dependencies and SSH/firmware inputs",
+    "Qualify candidate VM framebuffer/input drivers; OpenBSD AMD64 plain profile uses virtio VGA, unlike accepted local vesa profile",
+    "Execute candidates in a repository with native Linux sanitizer runners",
+    "Review inherited container contents and qualification; observed digest is not certification"
+  ],
+  "openbsd_source": {
+    "release_api": "https://api.github.com/repos/anyvm-org/openbsd-builder/releases/tags/v2.1.1",
+    "metadata_sha256": "d716ceb8ec8ec22d0cbe9227576c532432b4ce2c019a9cebb78811e70f51ec6b",
+    "release_announcement": "https://www.openbsd.org/80.html"
+  }
+}

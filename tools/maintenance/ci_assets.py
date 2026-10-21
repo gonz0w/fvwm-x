@@ -19,8 +19,8 @@ from urllib.request import HTTPRedirectHandler, build_opener
 
 from common import ROOT, fresh_output
 
-PINS = ROOT / 'dev-docs/ci/ASSET-PINS-2026-10-12.json'
-BOOT_PINS = ROOT / 'dev-docs/ci/BOOT-PINS-2026-10-13.json'
+PINS = ROOT / 'dev-docs/ci/ASSET-PINS-2026-10-20.json'
+BOOT_PINS = ROOT / 'dev-docs/ci/BOOT-PINS-2026-10-20.json'
 # Approved upstream release, independently checked against libpng.org.
 PNG_SOURCE = {
     'name': 'libpng-1.6.59.tar.xz',
@@ -31,8 +31,8 @@ PNG_SOURCE = {
 PROFILES = {
     'freebsd-amd64': ('freebsd-builder', '2.2.8', 'freebsd-15.1'),
     'freebsd-arm64': ('freebsd-builder', '2.2.8', 'freebsd-15.1-aarch64'),
-    'openbsd-amd64': ('openbsd-builder', '2.1.0', 'openbsd-7.9'),
-    'openbsd-arm64': ('openbsd-builder', '2.1.0', 'openbsd-7.9-aarch64'),
+    'openbsd-amd64': ('openbsd-builder', '2.1.1', 'openbsd-8.0'),
+    'openbsd-arm64': ('openbsd-builder', '2.1.1', 'openbsd-8.0-aarch64'),
 }
 CHUNK = 1024 * 1024
 MAX_ASSET = 2 * 1024 * 1024 * 1024

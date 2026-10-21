@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "fvwm/icon_boxes.h"
 #include "libs/picture_async.h"
 #include "libs/picture_view.h"
 #include <stdio.h>
@@ -79,7 +80,6 @@ static void clear_icon_dimensions(FvwmWindow *fw)
 	int py;
 	int tx;
 	int ty;
-
 	px = fw->icon_g.picture_w_g.x;
 	py = fw->icon_g.picture_w_g.y;
 	tx = fw->icon_g.title_w_g.x;

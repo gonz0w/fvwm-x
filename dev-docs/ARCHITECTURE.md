@@ -966,3 +966,11 @@ property owner answers get requests with an empty list. Pending ICE retirement
 is idempotent across the status sweep and close watch, preserving other peers. `tests/session_client_probe.c`
 is an independent libSM peer for real authentication, automatic registration retry
 and response progression. This is separate from the future desktop session owner.
+
+Core record dependencies: [module_records.h](https://github.com/gonz0w/fvwm-x/blob/cb515d726cba7897e60c36175d684b9209a40d46/fvwm/module_records.h) owns
+complete module/input/store/deferred-packet layouts and access macros;
+[module_list.h](../fvwm/module_list.h) retains opaque public pointers and iterator
+state. [icon_boxes.h](https://github.com/gonz0w/fvwm-x/blob/cb515d726cba7897e60c36175d684b9209a40d46/fvwm/icon_boxes.h) belongs to style/icon/window field
+consumers. [event_filter.h](https://github.com/gonz0w/fvwm-x/blob/cb515d726cba7897e60c36175d684b9209a40d46/fvwm/event_filter.h) keeps property-event scratch
+arguments beside events.c. Exact code/data parity and measured dependencies
+are recorded in the [core-record report](verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md).

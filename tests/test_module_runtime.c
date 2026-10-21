@@ -1,5 +1,5 @@
-#include "fvwm/module_list.h"
-
+#include "config.h"
+#include "fvwm/module_records.h"
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>

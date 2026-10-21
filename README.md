@@ -10,13 +10,13 @@ Desktop services build on FVWM's native modules and existing system facilities.
 File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
-**Status:** development. Core/module hardening, responsiveness and optional
-utility ports have locally qualified checkpoints.
+**Status:** development. The hosted core/utility snapshot has locally qualified
+hardening, responsiveness and utility-port checkpoints.
+[Core record dependencies](dev-docs/verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md)
+reduce rebuild scope with verified code/data parity.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.
-[Session ownership](dev-docs/verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md)
-retains its source-scoped results and earlier failures.
 [Protocol requirement inventory](dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
 records remaining runtime acceptance.
 [Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-20.md)

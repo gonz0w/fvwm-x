@@ -8077,6 +8077,14 @@ The action '_I_' causes an action to be performed on the button-press,
 if the function is invoked with prior knowledge of which window to act
 on.
 +
+Target-selection waits can be cancelled with Escape. Shutdown also cancels
+selection and click/hold classification waits without requiring a mouse
+release. If the target is destroyed or withdrawn while classification is
+pending, the remaining conditional actions are skipped. A target already
+retired by a nested *Wait* is not used when classification resumes. Pointer
+and keyboard grabs are released as the command unwinds; normal shutdown
+functions still execute.
++
 There is a number of predefined symbols that are replaced by certain
 values if they appear on the command line. Please refer to the
 *Command Expansion* section for details.

@@ -3579,3 +3579,16 @@ ewmh_state_policy_test = executable(
     link_args: ['-Wl,--wrap=malloc', '-Wl,--wrap=realloc', '-Wl,--wrap=free'],
 )
 test('ewmh-state-policy', ewmh_state_policy_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    foreach lifetime_case : ['selection', 'classification', 'wait']
+        test('function-lifetime-' + lifetime_case + '-xvfb', py,
+            args: [files('live_x/function_lifetime_live.py'),
+                '--fvwm', fvwm3, '--mfl', fvwm_mfl,
+                '--case', lifetime_case,
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts/function-lifetime' / lifetime_case],
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            is_parallel: false, timeout: 45,
+        )
+    endforeach
+endif

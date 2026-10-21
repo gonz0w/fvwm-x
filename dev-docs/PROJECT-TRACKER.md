@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Safety/maintainability closeout | Stream checkpoint merged in PR #141; four module/input repairs locally qualified in PR #142, for review | 2252 composed standard / 117 affected optional passes on six targets, scoped sanitizers, ten final installs and four authenticated BSD displays. Fork-time logging, once-only adoption, terminal framing, Script token ownership and root-context refusal are covered. Selected existing helpers retain their policies; pending interaction lifetimes are next. Broad owners remain open. [Report](verification/VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.md), [handoff criteria](#hardening-closeout). |
+| Safety/maintainability closeout | Module/input checkpoint merged in PR #142; final interaction-lifetime batch implemented, focused checks pass | Three reproduced failures cover selection shutdown, classification shutdown and conditional actions after target destruction. Existing active-function, module-input and deferred-window owners are retained. Combined qualification pending. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md), [handoff criteria](#hardening-closeout). |
 | BSD preparation evidence, CI-01 / MAINT-02 / CLEAN-01 | Merged in [PR #139](https://github.com/gonz0w/fvwm-x/pull/139); affected checkpoint passes | Three preparation/evidence repairs pass 282 native policy cases on six targets, two fresh OpenBSD runner cases and six actual loader invocations; original WM/installed bytes remain exact. Live phases and an expected exit 23 case validate diagnostics/cleanup. Portable 177 passes / 11 skips; PR138 runtime evidence retained. [Report](verification/VERIFICATION-2026-10-21-BSD-PREPARATION.md). |
 | Shared string ownership, DATA-01 / CLEAN-01 | Merged in [PR #138](https://github.com/gonz0w/fvwm-x/pull/138); composed checkpoint passes | Three shared first-line, multiline and quoted-copy operations retain existing bytes and ownership while avoiding before-source pointers and removing one quoted strlen rescan. One composed six-target checkpoint passes 2208 standard entries, 28 affected optional entries and one scoped guest sanitizer. Ten installs, staged geometry/styles and four authenticated default BSD displays pass; harness failures and wider release limits remain explicit. [Report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md). |
 | Protocol requirement register, STANDARDS-01 / EWMH-01 / SELECTION-01 | Merged on main through [PR #136](https://github.com/gonz0w/fvwm-x/pull/136), including PR #137; runtime acceptance remains open | Forty clause/role records refine the existing E/S reconciliation: root capabilities/desktops, window hints/requests and selection ownership/transfer. Historical evidence retains exact profile/source limits; manager announcement and desktop-publication source findings have concrete owner handoffs. No runtime, benchmark or full matrix repeat. [Register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md). |
@@ -271,8 +271,10 @@ ownership and root Send_ConfigInfo recipient refusal. Six targets pass 2252
 composed standard / 117 optional entries, scoped sanitizers and ten final
 installs. Preserve original probe/setup failures and affected completions in
 its [report](verification/VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.md). Existing configuration-view and Script
-packet/value helpers have explicit already-covered dispositions. Pending
-interaction lifetimes are the next finite pickup. No comparison is due.
+packet/value helpers have explicit already-covered dispositions. The pending interaction pickup is implemented with three bounded cancellation
+repairs and focused Linux/FreeBSD ARM64 passes; combined qualification is
+pending. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md).
+No comparison is due.
 
 Current selection, 2026-10-21: finish high-impact safety and maintainability,
 then move to the approved features and milestones. Remaining performance-only
@@ -308,8 +310,8 @@ subsequent merged implementation checkpoints with PR133–136 and PR138. The due
 [paired comparison](verification/PERFORMANCE-2026-10-21.md) uses existing
 PR132/138 Linux ARM64 GCC binaries. Command timing ranges overlap, peak RSS is
 unchanged and GNU text/read-only size falls 8 KiB, mostly layout/fill. PR138 is
-the new preserved reference at 2/5 subsequent merged checkpoints after PR139
-and PR141.
+the new preserved reference at 3/5 subsequent merged checkpoints after PR139,
+PR141 and PR142.
 Keep lightweight regression observations; they do not select more tuning or
 delay safety closeout for new benchmark builds. Documentation-only changes do
 not increment the counter. Investigate concrete regressions in their owning
@@ -816,7 +818,7 @@ qualification/dispositions; pending interaction lifetimes remain.
 | --- | --- | --- |
 | Stream repairs and provenance qualified | FD-01 / PROC-01 / CLEAN-01: Status FIFO/continuation, log replacement/failure and immediate native consumers. | PR141 qualifies the stream contracts. The delayed-module provenance concern is reproduced as wrong metadata in the preserved old core and repaired by fork-time identity plus once-only adoption in [PR142](verification/VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.md). Broad stream/process owners remain open. |
 | Selected external-input review disposed | DATA-01 / FD-01: shared legacy/incremental module readers, GetConfigLine, native Script packet/value/message consumers and root Send_ConfigInfo. | PR142 qualifies terminal malformed/truncated framing, Script token ownership and missing module-recipient refusal. GetConfigLine and Script packet/value sources/consumers remain exact to merged PR141 and already covered. [Entry-point dispositions](verification/VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.md#selected-input-review-dispositions). |
-| Next: pending interaction lifetimes | INPUT-01 / DATA-01 / CLEAN-01: `WaitForButtonsUp`, `CMD_Wait`, `execute_complex_function` and directly retained command contexts. | Review target destruction, recursive dispatch/cancellation and pending-resource retirement using existing lifetime mechanisms. Preserve qualified readiness, command ordering and X error barriers; do not turn this into a new scheduler or event-loop rewrite. |
+| Interaction-lifetime review implemented; qualification pending | INPUT-01 / DATA-01 / CLEAN-01: `WaitForButtonsUp`, `CMD_Wait`, `execute_complex_function` and directly retained command contexts. | Review target destruction, recursive dispatch/cancellation and pending-resource retirement using existing lifetime mechanisms. Preserve qualified readiness, command ordering and X error barriers; do not turn this into a new scheduler or event-loop rewrite. |
 
 These are bounded review pickups, not three mandatory implementation PRs or
 assertions that every path is defective. Inventory immediate callees/ownership

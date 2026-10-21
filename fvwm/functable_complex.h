@@ -22,7 +22,8 @@ typedef enum
 	CF_HOLD =           'h',
 	CF_CLICK =          'c',
 	CF_DOUBLE_CLICK =   'd',
-	CF_TIMEOUT =        '-'
+	CF_TIMEOUT =        '-',
+	CF_CANCELLED =      0
 } cfunc_action_t;
 
 /* ---------------------------- exported variables (globals) --------------- */

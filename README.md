@@ -12,10 +12,9 @@ compositor or native Wayland backend.
 
 **Status:** development. The hosted core/utility snapshot has locally qualified
 hardening, responsiveness and utility-port checkpoints.
-[Swallowed-client session ownership](dev-docs/verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md)
-checks registration, preserves other pending peers during cleanup and completes
-property replies. One composed checkpoint covers six targets; required gaps
-remain explicit.
+[Core record dependencies](dev-docs/verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md)
+reduce module/icon-box/event-filter rebuild scope, with exact compiled
+code/data parity and affected checks across all six targets.
 [Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-20.md)
 track latency, CPU, memory and executable size every five implementation batches.
 Optional Go builds use a patched compiler baseline. Separate desktop/artwork publication is tracked in the guides.

@@ -117,3 +117,5 @@ recorded environment. Physical hardware remains separate qualification.
 The [process/session startup checkpoint](verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md) records six-target/ten-profile constructor qualification, real session integration, scoped guest sanitizers and unchanged inherited OpenBSD gaps. Its source/profile scope does not establish native-CPU or physical/release acceptance.
 
 The [swallowed-client session checkpoint](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md) records composed six-target qualification, unchanged inherited OpenBSD gaps and scoped guest sanitizers. Native-CPU and physical/release acceptance remain separate.
+
+The [core-record checkpoint](verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md) records affected six-target/ten-profile checks, exact allocated code/data and scoped install parity. Broader PR134 runtime/default-X/sanitizer evidence and inherited gaps retain their original scope.

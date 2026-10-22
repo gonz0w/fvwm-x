@@ -1231,6 +1231,17 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         is_parallel: false,
         timeout: 120,
     )
+    test('mfl-settings-xvfb', py,
+        args: [files('live_x/mfl_settings_live.py'),
+            '--fvwm', fvwm3.full_path(), '--mfl', fvwm_mfl.full_path(),
+            '--desktop', fvwm_desktop.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'mfl-settings'],
+        depends: [fvwm3, fvwm_mfl],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false,
+        timeout: 120,
+    )
 endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']

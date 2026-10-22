@@ -774,6 +774,7 @@ class Desktop:
         self.last_clock = None
         self.monitor_width = 1440
         self.settings_generation = secrets.token_hex(16)
+        self.settings_instance = secrets.token_hex(16)
         self.settings_editor = None
         self.configuration_report = None
 
@@ -915,6 +916,139 @@ class Desktop:
                     generation=self.settings_generation,
                     persistence_error=self.persistence_error)
                 for key in setting_scope(scope)}
+
+    def settings_request(self, request):
+        """Only this settings owner validates values and commits preferences.
+
+        A generation identifies this helper's saved/effective snapshot, not
+        external Style/Colorset state or completed core repaint. All actions
+        retain the existing private-file revision check and writer lock.
+        """
+        def error(code):
+            return {'error': {'code': code}}
+
+        if not isinstance(request, dict):
+            return error('invalid_request')
+        operation = request.get('operation')
+        fields = {
+            'query': {'operation', 'scope'},
+            'set': {'operation', 'provider', 'generation', 'values'},
+            'reset': {'operation', 'provider', 'generation', 'scope'},
+            'reload': {'operation', 'provider', 'generation'},
+        }
+        if not isinstance(operation, str) or operation not in fields:
+            return error('unsupported_operation')
+        expected = fields[operation]
+        if operation == 'query' and 'provider' in request:
+            expected = expected | {'provider'}
+        if set(request) != expected:
+            return error('invalid_request')
+        provider = request.get('provider')
+        if 'provider' in request:
+            if not isinstance(provider, str) or not re.fullmatch(r'[0-9a-f]{32}', provider):
+                return error('invalid_request')
+            if provider != self.settings_instance:
+                # SendToModule can address multiple instances. Only the
+                # selected owner replies; another instance must not race its
+                # stale refusal against a successful commit by the target.
+                return None
+        scope = request.get('scope', 'all')
+        if not isinstance(scope, str) or len(scope) > 64:
+            return error('invalid_request')
+        if operation != 'query':
+            generation = request['generation']
+            if not isinstance(generation, str) or not re.fullmatch(r'[0-9a-f]{32}', generation):
+                return error('invalid_request')
+            if generation != self.settings_generation:
+                return error('stale_generation')
+        try:
+            setting_scope(scope)
+            if operation == 'set':
+                changes = request['values']
+                if not isinstance(changes, dict) or not changes or len(changes) > len(SETTINGS):
+                    return error('invalid_value')
+                for key, value in changes.items():
+                    setting_value(key, value)
+            elif operation == 'reset':
+                changes = {key: SETTINGS[key]['default'] for key in setting_scope(scope)}
+            if operation in ('set', 'reset'):
+                checked_settings(dict(self.saved, **changes))
+                checked_settings({**self.saved, **changes, **self.overrides})
+        except (ValueError, TypeError):
+            return error('invalid_value')
+
+        before = self.settings_generation
+        submission_failed = False
+        if operation != 'query':
+            try:
+                if operation == 'reload':
+                    self.reload_settings()
+                else:
+                    self.change_settings(changes)
+            except (OSError, ValueError, RuntimeError):
+                if self.settings_generation == before:
+                    return error('persistence_failed')
+                # The saved/in-memory commit already occurred. Never report a
+                # refusal that would invite replay as if nothing had changed.
+                submission_failed = True
+        result = dict(owner='FvwmDesktop', provider=self.settings_instance, schema_version=1,
+            operation=operation, generation=self.settings_generation,
+            state='observed' if operation == 'query' else
+                  'reloaded' if operation == 'reload' else 'committed',
+            settings=self.query_settings(scope), saved_revision=self.state_revision,
+            application='submission-failed' if submission_failed else
+                'submitted-to-fvwm' if self.last_theme else 'not-submitted',
+            asynchronous_completion='unknown', preview=False)
+        return {'result': result}
+
+    def handle_settings_request(self, argument):
+        """Hex keeps typed data out of FVWM expansion/token interpretation.
+
+        One bounded response is chunked through existing directed M_STRING
+        packets. The cookie/serial bind correlation across MFL restarts; they
+        do not authenticate peers sharing this user/X display.
+        """
+        parts = argument.split(' ')
+        if (len(parts) != 3 or not re.fullmatch(r'[0-9a-f-]{1,64}', parts[0])
+                or not re.fullmatch(r'[0-9a-f]{16}', parts[1]) or int(parts[1], 16) == 0):
+            print('FvwmDesktop: invalid settings request address', file=sys.stderr)
+            return
+        cookie, serial, encoded = parts
+        def unique_pairs(pairs):
+            value = {}
+            for key, item in pairs:
+                if key in value:
+                    raise ValueError('Duplicate request field')
+                value[key] = item
+            return value
+        try:
+            if not encoded or len(encoded) > 768 or len(encoded) % 2:
+                raise ValueError('Invalid settings payload size')
+            if not re.fullmatch(r'[0-9a-f]+', encoded):
+                raise ValueError('Invalid settings payload encoding')
+            request = json.loads(bytes.fromhex(encoded), object_pairs_hook=unique_pairs)
+            response = self.settings_request(request)
+            if response is None:
+                return
+        except (ValueError, UnicodeError, RecursionError):
+            response = {'error': {'code': 'invalid_request'}}
+        data = json.dumps(response, separators=(',', ':'), ensure_ascii=True).encode('ascii')
+        if len(data) > 8192:
+            if 'result' in response:
+                # Keep an already committed action's outcome observable even
+                # if a future registry cannot fit the bounded snapshot.
+                result = {key: value for key, value in response['result'].items()
+                          if key != 'settings'}
+                result['settings_unavailable'] = 'reply_too_large'
+                response = {'result': result}
+            else:
+                response = {'error': {'code': 'provider_reply_too_large'}}
+            data = json.dumps(response, separators=(',', ':'), ensure_ascii=True).encode('ascii')
+        prefix = 'SendToModule FvwmMFL MFL_SETTINGS_1 ' + cookie + ' ' + serial
+        chunks = [data[start:start + 256].hex() for start in range(0, len(data), 256)]
+        for index, chunk in enumerate(chunks):
+            self.send(prefix + ' part ' + str(index) + ' ' + chunk)
+        self.send(prefix + ' end ' + str(len(chunks)))
 
     def settings_menu(self, scope='all'):
         rows = []
@@ -1193,7 +1327,9 @@ class Desktop:
     def handle(self, message):
         command, _, argument = message.strip().partition(' ')
         try:
-            if command == 'barrier' and re.fullmatch(r'[A-Za-z0-9_-]{1,64}', argument):
+            if command == 'ipc-request':
+                self.handle_settings_request(argument)
+            elif command == 'barrier' and re.fullmatch(r'[A-Za-z0-9_-]{1,64}', argument):
                 # Echo follows earlier commands in this module's ordered pipe.
                 # Saved settings alone do not mean that FVWM has repainted yet.
                 self.send('Echo ' + argument)

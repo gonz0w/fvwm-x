@@ -661,5 +661,126 @@ class ConfigurationChecking(unittest.TestCase):
         self.assertNotIn('\x1b', result.stdout)
 
 
+class DesktopSettingsIPC(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.path = Path(self.directory.name) / 'state.json'
+        self.commands = []
+        self.instance = desktop.Desktop(self.commands.append,
+            ROOT / 'default-config', self.path)
+        self.addCleanup(self.instance.pool.shutdown)
+
+    def action(self, operation, **fields):
+        return self.instance.settings_request(dict(operation=operation,
+            provider=self.instance.settings_instance,
+            generation=self.instance.settings_generation, **fields))
+
+    def test_snapshot_scopes_overrides_and_stale_generations(self):
+        before = self.instance.settings_generation
+        self.instance.configure_setting('motion', 'true')
+        self.instance.finish_configuration()
+        result = self.instance.settings_request({'operation': 'query', 'scope': 'all'})['result']
+        self.assertEqual(set(result['settings']), set(desktop.SETTINGS))
+        self.assertEqual(result['owner'], 'FvwmDesktop')
+        self.assertFalse(result['preview'])
+        self.assertFalse(result['settings']['motion']['saved'])
+        self.assertTrue(result['settings']['motion']['effective'])
+        self.assertEqual(result['settings']['motion']['source'], 'module-configuration')
+        self.assertNotEqual(before, result['generation'])
+        stale = self.instance.settings_request(dict(operation='set', generation=before,
+            provider=self.instance.settings_instance,
+            values={'palette': 'dune'}))
+        self.assertEqual(stale, {'error': {'code': 'stale_generation'}})
+        self.assertFalse(self.path.exists())
+        result = self.instance.settings_request({'operation': 'query', 'scope': 'group:schedule'})
+        self.assertEqual(set(result['result']['settings']), {'day', 'night'})
+
+    def test_atomic_group_update_and_invalid_changes_preserve_state(self):
+        result = self.action('set', values={'day': '19:00', 'night': '07:00',
+                                         'palette': 'dune', 'motion': True})['result']
+        self.assertEqual(result['state'], 'committed')
+        self.assertEqual(result['application'], 'submitted-to-fvwm')
+        self.assertEqual(result['asynchronous_completion'], 'unknown')
+        saved = self.path.read_bytes()
+        generation = result['generation']
+        for values in ({'day': '07:00'}, {'motion': 'false'}, {'palette': 'ink; Exec evil'},
+                       {'unknown': True}, {}):
+            self.assertEqual(self.action('set', values=values),
+                             {'error': {'code': 'invalid_value'}})
+            self.assertEqual(self.path.read_bytes(), saved)
+            self.assertEqual(self.instance.settings_generation, generation)
+        self.assertEqual(self.path.stat().st_mode & 0o777, 0o600)
+
+    def test_scoped_reset_external_conflict_and_reload(self):
+        self.action('set', values={'palette': 'ink', 'day': '09:00', 'motion': True})
+        result = self.action('reset', scope='group:effects')['result']
+        self.assertFalse(result['settings']['motion']['saved'])
+        self.assertEqual(self.instance.saved['palette'], 'ink')
+        self.assertEqual(self.instance.saved['day'], '09:00')
+        external = dict(self.instance.saved, palette='grove')
+        desktop.save_settings(self.path, external)
+        saved = self.path.read_bytes()
+        self.assertEqual(self.action('set', values={'palette': 'dune'}),
+                         {'error': {'code': 'persistence_failed'}})
+        self.assertEqual(self.path.read_bytes(), saved)
+        before = self.instance.settings_generation
+        result = self.action('reload')['result']
+        self.assertEqual(result['state'], 'reloaded')
+        self.assertEqual(result['settings']['palette']['effective'], 'grove')
+        self.assertNotEqual(before, result['generation'])
+
+    def test_post_commit_submission_failure_reports_commit(self):
+        with patch.object(self.instance, 'theme', side_effect=RuntimeError('queue full')):
+            result = self.action('set', values={'palette': 'dune'})['result']
+        self.assertEqual(result['state'], 'committed')
+        self.assertEqual(result['application'], 'submission-failed')
+        self.assertEqual(json.loads(self.path.read_text())['palette'], 'dune')
+        self.assertEqual(result['generation'], self.instance.settings_generation)
+
+    def test_internal_framing_is_bounded_and_literal(self):
+        request = json.dumps({'operation': 'query', 'scope': 'all'}).encode().hex()
+        self.instance.handle_settings_request('1-ab-cd 0000000000000001 ' + request)
+        chunks = []
+        prefix = 'SendToModule FvwmMFL MFL_SETTINGS_1 1-ab-cd 0000000000000001 '
+        for index, command in enumerate(self.commands[:-1]):
+            self.assertTrue(command.startswith(prefix + 'part ' + str(index) + ' '))
+            self.assertLessEqual(len(command), 1000)
+            chunks.append(bytes.fromhex(command.rsplit(' ', 1)[1]))
+        self.assertEqual(self.commands[-1], prefix + 'end ' + str(len(chunks)))
+        data = b''.join(chunks)
+        self.assertLessEqual(len(data), 8192)
+        self.assertEqual(set(json.loads(data)['result']['settings']), set(desktop.SETTINGS))
+        self.commands.clear()
+        duplicate = b'{"operation":"query","operation":"set","scope":"all"}'
+        self.instance.handle_settings_request('a 0000000000000001 ' + duplicate.hex())
+        reply = json.loads(bytes.fromhex(self.commands[0].rsplit(' ', 1)[1]))
+        self.assertEqual(reply, {'error': {'code': 'invalid_request'}})
+
+    def test_invalid_envelopes_never_mutate(self):
+        for value in (None, [], {'operation': []}, {'operation': 'run'},
+                      {'operation': 'query', 'scope': []},
+                      {'operation': 'query', 'scope': 'all', 'provider': None},
+                      {'operation': 'query', 'scope': 'all', 'extra': True},
+                      {'operation': 'reload', 'generation': 'bad'}):
+            self.assertIn('error', self.instance.settings_request(value))
+        self.assertFalse(self.path.exists())
+
+    def test_multiple_instances_only_selected_owner_replies(self):
+        other = desktop.Desktop(self.commands.append, ROOT / 'default-config', self.path)
+        self.addCleanup(other.pool.shutdown)
+        request = dict(operation='set', provider=self.instance.settings_instance,
+            generation=self.instance.settings_generation, values={'palette': 'dune'})
+        self.assertIsNone(other.settings_request(request))
+        self.assertFalse(self.path.exists())
+        result = self.instance.settings_request(request)['result']
+        self.assertEqual(result['provider'], self.instance.settings_instance)
+        self.assertEqual(result['state'], 'committed')
+        query = dict(operation='query', scope='all', provider=self.instance.settings_instance)
+        self.assertIsNone(other.settings_request(query))
+        self.assertEqual(self.instance.settings_request(query)['result']['provider'],
+                         self.instance.settings_instance)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -46,7 +46,11 @@ not a security/confidentiality boundary for the same user or shared X display.
 
 ## Remaining owner scope
 
-Complete topology/binding queries, registered helper settings, observable
+The next [settings-provider contract](IPC-SETTINGS-PROVIDER-2026-10-22.md)
+adds helper-owned registry/value queries and typed generation-checked settings
+actions. It retains the bounds/ownership above and makes no core-preview claim.
+
+Complete topology/binding queries, other helper/service providers, observable
 shared-core generations/CFG-01 preview, typed domain actions, applied/failed
 results, progress/cancellation and service lifecycle providers remain open.
 No new UI is selected here; later consumers retain actual-X screenshot gates.

@@ -1,0 +1,380 @@
+{
+  "schema": 1,
+  "tracker": "IPC-02",
+  "state": "focused-checks-passed-integration-pending",
+  "source": {
+    "base": "1de89441e651b22003d44d9fba1d4a68eed9b3a4",
+    "runtime_inputs_sha256": {
+      "modules/FvwmMFL/FvwmMFL.c": "62bc6116ad6e31f07e51002005b33161c65908403c959e5d8f802815247bcf03",
+      "modules/FvwmMFL/request.c": "adccb76b0512bea02ded81725da201070b7399c238b095fc8a4c94c8c37947f4",
+      "modules/FvwmMFL/request.h": "7956dbfbecfc747e30c912ed1d69468279ed7a0a134bd358109c2113e15f0463",
+      "default-config/desktop.py": "00c4276c9ce8ed28678e3ef04766e72791539b570da685a454cbc826621dc379",
+      "tests/meson.build": "2c42da6764e681466f7737ec1b1e4b9d7096d90427743225c1ae0fcd8d7dad0b",
+      "tests/test_mfl_request.c": "4a9dd0da33912f9277cc5bdf1a997a1164d9d53b414a7203957b7a8bb880207a",
+      "tests/test_desktop.py": "7d03d5d22d6981d039f894ee93dd3dd65d69ef530dcc7df5cbe5733b85ce1fa8",
+      "tests/live_x/mfl_settings_live.py": "d80d4ce43b6d36a65af44c88ef7a378184d13d50f5832e11a62b891885be3d1f"
+    },
+    "publication_commit_tree": "Recorded in PR; documentation is outside tested runtime inputs",
+    "unchanged_guest_baseline": {
+      "head": "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+      "tree": "3ac989614951f05d9e2fd1d13298cd1935bf1689",
+      "archive_sha256": "70cea803e822074f7a600e1be45282a14f0109b6ed541a4673843a9e4f735641"
+    },
+    "unchanged_baseline_input_count": 2165
+  },
+  "stories": [
+    "settings registry/saved/effective snapshot queries",
+    "generation-checked atomic typed preference changes",
+    "correlated scoped reset and reload results"
+  ],
+  "summary": {
+    "development_target": "Linux ARM64",
+    "development_profile": "GCC default",
+    "selected_registered_passes": 6,
+    "desktop_policy_cases": 49,
+    "new_desktop_policy_cases": 7,
+    "scoped_guest_sanitizer_exercises": 2,
+    "new_UI": false,
+    "new_screenshots": 0,
+    "installs_default_X_BSD_or_full_matrix_run": false,
+    "historical_warning_policy_followups": 2
+  },
+  "focused": {
+    "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/targeted.tgz",
+    "sha256": "2e50e65db0a2894a3168bf370844dc3b3324e43f42527434d70ef866fb661ab5",
+    "bytes": 20724,
+    "payloads": 35,
+    "complete_integrity_hash_mode_verification": true,
+    "tests": {
+      "passed": 6,
+      "names": [
+        "fvwm3 / desktop-policy",
+        "fvwm3 / mfl-stream",
+        "fvwm3 / mfl-request",
+        "fvwm3:live-x / mfl-request-xvfb",
+        "fvwm3:live-x / mfl-settings-xvfb",
+        "fvwm3:live-x / mfl-stream-xvfb"
+      ]
+    },
+    "commands_log": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/development3.log",
+    "commands_log_sha256": "041c26cfbb1c7009e30b5c3787fff2ab3a8cf9edd5f6608a6c9eb222e3660ad7",
+    "binary_identities": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+        "sha256": "f4f0679b9a775f453faed2174c3ec71f16856adb807e3a14b5377df49d7a9223",
+        "bytes": 5319768
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+        "sha256": "0546a594000c2d6e2d4c0201f84e2958af49b3e6b6cc4f577167de9503e74ed1",
+        "bytes": 382896
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request": {
+        "sha256": "6344b1869462bb1d18b178d2a1ebe53ed83b96225c4cd260f8c6b17c5cf522d6",
+        "bytes": 197160
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop": {
+        "sha256": "5253b9c92de0f1d25d3d4e9db74574ecdfd5e5519ca00a3b9e8a515d6fa540c7",
+        "bytes": 82360
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/config.h": {
+        "sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+        "bytes": 4651
+      }
+    },
+    "actual_settings_X": {
+      "status": "passed",
+      "real_provider": {
+        "settings": 7,
+        "scoped_queries": true,
+        "atomic_changes": true,
+        "targeted_multiple_owners": true,
+        "readonly_refused": true,
+        "stale_writer_refused": true,
+        "scoped_reset": true,
+        "external_conflict": true,
+        "reload": true,
+        "restart_generation": true,
+        "restart_target_unavailable": true,
+        "asynchronous_completion": "unknown"
+      },
+      "independent_producer": {
+        "absent_timeout": true,
+        "partial_timeout": true,
+        "malformed_part_refused": true,
+        "disconnected_partial": true,
+        "late_reply_ignored": true,
+        "healthy_client": true
+      }
+    }
+  },
+  "sanitizers": {
+    "scope": "Reused Linux ARM64 Clang ASan/UBSan/LSan request policy and instrumented MFL settings lifecycle; unchanged uninstrumented core. Not native-CPU or full release qualification.",
+    "leak_detection": true,
+    "suppressions": false,
+    "diagnostics": {},
+    "commands": [
+      {
+        "label": "sanitizer-configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+        ],
+        "status": 0,
+        "seconds": 0.662
+      },
+      {
+        "label": "sanitizer-compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j",
+          "2",
+          "FvwmMFL",
+          "test-mfl-request"
+        ],
+        "status": 0,
+        "seconds": 0.328
+      },
+      {
+        "label": "sanitizer-policy",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--num-processes",
+          "1",
+          "--print-errorlogs",
+          "mfl-request"
+        ],
+        "status": 0,
+        "seconds": 0.17
+      },
+      {
+        "label": "sanitizer-settings",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+          "--desktop",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/ipc-settings-targeted/sanitizer-settings"
+        ],
+        "status": 0,
+        "seconds": 15.518
+      }
+    ],
+    "existing_Form_gap": "CLEAN-01 / Later; Form not invoked or requalified here",
+    "binary_identities": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "3da91fc8336e55f1c4e6cb73f0fef5ce723dfb08205f050e1b2e235ca4c45004",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": "29ba47ad04752151aab7b37d58c7dfae5bf8f9bc89748a4cd9dece672542d96c"
+    },
+    "actual_settings_X": {
+      "status": "passed",
+      "real_provider": {
+        "settings": 7,
+        "scoped_queries": true,
+        "atomic_changes": true,
+        "targeted_multiple_owners": true,
+        "readonly_refused": true,
+        "stale_writer_refused": true,
+        "scoped_reset": true,
+        "external_conflict": true,
+        "reload": true,
+        "restart_generation": true,
+        "restart_target_unavailable": true,
+        "asynchronous_completion": "unknown"
+      },
+      "independent_producer": {
+        "absent_timeout": true,
+        "partial_timeout": true,
+        "malformed_part_refused": true,
+        "disconnected_partial": true,
+        "late_reply_ignored": true,
+        "healthy_client": true
+      }
+    }
+  },
+  "manuals": {
+    "FvwmMFL": {
+      "source_sha256": "f302e198a1ca7bc23315a7d72eed891212514e8050c854f7bc9daff8fe8f1514",
+      "roff_sha256": "71e4862cce6ee071427f17da81587628679844d3a2acfcd0e0c92a1d343f61a1",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 5
+      }
+    },
+    "FvwmMFL-before": {
+      "source_sha256": "a34bf1c6c085be1ed6e33ad1de1aa4beb70a693859756628052101df250f51a0",
+      "roff_sha256": "24f5f3d0a130ee1072717edf7455ec5e2ea10e2532bc5ffd9f843a6a27db30c5",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 4
+      }
+    },
+    "FvwmDesktop": {
+      "source_sha256": "823d97e5e77c61008fddc96fbf627f86a1482759b2371401598b2032481fde6b",
+      "roff_sha256": "4b7f77b3b9e7edf00b868383f8139ef86bfbb117e4e82a6853d86564febea2d9",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    },
+    "FvwmDesktop-before": {
+      "source_sha256": "0dd3345322c36efb82cf3caedec84450c137743affea811bcad302505c0bc703",
+      "roff_sha256": "f60e25bc3c298221e8ce251a0d5ede5d1db21d119bf8906cd650f651fcbd52fa",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    }
+  },
+  "cleanup": {
+    "retired": [
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/ipc-settings-focused",
+        "files": 77,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/focused.tgz",
+        "sha256": "427adad19186241f420f70d7dfae2707ce60fb9bc7bdf22aa7487278930841eb"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/ipc-settings-policy-followup",
+        "files": 6,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/policy-followup.tgz",
+        "sha256": "b71b52eb8a2b5069af5c605fef53c65b46b2a1d9b0b52b6cc2550a6ef17c8c0c"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/ipc-settings-targeted",
+        "files": 35,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/targeted.tgz",
+        "sha256": "2e50e65db0a2894a3168bf370844dc3b3324e43f42527434d70ef866fb661ab5"
+      }
+    ],
+    "preserved": "sources, reusable builds, install stages, performance references and VM disks",
+    "module_size_output": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n  61921\t   2176\t   3640\t  67737\t  10899\t/tmp/fvwm-performance-reference-pr149/FvwmMFL\n  71121\t   2272\t   3656\t  77049\t  12cf9\t/tmp/fvwm-performance-reference-pr154/FvwmMFL\n"
+  },
+  "cycle": {
+    "reference_merged_pr": 154,
+    "merged_feature_PRs_since_reference": 0,
+    "current_batch_in_review": true,
+    "stories_in_current_batch": 3,
+    "count_after_merge": "1/3",
+    "closure": "Three feature PRs, about ten substantive stories or earlier natural handoff"
+  },
+  "deferred": [
+    "Affected six-target integration including AMD64/BSD, alternate compilers and relevant optional profiles at shared cycle checkpoint",
+    "Full install/default-X and milestone/release acceptance at required boundary; no changed install/server contract requires an early gate",
+    "Native-CPU sanitizers and physical hardware/toolkit/compositor acceptance"
+  ],
+  "remaining_IPC_scope": [
+    "Complete topology/binding/other-provider queries",
+    "Typed domain actions beyond owned settings",
+    "Progress/cancellation and service adoption",
+    "Observable shared-core generations and CFG-01 preview/recovery"
+  ],
+  "performance": {
+    "report": "PERFORMANCE-2026-10-22-PR154.md",
+    "reference_after_observation": 154,
+    "merged_implementation_PRs_after_reference": 0,
+    "candidate_settings_PR_included": false
+  },
+  "historical_captures": [
+    {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/focused.tgz",
+      "sha256": "427adad19186241f420f70d7dfae2707ce60fb9bc7bdf22aa7487278930841eb",
+      "bytes": 2722245
+    },
+    {
+      "reason": "Parenthesize an intentional adjacent-string test vector to remove Clang warning; no product/fixture change",
+      "changed_file": "tests/test_mfl_request.c",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/policy-followup.tgz",
+      "sha256": "b71b52eb8a2b5069af5c605fef53c65b46b2a1d9b0b52b6cc2550a6ef17c8c0c",
+      "all_payloads_modes_valid": true,
+      "commands": [
+        {
+          "label": "gcc-compile",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "2",
+            "test-mfl-request"
+          ],
+          "status": 0
+        },
+        {
+          "label": "gcc-test",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--num-processes",
+            "1",
+            "--print-errorlogs",
+            "mfl-request"
+          ],
+          "status": 0
+        },
+        {
+          "label": "sanitizer-compile",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j",
+            "2",
+            "test-mfl-request"
+          ],
+          "status": 0
+        },
+        {
+          "label": "sanitizer-test",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "--no-rebuild",
+            "--num-processes",
+            "1",
+            "--print-errorlogs",
+            "mfl-request"
+          ],
+          "status": 0
+        }
+      ],
+      "module_binaries_unchanged": true,
+      "retained_scope": "Five other registered entries and actual module lifecycle retain exact product/fixture inputs. Six selected entries counted once; policy follow-ups separate."
+    }
+  ],
+  "review": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/local-review.md",
+    "sha256": "0f9bf252977b340cd1a385c2d29b424b69c73782e668010b36a0927d8c2281ec",
+    "material_correction": "Explicit provider identity prevents another instance racing refusal against target commit",
+    "affected_requalification": "Final six selected Linux entries and two scoped sanitizer exercises pass; performance uses unchanged merged binaries and is not repeated",
+    "remaining_actionable_findings": 0
+  }
+}

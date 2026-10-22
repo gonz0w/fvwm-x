@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Desktop settings queries and typed actions](VERIFICATION-2026-10-22-IPC-SETTINGS.md): IPC-02 snapshots, generation-checked atomic changes and scoped reset/reload; focused Linux/policy/X and scoped sanitizer passes, shared cycle qualification pending.
+
+- [Due PR149→PR154 performance observation](PERFORMANCE-2026-10-22-PR154.md): preserved binaries only, unchanged core allocated size, explicit MFL feature growth and mixed small latency/CPU changes; PR154 starts the next five-merge reference.
+
 - [Correlated MFL queries and read-only admission](VERIFICATION-2026-10-22-IPC-REQUESTS.md): first IPC-02 subset; 82 selected six-target/ten-profile passes, ten staged sessions, four authenticated BSD displays and scoped leak-enabled request sanitizers. Original private runner failures and broader owner/release scope remain explicit.
 
 - [Non-executing desktop configuration checks](VERIFICATION-2026-10-22-CONFIG-CHECKER.md): bounded literal settings/Read analysis, exact source/include diagnostics, offline text/JSON and native paged reports; six-target affected checkpoint with retained native foundation.

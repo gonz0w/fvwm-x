@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Correlated desktop settings provider](IPC-SETTINGS-PROVIDER-2026-10-22.md): IPC-02 registry/value snapshots, generation-checked atomic updates and scoped reset/reload; the helper owns persistence and honest submission outcomes.
+
 - [Feature checks and shared qualification cycles](FEATURE-TEST-CADENCE-2026-10-22.md): accepted user direction; focused PR merge gates, one affected platform checkpoint per roughly three feature PRs, full milestone/release acceptance and explicit deferred coverage.
 
 - [First structured MFL request contract](IPC-REQUESTS-2026-10-22.md): IPC-02 correlation/schema, authoritative core queries, honest stream barriers, bounded lifetimes and one-way read-only admission. Broader providers/actions/preview remain open.

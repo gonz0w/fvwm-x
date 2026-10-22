@@ -14,13 +14,14 @@
 
 /* Bound parser recursion before entering cJSON. Its strings cannot represent
  * embedded NUL, so refuse that escape before comparing fields or IDs. */
-static bool request_shape(const char *text)
+static bool request_shape(const char *text, size_t limit,
+	unsigned int max_depth)
 {
 	size_t length = strlen(text);
 	unsigned int depth = 0;
 	bool string = false;
 
-	if (length > MAX_MODULE_INPUT_TEXT_LEN)
+	if (length > limit)
 		return false;
 	for (size_t i = 0; i < length; i++)
 	{
@@ -38,7 +39,7 @@ static bool request_shape(const char *text)
 			string = !string;
 		else if (!string && (ch == '{' || ch == '['))
 		{
-			if (++depth > 4)
+			if (++depth > max_depth)
 				return false;
 		}
 		else if (!string && (ch == '}' || ch == ']'))
@@ -73,19 +74,134 @@ static bool request_id(const cJSON *value, char *id)
 	return true;
 }
 
+static bool bounded_string(const cJSON *value, size_t maximum)
+{
+	return cJSON_IsString(value) && value->valuestring[0] != '\0' &&
+		strlen(value->valuestring) <= maximum;
+}
+
+static bool settings_token(const cJSON *value)
+{
+	if (!bounded_string(value, 32) || strlen(value->valuestring) != 32)
+		return false;
+	return strspn(value->valuestring, "0123456789abcdef") == 32;
+}
+
+static bool settings_values(const cJSON *value)
+{
+	const cJSON *item, *previous;
+	unsigned int count = 0;
+
+	if (!cJSON_IsObject(value))
+		return false;
+	for (item = value->child; item; item = item->next)
+	{
+		size_t length = strlen(item->string);
+
+		if (++count > 7 || length == 0 || length > 32 ||
+		    strspn(item->string, "abcdefghijklmnopqrstuvwxyz_") != length ||
+		    !(cJSON_IsBool(item) || bounded_string(item, 64)))
+			return false;
+		for (previous = value->child; previous != item;
+		    previous = previous->next)
+			if (strcmp(previous->string, item->string) == 0)
+				return false;
+	}
+	return count != 0;
+}
+
+static bool settings_request(struct mfl_request *request,
+	const cJSON *const *values, unsigned int seen)
+{
+	enum {SCOPE = 1U << 5, OPERATION = 1U << 6,
+		GENERATION = 1U << 7, VALUES = 1U << 8, PROVIDER = 1U << 9};
+	const unsigned int action_fields = 15 | OPERATION | GENERATION | PROVIDER;
+	cJSON *payload = cJSON_CreateObject();
+	cJSON *copy = NULL;
+	char *text = NULL;
+	const char *operation = NULL;
+	bool valid = false;
+
+	if (!payload)
+		return false;
+	if (strcmp(values[2]->valuestring, "query") == 0 &&
+	    (seen & ~(SCOPE | PROVIDER)) == 15 &&
+	    (!values[5] || bounded_string(values[5], 64)) &&
+	    (!values[9] || settings_token(values[9])))
+	{
+		request->kind = MFL_REQUEST_SETTINGS_QUERY;
+		operation = "query";
+	}
+	else if (strcmp(values[2]->valuestring, "action") == 0 &&
+	    cJSON_IsString(values[6]) && settings_token(values[7]) &&
+	    settings_token(values[9]))
+	{
+		operation = values[6]->valuestring;
+		if (strcmp(operation, "set") == 0 &&
+		    seen == (action_fields | VALUES) &&
+		    settings_values(values[8]))
+			request->kind = MFL_REQUEST_SETTINGS_SET;
+		else if (strcmp(operation, "reset") == 0 &&
+		    seen == (action_fields | SCOPE) &&
+		    bounded_string(values[5], 64))
+			request->kind = MFL_REQUEST_SETTINGS_RESET;
+		else if (strcmp(operation, "reload") == 0 && seen == action_fields)
+			request->kind = MFL_REQUEST_SETTINGS_RELOAD;
+	}
+	if (!mfl_request_is_settings(request->kind) ||
+	    !cJSON_AddStringToObject(payload, "operation", operation))
+		goto out;
+	if (request->kind == MFL_REQUEST_SETTINGS_QUERY ||
+	    request->kind == MFL_REQUEST_SETTINGS_RESET)
+		if (!cJSON_AddStringToObject(payload, "scope",
+			values[5] ? values[5]->valuestring : "all"))
+			goto out;
+	if (mfl_request_is_action(request->kind) &&
+	    !cJSON_AddStringToObject(payload, "generation", values[7]->valuestring))
+		goto out;
+	if (values[9] &&
+	    !cJSON_AddStringToObject(payload, "provider", values[9]->valuestring))
+		goto out;
+	if (request->kind == MFL_REQUEST_SETTINGS_SET)
+	{
+		copy = cJSON_Duplicate(values[8], true);
+		if (!copy || !cJSON_AddItemToObject(payload, "values", copy))
+		{
+			cJSON_Delete(copy);
+			goto out;
+		}
+	}
+	text = cJSON_PrintUnformatted(payload);
+	if (!text)
+		goto out;
+	if (strlen(text) > MFL_SETTINGS_INPUT_MAX)
+	{
+		request->error = "request_too_large";
+		goto out;
+	}
+	strcpy(request->settings_payload, text);
+	valid = true;
+out:
+	cJSON_free(text);
+	cJSON_Delete(payload);
+	if (!valid)
+		request->kind = MFL_REQUEST_INVALID;
+	return valid;
+}
+
 bool mfl_request_parse(const char *json, struct mfl_request *request)
 {
 	static const char *fields[] = {"version", "id", "method", "resource",
-		"mode"};
+		"mode", "scope", "operation", "generation", "values", "provider"};
 	cJSON *root = NULL;
-	const cJSON *values[5] = {0};
+	const cJSON *values[10] = {0};
 	const cJSON *item;
 	unsigned int seen = 0;
 	bool valid = false;
 
 	memset(request, 0, sizeof(*request));
 	request->error = "invalid_request";
-	if (json == NULL || !request_shape(json))
+	if (json == NULL || !request_shape(json, MAX_MODULE_INPUT_TEXT_LEN, 4))
 		return false;
 	root = cJSON_ParseWithOpts(json, NULL, true);
 	if (!cJSON_IsObject(root))
@@ -94,10 +210,10 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	{
 		size_t i;
 
-		for (i = 0; i < 5; i++)
+		for (i = 0; i < 10; i++)
 			if (strcmp(item->string, fields[i]) == 0)
 				break;
-		if (i == 5 || (seen & (1U << i)))
+		if (i == 10 || (seen & (1U << i)))
 			goto out;
 		seen |= 1U << i;
 		values[i] = item;
@@ -111,6 +227,14 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	}
 	if (!cJSON_IsString(values[2]))
 		goto out;
+	if (cJSON_IsString(values[3]) &&
+	    strcmp(values[3]->valuestring, "settings") == 0)
+	{
+		valid = settings_request(request, values, seen);
+		if (valid)
+			request->error = NULL;
+		goto out;
+	}
 	if (strcmp(values[2]->valuestring, "query") == 0 && seen == 15 &&
 	    cJSON_IsString(values[3]))
 	{
@@ -135,7 +259,8 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	}
 	else if (strcmp(values[2]->valuestring, "query") != 0 &&
 	    strcmp(values[2]->valuestring, "barrier") != 0 &&
-	    strcmp(values[2]->valuestring, "set_mode") != 0)
+	    strcmp(values[2]->valuestring, "set_mode") != 0 &&
+	    strcmp(values[2]->valuestring, "action") != 0)
 		request->error = "unsupported_method";
 	valid = request->kind != MFL_REQUEST_INVALID;
 	if (valid)
@@ -151,7 +276,8 @@ const char *mfl_request_reserve(struct mfl_pending_request *pending,
 {
 	*slot = NULL;
 	if (serial == 0 || (request->kind != MFL_REQUEST_DESKTOP &&
-	    request->kind != MFL_REQUEST_BARRIER))
+	    request->kind != MFL_REQUEST_BARRIER &&
+	    !mfl_request_is_settings(request->kind)))
 		return "invalid_request";
 	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
 	{
@@ -311,6 +437,171 @@ cJSON *mfl_request_reply(const char *id, const char *error, cJSON *result)
 	return root;
 fail:
 	cJSON_Delete(result);
+	cJSON_Delete(root);
+	return NULL;
+}
+
+bool mfl_request_is_settings(enum mfl_request_kind kind)
+{
+	return kind >= MFL_REQUEST_SETTINGS_QUERY &&
+		kind <= MFL_REQUEST_SETTINGS_RELOAD;
+}
+
+bool mfl_request_is_action(enum mfl_request_kind kind)
+{
+	return kind >= MFL_REQUEST_SETTINGS_SET &&
+		kind <= MFL_REQUEST_SETTINGS_RELOAD;
+}
+
+void mfl_request_clear(struct mfl_pending_request *pending)
+{
+	cJSON_free(pending->settings_result);
+	memset(pending, 0, sizeof(*pending));
+}
+
+static bool settings_cookie(const char *cookie)
+{
+	size_t length = strlen(cookie);
+
+	return length > 0 && length <= 64 &&
+		strspn(cookie, "0123456789abcdef-") == length;
+}
+
+bool mfl_request_settings_command(char *output, size_t capacity,
+	const struct mfl_request *request, uint64_t serial, const char *cookie)
+{
+	static const char hex[] = "0123456789abcdef";
+	char encoded[MFL_SETTINGS_INPUT_MAX * 2 + 1];
+	size_t length = strlen(request->settings_payload);
+	int written;
+
+	if (capacity == 0)
+		return false;
+	output[0] = '\0';
+	if (!mfl_request_is_settings(request->kind) || !settings_cookie(cookie) ||
+	    serial == 0 || length == 0 || length > MFL_SETTINGS_INPUT_MAX)
+		return false;
+	for (size_t i = 0; i < length; i++)
+	{
+		unsigned char value = request->settings_payload[i];
+
+		encoded[2 * i] = hex[value >> 4];
+		encoded[2 * i + 1] = hex[value & 15];
+	}
+	encoded[2 * length] = '\0';
+	written = snprintf(output, capacity,
+		"SendToModule FvwmDesktop ipc-request %s %016" PRIx64 " %s",
+		cookie, serial, encoded);
+	if (written < 0 || (size_t)written >= capacity)
+	{
+		output[0] = '\0';
+		return false;
+	}
+	return true;
+}
+
+const char *mfl_request_settings_payload(const char *message,
+	const struct mfl_pending_request *pending, const char *cookie)
+{
+	char prefix[128];
+	int length;
+
+	if (!mfl_request_is_settings(pending->kind) || !settings_cookie(cookie))
+		return NULL;
+	length = snprintf(prefix, sizeof(prefix), "MFL_SETTINGS_1 %s %016"
+		PRIx64 " ", cookie, pending->serial);
+	if (length < 0 || (size_t)length >= sizeof(prefix) ||
+	    strncmp(message, prefix, (size_t)length) != 0)
+		return NULL;
+	return message + length;
+}
+
+static int settings_hex(unsigned char value)
+{
+	if (value >= '0' && value <= '9')
+		return value - '0';
+	if (value >= 'a' && value <= 'f')
+		return value - 'a' + 10;
+	return -1;
+}
+
+enum mfl_settings_part_result mfl_request_settings_part(
+	struct mfl_pending_request *pending, const char *payload)
+{
+	bool end = strncmp(payload, "end ", 4) == 0;
+	const char *p;
+	unsigned int index = 0, digits = 0;
+	size_t length;
+
+	if (!mfl_request_is_settings(pending->kind) ||
+	    (!end && strncmp(payload, "part ", 5) != 0) ||
+	    pending->settings_length > MFL_SETTINGS_RESULT_MAX)
+		return MFL_SETTINGS_INVALID;
+	p = payload + (end ? 4 : 5);
+	while (*p >= '0' && *p <= '9')
+	{
+		if (++digits > 2)
+			return MFL_SETTINGS_INVALID;
+		index = index * 10 + (unsigned int)(*p++ - '0');
+	}
+	if (digits == 0 || index != pending->settings_parts)
+		return MFL_SETTINGS_INVALID;
+	if (end)
+		return *p == '\0' && pending->settings_length != 0 ?
+			MFL_SETTINGS_DONE : MFL_SETTINGS_INVALID;
+	if (*p++ != ' ' || pending->settings_parts >=
+	    MFL_SETTINGS_RESULT_MAX / MFL_SETTINGS_CHUNK)
+		return MFL_SETTINGS_INVALID;
+	length = strlen(p);
+	if (length == 0 || length % 2 || length > 2 * MFL_SETTINGS_CHUNK ||
+	    length / 2 > MFL_SETTINGS_RESULT_MAX - pending->settings_length)
+		return MFL_SETTINGS_INVALID;
+	/* Validate before appending; decoded NUL would truncate the JSON parser. */
+	for (size_t i = 0; i < length; i += 2)
+	{
+		int high = settings_hex(p[i]), low = settings_hex(p[i + 1]);
+
+		if (high < 0 || low < 0 || (high == 0 && low == 0))
+			return MFL_SETTINGS_INVALID;
+	}
+	if (!pending->settings_result)
+	{
+		pending->settings_result = cJSON_malloc(MFL_SETTINGS_RESULT_MAX + 1);
+		if (!pending->settings_result)
+			return MFL_SETTINGS_INVALID;
+	}
+	for (size_t i = 0; i < length; i += 2)
+		pending->settings_result[pending->settings_length++] =
+			(char)((settings_hex(p[i]) << 4) | settings_hex(p[i + 1]));
+	pending->settings_result[pending->settings_length] = '\0';
+	pending->settings_parts++;
+	return MFL_SETTINGS_MORE;
+}
+
+cJSON *mfl_request_settings_result(const struct mfl_pending_request *pending)
+{
+	cJSON *root;
+	const cJSON *value;
+
+	if (!pending->settings_result ||
+	    !request_shape(pending->settings_result, MFL_SETTINGS_RESULT_MAX, 8))
+		return NULL;
+	root = cJSON_ParseWithOpts(pending->settings_result, NULL, true);
+	if (!cJSON_IsObject(root) || cJSON_GetArraySize(root) != 1)
+		goto fail;
+	value = cJSON_GetObjectItemCaseSensitive(root, "result");
+	if (cJSON_IsObject(value))
+		return root;
+	value = cJSON_GetObjectItemCaseSensitive(root, "error");
+	if (cJSON_IsObject(value) && cJSON_GetArraySize(value) == 1)
+	{
+		const cJSON *code = cJSON_GetObjectItemCaseSensitive(value, "code");
+
+		if (bounded_string(code, 64) && strspn(code->valuestring,
+		    "abcdefghijklmnopqrstuvwxyz_") == strlen(code->valuestring))
+			return root;
+	}
+fail:
 	cJSON_Delete(root);
 	return NULL;
 }

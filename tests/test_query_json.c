@@ -58,6 +58,92 @@ static void test_internal_grammar(void)
 static const char token[] =
 	"000000000000000000000000000000000000000000000001";
 
+static void test_colorsets(void)
+{
+	colorset_t cs = {.fg = (Pixel)~0UL, .bg = 3,
+		.fg_alpha_percent = 80, .image_alpha_percent = 70,
+		.icon_alpha_percent = 60, .pixmap = ParentRelative};
+	struct fvwm_query_colorset entry = {2147483647, &cs, "pending"};
+	struct fvwm_query_spec spec = {.limit = 1, .generation = "-",
+		.resource = "colorsets"};
+	const char *error;
+	cJSON *result, *item, *background, *pixels;
+	char first[MODULE_QUERY_GENERATION_LEN + 1], second[sizeof(first)];
+
+	assert(!fvwm_query_token(0, first) && !first[0]);
+	assert(fvwm_query_token(1, first));
+	assert(fvwm_query_token(1, second) && strcmp(first, second) == 0);
+	assert(fvwm_query_token(2, second) && strcmp(first, second) != 0);
+	result = fvwm_query_colorsets(&entry, 1, 2, token, &spec, &error);
+	assert(result && !error);
+	assert(cJSON_GetObjectItemCaseSensitive(result,
+		"next_offset")->valueint == 1);
+	item = cJSON_GetArrayItem(cJSON_GetObjectItemCaseSensitive(result,
+		"colorsets"), 0);
+	assert(cJSON_GetObjectItemCaseSensitive(item,
+		"id")->valueint == 2147483647);
+	background = cJSON_GetObjectItemCaseSensitive(item, "background");
+	pixels = cJSON_GetObjectItemCaseSensitive(item, "pixels");
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(background,
+		"transparency")->valuestring, "parent") == 0);
+	assert(strlen(cJSON_GetObjectItemCaseSensitive(pixels,
+		"foreground")->valuestring) == 16);
+	cJSON_Delete(result);
+	spec.offset = 1;
+	assert(!fvwm_query_colorsets(&entry, 1, 2, token, &spec, &error));
+	assert(strcmp(error, "stale_generation") == 0);
+	strcpy(spec.generation, token);
+	result = fvwm_query_colorsets(&entry, 1, 2, token, &spec, &error);
+	assert(result && !error);
+	assert(cJSON_IsNull(cJSON_GetObjectItemCaseSensitive(result,
+		"next_offset")));
+	cJSON_Delete(result);
+	strcpy(spec.resource, "colorset");
+	spec.offset = 2147483647;
+	strcpy(spec.generation, "-");
+	result = fvwm_query_colorsets(&entry, 1, 2, token, &spec, &error);
+	assert(result && !error);
+	assert(cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(result,
+		"targeted")));
+	cJSON_Delete(result);
+	assert(fvwm_query_parse("a 0000000000000001 colorset 2147483647 1 -",
+		&spec));
+	assert(!fvwm_query_parse("a 0000000000000001 colorset 2147483648 1 -",
+		&spec));
+	assert(!fvwm_query_parse("a 0000000000000001 colorsets 2147483647 1 -",
+		&spec));
+	spec = (struct fvwm_query_spec){.limit = 1, .generation = "-",
+		.resource = "color-summary"};
+	result = fvwm_query_colorsets(NULL, 0, 2, token, &spec, &error);
+	assert(result && !error);
+	assert(!cJSON_GetObjectItemCaseSensitive(result, "colorsets"));
+	cJSON_Delete(result);
+	strcpy(spec.resource, "colorsets");
+	assert(!fvwm_query_colorsets(NULL, 1, 2, token, &spec, &error));
+	entry.update_state = "invalid";
+	assert(!fvwm_query_colorsets(&entry, 1, 2, token, &spec, &error));
+	entry.update_state = "refused";
+	cJSON_Hooks hooks = {.malloc_fn = checked_malloc,
+		.free_fn = checked_free};
+	bool completed = false;
+
+	for (fail_at = 0; fail_at < 1024; fail_at++)
+	{
+		attempts = live = 0;
+		cJSON_InitHooks(&hooks);
+		result = fvwm_query_colorsets(&entry, 1, 1, token, &spec,
+			&error);
+		completed = result != NULL;
+		assert(completed ? error == NULL : error != NULL);
+		cJSON_Delete(result);
+		assert(live == 0);
+		cJSON_InitHooks(NULL);
+		if (completed)
+			break;
+	}
+	assert(completed);
+}
+
 static void test_binding_pages(void)
 {
 	Binding bindings[3] = {{.type = BIND_KEYPRESS, .key_name = "F1",
@@ -254,6 +340,7 @@ static void test_monitors_and_failure_cleanup(void)
 int main(void)
 {
 	test_internal_grammar();
+	test_colorsets();
 	test_binding_pages();
 	test_binding_domains();
 	test_monitors_and_failure_cleanup();

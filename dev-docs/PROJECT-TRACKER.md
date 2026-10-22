@@ -41,15 +41,17 @@ Keep deferred gates explicit. See the
 [decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md) and
 [workflow](WORKFLOW.md#implementation-batches-and-test-cadence).
 
-Integration cycle ledger: PR157's composed affected six-target checkpoint is
-merged as `3f4f7052151f110ba6f398a3451e727af4ecf8c4`, the new integrated
-reference. PR158 and PR159 are merged (**2/3**); the current larger owned-
-operation batch qualifies their accumulated cycle with **122 selected passes on
-six targets/nine profiles**, five scoped guest sanitizer exercises and portable
-177 passes/14 skips. On merge use its canonical commit as the next integrated
-reference and reset to **0/3**. No frozen runtime/fixture correction is needed.
-[Report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md),
+Integration cycle ledger: PR160's affected six-target checkpoint is merged as
+`b9dc633123d7dd7478fd49f5019e500bc9185274`, the new integrated reference.
+It qualifies accumulated PR158/159/160 with **122 selected passes on six
+targets/nine profiles**, five scoped guest sanitizer exercises and portable
+177 passes/14 skips. The cycle is **0/3 merged**; current core colorset
+inspection becomes **1/3 on merge**. Its focused results do not qualify the
+new source on all targets.
+[Integrated report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md),
 [receipt](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.json).
+Performance reference PR159 is **1/5 merged**, **2/5 on this merge**; no
+comparison is due and tuning remains deferred.
 Full install/default-X/full compiler-feature and milestone/release acceptance
 remain at their required boundary. No changed install/discovery/server contract
 requires an early gate here. Native-CPU/hardware/toolkit/compositor checks remain
@@ -57,7 +59,8 @@ separate. Deferred gates are not passes.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Owned desktop operations, IPC-02 | Accumulated affected cycle qualified; in review | Five typed refresh/state/result/cancel/retention/notification capabilities adopt existing desktop scans. One combined checkpoint passes 122 selected entries across six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. Read-only, busy, stale, failures, late output, reconnect and bounds are explicit. No new UI or install/default-X repeats; wider domain/release acceptance stays open. [Report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.json). |
+| Core colorset inspection, IPC-02 / CFG-01 | Focused merge checks passed; in review | Three bounded inventory, exact sparse-ID and summary/freshness capabilities expose published values and pending/refused preparation. Seven focused Linux entries and three scoped leak-enabled guest sanitizer exercises pass; final unit readability edits repeat policy only with exact product/fixture retention. Cycle 0/3 merged, 1/3 on merge. Style/decor generations and safe preview stay open. No new UI, matrix/install/BSD or benchmark repeat. [Report](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.json). |
+| Owned desktop operations, IPC-02 | Merged in [PR #160](https://github.com/gonz0w/fvwm-x/pull/160); integrated reference | Five typed refresh/state/result/cancel/retention/notification capabilities adopt existing desktop scans. One combined checkpoint passes 122 selected entries across six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. Read-only, busy, stale, failures, late output, reconnect and bounds are explicit. No new UI or install/default-X repeats; wider domain/release acceptance stays open. [Report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.json). |
 | Desktop-provider observation, IPC-02 | Merged in [PR #159](https://github.com/gonz0w/fvwm-x/pull/159); cycle 2/3 | Desktop-owner capability/configuration state, opt-in identity/generation invalidations and conditional settings snapshots pass seven focused Linux entries (54 desktop policy cases) and two scoped leak-enabled guest sanitizer exercises. Core bytes remain PR158; source/queue/reconnect/absence boundaries are explicit. Shared cycle 1/3 merged, 2/3 on merge; six-target/alternate-profile and release acceptance remain deferred. No new UI. [Report](verification/VERIFICATION-2026-10-22-IPC-PROVIDER-OBSERVATION.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-PROVIDER-OBSERVATION.json). |
 | Binding scope inspection, IPC-02 | Merged in [PR #158](https://github.com/gonz0w/fvwm-x/pull/158); cycle 1/3 | Three menu/fallback, normalized placement and context/modifier policy features pass seven selected Linux GCC entries and three scoped leak-enabled guest sanitizer exercises. Frozen source guards pass; actual-X verifies overrides, literals and policy generations. Shared cycle 0/3 merged, 1/3 after merge; six-target/alternate-profile and release gates remain explicitly deferred. No new UI. [Report](verification/VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.json). |
 | Directed core state queries/readiness, IPC-02 | Merged in [PR #157](https://github.com/gonz0w/fvwm-x/pull/157); integrated reference | Three topology/workspace/global-binding features and a reproduced provider-readiness fix qualify accumulated PR155/156 work: 113 composed selected passes across six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. The correction retains 74 unchanged entries and runs 39 affected/missing entries; original failures and incomplete AMD64 capture remain explicit. No new UI or install/default-X repeats. Broader owner/release gates stay open. [Report](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.json). |
@@ -340,9 +343,13 @@ readiness fence, is merged in PR157 and qualifies the accumulated affected
 six-target cycle. Menu/fallback bindings, normalized
 placement controls and modifier/context policy inspection are merged in PR158.
 Provider capability queries, opt-in invalidations and conditional preference
-queries are merged in PR159. The current larger batch adopts bounded operation
+queries are merged in PR159. PR160 adopts bounded operation
 lifecycle with the existing desktop catalog/status workers and qualifies the
-accumulated affected six-target cycle. Other
+accumulated affected six-target cycle. Current IPC-02 work batches bounded
+colorset inventory, exact sparse-ID lookup and summary/freshness inspection.
+It exposes published values and pending/refused image preparation without
+allocating records or an X round trip. Style/decor generations and safe preview
+recovery remain open. Other
 providers, typed actions beyond settings, domain
 progress/decisions/cancellation and shared-core generations/CFG-01 preview remain
 open under their owners.
@@ -570,7 +577,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | BUTTON-02 | P2 / merged PR150; locally qualified atomic groups | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
 | CFG-01 | P2 / consumers merged; preview/recovery queued with IPC-02 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | P2 / first subset in review; general runtime diagnostics open | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Report file/line/include context and explicitly identify unchecked dynamic constructs. Never implement validation by executing Read/PipeRead/Exec. See the configuration/module backlog below. |
-| IPC-02 | P2 / base merged PR154; settings-provider batch focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
+| IPC-02 | P2 / PR154–160 merged; colorset inspection focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / queued, default product scope approved | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | SESSION-02 | P2 / queued, optional contribution scope approved | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | NOTIFY-01 | P2 / queued, roadmap scope approved | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
@@ -783,7 +790,9 @@ needed.
   snapshots. Current desktop-scan operation admission/results/cancellation,
   retention and invalidations pass the accumulated six-target cycle. Domain
   file/session/clipboard progress/decisions and full provider/core acceptance
-  remain open.
+  remain open. Core colorset inventory, exact sparse-ID lookup and summary/
+  freshness inspection pass focused Linux gates; Style/decor observation and
+  conflict-safe CFG-01 preview/recovery remain open.
 - Shared service/action scope: bounded provider capability/state records and
   generation-aware typed action envelopes with explicit unsupported/unavailable/
   denied/stale failures. SESSION owns service lifecycle; domain adapters own
@@ -2411,3 +2420,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-22: PR158 merged. IPC-02 batches desktop-provider capability/configuration state, bounded opt-in identity/generation invalidations and conditional settings snapshots. Seven focused Linux entries (54 desktop cases) and two scoped leak-enabled guest sanitizer exercises pass; frozen commands take 39.252 seconds, with unchanged PR158 core bytes. Actual-X covers multiple owners, filters, read-only/full-capacity admission, malformed notice recovery and absence without cached liveness. Original policy-fixture scope error and formatter gaps stay explicit. Cycle 1/3 merged, 2/3 on merge; no UI, install/default-X/BSD/matrix repeat. Performance PR154 is 4/5, 5/5 on merge; compare preserved binaries next run. [Report](verification/VERIFICATION-2026-10-22-IPC-PROVIDER-OBSERVATION.md).
 
 - 2026-10-22: After merged PR159, five owned-operation capabilities adopt existing applications/status workers: typed admission, state/results, generation-checked cancellation, bounded reconnect retention and coalesced invalidations. One frozen accumulated PR158/159/current checkpoint passes 122 selected entries on six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. No runtime/fixture correction follows freeze; old broad suites/install/default-X are not recounted. Canonical payload/mode proof precedes completed guest duplicate retirement. On merge reset the integrated reference/count to 0/3. Due PR154→159 performance comparison takes 31.438 seconds with preserved binaries; ranges mostly overlap and feature-size growth is explicit. PR159 resets the independent reference to 0/5, 1/5 after this merge. [Operation report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md), [performance](verification/PERFORMANCE-2026-10-22-PR159.md).
+
+- 2026-10-22: PR160 merged as integrated reference, resetting the cycle to 0/3. IPC-02 batches core colorset inventory pages, exact sparse-ID lookup and scalar summary/freshness with published versus pending/refused image state. Seven selected Linux entries and three scoped guest sanitizer exercises pass. Two final unit readability edits repeat policy only; exact product/fixture identities retain actual-X evidence. No new UI, full matrix, install/default-X or benchmark repeat. The feature becomes 1/3 on merge; performance PR159 is 1/5, 2/5 on merge. Style/decor generations and safe preview stay open. [Report](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.md).

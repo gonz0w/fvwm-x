@@ -46,6 +46,7 @@
 #include "libs/Strings.h"
 #include "libs/Grab.h"
 #include "colorset.h"
+#include "query_json.h"
 #include "externs.h"
 #include "fvwm.h"
 #include "cursor.h"
@@ -92,6 +93,21 @@ struct root_pic
 /* ---------------------------- forward declarations ----------------------- */
 
 /* ---------------------------- local variables ---------------------------- */
+
+/* Conservative owner revision: admission, allocation and async settlement all
+ * invalidate observations. Exhaustion disables queries instead of wrapping. */
+static uint64_t colorset_generation = 1;
+
+static void colorset_query_changed(void)
+{
+	if (colorset_generation)
+		colorset_generation++;
+}
+
+bool colorset_query_token(char output[MODULE_QUERY_GENERATION_LEN + 1])
+{
+	return fvwm_query_token(colorset_generation, output);
+}
 
 static char *black = "black";
 static char *white = "white";
@@ -478,6 +494,17 @@ static picture_async_commit colorset_effect_policy(FvwmPicture *view,
 	    PICTURE_ASYNC_DISCARD;
 }
 
+const char *colorset_query_update_state(int id)
+{
+	const colorset_t *cs = FindColorset(id);
+
+	if (!cs)
+		return "unavailable";
+	if (!cs->preparation)
+		return "idle";
+	return cs->preparation->refused ? "refused" : "pending";
+}
+
 static void colorset_effect_settled(FvwmPicture *view, Bool applied,
 	void *context)
 {
@@ -488,6 +515,7 @@ static void colorset_effect_settled(FvwmPicture *view, Bool applied,
 	{
 		return;
 	}
+	colorset_query_changed();
 	preparation->effect = NULL;
 	if (applied)
 	{
@@ -558,6 +586,7 @@ static void colorset_preparation_publish(
 	{
 		colorset_color_release(published, i);
 	}
+	colorset_query_changed();
 	*published = *requested;
 	published->preparation = NULL;
 	published->preparing = False;
@@ -667,6 +696,7 @@ static void colorset_image_settled(FvwmPicture *view, Bool applied,
 	{
 		return;
 	}
+	colorset_query_changed();
 	*slot = NULL;
 	if (applied && owner->shape)
 	{
@@ -1040,6 +1070,7 @@ static void parse_colorset_update(int n, char *line,
 	{
 		return;
 	}
+	colorset_query_changed();
 	cs = GetColorset(n);
 	if (image_async_enabled())
 	{
@@ -2248,6 +2279,7 @@ Bool alloc_colorset(int n)
 	ncs->icon_tint_percent = 0;
 	ncs->fg_tint_percent = ncs->bg_tint_percent = 0;
 	ncs->dither = (PictureDitherByDefault())? True:False;
+	colorset_query_changed();
 	return True;
 }
 

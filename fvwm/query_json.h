@@ -3,6 +3,7 @@
 
 #include "libs/Bindings.h"
 #include "libs/cJSON.h"
+#include "libs/Colorset.h"
 #include "libs/monitor_types.h"
 #include "libs/module_query.h"
 #include <stdint.h>
@@ -15,6 +16,19 @@ struct fvwm_query_spec {
 	unsigned int limit;
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];
 };
+
+struct fvwm_query_colorset {
+	int id;
+	const colorset_t *colorset;
+	const char *update_state;
+};
+
+/* Opaque observation identity, shared core incarnation and owner revision. */
+bool fvwm_query_token(uint64_t revision,
+	char output[MODULE_QUERY_GENERATION_LEN + 1]);
+cJSON *fvwm_query_colorsets(const struct fvwm_query_colorset *entries,
+	size_t count, size_t total, const char *generation,
+	const struct fvwm_query_spec *spec, const char **error);
 
 /* Fixed internal grammar; no expansion or retained caller-owned pointers. */
 bool fvwm_query_parse(const char *text, struct fvwm_query_spec *spec);

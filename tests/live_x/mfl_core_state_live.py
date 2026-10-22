@@ -267,6 +267,76 @@ def run(args):
                 normalized_placement=placed, policy=changed_policy,
                 generation_checked_across_domains=True, literal_query_no_execution=True)
 
+            # Sparse colorsets are core-owned. Queries cannot create a record.
+            caps = query('capabilities')
+            assert 'colorsets' in caps['resources'] and caps['colorset_page_max'] == 16
+            initial_colors = query('colorsets', scope='summary')
+            assert not initial_colors['preview_supported']
+            assert query('colorsets', expected=True, target='2147483646') == 'unavailable'
+            assert query('colorsets', scope='summary') == initial_colors
+            ids = list(range(21, 38)) + [2147483647]
+            writer.send((''.join(f'Colorset {n} fg #112233, bg #445566\n' for n in ids)).encode())
+            writer.echo('colorsets-published')
+            summary = query('colorsets', scope='summary')
+            assert summary['generation'] != initial_colors['generation']
+            assert summary['total'] == initial_colors['total'] + len(ids)
+            generation = summary['generation']
+            offset, inventory = 0, []
+            while offset is not None:
+                page = query('colorsets', offset=offset, limit=2, generation=generation)
+                inventory.extend(page['colorsets'])
+                offset = page['next_offset']
+            assert len(inventory) == summary['total']
+            assert set(ids) <= {item['id'] for item in inventory}
+            exact = query('colorsets', target='2147483647')
+            entry = exact['colorsets'][0]
+            assert exact['targeted'] and exact['offset'] is None
+            assert entry['id'] == 2147483647 and entry['update_state'] == 'idle'
+            assert entry['opacity_percent'] == dict(foreground=100, image=100, icon=100)
+            assert exact['pixel_encoding'] == 'colormap-hex'
+            class XColor(C.Structure):
+                _fields_ = [('pixel', C.c_ulong), ('red', C.c_ushort),
+                    ('green', C.c_ushort), ('blue', C.c_ushort),
+                    ('flags', C.c_char), ('pad', C.c_char)]
+            x.XDefaultColormap.argtypes = [C.c_void_p, C.c_int]
+            x.XDefaultColormap.restype = C.c_ulong
+            x.XQueryColor.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(XColor)]
+            rgb = XColor(pixel=int(entry['pixels']['foreground'], 16))
+            assert x.XQueryColor(d, x.XDefaultColormap(d, 0), C.byref(rgb))
+            assert (rgb.red, rgb.green, rgb.blue) == (0x1111, 0x2222, 0x3333)
+            assert query('colorsets', scope='summary') == summary
+            assert query('colorsets', expected=True, offset=summary['total'] + 1,
+                generation=generation) == 'invalid_offset'
+            writer.send(b'Colorset 21 fg #abcdef, fgAlpha 70\n')
+            writer.echo('colorset-change-processed')
+            assert query('colorsets', expected=True, scope='summary',
+                generation=generation) == 'stale_generation'
+            assert query('colorsets', expected=True, offset=2,
+                generation=generation) == 'stale_generation'
+            assert query('colorsets', expected=True, target='21',
+                generation=generation) == 'stale_generation'
+            updated = query('colorsets', target='21')
+            assert updated['colorsets'][0]['opacity_percent']['foreground'] == 70
+            # A failed asynchronous replacement keeps published colors visible.
+            writer.send(f'Colorset 21 Pixmap {runtime.root}/missing.xpm\n'.encode())
+            writer.echo('colorset-image-requested')
+            def refused():
+                return query('colorsets', target='21')['colorsets'][0]['update_state'] == 'refused'
+            wait_for_predicate('colorset replacement refused', refused,
+                time.monotonic() + 10, process=core)
+            failed = query('colorsets', target='21')
+            assert failed['colorsets'][0]['pixels'] == updated['colorsets'][0]['pixels']
+            assert failed['generation'] != updated['generation']
+            writer.send(b'Colorset 21 Plain\n')
+            writer.echo('colorset-recovered')
+            recovered = query('colorsets', target='21')
+            assert recovered['colorsets'][0]['update_state'] == 'idle'
+            assert recovered['generation'] != failed['generation']
+            evidence['colorsets'] = dict(summary=summary, exact=exact,
+                failed=failed, recovered=recovered, x_color_rgb=[rgb.red, rgb.green, rgb.blue],
+                pages_complete=True, missing_read_did_not_allocate=True,
+                stale_pages_and_targets_refused=True)
+
             os.kill(core.process.pid, signal.SIGSTOP)
             stopped = True
             rpc.send(frame('cancelled-core', resource='topology') +

@@ -8,6 +8,8 @@
 import datetime as dt
 import importlib.util
 import json
+import fcntl
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -54,7 +56,7 @@ class DesktopPolicy(unittest.TestCase):
             self.assertEqual(json.loads(state.read_text())['palette'], 'grove')
             self.assertEqual(state.stat().st_mode & 0o777, 0o600)
             self.assertEqual(local.read_text(), 'user configuration')
-            self.assertFalse(list(root.glob('.desktop-*')))
+            self.assertEqual([p.name for p in root.glob('.desktop-*')], ['.desktop-state.lock'])
 
     def test_menu_titles_cannot_execute_or_expand(self):
         value = 'a" $[w.id] %icon% &x\\\nExec evil'
@@ -133,8 +135,7 @@ class DesktopPolicy(unittest.TestCase):
             try:
                 instance.theme()
                 commands.clear()
-                instance.settings.update(palette='dune', keep_wallpaper=True)
-                instance.theme()
+                instance.change_settings(dict(palette='dune', keep_wallpaper=True))
                 self.assertFalse(any(c.startswith('Colorset 20') for c in commands))
                 self.assertTrue(any('#d0a17e' in c or '#87583e' in c for c in commands))
                 retained = instance.settings['wallpaper'].copy()
@@ -149,6 +150,184 @@ class DesktopPolicy(unittest.TestCase):
                 self.assertTrue(any('slate-' in c for c in commands if 'AspectPixmap' in c))
             finally:
                 restarted.pool.shutdown()
+
+
+class SettingsRegistry(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.path = Path(self.directory.name) / 'state.json'
+        self.commands = []
+        self.instance = desktop.Desktop(self.commands.append, ROOT / 'default-config', self.path)
+
+    def tearDown(self):
+        self.instance.pool.shutdown()
+        self.directory.cleanup()
+
+    def test_registry_drives_types_defaults_and_scopes(self):
+        for key, item in desktop.SETTINGS.items():
+            self.assertEqual(item['default'], desktop.DEFAULTS[key])
+            self.assertEqual(desktop.setting_value(key, item['default']), item['default'])
+            for bad in (None, [], {}, 1.5):
+                with self.assertRaises(ValueError):
+                    desktop.setting_value(key, bad)
+        for value in ('00:00', '23:59'):
+            self.assertEqual(desktop.setting_value('day', value), value)
+        for value in ('24:00', '00:60', '7:00', '12:01\n'):
+            with self.assertRaises(ValueError):
+                desktop.setting_value('day', value)
+        for value in (0, 1, 'false'):
+            with self.assertRaises(ValueError):
+                desktop.setting_value('motion', value)
+        self.assertEqual(desktop.setting_scope('appearance'), ['appearance'])
+        self.assertEqual(set(desktop.setting_scope('group:schedule')), {'day', 'night'})
+        for scope in ('wallpaper', 'missing', '', 'group:missing'):
+            with self.assertRaises(ValueError):
+                desktop.setting_scope(scope)
+
+    def test_change_reset_reload_and_legacy_migration(self):
+        self.path.write_text(json.dumps(dict(desktop.DEFAULTS, palette='ink')))
+        self.path.chmod(0o600)
+        self.instance.reload_settings()
+        self.instance.change_settings({'motion': True, 'day': '08:00', 'night': '20:00'})
+        self.assertEqual(json.loads(self.path.read_text())['schema_version'], 1)
+        self.instance.reset_settings('group:schedule')
+        self.assertEqual(self.instance.saved['day'], '07:00')
+        self.assertEqual(self.instance.saved['night'], '19:00')
+        self.assertTrue(self.instance.saved['motion'])
+        self.assertEqual(self.instance.saved['palette'], 'ink')
+        self.instance.reset_settings('motion')
+        self.assertFalse(self.instance.saved['motion'])
+        self.assertEqual(desktop.load_settings(self.path)[0], self.instance.saved)
+
+    def test_failed_write_preserves_memory_bytes_and_commands(self):
+        self.instance.change_settings({'palette': 'grove'})
+        previous = self.path.read_bytes(), self.instance.saved.copy(), self.instance.settings.copy()
+        self.commands.clear()
+        with patch.object(desktop.os, 'replace', side_effect=OSError('injected replacement failure')):
+            with self.assertRaises(OSError):
+                self.instance.change_settings({'palette': 'ink'})
+        self.assertEqual((self.path.read_bytes(), self.instance.saved, self.instance.settings), previous)
+        self.assertEqual(self.commands, [])
+        self.assertEqual([p.name for p in self.path.parent.glob('.desktop-*')], ['.desktop-state.lock'])
+        self.instance.change_settings({'palette': 'ink'})
+        self.assertEqual(self.instance.saved['palette'], 'ink')
+
+    def test_fsync_failure_is_before_commit(self):
+        with patch.object(desktop.os, 'fsync', side_effect=OSError('injected sync failure')):
+            with self.assertRaises(OSError):
+                self.instance.change_settings({'palette': 'ink'})
+        self.assertFalse(self.path.exists())
+        self.assertEqual(self.instance.saved['palette'], 'slate')
+        self.assertEqual(self.commands, [])
+
+    def test_stale_writer_must_reload_and_busy_writer_never_waits(self):
+        self.instance.change_settings({'palette': 'grove'})
+        desktop.save_settings(self.path, dict(self.instance.saved, palette='dune'))
+        with self.assertRaisesRegex(ValueError, 'externally'):
+            self.instance.change_settings({'palette': 'ink'})
+        self.assertEqual(self.instance.saved['palette'], 'grove')
+        self.instance.reload_settings()
+        self.instance.change_settings({'palette': 'ink'})
+        with (self.path.parent / '.desktop-state.lock').open('r+') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            with self.assertRaises(BlockingIOError):
+                self.instance.change_settings({'palette': 'grove'})
+        self.assertEqual(self.instance.saved['palette'], 'ink')
+
+    def test_file_and_parent_policy_refuse_unsafe_paths_without_blocking(self):
+        target = self.path.parent / 'other'
+        target.write_text('keep')
+        self.path.symlink_to(target)
+        with self.assertRaises(OSError):
+            desktop.save_settings(self.path, desktop.DEFAULTS)
+        self.assertEqual(target.read_text(), 'keep')
+        self.path.unlink()
+        os.mkfifo(self.path, 0o600)
+        with self.assertRaises(ValueError):
+            desktop.load_settings(self.path)
+        self.path.unlink()
+        desktop.save_settings(self.path, desktop.DEFAULTS)
+        self.path.chmod(0o644)
+        with self.assertRaises(ValueError):
+            desktop.load_settings(self.path)
+        self.path.chmod(0o600)
+        os.link(self.path, target.parent / 'alias')
+        with self.assertRaises(ValueError):
+            desktop.load_settings(self.path)
+        self.path.unlink()
+        self.path.parent.chmod(0o777)
+        try:
+            with self.assertRaises(ValueError):
+                desktop.save_settings(self.path, desktop.DEFAULTS)
+        finally:
+            self.path.parent.chmod(0o700)
+
+    def test_bounded_versioned_data_and_duplicate_refusal(self):
+        self.path.touch(mode=0o600)
+        for data in ('x' * 8193, '{"palette":"ink","palette":"dune"}', '[]',
+                     '{"schema_version":2}', '{"schema_version":true}',
+                     '{"schema_version":1}', '[' * 2000):
+            self.path.write_text(data)
+            with self.assertRaises(ValueError):
+                desktop.load_settings(self.path)
+            self.assertEqual(self.path.read_text(), data)
+
+    def test_overrides_are_separate_and_not_overwritten_by_reset(self):
+        for line in ('*FvwmDesktop: palette grove', '*FvwmDesktoppalette grove',
+                     '*fvwmdesktopPalette grove'):
+            self.assertEqual(desktop.desktop_configuration(line), ('palette', 'grove'))
+        self.assertIsNone(desktop.desktop_configuration('*Other: palette grove'))
+        self.instance.configure_setting('palette', 'grove')
+        self.instance.finish_configuration()
+        self.instance.change_settings({'palette': 'ink'})
+        item = self.instance.query_settings('palette')['palette']
+        self.assertEqual((item['saved'], item['effective'], item['source']),
+                         ('ink', 'grove', 'module-configuration'))
+        self.assertFalse(item['preview'])
+        self.instance.reset_settings('palette')
+        self.assertEqual(self.instance.saved['palette'], 'slate')
+        self.assertEqual(self.instance.settings['palette'], 'grove')
+        self.assertEqual(json.loads(self.path.read_text())['palette'], 'slate')
+
+    def test_invalid_changes_refuse_without_effects(self):
+        for changes in ({'day': '19:00'}, {'unknown': 'ink'}, {'palette': 'ink; Exec evil'},
+                        {'motion': 1}, {'wallpaper': {'palette': 'ink', 'appearance': 'dark'}}):
+            with self.assertRaises(ValueError):
+                self.instance.change_settings(changes)
+        self.assertFalse(self.path.exists())
+        self.assertEqual(self.commands, [])
+
+    def test_native_consumer_and_query_are_registry_driven(self):
+        self.instance.theme()
+        self.commands.clear()
+        self.instance.handle('query-settings test_1 all')
+        self.assertEqual(self.commands.pop(), 'Echo desktop-settings-test_1 done')
+        query = {line.split(' ', 3)[2]: json.loads(line.split(' ', 3)[3])
+                 for line in self.commands}
+        self.assertEqual(set(query), set(desktop.SETTINGS))
+        self.assertTrue(all(len(line.encode()) < 1000 for line in self.commands))
+        self.commands.clear()
+        self.instance.settings_menu('group:effects')
+        commands = '\n'.join(self.commands)
+        self.assertIn('reset group:effects', commands)
+        self.assertIn('set motion true', commands)
+        self.assertNotIn('SlateSetting_palette', commands)
+        self.assertIn('AddToMenu SlateSetting_motion Greyed "Saved: false"', commands)
+        self.assertNotIn('" Greyed', commands)
+
+    def test_invalid_startup_data_is_preserved_until_repaired_reload(self):
+        self.instance.pool.shutdown()
+        self.path.write_text('{"schema_version":99}')
+        self.path.chmod(0o600)
+        self.instance = desktop.Desktop(self.commands.append, ROOT / 'default-config', self.path)
+        self.instance.theme()
+        with self.assertRaises(ValueError):
+            self.instance.reset_settings('all')
+        self.assertEqual(json.loads(self.path.read_text())['schema_version'], 99)
+        self.path.unlink()
+        self.instance.reload_settings()
+        self.instance.change_settings({'palette': 'ink'})
+        self.assertEqual(self.instance.saved['palette'], 'ink')
 
 
 if __name__ == '__main__':

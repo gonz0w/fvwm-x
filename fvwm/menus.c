@@ -6657,6 +6657,7 @@ void AddToMenu(
 	char *end;
 	char *token = NULL;
 	char *option = NULL;
+	char *greyed_label = NULL;
 	int i;
 	int is_empty;
 	Bool do_replace_title;
@@ -6732,9 +6733,10 @@ void AddToMenu(
 	else if (StrEquals(item, "Greyed"))
 	{
 		greyed = True;
-		free(item);
-
-		GetNextToken(action, &item);
+		/* The caller retains item. Only this replacement label is owned
+		 * here, including the missing-label separator case. */
+		GetNextToken(action, &greyed_label);
+		item = (greyed_label != NULL) ? greyed_label : "";
 		action = "Nop";
 	}
 
@@ -6858,6 +6860,7 @@ void AddToMenu(
 		MI_LABEL_STRLEN(tmp)[i] =
 			(MI_LABEL(tmp)[i]) ? strlen(MI_LABEL(tmp)[i]) : 0;
 	} /* for */
+	free(greyed_label);
 
 	/*
 	 * Set the type flags

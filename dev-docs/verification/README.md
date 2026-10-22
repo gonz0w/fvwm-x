@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Grouped desktop settings editor](VERIFICATION-2026-10-22-SETTINGS-EDITOR.md): atomic grouped Apply, unsaved scoped Defaults/Cancel and bounded stale-consumer retirement; six-target functional qualification, actual-X screenshots and explicit existing Form exit-cleanup diagnostic.
+
+- [Typed desktop settings](VERIFICATION-2026-10-22-DESKTOP-SETTINGS.md): merged PR151; registry/query, private persistence, saved/effective separation and native settings menus. Live preview remains open.
+
 - [Atomic grouped button updates](VERIFICATION-2026-10-22-BUTTONS-ATOMIC.md): bounded validation, resource rollback/startup recovery and final-state focus/repaint; 106 fresh affected passes, retained unchanged PR149 foundation, scoped sanitizers, ten stages and four default BSD displays.
 
 - [Native button navigation and live state](VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md): merged PR149; opt-in keyboard navigation, visible focus, disabled actions and live palettes across six targets.

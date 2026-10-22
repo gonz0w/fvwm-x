@@ -65,6 +65,7 @@ DEFAULTS = {key: item['default'] for key, item in SETTINGS.items()} | {
     'wallpaper': dict(palette='slate', appearance='dark')}
 STATE_LIMIT = 8192
 UNCHECKED_REVISION = object()
+EDITOR_SECONDS = 300
 
 
 def setting_value(key, value, text=False):
@@ -576,6 +577,19 @@ class Desktop:
         self.desk = 0
         self.last_clock = None
         self.monitor_width = 1440
+        self.settings_generation = secrets.token_hex(16)
+        self.settings_editor = None
+
+    def retire_settings_editor(self):
+        # Only one bounded consumer lease belongs to this helper. Old Form
+        # callbacks cannot act on a later editor or another helper incarnation.
+        if self.settings_editor is not None:
+            self.send('KillModule FvwmForm SlateSettingsForm')
+            self.settings_editor = None
+
+    def settings_changed(self):
+        self.settings_generation = secrets.token_hex(16)
+        self.retire_settings_editor()
 
     def configure_setting(self, key, value):
         self.overrides[key] = setting_value(key, value, text=True)
@@ -583,6 +597,9 @@ class Desktop:
         # at END_CONFIG_INFO, so a valid two-line change has no transient refusal.
 
     def finish_configuration(self):
+        # A Form may outlive a killed/restarted helper, but its draft never
+        # belongs to the new owner. Retire that native consumer on startup.
+        self.send('KillModule FvwmForm SlateSettingsForm')
         try:
             self.settings = checked_settings(dict(self.saved, **self.overrides))
         except ValueError as error:
@@ -591,6 +608,7 @@ class Desktop:
             self.overrides.pop('day', None)
             self.overrides.pop('night', None)
             self.settings = checked_settings(dict(self.saved, **self.overrides))
+        self.settings_changed()
 
     def change_settings(self, changes):
         if self.persistence_error:
@@ -606,6 +624,7 @@ class Desktop:
         effective['wallpaper'] = candidate['wallpaper'].copy()
         revision = save_settings(self.state_path, candidate, self.state_revision)
         self.saved, self.settings, self.state_revision = candidate, effective, revision
+        self.settings_changed()
         self.theme(force=True)
 
     def reset_settings(self, scope):
@@ -616,7 +635,78 @@ class Desktop:
         effective = checked_settings(dict(saved, **self.overrides))
         self.saved, self.settings, self.state_revision = saved, effective, revision
         self.persistence_error = None
+        self.settings_changed()
         self.theme(force=True)
+
+    def edit_settings(self, scope='all', defaults=False):
+        keys = setting_scope(scope)
+        groups = dict.fromkeys(SETTINGS[key]['group'] for key in keys)
+        keys = [key for group in groups for key in keys if SETTINGS[key]['group'] == group]
+        self.retire_settings_editor()
+        token = secrets.token_hex(16)
+        self.settings_editor = dict(token=token, keys=keys, scope=scope,
+            generation=self.settings_generation, deadline=time.monotonic() + EDITOR_SECONDS)
+        lines = ['Title "Desktop settings"', 'Colorset 2', 'ItemColorset 12',
+                 'Line left', 'Text "Edit saved preferences. Apply saves them together."']
+        previous_group = None
+        for key in keys:
+            item = SETTINGS[key]
+            value = item['default'] if defaults else self.saved[key]
+            if item['group'] != previous_group:
+                lines += ['Line left', 'Text ' + quote(item['group'].title())]
+                previous_group = item['group']
+            lines += ['Line left', 'Text ' + quote(item['description'])]
+            if item['type'] == 'time':
+                lines += ['Input ' + key + ' 5 ' + quote(value)]
+            else:
+                choices = item.get('choices', (True, False))
+                lines += ['Selection ' + key + ' single']
+                for choice in choices:
+                    text = str(choice).lower()
+                    label = ('On' if choice else 'Off') if type(choice) is bool else text.title()
+                    lines += ['Choice ' + key + '_' + text + ' ' + text + ' ' +
+                              ('on' if choice == value else 'off') + ' ' + quote(label)]
+            if key in self.overrides:
+                lines += ['Line left', 'Text ' + quote('Effective: ' +
+                    str(self.settings[key]).lower() + ' (module configuration override)')]
+        if self.persistence_error:
+            lines += ['Line left', 'Text ' + quote(self.persistence_error)]
+        action = 'SendToModule FvwmDesktop '
+        lines += ['Line left', 'Text "Cancel or closing this window leaves preferences unchanged."',
+                  'Line expand', 'Button quit "Cancel" ^[',
+                  'Command ' + action + 'cancel-settings ' + token,
+                  'Button continue "Defaults (F2)" F2',
+                  'Command ' + action + 'defaults-settings ' + token,
+                  'Button continue "Apply (F3)" F3',
+                  'Command ' + action + 'apply-settings ' + token + ' ' +
+                      ' '.join('$(' + key + ')' for key in keys),
+                  'Timeout ' + str(EDITOR_SECONDS * 10) + ' ' +
+                      quote(action + 'cancel-settings ' + token) + ' ""']
+        self.send('DestroyModuleConfig SlateSettingsForm:*')
+        for line in lines:
+            self.send('*SlateSettingsForm: ' + line)
+        self.send('Module FvwmForm SlateSettingsForm')
+
+    def current_settings_editor(self, token):
+        editor = self.settings_editor
+        if (editor is None or editor['token'] != token
+                or editor['generation'] != self.settings_generation):
+            raise ValueError('Settings editor is stale; reopen it before applying')
+        if time.monotonic() >= editor['deadline']:
+            self.retire_settings_editor()
+            raise ValueError('Settings editor expired; reopen it before applying')
+        return editor
+
+    def apply_settings_editor(self, argument):
+        token, *values = argument.split()
+        editor = self.current_settings_editor(token)
+        if len(values) != len(editor['keys']):
+            raise ValueError('Incomplete settings editor values')
+        changes = {key: setting_value(key, value, text=True)
+                   for key, value in zip(editor['keys'], values)}
+        # Full validation and the saved-file revision check precede publication.
+        # Failed validation/persistence leaves the current Form available to fix.
+        self.change_settings(changes)
 
     def query_settings(self, scope='all'):
         return {key: dict(SETTINGS[key], owner='FvwmDesktop', available=True,
@@ -624,6 +714,7 @@ class Desktop:
                     saved=self.saved[key], effective=self.settings[key],
                     source='module-configuration' if key in self.overrides else 'saved',
                     application='submitted-to-fvwm' if self.last_theme else 'not-submitted',
+                    generation=self.settings_generation,
                     persistence_error=self.persistence_error)
                 for key in setting_scope(scope)}
 
@@ -644,7 +735,9 @@ class Desktop:
             options += [('Reset this setting', 'SendToModule FvwmDesktop reset ' + key)]
             self.menu(name, key, options)
             rows.append((label, 'Popup ' + name))
-        rows += [('', 'Nop'), ('Reset ' + scope, 'SendToModule FvwmDesktop reset ' + scope),
+        rows += [('', 'Nop'), ('Edit saved preferences...',
+                  'SendToModule FvwmDesktop edit-settings ' + scope),
+                 ('Reset ' + scope, 'SendToModule FvwmDesktop reset ' + scope),
                  ('Reload saved settings', 'SendToModule FvwmDesktop reload-settings'),
                  ('FVWM commands submitted; external Style/Colorset overrides are unobserved', 'Greyed')]
         if self.persistence_error:
@@ -670,7 +763,7 @@ class Desktop:
         self.send('SendToModule SlateBar ChangeButton ' + name + ' Title ' + quote(value))
 
     def notice(self, message):
-        self.send('KillModule SlateNoticeForm')
+        self.send('KillModule FvwmForm SlateNoticeForm')
         self.send('DestroyModuleConfig SlateNoticeForm:*')
         for command in ('Title "FVWM-X"', 'Position -16 -64', 'Line left', 'Text ' + quote(message),
                         'Line right', 'Button quit "Dismiss" ^[', 'Command Nop',
@@ -749,6 +842,7 @@ class Desktop:
                          'SendToModule FvwmDesktop toggle ' + key))
         rows += [('Refresh application list', 'SendToModule FvwmDesktop discover')]
         rows += [('Desktop settings...', 'SendToModule FvwmDesktop settings')]
+        rows += [('Edit saved preferences...', 'SendToModule FvwmDesktop edit-settings')]
         self.menu('SlateAppearance', 'Appearance', rows)
 
     def highlight_desk(self):
@@ -875,6 +969,18 @@ class Desktop:
             elif command == 'settings':
                 self.settings_menu(argument or 'all')
                 self.send('Menu SlateSettings Monitor c c')
+            elif command == 'edit-settings':
+                self.edit_settings(argument or 'all')
+            elif command == 'apply-settings':
+                if not argument:
+                    raise ValueError('Missing settings editor values')
+                self.apply_settings_editor(argument)
+            elif command in ('cancel-settings', 'defaults-settings'):
+                editor = self.current_settings_editor(argument)
+                if command == 'cancel-settings':
+                    self.retire_settings_editor()
+                else:
+                    self.edit_settings(editor['scope'], defaults=True)
             elif command == 'query-settings':
                 token, _, scope = argument.partition(' ')
                 if not re.fullmatch(r'[A-Za-z0-9_-]{1,64}', token):
@@ -987,6 +1093,9 @@ class Desktop:
         self.send('Module FvwmForm SlateSessionForm')
 
     def tick(self):
+        if (self.settings_editor is not None
+                and time.monotonic() >= self.settings_editor['deadline']):
+            self.retire_settings_editor()
         now = dt.datetime.now()
         clock = now.strftime('%a %d %b  %H:%M')
         if clock != self.last_clock:

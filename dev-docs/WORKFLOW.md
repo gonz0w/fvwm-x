@@ -78,6 +78,11 @@ sanitizers for relevant memory/lifetime changes. Do not run every compiler,
 optional feature, BSD desktop suite or full portable suite after each item.
 Fast checks still run before building dependent changes on top of an item.
 
+For visible native UI work, capture and inspect screenshots from the affected
+actual-X run and include a small review set in the user handoff. Preserve them
+with canonical source-bound evidence. Reuse that integration run; screenshots
+do not require another matrix or a separate desktop setup.
+
 At the batch boundary, freeze one candidate and run the required combined
 platform/compiler/install/default-X gates once, with optional-feature and
 sanitizer coverage selected for affected dependencies and behavior. Existing

@@ -21,6 +21,9 @@
 #include "libs/cJSON.h"
 #include "event_flags.h"
 #include "stream.h"
+#include "request.h"
+#include <stdint.h>
+#include <time.h>
 
 #include <sys/file.h>
 #include <sys/socket.h>
@@ -58,6 +61,9 @@ static int fvwmmfl_lock_fd = -1;
 static unsigned int client_count;
 
 struct client {
+	struct event *requests;
+	struct mfl_pending_request pending[MFL_REQUEST_LIMIT];
+	bool read_only;
 	struct event *resume;
 	struct event *partial;
 	struct bufferevent	*comms;
@@ -71,6 +77,7 @@ TAILQ_HEAD(clients, client);
 struct clients  clientq;
 
 struct fvwm_comms {
+	uint64_t next_request;
 	int		 fd[2];
 	struct event_base *base;
 	struct bufferevent *input, *output;
@@ -205,6 +212,8 @@ send_version_info(struct client *c)
 	content = cJSON_CreateObject();
 	cJSON_AddStringToObject(content, "version", VERSION);
 	cJSON_AddStringToObject(content, "version_info", VERSIONINFO);
+	cJSON_AddNumberToObject(content, "request_version", 1);
+	cJSON_AddStringToObject(content, "request_prefix", "request ");
 	cJSON_AddItemToObject(fm->j_obj, "connection_profile", content);
 
 	fm_to_json(fm);
@@ -505,6 +514,8 @@ client_set_interest(struct client *c, const char *event)
 	}
 
 	if (strcmp(event, "debug") == 0) {
+		if (c->read_only)
+			return false;
 		debug = (flag_type == EFLAGSET) ? 1 : 0;
 
 		/* Never send to FVWM3. */
@@ -550,7 +561,7 @@ static void
 register_interest(void)
 {
 	size_t		i;
-	unsigned long	f_m = 0, f_mx = 0;
+	unsigned long	f_m = 0, f_mx = MX_REPLY;
 
 	for (i = 0; i < (sizeof(etf) / sizeof(etf[0])); i++) {
 		unsigned long f = etf[i].flag;
@@ -613,8 +624,238 @@ client_destroy(struct client *c)
 	client_count--;
 	event_free(c->resume);
 	event_free(c->partial);
+	event_free(c->requests);
 	bufferevent_free(c->comms);
 	free(c);
+}
+
+static uint64_t
+request_now_ms(void)
+{
+	struct timespec now;
+
+	if (clock_gettime(CLOCK_MONOTONIC, &now) != 0)
+		err(1, "Cannot read MFL request clock");
+	return (uint64_t)now.tv_sec * 1000 + (uint64_t)now.tv_nsec / 1000000;
+}
+
+static bool
+client_reply(struct client *c, const char *id, const char *error, cJSON *result)
+{
+	cJSON *reply = mfl_request_reply(id && *id ? id : NULL, error, result);
+	char *line;
+	bool queued;
+
+	if (reply == NULL)
+		return false;
+	line = cJSON_PrintUnformatted(reply);
+	queued = line != NULL &&
+		mfl_queue_line(bufferevent_get_output(c->comms), line);
+	cJSON_free(line);
+	cJSON_Delete(reply);
+	return queued;
+}
+
+static bool
+client_request_timer(struct client *c)
+{
+	uint64_t earliest = UINT64_MAX;
+	bool found = false;
+	uint64_t now, delay;
+	struct timeval timeout;
+
+	event_del(c->requests);
+	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		if (c->pending[i].kind != MFL_REQUEST_INVALID &&
+		    (c->pending[i].deadline_ms < earliest || !found))
+		{
+			earliest = c->pending[i].deadline_ms;
+			found = true;
+		}
+	if (!found)
+		return true;
+	now = request_now_ms();
+	delay = earliest > now ? earliest - now : 0;
+	timeout.tv_sec = (time_t)(delay / 1000);
+	timeout.tv_usec = (suseconds_t)((delay % 1000) * 1000 + 1);
+	return evtimer_add(c->requests, &timeout) == 0;
+}
+
+static void
+client_request_timeout_cb(evutil_socket_t fd, short events, void *ctx)
+{
+	struct client *c = ctx;
+	uint64_t now = request_now_ms();
+
+	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+	{
+		struct mfl_pending_request *p = c->pending + i;
+
+		if (p->kind == MFL_REQUEST_INVALID || p->deadline_ms > now)
+			continue;
+		p->kind = MFL_REQUEST_INVALID;
+		if (!client_reply(c, p->id, "deadline_exceeded", NULL))
+		{
+			client_destroy(c);
+			return;
+		}
+	}
+	if (!client_request_timer(c))
+		client_destroy(c);
+}
+
+static bool
+request_add_strings(cJSON *parent, const char *name,
+	const char *const *strings, int count)
+{
+	cJSON *list = cJSON_CreateStringArray(strings, count);
+
+	if (!list)
+		return false;
+	if (!cJSON_AddItemToObject(parent, name, list))
+	{
+		cJSON_Delete(list);
+		return false;
+	}
+	return true;
+}
+
+static cJSON *
+client_local_result(struct client *c, enum mfl_request_kind kind)
+{
+	cJSON *result = cJSON_CreateObject();
+	cJSON *list;
+
+	if (result == NULL)
+		return NULL;
+	if (kind == MFL_REQUEST_CAPABILITIES)
+	{
+		const char *methods[] = {"query", "barrier", "set_mode"};
+		const char *resources[] = {"capabilities", "connection", "desktop"};
+
+		if (!request_add_strings(result, "methods", methods, 3) ||
+		    !request_add_strings(result, "resources", resources, 3) ||
+		    !cJSON_AddNumberToObject(result, "pending_limit",
+			MFL_REQUEST_LIMIT) ||
+		    !cJSON_AddNumberToObject(result, "deadline_ms",
+			MFL_REQUEST_TIMEOUT_MS) ||
+		    !cJSON_AddNumberToObject(result, "max_line_bytes",
+			MAX_MODULE_INPUT_TEXT_LEN) ||
+		    !cJSON_AddBoolToObject(result, "applied_command_results", false) ||
+		    !cJSON_AddBoolToObject(result, "read_only_security_boundary", false))
+			goto fail;
+		return result;
+	}
+	if (!cJSON_AddBoolToObject(result, "read_only", c->read_only))
+		goto fail;
+	list = cJSON_AddArrayToObject(result, "subscriptions");
+	if (!list)
+		goto fail;
+	for (size_t i = 0; i < sizeof(etf) / sizeof(etf[0]); i++)
+	{
+		unsigned long f = etf[i].flag;
+		bool selected = f & M_EXTENDED_MSG ?
+			(c->flags_mx & f) == f : (c->flags_m & f) != 0;
+
+		if (selected)
+		{
+			cJSON *name = cJSON_CreateString(etf[i].event);
+
+			if (!name || !cJSON_AddItemToArray(list, name))
+			{
+				cJSON_Delete(name);
+				goto fail;
+			}
+		}
+	}
+	return result;
+fail:
+	cJSON_Delete(result);
+	return NULL;
+}
+
+static bool
+client_request(struct client *c, const char *json)
+{
+	struct mfl_request request;
+	struct mfl_pending_request *slot;
+	const char *error;
+	char command[MAX_MODULE_INPUT_TEXT_LEN + 1];
+	cJSON *result;
+	bool valid = mfl_request_parse(json, &request);
+	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		if (c->pending[i].kind != MFL_REQUEST_INVALID &&
+		    strcmp(c->pending[i].id, request.id) == 0)
+			return client_reply(c, NULL, "duplicate_id", NULL);
+	if (!valid)
+		return client_reply(c, request.id, request.error, NULL);
+	if (request.kind == MFL_REQUEST_READ_ONLY)
+		c->read_only = true;
+	if (request.kind == MFL_REQUEST_READ_ONLY ||
+	    request.kind == MFL_REQUEST_CONNECTION ||
+	    request.kind == MFL_REQUEST_CAPABILITIES)
+	{
+		result = client_local_result(c, request.kind);
+		return result != NULL && client_reply(c, request.id, NULL, result);
+	}
+	if (fc.next_request == UINT64_MAX)
+		return client_reply(c, request.id, "request_ids_exhausted", NULL);
+	error = mfl_request_reserve(c->pending, &request, ++fc.next_request,
+		request_now_ms(), &slot);
+	if (error != NULL)
+		return client_reply(c, request.id, error, NULL);
+	if (!mfl_request_command(command, sizeof(command), slot) ||
+	    !mfl_queue_command(bufferevent_get_output(fc.output), command))
+	{
+		slot->kind = MFL_REQUEST_INVALID;
+		return client_reply(c, request.id, "core_queue_full", NULL);
+	}
+	return client_request_timer(c);
+}
+
+static void
+handle_request_packet(const FvwmPacket *packet)
+{
+	struct client *c;
+	const char *message;
+	size_t words;
+
+	if (packet->type != MX_REPLY || packet->size < FvwmPacketHeaderSize + 4)
+		return;
+	words = packet->size - FvwmPacketHeaderSize - 3;
+	message = (const char *)(packet->body + 3);
+	if (memchr(message, '\0', words * sizeof(unsigned long)) == NULL)
+		return;
+	TAILQ_FOREACH(c, &clientq, entry)
+	{
+		for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		{
+			struct mfl_pending_request *p = c->pending + i;
+			const char *payload;
+			cJSON *result;
+			const char *error;
+
+			if (p->kind == MFL_REQUEST_INVALID)
+				continue;
+			payload = mfl_request_payload(message, p);
+			if (payload == NULL)
+				continue;
+			/* An input callback can run before an already-due timer. */
+			error = request_now_ms() >= p->deadline_ms ?
+				"deadline_exceeded" : NULL;
+			result = error ? NULL :
+				mfl_request_core_result(p->kind, payload);
+			if (!error && !result)
+				error = "invalid_core_reply";
+			p->kind = MFL_REQUEST_INVALID;
+			if (!client_reply(c, p->id, error, result) ||
+			    !client_request_timer(c))
+				client_destroy(c);
+			/* Serial IDs are module-wide and never reused. No core work
+			 * retains this client or slot; late replies are discarded. */
+			return;
+		}
+	}
 }
 
 static void
@@ -646,8 +887,26 @@ client_read_cb(struct bufferevent *bev, void *ctx)
 			return;
 		}
 		event_del(c->partial);
+		if (strncmp(command, "request ", 8) == 0)
+		{
+			if (!client_request(c, command + 8))
+			{
+				client_destroy(c);
+				return;
+			}
+			continue;
+		}
 		if (command[0] == '\0' || client_set_interest(c, command))
 			continue;
+		if (c->read_only)
+		{
+			if (!client_reply(c, NULL, "read_only", NULL))
+			{
+				client_destroy(c);
+				return;
+			}
+			continue;
+		}
 		if (!mfl_queue_command(bufferevent_get_output(fc.output), command))
 		{
 			client_destroy(c);
@@ -697,7 +956,9 @@ accept_conn_cb(struct evconnlistener *l, evutil_socket_t fd,
 	c->comms = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
 	c->resume = evtimer_new(base, client_resume_cb, c);
 	c->partial = evtimer_new(base, client_partial_timeout_cb, c);
-	if (c->comms == NULL || c->resume == NULL || c->partial == NULL)
+	c->requests = evtimer_new(base, client_request_timeout_cb, c);
+	if (c->comms == NULL || c->resume == NULL || c->partial == NULL ||
+	    c->requests == NULL)
 	{
 		if (c->comms != NULL)
 			bufferevent_free(c->comms);
@@ -707,6 +968,8 @@ accept_conn_cb(struct evconnlistener *l, evutil_socket_t fd,
 			event_free(c->resume);
 		if (c->partial != NULL)
 			event_free(c->partial);
+		if (c->requests != NULL)
+			event_free(c->requests);
 		free(c);
 		return;
 	}
@@ -748,6 +1011,7 @@ fvwm_read(struct bufferevent *bev, void *data)
 			event_base_loopexit(fc.base, NULL);
 			return;
 		}
+		handle_request_packet((FvwmPacket *)packet);
 		broadcast_to_client((FvwmPacket *)packet);
 	}
 	if (evbuffer_get_length(bufferevent_get_input(bev)) != 0)

@@ -22,6 +22,7 @@ import zlib
 from geometry_transition_live import Client, Pointer
 from live_x_harness import HarnessError, HarnessRuntime, start_display_server, wait_for_predicate
 from mfl_stream_live import Connection
+from colorset_live import WindowAttributes
 
 
 def connect_client(display):
@@ -74,9 +75,11 @@ def run(options):
     client = connection = None
     evidence = {}
     try:
-        _, display = start_display_server(runtime, 'Xvfb',
-            ['Xvfb', '-screen', '0', '1440x900x24', '-noreset'],
-            'xserver.log', time.monotonic() + 10)
+        display = options.display
+        if display is None:
+            _, display = start_display_server(runtime, 'Xvfb',
+                ['Xvfb', '-screen', '0', '1440x900x24', '-noreset'],
+                'xserver.log', time.monotonic() + 10)
         root = source / 'default-config'
         user = runtime.root / 'user'
         user.mkdir()
@@ -106,17 +109,20 @@ def run(options):
             alias = wrappers / directory.name
             if module.is_file() and not alias.exists():
                 alias.symlink_to(module)
+        if options.installed_desktop:
+            (wrappers / 'FvwmDesktop').symlink_to(options.installed_desktop.resolve())
         modulepath = ':'.join(str(p) for p in
                               [wrappers, build / 'default-config'])
-        config.write_text('ModulePath ' + modulepath + '\n' +
+        config.write_text('ModulePath ' + modulepath + '\nRead ' +
+            str(source / 'fvwm/ConfigFvwmDefaults') + '\n' +
             (root / 'config').read_text().replace('$[FVWM_DATADIR]/default-config', str(root)) +
             # An uninstalled build cannot find the core's auto-started MFL.
-            ('\nAddToFunc StartFunction I Module FvwmMFL\n' if options.installed_modules is None
+            ('\nAddToFunc StartFunction I Module FvwmMFL\n' if options.installed_core or options.installed_modules is None
              or not (options.installed_modules / 'FvwmMFL').is_file() else ''))
         env = runtime.environment({'HOME':str(runtime.root), 'FVWM_USERDIR':str(user),
                                   'FVWM_DESKTOP_ROOT':str(root), 'FVWMMFL_SOCKET_PATH':str(runtime.root),
                                   'XDG_DATA_HOME':str(data), 'XDG_DATA_DIRS':str(data), 'DISPLAY':display})
-        process = runtime.start('fvwm', [str(build / 'fvwm3'), '-d', display,
+        process = runtime.start('fvwm', [str(options.installed_core or build / 'fvwm3'), '-d', display,
              '-f', str(config), '-v', '-o', str(runtime.root / 'core.log')], 'fvwm.log', env)
         endpoint = runtime.root / ('fvwm_mfl_' + display.replace(':', '_') + '.sock')
         wait_for_predicate('MFL endpoint', endpoint.exists, time.monotonic() + 15, process=process)
@@ -126,6 +132,11 @@ def run(options):
         connection.echo('desktop-ready')
         client = connect_client(display)
         pointer = Pointer(client)
+        for _ in range(32):
+            connection.send(b'AddToMenu SettingsGreyed Greyed\n+ Greyed ""\n'
+                            b'+ Greyed "Owned replacement label"\nDestroyMenu SettingsGreyed\n')
+        connection.echo('greyed-label-ownership-alive')
+        evidence['greyed_label_empty_quoted_destroy_ownership'] = 32
         client.x.XFetchName.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(C.c_void_p)]
         client.x.XFetchName.restype = C.c_int
         client.x.XGetImage.argtypes = [C.c_void_p, C.c_ulong, C.c_int, C.c_int,
@@ -137,6 +148,9 @@ def run(options):
         client.x.XDestroyImage.restype = C.c_int
 
         def pixel(x, y):
+            if options.display:
+                _, _, width, height = client.geometry(client.root)
+                x, y = min(x, width - 1), min(y, height - 5)
             image = client.x.XGetImage(client.display, client.root, x, y, 1, 1,
                                       C.c_ulong(-1).value, 2)
             assert image
@@ -173,11 +187,12 @@ def run(options):
         wait_for_predicate('top bar', lambda: 'SlateBar' in named_windows(),
                            time.monotonic() + 15, process=process)
         bar = named_windows()['SlateBar']
+        expected_width = client.geometry(client.root)[2] if options.display else 1440
         wait_for_predicate('configured top bar size',
-            lambda: client.geometry(bar)[2:] == (1440, 36),
+            lambda: client.geometry(bar)[2:] == (expected_width, 36),
             time.monotonic() + 15, process=process)
         self_geometry = client.geometry(bar)
-        assert self_geometry[2:] == (1440, 36), self_geometry
+        assert self_geometry[2:] == (expected_width, 36), self_geometry
         evidence['primary_bar_size'] = list(self_geometry[2:])
         state = user / 'desktop-state.json'
         barrier_id = 0
@@ -247,6 +262,113 @@ def run(options):
             for pressed in (1, 0):
                 pointer.x.XTestFakeKeyEvent(client.display, code, pressed, 0)
             client.x.XSync(client.display, 0)
+
+        def settings_query(scope='all'):
+            connection.send(('SendToModule FvwmDesktop query-settings test ' + scope + '\n').encode())
+            deadline = time.monotonic() + 15
+            result = {}
+            while time.monotonic() < deadline:
+                text = connection.record().get('echo', {}).get('message', '')
+                if text.startswith('desktop-settings-test '):
+                    if text == 'desktop-settings-test done':
+                        return result
+                    _, key, value = text.split(' ', 2)
+                    result[key] = json.loads(value)
+            raise AssertionError('No settings query reply')
+
+        query = settings_query()
+        assert query['palette']['saved'] == 'slate'
+        assert query['palette']['effective'] == 'slate'
+        assert query['palette']['preview'] is False
+        assert query['day']['saved'] == '08:15'
+        before = state.read_bytes()
+        connection.send(b'SendToModule FvwmDesktop set palette unknown\n')
+        barrier()
+        assert state.read_bytes() == before
+        connection.send(b'KillModule SlateNoticeForm\n')
+        connection.send(b'SendToModule FvwmDesktop reset group:schedule\n')
+        barrier()
+        query = settings_query()
+        assert query['day']['saved'] == '07:00' and query['night']['saved'] == '19:00'
+        assert query['appearance']['saved'] == 'dark'
+        # External edit is data, and must not be overwritten by a stale writer.
+        edited = json.loads(state.read_text())
+        edited['palette'] = 'grove'
+        edited['transparency'] = False
+        state.write_text(json.dumps(edited))
+        connection.send(b'SendToModule FvwmDesktop set palette ink\n')
+        barrier()
+        assert json.loads(state.read_text())['palette'] == 'grove'
+        assert settings_query('palette')['palette']['effective'] == 'slate'
+        connection.send(b'KillModule SlateNoticeForm\nSendToModule FvwmDesktop reload-settings\n')
+        barrier()
+        assert settings_query('palette')['palette']['effective'] == 'grove'
+        grove = int(palettes['grove']['dark']['surface'][1:], 16)
+        wait_for_predicate('reloaded settings painted', lambda: pixel(5, 5) == grove,
+                           time.monotonic() + 20, process=process)
+        evidence['typed_queries_scoped_reset_reload_stale_refusal'] = 'passed'
+        existing_windows = set(children(client.root))
+        connection.send(b'SendToModule FvwmDesktop settings group:effects\n')
+        wait_for_predicate('native settings menu', pointer.grabbed,
+                           time.monotonic() + 10, process=process)
+        client.x.XGetWindowAttributes.argtypes = [C.c_void_p, C.c_ulong,
+                                                C.POINTER(WindowAttributes)]
+        def mapped_menus():
+            result = []
+            for window in children(client.root):
+                attrs = WindowAttributes()
+                if (window not in existing_windows
+                        and client.x.XGetWindowAttributes(client.display, window, C.byref(attrs))
+                        and attrs.map_state == 2
+                        and attrs.width > 40 and attrs.height > 40):
+                    result.append(window)
+            return result
+        wait_for_predicate('settings menu mapped', mapped_menus,
+                           time.monotonic() + 5, process=process)
+        menus_before = set(mapped_menus())
+        key(b'Home')
+        key(b'Right')
+        wait_for_predicate('settings choice submenu mapped',
+            lambda: set(mapped_menus()) - menus_before,
+            time.monotonic() + 5, process=process)
+        key(b'Home')
+        key(b'Return')
+        wait_for_predicate('native setting activated',
+            lambda: json.loads(state.read_text())['transparency'] is True,
+            time.monotonic() + 10, process=process)
+        wait_for_predicate('settings selection dismissed', lambda: not pointer.grabbed(),
+                           time.monotonic() + 5, process=process)
+        connection.send(b'SendToModule FvwmDesktop settings group:effects\n')
+        wait_for_predicate('settings reopened', pointer.grabbed,
+                           time.monotonic() + 5, process=process)
+        key(b'Escape')
+        wait_for_predicate('settings menu dismissed', lambda: not pointer.grabbed(),
+                           time.monotonic() + 5, process=process)
+        evidence['native_registry_menu_keyboard_activate_cancel'] = 'passed'
+        connection.send(b'SendToModule FvwmDesktop reset palette\n'
+                        b'SendToModule FvwmDesktop set transparency true\n')
+        barrier()
+        assert settings_query('palette')['palette']['effective'] == 'slate'
+        connection.send(b'KillModule FvwmDesktop\n*FvwmDesktop: palette grove\n'
+                        b'ModuleSynchronous Timeout 15 FvwmDesktop\n')
+        barrier()
+        query = settings_query('palette')['palette']
+        assert (query['saved'], query['effective'], query['source']) == (
+            'slate', 'grove', 'module-configuration'), query
+        connection.send(b'SendToModule FvwmDesktop set palette ink\n')
+        barrier()
+        query = settings_query('palette')['palette']
+        assert (query['saved'], query['effective']) == ('ink', 'grove'), query
+        connection.send(b'SendToModule FvwmDesktop reset palette\n')
+        barrier()
+        assert settings_query('palette')['palette']['effective'] == 'grove'
+        connection.send(b'KillModule FvwmDesktop\nDestroyModuleConfig FvwmDesktop:*\n'
+                        b'ModuleSynchronous Timeout 15 FvwmDesktop\n')
+        barrier()
+        assert settings_query('palette')['palette']['effective'] == 'slate'
+        evidence['restart_persistence_and_explicit_override'] = 'passed'
+        if options.settings_only:
+            return
 
         connection.send(b'SlateLauncher\n')
         wait_for_predicate('centered launcher grab', pointer.grabbed,
@@ -366,4 +488,8 @@ if __name__ == '__main__':
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--installed-modules', type=Path)
+    parser.add_argument('--installed-desktop', type=Path)
+    parser.add_argument('--installed-core', type=Path)
+    parser.add_argument('--display')
+    parser.add_argument('--settings-only', action='store_true')
     run(parser.parse_args())

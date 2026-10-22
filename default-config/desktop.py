@@ -16,15 +16,19 @@ import configparser
 import ctypes as C
 import ctypes.util
 import datetime as dt
+import fcntl
+import hashlib
 import json
 import itertools
 import os
 from pathlib import Path
 import re
 import selectors
+import secrets
 import shlex
 import shutil
 import struct
+import stat
 import subprocess
 import sys
 import tempfile
@@ -37,10 +41,87 @@ M_NEW_DESK = 1 << 1
 M_CONFIG_INFO = 1 << 18
 M_END_CONFIG_INFO = 1 << 19
 M_STRING = 1 << 22
-DEFAULTS = dict(palette='slate', appearance='auto', day='07:00', night='19:00',
-                transparency=True, motion=False, keep_wallpaper=False,
-                wallpaper=dict(palette='slate', appearance='dark'))
 PALETTE_NAMES = ('slate', 'dune', 'grove', 'ink')
+
+# One data-only registry serves validation, queries and native menu consumers.
+# Wallpaper is an internal retained surface, not a user-supplied path/action.
+SETTINGS = {
+    'palette': dict(type='enum', default='slate', choices=PALETTE_NAMES,
+                    group='appearance', description='Desktop color palette'),
+    'appearance': dict(type='enum', default='auto', choices=('light', 'dark', 'auto'),
+                       group='appearance', description='Light, dark or scheduled appearance'),
+    'day': dict(type='time', default='07:00', minimum='00:00', maximum='23:59',
+                group='schedule', description='Local time when light appearance starts'),
+    'night': dict(type='time', default='19:00', minimum='00:00', maximum='23:59',
+                  group='schedule', description='Local time when dark appearance starts'),
+    'transparency': dict(type='boolean', default=True, group='effects',
+                         description='Tinted root background and menu snapshots'),
+    'motion': dict(type='boolean', default=False, group='effects',
+                   description='Menu repositioning and window shade steps'),
+    'keep_wallpaper': dict(type='boolean', default=False, group='appearance',
+                           description='Retain the current palette wallpaper'),
+}
+DEFAULTS = {key: item['default'] for key, item in SETTINGS.items()} | {
+    'wallpaper': dict(palette='slate', appearance='dark')}
+STATE_LIMIT = 8192
+UNCHECKED_REVISION = object()
+
+
+def setting_value(key, value, text=False):
+    if key not in SETTINGS:
+        raise ValueError('Unknown setting: ' + key)
+    item = SETTINGS[key]
+    if item['type'] == 'boolean':
+        if text and isinstance(value, str):
+            values = {'on': True, 'true': True, 'yes': True, '1': True,
+                      'off': False, 'false': False, 'no': False, '0': False}
+            value = values.get(value.lower(), value)
+        valid = type(value) is bool
+    elif item['type'] == 'enum':
+        valid = isinstance(value, str) and value in item['choices']
+    else:
+        valid = isinstance(value, str)
+        if valid:
+            minute(value)
+    if not valid:
+        raise ValueError('Invalid value for ' + key)
+    return value
+
+
+def checked_settings(values):
+    if not isinstance(values, dict) or set(values) != set(DEFAULTS):
+        raise ValueError('Invalid settings fields')
+    result = {key: setting_value(key, values[key]) for key in SETTINGS}
+    if result['day'] == result['night']:
+        raise ValueError('Day and night times must be different')
+    wallpaper = values['wallpaper']
+    if (not isinstance(wallpaper, dict) or set(wallpaper) != {'palette', 'appearance'}
+            or wallpaper['palette'] not in PALETTE_NAMES
+            or wallpaper['appearance'] not in ('light', 'dark')):
+        raise ValueError('Invalid retained wallpaper')
+    result['wallpaper'] = wallpaper.copy()
+    return result
+
+
+def setting_scope(scope):
+    keys = [key for key, item in SETTINGS.items()
+            if scope in ('all', key, 'group:' + item['group'])]
+    if not keys:
+        raise ValueError('Unknown settings scope: ' + scope)
+    return keys
+
+
+def desktop_configuration(message):
+    prefix = '*FvwmDesktop'
+    if not message.lower().startswith(prefix.lower()):
+        return None
+    # FVWM stores modern *Alias: option lines as *Aliasoption packets.
+    # Also accept the colon form for direct protocol consumers.
+    value = message[len(prefix):]
+    if value.startswith(':'):
+        value = value[1:]
+    option, _, value = value.strip().partition(' ')
+    return option.lower(), value.strip()
 
 
 def clean_label(value, limit=100):
@@ -63,25 +144,18 @@ def minute(value):
 
 
 def validate_settings(values):
+    """Migrate the original unversioned file, retaining valid known fields."""
     result = DEFAULTS.copy()
     result['wallpaper'] = DEFAULTS['wallpaper'].copy()
     if not isinstance(values, dict):
         return result
-    if values.get('palette') in PALETTE_NAMES:
-        result['palette'] = values['palette']
-    if values.get('appearance') in ('light', 'dark', 'auto'):
-        result['appearance'] = values['appearance']
-    for key in ('day', 'night'):
+    for key in SETTINGS:
         try:
-            minute(values.get(key, ''))
-            result[key] = values[key]
+            result[key] = setting_value(key, values.get(key))
         except ValueError:
             pass
     if result['day'] == result['night']:
         result['day'], result['night'] = DEFAULTS['day'], DEFAULTS['night']
-    for key in ('transparency', 'motion', 'keep_wallpaper'):
-        if type(values.get(key)) is bool:
-            result[key] = values[key]
     wallpaper = values.get('wallpaper')
     if isinstance(wallpaper, dict) and wallpaper.get('palette') in PALETTE_NAMES and wallpaper.get('appearance') in ('light', 'dark'):
         result['wallpaper'] = dict(palette=wallpaper['palette'], appearance=wallpaper['appearance'])
@@ -97,18 +171,117 @@ def appearance(settings, now):
     return 'light' if light else 'dark'
 
 
-def save_settings(path, settings):
-    """Atomic, private data-only state: it is never Read as FVWM commands."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, name = tempfile.mkstemp(prefix='.desktop-', dir=path.parent)
+def state_directory(path):
+    path.parent.mkdir(parents=True, mode=0o700, exist_ok=True)
+    fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
     try:
-        with os.fdopen(fd, 'w') as stream:
-            json.dump(settings, stream, indent=2)
-            stream.write('\n')
-        os.replace(name, path)
+        info = os.fstat(fd)
+        if info.st_uid != os.getuid() or info.st_mode & 0o022:
+            raise ValueError('Settings directory must be owned and writable only by you')
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def private_state_file(fd):
+    info = os.fstat(fd)
+    if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid()
+            or info.st_nlink != 1 or info.st_mode & 0o077):
+        raise ValueError('Settings file must be a private owned regular file')
+    return info
+
+
+def read_state(directory, name):
+    try:
+        fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                     dir_fd=directory)
+    except FileNotFoundError:
+        return None, None
+    try:
+        info = private_state_file(fd)
+        if info.st_size > STATE_LIMIT:
+            raise ValueError('Settings file exceeds 8192 bytes')
+        data = bytearray()
+        while len(data) <= STATE_LIMIT:
+            chunk = os.read(fd, STATE_LIMIT + 1 - len(data))
+            if not chunk:
+                break
+            data.extend(chunk)
+        if len(data) > STATE_LIMIT:
+            raise ValueError('Settings file exceeds 8192 bytes')
+        return bytes(data), hashlib.sha256(data).hexdigest()
     finally:
-        if os.path.exists(name):
-            os.unlink(name)
+        os.close(fd)
+
+
+def load_settings(path):
+    directory = state_directory(path)
+    try:
+        data, revision = read_state(directory, path.name)
+    finally:
+        os.close(directory)
+    if data is None:
+        return validate_settings({}), revision
+    def unique_pairs(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError('Duplicate settings field: ' + key)
+            result[key] = value
+        return result
+    try:
+        values = json.loads(data, object_pairs_hook=unique_pairs)
+    except (UnicodeError, RecursionError) as error:
+        raise ValueError('Invalid settings JSON') from error
+    if not isinstance(values, dict):
+        raise ValueError('Settings must be a JSON object')
+    if 'schema_version' not in values:
+        return validate_settings(values), revision
+    version = values.pop('schema_version')
+    if type(version) is not int or version != 1:
+        raise ValueError('Unsupported settings schema; file was preserved')
+    return checked_settings(values), revision
+
+
+def save_settings(path, settings, expected=UNCHECKED_REVISION):
+    """Serialize writers and refuse stale snapshots before private replacement.
+
+    All operations use the opened directory, including temporary cleanup. The
+    lock is nonblocking: another session cannot stall the module event loop.
+    """
+    values = dict(checked_settings(settings), schema_version=1)
+    data = (json.dumps(values, indent=2) + '\n').encode('utf-8')
+    directory = state_directory(path)
+    lock = None
+    name = None
+    try:
+        lock = os.open('.desktop-state.lock', os.O_CREAT | os.O_RDWR |
+                       os.O_NOFOLLOW | os.O_NONBLOCK, 0o600, dir_fd=directory)
+        private_state_file(lock)
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        _, revision = read_state(directory, path.name)
+        if expected is not UNCHECKED_REVISION and revision != expected:
+            raise ValueError('Settings changed externally; reload before saving')
+        temporary = '.desktop-' + secrets.token_hex(16)
+        fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
+                     os.O_NOFOLLOW, 0o600, dir_fd=directory)
+        name = temporary
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(name, path.name, src_dir_fd=directory, dst_dir_fd=directory)
+        name = None
+        # Replacement is the commit point. No fallible operation after it may
+        # report refusal while the in-memory state still describes old bytes.
+        return hashlib.sha256(data).hexdigest()
+    finally:
+        if name is not None:
+            os.unlink(name, dir_fd=directory)
+        if lock is not None:
+            os.close(lock)
+        os.close(directory)
 
 
 def command_output(argv, timeout=1):
@@ -383,11 +556,15 @@ class Desktop:
         self.root = root
         self.state_path = state_path
         self.palettes = json.loads((root / 'palettes.json').read_text())
+        self.persistence_error = None
         try:
-            saved = json.loads(state_path.read_text()) if state_path.stat().st_size <= 8192 else {}
+            self.saved, self.state_revision = load_settings(state_path)
         except (OSError, ValueError):
-            saved = {}
-        self.settings = validate_settings(saved)
+            self.saved, self.state_revision = validate_settings({}), None
+            self.persistence_error = 'Cannot read private settings; repair the file then reload'
+            print('FvwmDesktop: ' + self.persistence_error, file=sys.stderr)
+        self.overrides = {}
+        self.settings = validate_settings(self.saved)
         self.terminal = detect_terminal(os.environ.get('FVWM_TERMINAL', ''))
         self.system = os.uname().sysname
         self.apps, self.files = [], []
@@ -400,6 +577,80 @@ class Desktop:
         self.last_clock = None
         self.monitor_width = 1440
 
+    def configure_setting(self, key, value):
+        self.overrides[key] = setting_value(key, value, text=True)
+        # Configuration lines arrive individually. Check the combined schedule
+        # at END_CONFIG_INFO, so a valid two-line change has no transient refusal.
+
+    def finish_configuration(self):
+        try:
+            self.settings = checked_settings(dict(self.saved, **self.overrides))
+        except ValueError as error:
+            print('FvwmDesktop: ' + str(error) + '; ignoring schedule overrides',
+                  file=sys.stderr)
+            self.overrides.pop('day', None)
+            self.overrides.pop('night', None)
+            self.settings = checked_settings(dict(self.saved, **self.overrides))
+
+    def change_settings(self, changes):
+        if self.persistence_error:
+            raise ValueError(self.persistence_error)
+        for key, value in changes.items():
+            setting_value(key, value)
+        candidate = checked_settings(dict(self.saved, **changes))
+        effective = checked_settings(dict(candidate, **self.overrides))
+        mode = appearance(effective, dt.datetime.now())
+        candidate['wallpaper'] = (self.settings['wallpaper'].copy()
+            if effective['keep_wallpaper'] else
+            dict(palette=effective['palette'], appearance=mode))
+        effective['wallpaper'] = candidate['wallpaper'].copy()
+        revision = save_settings(self.state_path, candidate, self.state_revision)
+        self.saved, self.settings, self.state_revision = candidate, effective, revision
+        self.theme(force=True)
+
+    def reset_settings(self, scope):
+        self.change_settings({key: SETTINGS[key]['default'] for key in setting_scope(scope)})
+
+    def reload_settings(self):
+        saved, revision = load_settings(self.state_path)
+        effective = checked_settings(dict(saved, **self.overrides))
+        self.saved, self.settings, self.state_revision = saved, effective, revision
+        self.persistence_error = None
+        self.theme(force=True)
+
+    def query_settings(self, scope='all'):
+        return {key: dict(SETTINGS[key], owner='FvwmDesktop', available=True,
+                    capability='owned-desktop-preference', preview=False,
+                    saved=self.saved[key], effective=self.settings[key],
+                    source='module-configuration' if key in self.overrides else 'saved',
+                    application='submitted-to-fvwm' if self.last_theme else 'not-submitted',
+                    persistence_error=self.persistence_error)
+                for key in setting_scope(scope)}
+
+    def settings_menu(self, scope='all'):
+        rows = []
+        for key, item in self.query_settings(scope).items():
+            name = 'SlateSetting_' + key
+            label = key + ': ' + str(item['effective']).lower()
+            choices = item.get('choices', (True, False) if item['type'] == 'boolean' else ())
+            options = [(item['description'], 'Greyed'),
+                       ('Saved: ' + str(item['saved']).lower(), 'Greyed'),
+                       ('Source: ' + item['source'], 'Greyed')]
+            if choices:
+                options += [(str(value).lower(), 'SendToModule FvwmDesktop set ' +
+                             key + ' ' + str(value).lower()) for value in choices]
+            else:
+                options += [('Edit schedule...', 'SendToModule FvwmDesktop schedule')]
+            options += [('Reset this setting', 'SendToModule FvwmDesktop reset ' + key)]
+            self.menu(name, key, options)
+            rows.append((label, 'Popup ' + name))
+        rows += [('', 'Nop'), ('Reset ' + scope, 'SendToModule FvwmDesktop reset ' + scope),
+                 ('Reload saved settings', 'SendToModule FvwmDesktop reload-settings'),
+                 ('FVWM commands submitted; external Style/Colorset overrides are unobserved', 'Greyed')]
+        if self.persistence_error:
+            rows.append((self.persistence_error, 'Greyed'))
+        self.menu('SlateSettings', 'Desktop settings', rows)
+
     def submit(self, key, function, *args):
         if key not in self.jobs and len(self.jobs) < 4:
             self.jobs[key] = self.pool.submit(function, *args)
@@ -408,7 +659,12 @@ class Desktop:
         self.send('DestroyMenu recreate ' + name)
         self.send('AddToMenu ' + name + ' ' + quote(title) + ' Title')
         for label, action in rows:
-            self.send('AddToMenu ' + name + ' ' + quote(label) + ' ' + action)
+            # Greyed is AddToMenu's label prefix, not an executable action.
+            # Informational/unavailable rows must never become selectable.
+            if action == 'Greyed':
+                self.send('AddToMenu ' + name + ' Greyed ' + quote(label))
+            else:
+                self.send('AddToMenu ' + name + ' ' + quote(label) + ' ' + action)
 
     def button(self, name, value):
         self.send('SendToModule SlateBar ChangeButton ' + name + ' Title ' + quote(value))
@@ -472,11 +728,8 @@ class Desktop:
         self.send('Style * WindowShadeSteps ' + ('6' if self.settings['motion'] else '0'))
         self.button('appearance', key[0].title())
         self.last_theme = key
-        try:
-            save_settings(self.state_path, self.settings)
-        except OSError as error:
-            print('FvwmDesktop: could not save appearance: ' + str(error), file=sys.stderr)
         self.appearance_menu()
+        self.settings_menu()
         self.highlight_desk()
 
     def appearance_menu(self):
@@ -495,6 +748,7 @@ class Desktop:
             rows.append((label + ('  On' if self.settings[key] else '  Off'),
                          'SendToModule FvwmDesktop toggle ' + key))
         rows += [('Refresh application list', 'SendToModule FvwmDesktop discover')]
+        rows += [('Desktop settings...', 'SendToModule FvwmDesktop settings')]
         self.menu('SlateAppearance', 'Appearance', rows)
 
     def highlight_desk(self):
@@ -603,31 +857,37 @@ class Desktop:
                 # Saved settings alone do not mean that FVWM has repainted yet.
                 self.send('Echo ' + argument)
             elif command in ('set', 'toggle'):
-                if command == 'toggle' and argument in ('transparency', 'motion', 'keep_wallpaper'):
-                    self.settings[argument] = not self.settings[argument]
+                if (command == 'toggle' and argument in SETTINGS
+                        and SETTINGS[argument]['type'] == 'boolean'):
+                    changes = {argument: not self.saved[argument]}
                 elif command == 'set':
                     key, _, value = argument.partition(' ')
-                    if key in ('palette', 'appearance', 'day', 'night'):
-                        candidate = dict(self.settings, **{key: value})
-                        validated = validate_settings(candidate)
-                        if validated != candidate:
-                            raise ValueError('Invalid appearance setting')
-                        self.settings = candidate
-                    else:
-                        raise ValueError('Unknown setting')
+                    changes = {key: setting_value(key, value, text=True)}
                 else:
                     raise ValueError('Unknown setting')
-                save_settings(self.state_path, self.settings)
-                self.theme(force=True)
+                self.change_settings(changes)
+            elif command == 'reset':
+                self.reset_settings(argument)
+            elif command == 'reload-settings':
+                if argument:
+                    raise ValueError('reload-settings takes no arguments')
+                self.reload_settings()
+            elif command == 'settings':
+                self.settings_menu(argument or 'all')
+                self.send('Menu SlateSettings Monitor c c')
+            elif command == 'query-settings':
+                token, _, scope = argument.partition(' ')
+                if not re.fullmatch(r'[A-Za-z0-9_-]{1,64}', token):
+                    raise ValueError('Invalid settings query token')
+                for key, item in self.query_settings(scope or 'all').items():
+                    # Each reply fits the core's existing 1000-byte command
+                    # line; do not submit one oversized aggregate Echo.
+                    self.send('Echo desktop-settings-' + token + ' ' + key + ' ' +
+                              json.dumps(item, separators=(',', ':')))
+                self.send('Echo desktop-settings-' + token + ' done')
             elif command == 'times':
                 day, night = argument.split()
-                minute(day)
-                minute(night)
-                if day == night:
-                    raise ValueError('Day and night times must be different')
-                self.settings.update(day=day, night=night)
-                save_settings(self.state_path, self.settings)
-                self.theme(force=True)
+                self.change_settings({'day': day, 'night': night})
             elif command == 'schedule':
                 self.send('DestroyModuleConfig SlateScheduleForm:*')
                 for line in ('Title "Day / night schedule"', 'Line left',
@@ -834,14 +1094,13 @@ def main():
                     message = body[3 * WORD.size:].split(b'\0', 1)[0].decode('utf-8', 'replace')
                     if kind == M_STRING:
                         desktop.handle(message)
-                    elif message.lower().startswith('*fvwmdesktop:'):
-                        option, _, value = message.split(':', 1)[1].strip().partition(' ')
-                        option = option.lower()
-                        if option in DEFAULTS and option != 'wallpaper':
-                            value = value.strip()
-                            if type(DEFAULTS[option]) is bool:
-                                value = value.lower() in ('on', 'true', 'yes', '1')
-                            desktop.settings = validate_settings(dict(desktop.settings, **{option:value}))
+                    elif desktop_configuration(message) is not None:
+                        option, value = desktop_configuration(message)
+                        if option in SETTINGS:
+                            try:
+                                desktop.configure_setting(option, value.strip())
+                            except ValueError as error:
+                                print('FvwmDesktop: ' + str(error), file=sys.stderr)
                         elif option == 'terminal':
                             desktop.terminal = detect_terminal(value.strip())
                 elif kind == M_NEW_DESK and len(body) >= WORD.size:
@@ -849,6 +1108,7 @@ def main():
                     desktop.highlight_desk()
                 elif kind == M_END_CONFIG_INFO and not started:
                     started = True
+                    desktop.finish_configuration()
                     desktop.theme()
                     desktop.system_menu()
                     desktop.submit('apps', discover_apps, application_dirs())

@@ -60,7 +60,10 @@ Configuration examples for local.config:
 *FvwmDesktop: terminal xterm
 ....
 
-Explicit module configuration overrides saved preferences at module startup.
+Explicit module configuration overrides saved preferences for the module's
+lifetime. The settings center reports these overrides. Changing or resetting a
+saved choice does not remove an explicit module option; remove that option and
+restart the helper to use the saved choice.
 Omit an option to let the Appearance menu remember its selection. Times use
 local 24-hour HH:MM format and must be different. A day interval may cross
 midnight. Automatic appearance is checked each minute and immediately on
@@ -74,6 +77,67 @@ configuration. Palette choices preserve layout and bindings. Keep current
 wallpaper prevents palette and day/night changes from replacing the active
 wallpaper. The retained palette wallpaper choice survives session restarts.
 Custom wallpaper persistence remains the user's local.config responsibility.
+
+== DESKTOP SETTINGS
+
+The Appearance menu's Desktop settings entry opens a native FVWM menu. The
+same registry supplies the menus, validation and settings queries. This first
+configuration-center checkpoint covers the existing seven preferences only:
+
+[cols="1,1,2"]
+|===
+|ID |Group |Type and default
+|palette |appearance |slate (choices: slate, dune, grove, ink)
+|appearance |appearance |auto (choices: light, dark, auto)
+|keep_wallpaper |appearance |boolean, false
+|day |schedule |local HH:MM, 07:00
+|night |schedule |local HH:MM, 19:00
+|transparency |effects |boolean, true
+|motion |effects |boolean, false
+|===
+
+Times range from 00:00 to 23:59 and must differ. Use the schedule form or
+the times command to change both together. Boolean set commands accept
+true/false, on/off, yes/no or 1/0. Toggle changes the saved boolean choice.
+Setting IDs and values map to fixed helper actions; they cannot contain FVWM
+commands or resource paths. No focus, application or bar-layout settings are
+registered in this checkpoint.
+
+Each setting submenu shows its saved value, helper-effective value and source.
+The effective value includes explicit *FvwmDesktop options. Application status
+means the helper submitted its known commands to FVWM; it does not prove that
+other modules have repainted. Later personal Style or Colorset commands cannot
+be observed through this registry and are explicitly reported as unobserved.
+The helper never rewrites personal FVWM configuration. Preview is unavailable:
+timed confirmation, cancellation and restart recovery remain future work.
+
+Reset accepts one setting ID, group:appearance, group:schedule, group:effects
+or all. It changes only those saved preferences to registered defaults. It
+retains explicit module overrides and the current wallpaper when the effective
+keep_wallpaper choice requests it. A reset that would make day and night equal
+is refused; reset group:schedule to restore both times. Reload rereads the saved
+file, validates the combined configuration and reapplies the theme.
+
+Writes validate the complete candidate and replace a private file atomically
+before changing the helper's state or submitting theme commands. A failed write
+preserves the previous file and in-memory choices. Cooperating writers use a
+nonblocking lock; a changed file is refused until reload. This is not a
+transaction across FVWM, arbitrary user programs or storage-device failure.
+
+The state file is capped at 8192 bytes and must be a regular file owned by the
+current user, with one link and no group/other permissions. Its immediate
+directory must be owned by the user, must not be a symlink, and must not be
+group/other writable. The final file and lock cannot be symlinks or FIFOs.
+Existing directory ancestry remains the user's chosen trust boundary. A
+persistent private .desktop-state.lock is normal. Temporary files are removed
+on failure; source configuration and unrelated files are left alone.
+
+Unversioned JSON from earlier helpers is read using the original normalization
+rules; the next successful change writes schema_version 1. Version 1 requires
+the known fields and valid types. Unknown versions, duplicate fields, oversized
+or invalid files are preserved. Startup uses defaults and reports a persistence
+error; repair the data file or move it aside, then use reload-settings. The
+helper does not silently overwrite unreadable or future-version state.
 
 Transparency is enabled by default: the bar uses a retained root wallpaper
 with a strong tint, and menus use FVWM's snapshot translucency. This works
@@ -163,6 +227,10 @@ times 07:00 19:00
 toggle transparency
 toggle motion
 toggle keep_wallpaper
+settings [all|setting-ID|group:appearance|group:schedule|group:effects]
+query-settings token [scope]
+reset scope
+reload-settings
 refresh
 discover
 barrier token
@@ -178,3 +246,19 @@ helper belongs to one FVWM session and has no network listener. barrier emits
 Echo token after earlier helper commands reach FVWM. Tokens contain at most
 64 letters, digits, underscores or hyphens. This orders command application;
 independent modules may still be repainting.
+
+settings opens the native configuration-center menu for the requested scope.
+query-settings emits one Echo message per registered setting and a final
+completion message through the existing module transport. A token has 1 to 64
+letters, digits, underscores or hyphens. Replies have this form:
+
+....
+desktop-settings-token setting-ID {JSON metadata and state}
+desktop-settings-token done
+....
+
+Metadata includes type, default, choices or time bounds, description, group,
+owner, capability, availability and preview support. State includes saved,
+effective, source, application and persistence_error. Each reply fits the
+existing core command limit. Refused operations show a native notice and leave
+the prior settings intact; this query is not the future general IPC result API.

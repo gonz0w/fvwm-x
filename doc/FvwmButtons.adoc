@@ -999,6 +999,40 @@ ChangeButton button_id options::
   IDs, actions, layout and the current eligible focus target stay intact.
   Each option is applied as it is parsed; an invalid later option does not
   roll back earlier options. This legacy command is not an atomic batch.
+ChangeButtons (button_id options) [(button_id options) ...]::
+  atomically changes a group of leaf buttons in this module. Each parenthesized
+  group contains a selector followed by comma-separated option/value pairs,
+  using the options listed under *ChangeButton*. Selectors are stable *Id*
+  strings beginning with a letter, nonnegative decimal leaf numbers, or
+  +column+row positions. Numbers must fit a signed integer. Option names are
+  case-insensitive and must be written in full. A button may appear only once
+  (including aliases for the same button), and each option may appear only
+  once per button. Empty groups and trailing commas are refused.
++
+  Quote values containing whitespace, commas or parentheses with single or
+  double quotes. A backslash escapes the following character. Empty quoted
+  titles are allowed. The request is limited to 8192 bytes after fvwm command
+  expansion, 32 buttons and 128 option/value pairs. Colorsets must already
+  exist in the module; define them before sending the update. Icon names use
+  the normal image search and loading rules.
++
+  Every selector, option, value, colorset and icon is prepared before any
+  button changes. A refused request reports a diagnostic and leaves all
+  button presentation, focus and pending activation intact. Prepared strings
+  and picture-cache references are released on refusal. Icons are prepared
+  using the group's final normal Colorset, regardless of option order.
++
+  A successful request commits all values before focus repair and one repaint
+  pass. Disabling the focused button cancels its held activation and selects
+  the first remaining eligible button in the final state. Eligible focus,
+  actions, IDs, geometry and the running module stay intact. This is a logical
+  module transaction; X11 does not guarantee a simultaneous display frame.
+  Resource loading remains synchronous within the module and follows existing
+  image limits. *ChangeButton* keeps its incremental behavior.
++
+....
+SendToModule MyButtons ChangeButtons (play Enabled 0, Title "Starting...") (stop Enabled 1, Selected 1)
+....
 ExpandButtonVars button_id command::
   replaces variables present in the _command_ exactly like in the
   *Action* button option and then sends the command back to fvwm.

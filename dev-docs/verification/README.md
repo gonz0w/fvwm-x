@@ -1,5 +1,11 @@
 # Verification reports
 
+- [Atomic grouped button updates](VERIFICATION-2026-10-22-BUTTONS-ATOMIC.md): bounded validation, resource rollback/startup recovery and final-state focus/repaint; 106 fresh affected passes, retained unchanged PR149 foundation, scoped sanitizers, ten stages and four default BSD displays.
+
+- [Native button navigation and live state](VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md): merged PR149; opt-in keyboard navigation, visible focus, disabled actions and live palettes across six targets.
+
+- [Due PR144/149 performance observation](PERFORMANCE-2026-10-22-PR149.md): existing binaries, overlapping latency ranges and recorded code/data costs; PR149 starts the next five-checkpoint reference.
+
 - [Legacy strut and root work-area safety](VERIFICATION-2026-10-21-WORKAREA.md): unsigned admission, reservation revocation and observable per-desktop publication; 2372 standard / 30 selected optional broad passes plus 90 affected correction entries, scoped sanitizers, ten final installs and four final BSD displays.
 
 - [Desktop root publication](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md): three bounded pager/publication repairs; 2340 standard / 22 optional passes, four scoped sanitizer entries, ten installs and four default BSD displays.

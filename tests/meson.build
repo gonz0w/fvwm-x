@@ -3415,6 +3415,15 @@ buttons_navigation_test = executable(
 )
 test('buttons-navigation', buttons_navigation_test)
 
+buttons_updates_test = executable(
+    'test-buttons-updates',
+    ['test_buttons_updates.c',
+     '../modules/FvwmButtons/buttons_updates.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('buttons-updates', buttons_updates_test)
+
 ui_packet_test = executable(
     'test-ui-packet', ['test_ui_packet.c', '../modules/FvwmIconMan/iconman_packet.c',
                      '../modules/FvwmButtons/buttons_packet.c'],

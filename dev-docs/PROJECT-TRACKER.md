@@ -1,6 +1,6 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-21. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-22. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
@@ -34,7 +34,8 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Native button navigation and state, BUTTON-01 / BUTTON-02 | Locally qualified; [PR #149](https://github.com/gonz0w/fvwm-x/pull/149) for maintainer review | Four related feature improvements pass 2412 standard / 8 affected optional entries, four scoped guest sanitizers and ten fresh installs across six targets. Staged Buttons/geometry and four authenticated default BSD displays pass. BUTTON-01 closes on merge; BUTTON-02 atomic grouped updates remain next, then CFG-01. [Report](verification/VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md). |
+| Atomic grouped button updates, BUTTON-02 | Locally qualified; ready for maintainer review | Whole-group validation, resource rollback/startup recovery and final-state focus/repaint pass 106 fresh affected entries across six targets/ten profiles, five leak-enabled guest sanitizers, ten fresh stages and four authenticated default BSD displays. Exact unchanged consumers retain 2332 PR149 foundation entries; composed standard/selected optional totals are 2420/18. BUTTON-02 completes on merge, then CFG-01. [Report](verification/VERIFICATION-2026-10-22-BUTTONS-ATOMIC.md), [receipt](verification/VERIFICATION-2026-10-22-BUTTONS-ATOMIC.json). |
+| Native button navigation and state, BUTTON-01 / BUTTON-02 | Merged in [PR #149](https://github.com/gonz0w/fvwm-x/pull/149); locally qualified | Four feature improvements pass 2412 standard / 8 selected optional entries, four guest sanitizers, ten installs and four authenticated default BSD displays. BUTTON-01 is complete; BUTTON-02's live state subset is accepted. [Report](verification/VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md). |
 | Manager target admission / feature cutoff, SELECTION-01 / DATA-01 | Merged in PR #148; composed checkpoint locally qualified | One bounded request-admission repair and independent existing-conversion dispositions pass 2396 standard / 38 selected optional entries, 72 affected follow-ups, nine fixture-continuation groups and four scoped guest sanitizers. Ten final installs and composed authenticated BSD-X checks pass; original storage, observer and cleanup-assertion failures remain explicit. [Report](verification/VERIFICATION-2026-10-21-MANAGER-TARGETS.md), [receipt](verification/VERIFICATION-2026-10-21-MANAGER-TARGETS.json). Final general prerequisite checkpoint; BUTTON/CFG/IPC features follow. |
 | Legacy strut / root work-area safety, EWMH-01 / DATA-01 / INPUT-01 | Merged in PR #147; locally qualified composed checkpoint | Three admission, revocation and root-publication repairs pass one broad run (2372 standard / 30 selected optional) plus 90 affected review-continuation entries across six targets/ten profiles. Four final scoped sanitizers, ten final installs and four final authenticated BSD displays pass. Original selector/compiler/storage failures and the reproduced sticky-page correction remain explicit. [Report](verification/VERIFICATION-2026-10-21-WORKAREA.md). |
 | Desktop root publication, EWMH-01 / DATA-01 / INPUT-01 | Merged in PR #146; bounded checkpoint locally qualified | Three pager-index, count-adoption and bounded dependent-array repairs pass 2340 standard / 22 selected optional entries across six targets, four scoped sanitizer entries, ten fresh installs and four authenticated BSD displays. Original configure/manual-observer failures and independent old-core controls remain explicit. [Report](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). |
@@ -335,14 +336,14 @@ contributed its inventory through PR #136.
 [Baseline decision](decisions/OPENBSD-8.0-BASELINE-2026-10-20.md),
 [checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md).
 
-Performance tracking: the due PR138→PR144 comparison uses preserved Linux
+Performance tracking: the due PR144→PR149 comparison uses preserved Linux
 ARM64 GCC binaries after five merged implementation checkpoints. Command-median
-ranges overlap; code/read-only grows 11,195 bytes, data 88 bytes and peak RSS
-one 4 KiB page across the safety/maintenance changes. No consistent latency
-regression is observed. PR144 is the preserved next reference at 4/5 subsequent
-merged implementation checkpoints (PR145/146/147/148); unmerged PR149 does not
-count. The next merge makes the existing-binary comparison due.
-[Observation and receipt](verification/PERFORMANCE-2026-10-21-PR144.md).
+ranges overlap; code/read-only grows 6898 bytes and writable data 8 bytes,
+with roughly unchanged RSS. Title-load p95 varies upward in this sample while
+other p95 observations are similar/lower; no consistent latency regression is
+established. PR149 is the next reference at 0/5 subsequent merged checkpoints;
+the atomic Buttons batch is unmerged.
+[Observation and receipt](verification/PERFORMANCE-2026-10-22-PR149.md).
 Keep the [five-checkpoint cadence](WORKFLOW.md#periodic-performance-comparisons)
 without new benchmark builds or performance-only tuning.
 
@@ -506,8 +507,8 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | REPRO-01 | P2 / queued | Pin refreshable development/container/Nix and generator environments while retaining platform-native package and offline builds. See cleanup roadmap. |
 | DOCS-01 | P2 / man quality queued; website design deferred | Prioritize accurate OS-installed man pages, command/module coverage, examples, references, roff rendering/lint and staged package inclusion. Keep one reviewed AsciiDoc source and lightweight optional static HTML; no JavaScript/site framework or mandatory HTML install. Preserve runtime/configuration contracts; ASD-STE100 claims require explicit rule/dictionary review. Developer-doc migration is complete and does not claim a manual rewrite or fresh man render. Website visual design and public-helper compatibility adoption remain separate. See [policy](DOCUMENTATION.md) and [brief](decisions/WEBSITE-MANUALS-BRIEF.md). |
 | ARCHIVE-01 | P2 / after verified migration | Retired planning/upstream notes and dated reports are now relocated with hashes and repaired links; graph auto-update is disabled. Remaining: remove predecessor tooling only after reference, parity, packaging and distribution checks. Preserve history/evidence and user data; do not delete ignored build trees or VM disks. See cleanup roadmap. |
-| BUTTON-01 | P2 / locally qualified; PR149 review | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
-| BUTTON-02 | P2 / live state qualified in PR149; atomic groups next | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
+| BUTTON-01 | P2 / merged PR149; locally qualified | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
+| BUTTON-02 | P2 / locally qualified atomic groups; review | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
 | CFG-01 | P2 / queued | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | P2 / queued | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Report file/line/include context and explicitly identify unchecked dynamic constructs. Never implement validation by executing Read/PipeRead/Exec. See the configuration/module backlog below. |
 | IPC-02 | P2 / queued | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
@@ -2287,3 +2288,24 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-22: merged PR148 completes the selected feature prerequisite. BUTTON-01 navigation/focus/disabled controls and related BUTTON-02 live presentation form the first feature batch; focused Linux/FreeBSD ARM64 checks pass, combined qualification pending. Atomic grouped updates remain next.
 
 - 2026-10-22: PR149 qualifies four native Buttons feature improvements: opt-in traversal/activation, independent visible focus, disabled-action refusal/recovery and live enabled/selected/palette updates. 2412 standard / 8 selected optional entries, four scoped guest sanitizers, ten stages and four authenticated default BSD displays pass. All ten WM executables remain byte-identical to PR148; only the Buttons installed consumer changes. Atomic BUTTON-02 groups remain next, then CFG-01. Canonical-verified guest duplicates are retired; inherited manual diagnostics and physical/native-CPU/release gaps remain explicit. Performance cadence is 4/5 until merge. [Report](verification/VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md).
+
+- 2026-10-22: PR149 merged. BUTTON-02 atomic groups form the next coherent
+  contract: bounded whole-request validation, owned resource preparation/rollback,
+  and final-state focus repair with one affected-controls repaint. Focused Linux
+  checks pass; six-target combined qualification is pending. The initial prefix
+  dispatch failure is retained and corrected. CFG-01 is next; no extra general
+  maintenance is pulled forward. The due PR144→149 preserved-binary performance
+  comparison is recorded and resets the cadence to 0/5 against PR149.
+  [Performance observation](verification/PERFORMANCE-2026-10-22-PR149.md).
+
+- 2026-10-22: BUTTON-02 is locally qualified for review. One complete atomic
+  resource/state contract covers bounded validation, prepared resource rollback,
+  failed-startup filename recovery and final-state focus plus bounded repaint.
+  Final source passes 106 fresh affected entries across six targets/ten profiles,
+  five leak-enabled guest sanitizers, ten fresh stages and four authenticated
+  default BSD displays. 2332 unchanged PR149 standard entries are retained after
+  exact input/configuration/consumer checks; composed totals are 2420 standard
+  and 18 selected optional. Original fixture/control failures and declined
+  failed-copy cleanup remain explicit. BUTTON-02 completes on merge, followed
+  by CFG-01. PR149 performance reference remains 0/5; no new tuning is selected.
+  [Report](verification/VERIFICATION-2026-10-22-BUTTONS-ATOMIC.md).

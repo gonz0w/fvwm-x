@@ -199,6 +199,29 @@ def run(args):
                 finally:
                     x.XDestroyImage(image)
 
+            class XImagePrefix(C.Structure):
+                # Public Xlib XImage prefix through bytes_per_line. Copy the
+                # server's packed image once, rather than making a Python/FFI
+                # call per pixel across every rollback comparison.
+                _fields_ = [('width', C.c_int), ('height', C.c_int),
+                    ('xoffset', C.c_int), ('format', C.c_int),
+                    ('data', C.c_void_p), ('byte_order', C.c_int),
+                    ('bitmap_unit', C.c_int), ('bitmap_bit_order', C.c_int),
+                    ('bitmap_pad', C.c_int), ('depth', C.c_int),
+                    ('bytes_per_line', C.c_int)]
+
+            def snapshot():
+                image = x.XGetImage(d, shown, 0, 0, 600, 120,
+                    C.c_ulong(-1).value, 2)
+                assert image
+                try:
+                    header = C.cast(image, C.POINTER(XImagePrefix)).contents
+                    assert header.width == 600 and header.height == 120
+                    assert header.data and 0 < header.bytes_per_line <= 4800
+                    return C.string_at(header.data, header.bytes_per_line * 120)
+                finally:
+                    x.XDestroyImage(image)
+
             class XColor(C.Structure):
                 _fields_ = [('pixel', C.c_ulong), ('red', C.c_ushort),
                     ('green', C.c_ushort), ('blue', C.c_ushort),
@@ -245,8 +268,11 @@ def run(args):
                 'Frame 0', 'Padding 0 0', 'Font fixed', 'Colorset 0',
                 'FocusColorset 1', 'DisabledColorset 4',
                 'ActiveColorset 2', 'PressColorset 3', 'KeyboardNavigation 1',
-                '(1x1+0+0, Id alpha, Title Alpha, Action "Echo ACT-alpha")',
-                '(1x1+1+0, Title Label, Action (Mouse 2) "Echo ACT-secondary")',
+                '(1x1+0+0, Id alpha, Title Alpha, '
+                'Icon /no-such-initial-icon.xbm, '
+                'ActiveIcon /no-such-initial-active.xbm, '
+                'PressIcon /no-such-initial-press.xbm, Action "Echo ACT-alpha")',
+                '(1x1+1+0, Title Label, Action (Mouse 2) "Echo ACT-secondary") - -',
                 '(1x1+2+0, Id disabled, Disabled, Title Unavailable, '
                 'Action "Echo ACT-disabled")',
                 '(2x1+0+1, Container(Rows 1, Columns 2, Frame 0, Padding 0))',
@@ -353,6 +379,98 @@ def run(args):
             assert actions() == before
             evidence['disabled-all-entry-points-cancel-reenable-and-selected-state'] = 'passed'
 
+            def group(text):
+                command(f'SendToModule {module_name} ChangeButtons {text}')
+                barrier()
+
+            # Restore a known state, preserving the currently focused gamma.
+            group('(alpha Enabled 1, Selected 0) (beta Enabled 1) '
+                '(gamma Enabled 1) (epsilon Enabled 1)')
+            activate('gamma')
+            original = snapshot()
+            bad = [
+                '(missing Title Bad) (alpha Selected 1)',
+                '(alpha Selected 1) (missing Title Bad) (beta Enabled 0)',
+                '(alpha Selected 1) (beta Enabled 0) (missing Title Bad)',
+                '(alpha Selected 1) (beta Enabled 2)',
+                '(alpha Selected 1) (beta Unknown 1)',
+                '(alpha Selected 1) (beta Colorset 2147483647)',
+                '(alpha Selected 1) (beta Colorset 1junk)',
+                '(alpha Selected 1) (0 Enabled 0)',
+                '(alpha Selected 1) (+0+0 Enabled 0)',
+                '(alpha Selected 1, Selected 0)',
+                '(alpha Selected 1) (beta Title "unfinished)',
+                '(alpha Selected 1) (beta Title Bad) junk',
+                '(alpha Selected 1) (beta Icon /no-such-buttons-icon.xpm)',
+                '(alpha Selected 1) (beta Enabled 0,)',
+                '(alpha Selected 1) (99999999999999999999 Enabled 0)',
+                '(alpha Selected 1) (+2147483647+2147483647 Enabled 0)',
+                '(alpha Selected 1) (+0+2147483647 Enabled 0)',
+                '(alpha Selected 1) (+4+0 Enabled 0)',
+                ''.join(f'({n} Enabled 1)' for n in range(33)),
+            ]
+            for request in bad:
+                group(request)
+                assert snapshot() == original, request
+                activate('gamma')
+            evidence['atomic-invalid-first-middle-last-and-duplicates-rollback'] = 'passed'
+
+            # Preparation acquires actual picture-cache references. A later
+            # missing icon must unwind them without replacing any old resource.
+            icon = runtime.root / 'transaction.xbm'
+            icon.write_text('#define icon_width 8\n#define icon_height 8\n'
+                'static unsigned char icon_bits[] = {\n'
+                '0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};\n')
+            for _ in range(3):
+                group(f'(alpha Icon {icon}, ActiveIcon {icon}, '
+                    f'PressIcon {icon}) (beta Icon /no-such-final-icon.xpm)')
+                assert snapshot() == original
+            for n in range(3):
+                group(f'(alpha Title "Ready, ({n})", ActiveTitle Hover{n}, '
+                    f'PressTitle Press{n}, Icon {icon}, ActiveIcon {icon}, '
+                    f'PressIcon {icon}, Colorset 0, ActiveColorset 2, '
+                    'PressColorset 3, FocusColorset 1, DisabledColorset 4, '
+                    f'Selected 1) (beta Selected 1) (1 Icon {icon})')
+                await_color(0, 0, 0xff0000)
+                await_color(0, 60, 0xff0000)
+                activate('gamma')
+            evidence['atomic-icons-titles-all-palettes-owned-prepare-and-commit'] = 'passed'
+
+            # All final states are visible to focus repair. A held gamma key
+            # cannot activate when the same group disables gamma and beta;
+            # alpha is selected from the final eligible set, without restart.
+            before = actions()
+            key(0x20, True)
+            group('(alpha Selected 0) (beta Enabled 0) (gamma Enabled 0)')
+            key(0x20, False)
+            assert actions() == before
+            await_color(0, 0, 0x008000)
+            await_color(0, 60, 0x606060)
+            await_color(200, 60, 0x606060)
+            activate('alpha')
+            group('(alpha Enabled 0) (gamma Enabled 1, FocusColorset 1)')
+            activate('gamma')
+            # A refused group during a held key leaves that key/focus valid.
+            before = actions()
+            key(0x20, True)
+            group('(gamma Enabled 0) (missing Enabled 1)')
+            key(0x20, False)
+            assert actions() == before + ['gamma']
+            group('(gamma Selected 0, Title Recovered) (epsilon Selected 0)')
+            assert window_named(module_name) == shown
+            activate('gamma')
+            evidence['atomic-held-key-cancel-final-focus-recovery-stable-window-action'] = 'passed'
+
+            # Legacy ChangeButton still commits earlier valid pairs when a
+            # later pair is refused, even beside the additive group command.
+            command(f'SendToModule {module_name} ChangeButton gamma '
+                'Selected 1, Enabled 2')
+            barrier()
+            await_color(200, 60, 0xff0000)
+            group('(gamma Selected 0)')
+            await_color(200, 60, 0x008000)
+            evidence['legacy-incremental-changebutton-preserved'] = 'passed'
+
             # A live title update must preserve the other owned strings and
             # focused action. Exercise all three repeatedly under sanitizers.
             for n in range(3):
@@ -417,7 +535,8 @@ def run(args):
             assert core.wait_until_exit(time.monotonic() + 5) == 0
             text = ''.join(p.read_text() for p in runtime.root.glob('*.log'))
             assert not any(marker in text for marker in
-                ['ERROR: AddressSanitizer', 'runtime error:', 'Assertion']), text
+                ['ERROR: AddressSanitizer', 'ERROR: LeakSanitizer',
+                 'runtime error:', 'Assertion']), text
             assert not errors, errors
             evidence['status'] = 'passed'
         finally:

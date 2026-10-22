@@ -17,6 +17,7 @@ import shlex
 import sys
 import time
 import struct
+import subprocess
 import zlib
 
 from geometry_transition_live import Client, Pointer
@@ -556,6 +557,54 @@ def run(options):
         evidence['native_grouped_editor_apply_defaults_cancel_stale_reload_restart'] = 'passed'
         evidence['settings_screenshots'] = ['settings-editor.png', 'settings-draft.png',
                                            'settings-menu.png', 'settings-defaults.png']
+        # Inspect deliberately invalid source as data. No Read is submitted to
+        # the running WM, and generated/action lines must never create marker.
+        unchecked_marker = runtime.root / 'configuration-must-not-execute'
+        local = user / 'local.config'
+        local.write_text('# literal source graph\nRead checker-child\n'
+            'Exec touch ' + str(unchecked_marker) + '\n'
+            'PipeRead "touch ' + str(unchecked_marker) + '"\n'
+            'Module /bin/sh -c "touch ' + str(unchecked_marker) + '"\n'
+            '*FvwmDesktop: motion maybe\n*FvwmDesktop: palette $[env.UNSET]\n')
+        child = user / 'checker-child'
+        child.write_text('# continued setting\n*FvwmDesktop: palette \\\n wrong\n'
+                         '*FvwmDesktop: unknown value\n')
+        preserved = state.read_bytes(), local.read_bytes(), child.read_bytes()
+        helper = options.installed_desktop or build / 'default-config/FvwmDesktop'
+        cli_env = dict(env)
+        cli_env.pop('DISPLAY', None)
+        checked = subprocess.run([sys.executable, str(helper), '--check-config', str(local), '--json'],
+            env=cli_env, capture_output=True, text=True, timeout=15)
+        assert checked.returncode == 1, (checked.returncode, checked.stderr)
+        result = json.loads(checked.stdout)
+        assert (result['errors'], result['unchecked']) == (3, 4), result
+        first = result['diagnostics'][0]
+        assert (first['path'], first['line'], first['end_line']) == (str(child), 2, 3)
+        assert first['included_from'][0]['path'] == str(local)
+        assert first['included_from'][0]['line'] == 2
+        connection.send(b'SendToModule FvwmDesktop check-config\n')
+        window = wait_for_predicate('native configuration report',
+            lambda: named_windows().get('Configuration check'),
+            time.monotonic() + 15, process=process)
+        capture('configuration-check.png')
+        client.x.XSelectInput(client.display, window, 1 << 17)
+        client.x.XSync(client.display, 0)
+        form_key(window, b'F2')
+        wait_for_predicate('report predecessor closes', predecessor_closed,
+            time.monotonic() + 10, process=process)
+        window = wait_for_predicate('next configuration report page',
+            lambda: named_windows().get('Configuration check'),
+            time.monotonic() + 10, process=process)
+        capture('configuration-check-next.png')
+        form_key(window, b'Escape')
+        wait_for_predicate('configuration report dismissed',
+            lambda: 'Configuration check' not in named_windows(),
+            time.monotonic() + 10, process=process)
+        assert (state.read_bytes(), local.read_bytes(), child.read_bytes()) == preserved
+        assert not unchecked_marker.exists()
+        evidence['configuration_checker_readonly_locations_and_native_pages'] = 'passed'
+        evidence['configuration_check_cli'] = result
+        evidence['configuration_check_screenshots'] = ['configuration-check.png', 'configuration-check-next.png']
         if options.settings_only:
             return
 

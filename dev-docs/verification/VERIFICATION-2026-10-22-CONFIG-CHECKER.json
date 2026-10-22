@@ -1,0 +1,630 @@
+{
+  "schema": 1,
+  "tracker": "CFG-02",
+  "state": "first-subset-functional-checkpoint-locally-qualified",
+  "runtime_candidate": {
+    "head": "886d9e339210477f5a5f3b631dcc9a8aa5d1da5f",
+    "tree": "7ccbd0b38b05b8d046c601766dc6a89d73cd4777",
+    "base": "29f2727f7625727857ce8af6921d39d5ebb46e78",
+    "archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a"
+  },
+  "initial_candidate": {
+    "head": "c0e72459dbb674f0c87d20dae4cfb753dc8fd535",
+    "tree": "0ca1bf064f2eca1838f67a44f8082f83ff2457e8",
+    "archive_sha256": "6582d1dd9090f70f7415848db77ca4615d0169971e9120aa23976181b2906dea"
+  },
+  "review_correction": {
+    "files": [
+      "default-config/desktop.py",
+      "doc/FvwmDesktop.adoc",
+      "tests/test_desktop.py"
+    ],
+    "reason": "Reuse the running desktop option parser to avoid false acceptance/rejection for tabs and leading Unicode whitespace. Expanded the existing regression case and reran affected policy/X/helper gates on all six targets; native foundation retained."
+  },
+  "qualified_inputs": {
+    "count": 2157,
+    "runtime_policy_and_observer": {
+      "default-config/desktop.py": {
+        "sha256": "1b292e263e82d0097ba7e94292799e3aedc4f560dd544ab5ffeb2a996692331b",
+        "mode": 493
+      },
+      "tests/test_desktop.py": {
+        "sha256": "36c393b7092a56f826ed63f7a5991842cd1ded66c51ff98c1f4a3d32c03ee02b",
+        "mode": 420
+      },
+      "tests/live_x/desktop_live.py": {
+        "sha256": "63f8e7681ffc715cadcf11e5e813fdfe85dee3fa14df4f701e39957fbda0ccfc",
+        "mode": 420
+      }
+    }
+  },
+  "stories": [
+    "bounded non-executing literal desktop-settings and Read checker",
+    "source spans and include context with offline text/JSON CLI",
+    "native bounded worker and paged result consumer"
+  ],
+  "summary": {
+    "targets": 6,
+    "profiles": 10,
+    "fresh_affected_registered_passes": 20,
+    "retained_PR152_composed_registered_passes": 2931,
+    "composed_standard": 2420,
+    "composed_optional": 531,
+    "composed_total": 2951,
+    "fresh_helper_stages": 10,
+    "composed_stages": 8,
+    "fresh_complete_Meson_installs": 2,
+    "unchanged_native_ELF_targets": 150,
+    "unchanged_catalogs": 77,
+    "all_install_files": 927,
+    "built_desktop_X_sessions": 10,
+    "staged_settings_X_sessions": 10,
+    "authenticated_default_BSD_X_sessions": 4,
+    "portable_registered": 191,
+    "portable_passed": 177,
+    "portable_skipped": 14,
+    "policy_cases_per_profile": 42,
+    "fresh_sanitizer_run": false,
+    "retained_native_Form_exit_cleanup_gap": true
+  },
+  "profiles": [
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "profile": "gcc",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 307,
+      "composed_registered_passes": 309,
+      "testlog_sha256": "c2bc757fe5314581cbb2a72795f6f1d46af67ff13daa14c1240d594d24edeb36",
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "stage": "/tmp/fvwm-module-waits-20261015/stage-config-checker-corrected-gcc",
+      "stage_kind": "composed",
+      "installed_files": 96,
+      "installed_vector_sha256": "0d800c092aec36bef7b5826efb15749105305bc144e8e9ee19ca40aa328cdbce",
+      "native_target_vector_sha256": "1da0b65e54f66f54727bd6f5dbebc2aa1cf0bf13c3e02afd8120496abcd89847",
+      "catalog_vector_sha256": "27001a675c4c1899596797e1ed16ca4fb04a622935cb9f720c2db91d1c47508f",
+      "helper_sha256": "704e318bfa6ac46bf9525917e032a564495f36355d656403750dd31dd43e3360",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "761557cc71ce7a87fe29a111f1527e5ccf650ae627b2b8762dddbb26dfe4f324",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "1b264d177427288f170d66e29044273a562211266c7cb709df182dc534759cc3",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "profile": "clang",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 307,
+      "composed_registered_passes": 309,
+      "testlog_sha256": "de53980ee3691a8d150bc3dd50306ac8cf4d3578cfe2b9aa0c142cb17a0b4610",
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "stage": "/tmp/fvwm-module-waits-20261015/stage-config-checker-corrected-clang",
+      "stage_kind": "composed",
+      "installed_files": 96,
+      "installed_vector_sha256": "f51d8388e8891c1052e2fc3bb3332d419de8f87f512bde200e0729decb2ac1f5",
+      "native_target_vector_sha256": "a9419e99bf8c33f8dc2b24a5b8926f7c3f10eecb663fe157f9c5d1941bc132c6",
+      "catalog_vector_sha256": "27001a675c4c1899596797e1ed16ca4fb04a622935cb9f720c2db91d1c47508f",
+      "helper_sha256": "704e318bfa6ac46bf9525917e032a564495f36355d656403750dd31dd43e3360",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "66a82518706fa03735a1cda0ef8a4d1f328244afd70c0dea2a3f37bfdfd6e3df",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "bc5e4e18b81f3c0fb1085cd0e25843970354a70bd3b21a93c685b9495e03de6f",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "clang",
+        "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "profile": "software",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 286,
+      "composed_registered_passes": 288,
+      "testlog_sha256": "fb83ab68dde66332ba405e76556ef4b435d7d6cb79b69722094a1f98179328bd",
+      "configuration_sha256": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b",
+      "stage": "/tmp/fvwm-module-waits-20261015/stage-config-checker-corrected-software",
+      "stage_kind": "composed",
+      "installed_files": 96,
+      "installed_vector_sha256": "738dd9d8859523552daa8f70b0f67a5f2235800def33039b346674e559821fd2",
+      "native_target_vector_sha256": "fc251909223f4e33a69cd28c3e9af56fa6599646c04a5735e378aa29eee8b608",
+      "catalog_vector_sha256": "27001a675c4c1899596797e1ed16ca4fb04a622935cb9f720c2db91d1c47508f",
+      "helper_sha256": "704e318bfa6ac46bf9525917e032a564495f36355d656403750dd31dd43e3360",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "1280fce63ef2af709c9a619820db127d6ee4c8c4883bd41022ad2e6713ca16cf",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "135a792e76aedacd6704068a13db3a9f4e17fbd1d976e0eaa468b14620af9edf",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "profile": "minimal",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 241,
+      "composed_registered_passes": 243,
+      "testlog_sha256": "fb1118108fff6f9f727def622f1dce8ebdf28fa6152f3f279df48fa96408381e",
+      "configuration_sha256": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711",
+      "stage": "/tmp/fvwm-module-waits-20261015/stage-config-checker-corrected-minimal",
+      "stage_kind": "composed",
+      "installed_files": 85,
+      "installed_vector_sha256": "f47bb71b2716a853bec0b7e84e26263d76ba0ddc1da085bf637809e4d35a4e8b",
+      "native_target_vector_sha256": "b9deacd475e7d4142858edb84fdc5c3134803a30e8235bde5f51c440e1ff8c6c",
+      "catalog_vector_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "helper_sha256": "d2a63b66cb10f1a937e9ec7534ec83e9cd963a9af365d85a45538cc9dbe8aff2",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "c6baeb80aef60d43e663a55148308e5b08e1a2c9c7bfab188a1d4d52d1045493",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "0c573dcfe1b7fc1c5e8ef1eb3756fb9fa344978c941a20e19fdfbfe6412ecc5f",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ]
+    },
+    {
+      "target": "linux-amd64",
+      "profile": "gcc",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 307,
+      "composed_registered_passes": 309,
+      "testlog_sha256": "f01ccf186e41bc066beed49019ab4e0eb468aaab00bdaa7bb55fccf1d8811725",
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "stage": "/root/fvwm-module-waits-20261015/stage-config-checker-corrected-gcc",
+      "stage_kind": "composed",
+      "installed_files": 96,
+      "installed_vector_sha256": "db55ebc3eb3ed3a9c85b593f5e05d72d05e6ccc90517d67f10d906937f129cb4",
+      "native_target_vector_sha256": "2387d6939df701411675fc86eed45baf90480b0f48f30871ba242e83af71b850",
+      "catalog_vector_sha256": "a8e068fb3d1052f83acb52d12d876da4e9ef5797ae4c596a4b9ce73a73ec1abc",
+      "helper_sha256": "7242df15ae87f8a8aef1fa898b5d66f83da20514969bd225c391918872862f29",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "043dc9cbb06e6ab9a59f4c2a1af3cf22f7c4ffcc3d63ec2f81c8c39b7514dccc",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "996a3816e96e8a3c23379c9ef8a1bbec88bf240a86e8f20c9d1c09661a05c9aa",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+        "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ]
+    },
+    {
+      "target": "linux-amd64",
+      "profile": "clang",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 307,
+      "composed_registered_passes": 309,
+      "testlog_sha256": "a211fcf9196c51dc4330417447e7f1aad514989d013d66417c7ed14a03b0592a",
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "stage": "/root/fvwm-module-waits-20261015/stage-config-checker-corrected-clang",
+      "stage_kind": "composed",
+      "installed_files": 96,
+      "installed_vector_sha256": "1c700aa59f588b0c5a7a975b6a551caac447f56826b6380e97ea2f0b18466bc2",
+      "native_target_vector_sha256": "5f17f6fdb623368518bf6cbd89a2741aea0eb363c40d00b9f44df8371621d478",
+      "catalog_vector_sha256": "a8e068fb3d1052f83acb52d12d876da4e9ef5797ae4c596a4b9ce73a73ec1abc",
+      "helper_sha256": "7242df15ae87f8a8aef1fa898b5d66f83da20514969bd225c391918872862f29",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "e72a5834faf39c22eec3f907e8fea80f2f1a91dabaf372d69dbb8b1637118ab7",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "59ecb03f16f729b333ca607796f55afa7d58d2c33747ed7f08af12437fb46485",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "clang",
+        "LD_LIBRARY_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+        "PKG_CONFIG_PATH": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ]
+    },
+    {
+      "target": "freebsd-arm64",
+      "profile": "default",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 294,
+      "composed_registered_passes": 296,
+      "testlog_sha256": "ce09d23796cf270b8f75f5d6f6ab93fc22262d42712dc4a3c5c287352006b3e4",
+      "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+      "stage": "/root/fvwm-module-waits-20261015/stage-config-checker-corrected-default",
+      "stage_kind": "composed",
+      "installed_files": 96,
+      "installed_vector_sha256": "6e93861b5d978fc9b83eb8707c648d4f045d9203a99f08f43b0fa5044ff743a5",
+      "native_target_vector_sha256": "edf089b5988336d27cf3b4daf24440aa18e8d2d5f3dab83781dc144502bab9e4",
+      "catalog_vector_sha256": "a8e068fb3d1052f83acb52d12d876da4e9ef5797ae4c596a4b9ce73a73ec1abc",
+      "helper_sha256": "cc6d558405123eeac506fbf303cddc53cddd1104a3181a802c9f7f08702dc230",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "0c67997f89c2ed9f45b1be94c7f718dee1d32ed8ad03fa4aa2f3dd79d7bf84d5",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "a38974ed7ad1065d9ebd12dd45ac6fe6f826a12050d1b3b89e52a11da093bb07",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib",
+        "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ]
+    },
+    {
+      "target": "freebsd-amd64",
+      "profile": "default",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 294,
+      "composed_registered_passes": 296,
+      "testlog_sha256": "677edbaf3ef8e99eacda98b6c18afe9d33178638bce4013b24e35916e7a7d408",
+      "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+      "stage": "/root/fvwm-style-simplification-recovery-20261016/stage-config-checker-corrected-default",
+      "stage_kind": "composed",
+      "installed_files": 96,
+      "installed_vector_sha256": "e902196b1b0b4e3db1ae0760e68292244635ee8674dbc1a1271be4c1472027c4",
+      "native_target_vector_sha256": "c654e486fd75061a1855dfe5634dbe74167c964e1732d6d29002a2513bc51288",
+      "catalog_vector_sha256": "a8e068fb3d1052f83acb52d12d876da4e9ef5797ae4c596a4b9ce73a73ec1abc",
+      "helper_sha256": "cc6d558405123eeac506fbf303cddc53cddd1104a3181a802c9f7f08702dc230",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "8abcd37c077601da9206f8d3c054e597f00feb6b2c13633f49de20e90602a36a",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "b4778630b2a7885083a251d94291027b62c59df7f85317dd837be6d6bc7f0faa",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/root/fvwm-deps/libpng-1.6.59/lib",
+        "PKG_CONFIG_PATH": "/root/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "amd64"
+      ]
+    },
+    {
+      "target": "openbsd-arm64",
+      "profile": "default",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 294,
+      "composed_registered_passes": 296,
+      "testlog_sha256": "dfe435148ab0c63d72e56cf6019d3d2c7b20758f0eff7f43d474f034d6191b7b",
+      "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+      "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-config-checker-corrected",
+      "stage_kind": "fresh complete",
+      "installed_files": 85,
+      "installed_vector_sha256": "7e73640b1c6940f60a8f29c277d0a1d6b5796b6cc51350cbb5bd14e488672221",
+      "native_target_vector_sha256": "a2a626031fc3d562ff6784b012f915106cc29ed1af8aeaef07e88758835d5db5",
+      "catalog_vector_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "helper_sha256": "cc6d558405123eeac506fbf303cddc53cddd1104a3181a802c9f7f08702dc230",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "35d49a932792ae291b19ae058101d2d43ce9abeb17d3ad647282a90765603246",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "7278997a55218920f91921df878ead97a1de3f83c7a2bc3982002e97692c83e0",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib",
+        "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "OpenBSD",
+        "openbsd.my.domain",
+        "8.0",
+        "GENERIC.MP#1",
+        "arm64"
+      ]
+    },
+    {
+      "target": "openbsd-amd64",
+      "profile": "default",
+      "fresh_registered_passes": 2,
+      "retained_PR152_composed_registered_passes": 294,
+      "composed_registered_passes": 296,
+      "testlog_sha256": "285d03207f12b2ba1d03861077e97b033ce574dda53427bfa15a58e38e8425dd",
+      "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+      "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-config-checker-corrected",
+      "stage_kind": "fresh complete",
+      "installed_files": 85,
+      "installed_vector_sha256": "7ebffcef94613215b2e9e0845db5cd46cef6ac4e692cfb1cdb7b0dac9630c3ac",
+      "native_target_vector_sha256": "9a4554fba262107578b5bc1ba9e9ba070452e31a96c26060b3c2d0cd1ddd8185",
+      "catalog_vector_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "helper_sha256": "cc6d558405123eeac506fbf303cddc53cddd1104a3181a802c9f7f08702dc230",
+      "source_archive_sha256": "64601573ba12a90ff2e99f34bfe1a04892203b29055e16d7d4967edc9b032d7a",
+      "built_X": {
+        "evidence_sha256": "b2cd969b187a2b27e753a04605b8ff2e22053fea93265372b4b9a74e1014086c",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "staged_X": {
+        "evidence_sha256": "6410a58637a4a35322c1c23df63a43088f8d9f21710b3df1de596ea6c36e422b",
+        "cli_errors": 3,
+        "cli_unchecked": 4,
+        "readonly_and_native_paging": "passed"
+      },
+      "environment": {
+        "CC": "cc",
+        "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib",
+        "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      },
+      "uname": [
+        "OpenBSD",
+        "openbsd.my.domain",
+        "8.0",
+        "GENERIC.MP#2",
+        "amd64"
+      ]
+    }
+  ],
+  "captures": [
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "part": "initial",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/fvwm-x-linux-arm64-svg-evidence.tgz",
+      "sha256": "de5cf4eed8ba18e11f0916aa27a49f51b9a2b4f68dddfe57d4b7ac9afb706854",
+      "verified_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/fvwm-x-linux-arm64-svg-verified.json",
+      "verified_receipt_sha256": "609c0dfb736925e5837ff82a0e09cbab5e851e475d576adeca824821b0c8af04"
+    },
+    {
+      "target": "linux-amd64",
+      "part": "initial",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/linux-amd64-evidence.tgz",
+      "sha256": "0a88145cbe1864e1d222bda5df2b392d2e8df7fd60820e9b981e13efa938fe97",
+      "verified_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/linux-amd64-verified.json",
+      "verified_receipt_sha256": "694a687acd03f6b90b5d941d7da23a2b7cfc7126d52a7eae7f025cf8ab857341"
+    },
+    {
+      "target": "freebsd-arm64",
+      "part": "initial",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/freebsd-arm64-evidence.tgz",
+      "sha256": "33f14ac89ed7279e18043334d63d1214afa16b7f6a0a017338e183c70131ba6c",
+      "verified_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/freebsd-arm64-verified.json",
+      "verified_receipt_sha256": "d3f17c6d77d92d0afcb0d4dafa4f17ab66413beb20ea2cce490a9282243eb7b8"
+    },
+    {
+      "target": "freebsd-amd64",
+      "part": "initial",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/freebsd-amd64-evidence.tgz",
+      "sha256": "1b19869fefe6c0c81d477bb36e9b367250d25817cbc9c4ad4fb84e0e96f902e6",
+      "verified_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/freebsd-amd64-verified.json",
+      "verified_receipt_sha256": "197d83712ded9702fce99d0fde1c77903f37d793138080ea7e1541c0faebd4f3"
+    },
+    {
+      "target": "openbsd-arm64",
+      "part": "initial",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "0f12d7b5fce115b09fe08ac1635e4ce018aadbde1176c72e3a2aded9057b7a5b",
+      "verified_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/openbsd-arm64-verified.json",
+      "verified_receipt_sha256": "b027e0e9652a81decde055077da884ede08149704ed2b9747cdfd6c659b132a9"
+    },
+    {
+      "target": "openbsd-amd64",
+      "part": "initial",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/openbsd-amd64-job/guest-evidence.tgz",
+      "sha256": "a7dd42fb841d0bc29932c6b0ecd0246fd0379470490c3bf424b14d648755f415",
+      "verified_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/openbsd-amd64-verified.json",
+      "verified_receipt_sha256": "54aec08c71cd75271748702388f0d6c61ef395cfbdf4d21f2c2dd20a90707617"
+    }
+  ],
+  "retained_foundation": {
+    "report": "VERIFICATION-2026-10-22-SETTINGS-EDITOR.md",
+    "receipt_sha256": "430ba9f361d106e1362cb23a1e2d49d762c5bfd2cc008a7e18114d9ad163008b",
+    "scope": "All native C/build/protocol inputs and 150 executables remain exact. Replace the two affected registered entries per profile; retain the other 2931 composed PR152 foundation entries with their original scopes and gaps."
+  },
+  "sanitizers": {
+    "fresh_run": false,
+    "reason": "No native source, build or memory/ownership contract changes; retain exact native evidence and the known gap rather than repeating the same font exit diagnostic.",
+    "retained_Form_gap": {
+      "functional_registered_passes": 1,
+      "clean_sanitizer_gate": false,
+      "memory_access_and_UB_diagnostics": false,
+      "exit_leak_diagnostics": [
+        "SUMMARY: AddressSanitizer: 3080 byte(s) leaked in 67 allocation(s).",
+        "SUMMARY: AddressSanitizer: 3080 byte(s) leaked in 67 allocation(s).",
+        "SUMMARY: AddressSanitizer: 3080 byte(s) leaked in 67 allocation(s).",
+        "SUMMARY: AddressSanitizer: 3080 byte(s) leaked in 67 allocation(s).",
+        "SUMMARY: AddressSanitizer: 3080 byte(s) leaked in 67 allocation(s).",
+        "SUMMARY: AddressSanitizer: 3080 byte(s) leaked in 67 allocation(s).",
+        "SUMMARY: AddressSanitizer: 3080 byte(s) leaked in 67 allocation(s)."
+      ],
+      "control": {
+        "scope": "Existing native Form only; no FvwmDesktop process or new editor callbacks",
+        "diagnostics": [
+          "SUMMARY: AddressSanitizer: 3048 byte(s) leaked in 66 allocation(s)."
+        ],
+        "native_Form_sha256": "a5df527bee3f818d26abcb99524c62058dd273774cc19c452d5cf0bb176733b6",
+        "native_core_sha256": "7d8f6cfedf2838c970e403ddc5f78efb4ae0371ce5d13ed330b83e6dcae8bb84",
+        "leak_detection": true,
+        "status": "legacy exit diagnostic reproduced"
+      },
+      "control_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/settings-editor/font-exit-control.tgz",
+      "control_archive_sha256": "51c4cb37393932040490c0630e55e95e18fd8e8a63abe27aad8fcfc626ec0885",
+      "owner": "CLEAN-01 / Later",
+      "scope": "Existing native Form fontconfig/Xft process-exit resources; independent control has no new helper/editor. Existing exit-cleanup gap retained, no suppression or leak-detector disabling."
+    },
+    "clean_release_gate_claim": false
+  },
+  "portable": {
+    "initial_candidate": "c0e72459dbb674f0c87d20dae4cfb753dc8fd535",
+    "verify_log_sha256": "bb4998fc95f27e3cd54b73d66562e1290951453ef40bf891f85e4a0430270929",
+    "registered": 191,
+    "passed": 177,
+    "skipped": 14,
+    "retention": "The later correction changes only desktop helper/policy tests/manual; portable maintenance harness and inputs are unchanged. Fresh final documentation/repository checks are recorded separately."
+  },
+  "manual": {
+    "source_sha256": "0dd3345322c36efb82cf3caedec84450c137743affea811bcad302505c0bc703",
+    "roff_sha256": "f60e25bc3c298221e8ce251a0d5ede5d1db21d119bf8906cd650f651fcbd52fa",
+    "formatted_sha256": "4f862e4dc02c8a3fa33d390b08630cb7691f08c85a2cda09fa769c3683e572cc",
+    "formatter": "macOS /usr/bin/mandoc",
+    "lint_status": 3,
+    "prior_PR152_normalized_diagnostics_identical": false,
+    "diagnostics": {
+      "skipping insecure request: mso": 1,
+      "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+      "skipping paragraph macro: sp after SH": 8
+    },
+    "diagnostic_disposition": "Inherited mso/LINKSTYLE diagnostics and section-spacing family. One additional spacing warning corresponds to the new CONFIGURATION CHECK section; no new diagnostic family. DOCS-01 retains formatter scope."
+  },
+  "screenshots": {
+    "configuration-check-next.png": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/screenshots/configuration-check-next.png",
+      "sha256": "92137d2b25370f5acefcf783cbc87fae889f6c567d97855f027b2a55ba55f4d1",
+      "bytes": 56010
+    },
+    "configuration-check.png": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/option-parser/screenshots/configuration-check.png",
+      "sha256": "ab992ffad4b9a6b7cb66d916c44752354a544254f680179359253f185fa11111",
+      "bytes": 64971
+    }
+  },
+  "review": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/local-review.md",
+    "sha256": "46a17504abf5600459c661e55da3917ca6d05bb9c8a86a50d5dd0207438a4d0f",
+    "corrected_findings": 1,
+    "remaining_actionable_findings": 0
+  },
+  "original_failures": [
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "profile": "software staged settings",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/config-checker/fvwm-x-linux-arm64-svg-evidence.tgz",
+      "sha256": "dd4677012dbc0eba66f805c6082eea155a724a18252e304f27b106f9abe7e8c9",
+      "disposition": "Existing palette/reset barrier timed out before grouped editor/new checker. One unchanged isolated staged control passes, followed by only the unfinished minimal profile. Original failure remains failed; scheduling/root cause is not established. The later parser correction separately passes all affected final gates."
+    }
+  ],
+  "performance": {
+    "reference": "PR149",
+    "merged_checkpoints_after_reference": 3,
+    "comparison_due": false
+  },
+  "remaining": [
+    "General core runtime command/argument/source diagnostics and whole-language validation remain unimplemented under CFG-02",
+    "CFG-01 live preview needs observable shared-core generations/conflict recovery with IPC-02",
+    "CLEAN-01 existing native Form font process-exit cleanup is deferred to Later",
+    "native-CPU sanitizers, physical hardware, toolkit/compositor behavior and release acceptance"
+  ]
+}

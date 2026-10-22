@@ -51,3 +51,11 @@ multiplication. Large but int-representable coordinates are refused before
 arithmetic; actual-X regressions cover both large coordinates and row-spilling
 column aliases. The undispatched fixture-only candidate is retained, and the
 final product candidate includes this correction.
+
+The original OpenBSD AMD64 fixture reaches its 90-second deadline while making
+per-pixel Python/FFI calls for whole-window rollback comparisons. The packed-image
+fixture preserves every compared pixel with one bounded buffer copy; focused
+Linux checks pass against the exact compiled product. The final affected-consumer
+checkpoint is retained with its original outcomes. Packed-fixture follow-ups
+verify unchanged module bytes and replace only affected fixture outcomes;
+unrelated consumer checks and broad suites are not repeated.

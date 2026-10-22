@@ -199,6 +199,29 @@ def run(args):
                 finally:
                     x.XDestroyImage(image)
 
+            class XImagePrefix(C.Structure):
+                # Public Xlib XImage prefix through bytes_per_line. Copy the
+                # server's packed image once, rather than making a Python/FFI
+                # call per pixel across every rollback comparison.
+                _fields_ = [('width', C.c_int), ('height', C.c_int),
+                    ('xoffset', C.c_int), ('format', C.c_int),
+                    ('data', C.c_void_p), ('byte_order', C.c_int),
+                    ('bitmap_unit', C.c_int), ('bitmap_bit_order', C.c_int),
+                    ('bitmap_pad', C.c_int), ('depth', C.c_int),
+                    ('bytes_per_line', C.c_int)]
+
+            def snapshot():
+                image = x.XGetImage(d, shown, 0, 0, 600, 120,
+                    C.c_ulong(-1).value, 2)
+                assert image
+                try:
+                    header = C.cast(image, C.POINTER(XImagePrefix)).contents
+                    assert header.width == 600 and header.height == 120
+                    assert header.data and 0 < header.bytes_per_line <= 4800
+                    return C.string_at(header.data, header.bytes_per_line * 120)
+                finally:
+                    x.XDestroyImage(image)
+
             class XColor(C.Structure):
                 _fields_ = [('pixel', C.c_ulong), ('red', C.c_ushort),
                     ('green', C.c_ushort), ('blue', C.c_ushort),
@@ -361,7 +384,7 @@ def run(args):
             group('(alpha Enabled 1, Selected 0) (beta Enabled 1) '
                 '(gamma Enabled 1) (epsilon Enabled 1)')
             activate('gamma')
-            original = pixels(shown, 0, 0, 600, 120)
+            original = snapshot()
             bad = [
                 '(missing Title Bad) (alpha Selected 1)',
                 '(alpha Selected 1) (missing Title Bad) (beta Enabled 0)',
@@ -385,7 +408,7 @@ def run(args):
             ]
             for request in bad:
                 group(request)
-                assert pixels(shown, 0, 0, 600, 120) == original, request
+                assert snapshot() == original, request
                 activate('gamma')
             evidence['atomic-invalid-first-middle-last-and-duplicates-rollback'] = 'passed'
 
@@ -398,7 +421,7 @@ def run(args):
             for _ in range(3):
                 group(f'(alpha Icon {icon}, ActiveIcon {icon}, '
                     f'PressIcon {icon}) (beta Icon /no-such-final-icon.xpm)')
-                assert pixels(shown, 0, 0, 600, 120) == original
+                assert snapshot() == original
             for n in range(3):
                 group(f'(alpha Title "Ready, ({n})", ActiveTitle Hover{n}, '
                     f'PressTitle Press{n}, Icon {icon}, ActiveIcon {icon}, '

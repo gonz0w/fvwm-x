@@ -100,6 +100,7 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   read-only admission is not a security boundary.
 * `connection` returns this connection's `read_only` flag and selected event
   names. These are MFL-owned values and require no core round trip.
+* `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
 * `desktop` samples authoritative values through the existing core command
   engine and module-directed `Send_Reply`. It returns `scope:
@@ -197,6 +198,68 @@ If a future registry exceeds the reply bound, the result can omit `settings`
 with `settings_unavailable: "reply_too_large"`; query a smaller scope. An
 already committed action retains its outcome and generation.
 
+=== Validate settings without saving
+
+Use `method: "validate"`, `resource: "settings"`, the observed `provider` and
+`generation`, and the same nonempty typed `values` object as a set action:
+
+....
+request {"version":1,"id":"check-1","method":"validate","resource":"settings","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","values":{"palette":"grove","motion":false}}
+....
+
+No `operation` or `scope` field is accepted. The owner uses the same complete
+candidate validation as a commit, including combined day/night values and module
+overrides. The result has `state: "validated"`, the unchanged base generation
+and candidate `settings` with proposed saved/effective values. Each candidate
+item and the result have `application: "not-submitted"`; `persistence:
+"not-attempted"`, `asynchronous_completion: "not-started"` and `preview: false`
+are explicit. No file is written, theme command submitted, editor retired or
+generation changed. Read-only connections can validate.
+
+Validation is not a live preview, reservation or promise that persistence will
+succeed. It does not lock/read-check the saved file or test permissions, space
+or external changes. A known persistence error remains in item metadata but
+does not prevent value validation. A later set still checks its generation,
+current private-file revision and writer lock. Query again after conflicts.
+Invalid values and stale generations use the same errors as set actions.
+
+=== Inspect and cancel pending waits
+
+Local lifecycle requests remain available when all eight pending slots are full
+or the core/provider is stalled, including on read-only connections:
+
+....
+request {"version":1,"id":"waits-1","method":"query","resource":"pending"}
+request {"version":1,"id":"cancel-1","method":"cancel","target":"apply-1"}
+....
+
+The query returns `scope: "connection"`, `execution: "unknown"` and a `requests`
+array of at most eight entries. Each has its client `id`, `resource`, `operation`,
+`remaining_ms` and wait `state`: `awaiting-reply`, `receiving-reply` for a partial
+provider assembly, or `deadline-reached` while terminal expiry is due. These
+are transport observations; they do not describe domain progress, work totals,
+provider liveness or whether an action has committed. Local queries themselves
+are not stored. No other connection's requests or completed history is exposed.
+
+A cancel requires only `target`, with the same syntax/limit as a client ID.
+Use a fresh cancel request ID. If the target is still waiting, MFL sends its
+terminal `wait_cancelled` error first, frees its slot/partial assembly, then
+replies to the cancel with `state: "wait-cancelled"`, `target`, `execution:
+"unknown"` and `rollback: false`. Other pending waits keep their deadlines.
+Late target replies are discarded; the original ID/slot can be reused after its
+terminal reply. Internal serials prevent old results from completing the new
+wait. A missing, completed, expired or foreign target returns
+`request_not_pending`; no retained history distinguishes those cases. If expiry
+is already due, the original receives `deadline_exceeded`, not `wait_cancelled`.
+The ordinary duplicate-outstanding-ID rule applies to cancel request IDs too.
+
+Cancellation stops this connection's wait. It does not retract a queued command,
+stop the helper's action or undo a saved preference. An action may commit before
+or after cancellation. Query the owner before deciding what to do next; do not
+blindly replay. Disconnect also drops waits without cancelling domain execution.
+Capabilities advertise `cancellation: "wait-only"`; domain cancellation,
+progress/decision protocols and reconnect result recovery remain unavailable.
+
 === Processed stream barrier
 
 A request with `method: "barrier"` has no resource or mode field:
@@ -222,7 +285,7 @@ request {"version":1,"id":"restrict-1","method":"set_mode","mode":"read-only"}
 ....
 
 The result returns the connection state. Repeating this mode is harmless;
-changing back to writable is unsupported. Queries, barriers and event
+changing back to writable is unsupported. Queries, validation, wait cancellation, barriers and event
 subscriptions remain usable. Typed settings actions receive a correlated
 `read_only` error. Other legacy commands, including global debug
 changes, receive an uncorrelated `read_only` error and are not forwarded.
@@ -236,7 +299,7 @@ The existing private socket permissions remain unchanged.
 
 === Bounds, errors and disconnects
 
-Each client can have eight outstanding core queries/barriers. Each has an
+Each client can have eight outstanding core/provider requests. Each has an
 absolute five-second monotonic deadline that unrelated traffic cannot extend.
 Local queries remain available while core requests wait. Duplicate outstanding
 IDs return `duplicate_id` with a null ID; an additional request returns

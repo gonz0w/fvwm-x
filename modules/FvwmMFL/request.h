@@ -23,12 +23,16 @@ enum mfl_request_kind {
 	MFL_REQUEST_SETTINGS_QUERY,
 	MFL_REQUEST_SETTINGS_SET,
 	MFL_REQUEST_SETTINGS_RESET,
-	MFL_REQUEST_SETTINGS_RELOAD
+	MFL_REQUEST_SETTINGS_RELOAD,
+	MFL_REQUEST_SETTINGS_VALIDATE,
+	MFL_REQUEST_PENDING,
+	MFL_REQUEST_CANCEL
 };
 
 struct mfl_request {
 	enum mfl_request_kind kind;
 	char id[MFL_REQUEST_ID_MAX + 1];
+	char target[MFL_REQUEST_ID_MAX + 1];
 	const char *error;
 	char settings_payload[MFL_SETTINGS_INPUT_MAX + 1];
 };
@@ -48,6 +52,12 @@ enum mfl_settings_part_result {
 	MFL_SETTINGS_MORE,
 	MFL_SETTINGS_DONE
 };
+
+/* Local waiting state only; no domain execution or progress authority. */
+cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
+	uint64_t now_ms);
+struct mfl_pending_request *mfl_request_find(
+	struct mfl_pending_request *pending, const char *id);
 
 bool mfl_request_is_settings(enum mfl_request_kind kind);
 bool mfl_request_is_action(enum mfl_request_kind kind);

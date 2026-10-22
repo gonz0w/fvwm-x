@@ -733,18 +733,21 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		return NULL;
 	if (kind == MFL_REQUEST_CAPABILITIES)
 	{
-		const char *methods[] = {"query", "barrier", "set_mode", "action"};
+		const char *methods[] = {"query", "barrier", "set_mode",
+			"action", "validate", "cancel"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
-			"settings"};
+			"settings", "pending"};
 
-		if (!request_add_strings(result, "methods", methods, 4) ||
-		    !request_add_strings(result, "resources", resources, 4) ||
+		if (!request_add_strings(result, "methods", methods, 6) ||
+		    !request_add_strings(result, "resources", resources, 5) ||
 		    !cJSON_AddNumberToObject(result, "pending_limit",
 			MFL_REQUEST_LIMIT) ||
 		    !cJSON_AddNumberToObject(result, "deadline_ms",
 			MFL_REQUEST_TIMEOUT_MS) ||
 		    !cJSON_AddNumberToObject(result, "max_line_bytes",
 			MAX_MODULE_INPUT_TEXT_LEN) ||
+		    !cJSON_AddStringToObject(result, "cancellation",
+			"wait-only") ||
 		    !cJSON_AddBoolToObject(result, "applied_command_results", false) ||
 		    !cJSON_AddStringToObject(result, "settings_provider", "FvwmDesktop") ||
 		    !cJSON_AddStringToObject(result, "settings_provider_availability",
@@ -783,6 +786,52 @@ fail:
 	return NULL;
 }
 
+/* Cancellation retires correlation/assembly, never a submitted command.
+ * A late response cannot match a replacement slot's fresh internal serial. */
+static bool
+client_cancel_request(struct client *c, const struct mfl_request *request)
+{
+	struct mfl_pending_request *p = mfl_request_find(c->pending,
+		request->target);
+	cJSON *result;
+	bool expired;
+
+	if (!p)
+		return client_reply(c, request->id,
+			"request_not_pending", NULL);
+	expired = request_now_ms() >= p->deadline_ms;
+	if (expired)
+	{
+		if (!client_reply(c, p->id, "deadline_exceeded", NULL))
+			return false;
+		mfl_request_clear(p);
+		return client_request_timer(c) && client_reply(c, request->id,
+			"request_not_pending", NULL);
+	}
+	result = cJSON_CreateObject();
+	if (!result ||
+	    !cJSON_AddStringToObject(result, "state", "wait-cancelled") ||
+	    !cJSON_AddStringToObject(result, "target", p->id) ||
+	    !cJSON_AddStringToObject(result, "execution", "unknown") ||
+	    !cJSON_AddBoolToObject(result, "rollback", false))
+	{
+		cJSON_Delete(result);
+		return false;
+	}
+	if (!client_reply(c, p->id, "wait_cancelled", NULL))
+	{
+		cJSON_Delete(result);
+		return false;
+	}
+	mfl_request_clear(p);
+	if (!client_request_timer(c))
+	{
+		cJSON_Delete(result);
+		return false;
+	}
+	return client_reply(c, request->id, NULL, result);
+}
+
 static bool
 client_request(struct client *c, const char *json)
 {
@@ -800,6 +849,15 @@ client_request(struct client *c, const char *json)
 		return client_reply(c, request.id, request.error, NULL);
 	if (c->read_only && mfl_request_is_action(request.kind))
 		return client_reply(c, request.id, "read_only", NULL);
+	if (request.kind == MFL_REQUEST_CANCEL)
+		return client_cancel_request(c, &request);
+	if (request.kind == MFL_REQUEST_PENDING)
+	{
+		result = mfl_request_pending_result(
+			c->pending, request_now_ms());
+		return result != NULL &&
+			client_reply(c, request.id, NULL, result);
+	}
 	if (request.kind == MFL_REQUEST_READ_ONLY)
 		c->read_only = true;
 	if (request.kind == MFL_REQUEST_READ_ONLY ||
@@ -807,7 +865,8 @@ client_request(struct client *c, const char *json)
 	    request.kind == MFL_REQUEST_CAPABILITIES)
 	{
 		result = client_local_result(c, request.kind);
-		return result != NULL && client_reply(c, request.id, NULL, result);
+		return result != NULL &&
+			client_reply(c, request.id, NULL, result);
 	}
 	if (fc.next_request == UINT64_MAX)
 		return client_reply(c, request.id, "request_ids_exhausted", NULL);

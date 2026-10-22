@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Settings validation and request lifecycle](VERIFICATION-2026-10-22-IPC-LIFECYCLE.md): three IPC-02 capabilities; six focused Linux entries and three scoped guest sanitizer exercises pass, shared integration pending.
+
 - [Desktop settings queries and typed actions](VERIFICATION-2026-10-22-IPC-SETTINGS.md): IPC-02 snapshots, generation-checked atomic changes and scoped reset/reload; focused Linux/policy/X and scoped sanitizer passes, shared cycle qualification pending.
 
 - [Due PR149→PR154 performance observation](PERFORMANCE-2026-10-22-PR154.md): preserved binaries only, unchanged core allocated size, explicit MFL feature growth and mixed small latency/CPU changes; PR154 starts the next five-merge reference.

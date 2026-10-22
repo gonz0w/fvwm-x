@@ -696,6 +696,49 @@ class DesktopSettingsIPC(unittest.TestCase):
         result = self.instance.settings_request({'operation': 'query', 'scope': 'group:schedule'})
         self.assertEqual(set(result['result']['settings']), {'day', 'night'})
 
+    def test_validation_returns_candidate_without_any_publication(self):
+        self.instance.configure_setting('motion', 'true')
+        self.instance.finish_configuration()
+        before = (self.instance.saved.copy(), self.instance.settings.copy(),
+                  self.instance.settings_generation, self.instance.state_revision)
+        self.commands.clear()
+        with patch.object(desktop, 'save_settings', side_effect=AssertionError('write')):
+            result = self.action('validate', values={'palette': 'grove', 'motion': False,
+                'day': '19:00', 'night': '07:00'})['result']
+        self.assertEqual(result['state'], 'validated')
+        self.assertEqual(result['settings']['palette']['saved'], 'grove')
+        self.assertEqual(result['settings']['palette']['effective'], 'grove')
+        self.assertFalse(result['settings']['motion']['saved'])
+        self.assertTrue(result['settings']['motion']['effective'])
+        self.assertTrue(all(item['application'] == 'not-submitted'
+                            for item in result['settings'].values()))
+        self.assertEqual(result['persistence'], 'not-attempted')
+        self.assertEqual(result['application'], 'not-submitted')
+        self.assertEqual(result['asynchronous_completion'], 'not-started')
+        self.assertFalse(result['preview'])
+        self.assertEqual(before, (self.instance.saved, self.instance.settings,
+                         self.instance.settings_generation, self.instance.state_revision))
+        self.assertFalse(self.path.exists())
+        self.assertFalse(self.commands)
+        for values in ({'day': '19:00', 'night': '19:00'}, {'motion': 'false'},
+                       {'palette': 'ink; Exec evil'}, {}):
+            self.assertEqual(self.action('validate', values=values),
+                             {'error': {'code': 'invalid_value'}})
+        self.assertFalse(self.commands)
+
+    def test_validation_is_not_a_persistence_promise_and_still_checks_generation(self):
+        self.instance.persistence_error = 'private file unreadable'
+        result = self.action('validate', values={'palette': 'dune'})['result']
+        self.assertEqual(result['state'], 'validated')
+        self.assertEqual(result['settings']['palette']['persistence_error'],
+                         self.instance.persistence_error)
+        self.assertEqual(self.action('set', values={'palette': 'dune'}),
+                         {'error': {'code': 'persistence_failed'}})
+        self.assertEqual(self.instance.settings_request(dict(operation='validate',
+            provider=self.instance.settings_instance, generation='0' * 32,
+            values={'palette': 'dune'})), {'error': {'code': 'stale_generation'}})
+        self.assertFalse(self.path.exists())
+
     def test_atomic_group_update_and_invalid_changes_preserve_state(self):
         result = self.action('set', values={'day': '19:00', 'night': '07:00',
                                          'palette': 'dune', 'motion': True})['result']

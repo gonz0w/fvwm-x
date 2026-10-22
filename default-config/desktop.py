@@ -222,9 +222,8 @@ class ConfigurationCheck:
                             'Only literal Read filenames and optional Quiet are checked',
                             'configuration-source')
             return
-        match = re.fullmatch(r'\*FvwmDesktop:\s*(\S+)(?:\s+(.*))?', text, re.I | re.ASCII)
-        if match:
-            key, value = match[1].lower(), (match[2] or '').strip()
+        if re.match(r'\*FvwmDesktop:', text, re.I | re.ASCII):
+            key, value = desktop_configuration(text)
             if key == 'terminal':
                 self.diagnostic(location, 'unchecked', 'terminal-provider',
                                 'Terminal invocation and provider availability are not checked')

@@ -637,6 +637,10 @@ class ConfigurationChecking(unittest.TestCase):
         self.assertEqual((result['errors'], result['unchecked']), (0, 2))
         result = self.check('*FvwmDesktop: motion on\u00a0\n')
         self.assertEqual(result['status'], 'checked-subset')
+        result = self.check('*FvwmDesktop: \u00a0palette ink\n')
+        self.assertEqual(result['status'], 'checked-subset')
+        result = self.check('*FvwmDesktop: palette\tink\n')
+        self.assertEqual(result['diagnostics'][0]['code'], 'setting-name')
 
     def test_standalone_cli_without_display_has_explicit_exit_status_and_safe_output(self):
         helper = ROOT / 'default-config/desktop.py'

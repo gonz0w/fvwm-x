@@ -196,9 +196,10 @@ values must differ when both appear. Saved preferences are not loaded, so this
 does not validate their combined effective runtime state.
 
 Comments and blank lines are ignored. A backslash immediately before a newline
-joins physical lines, as in FVWM's reader. Source separators use ASCII whitespace;
-preference values retain the helper's existing trimming behavior. Input is UTF-8;
-other encodings are reported as unchecked. NUL bytes are errors.
+joins physical lines, as in FVWM's reader. Directive recognition and Read
+separators use ASCII whitespace. Desktop options reuse the running helper's
+existing trimming and literal-space option split. Input is UTF-8; other encodings
+are reported as unchecked. NUL bytes are errors.
 
 Literal Read searches FVWM_USERDIR, FVWM_DATADIR and the checker's working
 directory, in that order, or uses an absolute path directly. It is not relative

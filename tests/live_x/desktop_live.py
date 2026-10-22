@@ -149,7 +149,7 @@ def run(options):
             # Enumeration races native Form destruction/replacement. Only the
             # exact borrowed window and read operation may disappear here.
             if (event.code == 3 and event.resource in observed_windows
-                    and event.request in (15, 20)):
+                    and event.request in (3, 15, 20)):
                 evidence['observer_retired_windows'] = evidence.get('observer_retired_windows', 0) + 1
             else:
                 unexpected_errors.append((event.code, event.request, event.resource))
@@ -354,7 +354,8 @@ def run(options):
             for window in children(client.root):
                 attrs = WindowAttributes()
                 if (window not in existing_windows
-                        and client.x.XGetWindowAttributes(client.display, window, C.byref(attrs))
+                        and observe_window(window, lambda: client.x.XGetWindowAttributes(
+                            client.display, window, C.byref(attrs)))
                         and attrs.map_state == 2
                         and attrs.width > 40 and attrs.height > 40):
                     result.append(window)

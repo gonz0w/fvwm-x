@@ -36,6 +36,7 @@
 #include "FvwmButtons.h"
 #include "button.h"
 #include "parse.h"
+#include "keyboard.h"
 
 extern int w, h, x, y, xneg, yneg; /* used in ParseConfigLine */
 extern char *config_file;
@@ -879,7 +880,7 @@ static void ParseContainer(char **ss,button_info *b)
 static void ParseButton(button_info **uberb, char *s)
 {
 	button_info *b, *ub = *uberb;
-	int i, j;
+	int i, j, option;
 	char *t, *o;
 
 	b = alloc_button(ub, (ub->c->num_buttons)++);
@@ -917,6 +918,10 @@ static void ParseButton(button_info **uberb, char *s)
 			"activecolorset",
 			"presscolorset",
 			"top",
+			"disabled",
+			"selected",
+			"focuscolorset",
+			"disabledcolorset",
 			NULL
 		};
 		s = trimleft(s);
@@ -970,7 +975,8 @@ static void ParseButton(button_info **uberb, char *s)
 				s = trimleft(s);
 				continue;
 			}
-			switch (GetTokenIndex(s, opts, -1, &s))
+			option = GetTokenIndex(s, opts, -1, &s);
+			switch (option)
 			{
 			case 0: /* Back */
 				s = trimleft(s);
@@ -1675,6 +1681,35 @@ static void ParseButton(button_info **uberb, char *s)
 				}
 				break;
 
+			case 28: /* Disabled */
+				b->flags.b_Disabled = 1;
+				break;
+			case 29: /* Selected */
+				b->flags.b_Selected = 1;
+				break;
+			case 30: /* FocusColorset */
+			case 31: /* DisabledColorset */
+			{
+				Bool focus = option == 30;
+
+				t = s;
+				if (ParseColorsetId(s, &t, &i) &&
+					AllocColorset(i))
+				{
+					if (focus)
+					{
+						b->focusColorset = i;
+						b->flags.b_FocusColorset = 1;
+					}
+					else
+					{
+						b->disabledColorset = i;
+						b->flags.b_DisabledColorset = 1;
+					}
+					s = t;
+				}
+				break;
+			}
 			case 27: /* top */
 				b->flags.b_Top = 1;
 				break;
@@ -1831,11 +1866,15 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		"activecolorset",
 		"presscolorset",
 		"windowname",
+		"keyboardnavigation",
+		"focuscolorset",
+		"disabledcolorset",
 		NULL
 	};
-	int i, j, k;
+	int i, j, k, option;
 
-	switch (GetTokenIndex(s, opts, -1, &s))
+	option = GetTokenIndex(s, opts, -1, &s);
+	switch (option)
 	{
 	case 0:/* Geometry */
 	{
@@ -1991,6 +2030,33 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		}
 		break;
 
+	case 16: /* KeyboardNavigation: explicit opt-in, default off. */
+		if (module_parse_decimal_integers(s, &i, 1) &&
+			(i == 0 || i == 1))
+		{
+			buttons_set_keyboard_navigation(i != 0);
+		}
+		else
+		{
+			fvwm_debug(MyName, "KeyboardNavigation requires 0 or 1");
+		}
+		break;
+	case 17: /* FocusColorset */
+	case 18: /* DisabledColorset */
+		if (ParseColorsetId(s, NULL, &j) && AllocColorset(j))
+		{
+			if (option == 17)
+			{
+				ub->c->focusColorset = j;
+				ub->c->flags.b_FocusColorset = 1;
+			}
+			else
+			{
+				ub->c->disabledColorset = j;
+				ub->c->flags.b_DisabledColorset = 1;
+			}
+		}
+		break;
 	case 15: /* WindowName */
 	{
 		i = sscanf(s, "%126[^\n]", windowname);

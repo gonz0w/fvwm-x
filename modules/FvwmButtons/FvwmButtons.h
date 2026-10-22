@@ -81,6 +81,10 @@ typedef struct
 	unsigned b_PressColorset  : 1; /* Use alternate Colorset on press */
 	unsigned b_PressTitle     : 1; /* Use alternate Title text on press */
 	unsigned b_WindowName     : 1; /* Use alternate Window and Icon name */
+	unsigned b_Disabled       : 1; /* Block all module activation paths */
+	unsigned b_Selected       : 1; /* Explicit persistent selected relief */
+	unsigned b_FocusColorset  : 1;
+	unsigned b_DisabledColorset : 1;
 } flags_type;
 
 /* Flags for b->swallow */
@@ -130,6 +134,8 @@ struct container_info_struct
 	int colorset;              /* b_Colorset */
 	int activeColorset;        /* b_ActiveColorset */
 	int pressColorset;         /* b_PressColorset */
+	int focusColorset;
+	int disabledColorset;
 	Pixel fc;                  /* b_Fore */
 	Pixel bc, hc, sc;          /* b_Back && !b_IconBack */
 	FvwmPicture *backicon;     /* b_Back && b_IconBack */
@@ -186,6 +192,8 @@ struct button_info_struct
 	FvwmPicture *pressicon;  /* b_PressIcon */
 	int activeColorset;      /* b_ActiveColorset */
 	int pressColorset;       /* b_PressColorset */
+	int focusColorset;
+	int disabledColorset;
 	Window IconWin;          /* b_Swallow */
 	Window PanelWin;         /* b_Panel */
 	Window BackIconWin;      /* b_Back && b_IconBack */

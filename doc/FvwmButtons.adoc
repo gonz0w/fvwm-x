@@ -122,6 +122,42 @@ _dumb_ is neither _fixed_ nor _smart._ This is the default.
   Tells the module to use colorset _colorset_ for the background
   color/image and/or title color of a button when it is pressed.
 
+*FvwmButtons: KeyboardNavigation 0|1::
+  Set to *1* to enable module-local keyboard navigation. The default is
+  *0*, which preserves Return activation under the pointer and existing
+  configurations. Navigation applies only while this module's own window
+  has keyboard focus. It does not grab keys or request focus from another
+  application; the window manager's normal focus policy still applies.
++
+The initial target is the first enabled action button or panel. Labels,
+containers, disabled buttons and swallowed application windows are skipped.
+An action button must have a default or mouse-button-1 action. Tab and
+Shift+Tab move through configuration order, entering nested containers, and
+wrap at either end. Arrow keys choose a button whose centre is in that
+direction, preferring an overlapping row/column, then the nearest forward
+centre, then the nearest sideways centre. Equal distances keep configuration
+order. Arrows stop at an edge. Enter and Space activate the focused button
+as mouse button 1, independently of the pointer position.
++
+An inset outline indicates focus, including without a FocusColorset.
+Activation occurs on key release, except for ActionOnPress and Popup
+commands. Holding an activation key produces one action. Moving focus,
+clicking a pointer button or losing window focus cancels a pending key
+activation. Disabling the focused button selects the first remaining
+eligible button; with none, no button is focused. Re-enabling a button
+selects it only if no eligible target remains. Runtime updates do not remove
+button records or change layout.
+
+*FvwmButtons: FocusColorset colorset::
+  Default colorset for a keyboard-focused button when KeyboardNavigation
+  is enabled. The focus outline is also drawn.
+
+*FvwmButtons: DisabledColorset colorset::
+  Default colorset for a disabled button. Its ordinary title and icon remain
+  visible, so a label can explain why the action is unavailable. A small
+  cross in the lower right interior also marks disabled buttons when space
+  permits, including when no DisabledColorset is configured.
+
 *FvwmButtons: Columns columns::
   Specifies the number of columns of buttons to be created. If
   unspecified, the number of columns is set to the number of buttons
@@ -299,6 +335,27 @@ ActiveColorset colorset:::
 PressColorset colorset:::
     Use colorset _colorset_ for the background color/image and/or title
     color of the button when it is pressed.
+
+Disabled:::
+    Prevent pointer, keyboard and PressButton activation. Controls are
+    enabled by default. This is a presentation and input state, not an
+    authorization boundary: action handlers must validate requests and
+    check the current OS capabilities when performing an operation.
+
+Selected:::
+    Display persistent selected relief and the press title, icon and
+    colorset where configured. Selection does not activate an action.
+
+FocusColorset colorset:::
+    Override the module's FocusColorset for this button.
+
+DisabledColorset colorset:::
+    Override the module's DisabledColorset for this button. Disabled
+    presentation takes precedence over selected, pressed, focus and hover
+    presentation. Otherwise the colorset precedence is selected/pressed,
+    focus, hover, normal. A missing state colorset falls back to the next
+    applicable state, then the ordinary inherited colorset. Disabled
+    buttons always use the ordinary title and icon.
 
 Container [(options)]:::
     Specifies that this button will contain a miniature buttonbox,
@@ -926,7 +983,7 @@ SendToModule FvwmButtons-Alias <action> <params>
 Supported actions:
 
 ChangeButton button_id options::
-  can be used to change the title or icon of a button at run time.
+  can be used to change button presentation and state at run time.
   _button_id_ is the id of the button to change as specified using the
   *Id* button option. It may also be a number, in this case the button
   with the given number is assumed. And finally, _button_id_ may be in
@@ -934,8 +991,14 @@ ChangeButton button_id options::
   the button to be changed. It is possible to specify multiple option
   pairs (name with value) by delimiting them using comma. Currently
   options include *Title*, *ActiveTitle*, *PressTitle*, *Colorset*,
-  *Icon*, *ActiveIcon* and *PressIcon*. These options work like the
-  configuration options of the same name.
+  *Icon*, *ActiveIcon*, *PressIcon*, *ActiveColorset*, *PressColorset*,
+  *FocusColorset*, *DisabledColorset*, *Enabled* and *Selected*. Presentation
+  options work like the configuration options of the same name. *Enabled*
+  and *Selected* require *0* or *1*. Enabled 0 disables the control;
+  Enabled 1 enables it. Selected 0 clears persistent selection.
+  IDs, actions, layout and the current eligible focus target stay intact.
+  Each option is applied as it is parsed; an invalid later option does not
+  roll back earlier options. This legacy command is not an atomic batch.
 ExpandButtonVars button_id command::
   replaces variables present in the _command_ exactly like in the
   *Action* button option and then sends the command back to fvwm.
@@ -947,7 +1010,8 @@ PressButton button_id [mouse_button]::
   button e.g "1" for the left mouse button etc. Quotes around the number
   are not necessary. If _mouse_button_ option is omitted, mouse button 1
   is assumed. This command behaves exactly as if the mouse button was
-  pressed and released on the button on in question.
+  pressed and released on the button in question. Disabled controls refuse
+  this command as well as real input.
 Silent::
   This prefix may be specified before other actions. It disables all
   possible error and warning messages.

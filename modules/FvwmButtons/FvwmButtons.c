@@ -69,6 +69,7 @@
 #include "parse.h" /* ParseConfiguration(), parse_window_geometry() */
 #include "draw.h"
 #include "dynamic.h"
+#include "keyboard.h"
 #include "libs/flocale_font_types.h"
 #include "libs/picture_types.h"
 #define MW_EVENTS ( \
@@ -81,6 +82,7 @@
 	PointerMotionMask | \
 	KeyReleaseMask | \
 	KeyPressMask | \
+	FocusChangeMask | \
 	ButtonMotionMask | \
 	0)
 /* SW_EVENTS are for swallowed windows... */
@@ -972,6 +974,10 @@ void ButtonPressProcess (button_info *b, char **act)
 	FlocaleNameString tmp;
     	int i,i2;
 
+	if (!b || b->flags.b_Disabled)
+	{
+		return;
+	}
         memset(&tmp, 0, sizeof(tmp));
 	if (b && !*act && b->flags.b_Panel)
 	{
@@ -1092,6 +1098,10 @@ void Loop(void)
 	{
 		if (My_FNextEvent(Dpy, &Event))
 		{
+			if (buttons_keyboard_event(&Event))
+			{
+				continue;
+			}
 			if (FShapesSupported && Event.type == FShapeEventBase + FShapeNotify)
 			{
 				FShapeEvent *sev = (FShapeEvent *) &Event;
@@ -1329,10 +1339,10 @@ void Loop(void)
 	is_pointer_in_current_button = True;
 
 	act = NULL;
-	if (!b->flags.b_Panel &&
-	    (!b || !b->flags.b_Action ||
+	if (!b || b->flags.b_Disabled ||
+	    (!b->flags.b_Panel && (!b->flags.b_Action ||
 	     ((act = GetButtonAction(b, Event.xbutton.button)) == NULL &&
-	      (act = GetButtonAction(b, 0)) == NULL)))
+	      (act = GetButtonAction(b, 0)) == NULL))))
 	{
 	  CurrentButton = NULL;
 	  break;

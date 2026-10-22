@@ -22,6 +22,12 @@ cJSON *fvwm_query_topology(const monitor_topology_snapshot *snapshot,
 	const char **error);
 cJSON *fvwm_query_workspaces(struct monitors *monitors, int width, int height,
 	const char *mode, const char **error);
+cJSON *fvwm_query_binding_policy(const char *generation,
+	const struct fvwm_query_spec *spec, unsigned int ignored_modifiers,
+	const char **error);
+cJSON *fvwm_query_placement(const char *generation,
+	const struct fvwm_query_spec *spec, unsigned int drag,
+	unsigned int interactive, const char **error);
 cJSON *fvwm_query_bindings(const Binding *bindings, const char *generation,
 	const struct fvwm_query_spec *spec, const char **error);
 

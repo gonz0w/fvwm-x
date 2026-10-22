@@ -40,6 +40,7 @@ struct mfl_request {
 	unsigned int offset;
 	unsigned int limit;
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];
+	char binding_resource[16];
 	const char *error;
 	char settings_payload[MFL_SETTINGS_INPUT_MAX + 1];
 };

@@ -690,6 +690,7 @@ void CMD_IgnoreModifiers(F_CMD_ARGS)
 	}
 	if (mods_unused != mods_unused_old)
 	{
+		binding_query_changed();
 		/* broadcast config to modules */
 		broadcast_ignore_modifiers();
 	}

@@ -37,6 +37,8 @@
 
 #include "functions.h"
 #include "bindings.h"
+#include "menubindings.h"
+#include "move_resize.h"
 #include "misc.h"
 #include "screen.h"
 #include "module_interface.h"
@@ -852,11 +854,33 @@ void CMD_Send_Query(F_CMD_ARGS)
 			monitor_get_all_widths(), monitor_get_all_heights(),
 			monitor_mode == MONITOR_TRACKING_M ? "per-monitor" :
 			is_tracking_shared ? "shared" : "global", &error);
-	else if (strcmp(spec.resource, "bindings") == 0)
+	else if (strcmp(spec.resource, "bindings") == 0 ||
+	    strcmp(spec.resource, "menu-bindings") == 0 ||
+	    strcmp(spec.resource, "menu-defaults") == 0 ||
+	    strcmp(spec.resource, "placement") == 0 ||
+	    strcmp(spec.resource, "binding-policy") == 0)
 	{
 		if (binding_query_token(generation))
-			result = fvwm_query_bindings(Scr.AllBindings,
-				generation, &spec, &error);
+		{
+			if (strcmp(spec.resource, "placement") == 0)
+			{
+				unsigned int drag, interactive;
+
+				placement_query_masks(&drag, &interactive);
+				result = fvwm_query_placement(generation, &spec,
+					drag, interactive, &error);
+			}
+			else if (strcmp(spec.resource, "binding-policy") == 0)
+				result = fvwm_query_binding_policy(generation,
+					&spec, GetUnusedModifiers(), &error);
+			else
+				result = fvwm_query_bindings(
+					strcmp(spec.resource, "bindings") == 0 ?
+					Scr.AllBindings : menu_query_bindings(
+						strcmp(spec.resource,
+							"menu-defaults") == 0),
+					generation, &spec, &error);
+		}
 		else
 			error = "generation_unavailable";
 	}

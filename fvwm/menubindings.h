@@ -61,6 +61,9 @@ typedef enum
  * To be called by SetRCDefaults *only*. */
 void menu_bindings_startup_complete(void);
 
+/* Borrowed for one synchronous core query; never retain across dispatch. */
+const Binding *menu_query_bindings(Bool fallback);
+
 /* Parse a menu binding and store it.
  *
  * To be called from bindings.c *only*. */

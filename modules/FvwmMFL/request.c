@@ -214,12 +214,40 @@ static bool snapshot_request(struct mfl_request *request,
 	const cJSON *const *values, unsigned int seen)
 {
 	const char *resource = values[3]->valuestring;
-	const unsigned int extras = (1U << 7) | (1U << 11) | (1U << 12);
+	const unsigned int extras = (1U << 5) | (1U << 7) |
+		(1U << 11) | (1U << 12);
 
 	if (strcmp(values[2]->valuestring, "query") != 0)
 		return false;
 	if (strcmp(resource, "bindings") == 0)
 	{
+		const char *scope = "global";
+		const char *target;
+
+		if (values[5])
+		{
+			if (!cJSON_IsString(values[5]))
+				return false;
+			scope = values[5]->valuestring;
+		}
+		if (strcmp(scope, "global") == 0)
+			target = "bindings";
+		else if (strcmp(scope, "menu") == 0)
+			target = "menu-bindings";
+		else if (strcmp(scope, "menu-fallback") == 0)
+			target = "menu-defaults";
+		else if (strcmp(scope, "placement") == 0)
+			target = "placement";
+		else if (strcmp(scope, "policy") == 0)
+			target = "binding-policy";
+		else
+			return false;
+		/* Scalar policy snapshots have no list or paging semantics. */
+		if ((strcmp(scope, "placement") == 0 ||
+		     strcmp(scope, "policy") == 0) &&
+		    (values[11] || values[12]))
+			return false;
+		strcpy(request->binding_resource, target);
 		if ((seen & ~extras) != 15 ||
 		    (values[11] && !query_index(values[11],
 			MODULE_QUERY_OFFSET_MAX, &request->offset)) ||
@@ -655,7 +683,7 @@ bool mfl_request_snapshot_command(char *output, size_t capacity,
 		"Send_Query %s %016" PRIx64 " %s %u %u %s", cookie, serial,
 		request->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
 		request->kind == MFL_REQUEST_WORKSPACES ?
-		"workspaces" : "bindings",
+		"workspaces" : request->binding_resource,
 		request->offset, request->limit,
 		request->generation[0] ? request->generation : "-");
 	if (length < 0 || (size_t)length >= capacity)

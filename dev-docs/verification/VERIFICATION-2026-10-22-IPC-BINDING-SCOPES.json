@@ -1,0 +1,534 @@
+{
+  "owner": "IPC-02",
+  "base": "3f4f7052151f110ba6f398a3451e727af4ecf8c4",
+  "status": "focused feature merge gates pass; shared platform/release coverage deferred",
+  "stories": [
+    "regular/fallback menu binding inspection",
+    "normalized placement finish controls",
+    "context/modifier interpretation and generation invalidation"
+  ],
+  "candidate": {
+    "source_files": 2187,
+    "source_archive_sha256": "fc7e9f4cc18f07189d63788a82f44b1ab0a7e25c36126fdd0ee5d15c18cef120",
+    "worktree_manifest_sha256": "591c042a3e1541cf2ce65818c6a081f256c7f30c9dd25577657ae05abc955570",
+    "runtime_inputs": {
+      "fvwm/bindings.c": {
+        "sha256": "a4a161374f59e3e9d009a84b07a0164f5d687246373928ff9c7ca84c955ca701",
+        "mode": 420
+      },
+      "fvwm/menubindings.c": {
+        "sha256": "02e12abae17784f0d1abfb815d1962d8d7164ea77d1368763b4f8bf473cdeeb9",
+        "mode": 420
+      },
+      "fvwm/menubindings.h": {
+        "sha256": "07512e4dfe35b1178bfa582a9b1e25a79bc5ef81e3b8a1425913e6bfad84fd16",
+        "mode": 420
+      },
+      "fvwm/module_interface.c": {
+        "sha256": "bf344bcd164345bbedf017de71d9d9de98c84af1e339bda668461799aee51b10",
+        "mode": 420
+      },
+      "fvwm/move_resize.c": {
+        "sha256": "ebd61b458cd2af324534ff6457ae6cae2554e1fdc2c103921ed2eedfbcbea531",
+        "mode": 420
+      },
+      "fvwm/move_resize.h": {
+        "sha256": "8fc4790fe1bb6b85a1776edd03b7f15eaaf69be777264c0733077e3d3308e10d",
+        "mode": 420
+      },
+      "fvwm/query_json.c": {
+        "sha256": "fdaa91c292b8da87f7e5f115e2fbf7065175dbde3f643e126673289c547f96cd",
+        "mode": 420
+      },
+      "fvwm/query_json.h": {
+        "sha256": "fd1e03c7672440543c56658298f61e623ed27fb02f907670dc71b690adcae515",
+        "mode": 420
+      },
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "sha256": "2a8875d691c978a66fbb73f79daff31cccfd47af4a306290e1469fadd0ed45eb",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.c": {
+        "sha256": "940d49c8d82af99e01a213e526cb29cd87f69b13901311d37b67b62079fc7bf4",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.h": {
+        "sha256": "a4741a2f972dfbe3de722dd4c83f17fa28f5f410e4f99260b9eb1bc0bd8eaf89",
+        "mode": 420
+      },
+      "tests/live_x/mfl_core_state_live.py": {
+        "sha256": "ddd7c7775a5b4623cf989d16c15f169f2cf8badb82a13f3559619939e0a2e508",
+        "mode": 420
+      },
+      "tests/test_mfl_request.c": {
+        "sha256": "e4c5bf4e8eb3216973cf8b7226737f29ac9c62422d5097c2d53a0f457cf11494",
+        "mode": 420
+      },
+      "tests/test_query_json.c": {
+        "sha256": "3e6635659f30396f9d144ff2dd802f0b03f576a6d331562958f272fe391f8ace",
+        "mode": 420
+      }
+    },
+    "final_documentation": "status/report-only changes after freeze; no tested runtime change"
+  },
+  "canonical": {
+    "sha256": "e0147673e73b469b00becff9f984bc75421cc7ee2060992d5e8f0d64ef136d93",
+    "bytes": 131913,
+    "files": 41,
+    "payload_hashes_and_modes_verified": true,
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-binding-scopes/evidence.tgz"
+  },
+  "commands": [
+    {
+      "label": "compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j",
+        "2",
+        "fvwm3:executable",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.272
+    },
+    {
+      "label": "tests",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-stream-xvfb"
+      ],
+      "status": 0,
+      "seconds": 21.993
+    },
+    {
+      "label": "asan-compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j",
+        "2",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 1.135
+    },
+    {
+      "label": "asan-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.172
+    },
+    {
+      "label": "asan-core-state",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_core_state_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-binding-scopes-checkpoint/asan-core-state"
+      ],
+      "status": 0,
+      "seconds": 0.166
+    }
+  ],
+  "environment": {
+    "uname": [
+      "Linux",
+      "288f898505a4",
+      "6.18.10-200.fc43.aarch64",
+      "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+      "aarch64"
+    ],
+    "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+    "gcc_config_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+    "sanitizers": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+      "LSAN_OPTIONS": "exitcode=86",
+      "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+    }
+  },
+  "compilers": {
+    "host": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    },
+    "build": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    }
+  },
+  "features": {
+    "buildtype": "debugoptimized",
+    "golang": "disabled",
+    "htmldoc": false,
+    "live-x-tests": true,
+    "mandoc": false,
+    "png": "enabled",
+    "svg": "enabled",
+    "xcursor": "enabled",
+    "xrender": "enabled"
+  },
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+      "bytes": 5346600
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "e25ca5dfff4a2d3ec67bbee5b4005d3c1558e4364355fabc4650f5b42b32824e",
+      "bytes": 393824
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-query-json": {
+      "sha256": "52182443cb65d839ef9ae700cf424d59dca2d6ea5e40b5d0a9f9ee9da0a728f7",
+      "bytes": 400064
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request": {
+      "sha256": "c2768b9b827c673327826d8fd961353e16bfc1d7fd59b8bf2a573ff99c1601db",
+      "bytes": 281064
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop": {
+      "sha256": "f781a64664300d796fac05b3654933cc2fe9c8ecc5606e1f4ef99c28ca020140",
+      "bytes": 83646
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "48ab25e538d0f70403c32bb6bfa5fe63d2f2cb822c1d4c051e5a176d35fe4fb2",
+      "bytes": 2985344
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-query-json": {
+      "sha256": "decf36b6f9beda7409a90d0be71d4ba4a86bbf80fb66159960e4bbd46cb275b1",
+      "bytes": 3290224
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": {
+      "sha256": "6ab8e49b18185ddcb3a0d51eabaeb3cc09484e2bd8a4b14f34bb770a74c3fd69",
+      "bytes": 2656576
+    }
+  },
+  "tests": {
+    "evidence/asan-testlog.json": {
+      "entries": 2,
+      "passed": 2,
+      "other": []
+    },
+    "evidence/gcc-testlog.json": {
+      "entries": 7,
+      "passed": 7,
+      "other": []
+    }
+  },
+  "scoped_sanitizer_exercises": 3,
+  "native_CPU_sanitizers": false,
+  "binding_acceptance": {
+    "menu_entries": 1,
+    "fallback_entries": 7,
+    "override_does_not_remove_fallback": true,
+    "normalized_placement": {
+      "state": "observed",
+      "scope": "placement-bindings",
+      "generation": "00000000000904890e95022a000c27ec0000000000000016",
+      "button_count": 15,
+      "drag_finish_mask": 4,
+      "interactive_finish_mask": 2,
+      "key_bindings": false,
+      "modifier_bindings": false
+    },
+    "policy": {
+      "state": "observed",
+      "scope": "binding-policy",
+      "contexts": {
+        "window": 1,
+        "title": 2,
+        "icon": 4,
+        "root": 8,
+        "menu": 16,
+        "placement": 32,
+        "left_1": 64,
+        "right_1": 128,
+        "left_2": 256,
+        "right_2": 512,
+        "left_3": 1024,
+        "right_3": 2048,
+        "left_4": 4096,
+        "right_4": 8192,
+        "left_5": 16384,
+        "right_5": 32768,
+        "unmanaged": 65536,
+        "ewmh_desktop": 131072,
+        "top_left": 1048576,
+        "top_right": 2097152,
+        "bottom_left": 4194304,
+        "bottom_right": 8388608,
+        "left_side": 16777216,
+        "right_side": 33554432,
+        "top_side": 67108864,
+        "bottom_side": 134217728,
+        "menu_item": 20,
+        "frame": 15728640,
+        "sidebar": 251658240,
+        "all": 267583439
+      },
+      "modifiers": {
+        "shift": 1,
+        "lock": 2,
+        "control": 4,
+        "mod1": 8,
+        "mod2": 16,
+        "mod3": 32,
+        "mod4": 64,
+        "mod5": 128,
+        "any": 32768
+      },
+      "generation": "00000000000904890e95022a000c27ec0000000000000017",
+      "ignored_modifier_mask": 18,
+      "xkb_ignored_modifier_mask": 24576,
+      "used_modifier_mask": 237
+    },
+    "generation_checked_across_domains": true,
+    "literal_query_no_execution": true
+  },
+  "failures": {
+    "development1.log": {
+      "sha256": "9bbb1b0564d338d3a89cc7c73ed5e94d549ece83522bde701a65c6c68ba418b5",
+      "result": "failed; fixture admission expanded an unescaped variable; escaped in final source"
+    },
+    "development2.log": {
+      "sha256": "6b84d4eacd5642bed771d7808b95a25b8f530f1eb65654c14230409f090dd95f",
+      "result": "failed; fixture admission expanded an unescaped variable; escaped in final source"
+    }
+  },
+  "manual": {
+    "FvwmMFL": {
+      "source_sha256": "e828134cd71654a1015de4744c295992eb8c240e2d5c76b5d8398cbe5add6d28",
+      "roff_sha256": "ba01ee1717a3271d1743322c826b33a3c8de1e94b3ecd6c9c96581d4319c30e0",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 8
+      }
+    },
+    "FvwmMFL-before": {
+      "source_sha256": "86b5d2742c4c361c60fe45047bbca7687837f887f309365124def0b625eedb27",
+      "roff_sha256": "73e5de0541f10deb1144cf0bbaa762a731aecb5b5813f4a9da5c5969b5f14f1e",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 8
+      }
+    }
+  },
+  "retirement": {
+    "removed_capture": "/tmp/fvwm-module-waits-20261015/ipc-binding-scopes-checkpoint",
+    "capture_files": 41,
+    "removed_archive": "/tmp/fvwm-module-waits-20261015/ipc-binding-scopes-evidence.tgz",
+    "archive_sha256": "e0147673e73b469b00becff9f984bc75421cc7ee2060992d5e8f0d64ef136d93",
+    "removed_duplicate_source_archive": "/tmp/fvwm-module-waits-20261015/ipc-binding-scopes-inputs/source.tgz",
+    "source_archive_sha256": "3b072e40b463366d16eba76ca6ee8b038920c86c27e26f518ec6b6183900134a",
+    "canonical_payload_and_mode_proof": true
+  },
+  "cycle": {
+    "integrated_reference": "PR157",
+    "merged": 0,
+    "after_merge": 1,
+    "limit": 3,
+    "deferred": [
+      "affected six-target and alternate profiles at shared closure",
+      "full compiler/feature/install/default-X acceptance at milestone/release",
+      "native-CPU/hardware/toolkit/compositor qualification"
+    ]
+  },
+  "performance": {
+    "reference": "PR154",
+    "merged": 3,
+    "after_merge": 4,
+    "limit": 5,
+    "comparison_due": false
+  },
+  "final_policy": {
+    "reason": "Review replaces a five-way nested ternary with explicit test cases and wraps vector strings; only two policy test sources change",
+    "source_delta": {
+      "changed": [
+        "README.md",
+        "dev-docs/PROJECT-TRACKER.md",
+        "dev-docs/verification/README.md",
+        "dev-docs/verification/VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.json",
+        "dev-docs/verification/VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.md",
+        "tests/test_mfl_request.c",
+        "tests/test_query_json.c"
+      ],
+      "runtime": [
+        "tests/test_mfl_request.c",
+        "tests/test_query_json.c"
+      ],
+      "unchanged_runtime_and_fixtures": "all product and actual-X inputs exact; only two native policy test sources change"
+    },
+    "canonical": {
+      "sha256": "aa2dd64fe498d09f6afd3c17177e4db75e0ee4c82d041877a326707c950349c7",
+      "bytes": 223730,
+      "files": 17,
+      "payload_hashes_and_modes_verified": true
+    },
+    "commands": [
+      {
+        "label": "gcc-compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j",
+          "2",
+          "test-query-json",
+          "test-mfl-request"
+        ],
+        "status": 0,
+        "seconds": 0.273
+      },
+      {
+        "label": "gcc-tests",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--num-processes",
+          "1",
+          "--print-errorlogs",
+          "core-query-json",
+          "mfl-request"
+        ],
+        "status": 0,
+        "seconds": 0.171
+      },
+      {
+        "label": "asan-compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j",
+          "2",
+          "test-query-json",
+          "test-mfl-request"
+        ],
+        "status": 0,
+        "seconds": 0.273
+      },
+      {
+        "label": "asan-tests",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--num-processes",
+          "1",
+          "--print-errorlogs",
+          "core-query-json",
+          "mfl-request"
+        ],
+        "status": 0,
+        "seconds": 0.17
+      }
+    ],
+    "tests": {
+      "evidence/asan-testlog.json": {
+        "entries": 2,
+        "passed": 2,
+        "other": []
+      },
+      "evidence/gcc-testlog.json": {
+        "entries": 2,
+        "passed": 2,
+        "other": []
+      }
+    },
+    "unchanged_core_and_both_MFL_binaries_verified": true,
+    "focused_composition": {
+      "retained": 5,
+      "fresh_policy": 2,
+      "total": 7
+    },
+    "sanitizer_composition": {
+      "retained_X": 1,
+      "fresh_policy": 2,
+      "total": 3
+    },
+    "baseline_guard": "All 2185 initial frozen files guarded before/after with two exact test-source overrides; final documentation-only delta is outside execution scope",
+    "retirement": {
+      "removed_capture": "/tmp/fvwm-module-waits-20261015/ipc-binding-scopes-final-policy",
+      "capture_files": 17,
+      "removed_archive": "/tmp/fvwm-module-waits-20261015/ipc-binding-scopes-final-policy.tgz",
+      "archive_sha256": "aa2dd64fe498d09f6afd3c17177e4db75e0ee4c82d041877a326707c950349c7",
+      "canonical_payload_and_mode_proof": true
+    }
+  }
+}

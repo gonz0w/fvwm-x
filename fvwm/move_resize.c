@@ -2029,6 +2029,12 @@ void AnimatedMoveFvwmWindow(
 	return;
 }
 
+void placement_query_masks(unsigned int *drag, unsigned int *interactive)
+{
+	*drag = (unsigned int)move_drag_finish_button_mask;
+	*interactive = (unsigned int)move_interactive_finish_button_mask;
+}
+
 int placement_binding(int button, KeySym keysym, int modifier, char *action)
 {
 	if (keysym != 0)

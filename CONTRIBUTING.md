@@ -8,8 +8,10 @@ Use a bounded `codex/` branch from `origin/main`. Batch related implementation,
 tests and documentation into one reviewable PR per coherent checkpoint, usually
 three to five substantive related behavior improvements. Tests, probes and
 documentation supporting one improvement count as that one item. Use focused
-incremental checks between items and one broad qualification pass at the batch
-boundary; see the [cadence](dev-docs/WORKFLOW.md#implementation-batches-and-test-cadence).
+incremental checks between items. Ordinary PRs use focused merge gates; share
+one affected platform checkpoint across roughly three feature PRs and complete
+full acceptance at milestone/release boundaries. See the
+[cadence](dev-docs/WORKFLOW.md#implementation-batches-and-test-cadence).
 Keep related docs/evidence and review fixes in
 that PR while it is open; split for independent contracts or ownership. Preserve
 another chat's edits and run from an isolated, identified candidate. Sign contributor commits and
@@ -26,8 +28,8 @@ make hooks
 checks. It does not compile the WM or establish native platform, X11, race,
 sanitizer, hardware or release acceptance.
 
-Run it once for the combined candidate, not after each story or documentation
-edit. During development, use affected tests and an owner-controlled incremental
+Run it once per shared integration cycle, or when its harness changes, not after
+each story or documentation edit. During development, use affected tests and an owner-controlled incremental
 build per compiler/feature profile. Docs/status-only updates use `make check`
 and whitespace/link checks; retain unchanged source-bound runtime evidence.
 The offline link check covers current inline-Markdown file references; archived
@@ -44,8 +46,10 @@ sh tests/run_native_gate.sh --sanitizers builddir/review-sanitizers
 Run native commands on the matching Linux/BSD environment. macOS may use the
 qualified local QEMU/lab environments. Follow [support](dev-docs/SUPPORT.md),
 [BSD setup](dev-docs/BSD.md) and [local recipes](dev-docs/ci/README.md), including
-the patched PNG requirement. Run focused checks while developing and the required
-combined matrix once per coherent checkpoint; reuse valid unaffected evidence.
+the patched PNG requirement. Normal PRs use affected checks on one incremental
+Linux profile, plus early affected-platform checks for sensitive changes.
+The full scripts above are acceptance recipes, not an every-PR checklist.
+Record the integration cycle and deferred gates; reuse valid unaffected evidence.
 Use separate build directories. Default-X tests require a disposable BSD VM.
 
 Before pushing, inspect the diff, run appropriate checks and record commit/tree,

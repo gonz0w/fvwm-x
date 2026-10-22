@@ -32,6 +32,24 @@ retain earlier development states; a historical "pending" entry does not
 supersede a later accepted result. Counts describe each frozen checkpoint,
 not the changing shared checkout or another thread's desktop/runtime work.
 
+Verification cadence, accepted 2026-10-22: normal feature PRs use focused merge
+checks on one incremental Linux profile, with early affected-target checks for
+platform-sensitive changes. Share one affected six-target checkpoint across
+roughly three feature PRs; complete full compiler/feature/install/default-X
+acceptance at milestone/release boundaries or earlier for a changed contract.
+Keep deferred gates explicit. See the
+[decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md) and
+[workflow](WORKFLOW.md#implementation-batches-and-test-cadence).
+
+Integration cycle ledger: PR154's frozen IPC candidate
+`5f898d6e0abc05a009d6e429f84ab537be47afbb` already passes its selected
+six-target checkpoint under the previous cadence. PR154 remains in review;
+after merge it is the next cycle's reference. Subsequent merged feature PRs:
+**0/3**; accumulated new stories/subsystems/deferred cycle checks: **none yet**.
+Close that cycle at three PRs, about ten substantive stories or an earlier
+natural handoff. Record selected/deferred gates as features are chosen;
+native-CPU/hardware/toolkit/compositor and full release gaps remain unchanged.
+
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
 | Correlated MFL requests, IPC-02 | First subset locally qualified for review; owner remains open | Three request/error, core query/barrier and read-only admission features pass 82 selected registered entries across six targets/ten profiles, ten staged request-X sessions, four authenticated default BSD displays and two leak-enabled guest sanitizer exercises. Ten MFL executables change; 140 other native ELF targets / 77 catalogs retain exact PR153 identities. All 927 install files are verified. Fourteen OpenBSD selected tests and both complete installs are retained through exact cache/package identity; only unfinished installed-session gates run in completion jobs. Original private runner failures remain explicit. Old broad MFL-dependent passes are historical, not current composed qualification. No new UI is selected. Full providers, applied actions and preview/recovery remain open. [Report](verification/VERIFICATION-2026-10-22-IPC-REQUESTS.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-REQUESTS.json). |
@@ -2342,3 +2360,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-22: IPC-02’s focused Linux and early FreeBSD ARM64 native policy/actual-X checks pass, including independent X-property comparison, existing legacy streams, explicit read-only refusal, eight pending slots, timeout/late-reply and disconnect/slow-reader isolation. Pre-freeze review tightens duplicate-ID handling for malformed requests, checks deadlines in the input callback as well as the timer, and preserves allocation-failure ownership. The selected combined checkpoint builds all ten profiles, runs seven IPC/consumer entries per profile plus Linux backpressure/interaction checks, tests ten staged native modules and four authenticated default BSD displays, and adds scoped leak-enabled request policy/module lifecycle sanitizers. Unchanged core/other native targets retain exact identities; broader old MFL-dependent results are historical and will not be counted as freshly/composition-qualified for the changed MFL binary. No new UI is selected; native UI screenshots remain required for later visible consumers.
 
 - 2026-10-22: IPC-02’s first correlated query/barrier/read-only subset is locally qualified: 82 selected registered passes across six targets/ten profiles, ten staged request-X sessions, four authenticated default BSD displays and two leak-enabled scoped guest sanitizer exercises. Only ten MFL executables change; 140 other native ELF targets and 77 catalogs remain exact, with all 927 install files verified. Both original OpenBSD selected tests/complete installs are retained through exact source/cache/compiler/package identity while unfinished staged/default-X gates complete; the overstrict RUNPATH verifier and recovery proof-path failures remain canonical. An ASan target-registration setup failure is preserved; explicit reconfigure and scoped follow-up pass without suppression. Old broad MFL-dependent results remain historical, not current composed passes. No runtime/observer correction follows freeze 5f898d6. Full providers, typed applied actions, progress/cancellation and CFG-01 preview remain open. No new UI; later visible work retains screenshots. PR149 cadence stays 4/5 until merge. [Report](verification/VERIFICATION-2026-10-22-IPC-REQUESTS.md).
+
+- 2026-10-22: user requests substantially faster feature delivery. Adopt focused PR merge gates on one incremental Linux profile, early affected-target checks for sensitive work, one accumulated affected six-target checkpoint per roughly three feature PRs/ten substantive stories, and full milestone/release acceptance. Ordinary PRs do not repeat installs or four BSD default-X sessions. Explicit cycle/deferred-check ledger prevents silent coverage debt; PR154's already-qualified candidate starts the next cycle after merge. This documentation-only cadence update stays in open PR154 and repeats no product tests. [Decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md).

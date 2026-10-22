@@ -12,6 +12,9 @@ State whether supported configuration names, arguments or formats change.
 
 Record head/tree/base, actual commands/results and appropriate native/X11,
 race/sanitizer/install receipts. Preserve failures, skipped checks and gaps.
+For a focused feature PR, name the integration cycle and deferred platform/
+install/default-X checks. Deferred checks are not passes; full matrix results
+are not required for every ordinary PR. See dev-docs/WORKFLOW.md.
 `make verify` covers portable foundation checks only. Actions is disabled.
 
 ## Documentation and review

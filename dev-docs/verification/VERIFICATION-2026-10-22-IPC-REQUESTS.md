@@ -42,7 +42,11 @@ Base: merged PR153, `d330762f97ddb9cb9be5ab74cff0e57bdccd34af`.
 Pre-freeze review corrected malformed duplicate-ID handling, absolute-deadline
 checks when input precedes an already-due timer, and unattached JSON allocation
 ownership. No runtime/test correction follows the freeze. Publication changes
-only README/tracker/indices/evidence documentation; it does not repeat the matrix.
+only documentation, repository instructions and evidence; it does not repeat
+the matrix. The subsequent user-approved
+[cadence change](../decisions/FEATURE-TEST-CADENCE-2026-10-22.md) stays in this
+open PR, adds focused PR/shared-cycle gates for future development and leaves
+this already-completed qualification intact.
 
 All 82 selected registered entries pass across six targets and ten profiles:
 Linux AMD64/ARM64 GCC/Clang, Linux ARM64 software/minimal, FreeBSD AMD64/ARM64

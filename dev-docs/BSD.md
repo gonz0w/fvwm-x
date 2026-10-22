@@ -15,6 +15,14 @@ GitHub hosts code and review with Actions disabled. The owned QEMU recipes
 cover all four BSD profiles. Record exact source, guest, patch and feature
 identities separately from native-CPU and physical-hardware release coverage.
 
+Normal feature PRs do not boot both architectures or repeat staged/default-X
+sessions by default. Check a BSD target early for BSD-sensitive changes; share
+affected six-target coverage across the integration cycle. Complete install and
+default-X acceptance remains required at milestone/release boundaries, and
+runs earlier when installed or server-specific behavior changes. Follow the
+[tiered cadence](WORKFLOW.md#implementation-batches-and-test-cadence); the full
+gate commands below are acceptance recipes, not an every-PR checklist.
+
 Run `sh tests/run_on_bsd.sh` inside a guest with this source tree. It builds
 the core and all modules, runs policy tests and a native Xvfb session, then
 checks a staged installation. It does not install into the guest's system.

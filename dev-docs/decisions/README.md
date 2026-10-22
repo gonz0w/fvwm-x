@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Feature checks and shared qualification cycles](FEATURE-TEST-CADENCE-2026-10-22.md): accepted user direction; focused PR merge gates, one affected platform checkpoint per roughly three feature PRs, full milestone/release acceptance and explicit deferred coverage.
+
 - [First structured MFL request contract](IPC-REQUESTS-2026-10-22.md): IPC-02 correlation/schema, authoritative core queries, honest stream barriers, bounded lifetimes and one-way read-only admission. Broader providers/actions/preview remain open.
 
 - [Safety and maintainability closeout](HARDENING-CLOSEOUT-2026-10-21.md): approved priority change; defer remaining performance-only tuning to the next release and use finite safety checkpoints before feature handoff.

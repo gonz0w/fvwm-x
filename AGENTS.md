@@ -69,15 +69,19 @@ instructions; retired GSD plans and graph data are historical references.
 ## Verification and shared-workspace workflow
 
 - Follow `dev-docs/SUPPORT.md` and `dev-docs/BSD.md`. Pure policy needs native unit
-  coverage; X-visible behavior needs nested-X native Linux integration and relevant
-  six-target gates. Physical hardware/toolkits/compositors require their own checks.
-- Follow the batched test cadence in `dev-docs/WORKFLOW.md`: implement a coherent
-  set of related stories with affected builds/tests during development; run the
-  extensive matrix once at the combined checkpoint, not after each small edit.
-  Check platform-sensitive changes early on the affected target. Track focused
-  passes separately from full qualification; compatibility approvals and required
-  acceptance/release coverage remain unchanged.
-- Default to one PR per coherent checkpoint, usually three to five related
+  coverage; X-visible behavior needs nested-X Linux integration. Apply relevant
+  six-target coverage at the shared integration cycle and full acceptance at
+  milestone/release boundaries. Physical hardware/toolkits/compositors retain
+  their own checks; emulated passes do not establish native-CPU qualification.
+- Follow the tiered cadence in `dev-docs/WORKFLOW.md`: normal feature PRs use one
+  incremental Linux profile, affected policy/X tests and scoped sanitizers when
+  warranted. Check platform-sensitive changes early on the affected target.
+  Combine roughly three feature PRs into one affected cross-platform checkpoint;
+  full compiler/feature/install/default-X qualification belongs at milestone or
+  release boundaries unless the changed contract requires it earlier. Track
+  deferred gates in the tracker; focused-checks-passed PRs may merge while
+  integration is pending. Do not report deferred checks as passes.
+- Default to one PR per coherent feature batch, usually three to five related
   stories. Keep related implementation, tests, docs, evidence and review fixes
   together. Reuse owner-controlled incremental builds per compiler/feature
   profile; do not rebuild or run a full matrix solely because a PR is created.

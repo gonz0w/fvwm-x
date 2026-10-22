@@ -26,6 +26,7 @@ Pixel buttonBack(const button_info *);
 Pixel buttonHilite(button_info *);
 Pixel buttonShadow(button_info *);
 int buttonColorset(button_info *b);
+int buttons_state_colorset(const button_info *b);
 char *buttonTitle (button_info *b);
 FvwmPicture *buttonIcon (button_info *b);
 unsigned short iconFlagSet (button_info *b);

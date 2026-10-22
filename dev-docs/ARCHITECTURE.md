@@ -196,6 +196,16 @@ lock-on-send keeps its existing completion barrier. `stack::new_layer` publishes
 state and highlight identity for each affected transient. Combined frozen
 qualification is locally accepted; native release CI remains separate.
 
+FvwmButtons owns opt-in keyboard focus and held-key state in
+`modules/FvwmButtons/keyboard.c`, separately from pointer hover/press records.
+Its pure `buttons_navigation` policy ranks actual laid-out rectangles; existing
+button-tree iteration supplies traversal order. Button records live for the
+module lifetime, and dynamic state updates preserve their identity. The shared
+`ButtonPressProcess` activation boundary refuses disabled actions; managed
+window commands still go through SendText and the core command engine. State
+palettes are selected by `buttons_state_colorset` for foreground and background.
+Legacy ChangeButton remains incremental; bounded atomic groups stay BUTTON-02.
+
 The separate DATA-01 tree-query follow-up initializes `GetEqualSizeChildren`
 failure output and validates the parent before acquiring the owned Xlib child
 list. FvwmButtons remains its actual consumer. Focused policy and scoped

@@ -629,6 +629,13 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 60)
 
+    test('buttons-keyboard-xvfb', py,
+        args: [files('live_x/buttons_keyboard_live.py'),
+               '--module', fvwm_buttons, '--fvwm', fvwm3, '--mfl', fvwm_mfl,
+               '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'buttons-keyboard'],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 90)
+
     test('buttons-transport-xvfb', py,
         args: [files('live_x/buttons_transport_live.py'),
                '--module', fvwm_buttons,
@@ -3398,6 +3405,15 @@ script_packet_test = executable(
 )
 test('script-packet', script_packet_test)
 
+
+buttons_navigation_test = executable(
+    'test-buttons-navigation',
+    ['test_buttons_navigation.c',
+     '../modules/FvwmButtons/buttons_navigation.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('buttons-navigation', buttons_navigation_test)
 
 ui_packet_test = executable(
     'test-ui-packet', ['test_ui_packet.c', '../modules/FvwmIconMan/iconman_packet.c',

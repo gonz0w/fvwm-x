@@ -1,6 +1,8 @@
 module_sources = [
     'FvwmButtons.c',
     'buttons_packet.c',
+    'buttons_navigation.c',
+    'keyboard.c',
     'button.c',
     'draw.c',
     'dynamic.c',

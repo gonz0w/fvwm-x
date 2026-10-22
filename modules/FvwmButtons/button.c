@@ -30,6 +30,7 @@
 #include <X11/Intrinsic.h>
 #include "FvwmButtons.h"
 #include "button.h"
+#include "keyboard.h"
 
 
 
@@ -288,39 +289,69 @@ Pixel buttonShadow(button_info *b)
   return None;
 }
 
+int buttons_state_colorset(const button_info *b)
+{
+	const container_info *defaults = UberButton->c;
+
+	if (b->flags.b_Disabled)
+	{
+		if (b->flags.b_DisabledColorset)
+			return b->disabledColorset;
+		if (defaults->flags.b_DisabledColorset)
+			return defaults->disabledColorset;
+		return -1;
+	}
+	if (b->flags.b_Hangon || b->flags.b_Selected ||
+		b == CurrentButton || buttons_is_key_pressed(b))
+	{
+		if (b->flags.b_PressColorset)
+			return b->pressColorset;
+		if (defaults->flags.b_PressColorset)
+			return defaults->pressColorset;
+	}
+	if (buttons_is_focused(b))
+	{
+		if (b->flags.b_FocusColorset)
+			return b->focusColorset;
+		if (defaults->flags.b_FocusColorset)
+			return defaults->focusColorset;
+	}
+	if (b == ActiveButton)
+	{
+		if (b->flags.b_ActiveColorset)
+			return b->activeColorset;
+		if (defaults->flags.b_ActiveColorset)
+			return defaults->activeColorset;
+	}
+	return -1;
+}
+
 int buttonColorset(button_info *b)
 {
-  if (b->flags.b_Hangon)
-  {
-	if (b->flags.b_PressColorset)
-		return b->pressColorset;
-	if (UberButton->c->flags.b_PressColorset)
-		return UberButton->c->pressColorset;
-  }
-  else if (b == ActiveButton && b->flags.b_ActiveColorset)
-    return b->activeColorset;
-  else if (b == ActiveButton && UberButton->c->flags.b_ActiveColorset)
-    return UberButton->c->activeColorset;
-  else if (b == CurrentButton && b->flags.b_PressColorset)
-    return b->pressColorset;
-  else if (b == CurrentButton && UberButton->c->flags.b_PressColorset)
-    return UberButton->c->pressColorset;
+	int state = buttons_state_colorset(b);
 
-  if (b->flags.b_Colorset)
-    return b->colorset;
-  else if (b->flags.b_Container && b->c->flags.b_Colorset)
-    return b->c->colorset;
-  while ((b = b->parent))
-  {
-    if (b->c->flags.b_Colorset)
-      return b->c->colorset;
-  }
-  return -1;
+	if (state >= 0)
+		return state;
+	if (b->flags.b_Colorset)
+		return b->colorset;
+	if (b->flags.b_Container && b->c->flags.b_Colorset)
+		return b->c->colorset;
+	while ((b = b->parent))
+	{
+		if (b->c->flags.b_Colorset)
+			return b->c->colorset;
+	}
+	return -1;
 }
 
 char *buttonTitle (button_info *b)
 {
-	if (b->flags.b_Hangon)
+	if (b->flags.b_Disabled)
+	{
+		return b->flags.b_Title ? b->title : NULL;
+	}
+	if (b->flags.b_Hangon || b->flags.b_Selected ||
+		buttons_is_key_pressed(b))
 	{
 	    if (b->flags.b_PressTitle)
 		return b->pressTitle;
@@ -341,7 +372,12 @@ char *buttonTitle (button_info *b)
 
 FvwmPicture *buttonIcon (button_info *b)
 {
-	if (b->flags.b_Hangon)
+	if (b->flags.b_Disabled)
+	{
+		return b->icon;
+	}
+	if (b->flags.b_Hangon || b->flags.b_Selected ||
+		buttons_is_key_pressed(b))
         {
 		if (b->flags.b_PressIcon)
 			return b->pressicon;
@@ -357,7 +393,12 @@ FvwmPicture *buttonIcon (button_info *b)
 
 unsigned short iconFlagSet (button_info *b)
 {
-	if (b->flags.b_Hangon)
+	if (b->flags.b_Disabled)
+	{
+		return b->flags.b_Icon ? 1 : 0;
+	}
+	if (b->flags.b_Hangon || b->flags.b_Selected ||
+		buttons_is_key_pressed(b))
         {
                 if (b->flags.b_PressIcon)
                         return 1;

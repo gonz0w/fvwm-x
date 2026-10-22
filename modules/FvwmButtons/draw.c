@@ -40,6 +40,7 @@
 #include "libs/FEvent.h"
 #include "libs/Graphics.h"
 #include "FvwmButtons.h"
+#include "keyboard.h"
 #include "misc.h" /* ConstrainSize() */
 #include "icons.h" /* ConfigureIconWindow() */
 #include "button.h"
@@ -175,31 +176,12 @@ void MakeButton(button_info *b)
 
 static int buttonBGColorset(button_info *b)
 {
-	if (b->flags.b_Hangon)
-	{
-		if (b->flags.b_PressColorset)
-			return b->pressColorset;
-		if (UberButton->c->flags.b_PressColorset &&
-			(buttonSwallow(b) & b_UseOld))
-		{
-			return UberButton->c->pressColorset;
-		}
-	}
-	else if (b == ActiveButton && b->flags.b_ActiveColorset)
-		return b->activeColorset; /* button has it's own active CS */
-	else if (b == ActiveButton && UberButton->c->flags.b_ActiveColorset)
-		return UberButton->c->activeColorset; /* global active CS */
-	else if (b == CurrentButton && b->flags.b_PressColorset)
-		return b->pressColorset; /* button has it's own press CS */
-	else if (b == CurrentButton && UberButton->c->flags.b_PressColorset)
-		return UberButton->c->pressColorset; /* global press CS */
+	int state = buttons_state_colorset(b);
 
-	if (b->flags.b_Colorset)
-		return b->colorset;
-
-	return -1;
+	if (state >= 0)
+		return state;
+	return b->flags.b_Colorset ? b->colorset : -1;
 }
-
 
 
 /**
@@ -229,7 +211,7 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 	int f,of,x,y,px,py;
 	int ix,iy,iw,ih;
 	XGCValues gcv;
-	int rev = 0;
+	int rev = b->flags.b_Selected && !b->flags.b_Disabled;
 	int rev_xor = 0;
 	Pixel fc;
 	Pixel bc;
@@ -315,13 +297,17 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 		{
 			rev = 1;
 		}
-		if (b == CurrentButton && is_pointer_in_current_button)
+		if (!b->flags.b_Disabled &&
+			((b == CurrentButton && is_pointer_in_current_button) ||
+			 buttons_is_key_pressed(b)))
 		{
 			rev_xor = 1;
 		}
 	}
-	else if (b->flags.b_Hangon ||
-		 (b == CurrentButton && is_pointer_in_current_button))
+	else if ((!b->flags.b_Disabled && b->flags.b_Hangon) ||
+		 (!b->flags.b_Disabled &&
+			((b == CurrentButton && is_pointer_in_current_button) ||
+			 buttons_is_key_pressed(b))))
 	{
 		/* Hanging swallow or held down by user */
 		rev = 1;
@@ -687,6 +673,22 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 
 	/* relief */
 	RelieveButton(MyWindow,of,x,y,BW,BH,hc,sc,rev ^ rev_xor);
+	/* Focus is independent of hover and remains visible without a palette.
+	 * Keep marks inside the cleaned interior, including frameless buttons. */
+	if (buttons_is_focused(b) && BW > 2*f + 5 && BH > 2*f + 5)
+	{
+		XSetForeground(Dpy, NormalGC, fc);
+		XDrawRectangle(Dpy, MyWindow, NormalGC, x+f+1, y+f+1,
+			BW-2*f-3, BH-2*f-3);
+	}
+	if (b->flags.b_Disabled && BW > 2*f + 9 && BH > 2*f + 9)
+	{
+		XSetForeground(Dpy, NormalGC, fc);
+		XDrawLine(Dpy, MyWindow, NormalGC, x+BW-f-8, y+BH-f-8,
+			x+BW-f-3, y+BH-f-3);
+		XDrawLine(Dpy, MyWindow, NormalGC, x+BW-f-8, y+BH-f-3,
+			x+BW-f-3, y+BH-f-8);
+	}
 }
 
 /**

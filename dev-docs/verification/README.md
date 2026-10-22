@@ -542,3 +542,5 @@ diagnostic and execution gates remain separate.
 - [2026-10-20 swallowed-client session ownership](VERIFICATION-2026-10-20-SESSION-CALLBACKS.md): registration/refusal, pending-peer retention and property replies; one full run plus affected corrections, preserved no-save policy and 1/5 performance cadence.
 
 - [Core module/icon/event record dependencies](VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md): six-target affected qualification and exact code/data parity; ARM GCC fanout 68/216/37 to 30/6/2.
+
+- [Native button keyboard navigation and state](VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md): implementation and focused evidence; combined qualification pending.

@@ -1,0 +1,9 @@
+{
+  "status": "combined qualification pending",
+  "owners": ["BUTTON-01", "BUTTON-02 live presentation; atomic groups remain"],
+  "focused": {
+    "linux-arm64-gcc": ["buttons-navigation", "buttons-keyboard-xvfb", "buttons-transport-xvfb"],
+    "freebsd-arm64": ["buttons-navigation", "buttons-keyboard-xvfb", "buttons-transport-xvfb"]
+  },
+  "remaining": ["combined qualification", "staged/default X", "scoped guest sanitizers", "manual render", "native-CPU and physical/release acceptance"]
+}

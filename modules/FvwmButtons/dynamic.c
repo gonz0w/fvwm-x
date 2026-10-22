@@ -28,6 +28,7 @@
 #include "button.h"
 #include "draw.h"
 #include "icons.h"
+#include "keyboard.h"
 
 /* ---------------------------- local definitions --------------------------- */
 
@@ -199,7 +200,8 @@ static char *actions[] =
 static char *button_options[] =
 {
 	"Title", "Icon", "ActiveTitle", "ActiveIcon", "PressTitle", "PressIcon",
-	"Colorset", NULL
+	"Colorset", "Enabled", "Selected", "ActiveColorset", "PressColorset",
+	"FocusColorset", "DisabledColorset", NULL
 };
 
 void parse_message_line(char *line)
@@ -305,7 +307,7 @@ void parse_message_line(char *line)
 				if (b->flags.b_ActiveTitle)
 					free(b->activeTitle);
 				b->flags.b_ActiveTitle = 1;
-				b->title = value;
+				b->activeTitle = value;
 				value = NULL;
 				break;
 			case 4:
@@ -313,8 +315,56 @@ void parse_message_line(char *line)
 				if (b->flags.b_PressTitle)
 					free(b->pressTitle);
 				b->flags.b_PressTitle = 1;
-				b->title = value;
+				b->pressTitle = value;
 				value = NULL;
+				break;
+			case 7: /* Enabled */
+			case 8: /* Selected */
+				if (strcmp(value, "0") != 0 && strcmp(value, "1") != 0)
+				{
+					show_error("State requires 0 or 1\n");
+					break;
+				}
+				if (option == 7)
+				{
+					b->flags.b_Disabled = value[0] == '0';
+				}
+				else
+				{
+					b->flags.b_Selected = value[0] == '1';
+				}
+				buttons_state_changed(b);
+				break;
+			case 9: /* ActiveColorset */
+			case 10: /* PressColorset */
+			case 11: /* FocusColorset */
+			case 12: /* DisabledColorset */
+				if (!ParseColorsetId(value, NULL, &i) ||
+					!AllocColorset(i))
+				{
+					show_error("Invalid state colorset\n");
+					break;
+				}
+				if (option == 9)
+				{
+					b->activeColorset = i;
+					b->flags.b_ActiveColorset = 1;
+				}
+				else if (option == 10)
+				{
+					b->pressColorset = i;
+					b->flags.b_PressColorset = 1;
+				}
+				else if (option == 11)
+				{
+					b->focusColorset = i;
+					b->flags.b_FocusColorset = 1;
+				}
+				else
+				{
+					b->disabledColorset = i;
+					b->flags.b_DisabledColorset = 1;
+				}
 				break;
 			case 6:
 				/* Colorset */

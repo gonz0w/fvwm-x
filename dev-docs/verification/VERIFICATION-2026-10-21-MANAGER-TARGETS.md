@@ -1,7 +1,8 @@
 # Manager targets and feature handoff — 2026-10-21
 
 Owners: SELECTION-01 #22 / DATA-01 #6. PR: [#148](https://github.com/gonz0w/fvwm-x/pull/148).
-Status: **combined checkpoint in progress; remaining AMD64 gates pending**.
+Status: **composed local checkpoint passes; PR #148 ready for maintainer review**.
+[Machine receipt](VERIFICATION-2026-10-21-MANAGER-TARGETS.json).
 
 ## Outcome and milestone boundary
 
@@ -63,10 +64,31 @@ A later fixture-only cleanup observation changes manager_handoff_live.py;
 production binaries remain identical during that continuation. Final upkeep
 Markdown/receipt changes do not require another runtime qualification.
 
-Completed observations currently include four leak-enabled guest ASan/UBSan
-entries, the portable foundation (177 passes / 14 environment skips), final
-Linux ARM64 four-profile checks and both BSD ARM64 checkpoints. Exact composed
-counts and the remaining AMD64 results are pending final consolidation.
+One combined broad checkpoint passes **2,396 standard entries and 38 selected
+optional entries**, across Linux GCC/Clang on both architectures, Linux ARM64
+software/minimal profiles and FreeBSD/OpenBSD 8.0 on both architectures. The
+reviewed age guard has **72 affected continuation entries** across nine profiles;
+OpenBSD ARM64's full standard run already uses that reviewed runtime.
+
+The fixture-only continuation adds six Xvfb groups on Linux/FreeBSD and three
+authenticated default-X groups on FreeBSD, with unchanged production binaries.
+Four leak-enabled guest ASan/UBSan entries pass with actual `address,undefined`
+configuration. The portable foundation passes 177 checks with 14 environment
+skips (191 registered); it is separate from runtime qualification.
+
+Ten final current-source installs verify **150 ELF, 77 compiled-data and 700
+other data identities**. Final staged target conversions and manager handoff
+run in each profile; geometry runs at 1x/1.5x. Nine authenticated default BSD
+displays run in the composition, with 60 successful fixture groups and one
+preserved original failure followed by the controls below. All nine servers
+stop with status 0 and unauthenticated clients are refused. All three owned
+OpenBSD QEMU jobs exit 0 and remove ephemeral keys; the ARM64 auxiliary wrapper
+failure remains distinct from its passing runtime gates and composed loader
+observation.
+
+The PR144 performance reference remains at 3/5 subsequent merged implementation
+checkpoints (PR145/146/147). Unmerged PR148 does not increment it; no new timing
+comparison or tuning is due.
 
 ## Retained failures and dispositions
 
@@ -87,7 +109,7 @@ counts and the remaining AMD64 results are pending final consolidation.
   ephemeral key removed. Composition uses the fresh staged-core loader log and
   the prior staged-worker loader observation: the worker's full bytes/mode and
   owned PNG payloads/environment are identical. No runtime suite or install is
-  repeated to repair this observation. The pending AMD64 observer derives the
+  repeated to repair this observation. The final AMD64 observer derives the
   stage from the actual install summary.
 - FreeBSD AMD64's affected Xvfb/install/staged checks pass, but its first final
   default-X run fails a combined immediate old-peer preservation / manager-window

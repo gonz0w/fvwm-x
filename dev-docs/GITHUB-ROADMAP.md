@@ -3,7 +3,8 @@
 Current priority, 2026-10-21: the approved
 [feature cutoff](decisions/FEATURE-HANDOFF-2026-10-21.md) supersedes earlier
 maintenance pickup notes. Safety PR141–143 and selected foundation PR144–147
-are merged. Complete the bounded manager-target checkpoint, then BUTTON-01 #58,
+are merged. The bounded manager-target checkpoint is locally qualified in PR #148; after
+review/merge, advance BUTTON-01 #58,
 BUTTON-02 #59 and CFG-01 #60, followed by CFG-02 #61 and IPC-02 #70.
 Additional general stage 5 work stays open in the **Later** milestone for a
 future release; its stage numbers below retain the stable ownership mapping.

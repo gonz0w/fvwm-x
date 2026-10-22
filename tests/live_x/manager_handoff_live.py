@@ -147,9 +147,17 @@ def run_case(args, label):
                     assert elapsed < limit
                     if label == 'stalled':
                         assert elapsed >= 8
-                    assert alive(old) and not alive(owner)
                     expected = window if label == 'superseded' else 0
-                    assert x.XGetSelectionOwner(d, selection) == expected
+                    # Process exit does not order another connection's view
+                    # of server-side disconnect cleanup. Wait for the exact
+                    # resource/selection state; preserve the old peer.
+                    cleanup_started = time.monotonic()
+                    wait_for_predicate('manager disconnect cleanup',
+                        lambda: alive(old) and not alive(owner) and
+                            x.XGetSelectionOwner(d, selection) == expected,
+                        cleanup_started + 2)
+                    evidence['resource_cleanup_seconds'] = (
+                        time.monotonic() - cleanup_started)
                     evidence.update(seconds=elapsed, peer_preserved=True,
                         successor_preserved=(label == 'superseded'))
             evidence['status'] = 'passed'

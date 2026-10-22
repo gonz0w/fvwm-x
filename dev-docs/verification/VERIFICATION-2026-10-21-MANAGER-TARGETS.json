@@ -1,0 +1,2498 @@
+{
+  "status": "composed local checkpoint passed",
+  "base": "f27dc5a0f3c6885726da97108746d8d66e5a1ea5",
+  "runtime_commit": "080e852b7b706e97aafa8485bd45dbb543efaa09",
+  "initial_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+  "review_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+  "source_inputs": 2137,
+  "broad": {
+    "standard": 2396,
+    "optional_selected": 38,
+    "profiles": [
+      {
+        "target": "freebsd-arm64",
+        "profile": "default",
+        "tests": 293,
+        "scope": "full standard",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-arm64-evidence.tgz",
+        "canonical_sha256": "7ef730df7ea9ac9cdae82d8d2c47c502fcfe3061c2fcfc0cadb448a23cd43346"
+      },
+      {
+        "target": "freebsd-amd64",
+        "profile": "default",
+        "tests": 293,
+        "scope": "full standard",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-amd64-evidence.tgz",
+        "canonical_sha256": "56b98daddc5cbb8558306dac569b719b95a83272fe64bee17d7f342668f66d6c"
+      },
+      {
+        "target": "linux-amd64",
+        "profile": "gcc",
+        "tests": 306,
+        "scope": "full standard",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/linux-amd64-evidence.tgz",
+        "canonical_sha256": "9da0d21cd6fc2ed45ee72e491b4ce5109cd8cf6ed77d60ff0095ab57afdcf719"
+      },
+      {
+        "target": "linux-amd64",
+        "profile": "clang",
+        "tests": 306,
+        "scope": "full standard",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/linux-amd64-evidence.tgz",
+        "canonical_sha256": "9da0d21cd6fc2ed45ee72e491b4ce5109cd8cf6ed77d60ff0095ab57afdcf719"
+      },
+      {
+        "target": "openbsd-amd64",
+        "profile": "default",
+        "tests": 293,
+        "scope": "full standard",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/openbsd-amd64-job/guest-evidence.tgz",
+        "canonical_sha256": "8c39ff5673650e16b00616f0d736dbe6795c6206152307e5e1921307c8b05585"
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "gcc",
+        "tests": 306,
+        "scope": "full standard",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/resume/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8813b1823f0c760818ae256ec11f591bb5b6289abc44140354be2a6b7f33ec38"
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "clang",
+        "tests": 306,
+        "scope": "full standard",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/resume/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8813b1823f0c760818ae256ec11f591bb5b6289abc44140354be2a6b7f33ec38"
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "software",
+        "tests": 19,
+        "scope": "selected optional",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/resume/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8813b1823f0c760818ae256ec11f591bb5b6289abc44140354be2a6b7f33ec38"
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "minimal",
+        "tests": 19,
+        "scope": "selected optional",
+        "source_archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/resume/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8813b1823f0c760818ae256ec11f591bb5b6289abc44140354be2a6b7f33ec38"
+      },
+      {
+        "target": "openbsd-arm64",
+        "profile": "default",
+        "tests": 293,
+        "scope": "full standard",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/openbsd-arm64-job/guest-evidence.tgz",
+        "canonical_sha256": "5252f98cdb5759b58592a30492d38c469bc8aa63febca2ce389e16a786bb2a5e"
+      }
+    ]
+  },
+  "review": {
+    "affected_entries": 72,
+    "profiles": [
+      {
+        "target": "freebsd-arm64",
+        "profile": "default",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/root/fvwm-module-waits-20261015/stage-manager-targets-review-default",
+        "installed": {
+          "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+            "built": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "elf": false
+          },
+          "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+            "built": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "elf": false
+          },
+          "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+            "built": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "elf": false
+          },
+          "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+            "built": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "elf": false
+          },
+          "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+            "built": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "elf": false
+          },
+          "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+            "built": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "elf": false
+          },
+          "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+            "built": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "elf": false
+          },
+          "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+            "built": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "elf": false
+          },
+          "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+            "built": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+            "built": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+            "built": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "elf": false
+          },
+          "usr/local/bin/fvwm3": {
+            "built": "ee4cbbc5320358e370a3927946f719ec8b3b71085c6860491eeaa0ed79f0da4b",
+            "installed": "3bcde92310d62d4163c017f713bfbf18ab847ab0ee9af8d9b97eb025014cee22",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "ae876feb683fd8cee7014a695f03ffa61eab401a9e8bc3bdf7e64916952a5a64",
+            "installed": "3c4fc034684c3c9738dc85eceb1c20bd1a5109f4f45adde06d2d87e7a17179dd",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "ce62d3790268b44f522326f8e2fddd4e1ac7f9be0c08b6589ba77883b91af70f",
+            "installed": "3e881ad195923098c93c1438179e15f0c24b4ce35657cb6a2b4da90cfe4028b9",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "e3c98be56cc98ce8f599c8a1763b55551c19ae2de253127a2c8b399f48c4ec56",
+            "installed": "e35b990eff615941b13eac565597ff68947d0b0e31bfe9ec59ffe92baedf3a7e",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "48137334e77048f7c1440b9278fe2a1e115f53d8552906d9b8ff2c3778f645ff",
+            "installed": "3455f0106acd2ed2a8ec4764f5d34dc758995f6a0c1bb26856d7bf05a957de12",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "4effad0db2de3c0a268da7ab9934ca67dfa9d4e737177f77842da132eaa866a9",
+            "installed": "062f20b4df8980577698549bfe99504795729a0e89c1c2f88bf8f12342d28a48",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "dcb497ba1eb9d95c4ff3182e4d3a9856c7f2fe6a507c48fa2cc42b6bee04458c",
+            "installed": "2cdfa267edad97fd37d6604ba98a4856f725b6b3ff142910cf370448d6c9a8a3",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "e4a1d518c1cfc440769768db1a5d6eb727294800c40f7497fedf485b9dc6081b",
+            "installed": "e601a9399cd5a9b2dd092fab314a3bcaf743c4d40e338cc86f7f94beab79b2ca",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "c13db41ce59c32058e763765ca97116e78c9ec3382f1cf98d510a0fa697e4f91",
+            "installed": "2b5a307f26d4cbb89b4e0442a35c22caea0a24acb2eb36698fc75ff3a6393ebb",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "e32e3b71e68f221c40c09b41f5c6f08d2df2197c41db8371b2e055f86048a023",
+            "installed": "6d60dd3499feef2b2d22d0cbb0fbd8c9eae4841fa9fe3a6990542e36a41cb8b6",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "1bb14d17bd4b42c8f02d88bbcaf8b7aef098ddfebe16007b3540de2997d970c4",
+            "installed": "6ff3e47468b9704ab235404912388bd0ecf2a5ddb21a7fd9a5e8d06d3c83cea4",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "55b7958d17577dbee65cae157d3b5a0b64f99c5e4bd90254c7b276f1fb164970",
+            "installed": "3c81215099e9d720d5f394809d01d40bf6aaef6ed4aa2a853d4b76a5c42a96c5",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "5977cf1ca4cc143f8ccebb5742ff7a139dde23662b238514bd64e6716419ef26",
+            "installed": "b65061420d6547abc8cd9cfc24f114c917bf63073a8381d53e244112e4229e63",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "6c925df71670204c5d5ab1d1d9f325bdfd54a5aa65c39bc0dd4cf2eeccde87cb",
+            "installed": "040771d9d9e09ca2ca991225dfeceaf24d93d2d67c9860961059ade7e2ef214c",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "04d8640a464aa8167636e7774d71e31b6b4e58401de2fbab14fe4cf310eab3ae",
+            "installed": "388781e7584016302a5ffebeb4afcf5fd1df7273cdf885dc1f85ad7cfc7b8c71",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "eacc022bb58da65f27662ecc41dae76179095d22c6a89682ea2aeb0c840e9e35",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "752f132064c85167aee19a71da7514c2e345f3c723a976bab1adb6ec9fdd0bc1",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "61d2d232c916666716a1d4d59df438ba142e8dd7f0058d35638f7d63258599d1",
+          "usr/local/bin/FvwmCommand": "37a2da4ffe6d71cccfc6b35a1a02b69cb14cf0c1cbc8fff29178a633561fd477",
+          "usr/local/bin/fvwm-perllib": "22da76aec748eb511a61079f871d3588d022cf539806a3e8b023b3ec1db02f14",
+          "usr/local/bin/fvwm-convert-2.6": "fb3cb788a4c49d0bdb989b646039ab3cd35fde9402a76013c17636aabb7178c3",
+          "usr/local/bin/fvwm-menu-xlock": "e8761e9b1416e954c539f91631865ea8d77d225b489fd52cb1ce5fb44cf2a00c",
+          "usr/local/bin/fvwm-menu-directory": "d7d97b7a198c453d39f47fa7dc5d8fa28c14200a1e3f512ab6ae97d7590cac41",
+          "usr/local/bin/fvwm-menu-desktop": "9c5e972032e3d6f8428e2d37850ad34524a1ce3858ab0d5853d8a741003ca6bf",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/freebsd-arm64-evidence.tgz",
+        "canonical_sha256": "b89c91d90beb20659a9e122568f4892953160ac844d9fce910b5bde81b696d1e",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "freebsd-amd64",
+        "profile": "default",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/root/fvwm-style-simplification-recovery-20261016/stage-manager-targets-review-default",
+        "installed": {
+          "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+            "built": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "elf": false
+          },
+          "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+            "built": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "elf": false
+          },
+          "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+            "built": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "elf": false
+          },
+          "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+            "built": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "elf": false
+          },
+          "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+            "built": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "elf": false
+          },
+          "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+            "built": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "elf": false
+          },
+          "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+            "built": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "elf": false
+          },
+          "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+            "built": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "elf": false
+          },
+          "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+            "built": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+            "built": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+            "built": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "elf": false
+          },
+          "usr/local/bin/fvwm3": {
+            "built": "e1fc09966c8aee88f018ed94e5d6b9d6f30324d8ced36b6c662dea7822134401",
+            "installed": "b686c1d7b0c754b76faed9715d2c708ce61dc853b6d12ef103083bb40066fdf4",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "a3ea8b227d9fcf600b19ab13130ad8c2bbf8f6ab3850ed3b5b86dc96ff5e83c7",
+            "installed": "4dc1457735a035b4c99bbbd0bb7f27c7b37778450b8caacb4cc055856a513423",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "dcc1e8063bdcaa32feb2906d832458b1a149df7f343238e22d76e303385975ab",
+            "installed": "f4e1d462efbc7d50158d87ed63a401979fd45113bce08095589fe5a24b85281c",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "195eff9bba4cc09adc7dac97fc069d0f9cfd8537bd0d87e269aa42caa1ac4aac",
+            "installed": "9eed405689e2df45dd6bde8cafc476acdc7422efa397b5b11a693805f9b5ea9d",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "398cb8e6e6928de519e64a6230fe7580de1afe93721d93aac5d3e3be0126f764",
+            "installed": "b36dc5f04563d9f8829e53fccac6d60ac08cd5c04a7e142a9c55d61d9118219d",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "437a0a592818625ab5aa0a1ee041f3e7353ed8480c01ba586f4531971272f0d2",
+            "installed": "544f61c40750e1d9a226d111e998064c7215848f49e44b593dc1b31a55f0d609",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "7d798d955c7c977850667d699d6514ea54e51dbbe597e3618a44c855c6e964f8",
+            "installed": "8cd3db671b81f39077a3c828300d142ea02910044e8905587165d5dc41aebfb7",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "d9c4ce9f5073db47f85afb31c181d20742e2ed34879624f0766a7c04c5415cc7",
+            "installed": "9c46134636cb0521ce42ee177495dda14c301d41a0ba5a0c9d697c3f7c1fb6bc",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "3755c615722cb4911c7fd3d6d600505535b384504ca88c55978fec2be30e9f98",
+            "installed": "33fa55928af5a01b886f17e9403aca23a323dd245c6dc574c8c83aa8cfe9cc56",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "f381750ff4669bce0e69f6c9927c3a917762272c682947371e7b2e2745db5feb",
+            "installed": "0ef4d55d85c781adc7ffc16f8996e4edd211e2dbb683c906e5fb4272b11978f4",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "2216bb3ae4e9222d639670a9486bf471a19ea9ae84413dec9b8eaeffcef9c2ef",
+            "installed": "32445bc7bdb262c2aca609eb1da6e172e689428e6f63381b90c14c98be04452b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "5ae5b5f33956222755ebb5d44cda6bee946b5cbbffd611eae6cd1121e3778f00",
+            "installed": "fe863a600380069936cff784468f66f61bc57c97d6f0620fae611ec24134b91a",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "d23f5717419498a85fd65248e68523db271a7def1ab0603cb05fc81fd6dbe41e",
+            "installed": "937887b410b0c1c86bd3796c1ac8e0bf27afcc3015dfb973979a261848b73254",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "2a9580ddc3fde42111a6c8e48da07968555c9bd214e3b646789d4f2f96aaec8c",
+            "installed": "79473c050d1f7ec2ad3c455f4d21a4ce75438d60cd0aaeb60911ab309bd0a0b2",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "b291908342f6e29a671e15eb82b781d17ab4dd2432a360cd13f8e3e00ec1b0b6",
+            "installed": "07064035c454bffb38de55ab3b62320a21fe4080b8dd2f6905880d97fed798a4",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "eacc022bb58da65f27662ecc41dae76179095d22c6a89682ea2aeb0c840e9e35",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "752f132064c85167aee19a71da7514c2e345f3c723a976bab1adb6ec9fdd0bc1",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "61d2d232c916666716a1d4d59df438ba142e8dd7f0058d35638f7d63258599d1",
+          "usr/local/bin/FvwmCommand": "37a2da4ffe6d71cccfc6b35a1a02b69cb14cf0c1cbc8fff29178a633561fd477",
+          "usr/local/bin/fvwm-perllib": "22da76aec748eb511a61079f871d3588d022cf539806a3e8b023b3ec1db02f14",
+          "usr/local/bin/fvwm-convert-2.6": "fb3cb788a4c49d0bdb989b646039ab3cd35fde9402a76013c17636aabb7178c3",
+          "usr/local/bin/fvwm-menu-xlock": "e8761e9b1416e954c539f91631865ea8d77d225b489fd52cb1ce5fb44cf2a00c",
+          "usr/local/bin/fvwm-menu-directory": "d7d97b7a198c453d39f47fa7dc5d8fa28c14200a1e3f512ab6ae97d7590cac41",
+          "usr/local/bin/fvwm-menu-desktop": "9c5e972032e3d6f8428e2d37850ad34524a1ce3858ab0d5853d8a741003ca6bf",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/freebsd-amd64-evidence.tgz",
+        "canonical_sha256": "73acd3e9f6d8cd85698903d7ec620d5beb0bc776de46dcbe16abaa69f9801d67",
+        "outer_error_preserved": {
+          "error": "default-x"
+        }
+      },
+      {
+        "target": "linux-amd64",
+        "profile": "gcc",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/root/fvwm-module-waits-20261015/stage-manager-targets-review-gcc",
+        "installed": {
+          "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+            "built": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "elf": false
+          },
+          "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+            "built": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "elf": false
+          },
+          "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+            "built": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "elf": false
+          },
+          "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+            "built": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "elf": false
+          },
+          "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+            "built": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "elf": false
+          },
+          "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+            "built": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "elf": false
+          },
+          "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+            "built": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "elf": false
+          },
+          "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+            "built": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "elf": false
+          },
+          "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+            "built": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+            "built": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+            "built": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "elf": false
+          },
+          "usr/local/bin/fvwm3": {
+            "built": "2b216bc59ecef35cb125351293ad904b1fff038400a2504c2966cb8f9c4671f0",
+            "installed": "48448badc6a8a8a2a34b9899c1fa00df0873ca70eaa320972126a78d90c3ca33",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "0a7d279af1c9d8b16580797acb034cb4184337b6c4221f7fb7102ba576bc8355",
+            "installed": "307ec62911502edc0193cad1c5d9beaf17125ce2bcc2aa4a08b01140e0f325f5",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "780b8fcb77c0984f6822ad3dfd06c723b9878abed6a5d823db4263f88e52b024",
+            "installed": "132a3eb16a2b7ac023a8c1b14ce7a95d27f163ad0c05461199b6ec6318d82a4b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "2343304b2f3d24c3351026051040a4acb18ab74138f5ff1b6400a4ed92c16468",
+            "installed": "a8b880939a5d6ab7ef7aea1728f65a88405c9b9edf8682c7cbe29db195016a7b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "31b28f4f80a37c311c40492a05242b5e285a490342a36634e0aae95026ea4915",
+            "installed": "cca15000dceeedf127d0af3189852fbf6f446a232b9ad4c3a1ca68c9d40c7144",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "c409eae66cea96dc189502d1adf023d728ddf5241a64c2fa7584b7af848f1ffc",
+            "installed": "77f32fde3d71a9353629efb800bb451fff098b32322aaf1460aab274972ea37b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "7563ad7133185bde78b297334964e9fc7627343407795f5f38c107df569c4457",
+            "installed": "604298e163b7c080b8e6a27ba20ab83de81f2010aa6d3e330ad77c0a7d88944a",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "5c678d12ba1e40f80c864fcc2a2cbce52b4d7b6723cadc7e4e75ec1bf7990572",
+            "installed": "8963d9254c8de1e8ce77589084d489c790adc15ee90344d4b578b4c279c55457",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "b72d0561ee793847fe69ccdf491a1aa8cc64c79f95364cdb4dba07c1dbdcb617",
+            "installed": "202fabde32d1195f5d7b566d2010e21638ea83d185e27ee676591a30ed74d2ab",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "5353bb90af4cdc440929784a8235a62c5004fff6e52c278e96fdb51ce5a95010",
+            "installed": "62a570a4ddcbae21dc5210426883837127dea62072ecca081ff34778aedd8c75",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "ae1c79ba06057f6021a8feaaaaab1ac0c7d86f2116d4c69bbaadc7c0767b3b21",
+            "installed": "9a7c4be2508a4be1e08c8980cb14dbd79e25ffa1cf60b52f56476891cf0659db",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "04d307c4f95e3b7ea3a821c00cc74de2f09c095217bb18521b6cc6b228063af0",
+            "installed": "8fc75d8ab8ab1fb36117e006ff7c9b5f464303a572570712f69462f05e9f4e6a",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "d9b6f72aff099113c150749fee62eee743bda596c01562f437f135ac1b37394b",
+            "installed": "81cc7b2daa6719acceb6d5845f0dfedc4106c266061dc28279773f2d4b9245d6",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "4f1c59b659a730d486822c0622102167efa169418d5dc2cddb07f31f85a51c28",
+            "installed": "952b51ec2254a033e40fa1b69c935d058e1d195a2d172f2a3ad218fae76ab0e7",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "edc40fb7dcd2671d550074bff177868c0da2e6848f606a70caf02198684a7d0e",
+            "installed": "5ee5689383c9f9fd1fac23448066cecb6b5a001f518aab900e36afeef1dfe989",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "70389819df8a8608463aee3f6e7fc255c72399ab4638550661c4ca78a135f3dd",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "e043571be7b1000359d8319fb119c393499028162636e6897a38921ea649b269",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "81ebe1819de9a284aa1eb553c73a4e403b778875034dabdbec44ddce66e86717",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/linux-amd64-evidence.tgz",
+        "canonical_sha256": "e15b9706903b1b35295a5f5fe6db7b5c5164c7054822784453d1af666126df63",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "linux-amd64",
+        "profile": "clang",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/root/fvwm-module-waits-20261015/stage-manager-targets-review-clang",
+        "installed": {
+          "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+            "built": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "elf": false
+          },
+          "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+            "built": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "elf": false
+          },
+          "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+            "built": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "installed": "f188ecb6eeab1fafeb77f51d4edbc8d5cabe22b1949e05a4f11cd44cd9ba7f45",
+            "elf": false
+          },
+          "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+            "built": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "installed": "4359e77086d805cd5500bc3590d9dcbbfc79989c04413d59b6486cae00cd32ad",
+            "elf": false
+          },
+          "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+            "built": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "elf": false
+          },
+          "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+            "built": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "elf": false
+          },
+          "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+            "built": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "elf": false
+          },
+          "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+            "built": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "installed": "b3cd27ac3fae4d376d693be76eddb91490db73afa5bc6d604abf4fcd2b66ce7a",
+            "elf": false
+          },
+          "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+            "built": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+            "built": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+            "built": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "elf": false
+          },
+          "usr/local/bin/fvwm3": {
+            "built": "9169c5481cad9450bc9163e087bf3900fb21bd5e2d5172660af48a2d7c9db3d6",
+            "installed": "809415463dbc7d7e3f8a93fd9e85885a4be6b3c9e160ddc521ae10311ce1618e",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "8c097cc6be7a9e2fbe91a4f9895065488c1eb21d3c42a441e6e0faba2180e6df",
+            "installed": "bc58ccc76941a18fef45ca8f51af2ab39f962177dc020a58560a1759cbbbb37c",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "df67ae77e872d33ecde54495cb3a08d550cc91dc1d16b8aec9a255ad265e984f",
+            "installed": "81173cadcb4c2347295d1c3da725f79212b0b68fa5a77a262211d8fbe4b6e1be",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "85ca23c055d4c4cdf0bd9786f001ff3b0bc321cce4ee6449a72b1c576b8f0226",
+            "installed": "48a88d5004b59cf88059bdd274c30a10a65946b9e021cbb2c632c29f6b4ab9bb",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "ceed1f13882e4925d174e6265ce5afe1dc0696e7a9c9091beb25c406a1c47691",
+            "installed": "7a39737d995a0fe5ff4a3f4b371628fb6e79fa32fceb788200be86d4ffc32937",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "afc55ae750be5f31bdd27e946da8f5a560931b7718b3d8e37ac97f81ecea40c9",
+            "installed": "894499d29b8d4d717cf5e5e10fa91959e21a9ddcd962d9f88fe12f9f27ae317e",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "287656fea0eba615b406e153f449516242feb6388a9f306ae212cfbbf01e0a98",
+            "installed": "3edded3316f952d872046f2d197bc063534b0f2d73aff0ebfd2ec8d40552785b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "230682751a84cfcb6a54539847940365abc20a710258b08f68243412d5501ce3",
+            "installed": "8caf462a9ad9f5a8942e2979d57b313a97990c7f7e19e1f42e91ba27276cd8a2",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "e7417326731a3878ad8f3fe77e0306fa98877ce932f10207325f49d9a72823a5",
+            "installed": "dc52408d10d4ba75e811c1624692dcd8c58737399b1248d4ca2eb099a84c2ed4",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "eea2600701edd6d058865955a9d2c208eb57da1291163aa1f65f4a80e7a0d51b",
+            "installed": "c0edd82b882a24fcd4fffc6f2f4d8f4fe97c23048713a9c976978fff08305bf6",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "d2b7c1904788c77c607ca5a04fc9004423805cbb0fcc4352e2c729fc168bfb49",
+            "installed": "f050c1343db54ee292a480dce3f30d5b904d21157f6c87deb59f1eee3cb8f717",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "d6809de0f4ae5b484e7dcfccaadf730f5232451e8d6865443f34f3954121d460",
+            "installed": "5e749d4a22b90706c1763be27780ab21959d146a37934e4a1824a37da1d578d7",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "e39ca1c5ac37a2d87960e83710d1b6283f29a9c6c634e43daf5428fb074db1a0",
+            "installed": "274fdb3fa304e411049a99bea213a3bb2d4443247429fd232e0c736c5a9242d9",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "09623328ba2d8f8bb2abe0a9a9e9881de2a27b5b533d0930333707dc0959a014",
+            "installed": "ab55e54e67c18a01c6b9fbb8cf345346f1fcb048d0b7f933bd84f5c5f8de2261",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "2391f99bdd3d40c225dd0e77694f4ebb2dc2101a441c45fc45b777772aa5cfbd",
+            "installed": "27b65893e0d17ec652b307aed690ccd2d10fe6c7ea5dffa72396ed2d4aaf8564",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "70389819df8a8608463aee3f6e7fc255c72399ab4638550661c4ca78a135f3dd",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "e043571be7b1000359d8319fb119c393499028162636e6897a38921ea649b269",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "81ebe1819de9a284aa1eb553c73a4e403b778875034dabdbec44ddce66e86717",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/linux-amd64-evidence.tgz",
+        "canonical_sha256": "e15b9706903b1b35295a5f5fe6db7b5c5164c7054822784453d1af666126df63",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "openbsd-amd64",
+        "profile": "default",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-manager-targets-review-review",
+        "installed": {
+          "usr/local/bin/fvwm3": {
+            "built": "b7412f109f731933fce33490d70b2be732b56c660eba4e75de5fe521d12de683",
+            "installed": "4e542e2bc7805ffc4acf248d530d4311e1b4f8d85adaec0f8e91ac037c59fd4e",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "1ac850cfb3b3ed4cae0320437b4874bbea37851269eb19cc20ea293b31407845",
+            "installed": "644d1d345c1019fdbc8d67826d7887a84e72e7e68ca1c2907da84fc4637e2748",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "c514d894f024237a8c09f593e36c3c99d7eb4fa0b3992e7c69c3492366183166",
+            "installed": "86bea5300f3e2af5cbf198ae93e3c7689ebfcd2b3ef3c592fff075704b32b856",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "09a96c0a49ff94ea55676cb8b85e89c4c9fe36f1b2d3011dd91c66d0552d1f09",
+            "installed": "a31ec54bf56098dbc5f795eb3d7c14308ebb0a96fbbee9c2d5fbfe060e2562fb",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "0dbfc408c0845f54a5c277974c342cb78b5a3eb0687a54051b9e16670101f90f",
+            "installed": "7c9831a7ad5db76cebbca666b6d08a54110de0d44171800f336588c53ea3e995",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "00d6e28a1ebde484b3f5e5104fe9fc43baa68dbca3b01b45122ae7c87903791c",
+            "installed": "ebdc2628772477b86c9ea578b8ec3780f093862d5828fd30af8de98daf77fc8d",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "db0a10ed4f4270dcde97fb31d7b630ae4894068f5414bd539a2f56310702dc7b",
+            "installed": "b5850c0ee6fbbaafe4164cd223e238864265103bed1fc3a3bd3b12cc963e2e45",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "fcc708769efc04485110e24800cb0b15ed7abd00b5b4a32e387ef2a0101f8a26",
+            "installed": "4bd0d4a5fbfc3180f2e8f69befe33ad53a5be27303c656c314d80582bee40d2f",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "b831f408c5036c84966879bfb187dfc07d0e8edcc1e4094b77c49164b232b226",
+            "installed": "66d42e2845fccbaeaac3e8e03e9be9d29e75247fc16203fe67cdcfd534eddc52",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "a4ce08b6359369136b89918f21b23b7dff2b68bfc6e402c7de4ef335c4d78b67",
+            "installed": "2b29d6fcfdfebdbdd1dbbc3720a66d062346b575e8a05cbd87dc6378f3d0a501",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "6a2bfdcf0dba96a8d0fbded5d1258cae582e6467b4a1f33bc75b28c0702ffcac",
+            "installed": "1cead60b4ca7211434e99306e926b0112b00de81e7e2f1a024e30f5b2d9dac89",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "f6ec591aabdef0ffba9e0db255c692f429c8e121eac4c9d38a431203a54b4bd6",
+            "installed": "dc4029b2941b16b0c1e86d0418537189ff2b19402cd151f4ac09d808630bb2ad",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "c2201d6a58a4fecfbb5b09fe4e6edf2df75f37c79bbc4943690e15bb905c5cf3",
+            "installed": "37eb77dfa13a1827e394bb9b9415c0fb2e2f27ceeec514d51da0ee14dd4913b0",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "7f83de6c72a14470e94d2be56d6390102ef1f1c1ac63b7151f93946e236574a2",
+            "installed": "83b6036069f58316702980f3386554c95668f4f27c20d1c874f8bb70742294e9",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "a2f2957e7bd64cbd0fd3464988632e055e8ca3bab5985ffa9adfe3fcb3298e56",
+            "installed": "a530857fad346888cc204d281a5a777b5f016f3799b2d54d3f29f34f39deafe2",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "eacc022bb58da65f27662ecc41dae76179095d22c6a89682ea2aeb0c840e9e35",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "37a2da4ffe6d71cccfc6b35a1a02b69cb14cf0c1cbc8fff29178a633561fd477",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "9c5e972032e3d6f8428e2d37850ad34524a1ce3858ab0d5853d8a741003ca6bf",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/openbsd-amd64-job/guest-evidence.tgz",
+        "canonical_sha256": "d504014c1516704381462964400ca7f5f79b2244fa6ac8cce73c2d0f9d91b9f9",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "gcc",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/tmp/fvwm-module-waits-20261015/stage-manager-targets-review-gcc",
+        "installed": {
+          "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+            "built": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "elf": false
+          },
+          "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+            "built": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "elf": false
+          },
+          "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+            "built": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+            "installed": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+            "elf": false
+          },
+          "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+            "built": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+            "installed": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+            "elf": false
+          },
+          "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+            "built": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "elf": false
+          },
+          "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+            "built": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "elf": false
+          },
+          "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+            "built": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "elf": false
+          },
+          "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+            "built": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+            "installed": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+            "elf": false
+          },
+          "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+            "built": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+            "built": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+            "built": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "elf": false
+          },
+          "usr/local/bin/fvwm3": {
+            "built": "28516bbe921fdc855f3841acfb5d5189c5bd7fe5faeabb62807b7c5f244b0ae8",
+            "installed": "89330e3bcdfaec889f937a1b6618c5abdae6cf6fb3dd44e8ee259c0c80fc9674",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "8232340cd1386d7fb7fea6cf3641b222211ebdb55f997fe86edb5079e84dfca5",
+            "installed": "27b7f1fb8ffd15902b686f0ba756550404d5d58d334e89c1540aefd374776e2a",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "4813319222f2962845b97400d4f46a9fd89beae8dd03cdef8bbae51eb71981d9",
+            "installed": "33d46d1046e972b316f04e1bf4297029a21ac388a4ac7cdd235dae0196ef4e3d",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "8ae78e8620e1b27f59f4d08b8247ed4c20c37cb4d551cfee20c87e424910c7bb",
+            "installed": "1ff521c07589bc8f0c0ded57f594d55fffdec7411b4e20880ca154f6864149fd",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "844afead9da8d9737009c57017a9d8859fd30447299b519e799dbff041348472",
+            "installed": "65c098e7b3253ce05eb32ce5b050a22472f1334f279cee6cc8ebcf6352c984e4",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "c2733615f1d89164af71414cf98938030aebff849f87bb43c65f90dd5b235d4e",
+            "installed": "320361d719d2fc30937cdcc01d452e81915f8a57a75063fc4c66760c02939e64",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "81c9aceac470ed2bce78e1ff5a399b48ff7f5f94b95a601435f31a85f2d542f3",
+            "installed": "fbe5ac066c8ad96a984b9923ce2258baf3df6a6735511c071d944a639d06bb6b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "e2eb4bbe51d634e8705e2c0f1065beb84843e35b70ed589dde81b9b199d19390",
+            "installed": "1d85ef2d9092e3563275be488ea953c7a950fe9bc93e7b1d627f8bcd825b4dbf",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "be66b18bebb1d5b09df2a22811766162cba684e65fb1d080a7cc5048ea59329a",
+            "installed": "4cc378923dcba1f313f411d8ceb8d07b44f1fd423abb75da4eda0670b5f32b8c",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "a2ea673c7ed5f4c6e40ab2fa3f654c979b406814cac61743cb74e70dc75d168c",
+            "installed": "b39df4eeea349ddde0398c67ddf277630cd27dfa044a5e84d825e2a39b416da3",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "42251a5999e8f7bbfeff53243a78a534caa645e3faeefb9acac2de5f31058838",
+            "installed": "6d7849effe7d93ac45f22180f313b376ebb3214f59f2a85092527e1405364c7e",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "fca6b56888e852fc88b6223d7ccc903ebdcae696b8cdd4e704b8ed0bb2fb3e51",
+            "installed": "720ebfca04c90b7140ec191f267f4858a057a5a17e839b2bbea6e98a8c78cf81",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "53f59b1ed0aa78801d47b2a57b79c8a370067a40678e550015c9c7f3d671ff26",
+            "installed": "ab7c8a1acf6d91997bc814e7736a41e0f73fbb821dd9d6857c3b52fd0fd8df91",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "dfa193241bdc02c06425346ec4261e92cb76866cd11bffd61d6b5f568f26566d",
+            "installed": "ed956524646df387de78215d5d68ee555b153fa9784e48099662a5c7cbdede88",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "095bf23d4908ec04fda18650ef79e1e9d80d2b62c8033d1a6845053b9ef1e056",
+            "installed": "371a6d6896f20dc30a4200df88d8de0c2935e03eb2656785517c0f4950860f79",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "1be16f453e261046912ca45da81a232b362b559e8b8110ee6aac284a1cfeea58",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "06e364e4f78c63bd9ce98a3adf2edbe6e132e17c6a4eb012d5cc031763bded72",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "2c975ed99227321952726509a55fbd4c94e5a2863307964bfb3d752f3ce9f1e0",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8bcec052113617a500003296b04503c3802284ee969893717f0c7f68dffbcf0b",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "clang",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/tmp/fvwm-module-waits-20261015/stage-manager-targets-review-clang",
+        "installed": {
+          "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+            "built": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "elf": false
+          },
+          "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+            "built": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "elf": false
+          },
+          "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+            "built": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+            "installed": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+            "elf": false
+          },
+          "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+            "built": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+            "installed": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+            "elf": false
+          },
+          "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+            "built": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "elf": false
+          },
+          "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+            "built": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "elf": false
+          },
+          "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+            "built": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "elf": false
+          },
+          "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+            "built": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+            "installed": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+            "elf": false
+          },
+          "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+            "built": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+            "built": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+            "built": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "elf": false
+          },
+          "usr/local/bin/fvwm3": {
+            "built": "56f5035ec236bb33086c5a80f33d34cc8fd937fe09beedde88e8f32d913cf61c",
+            "installed": "2797a5c7ed1c235eea026f2892cfd49489f928504ef8e4d572ff30a3bef0134c",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "56fa704d3fed8019bf65e194d44844e91f46ddbbb2990e646a9d8c6c4815f220",
+            "installed": "306a46aa9cad6e9f649fb102d143089707a3688386a74f92280972dc13522e72",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "8ad49013e8c82a76c02d30fe4651edd105a149c8ee37aa8c6a867d63349e9291",
+            "installed": "7c5dd1195eac87ca508589a589ccbb359334cd053b384d6337181d842ba701c3",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "9ce71e35c94672ac3da4851dfd6733806becd6fc8d0adabea5ba2ab011b0185d",
+            "installed": "94ca2aa7a15a7de8af62483a6ecd5609e7ce9bc997672013b6579d092b42323e",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "23d13482a98412ba0bec27b55545ab92f786c0a8812bfa46e22d97b318fd7d2d",
+            "installed": "c36a16da9d196074e502f124c795237aaed607ec1e879dea714a901cbb374bda",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "c4cf29924abe7b3d91d151777066539838c5942ae6fe37651b835b9e493397e0",
+            "installed": "de370345cf8ab02784ec941cb405005f26ac5ad01a0ca3789a35486149e29688",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "f8c27a3b1bec951582225a6396aa5d8d70ddfe0591bb39b3f2ea6b858f715c5f",
+            "installed": "7edf491e2789fdf5467970a405af0e652126a45e9aab5b6b5c1a22e5ccd56322",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "1d8552e552f648325b7d961aa7999d55feaea5ff3a690459e4eddcc598239a9d",
+            "installed": "2f6c0f814e54ee9ba0635d10bcbfe218ab30268b657c2902016369770dec6d53",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "7e243344676783fc7d702cbd547c853a475883098006f28d160fd739f3ee0659",
+            "installed": "bc795ad4224cdf4c1d81a5301ab46fa3f497b8fd880d4d0538dcd1ef5cd55a7e",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "50699d17dd502c3ad658448e9010b15b1ce7f6a6e68822108b3c4b595e7ba512",
+            "installed": "3840212a3fce3819b76b8fa7dabe22dd23b4f3adac452bbbbd532d98cde96fbd",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "e70339f8238ec7640b1698623e402d1140ef494fd7ab70acdec2c475a04e6221",
+            "installed": "3cb665aeca4cad32f5bb0fc3dcb5b4fd460817db4a03603aa154060652b1b608",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "959c8b4a94fdf0989400fd61cbba372c6b9bb76193d93622aec6c10687b42c5f",
+            "installed": "5795dfb7d04f8b017e2b034e7f1bb116a7f6feeee22ca7951b6a5997bca4489f",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "ad2981a14d77e889cca78beb5600d5cd18488543f20179150763b8d8575d4cda",
+            "installed": "bd3790d0d2baf26217d12c5aa44456ec5a70849ad42b125faf11a8e9937ab90e",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "cb178d1190546221520ace6c3e1facf00a33b0feb6c19c851879ee0e3288d55d",
+            "installed": "3d0d67eccf251c64538fa28a8b3d41ac0feb3cd19bd8eacff8c764701c68b78a",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "473e30555347497fed30f7e974629b2a632d9899c92683ae3e00613138c1dc82",
+            "installed": "66014fb1863abffe569f46dcb33cf83da421a7c878c2a988b07d56a7c7bb5680",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "1be16f453e261046912ca45da81a232b362b559e8b8110ee6aac284a1cfeea58",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "06e364e4f78c63bd9ce98a3adf2edbe6e132e17c6a4eb012d5cc031763bded72",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "2c975ed99227321952726509a55fbd4c94e5a2863307964bfb3d752f3ce9f1e0",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8bcec052113617a500003296b04503c3802284ee969893717f0c7f68dffbcf0b",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "software",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/tmp/fvwm-module-waits-20261015/stage-manager-targets-review-software",
+        "installed": {
+          "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+            "built": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "installed": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+            "elf": false
+          },
+          "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+            "built": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "installed": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+            "elf": false
+          },
+          "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+            "built": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+            "installed": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+            "elf": false
+          },
+          "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+            "built": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+            "installed": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+            "elf": false
+          },
+          "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+            "built": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "installed": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+            "elf": false
+          },
+          "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+            "built": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "installed": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+            "elf": false
+          },
+          "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+            "built": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "installed": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+            "elf": false
+          },
+          "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+            "built": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+            "installed": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+            "elf": false
+          },
+          "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+            "built": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "installed": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+            "built": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "installed": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+            "elf": false
+          },
+          "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+            "built": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "installed": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+            "elf": false
+          },
+          "usr/local/bin/fvwm3": {
+            "built": "5c4264bd53ea3fea96ea90b785c0378e53821d91d3afec76da1576a87993e085",
+            "installed": "7fea185f3df163bf70426d72a14dda6f483cb38eb336ade579df96ed8d7be6c7",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "ba6c4b48026dcfb71b98f03011cfb2883e64af627983ad8f718826b76005c102",
+            "installed": "847f0cf6255c70ded713b37303186ec881c7ff9ffb3d31ef537aa4ac510c33bd",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "b0b8bf709991051742d1660eafc1ea5ac1bd89c6417dc03d2f2acd04fe8f5de7",
+            "installed": "1ee23b6553fbf592698784716f697bb8b9dbecf1fa273492fd3fa1eca4bfaa85",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "057f29964bf9918360be161384030012ea6e33c15a892033d9c97a574da8f3ae",
+            "installed": "46d199d7cb133ad0ad382bc9176aebfdc9a0489ac72e557d0c563f6a43de4385",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "94380a79d90b4cd580bca364e041a22826a9e916757b1344f29bc9d187e9e290",
+            "installed": "bf315cc9ae73ace942d4db32158cf17d3705625b4cfb74f025c514d2f0f7db87",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "96080e6543079d52a826adf3b5bb7a372dbcf0a2bf1c14a2dc983362e671d6d1",
+            "installed": "a49503e1b286357db2cab1a3fba58a5b449a523fbdbdcb82572f0c8bc6961d54",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "b471e8aaaddebe810c5913cc3a8f6909c09db25996d2b5f6072659533a781690",
+            "installed": "77f030a0df740f20d96ee6145967cc2937481e01128e18bbe76bc784f6433cf8",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "e44845f21fbca739a10f7519b2e29beae0ae064ec03b85eaa3d4f2da40150814",
+            "installed": "3bb56c6943c89d93d9535c7d631ade0bd927270e740864e6b2e5ad757f111666",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "22938ac5ab9b71cefcf2a3e53907ead6c20ec24ee4d636e7aadf270b06b6a286",
+            "installed": "f040ed6f46f2c8b320b0d7094355699eab7e7cb0301803bc814d99a45e89cf78",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "9e3247065451e76463790d2c6f9a5ea0dda3e92ba138f1308778ace16e0c2de5",
+            "installed": "10d97ffa3491385dd1e7671b3302e37cb429b7868d6114d987e16a275f127aa9",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "4cb387983044bd572dc1e2b896055dda516a7d61b49b71258197219d399a3437",
+            "installed": "e12c113a33f7e0d7a71904ba0037a06ca0ec56e372571975e211ee73cd692b8b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "f42c2a28eae2e354d2cdc1bea12b7c74c150093bd9966c179612528fe8b02aba",
+            "installed": "4eedf4e20ca3ea8cfc79202927da971ecb1bde812a5bab6fc78015176a887a2d",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "23f3cf924fa7e5030ff5d020a444556c4722928eb3f1c4ed99ccb00024fc5205",
+            "installed": "d01d422ea08a70fe83b5e04468660c75fed7f73b9e1a40dfc7e2e55dfed9a713",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "7ee889bde40cd286a4cfeeb278e93314516e60e3eda733d31a6497f7041c9638",
+            "installed": "682fe626400f89c01737c56d8db4619c031da58a42bcb87b69a06a84042114b7",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "6ba438e41240dab0882b7333529751cabc999939739ecbc69ffaa65092c0f1c7",
+            "installed": "79bd02f18895fa78262daef0e5485bf12d0012b1cc7cb846f7c1ceeb6747bea2",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "1be16f453e261046912ca45da81a232b362b559e8b8110ee6aac284a1cfeea58",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "06e364e4f78c63bd9ce98a3adf2edbe6e132e17c6a4eb012d5cc031763bded72",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "2c975ed99227321952726509a55fbd4c94e5a2863307964bfb3d752f3ce9f1e0",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8bcec052113617a500003296b04503c3802284ee969893717f0c7f68dffbcf0b",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "profile": "minimal",
+        "tests": 8,
+        "scope": "affected review continuation",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/tmp/fvwm-module-waits-20261015/stage-manager-targets-review-minimal",
+        "installed": {
+          "usr/local/bin/fvwm3": {
+            "built": "7f22ef2aaa8456a6531defa55d99c4ead99596ead2f6fae339a49a5b1e0698f3",
+            "installed": "7f22ef2aaa8456a6531defa55d99c4ead99596ead2f6fae339a49a5b1e0698f3",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "234a59995763337cfac884ea6c01f5462b4efe414f4cbf1a37707088fd613b01",
+            "installed": "234a59995763337cfac884ea6c01f5462b4efe414f4cbf1a37707088fd613b01",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "e8689231c1b442c77b0035665e258571741f5822dbb3e0fa7d915118e019fd7d",
+            "installed": "e8689231c1b442c77b0035665e258571741f5822dbb3e0fa7d915118e019fd7d",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "4346aed27818183d2398811a99629cb7cec7751c488ebee553cf8861f44ebf24",
+            "installed": "4346aed27818183d2398811a99629cb7cec7751c488ebee553cf8861f44ebf24",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "a74476170c88df0682602cf12526442ccfd9b2dc0157bb5b6236dd05f73e0182",
+            "installed": "a74476170c88df0682602cf12526442ccfd9b2dc0157bb5b6236dd05f73e0182",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "41b20b23710cdd8f5e7a5a96d54fd2855e9d38b3b59af86a48905ff58b3a8706",
+            "installed": "41b20b23710cdd8f5e7a5a96d54fd2855e9d38b3b59af86a48905ff58b3a8706",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "61f986c16f1ce6fd32ee2a769a8f2ff0a1e05b9330b1ad4016368ecc4ef2165c",
+            "installed": "61f986c16f1ce6fd32ee2a769a8f2ff0a1e05b9330b1ad4016368ecc4ef2165c",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "621dba064c27e5dcebc22ba3aa986fd90b357b63a4202452a3050427165c4c45",
+            "installed": "621dba064c27e5dcebc22ba3aa986fd90b357b63a4202452a3050427165c4c45",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "b6ed3fc24add84ae396404d28ebf893ecc596ec375b5a09e8cd8fbf638bf4160",
+            "installed": "b6ed3fc24add84ae396404d28ebf893ecc596ec375b5a09e8cd8fbf638bf4160",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "f54cc726ebe8fb14e08aabbfae54645d18a302ab8423ece8bbb4901a4690acf7",
+            "installed": "f54cc726ebe8fb14e08aabbfae54645d18a302ab8423ece8bbb4901a4690acf7",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "f657b0f6fbd17c9e8e00e2acf9874d21bceb59f0ee8523e5fa4d91679fc0324b",
+            "installed": "f657b0f6fbd17c9e8e00e2acf9874d21bceb59f0ee8523e5fa4d91679fc0324b",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "1d1a0525ac37c26c9d413bba1139a4ce00a3c4bb6766c47b10ee6a8369c1ce08",
+            "installed": "1d1a0525ac37c26c9d413bba1139a4ce00a3c4bb6766c47b10ee6a8369c1ce08",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "3dd5fe3ffcc4b0df5bacbbf3137f0048161cec4c6c41472c8397bfc8da3e98be",
+            "installed": "3dd5fe3ffcc4b0df5bacbbf3137f0048161cec4c6c41472c8397bfc8da3e98be",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "ef3dc3ca2ea7bc17f371f5896e8983c9deee60c0641f4f0c5de1e28a17078800",
+            "installed": "ef3dc3ca2ea7bc17f371f5896e8983c9deee60c0641f4f0c5de1e28a17078800",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "4ec28bc488077fbea315b6bbf4bfefa98c1ce607d4bcfc1ab1d877b1d8e5573a",
+            "installed": "4ec28bc488077fbea315b6bbf4bfefa98c1ce607d4bcfc1ab1d877b1d8e5573a",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "9e8d56347731c71747976c0e1499693089f7d9f2b2b28fdc7666c76bc5e84e06",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "06e364e4f78c63bd9ce98a3adf2edbe6e132e17c6a4eb012d5cc031763bded72",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "2c975ed99227321952726509a55fbd4c94e5a2863307964bfb3d752f3ce9f1e0",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "canonical_sha256": "8bcec052113617a500003296b04503c3802284ee969893717f0c7f68dffbcf0b",
+        "outer_error_preserved": null
+      },
+      {
+        "target": "openbsd-arm64",
+        "profile": "default",
+        "tests": 293,
+        "scope": "full standard",
+        "source_archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-manager-targets-review-review",
+        "installed": {
+          "usr/local/bin/fvwm3": {
+            "built": "c2fea2b54424db8d5eecc3665a7da6c9970c5d48b3f37bce546b59a70d07e7e7",
+            "installed": "69ad819a08ef9e2280ad9c3276a600c0cc5c514d863e0f5593c1287c6180fb68",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+            "built": "9955e7505de58126d5e10c3513914be81196e2bf8a20624ff3d7aa95080455c7",
+            "installed": "6f897b2b1d4d26ea7bf112c8bb2a2a9983eb3aaed01d922ef40f4a29ab7060b3",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+            "built": "8eefa3269d02e8bb25a8df8b0bdf5ffea9770827a7985a5518bad0dc2a295a00",
+            "installed": "900f2f6813c7ecc54e0d24f11a880957a1847098c8051394713f94350a228915",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+            "built": "25ae3c01d08d7eca40856bc58842a74786bb5ce95b2901eda67ff904da43ae77",
+            "installed": "dee8fb798f4ca942a2a926630fa20be6740d9b05b4f06cd353c0c24be41486fe",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+            "built": "51883207c8dfc5516598b0eb096763a4126a76efe7b2b60731d3bb5c9fe4314b",
+            "installed": "fcb850a938a6cfeb201ac858b7399aba1adb3baf6cbdc4b707df502be07b6e12",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+            "built": "8422906d446ffd04f319548c210e74495c3dc39a9f0209cb70bca38bb3b9226e",
+            "installed": "c2d593d253cd47548104168fb81e866fc657098fb440ffb19e444bf67a7c9958",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+            "built": "f01977890cb96c6b28dc644a845e32d03be7b890e2b73d0fd0902abd8434b7e1",
+            "installed": "eda900c8274371e53c8e044801eca1cae6230852d3c7e1a1038c84a48dd6b217",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+            "built": "a7d88becab04e8a1515a3db67aca6a03a72d60c1be3086cdb9d5a3487db9c93c",
+            "installed": "63f4248aed2fb25696a1f063eae7846a8d60132dc23ea728d79f0489a4dd11bc",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+            "built": "fe97943a964306bf4af07d569f8642e3ec118e682a414333af287fbcd4bcd882",
+            "installed": "01a5c5bcd8444f006de7e29dc129bc9f3c1d434c6a539c56ea92ca018188a976",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+            "built": "1d8fccadd689612a3c763be13ab2176f662a6957be679e9459e3a9f3e051f3aa",
+            "installed": "78c7c2e3663204a25383e29fd1d1df0581e8b691afb9c8cde8d330898347c6d6",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+            "built": "ce1cb097fe09c44ceb8a94ae5ea98dd866f677e62328b273dab5aa7f93d15962",
+            "installed": "a3e18d0181de4cf724547a753f4869e235549ad26a7bc78f1d5d3e14a0865a8d",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+            "built": "0b965dbc3e8400da7ce315eb53f74d4d738a6108efa56f5b507ee6d5860d102c",
+            "installed": "707ed531d14ad7ad133117fad15b25461625bae584886f9ac955c35c506fa1a3",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+            "built": "a298a0b8564b33a4d29635d7270e8e73e513b263ef55b43cb8954fabe713c91f",
+            "installed": "d40011c45f27cc1167ca4d66fef5be23370dd1eb17c1dc4e79375a399e0b5dd2",
+            "elf": true
+          },
+          "usr/local/bin/fvwm-root": {
+            "built": "4ca8d1e62e1e7c1ff458bdc2f59cb8af112a16111764547ca570799e41bb1ee3",
+            "installed": "4100de1bd0e6c7801ebc0c6ce2ee42bada07278cc8d517998a86fd9a1fa73cc2",
+            "elf": true
+          },
+          "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+            "built": "197eeae99ceb666d26923a33621f98f02a036c90473e0cfac1a9299a85e419c6",
+            "installed": "3e45e610c19c7c289871b1687debbf98b3d51bc8075cef57d33d94e61d8a888a",
+            "elf": true
+          }
+        },
+        "data": {
+          "usr/local/share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": "eacc022bb58da65f27662ecc41dae76179095d22c6a89682ea2aeb0c840e9e35",
+          "usr/local/share/fvwm3/default-config/config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "usr/local/share/fvwm3/default-config/desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "usr/local/share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "usr/local/share/fvwm3/default-config/fvwm-x.png": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+          "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+          "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+          "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+          "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+          "usr/local/share/fvwm3/perllib/FVWM/Module.pm": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+          "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+          "usr/local/share/fvwm3/perllib/FVWM/Event.pm": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+          "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+          "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": "91dec2ce6c0100ad3bdf296a54ac19225602cf4b75b5e49d6d11577a7c6e67c9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+          "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+          "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+          "usr/local/share/fvwm3/perllib/General/FileSystem.pm": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+          "usr/local/share/fvwm3/perllib/General/Parse.pm": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+          "usr/local/share/fvwm3/ConfigFvwmBacker": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+          "usr/local/share/fvwm3/ConfigFvwmButtons": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+          "usr/local/share/fvwm3/FvwmForm-Form": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+          "usr/local/share/fvwm3/FvwmForm-Capture": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+          "usr/local/share/fvwm3/FvwmForm-Desktop": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+          "usr/local/share/fvwm3/FvwmForm-QuitVerify": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+          "usr/local/share/fvwm3/FvwmForm-Rlogin": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+          "usr/local/share/fvwm3/FvwmForm-RootCursor": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+          "usr/local/share/fvwm3/FvwmForm-Talk": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+          "usr/local/share/fvwm3/FvwmForm-TalkHelp": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+          "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+          "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+          "usr/local/share/fvwm3/ConfigFvwmIconMan": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+          "usr/local/share/fvwm3/ConfigFvwmIdent": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+          "usr/local/share/fvwm3/ConfigFvwmPager": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+          "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+          "usr/local/share/fvwm3/FvwmScript-BaseConfig": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+          "usr/local/share/fvwm3/FvwmScript-BellSetup": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+          "usr/local/share/fvwm3/FvwmScript-Buttons": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+          "usr/local/share/fvwm3/FvwmScript-Colorset": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+          "usr/local/share/fvwm3/FvwmScript-Date": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+          "usr/local/share/fvwm3/FvwmScript-FileBrowser": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+          "usr/local/share/fvwm3/FvwmScript-Find": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+          "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+          "usr/local/share/fvwm3/FvwmScript-PointerSetup": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+          "usr/local/share/fvwm3/FvwmScript-Quit": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+          "usr/local/share/fvwm3/FvwmScript-ScreenDump": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+          "usr/local/share/fvwm3/FvwmScript-ScreenSetup": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+          "usr/local/share/fvwm3/FvwmScript-WidgetDemo": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+          "usr/local/share/fvwm3/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+          "usr/local/share/fvwm3/FvwmScript-ComExample": "6d79f956573d081d2228020d34c448e500e11a8b429f3e4473f69712e105ac54",
+          "usr/local/bin/FvwmCommand": "37a2da4ffe6d71cccfc6b35a1a02b69cb14cf0c1cbc8fff29178a633561fd477",
+          "usr/local/bin/fvwm-perllib": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+          "usr/local/bin/fvwm-convert-2.6": "3e30952c7913b531a2bab2f154e160fdc07d6951028747b95263605d28776158",
+          "usr/local/bin/fvwm-menu-xlock": "8cedd967a9bb7c7595b09ae9489465bc3feb29ac8d83c36b267f3156843d9e43",
+          "usr/local/bin/fvwm-menu-directory": "bd9d8f2a740bb5fd00855ce5479c8dda9626fd2808ce16fd81fac5b34958e4c0",
+          "usr/local/bin/fvwm-menu-desktop": "9c5e972032e3d6f8428e2d37850ad34524a1ce3858ab0d5853d8a741003ca6bf",
+          "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+          "usr/local/share/xsessions/fvwm3.desktop": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba"
+        },
+        "canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/openbsd-arm64-job/guest-evidence.tgz",
+        "canonical_sha256": "5252f98cdb5759b58592a30492d38c469bc8aa63febca2ce389e16a786bb2a5e",
+        "outer_error_preserved": null
+      }
+    ],
+    "final_installs": 10,
+    "elf_identities": 150,
+    "compiled_data_identities": 77,
+    "data_identities": 700
+  },
+  "sanitizers": {
+    "sha256": "b5aff5bff35d443d90d7ed84dc3e0e53c043298e13b3a7f34933a7a908360977",
+    "results": [
+      {
+        "label": "configure",
+        "status": 0
+      },
+      {
+        "label": "compile",
+        "status": 0
+      },
+      {
+        "label": "tests",
+        "status": 0
+      }
+    ],
+    "tests": 4,
+    "source": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": "4eb245fcbeb967f82a3c48144e08a6873e62ca223f646065c8a197784ab71d1e",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "0312c1ea2bc33e570a5fabe1f717a8ef4f4617cceba7e508007e34cff22e8d04",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-property-policy": "3ed5c4b13cba47c04e814b0655268098e802d861205ceef116c219c397dbcd2e"
+    }
+  },
+  "fixture_continuation": {
+    "xvfb_entries": 6,
+    "default_entries": 3,
+    "fixture_sha256": "46e398f17004e010a27aba6ace081ba259d37fce0c5442d61e5b0f846bb94529",
+    "production_binaries_unchanged": true,
+    "canonical_archives": {
+      "freebsd-amd64": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-amd64-cleanup-fixture.tgz",
+        "sha256": "8826436cc2a7a2bf4f86297c6869c72b9eb805a5560626c602837b9f60943178"
+      },
+      "fvwm-x-linux-arm64-svg": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/fvwm-x-linux-arm64-svg-cleanup-fixture.tgz",
+        "sha256": "42ab6a1244672fc4cfa9891ced6172cb67423ed820dd19867e8d5cccb186b801"
+      }
+    }
+  },
+  "portable": {
+    "registered": 191,
+    "passed": 177,
+    "skipped": 14,
+    "full_log": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/portable.log"
+  },
+  "preserved_dispositions": {
+    "linux_preflight": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/linux-preflight-collection.json",
+    "openbsd_arm64_loader": {
+      "status": "composed loader observation passed",
+      "original_wrapper_status": "failed after all runtime gates passed",
+      "reason": "auxiliary staged PNG observer named install-stage-manager-targets-review; installed stage is install-stage-manager-targets-review-review",
+      "current_archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/openbsd-arm64-job/guest-evidence.tgz",
+        "sha256": "5252f98cdb5759b58592a30492d38c469bc8aa63febca2ce389e16a786bb2a5e"
+      },
+      "prior_archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/openbsd-arm64-job/guest-evidence.tgz",
+        "sha256": "5eccb3206e3d30e3cac80ab3bfeade7c44c6d9e33ee4ce8d3eacac7d4166069c"
+      },
+      "fresh_staged_core_loader": {
+        "log": "builddir-bsd/manager-targets-review-checkpoint/default-installed-loader.log",
+        "png": {
+          "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng16.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+        }
+      },
+      "retained_staged_worker_loader": {
+        "current_path": "builddir-bsd/install-stage-manager-targets-review-review/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+        "prior_path": "builddir-bsd/install-stage-workarea-review/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+        "identity": {
+          "sha256": "3e45e610c19c7c289871b1687debbf98b3d51bc8075cef57d33d94e61d8a888a",
+          "mode": 493,
+          "bytes": 94784,
+          "elf": true
+        },
+        "previous_observation": {
+          "sha256": "3e45e610c19c7c289871b1687debbf98b3d51bc8075cef57d33d94e61d8a888a",
+          "loaded_png": {
+            "/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "64a00e82b769f5ee6a325bd257e6be6188561997d9c37c1ee9b9a68bdf356dd4"
+          }
+        }
+      },
+      "environment": {
+        "CC": "cc",
+        "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig",
+        "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib:/home/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib"
+      },
+      "runtime_tests_repeated": 0,
+      "installs_repeated": 0,
+      "qemu_exit_status": 0,
+      "ephemeral_key_removed": true
+    },
+    "freebsd_amd64_default_x": {
+      "status": "composed FreeBSD final checkpoint passed",
+      "original_default_x_status": "failed",
+      "original_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/freebsd-amd64-evidence.tgz",
+      "original_sha256": "73acd3e9f6d8cd85698903d7ec620d5beb0bc776de46dcbe16abaa69f9801d67",
+      "original_error": {
+        "error": "default-x"
+      },
+      "unchanged_default_control": {
+        "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-default-control.tgz",
+        "sha256": "a52b05bc50445a8e92112dbd87a5f14973861362a890effa31e6e0ba05ec66b3",
+        "fixtures": 8,
+        "status": "passed",
+        "server_after_cleanup": 0
+      },
+      "corrected_fixture": {
+        "sha256": "46e398f17004e010a27aba6ace081ba259d37fce0c5442d61e5b0f846bb94529",
+        "freebsd_xvfb_groups": 3,
+        "freebsd_default_groups": 3,
+        "linux_xvfb_groups": 3,
+        "production_binaries_unchanged": true,
+        "source_delta": [
+          "tests/live_x/manager_handoff_live.py"
+        ]
+      },
+      "server_cleanup_wait_limit_seconds": 2,
+      "full_suites_repeated": 0
+    },
+    "input_retirement": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/input-retirement.json",
+      "bytes": 222753716,
+      "archives": 32
+    }
+  },
+  "runtime_inputs_match_head": true,
+  "qualified_fixture_delta": [
+    "tests/live_x/manager_handoff_live.py"
+  ],
+  "upkeep_markdown_receipt_excluded_from_runtime_identity": true,
+  "remaining": [
+    "server allocation/property-write refusal",
+    "future-time and retained ownership histories",
+    "broader manager/Script/INCR/clipboard/XDND roles",
+    "native-CPU Linux sanitizers",
+    "physical hardware/toolkits/compositors",
+    "final release acceptance"
+  ],
+  "performance": {
+    "reference_pr": 144,
+    "subsequent_merged_checkpoints": 3,
+    "through": [
+      145,
+      146,
+      147
+    ],
+    "comparison_due": false
+  },
+  "milestone_cutoff": {
+    "remaining_general_stage5_owners": 20,
+    "github_milestone": "Later",
+    "next": [
+      "BUTTON-01",
+      "BUTTON-02",
+      "CFG-01",
+      "CFG-02",
+      "IPC-02"
+    ]
+  },
+  "native_default_x": {
+    "displays": 9,
+    "fixture_groups_passed": 60,
+    "original_failed_groups": 1,
+    "evidence": [
+      {
+        "target": "freebsd-arm64",
+        "scope": ".",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0,
+          "targets-values": 0,
+          "targets-multiple": 0,
+          "targets-admission": 0,
+          "geometry-4": 0,
+          "geometry-6": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true,
+        "canonical_sha256": "7ef730df7ea9ac9cdae82d8d2c47c502fcfe3061c2fcfc0cadb448a23cd43346"
+      },
+      {
+        "target": "freebsd-amd64",
+        "scope": ".",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0,
+          "targets-values": 0,
+          "targets-multiple": 0,
+          "targets-admission": 0,
+          "geometry-4": 0,
+          "geometry-6": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true,
+        "canonical_sha256": "56b98daddc5cbb8558306dac569b719b95a83272fe64bee17d7f342668f66d6c"
+      },
+      {
+        "target": "openbsd-amd64",
+        "scope": ".",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0,
+          "targets-values": 0,
+          "targets-multiple": 0,
+          "targets-admission": 0,
+          "geometry-4": 0,
+          "geometry-6": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true,
+        "canonical_sha256": "8c39ff5673650e16b00616f0d736dbe6795c6206152307e5e1921307c8b05585"
+      },
+      {
+        "target": "openbsd-arm64",
+        "scope": "review",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0,
+          "targets-values": 0,
+          "targets-multiple": 0,
+          "targets-admission": 0,
+          "geometry-4": 0,
+          "geometry-6": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true,
+        "canonical_sha256": "5252f98cdb5759b58592a30492d38c469bc8aa63febca2ce389e16a786bb2a5e"
+      },
+      {
+        "target": "freebsd-arm64",
+        "scope": "review",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0,
+          "targets-values": 0,
+          "targets-multiple": 0,
+          "targets-admission": 0,
+          "geometry-4": 0,
+          "geometry-6": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true,
+        "canonical_sha256": "b89c91d90beb20659a9e122568f4892953160ac844d9fce910b5bde81b696d1e"
+      },
+      {
+        "target": "freebsd-amd64",
+        "scope": "review",
+        "status": "failed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 1
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true,
+        "canonical_sha256": "73acd3e9f6d8cd85698903d7ec620d5beb0bc776de46dcbe16abaa69f9801d67"
+      },
+      {
+        "target": "openbsd-amd64",
+        "scope": "review",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0,
+          "targets-values": 0,
+          "targets-multiple": 0,
+          "targets-admission": 0,
+          "geometry-4": 0,
+          "geometry-6": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true,
+        "canonical_sha256": "d504014c1516704381462964400ca7f5f79b2244fa6ac8cce73c2d0f9d91b9f9"
+      },
+      {
+        "target": "freebsd-amd64",
+        "scope": "unchanged isolated control",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0,
+          "targets-values": 0,
+          "targets-multiple": 0,
+          "targets-admission": 0,
+          "geometry-4": 0,
+          "geometry-6": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true
+      },
+      {
+        "target": "freebsd-amd64",
+        "scope": "fixture-only continuation",
+        "status": "passed",
+        "fixtures": {
+          "manager-announcement": 0,
+          "manager-replacement": 0,
+          "manager-failure": 0
+        },
+        "server_after_cleanup": 0,
+        "unauthenticated_client_refused": true
+      }
+    ]
+  },
+  "retirement_records": [
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/input-retirement.json",
+      "sha256": "9c8d5cfe7220402c812d4f78646f959c7cb61f13bca04c9c87321a03e489a502",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/linux-amd64-retirement.json",
+      "sha256": "993e8f973f793384215cf62731ed01cf288dd470dab6184fe93f9ff9013dfc41",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-amd64-retirement.json",
+      "sha256": "c45236bdcb08cab49e3581e9e4f620d224241be6c2929b1da7a0b370cbd554e1",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-amd64-aux-retirement.json",
+      "sha256": "6d2aaf326eca9f723a5882fc23dfa7ebdc981ac5597ae4b15cc4f53a00c55bd1",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/openbsd-arm64-cache-retirement.json",
+      "sha256": "b84366e69022238400ec11bc48cd996fcdf8f05dbfe0f544bb94b844befb331e",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-arm64-aux-retirement.json",
+      "sha256": "89d8a4d07a7267ccfadd99001aa93b3e76ef797cd4a2baa521095cea120a2ee5",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/openbsd-amd64-cache-retirement.json",
+      "sha256": "37fe4467587e5dc46a2a4ada314efd2eaa8ed545020f6f78e8633565555d2015",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/freebsd-arm64-retirement.json",
+      "sha256": "12b851a7c93011f4a9050a3f184400fda8ed571f4c8851cf26279813a9d18a29",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/fvwm-x-linux-arm64-svg-aux-retirement.json",
+      "sha256": "e954b7adecc1544f4089a0fe86e52a6eea34310ea0cf1c4a06864735d24fb331",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/resume/fvwm-x-linux-arm64-svg-retirement.json",
+      "sha256": "ecdc6d6355253b86dc6e3d104c7aa1e780e0c1dd7c35f2088eaa94155f8d522d",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/linux-amd64-retirement.json",
+      "sha256": "be289e7c1ba8700822582584766e8a12cf3483953fe5467e46530a33bb9b663f",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/freebsd-amd64-retirement.json",
+      "sha256": "a888f079a32e5b47609c98e816a7fff7dd85135ce3dea4e56c1d1a42fa6f8c24",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/fvwm-x-linux-arm64-svg-retirement.json",
+      "sha256": "42e2eac1e29a17b9d6cfdaabf0c8d15cdd0859564dd4f63a2b1c6a4a04e9d80b",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/openbsd-arm64-cache-retirement.json",
+      "sha256": "b84366e69022238400ec11bc48cd996fcdf8f05dbfe0f544bb94b844befb331e",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/openbsd-amd64-cache-retirement.json",
+      "sha256": "37fe4467587e5dc46a2a4ada314efd2eaa8ed545020f6f78e8633565555d2015",
+      "source_builds_stages_disks_preserved": true
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/freebsd-arm64-retirement.json",
+      "sha256": "ac9ebb7939e0e94f8c788c2390c0f54cc097cd1cc28b9ed9a6d11418eda7ea4e",
+      "source_builds_stages_disks_preserved": true
+    }
+  ]
+}

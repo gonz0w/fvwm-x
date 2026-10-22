@@ -1,8 +1,7 @@
 # FVWM-X
 
 FVWM-X is an X11 window manager derived from FVWM3, for Linux, FreeBSD Xorg
-and OpenBSD Xenocara on AMD64 and ARM64. It is for people who want a fast,
-configurable desktop and control over their own setup.
+and OpenBSD Xenocara on AMD64 and ARM64. It offers a fast, configurable desktop.
 
 Our goals are a simpler codebase, responsive interaction, secure resource and
 process handling, and continued use of existing FVWM configurations and themes.
@@ -14,7 +13,8 @@ compositor or native Wayland backend.
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) is locally
 qualified and merged. [Work-area safety](dev-docs/verification/VERIFICATION-2026-10-21-WORKAREA.md)
 validates struts and publishes current reservations across six targets.
-Dependencies continue; performance tuning waits until the next release.
+Manager targets precede button/settings features; further maintenance and tuning
+move to a future release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

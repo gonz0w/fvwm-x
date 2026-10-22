@@ -3651,3 +3651,16 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         )
     endforeach
 endif
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    foreach manager_case : ['values', 'multiple', 'admission']
+        test('manager-targets-' + manager_case + '-xvfb', py,
+            args: [files('live_x/manager_targets_live.py'),
+                '--fvwm', fvwm3, '--mfl', fvwm_mfl,
+                '--case', manager_case,
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts/manager-targets' / manager_case],
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            is_parallel: false, timeout: 60,
+        )
+    endforeach
+endif

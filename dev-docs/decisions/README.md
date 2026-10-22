@@ -31,6 +31,8 @@ separate; the former public-helper output decision is still deferred.
 
 ## Existing records
 
+- [Milestone cutoff and feature handoff](FEATURE-HANDOFF-2026-10-21.md) — approved finite manager-target checkpoint, then BUTTON/CFG/IPC features; additional general maintenance deferred to a future release.
+
 - [Runtime language standard: C, Go and Lua](RUNTIME-GO-LUA-2026-10-06.md)
   — runtime-first Go helper migration and explicit Perl retirement approved in
   direction; additive Go-hosted Lua primitive policies scoped, go-lua adoption

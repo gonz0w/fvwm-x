@@ -78,6 +78,7 @@ struct clients  clientq;
 
 struct fvwm_comms {
 	uint64_t next_request;
+	char settings_cookie[65];
 	int		 fd[2];
 	struct event_base *base;
 	struct bufferevent *input, *output;
@@ -561,7 +562,7 @@ static void
 register_interest(void)
 {
 	size_t		i;
-	unsigned long	f_m = 0, f_mx = MX_REPLY;
+	unsigned long	f_m = M_STRING, f_mx = MX_REPLY;
 
 	for (i = 0; i < (sizeof(etf) / sizeof(etf[0])); i++) {
 		unsigned long f = etf[i].flag;
@@ -625,6 +626,8 @@ client_destroy(struct client *c)
 	event_free(c->resume);
 	event_free(c->partial);
 	event_free(c->requests);
+	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		mfl_request_clear(c->pending + i);
 	bufferevent_free(c->comms);
 	free(c);
 }
@@ -693,12 +696,12 @@ client_request_timeout_cb(evutil_socket_t fd, short events, void *ctx)
 
 		if (p->kind == MFL_REQUEST_INVALID || p->deadline_ms > now)
 			continue;
-		p->kind = MFL_REQUEST_INVALID;
 		if (!client_reply(c, p->id, "deadline_exceeded", NULL))
 		{
 			client_destroy(c);
 			return;
 		}
+		mfl_request_clear(p);
 	}
 	if (!client_request_timer(c))
 		client_destroy(c);
@@ -730,11 +733,12 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		return NULL;
 	if (kind == MFL_REQUEST_CAPABILITIES)
 	{
-		const char *methods[] = {"query", "barrier", "set_mode"};
-		const char *resources[] = {"capabilities", "connection", "desktop"};
+		const char *methods[] = {"query", "barrier", "set_mode", "action"};
+		const char *resources[] = {"capabilities", "connection", "desktop",
+			"settings"};
 
-		if (!request_add_strings(result, "methods", methods, 3) ||
-		    !request_add_strings(result, "resources", resources, 3) ||
+		if (!request_add_strings(result, "methods", methods, 4) ||
+		    !request_add_strings(result, "resources", resources, 4) ||
 		    !cJSON_AddNumberToObject(result, "pending_limit",
 			MFL_REQUEST_LIMIT) ||
 		    !cJSON_AddNumberToObject(result, "deadline_ms",
@@ -742,6 +746,11 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		    !cJSON_AddNumberToObject(result, "max_line_bytes",
 			MAX_MODULE_INPUT_TEXT_LEN) ||
 		    !cJSON_AddBoolToObject(result, "applied_command_results", false) ||
+		    !cJSON_AddStringToObject(result, "settings_provider", "FvwmDesktop") ||
+		    !cJSON_AddStringToObject(result, "settings_provider_availability",
+			"on-request") ||
+		    !cJSON_AddNumberToObject(result, "settings_payload_max_bytes",
+			MFL_SETTINGS_INPUT_MAX) ||
 		    !cJSON_AddBoolToObject(result, "read_only_security_boundary", false))
 			goto fail;
 		return result;
@@ -789,6 +798,8 @@ client_request(struct client *c, const char *json)
 			return client_reply(c, NULL, "duplicate_id", NULL);
 	if (!valid)
 		return client_reply(c, request.id, request.error, NULL);
+	if (c->read_only && mfl_request_is_action(request.kind))
+		return client_reply(c, request.id, "read_only", NULL);
 	if (request.kind == MFL_REQUEST_READ_ONLY)
 		c->read_only = true;
 	if (request.kind == MFL_REQUEST_READ_ONLY ||
@@ -804,10 +815,13 @@ client_request(struct client *c, const char *json)
 		request_now_ms(), &slot);
 	if (error != NULL)
 		return client_reply(c, request.id, error, NULL);
-	if (!mfl_request_command(command, sizeof(command), slot) ||
+	if (!(mfl_request_is_settings(request.kind) ?
+	    mfl_request_settings_command(command, sizeof(command), &request,
+		slot->serial, fc.settings_cookie) :
+	    mfl_request_command(command, sizeof(command), slot)) ||
 	    !mfl_queue_command(bufferevent_get_output(fc.output), command))
 	{
-		slot->kind = MFL_REQUEST_INVALID;
+		mfl_request_clear(slot);
 		return client_reply(c, request.id, "core_queue_full", NULL);
 	}
 	return client_request_timer(c);
@@ -847,8 +861,10 @@ handle_request_packet(const FvwmPacket *packet)
 				mfl_request_core_result(p->kind, payload);
 			if (!error && !result)
 				error = "invalid_core_reply";
-			p->kind = MFL_REQUEST_INVALID;
-			if (!client_reply(c, p->id, error, result) ||
+			bool queued = client_reply(c, p->id, error, result);
+
+			mfl_request_clear(p);
+			if (!queued ||
 			    !client_request_timer(c))
 				client_destroy(c);
 			/* Serial IDs are module-wide and never reused. No core work
@@ -856,6 +872,67 @@ handle_request_packet(const FvwmPacket *packet)
 			return;
 		}
 	}
+}
+
+static bool
+handle_settings_packet(const FvwmPacket *packet)
+{
+	struct client *c;
+	const char *message;
+	size_t words;
+
+	if (packet->type != M_STRING || packet->size < FvwmPacketHeaderSize + 4)
+		return false;
+	words = packet->size - FvwmPacketHeaderSize - 3;
+	message = (const char *)(packet->body + 3);
+	if (memchr(message, '\0', words * sizeof(unsigned long)) == NULL ||
+	    strncmp(message, "MFL_SETTINGS_1 ", 15) != 0)
+		return false;
+	TAILQ_FOREACH(c, &clientq, entry)
+	{
+		for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		{
+			struct mfl_pending_request *p = c->pending + i;
+			const char *payload = mfl_request_settings_payload(message,
+				p, fc.settings_cookie);
+			const char *error = NULL;
+			cJSON *envelope = NULL, *result = NULL;
+			bool queued;
+
+			if (!payload)
+				continue;
+			if (request_now_ms() >= p->deadline_ms)
+				error = "deadline_exceeded";
+			else
+			{
+				enum mfl_settings_part_result part =
+					mfl_request_settings_part(p, payload);
+
+				if (part == MFL_SETTINGS_MORE)
+					return true;
+				if (part == MFL_SETTINGS_DONE)
+					envelope = mfl_request_settings_result(p);
+				if (!envelope)
+					error = "invalid_provider_reply";
+				else if (cJSON_HasObjectItem(envelope, "error"))
+					error = cJSON_GetObjectItemCaseSensitive(
+						cJSON_GetObjectItemCaseSensitive(envelope,
+						"error"), "code")->valuestring;
+				else
+					result = cJSON_DetachItemFromObjectCaseSensitive(
+						envelope, "result");
+			}
+			queued = client_reply(c, p->id, error, result);
+			cJSON_Delete(envelope);
+			mfl_request_clear(p);
+			if (!queued || !client_request_timer(c))
+				client_destroy(c);
+			return true;
+		}
+	}
+	/* Reserved provider records, including late/old-incarnation replies, are
+	 * never broadcast as public events or retained as a second settings cache. */
+	return true;
 }
 
 static void
@@ -1012,7 +1089,8 @@ fvwm_read(struct bufferevent *bev, void *data)
 			return;
 		}
 		handle_request_packet((FvwmPacket *)packet);
-		broadcast_to_client((FvwmPacket *)packet);
+		if (!handle_settings_packet((FvwmPacket *)packet))
+			broadcast_to_client((FvwmPacket *)packet);
 	}
 	if (evbuffer_get_length(bufferevent_get_input(bev)) != 0)
 		evtimer_add(fc.resume, &yield);
@@ -1130,10 +1208,18 @@ int main(int argc, char **argv)
 	struct event_base     *base;
 	struct evconnlistener *fmd_cfd;
 	struct sockaddr_un    sin;
+	struct timespec       incarnation;
 	char		     *pe;
 	size_t		      socket_name_len;
 
 	TAILQ_INIT(&clientq);
+	if (clock_gettime(CLOCK_MONOTONIC, &incarnation) != 0)
+		err(1, "Cannot read MFL incarnation clock");
+	/* Correlation across restarts, not authentication. An old provider's
+	 * SendToModule must not complete a new MFL process's reused serial. */
+	snprintf(fc.settings_cookie, sizeof(fc.settings_cookie), "%lx-%lx-%lx",
+		(unsigned long)getpid(), (unsigned long)incarnation.tv_sec,
+		(unsigned long)incarnation.tv_nsec);
 
 	if ((fc.m = ParseModuleArgs(argc, argv, 1)) == NULL) {
 		fprintf(stderr, "%s must be started by FVWM3\n", MYNAME);

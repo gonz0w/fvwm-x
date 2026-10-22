@@ -1,0 +1,421 @@
+{
+  "status": "observed",
+  "profile": "linux-arm64-gcc-default",
+  "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+  "architecture": "aarch64",
+  "samples": 128,
+  "repetitions": 3,
+  "requested_rate": 10000,
+  "runs": [
+    {
+      "side": "baseline",
+      "repetition": 1,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr149/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr149/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-settings-focused/performance/1-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 1,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/bin/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-settings-focused/performance/1-candidate"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 2,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/bin/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-settings-focused/performance/2-candidate"
+      ],
+      "status": 0
+    },
+    {
+      "side": "baseline",
+      "repetition": 2,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr149/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr149/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-settings-focused/performance/2-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "baseline",
+      "repetition": 3,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr149/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr149/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-settings-focused/performance/3-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 3,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/bin/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-settings-focused/performance/3-candidate"
+      ],
+      "status": 0
+    }
+  ],
+  "checkpoints": {
+    "baseline": {
+      "revision": "dbebe40fdaaf61c41548699da35465df5784ef63",
+      "binaries": {
+        "fvwm": {
+          "path": "/tmp/fvwm-performance-reference-pr149/fvwm3",
+          "bytes": 5319728,
+          "sha256": "89330e3bcdfaec889f937a1b6618c5abdae6cf6fb3dd44e8ee259c0c80fc9674"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-performance-reference-pr149/FvwmMFL",
+          "bytes": 273376,
+          "sha256": "b39df4eeea349ddde0398c67ddf277630cd27dfa044a5e84d825e2a39b416da3"
+        }
+      },
+      "wm_size": {
+        "command": [
+          "/usr/bin/size",
+          "/tmp/fvwm-performance-reference-pr149/fvwm3"
+        ],
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1085180\t  26556\t  39520\t1151256\t 119118\t/tmp/fvwm-performance-reference-pr149/fvwm3\n",
+        "stderr": "",
+        "text_bytes": 1085180,
+        "data_bytes": 26556,
+        "bss_bytes": 39520
+      }
+    },
+    "candidate": {
+      "revision": "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+      "binaries": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/bin/fvwm3",
+          "bytes": 5319768,
+          "sha256": "effc71f593e9b9e9aac12b460085de5f382668d28b4e98f1ba7d0188a479060e"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "bytes": 366320,
+          "sha256": "a399106d10e1858563b146420ccbbe72606de5b7a60bfbb50c515750e05670ee"
+        }
+      },
+      "wm_size": {
+        "command": [
+          "/usr/bin/size",
+          "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/bin/fvwm3"
+        ],
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1085180\t  26556\t  39520\t1151256\t 119118\t/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/bin/fvwm3\n",
+        "stderr": "",
+        "text_bytes": 1085180,
+        "data_bytes": 26556,
+        "bss_bytes": 39520
+      }
+    }
+  },
+  "measurement_scope": "same-host owned Xvfb; no rebuild or timing gate",
+  "profiler_inputs": [
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+      "bytes": 11212,
+      "sha256": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/geometry_transition_live.py",
+      "bytes": 32806,
+      "sha256": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357"
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py",
+      "bytes": 140988,
+      "sha256": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380"
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "idle": {
+        "commands": {
+          "median_ms": 0.379212,
+          "median_range_ms": [
+            0.365711,
+            0.3837945
+          ],
+          "p95_ms": 0.478004
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.3528725,
+          "median_range_ms": [
+            12.230851000000001,
+            12.522020000000001
+          ],
+          "p95_ms": 13.359069
+        },
+        "wm_cpu_percent": 2.4721390087971895,
+        "wm_peak_rss_kib": 7192
+      },
+      "title": {
+        "commands": {
+          "median_ms": 0.37939900000000004,
+          "median_range_ms": [
+            0.35958650000000003,
+            0.39766999999999997
+          ],
+          "p95_ms": 0.979716
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.01512,
+          "median_range_ms": [
+            11.986890500000001,
+            12.030515999999999
+          ],
+          "p95_ms": 12.949566
+        },
+        "wm_cpu_percent": 8.747866280384486,
+        "wm_peak_rss_kib": 7192,
+        "achieved_requests_per_second": 9994.166531374458
+      },
+      "resize": {
+        "commands": {
+          "median_ms": 0.35602350000000005,
+          "median_range_ms": [
+            0.311086,
+            0.3569195
+          ],
+          "p95_ms": 0.450628
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.423353,
+          "median_range_ms": [
+            12.325351999999999,
+            12.442144500000001
+          ],
+          "p95_ms": 13.636029
+        },
+        "wm_cpu_percent": 15.889600531370728,
+        "wm_peak_rss_kib": 7192,
+        "achieved_requests_per_second": 9997.797947809053
+      }
+    },
+    "candidate": {
+      "idle": {
+        "commands": {
+          "median_ms": 0.384107,
+          "median_range_ms": [
+            0.3560445,
+            0.394753
+          ],
+          "p95_ms": 0.506962
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.4574575,
+          "median_range_ms": [
+            12.395707,
+            12.492145
+          ],
+          "p95_ms": 13.381194
+        },
+        "wm_cpu_percent": 2.469437297835373,
+        "wm_peak_rss_kib": 7196
+      },
+      "title": {
+        "commands": {
+          "median_ms": 0.373315,
+          "median_range_ms": [
+            0.36969050000000003,
+            0.38317
+          ],
+          "p95_ms": 0.9303
+        },
+        "scheduled_10ms": {
+          "median_ms": 11.880057,
+          "median_range_ms": [
+            11.758972499999999,
+            12.008828
+          ],
+          "p95_ms": 12.826564
+        },
+        "wm_cpu_percent": 8.246780789514569,
+        "wm_peak_rss_kib": 7196,
+        "achieved_requests_per_second": 9994.184771723483
+      },
+      "resize": {
+        "commands": {
+          "median_ms": 0.3618155,
+          "median_range_ms": [
+            0.3570865,
+            0.3655655
+          ],
+          "p95_ms": 0.460921
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.4423525,
+          "median_range_ms": [
+            12.422768999999999,
+            12.4697485
+          ],
+          "p95_ms": 13.672363
+        },
+        "wm_cpu_percent": 16.95024080548387,
+        "wm_peak_rss_kib": 7196,
+        "achieved_requests_per_second": 9997.65089094871
+      }
+    }
+  },
+  "canonical": {
+    "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-settings/focused.tgz",
+    "sha256": "427adad19186241f420f70d7dfae2707ce60fb9bc7bdf22aa7487278930841eb",
+    "bytes": 2722245,
+    "all_payloads_valid": true,
+    "raw_directory": "evidence/performance"
+  },
+  "source_binding": {
+    "baseline": {
+      "revision": "dbebe40fdaaf61c41548699da35465df5784ef63",
+      "files": {
+        "/tmp/fvwm-performance-reference-pr149/fvwm3": "89330e3bcdfaec889f937a1b6618c5abdae6cf6fb3dd44e8ee259c0c80fc9674",
+        "/tmp/fvwm-performance-reference-pr149/FvwmMFL": "b39df4eeea349ddde0398c67ddf277630cd27dfa044a5e84d825e2a39b416da3"
+      }
+    },
+    "candidate": {
+      "revision": "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+      "files": {
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/bin/fvwm3": "effc71f593e9b9e9aac12b460085de5f382668d28b4e98f1ba7d0188a479060e",
+        "/tmp/fvwm-module-waits-20261015/stage-structured-ipc-gcc/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "a399106d10e1858563b146420ccbbe72606de5b7a60bfbb50c515750e05670ee"
+      }
+    },
+    "profile": "linux-arm64-gcc-default",
+    "compiler": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+  },
+  "next_reference": {
+    "directory": "/tmp/fvwm-performance-reference-pr154",
+    "files": {
+      "fvwm3": {
+        "sha256": "effc71f593e9b9e9aac12b460085de5f382668d28b4e98f1ba7d0188a479060e",
+        "bytes": 5319768
+      },
+      "FvwmMFL": {
+        "sha256": "a399106d10e1858563b146420ccbbe72606de5b7a60bfbb50c515750e05670ee",
+        "bytes": 366320
+      }
+    },
+    "merged_pr": 154,
+    "runtime_commit": "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+    "merged_implementation_PRs_since_reference": 0
+  },
+  "module_size_output": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n  61921\t   2176\t   3640\t  67737\t  10899\t/tmp/fvwm-performance-reference-pr149/FvwmMFL\n  71121\t   2272\t   3656\t  77049\t  12cf9\t/tmp/fvwm-performance-reference-pr154/FvwmMFL\n",
+  "interval": {
+    "merged_PRs": [
+      150,
+      151,
+      152,
+      153,
+      154
+    ],
+    "baseline_merged_pr": 149,
+    "candidate_merged_pr": 154,
+    "unmerged_settings_candidate_included": false
+  }
+}

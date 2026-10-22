@@ -100,6 +100,7 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   read-only admission is not a security boundary.
 * `connection` returns this connection's `read_only` flag and selected event
   names. These are MFL-owned values and require no core round trip.
+* `settings` queries the running FvwmDesktop settings owner, as described below.
 * `desktop` samples authoritative values through the existing core command
   engine and module-directed `Send_Reply`. It returns `scope:
   "core-current-monitor"`, `units: "actual-pixels"`, the current `desk`,
@@ -112,8 +113,89 @@ receiving its terminal reply; a new connection has its own client-ID scope.
 
 The desktop query is an observation at core command evaluation, not a cached
 second window-state authority or an atomic X-server transaction. It does not
-provide the complete monitor topology, configured bindings, helper-owned
-settings, shared preview generations or asynchronous action status.
+provide the complete monitor topology, configured bindings, shared core preview
+generations or asynchronous action status. Helper-owned settings have their own
+provider query and generation; they are not core window/theme state.
+
+=== Desktop settings provider
+
+With FvwmDesktop running, query its registered settings through the same
+correlated request transport:
+
+....
+request {"version":1,"id":"settings-1","method":"query","resource":"settings"}
+request {"version":1,"id":"schedule-1","method":"query","resource":"settings","scope":"group:schedule"}
+....
+
+Optional `scope` defaults to `all`. It accepts one registered key or
+`group:appearance`, `group:schedule` and `group:effects`, matching FvwmDesktop's
+existing settings scopes. The result identifies `owner: "FvwmDesktop"`,
+`schema_version: 1`, opaque `provider` and `generation` tokens, `saved_revision`
+and a `settings`
+object keyed by setting name. Each item includes its type/default/choices or
+range, description, saved/effective values, override source and capability.
+The provider token identifies one helper incarnation. An optional `provider`
+field targets a query to that exact instance; omit it to discover an owner.
+The generation belongs to this helper's settings snapshot; it changes after
+accepted settings changes, reload or helper restart.
+
+Typed actions use `method: "action"`, `resource: "settings"`, `operation` and
+the exact provider and generation returned by the preceding query:
+
+....
+request {"version":1,"id":"apply-1","method":"action","resource":"settings","operation":"set","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","values":{"palette":"grove","motion":false}}
+request {"version":1,"id":"reset-1","method":"action","resource":"settings","operation":"reset","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","scope":"group:effects"}
+request {"version":1,"id":"reload-1","method":"action","resource":"settings","operation":"reload","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef"}
+....
+
+Both tokens are 32 lowercase hexadecimal characters; use the observed values.
+Only the selected provider responds, so multiple FvwmDesktop instances cannot
+race another owner's refusal against a successful commit. If that provider
+exits/restarts, requests to its old identity reach the deadline: rediscover with
+an untargeted query before choosing the new owner. `set`
+accepts a nonempty `values` object with at most the seven registered keys and
+typed string/boolean values. It validates the complete combined change before
+publishing, so day/night schedules can change atomically. `reset` requires a
+scope; `reload` accepts no scope or values. Unknown/duplicate fields, nested
+values, missing tokens and wrong types are refused. A stale generation
+returns `stale_generation` without mutation. Existing module overrides still
+take precedence over saved preferences.
+
+FvwmDesktop retains its private atomic file replacement, nonblocking writer
+lock and saved-file revision check. Invalid values return `invalid_value`;
+unavailable/refused file persistence or reload returns `persistence_failed`.
+For an external file change, reload/query before intentionally trying again.
+Successful set/reset returns `state: "committed"`; reload returns `state:
+"reloaded"`; query returns `state: "observed"`. Results include the new
+generation and a settings snapshot (reset returns its selected scope).
+
+`application: "submitted-to-fvwm"` means commands were queued by the owner;
+`asynchronous_completion: "unknown"` remains explicit. If publication succeeds
+but command submission fails, the result retains its committed/reloaded state
+with `application: "submission-failed"`. It does not report an unchanged state
+or invite blind replay. Generic `applied_command_results` remains false; this
+provider observes its own saved preferences, not final core rendering.
+Live preview remains unavailable (`preview: false`).
+
+Capabilities name the settings provider with availability `on-request`; MFL
+does not start it, retain a second settings cache or infer liveness from a core
+barrier. An absent/stalled provider reaches `deadline_exceeded`. A timeout or
+disconnect can occur after an action commits: query after reconnecting rather
+than infer refusal or automatically replay the action.
+
+Settings requests share the eight pending slots and absolute five-second
+deadline. The normalized provider input is limited to 384 bytes, excluding
+client IDs and outer envelope; larger input returns `request_too_large`.
+The internal reply is at most 8192 decoded bytes in 32 ordered chunks. Partial,
+malformed or out-of-order replies return `invalid_provider_reply`; expiry and
+disconnect release assembly storage. A restart cookie plus nonreused serial
+prevents late replies from completing a replacement request or MFL process.
+Typed data travels hex-encoded through existing directed module messages, so
+setting values cannot become FVWM expansions or command syntax. This is
+correlation and literal-data framing, not peer authentication on shared X11.
+If a future registry exceeds the reply bound, the result can omit `settings`
+with `settings_unavailable: "reply_too_large"`; query a smaller scope. An
+already committed action retains its outcome and generation.
 
 === Processed stream barrier
 
@@ -141,7 +223,8 @@ request {"version":1,"id":"restrict-1","method":"set_mode","mode":"read-only"}
 
 The result returns the connection state. Repeating this mode is harmless;
 changing back to writable is unsupported. Queries, barriers and event
-subscriptions remain usable. Other legacy commands, including global debug
+subscriptions remain usable. Typed settings actions receive a correlated
+`read_only` error. Other legacy commands, including global debug
 changes, receive an uncorrelated `read_only` error and are not forwarded.
 Already queued commands are not undone. A newly connected client starts in the
 existing writable mode, so callers should set this mode before sending actions.

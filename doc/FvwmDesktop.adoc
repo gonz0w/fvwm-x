@@ -178,6 +178,17 @@ and TitleStyle commands can change these independently. No proprietary or
 icon fonts are required. PNG wallpaper decoding uses FVWM's optional PNG
 support; builds without it retain solid palette backgrounds.
 
+The running settings owner also serves FvwmMFL's versioned `settings` queries
+and provider/generation-checked `set`, scoped `reset` and `reload` actions.
+This exposes
+the same registry, saved/effective values, override precedence and private-file
+revision checks used by the native editor. See FvwmMFL's STRUCTURED REQUESTS
+section for the wire format, bounds and result meanings. A committed preference
+or submitted FVWM command is not completed core rendering. Helper generations
+do not observe external Style/Colorset state; live preview remains unavailable.
+The `ipc-request` module message is reserved for that bounded literal-data
+transport; existing `query-settings` Echo consumers remain supported.
+
 == CONFIGURATION CHECK
 
 Desktop settings offers Check local.config. It reads

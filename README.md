@@ -14,15 +14,15 @@ compositor or native Wayland backend.
 prerequisite, button navigation/state and atomic groups, typed settings/grouped
 editing, and non-executing configuration checker are merged.
 [IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
-adds correlated MFL queries, processed-stream barriers and read-only
-admission; this first subset is locally qualified for review. Preview, polish, general
+has merged core queries, barriers and read-only mode. Settings queries/actions
+pass focused Linux checks; cycle qualification is pending. Preview, polish,
 maintenance and tuning remain deferred.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.
 [Protocol requirement inventory](dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
 records remaining runtime acceptance.
-[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-22-PR149.md)
+[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-22-PR154.md)
 track regressions every five implementation batches using existing builds.
 Go builds use a patched compiler baseline. Desktop/artwork publication,
 physical hardware, toolkits/compositors, native-CPU sanitizers and release

@@ -268,8 +268,11 @@ def run(args):
                 'Frame 0', 'Padding 0 0', 'Font fixed', 'Colorset 0',
                 'FocusColorset 1', 'DisabledColorset 4',
                 'ActiveColorset 2', 'PressColorset 3', 'KeyboardNavigation 1',
-                '(1x1+0+0, Id alpha, Title Alpha, Action "Echo ACT-alpha")',
-                '(1x1+1+0, Title Label, Action (Mouse 2) "Echo ACT-secondary")',
+                '(1x1+0+0, Id alpha, Title Alpha, '
+                'Icon /no-such-initial-icon.xbm, '
+                'ActiveIcon /no-such-initial-active.xbm, '
+                'PressIcon /no-such-initial-press.xbm, Action "Echo ACT-alpha")',
+                '(1x1+1+0, Title Label, Action (Mouse 2) "Echo ACT-secondary") - -',
                 '(1x1+2+0, Id disabled, Disabled, Title Unavailable, '
                 'Action "Echo ACT-disabled")',
                 '(2x1+0+1, Container(Rows 1, Columns 2, Frame 0, Padding 0))',
@@ -427,7 +430,7 @@ def run(args):
                     f'PressTitle Press{n}, Icon {icon}, ActiveIcon {icon}, '
                     f'PressIcon {icon}, Colorset 0, ActiveColorset 2, '
                     'PressColorset 3, FocusColorset 1, DisabledColorset 4, '
-                    'Selected 1) (beta Selected 1)')
+                    f'Selected 1) (beta Selected 1) (1 Icon {icon})')
                 await_color(0, 0, 0xff0000)
                 await_color(0, 60, 0xff0000)
                 activate('gamma')

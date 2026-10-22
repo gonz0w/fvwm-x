@@ -59,3 +59,12 @@ Linux checks pass against the exact compiled product. The final affected-consume
 checkpoint is retained with its original outcomes. Packed-fixture follow-ups
 verify unchanged module bytes and replace only affected fixture outcomes;
 unrelated consumer checks and broad suites are not repeated.
+
+Final ownership review reproduces an 81-byte, three-allocation leak with the
+unchanged instrumented module when a group replaces failed startup icon loads.
+The correction separates owned filenames from drawable flags and clears the
+freed legacy no-icon placeholder. Focused Linux policy/X and five leak-enabled
+sanitizer entries pass, including normal/active/press startup failure recovery
+and a legacy dash-placeholder replacement. This is part of the atomic resource
+contract, not a general startup rewrite. The final six-target affected-consumer
+checkpoint includes this correction and all previous fixture improvements.

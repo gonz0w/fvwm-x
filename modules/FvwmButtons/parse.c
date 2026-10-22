@@ -1769,6 +1769,7 @@ static void ParseButton(button_info **uberb, char *s)
 		else if (b->icon_file)
 		{
 			free(b->icon_file);
+			b->icon_file = NULL;
 		}
 	}
 	else

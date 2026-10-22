@@ -288,13 +288,15 @@ static void commit_update(button_info *b, buttons_update_option option,
 	}
 	if (text)
 	{
-		if (owned)
+		/* Failed startup loads clear drawable flags, but the icon
+		 * filename is still owned. Picture ownership follows its flag. */
+		if (owned || picture)
 		{
 			free(*text);
-			if (picture && *picture)
-			{
-				PDestroyFvwmPicture(Dpy, *picture);
-			}
+		}
+		if (owned && picture && *picture)
+		{
+			PDestroyFvwmPicture(Dpy, *picture);
 		}
 		*text = value->text;
 		value->text = NULL;

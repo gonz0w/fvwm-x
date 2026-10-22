@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import shlex
 import shutil
+import signal
 import struct
 import sys
 import time
@@ -66,7 +67,7 @@ def run(args):
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     evidence = {'status': 'running'}
     with HarnessRuntime(prefix='fvwm-settings-ipc-') as runtime:
-        connections, core = [], None
+        connections, core, stopped = [], None, False
         try:
             _, display = start_display_server(runtime, 'Xvfb',
                 ['Xvfb', '-screen', '0', '800x600x24', '-noreset'],
@@ -141,6 +142,19 @@ def run(args):
             action('set', observed['generation'], expected='read_only', c=reader,
                    values={'palette': 'ink'})
             assert not state.exists()
+            reader.send(frame('validate', method='validate', resource='settings',
+                provider=snapshot['provider'], generation=snapshot['generation'],
+                values={'palette': 'grove', 'motion': False}))
+            candidate = reply(reader, 'validate')
+            assert candidate['state'] == 'validated'
+            assert candidate['generation'] == snapshot['generation']
+            assert candidate['settings']['palette']['effective'] == 'grove'
+            assert not candidate['settings']['motion']['saved']
+            assert candidate['settings']['motion']['effective']
+            assert candidate['application'] == 'not-submitted'
+            assert candidate['persistence'] == 'not-attempted'
+            assert not state.exists()
+            assert query()['settings']['palette']['effective'] == 'slate'
             changed = action('set', snapshot['generation'], values={
                 'day': '19:00', 'night': '07:00', 'palette': 'grove', 'motion': False})
             assert changed['state'] == 'committed'
@@ -167,6 +181,27 @@ def run(args):
             reloaded = action('reload', reset['generation'])
             assert reloaded['state'] == 'reloaded'
             assert reloaded['settings']['palette']['effective'] == 'ink'
+            # Cancel a submitted write while the owned core is stopped. Resume
+            # proves wait cancellation cannot retract or roll back that command.
+            os.kill(core.process.pid, signal.SIGSTOP)
+            stopped = True
+            writer.send(frame('cancelled-write', method='action', resource='settings',
+                operation='set', provider=snapshot['provider'],
+                generation=reloaded['generation'], values={'palette': 'dune'}) +
+                frame('cancel-write', method='cancel', target='cancelled-write'))
+            assert reply(writer, 'cancelled-write', 'error') == 'wait_cancelled'
+            assert reply(writer, 'cancel-write')['execution'] == 'unknown'
+            writer.send(frame('empty-after-cancel', resource='pending'))
+            assert reply(writer, 'empty-after-cancel')['requests'] == []
+            os.kill(core.process.pid, signal.SIGCONT)
+            stopped = False
+            wait_for_predicate('cancelled write still commits',
+                lambda: json.loads(state.read_text())['palette'] == 'dune',
+                time.monotonic() + 5, process=core)
+            writer.send(frame('cancelled-write', resource='settings',
+                              provider=snapshot['provider']))
+            reloaded = reply(writer, 'cancelled-write')
+            assert reloaded['settings']['palette']['effective'] == 'dune'
             writer.send(b'KillModule FvwmDesktop\nModule FvwmDesktop\n')
             writer.echo('settings-restart-submitted')
             restarted = query()
@@ -174,6 +209,8 @@ def run(args):
             action('reset', reloaded['generation'], scope='all', expected='deadline_exceeded')
             evidence['real_provider'] = dict(settings=7, scoped_queries=True,
                 atomic_changes=True, targeted_multiple_owners=True,
+                readonly_validation=True, validation_no_mutation=True,
+                cancelled_write_still_commits=True, cancelled_id_reuse=True,
                 readonly_refused=True, stale_writer_refused=True,
                 scoped_reset=True, external_conflict=True, reload=True,
                 restart_generation=True, restart_target_unavailable=True,
@@ -194,6 +231,21 @@ def run(args):
             writer.send(b'Module FvwmDesktop\n')
             writer.echo('stub-submitted')
             assert query()['owner'] == 'independent-fixture'
+            reader.send(frame('partial-cancel', resource='settings', scope='partial'))
+            def partial_received():
+                reader.send(frame('partial-view', resource='pending'))
+                pending = reply(reader, 'partial-view')['requests']
+                return any(r['id'] == 'partial-cancel' and r['state'] == 'receiving-reply'
+                           for r in pending)
+            wait_for_predicate('partial reply assembled', partial_received,
+                               time.monotonic() + 3, process=core)
+            partial = json.loads(stub_log.read_text().splitlines()[-1])
+            reader.send(frame('cancel-partial', method='cancel', target='partial-cancel'))
+            assert reply(reader, 'partial-cancel', 'error') == 'wait_cancelled'
+            assert reply(reader, 'cancel-partial')['state'] == 'wait-cancelled'
+            writer.send(('SendToModule FvwmMFL MFL_SETTINGS_1 ' + partial['cookie'] + ' ' +
+                         partial['serial'] + ' end 1\n').encode())
+            writer.echo('late-cancelled-part-discarded')
             reader.send(frame('partial-timeout', resource='settings', scope='partial'))
             assert query()['owner'] == 'independent-fixture'
             assert reply(reader, 'partial-timeout', 'error') == 'deadline_exceeded'
@@ -216,11 +268,13 @@ def run(args):
             writer.echo('late-settings-discarded')
             assert query()['owner'] == 'independent-fixture'
             evidence['independent_producer'] = dict(absent_timeout=True,
-                partial_timeout=True, malformed_part_refused=True,
+                partial_timeout=True, partial_cancel=True, malformed_part_refused=True,
                 disconnected_partial=True, late_reply_ignored=True, healthy_client=True)
             assert core.poll() is None
             evidence['status'] = 'passed'
         finally:
+            if stopped:
+                os.kill(core.process.pid, signal.SIGCONT)
             for connection in connections:
                 connection.close()
             if core:

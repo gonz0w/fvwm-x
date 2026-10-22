@@ -809,9 +809,8 @@ class Desktop:
             self.settings = checked_settings(dict(self.saved, **self.overrides))
         self.settings_changed()
 
-    def change_settings(self, changes):
-        if self.persistence_error:
-            raise ValueError(self.persistence_error)
+    def prepare_settings(self, changes):
+        """Construct the same complete candidate for validation and commit."""
         for key, value in changes.items():
             setting_value(key, value)
         candidate = checked_settings(dict(self.saved, **changes))
@@ -821,6 +820,12 @@ class Desktop:
             if effective['keep_wallpaper'] else
             dict(palette=effective['palette'], appearance=mode))
         effective['wallpaper'] = candidate['wallpaper'].copy()
+        return candidate, effective
+
+    def change_settings(self, changes):
+        if self.persistence_error:
+            raise ValueError(self.persistence_error)
+        candidate, effective = self.prepare_settings(changes)
         revision = save_settings(self.state_path, candidate, self.state_revision)
         self.saved, self.settings, self.state_revision = candidate, effective, revision
         self.settings_changed()
@@ -907,12 +912,15 @@ class Desktop:
         # Failed validation/persistence leaves the current Form available to fix.
         self.change_settings(changes)
 
-    def query_settings(self, scope='all'):
+    def query_settings(self, scope='all', saved=None, effective=None):
+        observed = saved is None and effective is None
+        saved = self.saved if saved is None else saved
+        effective = self.settings if effective is None else effective
         return {key: dict(SETTINGS[key], owner='FvwmDesktop', available=True,
                     capability='owned-desktop-preference', preview=False,
-                    saved=self.saved[key], effective=self.settings[key],
+                    saved=saved[key], effective=effective[key],
                     source='module-configuration' if key in self.overrides else 'saved',
-                    application='submitted-to-fvwm' if self.last_theme else 'not-submitted',
+                    application='submitted-to-fvwm' if observed and self.last_theme else 'not-submitted',
                     generation=self.settings_generation,
                     persistence_error=self.persistence_error)
                 for key in setting_scope(scope)}
@@ -933,6 +941,7 @@ class Desktop:
         fields = {
             'query': {'operation', 'scope'},
             'set': {'operation', 'provider', 'generation', 'values'},
+            'validate': {'operation', 'provider', 'generation', 'values'},
             'reset': {'operation', 'provider', 'generation', 'scope'},
             'reload': {'operation', 'provider', 'generation'},
         }
@@ -963,7 +972,7 @@ class Desktop:
                 return error('stale_generation')
         try:
             setting_scope(scope)
-            if operation == 'set':
+            if operation in ('set', 'validate'):
                 changes = request['values']
                 if not isinstance(changes, dict) or not changes or len(changes) > len(SETTINGS):
                     return error('invalid_value')
@@ -971,11 +980,18 @@ class Desktop:
                     setting_value(key, value)
             elif operation == 'reset':
                 changes = {key: SETTINGS[key]['default'] for key in setting_scope(scope)}
-            if operation in ('set', 'reset'):
-                checked_settings(dict(self.saved, **changes))
-                checked_settings({**self.saved, **changes, **self.overrides})
+            if operation in ('set', 'reset', 'validate'):
+                candidate, effective = self.prepare_settings(changes)
         except (ValueError, TypeError):
             return error('invalid_value')
+
+        if operation == 'validate':
+            return {'result': dict(owner='FvwmDesktop', provider=self.settings_instance,
+                schema_version=1, operation=operation, state='validated',
+                generation=self.settings_generation, saved_revision=self.state_revision,
+                settings=self.query_settings(saved=candidate, effective=effective),
+                persistence='not-attempted', application='not-submitted',
+                asynchronous_completion='not-started', preview=False)}
 
         before = self.settings_generation
         submission_failed = False

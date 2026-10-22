@@ -333,8 +333,78 @@ static void test_settings_assembly_and_cleanup(void)
 	mfl_request_clear(&pending);
 }
 
+static void test_lifecycle(void)
+{
+	struct mfl_request request;
+	struct mfl_pending_request pending[MFL_REQUEST_LIMIT] = {0}, *slot;
+	cJSON *result, *list, *item;
+	char text[1001], command[1001];
+	const char *token = "0123456789abcdef0123456789abcdef";
+
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"p\","
+		"\"method\":\"query\",\"resource\":\"pending\"}", &request));
+	assert(request.kind == MFL_REQUEST_PENDING);
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"c\","
+		"\"method\":\"cancel\",\"target\":\"original-1\"}", &request));
+	assert(request.kind == MFL_REQUEST_CANCEL);
+	assert(strcmp(request.target, "original-1") == 0);
+	const char *bad[] = {"null", "0", "\"\"", "\"a b\"",
+		"\"a\\u0000b\"", "[]"};
+	for (size_t i = 0; i < sizeof(bad) / sizeof(bad[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"c\","
+			"\"method\":\"cancel\",\"target\":%s}", bad[i]);
+		assert(!mfl_request_parse(text, &request));
+	}
+	snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"v\","
+		"\"method\":\"validate\",\"resource\":\"settings\","
+		"\"provider\":\"%s\",\"generation\":\"%s\","
+		"\"values\":{\"motion\":false}}", token, token);
+	assert(mfl_request_parse(text, &request));
+	assert(request.kind == MFL_REQUEST_SETTINGS_VALIDATE);
+	assert(mfl_request_is_settings(request.kind));
+	assert(!mfl_request_is_action(request.kind));
+	assert(mfl_request_settings_command(command, sizeof(command), &request,
+		42, "a-b"));
+	assert(strstr(request.settings_payload, "\"operation\":\"validate\""));
+	assert(strstr(request.settings_payload, "\"generation\""));
+	assert(strstr(request.settings_payload, "\"values\""));
+	assert(mfl_request_reserve(pending, &request, 42, 100, &slot) == NULL);
+	assert(mfl_request_find(pending, "v") == slot);
+	assert(mfl_request_find(pending, "missing") == NULL);
+	assert(mfl_request_settings_part(slot, "part 0 7b") ==
+		MFL_SETTINGS_MORE);
+	result = mfl_request_pending_result(pending, 200);
+	assert(result);
+	list = cJSON_GetObjectItemCaseSensitive(result, "requests");
+	assert(cJSON_GetArraySize(list) == 1);
+	item = cJSON_GetArrayItem(list, 0);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(item,
+		"state")->valuestring,
+		"receiving-reply") == 0);
+	assert(cJSON_GetObjectItemCaseSensitive(item,
+		"remaining_ms")->valueint == 4900);
+	cJSON_Delete(result);
+	result = mfl_request_pending_result(pending, UINT64_MAX);
+	item = cJSON_GetArrayItem(cJSON_GetObjectItemCaseSensitive(result,
+		"requests"), 0);
+	assert(cJSON_GetObjectItemCaseSensitive(item,
+		"remaining_ms")->valueint == 0);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(item,
+		"state")->valuestring,
+		"deadline-reached") == 0);
+	cJSON_Delete(result);
+	mfl_request_clear(slot);
+	assert(mfl_request_find(pending, "v") == NULL);
+	result = mfl_request_pending_result(pending, 201);
+	assert(cJSON_GetArraySize(cJSON_GetObjectItemCaseSensitive(result,
+		"requests")) == 0);
+	cJSON_Delete(result);
+}
+
 int main(void)
 {
+	test_lifecycle();
 	test_schema();
 	test_id_bounds();
 	test_pending_bounds_and_reuse();

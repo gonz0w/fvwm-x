@@ -1,0 +1,505 @@
+{
+  "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-lifecycle/final.tgz",
+  "sha256": "12f431b6516bcbe8e5ed0723ecbb7210ba7e509364af7f778e1cb09ef3c6abb1",
+  "bytes": 22172,
+  "files": 40,
+  "complete_payload_verification": true,
+  "metadata": {
+    "binaries.json": {
+      "sha256": "f97d86142299070be0734c6d68df8f704904ecd91f3edea88b6b3fea3d4edc28",
+      "bytes": 870,
+      "mode": 420
+    },
+    "commands.json": {
+      "sha256": "803e1bb677225365bbab3a7b07f206c169101384cf1bf918e814c86957d61896",
+      "bytes": 1888,
+      "mode": 420
+    },
+    "executed.py": {
+      "sha256": "dfe1d6a25d7c2219e71a58b98e7aef11c7e726391c5466e84a280c238e3251f8",
+      "bytes": 4823,
+      "mode": 420
+    },
+    "focused-testlog.json": {
+      "sha256": "70e4fe13d8e9ccca5f75f604a25fccbdffa09ea5ef32697837eb1ebf1e0700dd",
+      "bytes": 9198,
+      "mode": 420
+    },
+    "focused-testlog.txt": {
+      "sha256": "1b1964dd31b8eaefe04a37d1606386d4b86affe88c35692e55d6cbde6214a2e3",
+      "bytes": 8424,
+      "mode": 420
+    },
+    "gcc-compilers.json": {
+      "sha256": "1fc6223088e562eca03cf0d6764f69599afe4f2523b14925d4efd5b61b3657cc",
+      "bytes": 684,
+      "mode": 420
+    },
+    "gcc-options.json": {
+      "sha256": "0f14499c9c24674ebafc36ad4e59488e38e0d358354946d5d86dffd2d583a8f8",
+      "bytes": 20645,
+      "mode": 420
+    },
+    "manifest.json": {
+      "sha256": "97a166309bd6f222771f5c2ef135477f3570b53c699f973fc2f82e878d70fc0e",
+      "bytes": 5901,
+      "mode": 420
+    },
+    "mfl-request/core.log": {
+      "sha256": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+      "bytes": 26,
+      "mode": 420
+    },
+    "mfl-request/debug.log": {
+      "sha256": "1f73d3fa13fb55765314e188a11f0442e2cc6298bdf36240a32a3025d5c51f0b",
+      "bytes": 767,
+      "mode": 420
+    },
+    "mfl-request/evidence.json": {
+      "sha256": "faaa08c7e0bb225300695c111e0044efe7f8b080ca926ac67f1922d7adaafa7b",
+      "bytes": 870,
+      "mode": 420
+    },
+    "mfl-request/xserver.log": {
+      "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "bytes": 1174,
+      "mode": 420
+    },
+    "mfl-settings/core.log": {
+      "sha256": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+      "bytes": 26,
+      "mode": 420
+    },
+    "mfl-settings/debug.log": {
+      "sha256": "3557de0dee7747918622cda66329de44067619f5deb0ce20b6e31db07b7333ae",
+      "bytes": 1012,
+      "mode": 420
+    },
+    "mfl-settings/evidence.json": {
+      "sha256": "445b067a5736c5cb0db95780bca326490756a52665e3696ab3488dc37a31f3d4",
+      "bytes": 809,
+      "mode": 420
+    },
+    "mfl-settings/xserver.log": {
+      "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "bytes": 1174,
+      "mode": 420
+    },
+    "mfl-stream/evidence.json": {
+      "sha256": "bf100860a15a309469ef2edac0ee336e3cb6f7732e18af00dea8107dbc4166a5",
+      "bytes": 258,
+      "mode": 420
+    },
+    "mfl-stream/fvwm.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": 420
+    },
+    "mfl-stream/xserver.log": {
+      "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "bytes": 1174,
+      "mode": 420
+    },
+    "result.json": {
+      "sha256": "12516e09192841e883a0b02cc58a6adef93dcc680520fd3481a550e3e895293d",
+      "bytes": 237,
+      "mode": 420
+    },
+    "sanitizer-binaries.json": {
+      "sha256": "ec703ad175cf8849ba0da7c54c3018ab295aae1b8319afa732a645dbf903d86f",
+      "bytes": 308,
+      "mode": 420
+    },
+    "sanitizer-compile.log": {
+      "sha256": "4cbca97cab6f3b6b8563f2b4431b9220a7ce5bbb77c2f3379617cfe87612333c",
+      "bytes": 656,
+      "mode": 420
+    },
+    "sanitizer-configure.log": {
+      "sha256": "49f490ab4f8cbb007ae4f2b744d29fcac9c7d1c78fc5ec348544c045af50333e",
+      "bytes": 7643,
+      "mode": 420
+    },
+    "sanitizer-diagnostics.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "bytes": 3,
+      "mode": 420
+    },
+    "sanitizer-environment.json": {
+      "sha256": "3c107ebdb1920beff839afa1ae4b0aa6327596dfc00e971ea14bac8c8836a69c",
+      "bytes": 150,
+      "mode": 420
+    },
+    "sanitizer-options.json": {
+      "sha256": "d355efe91479f25b9e8be2095334adc8d6d3e09ecd562eddb8fa5132542aeee4",
+      "bytes": 21226,
+      "mode": 420
+    },
+    "sanitizer-policy.log": {
+      "sha256": "32d39fe10653fb2f8fb6f413eb53e1218eb4a86280905b49defd080777ef6f32",
+      "bytes": 297,
+      "mode": 420
+    },
+    "sanitizer-request/core.log": {
+      "sha256": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+      "bytes": 26,
+      "mode": 420
+    },
+    "sanitizer-request/debug.log": {
+      "sha256": "5c37e6b73697990214103ffe2c01003d549834f27de7f2f02a1446180b666223",
+      "bytes": 767,
+      "mode": 420
+    },
+    "sanitizer-request/evidence.json": {
+      "sha256": "1160694583d68e3cccad0f4a1653421e5615d8c18d22eb9495aecfb62119630f",
+      "bytes": 870,
+      "mode": 420
+    },
+    "sanitizer-request/xserver.log": {
+      "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "bytes": 1174,
+      "mode": 420
+    },
+    "sanitizer-request.log": {
+      "sha256": "950b04dc84dae14de44e79c613dbb30b2a072e3ab510d0669af40291ec8ecffe",
+      "bytes": 722,
+      "mode": 420
+    },
+    "sanitizer-settings/core.log": {
+      "sha256": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+      "bytes": 26,
+      "mode": 420
+    },
+    "sanitizer-settings/debug.log": {
+      "sha256": "d74f46bab516a01a562b11b2988198c8b3f64bf99f738b80cb3379599fb4cb45",
+      "bytes": 1012,
+      "mode": 420
+    },
+    "sanitizer-settings/evidence.json": {
+      "sha256": "445b067a5736c5cb0db95780bca326490756a52665e3696ab3488dc37a31f3d4",
+      "bytes": 809,
+      "mode": 420
+    },
+    "sanitizer-settings/xserver.log": {
+      "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "bytes": 1174,
+      "mode": 420
+    },
+    "sanitizer-settings.log": {
+      "sha256": "3ab518bf14ee957e95d1fd09e2fe1cf71aed054e26b3dda52973b97176fb972f",
+      "bytes": 701,
+      "mode": 420
+    },
+    "sanitizer-testlog.json": {
+      "sha256": "3bea575b58ef39f06dc6aa3e888333eb5e0da61f0121a1e69ad13ab4dc35018f",
+      "bytes": 1132,
+      "mode": 420
+    },
+    "sanitizer-testlog.txt": {
+      "sha256": "e38034530700c17bf0a3ded75e6198a73686f966c916fa267140f63e8a2c8ac2",
+      "bytes": 1360,
+      "mode": 420
+    },
+    "source.json": {
+      "sha256": "9215ded13dbdc94c6e632be2d196723bf56834bb6c8151213b9de28d1edc6fb6",
+      "bytes": 1196,
+      "mode": 420
+    }
+  },
+  "source": {
+    "baseline": {
+      "head": "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+      "tree": "3ac989614951f05d9e2fd1d13298cd1935bf1689",
+      "archive_sha256": "70cea803e822074f7a600e1be45282a14f0109b6ed541a4673843a9e4f735641"
+    },
+    "baseline_files": 2165,
+    "changed_runtime_inputs": {
+      "modules/FvwmMFL/FvwmMFL.c": "3684c0329146de83ecc63d025059e3402e2c00c2911470c07ebd50acb212cfdb",
+      "modules/FvwmMFL/request.c": "4df02926a40b997f09379fab074fbf5b093cf8237caf6c7368ed5c069263a5f5",
+      "modules/FvwmMFL/request.h": "084f5269d7f8b57245c26a6406a7bde48f6db40b10610b31b1ea0db1c3c632d8",
+      "default-config/desktop.py": "b32416647717a2ffa87d47b43ad3efe4e3e9d0db6e35912bdda6a1537eb97b5b",
+      "tests/meson.build": "2c42da6764e681466f7737ec1b1e4b9d7096d90427743225c1ae0fcd8d7dad0b",
+      "tests/test_mfl_request.c": "39101ebb98edf3d410c5a4c384edf30b9e153131f5b1ece5d02c9667772010e2",
+      "tests/test_desktop.py": "fef4dff896abce822be842191479c63c65a787c5d25a48279339c1d36d368ba5",
+      "tests/live_x/mfl_settings_live.py": "cb5cd4737c382847a687efd7c2744e681f4812672198d6c6e5040e83ece09620",
+      "tests/live_x/mfl_request_live.py": "fd45efd60549975fcaaa03d37117ae4ad755aca589364543d29e21fa94ed2d61"
+    }
+  },
+  "result": {
+    "status": "passed",
+    "focused_registered": 6,
+    "scoped_sanitizer_exercises": 3,
+    "new_UI": false,
+    "full_matrix_install_default_X": "deferred to integration cycle/release; no relevant OS/packet/install/server contract changed"
+  },
+  "commands": [
+    {
+      "label": "sanitizer-configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+      ],
+      "status": 0,
+      "seconds": 0.652
+    },
+    {
+      "label": "sanitizer-compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j",
+        "2",
+        "FvwmMFL",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.368
+    },
+    {
+      "label": "sanitizer-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.174
+    },
+    {
+      "label": "sanitizer-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_request_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-lifecycle-final/sanitizer-request"
+      ],
+      "status": 0,
+      "seconds": 5.301
+    },
+    {
+      "label": "sanitizer-settings",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+        "--desktop",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-lifecycle-final/sanitizer-settings"
+      ],
+      "status": 0,
+      "seconds": 15.637
+    }
+  ],
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "f4f0679b9a775f453faed2174c3ec71f16856adb807e3a14b5377df49d7a9223",
+      "bytes": 5319768
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "5e4844d4d6f3481863a7315ae0ef8e9461880f504c4a584357e2bd97b610f17d",
+      "bytes": 387624
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request": {
+      "sha256": "c85e8a35e7bf28285d226aebc6f24b834f5c2cee8962e755ee82d174647f8c26",
+      "bytes": 204688
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop": {
+      "sha256": "ec82b8320d698b394529075be43ea59ad36c85d46f27ecd8a1b42b29af1cb302",
+      "bytes": 83340
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/config.h": {
+      "sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "bytes": 4651
+    }
+  },
+  "sanitizer_binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "eda20652aef14d4d488bef7a3b5b2887a78a148501aa14235730aadabf2e80c8",
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": "289f0196f8ecf2aa91aee1e4ba6699b62e4d3ffbc9faa557cae4b1bf96e2fe33"
+  },
+  "focused_tests": {
+    "passed": 6,
+    "names": [
+      "fvwm3 / desktop-policy",
+      "fvwm3 / mfl-stream",
+      "fvwm3 / mfl-request",
+      "fvwm3:live-x / mfl-request-xvfb",
+      "fvwm3:live-x / mfl-settings-xvfb",
+      "fvwm3:live-x / mfl-stream-xvfb"
+    ]
+  },
+  "settings_X": {
+    "status": "passed",
+    "real_provider": {
+      "settings": 7,
+      "scoped_queries": true,
+      "atomic_changes": true,
+      "targeted_multiple_owners": true,
+      "readonly_validation": true,
+      "validation_no_mutation": true,
+      "cancelled_write_still_commits": true,
+      "cancelled_id_reuse": true,
+      "readonly_refused": true,
+      "stale_writer_refused": true,
+      "scoped_reset": true,
+      "external_conflict": true,
+      "reload": true,
+      "restart_generation": true,
+      "restart_target_unavailable": true,
+      "asynchronous_completion": "unknown"
+    },
+    "independent_producer": {
+      "absent_timeout": true,
+      "partial_timeout": true,
+      "partial_cancel": true,
+      "malformed_part_refused": true,
+      "disconnected_partial": true,
+      "late_reply_ignored": true,
+      "healthy_client": true
+    }
+  },
+  "sanitizer_X": {
+    "status": "passed",
+    "real_provider": {
+      "settings": 7,
+      "scoped_queries": true,
+      "atomic_changes": true,
+      "targeted_multiple_owners": true,
+      "readonly_validation": true,
+      "validation_no_mutation": true,
+      "cancelled_write_still_commits": true,
+      "cancelled_id_reuse": true,
+      "readonly_refused": true,
+      "stale_writer_refused": true,
+      "scoped_reset": true,
+      "external_conflict": true,
+      "reload": true,
+      "restart_generation": true,
+      "restart_target_unavailable": true,
+      "asynchronous_completion": "unknown"
+    },
+    "independent_producer": {
+      "absent_timeout": true,
+      "partial_timeout": true,
+      "partial_cancel": true,
+      "malformed_part_refused": true,
+      "disconnected_partial": true,
+      "late_reply_ignored": true,
+      "healthy_client": true
+    }
+  },
+  "owner": "IPC-02",
+  "base": "53dcab6b1c0bcd1a343635f9ee91e0530e98568d",
+  "tested_changed_inputs": {
+    "modules/FvwmMFL/FvwmMFL.c": "3684c0329146de83ecc63d025059e3402e2c00c2911470c07ebd50acb212cfdb",
+    "modules/FvwmMFL/request.c": "4df02926a40b997f09379fab074fbf5b093cf8237caf6c7368ed5c069263a5f5",
+    "modules/FvwmMFL/request.h": "084f5269d7f8b57245c26a6406a7bde48f6db40b10610b31b1ea0db1c3c632d8",
+    "default-config/desktop.py": "b32416647717a2ffa87d47b43ad3efe4e3e9d0db6e35912bdda6a1537eb97b5b",
+    "tests/test_mfl_request.c": "39101ebb98edf3d410c5a4c384edf30b9e153131f5b1ece5d02c9667772010e2",
+    "tests/test_desktop.py": "fef4dff896abce822be842191479c63c65a787c5d25a48279339c1d36d368ba5",
+    "tests/live_x/mfl_settings_live.py": "cb5cd4737c382847a687efd7c2744e681f4812672198d6c6e5040e83ece09620",
+    "tests/live_x/mfl_request_live.py": "fd45efd60549975fcaaa03d37117ae4ad755aca589364543d29e21fa94ed2d61"
+  },
+  "unchanged_retained_registration": "tests/meson.build from merged PR155",
+  "manuals": {
+    "FvwmMFL": {
+      "source_sha256": "a88e420181392c44acc20775ee63e6cfb7366fff539dd83fbc070a0622eed294",
+      "roff_sha256": "181f387653bb732b89e91fa890832e535921d0773e1c8aa75f43ca3aeb619ecc",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 7
+      }
+    },
+    "FvwmMFL-before": {
+      "source_sha256": "f302e198a1ca7bc23315a7d72eed891212514e8050c854f7bc9daff8fe8f1514",
+      "roff_sha256": "71e4862cce6ee071427f17da81587628679844d3a2acfcd0e0c92a1d343f61a1",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 5
+      }
+    },
+    "FvwmDesktop": {
+      "source_sha256": "60fd5452d594fdb3a55392211ce8032d7aaa2226c90ccb01e6049b8e16745fc5",
+      "roff_sha256": "08144816a1c1893c4d98303ac9abf9f638da6d5db36acb11ebf34bf04ce37064",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    },
+    "FvwmDesktop-before": {
+      "source_sha256": "823d97e5e77c61008fddc96fbf627f86a1482759b2371401598b2032481fde6b",
+      "roff_sha256": "4b7f77b3b9e7edf00b868383f8139ef86bfbb117e4e82a6853d86564febea2d9",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    }
+  },
+  "retirement": {
+    "retired": [
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/ipc-lifecycle-final",
+        "files": 40,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-lifecycle/final.tgz",
+        "sha256": "12f431b6516bcbe8e5ed0723ecbb7210ba7e509364af7f778e1cb09ef3c6abb1"
+      }
+    ],
+    "preserved": "sources, reusable builds, install stages, performance references and VM disks",
+    "module_size_output": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n  61921\t   2176\t   3640\t  67737\t  10899\t/tmp/fvwm-performance-reference-pr149/FvwmMFL\n  71121\t   2272\t   3656\t  77049\t  12cf9\t/tmp/fvwm-performance-reference-pr154/FvwmMFL\n"
+  },
+  "integration_cycle": {
+    "reference": "PR154",
+    "merged_since": [
+      "PR155"
+    ],
+    "merged_count": 1,
+    "closure_trigger": 3,
+    "this_PR_on_merge": 2,
+    "deferred": [
+      "affected six-target",
+      "alternate compiler/relevant optional profiles",
+      "full install/default-X/milestone/release coverage at required boundary",
+      "native CPU/hardware/toolkit/compositor"
+    ]
+  },
+  "performance": {
+    "reference": "PR154",
+    "merged_count": 1,
+    "next_due": 5,
+    "benchmark_due": false
+  },
+  "initial_failure": {
+    "log": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-lifecycle/development1.log",
+    "sha256": "3a479ffaa1ce327c1a50ffc5fa1fb039e252f7c400db9fb27a9733e59ff42961",
+    "cause": "fixture assumed order among simultaneous request deadlines after slot reuse",
+    "resolution": "correlate terminal records by request ID; final six selected entries pass"
+  },
+  "new_UI": false
+}

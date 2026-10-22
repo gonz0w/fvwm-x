@@ -142,6 +142,16 @@ keep_wallpaper choice requests it. A reset that would make day and night equal
 is refused; reset group:schedule to restore both times. Reload rereads the saved
 file, validates the combined configuration and reapplies the theme.
 
+FvwmMFL also exposes correlated settings queries, typed set/reset/reload and
+non-publishing validation. A validation returns the proposed saved/effective
+values for the observed provider/generation without writing, submitting a theme,
+closing an editor or changing the generation. It checks combined values and
+overrides; it does not promise that a later write can acquire the lock or pass
+the current saved-file revision check. It is available to read-only IPC clients.
+See *FvwmMFL*(1) for the exact versioned request syntax and lifecycle rules.
+Cancelling an IPC wait does not cancel this helper's submitted action; query
+before replaying a change whose result was lost.
+
 Writes validate the complete candidate and replace a private file atomically
 before changing the helper's state or submitting theme commands. A failed write
 preserves the previous file and in-memory choices. Cooperating writers use a

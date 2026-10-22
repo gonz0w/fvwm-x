@@ -178,8 +178,30 @@ def run(args):
             assert reply(rpc, None, 'error') == 'duplicate_id'
             assert reply(rpc, 'over-limit', 'error') == 'too_many_requests'
             assert reply(rpc, 'local-during-wait')['read_only']
-            for i in range(8):
-                assert reply(rpc, f'pending-{i}', 'error') == 'deadline_exceeded'
+            rpc.send(frame('pending-view', resource='pending'))
+            waiting = reply(rpc, 'pending-view')
+            assert waiting['scope'] == 'connection' and waiting['execution'] == 'unknown'
+            assert len(waiting['requests']) == 8
+            assert {r['id'] for r in waiting['requests']} == {f'pending-{i}' for i in range(8)}
+            assert all(r['state'] == 'awaiting-reply' and 0 < r['remaining_ms'] <= 5000
+                       for r in waiting['requests'])
+            other.send(frame('private-view', resource='pending') +
+                       frame('foreign-cancel', 'cancel', target='pending-0'))
+            assert reply(other, 'private-view')['requests'] == []
+            assert reply(other, 'foreign-cancel', 'error') == 'request_not_pending'
+            rpc.send(frame('cancel-0', 'cancel', target='pending-0') +
+                     frame('pending-0', 'barrier'))
+            assert reply(rpc, 'pending-0', 'error') == 'wait_cancelled'
+            cancelled = reply(rpc, 'cancel-0')
+            assert cancelled == dict(state='wait-cancelled', target='pending-0',
+                                     execution='unknown', rollback=False)
+            # The freed slot is immediately reusable, but keeps a fresh serial.
+            expired = [rpc.record()['reply'] for _ in range(8)]
+            assert {r['id'] for r in expired} == {f'pending-{i}' for i in range(8)}
+            assert all(r['status'] == 'error' and r['error']['code'] == 'deadline_exceeded'
+                       for r in expired)
+            rpc.send(frame('cancel-again', 'cancel', target='pending-0'))
+            assert reply(rpc, 'cancel-again', 'error') == 'request_not_pending'
             elapsed = time.monotonic() - start
             assert 4.5 <= elapsed < 12, elapsed
             rpc.send(frame('pending-0', 'barrier'))
@@ -197,7 +219,9 @@ def run(args):
             rpc.send(frame('after-late', resource='connection'))
             assert reply(rpc, 'after-late')['read_only']
             evidence['pending_duplicate_timeout_late_and_disconnect_isolation'] = {
-                'pending_limit': 8, 'deadline_seconds_observed': elapsed}
+                'pending_limit': 8, 'deadline_seconds_observed': elapsed,
+                'local_pending_view': True, 'cancel_at_capacity_readonly': True,
+                'connection_isolation': True, 'slot_and_id_reuse': True}
 
             slow = connect()
             try:

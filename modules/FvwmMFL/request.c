@@ -132,6 +132,14 @@ static bool settings_request(struct mfl_request *request,
 		request->kind = MFL_REQUEST_SETTINGS_QUERY;
 		operation = "query";
 	}
+	else if (strcmp(values[2]->valuestring, "validate") == 0 &&
+	    seen == (15 | GENERATION | PROVIDER | VALUES) &&
+	    settings_token(values[7]) && settings_token(values[9]) &&
+	    settings_values(values[8]))
+	{
+		request->kind = MFL_REQUEST_SETTINGS_VALIDATE;
+		operation = "validate";
+	}
 	else if (strcmp(values[2]->valuestring, "action") == 0 &&
 	    cJSON_IsString(values[6]) && settings_token(values[7]) &&
 	    settings_token(values[9]))
@@ -156,13 +164,15 @@ static bool settings_request(struct mfl_request *request,
 		if (!cJSON_AddStringToObject(payload, "scope",
 			values[5] ? values[5]->valuestring : "all"))
 			goto out;
-	if (mfl_request_is_action(request->kind) &&
+	if ((mfl_request_is_action(request->kind) ||
+	    request->kind == MFL_REQUEST_SETTINGS_VALIDATE) &&
 	    !cJSON_AddStringToObject(payload, "generation", values[7]->valuestring))
 		goto out;
 	if (values[9] &&
 	    !cJSON_AddStringToObject(payload, "provider", values[9]->valuestring))
 		goto out;
-	if (request->kind == MFL_REQUEST_SETTINGS_SET)
+	if (request->kind == MFL_REQUEST_SETTINGS_SET ||
+	    request->kind == MFL_REQUEST_SETTINGS_VALIDATE)
 	{
 		copy = cJSON_Duplicate(values[8], true);
 		if (!copy || !cJSON_AddItemToObject(payload, "values", copy))
@@ -192,9 +202,10 @@ out:
 bool mfl_request_parse(const char *json, struct mfl_request *request)
 {
 	static const char *fields[] = {"version", "id", "method", "resource",
-		"mode", "scope", "operation", "generation", "values", "provider"};
+		"mode", "scope", "operation", "generation", "values",
+		"provider", "target"};
 	cJSON *root = NULL;
-	const cJSON *values[10] = {0};
+	const cJSON *values[11] = {0};
 	const cJSON *item;
 	unsigned int seen = 0;
 	bool valid = false;
@@ -210,10 +221,10 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	{
 		size_t i;
 
-		for (i = 0; i < 10; i++)
+		for (i = 0; i < 11; i++)
 			if (strcmp(item->string, fields[i]) == 0)
 				break;
-		if (i == 10 || (seen & (1U << i)))
+		if (i == 11 || (seen & (1U << i)))
 			goto out;
 		seen |= 1U << i;
 		values[i] = item;
@@ -245,9 +256,15 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 			request->kind = MFL_REQUEST_CAPABILITIES;
 		else if (strcmp(resource, "connection") == 0)
 			request->kind = MFL_REQUEST_CONNECTION;
+		else if (strcmp(resource, "pending") == 0)
+			request->kind = MFL_REQUEST_PENDING;
 		else if (strcmp(resource, "desktop") == 0)
 			request->kind = MFL_REQUEST_DESKTOP;
 	}
+	else if (strcmp(values[2]->valuestring, "cancel") == 0 &&
+	    seen == (7 | (1U << 10)) &&
+	    request_id(values[10], request->target))
+		request->kind = MFL_REQUEST_CANCEL;
 	else if (strcmp(values[2]->valuestring, "barrier") == 0 && seen == 7)
 		request->kind = MFL_REQUEST_BARRIER;
 	else if (strcmp(values[2]->valuestring, "set_mode") == 0 &&
@@ -260,7 +277,9 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	else if (strcmp(values[2]->valuestring, "query") != 0 &&
 	    strcmp(values[2]->valuestring, "barrier") != 0 &&
 	    strcmp(values[2]->valuestring, "set_mode") != 0 &&
-	    strcmp(values[2]->valuestring, "action") != 0)
+	    strcmp(values[2]->valuestring, "action") != 0 &&
+	    strcmp(values[2]->valuestring, "cancel") != 0 &&
+	    strcmp(values[2]->valuestring, "validate") != 0)
 		request->error = "unsupported_method";
 	valid = request->kind != MFL_REQUEST_INVALID;
 	if (valid)
@@ -268,6 +287,83 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 out:
 	cJSON_Delete(root);
 	return valid;
+}
+
+struct mfl_pending_request *mfl_request_find(
+	struct mfl_pending_request *pending, const char *id)
+{
+	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		if (pending[i].kind != MFL_REQUEST_INVALID &&
+		    strcmp(pending[i].id, id) == 0)
+			return pending + i;
+	return NULL;
+}
+
+cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
+	uint64_t now_ms)
+{
+	cJSON *result = cJSON_CreateObject();
+	cJSON *list;
+
+	if (!result)
+		return NULL;
+	list = cJSON_AddArrayToObject(result, "requests");
+	if (!list || !cJSON_AddStringToObject(result, "scope", "connection") ||
+	    !cJSON_AddStringToObject(result, "execution", "unknown"))
+		goto fail;
+	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+	{
+		const struct mfl_pending_request *p = pending + i;
+		cJSON *item;
+		const char *operation = "query";
+
+		if (p->kind == MFL_REQUEST_INVALID)
+			continue;
+		item = cJSON_CreateObject();
+		if (!item)
+			goto fail;
+		if (!cJSON_AddItemToArray(list, item))
+		{
+			cJSON_Delete(item);
+			goto fail;
+		}
+		switch (p->kind)
+		{
+		case MFL_REQUEST_SETTINGS_SET:
+			operation = "set";
+			break;
+		case MFL_REQUEST_SETTINGS_RESET:
+			operation = "reset";
+			break;
+		case MFL_REQUEST_SETTINGS_RELOAD:
+			operation = "reload";
+			break;
+		case MFL_REQUEST_SETTINGS_VALIDATE:
+			operation = "validate";
+			break;
+		case MFL_REQUEST_BARRIER:
+			operation = "barrier";
+			break;
+		default: break;
+		}
+		if (!cJSON_AddStringToObject(item, "id", p->id) ||
+		    !cJSON_AddStringToObject(item, "operation", operation) ||
+		    !cJSON_AddStringToObject(item, "resource",
+			mfl_request_is_settings(p->kind) ? "settings" :
+			p->kind == MFL_REQUEST_DESKTOP ?
+			"desktop" : "core-stream") ||
+		    !cJSON_AddStringToObject(item, "state",
+			now_ms >= p->deadline_ms ? "deadline-reached" :
+			p->settings_parts ?
+			"receiving-reply" : "awaiting-reply") ||
+		    !cJSON_AddNumberToObject(item, "remaining_ms",
+			now_ms >= p->deadline_ms ? 0 : p->deadline_ms - now_ms))
+			goto fail;
+	}
+	return result;
+fail:
+	cJSON_Delete(result);
+	return NULL;
 }
 
 const char *mfl_request_reserve(struct mfl_pending_request *pending,
@@ -444,7 +540,7 @@ fail:
 bool mfl_request_is_settings(enum mfl_request_kind kind)
 {
 	return kind >= MFL_REQUEST_SETTINGS_QUERY &&
-		kind <= MFL_REQUEST_SETTINGS_RELOAD;
+		kind <= MFL_REQUEST_SETTINGS_VALIDATE;
 }
 
 bool mfl_request_is_action(enum mfl_request_kind kind)

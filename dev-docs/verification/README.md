@@ -543,4 +543,4 @@ diagnostic and execution gates remain separate.
 
 - [Core module/icon/event record dependencies](VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md): six-target affected qualification and exact code/data parity; ARM GCC fanout 68/216/37 to 30/6/2.
 
-- [Native button keyboard navigation and state](VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md): implementation and focused evidence; combined qualification pending.
+- [Native button keyboard navigation and state](VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md): six-target combined qualification, source/install identities, scoped guest sanitizers and retained manual diagnostics.

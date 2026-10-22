@@ -1,8 +1,8 @@
 # Native button keyboard navigation and state — 2026-10-22
 
 Owners: BUTTON-01 #58 / BUTTON-02 #59.
-Status: **implemented; focused Linux ARM64 and FreeBSD ARM64 checks pass;
-combined qualification pending**.
+PR: [#149](https://github.com/gonz0w/fvwm-x/pull/149).
+Status: **combined local checkpoint passes; ready for maintainer review**.
 [Machine receipt](VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.json).
 
 ## Feature batch and compatibility
@@ -59,8 +59,44 @@ An unrelated client receives all 200 rapid real key presses and releases while
 retaining focus. RGB observations use the server colormap and tolerate RGB565
 quantisation on default BSD displays.
 
-Combined profiles, installs, manuals and sanitizer results are pending. Local
-VM/container results are not physical-input, native-CPU Linux sanitizer,
+The frozen candidate is `c78f24d36008c2867011c83ca87c1b13ae3a434d` with
+source archive `b8c56ec820e973b676b9150838b37d2f4f9f94c50d59a319de60ad38daea1e21`
+(2146 files). One combined checkpoint passes
+**2,412 standard entries and 8 affected optional entries**
+across six OS/architecture targets and 10 compiler/feature profiles.
+Linux GCC/Clang run on both architectures, Linux ARM64 adds software/minimal,
+and FreeBSD/OpenBSD 8.0 run on both architectures. All entries pass; the combined
+checkpoint has no test failure, skip or timeout.
+
+**4 scoped guest ASan/UBSan entries pass**, with leak checking enabled
+and no module/core sanitizer diagnostics. 10 fresh stages verify
+150 ELF, 77 compiled-catalog and 700 other data
+identities. Fresh staged checks include 10 Buttons scenarios
+and 20 1x/1.5x geometry groups. Four authenticated default BSD
+servers pass 12 Buttons/geometry groups, refuse unauthenticated
+clients and stop with status 0. Both owned OpenBSD QEMU jobs exit 0 and remove
+their ephemeral keys.
+
+The primary man page is generated with the existing Asciidoctor and its formatted
+new options/updates were inspected with macOS mandoc. Lint returns 3 on both the
+candidate and unchanged-main control: the same two preamble errors and sixteen
+spacing/block warnings. Normalized diagnostics are identical; no new diagnostic
+comes from the feature text. General roff portability stays DOCS-01-owned.
+The portable foundation separately passes 177 checks with
+14 environment skips
+(191 registered).
+
+All ten installed WM executables are byte-identical to their qualified PR148
+predecessors. Installed-consumer comparisons identify only FvwmButtons as changed
+in each profile. This is source/installation isolation evidence, not a new timing
+claim. Future module-only checkpoints can use the workflow's existing unchanged-
+artifact composition after verifying their actual binary/config/helper inputs;
+shared changes and native/default-X acceptance still require their owning gates.
+No extra full matrix was triggered by PR creation or final documentation.
+
+Final upkeep changes only developer documentation/status and the receipt. Runtime,
+policy, fixture and user-manual inputs retain the frozen candidate identities.
+Local VM/container results are not physical-input, native-CPU Linux sanitizer,
 toolkit/assistive-client/compositor or release acceptance.
 
 ## Retained development failures and cleanup
@@ -79,7 +115,11 @@ toolkit/assistive-client/compositor or release acceptance.
   were verified by PID, command and start identity, then stopped. Completed guest
   focused captures/source archives were retired only after canonical hashes and
   payload manifests matched. Sources, incremental builds, stages and VM disks
-  remain. These housekeeping actions do not qualify product behavior.
+  remain. Completed capture/archive duplicates on the four reusable Linux/FreeBSD
+  guests and the sanitizer guest are retired after canonical validation. Temporary
+  host OpenBSD cache copies are retired after both fresh captures validate. The
+  stopped OpenBSD disks and canonical captures preserve their reusable builds.
+  These housekeeping actions do not qualify product behavior.
 
 PR144 remains the performance reference. Merged PR145–148 advance its count to
 4/5; this unmerged feature checkpoint does not yet advance it. The next merged

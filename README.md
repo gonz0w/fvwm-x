@@ -12,7 +12,8 @@ compositor or native Wayland backend.
 **Status:** development. The
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) and manager-target
 prerequisite are merged. Opt-in button navigation, disabled controls and live
-presentation are in development; settings follow. Further general maintenance
+presentation are [ready for review](dev-docs/verification/VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md);
+settings follow. Further general maintenance
 and tuning stay in a future release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the

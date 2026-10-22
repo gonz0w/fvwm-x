@@ -10,6 +10,8 @@ import importlib.util
 import json
 import fcntl
 import os
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -456,6 +458,203 @@ class SettingsRegistry(unittest.TestCase):
         item = self.instance.query_settings('palette')['palette']
         self.assertEqual(item['generation'], self.instance.settings_generation)
         self.assertFalse(item['preview'])
+
+
+    def test_configuration_worker_returns_data_before_main_thread_presents_it(self):
+        (self.path.parent / 'local.config').write_text('*FvwmDesktop: palette wrong\n')
+        self.commands.clear()
+        self.instance.start_configuration_check()
+        self.instance.jobs['configuration'].result(timeout=2)
+        self.assertEqual(self.commands, [])
+        self.instance.poll_jobs()
+        self.assertEqual(self.instance.configuration_report['result']['errors'], 1)
+        self.assertIn('Module FvwmForm SlateConfigCheckForm', self.commands)
+        self.assertFalse(self.path.exists())
+        previous = self.instance.configuration_report['token']
+        self.instance.start_configuration_check()
+        self.instance.jobs['configuration'].result(timeout=2)
+        self.instance.poll_jobs()
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            self.instance.show_configuration_report(previous, 0)
+
+    def test_configuration_report_pages_and_busy_service_are_bounded(self):
+        file = self.path.parent / 'local.config'
+        file.write_text('*FvwmDesktop: palette wrong\n' * 9)
+        result = desktop.check_configuration(file)
+        self.instance.configuration_report = dict(token='current', result=result)
+        for page in (-1, 3):
+            with self.assertRaises(ValueError):
+                self.instance.show_configuration_report('current', page)
+        self.instance.show_configuration_report('current', 1)
+        text = '\n'.join(self.commands)
+        self.assertIn('page 2/3', text)
+        self.assertIn('check-page current 0', text)
+        self.assertIn('check-page current 2', text)
+        self.assertNotIn('Exec ', text)
+        self.assertNotIn('PipeRead ', text)
+        self.instance.jobs['configuration'] = object()
+        with self.assertRaisesRegex(ValueError, 'busy'):
+            self.instance.start_configuration_check()
+        self.instance.jobs.clear()
+
+
+class ConfigurationChecking(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.root = Path(self.directory.name)
+        self.file = self.root / 'local.config'
+
+    def tearDown(self):
+        self.directory.cleanup()
+
+    def check(self, text=None):
+        if text is not None:
+            self.file.write_text(text)
+        return desktop.check_configuration(self.file, self.root, self.root / 'data', self.root)
+
+    def test_literal_subset_and_registry_values(self):
+        text = '\n'.join('*FvwmDesktop: ' + key + ' ' + str(item['default']).lower()
+                         for key, item in desktop.SETTINGS.items())
+        result = self.check('# comment\n' + text)
+        self.assertEqual(result['status'], 'checked-subset')
+        self.assertEqual(result['checked_directives'], 7)
+        self.assertEqual(result['errors'], 0)
+        self.assertEqual(result['diagnostics'], [])
+        self.assertEqual(len(result['files']), 1)
+        result = self.check('*FvwmDesktop: unknown value\n*FvwmDesktop: motion 3\n')
+        self.assertEqual(result['errors'], 2)
+        self.assertEqual([x['code'] for x in result['diagnostics']], ['setting-name', 'setting-value'])
+
+    def test_nested_continuation_locations_include_full_context(self):
+        child = self.root / 'child config'
+        grandchild = self.root / 'grandchild'
+        self.file.write_text('# first\nRead "child config"\n')
+        child.write_text('# child\nRead grandchild\n')
+        grandchild.write_text('# grandchild\n*FvwmDesktop: palette \\\n  wrong\n')
+        result = self.check()
+        item = result['diagnostics'][0]
+        self.assertEqual((item['path'], item['line'], item['end_line']), (str(grandchild), 2, 3))
+        self.assertEqual([(p['path'], p['line']) for p in item['included_from']],
+                         [(str(self.file), 2), (str(child), 2)])
+        self.assertEqual(item['parser'], 'FvwmDesktop')
+
+    def test_actions_functions_expansions_and_terminal_are_unchecked_never_executed(self):
+        marker = self.root / 'must-not-exist'
+        text = '\n'.join(['Exec touch ' + str(marker), 'PipeRead "touch ' + str(marker) + '"',
+            'Module /bin/sh -c "touch ' + str(marker) + '"', 'AddToFunc Evil I Exec touch ' + str(marker),
+            '+ I Read "not-opened"', 'Lua os.execute("touch ' + str(marker) + '")',
+            '*FvwmDesktop: palette $[env.VALUE]', '*FvwmDesktop: terminal /bin/sh'])
+        with (patch.object(desktop.subprocess, 'Popen', side_effect=AssertionError('process execution')),
+              patch.object(desktop, 'command_output', side_effect=AssertionError('external command'))):
+            result = self.check(text)
+        self.assertEqual(result['errors'], 0)
+        self.assertEqual(result['unchecked'], 8)
+        self.assertEqual(result['status'], 'partial')
+        self.assertFalse(marker.exists())
+        self.assertEqual(len(result['files']), 1)
+
+    def test_literal_read_uses_user_data_cwd_search_not_including_directory(self):
+        user, data, cwd, parent = [self.root / name for name in ['user', 'data', 'cwd', 'parent']]
+        for path in [user, data, cwd, parent]:
+            path.mkdir()
+        file = parent / 'config'
+        file.write_text('Read choice\nRead absent Quiet\n')
+        for directory in [user, data, cwd]:
+            (directory / 'choice').write_text('*FvwmDesktop: palette ink\n')
+        (parent / 'choice').write_text('*FvwmDesktop: palette wrong\n')
+        for directory in [user, data, cwd]:
+            result = desktop.check_configuration(file, user, data, cwd)
+            self.assertEqual(result['status'], 'checked-subset')
+            self.assertEqual(result['files'][1]['path'], str(directory / 'choice'))
+            (directory / 'choice').unlink()
+        result = desktop.check_configuration(file, user, data, cwd)
+        self.assertEqual(result['errors'], 1)
+
+    def test_inode_cycle_and_repeated_non_recursive_read(self):
+        alias = self.root / 'alias'
+        self.file.write_text('Read alias\n')
+        alias.symlink_to(self.file)
+        self.assertEqual(self.check()['diagnostics'][0]['code'], 'include-cycle')
+        alias.unlink()
+        alias.write_text('*FvwmDesktop: motion on\n')
+        result = self.check('Read alias\nRead alias\n')
+        self.assertEqual(result['status'], 'checked-subset')
+        self.assertEqual(len(result['files']), 3)
+
+    def test_quiet_is_optional_missing_only_and_nonregular_sources_never_block(self):
+        self.assertEqual(self.check('Read missing Quiet\n')['errors'], 0)
+        self.assertEqual(self.check('Read missing\n')['diagnostics'][0]['code'], 'read-missing')
+        fifo = self.root / 'fifo'
+        os.mkfifo(fifo, 0o600)
+        self.assertEqual(self.check('Read fifo Quiet\n')['diagnostics'][0]['code'], 'read-type')
+        self.assertEqual(self.check('Read\n')['diagnostics'][0]['code'], 'read-argument')
+        self.assertEqual(self.check('Read "unterminated\n')['status'], 'partial')
+
+    def test_source_work_and_diagnostic_limits_report_incomplete(self):
+        for constant, bound, text, code in [
+                ('CHECK_BYTES', 8, '# ' + 'a' * 20, 'byte-limit'),
+                ('CHECK_LINE_BYTES', 8, '# ' + 'a' * 20, 'line-limit'),
+                ('CHECK_LINES', 2, '# one\n# two\n# three\n', 'work-limit'),
+                ('CHECK_DIAGNOSTICS', 3, 'Style * NeverFocus\n' * 5, 'diagnostic-limit')]:
+            with patch.object(desktop, constant, bound):
+                result = self.check(text)
+            self.assertEqual(result['status'], 'partial')
+            self.assertEqual(result['diagnostics'][-1]['code'], code)
+        self.assertEqual(len(result['diagnostics']), 3)
+        with patch.object(desktop, 'CHECK_SECONDS', 0):
+            self.assertEqual(self.check('# empty\n')['diagnostics'][0]['code'], 'time-limit')
+
+    def test_include_depth_and_visit_bounds(self):
+        for index in range(4):
+            (self.root / ('file' + str(index))).write_text('Read file' + str(index + 1) + '\n')
+        with patch.object(desktop, 'CHECK_DEPTH', 2):
+            result = self.check('Read file0\n')
+        self.assertEqual(result['diagnostics'][0]['code'], 'include-limit')
+        with patch.object(desktop, 'CHECK_FILES', 2):
+            result = self.check('Read file0\n')
+        self.assertEqual(result['diagnostics'][0]['code'], 'include-limit')
+
+    def test_nul_encoding_and_final_continuation_are_not_silently_dropped(self):
+        self.file.write_bytes(b'*FvwmDesktop: motion on\0\n')
+        self.assertEqual(self.check()['diagnostics'][0]['code'], 'nul-byte')
+        self.file.write_bytes(b'# \xff\n')
+        self.assertEqual(self.check()['diagnostics'][0]['code'], 'encoding')
+        self.file.write_bytes(b'*FvwmDesktop: motion on\\\n')
+        self.assertEqual(self.check()['checked_directives'], 1)
+        self.file.write_bytes(b'*FvwmDesktop: motion on\\')
+        self.assertEqual(self.check()['errors'], 1)
+
+    def test_explicit_schedule_uses_last_valid_definitions_across_reads(self):
+        child = self.root / 'child'
+        child.write_text('*FvwmDesktop: night 08:00\n')
+        result = self.check('*FvwmDesktop: day 07:00\n*FvwmDesktop: day 08:00\nRead child\n')
+        item = result['diagnostics'][0]
+        self.assertEqual((item['code'], item['path'], item['line']), ('schedule-equal', str(child), 1))
+        self.assertEqual(self.check('*FvwmDesktop: day 19:00\n')['errors'], 0)
+
+    def test_source_ascii_separators_are_distinct_from_preference_value_trimming(self):
+        result = self.check('Read\u00a0missing\n\u00a0# not a core comment\n')
+        self.assertEqual((result['errors'], result['unchecked']), (0, 2))
+        result = self.check('*FvwmDesktop: motion on\u00a0\n')
+        self.assertEqual(result['status'], 'checked-subset')
+
+    def test_standalone_cli_without_display_has_explicit_exit_status_and_safe_output(self):
+        helper = ROOT / 'default-config/desktop.py'
+        env = dict(os.environ, FVWM_USERDIR=str(self.root), FVWM_DATADIR=str(self.root))
+        env.pop('DISPLAY', None)
+        for text, expected in [('*FvwmDesktop: palette ink\n', 0),
+                               ('*FvwmDesktop: palette wrong\n', 1), ('Exec false\n', 2)]:
+            self.file.write_text(text)
+            result = subprocess.run([sys.executable, str(helper), '--check-config', str(self.file), '--json'],
+                                    env=env, capture_output=True, text=True, timeout=5)
+            self.assertEqual(result.returncode, expected, result.stderr)
+            self.assertEqual(json.loads(result.stdout)['schema_version'], 1)
+        unsafe = self.root / 'escape\x1b[31m'
+        unsafe.write_text('*FvwmDesktop: palette wrong\n')
+        result = subprocess.run([sys.executable, str(helper), '--check-config', str(unsafe)],
+                                env=env, capture_output=True, text=True, timeout=5)
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn('\x1b', result.stdout)
 
 
 if __name__ == '__main__':

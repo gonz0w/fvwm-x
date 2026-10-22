@@ -14,6 +14,8 @@ FvwmDesktop - FVWM-X baseline appearance and desktop services
 
 Module FvwmDesktop
 
+FvwmDesktop --check-config FILE [--json]
+
 == DESCRIPTION
 
 The sole shipped default configuration is the Slate desktop. Its layout is
@@ -176,6 +178,72 @@ and TitleStyle commands can change these independently. No proprietary or
 icon fonts are required. PNG wallpaper decoding uses FVWM's optional PNG
 support; builds without it retain solid palette backgrounds.
 
+== CONFIGURATION CHECK
+
+Desktop settings offers Check local.config. It reads
+$FVWM_USERDIR/local.config in a bounded worker and presents a native report.
+F1/F2 move between report pages; Escape closes the report. Source locations
+include physical start/end lines for continued logical lines and the immediate
+Read caller. Long paths are shortened for the native view. A new report replaces
+the previous snapshot; callbacks from an older report cannot select its pages.
+
+The check never executes configuration, starts modules, applies preferences,
+expands variables or runs PipeRead, shell commands, functions or Lua. It checks
+only literal colon-form *FvwmDesktop options for the seven registered settings,
+plus literal Read filenames with optional Quiet. Boolean/time/enum validation
+uses the same preference registry as the running helper. Explicit day/night
+values must differ when both appear. Saved preferences are not loaded, so this
+does not validate their combined effective runtime state.
+
+Comments and blank lines are ignored. A backslash immediately before a newline
+joins physical lines, as in FVWM's reader. Source separators use ASCII whitespace;
+preference values retain the helper's existing trimming behavior. Input is UTF-8;
+other encodings are reported as unchecked. NUL bytes are errors.
+
+Literal Read searches FVWM_USERDIR, FVWM_DATADIR and the checker's working
+directory, in that order, or uses an absolute path directly. It is not relative
+to the including file. Quiet permits a missing optional file; it does not hide
+an unreadable or nonregular source. Symbolic links are followed; device/inode
+identity detects active Read cycles. Repeated nonrecursive reads remain allowed.
+This is a fixed search-root snapshot, not a simulation of executable commands
+that could change paths, variables or generated files.
+
+Other FVWM commands, custom function calls, module options, terminal invocation,
+expansions, escaped filenames and unsupported Read syntax are reported as
+unchecked. They may be valid configuration. This first checker is not a full
+FVWM syntax validator or a predictor of session startup; general core-command
+argument/source diagnostics remain separate work. No configuration migration
+or new desktop package is required.
+
+For a complete source/include chain and observed file hashes, invoke the installed
+helper directly outside FVWM, without an X display:
+
+....
+/path/to/FvwmDesktop --check-config "$HOME/.fvwm/local.config"
+/path/to/FvwmDesktop --check-config "$HOME/.fvwm/local.config" --json
+....
+
+Use the helper in the configured ModulePath; it is normally installed in the
+versioned libexec module directory. Text output escapes control characters in
+paths. JSON schema_version 1 reports coverage, status, checked_directives,
+errors, unchecked, observed files with SHA-256 hashes, and diagnostics. Each
+diagnostic has path, line, end_line, included_from, severity, code, message and
+parser. Included callers retain their own start/end lines. The file hashes
+identify bytes read, not an atomic cross-file or future runtime snapshot.
+
+Exit status 0 means the supported subset has no reported errors or unchecked
+constructs. Status 1 means a supported-value or source-read error. Status 2
+means incomplete coverage, an exhausted budget or CLI usage error. A zero exit
+does not certify arbitrary FVWM configuration or effective runtime settings.
+
+One check reads at most 4 MiB combined, 64 file visits, eight active file levels,
+10,000 physical lines, 1 MiB per logical line and 64 diagnostics. Reaching a cap
+reports incomplete checking. An elapsed three-second budget is checked between
+reads/lines; it cannot preempt an individual filesystem call. Sources must be
+regular files and are opened without blocking on FIFOs. No check writes a source
+or preference file. The helper admits one check at a time within its existing
+bounded worker pool and retains one result snapshot.
+
 == DESKTOP SERVICES
 
 The helper uses the Python runtime already required by FVWM, standard library
@@ -251,6 +319,7 @@ toggle motion
 toggle keep_wallpaper
 settings [all|setting-ID|group:appearance|group:schedule|group:effects]
 edit-settings [scope]
+check-config
 query-settings token [scope]
 reset scope
 reload-settings
@@ -272,6 +341,9 @@ independent modules may still be repainting.
 
 settings opens the native configuration-center menu for the requested scope.
 edit-settings opens the grouped saved-preference editor for the same scopes.
+check-config starts the non-executing local.config check and accepts no module
+arguments. The native report generates token-bound check-page callbacks;
+ordinary clients should request a new check instead of reusing those callbacks.
 The editor's apply-settings, defaults-settings and cancel-settings callbacks
 carry an opaque per-instance token and are generated by the helper; ordinary
 command clients should use the documented set, times, reset or reload commands.

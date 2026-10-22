@@ -11,6 +11,7 @@ Only the main thread writes the module pipe; workers return data or argv arrays.
 """
 
 import calendar
+import argparse
 import concurrent.futures
 import configparser
 import ctypes as C
@@ -20,6 +21,7 @@ import fcntl
 import hashlib
 import json
 import itertools
+import io
 import os
 from pathlib import Path
 import re
@@ -66,6 +68,201 @@ DEFAULTS = {key: item['default'] for key, item in SETTINGS.items()} | {
 STATE_LIMIT = 8192
 UNCHECKED_REVISION = object()
 EDITOR_SECONDS = 300
+CHECK_BYTES = 4 * 1024 * 1024
+CHECK_LINE_BYTES = 1024 * 1024
+CHECK_FILES = 64
+CHECK_DEPTH = 8
+CHECK_LINES = 10000
+CHECK_DIAGNOSTICS = 64
+CHECK_SECONDS = 3
+
+
+class ConfigurationCheck:
+    """Read-only analysis of a declared subset, never a FVWM interpreter."""
+
+    def __init__(self, userdir, datadir, cwd):
+        self.search = [Path(root).absolute() for root in (userdir, datadir, cwd)]
+        self.deadline = time.monotonic() + CHECK_SECONDS
+        self.bytes = self.lines = self.visits = self.checked = 0
+        self.diagnostics, self.files = [], []
+        self.active, self.schedule = set(), {}
+        self.stopped = False
+
+    def diagnostic(self, location, severity, code, message, parser='FvwmDesktop'):
+        if self.stopped:
+            return
+        if len(self.diagnostics) == CHECK_DIAGNOSTICS - 1:
+            severity, code, message = 'unchecked', 'diagnostic-limit', 'Diagnostic limit reached; remaining input was not checked'
+            self.stopped = True
+        self.diagnostics.append(dict(location, severity=severity, code=code,
+                                     message=message, parser=parser))
+
+    def limit(self, location, code, message):
+        self.diagnostic(location, 'unchecked', code, message, 'configuration-source')
+        self.stopped = True
+
+    def read(self, paths, origin=None, quiet=False):
+        if self.stopped:
+            return
+        stack = origin['included_from'] + [
+            {key: origin[key] for key in ('path', 'line', 'end_line')}] if origin else []
+        location = dict(path=str(paths[0]), line=1, end_line=1, included_from=stack)
+        if len(stack) >= CHECK_DEPTH or self.visits >= CHECK_FILES:
+            self.limit(origin or location, 'include-limit', 'Include depth or file-visit limit reached')
+            return
+        self.visits += 1
+        fd = None
+        try:
+            for path in paths:
+                try:
+                    fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_CLOEXEC)
+                    location['path'] = str(path)
+                    break
+                except (FileNotFoundError, NotADirectoryError):
+                    continue
+            if fd is None:
+                if not quiet:
+                    self.diagnostic(origin or location, 'error', 'read-missing',
+                                    'Cannot find literal configuration file', 'configuration-source')
+                return
+            info = os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode):
+                self.diagnostic(origin or location, 'error', 'read-type',
+                                'Configuration source must be a regular file', 'configuration-source')
+                return
+            identity = (info.st_dev, info.st_ino)
+            if identity in self.active:
+                self.diagnostic(origin or location, 'error', 'include-cycle',
+                                'Literal Read cycle detected', 'configuration-source')
+                return
+            chunks = []
+            while True:
+                if time.monotonic() >= self.deadline:
+                    self.limit(location, 'time-limit', 'Elapsed checking budget reached')
+                    return
+                data = os.read(fd, min(65536, CHECK_BYTES - self.bytes + 1))
+                if not data:
+                    break
+                self.bytes += len(data)
+                if self.bytes > CHECK_BYTES:
+                    self.limit(location, 'byte-limit', 'Combined source byte limit reached')
+                    return
+                chunks.append(data)
+            data = b''.join(chunks)
+        except OSError as error:
+            self.diagnostic(origin or location, 'error', 'read-error',
+                            'Cannot inspect configuration source: ' + str(error.strerror),
+                            'configuration-source')
+            return
+        finally:
+            if fd is not None:
+                os.close(fd)
+        self.files.append(dict(path=location['path'], bytes=len(data),
+                               sha256=hashlib.sha256(data).hexdigest()))
+        self.active.add(identity)
+        try:
+            stream, logical, start, number = io.BytesIO(data), bytearray(), 1, 0
+            while not self.stopped:
+                part = stream.readline(CHECK_LINE_BYTES + 2)
+                if not part:
+                    break
+                number += 1
+                self.lines += 1
+                location = dict(location, line=start, end_line=number)
+                if self.lines > CHECK_LINES or time.monotonic() >= self.deadline:
+                    self.limit(location, 'work-limit', 'Line or elapsed checking budget reached')
+                    break
+                newline = part.endswith(b'\n')
+                logical.extend(part[:-1] if newline else part)
+                if len(logical) > CHECK_LINE_BYTES:
+                    self.limit(location, 'line-limit', 'Logical source line limit reached')
+                    break
+                if newline and logical.endswith(b'\\'):
+                    del logical[-1:]
+                    continue
+                self.line(bytes(logical), location)
+                logical.clear()
+                start = number + 1
+            if logical and not self.stopped:
+                self.line(bytes(logical), location)
+        finally:
+            self.active.remove(identity)
+
+    def line(self, data, location):
+        if b'\0' in data:
+            self.diagnostic(location, 'error', 'nul-byte', 'NUL byte in source', 'configuration-source')
+            return
+        try:
+            text = data.decode('utf-8').strip(' \t\r\v\f')
+        except UnicodeDecodeError:
+            self.diagnostic(location, 'unchecked', 'encoding',
+                            'This check supports UTF-8 source only', 'configuration-source')
+            return
+        if not text or text.startswith('#'):
+            return
+        if '$' in text or '`' in text:
+            self.diagnostic(location, 'unchecked', 'expansion',
+                            'Expansion or generated configuration is not evaluated')
+            return
+        if re.match(r'Read(?:\s|$)', text, re.I | re.ASCII):
+            if text.lower() == 'read':
+                self.diagnostic(location, 'error', 'read-argument', 'Read requires a filename',
+                                'configuration-source')
+                return
+            match = re.fullmatch(r'''Read\s+(?:"([^"\\]+)"|'([^'\\]+)'|([^\s'"\\]+))(?:\s+(Quiet))?''', text, re.I | re.ASCII)
+            if match:
+                name = next(value for value in match.groups()[:3] if value is not None)
+                if not name.startswith('~'):
+                    path = Path(name)
+                    paths = [path] if path.is_absolute() else [root / path for root in self.search]
+                    self.checked += 1
+                    self.read(paths, location, quiet=bool(match[4]))
+                    return
+            self.diagnostic(location, 'unchecked', 'read-syntax',
+                            'Only literal Read filenames and optional Quiet are checked',
+                            'configuration-source')
+            return
+        match = re.fullmatch(r'\*FvwmDesktop:\s*(\S+)(?:\s+(.*))?', text, re.I | re.ASCII)
+        if match:
+            key, value = match[1].lower(), (match[2] or '').strip()
+            if key == 'terminal':
+                self.diagnostic(location, 'unchecked', 'terminal-provider',
+                                'Terminal invocation and provider availability are not checked')
+                return
+            if key not in SETTINGS:
+                self.diagnostic(location, 'error', 'setting-name', 'Unknown FvwmDesktop option')
+                return
+            try:
+                parsed = setting_value(key, value, text=True)
+            except ValueError as error:
+                self.diagnostic(location, 'error', 'setting-value', str(error))
+                return
+            self.checked += 1
+            if key in ('day', 'night'):
+                self.schedule[key] = (parsed, location)
+            return
+        self.diagnostic(location, 'unchecked', 'unsupported',
+                        'Command or module syntax is outside the desktop-settings subset')
+
+    def result(self):
+        if len(self.schedule) == 2:
+            day, night = self.schedule['day'], self.schedule['night']
+            if day[0] == night[0]:
+                self.diagnostic(night[1], 'error', 'schedule-equal',
+                                'Explicit day and night times must be different')
+        errors = sum(item['severity'] == 'error' for item in self.diagnostics)
+        unchecked = sum(item['severity'] == 'unchecked' for item in self.diagnostics)
+        return dict(schema_version=1, coverage='desktop-settings-literals-and-Read-v1',
+                    status='errors' if errors else 'partial' if unchecked else 'checked-subset',
+                    errors=errors, unchecked=unchecked, checked_directives=self.checked,
+                    files=self.files, diagnostics=self.diagnostics)
+
+
+def check_configuration(path, userdir=None, datadir=None, cwd=None):
+    checker = ConfigurationCheck(userdir or os.environ.get('FVWM_USERDIR', Path.home() / '.fvwm'),
+        datadir or os.environ.get('FVWM_DATADIR', '@FVWM_DATADIR@'), cwd or Path.cwd())
+    checker.read([Path(path).absolute()])
+    return checker.result()
 
 
 def setting_value(key, value, text=False):
@@ -579,6 +776,7 @@ class Desktop:
         self.monitor_width = 1440
         self.settings_generation = secrets.token_hex(16)
         self.settings_editor = None
+        self.configuration_report = None
 
     def retire_settings_editor(self):
         # Only one bounded consumer lease belongs to this helper. Old Form
@@ -600,6 +798,7 @@ class Desktop:
         # A Form may outlive a killed/restarted helper, but its draft never
         # belongs to the new owner. Retire that native consumer on startup.
         self.send('KillModule FvwmForm SlateSettingsForm')
+        self.send('KillModule FvwmForm SlateConfigCheckForm')
         try:
             self.settings = checked_settings(dict(self.saved, **self.overrides))
         except ValueError as error:
@@ -739,10 +938,56 @@ class Desktop:
                   'SendToModule FvwmDesktop edit-settings ' + scope),
                  ('Reset ' + scope, 'SendToModule FvwmDesktop reset ' + scope),
                  ('Reload saved settings', 'SendToModule FvwmDesktop reload-settings'),
+                 ('Check local.config...', 'SendToModule FvwmDesktop check-config'),
                  ('FVWM commands submitted; external Style/Colorset overrides are unobserved', 'Greyed')]
         if self.persistence_error:
             rows.append((self.persistence_error, 'Greyed'))
         self.menu('SlateSettings', 'Desktop settings', rows)
+
+    def start_configuration_check(self):
+        if 'configuration' in self.jobs or len(self.jobs) >= 4:
+            raise ValueError('Desktop service is busy; try the configuration check again')
+        self.submit('configuration', check_configuration,
+                    self.state_path.parent / 'local.config', self.state_path.parent,
+                    self.root.parent)
+
+    def show_configuration_report(self, token, page):
+        report = self.configuration_report
+        if report is None or report['token'] != token:
+            raise ValueError('Configuration report is stale; run the check again')
+        result = report['result']
+        pages = max(1, (len(result['diagnostics']) + 3) // 4)
+        if not 0 <= page < pages:
+            raise ValueError('Invalid configuration report page')
+        lines = ['Title "Configuration check"', 'Colorset 2', 'ItemColorset 12',
+                 'Line left', 'Text "Desktop settings subset - configuration was not executed"',
+                 'Line left', 'Text ' + quote(str(result['errors']) + ' errors, ' +
+                     str(result['unchecked']) + ' unchecked; page ' + str(page + 1) + '/' + str(pages))]
+        if not result['diagnostics']:
+            lines += ['Line left', 'Text "No errors in the supported literal settings subset."']
+        for item in result['diagnostics'][page * 4:page * 4 + 4]:
+            path = item['path']
+            path = path if len(path) <= 80 else '...' + path[-77:]
+            span = str(item['line'])
+            if item['end_line'] != item['line']:
+                span += '-' + str(item['end_line'])
+            lines += ['Line left', 'Text ' + quote(path + ':' + span),
+                      'Line left', 'Text ' + quote(item['severity'] + ': ' + item['message'])]
+            if item['included_from']:
+                parent = item['included_from'][-1]
+                lines += ['Line left', 'Text ' + quote('Read from ' +
+                    Path(parent['path']).name + ':' + str(parent['line']))]
+        lines += ['Line left', 'Text "Other FVWM syntax and effective runtime state are not validated."',
+                  'Line expand', 'Button quit "Close" ^[', 'Command Nop']
+        for label, target in [('Previous (F1)', page - 1), ('Next (F2)', page + 1)]:
+            if 0 <= target < pages:
+                lines += ['Button continue ' + quote(label) + (' F1' if target < page else ' F2'),
+                          'Command SendToModule FvwmDesktop check-page ' + token + ' ' + str(target)]
+        self.send('KillModule FvwmForm SlateConfigCheckForm')
+        self.send('DestroyModuleConfig SlateConfigCheckForm:*')
+        for line in lines:
+            self.send('*SlateConfigCheckForm: ' + line)
+        self.send('Module FvwmForm SlateConfigCheckForm')
 
     def submit(self, key, function, *args):
         if key not in self.jobs and len(self.jobs) < 4:
@@ -940,6 +1185,9 @@ class Desktop:
                     self.notice(value)
                 elif key == 'volume':
                     self.notice(value or 'Sound control is unavailable or permission was denied.')
+                elif key == 'configuration':
+                    self.configuration_report = dict(token=secrets.token_hex(16), result=value)
+                    self.show_configuration_report(self.configuration_report['token'], 0)
             except Exception as error:
                 self.notice(str(error))
 
@@ -971,6 +1219,13 @@ class Desktop:
                 self.send('Menu SlateSettings Monitor c c')
             elif command == 'edit-settings':
                 self.edit_settings(argument or 'all')
+            elif command == 'check-config':
+                if argument:
+                    raise ValueError('check-config takes no module arguments; it checks local.config')
+                self.start_configuration_check()
+            elif command == 'check-page':
+                token, page = argument.split()
+                self.show_configuration_report(token, int(page))
             elif command == 'apply-settings':
                 if not argument:
                     raise ValueError('Missing settings editor values')
@@ -1137,6 +1392,27 @@ def power_action(system, action):
 
 
 def main():
+    if sys.argv[1:2] == ['--check-config']:
+        parser = argparse.ArgumentParser(description='Check literal desktop settings without executing configuration')
+        parser.add_argument('--check-config', type=Path, required=True, metavar='FILE')
+        parser.add_argument('--json', action='store_true')
+        options = parser.parse_args()
+        result = check_configuration(options.check_config)
+        if options.json:
+            print(json.dumps(result, ensure_ascii=True))
+        else:
+            print('Desktop settings subset only; configuration was not executed.')
+            for item in result['diagnostics']:
+                location = json.dumps(item['path'], ensure_ascii=True) + ':' + str(item['line'])
+                if item['end_line'] != item['line']:
+                    location += '-' + str(item['end_line'])
+                print(location + ': ' + item['severity'] + ': ' + item['message'])
+                for parent in reversed(item['included_from']):
+                    print('  Read from ' + json.dumps(parent['path'], ensure_ascii=True) + ':' + str(parent['line']))
+            print(result['status'] + ': ' + str(result['checked_directives']) +
+                  ' checked directives, ' + str(result['errors']) + ' errors, ' +
+                  str(result['unchecked']) + ' unchecked')
+        return 1 if result['errors'] else 2 if result['unchecked'] else 0
     if len(sys.argv) < 6:
         print('FvwmDesktop must be started with Module FvwmDesktop.', file=sys.stderr)
         return 1

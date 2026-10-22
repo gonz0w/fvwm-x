@@ -55,13 +55,18 @@ Bool buttons_is_key_pressed(const button_info *b)
 	return pressed_button == b;
 }
 
+static void clear_press(void)
+{
+	pressed_button = NULL;
+	pressed_key = 0;
+	activated_on_press = False;
+}
+
 static void cancel_press(void)
 {
 	button_info *old = pressed_button;
 
-	pressed_button = NULL;
-	pressed_key = 0;
-	activated_on_press = False;
+	clear_press();
 	if (old)
 	{
 		RedrawButton(old, DRAW_FORCE, NULL);
@@ -178,6 +183,32 @@ void buttons_state_changed(button_info *b)
 	{
 		set_focus_button(tab_target(focus_button, False));
 	}
+}
+
+/* Called only after a complete group commits. Do not draw intermediate
+ * focus/press state; the caller owns the following repaint boundary. */
+button_info *buttons_group_state_changed(void)
+{
+	if (CurrentButton && CurrentButton->flags.b_Disabled)
+	{
+		CurrentButton = NULL;
+	}
+	if (ActiveButton && ActiveButton->flags.b_Disabled)
+	{
+		ActiveButton = NULL;
+	}
+	if (!eligible(pressed_button))
+	{
+		clear_press();
+	}
+	if (!eligible(focus_button))
+	{
+		focus_button = tab_target(focus_button, False);
+		clear_press();
+	}
+	/* Only Enabled changes eligibility. Any cleared old focus/press is
+	 * already among the caller's targets; the new focus may need drawing. */
+	return focus_button;
 }
 
 static void activate(button_info *b)

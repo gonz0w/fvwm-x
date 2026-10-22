@@ -353,6 +353,95 @@ def run(args):
             assert actions() == before
             evidence['disabled-all-entry-points-cancel-reenable-and-selected-state'] = 'passed'
 
+            def group(text):
+                command(f'SendToModule {module_name} ChangeButtons {text}')
+                barrier()
+
+            # Restore a known state, preserving the currently focused gamma.
+            group('(alpha Enabled 1, Selected 0) (beta Enabled 1) '
+                '(gamma Enabled 1) (epsilon Enabled 1)')
+            activate('gamma')
+            original = pixels(shown, 0, 0, 600, 120)
+            bad = [
+                '(missing Title Bad) (alpha Selected 1)',
+                '(alpha Selected 1) (missing Title Bad) (beta Enabled 0)',
+                '(alpha Selected 1) (beta Enabled 0) (missing Title Bad)',
+                '(alpha Selected 1) (beta Enabled 2)',
+                '(alpha Selected 1) (beta Unknown 1)',
+                '(alpha Selected 1) (beta Colorset 2147483647)',
+                '(alpha Selected 1) (beta Colorset 1junk)',
+                '(alpha Selected 1) (0 Enabled 0)',
+                '(alpha Selected 1) (+0+0 Enabled 0)',
+                '(alpha Selected 1, Selected 0)',
+                '(alpha Selected 1) (beta Title "unfinished)',
+                '(alpha Selected 1) (beta Title Bad) junk',
+                '(alpha Selected 1) (beta Icon /no-such-buttons-icon.xpm)',
+                '(alpha Selected 1) (beta Enabled 0,)',
+                '(alpha Selected 1) (99999999999999999999 Enabled 0)',
+                ''.join(f'({n} Enabled 1)' for n in range(33)),
+            ]
+            for request in bad:
+                group(request)
+                assert pixels(shown, 0, 0, 600, 120) == original, request
+                activate('gamma')
+            evidence['atomic-invalid-first-middle-last-and-duplicates-rollback'] = 'passed'
+
+            # Preparation acquires actual picture-cache references. A later
+            # missing icon must unwind them without replacing any old resource.
+            icon = runtime.root / 'transaction.xpm'
+            icon.write_text('/* XPM */\nstatic char *icon[] = {\n'
+                '"8 8 1 1", "x c #ffff00",\n' +
+                ',\n'.join('"xxxxxxxx"' for _ in range(8)) + '};\n')
+            for _ in range(3):
+                group(f'(alpha Icon {icon}, ActiveIcon {icon}, '
+                    f'PressIcon {icon}) (beta Icon /no-such-final-icon.xpm)')
+                assert pixels(shown, 0, 0, 600, 120) == original
+            for n in range(3):
+                group(f'(alpha Title "Ready, ({n})", ActiveTitle Hover{n}, '
+                    f'PressTitle Press{n}, Icon {icon}, ActiveIcon {icon}, '
+                    f'PressIcon {icon}, Colorset 0, ActiveColorset 2, '
+                    'PressColorset 3, FocusColorset 1, DisabledColorset 4, '
+                    'Selected 1) (beta Selected 1)')
+                await_color(0, 0, 0xff0000)
+                await_color(0, 60, 0xff0000)
+                activate('gamma')
+            evidence['atomic-icons-titles-all-palettes-owned-prepare-and-commit'] = 'passed'
+
+            # All final states are visible to focus repair. A held gamma key
+            # cannot activate when the same group disables gamma and beta;
+            # alpha is selected from the final eligible set, without restart.
+            before = actions()
+            key(0x20, True)
+            group('(alpha Selected 0) (beta Enabled 0) (gamma Enabled 0)')
+            key(0x20, False)
+            assert actions() == before
+            await_color(0, 0, 0x008000)
+            await_color(0, 60, 0x606060)
+            await_color(200, 60, 0x606060)
+            activate('alpha')
+            group('(alpha Enabled 0) (gamma Enabled 1, FocusColorset 1)')
+            activate('gamma')
+            # A refused group during a held key leaves that key/focus valid.
+            before = actions()
+            key(0x20, True)
+            group('(gamma Enabled 0) (missing Enabled 1)')
+            key(0x20, False)
+            assert actions() == before + ['gamma']
+            group('(gamma Selected 0, Title Recovered) (epsilon Selected 0)')
+            assert window_named(module_name) == shown
+            activate('gamma')
+            evidence['atomic-held-key-cancel-final-focus-recovery-stable-window-action'] = 'passed'
+
+            # Legacy ChangeButton still commits earlier valid pairs when a
+            # later pair is refused, even beside the additive group command.
+            command(f'SendToModule {module_name} ChangeButton gamma '
+                'Selected 1, Enabled 2')
+            barrier()
+            await_color(200, 60, 0xff0000)
+            group('(gamma Selected 0)')
+            await_color(200, 60, 0x008000)
+            evidence['legacy-incremental-changebutton-preserved'] = 'passed'
+
             # A live title update must preserve the other owned strings and
             # focused action. Exercise all three repeatedly under sanitizers.
             for n in range(3):
@@ -417,7 +506,8 @@ def run(args):
             assert core.wait_until_exit(time.monotonic() + 5) == 0
             text = ''.join(p.read_text() for p in runtime.root.glob('*.log'))
             assert not any(marker in text for marker in
-                ['ERROR: AddressSanitizer', 'runtime error:', 'Assertion']), text
+                ['ERROR: AddressSanitizer', 'ERROR: LeakSanitizer',
+                 'runtime error:', 'Assertion']), text
             assert not errors, errors
             evidence['status'] = 'passed'
         finally:

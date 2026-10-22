@@ -29,6 +29,7 @@
 #include "draw.h"
 #include "icons.h"
 #include "keyboard.h"
+#include "buttons_updates.h"
 
 /* ---------------------------- local definitions --------------------------- */
 
@@ -103,17 +104,13 @@ static char *expand_button_vars(const button_info *b, const char *line)
 	return expanded_line;
 }
 
-static button_info *parse_button_id(char **line)
+static button_info *find_button(const char *s)
 {
 	button_info *b = NULL, *ub = UberButton;
 	int mask;
 	int x, y;
 	int count, i;
-	char *rest;
-	char *s;
 
-	s = PeekToken(*line, &rest);
-	*line = NULL;
 	if (!s)
 	{
 		show_error("No button id specified\n");
@@ -145,7 +142,7 @@ static button_info *parse_button_id(char **line)
 			return NULL;
 		}
 	}
-	else if (isdigit(*s))
+	else if (isdigit((unsigned char)*s))
 	{
 		x = atoi(s);
 		i = count = -1;
@@ -161,7 +158,7 @@ static button_info *parse_button_id(char **line)
 			return NULL;
 		}
 	}
-	else if (isalpha(*s))
+	else if (isalpha((unsigned char)*s))
 	{
 		Bool found = False;
 		i = -1;
@@ -186,15 +183,261 @@ static button_info *parse_button_id(char **line)
 		return NULL;
 	}
 
-	*line = rest;
 	return b;
+}
+
+static button_info *parse_button_id(char **line)
+{
+	char *rest;
+	char *selector = PeekToken(*line, &rest);
+	button_info *b = find_button(selector);
+
+	*line = b ? rest : NULL;
+	return b;
+}
+
+/* Prepared values belong to the request until commit transfers them to a
+ * button. Pictures hold cache references even when another button shares one. */
+typedef struct
+{
+	char *text;
+	FvwmPicture *picture;
+	int number;
+} prepared_update;
+
+static void commit_update(button_info *b, buttons_update_option option,
+	prepared_update *value)
+{
+	char **text = NULL;
+	FvwmPicture **picture = NULL;
+	Bool owned = False;
+
+	switch (option)
+	{
+	case BUTTONS_TITLE:
+		text = &b->title;
+		owned = b->flags.b_Title;
+		b->flags.b_Title = 1;
+		break;
+	case BUTTONS_ACTIVE_TITLE:
+		text = &b->activeTitle;
+		owned = b->flags.b_ActiveTitle;
+		b->flags.b_ActiveTitle = 1;
+		break;
+	case BUTTONS_PRESS_TITLE:
+		text = &b->pressTitle;
+		owned = b->flags.b_PressTitle;
+		b->flags.b_PressTitle = 1;
+		break;
+	case BUTTONS_ICON:
+		text = &b->icon_file;
+		picture = &b->icon;
+		owned = b->flags.b_Icon;
+		b->flags.b_Icon = 1;
+		break;
+	case BUTTONS_ACTIVE_ICON:
+		text = &b->active_icon_file;
+		picture = &b->activeicon;
+		owned = b->flags.b_ActiveIcon;
+		b->flags.b_ActiveIcon = 1;
+		break;
+	case BUTTONS_PRESS_ICON:
+		text = &b->press_icon_file;
+		picture = &b->pressicon;
+		owned = b->flags.b_PressIcon;
+		b->flags.b_PressIcon = 1;
+		break;
+	case BUTTONS_COLORSET:
+		b->colorset = value->number;
+		b->flags.b_Colorset = 1;
+		break;
+	case BUTTONS_ENABLED:
+		b->flags.b_Disabled = !value->number;
+		break;
+	case BUTTONS_SELECTED:
+		b->flags.b_Selected = value->number;
+		break;
+	case BUTTONS_ACTIVE_COLORSET:
+		b->activeColorset = value->number;
+		b->flags.b_ActiveColorset = 1;
+		break;
+	case BUTTONS_PRESS_COLORSET:
+		b->pressColorset = value->number;
+		b->flags.b_PressColorset = 1;
+		break;
+	case BUTTONS_FOCUS_COLORSET:
+		b->focusColorset = value->number;
+		b->flags.b_FocusColorset = 1;
+		break;
+	case BUTTONS_DISABLED_COLORSET:
+		b->disabledColorset = value->number;
+		b->flags.b_DisabledColorset = 1;
+		break;
+	case BUTTONS_UPDATE_OPTIONS:
+		break;
+	}
+	if (text)
+	{
+		if (owned)
+		{
+			free(*text);
+			if (picture && *picture)
+			{
+				PDestroyFvwmPicture(Dpy, *picture);
+			}
+		}
+		*text = value->text;
+		value->text = NULL;
+		if (picture)
+		{
+			*picture = value->picture;
+			value->picture = NULL;
+		}
+	}
+}
+
+static void change_buttons(const char *line)
+{
+	buttons_update_plan plan;
+	prepared_update prepared[BUTTONS_UPDATE_CHANGES] = {{0}};
+	button_info *targets[BUTTONS_UPDATE_GROUPS];
+	const char *error;
+	size_t g, j, k;
+	button_info *focus;
+
+	if (!buttons_parse_updates(line, &plan, &error))
+	{
+		show_error("ChangeButtons refused: %s\n", error);
+		return;
+	}
+	/* Resolve every target and palette without allocating sparse colorsets.
+	 * A later refusal must not consume capacity or alter button state. */
+	for (g = 0; g < plan.group_count; g++)
+	{
+		buttons_update_group *group = &plan.groups[g];
+
+		targets[g] = find_button(group->selector);
+		if (!targets[g] || targets[g]->flags.b_Container)
+		{
+			error = "selector does not name a leaf button";
+			goto done;
+		}
+		for (j = 0; j < g; j++)
+		{
+			if (targets[g] == targets[j])
+			{
+				error = "button appears more than once";
+				goto done;
+			}
+		}
+		for (j = group->first; j < group->first + group->count; j++)
+		{
+			buttons_update_change *change = &plan.changes[j];
+			char *end;
+
+			if (change->option == BUTTONS_ENABLED ||
+				change->option == BUTTONS_SELECTED)
+			{
+				prepared[j].number = change->value[0] == '1';
+			}
+			else if (change->option >= BUTTONS_COLORSET)
+			{
+				if (!ParseColorsetId(change->value, &end,
+					&prepared[j].number) || *end ||
+					!FindColorset(prepared[j].number))
+				{
+					error = "colorset must already exist";
+					goto done;
+				}
+			}
+		}
+	}
+	/* Load icons with the group's final normal palette, independent of
+	 * option order. No rendering, event dispatch or button mutation here. */
+	for (g = 0; g < plan.group_count; g++)
+	{
+		buttons_update_group *group = &plan.groups[g];
+		int colorset = targets[g]->colorset;
+
+		for (j = group->first; j < group->first + group->count; j++)
+		{
+			if (plan.changes[j].option == BUTTONS_COLORSET)
+			{
+				colorset = prepared[j].number;
+			}
+		}
+		for (j = group->first; j < group->first + group->count; j++)
+		{
+			buttons_update_change *change = &plan.changes[j];
+
+			if (change->option >= BUTTONS_COLORSET)
+			{
+				continue;
+			}
+			prepared[j].text = fxstrdup(change->value);
+			if ((change->option == BUTTONS_ICON ||
+				change->option == BUTTONS_ACTIVE_ICON ||
+				change->option == BUTTONS_PRESS_ICON) &&
+				!LoadIconFile(change->value, &prepared[j].picture,
+					colorset))
+			{
+				error = "cannot load icon";
+				goto done;
+			}
+		}
+	}
+	/* All fallible work is complete. Commit without servicing another
+	 * event, then repair focus against the final state and repaint once.
+	 * This is logical atomicity, not a compositor/frame presentation API. */
+	for (g = 0; g < plan.group_count; g++)
+	{
+		buttons_update_group *group = &plan.groups[g];
+
+		for (j = group->first; j < group->first + group->count; j++)
+		{
+			commit_update(targets[g], plan.changes[j].option,
+				&prepared[j]);
+		}
+	}
+	focus = buttons_group_state_changed();
+	for (g = 0; g < plan.group_count; g++)
+	{
+		RedrawButton(targets[g], DRAW_FORCE, NULL);
+		if (targets[g] == focus)
+		{
+			focus = NULL;
+		}
+	}
+	if (focus)
+	{
+		RedrawButton(focus, DRAW_FORCE, NULL);
+	}
+	if (UberButton->c->flags.b_TransBack)
+	{
+		SetTransparentBackground(UberButton, Width, Height);
+	}
+	error = NULL;
+done:
+	for (k = 0; k < plan.change_count; k++)
+	{
+		free(prepared[k].text);
+		if (prepared[k].picture)
+		{
+			PDestroyFvwmPicture(Dpy, prepared[k].picture);
+		}
+	}
+	if (error)
+	{
+		show_error("ChangeButtons refused: %s\n", error);
+	}
 }
 
 /* ---------------------------- interface functions ------------------------- */
 
 static char *actions[] =
 {
-	"Silent", "ChangeButton", "ExpandButtonVars", "PressButton", NULL
+	"Silent", "ChangeButtons", "ChangeButton", "ExpandButtonVars",
+	"PressButton", NULL
 };
 
 static char *button_options[] =
@@ -238,6 +481,12 @@ void parse_message_line(char *line)
 		action = GetTokenIndex(rest, actions, -1, &rest);
 	}
 
+	if (action == 1)
+	{
+		change_buttons(rest);
+		return;
+	}
+
 	/* find out which button */
 	b = parse_button_id(&rest);
 	if (!b || !rest)
@@ -247,7 +496,7 @@ void parse_message_line(char *line)
 
 	switch (action)
 	{
-	case 1:
+	case 2:
 		/* ChangeButton */
 		/* The dimensions of individual buttons (& the overall size of
 		 * the FvwmButtons window) is based on the initial
@@ -445,7 +694,7 @@ void parse_message_line(char *line)
 		}
 		break;
 
-	case 2:
+	case 3:
 		/* ExpandButtonVars */
 		line = expand_button_vars(b, rest);
 		if (line)
@@ -454,7 +703,7 @@ void parse_message_line(char *line)
 			free(line);
 		}
 		break;
-	case 3:
+	case 4:
 		/* PressButton */
 		rest = GetQuotedString(rest, &buttonn, "", NULL, NULL, NULL);
 		if (buttonn)

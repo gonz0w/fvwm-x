@@ -12,15 +12,15 @@ compositor or native Wayland backend.
 **Status:** development. The
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) and manager-target
 prerequisite are merged. Opt-in button navigation, disabled controls and live
-presentation are [ready for review](dev-docs/verification/VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md);
-settings follow. Further general maintenance
-and tuning stay in a future release.
+presentation are merged. Bounded atomic button updates are in
+[qualification](dev-docs/verification/VERIFICATION-2026-10-22-BUTTONS-ATOMIC.md);
+settings follow. General maintenance and tuning stay in a future release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.
 [Protocol requirement inventory](dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
 records remaining runtime acceptance.
-[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-21-PR144.md)
+[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-22-PR149.md)
 track regressions every five implementation batches using existing builds.
 Optional Go builds use a patched compiler baseline. Desktop/artwork publication,
 physical hardware, toolkits/compositors, native-CPU sanitizers and release

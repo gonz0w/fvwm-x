@@ -203,6 +203,13 @@ def run(args):
                     else:
                         assert read(result, 'INTEGER') == [2, 0]
                     evidence[label] = 'passed' if observed == 0 else 'wrongly-accepted'
+                    if observed == 0:
+                        pairs = atom('FVWM_MANAGER_PAIRS')
+                        values = [atom('VERSION'), result]
+                        change(pairs, values)
+                        assert reply(atom('MULTIPLE'), pairs, timestamp, fields) == 0
+                        assert read(pairs, 'ATOM_PAIR') == values
+                        read(result)
                 assert reply(atom('VERSION'), result, acquired, {}) == result
                 assert read(result, 'INTEGER') == [2, 0]
                 evidence['valid_epoch_recovery'] = 'passed'

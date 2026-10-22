@@ -70,14 +70,25 @@ main(void)
 	assert(!fvwm_selection_pair_length_is_valid(4));
 	assert(!fvwm_selection_pair_length_is_valid(1028));
 	/* Equality, CurrentTime, before/after and wrap are independent of Xlib. */
-	assert(fvwm_selection_request_time_is_valid(0, 100));
-	assert(fvwm_selection_request_time_is_valid(100, 100));
-	assert(fvwm_selection_request_time_is_valid(101, 100));
-	assert(!fvwm_selection_request_time_is_valid(99, 100));
-	assert(fvwm_selection_request_time_is_valid(5, UINT32_MAX - 4));
-	assert(!fvwm_selection_request_time_is_valid(UINT32_MAX - 4, 5));
-	assert(!fvwm_selection_request_time_is_valid(0x80000001U, 1));
-	assert(fvwm_selection_request_time_is_valid(0x80000000U, 1));
+	assert(fvwm_selection_request_time_is_valid(0, 100, 1, 2));
+	assert(fvwm_selection_request_time_is_valid(100, 100, 1, 2));
+	assert(fvwm_selection_request_time_is_valid(101, 100, 1, 2));
+	assert(!fvwm_selection_request_time_is_valid(99, 100, 1, 2));
+	assert(fvwm_selection_request_time_is_valid(5, UINT32_MAX - 4, 1, 2));
+	assert(!fvwm_selection_request_time_is_valid(UINT32_MAX - 4, 5, 1, 2));
+	assert(!fvwm_selection_request_time_is_valid(0x80000001U, 1, 1, 2));
+	assert(fvwm_selection_request_time_is_valid(0x80000000U, 1, 1, 2));
+
+	/* Past the half-wrap horizon, preserve valid long-running clients.
+	 * Missing/backward monotonic observations also avoid false refusal. */
+	assert(fvwm_selection_request_time_is_valid(99, 100, 1,
+	    UINT64_C(0x80000000) * 1000000 + 1));
+	assert(!fvwm_selection_request_time_is_valid(99, 100, 1,
+	    UINT64_C(0x80000000) * 1000000));
+	assert(fvwm_selection_request_time_is_valid(99, 100, 0, 2));
+	assert(fvwm_selection_request_time_is_valid(99, 100, 2, 1));
+	assert(fvwm_selection_request_time_is_valid(99, 100, UINT64_MAX, 2));
+	assert(fvwm_selection_request_time_is_valid(99, 100, 1, UINT64_MAX));
 
 	test_fixed_properties_require_complete_wire_values();
 	test_caps_and_arithmetic();

@@ -41,6 +41,7 @@
 #include "eventmask.h"
 
 Time managing_since;
+static uint64_t manager_acquired_ns;
 
 Atom _XA_WM_SX;
 Atom _XA_MANAGER;
@@ -175,6 +176,7 @@ SetupICCCM2(Bool replace_wm)
 	/* We are not yet in the event loop, thus fev_get_evtime() will not
 	 * be ready.  Have to get a timestamp manually by provoking a
 	 * PropertyNotify. */
+	manager_acquired_ns = events_monotonic_ns();
 	managing_since = get_server_time();
 
 	XSetSelectionOwner(dpy, _XA_WM_SX, Scr.NoFocusWin, managing_since);
@@ -293,7 +295,8 @@ icccm2_handle_selection_request(const XEvent *e)
 	 * acquisition period may publish our conversion data. No X round trip
 	 * is needed: ownership loss is handled by the ordered SelectionClear. */
 	if (ev.selection != _XA_WM_SX || ev.owner != Scr.NoFocusWin ||
-	    !fvwm_selection_request_time_is_valid(ev.time, managing_since))
+	    !fvwm_selection_request_time_is_valid(ev.time, managing_since,
+	    manager_acquired_ns, events_monotonic_ns()))
 	{
 		fvwm_debug(__func__, "Refusing foreign or stale manager request");
 		goto notify;

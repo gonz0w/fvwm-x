@@ -25,7 +25,10 @@ This checkpoint does not claim complete ICCCM conformance.
   and requests preceding acquisition. One admission gate refuses these before
   reading/writing conversion properties. Replies preserve correlation fields.
   The pure timestamp policy covers CurrentTime, equality, before/after, wrap
-  and the half-serial boundary. X timestamps use 32-bit half-range ordering;
+  and the half-serial boundary. Review added a monotonic acquisition-age
+  guard: after half a timestamp wrap (about 25 days), or with an unknown/
+  backward clock, time alone does not refuse a potentially valid client.
+  Foreign role/owner checks remain. X timestamps use 32-bit half-range ordering;
   no new per-request server query, synchronization barrier or history is added.
 - A zero-initialized native XEvent holds the reply. This is explicit storage and
   initialization, not a claim of a demonstrated overread in FSendEvent.
@@ -37,15 +40,17 @@ workspace. The first fixture attempt failed before core launch because relative
 executable paths lost their leading `./`; corrected by resolving the supplied
 paths. Both subsequent old-core controls pass values and MULTIPLE. The final
 baseline fixture records all three admission failures independently and valid
-recovery. The repaired candidate passes property policy and all three real-X
-cases on Linux ARM64 GCC and FreeBSD ARM64. Original logs/archives are retained.
+recovery. The first repaired candidate passes property policy and all three real-X
+cases on Linux ARM64 GCC and FreeBSD ARM64. The combined checkpoint and the
+reviewed long-uptime correction retain separate input identities. Original
+logs/archives are retained.
 
 ## Remaining scope
 
 Synthetic metadata refusal is role correctness, not an X11 authorization
 sandbox. Server BadAlloc/property-write refusal has not been fault-injected or
 repaired; an XFlush does not prove server allocation succeeded. Future-time
-validation, more-than-half-range histories, multi-screen replacement/race/flood
+validation, retained ownership histories, multi-screen replacement/race/flood
 coverage and broader ownership/transfer behavior remain with SELECTION-01.
 Script PRIMARY/private roles, INCR, clipboard management and XDND are deferred.
 No full S06 or whole-role conformance claim follows from the selected cases.

@@ -84,17 +84,13 @@ The Appearance menu's Desktop settings entry opens a native FVWM menu. The
 same registry supplies the menus, validation and settings queries. This first
 configuration-center checkpoint covers the existing seven preferences only:
 
-[cols="1,1,2"]
-|===
-|ID |Group |Type and default
-|palette |appearance |slate (choices: slate, dune, grove, ink)
-|appearance |appearance |auto (choices: light, dark, auto)
-|keep_wallpaper |appearance |boolean, false
-|day |schedule |local HH:MM, 07:00
-|night |schedule |local HH:MM, 19:00
-|transparency |effects |boolean, true
-|motion |effects |boolean, false
-|===
+* *palette*, appearance group: slate; choices slate, dune, grove, ink.
+* *appearance*, appearance group: auto; choices light, dark, auto.
+* *keep_wallpaper*, appearance group: boolean, false.
+* *day*, schedule group: local HH:MM, 07:00.
+* *night*, schedule group: local HH:MM, 19:00.
+* *transparency*, effects group: boolean, true.
+* *motion*, effects group: boolean, false.
 
 Times range from 00:00 to 23:59 and must differ. Use the schedule form or
 the times command to change both together. Boolean set commands accept
@@ -104,6 +100,8 @@ commands or resource paths. No focus, application or bar-layout settings are
 registered in this checkpoint.
 
 Each setting submenu shows its saved value, helper-effective value and source.
+Saved means the helper's last successfully loaded or written snapshot; use
+reload to adopt edits made outside the helper.
 The effective value includes explicit *FvwmDesktop options. Application status
 means the helper submitted its known commands to FVWM; it does not prove that
 other modules have repainted. Later personal Style or Colorset commands cannot
@@ -262,3 +260,5 @@ owner, capability, availability and preview support. State includes saved,
 effective, source, application and persistence_error. Each reply fits the
 existing core command limit. Refused operations show a native notice and leave
 the prior settings intact; this query is not the future general IPC result API.
+persistence_error reports a startup read problem that blocks saving until a
+successful reload; individual operation errors are reported by the notice.

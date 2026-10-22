@@ -1,11 +1,12 @@
 # GitHub roadmap index
 
-Current priority, 2026-10-21: the approved
+Current priority, 2026-10-22: the approved
 [feature cutoff](decisions/FEATURE-HANDOFF-2026-10-21.md) supersedes earlier
 maintenance pickup notes. Safety PR141–143 and selected foundation PR144–147
-are merged. The bounded manager-target checkpoint is locally qualified in PR #148; after
-review/merge, advance BUTTON-01 #58,
-BUTTON-02 #59 and CFG-01 #60, followed by CFG-02 #61 and IPC-02 #70.
+are merged. The manager-target checkpoint merged in PR #148. BUTTON-01 #58
+and BUTTON-02 #59 merged through PR149–150. CFG-01 #60 now owns the typed
+settings/native-center checkpoint and remaining preview/recovery work, followed
+by CFG-02 #61 and IPC-02 #70.
 Additional general stage 5 work stays open in the **Later** milestone for a
 future release; its stage numbers below retain the stable ownership mapping.
 Only a concrete feature prerequisite or reproduced serious safety defect may

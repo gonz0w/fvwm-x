@@ -1,12 +1,15 @@
 # GitHub roadmap index
 
-Current priority, 2026-10-21: the user's [safety closeout](PROJECT-TRACKER.md#hardening-closeout)
-supersedes older performance pickup notes. PERF-01 #29's remaining tuning is
-P2 / deferred backlog for the next release. Mixed STYLE/STATE/CACHE/LOOP owners
-retain safety/correctness scope; defer only their performance-only follow-ups.
-FD-01 #7 / PROC-01 #15 stream ownership is the next review family, then bounded
-DATA-01 #6 and INPUT-01 #9 pickups. CLEAN-01 #34 accompanies named safety/feature
-contracts. The tracker owns dispositions and handoff; broad issues remain open.
+Current priority, 2026-10-21: the approved
+[feature cutoff](decisions/FEATURE-HANDOFF-2026-10-21.md) supersedes earlier
+maintenance pickup notes. Safety PR141–143 and selected foundation PR144–147
+are merged. Complete the bounded manager-target checkpoint, then BUTTON-01 #58,
+BUTTON-02 #59 and CFG-01 #60, followed by CFG-02 #61 and IPC-02 #70.
+Additional general stage 5 work stays open in the **Later** milestone for a
+future release; its stage numbers below retain the stable ownership mapping.
+Only a concrete feature prerequisite or reproduced serious safety defect may
+interrupt. Existing release/platform gaps remain explicit. Do not close broad
+owners merely because one checkpoint is merged.
 
 Stable ID mapping imported on 2026-10-13. This is not a second live backlog.
 The [tracker](PROJECT-TRACKER.md#execution-order) owns scope/execution;

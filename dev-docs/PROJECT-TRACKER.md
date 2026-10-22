@@ -41,16 +41,13 @@ Keep deferred gates explicit. See the
 [decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md) and
 [workflow](WORKFLOW.md#implementation-batches-and-test-cadence).
 
-Integration cycle ledger: PR154's integrated reference is merged as
-`1de89441e651b22003d44d9fba1d4a68eed9b3a4`. PR155 and PR156 are merged
-(**2/3**); the third core-state/readiness batch now qualifies the accumulated
-candidate with **113 composed selected passes on six targets/nine profiles** and
-five scoped guest sanitizer exercises. The readiness correction retains 74
-unchanged entries and runs 39 affected/missing entries. The original failed/
-incomplete attempts stay explicit. [Report](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.md),
-[receipt](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.json).
-On this PR's merge, use its canonical commit as the next integrated reference
-and reset to **0/3**; required cycle gates pass before a fourth implementation PR.
+Integration cycle ledger: PR157's composed affected six-target checkpoint is
+merged as `3f4f7052151f110ba6f398a3451e727af4ecf8c4`, the new integrated
+reference. The cycle is **0/3 merged**. The selected next batch completes
+menu/fallback binding inspection, normalized placement controls and binding
+interpretation policy. It becomes **1/3 on merge**; affected six-target and
+alternate-profile checks remain due at cycle closure. Required cycle gates
+pass before a fourth implementation PR. [Integrated report](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.md).
 Full install/default-X/full compiler-feature and milestone/release acceptance
 remain at their required boundary. No changed install/discovery/server contract
 requires an early gate here. Native-CPU/hardware/toolkit/compositor checks remain
@@ -58,7 +55,8 @@ separate. Deferred gates are not passes.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Directed core state queries/readiness, IPC-02 | Combined affected cycle qualified; in review | Three topology/workspace/global-binding features and a reproduced provider-readiness fix qualify accumulated PR155/156 work: 113 composed selected passes across six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. The correction retains 74 unchanged entries and runs 39 affected/missing entries; original failures and incomplete AMD64 capture remain explicit. No new UI or install/default-X repeats. Broader owner/release gates stay open. [Report](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.json). |
+| Binding scope inspection, IPC-02 | Focused merge checks pass; in review | Three menu/fallback, normalized placement and context/modifier policy features pass seven selected Linux GCC entries and three scoped leak-enabled guest sanitizer exercises. Frozen source guards pass; actual-X verifies overrides, literals and policy generations. Shared cycle 0/3 merged, 1/3 after merge; six-target/alternate-profile and release gates remain explicitly deferred. No new UI. [Report](verification/VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.json). |
+| Directed core state queries/readiness, IPC-02 | Merged in [PR #157](https://github.com/gonz0w/fvwm-x/pull/157); integrated reference | Three topology/workspace/global-binding features and a reproduced provider-readiness fix qualify accumulated PR155/156 work: 113 composed selected passes across six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. The correction retains 74 unchanged entries and runs 39 affected/missing entries; original failures and incomplete AMD64 capture remain explicit. No new UI or install/default-X repeats. Broader owner/release gates stay open. [Report](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.json). |
 | Settings validation and pending waits, IPC-02 | Merged in [PR #156](https://github.com/gonz0w/fvwm-x/pull/156); included in the current combined cycle | Non-publishing generation-checked validation, connection-local pending snapshots and wait-only cancellation pass six Linux ARM64 GCC entries (51 desktop policy cases), plus three scoped leak-enabled guest sanitizer exercises. Actual-X proves cancellation releases partial buffers/slots yet a submitted write can still commit. An initial fixture expiry-order assumption is corrected and final focused checks pass. No new UI, installs/BSD/full matrix; deferred cycle gates remain explicit. [Report](verification/VERIFICATION-2026-10-22-IPC-LIFECYCLE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-LIFECYCLE.json). |
 | Desktop settings provider, IPC-02 | Merged in [PR #155](https://github.com/gonz0w/fvwm-x/pull/155); included in the current combined cycle | Registry/value snapshots, generation-checked atomic changes and correlated scoped reset/reload pass six selected registered entries on one Linux ARM64 GCC profile (49 desktop policy cases), plus two leak-enabled scoped guest sanitizer exercises. Review adds explicit provider identity after a multiple-owner reply ambiguity; final affected Linux and sanitizer gates pass. The earlier test-vector warning cleanup repeats only native policy; all original captures remain source-scoped. No installs/BSD/full matrix; deferred cycle/release gates are explicit above. No new UI. [Report](verification/VERIFICATION-2026-10-22-IPC-SETTINGS.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-SETTINGS.json). |
 | Correlated MFL requests, IPC-02 | Merged in [PR #154](https://github.com/gonz0w/fvwm-x/pull/154); first subset qualified, broader owner open | Three request/error, core query/barrier and read-only admission features pass 82 selected registered entries across six targets/ten profiles, ten staged request-X sessions, four authenticated default BSD displays and two leak-enabled guest sanitizer exercises. Ten MFL executables change; 140 other native ELF targets / 77 catalogs retain exact PR153 identities. All 927 install files are verified. Fourteen OpenBSD selected tests and both complete installs are retained through exact cache/package identity; only unfinished installed-session gates run in completion jobs. Original private runner failures remain explicit. Old broad MFL-dependent passes are historical, not current composed qualification. No new UI is selected. Full providers, applied actions and preview/recovery remain open. [Report](verification/VERIFICATION-2026-10-22-IPC-REQUESTS.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-REQUESTS.json). |
@@ -334,8 +332,10 @@ query, generation-checked atomic update and scoped reset/reload batch is merged
 in PR155. The next batch adds non-publishing typed validation, local pending
 snapshots and wait-only cancellation, merged in PR156. The current topology,
 workspace/cache and global-binding query batch, plus a reproduced settings
-readiness fence, qualifies the accumulated affected six-target cycle. Other
-providers, menu/placement bindings, typed actions beyond settings, domain
+readiness fence, is merged in PR157 and qualifies the accumulated affected
+six-target cycle. The next batch qualifies menu/fallback bindings, normalized
+placement controls and modifier/context policy inspection with focused checks. Other
+providers, typed actions beyond settings, domain
 progress/decisions/cancellation and shared-core generations/CFG-01 preview remain
 open under their owners.
 No new UI is selected for this transport batch; later visible consumers retain
@@ -769,8 +769,9 @@ needed.
   PR155 owned settings queries/actions; current non-publishing validation, local
   pending snapshots and wait-only cancellation. The current directed topology,
   workspace/cache and global-binding queries plus provider-readiness fence pass
-  the shared affected cycle. Domain progress/cancellation and full provider/core
-  acceptance remain open.
+  the shared affected cycle. The next focused batch adds menu/fallback records,
+  normalized placement masks and context/modifier policy. Domain
+  progress/cancellation and full provider/core acceptance remain open.
 - Shared service/action scope: bounded provider capability/state records and
   generation-aware typed action envelopes with explicit unsupported/unavailable/
   denied/stale failures. SESSION owns service lifecycle; domain adapters own
@@ -2392,3 +2393,5 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-22: PR155 merged. IPC-02 batches generation-checked non-publishing validation, connection-local pending snapshots and wait-only cancellation. Six selected Linux GCC entries (51 desktop policy cases) and three scoped leak-enabled guest sanitizer exercises pass. Actual-X proves a cancelled write can still commit, plus read-only/capacity/isolation/partial cleanup and late-result controls. The initial simultaneous-expiry ordering assumption is corrected in the fixture; final checks pass. Cycle 1/3 merged, 2/3 after this merge; deferred affected six-target/alternate-profile/release gates remain explicit. Performance reference PR154 is 1/5, 2/5 on merge; no observation due. No new UI/screenshots or matrix/install/BSD repeats. [Report](verification/VERIFICATION-2026-10-22-IPC-LIFECYCLE.md).
 
 - 2026-10-22: After merged PR156, IPC-02 core topology/workspace/global-binding queries and a reproduced startup-readiness fence qualify the accumulated three-PR cycle: 113 composed selected passes across six targets/nine profiles and five scoped guest sanitizer exercises. The readiness correction retains 74 unchanged entries and runs 39 affected/missing entries; original setup/storage/fixture/provider failures and incomplete AMD64 capture stay explicit. Portable 177 passes/14 skips; no new UI, install/default-X repeats or benchmark. On merge reset the integration reference/count; performance PR154 is 2/5, 3/5 on merge. [Report](verification/VERIFICATION-2026-10-22-IPC-CORE-STATE.md).
+
+- 2026-10-22: PR157 merged as the new integrated reference. IPC-02 finishes binding scope inspection with regular/fallback menu records, normalized placement controls and context/modifier policy. Seven focused Linux GCC entries and three scoped leak-enabled guest sanitizer exercises pass; the frozen gate commands take 23.738 seconds. Original unescaped-variable fixture failures remain recorded; the final escaped literal passes without action execution. No new UI, BSD boots, install/default-X/matrix or benchmark repeats. Cycle 0/3 merged, 1/3 on merge; affected six-target/alternate profiles remain due at shared closure, release acceptance separate. Performance PR154 is 3/5, 4/5 on merge. [Report](verification/VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.md).

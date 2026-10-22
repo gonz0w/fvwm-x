@@ -361,6 +361,11 @@ static Binding *_menu_binding_is_key(
 
 /* ---------------------------- interface functions ------------------------ */
 
+const Binding *menu_query_bindings(Bool fallback)
+{
+	return fallback ? menu_bindings_fallback : menu_bindings_regular;
+}
+
 void menu_bindings_startup_complete(void)
 {
 	menu_bindings = &menu_bindings_regular;

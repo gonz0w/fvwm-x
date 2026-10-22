@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Binding inspection scopes](IPC-BINDING-SCOPES-2026-10-22.md): IPC-02 regular/fallback menu records, normalized placement controls and context/modifier policy; focused merge gates with shared-cycle coverage deferred.
+
 - [Directed core state queries](IPC-CORE-STATE-QUERIES-2026-10-22.md): IPC-02 committed topology, workspace/cache observations and revision-checked global binding pages; combined affected cycle qualified; broader release acceptance remains separate.
 
 - [Settings validation and pending waits](IPC-REQUEST-LIFECYCLE-2026-10-22.md): IPC-02 candidate validation, connection-local snapshots and wait-only cancellation; submitted actions may still commit.

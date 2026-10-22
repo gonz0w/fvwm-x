@@ -107,6 +107,63 @@ static void test_binding_pages(void)
 	assert(strcmp(error, "query_too_large") == 0);
 }
 
+static void test_binding_domains(void)
+{
+	struct fvwm_query_spec spec = {.limit = 8, .generation = "-",
+		.resource = "menu-bindings"};
+	Binding binding = {.type = BIND_KEYPRESS, .Action = "SelectItem"};
+	const char *error;
+	cJSON *result = fvwm_query_bindings(&binding, token, &spec, &error);
+
+	assert(result && !error);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(result,
+		"scope")->valuestring, "menu-bindings") == 0);
+	assert(cJSON_IsNull(cJSON_GetObjectItemCaseSensitive(
+		cJSON_GetArrayItem(cJSON_GetObjectItemCaseSensitive(result,
+			"bindings"), 0), "key")));
+	cJSON_Delete(result);
+	strcpy(spec.resource, "menu-defaults");
+	result = fvwm_query_bindings(NULL, token, &spec, &error);
+	assert(result && !error);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(result,
+		"scope")->valuestring, "menu-fallback-bindings") == 0);
+	assert(cJSON_GetArraySize(cJSON_GetObjectItemCaseSensitive(result,
+		"bindings")) == 0);
+	cJSON_Delete(result);
+	result = fvwm_query_placement(token, &spec, 4, 5, &error);
+	assert(result && !error);
+	assert(cJSON_GetObjectItemCaseSensitive(result,
+		"drag_finish_mask")->valueint == 4);
+	assert(cJSON_GetObjectItemCaseSensitive(result,
+		"interactive_finish_mask")->valueint == 5);
+	assert(cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(result,
+		"key_bindings")));
+	cJSON_Delete(result);
+	result = fvwm_query_binding_policy(token, &spec, 2, &error);
+	assert(result && !error);
+	assert(cJSON_GetObjectItemCaseSensitive(result,
+		"ignored_modifier_mask")->valueint == 2);
+	assert(cJSON_GetObjectItemCaseSensitive(
+		cJSON_GetObjectItemCaseSensitive(result, "contexts"),
+		"root")->valueint == 8);
+	assert(cJSON_GetObjectItemCaseSensitive(
+		cJSON_GetObjectItemCaseSensitive(result, "modifiers"),
+		"control")->valueint == 4);
+	cJSON_Delete(result);
+	spec.offset = 1;
+	assert(!fvwm_query_placement(token, &spec, 0, 0, &error));
+	assert(strcmp(error, "invalid_request") == 0);
+	assert(!fvwm_query_binding_policy(token, &spec, 0, &error));
+	assert(strcmp(error, "invalid_request") == 0);
+	spec.offset = 0;
+	strcpy(spec.generation,
+		"000000000000000000000000000000000000000000000002");
+	assert(!fvwm_query_placement(token, &spec, 0, 0, &error));
+	assert(strcmp(error, "stale_generation") == 0);
+	assert(!fvwm_query_binding_policy(token, &spec, 0, &error));
+	assert(strcmp(error, "stale_generation") == 0);
+}
+
 static void test_monitors_and_failure_cleanup(void)
 {
 	monitor_topology_monitor fact = {.name_atom = 1, .name = "test",
@@ -146,7 +203,7 @@ static void test_monitors_and_failure_cleanup(void)
 	cJSON_Hooks hooks = {.malloc_fn = checked_malloc,
 		.free_fn = checked_free};
 
-	for (unsigned int kind = 0; kind < 3; kind++)
+	for (unsigned int kind = 0; kind < 5; kind++)
 	{
 		bool completed = false;
 
@@ -154,12 +211,28 @@ static void test_monitors_and_failure_cleanup(void)
 		{
 			attempts = live = 0;
 			cJSON_InitHooks(&hooks);
-			result = kind == 0 ?
-				fvwm_query_topology(&topology, &error) :
-				kind == 1 ? fvwm_query_workspaces(&monitors,
-					800, 600, "global", &error) :
-				fvwm_query_bindings(&binding, token,
+			switch (kind)
+			{
+			case 0:
+				result = fvwm_query_topology(&topology, &error);
+				break;
+			case 1:
+				result = fvwm_query_workspaces(&monitors,
+					800, 600, "global", &error);
+				break;
+			case 2:
+				result = fvwm_query_bindings(&binding, token,
 					&spec, &error);
+				break;
+			case 3:
+				result = fvwm_query_placement(token, &spec,
+					4, 5, &error);
+				break;
+			default:
+				result = fvwm_query_binding_policy(token, &spec,
+					2, &error);
+				break;
+			}
 			completed = result != NULL;
 			assert(completed ? error == NULL : error != NULL);
 			cJSON_Delete(result);
@@ -182,6 +255,7 @@ int main(void)
 {
 	test_internal_grammar();
 	test_binding_pages();
+	test_binding_domains();
 	test_monitors_and_failure_cleanup();
 	return 0;
 }

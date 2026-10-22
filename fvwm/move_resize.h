@@ -29,6 +29,7 @@ void move_icon(
 	FvwmWindow *fw, position new, position old,
 	Bool do_move_animated, Bool do_warp_pointer);
 int placement_binding(int button,KeySym keysym,int modifier,char *action);
+void placement_query_masks(unsigned int *drag, unsigned int *interactive);
 int GetMoveArguments(FvwmWindow *fw,
 	char **paction, size_rect s, position *pFinal,
 	Bool *fWarp, Bool *fPointer, Bool fKeep);

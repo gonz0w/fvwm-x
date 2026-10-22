@@ -187,6 +187,86 @@ def run(args):
                 generation_stable_on_queries=True, stale_continuation_refused=True,
                 unbind_invalidates=True, oversized_action_refused=True)
 
+            caps = query('capabilities')
+            assert caps['binding_scopes'] == ['global', 'menu', 'menu-fallback',
+                                              'placement', 'policy']
+            def binding_list(scope):
+                page = query('bindings', scope=scope, limit=2)
+                first_page = page
+                entries = page['bindings'][:]
+                while page['next_offset'] is not None:
+                    assert len(entries) < 4096
+                    page = query('bindings', scope=scope,
+                        offset=page['next_offset'], limit=16,
+                        generation=first_page['generation'])
+                    assert page['generation'] == first_page['generation']
+                    entries.extend(page['bindings'])
+                return first_page, entries
+            fallback_page, fallback = binding_list('menu-fallback')
+            assert fallback_page['scope'] == 'menu-fallback-bindings'
+            assert fallback and all(b['context_mask'] & 16 for b in fallback)
+            menu_page, menu_before = binding_list('menu')
+            writer.send(b'Mouse 1 M N Nop literal-$$[desk.n]\n')
+            writer.echo('menu-override-loaded')
+            menu_page, menu = binding_list('menu')
+            assert menu_page['scope'] == 'menu-bindings'
+            assert any(b['type'] == 'MousePress' and b['code'] == 1 and
+                       b['action'] == 'Nop literal-$[desk.n]' for b in menu), menu
+            assert binding_list('menu-fallback')[1] == fallback
+            assert query('bindings', expected=True, scope='menu-fallback',
+                generation=fallback_page['generation']) == 'stale_generation'
+            writer.send(b'Mouse 1 M N -\n')
+            writer.echo('menu-override-removed')
+            assert binding_list('menu')[1] == menu_before
+            assert binding_list('menu-fallback')[1] == fallback
+
+            placement = query('bindings', scope='placement')
+            assert placement['scope'] == 'placement-bindings'
+            assert placement['button_count'] == 15
+            assert not placement['key_bindings'] and not placement['modifier_bindings']
+            writer.send(b'Mouse 0 P N CancelPlacement\n'
+                        b'Mouse 3 P N PlaceWindowDrag\n'
+                        b'Mouse 2 P N PlaceWindowInteractive\n')
+            writer.echo('placement-policy-loaded')
+            placed = query('bindings', scope='placement')
+            assert placed['drag_finish_mask'] == 4
+            assert placed['interactive_finish_mask'] == 2
+            assert query('bindings', expected=True, scope='placement',
+                generation=placement['generation']) == 'stale_generation'
+            assert query('bindings', scope='placement',
+                         generation=placed['generation']) == placed
+            for fields in [dict(scope='placement', offset=0),
+                           dict(scope='policy', limit=1), dict(scope='unknown')]:
+                assert query('bindings', expected=True, **fields) == 'invalid_request'
+
+            policy = query('bindings', scope='policy')
+            assert policy['scope'] == 'binding-policy'
+            assert policy['contexts']['menu_item'] == 20
+            assert policy['contexts']['placement'] == 32
+            assert policy['modifiers']['control'] == 4
+            writer.send(b'IgnoreModifiers L2\n')
+            writer.echo('ignore-modifiers-loaded')
+            changed_policy = query('bindings', scope='policy')
+            assert changed_policy['ignored_modifier_mask'] == 18
+            assert changed_policy['used_modifier_mask'] == 237
+            assert changed_policy['generation'] != policy['generation']
+            assert query('bindings', expected=True, scope='policy',
+                generation=policy['generation']) == 'stale_generation'
+            assert query('bindings', expected=True, limit=1,
+                generation=placed['generation']) == 'stale_generation'
+            # A no-op policy command keeps a stable observation generation.
+            writer.send(b'IgnoreModifiers L2\n')
+            writer.echo('ignore-modifiers-unchanged')
+            assert query('bindings', scope='policy') == changed_policy
+            writer.send(b'IgnoreModifiers default\n')
+            writer.echo('ignore-modifiers-restored')
+            assert query('bindings', scope='policy')['generation'] != changed_policy['generation']
+            assert not marker.exists()
+            evidence['binding_scopes'] = dict(menu_entries=len(menu),
+                fallback_entries=len(fallback), override_does_not_remove_fallback=True,
+                normalized_placement=placed, policy=changed_policy,
+                generation_checked_across_domains=True, literal_query_no_execution=True)
+
             os.kill(core.process.pid, signal.SIGSTOP)
             stopped = True
             rpc.send(frame('cancelled-core', resource='topology') +

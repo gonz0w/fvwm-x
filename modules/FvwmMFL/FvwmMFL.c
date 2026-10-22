@@ -735,12 +735,16 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 	{
 		const char *methods[] = {"query", "barrier", "set_mode",
 			"action", "validate", "cancel"};
+		const char *binding_scopes[] = {"global", "menu",
+			"menu-fallback", "placement", "policy"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
 			"bindings"};
 
 		if (!request_add_strings(result, "methods", methods, 6) ||
 		    !request_add_strings(result, "resources", resources, 8) ||
+		    !request_add_strings(result, "binding_scopes",
+			binding_scopes, 5) ||
 		    !cJSON_AddNumberToObject(result, "pending_limit",
 			MFL_REQUEST_LIMIT) ||
 		    !cJSON_AddNumberToObject(result, "deadline_ms",

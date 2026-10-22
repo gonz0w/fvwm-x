@@ -164,8 +164,9 @@ transaction across topology, workspace state and X properties.
 `bindings` returns `state: "observed"`, `scope: "global-bindings"`, opaque
 `generation`, `offset`, `bindings` and `next_offset`. It describes installed
 Key, PointerKey and mouse records, including separate native records for a key
-that maps to multiple keycodes. It excludes menu/placement bindings and does
-not certify which binding wins for a particular application or event.
+that maps to multiple keycodes. Omit `scope` or use `scope: "global"` for
+these records. The other binding scopes are described below. No scope certifies
+which binding wins for a particular application or event.
 
 Each entry contains `type` (`Key`, `PointerKey`, `MousePress`, `MouseRelease`),
 `code` (keycode or button), `key` (configured key name or null), native
@@ -181,15 +182,64 @@ Binding pages default to offset 0 and limit 8. `limit` must be an integer from
 the list. A nonzero offset requires that generation. For example, after a page
 returns offset 8 and token G, request the next page with `offset: 8` and
 `generation: G` (substitute the exact observed string). An optional generation
-on offset 0 makes that first page conditional too.
+on offset 0 makes that first page conditional too. Continue with the same scope;
+offsets refer to records in that scope, not across all lists.
 
 Every binding command conservatively invalidates pages, including unbind and
-commands that ultimately make no global binding change. The token also belongs
+commands that ultimately make no global binding change. A change to
+`IgnoreModifiers` also invalidates every binding scope; repeating the same
+modifier policy does not. All scopes share this conservative token. It belongs
 to the core incarnation, so a restarted core cannot accept a predecessor's page.
 A mismatch returns `stale_generation`; restart from offset 0. An offset beyond
 the current list returns `invalid_offset`. A revision exhausted or unavailable
 returns `generation_unavailable`. Paging copies only the requested records and
 retains no binding pointers/cursors between commands.
+
+The `scope` field selects one of five binding observations, advertised in the
+capabilities result's `binding_scopes`:
+
+....
+request {"version":1,"id":"menu-1","method":"query","resource":"bindings","scope":"menu","limit":8}
+request {"version":1,"id":"defaults-1","method":"query","resource":"bindings","scope":"menu-fallback","limit":8}
+request {"version":1,"id":"placement-1","method":"query","resource":"bindings","scope":"placement"}
+request {"version":1,"id":"policy-1","method":"query","resource":"bindings","scope":"policy"}
+....
+
+`menu` returns `scope: "menu-bindings"` with the regular menu list.
+`menu-fallback` returns `scope: "menu-fallback-bindings"` with the permanent
+startup defaults. Both use the same entry schema, bounds and paging as global
+bindings. The core checks regular menu bindings first and falls back only if
+none matches. An override does not delete its fallback; removing the regular
+binding can expose that default again. These are separate lists, not a merged
+list of winners. Menu records retain native keycodes with `key: null` because
+the menu owner does not retain the original key spelling. Empty lists are valid.
+
+`placement` returns `scope: "placement-bindings"`, `generation`,
+`button_count`, `drag_finish_mask` and `interactive_finish_mask`. These are the
+current normalized finish controls used for placement/move interactions, not
+a history of configured commands. Bit zero represents mouse button 1; a set
+bit selects its normal finish path; a cleared bit selects cancellation. Existing
+initial-placement/resize and already-held-button rules still apply. Clearing all
+placement buttons and then setting button 3 to PlaceWindowDrag returns drag
+mask 4. `key_bindings: false` and `modifier_bindings: false` describe the
+existing placement parser's restrictions; this query does not add bindings.
+
+`policy` returns `scope: "binding-policy"`, `generation`, named `contexts`
+and X11 `modifiers` maps, `ignored_modifier_mask` from IgnoreModifiers,
+`xkb_ignored_modifier_mask` for the build's ignored XKB state bits, and
+`used_modifier_mask` for standard X modifiers after those exclusions. Context
+maps include individual areas/title buttons and composite `menu_item`, `frame`,
+`sidebar` and `all`; composite entries overlap. Modifier `any` is AnyModifier,
+not a bit to OR into a specific modifier combination. This metadata helps
+interpret raw records; it does not resolve window matching, keysym lookup,
+menu precedence or a hypothetical event's winning action.
+
+Placement and policy are whole scalar snapshots: they reject `offset` and
+`limit` even when zero/default, and have no `bindings` list or `next_offset`.
+An optional exact generation makes either conditional. Unknown scopes, wrong
+types and unsupported fields return `invalid_request`; a well-formed obsolete
+generation returns `stale_generation`. Querying never changes grabs, placement
+controls, modifier policy, menus or binding generations.
 
 Core snapshots share the eight pending slots and absolute five-second deadline,
 read-only admission, local pending inspection and wait-only cancellation.

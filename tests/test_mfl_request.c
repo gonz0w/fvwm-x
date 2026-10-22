@@ -448,6 +448,44 @@ static void test_core_snapshot_requests(void)
 	assert(mfl_request_snapshot_command(command, sizeof(command),
 		&request, 42, "a-b"));
 	assert(strstr(command, "bindings 4096 16 ffffffffffffffffffffffffffffffffffffffffffffffff"));
+	const char *scopes[] = {"global", "menu", "menu-fallback",
+		"placement", "policy"};
+	const char *targets[] = {"bindings", "menu-bindings", "menu-defaults",
+		"placement", "binding-policy"};
+
+	for (size_t i = 0; i < sizeof(scopes) / sizeof(scopes[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+			"\"method\":\"query\",\"resource\":\"bindings\","
+			"\"scope\":\"%s\"}", scopes[i]);
+		assert(mfl_request_parse(text, &request));
+		assert(mfl_request_snapshot_command(command, sizeof(command),
+			&request, 42, "a-b"));
+		assert(strstr(command, targets[i]));
+		if (i < 3)
+		{
+			snprintf(text, sizeof(text),
+				"{\"version\":1,\"id\":\"s\","
+				"\"method\":\"query\","
+				"\"resource\":\"bindings\",\"scope\":\"%s\","
+				"\"offset\":8,\"limit\":16,\"generation\":\""
+				"ffffffffffffffffffffffffffffffff"
+				"ffffffffffffffff\"}", scopes[i]);
+			assert(mfl_request_parse(text, &request));
+			assert(request.offset == 8 && request.limit == 16);
+		}
+	}
+	const char *bad_scopes[] = {"null", "true", "7", "\"unknown\"",
+		"\"menu;Exec\"", "\"menu\",\"scope\":\"global\"",
+		"\"placement\",\"offset\":0", "\"policy\",\"limit\":1"};
+
+	for (size_t i = 0; i < sizeof(bad_scopes) / sizeof(bad_scopes[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+			"\"method\":\"query\",\"resource\":\"bindings\","
+			"\"scope\":%s}", bad_scopes[i]);
+		assert(!mfl_request_parse(text, &request));
+	}
 	assert(mfl_request_part_payload(
 		"MFL_CORE_1 a-b 000000000000002a part 0 7b", &pending, "a-b"));
 	assert(!mfl_request_part_payload(

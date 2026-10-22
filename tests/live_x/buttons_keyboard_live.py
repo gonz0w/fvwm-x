@@ -378,6 +378,9 @@ def run(args):
                 '(alpha Selected 1) (beta Icon /no-such-buttons-icon.xpm)',
                 '(alpha Selected 1) (beta Enabled 0,)',
                 '(alpha Selected 1) (99999999999999999999 Enabled 0)',
+                '(alpha Selected 1) (+2147483647+2147483647 Enabled 0)',
+                '(alpha Selected 1) (+0+2147483647 Enabled 0)',
+                '(alpha Selected 1) (+4+0 Enabled 0)',
                 ''.join(f'({n} Enabled 1)' for n in range(33)),
             ]
             for request in bad:

@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ----------------------- */
 
 #include "config.h"
+#include <limits.h>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -132,6 +133,15 @@ static button_info *find_button(const char *s)
 		if (x < 0 || y < 0)
 		{
 			show_error("Button column/row must not be negative\n");
+			return NULL;
+		}
+		/* Refuse outside-grid coordinates before the legacy cell-index
+		 * multiplication, including values that still fit an int. */
+		if (!ub->flags.b_Container || ub->c->num_columns <= 0 ||
+			x >= ub->c->num_columns || y >= ub->c->num_rows ||
+			y > (INT_MAX - x) / ub->c->num_columns)
+		{
+			show_error("Button position is outside the grid\n");
 			return NULL;
 		}
 		b = get_xy_button(ub, y, x);

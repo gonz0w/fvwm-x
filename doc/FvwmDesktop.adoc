@@ -393,3 +393,10 @@ without broadcasting values. Conditional settings queries return unchanged
 when the exact targeted preference generation matches. These interfaces do not
 manage session services or confirm theme application; see *FvwmMFL*(1) for
 framing, limits, stale identities and snapshot recovery.
+
+The structured operations resource can request owned Applications or Status
+refreshes using the existing worker pool. It reports accepted/running/terminal
+state, retains bounded results across view disconnects, and can discard a
+cancelled scan's eventual output. This is separate from cancellation of a reply
+wait and does not stop a blocking backend call. See *FvwmMFL*(1) for typed
+admission, generations, retention, notifications and explicit partial outcomes.

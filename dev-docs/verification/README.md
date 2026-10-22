@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Owned desktop operations and shared cycle](VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md): five related capabilities; 122 selected passes on six targets/nine profiles, five scoped guest sanitizer exercises, explicit domain/release gaps.
+
+- [Due PR154→PR159 performance comparison](PERFORMANCE-2026-10-22-PR159.md): existing qualified binaries, overlapping ranges/mixed changes and measured feature-size costs; PR159 resets the independent reference.
+
 - [Desktop-provider observation](VERIFICATION-2026-10-22-IPC-PROVIDER-OBSERVATION.md): three features; seven focused Linux entries (54 desktop cases), two scoped guest sanitizer exercises, source-bound evidence and deferred shared-cycle gates.
 
 - [Binding scope inspection](VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.md): menu/fallback records, normalized placement controls and context/modifier policy; seven focused Linux passes and three scoped guest sanitizer exercises, with shared-cycle coverage deferred.

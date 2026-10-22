@@ -26,6 +26,9 @@ enum mfl_request_kind {
 	MFL_REQUEST_SETTINGS_RESET,
 	MFL_REQUEST_SETTINGS_RELOAD,
 	MFL_REQUEST_SETTINGS_VALIDATE,
+	MFL_REQUEST_OPERATION_QUERY,
+	MFL_REQUEST_OPERATION_START,
+	MFL_REQUEST_OPERATION_CANCEL,
 	MFL_REQUEST_PROVIDER,
 	MFL_REQUEST_WATCH,
 	MFL_REQUEST_UNWATCH,
@@ -45,6 +48,7 @@ struct mfl_request {
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];
 	char binding_resource[16];
 	char provider[33];
+	bool operation_watch;
 	const char *error;
 	char settings_payload[MFL_SETTINGS_INPUT_MAX + 1];
 };
@@ -72,6 +76,8 @@ struct mfl_pending_request *mfl_request_find(
 	struct mfl_pending_request *pending, const char *id);
 
 /* Fixed invalidation grammar; outputs are initialized on refusal. */
+bool mfl_operation_notice(const char *text, char provider[33],
+	char operation[33], char generation[33], char state[10]);
 bool mfl_provider_notice(const char *text, char provider[33],
 	char generation[33]);
 bool mfl_request_is_snapshot(enum mfl_request_kind kind);

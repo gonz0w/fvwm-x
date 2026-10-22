@@ -220,6 +220,71 @@ static bool query_index(const cJSON *value, unsigned int maximum,
 	return true;
 }
 
+static bool operation_request(struct mfl_request *request,
+	const cJSON *const *values, unsigned int seen)
+{
+	unsigned int fields = 15 | (1U << 9);
+	const char *operation = "query";
+	bool valid;
+	cJSON *payload;
+	char *text;
+
+	if (!settings_token(values[9]))
+		return false;
+	if (strcmp(values[2]->valuestring, "query") == 0)
+	{
+		if (values[10])
+			fields |= 1U << 10;
+		if (seen != fields ||
+		    (values[10] && !settings_token(values[10])))
+			return false;
+		request->kind = MFL_REQUEST_OPERATION_QUERY;
+	}
+	else if (strcmp(values[2]->valuestring, "action") == 0 &&
+	    bounded_string(values[6], 6) && settings_token(values[7]) &&
+	    cJSON_IsString(values[10]) &&
+	    seen == (fields | (1U << 6) | (1U << 7) | (1U << 10)))
+	{
+		operation = values[6]->valuestring;
+		if (strcmp(operation, "start") == 0 &&
+		    (strcmp(values[10]->valuestring, "applications") == 0 ||
+		     strcmp(values[10]->valuestring, "status") == 0))
+			request->kind = MFL_REQUEST_OPERATION_START;
+		else if (strcmp(operation, "cancel") == 0 &&
+		    settings_token(values[10]))
+			request->kind = MFL_REQUEST_OPERATION_CANCEL;
+		else
+			return false;
+	}
+	else
+		return false;
+	payload = cJSON_CreateObject();
+	if (!payload)
+		return false;
+	if (!cJSON_AddStringToObject(payload, "resource", "operations") ||
+	    !cJSON_AddStringToObject(payload, "operation", operation) ||
+	    !cJSON_AddStringToObject(payload, "provider",
+		values[9]->valuestring) ||
+	    (values[10] && !cJSON_AddStringToObject(payload, "target",
+		values[10]->valuestring)) ||
+	    (values[7] && !cJSON_AddStringToObject(payload, "generation",
+		values[7]->valuestring)))
+	{
+		cJSON_Delete(payload);
+		return false;
+	}
+	text = cJSON_PrintUnformatted(payload);
+	cJSON_Delete(payload);
+	if (!text)
+		return false;
+	valid = strlen(text) <= MFL_SETTINGS_INPUT_MAX;
+
+	if (valid)
+		strcpy(request->settings_payload, text);
+	cJSON_free(text);
+	return valid;
+}
+
 static bool snapshot_request(struct mfl_request *request,
 	const cJSON *const *values, unsigned int seen)
 {
@@ -333,7 +398,8 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	if (!cJSON_IsString(values[2]))
 		goto out;
 	if (cJSON_IsString(values[3]) &&
-	    strcmp(values[3]->valuestring, "provider") == 0 &&
+	    (strcmp(values[3]->valuestring, "provider") == 0 ||
+	     strcmp(values[3]->valuestring, "operations") == 0) &&
 	    (strcmp(values[2]->valuestring, "watch") == 0 ||
 	     strcmp(values[2]->valuestring, "unwatch") == 0))
 	{
@@ -348,9 +414,20 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 			if (values[9])
 				strcpy(request->provider,
 					values[9]->valuestring);
+			request->operation_watch =
+				strcmp(values[3]->valuestring,
+					"operations") == 0;
 			valid = true;
 			request->error = NULL;
 		}
+		goto out;
+	}
+	if (cJSON_IsString(values[3]) &&
+	    strcmp(values[3]->valuestring, "operations") == 0)
+	{
+		valid = operation_request(request, values, seen);
+		if (valid)
+			request->error = NULL;
 		goto out;
 	}
 	if (cJSON_IsString(values[3]) &&
@@ -475,6 +552,9 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 		if (!cJSON_AddStringToObject(item, "id", p->id) ||
 		    !cJSON_AddStringToObject(item, "operation", operation) ||
 		    !cJSON_AddStringToObject(item, "resource",
+			(p->kind >= MFL_REQUEST_OPERATION_QUERY &&
+			 p->kind <= MFL_REQUEST_OPERATION_CANCEL) ?
+			"operations" :
 			p->kind == MFL_REQUEST_PROVIDER ? "provider" :
 			mfl_request_is_settings(p->kind) ? "settings" :
 			p->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
@@ -678,13 +758,17 @@ bool mfl_request_is_settings(enum mfl_request_kind kind)
 {
 	return (kind >= MFL_REQUEST_SETTINGS_QUERY &&
 		kind <= MFL_REQUEST_SETTINGS_VALIDATE) ||
-		kind == MFL_REQUEST_PROVIDER;
+		kind == MFL_REQUEST_PROVIDER ||
+		(kind >= MFL_REQUEST_OPERATION_QUERY &&
+		 kind <= MFL_REQUEST_OPERATION_CANCEL);
 }
 
 bool mfl_request_is_action(enum mfl_request_kind kind)
 {
-	return kind >= MFL_REQUEST_SETTINGS_SET &&
-		kind <= MFL_REQUEST_SETTINGS_RELOAD;
+	return (kind >= MFL_REQUEST_SETTINGS_SET &&
+		kind <= MFL_REQUEST_SETTINGS_RELOAD) ||
+		kind == MFL_REQUEST_OPERATION_START ||
+		kind == MFL_REQUEST_OPERATION_CANCEL;
 }
 
 void mfl_request_clear(struct mfl_pending_request *pending)
@@ -895,5 +979,31 @@ bool mfl_provider_notice(const char *text, char provider[33],
 	memcpy(provider, tokens, 32);
 	provider[32] = '\0';
 	memcpy(generation, tokens + 33, 33);
+	return true;
+}
+
+bool mfl_operation_notice(const char *text, char provider[33],
+	char operation[33], char generation[33], char state[10])
+{
+	static const char prefix[] = "MFL_OPERATION_1 ";
+	char extra;
+
+	provider[0] = operation[0] = generation[0] = state[0] = '\0';
+	if (!text || strnlen(text, 128) >= 128 ||
+	    strncmp(text, prefix, sizeof(prefix) - 1) != 0 ||
+	    sscanf(text + sizeof(prefix) - 1, "%32s %32s %32s %9s %c",
+		provider, operation, generation, state, &extra) != 4 ||
+	    strlen(provider) != 32 || strlen(operation) != 32 ||
+	    strlen(generation) != 32 ||
+	    strspn(provider, "0123456789abcdef") != 32 ||
+	    strspn(operation, "0123456789abcdef") != 32 ||
+	    strspn(generation, "0123456789abcdef") != 32 ||
+	    (strcmp(state, "accepted") != 0 && strcmp(state, "running") != 0 &&
+	     strcmp(state, "completed") != 0 && strcmp(state, "failed") != 0 &&
+	     strcmp(state, "cancelled") != 0))
+	{
+		provider[0] = operation[0] = generation[0] = state[0] = '\0';
+		return false;
+	}
 	return true;
 }

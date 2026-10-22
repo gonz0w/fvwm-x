@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Owned desktop operations](IPC-DESKTOP-OPERATIONS-2026-10-22.md): typed refresh admission, state/results, cancellation, finite reconnect retention and coalesced invalidations; one accumulated IPC cycle checkpoint.
+
 - [Desktop-provider observation](IPC-PROVIDER-OBSERVATION-2026-10-22.md): capability/configuration state, opt-in bounded invalidations and conditional preference snapshots; SESSION service lifecycle stays separate.
 
 - [Binding inspection scopes](IPC-BINDING-SCOPES-2026-10-22.md): IPC-02 regular/fallback menu records, normalized placement controls and context/modifier policy; focused merge gates with shared-cycle coverage deferred.

@@ -14,16 +14,15 @@ compositor or native Wayland backend.
 prerequisite, buttons/atomic groups, settings/editor and non-executing
 configuration checker are merged.
 [IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
-has core/settings queries, actions, validation and wait controls. Topology,
-workspace/global-binding queries pass platform checks; binding inspection
-passes focused checks. Provider observation passes focused checks. Preview, polish,
+has core/settings queries, actions, validation and wait controls. Provider
+observation and bounded desktop operations pass shared platform checks. Preview, polish,
 maintenance and tuning remain deferred.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.
 [Protocol requirement inventory](dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
 records remaining runtime acceptance.
-[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-22-PR154.md)
+[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-22-PR159.md)
 track regressions every five implementation batches using existing builds.
 Go builds use a patched compiler baseline. Desktop/artwork publication,
 physical hardware, toolkits/compositors, native-CPU sanitizers and release

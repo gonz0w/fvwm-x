@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static void test_schema(void)
@@ -558,10 +559,101 @@ static void test_provider_requests(void)
 	assert(strstr(request.settings_payload, "generation"));
 }
 
+static size_t operation_allocations, operation_fail_at, operation_live;
+
+static void *operation_malloc(size_t size)
+{
+	void *memory;
+
+	if (operation_allocations++ == operation_fail_at)
+		return NULL;
+	memory = malloc(size);
+	if (memory)
+		operation_live++;
+	return memory;
+}
+
+static void operation_free(void *memory)
+{
+	if (memory)
+	{
+		assert(operation_live > 0);
+		operation_live--;
+	}
+	free(memory);
+}
+
+static void test_operation_requests(void)
+{
+	struct mfl_request request;
+	char query[512], provider[33], operation[33], generation[33], state[10];
+	const char *token = "0123456789abcdef0123456789abcdef";
+
+	snprintf(query, sizeof(query), "{\"version\":1,\"id\":\"o\","
+		"\"method\":\"action\",\"resource\":\"operations\","
+		"\"operation\":\"start\",\"target\":\"applications\","
+		"\"provider\":\"%s\",\"generation\":\"%s\"}", token, token);
+	assert(mfl_request_parse(query, &request));
+	assert(request.kind == MFL_REQUEST_OPERATION_START);
+	assert(mfl_request_is_settings(request.kind));
+	assert(mfl_request_is_action(request.kind));
+	assert(strstr(request.settings_payload, "operations"));
+	cJSON_Hooks hooks = {.malloc_fn = operation_malloc,
+		.free_fn = operation_free};
+	bool completed = false;
+
+	for (operation_fail_at = 0; operation_fail_at < 1024;
+	     operation_fail_at++)
+	{
+		operation_allocations = operation_live = 0;
+		cJSON_InitHooks(&hooks);
+		completed = mfl_request_parse(query, &request);
+		assert(operation_live == 0);
+		cJSON_InitHooks(NULL);
+		if (completed)
+			break;
+	}
+	assert(completed);
+	snprintf(query, sizeof(query), "{\"version\":1,\"id\":\"o\","
+		"\"method\":\"action\",\"resource\":\"operations\","
+		"\"operation\":\"cancel\",\"target\":\"%s\","
+		"\"provider\":\"%s\",\"generation\":\"%s\"}", token,
+		token, token);
+	assert(mfl_request_parse(query, &request));
+	assert(request.kind == MFL_REQUEST_OPERATION_CANCEL);
+	assert(mfl_request_is_action(request.kind));
+
+	snprintf(query, sizeof(query), "{\"version\":1,\"id\":\"o\","
+		"\"method\":\"query\",\"resource\":\"operations\","
+		"\"provider\":\"%s\",\"target\":\"%s\"}", token, token);
+	assert(mfl_request_parse(query, &request));
+	assert(request.kind == MFL_REQUEST_OPERATION_QUERY);
+	assert(!mfl_request_is_action(request.kind));
+	snprintf(query, sizeof(query), "{\"version\":1,\"id\":\"o\","
+		"\"method\":\"watch\",\"resource\":\"operations\","
+		"\"provider\":\"%s\"}", token);
+	assert(mfl_request_parse(query, &request));
+	assert(request.operation_watch);
+	snprintf(query, sizeof(query), "MFL_OPERATION_1 %s %s %s completed",
+		token, token, token);
+	assert(mfl_operation_notice(query, provider, operation,
+		generation, state));
+	assert(strcmp(state, "completed") == 0);
+	strcat(query, " extra");
+	assert(!mfl_operation_notice(query, provider, operation,
+		generation, state));
+	assert(!provider[0] && !operation[0] && !generation[0] && !state[0]);
+	assert(!mfl_request_parse("{\"version\":1,\"id\":\"o\","
+		"\"method\":\"query\",\"resource\":\"operations\"}", &request));
+	assert(!mfl_operation_notice(NULL, provider, operation,
+		generation, state));
+}
+
 int main(void)
 {
 	test_core_snapshot_requests();
 	test_provider_requests();
+	test_operation_requests();
 	test_lifecycle();
 	test_schema();
 	test_id_bounds();

@@ -430,6 +430,90 @@ resnapshot after reconnecting. There is no unbounded notification backlog or
 authority to roll back a submitted change. Existing shared-X/local-peer trust
 limits still apply; tokens and notices are not authentication.
 
+=== Owned desktop background operations
+
+FvwmDesktop can own correlated refresh operations for its existing application
+catalog and status collector. Provider queries advertise `operation_targets:
+["applications", "status"]`, operation limit 16 and terminal retention 300000 ms.
+These scans use the existing two-worker pool and four-job admission limit.
+Other legacy desktop jobs share that limit; duplicate target work returns
+`operation_busy` without admitting a new attempt. No file mutation, arbitrary
+command, power transition or generic job loader is added.
+
+....
+request {"version":1,"id":"refresh-1","method":"action","resource":"operations","operation":"start","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","target":"applications"}
+request {"version":1,"id":"jobs-1","method":"query","resource":"operations","provider":"0123456789abcdef0123456789abcdef"}
+request {"version":1,"id":"job-1","method":"query","resource":"operations","provider":"0123456789abcdef0123456789abcdef","target":"fedcba9876543210fedcba9876543210"}
+....
+
+Start requires the current provider/preference generation as an admission guard.
+The result contains owner/provider, `disconnect: "continue"` and an `operation`
+record. Its generated `id` differs from the connection's request ID. The record
+has its own generation, target, state, `cancel_requested`, unknown progress
+(`completed`/`total` null and `unit: "unknown"`), application outcome, result,
+error, `worker_stop: "unknown"`, `rollback: false` and remaining `retention_ms`.
+No field promises a total or percentage the backend cannot report.
+
+States are accepted, running, completed, failed and cancelled. Fast work can
+skip an observed running state. Completed means the worker returned and its
+normal menu/status commands were submitted; it does not confirm core application
+or repaint. Application refresh results report entry count; status results
+report that a sample object was collected, including potentially unavailable
+metrics. Worker failure reports `worker_failed` with no publication. Publication
+failure reports `publication_failed` and `application: "partial-or-unknown"`;
+commands or in-memory changes can already have occurred. No rollback is inferred.
+Errors do not broadcast worker exception text, paths, labels or result payloads.
+These targets request no decisions; unsupported operations remain explicit errors.
+
+Query without target returns at most 16 compact operation summaries plus declared
+limits; target selects one full record. Active records have null retention time.
+Terminal records expire after five monotonic minutes, or earlier when the next
+admission needs space and evicts the oldest admitted terminal record. They are
+memory-only and vanish on helper restart. Missing/expired IDs return
+`operation_unavailable`; a retired provider identity times out. No result archive
+or reconnect replay is retained by MFL.
+
+Cancellation is a domain action distinct from cancelling the MFL reply wait:
+
+....
+request {"version":1,"id":"cancel-job","method":"action","resource":"operations","operation":"cancel","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","target":"fedcba9876543210fedcba9876543210"}
+....
+
+Here generation is the operation record's latest generation, not the preference
+generation used to start. A mismatch returns `stale_generation` without changing
+the operation; an already terminal record returns `operation_finished`. A queued
+future may cancel immediately. A running/computed future remains admitted with
+`cancel_requested: true` until it returns, then its output is discarded and the
+record becomes cancelled. This cannot interrupt one blocking scan/system call,
+prove worker stoppage or undo prior effects. These two backends only collect data;
+this cancellation contract does not apply to later file/session operations.
+Read-only connections can observe operations but cannot start or cancel them.
+
+Closing a client continues owned work and retains its record within those bounds.
+Reconnect, rediscover the provider and query the retained list/ID. A lost start
+reply or cancelled reply wait must not be blindly replayed: the helper may have
+admitted an operation. There is no cross-reconnect deduplication key or exactly-
+once execution claim. Each admitted record has one terminal outcome while retained.
+
+`watch`/`unwatch resource: "operations"` opts into operation invalidations with
+an optional provider filter, independently of the preference watch. Each client
+has at most one watch per resource; capabilities advertise both limits. Local
+watch admission is read-only and consumes no pending slot. Connection queries
+expose `operation_watch` and `operation_filter`. Watch then query a fresh snapshot.
+
+....
+{"operation_changed":{"version":1,"owner":"FvwmDesktop","provider":"0123456789abcdef0123456789abcdef","id":"fedcba9876543210fedcba9876543210","generation":"0123456789abcdef0123456789abcdef","state":"completed","snapshot_required":true}}
+....
+
+Intermediate observations coalesce to at most one notice per retained record
+per owner poll; terminal invalidation is sent before admission can evict that
+record. Results remain queryable under the declared retention, not inside events.
+Malformed internal notices produce `operations_invalidated` with version 1,
+reason malformed_notice and snapshot_required true. Queries/replies/events can
+interleave. The existing bounded queue disconnects unqueueable clients, who must
+resnapshot after reconnect. No history, progress flood cache, value broadcast,
+process-death inference or authentication boundary is introduced.
+
 === Validate settings without saving
 
 Use `method: "validate"`, `resource: "settings"`, the observed `provider` and

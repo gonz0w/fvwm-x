@@ -33,6 +33,9 @@
 #include "cursor.h"
 #include "functions.h"
 #include "bindings.h"
+#include <inttypes.h>
+#include <time.h>
+#include <unistd.h>
 #include "module_interface.h"
 #include "misc.h"
 #include "screen.h"
@@ -55,6 +58,38 @@
 /* ---------------------------- local variables ---------------------------- */
 
 static int mods_unused = DEFAULT_MODS_UNUSED;
+/* Conservative revision: every binding command invalidates pages. Zero
+ * after exhaustion disables queries rather than ever reusing a revision. */
+static uint64_t bindings_generation = 1;
+
+bool binding_query_token(char output[MODULE_QUERY_GENERATION_LEN + 1])
+{
+	static struct timespec incarnation;
+	static bool initialized;
+
+	output[0] = '\0';
+	if (!bindings_generation)
+		return false;
+	if (!initialized)
+	{
+		if (clock_gettime(CLOCK_MONOTONIC, &incarnation) != 0)
+			return false;
+		initialized = true;
+	}
+	/* Bind revisions to this core incarnation, including after reconnect.
+	 * This identifies an observation; it is not an authentication token. */
+	snprintf(output, MODULE_QUERY_GENERATION_LEN + 1,
+		"%016" PRIx64 "%08" PRIx32 "%08" PRIx32 "%016" PRIx64,
+		(uint64_t)incarnation.tv_sec, (uint32_t)incarnation.tv_nsec,
+		(uint32_t)getpid(), bindings_generation);
+	return true;
+}
+
+static void binding_query_changed(void)
+{
+	if (bindings_generation)
+		bindings_generation++;
+}
 
 /* ---------------------------- exported variables (globals) --------------- */
 
@@ -522,6 +557,7 @@ static void binding_cmd(F_CMD_ARGS, binding_t type)
 	int count;
 	unsigned short btg = Scr.buttons2grab;
 
+	binding_query_changed();
 	count = ParseBinding(
 		dpy, &Scr.AllBindings, action, type, &Scr.nr_left_buttons,
 		&Scr.nr_right_buttons, &btg, Scr.flags.are_functions_silent);

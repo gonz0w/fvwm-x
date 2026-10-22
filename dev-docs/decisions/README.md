@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Directed core state queries](IPC-CORE-STATE-QUERIES-2026-10-22.md): IPC-02 committed topology, workspace/cache observations and revision-checked global binding pages; combined affected cycle qualified; broader release acceptance remains separate.
+
 - [Settings validation and pending waits](IPC-REQUEST-LIFECYCLE-2026-10-22.md): IPC-02 candidate validation, connection-local snapshots and wait-only cancellation; submitted actions may still commit.
 
 - [Correlated desktop settings provider](IPC-SETTINGS-PROVIDER-2026-10-22.md): IPC-02 registry/value snapshots, generation-checked atomic updates and scoped reset/reload; the helper owns persistence and honest submission outcomes.

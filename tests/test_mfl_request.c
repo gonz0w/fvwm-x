@@ -204,7 +204,7 @@ static void settings_part(struct mfl_pending_request *pending,
 		text[prefix + 2 * i + 1] = hex[byte & 15];
 	}
 	text[prefix + 2 * length] = '\0';
-	assert(mfl_request_settings_part(pending, text) == MFL_SETTINGS_MORE);
+	assert(mfl_request_part(pending, text) == MFL_PART_MORE);
 }
 
 static void test_settings_requests(void)
@@ -289,26 +289,27 @@ static void test_settings_assembly_and_cleanup(void)
 	const char *invalid[] = {"", "end 0", "part 1 7b", "part 0 ",
 		"part 0 0", "part 0 gg", "part 0 00", "part 000 7b"};
 
-	assert(mfl_request_settings_payload(
+	assert(mfl_request_part_payload(
 		"MFL_SETTINGS_1 a 0000000000000001 part 0 7b", &pending, "a"));
-	assert(!mfl_request_settings_payload(
+	assert(!mfl_request_part_payload(
 		"MFL_SETTINGS_1 b 0000000000000001 part 0 7b", &pending, "a"));
-	assert(!mfl_request_settings_payload("MFL_SETTINGS_1 a 0000000000000002 end 1",
+	assert(!mfl_request_part_payload(
+		"MFL_SETTINGS_1 a 0000000000000002 end 1",
 		&pending, "a"));
 	for (size_t i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
-		assert(mfl_request_settings_part(&pending, invalid[i]) ==
-			MFL_SETTINGS_INVALID);
+		assert(mfl_request_part(&pending, invalid[i]) ==
+			MFL_PART_INVALID);
 	settings_part(&pending, 0, "{\"result\":{");
-	assert(mfl_request_settings_part(&pending, "part 0 7b") ==
-		MFL_SETTINGS_INVALID);
+	assert(mfl_request_part(&pending, "part 0 7b") ==
+		MFL_PART_INVALID);
 	settings_part(&pending, 1, "\"owner\":\"FvwmDesktop\"}}");
-	assert(mfl_request_settings_part(&pending, "end 1") == MFL_SETTINGS_INVALID);
-	assert(mfl_request_settings_part(&pending, "end 2") == MFL_SETTINGS_DONE);
-	result = mfl_request_settings_result(&pending);
+	assert(mfl_request_part(&pending, "end 1") == MFL_PART_INVALID);
+	assert(mfl_request_part(&pending, "end 2") == MFL_PART_DONE);
+	result = mfl_request_result(&pending);
 	assert(result);
 	cJSON_Delete(result);
 	mfl_request_clear(&pending);
-	assert(!pending.settings_result && !pending.settings_length &&
+	assert(!pending.reply_data && !pending.reply_length &&
 		pending.kind == MFL_REQUEST_INVALID);
 	const char *bad_json[] = {"{\"result\":{},\"result\":{}}",
 		"{\"error\":{\"code\":\"bad;Exec\"}}", "{\"result\":null}",
@@ -317,7 +318,7 @@ static void test_settings_assembly_and_cleanup(void)
 	{
 		pending.kind = MFL_REQUEST_SETTINGS_SET;
 		settings_part(&pending, 0, bad_json[i]);
-		assert(!mfl_request_settings_result(&pending));
+		assert(!mfl_request_result(&pending));
 		mfl_request_clear(&pending);
 	}
 	pending.kind = MFL_REQUEST_SETTINGS_QUERY;
@@ -326,9 +327,9 @@ static void test_settings_assembly_and_cleanup(void)
 	chunk[sizeof(chunk) - 1] = '\0';
 	for (unsigned int i = 0; i < MFL_SETTINGS_RESULT_MAX / MFL_SETTINGS_CHUNK; i++)
 		settings_part(&pending, i, chunk);
-	assert(pending.settings_length == MFL_SETTINGS_RESULT_MAX);
-	assert(mfl_request_settings_part(&pending, "part 32 78") ==
-		MFL_SETTINGS_INVALID);
+	assert(pending.reply_length == MFL_SETTINGS_RESULT_MAX);
+	assert(mfl_request_part(&pending, "part 32 78") ==
+		MFL_PART_INVALID);
 	mfl_request_clear(&pending);
 	mfl_request_clear(&pending);
 }
@@ -372,8 +373,8 @@ static void test_lifecycle(void)
 	assert(mfl_request_reserve(pending, &request, 42, 100, &slot) == NULL);
 	assert(mfl_request_find(pending, "v") == slot);
 	assert(mfl_request_find(pending, "missing") == NULL);
-	assert(mfl_request_settings_part(slot, "part 0 7b") ==
-		MFL_SETTINGS_MORE);
+	assert(mfl_request_part(slot, "part 0 7b") ==
+		MFL_PART_MORE);
 	result = mfl_request_pending_result(pending, 200);
 	assert(result);
 	list = cJSON_GetObjectItemCaseSensitive(result, "requests");
@@ -402,8 +403,72 @@ static void test_lifecycle(void)
 	cJSON_Delete(result);
 }
 
+static void test_core_snapshot_requests(void)
+{
+	struct mfl_request request;
+	struct mfl_pending_request pending = {.kind = MFL_REQUEST_TOPOLOGY,
+		.serial = 42};
+	char text[1001], command[1001];
+	const char *resources[] = {"topology", "workspaces", "bindings"};
+	const char *invalid[] = {
+		"\"offset\":-1", "\"offset\":1", "\"offset\":4097",
+		"\"offset\":0.5", "\"limit\":0", "\"limit\":17",
+		"\"limit\":true", "\"generation\":\"bad\"",
+		"\"generation\":\"0123456789abcdef0123456789abcdef\"",
+		"\"limit\":2,\"limit\":3", "\"target\":\"x\""};
+
+	for (size_t i = 0; i < sizeof(resources) / sizeof(resources[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"c\","
+			"\"method\":\"query\",\"resource\":\"%s\"}",
+			resources[i]);
+		assert(mfl_request_parse(text, &request));
+		assert(mfl_request_is_snapshot(request.kind));
+		assert(!mfl_request_is_settings(request.kind));
+		assert(!mfl_request_is_action(request.kind));
+		assert(mfl_request_snapshot_command(command, sizeof(command),
+			&request, 42, "a-b"));
+		assert(strstr(command, "Send_Query a-b 000000000000002a "));
+		assert(!mfl_request_snapshot_command(command, 4, &request,
+			42, "a-b") && command[0] == '\0');
+	}
+	for (size_t i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"c\","
+			"\"method\":\"query\",\"resource\":\"bindings\",%s}",
+			invalid[i]);
+		assert(!mfl_request_parse(text, &request));
+	}
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"c\","
+		"\"method\":\"query\",\"resource\":\"bindings\","
+		"\"offset\":4096,\"limit\":16,"
+		"\"generation\":\"ffffffffffffffffffffffffffffffff"
+		"ffffffffffffffff\"}", &request));
+	assert(request.offset == 4096 && request.limit == 16);
+	assert(mfl_request_snapshot_command(command, sizeof(command),
+		&request, 42, "a-b"));
+	assert(strstr(command, "bindings 4096 16 ffffffffffffffffffffffffffffffffffffffffffffffff"));
+	assert(mfl_request_part_payload(
+		"MFL_CORE_1 a-b 000000000000002a part 0 7b", &pending, "a-b"));
+	assert(!mfl_request_part_payload(
+		"MFL_SETTINGS_1 a-b 000000000000002a part 0 7b",
+		&pending, "a-b"));
+	char chunk[MODULE_QUERY_CHUNK + 1];
+
+	memset(chunk, 'x', sizeof(chunk) - 1);
+	chunk[sizeof(chunk) - 1] = '\0';
+	for (unsigned int i = 0; i < MODULE_QUERY_RESULT_MAX /
+	    MODULE_QUERY_CHUNK; i++)
+		settings_part(&pending, i, chunk);
+	assert(pending.reply_length == MODULE_QUERY_RESULT_MAX);
+	assert(mfl_request_part(&pending, "end 128") == MFL_PART_DONE);
+	assert(mfl_request_part(&pending, "part 128 78") == MFL_PART_INVALID);
+	mfl_request_clear(&pending);
+}
+
 int main(void)
 {
+	test_core_snapshot_requests();
 	test_lifecycle();
 	test_schema();
 	test_id_bounds();

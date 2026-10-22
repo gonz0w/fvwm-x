@@ -670,11 +670,37 @@ class DesktopSettingsIPC(unittest.TestCase):
         self.instance = desktop.Desktop(self.commands.append,
             ROOT / 'default-config', self.path)
         self.addCleanup(self.instance.pool.shutdown)
+        self.instance.finish_configuration()
+        self.commands.clear()
 
     def action(self, operation, **fields):
         return self.instance.settings_request(dict(operation=operation,
             provider=self.instance.settings_instance,
             generation=self.instance.settings_generation, **fields))
+
+    def test_unconfigured_provider_refuses_queries_validation_and_mutation(self):
+        commands = []
+        unready = desktop.Desktop(commands.append, ROOT / 'default-config', self.path)
+        self.addCleanup(unready.pool.shutdown)
+        token = unready.settings_generation
+        for operation, fields in [('query', {'scope': 'all'}),
+                                  ('set', {'values': {'palette': 'grove'}}),
+                                  ('validate', {'values': {'palette': 'grove'}}),
+                                  ('reset', {'scope': 'all'}), ('reload', {})]:
+            request = dict(operation=operation, **fields)
+            if operation != 'query':
+                request.update(provider=unready.settings_instance, generation=token)
+            self.assertEqual(unready.settings_request(request),
+                             {'error': {'code': 'provider_not_ready'}})
+        self.assertEqual(unready.settings_generation, token)
+        self.assertFalse(self.path.exists())
+        self.assertFalse(commands)
+        unready.configure_setting('motion', 'true')
+        self.assertFalse(unready.settings_ready)
+        unready.finish_configuration()
+        snapshot = unready.settings_request({'operation': 'query', 'scope': 'all'})['result']
+        self.assertTrue(snapshot['settings']['motion']['effective'])
+        self.assertEqual(snapshot['settings']['motion']['source'], 'module-configuration')
 
     def test_snapshot_scopes_overrides_and_stale_generations(self):
         before = self.instance.settings_generation

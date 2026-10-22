@@ -141,6 +141,7 @@ $TIME = 0;
     {name => 'Schedule', cursor => '', window => 0, descr => 'Run an fvwm command after a delay'},
     {name => 'Scroll', cursor => '', window => 0, descr => 'Scroll the desktop viewport'},
     {name => 'Send_ConfigInfo', cursor => '', window => 0, descr => 'Internal, used for module communication'},
+    {name => 'Send_Query', cursor => '', window => 0, descr => 'Internal, bounded directed state queries'},
     {name => 'Send_Reply', cursor => '', window => 0, descr => 'Internal, used for module communication'},
     {name => 'Send_WindowList', cursor => '', window => 0, descr => 'Internal, used for module communication'},
     {name => 'SendToModule', cursor => '', window => 0, descr => 'Send a string (action) to a module'},

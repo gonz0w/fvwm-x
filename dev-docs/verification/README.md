@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Directed core state and shared IPC cycle](VERIFICATION-2026-10-22-IPC-CORE-STATE.md): topology/workspace/binding queries and provider readiness; 113 composed selected passes across six targets/nine profiles, five scoped guest sanitizer exercises, retained failures and separate release gates.
+
 - [Settings validation and request lifecycle](VERIFICATION-2026-10-22-IPC-LIFECYCLE.md): three IPC-02 capabilities; six focused Linux entries and three scoped guest sanitizer exercises pass, shared integration pending.
 
 - [Desktop settings queries and typed actions](VERIFICATION-2026-10-22-IPC-SETTINGS.md): IPC-02 snapshots, generation-checked atomic changes and scoped reset/reload; focused Linux/policy/X and scoped sanitizer passes, shared cycle qualification pending.

@@ -57,6 +57,7 @@ fvwm_sources = [
     'fvwm/move_resize.c',
     'fvwm/placement.c',
     'fvwm/read.c',
+    'fvwm/query_json.c',
     'fvwm/schedule.c',
     'fvwm/session.c',
     'fvwm/stack.c',

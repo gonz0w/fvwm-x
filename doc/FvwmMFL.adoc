@@ -100,6 +100,8 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   read-only admission is not a security boundary.
 * `connection` returns this connection's `read_only` flag and selected event
   names. These are MFL-owned values and require no core round trip.
+* `topology`, `workspaces` and `bindings` query core-owned state, as described
+  below. Binding pages also accept their documented continuation fields.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
 * `desktop` samples authoritative values through the existing core command
@@ -114,9 +116,100 @@ receiving its terminal reply; a new connection has its own client-ID scope.
 
 The desktop query is an observation at core command evaluation, not a cached
 second window-state authority or an atomic X-server transaction. It does not
-provide the complete monitor topology, configured bindings, shared core preview
-generations or asynchronous action status. Helper-owned settings have their own
+provide the separate topology/binding views described below, shared core
+preview generations or asynchronous action status. Helper-owned settings have their own
 provider query and generation; they are not core window/theme state.
+
+=== Core topology, workspace and binding queries
+
+These read-only resources use the existing command engine and directed module
+replies. They observe core-owned state at evaluation, without a second cache in
+MFL, an X round trip, or executing configured binding actions:
+
+....
+request {"version":1,"id":"monitors-1","method":"query","resource":"topology"}
+request {"version":1,"id":"workspaces-1","method":"query","resource":"workspaces"}
+request {"version":1,"id":"bindings-1","method":"query","resource":"bindings","limit":8}
+....
+
+`topology` returns `state: "observed"`, `scope: "committed-topology"`,
+`units: "actual-pixels"`, `root_fallback`, and the existing committed `topology`
+with its `monitors` array. Each monitor includes `name`, `name_atom`, `primary`,
+`geometry` (x/y/width/height), `physical_mm` (width/height) and output XIDs.
+`epoch` is an exact 16-character lowercase hexadecimal string, avoiding loss in
+JSON consumers with double precision numbers. It identifies topology commits
+within a core lifetime; it is not a shared theme/window generation or a promise
+that the X server has not changed since the last successful acquisition.
+A root-sized `FVWM-X-Root` monitor with no outputs is the explicit fallback when
+RandR exposes no monitors. A missing committed snapshot returns `unavailable`.
+
+`workspaces` returns `state: "observed"`, `scope: "core-monitors"`, actual-pixel
+units, `desktop_mode` (`global`, `shared` or `per-monitor`) and a `monitors` array.
+Each record has its core monitor `name`, current `desk`, `viewport` with x/y and
+aggregate desktop width/height, page-grid counts in `pages`, `scale_quarters`,
+and separate static `work_area` and `dynamic_work_area` rectangles. Desk/grid
+values are indices/counts; scale is the number of quarter steps per logical
+unit. These records follow the core's retained monitor collection; they do not
+replace the committed physical topology.
+
+`work_area_freshness: "cached"` is explicit. Work areas sample existing core
+caches without scanning windows or forcing publication. An all-zero rectangle
+cannot distinguish an uninitialized cache from an empty area at the origin;
+it is returned as JSON null (unknown). Other rectangles retain actual pixels,
+including zero dimensions at a nonzero origin. This does not certify freshness,
+recompute root EWMH work areas or change reservations. Normal window/geometry
+processing updates those caches. Separate query evaluations are not an atomic
+transaction across topology, workspace state and X properties.
+
+`bindings` returns `state: "observed"`, `scope: "global-bindings"`, opaque
+`generation`, `offset`, `bindings` and `next_offset`. It describes installed
+Key, PointerKey and mouse records, including separate native records for a key
+that maps to multiple keycodes. It excludes menu/placement bindings and does
+not certify which binding wins for a particular application or event.
+
+Each entry contains `type` (`Key`, `PointerKey`, `MousePress`, `MouseRelease`),
+`code` (keycode or button), `key` (configured key name or null), native
+`context_mask`, raw X modifier `modifier_mask`, literal `action`, and optional
+window match pattern in `window` (null when unrestricted). JSON strings escape
+control characters and replace malformed UTF-8 at presentation; no text from a
+query result is evaluated as a command. Numeric context masks use FVWM's context
+bits; modifier masks retain the configured X11 mask, including AnyModifier.
+
+Binding pages default to offset 0 and limit 8. `limit` must be an integer from
+1 to 16; `offset` an integer from 0 to 4096. Use the returned `next_offset` and
+48-character lowercase hexadecimal `generation` for continuation; null ends
+the list. A nonzero offset requires that generation. For example, after a page
+returns offset 8 and token G, request the next page with `offset: 8` and
+`generation: G` (substitute the exact observed string). An optional generation
+on offset 0 makes that first page conditional too.
+
+Every binding command conservatively invalidates pages, including unbind and
+commands that ultimately make no global binding change. The token also belongs
+to the core incarnation, so a restarted core cannot accept a predecessor's page.
+A mismatch returns `stale_generation`; restart from offset 0. An offset beyond
+the current list returns `invalid_offset`. A revision exhausted or unavailable
+returns `generation_unavailable`. Paging copies only the requested records and
+retains no binding pointers/cursors between commands.
+
+Core snapshots share the eight pending slots and absolute five-second deadline,
+read-only admission, local pending inspection and wait-only cancellation.
+Capabilities advertise the 32,768-byte decoded result maximum, binding page and
+offset limits. Each result is assembled in at most 128 ordered 256-byte chunks
+from directed `MX_REPLY`, with incarnation/serial correlation. Settings replies
+keep their separate 8192-byte maximum. Malformed core fragments return
+`invalid_core_reply`; late/cancelled/disconnected assemblies are discarded.
+No native packet type or layout changes.
+
+A topology/workspace query permits at most 64 monitor records, with at most 64
+outputs and 256 name bytes per topology monitor. Binding key names have the
+same 256-byte bound; actions and window patterns permit 1024 bytes. A scan skips
+at most 4096 bindings and copies at most 16. Limits or an oversized serialized
+snapshot return `query_too_large` without partial success or silent truncation;
+try a smaller binding page when appropriate. These transport limits do not
+restrict existing configuration files. Allocation failure returns
+`allocation_failed` when a reply can still be queued; otherwise the ordinary
+deadline/disconnect policy applies. Wider providers, domain progress/cancellation
+and shared-core preview/recovery remain separate capabilities.
 
 === Desktop settings provider
 
@@ -180,7 +273,10 @@ Live preview remains unavailable (`preview: false`).
 
 Capabilities name the settings provider with availability `on-request`; MFL
 does not start it, retain a second settings cache or infer liveness from a core
-barrier. An absent/stalled provider reaches `deadline_exceeded`. A timeout or
+barrier. Before initial module configuration completes, the provider returns
+`provider_not_ready` without exposing provisional defaults or executing typed
+actions/validation. Retry a query after a bounded delay; do not automatically
+replay actions. An absent/stalled provider reaches `deadline_exceeded`. A timeout or
 disconnect can occur after an action commits: query after reconnecting rather
 than infer refusal or automatically replay the action.
 

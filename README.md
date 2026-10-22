@@ -11,11 +11,11 @@ compositor or native Wayland backend.
 
 **Status:** development. The
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout), manager-target
-prerequisite, button navigation/state and atomic groups, typed settings/grouped
-editing, and non-executing configuration checker are merged.
+prerequisite, buttons/atomic groups, settings/editor and non-executing
+configuration checker are merged.
 [IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
-has core queries, barriers, read-only mode and settings actions. Validation and wait
-controls pass focused checks; integration is pending. Preview, polish,
+has core/settings queries, actions, validation and wait controls. Topology,
+workspace and binding queries pass shared platform checks. Preview, polish,
 maintenance and tuning remain deferred.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the

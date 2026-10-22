@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Correlated MFL queries and read-only admission](VERIFICATION-2026-10-22-IPC-REQUESTS.md): first IPC-02 subset; 82 selected six-target/ten-profile passes, ten staged sessions, four authenticated BSD displays and scoped leak-enabled request sanitizers. Original private runner failures and broader owner/release scope remain explicit.
+
 - [Non-executing desktop configuration checks](VERIFICATION-2026-10-22-CONFIG-CHECKER.md): bounded literal settings/Read analysis, exact source/include diagnostics, offline text/JSON and native paged reports; six-target affected checkpoint with retained native foundation.
 
 - [Grouped desktop settings editor](VERIFICATION-2026-10-22-SETTINGS-EDITOR.md): atomic grouped Apply, unsaved scoped Defaults/Cancel and bounded stale-consumer retirement; six-target functional qualification, actual-X screenshots and explicit existing Form exit-cleanup diagnostic.

@@ -751,9 +751,8 @@ void EWMH_SetWMDesktop(FvwmWindow *fw)
 		FW_W(fw), "_NET_WM_DESKTOP", EWMH_ATOM_LIST_CLIENT_WIN,
 		(unsigned char *)&desk, 1);
 
-	if (IS_STICKY_ACROSS_PAGES(fw) &&
-	    (fw->dyn_strut.left || fw->dyn_strut.right ||
-	     fw->dyn_strut.top || fw->dyn_strut.bottom))
+	if (fw->dyn_strut.left || fw->dyn_strut.right ||
+	    fw->dyn_strut.top || fw->dyn_strut.bottom)
 		ewmh_SetWorkArea(m);
 
 	return;

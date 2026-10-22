@@ -281,25 +281,30 @@ cancellation failures are repaired across six targets, and existing retained
 context/function/module/window owners have explicit dispositions. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md).
 No comparison is due.
 
-Current selection, 2026-10-21: the finite safety and maintainability closeout
-is locally qualified and merged in PR141/142/143.
-The LIB-05 Xlib requirement checkpoint and manager handoff are merged in
-PR144/145. Pager count/index/dependent-array publication is merged in PR146.
-Current pickup EWMH-01 R11/W03/W06 is locally qualified for legacy strut
-admission, absence revocation and per-desktop root work-area publication;
-PR147 awaits maintainer review. Its one broad checkpoint and affected sticky-page
-correction retain separate exact source evidence. Configuration commands,
-static auto-hide reservations and existing internal monitor policy remain usable.
-Partial struts, nonsticky-page panels, broader topology/multi-monitor root
-authority and wider selection transfer retain their separate owners. After
-merge, follow the approved stage 5 queue, including manager-selection target
-conversions S04–S06; do not reopen already-qualified manager startup or pager
-count work by inference.
-Then advance the remaining approved stage 5/6 dependencies and milestones.
-Remaining performance-only
-tuning moves to the next release. The finite [hardening closeout](#hardening-closeout)
-below supersedes older optimization/cleanup pickup instructions; it does not
-mark broad audit owners complete or reduce configuration/platform requirements.
+Current selection, 2026-10-21: the user approved the finite feature handoff
+in [the milestone cutoff](decisions/FEATURE-HANDOFF-2026-10-21.md).
+Safety closeout PR141–143 and dependency/protocol checkpoints PR144–147 are
+merged. Complete only the bounded manager-selection S04–S06 target checkpoint,
+then advance BUTTON-01, BUTTON-02 and CFG-01, followed by CFG-02 and IPC-02.
+Do not add another general maintenance checkpoint before those features.
+The [manager target checkpoint](verification/VERIFICATION-2026-10-21-MANAGER-TARGETS.md)
+has focused Linux/FreeBSD passes; combined qualification remains pending.
+
+Remaining general stage 5 work moves to the future-release backlog: broad
+BOX-01 sandboxing, dependency/linkage review and replacements, COMPAT-02
+retirement, general portability/reproducibility tooling, monitor/scale audits,
+remaining EWMH and selection roles/transfers, XDG interoperability and broad
+TEXT-01 adoption. Preserve their open owners and acceptance gaps; deferral is
+not completion or a claim of full standards/release qualification. A feature
+may bring forward only its concrete prerequisite (for example text composition
+for an editable control), without reopening the whole audit. Button traversal
+and disabled-state work do not wait for a general text/shaping replacement.
+A newly reproduced serious safety defect still advances with its owner.
+
+Stage 5 below remains the longer-term inventory; this current selection
+supersedes its blanket placement before stage 6 for this milestone. Existing
+configuration compatibility, six-target affected qualification and separate
+native-CPU/hardware/release gates remain. No release publishing is authorized.
 
 The CI-01 / MAINT-02 / CLEAN-01 preparation evidence checkpoint is merged in
 PR #139. Source modes, atomic live phase status and separate PNG loader proof
@@ -328,8 +333,8 @@ Performance tracking: the due PR138→PR144 comparison uses preserved Linux
 ARM64 GCC binaries after five merged implementation checkpoints. Command-median
 ranges overlap; code/read-only grows 11,195 bytes, data 88 bytes and peak RSS
 one 4 KiB page across the safety/maintenance changes. No consistent latency
-regression is observed. PR144 is the preserved next reference at 2/5 subsequent
-merged implementation checkpoints (PR145/146); this unmerged work-area batch
+regression is observed. PR144 is the preserved next reference at 3/5 subsequent
+merged implementation checkpoints (PR145/146/147); this unmerged manager-target batch
 does not count.
 [Observation and receipt](verification/PERFORMANCE-2026-10-21-PR144.md).
 Keep the [five-checkpoint cadence](WORKFLOW.md#periodic-performance-comparisons)
@@ -347,7 +352,7 @@ jumps ahead of this sequence.
 | 2 | Short dependency/package triage and early MAINT-02 adoption gates. Qualify the approved [PNG security baseline](decisions/PNG-SECURITY-BASELINE-PROPOSAL.md) with patched dependencies. Then interleave bounded DATA-01/IMAGE-01, FD-01/PROC-01 and INPUT-01 batches with a verified tool migration; include button-release waits in the owning interaction batch and the focused STACK-02 correctness check. Begin STANDARDS-01’s fixed requirement inventory alongside these audits; do not interrupt the active asynchronous image batch. | Build/manual adoption has reached its recorded maintenance checkpoint; interleave the remaining migrations with runtime work. The website/manual redesign is deferred under DOCS-01 and does not block adoption. Security findings advance immediately; routine audit work does not postpone all tools until hardening is exhausted. STACK-02’s per-window publication repair is now locally qualified, enabling the separate STACK-01 identity/traversal work. |
 | 3 | PERL-PROTO-01/PROMPT-01, checked metadata, Go-enabled FvwmCommand, three standalone utilities and the installed Script example are locally qualified. The coordinated full XDG provider/native Form port is now locally qualified and adopted at `04c1`, closing this utility-family port milestone. Disabled-Go predecessors remain until COMPAT-02's stage5 retirement gate. CI-01 shared setup, optional Go profiles and authenticated local default-BSD-X are qualified; CI-01's fixed asset preflight and approved owned QEMU runner are locally qualified in their affected scopes (`4bd0` / `5200`). Verified image/boot inputs are consumed at execution, 294 native units and four default-X startup setups pass. The [approved patched PNG bootstrap](decisions/CI-PNG-INPUT-PROPOSAL-2026-10-13.md) and fresh provider build/install/default-X consumers are now locally qualified at finalcec1; unaffected standard evidence is retained with precise affected completions. The user selected private gonz0w/fvwm-x and local-only verification; Actions/workflow adoption are retired requirements. CI-01 now owns local review recipes, source-bound evidence and manual GitHub roadmap/PR management; native execution gaps remain with VERIFY-01. MONITOR-01/EWMH-01/SELECTION-01 retain their fixed32-row reconciliation; adopt only verified runtime gaps at stage5. The other chat's desktop runtime work stays separately owned. | Reuse the accepted [XDG port checkpoint](verification/VERIFICATION-2026-10-12-XDG-PORT.md); no additional provider implementation matrix is queued. Later CI asset/runtime/retirement owners retain their own gates. |
 | 4 | The finite safety closeout below is locally qualified in PR141/142/143: stream/process ownership, selected external-input boundaries and pending window/resource lifetime. PR143 is merged; proceed with the approved stage 5 dependency handoff. Attach CLEAN-01/DEAD-01 or tool changes only to a concrete safety contract or named feature dependency. Retain accepted QUEUE/OUTPUT/STACK/DRAW/STYLE/STATE/CACHE/LOOP results. Defer further performance-only profiling/tuning, cache/style micro-work, timer-heap and XCB experiments to the next release. | Prevent crashes, malformed-input failures, hangs and ownership mistakes without an indefinite optimization phase. Bounds, fairness, ordering and cleanup remain safety work even when historically listed under performance. Use the explicit handoff criteria below, then advance stage 5/6 dependencies and features. |
-| 5 | Larger BOX-01, dependency/linkage, compatibility packaging and remaining portability changes; GEN-01 parser/runtime adoption is locally qualified; verified MONITOR-01 gaps and MODULE-SCALE-01 consumers; REPRO-01 and remaining release tooling. ARCHIVE-01 follows each verified migration. Adopt bounded EWMH-01/SELECTION-01 protocol gaps after INPUT/DRAW contracts; XDG-01 follows launcher/parser/process contracts, and TEXT-01 establishes text/input contracts before new desktop UI. | Broad or compatibility-sensitive changes retain their individual gates. Remove a predecessor after its replacement is accepted; do not wait for every unrelated migration or remove anything before parity. |
+| 5 | Future-release inventory after the approved feature cutoff (only named feature prerequisites may be brought forward): larger BOX-01, dependency/linkage, compatibility packaging and remaining portability changes; GEN-01 parser/runtime adoption is locally qualified; verified MONITOR-01 gaps and MODULE-SCALE-01 consumers; REPRO-01 and remaining release tooling. ARCHIVE-01 follows each verified migration. Adopt bounded EWMH-01/SELECTION-01 protocol gaps after INPUT/DRAW contracts; XDG-01 follows launcher/parser/process contracts, and TEXT-01 establishes text/input contracts before new desktop UI. | Broad or compatibility-sensitive changes retain their individual gates. Remove a predecessor after its replacement is accepted; do not wait for every unrelated migration or remove anything before parity. |
 | 6 | BUTTON-01, BUTTON-02, CFG-01, CFG-02 and IPC-02 in the owning build thread, then SESSION-01's portable default session foundation. Then FILE-VIEW-01 / FILE-DATA-01 / FILE-ACTION-01 deliver the configurable browser checkpoint, followed by FILE-JOBS-01 and DESKTOP-ICONS-01; FILE-INTEGRATION-01's portable entry point follows XDG-01 and the browser/property contracts. CONTENT-01 / RETENTION-01 / STORE-01 and CLIPBOARD-01's text/image handoff follow qualified selection/collection/action contracts; encrypted persistence follows protected memory, with file mutation and D-Bus not prerequisites. A11Y-01 follows the button/text contracts; SETTINGS-01’s native X11 preference bridge follows CFG-01 and SESSION-01. THEME-01 configuration review can proceed here after standards documentation; runtime/generation gaps follow their existing owners. | Desktop primitives follow the finite safety closeout and their named dependencies; deferred tuning does not block them. Session lifecycle reuses shared settings, process/readiness helpers and operation results. These are requirements, not implemented features or permission for a broad redesign. A qualified browser handoff lets a separate config/theme build thread use the documented primitives while core work continues. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md), [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md) and [clipboard scope](decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md). |
 | 7 | SESSION-02's optional bus bootstrap/dependency contract, then NOTIFY-01 and TRAY-01's XEmbed/StatusNotifier checkpoints; finish SESSION-02 integration/qualification with those owners. FILE-INTEGRATION-01's optional FileManager1 adapter follows the shared bus and qualified folder/reveal/properties operations. Qualify SETTINGS-01’s optional portal bridge and A11Y-01’s selected assistive profile with the same bus/service lifecycle. | The optional D-Bus contribution extends the same default session settings/UI. Select the common bus contract before protocol adoption to avoid competing lifecycle/transport work. Preserve portable login without optional packages and respect existing owners; the native locker is deferred. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md) and [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | 8 | RELEASE-01: final public-release gate, after planned coding/qualification checkpoints and the user's decision to prepare a release. Assemble STANDARDS-01 requirement evidence, THEME-01 review and truthful profile-specific claims at this gate. | Review identity/README, community/security reporting, install/trial, artifacts/provenance, man quality, contributor onboarding and public presentation. Reuse existing owners; record optional ideas' disposition. This is the final release stage and does not reorder coding or authorize publication. See [release gate](RELEASE-GATE.md). |
@@ -2267,3 +2272,5 @@ reader results are separate from the subsequent interpreter/file work.
   four final authenticated BSD displays. Failed selector/compiler/storage
   attempts remain explicit; canonical-verified guest duplicates are retired.
   [Composed report](verification/VERIFICATION-2026-10-21-WORKAREA.md).
+
+- 2026-10-21: User approves the finite feature handoff: PR147 merged, one bounded manager-target checkpoint, then BUTTON/CFG/IPC features. Remaining general stage 5 maintenance stays open for a future release; only concrete feature prerequisites or reproduced serious safety defects may interrupt. [Decision](decisions/FEATURE-HANDOFF-2026-10-21.md).

@@ -69,6 +69,16 @@ main(void)
 	assert(fvwm_selection_pair_length_is_valid(1024));
 	assert(!fvwm_selection_pair_length_is_valid(4));
 	assert(!fvwm_selection_pair_length_is_valid(1028));
+	/* Equality, CurrentTime, before/after and wrap are independent of Xlib. */
+	assert(fvwm_selection_request_time_is_valid(0, 100));
+	assert(fvwm_selection_request_time_is_valid(100, 100));
+	assert(fvwm_selection_request_time_is_valid(101, 100));
+	assert(!fvwm_selection_request_time_is_valid(99, 100));
+	assert(fvwm_selection_request_time_is_valid(5, UINT32_MAX - 4));
+	assert(!fvwm_selection_request_time_is_valid(UINT32_MAX - 4, 5));
+	assert(!fvwm_selection_request_time_is_valid(0x80000001U, 1));
+	assert(fvwm_selection_request_time_is_valid(0x80000000U, 1));
+
 	test_fixed_properties_require_complete_wire_values();
 	test_caps_and_arithmetic();
 	return 0;

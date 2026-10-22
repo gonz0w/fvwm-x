@@ -44,6 +44,13 @@ work complete.
 
 ## Implementation batches and test cadence
 
+The approved [feature handoff](decisions/FEATURE-HANDOFF-2026-10-21.md) caps
+pre-feature work at the manager-target checkpoint after merged PR147.
+Additional general maintenance remains in the future-release backlog. Bring
+forward only a named feature prerequisite or a reproduced serious safety defect;
+do not require all stage 5 audits before BUTTON/CFG/IPC development.
+
+
 Selection policy, 2026-10-21: use the tracker's
 [hardening closeout](PROJECT-TRACKER.md#hardening-closeout). Prioritize confirmed
 crashes, malformed-input failures, unbounded work and resource/process lifetime

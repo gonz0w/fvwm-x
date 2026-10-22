@@ -238,7 +238,8 @@ CloseICCCM2(void)
 	return;
 }
 
-/* FIXME: property change actually succeeded */
+/* Conversion output and SelectionNotify use the same ordered connection.
+ * Asynchronous server allocation errors retain the normal X error policy. */
 static Bool
 convertProperty(Window w, Atom target, Atom property)
 {
@@ -267,11 +268,7 @@ convertProperty(Window w, Atom target, Atom property)
 	{
 		return False;
 	}
-	/* FIXME: This is ugly. We should rather select for
-	   PropertyNotify on the window, return to the main loop,
-	   and send the SelectionNotify once we are sure the property
-	   has arrived. Problem: this needs a list of pending
-	   SelectionNotifys. */
+	/* Flushing submits writes; it is not a server-allocation success check. */
 	XFlush(dpy);
 
 	return True;
@@ -281,15 +278,26 @@ void
 icccm2_handle_selection_request(const XEvent *e)
 {
 	XSelectionRequestEvent ev = e->xselectionrequest;
-	XSelectionEvent reply;
+	XEvent response = { 0 };
+	XSelectionEvent *reply = &response.xselection;
 
-	reply.type = SelectionNotify;
-	reply.display = dpy;
-	reply.requestor = ev.requestor;
-	reply.selection = ev.selection;
-	reply.target = ev.target;
-	reply.property = None;
-	reply.time = ev.time;
+	reply->type = SelectionNotify;
+	reply->display = dpy;
+	reply->requestor = ev.requestor;
+	reply->selection = ev.selection;
+	reply->target = ev.target;
+	reply->property = None;
+	reply->time = ev.time;
+
+	/* Dispatch also receives synthetic events. Only this manager role and
+	 * acquisition period may publish our conversion data. No X round trip
+	 * is needed: ownership loss is handled by the ordered SelectionClear. */
+	if (ev.selection != _XA_WM_SX || ev.owner != Scr.NoFocusWin ||
+	    !fvwm_selection_request_time_is_valid(ev.time, managing_since))
+	{
+		fvwm_debug(__func__, "Refusing foreign or stale manager request");
+		goto notify;
+	}
 
 	if (ev.target == _XA_MULTIPLE)
 	{
@@ -325,7 +333,7 @@ icccm2_handle_selection_request(const XEvent *e)
 				XChangeProperty(dpy, ev.requestor, ev.property,
 				    _XA_ATOM_PAIR, 32, PropModeReplace,
 				    (unsigned char *)pairs, (int)count);
-				reply.property = ev.property;
+				reply->property = ev.property;
 			}
 			else
 			{
@@ -342,10 +350,11 @@ icccm2_handle_selection_request(const XEvent *e)
 		}
 		if (convertProperty(ev.requestor, ev.target, ev.property))
 		{
-			reply.property = ev.property;
+			reply->property = ev.property;
 		}
 	}
-	FSendEvent(dpy, ev.requestor, False, 0L,(XEvent*)&reply);
+notify:
+	FSendEvent(dpy, ev.requestor, False, 0L, &response);
 	XFlush(dpy);
 
 	return;

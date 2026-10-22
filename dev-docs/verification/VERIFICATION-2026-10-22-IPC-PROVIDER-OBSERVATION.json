@@ -1,0 +1,369 @@
+{
+  "owner": "IPC-02",
+  "base": "61b6d70ccd876c1d9dc3443f0ee8c972b5378f0b",
+  "status": "focused feature merge gates pass; shared platform/release coverage deferred",
+  "stories": [
+    "desktop provider capability/configuration-state queries",
+    "bounded opt-in preference invalidations",
+    "conditional targeted settings snapshots"
+  ],
+  "candidate": {
+    "source_files": 2188,
+    "source_archive_sha256": "a51cc144b571b7581f38654d7573d2416f7a0d6b51f2144f803c5377aca72763",
+    "worktree_manifest_sha256": "e25fc653cccd871a17b01630a298fba72893ad7ac089d3bb7dc842ff89d1d4b0",
+    "runtime_inputs": {
+      "default-config/desktop.py": {
+        "sha256": "40fb5a4dcd23bd6eb353c0c8fbf8bd9ae7f0f92981f91ed54413218fafa972ad",
+        "mode": 493
+      },
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "sha256": "d134fcbb2b43de1611e145efe554cbf245980096ab740a897ddca9e76604db7c",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.c": {
+        "sha256": "56588ece6a4c573a408fa517b40799112bfae4a315eea69ed9b64d99e08f0afe",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.h": {
+        "sha256": "2d128c64f852e551c5320416cc7e225051e994ffefbf7e6c2142bc6d9dbf4273",
+        "mode": 420
+      },
+      "tests/live_x/mfl_settings_live.py": {
+        "sha256": "737679a07825c3e2e209be7ebcb20d8e6b364ae8f48c8fe1befd379bec7bcb60",
+        "mode": 420
+      },
+      "tests/test_desktop.py": {
+        "sha256": "5663f166742c0e2da2be2eb20eaf2b5238f5bf54e30ea8edf933f741f43943ad",
+        "mode": 420
+      },
+      "tests/test_mfl_request.c": {
+        "sha256": "41ce60115c20d5076bd4fd4805c0af94bf9a16d796c4d410b06ec8d183db5d85",
+        "mode": 420
+      }
+    },
+    "post_freeze_changes": "documentation/status/report-only; no tested runtime changes"
+  },
+  "canonical": {
+    "sha256": "a31270ea8ca94ea7925050cbf15d73676740a5935b37a132ac4105e02b6781b1",
+    "bytes": 132129,
+    "files": 41,
+    "complete_payload_hashes_and_modes_verified": true,
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-provider-observation/evidence.tgz"
+  },
+  "commands": [
+    {
+      "label": "compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j",
+        "2",
+        "fvwm3:executable",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.169
+    },
+    {
+      "label": "tests",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "desktop-policy",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-stream-xvfb"
+      ],
+      "status": 0,
+      "seconds": 22.228
+    },
+    {
+      "label": "asan-compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j",
+        "2",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 1.07
+    },
+    {
+      "label": "asan-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.17
+    },
+    {
+      "label": "asan-settings",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+        "--desktop",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-provider-observation-checkpoint/asan-settings"
+      ],
+      "status": 0,
+      "seconds": 15.615
+    }
+  ],
+  "environment": {
+    "uname": [
+      "Linux",
+      "288f898505a4",
+      "6.18.10-200.fc43.aarch64",
+      "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+      "aarch64"
+    ],
+    "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+    "gcc_config_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+    "sanitizers": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+      "LSAN_OPTIONS": "exitcode=86",
+      "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+    }
+  },
+  "compilers": {
+    "host": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    },
+    "build": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    }
+  },
+  "features": {
+    "buildtype": "debugoptimized",
+    "b_sanitize": "none",
+    "golang": "disabled",
+    "htmldoc": false,
+    "live-x-tests": true,
+    "mandoc": false,
+    "png": "enabled",
+    "svg": "enabled",
+    "xcursor": "enabled",
+    "xrender": "enabled"
+  },
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+      "bytes": 5346600
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "5de45a80c289d421585fdf8e003ed6bf3f5ff2d716526ac67d5ba00b07cfdb7e",
+      "bytes": 398912
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request": {
+      "sha256": "182a52f5b8b5333420cad34b8bd7faa1df49cfadf4e1f2ff5d0232326104acc1",
+      "bytes": 286640
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop": {
+      "sha256": "45a564024be6fd7f15699b4df85c37c4643c48d0f0833df06355236df7610941",
+      "bytes": 85354
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "347b3c3f410f0fee82876e54b41f734e086869948f01cca7f426be6190dbabef",
+      "bytes": 3000728
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": {
+      "sha256": "3f5158d9a92de3374220fbc309039dff6a691abda2d95205f11d8a9fd641a0c4",
+      "bytes": 2672328
+    }
+  },
+  "retained_core_identity": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+  "tests": {
+    "evidence/asan-testlog.json": {
+      "entries": 1,
+      "passed": 1,
+      "other": []
+    },
+    "evidence/gcc-testlog.json": {
+      "entries": 7,
+      "passed": 7,
+      "other": []
+    }
+  },
+  "desktop_policy_cases": 54,
+  "scoped_sanitizer_exercises": 2,
+  "native_CPU_sanitizers": false,
+  "provider_acceptance": {
+    "provider": {
+      "owner": "FvwmDesktop",
+      "schema_version": 1,
+      "provider": "e8ac92d8e7c12e8bfeef9fe1328e3587",
+      "generation": "e2cb2b4a97d568ce06242740083ed9cf",
+      "lifecycle": "ready",
+      "lifecycle_scope": "desktop-preferences",
+      "availability": "available",
+      "failure_reason": null,
+      "persistence_error": null,
+      "resources": [
+        "settings"
+      ],
+      "operations": [
+        "query",
+        "validate",
+        "set",
+        "reset",
+        "reload"
+      ],
+      "notifications": "invalidation-only",
+      "preview": false,
+      "application_completion": "unknown",
+      "service_lifecycle": false
+    },
+    "conditional_unchanged": true,
+    "stale_query_refresh": true,
+    "configuration_ready_discovery": true,
+    "notifications_exclude_values": true,
+    "read_only_watch": true,
+    "target_filter_isolated": true,
+    "malformed_notice_requires_resnapshot": true,
+    "watch_at_pending_capacity": true,
+    "absent_owner_times_out_without_cache": true
+  },
+  "failures": {
+    "desktop-policy.log": {
+      "sha256": "78b1d26ed6f7d39045f05080d9c463a6d2d20a159476779f1318cd0c4cc3cc80",
+      "result": "new conditional test expected keep_wallpaper in effects; registry places it in appearance; corrected fixture scope assertion before freeze"
+    }
+  },
+  "manual": {
+    "FvwmMFL": {
+      "source_sha256": "3790e29aab354adcc89d0ab857647ffeee2a7413ff53441cbcbdcc080662cb02",
+      "roff_sha256": "2e36b7ca0ca6cad634a857fab3cb22938c1b01b5bba3c3bde903a79488a2bd3e",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 9
+      }
+    },
+    "FvwmMFL-before": {
+      "source_sha256": "e828134cd71654a1015de4744c295992eb8c240e2d5c76b5d8398cbe5add6d28",
+      "roff_sha256": "ba01ee1717a3271d1743322c826b33a3c8de1e94b3ecd6c9c96581d4319c30e0",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 8
+      }
+    },
+    "FvwmDesktop": {
+      "source_sha256": "f7487f8515b6eed13150bbf475c23d98e00fdbde8f6420651378aaaa3c06e603",
+      "roff_sha256": "4bcdffbe562d2f39df6133c7ca19b238795abb8fb38988e9437555cb7fe46632",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    },
+    "FvwmDesktop-before": {
+      "source_sha256": "60fd5452d594fdb3a55392211ce8032d7aaa2226c90ccb01e6049b8e16745fc5",
+      "roff_sha256": "08144816a1c1893c4d98303ac9abf9f638da6d5db36acb11ebf34bf04ce37064",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    }
+  },
+  "retirement": {
+    "removed_capture": "/tmp/fvwm-module-waits-20261015/ipc-provider-observation-checkpoint",
+    "capture_files": 41,
+    "removed_archive": "/tmp/fvwm-module-waits-20261015/ipc-provider-observation-evidence.tgz",
+    "archive_sha256": "a31270ea8ca94ea7925050cbf15d73676740a5935b37a132ac4105e02b6781b1",
+    "removed_duplicate_source_archive": "/tmp/fvwm-module-waits-20261015/ipc-provider-observation-inputs/source.tgz",
+    "source_archive_sha256": "a51cc144b571b7581f38654d7573d2416f7a0d6b51f2144f803c5377aca72763",
+    "canonical_payload_and_mode_proof": true
+  },
+  "cycle": {
+    "integrated_reference": "PR157",
+    "merged": [
+      "PR158"
+    ],
+    "count": 1,
+    "after_merge": 2,
+    "limit": 3,
+    "deferred": [
+      "affected six-target and alternate profiles at shared cycle closure",
+      "full compiler/optional-feature/install/default-X acceptance at milestone/release",
+      "native-CPU/hardware/toolkit/compositor qualification"
+    ]
+  },
+  "performance": {
+    "reference": "PR154",
+    "merged": 4,
+    "after_merge": 5,
+    "limit": 5,
+    "comparison_due_now": false,
+    "comparison_due_after_merge": true,
+    "next_step": "compare preserved binaries on next run"
+  }
+}

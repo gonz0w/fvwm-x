@@ -673,6 +673,58 @@ class DesktopSettingsIPC(unittest.TestCase):
         self.instance.finish_configuration()
         self.commands.clear()
 
+    def test_provider_configuration_lifecycle(self):
+        commands = []
+        instance = desktop.Desktop(commands.append, ROOT / 'default-config', self.path)
+        self.addCleanup(instance.pool.shutdown)
+        value = instance.settings_request({'operation': 'provider'})['result']
+        self.assertEqual(value['lifecycle'], 'starting')
+        self.assertEqual(value['availability'], 'configuring')
+        self.assertFalse(value['service_lifecycle'])
+        self.assertFalse(commands)
+        instance.finish_configuration()
+        value = instance.settings_request({'operation': 'provider'})['result']
+        self.assertEqual(value['lifecycle'], 'ready')
+        self.assertEqual(value['availability'], 'available')
+        self.assertIn('validate', value['operations'])
+        self.assertFalse(value['preview'])
+        prefix = 'SendToModule FvwmMFL MFL_PROVIDER_1 '
+        notices = [c for c in commands if c.startswith(prefix)]
+        self.assertEqual(notices, [prefix + instance.settings_instance + ' ' +
+                                  instance.settings_generation])
+        self.assertIsNone(instance.settings_request(dict(operation='provider', provider='0' * 32)))
+        self.assertFalse(self.path.exists())
+
+    def test_conditional_settings_query(self):
+        instance = self.instance
+        generation = instance.settings_generation
+        request = dict(operation='query', scope='group:effects',
+                       provider=instance.settings_instance, generation=generation)
+        unchanged = instance.settings_request(request)['result']
+        self.assertEqual(unchanged['state'], 'unchanged')
+        self.assertFalse(unchanged['snapshot_required'])
+        self.assertNotIn('settings', unchanged)
+        self.assertFalse(self.commands)
+        self.assertFalse(self.path.exists())
+        for changes in ({'generation': True}, {'scope': 'missing'}):
+            self.assertIn('error', instance.settings_request(request | changes))
+        no_provider = request.copy()
+        del no_provider['provider']
+        self.assertEqual(instance.settings_request(no_provider),
+                         {'error': {'code': 'invalid_request'}})
+        instance.change_settings({'palette': 'ink'})
+        refreshed = instance.settings_request(request)['result']
+        self.assertEqual(refreshed['state'], 'observed')
+        self.assertNotEqual(refreshed['generation'], generation)
+        self.assertEqual(set(refreshed['settings']), {'transparency', 'motion'})
+        notices = [c for c in self.commands if ' MFL_PROVIDER_1 ' in c]
+        self.assertEqual(len(notices), 1)
+        self.assertEqual(notices[0].split()[-1], refreshed['generation'])
+        self.commands.clear()
+        self.assertEqual(instance.settings_request(dict(operation='provider'))['result']['generation'],
+                         refreshed['generation'])
+        self.assertFalse(self.commands)
+
     def action(self, operation, **fields):
         return self.instance.settings_request(dict(operation=operation,
             provider=self.instance.settings_instance,

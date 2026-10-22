@@ -385,3 +385,11 @@ existing core command limit. Refused operations show a native notice and leave
 the prior settings intact; this query is not the future general IPC result API.
 persistence_error reports a startup read problem that blocks saving until a
 successful reload; individual operation errors are reported by the notice.
+
+The structured FvwmMFL `provider` query reports this helper's preference
+configuration readiness, supported operations and known persistence error.
+Optional provider watches announce readiness and changed preference generations
+without broadcasting values. Conditional settings queries return unchanged
+when the exact targeted preference generation matches. These interfaces do not
+manage session services or confirm theme application; see *FvwmMFL*(1) for
+framing, limits, stale identities and snapshot recovery.

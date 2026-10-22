@@ -789,6 +789,13 @@ class Desktop:
     def settings_changed(self):
         self.settings_generation = secrets.token_hex(16)
         self.retire_settings_editor()
+        if self.settings_ready:
+            self.announce_settings()
+
+    def announce_settings(self):
+        # Invalidation only: no values, actions or persistence-success claim.
+        self.send('SendToModule FvwmMFL MFL_PROVIDER_1 ' +
+                  self.settings_instance + ' ' + self.settings_generation)
 
     def configure_setting(self, key, value):
         self.overrides[key] = setting_value(key, value, text=True)
@@ -810,6 +817,7 @@ class Desktop:
             self.settings = checked_settings(dict(self.saved, **self.overrides))
         self.settings_changed()
         self.settings_ready = True
+        self.announce_settings()
 
     def prepare_settings(self, changes):
         """Construct the same complete candidate for validation and commit."""
@@ -942,6 +950,7 @@ class Desktop:
         operation = request.get('operation')
         fields = {
             'query': {'operation', 'scope'},
+            'provider': {'operation'},
             'set': {'operation', 'provider', 'generation', 'values'},
             'validate': {'operation', 'provider', 'generation', 'values'},
             'reset': {'operation', 'provider', 'generation', 'scope'},
@@ -950,8 +959,12 @@ class Desktop:
         if not isinstance(operation, str) or operation not in fields:
             return error('unsupported_operation')
         expected = fields[operation]
-        if operation == 'query' and 'provider' in request:
+        if operation in ('query', 'provider') and 'provider' in request:
             expected = expected | {'provider'}
+        if operation == 'query' and 'generation' in request:
+            expected = expected | {'generation'}
+            if 'provider' not in request:
+                return error('invalid_request')
         if set(request) != expected:
             return error('invalid_request')
         provider = request.get('provider')
@@ -963,6 +976,16 @@ class Desktop:
                 # selected owner replies; another instance must not race its
                 # stale refusal against a successful commit by the target.
                 return None
+        if operation == 'provider':
+            return {'result': dict(owner='FvwmDesktop', schema_version=1,
+                provider=self.settings_instance, generation=self.settings_generation,
+                lifecycle='ready' if self.settings_ready else 'starting',
+                lifecycle_scope='desktop-preferences',
+                availability='available' if self.settings_ready else 'configuring',
+                failure_reason=None, persistence_error=self.persistence_error,
+                resources=['settings'], operations=['query', 'validate', 'set', 'reset', 'reload'],
+                notifications='invalidation-only', preview=False,
+                application_completion='unknown', service_lifecycle=False)}
         # A module request can overtake this producer's Send_ConfigInfo.
         # Do not expose provisional defaults or mutate before END_CONFIG_INFO.
         if not self.settings_ready:
@@ -970,11 +993,11 @@ class Desktop:
         scope = request.get('scope', 'all')
         if not isinstance(scope, str) or len(scope) > 64:
             return error('invalid_request')
-        if operation != 'query':
+        if operation != 'query' or 'generation' in request:
             generation = request['generation']
             if not isinstance(generation, str) or not re.fullmatch(r'[0-9a-f]{32}', generation):
                 return error('invalid_request')
-            if generation != self.settings_generation:
+            if operation != 'query' and generation != self.settings_generation:
                 return error('stale_generation')
         try:
             setting_scope(scope)
@@ -991,6 +1014,10 @@ class Desktop:
         except (ValueError, TypeError):
             return error('invalid_value')
 
+        if operation == 'query' and request.get('generation') == self.settings_generation:
+            return {'result': dict(owner='FvwmDesktop', schema_version=1,
+                provider=self.settings_instance, generation=self.settings_generation,
+                state='unchanged', scope=scope, snapshot_required=False)}
         if operation == 'validate':
             return {'result': dict(owner='FvwmDesktop', provider=self.settings_instance,
                 schema_version=1, operation=operation, state='validated',

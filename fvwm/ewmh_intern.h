@@ -3,6 +3,7 @@
 
 #ifndef FVWM_EWMH_INTERN_H
 #define FVWM_EWMH_INTERN_H
+#include "libs/FProperty.h"
 #include "fvwm.h"
 
 /* Extended window manager hints support */
@@ -183,5 +184,8 @@ int ewmh_WMIcon(
 CARD32 *ewmh_SetWmIconFromPixmap(
 	FvwmWindow *fw, CARD32 *orig_icon, int *orig_size,
 	Bool is_mini_icon);
+
+FPropertyResult ewmh_read_property(Window, const char *,
+	ewmh_atom_list_name, unsigned char **, int *);
 
 #endif /* FVWM_EWMH_INTERN_H */

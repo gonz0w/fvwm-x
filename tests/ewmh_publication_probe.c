@@ -280,9 +280,10 @@ static void strut_publications(struct monitor *live, Window window)
 	for (unsigned round = 0; round < 7; round++)
 	{
 		unsigned long values[4] = { round == 4 ? 0 : 7, 0, 0, 0 };
-		Bool change_static = round == 0 || round == 1 || round == 5;
+		Bool change_static = round == 0 || round == 1 ||
+			round == 5 || round == 6;
 		Bool change_dynamic = round == 0 || round == 2 ||
-			round == 4 || round == 5;
+			round == 4 || round == 5 || round == 6;
 		rectangle expected_static, expected_dynamic;
 		XEvent event = { 0 };
 
@@ -299,8 +300,9 @@ static void strut_publications(struct monitor *live, Window window)
 		measure_work = True;
 		ewmh_WMStrut(fw, round == 5 ? NULL : &event, NULL, 0);
 		measure_work = False;
-		assert(fw[0].strut.left == 7);
-		assert(fw[0].dyn_strut.left == (round == 4 ? 0 : 7));
+		assert(fw[0].strut.left == (round == 6 ? 0 : 7));
+		assert(fw[0].dyn_strut.left ==
+			(round == 4 || round == 6 ? 0 : 7));
 		expected_static = change_static ? reference_area(&monitor, False) :
 			(rectangle){ 1, 2, 3, 4 };
 		expected_dynamic = change_dynamic ? reference_area(&monitor, True) :

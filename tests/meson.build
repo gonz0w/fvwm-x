@@ -3630,3 +3630,24 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         )
     endforeach
 endif
+
+
+ewmh_workarea_policy_test = executable(
+    'test-ewmh-workarea-policy', 'test_ewmh_workarea_policy.c',
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('ewmh-workarea-policy', ewmh_workarea_policy_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    foreach workarea_case : ['publication', 'revocation', 'bounds']
+        test('workarea-' + workarea_case + '-xvfb', py,
+            args: [files('live_x/workarea_live.py'),
+                '--fvwm', fvwm3, '--mfl', fvwm_mfl,
+                '--case', workarea_case,
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts/workarea' / workarea_case],
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            is_parallel: false, timeout: 90,
+        )
+    endforeach
+endif

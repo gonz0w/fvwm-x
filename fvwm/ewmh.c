@@ -55,6 +55,7 @@
 #include "ewmh_client_list.h"
 #include "ewmh_atom_index.h"
 #include "ewmh_desktop_policy.h"
+#include "ewmh_workarea_policy.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -503,35 +504,38 @@ void ewmh_DeleteProperty(
 	return;
 }
 
-void *ewmh_AtomGetByName(
-	Window win, const char *atom_name, ewmh_atom_list_name list,
-	int *size)
+FPropertyResult ewmh_read_property(Window win, const char *atom_name,
+	ewmh_atom_list_name list, unsigned char **data, int *size)
 {
 	ewmh_atom *a;
-	void *data = NULL;
+	size_t bytes = 0;
+	FPropertyResult result = FPROPERTY_MISSING;
 
+	*data = NULL;
 	*size = 0;
 	if ((a = get_ewmh_atom_by_name(atom_name, list)) != NULL)
 	{
-		size_t bytes;
-		unsigned char *reply = NULL;
 		int format = a->atom_type == XA_UTF8_STRING ? 8 : 32;
 		FPropertyLimits limits = fvwm_ewmh_property_limits(atom_name, format);
-		FPropertyResult result = FPropertyRead(dpy, win, a->atom,
-		    a->atom_type, limits, &reply, &bytes);
-		if (result == FPROPERTY_OK)
-		{
-			data = reply;
-			*size = (int)bytes;
-		}
-		else if (result != FPROPERTY_MISSING)
-		{
-			fvwm_debug(__func__,
-			    "Ignoring invalid property %s on %#lx (%d)",
-			    atom_name, win, result);
-		}
-	}
 
+		result = FPropertyRead(dpy, win, a->atom, a->atom_type,
+			limits, data, &bytes);
+		if (result == FPROPERTY_OK)
+			*size = (int)bytes;
+		else if (result != FPROPERTY_MISSING)
+			fvwm_debug(__func__,
+				"Ignoring invalid property %s on %#lx (%d)",
+				atom_name, win, result);
+	}
+	return result;
+}
+
+void *ewmh_AtomGetByName(Window win, const char *atom_name,
+	ewmh_atom_list_name list, int *size)
+{
+	unsigned char *data;
+
+	ewmh_read_property(win, atom_name, list, &data, size);
 	return data;
 }
 
@@ -588,6 +592,51 @@ void EWMH_SetCurrentDesktop(struct monitor *m)
 	return;
 }
 
+/* Legacy full-edge struts use root coordinates. Retain the existing sticky
+ * page selection and publishing monitor's base policy; monitor/root authority
+ * and partial-strut adoption have separate owners. Desk-local panels reserve
+ * only their own desktop; sticky-across-desks panels reserve every desktop. */
+static void merge_root_strut(long edges[4], const ewmh_strut *strut)
+{
+	edges[0] = max(edges[0], strut->left);
+	edges[1] = max(edges[1], strut->right);
+	edges[2] = max(edges[2], strut->top);
+	edges[3] = max(edges[3], strut->bottom);
+}
+
+static void desktop_workareas(struct monitor *m, unsigned count,
+	unsigned width, unsigned height, long *work)
+{
+	long common[4] = { max(0, m->ewmhc.BaseStrut.left),
+		max(0, m->ewmhc.BaseStrut.right),
+		max(0, m->ewmhc.BaseStrut.top),
+		max(0, m->ewmhc.BaseStrut.bottom) };
+	FvwmWindow *fw;
+
+	memset(work, 0, (size_t)count * 4 * sizeof(*work));
+	/* Each window contributes once. Shared reservations are merged once
+	 * after the walk, keeping work linear in windows plus bounded desks. */
+	for (fw = Scr.FvwmRoot.next; fw != NULL; fw = fw->next)
+	{
+		if (DO_EWMH_IGNORE_STRUT_HINTS(fw) ||
+		    !IS_STICKY_ACROSS_PAGES(fw))
+			continue;
+		if (IS_STICKY_ACROSS_DESKS(fw))
+			merge_root_strut(common, &fw->dyn_strut);
+		else if (fw->Desk >= 0 && (unsigned)fw->Desk < count)
+			merge_root_strut(work + (size_t)fw->Desk * 4,
+				&fw->dyn_strut);
+	}
+	for (unsigned i = 0; i < count; i++)
+	{
+		uint32_t edges[4];
+
+		for (unsigned edge = 0; edge < 4; edge++)
+			edges[edge] = max(common[edge], work[i * 4 + edge]);
+		fvwm_ewmh_workarea(width, height, edges, work + i * 4);
+	}
+}
+
 /* Prepare all bounded arrays before publishing dependent root properties.
  * X request ordering is preserved; this is not an atomic server transaction. */
 static Bool publish_desktop_snapshot(struct monitor *m, unsigned count)
@@ -598,19 +647,17 @@ static Bool publish_desktop_snapshot(struct monitor *m, unsigned count)
 	long number = count;
 
 	if (global == NULL || global->si == NULL ||
+	    global->si->w <= 0 || global->si->h <= 0 ||
 	    !fvwm_ewmh_desktop_count(count, -1, -1, 0,
 		XMaxRequestSize(dpy), &checked) || checked != count)
 		return False;
 	values = fxmalloc((size_t)count * 6 * sizeof(*values));
 	work = values + (size_t)count * 2;
+	desktop_workareas(m, count, global->si->w, global->si->h, work);
 	for (unsigned i = 0; i < count; i++)
 	{
 		values[i * 2] = m->virtual_scr.Vx;
 		values[i * 2 + 1] = m->virtual_scr.Vy;
-		work[i * 4] = global->si->x;
-		work[i * 4 + 1] = global->si->y;
-		work[i * 4 + 2] = global->si->w;
-		work[i * 4 + 3] = global->si->h;
 	}
 	m->ewmhc.CurrentNumberOfDesktops = count;
 	ewmh_ChangeProperty(Scr.Root, "_NET_NUMBER_OF_DESKTOPS",
@@ -703,6 +750,11 @@ void EWMH_SetWMDesktop(FvwmWindow *fw)
 	ewmh_ChangeProperty(
 		FW_W(fw), "_NET_WM_DESKTOP", EWMH_ATOM_LIST_CLIENT_WIN,
 		(unsigned char *)&desk, 1);
+
+	if (IS_STICKY_ACROSS_PAGES(fw) &&
+	    (fw->dyn_strut.left || fw->dyn_strut.right ||
+	     fw->dyn_strut.top || fw->dyn_strut.bottom))
+		ewmh_SetWorkArea(m);
 
 	return;
 }
@@ -1794,6 +1846,7 @@ void EWMH_WindowDestroyed(void)
 		EWMH_SetNumberOfDesktops(m);
 	}
 	EWMH_UpdateWorkArea(m);
+	ewmh_SetWorkArea(m);
 
 	return;
 }

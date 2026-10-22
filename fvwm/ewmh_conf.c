@@ -218,6 +218,7 @@ set_ewmhc_strut_values(struct monitor *m, int *val)
 		m->ewmhc.BaseStrut.bottom = val[3];
 
 		EWMH_UpdateWorkArea(m);
+		ewmh_SetWorkArea(m);
 	}
 }
 

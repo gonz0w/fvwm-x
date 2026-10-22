@@ -6709,6 +6709,21 @@ and in the maximize command. _EWMHIgnoreStrutHints_ causes fvwm to
 ignore such hints, as _EWMHUseStrutHints_, causes fvwm to use it which
 is the default.
 +
+Legacy _NET_WM_STRUT reservations must contain exactly four CARDINAL/32
+root-edge distances. Opposing distances must fit the root width or height;
+invalid replacements retain the previous accepted reservation. Deleting the
+property releases both the static and dynamic reservation. An all-zero value
+releases the dynamic reservation while retaining the previous nonzero static
+reservation for auto-hiding panels.
++
+The published _NET_WORKAREA uses current dynamic reservations from windows
+sticky across pages and the publishing monitor's base struts, separately for
+each desktop. A window sticky across desktops reserves all published desktops.
+Coordinates are actual pixels relative to the viewport; page movement does not
+add virtual-page offsets. Overlapping reservations can leave an empty work area.
+Partial struts and independent monitor desktop/root authority remain separate
+limitations.
++
 _EWMHIgnoreStateHints_ causes fvwm to ignore initial EWMH state hints
 when a new window is mapped. The default _EWMHUseStateHints_ causes
 fvwm to accept such hints.

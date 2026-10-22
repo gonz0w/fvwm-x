@@ -34,7 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Desktop root publication, EWMH-01 / DATA-01 / INPUT-01 | Locally qualified; PR #146 for maintainer review | Three pager-index, count-adoption and bounded dependent-array repairs pass 2340 standard / 22 selected optional entries across six targets, four scoped sanitizer entries, ten fresh installs and four authenticated BSD displays. Original configure/manual-observer failures and independent old-core controls remain explicit. [Report](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). |
+| Desktop root publication, EWMH-01 / DATA-01 / INPUT-01 | Merged in PR #146; bounded checkpoint locally qualified | Three pager-index, count-adoption and bounded dependent-array repairs pass 2340 standard / 22 selected optional entries across six targets, four scoped sanitizer entries, ten fresh installs and four authenticated BSD displays. Original configure/manual-observer failures and independent old-core controls remain explicit. [Report](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). |
 | Manager startup handoff, SELECTION-01 / DATA-01 | Merged in PR #145; bounded checkpoint locally qualified | Three manager announcement, bounded/cancellable handoff and ownership/refusal repairs pass 2308 standard / 14 selected optional entries on six targets, four scoped sanitizer entries, ten fresh installs and four authenticated BSD displays. Original fixture failures and isolated baseline controls remain explicit. [Report](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). |
 | Xlib dependency contract, LIB-05 / MAINT-02 | Merged in PR #144; bounded checkpoint locally qualified | 2284 standard / 33 selected optional entries pass across six targets/ten profiles; 30 native configure controls, ten fresh installs and four authenticated BSD displays pass. Generated configuration hashes remain exact; dependency introspection and emitted link commands contain no direct libxkbcommon requirement. [Report](verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md). |
 | Safety/maintainability closeout | All three selected review families locally qualified; merged in PR #143 | Three final cancellation repairs pass 2276 standard / 47 selected optional entries on six targets, scoped sanitizers, ten installs and four authenticated BSD displays. Every selected stream/input/lifetime entry point has a fixed/verified or already-covered disposition. Approved stage 5 dependency work is underway; broad audit/release owners remain open. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md), [handoff criteria](#hardening-closeout). |
@@ -286,7 +286,15 @@ The LIB-05 Xlib requirement checkpoint and manager handoff are merged in
 PR144/145. Current pickup is EWMH-01 R07/R09/R10/R12: bounded pager-index
 validation, count adoption/refusal and coherent dependent arrays. Configuration
 commands remain usable; oversized publication retains the last bounded snapshot.
-The six-target combined checkpoint is locally qualified; PR146 awaits review.
+The six-target combined checkpoint is locally qualified and PR146 is merged.
+Next bounded pickup: EWMH-01 R11/W03/W06 legacy strut admission, deletion
+revocation and observable root work-area publication. Freeze acceptance at
+CARDINAL range/shape refusal with last accepted value retained, missing-property
+revocation distinct from all-zero auto-hide, per-desktop root readback, page
+shifts, base changes, ignore-style refresh and dock destruction. Preserve static
+zero-strut retention; partial struts, nonsticky-page panels, full topology and
+multi-monitor root authority remain separate. Focused checks precede one
+combined six-target checkpoint.
 Reserved-edge geometry, multi-monitor/root authority and broader selection
 transfer retain their separate owners.
 Then advance the remaining approved stage 5/6 dependencies and milestones.
@@ -322,9 +330,9 @@ Performance tracking: the due PR138→PR144 comparison uses preserved Linux
 ARM64 GCC binaries after five merged implementation checkpoints. Command-median
 ranges overlap; code/read-only grows 11,195 bytes, data 88 bytes and peak RSS
 one 4 KiB page across the safety/maintenance changes. No consistent latency
-regression is observed. PR144 is the preserved next reference at 1/5 subsequent
-merged implementation checkpoints (PR145); this unmerged desktop batch does not
-count.
+regression is observed. PR144 is the preserved next reference at 2/5 subsequent
+merged implementation checkpoints (PR145/146); this unmerged work-area batch
+does not count.
 [Observation and receipt](verification/PERFORMANCE-2026-10-21-PR144.md).
 Keep the [five-checkpoint cadence](WORKFLOW.md#periodic-performance-comparisons)
 without new benchmark builds or performance-only tuning.

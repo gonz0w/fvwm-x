@@ -770,6 +770,8 @@ class Desktop:
         self.status = dict(cpu=None, memory=None, network='Checking...', battery=None)
         self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=2)
         self.jobs = {}
+        self.operations = {}
+        self.operation_jobs = {}
         self.desk = 0
         self.last_clock = None
         self.monitor_width = 1440
@@ -983,7 +985,10 @@ class Desktop:
                 lifecycle_scope='desktop-preferences',
                 availability='available' if self.settings_ready else 'configuring',
                 failure_reason=None, persistence_error=self.persistence_error,
-                resources=['settings'], operations=['query', 'validate', 'set', 'reset', 'reload'],
+                resources=['settings', 'operations'],
+                operations=['query', 'validate', 'set', 'reset', 'reload'],
+                operation_targets=['applications', 'status'], operation_limit=16,
+                operation_retention_ms=300000,
                 notifications='invalidation-only', preview=False,
                 application_completion='unknown', service_lifecycle=False)}
         # A module request can overtake this producer's Send_ConfigInfo.
@@ -1050,6 +1055,122 @@ class Desktop:
             asynchronous_completion='unknown', preview=False)
         return {'result': result}
 
+    def expire_operations(self, now):
+        for token, record in list(self.operations.items()):
+            if record['finished'] is not None and now - record['finished'] >= 300:
+                del self.operations[token]
+
+    def operation_snapshot(self, record, summary=False):
+        value = {key: record[key] for key in
+                 ('id', 'generation', 'target', 'state', 'cancel_requested')}
+        if not summary:
+            value.update(progress=dict(completed=None, total=None, unit='unknown'),
+                application=record['application'], result=record['result'],
+                error=record['error'], worker_stop='unknown', rollback=False)
+        value['retention_ms'] = (None if record['finished'] is None else
+            max(0, int((300 - (time.monotonic() - record['finished'])) * 1000)))
+        return value
+
+    def announce_operation(self, record):
+        if record['notified'] != record['generation']:
+            self.send('SendToModule FvwmMFL MFL_OPERATION_1 ' +
+                self.settings_instance + ' ' + record['id'] + ' ' +
+                record['generation'] + ' ' + record['state'])
+            record['notified'] = record['generation']
+
+    def operation_changed(self, record, **changes):
+        if all(record[key] == value for key, value in changes.items()):
+            return
+        record.update(changes)
+        record['generation'] = secrets.token_hex(16)
+        if record['state'] in ('completed', 'failed', 'cancelled'):
+            record['finished'] = time.monotonic()
+            # Coalesce intermediate observations, but publish terminal
+            # invalidation before a later admission can evict this record.
+            self.announce_operation(record)
+
+    def operation_request(self, request):
+        def error(code):
+            return {'error': {'code': code}}
+        if not isinstance(request, dict):
+            return error('invalid_request')
+        operation = request.get('operation')
+        expected = {'resource', 'operation', 'provider'}
+        if operation in ('start', 'cancel'):
+            expected |= {'target', 'generation'}
+        elif operation == 'query':
+            if 'target' in request:
+                expected.add('target')
+        else:
+            return error('unsupported_operation')
+        if set(request) != expected or request.get('resource') != 'operations':
+            return error('invalid_request')
+        for field in ('provider', 'generation'):
+            if field in request and (not isinstance(request[field], str) or
+                    not re.fullmatch(r'[0-9a-f]{32}', request[field])):
+                return error('invalid_request')
+        if request['provider'] != self.settings_instance:
+            return None
+        if not self.settings_ready:
+            return error('provider_not_ready')
+        self.expire_operations(time.monotonic())
+        target = request.get('target')
+        if 'target' in request and not isinstance(target, str):
+            return error('invalid_request')
+        if operation == 'start':
+            if target not in ('applications', 'status'):
+                return error('unsupported_target')
+            if request['generation'] != self.settings_generation:
+                return error('stale_generation')
+            key = 'apps' if target == 'applications' else 'status'
+            if key in self.jobs or len(self.jobs) >= 4:
+                return error('operation_busy')
+            if len(self.operations) >= 16:
+                retired = next((token for token, value in self.operations.items()
+                                if value['finished'] is not None), None)
+                if retired is None:
+                    return error('operation_limit')
+                del self.operations[retired]
+            try:
+                if key == 'apps':
+                    self.submit(key, discover_apps, application_dirs())
+                else:
+                    self.submit(key, collect_status, self.system)
+            except RuntimeError:
+                return error('operation_unavailable')
+            token = secrets.token_hex(16)
+            record = dict(id=token, generation=secrets.token_hex(16),
+                target=target, state='accepted', cancel_requested=False,
+                application='not-submitted', result=None, error=None,
+                finished=None, notified=None)
+            self.operations[token] = record
+            self.operation_jobs[key] = token
+        else:
+            if target is None:
+                return {'result': dict(owner='FvwmDesktop', provider=self.settings_instance,
+                    state='observed', operations=[self.operation_snapshot(r, summary=True)
+                        for r in self.operations.values()], operation_limit=16,
+                    terminal_retention_ms=300000, disconnect='continue')}
+            if not re.fullmatch(r'[0-9a-f]{32}', target):
+                return error('invalid_request')
+            record = self.operations.get(target)
+            if record is None:
+                return error('operation_unavailable')
+            if operation == 'cancel':
+                if request['generation'] != record['generation']:
+                    return error('stale_generation')
+                if record['finished'] is not None:
+                    return error('operation_finished')
+                key = 'apps' if record['target'] == 'applications' else 'status'
+                future = self.jobs[key]
+                self.operation_changed(record, cancel_requested=True)
+                if future.cancel():
+                    del self.jobs[key]
+                    del self.operation_jobs[key]
+                    self.operation_changed(record, state='cancelled')
+        return {'result': dict(owner='FvwmDesktop', provider=self.settings_instance,
+            operation=self.operation_snapshot(record), disconnect='continue')}
+
     def handle_settings_request(self, argument):
         """Hex keeps typed data out of FVWM expansion/token interpretation.
 
@@ -1076,7 +1197,9 @@ class Desktop:
             if not re.fullmatch(r'[0-9a-f]+', encoded):
                 raise ValueError('Invalid settings payload encoding')
             request = json.loads(bytes.fromhex(encoded), object_pairs_hook=unique_pairs)
-            response = self.settings_request(request)
+            response = (self.operation_request(request)
+                if isinstance(request, dict) and request.get('resource') == 'operations'
+                else self.settings_request(request))
             if response is None:
                 return
         except (ValueError, UnicodeError, RecursionError):
@@ -1329,12 +1452,22 @@ class Desktop:
         self.menu('SlateSession', 'Session', rows)
 
     def poll_jobs(self):
+        self.expire_operations(time.monotonic())
         for key, future in list(self.jobs.items()):
+            record = self.operations.get(self.operation_jobs.get(key))
             if not future.done():
+                if record is not None and future.running():
+                    self.operation_changed(record, state='running')
                 continue
             del self.jobs[key]
+            self.operation_jobs.pop(key, None)
+            if record is not None and record['cancel_requested']:
+                self.operation_changed(record, state='cancelled')
+                continue
+            publication = False
             try:
                 value = future.result()
+                publication = True
                 if key == 'apps':
                     self.apps = value
                     self.application_menu()
@@ -1370,8 +1503,20 @@ class Desktop:
                 elif key == 'configuration':
                     self.configuration_report = dict(token=secrets.token_hex(16), result=value)
                     self.show_configuration_report(self.configuration_report['token'], 0)
+                if record is not None:
+                    result = ({'entries': len(value)} if key == 'apps' else
+                              {'status_collected': True})
+                    self.operation_changed(record, state='completed', result=result,
+                        application='submitted-to-fvwm')
             except Exception as error:
-                self.notice(str(error))
+                if record is not None:
+                    self.operation_changed(record, state='failed',
+                        error='publication_failed' if publication else 'worker_failed',
+                        application='partial-or-unknown' if publication else 'not-submitted')
+                else:
+                    self.notice(str(error))
+        for record in self.operations.values():
+            self.announce_operation(record)
 
     def handle(self, message):
         command, _, argument = message.strip().partition(' ')

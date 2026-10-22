@@ -1,0 +1,1352 @@
+{
+  "owner": "IPC-02",
+  "base": "0eddcbbc97a82d0b0e6ca8cc53691b43756b610c",
+  "integrated_reference": "3f4f7052151f110ba6f398a3451e727af4ecf8c4",
+  "status": "accumulated affected six-target cycle qualified; broader owner/release acceptance remains open",
+  "stories": [
+    "typed owned applications/status refresh admission",
+    "correlated operation status and terminal results",
+    "generation-checked queued/running cancellation",
+    "bounded retention and reconnect policy",
+    "coalesced operation invalidations"
+  ],
+  "candidate": {
+    "source_files": 2192,
+    "source_archive_sha256": "e77f63f4d0cffeed127f2bc799ec98600b44ea1b6acbc2ea637b3a90a82c5461",
+    "worktree_manifest_sha256": "7879a2acb71fc80d99bf3f4e901db39ff32252920cb5c3f4c37196f133829091",
+    "runtime_inputs": {
+      "tests/meson.build": {
+        "sha256": "61040a51ef6a441b99f77e6061114976cb36ce0e79244f60ff3085f71c3527ee",
+        "mode": 420
+      },
+      "tests/test_mfl_request.c": {
+        "sha256": "24fafa00af4a7f1281387eda44d172dfb74232fdfa1d5d4a87b05aeb9111ca17",
+        "mode": 420
+      },
+      "tests/test_desktop.py": {
+        "sha256": "c4c9aca5193866ac46f45a54c49b32c668309dfd4eef868bbb40537c01e2cf6f",
+        "mode": 420
+      },
+      "default-config/desktop.py": {
+        "sha256": "e4a6f522d50d442e1b6cc4c1c5aeb821628357a774da13eaff16ad84297c271b",
+        "mode": 493
+      },
+      "tests/live_x/mfl_operations_live.py": {
+        "sha256": "8dcad80285c28347089a503f85132b42bb0496e3d13870037a6d8fe7464443b6",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.c": {
+        "sha256": "2188fb48b182436b0443008e44ae95516564a94fe3684223bff779440e4bcff5",
+        "mode": 420
+      },
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "sha256": "6afff8ed4aeca20573f36456f36d4a70541fb6ed51122e570d9634e956d0b985",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.h": {
+        "sha256": "641463858403e5e27ef32d40736849cb3930279148c96ffc3721cf0bf7d89be3",
+        "mode": 420
+      }
+    },
+    "post_freeze_changes": "documentation/status/report only"
+  },
+  "counts": {
+    "profiles": 9,
+    "targets": 6,
+    "selected_registered_passes": 122,
+    "desktop_policy_cases_per_profile": 61,
+    "scoped_guest_sanitizer_exercises": 5,
+    "portable_passes": 177,
+    "portable_skips": 14
+  },
+  "profiles": {
+    "linux-arm64/gcc": {
+      "build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb",
+        "interaction-servicing-xvfb"
+      ],
+      "passes": 14,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+          "bytes": 5346600
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "926feed33c387538ce6b7b9692ff267ab03c93831dc51c741923c2135407330d",
+          "bytes": 404824
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "09353ba56de03f1a8bf85a63f1af2242bf8761277e53d47f2beead0f9d7de42a",
+          "bytes": 92863
+        },
+        "tests/test-mfl-request": {
+          "sha256": "423302bfe59c8061b79ff7ef15243fac56e32c3a75e458c726a78517ec0da6fb",
+          "bytes": 296296
+        },
+        "tests/test-query-json": {
+          "sha256": "52182443cb65d839ef9ae700cf424d59dca2d6ea5e40b5d0a9f9ee9da0a728f7",
+          "bytes": 400064
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "fb29e991889b4410ff3bd73e751e62c4",
+          "generation": "e3d0f1292b9742043764134a8251d640",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299946
+        },
+        "completed": {
+          "id": "b0fdc69a56c5933e0c02a456aa12f77d",
+          "generation": "d80f2d715dce548dd38f6571b8a692c3",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 0
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299947
+        },
+        "notifications": 4,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3 / json-serialization": 0.0016543865203857422,
+        "fvwm3 / desktop-policy": 0.2047874927520752,
+        "fvwm3:live-x / desktop-baseline-xvfb": 7.703400611877441,
+        "fvwm3 / mfl-stream": 0.0016207695007324219,
+        "fvwm3 / mfl-request": 0.0013577938079833984,
+        "fvwm3 / mfl-event-flags": 0.0011866092681884766,
+        "fvwm3 / core-query-json": 0.0014240741729736328,
+        "fvwm3 / module-queue-order": 0.001068115234375,
+        "fvwm3:live-x / mfl-request-xvfb": 5.242077350616455,
+        "fvwm3:live-x / mfl-core-state-xvfb": 0.17555499076843262,
+        "fvwm3:live-x / mfl-operations-xvfb": 0.3023684024810791,
+        "fvwm3:live-x / mfl-settings-xvfb": 15.591692447662354,
+        "fvwm3:live-x / mfl-stream-xvfb": 0.788123607635498,
+        "fvwm3:live-x / interaction-servicing-xvfb": 3.8322842121124268
+      },
+      "archive": "linux-arm64"
+    },
+    "linux-arm64/clang": {
+      "build": "/tmp/fvwm-module-waits-20261015/build-clang",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb",
+        "interaction-servicing-xvfb"
+      ],
+      "passes": 14,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "15014a720eda216c0f40a6dcf8c4147d413fe38cbadfe750a858531cbd3450e4",
+          "bytes": 4453984
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "4cbdaf65162afc74901576a6546125d4ecbb3f6d43dee67ce2ddaaf18dc18960",
+          "bytes": 356648
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "09353ba56de03f1a8bf85a63f1af2242bf8761277e53d47f2beead0f9d7de42a",
+          "bytes": 92863
+        },
+        "tests/test-mfl-request": {
+          "sha256": "a9b1ea7420862461852e10e40f0e5accc1677669287e2809d0a3178f1efae9d4",
+          "bytes": 263656
+        },
+        "tests/test-query-json": {
+          "sha256": "c6dc68f0fef6915f6c0d87ee483d6aac0b9a768aac12b3158addd3218ae0daa7",
+          "bytes": 354144
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "4d8d5485e53dccb97806c5172d61c5eb",
+          "generation": "34a64e27619f638c9b38938f3fc6a621",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299945
+        },
+        "completed": {
+          "id": "d268121b9f5a6233899f96298efbe9b6",
+          "generation": "c18a86d26c4064f8f6e2df55ae777f06",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 0
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299945
+        },
+        "notifications": 4,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3 / json-serialization": 0.0020072460174560547,
+        "fvwm3 / desktop-policy": 0.21631503105163574,
+        "fvwm3:live-x / desktop-baseline-xvfb": 8.048174858093262,
+        "fvwm3 / mfl-stream": 0.0023238658905029297,
+        "fvwm3 / mfl-request": 0.0018646717071533203,
+        "fvwm3 / mfl-event-flags": 0.0016756057739257812,
+        "fvwm3 / core-query-json": 0.001909494400024414,
+        "fvwm3 / module-queue-order": 0.0015454292297363281,
+        "fvwm3:live-x / mfl-request-xvfb": 5.2602972984313965,
+        "fvwm3:live-x / mfl-core-state-xvfb": 0.18201208114624023,
+        "fvwm3:live-x / mfl-operations-xvfb": 0.3543248176574707,
+        "fvwm3:live-x / mfl-settings-xvfb": 15.681929588317871,
+        "fvwm3:live-x / mfl-stream-xvfb": 0.7948920726776123,
+        "fvwm3:live-x / interaction-servicing-xvfb": 3.6793930530548096
+      },
+      "archive": "linux-arm64"
+    },
+    "linux-arm64/minimal": {
+      "build": "/tmp/fvwm-module-waits-20261015/build-minimal",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "configuration_sha256": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb",
+        "interaction-servicing-xvfb"
+      ],
+      "passes": 14,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "9f80fb6f20b486eb0d236030dba6e1693a1ceabf307eb0bc7d2837b8dcd9a857",
+          "bytes": 5153136
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "464e4308e2ccb3472f9539b252ab862b61884ff18135eb926f06c9c1e1be7f0e",
+          "bytes": 404800
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "4b829c3cb9a7dabae96fd8a39eb189de58349bf8e6552af763046af770a035f0",
+          "bytes": 92864
+        },
+        "tests/test-mfl-request": {
+          "sha256": "c8a7844639865da39d8bf9d8b5c215b43e2b024b1a1e92af8ff38759bc4a7ebe",
+          "bytes": 296296
+        },
+        "tests/test-query-json": {
+          "sha256": "2164bc55ef6a528df79ef8d8b05beb95ffdbb5f0af8fc740cf7ad9c32c0a01ab",
+          "bytes": 400072
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "382091994512cd4feea866c2be718965",
+          "generation": "d2e1285c0d23c14d0f9be8db7ee1e9db",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299945
+        },
+        "completed": {
+          "id": "dcb67d9b66f6430d9b3a48ca8458acb2",
+          "generation": "c584bb4a61f1daa1834f8fa0c730d39f",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 0
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299943
+        },
+        "notifications": 4,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3 / json-serialization": 0.0017392635345458984,
+        "fvwm3 / desktop-policy": 0.21346759796142578,
+        "fvwm3:live-x / desktop-baseline-xvfb": 7.284142255783081,
+        "fvwm3 / mfl-stream": 0.0018489360809326172,
+        "fvwm3 / mfl-request": 0.0013802051544189453,
+        "fvwm3 / mfl-event-flags": 0.001131296157836914,
+        "fvwm3 / core-query-json": 0.0014803409576416016,
+        "fvwm3 / module-queue-order": 0.0015184879302978516,
+        "fvwm3:live-x / mfl-request-xvfb": 5.2435877323150635,
+        "fvwm3:live-x / mfl-core-state-xvfb": 0.1733417510986328,
+        "fvwm3:live-x / mfl-operations-xvfb": 0.29773545265197754,
+        "fvwm3:live-x / mfl-settings-xvfb": 15.487323999404907,
+        "fvwm3:live-x / mfl-stream-xvfb": 0.7965438365936279,
+        "fvwm3:live-x / interaction-servicing-xvfb": 3.730149745941162
+      },
+      "archive": "linux-arm64"
+    },
+    "linux-amd64/gcc": {
+      "build": "/root/fvwm-module-waits-20261015/build-gcc",
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ],
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb",
+        "interaction-servicing-xvfb"
+      ],
+      "passes": 14,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "e6952e24c66567f0931ccf37584e708e53d0092bb666d81bdd57ee149bba512a",
+          "bytes": 5360824
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "d370cf9280d706715f7abc74ce3b7a077bbfd8779041b2a8caa6070ee6459a6e",
+          "bytes": 359488
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "8351be11e983d1bb8a91f0434baa9336b3f9e04d0cf3fe355486602a3cfb7552",
+          "bytes": 92847
+        },
+        "tests/test-mfl-request": {
+          "sha256": "93a70a9be8e01ff7910e958df124520f77ed735a88572b6da4fcb3dbe6748acf",
+          "bytes": 238248
+        },
+        "tests/test-query-json": {
+          "sha256": "68a623070a1fdbf213c43c729c18da2b612a7cc27b41ca1a985d7189a559334e",
+          "bytes": 354840
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "0df24a85c099e531e033b8ffcc07591b",
+          "generation": "505bed9643e61bff0f7bcb3dbcefdfe0",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299936
+        },
+        "completed": {
+          "id": "187bc441b013ec69abf6e04f45fd5302",
+          "generation": "fac051537f0a94a7f77e38eb24e5587c",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 1
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299938
+        },
+        "notifications": 3,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3 / json-serialization": 0.03252005577087402,
+        "fvwm3 / desktop-policy": 3.467752695083618,
+        "fvwm3:live-x / desktop-baseline-xvfb": 40.55793476104736,
+        "fvwm3 / mfl-stream": 0.026116132736206055,
+        "fvwm3 / mfl-request": 0.031311988830566406,
+        "fvwm3 / mfl-event-flags": 0.020516157150268555,
+        "fvwm3 / core-query-json": 0.0291748046875,
+        "fvwm3 / module-queue-order": 0.021104097366333008,
+        "fvwm3:live-x / mfl-request-xvfb": 6.2012505531311035,
+        "fvwm3:live-x / mfl-core-state-xvfb": 1.0810163021087646,
+        "fvwm3:live-x / mfl-operations-xvfb": 2.7336301803588867,
+        "fvwm3:live-x / mfl-settings-xvfb": 22.06342649459839,
+        "fvwm3:live-x / mfl-stream-xvfb": 3.2907533645629883,
+        "fvwm3:live-x / interaction-servicing-xvfb": 5.324325799942017
+      },
+      "archive": "linux-amd64"
+    },
+    "linux-amd64/clang": {
+      "build": "/root/fvwm-module-waits-20261015/build-clang",
+      "uname": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.111+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+        "x86_64"
+      ],
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb",
+        "interaction-servicing-xvfb"
+      ],
+      "passes": 14,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "2cee71d54db1b2806dd5a263c5480a4a3332cb0c137a52fd043638b1ce8abcc7",
+          "bytes": 4529960
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "5d5b3277d5c007fc7462e8185472695fbeb27958bbc4e1faac81735c98acd017",
+          "bytes": 329960
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "8351be11e983d1bb8a91f0434baa9336b3f9e04d0cf3fe355486602a3cfb7552",
+          "bytes": 92847
+        },
+        "tests/test-mfl-request": {
+          "sha256": "24723b8f295d97d7c9488f6a915d65dcc9b55045918121328f203fa714a4a47e",
+          "bytes": 215368
+        },
+        "tests/test-query-json": {
+          "sha256": "aa50d9a21395191a81a17d25ee2a4fa0a777a8d58f03926d7f94a51ff369e139",
+          "bytes": 319200
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "03f304c114d6428a6d04300684d86432",
+          "generation": "559b4f0cedc690724c1b95054cf8df96",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299940
+        },
+        "completed": {
+          "id": "7a4f5a4bc9062d377c7cede3a8ba7704",
+          "generation": "893b2c8893eaaa53598eb6d054b0c15b",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 1
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299938
+        },
+        "notifications": 4,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3 / json-serialization": 0.027657270431518555,
+        "fvwm3 / desktop-policy": 2.8022260665893555,
+        "fvwm3:live-x / desktop-baseline-xvfb": 41.867457151412964,
+        "fvwm3 / mfl-stream": 0.029803037643432617,
+        "fvwm3 / mfl-request": 0.03278374671936035,
+        "fvwm3 / mfl-event-flags": 0.020027875900268555,
+        "fvwm3 / core-query-json": 0.03202462196350098,
+        "fvwm3 / module-queue-order": 0.02110576629638672,
+        "fvwm3:live-x / mfl-request-xvfb": 6.270081996917725,
+        "fvwm3:live-x / mfl-core-state-xvfb": 1.0574495792388916,
+        "fvwm3:live-x / mfl-operations-xvfb": 2.477618932723999,
+        "fvwm3:live-x / mfl-settings-xvfb": 22.020374059677124,
+        "fvwm3:live-x / mfl-stream-xvfb": 2.6705515384674072,
+        "fvwm3:live-x / interaction-servicing-xvfb": 5.268941879272461
+      },
+      "archive": "linux-amd64"
+    },
+    "freebsd-arm64/default": {
+      "build": "/root/fvwm-module-waits-20261015/build-default",
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ],
+      "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb"
+      ],
+      "passes": 13,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "56af40ae1ae772dbd657157f4adcb261619acb0559883248be44ef8374af4ae3",
+          "bytes": 5077304
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "6568c62ec27f8fc28edac25b971ad8092ac72bfc322118caf1b663bde19b0aab",
+          "bytes": 396832
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "8db51e1ae74ab5f916e9ba5ed082555043685613facfa2c9fe5ff348011f5e81",
+          "bytes": 92853
+        },
+        "tests/test-mfl-request": {
+          "sha256": "0799720eaa912e4b31de68ce31c0a3ba2e7003680f15715ef6da1482bcf97303",
+          "bytes": 249536
+        },
+        "tests/test-query-json": {
+          "sha256": "84b86fe2df71f9fd28f6879750feb4fc30a4a178c39abb1c4e582f0dac5ecc7e",
+          "bytes": 387208
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "f9f72776f36c604d0d41c91fac61e8d1",
+          "generation": "e340639c647fce1c2c4b4fa398d2a6e1",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299942
+        },
+        "completed": {
+          "id": "bd8c82bf82a8f8aca62afa2f189fa428",
+          "generation": "bf64e38a728db85644f2821522df3c39",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 0
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299939
+        },
+        "notifications": 3,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3:json-serialization": 0.003855466842651367,
+        "fvwm3:desktop-policy": 0.24939656257629395,
+        "bsd-x - fvwm3:desktop-baseline-xvfb": 7.749743223190308,
+        "fvwm3:mfl-stream": 0.0028138160705566406,
+        "fvwm3:mfl-request": 0.0027611255645751953,
+        "fvwm3:mfl-event-flags": 0.0025358200073242188,
+        "fvwm3:core-query-json": 0.002457857131958008,
+        "fvwm3:module-queue-order": 0.0024199485778808594,
+        "bsd-x - fvwm3:mfl-request-xvfb": 5.285569906234741,
+        "bsd-x - fvwm3:mfl-core-state-xvfb": 0.13138604164123535,
+        "bsd-x - fvwm3:mfl-operations-xvfb": 0.3087344169616699,
+        "bsd-x - fvwm3:mfl-settings-xvfb": 15.586009740829468,
+        "bsd-x - fvwm3:mfl-stream-xvfb": 0.6901133060455322
+      },
+      "archive": "freebsd-arm64"
+    },
+    "freebsd-amd64/default": {
+      "build": "/root/fvwm-style-simplification-recovery-20261016/build-default",
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "amd64"
+      ],
+      "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb"
+      ],
+      "passes": 13,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "aaaa9ff7dd09033a1b975bf753f94b671cc8ef6a0ecaf9f29f437e6430361623",
+          "bytes": 5091696
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "6443d2dd22f0ed5d921aff20b5f6465c46c3cd3b6490dac53d81abbd99c99539",
+          "bytes": 405320
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "8db51e1ae74ab5f916e9ba5ed082555043685613facfa2c9fe5ff348011f5e81",
+          "bytes": 92853
+        },
+        "tests/test-mfl-request": {
+          "sha256": "9b566202f20b1ecc5bd05b87cbc5752da338e5381c34251025d0cfddd6ef76fe",
+          "bytes": 258232
+        },
+        "tests/test-query-json": {
+          "sha256": "d438e6df62ceea93590d1ed84d2c5b248d6490ca317979a9264a5470c59781c2",
+          "bytes": 395696
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "8e662d6ca203b7a78ffe350d8e0f8842",
+          "generation": "a008869dda07d504a847545cc01c9dbc",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299932
+        },
+        "completed": {
+          "id": "0c1450e3eeab9d5a017db6ab3afca9da",
+          "generation": "cf095f4da0fdacf54650c05e32dbb16d",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 0
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299935
+        },
+        "notifications": 3,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3:json-serialization": 0.036572933197021484,
+        "fvwm3:desktop-policy": 4.777911901473999,
+        "bsd-x - fvwm3:desktop-baseline-xvfb": 43.22221398353577,
+        "fvwm3:mfl-stream": 0.031200885772705078,
+        "fvwm3:mfl-request": 0.03826403617858887,
+        "fvwm3:mfl-event-flags": 0.028071165084838867,
+        "fvwm3:core-query-json": 0.03476405143737793,
+        "fvwm3:module-queue-order": 0.027657032012939453,
+        "bsd-x - fvwm3:mfl-request-xvfb": 6.437605142593384,
+        "bsd-x - fvwm3:mfl-core-state-xvfb": 1.1529672145843506,
+        "bsd-x - fvwm3:mfl-operations-xvfb": 2.7872040271759033,
+        "bsd-x - fvwm3:mfl-settings-xvfb": 22.62059998512268,
+        "bsd-x - fvwm3:mfl-stream-xvfb": 2.604098081588745
+      },
+      "archive": "freebsd-amd64"
+    },
+    "openbsd-arm64/default": {
+      "build": "/root/fvwm-ci/source/builddir-bsd",
+      "uname": [
+        "OpenBSD",
+        "openbsd.my.domain",
+        "8.0",
+        "GENERIC.MP#1",
+        "arm64"
+      ],
+      "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb"
+      ],
+      "passes": 13,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "74d3c92284aa5288b80c9b9f65bddde9d12d021730958560d12ff5b8aeb8ce64",
+          "bytes": 4922592
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "a87c78734ea950eeaa6633ae3af50188bdab8697b0145b8461bdfe55473b564f",
+          "bytes": 377744
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "8db51e1ae74ab5f916e9ba5ed082555043685613facfa2c9fe5ff348011f5e81",
+          "bytes": 92853
+        },
+        "tests/test-mfl-request": {
+          "sha256": "ea3419d8b86090b42c3cf5e793b4cc1eaa43d556f76fbda27c6314312da838ae",
+          "bytes": 244920
+        },
+        "tests/test-query-json": {
+          "sha256": "2c63a7fa3ab0c716a81c754ac460c3ad8cc74f00f89a0dda6e1123bb684eec85",
+          "bytes": 395176
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "a20e6279991fa6308a563920fdc9a200",
+          "generation": "cb2d3428e599892b962b9a15fcf1bc9a",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299939
+        },
+        "completed": {
+          "id": "641b8f0d9c0e9302201b3ad30a488300",
+          "generation": "48fe73d90611dccee0ff8e804560fce2",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 0
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299941
+        },
+        "notifications": 4,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3:json-serialization": 0.017484664916992188,
+        "fvwm3:desktop-policy": 0.7201378345489502,
+        "bsd-x - fvwm3:desktop-baseline-xvfb": 10.82093358039856,
+        "fvwm3:mfl-stream": 0.01203465461730957,
+        "fvwm3:mfl-request": 0.010837554931640625,
+        "fvwm3:mfl-event-flags": 0.012601137161254883,
+        "fvwm3:core-query-json": 0.013336658477783203,
+        "fvwm3:module-queue-order": 0.012975692749023438,
+        "bsd-x - fvwm3:mfl-request-xvfb": 5.46390438079834,
+        "bsd-x - fvwm3:mfl-core-state-xvfb": 0.33306431770324707,
+        "bsd-x - fvwm3:mfl-operations-xvfb": 0.6009833812713623,
+        "bsd-x - fvwm3:mfl-settings-xvfb": 16.072633981704712,
+        "bsd-x - fvwm3:mfl-stream-xvfb": 0.8361728191375732
+      },
+      "archive": "openbsd-arm64"
+    },
+    "openbsd-amd64/default": {
+      "build": "/root/fvwm-ci/source/builddir-bsd",
+      "uname": [
+        "OpenBSD",
+        "openbsd.my.domain",
+        "8.0",
+        "GENERIC.MP#2",
+        "amd64"
+      ],
+      "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+      "selected": [
+        "core-query-json",
+        "mfl-request",
+        "mfl-stream",
+        "mfl-event-flags",
+        "json-serialization",
+        "desktop-policy",
+        "module-queue-order",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb"
+      ],
+      "passes": 13,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "bff1d5faa18966daaf79c4f9e1a8cb55c39ebb1276a1b7cc02f86b0ed1cbfa2d",
+          "bytes": 4791704
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "2ca7b10c7097e6931b2aa56df321066110e86cbafb166da1278d88140e29bb0a",
+          "bytes": 367872
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "8db51e1ae74ab5f916e9ba5ed082555043685613facfa2c9fe5ff348011f5e81",
+          "bytes": 92853
+        },
+        "tests/test-mfl-request": {
+          "sha256": "a2425e0550533a1c929faf316e68341420e476cac347e8324f235a075b95955d",
+          "bytes": 240216
+        },
+        "tests/test-query-json": {
+          "sha256": "cc252ba29907b7435a218228d96bf0275eda6928ecc7c7c22bbebe27e366076a",
+          "bytes": 381752
+        }
+      },
+      "operation_acceptance": {
+        "status": "passed",
+        "running_cancellation": {
+          "id": "171d751349023d8803ab75a82842d66f",
+          "generation": "fbc3dde4565f572927b2363ad4cccf09",
+          "target": "applications",
+          "state": "cancelled",
+          "cancel_requested": true,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "not-submitted",
+          "result": null,
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299920
+        },
+        "completed": {
+          "id": "faa991bbb4066bc79c49a552ea1571d4",
+          "generation": "1adf998d4f49815e2b692ebb8e44dcc6",
+          "target": "applications",
+          "state": "completed",
+          "cancel_requested": false,
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "application": "submitted-to-fvwm",
+          "result": {
+            "entries": 0
+          },
+          "error": null,
+          "worker_stop": "unknown",
+          "rollback": false,
+          "retention_ms": 299925
+        },
+        "notifications": 4,
+        "disconnect_continues": true,
+        "readonly_refuses_actions": true,
+        "stale_cancel_refused": true,
+        "busy_not_admitted": true,
+        "retained_terminals": 2,
+        "backend": "first startup scan real; later scans fixture-gated then real"
+      },
+      "timings": {
+        "fvwm3:json-serialization": 0.07732486724853516,
+        "fvwm3:desktop-policy": 9.81333613395691,
+        "bsd-x - fvwm3:desktop-baseline-xvfb": 87.43651366233826,
+        "fvwm3:mfl-stream": 0.07119512557983398,
+        "fvwm3:mfl-request": 0.07471966743469238,
+        "fvwm3:mfl-event-flags": 0.06079840660095215,
+        "fvwm3:core-query-json": 0.07525825500488281,
+        "fvwm3:module-queue-order": 0.06144285202026367,
+        "bsd-x - fvwm3:mfl-request-xvfb": 8.458630084991455,
+        "bsd-x - fvwm3:mfl-core-state-xvfb": 2.862212657928467,
+        "bsd-x - fvwm3:mfl-operations-xvfb": 5.430231809616089,
+        "bsd-x - fvwm3:mfl-settings-xvfb": 28.692736387252808,
+        "bsd-x - fvwm3:mfl-stream-xvfb": 5.266408681869507
+      },
+      "archive": "openbsd-amd64"
+    }
+  },
+  "archives": {
+    "linux-arm64": {
+      "sha256": "3b8e18f454780767b942ac89c14b903a7cae9e392bf4537373989d9f6cd943c1",
+      "bytes": 1761683,
+      "files": 184
+    },
+    "linux-amd64": {
+      "sha256": "6a8ea2c859149dfa1c03db2f611437ad821f4b272c006bcabd040d283ea887d1",
+      "bytes": 1211504,
+      "files": 125
+    },
+    "freebsd-arm64": {
+      "sha256": "32d80e1f6bb43db93e0e9a0826abbaf00bfe7bb88be5a329dada22f302f5f5be",
+      "bytes": 670639,
+      "files": 58
+    },
+    "freebsd-amd64": {
+      "sha256": "09b95d5d2c6bd7a66c1b89a6cd83bc6f9ce71ea45b732ecb936cfaa9ed059638",
+      "bytes": 660141,
+      "files": 58
+    },
+    "openbsd-arm64": {
+      "sha256": "65ff275ddece05c8d61336a38dd6c4965345479346b9765008c5a6b24d4d31ff",
+      "bytes": 107014653,
+      "files": 1028
+    },
+    "openbsd-amd64": {
+      "sha256": "799b0146546a9d8c42960e39d94ea54759397471b2f2e7f52868288d845e1994",
+      "bytes": 107201921,
+      "files": 1031
+    }
+  },
+  "sanitizers": {
+    "sha256": "d568b11b26d74ca12a11e4de061599223706ac99d387083215c2db535ae2b2b4",
+    "files": 29,
+    "result": {
+      "status": "passed",
+      "scoped_exercises": 5,
+      "instrumented": "core query JSON and request policy; native MFL in operation/request/settings actual-X fixtures",
+      "core_in_X": "unchanged uninstrumented current GCC candidate",
+      "native_CPU": false
+    },
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+        "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+        "bytes": 5346600
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop": {
+        "sha256": "09353ba56de03f1a8bf85a63f1af2242bf8761277e53d47f2beead0f9d7de42a",
+        "bytes": 92863
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+        "sha256": "15a5cdc4d56ae2249f9319d68294dce211292773838c4d22217114d4da4516fe",
+        "bytes": 3083416
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-query-json": {
+        "sha256": "decf36b6f9beda7409a90d0be71d4ba4a86bbf80fb66159960e4bbd46cb275b1",
+        "bytes": 3290224
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": {
+        "sha256": "15611d4e8bbd58eca5007bcf9b9062d4a3e20c4de2e1890becbc180232e2b72c",
+        "bytes": 2758536
+      }
+    },
+    "tests": {
+      "evidence/policy-testlog.json": {
+        "entries": 2,
+        "passed": 2
+      }
+    }
+  },
+  "native_CPU_sanitizers": false,
+  "compiler_warnings": {
+    "linux-arm64/gcc": [],
+    "linux-arm64/clang": [
+      "../source/fvwm/placement.c:294:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:299:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:304:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]"
+    ],
+    "linux-arm64/minimal": [
+      "../source/fvwm/bindings.c:620:17: warning: \u2018type\u2019 may be used uninitialized [-Wmaybe-uninitialized]",
+      "../source/fvwm/menus.c:4177:51: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/menus.c:4305:20: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/menus.c:6881:34: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/move_resize.c:2623:48: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/placement.c:294:1: warning: missing initializer for field \u2018get_first_pos\u2019 of \u2018pl_algo_t\u2019 [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:299:1: warning: missing initializer for field \u2018get_first_pos\u2019 of \u2018pl_algo_t\u2019 [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:304:1: warning: missing initializer for field \u2018get_first_pos\u2019 of \u2018pl_algo_t\u2019 [-Wmissing-field-initializers]",
+      "../source/libs/FSMlib.h:783:36: warning: statement with no effect [-Wunused-value]",
+      "../source/fvwm/virtual.c:311:28: warning: this statement may fall through [-Wimplicit-fallthrough=]"
+    ],
+    "linux-amd64/gcc": [
+      "../source/fvwm/bindings.c:620:17: warning: \u2018type\u2019 may be used uninitialized [-Wmaybe-uninitialized]",
+      "../source/fvwm/menus.c:4177:51: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/menus.c:4305:20: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/menus.c:6881:34: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/move_resize.c:2623:48: warning: this statement may fall through [-Wimplicit-fallthrough=]",
+      "../source/fvwm/placement.c:294:1: warning: missing initializer for field \u2018get_first_pos\u2019 of \u2018pl_algo_t\u2019 [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:299:1: warning: missing initializer for field \u2018get_first_pos\u2019 of \u2018pl_algo_t\u2019 [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:304:1: warning: missing initializer for field \u2018get_first_pos\u2019 of \u2018pl_algo_t\u2019 [-Wmissing-field-initializers]",
+      "../source/fvwm/virtual.c:311:28: warning: this statement may fall through [-Wimplicit-fallthrough=]"
+    ],
+    "linux-amd64/clang": [
+      "../source/fvwm/placement.c:294:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:299:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:304:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]"
+    ],
+    "freebsd-arm64/default": [
+      "../source/fvwm/placement.c:294:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:299:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:304:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]"
+    ],
+    "freebsd-amd64/default": [
+      "../source/fvwm/placement.c:294:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:299:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../source/fvwm/placement.c:304:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]"
+    ],
+    "openbsd-arm64/default": [
+      "../fvwm/placement.c:294:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../fvwm/placement.c:299:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../fvwm/placement.c:304:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "ld: warning: envvar.c:332 (../libs/envvar.c:332)(libfvwm3.a.p/envvar.c.o:(envDupExpand) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()",
+      "ld: warning: cJSON.c:130 (../libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: charmap.c:130 (../libs/charmap.c:130)(libfvwm3.a.p/charmap.c.o:(charmap_table_to_string) in archive libs/libfvwm3.a): warning: strcat() is almost always misused, please use strlcat()",
+      "ld: warning: cJSON.c:130 (../libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: cJSON.c:463 (../libs/cJSON.c:463)(libfvwm3.a.p/cJSON.c.o:(cJSON_SetValuestring) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()",
+      "ld: warning: cJSON.c:130 (../libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: cJSON.c:463 (../libs/cJSON.c:463)(libfvwm3.a.p/cJSON.c.o:(cJSON_SetValuestring) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()",
+      "ld: warning: cJSON.c:130 (../libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: cJSON.c:463 (../libs/cJSON.c:463)(libfvwm3.a.p/cJSON.c.o:(cJSON_SetValuestring) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()"
+    ],
+    "openbsd-amd64/default": [
+      "../fvwm/placement.c:294:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../fvwm/placement.c:299:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "../fvwm/placement.c:304:1: warning: missing field 'get_first_pos' initializer [-Wmissing-field-initializers]",
+      "ld: warning: expand.c:1752 (../fvwm/expand.c:1752)(fvwm3.p/fvwm_expand.c.o:(expand_vars)): warning: strcpy() is almost always misused, please use strlcpy()",
+      "ld: warning: expand.c:0 (../fvwm/expand.c:0)(fvwm3.p/fvwm_expand.c.o:(expand_vars)): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: fvwm3.c:1849 (../fvwm/fvwm3.c:1849)(fvwm3.p/fvwm_fvwm3.c.o:(main)): warning: strcat() is almost always misused, please use strlcat()",
+      "ld: warning: FvwmMFL.c:904 (../modules/FvwmMFL/FvwmMFL.c:904)(modules/FvwmMFL/FvwmMFL.p/FvwmMFL.c.o:(client_read_cb)): warning: strcpy() is almost always misused, please use strlcpy()",
+      "ld: warning: cJSON.c:130 (../libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: request.c:415 (../modules/FvwmMFL/request.c:415)(tests/test-mfl-request.p/.._modules_FvwmMFL_request.c.o:(mfl_request_parse)): warning: strcpy() is almost always misused, please use strlcpy()",
+      "ld: warning: cJSON.c:130 (../libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: cJSON.c:130 (../libs/cJSON.c:130)(libfvwm3.a.p/cJSON.c.o:(cJSON_Version) in archive libs/libfvwm3.a): warning: sprintf() is often misused, please use snprintf()",
+      "ld: warning: cJSON.c:463 (../libs/cJSON.c:463)(libfvwm3.a.p/cJSON.c.o:(cJSON_SetValuestring) in archive libs/libfvwm3.a): warning: strcpy() is almost always misused, please use strlcpy()"
+    ]
+  },
+  "manual": {
+    "FvwmMFL": {
+      "source_sha256": "f5f3d2514aea2f3e877d24fd09e387f8488596466b80caf62afece9e873942db",
+      "roff_sha256": "87ebdbd62c6bd6498464537744e12a2f9c1f1c3753aa895d5b37428eec68bd69",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 10
+      }
+    },
+    "FvwmMFL-before": {
+      "source_sha256": "3790e29aab354adcc89d0ab857647ffeee2a7413ff53441cbcbdcc080662cb02",
+      "roff_sha256": "2e36b7ca0ca6cad634a857fab3cb22938c1b01b5bba3c3bde903a79488a2bd3e",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 9
+      }
+    },
+    "FvwmDesktop": {
+      "source_sha256": "9ce31f148ec40d3e422817ce7aa2bf531ab2f1195c36b4c7a1e3476f74c55f3c",
+      "roff_sha256": "eb99498cbb9fb07939172ddfca6117959cd010fc923f558b2fc2c881734f078b",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    },
+    "FvwmDesktop-before": {
+      "source_sha256": "f7487f8515b6eed13150bbf475c23d98e00fdbde8f6420651378aaaa3c06e603",
+      "roff_sha256": "4bcdffbe562d2f39df6133c7ca19b238795abb8fb38988e9437555cb7fe46632",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8
+      }
+    }
+  },
+  "retirement": [
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "capture": "/tmp/fvwm-module-waits-20261015/ipc-desktop-operations-checkpoint",
+      "archive": "/tmp/fvwm-module-waits-20261015/ipc-desktop-operations-evidence.tgz",
+      "files": 184,
+      "sha256": "3b8e18f454780767b942ac89c14b903a7cae9e392bf4537373989d9f6cd943c1",
+      "canonical_payload_and_mode_proof": true
+    },
+    {
+      "target": "linux-amd64",
+      "capture": "/root/fvwm-module-waits-20261015/ipc-desktop-operations-checkpoint",
+      "archive": "/root/fvwm-module-waits-20261015/ipc-desktop-operations-evidence.tgz",
+      "files": 125,
+      "sha256": "6a8ea2c859149dfa1c03db2f611437ad821f4b272c006bcabd040d283ea887d1",
+      "canonical_payload_and_mode_proof": true
+    },
+    {
+      "target": "freebsd-arm64",
+      "capture": "/root/fvwm-module-waits-20261015/ipc-desktop-operations-checkpoint",
+      "archive": "/root/fvwm-module-waits-20261015/ipc-desktop-operations-evidence.tgz",
+      "files": 58,
+      "sha256": "32d80e1f6bb43db93e0e9a0826abbaf00bfe7bb88be5a329dada22f302f5f5be",
+      "canonical_payload_and_mode_proof": true
+    },
+    {
+      "target": "freebsd-amd64",
+      "capture": "/root/fvwm-style-simplification-recovery-20261016/ipc-desktop-operations-checkpoint",
+      "archive": "/root/fvwm-style-simplification-recovery-20261016/ipc-desktop-operations-evidence.tgz",
+      "files": 58,
+      "sha256": "09b95d5d2c6bd7a66c1b89a6cd83bc6f9ce71ea45b732ecb936cfaa9ed059638",
+      "canonical_payload_and_mode_proof": true
+    },
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "capture": "/tmp/fvwm-module-waits-20261015/ipc-desktop-operations-asan",
+      "archive": "/tmp/fvwm-module-waits-20261015/ipc-desktop-operations-asan.tgz",
+      "files": 29,
+      "sha256": "d568b11b26d74ca12a11e4de061599223706ac99d387083215c2db535ae2b2b4",
+      "canonical_payload_and_mode_proof": true
+    },
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "capture": "/tmp/fvwm-module-waits-20261015/ipc-performance159",
+      "archive": "/tmp/fvwm-module-waits-20261015/ipc-performance159.tgz",
+      "files": 45,
+      "sha256": "26f68c32d50c2c885f1bbe581c01b597a9661bd4a21e15d2aac22cfcd7815887",
+      "canonical_payload_and_mode_proof": true
+    }
+  ],
+  "performance": {
+    "reference": "PR159",
+    "merged_since_reference": 0,
+    "after_this_merge": 1,
+    "comparison": "PERFORMANCE-2026-10-22-PR159.md",
+    "seconds": 31.438
+  },
+  "cycle": {
+    "merged": [
+      "PR158",
+      "PR159"
+    ],
+    "current": "third candidate qualified",
+    "on_merge": "use canonical merge as integrated reference; reset to 0/3",
+    "deferred": [
+      "full compiler/optional-feature/install/default-X owner/milestone/release acceptance",
+      "domain file/session/clipboard operation acceptance",
+      "native-CPU/hardware/toolkit/compositor qualification"
+    ]
+  },
+  "failures": "No frozen runtime/fixture correction or failed selected gate; inherited compiler/formatter and broader acceptance gaps remain explicit"
+}

@@ -1,0 +1,459 @@
+{
+  "status": "observed",
+  "profile": "linux-arm64-gcc-default",
+  "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+  "architecture": "aarch64",
+  "samples": 128,
+  "repetitions": 3,
+  "requested_rate": 10000,
+  "runs": [
+    {
+      "side": "baseline",
+      "repetition": 1,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr154/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr154/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-performance159/comparison/1-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 1,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr159/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-performance159/comparison/1-candidate"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 2,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr159/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-performance159/comparison/2-candidate"
+      ],
+      "status": 0
+    },
+    {
+      "side": "baseline",
+      "repetition": 2,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr154/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr154/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-performance159/comparison/2-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "baseline",
+      "repetition": 3,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr154/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr154/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-performance159/comparison/3-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 3,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr159/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-performance159/comparison/3-candidate"
+      ],
+      "status": 0
+    }
+  ],
+  "checkpoints": {
+    "baseline": {
+      "revision": "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+      "binaries": {
+        "fvwm": {
+          "path": "/tmp/fvwm-performance-reference-pr154/fvwm3",
+          "bytes": 5319768,
+          "sha256": "effc71f593e9b9e9aac12b460085de5f382668d28b4e98f1ba7d0188a479060e"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-performance-reference-pr154/FvwmMFL",
+          "bytes": 366320,
+          "sha256": "a399106d10e1858563b146420ccbbe72606de5b7a60bfbb50c515750e05670ee"
+        }
+      },
+      "wm_size": {
+        "command": [
+          "/usr/bin/size",
+          "/tmp/fvwm-performance-reference-pr154/fvwm3"
+        ],
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1085180\t  26556\t  39520\t1151256\t 119118\t/tmp/fvwm-performance-reference-pr154/fvwm3\n",
+        "stderr": "",
+        "text_bytes": 1085180,
+        "data_bytes": 26556,
+        "bss_bytes": 39520
+      }
+    },
+    "candidate": {
+      "revision": "0597fbae3750f569eeb1f637400610c3409401e7",
+      "binaries": {
+        "fvwm": {
+          "path": "/tmp/fvwm-performance-reference-pr159/fvwm3",
+          "bytes": 5346600,
+          "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+          "bytes": 398912,
+          "sha256": "5de45a80c289d421585fdf8e003ed6bf3f5ff2d716526ac67d5ba00b07cfdb7e"
+        }
+      },
+      "wm_size": {
+        "command": [
+          "/usr/bin/size",
+          "/tmp/fvwm-performance-reference-pr159/fvwm3"
+        ],
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1099301\t  27220\t  39552\t1166073\t 11caf9\t/tmp/fvwm-performance-reference-pr159/fvwm3\n",
+        "stderr": "",
+        "text_bytes": 1099301,
+        "data_bytes": 27220,
+        "bss_bytes": 39552
+      }
+    }
+  },
+  "measurement_scope": "same-host owned Xvfb; no rebuild or timing gate",
+  "profiler_inputs": [
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+      "bytes": 11212,
+      "sha256": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/geometry_transition_live.py",
+      "bytes": 32806,
+      "sha256": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357"
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py",
+      "bytes": 140988,
+      "sha256": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380"
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "idle": {
+        "commands": {
+          "median_ms": 0.3421885,
+          "median_range_ms": [
+            0.31872999999999996,
+            0.360647
+          ],
+          "p95_ms": 0.509001
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.2563705,
+          "median_range_ms": [
+            12.111537,
+            12.5788925
+          ],
+          "p95_ms": 13.40954
+        },
+        "wm_cpu_percent": 2.4737150063187134,
+        "wm_peak_rss_kib": 7200
+      },
+      "title": {
+        "commands": {
+          "median_ms": 0.346314,
+          "median_range_ms": [
+            0.34506349999999997,
+            0.35708399999999996
+          ],
+          "p95_ms": 0.854336
+        },
+        "scheduled_10ms": {
+          "median_ms": 11.803973,
+          "median_range_ms": [
+            11.717348000000001,
+            11.812431499999999
+          ],
+          "p95_ms": 12.864622
+        },
+        "wm_cpu_percent": 7.660745010183549,
+        "wm_peak_rss_kib": 7200,
+        "achieved_requests_per_second": 9998.358993011218
+      },
+      "resize": {
+        "commands": {
+          "median_ms": 0.32672999999999996,
+          "median_range_ms": [
+            0.2968555,
+            0.34252150000000003
+          ],
+          "p95_ms": 0.455918
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.3811,
+          "median_range_ms": [
+            12.287037000000002,
+            12.429892500000001
+          ],
+          "p95_ms": 13.624082
+        },
+        "wm_cpu_percent": 15.280497254508598,
+        "wm_peak_rss_kib": 7200,
+        "achieved_requests_per_second": 9997.879519593944
+      }
+    },
+    "candidate": {
+      "idle": {
+        "commands": {
+          "median_ms": 0.368564,
+          "median_range_ms": [
+            0.3589595,
+            0.3738135
+          ],
+          "p95_ms": 0.470251
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.3425375,
+          "median_range_ms": [
+            12.0879325,
+            12.4403295
+          ],
+          "p95_ms": 13.368957
+        },
+        "wm_cpu_percent": 2.472189122302576,
+        "wm_peak_rss_kib": 7196
+      },
+      "title": {
+        "commands": {
+          "median_ms": 0.3641885,
+          "median_range_ms": [
+            0.34877199999999997,
+            0.36979300000000004
+          ],
+          "p95_ms": 1.021878
+        },
+        "scheduled_10ms": {
+          "median_ms": 11.887243999999999,
+          "median_range_ms": [
+            11.803202,
+            11.953515
+          ],
+          "p95_ms": 12.882789
+        },
+        "wm_cpu_percent": 7.568238668670132,
+        "wm_peak_rss_kib": 7196,
+        "achieved_requests_per_second": 9994.07426304401
+      },
+      "resize": {
+        "commands": {
+          "median_ms": 0.33287599999999995,
+          "median_range_ms": [
+            0.325084,
+            0.34523000000000004
+          ],
+          "p95_ms": 0.484793
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.452641499999999,
+          "median_range_ms": [
+            12.4204545,
+            12.462809
+          ],
+          "p95_ms": 13.650749
+        },
+        "wm_cpu_percent": 15.920683293807535,
+        "wm_peak_rss_kib": 7196,
+        "achieved_requests_per_second": 9998.077005092387
+      }
+    }
+  },
+  "interval": {
+    "baseline_merged_pr": 154,
+    "candidate_merged_pr": 159,
+    "merged_PRs": [
+      155,
+      156,
+      157,
+      158,
+      159
+    ],
+    "unmerged_operation_candidate_included": false
+  },
+  "next_reference": {
+    "merged_pr": 159,
+    "merge": "0eddcbbc97a82d0b0e6ca8cc53691b43756b610c",
+    "runtime_commit": "0597fbae3750f569eeb1f637400610c3409401e7",
+    "directory": "/tmp/fvwm-performance-reference-pr159",
+    "files": {
+      "fvwm3": {
+        "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+        "bytes": 5346600
+      },
+      "FvwmMFL": {
+        "sha256": "5de45a80c289d421585fdf8e003ed6bf3f5ff2d716526ac67d5ba00b07cfdb7e",
+        "bytes": 398912
+      }
+    },
+    "merged_implementation_PRs_since_reference": 0
+  },
+  "binding": {
+    "baseline": {
+      "directory": "/tmp/fvwm-performance-reference-pr154",
+      "files": {
+        "fvwm3": {
+          "sha256": "effc71f593e9b9e9aac12b460085de5f382668d28b4e98f1ba7d0188a479060e",
+          "bytes": 5319768
+        },
+        "FvwmMFL": {
+          "sha256": "a399106d10e1858563b146420ccbbe72606de5b7a60bfbb50c515750e05670ee",
+          "bytes": 366320
+        }
+      },
+      "merged_pr": 154,
+      "runtime_commit": "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+      "merged_implementation_PRs_since_reference": 0
+    },
+    "candidate": {
+      "merged_pr": 159,
+      "merge": "0eddcbbc97a82d0b0e6ca8cc53691b43756b610c",
+      "runtime_commit": "0597fbae3750f569eeb1f637400610c3409401e7",
+      "directory": "/tmp/fvwm-performance-reference-pr159",
+      "files": {
+        "fvwm3": {
+          "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+          "bytes": 5346600
+        },
+        "FvwmMFL": {
+          "sha256": "5de45a80c289d421585fdf8e003ed6bf3f5ff2d716526ac67d5ba00b07cfdb7e",
+          "bytes": 398912
+        }
+      }
+    },
+    "seconds": 31.438,
+    "command": [
+      "python3",
+      "/tmp/fvwm-module-waits-20261015/source/tests/compare_performance.py",
+      "--baseline-fvwm",
+      "/tmp/fvwm-performance-reference-pr154/fvwm3",
+      "--baseline-mfl",
+      "/tmp/fvwm-performance-reference-pr154/FvwmMFL",
+      "--baseline-revision",
+      "5f898d6e0abc05a009d6e429f84ab537be47afbb",
+      "--candidate-fvwm",
+      "/tmp/fvwm-performance-reference-pr159/fvwm3",
+      "--candidate-mfl",
+      "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+      "--candidate-revision",
+      "0597fbae3750f569eeb1f637400610c3409401e7",
+      "--profile",
+      "linux-arm64-gcc-default",
+      "--artifacts-dir",
+      "/tmp/fvwm-module-waits-20261015/ipc-performance159/comparison"
+    ],
+    "compiler": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+  },
+  "canonical": {
+    "sha256": "26f68c32d50c2c885f1bbe581c01b597a9661bd4a21e15d2aac22cfcd7815887",
+    "bytes": 2743493,
+    "files": 45,
+    "complete_payload_hashes_and_modes_verified": true
+  },
+  "module_size_output": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n  71121\t   2272\t   3656\t  77049\t  12cf9\t/tmp/fvwm-performance-reference-pr154/FvwmMFL\n  82994\t   2488\t   3720\t  89202\t  15c72\t/tmp/fvwm-performance-reference-pr159/FvwmMFL\n"
+}

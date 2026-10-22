@@ -903,5 +903,140 @@ class DesktopSettingsIPC(unittest.TestCase):
                          self.instance.settings_instance)
 
 
+class DesktopOperationPolicy(unittest.TestCase):
+    def setUp(self):
+        DesktopSettingsIPC.setUp(self)
+        self.instance.pool.shutdown()
+        self.futures = []
+        class Pool:
+            def submit(pool, *args):
+                future = desktop.concurrent.futures.Future()
+                self.futures.append(future)
+                return future
+        self.instance.pool = Pool()
+
+    def request(self, operation='query', **fields):
+        return self.instance.operation_request(dict(resource='operations',
+            operation=operation, provider=self.instance.settings_instance, **fields))
+
+    def start(self, target='applications'):
+        value = self.request('start', target=target,
+                             generation=self.instance.settings_generation)
+        self.assertIn('result', value)
+        return value['result']['operation']
+
+    def test_completion_and_generation(self):
+        record = self.start()
+        self.assertEqual(record['state'], 'accepted')
+        self.futures[-1].set_running_or_notify_cancel()
+        self.instance.poll_jobs()
+        running = self.request(target=record['id'])['result']['operation']
+        self.assertEqual(running['state'], 'running')
+        self.assertIsNone(running['progress']['total'])
+        self.assertNotEqual(record['generation'], running['generation'])
+        count = len(self.commands)
+        self.instance.poll_jobs()
+        self.assertEqual(len(self.commands), count)
+        self.futures[-1].set_result([])
+        self.instance.poll_jobs()
+        finished = self.request(target=record['id'])['result']['operation']
+        self.assertEqual(finished['state'], 'completed')
+        self.assertEqual(finished['result'], {'entries': 0})
+        self.assertEqual(finished['application'], 'submitted-to-fvwm')
+        self.assertEqual(len(self.request()['result']['operations']), 1)
+
+    def test_queued_cancel_and_retained_result(self):
+        record = self.start()
+        reply = self.request('cancel', target=record['id'], generation=record['generation'])
+        self.assertEqual(reply['result']['operation']['state'], 'cancelled')
+        self.assertTrue(self.futures[-1].cancelled())
+        self.assertFalse(self.instance.jobs)
+        self.assertFalse(self.instance.operation_jobs)
+        self.assertEqual(len(self.request()['result']['operations']), 1)
+        self.assertNotIn('application_menu', ' '.join(self.commands))
+        self.assertEqual(self.request('cancel', target=record['id'],
+            generation=record['generation'])['error']['code'], 'stale_generation')
+
+    def test_running_cancel_discards_late_output(self):
+        record = self.start()
+        self.futures[-1].set_running_or_notify_cancel()
+        self.instance.poll_jobs()
+        running = self.request(target=record['id'])['result']['operation']
+        reply = self.request('cancel', target=record['id'], generation=running['generation'])
+        self.assertEqual(reply['result']['operation']['state'], 'running')
+        self.assertTrue(reply['result']['operation']['cancel_requested'])
+        self.assertIn('apps', self.instance.jobs)
+        self.commands.clear()
+        self.futures[-1].set_result([{'name': 'must-not-publish'}])
+        self.instance.poll_jobs()
+        self.assertEqual(self.instance.apps, [])
+        finished = self.request(target=record['id'])['result']['operation']
+        self.assertEqual(finished['state'], 'cancelled')
+        self.assertEqual(finished['worker_stop'], 'unknown')
+        self.assertFalse(finished['rollback'])
+        self.assertTrue(all('MFL_OPERATION_1' in c for c in self.commands))
+
+    def test_failures_do_not_expose_worker_text(self):
+        record = self.start()
+        self.futures[-1].set_exception(RuntimeError('private worker detail'))
+        self.instance.poll_jobs()
+        failure = self.request(target=record['id'])['result']['operation']
+        self.assertEqual(failure['error'], 'worker_failed')
+        self.assertEqual(failure['application'], 'not-submitted')
+        self.assertNotIn('private worker detail', ' '.join(self.commands))
+        record = self.start()
+        self.futures[-1].set_result([])
+        with patch.object(self.instance, 'application_menu', side_effect=RuntimeError('send failed')):
+            self.instance.poll_jobs()
+        failure = self.request(target=record['id'])['result']['operation']
+        self.assertEqual(failure['error'], 'publication_failed')
+        self.assertEqual(failure['application'], 'partial-or-unknown')
+
+    def test_busy_scope_readiness_and_stale(self):
+        record = self.start()
+        self.assertEqual(self.request('start', target='applications',
+            generation=self.instance.settings_generation)['error']['code'], 'operation_busy')
+        self.assertEqual(len(self.futures), 1)
+        self.assertEqual(self.request('start', target='status',
+            generation='0' * 32)['error']['code'], 'stale_generation')
+        self.assertEqual(self.request(target=None)['error']['code'], 'invalid_request')
+        self.assertEqual(self.request('start', target='exec',
+            generation=self.instance.settings_generation)['error']['code'], 'unsupported_target')
+        self.assertEqual(self.request('decide')['error']['code'], 'unsupported_operation')
+        self.assertIsNone(self.instance.operation_request(dict(resource='operations',
+            operation='query', provider='0' * 32)))
+        self.instance.settings_ready = False
+        self.assertEqual(self.request()['error']['code'], 'provider_not_ready')
+
+    def test_status_refresh_and_shared_job_capacity(self):
+        record = self.start('status')
+        self.futures[-1].set_result(dict(cpu=(10, 5), memory=None,
+                                        network='Unavailable', battery=None))
+        self.instance.poll_jobs()
+        finished = self.request(target=record['id'])['result']['operation']
+        self.assertEqual(finished['state'], 'completed')
+        self.assertEqual(finished['result'], {'status_collected': True})
+        self.instance.jobs = {str(i): desktop.concurrent.futures.Future() for i in range(4)}
+        self.assertEqual(self.request('start', target='status',
+            generation=self.instance.settings_generation)['error']['code'], 'operation_busy')
+        self.assertEqual(len(self.futures), 1)
+
+    def test_bounded_retention_and_expiry(self):
+        records = []
+        for _ in range(18):
+            record = self.start()
+            records.append(record)
+            self.futures[-1].set_result([])
+            self.instance.poll_jobs()
+        self.assertEqual(len(self.instance.operations), 16)
+        self.assertLess(len(json.dumps(self.request()['result'])), 8192)
+        self.assertEqual(self.request(target=records[0]['id'])['error']['code'],
+                         'operation_unavailable')
+        active = self.start('status')
+        self.instance.expire_operations(desktop.time.monotonic() + 301)
+        self.assertEqual(set(self.instance.operations), {active['id']})
+        self.assertLess(len(json.dumps(self.request()['result'])), 8192)
+
+
 if __name__ == '__main__':
     unittest.main()

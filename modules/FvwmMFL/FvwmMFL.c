@@ -66,6 +66,8 @@ struct client {
 	bool read_only;
 	bool provider_watch;
 	char provider_filter[33];
+	bool operation_watch;
+	char operation_filter[33];
 	struct event *resume;
 	struct event *partial;
 	struct bufferevent	*comms;
@@ -741,14 +743,16 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 			"menu-fallback", "placement", "policy"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
-			"bindings", "provider"};
+			"bindings", "provider", "operations"};
 
 		if (!request_add_strings(result, "methods", methods, 8) ||
-		    !request_add_strings(result, "resources", resources, 9) ||
+		    !request_add_strings(result, "resources", resources, 10) ||
 		    !cJSON_AddStringToObject(result, "provider_notifications",
 			"invalidation-only") ||
 		    !cJSON_AddNumberToObject(result,
 			"provider_watch_limit", 1) ||
+		    !cJSON_AddNumberToObject(result,
+			"operation_watch_limit", 1) ||
 		    !request_add_strings(result, "binding_scopes",
 			binding_scopes, 5) ||
 		    !cJSON_AddNumberToObject(result, "pending_limit",
@@ -783,6 +787,12 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		cJSON_AddStringToObject(result, "provider_filter",
 			c->provider_filter) :
 		cJSON_AddNullToObject(result, "provider_filter")))
+		goto fail;
+	if (!cJSON_AddBoolToObject(result, "operation_watch",
+		c->operation_watch) ||
+	    !(c->operation_filter[0] ? cJSON_AddStringToObject(result,
+		"operation_filter", c->operation_filter) :
+		cJSON_AddNullToObject(result, "operation_filter")))
 		goto fail;
 	list = cJSON_AddArrayToObject(result, "subscriptions");
 	if (!list)
@@ -885,18 +895,23 @@ client_request(struct client *c, const char *json)
 	if (request.kind == MFL_REQUEST_WATCH ||
 	    request.kind == MFL_REQUEST_UNWATCH)
 	{
-		c->provider_watch = request.kind == MFL_REQUEST_WATCH;
-		strcpy(c->provider_filter, request.provider);
+		bool *watch = request.operation_watch ? &c->operation_watch :
+			&c->provider_watch;
+		char *filter = request.operation_watch ? c->operation_filter :
+			c->provider_filter;
+
+		*watch = request.kind == MFL_REQUEST_WATCH;
+		strcpy(filter, request.provider);
 		result = cJSON_CreateObject();
 		if (!result)
 			return false;
 		if (!cJSON_AddStringToObject(result, "state",
-			c->provider_watch ? "watching" : "unwatched") ||
+			*watch ? "watching" : "unwatched") ||
 		    !cJSON_AddBoolToObject(result, "snapshot_required",
-			c->provider_watch) ||
-		    !(c->provider_filter[0] ?
+			*watch) ||
+		    !(filter[0] ?
 			cJSON_AddStringToObject(result, "provider",
-				c->provider_filter) :
+				filter) :
 			cJSON_AddNullToObject(result, "provider")))
 		{
 			cJSON_Delete(result);
@@ -980,6 +995,51 @@ handle_request_packet(const FvwmPacket *packet)
 			return;
 		}
 	}
+}
+
+static bool
+handle_operation_packet(const FvwmPacket *packet)
+{
+	struct client *c, *next;
+	const char *message;
+	char provider[33], operation[33], generation[33], state[10];
+	char json[288];
+	bool valid;
+	int length;
+	size_t words;
+
+	if (packet->type != M_STRING ||
+	    packet->size < FvwmPacketHeaderSize + 4)
+		return false;
+	words = packet->size - FvwmPacketHeaderSize - 3;
+	message = (const char *)(packet->body + 3);
+	if (!memchr(message, '\0', words * sizeof(unsigned long)) ||
+	    strncmp(message, "MFL_OPERATION_1 ", 16) != 0)
+		return false;
+	valid = mfl_operation_notice(message, provider, operation,
+		generation, state);
+
+	length = valid ? snprintf(json, sizeof(json),
+		"{\"operation_changed\":{\"version\":1,"
+		"\"owner\":\"FvwmDesktop\","
+		"\"provider\":\"%s\",\"id\":\"%s\",\"generation\":\"%s\","
+		"\"state\":\"%s\",\"snapshot_required\":true}}",
+		provider, operation, generation, state) :
+		snprintf(json, sizeof(json),
+			"{\"operations_invalidated\":{\"version\":1,"
+			"\"reason\":\"malformed_notice\","
+			"\"snapshot_required\":true}}");
+	for (c = TAILQ_FIRST(&clientq); c; c = next)
+	{
+		next = TAILQ_NEXT(c, entry);
+		if (!c->operation_watch || (valid && c->operation_filter[0] &&
+		    strcmp(c->operation_filter, provider) != 0))
+			continue;
+		if (length < 0 || (size_t)length >= sizeof(json) ||
+		    !mfl_queue_line(bufferevent_get_output(c->comms), json))
+			client_destroy(c);
+	}
+	return true;
 }
 
 /* Notices are invalidations, not an authoritative provider cache. The normal
@@ -1262,7 +1322,8 @@ fvwm_read(struct bufferevent *bev, void *data)
 			return;
 		}
 		handle_request_packet((FvwmPacket *)packet);
-		if (!handle_provider_packet((FvwmPacket *)packet) &&
+		if (!handle_operation_packet((FvwmPacket *)packet) &&
+		    !handle_provider_packet((FvwmPacket *)packet) &&
 		    !handle_fragment_packet((FvwmPacket *)packet))
 			broadcast_to_client((FvwmPacket *)packet);
 	}

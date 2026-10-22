@@ -15,6 +15,11 @@ No binaries are rebuilt; the Buttons development build is excluded.
 | GNU writable data | 26548 bytes | 26556 bytes |
 | BSS | 39520 bytes | 39520 bytes |
 
+Command-median ranges overlap in every workload. Title-load p95 increases
+from 0.749 to 1.087 ms in this sample; the title median is unchanged and
+other p95 observations vary slightly in either direction. CPU and peak RSS
+remain similar. No consistent latency regression is established.
+
 These are observations on one VM/container/Xvfb environment, not universal
 speed claims or timing pass thresholds. Command/timer median and p95, CPU,
 achieved load and peak RSS for all workloads remain in the

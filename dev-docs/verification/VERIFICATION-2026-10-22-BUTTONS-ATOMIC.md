@@ -34,3 +34,14 @@ Canonical owner artifacts:
 `builddir/codex-2026-10-22/buttons-atomic-updates/`.
 The due five-checkpoint [performance comparison](PERFORMANCE-2026-10-22-PR149.md)
 uses existing PR144/149 binaries, independently of this feature candidate.
+
+The first frozen checkpoint retained successful standard-profile, install and
+OpenBSD default-display feature results, but the icon fixture incorrectly
+required optional XPM support in Linux minimal and FreeBSD profiles. Its
+portable correction uses X11's base bitmap loader and passes focused Linux
+checks. Product C/header source is unchanged. Both original OpenBSD auxiliary
+PNG proofs encounter a retained directory name from the verified object cache;
+the final runner uses fresh names. All original captures remain preserved.
+The final affected selection also includes every registered test consuming
+FvwmButtons (desktop, fonts, session and packet/service/partial transport),
+with unavailable minimal-profile registrations recorded explicitly.

@@ -336,14 +336,14 @@ contributed its inventory through PR #136.
 [Baseline decision](decisions/OPENBSD-8.0-BASELINE-2026-10-20.md),
 [checkpoint](verification/VERIFICATION-2026-10-20-OPENBSD-80.md).
 
-Performance tracking: the due PR138→PR144 comparison uses preserved Linux
+Performance tracking: the due PR144→PR149 comparison uses preserved Linux
 ARM64 GCC binaries after five merged implementation checkpoints. Command-median
-ranges overlap; code/read-only grows 11,195 bytes, data 88 bytes and peak RSS
-one 4 KiB page across the safety/maintenance changes. No consistent latency
-regression is observed. PR144 is the preserved next reference at 4/5 subsequent
-merged implementation checkpoints (PR145/146/147/148); unmerged PR149 does not
-count. The next merge makes the existing-binary comparison due.
-[Observation and receipt](verification/PERFORMANCE-2026-10-21-PR144.md).
+ranges overlap; code/read-only grows 6898 bytes and writable data 8 bytes,
+with roughly unchanged RSS. Title-load p95 varies upward in this sample while
+other p95 observations are similar/lower; no consistent latency regression is
+established. PR149 is the next reference at 0/5 subsequent merged checkpoints;
+the atomic Buttons batch is unmerged.
+[Observation and receipt](verification/PERFORMANCE-2026-10-22-PR149.md).
 Keep the [five-checkpoint cadence](WORKFLOW.md#periodic-performance-comparisons)
 without new benchmark builds or performance-only tuning.
 

@@ -388,10 +388,10 @@ def run(args):
 
             # Preparation acquires actual picture-cache references. A later
             # missing icon must unwind them without replacing any old resource.
-            icon = runtime.root / 'transaction.xpm'
-            icon.write_text('/* XPM */\nstatic char *icon[] = {\n'
-                '"8 8 1 1", "x c #ffff00",\n' +
-                ',\n'.join('"xxxxxxxx"' for _ in range(8)) + '};\n')
+            icon = runtime.root / 'transaction.xbm'
+            icon.write_text('#define icon_width 8\n#define icon_height 8\n'
+                'static unsigned char icon_bits[] = {\n'
+                '0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};\n')
             for _ in range(3):
                 group(f'(alpha Icon {icon}, ActiveIcon {icon}, '
                     f'PressIcon {icon}) (beta Icon /no-such-final-icon.xpm)')

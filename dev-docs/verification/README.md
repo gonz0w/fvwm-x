@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Desktop-provider observation](VERIFICATION-2026-10-22-IPC-PROVIDER-OBSERVATION.md): three features; seven focused Linux entries (54 desktop cases), two scoped guest sanitizer exercises, source-bound evidence and deferred shared-cycle gates.
+
 - [Binding scope inspection](VERIFICATION-2026-10-22-IPC-BINDING-SCOPES.md): menu/fallback records, normalized placement controls and context/modifier policy; seven focused Linux passes and three scoped guest sanitizer exercises, with shared-cycle coverage deferred.
 
 - [Directed core state and shared IPC cycle](VERIFICATION-2026-10-22-IPC-CORE-STATE.md): topology/workspace/binding queries and provider readiness; 113 composed selected passes across six targets/nine profiles, five scoped guest sanitizer exercises, retained failures and separate release gates.

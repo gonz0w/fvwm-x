@@ -104,13 +104,15 @@ def run(args):
             writer.send(b'set echo\n')
             writer.echo('settings-started')
             serial = 0
-            def query(c=writer, scope='all', provider=None):
+            def query(c=writer, scope='all', provider=None, generation=None):
                 nonlocal serial
                 deadline = time.monotonic() + 5
                 while True:
                     serial += 1
                     token = 'query-' + str(serial)
                     fields = {} if provider is None else {'provider': provider}
+                    if generation is not None:
+                        fields['generation'] = generation
                     c.send(frame(token, resource='settings', scope=scope, **fields))
                     record = c.record()
                     assert set(record) == {'reply'}, record
@@ -142,10 +144,29 @@ def run(args):
             assert set(query(scope='group:schedule')['settings']) == {'day', 'night'}
             state = user / 'desktop-state.json'
             assert not state.exists()
+            writer.send(frame('provider-query', resource='provider', provider=snapshot['provider']))
+            provider_state = reply(writer, 'provider-query')
+            assert provider_state['lifecycle'] == 'ready'
+            assert provider_state['lifecycle_scope'] == 'desktop-preferences'
+            assert provider_state['generation'] == snapshot['generation']
+            assert not provider_state['service_lifecycle'] and not provider_state['preview']
+            assert query(provider=snapshot['provider'], generation=snapshot['generation'])['state'] == 'unchanged'
+            watcher, discovery, filtered = connect(), connect(), connect()
+            watcher.send(frame('readonly-watch', method='set_mode', mode='read-only'))
+            reply(watcher, 'readonly-watch')
+            for c, fields in [(watcher, dict(provider=snapshot['provider'])),
+                              (discovery, {}), (filtered, dict(provider='0' * 32))]:
+                c.send(frame('watch', method='watch', resource='provider', **fields))
+                assert reply(c, 'watch')['snapshot_required']
             writer.send(b'Module FvwmDesktop\n'
                         b'SendToModule FvwmDesktop barrier two-settings-owners\n')
             writer.expect_echo('two-settings-owners')
             writer.expect_echo('two-settings-owners')
+            ready_notice = discovery.record()['provider_changed']
+            assert ready_notice['provider'] != snapshot['provider']
+            assert set(ready_notice) == {'version', 'owner', 'provider', 'generation', 'snapshot_required'}
+            assert ready_notice['snapshot_required']
+
             reader.send(frame('restrict', method='set_mode', mode='read-only'))
             reply(reader, 'restrict')
             observed = query(reader)
@@ -170,6 +191,22 @@ def run(args):
             assert changed['state'] == 'committed'
             assert changed['application'] == 'submitted-to-fvwm'
             assert changed['asynchronous_completion'] == 'unknown'
+            notice = watcher.record()['provider_changed']
+            assert notice['provider'] == snapshot['provider']
+            assert notice['generation'] == changed['generation']
+            assert discovery.record()['provider_changed'] == notice
+            assert query(provider=snapshot['provider'], generation=snapshot['generation'])['state'] == 'observed'
+            filtered.send(frame('filtered-barrier', method='barrier'))
+            assert reply(filtered, 'filtered-barrier')['state'] == 'processed'
+            watcher.send(frame('unwatch', method='unwatch', resource='provider'))
+            assert reply(watcher, 'unwatch')['state'] == 'unwatched'
+            discovery.send(frame('unwatch', method='unwatch', resource='provider'))
+            reply(discovery, 'unwatch')
+            evidence['provider_observation'] = dict(provider=provider_state,
+                conditional_unchanged=True, stale_query_refresh=True,
+                configuration_ready_discovery=True, notifications_exclude_values=True,
+                read_only_watch=True, target_filter_isolated=True)
+
             saved = state.read_bytes()
             assert json.loads(saved)['palette'] == 'grove'
             assert state.stat().st_mode & 0o777 == 0o600
@@ -180,6 +217,21 @@ def run(args):
                 action('set', changed['generation'], values=values, expected='invalid_value')
                 assert state.read_bytes() == saved
             reset = action('reset', changed['generation'], scope='group:schedule')
+            watcher.send(frame('unwatched-barrier', method='barrier'))
+            assert reply(watcher, 'unwatched-barrier')['state'] == 'processed'
+
+            watcher.send(frame('rewatch', method='watch', resource='provider',
+                               provider=snapshot['provider']))
+            reply(watcher, 'rewatch')
+            writer.send(b'SendToModule FvwmMFL MFL_PROVIDER_1 bad bad\n')
+            writer.echo('malformed-provider-notice')
+            invalidated = watcher.record()['provider_invalidated']
+            assert invalidated['reason'] == 'malformed_notice'
+            assert invalidated['snapshot_required']
+            watcher.send(frame('stop-rewatch', method='unwatch', resource='provider'))
+            reply(watcher, 'stop-rewatch')
+            evidence['provider_observation']['malformed_notice_requires_resnapshot'] = True
+
             assert set(reset['settings']) == {'day', 'night'}
             assert json.loads(state.read_text())['palette'] == 'grove'
             external = json.loads(state.read_text()) | {'palette': 'ink'}
@@ -195,6 +247,18 @@ def run(args):
             # proves wait cancellation cannot retract or roll back that command.
             os.kill(core.process.pid, signal.SIGSTOP)
             stopped = True
+            watcher.send(b''.join(frame('watch-slot-' + str(i), resource='provider',
+                provider=snapshot['provider']) for i in range(8)) +
+                frame('full-watch', method='watch', resource='provider') +
+                frame('full-unwatch', method='unwatch', resource='provider'))
+            assert reply(watcher, 'full-watch')['state'] == 'watching'
+            assert reply(watcher, 'full-unwatch')['state'] == 'unwatched'
+            for i in range(8):
+                watcher.send(frame('clear-watch-' + str(i), method='cancel',
+                                   target='watch-slot-' + str(i)))
+                assert reply(watcher, 'watch-slot-' + str(i), 'error') == 'wait_cancelled'
+                reply(watcher, 'clear-watch-' + str(i))
+            evidence['provider_observation']['watch_at_pending_capacity'] = True
             writer.send(frame('cancelled-write', method='action', resource='settings',
                 operation='set', provider=snapshot['provider'],
                 generation=reloaded['generation'], values={'palette': 'dune'}) +
@@ -230,9 +294,14 @@ def run(args):
             writer.send(b'KillModule FvwmDesktop\n')
             writer.echo('settings-stopped')
             writer.send(frame('missing', resource='settings') +
+                        frame('missing-provider', resource='provider') +
                         frame('local', resource='capabilities'))
             assert reply(writer, 'local')['settings_provider_availability'] == 'on-request'
-            assert reply(writer, 'missing', 'error') == 'deadline_exceeded'
+            missing = [writer.record()['reply'] for _ in range(2)]
+            assert {r['id'] for r in missing} == {'missing', 'missing-provider'}
+            assert all(r['status'] == 'error' and
+                       r['error']['code'] == 'deadline_exceeded' for r in missing)
+            evidence['provider_observation']['absent_owner_times_out_without_cache'] = True
 
             helper.unlink()
             helper.write_text('#!/bin/sh\nexec ' + shlex.join([

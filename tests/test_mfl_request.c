@@ -504,9 +504,64 @@ static void test_core_snapshot_requests(void)
 	mfl_request_clear(&pending);
 }
 
+static void test_provider_requests(void)
+{
+	struct mfl_request request;
+	char provider[33], generation[33], line[128], query[256];
+	const char *methods[] = {"query", "watch", "unwatch"};
+
+	for (size_t i = 0; i < 3; i++)
+	{
+		snprintf(query, sizeof(query), "{\"version\":1,\"id\":\"p\","
+			"\"method\":\"%s\",\"resource\":\"provider\"}",
+			methods[i]);
+		assert(mfl_request_parse(query, &request));
+		assert(request.kind == (i == 0 ? MFL_REQUEST_PROVIDER :
+			i == 1 ? MFL_REQUEST_WATCH : MFL_REQUEST_UNWATCH));
+		assert(!mfl_request_is_action(request.kind));
+	}
+	const char *bad[] = {
+		"\"method\":\"query\",\"resource\":\"provider\","
+			"\"scope\":\"all\"",
+		"\"method\":\"watch\",\"resource\":\"provider\","
+			"\"provider\":true",
+		"\"method\":\"unwatch\",\"resource\":\"provider\","
+			"\"provider\":\"x\"",
+		"\"method\":\"action\",\"resource\":\"provider\"",
+		"\"method\":\"query\",\"resource\":\"settings\","
+			"\"generation\":\"0123456789abcdef0123456789abcdef\""};
+
+	for (size_t i = 0; i < sizeof(bad) / sizeof(bad[0]); i++)
+	{
+		snprintf(query, sizeof(query),
+			"{\"version\":1,\"id\":\"p\",%s}",
+			bad[i]);
+		assert(!mfl_request_parse(query, &request));
+	}
+	snprintf(line, sizeof(line), "MFL_PROVIDER_1 %s %s",
+		"0123456789abcdef0123456789abcdef",
+		"fedcba9876543210fedcba9876543210");
+	assert(mfl_provider_notice(line, provider, generation));
+	assert(strcmp(provider, "0123456789abcdef0123456789abcdef") == 0);
+	assert(strcmp(generation, "fedcba9876543210fedcba9876543210") == 0);
+	line[15] = 'G';
+	assert(!mfl_provider_notice(line, provider, generation));
+	assert(!provider[0] && !generation[0]);
+	assert(!mfl_provider_notice(NULL, provider, generation));
+	assert(!mfl_provider_notice("MFL_PROVIDER_1 a b extra", provider,
+		generation));
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"p\","
+		"\"method\":\"query\",\"resource\":\"settings\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"generation\":\"fedcba9876543210fedcba9876543210\"}",
+		&request));
+	assert(strstr(request.settings_payload, "generation"));
+}
+
 int main(void)
 {
 	test_core_snapshot_requests();
+	test_provider_requests();
 	test_lifecycle();
 	test_schema();
 	test_id_bounds();

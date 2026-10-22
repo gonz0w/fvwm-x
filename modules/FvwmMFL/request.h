@@ -26,6 +26,9 @@ enum mfl_request_kind {
 	MFL_REQUEST_SETTINGS_RESET,
 	MFL_REQUEST_SETTINGS_RELOAD,
 	MFL_REQUEST_SETTINGS_VALIDATE,
+	MFL_REQUEST_PROVIDER,
+	MFL_REQUEST_WATCH,
+	MFL_REQUEST_UNWATCH,
 	MFL_REQUEST_PENDING,
 	MFL_REQUEST_CANCEL,
 	MFL_REQUEST_TOPOLOGY,
@@ -41,6 +44,7 @@ struct mfl_request {
 	unsigned int limit;
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];
 	char binding_resource[16];
+	char provider[33];
 	const char *error;
 	char settings_payload[MFL_SETTINGS_INPUT_MAX + 1];
 };
@@ -67,6 +71,9 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 struct mfl_pending_request *mfl_request_find(
 	struct mfl_pending_request *pending, const char *id);
 
+/* Fixed invalidation grammar; outputs are initialized on refusal. */
+bool mfl_provider_notice(const char *text, char provider[33],
+	char generation[33]);
 bool mfl_request_is_snapshot(enum mfl_request_kind kind);
 bool mfl_request_snapshot_command(char *output, size_t capacity,
 	const struct mfl_request *request, uint64_t serial, const char *cookie);

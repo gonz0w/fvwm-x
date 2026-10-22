@@ -124,8 +124,19 @@ static bool settings_request(struct mfl_request *request,
 
 	if (!payload)
 		return false;
-	if (strcmp(values[2]->valuestring, "query") == 0 &&
-	    (seen & ~(SCOPE | PROVIDER)) == 15 &&
+	if (strcmp(values[3]->valuestring, "provider") == 0 &&
+	    strcmp(values[2]->valuestring, "query") == 0 &&
+	    (seen & ~PROVIDER) == 15 &&
+	    (!values[9] || settings_token(values[9])))
+	{
+		request->kind = MFL_REQUEST_PROVIDER;
+		operation = "provider";
+	}
+	else if (strcmp(values[3]->valuestring, "settings") != 0)
+		goto out;
+	else if (strcmp(values[2]->valuestring, "query") == 0 &&
+	    (seen & ~(SCOPE | PROVIDER | GENERATION)) == 15 &&
+	    (!values[7] || (settings_token(values[7]) && values[9])) &&
 	    (!values[5] || bounded_string(values[5], 64)) &&
 	    (!values[9] || settings_token(values[9])))
 	{
@@ -164,8 +175,7 @@ static bool settings_request(struct mfl_request *request,
 		if (!cJSON_AddStringToObject(payload, "scope",
 			values[5] ? values[5]->valuestring : "all"))
 			goto out;
-	if ((mfl_request_is_action(request->kind) ||
-	    request->kind == MFL_REQUEST_SETTINGS_VALIDATE) &&
+	if (values[7] &&
 	    !cJSON_AddStringToObject(payload, "generation", values[7]->valuestring))
 		goto out;
 	if (values[9] &&
@@ -323,7 +333,29 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	if (!cJSON_IsString(values[2]))
 		goto out;
 	if (cJSON_IsString(values[3]) &&
-	    strcmp(values[3]->valuestring, "settings") == 0)
+	    strcmp(values[3]->valuestring, "provider") == 0 &&
+	    (strcmp(values[2]->valuestring, "watch") == 0 ||
+	     strcmp(values[2]->valuestring, "unwatch") == 0))
+	{
+		bool watch = strcmp(values[2]->valuestring, "watch") == 0;
+
+		if ((watch && (seen & ~(1U << 9)) == 15 &&
+		     (!values[9] || settings_token(values[9]))) ||
+		    (!watch && seen == 15))
+		{
+			request->kind = watch ? MFL_REQUEST_WATCH :
+				MFL_REQUEST_UNWATCH;
+			if (values[9])
+				strcpy(request->provider,
+					values[9]->valuestring);
+			valid = true;
+			request->error = NULL;
+		}
+		goto out;
+	}
+	if (cJSON_IsString(values[3]) &&
+	    (strcmp(values[3]->valuestring, "settings") == 0 ||
+	     strcmp(values[3]->valuestring, "provider") == 0))
 	{
 		valid = settings_request(request, values, seen);
 		if (valid)
@@ -443,6 +475,7 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 		if (!cJSON_AddStringToObject(item, "id", p->id) ||
 		    !cJSON_AddStringToObject(item, "operation", operation) ||
 		    !cJSON_AddStringToObject(item, "resource",
+			p->kind == MFL_REQUEST_PROVIDER ? "provider" :
 			mfl_request_is_settings(p->kind) ? "settings" :
 			p->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
 			p->kind == MFL_REQUEST_WORKSPACES ? "workspaces" :
@@ -643,8 +676,9 @@ bool mfl_request_is_snapshot(enum mfl_request_kind kind)
 
 bool mfl_request_is_settings(enum mfl_request_kind kind)
 {
-	return kind >= MFL_REQUEST_SETTINGS_QUERY &&
-		kind <= MFL_REQUEST_SETTINGS_VALIDATE;
+	return (kind >= MFL_REQUEST_SETTINGS_QUERY &&
+		kind <= MFL_REQUEST_SETTINGS_VALIDATE) ||
+		kind == MFL_REQUEST_PROVIDER;
 }
 
 bool mfl_request_is_action(enum mfl_request_kind kind)
@@ -841,4 +875,25 @@ cJSON *mfl_request_result(const struct mfl_pending_request *pending)
 fail:
 	cJSON_Delete(root);
 	return NULL;
+}
+
+bool mfl_provider_notice(const char *text, char provider[33],
+	char generation[33])
+{
+	static const char prefix[] = "MFL_PROVIDER_1 ";
+	const char *tokens;
+
+	provider[0] = generation[0] = '\0';
+	if (!text || strnlen(text, sizeof(prefix) + 65) !=
+		sizeof(prefix) - 1 + 65 ||
+	    strncmp(text, prefix, sizeof(prefix) - 1) != 0)
+		return false;
+	tokens = text + sizeof(prefix) - 1;
+	if (strspn(tokens, "0123456789abcdef") != 32 || tokens[32] != ' ' ||
+	    strspn(tokens + 33, "0123456789abcdef") != 32)
+		return false;
+	memcpy(provider, tokens, 32);
+	provider[32] = '\0';
+	memcpy(generation, tokens + 33, 33);
+	return true;
 }

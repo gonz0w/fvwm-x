@@ -64,6 +64,8 @@ struct client {
 	struct event *requests;
 	struct mfl_pending_request pending[MFL_REQUEST_LIMIT];
 	bool read_only;
+	bool provider_watch;
+	char provider_filter[33];
 	struct event *resume;
 	struct event *partial;
 	struct bufferevent	*comms;
@@ -734,15 +736,19 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 	if (kind == MFL_REQUEST_CAPABILITIES)
 	{
 		const char *methods[] = {"query", "barrier", "set_mode",
-			"action", "validate", "cancel"};
+			"action", "validate", "cancel", "watch", "unwatch"};
 		const char *binding_scopes[] = {"global", "menu",
 			"menu-fallback", "placement", "policy"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
-			"bindings"};
+			"bindings", "provider"};
 
-		if (!request_add_strings(result, "methods", methods, 6) ||
-		    !request_add_strings(result, "resources", resources, 8) ||
+		if (!request_add_strings(result, "methods", methods, 8) ||
+		    !request_add_strings(result, "resources", resources, 9) ||
+		    !cJSON_AddStringToObject(result, "provider_notifications",
+			"invalidation-only") ||
+		    !cJSON_AddNumberToObject(result,
+			"provider_watch_limit", 1) ||
 		    !request_add_strings(result, "binding_scopes",
 			binding_scopes, 5) ||
 		    !cJSON_AddNumberToObject(result, "pending_limit",
@@ -770,7 +776,13 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 			goto fail;
 		return result;
 	}
-	if (!cJSON_AddBoolToObject(result, "read_only", c->read_only))
+	if (!cJSON_AddBoolToObject(result, "read_only", c->read_only) ||
+	    !cJSON_AddBoolToObject(result, "provider_watch",
+		c->provider_watch) ||
+	    !(c->provider_filter[0] ?
+		cJSON_AddStringToObject(result, "provider_filter",
+			c->provider_filter) :
+		cJSON_AddNullToObject(result, "provider_filter")))
 		goto fail;
 	list = cJSON_AddArrayToObject(result, "subscriptions");
 	if (!list)
@@ -870,6 +882,28 @@ client_request(struct client *c, const char *json)
 		return result != NULL &&
 			client_reply(c, request.id, NULL, result);
 	}
+	if (request.kind == MFL_REQUEST_WATCH ||
+	    request.kind == MFL_REQUEST_UNWATCH)
+	{
+		c->provider_watch = request.kind == MFL_REQUEST_WATCH;
+		strcpy(c->provider_filter, request.provider);
+		result = cJSON_CreateObject();
+		if (!result)
+			return false;
+		if (!cJSON_AddStringToObject(result, "state",
+			c->provider_watch ? "watching" : "unwatched") ||
+		    !cJSON_AddBoolToObject(result, "snapshot_required",
+			c->provider_watch) ||
+		    !(c->provider_filter[0] ?
+			cJSON_AddStringToObject(result, "provider",
+				c->provider_filter) :
+			cJSON_AddNullToObject(result, "provider")))
+		{
+			cJSON_Delete(result);
+			return false;
+		}
+		return client_reply(c, request.id, NULL, result);
+	}
 	if (request.kind == MFL_REQUEST_READ_ONLY)
 		c->read_only = true;
 	if (request.kind == MFL_REQUEST_READ_ONLY ||
@@ -946,6 +980,63 @@ handle_request_packet(const FvwmPacket *packet)
 			return;
 		}
 	}
+}
+
+/* Notices are invalidations, not an authoritative provider cache. The normal
+ * per-client bounded output queue disconnects slow readers independently. */
+static bool
+handle_provider_packet(const FvwmPacket *packet)
+{
+	struct client *c, *next;
+	const char *message;
+	char provider[33], generation[33];
+	char json[256];
+	int length;
+	size_t words;
+
+	if (packet->type != M_STRING ||
+	    packet->size < FvwmPacketHeaderSize + 4)
+		return false;
+	words = packet->size - FvwmPacketHeaderSize - 3;
+	message = (const char *)(packet->body + 3);
+	if (!memchr(message, '\0', words * sizeof(unsigned long)) ||
+	    strncmp(message, "MFL_PROVIDER_1 ", 15) != 0)
+		return false;
+	if (!mfl_provider_notice(message, provider, generation))
+	{
+		/* Unknown identity invalidates every interested snapshot. */
+		const char *invalidated =
+			"{\"provider_invalidated\":{\"version\":1,"
+			"\"owner\":\"FvwmDesktop\","
+			"\"reason\":\"malformed_notice\","
+			"\"snapshot_required\":true}}";
+
+		for (c = TAILQ_FIRST(&clientq); c; c = next)
+		{
+			next = TAILQ_NEXT(c, entry);
+			if (c->provider_watch && !mfl_queue_line(
+			    bufferevent_get_output(c->comms), invalidated))
+				client_destroy(c);
+		}
+		return true;
+	}
+	/* Both variable strings are exactly 32 lower hexadecimal bytes. */
+	length = snprintf(json, sizeof(json),
+		"{\"provider_changed\":{\"version\":1,"
+		"\"owner\":\"FvwmDesktop\",\"provider\":\"%s\","
+		"\"generation\":\"%s\",\"snapshot_required\":true}}",
+		provider, generation);
+	for (c = TAILQ_FIRST(&clientq); c; c = next)
+	{
+		next = TAILQ_NEXT(c, entry);
+		if (!c->provider_watch || (c->provider_filter[0] &&
+		    strcmp(c->provider_filter, provider) != 0))
+			continue;
+		if (length < 0 || (size_t)length >= sizeof(json) ||
+		    !mfl_queue_line(bufferevent_get_output(c->comms), json))
+			client_destroy(c);
+	}
+	return true;
 }
 
 static bool
@@ -1171,7 +1262,8 @@ fvwm_read(struct bufferevent *bev, void *data)
 			return;
 		}
 		handle_request_packet((FvwmPacket *)packet);
-		if (!handle_fragment_packet((FvwmPacket *)packet))
+		if (!handle_provider_packet((FvwmPacket *)packet) &&
+		    !handle_fragment_packet((FvwmPacket *)packet))
 			broadcast_to_client((FvwmPacket *)packet);
 	}
 	if (evbuffer_get_length(bufferevent_get_input(bev)) != 0)

@@ -344,6 +344,92 @@ If a future registry exceeds the reply bound, the result can omit `settings`
 with `settings_unavailable: "reply_too_large"`; query a smaller scope. An
 already committed action retains its outcome and generation.
 
+=== Observe the desktop provider
+
+The `provider` resource currently describes the configured FvwmDesktop preference
+owner. It shares settings' bounded directed request/reply transport:
+
+....
+request {"version":1,"id":"owner-1","method":"query","resource":"provider"}
+request {"version":1,"id":"owner-2","method":"query","resource":"provider","provider":"0123456789abcdef0123456789abcdef"}
+....
+
+Omitting `provider` discovers an instance; if several are running, the first
+reply wins. This is not an inventory of all instances. Use the returned exact
+32-character lowercase hexadecimal provider identity for subsequent requests.
+The result includes `owner: "FvwmDesktop"`, `schema_version: 1`, `provider`,
+settings `generation`, `resources: ["settings"]`, supported `operations`,
+`notifications: "invalidation-only"` and `preview: false`.
+
+`lifecycle_scope: "desktop-preferences"` limits `lifecycle` to initial module
+configuration: `starting` with `availability: "configuring"`, or `ready` with
+`availability: "available"`. Unlike settings queries, this query can report
+starting before END_CONFIG_INFO. Availability does not promise a successful
+future file write. `persistence_error` reports a known settings-load problem;
+`failure_reason` is otherwise null. Actions still recheck their generation,
+values and persistence conditions. `application_completion: "unknown"` and
+`service_lifecycle: false` are explicit: this does not manage session services,
+confirm painted state, infer process death or certify a power/locker backend.
+An absent/stalled provider or obsolete target reaches `deadline_exceeded`.
+
+To avoid fetching unchanged preference metadata, a settings query may include
+both its exact provider and last observed generation:
+
+....
+request {"version":1,"id":"preferences-2","method":"query","resource":"settings","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","scope":"all"}
+....
+
+If the preference generation matches, the result contains `state: "unchanged"`,
+`scope`, identity/generation and `snapshot_required: false`, with no `settings`.
+If it differs, return the usual complete observed result for that scope. Scope
+validation still runs; malformed tokens or generation without provider are
+refused. The token identifies saved/effective preferences, not repaint,
+application submission, external file changes, clock-driven theme appearance or
+liveness. A client needs its own valid cache for the requested scope; the helper
+does not know which earlier fields that client retained.
+
+Opt into preference invalidations with `watch`; `unwatch` removes the interest:
+
+....
+request {"version":1,"id":"watch-1","method":"watch","resource":"provider"}
+request {"version":1,"id":"watch-2","method":"watch","resource":"provider","provider":"0123456789abcdef0123456789abcdef"}
+request {"version":1,"id":"stop-watch","method":"unwatch","resource":"provider"}
+....
+
+One watch belongs to each connection. A later watch replaces its filter; omit
+provider to observe all FvwmDesktop instances or supply one exact identity.
+Unwatch accepts no provider filter. Both methods work in read-only mode and
+at pending-request capacity without consuming a slot. Their correlated results
+have `state: "watching"`/`"unwatched"`, the filter as `provider` (or null), and
+`snapshot_required` true/false. Connection queries expose `provider_watch` and
+`provider_filter`. This interest is independent of legacy set/unset event flags.
+
+After configuration readiness and accepted preference changes/reload, watchers
+receive a separate JSON record, without preference values or action text:
+
+....
+{"provider_changed":{"version":1,"owner":"FvwmDesktop","provider":"0123456789abcdef0123456789abcdef","generation":"fedcba9876543210fedcba9876543210","snapshot_required":true}}
+....
+
+Treat each notice as invalidation, not an applied-action result or authoritative
+snapshot. Register the watch first, then query a fresh snapshot; the watch
+acknowledgement always requires that query. A notice can interleave with replies.
+If a notice races a query, fetch again before trusting cached values. Reconnects
+lose the watch and all history: re-register and query. No event replay, provider
+cache or subscription history is retained by MFL. Startup of a replacement
+helper announces its new identity to unfiltered watchers; an exact old-identity
+filter cannot discover its replacement. Helper death itself produces no notice;
+use bounded queries and SESSION's future lifecycle contract for that distinction.
+
+Malformed internal notices cannot safely identify an owner. Interested clients
+instead receive `provider_invalidated` with version 1, owner FvwmDesktop,
+`reason: "malformed_notice"` and `snapshot_required: true`; discard the affected
+cache and query again. Notices use the same bounded per-client output queue as
+other events. An unqueueable/slow consumer disconnects independently; it must
+resnapshot after reconnecting. There is no unbounded notification backlog or
+authority to roll back a submitted change. Existing shared-X/local-peer trust
+limits still apply; tokens and notices are not authentication.
+
 === Validate settings without saving
 
 Use `method: "validate"`, `resource: "settings"`, the observed `provider` and

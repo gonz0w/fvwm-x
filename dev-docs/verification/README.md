@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Non-executing desktop configuration checks](VERIFICATION-2026-10-22-CONFIG-CHECKER.md): bounded literal settings/Read analysis, exact source/include diagnostics, offline text/JSON and native paged reports; six-target affected checkpoint with retained native foundation.
+
 - [Grouped desktop settings editor](VERIFICATION-2026-10-22-SETTINGS-EDITOR.md): atomic grouped Apply, unsaved scoped Defaults/Cancel and bounded stale-consumer retirement; six-target functional qualification, actual-X screenshots and explicit existing Form exit-cleanup diagnostic.
 
 - [Typed desktop settings](VERIFICATION-2026-10-22-DESKTOP-SETTINGS.md): merged PR151; registry/query, private persistence, saved/effective separation and native settings menus. Live preview remains open.

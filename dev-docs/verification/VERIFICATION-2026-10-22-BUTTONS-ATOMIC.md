@@ -1,70 +1,68 @@
 # Atomic grouped button updates — BUTTON-02
 
-Implemented; focused Linux policy, native nested-X and existing transport checks
-pass. Combined qualification is pending. This checkpoint finishes one coherent
-button update contract through three related behavior improvements:
+The complete bounded per-module update contract is locally qualified for
+maintainer review. `ChangeButtons` validates an entire group, prepares its
+strings and icons, commits all values, then reconciles focus and repaints once.
+Refusal leaves button state and pending activation intact. Legacy `ChangeButton`
+keeps its incremental behavior. This completes BUTTON-02 on merge; CFG-01 is next.
 
-- Bounded whole-group parsing and validation, including duplicate selectors,
-  properties, exact numeric selectors, values and existing colorset references.
-- Operation-owned string/icon preparation and complete resource cleanup on refusal.
-- Commit every property before final-state focus/held-key reconciliation and one
-  bounded repaint pass; preserve IDs, actions, window identity and legacy
-  incremental ChangeButton behavior.
+This checkpoint stays together because parsing, resource ownership and final-state
+focus repair must form one transaction. It does not add settings, layout changes,
+a new toolkit, a compositor or a configuration migration.
 
-The additive ChangeButtons command accepts at most 8192 bytes, 32 buttons and
-128 changes. It is a logical per-module transaction, not a display-frame or
-whole-WM transaction. Image loading remains synchronous within the isolated
-module and follows existing image limits. Existing FVWM configuration syntax
-and commands require no migration or new runtime dependency.
+| Contract | Accepted behavior |
+| --- | --- |
+| Bounded validation | At most 8192 bytes, 32 leaf buttons and 128 changes; exact values/selectors, existing palettes, no duplicate properties or aliased targets. Grid bounds are checked before cell-index arithmetic. |
+| Prepared resources | Strings and picture-cache references are operation-owned until commit; a late refusal releases all prepared resources. Explicit new normal palettes are resolved before icon loading, independent of option order. |
+| Startup recovery | Replacing a failed normal/active/press startup icon releases its still-owned filename. The freed legacy dash placeholder is cleared, preventing a stale pointer during later replacement. |
+| Final-state application | Commit every target before repairing focus/held activation, then repaint at most the 32 targets plus a replacement focus. IDs, actions and module/window identity remain stable. |
 
-Qualification will compose fresh affected module/unit/X/install/default-BSD-X
-checks across six targets/ten profiles with PR149's retained broad coverage only
-after exact frozen-source, generated configuration and unchanged installed
-consumer/data identities are proven. Core geometry and unrelated full suites
-are not rerun solely for this module change. Scoped guest ASan/UBSan includes
-leak checking. Native-CPU sanitizer, hardware/toolkit/compositor and release
-acceptance remain separate.
+The syntax, quoting, limits and examples are in the primary
+[FvwmButtons manual](../../doc/FvwmButtons.adoc). Atomicity is logical module
+state, not a simultaneous X display frame or a whole-WM transaction. Resource
+loading remains synchronous inside the isolated module under existing image
+limits; a work budget cannot preempt a blocking resource call.
 
-The original command-prefix collision was exposed by the first actual-X check
-and corrected by matching the longer additive command first. The failed capture
-is retained alongside passing focused checks. A local macOS warning-as-error
-compile refused the test's sprintf calls; they now use bounded snprintf.
+The tested candidate is `6cd5c588f0477650f20f2f68660c354bb2e7d888`, tree
+`1c49c6aab3b9af01d37d0e546765f0e611d79ca9`, based on merged PR149
+`aa0f4b99e880dcc81fede493ca3f295d90241b89`. Its 2152 source inputs are bound to archive
+SHA256 `ae1128f714e8d3daaace89e634ce1b048cf02b388d0e0975e4ca6e524224862f`. Subsequent publication changes only
+README/tracker/report/index metadata; compiled source, tests, build definitions
+and the manual retain these qualified bytes. The
+[machine receipt](VERIFICATION-2026-10-22-BUTTONS-ATOMIC.json) records each target,
+profile, source/archive, configuration, selection and installed identity.
 
-Canonical owner artifacts:
-`builddir/codex-2026-10-22/buttons-atomic-updates/`.
-The due five-checkpoint [performance comparison](PERFORMANCE-2026-10-22-PR149.md)
-uses existing PR144/149 binaries, independently of this feature candidate.
+| Qualification | Result |
+| --- | --- |
+| Fresh affected checks | 106 passes: Linux GCC/Clang on AMD64/ARM64, FreeBSD and OpenBSD 8.0 on both architectures, plus Linux ARM64 software/minimal profiles. All registered Buttons consumers are included; minimal omits four unavailable session/service/transport registrations. |
+| Retained foundation | 2332 unaffected PR149 standard entries retained after exact configuration, source-scope and unrelated installed code/data checks. Composed standard total 2420; selected optional total 18. These are not 2438 freshly executed checks. |
+| Install identity | Ten fresh stages; 150 ELF, 77 compiled catalogs and 700 other data targets verified. Every installed consumer except FvwmButtons remains identical to PR149, including all ten core WM executables. |
+| Actual X behavior | Ten staged sessions and four private authenticated default BSD displays each pass ten named feature groups. Invalid first/middle/last groups, aliases, palettes, resource refusal, startup recovery, final focus, held keys, stable actions/window, legacy behavior and unrelated-client typing pass. |
+| Sanitizers | Five source-bound guest ASan/UBSan entries pass with leak detection and no diagnostics. An unchanged instrumented control reproduces 81 leaked bytes in three allocations; the corrected startup recovery passes. |
+| Server/VM cleanup | Four default servers exit 0 and refuse unauthenticated clients. Both final OpenBSD QEMU jobs exit 0; temporary private keys are removed. |
+| Portable/manual | Portable foundation: 177 passes / 14 environment skips (191 registered), plus final documentation checks. Asciidoctor man generation and mandoc rendering pass; lint diagnostics exactly match merged main. |
 
-The first frozen checkpoint retained successful standard-profile, install and
-OpenBSD default-display feature results, but the icon fixture incorrectly
-required optional XPM support in Linux minimal and FreeBSD profiles. Its
-portable correction uses X11's base bitmap loader and passes focused Linux
-checks. Product C/header source is unchanged. The OpenBSD ARM64 auxiliary
-PNG proof encounters a retained directory name from the verified object cache;
-the final runner uses fresh names. All original captures remain preserved.
-The final affected selection also includes every registered test consuming
-FvwmButtons (desktop, fonts, session and packet/service/partial transport),
-with unavailable minimal-profile registrations recorded explicitly.
+Original failures remain preserved: the initial command-prefix collision, the
+optional-XPM fixture assumption, the OpenBSD auxiliary PNG directory collision,
+AMD64 per-pixel Python/FFI fixture timeouts, and the unchanged-module ownership
+control. The packed-image comparison preserves every rollback pixel while
+avoiding roughly 1.6 million per-pixel FFI calls. A fixture-only pending
+coordinator was stopped before dispatch to include the coordinate-bound fix.
+Incomplete attempts were not installed or promoted to qualification; final
+corrections reran affected checks rather than unrelated full suites.
 
-Source review adds an in-grid check before the existing coordinate-to-cell
-multiplication. Large but int-representable coordinates are refused before
-arithmetic; actual-X regressions cover both large coordinates and row-spilling
-column aliases. The undispatched fixture-only candidate is retained, and the
-final product candidate includes this correction.
+Canonical captures and signed-source maps are under
+`builddir/codex-2026-10-22/buttons-atomic-updates/`, with final acceptance in
+`release/`. Fully passed guest capture/archive duplicates are retired only
+after canonical payload/hash/mode checks. Source trees, incremental builds,
+install stages, performance references, VM disks and canonical evidence remain.
+Automatic approval review declined deleting failed-run guest copies because
+those diagnostics might still be relevant; those copies remain too.
 
-The original OpenBSD AMD64 fixture reaches its 90-second deadline while making
-per-pixel Python/FFI calls for whole-window rollback comparisons. The packed-image
-fixture preserves every compared pixel with one bounded buffer copy; focused
-Linux checks pass against the exact compiled product. The final affected-consumer
-checkpoint is retained with its original outcomes. Packed-fixture follow-ups
-verify unchanged module bytes and replace only affected fixture outcomes;
-unrelated consumer checks and broad suites are not repeated.
-
-Final ownership review reproduces an 81-byte, three-allocation leak with the
-unchanged instrumented module when a group replaces failed startup icon loads.
-The correction separates owned filenames from drawable flags and clears the
-freed legacy no-icon placeholder. Focused Linux policy/X and five leak-enabled
-sanitizer entries pass, including normal/active/press startup failure recovery
-and a legacy dash-placeholder replacement. This is part of the atomic resource
-contract, not a general startup rewrite. The final six-target affected-consumer
-checkpoint includes this correction and all previous fixture improvements.
+The due [PR144→149 performance comparison](PERFORMANCE-2026-10-22-PR149.md)
+uses existing binaries. Latency ranges overlap, RSS is similar, and code/data
+costs are recorded without a universal speedup claim. PR149 is the next reference
+at 0/5 subsequent merged implementation checkpoints; this feature PR is unmerged.
+Further performance tuning and unselected general maintenance remain deferred.
+Native-CPU sanitizer, physical hardware/toolkit/compositor and release acceptance
+remain separate. Inherited manual lint is still DOCS-01-owned.

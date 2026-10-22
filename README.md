@@ -12,9 +12,9 @@ compositor or native Wayland backend.
 **Status:** development. The
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) and manager-target
 prerequisite are merged. Opt-in button navigation, disabled controls and live
-presentation are merged. Bounded atomic button updates are in
-[qualification](dev-docs/verification/VERIFICATION-2026-10-22-BUTTONS-ATOMIC.md);
-settings follow. General maintenance and tuning stay in a future release.
+presentation are merged. Bounded atomic button updates are
+[ready for review](dev-docs/verification/VERIFICATION-2026-10-22-BUTTONS-ATOMIC.md);
+settings follow. Maintenance and tuning stay deferred.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

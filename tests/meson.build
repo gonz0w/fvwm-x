@@ -833,6 +833,15 @@ monitor_scale_config_test = executable(
 
 test('monitor-scale-config', monitor_scale_config_test)
 
+query_json_test = executable(
+    'test-query-json', ['test_query_json.c', '../fvwm/query_json.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('core-query-json', query_json_test)
+
 status_json_test = executable(
     'test-status-json',
     ['test_status_json.c', '../fvwm/status_json.c'],
@@ -1230,6 +1239,15 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false,
         timeout: 120,
+    )
+    test('mfl-core-state-xvfb', py,
+        args: [files('live_x/mfl_core_state_live.py'),
+            '--fvwm', fvwm3.full_path(), '--mfl', fvwm_mfl.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'mfl-core-state'],
+        depends: [fvwm3, fvwm_mfl],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
     )
     test('mfl-settings-xvfb', py,
         args: [files('live_x/mfl_settings_live.py'),

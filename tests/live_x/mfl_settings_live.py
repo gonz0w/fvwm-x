@@ -106,11 +106,21 @@ def run(args):
             serial = 0
             def query(c=writer, scope='all', provider=None):
                 nonlocal serial
-                serial += 1
-                token = 'query-' + str(serial)
-                fields = {} if provider is None else {'provider': provider}
-                c.send(frame(token, resource='settings', scope=scope, **fields))
-                return reply(c, token)
+                deadline = time.monotonic() + 5
+                while True:
+                    serial += 1
+                    token = 'query-' + str(serial)
+                    fields = {} if provider is None else {'provider': provider}
+                    c.send(frame(token, resource='settings', scope=scope, **fields))
+                    record = c.record()
+                    assert set(record) == {'reply'}, record
+                    response = record['reply']
+                    assert response['version'] == 1 and response['id'] == token, response
+                    if response['status'] == 'ok':
+                        return response['result']
+                    assert response['error']['code'] == 'provider_not_ready', response
+                    assert time.monotonic() < deadline, 'provider never configured'
+                    time.sleep(.01)
             def action(operation, generation, expected=None, c=writer, **fields):
                 nonlocal serial
                 serial += 1

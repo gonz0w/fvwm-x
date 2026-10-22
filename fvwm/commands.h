@@ -181,7 +181,8 @@ enum
 
 	/* Functions for use by modules only! */
 	F_SEND_WINDOW_LIST = 1000,
-	F_SEND_REPLY
+	F_SEND_REPLY,
+	F_SEND_QUERY
 };
 
 /* ---------------------------- exported variables (globals) --------------- */
@@ -322,6 +323,7 @@ void CMD_Schedule(F_CMD_ARGS);
 void CMD_Scroll(F_CMD_ARGS);
 void CMD_Send_ConfigInfo(F_CMD_ARGS);
 void CMD_Send_Reply(F_CMD_ARGS);
+void CMD_Send_Query(F_CMD_ARGS);
 void CMD_Send_WindowList(F_CMD_ARGS);
 void CMD_SendToModule(F_CMD_ARGS);
 void CMD_Status(F_CMD_ARGS);

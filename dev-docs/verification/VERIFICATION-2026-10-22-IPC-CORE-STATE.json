@@ -1,0 +1,1193 @@
+{
+  "owner": "IPC-02",
+  "base": "45a164ac22b6278a490b233c421ceaaf44190d41",
+  "status": "combined affected cycle qualified; broader owner/release acceptance remains open",
+  "frozen_sources": {
+    "original": "3dfd717374a5304f4169b8b42b861b28dea400723307e57da9aa315232f123ea",
+    "readiness_correction": "80286509a8a0872fa138172ecbb427a1053ff52fe82113e6fe9ce4898651fbb4",
+    "correction_runtime_delta": [
+      "default-config/desktop.py",
+      "tests/live_x/mfl_settings_live.py",
+      "tests/test_desktop.py"
+    ]
+  },
+  "publication_runtime_inputs": {
+    "libs/module_query.h": {
+      "sha256": "0f1230049f455e995f7ff0e6fa5351ca58f5a9f16a3d167e60b4abb5dca366f3",
+      "mode": 420
+    },
+    "fvwm/meson.build": {
+      "sha256": "656609dfafb7c99cd2325c655366cd7547d584b4929c99e6f130d2d0ae27767c",
+      "mode": 420
+    },
+    "tests/test_mfl_request.c": {
+      "sha256": "1a6d74fc9f031e38d1f64ae918d34ed6550f0aca188971f3e184abd2fd62c11a",
+      "mode": 420
+    },
+    "fvwm/module_interface.c": {
+      "sha256": "07272953c1b289bbcac968c7852cf342952574c7f73c3212a72cb54d9447a643",
+      "mode": 420
+    },
+    "modules/FvwmMFL/request.c": {
+      "sha256": "e521d09c32dbf68d6829fbb7b17e22ec1c822b9eed609e73a5a018218a1b0b0d",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "07349caf8bb4edf4ba4cafe45c3e8b1fe1f15816eb39cc4f715b637246051de1",
+      "mode": 420
+    },
+    "modules/FvwmMFL/request.h": {
+      "sha256": "7f66ec6e2b1cf03538625d7866bb60fe7926612676abff34cd72a2f1251932f1",
+      "mode": 420
+    },
+    "fvwm/commands.h": {
+      "sha256": "0c5eff7606d7780b4c8ecc795efd8c9e3fe208e881a7efb3e3a3af183e0fe6fa",
+      "mode": 420
+    },
+    "fvwm/bindings.h": {
+      "sha256": "3ee36e60e14db1eb3c671fa1d7c551eedd6cf340692d67505d8b0bf45a5e6d8a",
+      "mode": 420
+    },
+    "modules/FvwmMFL/FvwmMFL.c": {
+      "sha256": "c597c66337e227e38743e41c3fef4f40a94e0a20623dd6330a48024218261aad",
+      "mode": 420
+    },
+    "default-config/desktop.py": {
+      "sha256": "405603a07f1f0d95bb7df7e40ef24f8dfde05450bbb5c6efc6258feebdf22908",
+      "mode": 493
+    },
+    "perllib/FVWM/Commands.pm": {
+      "sha256": "38cc4f43a7229cfee0f0f7a06df8d5d6d092d28e2720df74e633bc003a564105",
+      "mode": 420
+    },
+    "tests/live_x/mfl_core_state_live.py": {
+      "sha256": "92210740bbe158d78d22c33d69320b36958a27deca34518bc187d9ba08c1ec69",
+      "mode": 420
+    },
+    "fvwm/bindings.c": {
+      "sha256": "f2b3fe6e87110898460f93ebb1dc33183ee7cd4431bda4a21d9348eff5c56ef8",
+      "mode": 420
+    },
+    "fvwm/query_json.c": {
+      "sha256": "bef5725d2efe746a6c16693a2479cee7f33446d285b9c2987ef618bd3925a951",
+      "mode": 420
+    },
+    "tests/test_query_json.c": {
+      "sha256": "9a3e5ecce3d860aff51ed1baa01174dcd83f0c5bb3a5c7b73efe6e55b82d5050",
+      "mode": 420
+    },
+    "tests/live_x/mfl_settings_live.py": {
+      "sha256": "8f5ecd87bd3d50ebeaf2ae7042f36c6a668d3625c341d45e19f62b3d1a9da53b",
+      "mode": 420
+    },
+    "tests/test_desktop.py": {
+      "sha256": "9232bd483f6b6dc967eefbfeb5358ea7b5fd29e84036732b7058c29cb82c381c",
+      "mode": 420
+    },
+    "fvwm/query_json.h": {
+      "sha256": "44c711d48245ee59791d27b961b9b8da1a2c339fed103621fe9d6ac21942bb6b",
+      "mode": 420
+    },
+    "fvwm/functable.c": {
+      "sha256": "7eece5c74d758938d15c6839f8c118a596d54fcb9da13ade97f518da11b3a648",
+      "mode": 420
+    }
+  },
+  "counts": {
+    "targets": 6,
+    "profiles": 9,
+    "composed_selected": 113,
+    "retained_unchanged": 74,
+    "fresh_correction_or_missing": 39,
+    "scoped_sanitizer": 5,
+    "sanitizer_retained": 4,
+    "sanitizer_settings_followup": 1,
+    "portable_passed": 177,
+    "portable_skipped": 14
+  },
+  "profiles": {
+    "fvwm-x-linux-arm64-svg/gcc": {
+      "retained": [
+        {
+          "name": "fvwm3 / json-serialization",
+          "result": "OK",
+          "seconds": 0.0019495487213134766
+        },
+        {
+          "name": "fvwm3:live-x / desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 7.845195531845093
+        },
+        {
+          "name": "fvwm3 / mfl-stream",
+          "result": "OK",
+          "seconds": 0.0019888877868652344
+        },
+        {
+          "name": "fvwm3 / mfl-request",
+          "result": "OK",
+          "seconds": 0.0016286373138427734
+        },
+        {
+          "name": "fvwm3 / mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.0019364356994628906
+        },
+        {
+          "name": "fvwm3 / core-query-json",
+          "result": "OK",
+          "seconds": 0.0019073486328125
+        },
+        {
+          "name": "fvwm3 / module-queue-order",
+          "result": "OK",
+          "seconds": 0.0017235279083251953
+        },
+        {
+          "name": "fvwm3:live-x / mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 5.241969347000122
+        },
+        {
+          "name": "fvwm3:live-x / mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 0.1758134365081787
+        },
+        {
+          "name": "fvwm3:live-x / mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 0.7963354587554932
+        },
+        {
+          "name": "fvwm3:live-x / interaction-servicing-xvfb",
+          "result": "OK",
+          "seconds": 3.8964858055114746
+        }
+      ],
+      "fresh": [
+        {
+          "name": "fvwm3 / desktop-policy",
+          "result": "OK",
+          "seconds": 0.21074485778808594
+        },
+        {
+          "name": "fvwm3:live-x / mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 15.586003303527832
+        }
+      ],
+      "actual": {
+        "build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "fresh_tests": 2,
+        "selected": [
+          "desktop-policy",
+          "mfl-settings-xvfb"
+        ],
+        "retained_core_sha256": "c46701f7af819df1aee63d8eb9fbc5b2d4a6667ed34751d6bdea96f6343c5885",
+        "retained_mfl_sha256": "cf991bf76e3e2b660ca67ab2cb45445a024fe90f033d74db22223721e0fe92e7",
+        "binary_identities": {
+          "fvwm3": "c46701f7af819df1aee63d8eb9fbc5b2d4a6667ed34751d6bdea96f6343c5885",
+          "modules/FvwmMFL/FvwmMFL": "cf991bf76e3e2b660ca67ab2cb45445a024fe90f033d74db22223721e0fe92e7",
+          "default-config/FvwmDesktop": "f781a64664300d796fac05b3654933cc2fe9c8ecc5606e1f4ef99c28ca020140"
+        },
+        "configuration": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+      },
+      "evidence": "be82c5a1ce7e004e7e2384f4f3a537a2305145f1cb2ffd2068351a42b7aae936"
+    },
+    "fvwm-x-linux-arm64-svg/clang": {
+      "retained": [
+        {
+          "name": "fvwm3 / json-serialization",
+          "result": "OK",
+          "seconds": 0.0020101070404052734
+        },
+        {
+          "name": "fvwm3:live-x / desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 8.090087413787842
+        },
+        {
+          "name": "fvwm3 / mfl-stream",
+          "result": "OK",
+          "seconds": 0.0015063285827636719
+        },
+        {
+          "name": "fvwm3 / mfl-request",
+          "result": "OK",
+          "seconds": 0.0012564659118652344
+        },
+        {
+          "name": "fvwm3 / mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.0010323524475097656
+        },
+        {
+          "name": "fvwm3 / core-query-json",
+          "result": "OK",
+          "seconds": 0.0014200210571289062
+        },
+        {
+          "name": "fvwm3 / module-queue-order",
+          "result": "OK",
+          "seconds": 0.0013153553009033203
+        },
+        {
+          "name": "fvwm3:live-x / mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 5.268091201782227
+        },
+        {
+          "name": "fvwm3:live-x / mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 0.16566729545593262
+        },
+        {
+          "name": "fvwm3:live-x / mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 0.7737288475036621
+        },
+        {
+          "name": "fvwm3:live-x / interaction-servicing-xvfb",
+          "result": "OK",
+          "seconds": 3.869253158569336
+        }
+      ],
+      "fresh": [
+        {
+          "name": "fvwm3 / desktop-policy",
+          "result": "OK",
+          "seconds": 0.20641732215881348
+        },
+        {
+          "name": "fvwm3:live-x / mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 15.617134809494019
+        }
+      ],
+      "actual": {
+        "build": "/tmp/fvwm-module-waits-20261015/build-clang",
+        "fresh_tests": 2,
+        "selected": [
+          "desktop-policy",
+          "mfl-settings-xvfb"
+        ],
+        "retained_core_sha256": "e725c996b0f2c8a0cdcc3a6b65d49a6514c03777a9966338027697f8018dd7ae",
+        "retained_mfl_sha256": "37ff6c45b020d0892e7991f3c6a786ff7edb0ee07ddb6dd60e2bc1b4cb0aaf0d",
+        "binary_identities": {
+          "fvwm3": "e725c996b0f2c8a0cdcc3a6b65d49a6514c03777a9966338027697f8018dd7ae",
+          "modules/FvwmMFL/FvwmMFL": "37ff6c45b020d0892e7991f3c6a786ff7edb0ee07ddb6dd60e2bc1b4cb0aaf0d",
+          "default-config/FvwmDesktop": "f781a64664300d796fac05b3654933cc2fe9c8ecc5606e1f4ef99c28ca020140"
+        },
+        "configuration": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+      },
+      "evidence": "be82c5a1ce7e004e7e2384f4f3a537a2305145f1cb2ffd2068351a42b7aae936"
+    },
+    "fvwm-x-linux-arm64-svg/minimal": {
+      "retained": [
+        {
+          "name": "fvwm3 / json-serialization",
+          "result": "OK",
+          "seconds": 0.0016570091247558594
+        },
+        {
+          "name": "fvwm3:live-x / desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 7.632957696914673
+        },
+        {
+          "name": "fvwm3 / mfl-stream",
+          "result": "OK",
+          "seconds": 0.0017042160034179688
+        },
+        {
+          "name": "fvwm3 / mfl-request",
+          "result": "OK",
+          "seconds": 0.0012195110321044922
+        },
+        {
+          "name": "fvwm3 / mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.0010676383972167969
+        },
+        {
+          "name": "fvwm3 / core-query-json",
+          "result": "OK",
+          "seconds": 0.0014071464538574219
+        },
+        {
+          "name": "fvwm3 / module-queue-order",
+          "result": "OK",
+          "seconds": 0.0013613700866699219
+        },
+        {
+          "name": "fvwm3:live-x / mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 5.257997035980225
+        },
+        {
+          "name": "fvwm3:live-x / mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 0.17243313789367676
+        },
+        {
+          "name": "fvwm3:live-x / mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 0.7609262466430664
+        },
+        {
+          "name": "fvwm3:live-x / interaction-servicing-xvfb",
+          "result": "OK",
+          "seconds": 3.9777002334594727
+        }
+      ],
+      "fresh": [
+        {
+          "name": "fvwm3 / desktop-policy",
+          "result": "OK",
+          "seconds": 0.2072157859802246
+        },
+        {
+          "name": "fvwm3:live-x / mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 15.487583875656128
+        }
+      ],
+      "actual": {
+        "build": "/tmp/fvwm-module-waits-20261015/build-minimal",
+        "fresh_tests": 2,
+        "selected": [
+          "desktop-policy",
+          "mfl-settings-xvfb"
+        ],
+        "retained_core_sha256": "01fa8b76a2f1c8b707860be646d95e46aa42e4abaccdcb6c5b11c1ea7076dcf2",
+        "retained_mfl_sha256": "5bfbf8da9a9a1c6ab0a408f0f6e2e8af4d23529a8d196cf29626d7b801a72c76",
+        "binary_identities": {
+          "fvwm3": "01fa8b76a2f1c8b707860be646d95e46aa42e4abaccdcb6c5b11c1ea7076dcf2",
+          "modules/FvwmMFL/FvwmMFL": "5bfbf8da9a9a1c6ab0a408f0f6e2e8af4d23529a8d196cf29626d7b801a72c76",
+          "default-config/FvwmDesktop": "26ad1b2e0441d1ce1a93c86e5beb0102679017729ee8b8dc834608d5f492e861"
+        },
+        "configuration": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711"
+      },
+      "evidence": "be82c5a1ce7e004e7e2384f4f3a537a2305145f1cb2ffd2068351a42b7aae936"
+    },
+    "linux-amd64/gcc": {
+      "retained": [
+        {
+          "name": "fvwm3 / json-serialization",
+          "result": "OK",
+          "seconds": 0.029998064041137695
+        },
+        {
+          "name": "fvwm3:live-x / desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 38.53798174858093
+        },
+        {
+          "name": "fvwm3 / mfl-stream",
+          "result": "OK",
+          "seconds": 0.026192188262939453
+        },
+        {
+          "name": "fvwm3 / mfl-request",
+          "result": "OK",
+          "seconds": 0.02829599380493164
+        },
+        {
+          "name": "fvwm3 / mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.01923513412475586
+        },
+        {
+          "name": "fvwm3 / core-query-json",
+          "result": "OK",
+          "seconds": 0.02947521209716797
+        },
+        {
+          "name": "fvwm3 / module-queue-order",
+          "result": "OK",
+          "seconds": 0.023386716842651367
+        },
+        {
+          "name": "fvwm3:live-x / mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 6.220617771148682
+        },
+        {
+          "name": "fvwm3:live-x / mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 1.0289065837860107
+        },
+        {
+          "name": "fvwm3:live-x / mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 2.7626123428344727
+        },
+        {
+          "name": "fvwm3:live-x / interaction-servicing-xvfb",
+          "result": "OK",
+          "seconds": 5.342865943908691
+        }
+      ],
+      "fresh": [
+        {
+          "name": "fvwm3 / desktop-policy",
+          "result": "OK",
+          "seconds": 3.3393287658691406
+        },
+        {
+          "name": "fvwm3:live-x / mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 21.98543405532837
+        }
+      ],
+      "actual": {
+        "build": "/root/fvwm-module-waits-20261015/build-gcc",
+        "fresh_tests": 2,
+        "selected": [
+          "desktop-policy",
+          "mfl-settings-xvfb"
+        ],
+        "retained_core_sha256": "4787f02dd83c4d8ad4f10660e35241f52420b807fa686019a91d8041f426308c",
+        "retained_mfl_sha256": "6a412ce18315bee79eea877c63af13de64c33630426f02bf86bebf5ee1b66ab6",
+        "binary_identities": {
+          "fvwm3": "4787f02dd83c4d8ad4f10660e35241f52420b807fa686019a91d8041f426308c",
+          "modules/FvwmMFL/FvwmMFL": "6a412ce18315bee79eea877c63af13de64c33630426f02bf86bebf5ee1b66ab6",
+          "default-config/FvwmDesktop": "3036f703fcb92ff8b795a781f8143d4da15ff4a8bdb7423244b528c747276e5c"
+        },
+        "configuration": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+      },
+      "evidence": "bc9eb31f48f3ef167a469f2177f49264bf3579570ed2da60c958d98af152750b"
+    },
+    "linux-amd64/clang": {
+      "retained": [],
+      "fresh": [
+        {
+          "name": "fvwm3 / json-serialization",
+          "result": "OK",
+          "seconds": 0.02670907974243164
+        },
+        {
+          "name": "fvwm3 / desktop-policy",
+          "result": "OK",
+          "seconds": 2.735870599746704
+        },
+        {
+          "name": "fvwm3:live-x / desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 44.67457151412964
+        },
+        {
+          "name": "fvwm3 / mfl-stream",
+          "result": "OK",
+          "seconds": 0.029635906219482422
+        },
+        {
+          "name": "fvwm3 / mfl-request",
+          "result": "OK",
+          "seconds": 0.03121805191040039
+        },
+        {
+          "name": "fvwm3 / mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.03413987159729004
+        },
+        {
+          "name": "fvwm3 / core-query-json",
+          "result": "OK",
+          "seconds": 0.03051900863647461
+        },
+        {
+          "name": "fvwm3 / module-queue-order",
+          "result": "OK",
+          "seconds": 0.023745059967041016
+        },
+        {
+          "name": "fvwm3:live-x / mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 6.355912685394287
+        },
+        {
+          "name": "fvwm3:live-x / mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 0.9581127166748047
+        },
+        {
+          "name": "fvwm3:live-x / mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 21.33011817932129
+        },
+        {
+          "name": "fvwm3:live-x / mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 2.5613534450531006
+        },
+        {
+          "name": "fvwm3:live-x / interaction-servicing-xvfb",
+          "result": "OK",
+          "seconds": 5.1829469203948975
+        }
+      ],
+      "actual": {
+        "build": "/root/fvwm-module-waits-20261015/build-clang",
+        "fresh_tests": 13,
+        "selected": [
+          "core-query-json",
+          "mfl-request",
+          "mfl-stream",
+          "mfl-event-flags",
+          "json-serialization",
+          "desktop-policy",
+          "module-queue-order",
+          "mfl-core-state-xvfb",
+          "mfl-request-xvfb",
+          "mfl-settings-xvfb",
+          "mfl-stream-xvfb",
+          "desktop-baseline-xvfb",
+          "interaction-servicing-xvfb"
+        ],
+        "retained_core_sha256": null,
+        "retained_mfl_sha256": null,
+        "binary_identities": {
+          "fvwm3": "b9a2086dd491a6325c0b2d0f55f54173f9e31e0fc48e2e26ecda1fb210fee995",
+          "modules/FvwmMFL/FvwmMFL": "6b0eee73311aac9dd70c8030eca3c70208e67e88052f457f4f294784a696784c",
+          "default-config/FvwmDesktop": "3036f703fcb92ff8b795a781f8143d4da15ff4a8bdb7423244b528c747276e5c"
+        },
+        "configuration": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+      },
+      "evidence": "bc9eb31f48f3ef167a469f2177f49264bf3579570ed2da60c958d98af152750b"
+    },
+    "freebsd-arm64/default": {
+      "retained": [
+        {
+          "name": "fvwm3:json-serialization",
+          "result": "OK",
+          "seconds": 0.0033049583435058594
+        },
+        {
+          "name": "bsd-x - fvwm3:desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 7.574957370758057
+        },
+        {
+          "name": "fvwm3:mfl-stream",
+          "result": "OK",
+          "seconds": 0.0034439563751220703
+        },
+        {
+          "name": "fvwm3:mfl-request",
+          "result": "OK",
+          "seconds": 0.0027472972869873047
+        },
+        {
+          "name": "fvwm3:mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.0024318695068359375
+        },
+        {
+          "name": "fvwm3:core-query-json",
+          "result": "OK",
+          "seconds": 0.0026831626892089844
+        },
+        {
+          "name": "fvwm3:module-queue-order",
+          "result": "OK",
+          "seconds": 0.0021610260009765625
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 5.282826662063599
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 0.13093066215515137
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 0.6682214736938477
+        }
+      ],
+      "fresh": [
+        {
+          "name": "fvwm3:desktop-policy",
+          "result": "OK",
+          "seconds": 0.2612006664276123
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 15.751853466033936
+        }
+      ],
+      "actual": {
+        "build": "/root/fvwm-module-waits-20261015/build-default",
+        "fresh_tests": 2,
+        "selected": [
+          "desktop-policy",
+          "mfl-settings-xvfb"
+        ],
+        "retained_core_sha256": "0591d406c312777b23f31a7f3f41760fe2ead4d6c7a2889cd34912ec2fba2241",
+        "retained_mfl_sha256": "89be3f41c824534d781e4e3d6182d30d95af1a5840add878a04303204d4f5e8d",
+        "binary_identities": {
+          "fvwm3": "0591d406c312777b23f31a7f3f41760fe2ead4d6c7a2889cd34912ec2fba2241",
+          "modules/FvwmMFL/FvwmMFL": "89be3f41c824534d781e4e3d6182d30d95af1a5840add878a04303204d4f5e8d",
+          "default-config/FvwmDesktop": "e0cb7e0d16a0d1bc490ff7c158162d8b45b834c997d05e985e62a10b8cb63394"
+        },
+        "configuration": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+      },
+      "evidence": "f29c2bc666bd17bfd324d8deae852ce1ff0a6e082a59e2adb71faba165dcc896"
+    },
+    "freebsd-amd64/default": {
+      "retained": [
+        {
+          "name": "fvwm3:json-serialization",
+          "result": "OK",
+          "seconds": 0.03786802291870117
+        },
+        {
+          "name": "bsd-x - fvwm3:desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 43.49841380119324
+        },
+        {
+          "name": "fvwm3:mfl-stream",
+          "result": "OK",
+          "seconds": 0.03369498252868652
+        },
+        {
+          "name": "fvwm3:mfl-request",
+          "result": "OK",
+          "seconds": 0.03744220733642578
+        },
+        {
+          "name": "fvwm3:mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.028870820999145508
+        },
+        {
+          "name": "fvwm3:core-query-json",
+          "result": "OK",
+          "seconds": 0.03637194633483887
+        },
+        {
+          "name": "fvwm3:module-queue-order",
+          "result": "OK",
+          "seconds": 0.02940201759338379
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 6.461635112762451
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 1.1964359283447266
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 2.3167178630828857
+        }
+      ],
+      "fresh": [
+        {
+          "name": "fvwm3:desktop-policy",
+          "result": "OK",
+          "seconds": 4.543398141860962
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 22.10384202003479
+        }
+      ],
+      "actual": {
+        "build": "/root/fvwm-style-simplification-recovery-20261016/build-default",
+        "fresh_tests": 2,
+        "selected": [
+          "desktop-policy",
+          "mfl-settings-xvfb"
+        ],
+        "retained_core_sha256": "41efa33fff93f7cae77161237903670ac8cc862b7e178eb3fe08f6e2be9ac3e2",
+        "retained_mfl_sha256": "9a0b667f4d92ae9fa979ba8ce820896fa3b14680f7ca63206c15240b01618b6e",
+        "binary_identities": {
+          "fvwm3": "41efa33fff93f7cae77161237903670ac8cc862b7e178eb3fe08f6e2be9ac3e2",
+          "modules/FvwmMFL/FvwmMFL": "9a0b667f4d92ae9fa979ba8ce820896fa3b14680f7ca63206c15240b01618b6e",
+          "default-config/FvwmDesktop": "e0cb7e0d16a0d1bc490ff7c158162d8b45b834c997d05e985e62a10b8cb63394"
+        },
+        "configuration": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+      },
+      "evidence": "f99f1a3107a22a57ef5c6b2cc14cced62c89d0a4cc258e1e05e0d351811499fe"
+    },
+    "openbsd-arm64/default": {
+      "retained": [
+        {
+          "name": "fvwm3:json-serialization",
+          "result": "OK",
+          "seconds": 0.013923406600952148
+        },
+        {
+          "name": "bsd-x - fvwm3:desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 10.700133562088013
+        },
+        {
+          "name": "fvwm3:mfl-stream",
+          "result": "OK",
+          "seconds": 0.014025688171386719
+        },
+        {
+          "name": "fvwm3:mfl-request",
+          "result": "OK",
+          "seconds": 0.014152050018310547
+        },
+        {
+          "name": "fvwm3:mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.012861967086791992
+        },
+        {
+          "name": "fvwm3:core-query-json",
+          "result": "OK",
+          "seconds": 0.013813972473144531
+        },
+        {
+          "name": "fvwm3:module-queue-order",
+          "result": "OK",
+          "seconds": 0.013326644897460938
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 5.468961715698242
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 0.33359599113464355
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 0.87833571434021
+        }
+      ],
+      "fresh": [
+        {
+          "name": "fvwm3:desktop-policy",
+          "result": "OK",
+          "seconds": 0.5874044895172119
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 16.10001540184021
+        }
+      ],
+      "actual": {
+        "binary_identities": {
+          "builddir-bsd/modules/FvwmMFL/FvwmMFL": "213edeb6a64a7b27be88f6a1b78df24bc3c258cd909604a4c67b58760dc7b47b",
+          "builddir-bsd/fvwm3": "624e10164462bb169d65c03456a5dafeef29854dacd0578b2bb5faa7f8e06801"
+        },
+        "helper": {
+          "sha256": "e0cb7e0d16a0d1bc490ff7c158162d8b45b834c997d05e985e62a10b8cb63394"
+        }
+      },
+      "evidence": "7d4652802631dca3fbc9435342d98dc5604706fc752a641c225965103158d83e",
+      "retained_evidence": "56e67949eb8774b3e0b2eebd12ade0ac43e006fe11ee0eb5b00a1537793d9bf2"
+    },
+    "openbsd-amd64/default": {
+      "retained": [],
+      "fresh": [
+        {
+          "name": "fvwm3:json-serialization",
+          "result": "OK",
+          "seconds": 0.09262681007385254
+        },
+        {
+          "name": "fvwm3:desktop-policy",
+          "result": "OK",
+          "seconds": 9.758509159088135
+        },
+        {
+          "name": "bsd-x - fvwm3:desktop-baseline-xvfb",
+          "result": "OK",
+          "seconds": 87.63613891601562
+        },
+        {
+          "name": "fvwm3:mfl-stream",
+          "result": "OK",
+          "seconds": 0.06425690650939941
+        },
+        {
+          "name": "fvwm3:mfl-request",
+          "result": "OK",
+          "seconds": 0.15114092826843262
+        },
+        {
+          "name": "fvwm3:mfl-event-flags",
+          "result": "OK",
+          "seconds": 0.09967684745788574
+        },
+        {
+          "name": "fvwm3:core-query-json",
+          "result": "OK",
+          "seconds": 0.07659196853637695
+        },
+        {
+          "name": "fvwm3:module-queue-order",
+          "result": "OK",
+          "seconds": 0.061197519302368164
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-request-xvfb",
+          "result": "OK",
+          "seconds": 8.847909927368164
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-core-state-xvfb",
+          "result": "OK",
+          "seconds": 2.9148166179656982
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-settings-xvfb",
+          "result": "OK",
+          "seconds": 29.212015867233276
+        },
+        {
+          "name": "bsd-x - fvwm3:mfl-stream-xvfb",
+          "result": "OK",
+          "seconds": 5.512025594711304
+        }
+      ],
+      "actual": {
+        "build": "/home/fvwm-ci/source/builddir-bsd",
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#2",
+          "amd64"
+        ],
+        "configuration": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+        "fresh_tests": 12,
+        "selected": [
+          "core-query-json",
+          "mfl-request",
+          "mfl-stream",
+          "mfl-event-flags",
+          "json-serialization",
+          "desktop-policy",
+          "module-queue-order",
+          "mfl-core-state-xvfb",
+          "mfl-request-xvfb",
+          "mfl-settings-xvfb",
+          "mfl-stream-xvfb",
+          "desktop-baseline-xvfb"
+        ],
+        "environment": {
+          "CC": "cc",
+          "LD_LIBRARY_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib",
+          "PKG_CONFIG_PATH": "/root/fvwm-ci/source/builddir-bsd/png-bootstrap/prefix/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+        },
+        "binaries": {
+          "fvwm3": {
+            "sha256": "300a2ac7ac5af4d00255d3f3c1840d6244aa23f5648260845488be825e9c9bca",
+            "bytes": 4782440
+          },
+          "modules/FvwmMFL/FvwmMFL": {
+            "sha256": "ed612d020e3143ca6af383f26e9d70e56735aaf7b470953246ca3dba5c56bf14",
+            "bytes": 352296
+          },
+          "tests/test-query-json": {
+            "sha256": "6b0d67fb0e145f5ec2d6e0399e3feff1b0a85586dd2d3651ca8afeae8ebb1666",
+            "bytes": 369096
+          },
+          "tests/test-mfl-request": {
+            "sha256": "be850dd790570936bb10b9e832ca9ebb1c8cd226a5b07069ff770f56f2e2af05",
+            "bytes": 217952
+          },
+          "default-config/FvwmDesktop": {
+            "sha256": "e0cb7e0d16a0d1bc490ff7c158162d8b45b834c997d05e985e62a10b8cb63394",
+            "bytes": 83636
+          }
+        }
+      },
+      "evidence": "ce5ced25978813ada4b6823695a7d376c141d1ea748fae6ca9261b997e51094c"
+    }
+  },
+  "archives": {
+    "fvwm-x-linux-arm64-svg-readiness": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/fvwm-x-linux-arm64-svg-readiness.tgz",
+      "sha256": "be82c5a1ce7e004e7e2384f4f3a537a2305145f1cb2ffd2068351a42b7aae936",
+      "bytes": 1746582,
+      "files": 188,
+      "complete_payload_and_mode_verification": true
+    },
+    "linux-amd64-readiness": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/linux-amd64-readiness.tgz",
+      "sha256": "bc9eb31f48f3ef167a469f2177f49264bf3579570ed2da60c958d98af152750b",
+      "bytes": 1196063,
+      "files": 118,
+      "complete_payload_and_mode_verification": true
+    },
+    "freebsd-arm64-readiness": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/freebsd-arm64-readiness.tgz",
+      "sha256": "f29c2bc666bd17bfd324d8deae852ce1ff0a6e082a59e2adb71faba165dcc896",
+      "bytes": 664202,
+      "files": 57,
+      "complete_payload_and_mode_verification": true
+    },
+    "freebsd-amd64-readiness": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/freebsd-amd64-readiness.tgz",
+      "sha256": "f99f1a3107a22a57ef5c6b2cc14cced62c89d0a4cc258e1e05e0d351811499fe",
+      "bytes": 657893,
+      "files": 57,
+      "complete_payload_and_mode_verification": true
+    },
+    "openbsd-arm64-initial": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "56e67949eb8774b3e0b2eebd12ade0ac43e006fe11ee0eb5b00a1537793d9bf2",
+      "bytes": 106312997,
+      "files": 967,
+      "complete_payload_and_mode_verification": true
+    },
+    "openbsd-arm64-readiness": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/readiness/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "7d4652802631dca3fbc9435342d98dc5604706fc752a641c225965103158d83e",
+      "bytes": 105681504,
+      "files": 938,
+      "complete_payload_and_mode_verification": true
+    },
+    "openbsd-amd64-final": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/readiness/openbsd-amd64-job/guest-evidence.tgz",
+      "sha256": "ce5ced25978813ada4b6823695a7d376c141d1ea748fae6ca9261b997e51094c",
+      "bytes": 107080769,
+      "files": 1021,
+      "complete_payload_and_mode_verification": true
+    },
+    "asan": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/asan.tgz",
+      "sha256": "d93ef1764083c3b95625b426e81390857b620d7524d77bd1b460ae96eb1cd1d5",
+      "bytes": 120620,
+      "files": 29,
+      "complete_payload_and_mode_verification": true
+    }
+  },
+  "sanitizer": {
+    "original": {
+      "status": "passed",
+      "scoped_exercises": 5,
+      "instrumented": "core query JSON and request policy; native MFL in three actual-X fixtures",
+      "core_in_X": "unchanged uninstrumented current GCC candidate",
+      "native_CPU": false
+    },
+    "retained_exercises": [
+      "core-query-json",
+      "mfl-request",
+      "mfl-core-state-X",
+      "mfl-request-X"
+    ],
+    "fresh_settings_evidence_sha256": "be82c5a1ce7e004e7e2384f4f3a537a2305145f1cb2ffd2068351a42b7aae936",
+    "fresh_settings": {
+      "status": "passed",
+      "real_provider": {
+        "settings": 7,
+        "scoped_queries": true,
+        "atomic_changes": true,
+        "targeted_multiple_owners": true,
+        "readonly_validation": true,
+        "validation_no_mutation": true,
+        "cancelled_write_still_commits": true,
+        "cancelled_id_reuse": true,
+        "readonly_refused": true,
+        "stale_writer_refused": true,
+        "scoped_reset": true,
+        "external_conflict": true,
+        "reload": true,
+        "restart_generation": true,
+        "restart_target_unavailable": true,
+        "asynchronous_completion": "unknown"
+      },
+      "independent_producer": {
+        "absent_timeout": true,
+        "partial_timeout": true,
+        "partial_cancel": true,
+        "malformed_part_refused": true,
+        "disconnected_partial": true,
+        "late_reply_ignored": true,
+        "healthy_client": true
+      }
+    },
+    "original_binary_identities": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+        "sha256": "c46701f7af819df1aee63d8eb9fbc5b2d4a6667ed34751d6bdea96f6343c5885",
+        "bytes": 5341728
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop": {
+        "sha256": "ec82b8320d698b394529075be43ea59ad36c85d46f27ecd8a1b42b29af1cb302",
+        "bytes": 83340
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+        "sha256": "eee688a71765067c69b39690cd0bc821e9351568971a9b45f403cad7ebed2a8b",
+        "bytes": 2980648
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-query-json": {
+        "sha256": "0a79c906cbec06a079b24b3b68f545e60d762ede90ae635bd171bd3a2a50cdd9",
+        "bytes": 3268912
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": {
+        "sha256": "4ca81133d256a19a1e31c8e4bde3df690dc1c57aca52a3c735a76fea0c73aeb4",
+        "bytes": 2647576
+      }
+    },
+    "fresh_module": {
+      "sha256": "eee688a71765067c69b39690cd0bc821e9351568971a9b45f403cad7ebed2a8b"
+    },
+    "fresh_environment": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+      "LSAN_OPTIONS": "exitcode=86",
+      "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+    }
+  },
+  "portable": {
+    "command": "make verify",
+    "exit_code": 0,
+    "summary": "191 tests; 177 passed, 14 skipped",
+    "final_output": "ok\ntest_build_preserves_argv_and_has_no_default_install_or_wipe (test_tools.ToolTests.test_build_preserves_argv_and_has_no_default_install_or_wipe) ... ok\ntest_build_reconfigure_preserves_existing_data (test_tools.ToolTests.test_build_reconfigure_preserves_existing_data) ... ok\ntest_build_refuses_non_meson_data_and_source (test_tools.ToolTests.test_build_refuses_non_meson_data_and_source) ... ok\ntest_dependency_and_workflow_inventory_records_sources_without_a_security_verdict (test_tools.ToolTests.test_dependency_and_workflow_inventory_records_sources_without_a_security_verdict) ... ok\ntest_docs_both_modes_and_optional_prompt_and_failure (test_tools.ToolTests.test_docs_both_modes_and_optional_prompt_and_failure) ... ok\ntest_failed_generation_does_not_publish_and_preserves_existing_output (test_tools.ToolTests.test_failed_generation_does_not_publish_and_preserves_existing_output) ... ok\ntest_flat_website_preserves_existing_data_and_source (test_tools.ToolTests.test_flat_website_preserves_existing_data_and_source) ... ok\ntest_generator_version_mismatch_does_not_generate (test_tools.ToolTests.test_generator_version_mismatch_does_not_generate) ... ok\ntest_inventory_handles_spaces_links_and_deleted_files (test_tools.ToolTests.test_inventory_handles_spaces_links_and_deleted_files) ... ok\ntest_legacy_build_dry_run_preserves_paths_and_creates_no_output (test_tools.ToolTests.test_legacy_build_dry_run_preserves_paths_and_creates_no_output) ... ok\ntest_legacy_build_options_preserve_order_and_explicit_wipe (test_tools.ToolTests.test_legacy_build_options_preserve_order_and_explicit_wipe) ... ok\ntest_manual_manifest_matches_meson_and_includes_desktop (test_tools.ToolTests.test_manual_manifest_matches_meson_and_includes_desktop) ... ok\ntest_metadata_is_valid_perl_deterministic_and_uses_current_version (test_tools.ToolTests.test_metadata_is_valid_perl_deterministic_and_uses_current_version) ... ok\ntest_metadata_refuses_incomplete_extended_mask (test_tools.ToolTests.test_metadata_refuses_incomplete_extended_mask) ... ok\ntest_outputs_refuse_runtime_and_build_source_components (test_tools.ToolTests.test_outputs_refuse_runtime_and_build_source_components) ... ok\ntest_parser_generation_records_exact_inputs_and_outputs (test_tools.ToolTests.test_parser_generation_records_exact_inputs_and_outputs) ... ok\ntest_parser_header_order_failure_does_not_publish (test_tools.ToolTests.test_parser_header_order_failure_does_not_publish) ... ok\ntest_parser_wrapper_preserves_arguments_and_status (test_tools.ToolTests.test_parser_wrapper_preserves_arguments_and_status) ... ok\ntest_protocol_generation_matches_known_wire_values (test_tools.ToolTests.test_protocol_generation_matches_known_wire_values) ... ok\ntest_sections_reject_corruption_and_match_legacy_extraction (test_tools.ToolTests.test_sections_reject_corruption_and_match_legacy_extraction) ... ok\ntest_source_symlink_and_traversal_refused (test_tools.ToolTests.test_source_symlink_and_traversal_refused) ... ok\ntest_translation_failure_keeps_source_and_no_output (test_tools.ToolTests.test_translation_failure_keeps_source_and_no_output) ... ok\ntest_translation_literals_locations_and_bad_escapes (test_tools.ToolTests.test_translation_literals_locations_and_bad_escapes) ... ok\ntest_verbose_failure_is_propagated_and_compile_not_run (test_tools.ToolTests.test_verbose_failure_is_propagated_and_compile_not_run) ... ok\ntest_website_index_preserves_title_links_and_source_version (test_tools.ToolTests.test_website_index_preserves_title_links_and_source_version) ... ok\ntest_all_build_publishes_complete_catalogs_and_records_selection (test_translations.TranslationTests.test_all_build_publishes_complete_catalogs_and_records_selection) ... ok\ntest_all_update_keeps_sources_and_discards_partial_failure (test_translations.TranslationTests.test_all_update_keeps_sources_and_discards_partial_failure) ... ok\ntest_discovery_requires_complete_unique_catalog_list (test_translations.TranslationTests.test_discovery_requires_complete_unique_catalog_list) ... ok\ntest_discovery_uses_meson_list_and_preserves_order (test_translations.TranslationTests.test_discovery_uses_meson_list_and_preserves_order) ... ok\ntest_selection_errors_do_not_create_output (test_translations.TranslationTests.test_selection_errors_do_not_create_output) ... ok\ntest_missing_xkb_header_is_a_configuration_error (test_xlib_requirement.XlibRequirementTests.test_missing_xkb_header_is_a_configuration_error) ... skipped 'native Meson/pkg-config are unavailable'\ntest_missing_xkb_symbol_is_a_configuration_error (test_xlib_requirement.XlibRequirementTests.test_missing_xkb_symbol_is_a_configuration_error) ... skipped 'native Meson/pkg-config are unavailable'\ntest_real_xlib_with_libxkbcommon_unavailable (test_xlib_requirement.XlibRequirementTests.test_real_xlib_with_libxkbcommon_unavailable) ... skipped 'native Meson/pkg-config are unavailable'\n\n----------------------------------------------------------------------\nRan 93 tests in 3.854s\n\nOK (skipped=14)\npython3 tests/test_bsd_default_x.py\n................\n----------------------------------------------------------------------\nRan 16 tests in 0.007s\n\nOK\npython3 tests/test_native_gate.py\n........\n----------------------------------------------------------------------\nRan 8 tests in 4.314s\n\nOK\npython3 tests/test_ci_assets.py\n.......................\n----------------------------------------------------------------------\nRan 23 tests in 1.263s\n\nOK\npython3 tests/test_qemu_bsd.py\n.....................................\n----------------------------------------------------------------------\nRan 37 tests in 3.080s\n\nOK\npython3 tests/test_ci_png.py\n..........\n----------------------------------------------------------------------\nRan 10 tests in 10.174s\n\nOK\npython3 tests/test_go_sdk_recipe.py\n....\n----------------------------------------------------------------------\nRan 4 tests in 0.377s\n\nOK\n"
+  },
+  "manual": {
+    "FvwmMFL": {
+      "source_sha256": "86b5d2742c4c361c60fe45047bbca7687837f887f309365124def0b625eedb27",
+      "roff_sha256": "73e5de0541f10deb1144cf0bbaa762a731aecb5b5813f4a9da5c5969b5f14f1e",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 8
+      }
+    },
+    "FvwmMFL-before": {
+      "source_sha256": "a88e420181392c44acc20775ee63e6cfb7366fff539dd83fbc070a0622eed294",
+      "roff_sha256": "181f387653bb732b89e91fa890832e535921d0773e1c8aa75f43ca3aeb619ecc",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 7
+      }
+    }
+  },
+  "failures": [
+    "Initial private Meson target disambiguation/registration corrected before native execution.",
+    "Initial X observer comparison exposed uninitialized work-area cache; null/cached semantics added. A fixture placement default caused a timeout; deterministic placement fixes it and only owned orphans are stopped.",
+    "Cycle exposes settings-before-END_CONFIG_INFO race on Linux AMD64/FreeBSD AMD64/OpenBSD ARM64; readiness fence and bounded read-query wait fix it.",
+    "Linux guest storage guard refused before tests; 496 exact canonical historical duplicate files (187037601 bytes) retired and gate continued.",
+    "Initial OpenBSD input handoff referenced removed private default helper; verified original handoff completed. AMD64 original collection was interrupted/incomplete; no acceptance retained, new selected run required."
+  ],
+  "cleanup": {
+    "historical": {
+      "retired": "/tmp/fvwm-module-waits-20261015/style-update-work-combined1",
+      "files": 496,
+      "bytes": 187037601,
+      "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-19/style-update-work/qualification/fvwm-x-linux-arm64-svg.tgz",
+      "sha256": "3264d46e79cd7c194abde61ed1ea5248b473e7024347ef60ff4e5e695ff18ffd",
+      "free_bytes": 206143488,
+      "preserved": "sources, builds, install stages, performance references, host canonicals and VM disks"
+    },
+    "current": [
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/ipc-core-state-checkpoint-recovery",
+        "files": 172,
+        "bytes": 4417035,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/fvwm-x-linux-arm64-svg-recovery-evidence.tgz",
+        "sha256": "cf4242a6d175040bc96ae40cf11e4d6ca1699ddb85530242d6ce057a637bcc05"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/ipc-core-state-asan",
+        "files": 29,
+        "bytes": 534959,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/asan.tgz",
+        "sha256": "d93ef1764083c3b95625b426e81390857b620d7524d77bd1b460ae96eb1cd1d5"
+      },
+      {
+        "directory": "/root/fvwm-module-waits-20261015/ipc-core-state-checkpoint",
+        "files": 54,
+        "bytes": 1784316,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/freebsd-arm64-evidence.tgz",
+        "sha256": "2ddbb5e776d134f0f0b212f92fd3145002559b038fcc65a6a88453f532095113"
+      },
+      {
+        "directory": "/root/fvwm-module-waits-20261015/ipc-core-state-checkpoint",
+        "files": 9,
+        "bytes": 496447,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/linux-amd64-evidence.tgz",
+        "sha256": "399fcd43e578f19384c80966c68e3bd041fdc872c1ce8b2329645bb3e8c28c43"
+      },
+      {
+        "directory": "/root/fvwm-style-simplification-recovery-20261016/ipc-core-state-checkpoint",
+        "files": 9,
+        "bytes": 491689,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/freebsd-amd64-evidence.tgz",
+        "sha256": "a262bd985d73ee366f15211a9e0da5140fe201212c319bd5b332ecbd2c879267"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/ipc-core-state-readiness",
+        "files": 188,
+        "bytes": 4365793,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/fvwm-x-linux-arm64-svg-readiness.tgz",
+        "sha256": "be82c5a1ce7e004e7e2384f4f3a537a2305145f1cb2ffd2068351a42b7aae936"
+      },
+      {
+        "directory": "/root/fvwm-module-waits-20261015/ipc-core-state-readiness",
+        "files": 118,
+        "bytes": 3006586,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/linux-amd64-readiness.tgz",
+        "sha256": "bc9eb31f48f3ef167a469f2177f49264bf3579570ed2da60c958d98af152750b"
+      },
+      {
+        "directory": "/root/fvwm-module-waits-20261015/ipc-core-state-readiness",
+        "files": 57,
+        "bytes": 1765702,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/freebsd-arm64-readiness.tgz",
+        "sha256": "f29c2bc666bd17bfd324d8deae852ce1ff0a6e082a59e2adb71faba165dcc896"
+      },
+      {
+        "directory": "/root/fvwm-style-simplification-recovery-20261016/ipc-core-state-readiness",
+        "files": 57,
+        "bytes": 1757500,
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/freebsd-amd64-readiness.tgz",
+        "sha256": "f99f1a3107a22a57ef5c6b2cc14cced62c89d0a4cc258e1e05e0d351811499fe"
+      }
+    ]
+  },
+  "new_UI": false,
+  "deferred": [
+    "full install/default-X/compiler-feature release matrix at milestone/release boundary",
+    "native CPU ASan/UBSan execution",
+    "physical hardware/hotplug/toolkit/compositor qualification",
+    "broader IPC-02 providers/actions/progress/decisions/domain cancellation/service adoption/shared-core generations/CFG-01 preview",
+    "existing Form font-exit cleanup CLEAN-01/Later"
+  ],
+  "cycle": {
+    "reference": "PR154",
+    "merged": [
+      "PR155",
+      "PR156"
+    ],
+    "third_PR": "current candidate qualified; becomes next integrated reference on merge",
+    "next_merged_count": 0
+  },
+  "performance": {
+    "reference": "PR154",
+    "merged_count": 2,
+    "this_PR_on_merge": 3,
+    "next_due": 5,
+    "comparison_run": false
+  }
+}

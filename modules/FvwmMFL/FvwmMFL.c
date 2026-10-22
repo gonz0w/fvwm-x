@@ -736,16 +736,24 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		const char *methods[] = {"query", "barrier", "set_mode",
 			"action", "validate", "cancel"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
-			"settings", "pending"};
+			"settings", "pending", "topology", "workspaces",
+			"bindings"};
 
 		if (!request_add_strings(result, "methods", methods, 6) ||
-		    !request_add_strings(result, "resources", resources, 5) ||
+		    !request_add_strings(result, "resources", resources, 8) ||
 		    !cJSON_AddNumberToObject(result, "pending_limit",
 			MFL_REQUEST_LIMIT) ||
 		    !cJSON_AddNumberToObject(result, "deadline_ms",
 			MFL_REQUEST_TIMEOUT_MS) ||
 		    !cJSON_AddNumberToObject(result, "max_line_bytes",
 			MAX_MODULE_INPUT_TEXT_LEN) ||
+		    !cJSON_AddNumberToObject(
+			result, "core_query_result_max_bytes",
+			MODULE_QUERY_RESULT_MAX) ||
+		    !cJSON_AddNumberToObject(result, "binding_page_max",
+			MODULE_QUERY_PAGE_MAX) ||
+		    !cJSON_AddNumberToObject(result, "binding_offset_max",
+			MODULE_QUERY_OFFSET_MAX) ||
 		    !cJSON_AddStringToObject(result, "cancellation",
 			"wait-only") ||
 		    !cJSON_AddBoolToObject(result, "applied_command_results", false) ||
@@ -874,7 +882,10 @@ client_request(struct client *c, const char *json)
 		request_now_ms(), &slot);
 	if (error != NULL)
 		return client_reply(c, request.id, error, NULL);
-	if (!(mfl_request_is_settings(request.kind) ?
+	if (!(mfl_request_is_snapshot(request.kind) ?
+	    mfl_request_snapshot_command(command, sizeof(command), &request,
+		slot->serial, fc.settings_cookie) :
+	    mfl_request_is_settings(request.kind) ?
 	    mfl_request_settings_command(command, sizeof(command), &request,
 		slot->serial, fc.settings_cookie) :
 	    mfl_request_command(command, sizeof(command), slot)) ||
@@ -934,25 +945,29 @@ handle_request_packet(const FvwmPacket *packet)
 }
 
 static bool
-handle_settings_packet(const FvwmPacket *packet)
+handle_fragment_packet(const FvwmPacket *packet)
 {
 	struct client *c;
 	const char *message;
 	size_t words;
 
-	if (packet->type != M_STRING || packet->size < FvwmPacketHeaderSize + 4)
+	if ((packet->type != M_STRING && packet->type != MX_REPLY) ||
+	    packet->size < FvwmPacketHeaderSize + 4)
 		return false;
 	words = packet->size - FvwmPacketHeaderSize - 3;
 	message = (const char *)(packet->body + 3);
 	if (memchr(message, '\0', words * sizeof(unsigned long)) == NULL ||
-	    strncmp(message, "MFL_SETTINGS_1 ", 15) != 0)
+	    !((packet->type == M_STRING &&
+		strncmp(message, "MFL_SETTINGS_1 ", 15) == 0) ||
+		(packet->type == MX_REPLY &&
+		strncmp(message, "MFL_CORE_1 ", 11) == 0)))
 		return false;
 	TAILQ_FOREACH(c, &clientq, entry)
 	{
 		for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
 		{
 			struct mfl_pending_request *p = c->pending + i;
-			const char *payload = mfl_request_settings_payload(message,
+			const char *payload = mfl_request_part_payload(message,
 				p, fc.settings_cookie);
 			const char *error = NULL;
 			cJSON *envelope = NULL, *result = NULL;
@@ -964,15 +979,19 @@ handle_settings_packet(const FvwmPacket *packet)
 				error = "deadline_exceeded";
 			else
 			{
-				enum mfl_settings_part_result part =
-					mfl_request_settings_part(p, payload);
+				enum mfl_part_result part =
+					mfl_request_part(p, payload);
 
-				if (part == MFL_SETTINGS_MORE)
+				if (part == MFL_PART_MORE)
 					return true;
-				if (part == MFL_SETTINGS_DONE)
-					envelope = mfl_request_settings_result(p);
+				if (part == MFL_PART_DONE)
+					envelope = mfl_request_result(p);
 				if (!envelope)
+				{
 					error = "invalid_provider_reply";
+					if (mfl_request_is_snapshot(p->kind))
+						error = "invalid_core_reply";
+				}
 				else if (cJSON_HasObjectItem(envelope, "error"))
 					error = cJSON_GetObjectItemCaseSensitive(
 						cJSON_GetObjectItemCaseSensitive(envelope,
@@ -1148,7 +1167,7 @@ fvwm_read(struct bufferevent *bev, void *data)
 			return;
 		}
 		handle_request_packet((FvwmPacket *)packet);
-		if (!handle_settings_packet((FvwmPacket *)packet))
+		if (!handle_fragment_packet((FvwmPacket *)packet))
 			broadcast_to_client((FvwmPacket *)packet);
 	}
 	if (evbuffer_get_length(bufferevent_get_input(bev)) != 0)

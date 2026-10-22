@@ -49,6 +49,7 @@
 #include "ewmh.h"
 #include "commands.h"
 #include "module_queue.h"
+#include "query_json.h"
 #include "libs/vpacket.h"
 #include "libs/monitor_types.h"
 #include "libs/picture_types.h"
@@ -824,6 +825,114 @@ void CMD_Send_Reply(F_CMD_ARGS)
 	FlushMessageQueue(module);
 
 	return;
+}
+
+/* A bounded read of core-owned state; no X round trip or retained cursor.
+ * Existing directed packets/queues preserve producer command ordering. */
+void CMD_Send_Query(F_CMD_ARGS)
+{
+	struct fvwm_query_spec spec;
+	fmodule *module = exc->m.module;
+	cJSON *result = NULL, *envelope;
+	const char *error = NULL;
+	char *json;
+	char line[2 * MODULE_QUERY_CHUNK + 160];
+	char generation[MODULE_QUERY_GENERATION_LEN + 1];
+	unsigned int part = 0;
+	size_t length;
+	static const char hex[] = "0123456789abcdef";
+
+	if (!module || !fvwm_query_parse(action, &spec))
+		return;
+	if (strcmp(spec.resource, "topology") == 0)
+		result = fvwm_query_topology(
+			FScreenGetTopologySnapshot(), &error);
+	else if (strcmp(spec.resource, "workspaces") == 0)
+		result = fvwm_query_workspaces(&monitor_q,
+			monitor_get_all_widths(), monitor_get_all_heights(),
+			monitor_mode == MONITOR_TRACKING_M ? "per-monitor" :
+			is_tracking_shared ? "shared" : "global", &error);
+	else if (strcmp(spec.resource, "bindings") == 0)
+	{
+		if (binding_query_token(generation))
+			result = fvwm_query_bindings(Scr.AllBindings,
+				generation, &spec, &error);
+		else
+			error = "generation_unavailable";
+	}
+	else
+		error = "unsupported_resource";
+	envelope = cJSON_CreateObject();
+	if (!envelope)
+	{
+		cJSON_Delete(result);
+		return;
+	}
+	if (result)
+	{
+		if (!cJSON_AddItemToObject(envelope, "result", result))
+		{
+			cJSON_Delete(result);
+			cJSON_Delete(envelope);
+			return;
+		}
+	}
+	else
+	{
+		cJSON *details = cJSON_AddObjectToObject(envelope, "error");
+
+		if (!details || !cJSON_AddStringToObject(details, "code",
+			error ? error : "allocation_failed"))
+		{
+			cJSON_Delete(envelope);
+			return;
+		}
+	}
+	json = cJSON_PrintUnformatted(envelope);
+	cJSON_Delete(envelope);
+	if (!json)
+		return;
+	length = strlen(json);
+	if (length > MODULE_QUERY_RESULT_MAX)
+	{
+		cJSON_free(json);
+		json = NULL;
+		/* Refuse the whole snapshot rather than returning partial data. */
+		const char *failure =
+			"{\"error\":{\"code\":\"query_too_large\"}}";
+
+		length = strlen(failure);
+		json = cJSON_malloc(length + 1);
+		if (!json)
+			return;
+		memcpy(json, failure, length + 1);
+	}
+	for (size_t offset = 0; offset < length; part++)
+	{
+		size_t bytes = length - offset;
+		int prefix;
+
+		if (bytes > MODULE_QUERY_CHUNK)
+			bytes = MODULE_QUERY_CHUNK;
+		prefix = snprintf(line, sizeof(line),
+			"MFL_CORE_1 %s %s part %u ", spec.cookie,
+			spec.serial, part);
+		for (size_t i = 0; i < bytes; i++)
+		{
+			unsigned char value = json[offset + i];
+
+			line[prefix + 2 * i] = hex[value >> 4];
+			line[prefix + 2 * i + 1] = hex[value & 15];
+		}
+		line[prefix + 2 * bytes] = '\0';
+		SendName(module, MX_REPLY, 0, 0, 0, line);
+		offset += bytes;
+	}
+	cJSON_free(json);
+	snprintf(line, sizeof(line), "MFL_CORE_1 %s %s end %u",
+		spec.cookie, spec.serial, part);
+	SendName(module, MX_REPLY, 0, 0, 0, line);
+	FlushMessageQueue(module);
 }
 
 void CMD_Send_WindowList(F_CMD_ARGS)

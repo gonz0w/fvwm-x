@@ -773,6 +773,7 @@ class Desktop:
         self.desk = 0
         self.last_clock = None
         self.monitor_width = 1440
+        self.settings_ready = False
         self.settings_generation = secrets.token_hex(16)
         self.settings_instance = secrets.token_hex(16)
         self.settings_editor = None
@@ -808,6 +809,7 @@ class Desktop:
             self.overrides.pop('night', None)
             self.settings = checked_settings(dict(self.saved, **self.overrides))
         self.settings_changed()
+        self.settings_ready = True
 
     def prepare_settings(self, changes):
         """Construct the same complete candidate for validation and commit."""
@@ -961,6 +963,10 @@ class Desktop:
                 # selected owner replies; another instance must not race its
                 # stale refusal against a successful commit by the target.
                 return None
+        # A module request can overtake this producer's Send_ConfigInfo.
+        # Do not expose provisional defaults or mutate before END_CONFIG_INFO.
+        if not self.settings_ready:
+            return error('provider_not_ready')
         scope = request.get('scope', 'all')
         if not isinstance(scope, str) or len(scope) > 64:
             return error('invalid_request')

@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "query_json.h"
 #include "menu_image.h"
 #include "libs/picture_view.h"
 #include <stdio.h>
@@ -173,6 +174,7 @@ void menustyle_free(MenuStyle *ms)
 	{
 		return;
 	}
+	fvwm_query_appearance_changed();
 	if (FORE_GC(ST_MENU_INACTIVE_GCS(ms)))
 	{
 		XFreeGC(dpy, FORE_GC(ST_MENU_INACTIVE_GCS(ms)));
@@ -438,6 +440,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 	KeyCode keycode;
 	FvwmPictureAttributes fpa;
 
+	fvwm_query_appearance_changed();
 	action = GetNextToken(action, &name);
 	if (!name)
 	{
@@ -1163,6 +1166,7 @@ void menustyle_copy(MenuStyle *origms, MenuStyle *destms)
 	/* Copy origms to destms, be aware of all pointers in the MenuStyle
 	   structure. Use  the same order as in menustyle_parse_style */
 
+	fvwm_query_appearance_changed();
 	/* HilightBack / ActiveFore */
 	ST_DO_HILIGHT_BACK(destms) = ST_DO_HILIGHT_BACK(origms);
 	ST_DO_HILIGHT_FORE(destms) = ST_DO_HILIGHT_FORE(origms);
@@ -1171,6 +1175,8 @@ void menustyle_copy(MenuStyle *origms, MenuStyle *destms)
 	ST_RELIEF_THICKNESS(destms) = ST_RELIEF_THICKNESS(origms);
 	/* Animation */
 	ST_IS_ANIMATED(destms) = ST_IS_ANIMATED(origms);
+	/* Opacity is part of the copied look, including an existing target. */
+	ST_TRANSLUCENT_PERCENT(destms) = ST_TRANSLUCENT_PERCENT(origms);
 
 	/* font */
 	if (ST_PSTDFONT(destms) &&  !ST_USING_DEFAULT_FONT(destms))

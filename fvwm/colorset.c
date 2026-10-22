@@ -100,6 +100,7 @@ static uint64_t colorset_generation = 1;
 
 static void colorset_query_changed(void)
 {
+	fvwm_query_appearance_changed();
 	if (colorset_generation)
 		colorset_generation++;
 }

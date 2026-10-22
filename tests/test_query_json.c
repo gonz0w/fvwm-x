@@ -5,6 +5,9 @@
  */
 #include "config.h"
 #include "fvwm/query_json.h"
+#include "fvwm/execcontext.h"
+#include "fvwm/screen.h"
+#include "fvwm/menustyle.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,6 +60,136 @@ static void test_internal_grammar(void)
 
 static const char token[] =
 	"000000000000000000000000000000000000000000000001";
+
+static void test_appearance(void)
+{
+	MenuStyle menus[2] = {{.name = "*"}, {.name = "literal $[desk.n]"}};
+	FvwmDecor decors[2] = {{.tag = "Default"}, {.tag = "custom"}};
+	struct fvwm_query_spec spec = {.limit = 1, .generation = "-"};
+	const char *error;
+	cJSON *result, *item;
+	char first[MODULE_QUERY_GENERATION_LEN + 1], second[sizeof(first)];
+
+	menus[0].next_style = menus + 1;
+	menus[1].feel.flags.is_animated = 1;
+	menus[1].look.TranslucentPercent = 73;
+	menus[1].feel.item_format = "%l literal $[desk.n]";
+	decors[0].next = decors + 1;
+	decors[1].title_height = 23;
+	TB_JUSTIFICATION(decors[1].titlebar) = JUST_LEFT;
+	assert(fvwm_query_appearance_token(first));
+	assert(fvwm_query_appearance_token(second) && strcmp(first,
+		second) == 0);
+	fvwm_query_appearance_changed();
+	assert(fvwm_query_appearance_token(second) && strcmp(first,
+		second) != 0);
+	result = fvwm_query_appearance(token, &spec, &error);
+	assert(result && !error);
+	assert(cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(result,
+		"conditional_application")));
+	assert(cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(result,
+		"preview_supported")));
+	cJSON_Delete(result);
+	for (unsigned int kind = 0; kind < 2; kind++)
+	{
+		const char *property = kind ? "decorations" : "menu_styles";
+
+		spec.offset = 0;
+		strcpy(spec.generation, "-");
+		result = kind ? fvwm_query_decorations(decors, token, &spec,
+			&error) : fvwm_query_menu_styles(menus, token, &spec,
+				&error);
+		assert(result && !error);
+		assert(cJSON_GetObjectItemCaseSensitive(result,
+			"next_offset")->valueint == 1);
+		item = cJSON_GetArrayItem(cJSON_GetObjectItemCaseSensitive(
+			result,
+			property), 0);
+		assert(cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(item,
+			"default")));
+		cJSON_Delete(result);
+		spec.offset = 1;
+		assert(!(kind ? fvwm_query_decorations(decors, token, &spec,
+			&error) : fvwm_query_menu_styles(menus, token, &spec,
+				&error)));
+		assert(strcmp(error, "stale_generation") == 0);
+		strcpy(spec.generation, token);
+		result = kind ? fvwm_query_decorations(decors, token, &spec,
+			&error) : fvwm_query_menu_styles(menus, token, &spec,
+				&error);
+		assert(result && !error);
+		assert(cJSON_IsNull(cJSON_GetObjectItemCaseSensitive(result,
+			"next_offset")));
+		item = cJSON_GetArrayItem(cJSON_GetObjectItemCaseSensitive(
+			result,
+			property), 0);
+		assert(cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(item,
+			"default")));
+		if (kind)
+			assert(cJSON_GetObjectItemCaseSensitive(item,
+				"title_height")->valueint == 23);
+		else
+			assert(cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(
+				item,
+				"animation")));
+		cJSON_Delete(result);
+		spec.offset = 3;
+		assert(!(kind ? fvwm_query_decorations(decors, token, &spec,
+			&error) : fvwm_query_menu_styles(menus, token, &spec,
+				&error)));
+		assert(strcmp(error, "invalid_offset") == 0);
+	}
+	menus[0].next_style = menus;
+	decors[0].next = decors;
+	spec.offset = MODULE_QUERY_OFFSET_MAX;
+	assert(!fvwm_query_menu_styles(menus, token, &spec, &error));
+	assert(strcmp(error, "query_too_large") == 0);
+	assert(!fvwm_query_decorations(decors, token, &spec, &error));
+	assert(strcmp(error, "query_too_large") == 0);
+	menus[0].next_style = NULL;
+	decors[0].next = NULL;
+	spec.offset = 0;
+	strcpy(spec.generation, "-");
+	char oversized[MODULE_QUERY_STRING_MAX + 2];
+
+	memset(oversized, 'a', sizeof(oversized) - 1);
+	oversized[sizeof(oversized) - 1] = '\0';
+	menus[0].feel.item_format = oversized;
+	assert(!fvwm_query_menu_styles(menus, token, &spec, &error));
+	assert(strcmp(error, "query_too_large") == 0);
+	menus[0].feel.item_format = NULL;
+	decors[0].tag = oversized;
+	assert(!fvwm_query_decorations(decors, token, &spec, &error));
+	assert(strcmp(error, "query_too_large") == 0);
+	decors[0].tag = NULL;
+	cJSON_Hooks hooks = {.malloc_fn = checked_malloc,
+		.free_fn = checked_free};
+
+	for (unsigned int kind = 0; kind < 3; kind++)
+	{
+		bool completed = false;
+
+		for (fail_at = 0; fail_at < 1024; fail_at++)
+		{
+			attempts = live = 0;
+			cJSON_InitHooks(&hooks);
+			result = kind == 0 ? fvwm_query_appearance(token, &spec,
+				&error) : kind == 1 ? fvwm_query_menu_styles(
+					menus,
+				token, &spec, &error) : fvwm_query_decorations(
+					decors,
+				token, &spec, &error);
+			completed = result != NULL;
+			assert(completed ? error == NULL : error != NULL);
+			cJSON_Delete(result);
+			assert(live == 0);
+			cJSON_InitHooks(NULL);
+			if (completed)
+				break;
+		}
+		assert(completed);
+	}
+}
 
 static void test_colorsets(void)
 {
@@ -340,6 +473,7 @@ static void test_monitors_and_failure_cleanup(void)
 int main(void)
 {
 	test_internal_grammar();
+	test_appearance();
 	test_colorsets();
 	test_binding_pages();
 	test_binding_domains();

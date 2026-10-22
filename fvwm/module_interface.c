@@ -53,6 +53,7 @@
 #include "module_queue.h"
 #include "query_json.h"
 #include "colorset.h"
+#include "menustyle.h"
 #include "libs/vpacket.h"
 #include "libs/monitor_types.h"
 #include "libs/picture_types.h"
@@ -897,7 +898,24 @@ void CMD_Send_Query(F_CMD_ARGS)
 
 	if (!module || !fvwm_query_parse(action, &spec))
 		return;
-	if (strcmp(spec.resource, "colorsets") == 0 ||
+	if (strcmp(spec.resource, "appearance") == 0 ||
+	    strcmp(spec.resource, "menu-styles") == 0 ||
+	    strcmp(spec.resource, "decorations") == 0)
+	{
+		if (!fvwm_query_appearance_token(generation))
+			error = "generation_unavailable";
+		else if (strcmp(spec.resource, "appearance") == 0)
+			result = fvwm_query_appearance(generation,
+				&spec, &error);
+		else if (strcmp(spec.resource, "menu-styles") == 0)
+			result = fvwm_query_menu_styles(
+				menustyle_get_default_style(), generation,
+				&spec, &error);
+		else
+			result = fvwm_query_decorations(&Scr.DefaultDecor,
+				generation, &spec, &error);
+	}
+	else if (strcmp(spec.resource, "colorsets") == 0 ||
 	    strcmp(spec.resource, "colorset") == 0 ||
 	    strcmp(spec.resource, "color-summary") == 0)
 		result = query_colorsets(&spec, &error);

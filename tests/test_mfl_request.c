@@ -411,7 +411,7 @@ static void test_core_snapshot_requests(void)
 		.serial = 42};
 	char text[1001], command[1001];
 	const char *resources[] = {"topology", "workspaces", "bindings",
-		"colorsets"};
+		"colorsets", "appearance", "menu-styles", "decorations"};
 	const char *invalid[] = {
 		"\"offset\":-1", "\"offset\":1", "\"offset\":4097",
 		"\"offset\":0.5", "\"limit\":0", "\"limit\":17",
@@ -650,6 +650,40 @@ static void test_operation_requests(void)
 		generation, state));
 }
 
+static void test_appearance_requests(void)
+{
+	struct mfl_request request;
+	char text[1001], command[1001];
+	const char *names[] = {"appearance", "menu-styles", "decorations"};
+	const char *bad[] = {"\"scope\":\"all\"", "\"target\":\"*\"",
+		"\"offset\":1", "\"limit\":0", "\"generation\":\"bad\""};
+
+	for (size_t i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"a\","
+			"\"method\":\"query\",\"resource\":\"%s\","
+			"\"generation\":\"ffffffffffffffffffffffffffffffff"
+			"ffffffffffffffff\"}", names[i]);
+		assert(mfl_request_parse(text, &request));
+		assert(mfl_request_is_snapshot(request.kind));
+		assert(!mfl_request_is_action(request.kind));
+		assert(mfl_request_snapshot_command(command, sizeof(command),
+			&request, 1, "a"));
+		assert(strstr(command, names[i]));
+		for (size_t j = 0; j < sizeof(bad) / sizeof(bad[0]); j++)
+		{
+			snprintf(text, sizeof(text),
+				"{\"version\":1,\"id\":\"a\","
+				"\"method\":\"query\",\"resource\":\"%s\",%s}",
+				names[i], bad[j]);
+			assert(!mfl_request_parse(text, &request));
+		}
+	}
+	assert(!mfl_request_parse("{\"version\":1,\"id\":\"a\","
+		"\"method\":\"query\",\"resource\":\"appearance\",\"limit\":1}",
+		&request));
+}
+
 static void test_colorset_requests(void)
 {
 	struct mfl_request request;
@@ -689,6 +723,7 @@ static void test_colorset_requests(void)
 
 int main(void)
 {
+	test_appearance_requests();
 	test_colorset_requests();
 	test_core_snapshot_requests();
 	test_provider_requests();

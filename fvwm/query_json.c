@@ -6,6 +6,9 @@
 
 #include "config.h"
 #include "query_json.h"
+#include "execcontext.h"
+#include "screen.h"
+#include "menustyle.h"
 #include "libs/defaults.h"
 #include "libs/modifiers.h"
 #include "libs/wcontext.h"
@@ -15,6 +18,22 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+
+/* Conservative, process-local activity revision. All callers run on the core
+ * thread. A wrap permanently disables observations, rather than reusing IDs. */
+static uint64_t appearance_generation = 1;
+
+void fvwm_query_appearance_changed(void)
+{
+	if (appearance_generation)
+		appearance_generation++;
+}
+
+bool fvwm_query_appearance_token(
+	char output[MODULE_QUERY_GENERATION_LEN + 1])
+{
+	return fvwm_query_token(appearance_generation, output);
+}
 
 bool fvwm_query_token(uint64_t revision,
 	char output[MODULE_QUERY_GENERATION_LEN + 1])
@@ -584,6 +603,241 @@ cJSON *fvwm_query_colorsets(const struct fvwm_query_colorset *entries,
 		if (!add_colorset(list, entries + i))
 			goto fail;
 	*error = NULL;
+	return result;
+fail:
+	cJSON_Delete(result);
+	return NULL;
+}
+
+cJSON *fvwm_query_appearance(const char *generation,
+	const struct fvwm_query_spec *spec, const char **error)
+{
+	static const char *coverage[] = {"window-style-definitions",
+		"decoration-definitions", "menu-style-policy",
+		"default-font-command", "colorset-publication"};
+	cJSON *result, *list;
+
+	*error = "invalid_request";
+	if (spec->offset != 0)
+		return NULL;
+	if (!snapshot_generation(generation, spec, error))
+		return NULL;
+	result = observed_result("core-appearance-configuration", error);
+	if (!result)
+		return NULL;
+	list = cJSON_AddArrayToObject(result, "coverage");
+	if (!list ||
+	    !cJSON_AddStringToObject(result, "generation", generation) ||
+	    !cJSON_AddBoolToObject(result, "window_effective_state", false) ||
+	    !cJSON_AddStringToObject(result, "rendered_completion",
+		"unknown") ||
+	    !cJSON_AddBoolToObject(result, "conditional_application", false) ||
+	    !cJSON_AddBoolToObject(result, "preview_supported", false))
+		goto fail;
+	for (size_t i = 0; i < sizeof(coverage) / sizeof(coverage[0]); i++)
+	{
+		cJSON *name = cJSON_CreateString(coverage[i]);
+
+		if (!name)
+			goto fail;
+		if (!cJSON_AddItemToArray(list, name))
+		{
+			cJSON_Delete(name);
+			goto fail;
+		}
+	}
+	*error = NULL;
+	return result;
+fail:
+	cJSON_Delete(result);
+	return NULL;
+}
+
+static bool appearance_page_valid(const char *generation,
+	const struct fvwm_query_spec *spec, const char **error)
+{
+	*error = "invalid_request";
+	return spec->offset <= MODULE_QUERY_OFFSET_MAX && spec->limit > 0 &&
+		spec->limit <= MODULE_QUERY_PAGE_MAX &&
+		snapshot_generation(generation, spec, error);
+}
+
+static cJSON *appearance_page(const char *scope, const char *property,
+	const char *generation, unsigned int offset, const char **error)
+{
+	cJSON *result = observed_result(scope, error);
+
+	if (result &&
+	    cJSON_AddStringToObject(result, "generation", generation) &&
+	    cJSON_AddStringToObject(result, "units", "configuration-pixels") &&
+	    cJSON_AddNumberToObject(result, "offset", offset) &&
+	    cJSON_AddArrayToObject(result, property))
+		return result;
+	cJSON_Delete(result);
+	return NULL;
+}
+
+static bool appearance_page_finish(cJSON *result, bool more,
+	unsigned int next, const char **error)
+{
+	if (more && next > MODULE_QUERY_OFFSET_MAX)
+	{
+		*error = "query_too_large";
+		return false;
+	}
+	if (!(more ? cJSON_AddNumberToObject(result, "next_offset", next) :
+		cJSON_AddNullToObject(result, "next_offset")))
+		return false;
+	*error = NULL;
+	return true;
+}
+
+static cJSON *appearance_entry(cJSON *list)
+{
+	cJSON *item = cJSON_CreateObject();
+
+	if (item && !cJSON_AddItemToArray(list, item))
+	{
+		cJSON_Delete(item);
+		return NULL;
+	}
+	return item;
+}
+
+cJSON *fvwm_query_menu_styles(const MenuStyle *styles,
+	const char *generation, const struct fvwm_query_spec *spec,
+	const char **error)
+{
+	const MenuStyle *style = styles;
+	unsigned int offset = 0, count = 0;
+	cJSON *result, *list;
+
+	if (!appearance_page_valid(generation, spec, error))
+		return NULL;
+	for (; style && offset < spec->offset; offset++)
+		style = ST_NEXT_STYLE(style);
+	*error = "invalid_offset";
+	if (offset != spec->offset)
+		return NULL;
+	result = appearance_page("core-menu-style-policy", "menu_styles",
+		generation, offset, error);
+	if (!result)
+		return NULL;
+	list = cJSON_GetObjectItemCaseSensitive(result, "menu_styles");
+	for (; style && count < spec->limit;
+	     style = ST_NEXT_STYLE(style), count++)
+	{
+		cJSON *item, *colorsets;
+
+		if (!bounded_text(ST_NAME(style), MODULE_QUERY_NAME_MAX) ||
+		    (ST_ITEM_FORMAT(style) &&
+		     !bounded_text(ST_ITEM_FORMAT(style),
+			MODULE_QUERY_STRING_MAX)))
+		{
+			*error = "query_too_large";
+			goto fail;
+		}
+		item = appearance_entry(list);
+		if (!item)
+			goto fail;
+		colorsets = cJSON_AddObjectToObject(item, "colorsets");
+		if (!colorsets ||
+		    !cJSON_AddStringToObject(item, "name", ST_NAME(style)) ||
+		    !cJSON_AddBoolToObject(item, "default",
+			offset + count == 0) ||
+		    !cJSON_AddBoolToObject(item, "animation",
+			ST_IS_ANIMATED(style)) ||
+		    !cJSON_AddNumberToObject(item, "opacity_percent",
+			ST_TRANSLUCENT_PERCENT(style)) ||
+		    !cJSON_AddNumberToObject(item, "border_width",
+			ST_BORDER_WIDTH(style)) ||
+		    !cJSON_AddNumberToObject(item, "popup_delay_10ms",
+			ST_POPUP_DELAY(style)) ||
+		    !cJSON_AddNumberToObject(item, "popdown_delay_10ms",
+			ST_POPDOWN_DELAY(style)) ||
+		    !cJSON_AddBoolToObject(item, "automatic_hotkeys",
+			ST_USE_AUTOMATIC_HOTKEYS(style)) ||
+		    !cJSON_AddBoolToObject(item, "submenus_left",
+			ST_USE_LEFT_SUBMENUS(style)) ||
+		    !(ST_ITEM_FORMAT(style) ? cJSON_AddStringToObject(item,
+			"item_format", ST_ITEM_FORMAT(style)) :
+			cJSON_AddNullToObject(item, "item_format")) ||
+		    !cJSON_AddNumberToObject(colorsets, "menu",
+			ST_CSET_MENU(style)) ||
+		    !cJSON_AddNumberToObject(colorsets, "active",
+			ST_CSET_ACTIVE(style)) ||
+		    !cJSON_AddNumberToObject(colorsets, "greyed",
+			ST_CSET_GREYED(style)) ||
+		    !cJSON_AddNumberToObject(colorsets, "title",
+			ST_CSET_TITLE(style)))
+			goto fail;
+	}
+	if (!appearance_page_finish(result, style != NULL,
+		offset + count, error))
+		goto fail;
+	return result;
+fail:
+	cJSON_Delete(result);
+	return NULL;
+}
+
+cJSON *fvwm_query_decorations(const FvwmDecor *decorations,
+	const char *generation, const struct fvwm_query_spec *spec,
+	const char **error)
+{
+	const FvwmDecor *decor = decorations;
+	unsigned int offset = 0, count = 0;
+	cJSON *result, *list;
+
+	if (!appearance_page_valid(generation, spec, error))
+		return NULL;
+	for (; decor && offset < spec->offset; offset++)
+		decor = decor->next;
+	*error = "invalid_offset";
+	if (offset != spec->offset)
+		return NULL;
+	result = appearance_page("core-decoration-definitions", "decorations",
+		generation, offset, error);
+	if (!result)
+		return NULL;
+	list = cJSON_GetObjectItemCaseSensitive(result, "decorations");
+	for (; decor && count < spec->limit; decor = decor->next, count++)
+	{
+		cJSON *item;
+		const char *justification =
+			TB_JUSTIFICATION(decor->titlebar) == JUST_CENTER ?
+			"center" :
+			TB_JUSTIFICATION(decor->titlebar) == JUST_LEFT ?
+			"left" :
+			TB_JUSTIFICATION(decor->titlebar) == JUST_RIGHT ?
+			"right" : "unknown";
+
+		if (decor->tag &&
+		    !bounded_text(decor->tag, MODULE_QUERY_NAME_MAX))
+		{
+			*error = "query_too_large";
+			goto fail;
+		}
+		item = appearance_entry(list);
+		if (!item ||
+		    !(decor->tag ?
+			cJSON_AddStringToObject(item, "name", decor->tag) :
+			cJSON_AddNullToObject(item, "name")) ||
+		    !cJSON_AddBoolToObject(item, "default",
+			offset + count == 0) ||
+		    !cJSON_AddNumberToObject(item, "title_height",
+			decor->title_height) ||
+		    !cJSON_AddNumberToObject(item, "minimum_title_height",
+			decor->min_title_height) ||
+		    !cJSON_AddStringToObject(item, "title_justification",
+			justification) ||
+		    !cJSON_AddNumberToObject(item, "button_slots",
+			NUMBER_OF_TITLE_BUTTONS))
+			goto fail;
+	}
+	if (!appearance_page_finish(result, decor != NULL,
+		offset + count, error))
+		goto fail;
 	return result;
 fail:
 	cJSON_Delete(result);

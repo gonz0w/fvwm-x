@@ -1,0 +1,3808 @@
+{
+  "status": "locally qualified composed checkpoint; ready for maintainer review",
+  "base": "0165d40e51f001091776ea3fc776983bc147e3ad",
+  "initial_implementation": "4c63c0f4c",
+  "review_implementation": "96b5d18d271cfcf9f6fedf856e00bcd8c6a035b5",
+  "source_inputs": 2133,
+  "final_tested_source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b",
+  "initial_combined": {
+    "targets": {
+      "fvwm-x-linux-arm64-svg": {
+        "archive": "fvwm-x-linux-arm64-svg-evidence.tgz",
+        "sha256": "6f503ac463a4a3acd5391d1a41a6450a8be16d654e3a40f32953af0cbf8b9286",
+        "bytes": 1140214,
+        "source_inputs": 2133,
+        "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2",
+        "payloads_verified": 614,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "gcc": {
+            "tests": 303,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-safety-gcc",
+            "loader_sha256": "3848242fabb805c34e75f75454930b04a0f8ab6f5df68913453c8725e801777a"
+          },
+          "clang": {
+            "tests": 303,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-safety-clang",
+            "loader_sha256": "bd62c9db12375700afeecd708a8546b45290ba3681ab932f1f9032098ba037fd"
+          },
+          "software": {
+            "tests": 15,
+            "generated_config": {
+              "before": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b",
+              "after": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-safety-software",
+            "loader_sha256": "b7a7b04ea23da312394e297fc17a0aed73601148e66632787605d126c78f3a46"
+          },
+          "minimal": {
+            "tests": 15,
+            "generated_config": {
+              "before": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711",
+              "after": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711"
+            },
+            "installed_elf": 15,
+            "catalogs": 0,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-safety-minimal",
+            "loader_sha256": "f0010b3ab763042993c3a7b05fb3b798b9bf88d0cd73c54b75a0e63998edb885"
+          }
+        },
+        "test_logs": {
+          "clang-testlog.json": {
+            "registered": 303,
+            "passed": 303,
+            "other": [],
+            "sha256": "f219a74d2bf966505c775a6b71259841ca6363929eb45cdc41d0baf66bf1ff15"
+          },
+          "gcc-testlog.json": {
+            "registered": 303,
+            "passed": 303,
+            "other": [],
+            "sha256": "d99fba4ba77bb2407df84108748f1f6a1018e9a24702e4a17a0a859dd3b3ca73"
+          },
+          "minimal-testlog.json": {
+            "registered": 15,
+            "passed": 15,
+            "other": [],
+            "sha256": "0b4a5beaccbbf45cd207044142edda8c61b824af2ba3ce989a8df7d1ef688be9"
+          },
+          "software-testlog.json": {
+            "registered": 15,
+            "passed": 15,
+            "other": [],
+            "sha256": "ad6fd6d136b8fb1eac496c8bd90fef1eb1abd0480d7b6525f11e0c5514519859"
+          }
+        },
+        "all_commands_passed": true
+      },
+      "linux-amd64": {
+        "archive": "linux-amd64-evidence.tgz",
+        "sha256": "1c00e8e669143932aba8638aee0dd91308c746de5fa205c3e24b11315711cdd9",
+        "bytes": 317401,
+        "source_inputs": 2133,
+        "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2",
+        "payloads_verified": 288,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "gcc": {
+            "tests": 303,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "fvwm-linux-amd64",
+              "6.12.111+deb13-cloud-amd64",
+              "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+              "x86_64"
+            ],
+            "stage": "/root/fvwm-module-waits-20261015/stage-workarea-safety-gcc",
+            "loader_sha256": "e741bacceba15941f0b22171c92a68fb0f7b2404c3990e2856e7878537ef5f1d"
+          },
+          "clang": {
+            "tests": 303,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "fvwm-linux-amd64",
+              "6.12.111+deb13-cloud-amd64",
+              "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+              "x86_64"
+            ],
+            "stage": "/root/fvwm-module-waits-20261015/stage-workarea-safety-clang",
+            "loader_sha256": "69db519a087c706197ff3e5a7355fab9d1fed95a4c03d642ff932c6154755ab8"
+          }
+        },
+        "test_logs": {
+          "clang-testlog.json": {
+            "registered": 303,
+            "passed": 303,
+            "other": [],
+            "sha256": "b0b81fcd32933ddb97d77a8e3483715b8c6b5cdbaada70e005b4aad96685eba2"
+          },
+          "gcc-testlog.json": {
+            "registered": 303,
+            "passed": 303,
+            "other": [],
+            "sha256": "9e86c36fc990f8fc3bea724b2f1d57c3304916648428f19cd1a738ca9ff23240"
+          }
+        },
+        "all_commands_passed": true
+      },
+      "freebsd-arm64": {
+        "archive": "freebsd-arm64-evidence.tgz",
+        "sha256": "fce23f8225242bc6872aa11d7415440704f8caad29feb4a55db2be7b36a3c32a",
+        "bytes": 234466,
+        "source_inputs": 2133,
+        "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2",
+        "payloads_verified": 223,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 290,
+            "generated_config": {
+              "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+              "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "FreeBSD",
+              "freebsd",
+              "15.1-RELEASE-p4",
+              "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+              "arm64"
+            ],
+            "stage": "/root/fvwm-module-waits-20261015/stage-workarea-safety-default",
+            "loader_sha256": "e44ac8e8cc3cc17ad2d496977f3565265f503d6af51b911d7ac7bd450d4aaeec"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 290,
+            "passed": 290,
+            "other": [],
+            "sha256": "3cf927d20c8e437391e6c4dc1dc2b08a98dca0ba6cc97e546d31d1185c7b0a74"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 14,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        }
+      },
+      "freebsd-amd64": {
+        "archive": "freebsd-amd64-evidence.tgz",
+        "sha256": "c3ff9e60436d1db8f1208c475714fb83b75bc37af7eb83a536ecd2e7bb799647",
+        "bytes": 238637,
+        "source_inputs": 2133,
+        "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2",
+        "payloads_verified": 222,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 290,
+            "generated_config": {
+              "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+              "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "FreeBSD",
+              "freebsd",
+              "15.1-RELEASE-p4",
+              "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+              "amd64"
+            ],
+            "stage": "/root/fvwm-style-simplification-recovery-20261016/stage-workarea-safety-default",
+            "loader_sha256": "98a746d57b7d7412ce6970dcebc6431342eb48445eaf0e81c3f0d97b5bee91b0"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 290,
+            "passed": 290,
+            "other": [],
+            "sha256": "6e5a39446abf4cd77d79733e090555123e873e37ab66bd0a27965a56659f0e3c"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 14,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        }
+      },
+      "openbsd-amd64": {
+        "archive": "openbsd-amd64-job/guest-evidence.tgz",
+        "sha256": "423b3221788c7b35b99a06a5c54a5a59764771a7b2e4cd49ba1846d802fc5807",
+        "bytes": 113494847,
+        "source_inputs": 2133,
+        "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2",
+        "payloads_verified": 2945,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 290,
+            "generated_config": {
+              "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+              "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+            },
+            "installed_elf": 15,
+            "catalogs": 0,
+            "data": 70,
+            "uname": [
+              "OpenBSD",
+              "openbsd.my.domain",
+              "8.0",
+              "GENERIC.MP#2",
+              "amd64"
+            ],
+            "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-workarea-safety",
+            "loader_sha256": "603d0db478e63a5a0c7b0889ade95666e96c1649b940ee88b5d5dc9333e135ee"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 290,
+            "passed": 290,
+            "other": [],
+            "sha256": "0c468ce573c6203333316548c445742f2ec208ccf2ed5b13f100eb89de78d47d"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 14,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        },
+        "runner": {
+          "guest_release": [
+            "OpenBSD",
+            "8.0",
+            "amd64",
+            "OpenBSD 8.0 (GENERIC.MP) #2: Mon Oct 19 12:55:12 MDT 2026"
+          ],
+          "qemu_exit_status": 0,
+          "ephemeral_key_removed": true,
+          "prepare_script": {
+            "sha256": "48cfd93fe415a1d63a79267d74558d9938c049972afd24fc0c887bd5d28c105b",
+            "bytes": 4760
+          },
+          "run_script": {
+            "sha256": "dc82c5cc8f5771717e972828436240ff74f63c88639e00fbd49122fa8d9bae4c",
+            "bytes": 1948
+          },
+          "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2"
+        }
+      },
+      "openbsd-arm64": {
+        "archive": "openbsd-arm64-job/guest-evidence.tgz",
+        "sha256": "28c9780b441266d806817ba8fcbee0005943ad08b62a0b23ee844876c2f0e4d3",
+        "bytes": 113230959,
+        "source_inputs": 2133,
+        "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2",
+        "payloads_verified": 2942,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 290,
+            "generated_config": {
+              "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+              "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+            },
+            "installed_elf": 15,
+            "catalogs": 0,
+            "data": 70,
+            "uname": [
+              "OpenBSD",
+              "openbsd.my.domain",
+              "8.0",
+              "GENERIC.MP#1",
+              "arm64"
+            ],
+            "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-workarea-safety",
+            "loader_sha256": "5b1969c69c59d8d5717b644f63fa0ab7e7d06d0d410919d117feb18f738f2c42"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 290,
+            "passed": 290,
+            "other": [],
+            "sha256": "409bba8b5edec1b3c1855787542df8720470f946f8a9aa637ad4b5d75733f33c"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 14,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        },
+        "runner": {
+          "guest_release": [
+            "OpenBSD",
+            "8.0",
+            "arm64",
+            "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+          ],
+          "qemu_exit_status": 0,
+          "ephemeral_key_removed": true,
+          "prepare_script": {
+            "sha256": "1bdff0c55f3f08fa5eaf4d12b308c199794df7adb5e6003c928542ee4079b136",
+            "bytes": 4760
+          },
+          "run_script": {
+            "sha256": "6c06f6a1e3c847879f76b6d220d87c0389325ae98763d0bdeef73a39e65b362b",
+            "bytes": 1948
+          },
+          "source_archive_sha256": "4c46686cda9764a2968f583f6da770179588aafeba0fa0d7922b08d7245995f2"
+        }
+      }
+    },
+    "accepted": {
+      "entries": 2402,
+      "standard": 2372,
+      "optional": 30,
+      "affected_continuation": 0,
+      "install_profiles": 10,
+      "installed_elf": 150,
+      "catalogs": 77,
+      "data": 700,
+      "staged_workarea_groups": 30,
+      "staged_desktop_groups": 30,
+      "staged_geometry_groups": 20,
+      "staged_style_groups": 10,
+      "default_bsd_groups": 56
+    },
+    "retirement": {
+      "linux-amd64": {
+        "status": "retired verified guest duplicates",
+        "name": "linux-amd64",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/linux-amd64-evidence.tgz",
+            "archive_sha256": "1c00e8e669143932aba8638aee0dd91308c746de5fa205c3e24b11315711cdd9",
+            "payload_files": 288,
+            "freed_payload_bytes": 2958545,
+            "freed_archive_bytes": 317401
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "freebsd-amd64": {
+        "status": "retired verified guest duplicates",
+        "name": "freebsd-amd64",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/freebsd-amd64-evidence.tgz",
+            "archive_sha256": "c3ff9e60436d1db8f1208c475714fb83b75bc37af7eb83a536ecd2e7bb799647",
+            "payload_files": 222,
+            "freed_payload_bytes": 1752935,
+            "freed_archive_bytes": 238637
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "openbsd-arm64": {
+        "status": "retired verified temporary host build-cache copy",
+        "bytes": 104684124,
+        "sha256": "94239e2651844d3db23cfe49cd03abe7862bc70a18d96ac86208db9fb6e4d569",
+        "prior_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/openbsd-arm64-job/guest-evidence.tgz",
+        "current_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/openbsd-arm64-job/guest-evidence.tgz",
+        "canonical_evidence_and_vm_disks_preserved": true
+      },
+      "review-control": {
+        "status": "retired verified guest duplicates",
+        "name": "fvwm-x-linux-arm64-svg",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review-control-evidence.tgz",
+            "archive_sha256": "36969537c84e7c1960a3511f497a231b3e0d77645565b88209cd7373fb19961e",
+            "payload_files": 4,
+            "freed_payload_bytes": 2292,
+            "freed_archive_bytes": 1277
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "old-capture": {
+        "status": "retired verified guest duplicates",
+        "name": "fvwm-x-linux-arm64-svg",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/ewmh-state-batch/qualification/fvwm-x-linux-arm64-svg.tgz",
+            "archive_sha256": "a4f2ab3cc020bbd8a4b4aecbe089511682aaa535f5c179b4beb6644ae92a7265",
+            "payload_files": 358,
+            "freed_payload_bytes": 162801076,
+            "freed_archive_bytes": 0
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-distinct-id-filter/qualification/fvwm-x-linux-arm64-svg.tgz",
+            "archive_sha256": "b979a9bedc7141406c09f253084f48da952ecaacbad7848452ab95004bccacb4",
+            "payload_files": 359,
+            "freed_payload_bytes": 141064526,
+            "freed_archive_bytes": 0
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "fvwm-x-linux-arm64-svg": {
+        "status": "retired verified guest duplicates",
+        "name": "fvwm-x-linux-arm64-svg",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/fvwm-x-linux-arm64-svg-evidence.tgz",
+            "archive_sha256": "6f503ac463a4a3acd5391d1a41a6450a8be16d654e3a40f32953af0cbf8b9286",
+            "payload_files": 614,
+            "freed_payload_bytes": 5967824,
+            "freed_archive_bytes": 1140214
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/fvwm-x-linux-arm64-svg-development.tgz",
+            "archive_sha256": "2068b7ed9fad78bc620be93b61de171cb710d09776bccf786494aee66ab91653",
+            "payload_files": 9,
+            "freed_payload_bytes": 1107502,
+            "freed_archive_bytes": 153530
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/fvwm-x-linux-arm64-svg-development2.tgz",
+            "archive_sha256": "26ead2a3c080bdf746db27575d45dd0c65442f2a1c993f9200c0732f1875a512",
+            "payload_files": 21,
+            "freed_payload_bytes": 335035,
+            "freed_archive_bytes": 110258
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/fvwm-x-linux-arm64-svg-development3.tgz",
+            "archive_sha256": "c2774585809a86e6fb0a5ddabc7c3371d941a36da1ea2a1954567ddffaf511bf",
+            "payload_files": 20,
+            "freed_payload_bytes": 335815,
+            "freed_archive_bytes": 110290
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/fvwm-x-linux-arm64-svg-development4.tgz",
+            "archive_sha256": "066cad4ce6ea2b652ebbd2979e5ac6e6f77adcadf06289cf9719ad809038f7ef",
+            "payload_files": 21,
+            "freed_payload_bytes": 335037,
+            "freed_archive_bytes": 110266
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/fvwm-x-linux-arm64-svg-baselines.tgz",
+            "archive_sha256": "ace8f2a864bd02556de85b1f719442474177e4bbc7dbd3c3f04ff6222d4c6dbb",
+            "payload_files": 17,
+            "freed_payload_bytes": 10374,
+            "freed_archive_bytes": 3059
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/fvwm-x-linux-arm64-svg-asan-development.tgz",
+            "archive_sha256": "293059ed7e1943494c5c47d45243f5b31d6e338e72e712df55af0341abec29ed",
+            "payload_files": 20,
+            "freed_payload_bytes": 50267,
+            "freed_archive_bytes": 9273
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/linux-arm64-preflight-failure.tgz",
+            "archive_sha256": "68089230e208c59ff868e02b3d49bdd06b8685fa1a9c588ebf07afc8b606f391",
+            "payload_files": 6,
+            "freed_payload_bytes": 360296,
+            "freed_archive_bytes": 109060
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "openbsd-amd64": {
+        "status": "retired verified temporary host build-cache copy",
+        "bytes": 104869094,
+        "sha256": "782ea6806da69fec86198e1a77c9e042588a96d42f2a102016658c99e57e73dc",
+        "prior_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/openbsd-amd64-job/guest-evidence.tgz",
+        "current_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/openbsd-amd64-job/guest-evidence.tgz",
+        "canonical_evidence_and_vm_disks_preserved": true
+      },
+      "freebsd-arm64": {
+        "status": "retired verified guest duplicates",
+        "name": "freebsd-arm64",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/freebsd-arm64-evidence.tgz",
+            "archive_sha256": "fce23f8225242bc6872aa11d7415440704f8caad29feb4a55db2be7b36a3c32a",
+            "payload_files": 223,
+            "freed_payload_bytes": 1684930,
+            "freed_archive_bytes": 234466
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/freebsd-arm64-development.tgz",
+            "archive_sha256": "b93e3b7e8f5fdd6186142c4d0c49f6cf35df27dd1fcf740e95508d29d88c0164",
+            "payload_files": 9,
+            "freed_payload_bytes": 1101509,
+            "freed_archive_bytes": 148758
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/freebsd-arm64-development2.tgz",
+            "archive_sha256": "fd0e3ced17ecb3909cdf3fde371fde09655c70cdbbb4645f1daf8b0316ccbf8d",
+            "payload_files": 21,
+            "freed_payload_bytes": 339818,
+            "freed_archive_bytes": 110846
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/freebsd-arm64-development3.tgz",
+            "archive_sha256": "65ce8b3ff9028b983443661eda0e89c1796ae100fb96df2b5651a322f9aed5d4",
+            "payload_files": 20,
+            "freed_payload_bytes": 340463,
+            "freed_archive_bytes": 110892
+          },
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/freebsd-arm64-development4.tgz",
+            "archive_sha256": "14c7f6944701843553ab086389707f17d8e3cbb036cc1e1764c898897555461d",
+            "payload_files": 21,
+            "freed_payload_bytes": 339822,
+            "freed_archive_bytes": 110848
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      }
+    }
+  },
+  "affected_review_continuation": {
+    "targets": {
+      "fvwm-x-linux-arm64-svg": {
+        "archive": "review/fvwm-x-linux-arm64-svg-evidence.tgz",
+        "sha256": "8e4b70d16b0ba07509c907f4ac61a9a78c5677b97a9e35ea7e3b26a565eb6e3a",
+        "bytes": 293297,
+        "source_inputs": 2133,
+        "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b",
+        "payloads_verified": 449,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "gcc": {
+            "tests": 9,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-review-gcc",
+            "loader_sha256": "ca658251c94f21be8f798f47404526092bc999abe552580e782d20a7b2faf0c5"
+          },
+          "clang": {
+            "tests": 9,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-review-clang",
+            "loader_sha256": "177a384b68e870647d58bca53342db9cd4f0a15bb74598838e714d800b659bed"
+          },
+          "software": {
+            "tests": 9,
+            "generated_config": {
+              "before": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b",
+              "after": "e48ac8ea74691ef1c9aab29efe3a69f61558b10c5fc76b8fd6b8bd0389f9889b"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-review-software",
+            "loader_sha256": "c4d73dfc7aee7dd0905191d0931766b58522168d4c6ffccae97ca3ca4b49c852"
+          },
+          "minimal": {
+            "tests": 9,
+            "generated_config": {
+              "before": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711",
+              "after": "a72a2c5fe748a830bebc55a6d098e0908d01b8807ce1ccc446b9d3f915617711"
+            },
+            "installed_elf": 15,
+            "catalogs": 0,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "288f898505a4",
+              "6.18.10-200.fc43.aarch64",
+              "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+              "aarch64"
+            ],
+            "stage": "/tmp/fvwm-module-waits-20261015/stage-workarea-review-minimal",
+            "loader_sha256": "c3d1aaa081739fbb461a58e73b202368bb1b299c5db0e6716f6b56aee6fd0f67"
+          }
+        },
+        "test_logs": {
+          "clang-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "c08e444cfd0e87b3fee09b3176c5af1507558b01eaa010e8f6ad7fca032c62a3"
+          },
+          "gcc-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "3943250a5fea065bd9012554752651dc0063d954907b0157a4770248ceb6831a"
+          },
+          "minimal-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "5a24b0a6c10d9534070cdf8d56193a4efab9429d6550b03620cec81c0510fb9a"
+          },
+          "software-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "91321456bd3d17cf735272903cac52b9afab43419ff1c68e2f38d35ae21aae5d"
+          }
+        },
+        "all_commands_passed": true
+      },
+      "linux-amd64": {
+        "archive": "review/linux-amd64-evidence.tgz",
+        "sha256": "bcba1e4494d0b7c2335121bae81c33b8d450dd847cff247b43622061cf96b018",
+        "bytes": 209049,
+        "source_inputs": 2133,
+        "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b",
+        "payloads_verified": 236,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "gcc": {
+            "tests": 9,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "fvwm-linux-amd64",
+              "6.12.111+deb13-cloud-amd64",
+              "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+              "x86_64"
+            ],
+            "stage": "/root/fvwm-module-waits-20261015/stage-workarea-review-gcc",
+            "loader_sha256": "2abc074f42b6dedc64d149c257938363f58d22c4561c6a33165ab8a69c27e320"
+          },
+          "clang": {
+            "tests": 9,
+            "generated_config": {
+              "before": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+              "after": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "Linux",
+              "fvwm-linux-amd64",
+              "6.12.111+deb13-cloud-amd64",
+              "#1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28)",
+              "x86_64"
+            ],
+            "stage": "/root/fvwm-module-waits-20261015/stage-workarea-review-clang",
+            "loader_sha256": "077d7d4f4176a0222fc53c5fad51743500b51fe0c19529340be48a1c164b8ab9"
+          }
+        },
+        "test_logs": {
+          "clang-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "76180e3b4bd3caacc3429865f6ea27df8c0e00c4f2a9de161ae36d15af2bf91e"
+          },
+          "gcc-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "252b2bd9a8a17c51d52663296b08d49abb768c5cf7a0d9ed50084621de55a3af"
+          }
+        },
+        "all_commands_passed": true
+      },
+      "freebsd-arm64": {
+        "archive": "review/freebsd-arm64-evidence.tgz",
+        "sha256": "a6b5df780841707d1d4f3eea898e05d4bbbdebde655ab0915e3a4b1bd76aaeaa",
+        "bytes": 182636,
+        "source_inputs": 2133,
+        "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b",
+        "payloads_verified": 164,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 9,
+            "generated_config": {
+              "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+              "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "FreeBSD",
+              "freebsd",
+              "15.1-RELEASE-p4",
+              "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+              "arm64"
+            ],
+            "stage": "/root/fvwm-module-waits-20261015/stage-workarea-review-default",
+            "loader_sha256": "e8d859733a147a66fcb2bfd009477112bde3cc4d5b99457c617bd46032ee7186"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "a830c250f428ddf338c4a6bdabbe6c97ccd0c5b44a0cf38f333b2afcbd193294"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 8,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        }
+      },
+      "freebsd-amd64": {
+        "archive": "review/freebsd-amd64-evidence.tgz",
+        "sha256": "a5b5f69437f034fea78113cf1d23519ecfdb74a2ee21c24041cd9dd273f55c7d",
+        "bytes": 183917,
+        "source_inputs": 2133,
+        "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b",
+        "payloads_verified": 163,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 9,
+            "generated_config": {
+              "before": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+              "after": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+            },
+            "installed_elf": 15,
+            "catalogs": 11,
+            "data": 70,
+            "uname": [
+              "FreeBSD",
+              "freebsd",
+              "15.1-RELEASE-p4",
+              "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+              "amd64"
+            ],
+            "stage": "/root/fvwm-style-simplification-recovery-20261016/stage-workarea-review-default",
+            "loader_sha256": "1466f5e274ce33165f31eeb5cf5ccdb7436d32e3267141da6a851df24a0affe0"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "5ac01f04be145468a7f805991c7a95f033a5ec74961758f37f018649f0cb1ab9"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 8,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        }
+      },
+      "openbsd-amd64": {
+        "archive": "review/openbsd-amd64-job/guest-evidence.tgz",
+        "sha256": "b9584120ecb682e2910b5697fc5a5c799f3aef048f17c1ec0ccf22d35ec292f2",
+        "bytes": 112813905,
+        "source_inputs": 2133,
+        "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b",
+        "payloads_verified": 1152,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 9,
+            "generated_config": {
+              "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+              "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+            },
+            "installed_elf": 15,
+            "catalogs": 0,
+            "data": 70,
+            "uname": [
+              "OpenBSD",
+              "openbsd.my.domain",
+              "8.0",
+              "GENERIC.MP#2",
+              "amd64"
+            ],
+            "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-workarea-review",
+            "loader_sha256": "c06a1a8b6b0638ca19ddc7e73eebf522ba193ae7a6fae598c42944434c543517"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "6d65c21aeabf541c985264ab78d9134a2412805965d641d049d02b788e63f2c9"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 8,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        },
+        "runner": {
+          "guest_release": [
+            "OpenBSD",
+            "8.0",
+            "amd64",
+            "OpenBSD 8.0 (GENERIC.MP) #2: Mon Oct 19 12:55:12 MDT 2026"
+          ],
+          "qemu_exit_status": 0,
+          "ephemeral_key_removed": true,
+          "prepare_script": {
+            "sha256": "48cfd93fe415a1d63a79267d74558d9938c049972afd24fc0c887bd5d28c105b",
+            "bytes": 4760
+          },
+          "run_script": {
+            "sha256": "a2293d599d24370d231d14e70925025220af970f60005deb0f5d171a88e8e264",
+            "bytes": 2771
+          },
+          "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b"
+        }
+      },
+      "openbsd-arm64": {
+        "archive": "review/openbsd-arm64-job/guest-evidence.tgz",
+        "sha256": "5eccb3206e3d30e3cac80ab3bfeade7c44c6d9e33ee4ce8d3eacac7d4166069c",
+        "bytes": 112571728,
+        "source_inputs": 2133,
+        "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b",
+        "payloads_verified": 1149,
+        "all_payload_hashes_valid": true,
+        "profiles": {
+          "default": {
+            "tests": 9,
+            "generated_config": {
+              "before": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+              "after": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e"
+            },
+            "installed_elf": 15,
+            "catalogs": 0,
+            "data": 70,
+            "uname": [
+              "OpenBSD",
+              "openbsd.my.domain",
+              "8.0",
+              "GENERIC.MP#1",
+              "arm64"
+            ],
+            "stage": "/home/fvwm-ci/source/builddir-bsd/install-stage-workarea-review",
+            "loader_sha256": "67de79d0b77543c9af0f5023be1d77852d342105ec80fe26127155294db00eeb"
+          }
+        },
+        "test_logs": {
+          "default-testlog.json": {
+            "registered": 9,
+            "passed": 9,
+            "other": [],
+            "sha256": "3cf70f6a4aa221ff808f94ea503c9e8ce3a039b0772885bde0d376504b46d2a8"
+          }
+        },
+        "all_commands_passed": true,
+        "default_display": {
+          "groups": 8,
+          "workarea_groups": 3,
+          "unauthenticated_client_refused": true,
+          "server_status_after_cleanup": 0
+        },
+        "runner": {
+          "guest_release": [
+            "OpenBSD",
+            "8.0",
+            "arm64",
+            "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+          ],
+          "qemu_exit_status": 0,
+          "ephemeral_key_removed": true,
+          "prepare_script": {
+            "sha256": "1bdff0c55f3f08fa5eaf4d12b308c199794df7adb5e6003c928542ee4079b136",
+            "bytes": 4760
+          },
+          "run_script": {
+            "sha256": "dbd9bdec39efd59f99ff82125d8087a6c4af890b896a541d33572ac9ea67752b",
+            "bytes": 2771
+          },
+          "source_archive_sha256": "2683d01c7955e71d85a07a3cdeadb08959bd40b975aad353c35d845e772d9e0b"
+        }
+      }
+    },
+    "accepted": {
+      "entries": 90,
+      "standard": 0,
+      "optional": 0,
+      "affected_continuation": 90,
+      "install_profiles": 10,
+      "installed_elf": 150,
+      "catalogs": 77,
+      "data": 700,
+      "staged_workarea_groups": 30,
+      "staged_desktop_groups": 30,
+      "staged_geometry_groups": 20,
+      "staged_style_groups": 10,
+      "default_bsd_groups": 32
+    },
+    "retirement": {
+      "linux-amd64": {
+        "status": "retired verified guest duplicates",
+        "name": "linux-amd64",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/linux-amd64-evidence.tgz",
+            "archive_sha256": "bcba1e4494d0b7c2335121bae81c33b8d450dd847cff247b43622061cf96b018",
+            "payload_files": 236,
+            "freed_payload_bytes": 1129025,
+            "freed_archive_bytes": 209049
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "asan": {
+        "status": "retired verified guest duplicates",
+        "name": "fvwm-x-linux-arm64-svg",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/asan-evidence.tgz",
+            "archive_sha256": "62eda8ad155bbc53393b901d6d4545dd4bde4e2969dceb2f537b146f20d88754",
+            "payload_files": 20,
+            "freed_payload_bytes": 49991,
+            "freed_archive_bytes": 9200
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "freebsd-amd64": {
+        "status": "retired verified guest duplicates",
+        "name": "freebsd-amd64",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/freebsd-amd64-evidence.tgz",
+            "archive_sha256": "a5b5f69437f034fea78113cf1d23519ecfdb74a2ee21c24041cd9dd273f55c7d",
+            "payload_files": 163,
+            "freed_payload_bytes": 866058,
+            "freed_archive_bytes": 183917
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "openbsd-arm64": {
+        "status": "retired verified temporary host build-cache copy",
+        "bytes": 104684124,
+        "sha256": "94239e2651844d3db23cfe49cd03abe7862bc70a18d96ac86208db9fb6e4d569",
+        "prior_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/openbsd-arm64-job/guest-evidence.tgz",
+        "current_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/openbsd-arm64-job/guest-evidence.tgz",
+        "canonical_evidence_and_vm_disks_preserved": true
+      },
+      "fvwm-x-linux-arm64-svg": {
+        "status": "retired verified guest duplicates",
+        "name": "fvwm-x-linux-arm64-svg",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/fvwm-x-linux-arm64-svg-evidence.tgz",
+            "archive_sha256": "8e4b70d16b0ba07509c907f4ac61a9a78c5677b97a9e35ea7e3b26a565eb6e3a",
+            "payload_files": 449,
+            "freed_payload_bytes": 1887547,
+            "freed_archive_bytes": 293297
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      },
+      "openbsd-amd64": {
+        "status": "retired verified temporary host build-cache copy",
+        "bytes": 104869094,
+        "sha256": "782ea6806da69fec86198e1a77c9e042588a96d42f2a102016658c99e57e73dc",
+        "prior_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/desktop-publication-safety/openbsd-amd64-job/guest-evidence.tgz",
+        "current_canonical_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/openbsd-amd64-job/guest-evidence.tgz",
+        "canonical_evidence_and_vm_disks_preserved": true
+      },
+      "freebsd-arm64": {
+        "status": "retired verified guest duplicates",
+        "name": "freebsd-arm64",
+        "removed": [
+          {
+            "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/freebsd-arm64-evidence.tgz",
+            "archive_sha256": "a6b5df780841707d1d4f3eea898e05d4bbbdebde655ab0915e3a4b1bd76aaeaa",
+            "payload_files": 164,
+            "freed_payload_bytes": 844989,
+            "freed_archive_bytes": 182636
+          }
+        ],
+        "source_builds_stages_references_disks_preserved": true
+      }
+    }
+  },
+  "focused": {
+    "fvwm-x-linux-arm64-svg-development": {
+      "identity": {
+        "sha256": "2068b7ed9fad78bc620be93b61de171cb710d09776bccf786494aee66ab91653",
+        "bytes": 153530
+      },
+      "payloads": {
+        "changed.json": "d13c871281c52b886e0ff40f4c337666baa2c54b59c5039eacf60b593f8afbd0",
+        "compile.log": "b138497117e36f67bbed4d336dd90854374cd71e0202cb7fd1f7fb2e3c4fafc2",
+        "configure.log": "acc1fe63f218a30065d74e5db788ae420e3d47235be2d45c189c69f542f461ce",
+        "manifest.json": "718ac9af3b67602ede81f957be1c11ce9c62e9f25cfaccb58922dc9cae89a17e",
+        "result.json": "880c1920aecdec7ea9ce27d00f5b0f9ea2813b95f2d4714caf968ffc01e53ed7",
+        "source.json": "4c9d482ce86c950307f53b6eb8ce141807a45fbc75b55045665ad5077713acb1",
+        "testlog.json": "b6e3cbec7a542b6ed54ad1693f1020bda2fe3b0c31d1c298f7b74b2a1c5dcecd",
+        "testlog.txt": "4d8d5efc75e26cb403fb9aecf13fef8593caf07b29f9f24585748438fc7f1a3f",
+        "tests.log": "2d9b4b3becfc5658b8bd7c893e617f5ca87171bf6cf28fcbbde32d0f423d02b8"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 1
+        }
+      ],
+      "tests_executed": false,
+      "retained_previous_testlog_not_executed": true
+    },
+    "fvwm-x-linux-arm64-svg-development2": {
+      "identity": {
+        "sha256": "26ead2a3c080bdf746db27575d45dd0c65442f2a1c993f9200c0732f1875a512",
+        "bytes": 110258
+      },
+      "payloads": {
+        "changed.json": "d7106d385132b389c31b4353f05c2311f2b8bceabe130402c67f03947efb909b",
+        "compile.log": "898158ce139cb631efd48a399b4b1d354e2ef888bf3323b4b0615134f865ed21",
+        "configure.log": "acc1fe63f218a30065d74e5db788ae420e3d47235be2d45c189c69f542f461ce",
+        "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/bounds/debug.log": "e0ed4e47bed1c25716c008e20ccaa73de76f5fbe61ac03b03adcb0324cd3fa8a",
+        "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+        "live-x/bounds/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/publication/debug.log": "5163ce2c43ce244da76c16e44b0f54b48df81ef205322216ee00e6dabd53afdf",
+        "live-x/publication/evidence.json": "48ee8c10d6ebb180db6bdb277732a8e5f89022e97c23d246e8edde2e77cd1741",
+        "live-x/publication/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/revocation/debug.log": "8a5966e2b90deaaceb7d73c6acf352c3e92af798f478edafc3c840ec68b1ad2b",
+        "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+        "live-x/revocation/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "manifest.json": "52e336f0ca5fdb318ec8906e1143629bced92f07be3c46f23eb85afaa0a10724",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "source.json": "fe501e0baba2789dbdbf8f8de9d73128f48436e169684b29696a8787eeb9856f",
+        "testlog.json": "ac87762d7b2262ef442514b414232505c31624cacfa88615cedbe24cac25e483",
+        "testlog.txt": "ebd74c9941abf862832fd2a682e49e0ad804fe2869157bd98ecd4faffc694d51",
+        "tests.log": "a2fc04fafd4265b91d1e7cbb6493f6ab3b5ddfec498185eca259773d98fc811f"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "fvwm3:live-x / ewmh-state-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3 / ewmh-workarea-policy",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-publication-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-revocation-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-bounds-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/bounds/evidence.json": {
+          "case": "bounds",
+          "status": "passed",
+          "areas": [
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              13,
+              800,
+              587,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "malformed_retention_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/publication/evidence.json": {
+          "case": "publication",
+          "status": "passed",
+          "areas": [
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              17,
+              23,
+              770,
+              558
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "page_desk_base_destroy": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/revocation/evidence.json": {
+          "case": "revocation",
+          "status": "passed",
+          "areas": [
+            [
+              31,
+              0,
+              769,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              29,
+              800,
+              571,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "zero_delete_ignore_restore": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      }
+    },
+    "fvwm-x-linux-arm64-svg-development3": {
+      "identity": {
+        "sha256": "c2774585809a86e6fb0a5ddabc7c3371d941a36da1ea2a1954567ddffaf511bf",
+        "bytes": 110290
+      },
+      "payloads": {
+        "changed.json": "3229124ac514dfafdfb9f9ae12c1345a0013bc5c35a1b93a6146e26ea8089c48",
+        "compile.log": "fe11af31273dd2490cac28b78015eb3e6c094c49f106e013435c8d340a7b5702",
+        "configure.log": "acc1fe63f218a30065d74e5db788ae420e3d47235be2d45c189c69f542f461ce",
+        "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/bounds/debug.log": "e0ed4e47bed1c25716c008e20ccaa73de76f5fbe61ac03b03adcb0324cd3fa8a",
+        "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+        "live-x/bounds/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/publication/debug.log": "5163ce2c43ce244da76c16e44b0f54b48df81ef205322216ee00e6dabd53afdf",
+        "live-x/publication/evidence.json": "48ee8c10d6ebb180db6bdb277732a8e5f89022e97c23d246e8edde2e77cd1741",
+        "live-x/publication/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/revocation/debug.log": "8a5966e2b90deaaceb7d73c6acf352c3e92af798f478edafc3c840ec68b1ad2b",
+        "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+        "live-x/revocation/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "manifest.json": "fb2dbfcc9afc923fbff26f115b4a26e39b44c4340c638ff84d0f66ff170b07b1",
+        "result.json": "a56ca8843293f330eff97ed4be962d9cbcd5be05342a2fa4ad1bae5df4bd6ef4",
+        "source.json": "58b561a0a8d672b9849646ce96021ce54e1747e09a616c658ec7786e7515540a",
+        "testlog.json": "ac87762d7b2262ef442514b414232505c31624cacfa88615cedbe24cac25e483",
+        "testlog.txt": "ebd74c9941abf862832fd2a682e49e0ad804fe2869157bd98ecd4faffc694d51"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 1
+        }
+      ],
+      "tests_executed": false,
+      "retained_previous_testlog_not_executed": true
+    },
+    "fvwm-x-linux-arm64-svg-development4": {
+      "identity": {
+        "sha256": "066cad4ce6ea2b652ebbd2979e5ac6e6f77adcadf06289cf9719ad809038f7ef",
+        "bytes": 110266
+      },
+      "payloads": {
+        "changed.json": "d7106d385132b389c31b4353f05c2311f2b8bceabe130402c67f03947efb909b",
+        "compile.log": "ce7b4726dc5d116e0cebb6ca40adee3b05b164934fe7af3eca0a8ceaf4fa35af",
+        "configure.log": "acc1fe63f218a30065d74e5db788ae420e3d47235be2d45c189c69f542f461ce",
+        "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/bounds/debug.log": "596d32f3e3e1f7f15a7eda5eb3f3949860781d4676eb33f39601de9fbb70de9e",
+        "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+        "live-x/bounds/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/publication/debug.log": "bb12ff759f11526666cc8fed853005346ac57da0bdc6c4dc892a565c1958dabb",
+        "live-x/publication/evidence.json": "48ee8c10d6ebb180db6bdb277732a8e5f89022e97c23d246e8edde2e77cd1741",
+        "live-x/publication/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/revocation/debug.log": "142d476c4ddb818a34189e13a8d5027e96ebb3f554f25e8cc829feddd43fa764",
+        "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+        "live-x/revocation/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "manifest.json": "333c48d101d4981d1b4c7017c418d0e9f79ccaae0711cab18bd192a436894dc6",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "source.json": "adddbbc58d36e59a92f6deeedb0420948d3cd69bcf56e5e9ac9a02fd4893e6b2",
+        "testlog.json": "643e2f8c2b160b2fef270b3a087723f3fa3846216d5c7831b96919f36568fcd6",
+        "testlog.txt": "f677109ca22b9d13ade2ed7e3407371fd41b43c84a5af93188bffbc5305a8580",
+        "tests.log": "c2e0459f56917c0c1587416b1e46048f19fe2d5901ddfffbe048f2ff82b4a606"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "fvwm3:live-x / ewmh-state-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3 / ewmh-workarea-policy",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-publication-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-revocation-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-bounds-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/bounds/evidence.json": {
+          "case": "bounds",
+          "status": "passed",
+          "areas": [
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              13,
+              800,
+              587,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "malformed_retention_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/publication/evidence.json": {
+          "case": "publication",
+          "status": "passed",
+          "areas": [
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              17,
+              23,
+              770,
+              558
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "page_desk_base_destroy": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/revocation/evidence.json": {
+          "case": "revocation",
+          "status": "passed",
+          "areas": [
+            [
+              31,
+              0,
+              769,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              29,
+              800,
+              571,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "zero_delete_ignore_restore": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      }
+    },
+    "fvwm-x-linux-arm64-svg-baselines": {
+      "identity": {
+        "sha256": "ace8f2a864bd02556de85b1f719442474177e4bbc7dbd3c3f04ff6222d4c6dbb",
+        "bytes": 3059
+      },
+      "payloads": {
+        "bounds/core.log": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+        "bounds/debug.log": "61ece6ed1ee48bd9375ea702e74aa8dc6128839c1faf2768b128528c81f78792",
+        "bounds/evidence.json": "198577ce45df3e17b0f64d348c02b435ca2e36ec55f46fe3a84b13682bcabc5b",
+        "bounds/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "bounds.log": "18be278c9cac6b2c9996be43dc485e3109c8e5135010b34fd44d9e25964c2791",
+        "manifest.json": "3cacc4585948c2fe249d94ddac247ed05c71d0a2532bd4d327b05edab3ab4db7",
+        "publication/core.log": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+        "publication/debug.log": "fe5c85d1423194d5b16ee7591068af746af6040be7fc7e91ceea4d166430b7a9",
+        "publication/evidence.json": "3b9c9f3b65bf6189a4023b3afc64d40226de5f0816b2c3689b6aa29c7b1ba28d",
+        "publication/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "publication.log": "bc7fefb664f5f3e19e42a77f4fb6d1a167e20b0a97bc573beb23d6325a999793",
+        "result.json": "4aeb5f05b5885a6776ce2f46e888958a24b75ab465b409724e8c6d9aaf6c50e3",
+        "revocation/core.log": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+        "revocation/debug.log": "c492535dcfb46c95557b1475b25b7c0576018b64803ca97e4ff0a7d5d118fd2f",
+        "revocation/evidence.json": "8bc4b661f7b1b4e463987d94be98406cb7ce9dfea7c8e2fe3347cf4c7dd20198",
+        "revocation/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+        "revocation.log": "68b270d56e68689c9e7c46d36b3b0bc92fb9ddf137e67d586dce32f4fcc28883"
+      },
+      "result": {
+        "core": "/tmp/fvwm-module-waits-20261015/stage-desktop-publication-gcc/usr/local/bin/fvwm3",
+        "core_sha256": "67c05fbdcdf8f8e425861ed9153a0809c9af712161d17c8dac9e3384a71cb8a3",
+        "driver_sha256": "a12782cc2c922818bd291ef8d22e77f50950e16fe043b7c2517cb348b7c7ae11",
+        "cases": [
+          {
+            "case": "publication",
+            "status": 1,
+            "seconds": 5.136468584998511
+          },
+          {
+            "case": "revocation",
+            "status": 1,
+            "seconds": 5.233221116941422
+          },
+          {
+            "case": "bounds",
+            "status": 1,
+            "seconds": 5.228805318940431
+          }
+        ]
+      }
+    },
+    "fvwm-x-linux-arm64-svg-asan-development": {
+      "identity": {
+        "sha256": "293059ed7e1943494c5c47d45243f5b31d6e338e72e712df55af0341abec29ed",
+        "bytes": 9273
+      },
+      "payloads": {
+        "compile.log": "f423d802c080bf4200c75efafe4c638497f7612080d6f76e26c02ae32b2ded13",
+        "configure.log": "bca913d8f16ab48235863ac12c35b23187285ff4d8e283ad9b4085e60f14101a",
+        "environment.json": "97e64c863dc9e28089efb924ad650e2efcf143bcc565e995b93ce8dab77aed03",
+        "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/bounds/debug.log": "005a8fcf68af6d2225bc1024b6821aca17e317cfccaf132df85e4e8f706e4fce",
+        "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+        "live-x/bounds/xserver.log": "b972e3ff8111fd126d92d036dd2788f5c96200b83f9bff3ec498dda4c3b2494b",
+        "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/publication/debug.log": "3fb99f7f2360acda61664935b52dc82682aee8125a3a08d0837e07124bf952cc",
+        "live-x/publication/evidence.json": "48ee8c10d6ebb180db6bdb277732a8e5f89022e97c23d246e8edde2e77cd1741",
+        "live-x/publication/xserver.log": "b972e3ff8111fd126d92d036dd2788f5c96200b83f9bff3ec498dda4c3b2494b",
+        "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/revocation/debug.log": "9389a1e6aa32a064cb09c716bc5f4351a236a62dad551bebeee14d54e36711a3",
+        "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+        "live-x/revocation/xserver.log": "b972e3ff8111fd126d92d036dd2788f5c96200b83f9bff3ec498dda4c3b2494b",
+        "options.json": "1c80d125bf668a5071d48fd27621b1cb81ed06beb61dd7d07296208b7dcf5ae6",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "testlog.json": "c3955ac5e8ef92c9bd298fc0c80852e5b87af9a2e3cc4422957262eb72780bb2",
+        "testlog.txt": "227e67e64e2675ca6ac06f6f9dbecc8253e9ebf1a6213d9a0f525f3677a03585",
+        "tests.log": "55661277586120d0f0cb5adcea5826f1add08347e04577fdb4641e2734df9374"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "fvwm3 / ewmh-workarea-policy",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-publication-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-revocation-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:live-x / workarea-bounds-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/bounds/evidence.json": {
+          "case": "bounds",
+          "status": "passed",
+          "areas": [
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              13,
+              800,
+              587,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "malformed_retention_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/publication/evidence.json": {
+          "case": "publication",
+          "status": "passed",
+          "areas": [
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              17,
+              23,
+              770,
+              558
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "page_desk_base_destroy": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/revocation/evidence.json": {
+          "case": "revocation",
+          "status": "passed",
+          "areas": [
+            [
+              31,
+              0,
+              769,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              29,
+              800,
+              571,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "zero_delete_ignore_restore": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      },
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+        "LSAN_OPTIONS": "exitcode=86",
+        "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+      },
+      "sanitizers": "address,undefined"
+    },
+    "freebsd-arm64-development": {
+      "identity": {
+        "sha256": "b93e3b7e8f5fdd6186142c4d0c49f6cf35df27dd1fcf740e95508d29d88c0164",
+        "bytes": 148758
+      },
+      "payloads": {
+        "changed.json": "d13c871281c52b886e0ff40f4c337666baa2c54b59c5039eacf60b593f8afbd0",
+        "compile.log": "b4be09f2793eea7d36b7f8e130b2f027507f776fb8eed99252887c2f0b01692f",
+        "configure.log": "b640debeba1f6c2abf138f857e161bb8c4316db91e20a1792904fee935690418",
+        "manifest.json": "7bcfe6d852f87d6626a4fb213aa36b84c7c708d0ab058e71e812327052cdd71d",
+        "result.json": "880c1920aecdec7ea9ce27d00f5b0f9ea2813b95f2d4714caf968ffc01e53ed7",
+        "source.json": "4c9d482ce86c950307f53b6eb8ce141807a45fbc75b55045665ad5077713acb1",
+        "testlog.json": "fe121f99c57d677a227847e6534c9a268a4e11d53750601e29b3be9641f84aa9",
+        "testlog.txt": "2df0e856ed74b5d3f74837993a14598dfeb6b3cdd98f745f08ddced324c47490",
+        "tests.log": "2d9b4b3becfc5658b8bd7c893e617f5ca87171bf6cf28fcbbde32d0f423d02b8"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 1
+        }
+      ],
+      "tests_executed": false,
+      "retained_previous_testlog_not_executed": true
+    },
+    "freebsd-arm64-development2": {
+      "identity": {
+        "sha256": "fd0e3ced17ecb3909cdf3fde371fde09655c70cdbbb4645f1daf8b0316ccbf8d",
+        "bytes": 110846
+      },
+      "payloads": {
+        "changed.json": "d7106d385132b389c31b4353f05c2311f2b8bceabe130402c67f03947efb909b",
+        "compile.log": "9b6fbeed4fb7e82d51f9a9f69c0892ed19cfb61f5e30f460d1bbbddf78daea43",
+        "configure.log": "b640debeba1f6c2abf138f857e161bb8c4316db91e20a1792904fee935690418",
+        "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/bounds/debug.log": "93e787079f04dc694ed55e875f71d1a864fffbc7751b84bfb485d0a6147abb4e",
+        "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+        "live-x/bounds/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/publication/debug.log": "6342c2ddca14b07885ee9e4c2318dddf94650e9ea491148f2d5ef364cbac394a",
+        "live-x/publication/evidence.json": "48ee8c10d6ebb180db6bdb277732a8e5f89022e97c23d246e8edde2e77cd1741",
+        "live-x/publication/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/revocation/debug.log": "e7a30bbf68c5fd8301c99f483630eab5fa63ef82b3f948093e2fcf2aa6741b64",
+        "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+        "live-x/revocation/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "manifest.json": "e406169e46574dc8029ad68e9e544009186aab91c45da6239f30c84c0a0911de",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "source.json": "fe501e0baba2789dbdbf8f8de9d73128f48436e169684b29696a8787eeb9856f",
+        "testlog.json": "8d4951dd6f699e7713fee00b74474b8a86d28d7e7453b30fa8ebbc739b6d89aa",
+        "testlog.txt": "48311922a793f0c059303da4e258cbaacb2e91c6aea3a0b465f90f38f7989a6c",
+        "tests.log": "ac19705e8eb84c78c27bfc7b4b4bbeb45fd15f1fdb54724f0bcdf6be0d509627"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "bsd-x - fvwm3:ewmh-state-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:ewmh-workarea-policy",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:workarea-publication-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:workarea-revocation-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:workarea-bounds-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/bounds/evidence.json": {
+          "case": "bounds",
+          "status": "passed",
+          "areas": [
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              13,
+              800,
+              587,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "malformed_retention_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/publication/evidence.json": {
+          "case": "publication",
+          "status": "passed",
+          "areas": [
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              17,
+              23,
+              770,
+              558
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "page_desk_base_destroy": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/revocation/evidence.json": {
+          "case": "revocation",
+          "status": "passed",
+          "areas": [
+            [
+              31,
+              0,
+              769,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              29,
+              800,
+              571,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "zero_delete_ignore_restore": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      }
+    },
+    "freebsd-arm64-development3": {
+      "identity": {
+        "sha256": "65ce8b3ff9028b983443661eda0e89c1796ae100fb96df2b5651a322f9aed5d4",
+        "bytes": 110892
+      },
+      "payloads": {
+        "changed.json": "3229124ac514dfafdfb9f9ae12c1345a0013bc5c35a1b93a6146e26ea8089c48",
+        "compile.log": "ec4b56f92195b50cf7aef6661a981b27498b33bfcf94e597ee3eaf61b529d7a3",
+        "configure.log": "b640debeba1f6c2abf138f857e161bb8c4316db91e20a1792904fee935690418",
+        "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/bounds/debug.log": "93e787079f04dc694ed55e875f71d1a864fffbc7751b84bfb485d0a6147abb4e",
+        "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+        "live-x/bounds/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/publication/debug.log": "6342c2ddca14b07885ee9e4c2318dddf94650e9ea491148f2d5ef364cbac394a",
+        "live-x/publication/evidence.json": "48ee8c10d6ebb180db6bdb277732a8e5f89022e97c23d246e8edde2e77cd1741",
+        "live-x/publication/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/revocation/debug.log": "e7a30bbf68c5fd8301c99f483630eab5fa63ef82b3f948093e2fcf2aa6741b64",
+        "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+        "live-x/revocation/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "manifest.json": "9320c9d2fcb4ef2811dfa703c0a5c5fffdf561d33ad7683e19b5a63ebc89773a",
+        "result.json": "a56ca8843293f330eff97ed4be962d9cbcd5be05342a2fa4ad1bae5df4bd6ef4",
+        "source.json": "58b561a0a8d672b9849646ce96021ce54e1747e09a616c658ec7786e7515540a",
+        "testlog.json": "8d4951dd6f699e7713fee00b74474b8a86d28d7e7453b30fa8ebbc739b6d89aa",
+        "testlog.txt": "48311922a793f0c059303da4e258cbaacb2e91c6aea3a0b465f90f38f7989a6c"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 1
+        }
+      ],
+      "tests_executed": false,
+      "retained_previous_testlog_not_executed": true
+    },
+    "freebsd-arm64-development4": {
+      "identity": {
+        "sha256": "14c7f6944701843553ab086389707f17d8e3cbb036cc1e1764c898897555461d",
+        "bytes": 110848
+      },
+      "payloads": {
+        "changed.json": "d7106d385132b389c31b4353f05c2311f2b8bceabe130402c67f03947efb909b",
+        "compile.log": "89d0cadea8e89d3e5f37112e14b94c72ecc737fff9b8fd9a3183d4d3d94ca766",
+        "configure.log": "b640debeba1f6c2abf138f857e161bb8c4316db91e20a1792904fee935690418",
+        "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/bounds/debug.log": "b20008dc04a79d541553442d318f6fc22b9918afa77babd4c05bd15d8f066644",
+        "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+        "live-x/bounds/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/publication/debug.log": "aeb99ed2abcaaeca498e26d0f7ee93e6cc3e143870647c207bb94005e96171cc",
+        "live-x/publication/evidence.json": "48ee8c10d6ebb180db6bdb277732a8e5f89022e97c23d246e8edde2e77cd1741",
+        "live-x/publication/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "live-x/revocation/debug.log": "2b9135e261f916f0ceeef344d7a04bca8af0200c850753880c410015fb76a04e",
+        "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+        "live-x/revocation/xserver.log": "98c9d56f5082870a0b0f7a18116f9c618b8d64ea90ae27c6effa310f0c1c9af0",
+        "manifest.json": "2a01bc90b866a3d7fc70c301490324ca8518e6245bd98d6dfc7a8fcae05f8373",
+        "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+        "source.json": "adddbbc58d36e59a92f6deeedb0420948d3cd69bcf56e5e9ac9a02fd4893e6b2",
+        "testlog.json": "74429f29ca93b33a144be08f871cd3c04fea4477e1cb061c259b07f10f442896",
+        "testlog.txt": "738242b974d400078b0e36a609233bc66b13b1ecf7c4decf91ee1164d80c6447",
+        "tests.log": "f5a503cbe66aa3969b950c875df0b651509755598b3a66039172e0d708f882ed"
+      },
+      "result": [
+        {
+          "label": "configure",
+          "status": 0
+        },
+        {
+          "label": "compile",
+          "status": 0
+        },
+        {
+          "label": "tests",
+          "status": 0
+        }
+      ],
+      "tests": [
+        {
+          "name": "bsd-x - fvwm3:ewmh-state-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "fvwm3:ewmh-workarea-policy",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:workarea-publication-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:workarea-revocation-xvfb",
+          "result": "OK"
+        },
+        {
+          "name": "bsd-x - fvwm3:workarea-bounds-xvfb",
+          "result": "OK"
+        }
+      ],
+      "fixtures": {
+        "live-x/bounds/evidence.json": {
+          "case": "bounds",
+          "status": "passed",
+          "areas": [
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              19,
+              0,
+              781,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              13,
+              800,
+              587,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "malformed_retention_and_recovery": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/publication/evidence.json": {
+          "case": "publication",
+          "status": "passed",
+          "areas": [
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              17,
+              23,
+              770,
+              558,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              17,
+              23,
+              770,
+              558
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "page_desk_base_destroy": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        },
+        "live-x/revocation/evidence.json": {
+          "case": "revocation",
+          "status": "passed",
+          "areas": [
+            [
+              31,
+              0,
+              769,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              29,
+              800,
+              571,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ],
+            [
+              0,
+              0,
+              800,
+              563,
+              0,
+              0,
+              800,
+              600,
+              0,
+              0,
+              800,
+              600
+            ]
+          ],
+          "zero_delete_ignore_restore": true,
+          "children_after_cleanup": {
+            "Xvfb": 0,
+            "core": 0
+          }
+        }
+      }
+    },
+    "asan_binary_snapshot": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": "7765259212ff5d9f138f8456dd4399ce7547887529d8058985b9671def239fd7",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "0312c1ea2bc33e570a5fabe1f717a8ef4f4617cceba7e508007e34cff22e8d04",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ewmh-workarea-policy": "cf24d6d80da9e1283889212d2464e8238cbc535e0f2b799088ab74228859b2e5"
+    }
+  },
+  "final_sanitizers": {
+    "archive_sha256": "62eda8ad155bbc53393b901d6d4545dd4bde4e2969dceb2f537b146f20d88754",
+    "payloads": {
+      "compile.log": "e771a38878f95afc54e5313ded3a1ed0319babd35125ffc328a3d198cc4f64f6",
+      "configure.log": "bca913d8f16ab48235863ac12c35b23187285ff4d8e283ad9b4085e60f14101a",
+      "environment.json": "97e64c863dc9e28089efb924ad650e2efcf143bcc565e995b93ce8dab77aed03",
+      "live-x/bounds/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "live-x/bounds/debug.log": "d2ef66fae1223dbd4a2fab14257017f3e88dec204716364adedcab5fcb24c451",
+      "live-x/bounds/evidence.json": "ef222b0bb5c59d11fe82fefa52777543266f825aa154b88bc56650453d6a133f",
+      "live-x/bounds/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "live-x/publication/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "live-x/publication/debug.log": "f5df2cbc42bb5360bebcc4b1927d2ff2611c0c9faca3b8fea7c2a1bfd87f8d13",
+      "live-x/publication/evidence.json": "97d240181005d08f02db71d099f2c9b865575f84c7e1218b299a7f6a97416400",
+      "live-x/publication/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "live-x/revocation/core.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "live-x/revocation/debug.log": "56249b172a93ebcc1952437a1a45ab8a94d087ab478b8b9653bb6baa1dc3656d",
+      "live-x/revocation/evidence.json": "9c9fd3c0fa25e33c96d35e28f2ea162ef7c4d95856e9fec9474c60d0e4d0321a",
+      "live-x/revocation/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+      "options.json": "1c80d125bf668a5071d48fd27621b1cb81ed06beb61dd7d07296208b7dcf5ae6",
+      "result.json": "95ce536798ad4795506fc70a379be7e07e84804cee3139dcb711adcadbcc2d1b",
+      "testlog.json": "204f2da63aa20943a40bbec642e8c3e48d24def684b5c79b69d9d7a178003fbd",
+      "testlog.txt": "0e98523cf83843de96ad2b5d47f29efd9025f4e2d71b0ae1131cdbf52c38fb91",
+      "tests.log": "9bfdc8f0de243004defcd45fb209c9eff8edcac864f95bf19c96857aad7eb157"
+    },
+    "tests": [
+      {
+        "name": "fvwm3 / ewmh-workarea-policy",
+        "result": "OK"
+      },
+      {
+        "name": "fvwm3:live-x / workarea-publication-xvfb",
+        "result": "OK"
+      },
+      {
+        "name": "fvwm3:live-x / workarea-revocation-xvfb",
+        "result": "OK"
+      },
+      {
+        "name": "fvwm3:live-x / workarea-bounds-xvfb",
+        "result": "OK"
+      }
+    ],
+    "environment": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+      "LSAN_OPTIONS": "exitcode=86",
+      "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+    },
+    "sanitizers": "address,undefined",
+    "fixtures": {
+      "live-x/bounds/evidence.json": {
+        "case": "bounds",
+        "status": "passed",
+        "areas": [
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            19,
+            0,
+            781,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            13,
+            800,
+            587,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ]
+        ],
+        "malformed_retention_and_recovery": true,
+        "children_after_cleanup": {
+          "Xvfb": 0,
+          "core": 0
+        }
+      },
+      "live-x/publication/evidence.json": {
+        "case": "publication",
+        "status": "passed",
+        "areas": [
+          [
+            17,
+            23,
+            770,
+            558,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            17,
+            23,
+            770,
+            558,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            17,
+            23,
+            770,
+            558,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            17,
+            23,
+            770,
+            558,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600,
+            17,
+            23,
+            770,
+            558
+          ],
+          [
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ]
+        ],
+        "page_desk_base_destroy": true,
+        "children_after_cleanup": {
+          "Xvfb": 0,
+          "core": 0
+        }
+      },
+      "live-x/revocation/evidence.json": {
+        "case": "revocation",
+        "status": "passed",
+        "areas": [
+          [
+            31,
+            0,
+            769,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            29,
+            800,
+            571,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            0,
+            800,
+            563,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ],
+          [
+            0,
+            0,
+            800,
+            563,
+            0,
+            0,
+            800,
+            600,
+            0,
+            0,
+            800,
+            600
+          ]
+        ],
+        "zero_delete_ignore_restore": true,
+        "children_after_cleanup": {
+          "Xvfb": 0,
+          "core": 0
+        }
+      }
+    },
+    "asan_binary_snapshot": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": "0b983443d96086ffdc462fd0eb7bbe054c1f87c408ceed22b0de520160c7f144",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "0312c1ea2bc33e570a5fabe1f717a8ef4f4617cceba7e508007e34cff22e8d04",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ewmh-workarea-policy": "cf24d6d80da9e1283889212d2464e8238cbc535e0f2b799088ab74228859b2e5"
+    }
+  },
+  "final_asan_postcheck": {
+    "status": "exact final scoped sanitizer binaries retained",
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": "0b983443d96086ffdc462fd0eb7bbe054c1f87c408ceed22b0de520160c7f144",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": "0312c1ea2bc33e570a5fabe1f717a8ef4f4617cceba7e508007e34cff22e8d04",
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ewmh-workarea-policy": "cf24d6d80da9e1283889212d2464e8238cbc535e0f2b799088ab74228859b2e5"
+    },
+    "source_identity": "final correction candidate checked by the combined continuation"
+  },
+  "portable": {
+    "exit_status": 0,
+    "registered": 191,
+    "passed": 177,
+    "capability_skips": 14,
+    "sha256": "0f12251d538f139ef3d703fb41fcf8aa63249b349541d79daa68aa3670437fb3"
+  },
+  "review_control": {
+    "status": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/workarea-inputs/review-live.py\", line 196, in <module>\n    run(args)\n  File \"/tmp/fvwm-module-waits-20261015/workarea-inputs/review-live.py\", line 109, in run\n    area()\n  File \"/tmp/fvwm-module-waits-20261015/workarea-inputs/review-live.py\", line 102, in area\n    expect('_NET_WORKAREA', expected)\n  File \"/tmp/fvwm-module-waits-20261015/workarea-inputs/review-live.py\", line 76, in expect\n    wait_for_predicate(name, lambda: prop(name, window) == value,\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\nlive_x_harness.HarnessError: deadline expired while waiting for _NET_WORKAREA\n",
+    "driver": "review-workarea-live.py"
+  },
+  "review_control_artifacts": {
+    "archive": "review-control-evidence.tgz",
+    "sha256": "36969537c84e7c1960a3511f497a231b3e0d77645565b88209cd7373fb19961e",
+    "retirement": {
+      "status": "retired verified guest duplicates",
+      "name": "fvwm-x-linux-arm64-svg",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review-control-evidence.tgz",
+          "archive_sha256": "36969537c84e7c1960a3511f497a231b3e0d77645565b88209cd7373fb19961e",
+          "payload_files": 4,
+          "freed_payload_bytes": 2292,
+          "freed_archive_bytes": 1277
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    }
+  },
+  "final_asan_retirement": {
+    "status": "retired verified guest duplicates",
+    "name": "fvwm-x-linux-arm64-svg",
+    "removed": [
+      {
+        "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety/review/asan-evidence.tgz",
+        "archive_sha256": "62eda8ad155bbc53393b901d6d4545dd4bde4e2969dceb2f537b146f20d88754",
+        "payload_files": 20,
+        "freed_payload_bytes": 49991,
+        "freed_archive_bytes": 9200
+      }
+    ],
+    "source_builds_stages_references_disks_preserved": true
+  },
+  "disk_preflight": {
+    "archive": "linux-arm64-preflight-failure.tgz",
+    "sha256": "68089230e208c59ff868e02b3d49bdd06b8685fa1a9c588ebf07afc8b606f391",
+    "qualification_tests_executed": false,
+    "original_collector_timeout": {
+      "target": "fvwm-x-linux-arm64-svg",
+      "exception": "Inspect completed job; collection unfinished"
+    },
+    "resume": {
+      "pid": 718979,
+      "free_bytes": 723009536
+    },
+    "retired_old_duplicates": {
+      "status": "retired verified guest duplicates",
+      "name": "fvwm-x-linux-arm64-svg",
+      "removed": [
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/ewmh-state-batch/qualification/fvwm-x-linux-arm64-svg.tgz",
+          "archive_sha256": "a4f2ab3cc020bbd8a4b4aecbe089511682aaa535f5c179b4beb6644ae92a7265",
+          "payload_files": 358,
+          "freed_payload_bytes": 162801076,
+          "freed_archive_bytes": 0
+        },
+        {
+          "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-15/style-distinct-id-filter/qualification/fvwm-x-linux-arm64-svg.tgz",
+          "archive_sha256": "b979a9bedc7141406c09f253084f48da952ecaacbad7848452ab95004bccacb4",
+          "payload_files": 359,
+          "freed_payload_bytes": 141064526,
+          "freed_archive_bytes": 0
+        }
+      ],
+      "source_builds_stages_references_disks_preserved": true
+    }
+  },
+  "composition": {
+    "review_changed_inputs": [
+      "fvwm/ewmh.c",
+      "tests/live_x/workarea_live.py"
+    ],
+    "all_frozen_non_markdown_inputs_exact": true,
+    "changed_markdown": {
+      "README.md": {
+        "frozen": "ea45a32d0bd4e2e6763c790b20ab4999e29942da1e0c9fd05f78040038b3779c",
+        "final": "3b23bbaca1b821c3d26ee547f525a9749323d813857a5fd9ea13b923a97b3b49"
+      },
+      "dev-docs/PROJECT-TRACKER.md": {
+        "frozen": "8397deb3bb23c6dd31de730bc9201efbe24becd6f87f0d0b5fa98949d2973a65",
+        "final": "eed36f6d476bb83c1cf649eb3d9c3802150b5619c02f0a90437334bd1c02151b"
+      },
+      "dev-docs/SECURITY-STATUS.md": {
+        "frozen": "cca633b8623ef097fda89647988acbc44b846a1acd05bc85f8ae7d8dad79d3c3",
+        "final": "7218f59cd11e14c12c1744dd6da6dea46ea79a428629830ed01d1e9680ed9d21"
+      },
+      "dev-docs/verification/README.md": {
+        "frozen": "c90d9233dd2393a72396b332ed6fd21d776e43d0406c01a3a6f73ec0eba65841",
+        "final": "0aa5a0c3c2c69baeeeb73e7f518b4ef0621db6240a942d864856d817bfe723aa"
+      },
+      "dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md": {
+        "frozen": "31f858ff768b9e6d918c73287a6d9357627d2fbd0701d5bfa28fd7210d1e7e36",
+        "final": "1d3d104e209107cae4014ef4c50371e6af3b140bcfd521389c578611e7aa4c25"
+      },
+      "dev-docs/verification/VERIFICATION-2026-10-21-WORKAREA.md": {
+        "frozen": "857e17845e86815a5bf70d97dcadecc00464848167440d97ca1232acb31f916d",
+        "final": "7563936d90dcd9effdb637f2ee423cdbe2e26ebf23ef71b3bb84e7f694309378"
+      }
+    },
+    "broad_results_retained_at_initial_source": true,
+    "affected_continuation_qualifies_final_change": true
+  },
+  "manuals": {
+    "pages": {
+      "FvwmAnimate.1": "f0f6373256acda7c7ea9d701db1c3b9beadc637ccedd2d1effcafb503856bae2",
+      "FvwmAuto.1": "d1d1362ab5521dd0df8f0112fadd84dae7f80e5b5ea5ec3a02791165387aa8d5",
+      "FvwmBacker.1": "7282d968c005bbe61e861c7a61c06eb31ec4ca697c21191df80aeb74ed1b9836",
+      "FvwmButtons.1": "ad646faafb94c61c8014fe10cc4452f7991790f5cd8ed6fe15e06e15da1678f5",
+      "FvwmCommand.1": "8f867a0445334f9e0910c987a8cc8d91643598e95a44561c637d7af8f55ebe99",
+      "FvwmDesktop.1": "de33bd55d8dfc7b51b54466ffbe933b469ab49220986aa862f5bc04041bdfb00",
+      "FvwmEvent.1": "83b6c5a7ea19612733bfa100b158a2aebe1d8c5b32ffed6ebcf3661c64383f54",
+      "FvwmForm.1": "1016216621ee1d017c0a87d01ba5a18ed9ef5c796266d4c5535c2e778871ae6e",
+      "FvwmIconMan.1": "4519ed0b07564447bfc23904997658e2b3efcf20ddf45139b1140f14c49cd657",
+      "FvwmIdent.1": "9c349e3a9a662dccf79429a145601713ee56d6be6e5066f17604ce46c919307b",
+      "FvwmMFL.1": "5480f95743ffbf8c0211698080551a2b7a524826f6cffba70101e835f474bd10",
+      "FvwmPager.1": "c1ff3dca2b67bc7c016c95122c8bc9b659c61fb6508a360a01ce8738b398aa71",
+      "FvwmPerl.1": "1bd42aed249790263bcedac49337bddaec5839d053b8f8edacb07e67c1660004",
+      "FvwmRearrange.1": "2b63436222de10149df199587472cb6fb611226891ce4ff3291f98395d6a8db8",
+      "FvwmScript.1": "224a22f919740dedcecde51a0d6a6f5f61a0075f60c55e04a9f287ce4cfbcc72",
+      "fvwm-convert-2.6.1": "dccdd9dc17658cfb7fd83be5e8c5162d672959e9c6e741aa3d203658f3c2b6e9",
+      "fvwm-menu-desktop.1": "c799846b30268ba02f341eee064818c9b66598a4c217604a2e5a8647de16ae54",
+      "fvwm-menu-directory.1": "3700d68773c4a4e663074bcb93ba96af655a321c9db4e78545694c83395dcc2d",
+      "fvwm-menu-xlock.1": "801a61195119f9b2c7c8653bceacc6881345d6a62ef0f28f1457ecbdf806eb80",
+      "fvwm-perllib.1": "a1189f0fff14dca84a9452970fdaf29307dc9af4b05c13ad5445a22ee54cc657",
+      "fvwm-root.1": "0317745c65a88ce66729adda6f90bed0c22ae8edf1beb865ca897f277c63a17e",
+      "fvwm3.1": "f8a6ab2343441090988368fa8170d3a669cd0ceda61913fb957a7f483bb9565a",
+      "fvwm3all.1": "1db48671160278bde144c1e2e05081407ecbf4880b90313d1372576977b8ae51",
+      "fvwm3commands.1": "571c1285a6be38214488a4ba1519309852f7b683b58c2ae608f0db0ac87f25b6",
+      "fvwm3menus.1": "6f4bea7d5f96f6eeb5c61a01b085c3d72140d96a42074af97b78883e33afc037",
+      "fvwm3styles.1": "93471283cc695c8be7a219838c095e8e88b1567534a0d35dcbc3610208a2673a"
+    },
+    "renders": {
+      "fvwm3styles.1": {
+        "status": 0,
+        "bytes": 146561
+      },
+      "fvwm3all.1": {
+        "status": 0,
+        "bytes": 530373
+      }
+    }
+  },
+  "rendered_manual_review": {
+    "excerpts_sha256": "beaab715017a45d441f4abe46883f53e659ae86bea3adbf8adef24ddc496ef1d",
+    "pages": [
+      "fvwm3styles.1",
+      "fvwm3all.1"
+    ],
+    "text_and_wrapping_inspected": true
+  },
+  "performance": {
+    "reference": "PR144",
+    "subsequent_merged_implementation_checkpoints": 2,
+    "comparison_due": false
+  },
+  "review": "Typed property status separates absence from malformed replacement; CARDINAL range validation precedes signed storage. Missing properties clear both owners; zero retains static auto-hide state. One bounded snapshot buffer and one window walk publish per-desktop dynamic reservations. Desk/sticky/style/base/destroy hooks refresh root state without event dispatch or XSync. A separate client reproduced the missed sticky-page release; affected checks cover the final correction.",
+  "gaps": [
+    "Partial struts, nonsticky-page panels, full topology and independent multi-monitor root authority remain open.",
+    "Existing per-monitor internal work-area policy is retained; root readback does not qualify all maximize/placement clauses.",
+    "Property writes preserve request order without a multi-property atomic transaction.",
+    "Native-CPU Linux sanitizers, physical hardware/toolkits/compositors and final release acceptance remain separate."
+  ],
+  "evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/workarea-safety"
+}

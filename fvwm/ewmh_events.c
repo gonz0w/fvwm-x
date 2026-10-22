@@ -39,6 +39,7 @@
 #include "ewmh.h"
 #include "ewmh_intern.h"
 #include "ewmh_desktop_policy.h"
+#include "ewmh_workarea_policy.h"
 #include "decorations.h"
 #include "geometry.h"
 #include "borders.h"
@@ -1542,13 +1543,35 @@ int ewmh_WMStrut(
 		fw->dyn_strut.bottom = fw->strut.bottom = 0;
 	}
 
-	val = ewmh_AtomGetByName(
-		FW_W(fw), "_NET_WM_STRUT",
-		EWMH_ATOM_LIST_PROPERTY_NOTIFY, &size);
-
-	if (val == NULL)
 	{
-		return 0;
+		FPropertyResult result;
+		unsigned char *data = NULL;
+		struct monitor *global = monitor_get_global();
+
+		result = ewmh_read_property(FW_W(fw), "_NET_WM_STRUT",
+			EWMH_ATOM_LIST_PROPERTY_NOTIFY, &data, &size);
+		val = (CARD32 *)data;
+		if (result == FPROPERTY_MISSING)
+		{
+			/* Revocation differs from malformed replacement. A queued
+			 * delete may already have a new value: use the typed read's
+			 * current result, not the event's obsolete state. */
+			memset(&fw->strut, 0, sizeof(fw->strut));
+			memset(&fw->dyn_strut, 0, sizeof(fw->dyn_strut));
+			EWMH_UpdateWorkArea(m);
+			ewmh_SetWorkArea(m);
+			return 0;
+		}
+		if (result != FPROPERTY_OK)
+			return 0;
+		if (global == NULL || global->si == NULL ||
+		    !fvwm_ewmh_strut_valid(val, global->si->w, global->si->h))
+		{
+			fvwm_debug(__func__, "Ignoring out-of-root strut on %#lx",
+				FW_W(fw));
+			free(val);
+			return 0;
+		}
 	}
 
 	if ((val[0] > 0 || val[1] > 0 || val[2] > 0 || val[3] > 0)
@@ -1581,6 +1604,8 @@ int ewmh_WMStrut(
 		ewmh_ComputeAndSetWorkArea(m);
 	else if (update_dynamic)
 		ewmh_HandleDynamicWorkArea(m);
+	if (update_static || update_dynamic)
+		ewmh_SetWorkArea(m);
 	free(val);
 
 	return 0;

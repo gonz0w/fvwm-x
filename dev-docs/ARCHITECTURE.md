@@ -1018,4 +1018,11 @@ work-area snapshot. `ewmh_desktop_policy.h` owns pure count/index admission and
 server-request arithmetic; `ewmh_events.c` validates pager formats before owner
 adoption. Populated/current-desktop shrink requests are refused, not relocated.
 The 1024-record publication budget does not restrict configured FVWM desktops.
-Reserved-edge geometry and multi-monitor root authority remain separately owned.
+Legacy root work areas now merge accepted dynamic struts in one window walk,
+with common all-desktop reservations and bounded per-desktop edge storage in
+the existing publication buffer. `ewmh_workarea_policy.h` owns unsigned range
+admission and contained geometry. Typed property results distinguish malformed
+replacement from revocation; an all-zero value retains the static auto-hide
+reservation. Mutation, deletion, base/style/desk updates and destruction publish
+through the existing single-threaded paths. Partial struts, nonsticky-page
+panels and multi-monitor root authority remain separately owned.

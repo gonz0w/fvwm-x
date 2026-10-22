@@ -9,6 +9,15 @@ is locally qualified and merged in PR143; advance approved
 feature dependencies. Remaining performance-only tuning stays deferred. Broad
 audit owners and release gates remain open.
 
+The [legacy strut/work-area checkpoint](verification/VERIFICATION-2026-10-21-WORKAREA.md)
+is locally qualified in PR147: typed/range validation precedes signed adoption,
+absence revokes both records, and current dynamic reservations reach the root
+property. One broad run passes 2372 standard / 30 selected optional entries;
+90 affected continuation entries qualify the reproduced sticky-page correction.
+Four final scoped sanitizers, ten final installs and four final authenticated
+BSD displays pass. Original selector/compiler/disk-preflight failures remain
+preserved. Partial struts and wider monitor/standards/release owners stay open.
+
 The [desktop-publication checkpoint](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md)
 qualifies three pager/publication repairs: validate indices/formats before
 conversion, adopt accepted counts with matching arrays, and bound property
@@ -16,8 +25,9 @@ preparation before allocation/indexing. Six targets pass 2340 standard /
 22 selected optional entries, four scoped sanitizer entries, ten installs and
 four authenticated BSD displays. Original configure failures and three old-core
 controls remain preserved. Configuration commands remain usable; oversized
-publication retains the preceding snapshot. Reserved-edge/dock geometry and
-multi-monitor root authority remain open. PR146 awaits maintainer review.
+publication retains the preceding snapshot. Reserved-edge/dock geometry was outside that checkpoint; its legacy subset
+now has the work-area evidence above. Broader multi-monitor root authority
+remains open. PR146 is merged.
 
 The [manager-handoff checkpoint](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md)
 repairs the reproduced announcement identity and old-owner wait defects.

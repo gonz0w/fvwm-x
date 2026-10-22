@@ -39,6 +39,7 @@
 #include "borders.h"
 #include "frame.h"
 #include "ewmh.h"
+#include "ewmh_intern.h"
 #include "icons.h"
 #include "geometry.h"
 #include "move_resize.h"
@@ -533,7 +534,10 @@ static void apply_window_updates(
 	}
 	if (flags->do_update_working_area)
 	{
-		EWMH_UpdateWorkArea(t->m ? t->m : monitor_get_current());
+		struct monitor *m = t->m ? t->m : monitor_get_current();
+
+		EWMH_UpdateWorkArea(m);
+		ewmh_SetWorkArea(m);
 	}
 	if (flags->do_update_ewmh_stacking_hints)
 	{

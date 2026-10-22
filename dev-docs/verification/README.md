@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Core colorset observations](VERIFICATION-2026-10-22-IPC-COLORSET-STATE.md): bounded pages, exact sparse IDs and summary/freshness; seven focused Linux passes and three scoped guest sanitizer exercises, with shared-cycle coverage deferred.
+
 - [Owned desktop operations and shared cycle](VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md): five related capabilities; 122 selected passes on six targets/nine profiles, five scoped guest sanitizer exercises, explicit domain/release gaps.
 
 - [Due PR154→PR159 performance comparison](PERFORMANCE-2026-10-22-PR159.md): existing qualified binaries, overlapping ranges/mixed changes and measured feature-size costs; PR159 resets the independent reference.

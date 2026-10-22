@@ -1,0 +1,623 @@
+{
+  "owner": "IPC-02 / CFG-01",
+  "base": "b9dc633123d7dd7478fd49f5019e500bc9185274",
+  "status": "focused merge checks passed; accumulated platform/release acceptance deferred",
+  "features": [
+    "bounded core colorset inventory pages",
+    "exact existing sparse-ID lookup without allocation/fallback",
+    "scalar summary and conservative owner freshness including async preparation state"
+  ],
+  "candidate": {
+    "source_files": 2197,
+    "source_archive_sha256": "5008a102e7bb7d26e80e6ebd98585311d3599441444c4c85840a8e87371525fd",
+    "worktree_manifest_sha256": "99af2e668747dbca5a30263198dd347e131d9b4606f9f0f5141a5737223355f2",
+    "runtime_inputs": {
+      "fvwm/bindings.c": {
+        "sha256": "2d7a7816821d3834d1c93d29eb3dc77934c64bb80fd2f3ab717da35b466dee43",
+        "mode": 420
+      },
+      "fvwm/colorset.c": {
+        "sha256": "04689f158399f8665de656451f4dd9cd97f2076cb2e2b6528cd4ede698736b10",
+        "mode": 420
+      },
+      "fvwm/colorset.h": {
+        "sha256": "907aa5cf9fdb795f64c586e9e21969e2c9cda0ac3ff90775e2cb059682ae7f9d",
+        "mode": 420
+      },
+      "fvwm/module_interface.c": {
+        "sha256": "ab4a563d7c45ec79b5f1a9de4bf17858ac0389c8b74b87a3ec1981ef904fc9db",
+        "mode": 420
+      },
+      "fvwm/query_json.c": {
+        "sha256": "13222e8eade69b686476e62ca5c61bfeba8577c4709afc6e99cfaaeaa3a66de1",
+        "mode": 420
+      },
+      "fvwm/query_json.h": {
+        "sha256": "6ba9c40dfb0387470c837b6bfadc9f55dd0440e636f1633262224c06e99bfd8a",
+        "mode": 420
+      },
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "sha256": "48ce57b9b62be1862db93b19342f0c750e67674ba023b64223e428adc8884ce5",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.c": {
+        "sha256": "58635fef684a546855a3b02bb5e47f2504933308eb6687c077217dc3c445e2a1",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.h": {
+        "sha256": "6e60fc00d47e7e4be46f403c205b00f5a7bdb89656378b1586ad6a10c6782149",
+        "mode": 420
+      },
+      "tests/live_x/mfl_core_state_live.py": {
+        "sha256": "33767a4a3c410fad353444429e3c5603b9985a08fd5213f59f5a943c023ca7dd",
+        "mode": 420
+      },
+      "tests/test_mfl_request.c": {
+        "sha256": "6f27ed59d057878f01cb2ed42d14c68178ddde186e2545704cc93f605aba6908",
+        "mode": 420
+      },
+      "tests/test_query_json.c": {
+        "sha256": "58481e9b022f03998600602960ed7d2bfa4e98694f02ca003d330dee6ec6b09f",
+        "mode": 420
+      }
+    },
+    "post_freeze_changes": "final candidate has only documentation/status/receipt edits after freeze"
+  },
+  "canonical": {
+    "evidence": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-colorset-state/evidence.tgz",
+      "sha256": "b23aab0fefce7b9eb501c6d964cd478be422cc83c77f45cabff203b9cf0eb695",
+      "bytes": 135503,
+      "files": 45,
+      "complete_payload_hashes_and_modes_verified": true
+    },
+    "final": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-colorset-state/final.tgz",
+      "sha256": "c78f61db7d97e152737c247148a4c6e9933e5c0a2d878723c3bfe91b301cebf4",
+      "bytes": 111487,
+      "files": 15,
+      "complete_payload_hashes_and_modes_verified": true
+    }
+  },
+  "composition": {
+    "initial_source_archive_sha256": "aa708d400b1a4db295641764da2e92ef6a668aed4fb3493ca2baf75b125de28b",
+    "initial_focused_passes": 7,
+    "retained_actual_X_entries": 5,
+    "replacement_policy_entries": 2,
+    "final_policy_source_delta": [
+      "tests/test_query_json.c",
+      "tests/test_mfl_request.c"
+    ],
+    "reason": "unit-test readability and line-width edits only; product and actual-X fixture hashes are exact",
+    "scoped_sanitizer_exercises": 3,
+    "retained_sanitizer_X_entries": 1,
+    "replacement_sanitizer_policy_entries": 2,
+    "all_2197_source_hashes_and_modes_guarded_before_and_after": true
+  },
+  "commands": [
+    {
+      "label": "compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j",
+        "2",
+        "fvwm3:executable",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 2.156
+    },
+    {
+      "label": "tests",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb"
+      ],
+      "status": 0,
+      "seconds": 25.776
+    },
+    {
+      "label": "asan-compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j",
+        "2",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 1.542
+    },
+    {
+      "label": "asan-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.432
+    },
+    {
+      "label": "asan-core-state",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_core_state_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-colorset-state-checkpoint/asan-core-state"
+      ],
+      "status": 0,
+      "seconds": 0.381
+    },
+    {
+      "label": "gcc-compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j",
+        "2",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.921
+    },
+    {
+      "label": "gcc-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.434
+    },
+    {
+      "label": "asan-compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j",
+        "2",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.824
+    },
+    {
+      "label": "asan-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.551
+    }
+  ],
+  "environment": {
+    "uname": [
+      "Linux",
+      "288f898505a4",
+      "6.18.10-200.fc43.aarch64",
+      "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+      "aarch64"
+    ],
+    "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+    "gcc_config_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+    "sanitizers": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+      "LSAN_OPTIONS": "exitcode=86",
+      "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+    }
+  },
+  "compilers": {
+    "host": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    },
+    "build": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    }
+  },
+  "features_profile": {
+    "buildtype": "debugoptimized",
+    "golang": "disabled",
+    "htmldoc": false,
+    "live-x-tests": true,
+    "mandoc": false,
+    "png": "enabled",
+    "svg": "enabled",
+    "xcursor": "enabled",
+    "xrender": "enabled"
+  },
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "8eab0bd6c28ea0a0dfa41b94fb3f506e346a557124e1275060925a074ce1feba",
+      "bytes": 5361808
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "e30763b23eca586092a8f23d7a6a36c0fd487f8e2880963291d2f025afc18ec3",
+      "bytes": 407008
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-query-json": {
+      "sha256": "3900762c64d22309385b0b9d69b51227abaaa1d19a784d36e35bbc9634c13d63",
+      "bytes": 416304
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request": {
+      "sha256": "7823235cf79dd9cd88709afde47de21ce08f808a6773d936ba646210447e0500",
+      "bytes": 299968
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "d5dcf65f4a944766af52e31a121613ec9dc1ecc79243850f37bc81765a89008a",
+      "bytes": 3092624
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-query-json": {
+      "sha256": "befb6c252be42c5ace9b33e40ba5eeb6922a60471681c6dad76a2d169d5cf120",
+      "bytes": 3386472
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": {
+      "sha256": "0323de54596ca125d0f364f25628fca729abc812703926b96b18759dbf69dd9d",
+      "bytes": 2772776
+    }
+  },
+  "tests": {
+    "evidence": {
+      "evidence/asan-testlog.json": {
+        "entries": 2,
+        "passed": [
+          "fvwm3 / mfl-request",
+          "fvwm3 / core-query-json"
+        ]
+      },
+      "evidence/gcc-testlog.json": {
+        "entries": 7,
+        "passed": [
+          "fvwm3 / mfl-request",
+          "fvwm3 / core-query-json",
+          "fvwm3:live-x / mfl-request-xvfb",
+          "fvwm3:live-x / mfl-core-state-xvfb",
+          "fvwm3:live-x / mfl-operations-xvfb",
+          "fvwm3:live-x / mfl-settings-xvfb",
+          "fvwm3:live-x / mfl-stream-xvfb"
+        ]
+      }
+    },
+    "final": {
+      "evidence/asan-testlog.json": {
+        "entries": 2,
+        "passed": [
+          "fvwm3 / mfl-request",
+          "fvwm3 / core-query-json"
+        ]
+      },
+      "evidence/gcc-testlog.json": {
+        "entries": 2,
+        "passed": [
+          "fvwm3 / mfl-request",
+          "fvwm3 / core-query-json"
+        ]
+      }
+    }
+  },
+  "counts": {
+    "focused_registered_passes": 7,
+    "scoped_sanitizer_exercises": 3,
+    "profiles": 1,
+    "targets": 1
+  },
+  "native_CPU_sanitizers": false,
+  "sanitizer_scope": "core query JSON and request policy, plus instrumented MFL in actual-X core/appearance fixture with uninstrumented GCC core; no suppression/diagnostic",
+  "acceptance": {
+    "summary": {
+      "state": "observed",
+      "scope": "core-colorsets",
+      "generation": "000000000009256102850f7a000c2f4c0000000000000038",
+      "values": "published",
+      "units": "actual-pixels",
+      "pixel_encoding": "colormap-hex",
+      "total": 19,
+      "record_limit": 4096,
+      "page_max": 16,
+      "preview_supported": false
+    },
+    "exact": {
+      "state": "observed",
+      "scope": "core-colorsets",
+      "generation": "000000000009256102850f7a000c2f4c0000000000000038",
+      "values": "published",
+      "units": "actual-pixels",
+      "pixel_encoding": "colormap-hex",
+      "total": 19,
+      "record_limit": 4096,
+      "page_max": 16,
+      "preview_supported": false,
+      "colorsets": [
+        {
+          "pixels": {
+            "foreground": "0000000000112233",
+            "background": "0000000000445566",
+            "hilight": "0000000000567798",
+            "shadow": "0000000000262a2e",
+            "foreground_shadow": "0000000000374859",
+            "tint": "0000000000000000",
+            "icon_tint": "0000000000000000"
+          },
+          "opacity_percent": {
+            "foreground": 100,
+            "image": 100,
+            "icon": 100
+          },
+          "background": {
+            "has_pixmap": false,
+            "transparency": "none",
+            "type": 0,
+            "width": 0,
+            "height": 0
+          },
+          "id": 2147483647,
+          "update_state": "idle",
+          "tint_percent": 0,
+          "icon_tint_percent": 0,
+          "dither": false,
+          "icon_dither": false,
+          "has_shape": false
+        }
+      ],
+      "targeted": true,
+      "offset": null,
+      "next_offset": null
+    },
+    "failed": {
+      "state": "observed",
+      "scope": "core-colorsets",
+      "generation": "000000000009256102850f7a000c2f4c000000000000003b",
+      "values": "published",
+      "units": "actual-pixels",
+      "pixel_encoding": "colormap-hex",
+      "total": 19,
+      "record_limit": 4096,
+      "page_max": 16,
+      "preview_supported": false,
+      "colorsets": [
+        {
+          "pixels": {
+            "foreground": "0000000000abcdef",
+            "background": "0000000000445566",
+            "hilight": "0000000000567798",
+            "shadow": "0000000000262a2e",
+            "foreground_shadow": "00000000002a3744",
+            "tint": "0000000000000000",
+            "icon_tint": "0000000000000000"
+          },
+          "opacity_percent": {
+            "foreground": 70,
+            "image": 100,
+            "icon": 100
+          },
+          "background": {
+            "has_pixmap": false,
+            "transparency": "none",
+            "type": 0,
+            "width": 0,
+            "height": 0
+          },
+          "id": 21,
+          "update_state": "refused",
+          "tint_percent": 0,
+          "icon_tint_percent": 0,
+          "dither": false,
+          "icon_dither": false,
+          "has_shape": false
+        }
+      ],
+      "targeted": true,
+      "offset": null,
+      "next_offset": null
+    },
+    "recovered": {
+      "state": "observed",
+      "scope": "core-colorsets",
+      "generation": "000000000009256102850f7a000c2f4c000000000000003d",
+      "values": "published",
+      "units": "actual-pixels",
+      "pixel_encoding": "colormap-hex",
+      "total": 19,
+      "record_limit": 4096,
+      "page_max": 16,
+      "preview_supported": false,
+      "colorsets": [
+        {
+          "pixels": {
+            "foreground": "0000000000abcdef",
+            "background": "0000000000445566",
+            "hilight": "0000000000567798",
+            "shadow": "0000000000262a2e",
+            "foreground_shadow": "00000000002a3744",
+            "tint": "0000000000000000",
+            "icon_tint": "0000000000000000"
+          },
+          "opacity_percent": {
+            "foreground": 70,
+            "image": 100,
+            "icon": 100
+          },
+          "background": {
+            "has_pixmap": false,
+            "transparency": "none",
+            "type": 0,
+            "width": 0,
+            "height": 0
+          },
+          "id": 21,
+          "update_state": "idle",
+          "tint_percent": 0,
+          "icon_tint_percent": 0,
+          "dither": false,
+          "icon_dither": false,
+          "has_shape": false
+        }
+      ],
+      "targeted": true,
+      "offset": null,
+      "next_offset": null
+    },
+    "x_color_rgb": [
+      4369,
+      8738,
+      13107
+    ],
+    "pages_complete": true,
+    "missing_read_did_not_allocate": true,
+    "stale_pages_and_targets_refused": true
+  },
+  "failed_selected_gates": [],
+  "nonruntime_followups": [
+    "README exceeded the repository 250-word limit; trimmed before successful make check",
+    "two unit-test readability/line-width edits repeated only GCC/ASan policy; unchanged products/fixtures retain actual-X evidence"
+  ],
+  "manual": {
+    "FvwmMFL": {
+      "source_sha256": "cf8d6f453533cdac63eb0e9e5711e774ab9d453da6183e21da1fa39d964b52a1",
+      "roff_sha256": "bb52288ad4f88dc1f612f44a29c63111d31fb3da350504a0d3efabeee2f630c7",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 11
+      }
+    },
+    "FvwmMFL-before": {
+      "source_sha256": "f5f3d2514aea2f3e877d24fd09e387f8488596466b80caf62afece9e873942db",
+      "roff_sha256": "87ebdbd62c6bd6498464537744e12a2f9c1f1c3753aa895d5b37428eec68bd69",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 10
+      }
+    }
+  },
+  "retirement": [
+    {
+      "capture": "/tmp/fvwm-module-waits-20261015/ipc-colorset-state-checkpoint",
+      "files": 45,
+      "archive": "/tmp/fvwm-module-waits-20261015/ipc-colorset-state-evidence.tgz",
+      "archive_sha256": "b23aab0fefce7b9eb501c6d964cd478be422cc83c77f45cabff203b9cf0eb695",
+      "source_duplicate": "/tmp/fvwm-module-waits-20261015/ipc-colorset-state-inputs/source.tgz",
+      "source_sha256": "aa708d400b1a4db295641764da2e92ef6a668aed4fb3493ca2baf75b125de28b",
+      "canonical_payload_and_mode_proof": true
+    },
+    {
+      "capture": "/tmp/fvwm-module-waits-20261015/ipc-colorset-state-final",
+      "files": 15,
+      "archive": "/tmp/fvwm-module-waits-20261015/ipc-colorset-state-final.tgz",
+      "archive_sha256": "c78f61db7d97e152737c247148a4c6e9933e5c0a2d878723c3bfe91b301cebf4",
+      "source_duplicate": "/tmp/fvwm-module-waits-20261015/ipc-colorset-state-final-inputs/source.tgz",
+      "source_sha256": "5008a102e7bb7d26e80e6ebd98585311d3599441444c4c85840a8e87371525fd",
+      "canonical_payload_and_mode_proof": true
+    }
+  ],
+  "cycle": {
+    "integrated_reference": "PR160",
+    "integrated_commit": "b9dc633123d7dd7478fd49f5019e500bc9185274",
+    "merged": 0,
+    "after_merge": 1,
+    "limit": 3,
+    "deferred": [
+      "affected six-target/alternate-profile qualification at shared cycle closure",
+      "full compiler/optional-feature/install/default-X and owner/milestone/release acceptance",
+      "native CPU/hardware/toolkit/compositor qualification"
+    ]
+  },
+  "performance": {
+    "reference": "PR159",
+    "merged": 1,
+    "after_merge": 2,
+    "limit": 5,
+    "comparison_due": false
+  }
+}

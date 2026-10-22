@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Core colorset inspection](IPC-COLORSET-STATE-2026-10-22.md): bounded pages, exact sparse IDs and owner freshness; preview remains gated.
+
 - [Owned desktop operations](IPC-DESKTOP-OPERATIONS-2026-10-22.md): typed refresh admission, state/results, cancellation, finite reconnect retention and coalesced invalidations; one accumulated IPC cycle checkpoint.
 
 - [Desktop-provider observation](IPC-PROVIDER-OBSERVATION-2026-10-22.md): capability/configuration state, opt-in bounded invalidations and conditional preference snapshots; SESSION service lifecycle stays separate.

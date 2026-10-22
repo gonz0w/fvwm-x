@@ -10,8 +10,35 @@
 #include "libs/modifiers.h"
 #include "libs/wcontext.h"
 #include <inttypes.h>
+#include <limits.h>
+#include <time.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+
+bool fvwm_query_token(uint64_t revision,
+	char output[MODULE_QUERY_GENERATION_LEN + 1])
+{
+	static struct timespec incarnation;
+	static bool initialized;
+
+	output[0] = '\0';
+	if (!revision)
+		return false;
+	if (!initialized)
+	{
+		if (clock_gettime(CLOCK_MONOTONIC, &incarnation) != 0)
+			return false;
+		initialized = true;
+	}
+	/* Bind revisions to this core incarnation, including after reconnect.
+	 * This identifies an observation; it is not an authentication token. */
+	snprintf(output, MODULE_QUERY_GENERATION_LEN + 1,
+		"%016" PRIx64 "%08" PRIx32 "%08" PRIx32 "%016" PRIx64,
+		(uint64_t)incarnation.tv_sec, (uint32_t)incarnation.tv_nsec,
+		(uint32_t)getpid(), revision);
+	return true;
+}
 
 static bool bounded_text(const char *text, size_t limit)
 {
@@ -56,7 +83,8 @@ bool fvwm_query_parse(const char *text, struct fvwm_query_spec *spec)
 	    parsed.generation, &extra) != 6 ||
 	    strspn(parsed.cookie, "0123456789abcdef-") !=
 		strlen(parsed.cookie) || !hex_token(parsed.serial, 16) ||
-	    !decimal(offset, MODULE_QUERY_OFFSET_MAX, &parsed.offset) ||
+	    !decimal(offset, strcmp(parsed.resource, "colorset") == 0 ?
+		INT_MAX : MODULE_QUERY_OFFSET_MAX, &parsed.offset) ||
 	    !decimal(limit, MODULE_QUERY_PAGE_MAX, &parsed.limit) ||
 	    parsed.limit == 0 ||
 	    (strcmp(parsed.generation, "-") != 0 &&
@@ -208,7 +236,7 @@ fail:
 	return NULL;
 }
 
-static bool binding_generation(const char *generation,
+static bool snapshot_generation(const char *generation,
 	const struct fvwm_query_spec *spec, const char **error)
 {
 	*error = "generation_unavailable";
@@ -234,7 +262,7 @@ cJSON *fvwm_query_bindings(const Binding *bindings, const char *generation,
 	if (spec->offset > MODULE_QUERY_OFFSET_MAX || spec->limit == 0 ||
 	    spec->limit > MODULE_QUERY_PAGE_MAX)
 		return NULL;
-	if (!binding_generation(generation, spec, error))
+	if (!snapshot_generation(generation, spec, error))
 		return NULL;
 	while (b && offset < spec->offset)
 	{
@@ -333,7 +361,7 @@ cJSON *fvwm_query_placement(const char *generation,
 	*error = "invalid_request";
 	if (spec->offset != 0)
 		return NULL;
-	if (!binding_generation(generation, spec, error))
+	if (!snapshot_generation(generation, spec, error))
 		return NULL;
 	result = observed_result("placement-bindings", error);
 	if (!result)
@@ -390,7 +418,7 @@ cJSON *fvwm_query_binding_policy(const char *generation,
 	*error = "invalid_request";
 	if (spec->offset != 0)
 		return NULL;
-	if (!binding_generation(generation, spec, error))
+	if (!snapshot_generation(generation, spec, error))
 		return NULL;
 	result = observed_result("binding-policy", error);
 	if (!result)
@@ -414,6 +442,146 @@ cJSON *fvwm_query_binding_policy(const char *generation,
 	for (size_t i = 0; i < sizeof(modifiers) / sizeof(modifiers[0]); i++)
 		if (!cJSON_AddNumberToObject(modifier_map, modifiers[i].name,
 			modifiers[i].mask))
+			goto fail;
+	*error = NULL;
+	return result;
+fail:
+	cJSON_Delete(result);
+	return NULL;
+}
+
+static bool add_pixel(cJSON *object, const char *name, Pixel pixel)
+{
+	char text[17];
+
+	/* X pixels are colormap-local values, not RGB or resource IDs. */
+	snprintf(text, sizeof(text), "%016" PRIx64, (uint64_t)pixel);
+	return cJSON_AddStringToObject(object, name, text) != NULL;
+}
+
+static bool add_colorset(cJSON *list, const struct fvwm_query_colorset *entry)
+{
+	const colorset_t *cs = entry->colorset;
+	cJSON *item = cJSON_CreateObject(), *colors, *opacity, *background;
+
+	if (!item)
+		return false;
+	if (!cJSON_AddItemToArray(list, item))
+	{
+		cJSON_Delete(item);
+		return false;
+	}
+	colors = cJSON_AddObjectToObject(item, "pixels");
+	opacity = cJSON_AddObjectToObject(item, "opacity_percent");
+	background = cJSON_AddObjectToObject(item, "background");
+	return colors && opacity && background &&
+		cJSON_AddNumberToObject(item, "id", entry->id) &&
+		cJSON_AddStringToObject(item, "update_state",
+			entry->update_state) &&
+		add_pixel(colors, "foreground", cs->fg) &&
+		add_pixel(colors, "background", cs->bg) &&
+		add_pixel(colors, "hilight", cs->hilite) &&
+		add_pixel(colors, "shadow", cs->shadow) &&
+		add_pixel(colors, "foreground_shadow", cs->fgsh) &&
+		add_pixel(colors, "tint", cs->tint) &&
+		add_pixel(colors, "icon_tint", cs->icon_tint) &&
+		cJSON_AddNumberToObject(opacity, "foreground",
+			cs->fg_alpha_percent) &&
+		cJSON_AddNumberToObject(opacity, "image",
+			cs->image_alpha_percent) &&
+		cJSON_AddNumberToObject(opacity, "icon",
+			cs->icon_alpha_percent) &&
+		cJSON_AddNumberToObject(item, "tint_percent",
+			cs->tint_percent) &&
+		cJSON_AddNumberToObject(item, "icon_tint_percent",
+			cs->icon_tint_percent) &&
+		cJSON_AddBoolToObject(item, "dither", cs->dither) &&
+		cJSON_AddBoolToObject(item, "icon_dither",
+			cs->do_dither_icon) &&
+		cJSON_AddBoolToObject(background, "has_pixmap",
+			cs->pixmap != None) &&
+		cJSON_AddStringToObject(background, "transparency",
+			cs->pixmap == ParentRelative ? "parent" :
+			CSETS_IS_TRANSPARENT_ROOT(cs) ? "root" : "none") &&
+		cJSON_AddNumberToObject(background, "type", cs->pixmap_type) &&
+		cJSON_AddNumberToObject(background, "width", cs->width) &&
+		cJSON_AddNumberToObject(background, "height", cs->height) &&
+		cJSON_AddBoolToObject(item, "has_shape",
+			cs->shape_mask != None);
+}
+
+cJSON *fvwm_query_colorsets(const struct fvwm_query_colorset *entries,
+	size_t count, size_t total, const char *generation,
+	const struct fvwm_query_spec *spec, const char **error)
+{
+	bool single = strcmp(spec->resource, "colorset") == 0;
+	bool summary = strcmp(spec->resource, "color-summary") == 0;
+	struct fvwm_query_spec check = *spec;
+	cJSON *result, *list;
+
+	*error = "invalid_request";
+	if (spec->limit == 0 || spec->limit > MODULE_QUERY_PAGE_MAX ||
+	    count > spec->limit || count > total || (count && !entries) ||
+	    total > FVWM_COLORSET_LIMIT ||
+	    (!single && spec->offset > MODULE_QUERY_OFFSET_MAX) ||
+	    (single && (spec->offset > INT_MAX || count != 1)) ||
+	    (summary && (spec->offset || count)) ||
+	    (!single && !summary &&
+		(spec->offset > total || count !=
+			(total - spec->offset < spec->limit ?
+			 total - spec->offset : spec->limit))))
+		return NULL;
+	/* Exact ID lookups are independent of an inventory cursor. */
+	if (single)
+		check.offset = 0;
+	if (!snapshot_generation(generation, &check, error))
+		return NULL;
+	*error = "invalid_core_state";
+	for (size_t i = 0; i < count; i++)
+		if (entries[i].id < 0 || !entries[i].colorset ||
+		    !entries[i].update_state ||
+		    (strcmp(entries[i].update_state, "idle") != 0 &&
+		     strcmp(entries[i].update_state, "pending") != 0 &&
+		     strcmp(entries[i].update_state, "refused") != 0) ||
+		    (single && (unsigned)entries[i].id != spec->offset))
+			return NULL;
+	if (!single && !summary && spec->offset + count < total &&
+	    spec->offset + count > MODULE_QUERY_OFFSET_MAX)
+	{
+		*error = "query_too_large";
+		return NULL;
+	}
+	result = observed_result("core-colorsets", error);
+	if (!result)
+		return NULL;
+	if (!cJSON_AddStringToObject(result, "generation", generation) ||
+	    !cJSON_AddStringToObject(result, "values", "published") ||
+	    !cJSON_AddStringToObject(result, "units", "actual-pixels") ||
+	    !cJSON_AddStringToObject(result, "pixel_encoding",
+		"colormap-hex") ||
+	    !cJSON_AddNumberToObject(result, "total", total) ||
+	    !cJSON_AddNumberToObject(result, "record_limit",
+		FVWM_COLORSET_LIMIT) ||
+	    !cJSON_AddNumberToObject(result, "page_max",
+		MODULE_QUERY_PAGE_MAX) ||
+	    !cJSON_AddBoolToObject(result, "preview_supported", false))
+		goto fail;
+	if (summary)
+	{
+		*error = NULL;
+		return result;
+	}
+	list = cJSON_AddArrayToObject(result, "colorsets");
+	if (!list || !cJSON_AddBoolToObject(result, "targeted", single) ||
+	    !(single ? cJSON_AddNullToObject(result, "offset") :
+		cJSON_AddNumberToObject(result, "offset", spec->offset)) ||
+	    !((!single && spec->offset + count < total) ?
+		cJSON_AddNumberToObject(result, "next_offset",
+			spec->offset + count) :
+		cJSON_AddNullToObject(result, "next_offset")))
+		goto fail;
+	for (size_t i = 0; i < count; i++)
+		if (!add_colorset(list, entries + i))
 			goto fail;
 	*error = NULL;
 	return result;

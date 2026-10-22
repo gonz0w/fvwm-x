@@ -36,7 +36,8 @@ enum mfl_request_kind {
 	MFL_REQUEST_CANCEL,
 	MFL_REQUEST_TOPOLOGY,
 	MFL_REQUEST_WORKSPACES,
-	MFL_REQUEST_BINDINGS
+	MFL_REQUEST_BINDINGS,
+	MFL_REQUEST_COLORSETS
 };
 
 struct mfl_request {
@@ -46,7 +47,7 @@ struct mfl_request {
 	unsigned int offset;
 	unsigned int limit;
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];
-	char binding_resource[16];
+	char snapshot_resource[16];
 	char provider[33];
 	bool operation_watch;
 	const char *error;

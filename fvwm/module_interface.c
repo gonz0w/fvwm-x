@@ -52,6 +52,7 @@
 #include "commands.h"
 #include "module_queue.h"
 #include "query_json.h"
+#include "colorset.h"
 #include "libs/vpacket.h"
 #include "libs/monitor_types.h"
 #include "libs/picture_types.h"
@@ -829,6 +830,56 @@ void CMD_Send_Reply(F_CMD_ARGS)
 	return;
 }
 
+static cJSON *query_colorsets(const struct fvwm_query_spec *spec,
+	const char **error)
+{
+	struct fvwm_query_colorset entries[MODULE_QUERY_PAGE_MAX];
+	char generation[MODULE_QUERY_GENERATION_LEN + 1];
+	size_t total = ColorsetCount(), count = 0;
+	bool single = strcmp(spec->resource, "colorset") == 0;
+	bool summary = strcmp(spec->resource, "color-summary") == 0;
+
+	*error = "generation_unavailable";
+	if (!colorset_query_token(generation))
+		return NULL;
+	/* Validate freshness before looking up a cursor in a changed table. */
+	if ((strcmp(spec->generation, "-") != 0 &&
+	     strcmp(spec->generation, generation) != 0) ||
+	    (!single && spec->offset && strcmp(spec->generation, "-") == 0))
+	{
+		*error = "stale_generation";
+		return NULL;
+	}
+	if (single)
+	{
+		const colorset_t *cs = FindColorset((int)spec->offset);
+
+		*error = "unavailable";
+		if (!cs)
+			return NULL;
+		entries[count++] = (struct fvwm_query_colorset){
+			(int)spec->offset, cs,
+			colorset_query_update_state((int)spec->offset)};
+	}
+	else if (!summary)
+	{
+		*error = "invalid_offset";
+		if (spec->offset > total)
+			return NULL;
+		for (size_t i = spec->offset;
+		     i < total && count < spec->limit; i++)
+		{
+			int id = ColorsetIdAt(i);
+
+			entries[count++] = (struct fvwm_query_colorset){id,
+				FindColorset(id),
+				colorset_query_update_state(id)};
+		}
+	}
+	return fvwm_query_colorsets(entries, count, total, generation,
+		spec, error);
+}
+
 /* A bounded read of core-owned state; no X round trip or retained cursor.
  * Existing directed packets/queues preserve producer command ordering. */
 void CMD_Send_Query(F_CMD_ARGS)
@@ -846,7 +897,11 @@ void CMD_Send_Query(F_CMD_ARGS)
 
 	if (!module || !fvwm_query_parse(action, &spec))
 		return;
-	if (strcmp(spec.resource, "topology") == 0)
+	if (strcmp(spec.resource, "colorsets") == 0 ||
+	    strcmp(spec.resource, "colorset") == 0 ||
+	    strcmp(spec.resource, "color-summary") == 0)
+		result = query_colorsets(&spec, &error);
+	else if (strcmp(spec.resource, "topology") == 0)
 		result = fvwm_query_topology(
 			FScreenGetTopologySnapshot(), &error);
 	else if (strcmp(spec.resource, "workspaces") == 0)

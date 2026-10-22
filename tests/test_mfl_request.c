@@ -410,7 +410,8 @@ static void test_core_snapshot_requests(void)
 	struct mfl_pending_request pending = {.kind = MFL_REQUEST_TOPOLOGY,
 		.serial = 42};
 	char text[1001], command[1001];
-	const char *resources[] = {"topology", "workspaces", "bindings"};
+	const char *resources[] = {"topology", "workspaces", "bindings",
+		"colorsets"};
 	const char *invalid[] = {
 		"\"offset\":-1", "\"offset\":1", "\"offset\":4097",
 		"\"offset\":0.5", "\"limit\":0", "\"limit\":17",
@@ -649,8 +650,46 @@ static void test_operation_requests(void)
 		generation, state));
 }
 
+static void test_colorset_requests(void)
+{
+	struct mfl_request request;
+	char text[1001], command[1001];
+	const char *bad[] = {"\"target\":2147483647",
+		"\"target\":\"2147483648\"", "\"target\":\"01\"",
+		"\"target\":\"-1\"", "\"target\":\"1;Exec\"",
+		"\"target\":\"1\",\"offset\":0",
+		"\"scope\":\"summary\",\"limit\":1",
+		"\"scope\":\"summary\",\"target\":\"1\"",
+		"\"scope\":\"unknown\"", "\"offset\":1",
+		"\"limit\":0", "\"limit\":17", "\"generation\":\"abc\""};
+
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"c\","
+		"\"method\":\"query\","
+		"\"resource\":\"colorsets\",\"target\":\"2147483647\"}",
+		&request));
+	assert(request.kind == MFL_REQUEST_COLORSETS &&
+		request.offset == 2147483647);
+	assert(mfl_request_snapshot_command(command, sizeof(command),
+		&request, 1, "a"));
+	assert(strcmp(command,
+		"Send_Query a 0000000000000001 colorset 2147483647 1 -") == 0);
+	assert(!mfl_request_is_action(request.kind));
+	for (size_t i = 0; i < sizeof(bad) / sizeof(bad[0]); i++)
+	{
+		snprintf(text, sizeof(text),
+			"{\"version\":1,\"id\":\"c\",\"method\":\"query\","
+			"\"resource\":\"colorsets\",%s}", bad[i]);
+		assert(!mfl_request_parse(text, &request));
+	}
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"c\","
+		"\"method\":\"query\","
+		"\"resource\":\"colorsets\",\"scope\":\"summary\"}", &request));
+	assert(strcmp(request.snapshot_resource, "color-summary") == 0);
+}
+
 int main(void)
 {
+	test_colorset_requests();
 	test_core_snapshot_requests();
 	test_provider_requests();
 	test_operation_requests();

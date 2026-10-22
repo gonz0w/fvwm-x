@@ -33,9 +33,7 @@
 #include "cursor.h"
 #include "functions.h"
 #include "bindings.h"
-#include <inttypes.h>
-#include <time.h>
-#include <unistd.h>
+#include "query_json.h"
 #include "module_interface.h"
 #include "misc.h"
 #include "screen.h"
@@ -64,25 +62,7 @@ static uint64_t bindings_generation = 1;
 
 bool binding_query_token(char output[MODULE_QUERY_GENERATION_LEN + 1])
 {
-	static struct timespec incarnation;
-	static bool initialized;
-
-	output[0] = '\0';
-	if (!bindings_generation)
-		return false;
-	if (!initialized)
-	{
-		if (clock_gettime(CLOCK_MONOTONIC, &incarnation) != 0)
-			return false;
-		initialized = true;
-	}
-	/* Bind revisions to this core incarnation, including after reconnect.
-	 * This identifies an observation; it is not an authentication token. */
-	snprintf(output, MODULE_QUERY_GENERATION_LEN + 1,
-		"%016" PRIx64 "%08" PRIx32 "%08" PRIx32 "%016" PRIx64,
-		(uint64_t)incarnation.tv_sec, (uint32_t)incarnation.tv_nsec,
-		(uint32_t)getpid(), bindings_generation);
-	return true;
+	return fvwm_query_token(bindings_generation, output);
 }
 
 static void binding_query_changed(void)

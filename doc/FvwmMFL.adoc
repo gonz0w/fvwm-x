@@ -100,7 +100,7 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   read-only admission is not a security boundary.
 * `connection` returns this connection's `read_only` flag and selected event
   names. These are MFL-owned values and require no core round trip.
-* `topology`, `workspaces` and `bindings` query core-owned state, as described
+* `topology`, `workspaces`, `bindings` and `colorsets` query core-owned state, as described
   below. Binding pages also accept their documented continuation fields.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
@@ -260,6 +260,67 @@ restrict existing configuration files. Allocation failure returns
 `allocation_failed` when a reply can still be queued; otherwise the ordinary
 deadline/disconnect policy applies. Wider providers, domain progress/cancellation
 and shared-core preview/recovery remain separate capabilities.
+
+=== Core colorset inspection
+
+`query` with `resource: "colorsets"` observes the core's existing sparse colorset
+records. It does not allocate missing IDs, parse commands, read image files or
+query the X server. Read-only connections can use all three forms:
+
+----
+request {"version":1,"id":"palette-list","method":"query","resource":"colorsets","limit":8}
+request {"version":1,"id":"palette-one","method":"query","resource":"colorsets","target":"21"}
+request {"version":1,"id":"palette-summary","method":"query","resource":"colorsets","scope":"summary"}
+----
+
+Each result has `state: "observed"`, `scope: "core-colorsets"`, an opaque
+48-character `generation`, `total`, configured `record_limit`, and `page_max: 16`.
+The scalar summary omits entries and cursors. Use it to check a previous
+observation without transferring palette records. It accepts an optional
+`generation`; a mismatch returns `stale_generation`, rather than an unchanged
+response. Summary requests reject `target`, `offset` and `limit`.
+
+Inventory pages default to offset 0 and limit 8; limits are 1 through 16.
+`colorsets` contains at most that many records in the core registry order.
+`offset` and `next_offset` are ordinal positions, not colorset IDs. Follow
+`next_offset` with the returned generation; nonzero offsets require it. The
+last page has a null next offset. Offsets are bounded at 4096; a configured
+larger registry can report `query_too_large` when continuation would exceed that
+bound. Its summary and exact-ID lookups remain available. An offset beyond the
+current collection returns `invalid_offset`.
+
+`target` is a canonical decimal string from `"0"` through `"2147483647"`.
+It selects exactly one existing ID, including sparse high IDs; no default-zero
+fallback is applied. Unknown IDs return `unavailable`. Target requests reject
+`offset`, `limit` and `scope`, accept an optional generation, and return a
+one-entry `colorsets` array with `targeted: true` and null cursors. Inventory
+results have `targeted: false`.
+
+Entry `pixels` contains foreground, background, hilight, shadow,
+foreground_shadow, tint and icon_tint as exact 16-digit hexadecimal strings.
+`pixel_encoding: "colormap-hex"` means X colormap pixel values, not RGB strings,
+portable colors, pointers or pixmap IDs. No RGB conversion is performed.
+`opacity_percent` distinguishes foreground, image and icon opacity. Entries also
+report tint percentages, dithering, shape presence and background presence,
+type, dimensions and transparency (`none`, `parent` or `root`). Dimensions use
+actual pixels. Paths, parser text and resource ownership pointers are omitted.
+
+`values: "published"` refers to the retained colorset used by rendering/modules.
+`update_state` is `idle`, `pending` or `refused` for the owner's separate image
+preparation. A refused replacement can leave the previous palette published;
+`idle` does not certify that a screen repaint has completed. Commands, newly
+allocated records and asynchronous image/effect settlements conservatively
+invalidate the colorset generation, even when final values do not change.
+Repeated queries preserve it. Tokens identify this core incarnation and this
+resource only; they are neither authentication nor a persistence identifier.
+`generation_unavailable` refuses an exhausted/unavailable token.
+
+A query is a synchronous core observation; subsequent commands or asynchronous
+settlements can change it. On stale pages, restart at offset zero. These tokens
+do not cover Style/decorations, window policy or all appearance changes, and
+cannot authorize rollback after a separate check. `preview_supported: false`
+keeps live preview/revert unavailable until its conflict/recovery contract is
+implemented. Existing settings generations retain their separate scope.
 
 === Desktop settings provider
 

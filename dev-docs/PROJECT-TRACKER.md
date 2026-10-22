@@ -34,6 +34,7 @@ not the changing shared checkout or another thread's desktop/runtime work.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
+| Legacy strut / root work-area safety, EWMH-01 / DATA-01 / INPUT-01 | Locally qualified composed checkpoint; PR #147 for maintainer review | Three admission, revocation and root-publication repairs pass one broad run (2372 standard / 30 selected optional) plus 90 affected review-continuation entries across six targets/ten profiles. Four final scoped sanitizers, ten final installs and four final authenticated BSD displays pass. Original selector/compiler/storage failures and the reproduced sticky-page correction remain explicit. [Report](verification/VERIFICATION-2026-10-21-WORKAREA.md). |
 | Desktop root publication, EWMH-01 / DATA-01 / INPUT-01 | Merged in PR #146; bounded checkpoint locally qualified | Three pager-index, count-adoption and bounded dependent-array repairs pass 2340 standard / 22 selected optional entries across six targets, four scoped sanitizer entries, ten fresh installs and four authenticated BSD displays. Original configure/manual-observer failures and independent old-core controls remain explicit. [Report](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). |
 | Manager startup handoff, SELECTION-01 / DATA-01 | Merged in PR #145; bounded checkpoint locally qualified | Three manager announcement, bounded/cancellable handoff and ownership/refusal repairs pass 2308 standard / 14 selected optional entries on six targets, four scoped sanitizer entries, ten fresh installs and four authenticated BSD displays. Original fixture failures and isolated baseline controls remain explicit. [Report](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). |
 | Xlib dependency contract, LIB-05 / MAINT-02 | Merged in PR #144; bounded checkpoint locally qualified | 2284 standard / 33 selected optional entries pass across six targets/ten profiles; 30 native configure controls, ten fresh installs and four authenticated BSD displays pass. Generated configuration hashes remain exact; dependency introspection and emitted link commands contain no direct libxkbcommon requirement. [Report](verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md). |
@@ -283,20 +284,17 @@ No comparison is due.
 Current selection, 2026-10-21: the finite safety and maintainability closeout
 is locally qualified and merged in PR141/142/143.
 The LIB-05 Xlib requirement checkpoint and manager handoff are merged in
-PR144/145. Current pickup is EWMH-01 R07/R09/R10/R12: bounded pager-index
-validation, count adoption/refusal and coherent dependent arrays. Configuration
-commands remain usable; oversized publication retains the last bounded snapshot.
-The six-target combined checkpoint is locally qualified and PR146 is merged.
-Next bounded pickup: EWMH-01 R11/W03/W06 legacy strut admission, deletion
-revocation and observable root work-area publication. Freeze acceptance at
-CARDINAL range/shape refusal with last accepted value retained, missing-property
-revocation distinct from all-zero auto-hide, per-desktop root readback, page
-shifts, base changes, ignore-style refresh and dock destruction. Preserve static
-zero-strut retention; partial struts, nonsticky-page panels, full topology and
-multi-monitor root authority remain separate. Focused checks precede one
-combined six-target checkpoint.
-Reserved-edge geometry, multi-monitor/root authority and broader selection
-transfer retain their separate owners.
+PR144/145. Pager count/index/dependent-array publication is merged in PR146.
+Current pickup EWMH-01 R11/W03/W06 is locally qualified for legacy strut
+admission, absence revocation and per-desktop root work-area publication;
+PR147 awaits maintainer review. Its one broad checkpoint and affected sticky-page
+correction retain separate exact source evidence. Configuration commands,
+static auto-hide reservations and existing internal monitor policy remain usable.
+Partial struts, nonsticky-page panels, broader topology/multi-monitor root
+authority and wider selection transfer retain their separate owners. After
+merge, follow the approved stage 5 queue, including manager-selection target
+conversions S04–S06; do not reopen already-qualified manager startup or pager
+count work by inference.
 Then advance the remaining approved stage 5/6 dependencies and milestones.
 Remaining performance-only
 tuning moves to the next release. The finite [hardening closeout](#hardening-closeout)
@@ -2260,3 +2258,12 @@ reader results are separate from the subsequent interpreter/file work.
   and feature-handoff criteria; broad audit owners remain open. PR139 is merged,
   so lightweight performance tracking is at 1/5 against PR138. This priority
   update changes no runtime code and does not repeat a qualification matrix.
+
+- 2026-10-21: PR146 merged. PR147 batches typed/range-checked legacy strut
+  adoption, explicit deletion revocation and current per-desktop root work areas.
+  One broad six-target checkpoint passes 2372 standard / 30 selected optional
+  entries; the reproduced sticky-page review correction passes 90 affected
+  continuation entries, four final scoped sanitizers, ten final installs and
+  four final authenticated BSD displays. Failed selector/compiler/storage
+  attempts remain explicit; canonical-verified guest duplicates are retired.
+  [Composed report](verification/VERIFICATION-2026-10-21-WORKAREA.md).

@@ -80,17 +80,18 @@ Independent client: [ewmh_inventory_live.py](../../tests/live_x/ewmh_inventory_l
 | R07 | E04 | EWMH 3.3 SHOULD/conditional MUST: desktop count and accepted changes agree. | Verified for desktop-publication checkpoint profiles: independent growth, empty shrink and explicit format/range/capacity refusal. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Retain snapshot/source scope; oversized configured publication and multi-monitor root authority remain explicit limits. |
 | R08 | E04 | EWMH 3.3 conditional MUST: shrink reconciles out-of-range desktops/windows. | Verified refusal policy for tested profiles: current/populated-desktop shrink is refused; accepted shrink requires no relocation. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Wider configuration/monitor transitions and alternate relocation policies remain unqualified. |
 | R09 | E04 | EWMH 3.5: viewport pairs describe each desktop. | Verified for tested profiles: effective-count array lengths at startup, 301/401 desks and actual-pixel viewport updates. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Wider desktop-specific/per-monitor geometry remains open; publication capacity is explicit. |
-| R10 | E05 | EWMH 3.9 MUST: work area contains a geometry per desktop. | Verified length/typed positive-geometry contract for tested profiles: startup empty-array gap repaired and high counts agree. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | R11 reserved-edge semantics remain open; matching lengths do not qualify dock geometry. |
-| R11 | E05 | EWMH 3.9 MUST/SHOULD: viewport-contained work area accounts for reserved edges. | Implemented / unqualified. `ewmh_SetWorkArea` publishes global monitor geometry; P tests internal struts separately. | Foreign dock changes/removal, page shifts and topology must drive observable root geometry. |
+| R10 | E05 | EWMH 3.9 MUST: work area contains a geometry per desktop. | Verified length/typed positive-geometry contract for tested profiles: startup empty-array gap repaired and high counts agree. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Legacy reserved-edge semantics now have separate R11 work-area qualification; wider geometry remains open. |
+| R11 | E05 | EWMH 3.9 MUST/SHOULD: viewport-contained work area accounts for reserved edges. | Verified legacy full-edge subset for work-area checkpoint profiles: per-desktop dynamic reservations, mutation/removal, page/desk/sticky/base/style transitions and destruction. [Report](VERIFICATION-2026-10-21-WORKAREA.md). | Partial struts, nonsticky-page panels, wider topology and independent multi-monitor root authority remain open; root readback does not qualify all internal maximize/placement geometry. |
 | R12 | E04 | EWMH 3.6 MUST: current desktop stays within advertised range. | Verified for tested profiles: root pager admission, timestamp zero, actual new-client desk, high-desk growth and refusal/recovery. [Report](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md). | Oversized configured states retain the preceding root snapshot; wider monitor/shrink/configuration cases remain open. |
 
 The original R09 source observation and reproduced R10 startup gap now have
 [desktop checkpoint evidence](VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md).
 The old inventory receipt remains historical. The 1024-record/server-request
 publication budget bounds storage without restricting configured FVWM desktop
-numbers; refused publication retains the preceding root snapshot. R11 remains
-separate: equal array lengths and positive geometry do not establish reserved
-edges, per-desktop dock semantics or multi-monitor root authority.
+numbers; refused publication retains the preceding root snapshot. R11 now has separate legacy strut/root-readback qualification in the
+[work-area checkpoint](VERIFICATION-2026-10-21-WORKAREA.md). Partial-strut,
+nonsticky-page, wider topology and independent multi-monitor root authority
+remain open.
 
 ## Window hints and request handling
 
@@ -107,7 +108,7 @@ for resize synchronization. Entry points: [ewmh.c](../../fvwm/ewmh.c),
 | W03 | E07 | Project validation: malformed properties/messages are refused safely. | Implemented / unqualified for the whole family. L retains bounded property cases; not every message field. | Test format, signed/oversized values, source IDs and timestamps at each changed request owner. |
 | W04 | E08 | EWMH 3.8: active-window publication and activation requests. | Implemented / unqualified. `ewmh_ActiveWindow` exists; command Focus is not a request oracle. | Observe root focus plus property; distinguish request source/time, stale/dead clients and refusal. |
 | W05 | E08 | EWMH 5.15/5.16: user-time hints and alternate time window. | Planned. Neither atom appears in inspected tables or I advertisement. | Select focus policy before adoption; zero time, child death, wraparound and real application behavior. |
-| W06 | E09 | EWMH 5.9: legacy strut uses four root-edge distances. | Implemented / unqualified for complete geometry. L malformed-property and P internal policy evidence remain narrow. | Independent dock mutation/destruction and maximized placement with root-property readback. |
+| W06 | E09 | EWMH 5.9: legacy strut uses four root-edge distances. | Verified typed/range admission, malformed replacement retention, zero versus absence revocation and independent root readback for work-area checkpoint profiles. [Report](VERIFICATION-2026-10-21-WORKAREA.md). | Existing internal per-monitor work-area policy remains; broader maximized placement and partial-strut precedence are unqualified. |
 | W07 | E09 | EWMH 5.10 conditional MUST: partial strut overrides legacy strut. | Planned. `_NET_WM_STRUT_PARTIAL` absent from tables/I advertisement. | Root coordinates, partial edge spans, both-property precedence, hotplug and malformed spans. |
 | W08 | E10 | EWMH 6.3 conditional: fullscreen monitor selection uses four indices. | Planned. `_NET_WM_FULLSCREEN_MONITORS` absent from tables/I advertisement. | Validate indices/topology generations and restore; command fullscreen does not establish this protocol. |
 | W09 | E11 | EWMH 6.1 optional: ping correlates a client reply. | Planned. `_NET_WM_PING` absent from tables/I advertisement. | If adopted, timestamp/window matching, unresponsive peers and bounded completion; no unsupported claim. |

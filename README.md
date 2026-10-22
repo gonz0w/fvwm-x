@@ -12,8 +12,8 @@ compositor or native Wayland backend.
 
 **Status:** development. The
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) is locally
-qualified and merged. [Desktop publication](dev-docs/verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md)
-validates pager requests and bounds root arrays across six targets.
+qualified and merged. [Work-area safety](dev-docs/verification/VERIFICATION-2026-10-21-WORKAREA.md)
+validates struts and publishes current reservations across six targets.
 Dependencies continue; performance tuning waits until the next release.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the

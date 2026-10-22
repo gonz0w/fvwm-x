@@ -13,7 +13,7 @@ compositor or native Wayland backend.
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) and manager-target
 prerequisite are merged. Opt-in button navigation, disabled controls and live
 presentation and atomic button updates are merged. [Typed desktop settings](dev-docs/verification/VERIFICATION-2026-10-22-DESKTOP-SETTINGS.md)
-are ready for review; preview remains queued. Maintenance and tuning stay deferred.
+are merged; grouped editing follows. Preview, maintenance and tuning stay deferred.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

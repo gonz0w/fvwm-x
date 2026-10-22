@@ -23,6 +23,7 @@ from geometry_transition_live import Client, Pointer
 from live_x_harness import HarnessError, HarnessRuntime, start_display_server, wait_for_predicate
 from mfl_stream_live import Connection
 from colorset_live import WindowAttributes
+from selection_live import Event
 
 
 def connect_client(display):
@@ -285,7 +286,7 @@ def run(options):
         connection.send(b'SendToModule FvwmDesktop set palette unknown\n')
         barrier()
         assert state.read_bytes() == before
-        connection.send(b'KillModule SlateNoticeForm\n')
+        connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
         connection.send(b'SendToModule FvwmDesktop reset group:schedule\n')
         barrier()
         query = settings_query()
@@ -300,7 +301,7 @@ def run(options):
         barrier()
         assert json.loads(state.read_text())['palette'] == 'grove'
         assert settings_query('palette')['palette']['effective'] == 'slate'
-        connection.send(b'KillModule SlateNoticeForm\nSendToModule FvwmDesktop reload-settings\n')
+        connection.send(b'KillModule FvwmForm SlateNoticeForm\nSendToModule FvwmDesktop reload-settings\n')
         barrier()
         assert settings_query('palette')['palette']['effective'] == 'grove'
         grove = int(palettes['grove']['dark']['surface'][1:], 16)
@@ -367,6 +368,158 @@ def run(options):
         barrier()
         assert settings_query('palette')['palette']['effective'] == 'slate'
         evidence['restart_persistence_and_explicit_override'] = 'passed'
+
+        spec = importlib.util.spec_from_file_location('desktop_capture', root / 'desktop.py')
+        capture_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(capture_module)
+
+        def capture(name):
+            previous = os.environ.get('DISPLAY')
+            os.environ['DISPLAY'] = display
+            try:
+                # Screenshots are review artifacts, not timing assertions.
+                time.sleep(.2)
+                file = capture_module.screenshot(artifact)
+                Path(file.removeprefix('Screenshot saved: ')).rename(artifact / name)
+            finally:
+                if previous is None:
+                    os.environ.pop('DISPLAY', None)
+                else:
+                    os.environ['DISPLAY'] = previous
+
+        def editor_window():
+            return named_windows().get('Desktop settings')
+
+        def open_editor(scope='all'):
+            connection.send(('SendToModule FvwmDesktop edit-settings ' + scope + '\n').encode())
+            window = wait_for_predicate('settings editor mapped', editor_window,
+                time.monotonic() + 15, process=process)
+            wait_for_predicate('settings editor children', lambda: len(children(window)) >= 4,
+                time.monotonic() + 5, process=process)
+            return window
+
+        def form_key(window, symbol):
+            event = Event()
+            event.key.type, event.key.display = 2, client.display
+            event.key.window, event.key.root, event.key.same_screen = window, client.root, 1
+            event.key.keycode = client.x.XKeysymToKeycode(client.display,
+                client.x.XStringToKeysym(symbol))
+            client.x.XSendEvent.argtypes = [C.c_void_p, C.c_ulong, C.c_int,
+                                          C.c_long, C.POINTER(Event)]
+            assert client.x.XSendEvent(client.display, window, 0, 1, C.byref(event))
+            client.x.XSync(client.display, 0)
+
+        def click_child(window):
+            client.x.XTranslateCoordinates.argtypes = [C.c_void_p, C.c_ulong, C.c_ulong,
+                C.c_int, C.c_int, C.POINTER(C.c_int), C.POINTER(C.c_int), C.POINTER(C.c_ulong)]
+            _, _, width, height = client.geometry(window)
+            x, y, child = C.c_int(), C.c_int(), C.c_ulong()
+            assert client.x.XTranslateCoordinates(client.display, window, client.root,
+                width // 2, height // 2, C.byref(x), C.byref(y), C.byref(child))
+            pointer.motion(x.value, y.value)
+            pointer.button(1)
+            pointer.button(0)
+
+        def choice_pixels(window):
+            _, _, width, height = client.geometry(window)
+            image = client.x.XGetImage(client.display, window, 0, 0, width, height,
+                                       C.c_ulong(-1).value, 2)
+            assert image
+            try:
+                return tuple(client.x.XGetPixel(image, x, y)
+                             for y in range(height) for x in range(width))
+            finally:
+                client.x.XDestroyImage(image)
+
+        def choose(window):
+            before = choice_pixels(window)
+            click_child(window)
+            wait_for_predicate('native choice repainted', lambda: choice_pixels(window) != before,
+                time.monotonic() + 10, process=process)
+
+        before = state.read_bytes()
+        window = open_editor()
+        capture('settings-editor.png')
+        choices = sorted((client.geometry(w)[1], client.geometry(w)[0], w)
+            for w in children(window) if client.geometry(w)[2] == client.geometry(w)[3])
+        assert len(choices) == 13, choices
+        choose(choices[1][2])  # Dune palette.
+        choose(choices[4][2])  # Light appearance.
+        capture('settings-draft.png')
+        assert state.read_bytes() == before
+        form_key(window, b'F3')
+        try:
+            wait_for_predicate('grouped native apply', lambda: json.loads(state.read_text())['palette'] == 'dune'
+                and json.loads(state.read_text())['appearance'] == 'light',
+                time.monotonic() + 10, process=process)
+        finally:
+            evidence['editor_saved_after_apply'] = json.loads(state.read_text())
+            capture('settings-after-apply.png')
+        wait_for_predicate('successful editor closes', lambda: not editor_window(),
+            time.monotonic() + 10, process=process)
+        barrier()
+        connection.send(b'SendToModule FvwmDesktop settings\n')
+        wait_for_predicate('settings menu for review', pointer.grabbed,
+            time.monotonic() + 10, process=process)
+        capture('settings-menu.png')
+        key(b'Escape')
+        wait_for_predicate('review menu dismissed', lambda: not pointer.grabbed(),
+            time.monotonic() + 5, process=process)
+        before = state.read_bytes()
+        window = open_editor('group:effects')
+        client.x.XSelectInput(client.display, window, 1 << 17)
+        client.x.XSync(client.display, 0)
+        form_key(window, b'F2')  # Defaults reloads only the unsaved scoped draft.
+        client.x.XCheckTypedWindowEvent.argtypes = [C.c_void_p, C.c_ulong, C.c_int,
+                                                  C.POINTER(Event)]
+        def predecessor_closed():
+            event = Event()
+            return client.x.XCheckTypedWindowEvent(client.display, window, 17, C.byref(event))
+        wait_for_predicate('defaults closes predecessor Form', predecessor_closed,
+            time.monotonic() + 10, process=process)
+        # X resource IDs can be reused by the next Form connection.
+        replacement = wait_for_predicate('defaults editor mapped', editor_window,
+            time.monotonic() + 10, process=process)
+        capture('settings-defaults.png')
+        assert state.read_bytes() == before
+        form_key(replacement, b'Escape')
+        wait_for_predicate('cancel editor closes', lambda: not editor_window(),
+            time.monotonic() + 10, process=process)
+        assert state.read_bytes() == before
+        # A different accepted command retires the open draft immediately.
+        generation = settings_query('palette')['palette']['generation']
+        open_editor()
+        connection.send(b'SendToModule FvwmDesktop set palette ink\n')
+        barrier()
+        wait_for_predicate('changed settings retire stale editor', lambda: not editor_window(),
+            time.monotonic() + 10, process=process)
+        assert settings_query('palette')['palette']['generation'] != generation
+        # An external file edit is refused at Apply without losing the draft.
+        window = open_editor()
+        edited = json.loads(state.read_text())
+        edited['palette'] = 'grove'
+        state.write_text(json.dumps(edited))
+        before = state.read_bytes()
+        form_key(window, b'F3')
+        wait_for_predicate('external edit refusal notice', lambda: 'FVWM-X' in named_windows(),
+            time.monotonic() + 10, process=process)
+        barrier()
+        assert state.read_bytes() == before and editor_window() == window
+        assert settings_query('palette')['palette']['effective'] == 'ink'
+        connection.send(b'KillModule FvwmForm SlateNoticeForm\nSendToModule FvwmDesktop reload-settings\n')
+        barrier()
+        wait_for_predicate('reload retires draft', lambda: not editor_window(),
+            time.monotonic() + 10, process=process)
+        assert settings_query('palette')['palette']['effective'] == 'grove'
+        open_editor()
+        connection.send(b'KillModule FvwmDesktop\nModuleSynchronous Timeout 15 FvwmDesktop\n')
+        barrier()
+        wait_for_predicate('restart retires predecessor Form', lambda: not editor_window(),
+            time.monotonic() + 10, process=process)
+        assert state.read_bytes() == before
+        evidence['native_grouped_editor_apply_defaults_cancel_stale_reload_restart'] = 'passed'
+        evidence['settings_screenshots'] = ['settings-editor.png', 'settings-draft.png',
+                                           'settings-menu.png', 'settings-defaults.png']
         if options.settings_only:
             return
 
@@ -407,7 +560,7 @@ def run(options):
                            time.monotonic() + 10, process=process)
         shutil.copy2(capture, artifact / 'baseline-capture.png')
         evidence['screenshot_and_core_responsiveness'] = 'passed'
-        connection.send(b'KillModule SlateNoticeForm\n')
+        connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
 
         # Capture review images with a real terminal and the live native launcher.
         spec = importlib.util.spec_from_file_location('desktop_capture', root / 'desktop.py')

@@ -329,6 +329,134 @@ class SettingsRegistry(unittest.TestCase):
         self.instance.change_settings({'palette': 'ink'})
         self.assertEqual(self.instance.saved['palette'], 'ink')
 
+    def editor_values(self, **changes):
+        editor = self.instance.settings_editor
+        values = dict(self.instance.saved, **changes)
+        return editor['token'] + ' ' + ' '.join(str(values[key]).lower() for key in editor['keys'])
+
+    def test_editor_applies_several_fields_with_one_publication(self):
+        self.instance.edit_settings()
+        generation = self.instance.settings_generation
+        with patch.object(desktop, 'save_settings', wraps=desktop.save_settings) as save:
+            self.instance.apply_settings_editor(self.editor_values(
+                palette='grove', motion=True, day='08:00', night='21:00'))
+        self.assertEqual(save.call_count, 1)
+        self.assertEqual(self.instance.saved['palette'], 'grove')
+        self.assertEqual(self.instance.saved['night'], '21:00')
+        self.assertTrue(self.instance.saved['motion'])
+        self.assertIsNone(self.instance.settings_editor)
+        self.assertNotEqual(generation, self.instance.settings_generation)
+        self.assertEqual(desktop.load_settings(self.path)[0], self.instance.saved)
+
+    def test_editor_bad_group_or_failed_write_preserves_draft_and_state(self):
+        self.instance.change_settings({'palette': 'dune'})
+        self.instance.edit_settings('group:schedule')
+        editor = self.instance.settings_editor.copy()
+        before = self.path.read_bytes(), self.instance.saved.copy(), self.instance.settings.copy()
+        self.commands.clear()
+        with self.assertRaises(ValueError):
+            self.instance.apply_settings_editor(self.editor_values(day='08:00', night='08:00'))
+        with patch.object(desktop.os, 'replace', side_effect=OSError('injected failure')):
+            with self.assertRaises(OSError):
+                self.instance.apply_settings_editor(self.editor_values(day='08:00', night='21:00'))
+        self.assertEqual((self.path.read_bytes(), self.instance.saved, self.instance.settings), before)
+        self.assertEqual(self.instance.settings_editor, editor)
+        self.assertEqual(self.commands, [])
+        self.instance.apply_settings_editor(self.editor_values(day='08:00', night='21:00'))
+        self.assertEqual(self.instance.saved['palette'], 'dune')
+
+    def test_editor_defaults_are_scoped_unsaved_and_cancelable(self):
+        self.instance.change_settings({'palette': 'grove', 'motion': True})
+        self.instance.edit_settings('group:effects')
+        token = self.instance.settings_editor['token']
+        before = self.path.read_bytes()
+        self.commands.clear()
+        self.instance.handle('defaults-settings ' + token)
+        self.assertEqual(self.instance.settings_editor['keys'], ['transparency', 'motion'])
+        self.assertNotEqual(self.instance.settings_editor['token'], token)
+        self.assertIn('*SlateSettingsForm: Choice motion_false false on "Off"', self.commands)
+        self.assertFalse(any('Choice palette_' in line for line in self.commands))
+        self.assertEqual(self.path.read_bytes(), before)
+        self.instance.handle('cancel-settings ' + self.instance.settings_editor['token'])
+        self.assertIsNone(self.instance.settings_editor)
+        self.assertEqual(self.path.read_bytes(), before)
+
+    def test_editor_replacement_change_reload_and_restart_reject_stale_callbacks(self):
+        self.instance.edit_settings()
+        first = self.editor_values(palette='ink')
+        self.instance.edit_settings()
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            self.instance.apply_settings_editor(first)
+        second = self.editor_values(palette='ink')
+        self.instance.change_settings({'palette': 'grove'})
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            self.instance.apply_settings_editor(second)
+        self.instance.edit_settings()
+        third = self.editor_values(palette='ink')
+        self.instance.reload_settings()
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            self.instance.apply_settings_editor(third)
+        self.instance.edit_settings()
+        fourth = self.editor_values(palette='ink')
+        self.instance.pool.shutdown()
+        self.instance = desktop.Desktop(self.commands.append, ROOT / 'default-config', self.path)
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            self.instance.apply_settings_editor(fourth)
+        self.assertEqual(self.instance.saved['palette'], 'grove')
+
+    def test_editor_external_write_cannot_be_overwritten(self):
+        self.instance.change_settings({'palette': 'slate'})
+        self.instance.edit_settings()
+        argument = self.editor_values(palette='ink')
+        desktop.save_settings(self.path, dict(self.instance.saved, palette='dune'))
+        with self.assertRaisesRegex(ValueError, 'externally'):
+            self.instance.apply_settings_editor(argument)
+        self.assertEqual(desktop.load_settings(self.path)[0]['palette'], 'dune')
+        self.assertEqual(self.instance.settings['palette'], 'slate')
+        self.assertIsNotNone(self.instance.settings_editor)
+
+    def test_editor_deadline_and_unsupported_scopes(self):
+        for scope in ('unknown', 'wallpaper', 'group:missing'):
+            with self.assertRaises(ValueError):
+                self.instance.edit_settings(scope)
+        with patch.object(desktop.time, 'monotonic', return_value=100):
+            self.instance.edit_settings()
+        argument = self.editor_values(palette='ink')
+        with patch.object(desktop.time, 'monotonic', return_value=100 + desktop.EDITOR_SECONDS):
+            with self.assertRaisesRegex(ValueError, 'expired'):
+                self.instance.apply_settings_editor(argument)
+        self.assertIsNone(self.instance.settings_editor)
+        self.assertFalse(self.path.exists())
+        with patch.object(desktop.time, 'monotonic', return_value=100):
+            self.instance.edit_settings()
+        with patch.object(desktop.time, 'monotonic', return_value=100 + desktop.EDITOR_SECONDS):
+            self.instance.tick()
+        self.assertIsNone(self.instance.settings_editor)
+        self.assertFalse(self.path.exists())
+
+    def test_editor_override_is_visible_without_changing_personal_configuration(self):
+        self.instance.configure_setting('palette', 'grove')
+        self.instance.finish_configuration()
+        self.instance.edit_settings('palette')
+        self.assertIn('*SlateSettingsForm: Text "Effective: grove (module configuration override)"',
+                      self.commands)
+        self.instance.apply_settings_editor(self.editor_values(palette='ink'))
+        self.assertEqual(self.instance.saved['palette'], 'ink')
+        self.assertEqual(self.instance.settings['palette'], 'grove')
+        self.assertEqual(self.instance.overrides, {'palette': 'grove'})
+
+    def test_editor_values_are_complete_and_queries_expose_snapshot_identity(self):
+        self.instance.edit_settings()
+        token = self.instance.settings_editor['token']
+        for argument in (token, token + ' ink', self.editor_values() + ' extra',
+                         self.editor_values(palette='$(Exec evil)')):
+            with self.assertRaises(ValueError):
+                self.instance.apply_settings_editor(argument)
+        self.assertFalse(self.path.exists())
+        item = self.instance.query_settings('palette')['palette']
+        self.assertEqual(item['generation'], self.instance.settings_generation)
+        self.assertFalse(item['preview'])
+
 
 if __name__ == '__main__':
     unittest.main()

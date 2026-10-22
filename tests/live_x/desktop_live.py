@@ -74,6 +74,8 @@ def run(options):
     build = options.build.resolve()
     source = Path(__file__).resolve().parents[2]
     client = connection = None
+    previous_handler = None
+    unexpected_errors = []
     evidence = {}
     try:
         display = options.display
@@ -133,6 +135,38 @@ def run(options):
         connection.echo('desktop-ready')
         client = connect_client(display)
         pointer = Pointer(client)
+        class XError(C.Structure):
+            _fields_ = [('type', C.c_int), ('display', C.c_void_p),
+                ('resource', C.c_ulong), ('serial', C.c_ulong),
+                ('code', C.c_ubyte), ('request', C.c_ubyte), ('minor', C.c_ubyte)]
+
+        observed_windows = set()
+        handler_type = C.CFUNCTYPE(C.c_int, C.c_void_p, C.POINTER(XError))
+
+        @handler_type
+        def on_error(_, error):
+            event = error.contents
+            # Enumeration races native Form destruction/replacement. Only the
+            # exact borrowed window and read operation may disappear here.
+            if (event.code == 3 and event.resource in observed_windows
+                    and event.request in (15, 20)):
+                evidence['observer_retired_windows'] = evidence.get('observer_retired_windows', 0) + 1
+            else:
+                unexpected_errors.append((event.code, event.request, event.resource))
+            return 0
+
+        client.x.XSetErrorHandler.argtypes = [handler_type]
+        client.x.XSetErrorHandler.restype = C.c_void_p
+        previous_handler = client.x.XSetErrorHandler(on_error)
+
+        def observe_window(window, operation):
+            observed_windows.add(window)
+            try:
+                return operation()
+            finally:
+                client.x.XSync(client.display, 0)
+                observed_windows.remove(window)
+
         for _ in range(32):
             connection.send(b'AddToMenu SettingsGreyed Greyed\n+ Greyed ""\n'
                             b'+ Greyed "Owned replacement label"\nDestroyMenu SettingsGreyed\n')
@@ -163,8 +197,8 @@ def run(options):
         def children(window):
             root_return, parent = C.c_ulong(), C.c_ulong()
             items, count = C.POINTER(C.c_ulong)(), C.c_uint()
-            if not client.x.XQueryTree(client.display, window, C.byref(root_return),
-                                       C.byref(parent), C.byref(items), C.byref(count)):
+            if not observe_window(window, lambda: client.x.XQueryTree(client.display,
+                    window, C.byref(root_return), C.byref(parent), C.byref(items), C.byref(count))):
                 return []
             result = [items[i] for i in range(min(count.value, 256))]
             if items:
@@ -177,7 +211,8 @@ def run(options):
             while queue:
                 window, depth = queue.pop()
                 name = C.c_void_p()
-                if client.x.XFetchName(client.display, window, C.byref(name)) and name:
+                if observe_window(window, lambda: client.x.XFetchName(
+                        client.display, window, C.byref(name))) and name:
                     text = C.string_at(name).decode('utf-8', 'replace')
                     client.x.XFree(name)
                     found[text] = window
@@ -629,10 +664,14 @@ def run(options):
             connection.close()
         if client:
             client.close()
+            client.x.XSetErrorHandler.argtypes = [C.c_void_p]
+            client.x.XSetErrorHandler(previous_handler)
         for path in runtime.root.glob('*.log'):
             shutil.copy2(path, artifact / path.name)
         runtime.close()
+        evidence['observer_unexpected_x_errors'] = unexpected_errors
         (artifact / 'evidence.json').write_text(json.dumps(evidence, indent=2) + '\n')
+        assert not unexpected_errors, unexpected_errors
     print(json.dumps(evidence))
 
 

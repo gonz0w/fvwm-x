@@ -22,11 +22,15 @@ Older BSD release lines are outside this initial verification baseline.
 
 ## Required gates
 
-These gates qualify a combined acceptance checkpoint or release; they are not a
-requirement to rerun every target after each story. During a coherent development
-batch, use affected builds/tests and early checks for platform-sensitive changes.
+These gates qualify accumulated integration and release acceptance; they are not
+all feature-PR merge requirements. A normal PR uses one incremental Linux profile
+with affected policy/X checks and early affected-target checks for portability.
+After roughly three feature PRs, run one affected six-target checkpoint. Full
+compiler/feature/install/default-X coverage is required at milestone/release
+boundaries, or earlier for a changed contract that needs it. Track deferred gates
+explicitly; focused PR results do not establish complete platform acceptance.
 Follow the [test cadence](WORKFLOW.md#implementation-batches-and-test-cadence),
-and distinguish focused development passes from complete matrix qualification.
+and [accepted decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md).
 
 | Target | Architectures | Build and X gate | CI |
 | --- | --- | --- | --- |

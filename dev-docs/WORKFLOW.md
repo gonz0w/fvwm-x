@@ -61,35 +61,66 @@ cases before implementation. Record already-covered paths without rewriting
 them; newly discovered serious failures advance immediately with their owner.
 Remaining performance-only tuning is deferred to the next release.
 
-User clarification, 2026-10-15: optimize development throughput by batching
-three to five **substantive related behavior improvements** before broad
-qualification. Implementation, its tests, its probe and its documentation are
-one improvement, not four stories. The style-filter checkpoint was too small
-for the cost of a ten-profile full run. Do not repeat that cadence by default.
-A single-item checkpoint is justified by an urgent defect, an independently
-risky contract, a prerequisite that blocks further implementation, or a batch
-that would become difficult to review; record the concrete reason.
+User direction, 2026-10-22: separate a feature PR from full qualification.
+The earlier rule coupling each three-to-five-story PR to a broad matrix is
+superseded by the [shared-cycle decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md).
+Keep several substantive related improvements in a reviewable PR; aim to finish
+useful owner/issue scope rather than splitting minor parts into separate PRs.
+Implementation, its tests, probe and documentation count as one improvement.
+Do not make an unrelated rewrite or an unreviewable diff merely to raise a count.
 
-During implementation, use one incremental Linux development profile. After a
-coherent change, compile affected targets and run its focused policy/regression
-checks. Add focused nested-X coverage for changed X-visible behavior; add an
-early affected-platform check for OS/API/ABI/build-sensitive changes. Use scoped
-sanitizers for relevant memory/lifetime changes. Do not run every compiler,
-optional feature, BSD desktop suite or full portable suite after each item.
-Fast checks still run before building dependent changes on top of an item.
+### Feature PR gate
+
+Use one existing incremental Linux development profile and compile affected
+targets. Run the affected policy/regression tests, plus nested-X integration
+for changed X-visible behavior. Add scoped sanitizers for memory/lifetime
+changes. Run repository/link/diff checks and inspect the change. For OS APIs,
+native ABI/architecture, signals/descriptors, compiler or build-sensitive work,
+check the affected target early; a portable API name alone is not proof.
+These checks run before dependent implementation and before PR merge.
+
+An ordinary PR does not rerun every compiler, optional profile, staged install
+or BSD default-server session. Test the built affected module/helper directly.
+Run an early installed-path test when packaging, install rules, resource lookup,
+runtime linking or installed entry points change. Run the affected default-X
+gate early for server-dependent pointer/grab/RandR/rendering behavior. Broaden
+for shared dispatch/ordering, native packet changes or a concrete regression
+when the selected focused checks cannot establish the changed contract. Record
+the reason and relevant targets rather than automatically running everything.
 
 For visible native UI work, capture and inspect screenshots from the affected
 actual-X run and include a small review set in the user handoff. Preserve them
 with canonical source-bound evidence. Reuse that integration run; screenshots
 do not require another matrix or a separate desktop setup.
 
-At the batch boundary, freeze one candidate and run the required combined
-platform/compiler/install/default-X gates once, with optional-feature and
-sanitizer coverage selected for affected dependencies and behavior. Existing
-required acceptance coverage remains in force. Keep the distinction between
-focused passes, completed batch qualification and native-CPU/hardware/release
-gaps. A later correction reruns affected checks; repeat broader gates only
-when changed inputs or a concrete unresolved concern invalidate their evidence.
+### Shared integration cycle and release gate
+
+Close an integration cycle after roughly three merged implementation PRs, or
+earlier at a natural handoff or about ten accumulated substantive stories.
+Documentation-only changes do not advance the count. Freeze one accumulated
+candidate and run the affected six-target checkpoint once for all changes since
+the last integrated reference. Select compiler/optional-feature profiles from
+the accumulated impact. Install/default-X gates run at this checkpoint when
+the changed installed or server-dependent contract requires them; otherwise
+record them as deferred release coverage. Do not begin a fourth implementation
+PR until required cycle checks pass or the user explicitly changes the scope.
+
+At milestone closure and before a release candidate, complete the full required
+support matrix: Linux/FreeBSD/OpenBSD on AMD64/ARM64, required compiler/feature
+profiles, native policy and real-X integration, staged installs, default BSD-X
+and applicable sanitizer/acceptance coverage. Reuse exact valid cycle evidence
+and run missing coverage; changing a PR/milestone label is not a reason to
+repeat an identical accepted gate. Native-CPU/hardware/toolkit/compositor gaps
+remain separate. No release qualification is inferred from focused PR passes.
+
+Maintain a short cycle ledger in the tracker: integrated reference, merged
+feature PRs since it, affected subsystems, deferred gates and closure trigger.
+Feature PRs may merge as **focused checks passed / integration pending**.
+Do not close a broader owner or acceptance checkpoint until its criteria pass,
+or count deferred checks as successful execution. Preserve valid earlier
+evidence with its actual source/profile scope. A later correction reruns
+affected checks; repeat broader coverage only where inputs or unresolved
+concerns invalidate it.
 
 Preserve known unrelated failures with their owning issue and exact source/
 profile. Do not repeatedly retry them for a clean matrix or expand the current
@@ -98,7 +129,11 @@ one unchanged isolated control. Unresolved failures remain explicit and can
 prevent that profile's install/qualification; a suspected or actual regression
 in the batch must be resolved before its acceptance.
 
-Reuse existing builds, guests and qualified unchanged artifacts. Bound concurrent
+Reuse existing builds, guests and qualified unchanged artifacts. Fresh image,
+package/bootstrap and dependency qualification belongs to changes in those
+inputs, not every feature PR. Use valid owner-controlled development guests
+where supported; do not improvise an unsafe resume or mutate another owner.
+Bound concurrent
 VM jobs to available resources rather than starting every expensive guest at
 once. While a frozen candidate is testing, use the wait for review, next-batch
 design or independent implementation in a separate checkout; never mutate the
@@ -107,37 +142,28 @@ per checkpoint, generate receipts from existing logs, and use documentation/
 link/whitespace checks for documentation-only edits. Creating or updating a PR
 never triggers another matrix by itself.
 
-The user requested this cadence on 2026-10-06: complete more related stories
-before extensive multi-platform testing. Use focused checks during development
-and one full qualification pass for the combined checkpoint. Required platform
-coverage stays in place; it is not required after every story or small edit.
-
-Prefer a batch of roughly three to five related stories, or the natural set
-needed to complete one ownership/behavior contract. Keep individual changes
-reviewable and track each story separately. Do not expand a batch into unrelated
-rewrites, or wait for the entire backlog before qualification.
-
-Use one PR for that coherent checkpoint, rather than one PR per story. Keep
+Use one PR for a coherent feature batch, rather than one PR per story. Keep
 related code, tests, docs, tracker updates and evidence in the same PR; add
 related corrections to it while it is open. Split only for an independent
 contract, different ownership/dependencies, a configuration decision or a diff
 that cannot reasonably be reviewed together. A PR count is not a progress goal.
-Prepare docs and evidence before freezing the final candidate so routine upkeep
-does not create a separate follow-up PR. Record the final commit/tree in the PR
-and tested input identities in the report; reports need not embed their own
-commit hash. An already merged PR gets a new batch when further work is needed.
+Prepare a concise source-bound PR record with selected commands/results, review
+and deferred checks. Consolidate broad reports/canonical receipts at cycle
+closure instead of duplicating a release dossier for each feature PR. Routine
+upkeep stays with the open PR. Record final commit/tree and tested inputs;
+reports need not embed their own commit hash. An already merged PR gets a new
+batch when further work is needed.
 
 | Stage | Checks and status |
 | --- | --- |
-| Each story | Compile affected targets in the existing Linux development environment; run affected policy tests and the relevant reproducer. Run focused nested-X checks for changed X behavior and scoped sanitizers when memory/lifetime changes warrant them. Record implementation and focused evidence; keep full qualification pending. |
-| Platform-sensitive change | Check the affected BSD/architecture early when changing OS APIs, signals, descriptors, resource limits, native ABI or build detection. Use the relevant focused gate, not the whole matrix by default. |
-| Combined checkpoint | Freeze the source and run required full Linux/BSD compiler, integration, install, default-server and relevant optional-feature/sanitizer gates once for the batch. Record exact source/profile scope and required remaining release checks. |
+| Feature PR | One incremental Linux profile; affected compile, policy/regression and nested-X checks, scoped sanitizers when warranted, screenshots for visible UI, repository/diff review. Explicitly record integration/release coverage pending. |
+| Platform/install/server-sensitive change | Add the affected target or installed/default-X gate early. Broaden only for the changed contract or a concrete unresolved regression. |
+| Integration cycle | About three feature PRs or ten substantive stories, whichever comes first; one accumulated affected six-target checkpoint with relevant profiles and required install/default-X checks. Track deferred coverage before the next cycle. |
+| Milestone / release candidate | Complete required full matrix, compiler/features, staged installs, default-X, applicable sanitizers and acceptance; reuse exact valid cycle evidence and execute missing coverage. |
 | Failure or later change | Fix the concrete failure and rerun affected checks. Preserve valid earlier evidence; repeat broader checks only when changed shared behavior, build inputs or unresolved concerns justify them. Never carry a stale result forward as qualification for different code. |
 
-During implementation, use statuses such as **implemented / focused checks
-passed / full qualification pending**. Close the qualified checkpoint only when
-its required gates pass. Existing accepted reports remain historical evidence;
-this cadence does not retroactively change their scope.
+Existing accepted reports remain historical evidence; the new cadence does
+not retroactively change their scope or relabel a failed/unrun check.
 
 A reproduced serious defect gets its focused regression check immediately.
 Only a deliberate configuration-file/format break or required configuration
@@ -171,7 +197,9 @@ artifacts. The wrapper compiles default targets, and tests retain Meson's
 prerequisite build for targets excluded from that default (such as Go test
 binaries). Install uses `--no-rebuild` after compilation/testing, and failures
 still prevent installation. Full portable
-checks run once at the combined checkpoint. Docs/status-only corrections use
+checks run once at the shared integration checkpoint, or earlier when their
+own harness changes; use affected harness tests during development.
+Docs/status-only corrections use
 repository/link/branch-diff checks and retain unchanged runtime evidence.
 
 User direction, 2026-10-20: do not accumulate completed guest test-data

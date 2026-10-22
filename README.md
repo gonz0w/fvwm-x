@@ -10,12 +10,13 @@ File managers and other applications remain your choice; there is no built-in
 compositor or native Wayland backend.
 
 **Status:** development. The
-[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout) and manager-target
-prerequisite are merged. Opt-in button navigation, disabled controls and live
-presentation and atomic button updates are merged. [Typed desktop settings](dev-docs/verification/VERIFICATION-2026-10-22-DESKTOP-SETTINGS.md)
-and [grouped editing](dev-docs/verification/VERIFICATION-2026-10-22-SETTINGS-EDITOR.md)
-are merged. [Non-executing desktop configuration checks](dev-docs/verification/VERIFICATION-2026-10-22-CONFIG-CHECKER.md)
-are ready for review. Preview, polish, maintenance and tuning stay deferred.
+[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout), manager-target
+prerequisite, button navigation/state and atomic groups, typed settings/grouped
+editing, and non-executing configuration checker are merged.
+[IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
+adds correlated MFL queries, processed-stream barriers and read-only
+admission; this first subset is locally qualified for review. Preview, polish, general
+maintenance and tuning remain deferred.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

@@ -59,6 +59,123 @@ command must be completed within 30 seconds.
 Idle subscriptions with no pending input or output remain connected.
 A stalled connection to FVWM also has a 30-second write timeout.
 
+== STRUCTURED REQUESTS
+
+The connection profile advertises `request_version: 1` and
+`request_prefix: "request "`. Existing text commands, subscriptions and event
+objects keep their framing and behavior. A structured request is one line
+beginning with the literal prefix `request ` followed by a JSON object:
+
+....
+request {"version":1,"id":"desktop-1","method":"query","resource":"desktop"}
+....
+
+The entire line, including the prefix and excluding its newline, has the same
+1000-byte limit. Objects use the exact fields shown below; unknown or duplicate
+fields, wrong types and invalid JSON are errors. IDs are strings of 1–64 ASCII
+letters, digits, underscores, hyphens or periods. Embedded NUL escapes are
+rejected, and JSON nesting is limited to four levels before parsing.
+
+Replies are separate newline-delimited JSON objects, independent of event
+subscriptions:
+
+....
+{"reply":{"version":1,"id":"desktop-1","status":"ok","result":{...}}}
+{"reply":{"version":1,"id":"desktop-1","status":"error","error":{"code":"deadline_exceeded"}}}
+....
+
+An error has a null ID when the request has no safely recognized ID, duplicates
+an outstanding ID, or is a refused legacy command. Clients dispatch replies by
+ID and events by their existing keys. Local replies and subscribed events can
+arrive before an earlier core query completes. Do not infer a reply boundary
+from a socket write, or assume every record is a reply. Reuse an ID only after
+receiving its terminal reply; a new connection has its own client-ID scope.
+
+=== Queries
+
+`method: "query"` requires `resource` and no additional fields:
+
+* `capabilities` returns the supported methods/resources, pending and deadline
+  limits, and truthful capability flags. Applied command results are unavailable;
+  read-only admission is not a security boundary.
+* `connection` returns this connection's `read_only` flag and selected event
+  names. These are MFL-owned values and require no core round trip.
+* `desktop` samples authoritative values through the existing core command
+  engine and module-directed `Send_Reply`. It returns `scope:
+  "core-current-monitor"`, `units: "actual-pixels"`, the current `desk`,
+  `viewport` with x/y/width/height, `page` with x/y indices, and `work_area` with
+  x/y/width/height. Rectangles are actual pixels; desk/page values are indices.
+  The fields correspond to `$[desk.n]`, `$[vp.x]`, `$[vp.y]`, `$[vp.width]`,
+  `$[vp.height]`, `$[page.nx]`, `$[page.ny]` and the four `$[wa.*]` variables.
+  They preserve those variables' current-monitor/aggregate viewport semantics.
+  Work area is the existing static work area, not the separate dynamic area.
+
+The desktop query is an observation at core command evaluation, not a cached
+second window-state authority or an atomic X-server transaction. It does not
+provide the complete monitor topology, configured bindings, helper-owned
+settings, shared preview generations or asynchronous action status.
+
+=== Processed stream barrier
+
+A request with `method: "barrier"` has no resource or mode field:
+
+....
+request {"version":1,"id":"ordered-1","method":"barrier"}
+....
+
+Its successful result is `{"state":"processed","asynchronous_completion":"unknown"}`.
+The core has reached this point in MFL's command stream, preserving existing
+producer ordering after previously forwarded commands. Commands from other
+clients can be interleaved; there is no multi-client transaction. The result
+does not certify that a previous command was valid, applied successfully,
+painted, persisted or completed an asynchronous process/service. It is not an
+applied-action acknowledgement. Domain-specific action results remain separate.
+
+=== Read-only admission
+
+A connection can narrow its future admission once:
+
+....
+request {"version":1,"id":"restrict-1","method":"set_mode","mode":"read-only"}
+....
+
+The result returns the connection state. Repeating this mode is harmless;
+changing back to writable is unsupported. Queries, barriers and event
+subscriptions remain usable. Other legacy commands, including global debug
+changes, receive an uncorrelated `read_only` error and are not forwarded.
+Already queued commands are not undone. A newly connected client starts in the
+existing writable mode, so callers should set this mode before sending actions.
+
+This is an accidental-authority reduction for a cooperating connection. The
+same user can reconnect, use other clients or access the X display; this mode
+is not an X11 sandbox, authentication mechanism or confidentiality boundary.
+The existing private socket permissions remain unchanged.
+
+=== Bounds, errors and disconnects
+
+Each client can have eight outstanding core queries/barriers. Each has an
+absolute five-second monotonic deadline that unrelated traffic cannot extend.
+Local queries remain available while core requests wait. Duplicate outstanding
+IDs return `duplicate_id` with a null ID; an additional request returns
+`too_many_requests` with its own ID. A full shared output queue returns
+`core_queue_full` before that request is forwarded.
+
+A terminal `deadline_exceeded` releases the slot but does not retract commands
+already queued to the core. Late replies are discarded using internal serials
+that are never reused within the module process. Disconnect destroys the
+connection's pending state; replies from an older connection cannot complete a
+replacement connection's request. There is no replay or retained result store.
+On module/core disconnection, pending callers must treat unreceived results as
+unavailable and query again after reconnecting, rather than infer success.
+
+Other error codes are `invalid_request`, `unsupported_version`,
+`unsupported_method`, `unsupported_resource`, `unsupported_mode`,
+`invalid_core_reply` and `request_ids_exhausted`. Malformed stream framing still
+closes the offending connection under the existing framing rules. Allocation,
+queue-delivery or timer-setup failure can close it without a terminal record.
+All replies share the existing bounded client output queue and write deadline;
+a stalled reader is disconnected without blocking healthy clients.
+
 == REGISTERING INTEREST
 
 Commands can be sent to _FvwmMFL_ to control which information is sent

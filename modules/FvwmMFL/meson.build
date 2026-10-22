@@ -1,6 +1,6 @@
 fvwm_mfl = executable(
     'FvwmMFL',
-    sources: ['FvwmMFL.c', 'stream.c'],
+    sources: ['FvwmMFL.c', 'stream.c', 'request.c'],
     dependencies: [all_found_deps],
     include_directories: includedirs,
     install_dir: fvwm_moduledir,

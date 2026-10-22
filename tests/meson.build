@@ -668,6 +668,17 @@ mfl_stream_test = executable(
 )
 test('mfl-stream', mfl_stream_test)
 
+mfl_request_test = executable(
+    'test-mfl-request',
+    ['test_mfl_request.c', '../modules/FvwmMFL/request.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('mfl-request', mfl_request_test)
+
+
 configure_merge_test = executable(
     'test-configure-merge', 'test_configure_merge.c',
     include_directories: includedirs,
@@ -1206,6 +1217,19 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false,
         timeout: 60,
+    )
+endif
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('mfl-request-xvfb', py,
+        args: [files('live_x/mfl_request_live.py'),
+            '--fvwm', fvwm3.full_path(), '--mfl', fvwm_mfl.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'mfl-request'],
+        depends: [fvwm3, fvwm_mfl],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false,
+        timeout: 120,
     )
 endif
 

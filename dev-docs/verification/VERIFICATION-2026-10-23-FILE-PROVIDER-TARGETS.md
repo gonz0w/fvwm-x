@@ -2,7 +2,8 @@
 
 Five related FILE-ACTION/DATA/VIEW-01 consumer capabilities are ready for review:
 live reveal, observed target properties, explicit hidden/watch controls,
-configured action metadata, and versioned native focus for target visibility.
+configured action metadata, and versioned native focus for target visibility,
+ready in [PR #178](https://github.com/gonz0w/fvwm-x/pull/178).
 Supported configuration syntax remains usable. The browser remains in-progress
 development. [Contract](../decisions/FILE-PROVIDER-TARGETS-2026-10-23.md),
 [machine receipt](VERIFICATION-2026-10-23-FILE-PROVIDER-TARGETS.json),

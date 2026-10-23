@@ -103,15 +103,15 @@ def run(args):
                 C.c_long, C.c_long, C.c_int, C.c_ulong, C.POINTER(C.c_ulong),
                 C.POINTER(C.c_int), C.POINTER(C.c_ulong), C.POINTER(C.c_ulong),
                 C.POINTER(C.c_void_p)]
-            def prop(name):
+            def prop(name, type_=6):
                 actual, count, after = C.c_ulong(), C.c_ulong(), C.c_ulong()
                 format_, data = C.c_int(), C.c_void_p()
                 atom = x.XInternAtom(d, name.encode(), 0)
                 assert x.XGetWindowProperty(d, observer.root, atom, 0, 256,
-                    0, 6, C.byref(actual), C.byref(format_), C.byref(count),
+                    0, type_, C.byref(actual), C.byref(format_), C.byref(count),
                     C.byref(after), C.byref(data)) == 0
                 try:
-                    assert actual.value == 6 and format_.value == 32 and after.value == 0
+                    assert actual.value == type_ and format_.value == 32 and after.value == 0
                     values = C.cast(data, C.POINTER(C.c_ulong))
                     return [values[i] for i in range(count.value)]
                 finally:
@@ -424,6 +424,36 @@ def run(args):
                 failed=failed, recovered=recovered, x_color_rgb=[rgb.red, rgb.green, rgb.blue],
                 pages_complete=True, missing_read_did_not_allocate=True,
                 stale_pages_and_targets_refused=True)
+
+            # Core appearance covers definitions, not every window lifetime.
+            # Empty automatic retirement must not cancel a valid preview; an
+            # actual WindowStyle removal must still invalidate it.
+            explicit = query('appearance')['generation']
+            writer.send(b'DestroyStyle missing-retirement-probe\n')
+            writer.echo('explicit-empty-style-destruction')
+            assert query('appearance')['generation'] != explicit
+            ordinary = query('appearance')['generation']
+            retired_window = observer.window
+            observer.destroy()
+            wait_for_predicate('ordinary window retired',
+                lambda: retired_window not in prop('_NET_CLIENT_LIST', 33),
+                time.monotonic() + 5, process=core)
+            assert query('appearance')['generation'] == ordinary
+            observer.create()
+            wait_for_predicate('styled retirement observer managed',
+                lambda: observer.parent(observer.window) != observer.root,
+                time.monotonic() + 5, process=core)
+            writer.send(f'WindowId {observer.window} WindowStyle BorderWidth 9\n'.encode())
+            writer.echo('window-style-retirement-ready')
+            styled = query('appearance')['generation']
+            retired_window = observer.window
+            observer.destroy()
+            wait_for_predicate('styled window retired',
+                lambda: retired_window not in prop('_NET_CLIENT_LIST', 33),
+                time.monotonic() + 5, process=core)
+            assert query('appearance')['generation'] != styled
+            evidence['window_retirement_freshness'] = dict(
+                empty_cleanup_preserved=True, definition_removal_invalidated=True)
 
             os.kill(core.process.pid, signal.SIGSTOP)
             stopped = True

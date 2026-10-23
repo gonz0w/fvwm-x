@@ -41,19 +41,17 @@ Keep deferred gates explicit. See the
 [decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md) and
 [workflow](WORKFLOW.md#implementation-batches-and-test-cadence).
 
-Integration cycle ledger: PR160's affected six-target checkpoint is merged as
-`b9dc633123d7dd7478fd49f5019e500bc9185274`, the new integrated reference.
-It qualifies accumulated PR158/159/160 with **122 selected passes on six
-targets/nine profiles**, five scoped guest sanitizer exercises and portable
-177 passes/14 skips. PR161 and PR162 are **2/3 merged**. The current runtime menu-opacity preview
-closes this shared cycle with one accumulated affected six-target checkpoint.
-The frozen accumulated candidate passes 140 selected entries on six targets/
-nine profiles and seven scoped guest core/MFL sanitizer exercises. On its merge,
-use the canonical commit as the integrated reference and reset the cycle to 0/3.
-[Integrated report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md),
-[receipt](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.json).
-Performance reference PR159 is **3/5 merged**, **4/5 on this merge**; no
-comparison is due and tuning remains deferred.
+Integration cycle ledger: merged PR163 is the new integrated reference
+`cb380f9b3ccd910678a767d4d768731c748edf81`. Its accumulated PR161/162/163
+checkpoint passes **140 selected entries on six targets/nine profiles**, seven
+scoped guest core/MFL sanitizer exercises and portable 177 passes/14 skips.
+The cycle resets to **0/3 merged**, **1/3 on the current saved-opacity merge**.
+[Integrated report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md).
+The new saved-opacity candidate passes nine focused Linux entries (74 desktop
+policy cases), four scoped guest sanitizer exercises and inspected native UI;
+wider cycle coverage is pending. Performance reference PR159 is **4/5 merged**,
+**5/5 on this merge**; the next run compares existing qualified binaries.
+Tuning remains deferred.
 Full install/default-X/full compiler-feature and milestone/release acceptance
 remain at their required boundary. No changed install/discovery/server contract
 requires an early gate here. Native-CPU/hardware/toolkit/compositor checks remain
@@ -61,7 +59,8 @@ separate. Deferred gates are not passes.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Runtime menu-opacity preview, IPC-02 / CFG-01 | Combined checkpoint passed; in review | One atomic core scalar lease, typed connection/view controls and native Keep/Revert qualify accumulated PR161/162/current work: 140 selected passes across six targets/nine profiles, seven scoped guest core/MFL sanitizer exercises and portable 177 passes/14 skips. Actual-X screenshots are inspected. Saved-preference preview remains open; runtime Keep never persists. No C/helper/fixture correction follows freeze; data/docs amendments and original failures remain explicit. On merge reset cycle 0/3; performance PR159 becomes 4/5. [Report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md), [receipt](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.json). |
+| Saved launcher-opacity preview, CFG-01 / IPC-02 | Focused checks passed; ready for review, integration pending | Integer preference/schema migration, scoped Keep and save, captured draft return and orphan Form timeout pass nine selected Linux entries (74 desktop cases) and four scoped guest sanitizer exercises. Native screenshots expose and verify a label/notice correction. Core/file outcomes stay separate; general appearance preview remains open. Cycle 0/3 merged, 1/3 on merge; performance PR159 4/5, 5/5 on merge. [Report](verification/VERIFICATION-2026-10-22-SAVED-OPACITY-PREVIEW.md), [contract](decisions/SAVED-OPACITY-PREVIEW-2026-10-22.md). |
+| Runtime menu-opacity preview, IPC-02 / CFG-01 | Merged in [PR #163](https://github.com/gonz0w/fvwm-x/pull/163); integrated reference | One atomic core scalar lease, typed connection/view controls and native Keep/Revert qualify accumulated PR161/162/current work: 140 selected passes across six targets/nine profiles, seven scoped guest core/MFL sanitizer exercises and portable 177 passes/14 skips. Actual-X screenshots are inspected. Saved-preference preview remains open; runtime Keep never persists. No C/helper/fixture correction follows freeze; data/docs amendments and original failures remain explicit. On merge reset cycle 0/3; performance PR159 becomes 4/5. [Report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md), [receipt](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.json). |
 | Appearance policy and copied opacity, IPC-02 / CFG-01 | Merged in [PR #162](https://github.com/gonz0w/fvwm-x/pull/162); cycle 2/3 | Four related shared-freshness, menu/decor-page and CopyMenuStyle opacity improvements pass eight Linux entries and three scoped leak-enabled guest sanitizer exercises. Actual-X preserves new/existing target opacity and literal definitions; native desktop screenshots are captured/inspected. Original header/control failures stay explicit; no correction follows freeze. Cycle 1/3 merged, 2/3 on merge; accumulated platform/release gates remain due. [Report](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.json). |
 | Core colorset inspection, IPC-02 / CFG-01 | Merged in [PR #161](https://github.com/gonz0w/fvwm-x/pull/161); cycle 1/3 | Three bounded inventory, exact sparse-ID and summary/freshness capabilities expose published values and pending/refused preparation. Seven focused Linux entries and three scoped leak-enabled guest sanitizer exercises pass; final unit readability edits repeat policy only with exact product/fixture retention. Cycle 0/3 merged, 1/3 on merge. Style/decor generations and safe preview stay open. No new UI, matrix/install/BSD or benchmark repeat. [Report](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.json). |
 | Owned desktop operations, IPC-02 | Merged in [PR #160](https://github.com/gonz0w/fvwm-x/pull/160); integrated reference | Five typed refresh/state/result/cancel/retention/notification capabilities adopt existing desktop scans. One combined checkpoint passes 122 selected entries across six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. Read-only, busy, stale, failures, late output, reconnect and bounds are explicit. No new UI or install/default-X repeats; wider domain/release acceptance stays open. [Report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.json). |
@@ -352,8 +351,10 @@ lifecycle with the existing desktop catalog/status workers and qualifies the
 accumulated affected six-target cycle. PR161 adds bounded colorset inventory,
 exact sparse-ID lookup and summary/freshness with published versus pending/refused
 image state. PR162 merges appearance freshness, menu/decor pages and the
-CopyMenuStyle opacity repair. Current work adds one core-owned runtime opacity
+CopyMenuStyle opacity repair. Merged PR163 adds one core-owned runtime opacity
 lease, typed controls and native Keep/Revert with deadline/conflict recovery.
+Current work connects that lease to the owned launcher-opacity preference,
+scoped confirmation/persistence and captured editor draft return.
 General saved-preference confirmation and owned image/resource snapshots remain
 open. Other
 providers, typed actions beyond settings, domain
@@ -2444,3 +2445,14 @@ reader results are separate from the subsequent interpreter/file work.
   generated catalog/docs amendments have separate proof. Original development
   failures and broader install/default-X/release/native-CPU limits remain explicit.
   [Report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md).
+
+- 2026-10-22: PR163 merged as the new integrated reference, resetting to 0/3.
+  CFG-01 / IPC-02 now batch launcher-opacity integer metadata/schema migration,
+  native scoped Keep and save, captured draft transfer/resume and orphan Form
+  retirement. Confirmation and persistence outcomes remain separate. Focused
+  Linux/native UI passes nine selected entries (74 desktop policy cases) and
+  four scoped leak-enabled guest sanitizer exercises. Screenshot review corrects
+  the percent label and off-screen notice; the corrected focused checkpoint is
+  source-bound. No repeat six-target cycle is due. Performance PR159 is 4/5
+  merged, 5/5 after this merge; compare existing binaries next run.
+  [Report](verification/VERIFICATION-2026-10-22-SAVED-OPACITY-PREVIEW.md).

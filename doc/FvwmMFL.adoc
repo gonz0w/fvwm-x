@@ -346,7 +346,9 @@ decoration definition, menu-style policy, DefaultFont, and colorset owners.
 It advances conservatively on admitted changes, including commands that fail or
 leave identical values. Colorset allocation, parse, asynchronous settlement and
 publication also advance it. Existing binding and colorset tokens keep their
-independent resource scope. Repeated observations preserve the appearance token.
+independent resource scope. Automatic window retirement advances the token
+only when it removes a WindowStyle definition; explicit destroy commands still
+invalidate conservatively. Repeated observations preserve the appearance token.
 
 Style/WindowStyle/FocusStyle and destruction share their existing definition
 owner, including recursive functions. Decoration initialization/destruction,
@@ -497,8 +499,10 @@ Only the selected provider responds, so multiple FvwmDesktop instances cannot
 race another owner's refusal against a successful commit. If that provider
 exits/restarts, requests to its old identity reach the deadline: rediscover with
 an untargeted query before choosing the new owner. `set`
-accepts a nonempty `values` object with at most the seven registered keys and
-typed string/boolean values. It validates the complete combined change before
+accepts a nonempty `values` object with at most eight registered keys and
+typed string/boolean/integer values. Numeric transport values must be integral
+and fit signed 32-bit bounds; the owner enforces each setting's range.
+`launcher_opacity` accepts 0 through 100, default 94. It validates the complete combined change before
 publishing, so day/night schedules can change atomically. `reset` requires a
 scope; `reload` accepts no scope or values. Unknown/duplicate fields, nested
 values, missing tokens and wrong types are refused. A stale generation
@@ -520,7 +524,11 @@ with `application: "submission-failed"`. It does not report an unchanged state
 or invite blind replay. Generic `applied_command_results` remains false; this
 provider observes its own saved preferences, not final core rendering.
 Saved-preference preview remains unavailable (`preview: false`). The separate
-core `preview` resource changes only runtime menu opacity.
+core `preview` resource changes only runtime menu opacity. The opacity registry
+entry reports `native_preview: true` for its native Keep and save consumer;
+`runtime_constraint: "transparency-disabled"` explains opaque-mode masking.
+This adds no generic IPC saved-preview operation. See FvwmDesktop for file
+schema migration and separate runtime-confirmation/persistence outcomes.
 
 Capabilities name the settings provider with availability `on-request`; MFL
 does not start it, retain a second settings cache or infer liveness from a core

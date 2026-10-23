@@ -63,10 +63,13 @@ SETTINGS = {
                    description='Menu repositioning and window shade steps'),
     'keep_wallpaper': dict(type='boolean', default=False, group='appearance',
                            description='Retain the current palette wallpaper'),
+    'launcher_opacity': dict(type='integer', default=94, minimum=0, maximum=100,
+                             group='effects', description='Launcher opacity (percent)'),
 }
 DEFAULTS = {key: item['default'] for key, item in SETTINGS.items()} | {
     'wallpaper': dict(palette='slate', appearance='dark')}
 STATE_LIMIT = 8192
+STATE_SCHEMA = 2
 UNCHECKED_REVISION = object()
 EDITOR_SECONDS = 300
 CHECK_BYTES = 4 * 1024 * 1024
@@ -275,6 +278,10 @@ def setting_value(key, value, text=False):
                       'off': False, 'false': False, 'no': False, '0': False}
             value = values.get(value.lower(), value)
         valid = type(value) is bool
+    elif item['type'] == 'integer':
+        if text and isinstance(value, str) and re.fullmatch(r'[0-9]{1,3}', value):
+            value = int(value)
+        valid = type(value) is int and item['minimum'] <= value <= item['maximum']
     elif item['type'] == 'enum':
         valid = isinstance(value, str) and value in item['choices']
     else:
@@ -437,8 +444,13 @@ def load_settings(path):
     if 'schema_version' not in values:
         return validate_settings(values), revision
     version = values.pop('schema_version')
-    if type(version) is not int or version != 1:
+    if type(version) is not int or version not in (1, STATE_SCHEMA):
         raise ValueError('Unsupported settings schema; file was preserved')
+    if version == 1:
+        # Exact previous schema only: unknown/missing old fields still refuse.
+        if set(values) != set(DEFAULTS) - {'launcher_opacity'}:
+            raise ValueError('Invalid legacy settings fields')
+        values['launcher_opacity'] = SETTINGS['launcher_opacity']['default']
     return checked_settings(values), revision
 
 
@@ -448,7 +460,7 @@ def save_settings(path, settings, expected=UNCHECKED_REVISION):
     All operations use the opened directory, including temporary cleanup. The
     lock is nonblocking: another session cannot stall the module event loop.
     """
-    values = dict(checked_settings(settings), schema_version=1)
+    values = dict(checked_settings(settings), schema_version=STATE_SCHEMA)
     data = (json.dumps(values, indent=2) + '\n').encode('utf-8')
     directory = state_directory(path)
     lock = None
@@ -779,33 +791,42 @@ class MenuOpacityPreview:
 
     def request(self, operation):
         item = self.control
+        if operation == 'save':
+            self.desktop.check_opacity_preview(item)
+        core_operation = 'confirm' if operation == 'save' else operation
         self.submit(operation, 'Send_Preview {cookie} {serial} ' + item['view'] +
-                    ' ' + operation + ' ' +
-                    (item['generation'] if operation in ('confirm', 'revert') else '-') +
-                    ' ' + (item['lease'] if operation in ('confirm', 'revert') else '-') +
+                    ' ' + core_operation + ' ' +
+                    (item['generation'] if core_operation in ('confirm', 'revert') else '-') +
+                    ' ' + (item['lease'] if core_operation in ('confirm', 'revert') else '-') +
                     ' 0 0 -')
 
-    def start(self, opacity):
+    def start(self, opacity, save_setting=False, editor=None):
         if self.control is not None or not self.desktop.settings_ready:
             raise ValueError('A preview is already pending or desktop is not ready')
         if type(opacity) is not int or not 0 <= opacity <= 100:
             raise ValueError('Invalid menu opacity')
-        self.control = dict(view=secrets.token_hex(8), opacity=opacity, retries=1)
+        saved = self.desktop.prepare_opacity_preview(opacity) if save_setting else None
+        self.control = dict(view=secrets.token_hex(8), opacity=opacity, retries=1, saved=saved, editor=editor)
         self.submit('inspect', 'Send_Query {cookie} {serial} appearance 0 8 -')
 
     def action(self, view, operation):
         if (self.control is None or self.control['view'] != view
-                or operation not in ('confirm', 'revert')
+                or operation not in ('confirm', 'revert', 'save')
                 or 'lease' not in self.control):
             raise ValueError('Preview controls are stale')
-        # One queued control, with Revert taking precedence over Keep.
+        if operation == 'save':
+            self.desktop.check_opacity_preview(self.control)
+        # One queued control, with Revert taking precedence over Keep/Save.
         if self.pending is not None:
             if self.queued != 'revert':
                 self.queued = operation
         else:
             self.request(operation)
 
-    def finish(self, message, abandon=False):
+    def finish(self, message, abandon=False, committed=False):
+        draft = self.control.get('editor') if self.control is not None else None
+        resume = draft is not None and (committed or
+            draft['generation'] == self.desktop.settings_generation)
         if abandon and self.control is not None:
             # Same producer ordering: an uncertain submitted start is followed
             # by abandon. If output fails, the core's deadline still owns it.
@@ -815,19 +836,30 @@ class MenuOpacityPreview:
                           self.desktop.settings_instance)
         self.pending = self.control = self.queued = None
         self.desktop.notice(message)
+        if resume:
+            self.desktop.edit_settings(draft['scope'], draft=draft['values'])
 
     def show(self):
         alias = 'SlatePreview-' + self.desktop.settings_instance
         callback = ('Command SendToModule FvwmDesktop preview-control ' +
                     self.desktop.settings_instance + ' ' + self.control['view'])
+        saved = self.control['saved'] is not None
+        suffix = '%' if saved else '% (runtime only)'
+        hint = ('Keep is runtime only. Keep and save writes this preference.' if saved else
+                'Preferences stay unchanged. Theme updates or restart replace it.')
         lines = ['Title "Preview menu opacity"', 'Colorset 2', 'ItemColorset 12',
                  'Line left', 'Text "Launcher opacity: ' +
-                 str(self.control['opacity']) + '% (runtime only)"',
+                 str(self.control['opacity']) + suffix + '"',
                  'Line left', 'Text "Keep or revert within 15 seconds."',
                  'Line left', 'Text "Close the window to let the deadline restore the old value."',
-                 'Line left', 'Text "Preferences stay unchanged. Theme updates or restart replace it."',
+                 'Line left', 'Text "' + hint + '"',
                  'Line expand', 'Button continue "Revert" ^[', callback + ' revert',
                  'Button continue "Keep current value" F1', callback + ' confirm']
+        if saved:
+            lines += ['Button continue "Keep and save (F2)" F2', callback + ' save']
+        # A dead helper cannot retire its Form. The independent native timer
+        # only closes this consumer; it never confirms or writes preferences.
+        lines += ['Timeout 160 Nop ""']
         self.desktop.send('DestroyModuleConfig ' + alias + ':*')
         for line in lines:
             self.desktop.send('*' + alias + ': ' + line)
@@ -875,6 +907,8 @@ class MenuOpacityPreview:
                 raise ValueError('Invalid preview result')
             phase = pending['phase']
             if phase == 'inspect':
+                if self.control['saved'] is not None:
+                    self.desktop.check_opacity_preview(self.control)
                 generation = result.get('generation')
                 if not isinstance(generation, str) or not re.fullmatch(r'[0-9a-f]{48}', generation):
                     raise ValueError('Appearance generation unavailable')
@@ -896,15 +930,28 @@ class MenuOpacityPreview:
                 self.next_poll = time.monotonic() + 1
                 if self.queued is not None:
                     operation, self.queued = self.queued, None
-                    self.request(operation)
+                    try:
+                        self.request(operation)
+                    except (OSError, ValueError) as error:
+                        self.desktop.notice(str(error))
             else:
+                if phase == 'save' and state == 'confirmed':
+                    try:
+                        self.desktop.save_opacity_preview(self.control)
+                    except (OSError, ValueError):
+                        self.finish('Runtime opacity kept; preference was not saved. Reload settings before retrying.')
+                    else:
+                        self.desktop.settings_changed()
+                        self.desktop.settings_menu()
+                        self.finish('Launcher opacity saved. Runtime confirmation completed; rendering is unobserved.', committed=True)
+                    return
                 messages = {'confirmed': 'Menu opacity kept for this runtime; preferences unchanged.',
                             'reverted': 'Previous menu opacity restored.',
                             'expired': 'Preview expired; previous menu opacity restored.',
                             'conflicted': 'Appearance changed elsewhere; automatic restore refused.',
                             'abandoned': 'Previous menu opacity restored.'}
                 self.finish(messages.get(state, 'Preview is no longer active.'))
-        except (ValueError, UnicodeError, RecursionError):
+        except (OSError, ValueError, UnicodeError, RecursionError):
             self.finish('Preview result unavailable; core recovery remains responsible.', abandon=True)
 
     def tick(self):
@@ -1013,6 +1060,40 @@ class Desktop:
         self.settings_changed()
         self.theme(force=True)
 
+    def prepare_opacity_preview(self, opacity):
+        if self.persistence_error:
+            raise ValueError(self.persistence_error)
+        if 'launcher_opacity' in self.overrides:
+            raise ValueError('Launcher opacity has a module configuration override')
+        if not self.settings['transparency']:
+            raise ValueError('Enable transparency before previewing launcher opacity')
+        setting_value('launcher_opacity', opacity)
+        return dict(generation=self.settings_generation, revision=self.state_revision)
+
+    def check_opacity_preview(self, control):
+        snapshot = control.get('saved')
+        if snapshot is None:
+            raise ValueError('This preview has no saved-preference candidate')
+        self.prepare_opacity_preview(control['opacity'])
+        if snapshot['generation'] != self.settings_generation:
+            raise ValueError('Settings changed; reopen the preview before saving')
+        # Early refusal before core confirmation, followed by the same file
+        # revision check under the existing nonblocking writer lock at commit.
+        _, revision = load_settings(self.state_path)
+        if revision != snapshot['revision']:
+            raise ValueError('Settings changed externally; reload before saving')
+
+    def save_opacity_preview(self, control):
+        self.check_opacity_preview(control)
+        candidate = checked_settings(dict(self.saved, launcher_opacity=control['opacity']))
+        effective = checked_settings(dict(self.settings, launcher_opacity=control['opacity']))
+        revision = save_settings(self.state_path, candidate, control['saved']['revision'])
+        self.saved, self.settings, self.state_revision = candidate, effective, revision
+        # Only opacity was core-confirmed. Do not replay a complete theme after
+        # the file commit; a newer external core command must stay untouched.
+        if self.last_theme is not None:
+            self.last_theme = (*self.last_theme[:4], effective['launcher_opacity'])
+
     def reset_settings(self, scope):
         self.change_settings({key: SETTINGS[key]['default'] for key in setting_scope(scope)})
 
@@ -1024,7 +1105,7 @@ class Desktop:
         self.settings_changed()
         self.theme(force=True)
 
-    def edit_settings(self, scope='all', defaults=False):
+    def edit_settings(self, scope='all', defaults=False, draft=None):
         keys = setting_scope(scope)
         groups = dict.fromkeys(SETTINGS[key]['group'] for key in keys)
         keys = [key for group in groups for key in keys if SETTINGS[key]['group'] == group]
@@ -1037,13 +1118,14 @@ class Desktop:
         previous_group = None
         for key in keys:
             item = SETTINGS[key]
-            value = item['default'] if defaults else self.saved[key]
+            value = item['default'] if defaults else (draft or self.saved)[key]
             if item['group'] != previous_group:
                 lines += ['Line left', 'Text ' + quote(item['group'].title())]
                 previous_group = item['group']
             lines += ['Line left', 'Text ' + quote(item['description'])]
-            if item['type'] == 'time':
-                lines += ['Input ' + key + ' 5 ' + quote(value)]
+            if item['type'] in ('time', 'integer'):
+                width = 3 if item['type'] == 'integer' else 5
+                lines += ['Input ' + key + ' ' + str(width) + ' ' + quote(value)]
             else:
                 choices = item.get('choices', (True, False))
                 lines += ['Selection ' + key + ' single']
@@ -1068,6 +1150,11 @@ class Desktop:
                       ' '.join('$(' + key + ')' for key in keys),
                   'Timeout ' + str(EDITOR_SECONDS * 10) + ' ' +
                       quote(action + 'cancel-settings ' + token) + ' ""']
+        if 'launcher_opacity' in keys:
+            lines += ['Line left', 'Text "Preview tests opacity only, then returns to this captured draft."',
+                      'Button continue "Preview opacity (F4)" F4',
+                      'Command ' + action + 'preview-editor ' + token + ' ' +
+                          ' '.join('$(' + key + ')' for key in keys)]
         self.send('DestroyModuleConfig SlateSettingsForm:*')
         for line in lines:
             self.send('*SlateSettingsForm: ' + line)
@@ -1083,15 +1170,18 @@ class Desktop:
             raise ValueError('Settings editor expired; reopen it before applying')
         return editor
 
-    def apply_settings_editor(self, argument):
+    def settings_editor_values(self, argument):
         token, *values = argument.split()
         editor = self.current_settings_editor(token)
         if len(values) != len(editor['keys']):
             raise ValueError('Incomplete settings editor values')
         changes = {key: setting_value(key, value, text=True)
                    for key, value in zip(editor['keys'], values)}
-        # Full validation and the saved-file revision check precede publication.
-        # Failed validation/persistence leaves the current Form available to fix.
+        return editor, changes
+
+    def apply_settings_editor(self, argument):
+        _, changes = self.settings_editor_values(argument)
+        # Failed validation/persistence leaves the Form available to fix.
         self.change_settings(changes)
 
     def query_settings(self, scope='all', saved=None, effective=None):
@@ -1100,6 +1190,9 @@ class Desktop:
         effective = self.settings if effective is None else effective
         return {key: dict(SETTINGS[key], owner='FvwmDesktop', available=True,
                     capability='owned-desktop-preference', preview=False,
+                    native_preview=(key == 'launcher_opacity'),
+                    runtime_constraint=('transparency-disabled' if key == 'launcher_opacity'
+                        and not effective['transparency'] else None),
                     saved=saved[key], effective=effective[key],
                     source='module-configuration' if key in self.overrides else 'saved',
                     application='submitted-to-fvwm' if observed and self.last_theme else 'not-submitted',
@@ -1404,13 +1497,15 @@ class Desktop:
             if choices:
                 options += [(str(value).lower(), 'SendToModule FvwmDesktop set ' +
                              key + ' ' + str(value).lower()) for value in choices]
+            elif item['type'] == 'integer':
+                options += [('Edit saved value...', 'SendToModule FvwmDesktop edit-settings ' + key)]
             else:
                 options += [('Edit schedule...', 'SendToModule FvwmDesktop schedule')]
             options += [('Reset this setting', 'SendToModule FvwmDesktop reset ' + key)]
             self.menu(name, key, options)
             rows.append((label, 'Popup ' + name))
         self.menu('SlateOpacityPreview', 'Runtime launcher opacity',
-                  [(str(value) + '%', 'SendToModule FvwmDesktop preview-opacity ' +
+                  [(str(value) + '%', 'SendToModule FvwmDesktop preview-setting ' +
                     self.settings_instance + ' ' + str(value))
                    for value in (70, 85, 94, 100)])
         rows += [('Preview launcher opacity...', 'Popup SlateOpacityPreview'),
@@ -1490,7 +1585,7 @@ class Desktop:
     def notice(self, message):
         self.send('KillModule FvwmForm SlateNoticeForm')
         self.send('DestroyModuleConfig SlateNoticeForm:*')
-        for command in ('Title "FVWM-X"', 'Position -16 -64', 'Line left', 'Text ' + quote(message),
+        for command in ('Title "FVWM-X"', 'Line left', 'Text ' + quote(message),
                         'Line right', 'Button quit "Dismiss" ^[', 'Command Nop',
                         'Timeout 80 Nop ""'):
             self.send('*SlateNoticeForm: ' + command)
@@ -1512,7 +1607,8 @@ class Desktop:
 
     def theme(self, force=False):
         mode = appearance(self.settings, dt.datetime.now())
-        key = (self.settings['palette'], mode, self.settings['transparency'], self.settings['motion'])
+        key = (self.settings['palette'], mode, self.settings['transparency'],
+               self.settings['motion'], self.settings['launcher_opacity'])
         if not force and key == self.last_theme:
             return
         p = self.palettes[key[0]][mode]
@@ -1542,6 +1638,8 @@ class Desktop:
         # Menu Animation is submenu repositioning, not a compositor fade.
         self.send('MenuStyle * ' + ('Animation' if self.settings['motion'] else '!Animation'))
         self.send('CopyMenuStyle * SlateLauncherStyle')
+        if self.settings['transparency']:
+            self.send('MenuStyle SlateLauncherStyle Translucent ' + str(key[4]))
         self.send('MenuStyle SlateLauncherStyle ItemFormat "%24p%l%80p%>%24p"')
         self.send('Style * WindowShadeSteps ' + ('6' if self.settings['motion'] else '0'))
         self.button('appearance', key[0].title())
@@ -1696,10 +1794,23 @@ class Desktop:
     def handle(self, message):
         command, _, argument = message.strip().partition(' ')
         try:
-            if command == 'preview-opacity':
+            if command == 'preview-editor':
+                editor, changes = self.settings_editor_values(argument)
+                if 'launcher_opacity' not in changes:
+                    raise ValueError('This editor has no launcher opacity draft')
+                self.prepare_settings(changes)
+                draft = dict(scope=editor['scope'], values=changes,
+                             generation=editor['generation'])
+                self.menu_preview.start(changes['launcher_opacity'],
+                                        save_setting=True, editor=draft)
+                # Transfer the one bounded draft to the preview. A queued old
+                # Apply cannot publish while this captured draft is on trial.
+                self.retire_settings_editor()
+            elif command in ('preview-opacity', 'preview-setting'):
                 instance, value = argument.split()
                 if instance == self.settings_instance:
-                    self.menu_preview.start(int(value))
+                    self.menu_preview.start(setting_value('launcher_opacity', value, text=True),
+                                            save_setting=(command == 'preview-setting'))
             elif command == 'preview-control':
                 instance, view, operation = argument.split()
                 if instance == self.settings_instance:

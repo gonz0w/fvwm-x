@@ -1,0 +1,1287 @@
+{
+  "schema": 1,
+  "date": "2026-10-22",
+  "owners": [
+    "CFG-01",
+    "IPC-02"
+  ],
+  "status": "focused checks passed; shared integration pending",
+  "candidate": {
+    "base": "cb380f9b3ccd910678a767d4d768731c748edf81",
+    "integrated_reference_pr": 163,
+    "frozen_files": 2212,
+    "source_archive_sha256": "c60c310b6966e92bfc494cb94056958159273320163a2b45a745f67d934aefbb",
+    "source_manifest_sha256": "c084cb724e24534d7f3071eda71919cea0ccee986d5d5e275bd1f30c6c0e8d4c",
+    "runtime_inputs": {
+      "default-config/desktop.py": {
+        "sha256": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+        "mode": 493
+      },
+      "fvwm/style.c": {
+        "sha256": "6f1333c14ed5438ac1021297bdbc5b7d0b6002c7118b32c54fb1bef14fc6307a",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.c": {
+        "sha256": "0678b899a21b84e75577c930cafe5bc96e8f6b4ea00ab7cf7965d0feeefc0f67",
+        "mode": 420
+      },
+      "tests/live_x/desktop_live.py": {
+        "sha256": "3e6c81ad850d511fcdb49c932e4e0f7f8323d540043f3027cabd72f0a7465d34",
+        "mode": 420
+      },
+      "tests/live_x/mfl_core_state_live.py": {
+        "sha256": "03e39864868b5640bedbdcfa489f9b099932d0e14e6c61ecee9aa5b45728d8d5",
+        "mode": 420
+      },
+      "tests/live_x/mfl_settings_live.py": {
+        "sha256": "61a84a0c6f758139ea900abfe1e59c6c5591eb9d978e9b0f701b5fa3bb829026",
+        "mode": 420
+      },
+      "tests/test_desktop.py": {
+        "sha256": "127d4dc1b2419b2bbe242ed68e5510385e644d58dcc94ba6896d3726c8bcb48d",
+        "mode": 420
+      },
+      "tests/test_mfl_request.c": {
+        "sha256": "4e5636d62674e4f0e6742cbb44335cc5b9c811adcdfb2a31aa9fef23a40db738",
+        "mode": 420
+      }
+    },
+    "post_final_freeze_runtime_or_fixture_changes": false,
+    "final_amendments": "documentation/status/report only"
+  },
+  "counts": {
+    "selected_registered_passes": 9,
+    "desktop_policy_cases": 74,
+    "scoped_guest_sanitizer_exercises": 4,
+    "targets": 1,
+    "normal_profiles": 1
+  },
+  "profiles": {
+    "gcc": {
+      "build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "selected": [
+        "desktop-policy",
+        "mfl-request",
+        "core-query-json",
+        "preview-policy",
+        "mfl-settings-xvfb",
+        "mfl-core-state-xvfb",
+        "mfl-preview-xvfb",
+        "mfl-request-xvfb",
+        "desktop-baseline-xvfb"
+      ],
+      "passes": 9,
+      "binaries": {
+        "fvwm3": {
+          "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "bytes": 5396632
+        },
+        "modules/FvwmMFL/FvwmMFL": {
+          "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7",
+          "bytes": 418512
+        },
+        "default-config/FvwmDesktop": {
+          "sha256": "84f4d6cb847cdd63ed46bb3706af4cddd9ab380a794f3a8d0a47a9b79b67c21f",
+          "bytes": 109569
+        },
+        "tests/test-mfl-request": {
+          "sha256": "baa492aecee63b6a47c44cbb93190fb9dead72d079dc2d02fecd7249f38c449c",
+          "bytes": 315184
+        },
+        "tests/test-query-json": {
+          "sha256": "92293350a802117c977f19138fd0032cb08be26f60fa85a182f724327c7eeb1b",
+          "bytes": 441312
+        },
+        "tests/test-preview-policy": {
+          "sha256": "b3dcdb85d1d5dc73d1790272cddf892cd5cd9f52be51aaff83e60778c9423db1",
+          "bytes": 83680
+        }
+      }
+    }
+  },
+  "commands": {
+    "focused": [
+      {
+        "label": "gcc-configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-gcc"
+        ],
+        "status": 0,
+        "seconds": 0.633
+      },
+      {
+        "label": "gcc-compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j",
+          "2",
+          "fvwm3:executable",
+          "FvwmMFL",
+          "test-query-json",
+          "test-mfl-request",
+          "test-preview-policy"
+        ],
+        "status": 0,
+        "seconds": 0.17
+      },
+      {
+        "label": "gcc-tests",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--num-processes",
+          "1",
+          "--print-errorlogs",
+          "desktop-policy",
+          "mfl-request",
+          "core-query-json",
+          "preview-policy",
+          "mfl-settings-xvfb",
+          "mfl-core-state-xvfb",
+          "mfl-preview-xvfb",
+          "mfl-request-xvfb",
+          "desktop-baseline-xvfb"
+        ],
+        "status": 0,
+        "seconds": 52.012
+      }
+    ],
+    "sanitizer": [
+      {
+        "label": "configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+        ],
+        "status": 0,
+        "seconds": 0.691
+      },
+      {
+        "label": "compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j",
+          "2",
+          "fvwm3:executable",
+          "FvwmMFL",
+          "test-query-json",
+          "test-mfl-request",
+          "test-preview-policy"
+        ],
+        "status": 0,
+        "seconds": 0.169
+      },
+      {
+        "label": "policy",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--num-processes",
+          "1",
+          "--print-errorlogs",
+          "mfl-request"
+        ],
+        "status": 0,
+        "seconds": 0.166
+      },
+      {
+        "label": "preview",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_preview_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-asan/preview"
+        ],
+        "status": 0,
+        "seconds": 3.267
+      },
+      {
+        "label": "core-state",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_core_state_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-asan/core-state"
+        ],
+        "status": 0,
+        "seconds": 0.426
+      },
+      {
+        "label": "settings",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-asan/settings",
+          "--desktop",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/default-config/FvwmDesktop"
+        ],
+        "status": 0,
+        "seconds": 16.375
+      }
+    ]
+  },
+  "compilers": {
+    "host": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    },
+    "build": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    }
+  },
+  "sanitizers": {
+    "status": "passed",
+    "scoped_exercises": 4,
+    "instrumented": "current core/MFL in preview/core-state/settings actual-X; MFL request policy",
+    "core_in_X": "current Clang ASan/UBSan candidate; leak detection enabled",
+    "native_CPU": false,
+    "environment": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+      "LSAN_OPTIONS": "exitcode=86",
+      "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+    },
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": {
+        "sha256": "26e004d5609c8003ab9a7aaacddeb0cce91b828e7f5dfbf779a1de455e4a1530",
+        "bytes": 26551896
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/default-config/FvwmDesktop": {
+        "sha256": "84f4d6cb847cdd63ed46bb3706af4cddd9ab380a794f3a8d0a47a9b79b67c21f",
+        "bytes": 109569
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+        "sha256": "b2e7bc5b69f3f8f92b90325ea05dc8fd5edf7676f2eb8b63f819f50bb91ea57f",
+        "bytes": 3116032
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-query-json": {
+        "sha256": "f37d77a3d339a83e06a6d9daa4f156fdc12daab6ef729bdd68b4c1e0b8e8b5d5",
+        "bytes": 3488472
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": {
+        "sha256": "da37f5b56a0a1d9f0e915e7a3b5d2dea7f1bdad4edbac9eb97e4bfa314ff008f",
+        "bytes": 2868040
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-preview-policy": {
+        "sha256": "93c5da1f39277807f1a613a0005696c7a724ec923eef9447b802953135f9b3a7",
+        "bytes": 1911632
+      }
+    },
+    "diagnostics": {}
+  },
+  "observations": {
+    "fvwm3:live-x / desktop-baseline-xvfb": {
+      "greyed_label_empty_quoted_destroy_ownership": 32,
+      "primary_bar_size": [
+        1440,
+        36
+      ],
+      "palettes_appearance_schedule_opaque_switch": "passed",
+      "typed_queries_scoped_reset_reload_stale_refusal": "passed",
+      "native_registry_menu_keyboard_activate_cancel": "passed",
+      "restart_persistence_and_explicit_override": "passed",
+      "editor_saved_after_apply": {
+        "palette": "dune",
+        "appearance": "light",
+        "day": "07:00",
+        "night": "19:00",
+        "transparency": true,
+        "motion": false,
+        "keep_wallpaper": false,
+        "launcher_opacity": 94,
+        "wallpaper": {
+          "palette": "dune",
+          "appearance": "light"
+        },
+        "schema_version": 2
+      },
+      "native_grouped_editor_apply_defaults_cancel_stale_reload_restart": "passed",
+      "settings_screenshots": [
+        "settings-editor.png",
+        "settings-draft.png",
+        "settings-menu.png",
+        "settings-defaults.png"
+      ],
+      "preview_control_geometry": {
+        "window": 12582919,
+        "geometry": [
+          0,
+          0,
+          492,
+          127
+        ],
+        "children": [
+          [
+            12582922,
+            [
+              10,
+              94,
+              59,
+              28
+            ]
+          ],
+          [
+            12582923,
+            [
+              199,
+              94,
+              147,
+              28
+            ]
+          ]
+        ]
+      },
+      "observer_retired_windows": 6,
+      "runtime_preview": {
+        "explicit_revert": true,
+        "keep_runtime_only": true,
+        "helper_death_restores": true,
+        "preference_bytes_unchanged": true,
+        "screenshots": [
+          "opacity-preview-dialog.png",
+          "opacity-preview-launcher.png"
+        ]
+      },
+      "saved_opacity_preview": {
+        "saved": 71,
+        "schema": 2,
+        "scope_only": true,
+        "draft_transferred_and_resumed": true,
+        "revert_no_write": true,
+        "writer_lock_refused": true,
+        "partial_runtime_kept_file_unchanged": true,
+        "restart_persisted": true,
+        "helper_death_restored": true,
+        "orphan_dialog_retired": true,
+        "screenshots": [
+          "settings-opacity-editor.png",
+          "settings-opacity-confirm.png",
+          "settings-opacity-resumed.png",
+          "settings-opacity-write-refused.png"
+        ]
+      },
+      "configuration_checker_readonly_locations_and_native_pages": "passed",
+      "configuration_check_cli": {
+        "schema_version": 1,
+        "coverage": "desktop-settings-literals-and-Read-v1",
+        "status": "errors",
+        "errors": 3,
+        "unchecked": 4,
+        "checked_directives": 1,
+        "files": [
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+            "bytes": 332,
+            "sha256": "760884c3ec70ca7f7dc8537601a3e011639cbb3f22951bccd214a8dcdce2c565"
+          },
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/checker-child",
+            "bytes": 79,
+            "sha256": "a3157bfce8ff78c5fa16c620af47437c93c57a8e9c4dcfd835ef522030930c42"
+          }
+        ],
+        "diagnostics": [
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/checker-child",
+            "line": 2,
+            "end_line": 3,
+            "included_from": [
+              {
+                "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+                "line": 2,
+                "end_line": 2
+              }
+            ],
+            "severity": "error",
+            "code": "setting-value",
+            "message": "Invalid value for palette",
+            "parser": "FvwmDesktop"
+          },
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/checker-child",
+            "line": 4,
+            "end_line": 4,
+            "included_from": [
+              {
+                "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+                "line": 2,
+                "end_line": 2
+              }
+            ],
+            "severity": "error",
+            "code": "setting-name",
+            "message": "Unknown FvwmDesktop option",
+            "parser": "FvwmDesktop"
+          },
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+            "line": 3,
+            "end_line": 3,
+            "included_from": [],
+            "severity": "unchecked",
+            "code": "unsupported",
+            "message": "Command or module syntax is outside the desktop-settings subset",
+            "parser": "FvwmDesktop"
+          },
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+            "line": 4,
+            "end_line": 4,
+            "included_from": [],
+            "severity": "unchecked",
+            "code": "unsupported",
+            "message": "Command or module syntax is outside the desktop-settings subset",
+            "parser": "FvwmDesktop"
+          },
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+            "line": 5,
+            "end_line": 5,
+            "included_from": [],
+            "severity": "unchecked",
+            "code": "unsupported",
+            "message": "Command or module syntax is outside the desktop-settings subset",
+            "parser": "FvwmDesktop"
+          },
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+            "line": 6,
+            "end_line": 6,
+            "included_from": [],
+            "severity": "error",
+            "code": "setting-value",
+            "message": "Invalid value for motion",
+            "parser": "FvwmDesktop"
+          },
+          {
+            "path": "/tmp/fvwm-desktop-wmaegik6/user/local.config",
+            "line": 7,
+            "end_line": 7,
+            "included_from": [],
+            "severity": "unchecked",
+            "code": "expansion",
+            "message": "Expansion or generated configuration is not evaluated",
+            "parser": "FvwmDesktop"
+          }
+        ]
+      },
+      "configuration_check_screenshots": [
+        "configuration-check.png",
+        "configuration-check-next.png"
+      ],
+      "launcher_and_safe_application_launch": "passed",
+      "search_and_calendar": "passed",
+      "screenshot_and_core_responsiveness": "passed",
+      "screenshot_rgb_at_16_and_24_bit_depth": "passed",
+      "baseline_parser": "passed",
+      "observer_unexpected_x_errors": []
+    },
+    "fvwm3:live-x / mfl-core-state-xvfb": {
+      "status": "passed",
+      "topology": {
+        "observed": {
+          "state": "observed",
+          "scope": "committed-topology",
+          "units": "actual-pixels",
+          "root_fallback": false,
+          "topology": {
+            "epoch": "0000000000000001",
+            "monitors": [
+              {
+                "name": "screen",
+                "name_atom": 231,
+                "primary": false,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 800,
+                  "height": 600
+                },
+                "physical_mm": {
+                  "width": 212,
+                  "height": 159
+                },
+                "outputs": [
+                  60
+                ]
+              }
+            ]
+          }
+        },
+        "xrandr_monitors": "Monitors: 1\n 0: +screen 800/212x600/159+0+0  screen\n",
+        "xrandr_outputs": "Screen 0: minimum 1 x 1, current 800 x 600, maximum 800 x 600\nscreen connected 800x600+0+0 (0x3a) normal (normal) 0mm x 0mm\n\tIdentifier: 0x3c\n\tTimestamp:  606953379\n\tSubpixel:   unknown\n\tGamma:      1.2e-08:1.2e-08:1.2e-08\n\tBrightness: 0.11\n\tClones:    \n\tCRTC:       0\n\tCRTCs:      0\n\tTransform:  1.000000 0.000000 0.000000\n\t            0.000000 1.000000 0.000000\n\t            0.000000 0.000000 1.000000\n\t           filter: \n\tnon-desktop: 0 \n\t\tsupported: 0, 1\n  800x600 (0x3a)  0.000MHz *current\n        h: width   800 start    0 end    0 total    0 skew    0 clock   0.00KHz\n        v: height  600 start    0 end    0 total    0           clock   0.00Hz\n"
+      },
+      "workspaces": {
+        "state": "observed",
+        "scope": "core-monitors",
+        "monitors": [
+          {
+            "viewport": {
+              "x": 800,
+              "y": 600,
+              "width": 800,
+              "height": 600
+            },
+            "pages": {
+              "width": 3,
+              "height": 2
+            },
+            "name": "screen",
+            "desk": 2,
+            "scale_quarters": 4,
+            "work_area": {
+              "x": 0,
+              "y": 0,
+              "width": 800,
+              "height": 600
+            },
+            "dynamic_work_area": {
+              "x": 0,
+              "y": 0,
+              "width": 800,
+              "height": 600
+            }
+          }
+        ],
+        "units": "actual-pixels",
+        "desktop_mode": "global",
+        "work_area_freshness": "cached"
+      },
+      "bindings": {
+        "entries": 5,
+        "pages": 2,
+        "configuration_observed": true,
+        "no_action_execution": true,
+        "generation_stable_on_queries": true,
+        "stale_continuation_refused": true,
+        "unbind_invalidates": true,
+        "oversized_action_refused": true
+      },
+      "binding_scopes": {
+        "menu_entries": 1,
+        "fallback_entries": 7,
+        "override_does_not_remove_fallback": true,
+        "normalized_placement": {
+          "state": "observed",
+          "scope": "placement-bindings",
+          "generation": "00000000000942e91e803a7c000c410b0000000000000016",
+          "button_count": 15,
+          "drag_finish_mask": 4,
+          "interactive_finish_mask": 2,
+          "key_bindings": false,
+          "modifier_bindings": false
+        },
+        "policy": {
+          "state": "observed",
+          "scope": "binding-policy",
+          "contexts": {
+            "window": 1,
+            "title": 2,
+            "icon": 4,
+            "root": 8,
+            "menu": 16,
+            "placement": 32,
+            "left_1": 64,
+            "right_1": 128,
+            "left_2": 256,
+            "right_2": 512,
+            "left_3": 1024,
+            "right_3": 2048,
+            "left_4": 4096,
+            "right_4": 8192,
+            "left_5": 16384,
+            "right_5": 32768,
+            "unmanaged": 65536,
+            "ewmh_desktop": 131072,
+            "top_left": 1048576,
+            "top_right": 2097152,
+            "bottom_left": 4194304,
+            "bottom_right": 8388608,
+            "left_side": 16777216,
+            "right_side": 33554432,
+            "top_side": 67108864,
+            "bottom_side": 134217728,
+            "menu_item": 20,
+            "frame": 15728640,
+            "sidebar": 251658240,
+            "all": 267583439
+          },
+          "modifiers": {
+            "shift": 1,
+            "lock": 2,
+            "control": 4,
+            "mod1": 8,
+            "mod2": 16,
+            "mod3": 32,
+            "mod4": 64,
+            "mod5": 128,
+            "any": 32768
+          },
+          "generation": "00000000000942e91e803a7c000c410b0000000000000017",
+          "ignored_modifier_mask": 18,
+          "xkb_ignored_modifier_mask": 24576,
+          "used_modifier_mask": 237
+        },
+        "generation_checked_across_domains": true,
+        "literal_query_no_execution": true
+      },
+      "appearance_menu_initial": {
+        "*": {
+          "colorsets": {
+            "menu": 0,
+            "active": 0,
+            "greyed": 0,
+            "title": 0
+          },
+          "name": "*",
+          "default": true,
+          "animation": false,
+          "opacity_percent": 100,
+          "border_width": 2,
+          "popup_delay_10ms": 15,
+          "popdown_delay_10ms": 15,
+          "automatic_hotkeys": false,
+          "submenus_left": false,
+          "item_format": null
+        },
+        "Query menu $[desk.n]": {
+          "colorsets": {
+            "menu": 101,
+            "active": 102,
+            "greyed": 103,
+            "title": 104
+          },
+          "name": "Query menu $[desk.n]",
+          "default": false,
+          "animation": true,
+          "opacity_percent": 73,
+          "border_width": 3,
+          "popup_delay_10ms": 25,
+          "popdown_delay_10ms": 40,
+          "automatic_hotkeys": false,
+          "submenus_left": false,
+          "item_format": null
+        },
+        "QueryCopy": {
+          "colorsets": {
+            "menu": 101,
+            "active": 102,
+            "greyed": 103,
+            "title": 104
+          },
+          "name": "QueryCopy",
+          "default": false,
+          "animation": true,
+          "opacity_percent": 73,
+          "border_width": 3,
+          "popup_delay_10ms": 25,
+          "popdown_delay_10ms": 40,
+          "automatic_hotkeys": false,
+          "submenus_left": false,
+          "item_format": null
+        }
+      },
+      "appearance": {
+        "menu_styles": [
+          {
+            "colorsets": {
+              "menu": 0,
+              "active": 0,
+              "greyed": 0,
+              "title": 0
+            },
+            "name": "*",
+            "default": true,
+            "animation": false,
+            "opacity_percent": 100,
+            "border_width": 2,
+            "popup_delay_10ms": 15,
+            "popdown_delay_10ms": 15,
+            "automatic_hotkeys": false,
+            "submenus_left": false,
+            "item_format": null
+          },
+          {
+            "colorsets": {
+              "menu": 101,
+              "active": 102,
+              "greyed": 103,
+              "title": 104
+            },
+            "name": "Query menu $[desk.n]",
+            "default": false,
+            "animation": true,
+            "opacity_percent": 73,
+            "border_width": 3,
+            "popup_delay_10ms": 25,
+            "popdown_delay_10ms": 40,
+            "automatic_hotkeys": false,
+            "submenus_left": false,
+            "item_format": null
+          },
+          {
+            "colorsets": {
+              "menu": 101,
+              "active": 102,
+              "greyed": 103,
+              "title": 104
+            },
+            "name": "QueryCopy",
+            "default": false,
+            "animation": true,
+            "opacity_percent": 73,
+            "border_width": 3,
+            "popup_delay_10ms": 25,
+            "popdown_delay_10ms": 40,
+            "automatic_hotkeys": false,
+            "submenus_left": false,
+            "item_format": null
+          }
+        ],
+        "decorations": [
+          {
+            "name": "Default",
+            "default": true,
+            "title_height": 0,
+            "minimum_title_height": 0,
+            "title_justification": "center",
+            "button_slots": 10
+          },
+          {
+            "name": "Query decor $[desk.n]",
+            "default": false,
+            "title_height": 23,
+            "minimum_title_height": 0,
+            "title_justification": "left",
+            "button_slots": 10
+          }
+        ],
+        "changed_commands": [
+          "Style appearance-probe WindowShadeSteps 7",
+          "FocusStyle appearance-probe ClickToFocus",
+          "WindowId 4194305 WindowStyle WindowShadeSteps 8",
+          "WindowId 4194305 DestroyWindowStyle",
+          "DestroyStyle appearance-probe",
+          "TitleStyle Centered",
+          "AddTitleStyle (Solid black)",
+          "ButtonStyle 1 (Solid black)",
+          "AddButtonStyle 1 (Solid white)",
+          "BorderStyle Active (Solid black)",
+          "ButtonState ActiveDown True",
+          "DefaultFont fixed",
+          "MenuStyle QueryCopy !Animation, Translucent 31",
+          "CopyMenuStyle \"Query menu $$[desk.n]\" QueryCopy",
+          "DestroyMenuStyle QueryCopy",
+          "DestroyDecor \"Query decor $$[desk.n]\""
+        ],
+        "nested_function_tracked": true,
+        "pages_complete": true,
+        "stored_literals_not_executed": true,
+        "independent_colorset_generation": true
+      },
+      "colorsets": {
+        "summary": {
+          "state": "observed",
+          "scope": "core-colorsets",
+          "generation": "00000000000942e91e803a7c000c410b000000000000003c",
+          "values": "published",
+          "units": "actual-pixels",
+          "pixel_encoding": "colormap-hex",
+          "total": 23,
+          "record_limit": 4096,
+          "page_max": 16,
+          "preview_supported": false
+        },
+        "exact": {
+          "state": "observed",
+          "scope": "core-colorsets",
+          "generation": "00000000000942e91e803a7c000c410b000000000000003c",
+          "values": "published",
+          "units": "actual-pixels",
+          "pixel_encoding": "colormap-hex",
+          "total": 23,
+          "record_limit": 4096,
+          "page_max": 16,
+          "preview_supported": false,
+          "colorsets": [
+            {
+              "pixels": {
+                "foreground": "0000000000112233",
+                "background": "0000000000445566",
+                "hilight": "0000000000567798",
+                "shadow": "0000000000262a2e",
+                "foreground_shadow": "0000000000374859",
+                "tint": "0000000000000000",
+                "icon_tint": "0000000000000000"
+              },
+              "opacity_percent": {
+                "foreground": 100,
+                "image": 100,
+                "icon": 100
+              },
+              "background": {
+                "has_pixmap": false,
+                "transparency": "none",
+                "type": 0,
+                "width": 0,
+                "height": 0
+              },
+              "id": 2147483647,
+              "update_state": "idle",
+              "tint_percent": 0,
+              "icon_tint_percent": 0,
+              "dither": false,
+              "icon_dither": false,
+              "has_shape": false
+            }
+          ],
+          "targeted": true,
+          "offset": null,
+          "next_offset": null
+        },
+        "failed": {
+          "state": "observed",
+          "scope": "core-colorsets",
+          "generation": "00000000000942e91e803a7c000c410b000000000000003f",
+          "values": "published",
+          "units": "actual-pixels",
+          "pixel_encoding": "colormap-hex",
+          "total": 23,
+          "record_limit": 4096,
+          "page_max": 16,
+          "preview_supported": false,
+          "colorsets": [
+            {
+              "pixels": {
+                "foreground": "0000000000abcdef",
+                "background": "0000000000445566",
+                "hilight": "0000000000567798",
+                "shadow": "0000000000262a2e",
+                "foreground_shadow": "00000000002a3744",
+                "tint": "0000000000000000",
+                "icon_tint": "0000000000000000"
+              },
+              "opacity_percent": {
+                "foreground": 70,
+                "image": 100,
+                "icon": 100
+              },
+              "background": {
+                "has_pixmap": false,
+                "transparency": "none",
+                "type": 0,
+                "width": 0,
+                "height": 0
+              },
+              "id": 21,
+              "update_state": "refused",
+              "tint_percent": 0,
+              "icon_tint_percent": 0,
+              "dither": false,
+              "icon_dither": false,
+              "has_shape": false
+            }
+          ],
+          "targeted": true,
+          "offset": null,
+          "next_offset": null
+        },
+        "recovered": {
+          "state": "observed",
+          "scope": "core-colorsets",
+          "generation": "00000000000942e91e803a7c000c410b0000000000000041",
+          "values": "published",
+          "units": "actual-pixels",
+          "pixel_encoding": "colormap-hex",
+          "total": 23,
+          "record_limit": 4096,
+          "page_max": 16,
+          "preview_supported": false,
+          "colorsets": [
+            {
+              "pixels": {
+                "foreground": "0000000000abcdef",
+                "background": "0000000000445566",
+                "hilight": "0000000000567798",
+                "shadow": "0000000000262a2e",
+                "foreground_shadow": "00000000002a3744",
+                "tint": "0000000000000000",
+                "icon_tint": "0000000000000000"
+              },
+              "opacity_percent": {
+                "foreground": 70,
+                "image": 100,
+                "icon": 100
+              },
+              "background": {
+                "has_pixmap": false,
+                "transparency": "none",
+                "type": 0,
+                "width": 0,
+                "height": 0
+              },
+              "id": 21,
+              "update_state": "idle",
+              "tint_percent": 0,
+              "icon_tint_percent": 0,
+              "dither": false,
+              "icon_dither": false,
+              "has_shape": false
+            }
+          ],
+          "targeted": true,
+          "offset": null,
+          "next_offset": null
+        },
+        "x_color_rgb": [
+          4369,
+          8738,
+          13107
+        ],
+        "pages_complete": true,
+        "missing_read_did_not_allocate": true,
+        "stale_pages_and_targets_refused": true
+      },
+      "window_retirement_freshness": {
+        "empty_cleanup_preserved": true,
+        "definition_removal_invalidated": true
+      },
+      "readonly_cancel_late_result_isolation": true
+    },
+    "fvwm3:live-x / mfl-settings-xvfb": {
+      "status": "passed",
+      "provider_observation": {
+        "provider": {
+          "owner": "FvwmDesktop",
+          "schema_version": 1,
+          "provider": "b5a5d1246e3833c4aa9310e8db219fb8",
+          "generation": "92a855b49c065fa68e9f1d93ec11542e",
+          "lifecycle": "ready",
+          "lifecycle_scope": "desktop-preferences",
+          "availability": "available",
+          "failure_reason": null,
+          "persistence_error": null,
+          "resources": [
+            "settings",
+            "operations"
+          ],
+          "operations": [
+            "query",
+            "validate",
+            "set",
+            "reset",
+            "reload"
+          ],
+          "operation_targets": [
+            "applications",
+            "status"
+          ],
+          "operation_limit": 16,
+          "operation_retention_ms": 300000,
+          "notifications": "invalidation-only",
+          "preview": false,
+          "application_completion": "unknown",
+          "service_lifecycle": false
+        },
+        "conditional_unchanged": true,
+        "stale_query_refresh": true,
+        "configuration_ready_discovery": true,
+        "notifications_exclude_values": true,
+        "read_only_watch": true,
+        "target_filter_isolated": true,
+        "malformed_notice_requires_resnapshot": true,
+        "watch_at_pending_capacity": true,
+        "absent_owner_times_out_without_cache": true
+      },
+      "typed_integer_setting": {
+        "saved": 73,
+        "schema": 2,
+        "malformed_refused": true,
+        "reset": 94
+      },
+      "real_provider": {
+        "settings": 8,
+        "scoped_queries": true,
+        "atomic_changes": true,
+        "targeted_multiple_owners": true,
+        "readonly_validation": true,
+        "validation_no_mutation": true,
+        "cancelled_write_still_commits": true,
+        "cancelled_id_reuse": true,
+        "readonly_refused": true,
+        "stale_writer_refused": true,
+        "scoped_reset": true,
+        "external_conflict": true,
+        "reload": true,
+        "restart_generation": true,
+        "restart_target_unavailable": true,
+        "asynchronous_completion": "unknown"
+      },
+      "independent_producer": {
+        "absent_timeout": true,
+        "partial_timeout": true,
+        "partial_cancel": true,
+        "malformed_part_refused": true,
+        "disconnected_partial": true,
+        "late_reply_ignored": true,
+        "healthy_client": true
+      }
+    }
+  },
+  "screenshots": {
+    "settings-editor.png": {
+      "sha256": "d9018062f24a197b3622c61353af7f8f7f3c15e2e79e4e3b44800531537fab30",
+      "bytes": 61856,
+      "mode": 384
+    },
+    "settings-opacity-confirm.png": {
+      "sha256": "d99408de2d08df690be381dac92bda47e0305d995a34ca20d87e0ebf06b8b097",
+      "bytes": 38794,
+      "mode": 384
+    },
+    "settings-opacity-editor.png": {
+      "sha256": "1859fdc7463ff4766374966cdc0589b2aa85fc6841ba7ab7dd54544fbe8d999b",
+      "bytes": 45478,
+      "mode": 384
+    },
+    "settings-opacity-resumed.png": {
+      "sha256": "c7c6e79dd14ddf0c172d0bc3e71c694ecf60f315f117999e5dbf9bb49806fc11",
+      "bytes": 45515,
+      "mode": 384
+    },
+    "settings-opacity-write-refused.png": {
+      "sha256": "b6da51fb83598abfd103e8fefffb3acf801937a2445602f4da905ea581367258",
+      "bytes": 27812,
+      "mode": 384
+    }
+  },
+  "manuals": {
+    "before/FvwmMFL": {
+      "source_sha256": "ff3151c418e9271e52bc315bf44ea154df88245c24ff24b75c7a52c71a6f913c",
+      "roff_sha256": "5c0816c2c75e6d6316e08d0823c5eeeab540cf5c907cf2867bfe95eb7486c2eb",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 13
+      }
+    },
+    "before/FvwmDesktop": {
+      "source_sha256": "9483dd27581eb68b115e691c8e2f917754e80deeecb4a054c1d0a618eb069dd5",
+      "roff_sha256": "2d250729fe4ff20b0e9c99093f1988816f91f69573cd933bb6d60cbd88364d7e",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 9
+      }
+    },
+    "before/fvwm3": {
+      "source_sha256": "fb3fc61c0f15e6c4f8da113ee9cf1d759cd50c63b91b6b216bae9122299ad987",
+      "roff_sha256": "f8a6ab2343441090988368fa8170d3a669cd0ceda61913fb957a7f483bb9565a",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 27,
+        "skipping paragraph macro: sp after SS": 8
+      }
+    },
+    "after/FvwmMFL": {
+      "source_sha256": "1814c748daecd98b01d9fc0dab65db4932e8fd4701a4e5392ed9bd4922b9d444",
+      "roff_sha256": "f1276869e9eb17d41b66d4a434b43b905bc16bd3fc9068b78f0199180a2cdf7c",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 13
+      }
+    },
+    "after/FvwmDesktop": {
+      "source_sha256": "266e09b1128293ca966412c54c1d4700fb5c8f1dbba6b5a3bace3d7686528d70",
+      "roff_sha256": "7ef22da4e02ff08559dd174c404b65fab6ddecec249b7c00228adadb8cab8773",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 9
+      }
+    },
+    "after/fvwm3": {
+      "source_sha256": "fb3fc61c0f15e6c4f8da113ee9cf1d759cd50c63b91b6b216bae9122299ad987",
+      "roff_sha256": "f8a6ab2343441090988368fa8170d3a669cd0ceda61913fb957a7f483bb9565a",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 27,
+        "skipping paragraph macro: sp after SS": 8
+      }
+    }
+  },
+  "archives": {
+    "fvwm-x-linux-arm64-svg-evidence": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/saved-opacity-preview/ui-correction/fvwm-x-linux-arm64-svg-evidence.tgz",
+      "sha256": "5dfb79b48625f07f6e50163f412161050396cb7ca1775b07085dd9b71256e8f3",
+      "bytes": 1032534,
+      "files": 61,
+      "complete_payload_and_mode_verification": true,
+      "gzip_crc_verified_to_eof": true
+    },
+    "asan": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/saved-opacity-preview/ui-correction/asan.tgz",
+      "sha256": "6555a02903dca17fa78b86d4b3709f208d311e9cf150e9b60a61600e3e1b6d44",
+      "bytes": 126051,
+      "files": 29,
+      "complete_payload_and_mode_verification": true,
+      "gzip_crc_verified_to_eof": true
+    }
+  },
+  "retirement": {
+    "initial_capture_receipts": [
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "capture": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-checkpoint",
+        "archive": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-evidence.tgz",
+        "files": 61,
+        "sha256": "1699f1f99732feb6cac5e7a1abcc0ab86f6eec5f7d2c42bc93f2a9899e710370",
+        "canonical_payload_and_mode_proof": true
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "capture": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-asan",
+        "archive": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-asan.tgz",
+        "files": 29,
+        "sha256": "882be67022b0a0ab551a49af1cd6f8071d7ff015af92617a75be90d47dc2ec79",
+        "canonical_payload_and_mode_proof": true
+      }
+    ],
+    "corrected_capture_receipts": [
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "capture": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-checkpoint",
+        "archive": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-evidence.tgz",
+        "files": 61,
+        "sha256": "5dfb79b48625f07f6e50163f412161050396cb7ca1775b07085dd9b71256e8f3",
+        "canonical_payload_and_mode_proof": true
+      },
+      {
+        "target": "fvwm-x-linux-arm64-svg",
+        "capture": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-asan",
+        "archive": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-asan.tgz",
+        "files": 29,
+        "sha256": "6555a02903dca17fa78b86d4b3709f208d311e9cf150e9b60a61600e3e1b6d44",
+        "canonical_payload_and_mode_proof": true
+      }
+    ],
+    "source_archive_duplicates": [
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-inputs/source.tgz",
+        "sha256": "4656d37ce3735782c45cdf22815f0f98a0beb01930fd2cf0c6244e906e373212",
+        "bytes": 9010157,
+        "canonical_archive_preserved": true
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/saved-opacity-preview-ui-inputs/source.tgz",
+        "sha256": "c60c310b6966e92bfc494cb94056958159273320163a2b45a745f67d934aefbb",
+        "bytes": 9010215,
+        "canonical_archive_preserved": true
+      }
+    ],
+    "preserved": "canonical host archives/screenshots; extracted source, builds, install stages, performance references and VM disks"
+  },
+  "cycle": {
+    "merged_since_pr163": 0,
+    "after_current_merge": 1,
+    "shared_gate_trigger_prs": 3,
+    "performance_reference_pr": 159,
+    "performance_merged_batches": 4,
+    "performance_after_current_merge": 5,
+    "next_run": "compare existing qualified binaries; tuning deferred"
+  },
+  "deferred": [
+    "six-target accumulated integration",
+    "alternate normal compiler/feature profiles",
+    "full staged installs and default-X acceptance",
+    "full owner/milestone/release acceptance",
+    "native-CPU Linux sanitizers",
+    "physical hardware/toolkits/compositors",
+    "full appearance and image-resource snapshots/general saved-preview adapter"
+  ],
+  "inherited_gap": "FvwmForm/fontconfig/Xft exit allocations remain Later; native Form is not sanitizer instrumented here",
+  "review": "Source/ownership/bounds/configuration contract and all changed consumers reviewed locally; no unresolved batch defect. Signed DCO publication receipt records final head/tree privately."
+}

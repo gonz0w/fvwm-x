@@ -1,13 +1,12 @@
 # FVWM-X
 
 FVWM-X is an X11 window manager derived from FVWM3, for Linux, FreeBSD Xorg
-and OpenBSD Xenocara on AMD64 and ARM64. It offers a configurable desktop.
+and OpenBSD Xenocara on AMD64 and ARM64.
 
 Our goals are a simpler codebase, responsive interaction, secure resource and
 process handling, and continued use of existing FVWM configurations and themes.
 Desktop services build on FVWM's native modules and existing system facilities.
-File managers and other applications remain your choice; there is no built-in
-compositor or native Wayland backend.
+There is no built-in compositor or native Wayland backend.
 
 **Status:** development. The
 [safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout), manager-target
@@ -17,7 +16,8 @@ configuration checker are merged.
 has core/settings queries and actions. Provider
 observation and desktop operations pass shared platform checks. Appearance policy
 inspection and runtime opacity preview/recovery pass shared platform checks.
-Saved-preference preview and tuning remain open.
+Saved launcher-opacity preview, scoped confirmation/save and draft recovery
+pass focused checks; broader appearance preview and tuning remain open.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.
@@ -35,7 +35,6 @@ acceptance remain open.
 - [Contribute and validate locally](CONTRIBUTING.md)
 
 Review, tests, lint and validation run locally. GitHub hosts code, issues and
-PR review; GitHub Actions is disabled. Preserve original failed evidence and
-identify the exact source and platform behind every passing result.
+PR review; GitHub Actions is disabled. Preserve failed evidence and source/platform identities.
 
 FVWM-X retains FVWM's GPL license and upstream attribution; see [COPYING](COPYING).

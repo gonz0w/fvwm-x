@@ -5714,9 +5714,11 @@ void style_destroy_style(style_id_t s_id)
 	style_match_patterns patterns;
 	FvwmWindow *t;
 
-	fvwm_query_appearance_changed();
 	if (remove_all_of_style_from_list(s_id))
 	{
+		/* Automatic window retirement changes policy only when it
+		 * removes a real WindowStyle definition. */
+		fvwm_query_appearance_changed();
 		/* compact the current list of styles */
 		Scr.flags.do_need_style_list_update = 1;
 	}
@@ -5769,6 +5771,8 @@ void CMD_DestroyStyle(F_CMD_ARGS)
 {
 	style_id_t s_id;
 
+	fvwm_query_appearance_changed();
+
 	action = parse_style_id(action, &s_id);
 	if (action == NULL) {
 		free_style_id(&s_id);
@@ -5783,6 +5787,8 @@ void CMD_DestroyStyle(F_CMD_ARGS)
 void CMD_DestroyWindowStyle(F_CMD_ARGS)
 {
 	style_id_t s_id;
+
+	fvwm_query_appearance_changed();
 
 	memset(&s_id, 0, sizeof(style_id_t));
 	SID_SET_WINDOW_ID(s_id, (XID)FW_W(exc->w.fw));

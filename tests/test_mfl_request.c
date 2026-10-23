@@ -241,7 +241,7 @@ static void test_settings_requests(void)
 		assert(!mfl_request_parse(text, &request));
 		assert(request.kind == MFL_REQUEST_INVALID);
 	}
-	const char *values[] = {"{}", "{\"motion\":1}",
+	const char *values[] = {"{}", "{\"motion\":1.5}",
 		"{\"motion\":true,\"motion\":false}", "{\"palette\":{}}"};
 	for (size_t i = 0; i < sizeof(values) / sizeof(values[0]); i++)
 	{
@@ -721,6 +721,32 @@ static void test_colorset_requests(void)
 	assert(strcmp(request.snapshot_resource, "color-summary") == 0);
 }
 
+static void test_integer_settings(void)
+{
+	struct mfl_request request;
+	char text[1001];
+	const char *token = "0123456789abcdef0123456789abcdef";
+	const char *values[] = {
+		"{\"launcher_opacity\":73}",
+		"{\"a\":0,\"b\":1,\"c\":2,\"d\":3,"
+		"\"e\":4,\"f\":5,\"g\":6,\"h\":7}",
+		"{\"launcher_opacity\":73.5}",
+		"{\"launcher_opacity\":1e100}",
+		"{\"a\":0,\"b\":1,\"c\":2,\"d\":3,"
+		"\"e\":4,\"f\":5,\"g\":6,\"h\":7,\"i\":8}"
+	};
+
+	for (size_t i = 0; i < sizeof(values) / sizeof(values[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"n\","
+			"\"method\":\"action\",\"resource\":\"settings\","
+			"\"operation\":\"set\",\"generation\":\"%s\","
+			"\"provider\":\"%s\",\"values\":%s}",
+			token, token, values[i]);
+		assert(mfl_request_parse(text, &request) == (i < 2));
+	}
+}
+
 static void test_preview_requests(void)
 {
 	struct mfl_request request;
@@ -752,6 +778,7 @@ static void test_preview_requests(void)
 
 int main(void)
 {
+	test_integer_settings();
 	test_preview_requests();
 	test_appearance_requests();
 	test_colorset_requests();

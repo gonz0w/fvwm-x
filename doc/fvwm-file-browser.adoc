@@ -51,9 +51,35 @@ opened a window or finished.
 Home, Up and Back navigate; Back retains at most 32 successful locations. Path
 and Go accept an absolute path or a path relative to the current folder.
 Refresh (F5) reloads, Hidden (F6) toggles dot entries, Previous (F7) and Next (F8)
-change pages. Off-page selections remain selected. Terminal (F4) starts the
+change pages. The counters show visible/loaded items, page/total pages, total
+selection and the selected count excluded by the filter. An empty result shows
+page 0/0. Off-page and filtered-out selections remain selected. Select page
+selects the current twelve-entry page, subject to the 256-item total limit;
+Clear selection clears all pages, including filtered-out items. Terminal (F4) starts the
 configured executable in the current folder with no extra arguments. These
 executables are program paths/names, not shell fragments or argument templates.
+
+Filter and Apply filter perform a case-insensitive literal substring match on
+the admitted display labels, not raw paths. The query is valid UTF-8 of at most
+128 bytes. No glob, regular expression, recursive search or filesystem access
+runs. Clear filter restores all loaded entries. The input starts empty after
+each redraw; the active filter is shown separately. Applying an empty input also
+clears it. The filter persists across refresh and folder navigation.
+
+Sort cycles through name, kind, size and modified time. The direction button
+toggles ascending/descending. Directories remain first in both directions;
+primary-key ties use raw filename byte order in the chosen direction. Size is
+the observed entry size, not recursive disk usage. These operations reorder the
+loaded snapshot without rescanning. Selection uses IDs rather than positions.
+Changing sort or filter starts at page one; refresh keeps the previous page's
+first surviving visible item on screen, or returns to page one if it disappeared.
+
+Properties (F2) requires exactly one selected item, including a selection on
+another page or excluded by the filter. It displays the name, kind, mode,
+observed byte size and modification time in UTC from the last successful scan.
+It does not query the filesystem, follow symlinks, inspect content or validate a
+currently actionable target. Refresh updates the observation. Opening a file
+still uses the isolated worker's separate identity validation.
 
 Cancel work invalidates the pending result and requests worker termination.
 Close (Escape) exits the helper and closes its Form. The prototype closes after

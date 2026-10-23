@@ -17,7 +17,7 @@ has core/settings queries and actions. Provider
 observation and desktop operations pass shared platform checks. Appearance policy
 inspection and runtime opacity preview/recovery pass shared platform checks.
 Saved-opacity preview is merged. File/collection foundations now add a bounded
-native browser example; full file and protected clipboard handoffs remain open.
+native browser example with filtering, sorting and observed properties; full file and protected clipboard handoffs remain open.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

@@ -62,6 +62,30 @@ type browser struct {
 	pending                    *pendingWork
 	results                    chan completedWork
 	status                     string
+	order, inspected           string
+	reverse                    bool
+}
+
+func (b *browser) ordering() string {
+	if b.order == "" {
+		return "name"
+	}
+	return b.order
+}
+
+func (b *browser) reorder(key string, reverse bool) error {
+	if b.snapshot == nil {
+		return errors.New("folder is not ready")
+	}
+	entries, err := b.snapshot.OrderedEntries(key, reverse)
+	if err != nil {
+		return err
+	}
+	if err := b.model.Replace(entries); err != nil {
+		return err
+	}
+	b.order, b.reverse, b.offset = key, reverse, 0
+	return nil
 }
 
 // Text is presentation only. Prevent FVWM/Form expansions without changing
@@ -113,6 +137,18 @@ func (b *browser) show() error {
 	line(`Text "` + displayText(path, 90) + `"`)
 	line(`Line left`)
 	line(`Text "` + displayText(b.status, 120) + `"`)
+	line(`Line left`)
+	line(`Text "Filter: ` + displayText(b.model.Filter(), 60) + `"`)
+	line(`Input filter 24 ""`)
+	button("Apply filter", "", "filter", "x$(filter:Base64)")
+	button("Clear filter", "", "unfilter", "-")
+	line(`Line left`)
+	button("Sort: "+b.ordering(), "", "sort", "-")
+	direction := "ascending"
+	if b.reverse {
+		direction = "descending"
+	}
+	button(direction, "", "reverse", "-")
 	line(`Selection picks multiple`)
 	page, err := b.model.Page(b.offset)
 	if err != nil {
@@ -129,7 +165,26 @@ func (b *browser) show() error {
 		button("Open", "", "activate", item.ID)
 	}
 	line("Line left")
-	line(fmt.Sprintf("Text \"%d items; page %d; %d selected (limit %d)\"", len(b.model.Entries), b.offset/collection.PageSize+1, len(b.model.Selected), collection.MaxSelected))
+	pages := (b.model.VisibleCount() + collection.PageSize - 1) / collection.PageSize
+	pageNumber := 0
+	if pages != 0 {
+		pageNumber = b.offset/collection.PageSize + 1
+	}
+	line(fmt.Sprintf("Text \"%d/%d visible; page %d/%d; %d selected (%d filtered out, limit %d)\"", b.model.VisibleCount(), len(b.model.Entries), pageNumber, pages, len(b.model.Selected), b.model.HiddenSelectedCount(), collection.MaxSelected))
+	line("Line left")
+	button("Select page", "", "select-page", "-")
+	button("Clear selection", "", "clear-selection", "-")
+	button("Properties (F2)", "F2", "properties", "-")
+	if b.snapshot != nil && b.inspected != "" {
+		if details, err := b.snapshot.ObservedDetails(b.inspected); err == nil {
+			line("Line left")
+			line(`Text "Observed metadata; Refresh updates it. No link is followed."`)
+			for _, text := range details {
+				line("Line left")
+				line(`Text "` + displayText(text, 100) + `"`)
+			}
+		}
+	}
 	line("Line left")
 	button("Home", "", "home", "-")
 	button("Up", "", "up", "-")
@@ -212,6 +267,14 @@ func (b *browser) completed(event completedWork) error {
 			if b.snapshot != nil {
 				old = string(b.snapshot.Path)
 			}
+			anchor := ""
+			if page, err := b.model.Page(b.offset); err == nil && len(page) != 0 {
+				anchor = page[0].ID
+			}
+			entries, err := snapshot.OrderedEntries(b.ordering(), b.reverse)
+			if err != nil {
+				return err
+			}
 			if old != string(snapshot.Path) {
 				if event.work.navigation == "push" && old != "" {
 					b.history = append(b.history, old)
@@ -222,11 +285,12 @@ func (b *browser) completed(event completedWork) error {
 					b.history = b.history[:len(b.history)-1]
 				}
 				b.model.Selected = nil
+				b.inspected, anchor = "", ""
 			}
-			if err := b.model.Replace(snapshot.Entries()); err != nil {
+			if err := b.model.Replace(entries); err != nil {
 				return err
 			}
-			b.snapshot, b.hidden, b.offset = snapshot, snapshot.Hidden, 0
+			b.snapshot, b.hidden, b.offset = snapshot, snapshot.Hidden, b.model.OffsetFor(anchor)
 			b.status = "Folder loaded. Symlink/special-file actions unavailable."
 		} else if result.Status == "started" {
 			b.status = "Application started; the browser cannot confirm that the file opened"
@@ -274,6 +338,38 @@ func (b *browser) action(message string) (bool, error) {
 		path = string(b.snapshot.Path)
 	}
 	switch parts[3] {
+	case "filter", "unfilter":
+		var value []byte
+		if parts[3] == "filter" {
+			value, err = decodeField(parts[4])
+		}
+		if err == nil {
+			err = b.model.SetFilter(string(value))
+		}
+		if err == nil {
+			b.offset = 0
+		}
+	case "sort", "reverse":
+		key, reverse := b.ordering(), !b.reverse
+		if parts[3] == "sort" {
+			key = map[string]string{"name": "kind", "kind": "size", "size": "modified", "modified": "name"}[key]
+			reverse = b.reverse
+		}
+		err = b.reorder(key, reverse)
+	case "select-page":
+		err = b.model.SelectWholePage(b.model.Generation, b.offset)
+	case "clear-selection":
+		err = b.model.ClearSelection(b.model.Generation)
+		if err == nil {
+			b.inspected = ""
+		}
+	case "properties":
+		ids := b.model.SelectedIDs()
+		if len(ids) != 1 || b.snapshot == nil {
+			err = errors.New("select exactly one item for observed properties")
+		} else if _, err = b.snapshot.ObservedDetails(ids[0]); err == nil {
+			b.inspected = ids[0]
+		}
 	case "home":
 		err = b.navigate(b.home, "push")
 	case "up":

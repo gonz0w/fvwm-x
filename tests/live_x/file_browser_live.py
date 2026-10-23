@@ -47,7 +47,7 @@ def run(args):
             os.close(descriptor)
             (root / '.hidden').write_text('hidden')
             (root / 'link').symlink_to(root / 'file-00')
-            blocked = runtime.root / 'blocked'
+            blocked = runtime.root / 'blocked_fifo'
             os.mkfifo(blocked, 0o600)
             report = runtime.root / 'opened.json'
             opener = runtime.root / 'opener'
@@ -189,7 +189,7 @@ def run(args):
                     alias = last_inventory_alias
                     # XIDs may be reused after Form retirement. The per-view
                     # resource identity and complete child count own readiness.
-                    if alias.endswith('-ready') and alias != seen_alias and len(values) == 2 * len(squares) + 13 and (choices is None or len(squares) == choices):
+                    if alias.endswith('-ready') and alias != seen_alias and len(values) == 2 * len(squares) + 21 and (choices is None or len(squares) == choices):
                         return window, alias
                     return None
                 nonlocal seen_alias
@@ -200,11 +200,18 @@ def run(args):
                 x.XSetInputFocus(d, window, 1, 0)
                 code = x.XKeysymToKeycode(d, x.XStringToKeysym(symbol))
                 assert code, symbol
+                # XKeysymToKeycode does not apply the modifier needed for
+                # underscore. Temporary fixture paths may contain that byte.
+                shift = x.XKeysymToKeycode(d, x.XStringToKeysym(b'Shift_L')) if symbol == b'underscore' else 0
+                if shift:
+                    assert pointer.x.XTestFakeKeyEvent(d, shift, 1, 0)
                 for down in (1, 0):
                     assert pointer.x.XTestFakeKeyEvent(d, code, down, 0)
+                if shift:
+                    assert pointer.x.XTestFakeKeyEvent(d, shift, 0, 0)
                 x.XSync(d, 0)
 
-            def click(window):
+            def click(window, wait_grab=True):
                 _, _, width, height = client.geometry(window)
                 cx, cy, child = C.c_int(), C.c_int(), C.c_ulong()
                 assert x.XTranslateCoordinates(d, window, client.root, width // 2, height // 2,
@@ -212,8 +219,12 @@ def run(args):
                 pointer.motion(cx.value, cy.value)
                 connection.echo('pointer-positioned')
                 pointer.button(True)
-                if width != height:
-                    wait_for_predicate('native button press consumed', pointer.grabbed,
+                # Give the other X client a realistic press interval. The
+                # server's implicit grab alone does not acknowledge Form's
+                # explicit release grab or input-field selection.
+                time.sleep(0.05)
+                if width != height and wait_grab:
+                    wait_for_predicate('native button pointer grab', pointer.grabbed,
                         time.monotonic() + 5, process=app)
                 pointer.button(False)
 
@@ -260,11 +271,11 @@ def run(args):
             window = ready(window, 1)
             connection.echo('core-responsive-after-folder-navigation')
             evidence['paged_selection_and_folder_activation'] = True
-            # Up through an actual native button: Home/Up/Back are the first
-            # three controls after the rows; locate by their horizontal order.
+            # Up through an actual native button: the navigation row follows
+            # the selection controls; locate Home/Up/Back horizontally.
             _, squares, values = inventory()
             last_row = max(g[1] for g, w in values if g[2] == g[3])
-            nav_y = min(g[1] for g, w in values if g[1] > last_row + 22 and g[2] != g[3])
+            nav_y = sorted({g[1] for g, w in values if g[1] > last_row + 22 and g[2] != g[3]})[1]
             nav = sorted((g[0], w) for g, w in values if g[1] == nav_y and g[2] != g[3])
             click(nav[1][1])
             callback()
@@ -297,16 +308,18 @@ def run(args):
             # A FIFO path deliberately blocks open() in the filesystem worker.
             # The UI/core remain responsive and Cancel owns the child until reap.
             symbols = {'/': b'slash', '-': b'minus', '_': b'underscore', '.': b'period'}
-            for char in str(blocked):
-                key(window, symbols.get(char, char.encode()))
             _, _, values = inventory()
             field = max((g, w) for g, w in values if g[2] > 200)
+            click(field[1], wait_grab=False)
+            for char in str(blocked):
+                key(window, symbols.get(char, char.encode()))
             fg = field[0]
             controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
                 and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
             assert len(controls) == 3
             click(controls[0][1])
-            callback()
+            path_callback = callback()
+            assert base64.urlsafe_b64decode(path_callback.split()[4][1:] + '==') == os.fsencode(blocked)
             def busy_view():
                 current, _, _ = inventory()
                 return current if last_inventory_alias.endswith('-busy') else None
@@ -323,9 +336,84 @@ def run(args):
             window = ready(window, 7)
             key(window, b'F5')
             callback()
-            window = ready(window, 12)
+            window = ready(window, 7)
             evidence['blocked_worker_cancel_reap_refresh_and_core_responsiveness'] = True
             capture('file-browser-worker-recovery.png')
+            # Filter through the real native input/button. Selected hidden IDs
+            # survive; the properties panel describes the last scan only.
+            key(window, b'F7')
+            callback()
+            window = ready(window, 12)
+            _, squares, values = inventory()
+            click(squares[1][1])
+            field = min(((g, w) for g, w in values if g[2] > 140), key=lambda value: value[0][1])
+            click(field[1], wait_grab=False)
+            for char in 'file-14':
+                key(window, symbols.get(char, char.encode()))
+            fg = field[0]
+            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
+                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
+            assert len(controls) == 2
+            click(controls[0][1])
+            filtered_callback = callback()
+            assert base64.urlsafe_b64decode(filtered_callback.split()[4][1:] + '==') == b'file-14'
+            window = ready(window, 1)
+            capture('file-browser-filtered-selection.png')
+            # The selection row is immediately after the last choice row.
+            def selection_controls():
+                _, squares, values = inventory()
+                row_end = max(g[1] + g[3] for g, w in values if g[2] == g[3])
+                y = min(g[1] for g, w in values if g[1] > row_end and g[2] != g[3])
+                return sorted((g[0], w) for g, w in values if g[1] == y and g[2] != g[3])
+            buttons = selection_controls()
+            assert len(buttons) == 3
+            click(buttons[1][1])
+            callback()
+            window = ready(window, 1)
+            buttons = selection_controls()
+            click(buttons[0][1])
+            callback()
+            window = ready(window, 1)
+            key(window, b'F2')
+            callback()
+            window = ready(window, 1)
+            capture('file-browser-properties.png')
+            # Cycle ordering via the native sort control and invert direction.
+            _, squares, values = inventory()
+            first_row = min(g[1] for g, w in values if g[2] == g[3])
+            sort_y = max(g[1] for g, w in values if g[1] + g[3] < first_row and g[2] != g[3])
+            sort_buttons = sorted((g[0], w) for g, w in values if g[1] == sort_y and g[2] != g[3])
+            assert len(sort_buttons) == 2
+            click(sort_buttons[0][1])
+            callback()
+            window = ready(window, 1)
+            _, _, values = inventory()
+            sort_buttons = sorted((g[0], w) for g, w in values if g[1] == sort_y and g[2] != g[3])
+            click(sort_buttons[1][1])
+            callback()
+            window = ready(window, 1)
+            # Submit a no-match filter; the page has no stale rows or controls.
+            _, _, values = inventory()
+            field = min(((g, w) for g, w in values if g[2] > 140), key=lambda value: value[0][1])
+            click(field[1], wait_grab=False)
+            for char in 'no-match':
+                key(window, symbols.get(char, char.encode()))
+            fg = field[0]
+            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
+                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
+            click(controls[0][1])
+            callback()
+            window = ready(window, 0)
+            capture('file-browser-empty-filter.png')
+            _, _, values = inventory()
+            field = min(((g, w) for g, w in values if g[2] > 140), key=lambda value: value[0][1])
+            fg = field[0]
+            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
+                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
+            click(controls[1][1])
+            callback()
+            window = ready(window, 12)
+            evidence['native_filter_bulk_selection_properties_sort_and_empty_recovery'] = True
             key(window, b'Escape')
             callback()
             wait_for_predicate('browser normal close', lambda: app.poll() is not None,
@@ -335,7 +423,9 @@ def run(args):
             assert not unexpected_errors, unexpected_errors
             evidence['unexpected_observer_x_errors'] = unexpected_errors
             evidence['screenshots'] = ['file-browser-first-page.png', 'file-browser-second-page.png',
-                'file-browser-action-result.png', 'file-browser-worker-recovery.png']
+                'file-browser-action-result.png', 'file-browser-worker-recovery.png',
+                'file-browser-filtered-selection.png', 'file-browser-properties.png',
+                'file-browser-empty-filter.png']
             evidence['scope'] = 'native paged foundation; full scrolling/grid, files provider and mutations remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():

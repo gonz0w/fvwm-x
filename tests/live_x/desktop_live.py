@@ -557,6 +557,75 @@ def run(options):
         evidence['native_grouped_editor_apply_defaults_cancel_stale_reload_restart'] = 'passed'
         evidence['settings_screenshots'] = ['settings-editor.png', 'settings-draft.png',
                                            'settings-menu.png', 'settings-defaults.png']
+        # Use the real module reply path and native Form. Preference bytes
+        # remain exact through preview, explicit revert, keep and owner loss.
+        from mfl_request_live import frame, reply
+        rpc = Connection(endpoint)
+        rpc.socket.settimeout(10)
+        rpc.record()
+        preview_serial = 0
+        def preview_query(resource):
+            nonlocal preview_serial
+            preview_serial += 1
+            token = 'ui-preview-' + str(preview_serial)
+            rpc.send(frame(token, resource=resource, limit=16)
+                     if resource == 'menu-styles' else frame(token, resource=resource))
+            return reply(rpc, token)
+        try:
+            provider = preview_query('settings')['provider']
+            def launcher_opacity():
+                return next(item['opacity_percent'] for item in
+                            preview_query('menu-styles')['menu_styles']
+                            if item['name'] == 'SlateLauncherStyle')
+            baseline = launcher_opacity()
+            saved = state.read_bytes()
+            def open_preview(value):
+                connection.send(('SendToModule FvwmDesktop preview-opacity ' +
+                                 provider + ' ' + str(value) + '\n').encode())
+                window = wait_for_predicate('native opacity preview dialog',
+                    lambda: named_windows().get('Preview menu opacity'),
+                    time.monotonic() + 10, process=process)
+                wait_for_predicate('preview controls mapped',
+                    lambda: len(children(window)) >= 2,
+                    time.monotonic() + 5, process=process)
+                return window
+            window = open_preview(70)
+            assert launcher_opacity() == 70
+            capture('opacity-preview-dialog.png')
+            connection.send(b'SlateLauncher\n')
+            wait_for_predicate('preview launcher mapped', pointer.grabbed,
+                time.monotonic() + 5, process=process)
+            capture('opacity-preview-launcher.png')
+            key(b'Escape')
+            wait_for_predicate('preview launcher dismissed', lambda: not pointer.grabbed(),
+                time.monotonic() + 5, process=process)
+            evidence['preview_control_geometry'] = dict(window=window, geometry=client.geometry(window), children=[(w, client.geometry(w)) for w in children(window)])
+            form_key(window, b'Escape')
+            wait_for_predicate('explicit preview revert', lambda: launcher_opacity() == baseline,
+                time.monotonic() + 5, process=process)
+            connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
+            window = open_preview(85)
+            form_key(window, b'F1')
+            wait_for_predicate('keep dialog retired',
+                lambda: 'Preview menu opacity' not in named_windows(),
+                time.monotonic() + 5, process=process)
+            barrier()
+            assert launcher_opacity() == 85 and state.read_bytes() == saved
+            connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
+            open_preview(70)
+            connection.send(b'KillModule FvwmDesktop\n')
+            wait_for_predicate('desktop owner loss restores opacity',
+                lambda: launcher_opacity() == 85, time.monotonic() + 5, process=process)
+            connection.send(('KillModule FvwmForm SlatePreview-' + provider + '\n' +
+                'ModuleSynchronous Timeout 15 FvwmDesktop\n').encode())
+            barrier()
+            assert state.read_bytes() == saved
+            evidence['runtime_preview'] = dict(explicit_revert=True, keep_runtime_only=True,
+                helper_death_restores=True, preference_bytes_unchanged=True,
+                screenshots=['opacity-preview-dialog.png', 'opacity-preview-launcher.png'])
+        finally:
+            rpc.close()
+
         # Inspect deliberately invalid source as data. No Read is submitted to
         # the running WM, and generated/action lines must never create marker.
         unchecked_marker = runtime.root / 'configuration-must-not-execute'

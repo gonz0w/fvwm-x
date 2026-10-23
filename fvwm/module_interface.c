@@ -52,6 +52,7 @@
 #include "commands.h"
 #include "module_queue.h"
 #include "query_json.h"
+#include "appearance_preview.h"
 #include "colorset.h"
 #include "menustyle.h"
 #include "libs/vpacket.h"
@@ -677,6 +678,8 @@ Bool interaction_command_ready(const char *command, fmodule *origin)
 		 * could introduce an arbitrary-command wait in the drag itself. */
 		return origin == NULL ||
 			(origin->xSyncMask.m1 == 0 && origin->xSyncMask.m2 == 0);
+	case F_SEND_PREVIEW:
+	case F_SEND_QUERY:
 	case F_SEND_REPLY:
 		return origin == NULL ||
 			interaction_message_async(origin, MX_REPLY);
@@ -881,20 +884,98 @@ static cJSON *query_colorsets(const struct fvwm_query_spec *spec,
 		spec, error);
 }
 
-/* A bounded read of core-owned state; no X round trip or retained cursor.
- * Existing directed packets/queues preserve producer command ordering. */
+/* Consume result on every path. Bounded directed packets preserve producer
+ * command ordering for both reads and owned preview actions. */
+static void send_query_result(fmodule *module, const char *cookie,
+	const char *serial, cJSON *result, const char *error)
+{
+	cJSON *envelope;
+	char *json;
+	char line[2 * MODULE_QUERY_CHUNK + 160];
+	unsigned int part = 0;
+	size_t length;
+	static const char hex[] = "0123456789abcdef";
+
+	envelope = cJSON_CreateObject();
+	if (!envelope)
+	{
+		cJSON_Delete(result);
+		return;
+	}
+	if (result)
+	{
+		if (!cJSON_AddItemToObject(envelope, "result", result))
+		{
+			cJSON_Delete(result);
+			cJSON_Delete(envelope);
+			return;
+		}
+	}
+	else
+	{
+		cJSON *details = cJSON_AddObjectToObject(envelope, "error");
+
+		if (!details || !cJSON_AddStringToObject(details, "code",
+			error ? error : "allocation_failed"))
+		{
+			cJSON_Delete(envelope);
+			return;
+		}
+	}
+	json = cJSON_PrintUnformatted(envelope);
+	cJSON_Delete(envelope);
+	if (!json)
+		return;
+	length = strlen(json);
+	if (length > MODULE_QUERY_RESULT_MAX)
+	{
+		cJSON_free(json);
+		json = NULL;
+		/* Refuse the whole snapshot rather than returning partial data. */
+		const char *failure =
+			"{\"error\":{\"code\":\"query_too_large\"}}";
+
+		length = strlen(failure);
+		json = cJSON_malloc(length + 1);
+		if (!json)
+			return;
+		memcpy(json, failure, length + 1);
+	}
+	for (size_t offset = 0; offset < length; part++)
+	{
+		size_t bytes = length - offset;
+		int prefix;
+
+		if (bytes > MODULE_QUERY_CHUNK)
+			bytes = MODULE_QUERY_CHUNK;
+		prefix = snprintf(line, sizeof(line),
+			"MFL_CORE_1 %s %s part %u ", cookie,
+			serial, part);
+		for (size_t i = 0; i < bytes; i++)
+		{
+			unsigned char value = json[offset + i];
+
+			line[prefix + 2 * i] = hex[value >> 4];
+			line[prefix + 2 * i + 1] = hex[value & 15];
+		}
+		line[prefix + 2 * bytes] = '\0';
+		SendName(module, MX_REPLY, 0, 0, 0, line);
+		offset += bytes;
+	}
+	cJSON_free(json);
+	snprintf(line, sizeof(line), "MFL_CORE_1 %s %s end %u",
+		cookie, serial, part);
+	SendName(module, MX_REPLY, 0, 0, 0, line);
+	FlushMessageQueue(module);
+}
+
 void CMD_Send_Query(F_CMD_ARGS)
 {
 	struct fvwm_query_spec spec;
 	fmodule *module = exc->m.module;
-	cJSON *result = NULL, *envelope;
+	cJSON *result = NULL;
 	const char *error = NULL;
-	char *json;
-	char line[2 * MODULE_QUERY_CHUNK + 160];
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];
-	unsigned int part = 0;
-	size_t length;
-	static const char hex[] = "0123456789abcdef";
 
 	if (!module || !fvwm_query_parse(action, &spec))
 		return;
@@ -959,77 +1040,20 @@ void CMD_Send_Query(F_CMD_ARGS)
 	}
 	else
 		error = "unsupported_resource";
-	envelope = cJSON_CreateObject();
-	if (!envelope)
-	{
-		cJSON_Delete(result);
+	send_query_result(module, spec.cookie, spec.serial, result, error);
+}
+
+void CMD_Send_Preview(F_CMD_ARGS)
+{
+	struct preview_request request;
+	const char *error = NULL;
+	cJSON *result;
+	fmodule *module = exc->m.module;
+
+	if (!module || !preview_request_parse(action, &request))
 		return;
-	}
-	if (result)
-	{
-		if (!cJSON_AddItemToObject(envelope, "result", result))
-		{
-			cJSON_Delete(result);
-			cJSON_Delete(envelope);
-			return;
-		}
-	}
-	else
-	{
-		cJSON *details = cJSON_AddObjectToObject(envelope, "error");
-
-		if (!details || !cJSON_AddStringToObject(details, "code",
-			error ? error : "allocation_failed"))
-		{
-			cJSON_Delete(envelope);
-			return;
-		}
-	}
-	json = cJSON_PrintUnformatted(envelope);
-	cJSON_Delete(envelope);
-	if (!json)
-		return;
-	length = strlen(json);
-	if (length > MODULE_QUERY_RESULT_MAX)
-	{
-		cJSON_free(json);
-		json = NULL;
-		/* Refuse the whole snapshot rather than returning partial data. */
-		const char *failure =
-			"{\"error\":{\"code\":\"query_too_large\"}}";
-
-		length = strlen(failure);
-		json = cJSON_malloc(length + 1);
-		if (!json)
-			return;
-		memcpy(json, failure, length + 1);
-	}
-	for (size_t offset = 0; offset < length; part++)
-	{
-		size_t bytes = length - offset;
-		int prefix;
-
-		if (bytes > MODULE_QUERY_CHUNK)
-			bytes = MODULE_QUERY_CHUNK;
-		prefix = snprintf(line, sizeof(line),
-			"MFL_CORE_1 %s %s part %u ", spec.cookie,
-			spec.serial, part);
-		for (size_t i = 0; i < bytes; i++)
-		{
-			unsigned char value = json[offset + i];
-
-			line[prefix + 2 * i] = hex[value >> 4];
-			line[prefix + 2 * i + 1] = hex[value & 15];
-		}
-		line[prefix + 2 * bytes] = '\0';
-		SendName(module, MX_REPLY, 0, 0, 0, line);
-		offset += bytes;
-	}
-	cJSON_free(json);
-	snprintf(line, sizeof(line), "MFL_CORE_1 %s %s end %u",
-		spec.cookie, spec.serial, part);
-	SendName(module, MX_REPLY, 0, 0, 0, line);
-	FlushMessageQueue(module);
+	result = appearance_preview_request(module, &request, &error);
+	send_query_result(module, request.cookie, request.serial, result, error);
 }
 
 void CMD_Send_WindowList(F_CMD_ARGS)

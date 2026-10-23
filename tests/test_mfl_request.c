@@ -721,8 +721,38 @@ static void test_colorset_requests(void)
 	assert(strcmp(request.snapshot_resource, "color-summary") == 0);
 }
 
+static void test_preview_requests(void)
+{
+	struct mfl_request request;
+	struct mfl_pending_request pending[MFL_REQUEST_LIMIT] = {{0}}, *slot;
+	char text[1001], command[1001];
+	const char *token = "ffffffffffffffffffffffffffffffffffffffffffffffff";
+
+	snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"p\","
+		"\"method\":\"action\",\"resource\":\"preview\",\"operation\":\"start\","
+		"\"generation\":\"%s\",\"target\":\"literal $[desk.n]\","
+		"\"values\":{\"opacity\":73},\"timeout_ms\":1000}", token);
+	assert(mfl_request_parse(text, &request));
+	assert(request.kind == MFL_REQUEST_PREVIEW_START);
+	assert(mfl_request_is_action(request.kind));
+	assert(mfl_request_reserve(pending, &request, 1, 0, &slot) == NULL);
+	assert(mfl_request_preview_command(command, sizeof(command), &request,
+		1, "a", "0000000000000001"));
+	assert(strstr(command, "Send_Preview a 0000000000000001 "));
+	assert(!strchr(command, '$'));
+	assert(!mfl_request_preview_command(command, 4, &request,
+		1, "a", "0000000000000001") && !command[0]);
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"q\","
+		"\"method\":\"query\",\"resource\":\"preview\"}", &request));
+	assert(!mfl_request_is_action(request.kind));
+	assert(!mfl_request_parse("{\"version\":1,\"id\":\"q\","
+		"\"method\":\"query\",\"resource\":\"preview\",\"timeout_ms\":1000}",
+		&request));
+}
+
 int main(void)
 {
+	test_preview_requests();
 	test_appearance_requests();
 	test_colorset_requests();
 	test_core_snapshot_requests();

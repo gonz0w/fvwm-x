@@ -40,13 +40,19 @@ enum mfl_request_kind {
 	MFL_REQUEST_COLORSETS,
 	MFL_REQUEST_APPEARANCE,
 	MFL_REQUEST_MENU_STYLES,
-	MFL_REQUEST_DECORATIONS
+	MFL_REQUEST_DECORATIONS,
+	MFL_REQUEST_PREVIEW_QUERY,
+	MFL_REQUEST_PREVIEW_START,
+	MFL_REQUEST_PREVIEW_CONFIRM,
+	MFL_REQUEST_PREVIEW_REVERT
 };
 
 struct mfl_request {
 	enum mfl_request_kind kind;
 	char id[MFL_REQUEST_ID_MAX + 1];
 	char target[MFL_REQUEST_ID_MAX + 1];
+	unsigned int opacity;
+	unsigned int timeout_ms;
 	unsigned int offset;
 	unsigned int limit;
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];
@@ -84,6 +90,11 @@ bool mfl_operation_notice(const char *text, char provider[33],
 	char operation[33], char generation[33], char state[10]);
 bool mfl_provider_notice(const char *text, char provider[33],
 	char generation[33]);
+bool mfl_request_is_preview(enum mfl_request_kind kind);
+bool mfl_request_is_core_reply(enum mfl_request_kind kind);
+bool mfl_request_preview_command(char *output, size_t capacity,
+	const struct mfl_request *request, uint64_t serial,
+	const char *cookie, const char *view);
 bool mfl_request_is_snapshot(enum mfl_request_kind kind);
 bool mfl_request_snapshot_command(char *output, size_t capacity,
 	const struct mfl_request *request, uint64_t serial, const char *cookie);

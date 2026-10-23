@@ -103,6 +103,8 @@ receiving its terminal reply; a new connection has its own client-ID scope.
 * `topology`, `workspaces`, `bindings`, `colorsets`, `appearance`, `menu-styles`
   and `decorations` query core-owned state, as described
   below. Binding pages also accept their documented continuation fields.
+* `preview` queries or controls a core-owned runtime menu-opacity lease,
+  as described below. Saved-preference preview remains separate.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
 * `desktop` samples authoritative values through the existing core command
@@ -262,6 +264,71 @@ restrict existing configuration files. Allocation failure returns
 deadline/disconnect policy applies. Wider providers, domain progress/cancellation
 and shared-core preview/recovery remain separate capabilities.
 
+=== Runtime menu-opacity preview
+
+The `preview` resource owns one core-wide runtime lease for an existing named
+menu style's opacity. It does not write saved preferences or preview complete
+themes, colorsets, fonts, decorations or arbitrary command strings. Capability
+fields report `preview_scope: "menu-opacity"`, `preview_persistence:
+"runtime-only"`, `preview_lease_limit: 1` and `preview_timeout_max_ms: 30000`.
+
+First query `appearance` for its 48-character generation, then submit:
+
+----
+request {"version":1,"id":"try-opacity","method":"action","resource":"preview","operation":"start","generation":"CURRENT_48_HEX_TOKEN","target":"SlateLauncherStyle","values":{"opacity":70},"timeout_ms":15000}
+request {"version":1,"id":"preview-state","method":"query","resource":"preview"}
+request {"version":1,"id":"undo-opacity","method":"action","resource":"preview","operation":"revert","generation":"PREVIEW_48_HEX_TOKEN","target":"LEASE_48_HEX_TOKEN"}
+----
+
+Replace the uppercase placeholders with returned lowercase tokens. `start`
+requires one `values` member, integer `opacity` from 0 through 100, and an
+existing literal menu-style name of 1 through 64 UTF-8 bytes. The optional
+integer `timeout_ms` is 1000 through 30000; default 15000. The core checks the
+appearance generation and captures/applies the scalar in one command. A stale
+start returns `stale_generation`; an active lease returns `preview_busy`.
+No separate query-to-command race authorizes restoration.
+
+A successful start returns `scope: "menu-opacity"`, `state: "active"`, `lease`,
+post-apply `generation`, `target`, `previous_opacity`, `preview_opacity`,
+`remaining_ms` and `recovery: "pending"`. It explicitly reports `persistence:
+"not-attempted"` and `rendered_completion: "unknown"`. Opacity is sampled at
+menu presentation; close and reopen the menu to inspect it. Already displayed
+pixels can retain their preceding presentation.
+
+Use `operation: "confirm"` with the same lease and post-apply generation to
+keep the runtime value, or `revert` to restore the exact previous scalar.
+Confirm returns `state: "confirmed"`, `recovery: "kept"`; explicit recovery
+returns `state: "reverted"`, `recovery: "restored"`. Confirmation never writes
+preferences. A later theme/configuration update or WM restart can replace it.
+Terminal states have zero remaining time. A completed lease refuses further
+confirmation/revert with `preview_finished`; an old or foreign lease returns
+`preview_unavailable`. Wrong current lease generations return `stale_generation`.
+
+Only the originating connection can inspect/control its record. Other
+connections observe `state: "inactive"` without lease/target values. One
+terminal record is retained until replacement or native producer retirement;
+there is no preview history service. Lease/view identities also isolate stale
+callbacks across reconnects and core/helper incarnations. They are correlation
+identities, not an X11 authorization boundary.
+
+The monotonic core deadline restores without client polling. Disconnect queues
+an ordered abandon behind an admitted start; native producer death restores
+before its core record retires. A full output queue may delay/drop abandon;
+the independent deadline remains responsible. Recovery also runs during menu
+and pointer interactions, changing only the scalar, without freeing borrowed
+menu resources. It runs at the next eligible core service point and cannot
+preempt a single blocking command or a stalled X server.
+
+Any intervening tracked appearance activity conservatively ends the lease as
+`conflicted`, `recovery: "refused-conflict"`. It preserves the newer state,
+including target deletion; confirm/revert return `preview_conflict`. Inspect
+current policy before trying again. Unrelated tracked activity can also refuse
+restore. There is no blind fallback command or persistent rollback file.
+Allocation/clock/revision/target refusal is explicit; an uncertain or cancelled
+request wait does not cancel a submitted start. Query the originating connection
+or allow its core deadline to settle. Read-only connections can query but cannot
+start/confirm/revert; switching mode does not disable existing recovery.
+
 === Appearance configuration, menu styles and decorations
 
 Three read-only core observations support inspection of shared appearance policy:
@@ -296,8 +363,9 @@ An optional `generation` on `appearance` must match exactly, or the query return
 `stale_generation`. The scalar resource rejects `scope`, `target`, `offset` and
 `limit`. Observing a matching token does not make a later command conditional:
 a producer or image completion can intervene. Do not use a separate query and
-mutation as a rollback guard. Live preview/recovery remains unavailable until
-owned snapshots, conditional application and recovery are implemented.
+mutation as a rollback guard. The separate `preview` resource below owns an
+atomic snapshot/apply/recovery operation for one menu-opacity scalar. The
+appearance query flags do not advertise general appearance transactions.
 
 `menu-styles` and `decorations` use that same conservative appearance token.
 They return `state: "observed"`, `generation`, `offset`, `next_offset`, and a
@@ -389,8 +457,9 @@ A query is a synchronous core observation; subsequent commands or asynchronous
 settlements can change it. On stale pages, restart at offset zero. These tokens
 do not cover Style/decorations, window policy or all appearance changes, and
 cannot authorize rollback after a separate check. `preview_supported: false`
-keeps live preview/revert unavailable until its conflict/recovery contract is
-implemented. Existing settings generations retain their separate scope.
+keeps colorset preview/revert unavailable. The separate runtime `preview`
+resource owns only a menu-opacity scalar. Existing settings generations retain
+their separate scope.
 
 === Desktop settings provider
 
@@ -450,7 +519,8 @@ but command submission fails, the result retains its committed/reloaded state
 with `application: "submission-failed"`. It does not report an unchanged state
 or invite blind replay. Generic `applied_command_results` remains false; this
 provider observes its own saved preferences, not final core rendering.
-Live preview remains unavailable (`preview: false`).
+Saved-preference preview remains unavailable (`preview: false`). The separate
+core `preview` resource changes only runtime menu opacity.
 
 Capabilities name the settings provider with availability `on-request`; MFL
 does not start it, retain a second settings cache or infer liveness from a core

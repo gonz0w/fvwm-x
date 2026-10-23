@@ -661,6 +661,94 @@ class ConfigurationChecking(unittest.TestCase):
         self.assertNotIn('\x1b', result.stdout)
 
 
+class DesktopPreview(unittest.TestCase):
+    def setUp(self):
+        from types import SimpleNamespace
+        self.commands, self.notices = [], []
+        self.owner = SimpleNamespace(send=self.commands.append,
+            notice=self.notices.append, settings_instance='a' * 32,
+            settings_ready=True)
+        self.preview = desktop.MenuOpacityPreview(self.owner)
+
+    def feed(self, result):
+        pending = self.preview.pending
+        prefix = 'MFL_CORE_1 ' + self.owner.settings_instance + ' ' + pending['serial']
+        data = json.dumps({'result': result}).encode()
+        chunks = [data[i:i + 256] for i in range(0, len(data), 256)]
+        for i, chunk in enumerate(chunks):
+            self.preview.reply(prefix + ' part ' + str(i) + ' ' + chunk.hex())
+        self.preview.reply(prefix + ' end ' + str(len(chunks)))
+
+    def active(self):
+        self.preview.start(73)
+        self.feed({'generation': 'b' * 48})
+        self.assertIn('start ' + 'b' * 48 + ' - 73 15000', self.commands[-1])
+        self.feed(dict(scope='menu-opacity', state='active', generation='c' * 48,
+                       lease='d' * 48))
+
+    def test_controls_are_owned_runtime_only_and_revert_takes_precedence(self):
+        self.active()
+        self.assertTrue(any('runtime only' in c for c in self.commands))
+        self.assertFalse(any('save' in c.lower() and 'command' in c.lower()
+                             for c in self.commands))
+        view = self.preview.control['view']
+        with self.assertRaises(ValueError):
+            self.preview.action('old-view', 'revert')
+        self.preview.request('query')
+        self.preview.action(view, 'confirm')
+        self.preview.action(view, 'revert')
+        self.preview.action(view, 'confirm')
+        self.feed(dict(scope='menu-opacity', state='active', generation='c' * 48,
+                       lease='d' * 48))
+        self.assertIn(' revert ', self.commands[-1])
+        self.feed(dict(scope='menu-opacity', state='reverted'))
+        self.assertIsNone(self.preview.control)
+        self.assertIn('restored', self.notices[-1])
+
+    def test_stale_start_retry_is_bounded_and_rechecks_generation(self):
+        self.preview.start(70)
+        self.feed({'generation': 'b' * 48})
+        def refuse():
+            pending = self.preview.pending
+            prefix = 'MFL_CORE_1 ' + self.owner.settings_instance + ' ' + pending['serial']
+            data = b'{"error":{"code":"stale_generation"}}'
+            self.preview.reply(prefix + ' part 0 ' + data.hex())
+            self.preview.reply(prefix + ' end 1')
+        refuse()
+        self.assertEqual(self.preview.pending['phase'], 'inspect')
+        self.feed({'generation': 'c' * 48})
+        self.assertIn('start ' + 'c' * 48, self.commands[-1])
+        refuse()
+        self.assertIsNone(self.preview.control)
+        self.assertIn('refused', self.notices[-1])
+
+    def test_foreign_reply_ignored_and_timeout_abandons_same_view(self):
+        self.preview.start(85)
+        view = self.preview.control['view']
+        pending = self.preview.pending
+        self.preview.reply('MFL_CORE_1 ' + 'e' * 32 + ' ' + pending['serial'] + ' end 0')
+        self.assertIs(self.preview.pending, pending)
+        with patch.object(desktop.time, 'monotonic', return_value=pending['deadline']):
+            self.preview.tick()
+        self.assertIsNone(self.preview.pending)
+        self.assertIsNone(self.preview.control)
+        self.assertTrue(any(view + ' abandon - - 0 0 -' in c for c in self.commands))
+        self.assertIn('timed out', self.notices[-1])
+
+    def test_malformed_or_oversized_reply_cannot_keep_preview(self):
+        self.active()
+        self.preview.request('query')
+        pending = self.preview.pending
+        prefix = 'MFL_CORE_1 ' + self.owner.settings_instance + ' ' + pending['serial']
+        pending['data'] = bytearray(b'x' * 8192)
+        self.preview.reply(prefix + ' part 0 00')
+        self.assertIsNone(self.preview.control)
+        self.assertTrue(any(' abandon ' in c for c in self.commands))
+        self.assertFalse(any(' confirm ' in c for c in self.commands))
+        with self.assertRaises(ValueError):
+            desktop.unique_object([('state', 'active'), ('state', 'confirmed')])
+
+
 class DesktopSettingsIPC(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()

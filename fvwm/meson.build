@@ -58,6 +58,8 @@ fvwm_sources = [
     'fvwm/placement.c',
     'fvwm/read.c',
     'fvwm/query_json.c',
+    'fvwm/preview_policy.c',
+    'fvwm/appearance_preview.c',
     'fvwm/schedule.c',
     'fvwm/session.c',
     'fvwm/stack.c',

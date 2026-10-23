@@ -43,6 +43,7 @@ M_NEW_DESK = 1 << 1
 M_CONFIG_INFO = 1 << 18
 M_END_CONFIG_INFO = 1 << 19
 M_STRING = 1 << 22
+MX_REPLY = (1 << 31) | (1 << 10)
 PALETTE_NAMES = ('slate', 'dune', 'grove', 'ink')
 
 # One data-only registry serves validation, queries and native menu consumers.
@@ -747,6 +748,174 @@ def screenshot(directory):
         x.XSetErrorHandler(previous_handler)
 
 
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('Duplicate JSON field')
+        result[key] = value
+    return result
+
+
+class MenuOpacityPreview:
+    """One bounded runtime consumer; the core owns the rollback deadline."""
+    def __init__(self, desktop):
+        self.desktop = desktop
+        self.serial = 0
+        self.control = None
+        self.pending = None
+        self.queued = None
+        self.next_poll = 0
+
+    def submit(self, phase, command):
+        if self.pending is not None or self.serial == (1 << 64) - 1:
+            raise ValueError('Preview reply channel is unavailable')
+        self.serial += 1
+        serial = f'{self.serial:016x}'
+        self.pending = dict(phase=phase, serial=serial, data=bytearray(),
+                            parts=0, deadline=time.monotonic() + 5)
+        self.desktop.send(command.format(cookie=self.desktop.settings_instance,
+                                         serial=serial))
+
+    def request(self, operation):
+        item = self.control
+        self.submit(operation, 'Send_Preview {cookie} {serial} ' + item['view'] +
+                    ' ' + operation + ' ' +
+                    (item['generation'] if operation in ('confirm', 'revert') else '-') +
+                    ' ' + (item['lease'] if operation in ('confirm', 'revert') else '-') +
+                    ' 0 0 -')
+
+    def start(self, opacity):
+        if self.control is not None or not self.desktop.settings_ready:
+            raise ValueError('A preview is already pending or desktop is not ready')
+        if type(opacity) is not int or not 0 <= opacity <= 100:
+            raise ValueError('Invalid menu opacity')
+        self.control = dict(view=secrets.token_hex(8), opacity=opacity, retries=1)
+        self.submit('inspect', 'Send_Query {cookie} {serial} appearance 0 8 -')
+
+    def action(self, view, operation):
+        if (self.control is None or self.control['view'] != view
+                or operation not in ('confirm', 'revert')
+                or 'lease' not in self.control):
+            raise ValueError('Preview controls are stale')
+        # One queued control, with Revert taking precedence over Keep.
+        if self.pending is not None:
+            if self.queued != 'revert':
+                self.queued = operation
+        else:
+            self.request(operation)
+
+    def finish(self, message, abandon=False):
+        if abandon and self.control is not None:
+            # Same producer ordering: an uncertain submitted start is followed
+            # by abandon. If output fails, the core's deadline still owns it.
+            self.pending = None
+            self.request('abandon')
+        self.desktop.send('KillModule FvwmForm SlatePreview-' +
+                          self.desktop.settings_instance)
+        self.pending = self.control = self.queued = None
+        self.desktop.notice(message)
+
+    def show(self):
+        alias = 'SlatePreview-' + self.desktop.settings_instance
+        callback = ('Command SendToModule FvwmDesktop preview-control ' +
+                    self.desktop.settings_instance + ' ' + self.control['view'])
+        lines = ['Title "Preview menu opacity"', 'Colorset 2', 'ItemColorset 12',
+                 'Line left', 'Text "Launcher opacity: ' +
+                 str(self.control['opacity']) + '% (runtime only)"',
+                 'Line left', 'Text "Keep or revert within 15 seconds."',
+                 'Line left', 'Text "Close the window to let the deadline restore the old value."',
+                 'Line left', 'Text "Preferences stay unchanged. Theme updates or restart replace it."',
+                 'Line expand', 'Button continue "Revert" ^[', callback + ' revert',
+                 'Button continue "Keep current value" F1', callback + ' confirm']
+        self.desktop.send('DestroyModuleConfig ' + alias + ':*')
+        for line in lines:
+            self.desktop.send('*' + alias + ': ' + line)
+        self.desktop.send('Module FvwmForm ' + alias)
+
+    def reply(self, message):
+        pending = self.pending
+        if pending is None:
+            return
+        prefix = ('MFL_CORE_1 ' + self.desktop.settings_instance + ' ' +
+                  pending['serial'] + ' ')
+        if not message.startswith(prefix):
+            return
+        try:
+            fields = message[len(prefix):].split()
+            if (len(fields) == 3 and fields[0] == 'part'
+                    and fields[1] == str(pending['parts'])
+                    and re.fullmatch(r'(?:[0-9a-f]{2}){1,256}', fields[2])):
+                if len(pending['data']) + len(fields[2]) // 2 > 8192:
+                    raise ValueError('Preview reply exceeded its limit')
+                pending['data'].extend(bytes.fromhex(fields[2]))
+                pending['parts'] += 1
+                return
+            if fields != ['end', str(pending['parts'])] or not pending['parts']:
+                raise ValueError('Invalid preview reply')
+            response = json.loads(pending['data'], object_pairs_hook=unique_object)
+            self.pending = None
+            if isinstance(response, dict) and set(response) == {'error'}:
+                details = response['error']
+                code = details.get('code') if isinstance(details, dict) else None
+                if (pending['phase'] == 'start' and code == 'stale_generation'
+                        and self.control['retries']):
+                    # One retry can follow this helper's own closing Form or
+                    # a queued theme completion. Every apply still checks the
+                    # newly observed generation atomically in the core.
+                    self.control['retries'] -= 1
+                    self.submit('inspect', 'Send_Query {cookie} {serial} appearance 0 8 -')
+                    return
+                self.finish('Preview refused; inspect current appearance before retrying.', abandon=True)
+                return
+            if not isinstance(response, dict) or set(response) != {'result'}:
+                raise ValueError('Invalid preview response')
+            result = response['result']
+            if not isinstance(result, dict):
+                raise ValueError('Invalid preview result')
+            phase = pending['phase']
+            if phase == 'inspect':
+                generation = result.get('generation')
+                if not isinstance(generation, str) or not re.fullmatch(r'[0-9a-f]{48}', generation):
+                    raise ValueError('Appearance generation unavailable')
+                self.submit('start', 'Send_Preview {cookie} {serial} ' +
+                            self.control['view'] + ' start ' + generation +
+                            ' - ' + str(self.control['opacity']) +
+                            ' 15000 ' + b'SlateLauncherStyle'.hex())
+                return
+            if result.get('scope') != 'menu-opacity':
+                raise ValueError('Invalid preview scope')
+            state = result.get('state')
+            if state == 'active':
+                for key in ('generation', 'lease'):
+                    if not isinstance(result.get(key), str) or not re.fullmatch(r'[0-9a-f]{48}', result[key]):
+                        raise ValueError('Invalid preview identity')
+                self.control.update(generation=result['generation'], lease=result['lease'])
+                if phase == 'start':
+                    self.show()
+                self.next_poll = time.monotonic() + 1
+                if self.queued is not None:
+                    operation, self.queued = self.queued, None
+                    self.request(operation)
+            else:
+                messages = {'confirmed': 'Menu opacity kept for this runtime; preferences unchanged.',
+                            'reverted': 'Previous menu opacity restored.',
+                            'expired': 'Preview expired; previous menu opacity restored.',
+                            'conflicted': 'Appearance changed elsewhere; automatic restore refused.',
+                            'abandoned': 'Previous menu opacity restored.'}
+                self.finish(messages.get(state, 'Preview is no longer active.'))
+        except (ValueError, UnicodeError, RecursionError):
+            self.finish('Preview result unavailable; core recovery remains responsible.', abandon=True)
+
+    def tick(self):
+        now = time.monotonic()
+        if self.pending is not None and now >= self.pending['deadline']:
+            self.finish('Preview reply timed out; core recovery remains responsible.', abandon=True)
+        elif (self.control is not None and 'lease' in self.control
+              and self.pending is None and now >= self.next_poll):
+            self.request('query')
+
+
 class Desktop:
     def __init__(self, send, root, state_path):
         self.send = send
@@ -780,6 +949,7 @@ class Desktop:
         self.settings_instance = secrets.token_hex(16)
         self.settings_editor = None
         self.configuration_report = None
+        self.menu_preview = MenuOpacityPreview(self)
 
     def retire_settings_editor(self):
         # Only one bounded consumer lease belongs to this helper. Old Form
@@ -1239,7 +1409,12 @@ class Desktop:
             options += [('Reset this setting', 'SendToModule FvwmDesktop reset ' + key)]
             self.menu(name, key, options)
             rows.append((label, 'Popup ' + name))
-        rows += [('', 'Nop'), ('Edit saved preferences...',
+        self.menu('SlateOpacityPreview', 'Runtime launcher opacity',
+                  [(str(value) + '%', 'SendToModule FvwmDesktop preview-opacity ' +
+                    self.settings_instance + ' ' + str(value))
+                   for value in (70, 85, 94, 100)])
+        rows += [('Preview launcher opacity...', 'Popup SlateOpacityPreview'),
+                 ('', 'Nop'), ('Edit saved preferences...',
                   'SendToModule FvwmDesktop edit-settings ' + scope),
                  ('Reset ' + scope, 'SendToModule FvwmDesktop reset ' + scope),
                  ('Reload saved settings', 'SendToModule FvwmDesktop reload-settings'),
@@ -1521,7 +1696,15 @@ class Desktop:
     def handle(self, message):
         command, _, argument = message.strip().partition(' ')
         try:
-            if command == 'ipc-request':
+            if command == 'preview-opacity':
+                instance, value = argument.split()
+                if instance == self.settings_instance:
+                    self.menu_preview.start(int(value))
+            elif command == 'preview-control':
+                instance, view, operation = argument.split()
+                if instance == self.settings_instance:
+                    self.menu_preview.action(view, operation)
+            elif command == 'ipc-request':
                 self.handle_settings_request(argument)
             elif command == 'barrier' and re.fullmatch(r'[A-Za-z0-9_-]{1,64}', argument):
                 # Echo follows earlier commands in this module's ordered pipe.
@@ -1677,6 +1860,7 @@ class Desktop:
         self.send('Module FvwmForm SlateSessionForm')
 
     def tick(self):
+        self.menu_preview.tick()
         if (self.settings_editor is not None
                 and time.monotonic() >= self.settings_editor['deadline']):
             self.retire_settings_editor()
@@ -1765,6 +1949,7 @@ def main():
     user = Path(os.environ.get('FVWM_USERDIR', str(Path.home() / '.fvwm')))
     desktop = Desktop(send, root, user / 'desktop-state.json')
     send('SET_MASK ' + str(M_STRING | M_NEW_DESK | M_CONFIG_INFO | M_END_CONFIG_INFO))
+    send('SET_MASK ' + str(MX_REPLY))
     send('Send_ConfigInfo *FvwmDesktop')
     selector = selectors.DefaultSelector()
     selector.register(in_fd, selectors.EVENT_READ)
@@ -1804,9 +1989,11 @@ def main():
                     break
                 body = bytes(buffer[HEADER.size:length])
                 del buffer[:length]
-                if kind in (M_STRING, M_CONFIG_INFO):
+                if kind in (M_STRING, M_CONFIG_INFO, MX_REPLY):
                     message = body[3 * WORD.size:].split(b'\0', 1)[0].decode('utf-8', 'replace')
-                    if kind == M_STRING:
+                    if kind == MX_REPLY:
+                        desktop.menu_preview.reply(message)
+                    elif kind == M_STRING:
                         desktop.handle(message)
                     elif desktop_configuration(message) is not None:
                         option, value = desktop_configuration(message)

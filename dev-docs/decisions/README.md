@@ -152,3 +152,7 @@ separate; the former public-helper output decision is still deferred.
   qualification is recorded in the linked font/modal report.
 
 - [Local review and GitHub hosting](LOCAL-REVIEW-GITHUB-2026-10-13.md): approved private gonz0w/fvwm-x, signed PR review and roadmap mirror; all checks local, Actions disabled; native evidence requirements retained.
+
+- [Runtime menu-opacity preview](RUNTIME-OPACITY-PREVIEW-2026-10-22.md): one
+  core-owned conditional scalar lease, deadline/conflict recovery and native
+  runtime-only confirmation; saved-preference preview remains open.

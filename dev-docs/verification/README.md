@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Runtime menu-opacity preview and recovery](VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md): one core lease, typed controls and native runtime confirmation; 140 selected passes on six targets/nine profiles and seven scoped core/MFL sanitizer exercises. Saved-preference preview remains open.
+
 - [Appearance policy and copied opacity](VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.md): shared freshness, bounded menu/decor pages and preserved source opacity; eight focused Linux entries, three scoped guest sanitizer exercises and native screenshots.
 
 - [Core colorset observations](VERIFICATION-2026-10-22-IPC-COLORSET-STATE.md): bounded pages, exact sparse IDs and summary/freshness; seven focused Linux passes and three scoped guest sanitizer exercises, with shared-cycle coverage deferred.

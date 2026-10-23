@@ -45,12 +45,14 @@ Integration cycle ledger: PR160's affected six-target checkpoint is merged as
 `b9dc633123d7dd7478fd49f5019e500bc9185274`, the new integrated reference.
 It qualifies accumulated PR158/159/160 with **122 selected passes on six
 targets/nine profiles**, five scoped guest sanitizer exercises and portable
-177 passes/14 skips. PR161 is **1/3 merged**; current appearance policy
-inspection/copy-opacity repair becomes **2/3 on merge**. Focused results do not
-qualify the new source on all targets.
+177 passes/14 skips. PR161 and PR162 are **2/3 merged**. The current runtime menu-opacity preview
+closes this shared cycle with one accumulated affected six-target checkpoint.
+The frozen accumulated candidate passes 140 selected entries on six targets/
+nine profiles and seven scoped guest core/MFL sanitizer exercises. On its merge,
+use the canonical commit as the integrated reference and reset the cycle to 0/3.
 [Integrated report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md),
 [receipt](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.json).
-Performance reference PR159 is **2/5 merged**, **3/5 on this merge**; no
+Performance reference PR159 is **3/5 merged**, **4/5 on this merge**; no
 comparison is due and tuning remains deferred.
 Full install/default-X/full compiler-feature and milestone/release acceptance
 remain at their required boundary. No changed install/discovery/server contract
@@ -59,7 +61,8 @@ separate. Deferred gates are not passes.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Appearance policy and copied opacity, IPC-02 / CFG-01 | Focused merge checks passed; in review | Four related shared-freshness, menu/decor-page and CopyMenuStyle opacity improvements pass eight Linux entries and three scoped leak-enabled guest sanitizer exercises. Actual-X preserves new/existing target opacity and literal definitions; native desktop screenshots are captured/inspected. Original header/control failures stay explicit; no correction follows freeze. Cycle 1/3 merged, 2/3 on merge; accumulated platform/release gates remain due. [Report](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.json). |
+| Runtime menu-opacity preview, IPC-02 / CFG-01 | Combined checkpoint passed; in review | One atomic core scalar lease, typed connection/view controls and native Keep/Revert qualify accumulated PR161/162/current work: 140 selected passes across six targets/nine profiles, seven scoped guest core/MFL sanitizer exercises and portable 177 passes/14 skips. Actual-X screenshots are inspected. Saved-preference preview remains open; runtime Keep never persists. No C/helper/fixture correction follows freeze; data/docs amendments and original failures remain explicit. On merge reset cycle 0/3; performance PR159 becomes 4/5. [Report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md), [receipt](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.json). |
+| Appearance policy and copied opacity, IPC-02 / CFG-01 | Merged in [PR #162](https://github.com/gonz0w/fvwm-x/pull/162); cycle 2/3 | Four related shared-freshness, menu/decor-page and CopyMenuStyle opacity improvements pass eight Linux entries and three scoped leak-enabled guest sanitizer exercises. Actual-X preserves new/existing target opacity and literal definitions; native desktop screenshots are captured/inspected. Original header/control failures stay explicit; no correction follows freeze. Cycle 1/3 merged, 2/3 on merge; accumulated platform/release gates remain due. [Report](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.json). |
 | Core colorset inspection, IPC-02 / CFG-01 | Merged in [PR #161](https://github.com/gonz0w/fvwm-x/pull/161); cycle 1/3 | Three bounded inventory, exact sparse-ID and summary/freshness capabilities expose published values and pending/refused preparation. Seven focused Linux entries and three scoped leak-enabled guest sanitizer exercises pass; final unit readability edits repeat policy only with exact product/fixture retention. Cycle 0/3 merged, 1/3 on merge. Style/decor generations and safe preview stay open. No new UI, matrix/install/BSD or benchmark repeat. [Report](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.json). |
 | Owned desktop operations, IPC-02 | Merged in [PR #160](https://github.com/gonz0w/fvwm-x/pull/160); integrated reference | Five typed refresh/state/result/cancel/retention/notification capabilities adopt existing desktop scans. One combined checkpoint passes 122 selected entries across six targets/nine profiles, five scoped guest sanitizer exercises and portable 177 passes/14 skips. Read-only, busy, stale, failures, late output, reconnect and bounds are explicit. No new UI or install/default-X repeats; wider domain/release acceptance stays open. [Report](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-DESKTOP-OPERATIONS.json). |
 | Desktop-provider observation, IPC-02 | Merged in [PR #159](https://github.com/gonz0w/fvwm-x/pull/159); cycle 2/3 | Desktop-owner capability/configuration state, opt-in identity/generation invalidations and conditional settings snapshots pass seven focused Linux entries (54 desktop policy cases) and two scoped leak-enabled guest sanitizer exercises. Core bytes remain PR158; source/queue/reconnect/absence boundaries are explicit. Shared cycle 1/3 merged, 2/3 on merge; six-target/alternate-profile and release acceptance remain deferred. No new UI. [Report](verification/VERIFICATION-2026-10-22-IPC-PROVIDER-OBSERVATION.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-PROVIDER-OBSERVATION.json). |
@@ -348,15 +351,15 @@ queries are merged in PR159. PR160 adopts bounded operation
 lifecycle with the existing desktop catalog/status workers and qualifies the
 accumulated affected six-target cycle. PR161 adds bounded colorset inventory,
 exact sparse-ID lookup and summary/freshness with published versus pending/refused
-image state. Current work batches appearance-configuration freshness, bounded
-menu/decor definition pages and a reproduced CopyMenuStyle opacity repair.
-Owned snapshots, atomic conditional application and safe preview recovery remain
+image state. PR162 merges appearance freshness, menu/decor pages and the
+CopyMenuStyle opacity repair. Current work adds one core-owned runtime opacity
+lease, typed controls and native Keep/Revert with deadline/conflict recovery.
+General saved-preference confirmation and owned image/resource snapshots remain
 open. Other
 providers, typed actions beyond settings, domain
 progress/decisions/cancellation and shared-core generations/CFG-01 preview remain
 open under their owners.
-No new UI is selected for this transport batch; later visible consumers retain
-actual-X screenshot review. See the current checkpoint and request report.
+The runtime preview adds native UI and actual-X screenshot review. See the current checkpoint and request report.
 Do not add another general maintenance checkpoint before those features.
 The [manager target report](verification/VERIFICATION-2026-10-21-MANAGER-TARGETS.md)
 records composed six-target qualification, exact inputs and retained failures.
@@ -2428,3 +2431,16 @@ reader results are separate from the subsequent interpreter/file work.
 - 2026-10-22: PR160 merged as integrated reference, resetting the cycle to 0/3. IPC-02 batches core colorset inventory pages, exact sparse-ID lookup and scalar summary/freshness with published versus pending/refused image state. Seven selected Linux entries and three scoped guest sanitizer exercises pass. Two final unit readability edits repeat policy only; exact product/fixture identities retain actual-X evidence. No new UI, full matrix, install/default-X or benchmark repeat. The feature becomes 1/3 on merge; performance PR159 is 1/5, 2/5 on merge. Style/decor generations and safe preview stay open. [Report](verification/VERIFICATION-2026-10-22-IPC-COLORSET-STATE.md).
 
 - 2026-10-22: PR161 merged; appearance configuration freshness, bounded menu/decor pages and reproduced CopyMenuStyle opacity preservation pass eight selected Linux entries and three scoped guest sanitizer exercises. The existing native desktop consumer passes with captured/inspected launcher screenshots. Header-dependency and source73/copied100 controls remain preserved; no runtime/fixture correction follows freeze. Cycle 1/3 merged, 2/3 on merge; no matrix/install/BSD repeat. Performance PR159 is 2/5, 3/5 on merge. Owned snapshots/conditional application/recovery remain open. [Report](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.md).
+
+- 2026-10-22: PR162 merged as `fb510466bb0a034c03014424fc16384b83392777`.
+  IPC-02 / CFG-01 now batch an atomic core-owned runtime menu-opacity lease,
+  typed connection/view-scoped controls and a native confirmation consumer.
+  Focused Linux policy and actual-X controls pass; one stale-start retry remains
+  generation-checked. Deadline expiry during menu interaction, disconnect,
+  native producer death and conflict refusal are covered. Saved preferences
+  remain unchanged. The due accumulated six-target checkpoint passes 140 selected
+  entries on nine profiles, seven scoped guest core/MFL sanitizer exercises and
+  portable 177 passes/14 skips. No C/helper/fixture change follows freeze;
+  generated catalog/docs amendments have separate proof. Original development
+  failures and broader install/default-X/release/native-CPU limits remain explicit.
+  [Report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md).

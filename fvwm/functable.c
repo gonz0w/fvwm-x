@@ -493,6 +493,10 @@ const func_t func_table[] =
 	CMD_ENT("send_configinfo", CMD_Send_ConfigInfo, F_CONFIG_LIST, 0, 0),
 	/* - Internal, used for module communication */
 
+	CMD_ENT("send_preview", CMD_Send_Preview, F_SEND_PREVIEW,
+		FUNC_INTERACTION_SAFE, 0),
+	/* - Internal, bounded scalar preview leases */
+
 	CMD_ENT("send_query", CMD_Send_Query, F_SEND_QUERY,
 		FUNC_INTERACTION_SAFE, 0),
 	/* - Internal, bounded directed state queries */

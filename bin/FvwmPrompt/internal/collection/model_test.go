@@ -167,3 +167,24 @@ func TestProjectionBoundsAndBulkSelection(t *testing.T) {
 		t.Fatal("generation wrapped")
 	}
 }
+
+func TestAdapterSelectionIsAtomicAndIndependentOfProjection(t *testing.T) {
+	var m Model
+	m.Replace(entries(30))
+	m.SetFilter("no-match")
+	if err := m.SelectIDs(m.Generation, []string{"item25", "item1"}); err != nil {
+		t.Fatal(err)
+	}
+	if len(m.SelectedIDs()) != 2 || m.HiddenSelectedCount() != 2 {
+		t.Fatal("domain selection discarded")
+	}
+	before := m.SelectedIDs()
+	for _, ids := range [][]string{{"item1", "item1"}, {"missing"}, make([]string, MaxSelected+1)} {
+		if m.SelectIDs(m.Generation, ids) == nil || !reflect.DeepEqual(m.SelectedIDs(), before) {
+			t.Fatal("selection partially admitted")
+		}
+	}
+	if m.SelectIDs(m.Generation-1, nil) == nil || !reflect.DeepEqual(m.SelectedIDs(), before) {
+		t.Fatal("stale adapter selection")
+	}
+}

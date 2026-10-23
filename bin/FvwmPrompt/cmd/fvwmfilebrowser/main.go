@@ -35,6 +35,8 @@ const workerLimit = 10 * time.Second
 type options struct {
 	socket, dir, opener, terminal string
 	hidden, inspect               bool
+	targets                       [][]byte
+	properties                    bool
 }
 type pendingWork struct {
 	serial     uint64
@@ -291,6 +293,21 @@ func (b *browser) completed(event completedWork) error {
 				return err
 			}
 			b.snapshot, b.hidden, b.offset = snapshot, snapshot.Hidden, b.model.OffsetFor(anchor)
+			if len(result.Selected) != 0 {
+				if err := b.model.SelectIDs(b.model.Generation, result.Selected); err != nil {
+					return err
+				}
+				b.offset = b.model.OffsetFor(result.Selected[0])
+				if b.model.Filter() == "" {
+					b.model.Focus = result.Selected[0]
+				}
+				if event.work.navigation == "properties" {
+					if len(result.Selected) != 1 {
+						return errors.New("properties requires one target")
+					}
+					b.inspected = result.Selected[0]
+				}
+			}
 			b.status = "Folder loaded. Symlink/special-file actions unavailable."
 		} else if result.Status == "started" {
 			b.status = "Application started; the browser cannot confirm that the file opened"
@@ -443,7 +460,7 @@ func run(o options) error {
 	if o.inspect {
 		ctx, cancel := context.WithTimeout(context.Background(), workerLimit)
 		defer cancel()
-		result := startWorker(ctx, executable, workRequest{Operation: "scan", Path: []byte(o.dir), Hidden: o.hidden})
+		result := startWorker(ctx, executable, o.initialRequest())
 		if err := json.NewEncoder(os.Stdout).Encode(result); err != nil {
 			return err
 		}
@@ -504,7 +521,11 @@ func run(o options) error {
 	defer stop()
 	idle := time.NewTimer(idleLimit)
 	defer idle.Stop()
-	if err := b.navigate(o.dir, "push"); err != nil {
+	navigation := "push"
+	if o.properties {
+		navigation = "properties"
+	}
+	if err := b.queue(o.initialRequest(), navigation); err != nil {
 		return err
 	}
 	if err := b.show(); err != nil {
@@ -554,7 +575,10 @@ func main() {
 	}
 	var o options
 	home, _ := os.UserHomeDir()
-	flag.StringVar(&o.dir, "dir", home, "initial absolute local directory")
+	flag.StringVar(&o.dir, "dir", home, "initial absolute local directory or local file URI")
+	var reveal, properties targetFlags
+	flag.Var(&reveal, "reveal", "select a literal local target in its parent; repeat for one folder")
+	flag.Var(&properties, "properties", "show one local target in its parent with observed properties")
 	flag.StringVar(&o.socket, "socket", "", "FvwmMFL socket (default: standard private discovery)")
 	flag.StringVar(&o.opener, "opener", "", "literal opener executable; default: xdg-open when available")
 	flag.StringVar(&o.terminal, "terminal", "", "literal terminal executable; default: x-terminal-emulator or xterm")
@@ -563,6 +587,12 @@ func main() {
 	flag.Parse()
 	if flag.NArg() != 0 {
 		fmt.Fprintln(os.Stderr, "fvwm-file-browser: unexpected arguments")
+		os.Exit(2)
+	}
+	dirSet := false
+	flag.Visit(func(f *flag.Flag) { dirSet = dirSet || f.Name == "dir" })
+	if err := prepareOptions(&o, dirSet, reveal, properties); err != nil {
+		fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
 		os.Exit(2)
 	}
 	if o.opener == "" {

@@ -19,6 +19,7 @@ import (
 // Private parent/worker data. Raw paths are base64 JSON bytes, never commands.
 type workRequest struct {
 	Operation string              `json:"operation"`
+	Targets   [][]byte            `json:"target_bytes,omitempty"`
 	Path      []byte              `json:"path_bytes,omitempty"`
 	Hidden    bool                `json:"hidden"`
 	Snapshot  *filemodel.Snapshot `json:"snapshot,omitempty"`
@@ -28,6 +29,7 @@ type workRequest struct {
 
 type workResult struct {
 	Schema   int                 `json:"schema_version"`
+	Selected []string            `json:"selected_ids,omitempty"`
 	Status   string              `json:"status"`
 	Snapshot *filemodel.Snapshot `json:"snapshot,omitempty"`
 	Error    string              `json:"error,omitempty"`
@@ -51,6 +53,15 @@ func decode(data []byte, value any) error {
 func perform(request workRequest) (result workResult) {
 	result.Schema = 1
 	result.Status = "failed"
+	if request.Operation == "locate" {
+		snapshot, ids, err := filemodel.Locate(request.Targets, request.Hidden)
+		if err != nil {
+			result.Error = err.Error()
+			return
+		}
+		result.Status, result.Snapshot, result.Selected = "loaded", snapshot, ids
+		return
+	}
 	path := string(request.Path)
 	if request.Operation == "activate" || request.Operation == "terminal" {
 		if request.Snapshot == nil {

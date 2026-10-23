@@ -57,7 +57,7 @@ func TestProviderTargetSchemasAndCapabilities(t *testing.T) {
 	if code != "" || strings.Contains(string(data), "/private") || strings.Contains(string(data), "/terminal") {
 		t.Fatal(code, string(data))
 	}
-	got := state.(map[string]any)
+	got := state
 	if got["target_request_max"] != 8 || got["opener_available"] != false || got["terminal_available"] != true || len(got["configured_actions"].([]map[string]any)) != 1 {
 		t.Fatal(got)
 	}

@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Larger cleanup batches and risk-based platform checks](BATCHED-CLEANUP-CADENCE-2026-10-23.md): implement related sets before one focused gate; replace the automatic three-PR matrix with a five-batch risk review and targeted checks, retaining full milestone/release qualification.
+
 - [Dependency simplification](DEPENDENCY-SIMPLIFICATION-2026-10-23.md): mandatory Go direction, complete Perl/Python retirement ownership, FVWM 3.x baseline, bounded build/library evaluations and Later backlog children.
 - [Portable browser consumer handoff](BROWSER-CONSUMER-HANDOFF-2026-10-23.md): opt-in matching-folder reuse, shared bounded correlation, core presentation and optional installed desktop entry; protected payload/default-role ownership stays separate.
 

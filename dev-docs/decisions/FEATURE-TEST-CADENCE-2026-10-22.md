@@ -1,5 +1,9 @@
 # Feature PR checks and shared qualification cycles
 
+Cadence superseded on 2026-10-23 by [larger cleanup batches and risk-based
+platform checks](BATCHED-CLEANUP-CADENCE-2026-10-23.md). The text below records
+the earlier decision; its automatic three-PR matrix trigger no longer applies.
+
 Accepted user direction, 2026-10-22: feature development is spending too much
 time repeating platform/build/install qualification for small increments.
 Separate feature-PR merge checks from accumulated integration and release

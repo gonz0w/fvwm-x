@@ -36,3 +36,11 @@ and handoff behavior accounts for a larger feature surface; no per-feature cost
 or speed benefit is inferred. Qualified current binaries are preserved as the
 next independent comparison reference PR186, **0/5 on this feature merge**. The shared
 platform cadence remains separate, PR178 0/3 and 1/3 on this merge.
+
+
+The later [provider cleanup](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md)
+changes the browser executable. This observation/reference intentionally retains
+the pre-cleanup PR186 candidate's exact preserved binaries; it does not measure
+the final cleanup browser. No extra comparison is run for a portable refactor.
+The revised risk-based platform cadence supersedes the old 0/3 integration
+counter above; the independent periodic comparison still resets to 0/5 on merge.

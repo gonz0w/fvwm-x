@@ -14,14 +14,6 @@ type providerWork struct {
 	serial    uint64
 }
 
-func providerWorkerAction(operation string) bool {
-	switch operation {
-	case "navigate", "refresh", "open", "terminal", "custom", "reveal", "inspect", "hidden":
-		return true
-	}
-	return false
-}
-
 // Admission is metadata-only. The existing owned worker revalidates paths and
 // item identities immediately before enumeration or a literal process handoff.
 func (b *browser) planProviderWork(operation string, action providerAction) (workRequest, string, string) {

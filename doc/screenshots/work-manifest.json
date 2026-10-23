@@ -1,0 +1,54 @@
+{
+  "slate-dark": {
+    "file": "doc/screenshots/work-slate-dark.png",
+    "sha256": "d2a616fb14711c65ab1c8919eefc35dae8c8bf60c472170ae25e964a2508a8e0",
+    "capture": "completion/slate-dark/file-browser-ipc-started.png",
+    "source_archive_sha256": "8df0a0c8bb4273fb903a7d556ee1eeaa955c205e61c6f5aa5e14f8758b929e01",
+    "fixture_sha256": "fd2a27828e6669bb9e41d5eceeceba3fa52bdaa262d16703fd6509ab90554753",
+    "archive_sha256": "d871bc79135610c613ef24714b40f6b791130ac7c0401e9439f0f5ea59370610",
+    "configuration_sha256": {
+      "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+      "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+      "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+      "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+      "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "generated.config": "a356d336257dbe703d5aed45603f2552c62ec6f34d850a8fbfb49eaf1c7b2fa5"
+    },
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  },
+  "dune-light": {
+    "file": "doc/screenshots/work-dune-light.png",
+    "sha256": "71d43f1d6acd65874e8526bd9f0ab308b03ffed61c5ca8d0350f926b759dcac5",
+    "capture": "completion/dune-light/file-browser-ipc-cancelled.png",
+    "source_archive_sha256": "8df0a0c8bb4273fb903a7d556ee1eeaa955c205e61c6f5aa5e14f8758b929e01",
+    "fixture_sha256": "fd2a27828e6669bb9e41d5eceeceba3fa52bdaa262d16703fd6509ab90554753",
+    "archive_sha256": "d871bc79135610c613ef24714b40f6b791130ac7c0401e9439f0f5ea59370610",
+    "configuration_sha256": {
+      "local.config": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+      "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+      "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+      "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+      "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "generated.config": "b69f96e839c2bc118f17d102361874b2d6f9192f946ce60181e1c7c1de865c59"
+    },
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  },
+  "classic-large": {
+    "file": "doc/screenshots/work-classic-large.png",
+    "sha256": "86c451557068d0d29b2dd2711b0f387551409a9e01c7e027497c77f7db4e779f",
+    "capture": "completion/classic-large/file-browser-ipc-stale-target.png",
+    "source_archive_sha256": "8df0a0c8bb4273fb903a7d556ee1eeaa955c205e61c6f5aa5e14f8758b929e01",
+    "fixture_sha256": "fd2a27828e6669bb9e41d5eceeceba3fa52bdaa262d16703fd6509ab90554753",
+    "archive_sha256": "d871bc79135610c613ef24714b40f6b791130ac7c0401e9439f0f5ea59370610",
+    "configuration_sha256": {
+      "generated.config": "2f74f3ff27a3e57d893ae1ba366f7f84f4552ce91893433beeb6d6d22e6266e3"
+    },
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  }
+}

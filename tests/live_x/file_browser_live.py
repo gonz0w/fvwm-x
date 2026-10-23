@@ -471,7 +471,7 @@ def run(args):
             providers = rpc()['result']['providers']
             assert [p['provider'] for p in providers] == [provider], providers
             state = rpc(provider=provider, scope='state')['result']
-            assert state['loaded'] == 19 and state['actions'] and not state['file_actions'] and not state['file_content'], state
+            assert state['loaded'] == 19 and state['actions'] and state['file_actions'] and not state['file_content'], state
             assert base64.b64decode(state['path_bytes']) == os.fsencode(root)
             entries, offset = [], 0
             while offset is not None:
@@ -537,7 +537,7 @@ def run(args):
             key(window,b'space')
             evidence['file_provider_current_native_selection_and_stale_page'] = True
 
-            def control(operation, values):
+            def apply_control(operation, values):
                 nonlocal window
                 state = rpc(provider=provider, scope='state')['result']
                 reply = rpc(method='action', controlled=True, provider=provider,
@@ -554,12 +554,12 @@ def run(args):
             assert refused['error']['code'] == 'read_only', refused
             named = {base64.b64decode(i['name_bytes']):i['id'] for i in entries}
             ids = [named[b'file-00'], named[b'file-01']]
-            selected = control('selection', {'mode':'replace', 'ids':ids})
+            selected = apply_control('selection', {'mode':'replace', 'ids':ids})
             assert selected['selected'] == 2
             refused = rpc(method='action', controlled=True, provider=provider,
                 generation=state['generation'], operation='selection', values={'mode':'clear'})
             assert refused['error']['code'] == 'stale_generation', refused
-            control('properties', {})
+            apply_control('properties', {})
             assert identity == (window, sorted(children(window)))
             capture('file-browser-ipc-properties.png')
             state = rpc(provider=provider, scope='state')['result']
@@ -568,12 +568,12 @@ def run(args):
                 values={'mode':'add','ids':[named[b'file-02'],'f'*32]})
             assert refused['error']['code'] == 'invalid_selection', refused
             assert rpc(provider=provider, scope='state')['result']['selected'] == 2
-            filtered = control('filter', {'text':'file-00'})
+            filtered = apply_control('filter', {'text':'file-00'})
             assert filtered['visible'] == 1 and filtered['selected'] == 2
-            control('sort', {'key':'size','reverse':True})
+            apply_control('sort', {'key':'size','reverse':True})
             assert identity == (window, sorted(children(window)))
             capture('file-browser-ipc-filter.png')
-            control('filter', {'text':''})
+            apply_control('filter', {'text':''})
             state = rpc(provider=provider, scope='state')['result']
             malformed = dict(version=1,id='invalid-text',method='action',resource='files',
                 provider=provider,generation=state['generation'],operation='filter',values={'text':'RAW_BYTE'})
@@ -581,13 +581,13 @@ def run(args):
             refused = control_connection.record()['reply']
             assert refused['error']['code'] == 'invalid_request', refused
             assert rpc(provider=provider, scope='state')['result']['generation'] == state['generation']
-            control('view', {'mode':'grid'})
+            apply_control('view', {'mode':'grid'})
             capture('file-browser-ipc-grid.png')
-            control('view', {'mode':'list'})
-            control('selection', {'mode':'remove','ids':ids[:1]})
-            control('selection', {'mode':'add','ids':ids[:1]})
-            control('selection', {'mode':'clear'})
-            control('sort', {'key':'name','reverse':False})
+            apply_control('view', {'mode':'list'})
+            apply_control('selection', {'mode':'remove','ids':ids[:1]})
+            apply_control('selection', {'mode':'add','ids':ids[:1]})
+            apply_control('selection', {'mode':'clear'})
+            apply_control('sort', {'key':'name','reverse':False})
             evidence['file_provider_conditional_controls'] = dict(readonly_refused=True,
                 stale_refused=True, atomic_unknown_id_refusal=True, selection_edits=True,
                 hidden_selection=True, sort=True, properties=True, view=True,
@@ -802,6 +802,74 @@ def run(args):
             watch_state('off')
             evidence['watch_native_refresh_loss_manual_recovery'] = True
             evidence['watch_preserves_input_selection_and_windows'] = True
+            # Typed requests use the same isolated worker, but acknowledge
+            # admission separately from observed completion. Polling does not
+            # consume native ready records or change the operation identity.
+            def work_request(operation, values):
+                state = rpc(provider=provider, scope='state')['result']
+                reply = rpc(method='action', controlled=True, provider=provider,
+                    generation=state['generation'], operation=operation, values=values)
+                assert reply['status'] == 'ok' and reply['result']['applied'], reply
+                result = reply['result']; work = result['work']
+                assert work['status'] == 'accepted' and result['busy'], result
+                render_state(1)
+                return work['id']
+
+            def work_done(ticket, want):
+                deadline = time.monotonic() + 15
+                while time.monotonic() < deadline:
+                    current = rpc(provider=provider, scope='state')['result']
+                    assert current['work']['id'] == ticket, current
+                    if not current['busy']:
+                        assert current['work']['status'] == want, current
+                        return current
+                    time.sleep(0.02)
+                raise AssertionError('typed work did not finish')
+
+            # Stale identity is refused in the worker after admission.
+            ticket = work_request('navigate', {'mode':'item','id':named[b'00-folder']})
+            window = ready(window)
+            current = work_done(ticket, 'loaded')
+            assert base64.b64decode(current['path_bytes']) == os.fsencode(root/'00-folder')
+            capture('file-browser-ipc-navigation.png')
+            ticket = work_request('navigate', {'mode':'back'})
+            window = ready(window); work_done(ticket, 'loaded')
+            ticket = work_request('refresh', {})
+            window = ready(window); work_done(ticket, 'loaded')
+            ticket = work_request('navigate', {'mode':'path',
+                'path_bytes':base64.b64encode(os.fsencode(blocked)).decode()})
+            busy_state = rpc(provider=provider, scope='state')['result']
+            denied = rpc(method='action', controlled=True, provider=provider,
+                generation=busy_state['generation'], operation='refresh', values={})
+            assert denied['error']['code'] == 'busy', denied
+            connection.echo('core-responsive-during-typed-worker')
+            current = rpc(provider=provider, scope='state')['result']
+            cancelled = rpc(method='action', controlled=True, provider=provider,
+                generation=current['generation'], operation='cancel', values={'id':ticket})['result']
+            render_state(1)
+            assert cancelled['work']['status'] == 'cancelling' and cancelled['busy'], cancelled
+            window = ready(window); work_done(ticket, 'cancelled')
+            capture('file-browser-ipc-cancelled.png')
+            # Configured programs stay local; a client supplies only an index.
+            apply_control('selection', {'mode':'replace','ids':[named[b'file-00']]})
+            report.unlink(missing_ok=True)
+            ticket = work_request('custom', {'index':0})
+            window = ready(window); work_done(ticket, 'started')
+            wait_for_predicate('typed literal action', report.exists, time.monotonic()+5)
+            launched = json.loads(report.read_text())
+            assert [base64.b64decode(v) for v in launched['argv']] == [os.fsencode(root/'file-00')], launched
+            capture('file-browser-ipc-started.png')
+            # A changed observed item must not be handed to the application.
+            report.unlink()
+            (root/'file-00').write_text('externally replaced metadata')
+            ticket = work_request('open', {'id':named[b'file-00']})
+            window = ready(window); work_done(ticket, 'failed')
+            assert not report.exists()
+            capture('file-browser-ipc-stale-target.png')
+            evidence['file_provider_worker_actions'] = dict(navigation=True, back=True,
+                refresh=True, literal_configured_action=True, started_is_handoff=True,
+                stale_target_refused=True, busy_refused=True, cancel_reaped=True,
+                unrelated_core_responsive=True, retained_correlated_outcomes=True)
             key(window,b'Escape');callback()
             wait_for_predicate('browser exit',lambda:app.poll() is not None,time.monotonic()+5)
             assert app.poll()==0

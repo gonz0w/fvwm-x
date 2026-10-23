@@ -1070,3 +1070,11 @@ is shared with native Select visible; it publishes only complete admitted edits.
 MFL retains the existing producer wait and response ownership for both queries
 and controls. Native acknowledgement distinguishes published state from input
 admission; filesystem actions and clipboard content stay with their owners.
+
+[Browser worker requests](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_work.go)
+admit typed navigation/refresh/open/terminal/configured actions through the
+existing isolated worker. One latest accepted serial-bound outcome and explicit
+cancel/reap/supersession state live with the browser; MFL retains only its normal
+response ownership. Path bytes and configured program identity remain separate
+from display text. The [worker contract](decisions/FILE-PROVIDER-WORK-2026-10-23.md)
+does not add file mutation or protected clipboard transport.

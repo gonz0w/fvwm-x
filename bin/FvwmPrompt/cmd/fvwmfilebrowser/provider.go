@@ -90,7 +90,9 @@ func (b *browser) providerGeneration() string {
 		Focus      string
 		View       string
 		Inspected  []string
-	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected})
+		Work       *providerWork
+		Busy       bool
+	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active})
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:16])
 }
@@ -117,7 +119,8 @@ func (b *browser) validFileQuery(query fileQuery) bool {
 		return hexToken(query.Generation, 32) && query.Offset == 0 && query.Limit == 0 &&
 			len(query.Values) > 0 && len(query.Values) <= providerValuesMax &&
 			(query.Operation == "selection" || query.Operation == "filter" || query.Operation == "sort" ||
-				query.Operation == "view" || query.Operation == "properties")
+				query.Operation == "view" || query.Operation == "properties" ||
+				providerWorkerAction(query.Operation) || query.Operation == "cancel")
 	}
 	return query.Operation == "" && len(query.Values) == 0 &&
 		query.Offset >= 0 && query.Offset <= collection.MaxItems && query.Limit >= 1 && query.Limit <= providerPageMax &&
@@ -157,9 +160,12 @@ func (b *browser) providerResult(query fileQuery) (any, string) {
 		result["busy"], result["watch"] = b.active, b.watch.state()
 		result["page_max"], result["selection_limit"] = providerPageMax, collection.MaxSelected
 		result["actions"] = true
-		result["file_actions"] = false
+		result["file_actions"] = true
+		result["work"] = b.providerWork
+		result["operation_retention"] = "latest_accepted"
+		result["path_request_max"] = 192
 		result["selection_edit_max"] = providerEditMax
-		result["action_operations"] = []string{"selection", "filter", "sort", "view", "properties"}
+		result["action_operations"] = []string{"selection", "filter", "sort", "view", "properties", "navigate", "refresh", "open", "terminal", "custom", "cancel"}
 	case "properties":
 		if query.Offset != 0 {
 			return nil, "invalid_request"

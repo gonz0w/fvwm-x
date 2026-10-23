@@ -541,6 +541,7 @@ static bool files_values(const char *operation, const cJSON *values)
 	const cJSON *item, *previous;
 	const cJSON *mode = NULL, *ids = NULL, *text = NULL;
 	const cJSON *key = NULL, *reverse = NULL;
+	const cJSON *id = NULL, *path = NULL, *index = NULL;
 	unsigned int count = 0;
 
 	if (!cJSON_IsObject(values))
@@ -563,6 +564,12 @@ static bool files_values(const char *operation, const cJSON *values)
 			key = item;
 		else if (strcmp(item->string, "reverse") == 0)
 			reverse = item;
+		else if (strcmp(item->string, "id") == 0)
+			id = item;
+		else if (strcmp(item->string, "path_bytes") == 0)
+			path = item;
+		else if (strcmp(item->string, "index") == 0)
+			index = item;
 		else
 			return false;
 	}
@@ -604,7 +611,37 @@ static bool files_values(const char *operation, const cJSON *values)
 		return count == 1 && cJSON_IsString(mode) &&
 			(strcmp(mode->valuestring, "list") == 0 ||
 			 strcmp(mode->valuestring, "grid") == 0);
-	return strcmp(operation, "properties") == 0 && count == 0;
+	if (strcmp(operation, "navigate") == 0)
+	{
+		if (!cJSON_IsString(mode))
+			return false;
+		if (strcmp(mode->valuestring, "home") == 0 ||
+		    strcmp(mode->valuestring, "up") == 0 ||
+		    strcmp(mode->valuestring, "back") == 0)
+			return count == 1;
+		if (strcmp(mode->valuestring, "item") == 0)
+			return count == 2 && settings_token(id);
+		return strcmp(mode->valuestring, "path") == 0 && count == 2 &&
+			bounded_string(path, 256) &&
+			strspn(path->valuestring,
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				"abcdefghijklmnopqrstuvwxyz0123456789+/=")
+				== strlen(path->valuestring);
+	}
+	if (strcmp(operation, "open") == 0)
+		return count == 1 && settings_token(id);
+	if (strcmp(operation, "custom") == 0)
+		return count == 1 && cJSON_IsNumber(index) &&
+			index->valuedouble >= 0 && index->valuedouble < 4 &&
+			index->valuedouble == index->valueint;
+	if (strcmp(operation, "cancel") == 0)
+		return count == 1 && bounded_string(id, 16) &&
+			strlen(id->valuestring) == 16 &&
+			strspn(id->valuestring, "0123456789abcdef") == 16 &&
+			strcmp(id->valuestring, "0000000000000000") != 0;
+	return count == 0 && (strcmp(operation, "properties") == 0 ||
+		strcmp(operation, "refresh") == 0 ||
+		strcmp(operation, "terminal") == 0);
 }
 
 static bool files_action(struct mfl_request *request,

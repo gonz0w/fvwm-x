@@ -1,0 +1,319 @@
+{
+  "status": "passed",
+  "base": "fda9dc705e89cfa31b210d477e43055553ddf3cb",
+  "frozen_source_files": 2331,
+  "source_archive_sha256": "8df0a0c8bb4273fb903a7d556ee1eeaa955c205e61c6f5aa5e14f8758b929e01",
+  "worktree_manifest_sha256": "3e5644647daedee57d4d5c236bbb3f99afec03f6cfb1e8d81062f4b7a39203e0",
+  "captures": {
+    "final/fvwm-x-linux-arm64-svg-evidence.tgz": {
+      "sha256": "393ca2443e5598f1e8da0b422c973eb209c643153bad9561744730c43bbda2e2",
+      "files": 49,
+      "bytes": 1725190
+    },
+    "completion/fvwm-x-linux-arm64-svg-evidence.tgz": {
+      "sha256": "d871bc79135610c613ef24714b40f6b791130ac7c0401e9439f0f5ea59370610",
+      "files": 154,
+      "bytes": 5118907
+    },
+    "final/freebsd-arm64-evidence.tgz": {
+      "sha256": "0c4d4182c2d62c20d618412ea547783981af1e3a0841ead64fa22563fe8ed7d7",
+      "files": 42,
+      "bytes": 447841
+    },
+    "completion/freebsd-arm64-evidence.tgz": {
+      "sha256": "25c8affc67cf26ed6bce4f16b4927a9b769cc9fffb3d13b5d97bfbc3092a1d49",
+      "files": 48,
+      "bytes": 535555
+    }
+  },
+  "counts": {
+    "fvwm-x-linux-arm64-svg/testlog.json": 5,
+    "fvwm-x-linux-arm64-svg/go-policy.log": {
+      "top_cases": 76,
+      "packages": 5
+    },
+    "fvwm-x-linux-arm64-svg/go-race.log": {
+      "top_cases": 76,
+      "packages": 5
+    },
+    "scoped_sanitizer_policy": 2,
+    "scoped_sanitizer_X": 1,
+    "freebsd-arm64/testlog.json": 5,
+    "freebsd-arm64/go-policy.log": {
+      "top_cases": 75,
+      "packages": 5
+    }
+  },
+  "screenshots": {
+    "fvwm-x-linux-arm64-svg/slate-dark": {
+      "count": 35,
+      "sha256": {
+        "collection-label-cleared.png": "065870ab5d2d7f09aca127d0ad1870018cf9b97dd68edab0e074f2d5588fba2c",
+        "collection-label-clipped.png": "67f85f23127ae67f44f0cd061c2a9cc498e7464195c948b9952c0310660e2749",
+        "collection-update-before.png": "f320eda3cb78ae46b96c1ea469b999f88dd445ae81a616d170efb789f8a88400",
+        "collection-update-committed.png": "00a350fb4a4b8af373121721adf0ec6c4dda00eb71cd0cb4f5235b60dca5a36b",
+        "collection-update-empty.png": "1c7216fddaab27c526ef4aa5419ed6997b6faadf5a9cad8c639c1b3fef7c7c39",
+        "collection-update-removed.png": "f125ae8c3854b0bc6156d0f3e5512c085afbfbb9ffee58b3a86144b4a3fba4a1",
+        "collection-update-staged.png": "f320eda3cb78ae46b96c1ea469b999f88dd445ae81a616d170efb789f8a88400",
+        "file-browser-4096-grid.png": "2968f7df967509e10c92ac41e169727de347b44d65ed629f69ddb9077d82ecce",
+        "file-browser-4096-live-sort.png": "3b2bd142499acef29e34c1cd4e844a0fb5b6d7449d7a0a70cdb35ae9e27931fe",
+        "file-browser-4096-rows.png": "60917a9287bd7340f022e0705d8158162b03c3ff4120d01422f6c27f68994b52",
+        "file-browser-collection.png": "63a02ac251902322bcbd6e656c9a75211c8341555fcc2aacc35ed764ff2d7a8f",
+        "file-browser-custom-action.png": "c8bdfc1055388c332e9feb69aa6db516c6ec0f7d2b74645b14dd3994aa835e53",
+        "file-browser-empty-filter.png": "856b7b98d17f5530ebc689f58132c5337047e22ba61f004c3f50b408a90170d5",
+        "file-browser-filtered-selection.png": "491ef5ec2343bee5bdc22fa967cd5b79848398ddb0eb2f06190d0cf829520934",
+        "file-browser-grid.png": "04a84efb999182f030ca533bce04643f30bed118092c97c0fae052ab02a13a3a",
+        "file-browser-input-focus-return.png": "f0db76af255f7dc20b899b206340ad1abcde253394b9a533e1e0b4a15cd97460",
+        "file-browser-ipc-cancelled.png": "4bf86d1162a68e1191a9676210da271b7518674e9e905243872f6cb72439b9dc",
+        "file-browser-ipc-filter.png": "a6b68c04aec1115a06b9bc39038f89569b2582f29ef230952fcf0ffb582f6408",
+        "file-browser-ipc-grid.png": "5e539a8ed1358768b696337cc71970e9b6f23d0e7bcf0bcf024e2cf3ed06d53f",
+        "file-browser-ipc-navigation.png": "174a07982f265f826dce5082f5abd0e31ebdc865a218da12d5a593cd0be128b8",
+        "file-browser-ipc-properties.png": "a55f0413281d64939b4061aad9f75e7f3ba6a4b0f1c2ec0def30a3c6905c6f3c",
+        "file-browser-ipc-stale-target.png": "23648ddf7cc1b8382610b9546873c3c1662dd85b0658a4e72bb791735a602349",
+        "file-browser-ipc-started.png": "d2a616fb14711c65ab1c8919eefc35dae8c8bf60c472170ae25e964a2508a8e0",
+        "file-browser-live-sort.png": "d8685653249d784ea534548f87933be7fe7004477b3dc6fd5e5573507222eecf",
+        "file-browser-provider-selection.png": "14dd99d1328082d799b467af11ed64df72cef73bec4bf1c0ff2706de8ca609dd",
+        "file-browser-range-list.png": "2e4f82ff1cd64a03b6759ff61f18bdfe374a726af5c9c3b93eed198ee0b3795e",
+        "file-browser-refresh-changes.png": "18e61075acfa33178a4b14476082cdc559b4eb40ad238e530e263409ddaf65dd",
+        "file-browser-refresh-unchanged.png": "8e3636997bea8b2505905d3dcfbbb30351dada746c219b31fcd89c503aa3f2c3",
+        "file-browser-scrolled-properties.png": "11139d4a4addec1e48445b5798210d10786ecbb22534ae1d6a0586361d1442f4",
+        "file-browser-selection-properties.png": "b98f4065488c5c48d0db633b60d20563b192f8a20d43384fd41f52cc22e78f18",
+        "file-browser-watch-fallback.png": "2799f49450cfeb57aa061e86445dc237679687136e0625098384df2f39ef8042",
+        "file-browser-watch-recovered.png": "ccb46571134c8e85908a6d8a19a5aeb3f235cb0cc365ad673d0929a5bd61029a",
+        "file-browser-watch-refresh.png": "d78665767a36df18fa530b3c180dcf62f9ab574835262f710963415ff7bcf1a8",
+        "file-browser-wheel-after.png": "a6d9e8c5983a4836b20c2540cb18128e9c6cc59bdaf359656ce6874ebc2c6b83",
+        "file-browser-wheel-before.png": "026be88bbf918f642eb6ae479ce1eaf77ce6e1c5173d55260e8d234ac931c4ae"
+      },
+      "checks": {
+        "navigation": true,
+        "back": true,
+        "refresh": true,
+        "literal_configured_action": true,
+        "started_is_handoff": true,
+        "stale_target_refused": true,
+        "busy_refused": true,
+        "cancel_reaped": true,
+        "unrelated_core_responsive": true,
+        "retained_correlated_outcomes": true
+      },
+      "font": "xft:Sans:size=10:antialias=True",
+      "configuration_sha256": {
+        "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+        "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+        "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+        "generated.config": "a356d336257dbe703d5aed45603f2552c62ec6f34d850a8fbfb49eaf1c7b2fa5"
+      }
+    },
+    "fvwm-x-linux-arm64-svg/dune-light": {
+      "count": 35,
+      "sha256": {
+        "collection-label-cleared.png": "16f253c87ebb40cabf6a3670bf128d43a6801cc989c3b92bd6236251a0f04167",
+        "collection-label-clipped.png": "72811c91a7906b215cf3a53614f2db4eb39b27bd9ce7d52052009ff790d60bb4",
+        "collection-update-before.png": "aaa274b835efafa6d0129c54b8ff2a8b2c316cbd518f9facb0566796063a8eb9",
+        "collection-update-committed.png": "5b65cca36bc8f36529012ed38a2819b7f2340ef52d4af750f34613307e93c00f",
+        "collection-update-empty.png": "aed42bb2f5e7051fc33fe947332e2065d38a53bf7f3b4502f5194666ccf0be04",
+        "collection-update-removed.png": "b0c62447d9415360f0a8265ece21f7c795a3009a8abc4e7eec892e67bfba8973",
+        "collection-update-staged.png": "aaa274b835efafa6d0129c54b8ff2a8b2c316cbd518f9facb0566796063a8eb9",
+        "file-browser-4096-grid.png": "d5cee30d2842d554ac2bdf02cc2214408f756f5cb654b42970bddb77268a64a4",
+        "file-browser-4096-live-sort.png": "8af7e4c681c8e0c9afe2b123405bdb9ef4fc4e84d1d4dfe249c669eaba756947",
+        "file-browser-4096-rows.png": "23b1249ad0f0b107319ec73b0d6f1573fb83e1faf760e9ba4c665bcf999d2538",
+        "file-browser-collection.png": "b3eab1e53807d06b7d6d7e37119d9541aa872fba81734845c340dc77edf96dea",
+        "file-browser-custom-action.png": "3224404a6e523f4b7c972ac53b80c48c52f78017f71efdea83c239e7a1e112bb",
+        "file-browser-empty-filter.png": "af56db60d34c332e2fb08719509be29e8833f302b01905cc035d8c13a257cfee",
+        "file-browser-filtered-selection.png": "88429f42ac83b4d8f17504046e8f0d35501fadf6ba1e3adea618b98e663d51cb",
+        "file-browser-grid.png": "371aaa4a1968bb64357b0723e06aedf7103c672faad8f71b339623047d7627c4",
+        "file-browser-input-focus-return.png": "2fecf4061c027627302406e916b5ce24357c2e15f3694e88efaffbc3ab5a701a",
+        "file-browser-ipc-cancelled.png": "71d43f1d6acd65874e8526bd9f0ab308b03ffed61c5ca8d0350f926b759dcac5",
+        "file-browser-ipc-filter.png": "a7abb7c1a68f9cecd6774171053c56af6972005f2931750507135d7ee6eeca77",
+        "file-browser-ipc-grid.png": "3dc7225b4c2318c221612c4344403820afdae71fad4175202d9167e9d7c0f1c9",
+        "file-browser-ipc-navigation.png": "ba398a8f6c406df9fdb369e382aebc4e5e5da00a87614df95ff1d0c754ace131",
+        "file-browser-ipc-properties.png": "5fb7d4307057cb07b2df62a4a157c3bb15fee61cde79c228cfbae4d6818a7fe5",
+        "file-browser-ipc-stale-target.png": "56540a03632f9a44c9b0fef206601e656be0a5f5a524b7a604f0d110d4f498cd",
+        "file-browser-ipc-started.png": "a3eaec90999590e676601995715b71102dec16776d46460df69b79e578172aa5",
+        "file-browser-live-sort.png": "9aefe695b475d609915d6c22f9cd86beffda2992829e875f59ee78ca7961b96d",
+        "file-browser-provider-selection.png": "c899a6f51ea4e3310a90eb33fe88227917d00c7291a2972db30f1e7b424a6f8e",
+        "file-browser-range-list.png": "e022560478f4c4b825d5001cc56e113db16286009343eb0ee95c4aba6ac0a7f4",
+        "file-browser-refresh-changes.png": "33cbfb0f68a77895b454153e9c9cb13f608fc106fcaa8d9e671a7e9f14cb9865",
+        "file-browser-refresh-unchanged.png": "f29a2a03a89a92e0565583f38aa18943b29c57ff315f311d08d39045e651dddd",
+        "file-browser-scrolled-properties.png": "1ab00e3526fc4314760365688fe7fddf3c77947185e64705ecb3eb00f9ce9c2f",
+        "file-browser-selection-properties.png": "b602ba7232155f05573c92e0e9efe70c68a52fd3b6714e22b55d2404758e12f8",
+        "file-browser-watch-fallback.png": "23d0907884a1b692e5ba9c6ab622070b5f8170f7fdaa6cce98164fbed3f783fd",
+        "file-browser-watch-recovered.png": "ab5d26c0016defeed11192cf5924ba99eacb55d6e725db01dc6d686daf118437",
+        "file-browser-watch-refresh.png": "ed8157e3c1c881511a8bbbcf55e82ecd108892394ae74b0989543b3dcc713271",
+        "file-browser-wheel-after.png": "ce55037dfdca54153888e338601c4eaff4f8e903b4e5e00b767b8ee7ef8828d2",
+        "file-browser-wheel-before.png": "52691ee53566f6c789f79144e3cb44f2c08f2049cf871ea479722551f0bb404c"
+      },
+      "checks": {
+        "navigation": true,
+        "back": true,
+        "refresh": true,
+        "literal_configured_action": true,
+        "started_is_handoff": true,
+        "stale_target_refused": true,
+        "busy_refused": true,
+        "cancel_reaped": true,
+        "unrelated_core_responsive": true,
+        "retained_correlated_outcomes": true
+      },
+      "font": "xft:Sans:size=10:antialias=True",
+      "configuration_sha256": {
+        "local.config": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+        "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+        "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+        "generated.config": "b69f96e839c2bc118f17d102361874b2d6f9192f946ce60181e1c7c1de865c59"
+      }
+    },
+    "fvwm-x-linux-arm64-svg/classic-large": {
+      "count": 35,
+      "sha256": {
+        "collection-label-cleared.png": "b8634d9226c714ec117b2487dc27f95e5e20f63d4d54a3fcc5dc1a5bcb120a43",
+        "collection-label-clipped.png": "d9cc333f1d327e60fa27cefb0b9ecfe1aa8a8c30114aee7ba285f8cf002bc450",
+        "collection-update-before.png": "a56af03c30bbaaf2ae9b14254648e490c72262039949a56147bcd26565fcd423",
+        "collection-update-committed.png": "4b9072a13f25af7c8d3f46bbdbdb0f8cb18e05ca86db80ff773c30e74e42b982",
+        "collection-update-empty.png": "24c3d7b5e39048a72c132c9fb38e6917a1cb86753a8c495f365a6ea53f388126",
+        "collection-update-removed.png": "0db36dea82a6d63c775145530bb8619066d8b2262c3fc702e80272803fe8da0f",
+        "collection-update-staged.png": "a56af03c30bbaaf2ae9b14254648e490c72262039949a56147bcd26565fcd423",
+        "file-browser-4096-grid.png": "4b2c069d26f45071388647875425050a488299bd5ba61268e259b9ea94d97d4a",
+        "file-browser-4096-live-sort.png": "1a481f9dd9c6bf2ed66d850794b11238ab060c0dfda09340bf13f9ebd3153e84",
+        "file-browser-4096-rows.png": "a822f1a788a8756a58d804130a783ffa7e301d1d96e6a44634545e62b070cc0e",
+        "file-browser-collection.png": "5f0a90483a2a012fcb5930ccfef0f8b28d3529d0537bf1aa503b0d58369690bc",
+        "file-browser-custom-action.png": "18a826cc545482a1ea95842bc3de825081dd80600933ac23d823bc085722c005",
+        "file-browser-empty-filter.png": "bb2013f351b470fbf689176533590d3bfd7b04270787cc7f630243976b5ba6fd",
+        "file-browser-filtered-selection.png": "49c9708108974eaa03dd00d305492435317f4bf2eb42d1d7c366a7839b981bde",
+        "file-browser-grid.png": "965c43eb1a2b61a91eef63465abfd5a300cc048cae0a54ecb998825d13342b14",
+        "file-browser-input-focus-return.png": "c57ec68f69bd87daccf7a4b681572211064b57d53ac7a5138e69bd59f270ab52",
+        "file-browser-ipc-cancelled.png": "b0da9a507c763612b105b215405299403eaa2c7339ee4204af16527f8da33d83",
+        "file-browser-ipc-filter.png": "e2efdc981bed8e6704b031d5efc9c71f39a34a431b36f478012cc46203dae27d",
+        "file-browser-ipc-grid.png": "c3010515b9ca59edda1a484b16abdea451fecb66c85be552b81666e9170f326d",
+        "file-browser-ipc-navigation.png": "fd324a11de2c8d19f5cdd486861b5fcab3d9cda789db269efeb8c57f9633bde0",
+        "file-browser-ipc-properties.png": "3d3d1b40f7e48c399554db2390901e1409602e94779251e1389464de37791906",
+        "file-browser-ipc-stale-target.png": "86c451557068d0d29b2dd2711b0f387551409a9e01c7e027497c77f7db4e779f",
+        "file-browser-ipc-started.png": "ea0b5cb468455934e28dd563a76833cd5febe69f6b4bfb6628d78b156fc39736",
+        "file-browser-live-sort.png": "64ef3a01a7bb653bbcef3ad2f052cc1d93d2acc390758aca281147b04575620e",
+        "file-browser-provider-selection.png": "e6d698b1b7e92cdd79b45103bd5b33612a507eb139ced434055698a6a0316396",
+        "file-browser-range-list.png": "78fdd89a143f4bec392b16e25a96f127691df95717e018c12cbb156eba5abb83",
+        "file-browser-refresh-changes.png": "0d5e8b91e1ca536e84fd95112a3e2e80b8e620e4e61e9186ad4c1a2ddb96c535",
+        "file-browser-refresh-unchanged.png": "a33d294761edf1b2fec730e280eacfbe6b1f3c66557b8f66d7633c388d314875",
+        "file-browser-scrolled-properties.png": "afd5e5ec637bebacb7bd43713c927edc427e53e91444fc3804221beecfcf2577",
+        "file-browser-selection-properties.png": "ea3a92168e852c02d7f5e1189c396fb4bdc125b66e799f72e57e59f9c2d33add",
+        "file-browser-watch-fallback.png": "101db875a75e24f409d7d2b1bce950aaf48b20e71cdef5d073b959f313e6f22f",
+        "file-browser-watch-recovered.png": "61f1b9c155ab22d12c24f3d4f168ae2dee0b92aadd915c63df3b6959ee966b9d",
+        "file-browser-watch-refresh.png": "8693a4d9290fe5cb713036efaf3cb14d77ff8ae8085681693b1ec3edfae3bae0",
+        "file-browser-wheel-after.png": "3a420ea7c6e24dcc2d5963a9327b30f1e8321461d47af45dae6fc1b45cfb2f23",
+        "file-browser-wheel-before.png": "86b4a6ab0c82158454c7f3edaa62cbf3419ffa4648ed5eeddb2b62b3b38c247c"
+      },
+      "checks": {
+        "navigation": true,
+        "back": true,
+        "refresh": true,
+        "literal_configured_action": true,
+        "started_is_handoff": true,
+        "stale_target_refused": true,
+        "busy_refused": true,
+        "cancel_reaped": true,
+        "unrelated_core_responsive": true,
+        "retained_correlated_outcomes": true
+      },
+      "font": "9x15",
+      "configuration_sha256": {
+        "generated.config": "2f74f3ff27a3e57d893ae1ba366f7f84f4552ce91893433beeb6d6d22e6266e3"
+      }
+    },
+    "freebsd-arm64/native-ui": {
+      "count": 35,
+      "sha256": {
+        "collection-label-cleared.png": "2d1870e2087bd8b349d2b0e6a5b611c9412df29a290999142bcf50dafae202a8",
+        "collection-label-clipped.png": "7447cd7d6557789e35ee2427e5a94f7a0b0dea4173d03c355d5c2eaf6dd6c8f8",
+        "collection-update-before.png": "846c8b05e29c8d328d6469118dc3d9980b43d11b32ca1deb0e24d15abeb7ba12",
+        "collection-update-committed.png": "7bfa9d2733760d594b297908066b7474de97b128a9d03782c892b8947c97c8d0",
+        "collection-update-empty.png": "6cc9739e403f01d78f00bf5b3c0d2639cd783df53ff2955fa61b6b18fe2b6e88",
+        "collection-update-removed.png": "c6c2341fbceb93b3d80670ad40bf15b72f379e07f7ffd22b8733a7230a2b9cb8",
+        "collection-update-staged.png": "846c8b05e29c8d328d6469118dc3d9980b43d11b32ca1deb0e24d15abeb7ba12",
+        "file-browser-4096-grid.png": "6a933c7f41baa32f20811f6b6b3db53037e730212b686764722ab2a821682b6e",
+        "file-browser-4096-live-sort.png": "a0041b255db97b8b6470b5f8ac29f26ea58e38b0ddc4f1db9c3f91ad052ade22",
+        "file-browser-4096-rows.png": "389a154674ca74a73f2bfcd4718804f33057ef6dd5e14d6c843cb3a222ce9a92",
+        "file-browser-collection.png": "0688a219cae2f31877381848105fa13c731b795b6f062de43ac9a5b97b7c2bff",
+        "file-browser-custom-action.png": "91be41b11888303abc092c6b1ce63ac9d8794503494809c62dfa3a52e6fdcc1b",
+        "file-browser-empty-filter.png": "81e1c126abdeaece2368e1613d03404ada5b3465addd42b28f9b77cc2cf79712",
+        "file-browser-filtered-selection.png": "ea58080e1b575d51dc2275f8617a37bc77093958cc921ebf3d8f81fd92820e85",
+        "file-browser-grid.png": "f7e285159e9f5c523fc797d4c3e02f8262eadcf2f17f4ea00cbff00cb62ebd82",
+        "file-browser-input-focus-return.png": "0e86f304acd0c0d368db7c9e9c5a4f0e9eea32b63a7c4679a3f4eac262da0dbd",
+        "file-browser-ipc-cancelled.png": "32f1cc038bd3d80bcb26f368310f6529a3e01a83f1bec51480685ceb7256f7e8",
+        "file-browser-ipc-filter.png": "6e6e7f4caf3804cf49bc3c3d3d419501a96fa748f4de7e6d3f08d3aa7ef86464",
+        "file-browser-ipc-grid.png": "fdd28976f4582f3106a0350b57ef618f7f4d5736d0d1373483f4a02a644d710c",
+        "file-browser-ipc-navigation.png": "106a4aa6dc91177f1f2c76a2912d013515343d877362fc68877217a5b8067cff",
+        "file-browser-ipc-properties.png": "0bc8005620471f496001e2ee26a586764be218320f4a5550acfae1fcf05fa4c5",
+        "file-browser-ipc-stale-target.png": "f82529d9ee4bca5d15ac20a10c01c8a5eb809eca1e6a2eee3cfe1a00a34dd170",
+        "file-browser-ipc-started.png": "337f67f470693c1529ea68e15658a76254d1ecd071350e2e0ff2c6a091791986",
+        "file-browser-live-sort.png": "6621c24b72a2f7b8a01ef6bc445284c70c046a88d538ea862761f20f9089fa4a",
+        "file-browser-provider-selection.png": "2c99d18e5daff7516ac72e52f7fa0113d00915c5a90c74e9873415fb95ac9034",
+        "file-browser-range-list.png": "e2fd8299a01aa1f60ef6668c940babfc86a090a757413390404b12fee87bfe9d",
+        "file-browser-refresh-changes.png": "a77f96d82ed1924b8f2086ce771f3ad5cb5dfa7d04f881491f16dc6e8c653311",
+        "file-browser-refresh-unchanged.png": "c5e58e6631c308b0e54242632f296d7faf9726b01c5fb5e6d76c770c8793fd97",
+        "file-browser-scrolled-properties.png": "d4d498330601aecb958f70df134af6f52a7596ed9c0e2673795d728b8a78c85b",
+        "file-browser-selection-properties.png": "190dfb8d1fd92e119cb8e17842a50be776bcc27220fdfc4dc64f7194b9fa1235",
+        "file-browser-watch-fallback.png": "48699b38afadc9663622d012406b03a2e834e291c867716761dffd53ee39b067",
+        "file-browser-watch-recovered.png": "c16509b4ce69900b5de1915be543b219dae467c8317af2c8ae62735ae136ea7c",
+        "file-browser-watch-refresh.png": "9e480bd8cb041f59a24ab85ce68ad46ef056e32d48d7c96e1af5769701d6ae7c",
+        "file-browser-wheel-after.png": "30d2677d770a8aaf07ad3cdd4ada3882fcffb97b27edca5b6143c0b7d5569907",
+        "file-browser-wheel-before.png": "827b7c6b8ad1f337d05d8e8cdce73028d0492e3d0d6bbd6dbcf9c523daa0e608"
+      },
+      "checks": {
+        "navigation": true,
+        "back": true,
+        "refresh": true,
+        "literal_configured_action": true,
+        "started_is_handoff": true,
+        "stale_target_refused": true,
+        "busy_refused": true,
+        "cancel_reaped": true,
+        "unrelated_core_responsive": true,
+        "retained_correlated_outcomes": true
+      },
+      "font": "fixed",
+      "configuration_sha256": {
+        "generated.config": "5ff685a0bae41c489de55149ad19a9487b460fc61e89173efef1d5ec51d1bc75"
+      }
+    }
+  },
+  "binaries": {
+    "fvwm-x-linux-arm64-svg": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "32599e9e6d9d599b42708080e1dc647b79ac43ce3039719fcad7f530d7a2329b",
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": "34352d9c14f93c9ba23a3a760dc5c5541f9c2bf08986ceebc36d533c68c632e5",
+      "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser": "0f245243eb4e2926be28161084a95670edf36275db74db3aa28c825d6e3e4101",
+      "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/FvwmCommand": "330badbbe22904499df6dcffa7de66993735ff7d19ce32bbf1d17c76f0f0a287"
+    },
+    "freebsd-arm64": {
+      "/root/fvwm-module-waits-20261015/build-default/fvwm3": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+      "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL": "02c4fb9a9a4d24d2658b871cd2aa4fe87a83d638a85ee83b07e4d1baf6a36194",
+      "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm": "9547a2ba676eced6be7b927014be37be7c6ce119bac2ebd8f9eb69b112abebbd",
+      "/root/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser": "c0f120593478120ab74ec8ce97c73d2b2da721c5d364ba602c90e58e7363f519",
+      "/root/fvwm-module-waits-20261015/browser-directory-watch-go-build/FvwmCommand": "9a2b87f0a3cf29bb74e75d6b006c4bc3814ab555567b0cba49d6a057fc7178d0"
+    }
+  },
+  "fixture_correction": {
+    "file": "tests/live_x/file_browser_live.py",
+    "before": "12833c87a682c02fabb17f0849558d2475ad191043c3008bab90de0b1bad5656",
+    "after": "fd2a27828e6669bb9e41d5eceeceba3fa52bdaa262d16703fd6509ab90554753",
+    "reason": "Rename the UI action helper to avoid an existing native widget variable shadowing it; no product change"
+  },
+  "documentation_only_amendments": [
+    "dev-docs/PROJECT-TRACKER.md",
+    "dev-docs/decisions/README.md",
+    "dev-docs/verification/README.md",
+    "doc/development-preview.md"
+  ],
+  "integration_reference": "PR175; merged PR176 1/3, 2/3 on this merge",
+  "performance_reference": "PR174; merged PR176 2/5, 3/5 on this merge; no comparison due",
+  "gaps": "accumulated six-target, compiler/optional/install/default-X/owner/release and native-CPU/hardware/toolkit/assistive/protected-content qualification remain separate",
+  "verified_Linux_guest_duplicate_retirement": {
+    "files": 208,
+    "bytes": 26047555,
+    "scope": "This batch only: two capture trees/archives and one compressed source archive; canonical host copies retained; sources/builds/caches/disks preserved"
+  }
+}

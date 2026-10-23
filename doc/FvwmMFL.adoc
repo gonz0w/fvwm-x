@@ -489,7 +489,7 @@ action or replacing its native windows. Draft input and file content are absent.
 
 * `state` returns base64 `path_bytes`, loaded/visible/selected counts, focused
   ID, filter/sort/view/watch state and `page_max: 8`, `selection_limit: 256`,
-  `actions: true`, `file_actions: false`, `file_content: false`. It does not enumerate a new directory.
+  `actions: true`, `file_actions: true`, `file_content: false`. It does not enumerate a new directory.
 * `items` pages the current visible order. `selection` pages the selected set,
   including filtered-out selections. Both return `items`, `total`, `offset` and
   integer-or-null `next_offset`. Items contain opaque `id`, base64 `name_bytes`,
@@ -564,8 +564,7 @@ Unknown fields, wrong types and duplicate value fields are refused. The compact
 encoded values object must fit 384 bytes as well as the whole 1000-byte request
 line. For a larger selection, apply bounded add/remove edits, using each returned
 generation for the next edit. State advertises `selection_edit_max: 8` and
-`action_operations`; `file_actions: false` distinguishes these view controls from
-opening applications or mutating files.
+`action_operations`. File mutation remains unavailable.
 
 The browser validates values before any native handshake, captures current native
 selection/focus, then checks the supplied generation. An obsolete state returns
@@ -588,6 +587,73 @@ the producer becomes available. A native/transport publication failure retires
 the provider/view and returns unavailable or a transport failure; application may
 be unknown. No success is reported for a split model/native view.
 
+==== Isolated navigation and application requests
+
+The same conditional action envelope also admits worker operations. Query state
+first; all operations below require the current generation and a writable client.
+
+|===
+|Operation |Exact values |Behavior
+|`navigate`
+|`{"mode":"home"}`, `{"mode":"up"}` or `{"mode":"back"}`
+|Load Home, parent or the most recent history entry.
+|`navigate`
+|`{"mode":"item","id":"ITEM_32_HEX"}`
+|Revalidate a current directory item and load it. Other kinds are refused.
+|`navigate`
+|`{"mode":"path","path_bytes":"BASE64"}`
+|Load an absolute local path encoded in canonical padded base64. At most 192
+original bytes fit this request; longer paths remain available through native
+path entry. NUL/relative paths are refused; raw filename bytes are preserved.
+|`refresh`
+|`{}`
+|Rescan the current folder, reconciling surviving selection and focus.
+|`open`
+|`{"id":"ITEM_32_HEX"}`
+|Revalidate one observed item; navigate a directory or hand a regular file to the
+browser's configured opener. Symlink/special-file actions remain unavailable.
+|`terminal`
+|`{}`
+|Revalidate the observed folder and start the configured terminal there.
+|`custom`
+|`{"index":0}` (integer 0–3)
+|Revalidate the complete captured selection, then pass its literal paths to that
+configured action. Index is zero-based; the client cannot supply an executable.
+|`cancel`
+|`{"id":"WORK_16_HEX"}`
+|Request cancellation of that browser's current accepted worker operation.
+|===
+
+After native publication, the action reply contains `applied: true`, `busy: true`
+and `work: {id, operation, status: "accepted"}`. This acknowledges admission,
+not completion. Queries of `state` retain the latest accepted `work`, or null
+before the first request; `operation_retention` is `latest_accepted`. A newer
+accepted worker request replaces that one outcome. View controls and refused
+requests do not replace it. Pair the work ID with its provider incarnation.
+`path_request_max: 192` advertises the decoded path bound.
+
+Poll state until the matching work is terminal: `loaded`, `started`, `failed`,
+`cancelled` or `superseded`. Failure can include a bounded presentation `detail`.
+`started` means only that a process was handed off; application exit and opened
+pixels are not tracked. Completion enters the existing native publication path;
+no filesystem call runs in MFL, the WM core or the browser event loop.
+Operation state and worker occupancy also invalidate generation tokens.
+
+One owned worker slot is available. Another worker request returns `busy` while
+it is occupied, including during cancellation. Native navigation may supersede
+external work (`superseding` until reaped, then `superseded`). A matching `cancel`
+returns `cancelling`; the slot remains occupied until the child has exited and
+been reaped. Cancellation is best effort, cannot undo an application handoff and
+is not rollback. It suppresses late directory publication. Worker deadlines can
+also produce `cancelled`. Old/unknown work IDs return `operation_unavailable`;
+terminal/superseded work returns `not_cancellable`.
+
+Client wait cancellation (`resource: "requests"`) only discards the IPC reply;
+it does not cancel the worker. After a lost reply, query state to recover the
+latest accepted work. Closing the requesting client does not kill the browser's
+worker; closing the browser retires the provider and its outcomes. No persistence,
+mutation, content transfer or FileManager1 bus service is added.
+
 Producer registration uses `method: "register", resource: "files", provider`.
 Identity cannot change on that connection; reconnect to retire it. Dedicated
 `file_query` records carry version, 16-hex serial, provider, scope, generation,
@@ -599,8 +665,8 @@ bounded values again before native work. Matching producers reply with reserved
 using ordered chunks of at most 256 bytes and 32 parts. The assembled object
 contains `result` or `error: {code: ...}`. Other connections and old serials
 cannot complete the active producer response. These are internal producer
-messages, not user commands. External file actions, mutation and protected clipboard payload transport
-remain outside this metadata/view interface.
+messages, not user commands. Mutation and protected clipboard payload transport
+remain outside this interface.
 
 === Desktop settings provider
 

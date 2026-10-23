@@ -41,7 +41,10 @@ owners and 22 paused feature/polish owners. The
 implementation batches and three decision lanes. **Next: M1**, combining
 DEP-GO-01 #179, DEP-XDG-01 #180 and LEGACY-01 #181 with their parent cleanup
 scope. #179/#181 are Ready; #180 remains blocked by #179. No product deletion,
-compiler/install switch or new runtime qualification occurs in this planning PR.
+compiler/install switch or new runtime qualification occurs in
+[planning PR #188](https://github.com/gonz0w/fvwm-x/pull/188). All issue/Project
+placements, labels/milestones and preserved native relationships are verified.
+[Receipt](verification/MAINTENANCE-PLANNING-2026-10-23.md).
 
 Verification cadence, revised by the user on 2026-10-23: implement larger
 related cleanup/feature batches before one focused Linux gate. Aim for six to
@@ -439,7 +442,8 @@ cancellation failures are repaired across six targets, and existing retained
 context/function/module/window owners have explicit dispositions. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md).
 No comparison is due.
 
-Current selection, 2026-10-22: the user approved the finite feature handoff
+Historical feature selection, 2026-10-22 (superseded by maintenance-first scheduling):
+the user approved the finite feature handoff
 in [the milestone cutoff](decisions/FEATURE-HANDOFF-2026-10-21.md).
 Safety closeout PR141–143 and dependency/protocol checkpoints PR144–147 are
 merged. The bounded manager-selection S04–S06 target checkpoint is locally qualified
@@ -2708,3 +2712,14 @@ reader results are separate from the subsequent interpreter/file work.
   stages/priorities/native relationships and accepted evidence. Project Work
   batch mirrors the queue. PR187 is merged; no runtime/OS tests are needed for
   this documentation/board plan. [Batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).
+
+
+- 2026-10-23: Maintenance-first queue is mirrored and read back in all 73 open
+  issues and Project cards. Nineteen selected maintenance issues move from Later
+  to milestone 05; #179/#181 are Ready at the top, #180 remains blocked by #179.
+  Work batch contains the logical queue; original relative order of other cards
+  is preserved. All native parents/blockers, stage/priority and accepted evidence
+  remain intact. Two GitHub gateway failures are reconciled through actual-state
+  readback and smaller idempotent setters; final values pass. PR187 is Done;
+  planning PR188 is Review. No runtime/OS tests, removals or dependency changes.
+  [Receipt](verification/MAINTENANCE-PLANNING-2026-10-23.md).

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-23",
+  "status": "passed",
   "base": "5e442a6a42c53f02c62c90cad6b702f4f8f306f3",
   "counts": {
     "open_snapshot": 73,
@@ -14,7 +14,7 @@
     179,
     181
   ],
-  "milestone_05_from_Later": [
+  "moved_from_Later": [
     23,
     40,
     41,
@@ -35,7 +35,16 @@
     183,
     184
   ],
-  "membership": {
+  "parents_and_blockers_unchanged": true,
+  "stages_and_priorities_unchanged": true,
+  "issue_set_open_unchanged": true,
+  "body_hashes_and_milestones_verified": 73,
+  "ready_cards_at_top": [
+    179,
+    181
+  ],
+  "other_card_relative_order_preserved": true,
+  "logical_batch_mapping": {
     "3": "Qualification",
     "4": "M5",
     "5": "Qualification",
@@ -110,7 +119,112 @@
     "183": "M4",
     "184": "M3"
   },
-  "original_issue_snapshot_sha256": "672f2c52ea42dd29f1aac747f40b8e73641530e8f05135a56f9a1fb5b6cdd218",
-  "status": "Prepared; issue/Project mirror readback pending",
-  "runtime_changes": false
+  "work_batch_field": {
+    "id": "PVTSSF_lAHOAO8ux84Bm7hCzhm9reU",
+    "name": "Work batch",
+    "options": [
+      {
+        "id": "bb683917",
+        "name": "M1 Runtime baseline"
+      },
+      {
+        "id": "f6d1a59e",
+        "name": "M2 Runtime controllers"
+      },
+      {
+        "id": "c5688358",
+        "name": "M3 Target linkage"
+      },
+      {
+        "id": "a172efde",
+        "name": "M4 SVG consolidation"
+      },
+      {
+        "id": "257ee58c",
+        "name": "M5 Source ownership"
+      },
+      {
+        "id": "5d64878f",
+        "name": "M6 Perl retirement"
+      },
+      {
+        "id": "a65af2db",
+        "name": "M7 Owned tooling"
+      },
+      {
+        "id": "bb680fb0",
+        "name": "M8 Distribution closure"
+      },
+      {
+        "id": "e818a115",
+        "name": "D1 Build evaluation"
+      },
+      {
+        "id": "d40c8ff7",
+        "name": "D2 JSON evaluation"
+      },
+      {
+        "id": "c68982f1",
+        "name": "D3 Sandbox evaluation"
+      },
+      {
+        "id": "4831bfe9",
+        "name": "Qualification"
+      },
+      {
+        "id": "59ae755a",
+        "name": "Deferred performance"
+      },
+      {
+        "id": "f1a11755",
+        "name": "Paused features"
+      }
+    ],
+    "type": "ProjectV2SingleSelectField"
+  },
+  "gateway_recovery": {
+    "initial_request": "apply-0-request.json",
+    "outcome": "HTTP 502, no success response received; metadata setters may have partially applied",
+    "readback": "after-502.json and project-after-502.json",
+    "retained_metadata_assignments": 18,
+    "remaining_metadata_assignments": 152,
+    "recovery": "Read back actual state, retain completed assignments, send only unfinished prepared setters in groups of at most six; identical-value retry is idempotent.",
+    "position_request": "A second HTTP 502 affected a bulk position request; actual state was read back, attempted moves restored, then only the Ready M1 cards were promoted with individual setters."
+  },
+  "snapshot_sha256": {
+    "exact-before.json": "cfbfb33efa42be99376f9bdc76e7dc95cb28f3694b4b04be7166d1ed383e18a7",
+    "issues-after.json": "8c84bec89e7516d3fca34653e4291dfa355751d8b82d15aaea46d98e04f9bdf8",
+    "project-before.json": "814fb825b80233a640a33d410f51a5777d52cb30d593835856e98defb52e3bdc",
+    "project-after.json": "4f209683e0c0f06509ca98de228b9db3e6992237171a29199b82d93ecb52cc69",
+    "expected.json": "40b6d77b4bd23bdda7e732dfcb5ff0bf84ca567d33c03e0498b82af8962eb4b9"
+  },
+  "PR": {
+    "url": "https://github.com/gonz0w/fvwm-x/pull/188",
+    "state": "OPEN"
+  },
+  "runtime_changes": false,
+  "order_recovery": {
+    "attempted_position_ids": [
+      "PVTI_lAHOAO8ux84Bm7hCzhAk0Cw",
+      "PVTI_lAHOAO8ux84Bm7hCzhAk0Fc",
+      "PVTI_lAHOAO8ux84Bm7hCzhAk0H8",
+      "PVTI_lAHOAO8ux84Bm7hCzhAk0Lo",
+      "PVTI_lAHOAO8ux84Bm7hCzhAk0PE",
+      "PVTI_lAHOAO8ux84Bm7hCzhAkz-U",
+      "PVTI_lAHOAO8ux84Bm7hCzhAkz1s",
+      "PVTI_lAHOAO8ux84Bm7hCzhAkz4Q",
+      "PVTI_lAHOAO8ux84Bm7hCzhAkz6g",
+      "PVTI_lAHOAO8ux84Bm7hCzhAkz_0",
+      "PVTI_lAHOAO8ux84Bm7hCzhAkzw8",
+      "PVTI_lAHOAO8ux84Bm7hCzhAkzyU"
+    ],
+    "restored_original_relative_order": true,
+    "ready_at_top": [
+      179,
+      181
+    ],
+    "policy": "Work batch field mirrors full logical queue; only Ready M1 items move ahead of existing card order. Full-board automatic reordering is not required."
+  },
+  "local_validation": "make check lint; exhaustive/exclusive issue placement and acyclic batch graph; no runtime/build/test sources changed",
+  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/maintenance-batch-plan"
 }

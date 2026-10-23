@@ -156,6 +156,9 @@ batches; full required milestone/release qualification still runs once with
 valid evidence reuse. Three-theme/screenshots apply to changed rendering/UI,
 not a source move or documentation cleanup.
 
+[Planning PR #188](https://github.com/gonz0w/fvwm-x/pull/188) records this queue;
+the issue/Project mirror has been read back successfully.
+
 An issue closes only when its own acceptance is met. Finishing a child does not
 close its broad parent, and moving a card is not implementation or qualification.
 Decision lanes finish with a specific adopt/defer/reject outcome and bounded

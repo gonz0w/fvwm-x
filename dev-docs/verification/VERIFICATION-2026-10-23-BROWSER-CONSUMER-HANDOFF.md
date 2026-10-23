@@ -11,8 +11,8 @@ Scope note: this report records the original feature candidate. The subsequent
 changes ten Go files and qualifies the final browser on Linux. Earlier native,
 BSD, three-theme, install and sanitizer receipts keep their exact original
 source/binary scope. The [new cadence](../decisions/BATCHED-CLEANUP-CADENCE-2026-10-23.md)
-supersedes the three-PR trigger and counters below; PR186 is the first pending
-batch since integrated PR178.
+supersedes the three-PR trigger and counters below; PR186 is now the first
+merged batch since integrated PR178, with cleanup following separately.
 
 ## Behavior and scope
 

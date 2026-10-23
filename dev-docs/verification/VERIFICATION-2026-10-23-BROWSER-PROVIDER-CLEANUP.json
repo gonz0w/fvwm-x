@@ -195,5 +195,31 @@
     "files": 62,
     "bytes": 6321041
   },
-  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/browser-consumer-handoff/cleanup"
+  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/browser-consumer-handoff/cleanup",
+  "followup_derivation": {
+    "tested_parent": "9d136a7c840f19b452bfe0df69955ff83789c783",
+    "followup_base": "87e2559fae4494abc00f03232774bb301abb2922",
+    "baseline_changes": [
+      "AGENTS.md",
+      "README.md",
+      "dev-docs/DEVELOPERS.md",
+      "dev-docs/GITHUB-ROADMAP.md",
+      "dev-docs/PROJECT-TRACKER.md",
+      "dev-docs/PROJECT.md",
+      "dev-docs/decisions/CONFIG-COMPATIBILITY-SCOPE-2026-10-07.md",
+      "dev-docs/decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md",
+      "dev-docs/decisions/README.md",
+      "dev-docs/decisions/RUNTIME-GO-LUA-2026-10-06.md",
+      "dev-docs/verification/DEPENDENCY-PLANNING-2026-10-23.json",
+      "dev-docs/verification/DEPENDENCY-PLANNING-2026-10-23.md",
+      "dev-docs/verification/README.md"
+    ],
+    "conflicts": "Only documentation indexes; both entries retained",
+    "guarded_inputs_unchanged": 1504,
+    "README_hygiene": {
+      "inherited_words": 257,
+      "final_words": 250,
+      "fix": "Shorten screenshot alt captions; retain dependency planning link and status"
+    }
+  }
 }

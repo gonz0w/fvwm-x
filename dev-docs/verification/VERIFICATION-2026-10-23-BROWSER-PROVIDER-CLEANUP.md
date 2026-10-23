@@ -1,6 +1,6 @@
 # Combined browser provider cleanup
 
-Status: **focused Linux checks passed**, enlarging open [PR #186](https://github.com/gonz0w/fvwm-x/pull/186).
+Status: **focused Linux checks passed**, following merged [PR #186](https://github.com/gonz0w/fvwm-x/pull/186).
 [Source-bound receipt](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.json).
 The user requests larger sets of related cleanup before a combined test gate;
 the [revised cadence](../decisions/BATCHED-CLEANUP-CADENCE-2026-10-23.md) removes
@@ -38,7 +38,7 @@ Implement all four improvements, then run one existing Linux ARM64 profile:
 | Native provider/handoff integration | Pass, Slate dark | 11.563 s |
 
 Combined command time: **22.399 seconds**, excluding transfer, collection and
-local review/docs. No failed gate or correction/retry follows this freeze.
+local review/docs. No failed product gate or product correction/retry follows this freeze.
 A contract test ties all sixteen advertised operations to admitted example
 schemas and worker ownership, refuses unknown operations and proves metadata
 cannot modify the catalog. Existing malformed values, stale/atomic refusal,
@@ -66,8 +66,18 @@ After preservation, retire 62 individually verified guest duplicates
 (6,321,041 bytes), retaining source, incremental builds, installs, caches and
 disks. The source delta is only 11,452 bytes; no complete source/build snapshot
 is duplicated. PR178 remains the last integrated reference; PR186 is the first
-pending combined batch since it, with a risk review after about five merged
-batches or a substantial handoff rather than an automatic platform job.
+merged implementation batch since it, and this cleanup is the next pending
+batch. Review accumulated risk after about five merged batches or a substantial
+handoff rather than starting an automatic platform job.
+
+The cleanup branch follows merged PR186 and the dependency-planning docs from
+PR185. Rebase conflicts affect only two documentation indexes; both entries are
+retained. All 1504 guarded runtime/test/build inputs remain exact against the
+tested source, so no product test repeats for the documentation-only baseline
+change. The inherited README exceeds the 250-word hygiene limit (257 words);
+shorten screenshot alt captions to 248 words total, preserving the dependency
+planning link and product status. Repository checks then pass. The source-bound
+receipt records this derivation.
 
 The earlier [periodic comparison](PERFORMANCE-2026-10-23-BROWSER-HANDOFF.md)
 retains its preserved pre-cleanup PR186 binary identities. It does not measure

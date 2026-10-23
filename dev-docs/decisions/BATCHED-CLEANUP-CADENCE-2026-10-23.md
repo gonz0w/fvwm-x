@@ -39,8 +39,7 @@ trigger in the [previous cadence](FEATURE-TEST-CADENCE-2026-10-22.md).
   not create another three-theme run. No new performance comparison is due
   solely for cleanup or PR creation; retain the periodic comparison cadence.
 
-PR186 remains open and is enlarged with four related provider maintainability
-improvements: one operation catalog for capability/admission/worker routing,
+After PR186, batch four related provider maintainability improvements: one operation catalog for capability/admission/worker routing,
 strict typed value decoding, separate query versus mutation ownership, and
 compiler-checked query results. Run the accumulated cleanup's Linux policy/vet/
 build and one native-X provider/handoff exercise. Existing C/ABI/build/install/

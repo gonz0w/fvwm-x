@@ -19,11 +19,11 @@ built-in compositor or native Wayland backend.
 
 Slate dark: native list and observed properties.
 
-![Development file browser in Slate dark, with a selected list entry and its properties](doc/screenshots/browser-slate-list.png)
+![Slate dark file browser showing selection and observed properties](doc/screenshots/browser-slate-list.png)
 
 Dune light: native grid, scrolled to the end of 4096 synthetic entries.
 
-![Development file browser in Dune light, with a selected grid entry](doc/screenshots/browser-dune-grid.png)
+![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
 [More screenshots, theme/config examples and current limits](doc/development-preview.md).
 Full file-manager workflows, protected clipboard handoff, broader accessibility and release qualification

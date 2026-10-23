@@ -74,7 +74,8 @@ instructions; retired GSD plans and graph data are historical references.
   coverage; X-visible behavior needs nested-X Linux integration. Apply relevant
   platform coverage when affected APIs/ABI/build/server behavior or accumulated
   risk requires it, and full acceptance at milestone/release boundaries.
-  Physical hardware/toolkits/compositors retain their own checks; emulated passes do not establish native-CPU qualification.
+  Physical hardware/toolkits/compositors retain their own checks; emulated
+  passes do not establish native-CPU qualification.
 - Follow the tiered cadence in `dev-docs/WORKFLOW.md`: normal feature PRs use one
   incremental Linux profile, affected policy/X tests and scoped sanitizers when
   warranted. Check platform-sensitive changes early on the affected target.
@@ -83,12 +84,14 @@ instructions; retired GSD plans and graph data are historical references.
   matrix or a blocker on the next portable cleanup batch. Use affected BSD/
   architecture checks for changed contracts or concrete failures. Full compiler/
   feature/install/default-X qualification belongs at milestone/release boundaries
-  unless the changed contract requires it earlier. Track deferred gates in the tracker; focused-checks-passed PRs may merge while
+  unless the changed contract requires it earlier. Track deferred gates in the
+  tracker; focused-checks-passed PRs may merge while
   integration is pending. Do not report deferred checks as passes.
 - Default to one PR per coherent batch: usually six to ten related improvements
   where useful, or a complete reviewable owner slice. Keep related implementation,
   tests, docs, evidence and review fixes together. Reuse owner-controlled
-  incremental builds per compiler/feature profile; do not rebuild or run a full matrix solely because a PR is created.
+  incremental builds per compiler/feature profile; do not rebuild or run a full
+  matrix solely because a PR is created.
 - Local macOS uses emulated Linux/BSD where appropriate. Native Linux ASan/UBSan
   execution is a separate qualification; emulated passes are not evidence of
   native execution. Run review, tests, lint and validation locally; do not add

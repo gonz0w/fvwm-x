@@ -51,8 +51,9 @@ results. FreeBSD AMD64's synthetic-input observation correction repeats only UI;
 all product sources remain unchanged. Both OpenBSD 8.0 architectures pass and
 all owned guests shut down normally. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md).
 PR178 `e2f61e65b0e5277dedcf28fe6c602efa8b2d1762` is integrated reference
-with no implementation PR merged since it. Open PR186 is the first pending
-combined batch. The automatic three-PR platform trigger is retired; review
+with one implementation batch merged since it (PR186). Provider cleanup is the
+next pending batch; the intervening dependency-planning documentation adds no
+implementation count. The automatic three-PR platform trigger is retired; review
 coverage debt after roughly five merged batches or a substantial handoff.
 Full install/default-X/compiler-feature and owner/milestone/release acceptance
 remain at their required boundary. Native-CPU/hardware/toolkit/compositor/
@@ -91,8 +92,8 @@ or release gates, or advance either verification counter.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Combined provider cleanup, CLEAN-01 / FILE-DATA/ACTION/VIEW-01 | Added to open [PR #186](https://github.com/gonz0w/fvwm-x/pull/186); focused Linux checks pass | One catalog, strict typed value decoding, query/mutation boundaries and concrete query results. All four land before one 22.399-second combined policy/race/vet/build/native-X gate: 85 policy cases, 45 race cases, one actual-X driver. Native/OS/build/install/rendering inputs unchanged; no new platform/install/theme matrix. Earlier feature receipts keep their exact source scope. [Report](verification/VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md). |
-| Portable browser consumer handoff, FILE-ACTION/DATA/VIEW/INTEGRATION-01 | In review: [PR #186](https://github.com/gonz0w/fvwm-x/pull/186); focused checks pass | Shared correlated RPC, opt-in matching folder/reveal/properties reuse, core presentation and an optional installed desktop entry. Ten native entries, 251 Go top-case executions/15 package outcomes including race, four browser native-X runs and three scoped sanitizer exercises pass; three themes/41 screenshots each. Scoped completion resolves storage-only linking; a manual paragraph placement rerenders only that manual. PR178 is the last integrated reference; PR186 is the first pending combined batch; due performance comparison complete, new reference 0/5 on merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md), [contract](decisions/BROWSER-CONSUMER-HANDOFF-2026-10-23.md). |
+| Combined provider cleanup, CLEAN-01 / FILE-DATA/ACTION/VIEW-01 | Follow-up PR pending after merged PR186; focused Linux checks pass | One catalog, strict typed value decoding, query/mutation boundaries and concrete query results. All four land before one 22.399-second combined policy/race/vet/build/native-X gate: 85 policy cases, 45 race cases, one actual-X driver. Native/OS/build/install/rendering inputs unchanged; no new platform/install/theme matrix. Earlier feature receipts keep their exact source scope. [Report](verification/VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md). |
+| Portable browser consumer handoff, FILE-ACTION/DATA/VIEW/INTEGRATION-01 | Merged in [PR #186](https://github.com/gonz0w/fvwm-x/pull/186); source-bound feature checks pass | Shared correlated RPC, opt-in matching folder/reveal/properties reuse, core presentation and an optional installed desktop entry. Ten native entries, 251 Go top-case executions/15 package outcomes including race, four browser native-X runs and three scoped sanitizer exercises pass; three themes/41 screenshots each. Scoped completion resolves storage-only linking; a manual paragraph placement rerenders only that manual. PR178 is the last integrated reference; PR186 is the first merged combined batch; due performance comparison complete, new reference 0/5 on merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md), [contract](decisions/BROWSER-CONSUMER-HANDOFF-2026-10-23.md). |
 | Accumulated browser action cycle, PR176–178 | Closed before next feature implementation | Six targets/seven profiles: 84 native entries, 556 Go cases/35 outcomes, eight normal browser runs plus retained sanitized Form and five scoped sanitizer exercises. One UI-only observation completion; no product changes. PR178 is the integrated reference 0/3. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md). |
 | Live target and observation controls, FILE-ACTION/DATA/VIEW-01 | Merged in [PR #178](https://github.com/gonz0w/fvwm-x/pull/178); focused Linux and early FreeBSD checks pass | Live reveal/inspect, explicit hidden/watch controls, configured action metadata and generation-checked native focus reuse the existing workers/publication. Twenty-four native entries, 239 Go cases/15 package outcomes, five native-X runs and five scoped sanitizer exercises pass; three themes/39 screenshots each. No product/fixture correction follows freeze. Cycle 2/3, 3/3 on merge: close accumulated platform checkpoint before another feature. Performance PR174 3/5, 4/5 on merge. [Report](verification/VERIFICATION-2026-10-23-FILE-PROVIDER-TARGETS.md), [contract](decisions/FILE-PROVIDER-TARGETS-2026-10-23.md). |
 | Isolated browser worker requests, FILE-ACTION/DATA/VIEW-01 | Merged in [PR #177](https://github.com/gonz0w/fvwm-x/pull/177); focused Linux and early FreeBSD checks pass | Typed navigation/refresh and revalidated application/configured actions now have one retained outcome and explicit cancellation/supersession. Ten native entries, 227 Go cases/15 package outcomes including race, four native-X runs and three scoped sanitizer exercises pass; three themes/35 screenshots each. A driver helper naming correction repeats only UI, then completes the skipped manual/sanitizer gates. Merged cycle 2/3; performance PR174 3/5. [Report](verification/VERIFICATION-2026-10-23-FILE-PROVIDER-WORK.md), [contract](decisions/FILE-PROVIDER-WORK-2026-10-23.md). |
@@ -343,23 +344,23 @@ source/renderer. This checkpoint does not change runtime/build targets or claim
 new passing native CI, package/man gates or a completed manual rewrite.
 
 Current selection, revised by the user on 2026-10-23: the PR176–178 platform
-checkpoint is closed; PR186 remains open. Enlarge its related provider scope
+checkpoint is closed; PR186 is merged. Batch its related provider cleanup
 with operation-catalog consolidation, strict typed value decoding, separate
 query/mutation ownership and compiler-checked query results. Run one combined
 focused Linux gate after the cleanup group; no additional OS/theme/install
-matrix for portable internal code. The feature subset already supplies portable
+matrix for portable internal code. The merged feature subset already supplies portable
 matching-browser handoff, shared bounded correlated request transport and an
 optional installed folder desktop entry. Preserve
 existing independent-window behavior unless reuse is requested, literal target
 bytes, unknown-outcome refusal and default-association ownership. File mutation,
-FileManager1 and protected clipboard payload/storage remain separate. The last integrated reference is PR178; PR186 becomes the first merged batch
-since that reference.
+FileManager1 and protected clipboard payload/storage remain separate. The last integrated reference is PR178; PR186 is the first merged batch
+since that reference, and cleanup becomes the second on merge.
 The feature and later cleanup pass their source-bound focused gates. The due
 PR174 comparison retains pre-cleanup PR186 preserved binaries; it is not a final
 cleanup-browser speed claim.
-On this merge, retain PR178 as integrated reference with one merged batch and
-reset the independent
-performance reference to PR186 qualified handoff binaries at 0/5. Next pick up
+Retain PR178 as integrated reference with one merged batch, two on cleanup
+merge. The independent performance reference is PR186's preserved pre-cleanup
+handoff binaries at 0/5, advancing to 1/5 on cleanup merge. Next pick up
 the next bounded consumer/file action story; protected clipboard content and
 FileManager1/default-role contracts retain their separate acceptance gates.
 
@@ -1116,7 +1117,7 @@ tooling, then migration/removal after verification. See the
 estimated effort, acceptance criteria and upstream sources.
 
 User direction, 2026-10-23, reopens bounded related cleanup batches now. Start
-with the active file-browser provider boundary in open PR186; do not require a
+with the active file-browser provider boundary after merged PR186; do not require a
 complete old hardening audit before features resume. Keep unrelated general
 maintenance in the future-release backlog. Keep MAINT-01 candidates and remaining MAINT-02 migrations with
 their existing owners; neither all tooling migrations nor the deferred
@@ -2646,3 +2647,12 @@ reader results are separate from the subsequent interpreter/file work.
   old feature and performance receipts as their original candidate evidence;
   the new report binds the final browser source. Retire 62 verified guest
   duplicates (6,321,041 bytes). [Report](verification/VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md).
+
+
+- 2026-10-23: PR186 merges while the related cleanup is finalized. Publish cleanup
+  as its own follow-up, based on merged PR186 and PR185 dependency-planning docs.
+  Two documentation-index conflicts retain both entries; all 1504 qualified
+  runtime/test/build inputs stay exact. No test repeats for this baseline-only
+  change. PR178 remains integrated reference with one merged implementation
+  batch, two on cleanup merge; PR186 preserved comparison reference is 0/5,
+  1/5 on cleanup merge. The risk-based cadence replaces automatic all-OS runs.

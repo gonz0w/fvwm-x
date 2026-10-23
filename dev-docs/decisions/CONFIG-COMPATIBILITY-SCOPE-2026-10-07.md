@@ -1,5 +1,11 @@
 # Configuration compatibility scope
 
+**2026-10-23 baseline:** the user limits compatibility to FVWM 3.x configuration
+files and explicitly approves Perl-specific and pre-FVWM3 migration retirement.
+See the [dependency decision](DEPENDENCY-SIMPLIFICATION-2026-10-23.md) for exact
+ownership and migration gates. Other FVWM 3.x configuration breaks still need a
+decision; modern menus, FvwmScript and XPM remain in scope.
+
 Accepted user clarification, 2026-10-07. The user states that the intended
 compatibility requirement was configuration files only. This supersedes the
 blanket theme, module-contract and legacy-behavior preservation language in

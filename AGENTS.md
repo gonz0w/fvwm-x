@@ -20,7 +20,7 @@ instructions; retired GSD plans and graph data are historical references.
 - Keep authoritative X/window state single-threaded in the core; preserve
   dispatch, configuration and command ordering. Do not introduce blocking work
   into the main loop or remove a required ordering/error barrier casually.
-- Compatibility is limited to existing FVWM configuration files and their
+- Compatibility is limited to existing FVWM 3.x configuration files and their
   format: keep supported command/directive names, arguments, bindings, functions
   and theme configuration usable without requiring users to rewrite them.
   Stop for a compatibility decision only when a change breaks that configuration
@@ -28,7 +28,9 @@ instructions; retired GSD plans and graph data are historical references.
   protocols, exact legacy rendering, incidental timing and error/failure behavior
   do not require compatibility approval. Update shipped consumers and document
   and verify changed behavior. Other explicit product constraints still apply.
-  See `dev-docs/decisions/CONFIG-COMPATIBILITY-SCOPE-2026-10-07.md`.
+  See `dev-docs/decisions/CONFIG-COMPATIBILITY-SCOPE-2026-10-07.md` and
+  `dev-docs/decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md` for the approved
+  Perl-specific and pre-FVWM3 retirement exceptions.
 - Scale FVWM-owned UI and geometry, not arbitrary client pixels. X11/EWMH/ICCCM
   and module geometry remain actual pixels. Preserve scale/cache generations.
 - Extend UI/services with existing isolated modules and base-system capabilities.

@@ -1,5 +1,6 @@
 # Verification reports
 
+- [Dependency planning synchronization](DEPENDENCY-PLANNING-2026-10-23.md): ten owner updates, six Later backlog children and verified native relationships/Project fields; no runtime change.
 - [Portable browser consumer handoff](VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md): shared correlated request ownership, matching-browser reuse/presentation and optional desktop entry; focused Linux/FreeBSD/race/sanitizer, staged entry and three-theme captures.
 
 - [PR174→browser handoff performance observation](PERFORMANCE-2026-10-23-BROWSER-HANDOFF.md): existing qualified binaries, about 1 ms higher median with overlapping scan ranges, unchanged peak RSS and explicit feature-size growth.

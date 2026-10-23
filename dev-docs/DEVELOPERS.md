@@ -7,7 +7,8 @@ upstream branch/release/parser instructions are history, not current policy.
 
 ## Change contract
 
-Compatibility is limited to existing FVWM configuration files and their format.
+Compatibility is limited to existing FVWM 3.x configuration files and their
+format.
 Keep supported names, arguments, bindings, functions and theme directives usable
 without requiring a configuration rewrite. Obtain a user decision only when a
 change breaks that contract or requires a configuration migration. Internal
@@ -22,12 +23,17 @@ Do not add a compositor, Wayland backend or mandatory desktop packages.
 
 The user-approved [runtime language migration](decisions/RUNTIME-GO-LUA-2026-10-06.md)
 selects Go for first-party Python/Perl runtime helper replacements and optional
-Go-hosted Lua for primitive policies/workflows. C retains native core/UI/resource
+isolated Lua for primitive policies/workflows. C retains native core/UI/resource
 ownership. Explicit retirement of FvwmPerl/perllib/Perl-specific APIs is the
 approved configuration exception; preserve unrelated configured FVWM/FvwmScript
 behavior and document exact migration impacts. Qualify ports before default/install
 switches and keep current hardening first. Python build/test tooling remains
 until its separate checkpoint; no interpreter has been removed by scoping.
+The [2026-10-23 decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md)
+adds mandatory-Go build direction, full first-party Perl/Python retirement and
+pre-FVWM3 cleanup in Later. It reopens Lua engine selection for a bounded
+comparison; Meson remains authoritative pending separate build adoption.
+Preserve the current feature handoff and qualified utility-port evidence.
 
 Follow [STANDARDS.md](STANDARDS.md) for adopted protocol/UI requirements. Record
 the specification section/revision, advertised behavior, owner and independent

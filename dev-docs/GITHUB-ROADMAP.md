@@ -1,5 +1,13 @@
 # GitHub roadmap index
 
+Dependency scope was updated on 2026-10-23 under the [accepted
+decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). Children #179–184
+remain Later / P2 / Backlog with stage 05 ownership; existing owner states and
+the feature handoff remain unchanged. See the [tracker child
+mapping](PROJECT-TRACKER.md#dependency-simplification-backlog) for native
+parents and blocking relationships. No dependency migration is implemented by
+the roadmap update.
+
 Current priority, 2026-10-22: the approved
 [feature cutoff](decisions/FEATURE-HANDOFF-2026-10-21.md) supersedes earlier
 maintenance pickup notes. Safety PR141–143 and selected foundation PR144–147
@@ -25,7 +33,7 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 | 01 | GEO-01 | [#1 — Qualify the original geometry correctness repair](https://github.com/gonz0w/fvwm-x/issues/1) |
 | 01 | SCRIPT-01 | [#4 — Complete Script ownership, resource and text/input work](https://github.com/gonz0w/fvwm-x/issues/4) |
 | 01 | VERIFY-01 | [#5 — Qualify remaining native and release checks locally](https://github.com/gonz0w/fvwm-x/issues/5) |
-| 01 | COMPAT-01 | [#3 — Maintain FVWM configuration compatibility](https://github.com/gonz0w/fvwm-x/issues/3) |
+| 01 | COMPAT-01 | [#3 — Maintain FVWM 3.x configuration compatibility](https://github.com/gonz0w/fvwm-x/issues/3) |
 | 02 | LIB-02 | [#11 — Review image and transitive dependency boundaries](https://github.com/gonz0w/fvwm-x/issues/11) |
 | 02 | LIB-07 | [#13 — Qualify X11, server and font dependencies](https://github.com/gonz0w/fvwm-x/issues/13) |
 | 02 | LIB-01 | [#10 — Qualify JSON import and encoding boundaries](https://github.com/gonz0w/fvwm-x/issues/10) |
@@ -62,13 +70,13 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 | 05 | MODULE-SCALE-01 | [#51 — Audit native module scale consumers](https://github.com/gonz0w/fvwm-x/issues/51) |
 | 05 | BOX-01 | [#41 — Audit reusable geometry and box primitives](https://github.com/gonz0w/fvwm-x/issues/41) |
 | 05 | LIB-05 | [#47 — Review library boundaries and duplication](https://github.com/gonz0w/fvwm-x/issues/47) |
-| 05 | LINK-01 | [#49 — Audit dependency linkage and feature profiles](https://github.com/gonz0w/fvwm-x/issues/49) |
-| 05 | LIB-04 | [#46 — Audit optional image/library ownership](https://github.com/gonz0w/fvwm-x/issues/46) |
-| 05 | LIB-06 | [#48 — Evaluate JSON library replacement separately](https://github.com/gonz0w/fvwm-x/issues/48) |
-| 05 | COMPAT-02 | [#42 — Retire qualified Perl predecessors with migration evidence](https://github.com/gonz0w/fvwm-x/issues/42) |
-| 05 | RUNTIME-GO-01 | [#23 — Port remaining first-party runtime controllers to Go](https://github.com/gonz0w/fvwm-x/issues/23) |
-| 05 | LUA-01 | [#50 — Review optional primitive scripting integration](https://github.com/gonz0w/fvwm-x/issues/50) |
-| 05 | TOOLING-GO-01 | [#55 — Evaluate later first-party tooling migration](https://github.com/gonz0w/fvwm-x/issues/55) |
+| 05 | LINK-01 | [#49 — Declare target-owned dependencies and qualify reduced profiles](https://github.com/gonz0w/fvwm-x/issues/49) |
+| 05 | LIB-04 | [#46 — Consolidate SVG backends and evaluate renderer alternatives](https://github.com/gonz0w/fvwm-x/issues/46) |
+| 05 | LIB-06 | [#48 — Compare cJSON and yyjson on FVWM-X workloads](https://github.com/gonz0w/fvwm-x/issues/48) |
+| 05 | COMPAT-02 | [#42 — Remove Perl and retire replaced runtime components](https://github.com/gonz0w/fvwm-x/issues/42) |
+| 05 | RUNTIME-GO-01 | [#23 — Require Go and complete the Python-free runtime](https://github.com/gonz0w/fvwm-x/issues/23) |
+| 05 | LUA-01 | [#50 — Deliver Lua scripting and Perl migration examples](https://github.com/gonz0w/fvwm-x/issues/50) |
+| 05 | TOOLING-GO-01 | [#55 — Remove first-party Python and Perl tooling](https://github.com/gonz0w/fvwm-x/issues/55) |
 | 05 | GEN-01 | [#44 — Qualify modern parser/scanner generation](https://github.com/gonz0w/fvwm-x/issues/44) |
 | 05 | PORT-01 | [#52 — Complete Linux/BSD portability and packaging](https://github.com/gonz0w/fvwm-x/issues/52) |
 | 05 | I18N-01 | [#45 — Extend qualified catalog maintenance to UI coverage](https://github.com/gonz0w/fvwm-x/issues/45) |

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Combined browser provider cleanup](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md): four related catalog/decoding/ownership/type improvements; one 22.399-second Linux policy/race/vet/build/native-X gate, without another platform/install/theme matrix.
+
 - [Portable browser consumer handoff](VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md): shared correlated request ownership, matching-browser reuse/presentation and optional desktop entry; focused Linux/FreeBSD/race/sanitizer, staged entry and three-theme captures.
 
 - [PR174→browser handoff performance observation](PERFORMANCE-2026-10-23-BROWSER-HANDOFF.md): existing qualified binaries, about 1 ms higher median with overlapping scan ranges, unchanged peak RSS and explicit feature-size growth.

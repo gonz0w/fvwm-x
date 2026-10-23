@@ -86,16 +86,18 @@ is supplied. PNG-enabled builds must follow the audited dependency/backport
 policy in INSTALL.md; an option is not proof of a vendor patch.
 
 Pure policy needs native unit tests; X-visible changes need nested-X Linux
-integration. Apply the relevant [six-target matrix](SUPPORT.md) at shared
-integration cycles and full acceptance at milestone/release boundaries. Local macOS
+integration. Select relevant [platform checks](SUPPORT.md) for changed OS/ABI/build/server
+contracts or accumulated risk; complete full acceptance at milestone/release
+boundaries. Local macOS
 uses emulated Linux/BSD verification where appropriate. Native Linux ASan/UBSan
 CI remains separate; configured workflows or emulated passes are not that result.
 Use [BSD.md](BSD.md) for the BSD harness. Run appropriate tests once, then broaden
 when failures, new changes or unresolved concerns justify it.
 Use the [batch cadence](WORKFLOW.md#implementation-batches-and-test-cadence):
 focused merge gates on one incremental Linux profile, affected-platform checks
-when needed, and one accumulated affected platform checkpoint after roughly
-three feature PRs. Full install/default-X/compiler/feature acceptance belongs
+when needed, and an accumulated risk review after roughly five merged batches.
+The review selects justified missing coverage; it does not automatically run all
+six targets or block the next portable cleanup batch. Full install/default-X/compiler/feature acceptance belongs
 at milestone/release boundaries unless the changed contract needs it earlier.
 A PR may merge with focused checks passed and integration explicitly pending;
 track deferred gates and do not report them as successful execution.

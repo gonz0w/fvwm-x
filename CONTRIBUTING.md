@@ -6,11 +6,14 @@ scope; GitHub issues and the Project mirror that order and track review.
 
 Use a bounded `codex/` branch from `origin/main`. Batch related implementation,
 tests and documentation into one reviewable PR per coherent checkpoint, usually
-three to five substantive related behavior improvements. Tests, probes and
-documentation supporting one improvement count as that one item. Use focused
-incremental checks between items. Ordinary PRs use focused merge gates; share
-one affected platform checkpoint across roughly three feature PRs and complete
-full acceptance at milestone/release boundaries. See the
+six to ten substantive related improvements where useful, or a complete
+reviewable owner slice. Tests, probes and documentation supporting one improvement
+count as that one item. Use cheap affected compilation when useful while editing;
+run affected tests once at the combined checkpoint. Ordinary PRs use focused
+merge gates; review
+accumulated risk after roughly five merged batches and select justified affected
+platform checks. Do not automatically run all OSs on a PR counter. Complete full
+acceptance at milestone/release boundaries. See the
 [cadence](dev-docs/WORKFLOW.md#implementation-batches-and-test-cadence).
 Keep related docs/evidence and review fixes in
 that PR while it is open; split for independent contracts or ownership. Preserve

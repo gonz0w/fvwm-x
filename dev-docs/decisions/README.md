@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Larger cleanup batches and risk-based platform checks](BATCHED-CLEANUP-CADENCE-2026-10-23.md): implement related sets before one focused gate; replace the automatic three-PR matrix with a five-batch risk review and targeted checks, retaining full milestone/release qualification.
+
 - [Portable browser consumer handoff](BROWSER-CONSUMER-HANDOFF-2026-10-23.md): opt-in matching-folder reuse, shared bounded correlation, core presentation and optional installed desktop entry; protected payload/default-role ownership stays separate.
 
 - [Bounded directory watching](BROWSER-DIRECTORY-WATCH-2026-10-23.md): isolated native invalidations, coalesced reconciliation, finite observer leases and explicit manual fallback.

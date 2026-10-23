@@ -6,6 +6,14 @@ is closed before implementation. PR178
 `e2f61e65b0e5277dedcf28fe6c602efa8b2d1762` remains the integrated reference,
 0/3 merged and 1/3 on this feature merge. [Source-bound receipt](VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.json).
 
+Scope note: this report records the original feature candidate. The subsequent
+[combined provider cleanup](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md)
+changes ten Go files and qualifies the final browser on Linux. Earlier native,
+BSD, three-theme, install and sanitizer receipts keep their exact original
+source/binary scope. The [new cadence](../decisions/BATCHED-CLEANUP-CADENCE-2026-10-23.md)
+supersedes the three-PR trigger and counters below; PR186 is the first pending
+batch since integrated PR178.
+
 ## Behavior and scope
 
 Four related capabilities support portable file-manager consumers:

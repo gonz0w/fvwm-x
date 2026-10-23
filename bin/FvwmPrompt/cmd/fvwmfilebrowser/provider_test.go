@@ -42,7 +42,7 @@ func TestProviderPagesLiteralBytesAndExactIntegers(t *testing.T) {
 	if code != "" {
 		t.Fatal(code)
 	}
-	page := first.(map[string]any)
+	page := first
 	items := page["items"].([]providerItem)
 	if len(items) != 8 || page["next_offset"] != 8 || page["total"] != 12 {
 		t.Fatal(page)
@@ -55,7 +55,7 @@ func TestProviderPagesLiteralBytesAndExactIntegers(t *testing.T) {
 	if code != "" {
 		t.Fatal(code)
 	}
-	page = second.(map[string]any)
+	page = second
 	items = page["items"].([]providerItem)
 	if len(items) != 4 || page["next_offset"] != nil || !bytes.Equal(items[3].Name, []byte("literal ' \n\xff")) {
 		t.Fatal(page)
@@ -87,7 +87,7 @@ func TestProviderSelectionSnapshotAndObservedSummary(t *testing.T) {
 	b.model.SetFilter("no-match")
 	query.Generation, query.Scope = "", "selection"
 	result, code := b.providerResult(query)
-	if code != "" || len(result.(map[string]any)["items"].([]providerItem)) != 2 {
+	if code != "" || len(result["items"].([]providerItem)) != 2 {
 		t.Fatal("hidden selection lost", code, result)
 	}
 	query.Scope = "properties"
@@ -95,13 +95,13 @@ func TestProviderSelectionSnapshotAndObservedSummary(t *testing.T) {
 	if code != "" {
 		t.Fatal(code)
 	}
-	properties := result.(map[string]any)["properties"].(map[string]any)
+	properties := result["properties"].(map[string]any)
 	if properties["count"] != 2 || properties["files"] != 2 || properties["regular_file_bytes"] != "11" || properties["links_followed"] != false {
 		t.Fatal(properties)
 	}
 	query.Scope = "state"
 	result, code = b.providerResult(query)
-	state := result.(map[string]any)
+	state := result
 	if code != "" || state["visible"] != 0 || state["selected"] != 2 || state["file_content"] != false || state["actions"] != true {
 		t.Fatal(code, state)
 	}

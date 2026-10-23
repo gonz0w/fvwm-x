@@ -9,10 +9,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"io"
 	"path/filepath"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/collection"
 )
@@ -37,51 +35,21 @@ type providerAction struct {
 // handshake so malformed client text cannot change state or retire a provider.
 func decodeProviderAction(query fileQuery) (providerAction, error) {
 	var action providerAction
-	data := query.Values
-	if len(data) > providerValuesMax || !utf8.Valid(data) {
-		return action, errors.New("invalid action values")
-	}
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	if token, err := decoder.Token(); err != nil || token != json.Delim('{') {
-		return action, errors.New("action values must be an object")
-	}
-	fields := make(map[string]json.RawMessage)
-	for decoder.More() {
-		key, err := decoder.Token()
-		name, ok := key.(string)
-		if err != nil || !ok || fields[name] != nil || len(fields) == 2 {
-			return action, errors.New("invalid or duplicate action field")
-		}
-		var value json.RawMessage
-		if err := decoder.Decode(&value); err != nil {
-			return action, err
-		}
-		fields[name] = value
-	}
-	if token, err := decoder.Token(); err != nil || token != json.Delim('}') {
-		return action, errors.New("invalid action object")
-	}
-	var extra any
-	if decoder.Decode(&extra) != io.EOF {
-		return action, errors.New("trailing action values")
-	}
-	stringField := func(name string, target *string) bool {
-		value := fields[name]
-		return len(value) > 0 && value[0] == '"' && json.Unmarshal(value, target) == nil
+	fields, err := decodeProviderValues(query.Values)
+	if err != nil {
+		return action, err
 	}
 	valid := false
 	switch query.Operation {
 	case "selection":
-		if !stringField("mode", &action.mode) {
+		if !fields.string("mode", &action.mode) {
 			break
 		}
 		if action.mode == "clear" {
 			valid = len(fields) == 1
 			break
 		}
-		value := fields["ids"]
-		if len(fields) != 2 || len(value) == 0 || value[0] != '[' ||
-			json.Unmarshal(value, &action.ids) != nil || len(action.ids) == 0 || len(action.ids) > providerEditMax {
+		if len(fields) != 2 || !fields.strings("ids", &action.ids, providerEditMax) {
 			break
 		}
 		valid = action.mode == "replace" || action.mode == "add" || action.mode == "remove"
@@ -93,37 +61,34 @@ func decodeProviderAction(query fileQuery) (providerAction, error) {
 			seen[id] = true
 		}
 	case "filter":
-		valid = len(fields) == 1 && stringField("text", &action.text) && len(action.text) <= collection.MaxFilter && !strings.ContainsRune(action.text, 0)
+		valid = len(fields) == 1 && fields.string("text", &action.text) && len(action.text) <= collection.MaxFilter && !strings.ContainsRune(action.text, 0)
 		// SetFilter also validates UTF-8/NUL before publishing a candidate.
 	case "sort":
-		value := fields["reverse"]
-		valid = len(fields) == 2 && stringField("key", &action.key) &&
-			(bytes.Equal(value, []byte("true")) || bytes.Equal(value, []byte("false"))) &&
-			json.Unmarshal(value, &action.reverse) == nil &&
+		valid = len(fields) == 2 && fields.string("key", &action.key) &&
+			fields.boolean("reverse", &action.reverse) &&
 			(action.key == "name" || action.key == "kind" || action.key == "size" || action.key == "modified")
 	case "view":
-		valid = len(fields) == 1 && stringField("mode", &action.mode) && (action.mode == "list" || action.mode == "grid")
+		valid = len(fields) == 1 && fields.string("mode", &action.mode) && (action.mode == "list" || action.mode == "grid")
 	case "navigate":
-		if !stringField("mode", &action.mode) {
+		if !fields.string("mode", &action.mode) {
 			break
 		}
 		switch action.mode {
 		case "home", "up", "back":
 			valid = len(fields) == 1
 		case "item":
-			valid = len(fields) == 2 && stringField("id", &action.id) && hexToken(action.id, 32)
+			valid = len(fields) == 2 && fields.string("id", &action.id) && hexToken(action.id, 32)
 		case "path":
 			var encoded string
-			if len(fields) == 2 && stringField("path_bytes", &encoded) {
+			if len(fields) == 2 && fields.string("path_bytes", &encoded) {
 				var err error
 				action.path, err = decodeProviderPath(encoded)
 				valid = err == nil
 			}
 		}
 	case "reveal", "inspect":
-		value := fields["paths_bytes"]
 		var paths []string
-		if len(fields) != 1 || len(value) == 0 || value[0] != '[' || json.Unmarshal(value, &paths) != nil || len(paths) == 0 || len(paths) > providerTargetMax {
+		if len(fields) != 1 || !fields.strings("paths_bytes", &paths, providerTargetMax) {
 			break
 		}
 		seen := make(map[string]bool, len(paths))
@@ -138,15 +103,14 @@ func decodeProviderAction(query fileQuery) (providerAction, error) {
 			action.targets = append(action.targets, decoded)
 		}
 	case "hidden", "watch":
-		value := fields["enabled"]
-		valid = len(fields) == 1 && (bytes.Equal(value, []byte("true")) || bytes.Equal(value, []byte("false"))) && json.Unmarshal(value, &action.enabled) == nil
+		valid = len(fields) == 1 && fields.boolean("enabled", &action.enabled)
 	case "open":
-		valid = len(fields) == 1 && stringField("id", &action.id) && hexToken(action.id, 32)
+		valid = len(fields) == 1 && fields.string("id", &action.id) && hexToken(action.id, 32)
 	case "custom":
 		value := fields["index"]
 		valid = len(fields) == 1 && json.Unmarshal(value, &action.index) == nil && len(value) == 1 && action.index >= 0 && action.index < 4
 	case "cancel":
-		valid = len(fields) == 1 && stringField("id", &action.id) && hexToken(action.id, 16) && action.id != "0000000000000000"
+		valid = len(fields) == 1 && fields.string("id", &action.id) && hexToken(action.id, 16) && action.id != "0000000000000000"
 	case "properties", "refresh", "terminal", "present":
 		valid = len(fields) == 0
 	}
@@ -165,61 +129,4 @@ func decodeProviderPath(encoded string) ([]byte, error) {
 		return nil, errors.New("expected a bounded canonical base64 absolute path")
 	}
 	return path, nil
-}
-
-func (b *browser) applyProviderAction(query fileQuery, action providerAction) string {
-	if b.snapshot == nil || b.snapshot.Schema != 1 {
-		return "not_ready"
-	}
-	if query.Generation != b.providerGeneration() {
-		return "stale_generation"
-	}
-	if query.Operation == "cancel" {
-		return b.cancelProviderWork(action.id)
-	}
-	if providerWorkerAction(query.Operation) {
-		return b.startProviderWork(query, action)
-	}
-	// Collection policy publishes new slices/maps only after full admission.
-	// A refused candidate cannot change live selection, order or projection.
-	candidate := b.model
-	switch query.Operation {
-	case "selection":
-		if err := candidate.EditSelection(candidate.Generation, action.mode, action.ids); err != nil {
-			return "invalid_selection"
-		}
-		b.model, b.replaceSelection, b.inspected = candidate, true, nil
-	case "filter":
-		if err := candidate.SetFilter(action.text); err != nil {
-			return "operation_refused"
-		}
-		b.model = candidate
-	case "sort":
-		if action.key != b.ordering() || action.reverse != b.reverse {
-			entries, err := b.snapshot.OrderedEntries(action.key, action.reverse)
-			if err != nil || candidate.Replace(entries) != nil {
-				return "operation_refused"
-			}
-			b.model, b.order, b.reverse = candidate, action.key, action.reverse
-		}
-	case "view":
-		b.view = action.mode
-	case "present":
-		// Publication and managed-window commands are acknowledged by the caller.
-	case "watch":
-		if b.watch == nil {
-			b.watch = &directoryWatch{events: make(chan watchEvent, 1)}
-		}
-		b.watch.enabled = action.enabled
-		b.watch.desire(b.snapshot, true)
-	case "properties":
-		ids := candidate.SelectedIDs()
-		if _, err := b.snapshot.ObservedSelection(ids); err != nil {
-			return "selection_unavailable"
-		}
-		b.inspected = append([]string(nil), ids...)
-	default:
-		return "invalid_request"
-	}
-	return ""
 }

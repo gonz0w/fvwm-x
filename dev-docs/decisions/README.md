@@ -162,3 +162,5 @@ separate; the former public-helper output decision is still deferred.
 - [Saved launcher-opacity preview](SAVED-OPACITY-PREVIEW-2026-10-22.md): bounded
   integer preference, schema migration, native scoped confirmation and captured
   editor-draft handoff; runtime and persistence outcomes remain separate.
+
+- [File collection controls](FILE-COLLECTION-CONTROLS-2026-10-23.md): bounded label projections, observed sorting/properties and cross-page selection.

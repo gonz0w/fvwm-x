@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net"
 	"os"
@@ -175,5 +176,86 @@ func TestOneWorkerLatestNavigationAndCancelledPublication(t *testing.T) {
 	}
 	if b.snapshot == nil || string(b.snapshot.Path) != root || b.model.Generation != 1 {
 		t.Fatal("replacement not published")
+	}
+}
+
+func TestViewControlsPreserveDomainSelectionAndObserveProperties(t *testing.T) {
+	b := browser{instance: "owner", form: 7, snapshot: &filemodel.Snapshot{Schema: 1}}
+	for i := 0; i < 20; i++ {
+		b.snapshot.Items = append(b.snapshot.Items, filemodel.Item{ID: fmt.Sprintf("id%d", i), Name: []byte(fmt.Sprintf("file-%02d", i)), Kind: "file", Identity: filemodel.Identity{Size: int64(20 - i)}})
+	}
+	if err := b.reorder("name", false); err != nil {
+		t.Fatal(err)
+	}
+	act := func(action, argument, picks string) error {
+		_, err := b.action("FVWM_FILES_1 owner 7 " + action + " " + argument + " x" + base64.RawURLEncoding.EncodeToString([]byte(picks)))
+		return err
+	}
+	filter := "x" + base64.RawURLEncoding.EncodeToString([]byte("file-19"))
+	if act("filter", filter, "id0") != nil || b.model.VisibleCount() != 1 || b.model.HiddenSelectedCount() != 1 {
+		t.Fatal("filter lost picked item")
+	}
+	if act("select-page", "-", "") != nil || len(b.model.SelectedIDs()) != 2 {
+		t.Fatal("page selection lost hidden item")
+	}
+	if act("properties", "-", "id19") == nil {
+		t.Fatal("ambiguous properties accepted")
+	}
+	if act("clear-selection", "-", "id19") != nil || len(b.model.SelectedIDs()) != 0 {
+		t.Fatal("clear missed hidden selection")
+	}
+	if act("properties", "-", "id19") != nil || b.inspected != "id19" {
+		t.Fatal("properties did not use selected ID")
+	}
+	if act("unfilter", "-", "id19") != nil || b.model.VisibleCount() != 20 {
+		t.Fatal("clear filter")
+	}
+	if err := b.reorder("size", false); err != nil {
+		t.Fatal(err)
+	}
+	page, _ := b.model.Page(0)
+	if page[0].ID != "id19" || !b.model.Selected["id19"] || b.snapshot.Items[0].ID != "id0" {
+		t.Fatal("sort changed target identity")
+	}
+	if act("filter", "x"+base64.RawURLEncoding.EncodeToString([]byte(strings.Repeat("x", 129))), "id19") == nil || b.model.Filter() != "" {
+		t.Fatal("oversize filter accepted")
+	}
+}
+
+func TestRefreshKeepsVisibleAnchorAndDropsRemovedSelection(t *testing.T) {
+	left, right := net.Pipe()
+	defer left.Close()
+	defer right.Close()
+	go io.Copy(io.Discard, right)
+	s := &filemodel.Snapshot{Schema: 1, Path: []byte("/fixture")}
+	for i := 0; i < 30; i++ {
+		s.Items = append(s.Items, filemodel.Item{ID: fmt.Sprintf("id%d", i), Name: []byte(fmt.Sprintf("file-%02d", i)), Kind: "file"})
+	}
+	b := browser{session: transport.New(left), instance: "owner", snapshot: s}
+	b.reorder("name", false)
+	b.offset = 12
+	b.model.SelectPage(b.model.Generation, 12, []string{"id12", "id13"})
+	next := *s
+	next.Items = append([]filemodel.Item(nil), s.Items[1:]...)
+	next.Items[11].Name = []byte("renamed")
+	if err := b.completed(completedWork{result: workResult{Status: "loaded", Snapshot: &next}}); err != nil {
+		t.Fatal(err)
+	}
+	page, _ := b.model.Page(b.offset)
+	found := false
+	for _, e := range page {
+		if e.ID == "id12" {
+			found = true
+		}
+	}
+	if !found || !b.model.Selected["id12"] {
+		t.Fatal("refresh lost surviving anchor/selection")
+	}
+	next.Items = next.Items[:10]
+	if err := b.completed(completedWork{result: workResult{Status: "loaded", Snapshot: &next}}); err != nil {
+		t.Fatal(err)
+	}
+	if b.offset != 0 || len(b.model.SelectedIDs()) != 0 {
+		t.Fatal("removed anchor/selection survived")
 	}
 }

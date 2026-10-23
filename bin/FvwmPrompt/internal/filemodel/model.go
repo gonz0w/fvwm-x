@@ -138,8 +138,12 @@ func Scan(path string, hidden bool) (*Snapshot, error) {
 
 // Entries exposes display metadata only. A label is never a path or action.
 func (s *Snapshot) Entries() []collection.Entry {
-	entries := make([]collection.Entry, 0, len(s.Items))
-	for _, item := range s.Items {
+	return entries(s.Items)
+}
+
+func entries(items []Item) []collection.Entry {
+	entries := make([]collection.Entry, 0, len(items))
+	for _, item := range items {
 		label := string(item.Name)
 		if !utf8.Valid(item.Name) || strings.ContainsAny(label, "\x00\n\r\t") {
 			label = strconv.QuoteToGraphic(label)

@@ -1,0 +1,483 @@
+{
+  "status": "focused checks passed; integration pending",
+  "owners": [
+    "FILE-VIEW-01",
+    "FILE-ACTION-01"
+  ],
+  "base": "2eaaf10092ab0958f57bbd22bf900669c031b6d1",
+  "candidate": {
+    "archive_sha256": "8c9e604de00ade383371e792d82fed1b2e1c8952d611961ea7f3db2d034b922b",
+    "files": 2232,
+    "runtime_manual_test_inputs": {
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/main.go": {
+        "sha256": "f91478a3e2e79b5face10a5c7f2b35cfb79d562a9330e24511a751ac83b1a253",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/main_test.go": {
+        "sha256": "bd384ae8c41844b8af0900aac891714153c7a1cd9df310ff34ff60fdd944f4c3",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/collection/model.go": {
+        "sha256": "5930a3f58b0f7366d01bea2c8ea63aeaf0659c33cf1a81d21ebf3f404af2a650",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/collection/model_test.go": {
+        "sha256": "408182303236c976c6a2e3cbac74ef976c745d0a48d6745f83025df32b6b5ad2",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/filemodel/model.go": {
+        "sha256": "f579f66f806ac4bc484583f0e4583ccd23bc99d30235548a67bc2ebbbea190f8",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/filemodel/view.go": {
+        "sha256": "40e489aa204471d73e2999ad1da07ffc3103126f5d65f70e045d195e4cf8e0bd",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/filemodel/view_test.go": {
+        "sha256": "869f3be6a873d882a0501d4a50ef8bfaddc6750c809a6e41122c5834684fb9f6",
+        "mode": 420
+      },
+      "doc/fvwm-file-browser.adoc": {
+        "sha256": "289c0ab2a42ec1d4f0c8622286fac0da8728ec8170e589e66d00fec64caf08b8",
+        "mode": 420
+      },
+      "tests/live_x/file_browser_live.py": {
+        "sha256": "a896b12ed73e65704655c82fb4edfef002b6c2776d07cfad043f7f73c8300dfc",
+        "mode": 420
+      }
+    }
+  },
+  "archives": {
+    "original_frozen": {
+      "sha256": "922b7d40fb3a17a60b996046af277169585ecb1b767c3554397673277acd43c2",
+      "bytes": 159937,
+      "files": 23,
+      "full_manifest_mode_crc_verified": true
+    },
+    "final_ui_continuation": {
+      "sha256": "b2e74a2b9723e8c06ec43a6b6be6c8c9dafc001905cf78aabf4be1ca698976b0",
+      "bytes": 186993,
+      "files": 23,
+      "full_manifest_mode_crc_verified": true
+    }
+  },
+  "commands": {
+    "original": [
+      {
+        "label": "version",
+        "command": [
+          "go",
+          "version"
+        ],
+        "status": 0,
+        "seconds": 0.002
+      },
+      {
+        "label": "compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+          "-j",
+          "2",
+          "fvwm-file-browser",
+          "FvwmCommand",
+          "fvwm-file-browser.1"
+        ],
+        "status": 0,
+        "seconds": 0.318
+      },
+      {
+        "label": "registered",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+          "--no-rebuild",
+          "--num-processes",
+          "1",
+          "--print-errorlogs",
+          "file-browser-policy",
+          "command-client"
+        ],
+        "status": 0,
+        "seconds": 5.569
+      },
+      {
+        "label": "policy-json",
+        "command": [
+          "go",
+          "test",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/collection",
+          "./internal/filemodel",
+          "./cmd/fvwmfilebrowser",
+          "./cmd/fvwmcommand",
+          "./transport"
+        ],
+        "status": 0,
+        "seconds": 0.325
+      },
+      {
+        "label": "race",
+        "command": [
+          "go",
+          "test",
+          "-race",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/collection",
+          "./internal/filemodel",
+          "./cmd/fvwmfilebrowser",
+          "./cmd/fvwmcommand",
+          "./transport"
+        ],
+        "status": 0,
+        "seconds": 4.592
+      },
+      {
+        "label": "vet",
+        "command": [
+          "go",
+          "vet",
+          "-mod=vendor",
+          "./internal/collection",
+          "./internal/filemodel",
+          "./cmd/fvwmfilebrowser",
+          "./cmd/fvwmcommand",
+          "./transport"
+        ],
+        "status": 0,
+        "seconds": 0.12
+      },
+      {
+        "label": "native-ui",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--form",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "--browser",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go/bin/FvwmPrompt/fvwm-file-browser",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/file-collection-controls-checkpoint/ui"
+        ],
+        "status": 1,
+        "seconds": 6.019
+      }
+    ],
+    "continuation": [
+      {
+        "label": "compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+          "-j",
+          "2",
+          "fvwm-file-browser",
+          "FvwmCommand",
+          "fvwm-file-browser.1"
+        ],
+        "status": 0,
+        "seconds": 0.117
+      },
+      {
+        "label": "native-ui",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--form",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "--browser",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go/bin/FvwmPrompt/fvwm-file-browser",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/file-collection-controls-continuation/ui"
+        ],
+        "status": 0,
+        "seconds": 2.553
+      },
+      {
+        "label": "build-info",
+        "command": [
+          "go",
+          "version",
+          "-m",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go/bin/FvwmPrompt/fvwm-file-browser"
+        ],
+        "status": 0,
+        "seconds": 0.004
+      }
+    ]
+  },
+  "counts": {
+    "registered_entries": 2,
+    "selected_go_packages": 5,
+    "top_tests_per_go_invocation": 26,
+    "json_policy_plus_race_top_test_executions": 52,
+    "portable_passes": 177,
+    "portable_skips": 14,
+    "native_X_drivers": 1,
+    "captured_screenshots": 7,
+    "visually_inspected_screenshots": 4
+  },
+  "retention": {
+    "original_archive_sha256": "922b7d40fb3a17a60b996046af277169585ecb1b767c3554397673277acd43c2",
+    "retained_commands": [
+      {
+        "label": "version",
+        "command": [
+          "go",
+          "version"
+        ],
+        "status": 0,
+        "seconds": 0.002
+      },
+      {
+        "label": "compile",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+          "-j",
+          "2",
+          "fvwm-file-browser",
+          "FvwmCommand",
+          "fvwm-file-browser.1"
+        ],
+        "status": 0,
+        "seconds": 0.318
+      },
+      {
+        "label": "registered",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+          "--no-rebuild",
+          "--num-processes",
+          "1",
+          "--print-errorlogs",
+          "file-browser-policy",
+          "command-client"
+        ],
+        "status": 0,
+        "seconds": 5.569
+      },
+      {
+        "label": "policy-json",
+        "command": [
+          "go",
+          "test",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/collection",
+          "./internal/filemodel",
+          "./cmd/fvwmfilebrowser",
+          "./cmd/fvwmcommand",
+          "./transport"
+        ],
+        "status": 0,
+        "seconds": 0.325
+      },
+      {
+        "label": "race",
+        "command": [
+          "go",
+          "test",
+          "-race",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/collection",
+          "./internal/filemodel",
+          "./cmd/fvwmfilebrowser",
+          "./cmd/fvwmcommand",
+          "./transport"
+        ],
+        "status": 0,
+        "seconds": 4.592
+      },
+      {
+        "label": "vet",
+        "command": [
+          "go",
+          "vet",
+          "-mod=vendor",
+          "./internal/collection",
+          "./internal/filemodel",
+          "./cmd/fvwmfilebrowser",
+          "./cmd/fvwmcommand",
+          "./transport"
+        ],
+        "status": 0,
+        "seconds": 0.12
+      }
+    ],
+    "source_difference": [
+      "tests/live_x/file_browser_live.py"
+    ],
+    "all_other_frozen_inputs_equal": true,
+    "explanation": "Only native-X fixture changed: shift underscore in synthetic input and force underscore in FIFO path. Product/manual/build/policy/race inputs unchanged."
+  },
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "bytes": 5396632
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7",
+      "bytes": 418512
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "81c9aceac470ed2bce78e1ff5a399b48ff7f5f94b95a601435f31a85f2d542f3",
+      "bytes": 1497456
+    },
+    "/tmp/fvwm-module-waits-20261015/build-file-browser-go/bin/FvwmPrompt/fvwm-file-browser": {
+      "sha256": "5941142cfa8bba049567d5e7b4a844588a4ef76274f915c03fe39a5c8b6a9f23",
+      "bytes": 5349661
+    },
+    "/tmp/fvwm-module-waits-20261015/build-file-browser-go/bin/FvwmPrompt/FvwmCommand": {
+      "sha256": "d069abd93c2a9c67d2bbdaf87770c16150c3f0396e04990bb1e0f71653b84774",
+      "bytes": 4680536
+    },
+    "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go": {
+      "sha256": "0e893a1a4ab5d00e64bcd9b22060a53377f90c076434ff0aa1bd2a330b657691",
+      "bytes": 15795235
+    }
+  },
+  "screenshots": {
+    "file-browser-action-result.png": {
+      "sha256": "c055ad3101a6ecbf26e0cf65bf09613ff1766221f3284265af32da64b00889ac",
+      "bytes": 16515,
+      "inspected": false
+    },
+    "file-browser-empty-filter.png": {
+      "sha256": "ebae8fe7c3ae904b2c03683def634b090cd1725e2c1b230ee8b556f9dac6c0d8",
+      "bytes": 14686,
+      "inspected": true
+    },
+    "file-browser-filtered-selection.png": {
+      "sha256": "fba3a175914e192ba56203e6166b619936721e0a33e4957bd2b365d9b77bfeb0",
+      "bytes": 13074,
+      "inspected": true
+    },
+    "file-browser-first-page.png": {
+      "sha256": "4027bdfda6022aab34934228966a5bf535783bdf85747c05db96bfdceefdd246",
+      "bytes": 18880,
+      "inspected": true
+    },
+    "file-browser-properties.png": {
+      "sha256": "c8f9f0bae2c60906933b6d200c1a0dc0be9db7a369f10f1826c433243a915c88",
+      "bytes": 15372,
+      "inspected": true
+    },
+    "file-browser-second-page.png": {
+      "sha256": "acae77bfd5105b259c1c4d7d92d71317b6c5ac38c720fd3d2bdd8e13f2236695",
+      "bytes": 16835,
+      "inspected": false
+    },
+    "file-browser-worker-recovery.png": {
+      "sha256": "11889646732222aec46466ccb8ee5333d235288278f122355d801d14422ac112",
+      "bytes": 16831,
+      "inspected": false
+    }
+  },
+  "manual": {
+    "source_sha256": "289c0ab2a42ec1d4f0c8622286fac0da8728ec8170e589e66d00fec64caf08b8",
+    "generated_sha256": "33cfda6c725bec2a9750979805257757a45fd09fbc356fa16dda14dfb9887971",
+    "native_render": {
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ],
+      "commands": [
+        {
+          "label": "render",
+          "command": [
+            "mandoc",
+            "-Tutf8",
+            "/root/fvwm-file-collection-controls-20261023-manual/fvwm-file-browser.1"
+          ],
+          "status": 0
+        },
+        {
+          "label": "lint",
+          "command": [
+            "mandoc",
+            "-Tlint",
+            "/root/fvwm-file-collection-controls-20261023-manual/fvwm-file-browser.1"
+          ],
+          "status": 3
+        }
+      ],
+      "files": {
+        "fvwm-file-browser.1": {
+          "sha256": "33cfda6c725bec2a9750979805257757a45fd09fbc356fa16dda14dfb9887971",
+          "bytes": 9923
+        },
+        "executed.py": {
+          "sha256": "74e8b1d5e5adc969e6519269d9a8f4d52f138810d50f007755796b3c12a85a21",
+          "bytes": 712
+        },
+        "render.log": {
+          "sha256": "b12076998aa471d9614434755f8bfd240d980ea9b66eda2df3314424854a14e9",
+          "bytes": 10557
+        },
+        "lint.log": {
+          "sha256": "3e638ce1f3ec4ee9df06619cbffae49b37e584ca7c1bf57c9bb57deede688959",
+          "bytes": 2428
+        }
+      }
+    },
+    "lint": "status 3: Asciidoctor preamble mso/LINKSTYLE errors, source-line style notes and section-spacing warnings; rendered content assertions passed"
+  },
+  "review": {
+    "method": "local diff/source/consumer review",
+    "findings": "No outstanding actionable product findings. Retained fixture failures corrected in scoped UI continuations.",
+    "unchanged_C_and_build_inputs": true,
+    "native_core_reference_pr": 164,
+    "new_dependency": false
+  },
+  "cycle": {
+    "integrated_reference_pr": 163,
+    "merged_since_reference": [
+      164,
+      165
+    ],
+    "merged_count": 2,
+    "count_on_merge": 3,
+    "affected_six_target_checkpoint": "due after this merge, before a fourth implementation PR",
+    "performance_reference_pr": 164,
+    "merged_since_performance": 1,
+    "on_merge": 2
+  },
+  "deferred": [
+    "Accumulated six-target checkpoint",
+    "Full compiler/optional profile/install/default BSD-X/release acceptance",
+    "Native-CPU sanitizer and physical/toolkit/compositor acceptance",
+    "Full virtual scrolling/grid and native focus/scale/accessibility handoff",
+    "Structured files provider, watching and destructive file jobs",
+    "Protected clipboard owner/transfer/retention/storage/private payload handoff"
+  ]
+}

@@ -46,14 +46,17 @@ Integration cycle ledger: merged PR163 is the new integrated reference
 checkpoint passes **140 selected entries on six targets/nine profiles**, seven
 scoped guest core/MFL sanitizer exercises and portable 177 passes/14 skips.
 PR164 is merged as `6f7e964a0e6a41d1e3e89f2e9fd9898e764bf650`.
-The cycle is **1/3 merged**, **2/3 on the current browser-foundations merge**.
+PR165 is merged as `2eaaf10092ab0958f57bbd22bf900669c031b6d1`.
+The cycle is **2/3 merged**, **3/3 on the collection-controls merge**.
+The affected accumulated checkpoint is due after this batch; do not start a
+fourth implementation PR until it passes.
 [Integrated report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md).
 Merged PR164 passes nine focused Linux entries (74 desktop policy cases), four
 scoped guest sanitizer exercises and inspected native UI. The browser foundation
 passes its focused gate with early native FreeBSD/OpenBSD 8.0 ARM64 checks; wider
 cycle coverage is pending. The due PR159→PR164 performance observation uses
 existing binaries: latency ranges overlap with mixed CPU changes. PR164 is now
-**0/5 merged**, **1/5 after this browser merge**.
+**1/5 merged**, **2/5 after this collection-controls merge**.
 [Performance report](verification/PERFORMANCE-2026-10-23-PR164.md).
 Tuning remains deferred.
 Full install/default-X/full compiler-feature and milestone/release acceptance
@@ -63,7 +66,8 @@ separate. Deferred gates are not passes.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Collection/browser foundations, FILE-VIEW/DATA/ACTION-01 | Focused checks passed; ready for review, integration pending | Stable metadata/selection, byte-preserving isolated directory work and validated literal actions have a native paged consumer. Five Go packages/21 cases pass on Linux, FreeBSD and OpenBSD 8.0 ARM64; Linux race/vet and staged executable/manual/native UI pass. One command-client pass is retained after a test-flag-only registration correction. Full scrolling/grid, files provider, mutation and protected clipboard layers remain open. [Report](verification/VERIFICATION-2026-10-23-FILE-BROWSER-FOUNDATIONS.md), [contract](decisions/FILE-BROWSER-FOUNDATIONS-2026-10-23.md). |
+| File collection controls, FILE-VIEW/ACTION-01 | Focused checks passed; ready for review, integration pending | Bounded label filtering, deterministic observed sorting, cross-page selection and an observed-properties panel pass five Go packages/26 tests, scoped Go race/vet and the actual-X consumer. Seven screenshots are captured; four new/overview images are inspected. The UI fixture-only correction retains unchanged frozen policy results. Cycle 2/3 merged, 3/3 on merge; affected accumulated six-target checks are due before another implementation PR. [Report](verification/VERIFICATION-2026-10-23-FILE-COLLECTION-CONTROLS.md), [contract](decisions/FILE-COLLECTION-CONTROLS-2026-10-23.md). |
+| Collection/browser foundations, FILE-VIEW/DATA/ACTION-01 | Merged in [PR #165](https://github.com/gonz0w/fvwm-x/pull/165); integration pending | Stable metadata/selection, byte-preserving isolated directory work and validated literal actions have a native paged consumer. Five Go packages/21 cases pass on Linux, FreeBSD and OpenBSD 8.0 ARM64; Linux race/vet and staged executable/manual/native UI pass. One command-client pass is retained after a test-flag-only registration correction. Full scrolling/grid, files provider, mutation and protected clipboard layers remain open. [Report](verification/VERIFICATION-2026-10-23-FILE-BROWSER-FOUNDATIONS.md), [contract](decisions/FILE-BROWSER-FOUNDATIONS-2026-10-23.md). |
 | Saved launcher-opacity preview, CFG-01 / IPC-02 | Merged in [PR #164](https://github.com/gonz0w/fvwm-x/pull/164); integration pending | Integer preference/schema migration, scoped Keep and save, captured draft return and orphan Form timeout pass nine selected Linux entries (74 desktop cases) and four scoped guest sanitizer exercises. Native screenshots expose and verify a label/notice correction. Core/file outcomes stay separate; general appearance preview remains open. Cycle 0/3 merged, 1/3 on merge; performance PR159 4/5, 5/5 on merge. [Report](verification/VERIFICATION-2026-10-22-SAVED-OPACITY-PREVIEW.md), [contract](decisions/SAVED-OPACITY-PREVIEW-2026-10-22.md). |
 | Runtime menu-opacity preview, IPC-02 / CFG-01 | Merged in [PR #163](https://github.com/gonz0w/fvwm-x/pull/163); integrated reference | One atomic core scalar lease, typed connection/view controls and native Keep/Revert qualify accumulated PR161/162/current work: 140 selected passes across six targets/nine profiles, seven scoped guest core/MFL sanitizer exercises and portable 177 passes/14 skips. Actual-X screenshots are inspected. Saved-preference preview remains open; runtime Keep never persists. No C/helper/fixture correction follows freeze; data/docs amendments and original failures remain explicit. On merge reset cycle 0/3; performance PR159 becomes 4/5. [Report](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md), [receipt](verification/VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.json). |
 | Appearance policy and copied opacity, IPC-02 / CFG-01 | Merged in [PR #162](https://github.com/gonz0w/fvwm-x/pull/162); cycle 2/3 | Four related shared-freshness, menu/decor-page and CopyMenuStyle opacity improvements pass eight Linux entries and three scoped leak-enabled guest sanitizer exercises. Actual-X preserves new/existing target opacity and literal definitions; native desktop screenshots are captured/inspected. Original header/control failures stay explicit; no correction follows freeze. Cycle 1/3 merged, 2/3 on merge; accumulated platform/release gates remain due. [Report](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.md), [receipt](verification/VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.json). |
@@ -367,6 +371,11 @@ open actions with a native paged consumer. This proves supporting contracts;
 full scrolling/grid browser handoff, mutations and protected clipboard content
 remain separate. Clipboard will reuse collection metadata/selection policy,
 not this ordinary file-path callback channel for sensitive payloads.
+The next selected checkpoint adds reusable bounded literal filtering, snapshot
+sort modes, cross-page selection controls and an observed-metadata inspector.
+This advances FILE-VIEW-01 / FILE-ACTION-01 and the shared clipboard metadata
+foundation without admitting clipboard payloads. See the
+[collection-controls contract](decisions/FILE-COLLECTION-CONTROLS-2026-10-23.md).
 General saved-preference confirmation and owned image/resource snapshots remain
 open. Other
 providers, typed actions beyond settings, domain

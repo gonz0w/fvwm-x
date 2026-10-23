@@ -2,7 +2,8 @@
 
 Four related FILE-ACTION/DATA/VIEW-01 capabilities are ready for review: typed
 navigation/refresh, revalidated application/configured-selection handoff, retained
-correlated outcomes, and owned cancellation/supersession recovery. Supported
+correlated outcomes, and owned cancellation/supersession recovery, ready in
+[PR #177](https://github.com/gonz0w/fvwm-x/pull/177). Supported
 configuration syntax is unchanged. The browser stays in-progress development.
 [Contract](../decisions/FILE-PROVIDER-WORK-2026-10-23.md),
 [machine receipt](VERIFICATION-2026-10-23-FILE-PROVIDER-WORK.json),

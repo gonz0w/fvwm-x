@@ -6,6 +6,7 @@
 import argparse
 import base64
 import ctypes as C
+import hashlib
 import importlib.util
 import json
 import os
@@ -59,15 +60,68 @@ def run(args):
                 '"cwd":base64.b64encode(os.fsencode(os.getcwd())).decode()}))\n')
             opener.chmod(0o700)
             config = runtime.root / 'config'
-            config.write_text('DefaultFont fixed\nStyle * TileCascadePlacement, MouseFocus, MouseFocusClickRaisesOff, ClickToFocusPassesClick\n'
-                'Colorset 0 fg #e6ebef, bg #24343e\n'
-                '*FvwmFormDefault: Colorset 0\n*FvwmFormDefault: ItemColorset 0\n'
-                '*FvwmFormDefault: Font fixed\n*FvwmFormDefault: ButtonFont fixed\n'
-                '*FvwmFormDefault: InputFont fixed\n'
-                'ModulePath ' + str(args.mfl.parent) + ':' + str(args.form.parent) + '\n'
-                'AddToFunc StartFunction I Module FvwmMFL\n')
+            modules = runtime.root / 'modules'
+            modules.mkdir()
+            build = args.fvwm.resolve().parent
+            for directory in (build / 'modules').iterdir():
+                executable = directory / directory.name
+                if executable.is_file():
+                    (modules / directory.name).symlink_to(executable)
+            for name, executable in [('FvwmMFL', args.mfl), ('FvwmForm', args.form)]:
+                alias = modules / name
+                if alias.is_symlink():
+                    alias.unlink()
+                alias.symlink_to(executable.resolve())
+            source = Path(__file__).resolve().parents[2]
+            theme_root = source / 'default-config'
+            inputs = {}
+            if args.theme in ('slate-dark', 'dune-light'):
+                palette, appearance = args.theme.split('-')
+                local = runtime.root / 'local.config'
+                local.write_text('*FvwmDesktop: palette ' + palette + '\n'
+                    '*FvwmDesktop: appearance ' + appearance + '\n'
+                    '*FvwmDesktop: transparency false\n')
+                inputs['local.config'] = local.read_bytes()
+                for name in ('config', 'desktop.fvwm', 'desktop.py', 'palettes.json'):
+                    inputs[name] = (theme_root / name).read_bytes()
+                (modules / 'FvwmDesktop').symlink_to(build / 'default-config/FvwmDesktop')
+                config.write_text('ModulePath ' + str(modules) + '\nRead ' +
+                    str(source / 'fvwm/ConfigFvwmDefaults') + '\n' +
+                    (theme_root / 'config').read_text().replace(
+                        '$[FVWM_DATADIR]/default-config', str(theme_root)) +
+                    '\nAddToFunc StartFunction I Module FvwmMFL\n')
+                evidence['font'] = 'xft:Sans:size=10:antialias=True'
+            elif args.theme == 'classic-large':
+                config.write_text('DefaultFont 9x15\n'
+                    'Style * TileCascadePlacement, MouseFocus, MouseFocusClickRaisesOff, ClickToFocusPassesClick\n'
+                    'Style * BorderWidth 3, HandleWidth 6\n'
+                    '*FvwmFormDefault: Fore black\n*FvwmFormDefault: Back wheat\n'
+                    '*FvwmFormDefault: ItemFore navy\n*FvwmFormDefault: ItemBack ivory\n'
+                    '*FvwmFormDefault: Font 9x15\n*FvwmFormDefault: ButtonFont 9x15\n'
+                    '*FvwmFormDefault: InputFont 9x15\n'
+                    'ModulePath ' + str(modules) + '\n'
+                    'AddToFunc StartFunction I Module FvwmMFL\n')
+                evidence['font'] = '9x15'
+            else:
+                config.write_text('DefaultFont fixed\nStyle * TileCascadePlacement, MouseFocus, MouseFocusClickRaisesOff, ClickToFocusPassesClick\n'
+                    'Colorset 0 fg #e6ebef, bg #24343e\n'
+                    '*FvwmFormDefault: Colorset 0\n*FvwmFormDefault: ItemColorset 0\n'
+                    '*FvwmFormDefault: Font fixed\n*FvwmFormDefault: ButtonFont fixed\n'
+                    '*FvwmFormDefault: InputFont fixed\n'
+                    'ModulePath ' + str(args.mfl.parent) + ':' + str(args.form.parent) + '\n'
+                    'AddToFunc StartFunction I Module FvwmMFL\n')
+                evidence['font'] = 'fixed'
+            inputs['generated.config'] = config.read_bytes()
+            for name, data in inputs.items():
+                (artifact / name).write_bytes(data)
+            evidence['theme'] = args.theme
+            evidence['configuration_sha256'] = {
+                name: hashlib.sha256(data).hexdigest() for name, data in inputs.items()}
+            evidence['server_geometry'] = '1440x1000x24'
+            evidence['scale'] = 1
             env = runtime.environment({'DISPLAY': display,
-                'FVWMMFL_SOCKET_PATH': str(runtime.root), 'FVWM_USERDIR': str(runtime.root)})
+                'FVWMMFL_SOCKET_PATH': str(runtime.root), 'FVWM_USERDIR': str(runtime.root),
+                'FVWM_DESKTOP_ROOT': str(theme_root), 'HOME': str(runtime.root)})
             core = runtime.start('core', [str(args.fvwm), '-d', display, '-f', str(config)], 'core.log', env)
             endpoint = runtime.root / ('fvwm_mfl_' + display.replace(':', '_') + '.sock')
             wait_for_predicate('MFL endpoint', endpoint.exists, time.monotonic() + 10, process=core)
@@ -75,6 +129,35 @@ def run(args):
             connection.record()
             connection.send(b'set echo\n')
             connection.echo('browser-probe-ready')
+            if args.theme in ('slate-dark', 'dune-light'):
+                # A query may overtake the owner's initial configuration.
+                # Wait for the requested real configuration, not the default
+                # saved palette returned while module overrides are arriving.
+                deadline = time.monotonic() + 15
+                attempts = 0
+                while time.monotonic() < deadline:
+                    attempts += 1
+                    connection.send(b'SendToModule FvwmDesktop query-settings theme all\n')
+                    settings = {}
+                    while time.monotonic() < deadline:
+                        text = connection.record().get('echo', {}).get('message', '')
+                        if text == 'desktop-settings-theme done':
+                            break
+                        if text.startswith('desktop-settings-theme '):
+                            _, key_, value = text.split(' ', 2)
+                            settings[key_] = json.loads(value)
+                    expected = {'palette': palette, 'appearance': appearance,
+                                'transparency': False}
+                    if all(settings.get(k, {}).get('effective') == v and
+                           settings[k]['source'] == 'module-configuration' and
+                           settings[k]['application'] == 'submitted-to-fvwm'
+                           for k, v in expected.items()):
+                        evidence['theme_settings'] = {k: settings[k] for k in expected}
+                        evidence['theme_readiness_queries'] = attempts
+                        break
+                    time.sleep(0.02)
+                else:
+                    raise AssertionError('Configured desktop theme not ready: ' + repr(settings))
             snapshot = subprocess.run([str(args.browser), '--inspect', '--dir', str(root)],
                 env=env, capture_output=True, timeout=15)
             assert snapshot.returncode == 0, snapshot
@@ -402,6 +485,27 @@ def run(args):
             click(controls[1][1]);callback();window=ready(window)
             key(window,b'F5');callback();window=ready(window)
             evidence['blocked_worker_cancel_reap_refresh'] = True
+            # Refresh a filtered collection after the focused selected entry
+            # disappears. The old hidden directory selection must survive;
+            # the new matching entry receives focus but not selection.
+            (root / 'file-14').unlink()
+            (root / 'file-14-new').write_text('new entry')
+            (root / 'file-13').write_text('changed observed size')
+            key(window,b'F5');callback();window=ready(window)
+            key(window,b'Tab');key(window,b'F2')
+            assert packet(callback()) == bytes([0,0,0])
+            window=ready(window)
+            capture('file-browser-refresh-changes.png')
+            _,_,values=inventory()
+            field=min(((g,w) for g,w in values if g[2]>140 and g[3]<50),key=lambda v:v[0][1]);fg=field[0]
+            controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
+            click(controls[1][1]);callback();window=ready(window)
+            key(window,b'F2');bits=packet(callback())
+            assert bits[:2] == bytes([0,15]) and bits[2:] == bytes([1,0,0]),bits
+            window=ready(window)
+            key(window,b'F5');callback();window=ready(window)
+            capture('file-browser-refresh-unchanged.png')
+            evidence['refresh_focus_fallback_and_hidden_selection'] = True
             key(window,b'Escape');callback()
             wait_for_predicate('browser exit',lambda:app.poll() is not None,time.monotonic()+5)
             assert app.poll()==0
@@ -451,7 +555,7 @@ def run(args):
             assert app.poll()==0 and not unexpected_errors,unexpected_errors
             evidence['status']='passed'
             evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
-            evidence['scope']='native list/grid; incremental providers, private clipboard content and file mutations remain open'
+            evidence['scope']='native list/grid and metadata refresh; in-place native/provider transport, private clipboard content and file mutations remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')
@@ -479,4 +583,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('fvwm', 'mfl', 'form', 'browser', 'artifacts-dir'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--theme', choices=('fixture', 'slate-dark', 'dune-light',
+                        'classic-large'), default='fixture')
     run(parser.parse_args())

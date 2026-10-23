@@ -1,5 +1,11 @@
 # Verification reports
 
+- [Atomic metadata refresh](VERIFICATION-2026-10-23-COLLECTION-REFRESH.md): five Go packages/43 cases, separate race run and three real-theme native UI drivers; refresh/focus/selection feedback and screenshots qualify focused new-feature checks.
+
+- [Accumulated collection cycle](VERIFICATION-2026-10-23-COLLECTION-CYCLE.md): merged PR167–169 qualify 49 native entries on six targets/seven profiles with exact ARM64 retention; Slate dark, Dune light and larger-font classic configurations pass.
+
+- [PR164→PR169 performance and size observation](PERFORMANCE-2026-10-23-PR169.md): exact core/MFL binaries retain timing evidence; browser/Form feature sizes are explicit and no new speedup is claimed.
+
 - [Native scrolling collection list](VERIFICATION-2026-10-23-COLLECTION-LIST.md): bounded native viewport/selection, whole-view transport and browser adoption; focused Linux/FreeBSD, scoped sanitizers and screenshots pass. Shared integration remains pending.
 
 - [Collection and file-browser foundations](VERIFICATION-2026-10-23-FILE-BROWSER-FOUNDATIONS.md): stable selection/identity, isolated file loading and literal actions with a native paged consumer; focused Linux/race/install/UI and early native BSD checks pass, broader handoff pending.

@@ -348,3 +348,41 @@ func TestViewSwitchKeepsProjectionFocusAndSelection(t *testing.T) {
 		t.Fatal("invalid view accepted")
 	}
 }
+
+func TestCompletedRefreshPreservesNeighborsAndReportsChanges(t *testing.T) {
+	left, right := net.Pipe()
+	defer left.Close()
+	defer right.Close()
+	go io.Copy(io.Discard, right)
+	root := t.TempDir()
+	for _, name := range []string{"a", "b", "c"} {
+		os.WriteFile(filepath.Join(root, name), []byte("old"), 0600)
+	}
+	before, _ := filemodel.Scan(root, false)
+	b := browser{session: transport.New(left), instance: "refresh", snapshot: before, serial: 1}
+	b.model.Replace(before.Entries())
+	b.model.Focus = before.Items[1].ID
+	b.model.SelectIDs(b.model.Generation, []string{before.Items[0].ID, before.Items[1].ID})
+	b.inspected = before.Items[1].ID
+	os.Remove(filepath.Join(root, "b"))
+	os.WriteFile(filepath.Join(root, "a"), []byte("new larger metadata"), 0600)
+	os.WriteFile(filepath.Join(root, "d"), nil, 0600)
+	after, _ := filemodel.Scan(root, false)
+	event := completedWork{work: pendingWork{serial: 1}, result: workResult{Status: "loaded", Snapshot: after}}
+	if err := b.completed(event); err != nil {
+		t.Fatal(err)
+	}
+	if b.model.Focus != before.Items[2].ID || len(b.model.Selected) != 1 || !strings.Contains(b.status, "1 added, 1 updated, 1 removed; 1 selected entries lost") || b.inspected != "" {
+		t.Fatal(b.status, b.model.Focus, b.model.Selected, b.inspected)
+	}
+	generation := b.model.Generation
+	if err := b.completed(event); err != nil || b.model.Generation != generation || b.status != "Refreshed: no entry metadata changes." {
+		t.Fatal(err, b.status)
+	}
+	// A superseded scan cannot publish a removed selection or old observation.
+	event.work.serial = 0
+	event.result.Snapshot = before
+	if err := b.completed(event); err != nil || b.model.Generation != generation {
+		t.Fatal("stale result published", err)
+	}
+}

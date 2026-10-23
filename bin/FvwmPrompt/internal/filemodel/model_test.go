@@ -135,3 +135,22 @@ func TestInvalidFilenameBytes(t *testing.T) {
 		t.Fatal("filename bytes lost on wire")
 	}
 }
+
+func TestMetadataRevisionChangesWithoutChangingIdentity(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "file")
+	os.WriteFile(path, []byte("before"), 0600)
+	before, err := Scan(root, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	os.WriteFile(path, []byte("changed size"), 0600)
+	after, err := Scan(root, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a, b := before.Entries()[0], after.Entries()[0]
+	if a.ID != b.ID || a.Revision == b.Revision || len(a.Revision) != 32 {
+		t.Fatal("metadata revision changed domain identity or lost observation", a, b)
+	}
+}

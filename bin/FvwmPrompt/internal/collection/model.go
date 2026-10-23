@@ -18,9 +18,10 @@ const PageSize = 12
 const MaxFilter = 128
 
 type Entry struct {
-	ID    string `json:"id"`
-	Label string `json:"label"`
-	Kind  string `json:"kind"`
+	ID       string `json:"id"`
+	Label    string `json:"label"`
+	Kind     string `json:"kind"`
+	Revision string `json:"revision,omitempty"`
 }
 
 type Model struct {
@@ -105,15 +106,67 @@ func (m *Model) Replace(entries []Entry) error {
 	if len(entries) > MaxItems || m.Generation == ^uint64(0) {
 		return errors.New("collection limit reached")
 	}
+	index, err := validateEntries(entries)
+	if err != nil {
+		return err
+	}
+	return m.publish(entries, index)
+}
+
+func validateEntries(entries []Entry) (map[string]int, error) {
+	if len(entries) > MaxItems {
+		return nil, errors.New("collection limit reached")
+	}
 	index := make(map[string]int, len(entries))
 	for i, entry := range entries {
-		if entry.ID == "" || len(entry.ID) > 64 || len(entry.Label) > 512 || len(entry.Kind) > 32 {
-			return errors.New("invalid collection entry")
+		if entry.ID == "" || len(entry.ID) > 64 || len(entry.Label) > 512 || len(entry.Kind) > 32 || len(entry.Revision) > 64 {
+			return nil, errors.New("invalid collection entry")
 		}
 		if _, exists := index[entry.ID]; exists {
-			return errors.New("duplicate collection identity")
+			return nil, errors.New("duplicate collection identity")
 		}
 		index[entry.ID] = i
+	}
+	return index, nil
+}
+
+// publish owns all new slices/maps. Prefer a surviving old visible neighbor if
+// focus disappears; insertion or sort never changes a surviving focused ID.
+func (m *Model) publish(entries []Entry, index map[string]int) error {
+	if m.Generation == ^uint64(0) {
+		return errors.New("collection generation exhausted")
+	}
+	visible := projection(entries, m.filter)
+	visibleIDs := make(map[string]bool, len(visible))
+	for _, i := range visible {
+		visibleIDs[entries[i].ID] = true
+	}
+	focus := m.Focus
+	if !visibleIDs[focus] {
+		focus = ""
+		position := -1
+		for i, old := range m.visible {
+			if m.Entries[old].ID == m.Focus {
+				position = i
+				break
+			}
+		}
+		if position >= 0 {
+			for _, old := range m.visible[position+1:] {
+				if visibleIDs[m.Entries[old].ID] {
+					focus = m.Entries[old].ID
+					break
+				}
+			}
+			for i := position - 1; focus == "" && i >= 0; i-- {
+				if visibleIDs[m.Entries[m.visible[i]].ID] {
+					focus = m.Entries[m.visible[i]].ID
+				}
+			}
+		}
+		if focus == "" && len(visible) != 0 {
+			focus = entries[visible[0]].ID
+		}
 	}
 	selected := make(map[string]bool)
 	for id := range m.Selected {
@@ -123,9 +176,9 @@ func (m *Model) Replace(entries []Entry) error {
 	}
 	m.Entries = append([]Entry(nil), entries...)
 	m.Selected = selected
-	m.visible = projection(m.Entries, m.filter)
+	m.visible = visible
+	m.Focus = focus
 	m.Generation++
-	m.repairFocus()
 	return nil
 }
 

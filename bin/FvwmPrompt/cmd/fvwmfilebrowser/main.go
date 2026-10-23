@@ -324,10 +324,26 @@ func (b *browser) completed(event completedWork) error {
 				b.inspected = ""
 				b.model.Focus = ""
 			}
-			if err := b.model.Replace(entries); err != nil {
+			status := "Folder loaded. Symlink/special-file actions unavailable."
+			if old == string(snapshot.Path) {
+				changes, err := b.model.Reconcile(b.model.Generation, entries)
+				if err != nil {
+					return err
+				}
+				status = fmt.Sprintf("Refreshed: %d added, %d updated, %d removed; %d selected entries lost.",
+					changes.Added, changes.Updated, changes.Removed, changes.SelectionLost)
+				if changes.Added+changes.Updated+changes.Removed == 0 {
+					status = "Refreshed: no entry metadata changes."
+				}
+			} else if err := b.model.Replace(entries); err != nil {
 				return err
 			}
 			b.snapshot, b.hidden = snapshot, snapshot.Hidden
+			if b.inspected != "" {
+				if _, err := snapshot.ObservedDetails(b.inspected); err != nil {
+					b.inspected = ""
+				}
+			}
 			if len(result.Selected) != 0 {
 				if err := b.model.SelectIDs(b.model.Generation, result.Selected); err != nil {
 					return err
@@ -342,7 +358,7 @@ func (b *browser) completed(event completedWork) error {
 					b.inspected = result.Selected[0]
 				}
 			}
-			b.status = "Folder loaded. Symlink/special-file actions unavailable."
+			b.status = status
 		} else if result.Status == "started" {
 			b.status = "Application started; the browser cannot confirm that the file opened"
 		} else {

@@ -1,0 +1,1458 @@
+{
+  "status": "passed",
+  "scope": "Accumulated PR167/168/169 affected cycle; exact PR169 ARM64 policy/product results retained, other four targets fresh. Three real theme configurations exercised on reused Linux binaries.",
+  "source_archive_sha256": "f62afc52036f51a219b817754541201bf4478bb3fdf67c0b6f29e87325e51eb4",
+  "source_files": 2253,
+  "fresh_targets": {
+    "linux-amd64": {
+      "archive_sha256": "20b615fab96329a2d4fc0ff7363e5b1d2f7dd1a75dde549fcfe417157b08f1b0",
+      "verified_files": 44,
+      "profiles": {
+        "gcc": {
+          "build": "/root/fvwm-module-waits-20261015/build-gcc",
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.113+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+            "x86_64"
+          ],
+          "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "passes": 7,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "5cb750e1341f4de06db8f220b817cd540552ecb7f2ba610f259c19f760c90860",
+              "bytes": 5426096
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "55e6b18a225814913c4b43e039ad0c38f82b108270933085532caf1d1bb0c216",
+              "bytes": 378016
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "97e5df52801dd354869786e320f2f1a5f620cb4ed069264a3b068e09d7e61873",
+              "bytes": 1509392
+            }
+          }
+        },
+        "clang": {
+          "build": "/root/fvwm-module-waits-20261015/build-clang",
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.113+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+            "x86_64"
+          ],
+          "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "passes": 7,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "e63ae60ddc76adcb64edf1fa80aed84662250b2fe96f6e86bb634ebcc6f2ef51",
+              "bytes": 4589224
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "e32abb5ea36ed6cd9c59a6ace57f58b67b04b67d3adf0dbc9ec226d1dcb8d3d8",
+              "bytes": 341744
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "ea9fc31838cbf1ec6a7fcbd3f99cc0120ad0439bb745a82c0577246807c0ea68",
+              "bytes": 1332664
+            }
+          }
+        }
+      },
+      "commands": [
+        {
+          "label": "gcc-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "status": 0,
+          "seconds": 13.526
+        },
+        {
+          "label": "gcc-compile",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "2",
+            "FvwmForm",
+            "test-form-list",
+            "test-form-input",
+            "test-form-command"
+          ],
+          "status": 0,
+          "seconds": 15.027
+        },
+        {
+          "label": "gcc-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--num-processes",
+            "1",
+            "--print-errorlogs",
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "status": 0,
+          "seconds": 17.28
+        },
+        {
+          "label": "clang-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/build-clang"
+          ],
+          "status": 0,
+          "seconds": 16.432
+        },
+        {
+          "label": "clang-compile",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-clang",
+            "-j",
+            "2",
+            "FvwmForm",
+            "test-form-list",
+            "test-form-input",
+            "test-form-command"
+          ],
+          "status": 0,
+          "seconds": 12.449
+        },
+        {
+          "label": "clang-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-clang",
+            "--no-rebuild",
+            "--num-processes",
+            "1",
+            "--print-errorlogs",
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "status": 0,
+          "seconds": 15.77
+        },
+        {
+          "label": "go-version",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "version"
+          ],
+          "status": 0,
+          "seconds": 0.225
+        },
+        {
+          "label": "go-policy",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 12.071
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "-C",
+            "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 2.295
+        },
+        {
+          "label": "go-build",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "build",
+            "-C",
+            "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-o",
+            "/root/fvwm-module-waits-20261015/collection-cycle-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 3.537
+        },
+        {
+          "label": "browser-x",
+          "command": [
+            "python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-clang/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/root/fvwm-module-waits-20261015/build-clang/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/root/fvwm-module-waits-20261015/collection-cycle-go-build/fvwm-file-browser",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/collection-cycle-checkpoint/browser-ui"
+          ],
+          "status": 0,
+          "seconds": 30.664
+        }
+      ],
+      "Go_packages": 5,
+      "Go_top_cases": 36,
+      "native_UI": "passed"
+    },
+    "freebsd-amd64": {
+      "archive_sha256": "1a49b546c73fbb91eae89ff2b3d86aa7896e4a823489f1d85610ac790635554e",
+      "verified_files": 37,
+      "profiles": {
+        "default": {
+          "build": "/root/fvwm-style-simplification-recovery-20261016/build-default",
+          "uname": [
+            "FreeBSD",
+            "freebsd",
+            "15.1-RELEASE-p4",
+            "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+            "amd64"
+          ],
+          "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "passes": 7,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "6533c371a472c3b77a7ef278827cfba0d9d912267e5312bbb6730d062c10a687",
+              "bytes": 5154440
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "9595060700e9389f9e0369da8557828015bb2c15d71dc0a26a09be0e53614667",
+              "bytes": 419280
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "ea2d98717ba06fa4484826c56ecb8fcf34b2057035690f94a64e1efb0ade5cde",
+              "bytes": 1540672
+            }
+          }
+        }
+      },
+      "commands": [
+        {
+          "label": "default-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-style-simplification-recovery-20261016/build-default"
+          ],
+          "status": 0,
+          "seconds": 18.576
+        },
+        {
+          "label": "default-compile",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/root/fvwm-style-simplification-recovery-20261016/build-default",
+            "-j",
+            "2",
+            "FvwmForm",
+            "test-form-list",
+            "test-form-input",
+            "test-form-command"
+          ],
+          "status": 0,
+          "seconds": 14.201
+        },
+        {
+          "label": "default-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-style-simplification-recovery-20261016/build-default",
+            "--no-rebuild",
+            "--num-processes",
+            "1",
+            "--print-errorlogs",
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "status": 0,
+          "seconds": 18.311
+        },
+        {
+          "label": "go-version",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "version"
+          ],
+          "status": 0,
+          "seconds": 0.233
+        },
+        {
+          "label": "go-policy",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-C",
+            "/root/fvwm-style-simplification-recovery-20261016/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 15.739
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "-C",
+            "/root/fvwm-style-simplification-recovery-20261016/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 2.234
+        },
+        {
+          "label": "go-build",
+          "command": [
+            "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "build",
+            "-C",
+            "/root/fvwm-style-simplification-recovery-20261016/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-o",
+            "/root/fvwm-style-simplification-recovery-20261016/collection-cycle-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 3.996
+        },
+        {
+          "label": "browser-x",
+          "command": [
+            "python3",
+            "/root/fvwm-style-simplification-recovery-20261016/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/root/fvwm-style-simplification-recovery-20261016/build-default/fvwm3",
+            "--mfl",
+            "/root/fvwm-style-simplification-recovery-20261016/build-default/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/root/fvwm-style-simplification-recovery-20261016/build-default/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/root/fvwm-style-simplification-recovery-20261016/collection-cycle-go-build/fvwm-file-browser",
+            "--artifacts-dir",
+            "/root/fvwm-style-simplification-recovery-20261016/collection-cycle-checkpoint/browser-ui"
+          ],
+          "status": 0,
+          "seconds": 32.938
+        }
+      ],
+      "Go_packages": 5,
+      "Go_top_cases": 36,
+      "native_UI": "passed"
+    },
+    "openbsd-arm64": {
+      "archive_sha256": "2226dbf0c4309351e64d255c285ce406ec093f3c74926940c3f02dfd1a3c1333",
+      "verified_files": 1082,
+      "profiles": {
+        "default": {
+          "build": "/root/fvwm-ci/source/builddir-bsd",
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#1",
+            "arm64"
+          ],
+          "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "passes": 7,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "ee54b0db11086e2848be4555b961d7eb85350e2d35c5ffe024d35807d7cf3c36",
+              "bytes": 4979664
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "6efda6fc36a93fb69ab1082ee6cf536d593a5d4cd08bd3108064fdc6cf33645f",
+              "bytes": 389208
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "ded63a66babd421e832b0e688704b725a20a6de25d9f67f283e442e992e2cf7d",
+              "bytes": 1478416
+            }
+          }
+        }
+      },
+      "commands": [
+        {
+          "label": "default-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-ci/source/builddir-bsd"
+          ],
+          "status": 0,
+          "seconds": 2.023
+        },
+        {
+          "label": "default-compile",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/root/fvwm-ci/source/builddir-bsd",
+            "-j",
+            "2",
+            "FvwmForm",
+            "test-form-list",
+            "test-form-input",
+            "test-form-command"
+          ],
+          "status": 0,
+          "seconds": 1.781
+        },
+        {
+          "label": "default-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-ci/source/builddir-bsd",
+            "--no-rebuild",
+            "--num-processes",
+            "1",
+            "--print-errorlogs",
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "status": 0,
+          "seconds": 10.777
+        },
+        {
+          "label": "go-version",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "version"
+          ],
+          "status": 0,
+          "seconds": 0.073
+        },
+        {
+          "label": "go-policy",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "test",
+            "-C",
+            "/root/fvwm-ci/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 12.191
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "vet",
+            "-C",
+            "/root/fvwm-ci/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 1.898
+        },
+        {
+          "label": "go-build",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "build",
+            "-C",
+            "/root/fvwm-ci/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-o",
+            "/root/fvwm-ci/collection-cycle-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 0.462
+        },
+        {
+          "label": "browser-x",
+          "command": [
+            "python3",
+            "/root/fvwm-ci/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/root/fvwm-ci/source/builddir-bsd/fvwm3",
+            "--mfl",
+            "/root/fvwm-ci/source/builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/root/fvwm-ci/source/builddir-bsd/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/root/fvwm-ci/collection-cycle-go-build/fvwm-file-browser",
+            "--artifacts-dir",
+            "/root/fvwm-ci/collection-cycle-checkpoint/browser-ui"
+          ],
+          "status": 0,
+          "seconds": 7.598
+        }
+      ],
+      "Go_packages": 5,
+      "Go_top_cases": 36,
+      "native_UI": "passed"
+    },
+    "openbsd-amd64": {
+      "archive_sha256": "6e779644b74d4ebf87c95a871fa3c51a6ed2e36ce46755045e84e89a30e78037",
+      "verified_files": 1085,
+      "profiles": {
+        "default": {
+          "build": "/root/fvwm-ci/source/builddir-bsd",
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#2",
+            "amd64"
+          ],
+          "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "passes": 7,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "1c1cf13b99cb35b40bf32007884e313c020c28d9ee7fb8481b9919351ef38003",
+              "bytes": 4848144
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "1cfa2d5e86738359acd24b32967f6610886e9d2002d3bef406184702dc486479",
+              "bytes": 380272
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "cfea7d3a9289e7ffde5554622e553b3b086f8d893f139ddefa6446a5532c009d",
+              "bytes": 1421792
+            }
+          }
+        }
+      },
+      "commands": [
+        {
+          "label": "default-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-ci/source/builddir-bsd"
+          ],
+          "status": 0,
+          "seconds": 36.513
+        },
+        {
+          "label": "default-compile",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/root/fvwm-ci/source/builddir-bsd",
+            "-j",
+            "2",
+            "FvwmForm",
+            "test-form-list",
+            "test-form-input",
+            "test-form-command"
+          ],
+          "status": 0,
+          "seconds": 27.237
+        },
+        {
+          "label": "default-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-ci/source/builddir-bsd",
+            "--no-rebuild",
+            "--num-processes",
+            "1",
+            "--print-errorlogs",
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "status": 0,
+          "seconds": 28.324
+        },
+        {
+          "label": "go-version",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "version"
+          ],
+          "status": 0,
+          "seconds": 0.296
+        },
+        {
+          "label": "go-policy",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "test",
+            "-C",
+            "/root/fvwm-ci/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 174.943
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "vet",
+            "-C",
+            "/root/fvwm-ci/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 20.57
+        },
+        {
+          "label": "go-build",
+          "command": [
+            "/root/fvwm-ci/source/builddir-bsd-go-sdk/go/bin/go",
+            "build",
+            "-C",
+            "/root/fvwm-ci/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-o",
+            "/root/fvwm-ci/collection-cycle-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 4.925
+        },
+        {
+          "label": "browser-x",
+          "command": [
+            "python3",
+            "/root/fvwm-ci/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/root/fvwm-ci/source/builddir-bsd/fvwm3",
+            "--mfl",
+            "/root/fvwm-ci/source/builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/root/fvwm-ci/source/builddir-bsd/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/root/fvwm-ci/collection-cycle-go-build/fvwm-file-browser",
+            "--artifacts-dir",
+            "/root/fvwm-ci/collection-cycle-checkpoint/browser-ui"
+          ],
+          "status": 0,
+          "seconds": 91.74
+        }
+      ],
+      "Go_packages": 5,
+      "Go_top_cases": 36,
+      "native_UI": "passed"
+    }
+  },
+  "retention": {
+    "source_archive_sha256": "f62afc52036f51a219b817754541201bf4478bb3fdf67c0b6f29e87325e51eb4",
+    "reference_archive_sha256": "51effbbef99e9e2f4eef78e9d2e747b480f21391c3623cd73a89be7d086d3711",
+    "changed_inputs": [
+      "README.md",
+      "dev-docs/PROJECT-TRACKER.md",
+      "dev-docs/THEME-STANDARDS.md",
+      "dev-docs/WORKFLOW.md",
+      "dev-docs/decisions/COLLECTION-GRID-2026-10-23.md",
+      "dev-docs/decisions/README.md",
+      "dev-docs/verification/README.md",
+      "dev-docs/verification/VERIFICATION-2026-10-23-COLLECTION-GRID.json",
+      "dev-docs/verification/VERIFICATION-2026-10-23-COLLECTION-GRID.md",
+      "tests/live_x/file_browser_live.py"
+    ],
+    "unchanged_runtime_policy_manual_inputs": true,
+    "retained_targets": {
+      "fvwm-x-linux-arm64-svg": {
+        "policy_archive": {
+          "sha256": "b3eee99cf39a39d66abe76cfc5f7baf674d7e6c1b3cd3d24f8bfcdd2fa0abeb1",
+          "verified_files": 59
+        },
+        "observer_archive": {
+          "sha256": "06dc6f745efbb57feb11c514c5f37b2c45a2e117bab3a644021b0a4972b4bb25",
+          "verified_files": 40
+        },
+        "go": {
+          "go-policy.log": {
+            "packages": 5,
+            "top_tests": 36
+          },
+          "go-race.log": {
+            "packages": 5,
+            "top_tests": 36
+          }
+        },
+        "retained_commands": [
+          {
+            "label": "environment",
+            "args": [
+              "sh",
+              "-c",
+              "uname -a; cc --version; go version; df -h ."
+            ],
+            "status": 0,
+            "seconds": 0.004
+          },
+          {
+            "label": "configure",
+            "args": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "/tmp/fvwm-module-waits-20261015/source"
+            ],
+            "status": 0,
+            "seconds": 0.6
+          },
+          {
+            "label": "compile",
+            "args": [
+              "meson",
+              "compile",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "-j",
+              "2",
+              "FvwmForm",
+              "test-form-list",
+              "test-form-input",
+              "test-form-command"
+            ],
+            "status": 0,
+            "seconds": 0.124
+          },
+          {
+            "label": "registered",
+            "args": [
+              "meson",
+              "test",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "--no-rebuild",
+              "--num-processes",
+              "1",
+              "--print-errorlogs",
+              "form-list",
+              "form-input",
+              "form-command",
+              "form-transport-xvfb",
+              "form-input-xvfb",
+              "form-button-xvfb",
+              "form-fields-xvfb"
+            ],
+            "status": 0,
+            "seconds": 9.169
+          },
+          {
+            "label": "go-policy",
+            "args": [
+              "go",
+              "test",
+              "-json",
+              "-count=1",
+              "-mod=vendor",
+              "./internal/collection",
+              "./internal/filemodel",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmcommand",
+              "./transport"
+            ],
+            "status": 0,
+            "seconds": 0.267
+          },
+          {
+            "label": "go-race",
+            "args": [
+              "go",
+              "test",
+              "-race",
+              "-json",
+              "-count=1",
+              "-mod=vendor",
+              "./internal/collection",
+              "./internal/filemodel",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmcommand",
+              "./transport"
+            ],
+            "status": 0,
+            "seconds": 6.559
+          },
+          {
+            "label": "go-vet",
+            "args": [
+              "go",
+              "vet",
+              "-mod=vendor",
+              "./internal/collection",
+              "./internal/filemodel",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmcommand",
+              "./transport"
+            ],
+            "status": 0,
+            "seconds": 0.064
+          },
+          {
+            "label": "go-build",
+            "args": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-o",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "./cmd/fvwmfilebrowser"
+            ],
+            "status": 0,
+            "seconds": 0.117
+          },
+          {
+            "label": "native-ui",
+            "args": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+              "--fvwm",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+              "--mfl",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+              "--form",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+              "--browser",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-final-checkpoint/native-ui"
+            ],
+            "status": 0,
+            "seconds": 6.696
+          },
+          {
+            "label": "san-configure",
+            "args": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "/tmp/fvwm-module-waits-20261015/source"
+            ],
+            "status": 0,
+            "seconds": 0.711
+          },
+          {
+            "label": "san-compile",
+            "args": [
+              "meson",
+              "compile",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "-j",
+              "2",
+              "FvwmForm",
+              "test-form-list",
+              "test-form-input",
+              "test-form-command"
+            ],
+            "status": 0,
+            "seconds": 0.658
+          },
+          {
+            "label": "san-policy",
+            "args": [
+              "meson",
+              "test",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "--no-rebuild",
+              "--num-processes",
+              "1",
+              "--print-errorlogs",
+              "form-list",
+              "form-input",
+              "form-command"
+            ],
+            "status": 0,
+            "seconds": 0.185
+          },
+          {
+            "label": "san-ui",
+            "args": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+              "--fvwm",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+              "--mfl",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+              "--form",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmForm/FvwmForm",
+              "--browser",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-final-checkpoint/san-ui"
+            ],
+            "status": 0,
+            "seconds": 6.872
+          },
+          {
+            "label": "man-compile",
+            "args": [
+              "meson",
+              "compile",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+              "-j",
+              "2",
+              "FvwmForm.1",
+              "fvwm-file-browser.1"
+            ],
+            "status": 0,
+            "seconds": 0.222
+          }
+        ],
+        "observer_commands": [
+          {
+            "label": "native-ui",
+            "args": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+              "--fvwm",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+              "--mfl",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+              "--form",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+              "--browser",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-observer-checkpoint/native-ui"
+            ],
+            "status": 0,
+            "seconds": 7.249
+          },
+          {
+            "label": "san-ui",
+            "args": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+              "--fvwm",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+              "--mfl",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+              "--form",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmForm/FvwmForm",
+              "--browser",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/collection-grid-observer-checkpoint/san-ui"
+            ],
+            "status": 0,
+            "seconds": 6.689
+          }
+        ],
+        "observer_result": {
+          "status": "passed",
+          "target": "fvwm-x-linux-arm64-svg",
+          "source_files_guarded": 2251,
+          "only_fixture_changed": true,
+          "product_binary_hashes_unchanged": true,
+          "prior_policy_compile_race_vet_retained": true
+        }
+      },
+      "freebsd-arm64": {
+        "policy_archive": {
+          "sha256": "ef6a3ef69f1be0aacbb367743c414e1d326f514101a7a1f2ec032b91e5204296",
+          "verified_files": 26
+        },
+        "observer_archive": {
+          "sha256": "0ffb6d2d0a8c371178d22565ce933890c12499bc60a76b97316132e720299261",
+          "verified_files": 23
+        },
+        "go": {
+          "go-policy.log": {
+            "packages": 5,
+            "top_tests": 36
+          }
+        },
+        "retained_commands": [
+          {
+            "label": "environment",
+            "args": [
+              "sh",
+              "-c",
+              "uname -a; cc --version; go version; df -h ."
+            ],
+            "status": 0,
+            "seconds": 0.018
+          },
+          {
+            "label": "configure",
+            "args": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/root/fvwm-module-waits-20261015/build-default",
+              "/root/fvwm-module-waits-20261015/source"
+            ],
+            "status": 0,
+            "seconds": 0.694
+          },
+          {
+            "label": "compile",
+            "args": [
+              "meson",
+              "compile",
+              "-C",
+              "/root/fvwm-module-waits-20261015/build-default",
+              "-j",
+              "2",
+              "FvwmForm",
+              "test-form-list",
+              "test-form-input",
+              "test-form-command"
+            ],
+            "status": 0,
+            "seconds": 0.235
+          },
+          {
+            "label": "registered",
+            "args": [
+              "meson",
+              "test",
+              "-C",
+              "/root/fvwm-module-waits-20261015/build-default",
+              "--no-rebuild",
+              "--num-processes",
+              "1",
+              "--print-errorlogs",
+              "form-list",
+              "form-input",
+              "form-command",
+              "form-transport-xvfb",
+              "form-input-xvfb",
+              "form-button-xvfb",
+              "form-fields-xvfb"
+            ],
+            "status": 0,
+            "seconds": 9.857
+          },
+          {
+            "label": "go-policy",
+            "args": [
+              "go",
+              "test",
+              "-json",
+              "-count=1",
+              "-mod=vendor",
+              "./internal/collection",
+              "./internal/filemodel",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmcommand",
+              "./transport"
+            ],
+            "status": 0,
+            "seconds": 0.474
+          },
+          {
+            "label": "go-vet",
+            "args": [
+              "go",
+              "vet",
+              "-mod=vendor",
+              "./internal/collection",
+              "./internal/filemodel",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmcommand",
+              "./transport"
+            ],
+            "status": 0,
+            "seconds": 0.118
+          },
+          {
+            "label": "go-build",
+            "args": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-o",
+              "/root/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "./cmd/fvwmfilebrowser"
+            ],
+            "status": 0,
+            "seconds": 0.218
+          },
+          {
+            "label": "native-ui",
+            "args": [
+              "python3",
+              "/root/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+              "--fvwm",
+              "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+              "--mfl",
+              "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+              "--form",
+              "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+              "--browser",
+              "/root/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "--artifacts-dir",
+              "/root/fvwm-module-waits-20261015/collection-grid-final-checkpoint/native-ui"
+            ],
+            "status": 1,
+            "seconds": 1.171
+          }
+        ],
+        "observer_commands": [
+          {
+            "label": "native-ui",
+            "args": [
+              "python3",
+              "/root/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+              "--fvwm",
+              "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+              "--mfl",
+              "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+              "--form",
+              "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+              "--browser",
+              "/root/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+              "--artifacts-dir",
+              "/root/fvwm-module-waits-20261015/collection-grid-observer-checkpoint/native-ui"
+            ],
+            "status": 0,
+            "seconds": 6.427
+          }
+        ],
+        "observer_result": {
+          "status": "passed",
+          "target": "freebsd-arm64",
+          "source_files_guarded": 2251,
+          "only_fixture_changed": true,
+          "product_binary_hashes_unchanged": true,
+          "prior_policy_compile_race_vet_retained": true
+        }
+      }
+    },
+    "fresh_theme_profiles": [
+      "slate-dark",
+      "dune-light",
+      "classic-large"
+    ],
+    "scope": "Exact PR169 Linux/FreeBSD ARM64 build, 7 policy/native entries, Go 5-package/36 cases and Linux race/scoped sanitizers retained. No runtime or policy fixture inputs change; theme fixture extension is separately exercised on the same Linux binaries."
+  },
+  "themes": {
+    "slate-dark": {
+      "archive_sha256": "55db4feb9617044cba244e8ac13f84b3e9ff08f0f3e541ea740b98e86d75b84d",
+      "verified_files": 22,
+      "result": {
+        "font": "xft:Sans:size=10:antialias=True",
+        "theme": "slate-dark",
+        "configuration_sha256": {
+          "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+          "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+          "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "generated.config": "6f01aecd42160b26b0ebc5c32efedcfef9d34f1f6c89e337a2f8dc2cf6a7cfb1"
+        },
+        "server_geometry": "1440x1000x24",
+        "scale": 1,
+        "palette_setting": {
+          "type": "enum",
+          "default": "slate",
+          "choices": [
+            "slate",
+            "dune",
+            "grove",
+            "ink"
+          ],
+          "group": "appearance",
+          "description": "Desktop color palette",
+          "owner": "FvwmDesktop",
+          "available": true,
+          "capability": "owned-desktop-preference",
+          "preview": false,
+          "native_preview": false,
+          "runtime_constraint": null,
+          "saved": "slate",
+          "effective": "slate",
+          "source": "module-configuration",
+          "application": "submitted-to-fvwm",
+          "generation": "d3734d03a20664354899fab7ae04b753",
+          "persistence_error": null
+        },
+        "mixed_focus_scrolled_input_and_empty_list": true,
+        "grid_icons_range_selection_and_view_identity": true,
+        "end_space_selection_and_properties": true,
+        "focused_literal_byte_activation": true,
+        "stale_control_refused": true,
+        "focused_folder_activation_and_parent": true,
+        "filter_preserves_hidden_selection": true,
+        "blocked_worker_cancel_reap_refresh": true,
+        "over_limit_grid_range_is_atomic": true,
+        "keyboard_page_and_wheel_preserve_focus": true,
+        "4096_rows_two_offscreen_selections_bounded_callback": true,
+        "status": "passed",
+        "screenshots": [
+          "file-browser-collection.png",
+          "file-browser-scrolled-properties.png",
+          "file-browser-filtered-selection.png",
+          "file-browser-4096-rows.png"
+        ],
+        "scope": "native list/grid; incremental providers, private clipboard content and file mutations remain open"
+      }
+    },
+    "dune-light": {
+      "archive_sha256": "cdb97e53dc638517d8e86de34e8e784c1f3809d75ebdffea622289c424077204",
+      "verified_files": 22,
+      "result": {
+        "font": "xft:Sans:size=10:antialias=True",
+        "theme": "dune-light",
+        "configuration_sha256": {
+          "local.config": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+          "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+          "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "generated.config": "c8fb6f1e87bf51b299e829291ff62196626bc13020c5218a6ea476c1b549e5af"
+        },
+        "server_geometry": "1440x1000x24",
+        "scale": 1,
+        "palette_setting": {
+          "type": "enum",
+          "default": "slate",
+          "choices": [
+            "slate",
+            "dune",
+            "grove",
+            "ink"
+          ],
+          "group": "appearance",
+          "description": "Desktop color palette",
+          "owner": "FvwmDesktop",
+          "available": true,
+          "capability": "owned-desktop-preference",
+          "preview": false,
+          "native_preview": false,
+          "runtime_constraint": null,
+          "saved": "slate",
+          "effective": "dune",
+          "source": "module-configuration",
+          "application": "submitted-to-fvwm",
+          "generation": "cc4806b99ba0aa505f310687ba0c64ac",
+          "persistence_error": null
+        },
+        "mixed_focus_scrolled_input_and_empty_list": true,
+        "grid_icons_range_selection_and_view_identity": true,
+        "end_space_selection_and_properties": true,
+        "focused_literal_byte_activation": true,
+        "stale_control_refused": true,
+        "focused_folder_activation_and_parent": true,
+        "filter_preserves_hidden_selection": true,
+        "blocked_worker_cancel_reap_refresh": true,
+        "over_limit_grid_range_is_atomic": true,
+        "keyboard_page_and_wheel_preserve_focus": true,
+        "4096_rows_two_offscreen_selections_bounded_callback": true,
+        "status": "passed",
+        "screenshots": [
+          "file-browser-collection.png",
+          "file-browser-scrolled-properties.png",
+          "file-browser-filtered-selection.png",
+          "file-browser-4096-rows.png"
+        ],
+        "scope": "native list/grid; incremental providers, private clipboard content and file mutations remain open"
+      }
+    },
+    "classic-large": {
+      "archive_sha256": "56988f061aebbe69bcc2165b9039112b4a61e5c618d9af6d5b357341335d4fad",
+      "verified_files": 17,
+      "result": {
+        "font": "9x15",
+        "theme": "classic-large",
+        "configuration_sha256": {
+          "generated.config": "0f42675f53695f0746abbe78066059a0903314a3f8a71aff2b8430922a90fd13"
+        },
+        "server_geometry": "1440x1000x24",
+        "scale": 1,
+        "mixed_focus_scrolled_input_and_empty_list": true,
+        "grid_icons_range_selection_and_view_identity": true,
+        "end_space_selection_and_properties": true,
+        "focused_literal_byte_activation": true,
+        "stale_control_refused": true,
+        "focused_folder_activation_and_parent": true,
+        "filter_preserves_hidden_selection": true,
+        "blocked_worker_cancel_reap_refresh": true,
+        "over_limit_grid_range_is_atomic": true,
+        "keyboard_page_and_wheel_preserve_focus": true,
+        "4096_rows_two_offscreen_selections_bounded_callback": true,
+        "status": "passed",
+        "screenshots": [
+          "file-browser-collection.png",
+          "file-browser-scrolled-properties.png",
+          "file-browser-filtered-selection.png",
+          "file-browser-4096-rows.png"
+        ],
+        "scope": "native list/grid; incremental providers, private clipboard content and file mutations remain open"
+      }
+    }
+  },
+  "counts": {
+    "native_entries": 49,
+    "fresh_native_entries": 35,
+    "retained_native_entries": 14,
+    "targets": 6,
+    "profiles": 7,
+    "Go_packages_per_target": 5,
+    "Go_cases_per_target": 36,
+    "Go_top_case_executions_with_retained_Linux_race": 252,
+    "scoped_policy_sanitizers_retained": 3,
+    "browser_X_drivers_including_themes_and_sanitized": 10
+  },
+  "limits": [
+    "No full install/default-X/full optional-profile/release claim; no changed installation/discovery/server contract.",
+    "Native CPU sanitizers, physical hardware/toolkits/compositors/assistive acceptance remain separate.",
+    "Retained sanitized Form UI disables leak checking for the recorded inherited fontconfig exit allocations; pure policy checks enable it.",
+    "OpenBSD build caches also contain an older browser-cycle capture. Both capture manifests validate; only collection-cycle results count as fresh."
+  ]
+}

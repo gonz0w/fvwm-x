@@ -93,8 +93,22 @@ toggles ascending/descending. Directories remain first in both directions;
 primary-key ties use raw filename byte order in the chosen direction. Size is
 the observed entry size, not recursive disk usage. These operations reorder the
 loaded snapshot without rescanning. Selection uses IDs rather than positions.
-Changing sort or filter starts at page one; refresh keeps the previous page's
-first surviving visible item on screen, or returns to page one if it disappeared.
+Sort preserves a surviving focused ID; filtering chooses the first matching item
+when the old focus is excluded. Refresh retains surviving focus and selection,
+including filtered-out selections. If focus disappears, the next surviving
+visible old neighbor receives focus, then the previous one, otherwise the first
+new visible item. The focused item is revealed when the native view is rebuilt;
+a wheel-only viewport position is not retained across that rebuild.
+
+Refresh reports added, updated and removed entry counts and the number of
+selected entries that disappeared. Counts compare directory-entry identities
+and observed type, mode, size and modification time. A changed identity counts
+as a removal and addition. No file content is read.
+An unchanged refresh reports no entry metadata changes. A small change publishes
+one generation-checked metadata transaction; a larger change publishes one
+bounded validated replacement. Neither path publishes a partial collection.
+The filter, presentation and surviving IDs remain intact. Native controls are
+still rebuilt as a complete view; file watching is not enabled.
 
 Properties (F2) requires exactly one selected item, including a selection on
 another page or excluded by the filter. It displays the name, kind, mode,

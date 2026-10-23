@@ -152,7 +152,10 @@ func entries(items []Item) []collection.Entry {
 			_, size := utf8.DecodeLastRuneInString(label)
 			label = label[:len(label)-size]
 		}
-		entries = append(entries, collection.Entry{ID: item.ID, Label: label, Kind: item.Kind})
+		revision := sha256.Sum256([]byte(fmt.Sprintf("%d:%d:%d",
+			item.Identity.Mode, item.Identity.Size, item.Identity.MTime)))
+		entries = append(entries, collection.Entry{ID: item.ID, Label: label,
+			Kind: item.Kind, Revision: hex.EncodeToString(revision[:16])})
 	}
 	return entries
 }

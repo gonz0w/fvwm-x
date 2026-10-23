@@ -46,20 +46,29 @@ Integration cycle ledger: merged PR166 is the integrated reference
 checkpoint passes **63 selected core/desktop entries on six targets/seven
 profiles**, five Go packages/26 cases per target and six native browser drivers.
 Linux ARM64 exact matching results and four scoped guest sanitizer exercises
-are retained; the other five targets are fresh. Merged PR167/168 advance the cycle to **2/3**; the collection-grid checkpoint
-becomes **3/3 on merge**. Close the accumulated affected six-target cycle before
-starting a fourth implementation batch.
+are retained; the other five targets are fresh. Merged PR167/168/169 advance the cycle to **3/3**. The accumulated affected
+six-target cycle is now due before starting a fourth implementation batch.
 [Integrated report](verification/VERIFICATION-2026-10-23-FILE-SUPPORT-CYCLE.md).
-The independent performance reference is PR164, **4/5 merged**, **5/5 on this
-merge**. The next continuation owes the periodic comparison. Tuning remains deferred.
+The independent performance reference is PR164, **5/5 merged**. The next continuation owes the periodic comparison. Tuning remains deferred.
 Full install/default-X/full compiler-feature and milestone/release acceptance
 remain at their required boundary. No changed install/discovery/server contract
 requires an early gate here. Native-CPU/hardware/toolkit/compositor checks remain
 separate. Deferred gates are not passes.
 
+Theme compatibility direction, 2026-10-23: add two or three actual FVWM
+configuration profiles to shared native-UI checkpoints: Slate dark, Dune light,
+and classic/minimal custom settings with larger fonts and legacy module colors.
+Check collection/consumer geometry, text/icon rendering, selected/focused states,
+keyboard and pointer behavior; preserve screenshots and exact config/font/scale
+inputs. These profile runs are **pending**; the existing isolated dark fixture
+is not their qualification. Use one reused native-X build and batch these checks
+at the shared checkpoint, with relevant platform follow-ups rather than a new
+full matrix per feature. [Smoke contract](THEME-STANDARDS.md#primitive-theme-compatibility-smoke-set),
+[cadence](WORKFLOW.md#representative-theme-compatibility).
+
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Collection grid/ranges, FILE-VIEW/ACTION-01 | Focused checks passed; ready for review; integration pending | Native icon-grid over the shared model, keyboard/mouse additive ranges and browser --view/F7 switching preserve IDs/focus/selection. Both Linux/FreeBSD ARM64 pass seven native entries and five Go packages/36 cases; Linux race and three scoped sanitizer policy checks pass. A retiring-window observer correction reruns only three actual-X drivers; unchanged product/policy evidence is retained. Eleven screenshots per driver, new grid views inspected. Cycle 2/3 merged, 3/3 on merge; close it before the next implementation batch. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-GRID.md), [contract](decisions/COLLECTION-GRID-2026-10-23.md). |
+| Collection grid/ranges, FILE-VIEW/ACTION-01 | Merged in [PR #169](https://github.com/gonz0w/fvwm-x/pull/169); integration pending | Native icon-grid over the shared model, keyboard/mouse additive ranges and browser --view/F7 switching preserve IDs/focus/selection. Both Linux/FreeBSD ARM64 pass seven native entries and five Go packages/36 cases; Linux race and three scoped sanitizer policy checks pass. A retiring-window observer correction reruns only three actual-X drivers; unchanged product/policy evidence is retained. Eleven screenshots per driver, new grid views inspected. Cycle 2/3 merged, 3/3 on merge; close it before the next implementation batch. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-GRID.md), [contract](decisions/COLLECTION-GRID-2026-10-23.md). |
 | Native scrolling collection, FILE-VIEW/ACTION-01 | Merged in [PR #168](https://github.com/gonz0w/fvwm-x/pull/168); integration pending | One native viewport, keyboard/mouse focus/selection, bounded whole-view bitmap and browser adoption with acknowledged configuration batches. Linux/FreeBSD ARM64 each pass seven selected native entries and five Go packages/35 tests; Linux race, three scoped policy sanitizers and three composed actual-X drivers pass. Eight screenshots per driver captured; new UI inspected. PR168 advances the cycle to 2/3. Broader owner acceptance, incremental providers and protected clipboard content remain open. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-LIST.md), [contract](decisions/COLLECTION-LIST-2026-10-23.md). |
 | Portable browser target requests, FILE-DATA/ACTION/INTEGRATION-01 | Merged in [PR #167](https://github.com/gonz0w/fvwm-x/pull/167); current feature integration pending | Local path/URI requests preserve bytes; isolated atomic reveal and initial properties use generation-checked selection. Five Go packages/33 cases pass on Linux and FreeBSD ARM64; Linux race/vet/native-X with three browser instances pass. Nine screenshots are captured; two new views are inspected. The prior PR164–166 six-target cycle is qualified before this implementation; the PR167 merge advances the current cycle to 1/3. SQLite remains deferred behind the existing native content/storage contracts. [Report](verification/VERIFICATION-2026-10-23-FILE-BROWSER-HANDOFF.md), [contract](decisions/FILE-BROWSER-HANDOFF-2026-10-23.md). |
 | File collection controls, FILE-VIEW/ACTION-01 | Merged in [PR #166](https://github.com/gonz0w/fvwm-x/pull/166); accumulated integration qualified | Bounded label filtering, deterministic observed sorting, cross-page selection and an observed-properties panel pass five Go packages/26 tests, scoped Go race/vet and the actual-X consumer. Seven screenshots are captured; four new/overview images are inspected. The UI fixture-only correction retains unchanged frozen policy results. The accumulated PR164–166 six-target checkpoint is now qualified; broader owner acceptance remains open. [Report](verification/VERIFICATION-2026-10-23-FILE-COLLECTION-CONTROLS.md), [contract](decisions/FILE-COLLECTION-CONTROLS-2026-10-23.md). |
@@ -372,11 +381,12 @@ sort modes, cross-page selection controls and an observed-metadata inspector.
 This advances FILE-VIEW-01 / FILE-ACTION-01 and the shared clipboard metadata
 foundation without admitting clipboard payloads. See the
 [collection-controls contract](decisions/FILE-COLLECTION-CONTROLS-2026-10-23.md).
-Current selection after merged PR168: reuse the collection model for native
-icon-grid presentation, bounded additive range selection in both views, and a
-browser list/grid switch preserving stable IDs and focus. Use native type marks
-without external images/decoders; thumbnails and icon-theme loading are later
-work. Close the due shared cycle before a subsequent implementation batch.
+Current selection after merged PR169: close the accumulated affected six-target
+cycle and run the due periodic performance comparison before another feature
+implementation batch. Add the requested representative theme smoke set to the
+native-UI checkpoint; it remains pending until the actual configurations run.
+Keep theme/default ownership separate and preserve the shared metadata/private
+content boundary while advancing the remaining collection/provider prerequisites.
 SQLite is not a current prerequisite: live file state and
 opaque content/collection handles stay independent of a storage backend. STORE-01
 still owns protected memory first and optional versioned encrypted persistence

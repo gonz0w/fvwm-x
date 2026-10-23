@@ -186,12 +186,39 @@ class SettingsRegistry(unittest.TestCase):
             with self.assertRaises(ValueError):
                 desktop.setting_scope(scope)
 
+    def test_integer_bounds_text_and_schema_one_migration(self):
+        for value in (0, 73, 100):
+            self.assertEqual(desktop.setting_value('launcher_opacity', value), value)
+            self.assertEqual(desktop.setting_value('launcher_opacity', str(value), text=True), value)
+        for bad in (True, False, -1, 101, 73.5, '73', None):
+            with self.assertRaises(ValueError):
+                desktop.setting_value('launcher_opacity', bad)
+        for bad in ('-1', '101', '1.0', '1e1', '1; Exec evil', '１２'):
+            with self.assertRaises(ValueError):
+                desktop.setting_value('launcher_opacity', bad, text=True)
+        legacy = {key: value for key, value in desktop.DEFAULTS.items()
+                  if key != 'launcher_opacity'}
+        self.path.write_text(json.dumps(dict(legacy, schema_version=1)))
+        self.path.chmod(0o600)
+        before = self.path.read_bytes()
+        saved, revision = desktop.load_settings(self.path)
+        self.assertEqual(saved['launcher_opacity'], 94)
+        self.assertEqual(self.path.read_bytes(), before)
+        desktop.save_settings(self.path, dict(saved, launcher_opacity=73), revision)
+        self.assertEqual(json.loads(self.path.read_text())['schema_version'], 2)
+        self.assertEqual(desktop.load_settings(self.path)[0]['launcher_opacity'], 73)
+        for malformed in (dict(legacy, extra=True),
+                          {k: v for k, v in legacy.items() if k != 'motion'}):
+            self.path.write_text(json.dumps(dict(malformed, schema_version=1)))
+            with self.assertRaises(ValueError):
+                desktop.load_settings(self.path)
+
     def test_change_reset_reload_and_legacy_migration(self):
         self.path.write_text(json.dumps(dict(desktop.DEFAULTS, palette='ink')))
         self.path.chmod(0o600)
         self.instance.reload_settings()
         self.instance.change_settings({'motion': True, 'day': '08:00', 'night': '20:00'})
-        self.assertEqual(json.loads(self.path.read_text())['schema_version'], 1)
+        self.assertEqual(json.loads(self.path.read_text())['schema_version'], 2)
         self.instance.reset_settings('group:schedule')
         self.assertEqual(self.instance.saved['day'], '07:00')
         self.assertEqual(self.instance.saved['night'], '19:00')
@@ -374,7 +401,7 @@ class SettingsRegistry(unittest.TestCase):
         before = self.path.read_bytes()
         self.commands.clear()
         self.instance.handle('defaults-settings ' + token)
-        self.assertEqual(self.instance.settings_editor['keys'], ['transparency', 'motion'])
+        self.assertEqual(self.instance.settings_editor['keys'], ['transparency', 'motion', 'launcher_opacity'])
         self.assertNotEqual(self.instance.settings_editor['token'], token)
         self.assertIn('*SlateSettingsForm: Choice motion_false false on "Off"', self.commands)
         self.assertFalse(any('Choice palette_' in line for line in self.commands))
@@ -517,7 +544,7 @@ class ConfigurationChecking(unittest.TestCase):
                          for key, item in desktop.SETTINGS.items())
         result = self.check('# comment\n' + text)
         self.assertEqual(result['status'], 'checked-subset')
-        self.assertEqual(result['checked_directives'], 7)
+        self.assertEqual(result['checked_directives'], 8)
         self.assertEqual(result['errors'], 0)
         self.assertEqual(result['diagnostics'], [])
         self.assertEqual(len(result['files']), 1)
@@ -749,6 +776,167 @@ class DesktopPreview(unittest.TestCase):
             desktop.unique_object([('state', 'active'), ('state', 'confirmed')])
 
 
+class SavedOpacityPreview(unittest.TestCase):
+    feed = DesktopPreview.feed
+
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.path = Path(self.directory.name) / 'state.json'
+        self.commands = []
+        self.owner = desktop.Desktop(self.commands.append, ROOT / 'default-config', self.path)
+        self.addCleanup(self.owner.pool.shutdown)
+        self.owner.finish_configuration()
+        self.owner.theme()
+        self.preview = self.owner.menu_preview
+
+    def start_saved(self, value=73):
+        self.preview.start(value, save_setting=True)
+        self.feed({'generation': 'b' * 48})
+        self.feed(dict(scope='menu-opacity', state='active', generation='c' * 48,
+                       lease='d' * 48))
+
+    def save(self):
+        self.preview.action(self.preview.control['view'], 'save')
+        self.assertIn(' confirm ', self.commands[-1])
+        self.feed(dict(scope='menu-opacity', state='confirmed'))
+
+    def test_confirmed_save_is_scoped_and_does_not_reapply_theme(self):
+        self.owner.edit_settings('all')
+        saved_wallpaper = self.owner.saved['wallpaper'].copy()
+        self.owner.settings['wallpaper'] = dict(palette='grove', appearance='light')
+        self.start_saved()
+        self.assertTrue(any('Keep and save' in line for line in self.commands))
+        self.assertIn('*SlatePreview-' + self.owner.settings_instance + ': Timeout 160 Nop ""', self.commands)
+        self.assertFalse(self.path.exists())
+        self.commands.clear()
+        self.save()
+        self.assertEqual(self.owner.saved['launcher_opacity'], 73)
+        self.assertEqual(self.owner.saved['palette'], 'slate')
+        self.assertEqual(self.owner.saved['wallpaper'], saved_wallpaper)
+        self.assertEqual(self.owner.settings['wallpaper']['palette'], 'grove')
+        self.assertEqual(json.loads(self.path.read_text())['schema_version'], 2)
+        self.assertIsNone(self.owner.settings_editor)
+        self.assertEqual(self.owner.last_theme[-1], 73)
+        self.assertFalse(any(c.startswith(('Colorset ', 'Style ', 'MenuStyle ')) for c in self.commands))
+        self.commands.clear()
+        self.owner.theme()
+        self.assertEqual(self.commands, [])
+
+    def test_stale_settings_or_external_file_refuse_before_confirm(self):
+        self.start_saved()
+        view = self.preview.control['view']
+        self.owner.change_settings({'motion': True})
+        self.commands.clear()
+        with self.assertRaisesRegex(ValueError, 'Settings changed'):
+            self.preview.action(view, 'save')
+        self.assertEqual(self.commands, [])
+        self.preview.finish('test complete', abandon=True)
+        self.start_saved()
+        desktop.save_settings(self.path, dict(self.owner.saved, palette='grove'))
+        external = self.path.read_bytes()
+        self.commands.clear()
+        with self.assertRaisesRegex(ValueError, 'externally'):
+            self.preview.action(self.preview.control['view'], 'save')
+        self.assertEqual(self.path.read_bytes(), external)
+        self.assertEqual(self.commands, [])
+
+    def test_write_failure_after_confirmation_keeps_runtime_and_old_preferences(self):
+        self.start_saved()
+        self.preview.action(self.preview.control['view'], 'save')
+        with patch.object(desktop, 'save_settings', side_effect=OSError('disk full')):
+            self.feed(dict(scope='menu-opacity', state='confirmed'))
+        self.assertFalse(self.path.exists())
+        self.assertEqual(self.owner.saved['launcher_opacity'], 94)
+        self.assertIsNone(self.preview.control)
+        self.assertTrue(any('Runtime opacity kept; preference was not saved' in c for c in self.commands))
+
+    def test_external_file_change_after_confirmation_is_preserved(self):
+        self.start_saved()
+        self.preview.action(self.preview.control['view'], 'save')
+        desktop.save_settings(self.path, dict(self.owner.saved, palette='grove'))
+        external = self.path.read_bytes()
+        self.feed(dict(scope='menu-opacity', state='confirmed'))
+        self.assertEqual(self.path.read_bytes(), external)
+        self.assertEqual(self.owner.saved['launcher_opacity'], 94)
+        self.assertTrue(any('preference was not saved' in c for c in self.commands))
+
+    def test_expired_confirmation_does_not_write_and_revert_wins_queued_save(self):
+        self.start_saved()
+        self.preview.action(self.preview.control['view'], 'save')
+        with patch.object(desktop, 'save_settings') as save:
+            self.feed(dict(scope='menu-opacity', state='expired'))
+        save.assert_not_called()
+        self.start_saved()
+        view = self.preview.control['view']
+        self.preview.request('query')
+        self.preview.action(view, 'save')
+        self.preview.action(view, 'revert')
+        self.preview.action(view, 'save')
+        self.feed(dict(scope='menu-opacity', state='active', generation='c' * 48,
+                       lease='d' * 48))
+        self.assertIn(' revert ', self.commands[-1])
+        self.feed(dict(scope='menu-opacity', state='reverted'))
+        self.assertFalse(self.path.exists())
+
+    def test_preview_transfers_and_resumes_captured_draft_without_saving_other_fields(self):
+        self.owner.edit_settings('group:effects')
+        token = self.owner.settings_editor['token']
+        self.owner.handle('preview-editor ' + token + ' true true 73')
+        self.assertIsNone(self.owner.settings_editor)
+        self.feed({'generation': 'b' * 48})
+        self.feed(dict(scope='menu-opacity', state='active', generation='c' * 48,
+                       lease='d' * 48))
+        self.save()
+        self.assertEqual(self.owner.saved['launcher_opacity'], 73)
+        self.assertFalse(self.owner.saved['motion'])
+        self.assertIsNotNone(self.owner.settings_editor)
+        self.assertNotEqual(self.owner.settings_editor['token'], token)
+        self.assertTrue(any('Choice motion_true true on' in c for c in self.commands))
+        self.assertIn('*SlateSettingsForm: Input launcher_opacity 3 "73"', self.commands)
+        token = self.owner.settings_editor['token']
+        self.owner.handle('preview-editor ' + token + ' true true 50')
+        self.feed({'generation': 'b' * 48})
+        self.feed(dict(scope='menu-opacity', state='active', generation='c' * 48,
+                       lease='d' * 48))
+        before = self.path.read_bytes()
+        self.preview.action(self.preview.control['view'], 'revert')
+        self.feed(dict(scope='menu-opacity', state='reverted'))
+        self.assertEqual(self.path.read_bytes(), before)
+        self.assertIn('*SlateSettingsForm: Input launcher_opacity 3 "50"', self.commands)
+
+    def test_stale_transferred_draft_cannot_apply_or_reopen_after_settings_change(self):
+        self.owner.edit_settings('group:effects')
+        token = self.owner.settings_editor['token']
+        self.owner.handle('preview-editor ' + token + ' true true 73')
+        self.owner.change_settings({'palette': 'grove'})
+        self.commands.clear()
+        self.feed({'generation': 'b' * 48})
+        self.assertFalse(any(' start ' in c for c in self.commands))
+        self.assertIsNone(self.preview.control)
+        self.assertIsNone(self.owner.settings_editor)
+        self.assertEqual(self.owner.saved['palette'], 'grove')
+
+    def test_overrides_opaque_mode_and_stale_editor_do_not_preview(self):
+        self.owner.overrides['launcher_opacity'] = 85
+        with self.assertRaisesRegex(ValueError, 'override'):
+            self.preview.start(70, save_setting=True)
+        self.owner.overrides.clear()
+        self.owner.settings['transparency'] = False
+        with self.assertRaisesRegex(ValueError, 'transparency'):
+            self.preview.start(70, save_setting=True)
+        self.owner.settings['transparency'] = True
+        self.owner.edit_settings('launcher_opacity')
+        token = self.owner.settings_editor['token']
+        self.owner.edit_settings('launcher_opacity')
+        self.owner.handle('preview-editor ' + token + ' 70')
+        self.assertIsNone(self.preview.control)
+        token = self.owner.settings_editor['token']
+        self.owner.handle('preview-editor ' + token + ' 70')
+        self.assertEqual(self.preview.control['opacity'], 70)
+        self.assertFalse(self.path.exists())
+
+
 class DesktopSettingsIPC(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
@@ -804,7 +992,7 @@ class DesktopSettingsIPC(unittest.TestCase):
         refreshed = instance.settings_request(request)['result']
         self.assertEqual(refreshed['state'], 'observed')
         self.assertNotEqual(refreshed['generation'], generation)
-        self.assertEqual(set(refreshed['settings']), {'transparency', 'motion'})
+        self.assertEqual(set(refreshed['settings']), {'transparency', 'motion', 'launcher_opacity'})
         notices = [c for c in self.commands if ' MFL_PROVIDER_1 ' in c]
         self.assertEqual(len(notices), 1)
         self.assertEqual(notices[0].split()[-1], refreshed['generation'])

@@ -84,7 +84,7 @@ Custom wallpaper persistence remains the user's local.config responsibility.
 
 The Appearance menu's Desktop settings entry opens a native FVWM menu. The
 same registry supplies the menus, validation and settings queries. This first
-configuration-center checkpoint covers the existing seven preferences only:
+configuration-center covers these eight registered preferences:
 
 * *palette*, appearance group: slate; choices slate, dune, grove, ink.
 * *appearance*, appearance group: auto; choices light, dark, auto.
@@ -93,6 +93,9 @@ configuration-center checkpoint covers the existing seven preferences only:
 * *night*, schedule group: local HH:MM, 19:00.
 * *transparency*, effects group: boolean, true.
 * *motion*, effects group: boolean, false.
+* *launcher_opacity*, effects group: integer percent, 0 through 100, default 94.
+  It affects SlateLauncherStyle when transparency is enabled. Opaque mode
+  presents 100% while retaining the saved percentage.
 
 Times range from 00:00 to 23:59 and must differ. Use the schedule form or
 the times command to change both together. Boolean set commands accept
@@ -167,8 +170,11 @@ persistent private .desktop-state.lock is normal. Temporary files are removed
 on failure; source configuration and unrelated files are left alone.
 
 Unversioned JSON from earlier helpers is read using the original normalization
-rules; the next successful change writes schema_version 1. Version 1 requires
-the known fields and valid types. Unknown versions, duplicate fields, oversized
+rules. Complete schema_version 1 files load with launcher_opacity 94; no
+file is rewritten on read. The next successful save writes schema_version 2.
+Version 2 requires all eight preferences and retained wallpaper with valid
+types. Version 1 migration also requires its exact previous fields; incomplete
+or unknown fields are refused. Older helpers cannot read version 2. Unknown versions, duplicate fields, oversized
 or invalid files are preserved. Startup uses defaults and reports a persistence
 error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
@@ -201,32 +207,56 @@ below.
 The `ipc-request` module message is reserved for that bounded literal-data
 transport; existing `query-settings` Echo consumers remain supported.
 
-== RUNTIME OPACITY PREVIEW
+== LAUNCHER OPACITY PREVIEW
 
 Desktop settings offers *Preview launcher opacity...*, with 70%, 85%, 94% and
-100% choices. It changes the existing SlateLauncherStyle menu policy and opens
-a native confirmation dialog. Open Applications to view the candidate; close
-and reopen an already visible menu to sample its new opacity.
+100% choices. The saved-value editor also accepts any integer 0 through 100.
+Module configuration accepts *FvwmDesktop: launcher_opacity 94. A module override
+or disabled transparency refuses saved-setting preview; change that source
+first. Other menus retain their existing opacity policy.
 
-Choose *Keep current value* (F1) or *Revert* (Escape) within the core's 15-second
-lease. Keep changes only the current runtime scalar. Saved desktop preferences
-stay unchanged; a later theme update or restart replaces the value. Closing
-the dialog leaves recovery to the deadline. Helper death also restores, unless
-an intervening appearance change makes automatic recovery unsafe. The notice
-reports that refusal; inspect current appearance before retrying. Already
-painted menu pixels may retain their previous presentation until reopened.
+The preview opens a native confirmation dialog. Open Applications to view the
+candidate; close and reopen an already visible menu to sample its new opacity.
+Within the core's 15-second lease, choose *Revert* (Escape), *Keep current value*
+(F1, runtime only), or *Keep and save* (F2). Saving changes only launcher_opacity.
+Revert, closing the dialog and expiry do not save. A later theme/configuration
+update or restart can replace a runtime-only Keep; the saved preference is
+reapplied by the normal theme path after reload/restart.
 
-The core owns the exact previous scalar, atomic generation check and deadline.
-FvwmDesktop retains one reply wait and at most one queued control, with Revert
-taking precedence. Dialog callbacks bind to this helper and preview view;
-stale controls cannot keep a newer preview. One stale-start retry obtains a
-fresh generation and still applies conditionally; further conflicts are refused.
-Results are polled once per second
-while active. A missing/invalid reply queues abandon and reports uncertainty;
-it never claims persistence or completed rendering. Recovery runs at eligible
-core service points, including menu/pointer interactions, and cannot preempt
-one blocking command or a stalled X server. FvwmMFL documents the same typed
-runtime resource for clients. General saved-preference preview remains open.
+In a grouped editor containing opacity, *Preview opacity* (F4) captures the
+complete validated draft and closes its old Form. Only opacity is previewed.
+When the preview finishes, a new editor returns to that captured draft; other
+fields stay unsaved. Keep and save commits only opacity before returning.
+Queued old Apply/preview controls cannot publish, and changed settings discard
+an outdated captured draft rather than rebasing it over newer preferences.
+
+Keep and save checks helper/file freshness before applying the candidate and
+again before confirmation. The core must confirm the lease before the private
+file commit is attempted. The writer repeats its file-revision check under the
+existing nonblocking lock. If writing then fails, the notice explicitly reports
+*runtime opacity kept; preference was not saved*. Runtime confirmation and file
+persistence are separate outcomes. Reload before retrying after file conflicts.
+Saving does not replay the complete theme or overwrite a newer external core
+command. Rendering after confirmation remains unobserved.
+
+The core owns the exact previous scalar, conditional apply and monotonic
+deadline. Intervening tracked appearance activity conservatively refuses
+restoration; inspect current appearance before retrying. Helper death recovers
+without waiting for the dialog. An independent 16-second native Form timeout
+closes an orphaned preview consumer without confirming or saving.
+
+The helper retains one bounded reply wait, one captured draft and at most one
+queued control, with Revert taking precedence. Instance/view tokens isolate stale
+callbacks. One stale-start retry obtains a fresh generation and still applies
+conditionally. Active status polls once per second. Missing/invalid replies
+abandon and report uncertainty. Recovery runs at eligible core service points,
+including interactions; it cannot preempt one blocking call or a stalled server.
+Existing displayed menu pixels can require reopening.
+
+The existing preview-opacity module command and FvwmMFL's core `preview`
+resource remain runtime-only. Registry `preview: false` still declines generic
+IPC saved-preference preview; `native_preview: true` identifies the opacity
+consumer. General appearance/image-resource preview remains open.
 
 == CONFIGURATION CHECK
 
@@ -239,7 +269,7 @@ the previous snapshot; callbacks from an older report cannot select its pages.
 
 The check never executes configuration, starts modules, applies preferences,
 expands variables or runs PipeRead, shell commands, functions or Lua. It checks
-only literal colon-form *FvwmDesktop options for the seven registered settings,
+only literal colon-form *FvwmDesktop options for the eight registered settings,
 plus literal Read filenames with optional Quiet. Boolean/time/enum validation
 uses the same preference registry as the running helper. Explicit day/night
 values must differ when both appear. Saved preferences are not loaded, so this
@@ -369,6 +399,7 @@ toggle transparency
 toggle motion
 toggle keep_wallpaper
 settings [all|setting-ID|group:appearance|group:schedule|group:effects]
+preview-setting helper-instance opacity-percent
 edit-settings [scope]
 check-config
 query-settings token [scope]

@@ -137,11 +137,15 @@ def run(args):
             snapshot = query()
             assert snapshot['owner'] == 'FvwmDesktop' and not snapshot['preview']
             assert query(provider=snapshot['provider'])['provider'] == snapshot['provider']
-            assert len(snapshot['settings']) == 7
+            assert len(snapshot['settings']) == 8
             assert not snapshot['settings']['motion']['saved']
             assert snapshot['settings']['motion']['effective']
             assert snapshot['settings']['motion']['source'] == 'module-configuration'
             assert set(query(scope='group:schedule')['settings']) == {'day', 'night'}
+            opacity = snapshot['settings']['launcher_opacity']
+            assert opacity['type'] == 'integer' and opacity['minimum'] == 0
+            assert opacity['maximum'] == 100 and opacity['saved'] == 94
+            assert opacity['native_preview'] and not opacity['preview']
             state = user / 'desktop-state.json'
             assert not state.exists()
             writer.send(frame('provider-query', resource='provider', provider=snapshot['provider']))
@@ -207,6 +211,18 @@ def run(args):
                 configuration_ready_discovery=True, notifications_exclude_values=True,
                 read_only_watch=True, target_filter_isolated=True)
 
+            numeric = action('set', changed['generation'], values={'launcher_opacity': 73})
+            assert numeric['settings']['launcher_opacity']['saved'] == 73
+            assert json.loads(state.read_text())['schema_version'] == 2
+            before_numeric = state.read_bytes()
+            for invalid in [True, 73.5, -1, 101, '73']:
+                action('set', numeric['generation'], values={'launcher_opacity': invalid},
+                       expected='invalid_request' if invalid == 73.5 else 'invalid_value')
+                assert state.read_bytes() == before_numeric
+            action('reset', numeric['generation'], scope='launcher_opacity')
+            changed = query(provider=snapshot['provider'])
+            evidence['typed_integer_setting'] = dict(saved=73, schema=2,
+                malformed_refused=True, reset=94)
             saved = state.read_bytes()
             assert json.loads(saved)['palette'] == 'grove'
             assert state.stat().st_mode & 0o777 == 0o600
@@ -281,7 +297,7 @@ def run(args):
             restarted = query()
             assert restarted['generation'] != reloaded['generation']
             action('reset', reloaded['generation'], scope='all', expected='deadline_exceeded')
-            evidence['real_provider'] = dict(settings=7, scoped_queries=True,
+            evidence['real_provider'] = dict(settings=8, scoped_queries=True,
                 atomic_changes=True, targeted_multiple_owners=True,
                 readonly_validation=True, validation_no_mutation=True,
                 cancelled_write_still_commits=True, cancelled_id_reuse=True,

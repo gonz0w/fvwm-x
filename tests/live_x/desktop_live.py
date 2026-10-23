@@ -6,6 +6,7 @@
 """Load the real baseline, switch palettes, exercise services, and capture X."""
 
 import argparse
+import fcntl
 import ctypes as C
 import importlib.util
 import json
@@ -435,10 +436,11 @@ def run(options):
                 time.monotonic() + 5, process=process)
             return window
 
-        def form_key(window, symbol):
+        def form_key(window, symbol, state_mask=0):
             event = Event()
             event.key.type, event.key.display = 2, client.display
             event.key.window, event.key.root, event.key.same_screen = window, client.root, 1
+            event.key.state = state_mask
             event.key.keycode = client.x.XKeysymToKeycode(client.display,
                 client.x.XStringToKeysym(symbol))
             client.x.XSendEvent.argtypes = [C.c_void_p, C.c_ulong, C.c_int,
@@ -623,6 +625,105 @@ def run(options):
             evidence['runtime_preview'] = dict(explicit_revert=True, keep_runtime_only=True,
                 helper_death_restores=True, preference_bytes_unchanged=True,
                 screenshots=['opacity-preview-dialog.png', 'opacity-preview-launcher.png'])
+            provider = preview_query('settings')['provider']
+            baseline = launcher_opacity()
+            before_saved = state.read_bytes()
+            old_motion = json.loads(before_saved)['motion']
+            window = open_editor('group:effects')
+            choices = sorted((client.geometry(w)[1], client.geometry(w)[0], w)
+                for w in children(window) if client.geometry(w)[2] == client.geometry(w)[3])
+            assert len(choices) == 4
+            choose(choices[3 if old_motion else 2][2])
+            # Effects has exactly one input. Ctrl+U replaces its numeric draft.
+            form_key(window, b'u', 4)
+            form_key(window, b'7')
+            form_key(window, b'1')
+            capture('settings-opacity-editor.png')
+            form_key(window, b'F4')
+            preview_window = wait_for_predicate('saved opacity preview dialog',
+                lambda: named_windows().get('Preview menu opacity'),
+                time.monotonic() + 10, process=process)
+            wait_for_predicate('captured editor transferred', lambda: not editor_window(),
+                time.monotonic() + 5, process=process)
+            assert launcher_opacity() == 71 and state.read_bytes() == before_saved
+            capture('settings-opacity-confirm.png')
+            form_key(preview_window, b'F2')
+            wait_for_predicate('confirmed opacity saved',
+                lambda: json.loads(state.read_text())['launcher_opacity'] == 71,
+                time.monotonic() + 5, process=process)
+            assert json.loads(state.read_text())['motion'] == old_motion
+            assert json.loads(state.read_text())['schema_version'] == 2
+            window = wait_for_predicate('captured draft resumed', editor_window,
+                time.monotonic() + 5, process=process)
+            capture('settings-opacity-resumed.png')
+            form_key(window, b'F3')
+            wait_for_predicate('remaining draft applied',
+                lambda: json.loads(state.read_text())['motion'] != old_motion,
+                time.monotonic() + 5, process=process)
+            wait_for_predicate('resumed editor retired', lambda: not editor_window(),
+                time.monotonic() + 5, process=process)
+            barrier()
+            assert launcher_opacity() == 71
+            saved = state.read_bytes()
+
+            def saved_preview(value):
+                connection.send(('SendToModule FvwmDesktop preview-setting ' +
+                                 provider + ' ' + str(value) + '\n').encode())
+                window = wait_for_predicate('save-enabled opacity dialog',
+                    lambda: named_windows().get('Preview menu opacity'),
+                    time.monotonic() + 10, process=process)
+                wait_for_predicate('save-enabled controls ready',
+                    lambda: len(children(window)) >= 3,
+                    time.monotonic() + 5, process=process)
+                return window
+            window = saved_preview(50)
+            assert launcher_opacity() == 50
+            form_key(window, b'Escape')
+            wait_for_predicate('saved preview reverted without write',
+                lambda: launcher_opacity() == 71, time.monotonic() + 5, process=process)
+            assert state.read_bytes() == saved
+            connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
+            lock = os.open(user / '.desktop-state.lock', os.O_RDWR)
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                window = saved_preview(85)
+                form_key(window, b'F2')
+                wait_for_predicate('failed saved write is reported',
+                    lambda: 'Preview menu opacity' not in named_windows(),
+                    time.monotonic() + 5, process=process)
+                assert launcher_opacity() == 85 and state.read_bytes() == saved
+                notice_window = wait_for_predicate('partial outcome notice mapped',
+                    lambda: named_windows().get('FVWM-X'),
+                    time.monotonic() + 5, process=process)
+                nx, ny, nw, nh = client.geometry(notice_window)
+                assert 0 <= nx and 0 <= ny and nx + nw <= 1440 and ny + nh <= 900
+                capture('settings-opacity-write-refused.png')
+            finally:
+                fcntl.flock(lock, fcntl.LOCK_UN)
+                os.close(lock)
+            connection.send(b'KillModule FvwmForm SlateNoticeForm\n'
+                            b'KillModule FvwmDesktop\nModuleSynchronous Timeout 15 FvwmDesktop\n')
+            barrier()
+            provider = preview_query('settings')['provider']
+            assert launcher_opacity() == 71 and state.read_bytes() == saved
+            saved_preview(70)
+            connection.send(b'KillModule FvwmDesktop\n')
+            wait_for_predicate('saved preview helper death restores',
+                lambda: launcher_opacity() == 71, time.monotonic() + 5, process=process)
+            wait_for_predicate('orphan preview consumer times out independently',
+                lambda: 'Preview menu opacity' not in named_windows(),
+                time.monotonic() + 20, process=process)
+            assert state.read_bytes() == saved
+            connection.send(b'ModuleSynchronous Timeout 15 FvwmDesktop\n')
+            barrier()
+            assert launcher_opacity() == 71
+            evidence['saved_opacity_preview'] = dict(saved=71, schema=2,
+                scope_only=True, draft_transferred_and_resumed=True,
+                revert_no_write=True, writer_lock_refused=True,
+                partial_runtime_kept_file_unchanged=True, restart_persisted=True,
+                helper_death_restored=True, orphan_dialog_retired=True,
+                screenshots=['settings-opacity-editor.png', 'settings-opacity-confirm.png',
+                             'settings-opacity-resumed.png', 'settings-opacity-write-refused.png'])
         finally:
             rpc.close()
 

@@ -156,3 +156,7 @@ separate; the former public-helper output decision is still deferred.
 - [Runtime menu-opacity preview](RUNTIME-OPACITY-PREVIEW-2026-10-22.md): one
   core-owned conditional scalar lease, deadline/conflict recovery and native
   runtime-only confirmation; saved-preference preview remains open.
+
+- [Saved launcher-opacity preview](SAVED-OPACITY-PREVIEW-2026-10-22.md): bounded
+  integer preference, schema migration, native scoped confirmation and captured
+  editor-draft handoff; runtime and persistence outcomes remain separate.

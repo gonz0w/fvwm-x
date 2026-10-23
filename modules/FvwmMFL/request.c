@@ -99,9 +99,12 @@ static bool settings_values(const cJSON *value)
 	{
 		size_t length = strlen(item->string);
 
-		if (++count > 7 || length == 0 || length > 32 ||
+		if (++count > 8 || length == 0 || length > 32 ||
 		    strspn(item->string, "abcdefghijklmnopqrstuvwxyz_") != length ||
-		    !(cJSON_IsBool(item) || bounded_string(item, 64)))
+		    !(cJSON_IsBool(item) || bounded_string(item, 64) ||
+		      (cJSON_IsNumber(item) && item->valuedouble >= INT_MIN &&
+		       item->valuedouble <= INT_MAX &&
+		       item->valuedouble == item->valueint)))
 			return false;
 		for (previous = value->child; previous != item;
 		    previous = previous->next)

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Saved launcher-opacity preview](VERIFICATION-2026-10-22-SAVED-OPACITY-PREVIEW.md): integer preference/schema migration, native scoped Keep and save, captured draft return and orphan-dialog retirement; nine focused Linux passes (74 desktop cases), four scoped guest sanitizer exercises and inspected UI. Shared integration remains pending.
+
 - [Runtime menu-opacity preview and recovery](VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md): one core lease, typed controls and native runtime confirmation; 140 selected passes on six targets/nine profiles and seven scoped core/MFL sanitizer exercises. Saved-preference preview remains open.
 
 - [Appearance policy and copied opacity](VERIFICATION-2026-10-22-IPC-APPEARANCE-STATE.md): shared freshness, bounded menu/decor pages and preserved source opacity; eight focused Linux entries, three scoped guest sanitizer exercises and native screenshots.

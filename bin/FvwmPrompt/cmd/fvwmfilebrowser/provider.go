@@ -122,7 +122,7 @@ func (b *browser) validFileQuery(query fileQuery) bool {
 			len(query.Values) > 0 && len(query.Values) <= providerValuesMax &&
 			(query.Operation == "selection" || query.Operation == "filter" || query.Operation == "sort" ||
 				query.Operation == "view" || query.Operation == "properties" ||
-				providerWorkerAction(query.Operation) || query.Operation == "cancel" || query.Operation == "watch")
+				providerWorkerAction(query.Operation) || query.Operation == "cancel" || query.Operation == "watch" || query.Operation == "present")
 	}
 	return query.Operation == "" && len(query.Values) == 0 &&
 		query.Offset >= 0 && query.Offset <= collection.MaxItems && query.Limit >= 1 && query.Limit <= providerPageMax &&
@@ -176,7 +176,7 @@ func (b *browser) providerResult(query fileQuery) (any, string) {
 		}
 		result["configured_actions"] = actions
 		result["selection_edit_max"] = providerEditMax
-		result["action_operations"] = []string{"selection", "filter", "sort", "view", "properties", "navigate", "refresh", "open", "terminal", "custom", "cancel", "reveal", "inspect", "hidden", "watch"}
+		result["action_operations"] = []string{"selection", "filter", "sort", "view", "properties", "navigate", "refresh", "open", "terminal", "custom", "cancel", "reveal", "inspect", "hidden", "watch", "present"}
 	case "properties":
 		if query.Offset != 0 {
 			return nil, "invalid_request"
@@ -262,6 +262,12 @@ func (b *browser) answerProvider(query fileQuery) (bool, error) {
 				// Retire the view on failed publication: never acknowledge a
 				// split model/native state as an applied operation.
 				return false, err
+			}
+			if query.Operation == "present" {
+				selector := "All (FvwmFiles-" + b.instance + "-*) "
+				if err := b.sendCommands([]string{selector + "Iconify false", selector + "Focus", selector + "Raise"}); err != nil {
+					return false, err
+				}
 			}
 			applied = true
 			stateQuery := fileQuery{Version: 1, Provider: b.instance,

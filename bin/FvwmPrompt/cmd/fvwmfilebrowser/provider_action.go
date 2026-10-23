@@ -147,7 +147,7 @@ func decodeProviderAction(query fileQuery) (providerAction, error) {
 		valid = len(fields) == 1 && json.Unmarshal(value, &action.index) == nil && len(value) == 1 && action.index >= 0 && action.index < 4
 	case "cancel":
 		valid = len(fields) == 1 && stringField("id", &action.id) && hexToken(action.id, 16) && action.id != "0000000000000000"
-	case "properties", "refresh", "terminal":
+	case "properties", "refresh", "terminal", "present":
 		valid = len(fields) == 0
 	}
 	if !valid {
@@ -204,6 +204,8 @@ func (b *browser) applyProviderAction(query fileQuery, action providerAction) st
 		}
 	case "view":
 		b.view = action.mode
+	case "present":
+		// Publication and managed-window commands are acknowledged by the caller.
 	case "watch":
 		if b.watch == nil {
 			b.watch = &directoryWatch{events: make(chan watchEvent, 1)}

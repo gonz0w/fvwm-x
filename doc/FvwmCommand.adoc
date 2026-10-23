@@ -113,6 +113,11 @@ generic command submission still has no applied-result acknowledgement. Resource
 reply semantics, including native browser control publication, belong to
 FvwmMFL(1).
 
+The Go client and portable browser handoff share the same bounded correlated
+request transport. Each exchange closes and joins its reader on completion,
+error or cancellation, preserving literal JSON and exact integer formatting.
+A client timeout cancels its wait, not an admitted provider operation.
+
 == EXAMPLES
 
 ----

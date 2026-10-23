@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Portable browser consumer handoff](VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md): shared correlated request ownership, matching-browser reuse/presentation and optional desktop entry; focused Linux/FreeBSD/race/sanitizer, staged entry and three-theme captures.
+
+- [PR174→browser handoff performance observation](PERFORMANCE-2026-10-23-BROWSER-HANDOFF.md): existing qualified binaries, about 1 ms higher median with overlapping scan ranges, unchanged peak RSS and explicit feature-size growth.
+
 - [Conditional browser controls](VERIFICATION-2026-10-23-FILE-PROVIDER-CONTROLS.md): five typed generation-checked controls, shared selection policy, Linux/FreeBSD/race/sanitizer checks and three-theme captures; only UI/manual completions follow the freeze.
 
 - [Accumulated browser/provider cycle](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CYCLE.md): merged PR173–175 qualify 84 selected entries across six targets/seven profiles, 472 composed Go cases and retained themes/sanitizers before the next feature.
@@ -624,3 +628,5 @@ diagnostic and execution gates remain separate.
 - [Isolated browser action requests](VERIFICATION-2026-10-23-FILE-PROVIDER-WORK.md): focused Linux/FreeBSD, 227 Go cases including race, three theme captures and scoped sanitizer/manual checks; broader cycle remains pending.
 
 - [Live target and observation controls](VERIFICATION-2026-10-23-FILE-PROVIDER-TARGETS.md): focused Linux/FreeBSD, 24 native entries, 239 Go cases, three themes and scoped sanitizers; accumulated platform cycle due after merge.
+
+- [Accumulated browser action cycle](VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md): merged PR176–178 close six-target integration before the next feature; source-bound retention and one UI-only completion remain explicit.

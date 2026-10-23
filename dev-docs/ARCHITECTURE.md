@@ -1087,3 +1087,13 @@ its [pure policy](../modules/FvwmForm/form_list.c) preserves selection and scrol
 without replacing X resources. Explicit hidden/watch controls reuse snapshot/
 observer ownership. State exposes configured labels/availability without programs.
 See the [target contract](decisions/FILE-PROVIDER-TARGETS-2026-10-23.md).
+
+[Correlated request exchange](../bin/FvwmPrompt/transport/request.go) owns the
+shared command/browser one-shot JSON reader, context deadline and close/join
+lifecycle. [Portable reuse](../bin/FvwmPrompt/cmd/fvwmfilebrowser/reuse.go) admits
+only idle matching folders/capabilities and returns worker admission receipts;
+unknown outcomes cannot trigger duplicate launches. Pure TargetParent shares
+Locate's lexical policy. Native publication followed by core-owned presentation
+keeps managed-window actions in the command engine. The optional Go profile's
+folder desktop entry does not select a default provider. See the
+[handoff contract](decisions/BROWSER-CONSUMER-HANDOFF-2026-10-23.md).

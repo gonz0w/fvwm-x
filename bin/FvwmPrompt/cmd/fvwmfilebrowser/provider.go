@@ -85,14 +85,16 @@ func (b *browser) providerGeneration() string {
 	// A snapshot token binds metadata/projection plus current native selection
 	// and focus. Draft inputs and file content never enter the public snapshot.
 	data, _ := json.Marshal(struct {
-		Collection uint64
-		Selected   []string
-		Focus      string
-		View       string
-		Inspected  []string
-		Work       *providerWork
-		Busy       bool
-	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active})
+		Collection   uint64
+		Selected     []string
+		Focus        string
+		View         string
+		Inspected    []string
+		Work         *providerWork
+		Busy         bool
+		Hidden       bool
+		WatchEnabled bool
+	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active, b.snapshot != nil && b.snapshot.Hidden, b.watch != nil && b.watch.enabled})
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:16])
 }
@@ -120,7 +122,7 @@ func (b *browser) validFileQuery(query fileQuery) bool {
 			len(query.Values) > 0 && len(query.Values) <= providerValuesMax &&
 			(query.Operation == "selection" || query.Operation == "filter" || query.Operation == "sort" ||
 				query.Operation == "view" || query.Operation == "properties" ||
-				providerWorkerAction(query.Operation) || query.Operation == "cancel")
+				providerWorkerAction(query.Operation) || query.Operation == "cancel" || query.Operation == "watch")
 	}
 	return query.Operation == "" && len(query.Values) == 0 &&
 		query.Offset >= 0 && query.Offset <= collection.MaxItems && query.Limit >= 1 && query.Limit <= providerPageMax &&
@@ -163,9 +165,18 @@ func (b *browser) providerResult(query fileQuery) (any, string) {
 		result["file_actions"] = true
 		result["work"] = b.providerWork
 		result["operation_retention"] = "latest_accepted"
-		result["path_request_max"] = 192
+		result["path_request_max"] = providerPathMax
+		result["target_request_max"] = providerTargetMax
+		result["hidden"] = b.snapshot.Hidden
+		result["watch_enabled"] = b.watch != nil && b.watch.enabled
+		result["opener_available"], result["terminal_available"] = b.opener != "", b.terminal != ""
+		actions := make([]map[string]any, 0, len(b.actions))
+		for index, action := range b.actions {
+			actions = append(actions, map[string]any{"index": index, "label": displayText(action.Label, 96)})
+		}
+		result["configured_actions"] = actions
 		result["selection_edit_max"] = providerEditMax
-		result["action_operations"] = []string{"selection", "filter", "sort", "view", "properties", "navigate", "refresh", "open", "terminal", "custom", "cancel"}
+		result["action_operations"] = []string{"selection", "filter", "sort", "view", "properties", "navigate", "refresh", "open", "terminal", "custom", "cancel", "reveal", "inspect", "hidden", "watch"}
 	case "properties":
 		if query.Offset != 0 {
 			return nil, "invalid_request"

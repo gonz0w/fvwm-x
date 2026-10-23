@@ -204,6 +204,7 @@ static void am_list_entry(char *);
 static void am_list_commit(char *);
 static void am_list_abort(char *);
 static void am_list_status(char *);
+static void am_list_focus(char *);
 static Item *form_current_list;
 static void ct_Message(char *);
 static void ct_Geometry(char *);
@@ -2857,6 +2858,7 @@ static struct CommandTable am_table[] =
   {"ListBegin",am_list_begin},
   {"ListCommit",am_list_commit},
   {"ListEntry",am_list_entry},
+  {"ListFocus",am_list_focus},
   {"ListStatus",am_list_status},
   {"Map",am_Map},
   {"RenewTimeout",am_renew_timeout},
@@ -2871,6 +2873,7 @@ static bool form_native_message(char *buf)
 	static struct CommandTable table[] = {
 		{"ListAbort", am_list_abort}, {"ListBegin", am_list_begin},
 		{"ListCommit", am_list_commit}, {"ListEntry", am_list_entry},
+		{"ListFocus", am_list_focus},
 		{"ListStatus", am_list_status},
 		{"RenewTimeout", am_renew_timeout}, {"SetLabel", am_set_label}
 	};
@@ -3442,6 +3445,27 @@ static void am_list_commit(char *cp)
 	return;
 invalid:
 	fprintf(stderr, "%s: refused ListCommit\n", module->name);
+}
+
+static void am_list_focus(char *cp)
+{
+	const char *tail, *row;
+	Item *p = form_update_target(cp, &tail);
+	int generation, focus;
+
+	if (p == NULL || p->list.update != NULL ||
+	    !form_list_number(tail, INT_MAX, &generation))
+		goto invalid;
+	row = form_next_argument(tail);
+	if (!form_list_number(row, FORM_LIST_MAX, &focus) ||
+	    *form_next_argument(row) != '\0' ||
+	    !form_list_focus_version(p->list.state, generation, focus - 1))
+		goto invalid;
+	*p->list.initial = *p->list.state;
+	RedrawItem(p, 0, NULL);
+	return;
+invalid:
+	fprintf(stderr, "%s: refused ListFocus\n", module->name);
 }
 
 static void am_list_abort(char *cp)

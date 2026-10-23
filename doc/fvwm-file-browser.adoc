@@ -404,7 +404,17 @@ Home/Up/Back/item/path navigation, refresh, open, terminal and configured-select
 actions. The browser captures current native selection and checks the generation
 before admission. Slow work stays in its existing isolated worker. A client can
 choose a configured action index, but cannot provide an executable or shell text.
-Canonical base64 absolute paths retain bytes, with a 192-byte request bound;
+Live `reveal`/`inspect` requests accept up to eight canonical base64 absolute
+target paths in one parent and use the same worker to resolve the whole set.
+Success replaces selection, clears the admitted filter and focuses/scrolls to
+the first requested item; inspect also shows observed properties. Same-folder
+handoffs preserve native windows and drafts. Missing/mixed-parent/duplicate
+requests cannot publish partial targets; no target is opened. Explicit hidden
+targets enable hidden entries. A draft filter can be applied again explicitly.
+Typed `hidden` rescans with an explicit flag; typed `watch` configures/retries
+the existing observer. State exposes configured action index/labels and
+opener/terminal availability, without executable details.
+Canonical base64 absolute paths retain bytes, with a 192-byte per-path bound;
 longer paths use native path entry. See FvwmMFL(1) for exact values schemas.
 
 The native-acknowledged reply contains the latest accepted `work` ID/operation/

@@ -19,11 +19,15 @@ import (
 
 const providerEditMax = 8
 const providerValuesMax = 384
+const providerPathMax = 192
+const providerTargetMax = 8
 
 type providerAction struct {
 	mode, text, key string
 	id              string
 	path            []byte
+	targets         [][]byte
+	enabled         bool
 	index           int
 	ids             []string
 	reverse         bool
@@ -110,12 +114,32 @@ func decodeProviderAction(query fileQuery) (providerAction, error) {
 			valid = len(fields) == 2 && stringField("id", &action.id) && hexToken(action.id, 32)
 		case "path":
 			var encoded string
-			if len(fields) == 2 && stringField("path_bytes", &encoded) && len(encoded) <= 256 {
+			if len(fields) == 2 && stringField("path_bytes", &encoded) {
 				var err error
-				action.path, err = base64.StdEncoding.Strict().DecodeString(encoded)
-				valid = err == nil && len(action.path) > 0 && len(action.path) <= 192 && filepath.IsAbs(string(action.path)) && !bytes.ContainsRune(action.path, 0)
+				action.path, err = decodeProviderPath(encoded)
+				valid = err == nil
 			}
 		}
+	case "reveal", "inspect":
+		value := fields["paths_bytes"]
+		var paths []string
+		if len(fields) != 1 || len(value) == 0 || value[0] != '[' || json.Unmarshal(value, &paths) != nil || len(paths) == 0 || len(paths) > providerTargetMax {
+			break
+		}
+		seen := make(map[string]bool, len(paths))
+		valid = true
+		for _, path := range paths {
+			decoded, err := decodeProviderPath(path)
+			if err != nil || seen[string(decoded)] {
+				valid = false
+				break
+			}
+			seen[string(decoded)] = true
+			action.targets = append(action.targets, decoded)
+		}
+	case "hidden", "watch":
+		value := fields["enabled"]
+		valid = len(fields) == 1 && (bytes.Equal(value, []byte("true")) || bytes.Equal(value, []byte("false"))) && json.Unmarshal(value, &action.enabled) == nil
 	case "open":
 		valid = len(fields) == 1 && stringField("id", &action.id) && hexToken(action.id, 32)
 	case "custom":
@@ -130,6 +154,17 @@ func decodeProviderAction(query fileQuery) (providerAction, error) {
 		return action, errors.New("invalid action schema")
 	}
 	return action, nil
+}
+
+func decodeProviderPath(encoded string) ([]byte, error) {
+	if len(encoded) > 256 {
+		return nil, errors.New("encoded path exceeds limit")
+	}
+	path, err := base64.StdEncoding.Strict().DecodeString(encoded)
+	if err != nil || len(path) == 0 || len(path) > providerPathMax || !filepath.IsAbs(string(path)) || bytes.ContainsRune(path, 0) {
+		return nil, errors.New("expected a bounded canonical base64 absolute path")
+	}
+	return path, nil
 }
 
 func (b *browser) applyProviderAction(query fileQuery, action providerAction) string {
@@ -169,6 +204,12 @@ func (b *browser) applyProviderAction(query fileQuery, action providerAction) st
 		}
 	case "view":
 		b.view = action.mode
+	case "watch":
+		if b.watch == nil {
+			b.watch = &directoryWatch{events: make(chan watchEvent, 1)}
+		}
+		b.watch.enabled = action.enabled
+		b.watch.desire(b.snapshot, true)
 	case "properties":
 		ids := candidate.SelectedIDs()
 		if _, err := b.snapshot.ObservedSelection(ids); err != nil {

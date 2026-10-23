@@ -870,6 +870,53 @@ def run(args):
                 refresh=True, literal_configured_action=True, started_is_handoff=True,
                 stale_target_refused=True, busy_refused=True, cancel_reaped=True,
                 unrelated_core_responsive=True, retained_correlated_outcomes=True)
+            assert state['opener_available'] and state['terminal_available']
+            assert [a['index'] for a in state['configured_actions']] == list(range(4))
+            assert state['configured_actions'][0]['label'] == 'Review selection'
+            assert all(set(a) == {'index','label'} for a in state['configured_actions'])
+            def target_values(paths):
+                return {'paths_bytes':[base64.b64encode(os.fsencode(path)).decode() for path in paths]}
+
+            apply_control('filter', {'text':'no-match'})
+            ticket = work_request('reveal', target_values([root/'file-14-new', invalid]))
+            window = ready(window); current = work_done(ticket, 'loaded')
+            selected = rpc(provider=provider, scope='selection')['result']['items']
+            assert current['filter'] == '' and current['selected'] == 2, current
+            assert {base64.b64decode(i['name_bytes']) for i in selected} == {b'file-14-new',b'raw-\xff'}, selected
+            assert current['focus'] == next(i['id'] for i in selected if base64.b64decode(i['name_bytes']) == b'file-14-new'), current
+            assert not report.exists(), 'reveal executed an item'
+            capture('file-browser-ipc-reveal.png')
+            ticket = work_request('inspect', target_values([root/'.hidden', root/'link']))
+            window = ready(window); current = work_done(ticket, 'loaded')
+            properties = rpc(provider=provider, scope='properties')['result']['properties']
+            assert current['hidden'] and properties['count'] == 2 and properties['links'] == 1, properties
+            assert not report.exists(), 'target properties executed an item'
+            capture('file-browser-ipc-target-properties.png')
+            previous = current
+            ticket = work_request('reveal', target_values([root/'file-00',root/'missing-target']))
+            window = ready(window); current = work_done(ticket, 'failed')
+            for field in ['path_bytes','selected','focus','filter','hidden']:
+                assert current[field] == previous[field], (field,current,previous)
+            ticket = work_request('hidden', {'enabled':False})
+            window = ready(window); current = work_done(ticket, 'loaded')
+            assert not current['hidden'] and current['selected'] == 1, current
+            ticket = work_request('hidden', {'enabled':True})
+            window = ready(window); current = work_done(ticket, 'loaded')
+            assert current['hidden'] and current['selected'] == 1, current
+            capture('file-browser-ipc-hidden.png')
+            apply_control('watch', {'enabled':True})
+            watch_state('native'); window = ready(window)
+            current = rpc(provider=provider, scope='state')['result']
+            assert current['watch_enabled'] and current['watch'] == 'native', current
+            capture('file-browser-ipc-watching.png')
+            apply_control('watch', {'enabled':False})
+            watch_state('off')
+            assert not rpc(provider=provider, scope='state')['result']['watch_enabled']
+            evidence['file_provider_target_controls'] = dict(raw_byte_reveal=True,
+                filter_cleared=True, exact_selection_and_focus=True,
+                observed_multi_properties=True, hidden_target_included=True,
+                no_item_executed=True, failed_reveal_preserves_view=True,
+                hidden_setters=True, watch_setters=True, action_metadata_only=True)
             key(window,b'Escape');callback()
             wait_for_predicate('browser exit',lambda:app.poll() is not None,time.monotonic()+5)
             assert app.poll()==0
@@ -984,12 +1031,22 @@ def run(args):
             before = live_state()
             assert before[:6] == bytes([0, 0, 0, 1, 0, 31]), before
             capture('collection-update-before.png')
+            for command in ['ListFocus live 9 1','ListFocus live 1 33','ListFocus live 1 0']:
+                update(command)
+            native_status('focus-refused', 1)
+            assert live_state() == before
+            update('ListFocus live 1 1'); native_status('focus-first', 1)
+            focused = live_state()
+            assert focused[:6] == bytes([0,0,0,1,0,0]) and focused[6:] == before[6:], focused
+            update('ListFocus live 1 32'); native_status('focus-restored', 1)
+            assert live_state() == before
             update('ListBegin live 1 2')
             update('ListEntry live 2 0 "New unselected entry" directory')
             for old in range(32, 0, -1):
                 update('ListEntry live 2 %d "Updated entry %02d" file' % (old, old - 1))
                 if old == 16: connection.echo('staging-backpressure')
             native_status('staged', 1, 2)
+            update('ListFocus live 1 1'); native_status('pending-focus-refused',1,2)
             update('ListStatus live selected-state selection')
             while True:
                 text=connection.record().get('echo',{}).get('message','')
@@ -1056,9 +1113,10 @@ def run(args):
                 'stale_refusal': True, 'aborted_generation_reuse_refused': True,
                 'abort_empty_remove_teardown': True,
                 'versioned_callback_max_bytes': 518}
+            evidence['versioned_native_focus'] = dict(stale_refused=True, range_refused=True, pending_refused=True, focus_scroll_without_selection_change=True, same_windows_and_draft=True)
             evidence['status']='passed'
             evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
-            evidence['scope']='browser live updates and read-only paged metadata/current selection; external file actions, protected content and file mutation remain open'
+            evidence['scope']='typed browser view/worker/target controls and versioned native focus; protected content, mutation and full owner acceptance remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')

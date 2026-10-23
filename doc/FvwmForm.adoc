@@ -496,6 +496,16 @@ candidate is drawn or substituted into commands.
   An empty snapshot clears the collection. The same X child/windows, input
   drafts and fixed geometry remain. Restart now restores this published state.
 
+**FvwmForm: ListFocus ``_name_ _generation_ _row_``*::
+  Runtime command for a named versioned list/grid, distinct from the initial
+  one-argument ListFocus directive. Require its current positive generation and
+  an existing one-based row. Set focus/anchor and scroll the row into view,
+  preserving selection, input drafts, geometry and X windows. Refuse stale or
+  out-of-range requests, refused lists and lists with a pending update; refusal
+  changes neither published state nor staging. Restart uses the accepted focus.
+  Send through `SendToModule Alias ListFocus picks 2 32` and observe native
+  `ListStatus picks token selection` before releasing the old identity map.
+
 **FvwmForm: ListAbort ``_name_ _generation_``*::
   Discard the matching pending snapshot and free its labels. A discarded
   generation cannot be reused. Pending resources are also freed on module exit.

@@ -6,6 +6,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/collection"
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
@@ -67,4 +68,56 @@ func (o options) initialRequest() workRequest {
 		return workRequest{Operation: "locate", Targets: o.targets, Hidden: o.hidden}
 	}
 	return workRequest{Operation: "scan", Path: []byte(o.dir), Hidden: o.hidden}
+}
+
+// A live target handoff replaces selection and clears the admitted filter so
+// every requested target can be revealed. Validate the whole candidate before
+// publishing any state; paths, history and inspector follow that same commit.
+func (b *browser) publishLocated(result workResult, navigation string) error {
+	snapshot := result.Snapshot
+	if snapshot == nil || snapshot.Schema != 1 || len(result.Selected) == 0 {
+		return errors.New("invalid located snapshot")
+	}
+	entries, err := snapshot.OrderedEntries(b.ordering(), b.reverse)
+	if err != nil {
+		return err
+	}
+	candidate := b.model
+	if err := candidate.SetFilter(""); err != nil {
+		return err
+	}
+	if err := candidate.Replace(entries); err != nil {
+		return err
+	}
+	if err := candidate.SelectIDs(candidate.Generation, result.Selected); err != nil {
+		return err
+	}
+	candidate.Focus = result.Selected[0]
+	inspected := []string(nil)
+	if navigation == "properties" {
+		if _, err := snapshot.ObservedSelection(result.Selected); err != nil {
+			return err
+		}
+		inspected = append([]string(nil), result.Selected...)
+	}
+	old := ""
+	if b.snapshot != nil {
+		old = string(b.snapshot.Path)
+	}
+	if old != "" && old != string(snapshot.Path) {
+		b.history = append(b.history, old)
+		if len(b.history) > 32 {
+			b.history = b.history[1:]
+		}
+	}
+	b.model, b.snapshot, b.hidden = candidate, snapshot, snapshot.Hidden
+	b.inspected, b.replaceSelection, b.revealFocus = inspected, true, true
+	b.status = fmt.Sprintf("Revealed %d requested entries; no item was opened.", len(result.Selected))
+	if navigation == "properties" {
+		b.status = fmt.Sprintf("Showing observed properties for %d requested entries.", len(result.Selected))
+	}
+	if b.watch != nil {
+		b.watch.desire(snapshot, true)
+	}
+	return nil
 }

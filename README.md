@@ -15,7 +15,7 @@ built-in compositor or native Wayland backend.
 - An optional native file-browser prototype: scrolling list/grid, multi-selection,
   filtering, sorting, observed properties and configured application actions.
   Live updates retain drafts and selection; opt-in watching refreshes folders.
-  IPC offers metadata, view controls and cancellable file actions.
+  IPC offers metadata, view controls, live reveal/properties and cancellable actions.
 
 Slate dark: native list and observed properties.
 

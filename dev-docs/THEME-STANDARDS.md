@@ -76,6 +76,42 @@ assets/fonts available in the supported install. Track generated asset/source
 parity so a palette edit cannot leave old-colored PNG icons or wallpapers behind.
 Runtime-derived pressed/disabled/semantic colors need their own checks.
 
+## Primitive theme compatibility smoke set
+
+User direction, 2026-10-23: keep a small, repeatable set of two or three actual
+FVWM configurations for the evolving file-manager/clipboard primitives. Initial
+profiles are:
+
+| Profile | Variation exercised |
+| --- | --- |
+| Shipped Slate dark | Current default configuration, native module colors/fonts and normal desktop integration. |
+| Shipped Dune light | A different shipped palette in light mode, including backgrounds and selected/focused state visibility. |
+| Classic/minimal custom configuration | Explicit legacy Fore/Back/ItemFore/ItemBack module settings, larger base-system fonts and different configured control/border styling. |
+
+Load the actual configuration through its normal FVWM/module/theme path. A
+palette name in a receipt, changing only a screenshot background, or recoloring
+the isolated fixture does not qualify the full configuration. Keep controlled
+configuration snapshots/hashes, generated inputs, available fonts, scale and
+server geometry in the evidence. User-selected configurations can replace a
+profile later while retaining useful variation. Do not change shipped defaults
+or another owner's theme configuration to make a test pass.
+
+Exercise list/grid and subsequent native consumers with long/escaped labels,
+empty and large collections, normal/selected/focused states, keyboard traversal,
+mouse hit regions, scrolling and view switches. Inspect text/icon contrast,
+clipping/overlap, focus visibility, selection distinction and action reachability
+at the actual font/scale. Capture comparable screenshots for each profile and
+separate product defects from probe geometry assumptions. Use existing native
+fonts/resources; no extra desktop toolkit or mandatory font package is implied.
+Clipboard examples use synthetic metadata and preserve the private-content
+boundary; theme testing does not authorize payloads in ordinary UI broadcasts.
+
+Follow the shared UI cadence in [WORKFLOW.md](WORKFLOW.md#representative-theme-compatibility).
+This smoke set catches customization regressions and does not replace the wider
+THEME-01/A11Y-01 matrix below or prove support for every user configuration.
+Current collection evidence uses its isolated dark fixture; these three full
+configuration checks are **pending**, not retroactive passes.
+
 ## Review matrix and handoff
 
 Review all four shipped palettes × light/dark × comfortable/compact × opaque/

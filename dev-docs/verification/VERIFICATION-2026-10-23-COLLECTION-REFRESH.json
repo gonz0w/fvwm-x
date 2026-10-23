@@ -1,0 +1,1314 @@
+{
+  "status": "focused feature checks passed; accumulated predecessor cycle closed",
+  "base": "ac97a8ab379483c921f7526710f549c6074b5f97",
+  "candidate": {
+    "source_archive_sha256": "3ee1741e7d203910e57f8a93f0db5f0a336eb91531ea69bec6cc5153912dee3f",
+    "source_file_count": 2260,
+    "manifest_sha256": "afc43ce929e936359f7296ad6b79de696dabbe907514b248aeea488fa7e0e371",
+    "runtime_manual_fixture_inputs": {
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/main_test.go": {
+        "sha256": "b3ed8770a8e34063480ad132a602702735fc2f57941c6e33f89eb161328060ca",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/collection/model.go": {
+        "sha256": "bbc13ad2d4a569123883d415604b651401b8cedcc4bf67d21448dc1337b42dbc",
+        "mode": 420
+      },
+      "doc/fvwm-file-browser.adoc": {
+        "sha256": "4874d770f49ed75e59a42c2520fbb06b8c200a3f4576033d3e3816ecfab3bdc6",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/filemodel/model_test.go": {
+        "sha256": "d12558390225bd5d65f54d90ab41a8d0e32aaf91a601661b4e0a7b4cbd9982af",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/main.go": {
+        "sha256": "83434743ce029f2c61489ce4844656260c917dce4a4a9a699cd5ce0d2c1ede0d",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/collection/update.go": {
+        "sha256": "4db00783e9fb34b135ffd01934abe47269423a8d47ac3ec99714176e98b307ca",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/collection/update_test.go": {
+        "sha256": "c3ded32dd1fa5348e67002194a8127c2e41375177797eb3cb9d2c836e053cf1b",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/filemodel/model.go": {
+        "sha256": "44fd5503d70d12d3c0202b2dcbb89c30cdaa09d48c0709f28ebae450a8766ff0",
+        "mode": 420
+      },
+      "tests/live_x/file_browser_live.py": {
+        "sha256": "baeb300e20ea2a102fc5757875336e717226aad8561efe6ebf1811500083b1bc",
+        "mode": 420
+      }
+    }
+  },
+  "verification": {
+    "final": {
+      "archive_sha256": "ec5fa341c6955b516a0be31afd6ee7929f56ab15e0ae0cedd779a364b0599843",
+      "verified_files": 46,
+      "source_archive_sha256": "964ceda2a55f45f132a135eab525d109f37834b1caed33870999d9d80311f917",
+      "commands": [
+        {
+          "label": "environment",
+          "args": [
+            "sh",
+            "-c",
+            "uname -a; go version; df -h ."
+          ],
+          "status": 0,
+          "seconds": 0.004
+        },
+        {
+          "label": "go-policy",
+          "args": [
+            "go",
+            "test",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 0.416
+        },
+        {
+          "label": "go-race",
+          "args": [
+            "go",
+            "test",
+            "-race",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 6.798
+        },
+        {
+          "label": "go-vet",
+          "args": [
+            "go",
+            "vet",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 0.115
+        },
+        {
+          "label": "go-build",
+          "args": [
+            "go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 0.165
+        },
+        {
+          "label": "slate-dark",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-go-build/fvwm-file-browser",
+            "--theme",
+            "slate-dark",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-final-checkpoint/slate-dark"
+          ],
+          "status": 0,
+          "seconds": 7.904
+        },
+        {
+          "label": "dune-light",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-go-build/fvwm-file-browser",
+            "--theme",
+            "dune-light",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-final-checkpoint/dune-light"
+          ],
+          "status": 1,
+          "seconds": 0.221
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "packages": 5,
+          "top_cases": 43
+        },
+        "go-race.log": {
+          "packages": 5,
+          "top_cases": 43
+        }
+      },
+      "failure_disposition": "initial unready default palette reply; startup observer now waits for all requested configured settings",
+      "metadata": {
+        "capture-manifest.json": {
+          "sha256": "404cec270c03d626405d82ef8d998c5e0f55d77ee5b8c7c3380ecadb42712bad",
+          "bytes": 6981,
+          "mode": 420
+        },
+        "commands.json": {
+          "sha256": "d196c0af86e22d00ab08b968ec854390750fb36598650a2420e4574dbb07903c",
+          "bytes": 2756,
+          "mode": 420
+        },
+        "dune-light/config": {
+          "sha256": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "bytes": 1849,
+          "mode": 420
+        },
+        "dune-light/core.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "dune-light/desktop.fvwm": {
+          "sha256": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "bytes": 9044,
+          "mode": 420
+        },
+        "dune-light/desktop.py": {
+          "sha256": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+          "bytes": 109538,
+          "mode": 420
+        },
+        "dune-light/generated.config": {
+          "sha256": "bc1dff2f6fc763196aa3aa31fba9c5d3a8c57c076a97802c305d76c75b6d42cf",
+          "bytes": 2028,
+          "mode": 420
+        },
+        "dune-light/local.config": {
+          "sha256": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+          "bytes": 91,
+          "mode": 420
+        },
+        "dune-light/palettes.json": {
+          "sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "bytes": 1504,
+          "mode": 420
+        },
+        "dune-light/result.json": {
+          "sha256": "32044e1a1894039aff17871d331c6311d32a32fafd8537ca6dad77fcda99fb99",
+          "bytes": 681,
+          "mode": 420
+        },
+        "dune-light/xserver.log": {
+          "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+          "bytes": 1174,
+          "mode": 420
+        },
+        "dune-light.log": {
+          "sha256": "77fb9fa99d992c62a35bb6060f965d4b79477ba4b27786490bfeaf7b315c39f7",
+          "bytes": 854,
+          "mode": 420
+        },
+        "environment.log": {
+          "sha256": "3f58e5a5f63201541464d2f8d66b917bd7f6c8a8a6aed6ebad01284981b66a14",
+          "bytes": 251,
+          "mode": 420
+        },
+        "error.json": {
+          "sha256": "99af0549ad2aa3edf7a2b3e3bde9fce0ebcb28ac723a413ac3ce6aedb24cb0f1",
+          "bytes": 28,
+          "mode": 420
+        },
+        "executed.py": {
+          "sha256": "392a03c3cd25a80c8317cadfe629562be782ca33993e3e1bd2c5b90daad4dfab",
+          "bytes": 4692,
+          "mode": 420
+        },
+        "go-build.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "go-policy.log": {
+          "sha256": "5d2edc7ace5cb66108b58a5d03cafdde39046f4a02bf5127d70f4333a3dce7b6",
+          "bytes": 49711,
+          "mode": 420
+        },
+        "go-race.log": {
+          "sha256": "7a7b9471b120a1d10c58577466f7c34b3bb0aeaefc3e1e5239398b2808a770ff",
+          "bytes": 49741,
+          "mode": 420
+        },
+        "go-vet.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "native-binaries-before.json": {
+          "sha256": "380134ada893443cdf2f5a24f8d206fee43587a418b841ede13c047b3c5a23f3",
+          "bytes": 712,
+          "mode": 420
+        },
+        "slate-dark/browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "slate-dark/config": {
+          "sha256": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "bytes": 1849,
+          "mode": 420
+        },
+        "slate-dark/core.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "slate-dark/desktop.fvwm": {
+          "sha256": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "bytes": 9044,
+          "mode": 420
+        },
+        "slate-dark/desktop.py": {
+          "sha256": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+          "bytes": 109538,
+          "mode": 420
+        },
+        "slate-dark/file-browser-4096-grid.png": {
+          "sha256": "adffb3325cbcd359eab14882c1416c2fbfc343086166158ba8c1537d34831c37",
+          "bytes": 66642,
+          "mode": 384
+        },
+        "slate-dark/file-browser-4096-rows.png": {
+          "sha256": "3a204012c5e66287b4a2253bcdf4ac264052e572bc0d30f953471badb68b00b3",
+          "bytes": 83223,
+          "mode": 384
+        },
+        "slate-dark/file-browser-collection.png": {
+          "sha256": "ba7d1b5bd194ce4100abb0a79d486ff36936851ae19d06ebb54e84e58d4b5b26",
+          "bytes": 63051,
+          "mode": 384
+        },
+        "slate-dark/file-browser-empty-filter.png": {
+          "sha256": "10073ea2ec095addcf43cda2466ae64fa89f2bfc3190075e56c4b14f9389e7ec",
+          "bytes": 56579,
+          "mode": 384
+        },
+        "slate-dark/file-browser-filtered-selection.png": {
+          "sha256": "592843f05f482b1566530cf2dc553314677d30cafde855451462ce303c774eb3",
+          "bytes": 56143,
+          "mode": 384
+        },
+        "slate-dark/file-browser-grid.png": {
+          "sha256": "7c14e6ba7d573ce9c66b07d858f36d97d13a5f7af44b6db92449cbd2fa001423",
+          "bytes": 62587,
+          "mode": 384
+        },
+        "slate-dark/file-browser-input-focus-return.png": {
+          "sha256": "197aca27555850b7b959e98be76e7c36af67075465d18d13a78e015a9655b1a6",
+          "bytes": 63325,
+          "mode": 384
+        },
+        "slate-dark/file-browser-range-list.png": {
+          "sha256": "dc0b8a24087c85aa3f17d05bfb4f049f2f0ece1eeac60d7a30b419a9d83d3eca",
+          "bytes": 63228,
+          "mode": 384
+        },
+        "slate-dark/file-browser-refresh-changes.png": {
+          "sha256": "ae522ce1542940573ceb6a2a6de40771a69c4c92b1743d5cfcfb442a59294aa0",
+          "bytes": 68820,
+          "mode": 384
+        },
+        "slate-dark/file-browser-refresh-unchanged.png": {
+          "sha256": "47f6203ed7c018ee3f055366806d94e8a1981cda123f12dca4e474b11bbf9828",
+          "bytes": 75065,
+          "mode": 384
+        },
+        "slate-dark/file-browser-scrolled-properties.png": {
+          "sha256": "428be0943cd193e670b19d6751ad30fc1140ec74e6121a884ca48068c6fd8134",
+          "bytes": 79015,
+          "mode": 384
+        },
+        "slate-dark/file-browser-wheel-after.png": {
+          "sha256": "56d84701c9846fb39c48bf5183b74cf4c964b722e2cc5622493b38f9e3ad6768",
+          "bytes": 82980,
+          "mode": 384
+        },
+        "slate-dark/file-browser-wheel-before.png": {
+          "sha256": "7a3a977abc6bffaa5ec504e882f1660126c6d3929b8ec26f566634c5706e0577",
+          "bytes": 82934,
+          "mode": 384
+        },
+        "slate-dark/generated.config": {
+          "sha256": "fbcf96f628ed3688a721123ffcaae95993b5852d4f6a647247cead327a45e3f6",
+          "bytes": 2028,
+          "mode": 420
+        },
+        "slate-dark/large-browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "slate-dark/local.config": {
+          "sha256": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+          "bytes": 91,
+          "mode": 420
+        },
+        "slate-dark/palettes.json": {
+          "sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "bytes": 1504,
+          "mode": 420
+        },
+        "slate-dark/result.json": {
+          "sha256": "41878fc9f7d4117194c84393bab219ba6bc0ca4470ce9202a992cfe112e36d09",
+          "bytes": 2222,
+          "mode": 420
+        },
+        "slate-dark/xserver.log": {
+          "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+          "bytes": 1174,
+          "mode": 420
+        },
+        "slate-dark.log": {
+          "sha256": "704162dc5f221f81129a4d2b2abcb391d0d4cba1050e41e6b8dc77c93bea4915",
+          "bytes": 2028,
+          "mode": 420
+        },
+        "source.json": {
+          "sha256": "f45905608a9404732883f88e14d8afb5ac828e78abfa1b8e2af5b23bb0609379",
+          "bytes": 368523,
+          "mode": 420
+        }
+      }
+    },
+    "review-fix": {
+      "archive_sha256": "66d5535298d7757b45dd7223913ea0ff044bd419f31fba16b2398a23cfbf6f39",
+      "verified_files": 84,
+      "source_archive_sha256": "3ee1741e7d203910e57f8a93f0db5f0a336eb91531ea69bec6cc5153912dee3f",
+      "commands": [
+        {
+          "label": "environment",
+          "args": [
+            "sh",
+            "-c",
+            "uname -a; go version; df -h ."
+          ],
+          "status": 0,
+          "seconds": 0.004
+        },
+        {
+          "label": "go-policy",
+          "args": [
+            "go",
+            "test",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 0.416
+        },
+        {
+          "label": "go-race",
+          "args": [
+            "go",
+            "test",
+            "-race",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 6.796
+        },
+        {
+          "label": "go-vet",
+          "args": [
+            "go",
+            "vet",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 0.119
+        },
+        {
+          "label": "go-build",
+          "args": [
+            "go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-review-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 0.165
+        },
+        {
+          "label": "slate-dark",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-review-go-build/fvwm-file-browser",
+            "--theme",
+            "slate-dark",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-review-checkpoint/slate-dark"
+          ],
+          "status": 0,
+          "seconds": 7.896
+        },
+        {
+          "label": "dune-light",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-review-go-build/fvwm-file-browser",
+            "--theme",
+            "dune-light",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-review-checkpoint/dune-light"
+          ],
+          "status": 0,
+          "seconds": 7.855
+        },
+        {
+          "label": "classic-large",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-review-go-build/fvwm-file-browser",
+            "--theme",
+            "classic-large",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/collection-refresh-review-checkpoint/classic-large"
+          ],
+          "status": 0,
+          "seconds": 7.665
+        },
+        {
+          "label": "manual",
+          "args": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+            "-j",
+            "2",
+            "fvwm-file-browser.1"
+          ],
+          "status": 0,
+          "seconds": 0.176
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "packages": 5,
+          "top_cases": 43
+        },
+        "go-race.log": {
+          "packages": 5,
+          "top_cases": 43
+        }
+      },
+      "failure_disposition": "final corrected policy and all three themes pass",
+      "metadata": {
+        "browser.json": {
+          "sha256": "cde32f4e077e1f3a2ba6ac8776e0ecf05d02a8ef959704a92c0125cc788e2902",
+          "bytes": 103,
+          "mode": 420
+        },
+        "capture-manifest.json": {
+          "sha256": "bcb6c89947ce2ede6e7c08a1f782a2476cbb0d74fa817ce05759249920c602e4",
+          "bytes": 13295,
+          "mode": 420
+        },
+        "classic-large/browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "classic-large/core.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "classic-large/file-browser-4096-grid.png": {
+          "sha256": "25f0769555e6b7866563bccf646a7388f3bd4718eac2921ea5fbdb367e2a60fe",
+          "bytes": 21255,
+          "mode": 384
+        },
+        "classic-large/file-browser-4096-rows.png": {
+          "sha256": "90ce0e2f99883f2a0fff156b6986f071cb508ed7635f7001b2089bb32b5db08b",
+          "bytes": 23621,
+          "mode": 384
+        },
+        "classic-large/file-browser-collection.png": {
+          "sha256": "975476422b21b3fb24503ad7d898e2f870cea47d67b49e1c1f1c5de2ae5b4d2f",
+          "bytes": 19272,
+          "mode": 384
+        },
+        "classic-large/file-browser-empty-filter.png": {
+          "sha256": "0519d4c8f5ab425d969b6236949ba142f71e959714a816d5edbc0c4dbca93b43",
+          "bytes": 17673,
+          "mode": 384
+        },
+        "classic-large/file-browser-filtered-selection.png": {
+          "sha256": "6c8d1c34a49bb40bee1c8b240f43579bb73b859fdf5a3cd09b63197f6fc80ba7",
+          "bytes": 17691,
+          "mode": 384
+        },
+        "classic-large/file-browser-grid.png": {
+          "sha256": "363deda797200421d816b01be97a6282578c1f277182fa5fafab852768c6c635",
+          "bytes": 20329,
+          "mode": 384
+        },
+        "classic-large/file-browser-input-focus-return.png": {
+          "sha256": "27eeef8fc02b9e58635b214200c2e764fabbaa877d6ae5308c8a1be20f74e862",
+          "bytes": 19341,
+          "mode": 384
+        },
+        "classic-large/file-browser-range-list.png": {
+          "sha256": "2538927a8ab62ecabeb12f3afff57848253c5f28d2802cdac00c135bf1e3a4f6",
+          "bytes": 19294,
+          "mode": 384
+        },
+        "classic-large/file-browser-refresh-changes.png": {
+          "sha256": "db6059df689cf2ed543e086388a93e21b209629af0c4e32429972ead5958d823",
+          "bytes": 21076,
+          "mode": 384
+        },
+        "classic-large/file-browser-refresh-unchanged.png": {
+          "sha256": "addc717f7079231f2edf3761112514e5eeaebe3a562f8928f3f557a225045648",
+          "bytes": 22301,
+          "mode": 384
+        },
+        "classic-large/file-browser-scrolled-properties.png": {
+          "sha256": "b744573fdb374f5bb0976ec2c5252a8d8e0c076c2aac88a64101da20a08eaaf8",
+          "bytes": 23513,
+          "mode": 384
+        },
+        "classic-large/file-browser-wheel-after.png": {
+          "sha256": "125b60af8f797d91aa04a9a9e9a5150b02e20de3c181f628a36f22c1885d4f02",
+          "bytes": 23506,
+          "mode": 384
+        },
+        "classic-large/file-browser-wheel-before.png": {
+          "sha256": "b08e2a22d3eee4d9f916337fd24a13645ba48374545445bfe141f5da169ca238",
+          "bytes": 23493,
+          "mode": 384
+        },
+        "classic-large/generated.config": {
+          "sha256": "067d695fbed8841f73edd081d30420412711b22d273b812fd6ffadbe069e19f0",
+          "bytes": 451,
+          "mode": 420
+        },
+        "classic-large/large-browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "classic-large/result.json": {
+          "sha256": "8ecfacf4c21c06077bb47e05f98b6c70dc5ac05ef36e7685e723c1240eb4b71d",
+          "bytes": 1152,
+          "mode": 420
+        },
+        "classic-large/xserver.log": {
+          "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+          "bytes": 1174,
+          "mode": 420
+        },
+        "classic-large.log": {
+          "sha256": "47cd5fdd1928024875c7e89efbbbcca9ed5822621cd15f4e12c37c019feb059b",
+          "bytes": 1082,
+          "mode": 420
+        },
+        "commands.json": {
+          "sha256": "108212b7ee3414abae259065f2bf6777b8918697f2c50fc19e9a2a9ebff46d01",
+          "bytes": 3750,
+          "mode": 420
+        },
+        "dune-light/browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "dune-light/config": {
+          "sha256": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "bytes": 1849,
+          "mode": 420
+        },
+        "dune-light/core.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "dune-light/desktop.fvwm": {
+          "sha256": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "bytes": 9044,
+          "mode": 420
+        },
+        "dune-light/desktop.py": {
+          "sha256": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+          "bytes": 109538,
+          "mode": 420
+        },
+        "dune-light/file-browser-4096-grid.png": {
+          "sha256": "420ef733dca76b8518e09b3fbe798fb60070c058cc01276764d0d11d78732880",
+          "bytes": 66696,
+          "mode": 384
+        },
+        "dune-light/file-browser-4096-rows.png": {
+          "sha256": "7e247478ae94b112ec555a4aef91c0f674fade43cbd11a31ef2773155e4ae3f5",
+          "bytes": 83272,
+          "mode": 384
+        },
+        "dune-light/file-browser-collection.png": {
+          "sha256": "6533d571b5c5d828b1b4ff4a0ce2f74444a9a03879b31f544c1ad3aec81803d6",
+          "bytes": 62966,
+          "mode": 384
+        },
+        "dune-light/file-browser-empty-filter.png": {
+          "sha256": "0ce31d8ce311f2e40ca0295b6671f6ec788a6d01567db8c966b072b4508daaff",
+          "bytes": 56603,
+          "mode": 384
+        },
+        "dune-light/file-browser-filtered-selection.png": {
+          "sha256": "e18708ee11a8c30e3711cf6b921ba70efc56c319f80220e02bf7c79c55f6df5d",
+          "bytes": 56178,
+          "mode": 384
+        },
+        "dune-light/file-browser-grid.png": {
+          "sha256": "94784b26bf7d9b8de4a6f57c65602abd2aa0da72b38840617eebafc430a0643f",
+          "bytes": 62631,
+          "mode": 384
+        },
+        "dune-light/file-browser-input-focus-return.png": {
+          "sha256": "3d1cffbff0e5518fa3e7bee127a6ef38c2e712a836c42e1f148c522de797ba27",
+          "bytes": 63193,
+          "mode": 384
+        },
+        "dune-light/file-browser-range-list.png": {
+          "sha256": "dd72193bc6e7fd41635d9ce38b5a0d8bcd325d8fa6c9bee3d42cbcdaf7c21e90",
+          "bytes": 63129,
+          "mode": 384
+        },
+        "dune-light/file-browser-refresh-changes.png": {
+          "sha256": "aa4f9bc1fd17c8f7ef81d86200c15ad93d1f1d525515beb01138b4ef74df8e0c",
+          "bytes": 68691,
+          "mode": 384
+        },
+        "dune-light/file-browser-refresh-unchanged.png": {
+          "sha256": "c2c784ddc167eab568ae8b19a09ecab2087025e910a8a926f42be24e71809b05",
+          "bytes": 74846,
+          "mode": 384
+        },
+        "dune-light/file-browser-scrolled-properties.png": {
+          "sha256": "284a9daae91c6ef7490d0b841e54bcf66391be5200366f381609559d4d60570b",
+          "bytes": 79224,
+          "mode": 384
+        },
+        "dune-light/file-browser-wheel-after.png": {
+          "sha256": "85684e717f4da6fd0bbdc0cef24e60c1ae7f2aa9fffa788c6c389476558d1a18",
+          "bytes": 82918,
+          "mode": 384
+        },
+        "dune-light/file-browser-wheel-before.png": {
+          "sha256": "dd183c69dd30da11df071d6dbfb57d745e0c4a479a21cc7891b069e32c6cfb5a",
+          "bytes": 82878,
+          "mode": 384
+        },
+        "dune-light/generated.config": {
+          "sha256": "10399f4ae9172305085e5b92a124ebecf9c7744dc11473b76b12b76bf2d03229",
+          "bytes": 2028,
+          "mode": 420
+        },
+        "dune-light/large-browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "dune-light/local.config": {
+          "sha256": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+          "bytes": 91,
+          "mode": 420
+        },
+        "dune-light/palettes.json": {
+          "sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "bytes": 1504,
+          "mode": 420
+        },
+        "dune-light/result.json": {
+          "sha256": "50ff016e3743e207024d55d366b9512cd5783ac203fb3505834c45ec71a93a4e",
+          "bytes": 3549,
+          "mode": 420
+        },
+        "dune-light/xserver.log": {
+          "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+          "bytes": 1174,
+          "mode": 420
+        },
+        "dune-light.log": {
+          "sha256": "6fc19b14ff92701823efa7e2e0206a1d50ec0ce02389b8e03075c35db49b9243",
+          "bytes": 3049,
+          "mode": 420
+        },
+        "environment.log": {
+          "sha256": "aa866f1d9e46835029474a8c6a896671da95edef08d145a6049408c17952873c",
+          "bytes": 251,
+          "mode": 420
+        },
+        "executed.py": {
+          "sha256": "eca25edef0ad0732047811a1f9a8e7fa6e05f9092ff64b6f888635c7201fa33e",
+          "bytes": 4701,
+          "mode": 420
+        },
+        "fvwm-file-browser.1": {
+          "sha256": "179f0d9ccaaca1e52e1a4d706545dff398c7e6baa263c1bc1f103c8a9ce56e14",
+          "bytes": 15447,
+          "mode": 420
+        },
+        "go-build.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "go-policy.log": {
+          "sha256": "0aeb8a25fca11f9bbfec5274fe1e0d4a3106381f159d616180759fd9f15ca857",
+          "bytes": 52746,
+          "mode": 420
+        },
+        "go-race.log": {
+          "sha256": "042158194a12f5bf28333ba17abfd7244d8312cfd94a1b1c37e0ef043ef2acbb",
+          "bytes": 52774,
+          "mode": 420
+        },
+        "go-vet.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "manual.log": {
+          "sha256": "72a554361439366b38caf57f1a0614007e3e34468548fcab45ae8c81666c7f24",
+          "bytes": 325,
+          "mode": 420
+        },
+        "native-binaries-before.json": {
+          "sha256": "380134ada893443cdf2f5a24f8d206fee43587a418b841ede13c047b3c5a23f3",
+          "bytes": 712,
+          "mode": 420
+        },
+        "result.json": {
+          "sha256": "9983463bc1351a7c6c1d8968f8d29781e5ad52ecb0473dda4806f7de8129bca5",
+          "bytes": 255,
+          "mode": 420
+        },
+        "slate-dark/browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "slate-dark/config": {
+          "sha256": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+          "bytes": 1849,
+          "mode": 420
+        },
+        "slate-dark/core.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "slate-dark/desktop.fvwm": {
+          "sha256": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+          "bytes": 9044,
+          "mode": 420
+        },
+        "slate-dark/desktop.py": {
+          "sha256": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+          "bytes": 109538,
+          "mode": 420
+        },
+        "slate-dark/file-browser-4096-grid.png": {
+          "sha256": "4ce86edf885e274f034832e072e8706a267e255b68685a147b103d810775514d",
+          "bytes": 67093,
+          "mode": 384
+        },
+        "slate-dark/file-browser-4096-rows.png": {
+          "sha256": "70ccdeea9c85a93aa06d60e406cf7e40a242d6810ebf911380024baed32d3e42",
+          "bytes": 83679,
+          "mode": 384
+        },
+        "slate-dark/file-browser-collection.png": {
+          "sha256": "dbeb6590c5a905d2cb994879cab5a77b02213acb8add0a59f5b2c37f0498931a",
+          "bytes": 63139,
+          "mode": 384
+        },
+        "slate-dark/file-browser-empty-filter.png": {
+          "sha256": "b754d669e03406d61e9011e837f5fd40b5dd47172d84b99e3f90c347ff8ea06f",
+          "bytes": 56712,
+          "mode": 384
+        },
+        "slate-dark/file-browser-filtered-selection.png": {
+          "sha256": "04fd84c364785390707b5ae3af565d52beee00a6ae2fcc10231f8b40479e894c",
+          "bytes": 56273,
+          "mode": 384
+        },
+        "slate-dark/file-browser-grid.png": {
+          "sha256": "99b8f2163299972150497646b2ca034e1a4daba2e920cc3d8717a1f51526e1e1",
+          "bytes": 62694,
+          "mode": 384
+        },
+        "slate-dark/file-browser-input-focus-return.png": {
+          "sha256": "feb0d192ef37ea24708df57df16e22d3ac9a39d5cd7b0f57eb9da3d4b5e9b2d7",
+          "bytes": 63491,
+          "mode": 384
+        },
+        "slate-dark/file-browser-range-list.png": {
+          "sha256": "ff0b675660f7503a0954f661b5016942db1ca1e2185d5483de7543f953fb0e92",
+          "bytes": 63387,
+          "mode": 384
+        },
+        "slate-dark/file-browser-refresh-changes.png": {
+          "sha256": "79c554b37a1e289cf6463d0a57a92d8c3cefbb116c6e47c4253ae9c92ba31399",
+          "bytes": 68680,
+          "mode": 384
+        },
+        "slate-dark/file-browser-refresh-unchanged.png": {
+          "sha256": "6648b44466b60c16bea69387e6bbf25d04fbc345eeec7998b3a652b4460ea677",
+          "bytes": 74915,
+          "mode": 384
+        },
+        "slate-dark/file-browser-scrolled-properties.png": {
+          "sha256": "de55305001e28813b3f7eb5f15eb4a50d1f12bda41302967ce585fafcd95d7db",
+          "bytes": 79080,
+          "mode": 384
+        },
+        "slate-dark/file-browser-wheel-after.png": {
+          "sha256": "39e7871037e3b1352955ab5bd3e02b6f264971dc53608afe9ae24ab9225244c7",
+          "bytes": 83177,
+          "mode": 384
+        },
+        "slate-dark/file-browser-wheel-before.png": {
+          "sha256": "b815312805478a863c6a4ae9de742bd4735077fb72900662d9cc71d2a898b305",
+          "bytes": 83124,
+          "mode": 384
+        },
+        "slate-dark/generated.config": {
+          "sha256": "4fb861a8a9c8a2151e1387bf5b4fff2bcbe45a185fe36339870c28cc6a72379f",
+          "bytes": 2028,
+          "mode": 420
+        },
+        "slate-dark/large-browser.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0,
+          "mode": 420
+        },
+        "slate-dark/local.config": {
+          "sha256": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+          "bytes": 91,
+          "mode": 420
+        },
+        "slate-dark/palettes.json": {
+          "sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+          "bytes": 1504,
+          "mode": 420
+        },
+        "slate-dark/result.json": {
+          "sha256": "f306b21f4fe4fcdef41d3e6c5e243a6c601e6ec7e1cabfa9f34363968d703736",
+          "bytes": 3549,
+          "mode": 420
+        },
+        "slate-dark/xserver.log": {
+          "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+          "bytes": 1174,
+          "mode": 420
+        },
+        "slate-dark.log": {
+          "sha256": "37959c79971ef8eea7d1414145578c858b5bb5af0ad3be5fcc3f656df245b5d2",
+          "bytes": 3049,
+          "mode": 420
+        },
+        "source.json": {
+          "sha256": "3b3ec1d346309d410f73d7aff8370dd36e2ea1198cdebb06d1be0431247a555c",
+          "bytes": 368523,
+          "mode": 420
+        }
+      },
+      "result": {
+        "status": "passed",
+        "native_binaries_unchanged": true,
+        "source_files_guarded": 2260,
+        "theme_profiles": 3,
+        "shared_cycle": "closed before implementation; next cycle 0/3 until merge",
+        "native_OS": "emulated Linux ARM64, qualified Go 1.27.2"
+      },
+      "themes": {
+        "slate-dark": {
+          "font": "xft:Sans:size=10:antialias=True",
+          "theme": "slate-dark",
+          "configuration_sha256": {
+            "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+            "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+            "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+            "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+            "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+            "generated.config": "4fb861a8a9c8a2151e1387bf5b4fff2bcbe45a185fe36339870c28cc6a72379f"
+          },
+          "server_geometry": "1440x1000x24",
+          "scale": 1,
+          "theme_settings": {
+            "palette": {
+              "type": "enum",
+              "default": "slate",
+              "choices": [
+                "slate",
+                "dune",
+                "grove",
+                "ink"
+              ],
+              "group": "appearance",
+              "description": "Desktop color palette",
+              "owner": "FvwmDesktop",
+              "available": true,
+              "capability": "owned-desktop-preference",
+              "preview": false,
+              "native_preview": false,
+              "runtime_constraint": null,
+              "saved": "slate",
+              "effective": "slate",
+              "source": "module-configuration",
+              "application": "submitted-to-fvwm",
+              "generation": "00cb6f8bffa19ce6bb29f5fbf2e70272",
+              "persistence_error": null
+            },
+            "appearance": {
+              "type": "enum",
+              "default": "auto",
+              "choices": [
+                "light",
+                "dark",
+                "auto"
+              ],
+              "group": "appearance",
+              "description": "Light, dark or scheduled appearance",
+              "owner": "FvwmDesktop",
+              "available": true,
+              "capability": "owned-desktop-preference",
+              "preview": false,
+              "native_preview": false,
+              "runtime_constraint": null,
+              "saved": "auto",
+              "effective": "dark",
+              "source": "module-configuration",
+              "application": "submitted-to-fvwm",
+              "generation": "00cb6f8bffa19ce6bb29f5fbf2e70272",
+              "persistence_error": null
+            },
+            "transparency": {
+              "type": "boolean",
+              "default": true,
+              "group": "effects",
+              "description": "Tinted root background and menu snapshots",
+              "owner": "FvwmDesktop",
+              "available": true,
+              "capability": "owned-desktop-preference",
+              "preview": false,
+              "native_preview": false,
+              "runtime_constraint": null,
+              "saved": true,
+              "effective": false,
+              "source": "module-configuration",
+              "application": "submitted-to-fvwm",
+              "generation": "00cb6f8bffa19ce6bb29f5fbf2e70272",
+              "persistence_error": null
+            }
+          },
+          "theme_readiness_queries": 1,
+          "mixed_focus_scrolled_input_and_empty_list": true,
+          "grid_icons_range_selection_and_view_identity": true,
+          "end_space_selection_and_properties": true,
+          "focused_literal_byte_activation": true,
+          "stale_control_refused": true,
+          "focused_folder_activation_and_parent": true,
+          "filter_preserves_hidden_selection": true,
+          "blocked_worker_cancel_reap_refresh": true,
+          "refresh_focus_fallback_and_hidden_selection": true,
+          "over_limit_grid_range_is_atomic": true,
+          "keyboard_page_and_wheel_preserve_focus": true,
+          "4096_rows_two_offscreen_selections_bounded_callback": true,
+          "status": "passed",
+          "screenshots": [
+            "file-browser-collection.png",
+            "file-browser-scrolled-properties.png",
+            "file-browser-filtered-selection.png",
+            "file-browser-4096-rows.png"
+          ],
+          "scope": "native list/grid and metadata refresh; in-place native/provider transport, private clipboard content and file mutations remain open"
+        },
+        "dune-light": {
+          "font": "xft:Sans:size=10:antialias=True",
+          "theme": "dune-light",
+          "configuration_sha256": {
+            "local.config": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+            "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+            "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+            "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+            "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+            "generated.config": "10399f4ae9172305085e5b92a124ebecf9c7744dc11473b76b12b76bf2d03229"
+          },
+          "server_geometry": "1440x1000x24",
+          "scale": 1,
+          "theme_settings": {
+            "palette": {
+              "type": "enum",
+              "default": "slate",
+              "choices": [
+                "slate",
+                "dune",
+                "grove",
+                "ink"
+              ],
+              "group": "appearance",
+              "description": "Desktop color palette",
+              "owner": "FvwmDesktop",
+              "available": true,
+              "capability": "owned-desktop-preference",
+              "preview": false,
+              "native_preview": false,
+              "runtime_constraint": null,
+              "saved": "slate",
+              "effective": "dune",
+              "source": "module-configuration",
+              "application": "submitted-to-fvwm",
+              "generation": "64ec3440f2e771bdc90bc2d6b07a051c",
+              "persistence_error": null
+            },
+            "appearance": {
+              "type": "enum",
+              "default": "auto",
+              "choices": [
+                "light",
+                "dark",
+                "auto"
+              ],
+              "group": "appearance",
+              "description": "Light, dark or scheduled appearance",
+              "owner": "FvwmDesktop",
+              "available": true,
+              "capability": "owned-desktop-preference",
+              "preview": false,
+              "native_preview": false,
+              "runtime_constraint": null,
+              "saved": "auto",
+              "effective": "light",
+              "source": "module-configuration",
+              "application": "submitted-to-fvwm",
+              "generation": "64ec3440f2e771bdc90bc2d6b07a051c",
+              "persistence_error": null
+            },
+            "transparency": {
+              "type": "boolean",
+              "default": true,
+              "group": "effects",
+              "description": "Tinted root background and menu snapshots",
+              "owner": "FvwmDesktop",
+              "available": true,
+              "capability": "owned-desktop-preference",
+              "preview": false,
+              "native_preview": false,
+              "runtime_constraint": null,
+              "saved": true,
+              "effective": false,
+              "source": "module-configuration",
+              "application": "submitted-to-fvwm",
+              "generation": "64ec3440f2e771bdc90bc2d6b07a051c",
+              "persistence_error": null
+            }
+          },
+          "theme_readiness_queries": 1,
+          "mixed_focus_scrolled_input_and_empty_list": true,
+          "grid_icons_range_selection_and_view_identity": true,
+          "end_space_selection_and_properties": true,
+          "focused_literal_byte_activation": true,
+          "stale_control_refused": true,
+          "focused_folder_activation_and_parent": true,
+          "filter_preserves_hidden_selection": true,
+          "blocked_worker_cancel_reap_refresh": true,
+          "refresh_focus_fallback_and_hidden_selection": true,
+          "over_limit_grid_range_is_atomic": true,
+          "keyboard_page_and_wheel_preserve_focus": true,
+          "4096_rows_two_offscreen_selections_bounded_callback": true,
+          "status": "passed",
+          "screenshots": [
+            "file-browser-collection.png",
+            "file-browser-scrolled-properties.png",
+            "file-browser-filtered-selection.png",
+            "file-browser-4096-rows.png"
+          ],
+          "scope": "native list/grid and metadata refresh; in-place native/provider transport, private clipboard content and file mutations remain open"
+        },
+        "classic-large": {
+          "font": "9x15",
+          "theme": "classic-large",
+          "configuration_sha256": {
+            "generated.config": "067d695fbed8841f73edd081d30420412711b22d273b812fd6ffadbe069e19f0"
+          },
+          "server_geometry": "1440x1000x24",
+          "scale": 1,
+          "mixed_focus_scrolled_input_and_empty_list": true,
+          "grid_icons_range_selection_and_view_identity": true,
+          "end_space_selection_and_properties": true,
+          "focused_literal_byte_activation": true,
+          "stale_control_refused": true,
+          "focused_folder_activation_and_parent": true,
+          "filter_preserves_hidden_selection": true,
+          "blocked_worker_cancel_reap_refresh": true,
+          "refresh_focus_fallback_and_hidden_selection": true,
+          "over_limit_grid_range_is_atomic": true,
+          "keyboard_page_and_wheel_preserve_focus": true,
+          "4096_rows_two_offscreen_selections_bounded_callback": true,
+          "status": "passed",
+          "screenshots": [
+            "file-browser-collection.png",
+            "file-browser-scrolled-properties.png",
+            "file-browser-filtered-selection.png",
+            "file-browser-4096-rows.png"
+          ],
+          "scope": "native list/grid and metadata refresh; in-place native/provider transport, private clipboard content and file mutations remain open"
+        }
+      },
+      "manual": {
+        "sha256": "179f0d9ccaaca1e52e1a4d706545dff398c7e6baa263c1bc1f103c8a9ce56e14",
+        "render": "host /usr/bin/mandoc -Tascii",
+        "status": 0,
+        "bytes": 16650
+      }
+    }
+  },
+  "counts": {
+    "Go_packages_per_run": 5,
+    "Go_top_cases_per_run": 43,
+    "final_Go_top_case_executions_with_race": 86,
+    "final_actual_X_drivers": 3,
+    "final_screenshots_per_theme": 13,
+    "portable_passes": 177,
+    "portable_unavailable_tool_skips": 14
+  },
+  "closed_predecessor_cycle": {
+    "source_archive_sha256": "f62afc52036f51a219b817754541201bf4478bb3fdf67c0b6f29e87325e51eb4",
+    "counts": {
+      "native_entries": 49,
+      "fresh_native_entries": 35,
+      "retained_native_entries": 14,
+      "targets": 6,
+      "profiles": 7,
+      "Go_packages_per_target": 5,
+      "Go_cases_per_target": 36,
+      "Go_top_case_executions_with_retained_Linux_race": 252,
+      "scoped_policy_sanitizers_retained": 3,
+      "browser_X_drivers_including_themes_and_sanitized": 10
+    },
+    "report": "VERIFICATION-2026-10-23-COLLECTION-CYCLE.md"
+  },
+  "review": [
+    "All external delta array counts and identifier/entry lengths are checked before unbounded hashing or publication.",
+    "Remove/upsert conflicts, invalid complete ordering and stale/exhausted generations refuse atomically.",
+    "Metadata revision preserves domain ID independence; action dispatch still revalidates full worker observations.",
+    "Selection, filter and surviving focus are retained; deleted focus prefers surviving visible old neighbors.",
+    "A no-op snapshot consumes no generation; reorder-only changes still invalidate native controls through the new model/form generations.",
+    "One bounded model owner publishes copies; slow filesystem operations remain in the existing isolated child.",
+    "Whole native view redraw and acknowledgement protocol remain unchanged; no protected clipboard payload enters Go or Echo."
+  ],
+  "failure_disposition": {
+    "initial_capture": "Initial Dune readiness assertion observed a default saved palette before module configuration was published. Slate and all Go tests passed; original archive retained.",
+    "review_fix": "Bounded observer waits for all requested effective/module-configuration/submitted theme settings. Add explicit removed/ordered ID length checks before map hashing, with regression cases. Clarify user manual identity versus metadata counts.",
+    "affected_rerun": "Final five-package policy/race/vet/build and three UI profiles, then generated manual. No six-target matrix repeat: native C/core/MFL/desktop binaries remain exact."
+  },
+  "cycle": {
+    "integrated_reference_pr": 169,
+    "merged_since_reference": 0,
+    "after_this_merge": 1,
+    "next_shared_checkpoint": "after roughly three merged feature PRs or an earlier changed contract"
+  },
+  "performance": {
+    "reference_pr": 169,
+    "merged_count": 0,
+    "after_this_merge": 1,
+    "report": "PERFORMANCE-2026-10-23-PR169.md",
+    "tuning_deferred": true
+  },
+  "limitations": [
+    "Focused new feature check is emulated Linux ARM64; subsequent shared six-target/owner/milestone/release acceptance remains pending.",
+    "The closed predecessor platform cycle covers PR167\u2013169, not these new Go changes. No fresh native-C sanitizer need is introduced; exact cycle policy/UI evidence is retained. Native-CPU/physical/toolkit/compositor/assistive gates stay separate.",
+    "This is an internal metadata transaction API and snapshot consumer, not a streaming provider protocol or in-place native List update. Watching and file mutations remain open.",
+    "Protected clipboard content/private delivery and STORE-01 memory/persistence remain open; no SQLite dependency.",
+    "Counts compare observed identities/metadata, not file operations. Renames and other identity changes count as removal/addition."
+  ],
+  "screenshots_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/collection-refresh/screenshots",
+  "private_evidence": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/collection-refresh"
+}

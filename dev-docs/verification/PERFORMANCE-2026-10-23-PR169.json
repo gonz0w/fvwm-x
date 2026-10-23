@@ -1,0 +1,49 @@
+{
+  "core": {
+    "reference": {
+      "path": "/tmp/fvwm-performance-reference-pr164/fvwm3",
+      "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "bytes": 5396632
+    },
+    "current": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+      "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "bytes": 5396632
+    },
+    "identical": true
+  },
+  "mfl": {
+    "reference": {
+      "path": "/tmp/fvwm-performance-reference-pr164/FvwmMFL",
+      "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7",
+      "bytes": 418512
+    },
+    "current": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+      "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7",
+      "bytes": 418512
+    },
+    "identical": true
+  },
+  "feature_binaries": [
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+      "sha256": "1c424862ee774a88ce51f40174a8b4eb4fa8b7bb85a2c985a7ea6baf16a498c5",
+      "bytes": 1598608
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/collection-list-go-build/fvwm-file-browser",
+      "sha256": "c8dfa57ae6c4eac7cd54ec30c92c747acf32c2c6f41430dd2c949eea270a0899",
+      "bytes": 5361409
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser",
+      "sha256": "b8c076d83c4cac3f28fe6424a4d7db01995cf49b21459a0e249adfacf959bd09",
+      "bytes": 5361449
+    }
+  ],
+  "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 391986\t  14432\t  14000\t 420418\t  66a42\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n3426836\t  88195\t33805464\t37320495\t239772f\t/tmp/fvwm-module-waits-20261015/collection-list-go-build/fvwm-file-browser\n3429744\t  88195\t33805464\t37323403\t239828b\t/tmp/fvwm-module-waits-20261015/collection-grid-go-build/fvwm-file-browser\n",
+  "scope": "Periodic PR164 to merged PR169; existing Linux ARM64 GCC binaries only. Identical core/MFL retain the prior latency observations; no fresh speedup claim or timing rerun.",
+  "reference_pr": 169,
+  "counter_after_checkpoint": "0/5; next implementation PR becomes 1/5 only on merge"
+}

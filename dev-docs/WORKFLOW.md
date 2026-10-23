@@ -93,6 +93,25 @@ actual-X run and include a small review set in the user handoff. Preserve them
 with canonical source-bound evidence. Reuse that integration run; screenshots
 do not require another matrix or a separate desktop setup.
 
+### Representative theme compatibility
+
+User direction, 2026-10-23: exercise new native primitives with two or three
+representative FVWM theme configurations as development progresses. Use the
+[theme smoke set](THEME-STANDARDS.md#primitive-theme-compatibility-smoke-set):
+Slate dark, Dune light, and a controlled classic/minimal customization with
+larger fonts and explicit legacy module colors. Keep actual configuration
+snapshots and screenshots with the owning checkpoint; coverage remains pending
+until those configurations execute.
+
+Run this small set once on the reused Linux native-X build at shared UI
+checkpoints, and earlier when a change directly affects font, palette, focus,
+layout or rendering contracts. A local geometry/focus iteration may use one
+profile; run the other profiles together before the checkpoint. Add affected
+BSD/font/backend checks where needed, without multiplying every compiler,
+install or OS run by all themes. Reuse built binaries and the existing session
+harness. Fix a regression and repeat affected checks only. The wider default
+theme/accessibility and release matrices retain their separate scope.
+
 ### Shared integration cycle and release gate
 
 Close an integration cycle after roughly three merged implementation PRs, or

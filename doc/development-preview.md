@@ -148,7 +148,7 @@ interface; this is not a copy/move/delete job API.
 ## Still in development
 
 The existing desktop Files menu remains the default; this prototype does not
-register a system folder handler. General file-provider IPC,
+register a system folder handler. Further file-provider integration,
 file mutation jobs, thumbnails and complete consumer/install/platform acceptance
 remain open. Protected clipboard content, private delivery, retention and storage
 also remain separate work. Reusable metadata/selection primitives do not provide
@@ -172,10 +172,40 @@ observed sorting, list/grid mode and observed-properties presentation. Query
 its state and use the returned generation for each typed control. Selection
 edits accept up to eight stable IDs per request and retain the total 256-item
 cap; hidden selections remain owned. See the [MFL control schema](FvwmMFL.adoc#_conditional_browser_controls).
-These controls publish native views; external application/file operations and
-protected clipboard content remain separate.
+These controls publish native views; the following worker requests add external
+application handoff. Protected clipboard content remains separate.
 
 The [latest control checkpoint](../dev-docs/verification/VERIFICATION-2026-10-23-FILE-PROVIDER-CONTROLS.md)
 contains Slate dark, Dune light and classic larger-font examples with exact
 source/configuration and capture provenance. Existing images above retain their
 original checkpoint identities. The browser remains a development prototype.
+
+## Typed navigation, outcomes and cancellation
+
+Other consumers can now request Home/Up/Back, item/path navigation, refresh,
+opening, terminal-here and configured-selection actions through the same files
+provider. Query state for the provider and current generation, then send an
+`action` request. The immediate reply acknowledges admission; poll the retained
+`work` ID for its outcome. Cancellation waits for child reaping and cannot undo
+an application handoff. See the [exact schemas](FvwmMFL.adoc#_isolated_navigation_and_application_requests)
+and [focused checkpoint](../dev-docs/verification/VERIFICATION-2026-10-23-FILE-PROVIDER-WORK.md).
+
+Slate dark: the configured action started with one validated path. The status
+states that application completion is not tracked.
+
+![Slate dark configured action handoff](screenshots/work-slate-dark.png)
+
+Dune light: cancellation has reaped the worker and retained the previous folder.
+
+![Dune light cancelled file work](screenshots/work-dune-light.png)
+
+Classic larger-font configuration: an externally changed item is refused before
+an application launch; refreshing can recover its observation.
+
+![Classic theme stale file target refusal](screenshots/work-classic-large.png)
+
+These unmodified captures reuse the same three-theme native-X checkpoint at
+1440×1000, scale 1. The [work image manifest](screenshots/work-manifest.json)
+records hashes and source/configuration provenance. These examples add no new
+widget or default theme. The browser remains in-progress development; mutation,
+FileManager1, protected clipboard and full consumer/release acceptance remain open.

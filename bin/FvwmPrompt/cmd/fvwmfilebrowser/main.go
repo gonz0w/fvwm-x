@@ -80,6 +80,7 @@ type browser struct {
 	replaceSelection           bool
 	renderDeadline             time.Time
 	watch                      *directoryWatch
+	providerWork               *providerWork
 }
 
 func (b *browser) viewing() string {
@@ -150,6 +151,9 @@ func (b *browser) queue(request workRequest, navigation string) error {
 	work := pendingWork{b.serial, request, navigation}
 	b.status = "Loading or checking target; Cancel work remains available"
 	if b.active {
+		if b.providerWork != nil && b.providerWork.Status == "accepted" {
+			b.providerWork.Status = "superseding"
+		}
 		b.cancel()
 		b.pending = &work
 	} else {
@@ -246,6 +250,7 @@ func (b *browser) completed(event completedWork) error {
 			}
 		}
 	}
+	b.finishProviderWork(event)
 	if b.pending != nil {
 		work := *b.pending
 		b.pending = nil
@@ -401,6 +406,9 @@ func (b *browser) action(message string) (bool, error) {
 		b.pending = nil
 		if b.cancel != nil {
 			b.cancel()
+		}
+		if b.providerWork != nil && b.providerWork.Status == "accepted" {
+			b.providerWork.Status = "cancelling"
 		}
 		b.status = "Cancellation requested; waiting for current work to stop"
 		if b.watch != nil {

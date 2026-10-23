@@ -863,9 +863,31 @@ static void test_files_actions(void)
 		"\"operation\":\"sort\",\"values\":{\"key\":\"name\","
 		"\"reverse\":false}}",
 		"\"operation\":\"view\",\"values\":{\"mode\":\"grid\"}}",
-		"\"operation\":\"properties\",\"values\":{}}"
+		"\"operation\":\"properties\",\"values\":{}}",
+		"\"operation\":\"refresh\",\"values\":{}}",
+		"\"operation\":\"terminal\",\"values\":{}}",
+		"\"operation\":\"navigate\",\"values\":{\"mode\":\"home\"}}",
+		"\"operation\":\"navigate\",\"values\":{\"mode\":\"path\","
+		"\"path_bytes\":\"Lw==\"}}",
+		"\"operation\":\"open\",\"values\":{"
+		"\"id\":\"0123456789abcdef0123456789abcdef\"}}",
+		"\"operation\":\"navigate\",\"values\":{\"mode\":\"item\","
+		"\"id\":\"0123456789abcdef0123456789abcdef\"}}",
+		"\"operation\":\"custom\",\"values\":{\"index\":3}}",
+		"\"operation\":\"cancel\",\"values\":{"
+		"\"id\":\"0000000000000001\"}}"
 	};
 	static const char *invalid[] = {
+		"\"operation\":\"navigate\",\"values\":{\"mode\":\"home\","
+		"\"id\":\"0123456789abcdef0123456789abcdef\"}}",
+		"\"operation\":\"navigate\",\"values\":{\"mode\":\"path\","
+		"\"path_bytes\":\"bad\\nbyte\"}}",
+		"\"operation\":\"custom\",\"values\":{\"index\":4}}",
+		"\"operation\":\"custom\",\"values\":{\"index\":1.5}}",
+		"\"operation\":\"custom\",\"values\":{\"index\":null}}",
+		"\"operation\":\"cancel\",\"values\":{"
+		"\"id\":\"0000000000000000\"}}",
+		"\"operation\":\"terminal\",\"values\":{\"program\":\"bad\"}}",
 		"\"operation\":\"selection\",\"values\":{\"mode\":\"clear\","
 		"\"ids\":[]}}",
 		"\"operation\":\"selection\",\"values\":{\"mode\":\"add\","

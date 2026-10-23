@@ -6,9 +6,11 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"io"
+	"path/filepath"
 	"strings"
 	"unicode/utf8"
 
@@ -20,6 +22,9 @@ const providerValuesMax = 384
 
 type providerAction struct {
 	mode, text, key string
+	id              string
+	path            []byte
+	index           int
 	ids             []string
 	reverse         bool
 }
@@ -94,7 +99,31 @@ func decodeProviderAction(query fileQuery) (providerAction, error) {
 			(action.key == "name" || action.key == "kind" || action.key == "size" || action.key == "modified")
 	case "view":
 		valid = len(fields) == 1 && stringField("mode", &action.mode) && (action.mode == "list" || action.mode == "grid")
-	case "properties":
+	case "navigate":
+		if !stringField("mode", &action.mode) {
+			break
+		}
+		switch action.mode {
+		case "home", "up", "back":
+			valid = len(fields) == 1
+		case "item":
+			valid = len(fields) == 2 && stringField("id", &action.id) && hexToken(action.id, 32)
+		case "path":
+			var encoded string
+			if len(fields) == 2 && stringField("path_bytes", &encoded) && len(encoded) <= 256 {
+				var err error
+				action.path, err = base64.StdEncoding.Strict().DecodeString(encoded)
+				valid = err == nil && len(action.path) > 0 && len(action.path) <= 192 && filepath.IsAbs(string(action.path)) && !bytes.ContainsRune(action.path, 0)
+			}
+		}
+	case "open":
+		valid = len(fields) == 1 && stringField("id", &action.id) && hexToken(action.id, 32)
+	case "custom":
+		value := fields["index"]
+		valid = len(fields) == 1 && json.Unmarshal(value, &action.index) == nil && len(value) == 1 && action.index >= 0 && action.index < 4
+	case "cancel":
+		valid = len(fields) == 1 && stringField("id", &action.id) && hexToken(action.id, 16) && action.id != "0000000000000000"
+	case "properties", "refresh", "terminal":
 		valid = len(fields) == 0
 	}
 	if !valid {
@@ -109,6 +138,12 @@ func (b *browser) applyProviderAction(query fileQuery, action providerAction) st
 	}
 	if query.Generation != b.providerGeneration() {
 		return "stale_generation"
+	}
+	if query.Operation == "cancel" {
+		return b.cancelProviderWork(action.id)
+	}
+	if providerWorkerAction(query.Operation) {
+		return b.startProviderWork(query, action)
 	}
 	// Collection policy publishes new slices/maps only after full admission.
 	// A refused candidate cannot change live selection, order or projection.

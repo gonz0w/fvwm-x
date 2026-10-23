@@ -620,3 +620,5 @@ diagnostic and execution gates remain separate.
 - [Portable browser requests](VERIFICATION-2026-10-23-FILE-BROWSER-HANDOFF.md): local URI bytes, atomic reveal, initial properties and focused native checks after the completed six-target cycle.
 
 - [Shared collection grid](VERIFICATION-2026-10-23-COLLECTION-GRID.md): Shared collection grid: native type marks, list/grid identity and bounded additive ranges; focused checks and corrected observer pass with retained policy evidence.
+
+- [Isolated browser action requests](VERIFICATION-2026-10-23-FILE-PROVIDER-WORK.md): focused Linux/FreeBSD, 227 Go cases including race, three theme captures and scoped sanitizer/manual checks; broader cycle remains pending.

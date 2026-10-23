@@ -399,12 +399,25 @@ Selection/filter/sort/properties updates retain native windows and input drafts;
 view changes can recreate the layout. Accepted controls renew the idle limit.
 Properties use admitted observations, with no recursive scan or link following.
 
-This interface reads only the admitted snapshot; it does not scan directories,
-open files or expose file content. Metadata and selection/focus changes invalidate
+Queries read only the admitted snapshot. Writable clients can also submit typed
+Home/Up/Back/item/path navigation, refresh, open, terminal and configured-selection
+actions. The browser captures current native selection and checks the generation
+before admission. Slow work stays in its existing isolated worker. A client can
+choose a configured action index, but cannot provide an executable or shell text.
+Canonical base64 absolute paths retain bytes, with a 192-byte request bound;
+longer paths use native path entry. See FvwmMFL(1) for exact values schemas.
+
+The native-acknowledged reply contains the latest accepted `work` ID/operation/
+status. Query state for its loaded/started/failed/cancelled/superseded outcome.
+Only the latest accepted worker outcome is retained in memory. Started means
+process handoff, not application completion. Cancel by work ID; cancellation
+keeps the worker slot until reap, suppresses late directory publication and cannot
+undo a process handoff. Native navigation can supersede external work. IPC wait
+cancellation only discards the wait. No file content is exposed. Metadata and selection/focus changes invalidate
 page tokens. Discovery is limited to eight producers, with one active query per
 producer; a busy/unavailable instance yields an explicit error. Old browser/MFL
 combinations cannot register: build and update these shipped consumers together.
-Clipboard payload ownership/protection, typed external actions, file mutation
+Clipboard payload ownership/protection, file mutation
 and FileManager1 remain separate work. No SQLite dependency is introduced.
 
 == EXIT STATUS

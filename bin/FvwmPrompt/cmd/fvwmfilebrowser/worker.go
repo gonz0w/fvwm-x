@@ -74,17 +74,21 @@ func perform(request workRequest) (result workResult) {
 		return launch(request, paths)
 	}
 	path := string(request.Path)
-	if request.Operation == "activate" || request.Operation == "terminal" {
+	if request.Operation == "activate" || request.Operation == "browse" || request.Operation == "terminal" {
 		if request.Snapshot == nil {
 			result.Error = "Missing current file snapshot"
 			return
 		}
-		if request.Operation == "activate" {
+		if request.Operation == "activate" || request.Operation == "browse" {
 			var kind string
 			var err error
 			path, kind, err = request.Snapshot.Validate(request.ID)
 			if err != nil {
 				result.Error = err.Error()
+				return
+			}
+			if request.Operation == "browse" && kind != "directory" {
+				result.Error = "Target is not a directory"
 				return
 			}
 			if kind == "directory" {

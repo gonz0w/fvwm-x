@@ -67,6 +67,12 @@ typedef struct _drawtable {
   FlocaleWinString *dt_Fstr;            /* Fvwm string (handles multibyte) */
 } DrawTable;
 
+typedef struct
+{
+  char *label;
+  enum form_list_icon icon;
+} form_list_entry;
+
 /* An "item" is something in a form. Part of the structure is common
    for all item types, the rest of the structure is a union. */
 typedef union _item {
@@ -107,8 +113,9 @@ typedef union _item {
   struct {                 /* I_LIST: labels owned until module exit */
     struct _head head;
     form_list_state *state, *initial;
-    char **labels;
+    form_list_entry *entries;
     int capacity, row_height;
+    struct _line *line;
   } list;
   struct {                 /* I_SELECT */
     struct _head head;

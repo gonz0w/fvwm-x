@@ -319,3 +319,32 @@ func TestLargeNativeFormUsesAcknowledgedBatches(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestViewSwitchKeepsProjectionFocusAndSelection(t *testing.T) {
+	b := browser{instance: "owner", form: 2}
+	b.model.Replace([]collection.Entry{{ID: "a", Label: "first"}, {ID: "b", Label: "second"}})
+	act := func(packet []byte) error {
+		_, err := b.action("FVWM_FILES_2 owner 2 view - x" + base64.RawURLEncoding.EncodeToString(packet))
+		return err
+	}
+	if err := act([]byte{0, 1, 2}); err != nil || b.viewing() != "grid" || b.model.Focus != "b" || !b.model.Selected["b"] {
+		t.Fatal(err, b.viewing())
+	}
+	generation := b.model.Generation
+	if err := act([]byte{0, 1, 2}); err != nil || b.viewing() != "list" || b.model.Focus != "b" || !b.model.Selected["b"] || b.model.Generation != generation {
+		t.Fatal("view switch changed model", err)
+	}
+	if err := act([]byte{0, 2, 2}); err == nil || b.viewing() != "list" {
+		t.Fatal("malformed view change published")
+	}
+	for _, view := range []string{"", "list", "grid"} {
+		o := options{dir: "/fixture", view: view}
+		if err := prepareOptions(&o, true, nil, nil); err != nil {
+			t.Fatal(err)
+		}
+	}
+	o := options{dir: "/fixture", view: "unknown"}
+	if prepareOptions(&o, true, nil, nil) == nil {
+		t.Fatal("invalid view accepted")
+	}
+}

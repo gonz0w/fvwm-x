@@ -192,6 +192,7 @@ static void ct_Line(char *);
 static void ct_List(char *);
 static void ct_ListItem(char *);
 static void ct_ListFocus(char *);
+static void ct_ListGrid(char *);
 static Item *form_current_list;
 static void ct_Message(char *);
 static void ct_Geometry(char *);
@@ -245,6 +246,7 @@ static struct CommandTable ct_table[] =
   {"Line",ct_Line},
   {"List",ct_List},
   {"ListFocus",ct_ListFocus},
+  {"ListGrid",ct_ListGrid},
   {"ListItem",ct_ListItem},
   {"Message",ct_Message},
   {"PadVText",ct_padVText},
@@ -1139,8 +1141,8 @@ static void form_list_cleanup(void)
     if (p->type != I_LIST)
       continue;
     for (int i = 0; i < p->list.state->count; i++)
-      free(p->list.labels[i]);
-    free(p->list.labels);
+      free(p->list.entries[i].label);
+    free(p->list.entries);
     free(p->list.state);
     free(p->list.initial);
     free(p->header.name);
@@ -1188,12 +1190,44 @@ static void ct_List(char *cp)
   item->list.state = fxcalloc(1, sizeof(*item->list.state));
   item->list.initial = fxcalloc(1, sizeof(*item->list.initial));
   item->list.state->rows = rows;
+  item->list.state->columns = 1;
   *item->list.initial = *item->list.state;
+  item->list.line = cur_line;
   form_current_list = item;
   AddToLine(item);
   return;
 invalid:
   fprintf(stderr, "%s: invalid List name width rows (1..32)\n", module->name);
+}
+
+/* Layout is immutable once entries have been admitted. */
+static void ct_ListGrid(char *cp)
+{
+  Item *list = form_current_list;
+  int columns, height;
+
+  if (list == NULL || list->list.line != cur_line ||
+      list->list.state->count != 0 ||
+      !form_list_number(cp, 8, &columns) || columns < 2 ||
+      *form_next_argument(cp) != '\0' ||
+      (list->header.size_x - 20) / columns < 64)
+    goto invalid;
+  height = 3 * list->header.dt_ptr->dt_Ffont->height + 4 * TEXT_SPC;
+  if (height > (32760 - 2 * BOX_SPC) / list->list.state->rows)
+    goto invalid;
+  list->list.state->columns = columns;
+  list->list.row_height = height;
+  list->header.size_y = height * list->list.state->rows + 2 * BOX_SPC;
+  *list->list.initial = *list->list.state;
+  cur_line->size_y = 0;
+  for (int i = 0; i < cur_line->n; i++)
+    if (cur_line->items[i]->header.size_y > cur_line->size_y)
+      cur_line->size_y = cur_line->items[i]->header.size_y;
+  return;
+invalid:
+  if (list != NULL)
+    list->list.state->refused = list->list.initial->refused = true;
+  fprintf(stderr, "%s: invalid ListGrid columns (2..8)\n", module->name);
 }
 
 static void ct_ListFocus(char *cp)
@@ -1217,6 +1251,8 @@ static void ct_ListItem(char *cp)
   const char *label = form_next_argument(cp);
   const char *end = label;
   const char *tail;
+  enum form_list_icon icon = FORM_ICON_NONE;
+  bool valid_icon;
   bool on = strncmp(cp, "on", 2) == 0 && isspace((unsigned char)cp[2]);
 
   if (*end == '"')
@@ -1228,10 +1264,11 @@ static void ct_ListItem(char *cp)
 
   tail = *end == '"' ? end + 1 : end;
   while (isspace((unsigned char)*tail)) tail++;
+  valid_icon = form_list_parse_icon(tail, &icon);
   if (list == NULL || (*label != '"') ||
       (!on && !(strncmp(cp, "off", 3) == 0 &&
         isspace((unsigned char)cp[3]))) || *end != '"' ||
-      *tail != '\0' ||
+      !valid_icon ||
       strlen(label) > 1024 || !form_list_add(list->list.state, on))
   {
     if (list != NULL)
@@ -1242,10 +1279,11 @@ static void ct_ListItem(char *cp)
     fprintf(stderr, "%s: invalid/over-limit ListItem\n", module->name);
     return;
   }
-  list->list.labels = form_reserve_array(list->list.labels,
+  list->list.entries = form_reserve_array(list->list.entries,
     &list->list.capacity, list->list.state->count - 1, 1, 32,
-    sizeof(*list->list.labels));
-  list->list.labels[list->list.state->count - 1] = CopyQuotedString(label + 1);
+    sizeof(*list->list.entries));
+  list->list.entries[list->list.state->count - 1] =
+    (form_list_entry){CopyQuotedString(label + 1), icon};
   if (on && list->list.state->selected == 1)
     form_list_focus(list->list.state, list->list.state->count - 1);
   *list->list.initial = *list->list.state;

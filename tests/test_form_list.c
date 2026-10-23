@@ -4,14 +4,58 @@
 #include "config.h"
 #include <assert.h>
 #include <limits.h>
+#include <string.h>
 #include "modules/FvwmForm/form_list.h"
+
+static void test_grid_ranges(void)
+{
+	form_list_state s = {.rows = 4, .columns = 4};
+	form_list_state before;
+
+	for (int i = 0; i < 19; i++) assert(form_list_add(&s, false));
+	assert(form_list_lines(&s) == 5);
+	form_list_focus(&s, 18);
+	assert(s.focus == 18 && s.top == 4 && s.anchor == 18);
+	assert(form_list_extend(&s, 14));
+	assert(s.focus == 14 && s.anchor == 18 && s.selected == 5);
+	assert(form_list_extend(&s, 17) && s.selected == 5);
+	form_list_scroll(&s, INT_MIN);
+	assert(s.top == 0);
+	form_list_scroll(&s, INT_MAX);
+	assert(s.top == 4);
+	form_list_focus(&s, 0);
+	assert(s.top == 0 && s.anchor == 0);
+	for (int i = 19; i < FORM_LIST_MAX; i++) assert(form_list_add(&s, false));
+	form_list_focus(&s, 4095);
+	assert(s.top == 4080 && s.top % 4 == 0);
+	before = s;
+	assert(!form_list_extend(&s, 0));
+	assert(s.focus == before.focus && s.anchor == before.anchor &&
+		s.top == before.top && s.selected == before.selected &&
+		memcmp(s.bits, before.bits, sizeof(s.bits)) == 0);
+	assert(form_list_extend(&s, 4090) && s.selected == 11);
+	s = (form_list_state){.rows = 4, .columns = 4};
+	form_list_focus(&s, INT_MAX);
+	assert(s.top == 0 && s.focus == 0 && !form_list_extend(&s, 0));
+	assert(form_list_add(&s, false));
+	form_list_focus(&s, 0);
+	assert(form_list_extend(&s, 0) && s.selected == 1);
+}
 
 int main(void)
 {
+	test_grid_ranges();
 	form_list_state s = {.rows = 12};
 	unsigned char packet[FORM_LIST_BYTES + 2];
 
 	int value;
+	enum form_list_icon icon;
+
+	assert(form_list_parse_icon("directory ", &icon) &&
+		icon == FORM_ICON_DIRECTORY);
+	assert(form_list_parse_icon("", &icon) && icon == FORM_ICON_NONE);
+	assert(!form_list_parse_icon("file extra", &icon));
+	assert(!form_list_parse_icon("/path/icon.png", &icon));
 
 	assert(form_list_number("32", 32, &value) && value == 32);
 	assert(form_list_number("12 ", 32, &value) && value == 12);

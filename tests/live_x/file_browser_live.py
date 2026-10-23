@@ -18,7 +18,7 @@ from urllib.parse import quote_from_bytes
 
 from geometry_transition_live import Client, Pointer
 from colorset_live import WindowAttributes
-from live_x_harness import HarnessRuntime, start_display_server, wait_for_predicate
+from live_x_harness import HarnessError, HarnessRuntime, start_display_server, wait_for_predicate
 from mfl_stream_live import Connection
 
 
@@ -29,6 +29,7 @@ def run(args):
     previous_handler = None
     unexpected_errors = []
     observed_windows = set()
+    retired_errors = {}
     with HarnessRuntime(prefix='file-browser-') as runtime:
         connection = client = pointer = None
         try:
@@ -105,7 +106,9 @@ def run(args):
             @handler_type
             def on_error(_, error):
                 event = error.contents
-                if event.code == 3 and event.resource in observed_windows and event.request in (3, 15, 20):
+                if event.code == 3 and event.resource in observed_windows and event.request in (3, 14, 15, 20):
+                    key_ = (event.resource, event.request)
+                    retired_errors[key_] = retired_errors.get(key_, 0) + 1
                     evidence['observer_retired_windows'] = evidence.get('observer_retired_windows', 0) + 1
                 else:
                     unexpected_errors.append((event.code, event.request, event.resource))
@@ -122,6 +125,18 @@ def run(args):
                 finally:
                     x.XSync(d, 0)
                     observed_windows.remove(window)
+
+            def borrowed_geometry(window):
+                before = retired_errors.get((window, 14), 0)
+                try:
+                    return observe(window, lambda: client.geometry(window))
+                except HarnessError:
+                    # A retiring Form connection can close while the server is
+                    # grabbed. Retry only its observed BadWindow/GetGeometry;
+                    # all other X failures keep their original failure path.
+                    if retired_errors.get((window, 14), 0) > before:
+                        return None
+                    raise
 
             def children(parent):
                 r, above, count = C.c_ulong(), C.c_ulong(), C.c_uint()
@@ -170,7 +185,12 @@ def run(args):
                     finally:
                         if hint.name: x.XFree(hint.name)
                         if hint.class_: x.XFree(hint.class_)
-                    values = [(client.geometry(w), w) for w in children(window)]
+                    values = []
+                    for child in children(window):
+                        geometry = borrowed_geometry(child)
+                        if geometry is None:
+                            return None, [], []
+                        values.append((geometry, child))
                     squares = sorted((g[1], w) for g, w in values if g[2] == g[3])
                     return window, squares, values
                 finally:
@@ -190,7 +210,7 @@ def run(args):
                     alias = last_inventory_alias
                     # XIDs may be reused after Form retirement. The per-view
                     # resource identity and complete child count own readiness.
-                    if alias.endswith('-ready') and alias != seen_alias and len(values) == 21:
+                    if alias.endswith('-ready') and alias != seen_alias and len(values) == 22:
                         return window, alias
                     return None
                 nonlocal seen_alias
@@ -288,6 +308,33 @@ def run(args):
             click(controls[1][1]);callback();window=ready(window)
             evidence['mixed_focus_scrolled_input_and_empty_list']=True
             capture('file-browser-collection.png')
+            # Both presentations share indices/IDs, focus and selection. Shift
+            # navigation adds a bounded anchor range before switching views.
+            key(window,b'F7');callback();window=ready(window)
+            capture('file-browser-grid.png')
+            key(window,b'Tab');key(window,b'Home')
+            for _ in range(2):
+                pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Right');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
+            box,control=widget()
+            cx,cy,child=C.c_int(),C.c_int(),C.c_ulong()
+            cell_width=(box[2]-22)//4;cell_height=(box[3]-6)//4
+            assert x.XTranslateCoordinates(d,control,client.root,3+2*cell_width+cell_width//2,3+cell_height+cell_height//2,C.byref(cx),C.byref(cy),C.byref(child))
+            pointer.x.XTestFakeKeyEvent(d,shift,1,0);pointer.motion(cx.value,cy.value)
+            pointer.button(True);time.sleep(0.05);pointer.button(False);pointer.x.XTestFakeKeyEvent(d,shift,0,0)
+            key(window,b'F7');bits=packet(callback())
+            assert bits[:2]==bytes([0,6]) and bits[2]==127,bits
+            window=ready(window);capture('file-browser-range-list.png')
+            key(window,b'Tab')
+            for _ in range(2):
+                pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Down');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
+            key(window,b'F2');bits=packet(callback());assert bits[:2]==bytes([0,8]) and bits[2:4]==bytes([255,1]),bits
+            window=ready(window)
+            click(row_groups()[0][1][1]);callback();window=ready(window)
+            key(window,b'F7');callback();window=ready(window)
+            key(window,b'Tab');key(window,b'Home');key(window,b'Down');key(window,b'Right')
+            key(window,b'F7');bits=packet(callback());assert bits[:2]==bytes([0,5]) and not any(bits[2:]),bits
+            window=ready(window)
+            evidence['grid_icons_range_selection_and_view_identity']=True
             # Tab enters the list from the filter. Local motion/selection needs
             # neither a helper round trip nor a new form generation.
             key(window, b'Tab')
@@ -362,8 +409,15 @@ def run(args):
             # Form parsing, drawing and MFL callback transport (under 1000 bytes).
             large=runtime.root/'large';large.mkdir()
             for i in range(4096):(large/('entry-%04d'%i)).touch()
-            app=runtime.start('large-browser',[str(args.browser),'--socket',str(endpoint),'--reveal',str(large/'entry-4095')],'large-browser.log',env)
-            window=ready();capture('file-browser-4096-rows.png')
+            app=runtime.start('large-browser',[str(args.browser),'--socket',str(endpoint),'--view','grid','--reveal',str(large/'entry-4095')],'large-browser.log',env)
+            window=ready();capture('file-browser-4096-grid.png')
+            key(window,b'Tab');key(window,b'End')
+            pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Home');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
+            key(window,b'F2');bits=packet(callback())
+            assert bits[:2]==bytes([15,255]) and sum(v.bit_count() for v in bits[2:])==1 and bits[-1]==128
+            window=ready(window)
+            evidence['over_limit_grid_range_is_atomic']=True
+            key(window,b'F7');callback();window=ready(window);capture('file-browser-4096-rows.png')
             key(window,b'Tab');key(window,b'End');key(window,b'F2')
             text=callback();bits=packet(text)
             assert len(text)<1000 and len(bits)==514 and bits[:2]==bytes([15,255]) and bits[-1]==128,(len(text),bits)
@@ -397,7 +451,7 @@ def run(args):
             assert app.poll()==0 and not unexpected_errors,unexpected_errors
             evidence['status']='passed'
             evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
-            evidence['scope']='native scrolling list; grid, private clipboard content and file mutations remain open'
+            evidence['scope']='native list/grid; incremental providers, private clipboard content and file mutations remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')

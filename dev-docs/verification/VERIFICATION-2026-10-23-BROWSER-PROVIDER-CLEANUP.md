@@ -1,6 +1,6 @@
 # Combined browser provider cleanup
 
-Status: **focused Linux checks passed**, following merged [PR #186](https://github.com/gonz0w/fvwm-x/pull/186).
+Status: **focused Linux checks passed**, [PR #187](https://github.com/gonz0w/fvwm-x/pull/187) is open for review, following merged [PR #186](https://github.com/gonz0w/fvwm-x/pull/186).
 [Source-bound receipt](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.json).
 The user requests larger sets of related cleanup before a combined test gate;
 the [revised cadence](../decisions/BATCHED-CLEANUP-CADENCE-2026-10-23.md) removes
@@ -75,7 +75,7 @@ PR185. Rebase conflicts affect only two documentation indexes; both entries are
 retained. All 1504 guarded runtime/test/build inputs remain exact against the
 tested source, so no product test repeats for the documentation-only baseline
 change. The inherited README exceeds the 250-word hygiene limit (257 words);
-shorten screenshot alt captions to 248 words total, preserving the dependency
+shorten screenshot alt captions to 250 words total, preserving the dependency
 planning link and product status. Repository checks then pass. The source-bound
 receipt records this derivation.
 

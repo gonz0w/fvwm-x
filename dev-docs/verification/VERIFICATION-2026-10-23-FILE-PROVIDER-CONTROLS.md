@@ -2,7 +2,8 @@
 
 Five related FILE-ACTION/DATA/VIEW-01 controls are ready for review: stable-ID
 selection edits, literal filtering, observed sorting, list/grid presentation and
-observed properties. All require a current provider generation and acknowledge
+observed properties, ready in [PR #176](https://github.com/gonz0w/fvwm-x/pull/176).
+All require a current provider generation and acknowledge
 native publication. [Contract](../decisions/FILE-PROVIDER-CONTROLS-2026-10-23.md),
 [machine receipt](VERIFICATION-2026-10-23-FILE-PROVIDER-CONTROLS.json).
 

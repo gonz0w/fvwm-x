@@ -3,37 +3,37 @@
 FVWM-X is an X11 window manager derived from FVWM3, for Linux, FreeBSD Xorg
 and OpenBSD Xenocara on AMD64 and ARM64.
 
-Our goals are a simpler codebase, responsive interaction, secure resource and
+Our goals are a simpler codebase, responsive interaction, safer resource and
 process handling, and continued use of existing FVWM configurations and themes.
-Desktop services build on FVWM's native modules and existing system facilities.
-There is no built-in compositor or native Wayland backend.
+Desktop services use FVWM's native modules and system facilities. There is no
+built-in compositor or native Wayland backend.
 
-**Status:** development. The
-[safety closeout](dev-docs/PROJECT-TRACKER.md#hardening-closeout), manager-target
-prerequisite, buttons, settings/editor and configuration checker are merged.
-[IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
-provides core/settings queries, actions and preview/recovery. File browsing adds
-properties and reveal requests. Native list/grid views
-provide selection and bounded callbacks. Live browser updates preserve drafts and selection. Configured actions extend file browsing. Slate dark, Dune light and a
-larger-font classic configuration pass native UI checks. Full file and protected
-clipboard handoffs remain open.
-[OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
-passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
-current qualified baseline and 7.9 is out of scope.
-[Protocol requirement inventory](dev-docs/verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md)
-records remaining runtime acceptance.
-[Periodic performance comparisons](dev-docs/verification/PERFORMANCE-2026-10-23-PR169.md)
-track regressions every five implementation batches using existing builds.
-Go builds use a patched compiler baseline. Desktop/artwork publication,
-physical hardware, toolkits/compositors, native-CPU sanitizers and release
-acceptance remain open.
+**Status:** in-progress development, not a finished release. Recent work includes:
+
+- Atomic button updates, desktop settings/editor and configuration checking.
+- Structured IPC queries/actions and scoped settings preview/recovery.
+- An optional native file-browser prototype: scrolling list/grid, multi-selection,
+  filtering, sorting, observed properties and configured application actions.
+  Same-folder live updates retain drafts and surviving selection.
+
+Slate dark: native list and observed properties.
+
+![Development file browser in Slate dark, with a selected list entry and its properties](doc/screenshots/browser-slate-list.png)
+
+Dune light: native grid, scrolled to the end of 4096 synthetic entries.
+
+![Development file browser in Dune light, with a selected grid entry](doc/screenshots/browser-dune-grid.png)
+
+[More screenshots, theme/config examples and current limits](doc/development-preview.md).
+These are actual development captures, not mockups. Full file-manager workflows,
+protected clipboard handoff, broader accessibility and release qualification
+remain open. Existing folder menus remain the default. OpenBSD follows new
+releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)
 - [Roadmap and review board](https://github.com/users/gonz0w/projects/6)
 - [Contribute and validate locally](CONTRIBUTING.md)
 
-Review, tests, lint and validation run locally. GitHub hosts code, issues and
-PR review; GitHub Actions is disabled. Preserve failed evidence and source/platform identities.
-
+Review and validation run locally; GitHub Actions is disabled.
 FVWM-X retains FVWM's GPL license and upstream attribution; see [COPYING](COPYING).

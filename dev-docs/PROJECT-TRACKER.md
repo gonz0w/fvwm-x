@@ -73,6 +73,10 @@ and the same X windows; fixed status/properties labels, 4096-entry live reorder
 and short timeout renewal/expiry pass, with 24 screenshots per profile.
 Wider theme/scale/accessibility acceptance remains separate; these runs do not
 multiply every compiler/install/platform leg by all themes.
+[Public development screenshots and runnable configuration examples](../doc/development-preview.md)
+reuse four unmodified captures from this checkpoint. The README stays explicitly
+in development; publishing this subset does not close the remaining primitives
+or release gates, or advance either verification counter.
 [Smoke contract](THEME-STANDARDS.md#primitive-theme-compatibility-smoke-set),
 [cadence](WORKFLOW.md#representative-theme-compatibility).
 

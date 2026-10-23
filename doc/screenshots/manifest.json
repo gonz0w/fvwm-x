@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "capture_date": "2026-10-23",
+  "source_commit": "b0d4ceaaa98e37ef9337939d3eacd4db2efb20f8",
+  "source_archive_sha256": "2b03132f319228c278e826dffd7334c87ad4fd85d19f960159e2233b28993eca",
+  "capture_archive_sha256": "73ba1cfb0dbbb4a1c40dd6fcbce6502ed9dcc4f409177e48ae208dcf0d5e7852",
+  "target": "Linux ARM64 (emulated guest), Xvfb native-X integration",
+  "geometry": [
+    1440,
+    1000
+  ],
+  "ui_scale": 1,
+  "verification_report": "../../dev-docs/verification/VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md",
+  "pixel_edits": false,
+  "synthetic_files": true,
+  "files": [
+    {
+      "path": "browser-slate-list.png",
+      "profile": "slate-dark",
+      "capture_member": "slate-dark/file-browser-4096-rows.png",
+      "bytes": 84932,
+      "sha256": "b4b33d14a9f7c5f53b42edb403576471ba3e15170e99e7b581275513fc0a2587"
+    },
+    {
+      "path": "browser-dune-grid.png",
+      "profile": "dune-light",
+      "capture_member": "dune-light/file-browser-4096-grid.png",
+      "bytes": 71687,
+      "sha256": "4f794f11a3992cfad487096c1740f41a29cd3014364123ea4786728560b69cd3"
+    },
+    {
+      "path": "browser-slate-refresh.png",
+      "profile": "slate-dark",
+      "capture_member": "slate-dark/file-browser-refresh-changes.png",
+      "bytes": 78504,
+      "sha256": "af575ecdced30f3f2ce425ce7b34cdc7968ef697ac1e2c2ced694fa11c1e69c3"
+    },
+    {
+      "path": "browser-classic-refresh.png",
+      "profile": "classic-large",
+      "capture_member": "classic-large/file-browser-refresh-changes.png",
+      "bytes": 24456,
+      "sha256": "63b5633968fefce67370f05166d4696fc8aadb3fe5a6e091314e9253ed3ba8a5"
+    }
+  ]
+}

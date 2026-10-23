@@ -88,6 +88,17 @@ ARM64, 65 Linux AMD64 and 48 FreeBSD AMD64 files. Sources, builds, SDK/caches,
 helper references and VM disks remain preserved. Owned QEMU jobs are shut down;
 OpenBSD ephemeral job keys are deleted by the runner.
 
+## Public documentation follow-up
+
+The [development gallery](../../doc/development-preview.md) and README publish
+four unmodified PNGs from the final theme capture (259,579 bytes total), with
+Slate/Dune overrides and a minimal classic configuration example. Image hashes,
+dimensions and source membership match the preserved archive;
+[the manifest](../../doc/screenshots/manifest.json) records their provenance.
+Repository/link/whitespace checks pass for this documentation-only follow-up.
+Runtime/manual/fixture inputs are unchanged from the checkpoint above; no new
+runtime, performance or matrix result is claimed and cadence counters do not move.
+
 ## Remaining gates
 
 PR172 is the integrated reference; this starts a new cycle **0/3, 1/3 on merge**.

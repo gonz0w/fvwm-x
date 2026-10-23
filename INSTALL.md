@@ -55,9 +55,10 @@ headers) and Xt (X11 type headers) installed.
 * asciidoctor
 * golang (stable 1.26.9 or newer in the 1.26 series, or stable 1.27.2 or
   newer); enables FvwmPrompt, the Go FvwmCommand client and fvwm-menu-xlock,
-  fvwm-menu-directory, fvwm-convert-2.6, fvwm-menu-desktop and the installed
-  Script communication example helper. Go-disabled builds retain the
-  corresponding legacy utilities. An installed older/prerelease compiler is
+  fvwm-menu-directory, fvwm-convert-2.6, fvwm-menu-desktop, fvwm-file-browser
+  and the installed Script communication example helper. Go-disabled builds
+  retain legacy utility counterparts where available; the browser is omitted.
+  An installed older/prerelease compiler is
   refused even with the automatic feature selection: upgrade it or select
   `-Dgolang=disabled`. An absent compiler remains optional. Configuration checks
   the actual selected compiler with `GOTOOLCHAIN=local` and never downloads one.
@@ -75,6 +76,11 @@ headers) and Xt (X11 type headers) installed.
 * libxfixes-dev
 * libxpm-dev
 * libxrender-dev
+
+The optional `fvwm-file-browser` is a development consumer of FvwmForm/FvwmMFL;
+it does not replace the default desktop Files menu. See the
+[development screenshots and configuration examples](doc/development-preview.md)
+and [browser manual](doc/fvwm-file-browser.adoc) for setup and current limits.
 
 Go-enabled builds also install the coordinated `fvwm-menu-desktop` provider
 and native FvwmForm settings frontend. These use the existing standard-library

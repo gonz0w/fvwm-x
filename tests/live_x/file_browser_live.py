@@ -585,9 +585,110 @@ def run(args):
             key(window,b'Escape');callback()
             wait_for_predicate('large browser exit',lambda:app.poll() is not None,time.monotonic()+5)
             assert app.poll()==0 and not unexpected_errors,unexpected_errors
+            # Opt-in live primitive, in the same actual desktop theme. The
+            # browser keeps its current replacement lifecycle until its owner
+            # adopts the native publication/status handshake.
+            alias = 'FvwmLiveCollection-ready'
+            expected_children = 3
+            commands = ['*' + alias + ': ' + value for value in [
+                'Title "File browser"', 'Line left',
+                'Text "Live collection: atomic reorder, insert and removal"',
+                'Line left', 'Input draft 40 ""', 'Line left',
+                'List live 64 6', 'ListVersioned',
+                *['ListItem ' + ('on' if n == 11 else 'off') +
+                  ' "Original entry %02d" file' % n for n in range(32)],
+                'ListFocus 12', 'Line left', 'Button continue "Inspect state (F2)" F2',
+                'Command Echo FVWM_FORM_UPDATED x$(live:Base64) x$(draft:Base64)']]
+            for n, command in enumerate(commands):
+                connection.send((command + '\n').encode())
+                if n % 32 == 31:
+                    connection.echo('live-config-%d' % n)
+            connection.send(('Module FvwmForm ' + alias + '\n').encode())
+            app = core
+            window = ready()
+            native_window = window
+            native_children = sorted(children(window))
+            _, _, values = inventory()
+            field = min(values, key=lambda v: v[0][1])[1]
+            click(field, False)
+            for letter in b'keepdraft': key(window, bytes([letter]))
+            key(window, b'Tab'); key(window, b'End'); key(window, b'space')
+
+            def live_state():
+                key(window, b'F2')
+                while True:
+                    text = connection.record().get('echo', {}).get('message', '')
+                    if text.startswith('FVWM_FORM_UPDATED '):
+                        fields = text.split()
+                        result = [base64.urlsafe_b64decode(v[1:] + '==') for v in fields[1:]]
+                        assert result[1] == b'keepdraft', result
+                        return result[0]
+
+            def update(command):
+                connection.send(('*' + alias + ': ' + command + '\n').encode())
+
+            def native_status(token, published, pending=0, refused=0):
+                update('ListStatus live ' + token)
+                connection.expect_echo('FVWM_FORM_LIST %s %d %d %d' %
+                    (token, published, pending, refused))
+
+            before = live_state()
+            assert before[:6] == bytes([0, 0, 0, 1, 0, 31]), before
+            capture('collection-update-before.png')
+            update('ListBegin live 1 2')
+            update('ListEntry live 2 0 "New unselected entry" directory')
+            for old in range(32, 0, -1):
+                update('ListEntry live 2 %d "Updated entry %02d" file' % (old, old - 1))
+                if old == 16: connection.echo('staging-backpressure')
+            native_status('staged', 1, 2)
+            assert live_state() == before
+            capture('collection-update-staged.png')
+            # A selection edit made after Begin must survive publication.
+            key(window, b'Home'); key(window, b'space')
+            update('ListCommit live 2'); native_status('committed', 2)
+            after = live_state()
+            assert after[:6] == bytes([0, 0, 0, 2, 0, 32]), after
+            assert after[6:] == bytes([2, 0, 32, 0, 1]), after
+            assert inventory()[0] == native_window and sorted(children(window)) == native_children
+            capture('collection-update-committed.png')
+            # Duplicate source refuses the entire candidate, including labels.
+            update('ListBegin live 2 3')
+            update('ListEntry live 3 1 "Never published" file')
+            update('ListEntry live 3 1 "Duplicate source" file')
+            update('ListCommit live 3'); native_status('poisoned', 2, 3, 1)
+            assert live_state() == after
+            update('ListAbort live 3'); native_status('aborted', 2)
+            update('ListBegin live 2 3'); native_status('reuse-refused', 2)
+            # Stale records cannot mutate or poison a newer transaction.
+            update('ListBegin live 2 4')
+            update('ListEntry live 3 999 "Stale record" file')
+            update('ListCommit live 3'); update('ListAbort live 3')
+            native_status('stale-refused', 2, 4)
+            update('ListEntry live 4 2 "Surviving selection" file')
+            update('ListCommit live 4'); native_status('removed', 4)
+            result = live_state()
+            assert result == bytes([0, 0, 0, 4, 0, 0, 1]), result
+            capture('collection-update-removed.png')
+            update('ListBegin live 4 5'); update('ListCommit live 5')
+            native_status('empty', 5)
+            assert live_state() == bytes([0, 0, 0, 5, 0, 0])
+            capture('collection-update-empty.png')
+            # Leave owned staging resources for normal module-exit cleanup.
+            update('ListBegin live 5 6')
+            update('ListEntry live 6 0 "Pending at teardown" other')
+            native_status('closing', 5, 6)
+            connection.send(('KillModule FvwmForm ' + alias + '\n').encode())
+            connection.echo('live-update-finished')
+            evidence['live_collection_updates'] = {
+                'atomic_staging': True, 'current_input_at_commit': True,
+                'identity_mapping': True, 'same_native_windows': True,
+                'draft_preserved': True, 'duplicate_atomic_refusal': True,
+                'stale_refusal': True, 'aborted_generation_reuse_refused': True,
+                'abort_empty_remove_teardown': True,
+                'versioned_callback_max_bytes': 518}
             evidence['status']='passed'
             evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
-            evidence['scope']='native list/grid and metadata refresh; in-place native/provider transport, private clipboard content and file mutations remain open'
+            evidence['scope']='native list/grid and opt-in atomic live updates; browser update adoption, external providers, protected content and file mutation remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')

@@ -169,15 +169,105 @@ bool form_list_extend(form_list_state *s, int index)
 }
 
 size_t form_list_packet(const form_list_state *s,
-	unsigned char packet[FORM_LIST_BYTES + 2])
+	unsigned char packet[FORM_LIST_PACKET_MAX])
 {
 	size_t bytes = (s->count + 7) / 8;
+	size_t prefix = s->generation != 0 ? 4 : 0;
 
 	if (s->refused)
 		return 0;
-	/* Two-byte big-endian focus, then little-bit-first selection by row. */
+	/* Opt-in generation and focus are big-endian; selection is bit-first. */
+	if (prefix)
+	{
+		unsigned int generation = s->generation;
+		for (int i = 3; i >= 0; i--, generation >>= 8)
+			packet[i] = generation & 255;
+	}
+	packet += prefix;
 	packet[0] = s->focus >> 8;
 	packet[1] = s->focus & 255;
 	memcpy(packet + 2, s->bits, bytes);
-	return bytes + 2;
+	return prefix + bytes + 2;
+}
+
+
+bool form_list_update_begin(form_list_update *u, const form_list_state *s,
+	int expected, int generation)
+{
+	if (s->refused || s->generation <= 0 || expected != s->generation ||
+	    generation <= expected)
+		return false;
+	memset(u, 0, sizeof(*u));
+	u->expected = expected;
+	u->generation = generation;
+	u->source_count = s->count;
+	return true;
+}
+
+bool form_list_update_add(form_list_update *u, int source)
+{
+	if (u->refused || u->generation <= 0 || u->count == FORM_LIST_MAX ||
+	    source < 0 || source > u->source_count ||
+	    (source && (u->used[(source - 1) / 8] &
+	      (1u << ((source - 1) % 8)))))
+	{
+		u->refused = true;
+		return false;
+	}
+	if (source)
+		u->used[(source - 1) / 8] |= 1u << ((source - 1) % 8);
+	u->sources[u->count++] = source;
+	return true;
+}
+
+/* Prefer the surviving old position, then its next neighbor, then previous.
+ * New entries are a last resort; labels never establish identity. */
+static int form_list_update_position(const int *inverse, int old, int count)
+{
+	for (int i = old; i < count; i++)
+		if (inverse[i] >= 0)
+			return inverse[i];
+	for (int i = old - 1; i >= 0; i--)
+		if (inverse[i] >= 0)
+			return inverse[i];
+	return 0;
+}
+
+bool form_list_update_commit(form_list_state *s, const form_list_update *u)
+{
+	form_list_state candidate = *s;
+	int inverse[FORM_LIST_MAX];
+
+	if (u->refused || s->refused || s->generation != u->expected ||
+	    u->generation <= u->expected || s->count != u->source_count ||
+	    u->count < 0 || u->count > FORM_LIST_MAX)
+		return false;
+	for (int i = 0; i < s->count; i++)
+		inverse[i] = -1;
+	memset(candidate.bits, 0, sizeof(candidate.bits));
+	candidate.count = u->count;
+	candidate.selected = 0;
+	candidate.generation = u->generation;
+	for (int i = 0; i < u->count; i++)
+	{
+		int source = u->sources[i] - 1;
+
+		if (source < 0)
+			continue;
+		inverse[source] = i;
+		if (s->bits[source / 8] & (1u << (source % 8)))
+		{
+			candidate.bits[i / 8] |= 1u << (i % 8);
+			candidate.selected++;
+		}
+	}
+	candidate.focus = form_list_update_position(inverse, s->focus, s->count);
+	candidate.anchor = s->count && inverse[s->anchor] >= 0 ?
+		inverse[s->anchor] : candidate.focus;
+	candidate.top = form_list_update_position(inverse, s->top, s->count);
+	candidate.top -= candidate.top % form_list_columns(&candidate);
+	/* A scrolled-away focus stays scrolled away; do not steal the viewport. */
+	form_list_scroll(&candidate, 0);
+	*s = candidate;
+	return true;
 }

@@ -110,11 +110,14 @@ typedef union _item {
     int value_history_yankat;           /* yank point between restarts */
     char **value_history_ptr;           /* curr insertion point */
   } input;
-  struct {                 /* I_LIST: labels owned until module exit */
+  struct {                 /* I_LIST: owns published and pending snapshots */
     struct _head head;
     form_list_state *state, *initial;
     form_list_entry *entries;
     int capacity, row_height;
+    form_list_update *update;
+    form_list_entry *pending;
+    int pending_capacity, update_serial;
     struct _line *line;
   } list;
   struct {                 /* I_SELECT */

@@ -42,11 +42,79 @@ static void test_grid_ranges(void)
 	assert(form_list_extend(&s, 0) && s.selected == 1);
 }
 
+static void test_updates(void)
+{
+	form_list_state s = {.rows = 3, .generation = 1};
+	form_list_state before;
+	form_list_update u, saved;
+	unsigned char packet[FORM_LIST_PACKET_MAX];
+
+	for (int i = 0; i < 20; i++) assert(form_list_add(&s, i == 18));
+	form_list_focus(&s, 18);
+	assert(s.top == 16);
+	assert(!form_list_update_begin(&u, &s, 0, 2));
+	assert(!form_list_update_begin(&u, &s, 1, 1));
+	assert(form_list_update_begin(&u, &s, 1, 2));
+	assert(form_list_update_add(&u, 0));
+	for (int i = 2; i <= 20; i++) assert(form_list_update_add(&u, i));
+	/* User input during staging wins over the state at Begin. */
+	assert(form_list_toggle(&s, 5));
+	form_list_focus(&s, 5);
+	form_list_scroll(&s, INT_MAX);
+	assert(form_list_update_commit(&s, &u));
+	assert(s.generation == 2 && s.selected == 2 && s.focus == 5);
+	assert(s.bits[0] == 32 && s.bits[2] == 4 && s.top == 17);
+	assert(form_list_packet(&s, packet) == 9);
+	assert(packet[0] == 0 && packet[3] == 2 && packet[5] == 5);
+	before = s;
+	assert(!form_list_update_commit(&s, &u));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	assert(form_list_update_begin(&u, &s, 2, 3));
+	assert(form_list_update_add(&u, 1));
+	assert(!form_list_update_add(&u, 1));
+	assert(!form_list_update_commit(&s, &u));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	assert(form_list_update_begin(&u, &s, 2, 3));
+	assert(!form_list_update_add(&u, 21));
+	assert(!form_list_update_add(&u, 0));
+	assert(!form_list_update_commit(&s, &u));
+	assert(form_list_update_begin(&u, &s, 2, 3));
+	for (int i = 0; i < FORM_LIST_MAX; i++)
+		assert(form_list_update_add(&u, 0));
+	saved = u;
+	assert(!form_list_update_add(&u, 0));
+	assert(!form_list_update_commit(&s, &u));
+	assert(form_list_update_commit(&s, &saved));
+	assert(s.count == FORM_LIST_MAX && s.selected == 0 && s.focus == 0);
+	assert(form_list_update_begin(&u, &s, 3, INT_MAX));
+	/* An empty snapshot is an atomic clear, including stale bitmap bytes. */
+	assert(form_list_update_commit(&s, &u));
+	assert(s.count == 0 && s.focus == 0 && s.top == 0 && s.selected == 0);
+	assert(form_list_packet(&s, packet) == 6);
+	assert(packet[0] == 127 && packet[1] == 255 && packet[3] == 255);
+	assert(!form_list_update_begin(&u, &s, INT_MAX, INT_MAX));
+
+	s = (form_list_state){.rows = 2, .columns = 4, .generation = 1};
+	for (int i = 0; i < 20; i++) assert(form_list_add(&s, i == 10));
+	form_list_focus(&s, 10);
+	form_list_scroll(&s, INT_MAX);
+	assert(form_list_update_begin(&u, &s, 1, 2));
+	for (int i = 20; i > 0; i--)
+		if (i != 11) assert(form_list_update_add(&u, i));
+	assert(form_list_update_commit(&s, &u));
+	/* Removed focus chooses old successor 12 (new zero-based index 8). */
+	assert(s.focus == 8 && s.anchor == 8 && s.selected == 0);
+	assert(s.top % 4 == 0 && s.top <= 12);
+	s.generation = 0;
+	assert(!form_list_update_begin(&u, &s, 0, 1));
+}
+
 int main(void)
 {
 	test_grid_ranges();
+	test_updates();
 	form_list_state s = {.rows = 12};
-	unsigned char packet[FORM_LIST_BYTES + 2];
+	unsigned char packet[FORM_LIST_PACKET_MAX];
 
 	int value;
 	enum form_list_icon icon;

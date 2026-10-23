@@ -430,6 +430,93 @@ List; existing forms retain their input/history traversal.
 **FvwmForm: ListFocus ``_row_``*::
   Set initial focus to an existing one-based row in the preceding List.
 
+**FvwmForm: ListVersioned*::
+  After List and before its entries, opt into live updates and a generation
+  prefix in the encoded list callback. Initial generation is 1. Omit this
+  directive to keep the original immutable list/callback format. Use unique,
+  unquoted, whitespace-free list names for live commands. Layout and geometry
+  stay fixed; only the entry snapshot changes.
+
+The following commands are sent as runtime configuration lines to the running
+form's exact alias, for example `*MyFiles: ListBegin picks 1 2`.
+They use existing module transport; no new socket, module packet or toolkit is
+required. Only nonsensitive presentation metadata belongs in these commands.
+Escape presentation text using the same rules as ListItem. Never pass private
+clipboard payloads or reconstruct action identity from a label.
+
+**FvwmForm: ListBegin ``_name_ _expected_ _generation_``*::
+  Stage one complete replacement snapshot for the named versioned list.
+  Expected must equal its published generation. The new generation must be
+  greater than every previously admitted transaction, including aborted ones,
+  and at most 2147483647. There is one pending snapshot per list; another Begin
+  is refused until Commit or Abort. Refusal leaves the current view intact.
+
+**FvwmForm: ListEntry ``_name_ _generation_ _source_ _string_`` [file | directory | link | other]*::
+  Append a quoted label/type to the pending snapshot, in its new display order.
+  Source is the entry's one-based index in the published snapshot, or 0 for a
+  new entry. A nonzero source must exist and appear at most once. The domain
+  owner supplies this identity mapping using stable IDs; label equality does
+  not establish identity. New entries start unselected. Limits are 4096 entries
+  and the same 1024 source-byte label bound as ListItem.
++
+An invalid entry addressed to the pending generation poisons that candidate;
+Commit then refuses the whole update. Abort discards it. Records for another
+generation cannot append to, poison or abort the current candidate. No partial
+candidate is drawn or substituted into commands.
+
+**FvwmForm: ListCommit ``_name_ _generation_``*::
+  Publish the complete staged snapshot atomically. Preserve current selection
+  through source identity, including user changes made after Begin. Surviving
+  focus and range anchor move with their entries. Removed focus uses the next
+  surviving old neighbor, then the previous one, then the first new entry.
+  The old viewport anchor follows the same rule, aligned/clamped for list/grid;
+  an offscreen focus does not force scrolling. Removed selections disappear.
+  An empty snapshot clears the collection. The same X child/windows, input
+  drafts and fixed geometry remain. Restart now restores this published state.
+
+**FvwmForm: ListAbort ``_name_ _generation_``*::
+  Discard the matching pending snapshot and free its labels. A discarded
+  generation cannot be reused. Pending resources are also freed on module exit.
+  Staging has a fixed entry/label bound, with no automatic expiry: its owner
+  must finish or abort a transaction, or close the form.
+
+**FvwmForm: ListStatus ``_name_ _token_``*::
+  Ask the native module to emit `Echo FVWM_FORM_LIST token published pending refused`.
+  Token is 1..64 ASCII letters/digits, hyphen or underscore. Published is the
+  current generation; pending is 0 when no update exists; refused is 1 for a
+  poisoned candidate, otherwise 0. Wait for this native reply after Commit or
+  Abort before advancing the consumer's published mapping. A core Echo alone
+  acknowledges core command processing, not native publication. Unknown or
+  ambiguous names and malformed commands produce diagnostics; a consumer must
+  bound its wait and handle missing replies/module death.
+
+For example, start a two-entry live list, then reorder it and insert a new row:
+
+----
+*MyFiles: Line left
+*MyFiles: List picks 64 6
+*MyFiles: ListVersioned
+*MyFiles: ListItem on "First" file
+*MyFiles: ListItem off "Second" directory
+*MyFiles: Line left
+*MyFiles: Button continue "Inspect" F2
+*MyFiles: Command Echo MY_COLLECTION x$(picks:Base64)
+Module FvwmForm MyFiles
+# Once MyFiles is running, send:
+*MyFiles: ListBegin picks 1 2
+*MyFiles: ListEntry picks 2 2 "Second, updated" directory
+*MyFiles: ListEntry picks 2 0 "New entry" file
+*MyFiles: ListEntry picks 2 1 "First" file
+*MyFiles: ListCommit picks 2
+*MyFiles: ListStatus picks example_2
+----
+
+The selected First entry becomes row 3. Upload long snapshots in bounded,
+acknowledged batches through the existing transport. Accept callbacks only
+against the exact form identity and the published generation; reject stale
+indices before resolving domain IDs. This primitive does not automatically
+connect a filesystem watcher, update other form text or manage a provider.
+
 **FvwmForm: Selection ``_name_ _type_``*::
   This option starts a selection item with name _name_. Its choices are
   specified in following configuration commands. The option _type_ is
@@ -540,7 +627,9 @@ For List, this explicit modifier encodes a binary packet: two bytes of
 zero-based focus in big-endian order, then ceil(row-count/8) selection bytes.
 Bit 0 of the first selection byte is row 0; unused tail bits are zero. Empty
 lists use focus zero and no selection bytes. The maximum is 514 raw / 686
-encoded bytes. Ordinary List substitution is empty. Consumers must validate
+encoded bytes. With ListVersioned, prepend four big-endian generation bytes;
+the maximum is then 518 raw / 691 encoded bytes. Ordinary List substitution
+is empty. Consumers must validate
 length, padding, focus, selection cap and the exact immutable view generation
 before resolving row indices to domain IDs. Do not use labels as IDs.
 +

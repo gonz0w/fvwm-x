@@ -743,10 +743,11 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 			"menu-fallback", "placement", "policy"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
-			"bindings", "provider", "operations", "colorsets"};
+			"bindings", "provider", "operations", "colorsets",
+			"appearance", "menu-styles", "decorations"};
 
 		if (!request_add_strings(result, "methods", methods, 8) ||
-		    !request_add_strings(result, "resources", resources, 11) ||
+		    !request_add_strings(result, "resources", resources, 14) ||
 		    !cJSON_AddStringToObject(result, "provider_notifications",
 			"invalidation-only") ||
 		    !cJSON_AddNumberToObject(result,
@@ -764,6 +765,8 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		    !cJSON_AddNumberToObject(
 			result, "core_query_result_max_bytes",
 			MODULE_QUERY_RESULT_MAX) ||
+		    !cJSON_AddNumberToObject(result, "appearance_page_max",
+			MODULE_QUERY_PAGE_MAX) ||
 		    !cJSON_AddNumberToObject(result, "colorset_page_max",
 			MODULE_QUERY_PAGE_MAX) ||
 		    !cJSON_AddNumberToObject(result, "binding_page_max",

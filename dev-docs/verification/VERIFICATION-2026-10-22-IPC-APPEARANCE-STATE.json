@@ -1,0 +1,793 @@
+{
+  "owner": "IPC-02 / CFG-01",
+  "base": "9f95beda2217a4d69b76d8965b6a86a334127713",
+  "status": "focused feature merge checks passed; accumulated platform/release acceptance deferred",
+  "stories": [
+    "shared appearance configuration activity/freshness observation",
+    "bounded registered menu policy pages",
+    "bounded decoration definition pages",
+    "preserve source opacity in new/existing CopyMenuStyle destinations"
+  ],
+  "candidate": {
+    "source_files": 2200,
+    "source_archive_sha256": "4b66a81529ad3a9501192cf9a3f7876bdb66a38c1dd99323aa9c115e427b5ea7",
+    "worktree_manifest_sha256": "da96bcd985d43454f0805780e413298a004a5464cc9e74cae1e103778e44c2e2",
+    "runtime_inputs": {
+      "fvwm/borders.c": {
+        "sha256": "5f7d07fa6d033f97996eccb0ea7a7f24fc11fb05178d62cf9b1cf72c52e285ed",
+        "mode": 420
+      },
+      "fvwm/builtins.c": {
+        "sha256": "9ac97ed2dcb0491819f0107bb5bb45149ba3bdbedc0cea44c627145511149dfc",
+        "mode": 420
+      },
+      "fvwm/colorset.c": {
+        "sha256": "6ec2462a622bf26757174435f9592acad57b4f897c8caf45012e7bac1f2ceb12",
+        "mode": 420
+      },
+      "fvwm/menustyle.c": {
+        "sha256": "5ad2086a8f0ac8ed15a1331dc7160110344e3e56ce716f1cc306933121a86fdd",
+        "mode": 420
+      },
+      "fvwm/module_interface.c": {
+        "sha256": "eaf58c0aaac4beb103f975b39b3c4cc43a7207e34b98121bdb302cb012382ac8",
+        "mode": 420
+      },
+      "fvwm/query_json.c": {
+        "sha256": "ca21395f90ee2b13d69a2dd09161d68a252252beac278134ccd390862bddf69f",
+        "mode": 420
+      },
+      "fvwm/query_json.h": {
+        "sha256": "ca316e9ab320e1a69706cfb80879db2b962fea1f5335f47523da5260a73e38df",
+        "mode": 420
+      },
+      "fvwm/style.c": {
+        "sha256": "d2b3278caa6a802e5a674596abc7ecc61a5ef54845a50306cec73b2d72402c2a",
+        "mode": 420
+      },
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "sha256": "4deab28ef8b28e6b6fbd94716bc157be1629ed15b41f1df3c8626b300a6fc13d",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.c": {
+        "sha256": "51bafc642012823881d18ce9070ecf468ee715a8803fe5c9f1631e93ae4d999d",
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.h": {
+        "sha256": "04e5f5d0298ff5e1141a7d6f3e3e8282dd7e852be32fd73db2a0377c6985145c",
+        "mode": 420
+      },
+      "tests/live_x/mfl_core_state_live.py": {
+        "sha256": "045ec9671b686507d524c22c1a9910f2dac6c62479bbe7f7e2df33bc8aa21730",
+        "mode": 420
+      },
+      "tests/test_mfl_request.c": {
+        "sha256": "ce9550d6be0f9fd72b20def35b3a2786630032e84834659bc7713ea0b3a70a61",
+        "mode": 420
+      },
+      "tests/test_query_json.c": {
+        "sha256": "9ff1a1979916492cef1ec6e5f711bc3c921f60bcd3b88127da8f1d306d22416e",
+        "mode": 420
+      }
+    },
+    "post_freeze_changes": "documentation/status/receipt only; no runtime or fixture correction"
+  },
+  "canonical": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-appearance-state/evidence.tgz",
+    "sha256": "9f47c38b34c3e61e9dc9865795228fcf157f7e7a7baa07136fd421c93ee5bf6c",
+    "bytes": 748891,
+    "files": 76,
+    "complete_payload_hashes_and_modes_verified": true
+  },
+  "commands": [
+    {
+      "label": "compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j",
+        "2",
+        "fvwm3:executable",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.168
+    },
+    {
+      "label": "tests",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request",
+        "mfl-core-state-xvfb",
+        "mfl-request-xvfb",
+        "mfl-settings-xvfb",
+        "mfl-operations-xvfb",
+        "mfl-stream-xvfb",
+        "desktop-baseline-xvfb"
+      ],
+      "status": 0,
+      "seconds": 30.122
+    },
+    {
+      "label": "asan-compile",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j",
+        "2",
+        "FvwmMFL",
+        "test-query-json",
+        "test-mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.623
+    },
+    {
+      "label": "asan-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--num-processes",
+        "1",
+        "--print-errorlogs",
+        "core-query-json",
+        "mfl-request"
+      ],
+      "status": 0,
+      "seconds": 0.166
+    },
+    {
+      "label": "asan-core-state",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_core_state_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/ipc-appearance-state-checkpoint/asan-core-state"
+      ],
+      "status": 0,
+      "seconds": 0.274
+    }
+  ],
+  "counts": {
+    "focused_registered_passes": 8,
+    "scoped_sanitizer_exercises": 3,
+    "profiles": 1,
+    "targets": 1
+  },
+  "environment": {
+    "uname": [
+      "Linux",
+      "288f898505a4",
+      "6.18.10-200.fc43.aarch64",
+      "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+      "aarch64"
+    ],
+    "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+    "gcc_config_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+    "sanitizers": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1:exitcode=86",
+      "LSAN_OPTIONS": "exitcode=86",
+      "UBSAN_OPTIONS": "halt_on_error=1:exitcode=87"
+    }
+  },
+  "compilers": {
+    "host": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    },
+    "build": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    }
+  },
+  "features": {
+    "buildtype": "debugoptimized",
+    "b_sanitize": "none",
+    "golang": "disabled",
+    "htmldoc": false,
+    "live-x-tests": true,
+    "mandoc": false,
+    "png": "enabled",
+    "svg": "enabled",
+    "xcursor": "enabled",
+    "xrender": "enabled"
+  },
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "31282cfef0da7c5df0eca9fdc5660402012fe37cc026dd6162040a2db11efa6d",
+      "bytes": 5377960
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "4c1fa16b87b2ccf6d5b0801e9f31014da088d4bb39c8048ac0f168dba2e62b1b",
+      "bytes": 409096
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-query-json": {
+      "sha256": "940525f853a0eb1ebd6b1e9c138422aa82e1b7882003abee126f5fa79e275f68",
+      "bytes": 441312
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request": {
+      "sha256": "81f3d57742cc210f4559a145739fdc6c05ca4b7639e1f09172c1d91dbdc8ff6d",
+      "bytes": 304120
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/default-config/FvwmDesktop": {
+      "sha256": "09353ba56de03f1a8bf85a63f1af2242bf8761277e53d47f2beead0f9d7de42a",
+      "bytes": 92863
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "983459e1a53f54cddf75feed0a3e9ff404bf2b4dd30784c183fd9809d00e5fef",
+      "bytes": 3099800
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-query-json": {
+      "sha256": "bb4247afdb6846b0d5d7e935fd94eb5056db34caa4b22a7e3db53898967dc85a",
+      "bytes": 3488472
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request": {
+      "sha256": "cc571a8b6d28bb95d8a72996fb425591c0e69a65b8c0488adf613174af051caf",
+      "bytes": 2783040
+    }
+  },
+  "tests": {
+    "evidence/asan-testlog.json": {
+      "entries": 2,
+      "passed": [
+        "fvwm3 / mfl-request",
+        "fvwm3 / core-query-json"
+      ]
+    },
+    "evidence/gcc-testlog.json": {
+      "entries": 8,
+      "passed": [
+        "fvwm3:live-x / desktop-baseline-xvfb",
+        "fvwm3 / mfl-request",
+        "fvwm3 / core-query-json",
+        "fvwm3:live-x / mfl-request-xvfb",
+        "fvwm3:live-x / mfl-core-state-xvfb",
+        "fvwm3:live-x / mfl-operations-xvfb",
+        "fvwm3:live-x / mfl-settings-xvfb",
+        "fvwm3:live-x / mfl-stream-xvfb"
+      ]
+    },
+    "evidence/opacity-before/testlog.json": {
+      "entries": 1,
+      "historical_negative_control": true,
+      "failed": [
+        "fvwm3:live-x / mfl-core-state-xvfb"
+      ],
+      "reason": "pre-fix CopyMenuStyle source73 copied100"
+    }
+  },
+  "native_CPU_sanitizers": false,
+  "sanitizer_scope": "core JSON and native request policy, instrumented MFL in expanded actual-X appearance fixture with uninstrumented GCC core; no suppressions/diagnostics",
+  "acceptance": {
+    "menu_styles": [
+      {
+        "colorsets": {
+          "menu": 0,
+          "active": 0,
+          "greyed": 0,
+          "title": 0
+        },
+        "name": "*",
+        "default": true,
+        "animation": false,
+        "opacity_percent": 100,
+        "border_width": 2,
+        "popup_delay_10ms": 15,
+        "popdown_delay_10ms": 15,
+        "automatic_hotkeys": false,
+        "submenus_left": false,
+        "item_format": null
+      },
+      {
+        "colorsets": {
+          "menu": 101,
+          "active": 102,
+          "greyed": 103,
+          "title": 104
+        },
+        "name": "Query menu $[desk.n]",
+        "default": false,
+        "animation": true,
+        "opacity_percent": 73,
+        "border_width": 3,
+        "popup_delay_10ms": 25,
+        "popdown_delay_10ms": 40,
+        "automatic_hotkeys": false,
+        "submenus_left": false,
+        "item_format": null
+      },
+      {
+        "colorsets": {
+          "menu": 101,
+          "active": 102,
+          "greyed": 103,
+          "title": 104
+        },
+        "name": "QueryCopy",
+        "default": false,
+        "animation": true,
+        "opacity_percent": 73,
+        "border_width": 3,
+        "popup_delay_10ms": 25,
+        "popdown_delay_10ms": 40,
+        "automatic_hotkeys": false,
+        "submenus_left": false,
+        "item_format": null
+      }
+    ],
+    "decorations": [
+      {
+        "name": "Default",
+        "default": true,
+        "title_height": 0,
+        "minimum_title_height": 0,
+        "title_justification": "center",
+        "button_slots": 10
+      },
+      {
+        "name": "Query decor $[desk.n]",
+        "default": false,
+        "title_height": 23,
+        "minimum_title_height": 0,
+        "title_justification": "left",
+        "button_slots": 10
+      }
+    ],
+    "changed_commands": [
+      "Style appearance-probe WindowShadeSteps 7",
+      "FocusStyle appearance-probe ClickToFocus",
+      "WindowId 4194305 WindowStyle WindowShadeSteps 8",
+      "WindowId 4194305 DestroyWindowStyle",
+      "DestroyStyle appearance-probe",
+      "TitleStyle Centered",
+      "AddTitleStyle (Solid black)",
+      "ButtonStyle 1 (Solid black)",
+      "AddButtonStyle 1 (Solid white)",
+      "BorderStyle Active (Solid black)",
+      "ButtonState ActiveDown True",
+      "DefaultFont fixed",
+      "MenuStyle QueryCopy !Animation, Translucent 31",
+      "CopyMenuStyle \"Query menu $$[desk.n]\" QueryCopy",
+      "DestroyMenuStyle QueryCopy",
+      "DestroyDecor \"Query decor $$[desk.n]\""
+    ],
+    "nested_function_tracked": true,
+    "pages_complete": true,
+    "stored_literals_not_executed": true,
+    "independent_colorset_generation": true
+  },
+  "opacity_control": {
+    "source_before": 73,
+    "destination_before": 100,
+    "source_after": 73,
+    "destination_after": 73,
+    "new_and_existing_destination_verified": true,
+    "before_inputs": {
+      "fvwm/borders.c": "5f7d07fa6d033f97996eccb0ea7a7f24fc11fb05178d62cf9b1cf72c52e285ed",
+      "fvwm/builtins.c": "9ac97ed2dcb0491819f0107bb5bb45149ba3bdbedc0cea44c627145511149dfc",
+      "fvwm/colorset.c": "6ec2462a622bf26757174435f9592acad57b4f897c8caf45012e7bac1f2ceb12",
+      "fvwm/menustyle.c": "af711dd00a01fe8ecc1e4c15d24175430dcf38dc5fa48ae42fbfa11cd09ab533",
+      "fvwm/module_interface.c": "eaf58c0aaac4beb103f975b39b3c4cc43a7207e34b98121bdb302cb012382ac8",
+      "fvwm/query_json.c": "ca21395f90ee2b13d69a2dd09161d68a252252beac278134ccd390862bddf69f",
+      "fvwm/query_json.h": "ca316e9ab320e1a69706cfb80879db2b962fea1f5335f47523da5260a73e38df",
+      "fvwm/style.c": "d2b3278caa6a802e5a674596abc7ecc61a5ef54845a50306cec73b2d72402c2a",
+      "modules/FvwmMFL/FvwmMFL.c": "4deab28ef8b28e6b6fbd94716bc157be1629ed15b41f1df3c8626b300a6fc13d",
+      "modules/FvwmMFL/request.c": "51bafc642012823881d18ce9070ecf468ee715a8803fe5c9f1631e93ae4d999d",
+      "modules/FvwmMFL/request.h": "04e5f5d0298ff5e1141a7d6f3e3e8282dd7e852be32fd73db2a0377c6985145c",
+      "tests/live_x/mfl_core_state_live.py": "777ecca53db8ca94c16b8355d9afe2525d067d9af9795fcb54b3a7ebe0d0b917",
+      "tests/test_mfl_request.c": "ce9550d6be0f9fd72b20def35b3a2786630032e84834659bc7713ea0b3a70a61",
+      "tests/test_query_json.c": "9ff1a1979916492cef1ec6e5f711bc3c921f60bcd3b88127da8f1d306d22416e"
+    },
+    "negative_control_is_historical_failure_not_current_pass": true
+  },
+  "screenshots": {
+    "baseline-capture.png": {
+      "sha256": "27734348e486bba34b51f7da1d280aafe7a050af67fc447813feb88ddff87e78",
+      "bytes": 22919,
+      "mode": 384
+    },
+    "configuration-check-next.png": {
+      "sha256": "c52b872d6318c90950091afea6829e4895b6ddd2feece1b5a29f5c6be5ece48e",
+      "bytes": 56592,
+      "mode": 384
+    },
+    "configuration-check.png": {
+      "sha256": "e80f96f1ff855b7894a70639c872a5d0352b746dc0b42674472a612772a4d10a",
+      "bytes": 66145,
+      "mode": 384
+    },
+    "dune-dark.png": {
+      "sha256": "236de05028dee23e72f2e2f9190d023de0b33637cddfa5672af92a4e374e0433",
+      "bytes": 38166,
+      "mode": 384
+    },
+    "dune-light.png": {
+      "sha256": "efe38c2253afbd7cdba504cf3c70119bf73df0471848be231ab99f8f12b00f89",
+      "bytes": 37850,
+      "mode": 384
+    },
+    "grove-dark.png": {
+      "sha256": "c12a4807238fc8754f25a3a14689149f068d2f03fb9db26b1d22bbc20a4e23ad",
+      "bytes": 38083,
+      "mode": 384
+    },
+    "grove-light.png": {
+      "sha256": "7452713f4f50b8eaaf77d49fe03482bbdc67026591c1938b3461070f47882ab0",
+      "bytes": 37894,
+      "mode": 384
+    },
+    "ink-dark.png": {
+      "sha256": "63d5207171e26a12cc017fd3f99d2212fc58ba16545bee10cf5fd230993b15c2",
+      "bytes": 37910,
+      "mode": 384
+    },
+    "ink-light.png": {
+      "sha256": "b719862f6a706b7daf1d9e5bf2180dca3cf4151068fc0c9b2de75b73df8b2998",
+      "bytes": 37678,
+      "mode": 384
+    },
+    "settings-after-apply.png": {
+      "sha256": "4ef15497d24a3e42e5656cf41871e75410658cf539dd76a71e3d57d615309770",
+      "bytes": 22800,
+      "mode": 384
+    },
+    "settings-defaults.png": {
+      "sha256": "f66d00911293da87ad55a7106c7614931621e1822e87efcefe99d2ebbc86990d",
+      "bytes": 40312,
+      "mode": 384
+    },
+    "settings-draft.png": {
+      "sha256": "d3c4cf2fe7b73cea0a69abec97184aab37d04bc53dd5ea480c038e04798d130b",
+      "bytes": 56012,
+      "mode": 384
+    },
+    "settings-editor.png": {
+      "sha256": "f664e13d9fc4001bf1147b6adeebd1a65c6ed39e123fbeafb3a55b3b3c11af00",
+      "bytes": 56007,
+      "mode": 384
+    },
+    "settings-menu.png": {
+      "sha256": "0cf6c53881ea88053a1312554196326aa25fe5d82f45e3c17334b61ec42d747f",
+      "bytes": 55426,
+      "mode": 384
+    },
+    "slate-dark.png": {
+      "sha256": "55f426d3443f2c80aea193d9245a11a0b6dc2d4f345b4f82332d664e7ab18ccc",
+      "bytes": 38164,
+      "mode": 384
+    },
+    "slate-light.png": {
+      "sha256": "f75a0a02f3e948c0b6bf172da73b4239352e22cfed919331de3aeba082c63281",
+      "bytes": 38005,
+      "mode": 384
+    }
+  },
+  "inspected_review_screenshots": [
+    "slate-dark.png",
+    "slate-light.png"
+  ],
+  "desktop_acceptance": {
+    "greyed_label_empty_quoted_destroy_ownership": 32,
+    "primary_bar_size": [
+      1440,
+      36
+    ],
+    "palettes_appearance_schedule_opaque_switch": "passed",
+    "typed_queries_scoped_reset_reload_stale_refusal": "passed",
+    "native_registry_menu_keyboard_activate_cancel": "passed",
+    "restart_persistence_and_explicit_override": "passed",
+    "editor_saved_after_apply": {
+      "palette": "dune",
+      "appearance": "light",
+      "day": "07:00",
+      "night": "19:00",
+      "transparency": true,
+      "motion": false,
+      "keep_wallpaper": false,
+      "wallpaper": {
+        "palette": "dune",
+        "appearance": "light"
+      },
+      "schema_version": 1
+    },
+    "native_grouped_editor_apply_defaults_cancel_stale_reload_restart": "passed",
+    "settings_screenshots": [
+      "settings-editor.png",
+      "settings-draft.png",
+      "settings-menu.png",
+      "settings-defaults.png"
+    ],
+    "configuration_checker_readonly_locations_and_native_pages": "passed",
+    "configuration_check_cli": {
+      "schema_version": 1,
+      "coverage": "desktop-settings-literals-and-Read-v1",
+      "status": "errors",
+      "errors": 3,
+      "unchecked": 4,
+      "checked_directives": 1,
+      "files": [
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+          "bytes": 332,
+          "sha256": "c9ac852030f632dae9da0a8d8a4efced9f2bced69dbf9d24d17f4195c0d85cd3"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/checker-child",
+          "bytes": 79,
+          "sha256": "a3157bfce8ff78c5fa16c620af47437c93c57a8e9c4dcfd835ef522030930c42"
+        }
+      ],
+      "diagnostics": [
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/checker-child",
+          "line": 2,
+          "end_line": 3,
+          "included_from": [
+            {
+              "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+              "line": 2,
+              "end_line": 2
+            }
+          ],
+          "severity": "error",
+          "code": "setting-value",
+          "message": "Invalid value for palette",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/checker-child",
+          "line": 4,
+          "end_line": 4,
+          "included_from": [
+            {
+              "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+              "line": 2,
+              "end_line": 2
+            }
+          ],
+          "severity": "error",
+          "code": "setting-name",
+          "message": "Unknown FvwmDesktop option",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+          "line": 3,
+          "end_line": 3,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "unsupported",
+          "message": "Command or module syntax is outside the desktop-settings subset",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+          "line": 4,
+          "end_line": 4,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "unsupported",
+          "message": "Command or module syntax is outside the desktop-settings subset",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+          "line": 5,
+          "end_line": 5,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "unsupported",
+          "message": "Command or module syntax is outside the desktop-settings subset",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+          "line": 6,
+          "end_line": 6,
+          "included_from": [],
+          "severity": "error",
+          "code": "setting-value",
+          "message": "Invalid value for motion",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-92btw06g/user/local.config",
+          "line": 7,
+          "end_line": 7,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "expansion",
+          "message": "Expansion or generated configuration is not evaluated",
+          "parser": "FvwmDesktop"
+        }
+      ]
+    },
+    "configuration_check_screenshots": [
+      "configuration-check.png",
+      "configuration-check-next.png"
+    ],
+    "launcher_and_safe_application_launch": "passed",
+    "search_and_calendar": "passed",
+    "screenshot_and_core_responsiveness": "passed",
+    "screenshot_rgb_at_16_and_24_bit_depth": "passed",
+    "baseline_parser": "passed",
+    "observer_unexpected_x_errors": []
+  },
+  "development_failures": {
+    "development1.log": {
+      "sha256": "4a5a64beddcb3d682b60d1db2748341461b8d674e23a5319ddc9066c6cc11dd3",
+      "result": "new policy translation unit required explicit execcontext.h before legacy screen/menu declarations; corrected before freeze"
+    },
+    "development2.log": {
+      "sha256": "bdfd2fc492cb7888a6085f32208ed4ef3b67b5d562fb0b130763f651e84e6a61",
+      "result": "actual-X exposed existing CopyMenuStyle source73/destination100 omission"
+    },
+    "development3.log": {
+      "sha256": "a7d4cf641795a0f3ffce75beb5426f9b9aee7f94157abaf0cfb76af60d1e6b3a",
+      "result": "same original opacity omission reproduced with exact source/copy records; preserved canonical negative control"
+    },
+    "verifier_followup": {
+      "initial_refusal": "preserved negative control was classified as a current pass requirement",
+      "resolution": "require exactly its one historical failure; current gate logs must all pass",
+      "runtime_or_test_rerun": false
+    }
+  },
+  "manual": {
+    "before/FvwmMFL": {
+      "source_sha256": "cf8d6f453533cdac63eb0e9e5711e774ab9d453da6183e21da1fa39d964b52a1",
+      "roff_sha256": "a0efe193313be63511ed8d7ae4e33f66520efd294fba0ea46324caff52e7cf33",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 11
+      }
+    },
+    "before/fvwm3": {
+      "source_sha256": "fb3fc61c0f15e6c4f8da113ee9cf1d759cd50c63b91b6b216bae9122299ad987",
+      "roff_sha256": "f8a6ab2343441090988368fa8170d3a669cd0ceda61913fb957a7f483bb9565a",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 27,
+        "skipping paragraph macro: sp after SS": 8
+      },
+      "main_include_sha256": "4aba0dba3a90ffa161e24d931da8670c19b9778e2347c45be80b81ab345bc237"
+    },
+    "before/fvwm3menus": {
+      "source_sha256": "a9d12ad8a8aafeafcc2aa1d8538649d9a8a90e1cf55dda5d5f5780913c506903",
+      "roff_sha256": "6f4bea7d5f96f6eeb5c61a01b085c3d72140d96a42074af97b78883e33afc037",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SS": 3,
+        "skipping paragraph macro: sp after SH": 1
+      },
+      "main_include_sha256": "4aba0dba3a90ffa161e24d931da8670c19b9778e2347c45be80b81ab345bc237"
+    },
+    "after/FvwmMFL": {
+      "source_sha256": "d5ea2e9db1a66afb2f51496bfccd1ee0df01409b8dd62d18343ee62477c2e7ec",
+      "roff_sha256": "290c948838d2432a5f2d48d4669478ebff8cd77495a75240aa6abba78a9bf7ce",
+      "lint_status": 4,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 8,
+        "skipping paragraph macro: sp after SS": 12
+      }
+    },
+    "after/fvwm3": {
+      "source_sha256": "fb3fc61c0f15e6c4f8da113ee9cf1d759cd50c63b91b6b216bae9122299ad987",
+      "roff_sha256": "f8a6ab2343441090988368fa8170d3a669cd0ceda61913fb957a7f483bb9565a",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SH": 27,
+        "skipping paragraph macro: sp after SS": 8
+      },
+      "main_include_sha256": "9b3fd84de8ee71d0c1610d5a9a9746391e45f1b824a1fa9c99034db48989e633"
+    },
+    "after/fvwm3menus": {
+      "source_sha256": "a9d12ad8a8aafeafcc2aa1d8538649d9a8a90e1cf55dda5d5f5780913c506903",
+      "roff_sha256": "a3c4f1a74aa1f8edb5453f3b6b342cd9cd7bb6fa2c2e20f1dedafc18a0a365b2",
+      "lint_status": 3,
+      "diagnostics": {
+        "skipping insecure request: mso": 1,
+        "skipping unknown macro:  LINKSTYLE blue R < >": 1,
+        "missing date, using \"\": TH": 1,
+        "skipping paragraph macro: sp after SS": 3,
+        "skipping paragraph macro: sp after SH": 1
+      },
+      "main_include_sha256": "9b3fd84de8ee71d0c1610d5a9a9746391e45f1b824a1fa9c99034db48989e633"
+    }
+  },
+  "retirement": {
+    "removed_capture": "/tmp/fvwm-module-waits-20261015/ipc-appearance-state-checkpoint",
+    "capture_files": 76,
+    "removed_archive": "/tmp/fvwm-module-waits-20261015/ipc-appearance-state-evidence.tgz",
+    "archive_sha256": "9f47c38b34c3e61e9dc9865795228fcf157f7e7a7baa07136fd421c93ee5bf6c",
+    "removed_duplicate_source_archive": "/tmp/fvwm-module-waits-20261015/ipc-appearance-state-inputs/source.tgz",
+    "source_archive_sha256": "4b66a81529ad3a9501192cf9a3f7876bdb66a38c1dd99323aa9c115e427b5ea7",
+    "canonical_payload_and_mode_proof": true
+  },
+  "cycle": {
+    "integrated_reference": "PR160",
+    "integrated_commit": "b9dc633123d7dd7478fd49f5019e500bc9185274",
+    "merged": [
+      "PR161"
+    ],
+    "count": 1,
+    "after_merge": 2,
+    "limit": 3,
+    "deferred": [
+      "affected six-target and alternate-profile qualification at shared cycle closure",
+      "full compiler/feature/install/default-X and owner/milestone/release acceptance",
+      "native-CPU/hardware/toolkit/compositor qualification"
+    ]
+  },
+  "performance": {
+    "reference": "PR159",
+    "merged": 2,
+    "after_merge": 3,
+    "limit": 5,
+    "comparison_due": false
+  }
+}

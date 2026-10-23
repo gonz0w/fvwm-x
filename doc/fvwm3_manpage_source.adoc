@@ -2626,7 +2626,8 @@ than one menu in each call of *ChangeMenuStyle*.
 *CopyMenuStyle* _orig-menustyle_ _dest-menustyle_::
 Copy _orig-menustyle_ to _dest-menustyle_, where _orig-menustyle_ is
 an existing menu style. If the menu style _dest_menustyle_ does not
-exist, then it is created.
+exist, then it is created. The copy includes the Translucent opacity setting,
+including when replacing an existing destination style.
 
 *DestroyMenuStyle* _menustyle_::
 Deletes the menu style named _menustyle_ and changes all menus using

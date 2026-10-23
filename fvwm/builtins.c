@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "query_json.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -477,6 +478,7 @@ do_title_style(F_CMD_ARGS, Bool do_add)
 	char	  *prev;
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
+	fvwm_query_appearance_changed();
 	Scr.flags.do_need_window_update	  = 1;
 	decor->flags.has_changed	  = 1;
 	decor->titlebar.flags.has_changed = 1;
@@ -750,6 +752,8 @@ static void
 DestroyFvwmDecor(FvwmDecor *decor)
 {
 	int i;
+
+	fvwm_query_appearance_changed();
 	/* reset to default button set (frees allocated mem) */
 	DestroyAllButtons(decor);
 	for (i = 0; i < BS_MaxButtonState; ++i) {
@@ -847,6 +851,7 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 	TitleButton *tb	   = NULL;
 	FvwmDecor   *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
+	fvwm_query_appearance_changed();
 	parm = PeekToken(action, &text);
 	if (parm && isdigit(*parm)) {
 		button = atoi(parm);
@@ -2093,6 +2098,8 @@ InitFvwmDecor(FvwmDecor *decor)
 	int	  i;
 	DecorFace tmpdf;
 
+	fvwm_query_appearance_changed();
+
 	/* zero out the structures */
 	memset(decor, 0, sizeof(FvwmDecor));
 	memset(&tmpdf, 0, sizeof(DecorFace));
@@ -2816,6 +2823,7 @@ CMD_DefaultFont(F_CMD_ARGS)
 	FlocaleFont *old_font;
 	FvwmWindow  *t;
 
+	fvwm_query_appearance_changed();
 	font = PeekToken(action, &action);
 	if (!font) {
 		/* Try 'fixed', pass NULL font name */

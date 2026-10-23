@@ -18,6 +18,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "query_json.h"
 #include "fvwm/icon_boxes.h"
 #include <stdio.h>
 #include <stdbool.h>
@@ -4816,6 +4817,8 @@ static void _style_command(F_CMD_ARGS, char *prefix, Bool is_window_style)
 	window_style_list *list;
 	Bool merged = False;
 	style_id_t default_id;
+
+	fvwm_query_appearance_changed();
 	memset(&default_id, 0, sizeof(style_id_t));
 
 	ps = fxcalloc(1, sizeof(window_style));
@@ -5711,6 +5714,7 @@ void style_destroy_style(style_id_t s_id)
 	style_match_patterns patterns;
 	FvwmWindow *t;
 
+	fvwm_query_appearance_changed();
 	if (remove_all_of_style_from_list(s_id))
 	{
 		/* compact the current list of styles */

@@ -27,6 +27,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "query_json.h"
 #include <stdio.h>
 
 #include "libs/fvwmlib.h"
@@ -5263,6 +5264,8 @@ void CMD_ButtonState(F_CMD_ARGS)
 {
 	char *token;
 
+	fvwm_query_appearance_changed();
+
 	while ((token = PeekToken(action, &action)))
 	{
 		static char first = True;
@@ -5323,6 +5326,7 @@ void CMD_BorderStyle(F_CMD_ARGS)
 	char *prev;
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
+	fvwm_query_appearance_changed();
 	Scr.flags.do_need_window_update = 1;
 	decor->flags.has_changed = 1;
 	for (prev = action; (parm = PeekToken(action, &action)); prev = action)

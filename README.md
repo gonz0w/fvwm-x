@@ -15,7 +15,7 @@ prerequisite, buttons/atomic groups, settings/editor and non-executing
 configuration checker are merged.
 [IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
 has core/settings queries, actions, validation and wait controls. Provider
-observation and desktop operations pass shared platform checks. Core colorset
+observation and desktop operations pass shared platform checks. Appearance policy
 inspection has focused checks; preview and tuning remain deferred.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the

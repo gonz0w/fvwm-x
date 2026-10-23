@@ -100,7 +100,8 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   read-only admission is not a security boundary.
 * `connection` returns this connection's `read_only` flag and selected event
   names. These are MFL-owned values and require no core round trip.
-* `topology`, `workspaces`, `bindings` and `colorsets` query core-owned state, as described
+* `topology`, `workspaces`, `bindings`, `colorsets`, `appearance`, `menu-styles`
+  and `decorations` query core-owned state, as described
   below. Binding pages also accept their documented continuation fields.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
@@ -260,6 +261,75 @@ restrict existing configuration files. Allocation failure returns
 `allocation_failed` when a reply can still be queued; otherwise the ordinary
 deadline/disconnect policy applies. Wider providers, domain progress/cancellation
 and shared-core preview/recovery remain separate capabilities.
+
+=== Appearance configuration, menu styles and decorations
+
+Three read-only core observations support inspection of shared appearance policy:
+
+----
+request {"version":1,"id":"theme-state","method":"query","resource":"appearance"}
+request {"version":1,"id":"menu-policy","method":"query","resource":"menu-styles","limit":8}
+request {"version":1,"id":"decor-policy","method":"query","resource":"decorations","limit":8}
+----
+
+`appearance` returns `state: "observed"`,
+`scope: "core-appearance-configuration"`, an opaque 48-character `generation`,
+and `coverage`. The generation tracks activity in window-style definition,
+decoration definition, menu-style policy, DefaultFont, and colorset owners.
+It advances conservatively on admitted changes, including commands that fail or
+leave identical values. Colorset allocation, parse, asynchronous settlement and
+publication also advance it. Existing binding and colorset tokens keep their
+independent resource scope. Repeated observations preserve the appearance token.
+
+Style/WindowStyle/FocusStyle and destruction share their existing definition
+owner, including recursive functions. Decoration initialization/destruction,
+title/button/border styles and ButtonState are tracked. MenuStyle parsing,
+copying and removal share menu-policy hooks. This tracks those configuration
+owners, not every visible change on the display. Per-window assignments,
+interactive state, menu contents, image pixels/resources inside decorations,
+client changes and compositor state are not an effective appearance snapshot.
+The response explicitly reports `window_effective_state: false`,
+`rendered_completion: "unknown"`, `conditional_application: false` and
+`preview_supported: false`.
+
+An optional `generation` on `appearance` must match exactly, or the query returns
+`stale_generation`. The scalar resource rejects `scope`, `target`, `offset` and
+`limit`. Observing a matching token does not make a later command conditional:
+a producer or image completion can intervene. Do not use a separate query and
+mutation as a rollback guard. Live preview/recovery remains unavailable until
+owned snapshots, conditional application and recovery are implemented.
+
+`menu-styles` and `decorations` use that same conservative appearance token.
+They return `state: "observed"`, `generation`, `offset`, `next_offset`, and a
+`menu_styles` or `decorations` array. Default offset is 0 and limit is 8; limits
+are 1 through 16. Nonzero offsets require the previous generation. The final
+next offset is null. Restart at offset zero after `stale_generation`;
+`invalid_offset` refuses a position beyond the collection. Continuations beyond
+4096 return `query_too_large`. Traversal and serialization are bounded; records
+and cursors are never retained between requests. Scope/target fields are rejected.
+
+Both page resources describe definition order with the default record first.
+Each entry has a literal `name` and `default` flag. Names/templates are data and
+are not evaluated. `units: "configuration-pixels"` distinguishes configured
+measurements from scaled on-screen geometry; no effective window/menu layout is
+computed. A decoration's unavailable name is null rather than an invented ID.
+
+Menu policy includes submenu `animation`, `opacity_percent` (100 is opaque),
+`border_width`, normalized `popup_delay_10ms` and `popdown_delay_10ms`,
+`automatic_hotkeys`, `submenus_left`, nullable `item_format`, and the menu,
+active, greyed and title `colorsets`. These are registered policy fields;
+actual drawing and assigned menus have separate lifetimes. Decoration entries
+include configured `title_height`, `minimum_title_height`,
+`title_justification` (center/left/right/unknown), and `button_slots`. A zero
+configured height leaves sizing to the existing font/minimum policy. Faces,
+paths, resource handles, callback owners and window assignments are omitted.
+
+No query adds an X round trip or changes definitions. Existing message/result,
+queue, deadline, cancellation and read-only limits apply. Tokens are
+process/resource observations, not authentication or persistent identifiers;
+`generation_unavailable` refuses an unavailable/exhausted revision. A colorset
+or unrelated covered definition change can conservatively invalidate either
+page resource even when its selected entries remain identical.
 
 === Core colorset inspection
 

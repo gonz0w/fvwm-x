@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Appearance policy observations](IPC-APPEARANCE-STATE-2026-10-22.md): configuration freshness, bounded menu/decor pages and preserved copied opacity; safe preview recovery stays gated.
+
 - [Core colorset inspection](IPC-COLORSET-STATE-2026-10-22.md): bounded pages, exact sparse IDs and owner freshness; preview remains gated.
 
 - [Owned desktop operations](IPC-DESKTOP-OPERATIONS-2026-10-22.md): typed refresh admission, state/results, cancellation, finite reconnect retention and coalesced invalidations; one accumulated IPC cycle checkpoint.

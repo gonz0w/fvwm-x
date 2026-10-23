@@ -267,9 +267,96 @@ def run(args):
                 normalized_placement=placed, policy=changed_policy,
                 generation_checked_across_domains=True, literal_query_no_execution=True)
 
+            # Appearance policy is observable without executing stored data.
+            appearance = query('appearance')
+            assert appearance['scope'] == 'core-appearance-configuration'
+            assert not appearance['conditional_application']
+            assert not appearance['preview_supported']
+            assert query('appearance') == appearance
+            def policy_pages(resource, property):
+                generation = query('appearance')['generation']
+                offset, values = 0, []
+                while offset is not None:
+                    page = query(resource, limit=1, offset=offset,
+                        generation=generation)
+                    assert page['generation'] == generation
+                    assert page['units'] == 'configuration-pixels'
+                    values.extend(page[property])
+                    offset = page['next_offset']
+                return values, generation
+            writer.send(b'MenuStyle "Query menu $$[desk.n]" Animation, '
+                b'Translucent 73, BorderWidth 3, PopupDelay 250, '
+                b'PopdownDelay 400, MenuColorset 101, ActiveColorset 102, '
+                b'GreyedColorset 103, TitleColorset 104\n'
+                b'CopyMenuStyle "Query menu $$[desk.n]" QueryCopy\n'
+                b'AddToDecor "Query decor $$[desk.n]" TitleStyle Height 23 LeftJustified\n'
+                b'+ ButtonStyle 1 (Solid black)\n')
+            writer.echo('appearance-definitions-loaded')
+            menu_styles, page_generation = policy_pages('menu-styles', 'menu_styles')
+            indexed = {s['name']: s for s in menu_styles}
+            assert menu_styles[0]['default'] and menu_styles[0]['name'] == '*'
+            menu = indexed['Query menu $[desk.n]']
+            assert menu['animation'] and menu['opacity_percent'] == 73
+            assert menu['border_width'] == 3 and menu['popup_delay_10ms'] == 25
+            assert menu['popdown_delay_10ms'] == 40
+            assert menu['colorsets'] == dict(menu=101, active=102, greyed=103, title=104)
+            evidence['appearance_menu_initial'] = indexed
+            assert indexed['QueryCopy']['opacity_percent'] == 73, indexed['QueryCopy']
+            decors, _ = policy_pages('decorations', 'decorations')
+            decor = next(s for s in decors if s['name'] == 'Query decor $[desk.n]')
+            assert decors[0]['default'] and decor['title_height'] == 23
+            assert decor['title_justification'] == 'left' and decor['button_slots'] == 10
+            stable_colors = query('colorsets', scope='summary')
+            commands = ['Style appearance-probe WindowShadeSteps 7',
+                'FocusStyle appearance-probe ClickToFocus',
+                f'WindowId {observer.window} WindowStyle WindowShadeSteps 8',
+                f'WindowId {observer.window} DestroyWindowStyle',
+                'DestroyStyle appearance-probe',
+                'TitleStyle Centered', 'AddTitleStyle (Solid black)',
+                'ButtonStyle 1 (Solid black)', 'AddButtonStyle 1 (Solid white)',
+                'BorderStyle Active (Solid black)', 'ButtonState ActiveDown True',
+                'DefaultFont fixed', 'MenuStyle QueryCopy !Animation, Translucent 31',
+                'CopyMenuStyle "Query menu $$[desk.n]" QueryCopy',
+                'DestroyMenuStyle QueryCopy',
+                'DestroyDecor "Query decor $$[desk.n]"']
+            changed_commands = []
+            for command in commands:
+                before = query('appearance')['generation']
+                writer.send((command + '\n').encode())
+                writer.echo('appearance-change-' + str(len(changed_commands)))
+                after = query('appearance')['generation']
+                assert before != after, command
+                assert query('appearance', expected=True, generation=before) == 'stale_generation'
+                assert query('menu-styles', expected=True, offset=1,
+                    generation=before) == 'stale_generation'
+                assert query('decorations', expected=True, offset=1,
+                    generation=before) == 'stale_generation'
+                if command.startswith('CopyMenuStyle'):
+                    copies, _ = policy_pages('menu-styles', 'menu_styles')
+                    copied = next(s for s in copies if s['name'] == 'QueryCopy')
+                    assert copied['opacity_percent'] == 73 and copied['animation']
+                changed_commands.append(command)
+            assert query('colorsets', scope='summary') == stable_colors
+            writer.send(b'AddToFunc AppearanceProbe I Style nested-probe WindowShadeSteps 4\n')
+            writer.echo('appearance-function-stored')
+            before = query('appearance')['generation']
+            writer.send(b'AppearanceProbe\n')
+            writer.echo('appearance-function-evaluated')
+            assert query('appearance')['generation'] != before
+            assert query('menu-styles', expected=True, offset=4096,
+                generation=query('appearance')['generation']) == 'invalid_offset'
+            remaining, _ = policy_pages('decorations', 'decorations')
+            assert all(s['name'] != 'Query decor $[desk.n]' for s in remaining)
+            assert not marker.exists()
+            evidence['appearance'] = dict(menu_styles=menu_styles, decorations=decors,
+                changed_commands=changed_commands, nested_function_tracked=True,
+                pages_complete=True, stored_literals_not_executed=True,
+                independent_colorset_generation=True)
+
             # Sparse colorsets are core-owned. Queries cannot create a record.
             caps = query('capabilities')
             assert 'colorsets' in caps['resources'] and caps['colorset_page_max'] == 16
+            before_color_activity = query('appearance')['generation']
             initial_colors = query('colorsets', scope='summary')
             assert not initial_colors['preview_supported']
             assert query('colorsets', expected=True, target='2147483646') == 'unavailable'
@@ -332,6 +419,7 @@ def run(args):
             recovered = query('colorsets', target='21')
             assert recovered['colorsets'][0]['update_state'] == 'idle'
             assert recovered['generation'] != failed['generation']
+            assert query('appearance')['generation'] != before_color_activity
             evidence['colorsets'] = dict(summary=summary, exact=exact,
                 failed=failed, recovered=recovered, x_color_rgb=[rgb.red, rgb.green, rgb.blue],
                 pages_complete=True, missing_read_did_not_allocate=True,

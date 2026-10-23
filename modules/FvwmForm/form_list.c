@@ -6,6 +6,34 @@
 #include <ctype.h>
 #include "form_list.h"
 
+bool form_list_parse_icon(const char *text, enum form_list_icon *icon)
+{
+	static const char *const names[] = {"", "file", "directory", "link", "other"};
+	const char *end;
+	size_t length;
+
+	*icon = FORM_ICON_NONE;
+	while (isspace((unsigned char)*text))
+		text++;
+	end = text;
+	while (*end != '\0' && !isspace((unsigned char)*end))
+		end++;
+	length = end - text;
+	while (isspace((unsigned char)*end))
+		end++;
+	if (*end != '\0')
+		return false;
+	for (int i = FORM_ICON_NONE; i <= FORM_ICON_OTHER; i++)
+	{
+		if (strlen(names[i]) == length && memcmp(names[i], text, length) == 0)
+		{
+			*icon = i;
+			return true;
+		}
+	}
+	return false;
+}
+
 bool form_list_number(const char *text, int maximum, int *value)
 {
 	int n = 0;
@@ -61,32 +89,83 @@ bool form_list_toggle(form_list_state *s, int index)
 	return true;
 }
 
+/* Zero-initialized callers retain the original one-column layout. */
+int form_list_columns(const form_list_state *s)
+{
+	return s->columns > 0 ? s->columns : 1;
+}
+
+int form_list_lines(const form_list_state *s)
+{
+	int columns = form_list_columns(s);
+
+	return (s->count + columns - 1) / columns;
+}
+
 void form_list_scroll(form_list_state *s, int amount)
 {
-	int last = s->count > s->rows ? s->count - s->rows : 0;
+	int columns = form_list_columns(s);
+	int top = s->top / columns;
+	int last = form_list_lines(s) > s->rows ?
+		form_list_lines(s) - s->rows : 0;
 
-	/* Clamp before addition, including adversarial INT_MIN/INT_MAX. */
-	if (amount < -s->top)
-		s->top = 0;
-	else if (amount > last - s->top)
-		s->top = last;
+	/* Scroll in visual rows; clamp before adding even INT_MIN/INT_MAX. */
+	if (amount < -top)
+		top = 0;
+	else if (amount > last - top)
+		top = last;
 	else
-		s->top += amount;
+		top += amount;
+	s->top = top * columns;
 }
 
 void form_list_focus(form_list_state *s, int index)
 {
+	int columns = form_list_columns(s);
+	int row, top = s->top / columns;
+
 	if (s->count == 0)
 	{
-		s->focus = s->top = 0;
+		s->focus = s->anchor = s->top = 0;
 		return;
 	}
 	s->focus = index < 0 ? 0 : index >= s->count ? s->count - 1 : index;
-	if (s->focus < s->top)
-		s->top = s->focus;
-	if (s->focus >= s->top + s->rows)
-		s->top = s->focus - s->rows + 1;
+	s->anchor = s->focus;
+	row = s->focus / columns;
+	if (row < top)
+		top = row;
+	if (row >= top + s->rows)
+		top = row - s->rows + 1;
+	s->top = top * columns;
 	form_list_scroll(s, 0);
+}
+
+/* Shift extends additively from the last ordinary focus position. Selection
+ * and focus publish together; an over-budget range cannot partially change it. */
+bool form_list_extend(form_list_state *s, int index)
+{
+	form_list_state candidate = *s;
+	int first, last;
+
+	if (s->refused || s->count == 0)
+		return false;
+	form_list_focus(&candidate, index);
+	candidate.anchor = s->anchor;
+	first = candidate.focus < s->anchor ? candidate.focus : s->anchor;
+	last = candidate.focus > s->anchor ? candidate.focus : s->anchor;
+	for (int i = first; i <= last; i++)
+	{
+		unsigned char mask = 1u << (i % 8);
+
+		if (candidate.bits[i / 8] & mask)
+			continue;
+		if (candidate.selected == FORM_LIST_SELECTED)
+			return false;
+		candidate.bits[i / 8] |= mask;
+		candidate.selected++;
+	}
+	*s = candidate;
+	return true;
 }
 
 size_t form_list_packet(const form_list_state *s,

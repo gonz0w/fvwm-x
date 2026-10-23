@@ -594,3 +594,5 @@ diagnostic and execution gates remain separate.
 - [File-support cycle](VERIFICATION-2026-10-23-FILE-SUPPORT-CYCLE.md): merged PR164–166 affected six-target checkpoint; exact retained and fresh outcomes.
 
 - [Portable browser requests](VERIFICATION-2026-10-23-FILE-BROWSER-HANDOFF.md): local URI bytes, atomic reveal, initial properties and focused native checks after the completed six-target cycle.
+
+- [Shared collection grid](VERIFICATION-2026-10-23-COLLECTION-GRID.md): Shared collection grid: native type marks, list/grid identity and bounded additive ranges; focused checks and corrected observer pass with retained policy evidence.

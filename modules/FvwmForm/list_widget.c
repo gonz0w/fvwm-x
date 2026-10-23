@@ -7,7 +7,59 @@
 #include "FvwmForm.h"
 #include "libs/flocale_font_types.h"
 
-/* One child window, with draw work bounded by the configured viewport. */
+/* Native monochrome type marks scale with the item's font. They introduce
+ * no paths, decoders, per-entry pixmaps or extra X resources. */
+static void list_icon(Item *item, enum form_list_icon icon, int x, int y,
+	int size)
+{
+	GC gc = item->header.dt_ptr->dt_item_GC;
+	Window win = item->header.win;
+
+	if (icon == FORM_ICON_DIRECTORY)
+	{
+		XDrawRectangle(dpy, win, gc, x, y + size / 4,
+			size, 3 * size / 4);
+		XDrawRectangle(dpy, win, gc, x, y, size / 2, size / 4);
+	}
+	else if (icon == FORM_ICON_LINK)
+	{
+		XDrawLine(dpy, win, gc, x, y + size, x + size, y);
+		XDrawLine(dpy, win, gc, x + size / 3, y, x + size, y);
+		XDrawLine(dpy, win, gc, x + size, y, x + size, y + 2 * size / 3);
+	}
+	else if (icon == FORM_ICON_FILE)
+	{
+		XDrawRectangle(dpy, win, gc, x + size / 8, y,
+			3 * size / 4, size);
+		XDrawLine(dpy, win, gc, x + size / 3, y + size / 3,
+			x + 2 * size / 3, y + size / 3);
+		XDrawLine(dpy, win, gc, x + size / 3, y + 2 * size / 3,
+			x + 2 * size / 3, y + 2 * size / 3);
+	}
+	else
+	{
+		XDrawArc(dpy, win, gc, x, y, size, size, 0, 360 * 64);
+	}
+}
+
+static void list_thumb(Item *item, int *top, int *height)
+{
+	form_list_state *s = item->list.state;
+	int track = item->header.size_y - 2 * BOX_SPC;
+	int lines = form_list_lines(s);
+
+	*top = BOX_SPC;
+	*height = track;
+	if (lines <= s->rows)
+		return;
+	*height = track * s->rows / lines;
+	if (*height < 4)
+		*height = 4;
+	*top += (track - *height) * (s->top / form_list_columns(s)) /
+		(lines - s->rows);
+}
+
+/* One child window; work is bounded by at most 32 rows x 8 columns. */
 void form_list_draw(Item *item)
 {
 	DrawTable *dt = item->header.dt_ptr;
@@ -15,56 +67,77 @@ void form_list_draw(Item *item)
 	FlocaleWinString *str = dt->dt_Fstr;
 	int height = item->list.row_height;
 	int width = item->header.size_x;
-	XRectangle clip = {BOX_SPC, BOX_SPC, width - 20,
-		item->header.size_y - 2 * BOX_SPC};
-	Region region = XCreateRegion();
+	int columns = form_list_columns(s);
+	int cell_width = (width - 2 * BOX_SPC - 16) / columns;
 
 	XClearWindow(dpy, item->header.win);
-	XUnionRectWithRegion(&clip, region, region);
-	str->flags.has_clip_region = True;
-	str->clip_region = region;
 	str->flags.has_colorset = False;
 	str->win = item->header.win;
 	str->gc = dt->dt_item_GC;
-	for (int row = 0; row < s->rows && s->top + row < s->count; row++)
+	for (int cell = 0; cell < s->rows * columns &&
+	    s->top + cell < s->count; cell++)
 	{
-		int index = s->top + row;
-		int y = BOX_SPC + row * height;
+		int index = s->top + cell;
+		int x = BOX_SPC + (cell % columns) * cell_width;
+		int y = BOX_SPC + (cell / columns) * height;
 		bool selected = s->bits[index / 8] & (1u << (index % 8));
+		form_list_entry *entry = &item->list.entries[index];
+		XRectangle clip = {x, y, cell_width, height};
+		Region region = XCreateRegion();
+		int icon_size = dt->dt_Ffont->height;
 
+		XUnionRectWithRegion(&clip, region, region);
+		str->flags.has_clip_region = True;
+		str->clip_region = region;
 		XSetForeground(dpy, dt->dt_item_GC,
 			dt->dt_colors[selected ? c_item_fg : c_item_bg]);
 		XFillRectangle(dpy, item->header.win, dt->dt_item_GC,
-			BOX_SPC, y, width - 20, height);
+			x, y, cell_width, height);
 		XSetForeground(dpy, dt->dt_item_GC,
 			dt->dt_colors[selected ? c_item_bg : c_item_fg]);
-		str->str = item->list.labels[index];
+		str->str = entry->label;
 		str->len = strlen(str->str);
-		str->x = BOX_SPC + TEXT_SPC;
+		str->x = x + TEXT_SPC;
 		str->y = y + TEXT_SPC + dt->dt_Ffont->ascent;
+		if (columns > 1)
+		{
+			icon_size *= 2;
+			if (icon_size < 8)
+				icon_size = 8;
+			if (icon_size > cell_width - 2 * TEXT_SPC)
+				icon_size = cell_width - 2 * TEXT_SPC;
+			XSetRegion(dpy, dt->dt_item_GC, region);
+			list_icon(item, entry->icon,
+				x + (cell_width - icon_size) / 2,
+				y + TEXT_SPC, icon_size);
+			XSetClipMask(dpy, dt->dt_item_GC, None);
+			str->y = y + 2 * TEXT_SPC + icon_size +
+				dt->dt_Ffont->ascent;
+		}
+		else if (entry->icon != FORM_ICON_NONE)
+		{
+			list_icon(item, entry->icon, x + TEXT_SPC,
+				y + TEXT_SPC, icon_size);
+			str->x += icon_size + TEXT_SPC;
+		}
 		FlocaleDrawString(dpy, dt->dt_Ffont, str, FWS_HAVE_LENGTH);
 		if (CF.cur_list == item && index == s->focus)
 			XDrawRectangle(dpy, item->header.win, dt->dt_item_GC,
-				BOX_SPC, y, width - 21, height - 1);
+				x, y, cell_width - 1, height - 1);
+		str->flags.has_clip_region = False;
+		XDestroyRegion(region);
 	}
 	str->str = NULL;
-	str->flags.has_clip_region = False;
-	XDestroyRegion(region);
 	XSetForeground(dpy, dt->dt_item_GC, dt->dt_colors[c_item_fg]);
 	XDrawRectangle(dpy, item->header.win, dt->dt_item_GC,
 		0, 0, width - 1, item->header.size_y - 1);
-	/* A proportional track also accepts page clicks above/below its thumb. */
-	if (s->count > s->rows)
+	if (form_list_lines(s) > s->rows)
 	{
-		int track = item->header.size_y - 2 * BOX_SPC;
-		int thumb = track * s->rows / s->count;
-		int y;
+		int top, thumb;
 
-		if (thumb < 4)
-			thumb = 4;
-		y = BOX_SPC + (track - thumb) * s->top / (s->count - s->rows);
+		list_thumb(item, &top, &thumb);
 		XFillRectangle(dpy, item->header.win, dt->dt_item_GC,
-			width - 14, y, 10, thumb);
+			width - 14, top, 10, thumb);
 	}
 }
 
@@ -85,6 +158,7 @@ Bool form_list_key(KeySym key, unsigned int modifiers)
 {
 	Item *list = CF.cur_list;
 	form_list_state *s;
+	int target, columns;
 	bool has_list = false;
 
 	/* Keep the established input/history ring untouched in legacy forms. */
@@ -122,32 +196,49 @@ Bool form_list_key(KeySym key, unsigned int modifiers)
 	if (list == NULL)
 		return False;
 	s = list->list.state;
+	columns = form_list_columns(s);
+	target = s->focus;
 	switch (key)
 	{
 	case XK_Up:
-		form_list_focus(s, s->focus - 1);
+		target -= columns;
 		break;
 	case XK_Down:
-		form_list_focus(s, s->focus + 1);
+		target += columns;
+		break;
+	case XK_Left:
+		if (columns == 1)
+			return False;
+		target--;
+		break;
+	case XK_Right:
+		if (columns == 1)
+			return False;
+		target++;
 		break;
 	case XK_Home:
-		form_list_focus(s, 0);
+		target = 0;
 		break;
 	case XK_End:
-		form_list_focus(s, s->count - 1);
+		target = s->count - 1;
 		break;
 	case XK_Page_Up:
-		form_list_focus(s, s->focus - s->rows);
+		target -= s->rows * columns;
 		break;
 	case XK_Page_Down:
-		form_list_focus(s, s->focus + s->rows);
+		target += s->rows * columns;
 		break;
 	case XK_space:
 		form_list_toggle(s, s->focus);
-		break;
+		RedrawItem(list, 0, NULL);
+		return True;
 	default:
-		return False; /* F keys/Escape retain native button shortcuts. */
+		return False;
 	}
+	if (modifiers & ShiftMask)
+		form_list_extend(s, target);
+	else
+		form_list_focus(s, target);
 	RedrawItem(list, 0, NULL);
 	return True;
 }
@@ -155,32 +246,37 @@ Bool form_list_key(KeySym key, unsigned int modifiers)
 void form_list_click(Item *item, XButtonEvent *event)
 {
 	form_list_state *s = item->list.state;
-	int row = (event->y - BOX_SPC) / item->list.row_height + s->top;
+	int columns = form_list_columns(s);
+	int cell_width = (item->header.size_x - 2 * BOX_SPC - 16) / columns;
+	int row = (event->y - BOX_SPC) / item->list.row_height;
+	int column = (event->x - BOX_SPC) / cell_width;
+	int index = s->top + row * columns + column;
 
 	if (event->button == Button4 || event->button == Button5)
 		form_list_scroll(s, event->button == Button4 ? -3 : 3);
 	else if (event->button == Button1)
 	{
 		list_focus_item(item);
-		if (event->x >= item->header.size_x - 18 && s->count > s->rows)
+		if (event->x >= item->header.size_x - 18)
 		{
-			int track = item->header.size_y - 2 * BOX_SPC;
-			int thumb = track * s->rows / s->count;
-			int top;
+			int top, thumb;
 
-			if (thumb < 4)
-				thumb = 4;
-			top = BOX_SPC + (track - thumb) * s->top /
-				(s->count - s->rows);
+			list_thumb(item, &top, &thumb);
 			if (event->y < top)
 				form_list_scroll(s, -s->rows);
 			else if (event->y >= top + thumb)
 				form_list_scroll(s, s->rows);
 		}
-		else if (event->y >= BOX_SPC && row < s->count)
+		else if (event->y >= BOX_SPC && event->x >= BOX_SPC &&
+		    row < s->rows && column < columns && index < s->count)
 		{
-			form_list_focus(s, row);
-			form_list_toggle(s, row);
+			if (event->state & ShiftMask)
+				form_list_extend(s, index);
+			else
+			{
+				form_list_focus(s, index);
+				form_list_toggle(s, index);
+			}
 		}
 	}
 	RedrawItem(item, 0, NULL);

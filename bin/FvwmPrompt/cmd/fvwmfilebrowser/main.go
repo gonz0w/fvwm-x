@@ -34,6 +34,7 @@ const workerLimit = 10 * time.Second
 
 type options struct {
 	socket, dir, opener, terminal string
+	view                          string
 	hidden, inspect               bool
 	targets                       [][]byte
 	properties                    bool
@@ -65,7 +66,15 @@ type browser struct {
 	results                    chan completedWork
 	status                     string
 	order, inspected           string
+	view                       string
 	reverse                    bool
+}
+
+func (b *browser) viewing() string {
+	if b.view == "grid" {
+		return "grid"
+	}
+	return "list"
 }
 
 func (b *browser) ordering() string {
@@ -151,16 +160,26 @@ func (b *browser) show() error {
 		direction = "descending"
 	}
 	button(direction, "", "reverse", "-")
+	button("View: "+b.viewing()+" (F7)", "F7", "view", "-")
 	line("Line left")
-	line("List picks 84 12")
+	if b.viewing() == "grid" {
+		line("List picks 84 4")
+		line("ListGrid 4")
+	} else {
+		line("List picks 84 12")
+	}
 	entries := b.model.VisibleEntries()
 	for _, item := range entries {
 		selected := "off"
 		if b.model.Selected[item.ID] {
 			selected = "on"
 		}
-		line(fmt.Sprintf("ListItem %s \"%s: %s\"", selected,
-			item.Kind, displayText(item.Label, 90)))
+		icon := map[string]string{"directory": "directory", "file": "file", "symlink": "link"}[item.Kind]
+		if icon == "" {
+			icon = "other"
+		}
+		line(fmt.Sprintf("ListItem %s \"%s\" %s", selected,
+			displayText(item.Label, 90), icon))
 	}
 	for index, entry := range entries {
 		if entry.ID == b.model.Focus {
@@ -201,7 +220,7 @@ func (b *browser) show() error {
 	button("Cancel work", "", "cancel", "-")
 	button("Close (Esc)", "^[", "close", "-")
 	line(`Line left`)
-	line(`Text "Arrows, Home/End, PgUp/PgDn or wheel scroll; Space selects; Tab moves fields. Idle close: 5 minutes."`)
+	line(`Text "Arrows/PgUp/PgDn or wheel; Shift extends selection; Space toggles; Tab moves fields. Idle close: 5 minutes."`)
 	line("Timeout 3000 \"Echo FVWM_FILES_2 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x\" \"\"")
 	commands = append(commands, "Module FvwmForm "+alias)
 	deadline := time.NewTimer(workerLimit)
@@ -378,6 +397,12 @@ func (b *browser) action(message string) (bool, error) {
 		if err == nil {
 			err = b.model.SetFilter(string(value))
 		}
+	case "view":
+		if b.viewing() == "list" {
+			b.view = "grid"
+		} else {
+			b.view = "list"
+		}
 	case "sort", "reverse":
 		key, reverse := b.ordering(), !b.reverse
 		if parts[3] == "sort" {
@@ -508,7 +533,7 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, hidden: o.hidden, acks: make(chan string, 1), results: make(chan completedWork, 1)}
+		opener: o.opener, terminal: o.terminal, view: o.view, hidden: o.hidden, acks: make(chan string, 1), results: make(chan completedWork, 1)}
 	defer func() {
 		if b.cancel != nil {
 			b.cancel()
@@ -607,6 +632,7 @@ func main() {
 	var reveal, properties targetFlags
 	flag.Var(&reveal, "reveal", "select a literal local target in its parent; repeat for one folder")
 	flag.Var(&properties, "properties", "show one local target in its parent with observed properties")
+	flag.StringVar(&o.view, "view", "list", "initial collection view: list or grid")
 	flag.StringVar(&o.socket, "socket", "", "FvwmMFL socket (default: standard private discovery)")
 	flag.StringVar(&o.opener, "opener", "", "literal opener executable; default: xdg-open when available")
 	flag.StringVar(&o.terminal, "terminal", "", "literal terminal executable; default: x-terminal-emulator or xterm")

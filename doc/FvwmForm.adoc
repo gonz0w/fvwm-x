@@ -400,14 +400,30 @@ Meta(Mod1)-">" retrieves the next value of an input field.
 +
 Tab/Shift-Tab traverse inputs and lists in definition order. Arrows, Home/End
 and Page Up/Page Down move list focus; Space and left click toggle selection.
+Shift-navigation or Shift-click adds the inclusive range from the last ordinary
+focus position. An extension exceeding 256 selected rows is refused atomically,
+including its focus change. Clear selection through the consumer to start again.
 Wheel buttons scroll three rows without changing focus. Track clicks above or
 below the thumb scroll one viewport. Function keys retain button shortcuts.
 Restart restores configured selections/focus. These rules apply to forms with
 List; existing forms retain their input/history traversal.
 
-**FvwmForm: ListItem on | off ``_string_``*::
+**FvwmForm: ListGrid ``_columns_``*::
+  Immediately after List and before any ListItem, choose a grid with 2..8
+  columns. List's rows now count visual grid rows. Each column needs at least
+  64 actual pixels; checked geometry must fit X coordinates. Left/Right move
+  one entry; Up/Down move one visual row; Page Up/Down move one viewport.
+  Incomplete final rows contain no selectable blank cells. ListFocus and the
+  encoded bitmap continue to use entry indices, independent of presentation.
+  Invalid layout refuses the list result. Omit this directive for the list.
+
+**FvwmForm: ListItem on | off ``_string_`` [file | directory | link | other]*::
   Append one quoted presentation label (at most 1024 source bytes including
-  quotes) to the preceding List. Labels have no action/path identity. Use only
+  quotes) to the preceding List. The optional literal type chooses a native
+  monochrome mark scaled from ButtonFont. Grid cells without a type use a
+  generic mark. These marks load no files or thumbnails. Labels are clipped to
+  their cell; use the consumer's properties view for a long name.
+  Labels have no action/path identity. Use only
   nonsensitive metadata: ordinary command and Echo channels are public to the
   user's other modules.
 

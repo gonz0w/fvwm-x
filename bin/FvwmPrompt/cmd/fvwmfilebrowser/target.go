@@ -25,6 +25,9 @@ func (t *targetFlags) Set(value string) error {
 // Startup validation performs no filesystem calls. All target resolution is
 // owned by the same bounded cancellable worker used for ordinary navigation.
 func prepareOptions(o *options, dirSet bool, reveal, properties targetFlags) error {
+	if o.view != "" && o.view != "list" && o.view != "grid" {
+		return errors.New("view must be list or grid")
+	}
 	if (len(reveal) != 0 && len(properties) != 0) ||
 		(dirSet && len(reveal)+len(properties) != 0) || len(properties) > 1 {
 		return errors.New("use --dir, repeated --reveal, or one --properties target")

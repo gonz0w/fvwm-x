@@ -10,12 +10,13 @@ fvwm-file-browser - bounded native folder-browser foundations
 == SYNOPSIS
 
 *fvwm-file-browser* [*--dir* _local-target_] [*--hidden*]
-[*--socket* _path_] [*--opener* _executable_] [*--terminal* _executable_]
+[*--view* list|grid] [*--socket* _path_] [*--opener* _executable_] [*--terminal* _executable_]
 
 *fvwm-file-browser* *--reveal* _local-target_ [*--reveal* _local-target_ ...]
-[*--socket* _path_] [*--hidden*]
+[*--view* list|grid] [*--socket* _path_] [*--hidden*]
 
-*fvwm-file-browser* *--properties* _local-target_ [*--socket* _path_] [*--hidden*]
+*fvwm-file-browser* *--properties* _local-target_ [*--view* list|grid]
+[*--socket* _path_] [*--hidden*]
 
 *fvwm-file-browser* *--inspect* [*--dir* _local-target_] [*--hidden*]
 
@@ -23,8 +24,10 @@ fvwm-file-browser - bounded native folder-browser foundations
 
 This optional Go helper presents local folders with existing FvwmForm controls
 and the current FvwmMFL connection. Start Module FvwmMFL first. No GUI toolkit,
-compositor, D-Bus service or background daemon is required. The native list scrolls locally through up to 4096 entries with a twelve-row
-viewport; only visible rows are drawn. An icon grid is future work. Existing
+compositor, D-Bus service or background daemon is required. List and icon-grid
+presentations scroll locally through up to 4096 entries. The list has twelve
+visible rows; the grid has four rows of four cells. Only visible entries are
+drawn in one native window. Existing
 folder menus and user configurations stay usable.
 
 The shared collection model separates stable item IDs from labels, preserves
@@ -46,8 +49,11 @@ budget; there is no silent truncation before sorting.
 
 == CONTROLS
 
-Tab and Shift-Tab move among the filter, list and path fields. In the list,
-Up/Down, Home/End and Page Up/Page Down move focus and reveal that row. Space
+Tab and Shift-Tab move among the filter, collection and path fields. In the list,
+Up/Down, Home/End and Page Up/Page Down move focus and reveal that entry.
+Grid Left/Right move one entry; Up/Down move four entries. Shift-navigation
+or Shift-click adds the inclusive range from the last ordinary focus position.
+An over-limit range leaves focus and selection unchanged. Space
 toggles its selection; clicking a row also toggles it. Wheel scrolling changes
 the viewport without changing focus or selection. Clicking the track above or
 below its thumb scrolls one viewport. Open focused (Enter) acts on the focused
@@ -56,6 +62,14 @@ item. Directories load in the same browser. Files start the configured opener
 with one literal absolute-path argument; no shell evaluates a filename.
 Application started means process creation succeeded, not that the application
 opened a window or finished.
+
+View (F7) switches list/grid without changing the model, focused ID or selected
+IDs. `--view list|grid` chooses the initial presentation (default list); the
+choice lasts for this browser instance and is not saved. Native type marks
+identify directories, regular files, links and other entries; they are not
+thumbnails or externally loaded themed icons. Labels are clipped within grid
+cells; Properties exposes the observed name. Blank cells in the final row have
+no target.
 
 Home, Up and Back navigate; Back retains at most 32 successful locations. Path
 and Go accept an absolute path or a path relative to the current folder.
@@ -140,6 +154,10 @@ or general structured MFL files provider.
   Initial folder, default the user's home directory. Paths are at most 4096
   bytes. Folder ordering is directories first, then raw filename byte order.
 
+*--view* list|grid::
+  Initial native presentation. Default list. F7 switches it without changing
+  item IDs, focus or selection. The choice is not persisted.
+
 *--hidden*::
   Include dot entries. Default off; an explicitly revealed dot entry enables it.
 
@@ -212,7 +230,7 @@ rendered projection. Paths use the existing encoded input field. Configuration
 uploads are paced in batches of at most 32 commands with core acknowledgements
 and a ten-second total acknowledgement deadline. These are stale-control guards, not
 same-user or X11 authorization. No general IPC files provider is advertised by
-this first consumer. Broader structured providers, icon-grid view and the
+this first consumer. Broader structured providers, incremental updates and the
 complete file-browser handoff remain with FILE-VIEW/DATA/ACTION-01.
 
 No preferences or directory history are written to disk. Raw metadata remains

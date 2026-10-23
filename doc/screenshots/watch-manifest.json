@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "capture_date": "2026-10-23",
+  "base_commit": "be13d246442c0a324f84c6747be268aaa1c3dee1",
+  "source_archive_sha256": "d34b15796111bfc4188f6d08d9b382970fe9d0bfdbbf9fdc1a7cee36a0b75654",
+  "capture_archive_sha256": "ad4b86555f3eb24064c75c32ce318731d1c6b24cc704ceacd5b372a06868e3e3",
+  "target": "Linux ARM64 (emulated guest), Xvfb native-X integration",
+  "geometry": [
+    1440,
+    1000
+  ],
+  "ui_scale": 1,
+  "pixel_edits": false,
+  "synthetic_files": true,
+  "verification_report": "../../dev-docs/verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md",
+  "files": [
+    {
+      "path": "browser-watch-slate.png",
+      "profile": "slate-dark",
+      "capture_member": "slate-dark/file-browser-watch-refresh.png",
+      "bytes": 92753,
+      "sha256": "e7924de99e74f82cfca60636715abaabc768131dd0b40e6b5c4a476118519d5b"
+    },
+    {
+      "path": "browser-watch-dune-fallback.png",
+      "profile": "dune-light",
+      "capture_member": "dune-light/file-browser-watch-fallback.png",
+      "bytes": 93006,
+      "sha256": "8bfe07089377a6713178f578046195840dab40fe5a178b85e2e0e2cff550e148"
+    }
+  ]
+}

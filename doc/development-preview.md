@@ -21,6 +21,14 @@ filtering, sorting and status/property updates preserve the native window,
 unsubmitted input drafts and surviving selection. Changing folders or switching
 list/grid layout can rebuild the view and reset drafts.
 
+Newer development adds opt-in directory watching (`--watch auto`, or F8), with
+coalesced native invalidations, periodic reconciliation and explicit manual
+fallback. F5 remains available; Cancel work disables watching. The first four
+captures below retain their PR173 source identity and predate that watch
+status/control; the watching examples show the newer checkpoint.
+See the [browser manual](fvwm-file-browser.adoc#directory-watching) for current
+platform and consistency limits.
+
 Limits include 4096 loaded entries and 256 selected entries. Larger folders are
 refused as a whole. Properties describe the last admitted metadata snapshot;
 they do not read file contents or calculate recursive folder sizes. The prototype
@@ -70,6 +78,25 @@ That does not qualify every theme, scale, accessibility interface or physical
 display. The [theme contract](../dev-docs/THEME-STANDARDS.md#primitive-theme-compatibility-smoke-set)
 and [verification report](../dev-docs/verification/VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md)
 record the scope and remaining gates.
+
+## Opt-in watching: native refresh and manual fallback
+
+The newer watch checkpoint updates the same window after a synthetic file is
+added. Selection, the observed-properties panel and the unrelated Path draft
+remain intact. F8 toggles watching; F5 remains an explicit refresh.
+
+![Slate dark file browser automatically refreshed after a directory event, retaining selection and the Path draft](screenshots/browser-watch-slate.png)
+
+Renaming the observed directory stops watching and reports manual fallback.
+The previous snapshot stays visible. A successful F5 refresh can re-arm an
+enabled watch; the browser does not follow a replacement directory automatically.
+
+![Dune light file browser reporting lost directory watching and the manual recovery controls](screenshots/browser-watch-dune-fallback.png)
+
+These two unmodified captures come from the source-bound
+[directory-watch checkpoint](../dev-docs/verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md).
+Their [separate manifest](screenshots/watch-manifest.json) records the newer
+source/archive identity. The classic configuration passes the same cases.
 
 ## Try the optional browser
 
@@ -121,17 +148,18 @@ interface; this is not a copy/move/delete job API.
 ## Still in development
 
 The existing desktop Files menu remains the default; this prototype does not
-register a system folder handler. General file-provider IPC, automatic watching,
+register a system folder handler. General file-provider IPC,
 file mutation jobs, thumbnails and complete consumer/install/platform acceptance
 remain open. Protected clipboard content, private delivery, retention and storage
 also remain separate work. Reusable metadata/selection primitives do not provide
 clipboard payload protection. Wider theme, assistive technology, hardware and
 release checks retain their own gates.
 
-All four unmodified PNGs come from the 2026-10-23 Linux ARM64 native-X theme run
+The first four unmodified PNGs come from the PR173 Linux ARM64 native-X theme run
 at 1440×1000 and UI scale 1. They reuse the existing source-bound checkpoint,
 without another runtime or matrix run. The [image manifest](screenshots/manifest.json)
 records hashes, profiles, source identity and the canonical capture archive.
+All six images were captured on 2026-10-23 at the same geometry/scale.
 These are selected functionality examples, not performance measurements or
 finished artwork. [Periodic comparisons](../dev-docs/verification/PERFORMANCE-2026-10-23-PR169.md)
 track regressions separately.

@@ -1,5 +1,6 @@
 # Proposals and decisions
 
+- [Bounded directory watching](BROWSER-DIRECTORY-WATCH-2026-10-23.md): isolated native invalidations, coalesced reconciliation, finite observer leases and explicit manual fallback.
 - [Browser live-update adoption](BROWSER-LIVE-ADOPTION-2026-10-23.md): direct bounded native transactions, current-input reconciliation, fixed status/properties labels and replay-safe callbacks.
 
 - [Native live collection updates](LIVE-COLLECTION-UPDATES-2026-10-23.md): bounded atomic snapshot staging, live identity/state recovery and generation/native-status ownership, with legacy callbacks preserved.

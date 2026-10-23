@@ -35,6 +35,7 @@ const workerLimit = 10 * time.Second
 type options struct {
 	socket, dir, opener, terminal string
 	view                          string
+	watch                         string
 	hidden, inspect               bool
 	targets                       [][]byte
 	properties                    bool
@@ -78,6 +79,7 @@ type browser struct {
 	renderSerial, lastControl  uint64
 	replaceSelection           bool
 	renderDeadline             time.Time
+	watch                      *directoryWatch
 }
 
 func (b *browser) viewing() string {
@@ -229,6 +231,9 @@ func (b *browser) completed(event completedWork) error {
 				}
 			}
 			b.status = status
+			if b.watch != nil {
+				b.watch.desire(snapshot, event.work.navigation != "watch")
+			}
 		} else if result.Status == "started" {
 			b.status = "Application started; the browser cannot confirm that the file opened"
 			if event.work.request.Operation == "custom" {
@@ -236,6 +241,9 @@ func (b *browser) completed(event completedWork) error {
 			}
 		} else {
 			b.status = result.Error
+			if b.watch != nil && event.work.navigation == "watch" {
+				b.watch.fail("Automatic refresh failed")
+			}
 		}
 	}
 	if b.pending != nil {
@@ -376,6 +384,12 @@ func (b *browser) action(message string) (bool, error) {
 			b.hidden = !b.hidden
 		}
 		err = b.navigate(path, "refresh")
+	case "watch":
+		if b.watch == nil {
+			b.watch = &directoryWatch{events: make(chan watchEvent, 1)}
+		}
+		b.watch.enabled = !b.watch.enabled
+		b.watch.desire(b.snapshot, true)
 	case "selected", "activate", "terminal", "focused":
 		operation, id, program := "activate", parts[4], b.opener
 		if parts[3] == "focused" {
@@ -402,6 +416,10 @@ func (b *browser) action(message string) (bool, error) {
 			b.cancel()
 		}
 		b.status = "Cancellation requested; waiting for current work to stop"
+		if b.watch != nil {
+			b.watch.enabled = false
+			b.watch.desire(nil, false)
+		}
 	default:
 		err = errors.New("unsupported browser action")
 	}
@@ -444,9 +462,13 @@ func run(o options) error {
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
 		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), results: make(chan completedWork, 1)}
+	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
 		if b.cancel != nil {
 			b.cancel()
+		}
+		if b.watch.cancel != nil {
+			b.watch.cancel()
 		}
 		session.Send("KillModule FvwmForm " + b.alias)
 		session.Send("DestroyModuleConfig " + b.alias + ":*")
@@ -491,6 +513,8 @@ func run(o options) error {
 	defer stop()
 	idle := time.NewTimer(idleLimit)
 	defer idle.Stop()
+	watchTick := time.NewTicker(100 * time.Millisecond)
+	defer watchTick.Stop()
 	navigation := "push"
 	if o.properties {
 		navigation = "properties"
@@ -512,6 +536,25 @@ func run(o options) error {
 		case event := <-b.results:
 			if err := b.completed(event); err != nil {
 				return err
+			}
+		case event := <-b.watch.events:
+			if b.watch.event(event, time.Now()) {
+				if err := b.show(); err != nil {
+					return err
+				}
+			}
+		case now := <-watchTick.C:
+			changed := b.watch.tick(now, b.executable)
+			if request := b.watch.takeRefresh(now, b.active || b.pending != nil); request != nil {
+				if err := b.navigate(string(request.Path), "watch"); err != nil {
+					b.watch.fail("Automatic refresh refused")
+				}
+				changed = true
+			}
+			if changed {
+				if err := b.show(); err != nil {
+					return err
+				}
 			}
 		case message := <-events:
 			close, err := b.action(message)
@@ -536,6 +579,13 @@ func run(o options) error {
 }
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--watch-worker" {
+		if err := runWatchWorker(os.Stdin, os.Stdout, watchLease); err != nil {
+			fmt.Fprintln(os.Stderr, "fvwm-file-browser: invalid watch request")
+			os.Exit(1)
+		}
+		return
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--worker" {
 		if err := runWorker(os.Stdin, os.Stdout); err != nil {
 			fmt.Fprintln(os.Stderr, "fvwm-file-browser: invalid worker request")
@@ -551,6 +601,7 @@ func main() {
 	flag.Var(&reveal, "reveal", "select a literal local target in its parent; repeat for one folder")
 	flag.Var(&properties, "properties", "show observed properties for local targets in one parent; repeat")
 	flag.StringVar(&o.view, "view", "list", "initial collection view: list or grid")
+	flag.StringVar(&o.watch, "watch", "off", "directory watching: off or auto (native with periodic reconciliation)")
 	flag.StringVar(&o.socket, "socket", "", "FvwmMFL socket (default: standard private discovery)")
 	flag.StringVar(&o.opener, "opener", "", "literal opener executable; default: xdg-open when available")
 	flag.StringVar(&o.terminal, "terminal", "", "literal terminal executable; default: x-terminal-emulator or xterm")

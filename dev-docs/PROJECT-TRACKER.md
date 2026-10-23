@@ -49,8 +49,8 @@ unique native-X drivers including three themes. Two AMD64 unit report-publicatio
 races are corrected in the fixture; passing product/native work is retained.
 [Integrated report](verification/VERIFICATION-2026-10-23-LIVE-COLLECTION-CYCLE.md).
 PR172 `a5c27ff1ee140c99d91abbb1edb04bf281a6d0e4` is the new integrated
-reference: cycle **0/3**. Browser live-update adoption passes focused checks
-and is ready for review; **1/3 on merge**.
+reference: cycle **1/3** after merged PR173. Directory watching is the next
+focused batch; **2/3 on its merge**.
 Full install/default-X/compiler-feature and owner/milestone/release acceptance
 remain at their required boundary. Native-CPU/hardware/toolkit/compositor/
 assistive checks remain separate.
@@ -58,7 +58,7 @@ assistive checks remain separate.
 The due periodic comparison is complete. Core/MFL binaries are exact PR164
 identities; consumer/Form feature-size observations remain explicit and no new
 speedup is claimed. PR169 is the new independent performance reference:
-**3/5 merged after PR170–172; 4/5 on the browser-adoption merge**. Tuning stays deferred.
+**4/5 merged after PR170–173; 5/5 on the directory-watching merge**. Tuning stays deferred.
 [Performance and size report](verification/PERFORMANCE-2026-10-23-PR169.md).
 
 Representative theme smoke checks **pass** on reused Linux native-X binaries:
@@ -70,7 +70,9 @@ The refresh and selection-action checkpoints pass all three; the latest run
 exercises four configured action buttons, multi-selection properties and literal
 process handoff. Browser live refresh/filter/sort now retains input/selection
 and the same X windows; fixed status/properties labels, 4096-entry live reorder
-and short timeout renewal/expiry pass, with 24 screenshots per profile.
+and short timeout renewal/expiry pass. The directory-watch checkpoint now adds
+automatic refresh, loss/manual recovery and F8 controls, with 27 screenshots per
+profile. [Watch report](verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md).
 Wider theme/scale/accessibility acceptance remains separate; these runs do not
 multiply every compiler/install/platform leg by all themes.
 [Public development screenshots and runnable configuration examples](../doc/development-preview.md)
@@ -82,7 +84,8 @@ or release gates, or advance either verification counter.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Browser live-update adoption, FILE-VIEW/ACTION-01 | Ready for review; focused Linux and early FreeBSD checks pass | Live refresh/filter/sort/status/properties, hidden/late selection reconciliation, direct native-acknowledged batches and replay-safe callbacks preserve windows/drafts. Native timeout renewal retains bounded orphan cleanup. Final 17 native entries, five Go packages/53 cases on both targets plus Linux race (159 executions), five native-X drivers and three themes/24 screenshots each pass. The PR170–172 six-target cycle closes first. Cycle 0/3 and performance 3/5; on merge 1/3 and 4/5. [Report](verification/VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md), [contract](decisions/BROWSER-LIVE-ADOPTION-2026-10-23.md). |
+| Native directory watching, FILE-DATA/VIEW-01 | Ready for review; focused Linux/FreeBSD/OpenBSD 8.0 ARM64 checks pass | Isolated inotify/kqueue observer, coalesced/periodic reconciliation, F8 toggle, explicit manual fallback and F5 recovery. Five Go packages pass 62/61/61 cases plus Linux race 62 (246 composed executions); four native-X drivers and three themes/27 screenshots each pass. A retired-instance observer correction repeats only UI, and a storage repair repeats only the Meson helper/manual target. Native C identities are retained. Cycle 1/3, 2/3 on merge; performance 4/5, comparison due after merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md), [contract](decisions/BROWSER-DIRECTORY-WATCH-2026-10-23.md). |
+| Browser live-update adoption, FILE-VIEW/ACTION-01 | Merged in [PR #173](https://github.com/gonz0w/fvwm-x/pull/173); focused Linux and early FreeBSD checks pass | Live refresh/filter/sort/status/properties, hidden/late selection reconciliation, direct native-acknowledged batches and replay-safe callbacks preserve windows/drafts. Native timeout renewal retains bounded orphan cleanup. Final 17 native entries, five Go packages/53 cases on both targets plus Linux race (159 executions), five native-X drivers and three themes/24 screenshots each pass. The PR170–172 six-target cycle closes first. Cycle 1/3 and performance 4/5 after merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md), [contract](decisions/BROWSER-LIVE-ADOPTION-2026-10-23.md). |
 | Native live collection updates, FILE-VIEW-01 | Merged in [PR #172](https://github.com/gonz0w/fvwm-x/pull/172); accumulated integration qualified | Atomic bounded snapshots, current-input identity remapping, generation callbacks and native status/abort/replay ownership. Seven selected entries pass on each target, three Linux scoped sanitizer entries and five composed actual-X drivers pass; three themes/20 screenshots each. Go/core/MFL qualification is retained. The accumulated PR170–172 checkpoint is closed before browser adoption. PR172 is the integrated reference; performance remains PR169 at 3/5. [Report](verification/VERIFICATION-2026-10-23-LIVE-COLLECTION-UPDATES.md), [contract](decisions/LIVE-COLLECTION-UPDATES-2026-10-23.md). |
 | Configured file-selection actions, FILE-ACTION/DATA/VIEW-01 | Merged in [PR #171](https://github.com/gonz0w/fvwm-x/pull/171); focused checks pass | Up to four configured literal executables receive a fully validated selected-path argument set; multi-entry observed properties and repeated initial --properties preserve selection ownership. Immediate cancellation has a consistent result. Five Go packages/51 cases pass on both targets and in Linux race; three real-theme drivers pass with 15 screenshots each. A classic observer selector fix repeats only that driver; qualified native binaries are unchanged. Cycle 2/3 and performance 2/5 after merge. [Report](verification/VERIFICATION-2026-10-23-FILE-SELECTION-ACTIONS.md), [contract](decisions/FILE-SELECTION-ACTIONS-2026-10-23.md). |
 | Atomic metadata refresh, FILE-VIEW/DATA/ACTION-01 | Merged in [PR #170](https://github.com/gonz0w/fvwm-x/pull/170); focused checks pass | Bounded generation-checked transactions, snapshot reconciliation/no-op handling, observation revisions, visible-neighbor focus recovery and browser refresh/lost-selection feedback. Five Go packages/43 cases and the separate race run, vet and three real-theme native-X drivers pass; 13 screenshots per theme and updated manual captured/inspected. The PR167–169 six-target cycle and periodic comparison close first. PR170 advances the counters to 1/3 and 1/5; broader provider/native-update and protected-content handoffs remain open. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-REFRESH.md), [contract](decisions/COLLECTION-REFRESH-2026-10-23.md). |
@@ -399,16 +402,17 @@ sort modes, cross-page selection controls and an observed-metadata inspector.
 This advances FILE-VIEW-01 / FILE-ACTION-01 and the shared clipboard metadata
 foundation without admitting clipboard payloads. See the
 [collection-controls contract](decisions/FILE-COLLECTION-CONTROLS-2026-10-23.md).
-Current selection after merged PR172: native live snapshots are merged and the
-accumulated six-target checkpoint is closed. The browser adoption batch is ready
-for review: same-folder refresh/filter/sort/selection/status/properties preserve
-native windows and drafts, with current-input reconciliation, direct bounded
-native acknowledgements, callback replay guards and renewed orphan timeout.
-Focused Linux/FreeBSD, race, scoped sanitizer and three-theme checks pass.
-Navigation/layout boundaries retain explicit replacement behavior. Broader
-provider/consumer/install acceptance, watching/file jobs and protected-content
-handoffs remain with their owners. Preserve the metadata/private-content and
-default/theme boundaries. See the [adoption contract](decisions/BROWSER-LIVE-ADOPTION-2026-10-23.md).
+Current selection after merged PR173: native live browser adoption is merged.
+Batch FILE-DATA-01 native directory invalidations, coalesced/periodic snapshot
+reconciliation and explicit manual fallback/controls. One observer child owns
+native registrations separately from the enumeration/action child; slot/reap
+and supersession limits remain explicit. Manual refresh stays the default.
+The batch is ready for review: Linux/FreeBSD/OpenBSD 8.0 ARM64 Go checks,
+Linux race and four native-X drivers including all three themes pass. Native C
+artifacts are retained; original fixture/storage failures and precise affected
+completions remain in the [report](verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md). Preserve the metadata/private-content and
+default/theme boundaries. See the
+[watch contract](decisions/BROWSER-DIRECTORY-WATCH-2026-10-23.md).
 SQLite is not a current prerequisite: live file state and
 opaque content/collection handles stay independent of a storage backend. STORE-01
 still owns protected memory first and optional versioned encrypted persistence

@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Conditional browser controls](VERIFICATION-2026-10-23-FILE-PROVIDER-CONTROLS.md): five typed generation-checked controls, shared selection policy, Linux/FreeBSD/race/sanitizer checks and three-theme captures; only UI/manual completions follow the freeze.
+
+- [Accumulated browser/provider cycle](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CYCLE.md): merged PR173–175 qualify 84 selected entries across six targets/seven profiles, 472 composed Go cases and retained themes/sanitizers before the next feature.
+
 - [Read-only file-provider queries](VERIFICATION-2026-10-23-FILE-PROVIDER-QUERIES.md): bounded discovery, paged metadata/current native selection, typed properties and correlated CLI; focused Linux/FreeBSD, race, sanitizer and three-theme evidence.
 
 - [PR169→PR174 performance and size observation](PERFORMANCE-2026-10-23-PR174.md): preserved binaries, overlapping five-pair metadata-scan ranges and unchanged RSS; feature-size growth remains explicit.

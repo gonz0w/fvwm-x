@@ -109,7 +109,9 @@ seconds for MFL's terminal reply (including its five-second domain deadline).
 A successful reply returns status 0; a structured error is printed as JSON and
 returns status 1, as do connection/transport/time-limit errors. Option errors
 return status 2. The native MFL schema still validates methods/resources; this
-mode does not turn a submitted command into an applied-result acknowledgement.
+generic command submission still has no applied-result acknowledgement. Resource
+reply semantics, including native browser control publication, belong to
+FvwmMFL(1).
 
 == EXAMPLES
 

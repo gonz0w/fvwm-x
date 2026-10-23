@@ -24,13 +24,15 @@ const providerResultMax = 8192
 const providerChunk = 256
 
 type fileQuery struct {
-	Version    int    `json:"version"`
-	Serial     string `json:"serial"`
-	Provider   string `json:"provider"`
-	Scope      string `json:"scope"`
-	Generation string `json:"generation"`
-	Offset     int    `json:"offset"`
-	Limit      int    `json:"limit"`
+	Version    int             `json:"version"`
+	Serial     string          `json:"serial"`
+	Provider   string          `json:"provider"`
+	Scope      string          `json:"scope"`
+	Generation string          `json:"generation"`
+	Offset     int             `json:"offset"`
+	Limit      int             `json:"limit"`
+	Operation  string          `json:"operation,omitempty"`
+	Values     json.RawMessage `json:"values,omitempty"`
 }
 
 type providerRegistration struct {
@@ -86,7 +88,9 @@ func (b *browser) providerGeneration() string {
 		Collection uint64
 		Selected   []string
 		Focus      string
-	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus})
+		View       string
+		Inspected  []string
+	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected})
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:16])
 }
@@ -105,8 +109,17 @@ type providerItem struct {
 
 // Pure admitted-snapshot queries: no path lookup, content read or side effect.
 func (b *browser) validFileQuery(query fileQuery) bool {
-	return query.Version == 1 && query.Provider == b.instance &&
-		hexToken(query.Serial, 16) && query.Serial != "0000000000000000" &&
+	if query.Version != 1 || query.Provider != b.instance ||
+		!hexToken(query.Serial, 16) || query.Serial == "0000000000000000" {
+		return false
+	}
+	if query.Scope == "action" {
+		return hexToken(query.Generation, 32) && query.Offset == 0 && query.Limit == 0 &&
+			len(query.Values) > 0 && len(query.Values) <= providerValuesMax &&
+			(query.Operation == "selection" || query.Operation == "filter" || query.Operation == "sort" ||
+				query.Operation == "view" || query.Operation == "properties")
+	}
+	return query.Operation == "" && len(query.Values) == 0 &&
 		query.Offset >= 0 && query.Offset <= collection.MaxItems && query.Limit >= 1 && query.Limit <= providerPageMax &&
 		(query.Generation == "" || hexToken(query.Generation, 32)) &&
 		(query.Scope == "state" || query.Scope == "items" || query.Scope == "selection" || query.Scope == "properties")
@@ -143,7 +156,10 @@ func (b *browser) providerResult(query fileQuery) (any, string) {
 		result["reverse"], result["view"] = b.reverse, b.viewing()
 		result["busy"], result["watch"] = b.active, b.watch.state()
 		result["page_max"], result["selection_limit"] = providerPageMax, collection.MaxSelected
-		result["actions"] = false
+		result["actions"] = true
+		result["file_actions"] = false
+		result["selection_edit_max"] = providerEditMax
+		result["action_operations"] = []string{"selection", "filter", "sort", "view", "properties"}
 	case "properties":
 		if query.Offset != 0 {
 			return nil, "invalid_request"
@@ -200,20 +216,46 @@ func (b *browser) providerResult(query fileQuery) (any, string) {
 	return result, ""
 }
 
-func (b *browser) answerProvider(query fileQuery) error {
+func (b *browser) answerProvider(query fileQuery) (bool, error) {
 	if !b.validFileQuery(query) {
-		return errors.New("invalid file provider query")
+		return false, errors.New("invalid file provider query")
 	}
 	var result any
 	code := ""
-	if b.snapshot != nil && b.alias != "" {
+	applied := false
+	var action providerAction
+	if query.Scope == "action" {
+		var err error
+		action, err = decodeProviderAction(query)
+		if err != nil {
+			code = "invalid_request"
+		}
+	}
+	if code == "" && b.snapshot != nil && b.alias != "" {
 		b.renderDeadline = time.Now().Add(workerLimit)
 		packet, err := b.snapshotNative("q"+query.Serial, b.nativeGeneration, 0)
 		if err != nil || b.model.SelectNative(b.model.Generation, packet) != nil {
 			code = "native_state_unavailable"
 		}
 	}
-	if code == "" {
+	if code == "" && query.Scope == "action" {
+		code = b.applyProviderAction(query, action)
+		if code == "" {
+			if err := b.show(); err != nil {
+				// Retire the view on failed publication: never acknowledge a
+				// split model/native state as an applied operation.
+				return false, err
+			}
+			applied = true
+			stateQuery := fileQuery{Version: 1, Provider: b.instance,
+				Serial: query.Serial, Scope: "state", Limit: providerPageMax}
+			result, code = b.providerResult(stateQuery)
+			if code == "" {
+				state := result.(map[string]any)
+				state["scope"], state["operation"], state["applied"] = "action", query.Operation, true
+			}
+		}
+	} else if code == "" {
 		result, code = b.providerResult(query)
 	}
 	envelope := map[string]any{"result": result}
@@ -222,7 +264,7 @@ func (b *browser) answerProvider(query fileQuery) error {
 	}
 	data, err := json.Marshal(envelope)
 	if err != nil {
-		return err
+		return false, err
 	}
 	if len(data) > providerResultMax {
 		data = []byte(`{"error":{"code":"result_too_large"}}`)
@@ -234,9 +276,9 @@ func (b *browser) answerProvider(query fileQuery) error {
 			end = len(data)
 		}
 		if err := b.session.Send(fmt.Sprintf("files_reply %s part %d %s", query.Serial, parts, hex.EncodeToString(data[start:end]))); err != nil {
-			return err
+			return false, err
 		}
 		parts++
 	}
-	return b.session.Send(fmt.Sprintf("files_reply %s end %d", query.Serial, parts))
+	return applied, b.session.Send(fmt.Sprintf("files_reply %s end %d", query.Serial, parts))
 }

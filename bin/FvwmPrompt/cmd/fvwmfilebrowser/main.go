@@ -319,20 +319,7 @@ func (b *browser) action(message string) (bool, error) {
 	case "select-visible":
 		b.replaceSelection = true
 		entries := b.model.VisibleEntries()
-		ids := make([]string, 0, len(entries))
-		for id := range b.model.Selected {
-			ids = append(ids, id)
-		}
-		known := make(map[string]bool, len(ids))
-		for _, id := range ids {
-			known[id] = true
-		}
-		for _, entry := range entries {
-			if !known[entry.ID] {
-				ids = append(ids, entry.ID)
-			}
-		}
-		err = b.model.SelectIDs(b.model.Generation, ids)
+		err = b.model.EditSelection(b.model.Generation, "add", entryIDs(entries))
 	case "clear-selection":
 		b.replaceSelection = true
 		err = b.model.ClearSelection(b.model.Generation)
@@ -539,6 +526,16 @@ func run(o options) error {
 	}
 	idle := time.NewTimer(idleLimit)
 	defer idle.Stop()
+	renewIdle := func() {
+		if !idle.Stop() {
+			select {
+			case <-idle.C:
+			default:
+			}
+		}
+		idle.Reset(idleLimit)
+	}
+
 	watchTick := time.NewTicker(100 * time.Millisecond)
 	defer watchTick.Stop()
 	navigation := "push"
@@ -560,8 +557,12 @@ func run(o options) error {
 		case err := <-finished:
 			return err
 		case query := <-queries:
-			if err := b.answerProvider(query); err != nil {
+			applied, err := b.answerProvider(query)
+			if err != nil {
 				return err
+			}
+			if applied {
+				renewIdle()
 			}
 		case event := <-b.results:
 			if err := b.completed(event); err != nil {
@@ -594,13 +595,7 @@ func run(o options) error {
 			if err != nil {
 				b.status = err.Error()
 			}
-			if !idle.Stop() {
-				select {
-				case <-idle.C:
-				default:
-				}
-			}
-			idle.Reset(idleLimit)
+			renewIdle()
 			if err := b.show(); err != nil {
 				return err
 			}

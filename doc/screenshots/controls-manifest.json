@@ -1,0 +1,23 @@
+{
+  "slate-dark": {
+    "file": "doc/screenshots/controls-slate-dark.png",
+    "sha256": "58f5999b883f5fb0a256fb68aba117bab52eca0f47c537d79e4fc2ea9f116cb7",
+    "capture": "UI-completion/slate-dark",
+    "source_archive_sha256": "de952532f52c1745de47402b35819668bd0c487f4b38d8b944814a4b8973bf28",
+    "fixture_sha256": "627311578597b460ebe118465963b7977bdad8ab6470bb094352fce475924e1f"
+  },
+  "dune-light": {
+    "file": "doc/screenshots/controls-dune-light.png",
+    "sha256": "83ed9fb3376a57ec098c94e26a8bf2f91f2da4e28fdd1921fced7f1db56f299e",
+    "capture": "UI-completion/dune-light",
+    "source_archive_sha256": "de952532f52c1745de47402b35819668bd0c487f4b38d8b944814a4b8973bf28",
+    "fixture_sha256": "627311578597b460ebe118465963b7977bdad8ab6470bb094352fce475924e1f"
+  },
+  "classic-large": {
+    "file": "doc/screenshots/controls-classic-large.png",
+    "sha256": "feba4cd17f3fc64d9edc4099ae0d4fd3a650b3732185d9d1635ad93f683f6aa3",
+    "capture": "UI-completion/classic-large",
+    "source_archive_sha256": "de952532f52c1745de47402b35819668bd0c487f4b38d8b944814a4b8973bf28",
+    "fixture_sha256": "627311578597b460ebe118465963b7977bdad8ab6470bb094352fce475924e1f"
+  }
+}

@@ -32,7 +32,7 @@ platform and consistency limits.
 Limits include 4096 loaded entries and 256 selected entries. Larger folders are
 refused as a whole. Properties describe the last admitted metadata snapshot;
 they do not read file contents or calculate recursive folder sizes. The prototype
-closes after five minutes without a callback. The
+closes after five minutes without a callback or accepted external control. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
@@ -163,3 +163,19 @@ All six images were captured on 2026-10-23 at the same geometry/scale.
 These are selected functionality examples, not performance measurements or
 finished artwork. [Periodic comparisons](../dev-docs/verification/PERFORMANCE-2026-10-23-PR169.md)
 track regressions separately.
+
+## Conditional controls from other consumers
+
+The provider also accepts generation-checked selection edits, literal filtering,
+observed sorting, list/grid mode and observed-properties presentation. Query
+`resource: "files"` with `FvwmCommand --request`, choose the provider, then query
+its state and use the returned generation for each typed control. Selection
+edits accept up to eight stable IDs per request and retain the total 256-item
+cap; hidden selections remain owned. See the [MFL control schema](FvwmMFL.adoc#_conditional_browser_controls).
+These controls publish native views; external application/file operations and
+protected clipboard content remain separate.
+
+The [latest control checkpoint](../dev-docs/verification/VERIFICATION-2026-10-23-FILE-PROVIDER-CONTROLS.md)
+contains Slate dark, Dune light and classic larger-font examples with exact
+source/configuration and capture provenance. Existing images above retain their
+original checkpoint identities. The browser remains a development prototype.

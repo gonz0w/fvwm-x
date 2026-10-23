@@ -181,3 +181,5 @@ separate; the former public-helper output decision is still deferred.
 - [Native grid and range-selection contract, browser view switching and metadata-only boundaries.](COLLECTION-GRID-2026-10-23.md): Native grid and range-selection contract, browser view switching and metadata-only boundaries.
 
 - [Read-only browser provider queries](FILE-PROVIDER-QUERIES-2026-10-23.md): connection-scoped discovery, current-selection pages, typed observations and correlated CLI requests; file actions/content remain separate.
+
+- [Conditional browser controls](FILE-PROVIDER-CONTROLS-2026-10-23.md): generation-checked selection/filter/sort/view/properties, shared selection policy and native publication acknowledgement.

@@ -7,6 +7,9 @@ instructions; retired GSD plans and graph data are historical references.
 
 - Track priorities, decisions, status and verification in
   `dev-docs/PROJECT-TRACKER.md`. Its execution order is authoritative.
+  Current user direction is maintenance first: new feature pickup is paused;
+  use `dev-docs/decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md` for the
+  cleanup/dependency queue and approved retirement boundaries.
 - Use `dev-docs/PROJECT.md` for scope, `dev-docs/ARCHITECTURE.md` for source
   navigation, and `dev-docs/DEVELOPERS.md` for conventions and change contracts.
 - `dev-docs/WORKFLOW.md` defines upkeep. GSD commands, phases, plugins and graph

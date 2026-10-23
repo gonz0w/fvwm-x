@@ -10,13 +10,13 @@ requirements migration; it is not another backlog.
 
 ## Product constraints
 
-- User direction, 2026-10-21: finish high-impact safety and maintainability
-  checkpoints, then advance the approved features and milestones. Remaining
-  performance-only tuning moves to the next release; existing improvements and
-  lightweight regression observations remain. Preserve the approved desktop,
-  platform and configuration scope. Use the tracker's finite
-  [hardening closeout](PROJECT-TRACKER.md#hardening-closeout) before feature work,
-  then retain the separate release qualification gates.
+- User direction, 2026-10-23: pause new features and prioritize source cleanup,
+  legacy retirement, dependency reduction and maintenance. The
+  [maintenance-first batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md)
+  supersedes the earlier feature-first cutoff. Preserve accepted improvements,
+  existing configuration/platform scope and risk-based focused testing.
+  Performance-only tuning remains deferred; feature pickup resumes on user
+  direction, with separate release qualification retained.
 - X11/XRandR 1.5+; no native Wayland backend or built-in compositor.
 - OpenBSD follows new releases on AMD64 and ARM64, with 8.0 the current
   qualified baseline and 7.9 out of scope. Refresh fixed inputs and qualify
@@ -40,8 +40,8 @@ requirements migration; it is not another backlog.
   complete first-party Perl/Python retirement, FVWM 3.x-only compatibility,
   obsolete converter/backend removal and target-owned linkage. Keep Meson until
   the bounded Muon/CMake evaluation produces a separate adoption decision.
-  These are Later backlog items, not current build changes or new feature
-  prerequisites. Lua engine selection remains open. See the
+  These are now selected maintenance batches, not already implemented build
+  changes. Lua engine selection remains open. See the
   [decision and issue ownership](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md).
 - Approved runtime language direction: retain C core/native primitives, replace
   first-party Python runtime helpers and portable Perl utilities with Go, and

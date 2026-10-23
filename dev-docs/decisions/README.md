@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Maintenance-first batches](MAINTENANCE-FIRST-BATCHES-2026-10-23.md): pause new features, place all 73 open issues, promote the maintenance queue and define eight implementation batches/three decision lanes under risk-based testing.
+
 - [Larger cleanup batches and risk-based platform checks](BATCHED-CLEANUP-CADENCE-2026-10-23.md): implement related sets before one focused gate; replace the automatic three-PR matrix with a five-batch risk review and targeted checks, retaining full milestone/release qualification.
 
 - [Dependency simplification](DEPENDENCY-SIMPLIFICATION-2026-10-23.md): mandatory Go direction, complete Perl/Python retirement ownership, FVWM 3.x baseline, bounded build/library evaluations and Later backlog children.

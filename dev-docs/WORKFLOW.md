@@ -44,22 +44,19 @@ work complete.
 
 ## Implementation batches and test cadence
 
-The approved [feature handoff](decisions/FEATURE-HANDOFF-2026-10-21.md) caps
-pre-feature work at the manager-target checkpoint after merged PR147.
-Additional general maintenance remains in the future-release backlog. Bring
-forward only a named feature prerequisite or a reproduced serious safety defect;
-do not require all stage 5 audits before BUTTON/CFG/IPC development.
+User direction, 2026-10-23: new feature pickup is paused while source cleanup,
+legacy retirement, dependency reduction and maintenance are organized and
+implemented. Follow the [maintenance-first batches](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md)
+and the tracker queue. This supersedes the earlier feature-first handoff and
+future-release-only placement of general cleanup. Preserve accepted component
+work and keep performance-only tuning deferred. A new feature is selected only
+on user direction; existing-behavior parity for a named removal is maintenance.
 
-
-Selection policy, 2026-10-21: use the tracker's
-[hardening closeout](PROJECT-TRACKER.md#hardening-closeout). Prioritize confirmed
-crashes, malformed-input failures, unbounded work and resource/process lifetime
-defects. Cleanup belongs with a named safety contract or upcoming feature:
-prefer explicit ownership, checked results and one cleanup path over broad
-renames or structural churn. Freeze the selected entry points and acceptance
-cases before implementation. Record already-covered paths without rewriting
-them; newly discovered serious failures advance immediately with their owner.
-Remaining performance-only tuning is deferred to the next release.
+Group related ownership/error/unwind, dependency, predecessor and tool changes.
+Choose finite source/behavior acceptance at pickup rather than reopening a whole
+audit. No age-based deletion, broad mechanical rename or inferred service/library
+replacement. Serious reproduced failures still advance with their concrete
+regression and owner. No new mandatory GUI toolkit or core-state authority.
 
 User direction, 2026-10-23: use [larger related cleanup batches and risk-based
 platform checks](decisions/BATCHED-CLEANUP-CADENCE-2026-10-23.md). The automatic

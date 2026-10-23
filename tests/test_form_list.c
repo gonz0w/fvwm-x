@@ -109,10 +109,42 @@ static void test_updates(void)
 	assert(!form_list_update_begin(&u, &s, 0, 1));
 }
 
+static void test_live_choices_and_status(void)
+{
+	form_list_state s = {.rows = 12, .generation = 1};
+	form_list_state before = s;
+	form_list_update u;
+	char token[65];
+	bool selection;
+
+	assert(form_list_status_token("owner_2-u selection", token, &selection));
+	assert(selection && strcmp(token, "owner_2-u") == 0);
+	assert(form_list_status_token("owner ", token, &selection) && !selection);
+	const char *bad[] = {"", "has space", "x;echo", "x selection extra", "x selectionx"};
+	for (int i = 0; i < 5; i++)
+		assert(!form_list_status_token(bad[i], token, &selection) && token[0] == '\0');
+	assert(form_list_update_begin(&u, &s, 1, 2));
+	for (int i = 0; i < 257; i++)
+		assert(form_list_update_add_choice(&u, 0, FORM_LIST_ON));
+	assert(!form_list_update_commit(&s, &u));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	u.choices[256] = FORM_LIST_OFF;
+	assert(form_list_update_commit(&s, &u) && s.selected == 256);
+	assert(form_list_update_begin(&u, &s, 2, 3));
+	assert(form_list_update_add_choice(&u, 1, FORM_LIST_OFF));
+	assert(form_list_update_add_choice(&u, 257, FORM_LIST_ON));
+	assert(form_list_update_commit(&s, &u));
+	assert(s.selected == 1 && s.bits[0] == 2);
+	assert(form_list_update_begin(&u, &s, 3, 4));
+	assert(!form_list_update_add_choice(&u, 0, 42));
+	assert(!form_list_update_commit(&s, &u));
+}
+
 int main(void)
 {
 	test_grid_ranges();
 	test_updates();
+	test_live_choices_and_status();
 	form_list_state s = {.rows = 12};
 	unsigned char packet[FORM_LIST_PACKET_MAX];
 

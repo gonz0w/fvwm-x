@@ -336,8 +336,25 @@ static void test_input_insertion_capacity(void)
 }
 
 
+static void test_label_text(void)
+{
+	assert(form_label_text("\"\""));
+	assert(form_label_text("\"escaped \\\" quote\" "));
+	assert(!form_label_text("plain"));
+	assert(!form_label_text("\"unterminated"));
+	assert(!form_label_text("\"ok\" trailing"));
+	assert(!form_label_text("\"line\nnext\""));
+	char text[1026];
+	memset(text, 'x', sizeof(text));
+	text[0] = '"'; text[1023] = '"'; text[1024] = '\0';
+	assert(form_label_text(text));
+	text[1023] = 'x'; text[1024] = '"'; text[1025] = '\0';
+	assert(!form_label_text(text));
+}
+
 int main(void)
 {
+	test_label_text();
 	char *joined = fxmalloc(5);
 	memcpy(joined, "base", 5);
 	assert(form_append_text(&joined, " tail", 9));

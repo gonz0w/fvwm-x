@@ -443,3 +443,22 @@ bool form_parse_timeout(const char *text, form_timeout_args *args)
 	*args = candidate;
 	return true;
 }
+
+
+bool form_label_text(const char *text)
+{
+	const char *end = text;
+
+	if (strlen(text) > 1024 || *end++ != '"')
+		return false;
+	for (; *end && *end != '"'; end++)
+	{
+		if (*end == '\n' || *end == '\r')
+			return false;
+		if (*end == '\\' && end[1]) end++;
+	}
+	if (*end++ != '"')
+		return false;
+	while (isspace((unsigned char)*end)) end++;
+	return *end == '\0';
+}

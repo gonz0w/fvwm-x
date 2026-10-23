@@ -62,6 +62,8 @@ bool form_array_capacity(int current, int used, int spare, int initial,
 	size_t element_size, int *capacity);
 bool form_input_width(const char *text, int *width);
 bool form_parse_input(const char *text, form_input_args *args);
+/* One complete quoted presentation field; at most 1024 source bytes. */
+bool form_label_text(const char *text);
 bool form_input_geometry(int width, int font_height, int horizontal_padding,
 	int vertical_padding, int *size_x, int *size_y);
 /* Navigate the existing recall ring; empty storage has no successor. */

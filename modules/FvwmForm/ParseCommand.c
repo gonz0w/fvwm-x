@@ -91,7 +91,7 @@ static bool form_variable_matches(const char *begin, const char *end,
 
 /* This explicit modifier transports field bytes as one data argument. Ordinary
  * variables, including names ending in :Base64, retain lookup priority. */
-static char *form_encoded_value(const Item *item)
+char *form_encoded_value(const Item *item)
 {
 	static const char alphabet[] =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";

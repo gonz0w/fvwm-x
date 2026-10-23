@@ -206,8 +206,15 @@ bool form_list_update_begin(form_list_update *u, const form_list_state *s,
 
 bool form_list_update_add(form_list_update *u, int source)
 {
+	return form_list_update_add_choice(u, source, FORM_LIST_KEEP);
+}
+
+bool form_list_update_add_choice(form_list_update *u, int source,
+	enum form_list_choice choice)
+{
 	if (u->refused || u->generation <= 0 || u->count == FORM_LIST_MAX ||
 	    source < 0 || source > u->source_count ||
+	    choice < FORM_LIST_KEEP || choice > FORM_LIST_OFF ||
 	    (source && (u->used[(source - 1) / 8] &
 	      (1u << ((source - 1) % 8)))))
 	{
@@ -216,6 +223,7 @@ bool form_list_update_add(form_list_update *u, int source)
 	}
 	if (source)
 		u->used[(source - 1) / 8] |= 1u << ((source - 1) % 8);
+	u->choices[u->count] = choice;
 	u->sources[u->count++] = source;
 	return true;
 }
@@ -252,11 +260,14 @@ bool form_list_update_commit(form_list_state *s, const form_list_update *u)
 	{
 		int source = u->sources[i] - 1;
 
-		if (source < 0)
-			continue;
-		inverse[source] = i;
-		if (s->bits[source / 8] & (1u << (source % 8)))
+		if (source >= 0)
+			inverse[source] = i;
+		if (u->choices[i] == FORM_LIST_ON ||
+		    (u->choices[i] == FORM_LIST_KEEP && source >= 0 &&
+		     (s->bits[source / 8] & (1u << (source % 8)))))
 		{
+			if (candidate.selected == FORM_LIST_SELECTED)
+				return false;
 			candidate.bits[i / 8] |= 1u << (i % 8);
 			candidate.selected++;
 		}
@@ -269,5 +280,41 @@ bool form_list_update_commit(form_list_state *s, const form_list_update *u)
 	/* A scrolled-away focus stays scrolled away; do not steal the viewport. */
 	form_list_scroll(&candidate, 0);
 	*s = candidate;
+	return true;
+}
+
+
+bool form_list_status_token(const char *text, char token[65], bool *selection)
+{
+	size_t n = 0;
+
+	token[0] = '\0';
+	*selection = false;
+	while (text[n] && !isspace((unsigned char)text[n]))
+	{
+		unsigned char c = text[n];
+
+		if (n == 64 || !((c >= 'a' && c <= 'z') ||
+		    (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
+		    c == '-' || c == '_'))
+			return false;
+		n++;
+	}
+	if (n == 0)
+		return false;
+	const char *tail = text + n;
+	while (isspace((unsigned char)*tail)) tail++;
+	if (*tail)
+	{
+		if (strncmp(tail, "selection", 9) != 0 ||
+		    (tail[9] && !isspace((unsigned char)tail[9])))
+			return false;
+		tail += 9;
+		while (isspace((unsigned char)*tail)) tail++;
+		if (*tail) return false;
+		*selection = true;
+	}
+	memcpy(token, text, n);
+	token[n] = '\0';
 	return true;
 }

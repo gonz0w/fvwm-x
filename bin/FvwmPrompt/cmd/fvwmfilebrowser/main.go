@@ -71,6 +71,13 @@ type browser struct {
 	actions                    actionFlags
 	view                       string
 	reverse                    bool
+	native                     chan string
+	nativeGeneration           uint32
+	viewEntries                []collection.Entry
+	renderPath, renderView     string
+	renderSerial, lastControl  uint64
+	replaceSelection           bool
+	renderDeadline             time.Time
 }
 
 func (b *browser) viewing() string {
@@ -118,147 +125,6 @@ func displayText(value string, limit int) string {
 		out.WriteString(text)
 	}
 	return out.String()
-}
-
-func (b *browser) show() error {
-	if b.form == ^uint64(0) {
-		return errors.New("form generation exhausted")
-	}
-	oldAlias := b.alias
-	b.form++
-	state := "ready"
-	if b.active {
-		state = "busy"
-	}
-	alias := "FvwmFiles-" + b.instance + "-" + strconv.FormatUint(b.form, 10) + "-" + state
-	b.alias = alias
-	callback := "Command Echo FVWM_FILES_2 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " "
-	commands := []string{}
-	if oldAlias != "" {
-		commands = append(commands, "KillModule FvwmForm "+oldAlias, "DestroyModuleConfig "+oldAlias+":*")
-	}
-	line := func(value string) { commands = append(commands, "*"+alias+": "+value) }
-	button := func(label, key, action, argument string) {
-		line("Button continue \"" + label + "\" " + key)
-		line(callback + action + " " + argument + " x$(picks:Base64)")
-	}
-	line(`Title "File browser"`)
-	line(`Line left`)
-	path := "Loading folder"
-	if b.snapshot != nil {
-		path = string(b.snapshot.Path)
-	}
-	line(`Text "` + displayText(path, 90) + `"`)
-	line(`Line left`)
-	line(`Text "` + displayText(b.status, 120) + `"`)
-	line(`Line left`)
-	line(`Text "Filter: ` + displayText(b.model.Filter(), 60) + `"`)
-	line(`Input filter 24 ""`)
-	button("Apply filter", "", "filter", "x$(filter:Base64)")
-	button("Clear filter", "", "unfilter", "-")
-	line(`Line left`)
-	button("Sort: "+b.ordering(), "", "sort", "-")
-	direction := "ascending"
-	if b.reverse {
-		direction = "descending"
-	}
-	button(direction, "", "reverse", "-")
-	button("View: "+b.viewing()+" (F7)", "F7", "view", "-")
-	line("Line left")
-	if b.viewing() == "grid" {
-		line("List picks 84 4")
-		line("ListGrid 4")
-	} else {
-		line("List picks 84 12")
-	}
-	entries := b.model.VisibleEntries()
-	for _, item := range entries {
-		selected := "off"
-		if b.model.Selected[item.ID] {
-			selected = "on"
-		}
-		icon := map[string]string{"directory": "directory", "file": "file", "symlink": "link"}[item.Kind]
-		if icon == "" {
-			icon = "other"
-		}
-		line(fmt.Sprintf("ListItem %s \"%s\" %s", selected,
-			displayText(item.Label, 90), icon))
-	}
-	for index, entry := range entries {
-		if entry.ID == b.model.Focus {
-			line(fmt.Sprintf("ListFocus %d", index+1))
-			break
-		}
-	}
-	line("Line left")
-	line(fmt.Sprintf("Text \"%d/%d visible; %d selected (%d filtered out, limit %d)\"", b.model.VisibleCount(), len(b.model.Entries), len(b.model.Selected), b.model.HiddenSelectedCount(), collection.MaxSelected))
-	line("Line left")
-	button("Select visible", "", "select-visible", "-")
-	button("Clear selection", "", "clear-selection", "-")
-	button("Properties (F2)", "F2", "properties", "-")
-	if b.snapshot != nil && len(b.inspected) != 0 {
-		if details, err := b.snapshot.ObservedSelection(b.inspected); err == nil {
-			line("Line left")
-			line(`Text "Observed metadata; Refresh updates it. No link is followed."`)
-			for _, text := range details {
-				line("Line left")
-				line(`Text "` + displayText(text, 100) + `"`)
-			}
-		}
-	}
-	line("Line left")
-	button("Home", "", "home", "-")
-	button("Up", "", "up", "-")
-	button("Back", "", "back", "-")
-	button("Refresh (F5)", "F5", "refresh", "-")
-	button("Hidden (F6)", "F6", "hidden", "-")
-	line("Line left")
-	button("Open focused (Enter)", "^M", "focused", "-")
-	button("Open selected (F3)", "F3", "selected", "-")
-	button("Terminal (F4)", "F4", "terminal", "-")
-	line("Line left")
-	line(`Text "Path:"`)
-	line(`Input path 40 ""`)
-	button("Go", "", "path", "x$(path:Base64)")
-	button("Cancel work", "", "cancel", "-")
-	button("Close (Esc)", "^[", "close", "-")
-	for index, action := range b.actions {
-		line("Line left")
-		button(displayText(action.Label, 32), "", "custom", strconv.Itoa(index))
-	}
-	line(`Line left`)
-	line(`Text "Arrows/PgUp/PgDn or wheel; Shift extends selection; Space toggles; Tab moves fields. Idle close: 5 minutes."`)
-	line("Timeout 3000 \"Echo FVWM_FILES_2 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x\" \"\"")
-	commands = append(commands, "Module FvwmForm "+alias)
-	deadline := time.NewTimer(workerLimit)
-	defer deadline.Stop()
-	for i, command := range commands {
-		if err := b.session.Send(command); err != nil {
-			return err
-		}
-		// Core acknowledgement bounds outstanding configuration traffic instead
-		// of flooding MFL's finite output queue. Only the final command maps UI.
-		if b.acks != nil && (i%32 == 31 || i == len(commands)-1) {
-			tag := fmt.Sprintf("FVWM_FILES_SYNC %s %d %d", b.instance, b.form, i)
-			if err := b.session.Send("Echo " + tag); err != nil {
-				return err
-			}
-			for {
-				select {
-				case value := <-b.acks:
-					if value == tag {
-						goto acknowledged
-					}
-				case <-b.session.Done():
-					return net.ErrClosed
-				case <-deadline.C:
-					return errors.New("native collection configuration timed out")
-				}
-			}
-		acknowledged:
-		}
-	}
-	return nil
 }
 
 func (b *browser) start(work pendingWork) {
@@ -391,22 +257,31 @@ func decodeField(value string) ([]byte, error) {
 // stale callbacks, not hostile same-user/X11 clients from accessing the WM.
 func (b *browser) action(message string) (bool, error) {
 	parts := strings.Fields(message)
-	if len(parts) != 6 || parts[0] != "FVWM_FILES_2" || parts[1] != b.instance {
+	if len(parts) != 7 || parts[0] != "FVWM_FILES_3" || parts[1] != b.instance {
 		return false, errors.New("invalid browser callback")
 	}
 	if parts[2] != strconv.FormatUint(b.form, 10) {
 		return false, errors.New("stale browser control")
 	}
+	if parts[3] == "close" && parts[6] == "timeout" {
+		return true, nil
+	}
+	ticket, err := strconv.ParseUint(parts[6], 16, 64)
+	if err != nil || ticket == 0 || len(parts[6]) != 16 || fmt.Sprintf("%016x", ticket) != parts[6] || ticket <= b.lastControl {
+		return false, errors.New("stale browser invocation")
+	}
 	if parts[3] == "close" {
 		return true, nil
 	}
-	selected, err := decodeField(parts[5])
+	selected, err := nativePacket(parts[5], b.nativeGeneration)
 	if err != nil {
 		return false, err
 	}
 	if err := b.model.SelectNative(b.model.Generation, selected); err != nil {
+		b.replaceSelection = true
 		return false, err
 	}
+	b.lastControl = ticket
 	path := ""
 	if b.snapshot != nil {
 		path = string(b.snapshot.Path)
@@ -434,6 +309,7 @@ func (b *browser) action(message string) (bool, error) {
 		}
 		err = b.reorder(key, reverse)
 	case "select-visible":
+		b.replaceSelection = true
 		entries := b.model.VisibleEntries()
 		ids := make([]string, 0, len(entries))
 		for id := range b.model.Selected {
@@ -450,6 +326,7 @@ func (b *browser) action(message string) (bool, error) {
 		}
 		err = b.model.SelectIDs(b.model.Generation, ids)
 	case "clear-selection":
+		b.replaceSelection = true
 		err = b.model.ClearSelection(b.model.Generation)
 		if err == nil {
 			b.inspected = nil
@@ -566,7 +443,7 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), results: make(chan completedWork, 1)}
+		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), results: make(chan completedWork, 1)}
 	defer func() {
 		if b.cancel != nil {
 			b.cancel()
@@ -593,7 +470,14 @@ func run(o options) error {
 					return errors.New("browser acknowledgement queue is full")
 				}
 			}
-			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_2 "+b.instance+" ") {
+			if strings.HasPrefix(event.Echo.Message, "FVWM_FORM_LIST "+b.instance+"_") {
+				select {
+				case b.native <- event.Echo.Message:
+				default:
+					return errors.New("native collection reply queue is full")
+				}
+			}
+			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_3 "+b.instance+" ") {
 				select {
 				case events <- event.Echo.Message:
 				default:

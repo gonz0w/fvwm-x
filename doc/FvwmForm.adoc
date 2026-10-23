@@ -342,6 +342,21 @@ currently be changed with commands.)
   multiple *FvwmForm: Line and *FvwmForm: Text options. Blanks may be
   used to provide extra padding between items.
 
+**FvwmForm: Label ``_name_ _width_ _string_``*::
+  Create a named, fixed-size text area using Font and text colors. Name is
+  1..64 ASCII letters/digits, hyphen or underscore; keep names unique. Width is
+  1..4096 font units, checked against X geometry. The complete quoted text has
+  at most 1024 source bytes. Text is clipped to its fixed rectangle; later
+  updates neither resize the Form nor create another X child.
+
+**FvwmForm: SetLabel ``_name_ _string_``*::
+  Replace a running Label's quoted presentation text, using the same text bound.
+  Send `SendToModule MyForm SetLabel status "Folder refreshed"` to its exact
+  alias. The old text rectangle is cleared before painting the new clipped
+  value. Unknown/ambiguous names, plain Text items and malformed values refuse
+  without changing the label. Label owns its name/value until replacement/exit.
+  This is nonsensitive metadata, not a private-content delivery channel.
+
 **FvwmForm: Title ``_string_``*::
   Displays _string_ as the window's title. The string must be enclosed
   in double quotes. Using this command with anything other than a string
@@ -437,10 +452,13 @@ List; existing forms retain their input/history traversal.
   unquoted, whitespace-free list names for live commands. Layout and geometry
   stay fixed; only the entry snapshot changes.
 
-The following commands are sent as runtime configuration lines to the running
-form's exact alias, for example `*MyFiles: ListBegin picks 1 2`.
-They use existing module transport; no new socket, module packet or toolkit is
-required. Only nonsensitive presentation metadata belongs in these commands.
+Send the following runtime commands directly to the running form's exact
+alias, for example `SendToModule MyFiles ListBegin picks 1 2`.
+Direct messages use existing module transport without appending old snapshots
+to core configuration. Runtime configuration lines such as
+`SendToModule MyFiles ListBegin picks 1 2` remain accepted, but are stored by the core;
+prefer direct messages for repeated updates. No new socket, module packet or
+toolkit is required. Only nonsensitive presentation metadata belongs in these commands.
 Escape presentation text using the same rules as ListItem. Never pass private
 clipboard payloads or reconstruct action identity from a label.
 
@@ -451,12 +469,16 @@ clipboard payloads or reconstruct action identity from a label.
   and at most 2147483647. There is one pending snapshot per list; another Begin
   is refused until Commit or Abort. Refusal leaves the current view intact.
 
-**FvwmForm: ListEntry ``_name_ _generation_ _source_ _string_`` [file | directory | link | other]*::
+**FvwmForm: ListEntry ``_name_ _generation_ _source_ _string_`` [file | directory | link | other] [keep | on | off]*::
   Append a quoted label/type to the pending snapshot, in its new display order.
   Source is the entry's one-based index in the published snapshot, or 0 for a
   new entry. A nonzero source must exist and appear at most once. The domain
   owner supplies this identity mapping using stable IDs; label equality does
-  not establish identity. New entries start unselected. Limits are 4096 entries
+  not establish identity. The optional choice after a type mark overrides
+  selection at commit: on selects, off clears, keep preserves current selection
+  through source identity. Default keep leaves new entries unselected. Explicit
+  on can restore an entry selected while filtered out. Commit refuses a result
+  above 256 selected entries atomically. Limits are 4096 entries
   and the same 1024 source-byte label bound as ListItem.
 +
 An invalid entry addressed to the pending generation poisons that candidate;
@@ -480,15 +502,33 @@ candidate is drawn or substituted into commands.
   Staging has a fixed entry/label bound, with no automatic expiry: its owner
   must finish or abort a transaction, or close the form.
 
-**FvwmForm: ListStatus ``_name_ _token_``*::
+**FvwmForm: ListStatus ``_name_ _token_`` [selection]*::
   Ask the native module to emit `Echo FVWM_FORM_LIST token published pending refused`.
   Token is 1..64 ASCII letters/digits, hyphen or underscore. Published is the
   current generation; pending is 0 when no update exists; refused is 1 for a
-  poisoned candidate, otherwise 0. Wait for this native reply after Commit or
+  poisoned candidate, otherwise 0. With the optional literal selection word,
+  append `x` followed by the current versioned list's URL-base64 packet. This
+  observes native input made during staging without changing it. The original
+  five-field reply remains unchanged when that word is omitted.
+  Wait for this native reply after Commit or
   Abort before advancing the consumer's published mapping. A core Echo alone
   acknowledges core command processing, not native publication. Unknown or
   ambiguous names and malformed commands produce diagnostics; a consumer must
   bound its wait and handle missing replies/module death.
+
+**FvwmForm: RenewTimeout ``_ticks_``*::
+  Renew an already active Timeout through `SendToModule MyForm RenewTimeout 3000`.
+  Ticks are 1..99999 tenths of a second. The configured command and timer cadence
+  stay unchanged; a missing or already dispatched timeout cannot be resurrected.
+  A live consumer can refresh its finite orphan deadline while preserving its
+  window. Stopping renewal still permits expiry and module cleanup.
+
+**FvwmForm: ListNotify ``_token_``*::
+  After ListVersioned, configure one startup observation for that list. Token
+  uses ListStatus's literal bound. Once the native Form is initialized, emit
+  the same reply as ListStatus with selection. This is a native readiness
+  handshake; it does not activate an application. Preload forms retain their
+  existing unmapped startup behavior.
 
 For example, start a two-entry live list, then reorder it and insert a new row:
 
@@ -503,16 +543,18 @@ For example, start a two-entry live list, then reorder it and insert a new row:
 *MyFiles: Command Echo MY_COLLECTION x$(picks:Base64)
 Module FvwmForm MyFiles
 # Once MyFiles is running, send:
-*MyFiles: ListBegin picks 1 2
-*MyFiles: ListEntry picks 2 2 "Second, updated" directory
-*MyFiles: ListEntry picks 2 0 "New entry" file
-*MyFiles: ListEntry picks 2 1 "First" file
-*MyFiles: ListCommit picks 2
-*MyFiles: ListStatus picks example_2
+SendToModule MyFiles ListBegin picks 1 2
+SendToModule MyFiles ListEntry picks 2 2 "Second, updated" directory
+SendToModule MyFiles ListEntry picks 2 0 "New entry" file
+SendToModule MyFiles ListEntry picks 2 1 "First" file
+SendToModule MyFiles ListCommit picks 2
+SendToModule MyFiles ListStatus picks example_2
 ----
 
 The selected First entry becomes row 3. Upload long snapshots in bounded,
-acknowledged batches through the existing transport. Accept callbacks only
+acknowledged batches through the existing transport. A core acknowledgement
+bounds core input; use native ListStatus replies to bound the target module
+queue and prove that each batch was consumed. Accept callbacks only
 against the exact form identity and the published generation; reject stale
 indices before resolving domain IDs. This primitive does not automatically
 connect a filesystem watcher, update other form text or manage a provider.

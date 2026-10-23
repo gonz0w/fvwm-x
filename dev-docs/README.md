@@ -33,6 +33,9 @@ restoring that documentation does not publish or requalify its runtime inputs.
 
 User documentation lives in [doc/](../doc), including
 [the desktop manual](../doc/FvwmDesktop.adoc), and generates installed man pages.
+[Development screenshots and configuration examples](../doc/development-preview.md)
+show the optional native browser across three actual FVWM theme configurations.
+The gallery is a repository guide, not an installed manual or release claim.
 [INSTALL.md](../INSTALL.md) describes current build/dependency requirements.
 Developer guides/history are not installed product components.
 

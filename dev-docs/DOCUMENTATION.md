@@ -113,6 +113,12 @@ man-package gate.
 
 ## Published developer evidence
 
+The [development gallery](../doc/development-preview.md) publishes a small set of
+actual native-X screenshots with synthetic files, descriptive alternatives,
+configuration examples and an image hash/provenance manifest. It is a repository
+guide, not an installed manual or finished-release claim. Reuse inspected,
+source-bound captures rather than rerunning the matrix for documentation updates.
+
 `make check` verifies current inline-Markdown local file targets offline,
 including decision/verification links and the archive index. It ignores code
 examples, archive internals and vendored documents; remote URLs, anchors,

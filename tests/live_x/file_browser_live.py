@@ -55,9 +55,9 @@ def run(args):
             report = runtime.root / 'opened.json'
             opener = runtime.root / 'opener'
             opener.write_text('#!' + sys.executable + '\nimport base64,json,os,sys\n'
-                'from pathlib import Path\nPath(' + repr(str(report)) + ').write_text(json.dumps('
+                'from pathlib import Path\np=Path(' + repr(str(report)) + ');t=p.with_suffix(".part");t.write_text(json.dumps('
                 '{"argv":[base64.b64encode(os.fsencode(v)).decode() for v in sys.argv[1:]],'
-                '"cwd":base64.b64encode(os.fsencode(os.getcwd())).decode()}))\n')
+                '"cwd":base64.b64encode(os.fsencode(os.getcwd())).decode()}));t.replace(p)\n')
             opener.chmod(0o700)
             config = runtime.root / 'config'
             modules = runtime.root / 'modules'
@@ -126,6 +126,7 @@ def run(args):
             endpoint = runtime.root / ('fvwm_mfl_' + display.replace(':', '_') + '.sock')
             wait_for_predicate('MFL endpoint', endpoint.exists, time.monotonic() + 10, process=core)
             connection = Connection(endpoint)
+            connection.socket.settimeout(15)
             connection.record()
             connection.send(b'set echo\n')
             connection.echo('browser-probe-ready')
@@ -291,15 +292,33 @@ def run(args):
             x.XGetClassHint.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(ClassHint)]
             seen_alias = None
 
+            primitive = False
+            seen_renders = {}
+
+            def render_state(active):
+                deadline = time.monotonic() + 15
+                while time.monotonic() < deadline:
+                    text = connection.record().get('echo', {}).get('message', '')
+                    fields = text.split()
+                    if len(fields) != 6 or fields[0] != 'FVWM_FILES_RENDER':
+                        continue
+                    instance, form, serial, generation, state = fields[1:]
+                    serial = int(serial)
+                    if serial <= seen_renders.get(instance, 0):
+                        continue
+                    seen_renders[instance] = serial
+                    if int(state) == active:
+                        return 'FvwmFiles-%s-%s-ready' % (instance, form)
+                raise AssertionError('missing native publication observation')
+
             def ready(old=None, choices=None):
+                target = None if primitive else render_state(0)
                 def mapped():
                     window, squares, values = inventory()
                     if not window:
                         return None
                     alias = last_inventory_alias
-                    # XIDs may be reused after Form retirement. The per-view
-                    # resource identity and complete child count own readiness.
-                    if alias.endswith('-ready') and alias != seen_alias and len(values) == expected_children:
+                    if alias.endswith('-ready') and (target is None or alias == target) and len(values) == expected_children:
                         return window, alias
                     return None
                 nonlocal seen_alias
@@ -342,7 +361,7 @@ def run(args):
                 deadline = time.monotonic() + 5
                 while time.monotonic() < deadline:
                     text = connection.record().get('echo', {}).get('message', '')
-                    if text.startswith('FVWM_FILES_2 '):
+                    if text.startswith('FVWM_FILES_3 '):
                         return text
                 raise AssertionError('missing browser callback')
 
@@ -374,7 +393,9 @@ def run(args):
                 return [sorted((g[0], w) for g, w in values if g[1] == y) for y in ys]
 
             def packet(text):
-                return base64.urlsafe_b64decode(text.split()[5][1:] + '==')
+                value = base64.urlsafe_b64decode(text.split()[5][1:] + '==')
+                assert len(value) >= 6
+                return value[4:]
 
             window = ready()
             assert not report.exists(),'configured action ran on startup'
@@ -398,11 +419,24 @@ def run(args):
             click(controls[1][1]);callback();window=ready(window)
             evidence['mixed_focus_scrolled_input_and_empty_list']=True
             capture('file-browser-collection.png')
+            def enter_list():
+                _, _, values = inventory()
+                field = min(((g,w) for g,w in values if g[2]>140 and g[3]<50), key=lambda v:v[0][1])
+                click(field[1], False)
+                key(window, b'Tab')
+
+            def clear_input():
+                control = x.XKeysymToKeycode(d, x.XStringToKeysym(b'Control_L'))
+                pointer.x.XTestFakeKeyEvent(d, control, 1, 0)
+                key(window, b'u')
+                pointer.x.XTestFakeKeyEvent(d, control, 0, 0)
+                x.XSync(d,0)
+
             # Both presentations share indices/IDs, focus and selection. Shift
             # navigation adds a bounded anchor range before switching views.
             key(window,b'F7');callback();window=ready(window)
             capture('file-browser-grid.png')
-            key(window,b'Tab');key(window,b'Home')
+            enter_list();key(window,b'Home')
             for _ in range(2):
                 pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Right');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
             box,control=widget()
@@ -414,31 +448,33 @@ def run(args):
             key(window,b'F7');bits=packet(callback())
             assert bits[:2]==bytes([0,6]) and bits[2]==127,bits
             window=ready(window);capture('file-browser-range-list.png')
-            key(window,b'Tab')
+            enter_list()
             for _ in range(2):
                 pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Down');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
             key(window,b'F2');bits=packet(callback());assert bits[:2]==bytes([0,8]) and bits[2:4]==bytes([255,1]),bits
             window=ready(window)
             click(row_groups()[0][1][1]);callback();window=ready(window)
             key(window,b'F7');callback();window=ready(window)
-            key(window,b'Tab');key(window,b'Home');key(window,b'Down');key(window,b'Right')
+            enter_list();key(window,b'Home');key(window,b'Down');key(window,b'Right')
             key(window,b'F7');bits=packet(callback());assert bits[:2]==bytes([0,5]) and not any(bits[2:]),bits
             window=ready(window)
             evidence['grid_icons_range_selection_and_view_identity']=True
             # Tab enters the list from the filter. Local motion/selection needs
             # neither a helper round trip nor a new form generation.
-            key(window, b'Tab')
+            enter_list()
             key(window, b'End')
             key(window, b'space')
+            stable_frame = (window, sorted(children(window)))
             key(window, b'F2')
             first = callback()
             bits = packet(first)
             assert bits[:2] == bytes([0,18]) and bits[4] == 4, bits
             window = ready(window)
+            assert stable_frame == (window, sorted(children(window)))
             capture('file-browser-scrolled-properties.png')
             evidence['end_space_selection_and_properties'] = True
             # The literal byte name is owned by the worker, never the label.
-            key(window, b'Tab')
+            enter_list()
             key(window, b'Return')
             callback()
             wait_for_predicate('raw file dispatched', report.exists, time.monotonic()+5, process=app)
@@ -453,7 +489,7 @@ def run(args):
             # Configured actions use the current selection's original paths,
             # including non-UTF-8 and command-looking names, in one invocation.
             click(row_groups()[0][1][1]);callback();window=ready(window)
-            key(window,b'Tab');key(window,b'End');key(window,b'space')
+            enter_list();key(window,b'End');key(window,b'space')
             key(window,b'Up');key(window,b'space');key(window,b'F2')
             picks=packet(callback());assert picks[:2]==bytes([0,17]) and picks[4]==6,picks
             window=ready(window)
@@ -471,27 +507,56 @@ def run(args):
             connection.expect_echo(action_callback);window=ready(window)
             assert not report.exists(),'stale configured action launched'
             evidence['configured_action_literal_arguments_and_stale_control'] = True
+            # Sort/reverse publish in the same frame while an unrelated path
+            # draft remains untouched. Restore the named order for later cases.
+            _, _, values = inventory()
+            path_field = max(((g,w) for g,w in values if g[2]>200 and g[3]<50), key=lambda v:v[0][2])
+            click(path_field[1], False); clear_input()
+            for char in 'unsent-draft': key(window, b'minus' if char=='-' else char.encode())
+            sort_frame = (window, sorted(children(window)))
+            def sort_buttons():
+                _, _, values = inventory(); box, _ = widget()
+                field = min((g for g,w in values if g[2]>140 and g[3]<50), key=lambda g:g[1])
+                return sorted((g[0],w) for g,w in values if g[1]>field[1]+field[3] and g[1]<box[1])
+            click(sort_buttons()[0][1]); callback(); window=ready(window)
+            click(sort_buttons()[1][1]); callback(); window=ready(window)
+            assert sort_frame == (window, sorted(children(window)))
+            capture('file-browser-live-sort.png')
+            click(sort_buttons()[1][1]); callback(); window=ready(window)
+            for _ in range(3):
+                click(sort_buttons()[0][1]); callback(); window=ready(window)
+            # Go's callback proves the draft survived all updates; cancel the
+            # failed/nonexistent navigation and retain this directory.
+            _, _, values = inventory(); fg=path_field[0]
+            controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
+            click(controls[0][1]); text=callback()
+            assert base64.urlsafe_b64decode(text.split()[4][1:]+'==')==b'unsent-draft'
+            window=ready(window)
+            assert sort_frame == (window, sorted(children(window)))
+            evidence['live_sort_preserves_path_draft_and_windows'] = True
             # Clear the entire native selection, navigate to the first directory
             # using focus alone, then use the native Up button.
             click(row_groups()[0][1][1]); callback(); window = ready(window)
-            key(window, b'Tab'); key(window, b'Home'); key(window, b'Return')
+            enter_list(); key(window, b'Home'); key(window, b'Return')
             callback(); window = ready(window)
             click(row_groups()[1][1][1]); callback(); window = ready(window)
             evidence['focused_folder_activation_and_parent'] = True
             # Select the directory, then filter it away. Hidden selection survives
             # the new generation without admitting nonexistent bitmap bits.
-            key(window, b'Tab'); key(window, b'Home'); key(window, b'space')
+            enter_list(); key(window, b'Home'); key(window, b'space')
             _, _, values = inventory()
             field = min(((g,w) for g,w in values if g[2] > 140 and g[3] < 50), key=lambda v:v[0][1])
             click(field[1], wait_grab=False)
             symbols = {'/':b'slash','-':b'minus','_':b'underscore','.':b'period'}
+            clear_input()
             for char in 'file-14': key(window, symbols.get(char,char.encode()))
             fg=field[0]
             controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
             click(controls[0][1]); callback(); window=ready(window)
-            key(window,b'Tab'); key(window,b'space'); key(window,b'F2')
+            enter_list(); key(window,b'space'); key(window,b'F2')
             both=packet(callback()); assert both == bytes([0,0,1]), both
             window=ready(window)
+            filtered_frame = (window, sorted(children(window)))
             capture('file-browser-filtered-selection.png')
             evidence['filter_preserves_hidden_selection'] = True
             # The 40-column path input is wider than every configured action
@@ -501,14 +566,12 @@ def run(args):
             _,_,values=inventory()
             field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][2])
             click(field[1],wait_grab=False)
+            clear_input()
             for char in str(blocked): key(window,symbols.get(char,char.encode()))
             fg=field[0]
             controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
             click(controls[0][1]); assert base64.urlsafe_b64decode(callback().split()[4][1:]+'==')==os.fsencode(blocked)
-            def busy():
-                current,_,_=inventory()
-                return current if last_inventory_alias.endswith('-busy') else None
-            wait_for_predicate('blocked worker',busy,time.monotonic()+5,process=app)
+            render_state(1)
             connection.echo('core-responsive-during-blocked-worker')
             _,_,values=inventory()
             field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][2]);fg=field[0]
@@ -523,9 +586,10 @@ def run(args):
             (root / 'file-14-new').write_text('new entry')
             (root / 'file-13').write_text('changed observed size')
             key(window,b'F5');callback();window=ready(window)
-            key(window,b'Tab');key(window,b'F2')
+            enter_list();key(window,b'F2')
             assert packet(callback()) == bytes([0,0,0])
             window=ready(window)
+            assert filtered_frame == (window, sorted(children(window)))
             capture('file-browser-refresh-changes.png')
             _,_,values=inventory()
             field=min(((g,w) for g,w in values if g[2]>140 and g[3]<50),key=lambda v:v[0][1]);fg=field[0]
@@ -535,7 +599,9 @@ def run(args):
             assert bits[:2] == bytes([0,15]) and bits[2:] == bytes([1,0,0]),bits
             window=ready(window)
             key(window,b'F5');callback();window=ready(window)
+            assert filtered_frame == (window, sorted(children(window)))
             capture('file-browser-refresh-unchanged.png')
+            evidence['browser_live_window_and_draft_lifecycle'] = True
             evidence['refresh_focus_fallback_and_hidden_selection'] = True
             key(window,b'Escape');callback()
             wait_for_predicate('browser exit',lambda:app.poll() is not None,time.monotonic()+5)
@@ -547,24 +613,30 @@ def run(args):
             expected_children = 22
             app=runtime.start('large-browser',[str(args.browser),'--socket',str(endpoint),'--view','grid','--reveal',str(large/'entry-4095')],'large-browser.log',env)
             window=ready();capture('file-browser-4096-grid.png')
-            key(window,b'Tab');key(window,b'End')
+            large_frame=(window,sorted(children(window)))
+            click(sort_buttons()[1][1]);callback();window=ready(window)
+            capture('file-browser-4096-live-sort.png')
+            click(sort_buttons()[1][1]);callback();window=ready(window)
+            assert large_frame==(window,sorted(children(window)))
+            evidence['4096_live_update_native_backpressure']=True
+            enter_list();key(window,b'End')
             pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Home');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
             key(window,b'F2');bits=packet(callback())
             assert bits[:2]==bytes([15,255]) and sum(v.bit_count() for v in bits[2:])==1 and bits[-1]==128
             window=ready(window)
             evidence['over_limit_grid_range_is_atomic']=True
             key(window,b'F7');callback();window=ready(window);capture('file-browser-4096-rows.png')
-            key(window,b'Tab');key(window,b'End');key(window,b'F2')
+            enter_list();key(window,b'End');key(window,b'F2')
             text=callback();bits=packet(text)
             assert len(text)<1000 and len(bits)==514 and bits[:2]==bytes([15,255]) and bits[-1]==128,(len(text),bits)
             window=ready(window)
-            key(window,b'Tab');key(window,b'Home');key(window,b'space');key(window,b'F2')
+            enter_list();key(window,b'Home');key(window,b'space');key(window,b'F2')
             bits=packet(callback());assert bits[2]==1 and bits[-1]==128
             window=ready(window)
-            key(window,b'Tab');key(window,b'Home');key(window,b'Next');key(window,b'space');key(window,b'F2')
+            enter_list();key(window,b'Home');key(window,b'Next');key(window,b'space');key(window,b'F2')
             bits=packet(callback());assert bits[:2]==bytes([0,12]) and bits[2]==1 and bits[3]==16 and bits[-1]==128
             window=ready(window)
-            key(window,b'Tab');key(window,b'End')
+            enter_list();key(window,b'End')
             box,control=widget()
             cx,cy,child=C.c_int(),C.c_int(),C.c_ulong()
             assert x.XTranslateCoordinates(d,control,client.root,box[2]//2,box[3]//2,C.byref(cx),C.byref(cy),C.byref(child))
@@ -588,17 +660,19 @@ def run(args):
             # Opt-in live primitive, in the same actual desktop theme. The
             # browser keeps its current replacement lifecycle until its owner
             # adopts the native publication/status handshake.
+            primitive = True
             alias = 'FvwmLiveCollection-ready'
             expected_children = 3
             commands = ['*' + alias + ': ' + value for value in [
                 'Title "File browser"', 'Line left',
-                'Text "Live collection: atomic reorder, insert and removal"',
+                'Label live-label 64 "Live collection: atomic reorder, insert and removal"',
                 'Line left', 'Input draft 40 ""', 'Line left',
                 'List live 64 6', 'ListVersioned',
                 *['ListItem ' + ('on' if n == 11 else 'off') +
                   ' "Original entry %02d" file' % n for n in range(32)],
                 'ListFocus 12', 'Line left', 'Button continue "Inspect state (F2)" F2',
-                'Command Echo FVWM_FORM_UPDATED x$(live:Base64) x$(draft:Base64)']]
+                'Command Echo FVWM_FORM_UPDATED x$(live:Base64) x$(draft:Base64)',
+                'Timeout 10 \"Echo FVWM_FORM_LEASE_EXPIRED\" \"\"']]
             for n, command in enumerate(commands):
                 connection.send((command + '\n').encode())
                 if n % 32 == 31:
@@ -625,13 +699,20 @@ def run(args):
                         return result[0]
 
             def update(command):
-                connection.send(('*' + alias + ': ' + command + '\n').encode())
+                if not command.startswith('RenewTimeout '):
+                    connection.send(('SendToModule ' + alias + ' RenewTimeout 20\n').encode())
+                connection.send(('SendToModule ' + alias + ' ' + command + '\n').encode())
 
             def native_status(token, published, pending=0, refused=0):
                 update('ListStatus live ' + token)
                 connection.expect_echo('FVWM_FORM_LIST %s %d %d %d' %
                     (token, published, pending, refused))
 
+            connection.send(('SendToModule ' + alias + ' RenewTimeout 20\n').encode())
+            connection.send(('SendToModule ' + alias + ' ListStatus live renewed\n').encode())
+            connection.expect_echo('FVWM_FORM_LIST renewed 1 0 0')
+            time.sleep(1.1)
+            native_status('beyond-original-timeout',1)
             before = live_state()
             assert before[:6] == bytes([0, 0, 0, 1, 0, 31]), before
             capture('collection-update-before.png')
@@ -641,16 +722,34 @@ def run(args):
                 update('ListEntry live 2 %d "Updated entry %02d" file' % (old, old - 1))
                 if old == 16: connection.echo('staging-backpressure')
             native_status('staged', 1, 2)
+            update('ListStatus live selected-state selection')
+            while True:
+                text=connection.record().get('echo',{}).get('message','')
+                if text.startswith('FVWM_FORM_LIST selected-state '):
+                    fields=text.split();assert fields[:5]==['FVWM_FORM_LIST','selected-state','1','2','0']
+                    assert base64.urlsafe_b64decode(fields[5][1:]+'==')==before
+                    break
             assert live_state() == before
             capture('collection-update-staged.png')
             # A selection edit made after Begin must survive publication.
             key(window, b'Home'); key(window, b'space')
             update('ListCommit live 2'); native_status('committed', 2)
+            update('SetLabel live-label \"Published in the same native window\"')
+            native_status('label-painted', 2)
             after = live_state()
             assert after[:6] == bytes([0, 0, 0, 2, 0, 32]), after
             assert after[6:] == bytes([2, 0, 32, 0, 1]), after
             assert inventory()[0] == native_window and sorted(children(window)) == native_children
             capture('collection-update-committed.png')
+            # Direct updates leave fixed geometry intact and clip/clear labels.
+            update('SetLabel live-label "' + 'W'*400 + '"')
+            native_status('long-label', 2)
+            assert inventory()[0]==native_window and sorted(children(window))==native_children
+            capture('collection-label-clipped.png')
+            update('SetLabel live-label "Short label"');native_status('short-label',2)
+            capture('collection-label-cleared.png')
+            connection.send(('*'+alias+': ListStatus live legacy-status\n').encode())
+            connection.expect_echo('FVWM_FORM_LIST legacy-status 2 0 0')
             # Duplicate source refuses the entire candidate, including labels.
             update('ListBegin live 2 3')
             update('ListEntry live 3 1 "Never published" file')
@@ -677,7 +776,10 @@ def run(args):
             update('ListBegin live 5 6')
             update('ListEntry live 6 0 "Pending at teardown" other')
             native_status('closing', 5, 6)
-            connection.send(('KillModule FvwmForm ' + alias + '\n').encode())
+            update('RenewTimeout 3')
+            connection.expect_echo('FVWM_FORM_LEASE_EXPIRED')
+            wait_for_predicate('expired primitive retired',lambda:inventory()[0] is None,time.monotonic()+5)
+            evidence['renewed_timeout_and_orphan_expiry']=True
             connection.echo('live-update-finished')
             evidence['live_collection_updates'] = {
                 'atomic_staging': True, 'current_input_at_commit': True,
@@ -688,7 +790,7 @@ def run(args):
                 'versioned_callback_max_bytes': 518}
             evidence['status']='passed'
             evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
-            evidence['scope']='native list/grid and opt-in atomic live updates; browser update adoption, external providers, protected content and file mutation remain open'
+            evidence['scope']='browser live refresh/filter/sort/selection and native labels/status; external providers, protected content and file mutation remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')

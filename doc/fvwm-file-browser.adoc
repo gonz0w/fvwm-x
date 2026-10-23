@@ -86,9 +86,9 @@ executables are program paths/names, not shell fragments or argument templates.
 Filter and Apply filter perform a case-insensitive literal substring match on
 the admitted display labels, not raw paths. The query is valid UTF-8 of at most
 128 bytes. No glob, regular expression, recursive search or filesystem access
-runs. Clear filter restores all loaded entries. The input starts empty after
-each redraw; the active filter is shown separately. Applying an empty input also
-clears it. The filter persists across refresh and folder navigation.
+runs. Clear filter restores all loaded entries without discarding the input
+draft; the applied filter is shown separately. Ctrl-U clears the focused input.
+Applying an empty input also clears the filter. The filter persists across refresh and folder navigation.
 
 Sort cycles through name, kind, size and modified time. The direction button
 toggles ascending/descending. Directories remain first in both directions;
@@ -99,8 +99,12 @@ Sort preserves a surviving focused ID; filtering chooses the first matching item
 when the old focus is excluded. Refresh retains surviving focus and selection,
 including filtered-out selections. If focus disappears, the next surviving
 visible old neighbor receives focus, then the previous one, otherwise the first
-new visible item. The focused item is revealed when the native view is rebuilt;
-a wheel-only viewport position is not retained across that rebuild.
+new visible item. Same-folder refresh, filtering, sorting, selection controls,
+properties and worker-status updates retain the same Form/native child and
+unsent input drafts. Surviving viewport/range anchors follow entry identity;
+a wheel-scrolled focus does not force scrolling during live publication.
+Navigation to another folder and list/grid layout changes create a new native
+view and reveal the focused item; input drafts reset at those boundaries.
 
 Refresh reports added, updated and removed entry counts and the number of
 selected entries that disappeared. Counts compare directory-entry identities
@@ -109,8 +113,9 @@ as a removal and addition. No file content is read.
 An unchanged refresh reports no entry metadata changes. A small change publishes
 one generation-checked metadata transaction; a larger change publishes one
 bounded validated replacement. Neither path publishes a partial collection.
-The filter, presentation and surviving IDs remain intact. Native controls are
-still rebuilt as a complete view; file watching is not enabled.
+The filter, presentation and surviving IDs remain intact. Native entries and
+fixed status/properties labels update in place; an unchanged refresh leaves
+the native entry generation intact. File watching is not enabled.
 
 Properties (F2) accepts 1 to 256 selected entries, including offscreen and
 filtered-out selections. A single entry shows the observed name, kind, mode,
@@ -118,8 +123,9 @@ byte size and modification time in UTC. Multiple entries show counts of regular
 files, folders, links and special entries, plus the sum of regular-file sizes.
 Folder contents and link targets are not counted. Invalid or overflowing totals
 are refused; this is not recursive disk usage. The panel reads the last admitted
-snapshot without querying the filesystem or file contents. Refresh updates the
-observation; if any inspected identity disappears, the old panel retires.
+snapshot without querying the filesystem or file contents. Its fixed native
+area updates without replacing input or collection windows. Refresh updates
+the observation; if any inspected identity disappears, the old panel clears.
 Opening a file still uses the isolated worker's separate identity validation.
 
 == CONFIGURED SELECTION ACTIONS
@@ -284,15 +290,27 @@ names, directory observations and actions. Reusable metadata policy does not
 qualify clipboard payload lifetime or protection. Sensitive clipboard data must
 not be routed through ordinary Form command expansion or MFL Echo broadcasts.
 
-Native callbacks use the existing Echo/MFL framing with a versioned marker,
-instance/view identity and a known action. A bounded row-index selection bitmap
-and focus are URL-base64 encoded; the model resolves them only against the exact
-rendered projection. Paths use the existing encoded input field. Configuration
-uploads are paced in batches of at most 32 commands with core acknowledgements
-and a ten-second total acknowledgement deadline. These are stale-control guards, not
-same-user or X11 authorization. No general IPC files provider is advertised by
-this first consumer. Broader structured providers, incremental updates and the
-complete file-browser handoff remain with FILE-VIEW/DATA/ACTION-01.
+Native callbacks use Echo/MFL version 3 with an instance/frame identity, known
+action and monotonically increasing native invocation ticket. The URL-base64
+selection/focus packet prefixes its projection generation. The helper rejects
+replayed tickets and stale native generations before resolving indices to IDs;
+paths still use the encoded input field. These guards provide freshness, not
+same-user or X11 authorization. No general IPC files provider is advertised.
+
+Initial configuration uploads use at most 32 commands per core acknowledgement.
+Live updates use direct module messages, avoiding accumulated configuration
+records, and wait for a native reply after each batch of at most 32 commands.
+One reply slot and a ten-second total rendering deadline bound the handshake.
+Live updates renew the existing five-minute native orphan timeout; the helper
+still closes after its own five-minute idle limit.
+Before commit, current native selection is reconciled through the owned earlier
+projection, including entries newly filtered out. After commit, a native reply
+establishes the published mapping. Explicit Select visible/Clear selection
+controls use atomic selection overrides. Unknown, duplicate or over-budget
+native state cannot become action data; recovery can recreate the view, and
+missing/invalid publication or broken transport can terminate the consumer.
+Broader providers and complete owner/install/platform acceptance remain with
+FILE-VIEW/DATA/ACTION-01.
 
 No preferences or directory history are written to disk. Raw metadata remains
 in the helper's ordinary Go memory; no secret-storage claim is made. Results and

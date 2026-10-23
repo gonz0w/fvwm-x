@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -20,6 +21,18 @@ import (
 	"github.com/fvwmorg/FvwmPrompt/transport"
 )
 
+// Each invocation carries a native projection generation and Form ticket.
+func testControl(b *browser, action, argument string, packet []byte) string {
+	if b.nativeGeneration == 0 {
+		b.nativeGeneration = 1
+	}
+	data := make([]byte, 4, 4+len(packet))
+	binary.BigEndian.PutUint32(data, b.nativeGeneration)
+	data = append(data, packet...)
+	return fmt.Sprintf("FVWM_FILES_3 %s %d %s %s x%s %016x", b.instance,
+		b.form, action, argument, base64.RawURLEncoding.EncodeToString(data), b.lastControl+1)
+}
+
 func TestMain(m *testing.M) {
 	if path := os.Getenv("FVWM_TEST_ACTION_REPORT"); path != "" && len(os.Args) > 1 && os.Args[1] != "--worker" {
 		args := make([][]byte, 0, len(os.Args)-1)
@@ -31,7 +44,10 @@ func TestMain(m *testing.M) {
 			Args [][]byte
 			Cwd  []byte
 		}{args, []byte(cwd)})
-		if err := os.WriteFile(path, data, 0600); err != nil {
+		if err := os.WriteFile(path+".part", data, 0600); err != nil {
+			os.Exit(1)
+		}
+		if err := os.Rename(path+".part", path); err != nil {
 			os.Exit(1)
 		}
 		os.Exit(0)
@@ -116,14 +132,14 @@ func TestActionsValidateAndPassLiteralArguments(t *testing.T) {
 func TestControlsUseRenderedGenerationAndNativeSelection(t *testing.T) {
 	b := browser{instance: "owner", form: 3}
 	b.model.Replace([]collection.Entry{{ID: "first", Label: "same"}, {ID: "second", Label: "same"}})
-	picks := "x" + base64.RawURLEncoding.EncodeToString([]byte{0, 0, 3})
-	if _, err := b.action("FVWM_FILES_2 owner 2 cancel - " + picks); err == nil || len(b.model.Selected) != 0 {
+	message := testControl(&b, "cancel", "-", []byte{0, 0, 3})
+	if _, err := b.action(strings.Replace(message, "owner 3", "owner 2", 1)); err == nil || len(b.model.Selected) != 0 {
 		t.Fatal("stale callback mutated state")
 	}
-	if _, err := b.action("FVWM_FILES_2 owner 3 cancel - " + picks); err != nil || len(b.model.Selected) != 2 {
+	if _, err := b.action(message); err != nil || len(b.model.Selected) != 2 {
 		t.Fatal(err)
 	}
-	if close, err := b.action("FVWM_FILES_2 owner 3 close - x"); !close || err != nil {
+	if close, err := b.action(testControl(&b, "close", "-", nil)); !close || err != nil {
 		t.Fatal(close, err)
 	}
 	for _, value := range []string{"$[exec.x]", `quote" \ percent% &`, "line\nnext"} {
@@ -162,7 +178,7 @@ func TestOneWorkerLatestNavigationAndCancelledPublication(t *testing.T) {
 	if err := b.queue(workRequest{Operation: "activate"}, "push"); err == nil || b.serial != 3 {
 		t.Fatal("side effect queued behind busy worker")
 	}
-	if _, err := b.action("FVWM_FILES_2 fixture 1 cancel - xAAA"); err != nil {
+	if _, err := b.action(testControl(&b, "cancel", "-", []byte{0, 0})); err != nil {
 		t.Fatal(err)
 	}
 	if b.pending != nil || b.serial != 4 {
@@ -214,7 +230,7 @@ func TestViewControlsPreserveDomainSelectionAndObserveProperties(t *testing.T) {
 				}
 			}
 		}
-		_, err := b.action("FVWM_FILES_2 owner 7 " + action + " " + argument + " x" + base64.RawURLEncoding.EncodeToString(packet))
+		_, err := b.action(testControl(&b, action, argument, packet))
 		return err
 	}
 	filter := "x" + base64.RawURLEncoding.EncodeToString([]byte("file-19"))
@@ -322,6 +338,10 @@ func TestLargeNativeFormUsesAcknowledgedBatches(t *testing.T) {
 					return
 				}
 				b.acks <- strings.TrimPrefix(scanner.Text(), "Echo ")
+				if !scanner.Scan() || !strings.HasPrefix(scanner.Text(), "Echo FVWM_FILES_RENDER ") {
+					done <- fmt.Errorf("missing render observation")
+					return
+				}
 				done <- nil
 				return
 			}
@@ -340,7 +360,7 @@ func TestViewSwitchKeepsProjectionFocusAndSelection(t *testing.T) {
 	b := browser{instance: "owner", form: 2}
 	b.model.Replace([]collection.Entry{{ID: "a", Label: "first"}, {ID: "b", Label: "second"}})
 	act := func(packet []byte) error {
-		_, err := b.action("FVWM_FILES_2 owner 2 view - x" + base64.RawURLEncoding.EncodeToString(packet))
+		_, err := b.action(testControl(&b, "view", "-", packet))
 		return err
 	}
 	if err := act([]byte{0, 1, 2}); err != nil || b.viewing() != "grid" || b.model.Focus != "b" || !b.model.Selected["b"] {
@@ -400,5 +420,29 @@ func TestCompletedRefreshPreservesNeighborsAndReportsChanges(t *testing.T) {
 	event.result.Snapshot = before
 	if err := b.completed(event); err != nil || b.model.Generation != generation {
 		t.Fatal("stale result published", err)
+	}
+}
+
+func TestLiveCallbacksRefuseReplayAndOldNativeGeneration(t *testing.T) {
+	b := browser{instance: "live", form: 1, nativeGeneration: 4}
+	b.model.Replace([]collection.Entry{{ID: "one", Label: "same"}, {ID: "two", Label: "same"}})
+	message := testControl(&b, "properties", "-", []byte{0, 1, 2})
+	// A valid invocation can fail its domain action, but cannot be replayed.
+	b.action(message)
+	if b.lastControl != 1 || b.model.Focus != "two" {
+		t.Fatal("fresh control not admitted")
+	}
+	if _, err := b.action(message); err == nil || b.lastControl != 1 {
+		t.Fatal("replay admitted")
+	}
+	stale := testControl(&b, "clear-selection", "-", []byte{0, 0, 1})
+	fields := strings.Fields(stale)
+	old := []byte{0, 0, 0, 3, 0, 0, 1}
+	fields[5] = "x" + base64.RawURLEncoding.EncodeToString(old)
+	if _, err := b.action(strings.Join(fields, " ")); err == nil || !b.model.Selected["two"] || b.lastControl != 1 {
+		t.Fatal("old projection admitted")
+	}
+	if _, err := b.action(testControl(&b, "clear-selection", "-", []byte{0, 1, 2})); err != nil || len(b.model.Selected) != 0 || !b.replaceSelection {
+		t.Fatal("clear intent lost", err)
 	}
 }

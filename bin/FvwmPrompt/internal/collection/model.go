@@ -293,8 +293,20 @@ func (m *Model) VisibleEntries() []Entry {
 // SelectNative admits a complete viewport packet atomically, preserving items
 // hidden by the filter. Its maximum base64 representation is 686 bytes.
 func (m *Model) SelectNative(generation uint64, packet []byte) error {
-	count := len(m.visible)
-	if generation != m.Generation || len(packet) != 2+(count+7)/8 {
+	ids := make([]string, 0, len(m.visible))
+	for _, index := range m.visible {
+		ids = append(ids, m.Entries[index].ID)
+	}
+	return m.SelectNativeView(generation, ids, packet)
+}
+
+// SelectNativeView reconciles an owned earlier projection with the current
+// model. Retired IDs are ignored; selection outside that projection survives.
+// Callers must first validate the native form/packet generation against the
+// exact supplied projection. This admits input made during a live update.
+func (m *Model) SelectNativeView(generation uint64, ids []string, packet []byte) error {
+	count := len(ids)
+	if generation != m.Generation || count > MaxItems || len(packet) != 2+(count+7)/8 {
 		return errors.New("stale or malformed native selection")
 	}
 	focus := int(packet[0])<<8 | int(packet[1])
@@ -304,14 +316,22 @@ func (m *Model) SelectNative(generation uint64, packet []byte) error {
 	if count%8 != 0 && packet[len(packet)-1]>>uint(count%8) != 0 {
 		return errors.New("invalid native selection padding")
 	}
+	known := make(map[string]bool, len(m.Entries))
+	for _, entry := range m.Entries {
+		known[entry.ID] = true
+	}
 	selected := make(map[string]bool, len(m.Selected))
 	for id := range m.Selected {
 		selected[id] = true
 	}
-	for row, index := range m.visible {
-		id := m.Entries[index].ID
+	seen := make(map[string]bool, count)
+	for row, id := range ids {
+		if id == "" || len(id) > 64 || seen[id] {
+			return errors.New("invalid native projection identity")
+		}
+		seen[id] = true
 		delete(selected, id)
-		if packet[2+row/8]&(1<<uint(row%8)) != 0 {
+		if known[id] && packet[2+row/8]&(1<<uint(row%8)) != 0 {
 			selected[id] = true
 		}
 	}
@@ -320,7 +340,12 @@ func (m *Model) SelectNative(generation uint64, packet []byte) error {
 	}
 	m.Selected = selected
 	if count != 0 {
-		m.Focus = m.Entries[m.visible[focus]].ID
+		for _, i := range m.visible {
+			if m.Entries[i].ID == ids[focus] {
+				m.Focus = ids[focus]
+				break
+			}
+		}
 	}
 	return nil
 }

@@ -6,7 +6,7 @@ doc_manifest = configure_file(
     output: 'manuals.json',
     copy: true,
 )
-prompt_doc_args = golang.found() ? ['--prompt'] : []
+prompt_doc_args = ['--prompt']
 manual_names = run_command(
     py, doc_tool, '--list', 'pages', prompt_doc_args,
     check: true,

@@ -48,3 +48,9 @@ python3 tools/maintenance/ci_png.py build \
 # Configure performs the patched baseline check; preparation never asserts a
 # vendor backport merely because a package or operating system is recognized.
 test -x "$(command -v Xvfb)"
+# Every native build now requires the patched SDK, not just utility gates.
+if test ! -f builddir-bsd/go-sdk-environment.sh; then
+    sh dev-docs/ci/bsd-go-sdk.sh
+fi
+. builddir-bsd/go-sdk-environment.sh
+python3 tools/maintenance/go_version.py "$(go env GOVERSION)"

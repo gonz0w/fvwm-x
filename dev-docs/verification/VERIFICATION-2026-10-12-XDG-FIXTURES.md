@@ -12,8 +12,8 @@ Source archive SHA-256:
 `efe859530d63d9aead353201566f93fec0e8aae1386ab3c2eb017bd5471ac5f0`.
 
 The archive contains the unchanged
-[Python provider](../../bin/fvwm-menu-desktop.in), unchanged
-[Perl Form frontend](../../bin/fvwm-menu-desktop-config.fpl), new
+[Python provider](https://github.com/gonz0w/fvwm-x/blob/6d8db4199c207e22ddac86c9641bcea17262527e/bin/fvwm-menu-desktop.in), unchanged
+[Perl Form frontend](https://github.com/gonz0w/fvwm-x/blob/6d8db4199c207e22ddac86c9641bcea17262527e/bin/fvwm-menu-desktop-config.fpl), new
 fixture harness (`tests/test_xdg_menu_contracts.py` in the frozen `efe8` input),
 recorded observations (`tests/fixtures/xdg-menu-contracts.json` in that same input), scope
 hashes and the exact two-line owning registration from

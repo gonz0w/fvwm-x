@@ -38,7 +38,7 @@ FVWM_DOCS="fvwm3 fvwm3all fvwm3commands fvwm3menus fvwm3styles FvwmAnimate \
 	FvwmAuto FvwmBacker FvwmButtons FvwmCommand FvwmEvent \
 	FvwmForm FvwmIconMan FvwmIdent FvwmMFL FvwmPager FvwmPerl FvwmPrompt \
 	FvwmRearrange FvwmScript fvwm-menu-desktop fvwm-menu-directory \
-	fvwm-menu-xlock fvwm-perllib fvwm-root fvwm-convert-2.6"
+	fvwm-menu-xlock fvwm-perllib fvwm-root"
 
 # Generate .ad files by greping the appropriate section from the source.
 for section in ${FVWM_DOCS_AD}

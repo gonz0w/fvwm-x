@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or any later version.
-"""Validate the actual optional Go compiler without fetching a toolchain."""
+"""Validate the required Go compiler without fetching a toolchain."""
 import argparse
 import re
 
@@ -28,10 +28,10 @@ def main():
     try:
         print(supported_version(args.version))
     except ValueError as error:
-        parser.exit(1, 'Go-enabled builds require ' + REQUIREMENT + '.\n'
+        parser.exit(1, 'FVWM-X builds require ' + REQUIREMENT + '.\n'
                     + str(error) + ': ' + repr(args.version) + '\n'
-                    'Upgrade the selected compiler or configure '
-                    '-Dgolang=disabled.\n')
+                    'Install or select a supported compiler; automatic toolchain '
+                    'downloads are disabled.\n')
 
 
 if __name__ == '__main__':

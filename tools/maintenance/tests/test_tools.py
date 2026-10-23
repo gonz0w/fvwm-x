@@ -54,7 +54,7 @@ class ToolTests(unittest.TestCase):
         self.assertNotIn('--wipe', command[0])
 
     def test_build_reconfigure_preserves_existing_data(self):
-        args = self.build_args(define=['golang=disabled'])
+        args = self.build_args(define=['bidi=disabled'])
         private = args.builddir / 'meson-private'
         private.mkdir(parents=True)
         (private / 'coredata.dat').touch()
@@ -92,7 +92,7 @@ class ToolTests(unittest.TestCase):
         result = subprocess.run([
             sys.executable, str(ROOT / 'tools/maintenance/build.py'), '--legacy',
             '-b', str(self.root / 'legacy build'), '-p', '/prefix with spaces',
-            '-Dgolang=disabled', '--dry-run'], capture_output=True, text=True)
+            '-Dbidi=disabled', '--dry-run'], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("'-Dprefix=/prefix with spaces'", result.stdout)
         self.assertFalse((self.root / 'legacy build').exists())
@@ -188,7 +188,7 @@ class ToolTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 docs.section(text, 'x')
 
-    def test_docs_both_modes_and_optional_prompt_and_failure(self):
+    def test_docs_both_modes_include_utilities_and_report_failure(self):
         fake = self.executable('fake asciidoctor',
             'import pathlib,sys\n'
             'pathlib.Path(sys.argv[sys.argv.index("-o")+1]).write_text("rendered")\n')
@@ -196,9 +196,9 @@ class ToolTests(unittest.TestCase):
         docs.render(ROOT, output, ['html', 'man'], False, fake)
         self.assertTrue((output / 'html/FvwmDesktop.html').is_file())
         self.assertTrue((output / 'man/fvwm3styles.1').is_file())
-        self.assertFalse((output / 'man/FvwmPrompt.1').exists())
-        self.assertFalse((output / 'man/fvwm-file-browser.1').exists())
-        self.assertNotIn('xref:FvwmPrompt', (output / 'sources/index.adoc').read_text())
+        self.assertTrue((output / 'man/FvwmPrompt.1').exists())
+        self.assertTrue((output / 'man/fvwm-file-browser.1').exists())
+        self.assertIn('xref:FvwmPrompt', (output / 'sources/index.adoc').read_text())
         docs.render(ROOT, self.root / 'prompt', ['man'], True, fake)
         self.assertTrue((self.root / 'prompt/man/FvwmPrompt.1').exists())
         self.assertTrue((self.root / 'prompt/man/fvwm-file-browser.1').exists())

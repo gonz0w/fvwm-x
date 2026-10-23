@@ -25,12 +25,14 @@ Older BSD release lines are outside this initial verification baseline.
 These gates qualify accumulated integration and release acceptance; they are not
 all feature-PR merge requirements. A normal PR uses one incremental Linux profile
 with affected policy/X checks and early affected-target checks for portability.
-After roughly three feature PRs, run one affected six-target checkpoint. Full
+Batch related changes before one focused Linux gate. Review accumulated risk
+after roughly five merged batches or a substantial handoff; that review is not
+an automatic all-OS checkpoint. Platform checks follow affected contracts. Full
 compiler/feature/install/default-X coverage is required at milestone/release
 boundaries, or earlier for a changed contract that needs it. Track deferred gates
 explicitly; focused PR results do not establish complete platform acceptance.
 Follow the [test cadence](WORKFLOW.md#implementation-batches-and-test-cadence),
-and [accepted decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md).
+and [accepted decision](decisions/BATCHED-CLEANUP-CADENCE-2026-10-23.md).
 
 | Target | Architectures | Build and X gate | CI |
 | --- | --- | --- | --- |
@@ -47,7 +49,9 @@ BSD CI uses real FreeBSD/OpenBSD kernels under QEMU, selecting `x86_64` or
 Run the Linux gate after installing dependencies with
 `tests/install_linux_dependencies.sh` and Meson 1.7.0 or a supported newer
 version. The installer script is for an Ubuntu guest or CI runner and
-requires root. See [BSD.md](BSD.md) for BSD dependencies and local QEMU use.
+requires root. Install/select the required patched Go SDK before the gate; the
+Ubuntu dependency script does not assert that a distribution Go package meets
+the baseline. Go is required for all profiles. See [BSD.md](BSD.md) for BSD dependencies and local QEMU use.
 
 ## Evidence and remaining release checks
 

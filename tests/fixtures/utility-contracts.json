@@ -53,21 +53,5 @@
     "status": 0,
     "stdout": "DestroyMenu FixtureMenu\nAddToMenu FixtureMenu \"Fixture\" Title\n+ \"%menu/lock.xpm%blank: Blank screen\" Exec xlock -nolock -inwindow -mode blank\n+ \"%menu/lock.xpm%random: Random mode\" Exec xlock -nolock -inwindow -mode random\n+ \"\" Nop\n+ \"%menu/lock.xpm%alpha: Alpha pattern\" Exec xlock -nolock -inwindow -mode alpha\n+ \"%menu/lock.xpm%beta: Beta pattern\" Exec xlock -nolock -inwindow -mode beta\n",
     "stderr": ""
-  },
-  "convert-config": {
-    "status": 0,
-    "stdout": "",
-    "stderr": ""
-  },
-  "converted-bytes": "# retained comment\nStyle * HilightFore white\nNext [XTerm] Raise\n# UTF-8 caf\u00e9\n\nDestroyFunc StartFunction\nAddToFunc StartFunction\n+  I Test (Init)  Echo initialize\n",
-  "convert-refuse-overwrite": {
-    "status": 255,
-    "stdout": "",
-    "stderr": "Destination file:  <ROOT>/converted config exists\n"
-  },
-  "convert-missing": {
-    "status": 2,
-    "stdout": "",
-    "stderr": "Unable to open source file:  No such file or directory\n"
   }
 }

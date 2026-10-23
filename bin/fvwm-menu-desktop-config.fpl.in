@@ -2,7 +2,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or any later version.
 
-# Keep the existing FvwmPerl entry point while the optional Go provider owns
+# Keep the existing FvwmPerl entry point while the native Go provider owns
 # discovery and settings. The generated frontend still uses native FvwmForm.
 package MenuConfig;
 use strict;

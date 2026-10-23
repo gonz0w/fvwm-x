@@ -301,22 +301,20 @@ endif
 # Perl is a required dependency, we generate shebangs at buildtime
 perl = find_program('perl', required: true)
 
-# Optional Go compiler policy; keep this block independent of native libraries.
-golang = find_program('go', required: get_option('golang'))
-if golang.found()
-    go_env = run_command(
-        'env', 'GOTOOLCHAIN=local', golang, 'env', 'GOVERSION', check: true,
-    )
-    go_policy = run_command(
-        py, files('tools/maintenance/go_version.py'),
-        go_env.stdout().strip(), check: false,
-    )
-    if go_policy.returncode() != 0
-        error(go_policy.stderr().strip())
-    endif
-    gover = go_policy.stdout().strip()
+# Required Go compiler policy; keep this block independent of native libraries.
+golang = find_program('go', required: true)
+go_env = run_command(
+    'env', 'GOTOOLCHAIN=local', golang, 'env', 'GOVERSION', check: true,
+)
+go_policy = run_command(
+    py, files('tools/maintenance/go_version.py'),
+    go_env.stdout().strip(), check: false,
+)
+if go_policy.returncode() != 0
+    error(go_policy.stderr().strip())
 endif
-# End optional Go compiler policy.
+gover = go_policy.stdout().strip()
+# End required Go compiler policy.
 
 # Sed is used for substitution in several configure_file calls
 sed = find_program('sed', required: true)
@@ -710,7 +708,7 @@ environment_summary = {
     'VCS Version': fvwm_vcs_versioninfo,
     'C Compiler': cc.get_id(),
     'C Compiler Version': cc.version(),
-    'Go Version': golang.found() ? gover : 'N/A',
+    'Go Version': gover,
     'Linker': cc.get_linker_id(),
     'Python Path': py.full_path(),
     'Python Version': py.version(),
@@ -745,7 +743,7 @@ summary(
 featurevals = {
     'BiDi': fribidi.found() ? fribidi : false,
     'FreeType': freetype.found() ? freetype : false,
-    'Go Modules': golang.found(),
+    'Go Modules': true,
     'iconv': iconv.found(),
     'NLS': nls_enabled,
     'PNG support': libpng.found() ? libpng : false,

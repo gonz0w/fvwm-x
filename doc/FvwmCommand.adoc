@@ -74,9 +74,8 @@ FVWM configuration before using this client.
 
 == GO CLIENT BEHAVIOR
 
-Go-enabled builds install the Go client. Builds with Go disabled retain the
-legacy Python client until the separate runtime profile migration is complete.
-The Go executable needs no interpreter at runtime.
+Every build installs the Go client. The executable needs no interpreter or
+Go compiler at runtime; the replaced Python client is retired.
 
 The Go client sends each command as a complete line, in input order.
 Each command can contain at most 1000 bytes, excluding its final newline.

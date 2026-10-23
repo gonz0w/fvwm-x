@@ -50,12 +50,8 @@ fi
 build_dir=${1:-$default_dir}
 # Vendored inputs and the installed SDK are the complete Go build inputs.
 # Never fetch a toolchain or a module during this gate.
-golang=disabled
-if [ "$profile" = go-clients ]; then
-    golang=enabled
-    export GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off
-    go version
-fi
+export GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off
+go version
 python_bin=$(command -v python3 || true)
 if [ -z "$python_bin" ]; then
     for candidate in /usr/local/bin/python3.[0-9] /usr/local/bin/python3.[0-9][0-9]; do
@@ -85,7 +81,7 @@ else
     set -- "$@" --buildtype=debugoptimized
 fi
 meson setup "$build_dir" "$@" --prefix=/usr/local \
-    -Dpython="$python_bin" -Dgolang="$golang" -Dlive-x-tests=true \
+    -Dpython="$python_bin" -Dlive-x-tests=true \
     -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled \
     -Dpkg_config_path="${PKG_CONFIG_PATH:-}" \
     -Dpng-security-backport="${FVWM_PNG_SECURITY_BACKPORT:-false}" \

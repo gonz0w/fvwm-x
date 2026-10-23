@@ -1,0 +1,190 @@
+{
+  "provenance": {
+    "commit": "6d8db4199c207e22ddac86c9641bcea17262527e",
+    "source": "bin/fvwm-menu-xlock.in",
+    "sha256": "b2d28a30f8fc261f914025d7ec9a0b995a53f687ca69ed3b94ed8cad87749543",
+    "capture": "Original Perl program; candidate Go executable never invoked."
+  },
+  "cases": [
+    {
+      "args": [],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"alpha\t(Shows caf\u00e9 pattern)\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"blank\t(Shows Blank screen)\" Exec xlock -mode blank\n+ \"random\t(Random mode)\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--special-first"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"blank\t(Shows Blank screen)\" Exec xlock -mode blank\n+ \"random\t(Random mode)\" Exec xlock -mode random\n+ \"\" Nop\n+ \"alpha\t(Shows caf\u00e9 pattern)\" Exec xlock -mode alpha\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--wm-icons"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"%menu/lock.xpm%alpha\t(Shows caf\u00e9 pattern)\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"%menu/lock.xpm%blank\t(Shows Blank screen)\" Exec xlock -mode blank\n+ \"%menu/lock.xpm%random\t(Random mode)\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--icon-item=0",
+        "--wm-icons"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"%menu/lock.xpm%alpha\t(Shows caf\u00e9 pattern)\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"%menu/lock.xpm%blank\t(Shows Blank screen)\" Exec xlock -mode blank\n+ \"%menu/lock.xpm%random\t(Random mode)\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "-n",
+        "Menu",
+        "-t",
+        "Title",
+        "--icon-title=title.xpm",
+        "--icon-item=item.xpm"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu Menu\nAddToMenu Menu \"%title.xpm%Title\" Title\n+ \"%item.xpm%alpha\t(Shows caf\u00e9 pattern)\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"%item.xpm%blank\t(Shows Blank screen)\" Exec xlock -mode blank\n+ \"%item.xpm%random\t(Random mode)\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--NAME=Menu",
+        "--TI=Title",
+        "--it=%D"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu Menu\nAddToMenu Menu \"Title\" Title\n+ \"caf\u00e9 pattern\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"Blank screen\" Exec xlock -mode blank\n+ \"Random mode\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--name",
+        "--help"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu --help\nAddToMenu --help \"XLock Modes\" Title\n+ \"alpha\t(Shows caf\u00e9 pattern)\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"blank\t(Shows Blank screen)\" Exec xlock -mode blank\n+ \"random\t(Random mode)\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item",
+        "-literal",
+        "argument",
+        "--",
+        "-nolock",
+        "-inwindow"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"-literal\" Exec xlock argument -nolock -inwindow -mode alpha\n+ \"\" Nop\n+ \"-literal\" Exec xlock argument -nolock -inwindow -mode blank\n+ \"-literal\" Exec xlock argument -nolock -inwindow -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--i"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option i is ambiguous (icon-item, icon-title, item)\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--icon"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option icon is ambiguous (icon-item, icon-title)\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--unknown"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Unknown option: unknown\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--wm-icons=x"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option wm-icons does not take an argument\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--item"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option item requires an argument\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--item=%n:%d:%D"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"alpha:Shows caf\u00e9 pattern:caf\u00e9 pattern\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"blank:Shows Blank screen:Blank screen\" Exec xlock -mode blank\n+ \"random:Random mode:Random mode\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%8n:%-8D"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"   alpha:caf\u00e9 pattern\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"   blank:Blank screen\" Exec xlock -mode blank\n+ \"  random:Random mode\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%*5n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"al...\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"bl...\" Exec xlock -mode blank\n+ \"ra...\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%*-5n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"...ha\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"...nk\" Exec xlock -mode blank\n+ \"...om\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%8*4n:%-8*-4n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"    a...:...a    \" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"    b...:...k    \" Exec xlock -mode blank\n+ \"    r...:...m    \" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%0n:%*0D:%*3D:%*99D"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"alpha:caf\u00e9 pattern:caf\u00e9 pattern:caf\u00e9 pattern\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"blank:Blank screen:Blank screen:Blank screen\" Exec xlock -mode blank\n+ \"random:Random mode:Random mode:Random mode\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%q %% %n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"%q %% alpha\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"%q %% blank\" Exec xlock -mode blank\n+ \"%q %% random\" Exec xlock -mode random\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%n\\t%D"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu XLockMenu\nAddToMenu XLockMenu \"XLock Modes\" Title\n+ \"alpha\tcaf\u00e9 pattern\" Exec xlock -mode alpha\n+ \"\" Nop\n+ \"blank\tBlank screen\" Exec xlock -mode blank\n+ \"random\tRandom mode\" Exec xlock -mode random\n",
+      "stderr": ""
+    }
+  ]
+}

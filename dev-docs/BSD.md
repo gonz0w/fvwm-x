@@ -49,6 +49,11 @@ pkg_add -I meson ninja libevent png librsvg
 ```
 
 OpenBSD supplies pkg-config and DejaVu fonts in its base/Xenocara sets.
+Both systems also require the approved patched Go SDK for every build profile.
+`bsd-prepare-core.sh` and `bsd-prepare-go.sh` select the checksum-pinned private
+SDK; source `builddir-bsd/go-sdk-environment.sh` before manual Meson commands.
+The installed utilities do not need the compiler. See [INSTALL.md](../INSTALL.md).
+
 Both systems supply GNU libiconv through the rendering dependency chain.
 Meson must select the ports header and library together: FreeBSD also has
 libc iconv, and its builtin probe does not see `/usr/local/include`.

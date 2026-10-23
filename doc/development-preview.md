@@ -104,7 +104,7 @@ Use an installed Go-enabled development build; see [INSTALL.md](../INSTALL.md)
 for dependencies and the supported Go compiler baseline. For a new build:
 
 ```sh
-./build -b builddir-preview -Dgolang=enabled
+./build -b builddir-preview
 ```
 
 Install it using the documented installation procedure. From an FVWM session,

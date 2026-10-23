@@ -34,7 +34,7 @@ def changed_inode(path, previous):
 
 
 class Peer:
-    def __init__(self, helper, root, legacy=False, timeout=5000):
+    def __init__(self, helper, root, timeout=5000):
         self.root = root
         # Legacy failure cleanup can signal its peer. Always use our own
         # disposable child, never the fixture runner or an arbitrary PID.
@@ -42,9 +42,9 @@ class Peer:
         self.name = 'ComExample-' + str(self.peer.pid)
         self.input = root / ('.tmp-com-in-' + self.name)
         self.output = root / ('.tmp-com-out-' + self.name)
-        command = (['perl', str(helper)] if legacy else [str(helper)])
+        command = [str(helper)]
         command += ['--com-name', self.name]
-        if not legacy and timeout is not None:
+        if timeout is not None:
             command += ['--timeout-ms', str(timeout)]
         self.process = subprocess.Popen(command, env=dict(os.environ,
             FVWM_USERDIR=str(root)), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -122,8 +122,8 @@ def multiline(text):
 
 
 
-def ordinary(helper, legacy, root):
-    peer = Peer(helper, root, legacy, None)
+def ordinary(helper, root):
+    peer = Peer(helper, root, timeout=None)
     try:
         startup = peer.send(b'startup')
         assert startup.endswith(b'is up'), startup
@@ -143,11 +143,10 @@ def run(args):
     results = {}
     with tempfile.TemporaryDirectory(prefix='script-com-') as directory:
         base = Path(directory)
-        for label, helper, legacy in [('go', args.helper, False), ('legacy', args.legacy, True)]:
-            root = base / label
-            root.mkdir()
-            ordinary(helper, legacy, root)
-            results[label+'-ordinary-seven-requests'] = 'passed'
+        root = base / 'go'
+        root.mkdir()
+        ordinary(args.helper, root)
+        results['go-ordinary-seven-requests'] = 'passed'
         for option in [[], ['--help'], ['--com-name', '0'], ['--com-name', 'ComExample-1'],
                 ['--com-name', '../2'], ['--com-name', 'ComExample-2147483648'],
                 ['--com-name', '2', '--timeout-ms', '0'],
@@ -271,8 +270,6 @@ def run(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--helper', type=Path, required=True)
-    parser.add_argument('--legacy', type=Path, required=True)
     args = parser.parse_args()
     args.helper = args.helper.resolve()
-    args.legacy = args.legacy.resolve()
     run(args)

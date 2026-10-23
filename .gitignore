@@ -13,8 +13,6 @@ __pycache__/
 bin/FvwmCommand
 bin/FvwmPrompt/FvwmPrompt
 bin/fvwm-bug
-bin/fvwm-convert-2.4
-bin/fvwm-convert-2.6
 bin/fvwm-menu-desktop
 bin/fvwm-menu-directory
 bin/fvwm-menu-headlines

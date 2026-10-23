@@ -62,7 +62,7 @@ if name == 'meson':
         session = stage / 'share/xsessions/fvwm3.desktop'
         session.parent.mkdir(parents=True)
         session.touch()
-        for client in ('FvwmPrompt', 'FvwmCommand', 'fvwm-menu-xlock', 'fvwm-menu-directory', 'fvwm-convert-2.6', 'fvwm-menu-desktop'):
+        for client in ('FvwmPrompt', 'FvwmCommand', 'fvwm-menu-xlock', 'fvwm-menu-directory', 'fvwm-menu-desktop'):
             exe = stage / 'bin' / client
             exe.write_text('#!/bin/sh\\nexit 0\\n')
             exe.chmod(0o755)
@@ -117,7 +117,8 @@ if name == 'meson':
                 self.assertIn('--buildtype=debugoptimized', args)
                 self.assertIn('-Dlive-x-tests=true', args)
                 self.assertIn('-Dpng-security-backport=true', args)
-                self.assertIn('-Dgolang=disabled', args)
+                self.assertFalse(any(arg.startswith('-Dgolang=') for arg in args))
+                self.assertIn(['offline-env', ['local', 'off', 'off']], calls)
                 pkg = next(arg for arg in args if arg.startswith('-Dpkg_config_path='))
                 self.assertIn('/private/test-libs', pkg)
                 if system != 'Linux':
@@ -129,7 +130,7 @@ if name == 'meson':
     def test_go_profile_is_offline_and_stages_only_clients(self):
         calls = self.run_gate(flags=('--go-clients',))
         args = self.setup_args(calls)
-        self.assertIn('-Dgolang=enabled', args)
+        self.assertFalse(any(arg.startswith('-Dgolang=') for arg in args))
         compile_args = next(args for name, args in calls if name == 'meson'
             and args[0] == 'compile')
         self.assertIn('fvwm3:executable', compile_args)
@@ -144,13 +145,12 @@ if name == 'meson':
                 'prompt-protocol-xvfb', 'command-client-xvfb',
                 'xlock-menu-contracts', 'xlock-menu', 'xlock-menu-xvfb',
                 'directory-menu-contracts', 'directory-menu', 'directory-menu-xvfb',
-                'config-converter-contracts', 'config-converter',
                 'script-com-example', 'script-com-example-xvfb',
                 'desktop-menu', 'desktop-menu-xvfb'):
             self.assertIn(name, tests)
         install = next(args for name, args in calls if name == 'meson'
             and args[0] == 'install')
-        self.assertIn('prompt-client,command-client,xlock-menu,directory-menu,config-converter,script-com-example,desktop-menu', install)
+        self.assertIn('prompt-client,command-client,xlock-menu,directory-menu,script-com-example,desktop-menu', install)
         self.assertTrue(any(name == 'python3' and 'tests/test_xdg_desktop.py'
             in args and '--provider' in args for name, args in calls))
         self.assertTrue(any(name == 'go' and '-race' in args

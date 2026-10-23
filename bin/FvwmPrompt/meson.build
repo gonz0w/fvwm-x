@@ -37,7 +37,7 @@ fvwmprompt = custom_target(
 fvwmprompt_test_binaries = custom_target(
     'FvwmPrompt-test-binaries',
     output: [
-        'FvwmPrompt.test', 'fvwmcommand.test', 'fvwmconvert26.test',
+        'FvwmPrompt.test', 'fvwmcommand.test',
         'fvwmmenudesktop.test', 'fvwmmenudirectory.test',
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'transport.test',
@@ -69,7 +69,7 @@ test('prompt-client', py,
 )
 
 # The command client shares the standard-library transport; no readline or
-# color dependencies enter this executable. Go remains an optional feature.
+# color dependencies enter this executable.
 fvwmcommand = custom_target(
     'FvwmCommand',
     output: 'FvwmCommand',
@@ -121,7 +121,7 @@ test('xlock-menu', py,
     is_parallel: false,
 )
 
-# Directory menus share the optional standard-library utility runtime.
+# Directory menus share the standard-library utility runtime.
 fvwm_menu_directory = custom_target(
     'fvwm-menu-directory',
     output: 'fvwm-menu-directory',
@@ -150,33 +150,6 @@ test('directory-menu', py,
     timeout: 180,
 )
 
-# The configuration converter never executes the configuration it reads.
-fvwm_convert = custom_target(
-    'fvwm-convert-2.6',
-    output: 'fvwm-convert-2.6',
-    input: fvwmprompt_files,
-    command: [
-        'env', 'GOCACHE=' + fvwmprompt_go_cache,
-        'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
-        golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
-        '-o', meson.current_build_dir() / 'fvwm-convert-2.6',
-        './cmd/fvwmconvert26',
-    ],
-    install: true,
-    install_dir: bindir,
-    install_tag: 'config-converter',
-)
-test('config-converter-contracts', py,
-    args: [files('../../tests/test_utility_contracts.py'),
-        '--converter', fvwm_convert],
-    timeout: 60,
-)
-test('config-converter', py,
-    args: [files('../../tests/test_config_converter.py'),
-        '--converter', fvwm_convert],
-    timeout: 180,
-)
-
 # Paired with the installed native Script example; no extra Go dependencies.
 fvwm_script_com = custom_target(
     'fvwm-script-ComExample',
@@ -195,8 +168,7 @@ fvwm_script_com = custom_target(
 )
 test('script-com-example', py,
     args: [files('../../tests/test_script_com_example.py'),
-        '--helper', fvwm_script_com,
-        '--legacy', files('../../modules/FvwmScript/Scripts/fvwm-script-ComExample.pl')],
+        '--helper', fvwm_script_com],
     timeout: 180,
 )
 
@@ -228,7 +200,7 @@ test('desktop-menu', py,
 )
 
 # Optional native-Form collection consumer and isolated directory/action worker.
-# Standard library only; disabled-Go profiles retain their existing desktop.
+# Standard library only; adoption remains an explicit configuration choice.
 fvwm_file_browser = custom_target(
     'fvwm-file-browser',
     output: 'fvwm-file-browser',

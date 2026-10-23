@@ -1,6 +1,5 @@
 {
   "pages": [
-    "fvwm-convert-2.6",
     "fvwm-menu-desktop",
     "fvwm-menu-directory",
     "fvwm-menu-xlock",
@@ -22,7 +21,9 @@
     "FvwmPager",
     "FvwmPerl",
     "FvwmRearrange",
-    "FvwmScript"
+    "FvwmScript",
+    "FvwmPrompt",
+    "fvwm-file-browser"
   ],
   "split_pages": [
     "fvwm3commands",
@@ -33,9 +34,5 @@
     "commands",
     "menus",
     "styles"
-  ],
-  "go_pages": [
-    "FvwmPrompt",
-    "fvwm-file-browser"
   ]
 }

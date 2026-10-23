@@ -1,4 +1,4 @@
-if golang.found() and get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('script-com-example-xvfb', py,
         args: [files('live_x/script_com_example_live.py'),
             '--fvwm', fvwm3, '--mfl', fvwm_mfl, '--script', fvwm_script,
@@ -10,7 +10,7 @@ if golang.found() and get_option('live-x-tests') and host_machine.system() in ['
     )
 endif
 
-if golang.found() and get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('directory-menu-xvfb', py,
         args: [files('live_x/directory_menu_live.py'),
             '--fvwm', fvwm3, '--mfl', fvwm_mfl,
@@ -20,7 +20,7 @@ if golang.found() and get_option('live-x-tests') and host_machine.system() in ['
     )
 endif
 
-if golang.found() and get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('xlock-menu-xvfb', py,
         args: [files('live_x/xlock_menu_live.py'),
             '--fvwm', fvwm3, '--mfl', fvwm_mfl,
@@ -34,7 +34,7 @@ endif
 test('bsd-default-x-contract', py, args: [files('test_bsd_default_x.py')],
     timeout: 180)
 
-if golang.found() and get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('command-client-xvfb', py,
         args: [files('live_x/command_client_live.py'),
             '--fvwm', fvwm3, '--mfl', fvwm_mfl,
@@ -84,7 +84,7 @@ test('protocol-metadata', py,
 )
 test('utility-contracts', py, args: [files('test_utility_contracts.py')])
 
-if golang.found() and get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('prompt-protocol-xvfb', py,
         args: [files('live_x/prompt_protocol_live.py'),
                '--fvwm', fvwm3, '--mfl', fvwm_mfl,
@@ -3657,7 +3657,7 @@ config_line_test = executable(
 test('config-line', config_line_test)
 
 
-if golang.found() and get_option('live-x-tests')
+if get_option('live-x-tests')
     test('desktop-menu-xvfb', py,
         args: [files('live_x/xdg_menu_live.py'),
             '--fvwm', fvwm3,
@@ -3778,7 +3778,7 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
     endforeach
 endif
 
-if golang.found() and get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('file-browser-xvfb', py,
         args: [files('live_x/file_browser_live.py'),
             '--fvwm', fvwm3, '--mfl', fvwm_mfl,

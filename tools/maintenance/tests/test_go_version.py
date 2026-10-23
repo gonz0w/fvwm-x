@@ -44,7 +44,7 @@ class GoVersionTests(unittest.TestCase):
                                 capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 1)
         self.assertEqual(result.stdout, '')
-        self.assertIn('-Dgolang=disabled', result.stderr)
+        self.assertIn('automatic toolchain downloads are disabled', result.stderr)
         self.assertIn('1.27.2', result.stderr)
         result = subprocess.run([sys.executable, str(script), 'go1.27.2'],
                                 capture_output=True, text=True, timeout=10)
@@ -65,14 +65,12 @@ class GoMesonTests(unittest.TestCase):
         self.calls = self.root / 'calls.json'
         # The fixture executes the production block, not a hand-copied policy.
         text = (ROOT / 'meson.build').read_text()
-        block = text.split('# Optional Go compiler policy;', 1)[1]
-        block = block.split('# End optional Go compiler policy.', 1)[0]
-        block = '# Optional Go compiler policy;' + block
+        block = text.split('# Required Go compiler policy;', 1)[1]
+        block = block.split('# End required Go compiler policy.', 1)[0]
+        block = '# Required Go compiler policy;' + block
         (self.source / 'meson.build').write_text(
             "project('go-policy', meson_version: '>=1.5.1')\n"
             "py = import('python').find_installation('python3')\n" + block)
-        (self.source / 'meson.options').write_text(
-            "option('golang', type: 'feature', value: 'auto')\n")
         target = self.source / 'tools/maintenance'
         target.mkdir(parents=True)
         shutil.copy2(ROOT / 'tools/maintenance/go_version.py', target)
@@ -85,12 +83,19 @@ class GoMesonTests(unittest.TestCase):
                         'print(os.environ["GO_POLICY_VERSION"])\n')
         fake.chmod(0o755)
 
-    def configure(self, version, feature='enabled'):
+    def configure(self, version, options=(), missing=False):
         env = dict(os.environ, PATH=str(self.tools) + os.pathsep + os.environ['PATH'],
                    GO_POLICY_VERSION=version, GO_POLICY_CALLS=str(self.calls),
                    GOTOOLCHAIN='auto')
-        return subprocess.run(['meson', 'setup', str(self.root / 'build'),
-                               str(self.source), '-Dgolang=' + feature],
+        if missing:
+            (self.tools / 'go').unlink()
+            for name in ('env', 'python3', 'ninja', 'sh'):
+                program = shutil.which(name)
+                if program:
+                    (self.tools / name).symlink_to(program)
+            env['PATH'] = str(self.tools)
+        return subprocess.run([shutil.which('meson'), 'setup', str(self.root / 'build'),
+                               str(self.source), *options],
                               env=env, capture_output=True, text=True, timeout=120)
 
     def test_patched_compiler_uses_selected_program_without_downloading(self):
@@ -99,20 +104,29 @@ class GoMesonTests(unittest.TestCase):
         self.assertEqual(json.loads(self.calls.read_text()),
                          {'argv': ['env', 'GOVERSION'], 'toolchain': 'local'})
 
-    def test_unpatched_compiler_fails_with_upgrade_or_disable_diagnostic(self):
+    def test_unpatched_compiler_requires_upgrade(self):
         result = self.configure('go1.27.0')
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('-Dgolang=disabled', result.stdout + result.stderr)
+        self.assertIn('FVWM-X builds require', result.stdout + result.stderr)
+        self.assertNotIn('-Dgolang=disabled', result.stdout + result.stderr)
 
-    def test_disabled_go_never_invokes_compiler(self):
-        result = self.configure('devel unsupported', feature='disabled')
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    def test_missing_compiler_fails_before_invocation(self):
+        result = self.configure('unused', missing=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('go', result.stdout + result.stderr)
+        self.assertIn('not found', result.stdout + result.stderr)
         self.assertFalse(self.calls.exists())
 
-    def test_auto_feature_refuses_unpatched_present_compiler(self):
-        result = self.configure('go1.26.8', feature='auto')
+    def test_disabled_profile_is_no_longer_supported(self):
+        result = self.configure('go1.27.2', options=('-Dgolang=disabled',))
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('1.26.9', result.stdout + result.stderr)
+        self.assertIn('Unknown option', result.stdout + result.stderr)
+        self.assertFalse(self.calls.exists())
+
+    def test_prerelease_compiler_is_refused(self):
+        result = self.configure('go1.28rc1')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('stable Go', result.stdout + result.stderr)
 
 
 if __name__ == '__main__':

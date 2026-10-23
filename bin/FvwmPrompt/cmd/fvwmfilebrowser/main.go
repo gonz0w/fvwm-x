@@ -38,6 +38,7 @@ type options struct {
 	hidden, inspect               bool
 	targets                       [][]byte
 	properties                    bool
+	actions                       actionFlags
 }
 type pendingWork struct {
 	serial     uint64
@@ -65,7 +66,9 @@ type browser struct {
 	acks                       chan string
 	results                    chan completedWork
 	status                     string
-	order, inspected           string
+	order                      string
+	inspected                  []string
+	actions                    actionFlags
 	view                       string
 	reverse                    bool
 }
@@ -193,8 +196,8 @@ func (b *browser) show() error {
 	button("Select visible", "", "select-visible", "-")
 	button("Clear selection", "", "clear-selection", "-")
 	button("Properties (F2)", "F2", "properties", "-")
-	if b.snapshot != nil && b.inspected != "" {
-		if details, err := b.snapshot.ObservedDetails(b.inspected); err == nil {
+	if b.snapshot != nil && len(b.inspected) != 0 {
+		if details, err := b.snapshot.ObservedSelection(b.inspected); err == nil {
 			line("Line left")
 			line(`Text "Observed metadata; Refresh updates it. No link is followed."`)
 			for _, text := range details {
@@ -219,6 +222,10 @@ func (b *browser) show() error {
 	button("Go", "", "path", "x$(path:Base64)")
 	button("Cancel work", "", "cancel", "-")
 	button("Close (Esc)", "^[", "close", "-")
+	for index, action := range b.actions {
+		line("Line left")
+		button(displayText(action.Label, 32), "", "custom", strconv.Itoa(index))
+	}
 	line(`Line left`)
 	line(`Text "Arrows/PgUp/PgDn or wheel; Shift extends selection; Space toggles; Tab moves fields. Idle close: 5 minutes."`)
 	line("Timeout 3000 \"Echo FVWM_FILES_2 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x\" \"\"")
@@ -321,7 +328,7 @@ func (b *browser) completed(event completedWork) error {
 					b.history = b.history[:len(b.history)-1]
 				}
 				b.model.Selected = nil
-				b.inspected = ""
+				b.inspected = nil
 				b.model.Focus = ""
 			}
 			status := "Folder loaded. Symlink/special-file actions unavailable."
@@ -339,9 +346,9 @@ func (b *browser) completed(event completedWork) error {
 				return err
 			}
 			b.snapshot, b.hidden = snapshot, snapshot.Hidden
-			if b.inspected != "" {
-				if _, err := snapshot.ObservedDetails(b.inspected); err != nil {
-					b.inspected = ""
+			if len(b.inspected) != 0 {
+				if _, err := snapshot.ObservedSelection(b.inspected); err != nil {
+					b.inspected = nil
 				}
 			}
 			if len(result.Selected) != 0 {
@@ -352,15 +359,15 @@ func (b *browser) completed(event completedWork) error {
 					b.model.Focus = result.Selected[0]
 				}
 				if event.work.navigation == "properties" {
-					if len(result.Selected) != 1 {
-						return errors.New("properties requires one target")
-					}
-					b.inspected = result.Selected[0]
+					b.inspected = append([]string(nil), result.Selected...)
 				}
 			}
 			b.status = status
 		} else if result.Status == "started" {
 			b.status = "Application started; the browser cannot confirm that the file opened"
+			if event.work.request.Operation == "custom" {
+				b.status = fmt.Sprintf("Application started with %d selected paths; completion is not tracked.", result.ActionCount)
+			}
 		} else {
 			b.status = result.Error
 		}
@@ -445,14 +452,24 @@ func (b *browser) action(message string) (bool, error) {
 	case "clear-selection":
 		err = b.model.ClearSelection(b.model.Generation)
 		if err == nil {
-			b.inspected = ""
+			b.inspected = nil
 		}
 	case "properties":
 		ids := b.model.SelectedIDs()
-		if len(ids) != 1 || b.snapshot == nil {
-			err = errors.New("select exactly one item for observed properties")
-		} else if _, err = b.snapshot.ObservedDetails(ids[0]); err == nil {
-			b.inspected = ids[0]
+		if b.snapshot == nil {
+			err = errors.New("folder is not ready")
+		} else if _, err = b.snapshot.ObservedSelection(ids); err == nil {
+			b.inspected = append([]string(nil), ids...)
+		}
+	case "custom":
+		index, parseErr := strconv.Atoi(parts[4])
+		if parseErr != nil || index < 0 || index >= len(b.actions) {
+			err = errors.New("unknown configured action")
+		} else if ids := b.model.SelectedIDs(); len(ids) == 0 {
+			err = errors.New("select at least one entry for the configured action")
+		} else {
+			err = b.queue(workRequest{Operation: "custom", Snapshot: b.snapshot,
+				IDs: ids, Program: b.actions[index].Program}, "action")
 		}
 	case "home":
 		err = b.navigate(b.home, "push")
@@ -549,7 +566,7 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, view: o.view, hidden: o.hidden, acks: make(chan string, 1), results: make(chan completedWork, 1)}
+		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), results: make(chan completedWork, 1)}
 	defer func() {
 		if b.cancel != nil {
 			b.cancel()
@@ -646,8 +663,9 @@ func main() {
 	home, _ := os.UserHomeDir()
 	flag.StringVar(&o.dir, "dir", home, "initial absolute local directory or local file URI")
 	var reveal, properties targetFlags
+	flag.Var(&o.actions, "action", "configured LABEL=EXECUTABLE, receives selected literal paths; repeat up to four")
 	flag.Var(&reveal, "reveal", "select a literal local target in its parent; repeat for one folder")
-	flag.Var(&properties, "properties", "show one local target in its parent with observed properties")
+	flag.Var(&properties, "properties", "show observed properties for local targets in one parent; repeat")
 	flag.StringVar(&o.view, "view", "list", "initial collection view: list or grid")
 	flag.StringVar(&o.socket, "socket", "", "FvwmMFL socket (default: standard private discovery)")
 	flag.StringVar(&o.opener, "opener", "", "literal opener executable; default: xdg-open when available")

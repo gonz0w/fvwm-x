@@ -48,15 +48,16 @@ entries on six targets/seven profiles, five Go packages/36 cases per target,
 six native browser drivers and three actual theme configurations pass. Exact
 matching Linux/FreeBSD ARM64 policy/product/race/scoped sanitizer results are
 retained; four targets are fresh. [Integrated report](verification/VERIFICATION-2026-10-23-COLLECTION-CYCLE.md).
-The metadata refresh batch is ready for review with focused Linux checks;
-cycle **0/3 merged, 1/3 on its merge**. Full install/default-X/full compiler-feature
+PR170 metadata refresh is merged with focused Linux checks. The selection-action
+batch passes focused Linux and early FreeBSD checks and is ready for review;
+cycle **1/3 merged, 2/3 on this merge**. Full install/default-X/full compiler-feature
 and owner/milestone/release acceptance remain at their required boundary.
 Native-CPU/hardware/toolkit/compositor/assistive checks remain separate.
 
 The due periodic comparison is complete. Core/MFL binaries are exact PR164
 identities; consumer/Form feature-size observations remain explicit and no new
 speedup is claimed. PR169 is the new independent performance reference:
-**0/5 merged, 1/5 on the metadata-refresh merge**. Tuning stays deferred.
+**1/5 merged after PR170, 2/5 on the selection-action merge**. Tuning stays deferred.
 [Performance and size report](verification/PERFORMANCE-2026-10-23-PR169.md).
 
 Representative theme smoke checks **pass** on reused Linux native-X binaries:
@@ -64,7 +65,9 @@ full shipped Slate dark, Dune light and a controlled classic/minimal configurati
 with 9x15 font, explicit legacy Form colors and different borders. List/grid,
 empty/large/escaped labels, focus/selection, keyboard, hit targets/scroll and
 view switches pass; exact config/font/scale inputs and screenshots are preserved.
-The new refresh behavior passes all three again at its focused checkpoint.
+The refresh and selection-action checkpoints pass all three; the latest run
+exercises four configured action buttons, multi-selection properties and literal
+process handoff, with 15 screenshots per profile.
 Wider theme/scale/accessibility acceptance remains separate; these runs do not
 multiply every compiler/install/platform leg by all themes.
 [Smoke contract](THEME-STANDARDS.md#primitive-theme-compatibility-smoke-set),
@@ -72,7 +75,8 @@ multiply every compiler/install/platform leg by all themes.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Atomic metadata refresh, FILE-VIEW/DATA/ACTION-01 | Ready for review; focused new-feature checks pass | Bounded generation-checked transactions, snapshot reconciliation/no-op handling, observation revisions, visible-neighbor focus recovery and browser refresh/lost-selection feedback. Five Go packages/43 cases and the separate race run, vet and three real-theme native-X drivers pass; 13 screenshots per theme and updated manual captured/inspected. The PR167–169 six-target cycle and periodic comparison close first. New batch becomes 1/3 and 1/5 only on merge; broader provider/native-update and protected-content handoffs remain open. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-REFRESH.md), [contract](decisions/COLLECTION-REFRESH-2026-10-23.md). |
+| Configured file-selection actions, FILE-ACTION/DATA/VIEW-01 | Ready for review; focused Linux and early FreeBSD checks pass | Up to four configured literal executables receive a fully validated selected-path argument set; multi-entry observed properties and repeated initial --properties preserve selection ownership. Immediate cancellation has a consistent result. Five Go packages/51 cases pass on both targets and in Linux race; three real-theme drivers pass with 15 screenshots each. A classic observer selector fix repeats only that driver; qualified native binaries are unchanged. Cycle 1/3 and performance 1/5 merged; this becomes 2/3 and 2/5 on merge. [Report](verification/VERIFICATION-2026-10-23-FILE-SELECTION-ACTIONS.md), [contract](decisions/FILE-SELECTION-ACTIONS-2026-10-23.md). |
+| Atomic metadata refresh, FILE-VIEW/DATA/ACTION-01 | Merged in [PR #170](https://github.com/gonz0w/fvwm-x/pull/170); focused checks pass | Bounded generation-checked transactions, snapshot reconciliation/no-op handling, observation revisions, visible-neighbor focus recovery and browser refresh/lost-selection feedback. Five Go packages/43 cases and the separate race run, vet and three real-theme native-X drivers pass; 13 screenshots per theme and updated manual captured/inspected. The PR167–169 six-target cycle and periodic comparison close first. PR170 advances the counters to 1/3 and 1/5; broader provider/native-update and protected-content handoffs remain open. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-REFRESH.md), [contract](decisions/COLLECTION-REFRESH-2026-10-23.md). |
 | Collection grid/ranges, FILE-VIEW/ACTION-01 | Merged in [PR #169](https://github.com/gonz0w/fvwm-x/pull/169); accumulated integration qualified | Native icon-grid over the shared model, keyboard/mouse additive ranges and browser --view/F7 switching preserve IDs/focus/selection. Both Linux/FreeBSD ARM64 pass seven native entries and five Go packages/36 cases; Linux race and three scoped sanitizer policy checks pass. A retiring-window observer correction reruns only three actual-X drivers; unchanged product/policy evidence is retained. Eleven screenshots per driver, new grid views inspected. The accumulated PR167–169 cycle is now closed; the new reference is PR169. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-GRID.md), [contract](decisions/COLLECTION-GRID-2026-10-23.md). |
 | Native scrolling collection, FILE-VIEW/ACTION-01 | Merged in [PR #168](https://github.com/gonz0w/fvwm-x/pull/168); accumulated integration qualified | One native viewport, keyboard/mouse focus/selection, bounded whole-view bitmap and browser adoption with acknowledged configuration batches. Linux/FreeBSD ARM64 each pass seven selected native entries and five Go packages/35 tests; Linux race, three scoped policy sanitizers and three composed actual-X drivers pass. Eight screenshots per driver captured; new UI inspected. Accumulated qualification now closes with PR169. Broader owner acceptance, incremental providers and protected clipboard content remain open. [Report](verification/VERIFICATION-2026-10-23-COLLECTION-LIST.md), [contract](decisions/COLLECTION-LIST-2026-10-23.md). |
 | Portable browser target requests, FILE-DATA/ACTION/INTEGRATION-01 | Merged in [PR #167](https://github.com/gonz0w/fvwm-x/pull/167); accumulated integration qualified | Local path/URI requests preserve bytes; isolated atomic reveal and initial properties use generation-checked selection. Five Go packages/33 cases pass on Linux and FreeBSD ARM64; Linux race/vet/native-X with three browser instances pass. Nine screenshots are captured; two new views are inspected. The prior PR164–166 six-target cycle is qualified before this implementation; the PR167 merge advances the current cycle to 1/3. SQLite remains deferred behind the existing native content/storage contracts. [Report](verification/VERIFICATION-2026-10-23-FILE-BROWSER-HANDOFF.md), [contract](decisions/FILE-BROWSER-HANDOFF-2026-10-23.md). |
@@ -386,14 +390,14 @@ sort modes, cross-page selection controls and an observed-metadata inspector.
 This advances FILE-VIEW-01 / FILE-ACTION-01 and the shared clipboard metadata
 foundation without admitting clipboard payloads. See the
 [collection-controls contract](decisions/FILE-COLLECTION-CONTROLS-2026-10-23.md).
-Current selection after merged PR169: the accumulated affected six-target cycle,
-periodic comparison and representative theme smoke set are complete. The next
-coherent metadata refresh batch adds generation-checked transactions/reconciliation,
-observation revisions, visible-neighbor focus recovery and browser change/lost-selection
-feedback. Focused Linux policy/race/vet/native-X checks in all three themes pass;
-review and merge follow. Keep remaining in-place native updates/external providers,
-file watching/mutations and protected-content handoffs with their owners. Preserve
-the shared metadata/private content boundary and theme/default ownership.
+Current selection after merged PR170: metadata refresh is merged. The next
+coherent file-selection action batch is ready for review: bounded configured
+executable handoff over revalidated literal selected paths, observed multi-entry
+properties with repeated initial --properties, and consistent immediate-cancel
+results. Focused Linux/race/vet/three-theme native-X plus early FreeBSD process/
+filename-byte checks pass. Keep remaining in-place native updates/external
+providers, watching/file jobs and protected-content handoffs with their owners;
+preserve the metadata/private-content boundary and theme/default ownership.
 SQLite is not a current prerequisite: live file state and
 opaque content/collection handles stay independent of a storage backend. STORE-01
 still owns protected memory first and optional versioned encrypted persistence

@@ -21,6 +21,22 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	if path := os.Getenv("FVWM_TEST_ACTION_REPORT"); path != "" && len(os.Args) > 1 && os.Args[1] != "--worker" {
+		args := make([][]byte, 0, len(os.Args)-1)
+		for _, arg := range os.Args[1:] {
+			args = append(args, []byte(arg))
+		}
+		cwd, _ := os.Getwd()
+		data, _ := json.Marshal(struct {
+			Args [][]byte
+			Cwd  []byte
+		}{args, []byte(cwd)})
+		if err := os.WriteFile(path, data, 0600); err != nil {
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
 	if len(os.Args) == 2 && os.Args[1] == "--worker" {
 		switch os.Getenv("FVWM_TEST_FILE_WORKER") {
 		case "block":
@@ -208,13 +224,13 @@ func TestViewControlsPreserveDomainSelectionAndObserveProperties(t *testing.T) {
 	if act("select-visible", "-", "") != nil || len(b.model.SelectedIDs()) != 2 {
 		t.Fatal("page selection lost hidden item")
 	}
-	if act("properties", "-", "id19") == nil {
-		t.Fatal("ambiguous properties accepted")
+	if act("properties", "-", "id19") != nil || len(b.inspected) != 2 {
+		t.Fatal("properties lost filtered-out selection")
 	}
 	if act("clear-selection", "-", "id19") != nil || len(b.model.SelectedIDs()) != 0 {
 		t.Fatal("clear missed hidden selection")
 	}
-	if act("properties", "-", "id19") != nil || b.inspected != "id19" {
+	if act("properties", "-", "id19") != nil || (len(b.inspected) != 1 || b.inspected[0] != "id19") {
 		t.Fatal("properties did not use selected ID")
 	}
 	if act("unfilter", "-", "id19") != nil || b.model.VisibleCount() != 20 {
@@ -363,7 +379,7 @@ func TestCompletedRefreshPreservesNeighborsAndReportsChanges(t *testing.T) {
 	b.model.Replace(before.Entries())
 	b.model.Focus = before.Items[1].ID
 	b.model.SelectIDs(b.model.Generation, []string{before.Items[0].ID, before.Items[1].ID})
-	b.inspected = before.Items[1].ID
+	b.inspected = []string{before.Items[1].ID}
 	os.Remove(filepath.Join(root, "b"))
 	os.WriteFile(filepath.Join(root, "a"), []byte("new larger metadata"), 0600)
 	os.WriteFile(filepath.Join(root, "d"), nil, 0600)
@@ -372,7 +388,7 @@ func TestCompletedRefreshPreservesNeighborsAndReportsChanges(t *testing.T) {
 	if err := b.completed(event); err != nil {
 		t.Fatal(err)
 	}
-	if b.model.Focus != before.Items[2].ID || len(b.model.Selected) != 1 || !strings.Contains(b.status, "1 added, 1 updated, 1 removed; 1 selected entries lost") || b.inspected != "" {
+	if b.model.Focus != before.Items[2].ID || len(b.model.Selected) != 1 || !strings.Contains(b.status, "1 added, 1 updated, 1 removed; 1 selected entries lost") || len(b.inspected) != 0 {
 		t.Fatal(b.status, b.model.Focus, b.model.Selected, b.inspected)
 	}
 	generation := b.model.Generation

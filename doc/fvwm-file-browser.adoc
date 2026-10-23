@@ -11,11 +11,13 @@ fvwm-file-browser - bounded native folder-browser foundations
 
 *fvwm-file-browser* [*--dir* _local-target_] [*--hidden*]
 [*--view* list|grid] [*--socket* _path_] [*--opener* _executable_] [*--terminal* _executable_]
+[*--action* _label=executable_] ...
 
 *fvwm-file-browser* *--reveal* _local-target_ [*--reveal* _local-target_ ...]
 [*--view* list|grid] [*--socket* _path_] [*--hidden*]
 
-*fvwm-file-browser* *--properties* _local-target_ [*--view* list|grid]
+*fvwm-file-browser* *--properties* _local-target_ [*--properties* _local-target_ ...]
+[*--action* _label=executable_] ... [*--view* list|grid]
 [*--socket* _path_] [*--hidden*]
 
 *fvwm-file-browser* *--inspect* [*--dir* _local-target_] [*--hidden*]
@@ -110,12 +112,51 @@ bounded validated replacement. Neither path publishes a partial collection.
 The filter, presentation and surviving IDs remain intact. Native controls are
 still rebuilt as a complete view; file watching is not enabled.
 
-Properties (F2) requires exactly one selected item, including a selection on
-another page or excluded by the filter. It displays the name, kind, mode,
-observed byte size and modification time in UTC from the last successful scan.
-It does not query the filesystem, follow symlinks, inspect content or validate a
-currently actionable target. Refresh updates the observation. Opening a file
-still uses the isolated worker's separate identity validation.
+Properties (F2) accepts 1 to 256 selected entries, including offscreen and
+filtered-out selections. A single entry shows the observed name, kind, mode,
+byte size and modification time in UTC. Multiple entries show counts of regular
+files, folders, links and special entries, plus the sum of regular-file sizes.
+Folder contents and link targets are not counted. Invalid or overflowing totals
+are refused; this is not recursive disk usage. The panel reads the last admitted
+snapshot without querying the filesystem or file contents. Refresh updates the
+observation; if any inspected identity disappears, the old panel retires.
+Opening a file still uses the isolated worker's separate identity validation.
+
+== CONFIGURED SELECTION ACTIONS
+
+Repeat `--action 'Label=executable'` up to four times to add named native buttons.
+Labels are unique valid UTF-8 text of at most 32 bytes. Configured executable
+text is also valid UTF-8; selected filenames preserve their original bytes.
+The executable is one literal
+program name or path; it is not a shell fragment or argument template. Quote a
+path containing spaces as part of the option. No configured action runs on
+startup. For example:
+
+....
+fvwm-file-browser --dir "$HOME" --action 'Edit=gvim'
+....
+
+Clicking the button submits the current selected IDs, including filtered-out
+selections, from that exact view. With 1 to 256 selected entries, the isolated
+worker admits the entire argument list and checks the parent and every selected
+entry against its observed identity before starting one process. Each selected
+path becomes one literal absolute-path argument, in the current model order;
+no label, URI decoding or shell expansion reconstructs an argument. Files and
+folders are supported; a link, special entry, missing or changed target refuses
+the entire launch. The original filename bytes are preserved. A busy worker
+refuses another action rather than queueing a later side effect.
+
+Paths are at most 4096 bytes each and share a 32 KiB argument budget, including
+terminators. Oversize selections are refused as a whole. Executable/environment
+and operating-system process limits can still cause launch failure. The result
+reports process creation and the submitted path count, not application completion.
+Path validation is an observation, not a descriptor lease against a later rename;
+file mutation jobs require their own contract. Configure only programs whose
+selected-path argument interface matches this handoff. The default Open selected
+(F3) continues to require one item because generic openers differ in multi-file
+support.
+
+== LIFETIME AND TARGET REQUESTS
 
 Cancel work invalidates the pending result and requests worker termination.
 Close (Escape) exits the helper and closes its Form. The prototype closes after
@@ -145,7 +186,7 @@ Decoded paths must be absolute, contain no NUL and fit the 4096-byte path limit;
 encoded target arguments are bounded before decoding. OS argument limits also
 apply to a launch request.
 
-Choose --dir, repeated --reveal, or one --properties. The forms are mutually
+Choose --dir, repeated --reveal, or repeated --properties. The forms are mutually
 exclusive. --reveal loads the common parent and selects one to 256 requested
 entries, bringing the first requested entry's page into view. It never executes
 or opens the targets. A requested dot entry automatically enables hidden entries.
@@ -155,8 +196,8 @@ trailing separators are normalized for reveal/properties. Use --dir / to browse
 the filesystem root. Symlinks and special files may be revealed and inspected;
 their activation remains unavailable.
 
---properties selects one entry in its parent and immediately shows the observed
-properties panel. Target resolution, including parent enumeration, runs in the
+--properties selects one to 256 entries in their common parent and immediately
+shows the observed single-entry properties or selection summary. Target resolution, including parent enumeration, runs in the
 same isolated cancellable worker. The whole parent's admission limit still
 applies. These are portable launch requests for separate browser instances,
 not a single-instance daemon, FileManager1 service, new default folder handler
@@ -179,7 +220,8 @@ or general structured MFL files provider.
   Reveal an existing entry in its parent; repeat for bounded targets in one folder.
 
 *--properties* _local-target_::
-  Reveal one entry with its last observed properties shown immediately.
+  Reveal one to 256 entries in a common parent; repeat the option to show their
+  observed selection summary immediately.
 
 *--socket* _path_::
   Explicit FvwmMFL Unix socket. Otherwise use FVWMMFL_SOCKET, then the normal
@@ -193,6 +235,11 @@ or general structured MFL files provider.
 
 *--terminal* _executable_::
   Terminal program; default x-terminal-emulator, then xterm when found.
+
+*--action* _label=executable_::
+  Add a configured selection-action button; repeat at most four times. The
+  executable receives selected literal absolute paths as separate arguments.
+  See CONFIGURED SELECTION ACTIONS for admission, validation and launch results.
 
 *--inspect*::
   Run the same isolated scanner without X and emit one schema-version-1 JSON

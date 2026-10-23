@@ -17,7 +17,7 @@ func TestTargetOptionsRejectConflictsBeforeFilesystemWork(t *testing.T) {
 		dirSet             bool
 		reveal, properties targetFlags
 	}{
-		{true, targetFlags{"/a"}, nil}, {true, nil, targetFlags{"/a"}}, {false, targetFlags{"/a"}, targetFlags{"/b"}}, {false, nil, targetFlags{"/a", "/b"}}, {false, targetFlags{"file://remote/a"}, nil}, {false, targetFlags{""}, nil},
+		{true, targetFlags{"/a"}, nil}, {true, nil, targetFlags{"/a"}}, {false, targetFlags{"/a"}, targetFlags{"/b"}}, {false, targetFlags{"file://remote/a"}, nil}, {false, targetFlags{""}, nil},
 	} {
 		o := options{dir: "/home"}
 		if prepareOptions(&o, check.dirSet, check.reveal, check.properties) == nil || len(o.targets) != 0 {
@@ -31,6 +31,10 @@ func TestTargetOptionsRejectConflictsBeforeFilesystemWork(t *testing.T) {
 	o = options{dir: "/home"}
 	if prepareOptions(&o, false, nil, targetFlags{"file://localhost/tmp/%FF"}) != nil || !o.properties || string(o.targets[0]) != "/tmp/\xff" || o.initialRequest().Operation != "locate" {
 		t.Fatal(o)
+	}
+	multi := options{}
+	if prepareOptions(&multi, false, nil, targetFlags{"/tmp/a", "/tmp/b"}) != nil || !multi.properties || len(multi.targets) != 2 {
+		t.Fatal("repeated properties not admitted", multi)
 	}
 	var flags targetFlags
 	for i := 0; i < 256; i++ {
@@ -79,7 +83,23 @@ func TestInitialPropertiesOwnsSelectionAndViewport(t *testing.T) {
 	if err := b.completed(completedWork{work: pendingWork{navigation: "properties"}, result: r}); err != nil {
 		t.Fatal(err)
 	}
-	if len(b.model.SelectedIDs()) != 1 || b.inspected != r.Selected[0] || b.model.Focus != r.Selected[0] {
+	if len(b.model.SelectedIDs()) != 1 || (len(b.inspected) != 1 || b.inspected[0] != r.Selected[0]) || b.model.Focus != r.Selected[0] {
 		t.Fatal("initial selection/property lost")
+	}
+}
+
+func TestInitialMultiplePropertiesOwnsACompleteSelection(t *testing.T) {
+	left, right := net.Pipe()
+	defer left.Close()
+	defer right.Close()
+	go io.Copy(io.Discard, right)
+	root := t.TempDir()
+	for _, name := range []string{"a", "b"} {
+		os.WriteFile(filepath.Join(root, name), nil, 0600)
+	}
+	r := perform(workRequest{Operation: "locate", Targets: [][]byte{[]byte(filepath.Join(root, "b")), []byte(filepath.Join(root, "a"))}})
+	b := browser{session: transport.New(left), instance: "multi-properties"}
+	if err := b.completed(completedWork{work: pendingWork{navigation: "properties"}, result: r}); err != nil || len(b.inspected) != 2 || len(b.model.Selected) != 2 || b.model.Focus != r.Selected[0] {
+		t.Fatal(err, b.inspected, b.model.Selected)
 	}
 }

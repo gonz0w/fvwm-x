@@ -11,6 +11,7 @@ import (
 	"errors"
 	"io"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
@@ -24,15 +25,17 @@ type workRequest struct {
 	Hidden    bool                `json:"hidden"`
 	Snapshot  *filemodel.Snapshot `json:"snapshot,omitempty"`
 	ID        string              `json:"id,omitempty"`
+	IDs       []string            `json:"ids,omitempty"`
 	Program   string              `json:"program,omitempty"`
 }
 
 type workResult struct {
-	Schema   int                 `json:"schema_version"`
-	Selected []string            `json:"selected_ids,omitempty"`
-	Status   string              `json:"status"`
-	Snapshot *filemodel.Snapshot `json:"snapshot,omitempty"`
-	Error    string              `json:"error,omitempty"`
+	Schema      int                 `json:"schema_version"`
+	Selected    []string            `json:"selected_ids,omitempty"`
+	Status      string              `json:"status"`
+	Snapshot    *filemodel.Snapshot `json:"snapshot,omitempty"`
+	Error       string              `json:"error,omitempty"`
+	ActionCount int                 `json:"action_count,omitempty"`
 }
 
 func decode(data []byte, value any) error {
@@ -61,6 +64,14 @@ func perform(request workRequest) (result workResult) {
 		}
 		result.Status, result.Snapshot, result.Selected = "loaded", snapshot, ids
 		return
+	}
+	if request.Operation == "custom" {
+		paths, err := request.Snapshot.ValidateSelection(request.IDs)
+		if err != nil {
+			result.Error = err.Error()
+			return
+		}
+		return launch(request, paths)
 	}
 	path := string(request.Path)
 	if request.Operation == "activate" || request.Operation == "terminal" {
@@ -110,6 +121,15 @@ func perform(request workRequest) (result workResult) {
 	if request.Operation == "terminal" {
 		args = nil
 	}
+	return launch(request, args)
+}
+
+func launch(request workRequest, args []string) (result workResult) {
+	result.Schema, result.Status = 1, "failed"
+	if request.Program == "" || len(request.Program) > filemodel.MaxPath || strings.ContainsRune(request.Program, 0) {
+		result.Error = "Invalid configured application"
+		return
+	}
 	command := exec.Command(request.Program, args...)
 	command.Dir = string(request.Snapshot.Path)
 	if err := command.Start(); err != nil {
@@ -118,7 +138,7 @@ func perform(request workRequest) (result workResult) {
 	}
 	// Launch is a handoff, not proof of application completion or opened pixels.
 	command.Process.Release()
-	result.Status = "started"
+	result.Status, result.ActionCount = "started", len(args)
 	return
 }
 
@@ -154,6 +174,9 @@ func startWorker(ctx context.Context, executable string, request workRequest) wo
 		return workResult{Schema: 1, Status: "failed", Error: "Worker output is unavailable"}
 	}
 	if err := command.Start(); err != nil {
+		if ctx.Err() != nil {
+			return workResult{Schema: 1, Status: "cancelled", Error: "File operation cancelled or timed out"}
+		}
 		return workResult{Schema: 1, Status: "failed", Error: "Could not start file worker"}
 	}
 	data, readErr := io.ReadAll(io.LimitReader(stdout, filemodel.MaxWire+1))

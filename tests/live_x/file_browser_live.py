@@ -165,7 +165,13 @@ def run(args):
             assert len(snapshot['items']) == 19
             assert any(base64.b64decode(i['name_bytes']) == b'raw-\xff' for i in snapshot['items'])
             app = runtime.start('browser', [str(args.browser), '--socket', str(endpoint),
-                '--dir', str(root), '--opener', str(opener), '--terminal', str(opener)], 'browser.log', env)
+                '--dir', str(root), '--opener', str(opener), '--terminal', str(opener),
+                '--action', 'Review selection=' + str(opener),
+                '--action', 'Second configured action=' + str(opener),
+                '--action', 'Third configured action=' + str(opener),
+                '--action', 'Fourth configured action=' + str(opener)], 'browser.log', env)
+            action_count = 4
+            expected_children = 22 + action_count
             client, pointer = Client(display), None
             pointer = Pointer(client)
             x, d = client.x, client.display
@@ -293,7 +299,7 @@ def run(args):
                     alias = last_inventory_alias
                     # XIDs may be reused after Form retirement. The per-view
                     # resource identity and complete child count own readiness.
-                    if alias.endswith('-ready') and alias != seen_alias and len(values) == 22:
+                    if alias.endswith('-ready') and alias != seen_alias and len(values) == expected_children:
                         return window, alias
                     return None
                 nonlocal seen_alias
@@ -371,6 +377,7 @@ def run(args):
                 return base64.urlsafe_b64decode(text.split()[5][1:] + '==')
 
             window = ready()
+            assert not report.exists(),'configured action ran on startup'
             # A horizontally scrolled text field must reset its viewport when
             # traversing through the list back to that field.
             for _ in range(100): key(window,b'x')
@@ -443,6 +450,27 @@ def run(args):
             connection.expect_echo(first)
             window = ready(window)
             evidence['stale_control_refused'] = True
+            # Configured actions use the current selection's original paths,
+            # including non-UTF-8 and command-looking names, in one invocation.
+            click(row_groups()[0][1][1]);callback();window=ready(window)
+            key(window,b'Tab');key(window,b'End');key(window,b'space')
+            key(window,b'Up');key(window,b'space');key(window,b'F2')
+            picks=packet(callback());assert picks[:2]==bytes([0,17]) and picks[4]==6,picks
+            window=ready(window)
+            capture('file-browser-selection-properties.png')
+            report.unlink()
+            click(row_groups()[-action_count][0][1]);action_callback=callback()
+            assert action_callback.split()[3:5] == ['custom','0']
+            wait_for_predicate('configured action report',report.exists,time.monotonic()+5,process=app)
+            opened=json.loads(report.read_text())
+            assert [base64.b64decode(v) for v in opened['argv']] == [os.fsencode(root/literal),invalid],opened
+            assert base64.b64decode(opened['cwd']) == os.fsencode(root)
+            window=ready(window);capture('file-browser-custom-action.png')
+            report.unlink()
+            connection.send(('Echo '+action_callback+'\n').encode())
+            connection.expect_echo(action_callback);window=ready(window)
+            assert not report.exists(),'stale configured action launched'
+            evidence['configured_action_literal_arguments_and_stale_control'] = True
             # Clear the entire native selection, navigate to the first directory
             # using focus alone, then use the native Up button.
             click(row_groups()[0][1][1]); callback(); window = ready(window)
@@ -466,9 +494,12 @@ def run(args):
             window=ready(window)
             capture('file-browser-filtered-selection.png')
             evidence['filter_preserves_hidden_selection'] = True
+            # The 40-column path input is wider than every configured action
+            # button (labels <=32 columns). Actions can sit below it, so Y order
+            # alone cannot identify the field in a larger-font configuration.
             # Cancel a genuinely blocked FIFO worker while the core keeps serving.
             _,_,values=inventory()
-            field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][1])
+            field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][2])
             click(field[1],wait_grab=False)
             for char in str(blocked): key(window,symbols.get(char,char.encode()))
             fg=field[0]
@@ -480,7 +511,7 @@ def run(args):
             wait_for_predicate('blocked worker',busy,time.monotonic()+5,process=app)
             connection.echo('core-responsive-during-blocked-worker')
             _,_,values=inventory()
-            field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][1]);fg=field[0]
+            field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][2]);fg=field[0]
             controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
             click(controls[1][1]);callback();window=ready(window)
             key(window,b'F5');callback();window=ready(window)
@@ -513,6 +544,7 @@ def run(args):
             # Form parsing, drawing and MFL callback transport (under 1000 bytes).
             large=runtime.root/'large';large.mkdir()
             for i in range(4096):(large/('entry-%04d'%i)).touch()
+            expected_children = 22
             app=runtime.start('large-browser',[str(args.browser),'--socket',str(endpoint),'--view','grid','--reveal',str(large/'entry-4095')],'large-browser.log',env)
             window=ready();capture('file-browser-4096-grid.png')
             key(window,b'Tab');key(window,b'End')

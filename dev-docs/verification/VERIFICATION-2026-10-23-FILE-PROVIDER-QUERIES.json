@@ -1,0 +1,320 @@
+{
+  "status": "passed",
+  "source_archive_sha256": "499a5a4cf34812bf4334fefd9a08da026037c48ae5e8ffc63b1387f6e02c0e77",
+  "frozen_source_files": 2310,
+  "worktree_manifest_sha256": "7c27308c6cf7664f9944fd8777ec0b946df733d02ecf9a25c10b6ad6563b6cf2",
+  "base": "665bfcdc557b1c25dae216e96b3346ce30fd1814",
+  "captures": {
+    "final/fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "bfdabf02c82e1b22f60735d11cd3460d276959e0aa3950c18d8e5e53ffef63c7",
+      "files": 11,
+      "bytes": 130948
+    },
+    "final/freebsd-arm64": {
+      "archive_sha256": "4e57eae2b63c623fdc3ee756090660028de9c6c3c5ddfe97cc24dccf01753625",
+      "files": 50,
+      "bytes": 454945
+    },
+    "completion/fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "70f6fac176498f6c196ffe386ff840b3cbdc2a499ae703533d0d4631652419a7",
+      "files": 134,
+      "bytes": 4052120
+    },
+    "manual/evidence": {
+      "archive_sha256": "d4711df162986a0052119a393745c82e7188606e7106e20eb1bfc9af78e661f2",
+      "files": 6,
+      "bytes": 33697
+    }
+  },
+  "counts": {
+    "final/fvwm-x-linux-arm64-svg/testlog.json": 5,
+    "final/fvwm-x-linux-arm64-svg/go-policy.log": {
+      "top_cases": 68,
+      "packages": 5,
+      "failed_packages": []
+    },
+    "final/fvwm-x-linux-arm64-svg/go-race.log": {
+      "top_cases": 32,
+      "packages": 3,
+      "failed_packages": [
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand"
+      ]
+    },
+    "final/freebsd-arm64/testlog.json": 5,
+    "final/freebsd-arm64/go-policy.log": {
+      "top_cases": 67,
+      "packages": 5,
+      "failed_packages": []
+    },
+    "completion/fvwm-x-linux-arm64-svg/san-testlog.json": 2,
+    "completion/fvwm-x-linux-arm64-svg/go-race-completion.log": {
+      "top_cases": 36,
+      "packages": 2,
+      "failed_packages": []
+    }
+  },
+  "screenshots": {
+    "final/freebsd-arm64/native-ui": {
+      "count": 28,
+      "sha256": {
+        "collection-label-cleared.png": "2d1870e2087bd8b349d2b0e6a5b611c9412df29a290999142bcf50dafae202a8",
+        "collection-label-clipped.png": "7447cd7d6557789e35ee2427e5a94f7a0b0dea4173d03c355d5c2eaf6dd6c8f8",
+        "collection-update-before.png": "846c8b05e29c8d328d6469118dc3d9980b43d11b32ca1deb0e24d15abeb7ba12",
+        "collection-update-committed.png": "7bfa9d2733760d594b297908066b7474de97b128a9d03782c892b8947c97c8d0",
+        "collection-update-empty.png": "6cc9739e403f01d78f00bf5b3c0d2639cd783df53ff2955fa61b6b18fe2b6e88",
+        "collection-update-removed.png": "c6c2341fbceb93b3d80670ad40bf15b72f379e07f7ffd22b8733a7230a2b9cb8",
+        "collection-update-staged.png": "846c8b05e29c8d328d6469118dc3d9980b43d11b32ca1deb0e24d15abeb7ba12",
+        "file-browser-4096-grid.png": "4a15b3a3a3317d8d965247d790b97fd0afdc598c8619b204df92675162abe65e",
+        "file-browser-4096-live-sort.png": "7d27d95c0eec7374eea1e9d9d33ce6ee0512a625ec9a56f540f168329b92165f",
+        "file-browser-4096-rows.png": "8afdfd86072025bdab686cf9fd5693491c4dd60a55c7d8fcdb5ca6999b327289",
+        "file-browser-collection.png": "a921ef25c63dca936f10c68b1254726f338dc66b29481968d2ec3d810e8f3c91",
+        "file-browser-custom-action.png": "9438f0bc336f5e667b4d20cac356e3c61d6e6f291cc0dda95d541ab656f3f8fd",
+        "file-browser-empty-filter.png": "95d12c7bf658afc4789d5912c21caa07a275b8288fcd91b8687db549060f0ad5",
+        "file-browser-filtered-selection.png": "fb3ab8a4e063fdfe350155341c64eb37cea64b56cf7da845cedef47aee13d8ff",
+        "file-browser-grid.png": "15d4e8026ac4b7b30320814415c00c7d94c2223f852ad75249682a57faa319fc",
+        "file-browser-input-focus-return.png": "cb2fa4f73c8b0e62f4ca576197b4f5c3dd0bc6d39443a2521f701022a85f75f3",
+        "file-browser-live-sort.png": "4e0e8d3e3028417905d8426bc22e8b188d47e4c20bba36eda8a1438b85b6ffe5",
+        "file-browser-provider-selection.png": "db2dca1298ace20593b022d0b6286a44606ce56a078fe62cf729d41ca816bf37",
+        "file-browser-range-list.png": "8a6c477366e2c138a603a838cf33448c3b7e4fbf2acba2cd6409cf490f514892",
+        "file-browser-refresh-changes.png": "2b614b8ae5a1c7d2e2bbd51247d0656ffec213ff07d2a2b350d8bc27410c79b2",
+        "file-browser-refresh-unchanged.png": "8240272df75b106a6178d97e97a3554bce2931afb67153c9bb8eaf70b857dc8b",
+        "file-browser-scrolled-properties.png": "016d39930b2667b5ac50187ff84b3ab5b7f5f64b32eb0bd7f09ad58e6a2d5e52",
+        "file-browser-selection-properties.png": "b9330372203f9eab47f6f7f1f28df0e02852669c1884d7be4af4692d68d1d0d6",
+        "file-browser-watch-fallback.png": "e19179bc675b8c3d7d457d173bc6263ca39981b33f44ace52db0693a74d142a9",
+        "file-browser-watch-recovered.png": "d16dc338ee4171408805d275c6248dab586f9b52ad3ea3d31cb95bc309d40c75",
+        "file-browser-watch-refresh.png": "cee8257d2d626689c327a9f1a5e88e7a4296a3bd49317c7f36c398a5114d1e67",
+        "file-browser-wheel-after.png": "8eaf11f4ef2f0f6743dc6f1b982a5a5306304e2bddcbc54c5eb5b06b197a931b",
+        "file-browser-wheel-before.png": "b01709aed1e31ba27029a51c5d7a1484e06b864e3c134cd99832d894436ea1f0"
+      },
+      "query_checks": {
+        "file_provider_discovery_and_pages": true,
+        "file_provider_current_native_selection_and_stale_page": true
+      }
+    },
+    "completion/fvwm-x-linux-arm64-svg/slate-dark": {
+      "count": 28,
+      "sha256": {
+        "collection-label-cleared.png": "f7771e98d9e0c071c5d07b8049826c5ee72fc21ac0c71df6371ae0aa1ecbedd5",
+        "collection-label-clipped.png": "60f9b1c10a27c265d8744e77efbbe7f46e4e1b619ee136358b8167c88d29016e",
+        "collection-update-before.png": "80ec7849ff3fc1284b2523cd2b54eef4130a98e3e5a1475f0900b6c4180ebe25",
+        "collection-update-committed.png": "32fde9fcf4713278feb67de9031a2f1da5f67d75a346f2bf9dae41676da4e89e",
+        "collection-update-empty.png": "30e26fac29b5dce3f683af3ded2c311a798762c2fcbc05be4313382915660fce",
+        "collection-update-removed.png": "463d4b1a1a01b8d27b72c77a706a70dc0ce646526b21c02472b4f9ca0f8d611c",
+        "collection-update-staged.png": "80ec7849ff3fc1284b2523cd2b54eef4130a98e3e5a1475f0900b6c4180ebe25",
+        "file-browser-4096-grid.png": "3a2b44463fdc4e2c9e266d60478391d767bdacad0ee7d52e11289fdaa3e7c6d1",
+        "file-browser-4096-live-sort.png": "1a2af0a6528a4c36b3e3ea2ec567875a8ec24f4f2d96f441f7bb3d2af5f0549e",
+        "file-browser-4096-rows.png": "ea23f11ea8130ae94ea1e7e89465ff55956fad5d943592f7fbfef8b08da4496f",
+        "file-browser-collection.png": "394e05fc8f763fa166cca5e7272700ec632245e32a40ba57f3fb7ed112ca9ef6",
+        "file-browser-custom-action.png": "9eb34d1cd32b055f946054829033e34d7bbdabf2a0bfc8b2ba0e852bac447d25",
+        "file-browser-empty-filter.png": "213939a4155da4795aed3c90e91c97d2caf4347ff74ee1c88fd0f95883b4c08a",
+        "file-browser-filtered-selection.png": "4c55ba6aeddf66d934b208ec0a2c8ec3ab67d77c0a5af680cd1a3c6411179e72",
+        "file-browser-grid.png": "7d99c9ec02c1b1dcd619422b444858b7e4d922cdf9ce11d98268497d06a16587",
+        "file-browser-input-focus-return.png": "3bf037885d59d18d7644ae544da6336aa5c358025a063b7f2f7517057e5d973e",
+        "file-browser-live-sort.png": "bb2852fbe24828ce2c92881260e749f181a3a0726f91121c54296a7cc776bca7",
+        "file-browser-provider-selection.png": "b15edba555740eb7c315d42c10edc6c40e40dbaf5b2d503edfaa19a38946492a",
+        "file-browser-range-list.png": "d0027fedc9e8a061f43967ed17c6b360173e2134b677088b91fa2dbc2e3817ca",
+        "file-browser-refresh-changes.png": "a66f417059c884936a2c1b345a52e8f20f0678e20a421b9d6ad72a07798f92a3",
+        "file-browser-refresh-unchanged.png": "04205088b9d7e14a471d8ad6bfe64b3c474a949b0dedff83beff587b1b2844f8",
+        "file-browser-scrolled-properties.png": "f2bce4aa369bcfc6ccfbf39726a4fbdb717c66aa83b6b2654ba62fdceb991616",
+        "file-browser-selection-properties.png": "de1c15c865a223711dc0dac1620408e47e47dda0b522b6aedd8a4fe0b20e75bc",
+        "file-browser-watch-fallback.png": "459840b89061b0334e2523ed7169aa0d66d800aa004b3f6e55cd1f2636895666",
+        "file-browser-watch-recovered.png": "ca7c388fbb16ed1855967a52876badec32538d2f29ba4dbfeafb307142409b7a",
+        "file-browser-watch-refresh.png": "a40b9b55f60f50ea8a82030bb0a4c422db1e12c82c9ce46ec061b11b46042851",
+        "file-browser-wheel-after.png": "eeef732032949fe0a64bf17e68162afc91c13b9614714449e194c7a63c9bc66f",
+        "file-browser-wheel-before.png": "41fc0395c6479fa056bae23367492c47418457155e8a94d7b8930612488c1368"
+      },
+      "query_checks": {
+        "file_provider_discovery_and_pages": true,
+        "file_provider_current_native_selection_and_stale_page": true
+      }
+    },
+    "completion/fvwm-x-linux-arm64-svg/dune-light": {
+      "count": 28,
+      "sha256": {
+        "collection-label-cleared.png": "66245b61fd80c7dbc776f821f90e3355c0e7678fbc2f8e3cb3c778d099c0dfca",
+        "collection-label-clipped.png": "4720d21081d5e5acda7750757092a80646601c9441dda4d0aeddefa64d3dca9f",
+        "collection-update-before.png": "077771ec07c7228724e00e03dbb7eb02b286faba897289e8182b81f0208481ca",
+        "collection-update-committed.png": "b1e9b4e8fbbe72bb4069417966ac6d52c529153063c9a03193aea33bf3cbce51",
+        "collection-update-empty.png": "40efb9cbc72e4bca427c208da147655790bda4d1d2534084b68e3885ec86ff27",
+        "collection-update-removed.png": "e702fe8dfd15c5fc4dad45872de7b28faf974010aa3122e5c6535e03e540e937",
+        "collection-update-staged.png": "077771ec07c7228724e00e03dbb7eb02b286faba897289e8182b81f0208481ca",
+        "file-browser-4096-grid.png": "0a4a951d07df4367463ee3042adce22e0a25a8002af428048344c0d77498d8ca",
+        "file-browser-4096-live-sort.png": "b8a56ec79b25552b3d315e90f15e5ed0afb0e89211e3cd2a86c7a14de535cb86",
+        "file-browser-4096-rows.png": "fb32d960625c85f7d188627ef2f9564b75a2618ccefcc4ea17fed79dccc368ce",
+        "file-browser-collection.png": "ed5e5a73cfb8fdfe4af39054e5d885420f320759c293156daff10edb251a60f1",
+        "file-browser-custom-action.png": "5f93ab23fbef29d8101495b71310b4b802bd0b8a4e6205d51ae6247ff70c7f13",
+        "file-browser-empty-filter.png": "a9de8966802145334cc7f8233b75566182673bc739b84aac271e026c156835ac",
+        "file-browser-filtered-selection.png": "444e6f581ce013e9d10a95960492819b504b5dff9197d85a984916fefcf96c63",
+        "file-browser-grid.png": "202ebf41cd1207eabed66dc275eee83e83d05e8fa4c6185d71a3101fcedcac0e",
+        "file-browser-input-focus-return.png": "a952fa0f4745a14e2260fddbdb155b581f19c207bece5ba2525a349fb2e98d8b",
+        "file-browser-live-sort.png": "b63674cbed40fe3789432b948d0ecc2f40e1c0999c37410bb5a861684e33f5ad",
+        "file-browser-provider-selection.png": "2bd3d03c0e4d0a6dc7db204586fb4a22dcbf2eaf40ccda08acc9fed51b5f2dcd",
+        "file-browser-range-list.png": "7091b29e918c4e31bddc212b097f2438a6da4aa5bfeb79429ee3bd6ace6fd421",
+        "file-browser-refresh-changes.png": "ba0f86c8e058512a8762935a78924f5486c81f6e7e95b91db835992f7a02eac6",
+        "file-browser-refresh-unchanged.png": "dafe57ae39a9e5b2a0c157a106881c6fe1d9f6836dadbf820c9069335d3d8d3a",
+        "file-browser-scrolled-properties.png": "005f408821ef835c103cfb16394d4a952b46c66ea188f205f13656efb7ac576b",
+        "file-browser-selection-properties.png": "44f7d182a8818e99b4835991799126fc4881c6ad657406c9f75c9bfd97d20a0d",
+        "file-browser-watch-fallback.png": "2528b1af8761179d118bf13f39b242b929e58fc4d2d2f99b4dc65a3b1b8d0558",
+        "file-browser-watch-recovered.png": "446b7a89ab60dfeace52f5802c4cc1a4f2ad6b15d1129d30bb372efc06eb7bd0",
+        "file-browser-watch-refresh.png": "9336d174ce76e4616117312b6afcedeb728e8ea081be76cc05b2701fe1a71901",
+        "file-browser-wheel-after.png": "8ef315864715fff9f2a22cd81a98d40bad57044c3ccbf987d41ef2945afa1b35",
+        "file-browser-wheel-before.png": "74b4b8ec308fd9dd9804a30c4c908ea14b613a3a612e01ac7b1c162f8dbf09af"
+      },
+      "query_checks": {
+        "file_provider_discovery_and_pages": true,
+        "file_provider_current_native_selection_and_stale_page": true
+      }
+    },
+    "completion/fvwm-x-linux-arm64-svg/classic-large": {
+      "count": 28,
+      "sha256": {
+        "collection-label-cleared.png": "b8634d9226c714ec117b2487dc27f95e5e20f63d4d54a3fcc5dc1a5bcb120a43",
+        "collection-label-clipped.png": "d9cc333f1d327e60fa27cefb0b9ecfe1aa8a8c30114aee7ba285f8cf002bc450",
+        "collection-update-before.png": "a56af03c30bbaaf2ae9b14254648e490c72262039949a56147bcd26565fcd423",
+        "collection-update-committed.png": "4b9072a13f25af7c8d3f46bbdbdb0f8cb18e05ca86db80ff773c30e74e42b982",
+        "collection-update-empty.png": "24c3d7b5e39048a72c132c9fb38e6917a1cb86753a8c495f365a6ea53f388126",
+        "collection-update-removed.png": "0db36dea82a6d63c775145530bb8619066d8b2262c3fc702e80272803fe8da0f",
+        "collection-update-staged.png": "a56af03c30bbaaf2ae9b14254648e490c72262039949a56147bcd26565fcd423",
+        "file-browser-4096-grid.png": "17bb4eb5c835b5b3c623f84ac138f10a5f121f6c0436512ac9f9ae48505fdaab",
+        "file-browser-4096-live-sort.png": "93f57d46d50a0484eece7de5b73321de731bd5826bc07b7ae278bf3483f8de2f",
+        "file-browser-4096-rows.png": "12d12ac32a33bf9e9fc8250eb4be8c15791b908efc17b90ecb1412bd8514ce3a",
+        "file-browser-collection.png": "23a8eb419cda45816c2dcc1799e55f87e39437a21a95910212c3ba357e45d768",
+        "file-browser-custom-action.png": "d50975990d4a1b8d7970b2719b355128f1203e40ac65b3bccde678160d28749e",
+        "file-browser-empty-filter.png": "536ad76cd653c34acd5f9f735b28340feaf732ffe19cbf6b9209b1e4e7aedc79",
+        "file-browser-filtered-selection.png": "4661bae6cc2efb3ac6c2280f1c7dfaf76ca409934cbb4d2921f7244de18349c1",
+        "file-browser-grid.png": "aa665deaf162ad79cf15e58fddfaf3617c766941184fa9567b7247d6b317b90a",
+        "file-browser-input-focus-return.png": "7c07038030b50ee48c01e49edfdb54fb9354e6ae947d204d09112204806a22fc",
+        "file-browser-live-sort.png": "365f2838663bb81d12eb863afbda0b3158bc2e48600b88e580c25f2813a311d4",
+        "file-browser-provider-selection.png": "4d6ba760096d0a51561a0751a270ff9d680132cce4e34d62d706a3030f5dabbf",
+        "file-browser-range-list.png": "88595541bd6ad2e25b5c415be303a1db5cf966ec3f4b06ea00aff566a006aa2c",
+        "file-browser-refresh-changes.png": "624c7d4f72d51013abc754629a4803fd09cfe209940c51981cbc0d100729d244",
+        "file-browser-refresh-unchanged.png": "bf7faa0a3219210dc3064170c2d77e9a6dc6b9d359af3669c148d1d381404c6f",
+        "file-browser-scrolled-properties.png": "636c25d019d19d53cedd019d8842445679b21689ef56d87fee1bafe435956d71",
+        "file-browser-selection-properties.png": "e19027bd371cc669a41e9a2851927a63b8e7b83cb3dccbac59bc0b9e2faed586",
+        "file-browser-watch-fallback.png": "3cb39fd01a310ffd601e0fa199af042bb8ebed241eb1e47158a018e728fc576d",
+        "file-browser-watch-recovered.png": "dc1ccf73698f07d4536773ed5a7f521795ff37f1fd635d8518d6ebde8d74e8c2",
+        "file-browser-watch-refresh.png": "3a833a78ec430960a672bc0f53f966d64c66e22d71435f7b0347ae16f97d58c4",
+        "file-browser-wheel-after.png": "ab4bea61bb8fb48bf13902f6db3a887a6485ccccd4f2a1c90078a55acc341add",
+        "file-browser-wheel-before.png": "04d2d5acc3254526b241ff0107bf8f28362e60b4c60cc5d72a20308ced6e5b8a"
+      },
+      "query_checks": {
+        "file_provider_discovery_and_pages": true,
+        "file_provider_current_native_selection_and_stale_page": true
+      }
+    },
+    "completion/fvwm-x-linux-arm64-svg/san-client-lifetime": {
+      "count": 0,
+      "sha256": {},
+      "query_checks": {
+        "file_providers": {
+          "provider_limit": 8,
+          "connection_owned": true,
+          "readonly_query": true,
+          "wrong_owner_ignored": true,
+          "chunked_reply": true,
+          "cancellation_retains_producer": true,
+          "timeout_retains_producer": true,
+          "disconnected_waiter_discarded": true,
+          "owner_disconnect": true,
+          "fresh_serial_after_replacement": true,
+          "malformed_producer_isolated": true
+        }
+      }
+    }
+  },
+  "documentation_only_amendments": [
+    "README.md",
+    "dev-docs/ARCHITECTURE.md",
+    "dev-docs/PROJECT-TRACKER.md",
+    "dev-docs/decisions/README.md",
+    "dev-docs/verification/README.md"
+  ],
+  "C_format_derivations": {
+    "modules/FvwmMFL/FvwmMFL.c": {
+      "before_sha256": "13da915ae8e32dc0bd436835bf89eb76eb195b4b38f6eba0ac52473a2bbab4fd",
+      "after_sha256": "aba2a417f1c91da982a72d107424361af0b4874249522c25d220670d48a17926",
+      "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+    },
+    "tests/test_mfl_request.c": {
+      "before_sha256": "a0c238012a46a943e1c5e510deb19e31362ebc376c094472241e1736d91768e8",
+      "after_sha256": "f38d17acc8a39fb5f459a6e4c92c989a6da7ae74d6e5d0ea51de9c22fe134579",
+      "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+    }
+  },
+  "post_format_guard": {
+    "status": "passed",
+    "source_files": 2310,
+    "C_format_derivations": {
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "before_sha256": "13da915ae8e32dc0bd436835bf89eb76eb195b4b38f6eba0ac52473a2bbab4fd",
+        "after_sha256": "aba2a417f1c91da982a72d107424361af0b4874249522c25d220670d48a17926",
+        "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+      },
+      "tests/test_mfl_request.c": {
+        "before_sha256": "a0c238012a46a943e1c5e510deb19e31362ebc376c094472241e1736d91768e8",
+        "after_sha256": "f38d17acc8a39fb5f459a6e4c92c989a6da7ae74d6e5d0ea51de9c22fe134579",
+        "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+      }
+    },
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+        "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+        "bytes": 5396632
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+        "sha256": "59f1c1da494fdbd325aac9c078309131fd6e3054e92ebea8c1b690a9a068e323",
+        "bytes": 431464
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+        "sha256": "34352d9c14f93c9ba23a3a760dc5c5541f9c2bf08986ceebc36d533c68c632e5",
+        "bytes": 1623488
+      },
+      "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser": {
+        "sha256": "59f6ef79b17c2c9bbe38022aeb35816a07d6519c16bd7a108bad846d8aa300fb",
+        "bytes": 5530576
+      },
+      "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/FvwmCommand": {
+        "sha256": "330badbbe22904499df6dcffa7de66993735ff7d19ce32bbf1d17c76f0f0a287",
+        "bytes": 4689255
+      }
+    }
+  },
+  "post_format_checks": {
+    "status": "passed",
+    "source": {
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "before_sha256": "13da915ae8e32dc0bd436835bf89eb76eb195b4b38f6eba0ac52473a2bbab4fd",
+        "after_sha256": "aba2a417f1c91da982a72d107424361af0b4874249522c25d220670d48a17926",
+        "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+      },
+      "tests/test_mfl_request.c": {
+        "before_sha256": "a0c238012a46a943e1c5e510deb19e31362ebc376c094472241e1736d91768e8",
+        "after_sha256": "f38d17acc8a39fb5f459a6e4c92c989a6da7ae74d6e5d0ea51de9c22fe134579",
+        "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+      }
+    },
+    "scope": "C line wrapping only; all lexical C tokens/adjacent-string values equal; two focused entries repeated"
+  },
+  "pending": "accumulated six-target closure before fourth feature PR; full release/install/default-X/compiler/optional/hardware/toolkit/assistive/protected-content gates",
+  "public_screenshots": {
+    "slate-dark": {
+      "file": "doc/screenshots/provider-slate-dark.png",
+      "sha256": "b15edba555740eb7c315d42c10edc6c40e40dbaf5b2d503edfaa19a38946492a",
+      "capture": "completion/fvwm-x-linux-arm64-svg/slate-dark",
+      "source_archive_sha256": "499a5a4cf34812bf4334fefd9a08da026037c48ae5e8ffc63b1387f6e02c0e77"
+    },
+    "dune-light": {
+      "file": "doc/screenshots/provider-dune-light.png",
+      "sha256": "2bd3d03c0e4d0a6dc7db204586fb4a22dcbf2eaf40ccda08acc9fed51b5f2dcd",
+      "capture": "completion/fvwm-x-linux-arm64-svg/dune-light",
+      "source_archive_sha256": "499a5a4cf34812bf4334fefd9a08da026037c48ae5e8ffc63b1387f6e02c0e77"
+    },
+    "classic-large": {
+      "file": "doc/screenshots/provider-classic-large.png",
+      "sha256": "4d6ba760096d0a51561a0751a270ff9d680132cce4e34d62d706a3030f5dabbf",
+      "capture": "completion/fvwm-x-linux-arm64-svg/classic-large",
+      "source_archive_sha256": "499a5a4cf34812bf4334fefd9a08da026037c48ae5e8ffc63b1387f6e02c0e77"
+    }
+  }
+}

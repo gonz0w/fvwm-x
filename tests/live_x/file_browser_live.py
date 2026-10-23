@@ -32,7 +32,7 @@ def run(args):
     observed_windows = set()
     retired_errors = {}
     with HarnessRuntime(prefix='file-browser-') as runtime:
-        connection = client = pointer = None
+        connection = query_connection = client = pointer = None
         try:
             _, display = start_display_server(runtime, 'Xvfb',
                 ['Xvfb', '-screen', '0', '1440x1000x24', '-noreset'],
@@ -404,6 +404,44 @@ def run(args):
 
             window = ready()
             assert not report.exists(),'configured action ran on startup'
+            query_connection = Connection(endpoint)
+            query_connection.record()
+            query_connection.send(b'request {"version":1,"id":"ro","method":"set_mode","mode":"read-only"}\n')
+            assert query_connection.record()['reply']['status'] == 'ok'
+            query_serial = 0
+
+            def rpc(**fields):
+                nonlocal query_serial
+                query_serial += 1
+                request = dict(version=1, id='browser-' + str(query_serial),
+                               method='query', resource='files', **fields)
+                query_connection.send(('request ' + json.dumps(request) + '\n').encode())
+                reply = query_connection.record()['reply']
+                assert reply['id'] == request['id'], reply
+                return reply
+
+            provider = seen_alias.split('-')[1]
+            providers = rpc()['result']['providers']
+            assert [p['provider'] for p in providers] == [provider], providers
+            state = rpc(provider=provider, scope='state')['result']
+            assert state['loaded'] == 19 and not state['actions'] and not state['file_content'], state
+            assert base64.b64decode(state['path_bytes']) == os.fsencode(root)
+            entries, offset = [], 0
+            while offset is not None:
+                page = rpc(provider=provider, scope='items',
+                           generation=state['generation'], offset=offset, limit=8)['result']
+                entries.extend(page['items'])
+                offset = page['next_offset']
+            assert {i['id'] for i in entries} == {i['id'] for i in snapshot['items']}
+            assert any(base64.b64decode(i['name_bytes']) == b'raw-\xff' for i in entries)
+            assert all(isinstance(i['size_bytes'], str) and isinstance(i['mtime_ns'], str) for i in entries)
+            if args.command_client:
+                query = json.dumps(dict(version=1, id='cli-files', method='query', resource='files'))
+                command = subprocess.run([str(args.command_client), '-f', str(endpoint),
+                    '--request', query], env=env, capture_output=True, timeout=10)
+                assert command.returncode == 0, command
+                assert json.loads(command.stdout)['reply']['result']['providers'][0]['provider'] == provider
+            evidence['file_provider_discovery_and_pages'] = True
             # A horizontally scrolled text field must reset its viewport when
             # traversing through the list back to that field.
             for _ in range(100): key(window,b'x')
@@ -436,6 +474,21 @@ def run(args):
                 key(window, b'u')
                 pointer.x.XTestFakeKeyEvent(d, control, 0, 0)
                 x.XSync(d,0)
+
+            identity = window, sorted(children(window))
+            state = rpc(provider=provider, scope='state')['result']
+            enter_list();key(window,b'Home');key(window,b'space')
+            selected = rpc(provider=provider, scope='selection')['result']
+            assert len(selected['items']) == 1, selected
+            assert base64.b64decode(selected['items'][0]['name_bytes']) == b'00-folder'
+            stale = rpc(provider=provider, scope='items', generation=state['generation'], offset=8)
+            assert stale['error']['code'] == 'stale_generation', stale
+            properties = rpc(provider=provider, scope='properties')['result']['properties']
+            assert properties['directories'] == 1 and properties['regular_file_bytes'] == '0', properties
+            assert identity == (window, sorted(children(window)))
+            capture('file-browser-provider-selection.png')
+            key(window,b'space')
+            evidence['file_provider_current_native_selection_and_stale_page'] = True
 
             # Both presentations share indices/IDs, focus and selection. Shift
             # navigation adds a bounded anchor range before switching views.
@@ -834,7 +887,7 @@ def run(args):
                 'versioned_callback_max_bytes': 518}
             evidence['status']='passed'
             evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
-            evidence['scope']='browser live refresh/filter/sort/selection and native labels/status; external providers, protected content and file mutation remain open'
+            evidence['scope']='browser live updates and read-only paged metadata/current selection; typed actions, protected content and file mutation remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')
@@ -842,6 +895,8 @@ def run(args):
                     (artifact / 'failure-inventory.json').write_text(json.dumps(inventory()))
             if connection:
                 connection.close()
+            if query_connection:
+                query_connection.close()
             if pointer:
                 pointer.button(False)
             if client:
@@ -864,4 +919,5 @@ if __name__ == '__main__':
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--theme', choices=('fixture', 'slate-dark', 'dune-light',
                         'classic-large'), default='fixture')
+    parser.add_argument('--command-client', type=Path)
     run(parser.parse_args())

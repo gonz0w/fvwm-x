@@ -517,6 +517,53 @@ static bool snapshot_request(struct mfl_request *request,
 	return mfl_request_is_snapshot(request->kind);
 }
 
+static bool files_request(struct mfl_request *request,
+	const cJSON *const *values, unsigned int seen)
+{
+	const unsigned int required = 15 | (1U << 5) | (1U << 9);
+	const unsigned int extra = (1U << 7) | (1U << 11) | (1U << 12);
+	const char *scope;
+
+	if (strcmp(values[2]->valuestring, "register") == 0)
+	{
+		if (seen != (15 | (1U << 9)) || !settings_token(values[9]))
+			return false;
+		strcpy(request->provider, values[9]->valuestring);
+		request->kind = MFL_REQUEST_FILES_REGISTER;
+		return true;
+	}
+	if (strcmp(values[2]->valuestring, "query") != 0)
+		return false;
+	if (seen == 15)
+	{
+		request->kind = MFL_REQUEST_FILES_LIST;
+		return true;
+	}
+	if ((seen & ~extra) != required || !settings_token(values[9]) ||
+	    !cJSON_IsString(values[5]))
+		return false;
+	scope = values[5]->valuestring;
+	if (strcmp(scope, "state") != 0 && strcmp(scope, "items") != 0 &&
+	    strcmp(scope, "selection") != 0 && strcmp(scope, "properties") != 0)
+		return false;
+	if ((strcmp(scope, "state") == 0 || strcmp(scope, "properties") == 0) &&
+	    (values[11] || values[12]))
+		return false;
+	request->limit = MFL_FILES_PAGE_MAX;
+	if ((values[11] && !query_index(values[11], 4096, &request->offset)) ||
+	    (values[12] && (!query_index(values[12], MFL_FILES_PAGE_MAX,
+		&request->limit) || !request->limit)) ||
+	    (values[7] && !settings_token(values[7])) ||
+	    (request->offset && !values[7]))
+		return false;
+	strcpy(request->provider, values[9]->valuestring);
+	strcpy(request->snapshot_resource, scope);
+	if (values[7])
+		strcpy(request->generation, values[7]->valuestring);
+	request->kind = MFL_REQUEST_FILES_QUERY;
+	return true;
+}
+
 bool mfl_request_parse(const char *json, struct mfl_request *request)
 {
 	static const char *fields[] = {"version", "id", "method", "resource",
@@ -556,6 +603,14 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	}
 	if (!cJSON_IsString(values[2]))
 		goto out;
+	if (cJSON_IsString(values[3]) &&
+	    strcmp(values[3]->valuestring, "files") == 0)
+	{
+		valid = files_request(request, values, seen);
+		if (valid)
+			request->error = NULL;
+		goto out;
+	}
 	if (cJSON_IsString(values[3]) &&
 	    (strcmp(values[3]->valuestring, "provider") == 0 ||
 	     strcmp(values[3]->valuestring, "operations") == 0) &&
@@ -737,6 +792,7 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 			"operations" :
 			mfl_request_is_preview(p->kind) ? "preview" :
 			p->kind == MFL_REQUEST_PROVIDER ? "provider" :
+			p->kind == MFL_REQUEST_FILES_QUERY ? "files" :
 			mfl_request_is_settings(p->kind) ? "settings" :
 			p->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
 			p->kind == MFL_REQUEST_WORKSPACES ? "workspaces" :
@@ -768,6 +824,7 @@ const char *mfl_request_reserve(struct mfl_pending_request *pending,
 	*slot = NULL;
 	if (serial == 0 || (request->kind != MFL_REQUEST_DESKTOP &&
 	    request->kind != MFL_REQUEST_BARRIER &&
+	    request->kind != MFL_REQUEST_FILES_QUERY &&
 	    !mfl_request_is_settings(request->kind) &&
 	    !mfl_request_is_core_reply(request->kind)))
 		return "invalid_request";
@@ -965,7 +1022,8 @@ bool mfl_request_is_settings(enum mfl_request_kind kind)
 
 bool mfl_request_is_action(enum mfl_request_kind kind)
 {
-	return (kind >= MFL_REQUEST_SETTINGS_SET &&
+	return kind == MFL_REQUEST_FILES_REGISTER ||
+		(kind >= MFL_REQUEST_SETTINGS_SET &&
 		kind <= MFL_REQUEST_SETTINGS_RELOAD) ||
 		kind == MFL_REQUEST_OPERATION_START ||
 		kind == MFL_REQUEST_OPERATION_CANCEL ||
@@ -1137,6 +1195,7 @@ enum mfl_part_result mfl_request_part(
 		MODULE_QUERY_RESULT_MAX : MFL_SETTINGS_RESULT_MAX;
 
 	if ((!mfl_request_is_settings(pending->kind) &&
+	    pending->kind != MFL_REQUEST_FILES_QUERY &&
 	    !mfl_request_is_core_reply(pending->kind)) ||
 	    (!end && strncmp(payload, "part ", 5) != 0) ||
 	    pending->reply_length > maximum)
@@ -1181,6 +1240,38 @@ enum mfl_part_result mfl_request_part(
 	pending->reply_data[pending->reply_length] = '\0';
 	pending->reply_parts++;
 	return MFL_PART_MORE;
+}
+
+bool mfl_files_reply_header(const char *command, uint64_t *serial,
+	const char **payload)
+{
+	static const char prefix[] = "files_reply ";
+	const char *p;
+
+	*serial = 0;
+	*payload = NULL;
+	if (!command || strlen(command) < sizeof(prefix) + 16 ||
+	    strncmp(command, prefix, sizeof(prefix) - 1) != 0)
+		return false;
+	p = command + sizeof(prefix) - 1;
+	for (size_t i = 0; i < 16; i++)
+	{
+		int digit = settings_hex((unsigned char)p[i]);
+
+		if (digit < 0)
+		{
+			*serial = 0;
+			return false;
+		}
+		*serial = (*serial << 4) | (unsigned int)digit;
+	}
+	if (!*serial || p[16] != ' ' || !p[17])
+	{
+		*serial = 0;
+		return false;
+	}
+	*payload = p + 17;
+	return true;
 }
 
 cJSON *mfl_request_result(const struct mfl_pending_request *pending)

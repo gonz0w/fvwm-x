@@ -107,6 +107,7 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   as described below. Saved-preference preview remains separate.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
+* `files` discovers or queries running browser providers, as described below.
 * `desktop` samples authoritative values through the existing core command
   engine and module-directed `Send_Reply`. It returns `scope:
   "core-current-monitor"`, `units: "actual-pixels"`, the current `desk`,
@@ -462,6 +463,71 @@ cannot authorize rollback after a separate check. `preview_supported: false`
 keeps colorset preview/revert unavailable. The separate runtime `preview`
 resource owns only a menu-opacity scalar. Existing settings generations retain
 their separate scope.
+
+=== Browser metadata and selection
+
+The optional Go browser registers one opaque 32-character lowercase hexadecimal
+`provider` identity per connection. Discover up to eight running instances:
+
+....
+request {"version":1,"id":"browsers","method":"query","resource":"files"}
+request {"version":1,"id":"folder","method":"query","resource":"files","provider":"PROVIDER_32_HEX","scope":"state"}
+request {"version":1,"id":"selected","method":"query","resource":"files","provider":"PROVIDER_32_HEX","scope":"selection","limit":8}
+....
+
+Discovery returns `version: 1`, `query_only: true`, `provider_limit: 8` and
+`providers`, each with `provider` and `busy`. An empty list means no registered
+browser. Targeted queries require `provider` and `scope`: `state`, `items`,
+`selection` or `properties`. Read-only connections may query; registration is
+refused in read-only mode. This is same-user metadata transport, not an X11 or
+same-user security boundary. Use matching browser/MFL builds.
+
+Each successful targeted result contains `version: 1`, `provider`, opaque
+32-character `generation`, `scope` and `observed: true`. The browser reconciles
+its current native selection/focus before answering, without submitting a user
+action or replacing its native windows. Draft input and file content are absent.
+
+* `state` returns base64 `path_bytes`, loaded/visible/selected counts, focused
+  ID, filter/sort/view/watch state and `page_max: 8`, `selection_limit: 256`,
+  `actions: false`, `file_content: false`. It does not enumerate a new directory.
+* `items` pages the current visible order. `selection` pages the selected set,
+  including filtered-out selections. Both return `items`, `total`, `offset` and
+  integer-or-null `next_offset`. Items contain opaque `id`, base64 `name_bytes`,
+  a clipped display `label`, `kind`, symbolic `mode`, decimal-string
+  `size_bytes` and `mtime_ns`, plus `selected` and `focused`. Labels are not paths;
+  preserve raw bytes and parse the decimal strings for exact 64-bit integers.
+* `properties` returns a `properties` object with selected count, files,
+  directories, links, special entries and decimal-string `regular_file_bytes`.
+  `recursive` and `links_followed` are false. Folder contents, link targets and
+  file content are not read. An empty selection is unavailable.
+
+For pages, optional `limit` is 1–8 (default 8); `offset` is 0–4096. A nonzero
+offset requires the preceding result's `generation`. Metadata, projection,
+selection or focus changes invalidate that token with `stale_generation`;
+restart from offset zero. `state` and `properties` reject paging fields.
+Tokens are scoped to the selected provider incarnation. Observed metadata can
+be older than the filesystem; it is not authority to mutate or open a path.
+
+MFL routes one query at a time to each producer's own connection, with no Echo
+broadcast or second metadata cache. The existing eight waits per client and
+five-second absolute deadline apply. A busy producer returns `provider_busy`;
+a missing/disconnected owner returns `provider_unavailable`. Cancellation or a
+waiter disconnect discards its result but retains the producer slot until the
+terminal response or owner disconnect. This bounds queued work even when a
+producer stalls. Malformed producer replies disconnect that producer. Responses
+are limited to 8192 assembled bytes; larger observations return
+`result_too_large`, so request a smaller page where applicable.
+
+Producer registration uses `method: "register", resource: "files", provider`.
+Identity cannot change on that connection; reconnect to retire it. Dedicated
+`file_query` records carry version, 16-hex serial, provider, scope, generation,
+offset and limit. Matching producers reply with reserved
+`files_reply SERIAL part INDEX HEX` lines and `files_reply SERIAL end COUNT`,
+using ordered chunks of at most 256 bytes and 32 parts. The assembled object
+contains `result` or `error: {code: ...}`. Other connections and old serials
+cannot complete the active producer response. These are internal producer
+messages, not user commands. Typed actions, file mutation and protected clipboard
+payload transport remain outside this query interface.
 
 === Desktop settings provider
 

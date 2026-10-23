@@ -179,3 +179,5 @@ separate; the former public-helper output decision is still deferred.
 - [Native scrolling collection list](COLLECTION-LIST-2026-10-23.md): FILE-VIEW/ACTION-01 native viewport, bounded bitmap transport and browser adoption; protected clipboard payloads remain separate.
 
 - [Native grid and range-selection contract, browser view switching and metadata-only boundaries.](COLLECTION-GRID-2026-10-23.md): Native grid and range-selection contract, browser view switching and metadata-only boundaries.
+
+- [Read-only browser provider queries](FILE-PROVIDER-QUERIES-2026-10-23.md): connection-scoped discovery, current-selection pages, typed observations and correlated CLI requests; file actions/content remain separate.

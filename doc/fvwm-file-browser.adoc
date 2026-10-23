@@ -344,7 +344,7 @@ action and monotonically increasing native invocation ticket. The URL-base64
 selection/focus packet prefixes its projection generation. The helper rejects
 replayed tickets and stale native generations before resolving indices to IDs;
 paths still use the encoded input field. These guards provide freshness, not
-same-user or X11 authorization. No general IPC files provider is advertised.
+same-user or X11 authorization. The read-only files provider below exposes only admitted metadata.
 
 Initial configuration uploads use at most 32 commands per core acknowledgement.
 Live updates use direct module messages, avoiding accumulated configuration
@@ -358,7 +358,7 @@ establishes the published mapping. Explicit Select visible/Clear selection
 controls use atomic selection overrides. Unknown, duplicate or over-budget
 native state cannot become action data; recovery can recreate the view, and
 missing/invalid publication or broken transport can terminate the consumer.
-Broader providers and complete owner/install/platform acceptance remain with
+Typed action providers and complete owner/install/platform acceptance remain with
 FILE-VIEW/DATA/ACTION-01.
 
 The separate observer has a 16 KiB private request and 128-byte response-frame
@@ -367,7 +367,7 @@ event names or file content. One observer event channel and one desired folder
 bound pending work; superseded observer results cannot own a new directory.
 `FVWM_FILES_WATCH instance state` Echo observations report only off, starting,
 native or manual state after native publication. They are ordinary metadata,
-not a general files provider or protected-content channel.
+not a protected-content channel.
 
 No preferences or directory history are written to disk. Raw metadata remains
 in the helper's ordinary Go memory; no secret-storage claim is made. Results and
@@ -375,6 +375,24 @@ queues have finite limits, including a 4 MiB private worker envelope and sixteen
 native callback slots. Slow/broken MFL output closes the session according to
 its existing bounded transport policy. Native GUI and external application
 accessibility/interoperability need their own acceptance.
+
+== READ-ONLY FILES PROVIDER
+
+While connected, each browser registers an independent instance with FvwmMFL.
+`FvwmCommand --request` can discover instances and query `state`, paged `items`,
+paged `selection` and observed typed `properties`; see FvwmMFL(1) for schemas,
+base64 path/name bytes, decimal-string sizes/timestamps and paging generations.
+The current native selection is captured without requiring a button callback,
+including selection made since the last browser action. Queries preserve the
+native windows, input drafts and the helper's existing idle limit.
+
+This interface reads only the admitted snapshot; it does not scan directories,
+open files or expose file content. Metadata and selection/focus changes invalidate
+page tokens. Discovery is limited to eight producers, with one active query per
+producer; a busy/unavailable instance yields an explicit error. Old browser/MFL
+combinations cannot register: build and update these shipped consumers together.
+Clipboard payload ownership/protection, typed external actions, file mutation
+and FileManager1 remain separate work. No SQLite dependency is introduced.
 
 == EXIT STATUS
 

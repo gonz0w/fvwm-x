@@ -7,7 +7,7 @@
 :page-layout: base
 :mansource: FVWM-X
 :manmanual: FVWM-X Manual
-:revdate: 2026-10-12
+:revdate: 2026-10-23
 
 == NAME
 
@@ -45,6 +45,9 @@ FvwmCommand accepts the following command-line arguments:
 
 -d, --detailed, --verbose::
 	Print detailed diagnostic messages
+
+-R __json__, --request=__json__::
+	Go client only: send one structured request and print its correlated JSON reply.
 
 -v, --version::
 	Print version number.
@@ -93,9 +96,25 @@ The client returns status 0 on success, 1 on a connection, input or transport
 error, and 2 on an option error. Errors are printed on standard error.
 A partial command write is not retried.
 
+== STRUCTURED REQUEST MODE
+
+The Go client's `--request` sends one UTF-8 JSON object with a valid 1–64 byte
+ASCII request ID. The complete `request ` line must fit 1000 bytes. Duplicate
+fields, multiple objects and embedded line breaks are refused. Do not combine
+this mode with commands, stdin mode, info output or detailed diagnostics.
+
+The client skips the initial connection profile and unrelated events, then
+prints the matching reply with exact integers preserved. It waits at most six
+seconds for MFL's terminal reply (including its five-second domain deadline).
+A successful reply returns status 0; a structured error is printed as JSON and
+returns status 1, as do connection/transport/time-limit errors. Option errors
+return status 2. The native MFL schema still validates methods/resources; this
+mode does not turn a submitted command into an applied-result acknowledgement.
+
 == EXAMPLES
 
 ----
+FvwmCommand --request '{"version":1,"id":"browsers","method":"query","resource":"files"}'
 FvwmCommand Echo hello
 printf 'Echo first\nEcho second\n' | FvwmCommand -c
 FvwmCommand -f /private/path/socket -i 1 Echo hello

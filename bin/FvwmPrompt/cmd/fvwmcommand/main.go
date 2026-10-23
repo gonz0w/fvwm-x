@@ -23,9 +23,9 @@ import (
 var version = "development"
 
 type options struct {
-	stdin, info, detailed bool
-	socket, action        string
-	commands              []string
+	stdin, info, detailed   bool
+	socket, action, request string
+	commands                []string
 }
 
 func usage(out io.Writer, getenv func(string) string) {
@@ -43,13 +43,14 @@ Send commands to fvwm3 via FvwmMFL
                       >0 - print FvwmMFL feedback
   -d                  print detailed diagnostic messages
   -v                  print version number
+  --request JSON      send one structured MFL request, print its correlated reply
 
 Default unix socket name is:`, name)
 }
 
 func parse(args []string) (options, error) {
 	var o options
-	long := []string{"help", "version", "verbose", "cmds", "detailed", "info", "socket"}
+	long := []string{"help", "version", "verbose", "cmds", "detailed", "info", "socket", "request"}
 	for len(args) != 0 {
 		arg := args[0]
 		args = args[1:]
@@ -82,15 +83,15 @@ func parse(args []string) (options, error) {
 				return o, fmt.Errorf("unknown or ambiguous option --%s", name)
 			}
 			letters = map[string]string{"help": "h", "version": "v", "verbose": "d",
-				"cmds": "c", "detailed": "d", "info": "i", "socket": "f"}[matches[0]]
-			if supplied && letters != "i" && letters != "f" {
+				"cmds": "c", "detailed": "d", "info": "i", "socket": "f", "request": "R"}[matches[0]]
+			if supplied && letters != "i" && letters != "f" && letters != "R" {
 				return o, fmt.Errorf("option --%s does not take a value", name)
 			}
 		}
 		for len(letters) != 0 {
 			letter := letters[0]
 			letters = letters[1:]
-			if letter == 'i' || letter == 'f' || letter == 'w' {
+			if letter == 'i' || letter == 'f' || letter == 'w' || letter == 'R' {
 				if !supplied {
 					if letters != "" {
 						value, letters = letters, ""
@@ -114,6 +115,11 @@ func parse(args []string) (options, error) {
 				o.info = value != "0"
 			case 'f':
 				o.socket = value
+			case 'R':
+				if o.request != "" || value == "" {
+					return o, errors.New("request requires one nonempty JSON object")
+				}
+				o.request = value
 			case 'F', 'm', 'r', 'S', 'w':
 				// Retained FVWM2 options intentionally have no effect.
 			default:
@@ -132,6 +138,12 @@ func socketPath(explicit string, getenv func(string) string, uid int) string {
 }
 
 func execute(o options, input io.Reader, output io.Writer, getenv func(string) string) error {
+	if o.request != "" {
+		if o.stdin || o.info || o.detailed || len(o.commands) != 0 {
+			return errors.New("request mode cannot be combined with commands, stdin or feedback options")
+		}
+		return requestOnce(o, output, getenv)
+	}
 	endpoint := socketPath(o.socket, getenv, os.Getuid())
 	if o.detailed {
 		fmt.Fprintln(output, "Connecting to", endpoint)

@@ -32,6 +32,103 @@ def reply(connection, id_, status='ok'):
     return value.get('result') if status == 'ok' else value['error']['code']
 
 
+def file_provider_checks(connect, rpc, evidence):
+    rpc.send(frame('files-empty', resource='files'))
+    assert reply(rpc, 'files-empty')['providers'] == []
+    rpc.send(frame('files-readonly', 'register', resource='files', provider='a' * 32))
+    assert reply(rpc, 'files-readonly', 'error') == 'read_only'
+    owners = [connect() for _ in range(8)]
+    ids = ['%032x' % (i + 1) for i in range(8)]
+    for owner, provider in zip(owners, ids):
+        owner.send(frame('register', 'register', resource='files', provider=provider))
+        assert reply(owner, 'register') == dict(provider=provider, registered=True)
+    extra = connect()
+    extra.send(frame('duplicate', 'register', resource='files', provider=ids[0]))
+    assert reply(extra, 'duplicate', 'error') == 'provider_exists'
+    extra.send(frame('limit', 'register', resource='files', provider='f' * 32))
+    assert reply(extra, 'limit', 'error') == 'provider_limit'
+    owners[0].send(frame('downgrade', 'set_mode', mode='read-only'))
+    assert reply(owners[0], 'downgrade', 'error') == 'provider_active'
+    rpc.send(frame('files-list', resource='files'))
+    listed = reply(rpc, 'files-list')
+    assert listed['provider_limit'] == 8 and listed['query_only']
+    assert {x['provider'] for x in listed['providers']} == set(ids)
+
+    def query(id_, index=0, client=rpc):
+        client.send(frame(id_, resource='files', provider=ids[index], scope='items', limit=8))
+        value = owners[index].record()['file_query']
+        assert value['version'] == 1 and value['provider'] == ids[index]
+        assert len(value['serial']) == 16 and int(value['serial'], 16) > 0
+        return value['serial']
+
+    def respond(owner, serial, result):
+        data = json.dumps(dict(result=result), separators=(',', ':')).encode()
+        chunks = [data[i:i+256] for i in range(0, len(data), 256)]
+        for i, piece in enumerate(chunks):
+            owner.send(('files_reply %s part %d %s\n' % (serial, i, piece.hex())).encode())
+        owner.send(('files_reply %s end %d\n' % (serial, len(chunks))).encode())
+
+    def owner_barrier(index=0):
+        owners[index].send(frame('producer-barrier', resource='connection'))
+        reply(owners[index], 'producer-barrier')
+
+    serial = query('files-answer')
+    respond(owners[1], serial, dict(wrong_owner=True))
+    owner_barrier(1)
+    assert not select.select([rpc.socket], [], [], .05)[0]
+    payload = dict(observed=True, label='literal " \\ \n',
+        integers='9223372036854775807', padding='v' * 700)
+    respond(owners[0], serial, payload)
+    assert reply(rpc, 'files-answer') == payload
+    serial = query('files-cancelled')
+    rpc.send(frame('files-cancel', 'cancel', target='files-cancelled'))
+    assert reply(rpc, 'files-cancelled', 'error') == 'wait_cancelled'
+    assert reply(rpc, 'files-cancel')['state'] == 'wait-cancelled'
+    rpc.send(frame('still-busy', resource='files', provider=ids[0], scope='state'))
+    assert reply(rpc, 'still-busy', 'error') == 'provider_busy'
+    respond(owners[0], serial, dict(discarded_after_cancel=True))
+    owner_barrier()
+    serial = query('files-deadline', 1)
+    rpc.send(frame('files-pending', resource='pending'))
+    pending = reply(rpc, 'files-pending')['requests']
+    assert any(x['id'] == 'files-deadline' and x['resource'] == 'files' for x in pending)
+    assert reply(rpc, 'files-deadline', 'error') == 'deadline_exceeded'
+    rpc.send(frame('deadline-still-busy', resource='files', provider=ids[1], scope='state'))
+    assert reply(rpc, 'deadline-still-busy', 'error') == 'provider_busy'
+    respond(owners[1], serial, dict(discarded_after_timeout=True))
+    owner_barrier(1)
+    departed = connect()
+    serial = query('files-departed', client=departed)
+    departed.close()
+    respond(owners[0], serial, dict(discarded_after_disconnect=True))
+    owner_barrier()
+    serial = query('files-owner-lost')
+    owners[0].close()
+    assert reply(rpc, 'files-owner-lost', 'error') == 'provider_unavailable'
+    owners[0] = connect()
+    owners[0].send(frame('replacement', 'register', resource='files', provider=ids[0]))
+    reply(owners[0], 'replacement')
+    old_serial = serial
+    serial = query('files-replaced')
+    respond(owners[0], old_serial, dict(stale_incarnation=True))
+    respond(owners[0], serial, dict(replacement=True))
+    assert reply(rpc, 'files-replaced') == dict(replacement=True)
+    serial = query('files-invalid', 7)
+    owners[7].send(('files_reply %s end 0\n' % serial).encode())
+    owners[7].expect_closed()
+    assert reply(rpc, 'files-invalid', 'error') == 'provider_unavailable'
+    for owner in owners:
+        owner.close()
+    extra.close()
+    rpc.send(frame('files-after', resource='connection'))
+    assert reply(rpc, 'files-after')['read_only']
+    evidence['file_providers'] = dict(provider_limit=8, connection_owned=True,
+        readonly_query=True, wrong_owner_ignored=True, chunked_reply=True,
+        cancellation_retains_producer=True, timeout_retains_producer=True,
+        disconnected_waiter_discarded=True, owner_disconnect=True,
+        fresh_serial_after_replacement=True, malformed_producer_isolated=True)
+
+
 def run(args):
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     evidence = {'status': 'running'}
@@ -164,6 +261,8 @@ def run(args):
             assert reply(rpc, None, 'error') == 'invalid_request'
             assert not marker.exists()
             evidence['readonly_admission_schema_errors_and_no_execution'] = 'passed'
+
+            file_provider_checks(connect, rpc, evidence)
 
             # Stop only this owned core; MFL must continue servicing local queries
             # and absolute request deadlines, then discard late core replies.

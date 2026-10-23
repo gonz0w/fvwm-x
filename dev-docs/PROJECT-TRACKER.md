@@ -49,17 +49,21 @@ unique native-X drivers including three themes. Two AMD64 unit report-publicatio
 races are corrected in the fixture; passing product/native work is retained.
 [Integrated report](verification/VERIFICATION-2026-10-23-LIVE-COLLECTION-CYCLE.md).
 PR172 `a5c27ff1ee140c99d91abbb1edb04bf281a6d0e4` is the new integrated
-reference: cycle **1/3** after merged PR173. Directory watching is the next
-focused batch; **2/3 on its merge**.
+reference: cycle **2/3** after merged PR173–174. The read-only browser-provider
+batch is the third focused checkpoint; **3/3 on its merge**. Close accumulated
+affected six-target integration before a fourth feature implementation PR.
 Full install/default-X/compiler-feature and owner/milestone/release acceptance
 remain at their required boundary. Native-CPU/hardware/toolkit/compositor/
 assistive checks remain separate.
 
-The due periodic comparison is complete. Core/MFL binaries are exact PR164
-identities; consumer/Form feature-size observations remain explicit and no new
-speedup is claimed. PR169 is the new independent performance reference:
-**4/5 merged after PR170–173; 5/5 on the directory-watching merge**. Tuning stays deferred.
-[Performance and size report](verification/PERFORMANCE-2026-10-23-PR169.md).
+The due PR169→PR174 periodic comparison is complete using preserved qualified
+Linux ARM64 binaries. Core/MFL remain byte-identical to PR169; browser/Form file
+sizes grow 3.02%/1.56% across added features. Five paired 4096-file scan samples
+have overlapping ranges (medians 16.046/15.998 ms), with unchanged median maximum
+RSS. No speedup or consistent regression is established. PR174 is the independent
+performance reference at **0/5**; **1/5 on the provider-query merge**. Tuning stays
+deferred. [Report](verification/PERFORMANCE-2026-10-23-PR174.md). New provider MFL
+bytes cannot inherit the older MFL binary identity as performance evidence.
 
 Representative theme smoke checks **pass** on reused Linux native-X binaries:
 full shipped Slate dark, Dune light and a controlled classic/minimal configuration
@@ -84,7 +88,8 @@ or release gates, or advance either verification counter.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Native directory watching, FILE-DATA/VIEW-01 | Ready for review; focused Linux/FreeBSD/OpenBSD 8.0 ARM64 checks pass | Isolated inotify/kqueue observer, coalesced/periodic reconciliation, F8 toggle, explicit manual fallback and F5 recovery. Five Go packages pass 62/61/61 cases plus Linux race 62 (246 composed executions); four native-X drivers and three themes/27 screenshots each pass. A retired-instance observer correction repeats only UI, and a storage repair repeats only the Meson helper/manual target. Native C identities are retained. Cycle 1/3, 2/3 on merge; performance 4/5, comparison due after merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md), [contract](decisions/BROWSER-DIRECTORY-WATCH-2026-10-23.md). |
+| Read-only browser queries, FILE-DATA/VIEW-01 | Ready for review; focused Linux and early FreeBSD checks pass | Four related discovery, paged metadata/current selection, typed properties and correlated CLI capabilities. Ten registered entries, 203 composed Go cases/15 package outcomes, three scoped sanitizer exercises and four browser native-X drivers pass. Three themes/28 screenshots each are inspected. Disk-blocked race links and a version-stamp comparison require only scoped completions; C line wrapping retains equal tokens and repeats two focused request checks. Cycle 2/3, 3/3 on merge; performance PR174 0/5, 1/5 on merge. Broader owners remain open. [Report](verification/VERIFICATION-2026-10-23-FILE-PROVIDER-QUERIES.md), [contract](decisions/FILE-PROVIDER-QUERIES-2026-10-23.md). |
+| Native directory watching, FILE-DATA/VIEW-01 | Merged in [PR #174](https://github.com/gonz0w/fvwm-x/pull/174); focused Linux/FreeBSD/OpenBSD 8.0 ARM64 checks pass | Isolated inotify/kqueue observer, coalesced/periodic reconciliation, F8 toggle, explicit manual fallback and F5 recovery. Five Go packages pass 62/61/61 cases plus Linux race 62 (246 composed executions); four native-X drivers and three themes/27 screenshots each pass. A retired-instance observer correction repeats only UI, and a storage repair repeats only the Meson helper/manual target. Native C identities are retained. Cycle 1/3, 2/3 on merge; performance 4/5, comparison due after merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md), [contract](decisions/BROWSER-DIRECTORY-WATCH-2026-10-23.md). |
 | Browser live-update adoption, FILE-VIEW/ACTION-01 | Merged in [PR #173](https://github.com/gonz0w/fvwm-x/pull/173); focused Linux and early FreeBSD checks pass | Live refresh/filter/sort/status/properties, hidden/late selection reconciliation, direct native-acknowledged batches and replay-safe callbacks preserve windows/drafts. Native timeout renewal retains bounded orphan cleanup. Final 17 native entries, five Go packages/53 cases on both targets plus Linux race (159 executions), five native-X drivers and three themes/24 screenshots each pass. The PR170–172 six-target cycle closes first. Cycle 1/3 and performance 4/5 after merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md), [contract](decisions/BROWSER-LIVE-ADOPTION-2026-10-23.md). |
 | Native live collection updates, FILE-VIEW-01 | Merged in [PR #172](https://github.com/gonz0w/fvwm-x/pull/172); accumulated integration qualified | Atomic bounded snapshots, current-input identity remapping, generation callbacks and native status/abort/replay ownership. Seven selected entries pass on each target, three Linux scoped sanitizer entries and five composed actual-X drivers pass; three themes/20 screenshots each. Go/core/MFL qualification is retained. The accumulated PR170–172 checkpoint is closed before browser adoption. PR172 is the integrated reference; performance remains PR169 at 3/5. [Report](verification/VERIFICATION-2026-10-23-LIVE-COLLECTION-UPDATES.md), [contract](decisions/LIVE-COLLECTION-UPDATES-2026-10-23.md). |
 | Configured file-selection actions, FILE-ACTION/DATA/VIEW-01 | Merged in [PR #171](https://github.com/gonz0w/fvwm-x/pull/171); focused checks pass | Up to four configured literal executables receive a fully validated selected-path argument set; multi-entry observed properties and repeated initial --properties preserve selection ownership. Immediate cancellation has a consistent result. Five Go packages/51 cases pass on both targets and in Linux race; three real-theme drivers pass with 15 screenshots each. A classic observer selector fix repeats only that driver; qualified native binaries are unchanged. Cycle 2/3 and performance 2/5 after merge. [Report](verification/VERIFICATION-2026-10-23-FILE-SELECTION-ACTIONS.md), [contract](decisions/FILE-SELECTION-ACTIONS-2026-10-23.md). |
@@ -326,6 +331,15 @@ The ignored graph cache has automatic updates disabled. See the
 Man pages are the primary install documentation; optional HTML uses the existing
 source/renderer. This checkpoint does not change runtime/build targets or claim
 new passing native CI, package/man gates or a completed manual rewrite.
+
+Current selection after merged PR174: batch FILE-DATA/VIEW-01 read-only browser
+instance discovery, paged metadata/current native selection and typed observed
+properties, with a correlated `FvwmCommand --request` entry point. Keep typed
+external actions/FileManager1, file mutation and protected clipboard payloads
+with their owners. No SQLite or new GUI dependency is required. This is the
+third implementation checkpoint after integrated PR172; close the accumulated
+platform cycle before the next implementation PR. See the
+[contract](decisions/FILE-PROVIDER-QUERIES-2026-10-23.md).
 
 ## Execution order
 

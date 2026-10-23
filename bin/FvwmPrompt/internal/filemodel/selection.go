@@ -95,6 +95,44 @@ func (s *Snapshot) ValidateSelection(ids []string) ([]string, error) {
 	return paths, nil
 }
 
+type SelectionSummary struct {
+	Count, Files, Directories, Links, Special int
+	FileBytes                                 int64
+}
+
+func summarizeItems(items []Item) (*SelectionSummary, error) {
+	summary := &SelectionSummary{Count: len(items)}
+	for _, item := range items {
+		switch item.Kind {
+		case "file":
+			if item.Identity.Size < 0 || item.Identity.Size > math.MaxInt64-summary.FileBytes {
+				return nil, errors.New("observed file-size total exceeds limit")
+			}
+			summary.Files++
+			summary.FileBytes += item.Identity.Size
+		case "directory":
+			summary.Directories++
+		case "symlink":
+			summary.Links++
+		case "special":
+			summary.Special++
+		default:
+			return nil, errors.New("unknown observed file type")
+		}
+	}
+	return summary, nil
+}
+
+// SummarizeSelection exposes typed admitted observations without filesystem or
+// content work. Wire consumers choose exact integer encoding independently.
+func (s *Snapshot) SummarizeSelection(ids []string) (*SelectionSummary, error) {
+	items, err := s.selectedItems(ids)
+	if err != nil {
+		return nil, err
+	}
+	return summarizeItems(items)
+}
+
 // ObservedSelection is metadata-only, including links and special entries. It
 // reads neither files nor recursive directory contents and never claims freshness.
 func (s *Snapshot) ObservedSelection(ids []string) ([]string, error) {
@@ -105,29 +143,13 @@ func (s *Snapshot) ObservedSelection(ids []string) ([]string, error) {
 	if len(items) == 1 {
 		return s.ObservedDetails(items[0].ID)
 	}
-	files, directories, links, special := 0, 0, 0, 0
-	var bytes int64
-	for _, item := range items {
-		switch item.Kind {
-		case "file":
-			if item.Identity.Size < 0 || item.Identity.Size > math.MaxInt64-bytes {
-				return nil, errors.New("observed file-size total exceeds limit")
-			}
-			files++
-			bytes += item.Identity.Size
-		case "directory":
-			directories++
-		case "symlink":
-			links++
-		case "special":
-			special++
-		default:
-			return nil, errors.New("unknown observed file type")
-		}
+	summary, err := summarizeItems(items)
+	if err != nil {
+		return nil, err
 	}
 	return []string{
-		fmt.Sprintf("Observed selection: %d entries; %d files; %d folders", len(items), files, directories),
-		fmt.Sprintf("Regular-file bytes: %d; %d links; %d special entries", bytes, links, special),
+		fmt.Sprintf("Observed selection: %d entries; %d files; %d folders", summary.Count, summary.Files, summary.Directories),
+		fmt.Sprintf("Regular-file bytes: %d; %d links; %d special entries", summary.FileBytes, summary.Links, summary.Special),
 		"Folder contents and link targets are not counted. No file content is read.",
 	}, nil
 }

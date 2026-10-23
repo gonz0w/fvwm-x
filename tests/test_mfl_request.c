@@ -776,8 +776,80 @@ static void test_preview_requests(void)
 		&request));
 }
 
+static void test_files_schema_and_private_parts(void)
+{
+	struct mfl_request request;
+	struct mfl_pending_request pending = {0};
+	const char *payload;
+	uint64_t serial;
+	const char *valid[] = {
+		"{\"version\":1,\"id\":\"f\",\"method\":\"query\","
+		"\"resource\":\"files\"}",
+		"{\"version\":1,\"id\":\"f\",\"method\":\"register\","
+		"\"resource\":\"files\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\"}",
+		"{\"version\":1,\"id\":\"f\",\"method\":\"query\","
+		"\"resource\":\"files\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"scope\":\"items\","
+		"\"generation\":\"0123456789abcdef0123456789abcdef\","
+		"\"offset\":4096,\"limit\":8}"
+	};
+	const char *invalid[] = {
+		"{\"version\":1,\"id\":\"f\",\"method\":\"action\","
+		"\"resource\":\"files\"}",
+		"{\"version\":1,\"id\":\"f\",\"method\":\"register\","
+		"\"resource\":\"files\",\"provider\":\"bad\"}",
+		"{\"version\":1,\"id\":\"f\",\"method\":\"query\","
+		"\"resource\":\"files\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"scope\":\"items\",\"offset\":1}",
+		"{\"version\":1,\"id\":\"f\",\"method\":\"query\","
+		"\"resource\":\"files\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"scope\":\"items\",\"limit\":9}",
+		"{\"version\":1,\"id\":\"f\",\"method\":\"query\","
+		"\"resource\":\"files\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"scope\":\"state\",\"limit\":1}"
+	};
+
+	for (size_t i = 0; i < sizeof(valid) / sizeof(valid[0]); i++)
+	{
+		assert(mfl_request_parse(valid[i], &request));
+		assert(request.kind == (enum mfl_request_kind)(
+			MFL_REQUEST_FILES_LIST + i));
+		assert(mfl_request_is_action(request.kind) == (i == 1));
+	}
+	for (size_t i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
+		assert(!mfl_request_parse(invalid[i], &request));
+	{
+		struct mfl_pending_request slots[MFL_REQUEST_LIMIT] = {{0}};
+		struct mfl_pending_request *slot;
+
+		assert(mfl_request_parse(valid[2], &request));
+		assert(!mfl_request_reserve(slots, &request, 1, 100, &slot));
+		assert(slot == slots && slot->kind == MFL_REQUEST_FILES_QUERY);
+		assert(slot->deadline_ms == 5100);
+	}
+	assert(mfl_files_reply_header(
+		"files_reply 0000000000000001 part 0 7b7d", &serial, &payload));
+	assert(serial == 1 && strcmp(payload, "part 0 7b7d") == 0);
+	pending.kind = MFL_REQUEST_FILES_QUERY;
+	assert(mfl_request_part(&pending, payload) == MFL_PART_MORE);
+	assert(mfl_request_part(&pending, "end 1") == MFL_PART_DONE);
+	mfl_request_clear(&pending);
+	assert(!mfl_files_reply_header("files_reply 0000000000000000 end 1",
+		&serial, &payload));
+	assert(!serial && !payload);
+	assert(!mfl_files_reply_header("files_reply 000000000000000G end 1",
+		&serial, &payload));
+	assert(!serial && !payload);
+}
+
 int main(void)
 {
+	test_files_schema_and_private_parts();
 	test_integer_settings();
 	test_preview_requests();
 	test_appearance_requests();

@@ -62,6 +62,9 @@ static int fvwmmfl_lock_fd = -1;
 static unsigned int client_count;
 
 struct client {
+	bool closing;
+	char files_provider[33];
+	struct mfl_pending_request files_response;
 	char preview_view[17];
 	bool preview_used;
 	struct event *requests;
@@ -134,6 +137,7 @@ struct event_flag {
 
 static void fvwm_read(struct bufferevent *, void *);
 static void client_destroy(struct client *);
+static void files_owner_gone(const char *);
 static void broadcast_to_client(FvwmPacket *);
 static void setup_signal_handlers(struct event_base *);
 static inline const char *flag_to_event(unsigned long);
@@ -643,6 +647,9 @@ client_destroy(struct client *c)
 	}
 	TAILQ_REMOVE(&clientq, c, entry);
 	client_count--;
+	if (c->files_provider[0])
+		files_owner_gone(c->files_provider);
+	mfl_request_clear(&c->files_response);
 	event_free(c->resume);
 	event_free(c->partial);
 	event_free(c->requests);
@@ -727,6 +734,238 @@ client_request_timeout_cb(evutil_socket_t fd, short events, void *ctx)
 		client_destroy(c);
 }
 
+static void client_close_later(struct client *c)
+{
+	/* Peer retirement can be requested while iterating the client queue.
+	 * Keep records alive until the existing continuation callback runs. */
+	c->closing = true;
+	bufferevent_disable(c->comms, EV_READ | EV_WRITE);
+	event_active(c->resume, EV_TIMEOUT, 1);
+}
+
+static void files_owner_gone(const char *provider)
+{
+	struct client *c;
+
+	TAILQ_FOREACH(c, &clientq, entry)
+	{
+		for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		{
+			struct mfl_pending_request *p = c->pending + i;
+
+			if (p->kind != MFL_REQUEST_FILES_QUERY ||
+			    strcmp(p->producer, provider) != 0)
+				continue;
+			if (!client_reply(c, p->id,
+				"provider_unavailable", NULL))
+				client_close_later(c);
+			mfl_request_clear(p);
+		}
+		if (!client_request_timer(c))
+			client_close_later(c);
+	}
+}
+
+static struct client *files_owner(const char *provider)
+{
+	struct client *c;
+
+	TAILQ_FOREACH(c, &clientq, entry)
+		if (c->files_provider[0] &&
+		    strcmp(c->files_provider, provider) == 0)
+			return c;
+	return NULL;
+}
+
+static bool client_files_register(struct client *c,
+	const struct mfl_request *request)
+{
+	struct client *peer;
+	unsigned int count = 0;
+	cJSON *result;
+
+	if (c->files_provider[0] &&
+	    strcmp(c->files_provider, request->provider) != 0)
+		return client_reply(c, request->id,
+			"provider_already_registered", NULL);
+	peer = files_owner(request->provider);
+	if (peer && peer != c)
+		return client_reply(c, request->id, "provider_exists", NULL);
+	TAILQ_FOREACH(peer, &clientq, entry)
+		if (peer->files_provider[0])
+			count++;
+	if (!c->files_provider[0] && count >= MFL_FILES_PROVIDER_LIMIT)
+		return client_reply(c, request->id, "provider_limit", NULL);
+	result = cJSON_CreateObject();
+	if (!result || !cJSON_AddStringToObject(result, "provider",
+		request->provider) ||
+	    !cJSON_AddBoolToObject(result, "registered", true))
+	{
+		cJSON_Delete(result);
+		return false;
+	}
+	strcpy(c->files_provider, request->provider);
+	return client_reply(c, request->id, NULL, result);
+}
+
+static cJSON *client_files_list(void)
+{
+	cJSON *result = cJSON_CreateObject();
+	cJSON *list = result ?
+		cJSON_AddArrayToObject(result, "providers") : NULL;
+	struct client *c;
+
+	if (!list || !cJSON_AddNumberToObject(result, "version", 1) ||
+	    !cJSON_AddBoolToObject(result, "query_only", true) ||
+	    !cJSON_AddNumberToObject(result, "provider_limit",
+		MFL_FILES_PROVIDER_LIMIT))
+		goto fail;
+	TAILQ_FOREACH(c, &clientq, entry)
+	{
+		cJSON *item;
+
+		if (c->closing || !c->files_provider[0])
+			continue;
+		item = cJSON_CreateObject();
+		if (!item)
+			goto fail;
+		if (!cJSON_AddItemToArray(list, item))
+		{
+			cJSON_Delete(item);
+			goto fail;
+		}
+		if (!cJSON_AddStringToObject(item, "provider",
+			c->files_provider) ||
+		    !cJSON_AddBoolToObject(item, "busy",
+			c->files_response.kind != MFL_REQUEST_INVALID))
+			goto fail;
+	}
+	return result;
+fail:
+	cJSON_Delete(result);
+	return NULL;
+}
+
+static bool client_files_query(struct client *c,
+	const struct mfl_request *request)
+{
+	struct client *owner = files_owner(request->provider);
+	struct mfl_pending_request *slot;
+	const char *error;
+	char serial[17];
+	cJSON *event, *query;
+	char *line;
+	bool queued;
+
+	if (!owner || owner->closing)
+		return client_reply(c, request->id,
+			"provider_unavailable", NULL);
+	if (owner->files_response.kind != MFL_REQUEST_INVALID)
+		return client_reply(c, request->id, "provider_busy", NULL);
+	if (fc.next_request == UINT64_MAX)
+		return client_reply(c, request->id,
+			"request_ids_exhausted", NULL);
+	error = mfl_request_reserve(c->pending, request, ++fc.next_request,
+		request_now_ms(), &slot);
+	if (error)
+		return client_reply(c, request->id, error, NULL);
+	event = cJSON_CreateObject();
+	query = event ? cJSON_AddObjectToObject(event, "file_query") : NULL;
+	snprintf(serial, sizeof(serial), "%016" PRIx64, slot->serial);
+	if (!query || !cJSON_AddNumberToObject(query, "version", 1) ||
+	    !cJSON_AddStringToObject(query, "serial", serial) ||
+	    !cJSON_AddStringToObject(query, "provider", request->provider) ||
+	    !cJSON_AddStringToObject(query, "scope",
+		request->snapshot_resource) ||
+	    !cJSON_AddStringToObject(query, "generation",
+		request->generation) ||
+	    !cJSON_AddNumberToObject(query, "offset", request->offset) ||
+	    !cJSON_AddNumberToObject(query, "limit", request->limit))
+	{
+		cJSON_Delete(event);
+		mfl_request_clear(slot);
+		return false;
+	}
+	line = cJSON_PrintUnformatted(event);
+	cJSON_Delete(event);
+	if (!line)
+	{
+		mfl_request_clear(slot);
+		return false;
+	}
+	queued = mfl_queue_line(bufferevent_get_output(owner->comms), line);
+	cJSON_free(line);
+	if (!queued)
+	{
+		mfl_request_clear(slot);
+		client_close_later(owner);
+		return client_reply(c, request->id,
+			"provider_unavailable", NULL);
+	}
+	strcpy(slot->producer, request->provider);
+	owner->files_response.kind = MFL_REQUEST_FILES_QUERY;
+	owner->files_response.serial = slot->serial;
+	return client_request_timer(c);
+}
+
+static bool client_files_reply(struct client *owner, const char *command)
+{
+	const char *payload, *error = NULL;
+	uint64_t serial;
+	enum mfl_part_result part;
+	cJSON *envelope = NULL;
+	struct client *c;
+
+	if (!owner->files_provider[0] || owner->read_only ||
+	    !mfl_files_reply_header(command, &serial, &payload))
+		return false;
+	if (owner->files_response.kind == MFL_REQUEST_INVALID ||
+	    serial != owner->files_response.serial)
+		return true;
+	part = mfl_request_part(&owner->files_response, payload);
+	if (part == MFL_PART_INVALID)
+		return false;
+	if (part == MFL_PART_MORE)
+		return true;
+	envelope = mfl_request_result(&owner->files_response);
+	if (!envelope)
+		return false;
+	if (cJSON_HasObjectItem(envelope, "error"))
+		error = cJSON_GetObjectItemCaseSensitive(
+			cJSON_GetObjectItemCaseSensitive(envelope, "error"),
+			"code")->valuestring;
+	TAILQ_FOREACH(c, &clientq, entry)
+	{
+		for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
+		{
+			struct mfl_pending_request *p = c->pending + i;
+			cJSON *result = NULL;
+			bool queued;
+
+			if (p->kind != MFL_REQUEST_FILES_QUERY ||
+			    p->serial != serial ||
+			    strcmp(p->producer, owner->files_provider) != 0)
+				continue;
+			if (request_now_ms() >= p->deadline_ms)
+				error = "deadline_exceeded";
+			if (!error)
+				result =
+					cJSON_DetachItemFromObjectCaseSensitive(
+						envelope, "result");
+			queued = client_reply(c, p->id, error, result);
+			mfl_request_clear(p);
+			if (!queued || !client_request_timer(c))
+				client_close_later(c);
+			break;
+		}
+	}
+	/* A cancelled/disconnected waiter does not release the producer early.
+	 * The slot stays busy until the terminal reply or disconnect. */
+	cJSON_Delete(envelope);
+	mfl_request_clear(&owner->files_response);
+	return true;
+}
+
 static bool
 request_add_strings(cJSON *parent, const char *name,
 	const char *const *strings, int count)
@@ -754,16 +993,24 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 	if (kind == MFL_REQUEST_CAPABILITIES)
 	{
 		const char *methods[] = {"query", "barrier", "set_mode",
-			"action", "validate", "cancel", "watch", "unwatch"};
+			"action", "validate", "cancel", "watch", "unwatch",
+			"register"};
 		const char *binding_scopes[] = {"global", "menu",
 			"menu-fallback", "placement", "policy"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
 			"bindings", "provider", "operations", "colorsets",
-			"appearance", "menu-styles", "decorations", "preview"};
+			"appearance", "menu-styles", "decorations", "preview",
+			"files"};
 
-		if (!request_add_strings(result, "methods", methods, 8) ||
-		    !request_add_strings(result, "resources", resources, 15) ||
+		if (!request_add_strings(result, "methods", methods, 9) ||
+		    !request_add_strings(result, "resources", resources, 16) ||
+		    !cJSON_AddNumberToObject(result, "files_provider_limit",
+			MFL_FILES_PROVIDER_LIMIT) ||
+		    !cJSON_AddNumberToObject(result, "files_page_max",
+			MFL_FILES_PAGE_MAX) ||
+		    !cJSON_AddNumberToObject(result, "files_result_max_bytes",
+			MFL_SETTINGS_RESULT_MAX) ||
 		    !cJSON_AddStringToObject(result, "provider_notifications",
 			"invalidation-only") ||
 		    !cJSON_AddNumberToObject(result,
@@ -908,6 +1155,17 @@ client_request(struct client *c, const char *json)
 		return client_reply(c, request.id, request.error, NULL);
 	if (c->read_only && mfl_request_is_action(request.kind))
 		return client_reply(c, request.id, "read_only", NULL);
+	if (request.kind == MFL_REQUEST_FILES_REGISTER)
+		return client_files_register(c, &request);
+	if (request.kind == MFL_REQUEST_FILES_LIST)
+	{
+		result = client_files_list();
+		return result && client_reply(c, request.id, NULL, result);
+	}
+	if (request.kind == MFL_REQUEST_FILES_QUERY)
+		return client_files_query(c, &request);
+	if (request.kind == MFL_REQUEST_READ_ONLY && c->files_provider[0])
+		return client_reply(c, request.id, "provider_active", NULL);
 	if (request.kind == MFL_REQUEST_CANCEL)
 		return client_cancel_request(c, &request);
 	if (request.kind == MFL_REQUEST_PENDING)
@@ -1208,6 +1466,11 @@ client_read_cb(struct bufferevent *bev, void *ctx)
 	const struct timeval yield = {0, 1000};
 	unsigned int count;
 
+	if (c->closing)
+	{
+		client_destroy(c);
+		return;
+	}
 	event_del(c->resume);
 	for (count = 0; count < MFL_COMMAND_BUDGET; count++)
 	{
@@ -1227,9 +1490,18 @@ client_read_cb(struct bufferevent *bev, void *ctx)
 			return;
 		}
 		event_del(c->partial);
+		if (strncmp(command, "files_reply ", 12) == 0)
+		{
+			if (!client_files_reply(c, command) || c->closing)
+			{
+				client_destroy(c);
+				return;
+			}
+			continue;
+		}
 		if (strncmp(command, "request ", 8) == 0)
 		{
-			if (!client_request(c, command + 8))
+			if (!client_request(c, command + 8) || c->closing)
 			{
 				client_destroy(c);
 				return;

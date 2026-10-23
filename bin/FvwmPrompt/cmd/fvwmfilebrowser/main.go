@@ -470,20 +470,43 @@ func run(o options) error {
 		if b.watch.cancel != nil {
 			b.watch.cancel()
 		}
-		session.Send("KillModule FvwmForm " + b.alias)
-		session.Send("DestroyModuleConfig " + b.alias + ":*")
+		if b.alias != "" {
+			session.Send("KillModule FvwmForm " + b.alias)
+			session.Send("DestroyModuleConfig " + b.alias + ":*")
+		}
 	}()
 	events := make(chan string, 16)
+	queries := make(chan fileQuery, 1)
+	registered := make(chan providerRegistration, 1)
 	finished := make(chan error, 1)
 	go func() {
 		finished <- session.Read(func(record json.RawMessage) error {
 			var event struct {
-				Echo struct {
+				FileQuery *fileQuery            `json:"file_query"`
+				Reply     *providerRegistration `json:"reply"`
+				Echo      struct {
 					Message string `json:"message"`
 				} `json:"echo"`
 			}
 			if json.Unmarshal(record, &event) != nil {
 				return errors.New("invalid MFL event")
+			}
+			if event.Reply != nil && event.Reply.ID == "file-register" {
+				select {
+				case registered <- *event.Reply:
+				default:
+					return errors.New("duplicate file provider registration reply")
+				}
+			}
+			if event.FileQuery != nil {
+				if !b.validFileQuery(*event.FileQuery) {
+					return errors.New("invalid file provider query")
+				}
+				select {
+				case queries <- *event.FileQuery:
+				default:
+					return errors.New("file provider query queue is full")
+				}
 			}
 			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_SYNC "+b.instance+" ") {
 				select {
@@ -511,6 +534,9 @@ func run(o options) error {
 	}()
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+	if err := b.registerProvider(ctx, registered, finished); err != nil {
+		return err
+	}
 	idle := time.NewTimer(idleLimit)
 	defer idle.Stop()
 	watchTick := time.NewTicker(100 * time.Millisecond)
@@ -533,6 +559,10 @@ func run(o options) error {
 			return nil
 		case err := <-finished:
 			return err
+		case query := <-queries:
+			if err := b.answerProvider(query); err != nil {
+				return err
+			}
 		case event := <-b.results:
 			if err := b.completed(event); err != nil {
 				return err

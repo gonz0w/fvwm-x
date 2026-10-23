@@ -221,6 +221,63 @@ static bool query_index(const cJSON *value, unsigned int maximum,
 	return true;
 }
 
+static bool preview_token(const cJSON *value)
+{
+	return bounded_string(value, MODULE_QUERY_GENERATION_LEN) &&
+		strlen(value->valuestring) == MODULE_QUERY_GENERATION_LEN &&
+		strspn(value->valuestring, "0123456789abcdef") ==
+			MODULE_QUERY_GENERATION_LEN;
+}
+
+static bool preview_request(struct mfl_request *request,
+	const cJSON *const *values, unsigned int seen)
+{
+	unsigned int fields = 15 | (1U << 6) | (1U << 7) | (1U << 10);
+	const char *operation;
+
+	if (strcmp(values[2]->valuestring, "query") == 0 && seen == 15)
+	{
+		request->kind = MFL_REQUEST_PREVIEW_QUERY;
+		return true;
+	}
+	if (strcmp(values[2]->valuestring, "action") != 0 ||
+	    !bounded_string(values[6], 8) || !preview_token(values[7]) ||
+	    !bounded_string(values[10], MFL_REQUEST_ID_MAX))
+		return false;
+	operation = values[6]->valuestring;
+	if (strcmp(operation, "start") == 0)
+	{
+		const cJSON *opacity;
+
+		fields |= (1U << 8);
+		if ((seen & ~(1U << 13)) != fields ||
+		    !cJSON_IsObject(values[8]) || cJSON_GetArraySize(values[8]) != 1)
+			return false;
+		opacity = cJSON_GetObjectItemCaseSensitive(values[8], "opacity");
+		if (!query_index(opacity, 100, &request->opacity))
+			return false;
+		request->timeout_ms = 15000;
+		if (values[13] && (!query_index(values[13], 30000,
+			&request->timeout_ms) || request->timeout_ms < 1000))
+			return false;
+		request->kind = MFL_REQUEST_PREVIEW_START;
+	}
+	else
+	{
+		if (seen != fields || !preview_token(values[10]))
+			return false;
+		if (strcmp(operation, "confirm") == 0)
+			request->kind = MFL_REQUEST_PREVIEW_CONFIRM;
+		else if (strcmp(operation, "revert") == 0)
+			request->kind = MFL_REQUEST_PREVIEW_REVERT;
+		else
+			return false;
+	}
+	strcpy(request->target, values[10]->valuestring);
+	strcpy(request->generation, values[7]->valuestring);
+	return true;
+}
+
 static bool operation_request(struct mfl_request *request,
 	const cJSON *const *values, unsigned int seen)
 {
@@ -461,9 +518,9 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 {
 	static const char *fields[] = {"version", "id", "method", "resource",
 		"mode", "scope", "operation", "generation", "values",
-		"provider", "target", "offset", "limit"};
+		"provider", "target", "offset", "limit", "timeout_ms"};
 	cJSON *root = NULL;
-	const cJSON *values[13] = {0};
+	const cJSON *values[14] = {0};
 	const cJSON *item;
 	unsigned int seen = 0;
 	bool valid = false;
@@ -479,10 +536,10 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	{
 		size_t i;
 
-		for (i = 0; i < 13; i++)
+		for (i = 0; i < 14; i++)
 			if (strcmp(item->string, fields[i]) == 0)
 				break;
-		if (i == 13 || (seen & (1U << i)))
+		if (i == 14 || (seen & (1U << i)))
 			goto out;
 		seen |= 1U << i;
 		values[i] = item;
@@ -519,6 +576,14 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 			valid = true;
 			request->error = NULL;
 		}
+		goto out;
+	}
+	if (cJSON_IsString(values[3]) &&
+	    strcmp(values[3]->valuestring, "preview") == 0)
+	{
+		valid = preview_request(request, values, seen);
+		if (valid)
+			request->error = NULL;
 		goto out;
 	}
 	if (cJSON_IsString(values[3]) &&
@@ -635,6 +700,15 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 		}
 		switch (p->kind)
 		{
+		case MFL_REQUEST_PREVIEW_START:
+			operation = "start";
+			break;
+		case MFL_REQUEST_PREVIEW_CONFIRM:
+			operation = "confirm";
+			break;
+		case MFL_REQUEST_PREVIEW_REVERT:
+			operation = "revert";
+			break;
 		case MFL_REQUEST_SETTINGS_SET:
 			operation = "set";
 			break;
@@ -658,6 +732,7 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 			(p->kind >= MFL_REQUEST_OPERATION_QUERY &&
 			 p->kind <= MFL_REQUEST_OPERATION_CANCEL) ?
 			"operations" :
+			mfl_request_is_preview(p->kind) ? "preview" :
 			p->kind == MFL_REQUEST_PROVIDER ? "provider" :
 			mfl_request_is_settings(p->kind) ? "settings" :
 			p->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
@@ -691,7 +766,7 @@ const char *mfl_request_reserve(struct mfl_pending_request *pending,
 	if (serial == 0 || (request->kind != MFL_REQUEST_DESKTOP &&
 	    request->kind != MFL_REQUEST_BARRIER &&
 	    !mfl_request_is_settings(request->kind) &&
-	    !mfl_request_is_snapshot(request->kind)))
+	    !mfl_request_is_core_reply(request->kind)))
 		return "invalid_request";
 	for (size_t i = 0; i < MFL_REQUEST_LIMIT; i++)
 	{
@@ -855,6 +930,17 @@ fail:
 	return NULL;
 }
 
+bool mfl_request_is_preview(enum mfl_request_kind kind)
+{
+	return kind >= MFL_REQUEST_PREVIEW_QUERY &&
+		kind <= MFL_REQUEST_PREVIEW_REVERT;
+}
+
+bool mfl_request_is_core_reply(enum mfl_request_kind kind)
+{
+	return mfl_request_is_snapshot(kind) || mfl_request_is_preview(kind);
+}
+
 bool mfl_request_is_snapshot(enum mfl_request_kind kind)
 {
 	return kind == MFL_REQUEST_TOPOLOGY ||
@@ -879,7 +965,10 @@ bool mfl_request_is_action(enum mfl_request_kind kind)
 	return (kind >= MFL_REQUEST_SETTINGS_SET &&
 		kind <= MFL_REQUEST_SETTINGS_RELOAD) ||
 		kind == MFL_REQUEST_OPERATION_START ||
-		kind == MFL_REQUEST_OPERATION_CANCEL;
+		kind == MFL_REQUEST_OPERATION_CANCEL ||
+		kind == MFL_REQUEST_PREVIEW_START ||
+		kind == MFL_REQUEST_PREVIEW_CONFIRM ||
+		kind == MFL_REQUEST_PREVIEW_REVERT;
 }
 
 void mfl_request_clear(struct mfl_pending_request *pending)
@@ -894,6 +983,55 @@ static bool settings_cookie(const char *cookie)
 
 	return length > 0 && length <= 64 &&
 		strspn(cookie, "0123456789abcdef-") == length;
+}
+
+bool mfl_request_preview_command(char *output, size_t capacity,
+	const struct mfl_request *request, uint64_t serial,
+	const char *cookie, const char *view)
+{
+	static const char hex[] = "0123456789abcdef";
+	char name[2 * MFL_REQUEST_ID_MAX + 1] = "-";
+	const char *operation;
+	int length;
+
+	if (!capacity)
+		return false;
+	output[0] = '\0';
+	if (!mfl_request_is_preview(request->kind) || !serial ||
+	    !settings_cookie(cookie) || strlen(view) != 16 ||
+	    strspn(view, hex) != 16)
+		return false;
+	operation = request->kind == MFL_REQUEST_PREVIEW_START ? "start" :
+		request->kind == MFL_REQUEST_PREVIEW_CONFIRM ? "confirm" :
+		request->kind == MFL_REQUEST_PREVIEW_REVERT ? "revert" : "query";
+	if (request->kind == MFL_REQUEST_PREVIEW_START)
+	{
+		size_t bytes = strnlen(request->target, sizeof(request->target));
+
+		if (!bytes || bytes > MFL_REQUEST_ID_MAX)
+			return false;
+		for (size_t i = 0; i < bytes; i++)
+		{
+			unsigned char byte = request->target[i];
+
+			name[2 * i] = hex[byte >> 4];
+			name[2 * i + 1] = hex[byte & 15];
+		}
+		name[2 * bytes] = '\0';
+	}
+	length = snprintf(output, capacity,
+		"Send_Preview %s %016" PRIx64 " %s %s %s %s %u %u %s",
+		cookie, serial, view, operation,
+		request->generation[0] ? request->generation : "-",
+		request->kind == MFL_REQUEST_PREVIEW_CONFIRM ||
+		request->kind == MFL_REQUEST_PREVIEW_REVERT ? request->target : "-",
+		request->opacity, request->timeout_ms, name);
+	if (length < 0 || (size_t)length >= capacity)
+	{
+		output[0] = '\0';
+		return false;
+	}
+	return true;
 }
 
 bool mfl_request_snapshot_command(char *output, size_t capacity,
@@ -963,11 +1101,11 @@ const char *mfl_request_part_payload(const char *message,
 	int length;
 
 	if ((!mfl_request_is_settings(pending->kind) &&
-	    !mfl_request_is_snapshot(pending->kind)) ||
+	    !mfl_request_is_core_reply(pending->kind)) ||
 	    !settings_cookie(cookie))
 		return NULL;
 	length = snprintf(prefix, sizeof(prefix), "%s %s %016" PRIx64 " ",
-		mfl_request_is_snapshot(pending->kind) ?
+		mfl_request_is_core_reply(pending->kind) ?
 		"MFL_CORE_1" : "MFL_SETTINGS_1", cookie, pending->serial);
 	if (length < 0 || (size_t)length >= sizeof(prefix) ||
 	    strncmp(message, prefix, (size_t)length) != 0)
@@ -992,11 +1130,11 @@ enum mfl_part_result mfl_request_part(
 	unsigned int index = 0, digits = 0;
 	size_t length;
 
-	size_t maximum = mfl_request_is_snapshot(pending->kind) ?
+	size_t maximum = mfl_request_is_core_reply(pending->kind) ?
 		MODULE_QUERY_RESULT_MAX : MFL_SETTINGS_RESULT_MAX;
 
 	if ((!mfl_request_is_settings(pending->kind) &&
-	    !mfl_request_is_snapshot(pending->kind)) ||
+	    !mfl_request_is_core_reply(pending->kind)) ||
 	    (!end && strncmp(payload, "part ", 5) != 0) ||
 	    pending->reply_length > maximum)
 		return MFL_PART_INVALID;
@@ -1049,7 +1187,7 @@ cJSON *mfl_request_result(const struct mfl_pending_request *pending)
 
 	if (!pending->reply_data ||
 	    !request_shape(pending->reply_data,
-		mfl_request_is_snapshot(pending->kind) ?
+		mfl_request_is_core_reply(pending->kind) ?
 		MODULE_QUERY_RESULT_MAX : MFL_SETTINGS_RESULT_MAX, 8))
 		return NULL;
 	root = cJSON_ParseWithOpts(pending->reply_data, NULL, true);

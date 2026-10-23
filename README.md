@@ -14,9 +14,10 @@ compositor or native Wayland backend.
 prerequisite, buttons/atomic groups, settings/editor and non-executing
 configuration checker are merged.
 [IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
-has core/settings queries, actions, validation and wait controls. Provider
+has core/settings queries and actions. Provider
 observation and desktop operations pass shared platform checks. Appearance policy
-inspection has focused checks; preview and tuning remain deferred.
+inspection and runtime opacity preview/recovery pass shared platform checks.
+Saved-preference preview and tuning remain open.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the
 current qualified baseline and 7.9 is out of scope.

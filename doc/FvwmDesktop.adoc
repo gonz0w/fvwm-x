@@ -195,9 +195,38 @@ the same registry, saved/effective values, override precedence and private-file
 revision checks used by the native editor. See FvwmMFL's STRUCTURED REQUESTS
 section for the wire format, bounds and result meanings. A committed preference
 or submitted FVWM command is not completed core rendering. Helper generations
-do not observe external Style/Colorset state; live preview remains unavailable.
+do not observe external Style/Colorset state; saved-preference preview remains
+unavailable. A separate core-owned runtime menu-opacity preview is described
+below.
 The `ipc-request` module message is reserved for that bounded literal-data
 transport; existing `query-settings` Echo consumers remain supported.
+
+== RUNTIME OPACITY PREVIEW
+
+Desktop settings offers *Preview launcher opacity...*, with 70%, 85%, 94% and
+100% choices. It changes the existing SlateLauncherStyle menu policy and opens
+a native confirmation dialog. Open Applications to view the candidate; close
+and reopen an already visible menu to sample its new opacity.
+
+Choose *Keep current value* (F1) or *Revert* (Escape) within the core's 15-second
+lease. Keep changes only the current runtime scalar. Saved desktop preferences
+stay unchanged; a later theme update or restart replaces the value. Closing
+the dialog leaves recovery to the deadline. Helper death also restores, unless
+an intervening appearance change makes automatic recovery unsafe. The notice
+reports that refusal; inspect current appearance before retrying. Already
+painted menu pixels may retain their previous presentation until reopened.
+
+The core owns the exact previous scalar, atomic generation check and deadline.
+FvwmDesktop retains one reply wait and at most one queued control, with Revert
+taking precedence. Dialog callbacks bind to this helper and preview view;
+stale controls cannot keep a newer preview. One stale-start retry obtains a
+fresh generation and still applies conditionally; further conflicts are refused.
+Results are polled once per second
+while active. A missing/invalid reply queues abandon and reports uncertainty;
+it never claims persistence or completed rendering. Recovery runs at eligible
+core service points, including menu/pointer interactions, and cannot preempt
+one blocking command or a stalled X server. FvwmMFL documents the same typed
+runtime resource for clients. General saved-preference preview remains open.
 
 == CONFIGURATION CHECK
 

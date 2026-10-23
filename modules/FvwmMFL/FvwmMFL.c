@@ -23,6 +23,7 @@
 #include "stream.h"
 #include "request.h"
 #include <stdint.h>
+#include <inttypes.h>
 #include <time.h>
 
 #include <sys/file.h>
@@ -61,6 +62,8 @@ static int fvwmmfl_lock_fd = -1;
 static unsigned int client_count;
 
 struct client {
+	char preview_view[17];
+	bool preview_used;
 	struct event *requests;
 	struct mfl_pending_request pending[MFL_REQUEST_LIMIT];
 	bool read_only;
@@ -82,6 +85,7 @@ struct clients  clientq;
 
 struct fvwm_comms {
 	uint64_t next_request;
+	uint64_t next_view;
 	char settings_cookie[65];
 	int		 fd[2];
 	struct event_base *base;
@@ -625,6 +629,18 @@ broadcast_to_client(FvwmPacket *packet)
 static void
 client_destroy(struct client *c)
 {
+	/* Same-producer order places abandon after an already queued start.
+	 * If output cannot accept it, the independent core deadline still owns
+	 * recovery; module death also clears its lease before record retirement. */
+	if (c->preview_used && fc.output && fc.next_request != UINT64_MAX)
+	{
+		char command[256];
+
+		snprintf(command, sizeof(command),
+			"Send_Preview %s %016" PRIx64 " %s abandon - - 0 0 -",
+			fc.settings_cookie, ++fc.next_request, c->preview_view);
+		mfl_queue_command(bufferevent_get_output(fc.output), command);
+	}
 	TAILQ_REMOVE(&clientq, c, entry);
 	client_count--;
 	event_free(c->resume);
@@ -744,10 +760,10 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
 			"bindings", "provider", "operations", "colorsets",
-			"appearance", "menu-styles", "decorations"};
+			"appearance", "menu-styles", "decorations", "preview"};
 
 		if (!request_add_strings(result, "methods", methods, 8) ||
-		    !request_add_strings(result, "resources", resources, 14) ||
+		    !request_add_strings(result, "resources", resources, 15) ||
 		    !cJSON_AddStringToObject(result, "provider_notifications",
 			"invalidation-only") ||
 		    !cJSON_AddNumberToObject(result,
@@ -765,6 +781,10 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		    !cJSON_AddNumberToObject(
 			result, "core_query_result_max_bytes",
 			MODULE_QUERY_RESULT_MAX) ||
+		    !cJSON_AddStringToObject(result, "preview_scope", "menu-opacity") ||
+		    !cJSON_AddStringToObject(result, "preview_persistence", "runtime-only") ||
+		    !cJSON_AddNumberToObject(result, "preview_lease_limit", 1) ||
+		    !cJSON_AddNumberToObject(result, "preview_timeout_max_ms", 30000) ||
 		    !cJSON_AddNumberToObject(result, "appearance_page_max",
 			MODULE_QUERY_PAGE_MAX) ||
 		    !cJSON_AddNumberToObject(result, "colorset_page_max",
@@ -940,7 +960,12 @@ client_request(struct client *c, const char *json)
 		request_now_ms(), &slot);
 	if (error != NULL)
 		return client_reply(c, request.id, error, NULL);
-	if (!(mfl_request_is_snapshot(request.kind) ?
+	if (request.kind == MFL_REQUEST_PREVIEW_START)
+		c->preview_used = true;
+	if (!(mfl_request_is_preview(request.kind) ?
+	    mfl_request_preview_command(command, sizeof(command), &request,
+		slot->serial, fc.settings_cookie, c->preview_view) :
+	    mfl_request_is_snapshot(request.kind) ?
 	    mfl_request_snapshot_command(command, sizeof(command), &request,
 		slot->serial, fc.settings_cookie) :
 	    mfl_request_is_settings(request.kind) ?
@@ -1149,7 +1174,7 @@ handle_fragment_packet(const FvwmPacket *packet)
 				if (!envelope)
 				{
 					error = "invalid_provider_reply";
-					if (mfl_request_is_snapshot(p->kind))
+					if (mfl_request_is_core_reply(p->kind))
 						error = "invalid_core_reply";
 				}
 				else if (cJSON_HasObjectItem(envelope, "error"))
@@ -1261,13 +1286,15 @@ accept_conn_cb(struct evconnlistener *l, evutil_socket_t fd,
 	struct event_base *base = evconnlistener_get_base(l);
 	const struct timeval timeout = {MFL_PROGRESS_TIMEOUT, 0};
 
-	if (client_count >= MFL_CLIENT_LIMIT ||
+	if (client_count >= MFL_CLIENT_LIMIT || fc.next_view == UINT64_MAX ||
 	    evutil_make_socket_closeonexec(fd) < 0)
 	    {
 		close(fd);
 		return;
 	}
 	c = fxcalloc(1, sizeof(*c));
+	snprintf(c->preview_view, sizeof(c->preview_view),
+		"%016" PRIx64, ++fc.next_view);
 	c->comms = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);
 	c->resume = evtimer_new(base, client_resume_cb, c);
 	c->partial = evtimer_new(base, client_partial_timeout_cb, c);

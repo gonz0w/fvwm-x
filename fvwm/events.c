@@ -45,6 +45,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "appearance_preview.h"
 #include "fvwm/event_filter.h"
 #include "fvwm/module_records.h"
 #include "libs/FProperty.h"
@@ -4020,6 +4021,7 @@ Bool events_interaction_poll(int timeout_ms)
 	bool image_timeout;
 	Bool healthy = True;
 
+	appearance_preview_service();
 	if (ExecuteInteractionCommandQueue())
 	{
 		timeout_ms = 0;
@@ -4031,6 +4033,9 @@ Bool events_interaction_poll(int timeout_ms)
 	{
 		return True;
 	}
+	timer_ms = appearance_preview_timeout_ms();
+	if (timer_ms >= 0 && (timeout_ms < 0 || timer_ms < timeout_ms))
+		timeout_ms = timer_ms;
 	timer_ms = squeue_get_interaction_ms();
 	if (timer_ms >= 0 && (timeout_ms < 0 || timer_ms < timeout_ms))
 	{
@@ -4097,6 +4102,8 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 	struct timeval	       poll_timeout = {0, 0};
 	bool image_timeout = false;
 
+	/* Preview recovery changes only an opacity scalar, never borrowed faces. */
+	appearance_preview_service();
 	/* Pump even under an X-event flood, without changing any owner. */
 	image_async_transport();
 
@@ -4168,6 +4175,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		topology_ms = fvwm_topology_refresh_timeout_ms(
 		    &topology_refresh_state, events_monotonic_ns());
 		ms = fvwm_topology_timeout_min(scheduler_ms, topology_ms);
+		ms = fvwm_topology_timeout_min(ms, appearance_preview_timeout_ms());
 		if (ms < 0) {
 			timeout.tv_sec	= 42;
 			timeout.tv_usec = 0;

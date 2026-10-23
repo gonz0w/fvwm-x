@@ -833,6 +833,14 @@ monitor_scale_config_test = executable(
 
 test('monitor-scale-config', monitor_scale_config_test)
 
+preview_policy_test = executable(
+    'test-preview-policy',
+    ['test_preview_policy.c', '../fvwm/preview_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('preview-policy', preview_policy_test)
+
 query_json_test = executable(
     'test-query-json', ['test_query_json.c', '../fvwm/query_json.c'],
     include_directories: includedirs,
@@ -1239,6 +1247,15 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false,
         timeout: 120,
+    )
+    test('mfl-preview-xvfb', py,
+        args: [files('live_x/mfl_preview_live.py'),
+            '--fvwm', fvwm3.full_path(), '--mfl', fvwm_mfl.full_path(),
+            '--artifacts-dir', meson.current_build_dir() /
+                'live-x-artifacts' / 'mfl-preview'],
+        depends: [fvwm3, fvwm_mfl],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
     )
     test('mfl-core-state-xvfb', py,
         args: [files('live_x/mfl_core_state_live.py'),

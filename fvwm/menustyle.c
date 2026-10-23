@@ -166,6 +166,33 @@ MenuStyle *menustyle_get_default_style(void)
 	return default_menu_style;
 }
 
+bool menustyle_preview_opacity(const char *name, int opacity, int *previous)
+{
+	MenuStyle *style = default_menu_style;
+	unsigned int count = 0;
+
+	*previous = 0;
+	if (!name || opacity < 0 || opacity > 100)
+		return false;
+	for (; style && count <= MODULE_QUERY_OFFSET_MAX;
+	     style = ST_NEXT_STYLE(style), count++)
+	{
+		if (strcasecmp(ST_NAME(style), name) != 0)
+			continue;
+		if (ST_TRANSLUCENT_PERCENT(style) < 0 ||
+		    ST_TRANSLUCENT_PERCENT(style) > 100)
+			return false;
+		*previous = ST_TRANSLUCENT_PERCENT(style);
+		/* Opacity is sampled at menu presentation. This scalar owns no GC,
+		 * face, pixmap or window; recovery is safe during a menu grab too.
+		 * Already visible pixels may retain their previous presentation. */
+		ST_TRANSLUCENT_PERCENT(style) = opacity;
+		fvwm_query_appearance_changed();
+		return true;
+	}
+	return false;
+}
+
 void menustyle_free(MenuStyle *ms)
 {
 	MenuStyle *before = default_menu_style;

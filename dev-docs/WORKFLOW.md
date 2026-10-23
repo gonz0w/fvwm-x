@@ -61,23 +61,29 @@ cases before implementation. Record already-covered paths without rewriting
 them; newly discovered serious failures advance immediately with their owner.
 Remaining performance-only tuning is deferred to the next release.
 
-User direction, 2026-10-22: separate a feature PR from full qualification.
-The earlier rule coupling each three-to-five-story PR to a broad matrix is
-superseded by the [shared-cycle decision](decisions/FEATURE-TEST-CADENCE-2026-10-22.md).
-Keep several substantive related improvements in a reviewable PR; aim to finish
-useful owner/issue scope rather than splitting minor parts into separate PRs.
-Implementation, its tests, probe and documentation count as one improvement.
-Do not make an unrelated rewrite or an unreviewable diff merely to raise a count.
+User direction, 2026-10-23: use [larger related cleanup batches and risk-based
+platform checks](decisions/BATCHED-CLEANUP-CADENCE-2026-10-23.md). The automatic
+three-PR/ten-story platform trigger is superseded. Aim for six to ten related
+substantive improvements where useful, or a complete reviewable owner slice;
+counts are not a target for invented stories or unrelated rewrites. Keep related
+cleanup in the open owner PR when it improves the same contract. The user has
+reopened bounded cleanup; the old full hardening backlog remains deferred.
+
+Implement a coherent group before its combined focused test gate. Use cheap
+affected compilation when useful during editing; test early for a reproduced
+failure or a dependent contract that needs proof. Do not repeat suites, theme
+sets, sanitizers, installs or platform checks after each small edit.
 
 ### Feature PR gate
 
 Use one existing incremental Linux development profile and compile affected
 targets. Run the affected policy/regression tests, plus nested-X integration
-for changed X-visible behavior. Add scoped sanitizers for memory/lifetime
-changes. Run repository/link/diff checks and inspect the change. For OS APIs,
-native ABI/architecture, signals/descriptors, compiler or build-sensitive work,
-check the affected target early; a portable API name alone is not proof.
-These checks run before dependent implementation and before PR merge.
+for changed X-visible behavior. Add scoped sanitizers for changed memory/lifetime ownership and race checks
+for changed concurrency; moving an unchanged caller is not such a change. Run repository/link/diff checks and inspect the change. When OS APIs,
+native ABI/architecture, signals/descriptors, compiler or build behavior actually
+change, check the affected target early. An unchanged portable socket/process
+API is not itself a reason for another BSD boot. Run the focused gate once at
+the combined checkpoint; repeat only affected checks after a correction.
 
 An ordinary PR does not rerun every compiler, optional profile, staged install
 or BSD default-server session. Test the built affected module/helper directly.
@@ -114,15 +120,15 @@ theme/accessibility and release matrices retain their separate scope.
 
 ### Shared integration cycle and release gate
 
-Close an integration cycle after roughly three merged implementation PRs, or
-earlier at a natural handoff or about ten accumulated substantive stories.
-Documentation-only changes do not advance the count. Freeze one accumulated
-candidate and run the affected six-target checkpoint once for all changes since
-the last integrated reference. Select compiler/optional-feature profiles from
-the accumulated impact. Install/default-X gates run at this checkpoint when
-the changed installed or server-dependent contract requires them; otherwise
-record them as deferred release coverage. Do not begin a fourth implementation
-PR until required cycle checks pass or the user explicitly changes the scope.
+Review accumulated risk after about five merged implementation batches or a
+substantial subsystem handoff. This is a review point, not an automatic matrix
+or a blocker on starting the next ordinary batch. Maintain the integrated
+reference, affected subsystems and missing coverage in the tracker. Select
+additional target/compiler/optional checks when accumulated changes or a
+concrete failure justify them; document the reason. Portable policy/refactor
+batches normally use one incremental Linux profile. Do not boot all six targets
+because a PR counter reached a number. Install/default-X checks follow changed
+installed or server-dependent contracts, not a new PR or moved helper.
 
 At milestone closure and before a release candidate, complete the full required
 support matrix: Linux/FreeBSD/OpenBSD on AMD64/ARM64, required compiler/feature
@@ -134,7 +140,7 @@ remain separate. No release qualification is inferred from focused PR passes.
 
 Maintain a short cycle ledger in the tracker: integrated reference, merged
 feature PRs since it, affected subsystems, deferred gates and closure trigger.
-Feature PRs may merge as **focused checks passed / integration pending**.
+Feature PRs may merge as **focused checks passed / broader coverage pending**.
 Do not close a broader owner or acceptance checkpoint until its criteria pass,
 or count deferred checks as successful execution. Preserve valid earlier
 evidence with its actual source/profile scope. A later correction reruns
@@ -177,7 +183,7 @@ batch when further work is needed.
 | --- | --- |
 | Feature PR | One incremental Linux profile; affected compile, policy/regression and nested-X checks, scoped sanitizers when warranted, screenshots for visible UI, repository/diff review. Explicitly record integration/release coverage pending. |
 | Platform/install/server-sensitive change | Add the affected target or installed/default-X gate early. Broaden only for the changed contract or a concrete unresolved regression. |
-| Integration cycle | About three feature PRs or ten substantive stories, whichever comes first; one accumulated affected six-target checkpoint with relevant profiles and required install/default-X checks. Track deferred coverage before the next cycle. |
+| Accumulated risk review | About five merged implementation batches or a substantial subsystem handoff; inspect coverage debt and select justified affected targets. No automatic all-OS run or next-batch blocker. |
 | Milestone / release candidate | Complete required full matrix, compiler/features, staged installs, default-X, applicable sanitizers and acceptance; reuse exact valid cycle evidence and execute missing coverage. |
 | Failure or later change | Fix the concrete failure and rerun affected checks. Preserve valid earlier evidence; repeat broader checks only when changed shared behavior, build inputs or unresolved concerns justify them. Never carry a stale result forward as qualification for different code. |
 

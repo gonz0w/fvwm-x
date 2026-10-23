@@ -1055,17 +1055,24 @@ reservation. Mutation, deletion, base/style/desk updates and destruction publish
 through the existing single-threaded paths. Partial struts, nonsticky-page
 panels and multi-monitor root authority remain separately owned.
 
-The browser's [read-only provider](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider.go)
-reconciles current native selection, then serves bounded admitted metadata pages
-and typed observed properties. MFL owns connection registration, direct query
-routing and bounded response assembly; no path/content cache enters the core.
+The browser's [provider transport](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider.go)
+registers the owner, reconciles current native selection, publishes acknowledged
+results and chunks replies. [Read-only query policy](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_query.go)
+serves bounded admitted metadata pages and observed properties with a concrete
+map result type. MFL owns connection registration, direct query routing and
+bounded response assembly; no path/content cache enters the core.
 [One-shot CLI requests](../bin/FvwmPrompt/cmd/fvwmcommand/request.go) await a
 correlated terminal reply through the existing transport. See the
 [query contract](decisions/FILE-PROVIDER-QUERIES-2026-10-23.md).
 
-[Conditional browser controls](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_action.go)
-validate bounded values and current native state before applying metadata/view
-changes. [Selection edit policy](../bin/FvwmPrompt/internal/collection/selection_edit.go)
+[One operation catalog](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_operations.go)
+defines capability names, frame admission and worker ownership. Public names
+are copied so consumer metadata cannot modify later dispatch. Strict bounded
+[typed values](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_values.go) feed
+[operation schemas](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_action.go)
+before native reconciliation; [state application](../bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_apply.go)
+checks current generation before publishing metadata/view changes.
+[Selection edit policy](../bin/FvwmPrompt/internal/collection/selection_edit.go)
 is shared with native Select visible; it publishes only complete admitted edits.
 MFL retains the existing producer wait and response ownership for both queries
 and controls. Native acknowledgement distinguishes published state from input

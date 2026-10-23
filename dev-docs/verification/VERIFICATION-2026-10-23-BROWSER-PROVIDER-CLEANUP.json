@@ -1,0 +1,225 @@
+{
+  "status": "passed",
+  "parent_head": "9d136a7c840f19b452bfe0df69955ff83789c783",
+  "source_manifest_sha256": "671397adf374f50ddcf2b2efedf54318193156bc20482107f1bce68a9aa47133",
+  "delta_archive_sha256": "460c1d2360786e079d8b47474f824366dd082e97e1d0841b34ca154792d2e975",
+  "guarded_runtime_test_inputs": 1504,
+  "changed_Go_files": {
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider.go": {
+      "sha256": "49a9f1f7a3191a9d00df3fea3bc8084b1cb8e0f0e7d73c9974a652cad3f4f846",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_action.go": {
+      "sha256": "2e2a7b6309ab64e193e6ea54fbe6efaa70740e5f69350d50a9c7b3393b8a21ca",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_apply.go": {
+      "sha256": "ff2d35db9512e356863f9a5fc470e281899e094e5dfa59b30849bf48b4226f60",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_operations.go": {
+      "sha256": "4120798643c2b1eefb22e0ea3a7cdfbc78a0a616fa51f2b5a0fbe0ae7227c102",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_operations_test.go": {
+      "sha256": "caab2c8583559148079eca1615a8c6cc89fd5da1ad86b05a6fe3c56d2eebdb9b",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_query.go": {
+      "sha256": "0609d314aba0f57ca020d06a016b697189193e6ff960d85aa395674092205205",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_targets_test.go": {
+      "sha256": "c08b074b0fc1361c87714518b62799dba93d81af11cb0b7abf52dbce23451a2e",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_test.go": {
+      "sha256": "e01bd2c55cc53d34e801623be98d983c2b6c0b6596e146574f8258c5ce5ef88a",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_values.go": {
+      "sha256": "7547cd1e0ef29bb00bde298c5620a45e4d6f071e6b3695885a1ae0a11b46ad30",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_work.go": {
+      "sha256": "cf9b6201cf2b93f8c1748ecc1e723e3ec8fffab434ce8507724f42736b9b1f37",
+      "mode": 420
+    }
+  },
+  "evidence_archive_sha256": "9677d5b0332ed459da10bb1823b79b87b22e387313f49c1403d552d15c025aef",
+  "capture_files": 62,
+  "counts": {
+    "go-policy": {
+      "top_cases": 85,
+      "packages": 5
+    },
+    "go-race-browser": {
+      "top_cases": 45,
+      "packages": 1
+    }
+  },
+  "commands": [
+    {
+      "label": "go-policy",
+      "args": [
+        "go",
+        "test",
+        "-json",
+        "-count=1",
+        "-mod=vendor",
+        "./internal/collection",
+        "./internal/filemodel",
+        "./cmd/fvwmfilebrowser",
+        "./cmd/fvwmcommand",
+        "./transport"
+      ],
+      "status": 0,
+      "seconds": 1.577
+    },
+    {
+      "label": "go-race-browser",
+      "args": [
+        "go",
+        "test",
+        "-race",
+        "-json",
+        "-count=1",
+        "-mod=vendor",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "status": 0,
+      "seconds": 8.977
+    },
+    {
+      "label": "go-vet",
+      "args": [
+        "go",
+        "vet",
+        "-mod=vendor",
+        "./internal/collection",
+        "./internal/filemodel",
+        "./cmd/fvwmfilebrowser",
+        "./cmd/fvwmcommand",
+        "./transport"
+      ],
+      "status": 0,
+      "seconds": 0.115
+    },
+    {
+      "label": "go-build",
+      "args": [
+        "go",
+        "build",
+        "-mod=vendor",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "status": 0,
+      "seconds": 0.167
+    },
+    {
+      "label": "native-provider-handoff",
+      "args": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--form",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--browser",
+        "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+        "--command-client",
+        "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/FvwmCommand",
+        "--theme",
+        "slate-dark",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/browser-provider-cleanup-checkpoint/native-ui"
+      ],
+      "status": 0,
+      "seconds": 11.563
+    }
+  ],
+  "native_UI": {
+    "theme": "slate-dark",
+    "screenshots": 41,
+    "portable_browser_handoff": {
+      "local_URI_bytes": true,
+      "same_provider_and_window": true,
+      "exact_target_selection": true,
+      "no_duplicate_instance": true,
+      "deiconify_present": true,
+      "folder_argument_refresh": true,
+      "no_target_execution": true
+    },
+    "configuration_sha256": {
+      "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+      "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+      "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+      "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+      "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "generated.config": "84f9910e7e57490edfdf42890a9fc1a9d1c1ab0de6bbb8127cd82423230ab858"
+    }
+  },
+  "state_application_unchanged_sha256": "f3d3b38d43f158bb115164846d1abe265d44eb7c81ce417c2d99717bb97eb665",
+  "retained_native_client_compiler_binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "bytes": 5396632
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+      "bytes": 445112
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+      "bytes": 1624952
+    },
+    "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/FvwmCommand": {
+      "sha256": "6e3b1e047fe5db826e3d45e1652bcd200e1c9e12a54959a5ee56708df02db4e5",
+      "bytes": 4690217
+    },
+    "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go": {
+      "sha256": "0e893a1a4ab5d00e64bcd9b22060a53377f90c076434ff0aa1bd2a330b657691",
+      "bytes": 15795235
+    }
+  },
+  "browser": {
+    "sha256": "1ac4e99e68ef00a8c815a85840d06b34afd14c057f9ecede8e3854bc16ff81cb",
+    "bytes": 5620310
+  },
+  "coverage": "One Linux ARM64 combined focused gate; no additional OS/theme/install/C-build/default-X/release matrix. Prior feature/theme/performance receipts keep their original identities.",
+  "retired_verified_guest_duplicates": {
+    "files": 62,
+    "bytes": 6321041
+  },
+  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/browser-consumer-handoff/cleanup",
+  "followup_derivation": {
+    "tested_parent": "9d136a7c840f19b452bfe0df69955ff83789c783",
+    "followup_base": "87e2559fae4494abc00f03232774bb301abb2922",
+    "baseline_changes": [
+      "AGENTS.md",
+      "README.md",
+      "dev-docs/DEVELOPERS.md",
+      "dev-docs/GITHUB-ROADMAP.md",
+      "dev-docs/PROJECT-TRACKER.md",
+      "dev-docs/PROJECT.md",
+      "dev-docs/decisions/CONFIG-COMPATIBILITY-SCOPE-2026-10-07.md",
+      "dev-docs/decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md",
+      "dev-docs/decisions/README.md",
+      "dev-docs/decisions/RUNTIME-GO-LUA-2026-10-06.md",
+      "dev-docs/verification/DEPENDENCY-PLANNING-2026-10-23.json",
+      "dev-docs/verification/DEPENDENCY-PLANNING-2026-10-23.md",
+      "dev-docs/verification/README.md"
+    ],
+    "conflicts": "Only documentation indexes; both entries retained",
+    "guarded_inputs_unchanged": 1504,
+    "README_hygiene": {
+      "inherited_words": 257,
+      "final_words": 250,
+      "fix": "Shorten screenshot alt captions; retain dependency planning link and status"
+    }
+  }
+}

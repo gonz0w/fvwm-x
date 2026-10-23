@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Combined browser provider cleanup](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md): four related catalog/decoding/ownership/type improvements; one 22.399-second Linux policy/race/vet/build/native-X gate, without another platform/install/theme matrix.
+
 - [Dependency planning synchronization](DEPENDENCY-PLANNING-2026-10-23.md): ten owner updates, six Later backlog children and verified native relationships/Project fields; no runtime change.
 - [Portable browser consumer handoff](VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md): shared correlated request ownership, matching-browser reuse/presentation and optional desktop entry; focused Linux/FreeBSD/race/sanitizer, staged entry and three-theme captures.
 

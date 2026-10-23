@@ -3569,6 +3569,13 @@ module_x_service_test = executable(
 )
 test('module-x-service', module_x_service_test)
 
+form_list_test = executable(
+    'test-form-list', ['test_form_list.c', '../modules/FvwmForm/form_list.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('form-list', form_list_test)
+
 form_input_test = executable(
     'test-form-input', ['test_form_input.c', '../modules/FvwmForm/form_input.c'],
     include_directories: includedirs,
@@ -3587,6 +3594,7 @@ test('live-x-harness-teardown', py,
 form_command_test = executable(
     'test-form-command',
     ['test_form_command.c', '../modules/FvwmForm/ParseCommand.c',
+     '../modules/FvwmForm/form_list.c',
      '../modules/FvwmForm/form_input.c'],
     include_directories: [includedirs, include_directories('../modules/FvwmForm')],
     dependencies: all_found_deps,

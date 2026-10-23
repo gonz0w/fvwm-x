@@ -190,7 +190,7 @@ def run(args):
                     alias = last_inventory_alias
                     # XIDs may be reused after Form retirement. The per-view
                     # resource identity and complete child count own readiness.
-                    if alias.endswith('-ready') and alias != seen_alias and len(values) == 2 * len(squares) + 21 and (choices is None or len(squares) == choices):
+                    if alias.endswith('-ready') and alias != seen_alias and len(values) == 21:
                         return window, alias
                     return None
                 nonlocal seen_alias
@@ -233,7 +233,7 @@ def run(args):
                 deadline = time.monotonic() + 5
                 while time.monotonic() < deadline:
                     text = connection.record().get('echo', {}).get('message', '')
-                    if text.startswith('FVWM_FILES_1 '):
+                    if text.startswith('FVWM_FILES_2 '):
                         return text
                 raise AssertionError('missing browser callback')
 
@@ -254,236 +254,150 @@ def run(args):
                     else:
                         os.environ['DISPLAY'] = previous
 
-            window = ready(choices=12)
-            capture('file-browser-first-page.png')
-            _, squares, _ = inventory()
-            click(squares[0][1])
-            key(window, b'F8')
-            old_callback = callback()
-            assert base64.urlsafe_b64decode(old_callback.split()[5][1:] + '==')
-            window = ready(window, 7)
-            capture('file-browser-second-page.png')
-            key(window, b'F7')
-            callback()
-            window = ready(window, 12)
-            key(window, b'F3')
-            selected_callback = callback()
-            assert selected_callback.split()[5] == old_callback.split()[5]
-            window = ready(window, 1)
-            connection.echo('core-responsive-after-folder-navigation')
-            evidence['paged_selection_and_folder_activation'] = True
-            # Up through an actual native button: the navigation row follows
-            # the selection controls; locate Home/Up/Back horizontally.
-            _, squares, values = inventory()
-            last_row = max(g[1] for g, w in values if g[2] == g[3])
-            nav_y = sorted({g[1] for g, w in values if g[1] > last_row + 22 and g[2] != g[3]})[1]
-            nav = sorted((g[0], w) for g, w in values if g[1] == nav_y and g[2] != g[3])
-            click(nav[1][1])
-            callback()
-            window = ready(window, 12)
-            key(window, b'F8')
-            callback()
-            window = ready(window, 7)
-            _, squares, values = inventory()
-            index = next(i for i, item in enumerate(snapshot['items'][12:])
-                if base64.b64decode(item['name_bytes']) == os.fsencode(literal))
-            square_geometry = client.geometry(squares[index][1])
-            row_y = square_geometry[1] + square_geometry[3] / 2
-            row_buttons = [(g[0], w) for g, w in values if g[2] > g[3]
-                and abs(g[1] + g[3] / 2 - row_y) <= 2]
-            assert row_buttons
-            click(max(row_buttons)[1])
-            callback()
-            wait_for_predicate('literal file dispatched', report.exists, time.monotonic() + 5, process=app)
-            opened = json.loads(report.read_text())
-            assert base64.b64decode(opened['argv'][0]) == os.fsencode(root / literal)
-            evidence['literal_filename_argv'] = True
-            window = ready(window, 7)
-            # A stale callback from page 1 cannot navigate after newer controls.
-            connection.send(('Echo ' + old_callback + '\n').encode())
-            connection.expect_echo(old_callback)
-            window = ready(window, 7)
-            assert app.poll() is None and core.poll() is None
-            evidence['stale_control_refused'] = True
-            capture('file-browser-action-result.png')
-            # A FIFO path deliberately blocks open() in the filesystem worker.
-            # The UI/core remain responsive and Cancel owns the child until reap.
-            symbols = {'/': b'slash', '-': b'minus', '_': b'underscore', '.': b'period'}
-            _, _, values = inventory()
-            field = max((g, w) for g, w in values if g[2] > 200)
-            click(field[1], wait_grab=False)
-            for char in str(blocked):
-                key(window, symbols.get(char, char.encode()))
-            fg = field[0]
-            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
-                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
-            assert len(controls) == 3
-            click(controls[0][1])
-            path_callback = callback()
-            assert base64.urlsafe_b64decode(path_callback.split()[4][1:] + '==') == os.fsencode(blocked)
-            def busy_view():
-                current, _, _ = inventory()
-                return current if last_inventory_alias.endswith('-busy') else None
-            wait_for_predicate('blocked worker view', busy_view,
-                time.monotonic() + 5, process=app)
-            connection.echo('core-responsive-during-blocked-worker')
-            _, _, values = inventory()
-            field = max((g, w) for g, w in values if g[2] > 200)
-            fg = field[0]
-            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
-                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
-            click(controls[1][1])
-            callback()
-            window = ready(window, 7)
-            key(window, b'F5')
-            callback()
-            window = ready(window, 7)
-            evidence['blocked_worker_cancel_reap_refresh_and_core_responsiveness'] = True
-            capture('file-browser-worker-recovery.png')
-            # Filter through the real native input/button. Selected hidden IDs
-            # survive; the properties panel describes the last scan only.
-            key(window, b'F7')
-            callback()
-            window = ready(window, 12)
-            _, squares, values = inventory()
-            click(squares[1][1])
-            field = min(((g, w) for g, w in values if g[2] > 140), key=lambda value: value[0][1])
-            click(field[1], wait_grab=False)
-            for char in 'file-14':
-                key(window, symbols.get(char, char.encode()))
-            fg = field[0]
-            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
-                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
-            assert len(controls) == 2
-            click(controls[0][1])
-            filtered_callback = callback()
-            assert base64.urlsafe_b64decode(filtered_callback.split()[4][1:] + '==') == b'file-14'
-            window = ready(window, 1)
-            capture('file-browser-filtered-selection.png')
-            # The selection row is immediately after the last choice row.
-            def selection_controls():
-                _, squares, values = inventory()
-                row_end = max(g[1] + g[3] for g, w in values if g[2] == g[3])
-                y = min(g[1] for g, w in values if g[1] > row_end and g[2] != g[3])
-                return sorted((g[0], w) for g, w in values if g[1] == y and g[2] != g[3])
-            buttons = selection_controls()
-            assert len(buttons) == 3
-            click(buttons[1][1])
-            callback()
-            window = ready(window, 1)
-            buttons = selection_controls()
-            click(buttons[0][1])
-            callback()
-            window = ready(window, 1)
-            key(window, b'F2')
-            callback()
-            window = ready(window, 1)
-            capture('file-browser-properties.png')
-            # Cycle ordering via the native sort control and invert direction.
-            _, squares, values = inventory()
-            first_row = min(g[1] for g, w in values if g[2] == g[3])
-            sort_y = max(g[1] for g, w in values if g[1] + g[3] < first_row and g[2] != g[3])
-            sort_buttons = sorted((g[0], w) for g, w in values if g[1] == sort_y and g[2] != g[3])
-            assert len(sort_buttons) == 2
-            click(sort_buttons[0][1])
-            callback()
-            window = ready(window, 1)
-            _, _, values = inventory()
-            sort_buttons = sorted((g[0], w) for g, w in values if g[1] == sort_y and g[2] != g[3])
-            click(sort_buttons[1][1])
-            callback()
-            window = ready(window, 1)
-            # Submit a no-match filter; the page has no stale rows or controls.
-            _, _, values = inventory()
-            field = min(((g, w) for g, w in values if g[2] > 140), key=lambda value: value[0][1])
-            click(field[1], wait_grab=False)
-            for char in 'no-match':
-                key(window, symbols.get(char, char.encode()))
-            fg = field[0]
-            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
-                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
-            click(controls[0][1])
-            callback()
-            window = ready(window, 0)
-            capture('file-browser-empty-filter.png')
-            _, _, values = inventory()
-            field = min(((g, w) for g, w in values if g[2] > 140), key=lambda value: value[0][1])
-            fg = field[0]
-            controls = sorted((g[0], w) for g, w in values if g[0] > fg[0] + fg[2]
-                and abs(g[1] + g[3] / 2 - fg[1] - fg[3] / 2) < 3)
-            click(controls[1][1])
-            callback()
-            window = ready(window, 12)
-            evidence['native_filter_bulk_selection_properties_sort_and_empty_recovery'] = True
-            key(window, b'Escape')
-            callback()
-            wait_for_predicate('browser normal close', lambda: app.poll() is not None,
-                time.monotonic() + 5, process=core)
-            assert app.poll() == 0
-            evidence['close_cleanup'] = True
-            # A portable reveal request selects across pages without opening
-            # the targets. Dot entries become visible when explicitly named.
-            reveal_args = ['--reveal', str(root / 'file-14'), '--reveal', str(root / '.hidden')]
-            located = subprocess.run([str(args.browser), '--inspect', *reveal_args],
-                env=env, capture_output=True, timeout=15)
-            assert located.returncode == 0, located
-            located = json.loads(located.stdout)
-            assert located['snapshot']['hidden'] and len(located['selected_ids']) == 2
-            assert report.read_text() == json.dumps(opened)
-            app = runtime.start('browser-reveal', [str(args.browser), '--socket', str(endpoint),
-                *reveal_args, '--opener', str(opener)], 'reveal.log', env)
-            window = ready(choices=8)
-            capture('file-browser-initial-reveal.png')
-            key(window, b'F3')
-            reveal_callback = callback()
-            picked = base64.urlsafe_b64decode(reveal_callback.split()[5][1:] + '==').split()
-            assert len(picked) == 1  # other selected item remains off-page
-            window = ready(window, 8)
-            assert report.read_text() == json.dumps(opened)
-            key(window, b'Escape')
-            callback()
-            wait_for_predicate('revealed browser close', lambda: app.poll() is not None,
-                time.monotonic() + 5, process=core)
-            assert app.poll() == 0
-            # Percent-encoded invalid UTF-8 and a literal percent sign use one
-            # decoding step. Properties on a symlink remain an observation.
-            raw_uri = 'file://localhost' + quote_from_bytes(invalid, safe='/')
-            located = subprocess.run([str(args.browser), '--inspect', '--properties', raw_uri],
-                env=env, capture_output=True, timeout=15)
-            assert located.returncode == 0, located
-            located = json.loads(located.stdout)
-            selected = located['selected_ids'][0]
-            item = next(i for i in located['snapshot']['items'] if i['id'] == selected)
-            assert base64.b64decode(item['name_bytes']) == b'raw-\xff'
-            app = runtime.start('browser-properties', [str(args.browser), '--socket', str(endpoint),
-                '--opener', str(opener), '--properties', 'file://localhost' + quote_from_bytes(os.fsencode(root / 'link'), safe='/')],
-                'properties.log', env)
-            window = ready(choices=7)
-            capture('file-browser-initial-properties.png')
-            key(window, b'Escape')
-            callback()
-            wait_for_predicate('properties browser close', lambda: app.poll() is not None,
-                time.monotonic() + 5, process=core)
-            assert app.poll() == 0
-            assert report.read_text() == json.dumps(opened)
-            # Invalid external requests fail before opening a browser/socket;
-            # an unavailable target returns a failed isolated result.
-            bad = subprocess.run([str(args.browser), '--inspect', '--reveal', 'file://remote/path'],
-                env=env, capture_output=True, timeout=15)
-            assert bad.returncode == 2
-            missing = subprocess.run([str(args.browser), '--inspect', '--reveal', str(root / 'missing')],
-                env=env, capture_output=True, timeout=15)
-            assert missing.returncode != 0 and json.loads(missing.stdout)['status'] == 'failed'
-            evidence['portable_reveal_properties_URI_bytes_no_activation_and_refusal'] = True
+            def widget():
+                _, _, values = inventory()
+                return max(values, key=lambda value: value[0][3])
 
-            assert not unexpected_errors, unexpected_errors
-            evidence['unexpected_observer_x_errors'] = unexpected_errors
-            evidence['screenshots'] = ['file-browser-first-page.png', 'file-browser-second-page.png',
-                'file-browser-action-result.png', 'file-browser-worker-recovery.png',
-                'file-browser-filtered-selection.png', 'file-browser-properties.png',
-                'file-browser-empty-filter.png', 'file-browser-initial-reveal.png',
-                'file-browser-initial-properties.png']
-            evidence['scope'] = 'native paged foundation; full scrolling/grid, files provider and mutations remain open'
+            def row_groups():
+                _, _, values = inventory()
+                box, _ = widget()
+                ys = sorted({g[1] for g, w in values if g[1] >= box[1] + box[3]})
+                return [sorted((g[0], w) for g, w in values if g[1] == y) for y in ys]
+
+            def packet(text):
+                return base64.urlsafe_b64decode(text.split()[5][1:] + '==')
+
+            window = ready()
+            # A horizontally scrolled text field must reset its viewport when
+            # traversing through the list back to that field.
+            for _ in range(100): key(window,b'x')
+            key(window,b'Tab')
+            shift=x.XKeysymToKeycode(d,x.XStringToKeysym(b'Shift_L'))
+            pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Tab');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
+            key(window,b'a');time.sleep(0.05)
+            capture('file-browser-input-focus-return.png')
+            _,_,values=inventory()
+            field=min(((g,w) for g,w in values if g[2]>140 and g[3]<50),key=lambda v:v[0][1]);fg=field[0]
+            controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
+            click(controls[0][1]);text=callback()
+            assert base64.urlsafe_b64decode(text.split()[4][1:]+'==')==b'a'+b'x'*100
+            window=ready(window);capture('file-browser-empty-filter.png')
+            _,_,values=inventory()
+            field=min(((g,w) for g,w in values if g[2]>140 and g[3]<50),key=lambda v:v[0][1]);fg=field[0]
+            controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
+            click(controls[1][1]);callback();window=ready(window)
+            evidence['mixed_focus_scrolled_input_and_empty_list']=True
+            capture('file-browser-collection.png')
+            # Tab enters the list from the filter. Local motion/selection needs
+            # neither a helper round trip nor a new form generation.
+            key(window, b'Tab')
+            key(window, b'End')
+            key(window, b'space')
+            key(window, b'F2')
+            first = callback()
+            bits = packet(first)
+            assert bits[:2] == bytes([0,18]) and bits[4] == 4, bits
+            window = ready(window)
+            capture('file-browser-scrolled-properties.png')
+            evidence['end_space_selection_and_properties'] = True
+            # The literal byte name is owned by the worker, never the label.
+            key(window, b'Tab')
+            key(window, b'Return')
+            callback()
+            wait_for_predicate('raw file dispatched', report.exists, time.monotonic()+5, process=app)
+            opened = json.loads(report.read_text())
+            assert base64.b64decode(opened['argv'][0]) == invalid
+            window = ready(window)
+            evidence['focused_literal_byte_activation'] = True
+            connection.send(('Echo '+first+'\n').encode())
+            connection.expect_echo(first)
+            window = ready(window)
+            evidence['stale_control_refused'] = True
+            # Clear the entire native selection, navigate to the first directory
+            # using focus alone, then use the native Up button.
+            click(row_groups()[0][1][1]); callback(); window = ready(window)
+            key(window, b'Tab'); key(window, b'Home'); key(window, b'Return')
+            callback(); window = ready(window)
+            click(row_groups()[1][1][1]); callback(); window = ready(window)
+            evidence['focused_folder_activation_and_parent'] = True
+            # Select the directory, then filter it away. Hidden selection survives
+            # the new generation without admitting nonexistent bitmap bits.
+            key(window, b'Tab'); key(window, b'Home'); key(window, b'space')
+            _, _, values = inventory()
+            field = min(((g,w) for g,w in values if g[2] > 140 and g[3] < 50), key=lambda v:v[0][1])
+            click(field[1], wait_grab=False)
+            symbols = {'/':b'slash','-':b'minus','_':b'underscore','.':b'period'}
+            for char in 'file-14': key(window, symbols.get(char,char.encode()))
+            fg=field[0]
+            controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
+            click(controls[0][1]); callback(); window=ready(window)
+            key(window,b'Tab'); key(window,b'space'); key(window,b'F2')
+            both=packet(callback()); assert both == bytes([0,0,1]), both
+            window=ready(window)
+            capture('file-browser-filtered-selection.png')
+            evidence['filter_preserves_hidden_selection'] = True
+            # Cancel a genuinely blocked FIFO worker while the core keeps serving.
+            _,_,values=inventory()
+            field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][1])
+            click(field[1],wait_grab=False)
+            for char in str(blocked): key(window,symbols.get(char,char.encode()))
+            fg=field[0]
+            controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
+            click(controls[0][1]); assert base64.urlsafe_b64decode(callback().split()[4][1:]+'==')==os.fsencode(blocked)
+            def busy():
+                current,_,_=inventory()
+                return current if last_inventory_alias.endswith('-busy') else None
+            wait_for_predicate('blocked worker',busy,time.monotonic()+5,process=app)
+            connection.echo('core-responsive-during-blocked-worker')
+            _,_,values=inventory()
+            field=max(((g,w) for g,w in values if g[2]>200 and g[3]<50),key=lambda v:v[0][1]);fg=field[0]
+            controls=sorted((g[0],w) for g,w in values if g[0]>fg[0]+fg[2] and abs(g[1]-fg[1])<3)
+            click(controls[1][1]);callback();window=ready(window)
+            key(window,b'F5');callback();window=ready(window)
+            evidence['blocked_worker_cancel_reap_refresh'] = True
+            key(window,b'Escape');callback()
+            wait_for_predicate('browser exit',lambda:app.poll() is not None,time.monotonic()+5)
+            assert app.poll()==0
+            # Exercise the maximum row count and highest bitmap bit through real
+            # Form parsing, drawing and MFL callback transport (under 1000 bytes).
+            large=runtime.root/'large';large.mkdir()
+            for i in range(4096):(large/('entry-%04d'%i)).touch()
+            app=runtime.start('large-browser',[str(args.browser),'--socket',str(endpoint),'--reveal',str(large/'entry-4095')],'large-browser.log',env)
+            window=ready();capture('file-browser-4096-rows.png')
+            key(window,b'Tab');key(window,b'End');key(window,b'F2')
+            text=callback();bits=packet(text)
+            assert len(text)<1000 and len(bits)==514 and bits[:2]==bytes([15,255]) and bits[-1]==128,(len(text),bits)
+            window=ready(window)
+            key(window,b'Tab');key(window,b'Home');key(window,b'space');key(window,b'F2')
+            bits=packet(callback());assert bits[2]==1 and bits[-1]==128
+            window=ready(window)
+            key(window,b'Tab');key(window,b'Home');key(window,b'Next');key(window,b'space');key(window,b'F2')
+            bits=packet(callback());assert bits[:2]==bytes([0,12]) and bits[2]==1 and bits[3]==16 and bits[-1]==128
+            window=ready(window)
+            key(window,b'Tab');key(window,b'End')
+            box,control=widget()
+            cx,cy,child=C.c_int(),C.c_int(),C.c_ulong()
+            assert x.XTranslateCoordinates(d,control,client.root,box[2]//2,box[3]//2,C.byref(cx),C.byref(cy),C.byref(child))
+            pointer.motion(cx.value,cy.value)
+            capture('file-browser-wheel-before.png')
+            for down in (1,0):assert pointer.x.XTestFakeButtonEvent(d,4,down,0)
+            x.XSync(d,0)
+            # A server/core barrier establishes input delivery; wheel scroll is
+            # local and does not redraw the form through the helper.
+            connection.echo('wheel-delivered')
+            time.sleep(0.05)
+            capture('file-browser-wheel-after.png')
+            assert (artifact/'file-browser-wheel-before.png').read_bytes() != (artifact/'file-browser-wheel-after.png').read_bytes()
+            key(window,b'F2');bits=packet(callback());assert bits[:2]==bytes([15,255])
+            window=ready(window)
+            evidence['keyboard_page_and_wheel_preserve_focus']=True
+            evidence['4096_rows_two_offscreen_selections_bounded_callback'] = True
+            key(window,b'Escape');callback()
+            wait_for_predicate('large browser exit',lambda:app.poll() is not None,time.monotonic()+5)
+            assert app.poll()==0 and not unexpected_errors,unexpected_errors
+            evidence['status']='passed'
+            evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
+            evidence['scope']='native scrolling list; grid, private clipboard content and file mutations remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')
@@ -499,7 +413,7 @@ def run(args):
                     client.x.XSetErrorHandler.argtypes = [C.c_void_p]
                     client.x.XSetErrorHandler(previous_handler)
                 client.close()
-            for name in ['core.log', 'browser.log', 'xserver.log']:
+            for name in ['core.log', 'browser.log', 'large-browser.log', 'xserver.log']:
                 path = runtime.root / name
                 if path.exists():
                     shutil.copy2(path, artifact / name)

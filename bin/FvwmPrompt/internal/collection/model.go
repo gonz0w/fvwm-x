@@ -226,3 +226,48 @@ func (m *Model) SelectedIDs() []string {
 	}
 	return ids
 }
+
+// VisibleEntries copies the current ordered projection. Native row indices
+// belong only to this immutable generation; they are never external item IDs.
+func (m *Model) VisibleEntries() []Entry {
+	entries := make([]Entry, 0, len(m.visible))
+	for _, i := range m.visible {
+		entries = append(entries, m.Entries[i])
+	}
+	return entries
+}
+
+// SelectNative admits a complete viewport packet atomically, preserving items
+// hidden by the filter. Its maximum base64 representation is 686 bytes.
+func (m *Model) SelectNative(generation uint64, packet []byte) error {
+	count := len(m.visible)
+	if generation != m.Generation || len(packet) != 2+(count+7)/8 {
+		return errors.New("stale or malformed native selection")
+	}
+	focus := int(packet[0])<<8 | int(packet[1])
+	if (count == 0 && focus != 0) || (count > 0 && focus >= count) {
+		return errors.New("invalid native focus")
+	}
+	if count%8 != 0 && packet[len(packet)-1]>>uint(count%8) != 0 {
+		return errors.New("invalid native selection padding")
+	}
+	selected := make(map[string]bool, len(m.Selected))
+	for id := range m.Selected {
+		selected[id] = true
+	}
+	for row, index := range m.visible {
+		id := m.Entries[index].ID
+		delete(selected, id)
+		if packet[2+row/8]&(1<<uint(row%8)) != 0 {
+			selected[id] = true
+		}
+	}
+	if len(selected) > MaxSelected {
+		return errors.New("native selection exceeds limit")
+	}
+	m.Selected = selected
+	if count != 0 {
+		m.Focus = m.Entries[m.visible[focus]].ID
+	}
+	return nil
+}

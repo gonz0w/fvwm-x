@@ -98,6 +98,7 @@ static char *form_encoded_value(const Item *item)
 	const char *value = "";
 	char *joined = NULL, *result;
 	size_t length = 0, used = 0;
+	unsigned char packet[FORM_LIST_BYTES + 2];
 
 	if (item->type == I_INPUT)
 		value = item->input.value;
@@ -135,7 +136,15 @@ static char *form_encoded_value(const Item *item)
 		joined[used] = '\0';
 		value = joined;
 	}
-	length = strlen(value);
+	if (item->type == I_LIST)
+	{
+		length = form_list_packet(item->list.state, packet);
+		if (length == 0)
+			return NULL;
+		value = (const char *)packet;
+	}
+	else
+		length = strlen(value);
 	if (length > 65536)
 	{
 		free(joined);

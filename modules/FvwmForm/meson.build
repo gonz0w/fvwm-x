@@ -19,6 +19,8 @@ install_data(
 fvwmform_sources = [
     'FvwmForm.c',
     'form_input.c',
+    'form_list.c',
+    'list_widget.c',
     'ReadXServer.c',
     'ParseCommand.c',
 ]

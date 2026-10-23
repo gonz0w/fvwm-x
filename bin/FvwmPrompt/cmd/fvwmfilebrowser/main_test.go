@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/base64"
@@ -96,17 +97,17 @@ func TestActionsValidateAndPassLiteralArguments(t *testing.T) {
 	}
 }
 
-func TestControlsUseRenderedGenerationAndPageSelection(t *testing.T) {
+func TestControlsUseRenderedGenerationAndNativeSelection(t *testing.T) {
 	b := browser{instance: "owner", form: 3}
 	b.model.Replace([]collection.Entry{{ID: "first", Label: "same"}, {ID: "second", Label: "same"}})
-	picks := "x" + base64.RawURLEncoding.EncodeToString([]byte("first second"))
-	if _, err := b.action("FVWM_FILES_1 owner 2 cancel - " + picks); err == nil || len(b.model.Selected) != 0 {
+	picks := "x" + base64.RawURLEncoding.EncodeToString([]byte{0, 0, 3})
+	if _, err := b.action("FVWM_FILES_2 owner 2 cancel - " + picks); err == nil || len(b.model.Selected) != 0 {
 		t.Fatal("stale callback mutated state")
 	}
-	if _, err := b.action("FVWM_FILES_1 owner 3 cancel - " + picks); err != nil || len(b.model.Selected) != 2 {
+	if _, err := b.action("FVWM_FILES_2 owner 3 cancel - " + picks); err != nil || len(b.model.Selected) != 2 {
 		t.Fatal(err)
 	}
-	if close, err := b.action("FVWM_FILES_1 owner 3 close - x"); !close || err != nil {
+	if close, err := b.action("FVWM_FILES_2 owner 3 close - x"); !close || err != nil {
 		t.Fatal(close, err)
 	}
 	for _, value := range []string{"$[exec.x]", `quote" \ percent% &`, "line\nnext"} {
@@ -145,7 +146,7 @@ func TestOneWorkerLatestNavigationAndCancelledPublication(t *testing.T) {
 	if err := b.queue(workRequest{Operation: "activate"}, "push"); err == nil || b.serial != 3 {
 		t.Fatal("side effect queued behind busy worker")
 	}
-	if _, err := b.action("FVWM_FILES_1 fixture 1 cancel - x"); err != nil {
+	if _, err := b.action("FVWM_FILES_2 fixture 1 cancel - xAAA"); err != nil {
 		t.Fatal(err)
 	}
 	if b.pending != nil || b.serial != 4 {
@@ -188,14 +189,23 @@ func TestViewControlsPreserveDomainSelectionAndObserveProperties(t *testing.T) {
 		t.Fatal(err)
 	}
 	act := func(action, argument, picks string) error {
-		_, err := b.action("FVWM_FILES_1 owner 7 " + action + " " + argument + " x" + base64.RawURLEncoding.EncodeToString([]byte(picks)))
+		entries := b.model.VisibleEntries()
+		packet := make([]byte, 2+(len(entries)+7)/8)
+		for i, entry := range entries {
+			for _, id := range strings.Fields(picks) {
+				if id == entry.ID {
+					packet[2+i/8] |= 1 << uint(i%8)
+				}
+			}
+		}
+		_, err := b.action("FVWM_FILES_2 owner 7 " + action + " " + argument + " x" + base64.RawURLEncoding.EncodeToString(packet))
 		return err
 	}
 	filter := "x" + base64.RawURLEncoding.EncodeToString([]byte("file-19"))
 	if act("filter", filter, "id0") != nil || b.model.VisibleCount() != 1 || b.model.HiddenSelectedCount() != 1 {
 		t.Fatal("filter lost picked item")
 	}
-	if act("select-page", "-", "") != nil || len(b.model.SelectedIDs()) != 2 {
+	if act("select-visible", "-", "") != nil || len(b.model.SelectedIDs()) != 2 {
 		t.Fatal("page selection lost hidden item")
 	}
 	if act("properties", "-", "id19") == nil {
@@ -222,7 +232,7 @@ func TestViewControlsPreserveDomainSelectionAndObserveProperties(t *testing.T) {
 	}
 }
 
-func TestRefreshKeepsVisibleAnchorAndDropsRemovedSelection(t *testing.T) {
+func TestRefreshKeepsFocusedIdentityAndDropsRemovedSelection(t *testing.T) {
 	left, right := net.Pipe()
 	defer left.Close()
 	defer right.Close()
@@ -233,7 +243,7 @@ func TestRefreshKeepsVisibleAnchorAndDropsRemovedSelection(t *testing.T) {
 	}
 	b := browser{session: transport.New(left), instance: "owner", snapshot: s}
 	b.reorder("name", false)
-	b.offset = 12
+	b.model.Focus = "id12"
 	b.model.SelectPage(b.model.Generation, 12, []string{"id12", "id13"})
 	next := *s
 	next.Items = append([]filemodel.Item(nil), s.Items[1:]...)
@@ -241,21 +251,71 @@ func TestRefreshKeepsVisibleAnchorAndDropsRemovedSelection(t *testing.T) {
 	if err := b.completed(completedWork{result: workResult{Status: "loaded", Snapshot: &next}}); err != nil {
 		t.Fatal(err)
 	}
-	page, _ := b.model.Page(b.offset)
-	found := false
-	for _, e := range page {
-		if e.ID == "id12" {
-			found = true
-		}
+	if b.model.Focus != "id12" || !b.model.Selected["id12"] {
+		t.Fatal("refresh lost surviving focus/selection")
 	}
-	if !found || !b.model.Selected["id12"] {
-		t.Fatal("refresh lost surviving anchor/selection")
-	}
+
 	next.Items = next.Items[:10]
 	if err := b.completed(completedWork{result: workResult{Status: "loaded", Snapshot: &next}}); err != nil {
 		t.Fatal(err)
 	}
-	if b.offset != 0 || len(b.model.SelectedIDs()) != 0 {
+	if b.model.Focus == "id12" || len(b.model.SelectedIDs()) != 0 {
 		t.Fatal("removed anchor/selection survived")
+	}
+}
+
+func TestLargeNativeFormUsesAcknowledgedBatches(t *testing.T) {
+	left, right := net.Pipe()
+	defer left.Close()
+	defer right.Close()
+	b := browser{session: transport.New(left), instance: "owner", acks: make(chan string, 1)}
+	entries := make([]collection.Entry, collection.MaxItems)
+	for i := range entries {
+		entries[i] = collection.Entry{ID: fmt.Sprintf("id%d", i), Label: "metadata"}
+	}
+	if err := b.model.Replace(entries); err != nil {
+		t.Fatal(err)
+	}
+	done := make(chan error, 1)
+	go func() {
+		scanner := bufio.NewScanner(right)
+		pending, rows := 0, 0
+		for scanner.Scan() {
+			line := scanner.Text()
+			if strings.HasPrefix(line, "Echo FVWM_FILES_SYNC ") {
+				if pending > 32 {
+					done <- fmt.Errorf("unbounded batch: %d", pending)
+					return
+				}
+				pending = 0
+				b.acks <- strings.TrimPrefix(line, "Echo ")
+				continue
+			}
+			pending++
+			if strings.Contains(line, ": ListItem ") {
+				rows++
+			}
+			if strings.HasPrefix(line, "Module FvwmForm ") {
+				if rows != collection.MaxItems {
+					done <- fmt.Errorf("rows: %d", rows)
+					return
+				}
+				// show sends one final barrier after the map request.
+				if !scanner.Scan() {
+					done <- io.ErrUnexpectedEOF
+					return
+				}
+				b.acks <- strings.TrimPrefix(scanner.Text(), "Echo ")
+				done <- nil
+				return
+			}
+		}
+		done <- scanner.Err()
+	}()
+	if err := b.show(); err != nil {
+		t.Fatal(err)
+	}
+	if err := <-done; err != nil {
+		t.Fatal(err)
 	}
 }

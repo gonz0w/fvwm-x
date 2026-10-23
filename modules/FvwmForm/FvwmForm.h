@@ -10,6 +10,7 @@
 
  */
 
+#include "form_list.h"
 #include "libs/Flocale.h"               /* for font definition stuff */
 #include "libs/FGettext.h"              /* for localization of messages */
 /*
@@ -40,6 +41,7 @@
 #define I_BUTTON        5
 #define I_TIMEOUT       6
 #define I_SEPARATOR     7
+#define I_LIST          8
 
 #define IS_SINGLE       1
 #define IS_MULTIPLE     2
@@ -102,6 +104,12 @@ typedef union _item {
     int value_history_yankat;           /* yank point between restarts */
     char **value_history_ptr;           /* curr insertion point */
   } input;
+  struct {                 /* I_LIST: labels owned until module exit */
+    struct _head head;
+    form_list_state *state, *initial;
+    char **labels;
+    int capacity, row_height;
+  } list;
   struct {                 /* I_SELECT */
     struct _head head;
     int key;               /* one of IS_MULTIPLE, IS_SINGLE */
@@ -180,6 +188,7 @@ typedef struct _form {
   int warp_pointer;
   int max_width, total_height;          /* frame size */
   unsigned long screen_background;
+  Item *cur_list;
   Item *cur_input;                      /* current input during parse and run */
   Item *first_input;                    /* forms first input item during parse*/
   Item *last_error;                     /* fvwm error message display area */
@@ -271,5 +280,10 @@ char* find_nth_UTF8_char(char *str, char *before,
 	int *num, int *len);             /* FvwmForm.c */
 
 RETSIGTYPE DeadPipe(int nonsense);            /* FvwmForm.c */
+
+/* Native collection input; legacy forms keep their existing input ring. */
+Bool form_list_key(KeySym key, unsigned int modifiers);
+void form_list_click(Item *item, XButtonEvent *event);
+void form_list_draw(Item *item);
 
 #endif

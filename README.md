@@ -13,11 +13,10 @@ There is no built-in compositor or native Wayland backend.
 prerequisite, buttons/atomic groups, settings/editor and non-executing
 configuration checker are merged.
 [IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
-has core/settings queries and actions. Provider
-observation and desktop operations pass shared platform checks. Appearance policy
-inspection and runtime opacity preview/recovery pass shared platform checks.
-Saved-opacity preview is merged. File/collection foundations add native browsing,
-filtering, sorting, properties and reveal requests. Full file and protected
+has core/settings queries and actions. Provider observation, desktop operations, appearance queries and opacity
+preview/recovery pass shared platform checks. File/collection foundations add native browsing,
+filtering, sorting, properties and reveal requests. A shared native scrolling
+list adds keyboard focus and bounded whole-view selection. Full file and protected
 clipboard handoffs remain open.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)
 passes on both VM architectures. OpenBSD follows new releases; 8.0 is the

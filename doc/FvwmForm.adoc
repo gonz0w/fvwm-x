@@ -390,6 +390,30 @@ Meta(Mod1)-">" retrieves the next value of an input field.
 +
 (For forms with one input field, use the much easier arrow keys.)
 
+**FvwmForm: List ``_name_ _width_ _rows_``*::
+  Create one native scrollable multiple-selection list. Width is 1..4096 font
+  units (checked against X geometry); rows is 1..32. List uses ButtonFont and
+  item colors. Subsequent ListItem directives append to this list. At most
+  4096 rows and 256 selected rows are admitted; an invalid/over-limit item
+  refuses the list's encoded substitution rather than publishing partial data.
+  Only viewport rows are drawn in one child window.
++
+Tab/Shift-Tab traverse inputs and lists in definition order. Arrows, Home/End
+and Page Up/Page Down move list focus; Space and left click toggle selection.
+Wheel buttons scroll three rows without changing focus. Track clicks above or
+below the thumb scroll one viewport. Function keys retain button shortcuts.
+Restart restores configured selections/focus. These rules apply to forms with
+List; existing forms retain their input/history traversal.
+
+**FvwmForm: ListItem on | off ``_string_``*::
+  Append one quoted presentation label (at most 1024 source bytes including
+  quotes) to the preceding List. Labels have no action/path identity. Use only
+  nonsensitive metadata: ordinary command and Echo channels are public to the
+  user's other modules.
+
+**FvwmForm: ListFocus ``_row_``*::
+  Set initial focus to an existing one-based row in the preceding List.
+
 **FvwmForm: Selection ``_name_ _type_``*::
   This option starts a selection item with name _name_. Its choices are
   specified in following configuration commands. The option _type_ is
@@ -495,6 +519,14 @@ in a string, precede the right parenthesis with a backslash.
   at most 65536 bytes. A selection encodes its space-separated selected values.
   Refuse a larger value. Quote the substitution when an empty result must
   remain one shell argument. This encoding does not execute the field value.
++
+For List, this explicit modifier encodes a binary packet: two bytes of
+zero-based focus in big-endian order, then ceil(row-count/8) selection bytes.
+Bit 0 of the first selection byte is row 0; unused tail bits are zero. Empty
+lists use focus zero and no selection bytes. The maximum is 514 raw / 686
+encoded bytes. Ordinary List substitution is empty. Consumers must validate
+length, padding, focus, selection cap and the exact immutable view generation
+before resolving row indices to domain IDs. Do not use labels as IDs.
 +
 An existing field named `_name_:Base64` takes priority and keeps its ordinary
 value. Plain substitutions and choice conditions keep their existing behavior.

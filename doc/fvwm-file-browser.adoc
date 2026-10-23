@@ -23,8 +23,8 @@ fvwm-file-browser - bounded native folder-browser foundations
 
 This optional Go helper presents local folders with existing FvwmForm controls
 and the current FvwmMFL connection. Start Module FvwmMFL first. No GUI toolkit,
-compositor, D-Bus service or background daemon is required. The first consumer
-uses twelve-entry pages; a virtual scrolling list/grid is future work. Existing
+compositor, D-Bus service or background daemon is required. The native list scrolls locally through up to 4096 entries with a twelve-row
+viewport; only visible rows are drawn. An icon grid is future work. Existing
 folder menus and user configurations stay usable.
 
 The shared collection model separates stable item IDs from labels, preserves
@@ -46,8 +46,12 @@ budget; there is no silent truncation before sorting.
 
 == CONTROLS
 
-Tab moves among native controls; Space toggles a selection. Each row's Open
-button acts on that row's ID. Open selected (F3) requires exactly one selected
+Tab and Shift-Tab move among the filter, list and path fields. In the list,
+Up/Down, Home/End and Page Up/Page Down move focus and reveal that row. Space
+toggles its selection; clicking a row also toggles it. Wheel scrolling changes
+the viewport without changing focus or selection. Clicking the track above or
+below its thumb scrolls one viewport. Open focused (Enter) acts on the focused
+row independently of the selection. Open selected (F3) requires exactly one selected
 item. Directories load in the same browser. Files start the configured opener
 with one literal absolute-path argument; no shell evaluates a filename.
 Application started means process creation succeeded, not that the application
@@ -55,12 +59,11 @@ opened a window or finished.
 
 Home, Up and Back navigate; Back retains at most 32 successful locations. Path
 and Go accept an absolute path or a path relative to the current folder.
-Refresh (F5) reloads, Hidden (F6) toggles dot entries, Previous (F7) and Next (F8)
-change pages. The counters show visible/loaded items, page/total pages, total
-selection and the selected count excluded by the filter. An empty result shows
-page 0/0. Off-page and filtered-out selections remain selected. Select page
-selects the current twelve-entry page, subject to the 256-item total limit;
-Clear selection clears all pages, including filtered-out items. Terminal (F4) starts the
+Refresh (F5) reloads and Hidden (F6) toggles dot entries. Counters show
+visible/loaded items, total selection and the selected count excluded by the
+filter. Offscreen and filtered-out selections remain selected. Select visible
+selects the complete filtered projection, refusing the whole change if it would
+exceed the 256-item total limit. Clear selection also clears filtered-out items. Terminal (F4) starts the
 configured executable in the current folder with no extra arguments. These
 executables are program paths/names, not shell fragments or argument templates.
 
@@ -203,10 +206,13 @@ qualify clipboard payload lifetime or protection. Sensitive clipboard data must
 not be routed through ordinary Form command expansion or MFL Echo broadcasts.
 
 Native callbacks use the existing Echo/MFL framing with a versioned marker,
-instance/view identity, known action and opaque target IDs. Path/selection input
-uses native URL-base64 substitution. These are stale-control guards, not
+instance/view identity and a known action. A bounded row-index selection bitmap
+and focus are URL-base64 encoded; the model resolves them only against the exact
+rendered projection. Paths use the existing encoded input field. Configuration
+uploads are paced in batches of at most 32 commands with core acknowledgements
+and a ten-second total acknowledgement deadline. These are stale-control guards, not
 same-user or X11 authorization. No general IPC files provider is advertised by
-this first consumer. Broader structured providers, scrolling/grid view and the
+this first consumer. Broader structured providers, icon-grid view and the
 complete file-browser handoff remain with FILE-VIEW/DATA/ACTION-01.
 
 No preferences or directory history are written to disk. Raw metadata remains

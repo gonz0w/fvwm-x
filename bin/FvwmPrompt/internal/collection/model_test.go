@@ -188,3 +188,46 @@ func TestAdapterSelectionIsAtomicAndIndependentOfProjection(t *testing.T) {
 		t.Fatal("stale adapter selection")
 	}
 }
+
+func TestNativeSelectionPacket(t *testing.T) {
+	var m Model
+	entries := make([]Entry, MaxItems)
+	for i := range entries {
+		entries[i] = Entry{ID: fmt.Sprintf("id%d", i), Label: fmt.Sprintf("file-%d", i)}
+	}
+	if err := m.Replace(entries); err != nil {
+		t.Fatal(err)
+	}
+	packet := make([]byte, 514)
+	packet[0], packet[1], packet[513] = 15, 255, 128
+	if err := m.SelectNative(m.Generation, packet); err != nil || !m.Selected["id4095"] || m.Focus != "id4095" {
+		t.Fatal(err, m.Focus)
+	}
+	for _, invalid := range [][]byte{packet[:513], append(append([]byte(nil), packet...), 0), {255, 255}} {
+		if m.SelectNative(m.Generation, invalid) == nil || !m.Selected["id4095"] {
+			t.Fatal("malformed packet mutated selection")
+		}
+	}
+	if m.SelectNative(m.Generation-1, packet) == nil {
+		t.Fatal("stale packet")
+	}
+	for i := 2; i < 35; i++ {
+		packet[i] = 255
+	}
+	if m.SelectNative(m.Generation, packet) == nil || len(m.Selected) != 1 {
+		t.Fatal("selection cap was not atomic")
+	}
+	if err := m.SetFilter("file-4095"); err != nil {
+		t.Fatal(err)
+	}
+	if m.SelectNative(m.Generation, []byte{0, 0, 128}) == nil {
+		t.Fatal("padding admitted")
+	}
+	if err := m.SelectNative(m.Generation, []byte{0, 0, 1}); err != nil {
+		t.Fatal(err)
+	}
+	m.SetFilter("missing")
+	if err := m.SelectNative(m.Generation, []byte{0, 0}); err != nil || !m.Selected["id4095"] {
+		t.Fatal("hidden selection lost", err)
+	}
+}

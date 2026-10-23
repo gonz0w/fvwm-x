@@ -3783,6 +3783,7 @@ if golang.found() and get_option('live-x-tests') and host_machine.system() in ['
         args: [files('live_x/file_browser_live.py'),
             '--fvwm', fvwm3, '--mfl', fvwm_mfl,
             '--form', fvwm_form, '--browser', fvwm_file_browser,
+            '--command-client', fvwmcommand,
             '--artifacts-dir', meson.project_build_root() / 'live-x-file-browser'],
         timeout: 90,
         is_parallel: false,

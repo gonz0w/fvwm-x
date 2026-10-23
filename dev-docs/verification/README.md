@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Read-only file-provider queries](VERIFICATION-2026-10-23-FILE-PROVIDER-QUERIES.md): bounded discovery, paged metadata/current native selection, typed properties and correlated CLI; focused Linux/FreeBSD, race, sanitizer and three-theme evidence.
+
+- [PR169→PR174 performance and size observation](PERFORMANCE-2026-10-23-PR174.md): preserved binaries, overlapping five-pair metadata-scan ranges and unchanged RSS; feature-size growth remains explicit.
+
 - [Native browser directory watching](VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md): isolated native invalidations, coalesced reconciliation and explicit manual recovery; three-theme screenshots and focused Linux/BSD evidence.
 
 - [Accumulated live-collection cycle](VERIFICATION-2026-10-23-LIVE-COLLECTION-CYCLE.md): PR170–172 qualify 49 native entries across six targets, 357 composed Go cases and retained themes/sanitizers; AMD64 observer report races are corrected with focused completions.

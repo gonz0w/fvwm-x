@@ -1,0 +1,416 @@
+{
+  "status": "passed",
+  "reference": "PR175",
+  "base": "74c00f4e8e39607fa645bc41b0cea720486d94a1",
+  "source_archive_sha256": "901106036e74e93538512275e86bed06082838c4b45453f551af94211c126721",
+  "worktree_manifest_sha256": "ade7ebdb4ccc1ef55824e24862500bf9bc13a72d7e55867977e21e767222a98b",
+  "source_files": 2315,
+  "targets": {
+    "fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "416213a2353e951a6c516cb349fa06d03e0d46a12459a31003ea1447f357c754",
+      "archive_files": 14,
+      "profiles": {
+        "gcc": {
+          "build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "uname": [
+            "Linux",
+            "288f898505a4",
+            "6.18.10-200.fc43.aarch64",
+            "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+            "aarch64"
+          ],
+          "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "passes": 7,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+              "bytes": 5396632
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "59f1c1da494fdbd325aac9c078309131fd6e3054e92ebea8c1b690a9a068e323",
+              "bytes": 431464
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "34352d9c14f93c9ba23a3a760dc5c5541f9c2bf08986ceebc36d533c68c632e5",
+              "bytes": 1623488
+            }
+          }
+        }
+      },
+      "fresh_Go": null
+    },
+    "freebsd-arm64": {
+      "archive_sha256": "e89e1bebfe2ebad8eb2618ede1349cd2e6fcdc6b96898d1bdd8eb6bc7bb08dce",
+      "archive_files": 14,
+      "profiles": {
+        "default": {
+          "build": "/root/fvwm-module-waits-20261015/build-default",
+          "uname": [
+            "FreeBSD",
+            "freebsd",
+            "15.1-RELEASE-p4",
+            "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+            "arm64"
+          ],
+          "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb"
+          ],
+          "passes": 7,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+              "bytes": 5139416
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "31a81f2405f1bd335cb8d2118b27d4069faa4f86a5b531fb14bb798bcbb796e6",
+              "bytes": 429752
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "9547a2ba676eced6be7b927014be37be7c6ce119bac2ebd8f9eb69b112abebbd",
+              "bytes": 1570624
+            }
+          }
+        }
+      },
+      "fresh_Go": null
+    },
+    "linux-amd64": {
+      "archive_sha256": "b8b540c2e5acb9fbdd6a07b8e7b194c36f69862b8d9f61171744b613496158b4",
+      "archive_files": 86,
+      "profiles": {
+        "gcc": {
+          "build": "/root/fvwm-module-waits-20261015/build-gcc",
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.113+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+            "x86_64"
+          ],
+          "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb",
+            "mfl-request",
+            "mfl-stream",
+            "mfl-request-xvfb",
+            "mfl-settings-xvfb",
+            "mfl-operations-xvfb"
+          ],
+          "passes": 12,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "5cb750e1341f4de06db8f220b817cd540552ecb7f2ba610f259c19f760c90860",
+              "bytes": 5426096
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "f3e2fc10d37b86cef37b549a59959dec9a692912a5f01d6636b420d256f53c67",
+              "bytes": 394336
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "6acdcb2732d2d374e9009e5be512102717bc7d1fe40687f72d7ea80fe85574b7",
+              "bytes": 1545160
+            }
+          }
+        },
+        "clang": {
+          "build": "/root/fvwm-module-waits-20261015/build-clang",
+          "uname": [
+            "Linux",
+            "fvwm-linux-amd64",
+            "6.12.113+deb13-cloud-amd64",
+            "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+            "x86_64"
+          ],
+          "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb",
+            "mfl-request",
+            "mfl-stream",
+            "mfl-request-xvfb",
+            "mfl-settings-xvfb",
+            "mfl-operations-xvfb"
+          ],
+          "passes": 12,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "e63ae60ddc76adcb64edf1fa80aed84662250b2fe96f6e86bb634ebcc6f2ef51",
+              "bytes": 4589224
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "3bdc82441f874c06a004200adbf83982fb65b73261aa6009032ab4a3291719a8",
+              "bytes": 358728
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "eb32737429479670e5b1fee52603e5dcd47966a2d66e553cd3129ca9227e27a9",
+              "bytes": 1361496
+            }
+          }
+        }
+      },
+      "fresh_Go": {
+        "packages": 5,
+        "cases": 68,
+        "browser_native_X": "passed"
+      }
+    },
+    "freebsd-amd64": {
+      "archive_sha256": "8924b6030c3f263cfea088f1362c46f7bfb61e3cbd20e2fab1a60d15238b4107",
+      "archive_files": 67,
+      "profiles": {
+        "default": {
+          "build": "/root/fvwm-style-simplification-recovery-20261016/build-default",
+          "uname": [
+            "FreeBSD",
+            "freebsd",
+            "15.1-RELEASE-p4",
+            "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+            "amd64"
+          ],
+          "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb",
+            "mfl-request",
+            "mfl-stream",
+            "mfl-request-xvfb",
+            "mfl-settings-xvfb",
+            "mfl-operations-xvfb"
+          ],
+          "passes": 12,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "6533c371a472c3b77a7ef278827cfba0d9d912267e5312bbb6730d062c10a687",
+              "bytes": 5154440
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "d62795b45f8a905d48710826c2fbe2166ed38f19284ac0c8b9acce6fa959f30b",
+              "bytes": 439992
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "ebfae0c486377351d9fca625f85517f88d1d4b38f7ae14b73d59c16bd4f91bf4",
+              "bytes": 1571624
+            }
+          }
+        }
+      },
+      "fresh_Go": {
+        "packages": 5,
+        "cases": 67,
+        "browser_native_X": "passed"
+      }
+    },
+    "openbsd-arm64": {
+      "archive_sha256": "f7f8e7728eff557e0d528fa94af6b4f4d1e3b3c113031adbbb672678b1849675",
+      "archive_files": 2725,
+      "profiles": {
+        "default": {
+          "build": "/root/fvwm-ci/source/builddir-bsd",
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#1",
+            "arm64"
+          ],
+          "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb",
+            "mfl-request",
+            "mfl-stream",
+            "mfl-request-xvfb",
+            "mfl-settings-xvfb",
+            "mfl-operations-xvfb"
+          ],
+          "passes": 12,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "ee54b0db11086e2848be4555b961d7eb85350e2d35c5ffe024d35807d7cf3c36",
+              "bytes": 4979664
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "93f8bb00e9e2cd687c811849207b84d95902e35a38aeafd38f82538f794309ed",
+              "bytes": 406352
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "606dc9ebbb34b999e9350ff5b57232ec4bab854aa5601677d34b7c1c468243a2",
+              "bytes": 1509656
+            }
+          }
+        }
+      },
+      "fresh_Go": {
+        "packages": 5,
+        "cases": 67,
+        "browser_native_X": "passed"
+      }
+    },
+    "openbsd-amd64": {
+      "archive_sha256": "b30930c0f2050851ac855728c5751e3472feba976b02c6fa7c48979f84efd8c4",
+      "archive_files": 2728,
+      "profiles": {
+        "default": {
+          "build": "/root/fvwm-ci/source/builddir-bsd",
+          "uname": [
+            "OpenBSD",
+            "openbsd.my.domain",
+            "8.0",
+            "GENERIC.MP#2",
+            "amd64"
+          ],
+          "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+          "selected": [
+            "form-list",
+            "form-input",
+            "form-command",
+            "form-transport-xvfb",
+            "form-input-xvfb",
+            "form-button-xvfb",
+            "form-fields-xvfb",
+            "mfl-request",
+            "mfl-stream",
+            "mfl-request-xvfb",
+            "mfl-settings-xvfb",
+            "mfl-operations-xvfb"
+          ],
+          "passes": 12,
+          "binaries": {
+            "fvwm3": {
+              "sha256": "1c1cf13b99cb35b40bf32007884e313c020c28d9ee7fb8481b9919351ef38003",
+              "bytes": 4848144
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "sha256": "d3d9043e15917aa716c7033c8f6ac4c91452aec8418b45d80f8ec5ce9074d8d1",
+              "bytes": 397880
+            },
+            "modules/FvwmForm/FvwmForm": {
+              "sha256": "3c6c285a79a10e024f73fc12621f7db340bc252f1999f7872139f1663bad1a16",
+              "bytes": 1450464
+            }
+          }
+        }
+      },
+      "fresh_Go": {
+        "packages": 5,
+        "cases": 67,
+        "browser_native_X": "passed"
+      }
+    }
+  },
+  "retention": {
+    "reference": "PR175",
+    "reference_report": "VERIFICATION-2026-10-23-FILE-PROVIDER-QUERIES.json",
+    "reference_source_archive_sha256": "499a5a4cf34812bf4334fefd9a08da026037c48ae5e8ffc63b1387f6e02c0e77",
+    "current_source_archive_sha256": "901106036e74e93538512275e86bed06082838c4b45453f551af94211c126721",
+    "matched_runtime_test_files": 545,
+    "matched_manifest_sha256": "46a3857fbce96e310a144e15c1badc981fed2302bb73f8b4d9eae4e83eb35a21",
+    "C_token_derivations": {
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "before_sha256": "13da915ae8e32dc0bd436835bf89eb76eb195b4b38f6eba0ac52473a2bbab4fd",
+        "after_sha256": "aba2a417f1c91da982a72d107424361af0b4874249522c25d220670d48a17926",
+        "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+      },
+      "tests/test_mfl_request.c": {
+        "before_sha256": "a0c238012a46a943e1c5e510deb19e31362ebc376c094472241e1736d91768e8",
+        "after_sha256": "f38d17acc8a39fb5f459a6e4c92c989a6da7ae74d6e5d0ea51de9c22fe134579",
+        "C_tokens_equal_ignoring_comments_whitespace_and_adjacent_string_boundaries": true
+      }
+    },
+    "retained_registered_MFL_entries": {
+      "fvwm-x-linux-arm64-svg": 5,
+      "freebsd-arm64": 5
+    },
+    "retained_go_cases": {
+      "fvwm-x-linux-arm64-svg": 68,
+      "freebsd-arm64": 67,
+      "linux-race": 68
+    },
+    "retained_go_packages": 15,
+    "retained_sanitizer_exercises": 3,
+    "retained_browser_native_X_drivers": 4,
+    "retained_theme_profiles": [
+      "slate-dark",
+      "dune-light",
+      "classic-large"
+    ],
+    "source_bound_capture_hashes": {
+      "final/fvwm-x-linux-arm64-svg": {
+        "archive_sha256": "bfdabf02c82e1b22f60735d11cd3460d276959e0aa3950c18d8e5e53ffef63c7",
+        "files": 11,
+        "bytes": 130948
+      },
+      "final/freebsd-arm64": {
+        "archive_sha256": "4e57eae2b63c623fdc3ee756090660028de9c6c3c5ddfe97cc24dccf01753625",
+        "files": 50,
+        "bytes": 454945
+      },
+      "completion/fvwm-x-linux-arm64-svg": {
+        "archive_sha256": "70f6fac176498f6c196ffe386ff840b3cbdc2a499ae703533d0d4631652419a7",
+        "files": 134,
+        "bytes": 4052120
+      },
+      "manual/evidence": {
+        "archive_sha256": "d4711df162986a0052119a393745c82e7188606e7106e20eb1bfc9af78e661f2",
+        "files": 6,
+        "bytes": 33697
+      }
+    },
+    "scope": "Retain PR175 matching MFL/Go/browser/race/sanitizer results. Seven Form entries execute fresh per ARM64 target against the combined current modules."
+  },
+  "counts": {
+    "targets": 6,
+    "profiles": 7,
+    "native_entries": 84,
+    "fresh_native_entries": 74,
+    "retained_MFL_entries": 10,
+    "go_packages_per_target": 5,
+    "composed_go_package_outcomes_including_race": 35,
+    "composed_go_top_cases_including_race": 472,
+    "browser_native_X_runs_including_three_themes": 8,
+    "retained_scoped_sanitizer_exercises": 3
+  },
+  "limits": [
+    "Affected accumulated cycle only; full install/default-X/compiler-feature/milestone/release acceptance remains separate.",
+    "Guest execution does not establish native-Linux-CPU sanitizer or physical/toolkit/compositor/assistive acceptance.",
+    "PR175 C line wrapping retains all lexical tokens and is explicitly bridged in retained ARM64 evidence.",
+    "No new benchmark: performance reference PR174 is 1/5 after PR175."
+  ]
+}

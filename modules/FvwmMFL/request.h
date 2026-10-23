@@ -47,7 +47,8 @@ enum mfl_request_kind {
 	MFL_REQUEST_PREVIEW_REVERT,
 	MFL_REQUEST_FILES_LIST,
 	MFL_REQUEST_FILES_REGISTER,
-	MFL_REQUEST_FILES_QUERY
+	MFL_REQUEST_FILES_QUERY,
+	MFL_REQUEST_FILES_ACTION
 };
 
 struct mfl_request {
@@ -79,6 +80,9 @@ struct mfl_pending_request {
 
 #define MFL_FILES_PROVIDER_LIMIT 8
 #define MFL_FILES_PAGE_MAX 8
+#define MFL_FILES_EDIT_MAX 8
+
+bool mfl_request_is_files(enum mfl_request_kind kind);
 
 /* Private producer framing over the existing client transport. */
 bool mfl_files_reply_header(const char *command, uint64_t *serial,

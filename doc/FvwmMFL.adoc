@@ -464,7 +464,7 @@ keeps colorset preview/revert unavailable. The separate runtime `preview`
 resource owns only a menu-opacity scalar. Existing settings generations retain
 their separate scope.
 
-=== Browser metadata and selection
+=== Browser metadata, selection and controls
 
 The optional Go browser registers one opaque 32-character lowercase hexadecimal
 `provider` identity per connection. Discover up to eight running instances:
@@ -475,7 +475,7 @@ request {"version":1,"id":"folder","method":"query","resource":"files","provider
 request {"version":1,"id":"selected","method":"query","resource":"files","provider":"PROVIDER_32_HEX","scope":"selection","limit":8}
 ....
 
-Discovery returns `version: 1`, `query_only: true`, `provider_limit: 8` and
+Discovery returns `version: 1`, `query_only: false`, `file_mutation: false`, `provider_limit: 8` and
 `providers`, each with `provider` and `busy`. An empty list means no registered
 browser. Targeted queries require `provider` and `scope`: `state`, `items`,
 `selection` or `properties`. Read-only connections may query; registration is
@@ -489,7 +489,7 @@ action or replacing its native windows. Draft input and file content are absent.
 
 * `state` returns base64 `path_bytes`, loaded/visible/selected counts, focused
   ID, filter/sort/view/watch state and `page_max: 8`, `selection_limit: 256`,
-  `actions: false`, `file_content: false`. It does not enumerate a new directory.
+  `actions: true`, `file_actions: false`, `file_content: false`. It does not enumerate a new directory.
 * `items` pages the current visible order. `selection` pages the selected set,
   including filtered-out selections. Both return `items`, `total`, `offset` and
   integer-or-null `next_offset`. Items contain opaque `id`, base64 `name_bytes`,
@@ -518,16 +518,89 @@ producer stalls. Malformed producer replies disconnect that producer. Responses
 are limited to 8192 assembled bytes; larger observations return
 `result_too_large`, so request a smaller page where applicable.
 
+==== Conditional browser controls
+
+Writable clients may use `method: "action", resource: "files"` with exactly
+`provider`, a required current `generation`, `operation` and `values` in addition
+to version/ID/method/resource. Read-only clients are refused. Query state first;
+replace uppercase placeholders below with the returned tokens/IDs:
+
+....
+request {"version":1,"id":"pick","method":"action","resource":"files","provider":"PROVIDER_32_HEX","generation":"GENERATION_32_HEX","operation":"selection","values":{"mode":"replace","ids":["ITEM_32_HEX"]}}
+request {"version":1,"id":"inspect","method":"action","resource":"files","provider":"PROVIDER_32_HEX","generation":"GENERATION_32_HEX","operation":"properties","values":{}}
+....
+
+|===
+|Operation |Exact values |Resulting behavior
+
+|`selection`
+|`{"mode":"replace","ids":[...]}` (mode may also be `add` or `remove`),
+or `{"mode":"clear"}`
+|Replace, add or remove 1–8 unique current IDs, or clear the complete selection.
+Hidden selections stay owned during add/remove; the total cap remains 256.
+Unknown/duplicate IDs or an over-limit result refuse the whole edit.
+
+|`filter`
+|`{"text":"literal filter"}`
+|Apply up to 128 UTF-8 bytes, including empty text to clear. Matching is literal
+case-insensitive label matching. Selection outside the projection is retained.
+
+|`sort`
+|`{"key":"name","reverse":false}` (`key` may also be `kind`, `size` or `modified`)
+|Set the observed order explicitly, retaining selection and surviving focus.
+
+|`view`
+|`{"mode":"list"}` or `{"mode":"grid"}`
+|Set the presentation explicitly. Layout changes may recreate the native frame;
+provider identity and admitted metadata/selection remain owned by the browser.
+
+|`properties`
+|`{}`
+|Present observed properties for the complete current selection in the existing
+labels. No filesystem lookup or content read occurs.
+|===
+
+Unknown fields, wrong types and duplicate value fields are refused. The compact
+encoded values object must fit 384 bytes as well as the whole 1000-byte request
+line. For a larger selection, apply bounded add/remove edits, using each returned
+generation for the next edit. State advertises `selection_edit_max: 8` and
+`action_operations`; `file_actions: false` distinguishes these view controls from
+opening applications or mutating files.
+
+The browser validates values before any native handshake, captures current native
+selection/focus, then checks the supplied generation. An obsolete state returns
+`stale_generation` without applying the requested change. Unknown selection IDs
+return `invalid_selection`; empty properties return `selection_unavailable`.
+Refusals preserve the prior selection/projection. View and inspected-property
+state also enter continuation tokens, so these controls can invalidate pages.
+
+After native publication is acknowledged, an `ok` reply contains state fields
+plus `scope: "action"`, `operation` and `applied: true`. This acknowledges the
+browser's native view publication, not filesystem freshness or external action
+completion. Use the returned `generation` for the next control. Live input can
+change again after the captured state; this is not a display lock.
+
+Accepted controls renew the helper's existing idle limit; queries and refused
+controls do not. The shared producer busy slot, five-second client wait and
+wait-only cancellation apply to both queries and controls. A cancelled/timed-out
+wait does not retract a submitted control; it may still publish. Re-query after
+the producer becomes available. A native/transport publication failure retires
+the provider/view and returns unavailable or a transport failure; application may
+be unknown. No success is reported for a split model/native view.
+
 Producer registration uses `method: "register", resource: "files", provider`.
 Identity cannot change on that connection; reconnect to retire it. Dedicated
 `file_query` records carry version, 16-hex serial, provider, scope, generation,
-offset and limit. Matching producers reply with reserved
+offset and limit. Controls use `scope: "action"`, an `operation` and bounded
+`values` containing the admitted typed object. MFL refuses malformed UTF-8 using
+the existing JSON text policy before forwarding; consumer policy validates the
+bounded values again before native work. Matching producers reply with reserved
 `files_reply SERIAL part INDEX HEX` lines and `files_reply SERIAL end COUNT`,
 using ordered chunks of at most 256 bytes and 32 parts. The assembled object
 contains `result` or `error: {code: ...}`. Other connections and old serials
 cannot complete the active producer response. These are internal producer
-messages, not user commands. Typed actions, file mutation and protected clipboard
-payload transport remain outside this query interface.
+messages, not user commands. External file actions, mutation and protected clipboard payload transport
+remain outside this metadata/view interface.
 
 === Desktop settings provider
 

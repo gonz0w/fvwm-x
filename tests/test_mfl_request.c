@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "modules/FvwmMFL/request.h"
+#include "libs/defaults.h"
 #include <assert.h>
 #include <limits.h>
 #include <stdio.h>
@@ -847,8 +848,95 @@ static void test_files_schema_and_private_parts(void)
 	assert(!serial && !payload);
 }
 
+static void test_files_actions(void)
+{
+	static const char prefix[] =
+		"{\"version\":1,\"id\":\"a\",\"method\":\"action\","
+		"\"resource\":\"files\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"generation\":\"0123456789abcdef0123456789abcdef\",";
+	static const char *valid[] = {
+		"\"operation\":\"selection\",\"values\":{\"mode\":\"clear\"}}",
+		"\"operation\":\"selection\",\"values\":{\"mode\":\"add\","
+		"\"ids\":[\"0123456789abcdef0123456789abcdef\"]}}",
+		"\"operation\":\"filter\",\"values\":{\"text\":\"\"}}",
+		"\"operation\":\"sort\",\"values\":{\"key\":\"name\","
+		"\"reverse\":false}}",
+		"\"operation\":\"view\",\"values\":{\"mode\":\"grid\"}}",
+		"\"operation\":\"properties\",\"values\":{}}"
+	};
+	static const char *invalid[] = {
+		"\"operation\":\"selection\",\"values\":{\"mode\":\"clear\","
+		"\"ids\":[]}}",
+		"\"operation\":\"selection\",\"values\":{\"mode\":\"add\","
+		"\"ids\":[]}}",
+		"\"operation\":\"selection\",\"values\":{\"mode\":\"add\","
+		"\"ids\":[\"bad\"]}}",
+		"\"operation\":\"filter\",\"values\":{\"text\":null}}",
+		"\"operation\":\"filter\",\"values\":{\"text\":\"\xff\"}}",
+		"\"operation\":\"filter\",\"values\":{\"text\":\"a\","
+		"\"text\":\"b\"}}",
+		"\"operation\":\"sort\",\"values\":{\"key\":\"name\","
+		"\"reverse\":0}}",
+		"\"operation\":\"view\",\"values\":{\"mode\":\"grid\","
+		"\"text\":\"extra\"}}",
+		"\"operation\":\"properties\",\"values\":{\"extra\":true}}",
+		"\"operation\":\"open\",\"values\":{}}"
+	};
+	char json[MAX_MODULE_INPUT_TEXT_LEN + 1];
+	struct mfl_request request;
+	struct mfl_pending_request pending[MFL_REQUEST_LIMIT] = {{0}};
+	struct mfl_pending_request *slot;
+
+	for (size_t i = 0; i < sizeof(valid) / sizeof(valid[0]); i++)
+	{
+		snprintf(json, sizeof(json), "%s%s", prefix, valid[i]);
+		assert(mfl_request_parse(json, &request));
+		assert(request.kind == MFL_REQUEST_FILES_ACTION);
+		assert(mfl_request_is_action(request.kind));
+		assert(mfl_request_is_files(request.kind));
+		assert(strcmp(request.snapshot_resource, "action") == 0);
+	}
+	{
+		cJSON *root, *values, *ids;
+		char id[33];
+
+		snprintf(json, sizeof(json), "%s%s", prefix, valid[1]);
+		root = cJSON_Parse(json);
+		assert(root);
+		values = cJSON_GetObjectItemCaseSensitive(root, "values");
+		cJSON_DeleteItemFromObjectCaseSensitive(values, "ids");
+		ids = cJSON_AddArrayToObject(values, "ids");
+		for (unsigned int i = 0; i <= MFL_FILES_EDIT_MAX; i++)
+		{
+			char *serialized;
+
+			snprintf(id, sizeof(id), "%032x", i);
+			assert(cJSON_AddItemToArray(ids,
+				cJSON_CreateString(id)));
+			serialized = cJSON_PrintUnformatted(root);
+			assert(serialized);
+			assert(mfl_request_parse(serialized, &request) ==
+				(i < MFL_FILES_EDIT_MAX));
+			cJSON_free(serialized);
+		}
+		cJSON_Delete(root);
+		snprintf(json, sizeof(json), "%s%s", prefix, valid[0]);
+		assert(mfl_request_parse(json, &request));
+	}
+	assert(!mfl_request_reserve(pending, &request, 1, 100, &slot));
+	assert(slot == pending && slot->kind == MFL_REQUEST_FILES_ACTION);
+	mfl_request_clear(slot);
+	for (size_t i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
+	{
+		snprintf(json, sizeof(json), "%s%s", prefix, invalid[i]);
+		assert(!mfl_request_parse(json, &request));
+	}
+}
+
 int main(void)
 {
+	test_files_actions();
 	test_files_schema_and_private_parts();
 	test_integer_settings();
 	test_preview_requests();

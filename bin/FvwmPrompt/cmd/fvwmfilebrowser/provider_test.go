@@ -102,7 +102,7 @@ func TestProviderSelectionSnapshotAndObservedSummary(t *testing.T) {
 	query.Scope = "state"
 	result, code = b.providerResult(query)
 	state := result.(map[string]any)
-	if code != "" || state["visible"] != 0 || state["selected"] != 2 || state["file_content"] != false || state["actions"] != false {
+	if code != "" || state["visible"] != 0 || state["selected"] != 2 || state["file_content"] != false || state["actions"] != true {
 		t.Fatal(code, state)
 	}
 }
@@ -123,7 +123,7 @@ func TestProviderRefusesMalformedStaleAndUnreadyQueries(t *testing.T) {
 		if _, code := b.providerResult(bad); code != "invalid_request" {
 			t.Fatal(bad, code)
 		}
-		if b.answerProvider(bad) == nil {
+		if _, err := b.answerProvider(bad); err == nil {
 			t.Fatal("invalid input reached native transport")
 		}
 	}
@@ -147,7 +147,7 @@ func TestProviderReplyFramingAndResultBudget(t *testing.T) {
 		left, right := net.Pipe()
 		b.session = transport.New(left)
 		done := make(chan error, 1)
-		go func() { done <- b.answerProvider(query); left.Close() }()
+		go func() { _, err := b.answerProvider(query); done <- err; left.Close() }()
 		var data []byte
 		parts := 0
 		scanner := bufio.NewScanner(right)

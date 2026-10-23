@@ -1,0 +1,373 @@
+{
+  "status": "passed",
+  "base": "74c00f4e8e39607fa645bc41b0cea720486d94a1",
+  "source_archive_sha256": "de952532f52c1745de47402b35819668bd0c487f4b38d8b944814a4b8973bf28",
+  "frozen_source_files": 2322,
+  "worktree_manifest_sha256": "b0d41196dafd4a3cde290b7b55cb4a25f03df8a9f846b20ff09b32562c8990a8",
+  "prior_cycle": {
+    "reference": "PR175",
+    "source_archive_sha256": "901106036e74e93538512275e86bed06082838c4b45453f551af94211c126721",
+    "counts": {
+      "targets": 6,
+      "profiles": 7,
+      "native_entries": 84,
+      "fresh_native_entries": 74,
+      "retained_MFL_entries": 10,
+      "go_packages_per_target": 5,
+      "composed_go_package_outcomes_including_race": 35,
+      "composed_go_top_cases_including_race": 472,
+      "browser_native_X_runs_including_three_themes": 8,
+      "retained_scoped_sanitizer_exercises": 3
+    },
+    "closed_before_feature": true
+  },
+  "captures": {
+    "fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "8b2baa30f4a8cf52759b91578d083ecad779251e7699bce8cf20db462994a1fe",
+      "files": 154,
+      "bytes": 4541522
+    },
+    "freebsd-arm64": {
+      "archive_sha256": "47d69ed489d107daf65810078ed52fc6626c613d3779a11c84a0995318175afb",
+      "files": 53,
+      "bytes": 493017
+    },
+    "fvwm-x-linux-arm64-svg-UI-completion": {
+      "archive_sha256": "ea3cf3b8627d19269ffd021d047f07b34760acb5b5e8fefc504cafa84dfdc7db",
+      "files": 129,
+      "bytes": 4510823
+    },
+    "freebsd-arm64-UI-completion": {
+      "archive_sha256": "f1a9a4ee3d2ab14161fc71db60daada4eb4463b0db5d85d2f7c1259a8e8d8935",
+      "files": 43,
+      "bytes": 482629
+    }
+  },
+  "counts": {
+    "fvwm-x-linux-arm64-svg/testlog.json": 5,
+    "fvwm-x-linux-arm64-svg/san-testlog.json": 2,
+    "fvwm-x-linux-arm64-svg/go-policy.log": {
+      "top_cases": 72,
+      "packages": 5
+    },
+    "fvwm-x-linux-arm64-svg/go-race.log": {
+      "top_cases": 72,
+      "packages": 5
+    },
+    "freebsd-arm64/testlog.json": 5,
+    "freebsd-arm64/go-policy.log": {
+      "top_cases": 71,
+      "packages": 5
+    }
+  },
+  "screenshots": {
+    "fvwm-x-linux-arm64-svg/slate-dark": {
+      "count": 31,
+      "sha256": {
+        "collection-label-cleared.png": "855c99b1997e6be7d0151b7ef863d8c139b3dc180936570d240d06b94a9b5733",
+        "collection-label-clipped.png": "670557b4a1c3418388f7d392061da8d7b1e6cc834c46386e5f0653770b88c76c",
+        "collection-update-before.png": "659a4583544f3436105a723c2f5ee14d3b18d9433bf7ec27caf190bcc2a5d7c2",
+        "collection-update-committed.png": "a1f3c0dbfa3d28742a6056c92490c97ed753706b7fba4135b743ef31c9c60b13",
+        "collection-update-empty.png": "25ad2c2efb40d0b5f35026126f155260a017bb9ed4c72e63424ff9a75a777208",
+        "collection-update-removed.png": "1126a038be031ec93f444d24252410654002542ae4147de4464d828ef2dd50ce",
+        "collection-update-staged.png": "659a4583544f3436105a723c2f5ee14d3b18d9433bf7ec27caf190bcc2a5d7c2",
+        "file-browser-4096-grid.png": "1633b97bd6e70f063d0e92b179b096c2eaeecd527d90a990e57907b5022cd293",
+        "file-browser-4096-live-sort.png": "0defda9ce60439d9047d0171fcb1d0658d5fcbb818dd8b0c6e498057ba092ba5",
+        "file-browser-4096-rows.png": "751d6fb16f753fbcfbb0d2bcfcbd93c63cbadfd465f0684ae11cbcd3961f8b95",
+        "file-browser-collection.png": "b4d035e88d4e7f9981fb13cce2a60423e9a874fea5bf06ab11fb86484c24aba2",
+        "file-browser-custom-action.png": "64dea650999a120ab33af67028981a48565bea385caa64448bd24a194e0a03c2",
+        "file-browser-empty-filter.png": "1fac51b160bfea7224877308a801cf330be89d4a0e615d406628634b9e115a40",
+        "file-browser-filtered-selection.png": "284edb59c398ba85ed24d052484cc13cb8cf81794d1e119c43dbafa1271ae3c5",
+        "file-browser-grid.png": "fc321f06b6b55f97999d79082473144e65658b0205439fb5c201fd5606ad0965",
+        "file-browser-input-focus-return.png": "0872040b5aa6d6519ba5afe3d316730de083074a3ea17e77af73bb39809f7721",
+        "file-browser-ipc-filter.png": "6a87aa3ead13433e4feb5b1d04ce370b6ebdbe0294e60aa9b7282279b824e747",
+        "file-browser-ipc-grid.png": "79550ae52a4dd5fbaf43dffb29642535c470526b3f79efa41151db40387eaf88",
+        "file-browser-ipc-properties.png": "58f5999b883f5fb0a256fb68aba117bab52eca0f47c537d79e4fc2ea9f116cb7",
+        "file-browser-live-sort.png": "9dc2e954fd566e82317a2312f0f1deeb3c2ff9db03d750191a54ac6e847e77ac",
+        "file-browser-provider-selection.png": "1c6dd620aac0c2b417c0fa33a24f5623e0d21a14e5d2c6d9f2f09bee7ce22f3b",
+        "file-browser-range-list.png": "b489daedfdbd3754e15ab3d97b56d1fa0f615bea550414adb301179ebaf1a0bf",
+        "file-browser-refresh-changes.png": "eed845efbdf2b25978f519f0b40bed39c2c0144f32bc43cef6eb06503a9e2e4e",
+        "file-browser-refresh-unchanged.png": "7c2cec11ce646ac288b497deb19e70f0741342f02bdf1a1aa8e41c4a62f71468",
+        "file-browser-scrolled-properties.png": "be06a1e2fa0a28deb4068712a1fd7287448a64aa4b5d5f8271b38a4f4686dd56",
+        "file-browser-selection-properties.png": "2a5da6169413015d6703ca8e0ae41986f7e77c7b61049a46830bebb1da21da34",
+        "file-browser-watch-fallback.png": "c17fb53e0522160d65ed9f8c92c6326e9c641f9421e6b1cfb15393175a09cff1",
+        "file-browser-watch-recovered.png": "dbfd8129309bcf2efc78390da4d8c59980076140b3a464f77cf2b6e5bb61aa0d",
+        "file-browser-watch-refresh.png": "f104b4f022ae0bf3fb7515cec4d8b7d0774fd53155cc2e7783fbcfdaece3b107",
+        "file-browser-wheel-after.png": "a37007a6179b032cedbb40059200f927c9b14fc27cf3a957fd81ca6bdbcc1d96",
+        "file-browser-wheel-before.png": "cdd5400d41fb6299cffadb6ad77cd9782bec29041d776d5b1e183c217321e75e"
+      },
+      "control_checks": {
+        "readonly_refused": true,
+        "stale_refused": true,
+        "atomic_unknown_id_refusal": true,
+        "selection_edits": true,
+        "hidden_selection": true,
+        "sort": true,
+        "properties": true,
+        "view": true,
+        "malformed_text_isolated": true,
+        "same_windows_except_view_switch": true
+      },
+      "font": "xft:Sans:size=10:antialias=True",
+      "configuration_sha256": {
+        "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+        "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+        "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+        "generated.config": "49ffea64cac8ed463f4b0ba46fa6769ace390bf198b3b8b241b938926b66969d"
+      },
+      "accepted_capture": "UI completion"
+    },
+    "fvwm-x-linux-arm64-svg/dune-light": {
+      "count": 31,
+      "sha256": {
+        "collection-label-cleared.png": "c22ee10ab0ceac6824c15790ba123b6b443b0a151070d3263de1346b9e7ee128",
+        "collection-label-clipped.png": "cec4f9cd33aefa12c434d0d2ad2ce4c79d66103daf01fb12ccfec93a99379cfc",
+        "collection-update-before.png": "482c73c5d2047dc532af72d69e86a9bc8cedd8319e9f915b50478ddb5a15fadf",
+        "collection-update-committed.png": "3ab8d7494bd0e9dccc8d5e1248eb70fe041c7cd0e3533cb16eeb5311d298e9f8",
+        "collection-update-empty.png": "71a6c978258be4526f56fdbf6553c5ae417979999ed442e7283e9c048c5d337e",
+        "collection-update-removed.png": "d43ed64f1a2c6a90c9f6b58d38eccb09d6376baafea1fe69350963b7115cb37c",
+        "collection-update-staged.png": "482c73c5d2047dc532af72d69e86a9bc8cedd8319e9f915b50478ddb5a15fadf",
+        "file-browser-4096-grid.png": "ccb1cef6035bfaae1fb29dc3f0366f97dccddc4012afa480f15f7973ba3ca912",
+        "file-browser-4096-live-sort.png": "4fd1733fbd4f0f96c23ba713925a0289e7df8fd3be621670938985bc2cd818d7",
+        "file-browser-4096-rows.png": "b3c089ef14c651f6bf44e1bb14566756615652aa5df835ce82422c0c72c6a343",
+        "file-browser-collection.png": "2f19cb319652a925df193e116b51aa4613d920758385d502de10a3e2973613f2",
+        "file-browser-custom-action.png": "27ca390029ef8c2fe9451b7c80f1191cc15b67253d4e80394dec0e676de3bd3f",
+        "file-browser-empty-filter.png": "7278814d155ee8cfc0667cf48209ce0a538e759e964c9ff0d16365d3046a5382",
+        "file-browser-filtered-selection.png": "9ee4dd20f69cca7efc8bdaa9434169b68d76e8cc7ed23b094fae65b686c966d9",
+        "file-browser-grid.png": "cb2b181f8eda2a1d6ea30064847b2f39d71083aa5eee78c74921d47789d620ca",
+        "file-browser-input-focus-return.png": "2fc637debf069ccfa8a1893fc3e876f8ad86c78ba03e0ac2b1ef7bbdf1bed56f",
+        "file-browser-ipc-filter.png": "a30b1ddd6b1ad40ea27255814efa4b6e9d30aa4182bb20c38c13f6ac6568bd07",
+        "file-browser-ipc-grid.png": "83ed9fb3376a57ec098c94e26a8bf2f91f2da4e28fdd1921fced7f1db56f299e",
+        "file-browser-ipc-properties.png": "40db9ecd87bc3108a7b5983b0596c60a933c62c40021726c2dcb19a4c300addd",
+        "file-browser-live-sort.png": "ab787317a9fe512c84b0b3f7a2d588f66aa6d7eb35e966b7714442f15c431313",
+        "file-browser-provider-selection.png": "01e4e1f6d5b379aedcc8e7749fb9c56c54f0f7ba3141ba34e8be11a51a7c281e",
+        "file-browser-range-list.png": "41cfd961bf79ca7b3055b6e84e70ae98226fc2486bb392b9e0e475022e3fbd9e",
+        "file-browser-refresh-changes.png": "e020bdb135cbc43bae809929ef4f285dc180926dc0e4426df33f689250d8f3eb",
+        "file-browser-refresh-unchanged.png": "a9ab009402b54ee8607cb6b65a435c5c5382f83330bb8cbab60c662037c2e9ae",
+        "file-browser-scrolled-properties.png": "5d678b05db7bfc1cb9cb28ea25d1f691de3fbe5a1a04ef38c51c9ed6b7367397",
+        "file-browser-selection-properties.png": "f9e5c25e2850b480d26e853f79bc082b7bc9aa209539a80319aaaee9f91d8dbb",
+        "file-browser-watch-fallback.png": "2f705d3bdae838f0d2e13b7f2eaa8bb2915ad4a01fef85fedeac697fe3d259e2",
+        "file-browser-watch-recovered.png": "e235206e9b0b7833639ef31ddcaedaf01a7fa6b10d2327395551f706cd389762",
+        "file-browser-watch-refresh.png": "a5e7787c23ef97575b5ffea9741bda1cc96861f4ca050942c31ce60df970d906",
+        "file-browser-wheel-after.png": "f9ca3f7fadb1b4f793e7ee9fe1b20caf10bc945a78df129989d20de262bfbbf5",
+        "file-browser-wheel-before.png": "55fcb6d1a689048fba761ab08e3f52763adc36a62bd49dd42a769d0161ec40de"
+      },
+      "control_checks": {
+        "readonly_refused": true,
+        "stale_refused": true,
+        "atomic_unknown_id_refusal": true,
+        "selection_edits": true,
+        "hidden_selection": true,
+        "sort": true,
+        "properties": true,
+        "view": true,
+        "malformed_text_isolated": true,
+        "same_windows_except_view_switch": true
+      },
+      "font": "xft:Sans:size=10:antialias=True",
+      "configuration_sha256": {
+        "local.config": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+        "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+        "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+        "generated.config": "a4ef19b1b23b7b22514f5e41a71701288133411bd2ea70a537eeb05ff6cd2f56"
+      },
+      "accepted_capture": "UI completion"
+    },
+    "fvwm-x-linux-arm64-svg/classic-large": {
+      "count": 31,
+      "sha256": {
+        "collection-label-cleared.png": "b8634d9226c714ec117b2487dc27f95e5e20f63d4d54a3fcc5dc1a5bcb120a43",
+        "collection-label-clipped.png": "d9cc333f1d327e60fa27cefb0b9ecfe1aa8a8c30114aee7ba285f8cf002bc450",
+        "collection-update-before.png": "a56af03c30bbaaf2ae9b14254648e490c72262039949a56147bcd26565fcd423",
+        "collection-update-committed.png": "4b9072a13f25af7c8d3f46bbdbdb0f8cb18e05ca86db80ff773c30e74e42b982",
+        "collection-update-empty.png": "24c3d7b5e39048a72c132c9fb38e6917a1cb86753a8c495f365a6ea53f388126",
+        "collection-update-removed.png": "0db36dea82a6d63c775145530bb8619066d8b2262c3fc702e80272803fe8da0f",
+        "collection-update-staged.png": "a56af03c30bbaaf2ae9b14254648e490c72262039949a56147bcd26565fcd423",
+        "file-browser-4096-grid.png": "721e897ae2d47b36b21e450a60bb0e4b1920673443762d5c3a2b81607e9fc427",
+        "file-browser-4096-live-sort.png": "7910c84341ae3963d2b7a4f85c31dc334e8398b45ba7128ff5d36e8326de1fde",
+        "file-browser-4096-rows.png": "662f6636541821986f4c3b8ab1319defd886677f9a131b812a430aa259f13c2c",
+        "file-browser-collection.png": "bf9daf6e2f7b13d4cceced3351711525c3b551c25ebcd0b6cede7e3a94d12f1d",
+        "file-browser-custom-action.png": "b984d78aaab5ec69a8456459dc2e28819157805d79dad63ff1b93e8d5a556714",
+        "file-browser-empty-filter.png": "c7402707741b7f152db30d7f687140d5918abf124c4d543bfa543c0aef5fc24a",
+        "file-browser-filtered-selection.png": "ffabf5123ca66e66783b7d15366b8daea27612cc7067ef3967cc8401f0488e9b",
+        "file-browser-grid.png": "eef26e77d236a7a24b2f34d41170e52deb8dea222719eed2154708f4c899d6de",
+        "file-browser-input-focus-return.png": "19336b9e27ec9606704ef58b11ec8b058fbbdc1042794714513fc141b3e7131d",
+        "file-browser-ipc-filter.png": "feba4cd17f3fc64d9edc4099ae0d4fd3a650b3732185d9d1635ad93f683f6aa3",
+        "file-browser-ipc-grid.png": "ebb1ebdac85878e05c5b1057df2dda0faf9a401ff8f1aad54ddaefd4c100ec14",
+        "file-browser-ipc-properties.png": "5e087ff215ca9b5844ac86d6a2499e3c6ac5299647a99dc61b1a524a9dba687b",
+        "file-browser-live-sort.png": "63018662232a1b8ede26bc54612c4a1b9b113988fa4820c621754b442b6da37c",
+        "file-browser-provider-selection.png": "edc98144e767e4d65adbe1745ac3aef7ac24e9bef5a19bfaa26e61edcc7eb514",
+        "file-browser-range-list.png": "4cc6552a92a1adc639e8d145a6467ab637218837a4abfa080bf30437054942fb",
+        "file-browser-refresh-changes.png": "480e49607e824774840f580891d7d9514d515316bd840ea5aedb1101642c1970",
+        "file-browser-refresh-unchanged.png": "589ff3c8040e5b0641d4b348acb99a00bbdb822fe83fd4b44ab677930c0c8b50",
+        "file-browser-scrolled-properties.png": "06bc4cb73d35ef6c97f151c02ffb5be33683c0bb2f616b4ffce900847f43e3b4",
+        "file-browser-selection-properties.png": "032a5b0dfe2c4afd65aae18f2f2219920d1f50ad0821fe0e9654e8f3a84ee6f1",
+        "file-browser-watch-fallback.png": "87a0cd62a4471b66a06c1812c3e46d8666acec592c82da8a534828a05ac6a67d",
+        "file-browser-watch-recovered.png": "768c620150cd59e72ac2d068b790f2e8a6794e537c9904ba5e447467f370711e",
+        "file-browser-watch-refresh.png": "8d2a1b469688c91979dc9ff34e212cede241e74136fbfcc584aad8f2ff9b96b9",
+        "file-browser-wheel-after.png": "fb944409a9d29ffb1f02fb34756348b6cf76b2683a59db10d9ab69df453cc577",
+        "file-browser-wheel-before.png": "30e4ce5ac5d557eb167b6607d1eab7eb5d800635b9d05f907458dd7a16188921"
+      },
+      "control_checks": {
+        "readonly_refused": true,
+        "stale_refused": true,
+        "atomic_unknown_id_refusal": true,
+        "selection_edits": true,
+        "hidden_selection": true,
+        "sort": true,
+        "properties": true,
+        "view": true,
+        "malformed_text_isolated": true,
+        "same_windows_except_view_switch": true
+      },
+      "font": "9x15",
+      "configuration_sha256": {
+        "generated.config": "c1c2e93c981ea3bc4639ca39009b184c5bff0b92f95bc05abe22eac5d4837ab3"
+      },
+      "accepted_capture": "UI completion"
+    },
+    "fvwm-x-linux-arm64-svg/san-client-lifetime": {
+      "count": 0,
+      "sha256": {},
+      "control_checks": null,
+      "font": null,
+      "configuration_sha256": null
+    },
+    "freebsd-arm64/native-ui": {
+      "count": 31,
+      "sha256": {
+        "collection-label-cleared.png": "2d1870e2087bd8b349d2b0e6a5b611c9412df29a290999142bcf50dafae202a8",
+        "collection-label-clipped.png": "7447cd7d6557789e35ee2427e5a94f7a0b0dea4173d03c355d5c2eaf6dd6c8f8",
+        "collection-update-before.png": "846c8b05e29c8d328d6469118dc3d9980b43d11b32ca1deb0e24d15abeb7ba12",
+        "collection-update-committed.png": "7bfa9d2733760d594b297908066b7474de97b128a9d03782c892b8947c97c8d0",
+        "collection-update-empty.png": "6cc9739e403f01d78f00bf5b3c0d2639cd783df53ff2955fa61b6b18fe2b6e88",
+        "collection-update-removed.png": "c6c2341fbceb93b3d80670ad40bf15b72f379e07f7ffd22b8733a7230a2b9cb8",
+        "collection-update-staged.png": "846c8b05e29c8d328d6469118dc3d9980b43d11b32ca1deb0e24d15abeb7ba12",
+        "file-browser-4096-grid.png": "fc4b87fd2d202d4c8140cd1d3accfeb3062f87b5b3e70bf52ba0eeddeae2aa62",
+        "file-browser-4096-live-sort.png": "7922903cae8543c0d65c14029c40abe90c016b60da7a12cf2379f769ea97d652",
+        "file-browser-4096-rows.png": "3f0921bc7f8775fe029b13885b00453ae674eec817de11d980f5b0d92c5c2df4",
+        "file-browser-collection.png": "bd6b55244774a6993d03b8c4f2b4302166b159eeb0dc4c2c487fa8b4689fb43c",
+        "file-browser-custom-action.png": "bfda2cb36a234772dd9f6baf4235b3e2c02b887e1a49b3f38dca4f0079fa3000",
+        "file-browser-empty-filter.png": "2bcb696fa15817d41bac7f164eb5962556101881e2ec5230ba55685b8f938057",
+        "file-browser-filtered-selection.png": "fafbcd31dbc6f8204d897877ee3dd1379f16cd92f325c0f600a0fcc86e863b05",
+        "file-browser-grid.png": "a3ce67e34fae5eb35a4e0ce4d7dcf60f3dd92fbc5e9a2c5a3678e81f382a3dfc",
+        "file-browser-input-focus-return.png": "3c08263d9ac73a85c048c6a3e39e5c1ab89492af934369c036636b36bb44e60a",
+        "file-browser-ipc-filter.png": "2de94820c3010dca1a3a45af17f07322064ccef9aac35fdc8acb6a6a825f57b8",
+        "file-browser-ipc-grid.png": "e5b9ac8c700c242d2268a43c0688c2d9680c0066efb59e0549ce6d96ed5f9754",
+        "file-browser-ipc-properties.png": "cccde0540eca955efff2156a2d5ba608dbd0a5e985da50b42ce29786e4d8c9c3",
+        "file-browser-live-sort.png": "2e633a988015d3552ad131e81bf68e9be583e04e191ff4ea33ebb2195cb8622d",
+        "file-browser-provider-selection.png": "034b3d45db19bbb5e75d98a4c6a699993e31e8b03210dc190484076c86140545",
+        "file-browser-range-list.png": "919a4f1e511e1268d257d0e48ff9c5f33ee2e863858e1e1e84b2c60d0641c160",
+        "file-browser-refresh-changes.png": "3a99bd84b56ce6f5d9e454462157f847b11a1cf0957345f254df8ead6052773c",
+        "file-browser-refresh-unchanged.png": "f4cf2605cf2279e8fd2996c1bd1c1f1c2436ad7f45206f5c3968fc45fc8525d5",
+        "file-browser-scrolled-properties.png": "331f872ad8c016f7cef103e36e79f8f98ef736783b02a758a4bfec8c34cc137e",
+        "file-browser-selection-properties.png": "69d131e16fa213221f667c85f9d4729bfb695f7fe7838e8481db74d29f93efc9",
+        "file-browser-watch-fallback.png": "96a228289e5045d9c80711cb85ca0ff0af037e7950e42adffee6d2050b145acb",
+        "file-browser-watch-recovered.png": "d0fdfb464be747f1115987625b6bbbe5948e94e957a8120623d6a680499884e1",
+        "file-browser-watch-refresh.png": "3a5bdb79a50f07eb000dc39cefff8f79ea45e67a181062df18f9eeffbc3b2982",
+        "file-browser-wheel-after.png": "a46182aaf8eaa4a5fa99bbd131e41b8993e349ff601f245817cc4d97a96a1553",
+        "file-browser-wheel-before.png": "c82190fe3bdd2ba5b95d379b0df7ed02b1c9b0bde0eab81666e84fff6e9cb0e1"
+      },
+      "control_checks": {
+        "readonly_refused": true,
+        "stale_refused": true,
+        "atomic_unknown_id_refusal": true,
+        "selection_edits": true,
+        "hidden_selection": true,
+        "sort": true,
+        "properties": true,
+        "view": true,
+        "malformed_text_isolated": true,
+        "same_windows_except_view_switch": true
+      },
+      "font": "fixed",
+      "configuration_sha256": {
+        "generated.config": "5ff685a0bae41c489de55149ad19a9487b460fc61e89173efef1d5ec51d1bc75"
+      },
+      "accepted_capture": "UI completion"
+    }
+  },
+  "results": {
+    "fvwm-x-linux-arm64-svg": {
+      "status": "passed",
+      "target": "fvwm-x-linux-arm64-svg",
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64"
+      ],
+      "source_files_guarded": 2322,
+      "registered": 5,
+      "Go": "five affected packages/vet/build",
+      "scoped_sanitizers": true,
+      "integration_release_coverage": "pending"
+    },
+    "freebsd-arm64": {
+      "status": "passed",
+      "target": "freebsd-arm64",
+      "uname": [
+        "FreeBSD",
+        "freebsd",
+        "15.1-RELEASE-p4",
+        "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+        "arm64"
+      ],
+      "source_files_guarded": 2322,
+      "registered": 5,
+      "Go": "five affected packages/vet/build",
+      "scoped_sanitizers": false,
+      "integration_release_coverage": "pending"
+    }
+  },
+  "manual_only_correction": {
+    "status": "passed",
+    "scope": "only the corrected AsciiDoc table rerenders; runtime/fixture inputs unchanged",
+    "source_sha256": "71d5174a62a180f270d594eb4fe4fc62aa5a1c8b31c75b74d9e5ab0c0f0bfe9d",
+    "man_sha256": "e64ea91c958398f33069115ebbb5bab87173260f9e0d9f1d28d4872127d38a3f",
+    "table_cells": 18
+  },
+  "capture_fixture_derivation": {
+    "path": "tests/live_x/file_browser_live.py",
+    "before_sha256": "a5dcfa0f15a7aed53ccba8f67292bf69ae4234fc6c97ce45d1330e986306e931",
+    "after_sha256": "627311578597b460ebe118465963b7977bdad8ab6470bb094352fce475924e1f",
+    "scope": "Only new provider review captures observe native button ink and stable pixels; product and policy unchanged"
+  },
+  "documentation_only_amendments": [
+    "dev-docs/PROJECT-TRACKER.md",
+    "dev-docs/verification/README.md",
+    "doc/FvwmMFL.adoc",
+    "doc/development-preview.md"
+  ],
+  "integration_reference": "PR175, 0/3; 1/3 on this feature merge",
+  "performance_reference": "PR174, 1/5; 2/5 on this feature merge",
+  "pending": "full six-target/new-feature accumulated qualification, install/default-X/compiler/optional/owner/milestone/release, native-CPU/hardware/toolkit/assistive and protected-content acceptance",
+  "public_screenshots": {
+    "slate-dark": {
+      "file": "doc/screenshots/controls-slate-dark.png",
+      "sha256": "58f5999b883f5fb0a256fb68aba117bab52eca0f47c537d79e4fc2ea9f116cb7",
+      "capture": "UI-completion/slate-dark",
+      "source_archive_sha256": "de952532f52c1745de47402b35819668bd0c487f4b38d8b944814a4b8973bf28",
+      "fixture_sha256": "627311578597b460ebe118465963b7977bdad8ab6470bb094352fce475924e1f"
+    },
+    "dune-light": {
+      "file": "doc/screenshots/controls-dune-light.png",
+      "sha256": "83ed9fb3376a57ec098c94e26a8bf2f91f2da4e28fdd1921fced7f1db56f299e",
+      "capture": "UI-completion/dune-light",
+      "source_archive_sha256": "de952532f52c1745de47402b35819668bd0c487f4b38d8b944814a4b8973bf28",
+      "fixture_sha256": "627311578597b460ebe118465963b7977bdad8ab6470bb094352fce475924e1f"
+    },
+    "classic-large": {
+      "file": "doc/screenshots/controls-classic-large.png",
+      "sha256": "feba4cd17f3fc64d9edc4099ae0d4fd3a650b3732185d9d1635ad93f683f6aa3",
+      "capture": "UI-completion/classic-large",
+      "source_archive_sha256": "de952532f52c1745de47402b35819668bd0c487f4b38d8b944814a4b8973bf28",
+      "fixture_sha256": "627311578597b460ebe118465963b7977bdad8ab6470bb094352fce475924e1f"
+    }
+  }
+}

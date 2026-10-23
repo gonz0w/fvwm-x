@@ -753,7 +753,7 @@ static void files_owner_gone(const char *provider)
 		{
 			struct mfl_pending_request *p = c->pending + i;
 
-			if (p->kind != MFL_REQUEST_FILES_QUERY ||
+			if (!mfl_request_is_files(p->kind) ||
 			    strcmp(p->producer, provider) != 0)
 				continue;
 			if (!client_reply(c, p->id,
@@ -816,7 +816,8 @@ static cJSON *client_files_list(void)
 	struct client *c;
 
 	if (!list || !cJSON_AddNumberToObject(result, "version", 1) ||
-	    !cJSON_AddBoolToObject(result, "query_only", true) ||
+	    !cJSON_AddBoolToObject(result, "query_only", false) ||
+	    !cJSON_AddBoolToObject(result, "file_mutation", false) ||
 	    !cJSON_AddNumberToObject(result, "provider_limit",
 		MFL_FILES_PROVIDER_LIMIT))
 		goto fail;
@@ -846,7 +847,7 @@ fail:
 	return NULL;
 }
 
-static bool client_files_query(struct client *c,
+static bool client_files_request(struct client *c,
 	const struct mfl_request *request)
 {
 	struct client *owner = files_owner(request->provider);
@@ -886,6 +887,20 @@ static bool client_files_query(struct client *c,
 		mfl_request_clear(slot);
 		return false;
 	}
+	if (request->kind == MFL_REQUEST_FILES_ACTION)
+	{
+		cJSON *values = cJSON_Parse(request->settings_payload);
+
+		if (!values || !cJSON_AddStringToObject(query, "operation",
+			request->target) ||
+		    !cJSON_AddItemToObject(query, "values", values))
+		{
+			cJSON_Delete(values);
+			cJSON_Delete(event);
+			mfl_request_clear(slot);
+			return false;
+		}
+	}
 	line = cJSON_PrintUnformatted(event);
 	cJSON_Delete(event);
 	if (!line)
@@ -903,7 +918,7 @@ static bool client_files_query(struct client *c,
 			"provider_unavailable", NULL);
 	}
 	strcpy(slot->producer, request->provider);
-	owner->files_response.kind = MFL_REQUEST_FILES_QUERY;
+	owner->files_response.kind = request->kind;
 	owner->files_response.serial = slot->serial;
 	return client_request_timer(c);
 }
@@ -942,7 +957,7 @@ static bool client_files_reply(struct client *owner, const char *command)
 			cJSON *result = NULL;
 			bool queued;
 
-			if (p->kind != MFL_REQUEST_FILES_QUERY ||
+			if (!mfl_request_is_files(p->kind) ||
 			    p->serial != serial ||
 			    strcmp(p->producer, owner->files_provider) != 0)
 				continue;
@@ -1009,6 +1024,8 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 			MFL_FILES_PROVIDER_LIMIT) ||
 		    !cJSON_AddNumberToObject(result, "files_page_max",
 			MFL_FILES_PAGE_MAX) ||
+		    !cJSON_AddNumberToObject(result, "files_edit_max",
+			MFL_FILES_EDIT_MAX) ||
 		    !cJSON_AddNumberToObject(result, "files_result_max_bytes",
 			MFL_SETTINGS_RESULT_MAX) ||
 		    !cJSON_AddStringToObject(result, "provider_notifications",
@@ -1162,8 +1179,8 @@ client_request(struct client *c, const char *json)
 		result = client_files_list();
 		return result && client_reply(c, request.id, NULL, result);
 	}
-	if (request.kind == MFL_REQUEST_FILES_QUERY)
-		return client_files_query(c, &request);
+	if (mfl_request_is_files(request.kind))
+		return client_files_request(c, &request);
 	if (request.kind == MFL_REQUEST_READ_ONLY && c->files_provider[0])
 		return client_reply(c, request.id, "provider_active", NULL);
 	if (request.kind == MFL_REQUEST_CANCEL)

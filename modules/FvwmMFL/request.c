@@ -9,6 +9,7 @@
 #include "request.h"
 #include "libs/defaults.h"
 #include "libs/module_monitor.h"
+#include "libs/json_print_policy.h"
 #include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
@@ -517,6 +518,130 @@ static bool snapshot_request(struct mfl_request *request,
 	return mfl_request_is_snapshot(request->kind);
 }
 
+static bool files_filter_text(const cJSON *value)
+{
+	const unsigned char *text;
+
+	if (!cJSON_IsString(value) || strlen(value->valuestring) > 128)
+		return false;
+	text = (const unsigned char *)value->valuestring;
+	while (*text)
+	{
+		size_t length = json_utf8_sequence_length(text);
+
+		if (!length)
+			return false;
+		text += length;
+	}
+	return true;
+}
+
+static bool files_values(const char *operation, const cJSON *values)
+{
+	const cJSON *item, *previous;
+	const cJSON *mode = NULL, *ids = NULL, *text = NULL;
+	const cJSON *key = NULL, *reverse = NULL;
+	unsigned int count = 0;
+
+	if (!cJSON_IsObject(values))
+		return false;
+	for (item = values->child; item; item = item->next)
+	{
+		if (++count > 2)
+			return false;
+		for (previous = values->child; previous != item;
+		    previous = previous->next)
+			if (strcmp(previous->string, item->string) == 0)
+				return false;
+		if (strcmp(item->string, "mode") == 0)
+			mode = item;
+		else if (strcmp(item->string, "ids") == 0)
+			ids = item;
+		else if (strcmp(item->string, "text") == 0)
+			text = item;
+		else if (strcmp(item->string, "key") == 0)
+			key = item;
+		else if (strcmp(item->string, "reverse") == 0)
+			reverse = item;
+		else
+			return false;
+	}
+	if (strcmp(operation, "selection") == 0)
+	{
+		if (!cJSON_IsString(mode))
+			return false;
+		if (strcmp(mode->valuestring, "clear") == 0)
+			return count == 1;
+		if (count != 2 || !cJSON_IsArray(ids) ||
+		    (strcmp(mode->valuestring, "replace") != 0 &&
+		     strcmp(mode->valuestring, "add") != 0 &&
+		     strcmp(mode->valuestring, "remove") != 0))
+			return false;
+		count = 0;
+		for (item = ids->child; item; item = item->next)
+		{
+			if (++count > MFL_FILES_EDIT_MAX ||
+			    !settings_token(item))
+				return false;
+			for (previous = ids->child; previous != item;
+			    previous = previous->next)
+				if (strcmp(previous->valuestring,
+					item->valuestring) == 0)
+					return false;
+		}
+		return count != 0;
+	}
+	if (strcmp(operation, "filter") == 0)
+		return count == 1 && files_filter_text(text);
+	if (strcmp(operation, "sort") == 0)
+		return count == 2 && cJSON_IsString(key) &&
+			cJSON_IsBool(reverse) &&
+			(strcmp(key->valuestring, "name") == 0 ||
+			 strcmp(key->valuestring, "kind") == 0 ||
+			 strcmp(key->valuestring, "size") == 0 ||
+			 strcmp(key->valuestring, "modified") == 0);
+	if (strcmp(operation, "view") == 0)
+		return count == 1 && cJSON_IsString(mode) &&
+			(strcmp(mode->valuestring, "list") == 0 ||
+			 strcmp(mode->valuestring, "grid") == 0);
+	return strcmp(operation, "properties") == 0 && count == 0;
+}
+
+static bool files_action(struct mfl_request *request,
+	const cJSON *const *values, unsigned int seen)
+{
+	const unsigned int fields = 15 | (1U << 6) | (1U << 7) |
+		(1U << 8) | (1U << 9);
+	char *text;
+	size_t length;
+
+	if (seen != fields || !bounded_string(values[6], 10) ||
+	    !settings_token(values[7]) || !settings_token(values[9]) ||
+	    !files_values(values[6]->valuestring, values[8]))
+		return false;
+	text = cJSON_PrintUnformatted(values[8]);
+	if (!text)
+		return false;
+	length = strlen(text);
+	if (length <= MFL_SETTINGS_INPUT_MAX)
+		memcpy(request->settings_payload, text, length + 1);
+	cJSON_free(text);
+	if (length > MFL_SETTINGS_INPUT_MAX)
+		return false;
+	strcpy(request->provider, values[9]->valuestring);
+	strcpy(request->generation, values[7]->valuestring);
+	strcpy(request->target, values[6]->valuestring);
+	strcpy(request->snapshot_resource, "action");
+	request->kind = MFL_REQUEST_FILES_ACTION;
+	return true;
+}
+
+bool mfl_request_is_files(enum mfl_request_kind kind)
+{
+	return kind == MFL_REQUEST_FILES_QUERY ||
+		kind == MFL_REQUEST_FILES_ACTION;
+}
+
 static bool files_request(struct mfl_request *request,
 	const cJSON *const *values, unsigned int seen)
 {
@@ -524,6 +649,8 @@ static bool files_request(struct mfl_request *request,
 	const unsigned int extra = (1U << 7) | (1U << 11) | (1U << 12);
 	const char *scope;
 
+	if (strcmp(values[2]->valuestring, "action") == 0)
+		return files_action(request, values, seen);
 	if (strcmp(values[2]->valuestring, "register") == 0)
 	{
 		if (seen != (15 | (1U << 9)) || !settings_token(values[9]))
@@ -792,7 +919,7 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 			"operations" :
 			mfl_request_is_preview(p->kind) ? "preview" :
 			p->kind == MFL_REQUEST_PROVIDER ? "provider" :
-			p->kind == MFL_REQUEST_FILES_QUERY ? "files" :
+			mfl_request_is_files(p->kind) ? "files" :
 			mfl_request_is_settings(p->kind) ? "settings" :
 			p->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
 			p->kind == MFL_REQUEST_WORKSPACES ? "workspaces" :
@@ -824,7 +951,7 @@ const char *mfl_request_reserve(struct mfl_pending_request *pending,
 	*slot = NULL;
 	if (serial == 0 || (request->kind != MFL_REQUEST_DESKTOP &&
 	    request->kind != MFL_REQUEST_BARRIER &&
-	    request->kind != MFL_REQUEST_FILES_QUERY &&
+	    !mfl_request_is_files(request->kind) &&
 	    !mfl_request_is_settings(request->kind) &&
 	    !mfl_request_is_core_reply(request->kind)))
 		return "invalid_request";
@@ -1023,6 +1150,7 @@ bool mfl_request_is_settings(enum mfl_request_kind kind)
 bool mfl_request_is_action(enum mfl_request_kind kind)
 {
 	return kind == MFL_REQUEST_FILES_REGISTER ||
+		kind == MFL_REQUEST_FILES_ACTION ||
 		(kind >= MFL_REQUEST_SETTINGS_SET &&
 		kind <= MFL_REQUEST_SETTINGS_RELOAD) ||
 		kind == MFL_REQUEST_OPERATION_START ||
@@ -1195,7 +1323,7 @@ enum mfl_part_result mfl_request_part(
 		MODULE_QUERY_RESULT_MAX : MFL_SETTINGS_RESULT_MAX;
 
 	if ((!mfl_request_is_settings(pending->kind) &&
-	    pending->kind != MFL_REQUEST_FILES_QUERY &&
+	    !mfl_request_is_files(pending->kind) &&
 	    !mfl_request_is_core_reply(pending->kind)) ||
 	    (!end && strncmp(payload, "part ", 5) != 0) ||
 	    pending->reply_length > maximum)

@@ -32,7 +32,7 @@ def run(args):
     observed_windows = set()
     retired_errors = {}
     with HarnessRuntime(prefix='file-browser-') as runtime:
-        connection = query_connection = client = pointer = None
+        connection = query_connection = control_connection = client = pointer = None
         try:
             _, display = start_display_server(runtime, 'Xvfb',
                 ['Xvfb', '-screen', '0', '1440x1000x24', '-noreset'],
@@ -376,11 +376,53 @@ def run(args):
             spec.loader.exec_module(capture_module)
 
             def capture(name):
+                settle = name.startswith('file-browser-ipc-')
+                if settle:
+                    # A mapped/published frame can still have queued Expose
+                    # work. Observe actual button ink before taking the new
+                    # provider-control review captures.
+                    x.XGetImage.argtypes = [C.c_void_p, C.c_ulong, C.c_int,
+                        C.c_int, C.c_uint, C.c_uint, C.c_ulong, C.c_int]
+                    x.XGetImage.restype = C.c_void_p
+                    x.XGetPixel.argtypes = [C.c_void_p, C.c_int, C.c_int]
+                    x.XGetPixel.restype = C.c_ulong
+                    x.XDestroyImage.argtypes = [C.c_void_p]
+                    def button_painted():
+                        _, _, values = inventory()
+                        field = min((g for g,w in values if g[2]>140 and g[3]<50), key=lambda g:g[1])
+                        controls = sorted((g,w) for g,w in values if g[0]>field[0]+field[2] and abs(g[1]-field[1])<3)
+                        box, child = controls[0]
+                        picture = x.XGetImage(d, child, 4, 4, box[2]-8, box[3]-8, C.c_ulong(-1).value, 2)
+                        if not picture:
+                            return False
+                        try:
+                            background = x.XGetPixel(picture, 0, 0)
+                            return any(x.XGetPixel(picture, px, py) != background
+                                for py in range(box[3]-8) for px in range(box[2]-8))
+                        finally:
+                            x.XDestroyImage(picture)
+                    wait_for_predicate('native button text painted', button_painted,
+                        time.monotonic()+5, process=app)
                 previous = os.environ.get('DISPLAY')
                 os.environ['DISPLAY'] = display
                 try:
-                    file = capture_module.screenshot(artifact).removeprefix('Screenshot saved: ')
-                    Path(file).rename(artifact / name)
+                    candidate = None
+                    digest = None
+                    deadline = time.monotonic()+5
+                    while True:
+                        file = Path(capture_module.screenshot(artifact).removeprefix('Screenshot saved: '))
+                        current = hashlib.sha256(file.read_bytes()).hexdigest()
+                        if not settle or current == digest:
+                            if candidate:
+                                candidate.unlink()
+                            file.rename(artifact / name)
+                            break
+                        if candidate:
+                            candidate.unlink()
+                        candidate, digest = file, current
+                        if time.monotonic() >= deadline:
+                            candidate.unlink()
+                            raise AssertionError('provider review capture did not settle')
                 finally:
                     if previous is None:
                         os.environ.pop('DISPLAY', None)
@@ -408,15 +450,20 @@ def run(args):
             query_connection.record()
             query_connection.send(b'request {"version":1,"id":"ro","method":"set_mode","mode":"read-only"}\n')
             assert query_connection.record()['reply']['status'] == 'ok'
+            control_connection = Connection(endpoint)
+            control_connection.record()
+            query_connection.socket.settimeout(15)
+            control_connection.socket.settimeout(15)
             query_serial = 0
 
-            def rpc(**fields):
+            def rpc(method='query', controlled=False, **fields):
                 nonlocal query_serial
                 query_serial += 1
                 request = dict(version=1, id='browser-' + str(query_serial),
-                               method='query', resource='files', **fields)
-                query_connection.send(('request ' + json.dumps(request) + '\n').encode())
-                reply = query_connection.record()['reply']
+                               method=method, resource='files', **fields)
+                peer = control_connection if controlled else query_connection
+                peer.send(('request ' + json.dumps(request) + '\n').encode())
+                reply = peer.record()['reply']
                 assert reply['id'] == request['id'], reply
                 return reply
 
@@ -424,7 +471,7 @@ def run(args):
             providers = rpc()['result']['providers']
             assert [p['provider'] for p in providers] == [provider], providers
             state = rpc(provider=provider, scope='state')['result']
-            assert state['loaded'] == 19 and not state['actions'] and not state['file_content'], state
+            assert state['loaded'] == 19 and state['actions'] and not state['file_actions'] and not state['file_content'], state
             assert base64.b64decode(state['path_bytes']) == os.fsencode(root)
             entries, offset = [], 0
             while offset is not None:
@@ -489,6 +536,62 @@ def run(args):
             capture('file-browser-provider-selection.png')
             key(window,b'space')
             evidence['file_provider_current_native_selection_and_stale_page'] = True
+
+            def control(operation, values):
+                nonlocal window
+                state = rpc(provider=provider, scope='state')['result']
+                reply = rpc(method='action', controlled=True, provider=provider,
+                    generation=state['generation'], operation=operation, values=values)
+                assert reply['status'] == 'ok' and reply['result']['applied'], reply
+                # Consume each publication before another control can change
+                # layout; an earlier update must not name a retired frame.
+                window = ready(window)
+                return reply['result']
+
+            state = rpc(provider=provider, scope='state')['result']
+            refused = rpc(method='action', provider=provider, generation=state['generation'],
+                operation='selection', values={'mode':'clear'})
+            assert refused['error']['code'] == 'read_only', refused
+            named = {base64.b64decode(i['name_bytes']):i['id'] for i in entries}
+            ids = [named[b'file-00'], named[b'file-01']]
+            selected = control('selection', {'mode':'replace', 'ids':ids})
+            assert selected['selected'] == 2
+            refused = rpc(method='action', controlled=True, provider=provider,
+                generation=state['generation'], operation='selection', values={'mode':'clear'})
+            assert refused['error']['code'] == 'stale_generation', refused
+            control('properties', {})
+            assert identity == (window, sorted(children(window)))
+            capture('file-browser-ipc-properties.png')
+            state = rpc(provider=provider, scope='state')['result']
+            refused = rpc(method='action', controlled=True, provider=provider,
+                generation=state['generation'], operation='selection',
+                values={'mode':'add','ids':[named[b'file-02'],'f'*32]})
+            assert refused['error']['code'] == 'invalid_selection', refused
+            assert rpc(provider=provider, scope='state')['result']['selected'] == 2
+            filtered = control('filter', {'text':'file-00'})
+            assert filtered['visible'] == 1 and filtered['selected'] == 2
+            control('sort', {'key':'size','reverse':True})
+            assert identity == (window, sorted(children(window)))
+            capture('file-browser-ipc-filter.png')
+            control('filter', {'text':''})
+            state = rpc(provider=provider, scope='state')['result']
+            malformed = dict(version=1,id='invalid-text',method='action',resource='files',
+                provider=provider,generation=state['generation'],operation='filter',values={'text':'RAW_BYTE'})
+            control_connection.send(('request '+json.dumps(malformed)).encode().replace(b'RAW_BYTE',b'\xff')+b'\n')
+            refused = control_connection.record()['reply']
+            assert refused['error']['code'] == 'invalid_request', refused
+            assert rpc(provider=provider, scope='state')['result']['generation'] == state['generation']
+            control('view', {'mode':'grid'})
+            capture('file-browser-ipc-grid.png')
+            control('view', {'mode':'list'})
+            control('selection', {'mode':'remove','ids':ids[:1]})
+            control('selection', {'mode':'add','ids':ids[:1]})
+            control('selection', {'mode':'clear'})
+            control('sort', {'key':'name','reverse':False})
+            evidence['file_provider_conditional_controls'] = dict(readonly_refused=True,
+                stale_refused=True, atomic_unknown_id_refusal=True, selection_edits=True,
+                hidden_selection=True, sort=True, properties=True, view=True,
+                malformed_text_isolated=True, same_windows_except_view_switch=True)
 
             # Both presentations share indices/IDs, focus and selection. Shift
             # navigation adds a bounded anchor range before switching views.
@@ -887,7 +990,7 @@ def run(args):
                 'versioned_callback_max_bytes': 518}
             evidence['status']='passed'
             evidence['screenshots']=['file-browser-collection.png','file-browser-scrolled-properties.png','file-browser-filtered-selection.png','file-browser-4096-rows.png']
-            evidence['scope']='browser live updates and read-only paged metadata/current selection; typed actions, protected content and file mutation remain open'
+            evidence['scope']='browser live updates and read-only paged metadata/current selection; external file actions, protected content and file mutation remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():
                 capture('file-browser-failure.png')
@@ -897,6 +1000,8 @@ def run(args):
                 connection.close()
             if query_connection:
                 query_connection.close()
+            if control_connection:
+                control_connection.close()
             if pointer:
                 pointer.button(False)
             if client:

@@ -51,7 +51,7 @@ def file_provider_checks(connect, rpc, evidence):
     assert reply(owners[0], 'downgrade', 'error') == 'provider_active'
     rpc.send(frame('files-list', resource='files'))
     listed = reply(rpc, 'files-list')
-    assert listed['provider_limit'] == 8 and listed['query_only']
+    assert listed['provider_limit'] == 8 and not listed['query_only']
     assert {x['provider'] for x in listed['providers']} == set(ids)
 
     def query(id_, index=0, client=rpc):
@@ -80,6 +80,30 @@ def file_provider_checks(connect, rpc, evidence):
         integers='9223372036854775807', padding='v' * 700)
     respond(owners[0], serial, payload)
     assert reply(rpc, 'files-answer') == payload
+    rpc.send(frame('files-readonly-action', 'action', resource='files', provider=ids[0],
+        generation='a' * 32, operation='selection', values={'mode':'clear'}))
+    assert reply(rpc, 'files-readonly-action', 'error') == 'read_only'
+    action_client = connect()
+    action_client.send(frame('files-action', 'action', resource='files', provider=ids[0],
+        generation='a' * 32, operation='filter', values={'text':'literal " $[exec.noop]\n'}))
+    action = owners[0].record()['file_query']
+    assert action['scope'] == 'action' and action['operation'] == 'filter'
+    assert action['values'] == {'text':'literal " $[exec.noop]\n'}
+    respond(owners[0], action['serial'], dict(applied=True))
+    assert reply(action_client, 'files-action') == dict(applied=True)
+    action_client.send(frame('files-action-cancelled', 'action', resource='files', provider=ids[0],
+        generation='a' * 32, operation='selection', values={'mode':'clear'}))
+    action = owners[0].record()['file_query']
+    action_client.send(frame('cancel-action-wait', 'cancel', target='files-action-cancelled'))
+    assert reply(action_client, 'files-action-cancelled', 'error') == 'wait_cancelled'
+    assert reply(action_client, 'cancel-action-wait')['state'] == 'wait-cancelled'
+    rpc.send(frame('cancelled-action-busy', resource='files', provider=ids[0], scope='state'))
+    assert reply(rpc, 'cancelled-action-busy', 'error') == 'provider_busy'
+    respond(owners[0], action['serial'], dict(applied_after_cancel=True))
+    owner_barrier()
+    action_client.send(frame('action-client-after-cancel', resource='connection'))
+    assert not reply(action_client, 'action-client-after-cancel')['read_only']
+    action_client.close()
     serial = query('files-cancelled')
     rpc.send(frame('files-cancel', 'cancel', target='files-cancelled'))
     assert reply(rpc, 'files-cancelled', 'error') == 'wait_cancelled'
@@ -123,7 +147,7 @@ def file_provider_checks(connect, rpc, evidence):
     rpc.send(frame('files-after', resource='connection'))
     assert reply(rpc, 'files-after')['read_only']
     evidence['file_providers'] = dict(provider_limit=8, connection_owned=True,
-        readonly_query=True, wrong_owner_ignored=True, chunked_reply=True,
+        readonly_query=True, conditional_action_routing=True, readonly_action_refused=True, action_cancel_wait_only=True, wrong_owner_ignored=True, chunked_reply=True,
         cancellation_retains_producer=True, timeout_retains_producer=True,
         disconnected_waiter_discarded=True, owner_disconnect=True,
         fresh_serial_after_replacement=True, malformed_producer_isolated=True)

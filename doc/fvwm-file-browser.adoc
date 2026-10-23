@@ -344,7 +344,7 @@ action and monotonically increasing native invocation ticket. The URL-base64
 selection/focus packet prefixes its projection generation. The helper rejects
 replayed tickets and stale native generations before resolving indices to IDs;
 paths still use the encoded input field. These guards provide freshness, not
-same-user or X11 authorization. The read-only files provider below exposes only admitted metadata.
+same-user or X11 authorization. The files provider below exposes admitted metadata and conditional view controls.
 
 Initial configuration uploads use at most 32 commands per core acknowledgement.
 Live updates use direct module messages, avoiding accumulated configuration
@@ -376,7 +376,7 @@ native callback slots. Slow/broken MFL output closes the session according to
 its existing bounded transport policy. Native GUI and external application
 accessibility/interoperability need their own acceptance.
 
-== READ-ONLY FILES PROVIDER
+== FILES PROVIDER
 
 While connected, each browser registers an independent instance with FvwmMFL.
 `FvwmCommand --request` can discover instances and query `state`, paged `items`,
@@ -385,6 +385,19 @@ base64 path/name bytes, decimal-string sizes/timestamps and paging generations.
 The current native selection is captured without requiring a button callback,
 including selection made since the last browser action. Queries preserve the
 native windows, input drafts and the helper's existing idle limit.
+
+Writable clients may also apply generation-checked selection edits, literal
+filtering, observed sort, list/grid presentation and observed-properties controls.
+Query the current state first and use the latest returned generation for each
+edit. Selection edits replace/add/remove up to eight stable IDs or clear the
+complete set, with the existing total cap of 256. Unknown IDs, malformed values
+and stale state refuse the whole requested edit. See FvwmMFL(1) for exact schemas.
+
+These controls use the existing native publication handshake. Success means the
+native view was published; interrupted client waits do not undo submitted work.
+Selection/filter/sort/properties updates retain native windows and input drafts;
+view changes can recreate the layout. Accepted controls renew the idle limit.
+Properties use admitted observations, with no recursive scan or link following.
 
 This interface reads only the admitted snapshot; it does not scan directories,
 open files or expose file content. Metadata and selection/focus changes invalidate

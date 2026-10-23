@@ -98,7 +98,7 @@ static char *form_encoded_value(const Item *item)
 	const char *value = "";
 	char *joined = NULL, *result;
 	size_t length = 0, used = 0;
-	unsigned char packet[FORM_LIST_BYTES + 2];
+	unsigned char packet[FORM_LIST_PACKET_MAX];
 
 	if (item->type == I_INPUT)
 		value = item->input.value;

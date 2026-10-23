@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Native live collection updates](LIVE-COLLECTION-UPDATES-2026-10-23.md): bounded atomic snapshot staging, live identity/state recovery and generation/native-status ownership, with legacy callbacks preserved.
+
 - [Configured selection actions](FILE-SELECTION-ACTIONS-2026-10-23.md): whole-selection validation and literal executable handoff, observed multi-entry properties and initial properties requests; protected content/provider and mutation services stay separate.
 
 - [Atomic collection refresh](COLLECTION-REFRESH-2026-10-23.md): bounded metadata transactions, reconciliation, observation revisions and neighbor/selection recovery; browser refresh feedback, without a protected-content or streaming-provider claim.

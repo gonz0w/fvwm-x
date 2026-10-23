@@ -193,6 +193,12 @@ static void ct_List(char *);
 static void ct_ListItem(char *);
 static void ct_ListFocus(char *);
 static void ct_ListGrid(char *);
+static void ct_list_versioned(char *);
+static void am_list_begin(char *);
+static void am_list_entry(char *);
+static void am_list_commit(char *);
+static void am_list_abort(char *);
+static void am_list_status(char *);
 static Item *form_current_list;
 static void ct_Message(char *);
 static void ct_Geometry(char *);
@@ -248,6 +254,7 @@ static struct CommandTable ct_table[] =
   {"ListFocus",ct_ListFocus},
   {"ListGrid",ct_ListGrid},
   {"ListItem",ct_ListItem},
+  {"ListVersioned",ct_list_versioned},
   {"Message",ct_Message},
   {"PadVText",ct_padVText},
   {"Position",ct_Position},
@@ -1132,6 +1139,20 @@ static void PutDataInForm(char *cp)
   } /* end all items */
   free(var_name);			/* not needed now */
 }
+static void form_list_abort(Item *p)
+{
+	if (p->list.update != NULL)
+	{
+		for (int i = 0; i < p->list.update->count; i++)
+			free(p->list.pending[i].label);
+		free(p->list.pending);
+		free(p->list.update);
+		p->list.pending = NULL;
+		p->list.update = NULL;
+		p->list.pending_capacity = 0;
+	}
+}
+
 static void form_list_cleanup(void)
 {
   Item *p;
@@ -1142,6 +1163,7 @@ static void form_list_cleanup(void)
       continue;
     for (int i = 0; i < p->list.state->count; i++)
       free(p->list.entries[i].label);
+    form_list_abort(p);
     free(p->list.entries);
     free(p->list.state);
     free(p->list.initial);
@@ -1198,6 +1220,21 @@ static void ct_List(char *cp)
   return;
 invalid:
   fprintf(stderr, "%s: invalid List name width rows (1..32)\n", module->name);
+}
+
+/* Opt-in keeps existing Base64 collection callbacks byte-for-byte usable. */
+static void ct_list_versioned(char *cp)
+{
+	if (form_current_list == NULL || *cp != '\0' ||
+	    form_current_list->list.state->count != 0)
+	{
+		fprintf(stderr, "%s: ListVersioned must precede entries\n",
+			module->name);
+		return;
+	}
+	form_current_list->list.state->generation = 1;
+	form_current_list->list.update_serial = 1;
+	*form_current_list->list.initial = *form_current_list->list.state;
 }
 
 /* Layout is immutable once entries have been admitted. */
@@ -2778,6 +2815,11 @@ static void am_UnMap(char *);
 static void am_Stop(char *);
 static struct CommandTable am_table[] =
 {
+  {"ListAbort",am_list_abort},
+  {"ListBegin",am_list_begin},
+  {"ListCommit",am_list_commit},
+  {"ListEntry",am_list_entry},
+  {"ListStatus",am_list_status},
   {"Map",am_Map},
   {"Stop",am_Stop},
   {"UnMap",am_UnMap}
@@ -3184,3 +3226,166 @@ ErrorHandler(Display *dpy, XErrorEvent *event)
 /*  c-basic-offset: 8 */
 /*  indent-tabs-mode: t */
 /*  End: */
+
+
+/* One bounded staging snapshot per list. A malformed addressed entry poisons
+ * only that transaction; visible resources and user edits remain untouched. */
+static Item *form_update_target(const char *cp, const char **tail)
+{
+	const char *end = form_next_argument(cp);
+	size_t length = end - cp;
+	Item *target = NULL;
+
+	while (length && isspace((unsigned char)cp[length - 1]))
+		length--;
+	*tail = end;
+	for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
+		if (p->type == I_LIST && strlen(p->header.name) == length &&
+		    memcmp(p->header.name, cp, length) == 0)
+		{
+			if (target != NULL)
+				return NULL;
+			target = p;
+		}
+	return target;
+}
+
+static void am_list_begin(char *cp)
+{
+	const char *tail;
+	Item *p = form_update_target(cp, &tail);
+	int expected, generation;
+	form_list_update prepared;
+
+	if (p == NULL || p->list.update != NULL ||
+	    !form_list_number(tail, INT_MAX, &expected) ||
+	    !form_list_number(form_next_argument(tail), INT_MAX, &generation) ||
+	    *form_next_argument(form_next_argument(tail)) != '\0' ||
+	    generation <= p->list.update_serial ||
+	    !form_list_update_begin(&prepared, p->list.state, expected, generation))
+		goto invalid;
+	p->list.update = fxmalloc(sizeof(prepared));
+	*p->list.update = prepared;
+	/* Aborting cannot make an old transaction identifier reusable. */
+	p->list.update_serial = generation;
+	return;
+invalid:
+	fprintf(stderr, "%s: refused ListBegin\n", module->name);
+}
+
+static void am_list_entry(char *cp)
+{
+	const char *tail, *source_text, *label, *end, *icon_text;
+	Item *p = form_update_target(cp, &tail);
+	int generation, source;
+	enum form_list_icon icon;
+
+	/* Old transaction traffic cannot poison a newer staged generation. */
+	if (p == NULL || p->list.update == NULL ||
+	    !form_list_number(tail, INT_MAX, &generation) ||
+	    generation != p->list.update->generation)
+		goto invalid;
+	source_text = form_next_argument(tail);
+	label = form_next_argument(source_text);
+	end = label;
+	if (*end == '"')
+		for (end++; *end && *end != '"'; end++)
+			if (*end == '\\' && end[1]) end++;
+	icon_text = *end == '"' ? end + 1 : end;
+	if (strncmp(source_text, "0 ", 2) == 0 ||
+	    (source_text[0] == '0' && source_text[1] == '\t'))
+		source = 0;
+	else if (!form_list_number(source_text, FORM_LIST_MAX, &source))
+		goto poisoned;
+	if (*label != '"' || *end != '"' || strlen(label) > 1024 ||
+	    !form_list_parse_icon(icon_text, &icon) ||
+	    !form_list_update_add(p->list.update, source))
+		goto poisoned;
+	p->list.pending = form_reserve_array(p->list.pending,
+		&p->list.pending_capacity, p->list.update->count - 1, 1, 32,
+		sizeof(*p->list.pending));
+	p->list.pending[p->list.update->count - 1] =
+		(form_list_entry){CopyQuotedString(label + 1), icon};
+	return;
+poisoned:
+	p->list.update->refused = true;
+invalid:
+	fprintf(stderr, "%s: refused ListEntry\n", module->name);
+}
+
+static void am_list_commit(char *cp)
+{
+	const char *tail;
+	Item *p = form_update_target(cp, &tail);
+	int generation, old_count;
+	form_list_entry *old;
+
+	if (p == NULL || p->list.update == NULL ||
+	    !form_list_number(tail, INT_MAX, &generation) ||
+	    *form_next_argument(tail) != '\0' ||
+	    generation != p->list.update->generation)
+		goto invalid;
+	old_count = p->list.state->count;
+	if (!form_list_update_commit(p->list.state, p->list.update))
+		goto invalid;
+	old = p->list.entries;
+	p->list.entries = p->list.pending;
+	p->list.capacity = p->list.pending_capacity;
+	p->list.pending = NULL;
+	free(p->list.update);
+	p->list.update = NULL;
+	p->list.pending_capacity = 0;
+	*p->list.initial = *p->list.state;
+	for (int i = 0; i < old_count; i++)
+		free(old[i].label);
+	free(old);
+	RedrawItem(p, 0, NULL);
+	return;
+invalid:
+	fprintf(stderr, "%s: refused ListCommit\n", module->name);
+}
+
+static void am_list_abort(char *cp)
+{
+	const char *tail;
+	Item *p = form_update_target(cp, &tail);
+	int generation;
+
+	if (p == NULL || p->list.update == NULL ||
+	    !form_list_number(tail, INT_MAX, &generation) ||
+	    *form_next_argument(tail) != '\0' ||
+	    generation != p->list.update->generation)
+	{
+		fprintf(stderr, "%s: refused ListAbort\n", module->name);
+		return;
+	}
+	form_list_abort(p);
+}
+
+
+/* A native reply, unlike a core Echo barrier, observes actual publication. */
+static void am_list_status(char *cp)
+{
+	const char *token;
+	Item *p = form_update_target(cp, &token);
+	char reply[160];
+	size_t length = strlen(token);
+
+	if (p == NULL || p->list.state->generation == 0 ||
+	    length == 0 || length > 64)
+		goto invalid;
+	for (size_t i = 0; i < length; i++)
+		if (!((token[i] >= 'a' && token[i] <= 'z') ||
+		      (token[i] >= 'A' && token[i] <= 'Z') ||
+		      (token[i] >= '0' && token[i] <= '9') ||
+		      token[i] == '-' || token[i] == '_'))
+			goto invalid;
+	snprintf(reply, sizeof(reply), "Echo FVWM_FORM_LIST %s %d %d %d",
+		token, p->list.state->generation,
+		p->list.update ? p->list.update->generation : 0,
+		p->list.update ? p->list.update->refused : 0);
+	SendText(Channel, reply, 0);
+	return;
+invalid:
+	fprintf(stderr, "%s: refused ListStatus\n", module->name);
+}

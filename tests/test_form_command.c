@@ -158,6 +158,8 @@ static void test_list_packet(void)
 	root_item_ptr = &list;
 	assert(form_list_add(list.list.state, true));
 	expect("$(picks:Base64)", "AAAB");
+	state.generation = 1;
+	expect("$(picks:Base64)", "AAAAAQAAAQ");
 	list.list.state->refused = true;
 	int length;
 	char *end;

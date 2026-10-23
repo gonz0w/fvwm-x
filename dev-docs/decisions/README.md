@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Collection and folder-browser foundations](FILE-BROWSER-FOUNDATIONS-2026-10-23.md): stable metadata/selection, isolated file observations/actions and a bounded native consumer; full scrolling/provider and clipboard protection remain separate.
+
 - [Appearance policy observations](IPC-APPEARANCE-STATE-2026-10-22.md): configuration freshness, bounded menu/decor pages and preserved copied opacity; safe preview recovery stays gated.
 
 - [Core colorset inspection](IPC-COLORSET-STATE-2026-10-22.md): bounded pages, exact sparse IDs and owner freshness; preview remains gated.

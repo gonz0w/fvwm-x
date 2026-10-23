@@ -158,6 +158,10 @@ if get_option('mandoc')
             '.adoc',
             '',
         )
+        page_install = {}
+        if doc_name_attribute == 'fvwm-file-browser'
+            page_install = {'install_tag': 'file-browser'}
+        endif
         man_pages += custom_target(
             dest,
             input: source,
@@ -171,6 +175,7 @@ if get_option('mandoc')
             ],
             install: true,
             install_dir: join_paths(get_option('mandir'), 'man1'),
+            kwargs: page_install,
         )
     endforeach
 

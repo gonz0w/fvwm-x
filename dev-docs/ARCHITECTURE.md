@@ -25,7 +25,8 @@ External compositors own compositing. Helpers do not create a second authority
 for core windows, monitor state or command order.
 
 The approved [file-manager primitives](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md)
-are queued, not new source entry points. Collection views and typed actions reuse
+now have an initial paged foundation consumer (see source row below); full
+scrolling/grid and external provider handoff remain queued. Views/actions reuse
 native module/UI/IPC owners; directory enumeration, watching and file-operation
 jobs stay in isolated services. Folder windows and the optional desktop pinboard
 share the model. A separate config/theme consumer uses qualified documented
@@ -62,6 +63,7 @@ this scope. Concrete entry points and dependency profiles remain queued.
 
 | Area | Source entry points | Responsibility |
 | --- | --- | --- |
+| File/collection foundations | [collection model](../bin/FvwmPrompt/internal/collection/model.go), [file adapter](../bin/FvwmPrompt/internal/filemodel/model.go), [native consumer](../bin/FvwmPrompt/cmd/fvwmfilebrowser/main.go), [worker](../bin/FvwmPrompt/cmd/fvwmfilebrowser/worker.go) | Optional Go/std-lib owner reuses MFL transport and FvwmForm. Stable metadata/selection, byte-preserving directory snapshots and validated literal actions use one bounded isolated worker plus one latest navigation. Twelve-entry native pages provide a working example; scrolling/grid, external provider, mutation and protected clipboard payloads retain their owners. |
 | Command clients / metadata | [FvwmPrompt.go](../bin/FvwmPrompt/FvwmPrompt.go), [FvwmCommand Go client](../bin/FvwmPrompt/cmd/fvwmcommand/main.go), [session.go](../bin/FvwmPrompt/transport/session.go), [generate.py](../tools/maintenance/generate.py), [Module.pm.in](../perllib/FVWM/Module.pm.in) | Prompt owns its readline UI; Go-enabled FvwmCommand owns its bounded stdin/first-record CLI, and disabled-Go retains the legacy Python client. Both Go clients share the standard-library transport: one reader, serialized writes and idempotent teardown. Native headers/command table generate checked committed Perl metadata and JSON companions. Extended handler matching excludes the shared category marker. Broader Go ports and Perl retirement retain their own gates. |
 | Bootstrap | [fvwm3.c](../fvwm/fvwm3.c), [screen.h](../fvwm/screen.h) | Display ownership, initialization, configuration, restart and global screen state |
 | Dispatch / scheduling | [events.c](../fvwm/events.c), [event_loop_policy.c](../fvwm/event_loop_policy.c), [schedule.c](../fvwm/schedule.c) | Event ordering, readiness, bounded work, timers and deferred termination |

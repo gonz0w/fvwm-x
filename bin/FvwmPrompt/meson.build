@@ -41,6 +41,7 @@ fvwmprompt_test_binaries = custom_target(
         'fvwmmenudesktop.test', 'fvwmmenudirectory.test',
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'transport.test',
+        'fvwmfilebrowser.test', 'collection.test', 'filemodel.test',
     ],
     input: fvwmprompt_files,
     command: [
@@ -223,5 +224,30 @@ fvwm_menu_desktop = custom_target(
 test('desktop-menu', py,
     args: [files('../../tests/test_xdg_desktop.py'),
         '--provider', fvwm_menu_desktop],
+    timeout: 180,
+)
+
+# Optional native-Form collection consumer and isolated directory/action worker.
+# Standard library only; disabled-Go profiles retain their existing desktop.
+fvwm_file_browser = custom_target(
+    'fvwm-file-browser',
+    output: 'fvwm-file-browser',
+    input: fvwmprompt_files,
+    command: [
+        'env', 'GOCACHE=' + fvwmprompt_go_cache,
+        'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
+        golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
+        '-o', meson.current_build_dir() / 'fvwm-file-browser',
+        './cmd/fvwmfilebrowser',
+    ],
+    install: true,
+    install_dir: bindir,
+    install_tag: 'file-browser',
+)
+test('file-browser-policy', golang,
+    args: ['test', '-C', fvwmprompt_build, '-json', '-count=1', '-mod=vendor',
+        './internal/collection', './internal/filemodel',
+        './cmd/fvwmfilebrowser', './cmd/fvwmcommand', './transport'],
+    env: prompt_test_env,
     timeout: 180,
 )

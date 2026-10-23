@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Collection and file-browser foundations](VERIFICATION-2026-10-23-FILE-BROWSER-FOUNDATIONS.md): stable selection/identity, isolated file loading and literal actions with a native paged consumer; focused Linux/race/install/UI and early native BSD checks pass, broader handoff pending.
+
+- [Due PR159→PR164 performance observation](PERFORMANCE-2026-10-23-PR164.md): existing qualified binaries, overlapping command-latency ranges and mixed CPU changes; core/MFL size costs remain explicit.
+
 - [Saved launcher-opacity preview](VERIFICATION-2026-10-22-SAVED-OPACITY-PREVIEW.md): integer preference/schema migration, native scoped Keep and save, captured draft return and orphan-dialog retirement; nine focused Linux passes (74 desktop cases), four scoped guest sanitizer exercises and inspected UI. Shared integration remains pending.
 
 - [Runtime menu-opacity preview and recovery](VERIFICATION-2026-10-22-RUNTIME-OPACITY-PREVIEW.md): one core lease, typed controls and native runtime confirmation; 140 selected passes on six targets/nine profiles and seven scoped core/MFL sanitizer exercises. Saved-preference preview remains open.

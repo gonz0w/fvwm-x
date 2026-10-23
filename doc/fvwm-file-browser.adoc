@@ -1,0 +1,151 @@
+= fvwm-file-browser(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+
+== NAME
+
+fvwm-file-browser - bounded native folder-browser foundations
+
+== SYNOPSIS
+
+*fvwm-file-browser* [*--dir* _absolute-path_] [*--hidden*]
+[*--socket* _path_] [*--opener* _executable_] [*--terminal* _executable_]
+
+*fvwm-file-browser* *--inspect* [*--dir* _absolute-path_] [*--hidden*]
+
+== DESCRIPTION
+
+This optional Go helper presents local folders with existing FvwmForm controls
+and the current FvwmMFL connection. Start Module FvwmMFL first. No GUI toolkit,
+compositor, D-Bus service or background daemon is required. The first consumer
+uses twelve-entry pages; a virtual scrolling list/grid is future work. Existing
+folder menus and user configurations stay usable.
+
+The shared collection model separates stable item IDs from labels, preserves
+surviving selections across refresh and admits at most 4096 entries and 256
+selected items. Filesystem names remain original bytes, including non-UTF-8
+names. This first consumer shows non-ASCII, control and expansion characters as
+ASCII [U+XXXX] escapes; labels may be shortened. Labels are never
+used to reconstruct paths or executable commands. Symlinks and special files
+are listed but activation is unavailable in this checkpoint.
+
+All enumeration, metadata checks and application dispatch run in one separate
+worker process. There is one active child and at most one replacement navigation
+request. Supersession or Cancel requests termination; the slot remains owned
+until the child is reaped. Each worker has a ten-second deadline. A kernel call
+that cannot be interrupted can delay reaping, so a timeout is not a promise of
+instant termination. The WM and browser control loop do not perform those calls.
+Over-limit folders are refused as a whole, including hidden entries in the
+budget; there is no silent truncation before sorting.
+
+== CONTROLS
+
+Tab moves among native controls; Space toggles a selection. Each row's Open
+button acts on that row's ID. Open selected (F3) requires exactly one selected
+item. Directories load in the same browser. Files start the configured opener
+with one literal absolute-path argument; no shell evaluates a filename.
+Application started means process creation succeeded, not that the application
+opened a window or finished.
+
+Home, Up and Back navigate; Back retains at most 32 successful locations. Path
+and Go accept an absolute path or a path relative to the current folder.
+Refresh (F5) reloads, Hidden (F6) toggles dot entries, Previous (F7) and Next (F8)
+change pages. Off-page selections remain selected. Terminal (F4) starts the
+configured executable in the current folder with no extra arguments. These
+executables are program paths/names, not shell fragments or argument templates.
+
+Cancel work invalidates the pending result and requests worker termination.
+Close (Escape) exits the helper and closes its Form. The prototype closes after
+five minutes without a callback; it also has an independent native Form timer.
+Closing through the window manager can leave the helper until its idle deadline.
+SIGINT/SIGTERM cancel work and close the owned Form. Connection loss ends the
+helper; a remaining Form expires independently. This is a bounded example
+consumer, not a persistent full file-manager window.
+
+Every rendered Form has a fresh callback generation. Old controls cannot act
+on a newer view. Target actions recheck directory and entry identity immediately
+before dispatch; replaced/missing/changed items require refresh. Passing a path
+to another application cannot guarantee that the path stays unchanged afterward.
+This observation contract is unsuitable for destructive file jobs, which remain
+unavailable here. No copy/move/delete, trash, automatic watching, recursive search,
+thumbnail service or encrypted clipboard storage is implemented.
+
+== OPTIONS
+
+*--dir* _absolute-path_::
+  Initial folder, default the user's home directory. Paths are at most 4096
+  bytes. Folder ordering is directories first, then raw filename byte order.
+
+*--hidden*::
+  Include dot entries. Default off.
+
+*--socket* _path_::
+  Explicit FvwmMFL Unix socket. Otherwise use FVWMMFL_SOCKET, then the normal
+  FVWMMFL_SOCKET_PATH / XDG_RUNTIME_DIR / private temporary-directory discovery
+  used by FvwmCommand. DISPLAY selects the endpoint. No network listener opens.
+
+*--opener* _executable_::
+  File-opening program; default xdg-open when found. Missing capability reports
+  unavailable without executing a fallback shell. The absolute file path is
+  passed as one argument.
+
+*--terminal* _executable_::
+  Terminal program; default x-terminal-emulator, then xterm when found.
+
+*--inspect*::
+  Run the same isolated scanner without X and emit one schema-version-1 JSON
+  result. Path/name byte fields are standard padded base64 JSON strings. A loaded
+  snapshot contains the root observation, hidden flag and stable item IDs with
+  kind and metadata. Failure emits a failed result and exits nonzero. This is
+  file metadata, not a protected-content or clipboard payload channel.
+
+*--help*::
+  Show command usage. Unknown options/extra operands fail.
+
+== CONFIGURATION EXAMPLE
+
+The optional executable installs with Go-enabled builds. A working independent
+consumer can be opened from a binding without replacing the default folder menu:
+
+----
+AddToMenu FileTools "Folder browser" Exec exec fvwm-file-browser
+Key F9 A M Exec exec fvwm-file-browser
+----
+
+The browser uses a random per-process Form alias and existing Form defaults.
+Personal FvwmForm defaults may set fonts/colors. It does not change theme or
+core window policy. Run the executable directly in an FVWM session for an
+initial folder whose name needs literal shell argument quoting.
+
+== OWNERSHIP AND LIMITS
+
+The collection package owns metadata/selection only. The file adapter owns raw
+names, directory observations and actions. Reusable metadata policy does not
+qualify clipboard payload lifetime or protection. Sensitive clipboard data must
+not be routed through ordinary Form command expansion or MFL Echo broadcasts.
+
+Native callbacks use the existing Echo/MFL framing with a versioned marker,
+instance/view identity, known action and opaque target IDs. Path/selection input
+uses native URL-base64 substitution. These are stale-control guards, not
+same-user or X11 authorization. No general IPC files provider is advertised by
+this first consumer. Broader structured providers, scrolling/grid view and the
+complete file-browser handoff remain with FILE-VIEW/DATA/ACTION-01.
+
+No preferences or directory history are written to disk. Raw metadata remains
+in the helper's ordinary Go memory; no secret-storage claim is made. Results and
+queues have finite limits, including a 4 MiB private worker envelope and sixteen
+native callback slots. Slow/broken MFL output closes the session according to
+its existing bounded transport policy. Native GUI and external application
+accessibility/interoperability need their own acceptance.
+
+== EXIT STATUS
+
+Zero means the consumer closed normally or inspection loaded. Nonzero means
+invalid arguments, unavailable MFL connection, inspection/worker failure or
+transport failure. A failed UI action is shown in the browser and can be retried
+after refresh; it does not necessarily terminate the consumer.
+
+== SEE ALSO
+
+FvwmForm(1), FvwmMFL(1), FvwmDesktop(1), FvwmCommand(1)

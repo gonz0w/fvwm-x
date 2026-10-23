@@ -164,3 +164,5 @@ separate; the former public-helper output decision is still deferred.
   editor-draft handoff; runtime and persistence outcomes remain separate.
 
 - [File collection controls](FILE-COLLECTION-CONTROLS-2026-10-23.md): bounded label projections, observed sorting/properties and cross-page selection.
+
+- [Portable browser requests](FILE-BROWSER-HANDOFF-2026-10-23.md): literal local path/URI inputs, worker-owned reveal/properties and a storage-neutral boundary.

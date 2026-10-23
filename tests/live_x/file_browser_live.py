@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import time
+from urllib.parse import quote_from_bytes
 
 from geometry_transition_live import Client, Pointer
 from colorset_live import WindowAttributes
@@ -420,12 +421,68 @@ def run(args):
                 time.monotonic() + 5, process=core)
             assert app.poll() == 0
             evidence['close_cleanup'] = True
+            # A portable reveal request selects across pages without opening
+            # the targets. Dot entries become visible when explicitly named.
+            reveal_args = ['--reveal', str(root / 'file-14'), '--reveal', str(root / '.hidden')]
+            located = subprocess.run([str(args.browser), '--inspect', *reveal_args],
+                env=env, capture_output=True, timeout=15)
+            assert located.returncode == 0, located
+            located = json.loads(located.stdout)
+            assert located['snapshot']['hidden'] and len(located['selected_ids']) == 2
+            assert report.read_text() == json.dumps(opened)
+            app = runtime.start('browser-reveal', [str(args.browser), '--socket', str(endpoint),
+                *reveal_args, '--opener', str(opener)], 'reveal.log', env)
+            window = ready(choices=8)
+            capture('file-browser-initial-reveal.png')
+            key(window, b'F3')
+            reveal_callback = callback()
+            picked = base64.urlsafe_b64decode(reveal_callback.split()[5][1:] + '==').split()
+            assert len(picked) == 1  # other selected item remains off-page
+            window = ready(window, 8)
+            assert report.read_text() == json.dumps(opened)
+            key(window, b'Escape')
+            callback()
+            wait_for_predicate('revealed browser close', lambda: app.poll() is not None,
+                time.monotonic() + 5, process=core)
+            assert app.poll() == 0
+            # Percent-encoded invalid UTF-8 and a literal percent sign use one
+            # decoding step. Properties on a symlink remain an observation.
+            raw_uri = 'file://localhost' + quote_from_bytes(invalid, safe='/')
+            located = subprocess.run([str(args.browser), '--inspect', '--properties', raw_uri],
+                env=env, capture_output=True, timeout=15)
+            assert located.returncode == 0, located
+            located = json.loads(located.stdout)
+            selected = located['selected_ids'][0]
+            item = next(i for i in located['snapshot']['items'] if i['id'] == selected)
+            assert base64.b64decode(item['name_bytes']) == b'raw-\xff'
+            app = runtime.start('browser-properties', [str(args.browser), '--socket', str(endpoint),
+                '--opener', str(opener), '--properties', 'file://localhost' + quote_from_bytes(os.fsencode(root / 'link'), safe='/')],
+                'properties.log', env)
+            window = ready(choices=7)
+            capture('file-browser-initial-properties.png')
+            key(window, b'Escape')
+            callback()
+            wait_for_predicate('properties browser close', lambda: app.poll() is not None,
+                time.monotonic() + 5, process=core)
+            assert app.poll() == 0
+            assert report.read_text() == json.dumps(opened)
+            # Invalid external requests fail before opening a browser/socket;
+            # an unavailable target returns a failed isolated result.
+            bad = subprocess.run([str(args.browser), '--inspect', '--reveal', 'file://remote/path'],
+                env=env, capture_output=True, timeout=15)
+            assert bad.returncode == 2
+            missing = subprocess.run([str(args.browser), '--inspect', '--reveal', str(root / 'missing')],
+                env=env, capture_output=True, timeout=15)
+            assert missing.returncode != 0 and json.loads(missing.stdout)['status'] == 'failed'
+            evidence['portable_reveal_properties_URI_bytes_no_activation_and_refusal'] = True
+
             assert not unexpected_errors, unexpected_errors
             evidence['unexpected_observer_x_errors'] = unexpected_errors
             evidence['screenshots'] = ['file-browser-first-page.png', 'file-browser-second-page.png',
                 'file-browser-action-result.png', 'file-browser-worker-recovery.png',
                 'file-browser-filtered-selection.png', 'file-browser-properties.png',
-                'file-browser-empty-filter.png']
+                'file-browser-empty-filter.png', 'file-browser-initial-reveal.png',
+                'file-browser-initial-properties.png']
             evidence['scope'] = 'native paged foundation; full scrolling/grid, files provider and mutations remain open'
         finally:
             if sys.exc_info()[0] is not None and 'capture' in locals():

@@ -9,10 +9,15 @@ fvwm-file-browser - bounded native folder-browser foundations
 
 == SYNOPSIS
 
-*fvwm-file-browser* [*--dir* _absolute-path_] [*--hidden*]
+*fvwm-file-browser* [*--dir* _local-target_] [*--hidden*]
 [*--socket* _path_] [*--opener* _executable_] [*--terminal* _executable_]
 
-*fvwm-file-browser* *--inspect* [*--dir* _absolute-path_] [*--hidden*]
+*fvwm-file-browser* *--reveal* _local-target_ [*--reveal* _local-target_ ...]
+[*--socket* _path_] [*--hidden*]
+
+*fvwm-file-browser* *--properties* _local-target_ [*--socket* _path_] [*--hidden*]
+
+*fvwm-file-browser* *--inspect* [*--dir* _local-target_] [*--hidden*]
 
 == DESCRIPTION
 
@@ -97,14 +102,49 @@ This observation contract is unsuitable for destructive file jobs, which remain
 unavailable here. No copy/move/delete, trash, automatic watching, recursive search,
 thumbnail service or encrypted clipboard storage is implemented.
 
+== PORTABLE TARGET REQUESTS
+
+A local target is an absolute filesystem path or a local file URI. An ordinary
+absolute path is literal, including percent, question-mark and hash characters.
+URI percent escapes are decoded exactly once and retain original filename bytes,
+including non-UTF-8 bytes. Empty authority or localhost is supported; remote
+hosts, user information, ports, opaque/relative URIs and raw query/fragment
+syntax are refused. Encode filename question marks and hashes as %3F and %23.
+Decoded paths must be absolute, contain no NUL and fit the 4096-byte path limit;
+encoded target arguments are bounded before decoding. OS argument limits also
+apply to a launch request.
+
+Choose --dir, repeated --reveal, or one --properties. The forms are mutually
+exclusive. --reveal loads the common parent and selects one to 256 requested
+entries, bringing the first requested entry's page into view. It never executes
+or opens the targets. A requested dot entry automatically enables hidden entries.
+Duplicate targets, mixed lexical parents, root targets, dot path components and
+missing entries fail as a whole; no partial selection is published. Repeated or
+trailing separators are normalized for reveal/properties. Use --dir / to browse
+the filesystem root. Symlinks and special files may be revealed and inspected;
+their activation remains unavailable.
+
+--properties selects one entry in its parent and immediately shows the observed
+properties panel. Target resolution, including parent enumeration, runs in the
+same isolated cancellable worker. The whole parent's admission limit still
+applies. These are portable launch requests for separate browser instances,
+not a single-instance daemon, FileManager1 service, new default folder handler
+or general structured MFL files provider.
+
 == OPTIONS
 
-*--dir* _absolute-path_::
+*--dir* _local-target_::
   Initial folder, default the user's home directory. Paths are at most 4096
   bytes. Folder ordering is directories first, then raw filename byte order.
 
 *--hidden*::
-  Include dot entries. Default off.
+  Include dot entries. Default off; an explicitly revealed dot entry enables it.
+
+*--reveal* _local-target_::
+  Reveal an existing entry in its parent; repeat for bounded targets in one folder.
+
+*--properties* _local-target_::
+  Reveal one entry with its last observed properties shown immediately.
 
 *--socket* _path_::
   Explicit FvwmMFL Unix socket. Otherwise use FVWMMFL_SOCKET, then the normal
@@ -124,7 +164,10 @@ thumbnail service or encrypted clipboard storage is implemented.
   result. Path/name byte fields are standard padded base64 JSON strings. A loaded
   snapshot contains the root observation, hidden flag and stable item IDs with
   kind and metadata. Failure emits a failed result and exits nonzero. This is
-  file metadata, not a protected-content or clipboard payload channel.
+  file metadata, not a protected-content or clipboard payload channel. It also
+  accepts --reveal or --properties instead of --dir, emitting selected_ids in
+  requested order on success. A missing target emits a failed result with no
+  snapshot or selection. Invalid syntax/option combinations fail before work.
 
 *--help*::
   Show command usage. Unknown options/extra operands fail.
@@ -137,6 +180,14 @@ consumer can be opened from a binding without replacing the default folder menu:
 ----
 AddToMenu FileTools "Folder browser" Exec exec fvwm-file-browser
 Key F9 A M Exec exec fvwm-file-browser
+----
+
+Explicit target examples (no target is executed by reveal/properties):
+
+----
+fvwm-file-browser --reveal /home/user/Documents/report.txt
+fvwm-file-browser --properties file:///home/user/Documents/report%20draft.txt
+fvwm-file-browser --inspect --reveal /home/user/Documents/report.txt
 ----
 
 The browser uses a random per-process Form alias and existing Form defaults.

@@ -588,3 +588,7 @@ diagnostic and execution gates remain separate.
 - [Native button keyboard navigation and state](VERIFICATION-2026-10-22-BUTTONS-KEYBOARD.md): six-target combined qualification, source/install identities, scoped guest sanitizers and retained manual diagnostics.
 
 - [File collection controls](VERIFICATION-2026-10-23-FILE-COLLECTION-CONTROLS.md): bounded filter/sort/selection and observed properties, focused Linux/race/native UI with explicit cycle coverage pending.
+
+- [File-support cycle](VERIFICATION-2026-10-23-FILE-SUPPORT-CYCLE.md): merged PR164–166 affected six-target checkpoint; exact retained and fresh outcomes.
+
+- [Portable browser requests](VERIFICATION-2026-10-23-FILE-BROWSER-HANDOFF.md): local URI bytes, atomic reveal, initial properties and focused native checks after the completed six-target cycle.

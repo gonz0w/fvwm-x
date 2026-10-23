@@ -144,6 +144,27 @@ func (m *Model) Page(offset int) ([]Entry, error) {
 	return page, nil
 }
 
+// SelectIDs admits an adapter's complete domain selection independently of
+// paging. Native page callbacks continue using the narrower SelectPage policy.
+func (m *Model) SelectIDs(generation uint64, ids []string) error {
+	if generation != m.Generation || len(ids) > MaxSelected {
+		return errors.New("stale or over-limit domain selection")
+	}
+	known := make(map[string]bool, len(m.Entries))
+	for _, entry := range m.Entries {
+		known[entry.ID] = true
+	}
+	selected := make(map[string]bool, len(ids))
+	for _, id := range ids {
+		if !known[id] || selected[id] {
+			return errors.New("unknown or duplicate domain selection")
+		}
+		selected[id] = true
+	}
+	m.Selected = selected
+	return nil
+}
+
 func (m *Model) ClearSelection(generation uint64) error {
 	if generation != m.Generation {
 		return errors.New("stale collection generation")

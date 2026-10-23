@@ -242,3 +242,34 @@ unmodified 1440×1000, scale-1 captures and their exact source/configuration/arc
 identities. Earlier images keep their original provenance. This remains an
 in-progress browser prototype; file jobs, default folder roles/FileManager1,
 protected clipboard content and broader consumer/release qualification stay open.
+
+
+## Portable consumer handoff
+
+`fvwm-file-browser --reuse` can refresh a matching idle folder window or hand
+local reveal/properties targets to it, then present that window through the
+core. A successful reply acknowledges work admission; its existing work ID
+tracks completion. Without a match it opens an independent view. Explicit
+customization uses independent launches. Go-enabled installs include an optional
+development folder desktop entry; default associations remain user controlled.
+See the [manual](fvwm-file-browser.adoc#_portable_folder_handoff) and
+[focused checkpoint](../dev-docs/verification/VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md).
+
+Slate dark: the existing iconified browser is presented with two requested
+properties targets, including a byte-escaped local URI. No item is executed.
+
+![Slate reused browser properties](screenshots/handoff-slate-dark.png)
+
+Dune light: a positional folder URI refreshes the same provider and native window.
+
+![Dune reused folder](screenshots/handoff-dune-light.png)
+
+Classic larger-font configuration: the same properties handoff retains native
+selection and readable controls with 9x15 text.
+
+![Classic reused browser properties](screenshots/handoff-classic-large.png)
+
+The [handoff image manifest](screenshots/handoff-manifest.json) records unmodified
+1440×1000, scale-1 captures and source/configuration/archive identities. This
+remains in-progress development. File jobs/mutation, default folder roles,
+FileManager1 and protected clipboard delivery remain separate.

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.5
+Type=Application
+Name=FVWM-X File Browser (development)
+GenericName=File Manager
+Comment=Browse local folders using native FVWM primitives
+TryExec=fvwm-file-browser
+Exec=fvwm-file-browser --reuse -- %u
+Icon=system-file-manager
+Terminal=false
+StartupNotify=false
+Categories=System;
+MimeType=inode/directory;

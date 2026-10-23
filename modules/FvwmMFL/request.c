@@ -671,7 +671,8 @@ static bool files_values(const char *operation, const cJSON *values)
 			strcmp(id->valuestring, "0000000000000000") != 0;
 	return count == 0 && (strcmp(operation, "properties") == 0 ||
 		strcmp(operation, "refresh") == 0 ||
-		strcmp(operation, "terminal") == 0);
+		strcmp(operation, "terminal") == 0 ||
+		strcmp(operation, "present") == 0);
 }
 
 static bool files_action(struct mfl_request *request,

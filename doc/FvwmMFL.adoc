@@ -645,6 +645,12 @@ flag changes only on a successful result; surviving selection/focus is retained.
 |Set desired watching immediately through existing observer ownership. Enabling
 also retries a manual fallback. Publication acknowledges configuration; query
 `watch` for starting/native/manual/off. No worker-outcome ID is replaced.
+|`present`
+|`{}`
+|Publish current native state, then de-iconify, focus and raise only this provider's
+browser through the shared core command engine. Focus follows normal viewport/
+desk policy and does not warp the pointer. No new worker outcome replaces the
+last accepted work; core command acknowledgement is not file-work completion.
 |`cancel`
 |`{"id":"WORK_16_HEX"}`
 |Request cancellation of that browser's current accepted worker operation.

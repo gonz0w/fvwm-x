@@ -1,7 +1,7 @@
 # Periodic browser performance and size observation
 
 Status: **observed**, preserved PR174 versus the qualified portable browser
-handoff candidate. [Raw observations, hashes and sizes](PERFORMANCE-2026-10-23-BROWSER-HANDOFF.json).
+handoff candidate in [PR #186](https://github.com/gonz0w/fvwm-x/pull/186). [Raw observations, hashes and sizes](PERFORMANCE-2026-10-23-BROWSER-HANDOFF.json).
 This is the due five-feature comparison; it uses existing binaries without
 another build. Tuning remains deferred.
 
@@ -34,5 +34,5 @@ File sizes include debug data and are not runtime memory usage. Allocated ELF
 sections and exact binary identities are also recorded. Added provider/control
 and handoff behavior accounts for a larger feature surface; no per-feature cost
 or speed benefit is inferred. Qualified current binaries are preserved as the
-next independent comparison reference, **0/5 on this feature merge**. The shared
+next independent comparison reference PR186, **0/5 on this feature merge**. The shared
 platform cadence remains separate, PR178 0/3 and 1/3 on this merge.

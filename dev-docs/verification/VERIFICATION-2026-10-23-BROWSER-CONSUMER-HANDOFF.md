@@ -1,6 +1,6 @@
 # Portable browser consumer handoff
 
-Status: **focused checks passed**; ready for PR review. The accumulated
+Status: **focused checks passed**; [PR #186](https://github.com/gonz0w/fvwm-x/pull/186) is open for review. The accumulated
 [PR176–178 platform cycle](VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md)
 is closed before implementation. PR178
 `e2f61e65b0e5277dedcf28fe6c602efa8b2d1762` remains the integrated reference,

@@ -14,8 +14,8 @@ prerequisite, buttons, settings/editor and configuration checker are merged.
 [IPC-02](dev-docs/PROJECT-TRACKER.md#ipc-02-structured-queries-and-operation-results)
 provides core/settings queries, actions and preview/recovery. File browsing adds
 filtering, sorting, properties and reveal requests. Native list/grid views
-provide focus, range selection and bounded callbacks. Atomic metadata refresh
-preserves surviving state and reports changes. Slate dark, Dune light and a
+provide selection and bounded callbacks. Atomic refresh, selection properties
+and configured actions extend the file handoff. Slate dark, Dune light and a
 larger-font classic configuration pass native UI checks. Full file and protected
 clipboard handoffs remain open.
 [OpenBSD 8.0 qualification](dev-docs/verification/VERIFICATION-2026-10-20-OPENBSD-80.md)

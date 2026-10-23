@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Configured file-selection actions](VERIFICATION-2026-10-23-FILE-SELECTION-ACTIONS.md): five Go packages/51 cases on Linux/FreeBSD, Linux race and three real-theme native drivers; four-button layout, literal byte arguments and observed multi-properties pass. A classic observer fix reruns only that driver; native binaries and passing results are retained.
+
 - [Atomic metadata refresh](VERIFICATION-2026-10-23-COLLECTION-REFRESH.md): five Go packages/43 cases, separate race run and three real-theme native UI drivers; refresh/focus/selection feedback and screenshots qualify focused new-feature checks.
 
 - [Accumulated collection cycle](VERIFICATION-2026-10-23-COLLECTION-CYCLE.md): merged PR167–169 qualify 49 native entries on six targets/seven profiles with exact ARM64 retention; Slate dark, Dune light and larger-font classic configurations pass.

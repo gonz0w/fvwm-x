@@ -29,8 +29,8 @@ func prepareOptions(o *options, dirSet bool, reveal, properties targetFlags) err
 		return errors.New("view must be list or grid")
 	}
 	if (len(reveal) != 0 && len(properties) != 0) ||
-		(dirSet && len(reveal)+len(properties) != 0) || len(properties) > 1 {
-		return errors.New("use --dir, repeated --reveal, or one --properties target")
+		(dirSet && len(reveal)+len(properties) != 0) {
+		return errors.New("use --dir, repeated --reveal, or repeated --properties targets")
 	}
 	if len(reveal)+len(properties) == 0 {
 		path, err := filemodel.ParseTarget(o.dir)
@@ -45,7 +45,7 @@ func prepareOptions(o *options, dirSet bool, reveal, properties targetFlags) err
 		values = properties
 	}
 	if len(values) > collection.MaxSelected {
-		return errors.New("at most 256 reveal targets are supported")
+		return errors.New("at most 256 targets are supported")
 	}
 	targets := make([][]byte, 0, len(values))
 	for _, value := range values {

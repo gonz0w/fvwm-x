@@ -189,6 +189,10 @@ static void ct_InputFont(char *);
 static void ct_ItemBack(char *);
 static void ct_ItemFore(char *);
 static void ct_Line(char *);
+static void ct_List(char *);
+static void ct_ListItem(char *);
+static void ct_ListFocus(char *);
+static Item *form_current_list;
 static void ct_Message(char *);
 static void ct_Geometry(char *);
 static void ct_Position(char *);
@@ -239,6 +243,9 @@ static struct CommandTable ct_table[] =
   {"ItemColorset",ct_ItemColorset},
   {"ItemFore",ct_ItemFore},
   {"Line",ct_Line},
+  {"List",ct_List},
+  {"ListFocus",ct_ListFocus},
+  {"ListItem",ct_ListItem},
   {"Message",ct_Message},
   {"PadVText",ct_padVText},
   {"Position",ct_Position},
@@ -1123,6 +1130,127 @@ static void PutDataInForm(char *cp)
   } /* end all items */
   free(var_name);			/* not needed now */
 }
+static void form_list_cleanup(void)
+{
+  Item *p;
+
+  for (p = root_item_ptr; p != NULL; p = p->header.next)
+  {
+    if (p->type != I_LIST)
+      continue;
+    for (int i = 0; i < p->list.state->count; i++)
+      free(p->list.labels[i]);
+    free(p->list.labels);
+    free(p->list.state);
+    free(p->list.initial);
+    free(p->header.name);
+  }
+}
+
+/* A malformed definition cannot leave the preceding list as append target. */
+static void ct_List(char *cp)
+{
+  form_input_args args;
+  Item prepared;
+  int width, height, rows;
+  const char *tail;
+  static bool cleanup_registered;
+
+  form_current_list = NULL;
+  if (!cleanup_registered)
+  {
+    if (atexit(form_list_cleanup) != 0)
+      goto invalid;
+    cleanup_registered = true;
+  }
+  if (!form_parse_input(cp, &args) ||
+      !form_list_number(form_next_argument(cp), 4096, &args.width))
+    goto invalid;
+  tail = form_next_argument(form_next_argument(cp));
+  if (!form_list_number(tail, 32, &rows) ||
+      *form_next_argument(tail) != '\0')
+    goto invalid;
+  memset(&prepared, 0, sizeof(prepared));
+  prepared.type = I_LIST;
+  AssignDrawTable(&prepared);
+  if (!form_input_geometry(args.width,
+      prepared.header.dt_ptr->dt_Ffont->height,
+      2 * (BOX_SPC + TEXT_SPC) + 20, 2 * TEXT_SPC, &width, &height) ||
+      height > (32760 - 2 * BOX_SPC) / rows || width > 32760)
+    goto invalid;
+  AddItem();
+  item->type = I_LIST;
+  item->header.dt_ptr = prepared.header.dt_ptr;
+  item->header.name = CopySolidString(cp);
+  item->header.size_x = width;
+  item->list.row_height = height;
+  item->header.size_y = rows * item->list.row_height + 2 * BOX_SPC;
+  item->list.state = fxcalloc(1, sizeof(*item->list.state));
+  item->list.initial = fxcalloc(1, sizeof(*item->list.initial));
+  item->list.state->rows = rows;
+  *item->list.initial = *item->list.state;
+  form_current_list = item;
+  AddToLine(item);
+  return;
+invalid:
+  fprintf(stderr, "%s: invalid List name width rows (1..32)\n", module->name);
+}
+
+static void ct_ListFocus(char *cp)
+{
+  int focus;
+
+  if (form_current_list == NULL || !form_list_number(cp, FORM_LIST_MAX, &focus) ||
+      focus > form_current_list->list.state->count ||
+      *form_next_argument(cp) != '\0')
+  {
+    fprintf(stderr, "%s: invalid ListFocus (one-based row)\n", module->name);
+    return;
+  }
+  form_list_focus(form_current_list->list.state, focus - 1);
+  *form_current_list->list.initial = *form_current_list->list.state;
+}
+
+static void ct_ListItem(char *cp)
+{
+  Item *list = form_current_list;
+  const char *label = form_next_argument(cp);
+  const char *end = label;
+  const char *tail;
+  bool on = strncmp(cp, "on", 2) == 0 && isspace((unsigned char)cp[2]);
+
+  if (*end == '"')
+  {
+    for (end++; *end != '\0' && *end != '"'; end++)
+      if (*end == '\\' && end[1] != '\0')
+        end++;
+  }
+
+  tail = *end == '"' ? end + 1 : end;
+  while (isspace((unsigned char)*tail)) tail++;
+  if (list == NULL || (*label != '"') ||
+      (!on && !(strncmp(cp, "off", 3) == 0 &&
+        isspace((unsigned char)cp[3]))) || *end != '"' ||
+      *tail != '\0' ||
+      strlen(label) > 1024 || !form_list_add(list->list.state, on))
+  {
+    if (list != NULL)
+    {
+      list->list.state->refused = true;
+      list->list.initial->refused = true;
+    }
+    fprintf(stderr, "%s: invalid/over-limit ListItem\n", module->name);
+    return;
+  }
+  list->list.labels = form_reserve_array(list->list.labels,
+    &list->list.capacity, list->list.state->count - 1, 1, 32,
+    sizeof(*list->list.labels));
+  list->list.labels[list->list.state->count - 1] = CopyQuotedString(label + 1);
+  if (on && list->list.state->selected == 1)
+    form_list_focus(list->list.state, list->list.state->count - 1);
+  *list->list.initial = *list->list.state;
+}
+
 static void ct_Selection(char *cp)
 {
   /* syntax: *FFSelection <name> single | multiple */
@@ -1466,12 +1594,18 @@ static void Restart(void)
   Item *item;
 
   CF.cur_input = NULL;
+  CF.cur_list = NULL;
   CF.abs_cursor = CF.rel_cursor = 0;
   for (item = root_item_ptr; item != 0;
        item = item->header.next) {/* all items */
     switch (item->type) {
+    case I_LIST:
+      *item->list.state = *item->list.initial;
+      if (!CF.cur_input && !CF.cur_list)
+        CF.cur_list = item;
+      break;
     case I_INPUT:
-      if (!CF.cur_input)
+      if (!CF.cur_input && !CF.cur_list)
 	CF.cur_input = item;
 
       /* save old input values in a recall ring. */
@@ -1744,7 +1878,16 @@ void RedrawItem (Item *item, int click, XEvent *pev)
   XRectangle r,inter;
   Region region = None;
   Bool text_inter = True;
-  DrawTable *dt_ptr = item->header.dt_ptr;
+  DrawTable *dt_ptr;
+
+  if (item == NULL)
+    return;
+  if (item->type == I_LIST)
+  {
+    form_list_draw(item);
+    return;
+  }
+  dt_ptr = item->header.dt_ptr;
 
   /* Init intersection to size of the item. */
   inter.x = BOX_SPC + TEXT_SPC - 1;
@@ -2176,7 +2319,7 @@ void DoCommand (Item *cmd)
 	XClearWindow(dpy, item->header.win);
 	RedrawItem(item, 0, NULL);
       }
-      if (item->type == I_CHOICE)
+      if (item->type == I_CHOICE || item->type == I_LIST)
 	RedrawItem(item, 0, NULL);
     }
   }
@@ -2411,6 +2554,7 @@ static void OpenWindows(void)
   for (item = root_item_ptr; item != 0;
        item = item->header.next) {	/* all items */
     switch (item->type) {
+    case I_LIST:
     case I_INPUT:
       myfprintf((stderr,"Checking alloc during OpenWindow on input\n"));
       CheckAlloc(item,item->header.dt_ptr); /* alloc colors and fonts needed */

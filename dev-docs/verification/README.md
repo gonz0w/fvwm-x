@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Native scrolling collection list](VERIFICATION-2026-10-23-COLLECTION-LIST.md): bounded native viewport/selection, whole-view transport and browser adoption; focused Linux/FreeBSD, scoped sanitizers and screenshots pass. Shared integration remains pending.
+
 - [Collection and file-browser foundations](VERIFICATION-2026-10-23-FILE-BROWSER-FOUNDATIONS.md): stable selection/identity, isolated file loading and literal actions with a native paged consumer; focused Linux/race/install/UI and early native BSD checks pass, broader handoff pending.
 
 - [Due PR159→PR164 performance observation](PERFORMANCE-2026-10-23-PR164.md): existing qualified binaries, overlapping command-latency ranges and mixed CPU changes; core/MFL size costs remain explicit.

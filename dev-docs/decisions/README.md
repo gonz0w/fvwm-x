@@ -166,3 +166,5 @@ separate; the former public-helper output decision is still deferred.
 - [File collection controls](FILE-COLLECTION-CONTROLS-2026-10-23.md): bounded label projections, observed sorting/properties and cross-page selection.
 
 - [Portable browser requests](FILE-BROWSER-HANDOFF-2026-10-23.md): literal local path/URI inputs, worker-owned reveal/properties and a storage-neutral boundary.
+
+- [Native scrolling collection list](COLLECTION-LIST-2026-10-23.md): FILE-VIEW/ACTION-01 native viewport, bounded bitmap transport and browser adoption; protected clipboard payloads remain separate.

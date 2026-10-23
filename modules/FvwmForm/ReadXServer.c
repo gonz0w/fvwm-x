@@ -209,6 +209,8 @@ void ReadXServer (void)
 	break;
       case KeyPress:  /* we do text input here */
 	n = XLookupString(&event.xkey, (char *)buf, sizeof(buf), &ks, NULL);
+	if (form_list_key(ks, event.xkey.state))
+	  break;
 	if (n >= sizeof(buf)/sizeof(char)) {
 	    myfprintf((stderr, "Got too many chars:\n"));
 	    n = sizeof(buf)/sizeof(char)-1;
@@ -255,13 +257,13 @@ void ReadXServer (void)
 	  }
 	  break;
 	case '>':
-	  if (event.xkey.state & Mod1Mask) { /* Meta, shift > */
+	  if (CF.cur_input && (event.xkey.state & Mod1Mask)) { /* Meta > */
 	    process_history(1);
 	    goto redraw_newcursor;
 	  }
 	  break;
 	case '<':
-	  if (event.xkey.state & Mod1Mask) { /* Meta, shift < */
+	  if (CF.cur_input && (event.xkey.state & Mod1Mask)) { /* Meta < */
 	    process_history(-1);
 	    goto redraw_newcursor;
 	  }
@@ -510,7 +512,13 @@ void ReadXServer (void)
 	}
 	break;
 	case ButtonPress:
+	  if (item->type == I_LIST)
+	    form_list_click(item, &event.xbutton);
 	  if (item->type == I_INPUT) {
+	    Item *old_list = CF.cur_list;
+	    CF.cur_list = NULL;
+	    if (old_list != NULL)
+	      RedrawItem(old_list, 0, NULL);
 	    old_item = CF.cur_input;
 	    CF.cur_input = item;
 	    RedrawItem(old_item, 1, NULL);

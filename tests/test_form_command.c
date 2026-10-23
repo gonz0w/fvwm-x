@@ -149,8 +149,25 @@ static void test_encoded_field(void)
 	expect("$(FormJob:Token)", "0000000000000002");
 }
 
+static void test_list_packet(void)
+{
+	form_list_state state = {.rows = 12};
+	Item list = {.list = {.head = {.type = I_LIST, .name = "picks"},
+		.state = &state}};
+
+	root_item_ptr = &list;
+	assert(form_list_add(list.list.state, true));
+	expect("$(picks:Base64)", "AAAB");
+	list.list.state->refused = true;
+	int length;
+	char *end;
+	assert(ParseCommand(0, "$(picks:Base64)", '\0', &length, &end) == NULL);
+	root_item_ptr = NULL;
+}
+
 int main(void)
 {
+	test_list_packet();
 	test_existing_substitution();
 	test_long_identifiers_and_output();
 	test_refusal_and_retry();

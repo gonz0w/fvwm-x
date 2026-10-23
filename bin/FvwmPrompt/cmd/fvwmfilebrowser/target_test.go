@@ -79,7 +79,7 @@ func TestInitialPropertiesOwnsSelectionAndViewport(t *testing.T) {
 	if err := b.completed(completedWork{work: pendingWork{navigation: "properties"}, result: r}); err != nil {
 		t.Fatal(err)
 	}
-	if b.offset != 12 || len(b.model.SelectedIDs()) != 1 || b.inspected != r.Selected[0] || b.model.Focus != r.Selected[0] {
+	if len(b.model.SelectedIDs()) != 1 || b.inspected != r.Selected[0] || b.model.Focus != r.Selected[0] {
 		t.Fatal("initial selection/property lost")
 	}
 }

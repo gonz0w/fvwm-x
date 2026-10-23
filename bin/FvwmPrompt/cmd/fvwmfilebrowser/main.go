@@ -55,13 +55,13 @@ type browser struct {
 	opener, terminal           string
 	model                      collection.Model
 	snapshot                   *filemodel.Snapshot
-	offset                     int
 	hidden                     bool
 	history                    []string
 	form, serial               uint64
 	active                     bool
 	cancel                     context.CancelFunc
 	pending                    *pendingWork
+	acks                       chan string
 	results                    chan completedWork
 	status                     string
 	order, inspected           string
@@ -86,7 +86,7 @@ func (b *browser) reorder(key string, reverse bool) error {
 	if err := b.model.Replace(entries); err != nil {
 		return err
 	}
-	b.order, b.reverse, b.offset = key, reverse, 0
+	b.order, b.reverse = key, reverse
 	return nil
 }
 
@@ -120,7 +120,7 @@ func (b *browser) show() error {
 	}
 	alias := "FvwmFiles-" + b.instance + "-" + strconv.FormatUint(b.form, 10) + "-" + state
 	b.alias = alias
-	callback := "Command Echo FVWM_FILES_1 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " "
+	callback := "Command Echo FVWM_FILES_2 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " "
 	commands := []string{}
 	if oldAlias != "" {
 		commands = append(commands, "KillModule FvwmForm "+oldAlias, "DestroyModuleConfig "+oldAlias+":*")
@@ -151,30 +151,27 @@ func (b *browser) show() error {
 		direction = "descending"
 	}
 	button(direction, "", "reverse", "-")
-	line(`Selection picks multiple`)
-	page, err := b.model.Page(b.offset)
-	if err != nil {
-		return err
-	}
-	for i, item := range page {
-		line("Line left")
+	line("Line left")
+	line("List picks 84 12")
+	entries := b.model.VisibleEntries()
+	for _, item := range entries {
 		selected := "off"
 		if b.model.Selected[item.ID] {
 			selected = "on"
 		}
-		line(fmt.Sprintf("Choice row%d %s %s \"%s: %s\"", i, item.ID, selected,
-			item.Kind, displayText(item.Label, 64)))
-		button("Open", "", "activate", item.ID)
+		line(fmt.Sprintf("ListItem %s \"%s: %s\"", selected,
+			item.Kind, displayText(item.Label, 90)))
+	}
+	for index, entry := range entries {
+		if entry.ID == b.model.Focus {
+			line(fmt.Sprintf("ListFocus %d", index+1))
+			break
+		}
 	}
 	line("Line left")
-	pages := (b.model.VisibleCount() + collection.PageSize - 1) / collection.PageSize
-	pageNumber := 0
-	if pages != 0 {
-		pageNumber = b.offset/collection.PageSize + 1
-	}
-	line(fmt.Sprintf("Text \"%d/%d visible; page %d/%d; %d selected (%d filtered out, limit %d)\"", b.model.VisibleCount(), len(b.model.Entries), pageNumber, pages, len(b.model.Selected), b.model.HiddenSelectedCount(), collection.MaxSelected))
+	line(fmt.Sprintf("Text \"%d/%d visible; %d selected (%d filtered out, limit %d)\"", b.model.VisibleCount(), len(b.model.Entries), len(b.model.Selected), b.model.HiddenSelectedCount(), collection.MaxSelected))
 	line("Line left")
-	button("Select page", "", "select-page", "-")
+	button("Select visible", "", "select-visible", "-")
 	button("Clear selection", "", "clear-selection", "-")
 	button("Properties (F2)", "F2", "properties", "-")
 	if b.snapshot != nil && b.inspected != "" {
@@ -194,8 +191,7 @@ func (b *browser) show() error {
 	button("Refresh (F5)", "F5", "refresh", "-")
 	button("Hidden (F6)", "F6", "hidden", "-")
 	line("Line left")
-	button("Previous (F7)", "F7", "previous", "-")
-	button("Next (F8)", "F8", "next", "-")
+	button("Open focused (Enter)", "^M", "focused", "-")
 	button("Open selected (F3)", "F3", "selected", "-")
 	button("Terminal (F4)", "F4", "terminal", "-")
 	line("Line left")
@@ -205,12 +201,35 @@ func (b *browser) show() error {
 	button("Cancel work", "", "cancel", "-")
 	button("Close (Esc)", "^[", "close", "-")
 	line(`Line left`)
-	line(`Text "Select with Space; Tab moves controls. Idle close: 5 minutes."`)
-	line("Timeout 3000 \"Echo FVWM_FILES_1 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x\" \"\"")
+	line(`Text "Arrows, Home/End, PgUp/PgDn or wheel scroll; Space selects; Tab moves fields. Idle close: 5 minutes."`)
+	line("Timeout 3000 \"Echo FVWM_FILES_2 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x\" \"\"")
 	commands = append(commands, "Module FvwmForm "+alias)
-	for _, command := range commands {
+	deadline := time.NewTimer(workerLimit)
+	defer deadline.Stop()
+	for i, command := range commands {
 		if err := b.session.Send(command); err != nil {
 			return err
+		}
+		// Core acknowledgement bounds outstanding configuration traffic instead
+		// of flooding MFL's finite output queue. Only the final command maps UI.
+		if b.acks != nil && (i%32 == 31 || i == len(commands)-1) {
+			tag := fmt.Sprintf("FVWM_FILES_SYNC %s %d %d", b.instance, b.form, i)
+			if err := b.session.Send("Echo " + tag); err != nil {
+				return err
+			}
+			for {
+				select {
+				case value := <-b.acks:
+					if value == tag {
+						goto acknowledged
+					}
+				case <-b.session.Done():
+					return net.ErrClosed
+				case <-deadline.C:
+					return errors.New("native collection configuration timed out")
+				}
+			}
+		acknowledged:
 		}
 	}
 	return nil
@@ -269,10 +288,6 @@ func (b *browser) completed(event completedWork) error {
 			if b.snapshot != nil {
 				old = string(b.snapshot.Path)
 			}
-			anchor := ""
-			if page, err := b.model.Page(b.offset); err == nil && len(page) != 0 {
-				anchor = page[0].ID
-			}
 			entries, err := snapshot.OrderedEntries(b.ordering(), b.reverse)
 			if err != nil {
 				return err
@@ -287,17 +302,17 @@ func (b *browser) completed(event completedWork) error {
 					b.history = b.history[:len(b.history)-1]
 				}
 				b.model.Selected = nil
-				b.inspected, anchor = "", ""
+				b.inspected = ""
+				b.model.Focus = ""
 			}
 			if err := b.model.Replace(entries); err != nil {
 				return err
 			}
-			b.snapshot, b.hidden, b.offset = snapshot, snapshot.Hidden, b.model.OffsetFor(anchor)
+			b.snapshot, b.hidden = snapshot, snapshot.Hidden
 			if len(result.Selected) != 0 {
 				if err := b.model.SelectIDs(b.model.Generation, result.Selected); err != nil {
 					return err
 				}
-				b.offset = b.model.OffsetFor(result.Selected[0])
 				if b.model.Filter() == "" {
 					b.model.Focus = result.Selected[0]
 				}
@@ -334,7 +349,7 @@ func decodeField(value string) ([]byte, error) {
 // stale callbacks, not hostile same-user/X11 clients from accessing the WM.
 func (b *browser) action(message string) (bool, error) {
 	parts := strings.Fields(message)
-	if len(parts) != 6 || parts[0] != "FVWM_FILES_1" || parts[1] != b.instance {
+	if len(parts) != 6 || parts[0] != "FVWM_FILES_2" || parts[1] != b.instance {
 		return false, errors.New("invalid browser callback")
 	}
 	if parts[2] != strconv.FormatUint(b.form, 10) {
@@ -347,7 +362,7 @@ func (b *browser) action(message string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if err := b.model.SelectPage(b.model.Generation, b.offset, strings.Fields(string(selected))); err != nil {
+	if err := b.model.SelectNative(b.model.Generation, selected); err != nil {
 		return false, err
 	}
 	path := ""
@@ -363,9 +378,6 @@ func (b *browser) action(message string) (bool, error) {
 		if err == nil {
 			err = b.model.SetFilter(string(value))
 		}
-		if err == nil {
-			b.offset = 0
-		}
 	case "sort", "reverse":
 		key, reverse := b.ordering(), !b.reverse
 		if parts[3] == "sort" {
@@ -373,8 +385,22 @@ func (b *browser) action(message string) (bool, error) {
 			reverse = b.reverse
 		}
 		err = b.reorder(key, reverse)
-	case "select-page":
-		err = b.model.SelectWholePage(b.model.Generation, b.offset)
+	case "select-visible":
+		entries := b.model.VisibleEntries()
+		ids := make([]string, 0, len(entries))
+		for id := range b.model.Selected {
+			ids = append(ids, id)
+		}
+		known := make(map[string]bool, len(ids))
+		for _, id := range ids {
+			known[id] = true
+		}
+		for _, entry := range entries {
+			if !known[entry.ID] {
+				ids = append(ids, entry.ID)
+			}
+		}
+		err = b.model.SelectIDs(b.model.Generation, ids)
 	case "clear-selection":
 		err = b.model.ClearSelection(b.model.Generation)
 		if err == nil {
@@ -415,16 +441,11 @@ func (b *browser) action(message string) (bool, error) {
 			b.hidden = !b.hidden
 		}
 		err = b.navigate(path, "refresh")
-	case "previous", "next":
-		offset := b.offset - collection.PageSize
-		if parts[3] == "next" {
-			offset = b.offset + collection.PageSize
-		}
-		if _, err = b.model.Page(offset); err == nil {
-			b.offset = offset
-		}
-	case "selected", "activate", "terminal":
+	case "selected", "activate", "terminal", "focused":
 		operation, id, program := "activate", parts[4], b.opener
+		if parts[3] == "focused" {
+			id = b.model.Focus
+		}
 		if parts[3] == "selected" {
 			ids := b.model.SelectedIDs()
 			if len(ids) != 1 {
@@ -487,7 +508,7 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, hidden: o.hidden, results: make(chan completedWork, 1)}
+		opener: o.opener, terminal: o.terminal, hidden: o.hidden, acks: make(chan string, 1), results: make(chan completedWork, 1)}
 	defer func() {
 		if b.cancel != nil {
 			b.cancel()
@@ -507,7 +528,14 @@ func run(o options) error {
 			if json.Unmarshal(record, &event) != nil {
 				return errors.New("invalid MFL event")
 			}
-			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_1 "+b.instance+" ") {
+			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_SYNC "+b.instance+" ") {
+				select {
+				case b.acks <- event.Echo.Message:
+				default:
+					return errors.New("browser acknowledgement queue is full")
+				}
+			}
+			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_2 "+b.instance+" ") {
 				select {
 				case events <- event.Echo.Message:
 				default:

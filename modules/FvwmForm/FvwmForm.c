@@ -194,6 +194,11 @@ static void ct_ListItem(char *);
 static void ct_ListFocus(char *);
 static void ct_ListGrid(char *);
 static void ct_list_versioned(char *);
+static void ct_list_notify(char *);
+static void ct_label(char *);
+static void am_set_label(char *);
+static void am_renew_timeout(char *);
+static void form_list_report(Item *, const char *, bool);
 static void am_list_begin(char *);
 static void am_list_entry(char *);
 static void am_list_commit(char *);
@@ -249,11 +254,13 @@ static struct CommandTable ct_table[] =
   {"ItemBack",ct_ItemBack},
   {"ItemColorset",ct_ItemColorset},
   {"ItemFore",ct_ItemFore},
+  {"Label",ct_label},
   {"Line",ct_Line},
   {"List",ct_List},
   {"ListFocus",ct_ListFocus},
   {"ListGrid",ct_ListGrid},
   {"ListItem",ct_ListItem},
+  {"ListNotify",ct_list_notify},
   {"ListVersioned",ct_list_versioned},
   {"Message",ct_Message},
   {"PadVText",ct_padVText},
@@ -1153,12 +1160,17 @@ static void form_list_abort(Item *p)
 	}
 }
 
-static void form_list_cleanup(void)
+static void form_native_cleanup(void)
 {
   Item *p;
 
   for (p = root_item_ptr; p != NULL; p = p->header.next)
   {
+    if (p->type == I_TEXT && p->text.fixed)
+    {
+      free(p->text.value);
+      free(p->header.name);
+    }
     if (p->type != I_LIST)
       continue;
     for (int i = 0; i < p->list.state->count; i++)
@@ -1171,6 +1183,16 @@ static void form_list_cleanup(void)
   }
 }
 
+static bool form_native_cleanup_register(void)
+{
+	static bool registered;
+
+	if (!registered && atexit(form_native_cleanup) != 0)
+		return false;
+	registered = true;
+	return true;
+}
+
 /* A malformed definition cannot leave the preceding list as append target. */
 static void ct_List(char *cp)
 {
@@ -1178,15 +1200,10 @@ static void ct_List(char *cp)
   Item prepared;
   int width, height, rows;
   const char *tail;
-  static bool cleanup_registered;
 
   form_current_list = NULL;
-  if (!cleanup_registered)
-  {
-    if (atexit(form_list_cleanup) != 0)
-      goto invalid;
-    cleanup_registered = true;
-  }
+  if (!form_native_cleanup_register())
+    goto invalid;
   if (!form_parse_input(cp, &args) ||
       !form_list_number(form_next_argument(cp), 4096, &args.width))
     goto invalid;
@@ -1842,6 +1859,7 @@ void RedrawFrame(XEvent *pev)
 void RedrawText(Item *item)
 {
   char *p;
+  Region region = NULL;
 
   CheckAlloc(item,item->header.dt_ptr); /* alloc colors and fonts needed */
   item->header.dt_ptr->dt_Fstr->len = item->text.n;
@@ -1860,9 +1878,26 @@ void RedrawText(Item *item)
     item->header.dt_ptr->dt_Fstr->colorset = GetColorset(colorset);
     item->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
   }
+  if (item->text.fixed)
+  {
+    XRectangle clip = {item->header.pos_x, item->header.pos_y,
+      item->header.size_x, item->header.size_y};
+    XClearArea(dpy, CF.frame, clip.x, clip.y, clip.width, clip.height, False);
+    region = XCreateRegion();
+    XUnionRectWithRegion(&clip, region, region);
+    item->header.dt_ptr->dt_Fstr->flags.has_clip_region = True;
+    item->header.dt_ptr->dt_Fstr->clip_region = region;
+  }
   FlocaleDrawString(dpy,
 		    item->header.dt_ptr->dt_Ffont,
 		    item->header.dt_ptr->dt_Fstr, FWS_HAVE_LENGTH);
+  if (region != NULL)
+  {
+    item->header.dt_ptr->dt_Fstr->flags.has_clip_region = False;
+    item->header.dt_ptr->dt_Fstr->clip_region = NULL;
+    item->header.dt_ptr->dt_Fstr->str = NULL;
+    XDestroyRegion(region);
+  }
   return;
 }
 
@@ -2735,6 +2770,7 @@ static void OpenWindows(void)
 
 static void process_message(unsigned long, unsigned long *); /* proto */
 static void ParseActiveMessage(char *); /* proto */
+static bool form_native_message(char *);
 
 /* read something from Fvwm */
 static void ReadFvwm(void)
@@ -2760,6 +2796,8 @@ static void ReadFvwm(void)
 }
 static void process_message(unsigned long type, unsigned long *body)
 {
+  if (type == M_STRING && form_native_message((char *)&body[3]))
+    return;
   switch (type) {
   case M_CONFIG_INFO:			/* any module config command */
     myfprintf((stderr,"process_message: Got command: %s\n", (char *)&body[3]));
@@ -2821,9 +2859,34 @@ static struct CommandTable am_table[] =
   {"ListEntry",am_list_entry},
   {"ListStatus",am_list_status},
   {"Map",am_Map},
+  {"RenewTimeout",am_renew_timeout},
+  {"SetLabel",am_set_label},
   {"Stop",am_Stop},
   {"UnMap",am_UnMap}
 };
+
+/* Direct messages do not append runtime snapshots to core configuration. */
+static bool form_native_message(char *buf)
+{
+	static struct CommandTable table[] = {
+		{"ListAbort", am_list_abort}, {"ListBegin", am_list_begin},
+		{"ListCommit", am_list_commit}, {"ListEntry", am_list_entry},
+		{"ListStatus", am_list_status},
+		{"RenewTimeout", am_renew_timeout}, {"SetLabel", am_set_label}
+	};
+	struct CommandTable *entry = FindToken(buf, table, struct CommandTable);
+	char *p;
+
+	if (entry == NULL)
+		return false;
+	if (!form_chomp_line(buf))
+		return true;
+	p = buf + strlen(entry->name);
+	while (isspace((unsigned char)*p)) p++;
+	FormVarsCheck(&p);
+	entry->function(p);
+	return true;
+}
 
 /* This is similar to the other 2 "Parse" functions. */
 static void ParseActiveMessage(char *buf)
@@ -3189,6 +3252,9 @@ int main (int argc, char **argv)
   }
   OpenWindows();			/* create initial window */
   SendFinishedStartupNotification(Channel);/* tell fvwm we're running */
+  for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
+    if (p->type == I_LIST && p->list.notify[0])
+      form_list_report(p, p->list.notify, true);
   if (timer != NULL && !SetupTimer()) {
     fprintf(stderr, "%s: Unable to initialize timeout service\n", module->name);
     return 1;
@@ -3230,7 +3296,7 @@ ErrorHandler(Display *dpy, XErrorEvent *event)
 
 /* One bounded staging snapshot per list. A malformed addressed entry poisons
  * only that transaction; visible resources and user edits remain untouched. */
-static Item *form_update_target(const char *cp, const char **tail)
+static Item *form_named_target(const char *cp, const char **tail, int type)
 {
 	const char *end = form_next_argument(cp);
 	size_t length = end - cp;
@@ -3240,7 +3306,7 @@ static Item *form_update_target(const char *cp, const char **tail)
 		length--;
 	*tail = end;
 	for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
-		if (p->type == I_LIST && strlen(p->header.name) == length &&
+		if (p->type == type && strlen(p->header.name) == length &&
 		    memcmp(p->header.name, cp, length) == 0)
 		{
 			if (target != NULL)
@@ -3248,6 +3314,11 @@ static Item *form_update_target(const char *cp, const char **tail)
 			target = p;
 		}
 	return target;
+}
+
+static Item *form_update_target(const char *cp, const char **tail)
+{
+	return form_named_target(cp, tail, I_LIST);
 }
 
 static void am_list_begin(char *cp)
@@ -3275,7 +3346,10 @@ invalid:
 
 static void am_list_entry(char *cp)
 {
-	const char *tail, *source_text, *label, *end, *icon_text;
+	const char *tail, *source_text, *label, *end, *icon_text, *choice_text;
+	char icon_name[16], choice_name[5];
+	size_t icon_length;
+	enum form_list_choice choice = FORM_LIST_KEEP;
 	Item *p = form_update_target(cp, &tail);
 	int generation, source;
 	enum form_list_icon icon;
@@ -3292,14 +3366,36 @@ static void am_list_entry(char *cp)
 		for (end++; *end && *end != '"'; end++)
 			if (*end == '\\' && end[1]) end++;
 	icon_text = *end == '"' ? end + 1 : end;
+	while (isspace((unsigned char)*icon_text)) icon_text++;
+	choice_text = form_next_argument(icon_text);
+	icon_length = choice_text - icon_text;
+	while (icon_length && isspace((unsigned char)icon_text[icon_length-1]))
+		icon_length--;
+	if (icon_length >= sizeof(icon_name)) goto poisoned;
+	memcpy(icon_name, icon_text, icon_length);
+	icon_name[icon_length] = '\0';
+	if (*choice_text)
+	{
+		const char *choice_end = form_next_argument(choice_text);
+		size_t length = choice_end - choice_text;
+
+		while (length && isspace((unsigned char)choice_text[length-1]))
+			length--;
+		if (*choice_end || length >= sizeof(choice_name)) goto poisoned;
+		memcpy(choice_name, choice_text, length);
+		choice_name[length] = '\0';
+		if (!strcasecmp(choice_name, "on")) choice = FORM_LIST_ON;
+		else if (!strcasecmp(choice_name, "off")) choice = FORM_LIST_OFF;
+		else if (strcasecmp(choice_name, "keep")) goto poisoned;
+	}
 	if (strncmp(source_text, "0 ", 2) == 0 ||
 	    (source_text[0] == '0' && source_text[1] == '\t'))
 		source = 0;
 	else if (!form_list_number(source_text, FORM_LIST_MAX, &source))
 		goto poisoned;
 	if (*label != '"' || *end != '"' || strlen(label) > 1024 ||
-	    !form_list_parse_icon(icon_text, &icon) ||
-	    !form_list_update_add(p->list.update, source))
+	    !form_list_parse_icon(icon_name, &icon) ||
+	    !form_list_update_add_choice(p->list.update, source, choice))
 		goto poisoned;
 	p->list.pending = form_reserve_array(p->list.pending,
 		&p->list.pending_capacity, p->list.update->count - 1, 1, 32,
@@ -3327,7 +3423,10 @@ static void am_list_commit(char *cp)
 		goto invalid;
 	old_count = p->list.state->count;
 	if (!form_list_update_commit(p->list.state, p->list.update))
+	{
+		p->list.update->refused = true;
 		goto invalid;
+	}
 	old = p->list.entries;
 	p->list.entries = p->list.pending;
 	p->list.capacity = p->list.pending_capacity;
@@ -3363,29 +3462,136 @@ static void am_list_abort(char *cp)
 }
 
 
-/* A native reply, unlike a core Echo barrier, observes actual publication. */
-static void am_list_status(char *cp)
+/* A native reply observes actual startup/publication and pending refusal. */
+static void form_list_report(Item *p, const char *token, bool selection)
 {
-	const char *token;
-	Item *p = form_update_target(cp, &token);
-	char reply[160];
-	size_t length = strlen(token);
+	char reply[1024];
+	char *packet = selection ? form_encoded_value(p) : NULL;
+	int length;
 
-	if (p == NULL || p->list.state->generation == 0 ||
-	    length == 0 || length > 64)
+	if (selection && packet == NULL)
 		goto invalid;
-	for (size_t i = 0; i < length; i++)
-		if (!((token[i] >= 'a' && token[i] <= 'z') ||
-		      (token[i] >= 'A' && token[i] <= 'Z') ||
-		      (token[i] >= '0' && token[i] <= '9') ||
-		      token[i] == '-' || token[i] == '_'))
-			goto invalid;
-	snprintf(reply, sizeof(reply), "Echo FVWM_FORM_LIST %s %d %d %d",
-		token, p->list.state->generation,
+	length = snprintf(reply, sizeof(reply),
+		"Echo FVWM_FORM_LIST %s %d %d %d%s%s", token,
+		p->list.state->generation,
 		p->list.update ? p->list.update->generation : 0,
-		p->list.update ? p->list.update->refused : 0);
+		p->list.update ? p->list.update->refused : 0,
+		selection ? " x" : "", selection ? packet : "");
+	free(packet);
+	if (length < 0 || (size_t)length >= sizeof(reply))
+		goto invalid;
+	XFlush(dpy);
 	SendText(Channel, reply, 0);
 	return;
 invalid:
-	fprintf(stderr, "%s: refused ListStatus\n", module->name);
+	fprintf(stderr, "%s: refused collection report\n", module->name);
+}
+
+static void am_list_status(char *cp)
+{
+	const char *tail;
+	Item *p = form_update_target(cp, &tail);
+	char token[65];
+	bool selection;
+
+	if (p == NULL || p->list.state->generation == 0 ||
+	    !form_list_status_token(tail, token, &selection))
+	{
+		fprintf(stderr, "%s: refused ListStatus\n", module->name);
+		return;
+	}
+	form_list_report(p, token, selection);
+}
+
+static void ct_list_notify(char *cp)
+{
+	char token[65];
+	bool selection;
+
+	if (form_current_list == NULL ||
+	    form_current_list->list.state->generation == 0 ||
+	    !form_list_status_token(cp, token, &selection) || selection)
+	{
+		fprintf(stderr, "%s: refused ListNotify\n", module->name);
+		return;
+	}
+	memcpy(form_current_list->list.notify, token, strlen(token) + 1);
+}
+
+static void ct_label(char *cp)
+{
+	form_input_args args;
+	Item prepared;
+	int width, height;
+	const char *end = form_next_argument(cp);
+	size_t length = end - cp;
+
+	while (length && isspace((unsigned char)cp[length-1])) length--;
+	if (length == 0 || length > 64) goto invalid;
+	for (size_t i = 0; i < length; i++)
+		if (!((cp[i] >= 'a' && cp[i] <= 'z') ||
+		      (cp[i] >= 'A' && cp[i] <= 'Z') ||
+		      (cp[i] >= '0' && cp[i] <= '9') || cp[i] == '_' || cp[i] == '-'))
+			goto invalid;
+	if (!form_parse_input(cp, &args) ||
+	    !form_list_number(end, 4096, &args.width) ||
+	    !form_label_text(args.initial) || !form_native_cleanup_register())
+		goto invalid;
+	memset(&prepared, 0, sizeof(prepared));
+	prepared.type = I_TEXT;
+	AssignDrawTable(&prepared);
+	if (!form_input_geometry(args.width, prepared.header.dt_ptr->dt_Ffont->height,
+	    2 * TEXT_SPC, CF.padVText, &width, &height) ||
+	    width > 32760 || height > 32760)
+		goto invalid;
+	AddItem();
+	bg_state = 'u';
+	item->type = I_TEXT;
+	item->header.dt_ptr = prepared.header.dt_ptr;
+	item->header.name = CopySolidString(cp);
+	item->header.size_x = width;
+	item->header.size_y = height;
+	item->text.fixed = true;
+	item->text.value = form_copy_quoted(args.initial + 1);
+	item->text.n = strlen(item->text.value);
+	AddToLine(item);
+	return;
+invalid:
+	fprintf(stderr, "%s: invalid Label name width quoted-text\n", module->name);
+}
+
+static void am_set_label(char *cp)
+{
+	const char *text;
+	Item *p = form_named_target(cp, &text, I_TEXT);
+	char *copy;
+
+	if (p == NULL || !p->text.fixed || !form_label_text(text))
+	{
+		fprintf(stderr, "%s: refused SetLabel\n", module->name);
+		return;
+	}
+	copy = form_copy_quoted(text + 1);
+	p->header.dt_ptr->dt_Fstr->str = NULL;
+	free(p->text.value);
+	p->text.value = copy;
+	p->text.n = strlen(copy);
+	RedrawText(p);
+}
+
+
+/* Renew a live lease, never resurrect a timeout already dispatched. */
+static void am_renew_timeout(char *cp)
+{
+	int ticks;
+
+	if (timer == NULL || pev == NULL || timer->timeout.timeleft <= 0 ||
+	    !event_pending(pev, EV_TIMEOUT, NULL) ||
+	    !form_list_number(cp, 99999, &ticks) ||
+	    *form_next_argument(cp) != '\0')
+	{
+		fprintf(stderr, "%s: refused RenewTimeout\n", module->name);
+		return;
+	}
+	timer->timeout.timeleft = ticks;
 }

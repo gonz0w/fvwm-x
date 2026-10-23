@@ -231,3 +231,24 @@ func TestNativeSelectionPacket(t *testing.T) {
 		t.Fatal("hidden selection lost", err)
 	}
 }
+
+func TestNativeEarlierProjectionRetainsLateHiddenInput(t *testing.T) {
+	var m Model
+	m.Replace([]Entry{{ID: "a", Label: "a"}, {ID: "b", Label: "b"}, {ID: "c", Label: "c"}})
+	old := []string{"a", "b", "c"}
+	m.SetFilter("c")
+	if err := m.SelectNativeView(m.Generation, old, []byte{0, 1, 3}); err != nil || !m.Selected["a"] || !m.Selected["b"] || m.HiddenSelectedCount() != 2 || m.Focus != "c" {
+		t.Fatal("late filtered selection lost", err, m)
+	}
+	m.Replace([]Entry{{ID: "a", Label: "a"}, {ID: "c", Label: "c"}})
+	if err := m.SelectNativeView(m.Generation, old, []byte{0, 1, 7}); err != nil || len(m.Selected) != 2 || m.Selected["b"] || m.Focus != "c" {
+		t.Fatal("retired identity survived", err, m)
+	}
+	before := m.SelectedIDs()
+	if m.SelectNativeView(m.Generation, []string{"a", "a"}, []byte{0, 0, 1}) == nil || len(m.Selected) != len(before) || !m.Selected["c"] {
+		t.Fatal("ambiguous old projection changed selection")
+	}
+	if m.SelectNativeView(m.Generation-1, old, []byte{0, 0, 1}) == nil || !m.Selected["c"] {
+		t.Fatal("old model changed selection")
+	}
+}

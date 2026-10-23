@@ -36,11 +36,16 @@ typedef struct {
 	int expected, generation, count, source_count;
 	bool refused;
 	int sources[FORM_LIST_MAX];
+	unsigned char choices[FORM_LIST_MAX];
 	unsigned char used[FORM_LIST_BYTES];
 } form_list_update;
 bool form_list_update_begin(form_list_update *update,
 	const form_list_state *state, int expected, int generation);
+enum form_list_choice { FORM_LIST_KEEP, FORM_LIST_ON, FORM_LIST_OFF };
 bool form_list_update_add(form_list_update *update, int source);
+bool form_list_update_add_choice(form_list_update *update, int source,
+	enum form_list_choice choice);
+bool form_list_status_token(const char *text, char token[65], bool *selection);
 bool form_list_update_commit(form_list_state *state,
 	const form_list_update *update);
 #endif

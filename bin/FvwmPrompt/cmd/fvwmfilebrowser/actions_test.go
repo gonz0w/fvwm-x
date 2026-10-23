@@ -117,7 +117,7 @@ func TestConfiguredActionUsesCurrentSelectionAndRefusesBusyWork(t *testing.T) {
 		actions: actionFlags{{Label: "Review", Program: "unused-fixture-program"}}, results: make(chan completedWork, 1)}
 	b.model.Replace(s.Entries())
 	t.Setenv("FVWM_TEST_FILE_WORKER", "block")
-	message := "FVWM_FILES_2 actions 3 custom 0 xAAAD"
+	message := testControl(&b, "custom", "0", []byte{0, 0, 3})
 	if _, err := b.action(message); err != nil || !b.active || b.serial != 1 {
 		t.Fatal(err, b.serial)
 	}
@@ -125,7 +125,7 @@ func TestConfiguredActionUsesCurrentSelectionAndRefusesBusyWork(t *testing.T) {
 	if _, err := b.action(message); err == nil || b.serial != 1 {
 		t.Fatal("action queued behind busy worker", err)
 	}
-	if _, err := b.action("FVWM_FILES_2 actions 3 custom 1 xAAAD"); err == nil || b.serial != 1 {
+	if _, err := b.action(testControl(&b, "custom", "1", []byte{0, 0, 3})); err == nil || b.serial != 1 {
 		t.Fatal("unknown action admitted")
 	}
 	b.cancel()

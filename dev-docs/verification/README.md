@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Accumulated live-collection cycle](VERIFICATION-2026-10-23-LIVE-COLLECTION-CYCLE.md): PR170–172 qualify 49 native entries across six targets, 357 composed Go cases and retained themes/sanitizers; AMD64 observer report races are corrected with focused completions.
+
+- [Browser live-update adoption](VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md): focused native/Go and actual-X qualification for in-place browser updates and labels.
+
 - [Native live collection updates](VERIFICATION-2026-10-23-LIVE-COLLECTION-UPDATES.md): seven selected Linux/FreeBSD entries each, three scoped sanitizer entries and five native-X drivers; three themes/20 screenshots each, draft/window/selection retention and stale/abort refusal.
 
 - [Configured file-selection actions](VERIFICATION-2026-10-23-FILE-SELECTION-ACTIONS.md): five Go packages/51 cases on Linux/FreeBSD, Linux race and three real-theme native drivers; four-button layout, literal byte arguments and observed multi-properties pass. A classic observer fix reruns only that driver; native binaries and passing results are retained.

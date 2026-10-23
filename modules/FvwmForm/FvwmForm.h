@@ -90,6 +90,7 @@ typedef union _item {
   struct {                 /* I_TEXT */
     struct _head head;
     int n;                 /* string length */
+    bool fixed;            /* named clipped Label; owns name and value */
     char *value;           /* string to display */
     unsigned long color;                /* color of text */
   } text;
@@ -118,6 +119,7 @@ typedef union _item {
     form_list_update *update;
     form_list_entry *pending;
     int pending_capacity, update_serial;
+    char notify[65];
     struct _line *line;
   } list;
   struct {                 /* I_SELECT */
@@ -275,6 +277,8 @@ extern int Channel[2];
 
 /* prototypes */
 void ReadXServer(void);                  /* ReadXServer.c */
+/* Returned encoded field is owned by the caller. */
+char *form_encoded_value(const Item *item);
 void RedrawText(Item *item);             /* FvwmForm.c */
 void RedrawTimeout(Item *item);          /* FvwmForm.c */
 void RedrawItem (

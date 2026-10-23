@@ -1,6 +1,7 @@
 # Read-only file-provider queries — focused checkpoint
 
-Four related FILE-DATA/VIEW-01 capabilities are ready for review: bounded browser
+Four related FILE-DATA/VIEW-01 capabilities are ready in
+[PR #175](https://github.com/gonz0w/fvwm-x/pull/175): bounded browser
 instance discovery, generation-bound metadata/current-selection pages, typed
 observed selection summaries and a correlated `FvwmCommand --request` mode.
 [Contract](../decisions/FILE-PROVIDER-QUERIES-2026-10-23.md),

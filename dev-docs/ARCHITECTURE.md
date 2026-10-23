@@ -119,6 +119,15 @@ Wait can retire a retained target before classification resumes, so that record
 is checked as well. Six-target compiler/install/default-X qualification passes, with scoped
 guest sanitizers and exact entry-point dispositions. [Report](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md).
 
+The optional browser's [directory observer](../bin/FvwmPrompt/cmd/fvwmfilebrowser/watch.go)
+owns one process slot and one coalesced invalidation, separately from the existing
+enumeration/action worker. [Private observer I/O](../bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_worker.go)
+contains filesystem calls and finite leases; platform files implement Linux
+inotify and BSD kqueue. Observer events never become authoritative entries or
+actions: the existing worker/snapshot/native publication path performs refresh.
+Manual fallback, supersession and reap ownership follow the
+[watch contract](decisions/BROWSER-DIRECTORY-WATCH-2026-10-23.md).
+
 ## Boundaries to strengthen within owning fixes
 
 1. Resolve window identity and lifetime through existing ownership mechanisms;

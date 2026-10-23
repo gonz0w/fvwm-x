@@ -10,15 +10,16 @@ fvwm-file-browser - bounded native folder-browser foundations
 == SYNOPSIS
 
 *fvwm-file-browser* [*--dir* _local-target_] [*--hidden*]
-[*--view* list|grid] [*--socket* _path_] [*--opener* _executable_] [*--terminal* _executable_]
+[*--view* list|grid] [*--watch* off|auto] [*--socket* _path_]
+[*--opener* _executable_] [*--terminal* _executable_]
 [*--action* _label=executable_] ...
 
 *fvwm-file-browser* *--reveal* _local-target_ [*--reveal* _local-target_ ...]
-[*--view* list|grid] [*--socket* _path_] [*--hidden*]
+[*--view* list|grid] [*--watch* off|auto] [*--socket* _path_] [*--hidden*]
 
 *fvwm-file-browser* *--properties* _local-target_ [*--properties* _local-target_ ...]
 [*--action* _label=executable_] ... [*--view* list|grid]
-[*--socket* _path_] [*--hidden*]
+[*--watch* off|auto] [*--socket* _path_] [*--hidden*]
 
 *fvwm-file-browser* *--inspect* [*--dir* _local-target_] [*--hidden*]
 
@@ -115,7 +116,8 @@ one generation-checked metadata transaction; a larger change publishes one
 bounded validated replacement. Neither path publishes a partial collection.
 The filter, presentation and surviving IDs remain intact. Native entries and
 fixed status/properties labels update in place; an unchanged refresh leaves
-the native entry generation intact. File watching is not enabled.
+the native entry generation intact. Watching is off by default; see DIRECTORY
+WATCHING for opt-in invalidation and consistency limits.
 
 Properties (F2) accepts 1 to 256 selected entries, including offscreen and
 filtered-out selections. A single entry shows the observed name, kind, mode,
@@ -162,9 +164,50 @@ selected-path argument interface matches this handoff. The default Open selected
 (F3) continues to require one item because generic openers differ in multi-file
 support.
 
+== DIRECTORY WATCHING
+
+Watch (F8) toggles automatic refresh; `--watch auto` enables it at startup.
+`--watch off` is the default. A fixed status line distinguishes off, starting,
+native watching and manual fallback. Automatic updates use the same bounded
+snapshot reconciliation as F5, preserving drafts, surviving selection and the
+native window. Events do not extend the user's five-minute idle deadline.
+
+One separate observer child owns one directory descriptor and one native event
+queue. Linux uses inotify on the already observed directory through procfs;
+FreeBSD and OpenBSD use a kqueue directory vnode filter. Filesystem opens,
+registration and event reads stay outside the browser/WM loops. The observer
+emits at most two change notices per second; the browser coalesces them into one
+dirty flag and admits at most one background rescan per second. Navigation and
+application work keep the existing worker slot; watching never cancels them or
+queues application side effects. A dirty flag waits until that worker is free.
+
+Notifications are advisory. The browser performs a complete rescan after watch
+registration and every 30 seconds while watching, including when no native event
+arrives. This covers missed changes and child metadata changes not reported by a
+BSD directory vnode filter. No per-entry or recursive watches are opened.
+Linux event-queue overflow requests a complete rescan. Changes can still occur
+during an observation; explicit Refresh and separate action revalidation remain
+available. Watching is not a filesystem journal or a path-identity lease.
+
+Unavailable registration (including missing Linux procfs), observer failure,
+directory rename/removal/revocation or failed automatic refresh switches to
+manual fallback and retains the previous snapshot. It does not follow a
+replacement directory or retry continuously. A successful explicit F5 refresh
+or navigation retries an enabled watch; F8 can disable/re-enable it. Cancel work
+disables watching and requests cancellation of both owned children, retaining
+their process slots until reap. A blocked kernel call can delay reaping.
+
+Observer startup has a ten-second deadline. Each observer has a sixty-second
+lease, bounding a quiet orphan if its parent disappears. A live browser renews
+by starting the next observer only after the prior one has exited and been
+reaped, then rescans after registration. Renewal never extends browser idle
+lifetime. Status changes affect the existing label rather than rebuilding the
+Form. Inspection (`--inspect`) remains a one-shot snapshot without watching.
+
 == LIFETIME AND TARGET REQUESTS
 
-Cancel work invalidates the pending result and requests worker termination.
+Cancel work invalidates the pending result, disables watching and requests
+worker/observer termination.
 Close (Escape) exits the helper and closes its Form. The prototype closes after
 five minutes without a callback; it also has an independent native Form timer.
 Closing through the window manager can leave the helper until its idle deadline.
@@ -177,7 +220,7 @@ on a newer view. Target actions recheck directory and entry identity immediately
 before dispatch; replaced/missing/changed items require refresh. Passing a path
 to another application cannot guarantee that the path stays unchanged afterward.
 This observation contract is unsuitable for destructive file jobs, which remain
-unavailable here. No copy/move/delete, trash, automatic watching, recursive search,
+unavailable here. No copy/move/delete, trash, recursive search,
 thumbnail service or encrypted clipboard storage is implemented.
 
 == PORTABLE TARGET REQUESTS
@@ -221,6 +264,11 @@ or general structured MFL files provider.
 
 *--hidden*::
   Include dot entries. Default off; an explicitly revealed dot entry enables it.
+
+*--watch* off|auto::
+  Enable native directory invalidations plus 30-second reconciliation with auto;
+  default off. F8 toggles this for the current instance. Failures use explicit
+  manual fallback. See DIRECTORY WATCHING for consistency and lifetime limits.
 
 *--reveal* _local-target_::
   Reveal an existing entry in its parent; repeat for bounded targets in one folder.
@@ -276,6 +324,7 @@ Explicit target examples (no target is executed by reveal/properties):
 fvwm-file-browser --reveal /home/user/Documents/report.txt
 fvwm-file-browser --properties file:///home/user/Documents/report%20draft.txt
 fvwm-file-browser --inspect --reveal /home/user/Documents/report.txt
+fvwm-file-browser --dir /home/user/Documents --watch auto
 ----
 
 The browser uses a random per-process Form alias and existing Form defaults.
@@ -311,6 +360,14 @@ native state cannot become action data; recovery can recreate the view, and
 missing/invalid publication or broken transport can terminate the consumer.
 Broader providers and complete owner/install/platform acceptance remain with
 FILE-VIEW/DATA/ACTION-01.
+
+The separate observer has a 16 KiB private request and 128-byte response-frame
+limit. Its records carry constant invalidation/lifetime states, never paths,
+event names or file content. One observer event channel and one desired folder
+bound pending work; superseded observer results cannot own a new directory.
+`FVWM_FILES_WATCH instance state` Echo observations report only off, starting,
+native or manual state after native publication. They are ordinary metadata,
+not a general files provider or protected-content channel.
 
 No preferences or directory history are written to disk. Raw metadata remains
 in the helper's ordinary Go memory; no secret-storage claim is made. Results and

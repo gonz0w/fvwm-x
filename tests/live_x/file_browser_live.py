@@ -172,7 +172,7 @@ def run(args):
                 '--action', 'Third configured action=' + str(opener),
                 '--action', 'Fourth configured action=' + str(opener)], 'browser.log', env)
             action_count = 4
-            expected_children = 22 + action_count
+            expected_children = 23 + action_count
             client, pointer = Client(display), None
             pointer = Pointer(client)
             x, d = client.x, client.display
@@ -294,6 +294,8 @@ def run(args):
 
             primitive = False
             seen_renders = {}
+            seen_generations = {}
+            retired_instances = set()
 
             def render_state(active):
                 deadline = time.monotonic() + 15
@@ -303,10 +305,13 @@ def run(args):
                     if len(fields) != 6 or fields[0] != 'FVWM_FILES_RENDER':
                         continue
                     instance, form, serial, generation, state = fields[1:]
+                    if instance in retired_instances:
+                        continue
                     serial = int(serial)
                     if serial <= seen_renders.get(instance, 0):
                         continue
                     seen_renders[instance] = serial
+                    seen_generations[instance] = int(generation)
                     if int(state) == active:
                         return 'FvwmFiles-%s-%s-ready' % (instance, form)
                 raise AssertionError('missing native publication observation')
@@ -603,14 +608,53 @@ def run(args):
             capture('file-browser-refresh-unchanged.png')
             evidence['browser_live_window_and_draft_lifecycle'] = True
             evidence['refresh_focus_fallback_and_hidden_selection'] = True
+            # Opt-in watching reconciles native invalidations through the same
+            # window, preserving drafts and surviving selection. Loss is an
+            # explicit manual fallback; a successful F5 re-arms the observer.
+            def watch_state(want):
+                deadline = time.monotonic() + 15
+                while time.monotonic() < deadline:
+                    text = connection.record().get('echo', {}).get('message', '')
+                    if text == 'FVWM_FILES_WATCH %s %s' % (seen_alias.split('-')[1], want):
+                        return
+                raise AssertionError('missing watch state ' + want)
+
+            key(window, b'F8'); callback(); window = ready(window)
+            watch_state('native'); window = ready(window)
+            watching_frame = (window, sorted(children(window)))
+            watch_instance = seen_alias.split('-')[1]
+            watch_generation = seen_generations[watch_instance]
+            (root / 'watched-added').write_text('native event')
+            while seen_generations[watch_instance] <= watch_generation:
+                window = ready(window)
+            enter_list(); key(window, b'F2')
+            watched = packet(callback())
+            assert watched[2:] == bytes([1, 0, 0]), watched
+            window = ready(window)
+            assert watching_frame == (window, sorted(children(window)))
+            capture('file-browser-watch-refresh.png')
+            moved = runtime.root / 'renamed-files'
+            root.rename(moved)
+            watch_state('manual')
+            assert watching_frame == (window, sorted(children(window)))
+            capture('file-browser-watch-fallback.png')
+            moved.rename(root)
+            key(window, b'F5'); callback(); window = ready(window)
+            watch_state('native'); window = ready(window)
+            capture('file-browser-watch-recovered.png')
+            key(window, b'F8'); callback(); window = ready(window)
+            watch_state('off')
+            evidence['watch_native_refresh_loss_manual_recovery'] = True
+            evidence['watch_preserves_input_selection_and_windows'] = True
             key(window,b'Escape');callback()
             wait_for_predicate('browser exit',lambda:app.poll() is not None,time.monotonic()+5)
             assert app.poll()==0
+            retired_instances.add(seen_alias.split('-')[1])
             # Exercise the maximum row count and highest bitmap bit through real
             # Form parsing, drawing and MFL callback transport (under 1000 bytes).
             large=runtime.root/'large';large.mkdir()
             for i in range(4096):(large/('entry-%04d'%i)).touch()
-            expected_children = 22
+            expected_children = 23
             app=runtime.start('large-browser',[str(args.browser),'--socket',str(endpoint),'--view','grid','--reveal',str(large/'entry-4095')],'large-browser.log',env)
             window=ready();capture('file-browser-4096-grid.png')
             large_frame=(window,sorted(children(window)))

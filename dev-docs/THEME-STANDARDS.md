@@ -111,7 +111,7 @@ This smoke set catches customization regressions and does not replace the wider
 THEME-01/A11Y-01 matrix below or prove support for every user configuration.
 The current browser checkpoint passes all three configurations, including live
 refresh, selection/properties and list/grid checks. See the
-[source-bound report](verification/VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md)
+[source-bound report](verification/VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md)
 and [public screenshots/config examples](../doc/development-preview.md).
 Earlier isolated-fixture results retain their original scope; the wider matrix
 below remains open.

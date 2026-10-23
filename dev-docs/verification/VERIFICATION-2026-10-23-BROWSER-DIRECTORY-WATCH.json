@@ -1,0 +1,775 @@
+{
+  "base": "be13d246442c0a324f84c6747be268aaa1c3dee1",
+  "frozen_scopes": {
+    "final": {
+      "files": 2298,
+      "archive_sha256": "0c602b6e62c1dfbf7a369b3f8c14399e8c545d48718ef7a8fcde7014cf53e810"
+    },
+    "completion": {
+      "files": 2298,
+      "archive_sha256": "d34b15796111bfc4188f6d08d9b382970fe9d0bfdbbf9fdc1a7cee36a0b75654"
+    }
+  },
+  "fixture_only_completion_delta": [
+    "tests/live_x/file_browser_live.py"
+  ],
+  "qualified_consumed_inputs": {
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_worker_test.go": {
+      "sha256": "5ff2465358fc194606f0cafdca78bb06774ceb9a4ef2335ff2fa51c32e9d1936",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/main_test.go": {
+      "sha256": "a3418107c912d201bbd8f0856a6d967dd6847b877f0fee41d6093acb5b88111f",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/main.go": {
+      "sha256": "73ba79fa2f2da5099c2faa512af44c22d17e350129b00d4b3ced63405d7567c6",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_test.go": {
+      "sha256": "ec3e83513a0944839493d08297e2a830f953b8ea9438663d4ad325aa81693a36",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": {
+      "sha256": "b3338466b5f42765ecc7a1b1aa590b8630ce81b4c12099f467d6f44235d37219",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_other.go": {
+      "sha256": "b7cf57b20f584f696b91f7415ea688f744e16f043f68dccb7bb2bba4df32cb7b",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_worker.go": {
+      "sha256": "70c3bfb0bce888a75ad47f1741a78eed6c71abc504934130a778129a9e08ea46",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/target.go": {
+      "sha256": "1a8016ba4f747b9c10b58433b93fcd0e96cbc0b8f5531a6a0c6567c6c106b388",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_linux.go": {
+      "sha256": "efdc12a1129b4957e8d2a9adb714253f00d7cabd2055b0392f4515444d31d32c",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_bsd.go": {
+      "sha256": "7c3ac515d3bb51c5281bc91be24e2eece18712916a12a19aa47ebe812c0f5563",
+      "mode": 420
+    },
+    "doc/fvwm-file-browser.adoc": {
+      "sha256": "ab13517b99c13e30f2bfd07c3a3e534607dcd436b16894c077507374d0d76732",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_linux_test.go": {
+      "sha256": "08f11c6ff7619b78d2b5017d0ef5e79b3094edb8997c0df4fc5a70952dc7a60e",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": {
+      "sha256": "6a243e3b82e6c13286b261320f63946aeceacbe4a912f0191a1a700e74f77af6",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch.go": {
+      "sha256": "0a445563c419d679b6fd41d452087407e3eb71d6859d366b9f26bc40be351d97",
+      "mode": 420
+    },
+    "tests/live_x/file_browser_live.py": {
+      "sha256": "c72879773c30c15610b12f078d207d9abc1cf944e50c642c07473fce03ae1668",
+      "mode": 420
+    }
+  },
+  "captures": {
+    "final/fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "c59b1da20c2a5ea6077e5e776297ed6df88da5a9bb409df94f79df11940f5f3d",
+      "verified_files": 40,
+      "Go": {
+        "go-policy": {
+          "packages": 5,
+          "top_cases": 62,
+          "tests": [
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshPreservesOnlySurvivingIdentities",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestPageSelectionRefusesAtomically",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestBoundsAndReplacementPublication",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestFilteredProjectionRetainsIdentityAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestProjectionBoundsAndBulkSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestAdapterSelectionIsAtomicAndIndependentOfProjection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeSelectionPacket",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeEarlierProjectionRetainsLateHiddenInput",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaPublishesOneOwnedOrderedTransaction",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLiteralNamesHiddenEmptyAndStableRefresh",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestInvalidDeltaNeverPublishesPartialState",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestReplacementAndSymlinkRefusal",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestReconcileNoOpLargeFallbackAndReorder",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshFocusNeighborsAndFilteredSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaMaximumChangeAndResultBudgets",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestDirectoryAdmissionAndInvalidInputs",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestInvalidFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestMetadataRevisionChangesWithoutChangingIdentity",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionValidatesLiteralPathsAndCompleteObservations",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionRejectsUnknownDuplicateUnsupportedAndReplacedRoot",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionArgumentBudgetsPrecedeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestObservedSelectionBoundsTotalsAndNoFilesystemAccess",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocalTargetURIDecodesExactlyOnce",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocatePublishesAllTargetsOrNone",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocateObservesFinalSymlinkWithoutOpening",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestOrderingUsesObservedMetadataAndLiteralNames",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionOptionsAreBoundedLiteralPrograms",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredWorkerActionChecksAllBeforeOneLiteralLaunch",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionUsesCurrentSelectionAndRefusesBusyWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestOptions",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestDiscovery",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestInformationalExit",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCompleteWritesAndValidation",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFailedWritesCloseWithoutRetry",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestRecords",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFragmentedRecordsAndOwnedBytes",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCloseInterruptsIdleReadAndBlockedWrite",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestConcurrentCommandsRemainWhole",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerIsolationBoundsAndCancellation",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestActionsValidateAndPassLiteralArguments",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestControlsUseRenderedGenerationAndNativeSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerWirePreservesFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestOneWorkerLatestNavigationAndCancelledPublication",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewControlsPreserveDomainSelectionAndObserveProperties",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestRefreshKeepsFocusedIdentityAndDropsRemovedSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLargeNativeFormUsesAcknowledgedBatches",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewSwitchKeepsProjectionFocusAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestCompletedRefreshPreservesNeighborsAndReportsChanges",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLiveCallbacksRefuseReplayAndOldNativeGeneration",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestTargetOptionsRejectConflictsBeforeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestIsolatedLocateCarriesSelectionAndFailure",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialPropertiesOwnsSelectionAndViewport",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialMultiplePropertiesOwnsACompleteSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInotifyLengthOverflowAndLoss",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchCoalescesBurstAndDefersToUserWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLossAndStaleEventsCannotOwnReplacement",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLeaseAndStartupDeadline",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestBrowserWatchOptionsToggleAndCancel",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerChangesLossAndFiniteLease",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerRefusesStaleAndMalformedRequests",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessCancellationReapsBeforeDone",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessRejectsOversizeAndOutOfOrderOutput"
+          ]
+        },
+        "go-race": {
+          "packages": 5,
+          "top_cases": 62,
+          "tests": [
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshPreservesOnlySurvivingIdentities",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestPageSelectionRefusesAtomically",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLiteralNamesHiddenEmptyAndStableRefresh",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestReplacementAndSymlinkRefusal",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestBoundsAndReplacementPublication",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestFilteredProjectionRetainsIdentityAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestProjectionBoundsAndBulkSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestAdapterSelectionIsAtomicAndIndependentOfProjection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeSelectionPacket",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeEarlierProjectionRetainsLateHiddenInput",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaPublishesOneOwnedOrderedTransaction",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestInvalidDeltaNeverPublishesPartialState",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestReconcileNoOpLargeFallbackAndReorder",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshFocusNeighborsAndFilteredSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaMaximumChangeAndResultBudgets",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestDirectoryAdmissionAndInvalidInputs",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestInvalidFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestMetadataRevisionChangesWithoutChangingIdentity",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionValidatesLiteralPathsAndCompleteObservations",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionRejectsUnknownDuplicateUnsupportedAndReplacedRoot",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionArgumentBudgetsPrecedeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestObservedSelectionBoundsTotalsAndNoFilesystemAccess",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocalTargetURIDecodesExactlyOnce",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocatePublishesAllTargetsOrNone",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocateObservesFinalSymlinkWithoutOpening",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestOrderingUsesObservedMetadataAndLiteralNames",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestOptions",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestDiscovery",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestInformationalExit",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionOptionsAreBoundedLiteralPrograms",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCompleteWritesAndValidation",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFailedWritesCloseWithoutRetry",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestRecords",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFragmentedRecordsAndOwnedBytes",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCloseInterruptsIdleReadAndBlockedWrite",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestConcurrentCommandsRemainWhole",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredWorkerActionChecksAllBeforeOneLiteralLaunch",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionUsesCurrentSelectionAndRefusesBusyWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerIsolationBoundsAndCancellation",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestActionsValidateAndPassLiteralArguments",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestControlsUseRenderedGenerationAndNativeSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerWirePreservesFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestOneWorkerLatestNavigationAndCancelledPublication",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewControlsPreserveDomainSelectionAndObserveProperties",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestRefreshKeepsFocusedIdentityAndDropsRemovedSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLargeNativeFormUsesAcknowledgedBatches",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewSwitchKeepsProjectionFocusAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestCompletedRefreshPreservesNeighborsAndReportsChanges",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLiveCallbacksRefuseReplayAndOldNativeGeneration",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestTargetOptionsRejectConflictsBeforeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestIsolatedLocateCarriesSelectionAndFailure",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialPropertiesOwnsSelectionAndViewport",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialMultiplePropertiesOwnsACompleteSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInotifyLengthOverflowAndLoss",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchCoalescesBurstAndDefersToUserWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLossAndStaleEventsCannotOwnReplacement",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLeaseAndStartupDeadline",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestBrowserWatchOptionsToggleAndCancel",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerChangesLossAndFiniteLease",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerRefusesStaleAndMalformedRequests",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessCancellationReapsBeforeDone",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessRejectsOversizeAndOutOfOrderOutput"
+          ]
+        }
+      },
+      "commands": [
+        {
+          "label": "environment",
+          "args": [
+            "sh",
+            "-c",
+            "uname -a; go version; df -h ."
+          ],
+          "status": 0,
+          "seconds": 0.004
+        },
+        {
+          "label": "go-policy",
+          "args": [
+            "go",
+            "test",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 1.514
+        },
+        {
+          "label": "go-race",
+          "args": [
+            "go",
+            "test",
+            "-race",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 9.816
+        },
+        {
+          "label": "go-vet",
+          "args": [
+            "go",
+            "vet",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 0.117
+        },
+        {
+          "label": "go-build",
+          "args": [
+            "go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 0.22
+        },
+        {
+          "label": "slate-dark",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "--theme",
+            "slate-dark",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-final-checkpoint/slate-dark"
+          ],
+          "status": 1,
+          "seconds": 15.579
+        }
+      ],
+      "UI": {
+        "slate-dark": {
+          "screenshots": 16,
+          "passed": false
+        }
+      }
+    },
+    "final/freebsd-arm64": {
+      "archive_sha256": "7d7d252665df940a43fc063d2696ceddca06714ecd0c5c47094b05e105e5ce9b",
+      "verified_files": 34,
+      "Go": {
+        "go-policy": {
+          "packages": 5,
+          "top_cases": 61,
+          "tests": [
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshPreservesOnlySurvivingIdentities",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestPageSelectionRefusesAtomically",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestBoundsAndReplacementPublication",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestFilteredProjectionRetainsIdentityAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestProjectionBoundsAndBulkSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestAdapterSelectionIsAtomicAndIndependentOfProjection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeSelectionPacket",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeEarlierProjectionRetainsLateHiddenInput",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaPublishesOneOwnedOrderedTransaction",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestInvalidDeltaNeverPublishesPartialState",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestReconcileNoOpLargeFallbackAndReorder",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshFocusNeighborsAndFilteredSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaMaximumChangeAndResultBudgets",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLiteralNamesHiddenEmptyAndStableRefresh",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestReplacementAndSymlinkRefusal",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestDirectoryAdmissionAndInvalidInputs",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestInvalidFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestMetadataRevisionChangesWithoutChangingIdentity",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionValidatesLiteralPathsAndCompleteObservations",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionRejectsUnknownDuplicateUnsupportedAndReplacedRoot",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionArgumentBudgetsPrecedeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestObservedSelectionBoundsTotalsAndNoFilesystemAccess",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocalTargetURIDecodesExactlyOnce",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocatePublishesAllTargetsOrNone",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocateObservesFinalSymlinkWithoutOpening",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestOrderingUsesObservedMetadataAndLiteralNames",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestOptions",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestDiscovery",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestInformationalExit",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionOptionsAreBoundedLiteralPrograms",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCompleteWritesAndValidation",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFailedWritesCloseWithoutRetry",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestRecords",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFragmentedRecordsAndOwnedBytes",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCloseInterruptsIdleReadAndBlockedWrite",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestConcurrentCommandsRemainWhole",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredWorkerActionChecksAllBeforeOneLiteralLaunch",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionUsesCurrentSelectionAndRefusesBusyWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerIsolationBoundsAndCancellation",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestActionsValidateAndPassLiteralArguments",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestControlsUseRenderedGenerationAndNativeSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerWirePreservesFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestOneWorkerLatestNavigationAndCancelledPublication",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewControlsPreserveDomainSelectionAndObserveProperties",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestRefreshKeepsFocusedIdentityAndDropsRemovedSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLargeNativeFormUsesAcknowledgedBatches",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewSwitchKeepsProjectionFocusAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestCompletedRefreshPreservesNeighborsAndReportsChanges",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLiveCallbacksRefuseReplayAndOldNativeGeneration",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestTargetOptionsRejectConflictsBeforeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestIsolatedLocateCarriesSelectionAndFailure",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialPropertiesOwnsSelectionAndViewport",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialMultiplePropertiesOwnsACompleteSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchCoalescesBurstAndDefersToUserWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLossAndStaleEventsCannotOwnReplacement",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLeaseAndStartupDeadline",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestBrowserWatchOptionsToggleAndCancel",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerChangesLossAndFiniteLease",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerRefusesStaleAndMalformedRequests",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessCancellationReapsBeforeDone",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessRejectsOversizeAndOutOfOrderOutput"
+          ]
+        }
+      },
+      "commands": [
+        {
+          "label": "environment",
+          "args": [
+            "sh",
+            "-c",
+            "uname -a; go version; df -h ."
+          ],
+          "status": 0,
+          "seconds": 0.009
+        },
+        {
+          "label": "go-policy",
+          "args": [
+            "go",
+            "test",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 2.448
+        },
+        {
+          "label": "go-vet",
+          "args": [
+            "go",
+            "vet",
+            "-mod=vendor",
+            "./internal/collection",
+            "./internal/filemodel",
+            "./cmd/fvwmfilebrowser",
+            "./cmd/fvwmcommand",
+            "./transport"
+          ],
+          "status": 0,
+          "seconds": 0.115
+        },
+        {
+          "label": "go-build",
+          "args": [
+            "go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/root/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 0.216
+        },
+        {
+          "label": "native-ui",
+          "args": [
+            "python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/root/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "--theme",
+            "fixture",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/browser-directory-watch-final-checkpoint/native-ui"
+          ],
+          "status": 1,
+          "seconds": 15.437
+        }
+      ],
+      "UI": {
+        "native-ui": {
+          "screenshots": 16,
+          "passed": false
+        }
+      }
+    },
+    "completion/fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "ad4b86555f3eb24064c75c32ce318731d1c6b24cc704ceacd5b372a06868e3e3",
+      "verified_files": 121,
+      "Go": {},
+      "commands": [
+        {
+          "label": "slate-dark",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "--theme",
+            "slate-dark",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-completion-checkpoint/slate-dark"
+          ],
+          "status": 0,
+          "seconds": 10.224
+        },
+        {
+          "label": "dune-light",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "--theme",
+            "dune-light",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-completion-checkpoint/dune-light"
+          ],
+          "status": 0,
+          "seconds": 10.31
+        },
+        {
+          "label": "classic-large",
+          "args": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "--theme",
+            "classic-large",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/browser-directory-watch-completion-checkpoint/classic-large"
+          ],
+          "status": 0,
+          "seconds": 9.796
+        },
+        {
+          "label": "meson-go-configure",
+          "args": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+            "/tmp/fvwm-module-waits-20261015/source"
+          ],
+          "status": 0,
+          "seconds": 0.964
+        },
+        {
+          "label": "meson-helper-manual",
+          "args": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-file-browser-go",
+            "-j",
+            "2",
+            "fvwm-file-browser",
+            "fvwm-file-browser.1"
+          ],
+          "status": 1,
+          "seconds": 0.271
+        }
+      ],
+      "UI": {
+        "slate-dark": {
+          "screenshots": 27,
+          "passed": true
+        },
+        "dune-light": {
+          "screenshots": 27,
+          "passed": true
+        },
+        "classic-large": {
+          "screenshots": 27,
+          "passed": true
+        }
+      }
+    },
+    "completion/freebsd-arm64": {
+      "archive_sha256": "6bab74fb50649d6712cdf916c62c2d0dd320c7b2cc16f236bbca9a0adb019724",
+      "verified_files": 42,
+      "Go": {},
+      "commands": [
+        {
+          "label": "native-ui",
+          "args": [
+            "python3",
+            "/root/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "--form",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm",
+            "--browser",
+            "/root/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+            "--theme",
+            "fixture",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/browser-directory-watch-completion-checkpoint/native-ui"
+          ],
+          "status": 0,
+          "seconds": 9.673
+        }
+      ],
+      "UI": {
+        "native-ui": {
+          "screenshots": 27,
+          "passed": true
+        }
+      }
+    },
+    "final/openbsd-arm64": {
+      "archive_sha256": "de6afd889cc7f2ecb24103c31622fae46fa0ca399a6a25be00a38081c8c38c68",
+      "verified_files": 13,
+      "Go": {
+        "go-policy": {
+          "packages": 5,
+          "top_cases": 61,
+          "tests": [
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshPreservesOnlySurvivingIdentities",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestPageSelectionRefusesAtomically",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestBoundsAndReplacementPublication",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestFilteredProjectionRetainsIdentityAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestProjectionBoundsAndBulkSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestAdapterSelectionIsAtomicAndIndependentOfProjection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeSelectionPacket",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestNativeEarlierProjectionRetainsLateHiddenInput",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaPublishesOneOwnedOrderedTransaction",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestInvalidDeltaNeverPublishesPartialState",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestReconcileNoOpLargeFallbackAndReorder",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestRefreshFocusNeighborsAndFilteredSelection",
+            "github.com/fvwmorg/FvwmPrompt/internal/collection/TestDeltaMaximumChangeAndResultBudgets",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLiteralNamesHiddenEmptyAndStableRefresh",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestReplacementAndSymlinkRefusal",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestDirectoryAdmissionAndInvalidInputs",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestInvalidFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestMetadataRevisionChangesWithoutChangingIdentity",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionValidatesLiteralPathsAndCompleteObservations",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionRejectsUnknownDuplicateUnsupportedAndReplacedRoot",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestSelectionArgumentBudgetsPrecedeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestObservedSelectionBoundsTotalsAndNoFilesystemAccess",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocalTargetURIDecodesExactlyOnce",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocatePublishesAllTargetsOrNone",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestLocateObservesFinalSymlinkWithoutOpening",
+            "github.com/fvwmorg/FvwmPrompt/internal/filemodel/TestOrderingUsesObservedMetadataAndLiteralNames",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionOptionsAreBoundedLiteralPrograms",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredWorkerActionChecksAllBeforeOneLiteralLaunch",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestConfiguredActionUsesCurrentSelectionAndRefusesBusyWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestOptions",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestDiscovery",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand/TestInformationalExit",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerIsolationBoundsAndCancellation",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCompleteWritesAndValidation",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFailedWritesCloseWithoutRetry",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestRecords",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestFragmentedRecordsAndOwnedBytes",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestCloseInterruptsIdleReadAndBlockedWrite",
+            "github.com/fvwmorg/FvwmPrompt/transport/TestConcurrentCommandsRemainWhole",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestActionsValidateAndPassLiteralArguments",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestControlsUseRenderedGenerationAndNativeSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWorkerWirePreservesFilenameBytes",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestOneWorkerLatestNavigationAndCancelledPublication",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewControlsPreserveDomainSelectionAndObserveProperties",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestRefreshKeepsFocusedIdentityAndDropsRemovedSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLargeNativeFormUsesAcknowledgedBatches",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestViewSwitchKeepsProjectionFocusAndSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestCompletedRefreshPreservesNeighborsAndReportsChanges",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestLiveCallbacksRefuseReplayAndOldNativeGeneration",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestTargetOptionsRejectConflictsBeforeFilesystemWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestIsolatedLocateCarriesSelectionAndFailure",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialPropertiesOwnsSelectionAndViewport",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestInitialMultiplePropertiesOwnsACompleteSelection",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchCoalescesBurstAndDefersToUserWork",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLossAndStaleEventsCannotOwnReplacement",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchLeaseAndStartupDeadline",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestBrowserWatchOptionsToggleAndCancel",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerChangesLossAndFiniteLease",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchWorkerRefusesStaleAndMalformedRequests",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessCancellationReapsBeforeDone",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser/TestWatchProcessRejectsOversizeAndOutOfOrderOutput"
+          ]
+        }
+      }
+    },
+    "manual/linux-arm64": {
+      "archive_sha256": "2732a8212388cc8201d42331ad6b2fe24262344a76d96775f029673d00c23592",
+      "verified_files": 6
+    }
+  },
+  "final_Go_top_case_executions": 246,
+  "native_X_drivers": 4,
+  "three_theme_profiles": [
+    "slate-dark",
+    "dune-light",
+    "classic-large"
+  ],
+  "screenshots_per_driver": 27,
+  "manual_render": {
+    "formatter": "/usr/bin/mandoc",
+    "status": 0,
+    "bytes": 25047,
+    "sha256": "6a334c4205a860e476c6967bdd4e60de3430b64c78d49a628900f2b66a7413a2"
+  },
+  "manual_target": {
+    "status": "passed",
+    "helper_sha256": "c19226e09c315d3a4346b9610133da6ecef872821d3d14aae3968d836f8ccc99",
+    "manual_sha256": "0b1d9aedec364349ef893f680e48b2ed7feb59feaecc1bcde75ff958ce948f6d",
+    "cache_reused": true,
+    "tested_meson_helper_identical": true
+  },
+  "C_core_MFL_Form_inputs_unchanged": true,
+  "native_CPU_execution": false,
+  "cycle_before_merge": "1/3",
+  "cycle_after_merge": "2/3",
+  "performance_before_merge": "4/5",
+  "performance_after_merge": "5/5; compare preserved binaries next run",
+  "retired_Linux_guest_files": 163,
+  "retained_Linux_native_binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "bytes": 5396632
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7",
+      "bytes": 418512
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "34352d9c14f93c9ba23a3a760dc5c5541f9c2bf08986ceebc36d533c68c632e5",
+      "bytes": 1623488
+    },
+    "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go": {
+      "sha256": "0e893a1a4ab5d00e64bcd9b22060a53377f90c076434ff0aa1bd2a330b657691",
+      "bytes": 15795235
+    }
+  },
+  "tested_Linux_helper": {
+    "sha256": "c19226e09c315d3a4346b9610133da6ecef872821d3d14aae3968d836f8ccc99",
+    "bytes": 5523577
+  },
+  "retained_FreeBSD_binaries": {
+    "/root/fvwm-module-waits-20261015/build-default/fvwm3": {
+      "sha256": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+      "bytes": 5139416
+    },
+    "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "9d4de5ecc4bc156195f28f0611617a24c379d913a3de3ec783db817121ff9f3f",
+      "bytes": 409472
+    },
+    "/root/fvwm-module-waits-20261015/build-default/modules/FvwmForm/FvwmForm": {
+      "sha256": "9547a2ba676eced6be7b927014be37be7c6ce119bac2ebd8f9eb69b112abebbd",
+      "bytes": 1570624
+    },
+    "/root/fvwm-go-baseline-20261014/sdk/go/bin/go": {
+      "sha256": "ffdf9f966da8b37903ac1d1f95dd5aa8c8ff2212e693a797d5076f4a42b5a64a",
+      "bytes": 15722528
+    },
+    "/root/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser": {
+      "sha256": "bf7c0b7af41b799693d03ec6d824c4b9563580a83b1ae6b1c1a593a646f209db",
+      "bytes": 5348771
+    }
+  }
+}

@@ -194,7 +194,7 @@ func (b *browser) update() error {
 			return b.render()
 		}
 	}
-	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.status}, {"projection", b.projectionText()}, {"counts", b.countText()}}
+	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.status}, {"watcher", b.watchText()}, {"projection", b.projectionText()}, {"counts", b.countText()}}
 	labels = append(labels, b.inspectorLabels()...)
 	commands := make([]string, 0, len(labels))
 	for _, label := range labels {
@@ -225,7 +225,10 @@ func (b *browser) show() error {
 	if b.active {
 		active = 1
 	}
-	return b.session.Send(fmt.Sprintf("Echo FVWM_FILES_RENDER %s %d %d %d %d", b.instance, b.form, b.renderSerial, b.nativeGeneration, active))
+	if err := b.session.Send(fmt.Sprintf("Echo FVWM_FILES_RENDER %s %d %d %d %d", b.instance, b.form, b.renderSerial, b.nativeGeneration, active)); err != nil {
+		return err
+	}
+	return b.session.Send("Echo FVWM_FILES_WATCH " + b.instance + " " + b.watch.state())
 }
 
 type nativeLabel struct{ name, value string }

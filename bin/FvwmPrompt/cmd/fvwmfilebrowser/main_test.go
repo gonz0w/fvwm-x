@@ -34,7 +34,7 @@ func testControl(b *browser, action, argument string, packet []byte) string {
 }
 
 func TestMain(m *testing.M) {
-	if path := os.Getenv("FVWM_TEST_ACTION_REPORT"); path != "" && len(os.Args) > 1 && os.Args[1] != "--worker" {
+	if path := os.Getenv("FVWM_TEST_ACTION_REPORT"); path != "" && len(os.Args) > 1 && os.Args[1] != "--worker" && os.Args[1] != "--watch-worker" {
 		args := make([][]byte, 0, len(os.Args)-1)
 		for _, arg := range os.Args[1:] {
 			args = append(args, []byte(arg))
@@ -53,6 +53,23 @@ func TestMain(m *testing.M) {
 		os.Exit(0)
 	}
 
+	if len(os.Args) == 2 && os.Args[1] == "--watch-worker" {
+		switch os.Getenv("FVWM_TEST_WATCH_WORKER") {
+		case "oversize":
+			os.Stdout.Write(bytes.Repeat([]byte("x"), 128*1024))
+			os.Exit(0)
+		case "out-of-order":
+			fmt.Fprintln(os.Stdout, "changed")
+			os.Exit(0)
+		case "block":
+			time.Sleep(time.Minute)
+			os.Exit(0)
+		}
+		if runWatchWorker(os.Stdin, os.Stdout, watchLease) != nil {
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--worker" {
 		switch os.Getenv("FVWM_TEST_FILE_WORKER") {
 		case "block":
@@ -340,6 +357,10 @@ func TestLargeNativeFormUsesAcknowledgedBatches(t *testing.T) {
 				b.acks <- strings.TrimPrefix(scanner.Text(), "Echo ")
 				if !scanner.Scan() || !strings.HasPrefix(scanner.Text(), "Echo FVWM_FILES_RENDER ") {
 					done <- fmt.Errorf("missing render observation")
+					return
+				}
+				if !scanner.Scan() || scanner.Text() != "Echo FVWM_FILES_WATCH owner off" {
+					done <- fmt.Errorf("missing watch observation")
 					return
 				}
 				done <- nil

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Native browser directory watching](VERIFICATION-2026-10-23-BROWSER-DIRECTORY-WATCH.md): isolated native invalidations, coalesced reconciliation and explicit manual recovery; three-theme screenshots and focused Linux/BSD evidence.
+
 - [Accumulated live-collection cycle](VERIFICATION-2026-10-23-LIVE-COLLECTION-CYCLE.md): PR170–172 qualify 49 native entries across six targets, 357 composed Go cases and retained themes/sanitizers; AMD64 observer report races are corrected with focused completions.
 
 - [Browser live-update adoption](VERIFICATION-2026-10-23-BROWSER-LIVE-ADOPTION.md): focused native/Go and actual-X qualification for in-place browser updates and labels.

@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Portable browser consumer handoff](BROWSER-CONSUMER-HANDOFF-2026-10-23.md): opt-in matching-folder reuse, shared bounded correlation, core presentation and optional installed desktop entry; protected payload/default-role ownership stays separate.
+
 - [Bounded directory watching](BROWSER-DIRECTORY-WATCH-2026-10-23.md): isolated native invalidations, coalesced reconciliation, finite observer leases and explicit manual fallback.
 - [Browser live-update adoption](BROWSER-LIVE-ADOPTION-2026-10-23.md): direct bounded native transactions, current-input reconciliation, fixed status/properties labels and replay-safe callbacks.
 

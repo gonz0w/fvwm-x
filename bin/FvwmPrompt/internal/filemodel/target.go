@@ -37,12 +37,16 @@ func ParseTarget(value string) ([]byte, error) {
 	return []byte(path), nil
 }
 
-// Locate loads one parent and resolves all requested names before publishing.
-// It does not open a target or follow its final symlink. Absolute lexical parent
-// names must agree; aliases are not resolved by extra blocking path lookups.
-func Locate(targets [][]byte, hidden bool) (*Snapshot, []string, error) {
+// TargetParent validates the same lexical target set without filesystem work.
+func TargetParent(targets [][]byte) (string, error) {
+	parent, _, _, err := planLocate(targets)
+	return parent, err
+}
+
+func planLocate(targets [][]byte) (string, []string, bool, error) {
+	hidden := false
 	if len(targets) == 0 || len(targets) > collection.MaxSelected {
-		return nil, nil, errors.New("reveal requires one to 256 targets")
+		return "", nil, false, errors.New("reveal requires one to 256 targets")
 	}
 	parent := ""
 	names := make([]string, 0, len(targets))
@@ -50,28 +54,40 @@ func Locate(targets [][]byte, hidden bool) (*Snapshot, []string, error) {
 	for _, target := range targets {
 		path := string(target)
 		if !validPath(path) {
-			return nil, nil, errors.New("invalid reveal target")
+			return "", nil, false, errors.New("invalid reveal target")
 		}
 		for _, component := range strings.Split(path, string(filepath.Separator)) {
 			if component == "." || component == ".." {
-				return nil, nil, errors.New("reveal targets cannot contain dot path components")
+				return "", nil, false, errors.New("reveal targets cannot contain dot path components")
 			}
 		}
 		path = filepath.Clean(path)
 		if path == string(filepath.Separator) {
-			return nil, nil, errors.New("the filesystem root has no parent entry; use --dir")
+			return "", nil, false, errors.New("the filesystem root has no parent entry; use --dir")
 		}
 		dir, name := filepath.Dir(path), filepath.Base(path)
 		if parent != "" && parent != dir {
-			return nil, nil, errors.New("reveal targets must share one parent folder")
+			return "", nil, false, errors.New("reveal targets must share one parent folder")
 		}
 		if seen[name] {
-			return nil, nil, errors.New("duplicate reveal target")
+			return "", nil, false, errors.New("duplicate reveal target")
 		}
 		parent, seen[name] = dir, true
 		names = append(names, name)
 		hidden = hidden || strings.HasPrefix(name, ".")
 	}
+	return parent, names, hidden, nil
+}
+
+// Locate loads one parent and resolves all requested names before publishing.
+// It does not open a target or follow its final symlink. Absolute lexical parent
+// names must agree; aliases are not resolved by extra blocking path lookups.
+func Locate(targets [][]byte, hidden bool) (*Snapshot, []string, error) {
+	parent, names, explicitHidden, err := planLocate(targets)
+	if err != nil {
+		return nil, nil, err
+	}
+	hidden = hidden || explicitHidden
 	snapshot, err := Scan(parent, hidden)
 	if err != nil {
 		return nil, nil, err

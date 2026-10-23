@@ -37,6 +37,7 @@ type options struct {
 	view                          string
 	watch                         string
 	hidden, inspect               bool
+	reuse                         bool
 	targets                       [][]byte
 	properties                    bool
 	actions                       actionFlags
@@ -631,30 +632,26 @@ func main() {
 		}
 		return
 	}
-	var o options
 	home, _ := os.UserHomeDir()
-	flag.StringVar(&o.dir, "dir", home, "initial absolute local directory or local file URI")
-	var reveal, properties targetFlags
-	flag.Var(&o.actions, "action", "configured LABEL=EXECUTABLE, receives selected literal paths; repeat up to four")
-	flag.Var(&reveal, "reveal", "select a literal local target in its parent; repeat for one folder")
-	flag.Var(&properties, "properties", "show observed properties for local targets in one parent; repeat")
-	flag.StringVar(&o.view, "view", "list", "initial collection view: list or grid")
-	flag.StringVar(&o.watch, "watch", "off", "directory watching: off or auto (native with periodic reconciliation)")
-	flag.StringVar(&o.socket, "socket", "", "FvwmMFL socket (default: standard private discovery)")
-	flag.StringVar(&o.opener, "opener", "", "literal opener executable; default: xdg-open when available")
-	flag.StringVar(&o.terminal, "terminal", "", "literal terminal executable; default: x-terminal-emulator or xterm")
-	flag.BoolVar(&o.hidden, "hidden", false, "include hidden entries")
-	flag.BoolVar(&o.inspect, "inspect", false, "emit bounded schema-1 directory JSON without X")
-	flag.Parse()
-	if flag.NArg() != 0 {
-		fmt.Fprintln(os.Stderr, "fvwm-file-browser: unexpected arguments")
-		os.Exit(2)
+	o, err := parseOptions(os.Args[1:], home, os.Stderr)
+	if errors.Is(err, flag.ErrHelp) {
+		return
 	}
-	dirSet := false
-	flag.Visit(func(f *flag.Flag) { dirSet = dirSet || f.Name == "dir" })
-	if err := prepareOptions(&o, dirSet, reveal, properties); err != nil {
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
 		os.Exit(2)
+	}
+	if o.reuse {
+		endpoint := transport.SocketPath(o.socket, os.Getenv, os.Getuid())
+		receipt, reused, err := reuseBrowser(context.Background(), endpoint, o)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
+			os.Exit(1)
+		}
+		if reused {
+			fmt.Println(string(receipt))
+			return
+		}
 	}
 	if o.opener == "" {
 		o.opener, _ = exec.LookPath("xdg-open")

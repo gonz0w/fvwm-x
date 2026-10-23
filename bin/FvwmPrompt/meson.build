@@ -244,6 +244,12 @@ fvwm_file_browser = custom_target(
     install_dir: bindir,
     install_tag: 'file-browser',
 )
+# Portable folder role is available only with its installed Go consumer.
+# Installing an entry never changes user MIME defaults.
+install_data('fvwm-file-browser.desktop',
+    install_dir: get_option('datadir') / 'applications',
+    install_tag: 'file-browser',
+)
 test('file-browser-policy', golang,
     args: ['test', '-C', fvwmprompt_build, '-json', '-count=1', '-mod=vendor',
         './internal/collection', './internal/filemodel',

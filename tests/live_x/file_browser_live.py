@@ -525,7 +525,13 @@ def run(args):
             identity = window, sorted(children(window))
             state = rpc(provider=provider, scope='state')['result']
             enter_list();key(window,b'Home');key(window,b'space')
-            selected = rpc(provider=provider, scope='selection')['result']
+            def selected_count(count):
+                def observed():
+                    result = rpc(provider=provider, scope='selection')['result']
+                    return result if result['total'] == count else None
+                return wait_for_predicate('native selection count %d' % count,
+                    observed, time.monotonic()+5, process=app)
+            selected = selected_count(1)
             assert len(selected['items']) == 1, selected
             assert base64.b64decode(selected['items'][0]['name_bytes']) == b'00-folder'
             stale = rpc(provider=provider, scope='items', generation=state['generation'], offset=8)
@@ -535,6 +541,7 @@ def run(args):
             assert identity == (window, sorted(children(window)))
             capture('file-browser-provider-selection.png')
             key(window,b'space')
+            selected_count(0)
             evidence['file_provider_current_native_selection_and_stale_page'] = True
 
             def apply_control(operation, values):
@@ -917,6 +924,43 @@ def run(args):
                 observed_multi_properties=True, hidden_target_included=True,
                 no_item_executed=True, failed_reveal_preserves_view=True,
                 hidden_setters=True, watch_setters=True, action_metadata_only=True)
+            # A second CLI is a bounded handoff client; it must not create a
+            # duplicate native window or route to another provider/folder.
+            original_window = window
+            original_children = sorted(children(window))
+            connection.send(('All (FvwmFiles-'+provider+'-*) Iconify true\n').encode())
+            connection.echo('browser-iconify-submitted')
+            wait_for_predicate('browser iconified', lambda: inventory()[0] is None,
+                time.monotonic()+5, process=app)
+            uri = 'file://' + quote_from_bytes(invalid, safe='/')
+            command = subprocess.run([str(args.browser),'--socket',str(endpoint),
+                '--reuse','--properties',uri,'--properties',str(root/'file-14-new')],
+                env=env,capture_output=True,timeout=15)
+            assert command.returncode == 0, (command.returncode,command.stdout,command.stderr)
+            receipt = json.loads(command.stdout)
+            assert receipt['status'] == 'accepted' and receipt['provider'] == provider
+            window = ready(window); work_done(receipt['work']['id'], 'loaded')
+            wait_for_predicate('reused browser presented', lambda:inventory()[0] == original_window,
+                time.monotonic()+5,process=app)
+            assert window == original_window and sorted(children(window)) == original_children
+            assert len(rpc()['result']['providers']) == 1
+            selected = rpc(provider=provider,scope='selection')['result']['items']
+            assert {base64.b64decode(i['name_bytes']) for i in selected} == {b'raw-\xff',b'file-14-new'}, selected
+            assert not report.exists(), 'portable target handoff executed an item'
+            capture('file-browser-reused-properties.png')
+            command = subprocess.run([str(args.browser),'--socket',str(endpoint),'--reuse',
+                'file://'+quote_from_bytes(os.fsencode(root),safe='/')],
+                env=env,capture_output=True,timeout=15)
+            assert command.returncode == 0, (command.returncode,command.stdout,command.stderr)
+            receipt = json.loads(command.stdout)
+            assert receipt['work']['operation'] == 'refresh'
+            window = ready(window); work_done(receipt['work']['id'], 'loaded')
+            assert window == original_window and len(rpc()['result']['providers']) == 1
+            capture('file-browser-reused-folder.png')
+            evidence['portable_browser_handoff'] = dict(local_URI_bytes=True,
+                same_provider_and_window=True, exact_target_selection=True,
+                no_duplicate_instance=True, deiconify_present=True,
+                folder_argument_refresh=True, no_target_execution=True)
             key(window,b'Escape');callback()
             wait_for_predicate('browser exit',lambda:app.poll() is not None,time.monotonic()+5)
             assert app.poll()==0

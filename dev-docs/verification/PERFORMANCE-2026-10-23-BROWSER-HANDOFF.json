@@ -1,0 +1,183 @@
+{
+  "status": "observed",
+  "reference": "PR174",
+  "candidate": "portable browser handoff",
+  "native_cpu": false,
+  "method": "One warmup each; five alternating paired 4096-empty-file metadata scans, existing qualified binaries; os.wait4 CPU/max-RSS; no benchmark build",
+  "summary": {
+    "browser_reference": {
+      "samples": 5,
+      "median_ms": 15.274220997525845,
+      "range_ms": [
+        14.833383000222966,
+        20.59685200219974
+      ],
+      "median_max_rss_kib": 29172
+    },
+    "browser_current": {
+      "samples": 5,
+      "median_ms": 16.275688001769595,
+      "range_ms": [
+        15.287554000678938,
+        18.01282900123624
+      ],
+      "median_max_rss_kib": 29172
+    }
+  },
+  "binary_file_sizes": {
+    "core": {
+      "reference_bytes": 5396632,
+      "current_bytes": 5396632,
+      "change_percent": 0.0
+    },
+    "mfl": {
+      "reference_bytes": 418512,
+      "current_bytes": 445112,
+      "change_percent": 6.355851206178076
+    },
+    "form": {
+      "reference_bytes": 1623488,
+      "current_bytes": 1624952,
+      "change_percent": 0.09017621319036273
+    },
+    "browser_current": {
+      "reference_bytes": 5523577,
+      "current_bytes": 5620856,
+      "change_percent": 1.7611594805322817
+    }
+  },
+  "observations": {
+    "binaries": {
+      "core": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "bytes": 5396632,
+        "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1097293\t  27380\t  39824\t1164497\t 11c4d1\t/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3\n"
+      },
+      "mfl": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "bytes": 445112,
+        "sha256": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 100231\t   2576\t   3736\t 106543\t  1a02f\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL\n"
+      },
+      "form": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "bytes": 1624952,
+        "sha256": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 398442\t  14736\t  14048\t 427226\t  684da\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n"
+      },
+      "browser_reference": {
+        "path": "/tmp/fvwm-module-waits-20261015/browser-handoff-performance-inputs/browser_reference",
+        "bytes": 5523577,
+        "sha256": "c19226e09c315d3a4346b9610133da6ecef872821d3d14aae3968d836f8ccc99",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3498899\t  88259\t33805464\t37392622\t23a90ee\t/tmp/fvwm-module-waits-20261015/browser-handoff-performance-inputs/browser_reference\n",
+        "go_build": "/tmp/fvwm-module-waits-20261015/browser-handoff-performance-inputs/browser_reference: go1.27.2\n\tpath\tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser\n\tmod\tgithub.com/fvwmorg/FvwmPrompt\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,gotestjsonbuildtext=1,httpcookiemaxnum=0,httplaxcontentlength=1,httpmuxgo121=1,httpservecontentkeepheaders=1,httpservecontentmaxranges=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlmaxqueryparams=0,urlstrictcolons=0,winreadlinkvolume=0,winsymlink=0,x509negativeserial=1,x509rsacrt=0,x509sha256skid=0,x509sslcertoverrideplatform=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+      },
+      "browser_current": {
+        "path": "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser",
+        "bytes": 5620856,
+        "sha256": "59e56a6eb07eb4f3d70568e27371ebdcd1e3ddb43904d996d677370a7d6f9c2b",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3591767\t  88323\t33805464\t37485554\t23bfbf2\t/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser\n",
+        "go_build": "/tmp/fvwm-module-waits-20261015/browser-directory-watch-go-build/fvwm-file-browser: go1.27.2\n\tpath\tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser\n\tmod\tgithub.com/fvwmorg/FvwmPrompt\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,gotestjsonbuildtext=1,httpcookiemaxnum=0,httplaxcontentlength=1,httpmuxgo121=1,httpservecontentkeepheaders=1,httpservecontentmaxranges=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlmaxqueryparams=0,urlstrictcolons=0,winreadlinkvolume=0,winsymlink=0,x509negativeserial=1,x509rsacrt=0,x509sha256skid=0,x509sslcertoverrideplatform=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+      }
+    },
+    "scan_observations": [
+      {
+        "repeat": 0,
+        "binary": "browser_reference",
+        "wall_seconds": 0.02059685200219974,
+        "user_seconds": 0.013616,
+        "system_seconds": 0.011054,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 0,
+        "binary": "browser_current",
+        "wall_seconds": 0.01801282900123624,
+        "user_seconds": 0.010629,
+        "system_seconds": 0.009936,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 1,
+        "binary": "browser_current",
+        "wall_seconds": 0.01676990100531839,
+        "user_seconds": 0.012223,
+        "system_seconds": 0.006189999999999999,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 1,
+        "binary": "browser_reference",
+        "wall_seconds": 0.015167511002800893,
+        "user_seconds": 0.012279,
+        "system_seconds": 0.005235999999999999,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 2,
+        "binary": "browser_reference",
+        "wall_seconds": 0.016141602995048743,
+        "user_seconds": 0.008007,
+        "system_seconds": 0.01086,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 2,
+        "binary": "browser_current",
+        "wall_seconds": 0.016275688001769595,
+        "user_seconds": 0.015451,
+        "system_seconds": 0.0033139999999999997,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 3,
+        "binary": "browser_current",
+        "wall_seconds": 0.015319846002967097,
+        "user_seconds": 0.009115,
+        "system_seconds": 0.008483,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 3,
+        "binary": "browser_reference",
+        "wall_seconds": 0.014833383000222966,
+        "user_seconds": 0.008376999999999999,
+        "system_seconds": 0.008516,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 4,
+        "binary": "browser_reference",
+        "wall_seconds": 0.015274220997525845,
+        "user_seconds": 0.011254,
+        "system_seconds": 0.006222999999999999,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      },
+      {
+        "repeat": 4,
+        "binary": "browser_current",
+        "wall_seconds": 0.015287554000678938,
+        "user_seconds": 0.006376,
+        "system_seconds": 0.011096,
+        "max_rss_kib": 29172,
+        "entries": 4096
+      }
+    ],
+    "native_cpu": false,
+    "scope": "Preserved PR174 and qualified portable-handoff binaries; no benchmark build. Metadata scan/worker handoff only; not native UI latency.",
+    "storage": "Filesystem      Size  Used Avail Use% Mounted on\noverlay         100G  100G  233M 100% /\n"
+  },
+  "reference_observations_sha256": "e80c0180006397ed5827535f58d3863864663b953a974c0aa526e133021a4971",
+  "current_observations_sha256": "c5ffbfa22ccd0324029169bc96748d7b6d37aafb6086e615bdb504fe969e8549",
+  "interpretation": "Current median approximately 1 ms higher, overlapping ranges and unchanged peak RSS; five pairs do not establish a speedup or consistent regression. Not UI latency or native-CPU qualification."
+}

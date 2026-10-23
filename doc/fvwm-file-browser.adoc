@@ -23,6 +23,12 @@ fvwm-file-browser - bounded native folder-browser foundations
 
 *fvwm-file-browser* *--inspect* [*--dir* _local-target_] [*--hidden*]
 
+*fvwm-file-browser* [*--reuse*] [_local-folder_]
+
+*fvwm-file-browser* *--reuse* [*--dir* _local-folder_]
+[*--reveal* _local-target_ ... | *--properties* _local-target_ ...]
+[*--socket* _path_]
+
 == DESCRIPTION
 
 This optional Go helper presents local folders with existing FvwmForm controls
@@ -429,6 +435,58 @@ producer; a busy/unavailable instance yields an explicit error. Old browser/MFL
 combinations cannot register: build and update these shipped consumers together.
 Clipboard payload ownership/protection, file mutation
 and FileManager1 remain separate work. No SQLite dependency is introduced.
+
+== PORTABLE FOLDER HANDOFF
+
+A single optional positional local folder is equivalent to --dir and accepts
+the same absolute local path/file URI grammar. With no target, use Home.
+It cannot be combined with --dir/--reveal/--properties or another argument.
+An unsupported URI scheme is refused without fetching or opening it.
+
+--reuse is opt-in. Discover at most eight providers and choose an idle,
+capability-compatible instance already observing the same lexical folder.
+For a folder launch, refresh it; for reveal/properties, submit the complete
+bounded target set. No item is executed. Existing standalone launches retain
+independent windows. No matching idle/capable provider, or a target set above
+the IPC bounds (eight paths, 192 decoded bytes each, 384 total values bytes),
+uses the existing independent launch path. Larger requests keep its 256-target/
+4096-byte limits. Matching does not resolve parent aliases or symlinks.
+
+Reuse accepts only folder/target/socket options. Explicit view, hidden, watch,
+program/action or --inspect options are refused with --reuse; configure those
+on an independent browser first. An older browser missing required capabilities
+is skipped without sending it a new unsupported action.
+
+A successful reuse prints one JSON admission receipt with version, provider and
+work ID/operation/status, then exits. Accepted does not mean loaded or application
+completion; query the matching work in FvwmMFL(1). The browser's normal worker
+lifetime and error presentation continue independently of this client.
+The client has a ten-second total IPC deadline, within which each correlated
+request has its ordinary six-second terminal-reply allowance. Query/current
+precondition refusal can retry once. A submitted request with lost/malformed
+reply returns an unknown-outcome error and never starts a duplicate view.
+
+After admission, the explicit present control de-iconifies, focuses and raises
+only that browser through the shared FVWM command engine. Focus uses the normal
+core viewport/desk policy and does not warp the pointer. Presentation is separate
+from worker completion; a presentation failure returns an error while admitted
+work may continue. Sensitive clipboard content is not a request payload.
+
+Go-enabled installation also provides fvwm-file-browser.desktop under the
+application data directory. It advertises only inode/directory, uses TryExec and
+one literal URL field in `fvwm-file-browser --reuse -- %u`, and also launches Home
+when invoked without a URL. No shell expands the URI. It adds no D-Bus activation
+or startup-notification guarantee and never changes the user's MIME defaults.
+The entry remains marked development; ordinary Open/Save dialogs, automatic
+FileManager1 ownership and full default-provider adoption remain separate.
+
+Examples:
+
+....
+fvwm-file-browser --reuse 'file:///home/user/Work%20files'
+fvwm-file-browser --reuse --reveal '/home/user/Work files/report.txt'
+fvwm-file-browser --reuse --properties '/home/user/Work files/report.txt'
+....
 
 == EXIT STATUS
 

@@ -1,0 +1,54 @@
+{
+  "slate-dark": {
+    "file": "doc/screenshots/handoff-slate-dark.png",
+    "sha256": "9a2e1ff615cb04ff6e63fdc9e4e9b199e848427855075632af36ab345c93976a",
+    "capture": "evidence/slate-dark/file-browser-reused-properties.png",
+    "source_archive_sha256": "88afcac8aaf70e16fdb5a1c254b7687fbb0fe6cacd422f5ea908e9a79bc6954d",
+    "archive_sha256": "0fdda22a6ff5483340aa99899a582e9fe0ee51af68285bc0decd0ad869dff989",
+    "configuration_sha256": {
+      "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+      "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+      "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+      "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+      "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "generated.config": "4d226d796592f35d17b7b5fe56c3dd461df362f2b221473bf78f74cd33c5288f"
+    },
+    "font": "xft:Sans:size=10:antialias=True",
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  },
+  "dune-light": {
+    "file": "doc/screenshots/handoff-dune-light.png",
+    "sha256": "3bbe9730965f2994215d59bfb10de3ae0a1fd6749c90139061b6e3dc1636fbc7",
+    "capture": "evidence/dune-light/file-browser-reused-folder.png",
+    "source_archive_sha256": "88afcac8aaf70e16fdb5a1c254b7687fbb0fe6cacd422f5ea908e9a79bc6954d",
+    "archive_sha256": "0fdda22a6ff5483340aa99899a582e9fe0ee51af68285bc0decd0ad869dff989",
+    "configuration_sha256": {
+      "local.config": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+      "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+      "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+      "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+      "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "generated.config": "1bf97cce9dfba2c454f469b6344a0710ac44d319c7590760ede95f7b7990ab34"
+    },
+    "font": "xft:Sans:size=10:antialias=True",
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  },
+  "classic-large": {
+    "file": "doc/screenshots/handoff-classic-large.png",
+    "sha256": "6f1f389debd375022fdb8cb79df91a001ce18729f36e3307f8eea861f3403ec9",
+    "capture": "evidence/classic-large/file-browser-reused-properties.png",
+    "source_archive_sha256": "88afcac8aaf70e16fdb5a1c254b7687fbb0fe6cacd422f5ea908e9a79bc6954d",
+    "archive_sha256": "0fdda22a6ff5483340aa99899a582e9fe0ee51af68285bc0decd0ad869dff989",
+    "configuration_sha256": {
+      "generated.config": "8cc72ea3eec3655787e2ee5f485aefdb083fff7d4c22167402fb2fec8cf2b846"
+    },
+    "font": "9x15",
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  }
+}

@@ -1,5 +1,12 @@
 # Runtime language standard: C, Go and Lua
 
+**2026-10-23 update:** the [dependency
+decision](DEPENDENCY-SIMPLIFICATION-2026-10-23.md) adds mandatory-Go build
+direction, complete first-party Perl/Python retirement ownership and a bounded
+Lua engine comparison. The implementation remains queued in Later; the
+historical audit and accepted port evidence below remain valid. Earlier
+optional-Go and Go-host-only assumptions are superseded for future adoption.
+
 Status: **runtime-first migration direction and scoping approved on
 2026-10-06**. The user requested Perl removal, replacement of Python with Go,
 and Lua/go-lua where useful, starting with runtime replacement scope. This

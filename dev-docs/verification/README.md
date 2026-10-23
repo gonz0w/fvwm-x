@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Dependency planning synchronization](DEPENDENCY-PLANNING-2026-10-23.md): ten owner updates, six Later backlog children and verified native relationships/Project fields; no runtime change.
+
 - [Conditional browser controls](VERIFICATION-2026-10-23-FILE-PROVIDER-CONTROLS.md): five typed generation-checked controls, shared selection policy, Linux/FreeBSD/race/sanitizer checks and three-theme captures; only UI/manual completions follow the freeze.
 
 - [Accumulated browser/provider cycle](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CYCLE.md): merged PR173–175 qualify 84 selected entries across six targets/seven profiles, 472 composed Go cases and retained themes/sanitizers before the next feature.

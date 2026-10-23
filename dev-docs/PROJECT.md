@@ -28,7 +28,7 @@ requirements migration; it is not another backlog.
   event-loop work and interaction servicing; preserve dispatch/command order.
 - Scale FVWM-owned UI and geometry, not arbitrary application pixels. EWMH,
   ICCCM, configure and module geometry remain actual X11 pixels.
-- Compatibility is limited to existing FVWM configuration files and their
+- Compatibility is limited to existing FVWM 3.x configuration files and their
   format. Keep supported names, arguments, bindings, functions and theme
   directives usable without a configuration rewrite. Ask only for a deliberate
   configuration incompatibility or required migration. Internal APIs/ABIs,
@@ -36,12 +36,19 @@ requirements migration; it is not another backlog.
   behavior have no separate compatibility hold; update shipped consumers,
   documentation and verification together. Other product constraints remain.
   See the [clarified compatibility scope](decisions/CONFIG-COMPATIBILITY-SCOPE-2026-10-07.md).
+- Approved dependency simplification, 2026-10-23: mandatory Go for building,
+  complete first-party Perl/Python retirement, FVWM 3.x-only compatibility,
+  obsolete converter/backend removal and target-owned linkage. Keep Meson until
+  the bounded Muon/CMake evaluation produces a separate adoption decision.
+  These are Later backlog items, not current build changes or new feature
+  prerequisites. Lua engine selection remains open. See the
+  [decision and issue ownership](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md).
 - Approved runtime language direction: retain C core/native primitives, replace
   first-party Python runtime helpers and portable Perl utilities with Go, and
-  add optional isolated Go-hosted Lua policies over shared primitives. The user
+  add optional isolated Lua policies over shared primitives. The user
   explicitly approves future retirement of FvwmPerl/perllib and Perl-specific
   APIs; unrelated FVWM/FvwmScript contracts remain. Runtime ports/removal and
-  go-lua adoption are queued; first-party build/test tooling follows separately.
+  Lua engine selection/adoption are queued; first-party build/test tooling follows separately.
   See the [component audit and scope](decisions/RUNTIME-GO-LUA-2026-10-06.md).
 - The default desktop uses existing FVWM components and base-system capabilities;
   unavailable services are reported honestly. No additional desktop framework

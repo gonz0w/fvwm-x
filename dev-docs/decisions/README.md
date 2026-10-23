@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Dependency simplification](DEPENDENCY-SIMPLIFICATION-2026-10-23.md): mandatory Go direction, complete Perl/Python retirement ownership, FVWM 3.x baseline, bounded build/library evaluations and Later backlog children.
+
 - [Bounded directory watching](BROWSER-DIRECTORY-WATCH-2026-10-23.md): isolated native invalidations, coalesced reconciliation, finite observer leases and explicit manual fallback.
 - [Browser live-update adoption](BROWSER-LIVE-ADOPTION-2026-10-23.md): direct bounded native transactions, current-input reconciliation, fixed status/properties labels and replay-safe callbacks.
 

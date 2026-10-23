@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-23",
+  "repository": "gonz0w/fvwm-x",
+  "updated_owners": [
+    3,
+    23,
+    35,
+    40,
+    42,
+    46,
+    48,
+    49,
+    50,
+    55
+  ],
+  "children": [
+    {
+      "number": 179,
+      "parent": 23,
+      "milestone": "Later",
+      "labels": [
+        "area:tooling",
+        "priority:P2",
+        "stage:05",
+        "status:backlog",
+        "type:cleanup"
+      ],
+      "fields": {
+        "Status": "Backlog",
+        "Priority": "P2",
+        "Stage": "05 Portability and packaging"
+      }
+    },
+    {
+      "number": 180,
+      "parent": 42,
+      "milestone": "Later",
+      "labels": [
+        "area:dependencies",
+        "priority:P2",
+        "stage:05",
+        "status:backlog",
+        "type:cleanup"
+      ],
+      "fields": {
+        "Status": "Backlog",
+        "Priority": "P2",
+        "Stage": "05 Portability and packaging"
+      }
+    },
+    {
+      "number": 181,
+      "parent": 40,
+      "milestone": "Later",
+      "labels": [
+        "area:tooling",
+        "priority:P2",
+        "stage:05",
+        "status:backlog",
+        "type:cleanup"
+      ],
+      "fields": {
+        "Status": "Backlog",
+        "Priority": "P2",
+        "Stage": "05 Portability and packaging"
+      }
+    },
+    {
+      "number": 182,
+      "parent": 55,
+      "milestone": "Later",
+      "labels": [
+        "area:tooling",
+        "priority:P2",
+        "stage:05",
+        "status:backlog",
+        "type:cleanup"
+      ],
+      "fields": {
+        "Status": "Backlog",
+        "Priority": "P2",
+        "Stage": "05 Portability and packaging"
+      }
+    },
+    {
+      "number": 183,
+      "parent": 46,
+      "milestone": "Later",
+      "labels": [
+        "area:dependencies",
+        "priority:P2",
+        "stage:05",
+        "status:backlog",
+        "type:cleanup"
+      ],
+      "fields": {
+        "Status": "Backlog",
+        "Priority": "P2",
+        "Stage": "05 Portability and packaging"
+      }
+    },
+    {
+      "number": 184,
+      "parent": 49,
+      "milestone": "Later",
+      "labels": [
+        "area:dependencies",
+        "priority:P2",
+        "stage:05",
+        "status:backlog",
+        "type:cleanup"
+      ],
+      "fields": {
+        "Status": "Backlog",
+        "Priority": "P2",
+        "Stage": "05 Portability and packaging"
+      }
+    }
+  ],
+  "blocked_by": {
+    "180": [
+      179
+    ],
+    "42": [
+      50,
+      179
+    ]
+  },
+  "existing_owner_metadata_unchanged": [
+    "state",
+    "labels",
+    "milestone",
+    "Project Status/Priority/Stage"
+  ]
+}

@@ -209,3 +209,36 @@ These unmodified captures reuse the same three-theme native-X checkpoint at
 records hashes and source/configuration provenance. These examples add no new
 widget or default theme. The browser remains in-progress development; mutation,
 FileManager1, protected clipboard and full consumer/release acceptance remain open.
+
+## Live reveal and target properties
+
+Consumers can now reveal or inspect targets in a running browser, using a current
+provider generation and bounded base64 byte paths. A successful request selects
+exactly the target set, clears the admitted filter and brings the first target
+into view. Same-folder requests preserve the window and input drafts; a draft
+filter can be reapplied explicitly. Missing/mixed-parent targets fail as a whole.
+No item is executed by reveal or properties. Explicit hidden/watch setters and
+configured action labels/availability let a configuration build its own controls.
+See the [target schemas](FvwmMFL.adoc#_isolated_navigation_and_application_requests)
+and [checkpoint](../dev-docs/verification/VERIFICATION-2026-10-23-FILE-PROVIDER-TARGETS.md).
+
+Slate dark: observed properties for an explicitly requested hidden file and a
+symlink. The inspector follows no link and reads no file content.
+
+![Slate target properties](screenshots/targets-slate-dark.png)
+
+Dune light: two requested items are selected; the first is focused and scrolled
+into view through a generation-checked native focus command.
+
+![Dune live target reveal](screenshots/targets-dune-light.png)
+
+Classic larger-font configuration: watching is enabled by a typed request and
+reports native observation with periodic reconciliation.
+
+![Classic typed watching](screenshots/targets-classic-large.png)
+
+The [target image manifest](screenshots/targets-manifest.json) records these
+unmodified 1440×1000, scale-1 captures and their exact source/configuration/archive
+identities. Earlier images keep their original provenance. This remains an
+in-progress browser prototype; file jobs, default folder roles/FileManager1,
+protected clipboard content and broader consumer/release qualification stay open.

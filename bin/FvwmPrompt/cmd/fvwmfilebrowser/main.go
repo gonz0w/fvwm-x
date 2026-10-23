@@ -78,6 +78,7 @@ type browser struct {
 	renderPath, renderView     string
 	renderSerial, lastControl  uint64
 	replaceSelection           bool
+	revealFocus                bool
 	renderDeadline             time.Time
 	watch                      *directoryWatch
 	providerWork               *providerWork
@@ -177,7 +178,11 @@ func (b *browser) completed(event completedWork) error {
 	b.cancel = nil
 	if event.work.serial == b.serial {
 		result := event.result
-		if result.Status == "loaded" && result.Snapshot != nil {
+		if result.Status == "loaded" && result.Snapshot != nil && event.work.request.Operation == "locate" {
+			if err := b.publishLocated(result, event.work.navigation); err != nil {
+				return err
+			}
+		} else if result.Status == "loaded" && result.Snapshot != nil {
 			snapshot := result.Snapshot
 			if snapshot.Schema != 1 {
 				return errors.New("invalid directory schema")

@@ -589,6 +589,14 @@ be unknown. No success is reported for a split model/native view.
 
 ==== Isolated navigation and application requests
 
+State also advertises `hidden` from the admitted snapshot, desired
+`watch_enabled`, `opener_available`, `terminal_available` and `configured_actions`
+as up to four `{index, label}` records. Labels are presentation text; executable
+paths/arguments are absent. An empty array means no configured selection action.
+These flags describe browser configuration, not proof that a program can start.
+`target_request_max: 8` bounds each reveal/inspect list; the shared 384-byte values
+cap can require fewer paths.
+
 The same conditional action envelope also admits worker operations. Query state
 first; all operations below require the current generation and a writable client.
 
@@ -619,6 +627,24 @@ browser's configured opener. Symlink/special-file actions remain unavailable.
 |`{"index":0}` (integer 0–3)
 |Revalidate the complete captured selection, then pass its literal paths to that
 configured action. Index is zero-based; the client cannot supply an executable.
+|`reveal`
+|`{"paths_bytes":["BASE64",...]}`
+|Resolve 1–8 absolute local target paths in one parent, load that parent and
+replace selection with exactly those targets. Clear the admitted filter and
+focus/scroll to the first requested item. No item is opened.
+|`inspect`
+|`{"paths_bytes":["BASE64",...]}`
+|Reveal the target set and show its observed properties, including final symlinks
+or special entries without following them or reading their content.
+|`hidden`
+|`{"enabled":true}` or `{"enabled":false}`
+|Rescan the current folder with explicit hidden-file visibility. The admitted
+flag changes only on a successful result; surviving selection/focus is retained.
+|`watch`
+|`{"enabled":true}` or `{"enabled":false}`
+|Set desired watching immediately through existing observer ownership. Enabling
+also retries a manual fallback. Publication acknowledges configuration; query
+`watch` for starting/native/manual/off. No worker-outcome ID is replaced.
 |`cancel`
 |`{"id":"WORK_16_HEX"}`
 |Request cancellation of that browser's current accepted worker operation.
@@ -631,6 +657,19 @@ before the first request; `operation_retention` is `latest_accepted`. A newer
 accepted worker request replaces that one outcome. View controls and refused
 requests do not replace it. Pair the work ID with its provider incarnation.
 `path_request_max: 192` advertises the decoded path bound.
+
+Reveal/inspect use canonical padded-base64 raw paths with the same 192-byte
+per-path bound as navigation; the complete values object still fits 384 bytes.
+Targets must share one lexical parent, must exist in the admitted enumeration,
+and cannot be duplicates, the root itself, or contain dot path components.
+Resolution and enumeration run in the isolated worker. Failure/cancellation
+preserves the prior folder/filter/selection/properties. Explicit hidden targets
+enable hidden entries. A successful target handoff clears the admitted filter,
+replaces the complete selection, focuses the first requested entry and replaces
+observed properties only for inspect. Same-folder updates retain native windows
+and input drafts; the filter input draft can be reapplied explicitly. A changed
+folder follows normal navigation/history. Target order determines first focus,
+while paged selection uses the collection order.
 
 Poll state until the matching work is terminal: `loaded`, `started`, `failed`,
 `cancelled` or `superseded`. Failure can include a bounded presentation `detail`.

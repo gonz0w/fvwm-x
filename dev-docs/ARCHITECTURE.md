@@ -1078,3 +1078,12 @@ cancel/reap/supersession state live with the browser; MFL retains only its norma
 response ownership. Path bytes and configured program identity remain separate
 from display text. The [worker contract](decisions/FILE-PROVIDER-WORK-2026-10-23.md)
 does not add file mutation or protected clipboard transport.
+
+[Live target publication](../bin/FvwmPrompt/cmd/fvwmfilebrowser/target.go)
+uses the existing isolated Locate worker and validates one candidate for exact
+selection, filter, first focus, properties and directory/history. Same-folder
+handoff commits native selection then sends generation-checked runtime ListFocus;
+its [pure policy](../modules/FvwmForm/form_list.c) preserves selection and scrolls
+without replacing X resources. Explicit hidden/watch controls reuse snapshot/
+observer ownership. State exposes configured labels/availability without programs.
+See the [target contract](decisions/FILE-PROVIDER-TARGETS-2026-10-23.md).

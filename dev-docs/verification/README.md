@@ -622,3 +622,5 @@ diagnostic and execution gates remain separate.
 - [Shared collection grid](VERIFICATION-2026-10-23-COLLECTION-GRID.md): Shared collection grid: native type marks, list/grid identity and bounded additive ranges; focused checks and corrected observer pass with retained policy evidence.
 
 - [Isolated browser action requests](VERIFICATION-2026-10-23-FILE-PROVIDER-WORK.md): focused Linux/FreeBSD, 227 Go cases including race, three theme captures and scoped sanitizer/manual checks; broader cycle remains pending.
+
+- [Live target and observation controls](VERIFICATION-2026-10-23-FILE-PROVIDER-TARGETS.md): focused Linux/FreeBSD, 24 native entries, 239 Go cases, three themes and scoped sanitizers; accumulated platform cycle due after merge.

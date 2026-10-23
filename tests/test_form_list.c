@@ -7,6 +7,31 @@
 #include <string.h>
 #include "modules/FvwmForm/form_list.h"
 
+static void test_versioned_focus(void)
+{
+	form_list_state s = {.rows = 4, .columns = 4, .generation = 7};
+	form_list_state before;
+
+	for (int i = 0; i < FORM_LIST_MAX; i++)
+		assert(form_list_add(&s, i == 0));
+	before = s;
+	assert(!form_list_focus_version(&s, 0, 0));
+	assert(!form_list_focus_version(&s, 6, 4095));
+	assert(!form_list_focus_version(&s, 7, -1));
+	assert(!form_list_focus_version(&s, 7, 4096));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	assert(form_list_focus_version(&s, 7, 4095));
+	assert(s.focus == 4095 && s.anchor == 4095 && s.top == 4080);
+	assert(s.selected == before.selected &&
+		memcmp(s.bits, before.bits, sizeof(s.bits)) == 0);
+	s.refused = true;
+	before = s;
+	assert(!form_list_focus_version(&s, 7, 0));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	s = (form_list_state){.generation = 7};
+	assert(!form_list_focus_version(&s, 7, 0));
+}
+
 static void test_grid_ranges(void)
 {
 	form_list_state s = {.rows = 4, .columns = 4};
@@ -143,6 +168,7 @@ static void test_live_choices_and_status(void)
 int main(void)
 {
 	test_grid_ranges();
+	test_versioned_focus();
 	test_updates();
 	test_live_choices_and_status();
 	form_list_state s = {.rows = 12};

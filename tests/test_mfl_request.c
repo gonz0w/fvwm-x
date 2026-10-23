@@ -856,6 +856,10 @@ static void test_files_actions(void)
 		"\"provider\":\"0123456789abcdef0123456789abcdef\","
 		"\"generation\":\"0123456789abcdef0123456789abcdef\",";
 	static const char *valid[] = {
+		"\"operation\":\"reveal\",\"values\":{\"paths_bytes\":[\"L2E=\"]}}",
+		"\"operation\":\"inspect\",\"values\":{\"paths_bytes\":[\"L2E=\",\"L2I=\"]}}",
+		"\"operation\":\"hidden\",\"values\":{\"enabled\":true}}",
+		"\"operation\":\"watch\",\"values\":{\"enabled\":false}}",
 		"\"operation\":\"selection\",\"values\":{\"mode\":\"clear\"}}",
 		"\"operation\":\"selection\",\"values\":{\"mode\":\"add\","
 		"\"ids\":[\"0123456789abcdef0123456789abcdef\"]}}",
@@ -878,6 +882,11 @@ static void test_files_actions(void)
 		"\"id\":\"0000000000000001\"}}"
 	};
 	static const char *invalid[] = {
+		"\"operation\":\"reveal\",\"values\":{\"paths_bytes\":[]}}",
+		"\"operation\":\"inspect\",\"values\":{\"paths_bytes\":[null]}}",
+		"\"operation\":\"reveal\",\"values\":{\"paths_bytes\":[\"L2E=\",\"L2E=\"]}}",
+		"\"operation\":\"hidden\",\"values\":{\"enabled\":null}}",
+		"\"operation\":\"watch\",\"values\":{\"enabled\":0}}",
 		"\"operation\":\"navigate\",\"values\":{\"mode\":\"home\","
 		"\"id\":\"0123456789abcdef0123456789abcdef\"}}",
 		"\"operation\":\"navigate\",\"values\":{\"mode\":\"path\","
@@ -923,7 +932,7 @@ static void test_files_actions(void)
 		cJSON *root, *values, *ids;
 		char id[33];
 
-		snprintf(json, sizeof(json), "%s%s", prefix, valid[1]);
+		snprintf(json, sizeof(json), "%s%s", prefix, valid[5]);
 		root = cJSON_Parse(json);
 		assert(root);
 		values = cJSON_GetObjectItemCaseSensitive(root, "values");

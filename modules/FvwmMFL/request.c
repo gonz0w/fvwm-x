@@ -536,12 +536,22 @@ static bool files_filter_text(const cJSON *value)
 	return true;
 }
 
+static bool files_path_value(const cJSON *value)
+{
+	return bounded_string(value, 256) &&
+		strspn(value->valuestring,
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			"abcdefghijklmnopqrstuvwxyz0123456789+/=") ==
+		strlen(value->valuestring);
+}
+
 static bool files_values(const char *operation, const cJSON *values)
 {
 	const cJSON *item, *previous;
 	const cJSON *mode = NULL, *ids = NULL, *text = NULL;
 	const cJSON *key = NULL, *reverse = NULL;
 	const cJSON *id = NULL, *path = NULL, *index = NULL;
+	const cJSON *paths = NULL, *enabled = NULL;
 	unsigned int count = 0;
 
 	if (!cJSON_IsObject(values))
@@ -570,6 +580,10 @@ static bool files_values(const char *operation, const cJSON *values)
 			path = item;
 		else if (strcmp(item->string, "index") == 0)
 			index = item;
+		else if (strcmp(item->string, "paths_bytes") == 0)
+			paths = item;
+		else if (strcmp(item->string, "enabled") == 0)
+			enabled = item;
 		else
 			return false;
 	}
@@ -622,11 +636,27 @@ static bool files_values(const char *operation, const cJSON *values)
 		if (strcmp(mode->valuestring, "item") == 0)
 			return count == 2 && settings_token(id);
 		return strcmp(mode->valuestring, "path") == 0 && count == 2 &&
-			bounded_string(path, 256) &&
-			strspn(path->valuestring,
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-				"abcdefghijklmnopqrstuvwxyz0123456789+/=")
-				== strlen(path->valuestring);
+			files_path_value(path);
+	}
+	if (strcmp(operation, "hidden") == 0 ||
+	    strcmp(operation, "watch") == 0)
+		return count == 1 && cJSON_IsBool(enabled);
+	if (strcmp(operation, "reveal") == 0 ||
+	    strcmp(operation, "inspect") == 0)
+	{
+		if (count != 1 || !cJSON_IsArray(paths))
+			return false;
+		count = 0;
+		for (item = paths->child; item; item = item->next)
+		{
+			if (++count > 8 || !files_path_value(item))
+				return false;
+			for (previous = paths->child; previous != item;
+			    previous = previous->next)
+				if (strcmp(previous->valuestring, item->valuestring) == 0)
+					return false;
+		}
+		return count != 0;
 	}
 	if (strcmp(operation, "open") == 0)
 		return count == 1 && settings_token(id);

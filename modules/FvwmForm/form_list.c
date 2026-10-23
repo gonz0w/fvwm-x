@@ -140,6 +140,16 @@ void form_list_focus(form_list_state *s, int index)
 	form_list_scroll(s, 0);
 }
 
+/* An explicit owner focus request never clamps stale/out-of-range ordinals. */
+bool form_list_focus_version(form_list_state *s, int generation, int index)
+{
+	if (generation <= 0 || generation != s->generation || s->refused ||
+	    index < 0 || index >= s->count)
+		return false;
+	form_list_focus(s, index);
+	return true;
+}
+
 /* Shift extends additively from the last ordinary focus position. Selection
  * and focus publish together; an over-budget range cannot partially change it. */
 bool form_list_extend(form_list_state *s, int index)

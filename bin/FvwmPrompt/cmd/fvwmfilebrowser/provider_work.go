@@ -16,7 +16,7 @@ type providerWork struct {
 
 func providerWorkerAction(operation string) bool {
 	switch operation {
-	case "navigate", "refresh", "open", "terminal", "custom":
+	case "navigate", "refresh", "open", "terminal", "custom", "reveal", "inspect", "hidden":
 		return true
 	}
 	return false
@@ -28,6 +28,14 @@ func (b *browser) planProviderWork(operation string, action providerAction) (wor
 	request := workRequest{Snapshot: b.snapshot, Hidden: b.hidden}
 	navigation := "push"
 	switch operation {
+	case "reveal", "inspect":
+		request.Operation, request.Targets = "locate", action.targets
+		if operation == "inspect" {
+			navigation = "properties"
+		}
+	case "hidden":
+		request.Operation, request.Path, request.Hidden = "scan", b.snapshot.Path, action.enabled
+		navigation = "refresh"
 	case "refresh":
 		request.Operation, request.Path = "scan", b.snapshot.Path
 		navigation = "refresh"

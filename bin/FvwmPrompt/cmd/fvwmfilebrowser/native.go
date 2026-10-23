@@ -177,6 +177,20 @@ func (b *browser) update() error {
 			b.status = err.Error()
 			return b.render()
 		}
+		if b.revealFocus {
+			for index, entry := range entries {
+				if entry.ID == b.model.Focus {
+					if err := b.session.Send(fmt.Sprintf("SendToModule %s ListFocus picks %d %d", b.alias, next, index+1)); err != nil {
+						return err
+					}
+					packet, err = b.snapshotNative("focused", next, 0)
+					if err != nil {
+						return err
+					}
+					break
+				}
+			}
+		}
 		b.nativeGeneration = next
 		b.viewEntries = entries
 		b.replaceSelection = false
@@ -221,6 +235,7 @@ func (b *browser) show() error {
 	if err != nil {
 		return err
 	}
+	b.revealFocus = false
 	active := 0
 	if b.active {
 		active = 1

@@ -185,3 +185,5 @@ separate; the former public-helper output decision is still deferred.
 - [Conditional browser controls](FILE-PROVIDER-CONTROLS-2026-10-23.md): generation-checked selection/filter/sort/view/properties, shared selection policy and native publication acknowledgement.
 
 - [Isolated browser action requests](FILE-PROVIDER-WORK-2026-10-23.md): typed navigation, revalidated process handoff, latest correlated outcome and owned cancel/reap recovery.
+
+- [Live target and observation controls](FILE-PROVIDER-TARGETS-2026-10-23.md): atomic reveal/inspect, explicit hidden/watch state, configured action metadata and versioned native focus.

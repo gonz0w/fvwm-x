@@ -26,6 +26,7 @@ int form_list_lines(const form_list_state *state);
 bool form_list_extend(form_list_state *state, int index);
 bool form_list_toggle(form_list_state *state, int index);
 void form_list_focus(form_list_state *state, int index);
+bool form_list_focus_version(form_list_state *state, int generation, int index);
 void form_list_scroll(form_list_state *state, int amount);
 size_t form_list_packet(const form_list_state *state,
 	unsigned char packet[FORM_LIST_PACKET_MAX]);

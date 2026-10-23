@@ -1,0 +1,51 @@
+{
+  "slate-dark": {
+    "file": "doc/screenshots/targets-slate-dark.png",
+    "sha256": "5d029fa3d56b3dfa9069b6582587feac4c999e53112babe786f23f745265ff87",
+    "capture": "final/slate-dark/file-browser-ipc-target-properties.png",
+    "source_archive_sha256": "42410e3b688c0ec55ca32812bd651b8c9a472b0e584d5ef1f4400b89c62c3c3e",
+    "archive_sha256": "4f7844c84406ef62bed1fbd2716108487f50cfa9f20b478759e4e18960c9d69d",
+    "configuration_sha256": {
+      "local.config": "ab4934f15d47d9f71b134d5acb66648aaf3ac721f7d576482f1f92e392ea3bb6",
+      "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+      "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+      "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+      "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "generated.config": "794fdc57ac75a44cd271ebf0e363afb9af27e45037fa6545db443407a4a21369"
+    },
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  },
+  "dune-light": {
+    "file": "doc/screenshots/targets-dune-light.png",
+    "sha256": "12d3efddd518170d478fd7ae60705a64aacf23dd0510b714e971d3be617cf85e",
+    "capture": "final/dune-light/file-browser-ipc-reveal.png",
+    "source_archive_sha256": "42410e3b688c0ec55ca32812bd651b8c9a472b0e584d5ef1f4400b89c62c3c3e",
+    "archive_sha256": "4f7844c84406ef62bed1fbd2716108487f50cfa9f20b478759e4e18960c9d69d",
+    "configuration_sha256": {
+      "local.config": "ad0e966f0693bea8a691e6c5d4ace3d567276d2ad314dd1703e20d5aadb7d7eb",
+      "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+      "desktop.fvwm": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+      "desktop.py": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+      "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "generated.config": "06f02bc9bdf8ed8ae46f3c7ea5246116af6ea536cf744a069bcf69d81342ab99"
+    },
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  },
+  "classic-large": {
+    "file": "doc/screenshots/targets-classic-large.png",
+    "sha256": "fc74e2f9da45c00f004eca70cf9624b2aac18ffdf0819a4e186f4c3341492087",
+    "capture": "final/classic-large/file-browser-ipc-watching.png",
+    "source_archive_sha256": "42410e3b688c0ec55ca32812bd651b8c9a472b0e584d5ef1f4400b89c62c3c3e",
+    "archive_sha256": "4f7844c84406ef62bed1fbd2716108487f50cfa9f20b478759e4e18960c9d69d",
+    "configuration_sha256": {
+      "generated.config": "d2b698c59ffa20f857dd374232097379a9647b9c30027e4e03177c16be150bef"
+    },
+    "geometry": "1440x1000x24",
+    "scale": 1,
+    "unmodified": true
+  }
+}

@@ -32,6 +32,17 @@ retain earlier development states; a historical "pending" entry does not
 supersede a later accepted result. Counts describe each frozen checkpoint,
 not the changing shared checkout or another thread's desktop/runtime work.
 
+Current priority, 2026-10-23: **maintenance first; new feature pickup paused**.
+Merged PR187 completes the provider cleanup; its focused 22.399-second Linux
+checkpoint remains accepted. Organize the 73 open issues into 34 maintenance
+owners/children, 12 conditional qualification owners, five deferred performance
+owners and 22 paused feature/polish owners. The
+[batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md) defines eight
+implementation batches and three decision lanes. **Next: M1**, combining
+DEP-GO-01 #179, DEP-XDG-01 #180 and LEGACY-01 #181 with their parent cleanup
+scope. #179/#181 are Ready; #180 remains blocked by #179. No product deletion,
+compiler/install switch or new runtime qualification occurs in this planning PR.
+
 Verification cadence, revised by the user on 2026-10-23: implement larger
 related cleanup/feature batches before one focused Linux gate. Aim for six to
 ten substantive related improvements where useful, or a complete owner slice.
@@ -51,9 +62,10 @@ results. FreeBSD AMD64's synthetic-input observation correction repeats only UI;
 all product sources remain unchanged. Both OpenBSD 8.0 architectures pass and
 all owned guests shut down normally. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md).
 PR178 `e2f61e65b0e5277dedcf28fe6c602efa8b2d1762` is integrated reference
-with one implementation batch merged since it (PR186). Provider cleanup in PR187 is the
-next pending batch; the intervening dependency-planning documentation adds no
-implementation count. The automatic three-PR platform trigger is retired; review
+with two implementation batches merged since it (PR186 and PR187). Planning
+and documentation do not advance the count. Pending broader coverage for those
+feature/cleanup sources remains explicit; the last affected six-target closure
+is still PR178. The automatic three-PR platform trigger is retired; review
 coverage debt after roughly five merged batches or a substantial handoff.
 Full install/default-X/compiler-feature and owner/milestone/release acceptance
 remain at their required boundary. Native-CPU/hardware/toolkit/compositor/
@@ -65,8 +77,8 @@ ranges, medians 15.274/16.276 ms and unchanged 29172 KiB peak RSS. The current
 median is about 1 ms higher; no speedup or consistent regression is established.
 Core file bytes are unchanged; MFL/Form/browser grow 6.36%/0.09%/1.76%.
 The preserved pre-cleanup PR186 handoff binaries become the independent
-comparison reference **0/5 on this merge**; this observation does not measure
-the later cleanup browser. Tuning stays deferred.
+comparison reference, now **1/5 after merged PR187**; this observation does not
+measure the later cleanup browser. Planning adds no new comparison count. Tuning stays deferred.
 [Report](verification/PERFORMANCE-2026-10-23-BROWSER-HANDOFF.md).
 
 Representative theme smoke checks **pass** on reused Linux native-X binaries:
@@ -92,7 +104,7 @@ or release gates, or advance either verification counter.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| Combined provider cleanup, CLEAN-01 / FILE-DATA/ACTION/VIEW-01 | In review: [PR #187](https://github.com/gonz0w/fvwm-x/pull/187); focused Linux checks pass | One catalog, strict typed value decoding, query/mutation boundaries and concrete query results. All four land before one 22.399-second combined policy/race/vet/build/native-X gate: 85 policy cases, 45 race cases, one actual-X driver. Native/OS/build/install/rendering inputs unchanged; no new platform/install/theme matrix. Earlier feature receipts keep their exact source scope. [Report](verification/VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md). |
+| Combined provider cleanup, CLEAN-01 / FILE-DATA/ACTION/VIEW-01 | Merged in [PR #187](https://github.com/gonz0w/fvwm-x/pull/187); focused Linux checks pass | One catalog, strict typed value decoding, query/mutation boundaries and concrete query results. All four land before one 22.399-second combined policy/race/vet/build/native-X gate: 85 policy cases, 45 race cases, one actual-X driver. Native/OS/build/install/rendering inputs unchanged; no new platform/install/theme matrix. Earlier feature receipts keep their exact source scope. [Report](verification/VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md). |
 | Portable browser consumer handoff, FILE-ACTION/DATA/VIEW/INTEGRATION-01 | Merged in [PR #186](https://github.com/gonz0w/fvwm-x/pull/186); source-bound feature checks pass | Shared correlated RPC, opt-in matching folder/reveal/properties reuse, core presentation and an optional installed desktop entry. Ten native entries, 251 Go top-case executions/15 package outcomes including race, four browser native-X runs and three scoped sanitizer exercises pass; three themes/41 screenshots each. Scoped completion resolves storage-only linking; a manual paragraph placement rerenders only that manual. PR178 is the last integrated reference; PR186 is the first merged combined batch; due performance comparison complete, new reference 0/5 on merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md), [contract](decisions/BROWSER-CONSUMER-HANDOFF-2026-10-23.md). |
 | Accumulated browser action cycle, PR176–178 | Closed before next feature implementation | Six targets/seven profiles: 84 native entries, 556 Go cases/35 outcomes, eight normal browser runs plus retained sanitized Form and five scoped sanitizer exercises. One UI-only observation completion; no product changes. PR178 is the integrated reference 0/3. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md). |
 | Live target and observation controls, FILE-ACTION/DATA/VIEW-01 | Merged in [PR #178](https://github.com/gonz0w/fvwm-x/pull/178); focused Linux and early FreeBSD checks pass | Live reveal/inspect, explicit hidden/watch controls, configured action metadata and generation-checked native focus reuse the existing workers/publication. Twenty-four native entries, 239 Go cases/15 package outcomes, five native-X runs and five scoped sanitizer exercises pass; three themes/39 screenshots each. No product/fixture correction follows freeze. Cycle 2/3, 3/3 on merge: close accumulated platform checkpoint before another feature. Performance PR174 3/5, 4/5 on merge. [Report](verification/VERIFICATION-2026-10-23-FILE-PROVIDER-TARGETS.md), [contract](decisions/FILE-PROVIDER-TARGETS-2026-10-23.md). |
@@ -343,7 +355,8 @@ Man pages are the primary install documentation; optional HTML uses the existing
 source/renderer. This checkpoint does not change runtime/build targets or claim
 new passing native CI, package/man gates or a completed manual rewrite.
 
-Current selection, revised by the user on 2026-10-23: the PR176–178 platform
+Earlier file-browser selection, superseded by maintenance-first scheduling:
+the PR176–178 platform
 checkpoint is closed; PR186 is merged. Batch its related provider cleanup
 with operation-catalog consolidation, strict typed value decoding, separate
 query/mutation ownership and compiler-checked query results. Run one combined
@@ -367,6 +380,32 @@ FileManager1/default-role contracts retain their separate acceptance gates.
 
 
 ## Execution order
+
+Current execution selection, 2026-10-23: the user's maintenance-first request
+supersedes the feature-first cutoff below. Feature pickup stays paused until
+the user resumes it. Preserve accepted checkpoints and existing feature plans.
+Use this ordered batch queue; the linked register contains exact issue mapping,
+prerequisites, exclusions and finite acceptance. Scope each implementation PR
+to a complete related owner slice; tests/docs do not inflate story counts.
+
+| Order | Batch | Main outcome |
+| --- | --- | --- |
+| M1 | Supported runtime baseline and replaced entry points | Require the approved offline Go compiler; retire disabled-Go utility paths, replaced XDG/converter implementations and the pre-FVWM3 converter as one coherent install-contract batch. |
+| M2 | Remaining first-party runtime controllers | Port remaining desktop/launcher/session/screenshot controllers in native-UI/process ownership groups; remove each predecessor after installed parity. Keep explicit arbitrary shell execution and native capture boundaries. |
+| M3 | Target-owned linkage and dependency closure | Map real symbols/static transitives and replace broad dependency bags by core/module/worker target groups. Remove only unused edges, with package/license/installed closure measurements. |
+| M4 | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
+| M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
+| M6 | Perl framework retirement and scripting disposition | Qualify the bounded scripting migration floor, then retire FvwmPerl/perllib/fvwm-perllib and Perl-only build/templates. Keep unrelated FVWM3/FvwmScript behavior and user files. |
+| M7 | Owned build/generator/test tool retirement | Port first-party tools in build/source, generation/docs and independent test/VM-driver groups; remove predecessors only after parity, failure capture and offline/reproducibility checks. |
+| M8 | Distribution, portability and documentation closure | Reconcile install/source archives, manuals/examples, package/license references and platform branches; complete accumulated required maintenance qualification once, with release/hardware gaps explicit. |
+
+D1 build-backend, D2 JSON and D3 helper-sandbox evaluations are bounded decision
+lanes, not automatic adoption or full source rewrites. Source removal requires
+an exact disposition/replacement list. #41's old geometry title is corrected to
+its existing helper-sandbox scope. Native parent/blocking relations remain
+unchanged. Conditional qualification owners are consulted only for affected
+contracts; performance-only owners stay Later; new feature/polish owners are
+Backlog under their existing milestones. [Complete register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).
 
 Development cadence, revised by the user on 2026-10-23: combine larger sets of
 similar issues before one focused Linux checkpoint. Aim for six to ten related
@@ -623,11 +662,12 @@ another thread's active build. Any reproduced urgent defect still takes priority
 Accepted 2026-10-23: mandatory Go for building, all first-party Perl/Python
 retirement, FVWM 3.x baseline, obsolete converter/backend removal and explicit
 target linkage. The [decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md)
-owns scope and adoption criteria. Existing feature handoff, current milestone
-and performance deferral remain unchanged; Meson and optional-Go builds remain
-the actual contract until the respective implementation lands.
+owns scope and adoption criteria. The later maintenance-first request selects
+these children now and pauses feature pickup. Meson and optional-Go builds
+remain the actual contract until their respective implementation lands.
 
-All six children are Later / P2 / Backlog with stage 05 ownership:
+All six children move to milestone 05 / P2, retaining stage 05 ownership.
+#179/#181 are Ready; the other four stay Backlog with their batch/dependencies:
 
 | Child | Parent and checkpoint |
 | --- | --- |
@@ -1116,10 +1156,11 @@ tooling, then migration/removal after verification. See the
 [cleanup and library roadmap](CLEANUP-ROADMAP-2026-10-05.md) for all findings,
 estimated effort, acceptance criteria and upstream sources.
 
-User direction, 2026-10-23, reopens bounded related cleanup batches now. Start
-with the active file-browser provider boundary after merged PR186; do not require a
-complete old hardening audit before features resume. Keep unrelated general
-maintenance in the future-release backlog. Keep MAINT-01 candidates and remaining MAINT-02 migrations with
+User direction, 2026-10-23, now prioritizes source/legacy/dependency maintenance
+and pauses new features. The provider boundary is accepted in merged PR187.
+Use the maintenance-first register for all remaining owner slices; preserve
+accepted work and keep performance-only tuning deferred. General maintenance
+is no longer restricted to a feature prerequisite. Keep MAINT-01 candidates and remaining MAINT-02 migrations with
 their existing owners; neither all tooling migrations nor the deferred
 performance tail is a prerequisite for feature handoff.
 CI-01's test/sanitizer work is separate from release publishing ownership.
@@ -2656,3 +2697,14 @@ reader results are separate from the subsequent interpreter/file work.
   change. PR178 remains integrated reference with one merged implementation
   batch, two on cleanup merge; PR186 preserved comparison reference is 0/5,
   1/5 on cleanup merge. The risk-based cadence replaces automatic all-OS runs.
+
+
+- 2026-10-23: User pauses feature work and selects source cleanup, legacy removal,
+  dependency reduction and maintenance. Reconcile all 73 open issues into 34
+  maintenance owners/children in M1–M8 plus three bounded decision lanes, 12
+  conditional qualification owners, five deferred performance owners and 22
+  paused feature/polish owners. Promote 19 selected maintenance issues from
+  Later to milestone 05; #179/#181 Ready, #180 still blocked by #179. Keep
+  stages/priorities/native relationships and accepted evidence. Project Work
+  batch mirrors the queue. PR187 is merged; no runtime/OS tests are needed for
+  this documentation/board plan. [Batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).

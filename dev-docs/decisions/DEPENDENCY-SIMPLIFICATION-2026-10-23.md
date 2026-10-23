@@ -19,11 +19,12 @@ X11/ICCCM behavior. Age, a name containing "legacy", or a lexical search does
 not prove functionality is obsolete. Retire obsolete implementations after
 their supported behavior has a qualified owner.
 
-All six new children below are P2 / Backlog, in the Later milestone with stage
-05 ownership. Existing owners retain their broader status and acceptance gates.
-The [tracker execution order](../PROJECT-TRACKER.md#execution-order) and accepted
-feature handoff remain authoritative. This adds no current-milestone prerequisite
-and reopens no completed hardening or utility-port checkpoint.
+Scheduling superseded by the later user request on 2026-10-23: the six children
+are selected under the [maintenance-first batch register](MAINTENANCE-FIRST-BATCHES-2026-10-23.md),
+in milestone 05 / P2 with stage 05 ownership. #179/#181 are Ready; the other
+children stay Backlog until their batch/prerequisites are ready. New feature
+pickup is paused. Existing accepted evidence remains accepted; the actual
+build/install contract changes only when implementation is qualified and merged.
 
 ## Language and build direction
 
@@ -99,7 +100,9 @@ Implementation owners update actual build/install options, manuals, package
 recipes, source distributions and dependency/license inventories together.
 Retain applicable command behavior and use independent fixtures rather than
 perpetual interpreter-based production oracles. Apply focused checks while
-developing coherent groups, then one combined affected six-target checkpoint;
+developing coherent groups under the risk-based cadence; run an accumulated
+cross-platform checkpoint when the changed compiler/install/backend/link contract
+requires it, not after each edit;
 real-X behavior, native sanitizer and release gates retain their own scope.
 
 Record installed closure/size, memory, CPU and latency before/after where

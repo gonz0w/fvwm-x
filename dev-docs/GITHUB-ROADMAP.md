@@ -1,25 +1,20 @@
 # GitHub roadmap index
 
-Dependency scope was updated on 2026-10-23 under the [accepted
-decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). Children #179–184
-remain Later / P2 / Backlog with stage 05 ownership; existing owner states and
-the feature handoff remain unchanged. See the [tracker child
-mapping](PROJECT-TRACKER.md#dependency-simplification-backlog) for native
-parents and blocking relationships. No dependency migration is implemented by
-the roadmap update.
+Current priority, 2026-10-23: **maintenance first; new feature pickup paused**.
+The [batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md) reconciles
+all 73 open issues: 34 maintenance owners/children, 12 conditional qualification
+owners, five deferred performance owners and 22 paused feature/polish owners.
+Eight implementation batches and three bounded decision lanes organize the
+remaining work. #179/#181 are Ready for M1; #180 follows #179 within the combined
+compiler/utility/legacy install checkpoint.
 
-Current priority, 2026-10-22: the approved
-[feature cutoff](decisions/FEATURE-HANDOFF-2026-10-21.md) supersedes earlier
-maintenance pickup notes. Safety PR141–143 and selected foundation PR144–147
-are merged. The manager-target checkpoint merged in PR #148. BUTTON-01 #58
-and BUTTON-02 #59 merged through PR149–150. CFG-01 #60 now owns the typed
-settings/native-center checkpoint and remaining preview/recovery work, followed
-by CFG-02 #61 and IPC-02 #70.
-Additional general stage 5 work stays open in the **Later** milestone for a
-future release; its stage numbers below retain the stable ownership mapping.
-Only a concrete feature prerequisite or reproduced serious safety defect may
-interrupt. Existing release/platform gaps remain explicit. Do not close broad
-owners merely because one checkpoint is merged.
+Promote selected maintenance issues from Later to milestone 05, preserving their
+stage/priority and native parent/blocked-by relationships. Other maintenance
+owners keep their original milestone. The Project's **Work batch** field mirrors
+the register. Remaining feature work is Backlog under its existing milestones;
+performance-only work stays Later. Accepted components are not reopened or
+closed by card movement. [Tracker execution order](PROJECT-TRACKER.md#execution-order)
+is authoritative; no runtime/removal/qualification is implemented by planning.
 
 Stable ID mapping imported on 2026-10-13. This is not a second live backlog.
 The [tracker](PROJECT-TRACKER.md#execution-order) owns scope/execution;
@@ -68,7 +63,7 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 | 05 | EWMH-01 | [#18 — Adopt verified EWMH correctness gaps](https://github.com/gonz0w/fvwm-x/issues/18) |
 | 05 | SELECTION-01 | [#22 — Complete selection role and transfer contracts](https://github.com/gonz0w/fvwm-x/issues/22) |
 | 05 | MODULE-SCALE-01 | [#51 — Audit native module scale consumers](https://github.com/gonz0w/fvwm-x/issues/51) |
-| 05 | BOX-01 | [#41 — Audit reusable geometry and box primitives](https://github.com/gonz0w/fvwm-x/issues/41) |
+| 05 | BOX-01 | [#41 — Evaluate isolated helper sandbox boundaries](https://github.com/gonz0w/fvwm-x/issues/41) |
 | 05 | LIB-05 | [#47 — Review library boundaries and duplication](https://github.com/gonz0w/fvwm-x/issues/47) |
 | 05 | LINK-01 | [#49 — Declare target-owned dependencies and qualify reduced profiles](https://github.com/gonz0w/fvwm-x/issues/49) |
 | 05 | LIB-04 | [#46 — Consolidate SVG backends and evaluate renderer alternatives](https://github.com/gonz0w/fvwm-x/issues/46) |

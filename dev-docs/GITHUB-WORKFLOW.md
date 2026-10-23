@@ -6,7 +6,7 @@ The [stable issue index](GITHUB-ROADMAP.md) links every imported tracker ID.
 
 The tracker owns execution order, scope and accepted evidence. GitHub organizes
 live issue/PR review and mirrors that order manually. Pick a bounded unblocked
-outcome from the owning stage, inspect open PRs and read its decisions/evidence.
+outcome from the current tracker batch, inspect open PRs and read its decisions/evidence.
 Split broad planning into reviewed implementation slices when picked up. Do not
 restart accepted work or interpret a local checkpoint as physical/release acceptance.
 
@@ -26,9 +26,10 @@ in Backlog; maintainer triage supplies priority/stage before pickup.
 | status:done | Done | Every scoped criterion accepted; issue closed |
 
 P0 is a reproduced critical defect; P1 is important current foundation work;
-P2 is later work. Execution stage precedes ordinary priority sorting; a new
-serious defect jumps ahead. The initial table orders stage, priority, then the
-tracker's row order. Update positions manually when ownership/order changes.
+P2 is normal planned work. Current user-selected batch order precedes ordinary
+stage/priority sorting; a new serious defect jumps ahead. Stage remains stable
+ownership, not permission to bypass the maintenance-first queue. The Project's
+Work batch field mirrors the current batch register. Update positions manually when ownership/order changes.
 Milestones follow stages1–9 plus Later, without invented due dates. Remaining
 monitor/protocol gaps and runtime-controller ports belong to stage5; their
 accepted stage3 audit/utility checkpoints are not repeated.

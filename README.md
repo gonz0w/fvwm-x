@@ -8,7 +8,8 @@ and continued use of FVWM 3.x configurations and themes.
 Desktop services use FVWM's native modules and system facilities. There is no
 built-in compositor or native Wayland backend.
 
-**Status:** in-progress development, not a finished release. Recent work includes:
+**Status:** in-progress development. Features paused for source cleanup and
+dependency retirement. Recent work includes:
 
 - Atomic button updates, desktop settings/editor and configuration checking.
 - Structured IPC queries/actions and scoped settings preview/recovery.
@@ -30,7 +31,7 @@ Full file-manager workflows, protected clipboard handoff, broader accessibility 
 remain open. Existing folder menus remain the default. OpenBSD follows new
 releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
 
-Later: [mandatory Go, Perl/Python retirement and dependency cleanup](dev-docs/decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md); implementation remains queued.
+Next: [batched legacy, dependency and tooling cleanup](dev-docs/decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).
 
 - [Install and build](INSTALL.md)
 - [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)

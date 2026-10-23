@@ -1,0 +1,462 @@
+{
+  "status": "observed",
+  "profile": "linux-arm64-gcc-default",
+  "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+  "architecture": "aarch64",
+  "samples": 128,
+  "repetitions": 3,
+  "requested_rate": 10000,
+  "runs": [
+    {
+      "side": "baseline",
+      "repetition": 1,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr159/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/file-browser-performance164/comparison/1-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 1,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr164/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr164/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/file-browser-performance164/comparison/1-candidate"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 2,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr164/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr164/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/file-browser-performance164/comparison/2-candidate"
+      ],
+      "status": 0
+    },
+    {
+      "side": "baseline",
+      "repetition": 2,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr159/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/file-browser-performance164/comparison/2-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "baseline",
+      "repetition": 3,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr159/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/file-browser-performance164/comparison/3-baseline"
+      ],
+      "status": 0
+    },
+    {
+      "side": "candidate",
+      "repetition": 3,
+      "command": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-performance-reference-pr164/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-performance-reference-pr164/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/file-browser-performance164/comparison/3-candidate"
+      ],
+      "status": 0
+    }
+  ],
+  "checkpoints": {
+    "baseline": {
+      "revision": "0597fbae3750f569eeb1f637400610c3409401e7",
+      "binaries": {
+        "fvwm": {
+          "path": "/tmp/fvwm-performance-reference-pr159/fvwm3",
+          "bytes": 5346600,
+          "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+          "bytes": 398912,
+          "sha256": "5de45a80c289d421585fdf8e003ed6bf3f5ff2d716526ac67d5ba00b07cfdb7e"
+        }
+      },
+      "wm_size": {
+        "command": [
+          "/usr/bin/size",
+          "/tmp/fvwm-performance-reference-pr159/fvwm3"
+        ],
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1099301\t  27220\t  39552\t1166073\t 11caf9\t/tmp/fvwm-performance-reference-pr159/fvwm3\n",
+        "stderr": "",
+        "text_bytes": 1099301,
+        "data_bytes": 27220,
+        "bss_bytes": 39552
+      }
+    },
+    "candidate": {
+      "revision": "a2b9e955259faea2a9a42dd464f36529720b4974",
+      "binaries": {
+        "fvwm": {
+          "path": "/tmp/fvwm-performance-reference-pr164/fvwm3",
+          "bytes": 5396632,
+          "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-performance-reference-pr164/FvwmMFL",
+          "bytes": 418512,
+          "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7"
+        }
+      },
+      "wm_size": {
+        "command": [
+          "/usr/bin/size",
+          "/tmp/fvwm-performance-reference-pr164/fvwm3"
+        ],
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1097293\t  27380\t  39824\t1164497\t 11c4d1\t/tmp/fvwm-performance-reference-pr164/fvwm3\n",
+        "stderr": "",
+        "text_bytes": 1097293,
+        "data_bytes": 27380,
+        "bss_bytes": 39824
+      }
+    }
+  },
+  "measurement_scope": "same-host owned Xvfb; no rebuild or timing gate",
+  "profiler_inputs": [
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+      "bytes": 11212,
+      "sha256": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/geometry_transition_live.py",
+      "bytes": 32806,
+      "sha256": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357"
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py",
+      "bytes": 140988,
+      "sha256": "78fc9ff95abab0c686afb04c4513d3cf96b82757ec856f2d6668da18eaf48380"
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "idle": {
+        "commands": {
+          "median_ms": 0.302335,
+          "median_range_ms": [
+            0.2529185,
+            0.3528975
+          ],
+          "p95_ms": 0.447503
+        },
+        "scheduled_10ms": {
+          "median_ms": 11.964637,
+          "median_range_ms": [
+            11.9627825,
+            12.180201
+          ],
+          "p95_ms": 13.231832
+        },
+        "wm_cpu_percent": 1.8964124689159403,
+        "wm_peak_rss_kib": 7200
+      },
+      "title": {
+        "commands": {
+          "median_ms": 0.36344,
+          "median_range_ms": [
+            0.3526275,
+            0.37227299999999997
+          ],
+          "p95_ms": 0.882088
+        },
+        "scheduled_10ms": {
+          "median_ms": 11.807927,
+          "median_range_ms": [
+            11.654989,
+            11.896324
+          ],
+          "p95_ms": 12.758954
+        },
+        "wm_cpu_percent": 7.663299999203451,
+        "wm_peak_rss_kib": 7200,
+        "achieved_requests_per_second": 9993.490410885905
+      },
+      "resize": {
+        "commands": {
+          "median_ms": 0.30002249999999997,
+          "median_range_ms": [
+            0.29518900000000003,
+            0.3493145
+          ],
+          "p95_ms": 0.458336
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.365244,
+          "median_range_ms": [
+            12.281993,
+            12.3874735
+          ],
+          "p95_ms": 13.849461
+        },
+        "wm_cpu_percent": 15.363051625199645,
+        "wm_peak_rss_kib": 7200,
+        "achieved_requests_per_second": 9996.811286077109
+      }
+    },
+    "candidate": {
+      "idle": {
+        "commands": {
+          "median_ms": 0.348127,
+          "median_range_ms": [
+            0.2812725,
+            0.369086
+          ],
+          "p95_ms": 0.485044
+        },
+        "scheduled_10ms": {
+          "median_ms": 11.9999495,
+          "median_range_ms": [
+            11.5103635,
+            12.359868500000001
+          ],
+          "p95_ms": 13.325375
+        },
+        "wm_cpu_percent": 2.4669791022849816,
+        "wm_peak_rss_kib": 7196
+      },
+      "title": {
+        "commands": {
+          "median_ms": 0.327481,
+          "median_range_ms": [
+            0.257335,
+            0.365294
+          ],
+          "p95_ms": 0.663254
+        },
+        "scheduled_10ms": {
+          "median_ms": 11.7290105,
+          "median_range_ms": [
+            11.5143215,
+            11.7456775
+          ],
+          "p95_ms": 12.567953
+        },
+        "wm_cpu_percent": 6.58090345961303,
+        "wm_peak_rss_kib": 7196,
+        "achieved_requests_per_second": 9997.465821429543
+      },
+      "resize": {
+        "commands": {
+          "median_ms": 0.2704605,
+          "median_range_ms": [
+            0.25202199999999997,
+            0.3648355
+          ],
+          "p95_ms": 0.529629
+        },
+        "scheduled_10ms": {
+          "median_ms": 12.353909999999999,
+          "median_range_ms": [
+            12.2769715,
+            12.392451999999999
+          ],
+          "p95_ms": 13.686668
+        },
+        "wm_cpu_percent": 14.195216553409294,
+        "wm_peak_rss_kib": 7196,
+        "achieved_requests_per_second": 9997.060148892422
+      }
+    }
+  },
+  "interval": {
+    "baseline_merged_pr": 159,
+    "candidate_merged_pr": 164,
+    "merged_PRs": [
+      160,
+      161,
+      162,
+      163,
+      164
+    ],
+    "unmerged_browser_candidate_included": false
+  },
+  "next_reference": {
+    "merged_pr": 164,
+    "merge": "6f7e964a0e6a41d1e3e89f2e9fd9898e764bf650",
+    "runtime_commit": "a2b9e955259faea2a9a42dd464f36529720b4974",
+    "directory": "/tmp/fvwm-performance-reference-pr164",
+    "files": {
+      "fvwm3": {
+        "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+        "bytes": 5396632
+      },
+      "FvwmMFL": {
+        "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7",
+        "bytes": 418512
+      }
+    },
+    "merged_implementation_PRs_since_reference": 0
+  },
+  "binding": {
+    "baseline": {
+      "merged_pr": 159,
+      "merge": "0eddcbbc97a82d0b0e6ca8cc53691b43756b610c",
+      "runtime_commit": "0597fbae3750f569eeb1f637400610c3409401e7",
+      "directory": "/tmp/fvwm-performance-reference-pr159",
+      "files": {
+        "fvwm3": {
+          "sha256": "d11e6b175c96c0347f992bc1a8d926754a610e647d1b1b19976e8384a487fd8d",
+          "bytes": 5346600
+        },
+        "FvwmMFL": {
+          "sha256": "5de45a80c289d421585fdf8e003ed6bf3f5ff2d716526ac67d5ba00b07cfdb7e",
+          "bytes": 398912
+        }
+      },
+      "merged_implementation_PRs_since_reference": 0
+    },
+    "candidate": {
+      "merged_pr": 164,
+      "merge": "6f7e964a0e6a41d1e3e89f2e9fd9898e764bf650",
+      "runtime_commit": "a2b9e955259faea2a9a42dd464f36529720b4974",
+      "directory": "/tmp/fvwm-performance-reference-pr164",
+      "files": {
+        "fvwm3": {
+          "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "bytes": 5396632
+        },
+        "FvwmMFL": {
+          "sha256": "6fbfaccea2aa45f624a3d29a88dd0a33703738777db52733130713634d015df7",
+          "bytes": 418512
+        }
+      }
+    },
+    "seconds": 30.838,
+    "command": [
+      "python3",
+      "/tmp/fvwm-module-waits-20261015/source/tests/compare_performance.py",
+      "--baseline-fvwm",
+      "/tmp/fvwm-performance-reference-pr159/fvwm3",
+      "--baseline-mfl",
+      "/tmp/fvwm-performance-reference-pr159/FvwmMFL",
+      "--baseline-revision",
+      "0597fbae3750f569eeb1f637400610c3409401e7",
+      "--candidate-fvwm",
+      "/tmp/fvwm-performance-reference-pr164/fvwm3",
+      "--candidate-mfl",
+      "/tmp/fvwm-performance-reference-pr164/FvwmMFL",
+      "--candidate-revision",
+      "a2b9e955259faea2a9a42dd464f36529720b4974",
+      "--profile",
+      "linux-arm64-gcc-default",
+      "--artifacts-dir",
+      "/tmp/fvwm-module-waits-20261015/file-browser-performance164/comparison"
+    ],
+    "compiler": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+  },
+  "canonical": {
+    "sha256": "598dd42b37d5b83b75755a2c12107923a178df0a3bd1cfd89493d34d739d5ce3",
+    "bytes": 2794717,
+    "files": 45,
+    "gzip_crc_verified_to_eof": true,
+    "complete_payload_and_mode_verification": true
+  },
+  "module_size_output": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n  82994\t   2488\t   3720\t  89202\t  15c72\t/tmp/fvwm-performance-reference-pr159/FvwmMFL\n  91682\t   2544\t   3736\t  97962\t  17eaa\t/tmp/fvwm-performance-reference-pr164/FvwmMFL\n",
+  "module_size_sha256": "2ec54309f915ca64ab5b6f2837f9c47101e7e6f2ecc4ec209b57fcb896b1e19b"
+}

@@ -33,5 +33,9 @@
     "commands",
     "menus",
     "styles"
+  ],
+  "go_pages": [
+    "FvwmPrompt",
+    "fvwm-file-browser"
   ]
 }

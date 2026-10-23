@@ -1,0 +1,485 @@
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2, or any later version.
+
+package main
+
+import (
+	"context"
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"flag"
+	"fmt"
+	"net"
+	"os"
+	"os/exec"
+	"os/signal"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"syscall"
+	"time"
+	"unicode"
+
+	"github.com/fvwmorg/FvwmPrompt/internal/collection"
+	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
+	"github.com/fvwmorg/FvwmPrompt/transport"
+)
+
+const idleLimit = 5 * time.Minute
+const workerLimit = 10 * time.Second
+
+type options struct {
+	socket, dir, opener, terminal string
+	hidden, inspect               bool
+}
+type pendingWork struct {
+	serial     uint64
+	request    workRequest
+	navigation string
+}
+type completedWork struct {
+	work   pendingWork
+	result workResult
+}
+
+type browser struct {
+	session                    *transport.Session
+	executable, instance, home string
+	alias                      string
+	opener, terminal           string
+	model                      collection.Model
+	snapshot                   *filemodel.Snapshot
+	offset                     int
+	hidden                     bool
+	history                    []string
+	form, serial               uint64
+	active                     bool
+	cancel                     context.CancelFunc
+	pending                    *pendingWork
+	results                    chan completedWork
+	status                     string
+}
+
+// Text is presentation only. Prevent FVWM/Form expansions without changing
+// the original bytes retained by filemodel and used for all actions.
+func displayText(value string, limit int) string {
+	var out strings.Builder
+	for _, c := range value {
+		text := string(c)
+		if !unicode.IsPrint(c) || c > 126 || strings.ContainsRune("$%\\\"&", c) {
+			text = fmt.Sprintf("[U+%04X]", c)
+		}
+		if out.Len()+len(text) > limit {
+			out.WriteString("...")
+			break
+		}
+		out.WriteString(text)
+	}
+	return out.String()
+}
+
+func (b *browser) show() error {
+	if b.form == ^uint64(0) {
+		return errors.New("form generation exhausted")
+	}
+	oldAlias := b.alias
+	b.form++
+	state := "ready"
+	if b.active {
+		state = "busy"
+	}
+	alias := "FvwmFiles-" + b.instance + "-" + strconv.FormatUint(b.form, 10) + "-" + state
+	b.alias = alias
+	callback := "Command Echo FVWM_FILES_1 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " "
+	commands := []string{}
+	if oldAlias != "" {
+		commands = append(commands, "KillModule FvwmForm "+oldAlias, "DestroyModuleConfig "+oldAlias+":*")
+	}
+	line := func(value string) { commands = append(commands, "*"+alias+": "+value) }
+	button := func(label, key, action, argument string) {
+		line("Button continue \"" + label + "\" " + key)
+		line(callback + action + " " + argument + " x$(picks:Base64)")
+	}
+	line(`Title "File browser"`)
+	line(`Line left`)
+	path := "Loading folder"
+	if b.snapshot != nil {
+		path = string(b.snapshot.Path)
+	}
+	line(`Text "` + displayText(path, 90) + `"`)
+	line(`Line left`)
+	line(`Text "` + displayText(b.status, 120) + `"`)
+	line(`Selection picks multiple`)
+	page, err := b.model.Page(b.offset)
+	if err != nil {
+		return err
+	}
+	for i, item := range page {
+		line("Line left")
+		selected := "off"
+		if b.model.Selected[item.ID] {
+			selected = "on"
+		}
+		line(fmt.Sprintf("Choice row%d %s %s \"%s: %s\"", i, item.ID, selected,
+			item.Kind, displayText(item.Label, 64)))
+		button("Open", "", "activate", item.ID)
+	}
+	line("Line left")
+	line(fmt.Sprintf("Text \"%d items; page %d; %d selected (limit %d)\"", len(b.model.Entries), b.offset/collection.PageSize+1, len(b.model.Selected), collection.MaxSelected))
+	line("Line left")
+	button("Home", "", "home", "-")
+	button("Up", "", "up", "-")
+	button("Back", "", "back", "-")
+	button("Refresh (F5)", "F5", "refresh", "-")
+	button("Hidden (F6)", "F6", "hidden", "-")
+	line("Line left")
+	button("Previous (F7)", "F7", "previous", "-")
+	button("Next (F8)", "F8", "next", "-")
+	button("Open selected (F3)", "F3", "selected", "-")
+	button("Terminal (F4)", "F4", "terminal", "-")
+	line("Line left")
+	line(`Text "Path:"`)
+	line(`Input path 40 ""`)
+	button("Go", "", "path", "x$(path:Base64)")
+	button("Cancel work", "", "cancel", "-")
+	button("Close (Esc)", "^[", "close", "-")
+	line(`Line left`)
+	line(`Text "Select with Space; Tab moves controls. Idle close: 5 minutes."`)
+	line("Timeout 3000 \"Echo FVWM_FILES_1 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x\" \"\"")
+	commands = append(commands, "Module FvwmForm "+alias)
+	for _, command := range commands {
+		if err := b.session.Send(command); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (b *browser) start(work pendingWork) {
+	b.active = true
+	ctx, cancel := context.WithTimeout(context.Background(), workerLimit)
+	b.cancel = cancel
+	go func() {
+		defer cancel()
+		b.results <- completedWork{work, startWorker(ctx, b.executable, work.request)}
+	}()
+}
+
+func (b *browser) queue(request workRequest, navigation string) error {
+	if b.serial == ^uint64(0) {
+		return errors.New("request generation exhausted")
+	}
+	if b.active && request.Operation != "scan" {
+		return errors.New("file worker is busy")
+	}
+	b.serial++
+	work := pendingWork{b.serial, request, navigation}
+	b.status = "Loading or checking target; Cancel work remains available"
+	if b.active {
+		b.cancel()
+		b.pending = &work
+	} else {
+		b.start(work)
+	}
+	return nil
+}
+
+func (b *browser) navigate(path, navigation string) error {
+	if !filepath.IsAbs(path) && b.snapshot != nil {
+		path = filepath.Join(string(b.snapshot.Path), path)
+	}
+	if !filepath.IsAbs(path) || len(path) > filemodel.MaxPath || strings.ContainsRune(path, 0) {
+		return errors.New("invalid folder path")
+	}
+	return b.queue(workRequest{Operation: "scan", Path: []byte(filepath.Clean(path)), Hidden: b.hidden}, navigation)
+}
+
+func (b *browser) completed(event completedWork) error {
+	b.active = false
+	b.cancel = nil
+	if event.work.serial == b.serial {
+		result := event.result
+		if result.Status == "loaded" && result.Snapshot != nil {
+			snapshot := result.Snapshot
+			if snapshot.Schema != 1 {
+				return errors.New("invalid directory schema")
+			}
+			old := ""
+			if b.snapshot != nil {
+				old = string(b.snapshot.Path)
+			}
+			if old != string(snapshot.Path) {
+				if event.work.navigation == "push" && old != "" {
+					b.history = append(b.history, old)
+					if len(b.history) > 32 {
+						b.history = b.history[1:]
+					}
+				} else if event.work.navigation == "back" && len(b.history) != 0 {
+					b.history = b.history[:len(b.history)-1]
+				}
+				b.model.Selected = nil
+			}
+			if err := b.model.Replace(snapshot.Entries()); err != nil {
+				return err
+			}
+			b.snapshot, b.hidden, b.offset = snapshot, snapshot.Hidden, 0
+			b.status = "Folder loaded. Symlink/special-file actions unavailable."
+		} else if result.Status == "started" {
+			b.status = "Application started; the browser cannot confirm that the file opened"
+		} else {
+			b.status = result.Error
+		}
+	}
+	if b.pending != nil {
+		work := *b.pending
+		b.pending = nil
+		b.start(work)
+	}
+	return b.show()
+}
+
+func decodeField(value string) ([]byte, error) {
+	if !strings.HasPrefix(value, "x") || len(value) > 6000 {
+		return nil, errors.New("invalid native field")
+	}
+	return base64.RawURLEncoding.DecodeString(value[1:])
+}
+
+// Only controls from this exact rendered view can act. These tokens prevent
+// stale callbacks, not hostile same-user/X11 clients from accessing the WM.
+func (b *browser) action(message string) (bool, error) {
+	parts := strings.Fields(message)
+	if len(parts) != 6 || parts[0] != "FVWM_FILES_1" || parts[1] != b.instance {
+		return false, errors.New("invalid browser callback")
+	}
+	if parts[2] != strconv.FormatUint(b.form, 10) {
+		return false, errors.New("stale browser control")
+	}
+	if parts[3] == "close" {
+		return true, nil
+	}
+	selected, err := decodeField(parts[5])
+	if err != nil {
+		return false, err
+	}
+	if err := b.model.SelectPage(b.model.Generation, b.offset, strings.Fields(string(selected))); err != nil {
+		return false, err
+	}
+	path := ""
+	if b.snapshot != nil {
+		path = string(b.snapshot.Path)
+	}
+	switch parts[3] {
+	case "home":
+		err = b.navigate(b.home, "push")
+	case "up":
+		if path == "" {
+			err = errors.New("folder is not ready")
+		} else {
+			err = b.navigate(filepath.Dir(path), "push")
+		}
+	case "back":
+		if len(b.history) == 0 {
+			err = errors.New("no previous folder")
+		} else {
+			err = b.navigate(b.history[len(b.history)-1], "back")
+		}
+	case "path":
+		var value []byte
+		value, err = decodeField(parts[4])
+		if err == nil && len(value) == 0 {
+			err = errors.New("enter a folder path")
+		}
+		if err == nil {
+			err = b.navigate(string(value), "push")
+		}
+	case "refresh", "hidden":
+		if parts[3] == "hidden" {
+			b.hidden = !b.hidden
+		}
+		err = b.navigate(path, "refresh")
+	case "previous", "next":
+		offset := b.offset - collection.PageSize
+		if parts[3] == "next" {
+			offset = b.offset + collection.PageSize
+		}
+		if _, err = b.model.Page(offset); err == nil {
+			b.offset = offset
+		}
+	case "selected", "activate", "terminal":
+		operation, id, program := "activate", parts[4], b.opener
+		if parts[3] == "selected" {
+			ids := b.model.SelectedIDs()
+			if len(ids) != 1 {
+				return false, errors.New("select exactly one item to open")
+			}
+			id = ids[0]
+		}
+		if parts[3] == "terminal" {
+			operation, id, program = "terminal", "", b.terminal
+		}
+		err = b.queue(workRequest{Operation: operation, Snapshot: b.snapshot, Hidden: b.hidden, ID: id, Program: program}, "push")
+	case "cancel":
+		if b.serial == ^uint64(0) {
+			return false, errors.New("request generation exhausted")
+		}
+		b.serial++
+		b.pending = nil
+		if b.cancel != nil {
+			b.cancel()
+		}
+		b.status = "Cancellation requested; waiting for current work to stop"
+	default:
+		err = errors.New("unsupported browser action")
+	}
+	return false, err
+}
+
+func run(o options) error {
+	executable, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	if o.inspect {
+		ctx, cancel := context.WithTimeout(context.Background(), workerLimit)
+		defer cancel()
+		result := startWorker(ctx, executable, workRequest{Operation: "scan", Path: []byte(o.dir), Hidden: o.hidden})
+		if err := json.NewEncoder(os.Stdout).Encode(result); err != nil {
+			return err
+		}
+		if result.Status != "loaded" {
+			return errors.New("directory inspection failed")
+		}
+		return nil
+	}
+	connection, err := net.DialTimeout("unix", transport.SocketPath(o.socket, os.Getenv, os.Getuid()), transport.WriteTimeout)
+	if err != nil {
+		return errors.New("cannot connect to FvwmMFL; start Module FvwmMFL")
+	}
+	session := transport.New(connection)
+	defer session.Close()
+	if err := session.Send("set echo"); err != nil {
+		return err
+	}
+	nonce := make([]byte, 16)
+	if _, err := rand.Read(nonce); err != nil {
+		return err
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
+		opener: o.opener, terminal: o.terminal, hidden: o.hidden, results: make(chan completedWork, 1)}
+	defer func() {
+		if b.cancel != nil {
+			b.cancel()
+		}
+		session.Send("KillModule FvwmForm " + b.alias)
+		session.Send("DestroyModuleConfig " + b.alias + ":*")
+	}()
+	events := make(chan string, 16)
+	finished := make(chan error, 1)
+	go func() {
+		finished <- session.Read(func(record json.RawMessage) error {
+			var event struct {
+				Echo struct {
+					Message string `json:"message"`
+				} `json:"echo"`
+			}
+			if json.Unmarshal(record, &event) != nil {
+				return errors.New("invalid MFL event")
+			}
+			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_1 "+b.instance+" ") {
+				select {
+				case events <- event.Echo.Message:
+				default:
+					return errors.New("browser control queue is full")
+				}
+			}
+			return nil
+		})
+	}()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	idle := time.NewTimer(idleLimit)
+	defer idle.Stop()
+	if err := b.navigate(o.dir, "push"); err != nil {
+		return err
+	}
+	if err := b.show(); err != nil {
+		return err
+	}
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case <-idle.C:
+			return nil
+		case err := <-finished:
+			return err
+		case event := <-b.results:
+			if err := b.completed(event); err != nil {
+				return err
+			}
+		case message := <-events:
+			close, err := b.action(message)
+			if close {
+				return nil
+			}
+			if err != nil {
+				b.status = err.Error()
+			}
+			if !idle.Stop() {
+				select {
+				case <-idle.C:
+				default:
+				}
+			}
+			idle.Reset(idleLimit)
+			if err := b.show(); err != nil {
+				return err
+			}
+		}
+	}
+}
+
+func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--worker" {
+		if err := runWorker(os.Stdin, os.Stdout); err != nil {
+			fmt.Fprintln(os.Stderr, "fvwm-file-browser: invalid worker request")
+			os.Exit(1)
+		}
+		return
+	}
+	var o options
+	home, _ := os.UserHomeDir()
+	flag.StringVar(&o.dir, "dir", home, "initial absolute local directory")
+	flag.StringVar(&o.socket, "socket", "", "FvwmMFL socket (default: standard private discovery)")
+	flag.StringVar(&o.opener, "opener", "", "literal opener executable; default: xdg-open when available")
+	flag.StringVar(&o.terminal, "terminal", "", "literal terminal executable; default: x-terminal-emulator or xterm")
+	flag.BoolVar(&o.hidden, "hidden", false, "include hidden entries")
+	flag.BoolVar(&o.inspect, "inspect", false, "emit bounded schema-1 directory JSON without X")
+	flag.Parse()
+	if flag.NArg() != 0 {
+		fmt.Fprintln(os.Stderr, "fvwm-file-browser: unexpected arguments")
+		os.Exit(2)
+	}
+	if o.opener == "" {
+		o.opener, _ = exec.LookPath("xdg-open")
+	}
+	if o.terminal == "" {
+		o.terminal, _ = exec.LookPath("x-terminal-emulator")
+		if o.terminal == "" {
+			o.terminal, _ = exec.LookPath("xterm")
+		}
+	}
+	if err := run(o); err != nil {
+		fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
+		os.Exit(1)
+	}
+}

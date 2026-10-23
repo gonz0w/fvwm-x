@@ -35,6 +35,8 @@ def index_source(text, prompt):
     if not prompt:
         text = ''.join(line for line in text.splitlines(keepends=True)
                        if 'xref:FvwmPrompt.adoc[' not in line)
+    if prompt:
+        text += '\n* xref:fvwm-file-browser.adoc[File browser foundations]\n'
     if 'xref:FvwmDesktop.adoc[' not in text:
         text += '\n== Default desktop\n\n* xref:FvwmDesktop.adoc[Slate desktop]\n'
     return text
@@ -68,7 +70,7 @@ def render(source, output, formats, prompt, executable, website=False):
         if not version:
             raise ValueError('could not determine source version')
     if prompt:
-        pages += ['FvwmPrompt']
+        pages += manifest['go_pages']
     with fresh_output(output, source) as stage:
         inputs = stage / 'sources'
         inputs.mkdir()
@@ -136,7 +138,7 @@ def main():
     if args.list:
         names = manual_manifest()[args.list]
         if args.list == 'pages' and args.prompt:
-            names += ['FvwmPrompt']
+            names += manual_manifest()['go_pages']
         print('\n'.join(names))
         return
     if args.extract or args.index:

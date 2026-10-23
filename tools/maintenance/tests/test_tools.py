@@ -197,9 +197,11 @@ class ToolTests(unittest.TestCase):
         self.assertTrue((output / 'html/FvwmDesktop.html').is_file())
         self.assertTrue((output / 'man/fvwm3styles.1').is_file())
         self.assertFalse((output / 'man/FvwmPrompt.1').exists())
+        self.assertFalse((output / 'man/fvwm-file-browser.1').exists())
         self.assertNotIn('xref:FvwmPrompt', (output / 'sources/index.adoc').read_text())
         docs.render(ROOT, self.root / 'prompt', ['man'], True, fake)
         self.assertTrue((self.root / 'prompt/man/FvwmPrompt.1').exists())
+        self.assertTrue((self.root / 'prompt/man/fvwm-file-browser.1').exists())
         bad = self.executable('bad renderer', 'import sys\nsys.exit(3)\n')
         with self.assertRaises(subprocess.CalledProcessError):
             docs.render(ROOT, self.root / 'failed', ['man'], False, bad)

@@ -27,7 +27,8 @@ Current findings and verification gaps are summarized in
 
 ## Agent Temper adoption — MAINT-02/TEMPER-01
 
-Owner: Cam (@gonz0w). Status: in progress. Review mirror:
+Owner: Cam (@gonz0w). Status: open until authorized integration and canonical
+verification are complete. Review mirror:
 [issue #192](https://github.com/gonz0w/fvwm-x/issues/192), bounded child of
 [MAINT-02 #14](https://github.com/gonz0w/fvwm-x/issues/14). This is the current
 owner-requested methodology checkpoint, not a new product feature batch.
@@ -59,10 +60,13 @@ the work-item walkthrough and preserved local contracts. Two wording findings
 (commit convention and authoritative tracker routing) were corrected. This is
 source/documentation evidence, not new runtime or platform qualification.
 
-Continuation: prepare the signed PR, verify its final source/signature/DCO and
-review, then await explicit maintainer integration authority. Canonical verification
-and final reconciliation remain open. Preserve this checkpoint as authority and
-use the issue/PR as review mirrors.
+Completion rule: this checkpoint becomes complete when its reviewed candidate is
+merged with explicit maintainer authority and the canonical commit/tree,
+signature and retained author DCO are verified. Record the exact identities and
+results in [PR #193](https://github.com/gonz0w/fvwm-x/pull/193), linked here as
+evidence. Until both conditions are satisfied, the checkpoint remains open.
+This tracker owns the completion rule; GitHub mirrors the resulting state.
+Broad MAINT-02 and product/native/release acceptance remain open.
 
 ## Current checkpoint status
 

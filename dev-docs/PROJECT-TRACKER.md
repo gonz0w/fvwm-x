@@ -27,7 +27,7 @@ Current findings and verification gaps are summarized in
 
 ## Agent Temper routing update — MAINT-02/TEMPER-02
 
-Owner: Cam; assigned fleet-adoption lead. Status: in progress; mirrored in
+Owner: Cam; assigned fleet-adoption lead. Status: review candidate; mirrored in
 [issue #196](https://github.com/gonz0w/fvwm-x/issues/196) under MAINT-02 #14.
 The October 24 owner-selected fleet update is a bounded maintenance checkpoint.
 Outcome: pristine immutable source update, explicit Codex selection, bounded
@@ -39,6 +39,13 @@ policy, role/model/effort/fallback/limit mapping; affected links/anchors and
 appropriate existing checks; signed actual-author-DCO candidate; separate final
 review; deliberate maintainer-approved integration and canonical verification.
 Use the owning issue for approach/evidence and mirror meaningful status here.
+Source preparation and static source/inventory/hash/TOML audit are complete at
+the selected pin. `make verify` passed the portable repository/lint/policy tests;
+15 native Meson/compiler/tool integration cases were explicitly skipped. These
+are source/portable checks, not WM, X11, native-platform or runtime-routing
+qualification. Separate final review, explicit maintainer integration and
+canonical verification remain pending; issue #196 holds exact evidence.
+
 Existing native/X11/install/performance/release gates remain separate. This
 checkpoint ends only at accepted merge/canonical verification or abandonment;
 configuration parsing does not establish runtime role/model discovery.

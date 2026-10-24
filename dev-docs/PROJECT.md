@@ -140,8 +140,9 @@ man pages and optional HTML from one source. The documentation
 
 Adopt the pinned [Agent Temper method](../.agent-temper/METHOD.md) as the portable development
 method. The [source record](../.agent-temper/SOURCE.md) identifies the immutable revision and retained
-bytes. **No optional profiles are selected.** Existing local verification and
-GitHub practices remain local extensions; the bundled profiles are inactive.
+bytes. Only the [Codex profile](../.agent-temper/profiles/codex.md) is selected. Existing local
+verification and GitHub practices remain local extensions; the bundled GitHub
+and strict-test-first profiles are inactive.
 This project document and its linked product decisions own product scope. This policy owns development decisions and
 authority; it does not replace those product contracts.
 
@@ -185,8 +186,9 @@ On 2026-10-24 the owner approved lasting bounded read-only agent reviews of
 accepted work. The lead may assign a finite source/policy/evidence inspection to
 a separate agent and record the reviewer, exact candidate, scope, findings and
 resolution. This replaces any previous blanket no-agent rule for that review
-scope only. It does not authorize delegated implementation, candidate/native
-execution, other-resource control or merging. Self-review remains self-review;
+scope only. The October 24 routing decision below additionally permits bounded
+implementation delegation. Candidate/native execution, other-resource control
+and merging retain their existing authority gates. Self-review remains self-review;
 an agent review is not an independent human approval or a GitHub approving review.
 
 ### Decisions and action authority
@@ -235,3 +237,45 @@ and a representative work item from pickup through completion. Owner decisions
 are needed for authority or required-policy changes. Adoption findings belong in
 [the owning tracker checkpoint](PROJECT-TRACKER.md#agent-temper-adoption--maint-02temper-01), mirrored in [issue #192](https://github.com/gonz0w/fvwm-x/issues/192); publish a sanitized upstream proposal only with
 appropriate authority. A project-specific requirement is not a universal rule.
+
+### Codex routing selection and policy change — 2026-10-24
+
+The owner explicitly selected model-routed subagent implementation and directed
+all existing Temper adopters to be ready for it in
+[issue #196](https://github.com/gonz0w/fvwm-x/issues/196). This replaces the
+previous read-only-review-only delegation allowance with bounded implementation
+delegation within already owner-accepted task scope. The lead must supply explicit
+file ownership, acceptance, policy, evidence, stop conditions and resource limits.
+The reason is that owner-selected workflow; separate review and existing native,
+operational and per-PR maintainer merge approval remain binding. This does not
+select a new product/platform/toolchain or expand other-resource authority.
+
+| Role | Assignment | Model | Effort |
+| --- | --- | --- | --- |
+| `temper_workflow` | Bounded read-only inspection and evidence summaries | `gpt-6-luna` | `medium` |
+| `temper_implementer` | Accepted implementation, tests and ordinary debugging | `gpt-6.1-sol` | `high` |
+| `temper_analyst` | Difficult analysis or separate complex review | `gpt-6-astra` | `high` |
+| `temper_reviewer` | Separate final review of work it did not author | `gpt-6.1-sol` | `high` |
+
+The lead owns tracker writes, integration and returned-evidence verification.
+Use at most three concurrent delegated agents, excluding the lead, within existing
+resource and WIP limits. No nested helpers without an explicit lead assignment.
+Keep tiny or tightly coupled work with the lead when appropriate. No role changes
+permissions or authorizes native/operational execution by itself.
+
+If a role or model is unavailable, report it. The lead may do the bounded work
+with its current model only when adequate and permitted under existing policy
+and limits; otherwise resolve the missing choice with the owner. Never silently
+substitute a model or claim that requested settings actually ran. The owner
+approves model/effort/role/limit changes; routine routing within this table is
+delegated to the lead. Preserve independent final review.
+
+Local `.codex/agents/` files are adapted project configuration outside the pinned
+bundle. No global/default model, permission or primary-chat setting changes.
+Where native role discovery is unavailable but explicit spawn settings are
+supported, use this same table with a complete fresh-context brief and record
+observed settings, or follow the fallback. Existing chats do not switch models
+when files change. Record client/version and observed role/model/effort metadata
+in the owning issue; parsing proves syntax only. Native discovery/routing remain
+unverified until actually observed in a fresh supporting session. Earlier active
+work retains accepted scope and evidence; future delegation follows this policy.

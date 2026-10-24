@@ -25,6 +25,24 @@ Current findings and verification gaps are summarized in
   Local BSD verification uses QEMU. Keep the root-sized fallback for servers
   reporting no RandR monitors. No native Wayland backend or built-in compositor.
 
+## Agent Temper routing update — MAINT-02/TEMPER-02
+
+Owner: Cam; assigned fleet-adoption lead. Status: in progress; mirrored in
+[issue #196](https://github.com/gonz0w/fvwm-x/issues/196) under MAINT-02 #14.
+The October 24 owner-selected fleet update is a bounded maintenance checkpoint.
+Outcome: pristine immutable source update, explicit Codex selection, bounded
+implementation delegation and four local roles. No product/runtime/native effects,
+new tracker or broader acceptance. Preserve other owners and active work.
+
+Acceptance: exact upstream bytes/license/source/manifest/inventory; coherent local
+policy, role/model/effort/fallback/limit mapping; affected links/anchors and
+appropriate existing checks; signed actual-author-DCO candidate; separate final
+review; deliberate maintainer-approved integration and canonical verification.
+Use the owning issue for approach/evidence and mirror meaningful status here.
+Existing native/X11/install/performance/release gates remain separate. This
+checkpoint ends only at accepted merge/canonical verification or abandonment;
+configuration parsing does not establish runtime role/model discovery.
+
 ## Agent Temper adoption — MAINT-02/TEMPER-01
 
 Owner: Cam (@gonz0w). Status: open until authorized integration and canonical

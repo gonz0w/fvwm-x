@@ -97,8 +97,11 @@ installed and tracked separately. Other Python/Perl runtime controllers and
 build/developer tooling have their own retirement work; this change does not
 make the entire distribution interpreter-free. M2's first slice installs the
 private Go `fvwm-desktop-worker` beside FvwmDesktop for application discovery,
-metrics and audio/power jobs. The controller and native screenshot boundary
-still use Python; full controller/session acceptance remains open.
+metrics, audio/power jobs and data-only settings/UI policy. Settings registry,
+schema migration, candidate validation and native menu/Form construction share
+the Go policy. The resident controller still owns Python file commits, consumer
+lifetimes and native screenshot capture; full controller/session acceptance
+remains open.
 
 The pre-FVWM3 `fvwm-convert-2.6` converter is no longer built or installed.
 FVWM3 configuration files remain supported. Migrate older configuration with

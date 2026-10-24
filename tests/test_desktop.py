@@ -1268,5 +1268,70 @@ class DesktopOperationPolicy(unittest.TestCase):
         self.assertLess(len(json.dumps(self.request()['result'])), 8192)
 
 
+class SettingsPlans(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix='fvwm-settings-plans-')
+        self.addCleanup(self.temp.cleanup)
+        self.commands = []
+        self.owner = desktop.Desktop(self.commands.append, ROOT / 'default-config',
+                                     Path(self.temp.name) / 'state.json')
+        self.addCleanup(self.owner.pool.shutdown)
+        self.owner.finish_configuration()
+
+    def test_rejected_editor_plan_preserves_active_draft(self):
+        self.owner.edit_settings('group:effects')
+        editor = self.owner.settings_editor
+        for plan in [dict(keys=['motion'], lines=['Exec evil']),
+                     dict(keys=['motion', 'motion'], lines=['Line left']),
+                     dict(keys=['unknown'], lines=['Line left']),
+                     dict(keys=['motion'], lines=['Text "ok"\nCommand Exec evil']),
+                     dict(keys=['motion'], lines=['Line left'] * 161)]:
+            self.commands.clear()
+            with patch.object(desktop, 'settings_policy', return_value=plan):
+                with self.assertRaises(ValueError):
+                    self.owner.edit_settings('motion')
+            self.assertIs(self.owner.settings_editor, editor)
+            self.assertEqual(self.commands, [])
+
+    def test_rejected_late_menu_plan_publishes_nothing(self):
+        plans = [dict(name='SlateSettings', title='Settings', rows=[['Valid', 'Nop']]),
+                 dict(name='SlateSetting_motion', title='motion', rows=[['bad', 'Nop\nExec evil']])]
+        self.commands.clear()
+        with patch.object(desktop, 'settings_policy', return_value=plans):
+            with self.assertRaises(ValueError):
+                self.owner.settings_menu()
+        self.assertEqual(self.commands, [])
+
+    def test_form_plans_keep_existing_schedule_and_preview_callbacks(self):
+        self.commands.clear()
+        self.owner.handle('schedule')
+        self.assertIn('*SlateScheduleForm: Command SendToModule FvwmDesktop times $(day) $(night)', self.commands)
+        lines = desktop.settings_policy('preview-form',
+            instance=self.owner.settings_instance, view='b' * 16, opacity=73, saved=True)
+        self.assertIn('Timeout 160 Nop ""', lines)
+        self.assertIn('Command SendToModule FvwmDesktop preview-control ' +
+            self.owner.settings_instance + ' ' + 'b' * 16 + ' save', lines)
+
+    def test_worker_failure_before_file_commit_preserves_state(self):
+        self.owner.change_settings({'palette': 'grove'})
+        before = self.owner.state_path.read_bytes()
+        generation = self.owner.settings_generation
+        with patch.object(desktop, 'desktop_worker', side_effect=RuntimeError('worker unavailable')):
+            with self.assertRaisesRegex(ValueError, 'unavailable'):
+                self.owner.change_settings({'palette': 'dune'})
+        self.assertEqual(self.owner.state_path.read_bytes(), before)
+        self.assertEqual(self.owner.settings_generation, generation)
+        self.assertEqual(self.owner.saved['palette'], 'grove')
+
+    def test_scalar_cache_is_bounded_and_rejects_mutable_results(self):
+        desktop.scalar_setting_value.cache_clear()
+        self.addCleanup(desktop.scalar_setting_value.cache_clear)
+        with patch.object(desktop, 'settings_policy', return_value={'bad': 'mutable'}):
+            with self.assertRaises(ValueError):
+                desktop.setting_value('motion', True)
+        self.assertEqual(desktop.scalar_setting_value.cache_info().currsize, 0)
+        self.assertEqual(desktop.scalar_setting_value.cache_info().maxsize, 128)
+
+
 if __name__ == '__main__':
     unittest.main()

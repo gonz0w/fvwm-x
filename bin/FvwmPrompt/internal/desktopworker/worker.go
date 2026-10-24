@@ -21,6 +21,8 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 )
 
 const RequestLimit = 64 * 1024
@@ -30,11 +32,12 @@ const Deadline = 4 * time.Second
 
 // Request is a private one-shot protocol, not an installed configuration API.
 type Request struct {
-	Version     int      `json:"version"`
-	Operation   string   `json:"operation"`
-	System      string   `json:"system,omitempty"`
-	Action      string   `json:"action,omitempty"`
-	Directories []string `json:"directories,omitempty"`
+	Version     int             `json:"version"`
+	Operation   string          `json:"operation"`
+	System      string          `json:"system,omitempty"`
+	Action      string          `json:"action,omitempty"`
+	Directories []string        `json:"directories,omitempty"`
+	Settings    json.RawMessage `json:"settings,omitempty"`
 }
 
 type Response struct {
@@ -56,7 +59,7 @@ func Decode(data []byte) (Request, error) {
 		return request, errors.New("expected request object")
 	}
 	seen := map[string]bool{}
-	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true}
+	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "settings": true}
 	for decoder.More() {
 		token, err = decoder.Token()
 		key, ok := token.(string)
@@ -88,9 +91,7 @@ func Decode(data []byte) (Request, error) {
 }
 
 func validateRequest(request Request) (Request, error) {
-	if len(request.Directories) > 64 {
-		return request, errors.New("too many application directories")
-	}
+
 	if request.Version != 1 {
 		return request, errors.New("unsupported desktop worker protocol")
 	}
@@ -105,10 +106,17 @@ func validateRequest(request Request) (Request, error) {
 	if request.System == "" {
 		request.System = map[string]string{"linux": "Linux", "freebsd": "FreeBSD", "openbsd": "OpenBSD"}[runtime.GOOS]
 	}
-	if request.Operation != "apps" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
+	if request.Operation != "apps" && request.Operation != "settings" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
 		return request, errors.New("unsupported system")
 	}
+	if request.Operation != "settings" && request.Settings != nil {
+		return request, errors.New("unexpected settings policy")
+	}
 	switch request.Operation {
+	case "settings":
+		if request.Action != "" || len(request.Directories) != 0 || request.Settings == nil {
+			return request, errors.New("invalid settings policy request")
+		}
 	case "apps":
 		if request.Action != "" {
 			return request, errors.New("apps has no action")
@@ -204,6 +212,14 @@ func Run(ctx context.Context, request Request, env Environment) (any, error) {
 	}
 	var value any
 	switch request.Operation {
+	case "settings":
+		value, err = desktopsettings.Evaluate(request.Settings)
+		if err != nil {
+			value = map[string]any{"error": err.Error()}
+			err = nil
+		} else {
+			value = map[string]any{"value": value}
+		}
 	case "apps":
 		value, err = applications(ctx, request.Directories, env)
 	case "status":

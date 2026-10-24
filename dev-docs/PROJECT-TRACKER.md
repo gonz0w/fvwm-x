@@ -27,7 +27,8 @@ Current findings and verification gaps are summarized in
 
 ## Agent Temper routing update — MAINT-02/TEMPER-02
 
-Owner: Cam; assigned fleet-adoption lead. Status: review candidate; mirrored in
+Owner: Cam; assigned fleet-adoption lead. Status: reviewed and owner-approved
+candidate; canonical completion remains conditional below. Mirrored in
 [issue #196](https://github.com/gonz0w/fvwm-x/issues/196) under MAINT-02 #14.
 The October 24 owner-selected fleet update is a bounded maintenance checkpoint.
 Outcome: pristine immutable source update, explicit Codex selection, bounded
@@ -43,8 +44,18 @@ Source preparation and static source/inventory/hash/TOML audit are complete at
 the selected pin. `make verify` passed the portable repository/lint/policy tests;
 15 native Meson/compiler/tool integration cases were explicitly skipped. These
 are source/portable checks, not WM, X11, native-platform or runtime-routing
-qualification. Separate final review, explicit maintainer integration and
-canonical verification remain pending; issue #196 holds exact evidence.
+qualification. Separate parent peer-agent review cleared signed head
+`4936938eb421db64c7f3a054f6fdda8fe7654058`, tree
+`67f16a9417f0653efd6b0e708ca6bacfd5a826e8`, including the retained verification
+log and signature/DCO evidence. It did not independently rerun tests or observe
+runtime routing. The owner explicitly authorized gated merge of PR #197 on
+2026-10-24, with existing checks, resolved review and canonical signature/DCO
+verification. This is finite approval for this checkpoint; no production,
+credentials, permissions/protection or general future merge authority expands.
+Issue #196 records the exact final source and canonical verification. The
+checkpoint becomes complete when PR #197 merges and its canonical identity,
+signature and DCO pass that recorded verification; until then integration is
+pending. Broader MAINT-02 #14 and native/release outcomes remain open.
 
 Existing native/X11/install/performance/release gates remain separate. This
 checkpoint ends only at accepted merge/canonical verification or abandonment;

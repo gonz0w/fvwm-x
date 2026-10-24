@@ -51,3 +51,19 @@ worker_environment = environment()
 worker_environment.set('FVWM_IMAGE_SVG_WORKER', fvwm_svg_worker.full_path())
 worker_environment.set('FVWM_IMAGE_EFFECT_WORKER', fvwm_svg_worker.full_path())
 add_test_setup('imageworker', env: worker_environment, is_default: true)
+
+# The capture process owns its X connection and PNG writer. Link only its
+# actual dependencies; disabled-PNG profiles install an explicit refusal stub.
+capture_deps = [summary_depvals['x11']]
+if libpng.found()
+    capture_deps += libpng
+endif
+fvwm_desktop_capture = executable(
+    'fvwm-desktop-capture',
+    ['desktop_capture.c', '../libs/capture_policy.c', '../libs/ImageSafety.c'],
+    include_directories: includedirs,
+    dependencies: capture_deps,
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'desktop-controller',
+)

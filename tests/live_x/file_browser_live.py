@@ -82,7 +82,7 @@ def run(args):
                     '*FvwmDesktop: appearance ' + appearance + '\n'
                     '*FvwmDesktop: transparency false\n')
                 inputs['local.config'] = local.read_bytes()
-                for name in ('config', 'desktop.fvwm', 'capture.py', 'palettes.json'):
+                for name in ('config', 'desktop.fvwm', 'palettes.json'):
                     inputs[name] = (theme_root / name).read_bytes()
                 (modules / 'FvwmDesktop').symlink_to(build / 'bin/FvwmPrompt/FvwmDesktop')
                 config.write_text('ModulePath ' + str(modules) + '\nRead ' +
@@ -371,9 +371,8 @@ def run(args):
                 raise AssertionError('missing browser callback')
 
             source = Path(__file__).resolve().parents[2]
-            spec = importlib.util.spec_from_file_location('capture', source / 'default-config/capture.py')
-            capture_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(capture_module)
+            from native_capture import NativeCapture
+            capture_module = NativeCapture(build / 'bin/fvwm-desktop-capture')
 
             def capture(name):
                 settle = name.startswith('file-browser-ipc-')

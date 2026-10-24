@@ -37,9 +37,9 @@ func helperBeside(directory, name string) string {
 		return path
 	}
 	if name == "fvwm-desktop-capture" {
-		// Meson keeps configured scripts in default-config, while Go executables
-		// live in bin/FvwmPrompt. Installed helpers remain adjacent and win above.
-		fallback := filepath.Join(directory, "..", "..", "default-config", name)
+		// Meson keeps the C helper in bin, while Go executables live in
+		// bin/FvwmPrompt. Installed helpers remain adjacent and win above.
+		fallback := filepath.Join(directory, "..", name)
 		if info, err := os.Stat(fallback); err == nil && info.Mode().IsRegular() {
 			return fallback
 		}

@@ -23,3 +23,8 @@ Remote settings and their observed enforcement are recorded in the repository
 setup report. Versioned policy files do not apply themselves. Neither local
 hooks nor an issue label proves checks passed. Keep failures, skips, native
 limitations and configuration compatibility explicit.
+
+The [Agent Temper composition](dev-docs/PROJECT.md) records persistent development
+choices and the owner's permission for bounded read-only agent reviews. Existing
+maintainer merge and consequential-action gates remain. Resolve missing or
+conflicting policy through owner Q&A and save the answer before affected work.

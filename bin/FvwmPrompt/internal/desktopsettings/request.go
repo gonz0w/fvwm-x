@@ -120,7 +120,7 @@ func merge(base, changes Values) Values {
 	return result
 }
 
-func prepare(s Snapshot, changes Values, minute int) (Values, error) {
+func Prepare(s Snapshot, changes Values, minute int) (Values, error) {
 	for k, v := range changes {
 		if _, e := Value(k, v, false); e != nil {
 			return nil, e
@@ -323,7 +323,7 @@ func Evaluate(data []byte) (any, error) {
 		if !ok {
 			return nil, errors.New("Invalid local minute")
 		}
-		return prepare(s, changes, minute)
+		return Prepare(s, changes, minute)
 	case "query":
 		scope, ok := r["scope"].(string)
 		observed, valid := r["observed"].(bool)

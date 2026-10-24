@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 )
@@ -316,5 +317,41 @@ func TestConfigurationCheckCannotUseBackends(t *testing.T) {
 	request.Operation = "apps"
 	if _, err := Run(context.Background(), request, Environment{}); err == nil {
 		t.Fatal("check payload admitted by another operation")
+	}
+}
+
+func TestFileMenuIsBoundedAndLiteral(t *testing.T) {
+	root := t.TempDir()
+	request := Request{Version: 1, Operation: "files", Path: root}
+	value, err := Run(context.Background(), request, Environment{})
+	if err != nil || len(value.([]FileMenuEntry)) != 0 {
+		t.Fatalf("empty folder: %v %v", value, err)
+	}
+	for _, name := range []string{"z-file", "A-file", "literal; command"} {
+		if err := os.WriteFile(filepath.Join(root, name), nil, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := os.Mkdir(filepath.Join(root, "directory"), 0700); err != nil {
+		t.Fatal(err)
+	}
+	value, err = Run(context.Background(), request, Environment{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	records := value.([]FileMenuEntry)
+	if len(records) != 4 || !records[0].Directory || records[1].Name != "A-file" || records[2].Name != "literal; command" {
+		t.Fatalf("%+v", records)
+	}
+	request.Path = filepath.Join(root, "fifo")
+	if err := syscall.Mkfifo(request.Path, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Run(context.Background(), request, Environment{}); err == nil {
+		t.Fatal("FIFO accepted as folder")
+	}
+	request.Operation = "apps"
+	if _, err := Run(context.Background(), request, Environment{}); err == nil {
+		t.Fatal("unrelated operation accepted file path")
 	}
 }

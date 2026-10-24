@@ -39,6 +39,7 @@ fvwmprompt_test_binaries = custom_target(
     output: [
         'FvwmPrompt.test', 'fvwmcommand.test', 'fvwmdesktopworker.test',
         'desktopworker.test', 'desktopsettings.test', 'desktopcheck.test',
+        'desktopcontroller.test', 'fvwmdesktop.test',
         'fvwmmenudesktop.test', 'fvwmmenudirectory.test',
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'transport.test',
@@ -231,6 +232,34 @@ test('file-browser-policy', golang,
     timeout: 180,
 )
 
+# The resident owner imports settings policy directly; commits/leases never
+# cross a worker boundary. Only acquisition/capture jobs remain isolated.
+# Go parses -ldflags as a quoted argument list, independently of the shell.
+# Preserve spaces/apostrophes in ordinary configured installation paths.
+desktop_data_linker = 'main.dataDirectory=' + fvwm_datadir
+if not desktop_data_linker.contains('\'')
+    desktop_data_linker = '\'' + desktop_data_linker + '\''
+elif not desktop_data_linker.contains('"')
+    desktop_data_linker = '"' + desktop_data_linker + '"'
+endif
+fvwm_desktop = custom_target(
+    'FvwmDesktop',
+    output: 'FvwmDesktop',
+    input: fvwmprompt_files,
+    command: [
+        'env', 'GOCACHE=' + fvwmprompt_go_cache,
+        'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
+        golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
+        '-ldflags', '-X ' + desktop_data_linker
+            + ' -X main.pngEnabled=' + (libpng.found() ? 'true' : 'false'),
+        '-o', meson.current_build_dir() / 'FvwmDesktop',
+        './cmd/fvwmdesktop',
+    ],
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'desktop-controller',
+)
+
 # Nonresident acquisition/actions for the existing desktop controller.
 fvwm_desktop_worker = custom_target(
     'fvwm-desktop-worker',
@@ -252,13 +281,15 @@ desktop_worker_env.set('FVWM_DESKTOP_WORKER', fvwm_desktop_worker.full_path())
 test('desktop-worker-policy', golang,
     args: ['test', '-C', fvwmprompt_build, '-mod=vendor',
         './internal/desktopworker', './cmd/fvwmdesktopworker',
-        './internal/desktopsettings', './internal/desktopcheck'],
+        './internal/desktopsettings', './internal/desktopcheck',
+        './internal/desktopcontroller', './cmd/fvwmdesktop'],
     env: prompt_test_env,
     timeout: 180,
 )
+desktop_worker_env.set('FVWM_DESKTOP_CONTROLLER', fvwm_desktop.full_path())
 test('desktop-worker-client', py,
     args: [files('../../tests/test_desktop_worker.py')],
     env: desktop_worker_env,
-    depends: fvwm_desktop_worker,
+    depends: [fvwm_desktop, fvwm_desktop_worker],
     timeout: 90,
 )

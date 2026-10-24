@@ -1,0 +1,187 @@
+{
+  "status": "observed",
+  "reference": "PR186 preserved pre-cleanup browser",
+  "candidate": "merged PR194, unchanged M1-qualified cleanup browser",
+  "method": "one warmup then five alternating pairs over 4096 empty files; existing binaries only; os.wait4 CPU/max-RSS",
+  "native_cpu": false,
+  "summary": {
+    "browser_reference": {
+      "samples": 5,
+      "median_ms": 16.33214799221605,
+      "range_ms": [
+        15.858184997341596,
+        16.734235003241338
+      ],
+      "median_max_rss_kib": 29460,
+      "median_cpu_ms": 18.419999999999998
+    },
+    "browser_current": {
+      "samples": 5,
+      "median_ms": 16.040978007367812,
+      "range_ms": [
+        16.01601998845581,
+        16.600150003796443
+      ],
+      "median_max_rss_kib": 29460,
+      "median_cpu_ms": 18.177
+    }
+  },
+  "observations": {
+    "binaries": {
+      "core": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "bytes": 5396632,
+        "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1097293\t  27380\t  39824\t1164497\t 11c4d1\t/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3\n"
+      },
+      "mfl": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "bytes": 445112,
+        "sha256": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 100231\t   2576\t   3736\t 106543\t  1a02f\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL\n"
+      },
+      "form": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "bytes": 1624952,
+        "sha256": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 398442\t  14736\t  14048\t 427226\t  684da\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n"
+      },
+      "browser_reference": {
+        "path": "/tmp/fvwm-module-waits-20261015/m24-performance-inputs/browser_reference",
+        "bytes": 5620856,
+        "sha256": "59e56a6eb07eb4f3d70568e27371ebdcd1e3ddb43904d996d677370a7d6f9c2b",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3591767\t  88323\t33805464\t37485554\t23bfbf2\t/tmp/fvwm-module-waits-20261015/m24-performance-inputs/browser_reference\n",
+        "go_build": "/tmp/fvwm-module-waits-20261015/m24-performance-inputs/browser_reference: go1.27.2\n\tpath\tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser\n\tmod\tgithub.com/fvwmorg/FvwmPrompt\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,gotestjsonbuildtext=1,httpcookiemaxnum=0,httplaxcontentlength=1,httpmuxgo121=1,httpservecontentkeepheaders=1,httpservecontentmaxranges=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlmaxqueryparams=0,urlstrictcolons=0,winreadlinkvolume=0,winsymlink=0,x509negativeserial=1,x509rsacrt=0,x509sha256skid=0,x509sslcertoverrideplatform=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+      },
+      "browser_current": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser",
+        "bytes": 5620310,
+        "sha256": "1ac4e99e68ef00a8c815a85840d06b34afd14c057f9ecede8e3854bc16ff81cb",
+        "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3590675\t  88707\t33805464\t37484846\t23bf92e\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser\n",
+        "go_build": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser: go1.27.2\n\tpath\tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser\n\tmod\tgithub.com/fvwmorg/FvwmPrompt\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,gotestjsonbuildtext=1,httpcookiemaxnum=0,httplaxcontentlength=1,httpmuxgo121=1,httpservecontentkeepheaders=1,httpservecontentmaxranges=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlmaxqueryparams=0,urlstrictcolons=0,winreadlinkvolume=0,winsymlink=0,x509negativeserial=1,x509rsacrt=0,x509sha256skid=0,x509sslcertoverrideplatform=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+      }
+    },
+    "scan_observations": [
+      {
+        "repeat": 0,
+        "binary": "browser_reference",
+        "wall_seconds": 0.016734235003241338,
+        "user_seconds": 0.006441,
+        "system_seconds": 0.012242,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 0,
+        "binary": "browser_current",
+        "wall_seconds": 0.01601601998845581,
+        "user_seconds": 0.010069999999999999,
+        "system_seconds": 0.007858,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 1,
+        "binary": "browser_current",
+        "wall_seconds": 0.016600150003796443,
+        "user_seconds": 0.011033999999999999,
+        "system_seconds": 0.007789,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 1,
+        "binary": "browser_reference",
+        "wall_seconds": 0.016268521998426877,
+        "user_seconds": 0.008857,
+        "system_seconds": 0.009876,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 2,
+        "binary": "browser_reference",
+        "wall_seconds": 0.01633214799221605,
+        "user_seconds": 0.010438,
+        "system_seconds": 0.0077529999999999995,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 2,
+        "binary": "browser_current",
+        "wall_seconds": 0.016040978007367812,
+        "user_seconds": 0.012624999999999999,
+        "system_seconds": 0.005763,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 3,
+        "binary": "browser_current",
+        "wall_seconds": 0.01604035399213899,
+        "user_seconds": 0.007866999999999999,
+        "system_seconds": 0.01031,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 3,
+        "binary": "browser_reference",
+        "wall_seconds": 0.016467648994876072,
+        "user_seconds": 0.011302,
+        "system_seconds": 0.007117999999999999,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 4,
+        "binary": "browser_reference",
+        "wall_seconds": 0.015858184997341596,
+        "user_seconds": 0.007819999999999999,
+        "system_seconds": 0.010024,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      },
+      {
+        "repeat": 4,
+        "binary": "browser_current",
+        "wall_seconds": 0.016091646000859328,
+        "user_seconds": 0.011042,
+        "system_seconds": 0.006963,
+        "max_rss_kib": 29460,
+        "entries": 4096
+      }
+    ],
+    "native_cpu": false,
+    "scope": "Preserved PR186 and PR194/M1-qualified cleanup browser binaries; no benchmark build. Metadata scan/worker handoff only; not native UI latency.",
+    "storage": "Filesystem      Size  Used Avail Use% Mounted on\noverlay         100G  100G  240M 100% /\n"
+  },
+  "baseline_host_binary": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/browser-consumer-handoff/performance/reference-binaries/browser_current",
+  "current_browser_qualification": "M1 archive installed-files.json matches 1ac4e99e68ef00a8c815a85840d06b34afd14c057f9ecede8e3854bc16ff81cb",
+  "next_reference": {
+    "revision": "e7f790c2a746d11ae4412b1aade209abe9c39295",
+    "directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-resident-controller/performance-reference",
+    "files": {
+      "form": {
+        "sha256": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+        "bytes": 1624952
+      },
+      "core": {
+        "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+        "bytes": 5396632
+      },
+      "browser_current": {
+        "sha256": "1ac4e99e68ef00a8c815a85840d06b34afd14c057f9ecede8e3854bc16ff81cb",
+        "bytes": 5620310
+      },
+      "mfl": {
+        "sha256": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+        "bytes": 445112
+      }
+    },
+    "merged_batches": 0,
+    "after_current_merge": 1
+  },
+  "interpretation": "Overlapping ranges, equal peak RSS, no consistent speed improvement/regression established. Resident-controller session performance remains unmeasured."
+}

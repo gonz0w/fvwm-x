@@ -11,7 +11,7 @@ import math
 from pathlib import Path
 
 root = Path(__file__).resolve().parent
-spec = importlib.util.spec_from_file_location('desktop', root / 'desktop.py')
+spec = importlib.util.spec_from_file_location('desktop', root / 'capture.py')
 desktop = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(desktop)
 palettes = json.loads((root / 'palettes.json').read_text())

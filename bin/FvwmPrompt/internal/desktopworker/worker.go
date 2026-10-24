@@ -40,6 +40,7 @@ type Request struct {
 	Directories []string        `json:"directories,omitempty"`
 	Settings    json.RawMessage `json:"settings,omitempty"`
 	Check       json.RawMessage `json:"check,omitempty"`
+	Path        string          `json:"path,omitempty"`
 }
 
 type Response struct {
@@ -61,7 +62,7 @@ func Decode(data []byte) (Request, error) {
 		return request, errors.New("expected request object")
 	}
 	seen := map[string]bool{}
-	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "settings": true, "check": true}
+	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "settings": true, "check": true, "path": true}
 	for decoder.More() {
 		token, err = decoder.Token()
 		key, ok := token.(string)
@@ -101,7 +102,7 @@ func validateRequest(request Request) (Request, error) {
 	if request.Version != 1 {
 		return request, errors.New("unsupported desktop worker protocol")
 	}
-	for _, value := range append([]string{request.System, request.Action}, request.Directories...) {
+	for _, value := range append([]string{request.System, request.Action, request.Path}, request.Directories...) {
 		if len(value) > 4096 || strings.ContainsRune(value, 0) {
 			return request, errors.New("invalid request value")
 		}
@@ -110,7 +111,7 @@ func validateRequest(request Request) (Request, error) {
 	if request.System == "" {
 		request.System = map[string]string{"linux": "Linux", "freebsd": "FreeBSD", "openbsd": "OpenBSD"}[runtime.GOOS]
 	}
-	if request.Operation != "apps" && request.Operation != "settings" && request.Operation != "check" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
+	if request.Operation != "apps" && request.Operation != "settings" && request.Operation != "check" && request.Operation != "files" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
 		return request, errors.New("unsupported system")
 	}
 	if request.Operation != "settings" && request.Settings != nil {
@@ -119,7 +120,14 @@ func validateRequest(request Request) (Request, error) {
 	if request.Operation != "check" && request.Check != nil {
 		return request, errors.New("unexpected configuration check")
 	}
+	if request.Operation != "files" && request.Path != "" {
+		return request, errors.New("unexpected file menu path")
+	}
 	switch request.Operation {
+	case "files":
+		if request.Path == "" || request.Action != "" || len(request.Directories) != 0 {
+			return request, errors.New("invalid file menu request")
+		}
 	case "check":
 		if request.Action != "" || len(request.Directories) != 0 || request.Check == nil {
 			return request, errors.New("invalid configuration check request")
@@ -226,6 +234,8 @@ func Run(ctx context.Context, request Request, env Environment) (any, error) {
 	}
 	var value any
 	switch request.Operation {
+	case "files":
+		value, err = fileMenu(ctx, request.Path)
 	case "check":
 		check, _ := desktopcheck.DecodeRequest(request.Check)
 		value, err = desktopcheck.Check(ctx, check)

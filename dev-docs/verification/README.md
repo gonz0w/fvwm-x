@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Resident Go desktop controller](VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md): coordinated state, commits, preview/editor and bounded process/module ownership; focused Linux/FreeBSD, installed peers, three-theme captures and compile-only supported pairs.
+
+- [PR186→PR194 periodic observation](PERFORMANCE-2026-10-24-PR194.md): preserved binaries, overlapping scan ranges and unchanged peak RSS; no resident-session performance claim.
+
 - [Maintenance backlog organization](MAINTENANCE-PLANNING-2026-10-23.md): all 73 open issues placed in eight implementation batches/three decision lanes and conditional/deferred/paused groups; planning-only changes, with all issue/Project placements and preserved native relationships verified.
 
 - [Combined browser provider cleanup](VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md): four related catalog/decoding/ownership/type improvements; one 22.399-second Linux policy/race/vet/build/native-X gate, without another platform/install/theme matrix.

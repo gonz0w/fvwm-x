@@ -114,8 +114,8 @@ def run(options):
             alias = wrappers / directory.name
             if module.is_file() and not alias.exists():
                 alias.symlink_to(module)
-        if options.installed_desktop:
-            (wrappers / 'FvwmDesktop').symlink_to(options.installed_desktop.resolve())
+        controller = options.installed_desktop or build / 'bin/FvwmPrompt/FvwmDesktop'
+        (wrappers / 'FvwmDesktop').symlink_to(controller.resolve())
         modulepath = ':'.join(str(p) for p in
                               [wrappers, build / 'default-config'])
         config.write_text('ModulePath ' + modulepath + '\nRead ' +
@@ -407,7 +407,7 @@ def run(options):
         assert settings_query('palette')['palette']['effective'] == 'slate'
         evidence['restart_persistence_and_explicit_override'] = 'passed'
 
-        spec = importlib.util.spec_from_file_location('desktop_capture', root / 'desktop.py')
+        spec = importlib.util.spec_from_file_location('desktop_capture', root / 'capture.py')
         capture_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(capture_module)
 
@@ -740,10 +740,10 @@ def run(options):
         child.write_text('# continued setting\n*FvwmDesktop: palette \\\n wrong\n'
                          '*FvwmDesktop: unknown value\n')
         preserved = state.read_bytes(), local.read_bytes(), child.read_bytes()
-        helper = options.installed_desktop or build / 'default-config/FvwmDesktop'
+        helper = options.installed_desktop or build / 'bin/FvwmPrompt/FvwmDesktop'
         cli_env = dict(env)
         cli_env.pop('DISPLAY', None)
-        checked = subprocess.run([sys.executable, str(helper), '--check-config', str(local), '--json'],
+        checked = subprocess.run([str(helper), '--check-config', str(local), '--json'],
             env=cli_env, capture_output=True, text=True, timeout=15)
         assert checked.returncode == 1, (checked.returncode, checked.stderr)
         result = json.loads(checked.stdout)
@@ -818,7 +818,7 @@ def run(options):
         connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
 
         # Capture review images with a real terminal and the live native launcher.
-        spec = importlib.util.spec_from_file_location('desktop_capture', root / 'desktop.py')
+        spec = importlib.util.spec_from_file_location('desktop_capture', root / 'capture.py')
         capture_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(capture_module)
         if shutil.which('xterm'):

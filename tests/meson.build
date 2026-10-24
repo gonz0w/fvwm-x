@@ -281,8 +281,11 @@ property_policy_test = executable(
 )
 test('property-policy', property_policy_test)
 
-test('desktop-policy', py, args: [files('test_desktop.py')],
-    env: desktop_worker_env, depends: fvwm_desktop_worker)
+test('desktop-policy', golang,
+    args: ['test', '-C', fvwmprompt_build, '-count=1', '-mod=vendor',
+        './internal/desktopcontroller', './cmd/fvwmdesktop'],
+    env: prompt_test_env, timeout: 90)
+test('desktop-assets', py, args: [files('test_desktop.py')])
 test('responsiveness-profile-evidence', py,
     args: [files('test_responsiveness_profile.py')])
 
@@ -374,7 +377,8 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'desktop',
         ],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
-        depends: [fvwm3, fvwm_mfl, fvwm_backer, fvwm_buttons, fvwm_event, fvwm_form],
+        depends: [fvwm3, fvwm_mfl, fvwm_backer, fvwm_buttons, fvwm_event, fvwm_form,
+            fvwm_desktop, fvwm_desktop_worker],
         is_parallel: false,
         timeout: host_machine.system() == 'linux' ? 120 : 300,
     )

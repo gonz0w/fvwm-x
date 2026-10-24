@@ -66,28 +66,6 @@ class DesktopPolicy(unittest.TestCase):
         self.assertFalse(any(c in cleaned for c in '\\"$%&\n'))
         self.assertLessEqual(len(desktop.clean_label('x' * 200)), 100)
 
-    def test_exec_field_codes_are_argv_not_shell(self):
-        command = desktop.desktop_exec('app "hello world" %f %F %u %U %i %c %k %%',
-                                       'A; touch /tmp/evil', '/tmp/a.desktop', 'an-icon')
-        self.assertEqual(command, ['app', 'hello world', '--icon', 'an-icon',
-                                  'A; touch /tmp/evil', '/tmp/a.desktop', '%'])
-        for value in ('app --file=%f', 'app %Z', '%f'):
-            with self.assertRaises(ValueError):
-                desktop.desktop_exec(value, 'Name', '/tmp/a')
-
-    def test_user_hidden_entry_masks_system_application(self):
-        with tempfile.TemporaryDirectory() as directory:
-            user, system = Path(directory) / 'user', Path(directory) / 'system'
-            user.mkdir()
-            system.mkdir()
-            (system / 'app.desktop').write_text('[Desktop Entry]\nType=Application\nName=System\nExec=/bin/sh\n')
-            (user / 'app.desktop').write_text('[Desktop Entry]\nType=Application\nHidden=true\n')
-            (system / 'safe.desktop').write_text('[Desktop Entry]\nType=Application\nName=Quoted;Name\nExec=/bin/sh "literal; argument"\n')
-            (system / 'bad.desktop').write_text('[Desktop Entry]\nType=Application\nName=Bad\nExec=/bin/sh %Z\n')
-            apps = desktop.discover_apps([user, system])
-            self.assertEqual(len(apps), 1)
-            self.assertEqual(apps[0]['argv'], ['/bin/sh', 'literal; argument'])
-
     def test_palettes_have_readable_text_and_selection(self):
         palettes = json.loads((ROOT / 'default-config/palettes.json').read_text())
         def luminance(color):
@@ -104,30 +82,6 @@ class DesktopPolicy(unittest.TestCase):
                 self.assertGreaterEqual(contrast(p['text'], p['surface']), 4.5)
                 self.assertGreaterEqual(contrast(p['muted'], p['surface']), 4.5)
                 self.assertGreaterEqual(contrast(p['on_accent'], p['accent']), 4.5)
-
-    def test_bsd_native_counter_formats(self):
-        for system, counters in (('FreeBSD', '38 0 80 1 11386'),
-                                  ('OpenBSD', '180,0,147,13,6,3954')):
-            values = {'kern.cp_time':counters, 'hw.physmem':'1073741824',
-                      'hw.pagesize':'4096', 'vm.stats.vm.v_free_count':'1024',
-                      'hw.acpi.battery.life':'75'}
-            def output(argv):
-                if argv[0] == 'sysctl':
-                    return values.get(argv[-1], '')
-                if argv[0] == 'apm':
-                    return '3' if argv[-1] == '-b' else '75'
-                return {'vmstat':'  1024 pages free',
-                        'ifconfig':'em0: flags=UP\n\tstatus: active\n'}.get(argv[0], '')
-            with patch.object(desktop, 'command_output', side_effect=output):
-                status = desktop.collect_status(system)
-            self.assertEqual(status['cpu'], (sum(map(int, counters.replace(',', ' ').split())),
-                                             int(counters.replace(',', ' ').split()[-1])))
-            self.assertEqual(status['memory'], 1073741824 - 1024 * 4096)
-            self.assertEqual(status['battery'], 75)
-            self.assertEqual(status['network'], 'em0')
-        with patch.object(desktop, 'command_output', side_effect=lambda argv:
-                          '4' if argv == ['apm', '-b'] else '0'):
-            self.assertIsNone(desktop.collect_status('OpenBSD')['battery'])
 
     def test_wallpaper_retention_does_not_replace_saved_surface(self):
         commands = []
@@ -572,7 +526,7 @@ class ConfigurationChecking(unittest.TestCase):
             '+ I Read "not-opened"', 'Lua os.execute("touch ' + str(marker) + '")',
             '*FvwmDesktop: palette $[env.VALUE]', '*FvwmDesktop: terminal /bin/sh'])
         with (patch.object(desktop.subprocess, 'Popen', side_effect=AssertionError('process execution')),
-              patch.object(desktop, 'command_output', side_effect=AssertionError('external command'))):
+              patch.object(desktop, 'desktop_worker', side_effect=AssertionError('external command'))):
             result = self.check(text)
         self.assertEqual(result['errors'], 0)
         self.assertEqual(result['unchecked'], 8)

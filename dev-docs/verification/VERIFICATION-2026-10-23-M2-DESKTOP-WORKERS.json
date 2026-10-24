@@ -1,0 +1,1273 @@
+{
+  "date": "2026-10-23",
+  "status": "focused-checks-passed",
+  "scope": "M2.1 background desktop acquisition/actions; Refs #23/#7/#15, broad owners remain open",
+  "base": "3df09ef2ba32fa0d4c9c517c1e74def012ac5b26",
+  "qualified_inputs": 2376,
+  "candidate_manifest_sha256": "910fd509601f6d21eab1e059ce26143e54dad648ab373b5efe05b61f214470e3",
+  "candidate_archive_sha256": "d4d32fedbb62eb2a65d023e596add01ebe1134e726221815271cf4d6fc623b7b",
+  "post_freeze_changes": [
+    "INSTALL.md",
+    "README.md",
+    "bin/FvwmPrompt/internal/desktopworker/files.go",
+    "bin/FvwmPrompt/internal/desktopworker/worker_test.go",
+    "default-config/desktop.py",
+    "dev-docs/ARCHITECTURE.md",
+    "doc/FvwmDesktop.adoc",
+    "tests/test_desktop_worker.py"
+  ],
+  "final_controller_sha256": "4982e6f4d5fed9786485226faa7ee488b65ef71e2cf40a910d8c7fc08a858ff2",
+  "targets": {
+    "fvwm-x-linux-arm64-svg": {
+      "status": "passed",
+      "archive_sha256": "0909236c191364e6327efba26107199642b42e334b4ef32efb3dab147e59b645",
+      "bytes": 1060321,
+      "files": 60,
+      "commands": [
+        {
+          "label": "configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "status": 0,
+          "seconds": 0.873
+        },
+        {
+          "label": "worker-build",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "2",
+            "fvwm-desktop-worker"
+          ],
+          "status": 0,
+          "seconds": 0.267
+        },
+        {
+          "label": "go-policy",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ],
+          "status": 0,
+          "seconds": 0.318
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "go",
+            "vet",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ],
+          "status": 0,
+          "seconds": 0.064
+        },
+        {
+          "label": "controller-policy",
+          "command": [
+            "python3",
+            "tests/test_desktop.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 0.232
+        },
+        {
+          "label": "worker-client",
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 3.876
+        },
+        {
+          "label": "stage",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/install-stage"
+          ],
+          "status": 0,
+          "seconds": 0.119
+        },
+        {
+          "label": "installed-client",
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 3.937
+        },
+        {
+          "label": "go-race",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-race",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker"
+          ],
+          "status": 0,
+          "seconds": 1.452
+        },
+        {
+          "label": "race-worker-build",
+          "command": [
+            "go",
+            "build",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-race",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/race-worker",
+            "./cmd/fvwmdesktopworker"
+          ],
+          "status": 0,
+          "seconds": 0.17
+        },
+        {
+          "label": "race-worker-client",
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 5.943
+        },
+        {
+          "label": "desktop-native-x",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--installed-desktop",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/desktop-ui"
+          ],
+          "status": 0,
+          "seconds": 27.035
+        },
+        {
+          "label": "native-x-settings",
+          "command": [
+            "python3",
+            "tests/live_x/mfl_settings_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/native-x-settings"
+          ],
+          "status": 0,
+          "seconds": 15.661
+        },
+        {
+          "label": "native-x-operations",
+          "command": [
+            "python3",
+            "tests/live_x/mfl_operations_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/m2-checkpoint/native-x-operations"
+          ],
+          "status": 0,
+          "seconds": 0.421
+        }
+      ],
+      "result": {
+        "status": "passed",
+        "scope": "M2.1 nonresident desktop acquisition and actions; controller and capture remain explicit Python owners",
+        "target": "fvwm-x-linux-arm64-svg",
+        "native_binaries_retained": true,
+        "commands": 14
+      },
+      "gzip_crc_and_all_payload_modes_verified": true,
+      "Go": {
+        "go-policy": {
+          "top_cases": 50,
+          "package_outcomes": 3,
+          "all_test_pass_events": 432
+        },
+        "go-race": {
+          "top_cases": 10,
+          "package_outcomes": 2,
+          "all_test_pass_events": 21
+        }
+      },
+      "native-retention": {
+        "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+        "binaries": {
+          "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+          "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+          "modules/FvwmScript/FvwmScript": "53f59b1ed0aa78801d47b2a57b79c8a370067a40678e550015c9c7f3d671ff26"
+        },
+        "unchanged": true
+      },
+      "desktop": {
+        "greyed_label_empty_quoted_destroy_ownership": 32,
+        "primary_bar_size": [
+          1440,
+          36
+        ],
+        "palettes_appearance_schedule_opaque_switch": "passed",
+        "typed_queries_scoped_reset_reload_stale_refusal": "passed",
+        "native_registry_menu_keyboard_activate_cancel": "passed",
+        "restart_persistence_and_explicit_override": "passed",
+        "editor_saved_after_apply": {
+          "palette": "dune",
+          "appearance": "light",
+          "day": "07:00",
+          "night": "19:00",
+          "transparency": true,
+          "motion": false,
+          "keep_wallpaper": false,
+          "launcher_opacity": 94,
+          "wallpaper": {
+            "palette": "dune",
+            "appearance": "light"
+          },
+          "schema_version": 2
+        },
+        "native_grouped_editor_apply_defaults_cancel_stale_reload_restart": "passed",
+        "settings_screenshots": [
+          "settings-editor.png",
+          "settings-draft.png",
+          "settings-menu.png",
+          "settings-defaults.png"
+        ],
+        "preview_control_geometry": {
+          "window": 12582919,
+          "geometry": [
+            0,
+            0,
+            492,
+            127
+          ],
+          "children": [
+            [
+              12582922,
+              [
+                10,
+                94,
+                59,
+                28
+              ]
+            ],
+            [
+              12582923,
+              [
+                199,
+                94,
+                147,
+                28
+              ]
+            ]
+          ]
+        },
+        "observer_retired_windows": 6,
+        "runtime_preview": {
+          "explicit_revert": true,
+          "keep_runtime_only": true,
+          "helper_death_restores": true,
+          "preference_bytes_unchanged": true,
+          "screenshots": [
+            "opacity-preview-dialog.png",
+            "opacity-preview-launcher.png"
+          ]
+        },
+        "saved_opacity_preview": {
+          "saved": 71,
+          "schema": 2,
+          "scope_only": true,
+          "draft_transferred_and_resumed": true,
+          "revert_no_write": true,
+          "writer_lock_refused": true,
+          "partial_runtime_kept_file_unchanged": true,
+          "restart_persisted": true,
+          "helper_death_restored": true,
+          "orphan_dialog_retired": true,
+          "screenshots": [
+            "settings-opacity-editor.png",
+            "settings-opacity-confirm.png",
+            "settings-opacity-resumed.png",
+            "settings-opacity-write-refused.png"
+          ]
+        },
+        "configuration_checker_readonly_locations_and_native_pages": "passed",
+        "configuration_check_cli": {
+          "schema_version": 1,
+          "coverage": "desktop-settings-literals-and-Read-v1",
+          "status": "errors",
+          "errors": 3,
+          "unchecked": 4,
+          "checked_directives": 1,
+          "files": [
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+              "bytes": 332,
+              "sha256": "ce4e5d761acbc36fe6320407a38e3c17c0d1766dd18e48059c53e7a2a3b6f119"
+            },
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/checker-child",
+              "bytes": 79,
+              "sha256": "a3157bfce8ff78c5fa16c620af47437c93c57a8e9c4dcfd835ef522030930c42"
+            }
+          ],
+          "diagnostics": [
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/checker-child",
+              "line": 2,
+              "end_line": 3,
+              "included_from": [
+                {
+                  "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+                  "line": 2,
+                  "end_line": 2
+                }
+              ],
+              "severity": "error",
+              "code": "setting-value",
+              "message": "Invalid value for palette",
+              "parser": "FvwmDesktop"
+            },
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/checker-child",
+              "line": 4,
+              "end_line": 4,
+              "included_from": [
+                {
+                  "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+                  "line": 2,
+                  "end_line": 2
+                }
+              ],
+              "severity": "error",
+              "code": "setting-name",
+              "message": "Unknown FvwmDesktop option",
+              "parser": "FvwmDesktop"
+            },
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+              "line": 3,
+              "end_line": 3,
+              "included_from": [],
+              "severity": "unchecked",
+              "code": "unsupported",
+              "message": "Command or module syntax is outside the desktop-settings subset",
+              "parser": "FvwmDesktop"
+            },
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+              "line": 4,
+              "end_line": 4,
+              "included_from": [],
+              "severity": "unchecked",
+              "code": "unsupported",
+              "message": "Command or module syntax is outside the desktop-settings subset",
+              "parser": "FvwmDesktop"
+            },
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+              "line": 5,
+              "end_line": 5,
+              "included_from": [],
+              "severity": "unchecked",
+              "code": "unsupported",
+              "message": "Command or module syntax is outside the desktop-settings subset",
+              "parser": "FvwmDesktop"
+            },
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+              "line": 6,
+              "end_line": 6,
+              "included_from": [],
+              "severity": "error",
+              "code": "setting-value",
+              "message": "Invalid value for motion",
+              "parser": "FvwmDesktop"
+            },
+            {
+              "path": "/tmp/fvwm-desktop-27g7wmdc/user/local.config",
+              "line": 7,
+              "end_line": 7,
+              "included_from": [],
+              "severity": "unchecked",
+              "code": "expansion",
+              "message": "Expansion or generated configuration is not evaluated",
+              "parser": "FvwmDesktop"
+            }
+          ]
+        },
+        "configuration_check_screenshots": [
+          "configuration-check.png",
+          "configuration-check-next.png"
+        ],
+        "launcher_and_safe_application_launch": "passed",
+        "search_and_calendar": "passed",
+        "screenshot_and_core_responsiveness": "passed",
+        "screenshot_rgb_at_16_and_24_bit_depth": "passed",
+        "baseline_parser": "passed",
+        "observer_unexpected_x_errors": []
+      }
+    },
+    "freebsd-arm64": {
+      "status": "passed",
+      "archive_sha256": "eabdf3c2382f6227f6862785cc45e6b891fbd4b613a4942e6df2d85ad63baea1",
+      "bytes": 152485,
+      "files": 25,
+      "commands": [
+        {
+          "label": "configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/build-default"
+          ],
+          "status": 0,
+          "seconds": 1.543
+        },
+        {
+          "label": "worker-build",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-default",
+            "-j",
+            "2",
+            "fvwm-desktop-worker"
+          ],
+          "status": 0,
+          "seconds": 0.718
+        },
+        {
+          "label": "go-policy",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ],
+          "status": 0,
+          "seconds": 0.686
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "go",
+            "vet",
+            "-C",
+            "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ],
+          "status": 0,
+          "seconds": 0.119
+        },
+        {
+          "label": "controller-policy",
+          "command": [
+            "python3",
+            "tests/test_desktop.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 0.319
+        },
+        {
+          "label": "worker-client",
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 3.995
+        },
+        {
+          "label": "stage",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-default",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller",
+            "--destdir",
+            "/root/fvwm-module-waits-20261015/m2-checkpoint/install-stage"
+          ],
+          "status": 0,
+          "seconds": 0.12
+        },
+        {
+          "label": "installed-client",
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 4.026
+        },
+        {
+          "label": "native-x-settings",
+          "command": [
+            "python3",
+            "tests/live_x/mfl_settings_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/root/fvwm-module-waits-20261015/m2-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m2-checkpoint/native-x-settings"
+          ],
+          "status": 0,
+          "seconds": 16.027
+        },
+        {
+          "label": "native-x-operations",
+          "command": [
+            "python3",
+            "tests/live_x/mfl_operations_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/root/fvwm-module-waits-20261015/m2-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m2-checkpoint/native-x-operations"
+          ],
+          "status": 0,
+          "seconds": 0.572
+        }
+      ],
+      "result": {
+        "status": "passed",
+        "scope": "M2.1 nonresident desktop acquisition and actions; controller and capture remain explicit Python owners",
+        "target": "freebsd-arm64",
+        "native_binaries_retained": true,
+        "commands": 10
+      },
+      "gzip_crc_and_all_payload_modes_verified": true,
+      "Go": {
+        "go-policy": {
+          "top_cases": 50,
+          "package_outcomes": 3,
+          "all_test_pass_events": 432
+        }
+      },
+      "native-retention": {
+        "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+        "binaries": {
+          "fvwm3": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+          "modules/FvwmMFL/FvwmMFL": "2730a9a324fa8165fa65e544ffcb59b07e499e5d12532533875791ec01d6a577",
+          "modules/FvwmForm/FvwmForm": "3f9d04b481dbff5060b6474293f68caaeac7e879c5f3b0a4161ddf1a7d35510e",
+          "modules/FvwmScript/FvwmScript": "5977cf1ca4cc143f8ccebb5742ff7a139dde23662b238514bd64e6716419ef26"
+        },
+        "unchanged": true
+      }
+    },
+    "completion": {
+      "status": "passed",
+      "archive_sha256": "bec8f2f100376e4f3a0d4f30ebdb93377897764f9d689542c2ce9b8321237474",
+      "bytes": 16264,
+      "files": 11,
+      "commands": [
+        {
+          "label": "configure-consumer",
+          "status": 0,
+          "args": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "seconds": 0.998
+        },
+        {
+          "label": "bridge-completion",
+          "status": 0,
+          "args": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ],
+          "seconds": 3.92
+        },
+        {
+          "label": "stage",
+          "status": 0,
+          "args": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/m2-completion-checkpoint/install-stage"
+          ],
+          "seconds": 0.116
+        },
+        {
+          "label": "manual",
+          "status": 0,
+          "args": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-a",
+            "reproducible",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/m2-completion-checkpoint/FvwmDesktop.1",
+            "/tmp/fvwm-module-waits-20261015/source/doc/FvwmDesktop.adoc"
+          ],
+          "seconds": 0.119
+        }
+      ],
+      "result": {
+        "status": "passed",
+        "product_correction": "allocate selector before spawning; clean up on selector/fork failure",
+        "new_bridge_tests": 11,
+        "Go_worker_unchanged": true
+      },
+      "gzip_crc_and_all_payload_modes_verified": true,
+      "installed_lookup": {
+        "status": "passed",
+        "override_unset": true,
+        "worker_sha256": "e383f7589a233018b8279c0b2828f2309d0b07f38be49a508ffc3508a2e2f0d2",
+        "adjacent_controller_sha256": "aa7454e77dcf3acf38a2fe160bba5baa6f5317e28ea63231f2d0609f4988ca50"
+      },
+      "overhead": {
+        "scope": "seven paired Linux status acquisitions; extra child startup included, not full session or performance tuning",
+        "pairs_ms": [
+          {
+            "baseline": 0.190918,
+            "worker": 1.191176
+          },
+          {
+            "worker": 1.106134,
+            "baseline": 0.126251
+          },
+          {
+            "baseline": 0.069334,
+            "worker": 0.96259
+          },
+          {
+            "worker": 1.063008,
+            "baseline": 0.139418
+          },
+          {
+            "baseline": 0.067709,
+            "worker": 0.976425
+          },
+          {
+            "worker": 1.0583,
+            "baseline": 0.112917
+          },
+          {
+            "baseline": 0.064042,
+            "worker": 1.026841
+          }
+        ],
+        "median_baseline_ms": 0.112917,
+        "median_worker_ms": 1.0583,
+        "worker_bytes": 4677354,
+        "baseline_source_sha256": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+        "peak_child_rss_scope": "entire completion command history, not standalone worker or session RSS"
+      },
+      "source_delta": [
+        {
+          "path": "default-config/desktop.py",
+          "before": "e2e9e9e89dd5d8cdb95c0b52efbe3f91aa3fbc7a37b5e0b2d96666544d0fd2e6",
+          "after": "4982e6f4d5fed9786485226faa7ee488b65ef71e2cf40a910d8c7fc08a858ff2"
+        },
+        {
+          "path": "tests/test_desktop_worker.py",
+          "before": "09b9d72a796891835a04d182c46dd6fcd7e227eff4452bf776d07a2d5d30acf0",
+          "after": "acb6d27bff70550a565d48461b3e9f6b66c2b907eb20f51455a1fd961fdb456b"
+        },
+        {
+          "path": "doc/FvwmDesktop.adoc",
+          "before": "266e09b1128293ca966412c54c1d4700fb5c8f1dbba6b5a3bace3d7686528d70",
+          "after": "3696bf282ecd63300efe00ca98d6d04f788d4815155959eeaaab6da63c3ef533"
+        }
+      ]
+    }
+  },
+  "cross_builds": [
+    {
+      "target": "linux-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.487,
+      "sha256": "6daa99bc5a06db09a2e81d6b09c58798c0e877538c9347fc768eeb2e800ab510",
+      "bytes": 4946258
+    },
+    {
+      "target": "linux-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.487,
+      "sha256": "57875e7b9f62b437f19a72a80cbb8c26cc34008751a8d254c8e5722e0fe78f3b",
+      "bytes": 4678226
+    },
+    {
+      "target": "freebsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.308,
+      "sha256": "c33de1e70abd2785ee68c05cacb170324b9581667c0f1db0f89416aa16716a21",
+      "bytes": 4815598
+    },
+    {
+      "target": "freebsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.306,
+      "sha256": "4f0c5746806ffda12e2e140a6a43f97a8710d617f643b1ebcae5af8faf7bac8a",
+      "bytes": 4562087
+    },
+    {
+      "target": "openbsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.309,
+      "sha256": "93ba79297894ae8a3cf4cf406cc9dc63b57a729fe652112af06cadd51509fe26",
+      "bytes": 4808783
+    },
+    {
+      "target": "openbsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.302,
+      "sha256": "8234e8d88633ea0e00e02d90894c6132ae15bb67c6d77ddf51959d31da3e64f2",
+      "bytes": 4563986
+    }
+  ],
+  "Go_top_case_executions": 110,
+  "Go_package_outcomes": 8,
+  "controller_policy_cases": 142,
+  "original_worker_bridge_cases": 45,
+  "final_worker_bridge_cases": 24,
+  "native_X_original_runs": 5,
+  "native_X_final_operations_repeat": {
+    "status": "passed",
+    "archive_sha256": "2c4af8f01960c228634ed3c4ed00605dc719907192f8d6dea2fdd7fcd72d527b",
+    "payloads": 4
+  },
+  "portable_tests": {
+    "total": 196,
+    "passed": 181,
+    "environment_skips": 15
+  },
+  "unchanged_source_owners": {
+    "png_bytes": "30819118877bd8c7ef4ee434d00a28a0926567a2a26f55459346e1b33d9b9220",
+    "screenshot": "192d29e295fa1f8e7ec0c86c02f7f0bf60ba0c85eafcc2cfeb4081d7ce03fa83",
+    "ConfigurationCheck": "4d654d9e6ade43a036e7bde321e648d5307b576fe7eec807c92ad7550382650d",
+    "MenuOpacityPreview": "42d8ab0e023e40afacd65f9c0697f91432fca3c25aaa55aa1b17b0871badaa74",
+    "load_settings": "cc4555ac32180faf464cdc4a38e79165e2ef239ee18066eafaeebecb518e93e2",
+    "save_settings": "712a4065722ca641841257bd1bc353ff01224435b514fcc25aeb3107397b89c4",
+    "checked_settings": "d9ad44633198326da061765523fcebce404415d43d4fe6c7c85c0d9f2a942f3b",
+    "appearance": "61c074b8cae1adb6eb857fe3ccb516208956ca246748796ca12e20f6720c48bf"
+  },
+  "selector_control": {
+    "status": "preceding-ordering-gap-reproduced",
+    "test": "selector failure must not create child",
+    "failures_expected": 1,
+    "final_bridge_tests": 12
+  },
+  "worker_status_overhead": {
+    "scope": "seven paired Linux status acquisitions; extra child startup included, not full session or performance tuning",
+    "pairs_ms": [
+      {
+        "baseline": 0.190918,
+        "worker": 1.191176
+      },
+      {
+        "worker": 1.106134,
+        "baseline": 0.126251
+      },
+      {
+        "baseline": 0.069334,
+        "worker": 0.96259
+      },
+      {
+        "worker": 1.063008,
+        "baseline": 0.139418
+      },
+      {
+        "baseline": 0.067709,
+        "worker": 0.976425
+      },
+      {
+        "worker": 1.0583,
+        "baseline": 0.112917
+      },
+      {
+        "baseline": 0.064042,
+        "worker": 1.026841
+      }
+    ],
+    "median_baseline_ms": 0.112917,
+    "median_worker_ms": 1.0583,
+    "worker_bytes": 4677354,
+    "baseline_source_sha256": "f7ea038b2c18b31af2e481a969a65735844c7dbe585de9e2d8c9db44d782a5c2",
+    "peak_child_rss_scope": "entire completion command history, not standalone worker or session RSS",
+    "source_scope": "measured before the independent launcher-only quoting correction; status and supervision implementations unchanged"
+  },
+  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/m2-desktop-workers",
+  "remaining_acceptance": [
+    "resident settings/schema/editor/preview/checker/module and launcher coordination port",
+    "separate screenshot/native capture ownership port",
+    "complete Python-free installed desktop/full-session startup/RSS/idle wakeups/input latency comparisons",
+    "broader six-target/default-X/milestone/release/native-CPU/hardware/toolkit acceptance"
+  ],
+  "cadence": "one combined Linux gate and targeted FreeBSD ARM64 gate; source-bound narrow review corrections, no full-OS matrix repeat",
+  "final_review_checks": {
+    "fvwm-x-linux-arm64-svg": {
+      "archive_sha256": "75ed7dce3f964e71615d069a67d947447500d076a8514560eb2b4ff37f35aa30",
+      "payloads": 18,
+      "gzip_crc_payload_hashes_modes_source_verified": true,
+      "result": {
+        "status": "passed",
+        "target": "fvwm-x-linux-arm64-svg",
+        "bridge_cases": 12,
+        "scope": "only quoted-backslash parity, final bridge rollback and worker/operations checks; original full UI and policy retained"
+      },
+      "commands": [
+        {
+          "label": "configure",
+          "status": 0,
+          "seconds": 0.872,
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ]
+        },
+        {
+          "label": "worker-build",
+          "status": 0,
+          "seconds": 0.277,
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "2",
+            "fvwm-desktop-worker"
+          ]
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 0.316,
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ]
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 0.065,
+          "command": [
+            "go",
+            "vet",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ]
+        },
+        {
+          "label": "go-race",
+          "status": 0,
+          "seconds": 1.317,
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-race",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker"
+          ]
+        },
+        {
+          "label": "stage",
+          "status": 0,
+          "seconds": 0.116,
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/m2-final-checkpoint/install-stage"
+          ]
+        },
+        {
+          "label": "final-bridge",
+          "status": 0,
+          "seconds": 3.976,
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ]
+        },
+        {
+          "label": "native-operations",
+          "status": 0,
+          "seconds": 0.372,
+          "command": [
+            "python3",
+            "tests/live_x/mfl_operations_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/tmp/fvwm-module-waits-20261015/m2-final-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/m2-final-checkpoint/operations"
+          ]
+        }
+      ],
+      "source": {
+        "default-config/desktop.py": {
+          "sha256": "4982e6f4d5fed9786485226faa7ee488b65ef71e2cf40a910d8c7fc08a858ff2",
+          "mode": 493
+        },
+        "tests/test_desktop_worker.py": {
+          "sha256": "ba92585dfd978a406f515e97925bd0d89015dc796d6d5e2fab03245f5c7e46df",
+          "mode": 420
+        },
+        "bin/FvwmPrompt/internal/desktopworker/files.go": {
+          "sha256": "a027a571d3f219c8d60a0a1af217386887588f364e9f6026227ec16178b1e01e",
+          "mode": 420
+        },
+        "bin/FvwmPrompt/internal/desktopworker/worker_test.go": {
+          "sha256": "969a210b5a8996e4937bf171c718506109a15fd0c7c7ae2d7e934900f46c6d97",
+          "mode": 420
+        }
+      },
+      "installed": {
+        "controller_sha256": "aa7454e77dcf3acf38a2fe160bba5baa6f5317e28ea63231f2d0609f4988ca50",
+        "worker_sha256": "dd62b20afcdb2a577caffea98679a55333b45a4e9317ac51475c6606b2b48e76",
+        "worker_bytes": 4677250,
+        "adjacent_lookup_without_override": "passed",
+        "native_unchanged": {
+          "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+          "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+          "modules/FvwmScript/FvwmScript": "53f59b1ed0aa78801d47b2a57b79c8a370067a40678e550015c9c7f3d671ff26"
+        }
+      },
+      "Go": {
+        "go-policy": {
+          "top_cases": 50,
+          "package_outcomes": 3
+        },
+        "go-race": {
+          "top_cases": 10,
+          "package_outcomes": 2
+        }
+      }
+    },
+    "freebsd-arm64": {
+      "archive_sha256": "231f69d8898220eae182e5a78073c753bd0530c77fb2b913a354594ee622be22",
+      "payloads": 17,
+      "gzip_crc_payload_hashes_modes_source_verified": true,
+      "result": {
+        "status": "passed",
+        "target": "freebsd-arm64",
+        "bridge_cases": 12,
+        "scope": "only quoted-backslash parity, final bridge rollback and worker/operations checks; original full UI and policy retained"
+      },
+      "commands": [
+        {
+          "label": "configure",
+          "status": 0,
+          "seconds": 1.235,
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/build-default"
+          ]
+        },
+        {
+          "label": "worker-build",
+          "status": 0,
+          "seconds": 0.577,
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-default",
+            "-j",
+            "2",
+            "fvwm-desktop-worker"
+          ]
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 0.486,
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-json",
+            "-count=1",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ]
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 0.065,
+          "command": [
+            "go",
+            "vet",
+            "-C",
+            "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/desktopworker",
+            "./cmd/fvwmdesktopworker",
+            "./internal/xdgmenu"
+          ]
+        },
+        {
+          "label": "stage",
+          "status": 0,
+          "seconds": 0.122,
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-default",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller",
+            "--destdir",
+            "/root/fvwm-module-waits-20261015/m2-final-checkpoint/install-stage"
+          ]
+        },
+        {
+          "label": "final-bridge",
+          "status": 0,
+          "seconds": 4.058,
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ]
+        },
+        {
+          "label": "native-operations",
+          "status": 0,
+          "seconds": 0.587,
+          "command": [
+            "python3",
+            "tests/live_x/mfl_operations_live.py",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/root/fvwm-module-waits-20261015/m2-final-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m2-final-checkpoint/operations"
+          ]
+        }
+      ],
+      "source": {
+        "default-config/desktop.py": {
+          "sha256": "4982e6f4d5fed9786485226faa7ee488b65ef71e2cf40a910d8c7fc08a858ff2",
+          "mode": 493
+        },
+        "tests/test_desktop_worker.py": {
+          "sha256": "ba92585dfd978a406f515e97925bd0d89015dc796d6d5e2fab03245f5c7e46df",
+          "mode": 420
+        },
+        "bin/FvwmPrompt/internal/desktopworker/files.go": {
+          "sha256": "a027a571d3f219c8d60a0a1af217386887588f364e9f6026227ec16178b1e01e",
+          "mode": 420
+        },
+        "bin/FvwmPrompt/internal/desktopworker/worker_test.go": {
+          "sha256": "969a210b5a8996e4937bf171c718506109a15fd0c7c7ae2d7e934900f46c6d97",
+          "mode": 420
+        }
+      },
+      "installed": {
+        "controller_sha256": "2088ce87cb5bcbf7245c6e8ae07b8ee558929f7319556d2d3b6028f59f81a6b7",
+        "worker_sha256": "2364478a275a88f808e4f2b521faef038b07e8f2b3d50f3917f12443194a8063",
+        "worker_bytes": 4561239,
+        "adjacent_lookup_without_override": "passed",
+        "native_unchanged": {
+          "fvwm3": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+          "modules/FvwmMFL/FvwmMFL": "2730a9a324fa8165fa65e544ffcb59b07e499e5d12532533875791ec01d6a577",
+          "modules/FvwmForm/FvwmForm": "3f9d04b481dbff5060b6474293f68caaeac7e879c5f3b0a4161ddf1a7d35510e",
+          "modules/FvwmScript/FvwmScript": "5977cf1ca4cc143f8ccebb5742ff7a139dde23662b238514bd64e6716419ef26"
+        }
+      },
+      "Go": {
+        "go-policy": {
+          "top_cases": 50,
+          "package_outcomes": 3
+        }
+      }
+    }
+  },
+  "initial_cross_builds": [
+    {
+      "target": "linux-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 2.327,
+      "sha256": "031adc5b443cf1599a62c4d6dc4c220c7ec36fa13327101abd8cd348b7dc06df",
+      "bytes": 4946458
+    },
+    {
+      "target": "linux-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 2.327,
+      "sha256": "b4de3f9ad07254a96fa9e07bbf88b15e2ebab6c5eb4d9f7f0333bc2712cc852f",
+      "bytes": 4678026
+    },
+    {
+      "target": "freebsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 2.001,
+      "sha256": "c1f667df78510573d14c3157048c85ba303cfd0881b0030057d60456868c2dd0",
+      "bytes": 4815854
+    },
+    {
+      "target": "freebsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 2.019,
+      "sha256": "c223ef221ca62049a9ab4f02213dcd2c36533168069f5549e07103de08fa29e9",
+      "bytes": 4562095
+    },
+    {
+      "target": "openbsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 2.047,
+      "sha256": "924a59d38e893d67478408825e7c523c30b2ecde54d82a7d0d40b65c96251a82",
+      "bytes": 4808695
+    },
+    {
+      "target": "openbsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 2.06,
+      "sha256": "fa34f87bdce01ef870149f9a3e85eb92688ebf2f55be3a8ce2c0d4fd8e3b9446",
+      "bytes": 4564066
+    }
+  ],
+  "first_completion_worker_bridge_cases": 11,
+  "final_worker_bridge_cases_scope": "12 on each final installed Linux/FreeBSD pair, not 24 distinct cases",
+  "quoted_backslash_control": {
+    "status": "preceding-port-quoting-mismatch-reproduced",
+    "raw": "/bin/sh \"\\$HOME\"",
+    "expected_original_Python": [
+      "/bin/sh",
+      "\\$HOME"
+    ],
+    "preceding_Go_result": [
+      "/bin/sh",
+      "$HOME"
+    ]
+  },
+  "guest_capture_retirement": {
+    "fvwm-x-linux-arm64-svg": {
+      "status": "retired-host-verified-capture-duplicates",
+      "files": 97,
+      "preserved": "sources, incremental builds, stages, VM disks and canonical host captures"
+    },
+    "freebsd-arm64": {
+      "status": "retired-host-verified-capture-duplicates",
+      "files": 44,
+      "preserved": "sources, incremental builds, stages, VM disks and canonical host captures"
+    }
+  }
+}

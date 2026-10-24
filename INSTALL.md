@@ -95,7 +95,10 @@ The existing `Module FvwmPerl -l fvwm-menu-desktop-config.fpl` entry point is a
 small adapter to that native owner; the remaining FvwmPerl framework is still
 installed and tracked separately. Other Python/Perl runtime controllers and
 build/developer tooling have their own retirement work; this change does not
-make the entire distribution interpreter-free.
+make the entire distribution interpreter-free. M2's first slice installs the
+private Go `fvwm-desktop-worker` beside FvwmDesktop for application discovery,
+metrics and audio/power jobs. The controller and native screenshot boundary
+still use Python; full controller/session acceptance remains open.
 
 The pre-FVWM3 `fvwm-convert-2.6` converter is no longer built or installed.
 FVWM3 configuration files remain supported. Migrate older configuration with

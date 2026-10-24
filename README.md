@@ -8,9 +8,10 @@ FVWM 3.x configuration/theme compatibility. Services use native modules and
 system facilities; no compositor or Wayland backend.
 
 **Status:** in-progress development. Features paused for source cleanup and
-dependency retirement. Go is required to build. Installed utilities need no
+dependency retirement. Builds require Go. Installed utilities need no
 Go compiler, PyXDG, Pillow or ImageMagick. The pre-FVWM3 converter is retired.
-[Build/upgrade notes](INSTALL.md). Recent work includes:
+[Build/upgrade notes](INSTALL.md). App discovery, metrics and audio/power jobs now use Go.
+Recent work includes:
 
 - Atomic button updates, desktop settings/editor and configuration checking.
 - Structured IPC queries/actions and scoped settings preview/recovery.

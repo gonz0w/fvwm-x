@@ -341,10 +341,11 @@ module publication fails.
 The adjacent private *fvwm-desktop-worker* owns application discovery, system
 metrics, audio/power jobs, bounded folder-menu listings and read-only
 configuration checking. Its results remain data; it cannot commit preferences
-or own a preview lease. The separate *fvwm-desktop-capture* helper retains the
-existing Python/Xlib/PNG implementation until its native port is qualified.
-This is not a Python-free desktop yet. Installed users need no Go compiler,
-pip package, additional GUI toolkit or compositor.
+or own a preview lease. The separate native *fvwm-desktop-capture* helper owns its Xlib connection and
+uses the selected libpng dependency. No installed desktop controller/helper
+requires Python. Build/generation/test tooling retains its separate migration
+scope. Installed users need no Go compiler, pip package, additional GUI toolkit
+or compositor.
 
 Only the resident event loop changes controller state or writes the module
 pipe. At most four service jobs are admitted, with two running at once. Pending
@@ -395,8 +396,9 @@ is disabled. Network information uses ifconfig or an existing ip command.
 Settings needing privileges remain the operating system's responsibility.
 No helper automatically invokes sudo or doas.
 
-Screenshots use the existing Xlib library and Python's built-in PNG encoder
-in the separately supervised capture helper.
+Screenshots use Xlib and the configured libpng library in the separately
+supervised native capture helper. A PNG-disabled build reports capture as
+unavailable. Failed writes remove the helper's newly created partial file.
 Print captures the root display to ~/Pictures/Screenshots with a unique,
 private filename. Capture supports TrueColor visuals and a maximum of 16
 megapixels. The capture runs independently of the WM and does not include the

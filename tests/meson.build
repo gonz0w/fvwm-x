@@ -3797,3 +3797,20 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         is_parallel: false,
     )
 endif
+
+capture_policy_test = executable(
+    'test-capture-policy',
+    ['test_capture_policy.c', '../libs/capture_policy.c', '../libs/ImageSafety.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('capture-policy', capture_policy_test)
+if libpng.found() and get_option('live-x-tests')
+    test('desktop-capture-xvfb', py,
+        args: [files('live_x/capture_live.py'),
+            '--capture', fvwm_desktop_capture,
+            '--artifacts-dir', meson.project_build_root() / 'live-x-capture'],
+        timeout: 90,
+        is_parallel: false,
+    )
+endif

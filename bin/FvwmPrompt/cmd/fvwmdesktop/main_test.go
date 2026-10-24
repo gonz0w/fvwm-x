@@ -28,7 +28,7 @@ func TestCLIUsage(t *testing.T) {
 func TestBuildAndInstalledHelperLookup(t *testing.T) {
 	root := t.TempDir()
 	bin := filepath.Join(root, "bin", "FvwmPrompt")
-	build := filepath.Join(root, "default-config")
+	build := filepath.Join(root, "bin")
 	for _, dir := range []string{bin, build} {
 		if err := os.MkdirAll(dir, 0700); err != nil {
 			t.Fatal(err)

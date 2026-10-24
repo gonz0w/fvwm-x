@@ -8,7 +8,6 @@
 import argparse
 import fcntl
 import ctypes as C
-import importlib.util
 import json
 import os
 import re
@@ -21,6 +20,7 @@ import struct
 import subprocess
 import zlib
 
+from native_capture import NativeCapture
 from geometry_transition_live import Client, Pointer
 from live_x_harness import HarnessError, HarnessRuntime, start_display_server, wait_for_predicate
 from mfl_stream_live import Connection
@@ -407,9 +407,8 @@ def run(options):
         assert settings_query('palette')['palette']['effective'] == 'slate'
         evidence['restart_persistence_and_explicit_override'] = 'passed'
 
-        spec = importlib.util.spec_from_file_location('desktop_capture', root / 'capture.py')
-        capture_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(capture_module)
+        capture_module = NativeCapture(options.installed_desktop.resolve().with_name('fvwm-desktop-capture')
+            if options.installed_desktop else build / 'bin/fvwm-desktop-capture')
 
         def capture(name):
             previous = os.environ.get('DISPLAY')
@@ -818,9 +817,8 @@ def run(options):
         connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
 
         # Capture review images with a real terminal and the live native launcher.
-        spec = importlib.util.spec_from_file_location('desktop_capture', root / 'capture.py')
-        capture_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(capture_module)
+        capture_module = NativeCapture(options.installed_desktop.resolve().with_name('fvwm-desktop-capture')
+            if options.installed_desktop else build / 'bin/fvwm-desktop-capture')
         if shutil.which('xterm'):
             terminal = runtime.start('terminal', ['xterm', '-T', 'Terminal', '-fa', 'Monospace', '-fs', '11',
                 '-bg', '#202a31', '-fg', '#e5edf0', '-geometry', '76x23+100+120', '-e', '/bin/sh', '-c',

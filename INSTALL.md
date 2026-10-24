@@ -93,15 +93,15 @@ FvwmForm settings frontend. They need no Go, PyXDG, Pillow or ImageMagick at
 runtime. Use `PipeRead 'fvwm-menu-desktop --configure'` in FVWM configuration.
 The existing `Module FvwmPerl -l fvwm-menu-desktop-config.fpl` entry point is a
 small adapter to that native owner; the remaining FvwmPerl framework is still
-installed and tracked separately. Other Python/Perl runtime controllers and
-build/developer tooling have their own retirement work; this change does not
-make the entire distribution interpreter-free. M2's first slice installs the
-private Go `fvwm-desktop-worker` beside FvwmDesktop for application discovery,
-metrics, audio/power jobs and data-only settings/UI policy. Settings registry,
-schema migration, candidate validation and native menu/Form construction share
-the Go policy. The resident controller still owns Python file commits, consumer
-lifetimes and native screenshot capture; full controller/session acceptance
-remains open.
+installed and tracked separately. Build/developer tooling has its own retirement
+work; the distribution is not interpreter-free. The installed desktop controller
+and helpers no longer require Python: Go owns settings commits, generations,
+editor/preview lifetimes and native module publication. The adjacent private
+`fvwm-desktop-worker` handles application discovery, metrics, audio/power jobs,
+folder menus and read-only configuration checking. A separate C
+`fvwm-desktop-capture` owns its Xlib connection and uses the configured libpng;
+PNG-disabled profiles report capture as unavailable. Installed users need no Go
+compiler. Complete controller/session acceptance remains open.
 
 The pre-FVWM3 `fvwm-convert-2.6` converter is no longer built or installed.
 FVWM3 configuration files remain supported. Migrate older configuration with
@@ -275,8 +275,8 @@ meson test -C builddir-local --print-errorlogs
 Dependency detection and feature options are authoritative in `meson.build`
 and `meson.options`. Package names above vary by OS. Build and optional
 maintenance dependencies are separate from the desktop services discovered
-at runtime; the default desktop uses the existing FVWM components and Python
-standard library.
+at runtime; the default desktop uses the existing FVWM components, Go helpers
+and the native Xlib/libpng capture helper.
 
 Native BSD verification
 =======================

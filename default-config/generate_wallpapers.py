@@ -5,20 +5,27 @@
 # (at your option) any later version.
 """Regenerate the original, package-free geometric wallpapers from palettes."""
 
-import importlib.util
 import json
 import math
+import struct
+import zlib
 from pathlib import Path
 
 root = Path(__file__).resolve().parent
-spec = importlib.util.spec_from_file_location('desktop', root / 'capture.py')
-desktop = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(desktop)
 palettes = json.loads((root / 'palettes.json').read_text())
 output = root / 'wallpapers'
 output.mkdir(exist_ok=True)
 width, height = 1600, 1000
 
+
+
+def png_bytes(width, height, rows):
+    def chunk(kind, data):
+        crc = zlib.crc32(kind + data) & 0xffffffff
+        return struct.pack('!I', len(data)) + kind + data + struct.pack('!I', crc)
+    raw = b''.join(b'\0' + row for row in rows)
+    return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('!IIBBBBB', width, height, 8, 2, 0, 0, 0))
+            + chunk(b'IDAT', zlib.compress(raw, 6)) + chunk(b'IEND', b''))
 
 def rgb(value):
     return tuple(int(value[i:i + 2], 16) for i in (1, 3, 5))
@@ -46,7 +53,7 @@ for name, variants in palettes.items():
                 color = blend(background, accent, amount * (.7 if mode == 'light' else 1))
                 row.extend(color * (right - left))
             rows.append(row)
-        (output / f'{name}-{mode}.png').write_bytes(desktop.png_bytes(width, height, rows))
+        (output / f'{name}-{mode}.png').write_bytes(png_bytes(width, height, rows))
 
 # A small original session badge avoids references to the removed legacy icons.
 p = palettes['slate']['dark']
@@ -58,4 +65,4 @@ for y in range(48):
         inner = abs(x - 23.5) + abs(y - 23.5) < 11
         row.extend(rgb(p['accent'] if outer and not inner else p['surface']))
     rows.append(row)
-(root / 'fvwm-x.png').write_bytes(desktop.png_bytes(48, 48, rows))
+(root / 'fvwm-x.png').write_bytes(png_bytes(48, 48, rows))

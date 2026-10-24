@@ -7,6 +7,7 @@ package desktopworker
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -289,5 +290,31 @@ func TestRequestCountRefusesBeforeValueScan(t *testing.T) {
 	request := Request{Version: 1, Operation: "apps", Directories: directories}
 	if _, err := Run(context.Background(), request, Environment{}); err == nil || err.Error() != "too many application directories" {
 		t.Fatalf("count must be refused before element inspection: %v", err)
+	}
+}
+
+func TestConfigurationCheckCannotUseBackends(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "config")
+	if err := os.WriteFile(path, []byte("Exec touch marker\n*FvwmDesktop: motion on\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	payload, _ := json.Marshal(map[string]string{"path": path, "userdir": root, "datadir": root, "cwd": root})
+	request := Request{Version: 1, Operation: "check", Check: payload}
+	value, err := Run(context.Background(), request, Environment{})
+	if err != nil || value == nil {
+		t.Fatalf("%v %v", value, err)
+	}
+	for _, field := range []string{"action", "directories", "settings"} {
+		outer := map[string]any{"version": 1, "operation": "check", "check": json.RawMessage(payload)}
+		outer[field] = map[string]any{"action": "up", "directories": []string{"/tmp"}, "settings": map[string]any{}}[field]
+		data, _ := json.Marshal(outer)
+		if _, err := Decode(data); err == nil {
+			t.Fatalf("accepted unrelated %s", field)
+		}
+	}
+	request.Operation = "apps"
+	if _, err := Run(context.Background(), request, Environment{}); err == nil {
+		t.Fatal("check payload admitted by another operation")
 	}
 }

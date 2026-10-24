@@ -525,9 +525,7 @@ class ConfigurationChecking(unittest.TestCase):
             'Module /bin/sh -c "touch ' + str(marker) + '"', 'AddToFunc Evil I Exec touch ' + str(marker),
             '+ I Read "not-opened"', 'Lua os.execute("touch ' + str(marker) + '")',
             '*FvwmDesktop: palette $[env.VALUE]', '*FvwmDesktop: terminal /bin/sh'])
-        with (patch.object(desktop.subprocess, 'Popen', side_effect=AssertionError('process execution')),
-              patch.object(desktop, 'desktop_worker', side_effect=AssertionError('external command'))):
-            result = self.check(text)
+        result = self.check(text)
         self.assertEqual(result['errors'], 0)
         self.assertEqual(result['unchecked'], 8)
         self.assertEqual(result['status'], 'partial')
@@ -571,29 +569,15 @@ class ConfigurationChecking(unittest.TestCase):
         self.assertEqual(self.check('Read\n')['diagnostics'][0]['code'], 'read-argument')
         self.assertEqual(self.check('Read "unterminated\n')['status'], 'partial')
 
-    def test_source_work_and_diagnostic_limits_report_incomplete(self):
-        for constant, bound, text, code in [
-                ('CHECK_BYTES', 8, '# ' + 'a' * 20, 'byte-limit'),
-                ('CHECK_LINE_BYTES', 8, '# ' + 'a' * 20, 'line-limit'),
-                ('CHECK_LINES', 2, '# one\n# two\n# three\n', 'work-limit'),
-                ('CHECK_DIAGNOSTICS', 3, 'Style * NeverFocus\n' * 5, 'diagnostic-limit')]:
-            with patch.object(desktop, constant, bound):
-                result = self.check(text)
-            self.assertEqual(result['status'], 'partial')
-            self.assertEqual(result['diagnostics'][-1]['code'], code)
-        self.assertEqual(len(result['diagnostics']), 3)
-        with patch.object(desktop, 'CHECK_SECONDS', 0):
-            self.assertEqual(self.check('# empty\n')['diagnostics'][0]['code'], 'time-limit')
-
-    def test_include_depth_and_visit_bounds(self):
-        for index in range(4):
-            (self.root / ('file' + str(index))).write_text('Read file' + str(index + 1) + '\n')
-        with patch.object(desktop, 'CHECK_DEPTH', 2):
-            result = self.check('Read file0\n')
-        self.assertEqual(result['diagnostics'][0]['code'], 'include-limit')
-        with patch.object(desktop, 'CHECK_FILES', 2):
-            result = self.check('Read file0\n')
-        self.assertEqual(result['diagnostics'][0]['code'], 'include-limit')
+    def test_complete_worker_report_is_validated_before_publication(self):
+        result = self.check('*FvwmDesktop: palette wrong\n')
+        for field, value in [('errors', 0), ('files', [None]),
+                             ('diagnostics', [dict(result['diagnostics'][0], end_line=0)])]:
+            with self.subTest(field=field):
+                malformed = dict(result, **{field: value})
+                with patch.object(desktop, 'desktop_worker', return_value=malformed):
+                    with self.assertRaises(ValueError):
+                        self.check()
 
     def test_nul_encoding_and_final_continuation_are_not_silently_dropped(self):
         self.file.write_bytes(b'*FvwmDesktop: motion on\0\n')

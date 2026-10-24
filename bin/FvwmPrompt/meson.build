@@ -38,7 +38,7 @@ fvwmprompt_test_binaries = custom_target(
     'FvwmPrompt-test-binaries',
     output: [
         'FvwmPrompt.test', 'fvwmcommand.test', 'fvwmdesktopworker.test',
-        'desktopworker.test', 'desktopsettings.test',
+        'desktopworker.test', 'desktopsettings.test', 'desktopcheck.test',
         'fvwmmenudesktop.test', 'fvwmmenudirectory.test',
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'transport.test',
@@ -252,7 +252,7 @@ desktop_worker_env.set('FVWM_DESKTOP_WORKER', fvwm_desktop_worker.full_path())
 test('desktop-worker-policy', golang,
     args: ['test', '-C', fvwmprompt_build, '-mod=vendor',
         './internal/desktopworker', './cmd/fvwmdesktopworker',
-        './internal/desktopsettings'],
+        './internal/desktopsettings', './internal/desktopcheck'],
     env: prompt_test_env,
     timeout: 180,
 )

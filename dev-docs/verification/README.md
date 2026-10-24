@@ -635,3 +635,5 @@ diagnostic and execution gates remain separate.
 - [Live target and observation controls](VERIFICATION-2026-10-23-FILE-PROVIDER-TARGETS.md): focused Linux/FreeBSD, 24 native entries, 239 Go cases, three themes and scoped sanitizers; accumulated platform cycle due after merge.
 
 - [Accumulated browser action cycle](VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md): merged PR176–178 close six-target integration before the next feature; source-bound retention and one UI-only completion remain explicit.
+
+- [M2 configuration checker](VERIFICATION-2026-10-24-M2-CONFIGURATION-CHECKER.md): bounded read-only Go source walker, retained native report and focused Linux/theme/cross-build evidence.

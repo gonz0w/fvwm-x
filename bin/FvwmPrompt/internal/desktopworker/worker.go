@@ -22,6 +22,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 )
 
@@ -38,6 +39,7 @@ type Request struct {
 	Action      string          `json:"action,omitempty"`
 	Directories []string        `json:"directories,omitempty"`
 	Settings    json.RawMessage `json:"settings,omitempty"`
+	Check       json.RawMessage `json:"check,omitempty"`
 }
 
 type Response struct {
@@ -59,7 +61,7 @@ func Decode(data []byte) (Request, error) {
 		return request, errors.New("expected request object")
 	}
 	seen := map[string]bool{}
-	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "settings": true}
+	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "settings": true, "check": true}
 	for decoder.More() {
 		token, err = decoder.Token()
 		key, ok := token.(string)
@@ -108,13 +110,23 @@ func validateRequest(request Request) (Request, error) {
 	if request.System == "" {
 		request.System = map[string]string{"linux": "Linux", "freebsd": "FreeBSD", "openbsd": "OpenBSD"}[runtime.GOOS]
 	}
-	if request.Operation != "apps" && request.Operation != "settings" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
+	if request.Operation != "apps" && request.Operation != "settings" && request.Operation != "check" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
 		return request, errors.New("unsupported system")
 	}
 	if request.Operation != "settings" && request.Settings != nil {
 		return request, errors.New("unexpected settings policy")
 	}
+	if request.Operation != "check" && request.Check != nil {
+		return request, errors.New("unexpected configuration check")
+	}
 	switch request.Operation {
+	case "check":
+		if request.Action != "" || len(request.Directories) != 0 || request.Check == nil {
+			return request, errors.New("invalid configuration check request")
+		}
+		if _, err := desktopcheck.DecodeRequest(request.Check); err != nil {
+			return request, err
+		}
 	case "settings":
 		if request.Action != "" || len(request.Directories) != 0 || request.Settings == nil {
 			return request, errors.New("invalid settings policy request")
@@ -214,6 +226,9 @@ func Run(ctx context.Context, request Request, env Environment) (any, error) {
 	}
 	var value any
 	switch request.Operation {
+	case "check":
+		check, _ := desktopcheck.DecodeRequest(request.Check)
+		value, err = desktopcheck.Check(ctx, check)
 	case "settings":
 		value, err = desktopsettings.Evaluate(request.Settings)
 		if err != nil {

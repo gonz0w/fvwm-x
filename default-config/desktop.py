@@ -21,7 +21,6 @@ import functools
 import hashlib
 import json
 import itertools
-import io
 import os
 from pathlib import Path
 import re
@@ -52,200 +51,68 @@ STATE_LIMIT = 8192
 STATE_SCHEMA = 2
 UNCHECKED_REVISION = object()
 EDITOR_SECONDS = 300
-CHECK_BYTES = 4 * 1024 * 1024
-CHECK_LINE_BYTES = 1024 * 1024
-CHECK_FILES = 64
-CHECK_DEPTH = 8
-CHECK_LINES = 10000
-CHECK_DIAGNOSTICS = 64
-CHECK_SECONDS = 3
-
-
-class ConfigurationCheck:
-    """Read-only analysis of a declared subset, never a FVWM interpreter."""
-
-    def __init__(self, userdir, datadir, cwd):
-        self.search = [Path(root).absolute() for root in (userdir, datadir, cwd)]
-        self.deadline = time.monotonic() + CHECK_SECONDS
-        self.bytes = self.lines = self.visits = self.checked = 0
-        self.diagnostics, self.files = [], []
-        self.active, self.schedule = set(), {}
-        self.stopped = False
-
-    def diagnostic(self, location, severity, code, message, parser='FvwmDesktop'):
-        if self.stopped:
-            return
-        if len(self.diagnostics) == CHECK_DIAGNOSTICS - 1:
-            severity, code, message = 'unchecked', 'diagnostic-limit', 'Diagnostic limit reached; remaining input was not checked'
-            self.stopped = True
-        self.diagnostics.append(dict(location, severity=severity, code=code,
-                                     message=message, parser=parser))
-
-    def limit(self, location, code, message):
-        self.diagnostic(location, 'unchecked', code, message, 'configuration-source')
-        self.stopped = True
-
-    def read(self, paths, origin=None, quiet=False):
-        if self.stopped:
-            return
-        stack = origin['included_from'] + [
-            {key: origin[key] for key in ('path', 'line', 'end_line')}] if origin else []
-        location = dict(path=str(paths[0]), line=1, end_line=1, included_from=stack)
-        if len(stack) >= CHECK_DEPTH or self.visits >= CHECK_FILES:
-            self.limit(origin or location, 'include-limit', 'Include depth or file-visit limit reached')
-            return
-        self.visits += 1
-        fd = None
-        try:
-            for path in paths:
-                try:
-                    fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_CLOEXEC)
-                    location['path'] = str(path)
-                    break
-                except (FileNotFoundError, NotADirectoryError):
-                    continue
-            if fd is None:
-                if not quiet:
-                    self.diagnostic(origin or location, 'error', 'read-missing',
-                                    'Cannot find literal configuration file', 'configuration-source')
-                return
-            info = os.fstat(fd)
-            if not stat.S_ISREG(info.st_mode):
-                self.diagnostic(origin or location, 'error', 'read-type',
-                                'Configuration source must be a regular file', 'configuration-source')
-                return
-            identity = (info.st_dev, info.st_ino)
-            if identity in self.active:
-                self.diagnostic(origin or location, 'error', 'include-cycle',
-                                'Literal Read cycle detected', 'configuration-source')
-                return
-            chunks = []
-            while True:
-                if time.monotonic() >= self.deadline:
-                    self.limit(location, 'time-limit', 'Elapsed checking budget reached')
-                    return
-                data = os.read(fd, min(65536, CHECK_BYTES - self.bytes + 1))
-                if not data:
-                    break
-                self.bytes += len(data)
-                if self.bytes > CHECK_BYTES:
-                    self.limit(location, 'byte-limit', 'Combined source byte limit reached')
-                    return
-                chunks.append(data)
-            data = b''.join(chunks)
-        except OSError as error:
-            self.diagnostic(origin or location, 'error', 'read-error',
-                            'Cannot inspect configuration source: ' + str(error.strerror),
-                            'configuration-source')
-            return
-        finally:
-            if fd is not None:
-                os.close(fd)
-        self.files.append(dict(path=location['path'], bytes=len(data),
-                               sha256=hashlib.sha256(data).hexdigest()))
-        self.active.add(identity)
-        try:
-            stream, logical, start, number = io.BytesIO(data), bytearray(), 1, 0
-            while not self.stopped:
-                part = stream.readline(CHECK_LINE_BYTES + 2)
-                if not part:
-                    break
-                number += 1
-                self.lines += 1
-                location = dict(location, line=start, end_line=number)
-                if self.lines > CHECK_LINES or time.monotonic() >= self.deadline:
-                    self.limit(location, 'work-limit', 'Line or elapsed checking budget reached')
-                    break
-                newline = part.endswith(b'\n')
-                logical.extend(part[:-1] if newline else part)
-                if len(logical) > CHECK_LINE_BYTES:
-                    self.limit(location, 'line-limit', 'Logical source line limit reached')
-                    break
-                if newline and logical.endswith(b'\\'):
-                    del logical[-1:]
-                    continue
-                self.line(bytes(logical), location)
-                logical.clear()
-                start = number + 1
-            if logical and not self.stopped:
-                self.line(bytes(logical), location)
-        finally:
-            self.active.remove(identity)
-
-    def line(self, data, location):
-        if b'\0' in data:
-            self.diagnostic(location, 'error', 'nul-byte', 'NUL byte in source', 'configuration-source')
-            return
-        try:
-            text = data.decode('utf-8').strip(' \t\r\v\f')
-        except UnicodeDecodeError:
-            self.diagnostic(location, 'unchecked', 'encoding',
-                            'This check supports UTF-8 source only', 'configuration-source')
-            return
-        if not text or text.startswith('#'):
-            return
-        if '$' in text or '`' in text:
-            self.diagnostic(location, 'unchecked', 'expansion',
-                            'Expansion or generated configuration is not evaluated')
-            return
-        if re.match(r'Read(?:\s|$)', text, re.I | re.ASCII):
-            if text.lower() == 'read':
-                self.diagnostic(location, 'error', 'read-argument', 'Read requires a filename',
-                                'configuration-source')
-                return
-            match = re.fullmatch(r'''Read\s+(?:"([^"\\]+)"|'([^'\\]+)'|([^\s'"\\]+))(?:\s+(Quiet))?''', text, re.I | re.ASCII)
-            if match:
-                name = next(value for value in match.groups()[:3] if value is not None)
-                if not name.startswith('~'):
-                    path = Path(name)
-                    paths = [path] if path.is_absolute() else [root / path for root in self.search]
-                    self.checked += 1
-                    self.read(paths, location, quiet=bool(match[4]))
-                    return
-            self.diagnostic(location, 'unchecked', 'read-syntax',
-                            'Only literal Read filenames and optional Quiet are checked',
-                            'configuration-source')
-            return
-        if re.match(r'\*FvwmDesktop:', text, re.I | re.ASCII):
-            key, value = desktop_configuration(text)
-            if key == 'terminal':
-                self.diagnostic(location, 'unchecked', 'terminal-provider',
-                                'Terminal invocation and provider availability are not checked')
-                return
-            if key not in SETTINGS:
-                self.diagnostic(location, 'error', 'setting-name', 'Unknown FvwmDesktop option')
-                return
-            try:
-                parsed = setting_value(key, value, text=True)
-            except ValueError as error:
-                self.diagnostic(location, 'error', 'setting-value', str(error))
-                return
-            self.checked += 1
-            if key in ('day', 'night'):
-                self.schedule[key] = (parsed, location)
-            return
-        self.diagnostic(location, 'unchecked', 'unsupported',
-                        'Command or module syntax is outside the desktop-settings subset')
-
-    def result(self):
-        if len(self.schedule) == 2:
-            day, night = self.schedule['day'], self.schedule['night']
-            if day[0] == night[0]:
-                self.diagnostic(night[1], 'error', 'schedule-equal',
-                                'Explicit day and night times must be different')
-        errors = sum(item['severity'] == 'error' for item in self.diagnostics)
-        unchecked = sum(item['severity'] == 'unchecked' for item in self.diagnostics)
-        return dict(schema_version=1, coverage='desktop-settings-literals-and-Read-v1',
-                    status='errors' if errors else 'partial' if unchecked else 'checked-subset',
-                    errors=errors, unchecked=unchecked, checked_directives=self.checked,
-                    files=self.files, diagnostics=self.diagnostics)
-
-
 def check_configuration(path, userdir=None, datadir=None, cwd=None):
-    checker = ConfigurationCheck(userdir or os.environ.get('FVWM_USERDIR', Path.home() / '.fvwm'),
-        datadir or os.environ.get('FVWM_DATADIR', '@FVWM_DATADIR@'), cwd or Path.cwd())
-    checker.read([Path(path).absolute()])
-    return checker.result()
+    request = dict(path=str(Path(path).absolute()),
+        userdir=str(Path(userdir or os.environ.get('FVWM_USERDIR', Path.home() / '.fvwm')).absolute()),
+        datadir=str(Path(datadir or os.environ.get('FVWM_DATADIR', '@FVWM_DATADIR@')).absolute()),
+        cwd=str(Path(cwd or Path.cwd()).absolute()))
+    result = desktop_worker('check', check=request)
+    return configuration_report(result)
+
+
+def configuration_report(result):
+    """Validate the whole data-only report before its resident UI can publish."""
+    fields = {'schema_version', 'coverage', 'status', 'errors', 'unchecked',
+              'checked_directives', 'files', 'diagnostics'}
+    if (type(result) is not dict or set(result) != fields or
+            type(result['schema_version']) is not int or result['schema_version'] != 1 or
+            result['coverage'] != 'desktop-settings-literals-and-Read-v1' or
+            result['status'] not in ('errors', 'partial', 'checked-subset')):
+        raise ValueError('Invalid configuration check report')
+    for field in ('errors', 'unchecked', 'checked_directives'):
+        if type(result[field]) is not int or not 0 <= result[field] <= 10000:
+            raise ValueError('Invalid configuration check counts')
+    for field in ('files', 'diagnostics'):
+        if type(result[field]) is not list or len(result[field]) > 64:
+            raise ValueError('Invalid configuration check records')
+    total = 0
+    for item in result['files']:
+        if (type(item) is not dict or set(item) != {'path', 'bytes', 'sha256'} or
+                type(item['bytes']) is not int or not 0 <= item['bytes'] <= 4194304 or
+                type(item['sha256']) is not str or not re.fullmatch(r'[0-9a-f]{64}', item['sha256'])):
+            raise ValueError('Invalid configuration source record')
+        worker_text(item['path'], 8192)
+        total += item['bytes']
+    if total > 4194304:
+        raise ValueError('Invalid configuration source byte count')
+    def location(item):
+        worker_text(item['path'], 8192)
+        for key in ('line', 'end_line'):
+            if type(item[key]) is not int or not 1 <= item[key] <= 10001:
+                raise ValueError('Invalid configuration source location')
+        if item['end_line'] < item['line']:
+            raise ValueError('Invalid configuration source span')
+    errors = unchecked = 0
+    for item in result['diagnostics']:
+        if (type(item) is not dict or set(item) != {'path', 'line', 'end_line',
+                'included_from', 'severity', 'code', 'message', 'parser'} or
+                item['severity'] not in ('error', 'unchecked') or
+                item['parser'] not in ('FvwmDesktop', 'configuration-source') or
+                type(item['included_from']) is not list or len(item['included_from']) > 8):
+            raise ValueError('Invalid configuration diagnostic')
+        location(item)
+        worker_text(item['code'], 64)
+        worker_text(item['message'], 1024)
+        for parent in item['included_from']:
+            if type(parent) is not dict or set(parent) != {'path', 'line', 'end_line'}:
+                raise ValueError('Invalid configuration include location')
+            location(parent)
+        errors += item['severity'] == 'error'
+        unchecked += item['severity'] == 'unchecked'
+    status = 'errors' if errors else 'partial' if unchecked else 'checked-subset'
+    if result['errors'] != errors or result['unchecked'] != unchecked or result['status'] != status:
+        raise ValueError('Invalid configuration check summary')
+    return result
 
 
 def settings_policy(operation, **arguments):

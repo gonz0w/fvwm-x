@@ -323,15 +323,16 @@ reports incomplete checking. An elapsed three-second budget is checked between
 reads/lines; it cannot preempt an individual filesystem call. Sources must be
 regular files and are opened without blocking on FIFOs. No check writes a source
 or preference file. The helper admits one check at a time within its existing
-bounded worker pool and retains one result snapshot.
+bounded worker pool and retains one result snapshot. Source walking and
+diagnostics use the shared Go settings registry in the private worker; complete
+reports are validated before the resident controller presents them.
 
 == DESKTOP SERVICES
 
 The resident desktop controller still uses Python for preference-file commits,
-module publication, editor/preview lifetimes, configuration-source walking and
-screenshot capture. The adjacent private *fvwm-desktop-worker* Go executable
-owns application discovery, system metrics, audio/power jobs and data-only
-settings/UI policy. One registry supplies typed validation, stored-schema
+module publication, editor/preview lifetimes and screenshot capture. The adjacent private *fvwm-desktop-worker* Go executable
+owns application discovery, system metrics, audio/power jobs, read-only
+configuration-source checking and data-only settings/UI policy. One registry supplies typed validation, stored-schema
 migration, saved/effective candidates, query metadata and native settings,
 appearance, schedule and preview-dialog plans. The controller validates complete
 plans before publishing; an invalid editor plan preserves the current draft. Installed users need no Go compiler or

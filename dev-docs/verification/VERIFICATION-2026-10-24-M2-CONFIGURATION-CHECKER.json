@@ -1,0 +1,536 @@
+{
+  "schema_version": 1,
+  "baseline": "fd76d53e7980983b55038b19e6d3113a211edd3a",
+  "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-configuration-checker/evidence.tgz",
+  "archive_sha256": "6888738657797c7916a8bcc052668e5e3b4f39b9c1d789ed40522c101e3f8624",
+  "archive_payloads_verified": 57,
+  "source_manifest": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-configuration-checker/source.json",
+  "source_manifest_sha256": "d93fa7c21aaffbde957ff2160139ebd472f7a4ba055d6b2bd1c53a497a350384",
+  "source_input_count": 1571,
+  "changed_runtime_inputs": {
+    "bin/FvwmPrompt/internal/desktopworker/worker.go": {
+      "sha256": "a413300cd9c3d803af768b2c5206b558277b851441db5f8227723e1e6b62e737",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopworker/worker_test.go": {
+      "sha256": "7f5223ca6863c56bad11dc05cc60a4be6b798aaf9772d1671548a2356f6404d7",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/meson.build": {
+      "sha256": "52ac72f4ec1074c949df475a22bf270c30122e43285fd36c907860ea4222808b",
+      "mode": 420
+    },
+    "default-config/desktop.py": {
+      "sha256": "15f6595193ce5599186cb6cdff854281fadf16b60b422797b37b852958992107",
+      "mode": 493
+    },
+    "doc/FvwmDesktop.adoc": {
+      "sha256": "bcde525d7b5ec140b6831f06dc85730dca079af664f06ee704c377b8aba8fbed",
+      "mode": 420
+    },
+    "tests/test_desktop.py": {
+      "sha256": "7cdfc3f3245192c1bf259e10a0400d3b1fe0028f82d2c8b9cf3b28590932d688",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcheck/check.go": {
+      "sha256": "695b978f60532c71f385c6c0ebf8823e7292e9ff97c9d7804c8128f04242cc7d",
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcheck/check_test.go": {
+      "sha256": "530f09cba4f5d1bb1574f5a139bf4395315adb06afa2ab8f6165e101f2fcb2d1",
+      "mode": 420
+    }
+  },
+  "checks": [
+    {
+      "label": "configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc"
+      ],
+      "status": 0,
+      "seconds": 1.265
+    },
+    {
+      "label": "worker-build",
+      "command": [
+        "meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j",
+        "1",
+        "fvwm-desktop-worker"
+      ],
+      "status": 0,
+      "seconds": 0.316
+    },
+    {
+      "label": "go-normal",
+      "command": [
+        "go",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "-json",
+        "-count=1",
+        "-mod=vendor",
+        "./internal/desktopcheck",
+        "./internal/desktopsettings",
+        "./internal/desktopworker",
+        "./cmd/fvwmdesktopworker"
+      ],
+      "status": 0,
+      "seconds": 0.522
+    },
+    {
+      "label": "go-race",
+      "command": [
+        "go",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "-race",
+        "-json",
+        "-count=1",
+        "-mod=vendor",
+        "./internal/desktopcheck",
+        "./internal/desktopsettings",
+        "./internal/desktopworker",
+        "./cmd/fvwmdesktopworker"
+      ],
+      "status": 0,
+      "seconds": 4.937
+    },
+    {
+      "label": "go-vet",
+      "command": [
+        "go",
+        "vet",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "-mod=vendor",
+        "./internal/desktopcheck",
+        "./internal/desktopsettings",
+        "./internal/desktopworker",
+        "./cmd/fvwmdesktopworker"
+      ],
+      "status": 0,
+      "seconds": 0.165
+    },
+    {
+      "label": "controller",
+      "command": [
+        "python3",
+        "tests/test_desktop.py",
+        "-v"
+      ],
+      "status": 0,
+      "seconds": 1.017
+    },
+    {
+      "label": "worker-boundary",
+      "command": [
+        "python3",
+        "tests/test_desktop_worker.py",
+        "-v"
+      ],
+      "status": 0,
+      "seconds": 3.932
+    },
+    {
+      "label": "stage",
+      "command": [
+        "meson",
+        "install",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--tags",
+        "desktop-controller",
+        "--destdir",
+        "/tmp/fvwm-module-waits-20261015/m23-checker/stage"
+      ],
+      "status": 0,
+      "seconds": 0.119
+    },
+    {
+      "label": "adjacent-cli",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/m23-checker/stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "--check-config",
+        "/tmp/fvwm-module-waits-20261015/m23-checker/adjacent.config",
+        "--json"
+      ],
+      "status": 0,
+      "seconds": 0.032
+    },
+    {
+      "label": "native-x",
+      "command": [
+        "python3",
+        "tests/live_x/desktop_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--installed-desktop",
+        "/tmp/fvwm-module-waits-20261015/m23-checker/stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/m23-checker/ui",
+        "--settings-themes"
+      ],
+      "status": 0,
+      "seconds": 29.65
+    },
+    {
+      "label": "manual",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-a",
+        "reproducible",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/m23-checker/FvwmDesktop.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/FvwmDesktop.adoc"
+      ],
+      "status": 0,
+      "seconds": 0.067
+    }
+  ],
+  "go_normal": {
+    "top_level_cases": 31,
+    "subcases": 26,
+    "packages": 4
+  },
+  "go_race": {
+    "top_level_cases": 31,
+    "subcases": 26,
+    "packages": 4
+  },
+  "controller_cases": 75,
+  "boundary_cases": 12,
+  "native_identity": {
+    "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+    "config.h": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+    "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+    "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+    "modules/FvwmButtons/FvwmButtons": "f89f9b7f87b8517d0b8b452fbac2ae2257fa601b4eee15d33055d9152493e2bf"
+  },
+  "native_x": {
+    "greyed_label_empty_quoted_destroy_ownership": 32,
+    "primary_bar_size": [
+      1440,
+      36
+    ],
+    "palettes_appearance_schedule_opaque_switch": "passed",
+    "typed_queries_scoped_reset_reload_stale_refusal": "passed",
+    "native_registry_menu_keyboard_activate_cancel": "passed",
+    "restart_persistence_and_explicit_override": "passed",
+    "editor_saved_after_apply": {
+      "appearance": "light",
+      "day": "07:00",
+      "keep_wallpaper": false,
+      "launcher_opacity": 94,
+      "motion": false,
+      "night": "19:00",
+      "palette": "dune",
+      "transparency": true,
+      "wallpaper": {
+        "appearance": "light",
+        "palette": "dune"
+      },
+      "schema_version": 2
+    },
+    "native_grouped_editor_apply_defaults_cancel_stale_reload_restart": "passed",
+    "settings_screenshots": [
+      "settings-editor.png",
+      "settings-draft.png",
+      "settings-menu.png",
+      "settings-defaults.png"
+    ],
+    "preview_control_geometry": {
+      "window": 12582919,
+      "geometry": [
+        0,
+        0,
+        492,
+        127
+      ],
+      "children": [
+        [
+          12582922,
+          [
+            10,
+            94,
+            59,
+            28
+          ]
+        ],
+        [
+          12582923,
+          [
+            199,
+            94,
+            147,
+            28
+          ]
+        ]
+      ]
+    },
+    "observer_retired_windows": 6,
+    "runtime_preview": {
+      "explicit_revert": true,
+      "keep_runtime_only": true,
+      "helper_death_restores": true,
+      "preference_bytes_unchanged": true,
+      "screenshots": [
+        "opacity-preview-dialog.png",
+        "opacity-preview-launcher.png"
+      ]
+    },
+    "saved_opacity_preview": {
+      "saved": 71,
+      "schema": 2,
+      "scope_only": true,
+      "draft_transferred_and_resumed": true,
+      "revert_no_write": true,
+      "writer_lock_refused": true,
+      "partial_runtime_kept_file_unchanged": true,
+      "restart_persisted": true,
+      "helper_death_restored": true,
+      "orphan_dialog_retired": true,
+      "screenshots": [
+        "settings-opacity-editor.png",
+        "settings-opacity-confirm.png",
+        "settings-opacity-resumed.png",
+        "settings-opacity-write-refused.png"
+      ]
+    },
+    "configuration_checker_readonly_locations_and_native_pages": "passed",
+    "configuration_check_cli": {
+      "schema_version": 1,
+      "coverage": "desktop-settings-literals-and-Read-v1",
+      "status": "errors",
+      "errors": 3,
+      "unchecked": 4,
+      "checked_directives": 1,
+      "files": [
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+          "bytes": 332,
+          "sha256": "c72528f6b63b96ab0a068d02b7402117a4949e13229ae78cdeccad623aac27ec"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/checker-child",
+          "bytes": 79,
+          "sha256": "a3157bfce8ff78c5fa16c620af47437c93c57a8e9c4dcfd835ef522030930c42"
+        }
+      ],
+      "diagnostics": [
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/checker-child",
+          "line": 2,
+          "end_line": 3,
+          "included_from": [
+            {
+              "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+              "line": 2,
+              "end_line": 2
+            }
+          ],
+          "severity": "error",
+          "code": "setting-value",
+          "message": "Invalid value for palette",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/checker-child",
+          "line": 4,
+          "end_line": 4,
+          "included_from": [
+            {
+              "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+              "line": 2,
+              "end_line": 2
+            }
+          ],
+          "severity": "error",
+          "code": "setting-name",
+          "message": "Unknown FvwmDesktop option",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+          "line": 3,
+          "end_line": 3,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "unsupported",
+          "message": "Command or module syntax is outside the desktop-settings subset",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+          "line": 4,
+          "end_line": 4,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "unsupported",
+          "message": "Command or module syntax is outside the desktop-settings subset",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+          "line": 5,
+          "end_line": 5,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "unsupported",
+          "message": "Command or module syntax is outside the desktop-settings subset",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+          "line": 6,
+          "end_line": 6,
+          "included_from": [],
+          "severity": "error",
+          "code": "setting-value",
+          "message": "Invalid value for motion",
+          "parser": "FvwmDesktop"
+        },
+        {
+          "path": "/tmp/fvwm-desktop-12jebo5l/user/local.config",
+          "line": 7,
+          "end_line": 7,
+          "included_from": [],
+          "severity": "unchecked",
+          "code": "expansion",
+          "message": "Expansion or generated configuration is not evaluated",
+          "parser": "FvwmDesktop"
+        }
+      ]
+    },
+    "configuration_check_screenshots": [
+      "configuration-check.png",
+      "configuration-check-next.png"
+    ],
+    "launcher_and_safe_application_launch": "passed",
+    "search_and_calendar": "passed",
+    "screenshot_and_core_responsiveness": "passed",
+    "screenshot_rgb_at_16_and_24_bit_depth": "passed",
+    "settings_theme_profiles": {
+      "slate-dark": {
+        "editor_geometry": [
+          624,
+          229
+        ],
+        "input": "slate-dark-settings.config",
+        "screenshots": [
+          "slate-dark-settings.png",
+          "slate-dark-menu.png"
+        ],
+        "cancellation_preserves_file": true
+      },
+      "dune-light": {
+        "editor_geometry": [
+          624,
+          229
+        ],
+        "input": "dune-light-settings.config",
+        "screenshots": [
+          "dune-light-settings.png",
+          "dune-light-menu.png"
+        ],
+        "cancellation_preserves_file": true
+      },
+      "classic-large": {
+        "editor_geometry": [
+          804,
+          221
+        ],
+        "input": "classic-large-settings.config",
+        "screenshots": [
+          "classic-large-settings.png",
+          "classic-large-menu.png"
+        ],
+        "cancellation_preserves_file": true
+      }
+    },
+    "baseline_parser": "passed",
+    "observer_unexpected_x_errors": []
+  },
+  "cross_builds": [
+    {
+      "target": "linux-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.803,
+      "sha256": "6a2c7bbae7849d17a66d30328e729bfc81f25ecc7804ceecf160eab8cd4f8c82",
+      "bytes": 5336425
+    },
+    {
+      "target": "linux-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.803,
+      "sha256": "787edee2759a8e4434755187c7797bc13230e991f8b800a081ebdc40482f2d9d",
+      "bytes": 5032447
+    },
+    {
+      "target": "freebsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.616,
+      "sha256": "490ee669d8cdbb5b3cdf46967915d9630626c7286a5bfbab027fc39f0921b142",
+      "bytes": 5202525
+    },
+    {
+      "target": "freebsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.623,
+      "sha256": "7f9366be2621ac91b9222e6bfa378d0c3cb9e9bb1ab82e539df17797342f99fb",
+      "bytes": 4916412
+    },
+    {
+      "target": "openbsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.595,
+      "sha256": "1ba6d3ab16e6d7733ac8c5d255727b91502f7dbddeb640c554aaa1eb93dd9af6",
+      "bytes": 5195969
+    },
+    {
+      "target": "openbsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.614,
+      "sha256": "03c280121d83076bd5f09c6825da5be9bed25952d7e6d1da2ff14c796c3b7f5b",
+      "bytes": 4917266
+    }
+  ],
+  "screenshots_inspected": [
+    "configuration-check.png",
+    "configuration-check-next.png",
+    "slate-dark-settings.png",
+    "dune-light-settings.png",
+    "classic-large-settings.png"
+  ],
+  "retired_duplicates": {
+    "removed_files": 70,
+    "removed_bytes": 3608619,
+    "canonical_host_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-configuration-checker/evidence.tgz",
+    "archive_sha256": "6888738657797c7916a8bcc052668e5e3b4f39b9c1d789ed40522c101e3f8624",
+    "preserved": "source, builds, caches, stage, VM disks and other owners"
+  },
+  "review": {
+    "kind": "lead self-review",
+    "scope": "source, reference consumers, ownership, limits, native evidence and screenshots",
+    "finding": "lexical path cleaning changed symlink/parent traversal",
+    "resolution": "preserve filesystem traversal; failing regression retained in host evidence, fresh Linux normal/race pass"
+  },
+  "limits": [
+    "Focused Linux ARM64 guest API execution is not native-CPU qualification.",
+    "BSD execution/default-X/full installs and broad owner acceptance deferred.",
+    "Python remains for resident state/lifetimes/capture.",
+    "No benchmark or speed/size claim; PR186 periodic reference is 4/5, 5/5 on this merge."
+  ]
+}

@@ -1,5 +1,10 @@
 # Project workflow and code navigation
 
+Apply the [pinned portable method](../.agent-temper/METHOD.md) and the
+[project's composition and decisions](PROJECT.md#agent-temper-composition-and-project-decisions).
+The local tracker and existing risk-based cadence below remain authoritative;
+GitHub is a mirror, not a newly selected Temper profile.
+
 Use one versioned project system:
 
 | Question | Authority |

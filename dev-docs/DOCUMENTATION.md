@@ -126,3 +126,11 @@ reference-style Markdown and HTML still need their own checks. Document imports
 retain original input/output SHA256 values and dated scope. Portable navigation
 notes identify retired fixture paths and historical source positions. Archived
 control files remain inactive/local; publication does not adopt their workflow.
+
+## Portable writing method
+
+Apply the [Temper documentation reference](../.agent-temper/docs/reference/documentation.md)
+for reader needs, clear procedures and honest evidence. It is STE-informed,
+not formal ASD-STE100 certification. Preserve this document's canonical AsciiDoc,
+installed man-page, derived HTML, rendering and accessibility contracts. The
+method adoption does not change build defaults or complete DOCS-01 acceptance.

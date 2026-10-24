@@ -1,5 +1,11 @@
 # FVWM-X development instructions
 
+Read the pinned [Agent Temper method](.agent-temper/METHOD.md),
+[local project policy](dev-docs/PROJECT.md) and the selected owning work item first.
+No optional profiles are selected. Product/platform rules below are local
+extensions; the method does not choose them. Follow the existing work authority
+and required gates. Recorded owner decisions persist across sessions.
+
 FVWM-X is an X11 window manager derived from FVWM3. These are current repository
 instructions; retired GSD plans and graph data are historical references.
 

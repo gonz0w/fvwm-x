@@ -25,6 +25,49 @@ Current findings and verification gaps are summarized in
   Local BSD verification uses QEMU. Keep the root-sized fallback for servers
   reporting no RandR monitors. No native Wayland backend or built-in compositor.
 
+## Agent Temper adoption — MAINT-02/TEMPER-01
+
+Owner: Cam (@gonz0w). Status: open until authorized integration and canonical
+verification are complete. Review mirror:
+[issue #192](https://github.com/gonz0w/fvwm-x/issues/192), bounded child of
+[MAINT-02 #14](https://github.com/gonz0w/fvwm-x/issues/14). This is the current
+owner-requested methodology checkpoint, not a new product feature batch.
+
+Outcome: adopt the portable Agent Temper core at
+`588698ff019fbde5bfc01f426c02af66c4987b6d` with no optional profiles, while keeping
+this tracker authoritative and preserving FVWM-X's local product, compatibility,
+license, documentation and risk-based verification requirements.
+
+Acceptance: retain exact upstream bytes/license/source/checksums; compose durable
+policy in PROJECT.md; align agent/contributor/governance/documentation routes;
+record the owner's 2026-10-24 permission for bounded read-only agent reviews;
+pass existing documentation checks plus bundle/link/anchor/source and reader
+review; preserve signed/DCO history and obtain required maintainer integration.
+
+Non-goals: runtime/build/checker changes, new tools, native/VM execution, release,
+deployment, changes to other owners' files or requalification of historical
+results. Broad MAINT-02, native and release gates remain open. This documentation
+checkpoint does not advance feature/performance qualification counters.
+
+Verification: `make check`, both working/staged `git diff --check`, exact bundle
+inventory/upstream/hash checks and affected Markdown links/anchors; separate
+policy/reader review. No artificial runtime tests for unchanged behavior.
+
+Evidence on 2026-10-24: `make check` passed. Exact eight-file upstream comparison,
+ten-file inventory, nine-entry digest coverage, affected local links/anchors and
+working/staged whitespace checks passed. A separate read-only reviewer inspected
+the work-item walkthrough and preserved local contracts. Two wording findings
+(commit convention and authoritative tracker routing) were corrected. This is
+source/documentation evidence, not new runtime or platform qualification.
+
+Completion rule: this checkpoint becomes complete when its reviewed candidate is
+merged with explicit maintainer authority and the canonical commit/tree,
+signature and retained author DCO are verified. Record the exact identities and
+results in [PR #193](https://github.com/gonz0w/fvwm-x/pull/193), linked here as
+evidence. Until both conditions are satisfied, the checkpoint remains open.
+This tracker owns the completion rule; GitHub mirrors the resulting state.
+Broad MAINT-02 and product/native/release acceptance remain open.
+
 ## Current checkpoint status
 
 This table is the current summary for this thread. The dated entries below

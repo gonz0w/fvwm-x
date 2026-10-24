@@ -17,6 +17,7 @@ import ctypes as C
 import ctypes.util
 import datetime as dt
 import fcntl
+import functools
 import hashlib
 import json
 import itertools
@@ -44,30 +45,9 @@ M_CONFIG_INFO = 1 << 18
 M_END_CONFIG_INFO = 1 << 19
 M_STRING = 1 << 22
 MX_REPLY = (1 << 31) | (1 << 10)
-PALETTE_NAMES = ('slate', 'dune', 'grove', 'ink')
 
-# One data-only registry serves validation, queries and native menu consumers.
-# Wallpaper is an internal retained surface, not a user-supplied path/action.
-SETTINGS = {
-    'palette': dict(type='enum', default='slate', choices=PALETTE_NAMES,
-                    group='appearance', description='Desktop color palette'),
-    'appearance': dict(type='enum', default='auto', choices=('light', 'dark', 'auto'),
-                       group='appearance', description='Light, dark or scheduled appearance'),
-    'day': dict(type='time', default='07:00', minimum='00:00', maximum='23:59',
-                group='schedule', description='Local time when light appearance starts'),
-    'night': dict(type='time', default='19:00', minimum='00:00', maximum='23:59',
-                  group='schedule', description='Local time when dark appearance starts'),
-    'transparency': dict(type='boolean', default=True, group='effects',
-                         description='Tinted root background and menu snapshots'),
-    'motion': dict(type='boolean', default=False, group='effects',
-                   description='Menu repositioning and window shade steps'),
-    'keep_wallpaper': dict(type='boolean', default=False, group='appearance',
-                           description='Retain the current palette wallpaper'),
-    'launcher_opacity': dict(type='integer', default=94, minimum=0, maximum=100,
-                             group='effects', description='Launcher opacity (percent)'),
-}
-DEFAULTS = {key: item['default'] for key, item in SETTINGS.items()} | {
-    'wallpaper': dict(palette='slate', appearance='dark')}
+# Registry and pure settings/UI policy come from the private Go worker. The
+# resident controller keeps file commit, generations and consumer lifetimes.
 STATE_LIMIT = 8192
 STATE_SCHEMA = 2
 UNCHECKED_REVISION = object()
@@ -268,52 +248,99 @@ def check_configuration(path, userdir=None, datadir=None, cwd=None):
     return checker.result()
 
 
-def setting_value(key, value, text=False):
-    if key not in SETTINGS:
-        raise ValueError('Unknown setting: ' + key)
-    item = SETTINGS[key]
-    if item['type'] == 'boolean':
-        if text and isinstance(value, str):
-            values = {'on': True, 'true': True, 'yes': True, '1': True,
-                      'off': False, 'false': False, 'no': False, '0': False}
-            value = values.get(value.lower(), value)
-        valid = type(value) is bool
-    elif item['type'] == 'integer':
-        if text and isinstance(value, str) and re.fullmatch(r'[0-9]{1,3}', value):
-            value = int(value)
-        valid = type(value) is int and item['minimum'] <= value <= item['maximum']
-    elif item['type'] == 'enum':
-        valid = isinstance(value, str) and value in item['choices']
-    else:
-        valid = isinstance(value, str)
-        if valid:
-            minute(value)
-    if not valid:
-        raise ValueError('Invalid value for ' + key)
+def settings_policy(operation, **arguments):
+    try:
+        result = desktop_worker('settings', settings=dict(operation=operation, **arguments))
+    except RuntimeError as error:
+        raise ValueError('Settings policy is unavailable') from error
+    if type(result) is not dict or len(result) != 1:
+        raise ValueError('Invalid settings policy response')
+    if 'error' in result:
+        raise ValueError(worker_text(result['error'], 1024))
+    if 'value' not in result:
+        raise ValueError('Invalid settings policy result')
+    return result['value']
+
+
+@functools.lru_cache(maxsize=128)
+def scalar_setting_value(key, encoded, text):
+    # Only immutable scalar results are cached, with fixed policy for this
+    # executable. No state, generation, persistence or UI plan is cached.
+    value = settings_policy('value', key=key, value=json.loads(encoded), text=text)
+    if type(value) not in (str, int, bool):
+        raise ValueError('Invalid scalar settings result')
     return value
 
 
+def setting_value(key, value, text=False):
+    return scalar_setting_value(key, json.dumps(value, ensure_ascii=True), text)
+
+
 def checked_settings(values):
-    if not isinstance(values, dict) or set(values) != set(DEFAULTS):
-        raise ValueError('Invalid settings fields')
-    result = {key: setting_value(key, values[key]) for key in SETTINGS}
-    if result['day'] == result['night']:
-        raise ValueError('Day and night times must be different')
-    wallpaper = values['wallpaper']
-    if (not isinstance(wallpaper, dict) or set(wallpaper) != {'palette', 'appearance'}
-            or wallpaper['palette'] not in PALETTE_NAMES
-            or wallpaper['appearance'] not in ('light', 'dark')):
-        raise ValueError('Invalid retained wallpaper')
-    result['wallpaper'] = wallpaper.copy()
-    return result
+    return settings_policy('checked', values=values)
 
 
 def setting_scope(scope):
-    keys = [key for key, item in SETTINGS.items()
-            if scope in ('all', key, 'group:' + item['group'])]
-    if not keys:
-        raise ValueError('Unknown settings scope: ' + scope)
+    keys = settings_policy('scope', scope=scope)
+    if (type(keys) is not list or not 1 <= len(keys) <= len(SETTINGS)
+            or any(type(key) is not str or key not in SETTINGS for key in keys)
+            or len(set(keys)) != len(keys)):
+        raise ValueError('Invalid settings scope result')
     return keys
+
+
+def plan_text(value, limit=1024):
+    worker_text(value, limit)
+    if any(character in value for character in '\r\n'):
+        raise ValueError('Invalid native settings plan text')
+    return value
+
+
+def editor_plan(plan):
+    if type(plan) is not dict or set(plan) != {'keys', 'lines'}:
+        raise ValueError('Invalid editor plan')
+    keys, lines = plan['keys'], plan['lines']
+    if (type(keys) is not list or not 1 <= len(keys) <= len(SETTINGS)
+            or any(type(key) is not str or key not in SETTINGS for key in keys)
+            or len(set(keys)) != len(keys) or type(lines) is not list
+            or not 1 <= len(lines) <= 160):
+        raise ValueError('Invalid editor plan')
+    return keys, form_lines(lines)
+
+
+def form_lines(lines):
+    if type(lines) is not list or not 1 <= len(lines) <= 160:
+        raise ValueError('Invalid native Form plan')
+    commands = {'Title', 'Colorset', 'ItemColorset', 'Line', 'Text', 'Input',
+                'Selection', 'Choice', 'Button', 'Command', 'Timeout'}
+    for line in lines:
+        if plan_text(line).partition(' ')[0] not in commands:
+            raise ValueError('Invalid native editor directive')
+    return lines
+
+
+def menu_plans(plans):
+    if type(plans) is not list or not 1 <= len(plans) <= len(SETTINGS) + 2:
+        raise ValueError('Invalid settings menu plans')
+    names = {'SlateSettings', 'SlateOpacityPreview', 'SlateAppearance'} | {'SlateSetting_' + k for k in SETTINGS}
+    seen = set()
+    for menu in plans:
+        if type(menu) is not dict or set(menu) != {'name', 'title', 'rows'}:
+            raise ValueError('Invalid settings menu plan')
+        name = plan_text(menu['name'])
+        if name not in names or name in seen:
+            raise ValueError('Invalid settings menu identity')
+        seen.add(name)
+        plan_text(menu['title'])
+        rows = menu['rows']
+        if type(rows) is not list or not 1 <= len(rows) <= 32:
+            raise ValueError('Invalid settings menu rows')
+        for row in rows:
+            if type(row) is not list or len(row) != 2:
+                raise ValueError('Invalid settings menu row')
+            for value in row:
+                plan_text(value)
+    return plans
 
 
 def desktop_configuration(message):
@@ -340,40 +367,15 @@ def quote(value):
 
 
 def minute(value):
-    if not re.fullmatch(r'[0-2][0-9]:[0-5][0-9]', str(value)):
-        raise ValueError('time must be HH:MM')
-    hour, part = map(int, value.split(':'))
-    if hour > 23:
-        raise ValueError('hour must be 00..23')
-    return hour * 60 + part
+    return settings_policy('minute', value=value)
 
 
 def validate_settings(values):
-    """Migrate the original unversioned file, retaining valid known fields."""
-    result = DEFAULTS.copy()
-    result['wallpaper'] = DEFAULTS['wallpaper'].copy()
-    if not isinstance(values, dict):
-        return result
-    for key in SETTINGS:
-        try:
-            result[key] = setting_value(key, values.get(key))
-        except ValueError:
-            pass
-    if result['day'] == result['night']:
-        result['day'], result['night'] = DEFAULTS['day'], DEFAULTS['night']
-    wallpaper = values.get('wallpaper')
-    if isinstance(wallpaper, dict) and wallpaper.get('palette') in PALETTE_NAMES and wallpaper.get('appearance') in ('light', 'dark'):
-        result['wallpaper'] = dict(palette=wallpaper['palette'], appearance=wallpaper['appearance'])
-    return result
+    return settings_policy('migrate', values=values)
 
 
 def appearance(settings, now):
-    if settings['appearance'] != 'auto':
-        return settings['appearance']
-    day, night = minute(settings['day']), minute(settings['night'])
-    current = now.hour * 60 + now.minute
-    light = day <= current < night if day < night else current >= day or current < night
-    return 'light' if light else 'dark'
+    return settings_policy('appearance', values=settings, minute=now.hour * 60 + now.minute)
 
 
 def state_directory(path):
@@ -428,30 +430,10 @@ def load_settings(path):
         os.close(directory)
     if data is None:
         return validate_settings({}), revision
-    def unique_pairs(pairs):
-        result = {}
-        for key, value in pairs:
-            if key in result:
-                raise ValueError('Duplicate settings field: ' + key)
-            result[key] = value
-        return result
     try:
-        values = json.loads(data, object_pairs_hook=unique_pairs)
-    except (UnicodeError, RecursionError) as error:
+        return settings_policy('decode', data=data.decode('utf-8')), revision
+    except UnicodeError as error:
         raise ValueError('Invalid settings JSON') from error
-    if not isinstance(values, dict):
-        raise ValueError('Settings must be a JSON object')
-    if 'schema_version' not in values:
-        return validate_settings(values), revision
-    version = values.pop('schema_version')
-    if type(version) is not int or version not in (1, STATE_SCHEMA):
-        raise ValueError('Unsupported settings schema; file was preserved')
-    if version == 1:
-        # Exact previous schema only: unknown/missing old fields still refuse.
-        if set(values) != set(DEFAULTS) - {'launcher_opacity'}:
-            raise ValueError('Invalid legacy settings fields')
-        values['launcher_opacity'] = SETTINGS['launcher_opacity']['default']
-    return checked_settings(values), revision
 
 
 def save_settings(path, settings, expected=UNCHECKED_REVISION):
@@ -822,25 +804,9 @@ class MenuOpacityPreview:
 
     def show(self):
         alias = 'SlatePreview-' + self.desktop.settings_instance
-        callback = ('Command SendToModule FvwmDesktop preview-control ' +
-                    self.desktop.settings_instance + ' ' + self.control['view'])
-        saved = self.control['saved'] is not None
-        suffix = '%' if saved else '% (runtime only)'
-        hint = ('Keep is runtime only. Keep and save writes this preference.' if saved else
-                'Preferences stay unchanged. Theme updates or restart replace it.')
-        lines = ['Title "Preview menu opacity"', 'Colorset 2', 'ItemColorset 12',
-                 'Line left', 'Text "Launcher opacity: ' +
-                 str(self.control['opacity']) + suffix + '"',
-                 'Line left', 'Text "Keep or revert within 15 seconds."',
-                 'Line left', 'Text "Close the window to let the deadline restore the old value."',
-                 'Line left', 'Text "' + hint + '"',
-                 'Line expand', 'Button continue "Revert" ^[', callback + ' revert',
-                 'Button continue "Keep current value" F1', callback + ' confirm']
-        if saved:
-            lines += ['Button continue "Keep and save (F2)" F2', callback + ' save']
-        # A dead helper cannot retire its Form. The independent native timer
-        # only closes this consumer; it never confirms or writes preferences.
-        lines += ['Timeout 160 Nop ""']
+        lines = form_lines(settings_policy('preview-form',
+            instance=self.desktop.settings_instance, view=self.control['view'],
+            opacity=self.control['opacity'], saved=self.control['saved'] is not None))
         self.desktop.send('DestroyModuleConfig ' + alias + ':*')
         for line in lines:
             self.desktop.send('*' + alias + ': ' + line)
@@ -1019,18 +985,18 @@ class Desktop:
         self.settings_ready = True
         self.announce_settings()
 
+    def policy_snapshot(self, saved=None, effective=None):
+        return dict(saved=self.saved if saved is None else saved,
+            effective=self.settings if effective is None else effective,
+            overrides=self.overrides, generation=self.settings_generation,
+            instance=self.settings_instance, persistence_error=self.persistence_error,
+            submitted=bool(self.last_theme))
+
     def prepare_settings(self, changes):
-        """Construct the same complete candidate for validation and commit."""
-        for key, value in changes.items():
-            setting_value(key, value)
-        candidate = checked_settings(dict(self.saved, **changes))
-        effective = checked_settings(dict(candidate, **self.overrides))
-        mode = appearance(effective, dt.datetime.now())
-        candidate['wallpaper'] = (self.settings['wallpaper'].copy()
-            if effective['keep_wallpaper'] else
-            dict(palette=effective['palette'], appearance=mode))
-        effective['wallpaper'] = candidate['wallpaper'].copy()
-        return candidate, effective
+        now = dt.datetime.now()
+        result = settings_policy('prepare', snapshot=self.policy_snapshot(),
+            changes=changes, minute=now.hour * 60 + now.minute)
+        return result['candidate'], result['effective']
 
     def change_settings(self, changes):
         if self.persistence_error:
@@ -1087,55 +1053,15 @@ class Desktop:
         self.theme(force=True)
 
     def edit_settings(self, scope='all', defaults=False, draft=None):
-        keys = setting_scope(scope)
-        groups = dict.fromkeys(SETTINGS[key]['group'] for key in keys)
-        keys = [key for group in groups for key in keys if SETTINGS[key]['group'] == group]
-        self.retire_settings_editor()
         token = secrets.token_hex(16)
+        plan = settings_policy('editor', snapshot=self.policy_snapshot(),
+            scope=scope, defaults=defaults, draft=draft, token=token)
+        # Construct/validate before retiring the current consumer. Failed plans
+        # must not discard an editable draft or admit a partial Form.
+        keys, lines = editor_plan(plan)
+        self.retire_settings_editor()
         self.settings_editor = dict(token=token, keys=keys, scope=scope,
             generation=self.settings_generation, deadline=time.monotonic() + EDITOR_SECONDS)
-        lines = ['Title "Desktop settings"', 'Colorset 2', 'ItemColorset 12',
-                 'Line left', 'Text "Edit saved preferences. Apply saves them together."']
-        previous_group = None
-        for key in keys:
-            item = SETTINGS[key]
-            value = item['default'] if defaults else (draft or self.saved)[key]
-            if item['group'] != previous_group:
-                lines += ['Line left', 'Text ' + quote(item['group'].title())]
-                previous_group = item['group']
-            lines += ['Line left', 'Text ' + quote(item['description'])]
-            if item['type'] in ('time', 'integer'):
-                width = 3 if item['type'] == 'integer' else 5
-                lines += ['Input ' + key + ' ' + str(width) + ' ' + quote(value)]
-            else:
-                choices = item.get('choices', (True, False))
-                lines += ['Selection ' + key + ' single']
-                for choice in choices:
-                    text = str(choice).lower()
-                    label = ('On' if choice else 'Off') if type(choice) is bool else text.title()
-                    lines += ['Choice ' + key + '_' + text + ' ' + text + ' ' +
-                              ('on' if choice == value else 'off') + ' ' + quote(label)]
-            if key in self.overrides:
-                lines += ['Line left', 'Text ' + quote('Effective: ' +
-                    str(self.settings[key]).lower() + ' (module configuration override)')]
-        if self.persistence_error:
-            lines += ['Line left', 'Text ' + quote(self.persistence_error)]
-        action = 'SendToModule FvwmDesktop '
-        lines += ['Line left', 'Text "Cancel or closing this window leaves preferences unchanged."',
-                  'Line expand', 'Button quit "Cancel" ^[',
-                  'Command ' + action + 'cancel-settings ' + token,
-                  'Button continue "Defaults (F2)" F2',
-                  'Command ' + action + 'defaults-settings ' + token,
-                  'Button continue "Apply (F3)" F3',
-                  'Command ' + action + 'apply-settings ' + token + ' ' +
-                      ' '.join('$(' + key + ')' for key in keys),
-                  'Timeout ' + str(EDITOR_SECONDS * 10) + ' ' +
-                      quote(action + 'cancel-settings ' + token) + ' ""']
-        if 'launcher_opacity' in keys:
-            lines += ['Line left', 'Text "Preview tests opacity only, then returns to this captured draft."',
-                      'Button continue "Preview opacity (F4)" F4',
-                      'Command ' + action + 'preview-editor ' + token + ' ' +
-                          ' '.join('$(' + key + ')' for key in keys)]
         self.send('DestroyModuleConfig SlateSettingsForm:*')
         for line in lines:
             self.send('*SlateSettingsForm: ' + line)
@@ -1156,8 +1082,7 @@ class Desktop:
         editor = self.current_settings_editor(token)
         if len(values) != len(editor['keys']):
             raise ValueError('Incomplete settings editor values')
-        changes = {key: setting_value(key, value, text=True)
-                   for key, value in zip(editor['keys'], values)}
+        changes = settings_policy('editor-values', keys=editor['keys'], values=values)
         return editor, changes
 
     def apply_settings_editor(self, argument):
@@ -1166,20 +1091,9 @@ class Desktop:
         self.change_settings(changes)
 
     def query_settings(self, scope='all', saved=None, effective=None):
-        observed = saved is None and effective is None
-        saved = self.saved if saved is None else saved
-        effective = self.settings if effective is None else effective
-        return {key: dict(SETTINGS[key], owner='FvwmDesktop', available=True,
-                    capability='owned-desktop-preference', preview=False,
-                    native_preview=(key == 'launcher_opacity'),
-                    runtime_constraint=('transparency-disabled' if key == 'launcher_opacity'
-                        and not effective['transparency'] else None),
-                    saved=saved[key], effective=effective[key],
-                    source='module-configuration' if key in self.overrides else 'saved',
-                    application='submitted-to-fvwm' if observed and self.last_theme else 'not-submitted',
-                    generation=self.settings_generation,
-                    persistence_error=self.persistence_error)
-                for key in setting_scope(scope)}
+        return settings_policy('query', scope=scope,
+            snapshot=self.policy_snapshot(saved, effective),
+            observed=saved is None and effective is None)
 
     def settings_request(self, request):
         """Only this settings owner validates values and commits preferences.
@@ -1467,38 +1381,9 @@ class Desktop:
         self.send(prefix + ' end ' + str(len(chunks)))
 
     def settings_menu(self, scope='all'):
-        rows = []
-        for key, item in self.query_settings(scope).items():
-            name = 'SlateSetting_' + key
-            label = key + ': ' + str(item['effective']).lower()
-            choices = item.get('choices', (True, False) if item['type'] == 'boolean' else ())
-            options = [(item['description'], 'Greyed'),
-                       ('Saved: ' + str(item['saved']).lower(), 'Greyed'),
-                       ('Source: ' + item['source'], 'Greyed')]
-            if choices:
-                options += [(str(value).lower(), 'SendToModule FvwmDesktop set ' +
-                             key + ' ' + str(value).lower()) for value in choices]
-            elif item['type'] == 'integer':
-                options += [('Edit saved value...', 'SendToModule FvwmDesktop edit-settings ' + key)]
-            else:
-                options += [('Edit schedule...', 'SendToModule FvwmDesktop schedule')]
-            options += [('Reset this setting', 'SendToModule FvwmDesktop reset ' + key)]
-            self.menu(name, key, options)
-            rows.append((label, 'Popup ' + name))
-        self.menu('SlateOpacityPreview', 'Runtime launcher opacity',
-                  [(str(value) + '%', 'SendToModule FvwmDesktop preview-setting ' +
-                    self.settings_instance + ' ' + str(value))
-                   for value in (70, 85, 94, 100)])
-        rows += [('Preview launcher opacity...', 'Popup SlateOpacityPreview'),
-                 ('', 'Nop'), ('Edit saved preferences...',
-                  'SendToModule FvwmDesktop edit-settings ' + scope),
-                 ('Reset ' + scope, 'SendToModule FvwmDesktop reset ' + scope),
-                 ('Reload saved settings', 'SendToModule FvwmDesktop reload-settings'),
-                 ('Check local.config...', 'SendToModule FvwmDesktop check-config'),
-                 ('FVWM commands submitted; external Style/Colorset overrides are unobserved', 'Greyed')]
-        if self.persistence_error:
-            rows.append((self.persistence_error, 'Greyed'))
-        self.menu('SlateSettings', 'Desktop settings', rows)
+        menus = menu_plans(settings_policy('menus', snapshot=self.policy_snapshot(), scope=scope))
+        for menu in menus:
+            self.menu(menu['name'], menu['title'], menu['rows'])
 
     def start_configuration_check(self):
         if 'configuration' in self.jobs or len(self.jobs) >= 4:
@@ -1630,24 +1515,8 @@ class Desktop:
         self.highlight_desk()
 
     def appearance_menu(self):
-        def selected(label, value, current):
-            return ('* ' if value == current else '  ') + label
-        rows = [(selected(n.title(), n, self.settings['palette']),
-                 'SendToModule FvwmDesktop set palette ' + n) for n in PALETTE_NAMES]
-        rows += [('', 'Nop')]
-        rows += [(selected(n.title(), n, self.settings['appearance']),
-                  'SendToModule FvwmDesktop set appearance ' + n)
-                 for n in ('light', 'dark', 'auto')]
-        rows += [('Day ' + self.settings['day'] + ' / Night ' + self.settings['night'],
-                  'SendToModule FvwmDesktop schedule')]
-        for key, label in (('transparency', 'Transparency'), ('motion', 'Motion'),
-                           ('keep_wallpaper', 'Keep current wallpaper')):
-            rows.append((label + ('  On' if self.settings[key] else '  Off'),
-                         'SendToModule FvwmDesktop toggle ' + key))
-        rows += [('Refresh application list', 'SendToModule FvwmDesktop discover')]
-        rows += [('Desktop settings...', 'SendToModule FvwmDesktop settings')]
-        rows += [('Edit saved preferences...', 'SendToModule FvwmDesktop edit-settings')]
-        self.menu('SlateAppearance', 'Appearance', rows)
+        menu = menu_plans([settings_policy('appearance-menu', values=self.settings)])[0]
+        self.menu(menu['name'], menu['title'], menu['rows'])
 
     def highlight_desk(self):
         for desk in range(4):
@@ -1854,13 +1723,9 @@ class Desktop:
                 day, night = argument.split()
                 self.change_settings({'day': day, 'night': night})
             elif command == 'schedule':
+                lines = form_lines(settings_policy('schedule', values=self.settings))
                 self.send('DestroyModuleConfig SlateScheduleForm:*')
-                for line in ('Title "Day / night schedule"', 'Line left',
-                             'Text "Day starts (HH:MM)"', 'Input day 5 ' + quote(self.settings['day']),
-                             'Line left', 'Text "Night starts (HH:MM)"',
-                             'Input night 5 ' + quote(self.settings['night']), 'Line expand',
-                             'Button quit "Save" ^M', 'Command SendToModule FvwmDesktop times $(day) $(night)',
-                             'Button quit "Cancel" ^[', 'Command Nop'):
+                for line in lines:
                     self.send('*SlateScheduleForm: ' + line)
                 self.send('Module FvwmForm SlateScheduleForm')
             elif command == 'refresh':
@@ -2093,6 +1958,15 @@ def main():
     finally:
         selector.close()
         desktop.pool.shutdown(wait=False)
+
+
+# Ordered metadata is obtained once. All subsequent pure policy calls share the
+# same installed worker; no second editable registry or schema implementation.
+_catalog = settings_policy('registry')
+SETTINGS = {key: _catalog['registry'][key] for key in _catalog['keys']}
+DEFAULTS = _catalog['defaults']
+PALETTE_NAMES = tuple(SETTINGS['palette']['choices'])
+del _catalog
 
 
 if __name__ == '__main__':

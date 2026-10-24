@@ -10,7 +10,7 @@ system facilities; no compositor or Wayland backend.
 **Status:** in-progress development. Features paused for source cleanup and
 dependency retirement. Builds require Go. Installed utilities need no
 Go compiler, PyXDG, Pillow or ImageMagick. The pre-FVWM3 converter is retired.
-[Build/upgrade notes](INSTALL.md). App discovery, metrics and audio/power jobs now use Go.
+[Build/upgrade notes](INSTALL.md). Go handles app discovery, metrics, audio/power and settings UI policy.
 Recent work includes:
 
 - Atomic button updates, desktop settings/editor and configuration checking.

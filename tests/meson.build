@@ -369,6 +369,7 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         'desktop-baseline-xvfb', py,
         args: [
             files('live_x/desktop_live.py'), '--build', meson.project_build_root(),
+            '--settings-themes',
             '--installed-modules', get_option('prefix') / fvwm_moduledir,
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'desktop',
         ],

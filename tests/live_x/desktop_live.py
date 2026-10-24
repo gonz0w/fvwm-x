@@ -809,11 +809,11 @@ def run(options):
         pictures = runtime.root / 'Pictures/Screenshots'
         wait_for_predicate('bundled screenshot', lambda: pictures.is_dir() and any(pictures.glob('*.png')),
                            time.monotonic() + 60, process=process)
-        capture = next(pictures.glob('*.png'))
-        wait_for_predicate('complete PNG', lambda: capture.stat().st_size > 32 and
-                           capture.read_bytes().endswith(b'IEND\xaeB`\x82'),
+        captured_png = next(pictures.glob('*.png'))
+        wait_for_predicate('complete PNG', lambda: captured_png.stat().st_size > 32 and
+                           captured_png.read_bytes().endswith(b'IEND\xaeB`\x82'),
                            time.monotonic() + 10, process=process)
-        shutil.copy2(capture, artifact / 'baseline-capture.png')
+        shutil.copy2(captured_png, artifact / 'baseline-capture.png')
         evidence['screenshot_and_core_responsiveness'] = 'passed'
         connection.send(b'KillModule FvwmForm SlateNoticeForm\n')
 
@@ -871,6 +871,45 @@ def run(options):
                 os.environ.pop('DISPLAY', None)
             else:
                 os.environ['DISPLAY'] = old_display
+        if options.settings_themes:
+            profiles = {}
+            for profile, palette, mode in [('slate-dark', 'slate', 'dark'),
+                                           ('dune-light', 'dune', 'light'),
+                                           ('classic-large', 'grove', 'dark')]:
+                commands = ['SendToModule FvwmDesktop set palette ' + palette,
+                            'SendToModule FvwmDesktop set appearance ' + mode]
+                if profile == 'classic-large':
+                    commands += ['DefaultFont 9x15', 'Style * BorderWidth 3, HandleWidth 6',
+                        '*FvwmFormDefault: Font 9x15', '*FvwmFormDefault: ButtonFont 9x15',
+                        '*FvwmFormDefault: InputFont 9x15', '*FvwmFormDefault: Fore black',
+                        '*FvwmFormDefault: Back wheat', '*FvwmFormDefault: ItemFore navy',
+                        '*FvwmFormDefault: ItemBack ivory']
+                config_path = artifact / (profile + '-settings.config')
+                config_path.write_text('\n'.join(commands) + '\n')
+                connection.send(('\n'.join(commands) + '\n').encode())
+                barrier()
+                before = state.read_bytes()
+                window = open_editor('group:effects')
+                _, _, width, height = client.geometry(window)
+                _, _, screen_width, screen_height = client.geometry(client.root)
+                assert 0 < width <= screen_width and 0 < height <= screen_height
+                capture(profile + '-settings.png')
+                form_key(window, b'Escape')
+                wait_for_predicate(profile + ' editor cancellation', lambda: not editor_window(),
+                    time.monotonic() + 10, process=process)
+                barrier()
+                assert state.read_bytes() == before
+                connection.send(b'SendToModule FvwmDesktop settings\n')
+                wait_for_predicate(profile + ' settings menu', pointer.grabbed,
+                    time.monotonic() + 10, process=process)
+                capture(profile + '-menu.png')
+                key(b'Escape')
+                wait_for_predicate(profile + ' menu dismissal', lambda: not pointer.grabbed(),
+                    time.monotonic() + 10, process=process)
+                profiles[profile] = dict(editor_geometry=[width, height],
+                    input=config_path.name, screenshots=[profile + '-settings.png', profile + '-menu.png'],
+                    cancellation_preserves_file=True)
+            evidence['settings_theme_profiles'] = profiles
         log = (runtime.root / 'core.log').read_text()
         for bad in ('Unknown style', 'Bad geometry', 'Invalid button', 'No such command', 'error in config'):
             assert bad.lower() not in log.lower(), log
@@ -904,4 +943,5 @@ if __name__ == '__main__':
     parser.add_argument('--installed-core', type=Path)
     parser.add_argument('--display')
     parser.add_argument('--settings-only', action='store_true')
+    parser.add_argument('--settings-themes', action='store_true')
     run(parser.parse_args())

@@ -257,3 +257,37 @@ func TestFailedBackendOwnershipAndInvalidDirectRequest(t *testing.T) {
 		t.Fatal("invalid typed request executed backend")
 	}
 }
+
+func TestSettingsPolicyCannotReachBackendCapabilities(t *testing.T) {
+	env := Environment{Run: func(context.Context, []string, time.Duration) (string, error) {
+		t.Fatal("settings executed a command")
+		return "", nil
+	}, LookPath: func(string) (string, error) { t.Fatal("settings looked up a command"); return "", nil }, Read: func(string) ([]byte, error) { t.Fatal("settings read a path"); return nil, nil }, Entries: func(string) ([]string, error) { t.Fatal("settings listed a directory"); return nil, nil }}
+	for _, payload := range []string{`{"operation":"registry"}`, `{"operation":"value","key":"motion","value":"on","text":true}`, `{"operation":"value","key":"motion","value":1,"text":false}`} {
+		request, err := Decode([]byte(`{"version":1,"operation":"settings","settings":` + payload + `}`))
+		if err != nil {
+			t.Fatal(err)
+		}
+		result, err := Run(context.Background(), request, env)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(result.(map[string]any)) != 1 {
+			t.Fatal(result)
+		}
+	}
+	for _, payload := range []string{`{"version":1,"operation":"settings"}`, `{"version":1,"operation":"settings","settings":{},"action":"reboot"}`, `{"version":1,"operation":"power","action":"reboot","settings":{}}`} {
+		if _, err := Decode([]byte(payload)); err == nil {
+			t.Fatal(payload)
+		}
+	}
+}
+
+func TestRequestCountRefusesBeforeValueScan(t *testing.T) {
+	directories := make([]string, 65)
+	directories[0] = "\x00"
+	request := Request{Version: 1, Operation: "apps", Directories: directories}
+	if _, err := Run(context.Background(), request, Environment{}); err == nil || err.Error() != "too many application directories" {
+		t.Fatalf("count must be refused before element inspection: %v", err)
+	}
+}

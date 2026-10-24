@@ -43,7 +43,8 @@ Current implementation: M1 #179/#180/#181 is **Done** in merged PR189, with the
 [combined acceptance report](../verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md)
 and [exact disposition](M1-RUNTIME-BASELINE-2026-10-23.md). The native #180 → #179
 prerequisite was covered by the same merged checkpoint; native relationships
-remain preserved. M2.1 is Review: [desktop acquisition/actions](M2-DESKTOP-WORKERS-2026-10-23.md).
+remain preserved. M2.1 is merged in [PR190](https://github.com/gonz0w/fvwm-x/pull/190): [desktop acquisition/actions](M2-DESKTOP-WORKERS-2026-10-23.md).
+M2.2 [settings policy/native UI plans](M2-SETTINGS-POLICY-2026-10-23.md) is Review.
 Resident coordination and native screenshot capture remain in M2. Broader #23/#35/#40/#42 ownership remains open.
 
 Original planning intake follows (the report supersedes its Ready/Backlog status):

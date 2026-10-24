@@ -1,0 +1,892 @@
+{
+  "date": "2026-10-23",
+  "status": "focused-checks-passed",
+  "scope": "M2.2 settings policy and native UI plans; Refs #23/#7/#15, broad owners remain open",
+  "base": "2dbfa136f78e7ba70638b56b4b7b46305808daad",
+  "frozen_inputs": 2385,
+  "candidate_manifest_sha256": "da3a66e52ca45302069798704bd3f7476bc037f394fa2bea4e5b0fa9bb581cf3",
+  "candidate_archive_sha256": "1ab69742a7929c59861fe3fb50a418522a6e33f1b8bad6912ac937e857027394",
+  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/m2-settings-controller",
+  "captures": {
+    "initial": {
+      "archive_sha256": "acbc11be5253c517208c3b3c394e1ece4f0c014e8c08a009932e17c6b0ad8c2b",
+      "payload_files": 48,
+      "gzip_crc_payload_hashes_modes_verified": true
+    },
+    "ui-completion": {
+      "archive_sha256": "b77ae970a5babcc2179e711ea934b1066ecb1c9a3a61bd217458d8fffee6eda2",
+      "payload_files": 56,
+      "gzip_crc_payload_hashes_modes_verified": true
+    },
+    "storage-attempt": {
+      "archive_sha256": "52d54eb4e943d6fc61124598c41f0e9c14c33a4902e88f1b4bd0cf800c278c70",
+      "payload_files": 4,
+      "gzip_crc_payload_hashes_modes_verified": true
+    },
+    "storage-completion": {
+      "archive_sha256": "1a7a3d519b59322746af696023d4283c061fe0bac60dc486c28c9e48ed8d2c57",
+      "payload_files": 11,
+      "gzip_crc_payload_hashes_modes_verified": true
+    }
+  },
+  "commands": {
+    "initial": [
+      {
+        "label": "configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-gcc"
+        ],
+        "status": 0,
+        "seconds": 0.865
+      },
+      {
+        "label": "worker-build",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j",
+          "2",
+          "fvwm-desktop-worker"
+        ],
+        "status": 0,
+        "seconds": 0.265
+      },
+      {
+        "label": "go-policy",
+        "command": [
+          "go",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/desktopsettings",
+          "./internal/desktopworker",
+          "./cmd/fvwmdesktopworker"
+        ],
+        "status": 0,
+        "seconds": 0.215
+      },
+      {
+        "label": "go-vet",
+        "command": [
+          "go",
+          "vet",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-mod=vendor",
+          "./internal/desktopsettings",
+          "./internal/desktopworker",
+          "./cmd/fvwmdesktopworker"
+        ],
+        "status": 0,
+        "seconds": 0.064
+      },
+      {
+        "label": "controller-policy",
+        "command": [
+          "python3",
+          "tests/test_desktop.py",
+          "-v"
+        ],
+        "status": 0,
+        "seconds": 0.666
+      },
+      {
+        "label": "stage",
+        "command": [
+          "meson",
+          "install",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--tags",
+          "desktop-controller",
+          "--destdir",
+          "/tmp/fvwm-module-waits-20261015/m22-checkpoint/install-stage"
+        ],
+        "status": 0,
+        "seconds": 0.116
+      },
+      {
+        "label": "installed-client",
+        "command": [
+          "python3",
+          "tests/test_desktop_worker.py",
+          "-v"
+        ],
+        "status": 0,
+        "seconds": 3.904
+      },
+      {
+        "label": "go-race",
+        "command": [
+          "go",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-race",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/desktopsettings",
+          "./internal/desktopworker",
+          "./cmd/fvwmdesktopworker"
+        ],
+        "status": 0,
+        "seconds": 2.411
+      },
+      {
+        "label": "desktop-native-x",
+        "command": [
+          "python3",
+          "tests/live_x/desktop_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--installed-desktop",
+          "/tmp/fvwm-module-waits-20261015/m22-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/m22-checkpoint/desktop-ui",
+          "--settings-themes"
+        ],
+        "status": 1,
+        "seconds": 26.918
+      }
+    ],
+    "completion": [
+      {
+        "label": "desktop-native-x",
+        "command": [
+          "python3",
+          "tests/live_x/desktop_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--installed-desktop",
+          "/tmp/fvwm-module-waits-20261015/m22-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/m22-completion/desktop-ui",
+          "--settings-themes"
+        ],
+        "seconds": 29.069,
+        "status": 0
+      },
+      {
+        "label": "native-x-settings",
+        "command": [
+          "python3",
+          "tests/live_x/mfl_settings_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--desktop",
+          "/tmp/fvwm-module-waits-20261015/m22-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/m22-completion/native-x-settings"
+        ],
+        "seconds": 15.666,
+        "status": 0
+      },
+      {
+        "label": "native-x-operations",
+        "command": [
+          "python3",
+          "tests/live_x/mfl_operations_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--desktop",
+          "/tmp/fvwm-module-waits-20261015/m22-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/m22-completion/native-x-operations"
+        ],
+        "seconds": 0.382,
+        "status": 0
+      },
+      {
+        "label": "test-binary-target",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j",
+          "2",
+          "FvwmPrompt-test-binaries"
+        ],
+        "seconds": 0.972,
+        "status": 1
+      }
+    ],
+    "storage-attempt": [
+      {
+        "label": "test-binary-target",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j",
+          "1",
+          "FvwmPrompt-test-binaries"
+        ],
+        "seconds": 1.123,
+        "status": 1
+      }
+    ],
+    "storage-completion": [
+      {
+        "label": "test-binary-target",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j",
+          "1",
+          "FvwmPrompt-test-binaries"
+        ],
+        "seconds": 0.623,
+        "status": 0
+      },
+      {
+        "label": "manual",
+        "command": [
+          "asciidoctor",
+          "-b",
+          "manpage",
+          "-a",
+          "reproducible",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/m22-storage/FvwmDesktop.1",
+          "/tmp/fvwm-module-waits-20261015/source/doc/FvwmDesktop.adoc"
+        ],
+        "seconds": 0.069,
+        "status": 0
+      },
+      {
+        "label": "settings-observations",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/m22-inputs/observe.py",
+          "/tmp/fvwm-module-waits-20261015/source",
+          "/tmp/fvwm-module-waits-20261015/m22-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "/tmp/fvwm-module-waits-20261015/m22-storage",
+          "/tmp/fvwm-module-waits-20261015/m22-inputs/baseline-desktop.py"
+        ],
+        "seconds": 0.115,
+        "status": 0
+      }
+    ]
+  },
+  "Go": {
+    "go-policy": {
+      "top_cases": 20,
+      "packages": 3
+    },
+    "go-race": {
+      "top_cases": 20,
+      "packages": 3
+    }
+  },
+  "controller_policy_cases": 76,
+  "installed_worker_boundary_cases": 12,
+  "native_X_accepted_runs": 3,
+  "settings_theme_profiles": {
+    "slate-dark": {
+      "editor_geometry": [
+        624,
+        229
+      ],
+      "input": "slate-dark-settings.config",
+      "screenshots": [
+        "slate-dark-settings.png",
+        "slate-dark-menu.png"
+      ],
+      "cancellation_preserves_file": true
+    },
+    "dune-light": {
+      "editor_geometry": [
+        624,
+        229
+      ],
+      "input": "dune-light-settings.config",
+      "screenshots": [
+        "dune-light-settings.png",
+        "dune-light-menu.png"
+      ],
+      "cancellation_preserves_file": true
+    },
+    "classic-large": {
+      "editor_geometry": [
+        804,
+        221
+      ],
+      "input": "classic-large-settings.config",
+      "screenshots": [
+        "classic-large-settings.png",
+        "classic-large-menu.png"
+      ],
+      "cancellation_preserves_file": true
+    }
+  },
+  "observer_unexpected_x_errors": [],
+  "installed_lookup": {
+    "status": "passed",
+    "adjacent_lookup_without_override": true,
+    "private_save_load_revision": true,
+    "controller_sha256": "12e74c001443cdfbc1fd8cbb8c06b9441d6dc8b3c96561f6972a3374854baf1b",
+    "worker_sha256": "b89707f1f5b2109e52a2dbd41e50b291d4a8128888ed8c4d666fcba5bfb71761"
+  },
+  "private_test_outputs": {
+    "FvwmPrompt.test": {
+      "sha256": "a3dc5e55fb5dc9c4fbb90716c61ad6227ef8a870f7b28abb1e9c55bb3195ba9e",
+      "bytes": 4712509
+    },
+    "fvwmcommand.test": {
+      "sha256": "5b02580e0925266c26d1a6d1d715df7622e137f7f70b1fcd3d59a988892c0700",
+      "bytes": 6304147
+    },
+    "fvwmdesktopworker.test": {
+      "sha256": "ff085490a8ac208f2d835d51ab50ae17bb2035210d4d2126f89e43b1754f477c",
+      "bytes": 5896925
+    },
+    "fvwmfilebrowser.test": {
+      "sha256": "b78813d118a45c748cfd1d7c25b774b6bdba89a3880db03546831afae766bd38",
+      "bytes": 7177171
+    },
+    "fvwmmenudesktop.test": {
+      "sha256": "a448ea2c4c3997a0309be6a879483f93a59dedfe957ef0929c962da97859477e",
+      "bytes": 6492516
+    },
+    "fvwmmenudirectory.test": {
+      "sha256": "5696bbbd2f28dc9669d29fce9ac47061ef367daf75294dde1f6bf96313910057",
+      "bytes": 4713685
+    },
+    "fvwmmenuxlock.test": {
+      "sha256": "3518e76595c575958f0bbc29f8a301c62da7794130afae5622aa2fede43f7648",
+      "bytes": 4538973
+    },
+    "fvwmscriptcom.test": {
+      "sha256": "9ba33ab131dfacaac8b1f575bfea0f3617ce176f64fbed696fa1a5a695ed4a8f",
+      "bytes": 4536965
+    },
+    "collection.test": {
+      "sha256": "8687f97b8fe79311677d8c2c8a52957d2627ebdb96ff36df52cd3fa9ca074f42",
+      "bytes": 4691383
+    },
+    "desktopsettings.test": {
+      "sha256": "794f65caac47d07770fe761a3abffcfcef23bf659d97d63410e8e89f3e0ec37d",
+      "bytes": 5612044
+    },
+    "desktopworker.test": {
+      "sha256": "cc636a87172ba391ae7c19d0904ce6c9328a0999001b3b2c095dbdc94c5ca534",
+      "bytes": 5912247
+    },
+    "filemodel.test": {
+      "sha256": "70a06e2b2e67854d3d52c211031fa2f21e293de9859f294bb3e8a51bfd6c2f31",
+      "bytes": 5714768
+    },
+    "xdgmenu.test": {
+      "sha256": "47b081e2fdd237125bb58999dede42c4ba63c7617e6952b332e63e61c9ea19eb",
+      "bytes": 5228867
+    },
+    "xdgsource.test": {
+      "sha256": "ec5894b5c829ac40511b0dcfc20b1ea02aa5e968e4d0a4060d126eeb974b7eca",
+      "bytes": 4938165
+    },
+    "transport.test": {
+      "sha256": "87ff68e9bba8bb5b7dc8e1e7b5df637770b99a11c18b8b718a18aa7beebf9e1c",
+      "bytes": 6291043
+    }
+  },
+  "native_retention": {
+    "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+    "binaries": {
+      "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+      "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+      "modules/FvwmScript/FvwmScript": "53f59b1ed0aa78801d47b2a57b79c8a370067a40678e550015c9c7f3d671ff26"
+    },
+    "unchanged": true
+  },
+  "unchanged_owner_implementations": {
+    "state_directory": "99d2b7ea47f7ccb8ddbce019ce493a5b33fe853850b3c4e6be7d8a2e12100d7f",
+    "private_state_file": "a01c47fa6f0bb0c5ef933da6b03a0e424156dd54319c2ecddec1d8416020b5c5",
+    "read_state": "cfdbb3efc9fe28d62f19b825208a721141b52a148bec07d7476022a126c1e55b",
+    "save_settings": "712a4065722ca641841257bd1bc353ff01224435b514fcc25aeb3107397b89c4",
+    "png_bytes": "30819118877bd8c7ef4ee434d00a28a0926567a2a26f55459346e1b33d9b9220",
+    "screenshot": "192d29e295fa1f8e7ec0c86c02f7f0bf60ba0c85eafcc2cfeb4081d7ce03fa83",
+    "Desktop.current_settings_editor": "48c1572fa1b8f77b5f78b9baddac8a6ff63e3b89d5d4fecd75097614054a4906",
+    "Desktop.settings_changed": "59981a5771b3356b0047d1024d2b31da091bdc0a77935152ff3fc194e951be0e",
+    "Desktop.retire_settings_editor": "2ad251db3de5283db60a88a92b023316b00678c7ee942bb6120e90f9791950f8",
+    "Desktop.change_settings": "3f821a09419b9f613b0df6d7baac2e64c1da27df69c552ca389b86d25bc39440",
+    "Desktop.check_opacity_preview": "52f56c2e156510ecca0f305e3d5eae49534107ef91e997da94c52c7a40b7dea5",
+    "Desktop.save_opacity_preview": "ab089eda7984ad00c6dfc25434c5a5ed95892763a34b795336766dd8343d14ba",
+    "Desktop.settings_request": "bf9a6236240f7f44671190be3ec104bab4c273c7ff054e8fc9bc626f5aaf48ab",
+    "Desktop.handle_settings_request": "f52a7187170b8a15096fbc9f7ebfdb464f5ebb6a5899c1d17dc68b0eb4f75e07",
+    "Desktop.operation_request": "c1e507768d69863f20d1fb31c220a5eebe8f3b3d37f6ebb398f5f171a637f3ea",
+    "Desktop.poll_jobs": "62a6cf7109b29a7b41ea8388aa9b452e369f2b858a6ed0b31008ffc546c844b0",
+    "Desktop.tick": "a439fb32f8bb3c7631e2a8ea048714ebb241d42ede42ada0ffb7025875ab532e",
+    "MenuOpacityPreview.submit": "6a2c47bd77d723701970a6efdcdd111c96c9f4fc87594d2babed81d902fca2f9",
+    "MenuOpacityPreview.request": "16216ee8b882802cf5c75acd704a15191042871a9a045bada1c60d915757bef3",
+    "MenuOpacityPreview.start": "f843d97fb37849c5aa1ca74ad1c8dab22f042031cd1f0c5cd10af287f31d0f6d",
+    "MenuOpacityPreview.action": "dc0f665697348c9c9ca267b7a63c18ed661363342230325281d7547c121f279f",
+    "MenuOpacityPreview.finish": "0476340294812da4161ebefc47344f4ceae49bea1137203e75192494ac2b3316",
+    "MenuOpacityPreview.reply": "2c00257adccf784253d36d38c8688b60a59ead1411057c3025cb4d0495e0d22c",
+    "MenuOpacityPreview.tick": "97a4123e0cbaeb5afa74d0955513fa60277d0460b2172fcf44787f772c071f7c"
+  },
+  "fixture_correction": {
+    "tests/live_x/desktop_live.py": {
+      "sha256": "bb410b8ba5866652a7921ef4182d5aef8a69f3204cc8d4039985c2e925f3839c",
+      "mode": 420
+    }
+  },
+  "whitespace_only_Go_source_mapping": {
+    "policy.go": {
+      "equal_including_implicit_semicolons": true,
+      "final_sha256": "1c49d6ba00b396c9bf946005c54c8530f7d059602ed21e2553b1a7bd2c91dc3a",
+      "scanner_token_and_literal_sha256": "9b725866f38b095434129552f6e748481ab7b7d159a3cc66639f6c22d9ac9950",
+      "tested_sha256": "c40d07bc2150adbdfedfd92ecd5263036f160224a6715f1aeecf5f67990d80c9"
+    },
+    "request.go": {
+      "equal_including_implicit_semicolons": true,
+      "final_sha256": "da7874afc08dba759abd11519b347c2f44577c37f8c35b6a5105151cd53ec9f4",
+      "scanner_token_and_literal_sha256": "c9342212599fc4cb54c0c1d1ab6855fa7f2d317a112df9466b05780b67c2bf83",
+      "tested_sha256": "4e5bfeac1d1471ddbf64e98e70344875ee8ec4df63472ad0f6dd390fd6c4966c"
+    },
+    "ui.go": {
+      "equal_including_implicit_semicolons": true,
+      "final_sha256": "f3ba7c0aadd1dea24c8ddf12826dacafcc20d7418b84eb548ac4179f605ee7c1",
+      "scanner_token_and_literal_sha256": "748c9599deaa446e4d11b17427fc20dbeb30a8d1102de4b5be7301f0a280257a",
+      "tested_sha256": "c7e8197becd41664c925c6956c47c08806871dadb6d96e46dae5152771ed3492"
+    }
+  },
+  "cross_builds": [
+    {
+      "target": "linux-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.517,
+      "sha256": "cdf09bb69f7f89d34b5ad321fa03c11e4b13ad52710a0c2d7466bf1648d2a980",
+      "bytes": 5072875
+    },
+    {
+      "target": "linux-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.517,
+      "sha256": "487cbb56ee80c19a9019680dccb3cee16d92f5a3b267d69195328ad34003d59f",
+      "bytes": 4769203
+    },
+    {
+      "target": "freebsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.349,
+      "sha256": "9a88e5ebe8bc04d85e705e1694e889218615641d99b1e2df31cbaff25b414dbc",
+      "bytes": 4929191
+    },
+    {
+      "target": "freebsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.349,
+      "sha256": "fd49c8909fded2a2cd669cf26b1288ea2221dc600ede6756abf39f27cb36544c",
+      "bytes": 4654872
+    },
+    {
+      "target": "openbsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.351,
+      "sha256": "eeb9488d4762795e41831ab45c06f719b134c6b19c4bc25b121ac7fa9651f3b2",
+      "bytes": 4928096
+    },
+    {
+      "target": "openbsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.346,
+      "sha256": "a9580d8c902942934e21d41aca6d76af868b51e835e204641a64f76f6ade52a8",
+      "bytes": 4656219
+    }
+  ],
+  "settings_observation": {
+    "scope": "seven alternating settings prepare/query/editor plans; fake publication, no session or repaint measurement",
+    "pairs_ms": [
+      {
+        "baseline": 0.055292,
+        "current": 2.028927
+      },
+      {
+        "current": 1.886843,
+        "baseline": 0.044
+      },
+      {
+        "baseline": 0.028167,
+        "current": 1.969801
+      },
+      {
+        "current": 1.983218,
+        "baseline": 0.050709
+      },
+      {
+        "baseline": 0.028667,
+        "current": 1.970218
+      },
+      {
+        "current": 1.923051,
+        "baseline": 0.040501
+      },
+      {
+        "baseline": 0.025917,
+        "current": 1.914634
+      }
+    ],
+    "median_baseline_ms": 0.040501,
+    "median_current_ms": 1.969801,
+    "baseline_source_sha256": "4982e6f4d5fed9786485226faa7ee488b65ef71e2cf40a910d8c7fc08a858ff2",
+    "comparisons": {
+      "settings_menu": {
+        "exact_normalized_command_order": true,
+        "commands": 87
+      },
+      "appearance_menu": {
+        "exact_normalized_command_order": true,
+        "commands": 17
+      },
+      "edit_settings": {
+        "exact_normalized_command_order": true,
+        "commands": 36
+      },
+      "handle": {
+        "exact_normalized_command_order": true,
+        "commands": 14
+      },
+      "preview-runtime": {
+        "exact_normalized_command_order": true,
+        "commands": 19
+      },
+      "preview-saved": {
+        "exact_normalized_command_order": true,
+        "commands": 21
+      },
+      "query": {
+        "metadata_equal": true
+      }
+    }
+  },
+  "preserved_failures": [
+    {
+      "attempt": "initial",
+      "check": "desktop-native-x",
+      "cause": "test fixture shadowed capture function with PNG pathname; all preceding product workflows completed; fix only fixture local variable"
+    },
+    {
+      "attempt": "ui-completion",
+      "check": "test-binary-target",
+      "cause": "guest disk exhausted; native UI/themes/settings/operations passed"
+    },
+    {
+      "attempt": "storage-attempt",
+      "check": "test-binary-target",
+      "cause": "serial memory-backed temporary link still needed final output disk space"
+    }
+  ],
+  "storage_resolution": {
+    "current_capture_duplicates_retired": {
+      "status": "retired-only-hash-verified-capture-and-input-archive-duplicates",
+      "files": 108,
+      "bytes": 26331039,
+      "preserved": "canonical host captures, failed attempts, source, builds, caches, stages and disks"
+    },
+    "older_source_archives_retired": {
+      "status": "retired-verified-completed-source-archive-duplicates",
+      "files": 9,
+      "bytes": 80160549
+    },
+    "canonical_old_archive_integrity": {
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/candidate2-source.tgz": {
+        "archive_sha256": "80286509a8a0872fa138172ecbb427a1053ff52fe82113e6fe9ce4898651fbb4",
+        "payload_files": 2182,
+        "payload_manifest_sha256": "88b1cbbc971148443082e368304f009fb4ed4ff5517c85fa99fedcc9fd3349e9",
+        "gzip_crc_all_payloads_read": true
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/resume/candidate-source.tgz": {
+        "archive_sha256": "02cffe40a4488295040e830149a0bac655972a90c04ebecae51635fc5ca41325",
+        "payload_files": 2137,
+        "payload_manifest_sha256": "1c73c459837b31c159deba9699a0a55efdb2cf0ac2384c8455d7802ac767b1bc",
+        "gzip_crc_all_payloads_read": true
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/review/openbsd-amd64-job/source.tgz": {
+        "archive_sha256": "2e5393adb8c92c73dc1a91b90d70a05800633cac7a58b74d4766f447e3ab8ec3",
+        "payload_files": 2137,
+        "payload_manifest_sha256": "9620ff5805109a50bdbcbc0ec5ae083a8117358765a91af806498461f8dcea81",
+        "gzip_crc_all_payloads_read": true
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/buttons-atomic-updates/development1-source.tgz": {
+        "archive_sha256": "a85670fe7b7869070c9f9df94fccd991b8c0654e539012e18c3f1e2c311e5747",
+        "payload_files": 2149,
+        "payload_manifest_sha256": "55cb28ec0deaabf3d68951124148006b9b6e7704cac61edd76844c83c8a633ee",
+        "gzip_crc_all_payloads_read": true
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/buttons-atomic-updates/openbsd-amd64-job/source.tgz": {
+        "archive_sha256": "eab819a44e65a02cb6ad5e432d3c71eee19ef616617d65bb5fd5b32fc86aedc2",
+        "payload_files": 2152,
+        "payload_manifest_sha256": "c63e2e31ebdd35202728c787d2903fcea4371241d5c6c7195019ba9202c0a994",
+        "gzip_crc_all_payloads_read": true
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/ipc-core-state/openbsd-arm64-job/source.tgz": {
+        "archive_sha256": "3dfd717374a5304f4169b8b42b861b28dea400723307e57da9aa315232f123ea",
+        "payload_files": 2182,
+        "payload_manifest_sha256": "f9c67a9e91c79ed4037ca8feb8b6c101b85e873520e0fa2049e39067274ae5aa",
+        "gzip_crc_all_payloads_read": true
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-22/typed-desktop-settings/qualified/openbsd-arm64-job/source.tgz": {
+        "archive_sha256": "d9ae763b491e4a86fe4c8d183f4bce1e618eeef881fc16418971d0d971ed474c",
+        "payload_files": 2154,
+        "payload_manifest_sha256": "d1d22e2039903f50f880ed854027a741aa2fa4f07cdef5d2e10bd9eb23eb8e9f",
+        "gzip_crc_all_payloads_read": true
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/browser-consumer-handoff/final/candidate-source.tgz": {
+        "archive_sha256": "88afcac8aaf70e16fdb5a1c254b7687fbb0fe6cacd422f5ea908e9a79bc6954d",
+        "payload_files": 2354,
+        "payload_manifest_sha256": "215083bb8a865838684f4c45b5ae56cce6ff1b3d73aeedc523574f66655eb942",
+        "gzip_crc_all_payloads_read": true
+      }
+    },
+    "final_target_environment": {
+      "GOFLAGS": "-p=1",
+      "GOTMPDIR": "/dev/shm"
+    },
+    "source_builds_caches_stages_disks_preserved": true,
+    "final_capture_duplicates_retired": {
+      "status": "retired-final-host-verified-capture-duplicates",
+      "files": 17,
+      "bytes": 58406
+    }
+  },
+  "portable_foundation": {
+    "fresh": "make check lint",
+    "retained_from_PR190": {
+      "total": 196,
+      "passed": 181,
+      "environment_skips": 15
+    },
+    "suite_not_repeated": "portable harness unchanged"
+  },
+  "remaining": [
+    "resident configuration/dispatch/generation/editor/preview lifetime migration",
+    "configuration-source walker and separately reviewed native screenshot boundary",
+    "Python-free installed desktop and full-session startup/RSS/idle/input comparisons",
+    "full native six-target/default-X/milestone/release/native-CPU/hardware coverage"
+  ],
+  "integration_review": {
+    "reference": "PR178",
+    "merged_since": [
+      "PR186",
+      "PR187",
+      "PR189",
+      "PR190"
+    ],
+    "after_this_merge": 5,
+    "risk_review": "M1 six-target utility/compiler/install and M2.1 affected FreeBSD worker evidence retained; new policy has no OS-specific I/O or native C changes; full controller handoff remains boundary, no automatic matrix"
+  },
+  "periodic_performance": {
+    "reference": "PR186",
+    "current_count": 3,
+    "after_this_merge": 4,
+    "due": false
+  },
+  "post_freeze_changes": [
+    "bin/FvwmPrompt/internal/desktopsettings/policy.go",
+    "bin/FvwmPrompt/internal/desktopsettings/request.go",
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go",
+    "dev-docs/ARCHITECTURE.md",
+    "dev-docs/PROJECT-TRACKER.md",
+    "dev-docs/decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md",
+    "dev-docs/verification/VERIFICATION-2026-10-23-M2-SETTINGS-POLICY.md",
+    "doc/FvwmDesktop.adoc",
+    "tests/live_x/desktop_live.py",
+    "bin/FvwmPrompt/internal/desktopworker/worker.go",
+    "bin/FvwmPrompt/internal/desktopworker/worker_test.go"
+  ],
+  "post_freeze_scope": "one fixture pathname correction; exact-token/literal-equal Go formatting; final review restores directory-count refusal before copying/scanning and adds one regression case, with focused normal/race/build/CLI/adjacent checks; docs/status only otherwise",
+  "review_completion": {
+    "archive_sha256": "72ada57597292af3ab2de63559893e8a976488c491fd5018ec3f1595b84d58f5",
+    "payloads": 8,
+    "gzip_crc_payloads_modes_source_verified": true,
+    "commands": [
+      {
+        "label": "worker-normal",
+        "command": [
+          "go",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/desktopworker"
+        ],
+        "seconds": 0.216,
+        "status": 0
+      },
+      {
+        "label": "worker-race",
+        "command": [
+          "go",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-race",
+          "-json",
+          "-count=1",
+          "-mod=vendor",
+          "./internal/desktopworker"
+        ],
+        "seconds": 1.397,
+        "status": 0
+      },
+      {
+        "label": "worker-build",
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j",
+          "1",
+          "fvwm-desktop-worker"
+        ],
+        "seconds": 0.274,
+        "status": 0
+      },
+      {
+        "label": "stage",
+        "command": [
+          "meson",
+          "install",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--tags",
+          "desktop-controller",
+          "--destdir",
+          "/tmp/fvwm-module-waits-20261015/m22-review/install-stage"
+        ],
+        "seconds": 0.119,
+        "status": 0
+      }
+    ],
+    "Go": {
+      "normal": {
+        "top_cases": 10,
+        "packages": 1
+      },
+      "race": {
+        "top_cases": 10,
+        "packages": 1
+      }
+    },
+    "result": {
+      "status": "passed",
+      "scope": "only request-count-before-copy/scan review correction; no policy/UI/lifetime logic change",
+      "CLI_count_refusal": "passed",
+      "adjacent_policy_lookup_without_override": "passed",
+      "worker_sha256": "b4d8a58f2bcdaa0e8097a77bc4656c5a07d6333f52cbfe44197148dce6d2f2c7",
+      "controller_sha256": "12e74c001443cdfbc1fd8cbb8c06b9441d6dc8b3c96561f6972a3374854baf1b",
+      "native_unchanged": {
+        "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+        "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+        "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+        "modules/FvwmScript/FvwmScript": "53f59b1ed0aa78801d47b2a57b79c8a370067a40678e550015c9c7f3d671ff26"
+      }
+    },
+    "source": {
+      "bin/FvwmPrompt/internal/desktopworker/worker.go": {
+        "sha256": "ee4c7e1f5458ccc4c04a2100db934c9c9737c2daa452ca0a048acc175fc8404d",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopworker/worker_test.go": {
+        "sha256": "a68c362afe7a07883be25c8b4e9658cd9caadec8a637d73ae4d928b03df28211",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/policy.go": {
+        "sha256": "1c49d6ba00b396c9bf946005c54c8530f7d059602ed21e2553b1a7bd2c91dc3a",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/request.go": {
+        "sha256": "da7874afc08dba759abd11519b347c2f44577c37f8c35b6a5105151cd53ec9f4",
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/ui.go": {
+        "sha256": "f3ba7c0aadd1dea24c8ddf12826dacafcc20d7418b84eb548ac4179f605ee7c1",
+        "mode": 420
+      }
+    },
+    "control": {
+      "status": "preceding-count-order-reproduced",
+      "worker": "/tmp/fvwm-module-waits-20261015/m22-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+      "error": "invalid request value",
+      "expected_first_bound_error": "too many application directories"
+    },
+    "capture_retirement": {
+      "status": "retired-host-verified-review-capture-duplicates",
+      "files": 9
+    }
+  },
+  "initial_cross_builds": [
+    {
+      "target": "linux-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.371,
+      "sha256": "f757698c17584a81b43849ac2a00d769f2476ea2a780e93856ea68893294fc7d",
+      "bytes": 5072179
+    },
+    {
+      "target": "linux-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.371,
+      "sha256": "7f63b9711a7f9622c4f21488b2cf7a1cfb962652cade962b970d269387fd23b1",
+      "bytes": 4769091
+    },
+    {
+      "target": "freebsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.363,
+      "sha256": "082dc2fd2c59a7afa3551bf70c8d19a2ad4324ae85850a4c267bf4194474417e",
+      "bytes": 4928711
+    },
+    {
+      "target": "freebsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.363,
+      "sha256": "889ff0b3d91005cbe79a92322aa3f487721f623cb65058ef447e14f6aae45977",
+      "bytes": 4655112
+    },
+    {
+      "target": "openbsd-amd64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.365,
+      "sha256": "bb55a4b52dd566ae1b3c9dc75dad17a04d74bed840a70b8ffa16cd794eb90554",
+      "bytes": 4927800
+    },
+    {
+      "target": "openbsd-arm64",
+      "status": "compiled only; no execution claim",
+      "seconds": 0.365,
+      "sha256": "e8ccd0eb50150ed5e00d1f1021fecbe84cc23fc77716afa9c26cf49d639d591d",
+      "bytes": 4655643
+    }
+  ],
+  "composed_Go_top_cases": {
+    "normal": 21,
+    "race": 21,
+    "packages_per_profile": 3,
+    "scope": "initial 20 plus one new count-order case; focused 10-case worker reruns do not count as 10 new cases"
+  },
+  "private_test_outputs_scope": "all 15 compiled before final bounds review; affected worker tests/helper freshly compile final guard and typed policy sources, unchanged command/output contract retained"
+}

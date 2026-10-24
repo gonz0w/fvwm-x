@@ -1,52 +1,22 @@
 # Agent Temper source record
 
-This offline bundle supplies the portable development method for FVWM-X.
-[Local project policy](../dev-docs/PROJECT.md) records its composition and action authority.
-No optional profiles are selected. The two retained profiles only satisfy
-upstream relative links; their presence does not activate them.
+Repository: https://github.com/gonz0w/agent-temper
 
-- Source: [gonz0w/agent-temper](https://github.com/gonz0w/agent-temper).
-- Revision: `588698ff019fbde5bfc01f426c02af66c4987b6d`.
-- Tree: `cd59f42e27e5f982f24cbdbb59a8b9b04d1c11b1`.
-- Adoption work: [issue #192](https://github.com/gonz0w/fvwm-x/issues/192).
-- Rights: complete upstream [BSD-3-Clause license](LICENSE); original project
-  licensing and third-party notices remain in [the local license](../COPYING)
-  and [notices](../THIRD_PARTY_NOTICES.md). No project relicensing is implied.
+Revision: `c07af93dc99e770bf4f3ec6f30a0536cb2ae14c5`
 
-## Retained inventory
+Source: https://github.com/gonz0w/agent-temper/tree/c07af93dc99e770bf4f3ec6f30a0536cb2ae14c5
 
-These eight files are byte-identical to the immutable upstream commit:
+Local selection: [project policy](../dev-docs/PROJECT.md); only Codex is selected.
+Update work: https://github.com/gonz0w/fvwm-x/issues/196
 
-- [LICENSE](LICENSE)
-- [METHOD.md](METHOD.md)
-- [Workflow](docs/reference/workflow.md)
-- [Verification](docs/reference/verification.md)
-- [Documentation](docs/reference/documentation.md)
-- [Extensions](docs/reference/extensions.md)
-- [GitHub profile — inactive](profiles/github.md)
-- [Strict test-first profile — inactive](profiles/strict-test-first.md)
+Nine upstream files retain their original bytes and complete BSD-3-Clause
+[license](LICENSE). Existing project licensing and external-source terms remain.
+SHA256SUMS covers all nine upstream files and this local source record. The
+manifest itself is excluded. Exact inventory is those eleven files; signed
+consumer history binds the local provenance. Checksums alone do not authenticate
+source. Previous adoption is recoverable through consumer Git history.
 
-[SHA256SUMS](SHA256SUMS) covers those eight files and this local source record,
-with paths relative to `.agent-temper/`. Only the manifest itself is excluded.
-The exact bundle is these ten files. Signed consumer history binds the manifest;
-checksums alone do not authenticate an upstream source.
-
-## Verification and updates
-
-Verify exact inventory and manifest coverage, every digest and all eight upstream
-bytes against the recorded commit in a trusted retained Agent Temper checkout.
-Validate affected local links and heading fragments, license attribution and the
-combined policy with separate reader review. Existing repository checks remain
-required; they do not by themselves establish upstream equivalence or policy
-meaning. No moving branch is fetched during verification.
-
-An update needs a bounded item in the existing work authority, semantic review,
-new immutable source identity, complete retained content, regenerated checksums
-and applicable checks/review. Do not edit imported prose in place. If a required
-source cannot be resolved or policies conflict, report the gap and stop affected
-work. Resolve changed local decisions with the owner before applying them.
-
-Keep product/platform rules local. Record reuse findings in the adoption item;
-[extension guidance](docs/reference/extensions.md) distinguishes a core correction
-from an optional profile or local rule. No upstream change silently advances this
-pin, and adoption grants no execution, merge, release or deployment authority.
+Updates require bounded local work, reviewed immutable source, semantic/source/
+inventory/hash/link checks, local policy compatibility, applicable verification,
+separate review and existing integration authority. No automatic pin advance or
+execution/merge/release/deployment authority follows from adoption.

@@ -2,7 +2,7 @@
 
 Read the pinned [Agent Temper method](.agent-temper/METHOD.md),
 [local project policy](dev-docs/PROJECT.md) and the selected owning work item first.
-No optional profiles are selected. Product/platform rules below are local
+Only the Codex profile is selected in local project policy. Product/platform rules below are local
 extensions; the method does not choose them. Follow the existing work authority
 and required gates. Recorded owner decisions persist across sessions.
 
@@ -122,3 +122,10 @@ instructions; retired GSD plans and graph data are historical references.
   author-DCO commits and PR review. See CONTRIBUTING.md and GOVERNANCE.md.
 - Newly requested branches default to codex/. Release publishing, credentials and
   upstream notifications have separate ownership from build/test work.
+
+Apply the Codex routing profile selected in local project policy. When useful,
+delegate bounded inspection to `temper_workflow`, accepted implementation to
+`temper_implementer`, difficult analysis to `temper_analyst`, and separate final
+review to `temper_reviewer`. Supply the work item/comments, policy, relevant
+files, acceptance, checks and edit boundaries. Follow local escalation, fallback,
+resource and execution limits; the lead owns integration and verifies evidence.

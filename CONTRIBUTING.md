@@ -3,7 +3,7 @@
 Use the pinned [method](.agent-temper/METHOD.md) with
 [local project policy](dev-docs/PROJECT.md) and the existing workflow below. Its bounded
 work, persistent decisions and reader-oriented documentation requirements apply
-alongside local contracts; no optional profile or new tracker is activated.
+alongside local contracts; only the Codex profile is selected, with no new tracker.
 
 Read [AGENTS.md](AGENTS.md), the [tracker](dev-docs/PROJECT-TRACKER.md), and the
 [developer guide](dev-docs/DEVELOPERS.md). The tracker owns execution order and

@@ -35,8 +35,8 @@ complete Python retirement is claimed.
 
 | Check | Result |
 | --- | --- |
-| Linux ARM64 Go normal policy | 20 top cases / three packages |
-| Linux scoped race | Same 20 top cases / three packages; parallel result ownership exercised |
+| Linux ARM64 Go normal policy | 20 combined cases / three packages; final composed coverage 21 |
+| Linux scoped race | Same combined 20 / three packages; final composed 21, parallel result ownership exercised |
 | Go vet | All three affected packages pass |
 | Controller policy | Original 71 plus five new plan/failure/cache cases: 76 pass |
 | Installed-worker process boundary | 12 cases pass; no policy/client matrix repetition |
@@ -89,11 +89,23 @@ installed lookup and paired observations pass. No passing product/UI suite is
 repeated for storage. Command time is about 35 + 46 seconds for the two runtime
 attempts and under two seconds for the storage-only attempts.
 
+Final diff review catches a bounds-check ordering slip in the duplicate-check
+cleanup: directory count was checked after copying/scanning values. Restore the
+original early count check and remove only the later duplicate. An independent
+old-helper control and a direct-Go regression require count refusal before value
+inspection. Repeat only the ten-case affected worker package in normal/race,
+helper build, final adjacent stage and invalid-count CLI check: about two command
+seconds, all pass. Six final workers cross-build offline. No settings/UI, file
+commit or lifetime logic changes; their qualified results remain valid. Final
+composed normal/race coverage is 21 top cases per profile; reruns are not new
+cases. Private all-package output compilation stays bound to its earlier source;
+final affected worker tests/helper compile the corrected source separately.
+
 Final Go literal layout is whitespace-only. Scanner token/literal streams,
 including implicit semicolons, are identical for the three formatted source
 files; no source directives/cgo are involved. The receipt maps tested and final
 hashes explicitly, retaining the qualified runtime/cross-build evidence. Final
-status/report changes use repository/link/diff checks. All four canonical
+status/report changes use repository/link/diff checks. All five canonical
 captures pass gzip EOF/CRC, payload hashes/modes and expected source checks;
 failed attempts remain represented. No private artifacts are committed.
 

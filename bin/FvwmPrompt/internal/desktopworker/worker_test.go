@@ -282,3 +282,12 @@ func TestSettingsPolicyCannotReachBackendCapabilities(t *testing.T) {
 		}
 	}
 }
+
+func TestRequestCountRefusesBeforeValueScan(t *testing.T) {
+	directories := make([]string, 65)
+	directories[0] = "\x00"
+	request := Request{Version: 1, Operation: "apps", Directories: directories}
+	if _, err := Run(context.Background(), request, Environment{}); err == nil || err.Error() != "too many application directories" {
+		t.Fatalf("count must be refused before element inspection: %v", err)
+	}
+}

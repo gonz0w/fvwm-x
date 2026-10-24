@@ -43,10 +43,12 @@ one pure Go package. Keep direct preference commits, state generations,
 editor/preview lifetimes and publication with the resident Python authority.
 This avoids introducing ambiguous file commits across worker failure. Complete
 plans validate before consumer replacement; scalar-only caching is bounded.
-76 controller cases, 40 normal/race Go executions, installed/adjacent checks,
+76 controller cases, 21 composed Go top cases per normal/race profile, installed/adjacent checks,
 three native-X drivers and three settings theme profiles/six captures pass.
 Six workers cross-build offline. Fixture/storage-only corrections retain all
-valid evidence; no product/policy or full-OS matrix repeat.
+valid evidence. Final count-before-copy review repeats only the affected
+worker normal/race/build/invalid-count/adjacent checks; settings/UI stay qualified.
+No full-OS matrix repeat.
 [Scope](decisions/M2-SETTINGS-POLICY-2026-10-23.md),
 [qualification](verification/VERIFICATION-2026-10-23-M2-SETTINGS-POLICY.md).
 
@@ -2781,7 +2783,10 @@ reader results are separate from the subsequent interpreter/file work.
   recovery finishes only skipped build/manual/adjacent checks. Canonical failed
   attempts remain; exact-hash guest archive duplicates retire, builds/stages
   stay. Whitespace-only Go readability changes retain equal scanner token/literal
-  streams. No native C, new feature, full Python retirement or size/speed claim.
+  streams. Final diff review restores count-before-copy/scan ordering with one
+  direct-call regression and scoped worker normal/race/build/CLI/adjacent passes;
+  settings/UI results stay valid. No native C, new feature, full Python retirement
+  or size/speed claim.
   Seven paired prepare/query/editor observations add about 1.93 ms median
   process/JSON cost; full-session comparisons stay at #23 closure. This is fifth
   post-PR178 merge coverage review, not an automatic matrix. PR186 periodic

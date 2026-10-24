@@ -91,6 +91,10 @@ func Decode(data []byte) (Request, error) {
 }
 
 func validateRequest(request Request) (Request, error) {
+	// Refuse counts before copying/scanning, including direct Go callers.
+	if len(request.Directories) > 64 {
+		return request, errors.New("too many application directories")
+	}
 
 	if request.Version != 1 {
 		return request, errors.New("unsupported desktop worker protocol")
@@ -100,9 +104,7 @@ func validateRequest(request Request) (Request, error) {
 			return request, errors.New("invalid request value")
 		}
 	}
-	if len(request.Directories) > 64 {
-		return request, errors.New("too many application directories")
-	}
+
 	if request.System == "" {
 		request.System = map[string]string{"linux": "Linux", "freebsd": "FreeBSD", "openbsd": "OpenBSD"}[runtime.GOOS]
 	}

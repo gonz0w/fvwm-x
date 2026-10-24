@@ -3,7 +3,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-"""FVWM-X desktop services, using only Python's standard library and base tools.
+"""FVWM-X desktop services, with native UI and bounded Go acquisition workers.
 
 This process owns no managed-window state. File discovery, system commands and
 screenshots run in bounded workers, never in FVWM's authoritative X event loop.
@@ -13,7 +13,6 @@ Only the main thread writes the module pipe; workers return data or argv arrays.
 import calendar
 import argparse
 import concurrent.futures
-import configparser
 import ctypes as C
 import ctypes.util
 import datetime as dt
@@ -26,6 +25,7 @@ import os
 from pathlib import Path
 import re
 import selectors
+import signal
 import secrets
 import shlex
 import shutil
@@ -494,92 +494,110 @@ def save_settings(path, settings, expected=UNCHECKED_REVISION):
         os.close(directory)
 
 
-def command_output(argv, timeout=1):
+WORKER_REQUEST_LIMIT = 65536
+WORKER_RESULT_LIMIT = 1024 * 1024
+WORKER_SECONDS = 6
+
+
+def desktop_worker(operation, **arguments):
+    """One bounded data-only job; only the controller publishes FVWM commands."""
+    helper = os.environ.get('FVWM_DESKTOP_WORKER')
+    if not helper:
+        directory = Path(__file__).resolve().parent
+        helper = directory / 'fvwm-desktop-worker'
+        if not helper.is_file():
+            helper = directory.parent / 'bin/FvwmPrompt/fvwm-desktop-worker'
+    request = json.dumps(dict(version=1, operation=operation, **arguments),
+                         ensure_ascii=True).encode('utf-8')
+    if len(request) > WORKER_REQUEST_LIMIT:
+        raise ValueError('Desktop worker request exceeds limit')
+    selector = selectors.DefaultSelector()
+    process = None
     try:
-        result = subprocess.run(argv, stdin=subprocess.DEVNULL,
-                                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                                timeout=timeout, check=False, close_fds=True,
-                                env=dict(os.environ, LC_ALL='C'))
-        if result.returncode == 0 and len(result.stdout) <= 65536:
-            return result.stdout.decode('utf-8', 'replace').strip()
-    except (OSError, subprocess.TimeoutExpired):
-        pass
-    return ''
-
-
-def desktop_exec(value, name, filename, icon=''):
-    """Expand supported desktop-entry field codes without invoking a shell."""
-    words = shlex.split(value)
-    result = []
-    for word in words:
-        if word in ('%f', '%F', '%u', '%U'):
-            continue  # No file/URL was selected by this application launch.
-        if word == '%i':
-            if icon:
-                result.extend(('--icon', icon))
-        elif word == '%c':
-            result.append(name)
-        elif word == '%k':
-            result.append(str(filename))
-        else:
-            literal = word.replace('%%', '\x01')
-            if '%' in literal:
-                raise ValueError('unsupported/embedded desktop Exec field code')
-            result.append(literal.replace('\x01', '%'))
-    if not result:
-        raise ValueError('empty Exec')
-    return result
-
-
-def application_dirs():
-    home = Path.home()
-    user = Path(os.environ.get('XDG_DATA_HOME', str(home / '.local/share')))
-    system = os.environ.get('XDG_DATA_DIRS', '/usr/local/share:/usr/share')
-    return [user / 'applications'] + [Path(p) / 'applications'
-                                       for p in system.split(':') if p]
-
-
-def discover_apps(directories):
-    result, seen = [], set()
-    desktop = set(os.environ.get('XDG_CURRENT_DESKTOP', 'FVWM').split(':'))
-    for directory in directories:
-        if not directory.is_dir():
-            continue
-        for path in sorted(itertools.islice(directory.rglob('*.desktop'), 2048)):
-            identity = str(path.relative_to(directory)).replace('/', '-')
-            if identity in seen:
-                continue
-            seen.add(identity)  # A user Hidden entry masks the system entry.
+        process = subprocess.Popen([str(helper)], stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, close_fds=True,
+            start_new_session=True, bufsize=0)
+        deadline = time.monotonic() + WORKER_SECONDS
+        data, sent = bytearray(), 0
+        os.set_blocking(process.stdin.fileno(), False)
+        os.set_blocking(process.stdout.fileno(), False)
+        selector.register(process.stdin, selectors.EVENT_WRITE, 'request')
+        selector.register(process.stdout, selectors.EVENT_READ, 'result')
+        reading = True
+        while reading:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise RuntimeError('Desktop worker deadline exceeded')
+            for key, _ in selector.select(remaining):
+                if key.data == 'request':
+                    sent += os.write(key.fd, request[sent:sent + 8192])
+                    if sent == len(request):
+                        selector.unregister(process.stdin)
+                        process.stdin.close()
+                else:
+                    chunk = os.read(key.fd, 8192)
+                    if not chunk:
+                        selector.unregister(process.stdout)
+                        reading = False
+                        break
+                    if len(chunk) > WORKER_RESULT_LIMIT - len(data):
+                        raise RuntimeError('Desktop worker result exceeds limit')
+                    data.extend(chunk)
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise RuntimeError('Desktop worker deadline exceeded')
+        if process.wait(timeout=remaining) != 0:
+            raise RuntimeError('Desktop worker failed')
+        response = json.loads(data.decode('utf-8'), object_pairs_hook=unique_object)
+        if (type(response) is not dict or set(response) != {'version', 'result'}
+                or type(response['version']) is not int or response['version'] != 1):
+            raise ValueError('Invalid desktop worker response')
+        return response['result']
+    except BaseException:
+        # Keep the leader unreaped until the group signal: its retained PID
+        # prevents reuse from targeting an unrelated group. Never signal after
+        # wait/poll has reaped it. This also owns blocked descendants/pipes.
+        if process is not None and process.returncode is None:
             try:
-                if path.stat().st_size > 65536:
-                    continue
-                parser = configparser.ConfigParser(interpolation=None, strict=False)
-                parser.read(path, encoding='utf-8')
-                entry = parser['Desktop Entry']
-                if entry.get('Type') != 'Application':
-                    continue
-                if any(entry.get(k, '').lower() == 'true' for k in ('Hidden', 'NoDisplay')):
-                    continue
-                only = set(filter(None, entry.get('OnlyShowIn', '').split(';')))
-                excluded = set(filter(None, entry.get('NotShowIn', '').split(';')))
-                if (only and not only & desktop) or excluded & desktop:
-                    continue
-                if entry.get('TryExec') and not shutil.which(entry['TryExec']):
-                    continue
-                name = entry.get('Name', path.stem)
-                argv = desktop_exec(entry['Exec'], name, path, entry.get('Icon', ''))
-                if not shutil.which(argv[0]):
-                    continue
-                cwd = entry.get('Path') or None
-                if cwd and not Path(cwd).is_dir():
-                    continue
-                result.append(dict(name=name, argv=argv, cwd=cwd,
-                                   terminal=entry.get('Terminal', '').lower() == 'true'))
-            except (OSError, ValueError, KeyError, configparser.Error):
-                continue
-            if len(result) >= 512:
-                return sorted(result, key=lambda item: item['name'].casefold())
-    return sorted(result, key=lambda item: item['name'].casefold())
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            process.wait()
+        raise
+    finally:
+        selector.close()
+        if process is not None:
+            process.stdout.close()
+            if not process.stdin.closed:
+                process.stdin.close()
+
+
+def worker_text(value, limit=65536):
+    if type(value) is not str or len(value.encode('utf-8')) > limit or '\0' in value:
+        raise ValueError('Invalid desktop worker text')
+    return value
+
+
+def discover_apps(directories=None):
+    arguments = {} if directories is None else {'directories': list(map(str, directories))}
+    result = desktop_worker('apps', **arguments)
+    if type(result) is not list or len(result) > 512:
+        raise ValueError('Invalid desktop application result')
+    for app in result:
+        if type(app) is not dict or set(app) != {'name', 'argv', 'cwd', 'terminal'}:
+            raise ValueError('Invalid desktop application record')
+        worker_text(app['name'])
+        if type(app['argv']) is not list or not 1 <= len(app['argv']) <= 4096:
+            raise ValueError('Invalid desktop application arguments')
+        for value in app['argv']:
+            worker_text(value)
+        if not app['argv'][0] or sum(len(v.encode('utf-8')) for v in app['argv']) > 65536:
+            raise ValueError('Desktop application arguments exceed limit')
+        if app['cwd'] is not None:
+            worker_text(app['cwd'], 4096)
+        if type(app['terminal']) is not bool:
+            raise ValueError('Invalid desktop application terminal flag')
+    return result
 
 
 def detect_terminal(value=''):
@@ -594,58 +612,21 @@ def detect_terminal(value=''):
 
 
 def collect_status(system):
-    """Return counters, not formatted FVWM commands. No dependency on top/btop."""
-    status = dict(cpu=None, memory=None, network='Unavailable', battery=None)
-    try:
-        if system == 'Linux':
-            counters = list(map(int, Path('/proc/stat').read_text().splitlines()[0].split()[1:9]))
-            status['cpu'] = (sum(counters), counters[3] + counters[4])
-            memory = dict(line.split(':', 1) for line in Path('/proc/meminfo').read_text().splitlines())
-            total = int(memory['MemTotal'].split()[0])
-            available = int(memory.get('MemAvailable', memory['MemFree']).split()[0])
-            status['memory'] = max(0, total - available) * 1024
-            links = [p for p in Path('/sys/class/net').iterdir() if p.name != 'lo']
-            up = [p.name for p in links if (p / 'operstate').read_text().strip() == 'up']
-            status['network'] = ', '.join(up) if up else 'Disconnected'
-            batteries = []
-            for device in Path('/sys/class/power_supply').glob('*'):
-                if (device / 'type').read_text().strip() == 'Battery':
-                    batteries.append(int((device / 'capacity').read_text()))
-            if batteries:
-                status['battery'] = round(sum(batteries) / len(batteries))
-        elif system in ('FreeBSD', 'OpenBSD'):
-            # FreeBSD separates counters with spaces; OpenBSD uses commas and
-            # has an additional state. Both put the idle counter last.
-            counters = list(map(int, re.findall(r'\d+', command_output(['sysctl', '-n', 'kern.cp_time']))))
-            if counters:
-                status['cpu'] = (sum(counters), counters[-1])
-            total = command_output(['sysctl', '-n', 'hw.physmem'])
-            page_size = command_output(['sysctl', '-n', 'hw.pagesize'])
-            if system == 'FreeBSD':
-                free = command_output(['sysctl', '-n', 'vm.stats.vm.v_free_count'])
-                battery = command_output(['sysctl', '-n', 'hw.acpi.battery.life'])
-            else:
-                match = re.search(r'^\s*(\d+) pages free$',
-                                  command_output(['vmstat', '-s']), re.M)
-                free = match.group(1) if match else ''
-                state = command_output(['apm', '-b'])
-                battery = command_output(['apm', '-l']) if state in ('0', '1', '2', '3') else ''
-            if total.isdigit() and free.isdigit() and page_size.isdigit():
-                status['memory'] = max(0, int(total) - int(free) * int(page_size))
-            if battery.isdigit() and 0 <= int(battery) <= 100:
-                status['battery'] = int(battery)
-            links = command_output(['ifconfig', '-a'])
-            active = []
-            current = ''
-            for line in links.splitlines():
-                if line and not line[0].isspace():
-                    current = line.split(':')[0]
-                elif 'status: active' in line and not current.startswith('lo'):
-                    active.append(current)
-            status['network'] = ', '.join(active) if active else 'Disconnected'
-    except (OSError, ValueError, KeyError, IndexError):
-        pass
-    return status
+    result = desktop_worker('status', system=system)
+    if type(result) is not dict or set(result) != {'cpu', 'memory', 'network', 'battery'}:
+        raise ValueError('Invalid desktop status result')
+    integer = lambda value: type(value) is int and 0 <= value <= (1 << 63) - 1
+    cpu = result['cpu']
+    if cpu is not None and (type(cpu) is not list or len(cpu) != 2 or
+            not all(map(integer, cpu)) or cpu[1] > cpu[0]):
+        raise ValueError('Invalid desktop CPU counters')
+    if result['memory'] is not None and not integer(result['memory']):
+        raise ValueError('Invalid desktop memory counter')
+    battery = result['battery']
+    if battery is not None and (not integer(battery) or battery > 100):
+        raise ValueError('Invalid desktop battery level')
+    worker_text(result['network'], 4096)
+    return result
 
 
 def png_bytes(width, height, rows):
@@ -1396,7 +1377,7 @@ class Desktop:
                 del self.operations[retired]
             try:
                 if key == 'apps':
-                    self.submit(key, discover_apps, application_dirs())
+                    self.submit(key, discover_apps)
                 else:
                     self.submit(key, collect_status, self.system)
             except RuntimeError:
@@ -1888,7 +1869,7 @@ class Desktop:
                 self.theme(force=True)
                 self.last_clock = None
             elif command == 'discover':
-                self.submit('apps', discover_apps, application_dirs())
+                self.submit('apps', discover_apps)
             elif command == 'search':
                 self.application_menu(argument[:80])
             elif command == 'launch':
@@ -1985,34 +1966,11 @@ class Desktop:
 
 
 def volume(system, action):
-    if system == 'OpenBSD' and shutil.which('sndioctl'):
-        if action == 'mute':
-            current = command_output(['sndioctl', '-n', 'output.mute'])
-            if current not in ('0', '1'):
-                return ''
-            setting = 'output.mute=' + ('0' if current == '1' else '1')
-        else:
-            setting = 'output.level=' + ('+0.05' if action == 'up' else '-0.05')
-        return command_output(['sndioctl', setting])
-    if system == 'FreeBSD' and shutil.which('mixer'):
-        # FreeBSD's mixer(8) supports relative volume and mute toggling.
-        return command_output(['mixer', 'vol.mute=toggle' if action == 'mute'
-                               else 'vol.volume=' + ('+5%' if action == 'up' else '-5%')])
-    if shutil.which('amixer'):
-        return command_output(['amixer', 'sset', 'Master',
-                               {'up':'5%+', 'down':'5%-', 'mute':'toggle'}[action]])
-    return ''
+    return worker_text(desktop_worker('volume', system=system, action=action))
 
 
 def power_action(system, action):
-    # No automatic sudo/doas: use existing session permissions, report failures.
-    argv = ['systemctl', action] if system == 'Linux' and shutil.which('systemctl') else ['shutdown', '-p' if action == 'poweroff' else '-r', 'now']
-    try:
-        result = subprocess.run(argv, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                                stderr=subprocess.DEVNULL, close_fds=True, timeout=3)
-        return 'Power request sent.' if result.returncode == 0 else 'Power request denied by the system. Check session permissions.'
-    except (OSError, subprocess.TimeoutExpired):
-        return 'Power service is unavailable or did not respond.'
+    return worker_text(desktop_worker('power', system=system, action=action))
 
 
 def main():
@@ -2123,7 +2081,7 @@ def main():
                     desktop.finish_configuration()
                     desktop.theme()
                     desktop.system_menu()
-                    desktop.submit('apps', discover_apps, application_dirs())
+                    desktop.submit('apps', discover_apps)
                     send('NOP FINISHED STARTUP')
             if started:
                 desktop.tick()

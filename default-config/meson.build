@@ -11,7 +11,8 @@ default_conf_files = [
     'fvwm-x.png',
 ]
 
-# The desktop needs only the Python runtime already required by FVWM.
+# The remaining UI/settings controller uses Python; acquisition/actions use
+# the adjacent private Go worker. Screenshot capture retains its native owner.
 file_config.set('DESKTOP_PNG', libpng.found() ? 'true' : 'false')
 fvwm_desktop = configure_file(
     input: 'desktop.py',
@@ -20,6 +21,7 @@ fvwm_desktop = configure_file(
     install: true,
     install_dir: fvwm_moduledir,
     install_mode: install_mask_755,
+    install_tag: 'desktop-controller',
 )
 
 foreach palette : ['slate', 'dune', 'grove', 'ink']

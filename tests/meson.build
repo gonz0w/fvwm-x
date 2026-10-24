@@ -281,7 +281,8 @@ property_policy_test = executable(
 )
 test('property-policy', property_policy_test)
 
-test('desktop-policy', py, args: [files('test_desktop.py')])
+test('desktop-policy', py, args: [files('test_desktop.py')],
+    env: desktop_worker_env, depends: fvwm_desktop_worker)
 test('responsiveness-profile-evidence', py,
     args: [files('test_responsiveness_profile.py')])
 
@@ -1272,7 +1273,8 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '--desktop', fvwm_desktop.full_path(),
             '--artifacts-dir', meson.current_build_dir() /
                 'live-x-artifacts' / 'mfl-operations'],
-        depends: [fvwm3, fvwm_mfl],
+        depends: [fvwm3, fvwm_mfl, fvwm_desktop_worker],
+        env: desktop_worker_env,
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 60,
     )
@@ -1282,7 +1284,8 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             '--desktop', fvwm_desktop.full_path(),
             '--artifacts-dir', meson.current_build_dir() /
                 'live-x-artifacts' / 'mfl-settings'],
-        depends: [fvwm3, fvwm_mfl],
+        depends: [fvwm3, fvwm_mfl, fvwm_desktop_worker],
+        env: desktop_worker_env,
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false,
         timeout: 120,

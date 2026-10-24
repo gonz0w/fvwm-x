@@ -327,12 +327,40 @@ bounded worker pool and retains one result snapshot.
 
 == DESKTOP SERVICES
 
-The helper uses the Python runtime already required by FVWM, standard library
-modules, and available OS tools. It never requires pip packages, dmenu,
-stalonetray, an external notification daemon, ImageMagick, or a compositor.
-Slow discovery, metrics and capture run outside the core event loop. Subprocess
-queries have deadlines. Module queues, input packets and generated menus are
-bounded; child programs do not inherit the module protocol descriptors.
+The desktop controller still uses Python for settings, native UI coordination,
+configuration checking and screenshot capture. Application discovery, system
+metrics, audio and session power requests now run in the adjacent private
+*fvwm-desktop-worker* Go executable. Installed users need no Go compiler or
+additional language packages. This is the first M2 migration slice, not a
+Python-free desktop yet. No pip package, additional GUI toolkit or compositor
+is required.
+
+Slow jobs stay outside the core event loop and return typed data; only the
+controller's main thread writes the module pipe. The existing two-thread/four-job
+admission bound remains. Each nonresident Go job accepts at most 64 KiB of JSON
+and returns at most 1 MiB. Backend output is capped at 64 KiB. Go checks a
+four-second job context and one-second query/three-second power deadlines; the
+controller supervises request/output progress with a six-second deadline.
+A stalled job or inherited pipe is retired with its owned process group. A
+filesystem syscall still depends on operating-system cancellation; these are
+bounded service policies, not a hard real-time guarantee.
+
+Application discovery retains user-hidden masking, literal argv/field codes,
+current-desktop/availability filters, working directories and terminal flags.
+It reuses the shared Desktop Entry reader, which rejects malformed/duplicate
+keys, NUL and invalid UTF-8. The launcher retains its existing POSIX word quoting;
+it does not invoke a shell. Each job caps directory roots at 64, enumeration at
+8192 entries, depth at 16, candidates at 2048 per root and results at 512.
+Depth and candidate/application count caps limit the selected list. Enumeration
+or encoded-result overflow reports a failed refresh; a failed refresh preserves
+the previous published snapshot.
+The existing explicit Run command/shell behavior is unchanged.
+
+The installed helper is next to FvwmDesktop; build-tree consumers use the sibling
+Go output. Developers may set FVWM_DESKTOP_WORKER to an explicit helper path for
+isolated tests. The one-shot JSON protocol is internal, not a user configuration
+format. Module queues, packets and generated menus remain bounded; child programs
+do not inherit the module protocol descriptors.
 
 Linux CPU/RAM counters come from /proc, and battery/link state from /sys.
 FreeBSD and OpenBSD counters use sysctl and base utilities. RAM accounting is

@@ -37,7 +37,8 @@ fvwmprompt = custom_target(
 fvwmprompt_test_binaries = custom_target(
     'FvwmPrompt-test-binaries',
     output: [
-        'FvwmPrompt.test', 'fvwmcommand.test',
+        'FvwmPrompt.test', 'fvwmcommand.test', 'fvwmdesktopworker.test',
+        'desktopworker.test',
         'fvwmmenudesktop.test', 'fvwmmenudirectory.test',
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'transport.test',
@@ -228,4 +229,35 @@ test('file-browser-policy', golang,
         './cmd/fvwmfilebrowser', './cmd/fvwmcommand', './transport'],
     env: prompt_test_env,
     timeout: 180,
+)
+
+# Nonresident acquisition/actions for the existing desktop controller.
+fvwm_desktop_worker = custom_target(
+    'fvwm-desktop-worker',
+    output: 'fvwm-desktop-worker',
+    input: fvwmprompt_files,
+    command: [
+        'env', 'GOCACHE=' + fvwmprompt_go_cache,
+        'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
+        golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
+        '-o', meson.current_build_dir() / 'fvwm-desktop-worker',
+        './cmd/fvwmdesktopworker',
+    ],
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'desktop-controller',
+)
+desktop_worker_env = environment()
+desktop_worker_env.set('FVWM_DESKTOP_WORKER', fvwm_desktop_worker.full_path())
+test('desktop-worker-policy', golang,
+    args: ['test', '-C', fvwmprompt_build, '-mod=vendor',
+        './internal/desktopworker', './cmd/fvwmdesktopworker'],
+    env: prompt_test_env,
+    timeout: 180,
+)
+test('desktop-worker-client', py,
+    args: [files('../../tests/test_desktop_worker.py')],
+    env: desktop_worker_env,
+    depends: fvwm_desktop_worker,
+    timeout: 90,
 )

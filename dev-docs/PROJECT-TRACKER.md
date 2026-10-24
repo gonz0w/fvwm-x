@@ -33,21 +33,24 @@ supersede a later accepted result. Counts describe each frozen checkpoint,
 not the changing shared checkout or another thread's desktop/runtime work.
 
 Current priority, 2026-10-23: **maintenance first; new feature pickup paused**.
-**M1 is ready for review**, combining DEP-GO-01 #179, DEP-XDG-01 #180 and
-LEGACY-01 #181. Mandatory offline Go builds replace the disabled utility graph;
-replaced Python/Perl menu/command/example producers and the pre-FVWM3 converter
-are retired. Six supported targets pass one combined compiler/profile/install/
-CLI/native-X checkpoint, including four BSD default-server settings runs. The
-signed source package and all 27 manuals pass; remaining native implementations
-are retained by scoped source/binary identity. The small native-settings adapter
-stays with the separately owned Perl framework. [Report](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md),
-[exact disposition](decisions/M1-RUNTIME-BASELINE-2026-10-23.md).
-All three children are Review pending merge; their native parent/blocker links
-remain intact. **Next after M1 merge: M2**, remaining runtime controllers.
+Merged [PR189](https://github.com/gonz0w/fvwm-x/pull/189) completes M1
+#179/#180/#181; those children are Done. Its combined six-target utility/build/
+install acceptance remains accepted. **M2.1 is ready for review**: desktop
+application discovery, Linux/BSD metrics, audio and session power queries move
+into one bounded nonresident Go worker. Strict typed data, process-group
+retirement and partial-I/O supervision preserve native publication ownership.
+One combined Linux and targeted FreeBSD checkpoint passes; all six workers
+cross-build offline. Review fixes for selector setup and literal launcher quoting repeat only
+affected worker/bridge/installed operation checks. [Report](verification/VERIFICATION-2026-10-23-M2-DESKTOP-WORKERS.md),
+[scope and remaining work](decisions/M2-DESKTOP-WORKERS-2026-10-23.md).
 
-Planning PR188 is merged/Done. Its 73-issue inventory and M1–M8 queue remain the
-scope baseline; broader #23/#35/#40/#42 owners stay open. M1 does not close the
-whole accumulated feature cycle or claim full interpreter retirement.
+The resident settings/editor/preview/checker/module controller and native X
+screenshot boundary remain Python. #23/#7/#15 stay open; this is a finite M2
+slice, not complete interpreter retirement. **Next: remaining M2 resident
+controller coordination, then separately reviewed native screenshot capture**.
+Complete Python-free installed/session and full-session measurements precede
+M2 closure; M3 is not advanced early. Planning PR188 and M1 PR189 are Done.
+Broader maintenance/feature scope stays in the M1–M8 register.
 
 Verification cadence, revised by the user on 2026-10-23: implement larger
 related cleanup/feature batches before one focused Linux gate. Aim for six to
@@ -68,7 +71,7 @@ results. FreeBSD AMD64's synthetic-input observation correction repeats only UI;
 all product sources remain unchanged. Both OpenBSD 8.0 architectures pass and
 all owned guests shut down normally. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md).
 PR178 `e2f61e65b0e5277dedcf28fe6c602efa8b2d1762` is integrated reference
-with two implementation batches merged since it (PR186 and PR187). Planning
+with three implementation batches merged since it (PR186, PR187 and PR189). Planning
 and documentation do not advance the count. Pending broader coverage for those
 feature/cleanup sources remains explicit; the last affected six-target closure
 is still PR178. The automatic three-PR platform trigger is retired; review
@@ -83,7 +86,7 @@ ranges, medians 15.274/16.276 ms and unchanged 29172 KiB peak RSS. The current
 median is about 1 ms higher; no speedup or consistent regression is established.
 Core file bytes are unchanged; MFL/Form/browser grow 6.36%/0.09%/1.76%.
 The preserved pre-cleanup PR186 handoff binaries become the independent
-comparison reference, now **1/5 after merged PR187**; this observation does not
+comparison reference, now **2/5 after merged PR189**; this observation does not
 measure the later cleanup browser. Planning adds no new comparison count. Tuning stays deferred.
 [Report](verification/PERFORMANCE-2026-10-23-BROWSER-HANDOFF.md).
 
@@ -110,7 +113,8 @@ or release gates, or advance either verification counter.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| M1 required runtime baseline, DEP-GO/XDG-01 and LEGACY-01 | Ready for PR review; #179/#180/#181 remain open until merge | One combined six-target utility/compiler/default/reduced/install checkpoint, 30 native-X utility runs, four BSD default-server settings runs and a fresh signed source-package build pass. All 27 manuals render; 181 portable tests pass and 15 host environment skips remain; compiler controls pass freshly on all six targets. Exact replaced/pre-3.x files retire; the framework adapter, current menus, Script, XPM/ICCCM and user files remain. [Report](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md). |
+| M2.1 desktop acquisition/actions, RUNTIME-GO/FD/PROC-01 | Ready for review; broad #23/#7/#15 remain open | Apps, Linux/BSD status, audio and power jobs use a private bounded Go worker. Linux/FreeBSD focused policy/CLI/install/native-X and Linux race pass; six workers cross-build without new VM matrix. Final consumer setup/fork rollback, literal quoting and adjacent lookup pass scoped completion. Settings/preview/checker/capture owners retain exact source; full controller/session migration remains next. [Report](verification/VERIFICATION-2026-10-23-M2-DESKTOP-WORKERS.md). |
+| M1 required runtime baseline, DEP-GO/XDG-01 and LEGACY-01 | Merged in [PR189](https://github.com/gonz0w/fvwm-x/pull/189); #179/#180/#181 Done | One combined six-target utility/compiler/default/reduced/install checkpoint, 30 native-X utility runs, four BSD default-server settings runs and a fresh signed source-package build pass. All 27 manuals render; 181 portable tests pass and 15 host environment skips remain; compiler controls pass freshly on all six targets. Exact replaced/pre-3.x files retire; the framework adapter, current menus, Script, XPM/ICCCM and user files remain. [Report](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md). |
 | Combined provider cleanup, CLEAN-01 / FILE-DATA/ACTION/VIEW-01 | Merged in [PR #187](https://github.com/gonz0w/fvwm-x/pull/187); focused Linux checks pass | One catalog, strict typed value decoding, query/mutation boundaries and concrete query results. All four land before one 22.399-second combined policy/race/vet/build/native-X gate: 85 policy cases, 45 race cases, one actual-X driver. Native/OS/build/install/rendering inputs unchanged; no new platform/install/theme matrix. Earlier feature receipts keep their exact source scope. [Report](verification/VERIFICATION-2026-10-23-BROWSER-PROVIDER-CLEANUP.md). |
 | Portable browser consumer handoff, FILE-ACTION/DATA/VIEW/INTEGRATION-01 | Merged in [PR #186](https://github.com/gonz0w/fvwm-x/pull/186); source-bound feature checks pass | Shared correlated RPC, opt-in matching folder/reveal/properties reuse, core presentation and an optional installed desktop entry. Ten native entries, 251 Go top-case executions/15 package outcomes including race, four browser native-X runs and three scoped sanitizer exercises pass; three themes/41 screenshots each. Scoped completion resolves storage-only linking; a manual paragraph placement rerenders only that manual. PR178 is the last integrated reference; PR186 is the first merged combined batch; due performance comparison complete, new reference 0/5 on merge. [Report](verification/VERIFICATION-2026-10-23-BROWSER-CONSUMER-HANDOFF.md), [contract](decisions/BROWSER-CONSUMER-HANDOFF-2026-10-23.md). |
 | Accumulated browser action cycle, PR176–178 | Closed before next feature implementation | Six targets/seven profiles: 84 native entries, 556 Go cases/35 outcomes, eight normal browser runs plus retained sanitized Form and five scoped sanitizer exercises. One UI-only observation completion; no product changes. PR178 is the integrated reference 0/3. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md). |
@@ -397,8 +401,8 @@ to a complete related owner slice; tests/docs do not inflate story counts.
 
 | Order | Batch | Main outcome |
 | --- | --- | --- |
-| M1 — Review | Supported runtime baseline and replaced entry points | #179/#180/#181 implemented and combined acceptance passed. Merge this checkpoint, then pick up M2; retain broader owners and native prerequisites. |
-| M2 | Remaining first-party runtime controllers | Port remaining desktop/launcher/session/screenshot controllers in native-UI/process ownership groups; remove each predecessor after installed parity. Keep explicit arbitrary shell execution and native capture boundaries. |
+| M1 — Done | Supported runtime baseline and replaced entry points | PR189 merged; #179/#180/#181 Done. Qualified required compiler/utility/profile/install contract retained. |
+| M2 — Active | Remaining first-party runtime controllers | M2.1 acquisition/action worker slice ready for review. Resident settings/editor/checker/module coordination and separate native screenshot capture remain; complete installed/session acceptance before M3. |
 | M3 | Target-owned linkage and dependency closure | Map real symbols/static transitives and replace broad dependency bags by core/module/worker target groups. Remove only unused edges, with package/license/installed closure measurements. |
 | M4 | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
 | M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
@@ -2741,3 +2745,20 @@ reader results are separate from the subsequent interpreter/file work.
   merge; pre-cleanup PR186 performance reference is 1/5, 2/5 on merge. No new
   performance comparison or rendering/theme/sanitizer matrix is due.
   [M1 report](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md).
+
+
+- 2026-10-23: PR189 merges; M1 children #179/#180/#181 are Done. Begin M2.1,
+  grouping application discovery, Linux/BSD system metrics, audio/power jobs,
+  typed private transport, process ownership and staged consumers. One combined
+  Linux and targeted FreeBSD gate passes, with six offline cross-builds instead
+  of another native/default-X matrix. Keep original receipts and repeat only
+  affected bridge/worker/installed operations after selector and quoting review
+  corrections.
+  Settings/preview/checker and native capture functions retain source hashes.
+  #23/#7/#15 stay open for remaining M2 work; no Python-free or full-session
+  acceptance claim. Incremental status acquisitions add about 0.945 ms median
+  child-startup cost in a seven-pair observation, with no speedup claim. Full
+  session/RSS/idle/input measurements stay mandatory at runtime closure.
+  Periodic browser comparison reference PR186 is 2/5, 3/5 on this merge; broader
+  integration reference stays PR178 (three merged batches, four on this merge).
+  [Report](verification/VERIFICATION-2026-10-23-M2-DESKTOP-WORKERS.md).

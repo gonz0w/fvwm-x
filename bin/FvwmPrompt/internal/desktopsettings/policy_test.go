@@ -126,7 +126,7 @@ func TestCandidateAndQueryAreNonPublishing(t *testing.T) {
 	s.Effective["palette"] = "dune"
 	s.Effective["wallpaper"] = Values{"palette": "ink", "appearance": "light"}
 	s.Saved["keep_wallpaper"] = true
-	result, err := prepare(s, Values{"motion": true}, 480)
+	result, err := Prepare(s, Values{"motion": true}, 480)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -156,7 +156,7 @@ func TestCandidateAndQueryAreNonPublishing(t *testing.T) {
 	if q["palette"].(map[string]any)["application"] != "submitted-to-fvwm" {
 		t.Fatal(q)
 	}
-	if _, err := prepare(s, Values{"wallpaper": Values{}}, 480); err == nil {
+	if _, err := Prepare(s, Values{"wallpaper": Values{}}, 480); err == nil {
 		t.Fatal("internal field mutation")
 	}
 }

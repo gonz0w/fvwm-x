@@ -11,18 +11,20 @@ default_conf_files = [
     'fvwm-x.png',
 ]
 
-# The remaining UI/settings controller uses Python; acquisition/actions use
-# the adjacent private Go worker. Screenshot capture retains its native owner.
-file_config.set('DESKTOP_PNG', libpng.found() ? 'true' : 'false')
-fvwm_desktop = configure_file(
-    input: 'desktop.py',
-    output: 'FvwmDesktop',
+# Native capture stays separately supervised until its reviewed Xlib port.
+fvwm_desktop_capture = configure_file(
+    input: 'capture.py',
+    output: 'fvwm-desktop-capture',
     configuration: file_config,
     install: true,
     install_dir: fvwm_moduledir,
     install_mode: install_mask_755,
     install_tag: 'desktop-controller',
 )
+
+# The uninstalled Go module executes this configured helper too. Reused
+# configure_file output may retain an older mode when its bytes are equal.
+run_command('chmod', '0755', fvwm_desktop_capture, check: true)
 
 foreach palette : ['slate', 'dune', 'grove', 'ink']
     foreach appearance : ['light', 'dark']

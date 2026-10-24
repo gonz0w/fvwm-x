@@ -33,28 +33,28 @@ def run(args):
             user.mkdir(mode=0o700)
             wrappers.mkdir()
             (wrappers / 'FvwmMFL').symlink_to(args.mfl.resolve())
-            # Gate only the scan backend; execute the shipped owner/main loop.
-            # Its first startup scan uses the real discovery implementation.
-            owner = runtime.root / 'owner.py'
-            owner.write_text('import importlib.machinery, importlib.util, time\n'
-                'from pathlib import Path\n'
-                f'loader=importlib.machinery.SourceFileLoader("owner", {str(args.desktop)!r})\n'
-                'spec=importlib.util.spec_from_loader("owner", loader)\n'
-                'module=importlib.util.module_from_spec(spec); loader.exec_module(module)\n'
-                'original=module.discover_apps; calls=0\n'
-                'def discover(*args):\n'
-                ' global calls\n calls+=1\n'
-                ' if calls>1:\n'
+            # Gate acquisition at the private worker boundary; run the actual
+            # installed resident binary with no patched controller functions.
+            real_worker = os.environ.get('FVWM_DESKTOP_WORKER',
+                str(args.desktop.with_name('fvwm-desktop-worker')))
+            peer = runtime.root / 'worker-peer'
+            peer.write_text('#!' + sys.executable + '\n'
+                'import json,sys,subprocess,time\nfrom pathlib import Path\n'
+                'data=sys.stdin.buffer.read(); request=json.loads(data)\n'
+                f'counter=Path({str(runtime.root / "scan-count")!r})\n'
+                'if request["operation"]=="apps":\n'
+                ' count=int(counter.read_text())+1 if counter.exists() else 1\n'
+                ' counter.write_text(str(count))\n'
+                ' if count>1:\n'
                 f'  Path({str(started)!r}).touch()\n'
-                '  deadline=time.monotonic()+15\n'
+                '  deadline=time.monotonic()+5\n'
                 f'  while not Path({str(gate)!r}).exists():\n'
                 '   if time.monotonic()>deadline: raise RuntimeError("fixture gate deadline")\n'
                 '   time.sleep(.01)\n'
-                ' return original(*args)\n'
-                'module.discover_apps=discover\nraise SystemExit(module.main())\n')
-            (wrappers / 'FvwmDesktop').write_text('#!/bin/sh\nexec ' +
-                shlex.join([sys.executable, str(owner)]) + ' "$@"\n')
-            (wrappers / 'FvwmDesktop').chmod(0o755)
+                f'result=subprocess.run([{real_worker!r}],input=data,stdout=sys.stdout.buffer)\n'
+                'raise SystemExit(result.returncode)\n')
+            peer.chmod(0o700)
+            (wrappers / 'FvwmDesktop').symlink_to(args.desktop.resolve())
             config = runtime.root / 'config'
             config.write_text('Read ' + str(source / 'fvwm/ConfigFvwmDefaults') + '\n'
                 'ModulePath ' + str(wrappers) + '\n'
@@ -62,7 +62,8 @@ def run(args):
             core = runtime.start('core', [str(args.fvwm), '-d', display,
                 '-f', str(config), '-v', '-o', str(runtime.root / 'debug.log')],
                 'core.log', runtime.environment({'FVWMMFL_SOCKET_PATH': str(runtime.root),
-                    'FVWM_USERDIR': str(user), 'FVWM_DESKTOP_ROOT': str(source / 'default-config')}))
+                    'FVWM_USERDIR': str(user), 'FVWM_DESKTOP_ROOT': str(source / 'default-config'),
+                    'FVWM_DESKTOP_WORKER': str(peer)}))
             endpoint = runtime.root / f"fvwm_mfl_{display.replace(':', '_')}.sock"
             wait_for_predicate('operation endpoint', endpoint.exists,
                                time.monotonic() + 12, process=core)

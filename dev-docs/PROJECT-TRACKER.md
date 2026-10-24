@@ -1,6 +1,6 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-23. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-24. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
@@ -70,7 +70,7 @@ Broad MAINT-02 and product/native/release acceptance remain open.
 
 ## M2.3 configuration-checker runtime port
 
-Owner: current M2 implementation chat; focused checks passed, ready for review.
+Owner: current M2 implementation chat; merged in PR194.
 Broader RUNTIME-GO-01 #23 remains open.
 Outcome: remove the Python literal-source walker and use the existing bounded
 Go worker for read-only configuration reports. This independent named M2 owner
@@ -92,6 +92,42 @@ report paging, three theme profiles and manual rendering in 42.022 command
 seconds. Six workers cross-build; no BSD execution claim. Source/limits and
 symlink-parent traversal preserve the declared literal subset.
 [Report](verification/VERIFICATION-2026-10-24-M2-CONFIGURATION-CHECKER.md).
+
+## M2.4 resident desktop controller
+
+Owner: current M2 implementation chat. Status: focused checks passed; ready for review after merged PR194.
+Outcome: port the resident desktop module to Go as one state/dispatch/lifetime
+owner, importing existing settings policy directly. Group private persistence,
+settings generations/overrides, editor/draft and core-preview lifetimes, typed
+provider replies, bounded jobs/operations and existing native UI/services.
+Acceptance: preserve FVWM3 configuration and installed entry names, atomic
+revision-checked private commits, no false refusal after rename, stale-owner/
+editor/preview rejection, ordered bounded native packets and commands, bounded
+job admission/cancellation and explicit service failures. Retire the Python
+resident implementation after installed parity. Keep the existing Xlib/PNG
+capture code in a separately supervised helper for its later native port.
+Non-goals: new UI/features, native capture replacement, M3 work, broad #23 or
+release closure. Dependencies: merged M2.1–M2.3 packages. Use focused Go policy/
+race/process tests, independent packet peers and existing actual-X settings/
+operations/default-desktop fixtures with three theme profiles/screenshots.
+Check private-file/descriptor portability early on an affected BSD target;
+compile supported pairs offline. Full owner/platform/session qualification
+remains explicit. Run the now-due preserved-binary performance comparison without
+new benchmark builds. The simpler alternative, another one-shot state service,
+would split commit/lease authority; resident ownership avoids that ambiguity.
+
+Delivery: the Go resident now owns private persistence, generations, editor/core
+preview recovery, typed replies, ordered packets, bounded jobs and existing UI.
+The Python resident retires; only isolated capture remains Python. Existing
+vendored Unix wrappers and a pinned Unicode fold table add no vendor payload.
+Linux passes 55 normal/53 race top cases (36 subcases each); FreeBSD ARM64 passes
+53 normal top cases/36 subcases. Six independent installed peers pass on both;
+native-X settings/operations, Linux desktop services, three themes/28 captures,
+manual rendering and twelve offline resident/worker cross-builds pass. Review
+corrections repeat affected gates only; original failures stay preserved.
+[Source-bound report](verification/VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md).
+Next: native capture, complete Python-free installed/session measurements and
+remaining owner/platform qualification before M3. #23/#7/#15 remain open.
 
 ## Current checkpoint status
 
@@ -121,11 +157,11 @@ No full-OS matrix repeat.
 [Scope](decisions/M2-SETTINGS-POLICY-2026-10-23.md),
 [qualification](verification/VERIFICATION-2026-10-23-M2-SETTINGS-POLICY.md).
 
-Current: M2.3 read-only source checking is ready for review, as scoped above.
-Next: the resident controller/configuration/dispatch/generation and consumer
-lifetime port, then native screenshot capture. #23/#7/#15 and M2 remain open.
-Python-free installed desktop and full-session measurements precede closure;
-M3 does not advance early. New feature pickup remains paused.
+Current: M2.3 merged in [PR194](https://github.com/gonz0w/fvwm-x/pull/194).
+M2.4's coordinated resident Go controller is ready for review, as scoped above.
+Next: native screenshot capture, then complete Python-free installed/session
+measurements and remaining owner/platform acceptance before M3. #23/#7/#15 and
+M2 remain open. New feature pickup remains paused.
 
 Verification cadence, revised by the user on 2026-10-23: implement larger
 related cleanup/feature batches before one focused Linux gate. Aim for six to
@@ -146,9 +182,10 @@ results. FreeBSD AMD64's synthetic-input observation correction repeats only UI;
 all product sources remain unchanged. Both OpenBSD 8.0 architectures pass and
 all owned guests shut down normally. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md).
 PR178 `e2f61e65b0e5277dedcf28fe6c602efa8b2d1762` is integrated reference
-with five implementation batches merged since it (PR186, PR187, PR189, PR190
-and PR191), six on M2.3 merge. Coverage debt was reviewed at PR191, without an
-automatic full matrix. M1 qualifies utility/compiler/install changes on six targets; M2.1
+with six implementation batches merged since it (PR186, PR187, PR189, PR190,
+PR191 and PR194), seven on M2.4 merge. Coverage debt was reviewed at PR191 and
+this substantial resident handoff. Focused Linux and affected FreeBSD checks
+cover the new owner without an automatic full matrix. M1 qualifies utility/compiler/install changes on six targets; M2.1
 adds affected FreeBSD transport/worker evidence. Remaining controller/default-X/
 full-session gates stay at the M2 handoff; pure settings planning adds no native
 C, OS-specific I/O or new dependency. Planning
@@ -160,16 +197,15 @@ Full install/default-X/compiler-feature and owner/milestone/release acceptance
 remain at their required boundary. Native-CPU/hardware/toolkit/compositor/
 assistive checks remain separate.
 
-The due PR174→portable-handoff periodic comparison is complete using existing
-qualified Linux ARM64 binaries. Five paired 4096-file scans have overlapping
-ranges, medians 15.274/16.276 ms and unchanged 29172 KiB peak RSS. The current
-median is about 1 ms higher; no speedup or consistent regression is established.
-Core file bytes are unchanged; MFL/Form/browser grow 6.36%/0.09%/1.76%.
-The preserved pre-cleanup PR186 handoff binaries become the independent
-comparison reference, now **4/5 after merged PR191**, 5/5 on M2.3 merge; compare
-preserved binaries on the following run. This observation does not
-measure the later cleanup browser. Planning adds no new comparison count. Tuning stays deferred.
-[Report](verification/PERFORMANCE-2026-10-23-BROWSER-HANDOFF.md).
+The due PR186→PR194 periodic comparison is complete using preserved qualified
+Linux ARM64 binaries, without a benchmark build. Five alternating 4096-file scans
+have overlapping ranges, medians 16.332/16.041 ms and unchanged 29460 KiB peak RSS.
+Core/MFL/Form hashes and sizes stay exact; browser file bytes fall by 546.
+No consistent speed improvement or regression is established. This does not
+measure the new resident controller's startup/RSS/idle/input; those measurements
+remain at M2 closure. Preserve merged PR194 as the new reference at **0/5**,
+1/5 on M2.4 merge. Planning/documentation do not advance the counter; tuning
+stays deferred. [Report](verification/PERFORMANCE-2026-10-24-PR194.md).
 
 Representative theme smoke checks **pass** on reused Linux native-X binaries:
 full shipped Slate dark, Dune light and a controlled classic/minimal configuration
@@ -194,7 +230,8 @@ or release gates, or advance either verification counter.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| M2.3 read-only configuration checker | Focused checks passed; ready for review | Go source walking, diagnostics and limits; resident report validation. [Report](verification/VERIFICATION-2026-10-24-M2-CONFIGURATION-CHECKER.md). |
+| M2.4 resident controller | Focused checks passed; ready for review | One Go state/dispatch/lifetime owner; Linux/FreeBSD, race, installed peers, native-X and three-theme evidence. Native capture and full owner/session acceptance remain. [Report](verification/VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md). |
+| M2.3 read-only configuration checker | Merged PR194; broad owners remain open | Go source walking, diagnostics and limits; resident report validation. [Report](verification/VERIFICATION-2026-10-24-M2-CONFIGURATION-CHECKER.md). |
 | M2.2 settings policy/native UI planning | Merged PR191; broad owners remain open | One Go registry/types/schema/candidate/query owner and settings/appearance/schedule/preview plans; resident file commits and lifetimes stay together. [Report](verification/VERIFICATION-2026-10-23-M2-SETTINGS-POLICY.md). |
 | M2.1 desktop acquisition/actions, RUNTIME-GO/FD/PROC-01 | Merged in [PR190](https://github.com/gonz0w/fvwm-x/pull/190); broad #23/#7/#15 remain open | Apps, Linux/BSD status, audio and power jobs use a private bounded Go worker. Linux/FreeBSD focused policy/CLI/install/native-X and Linux race pass; six workers cross-build without new VM matrix. Final consumer setup/fork rollback, literal quoting and adjacent lookup pass scoped completion. Settings/preview/checker/capture owners retain exact source; full controller/session migration remains next. [Report](verification/VERIFICATION-2026-10-23-M2-DESKTOP-WORKERS.md). |
 | M1 required runtime baseline, DEP-GO/XDG-01 and LEGACY-01 | Merged in [PR189](https://github.com/gonz0w/fvwm-x/pull/189); #179/#180/#181 Done | One combined six-target utility/compiler/default/reduced/install checkpoint, 30 native-X utility runs, four BSD default-server settings runs and a fresh signed source-package build pass. All 27 manuals render; 181 portable tests pass and 15 host environment skips remain; compiler controls pass freshly on all six targets. Exact replaced/pre-3.x files retire; the framework adapter, current menus, Script, XPM/ICCCM and user files remain. [Report](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md). |
@@ -485,7 +522,7 @@ to a complete related owner slice; tests/docs do not inflate story counts.
 | Order | Batch | Main outcome |
 | --- | --- | --- |
 | M1 — Done | Supported runtime baseline and replaced entry points | PR189 merged; #179/#180/#181 Done. Qualified required compiler/utility/profile/install contract retained. |
-| M2 — Active | Remaining first-party runtime controllers | M2.1/M2.2 merged PR190/191; M2.3 read-only checker focused checks pass, ready for review. Resident settings/editor/report/module coordination and separate native screenshot capture remain; complete installed/session acceptance before M3. |
+| M2 — Active | Remaining first-party runtime controllers | M2.1–M2.3 merged PR190/191/194; M2.4 resident Go state/dispatch/lifetime owner focused checks pass, ready for review. Native screenshot capture, complete Python-free installed/session measurements and remaining owner/platform acceptance precede M3. |
 | M3 | Target-owned linkage and dependency closure | Map real symbols/static transitives and replace broad dependency bags by core/module/worker target groups. Remove only unused edges, with package/license/installed closure measurements. |
 | M4 | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
 | M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
@@ -2864,3 +2901,15 @@ reader results are separate from the subsequent interpreter/file work.
   post-PR178 merge coverage review, not an automatic matrix. PR186 periodic
   comparison is 3/5, 4/5 on merge. Remaining resident/state/lifetime/capture
   work stays in M2 before M3. [Report](verification/VERIFICATION-2026-10-23-M2-SETTINGS-POLICY.md).
+
+- 2026-10-24: PR194 merges M2.3. M2.4 replaces the Python resident with one Go
+  state/dispatch/lifetime owner, reusing settings policy and vendored Unix APIs.
+  Focused Linux/FreeBSD, installed module peers, native-X services/settings/
+  operations and three-theme captures pass; twelve supported-pair builds are
+  compile-only. Directed termination, Unicode and build-tree capture regressions
+  pass after preserved failures. Full owner/session/capture and broad #23/#7/#15
+  remain open. Retire only host-verified guest duplicates. The due preserved-
+  binary comparison shows overlapping scan ranges/unchanged RSS; PR194 resets
+  performance to 0/5, 1/5 on this merge. No full matrix or resident speed claim.
+  [Controller report](verification/VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md),
+  [performance](verification/PERFORMANCE-2026-10-24-PR194.md).

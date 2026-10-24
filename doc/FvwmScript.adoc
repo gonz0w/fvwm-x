@@ -988,7 +988,7 @@ function to handle multiple lines as one line).
 The installed FvwmScript-ComExample demonstrates startup, counted requests,
 unknown requests, three length-prefixed lines and exit. Go-enabled builds
 run the standard-library helper fvwm-script-ComExample from the FVWM data
-directory. Builds without Go run fvwm-script-ComExample.pl through Perl.
+directory. The installed helper is a standalone Go executable; no compiler is needed at runtime.
 The Perl file remains installed so copied configurations that invoke it
 explicitly keep working.
 

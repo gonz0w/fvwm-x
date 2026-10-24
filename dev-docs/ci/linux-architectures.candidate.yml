@@ -33,6 +33,10 @@ jobs:
           python3 -m venv builddir/meson-env
           builddir/meson-env/bin/pip install meson==1.7.0
           echo "$GITHUB_WORKSPACE/builddir/meson-env/bin" >> "$GITHUB_PATH"
+      - name: Install the pinned private Go build dependency
+        run: |
+          sh dev-docs/ci/linux-go-sdk.sh
+          echo "$GITHUB_WORKSPACE/builddir/go-sdk/go/bin" >> "$GITHUB_PATH"
       - name: Build the approved patched PNG input
         run: sh dev-docs/ci/linux-prepare-png.sh
       - name: Run native architecture gate
@@ -65,10 +69,13 @@ jobs:
       - name: Install native build, X and Go dependencies
         run: |
           sudo sh tests/install_linux_dependencies.sh
-          sudo apt-get install -y golang-go
           python3 -m venv builddir/meson-env
           builddir/meson-env/bin/pip install meson==1.7.0
           echo "$GITHUB_WORKSPACE/builddir/meson-env/bin" >> "$GITHUB_PATH"
+      - name: Install the pinned private Go build dependency
+        run: |
+          sh dev-docs/ci/linux-go-sdk.sh
+          echo "$GITHUB_WORKSPACE/builddir/go-sdk/go/bin" >> "$GITHUB_PATH"
       - name: Build the approved patched PNG input
         run: sh dev-docs/ci/linux-prepare-png.sh
       - name: Qualify offline Go builds, installed clients and race checks
@@ -109,6 +116,8 @@ jobs:
           python3 -m venv builddir/meson-env
           builddir/meson-env/bin/pip install meson==1.7.0
           export PATH="$PWD/builddir/meson-env/bin:$PATH"
+          sh dev-docs/ci/linux-go-sdk.sh
+          . builddir/go-sdk-environment.sh
           sh dev-docs/ci/linux-prepare-png.sh
           . builddir/ci-png/native/environment.sh
           sh tests/run_native_gate.sh --sanitizers

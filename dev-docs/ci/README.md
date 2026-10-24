@@ -187,9 +187,9 @@ Historical adoption gates (remote-workflow execution is superseded by local revi
 2. Review inherited Ubuntu/Alpine image digests or qualify their replacement.
    No digest was invented for the upstream mutable `latest` images.
 3. Qualify actual native Linux sanitizer jobs and Prompt/Go release coverage.
-   The core/sanitizer profiles retain `golang=disabled`; separate Go jobs enable
-   the client/utility family, build with vendored inputs/toolchain fetching disabled,
-   exercise the actual protocol and stage seven tagged clients/utilities. Linux also runs units/vet and a
+   Every profile requires the patched Go compiler. The focused `--go-clients`
+   selector exercises the installed client/utility family, build with vendored inputs/toolchain fetching disabled,
+   exercise the actual protocol and stage the supported tagged clients/utilities. Linux also runs units/vet and a
    race-instrumented client against peer and actual-WM fixtures. Local profile
    qualification does not establish a passing Actions run.
 4. Resolve the FVWM-X repository destination (this checkout has no Git remote),
@@ -245,7 +245,11 @@ without repeating the clients or executing a screensaver action.
 record the final driver/profile source and its distinct native CI adoption gaps.
 
 The [xlock utility checkpoint](../verification/VERIFICATION-2026-10-12-XLOCK-PORT.md)
-adds the utility to this gate and retains its Go-disabled Perl fallback.
+originally added the utility to this gate. M1 retires the Go-disabled fallback;
+all native build profiles now require the patched compiler. Linux disposable
+jobs can explicitly run `linux-go-sdk.sh` and source
+`builddir/go-sdk-environment.sh` before their gate. Configuration/build never
+fetches a compiler.
 
 The Linux candidate uses the same approved PNG source via
 `linux-prepare-png.sh` and `ci_assets.py --profile png-source`. Preparation and

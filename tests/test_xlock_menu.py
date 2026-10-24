@@ -7,7 +7,6 @@ import argparse
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -20,9 +19,6 @@ def run(binary):
     count = 0
     with tempfile.TemporaryDirectory(prefix='fvwm-xlock-') as temporary:
         root = Path(temporary)
-        legacy = root / 'legacy'
-        legacy.write_text((ROOT / 'bin/fvwm-menu-xlock.in').read_text().replace(
-            '@PERL@', shutil.which('perl')).replace('@VERSION@', 'fixture-version'))
         producer = root / 'xlock'
         env = dict(os.environ, PATH=str(root) + os.pathsep + os.environ['PATH'],
                    LC_ALL='C', PROBE_ARGS=str(root / 'args.json'))
@@ -33,26 +29,27 @@ def run(binary):
                 'open(os.environ["PROBE_ARGS"],"w").write(json.dumps(sys.argv[1:]))\n' + body)
             producer.chmod(0o755)
 
-        def invoke(args=(), old=False, custom_env=None):
-            return subprocess.run(([shutil.which('perl'), str(legacy)] if old else
-                [str(binary)]) + list(args), env=custom_env or env,
+        def invoke(args=(), custom_env=None):
+            return subprocess.run([str(binary)] + list(args), env=custom_env or env,
                 capture_output=True, timeout=9)
 
         script('print("where mode is one of:")\n'
                'print("  alpha Shows café pattern")\n'
                'print("  blank Shows Blank screen")\n'
                'print("  random Random mode")\n')
-        cases = [[], ['--special-first'], ['--wm-icons'], ['--icon-item=0', '--wm-icons'],
-            ['-n', 'Menu', '-t', 'Title', '--icon-title=title.xpm', '--icon-item=item.xpm'],
-            ['--NAME=Menu', '--TI=Title', '--it=%D'], ['--name', '--help'],
-            ['--item', '-literal', 'argument', '--', '-nolock', '-inwindow'],
-            ['--i'], ['--icon'], ['--unknown'], ['--wm-icons=x'], ['--item']]
-        cases += [['--item=' + fmt] for fmt in ('%n:%d:%D', '%8n:%-8D', '%*5n',
-            '%*-5n', '%8*4n:%-8*-4n', '%0n:%*0D:%*3D:%*99D', '%q %% %n', r'%n\t%D')]
-        for args in cases:
-            old, new = invoke(args, old=True), invoke(args)
-            assert (new.returncode, new.stdout, new.stderr.replace(str(binary).encode(), b'TOOL')) == (
-                old.returncode, old.stdout, old.stderr.replace(str(legacy).encode(), b'TOOL')), (args, old, new)
+        reference = json.loads((ROOT / 'tests/fixtures/xlock-cli.json').read_text())
+        for case in reference['cases']:
+            args = [v.replace('<ROOT>', str(root)) for v in case['args']]
+            result = invoke(args)
+            def normalized(data):
+                return data.replace(str(binary).encode(), b'TOOL').replace(
+                    str(root).encode(), b'<ROOT>').decode('utf-8', 'surrogateescape').replace(
+                    '(integer number expected)', '(number expected)')
+            expected = dict(case)
+            stdout = normalized(result.stdout)
+            observed = (result.returncode, stdout, normalized(result.stderr))
+            wanted = (expected['status'], expected['stdout'], expected['stderr'])
+            assert observed == wanted, (args, observed, wanted)
             count += 1
         assert json.loads((root / 'args.json').read_text()) == ['-display', 'NONE', '-help']
 

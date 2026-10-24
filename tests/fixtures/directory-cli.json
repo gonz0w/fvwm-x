@@ -1,0 +1,409 @@
+{
+  "provenance": {
+    "commit": "6d8db4199c207e22ddac86c9641bcea17262527e",
+    "source": "bin/fvwm-menu-directory.in",
+    "sha256": "7b52e3acbf06da7edaf0946c33d6d621e52cee98476dafa5a89b5fa25b2569c2",
+    "capture": "Original Perl program; candidate Go executable never invoked.",
+    "directory_size": 64
+  },
+  "cases": [
+    {
+      "args": [],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--ALL",
+        "--no-all"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--all"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \".hidden\" Exec xterm -e vi \"<ROOT>/listing/.hidden\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--links"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--wm-icons"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"%menu/folder-open.xpm%<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"%menu/folder.xpm%folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"%menu/folder.xpm%linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"%menu/file.xpm%alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"%menu/utility.xpm%app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"%menu/file.xpm%caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"%menu/file.xpm%pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"%menu/file.xpm%quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"%menu/file.xpm%zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--icon-file=file",
+        "--icon-app=app",
+        "--icon-dir=dir"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"%dir%folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"%dir%linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"%file%alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"%app%app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"%file%caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"%file%pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"%file%quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"%file%zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--title",
+        "",
+        "--command-file=Nop"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Nop\n+ \"app\" Nop\n+ \"caf\u00e9\" Nop\n+ \"pipe\" Nop\n+ \"quote\\\" dollar$$\" Nop\n+ \"zeta\" Nop\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--command-title",
+        "",
+        "--memory-for-speed"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Title\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--special-dirs"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"..\" Popup \"<ROOT>\" item +100 c\n+ \"\" Nop\n+ \"~\" Popup \"<ROOT>\" item +100 c\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--special-dirs=3,1,2-"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"\" Nop\n+ \"/\" Popup \"/\" item +100 c\n+ \"\" Nop\n+ \"..\" Popup \"<ROOT>\" item +100 c\n+ \"\" Nop\n+ \"~\" Popup \"<ROOT>\" item +100 c\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--check-subdirs"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--menu-style=Custom",
+        "--func-name=CustomFunction"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction CustomFunction\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\nChangeMenuStyle \"Custom\" \"<ROOT>/listing\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--exec-title=^pwd",
+        "--exec-file=-",
+        "--exec-app=^echo"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; pwd\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Nop\n+ \"app\" Exec echo \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Nop\n+ \"pipe\" Nop\n+ \"quote\\\" dollar$$\" Nop\n+ \"zeta\" Nop\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--xterm=terminal -e",
+        "--exec-app"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; terminal -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec terminal -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec terminal -e  \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec terminal -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec terminal -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec terminal -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec terminal -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--command-app=Echo app %f"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Echo app <ROOT>/listing/app\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--title=%d (%p)"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"listing (<ROOT>/listing)\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--name=Unused"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--i"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option i is ambiguous (icon-app, icon-dir, icon-file, icon-title, item)\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--icon"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option icon is ambiguous (icon-app, icon-dir, icon-file, icon-title)\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--unknown"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Unknown option: unknown\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--all=yes"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option all does not take an argument\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--order=oops"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Value \"oops\" invalid for option order (number expected)\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--item"
+      ],
+      "status": 255,
+      "stdout": "",
+      "stderr": "Option item requires an argument\nTry 'TOOL --help' for more information.\n"
+    },
+    {
+      "args": [
+        "--DIR",
+        "<ROOT>/listing///",
+        "--title",
+        "%d:%p"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing///\"\nAddToMenu \"<ROOT>/listing///\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing///\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"listing:<ROOT>/listing///\" Exec cd \"<ROOT>/listing///\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--DIR",
+        "<ROOT>/listing///",
+        "--special-dirs"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing///\"\nAddToMenu \"<ROOT>/listing///\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing///\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing///\" Exec cd \"<ROOT>/listing///\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"..\" Nop\n+ \"\" Nop\n+ \"~\" Popup \"<ROOT>\" item +100 c\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=-6"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=-5"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=-4"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=-3"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=-2"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=-1"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=0"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=1"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=2"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=3"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=4"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=5"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--order=6"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%n:%s:%t:%T"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder:64:Dir :D\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder:64:Link:L\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha:9:File:F\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app:9:File:F\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9:9:File:F\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe:0:Pipe:P\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$:9:File:F\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta:9:File:F\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%8n:%-8s"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"  folder:64      \" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder:64      \" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"   alpha:9       \" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"     app:9       \" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"   caf\u00e9:9       \" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"    pipe:0       \" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$:9       \" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"    zeta:9       \" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%*5n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"fo...\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"li...\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"al...\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"ca...\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"qu...\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%*-5n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"...er\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"...er\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"...ha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"...\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"...r$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%8*4n:%-8*-4n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"    f...:...r    \" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"    l...:...r    \" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"    a...:...a    \" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"     app:app     \" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"    c...:...\udca9    \" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"    p...:...e    \" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"    q...:...$$    \" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"    z...:...a    \" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%0n:%*0n:%*3n:%*99n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder:folder:folder:folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder:linked-folder:linked-folder:linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha:alpha:alpha:alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app:app:app:app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9:caf\u00e9:caf\u00e9:caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe:pipe:pipe:pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$:quote\\\" dollar$$:quote\\\" dollar$$:quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta:zeta:zeta:zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%q %% %n"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"%%q %%%% folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"%%q %%%% linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"%%q %%%% alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"%%q %%%% app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"%%q %%%% caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"%%q %%%% pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"%%q %%%% quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"%%q %%%% zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%n\\t%T"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\tD\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\tL\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\tF\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\tF\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\tF\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\tP\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\tF\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\tF\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%f"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "--item=%n:%D:%d"
+      ],
+      "status": 0,
+      "stdout": "DestroyMenu recreate \"<ROOT>/listing\"\nAddToMenu \"<ROOT>/listing\"\n+ DynamicPopDownAction DestroyMenu \"<ROOT>/listing\"\n+ MissingSubmenuFunction FuncFvwmMenuDirectory\n+ \"<ROOT>/listing\" Exec cd \"<ROOT>/listing\"; xterm -e /bin/sh\n+ \"\" Nop\n+ \"folder:2023-11-14:2023-11-14 22:13:20\" Popup \"<ROOT>/listing/folder\" item +100 c\n+ \"linked-folder:2023-11-14:2023-11-14 22:13:20\" Popup \"<ROOT>/listing/linked-folder\" item +100 c\n+ \"alpha:2023-11-14:2023-11-14 22:13:20\" Exec xterm -e vi \"<ROOT>/listing/alpha\"\n+ \"app:2023-11-14:2023-11-14 22:13:20\" Exec xterm -e vi \"<ROOT>/listing/app\"\n+ \"caf\u00e9:2023-11-14:2023-11-14 22:13:20\" Exec xterm -e vi \"<ROOT>/listing/caf\u00e9\"\n+ \"pipe:2023-11-14:2023-11-14 22:13:20\" Exec xterm -e vi \"<ROOT>/listing/pipe\"\n+ \"quote\\\" dollar$$:2023-11-14:2023-11-14 22:13:20\" Exec xterm -e vi \"<ROOT>/listing/quote\\\" dollar\\$$\"\n+ \"zeta:2023-11-14:2023-11-14 22:13:20\" Exec xterm -e vi \"<ROOT>/listing/zeta\"\n",
+      "stderr": ""
+    }
+  ]
+}

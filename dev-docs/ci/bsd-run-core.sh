@@ -3,6 +3,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or any later version.
 set -eu
+. builddir-bsd/go-sdk-environment.sh
 . builddir-bsd/png-bootstrap/environment.sh
 sh tests/run_on_bsd.sh builddir-bsd
 python3 tools/maintenance/ci_png.py verify \

@@ -39,6 +39,14 @@ independent lane when useful without requiring concurrent agents or VM jobs.
 
 ## First development batch: M1
 
+Current implementation: M1 #179/#180/#181 is **Review**, with the
+[combined acceptance report](../verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md)
+and [exact disposition](M1-RUNTIME-BASELINE-2026-10-23.md). The native #180 → #179
+prerequisite is covered by the same checkpoint and stays intact until merge.
+M2 is next after review/merge. Broader #23/#35/#40/#42 ownership remains open.
+
+Original planning intake follows (the report supersedes its Ready/Backlog status):
+
 #179 and #181 are Ready. #180 stays Backlog/blocked by #179; perform its
 implementation in the same combined candidate once the required compiler and
 install contract is established. Do not merge an intermediate broken fallback

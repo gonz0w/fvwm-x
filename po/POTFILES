@@ -4,7 +4,6 @@
   '../fvwm/virtual.c'
   '../fvwm/menus.c'
   '../default-config/config'
-  '../bin/fvwm-menu-desktop-config.fpl'
   '../modules/FvwmPager/FvwmPager.c'
   '../modules/FvwmPager/x_pager.c'
   '../modules/FvwmForm/FvwmForm-XDGMenuHelp'

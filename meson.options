@@ -23,12 +23,6 @@ option(
     description: 'Enable freetype support',
 )
 option(
-    'golang',
-    type: 'feature',
-    value: 'auto',
-    description: 'Build Golang modules',
-)
-option(
     'docdir',
     type: 'string',
     description: 'Directory to install documentation',

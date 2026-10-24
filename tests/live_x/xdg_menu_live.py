@@ -40,6 +40,14 @@ def run(args):
             for path in (user, menus, apps, tools):
                 path.mkdir(parents=True, mode=0o700)
             shutil.copy2(args.provider, tools/'fvwm-menu-desktop')
+            # Only the provider is under retirement testing. The independent
+            # application/client fixture retains its absolute Python shebang.
+            retired_attempts = runtime.root/'retired-runtime-attempts'
+            for name in ('perl', 'python', 'python2', 'python3', 'convert', 'identify'):
+                denied = tools/name
+                denied.write_text('#!/bin/sh\nprintf "%s\\n" "$0" >> ' +
+                                  shlex.quote(str(retired_attempts)) + '\nexit 127\n')
+                denied.chmod(0o755)
             report=runtime.root/'application.json'
             app=tools/'fixture-app'
             app.write_text('#!'+sys.executable+'\nimport json,sys\n'
@@ -188,6 +196,8 @@ def run(args):
             x.XSync(d,0);pointer.button(False);pressed=False
             wait_for_predicate('literal application arguments',report.exists,time.monotonic()+15,process=core)
             assert json.loads(report.read_text())==['two words',caption,'%'],report.read_text()
+            assert not retired_attempts.exists(), retired_attempts.read_text()
+            results['no_retired_runtime_commands'] = True
             results['actual_menu_action_literal_argv']=True
             connection.echo('application-complete')
             assert core.poll() is None

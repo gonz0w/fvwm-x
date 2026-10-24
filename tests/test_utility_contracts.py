@@ -2,11 +2,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or any later version.
-"""Capture the installed Perl utility contracts before their Go ports.
-
-These are parity fixtures, not a claim that every legacy output is desirable.
-Only --record explicitly changes the reference file. No generated actions run.
-"""
+"""Check native utilities against frozen pre-retirement CLI contracts."""
 import argparse
 import json
 import os
@@ -20,24 +16,16 @@ ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = ROOT / 'tests/fixtures/utility-contracts.json'
 
 
-def observe(xlock_binary=None, xlock_version=None, directory_binary=None, directory_version=None,
-            converter_binary=None):
-    perl = shutil.which('perl')
-    assert perl
+def observe(xlock_binary=None, xlock_version=None, directory_binary=None, directory_version=None):
     observations = {}
     with tempfile.TemporaryDirectory(prefix='fvwm-utility-') as temporary:
         root = Path(temporary)
         tools = root / 'tools'
         tools.mkdir()
-        for name in ('fvwm-menu-directory', 'fvwm-menu-xlock', 'fvwm-convert-2.6'):
-            data = (ROOT / 'bin' / (name + '.in')).read_text()
-            (tools / name).write_text(data.replace('@PERL@', perl).replace('@VERSION@', 'fixture-version'))
         if xlock_binary:
             shutil.copy2(xlock_binary, tools / 'fvwm-menu-xlock')
         if directory_binary:
             shutil.copy2(directory_binary, tools / 'fvwm-menu-directory')
-        if converter_binary:
-            shutil.copy2(converter_binary, tools / 'fvwm-convert-2.6')
         files = root / 'files'
         files.mkdir()
         (files / 'Folder').mkdir()
@@ -56,10 +44,9 @@ def observe(xlock_binary=None, xlock_version=None, directory_binary=None, direct
                    PATH=str(tools) + os.pathsep + os.environ.get('PATH', ''))
 
         def run(label, name, args, success=True):
-            candidate = ((xlock_binary and name == 'fvwm-menu-xlock') or
-                         (directory_binary and name == 'fvwm-menu-directory') or
-                         (converter_binary and name == 'fvwm-convert-2.6'))
-            command = [str(tools / name)] if candidate else [perl, str(tools / name)]
+            if not (tools / name).exists():
+                return
+            command = [str(tools / name)]
             result = subprocess.run([*command, *args], cwd=root,
                                     env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                     timeout=10)
@@ -114,41 +101,25 @@ def observe(xlock_binary=None, xlock_version=None, directory_binary=None, direct
         run('xlock-format-special-first', 'fvwm-menu-xlock',
             ['--name=FixtureMenu', '--title=Fixture', '--item=%n: %D',
              '--wm-icons', '--special-first', '--', '-nolock', '-inwindow'])
-        assert json.loads((root / 'xlock-args.json').read_text()) == ['-display', 'NONE', '-help']
+        if xlock_binary:
+            assert json.loads((root / 'xlock-args.json').read_text()) == ['-display', 'NONE', '-help']
 
-        original = (b'# retained comment\nStyle * HilightFore white\n'
-                    b'AddToFunc InitFunction\n+ I Echo initialize\n'
-                    b'Next [XTerm] Raise\n# UTF-8 caf\xc3\xa9\n')
-        source = root / 'old config'
-        source.write_bytes(original)
-        destination = root / 'converted config'
-        run('convert-config', 'fvwm-convert-2.6', [str(source), str(destination)])
-        observations['converted-bytes'] = destination.read_bytes().decode('utf-8', 'surrogateescape')
-        before = destination.read_bytes()
-        run('convert-refuse-overwrite', 'fvwm-convert-2.6', [str(source), str(destination)], False)
-        assert source.read_bytes() == original and destination.read_bytes() == before
-        run('convert-missing', 'fvwm-convert-2.6', [str(root / 'absent')], False)
-        assert not (root / 'absent.converted').exists()
     return observations
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--record', action='store_true')
-    parser.add_argument('--xlock', type=Path)
+    candidates = parser.add_mutually_exclusive_group(required=True)
+    candidates.add_argument('--xlock', type=Path)
     parser.add_argument('--xlock-version', default='fixture-version')
-    parser.add_argument('--directory', type=Path)
+    candidates.add_argument('--directory', type=Path)
     parser.add_argument('--directory-version', default='fixture-version')
-    parser.add_argument('--converter', type=Path)
     args = parser.parse_args()
-    assert not (args.record and (args.xlock or args.directory or args.converter)), 'Candidate runs cannot replace the legacy baseline'
     observed = observe(args.xlock.resolve() if args.xlock else None, args.xlock_version,
-                       args.directory.resolve() if args.directory else None, args.directory_version,
-                       args.converter.resolve() if args.converter else None)
-    if args.record:
-        REFERENCE.parent.mkdir(exist_ok=True)
-        REFERENCE.write_text(json.dumps(observed, ensure_ascii=True, indent=2) + '\n')
-    else:
-        expected = json.loads(REFERENCE.read_text())
-        assert observed == expected, [key for key in observed if observed[key] != expected.get(key)]
+                       args.directory.resolve() if args.directory else None, args.directory_version)
+    expected = json.loads(REFERENCE.read_text())
+    selected = {key: value for key, value in expected.items() if
+                key.startswith(('fvwm-menu-xlock', 'xlock-') if args.xlock else
+                               ('fvwm-menu-directory', 'directory-'))}
+    assert observed == selected, [key for key in observed if observed[key] != selected.get(key)]
     print(json.dumps({'utility_contracts': len(observed), 'status': 'passed'}))

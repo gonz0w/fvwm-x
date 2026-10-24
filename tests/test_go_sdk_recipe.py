@@ -14,6 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class SdkRecipeTests(unittest.TestCase):
+    recipe = 'bsd-go-sdk.sh'
+    sdk_directory = 'builddir-bsd-go-sdk'
+    evidence_directory = 'builddir-bsd'
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix='fvwm-go-sdk-')
         self.addCleanup(self.temporary.cleanup)
@@ -23,19 +27,19 @@ class SdkRecipeTests(unittest.TestCase):
         uname = tools / 'uname'
         uname.write_text('#!' + sys.executable + '\nimport os,sys\n'
                          'print(os.environ.get("SDK_TEST_SYSTEM", "OpenBSD") '
-                         'if sys.argv[1] == "-s" else "arm64")\n')
+                         'if sys.argv[1] == "-s" else os.environ.get("SDK_TEST_ARCH", "arm64"))\n')
         uname.chmod(0o755)
         self.env = dict(os.environ, PATH=str(tools) + os.pathsep + os.environ['PATH'])
         self.archive = self.root / 'sdk.tgz'
         self.archive.write_bytes(b'not the authenticated compiler')
 
     def run_recipe(self, archive=None):
-        result = subprocess.run(['sh', str(ROOT / 'dev-docs/ci/bsd-go-sdk.sh'),
+        result = subprocess.run(['sh', str(ROOT / 'dev-docs/ci' / self.recipe),
                                  str(archive or self.archive)], cwd=self.root,
                                 env=self.env, capture_output=True, text=True, timeout=10)
         self.assertNotEqual(result.returncode, 0)
-        self.assertFalse((self.root / 'builddir-bsd/go-sdk-environment.sh').exists())
-        self.assertFalse((self.root / 'builddir-bsd-go-sdk/go').exists())
+        self.assertFalse((self.root / self.evidence_directory / 'go-sdk-environment.sh').exists())
+        self.assertFalse((self.root / self.sdk_directory / 'go').exists())
         return result
 
     def test_wrong_archive_refused_before_extraction(self):
@@ -48,7 +52,7 @@ class SdkRecipeTests(unittest.TestCase):
         self.run_recipe(link)
 
     def test_existing_sdk_preserved(self):
-        sdk = self.root / 'builddir-bsd-go-sdk'
+        sdk = self.root / self.sdk_directory
         sdk.mkdir()
         marker = sdk / 'owner'
         marker.write_text('existing compiler')
@@ -59,7 +63,21 @@ class SdkRecipeTests(unittest.TestCase):
     def test_unsupported_platform_refused(self):
         self.env['SDK_TEST_SYSTEM'] = 'OtherOS'
         self.run_recipe()
-        self.assertFalse((self.root / 'builddir-bsd-go-sdk').exists())
+        self.assertFalse((self.root / self.sdk_directory).exists())
+
+
+class LinuxSdkRecipeTests(SdkRecipeTests):
+    recipe = 'linux-go-sdk.sh'
+    sdk_directory = 'builddir/go-sdk'
+    evidence_directory = 'builddir'
+
+    def setUp(self):
+        super().setUp()
+        self.env.update(SDK_TEST_SYSTEM='Linux', SDK_TEST_ARCH='aarch64')
+
+    def test_existing_sdk_preserved(self):
+        (self.root / 'builddir').mkdir()
+        super().test_existing_sdk_preserved()
 
 
 if __name__ == '__main__':

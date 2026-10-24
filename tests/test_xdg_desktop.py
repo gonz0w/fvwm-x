@@ -4,8 +4,8 @@
 # the Free Software Foundation; either version 2, or any later version.
 """Exercise the coordinated stdlib XDG utility through its installed CLI.
 
-Predecessor observations remain in test_xdg_menu_contracts.py. This gate checks
-normative behavior and records intentional improvements without replacing them.
+Predecessor observations remain in the dated XDG port verification receipts.
+This gate checks normative behavior and records intentional improvements without replacing them.
 """
 import argparse
 import base64

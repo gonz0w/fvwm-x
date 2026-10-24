@@ -18,8 +18,8 @@ for its modes. Use the output with *PipeRead*. The utility does not lock the
 display or start a selected mode. The generated menu keeps the *Exec xlock*
 actions and your supplied xlock arguments.
 
-Go-enabled builds install the Go implementation. Go-disabled builds retain
-the Perl implementation. Both use the same options and menu format.
+Every build installs the Go implementation with the existing options and
+menu format. It needs no interpreter or Go compiler at runtime.
 
 The Go implementation runs `xlock -display NONE -help` directly. It reads
 stdout and stderr, with a five-second deadline and a 1 MiB combined output

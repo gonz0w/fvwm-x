@@ -23,8 +23,8 @@ Run from the repository root:
 python3 -m unittest discover -s tools/maintenance/tests -v
 
 # Review the plan first; the default builddir is separate from ./build's.
-python3 tools/maintenance/build.py --dry-run -Dgolang=disabled --test
-python3 tools/maintenance/build.py -Dgolang=disabled --test --verbose
+python3 tools/maintenance/build.py --dry-run --test
+python3 tools/maintenance/build.py --test --verbose
 
 # Explicit install and prefix are supported; installation is never implicit.
 # Options containing spaces remain single arguments.

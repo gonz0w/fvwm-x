@@ -82,20 +82,8 @@ install_data(
     install_dir: fvwm_datadir,
 )
 
-# Retain this filename for configurations that explicitly invoke Perl.
-install_data(
-    'Scripts/fvwm-script-ComExample.pl',
-    install_dir: fvwm_datadir,
-    install_tag: 'script-com-example',
-)
-
-# Configure the consumer before bin/ creates the optional Go target. Quote
-# each shell argument once; neither helper interpolates the communication ID.
+# Quote the installed native helper once; the communication ID stays literal.
 com_arguments = [fvwm_datadir / 'fvwm-script-ComExample']
-if not golang.found()
-    com_arguments = [perl.full_path(), '-w',
-        fvwm_datadir / 'fvwm-script-ComExample.pl']
-endif
 com_config = configuration_data()
 com_config.set('COM_HELPER', run_command(py, '-c',
     'import shlex, sys; print(shlex.join(sys.argv[1:]))',

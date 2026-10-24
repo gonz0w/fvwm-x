@@ -6,8 +6,8 @@
 import argparse
 import json
 import os
+import re
 from pathlib import Path
-import shutil
 import subprocess
 import tempfile
 
@@ -16,11 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def run(binary):
     count = 0
-    with tempfile.TemporaryDirectory(prefix='fvwm-directory-') as temporary:
+    with tempfile.TemporaryDirectory(prefix='fvd-', dir='/tmp') as temporary:
         root = Path(temporary)
-        legacy = root / 'legacy'
-        legacy.write_text((ROOT / 'bin/fvwm-menu-directory.in').read_text().replace(
-            '@PERL@', shutil.which('perl')).replace('@VERSION@', 'fixture-version'))
         directory = root / 'listing'
         directory.mkdir()
         (directory / 'folder').mkdir()
@@ -34,43 +31,57 @@ def run(binary):
         env = dict(os.environ, HOME=str(root), FVWM_USERDIR=str(root),
                    SHELL='/bin/sh', EDITOR='vi', TZ='UTC', LC_ALL='C')
 
-        def invoke(args=(), old=False):
-            return subprocess.run(([shutil.which('perl'), str(legacy)] if old else
-                [str(binary)]) + ['--dir', str(directory)] + list(args), env=env,
+        def invoke(args=()):
+            return subprocess.run([str(binary)] + ['--dir', str(directory)] + list(args), env=env,
                 capture_output=True, timeout=9)
 
-        def normalized(result, executable):
-            return result.returncode, result.stdout, result.stderr.replace(
-                str(executable).encode(), b'TOOL').replace(
-                    b'(integer number expected)', b'(number expected)')
-
-        cases = [[], ['--ALL', '--no-all'], ['--all'], ['--links'],
-            ['--wm-icons'], ['--icon-file=file', '--icon-app=app', '--icon-dir=dir'],
-            ['--title', '', '--command-file=Nop'], ['--command-title', '', '--memory-for-speed'],
-            ['--special-dirs'], ['--special-dirs=3,1,2-'], ['--check-subdirs'],
-            ['--menu-style=Custom', '--func-name=CustomFunction'],
-            ['--exec-title=^pwd', '--exec-file=-', '--exec-app=^echo'],
-            ['--xterm=terminal -e', '--exec-app'], ['--command-app=Echo app %f'],
-            ['--title=%d (%p)'], ['--name=Unused'], ['--i'], ['--icon'],
-            ['--unknown'], ['--all=yes'], ['--order=oops'], ['--item'],
-            ['--DIR', str(directory) + '///', '--title', '%d:%p'],
-            ['--DIR', str(directory) + '///', '--special-dirs'],
-        ]
-        cases += [['--order=' + str(order)] for order in range(-6, 7)]
-        # Only regular files have fixed dates; test metadata in a separate fixture below.
-        cases += [['--item=' + fmt] for fmt in ('%n:%s:%t:%T', '%8n:%-8s',
-            '%*5n', '%*-5n', '%8*4n:%-8*-4n', '%0n:%*0n:%*3n:%*99n',
-            '%q %% %n', r'%n\t%T', '%f')]
-        for args in cases:
-            old, new = invoke(args, old=True), invoke(args)
-            assert normalized(new, binary) == normalized(old, legacy), (args, old, new)
+        reference = json.loads((ROOT / 'tests/fixtures/directory-cli.json').read_text())
+        for case in reference['cases']:
+            args = [v.replace('<ROOT>', str(root)) for v in case['args']]
+            if args == ['--item=%n:%D:%d']:
+                for p in directory.iterdir():
+                    if not p.is_symlink():
+                        os.utime(p, (1700000000, 1700000000))
+            result = invoke(args)
+            def normalized(data):
+                return data.replace(str(binary).encode(), b'TOOL').replace(
+                    str(root).encode(), b'<ROOT>').decode('utf-8', 'surrogateescape').replace(
+                    '(integer number expected)', '(number expected)')
+            expected = dict(case)
+            # Only directory st_size is filesystem-specific. Preserve the
+            # frozen layout while checking its value against independent stat.
+            if args in (['--item=%n:%s:%t:%T'], ['--item=%8n:%-8s']):
+                for name in ('folder', 'linked-folder'):
+                    old = str(reference['provenance']['directory_size'])
+                    size = str((directory / name).stat().st_size)
+                    if args == ['--item=%8n:%-8s']:
+                        old, size = old.ljust(8), size.ljust(8)
+                    expected['stdout'] = expected['stdout'].replace(
+                        name + ':' + old, name + ':' + size)
+            stdout = normalized(result.stdout)
+            if args and re.fullmatch(r'--order=-?[0-9]+', args[0]) and abs(int(args[0][8:])) < 4:
+                order = int(args[0][8:])
+                names = [v for v in os.listdir(directory) if not v.startswith('.')]
+                if abs(order) in (2, 3):
+                    names.sort(key=lambda v: (directory / v).is_dir(),
+                               reverse=abs(order) == 2)
+                if order < 0:
+                    names.reverse()
+                rows = [line for line in stdout.splitlines() if
+                        re.match(r'^\+ ".*" (Popup|Exec) ', line)][1:]
+                # Check native enumeration/stable partition independently;
+                # compare the frozen command/layout rows as an unordered set.
+                def label(name):
+                    return name.replace('\\', '\\\\').replace('"', '\\"').replace('$', '$$')
+                assert len(rows) == len(names), (args, rows, names)
+                assert all(row.startswith('+ "' + label(name) + '" ')
+                           for row, name in zip(rows, names)), (args, rows, names)
+                stdout = '\n'.join(sorted(stdout.splitlines()))
+                expected['stdout'] = '\n'.join(sorted(expected['stdout'].splitlines()))
+            observed = (result.returncode, stdout, normalized(result.stderr))
+            wanted = (expected['status'], expected['stdout'], expected['stderr'])
+            assert observed == wanted, (args, observed, wanted)
             count += 1
-        for p in directory.iterdir():
-            if not p.is_symlink():
-                os.utime(p, (1700000000, 1700000000))
-        old, new = invoke(['--item=%n:%D:%d'], old=True), invoke(['--item=%n:%D:%d'])
-        assert normalized(new, binary) == normalized(old, legacy), (old, new)
-        count += 1
         state = root / '.fvwm-menu-directory.dir'
         result = subprocess.run([str(binary), '--fvwm-remember', str(root),
             str(directory), 'Browser'], env=env, capture_output=True, timeout=5)

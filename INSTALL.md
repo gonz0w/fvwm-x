@@ -50,22 +50,28 @@ XKB key translation comes from libX11. Configuration checks its
 is not a direct build or runtime requirement. Keep Xtrans (session transport
 headers) and Xt (X11 type headers) installed.
 
+Go is a required **build** dependency: stable 1.26.9 or newer in the 1.26
+series, or stable 1.27.2 or newer. It builds FvwmPrompt, FvwmCommand, the
+XDG/directory/xlock menu utilities, fvwm-file-browser and the installed Script
+communication helper. Put the selected SDK's `bin` first in `PATH`. An absent,
+old or prerelease compiler fails configuration; the disabled-Go profile has
+been removed. Use a new build directory when an older Meson directory retains
+the removed `golang` option; some Meson versions reject that cached option.
+Configuration uses `GOTOOLCHAIN=local`; all utility builds use
+vendored inputs with module/toolchain downloads disabled. Go is not required
+on machines running the installed executables. The module's `go 1.21` directive
+sets the source language, not the supported compiler baseline. See the
+[approved baseline](dev-docs/decisions/GO-TOOLCHAIN-BASELINE-PROPOSAL.md).
+Use a checksum-verified private SDK when OS packages lag; system packages need
+not change. Bootstrap/install the SDK explicitly before configuring FVWM-X. Disposable Linux
+jobs can use `sh dev-docs/ci/linux-go-sdk.sh` followed by
+`. builddir/go-sdk-environment.sh`; BSD jobs use `bsd-go-sdk.sh` and
+`builddir-bsd/go-sdk-environment.sh`. These explicit preparation recipes fetch
+fixed checksum-verified SDKs; configure/build never performs that fetch.
+
 ## Optional dependencies
 
 * asciidoctor
-* golang (stable 1.26.9 or newer in the 1.26 series, or stable 1.27.2 or
-  newer); enables FvwmPrompt, the Go FvwmCommand client and fvwm-menu-xlock,
-  fvwm-menu-directory, fvwm-convert-2.6, fvwm-menu-desktop, fvwm-file-browser
-  and the installed Script communication example helper. Go-disabled builds
-  retain legacy utility counterparts where available; the browser is omitted.
-  An installed older/prerelease compiler is
-  refused even with the automatic feature selection: upgrade it or select
-  `-Dgolang=disabled`. An absent compiler remains optional. Configuration checks
-  the actual selected compiler with `GOTOOLCHAIN=local` and never downloads one.
-  The module's `go 1.21` directive preserves its source-language setting; it is
-  not the supported compiler baseline. See the [approved baseline](dev-docs/decisions/GO-TOOLCHAIN-BASELINE-PROPOSAL.md).
-  If BSD packages lag, use a checksum-verified official SDK in a private prefix
-  and put its `bin` directory first in `PATH`; system packages need not change.
 * libfreetype6-dev
 * libfribidi-dev
 * gettext runtime/development files and `msgfmt` (for NLS)
@@ -82,14 +88,22 @@ it does not replace the default desktop Files menu. See the
 [development screenshots and configuration examples](doc/development-preview.md)
 and [browser manual](doc/fvwm-file-browser.adoc) for setup and current limits.
 
-Go-enabled builds also install the coordinated `fvwm-menu-desktop` provider
-and native FvwmForm settings frontend. These use the existing standard-library
-utility build and need no Go, PyXDG or image toolkit at runtime. The existing
-`Module FvwmPerl -l fvwm-menu-desktop-config.fpl` entry point delegates to that
-frontend. Builds with `-Dgolang=disabled` retain the Python/PyXDG provider and
-original Perl frontend. The separate Perl framework retirement is not part of
-this port. See `fvwm-menu-desktop(1)` for worker deadlines, private action files,
-image conversion and safe settings publication.
+Every build installs the coordinated `fvwm-menu-desktop` provider and native
+FvwmForm settings frontend. They need no Go, PyXDG, Pillow or ImageMagick at
+runtime. Use `PipeRead 'fvwm-menu-desktop --configure'` in FVWM configuration.
+The existing `Module FvwmPerl -l fvwm-menu-desktop-config.fpl` entry point is a
+small adapter to that native owner; the remaining FvwmPerl framework is still
+installed and tracked separately. Other Python/Perl runtime controllers and
+build/developer tooling have their own retirement work; this change does not
+make the entire distribution interpreter-free.
+
+The pre-FVWM3 `fvwm-convert-2.6` converter is no longer built or installed.
+FVWM3 configuration files remain supported. Migrate older configuration with
+an older FVWM release before using FVWM-X; user files are never rewritten.
+When upgrading an existing prefix, remove the old converter and
+`share/fvwm3/fvwm-script-ComExample.pl` from that prefix using its previous
+package manifest. A fresh stage has neither file; installing over a prefix does
+not automatically delete files owned by an older package.
 
 Native language support
 =======================
@@ -220,7 +234,7 @@ $ ./build -i
 $ ./build -Dhtmldoc=false -mi
 
 # Enable specific options (see `meson.options`), compile docs and install
-$ ./build -Dgolang=disabled -Dbidi=disabled -Dhtmldoc=false -mi
+$ ./build -Dbidi=disabled -Dhtmldoc=false -mi
 ```
 
 The wrapper also accepts `--dry-run`, `--test`, `--jobs N` and `--log PATH`.
@@ -228,7 +242,7 @@ It does not install without `-i`. Changed `-D` options reconfigure the chosen
 build without wiping it. Repeated identical scalar options reuse the configured
 build; arrays, unknown options or missing option metadata use ordinary setup.
 `--reconfigure` forces setup and `-f` explicitly requests wipe/reconfigure.
-Tests retain their prerequisite build, including optional Go test binaries
+Tests retain their prerequisite build, including Go test binaries
 excluded from the default build. Installation uses `--no-rebuild` after
 compilation/testing. A compile or test failure prevents installation. Keep one owned
 build directory per compiler/feature profile and refresh dependency detection
@@ -238,7 +252,7 @@ retained diagnostics. Values containing spaces remain one argument:
 
 ```sh
 ./build -b 'build with spaces' -p '/prefix with spaces' --dry-run
-./build -b builddir-local -Dgolang=disabled --jobs 2 --test
+./build -b builddir-local --jobs 2 --test
 ```
 
 Direct Meson use
@@ -247,7 +261,7 @@ Direct Meson use
 For an isolated build without installation:
 
 ```sh
-meson setup builddir-local -Dgolang=disabled
+meson setup builddir-local -Dbidi=disabled
 meson compile -C builddir-local
 meson test -C builddir-local --print-errorlogs
 ```

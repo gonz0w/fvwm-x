@@ -23,9 +23,8 @@ fvwm-menu-directory [ *--help*|*-h*|*-?* ] [ *--version*|*-V* ]
 == DESCRIPTION
 
 Use this utility with *PipeRead* to build an FVWM directory menu.
-Its options control labels, sorting, icons and actions. Go-enabled builds
-install the Go implementation. Builds with Go disabled retain the Perl
-implementation until its separate retirement checkpoint.
+Its options control labels, sorting, icons and actions. Every build installs
+the Go implementation; it needs no interpreter or compiler at runtime.
 
 == GO IMPLEMENTATION
 

@@ -32,11 +32,7 @@ def manual_manifest():
 
 
 def index_source(text, prompt):
-    if not prompt:
-        text = ''.join(line for line in text.splitlines(keepends=True)
-                       if 'xref:FvwmPrompt.adoc[' not in line)
-    if prompt:
-        text += '\n* xref:fvwm-file-browser.adoc[File browser foundations]\n'
+    text += '\n* xref:fvwm-file-browser.adoc[File browser foundations]\n'
     if 'xref:FvwmDesktop.adoc[' not in text:
         text += '\n== Default desktop\n\n* xref:FvwmDesktop.adoc[Slate desktop]\n'
     return text
@@ -69,8 +65,6 @@ def render(source, output, formats, prompt, executable, website=False):
             cwd=source, text=True).strip()
         if not version:
             raise ValueError('could not determine source version')
-    if prompt:
-        pages += manifest['go_pages']
     with fresh_output(output, source) as stage:
         inputs = stage / 'sources'
         inputs.mkdir()
@@ -121,7 +115,8 @@ def main():
     parser.add_argument('--source', type=Path, default=ROOT)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--format', choices=['html', 'man', 'both'], default='both')
-    parser.add_argument('--prompt', action='store_true')
+    parser.add_argument('--prompt', action='store_true', default=True,
+                        help='compatibility alias; utility manuals are always included')
     parser.add_argument('--website', action='store_true')
     parser.add_argument('--website-directory', action='store_true',
                         help='render website pages directly into a fresh output directory')
@@ -137,8 +132,6 @@ def main():
         parser.error('select one of --output, --list, --extract or --index')
     if args.list:
         names = manual_manifest()[args.list]
-        if args.list == 'pages' and args.prompt:
-            names += manual_manifest()['go_pages']
         print('\n'.join(names))
         return
     if args.extract or args.index:

@@ -316,7 +316,7 @@ or general structured MFL files provider.
 
 == CONFIGURATION EXAMPLE
 
-The optional executable installs with Go-enabled builds. A working independent
+The executable installs with every build; adopting it remains optional. A working independent
 consumer can be opened from a binding without replacing the default folder menu:
 
 ----
@@ -472,7 +472,7 @@ core viewport/desk policy and does not warp the pointer. Presentation is separat
 from worker completion; a presentation failure returns an error while admitted
 work may continue. Sensitive clipboard content is not a request payload.
 
-Go-enabled installation also provides fvwm-file-browser.desktop under the
+Installation also provides fvwm-file-browser.desktop under the
 application data directory. It advertises only inode/directory, uses TryExec and
 one literal URL field in `fvwm-file-browser --reuse -- %u`, and also launches Home
 when invoked without a URL. No shell expands the URI. It adds no D-Bus activation

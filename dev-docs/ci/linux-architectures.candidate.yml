@@ -116,6 +116,8 @@ jobs:
           python3 -m venv builddir/meson-env
           builddir/meson-env/bin/pip install meson==1.7.0
           export PATH="$PWD/builddir/meson-env/bin:$PATH"
+          sh dev-docs/ci/linux-go-sdk.sh
+          . builddir/go-sdk-environment.sh
           sh dev-docs/ci/linux-prepare-png.sh
           . builddir/ci-png/native/environment.sh
           sh tests/run_native_gate.sh --sanitizers

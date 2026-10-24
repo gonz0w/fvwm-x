@@ -1,0 +1,411 @@
+{
+  "status": "passed",
+  "date": "2026-10-23",
+  "scope": "M1 DEP-GO-01 #179 / DEP-XDG-01 #180 / LEGACY-01 #181",
+  "base": "6d8db4199c207e22ddac86c9641bcea17262527e",
+  "implementation_head": "6c0dc1cb28d631c8ff87325546e6b590d7b62c2d",
+  "implementation_tree": "50f89e25bc94684f2909574acb7abf7b7d7731c4",
+  "candidate_manifest_sha256": "e85f22b529d5c69fba1a17d665ed73f33d488d26f07c7a5ea4a0b655db0b85e6",
+  "candidate_archive_sha256": "95c7c9caf7985db702d81043d7a4fb757f3b74d63532467198c858c2d768a06b",
+  "qualified_inputs": 2367,
+  "retired_files": {
+    "bin/FvwmCommand.in": "3aff0cd5ae4a54ffba8da88e7dd8ad8a8e6a91c2cfd9873ab22ec0c40dac2b81",
+    "bin/FvwmPrompt/cmd/fvwmconvert26/convert.go": "625b060a61974a4f8b9de0d0392f4fce516628897d02e7f66bc340cd3cf3b16b",
+    "bin/FvwmPrompt/cmd/fvwmconvert26/files.go": "d62c6f62dfc9efd7dd4624d928b28340adc8632f1a7585c7d8e09c9d19174bfb",
+    "bin/FvwmPrompt/cmd/fvwmconvert26/main.go": "640afa466f2e9a7916cb3b780e9a755436a2d4efb97c79b9ff36ae75216838a1",
+    "bin/FvwmPrompt/cmd/fvwmconvert26/main_test.go": "e6d5511a8838ac57a1e307e18ff113847cf31e573907ccf31b627aede1507b42",
+    "bin/fvwm-convert-2.6.in": "0051dc803e9726ae0e6b03c984001e5b630ec7358c2c9c6691c71841cb2b9e74",
+    "bin/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+    "bin/fvwm-menu-desktop.in": "9c26c248cf6500270770df7c09642ab94dd89cabb9a89f99689a2bf681ff4062",
+    "bin/fvwm-menu-directory.in": "7b52e3acbf06da7edaf0946c33d6d621e52cee98476dafa5a89b5fa25b2569c2",
+    "bin/fvwm-menu-xlock.in": "b2d28a30f8fc261f914025d7ec9a0b995a53f687ca69ed3b94ed8cad87749543",
+    "doc/fvwm-convert-2.6.adoc": "65be4c462b471e019702b496c2938ea56cf8bab1e008ac261e48b5c553b5ad3d",
+    "modules/FvwmScript/Scripts/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+    "tests/test_config_converter.py": "c087d54923f42b938d33b38ecc33b1fe8536ae0b10d4084c14ee584cd6887e03"
+  },
+  "post_freeze_documentation_and_inactive_recipe": [
+    "INSTALL.md",
+    "README.md",
+    "dev-docs/ARCHITECTURE.md",
+    "dev-docs/CLEANUP-ROADMAP-2026-10-05.md",
+    "dev-docs/ci/README.md",
+    "dev-docs/ci/linux-architectures.candidate.yml",
+    "dev-docs/verification/RECONCILIATION-2026-10-12-UTILITY-CONSUMERS.md",
+    "dev-docs/verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md",
+    "doc/FvwmCommand.adoc",
+    "doc/fvwm-file-browser.adoc",
+    "doc/fvwm-menu-desktop.adoc",
+    "doc/fvwm-menu-directory.adoc",
+    "doc/fvwm-menu-xlock.adoc"
+  ],
+  "targets": {
+    "fvwm-x-linux-arm64-svg": {
+      "status": "passed",
+      "archive_sha256": "0a56a0b82fcb5ac99021ac99d5b5e04fa26a48bb86c1e1c1b7f1ba67db52fdca",
+      "archive_bytes": 171492,
+      "verified_payload_files": 55,
+      "Go_top_cases": 165,
+      "Go_all_test_pass_events": 615,
+      "Go_packages": 12,
+      "passing_commands": 24,
+      "command_seconds": 21.513,
+      "default_and_reduced_utility_builds": "passed",
+      "installed_consumers_and_frozen_CLI": "passed",
+      "native_X_runs": 5,
+      "default_X_settings": false,
+      "native_retention": {
+        "before": {
+          "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+          "modules/FvwmScript/FvwmScript": "53f59b1ed0aa78801d47b2a57b79c8a370067a40678e550015c9c7f3d671ff26",
+          "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6"
+        },
+        "after": {
+          "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+          "modules/FvwmScript/FvwmScript": "53f59b1ed0aa78801d47b2a57b79c8a370067a40678e550015c9c7f3d671ff26",
+          "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6"
+        },
+        "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+        "unchanged": true
+      }
+    },
+    "linux-amd64": {
+      "status": "passed",
+      "archive_sha256": "57c9ab756299d82ff15ef13fae07dda1813ddb0fcbe44cd78c441f63354b168a",
+      "archive_bytes": 176032,
+      "verified_payload_files": 55,
+      "Go_top_cases": 165,
+      "Go_all_test_pass_events": 615,
+      "Go_packages": 12,
+      "passing_commands": 24,
+      "command_seconds": 199.666,
+      "default_and_reduced_utility_builds": "passed",
+      "installed_consumers_and_frozen_CLI": "passed",
+      "native_X_runs": 5,
+      "default_X_settings": false,
+      "native_retention": {
+        "before": {
+          "fvwm3": "5cb750e1341f4de06db8f220b817cd540552ecb7f2ba610f259c19f760c90860",
+          "modules/FvwmMFL/FvwmMFL": "a40d315521cea6d20b3a23fcc0af4d908cdbf0e6e43f35858672b548ac1c973f",
+          "modules/FvwmScript/FvwmScript": "d9b6f72aff099113c150749fee62eee743bda596c01562f437f135ac1b37394b",
+          "modules/FvwmForm/FvwmForm": "63635f9b35a44db143d99abde98bf7a7538531c3a2c6f8c5395f6ef70790b761"
+        },
+        "after": {
+          "fvwm3": "5cb750e1341f4de06db8f220b817cd540552ecb7f2ba610f259c19f760c90860",
+          "modules/FvwmMFL/FvwmMFL": "71d37664d317e4658665e23854e58d75cea8431c96d3a0bddc7075d6fbb0216a",
+          "modules/FvwmScript/FvwmScript": "d9b6f72aff099113c150749fee62eee743bda596c01562f437f135ac1b37394b",
+          "modules/FvwmForm/FvwmForm": "63635f9b35a44db143d99abde98bf7a7538531c3a2c6f8c5395f6ef70790b761"
+        },
+        "configuration_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+        "unchanged": false
+      }
+    },
+    "freebsd-arm64": {
+      "status": "passed",
+      "archive_sha256": "01e59e2774120d13ae9bef87e55f2838aaa6f5179d4f1ea8af607389fba25725",
+      "archive_bytes": 177662,
+      "verified_payload_files": 66,
+      "Go_top_cases": 164,
+      "Go_all_test_pass_events": 614,
+      "Go_packages": 12,
+      "passing_commands": 22,
+      "command_seconds": 28.841,
+      "default_and_reduced_utility_builds": "passed",
+      "installed_consumers_and_frozen_CLI": "passed",
+      "native_X_runs": 5,
+      "default_X_settings": true,
+      "native_retention": {
+        "before": {
+          "fvwm3": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+          "modules/FvwmMFL/FvwmMFL": "2730a9a324fa8165fa65e544ffcb59b07e499e5d12532533875791ec01d6a577",
+          "modules/FvwmScript/FvwmScript": "5977cf1ca4cc143f8ccebb5742ff7a139dde23662b238514bd64e6716419ef26",
+          "modules/FvwmForm/FvwmForm": "3f9d04b481dbff5060b6474293f68caaeac7e879c5f3b0a4161ddf1a7d35510e"
+        },
+        "after": {
+          "fvwm3": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+          "modules/FvwmMFL/FvwmMFL": "2730a9a324fa8165fa65e544ffcb59b07e499e5d12532533875791ec01d6a577",
+          "modules/FvwmScript/FvwmScript": "5977cf1ca4cc143f8ccebb5742ff7a139dde23662b238514bd64e6716419ef26",
+          "modules/FvwmForm/FvwmForm": "3f9d04b481dbff5060b6474293f68caaeac7e879c5f3b0a4161ddf1a7d35510e"
+        },
+        "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+        "unchanged": true
+      }
+    },
+    "freebsd-amd64": {
+      "status": "passed",
+      "archive_sha256": "85ae931bf4c515275bd98411f8f71ac607abc95156ffd9283edbb75b12adfc0c",
+      "archive_bytes": 177827,
+      "verified_payload_files": 66,
+      "Go_top_cases": 164,
+      "Go_all_test_pass_events": 614,
+      "Go_packages": 12,
+      "passing_commands": 22,
+      "command_seconds": 215.647,
+      "default_and_reduced_utility_builds": "passed",
+      "installed_consumers_and_frozen_CLI": "passed",
+      "native_X_runs": 5,
+      "default_X_settings": true,
+      "native_retention": {
+        "before": {
+          "fvwm3": "6533c371a472c3b77a7ef278827cfba0d9d912267e5312bbb6730d062c10a687",
+          "modules/FvwmMFL/FvwmMFL": "8e6970e2f917f65549e712427f171077213bcfdbbb738ee91726a972992247bd",
+          "modules/FvwmScript/FvwmScript": "d23f5717419498a85fd65248e68523db271a7def1ab0603cb05fc81fd6dbe41e",
+          "modules/FvwmForm/FvwmForm": "ba5c4f07a6f4cd06c5e24f4dfc93771ede7c993ce37350dbba70ab90797a5925"
+        },
+        "after": {
+          "fvwm3": "6533c371a472c3b77a7ef278827cfba0d9d912267e5312bbb6730d062c10a687",
+          "modules/FvwmMFL/FvwmMFL": "153ccec1fd142c482b45a0bd8de332926c96576338d1126070ddc05c314b55fe",
+          "modules/FvwmScript/FvwmScript": "d23f5717419498a85fd65248e68523db271a7def1ab0603cb05fc81fd6dbe41e",
+          "modules/FvwmForm/FvwmForm": "ba5c4f07a6f4cd06c5e24f4dfc93771ede7c993ce37350dbba70ab90797a5925"
+        },
+        "configuration_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+        "unchanged": false
+      }
+    },
+    "openbsd-arm64": {
+      "status": "passed",
+      "archive_sha256": "ce62f958dfe2febb390734c71a135a4fd4705659fdd2daeb930abc9a5e79c7f6",
+      "archive_bytes": 163869848,
+      "verified_payload_files": 3251,
+      "Go_top_cases": 164,
+      "Go_all_test_pass_events": 614,
+      "Go_packages": 12,
+      "passing_commands": 25,
+      "command_seconds": 50.758,
+      "default_and_reduced_utility_builds": "passed",
+      "installed_consumers_and_frozen_CLI": "passed",
+      "native_X_runs": 5,
+      "default_X_settings": true,
+      "native_retention": {
+        "before": {
+          "fvwm3": "ee54b0db11086e2848be4555b961d7eb85350e2d35c5ffe024d35807d7cf3c36",
+          "modules/FvwmMFL/FvwmMFL": "34c9e9528d13cd558092dda553f15040dd891bbace95f16a81dd4a663791ae5b",
+          "modules/FvwmScript/FvwmScript": "a298a0b8564b33a4d29635d7270e8e73e513b263ef55b43cb8954fabe713c91f",
+          "modules/FvwmForm/FvwmForm": "43fedc25ca3ec64d0bf5b6595029f05e16421622027bc87ec06d1c3b24348cfd"
+        },
+        "after": {
+          "fvwm3": "ee54b0db11086e2848be4555b961d7eb85350e2d35c5ffe024d35807d7cf3c36",
+          "modules/FvwmMFL/FvwmMFL": "eb03c0e9b7de1fda43a8109a33e734be7c8e5d6e02feb37d0460558749d580fd",
+          "modules/FvwmScript/FvwmScript": "a298a0b8564b33a4d29635d7270e8e73e513b263ef55b43cb8954fabe713c91f",
+          "modules/FvwmForm/FvwmForm": "43fedc25ca3ec64d0bf5b6595029f05e16421622027bc87ec06d1c3b24348cfd"
+        },
+        "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+        "unchanged": false
+      }
+    },
+    "openbsd-amd64": {
+      "status": "passed",
+      "archive_sha256": "64d7f59471a396cb70b1deb00594144e6a311203606737495959a6135d86d676",
+      "archive_bytes": 168183518,
+      "verified_payload_files": 3254,
+      "Go_top_cases": 164,
+      "Go_all_test_pass_events": 614,
+      "Go_packages": 12,
+      "passing_commands": 25,
+      "command_seconds": 417.442,
+      "default_and_reduced_utility_builds": "passed",
+      "installed_consumers_and_frozen_CLI": "passed",
+      "native_X_runs": 5,
+      "default_X_settings": true,
+      "native_retention": {
+        "before": {
+          "fvwm3": "1c1cf13b99cb35b40bf32007884e313c020c28d9ee7fb8481b9919351ef38003",
+          "modules/FvwmMFL/FvwmMFL": "b5d0b1ce1d40d3b50c41c376335a7da4b9042ac1710c45b06e38fbae2b3a31d6",
+          "modules/FvwmScript/FvwmScript": "c2201d6a58a4fecfbb5b09fe4e6edf2df75f37c79bbc4943690e15bb905c5cf3",
+          "modules/FvwmForm/FvwmForm": "4df152444ec956d00d2437e1e0686c5ed6a5f170f28977c9c475d3c0741426b9"
+        },
+        "after": {
+          "fvwm3": "1c1cf13b99cb35b40bf32007884e313c020c28d9ee7fb8481b9919351ef38003",
+          "modules/FvwmMFL/FvwmMFL": "d8f64d9ec999612bacac2c13f0066b2d538b7d403ad244a6d6f002aa0371aafa",
+          "modules/FvwmScript/FvwmScript": "c2201d6a58a4fecfbb5b09fe4e6edf2df75f37c79bbc4943690e15bb905c5cf3",
+          "modules/FvwmForm/FvwmForm": "4df152444ec956d00d2437e1e0686c5ed6a5f170f28977c9c475d3c0741426b9"
+        },
+        "configuration_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+        "unchanged": false
+      }
+    }
+  },
+  "Go_top_cases": 986,
+  "Go_test_pass_events": 3686,
+  "Go_package_outcomes": 72,
+  "native_X_runs": 30,
+  "BSD_default_X_settings_runs": 4,
+  "portable_tests": 196,
+  "portable_passes": 181,
+  "portable_host_skips": 15,
+  "native_compiler_controls_per_target": 9,
+  "SDK_recipe_controls_per_target": 8,
+  "source_package": {
+    "status": "passed",
+    "archive": {
+      "schema": 1,
+      "commit": "6c0dc1cb28d631c8ff87325546e6b590d7b62c2d",
+      "epoch": 0,
+      "bytes": 5274167,
+      "sha256": "0eacb876e06ce45ebec106481196400435864d91f845266a63417be10efb387b",
+      "excluded_top_level": [
+        ".DS_Store",
+        ".agents",
+        ".clang-format",
+        ".codex",
+        ".disabled-travis.yml",
+        ".editorconfig",
+        ".git",
+        ".github",
+        ".gitignore",
+        ".gsd",
+        ".mailmap",
+        ".planning",
+        "AGENTS.md",
+        "dev-docs"
+      ],
+      "development_only": false
+    },
+    "manual_pages": 27,
+    "fresh_release_source_build": [
+      "FvwmCommand",
+      "fvwm-menu-desktop"
+    ],
+    "removed_files_absent": true,
+    "evidence_sha256": "5ac1a32c77629ce1eff292b7799a1ad95f2f99e778f315eedbd9f89416346e5f",
+    "commands": [
+      {
+        "label": "fresh-source-configure",
+        "status": 0,
+        "command": [
+          "meson",
+          "setup",
+          "/tmp/fvwm-module-waits-20261015/m1-package-checkpoint/build",
+          "/tmp/fvwm-module-waits-20261015/m1-package-checkpoint/source",
+          "-Dmandoc=false",
+          "-Dhtmldoc=false"
+        ],
+        "seconds": 1.571
+      },
+      {
+        "label": "fresh-source-build",
+        "status": 0,
+        "command": [
+          "meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/m1-package-checkpoint/build",
+          "-j",
+          "2",
+          "FvwmCommand",
+          "fvwm-menu-desktop"
+        ],
+        "seconds": 0.424
+      },
+      {
+        "label": "fresh-source-provider",
+        "status": 0,
+        "command": [
+          "python3",
+          "tests/test_xdg_desktop.py",
+          "--provider",
+          "/tmp/fvwm-module-waits-20261015/m1-package-checkpoint/build/bin/FvwmPrompt/fvwm-menu-desktop"
+        ],
+        "seconds": 0.118
+      },
+      {
+        "label": "manuals",
+        "status": 0,
+        "command": [
+          "python3",
+          "tools/maintenance/docs.py",
+          "--source",
+          "/tmp/fvwm-module-waits-20261015/m1-package-checkpoint/source",
+          "--format",
+          "both",
+          "--output",
+          "/tmp/fvwm-module-waits-20261015/m1-package-checkpoint/manuals"
+        ],
+        "seconds": 4.023
+      }
+    ]
+  },
+  "source_package_input_retention": {
+    "status": "passed",
+    "unchanged_qualified_release_files": 1646,
+    "documentation_only_followup": [
+      "INSTALL.md",
+      "README.md",
+      "doc/FvwmCommand.adoc",
+      "doc/fvwm-file-browser.adoc",
+      "doc/fvwm-menu-desktop.adoc",
+      "doc/fvwm-menu-directory.adoc",
+      "doc/fvwm-menu-xlock.adoc"
+    ],
+    "retired_files_absent": true,
+    "archive_sha256": "0eacb876e06ce45ebec106481196400435864d91f845266a63417be10efb387b"
+  },
+  "source_reference_scan": {
+    "status": "passed",
+    "retired_files": {
+      "bin/FvwmCommand.in": "3aff0cd5ae4a54ffba8da88e7dd8ad8a8e6a91c2cfd9873ab22ec0c40dac2b81",
+      "bin/FvwmPrompt/cmd/fvwmconvert26/convert.go": "625b060a61974a4f8b9de0d0392f4fce516628897d02e7f66bc340cd3cf3b16b",
+      "bin/FvwmPrompt/cmd/fvwmconvert26/files.go": "d62c6f62dfc9efd7dd4624d928b28340adc8632f1a7585c7d8e09c9d19174bfb",
+      "bin/FvwmPrompt/cmd/fvwmconvert26/main.go": "640afa466f2e9a7916cb3b780e9a755436a2d4efb97c79b9ff36ae75216838a1",
+      "bin/FvwmPrompt/cmd/fvwmconvert26/main_test.go": "e6d5511a8838ac57a1e307e18ff113847cf31e573907ccf31b627aede1507b42",
+      "bin/fvwm-convert-2.6.in": "0051dc803e9726ae0e6b03c984001e5b630ec7358c2c9c6691c71841cb2b9e74",
+      "bin/fvwm-menu-desktop-config.fpl": "b18c81f4f0ba9bc9a0cb310af7c5dbc4d0c5b6d64438264c62261a8c3828f588",
+      "bin/fvwm-menu-desktop.in": "9c26c248cf6500270770df7c09642ab94dd89cabb9a89f99689a2bf681ff4062",
+      "bin/fvwm-menu-directory.in": "7b52e3acbf06da7edaf0946c33d6d621e52cee98476dafa5a89b5fa25b2569c2",
+      "bin/fvwm-menu-xlock.in": "b2d28a30f8fc261f914025d7ec9a0b995a53f687ca69ed3b94ed8cad87749543",
+      "doc/fvwm-convert-2.6.adoc": "65be4c462b471e019702b496c2938ea56cf8bab1e008ac261e48b5c553b5ad3d",
+      "modules/FvwmScript/Scripts/fvwm-script-ComExample.pl": "80cd03ffbb1214f654e3131dc5e9c0c28c4c72f84e927344e873311e625dd12b",
+      "tests/test_config_converter.py": "c087d54923f42b938d33b38ecc33b1fe8536ae0b10d4084c14ee584cd6887e03"
+    },
+    "active_PyXDG_PIL_imports": [],
+    "retired_build_install_manual_targets": 0,
+    "frozen_surviving_utility_values_unchanged": 11,
+    "core_C_delta": [],
+    "source_archive": {
+      "schema": 1,
+      "commit": "6c0dc1cb28d631c8ff87325546e6b590d7b62c2d",
+      "epoch": 0,
+      "bytes": 5274167,
+      "sha256": "0eacb876e06ce45ebec106481196400435864d91f845266a63417be10efb387b",
+      "excluded_top_level": [
+        ".DS_Store",
+        ".agents",
+        ".clang-format",
+        ".codex",
+        ".disabled-travis.yml",
+        ".editorconfig",
+        ".git",
+        ".github",
+        ".gitignore",
+        ".gsd",
+        ".mailmap",
+        ".planning",
+        "AGENTS.md",
+        "dev-docs"
+      ],
+      "development_only": false
+    }
+  },
+  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-23/m1-runtime-baseline",
+  "limitations": [
+    "M1 utility/build/install acceptance, not complete feature-cycle or release closure",
+    "No new native CPU ASan/UBSan, physical hardware, toolkit or compositor qualification",
+    "C/rendering source unchanged by M1; older AMD64 MFL builds pick up the previously merged PR186 request.c",
+    "Three-theme gallery retained for unchanged rendering; no new UI",
+    "Remaining Python controllers M2; Perl framework M6; owned tools M7",
+    "No performance comparison due; reference remains pre-cleanup PR186, 1/5 now and 2/5 on M1 merge"
+  ],
+  "verified_guest_capture_retirement": {
+    "status": "retired_verified_duplicates",
+    "files": 60,
+    "bytes": 17181297,
+    "preserved": [
+      "source",
+      "all builds/caches",
+      "install stages",
+      "VM disks"
+    ],
+    "host_archive_verified": true
+  }
+}

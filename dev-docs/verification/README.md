@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Native desktop capture](VERIFICATION-2026-10-24-M2-NATIVE-CAPTURE.md): Python helper retirement, exact RGB/private-file/refusal and installed dispatch on Linux/FreeBSD; three themes and scoped sanitizer, with full M2/session gates still open.
+
 - [Resident Go desktop controller](VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md): coordinated state, commits, preview/editor and bounded process/module ownership; focused Linux/FreeBSD, installed peers, three-theme captures and compile-only supported pairs.
 
 - [PR186→PR194 periodic observation](PERFORMANCE-2026-10-24-PR194.md): preserved binaries, overlapping scan ranges and unchanged peak RSS; no resident-session performance claim.

@@ -75,12 +75,6 @@ void InitHDipstick(struct XObj *xobj)
  XSelectInput(dpy, xobj->win, ExposureMask);
 }
 
-void DestroyHDipstick(struct XObj *xobj)
-{
- XFreeGC(dpy,xobj->gc);
- XDestroyWindow(dpy,xobj->win);
-}
-
 void DrawHDipstick(struct XObj *xobj, XEvent *evp)
 {
  int  i;

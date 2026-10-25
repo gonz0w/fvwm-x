@@ -71,13 +71,6 @@ void InitItemDraw(struct XObj *xobj)
   xobj->value3 = -1;
 }
 
-void DestroyItemDraw(struct XObj *xobj)
-{
-  FlocaleUnloadFont(dpy,xobj->Ffont);
-  XFreeGC(dpy,xobj->gc);
-  XDestroyWindow(dpy,xobj->win);
-}
-
 void DrawItemDraw(struct XObj *xobj, XEvent *evp)
 {
 

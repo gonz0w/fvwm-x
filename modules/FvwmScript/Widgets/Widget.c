@@ -23,61 +23,51 @@
 #include "Tools.h"
 
 extern void InitPushButton(struct XObj *xobj);
-extern void DestroyPushButton(struct XObj *xobj);
 extern void DrawPushButton(struct XObj *xobj, XEvent *evp);
 extern void EvtMousePushButton(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyPushButton(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitRadioButton(struct XObj *xobj);
-extern void DestroyRadioButton(struct XObj *xobj);
 extern void DrawRadioButton(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseRadioButton(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyRadioButton(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitItemDraw(struct XObj *xobj);
-extern void DestroyItemDraw(struct XObj *xobj);
 extern void DrawItemDraw(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseItemDraw(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyItemDraw(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitCheckBox(struct XObj *xobj);
-extern void DestroyCheckBox(struct XObj *xobj);
 extern void DrawCheckBox(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseCheckBox(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyCheckBox(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitTextField(struct XObj *xobj);
-extern void DestroyTextField(struct XObj *xobj);
 extern void DrawTextField(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseTextField(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitHScrollBar(struct XObj *xobj);
-extern void DestroyHScrollBar(struct XObj *xobj);
 extern void DrawHScrollBar(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseHScrollBar(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyHScrollBar(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitVScrollBar(struct XObj *xobj);
-extern void DestroyVScrollBar(struct XObj *xobj);
 extern void DrawVScrollBar(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseVScrollBar(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyVScrollBar(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitPopupMenu(struct XObj *xobj);
-extern void DestroyPopupMenu(struct XObj *xobj);
 extern void DrawPopupMenu(struct XObj *xobj, XEvent *evp);
 extern void EvtMousePopupMenu(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyPopupMenu(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitRectangle(struct XObj *xobj);
-extern void DestroyRectangle(struct XObj *xobj);
 extern void DrawRectangle(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseRectangle(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyRectangle(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitMiniScroll(struct XObj *xobj);
-extern void DestroyMiniScroll(struct XObj *xobj);
 extern void DrawMiniScroll(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseMiniScroll(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyMiniScroll(struct XObj *xobj,XKeyEvent *EvtKey);
@@ -91,28 +81,64 @@ extern void ProcessMsgSwallow(
 	struct XObj *xobj,unsigned long type,unsigned long *body);
 
 extern void InitHDipstick(struct XObj *xobj);
-extern void DestroyHDipstick(struct XObj *xobj);
 extern void DrawHDipstick(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseHDipstick(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyHDipstick(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitVDipstick(struct XObj *xobj);
-extern void DestroyVDipstick(struct XObj *xobj);
 extern void DrawVDipstick(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseVDipstick(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyVDipstick(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitList(struct XObj *xobj);
-extern void DestroyList(struct XObj *xobj);
 extern void DrawList(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseList(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyList(struct XObj *xobj,XKeyEvent *EvtKey);
 
 extern void InitMenu(struct XObj *xobj);
-extern void DestroyMenu(struct XObj *xobj);
 extern void DrawMenu(struct XObj *xobj, XEvent *evp);
 extern void EvtMouseMenu(struct XObj *xobj,XButtonEvent *EvtButton);
 extern void EvtKeyMenu(struct XObj *xobj,XKeyEvent *EvtKey);
+
+/* Ordinary widgets replace the borrowed base GC during initialization. */
+static void script_widget_destroy_window(struct XObj *xobj)
+{
+	if (xobj->gc != NULL)
+		XFreeGC(dpy, xobj->gc);
+	if (xobj->win != None)
+		XDestroyWindow(dpy, xobj->win);
+	xobj->gc = NULL;
+	xobj->win = None;
+}
+
+void script_widget_release(struct XObj **slot, bool initialized)
+{
+	struct XObj *xobj = *slot;
+
+	if (xobj == NULL)
+		return;
+	/* Callbacks finish first: they may inspect other widgets.
+	 * A partial widget borrows the base GC and owns no named colors. */
+	if (xobj->Ffont != NULL)
+		FlocaleUnloadFont(dpy, xobj->Ffont);
+	if (initialized && xobj->colorset < 0)
+	{
+		for (int i = 0; i < 4; i++)
+			PictureFreeColors(dpy, Pcmap, &xobj->TabColor[i],
+				1, 0, True);
+	}
+	script_icon_clear(xobj);
+	free(xobj->title);
+	free(xobj->swallow);
+	free(xobj->icon);
+	free(xobj->font);
+	free(xobj->forecolor);
+	free(xobj->backcolor);
+	free(xobj->shadcolor);
+	free(xobj->hilicolor);
+	free(xobj);
+	*slot = NULL;
+}
 
 /*
  * Choose function depending on button type
@@ -126,7 +152,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=PushButton;
 		xobj->InitObj=InitPushButton;
-		xobj->DestroyObj=DestroyPushButton;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawPushButton;
 		xobj->EvtMouse=EvtMousePushButton;
 		xobj->EvtKey=EvtKeyPushButton;
@@ -135,7 +161,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=RadioButton;
 		xobj->InitObj=InitRadioButton;
-		xobj->DestroyObj=DestroyRadioButton;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawRadioButton;
 		xobj->EvtMouse=EvtMouseRadioButton;
 		xobj->EvtKey=EvtKeyRadioButton;
@@ -144,7 +170,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=ItemDraw;
 		xobj->InitObj=InitItemDraw;
-		xobj->DestroyObj=DestroyItemDraw;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawItemDraw;
 		xobj->EvtMouse=EvtMouseItemDraw;
 		xobj->EvtKey=EvtKeyItemDraw;
@@ -153,7 +179,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=CheckBox;
 		xobj->InitObj=InitCheckBox;
-		xobj->DestroyObj=DestroyCheckBox;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawCheckBox;
 		xobj->EvtMouse=EvtMouseCheckBox;
 		xobj->EvtKey=EvtKeyCheckBox;
@@ -162,7 +188,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=TextField;
 		xobj->InitObj=InitTextField;
-		xobj->DestroyObj=DestroyTextField;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawTextField;
 		xobj->EvtMouse=EvtMouseTextField;
 		xobj->EvtKey=EvtKeyTextField;
@@ -171,7 +197,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=HScrollBar;
 		xobj->InitObj=InitHScrollBar;
-		xobj->DestroyObj=DestroyHScrollBar;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawHScrollBar;
 		xobj->EvtMouse=EvtMouseHScrollBar;
 		xobj->EvtKey=EvtKeyHScrollBar;
@@ -180,7 +206,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=VScrollBar;
 		xobj->InitObj=InitVScrollBar;
-		xobj->DestroyObj=DestroyVScrollBar;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawVScrollBar;
 		xobj->EvtMouse=EvtMouseVScrollBar;
 		xobj->EvtKey=EvtKeyVScrollBar;
@@ -189,7 +215,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=PopupMenu;
 		xobj->InitObj=InitPopupMenu;
-		xobj->DestroyObj=DestroyPopupMenu;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawPopupMenu;
 		xobj->EvtMouse=EvtMousePopupMenu;
 		xobj->EvtKey=EvtKeyPopupMenu;
@@ -198,7 +224,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=Rectangle;
 		xobj->InitObj=InitRectangle;
-		xobj->DestroyObj=DestroyRectangle;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawRectangle;
 		xobj->EvtMouse=EvtMouseRectangle;
 		xobj->EvtKey=EvtKeyRectangle;
@@ -207,7 +233,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=MiniScroll;
 		xobj->InitObj=InitMiniScroll;
-		xobj->DestroyObj=DestroyMiniScroll;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawMiniScroll;
 		xobj->EvtMouse=EvtMouseMiniScroll;
 		xobj->EvtKey=EvtKeyMiniScroll;
@@ -226,7 +252,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=HDipstick;
 		xobj->InitObj=InitHDipstick;
-		xobj->DestroyObj=DestroyHDipstick;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawHDipstick;
 		xobj->EvtMouse=EvtMouseHDipstick;
 		xobj->EvtKey=EvtKeyHDipstick;
@@ -235,7 +261,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=VDipstick;
 		xobj->InitObj=InitVDipstick;
-		xobj->DestroyObj=DestroyVDipstick;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawVDipstick;
 		xobj->EvtMouse=EvtMouseVDipstick;
 		xobj->EvtKey=EvtKeyVDipstick;
@@ -244,7 +270,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=List;
 		xobj->InitObj=InitList;
-		xobj->DestroyObj=DestroyList;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawList;
 		xobj->EvtMouse=EvtMouseList;
 		xobj->EvtKey=EvtKeyList;
@@ -253,7 +279,7 @@ void ChooseFunction(struct XObj *xobj,char *type)
 	{
 		xobj->TypeWidget=Menu;
 		xobj->InitObj=InitMenu;
-		xobj->DestroyObj=DestroyMenu;
+		xobj->DestroyObj=script_widget_destroy_window;
 		xobj->DrawObj=DrawMenu;
 		xobj->EvtMouse=EvtMouseMenu;
 		xobj->EvtKey=EvtKeyMenu;

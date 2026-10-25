@@ -77,12 +77,6 @@ void InitMiniScroll(struct XObj *xobj)
   XSelectInput(dpy, xobj->win, ExposureMask);
 }
 
-void DestroyMiniScroll(struct XObj *xobj)
-{
-  XFreeGC(dpy,xobj->gc);
-  XDestroyWindow(dpy,xobj->win);
-}
-
 void DrawMiniScroll(struct XObj *xobj, XEvent *evp)
 {
 

@@ -2679,6 +2679,35 @@ script_message_owner_test = executable(
 )
 test('script-message-owner', script_message_owner_test)
 
+script_widget_owner_test = executable(
+    'test-script-widget-owner', 'test_script_widget_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=FlocaleUnloadFont',
+        '-Wl,--wrap=XFreeGC', '-Wl,--wrap=XDestroyWindow',
+        '-Wl,--wrap=XKillClient', '-Wl,--wrap=XCreateFontCursor',
+        '-Wl,--wrap=XFreeCursor', '-Wl,--wrap=XCreateWindow',
+        '-Wl,--wrap=fvwmlib_XCreateGC', '-Wl,--wrap=GetColor',
+        '-Wl,--wrap=XSetForeground', '-Wl,--wrap=XSetBackground',
+        '-Wl,--wrap=XSetLineAttributes', '-Wl,--wrap=XSelectInput',
+        '-Wl,--wrap=free', '-Wl,--wrap=FlocaleLoadFont',
+        '-Wl,--wrap=FlocaleTextWidth', '-Wl,--wrap=PictureFreeColors',
+        '-Wl,--wrap=XFreePixmap', '-Wl,--wrap=XClearWindow'],
+    c_args: ['-UNDEBUG'],
+)
+test('script-widget-owner', script_widget_owner_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-widget-owner-xvfb', py,
+        args: [files('live_x/script_widget_owner_live.py'), '--module', fvwm_script,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-widget-owner'],
+        depends: fvwm_script,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 90)
+endif
+
 script_icon_owner_test = executable(
     'test-script-icon-owner', 'test_script_icon_owner.c',
     objects: fvwm_script.extract_all_objects(recursive: false),

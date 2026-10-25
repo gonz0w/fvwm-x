@@ -1,0 +1,421 @@
+{
+  "base": "d5187be3b8abe67c2dd62e7d818c6f45884b66fc",
+  "owners": [
+    "SCRIPT-01 #4",
+    "CLEAN-01 #34"
+  ],
+  "status": "focused checks passed; broader qualification pending",
+  "captured_candidate_inputs_count": 22,
+  "runtime_test_inputs": {
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "13027372438fad0b86ce6d14ea3524e27bf61f29d4c366f7cb90844e36c7a112",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/CheckBox.c": {
+      "sha256": "f9296934d5f68aace9968f36a323f625d1ebd22eba44dfd36e62535137d34516",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/HDipstick.c": {
+      "sha256": "8a9f40fd6b42255fb22f5fea4cb82f2d196fe58680be44c0728e88a27fcfaa85",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/HScrollBar.c": {
+      "sha256": "5bb46e3ac13931e0332b888d15f5c408083c3cf7b455c0cd74bce1ae5db2a9e1",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/ItemDraw.c": {
+      "sha256": "041840597afa165aa9e3889e3200b241e5bfa411663074d2908b9a916002c059",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/List.c": {
+      "sha256": "f8651bc860ad3f8030ec17bae498b94cc6ba83f22412c0cc86bf9183c028ccf5",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/Menu.c": {
+      "sha256": "770e033d8ae4cb742ac46a2101b664670c2825a0bedb3d5304336493507b4288",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/MiniScroll.c": {
+      "sha256": "6786307cc2743f1664c353e0abdf2aee7641986c9db27a8ee4f823fe7b52e29a",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/PopupMenu.c": {
+      "sha256": "16edb333f2105c556c751384236f8814b5306c92c98c8516d6ba8d94b15c17a2",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/PushButton.c": {
+      "sha256": "2f689c39ccca1e9b0ba076cdb927f6813b0c897d4ebce393ed612c41f9236afa",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/RadioButton.c": {
+      "sha256": "509534973e706bb3b6df6f79dac3f79995348b0d28d50cdb2b4801d959e3b4d5",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/Rectangle.c": {
+      "sha256": "3d802b1ef173c4f4d90e92fb305169c149f93aca730a19c1590d86774a19e05a",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/TextField.c": {
+      "sha256": "60916b32840db3df5748184f6762b8e13bbfd039ca50bca1748de91039480488",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/Tools.h": {
+      "sha256": "2cb41785646a20cc467f3db2a93540f820b396954594ebf1548b4787cbd06fe5",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/VDipstick.c": {
+      "sha256": "3cba6c7eb3633f7949248668065083fc41d29aa8fdcabb588b8bd7cc20d15ac0",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/VScrollBar.c": {
+      "sha256": "b15a6c5fd566ab7c64aad3102d28ad54d65e86763ea82428f01916f0c8e22d4d",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/Widget.c": {
+      "sha256": "671e6a20695327bf03a345c250e559bd0919226c29c43e231e8a3cc4e1745b87",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "288feb01f19d86565b1d4cdd2ba293da92e0e162e1a8b95cd515354a3c4df8e7",
+      "mode": 420
+    },
+    "tests/test_script_widget_owner.c": {
+      "sha256": "1d434b9d3a3549373b283fb0452a6f3ffa7071d3d0f1ecad583a89433a67a413",
+      "mode": 420
+    },
+    "tests/live_x/script_widget_owner_live.py": {
+      "sha256": "9b9414a49ff7991dbd48a7798b57935c81d2b0545bf818ef112fd6cae29ba49e",
+      "mode": 420
+    }
+  },
+  "relevant_inputs_count": 278,
+  "relevant_inputs_sha256": "fb9c0aacbb343f01ee7bd6f99402384d57809768cfb2a2ecd9705b040a409a29",
+  "baseline": {
+    "inputs": {
+      "modules/FvwmScript/FvwmScript.c": "3883a47d7a13e4ffced48f6d6982ec2ef924e7343a0b3232fe4b2acfd7adba01",
+      "modules/FvwmScript/Widgets/Tools.c": "a6a5448a57158dddbf11282dcc5f4c34591754f6dffd8d43fda98cd1918d5770",
+      "tests/test_script_widget_owner.c": "62eb552412d898e81c90b041579e75a2ecb6c8f25fe578382be4dea69f0c2529",
+      "tests/meson.build": "0da88e73b0d3c5ff80ed4257eb6cf6d5bde7b94d68be628d29bc27156f95b234"
+    },
+    "config": "085a23acb701ed570a30a99a1a38c0fe8147dfb04370ab45b86bc610bf6e4258",
+    "build": {
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "tests/test-script-widget-owner"
+      ],
+      "status": 0,
+      "seconds": 0.9821419799991418
+    },
+    "binary": "c5004fc4de2c6b8db263bbf1405369f6884eb2f0037d77d6ca809d198ed83469",
+    "owner": {
+      "command": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-widget-owner"
+      ],
+      "status": -6,
+      "seconds": 0.04019845701986924
+    }
+  },
+  "expected_baseline_observations": {
+    "missed_fonts": [
+      "Rectangle",
+      "MiniScroll",
+      "SwallowExec",
+      "HDipstick",
+      "VDipstick"
+    ],
+    "cursor_create": 6,
+    "cursor_attach": 6,
+    "cursor_free": 0,
+    "status": -6
+  },
+  "focused_gate": {
+    "status": "passed",
+    "commands": [
+      {
+        "label": "normal-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-script-widget-owner",
+          "tests/test-script-icon-owner",
+          "tests/test-script-geometry",
+          "tests/test-script-widget-math",
+          "tests/test-font-geometry-x",
+          "fvwm3",
+          "modules/FvwmMFL/FvwmMFL",
+          "bin/fvwm-desktop-capture"
+        ],
+        "status": 0,
+        "seconds": 2.345722566009499
+      },
+      {
+        "label": "normal-units",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "script-widget-owner",
+          "script-icon-owner",
+          "script-geometry",
+          "script-widget-math"
+        ],
+        "status": 0,
+        "seconds": 0.1708953460038174
+      },
+      {
+        "label": "normal-widget-owners-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_widget_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--capture",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-widgets-20261025/final/widget-owner-x"
+        ],
+        "status": 0,
+        "seconds": 0.6404069119889755
+      },
+      {
+        "label": "normal-icon-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_icon_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--capture",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-widgets-20261025/final/icon-x"
+        ],
+        "status": 0,
+        "seconds": 0.5282712199841626
+      },
+      {
+        "label": "normal-geometry-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_geometry_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--script",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-widgets-20261025/final/geometry-x",
+          "--font-probe",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-font-geometry-x"
+        ],
+        "status": 0,
+        "seconds": 2.1012129729788285
+      },
+      {
+        "label": "normal-modal-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_modal_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--script",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-widgets-20261025/final/modal-x"
+        ],
+        "status": 0,
+        "seconds": 16.709484083025018
+      },
+      {
+        "label": "asan-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "tests/test-script-widget-owner",
+          "tests/test-script-icon-owner",
+          "tests/test-script-geometry",
+          "tests/test-script-widget-math"
+        ],
+        "status": 0,
+        "seconds": 1.804882352007553
+      },
+      {
+        "label": "asan-units",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "script-widget-owner",
+          "script-icon-owner",
+          "script-geometry",
+          "script-widget-math"
+        ],
+        "status": 0,
+        "seconds": 0.16575152301811613
+      }
+    ]
+  },
+  "focused_command_seconds": 24.46662697501597,
+  "native_unit_results": {
+    "normal": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "scoped_asan_ubsan": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "all_widget_live": {
+    "all-fifteen-startup": "passed",
+    "all-fifteen-font-change": "passed",
+    "named-to-colorset": "passed",
+    "colorset-to-named": "passed",
+    "font-option-update": "passed",
+    "font-recovery": "passed",
+    "normal-exit": "passed",
+    "before-prepare": "passed",
+    "prepare-refusal": "passed"
+  },
+  "icon_live": {
+    "existing-text-rendering": "passed",
+    "initial-bitmap-conversion": "passed",
+    "replace-with-white-bitmap": "passed",
+    "missing-image-clears-pixels": "passed",
+    "decoder-refusal-clears-pixels": "passed",
+    "same-path-retry": "passed",
+    "expose-redraw": "passed",
+    "repeated-replacement": "passed",
+    "normal-shutdown": "passed",
+    "partial-startup-refusal": "passed"
+  },
+  "geometry_live": {
+    "production-font-advance-and-shadow-overflow": "passed",
+    "zero-and-omitted-startup": "passed",
+    "seven-invalid-requests-preserve-window": "passed",
+    "valid-resize-and-position-after-refusal": "passed",
+    "invalid-font-refusal-and-valid-font-recovery": "passed",
+    "protocol-endpoints-and-recovery": "passed",
+    "three-oversized-popup-paths-return-and-preserve-module": "passed",
+    "three-valid-popup-paths-recover": "passed",
+    "five-invalid-startups-clean-refusal-core-service": "passed"
+  },
+  "modal_live": {
+    "0:PushButton:1": "command/timer/mutation/release/termination passed",
+    "1:CheckBox:1": "command/timer/mutation/release/termination passed",
+    "2:RadioButton:1": "command/timer/mutation/release/termination passed",
+    "3:TextField:1": "command/timer/mutation/release/termination passed",
+    "4:Menu:1": "command/timer/mutation/release/termination passed",
+    "5:PopupMenu:1": "command/timer/mutation/release/termination passed",
+    "6:PushButton:3": "command/timer/mutation/release/termination passed",
+    "7:HScrollBar:1": "command/timer/mutation/release/termination passed",
+    "8:VScrollBar:1": "command/timer/mutation/release/termination passed",
+    "9:MiniScroll:1": "command/timer/mutation/release/termination passed",
+    "10:List:1": "command/timer/mutation/release/termination passed",
+    "11:List:1": "command/timer/mutation/release/termination passed",
+    "12:List:1": "command/timer/mutation/release/termination passed",
+    "13:PushButton:1": "command/timer/mutation/release/termination passed"
+  },
+  "all_fifteen_owner_sweep": {
+    "font_unloads": 55,
+    "gc_releases": 14,
+    "window_releases": 15,
+    "named_color_releases": 60,
+    "pixmap_releases": 45,
+    "pixel_vectors": 15,
+    "watched_heap_frees": 180,
+    "cursor_create_attach_free": 9
+  },
+  "outputs": {
+    "normal": {
+      "modules/FvwmScript/FvwmScript": "44a18eff7982db75e39abd2a22c8ffcd6796da74c8ae8141a7dd4465e5e4d9a1",
+      "tests/test-script-widget-owner": "ebbda4359e97750f705da7c2a52d8bdd5169b423b94e58782ebf8db3d1ef998e",
+      "tests/test-script-icon-owner": "5e8427e15721bb50cfd275e37828f98519c935e226190980bcb53494df934886",
+      "tests/test-script-geometry": "8c2faeb7c47acbff96693e330fb2b7422ab57791f0f9d8935d7be1ee545ece19",
+      "tests/test-script-widget-math": "9c06f3fd283678bb70e9ecb5c32405f7bb13a3265ab22a8df496faa5a0b0dfe8",
+      "tests/test-font-geometry-x": "ab14096b5c47a27a704dddd7e90c5549c02625873fc352be2b275f7694ff2c44",
+      "fvwm3": "c6a10b077d8c098f7c59ab79f6f76213a7e265b6d8022834e13c2443f57ee8b3",
+      "modules/FvwmMFL/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+      "bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+    },
+    "asan": {
+      "tests/test-script-widget-owner": "dd42517f2c0cf45c3c02d605b963b5b178fd92765f728fe9895b8a99fe4ad3a0",
+      "tests/test-script-icon-owner": "abc40d6cfac0b4243e0508075ba57d26ca77d84b752fd93704d3a8a7a5956bfb",
+      "tests/test-script-geometry": "cf9f5077ffa57d1e293c5821efefba8c08e13ecfb6a7c7f2e4e8564addbf58e2",
+      "tests/test-script-widget-math": "d416fbed2e33dac59cddc0325684a3728f0d0c5e703e3f503145e32f5d94e2a1"
+    }
+  },
+  "output_identities": 13,
+  "sanitizers": {
+    "profile": "Linux ARM64 Clang18.1.3 address,undefined",
+    "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "archive": {
+    "payloads": 142,
+    "archive_bytes": 693060,
+    "archive_sha256": "345220e95879aa301710dd880eeb5c2c724ab0307bbdc408fb1b7f51a50d1dad"
+  },
+  "archive_regular_payloads": 143,
+  "all_prior_pr_merges": {
+    "merged": [
+      {
+        "pr": 242,
+        "head": "3daae861833837dcd4df4b7a3d95081b3e123fc3",
+        "canonical": "5094080af751f99772d720ea5581018a7ecccd3c",
+        "tree": "496f30fa6ff93e7d399a7c825be8a224d77c008e"
+      },
+      {
+        "pr": 228,
+        "head": "57a54a8583c92a134257b74913078dd6a5e14f65",
+        "canonical": "389a02203f1c6a6fc3764f77d22d566a42ba5066",
+        "tree": "ae7300ec0b0a8bdee8de123474f7616d8260608b"
+      },
+      {
+        "pr": 237,
+        "head": "1442a40613491d66e6a82728c2558e8fbe6c829f",
+        "canonical": "d5187be3b8abe67c2dd62e7d818c6f45884b66fc",
+        "tree": "085aa76e87ef5530be3ff7398cdce0da7cdc6c00"
+      }
+    ],
+    "all_signatures_valid": true,
+    "dco": "Cam <cam@fungalo.co>",
+    "open_pr_readback": [],
+    "completed_branches_retired": true,
+    "docs_reviews": [
+      "PR228clearafterstaleschedulefix",
+      "PR237clearafterobsoletequeueandJSONmirrorfix"
+    ],
+    "runtime_unchanged_in_planning_prs": true
+  },
+  "review": {
+    "source": "separate reviewer clear; actual exit ordering also inspected at ShutdownX",
+    "evidence": "separate final source/evidence review clear; frozen inputs, raw outcomes/counts, sanitizer options, outputs and archive verified; prior merge API facts attributed to lead"
+  },
+  "limits": [
+    "No fresh BSD/AMD64/install/whole-theme or full feature matrix",
+    "Scoped owner checks do not prove whole-module/global/font-cache/interpreter leak cleanliness",
+    "No new UI/primitive; controlled existing all-widget screenshot only",
+    "No native-CPU/physical/toolkit/compositor/release qualification",
+    "PR238 periodic reference4/5 after242; this merge reaches5/5, next regular comparison due"
+  ],
+  "routing": "Requested Astra/high analysis, Sol/high implementation, separate Sol/high review; runtime metadata unverified"
+}

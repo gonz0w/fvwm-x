@@ -196,12 +196,10 @@ ShutdownX(void)
 
   for (i=0; i<initialized_widgets; i++)
     tabxobj[i]->DestroyObj(tabxobj[i]);
-  /* Allocation precedes icon loading and widget preparation.  Scan the
-   * fixed, initially NULL slots too: the current widget can own an icon
-   * even when preparation refused before initialized_widgets advanced. */
+  /* Allocation precedes preparation; release partial widgets too.  Keep this
+   * separate pass so no callback can observe another widget's freed record. */
   for (i=0; i<(int)(sizeof(tabxobj) / sizeof(tabxobj[0])); i++)
-    if (tabxobj[i] != NULL)
-      script_icon_clear(tabxobj[i]);
+    script_widget_release(&tabxobj[i], i < initialized_widgets);
   XFlush(dpy);
   fsm_close();
   XCloseDisplay(dpy);
@@ -838,6 +836,9 @@ void BuildGUI(int IsFather, int argc, char **argv)
     tabxobj[i]->flags[1] = (*tabobj)[i].flags[1];
     tabxobj[i]->flags[2] = (*tabobj)[i].flags[2];
     tabxobj[i]->flags[3] = (*tabobj)[i].flags[3];
+    /* These eight strings transfer from the parser object or are duplicated
+     * from base defaults below.  XObj owns them; parser/AST teardown must not
+     * free transferred aliases.  Unconstructed parser objects stay separate. */
     tabxobj[i]->icon = (*tabobj)[i].icon;
     tabxobj[i]->swallow = (*tabobj)[i].swallow;
 

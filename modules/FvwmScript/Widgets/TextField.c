@@ -79,6 +79,8 @@ void InitTextField(struct XObj *xobj)
 				xobj->x,xobj->y,xobj->width,xobj->height,0,
 				CopyFromParent,InputOutput,CopyFromParent,
 				mask,&Attr);
+	if (mask & CWCursor)
+		XFreeCursor(dpy, Attr.cursor);
 	xobj->gc=fvwmlib_XCreateGC(dpy,xobj->win,0,NULL);
 	XSetForeground(dpy,xobj->gc,xobj->TabColor[fore]);
 
@@ -102,13 +104,6 @@ void InitTextField(struct XObj *xobj)
 				    GetColorset(xobj->colorset), Pdepth,
 				    xobj->gc, True);
 	XSelectInput(dpy, xobj->win, ExposureMask);
-}
-
-void DestroyTextField(struct XObj *xobj)
-{
-	FlocaleUnloadFont(dpy,xobj->Ffont);
-	XFreeGC(dpy,xobj->gc);
-	XDestroyWindow(dpy,xobj->win);
 }
 
 /* text cursor drawing */

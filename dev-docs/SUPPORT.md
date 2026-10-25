@@ -183,6 +183,13 @@ outside scope. Menu captures show existing UI with the private dataset, not new
 theme qualification. The M2 acceptance handoff records existing qualified
 subsets and the remaining native-CPU/owner acceptance separately.
 
+The [native ARM64 session checkpoint](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md)
+adds actual AArch64 ELF/process evidence and the existing installed session checks
+under Apple hardware virtualization. It qualifies the exercised instruction paths,
+not bare metal, native AMD64/Ubuntu-kernel/sanitizer coverage or physical/release
+acceptance. Full-session owner acceptance remains separate. Historical emulated
+observations retain their own environment and qualification flags.
+
 The [process/session startup checkpoint](verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md) records six-target/ten-profile constructor qualification, real session integration, scoped guest sanitizers and unchanged inherited OpenBSD gaps. Its source/profile scope does not establish native-CPU or physical/release acceptance.
 
 The [swallowed-client session checkpoint](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md) records composed six-target qualification, unchanged inherited OpenBSD gaps and scoped guest sanitizers. Native-CPU and physical/release acceptance remain separate.

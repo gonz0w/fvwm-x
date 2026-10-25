@@ -1,0 +1,912 @@
+{
+  "checkpoint": "M2.10 native ARM64 execution acceptance",
+  "merged_PR202": {
+    "merge": "cead217dbba5bb5f0d9862439b3f837e88553b8d",
+    "tree": "de946e985520268e7f398b61b037c993e52c098e",
+    "signature_verified": true,
+    "author_DCO": true,
+    "pr": {
+      "headRefName": "codex/m2-session-closeout",
+      "headRefOid": "dc5ac2ce800c36f756aa41b3e11b450a616bbaef",
+      "mergeCommit": {
+        "oid": "cead217dbba5bb5f0d9862439b3f837e88553b8d"
+      },
+      "state": "MERGED"
+    }
+  },
+  "status": "selected native ARM64 execution passed; full-session owner acceptance remains pending",
+  "qualification": {
+    "exercised_native_AArch64_in_hardware_virtualized_Linux": true,
+    "full_native_Linux_qualification": false,
+    "native_AMD64": false,
+    "native_Ubuntu_kernel_baseline": false,
+    "native_sanitizers": false,
+    "native_paired_performance_comparison": false,
+    "fresh_Python_free_root": false,
+    "full_session_owner_accepted": false,
+    "release_or_physical_hardware": false
+  },
+  "provider": {
+    "host": {
+      "system": "Darwin",
+      "machine": "arm64"
+    },
+    "provider": {
+      "Arch": "arm64",
+      "CurrentMachine": "podman-machine-default",
+      "MachineState": "Running",
+      "OS": "darwin",
+      "VMType": "applehv"
+    },
+    "container": {
+      "Id": "288f898505a42ccdb79d3c7eba8a6db155fa3bb296ca3fb7194fa6276aecc386",
+      "Name": "fvwm-x-linux-arm64-svg",
+      "Image": "0a5ca7b6bcd6217d9f20f70784332741cd386bfe4d9e40ed1b00a03050750e93",
+      "ImageName": "localhost/fvwm-x-svg-arm64-profile:20261006",
+      "State": {
+        "Status": "running",
+        "Running": true,
+        "StartedAt": "2026-10-23T06:20:37.965233794-06:00"
+      }
+    },
+    "machine_guest": "Linux\n90bf1d15-d764-47f5-9544-7c0e97d2b2f5\n"
+  },
+  "environment": {
+    "uname": [
+      "Linux",
+      "288f898505a4",
+      "6.18.10-200.fc43.aarch64",
+      "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+      "aarch64"
+    ],
+    "os_release": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "boot_id": "90bf1d15-d764-47f5-9544-7c0e97d2b2f5",
+    "cpuinfo": "processor\t: 0\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 1\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 2\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 3\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 4\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 5\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 6\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 7\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\nprocessor\t: 8\nBogoMIPS\t: 48.00\nFeatures\t: fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 asimddp sha512 asimdfhm dit uscat ilrcpc flagm sb paca pacg dcpodp flagm2 frint i8mm bf16 bti afp rpres sme smei16i64 smef64f64 smei8i32 smef16f32 smeb16f32 smef32f32 ebf16 sme2 sme2p1 smei16i32 smebi32i32 smeb16b16 smef16f16\nCPU implementer\t: 0x61\nCPU architecture: 8\nCPU variant\t: 0x0\nCPU part\t: 0x000\nCPU revision\t: 0\n\n",
+    "binfmt_visible_entries": [],
+    "null_device": {
+      "major": 1,
+      "minor": 3
+    },
+    "cgroup_options": "Not requested: no delegated writable accounting parent.",
+    "trace_options": "Not requested: no exposed tracefs instances; no mount/policy change.",
+    "python_free_root": false,
+    "existing_container_preserved": true
+  },
+  "loader_post_run_identity": {
+    "path": "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+    "sha256": "390027e5f45f236bd1838bc54bf464c5ff01d260ab9f8b415ea8276641bce505",
+    "bytes": 203968,
+    "mode": 493,
+    "ELF_machine": 183,
+    "scope": "Post-run identity of loader path present in sampled core maps"
+  },
+  "archive": {
+    "sha256": "5020cbb3f924a0b3c93c1db664fbaf74ad9216b0c5e34da0ae208613054953f1",
+    "bytes": 553839,
+    "gzip_crc_to_eof": true,
+    "payloads_verified": 57,
+    "manifest_entries_verified": 56
+  },
+  "commands": [
+    {
+      "label": "plain-workload",
+      "command": [
+        "python3",
+        "tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--observe-only",
+        "--workload-observe",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/m210-acceptance/plain-workload"
+      ],
+      "status": 0,
+      "seconds": 17.429345255019143
+    },
+    {
+      "label": "resident-gc",
+      "command": [
+        "python3",
+        "tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--observe-only",
+        "--workload-observe",
+        "--gc-observe",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/m210-acceptance/resident-gc"
+      ],
+      "status": 0,
+      "seconds": 16.957011278020218
+    },
+    {
+      "label": "session-actions",
+      "command": [
+        "python3",
+        "tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/m210-acceptance/session-actions"
+      ],
+      "status": 0,
+      "seconds": 3.2719097060034983
+    }
+  ],
+  "source": {
+    "commit": "cead217dbba5bb5f0d9862439b3f837e88553b8d",
+    "runtime_inputs_exact": 1185,
+    "test_files_exact": 124,
+    "test_archive_sha256": "b47d5fe9f476d1f95d8f1953385e2f72013574913d2e9376f9525ca7478bae53",
+    "new_build_or_matrix": false,
+    "production_or_test_logic_changes": 0
+  },
+  "staged_ELF_identities": {
+    "usr/local/bin/fvwm3": {
+      "sha256": "2e6c3414713f704e4a1fd79227a8c9d19b5e4a2a016425b58976c791c894d752",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/bin/FvwmPrompt": {
+      "sha256": "7fd3dfe7aaa175b701f20272de195299ed8ef7da2b69b08b75688fcf86ee9ae7",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/bin/FvwmCommand": {
+      "sha256": "6e3b1e047fe5db826e3d45e1652bcd200e1c9e12a54959a5ee56708df02db4e5",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/bin/fvwm-menu-xlock": {
+      "sha256": "b8797eef32946786345ee0ba3905138546667eb026f6ebba79d0e40b5201a35f",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/bin/fvwm-menu-directory": {
+      "sha256": "670e7321d0a8c64b67694b6a2ceefe5968fb1ab042addda65e3e6c33e7143811",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/bin/fvwm-menu-desktop": {
+      "sha256": "98a948289db6f9950bc21ba40eb40332f506c9bedaea42d2b5426f815b5d556e",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/bin/fvwm-file-browser": {
+      "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/bin/fvwm-root": {
+      "sha256": "ed956524646df387de78215d5d68ee555b153fa9784e48099662a5c7cbdede88",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/share/fvwm3/fvwm-script-ComExample": {
+      "sha256": "8440faa4575c01aaa888c017252707dbe262a2dc01dc1a78d3f15e3c31fe90bc",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+      "sha256": "27b7f1fb8ffd15902b686f0ba756550404d5d58d334e89c1540aefd374776e2a",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+      "sha256": "33d46d1046e972b316f04e1bf4297029a21ac388a4ac7cdd235dae0196ef4e3d",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+      "sha256": "1ff521c07589bc8f0c0ded57f594d55fffdec7411b4e20880ca154f6864149fd",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+      "sha256": "f33ef057a7c6e1566e3a8bf154db280eaaa9946cea382890e6fc0136ee478793",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+      "sha256": "320361d719d2fc30937cdcc01d452e81915f8a57a75063fc4c66760c02939e64",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+      "sha256": "d0e2b9b2b9e17ec9012ea9971359f3bf1a2b5255954166f388004c3c53afb842",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+      "sha256": "1d85ef2d9092e3563275be488ea953c7a950fe9bc93e7b1d627f8bcd825b4dbf",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+      "sha256": "4cc378923dcba1f313f411d8ceb8d07b44f1fd423abb75da4eda0670b5f32b8c",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+      "sha256": "79d12b4df37e4ed97408dd497ce3749bb8478f1fec45648998451b4219e5443f",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+      "sha256": "6d7849effe7d93ac45f22180f313b376ebb3214f59f2a85092527e1405364c7e",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+      "sha256": "720ebfca04c90b7140ec191f267f4858a057a5a17e839b2bbea6e98a8c78cf81",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+      "sha256": "ab7c8a1acf6d91997bc814e7736a41e0f73fbb821dd9d6857c3b52fd0fd8df91",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+      "sha256": "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+      "sha256": "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+      "sha256": "371a6d6896f20dc30a4200df88d8de0c2935e03eb2656785517c0f4950860f79",
+      "machine": 183,
+      "machine_name": "AArch64"
+    },
+    "usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+      "sha256": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+      "machine": 183,
+      "machine_name": "AArch64"
+    }
+  },
+  "runs": {
+    "plain-workload": {
+      "live_process_executable_identities": 11,
+      "live_executables": [
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/bin/fvwm3",
+          "2e6c3414713f704e4a1fd79227a8c9d19b5e4a2a016425b58976c791c894d752"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "1ff521c07589bc8f0c0ded57f594d55fffdec7411b4e20880ca154f6864149fd"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "f33ef057a7c6e1566e3a8bf154db280eaaa9946cea382890e6fc0136ee478793"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "320361d719d2fc30937cdcc01d452e81915f8a57a75063fc4c66760c02939e64"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "d0e2b9b2b9e17ec9012ea9971359f3bf1a2b5255954166f388004c3c53afb842"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "79d12b4df37e4ed97408dd497ce3749bb8478f1fec45648998451b4219e5443f"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+          "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb"
+        ]
+      ],
+      "core_exit": 0,
+      "ownership_cleanup": {
+        "errors": [],
+        "runtime_closed": true
+      },
+      "completed_operations": 8,
+      "entries_per_operation": [
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512
+      ],
+      "menu_grab_dismissals": 16,
+      "pre_input_states": [
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running"
+      ],
+      "admission_input_ms": {
+        "raw": [
+          0.4919990024063736,
+          0.27804099954664707,
+          0.3547910018824041,
+          0.29916601488366723,
+          0.4082079976797104,
+          0.5165819893591106,
+          0.5510410119313747,
+          0.40649899165146053
+        ],
+        "median": 0.40735349466558546,
+        "min": 0.27804099954664707,
+        "max": 0.5510410119313747
+      },
+      "sampled_observer_phases": {
+        "startup": {
+          "duration_seconds": 0.11242317399592139,
+          "sample_count": 3,
+          "partial_samples": 2,
+          "sampled_rss_peak_kib": 30452,
+          "sampled_pss_peak_kib": 18735,
+          "retained_rss_kib": 29176,
+          "retained_pss_kib": 16541,
+          "observed_cpu_seconds": 0.10275340301450342,
+          "cpu_ms": 30.0,
+          "cpu_percent": 29.1961133353078,
+          "context_switches": 2666,
+          "partial_intervals": 2,
+          "invalid_time_intervals": 0
+        },
+        "idle": {
+          "duration_seconds": 12.005793832999188,
+          "sample_count": 204,
+          "partial_samples": 204,
+          "sampled_rss_peak_kib": 29528,
+          "sampled_pss_peak_kib": 16733,
+          "retained_rss_kib": 29528,
+          "retained_pss_kib": 16733,
+          "observed_cpu_seconds": 11.984055089007597,
+          "cpu_ms": 10.0,
+          "cpu_percent": 0.08344420920738693,
+          "context_switches": 2257,
+          "partial_intervals": 203,
+          "invalid_time_intervals": 0
+        },
+        "activity": {
+          "duration_seconds": 5.12672202300746,
+          "sample_count": 91,
+          "partial_samples": 91,
+          "sampled_rss_peak_kib": 37356,
+          "sampled_pss_peak_kib": 24433,
+          "retained_rss_kib": 32880,
+          "retained_pss_kib": 19945,
+          "observed_cpu_seconds": 5.072232265985804,
+          "cpu_ms": 520.0,
+          "cpu_percent": 10.251896457642529,
+          "context_switches": 38078,
+          "partial_intervals": 90,
+          "invalid_time_intervals": 0
+        },
+        "shutdown": {
+          "duration_seconds": 0.00924952098284848,
+          "sample_count": 3,
+          "partial_samples": 3,
+          "sampled_rss_peak_kib": 32880,
+          "sampled_pss_peak_kib": 19945,
+          "retained_rss_kib": null,
+          "retained_pss_kib": null,
+          "observed_cpu_seconds": 0.007799774000886828,
+          "cpu_ms": 0.0,
+          "cpu_percent": 0.0,
+          "context_switches": 53,
+          "partial_intervals": 2,
+          "invalid_time_intervals": 0
+        }
+      },
+      "kernel_observation": {
+        "schema_version": 1,
+        "kernel": {
+          "system": "Linux",
+          "release": "6.18.10-200.fc43.aarch64"
+        },
+        "cgroup": {
+          "requested": false,
+          "available": false,
+          "reason": "not requested",
+          "complete": false,
+          "path": null,
+          "snapshots": [],
+          "cpu_delta": null,
+          "charged_memory_peak_bytes": null,
+          "memory_semantics": "cgroup charge includes kernel/cache; not RSS/PSS",
+          "peak_semantics": "cumulative since fresh group creation; never reset",
+          "admission": "shell joins immediately before exec"
+        },
+        "trace": {
+          "requested": false,
+          "available": false,
+          "reason": "not requested",
+          "complete": false,
+          "path": null,
+          "root_pid": 70694,
+          "parent_pid": 70690,
+          "wakeup_count": null,
+          "wakeup_new_count": null,
+          "phase_counts": null,
+          "per_cpu_stats": {},
+          "metadata": {},
+          "semantics": "selected-task sched tracepoint occurrences; not IRQs/timers"
+        },
+        "cleanup_errors": [],
+        "boundaries": [
+          {
+            "name": "launch",
+            "monotonic_seconds": 168444.212037054
+          },
+          {
+            "name": "startup",
+            "monotonic_seconds": 168444.212039304
+          },
+          {
+            "name": "idle",
+            "monotonic_seconds": 168444.32612364
+          },
+          {
+            "name": "activity",
+            "monotonic_seconds": 168456.335167259
+          },
+          {
+            "name": "shutdown",
+            "monotonic_seconds": 168461.460416826
+          }
+        ],
+        "end_monotonic_seconds": 168461.485557438
+      }
+    },
+    "resident-gc": {
+      "live_process_executable_identities": 12,
+      "live_executables": [
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/bin/fvwm3",
+          "2e6c3414713f704e4a1fd79227a8c9d19b5e4a2a016425b58976c791c894d752"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "1ff521c07589bc8f0c0ded57f594d55fffdec7411b4e20880ca154f6864149fd"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "f33ef057a7c6e1566e3a8bf154db280eaaa9946cea382890e6fc0136ee478793"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "320361d719d2fc30937cdcc01d452e81915f8a57a75063fc4c66760c02939e64"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "d0e2b9b2b9e17ec9012ea9971359f3bf1a2b5255954166f388004c3c53afb842"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "79d12b4df37e4ed97408dd497ce3749bb8478f1fec45648998451b4219e5443f"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+          "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb"
+        ]
+      ],
+      "core_exit": 0,
+      "ownership_cleanup": {
+        "errors": [],
+        "runtime_closed": true
+      },
+      "completed_operations": 8,
+      "entries_per_operation": [
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512
+      ],
+      "menu_grab_dismissals": 16,
+      "pre_input_states": [
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running"
+      ],
+      "admission_input_ms": {
+        "raw": [
+          0.7134980114642531,
+          0.35237500560469925,
+          0.5190410010982305,
+          0.6652899901382625,
+          0.4040819767396897,
+          0.38254098035395145,
+          0.495874002808705,
+          0.39804098196327686
+        ],
+        "median": 0.44997798977419734,
+        "min": 0.35237500560469925,
+        "max": 0.7134980114642531
+      },
+      "sampled_observer_phases": {
+        "startup": {
+          "duration_seconds": 0.11215375701431185,
+          "sample_count": 3,
+          "partial_samples": 1,
+          "sampled_rss_peak_kib": 30848,
+          "sampled_pss_peak_kib": 19102,
+          "retained_rss_kib": 29016,
+          "retained_pss_kib": 16412,
+          "observed_cpu_seconds": 0.10245427797781304,
+          "cpu_ms": 30.0,
+          "cpu_percent": 29.28135417292838,
+          "context_switches": 2685,
+          "partial_intervals": 2,
+          "invalid_time_intervals": 0
+        },
+        "idle": {
+          "duration_seconds": 12.003419879998546,
+          "sample_count": 206,
+          "partial_samples": 206,
+          "sampled_rss_peak_kib": 29232,
+          "sampled_pss_peak_kib": 16468,
+          "retained_rss_kib": 29232,
+          "retained_pss_kib": 16468,
+          "observed_cpu_seconds": 11.985841793997679,
+          "cpu_ms": 30.0,
+          "cpu_percent": 0.25029531104793595,
+          "context_switches": 2339,
+          "partial_intervals": 205,
+          "invalid_time_intervals": 0
+        },
+        "activity": {
+          "duration_seconds": 4.6866262260009535,
+          "sample_count": 84,
+          "partial_samples": 84,
+          "sampled_rss_peak_kib": 37720,
+          "sampled_pss_peak_kib": 24821,
+          "retained_rss_kib": 33152,
+          "retained_pss_kib": 20249,
+          "observed_cpu_seconds": 4.679457824997371,
+          "cpu_ms": 470.0,
+          "cpu_percent": 10.043898621957641,
+          "context_switches": 38416,
+          "partial_intervals": 83,
+          "invalid_time_intervals": 0
+        },
+        "shutdown": {
+          "duration_seconds": 0.010130810987902805,
+          "sample_count": 2,
+          "partial_samples": 2,
+          "sampled_rss_peak_kib": 33152,
+          "sampled_pss_peak_kib": 20249,
+          "retained_rss_kib": null,
+          "retained_pss_kib": null,
+          "observed_cpu_seconds": 0.008465564984362572,
+          "cpu_ms": 20.0,
+          "cpu_percent": 236.2512134387204,
+          "context_switches": 34,
+          "partial_intervals": 1,
+          "invalid_time_intervals": 0
+        }
+      },
+      "kernel_observation": {
+        "schema_version": 1,
+        "kernel": {
+          "system": "Linux",
+          "release": "6.18.10-200.fc43.aarch64"
+        },
+        "cgroup": {
+          "requested": false,
+          "available": false,
+          "reason": "not requested",
+          "complete": false,
+          "path": null,
+          "snapshots": [],
+          "cpu_delta": null,
+          "charged_memory_peak_bytes": null,
+          "memory_semantics": "cgroup charge includes kernel/cache; not RSS/PSS",
+          "peak_semantics": "cumulative since fresh group creation; never reset",
+          "admission": "shell joins immediately before exec"
+        },
+        "trace": {
+          "requested": false,
+          "available": false,
+          "reason": "not requested",
+          "complete": false,
+          "path": null,
+          "root_pid": 70830,
+          "parent_pid": 70826,
+          "wakeup_count": null,
+          "wakeup_new_count": null,
+          "phase_counts": null,
+          "per_cpu_stats": {},
+          "metadata": {},
+          "semantics": "selected-task sched tracepoint occurrences; not IRQs/timers"
+        },
+        "cleanup_errors": [],
+        "boundaries": [
+          {
+            "name": "launch",
+            "monotonic_seconds": 168461.645886258
+          },
+          {
+            "name": "startup",
+            "monotonic_seconds": 168461.645888633
+          },
+          {
+            "name": "idle",
+            "monotonic_seconds": 168461.759628345
+          },
+          {
+            "name": "activity",
+            "monotonic_seconds": 168473.766840925
+          },
+          {
+            "name": "shutdown",
+            "monotonic_seconds": 168478.451969112
+          }
+        ],
+        "end_monotonic_seconds": 168478.475063062
+      },
+      "resident_gc": {
+        "scope": "Resident stderr only; worker stderr is not collected.",
+        "enabled": true,
+        "observed_cycles": 9,
+        "cycles": [
+          {
+            "cycle": 1,
+            "at_seconds": 12.333,
+            "clock_phases_ms": [
+              0.12,
+              0.2,
+              0.003
+            ],
+            "stop_the_world_clock_ms": 0.123,
+            "forced": false
+          },
+          {
+            "cycle": 2,
+            "at_seconds": 12.904,
+            "clock_phases_ms": [
+              0.019,
+              0.34,
+              0.002
+            ],
+            "stop_the_world_clock_ms": 0.020999999999999998,
+            "forced": false
+          },
+          {
+            "cycle": 3,
+            "at_seconds": 13.384,
+            "clock_phases_ms": [
+              0.028,
+              0.19,
+              0.025
+            ],
+            "stop_the_world_clock_ms": 0.053000000000000005,
+            "forced": false
+          },
+          {
+            "cycle": 4,
+            "at_seconds": 13.925,
+            "clock_phases_ms": [
+              0.046,
+              0.8,
+              0.014
+            ],
+            "stop_the_world_clock_ms": 0.06,
+            "forced": false
+          },
+          {
+            "cycle": 5,
+            "at_seconds": 14.118,
+            "clock_phases_ms": [
+              0.026,
+              0.16,
+              0.002
+            ],
+            "stop_the_world_clock_ms": 0.027999999999999997,
+            "forced": false
+          },
+          {
+            "cycle": 6,
+            "at_seconds": 14.582,
+            "clock_phases_ms": [
+              0.023,
+              0.25,
+              0.008
+            ],
+            "stop_the_world_clock_ms": 0.031,
+            "forced": false
+          },
+          {
+            "cycle": 7,
+            "at_seconds": 15.103,
+            "clock_phases_ms": [
+              0.024,
+              0.2,
+              0.026
+            ],
+            "stop_the_world_clock_ms": 0.05,
+            "forced": false
+          },
+          {
+            "cycle": 8,
+            "at_seconds": 15.682,
+            "clock_phases_ms": [
+              0.024,
+              0.25,
+              0.048
+            ],
+            "stop_the_world_clock_ms": 0.07200000000000001,
+            "forced": false
+          },
+          {
+            "cycle": 9,
+            "at_seconds": 16.32,
+            "clock_phases_ms": [
+              0.021,
+              0.35,
+              0.031
+            ],
+            "stop_the_world_clock_ms": 0.052000000000000005,
+            "forced": false
+          }
+        ],
+        "max_observed_stop_the_world_clock_ms": 0.123,
+        "malformed_lines": [],
+        "input_truncated": false,
+        "complete_parse": true,
+        "limit": "No observed cycle does not establish zero GC pauses; this workload does not establish worst-case latency."
+      }
+    },
+    "session-actions": {
+      "live_process_executable_identities": 37,
+      "live_executables": [
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/bin/fvwm3",
+          "2e6c3414713f704e4a1fd79227a8c9d19b5e4a2a016425b58976c791c894d752"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmBacker",
+          "1ff521c07589bc8f0c0ded57f594d55fffdec7411b4e20880ca154f6864149fd"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmButtons",
+          "f33ef057a7c6e1566e3a8bf154db280eaaa9946cea382890e6fc0136ee478793"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+          "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+          "320361d719d2fc30937cdcc01d452e81915f8a57a75063fc4c66760c02939e64"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmForm",
+          "d0e2b9b2b9e17ec9012ea9971359f3bf1a2b5255954166f388004c3c53afb842"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+          "79d12b4df37e4ed97408dd497ce3749bb8478f1fec45648998451b4219e5443f"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture",
+          "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821"
+        ],
+        [
+          "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+          "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb"
+        ],
+        [
+          "/usr/bin/dash",
+          "c883d9c27228339580994a1d0ea960645368c7d1b960a712bd0c655860c2d0d7"
+        ],
+        [
+          "/usr/bin/sleep",
+          "5b814cc93d7f2110d40c936f5f86a6135de783ae2a28afe25eabac4ecc25bf10"
+        ]
+      ],
+      "core_exit": 0,
+      "ownership_cleanup": {
+        "errors": [],
+        "runtime_closed": true
+      },
+      "safe_session_smoke": {
+        "system": [
+          "Linux",
+          "288f898505a4",
+          "6.18.10-200.fc43.aarch64",
+          "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+          "aarch64"
+        ],
+        "root": "/",
+        "prefix": "/tmp/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+        "python_free_namespace": false,
+        "observer_unexpected_x_errors": [],
+        "observer_retired_windows": 0,
+        "startup_ready_ms": 112.81521400087513,
+        "safe_power_and_locker_peers": "passed",
+        "installed_utility_commands": "passed",
+        "locker_failure_theme_captures": {
+          "slate-dark": "slate-dark-locker-notice.png",
+          "dune-light": "dune-light-locker-notice.png",
+          "classic-large": "classic-large-locker-notice.png"
+        },
+        "controller_restart_without_power_replay": "passed",
+        "same_locker_survives_controller_restart": 71084,
+        "existing_logout_core_quit": "passed",
+        "same_locker_survives_core_retirement": 71084,
+        "fixture_locker_reaped": 0,
+        "observation_cleanup_errors": [],
+        "core_exit": 0
+      }
+    }
+  },
+  "old_upload_cleanup": {
+    "removed": 7,
+    "bytes": 53412419,
+    "free_bytes": 52895744,
+    "source_build_stage_cache_disks_preserved": true
+  },
+  "new_capture_cleanup": {
+    "retired_files": 59,
+    "retired_bytes": 5204333,
+    "owned_process_identities_retired": true,
+    "source_build_stage_cache_disks_preserved": true,
+    "free_bytes": 64356352,
+    "shared_container_not_stopped": true
+  },
+  "screenshots": {
+    "dev-docs/verification/m2-native-acceptance/dune-light.png": {
+      "sha256": "5d34915514ffe7a5a1809c18757e537831e95bb88400703cae64a34216b392e4",
+      "bytes": 23413
+    },
+    "dev-docs/verification/m2-native-acceptance/classic-large.png": {
+      "sha256": "17110dcadbd5204ca0e2878dabb1a57c992db637724fd6f8600dcdb8c0cb6693",
+      "bytes": 20031
+    }
+  },
+  "limits": [
+    "Hardware-virtualized native ARM64 subset, not bare metal or physical input/paint.",
+    "Ubuntu24.04.5 userspace on Fedora43 6.18.10 ARM64 kernel; not native Ubuntu kernel qualification.",
+    "Sampled process maps/ancestry miss transient identities; proc metrics remain partial, cgroup/trace unavailable.",
+    "Safe peers do not qualify authentication, real power/login or locker protection.",
+    "No fresh Python-free namespace; PR201 proof retains its historical scope.",
+    "No cross-architecture or traced/untraced speed/GC causal claim.",
+    "Full-session owner acceptance before M3 remains explicit."
+  ],
+  "routing": {
+    "analyst_requested": "gpt-6-astra/high",
+    "reviewer_requested": "gpt-6.1-sol/high",
+    "observed_model_client_metadata": "Unavailable; requested selection unverified.",
+    "agent_review_not_independent_human_approval": true
+  }
+}

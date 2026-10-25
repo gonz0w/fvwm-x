@@ -1,5 +1,11 @@
 # Maintenance-first development batches
 
+Current scheduling update, 2026-10-25: the user keeps cleanup first and restores
+measured optimization ahead of new features. The [modernization decision](MODERNIZATION-ORDER-2026-10-25.md)
+adds O1 and the finite #209 handoff; it supersedes performance-only deferral in
+this historical captured register. Preserve accepted M1/M2/M3 and all other
+maintenance scope. F1–F4 feature issues remain Backlog.
+
 Accepted user direction, 2026-10-23: pause new features and organize source
 cleanup, legacy retirement, dependency reduction and maintenance before resuming
 feature completion. This supersedes the earlier feature-first cutoff and the

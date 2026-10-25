@@ -15,8 +15,13 @@ requirements migration; it is not another backlog.
   [maintenance-first batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md)
   supersedes the earlier feature-first cutoff. Preserve accepted improvements,
   existing configuration/platform scope and risk-based focused testing.
-  Performance-only tuning remains deferred; feature pickup resumes on user
-  direction, with separate release qualification retained.
+  On 2026-10-25 the user restored measured optimization alongside cleanup;
+  new feature pickup remains behind the finite #209 handoff. The approved
+  [modernization scope/order](decisions/MODERNIZATION-ORDER-2026-10-25.md)
+  records composable themes/icons/fonts, native graphics/layout, live tooling,
+  workspace tools, qualified external locker integration and build/verification
+  improvements. These are queued scope, not library/default adoption or new
+  release prerequisites; separate release qualification remains.
 - X11/XRandR 1.5+; no native Wayland backend or built-in compositor.
 - OpenBSD follows new releases on AMD64 and ARM64, with 8.0 the current
   qualified baseline and 7.9 out of scope. Refresh fixed inputs and qualify

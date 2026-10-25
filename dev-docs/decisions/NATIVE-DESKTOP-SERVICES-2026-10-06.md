@@ -1,5 +1,12 @@
 # Native notifications and system tray — roadmap scope approved
 
+Later scope update, 2026-10-25: [LOCK-01 #225](https://github.com/gonz0w/fvwm-x/issues/225)
+now owns qualified external-locker readiness, idle/display-power/suspend
+coordination after SESSION-01. This supersedes deferral of that integration
+only; a new native authentication implementation remains unselected. Portable
+session/bus ownership and current accepted components stay unchanged. See the
+[modernization order](MODERNIZATION-ORDER-2026-10-25.md).
+
 Owners: NOTIFY-01 and TRAY-01. Status: the user approved adding both services
 to the roadmap on 2026-10-06. Runtime implementation, concrete command syntax
 and dependency selection remain pending in the build thread. The locker is

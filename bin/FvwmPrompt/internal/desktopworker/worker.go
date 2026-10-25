@@ -23,7 +23,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
-	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 )
 
 const RequestLimit = 64 * 1024
@@ -38,7 +37,6 @@ type Request struct {
 	System      string          `json:"system,omitempty"`
 	Action      string          `json:"action,omitempty"`
 	Directories []string        `json:"directories,omitempty"`
-	Settings    json.RawMessage `json:"settings,omitempty"`
 	Check       json.RawMessage `json:"check,omitempty"`
 	Path        string          `json:"path,omitempty"`
 }
@@ -62,7 +60,7 @@ func Decode(data []byte) (Request, error) {
 		return request, errors.New("expected request object")
 	}
 	seen := map[string]bool{}
-	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "settings": true, "check": true, "path": true}
+	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "check": true, "path": true}
 	for decoder.More() {
 		token, err = decoder.Token()
 		key, ok := token.(string)
@@ -111,12 +109,10 @@ func validateRequest(request Request) (Request, error) {
 	if request.System == "" {
 		request.System = map[string]string{"linux": "Linux", "freebsd": "FreeBSD", "openbsd": "OpenBSD"}[runtime.GOOS]
 	}
-	if request.Operation != "apps" && request.Operation != "settings" && request.Operation != "check" && request.Operation != "files" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
+	if request.Operation != "apps" && request.Operation != "check" && request.Operation != "files" && request.System != "Linux" && request.System != "FreeBSD" && request.System != "OpenBSD" {
 		return request, errors.New("unsupported system")
 	}
-	if request.Operation != "settings" && request.Settings != nil {
-		return request, errors.New("unexpected settings policy")
-	}
+
 	if request.Operation != "check" && request.Check != nil {
 		return request, errors.New("unexpected configuration check")
 	}
@@ -134,10 +130,6 @@ func validateRequest(request Request) (Request, error) {
 		}
 		if _, err := desktopcheck.DecodeRequest(request.Check); err != nil {
 			return request, err
-		}
-	case "settings":
-		if request.Action != "" || len(request.Directories) != 0 || request.Settings == nil {
-			return request, errors.New("invalid settings policy request")
 		}
 	case "apps":
 		if request.Action != "" {
@@ -239,14 +231,6 @@ func Run(ctx context.Context, request Request, env Environment) (any, error) {
 	case "check":
 		check, _ := desktopcheck.DecodeRequest(request.Check)
 		value, err = desktopcheck.Check(ctx, check)
-	case "settings":
-		value, err = desktopsettings.Evaluate(request.Settings)
-		if err != nil {
-			value = map[string]any{"error": err.Error()}
-			err = nil
-		} else {
-			value = map[string]any{"value": value}
-		}
 	case "apps":
 		value, err = applications(ctx, request.Directories, env)
 	case "status":

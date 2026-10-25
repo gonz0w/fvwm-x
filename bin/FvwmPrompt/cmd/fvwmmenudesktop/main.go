@@ -20,6 +20,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fvwmorg/FvwmPrompt/internal/runtimepath"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
 )
@@ -522,7 +523,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "fvwm-menu-desktop:", err)
 		os.Exit(2)
 	}
-	executable, err := os.Executable()
+	executable, err := runtimepath.Executable(os.Args[0])
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

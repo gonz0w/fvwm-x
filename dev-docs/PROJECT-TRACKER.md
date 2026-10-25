@@ -167,7 +167,7 @@ remaining owner/platform qualification before M3. #23/#7/#15 remain open.
 
 ## M2.5 native desktop capture
 
-Owner: current M2 implementation chat. Status: focused checks passed; ready for review after merged PR195.
+Owner: current M2 implementation chat. Status: merged in PR198 under Cam’s explicit 2026-10-24 merge instruction.
 Outcome: replace the last installed desktop Python helper with a separately
 supervised C Xlib/libpng capture executable, preserving Print/module commands,
 private unique PNG files, true-color channel scaling, 16-megapixel admission,
@@ -206,6 +206,89 @@ Cam explicitly authorized this merge and cleanup in chat. Canonical signature,
 tree and remote state are verified; completed local/remote
 branches retire, while canonical evidence, reusable builds and VM disks remain.
 
+## M2.6 runtime/session action completion
+
+Owner: current M2 implementation chat. Status: focused checks passed; ready for review after merged PR198.
+Outcome: reconcile the actual installed runtime inventory, remove the unconsumed
+settings RPC adapter after direct imports, and finish ownership of existing
+locker/power actions. Power admission uses its own job identity instead of the
+audio slot and reports busy refusal. One pending locker invocation reports
+construction/exit failures and refuses duplicates without claiming readiness;
+external lockers/applications retain detached restart behavior. Preserve native
+configuration commands, literal application argv and intentional Run shell use.
+Acceptance: retire only unused RPC conversion/helpers, retaining direct typed
+settings/UI/persistence policy and malformed-input coverage at current consumers;
+prove audio/power isolation, busy/invalid action refusal, one locker invocation,
+late exit/exec failure reporting and no inferred lock-before-sleep guarantee.
+Demonstrate an installed desktop/command/menu environment without Python in its
+runtime namespace, record startup/process/RSS/idle/input observations and compare
+with preserved PR194's Python resident when available. Keep renderer/theme
+coverage source-bound; capture any new notices in the three established themes.
+Non-goals: new SESSION-01/02 autostart/bus/service manager features, M3 linkage,
+M6 Perl/M7 tooling retirement, broad #7/#15 closure or release acceptance.
+Dependencies: merged M2.1–M2.5. Implement together, then one incremental Linux
+policy/race/installed/native-X gate; add a scoped BSD check only if changed
+contracts justify it. Full affected six-target/default/reduced/session acceptance
+remains explicit before M2 owner closure; do not claim it from focused checks.
+The simpler alternative is to leave action aliases and dormant request decoding;
+separate existing action lifetimes and direct policy imports avoid ambiguous
+admission and needless protocol maintenance without another daemon.
+
+Discovery during installed proof: the minimal Python-free root has no procfs.
+The resident silently ignored os.Executable failure and lost sibling helpers.
+Extend only this failed-lookup path: use FVWM's absolute invocation path when
+procfs lookup is unavailable, retaining normal lookup and explicit overrides.
+Verify the pure path choice and actual installed root; no relative-PATH guess or
+new helper setting is introduced. The same installed-root failure occurs in the
+full menu's self-worker path; browser inspection and directory-menu reuse have
+the same source dependency. Consolidate these four consumers in one stdlib-only
+runtimepath helper, including symlink resolution and explicit relative failure,
+then run their affected tests together. Retire an unused resident helper-path
+function rather than leave another competing lookup. This is a reproduced
+installed-runtime dependency family, not a new feature or utility reimplementation.
+The container also forbids mknod, so this
+availability fixture uses an explicit ordinary /dev/null test sink. It does not
+qualify device semantics, a complete OS image or a hostile-code sandbox.
+
+Inventory: a bounded read-only workflow agent finds current resident/worker/
+capture and utility install targets in Meson, and no production launcher.py or
+session.py entry. These old planning names are historical. Remaining Python is
+build/test/artwork tooling; the Perl framework remains M6. Source inspection is
+not installed interpreter-free or full-session evidence.
+Routing follows the newly merged PR197 policy. Native role loading is unavailable
+in this orchestration surface; use explicit fresh-context spawn settings from
+the selected table. Workflow inventory requests `gpt-6-luna`/medium; separate final
+review will request `gpt-6.1-sol`/high. The API reports agent identity, without
+observed model/client-version metadata; runtime selection remains unverified.
+No routing cost/speed saving is claimed. Lead owns implementation/integration.
+
+Delivery: power/audio admission, locker lifecycle, direct-policy retirement and
+shared self-worker paths pass their focused checks. A source overlay reproduces
+the lost power request. Initial 57/36 and shared-family 65/37 Go top/subcases pass
+in normal/race, then only the changed callers' 10/5 normal cases/vet repeat after
+review. Installed peers and actual-X desktop/worker/capture/command/full-menu/
+directory reuse/browser inspection pass without a Python interpreter in the
+runtime root. Same locker PID/starttime survives both controller restart and
+core logout, then is reaped. All three final notice themes are captured/inspected;
+reviewed source/evidence has no unresolved actionable findings. The reduced root
+uses a regular null sink and has no procfs; it is not a complete OS/device image.
+All 100 installed files remain exact and temporary roots are removed. Retire
+260 verified guest duplicates (58,733,469 bytes), retaining canonical host
+evidence and reusable source/build/cache/stages/disks.
+[Report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md).
+
+Three alternating ordinary installed-session pairs compare the preserved PR194
+Python resident/qualified Linux worker with the Go owner on identical current
+native foundations: median startup 192.411/114.954 ms and summed RSS
+45472/27588 KiB; key response 0.303/0.311 ms overlaps. CPU ticks are coarse,
+thread-leader switches are not wakeups, and sampled idle RSS is not startup peak.
+No hardware/GC/general speed guarantee follows. This distinct session observation
+does not reset the independent PR194 periodic reference, now 2/5 after PR198,
+3/5 on this merge. [Observation](verification/PERFORMANCE-2026-10-24-M2-SESSION.md).
+Next: one combined M2 platform/default/reduced/install/session acceptance handoff
+and remaining true wakeup/peak/native-CPU limits before M3. Broader #23/#7/#15
+and release gates remain open; new features and tuning remain paused.
+
 ## Current checkpoint status
 
 This table is the current summary for this thread. The dated entries below
@@ -235,10 +318,10 @@ No full-OS matrix repeat.
 [qualification](verification/VERIFICATION-2026-10-23-M2-SETTINGS-POLICY.md).
 
 Current: M2.3 merged in [PR194](https://github.com/gonz0w/fvwm-x/pull/194).
-M2.4 merged in [PR195](https://github.com/gonz0w/fvwm-x/pull/195); M2.5 native
-capture is ready for review, as scoped above. Next: remaining runtime inventory,
-complete Python-free installed/session measurements and remaining owner/platform
-acceptance before M3. #23/#7/#15 and
+M2.5 merged in [PR198](https://github.com/gonz0w/fvwm-x/pull/198); M2.6 runtime/
+session action completion is ready for review, as scoped above. Next: one combined
+M2 affected-platform/default/reduced/install/session acceptance handoff and honest
+remaining measurement limits before M3. #23/#7/#15 and
 M2 remain open. New feature pickup remains paused.
 
 Verification cadence, revised by the user on 2026-10-23: implement larger
@@ -260,8 +343,8 @@ results. FreeBSD AMD64's synthetic-input observation correction repeats only UI;
 all product sources remain unchanged. Both OpenBSD 8.0 architectures pass and
 all owned guests shut down normally. [Report](verification/VERIFICATION-2026-10-23-BROWSER-ACTIONS-CYCLE.md).
 PR178 `e2f61e65b0e5277dedcf28fe6c602efa8b2d1762` is integrated reference
-with seven implementation batches merged since it (PR186, PR187, PR189, PR190,
-PR191, PR194 and PR195), eight on M2.5 merge. Coverage debt was reviewed at PR191 and
+with eight implementation batches merged since it (PR186, PR187, PR189, PR190,
+PR191, PR194, PR195 and PR198), nine on M2.6 merge. Coverage debt was reviewed at PR191 and
 this substantial resident handoff. Focused Linux and affected FreeBSD checks
 cover the new owner without an automatic full matrix. M1 qualifies utility/compiler/install changes on six targets; M2.1
 adds affected FreeBSD transport/worker evidence. Remaining controller/default-X/
@@ -281,8 +364,8 @@ have overlapping ranges, medians 16.332/16.041 ms and unchanged 29460 KiB peak R
 Core/MFL/Form hashes and sizes stay exact; browser file bytes fall by 546.
 No consistent speed improvement or regression is established. This does not
 measure the new resident controller's startup/RSS/idle/input; those measurements
-remain at M2 closure. Preserve merged PR194 as the new reference at **1/5** after PR195,
-2/5 on M2.5 merge. Planning/documentation do not advance the counter; tuning
+remain at M2 closure. Preserve merged PR194 as the new reference at **2/5** after PR198,
+3/5 on M2.6 merge. Planning/documentation do not advance the counter; tuning
 stays deferred. [Report](verification/PERFORMANCE-2026-10-24-PR194.md).
 
 Representative theme smoke checks **pass** on reused Linux native-X binaries:
@@ -308,7 +391,8 @@ or release gates, or advance either verification counter.
 
 | Checkpoint | Current state | Evidence and next step |
 | --- | --- | --- |
-| M2.5 native capture | Focused checks passed; ready for review | Last installed desktop Python helper retires; Linux/FreeBSD RGB/refusal/install dispatch, three-theme screenshots and scoped sanitizer pass. Full owner/session acceptance remains. [Report](verification/VERIFICATION-2026-10-24-M2-NATIVE-CAPTURE.md). |
+| M2.6 runtime/session actions | Focused checks passed; ready for review | Power/locker ownership, retired policy RPC, shared self-worker resolution; Python-free installed proof, three themes and paired session observations. Full owner/platform acceptance remains. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md). |
+| M2.5 native capture | Merged PR198 | Last installed desktop Python helper retires; Linux/FreeBSD RGB/refusal/install dispatch, three-theme screenshots and scoped sanitizer pass. Full owner/session acceptance remains. [Report](verification/VERIFICATION-2026-10-24-M2-NATIVE-CAPTURE.md). |
 | M2.4 resident controller | Merged PR195 | One Go state/dispatch/lifetime owner; Linux/FreeBSD, race, installed peers, native-X and three-theme evidence. Native capture and full owner/session acceptance remain. [Report](verification/VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md). |
 | M2.3 read-only configuration checker | Merged PR194; broad owners remain open | Go source walking, diagnostics and limits; resident report validation. [Report](verification/VERIFICATION-2026-10-24-M2-CONFIGURATION-CHECKER.md). |
 | M2.2 settings policy/native UI planning | Merged PR191; broad owners remain open | One Go registry/types/schema/candidate/query owner and settings/appearance/schedule/preview plans; resident file commits and lifetimes stay together. [Report](verification/VERIFICATION-2026-10-23-M2-SETTINGS-POLICY.md). |
@@ -601,7 +685,7 @@ to a complete related owner slice; tests/docs do not inflate story counts.
 | Order | Batch | Main outcome |
 | --- | --- | --- |
 | M1 — Done | Supported runtime baseline and replaced entry points | PR189 merged; #179/#180/#181 Done. Qualified required compiler/utility/profile/install contract retained. |
-| M2 — Active | Remaining first-party runtime controllers | M2.1–M2.4 merged PR190/191/194/195; M2.5 native capture focused checks pass, ready for review. Remaining runtime inventory, complete Python-free installed/session measurements and owner/platform acceptance precede M3. |
+| M2 — Active | Remaining first-party runtime controllers | M2.1–M2.5 merged PR190/191/194/195/198; M2.6 runtime/session action and installed handoff checks pass, ready for review. One combined affected-platform/default/reduced/install and remaining session/measurement acceptance handoff precedes M3. |
 | M3 | Target-owned linkage and dependency closure | Map real symbols/static transitives and replace broad dependency bags by core/module/worker target groups. Remove only unused edges, with package/license/installed closure measurements. |
 | M4 | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
 | M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
@@ -956,7 +1040,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | LIB-06 | P2 / Later evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | UTIL-01 | P2 / utility-family port milestone locally qualified | [Xlock checkpoint](verification/VERIFICATION-2026-10-12-XLOCK-PORT.md), [directory checkpoint](verification/VERIFICATION-2026-10-12-DIRECTORY-PORT.md) and [converter checkpoint](verification/VERIFICATION-2026-10-12-CONVERTER-PORT.md) install Go when enabled and retain disabled-Go Perl. The converter preserves ordinary heuristic bytes with finite input/reference work and atomic private outputs. [Consumer classification](verification/RECONCILIATION-2026-10-12-UTILITY-CONSUMERS.md) separates the installed Script FIFO example, development cursor generator, optional status recipes and full XDG provider/frontend. The [Script example checkpoint](verification/VERIFICATION-2026-10-12-SCRIPT-COM-PORT.md) qualifies stdlib Go/paired selection, bounded owned FIFOs, staged and actual native widget checks. Copied explicit Perl invocations remain usable. The [full XDG provider/frontend fixture checkpoint](verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md) now passes across six targets; its [inactive input-policy foundation](verification/VERIFICATION-2026-10-12-XDG-POLICY.md) is qualified at `d33f`, with [discovery/preference policy](verification/VERIFICATION-2026-10-12-XDG-DISCOVERY.md) qualified at `9337` and [ordered allocation](verification/VERIFICATION-2026-10-12-XDG-ALLOCATION.md) at `be8e`; the [full coordinated Go provider/native Form port](verification/VERIFICATION-2026-10-12-XDG-PORT.md) is now locally qualified and adopted at `04c1`. COMPAT-02 retirement remains a separate stage5 gate. This supersedes earlier Python port recommendations. Preserve applicable configured behavior. See [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
-| RUNTIME-GO-01 | P2 / mandatory-Go direction approved in Later under #179; Prompt transport, Go-enabled Command, three standalone utilities and Script example locally qualified; full XDG port locally qualified | [FvwmCommand checkpoint](verification/VERIFICATION-2026-10-12-COMMAND-PORT.md) installs the shared-transport Go client when Go is enabled; the disabled-Go Python profile remains until the stage5 runtime/install gate. UTIL-01 now qualifies xlock, directory, converter and the installed Script communication example independently; example/contrib ownership is reconciled. The [full XDG provider/frontend contracts](verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md) are locally captured at `efe8`; the [pure input-policy foundation](verification/VERIFICATION-2026-10-12-XDG-POLICY.md) is qualified at `d33f`, and the [discovery/preference policy](verification/VERIFICATION-2026-10-12-XDG-DISCOVERY.md) at `9337`, with [ordered allocation](verification/VERIFICATION-2026-10-12-XDG-ALLOCATION.md) at `be8e`. The [full coordinated provider/native Form integration](verification/VERIFICATION-2026-10-12-XDG-PORT.md) is adopted in optional Go builds at `04c1` after its combined six-target/default/minimal/install/native-X/manual checkpoint. No further XDG provider implementation gate is pending. Replace remaining first-party Python runtime controllers/utilities with Go: FvwmDesktop and launcher/session packages, screenshot native boundary. Keep C core/native UI/resource ownership, private data preferences and existing CLI/module behavior. Stage 3 fixtures/transport, incremental ports, stage 5 desktop/build/install parity before dependent services. Pin dependencies/Go floor, qualify six targets/offline/default/minimal installs and measure memory/CPU/GC/latency; no automatic speed/footprint claim. See [component audit](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
+| RUNTIME-GO-01 | P2 / M2 partially implemented; focused component checks pass, full handoff pending | Mandatory-Go utility/install baseline is accepted in M1; M2.1–M2.5 desktop workers, direct settings/checker, Go resident and native capture are merged. M2.6 completes existing action ownership, removes the transitional policy RPC and shares procfs-independent self-worker paths. Linux Python-free installed execution and paired session observations pass with explicit root/measurement limits. Full affected six-target/default/reduced/install/session acceptance and true wakeup/startup-peak/native-CPU gaps remain before M3; broad #23 stays open. [Current report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md), [utility baseline](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md), [scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | LUA-01 | P2 / Later; engine selection open | Deliver isolated Lua policies and Perl migration examples over shared typed primitives. Compare preferred Shopify/go-lua with official native Lua; decide version/coroutines, exact IDs, reload/shutdown and resource limits before adoption. No VM/blocking work in the C core; preserve FvwmScript. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | TOOLING-GO-01 | P2 / Later; child #182 queued | Remove all owned Python/Perl build/docs/metadata/artwork/test/maintenance tools in bounded parity groups after runtime qualification. Keep coverage and provenance. Compare Muon/CMake before separate adoption; distinguish installed runtime, owned tooling and whole-build/test interpreter closure. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | GEN-01 | P2 / modern runtime and developer wrapper locally adopted | Four related stories preserve grammar/token rules and normal generator-free builds. Frozen2514 passes eight clean compiler profiles/1816 standard entries,120 staged code identities,48 affected installed-module fixtures on four default BSD servers, optional232/212 suites and15 scoped sanitizer checks. All24 affected developer-tool checks pass; ten wider inventory errors from absent Git are retained separately. The original candidate Clang colorset timeout remains unexplained; unchanged control/retry and fresh full production suite pass at original deadlines. No configuration migration. [Report](verification/VERIFICATION-2026-10-11-PARSER-ADOPTION.md). |
@@ -3005,3 +3089,16 @@ reader results are separate from the subsequent interpreter/file work.
   Broad M2/#23/#7/#15 remain open for inventory, complete installed/session
   measurements and owner/platform acceptance before M3.
   [Report](verification/VERIFICATION-2026-10-24-M2-NATIVE-CAPTURE.md).
+
+- 2026-10-24: Cam explicitly authorizes PR198 merge/cleanup/continuation. Its
+  canonical signature/DCO and runtime input identity are verified, preserving
+  PR197's policy-only integration. M2.6 batches action ownership, unused policy
+  RPC removal and the reproduced self-worker/procfs family. Linux policy/race,
+  installed Python-free runtime/utility and locker-survival checks pass, with
+  three inspected notice themes and paired session observations. Review fixes
+  survival evidence, caller refusal propagation and mapped Slate capture.
+  Setup/storage/wrong-reference failures stay explicit; only affected work
+  repeats. No BSD/full matrix or C sanitizer repeat. Full M2/platform/session
+  acceptance remains before M3; #23/#7/#15 remain open. Independent PR194 scan
+  cadence is 2/5, 3/5 on merge. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md),
+  [session observation](verification/PERFORMANCE-2026-10-24-M2-SESSION.md).

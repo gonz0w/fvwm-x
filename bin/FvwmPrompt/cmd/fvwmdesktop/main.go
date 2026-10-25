@@ -20,6 +20,7 @@ import (
 
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller"
+	"github.com/fvwmorg/FvwmPrompt/internal/runtimepath"
 )
 
 var dataDirectory = "/usr/local/share/fvwm3"
@@ -46,12 +47,16 @@ func helperBeside(directory, name string) string {
 	}
 	return path
 }
-func adjacent(name, override string) string {
+
+func adjacent(name, override string) (string, error) {
 	if value := os.Getenv(override); value != "" {
-		return value
+		return value, nil
 	}
-	self, _ := os.Executable()
-	return helperBeside(filepath.Dir(self), name)
+	self, err := runtimepath.Executable(os.Args[0])
+	if err != nil {
+		return "", err
+	}
+	return helperBeside(filepath.Dir(self), name), nil
 }
 
 func check(ctx context.Context, args []string, out, stderr io.Writer) int {
@@ -69,7 +74,12 @@ func check(ctx context.Context, args []string, out, stderr io.Writer) int {
 		return 1
 	}
 	request := desktopcheck.Request{Path: *path, Userdir: environment("FVWM_USERDIR", filepath.Join(home, ".fvwm")), Datadir: environment("FVWM_DATADIR", dataDirectory), Cwd: cwd}
-	result, err := desktopcontroller.CheckConfiguration(ctx, adjacent("fvwm-desktop-worker", "FVWM_DESKTOP_WORKER"), request)
+	helper, err := adjacent("fvwm-desktop-worker", "FVWM_DESKTOP_WORKER")
+	if err != nil {
+		fmt.Fprintln(stderr, "FvwmDesktop: "+err.Error())
+		return 1
+	}
+	result, err := desktopcontroller.CheckConfiguration(ctx, helper, request)
 	if err != nil {
 		fmt.Fprintln(stderr, "FvwmDesktop: "+err.Error())
 		return 1
@@ -117,7 +127,15 @@ func run(ctx context.Context, args []string) error {
 	home, _ := os.UserHomeDir()
 	data := environment("FVWM_DATADIR", dataDirectory)
 	system := map[string]string{"linux": "Linux", "freebsd": "FreeBSD", "openbsd": "OpenBSD"}[runtime.GOOS]
-	return desktopcontroller.Run(desktopcontroller.Options{Context: ctx, Root: environment("FVWM_DESKTOP_ROOT", filepath.Join(data, "default-config")), StatePath: filepath.Join(environment("FVWM_USERDIR", filepath.Join(home, ".fvwm")), "desktop-state.json"), System: system, Worker: adjacent("fvwm-desktop-worker", "FVWM_DESKTOP_WORKER"), Capture: adjacent("fvwm-desktop-capture", "FVWM_DESKTOP_CAPTURE"), PNG: pngEnabled != "false", Input: input, Output: output})
+	worker, err := adjacent("fvwm-desktop-worker", "FVWM_DESKTOP_WORKER")
+	if err != nil {
+		return err
+	}
+	capture, err := adjacent("fvwm-desktop-capture", "FVWM_DESKTOP_CAPTURE")
+	if err != nil {
+		return err
+	}
+	return desktopcontroller.Run(desktopcontroller.Options{Context: ctx, Root: environment("FVWM_DESKTOP_ROOT", filepath.Join(data, "default-config")), StatePath: filepath.Join(environment("FVWM_USERDIR", filepath.Join(home, ".fvwm")), "desktop-state.json"), System: system, Worker: worker, Capture: capture, PNG: pngEnabled != "false", Input: input, Output: output})
 }
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)

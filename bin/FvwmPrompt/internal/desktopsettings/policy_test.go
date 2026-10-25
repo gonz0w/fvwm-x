@@ -199,18 +199,6 @@ func TestEditorAndMenuPlansKeepScopedCallbacks(t *testing.T) {
 		}
 	}
 }
-func TestRequestFieldsAndAmbiguousNestedInputs(t *testing.T) {
-	for _, raw := range []string{`{"operation":"registry","extra":0}`, `{"operation":"registry","operation":"value"}`, `{"operation":"checked","values":{"x":1,"x":2}}`, `{"operation":"value","key":"motion","value":true,"text":0}`, `{"operation":"editor-values","keys":["motion","motion"],"values":["on","off"]}`, `{"operation":"editor-values","keys":["day"],"values":[]}`} {
-		if _, err := Evaluate([]byte(raw)); err == nil {
-			t.Fatal(raw)
-		}
-	}
-	result, err := Evaluate([]byte(`{"operation":"editor-values","keys":["day","night"],"values":["08:00","20:00"]}`))
-	if err != nil || !reflect.DeepEqual(result, Values{"day": "08:00", "night": "20:00"}) {
-		t.Fatal(result, err)
-	}
-}
-
 func TestScheduleAppearanceAndPreviewPlans(t *testing.T) {
 	s := Defaults()
 	menu := AppearanceMenu(s)

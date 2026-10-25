@@ -71,6 +71,8 @@ type Controller struct {
 	operations                               []*operation
 	operationJobs                            map[string]*operation
 	spawnSlots                               chan struct{}
+	lockerPending                            bool
+	lockerResult                             chan error
 }
 
 func New(root, statePath, system, worker, capture string, png bool, send func(string) error) (*Controller, error) {
@@ -78,7 +80,7 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 	d := &Controller{root: root, statePath: statePath, system: system, worker: worker, capture: capture, png: png, send: send,
 		instance: newID(16), generation: newID(16), overrides: values{}, width: 1440,
 		ctx: ctx, cancel: cancel, jobs: map[string]*job{}, completed: make(chan job, 4),
-		operationJobs: map[string]*operation{}, spawnSlots: make(chan struct{}, 256)}
+		operationJobs: map[string]*operation{}, spawnSlots: make(chan struct{}, 256), lockerResult: make(chan error, 1)}
 	d.preview.desktop = d
 	file, err := os.Open(filepath.Join(root, "palettes.json"))
 	if err != nil {

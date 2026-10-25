@@ -2623,7 +2623,7 @@ if host_machine.system() == 'linux'
         link_args: ['-Wl,--wrap=pipe', '-Wl,--wrap=fcntl',
             '-Wl,--wrap=fcntl64', '-Wl,--wrap=sigprocmask', '-Wl,--wrap=sigaction',
             '-Wl,--wrap=fork', '-Wl,--wrap=setpgid', '-Wl,--wrap=dup2',
-            '-Wl,--wrap=execl'],
+            '-Wl,--wrap=execl', '-Wl,--wrap=fvwmPoll', '-Wl,--wrap=poll'],
     )
     test('script-process-fault', script_process_fault_test, timeout: 60)
 endif
@@ -2678,6 +2678,29 @@ script_message_owner_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('script-message-owner', script_message_owner_test)
+
+script_icon_owner_test = executable(
+    'test-script-icon-owner', 'test_script_icon_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=XFreePixmap', '-Wl,--wrap=PictureFreeColors',
+        '-Wl,--wrap=PictureFindImageFile',
+        '-Wl,--wrap=PImageLoadPixmapFromFile'],
+    c_args: ['-UNDEBUG'],
+)
+test('script-icon-owner', script_icon_owner_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-icon-xvfb', py,
+        args: [files('live_x/script_icon_live.py'), '--module', fvwm_script,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-icon'],
+        depends: fvwm_script,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60)
+endif
 
 
 script_execution_test = executable(
@@ -3113,6 +3136,14 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         timeout: 120, is_parallel: false,
     )
 endif
+
+fvwmsignal_test = executable(
+    'test-fvwmsignal',
+    ['test_fvwmsignal.c', '../libs/fvwmsignal.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('fvwmsignal', fvwmsignal_test, timeout: 15)
 
 image_async_wait_test = executable(
     'test-image-async-wait',

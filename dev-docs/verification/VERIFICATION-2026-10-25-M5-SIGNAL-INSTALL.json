@@ -1,0 +1,370 @@
+{
+  "base": "8602b3c42631ec16c313893b8dffc7962efdb8c5",
+  "scope": "M5 POSIX handler installation, #34/#7 remain open",
+  "source_and_binaries": {
+    "source": {
+      "fvwm/fvwm3.c": {
+        "sha256": "f78d0edd50b0a91917015707961bcd46671d27a152d94eb45f9062353a1f6ea1",
+        "mode": 420
+      },
+      "meson.build": {
+        "sha256": "4121249c329e7f7189d7a8c36d34ea0d0d770e1cbf18e27b43d0e40a821f5e28",
+        "mode": 420
+      },
+      "modules/FvwmAnimate/FvwmAnimate.c": {
+        "sha256": "278c0d990c8457e56419fe404b94fc66163b5ad3e10a86561b81e059eb01584e",
+        "mode": 420
+      },
+      "modules/FvwmAuto/FvwmAuto.c": {
+        "sha256": "d04fd282a83d48dce25dc7d0ead4a4b65a1ac8d281b0444dd2aa8f618b86c981",
+        "mode": 420
+      },
+      "modules/FvwmButtons/FvwmButtons.c": {
+        "sha256": "7661ed6b266d747b841132f58eaa8a83ff669d9a367763d583766d5549e57d2c",
+        "mode": 420
+      },
+      "modules/FvwmEvent/FvwmEvent.c": {
+        "sha256": "305c4174c94520eb23d1eee697de5d3d4b82e73b5d2c2120aee9168dbaf7b115",
+        "mode": 420
+      },
+      "modules/FvwmForm/FvwmForm.c": {
+        "sha256": "693384fd40676d3ec464bf6f89368e3c68bc5faec5e8501092b94157b3f2e9e0",
+        "mode": 420
+      },
+      "modules/FvwmIconMan/FvwmIconMan.c": {
+        "sha256": "e730395d65cadc467e7af6aa2722ed00f52b3be5563455ffafcb9e28c0a033f8",
+        "mode": 420
+      },
+      "modules/FvwmIdent/FvwmIdent.c": {
+        "sha256": "13da50329938d5b41827093752909f664b0229289f242c6369fff88a45c862e0",
+        "mode": 420
+      },
+      "modules/FvwmPager/FvwmPager.c": {
+        "sha256": "3379dcd2747a62d4fdf4f7ecfd5bde8590d2100077c1bbfe339f1c5aeec30c2d",
+        "mode": 420
+      },
+      "modules/FvwmScript/FvwmScript.c": {
+        "sha256": "559309a9eaf081a76ed0dd40e7e850c1b8134b776f2234731d62ebd264751c24",
+        "mode": 420
+      },
+      "tools/maintenance/tests/test_signal_requirement.py": {
+        "sha256": "7cbd02890d9124e595bad6712d393ca1d81277e29361306f5f801c06f0ff2d24",
+        "mode": 420
+      }
+    },
+    "binaries": {
+      "fvwm3": {
+        "sha256": "c6a10b077d8c098f7c59ab79f6f76213a7e265b6d8022834e13c2443f57ee8b3",
+        "bytes": 5395312
+      },
+      "tests/test-fvwmsignal": {
+        "sha256": "ccbe779a61e4b5c037a3089093d3896e03463ffa765974b36a86fb386aa40d69",
+        "bytes": 98424
+      },
+      "modules/FvwmAnimate/FvwmAnimate": {
+        "sha256": "5e9229805edca648050bc985212effaff051b2e79c440e9eb7108cbc796fe91f",
+        "bytes": 894392
+      },
+      "modules/FvwmAuto/FvwmAuto": {
+        "sha256": "e75b8559a0ed06ade2c40b223b7d99973341f1e328e6984a1e4f1e30a04b689c",
+        "bytes": 167168
+      },
+      "modules/FvwmButtons/FvwmButtons": {
+        "sha256": "bf94017482694a9171f5111182c20bc475c599599a6f1067b43adbaf59dae94f",
+        "bytes": 1728216
+      },
+      "modules/FvwmEvent/FvwmEvent": {
+        "sha256": "3d056f6dc9c01103de9ad783dd8691bd2f7543e15827375afe7d30ce1db665a6",
+        "bytes": 170104
+      },
+      "modules/FvwmForm/FvwmForm": {
+        "sha256": "17fce9f742a41e17ffa6daae72c263202869a98ac8bd588a90890ec854f86b44",
+        "bytes": 1623984
+      },
+      "modules/FvwmIconMan/FvwmIconMan": {
+        "sha256": "9ea8df93c3efc726a07b3a3b02dd14b5e12ebc31d74c86140cd691272c2b290b",
+        "bytes": 1777880
+      },
+      "modules/FvwmIdent/FvwmIdent": {
+        "sha256": "4eb78b9cd6703b3ba7e495e3fedc832d0d3d1b06bf5d159c06a28d4af6856c91",
+        "bytes": 1416640
+      },
+      "modules/FvwmPager/FvwmPager": {
+        "sha256": "27104b82a80b58edf88e6a6ef68d8cb360a67a473cf1be77b55e14227f004cd3",
+        "bytes": 1640408
+      },
+      "modules/FvwmScript/FvwmScript": {
+        "sha256": "d04f706e9fa9eeb66a853e519444c35f3191680ba363cfda0010580e14841970",
+        "bytes": 2208072
+      }
+    },
+    "runtime_tests": [
+      {
+        "name": "fvwm3 / event-transport",
+        "stdout": "fragmented passed\npass-id passed\nshort-body passed\ntail passed\ncount-small passed\ncount-large passed\ntruncated passed\nconfiguration-term passed\nactive-term passed\neof passed\n",
+        "result": "OK",
+        "duration": 0.2648444175720215,
+        "returncode": 0
+      },
+      {
+        "name": "fvwm3 / fvwmsignal",
+        "stdout": "actual signals preserve wrapper masks, lifetimes and I/O results\n",
+        "result": "OK",
+        "duration": 0.29785895347595215,
+        "returncode": 0
+      }
+    ]
+  },
+  "original_commands": [
+    {
+      "label": "configure-controls",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "tools.maintenance.tests.test_signal_requirement",
+        "-v"
+      ],
+      "status": 0,
+      "seconds": 0.7717994740232825
+    },
+    {
+      "label": "group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "fvwm3",
+        "tests/test-fvwmsignal",
+        "modules/FvwmAnimate/FvwmAnimate",
+        "modules/FvwmAuto/FvwmAuto",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmEvent/FvwmEvent",
+        "modules/FvwmForm/FvwmForm",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmPager/FvwmPager",
+        "modules/FvwmScript/FvwmScript"
+      ],
+      "status": 0,
+      "seconds": 12.18819367501419
+    },
+    {
+      "label": "post-preprocessing",
+      "command": [
+        "python3",
+        "/tmp/fvwm-m5-install-preprocess-20261025.py",
+        "after"
+      ],
+      "status": 0,
+      "seconds": 0.44472626299830154
+    },
+    {
+      "label": "active-parity",
+      "command": [
+        "python3",
+        "/tmp/fvwm-m5-install-20261025/compare_preprocess.py"
+      ],
+      "status": 1,
+      "seconds": 0.0158996389945969
+    }
+  ],
+  "continuation": {
+    "command": "python3 /tmp/fvwm-m5-install-20261025/compare_preprocess.py && export PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:$PATH LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib && cd /tmp/fvwm-module-waits-20261015/source && meson test -C ../build-gcc --no-rebuild --print-errorlogs fvwmsignal event-transport && python3 tests/live_x/script_process_live.py --module ../build-gcc/modules/FvwmScript/FvwmScript --artifacts-dir /tmp/fvwm-m5-install-20261025/runtime-script-x",
+    "status": 0
+  },
+  "preprocessing": {
+    "baseline_config_sha256": "5e37f28ca76b1862dd175e489aa2661a4e16d3459e711a6d2ace1910761f4824",
+    "final_config_sha256": "085a23acb701ed570a30a99a1a38c0fe8147dfb04370ab45b86bc610bf6e4258",
+    "removed_config_definitions": [
+      "#define HAVE_SIGACTION 1",
+      "#define HAVE_SIGINTERRUPT 1"
+    ],
+    "files": {
+      "fvwm/fvwm3.c": {
+        "tokens_equal": true,
+        "tokens": 109382,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "cbbab387b706402d79636d919114f472e432a6dbf0c1380f610fadc176f85eb5",
+        "final_preprocessed_sha256": "cbbab387b706402d79636d919114f472e432a6dbf0c1380f610fadc176f85eb5"
+      },
+      "modules/FvwmAnimate/FvwmAnimate.c": {
+        "tokens_equal": true,
+        "tokens": 106258,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "6b2687854b563c4f8c906ff8238ee7fdef77fb221fcff03962304aa33abd3b95",
+        "final_preprocessed_sha256": "6b2687854b563c4f8c906ff8238ee7fdef77fb221fcff03962304aa33abd3b95"
+      },
+      "modules/FvwmAuto/FvwmAuto.c": {
+        "tokens_equal": true,
+        "tokens": 83664,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "abce957227817f16847d4c89ac164a4b60aef7538df6566aafa15adc5ff60afc",
+        "final_preprocessed_sha256": "abce957227817f16847d4c89ac164a4b60aef7538df6566aafa15adc5ff60afc"
+      },
+      "modules/FvwmButtons/FvwmButtons.c": {
+        "tokens_equal": true,
+        "tokens": 107908,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "4d98f8c902d4100519710046aa664b947dd92e9cd1e4f244237267b0f320ef27",
+        "final_preprocessed_sha256": "4d98f8c902d4100519710046aa664b947dd92e9cd1e4f244237267b0f320ef27"
+      },
+      "modules/FvwmEvent/FvwmEvent.c": {
+        "tokens_equal": true,
+        "tokens": 84671,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "b259d887a2913c73935304f65a8b8ef05f47bc69575524c9801f649bc86af6d9",
+        "final_preprocessed_sha256": "b259d887a2913c73935304f65a8b8ef05f47bc69575524c9801f649bc86af6d9"
+      },
+      "modules/FvwmForm/FvwmForm.c": {
+        "tokens_equal": true,
+        "tokens": 118105,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "87dd0987391281799f4606adaf61d3ea3f46c975c3c0398732fdb8661df54045",
+        "final_preprocessed_sha256": "87dd0987391281799f4606adaf61d3ea3f46c975c3c0398732fdb8661df54045"
+      },
+      "modules/FvwmIconMan/FvwmIconMan.c": {
+        "tokens_equal": true,
+        "tokens": 93092,
+        "allowed_metadata": [
+          {
+            "assertion_diagnostic_lines": [
+              [
+                "303"
+              ],
+              [
+                "287"
+              ]
+            ]
+          }
+        ],
+        "baseline_preprocessed_sha256": "edc894c3d0b3e096af55bec46578fa090ee93e5e7311d4632a38886517f738eb",
+        "final_preprocessed_sha256": "e26dc1c59d60a1b70f449704fea13e6adaf6b8146bd6b59af683e52abb65f32a"
+      },
+      "modules/FvwmIdent/FvwmIdent.c": {
+        "tokens_equal": true,
+        "tokens": 97162,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "103bb861cc7dfb1483a31dc54ab5338d7146a7b49c15b0ac6421fa12f6b9b8aa",
+        "final_preprocessed_sha256": "103bb861cc7dfb1483a31dc54ab5338d7146a7b49c15b0ac6421fa12f6b9b8aa"
+      },
+      "modules/FvwmPager/FvwmPager.c": {
+        "tokens_equal": true,
+        "tokens": 93564,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "b24b74e1e215eabd6cb511d4eedc0beda99e88b65f97f1d0eb5fe479996d7612",
+        "final_preprocessed_sha256": "b24b74e1e215eabd6cb511d4eedc0beda99e88b65f97f1d0eb5fe479996d7612"
+      },
+      "modules/FvwmScript/FvwmScript.c": {
+        "tokens_equal": true,
+        "tokens": 103558,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "0399e14600f6a44b147a9e86639c733c929db597419dc644227df7166e9341e3",
+        "final_preprocessed_sha256": "0399e14600f6a44b147a9e86639c733c929db597419dc644227df7166e9341e3"
+      }
+    }
+  },
+  "selectors": {
+    "before": {
+      "status": 0,
+      "references": [
+        "HEAD:fvwm/fvwm3.c:700:#ifdef HAVE_SIGACTION",
+        "HEAD:fvwm/fvwm3.c:767:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:fvwm/fvwm3.c:768:\tsiginterrupt(SIGUSR1, 0);",
+        "HEAD:fvwm/fvwm3.c:769:\tsiginterrupt(SIGUSR2, 1);",
+        "HEAD:fvwm/fvwm3.c:773:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:fvwm/fvwm3.c:774:\tsiginterrupt(SIGINT, 0);",
+        "HEAD:fvwm/fvwm3.c:777:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:fvwm/fvwm3.c:778:\tsiginterrupt(SIGHUP, 0);",
+        "HEAD:fvwm/fvwm3.c:781:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:fvwm/fvwm3.c:782:\tsiginterrupt(SIGQUIT, 0);",
+        "HEAD:fvwm/fvwm3.c:785:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:fvwm/fvwm3.c:786:\tsiginterrupt(SIGTERM, 0);",
+        "HEAD:fvwm/fvwm3.c:789:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:fvwm/fvwm3.c:790:\tsiginterrupt(SIGCHLD, 0);",
+        "HEAD:modules/FvwmAnimate/FvwmAnimate.c:731:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmAnimate/FvwmAnimate.c:754:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmAnimate/FvwmAnimate.c:755:  siginterrupt(SIGTERM, True);",
+        "HEAD:modules/FvwmAnimate/FvwmAnimate.c:756:  siginterrupt(SIGINT,  True);",
+        "HEAD:modules/FvwmAnimate/FvwmAnimate.c:757:  siginterrupt(SIGPIPE, True);",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:131:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:162:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:163:\tsiginterrupt(SIGPIPE, 0);",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:164:\tsiginterrupt(SIGINT, 0);",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:165:\tsiginterrupt(SIGHUP, 0);",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:166:\tsiginterrupt(SIGQUIT, 0);",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:167:\tsiginterrupt(SIGTERM, 0);",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:623:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:654:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:655:\tsiginterrupt(SIGPIPE, 1);",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:656:\tsiginterrupt(SIGINT, 1);",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:657:\tsiginterrupt(SIGHUP, 1);",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:658:\tsiginterrupt(SIGQUIT, 1);",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:659:\tsiginterrupt(SIGTERM, 1);",
+        "HEAD:modules/FvwmEvent/FvwmEvent.c:248:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmForm/FvwmForm.c:3168:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmForm/FvwmForm.c:3191:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmForm/FvwmForm.c:3192:  siginterrupt(SIGPIPE, 1);",
+        "HEAD:modules/FvwmForm/FvwmForm.c:3193:  siginterrupt(SIGTERM, 1);",
+        "HEAD:modules/FvwmForm/FvwmForm.c:3194:  siginterrupt(SIGINT, 1);",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:256:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:286:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:287:\tsiginterrupt(SIGPIPE, 0);",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:288:\tsiginterrupt(SIGINT, 0);",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:289:\tsiginterrupt(SIGHUP, 0);",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:290:\tsiginterrupt(SIGTERM, 0);",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:291:\tsiginterrupt(SIGQUIT, 0);",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:142:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:172:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:173:\tsiginterrupt(SIGPIPE, 1);",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:174:\tsiginterrupt(SIGTERM, 1);",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:175:\tsiginterrupt(SIGQUIT, 1);",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:176:\tsiginterrupt(SIGINT, 1);",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:177:\tsiginterrupt(SIGHUP, 1);",
+        "HEAD:modules/FvwmPager/FvwmPager.c:152:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmPager/FvwmPager.c:184:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmPager/FvwmPager.c:185:\tsiginterrupt(SIGPIPE, 1);",
+        "HEAD:modules/FvwmPager/FvwmPager.c:186:\tsiginterrupt(SIGTERM, 1);",
+        "HEAD:modules/FvwmPager/FvwmPager.c:187:\tsiginterrupt(SIGQUIT, 1);",
+        "HEAD:modules/FvwmPager/FvwmPager.c:188:\tsiginterrupt(SIGINT, 1);",
+        "HEAD:modules/FvwmPager/FvwmPager.c:189:\tsiginterrupt(SIGHUP, 1);",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1787:#ifdef HAVE_SIGACTION",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1815:#ifdef HAVE_SIGINTERRUPT",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1816:  siginterrupt(SIGPIPE, 1);",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1817:  siginterrupt(SIGINT,  1);",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1818:  siginterrupt(SIGHUP,  1);",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1819:  siginterrupt(SIGQUIT, 1);",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1820:  siginterrupt(SIGTERM, 1);"
+      ]
+    },
+    "after": {
+      "status": 1,
+      "references": []
+    }
+  },
+  "script_x": {
+    "open-stdout-exit-seconds": 0.12775590701494366,
+    "open-stdout": "passed",
+    "closed-stdout-exit-seconds": 0.12486576399533078,
+    "closed-stdout": "passed",
+    "cache-retry": "passed"
+  },
+  "archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-signal-install/native-evidence.tgz",
+    "sha256": "a08a36e15f03928de4842d4071117d354afaac4c4a3794c5edb920a6512fc95a",
+    "bytes": 2020861,
+    "regular_payloads_read": 62,
+    "gzip_crc_to_eof": true
+  },
+  "retained_evidence": [
+    "PR240 source-bound sanitizer ownership qualification for unchanged code",
+    "PR239 source-bound FreeBSD15.1/OpenBSD8.0 shared primitive qualification"
+  ],
+  "qualification_limits": [
+    "No fresh sanitizer/BSD/architecture/install/theme or release qualification in this token-preserving cleanup",
+    "Missing API cases are controlled compile/link failures, not runtime vulnerability findings",
+    "Original parity assertion treated adjacent blank-line removal as mismatch; all nonblank config directives match except two retired definitions"
+  ],
+  "routing": "Requested Astra/high analysis, Sol/high implementation, separate Sol/high review; runtime model metadata unavailable/unverified"
+}

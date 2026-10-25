@@ -191,10 +191,21 @@ foreach h : headers
     endif
 endforeach
 
-if conf.has('HAVE_SYS_SELECT_H')
-    conf.set10('HAVE_SELECT', true)
-    conf.set('SELECT_FD_SET_CAST', '')
+# POSIX signal installation requirement.
+if not cc.links('''
+#define _POSIX_C_SOURCE 200809L
+#include <signal.h>
+int main(void)
+{
+    struct sigaction action = {0};
+    action.sa_handler = SIG_DFL;
+    return (sigemptyset)(&action.sa_mask) ||
+        (sigaction)(SIGTERM, &action, 0);
+}
+''', dependencies: syslibs, name: 'POSIX signal installation')
+    error('FVWM-X requires POSIX sigaction and sigemptyset')
 endif
+# End POSIX signal installation requirement.
 
 # Function checks.
 functions = [
@@ -209,10 +220,6 @@ functions = [
     'setpgid',
     'setpgrp',
     'setvbuf',
-    'sigaction',
-    'siginterrupt',
-    'siglongjmp',
-    'sigsetjmp',
     'socket',
     'strchr',
     'strdup',

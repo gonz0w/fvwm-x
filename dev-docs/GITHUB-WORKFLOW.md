@@ -10,6 +10,16 @@ outcome from the current tracker batch, inspect open PRs and read its decisions/
 Split broad planning into reviewed implementation slices when picked up. Do not
 restart accepted work or interpret a local checkpoint as physical/release acceptance.
 
+## Modernization queue
+
+The [2026-10-25 decision](decisions/MODERNIZATION-ORDER-2026-10-25.md) restores
+measured optimization alongside cleanup and keeps new features Backlog behind
+#209. Preserve M1–M8/decision-lane ownership and use O1/F1–F4 Work batch fields.
+Parent links organize scope; native blockers express actual prerequisites or
+the explicit scheduling gate. Use accepted subsets of broad owners without
+waiting for unrelated optional work. Keep the graph acyclic and preserve closed
+components, existing links and unrelated PR status.
+
 ## Status and priority
 
 Use exactly one `status:` label, one `priority:` label and one owning stage.

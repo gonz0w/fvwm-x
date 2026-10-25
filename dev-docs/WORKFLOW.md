@@ -54,8 +54,10 @@ legacy retirement, dependency reduction and maintenance are organized and
 implemented. Follow the [maintenance-first batches](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md)
 and the tracker queue. This supersedes the earlier feature-first handoff and
 future-release-only placement of general cleanup. Preserve accepted component
-work and keep performance-only tuning deferred. A new feature is selected only
-on user direction; existing-behavior parity for a named removal is maintenance.
+work. The [October 25 modernization order](decisions/MODERNIZATION-ORDER-2026-10-25.md)
+restores bounded measured optimization alongside cleanup; #209 records the finite
+accepted handoff before new feature pickup. Existing-behavior parity for a named
+removal remains maintenance.
 
 Group related ownership/error/unwind, dependency, predecessor and tool changes.
 Choose finite source/behavior acceptance at pickup rather than reopening a whole

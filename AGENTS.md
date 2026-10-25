@@ -13,7 +13,9 @@ instructions; retired GSD plans and graph data are historical references.
 
 - Track priorities, decisions, status and verification in
   `dev-docs/PROJECT-TRACKER.md`. Its execution order is authoritative.
-  Current user direction is maintenance first: new feature pickup is paused;
+  Current user direction is cleanup and measured optimization first; new feature
+  pickup stays queued behind the finite handoff in
+  `dev-docs/decisions/MODERNIZATION-ORDER-2026-10-25.md`;
   use `dev-docs/decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md` for the
   cleanup/dependency queue and approved retirement boundaries.
 - Use `dev-docs/PROJECT.md` for scope, `dev-docs/ARCHITECTURE.md` for source

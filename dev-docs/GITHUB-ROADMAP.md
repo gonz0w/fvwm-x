@@ -14,21 +14,18 @@ are native children of #41; #235–#236 are native children of #5. D3 owns scope
 worker policy and Qualification owns the verification additions. Existing
 maintenance pickup, statuses and qualification evidence remain separately owned.
 
-Current priority, 2026-10-23: **maintenance first; new feature pickup paused**.
-The [batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md) reconciles
-all 73 open issues: 34 maintenance owners/children, 12 conditional qualification
-owners, five deferred performance owners and 22 paused feature/polish owners.
-Eight implementation batches and three bounded decision lanes organize the
-remaining work. #179/#181 are Ready for M1; #180 follows #179 within the combined
-compiler/utility/legacy install checkpoint.
+Current priority, 2026-10-25: **cleanup and measured optimization first**.
+The [modernization decision](decisions/MODERNIZATION-ORDER-2026-10-25.md) and
+[program #208](https://github.com/gonz0w/fvwm-x/issues/208) map twenty new issues
+and affected shared owners. #209 is the finite foundation handoff before feature
+pickup. Preserve completed M1/M2/M3 and accepted UI/IPC/browser components.
 
-Promote selected maintenance issues from Later to milestone 05, preserving their
-stage/priority and native parent/blocked-by relationships. Other maintenance
-owners keep their original milestone. The Project's **Work batch** field mirrors
-the register. Remaining feature work is Backlog under its existing milestones;
-performance-only work stays Later. Accepted components are not reopened or
-closed by card movement. [Tracker execution order](PROJECT-TRACKER.md#execution-order)
-is authoritative; no runtime/removal/qualification is implemented by planning.
+The Project Work batch field retains M1–M8 and decision lanes, renames deferred
+performance to **O1 Measured optimization**, and organizes **F1 Shared contracts**,
+**F2 Native UI**, **F3 Workspace tools** and **F4 Services and effects**. Existing
+paused cards become **Future features**. Status remains Backlog for queued work;
+#29/#34 are P1 and the five performance owners return to milestone 04. Preserve
+native parent/blocker links and accepted evidence; no runtime work is claimed.
 
 Stable ID mapping imported on 2026-10-13. This is not a second live backlog.
 The [tracker](PROJECT-TRACKER.md#execution-order) owns scope/execution;
@@ -68,7 +65,7 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 | 04 | OUTPUT-01 | [#26 — Qualify bounded asynchronous module output](https://github.com/gonz0w/fvwm-x/issues/26) |
 | 04 | OUTPUT-02 | [#27 — Qualify one total synchronous-output deadline](https://github.com/gonz0w/fvwm-x/issues/27) |
 | 04 | OUTPUT-03 | [#28 — Qualify bounded synchronous module startup](https://github.com/gonz0w/fvwm-x/issues/28) |
-| 04 | PERF-01 | [#29 — Measure and tune remaining responsiveness work](https://github.com/gonz0w/fvwm-x/issues/29) |
+| 04 | PERF-01 | [#29 — Measure and optimize the foundation before new features](https://github.com/gonz0w/fvwm-x/issues/29) |
 | 04 | DRAW-01 | [#25 — Complete bounded redraw and dirty-state ownership](https://github.com/gonz0w/fvwm-x/issues/25) |
 | 04 | STACK-02 | [#32 — Qualify per-window stacking state publication](https://github.com/gonz0w/fvwm-x/issues/32) |
 | 04 | STACK-01 | [#31 — Complete stacking identity, walks and retirement work](https://github.com/gonz0w/fvwm-x/issues/31) |
@@ -193,3 +190,28 @@ FD-01 #7 / PROC-01 #15 / DATA-01 #6 / CLEAN-01 #34: [process/session startup](ve
 DATA-01 #6 / FD-01 #7 / CLEAN-01 #34: [swallowed-client session ownership](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md) is ready for review after merged PR133. Three registration/pending-queue/property repairs pass a composed six-target/ten-profile checkpoint after one original full run: 2197 standard and 475 optional results. The composition retains 2516 unaffected original passes and uses 156 affected entries (122 fresh / 34 retained by exact inputs and eleven binaries per focused target). Fifty callback entries, twenty pending-peer entries, nineteen real-session drivers with 57 independent clients and 171 property replies, fifteen scoped guest sanitizer entries, nine fresh stages and four final authenticated default BSD session displays pass. Three inherited required OpenBSD AMD64 omissions and its install/two staged-geometry gap remain without retries. The existing no-automatic-save policy is preserved. Performance reference PR132 remains at 1/5; no comparison is due. DATA-01/FD-01 remain in Review; CLEAN-01 remains In progress; broad owners stay open.
 
 Core record dependency checkpoint: MAINT-02 #14 / CLEAN-01 #34; Three module/icon-box/event-filter dependency improvements pass 185 affected native checks across six targets/ten profiles (19 focused retained / 166 fresh). All 5981 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten scoped stages verify 249 identities. ARM GCC layout fanout falls 68/216/37 to 30/6/2 objects. Broader PR134 runtime evidence and inherited OpenBSD gaps remain source-scoped. [Report](verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md). PR134 is merged; performance cadence 2/5, no comparison due.
+
+## Modernization issues — 2026-10-25
+
+| Stage | Tracker ID | Issue |
+| --- | --- | --- |
+| later | MODERNIZE-01 | [#208 — Organize modernization behind cleanup and measured optimization](https://github.com/gonz0w/fvwm-x/issues/208) |
+| 04 | FOUNDATION-READY-01 | [#209 — Accept a bounded cleanup and optimization handoff before new features](https://github.com/gonz0w/fvwm-x/issues/209) |
+| later | GRAPHICS-01 | [#210 — Qualify shared native XRender drawing and resource contracts](https://github.com/gonz0w/fvwm-x/issues/210) |
+| later | GRAPHICS-02 | [#211 — Evaluate direct Cairo drawing and bounded native effects](https://github.com/gonz0w/fvwm-x/issues/211) |
+| later | LAYOUT-01 | [#212 — Build reusable responsive native panel and collection layouts](https://github.com/gonz0w/fvwm-x/issues/212) |
+| later | BIND-01 | [#213 — Reuse typed revisions and event-driven bindings across native views](https://github.com/gonz0w/fvwm-x/issues/213) |
+| later | THEME-02 | [#214 — Add composable semantic theme roles and independent appearance choices](https://github.com/gonz0w/fvwm-x/issues/214) |
+| later | ICON-01 | [#215 — Share named icon lookup and scalable icon-theme assets](https://github.com/gonz0w/fvwm-x/issues/215) |
+| later | ICON-02 | [#216 — Add explicit icon-font runs with named icons and reliable fallback](https://github.com/gonz0w/fvwm-x/issues/216) |
+| later | RELOAD-01 | [#217 — Reload supported components with last-working-state retention](https://github.com/gonz0w/fvwm-x/issues/217) |
+| later | INSPECT-01 | [#218 — Inspect effective configuration, bindings and theme provenance](https://github.com/gonz0w/fvwm-x/issues/218) |
+| later | ACTIONS-01 | [#219 — Build a shared command palette for windows, apps and actions](https://github.com/gonz0w/fvwm-x/issues/219) |
+| later | WORKSPACE-01 | [#220 — Add configurable hybrid layouts and snapping policies](https://github.com/gonz0w/fvwm-x/issues/220) |
+| later | WORKSPACE-02 | [#221 — Add named scratchpads with predictable summon and focus behavior](https://github.com/gonz0w/fvwm-x/issues/221) |
+| later | WORKSPACE-03 | [#222 — Remember monitor roles and restore scoped docking profiles](https://github.com/gonz0w/fvwm-x/issues/222) |
+| later | WORKSPACE-04 | [#223 — Add a keyboard-accessible workspace and window overview](https://github.com/gonz0w/fvwm-x/issues/223) |
+| later | EFFECTS-01 | [#224 — Prototype optional compositor-assisted workspace transitions](https://github.com/gonz0w/fvwm-x/issues/224) |
+| later | LOCK-01 | [#225 — Integrate qualified locker readiness, idle locking and suspend coordination](https://github.com/gonz0w/fvwm-x/issues/225) |
+| 05 | BUILD-PROFILES-01 | [#226 — Document portable build profiles and explain effective feature cost](https://github.com/gonz0w/fvwm-x/issues/226) |
+| 03 | FUZZ-01 | [#227 — Add bounded local fuzzing for owned parsers and transport boundaries](https://github.com/gonz0w/fvwm-x/issues/227) |

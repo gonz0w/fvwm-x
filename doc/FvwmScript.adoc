@@ -567,7 +567,9 @@ ChangeWindowTitleFromArg numarg::
 ChangeLocaleTitle id1 id2::
   As ChangeTitle but use the locale catalog(s) defined with UseGettext.
 ChangeIcon id1 id2::
-  Set the icon of the widget numbered _id1_ to _id2_.
+  Set the icon of the widget numbered _id1_ to _id2_. If the file cannot
+  be found or decoded, the previous icon is removed. Repeat ChangeIcon
+  after the image becomes available to load it; retry is not automatic.
 ChangeForeColor id1 \{color}::
   Set the foreground color of the widget numbered _id1_ to {_color_}.
 ChangeBackColor id1 \{color}::

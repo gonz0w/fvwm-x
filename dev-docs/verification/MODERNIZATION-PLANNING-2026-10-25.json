@@ -1,0 +1,240 @@
+{
+  "total_issues_read": 116,
+  "project_items": 173,
+  "new_issues": 20,
+  "existing_issue_bodies_updated": 44,
+  "new_parent_links": 19,
+  "new_blocking_links": 33,
+  "existing_relationships_preserved": true,
+  "prior_body_and_evidence_retained": true,
+  "existing_card_statuses_preserved": true,
+  "work_batch_option_ids_preserved": true,
+  "all_future_features_reach_handoff": true,
+  "dependency_cycles": 0,
+  "new_issue_labels_milestones_and_fields_match": true,
+  "captured_at_utc": "2026-10-25T16:53:45.879445+00:00",
+  "base_commit": "14604024459b1504869d456d009433027f7f3b2a",
+  "relationships": {
+    "parents": [
+      [
+        209,
+        208
+      ],
+      [
+        210,
+        208
+      ],
+      [
+        211,
+        208
+      ],
+      [
+        212,
+        208
+      ],
+      [
+        213,
+        208
+      ],
+      [
+        214,
+        208
+      ],
+      [
+        215,
+        208
+      ],
+      [
+        216,
+        208
+      ],
+      [
+        217,
+        208
+      ],
+      [
+        218,
+        208
+      ],
+      [
+        219,
+        208
+      ],
+      [
+        220,
+        208
+      ],
+      [
+        221,
+        208
+      ],
+      [
+        222,
+        208
+      ],
+      [
+        223,
+        208
+      ],
+      [
+        224,
+        208
+      ],
+      [
+        225,
+        208
+      ],
+      [
+        226,
+        53
+      ],
+      [
+        227,
+        5
+      ]
+    ],
+    "blockers": [
+      [
+        210,
+        209
+      ],
+      [
+        210,
+        183
+      ],
+      [
+        211,
+        210
+      ],
+      [
+        212,
+        209
+      ],
+      [
+        213,
+        209
+      ],
+      [
+        214,
+        209
+      ],
+      [
+        215,
+        209
+      ],
+      [
+        215,
+        183
+      ],
+      [
+        216,
+        215
+      ],
+      [
+        217,
+        214
+      ],
+      [
+        218,
+        214
+      ],
+      [
+        219,
+        213
+      ],
+      [
+        219,
+        212
+      ],
+      [
+        220,
+        209
+      ],
+      [
+        221,
+        209
+      ],
+      [
+        222,
+        209
+      ],
+      [
+        223,
+        213
+      ],
+      [
+        223,
+        212
+      ],
+      [
+        223,
+        215
+      ],
+      [
+        224,
+        210
+      ],
+      [
+        225,
+        209
+      ],
+      [
+        225,
+        72
+      ],
+      [
+        57,
+        209
+      ],
+      [
+        60,
+        209
+      ],
+      [
+        61,
+        209
+      ],
+      [
+        63,
+        209
+      ],
+      [
+        65,
+        209
+      ],
+      [
+        66,
+        209
+      ],
+      [
+        69,
+        209
+      ],
+      [
+        70,
+        209
+      ],
+      [
+        75,
+        209
+      ],
+      [
+        80,
+        209
+      ],
+      [
+        81,
+        209
+      ]
+    ],
+    "field_assignments": 87
+  },
+  "snapshot_sha256": {
+    "fvwm-modernization-live-issues-flat.json": "002faab9bd5d14bb18a247c8e6ea0b5246ed4aa21413bc00f116a1f2162ff6b1",
+    "fvwm-modernization-project-before.json": "08e9cd290e03c2ffa14082be674750d5d4ffa202458ea77e81bd598f0557750a",
+    "fvwm-modernization-relations-before.json": "01031a9371c363469f1e14324988985b272cfd682a2a3e6c080af61d2fbfb4c6",
+    "fvwm-modernization-final-issues.json": "1254cbd4845f63c5cebdd6ca8166064f3b93892decbf627caad43baaf366378a",
+    "fvwm-modernization-final-project.json": "053a8634cda8aef580c9e8f09675820750d5eb6d23f88418997205c11b314309",
+    "fvwm-modernization-final-relations.json": "1bd07f5c07aa12cb2811fb71fe9c71de55ba684377e63e9295d24fa9641c82f7"
+  }
+}

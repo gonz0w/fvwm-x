@@ -128,7 +128,6 @@ main(int argc, char **argv)
 	}
 
 	/* Dead pipes mean fvwm died */
-#ifdef HAVE_SIGACTION
 	{
 		struct sigaction  sigact;
 
@@ -151,29 +150,6 @@ main(int argc, char **argv)
 		sigaction(SIGQUIT, &sigact, NULL);
 		sigaction(SIGTERM, &sigact, NULL);
 	}
-#else
-	/* We don't have sigaction(), so fall back to less robust methods.  */
-#ifdef USE_BSD_SIGNALS
-	fvwmSetSignalMask( sigmask(SIGPIPE) |
-			   sigmask(SIGINT)  |
-			   sigmask(SIGHUP)  |
-			   sigmask(SIGQUIT) |
-			   sigmask(SIGTERM) );
-#endif
-
-	signal(SIGPIPE, TerminateHandler);
-	signal(SIGINT,  TerminateHandler);
-	signal(SIGHUP,  TerminateHandler);
-	signal(SIGQUIT, TerminateHandler);
-	signal(SIGTERM, TerminateHandler);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGPIPE, 0);
-	siginterrupt(SIGINT, 0);
-	siginterrupt(SIGHUP, 0);
-	siginterrupt(SIGQUIT, 0);
-	siginterrupt(SIGTERM, 0);
-#endif
-#endif
 
 	fd[0] = module->to_fvwm;
 	fd[1] = module->from_fvwm;

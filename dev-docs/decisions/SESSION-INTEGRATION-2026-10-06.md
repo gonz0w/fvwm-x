@@ -1,5 +1,12 @@
 # Default session manager and optional D-Bus integration
 
+Later scope update, 2026-10-25: [LOCK-01 #225](https://github.com/gonz0w/fvwm-x/issues/225)
+now owns qualified external-locker readiness, idle/display-power/suspend
+coordination after SESSION-01. This supersedes deferral of that integration
+only; a new native authentication implementation remains unselected. Portable
+session/bus ownership and current accepted components stay unchanged. See the
+[modernization order](MODERNIZATION-ORDER-2026-10-25.md).
+
 Owners: SESSION-01, SESSION-02, coordinated with CFG-01/CFG-02, IPC-02,
 NOTIFY-01 and TRAY-01.
 

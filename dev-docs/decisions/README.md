@@ -4,6 +4,8 @@
 
 - [Portable and OpenBSD hardening follow-ups](PORTABLE-OPENBSD-HARDENING-2026-10-25.md): approved issue scope for measurable requirements, per-platform worker sandboxes, installed C/Go protections and OpenBSD allocator auditing; existing file/process owners retain the bounded trust-boundary review.
 
+- [Modernization scope and order](MODERNIZATION-ORDER-2026-10-25.md): cleanup and measured optimization first, a finite feature handoff, shared theme/icon/native contracts, workspace tools and optional locker/effects scope; twenty new issues reuse accepted foundations.
+
 - [Maintenance-first batches](MAINTENANCE-FIRST-BATCHES-2026-10-23.md): pause new features, place all 73 open issues, promote the maintenance queue and define eight implementation batches/three decision lanes under risk-based testing.
 
 - [Larger cleanup batches and risk-based platform checks](BATCHED-CLEANUP-CADENCE-2026-10-23.md): implement related sets before one focused gate; replace the automatic three-PR matrix with a five-batch risk review and targeted checks, retaining full milestone/release qualification.

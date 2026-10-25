@@ -176,30 +176,6 @@ func Editor(s Snapshot,
 	return plan, nil
 }
 
-func editorValues(rawKeys, rawValues any) (Values, error) {
-	keys, ok := rawKeys.([]any)
-	values, valid := rawValues.([]any)
-	if !ok || !valid || len(keys) == 0 || len(keys) > len(registry) || len(keys) != len(values) {
-		return nil, errors.New("Incomplete settings editor values")
-	}
-	result := Values{}
-	for i, key := range keys {
-		k, ok := key.(string)
-		if !ok {
-			return nil, errors.New("Invalid editor key")
-		}
-		if _, found := result[k]; found {
-			return nil, errors.New("Duplicate editor key")
-		}
-		value, err := Value(k, values[i], true)
-		if err != nil {
-			return nil, err
-		}
-		result[k] = value
-	}
-	return result, nil
-}
-
 func Menus(s Snapshot, scope string) ([]Menu, error) {
 	query, err := Query(s, scope, true)
 	if err != nil {

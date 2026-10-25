@@ -1,0 +1,726 @@
+{
+  "schema_version": 1,
+  "scope": "Three alternating installed session pairs, unchanged current native foundation; PR194 Python resident/qualified Linux worker versus current Go owner",
+  "reference": {
+    "commit": "e7f790c2a746d11ae4412b1aade209abe9c39295",
+    "script_source_sha256": "15f6595193ce5599186cb6cdff854281fadf16b60b422797b37b852958992107",
+    "configured_script_sha256": "75fd411f9f33581e7e2b75402effb99f33e7489d0b0cd88e305865b6c37fea6f",
+    "worker_sha256": "3caa7b32cf111e26469f22ff1b618eaba35df87f4a385d396759f87481c3c4fb",
+    "native_foundation": "current unchanged core/modules/data, identical in both profiles",
+    "samples_per_profile": 3,
+    "limits": "observations, not tuning or hardware/session-manager qualification"
+  },
+  "reference_recovery": {
+    "source_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-configuration-checker/evidence.tgz",
+    "sha256": "3caa7b32cf111e26469f22ff1b618eaba35df87f4a385d396759f87481c3c4fb",
+    "bytes": 5031735,
+    "qualified_target": "Linux ARM64",
+    "wrong_initial_reference": "host Mach-O worker rejected before startup; not performance data"
+  },
+  "profiles": {
+    "reference": {
+      "samples": [
+        {
+          "root": "/",
+          "prefix": "/tmp/fvwm-module-waits-20261015/fvwm-reference-301vcxj_/usr/local",
+          "python_free_namespace": false,
+          "startup_ready_ms": 192.41062400396913,
+          "observation": {
+            "idle_seconds": 1.5022329369967338,
+            "processes": {
+              "66803": {
+                "name": "fvwm3",
+                "rss_kib": 7592,
+                "hwm_kib": 21476,
+                "cpu_ticks": 4,
+                "switches": 1920
+              },
+              "66804": {
+                "name": "FvwmBacker",
+                "rss_kib": 3592,
+                "hwm_kib": 3672,
+                "cpu_ticks": 0,
+                "switches": 899
+              },
+              "66805": {
+                "name": "FvwmDesktop",
+                "rss_kib": 23072,
+                "hwm_kib": 23072,
+                "cpu_ticks": 2,
+                "switches": 78
+              },
+              "66806": {
+                "name": "FvwmButtons",
+                "rss_kib": 6416,
+                "hwm_kib": 6416,
+                "cpu_ticks": 0,
+                "switches": 132
+              },
+              "66807": {
+                "name": "FvwmEvent",
+                "rss_kib": 1436,
+                "hwm_kib": 1436,
+                "cpu_ticks": 0,
+                "switches": 5
+              },
+              "66808": {
+                "name": "FvwmEvent",
+                "rss_kib": 1436,
+                "hwm_kib": 1436,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "66809": {
+                "name": "FvwmMFL",
+                "rss_kib": 1928,
+                "hwm_kib": 1928,
+                "cpu_ticks": 0,
+                "switches": 18
+              }
+            },
+            "steady_rss_sum_kib": 45472,
+            "sampled_idle_peak_rss_sum_kib": 45472,
+            "retained_process_hwm_sum_kib": 59436,
+            "retained_idle_cpu_ms": 0.0,
+            "retained_idle_context_switches": 15,
+            "wakeups": null,
+            "wakeups_limit": "Kernel scheduler tracing is not available; context switches are a separate proxy.",
+            "xtest_key_to_core_echo_ms": [
+              0.7437550084432587,
+              0.241960005951114,
+              0.4135859926464036,
+              0.45600300654768944,
+              0.591421005083248,
+              0.41129499732051045,
+              0.3586280072340742,
+              0.39075200038496405,
+              0.3561690100468695,
+              0.3653780004242435,
+              0.30554398836102337,
+              0.2798349887598306
+            ]
+          },
+          "existing_logout_core_quit": "passed",
+          "core_exit": 0
+        },
+        {
+          "root": "/",
+          "prefix": "/tmp/fvwm-module-waits-20261015/fvwm-reference-301vcxj_/usr/local",
+          "python_free_namespace": false,
+          "startup_ready_ms": 192.90154399641324,
+          "observation": {
+            "idle_seconds": 1.532805445996928,
+            "processes": {
+              "66960": {
+                "name": "FvwmButtons",
+                "rss_kib": 6428,
+                "hwm_kib": 6428,
+                "cpu_ticks": 0,
+                "switches": 133
+              },
+              "66961": {
+                "name": "FvwmEvent",
+                "rss_kib": 1420,
+                "hwm_kib": 1420,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "66962": {
+                "name": "FvwmEvent",
+                "rss_kib": 1432,
+                "hwm_kib": 1432,
+                "cpu_ticks": 0,
+                "switches": 3
+              },
+              "66963": {
+                "name": "FvwmMFL",
+                "rss_kib": 1928,
+                "hwm_kib": 1928,
+                "cpu_ticks": 0,
+                "switches": 18
+              },
+              "66957": {
+                "name": "fvwm3",
+                "rss_kib": 7596,
+                "hwm_kib": 21560,
+                "cpu_ticks": 4,
+                "switches": 1915
+              },
+              "66958": {
+                "name": "FvwmBacker",
+                "rss_kib": 3600,
+                "hwm_kib": 3680,
+                "cpu_ticks": 0,
+                "switches": 898
+              },
+              "66959": {
+                "name": "FvwmDesktop",
+                "rss_kib": 23104,
+                "hwm_kib": 23104,
+                "cpu_ticks": 2,
+                "switches": 66
+              }
+            },
+            "steady_rss_sum_kib": 45508,
+            "sampled_idle_peak_rss_sum_kib": 45508,
+            "retained_process_hwm_sum_kib": 59552,
+            "retained_idle_cpu_ms": 0.0,
+            "retained_idle_context_switches": 6,
+            "wakeups": null,
+            "wakeups_limit": "Kernel scheduler tracing is not available; context switches are a separate proxy.",
+            "xtest_key_to_core_echo_ms": [
+              0.5721710040234029,
+              0.27358499937690794,
+              0.21420999837573618,
+              0.21275199833326042,
+              0.33029400219675153,
+              0.36087699118070304,
+              0.2619599981699139,
+              0.3458769933786243,
+              0.5452539917314425,
+              0.5125870084157214,
+              0.24233499425463378,
+              0.23604299349244684
+            ]
+          },
+          "existing_logout_core_quit": "passed",
+          "core_exit": 0
+        },
+        {
+          "root": "/",
+          "prefix": "/tmp/fvwm-module-waits-20261015/fvwm-reference-301vcxj_/usr/local",
+          "python_free_namespace": false,
+          "startup_ready_ms": 189.96139800583478,
+          "observation": {
+            "idle_seconds": 1.5524030439992202,
+            "processes": {
+              "67042": {
+                "name": "fvwm3",
+                "rss_kib": 7572,
+                "hwm_kib": 21460,
+                "cpu_ticks": 3,
+                "switches": 1922
+              },
+              "67043": {
+                "name": "FvwmBacker",
+                "rss_kib": 3596,
+                "hwm_kib": 3804,
+                "cpu_ticks": 0,
+                "switches": 892
+              },
+              "67044": {
+                "name": "FvwmDesktop",
+                "rss_kib": 23056,
+                "hwm_kib": 23056,
+                "cpu_ticks": 2,
+                "switches": 64
+              },
+              "67045": {
+                "name": "FvwmButtons",
+                "rss_kib": 6424,
+                "hwm_kib": 6424,
+                "cpu_ticks": 0,
+                "switches": 130
+              },
+              "67046": {
+                "name": "FvwmEvent",
+                "rss_kib": 1432,
+                "hwm_kib": 1432,
+                "cpu_ticks": 0,
+                "switches": 3
+              },
+              "67047": {
+                "name": "FvwmEvent",
+                "rss_kib": 1436,
+                "hwm_kib": 1436,
+                "cpu_ticks": 0,
+                "switches": 3
+              },
+              "67048": {
+                "name": "FvwmMFL",
+                "rss_kib": 1924,
+                "hwm_kib": 1924,
+                "cpu_ticks": 0,
+                "switches": 18
+              }
+            },
+            "steady_rss_sum_kib": 45440,
+            "sampled_idle_peak_rss_sum_kib": 45440,
+            "retained_process_hwm_sum_kib": 59536,
+            "retained_idle_cpu_ms": 0.0,
+            "retained_idle_context_switches": 6,
+            "wakeups": null,
+            "wakeups_limit": "Kernel scheduler tracing is not available; context switches are a separate proxy.",
+            "xtest_key_to_core_echo_ms": [
+              0.6140879995655268,
+              0.3012930101249367,
+              0.24741799279581755,
+              0.24596000730525702,
+              0.21891800861340016,
+              0.2500849950592965,
+              0.2556260005803779,
+              0.28096098685637116,
+              0.2746270038187504,
+              0.2472100022714585,
+              0.19166899437550455,
+              0.36283599911257625
+            ]
+          },
+          "existing_logout_core_quit": "passed",
+          "core_exit": 0
+        }
+      ],
+      "startup_ready_ms": {
+        "median": 192.41062400396913,
+        "min": 189.96139800583478,
+        "max": 192.90154399641324,
+        "values": [
+          192.41062400396913,
+          192.90154399641324,
+          189.96139800583478
+        ]
+      },
+      "steady_rss_sum_kib": {
+        "median": 45472,
+        "min": 45440,
+        "max": 45508,
+        "values": [
+          45472,
+          45508,
+          45440
+        ]
+      },
+      "sampled_idle_peak_rss_sum_kib": {
+        "median": 45472,
+        "min": 45440,
+        "max": 45508,
+        "values": [
+          45472,
+          45508,
+          45440
+        ]
+      },
+      "retained_cpu_ms": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "values": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "thread_leader_context_switches": {
+        "median": 6,
+        "min": 6,
+        "max": 15,
+        "values": [
+          15,
+          6,
+          6
+        ]
+      },
+      "xtest_key_to_core_echo_ms": {
+        "median": 0.30341849924298003,
+        "min": 0.19166899437550455,
+        "max": 0.7437550084432587,
+        "values": [
+          0.7437550084432587,
+          0.241960005951114,
+          0.4135859926464036,
+          0.45600300654768944,
+          0.591421005083248,
+          0.41129499732051045,
+          0.3586280072340742,
+          0.39075200038496405,
+          0.3561690100468695,
+          0.3653780004242435,
+          0.30554398836102337,
+          0.2798349887598306,
+          0.5721710040234029,
+          0.27358499937690794,
+          0.21420999837573618,
+          0.21275199833326042,
+          0.33029400219675153,
+          0.36087699118070304,
+          0.2619599981699139,
+          0.3458769933786243,
+          0.5452539917314425,
+          0.5125870084157214,
+          0.24233499425463378,
+          0.23604299349244684,
+          0.6140879995655268,
+          0.3012930101249367,
+          0.24741799279581755,
+          0.24596000730525702,
+          0.21891800861340016,
+          0.2500849950592965,
+          0.2556260005803779,
+          0.28096098685637116,
+          0.2746270038187504,
+          0.2472100022714585,
+          0.19166899437550455,
+          0.36283599911257625
+        ]
+      }
+    },
+    "current": {
+      "samples": [
+        {
+          "root": "/",
+          "prefix": "/tmp/fvwm-module-waits-20261015/m26-session/stage/usr/local",
+          "python_free_namespace": false,
+          "startup_ready_ms": 120.1140659977682,
+          "observation": {
+            "idle_seconds": 1.5398194119916297,
+            "processes": {
+              "66901": {
+                "name": "FvwmButtons",
+                "rss_kib": 6424,
+                "hwm_kib": 6424,
+                "cpu_ticks": 0,
+                "switches": 119
+              },
+              "66902": {
+                "name": "FvwmEvent",
+                "rss_kib": 1436,
+                "hwm_kib": 1436,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "66903": {
+                "name": "FvwmEvent",
+                "rss_kib": 1436,
+                "hwm_kib": 1436,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "66904": {
+                "name": "FvwmMFL",
+                "rss_kib": 1920,
+                "hwm_kib": 1920,
+                "cpu_ticks": 0,
+                "switches": 16
+              },
+              "66892": {
+                "name": "fvwm3",
+                "rss_kib": 7584,
+                "hwm_kib": 21648,
+                "cpu_ticks": 4,
+                "switches": 1892
+              },
+              "66893": {
+                "name": "FvwmBacker",
+                "rss_kib": 3596,
+                "hwm_kib": 3620,
+                "cpu_ticks": 0,
+                "switches": 953
+              },
+              "66894": {
+                "name": "FvwmDesktop",
+                "rss_kib": 5192,
+                "hwm_kib": 5192,
+                "cpu_ticks": 0,
+                "switches": 7
+              }
+            },
+            "steady_rss_sum_kib": 27588,
+            "sampled_idle_peak_rss_sum_kib": 27588,
+            "retained_process_hwm_sum_kib": 41676,
+            "retained_idle_cpu_ms": 0.0,
+            "retained_idle_context_switches": 0,
+            "wakeups": null,
+            "wakeups_limit": "Kernel scheduler tracing is not available; context switches are a separate proxy.",
+            "xtest_key_to_core_echo_ms": [
+              0.6941299943719059,
+              0.3307940060039982,
+              0.23833499290049076,
+              0.2051679912256077,
+              0.2056259982055053,
+              0.17666799249127507,
+              0.16283500008285046,
+              0.17783499788492918,
+              0.2052930067293346,
+              0.2169599902117625,
+              0.30346000858116895,
+              0.2860429958673194
+            ]
+          },
+          "existing_logout_core_quit": "passed",
+          "core_exit": 0
+        },
+        {
+          "root": "/",
+          "prefix": "/tmp/fvwm-module-waits-20261015/m26-session/stage/usr/local",
+          "python_free_namespace": false,
+          "startup_ready_ms": 112.51263700251002,
+          "observation": {
+            "idle_seconds": 1.5503348209895194,
+            "processes": {
+              "66934": {
+                "name": "FvwmButtons",
+                "rss_kib": 6428,
+                "hwm_kib": 6428,
+                "cpu_ticks": 0,
+                "switches": 123
+              },
+              "66935": {
+                "name": "FvwmEvent",
+                "rss_kib": 1432,
+                "hwm_kib": 1432,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "66936": {
+                "name": "FvwmEvent",
+                "rss_kib": 1420,
+                "hwm_kib": 1420,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "66937": {
+                "name": "FvwmMFL",
+                "rss_kib": 1924,
+                "hwm_kib": 1924,
+                "cpu_ticks": 0,
+                "switches": 16
+              },
+              "66925": {
+                "name": "fvwm3",
+                "rss_kib": 7596,
+                "hwm_kib": 21552,
+                "cpu_ticks": 3,
+                "switches": 1893
+              },
+              "66926": {
+                "name": "FvwmBacker",
+                "rss_kib": 3592,
+                "hwm_kib": 3676,
+                "cpu_ticks": 0,
+                "switches": 923
+              },
+              "66927": {
+                "name": "FvwmDesktop",
+                "rss_kib": 5156,
+                "hwm_kib": 5156,
+                "cpu_ticks": 0,
+                "switches": 5
+              }
+            },
+            "steady_rss_sum_kib": 27548,
+            "sampled_idle_peak_rss_sum_kib": 27548,
+            "retained_process_hwm_sum_kib": 41588,
+            "retained_idle_cpu_ms": 0.0,
+            "retained_idle_context_switches": 0,
+            "wakeups": null,
+            "wakeups_limit": "Kernel scheduler tracing is not available; context switches are a separate proxy.",
+            "xtest_key_to_core_echo_ms": [
+              0.671421003062278,
+              0.34821100416593254,
+              0.3635440079960972,
+              0.38046100235078484,
+              0.31937799940351397,
+              0.2813769970089197,
+              0.2915860095527023,
+              0.37262799742165953,
+              0.28966899844817817,
+              0.32041899976320565,
+              0.36075299431104213,
+              0.29283500043675303
+            ]
+          },
+          "existing_logout_core_quit": "passed",
+          "core_exit": 0
+        },
+        {
+          "root": "/",
+          "prefix": "/tmp/fvwm-module-waits-20261015/m26-session/stage/usr/local",
+          "python_free_namespace": false,
+          "startup_ready_ms": 114.95394600206055,
+          "observation": {
+            "idle_seconds": 1.5525644619920058,
+            "processes": {
+              "67136": {
+                "name": "FvwmEvent",
+                "rss_kib": 1424,
+                "hwm_kib": 1424,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "67137": {
+                "name": "FvwmEvent",
+                "rss_kib": 1436,
+                "hwm_kib": 1436,
+                "cpu_ticks": 0,
+                "switches": 4
+              },
+              "67138": {
+                "name": "FvwmMFL",
+                "rss_kib": 1924,
+                "hwm_kib": 1924,
+                "cpu_ticks": 0,
+                "switches": 16
+              },
+              "67126": {
+                "name": "fvwm3",
+                "rss_kib": 7596,
+                "hwm_kib": 21476,
+                "cpu_ticks": 4,
+                "switches": 1895
+              },
+              "67127": {
+                "name": "FvwmBacker",
+                "rss_kib": 3600,
+                "hwm_kib": 3600,
+                "cpu_ticks": 0,
+                "switches": 953
+              },
+              "67128": {
+                "name": "FvwmDesktop",
+                "rss_kib": 5212,
+                "hwm_kib": 5212,
+                "cpu_ticks": 0,
+                "switches": 6
+              },
+              "67135": {
+                "name": "FvwmButtons",
+                "rss_kib": 6420,
+                "hwm_kib": 6420,
+                "cpu_ticks": 0,
+                "switches": 123
+              }
+            },
+            "steady_rss_sum_kib": 27612,
+            "sampled_idle_peak_rss_sum_kib": 27612,
+            "retained_process_hwm_sum_kib": 41492,
+            "retained_idle_cpu_ms": 0.0,
+            "retained_idle_context_switches": 0,
+            "wakeups": null,
+            "wakeups_limit": "Kernel scheduler tracing is not available; context switches are a separate proxy.",
+            "xtest_key_to_core_echo_ms": [
+              0.5847119900863618,
+              0.2252100093755871,
+              0.2421269891783595,
+              0.3559190081432462,
+              0.5358369962777942,
+              0.461085990536958,
+              0.4200029943604022,
+              0.38812799903098494,
+              0.4172529879724607,
+              0.3368360048625618,
+              0.2773360029095784,
+              0.20150099589955062
+            ]
+          },
+          "existing_logout_core_quit": "passed",
+          "core_exit": 0
+        }
+      ],
+      "startup_ready_ms": {
+        "median": 114.95394600206055,
+        "min": 112.51263700251002,
+        "max": 120.1140659977682,
+        "values": [
+          120.1140659977682,
+          112.51263700251002,
+          114.95394600206055
+        ]
+      },
+      "steady_rss_sum_kib": {
+        "median": 27588,
+        "min": 27548,
+        "max": 27612,
+        "values": [
+          27588,
+          27548,
+          27612
+        ]
+      },
+      "sampled_idle_peak_rss_sum_kib": {
+        "median": 27588,
+        "min": 27548,
+        "max": 27612,
+        "values": [
+          27588,
+          27548,
+          27612
+        ]
+      },
+      "retained_cpu_ms": {
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "values": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "thread_leader_context_switches": {
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "values": [
+          0,
+          0,
+          0
+        ]
+      },
+      "xtest_key_to_core_echo_ms": {
+        "median": 0.31141900399234146,
+        "min": 0.16283500008285046,
+        "max": 0.6941299943719059,
+        "values": [
+          0.6941299943719059,
+          0.3307940060039982,
+          0.23833499290049076,
+          0.2051679912256077,
+          0.2056259982055053,
+          0.17666799249127507,
+          0.16283500008285046,
+          0.17783499788492918,
+          0.2052930067293346,
+          0.2169599902117625,
+          0.30346000858116895,
+          0.2860429958673194,
+          0.671421003062278,
+          0.34821100416593254,
+          0.3635440079960972,
+          0.38046100235078484,
+          0.31937799940351397,
+          0.2813769970089197,
+          0.2915860095527023,
+          0.37262799742165953,
+          0.28966899844817817,
+          0.32041899976320565,
+          0.36075299431104213,
+          0.29283500043675303,
+          0.5847119900863618,
+          0.2252100093755871,
+          0.2421269891783595,
+          0.3559190081432462,
+          0.5358369962777942,
+          0.461085990536958,
+          0.4200029943604022,
+          0.38812799903098494,
+          0.4172529879724607,
+          0.3368360048625618,
+          0.2773360029095784,
+          0.20150099589955062
+        ]
+      }
+    }
+  },
+  "limits": [
+    "Linux ARM64 guest, not independent native CPU/hardware qualification",
+    "Startup includes fixed observer polling and readiness/bar construction, not login/display-server startup",
+    "RSS sums double-count shared pages; not PSS or physical memory",
+    "Idle sampling and retained-process HWM are not startup/session peak",
+    "CPU is coarse retained-process tick data; transient children may be missed",
+    "Context switches are thread-leader counters, not total Go-thread activity or scheduler wakeups",
+    "Scheduler tracing was not exposed; wakeups uncollected",
+    "XTest key-to-core Echo is not physical/widget/loaded application latency",
+    "Only three pairs, no general performance/GC guarantee; tuning remains paused"
+  ],
+  "periodic_reference": "PR194 remains 2/5 after PR198, 3/5 on current merge; this separate session acceptance observation does not reset metadata-scan cadence"
+}

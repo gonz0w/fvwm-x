@@ -13,7 +13,6 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -240,13 +239,6 @@ func decodeResult(data []byte) (any, error) {
 		return nil, errors.New("Trailing result data")
 	}
 	return value, nil
-}
-func helperPath(name, override string) string {
-	if value := os.Getenv(override); value != "" {
-		return value
-	}
-	self, _ := os.Executable()
-	return filepath.Join(filepath.Dir(self), name)
 }
 func resultAs[T any](value any) (T, error) {
 	var result T

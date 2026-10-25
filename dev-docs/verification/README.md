@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Runtime/session action handoff](VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md): power/locker ownership, retired settings RPC, shared self-worker paths and Python-free installed execution; separate review, three themes and explicit remaining owner acceptance.
+
+- [Installed resident-session observation](PERFORMANCE-2026-10-24-M2-SESSION.md): three preserved-reference pairs, lower sampled startup/RSS and overlapping key timings; peak/wakeup/native-CPU limits remain.
+
 - [Native desktop capture](VERIFICATION-2026-10-24-M2-NATIVE-CAPTURE.md): Python helper retirement, exact RGB/private-file/refusal and installed dispatch on Linux/FreeBSD; three themes and scoped sanitizer, with full M2/session gates still open.
 
 - [Resident Go desktop controller](VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md): coordinated state, commits, preview/editor and bounded process/module ownership; focused Linux/FreeBSD, installed peers, three-theme captures and compile-only supported pairs.

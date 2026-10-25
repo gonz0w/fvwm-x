@@ -14,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+
+	"github.com/fvwmorg/FvwmPrompt/internal/runtimepath"
 )
 
 const listingLimit = 100000
@@ -407,9 +409,9 @@ func menu(out io.Writer, o options, entries []entry) error {
 			if !o.reuse {
 				action = `Popup "` + escapeFile(e.path) + `" item +100 c`
 			} else {
-				program := o.program
-				if p, err := os.Executable(); err == nil {
-					program = p
+				program, err := runtimepath.Executable(o.program)
+				if err != nil {
+					return err
 				}
 				argv := []string{program, "--fvwm-remember", o.userDir, e.path, o.name}
 				for i := range argv {

@@ -1,0 +1,745 @@
+{
+  "schema_version": 1,
+  "scope": "M2.6 runtime/session cleanup; full M2/platform acceptance and #23/#7/#15 remain open",
+  "baseline": "2c6d0f73819de43c3d1ba685290b6540eb68cd07",
+  "runtime_inputs": 1597,
+  "source_manifest_sha256": "1a296d28374911bb39527ad4509def7d42b012779b570821a22844e7d3699f34",
+  "source_archive_sha256": "3d76f95b3c489ef61eb59a3aaa67a5af09b15cd567c281f44abac54be10374eb",
+  "canonical_host_directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-session-runtime",
+  "pr198_merge": {
+    "merge": "2c6d0f73819de43c3d1ba685290b6540eb68cd07",
+    "canonical_signature_verified": true,
+    "dco_retained": true,
+    "runtime_inputs_match_pr198": 1593,
+    "intervening_policy_pr": 197,
+    "branch_cleanup": true
+  },
+  "archives": {
+    "evidence.tgz": {
+      "sha256": "331bc7322ca72f09e1dcd612574f0c0965fb815940ab9ebeb6be291ff679e8e7",
+      "source_manifest": "source-initial.json",
+      "payloads": 14,
+      "result": {
+        "error": "python-free-and-session-observations"
+      },
+      "commands": [
+        {
+          "label": "configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "status": 0,
+          "seconds": 0.927
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "1",
+            "FvwmDesktop",
+            "fvwm-desktop-worker",
+            "FvwmCommand",
+            "FvwmPrompt",
+            "fvwm-menu-desktop",
+            "fvwm-menu-directory",
+            "fvwm-menu-xlock",
+            "fvwm-script-ComExample",
+            "fvwm-file-browser"
+          ],
+          "status": 0,
+          "seconds": 0.775
+        },
+        {
+          "label": "go-normal",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "-count=1",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/desktopsettings",
+            "./internal/desktopcheck",
+            "./cmd/fvwmdesktopworker",
+            "./cmd/fvwmdesktop"
+          ],
+          "status": 0,
+          "seconds": 2.178
+        },
+        {
+          "label": "go-race",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-race",
+            "-json",
+            "-count=1",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/desktopsettings",
+            "./internal/desktopcheck",
+            "./cmd/fvwmdesktopworker",
+            "./cmd/fvwmdesktop"
+          ],
+          "status": 0,
+          "seconds": 9.19
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "go",
+            "vet",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/desktopsettings",
+            "./internal/desktopcheck",
+            "./cmd/fvwmdesktopworker",
+            "./cmd/fvwmdesktop"
+          ],
+          "status": 0,
+          "seconds": 0.268
+        },
+        {
+          "label": "man",
+          "command": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/m26-session/FvwmDesktop.1",
+            "doc/FvwmDesktop.adoc"
+          ],
+          "status": 0,
+          "seconds": 0.064
+        },
+        {
+          "label": "stage",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/m26-session/stage"
+          ],
+          "status": 0,
+          "seconds": 0.17
+        },
+        {
+          "label": "installed-peers",
+          "command": [
+            "python3",
+            "tests/test_desktop_worker.py",
+            "-v"
+          ],
+          "status": 0,
+          "seconds": 2.152
+        },
+        {
+          "label": "python-free-and-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-inputs/runtime.py",
+            "/tmp/fvwm-module-waits-20261015/m26-session"
+          ],
+          "status": 1,
+          "seconds": 0.221
+        }
+      ],
+      "counts": {
+        "go-normal": {
+          "top": 57,
+          "subcases": 36,
+          "packages": [
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktopworker",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopcheck",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopworker"
+          ]
+        },
+        "go-race": {
+          "top": 57,
+          "subcases": 36,
+          "packages": [
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktopworker",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopcheck",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+            "github.com/fvwmorg/FvwmPrompt/internal/desktopworker"
+          ]
+        }
+      },
+      "seconds": 15.945
+    },
+    "completion-evidence.tgz": {
+      "sha256": "e70ce5ed09f9391fd7fd7896829f49fbd0c9512a42a33a0c8eac2dbc6b3fd085",
+      "source_manifest": "source-before-theme.json",
+      "payloads": 35,
+      "result": {
+        "error": "python-free-and-session-observations"
+      },
+      "commands": [
+        {
+          "label": "entry-and-reuse-build",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "1",
+            "FvwmDesktop",
+            "fvwm-menu-directory"
+          ],
+          "status": 0,
+          "seconds": 0.385
+        },
+        {
+          "label": "final-policy",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "-count=1",
+            "./cmd/fvwmdesktop",
+            "./cmd/fvwmmenudirectory"
+          ],
+          "status": 0,
+          "seconds": 0.267
+        },
+        {
+          "label": "final-vet",
+          "command": [
+            "go",
+            "vet",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./cmd/fvwmdesktop",
+            "./cmd/fvwmmenudirectory"
+          ],
+          "status": 0,
+          "seconds": 0.119
+        },
+        {
+          "label": "stage",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/m26-session/stage"
+          ],
+          "status": 0,
+          "seconds": 0.126
+        },
+        {
+          "label": "python-free-and-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-completion-inputs/runtime.py",
+            "/tmp/fvwm-module-waits-20261015/m26-completion"
+          ],
+          "status": 1,
+          "seconds": 8.232
+        }
+      ],
+      "counts": {
+        "final-policy": {
+          "top": 10,
+          "subcases": 5,
+          "packages": [
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudirectory"
+          ]
+        }
+      },
+      "seconds": 9.129
+    },
+    "cont-evidence.tgz": {
+      "sha256": "ed5aa7baf36d60ca5e0c1c7ee296c81361df4d502476c87c1441c97f8cf779bc",
+      "source_manifest": "source-initial.json",
+      "payloads": 8,
+      "result": {
+        "error": "python-free-and-session-observations"
+      },
+      "commands": [
+        {
+          "label": "python-free-and-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-cont-inputs/runtime.py",
+            "/tmp/fvwm-module-waits-20261015/m26-cont"
+          ],
+          "status": 1,
+          "seconds": 15.284
+        }
+      ],
+      "counts": {},
+      "seconds": 15.284
+    },
+    "diagnostic-evidence.tgz": {
+      "sha256": "4d78d225c54b37e7b809d259a11f04e1d5a9bbaa5a871f6327cb19b82c747b39",
+      "source_manifest": "source-diagnostics.json",
+      "payloads": 11,
+      "result": {
+        "error": "python-free-and-session-observations"
+      },
+      "commands": [
+        {
+          "label": "python-free-and-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-diagnostics-inputs/runtime.py",
+            "/tmp/fvwm-module-waits-20261015/m26-diagnostics"
+          ],
+          "status": 1,
+          "seconds": 15.264
+        }
+      ],
+      "counts": {},
+      "seconds": 15.264
+    },
+    "final-evidence.tgz": {
+      "sha256": "35618b22108bc980ff960dbd37169c83adb00bd78ce154dc811c120e2f6de2f3",
+      "source_manifest": "source-before-shared.json",
+      "payloads": 22,
+      "result": {
+        "error": "python-free-and-session-observations"
+      },
+      "commands": [
+        {
+          "label": "entry-build",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "1",
+            "FvwmDesktop"
+          ],
+          "status": 0,
+          "seconds": 0.327
+        },
+        {
+          "label": "stage",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/m26-session/stage"
+          ],
+          "status": 0,
+          "seconds": 0.123
+        },
+        {
+          "label": "python-free-and-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-final-inputs/runtime.py",
+            "/tmp/fvwm-module-waits-20261015/m26-final"
+          ],
+          "status": 1,
+          "seconds": 1.063
+        }
+      ],
+      "counts": {},
+      "seconds": 1.513
+    },
+    "lookup-evidence.tgz": {
+      "sha256": "a61ecb016c6edb79d6fe9e15d2ef2b3e0aec88ec39348f3ab43ac0f70fd1eea9",
+      "source_manifest": "source-before-shared.json",
+      "payloads": 6,
+      "result": {
+        "error": "entry-build"
+      },
+      "commands": [
+        {
+          "label": "entry-policy",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "-count=1",
+            "./cmd/fvwmdesktop"
+          ],
+          "status": 0,
+          "seconds": 0.166
+        },
+        {
+          "label": "entry-build",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "1",
+            "FvwmDesktop",
+            "doc/FvwmDesktop.1"
+          ],
+          "status": 1,
+          "seconds": 0.119
+        }
+      ],
+      "counts": {
+        "entry-policy": {
+          "top": 3,
+          "subcases": 0,
+          "packages": [
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop"
+          ]
+        }
+      },
+      "seconds": 0.28500000000000003
+    },
+    "observations-evidence.tgz": {
+      "sha256": "b77b530ab453906d344e6d3f8aff3ea8d6d7b108ed359924485ddf694a1162cd",
+      "source_manifest": "source-before-theme.json",
+      "payloads": 36,
+      "result": {
+        "status": "passed",
+        "commands": 1,
+        "native_unchanged": {
+          "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "config.h": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+          "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+          "modules/FvwmButtons/FvwmButtons": "f89f9b7f87b8517d0b8b452fbac2ae2257fa601b4eee15d33055d9152493e2bf"
+        }
+      },
+      "commands": [
+        {
+          "label": "paired-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-observations-inputs/observations.py",
+            "/tmp/fvwm-module-waits-20261015/m26-observations"
+          ],
+          "status": 0,
+          "seconds": 15.035
+        }
+      ],
+      "counts": {},
+      "seconds": 15.035
+    },
+    "ready-evidence.tgz": {
+      "sha256": "711b48e1efe5ef6339b00d67d1e8890c92c613a4f1eb209500a8ed58642ddbac",
+      "source_manifest": "source-before-lookup.json",
+      "payloads": 11,
+      "result": {
+        "error": "python-free-and-session-observations"
+      },
+      "commands": [
+        {
+          "label": "python-free-and-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-ready-inputs/runtime.py",
+            "/tmp/fvwm-module-waits-20261015/m26-ready"
+          ],
+          "status": 1,
+          "seconds": 5.429
+        }
+      ],
+      "counts": {},
+      "seconds": 5.429
+    },
+    "shared-evidence.tgz": {
+      "sha256": "ba3a0b07eb5fa2a2a486ac1c1c3b098003bf99a0f9465511d9be71112d697f02",
+      "source_manifest": "source-before-review.json",
+      "payloads": 11,
+      "result": {
+        "error": "python-free-and-session-observations"
+      },
+      "commands": [
+        {
+          "label": "configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "status": 0,
+          "seconds": 0.91
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "meson",
+            "compile",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "1",
+            "FvwmDesktop",
+            "fvwm-menu-desktop",
+            "fvwm-menu-directory",
+            "fvwm-file-browser"
+          ],
+          "status": 0,
+          "seconds": 0.768
+        },
+        {
+          "label": "shared-normal",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "-count=1",
+            "./internal/runtimepath",
+            "./cmd/fvwmdesktop",
+            "./cmd/fvwmmenudesktop",
+            "./cmd/fvwmmenudirectory",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 2.127
+        },
+        {
+          "label": "shared-race",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-race",
+            "-json",
+            "-count=1",
+            "./internal/runtimepath",
+            "./cmd/fvwmdesktop",
+            "./cmd/fvwmmenudesktop",
+            "./cmd/fvwmmenudirectory",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 17.431
+        },
+        {
+          "label": "shared-vet",
+          "command": [
+            "go",
+            "vet",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/runtimepath",
+            "./cmd/fvwmdesktop",
+            "./cmd/fvwmmenudesktop",
+            "./cmd/fvwmmenudirectory",
+            "./cmd/fvwmfilebrowser"
+          ],
+          "status": 0,
+          "seconds": 0.215
+        },
+        {
+          "label": "stage",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/m26-session/stage"
+          ],
+          "status": 0,
+          "seconds": 0.115
+        },
+        {
+          "label": "python-free-and-session-observations",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/m26-shared-inputs/runtime.py",
+            "/tmp/fvwm-module-waits-20261015/m26-shared"
+          ],
+          "status": 1,
+          "seconds": 0.165
+        }
+      ],
+      "counts": {
+        "shared-normal": {
+          "top": 65,
+          "subcases": 37,
+          "packages": [
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudesktop",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudirectory",
+            "github.com/fvwmorg/FvwmPrompt/internal/runtimepath"
+          ]
+        },
+        "shared-race": {
+          "top": 65,
+          "subcases": 37,
+          "packages": [
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudesktop",
+            "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudirectory",
+            "github.com/fvwmorg/FvwmPrompt/internal/runtimepath"
+          ]
+        }
+      },
+      "seconds": 21.731
+    },
+    "theme-evidence.tgz": {
+      "sha256": "24251dfec8b8207dddb24563f1b488ec08e5435df9d9944d50cdda1826eb05d9",
+      "source_manifest": "source.json",
+      "payloads": 26,
+      "result": {
+        "status": "passed",
+        "commands": 1,
+        "native_unchanged": {
+          "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+          "config.h": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+          "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+          "modules/FvwmButtons/FvwmButtons": "f89f9b7f87b8517d0b8b452fbac2ae2257fa601b4eee15d33055d9152493e2bf"
+        }
+      },
+      "commands": [
+        {
+          "label": "installed-theme-notices",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/tmp/fvwm-module-waits-20261015/m26-session/stage/usr/local",
+            "--version",
+            "1.1.6",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/m26-theme/theme-notices"
+          ],
+          "status": 0,
+          "seconds": 3.22
+        }
+      ],
+      "counts": {},
+      "seconds": 3.22
+    }
+  },
+  "namespace_success": {
+    "root": "/tmp/fvwm-module-waits-20261015/fvwm-python-free-6utomjjn",
+    "prefix": "/usr/local",
+    "python_free_namespace": true,
+    "startup_ready_ms": 116.41478900855873,
+    "safe_power_and_locker_peers": "passed",
+    "installed_utility_commands": "passed",
+    "locker_failure_theme_captures": {
+      "slate-dark": "slate-dark-locker-notice.png",
+      "dune-light": "dune-light-locker-notice.png",
+      "classic-large": "classic-large-locker-notice.png"
+    },
+    "controller_restart_without_power_replay": "passed",
+    "same_locker_survives_controller_restart": 66759,
+    "existing_logout_core_quit": "passed",
+    "same_locker_survives_core_retirement": 66759,
+    "fixture_locker_reaped": 0,
+    "core_exit": 0
+  },
+  "namespace_limits": {
+    "no_python_or_pypy": true,
+    "procfs_absent": true,
+    "regular_null_sink": true,
+    "external_python_observer": true,
+    "not_full_os_image_or_security_sandbox": true
+  },
+  "final_theme_success": {
+    "root": "/",
+    "prefix": "/tmp/fvwm-module-waits-20261015/m26-session/stage/usr/local",
+    "python_free_namespace": false,
+    "startup_ready_ms": 112.85188100009691,
+    "safe_power_and_locker_peers": "passed",
+    "installed_utility_commands": "passed",
+    "locker_failure_theme_captures": {
+      "slate-dark": "slate-dark-locker-notice.png",
+      "dune-light": "dune-light-locker-notice.png",
+      "classic-large": "classic-large-locker-notice.png"
+    },
+    "controller_restart_without_power_replay": "passed",
+    "same_locker_survives_controller_restart": 67280,
+    "existing_logout_core_quit": "passed",
+    "same_locker_survives_core_retirement": 67280,
+    "fixture_locker_reaped": 0,
+    "core_exit": 0
+  },
+  "installed_stage_audit": {
+    "source_inputs": 1597,
+    "unchanged_installed_files_after_hardlink_fixture": 100,
+    "ephemeral_runtime_roots_remaining": 0,
+    "scheduler_trace_wakeup_enable_exists": false
+  },
+  "review": {
+    "type": "separate read-only agent review, not human approval",
+    "requested_workflow": "gpt-6-luna medium",
+    "requested_reviewer": "gpt-6.1-sol high",
+    "role_loading": "explicit fresh-context API equivalent, native role loading unavailable",
+    "observed_model_and_client_version": "not returned by this surface; unverified",
+    "resolved_findings": [
+      "detached locker survival evidence",
+      "resolver error propagation",
+      "mapped Slate notice capture"
+    ],
+    "final": "no unresolved actionable findings"
+  },
+  "retention": "Earlier controller/worker/settings/checker normal/race/manual/peer results retain exact runtime bodies; helperPath removal is dead code. Shared-family caller refusal correction repeats affected normal/vet/build; final observer change touches only UI branch, retaining namespace and observation bodies. Native core/config/MFL/Form/Buttons hashes remain exact.",
+  "remaining": [
+    "Combined affected six-target/default/reduced installs and owner/session acceptance before M3",
+    "True wakeups, transient/startup peak and native CPU/hardware/GC qualification",
+    "Full SESSION-01/02 features remain queued, not selected by maintenance",
+    "Perl framework M6 and build/test Python M7 remain separate"
+  ],
+  "command_seconds_all_attempts": 102.835,
+  "guest_cleanup_first": {
+    "removed_files": 136,
+    "removed_bytes": 30726359,
+    "preserved": "host canonical evidence, sources, builds/caches/stage, VM disks and other owners"
+  },
+  "guest_cleanup_final": {
+    "removed_files": 124,
+    "removed_bytes": 28007110,
+    "preserved": "host canonical evidence, sources, builds/caches/stage, VM disks and other owners"
+  },
+  "guest_cleanup_total": {
+    "removed_files": 260,
+    "removed_bytes": 58733469
+  }
+}

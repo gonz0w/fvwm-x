@@ -282,15 +282,7 @@ func (d *Controller) handle(command, argument string) error {
 	case "screenshot":
 		d.screenshot()
 	case "lock":
-		path := found("xlock")
-		if path == "" {
-			path = found("slock")
-		}
-		if path != "" {
-			d.spawn([]string{path}, "")
-		} else {
-			d.notice("No secure X11 locker is available. The screen has NOT been locked.")
-		}
+		d.lock()
 	case "volume":
 		if argument == "up" || argument == "down" || argument == "mute" {
 			d.workerJob("volume", "volume", values{"system": d.system, "action": argument})
@@ -303,12 +295,13 @@ func (d *Controller) handle(command, argument string) error {
 		if argument == "logout" {
 			d.emit("Quit")
 		} else if argument == "poweroff" || argument == "reboot" {
-			d.workerJob("volume", "power", values{"system": d.system, "action": argument})
+			d.power(argument)
 		}
 	}
 	return d.fatal
 }
 func (d *Controller) tick() {
+	d.pollLocker()
 	d.preview.tick()
 	if d.editor != nil && !time.Now().Before(d.editor.deadline) {
 		d.retireEditor()

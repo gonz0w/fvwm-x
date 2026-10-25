@@ -95,26 +95,78 @@ func detectTerminal(text string) []string {
 	}
 	return nil
 }
-func (d *Controller) spawn(argv []string, cwd string) {
+
+// startDetached admits a launched application without adopting its lifetime.
+// Slot release belongs to exactly one waiter; the event loop owns notices.
+func (d *Controller) startDetached(argv []string, cwd string) (*exec.Cmd, error) {
 	if len(argv) == 0 {
-		return
+		return nil, errors.New("Missing application command")
 	}
 	select {
 	case d.spawnSlots <- struct{}{}:
 	default:
-		d.notice("Too many desktop-launched applications are still running.")
-		return
+		return nil, errors.New("Too many desktop-launched applications are still running.")
 	}
 	command := exec.Command(argv[0], argv[1:]...)
 	command.Dir = cwd
 	command.SysProcAttr = &syscall.SysProcAttr{Setsid: true}
 	if err := command.Start(); err != nil {
 		<-d.spawnSlots
+		return nil, err
+	}
+	return command, nil
+}
+func (d *Controller) spawn(argv []string, cwd string) {
+	command, err := d.startDetached(argv, cwd)
+	if err != nil {
 		d.notice("Could not start program: " + err.Error())
 		return
 	}
 	slots := d.spawnSlots
 	go func() { _ = command.Wait(); <-slots }()
+}
+func (d *Controller) lock() {
+	if d.lockerPending {
+		d.notice("A lock request is already pending; protection is unconfirmed.")
+		return
+	}
+	path := found("xlock")
+	if path == "" {
+		path = found("slock")
+	}
+	if path == "" {
+		d.notice("No secure X11 locker is available. The screen has NOT been locked.")
+		return
+	}
+	command, err := d.startDetached([]string{path}, "")
+	if err != nil {
+		d.notice("Could not start locker; the screen has NOT been locked: " + err.Error())
+		return
+	}
+	d.lockerPending = true
+	result, slots := d.lockerResult, d.spawnSlots
+	// One admitted locker has one buffered completion. It survives WM/module
+	// retirement like other detached applications; no fixed delay claims ready.
+	go func() { err := command.Wait(); <-slots; result <- err }()
+}
+func (d *Controller) pollLocker() {
+	select {
+	case err := <-d.lockerResult:
+		d.lockerPending = false
+		if err != nil {
+			d.notice("Locker exited unsuccessfully; protection is unconfirmed.")
+		}
+	default:
+	}
+}
+func (d *Controller) power(action string) {
+	if _, pending := d.jobs["power"]; pending {
+		d.notice("A power request is already pending; no additional request was sent.")
+		return
+	}
+	if !d.workerJob("power", "power", values{"system": d.system, "action": action}) {
+		d.notice("Desktop service is busy; no power request was sent. Try again.")
+	}
 }
 func (d *Controller) term(argv []string, cwd string) {
 	if len(d.terminal) == 0 {
@@ -324,10 +376,13 @@ func (d *Controller) publishJob(result job) error {
 		}
 		d.report = &report{newID(16), reportValue}
 		return d.showReport(d.report.token, 0)
-	case "screenshot", "volume":
+	case "screenshot", "volume", "power":
 		text, ok := result.result.(string)
 		if !ok || !validText(text, 4096) {
 			return errors.New("Invalid desktop service response")
+		}
+		if text == "" && result.key == "power" {
+			return errors.New("Invalid power service response")
 		}
 		if text == "" {
 			text = "Sound control is unavailable or permission was denied."

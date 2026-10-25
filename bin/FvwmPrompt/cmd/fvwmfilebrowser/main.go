@@ -26,6 +26,7 @@ import (
 
 	"github.com/fvwmorg/FvwmPrompt/internal/collection"
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
+	"github.com/fvwmorg/FvwmPrompt/internal/runtimepath"
 	"github.com/fvwmorg/FvwmPrompt/transport"
 )
 
@@ -428,7 +429,7 @@ func (b *browser) action(message string) (bool, error) {
 }
 
 func run(o options) error {
-	executable, err := os.Executable()
+	executable, err := runtimepath.Executable(os.Args[0])
 	if err != nil {
 		return err
 	}

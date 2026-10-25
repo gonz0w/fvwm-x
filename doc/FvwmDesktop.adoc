@@ -396,6 +396,15 @@ is disabled. Network information uses ifconfig or an existing ip command.
 Settings needing privileges remain the operating system's responsibility.
 No helper automatically invokes sudo or doas.
 
+Power requests have their own bounded admission slot; an audio job cannot silently
+replace them. Duplicate or capacity-limited requests report that no additional
+request was sent. Backend authorization and errors remain with the operating
+system. A pending locker invocation refuses duplicates within this controller
+instance; construction or unsuccessful exit reports unconfirmed protection.
+Starting a locker is not proof that the screen is locked. Detached lockers and
+applications retain their existing lifetime across controller/WM retirement;
+there is no lock-before-sleep or full session-service readiness guarantee.
+
 Screenshots use Xlib and the configured libpng library in the separately
 supervised native capture helper. A PNG-disabled build reports capture as
 unavailable. Failed writes remove the helper's newly created partial file.

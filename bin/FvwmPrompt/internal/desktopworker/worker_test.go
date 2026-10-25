@@ -260,28 +260,18 @@ func TestFailedBackendOwnershipAndInvalidDirectRequest(t *testing.T) {
 	}
 }
 
-func TestSettingsPolicyCannotReachBackendCapabilities(t *testing.T) {
-	env := Environment{Run: func(context.Context, []string, time.Duration) (string, error) {
-		t.Fatal("settings executed a command")
-		return "", nil
-	}, LookPath: func(string) (string, error) { t.Fatal("settings looked up a command"); return "", nil }, Read: func(string) ([]byte, error) { t.Fatal("settings read a path"); return nil, nil }, Entries: func(string) ([]string, error) { t.Fatal("settings listed a directory"); return nil, nil }}
-	for _, payload := range []string{`{"operation":"registry"}`, `{"operation":"value","key":"motion","value":"on","text":true}`, `{"operation":"value","key":"motion","value":1,"text":false}`} {
-		request, err := Decode([]byte(`{"version":1,"operation":"settings","settings":` + payload + `}`))
-		if err != nil {
-			t.Fatal(err)
-		}
-		result, err := Run(context.Background(), request, env)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(result.(map[string]any)) != 1 {
-			t.Fatal(result)
+func TestRetiredSettingsRPCIsRefused(t *testing.T) {
+	for _, payload := range []string{
+		`{"version":1,"operation":"settings","settings":{"operation":"registry"}}`,
+		`{"version":1,"operation":"settings"}`,
+		`{"version":1,"operation":"power","action":"reboot","settings":{}}`,
+	} {
+		if _, err := Decode([]byte(payload)); err == nil {
+			t.Fatal("retired private request accepted: " + payload)
 		}
 	}
-	for _, payload := range []string{`{"version":1,"operation":"settings"}`, `{"version":1,"operation":"settings","settings":{},"action":"reboot"}`, `{"version":1,"operation":"power","action":"reboot","settings":{}}`} {
-		if _, err := Decode([]byte(payload)); err == nil {
-			t.Fatal(payload)
-		}
+	if _, err := Run(context.Background(), Request{Version: 1, Operation: "settings"}, Environment{}); err == nil {
+		t.Fatal("direct caller reached retired policy")
 	}
 }
 

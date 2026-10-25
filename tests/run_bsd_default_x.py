@@ -113,6 +113,27 @@ def dependency_identity(system, server_log):
 def fixture_commands(args, build, source):
     if args.server_only:
         return []
+    if args.desktop_controller_only:
+        stage = build / 'install-stage'
+        prefix = stage / 'usr/local'
+        controllers = sorted(path for path in
+            prefix.glob('libexec/fvwm3/*/FvwmDesktop') if path.is_file())
+        if len(controllers) != 1:
+            raise RuntimeError('Expected exactly one staged FvwmDesktop under ' +
+                               str(prefix / 'libexec/fvwm3') +
+                               '; found ' + str(len(controllers)) + '.')
+        controller = controllers[0]
+        data = prefix / 'share/fvwm3'
+        if not all(path.resolve().is_relative_to(stage.resolve())
+                   for path in (controller, data)):
+            raise RuntimeError('Desktop controller/data must remain inside '
+                               'the install stage.')
+        if not (data / 'default-config/config').is_file():
+            raise RuntimeError('Missing staged desktop configuration: ' +
+                               str(data / 'default-config/config'))
+        return [('desktop-controller', ['--build', str(build),
+            '--installed-desktop', str(controller), '--installed-data', str(data),
+            '--settings-only'])]
     clients = build / 'install-stage/usr/local/bin' if build else Path()
     fixtures = [
         ('command', ['--command', str(clients / 'FvwmCommand')]),
@@ -191,14 +212,18 @@ def run_once(args):
                           'prompt': 'prompt_protocol_live.py',
                           'xlock': 'xlock_menu_live.py', 'directory': 'directory_menu_live.py',
                           'script-com': 'script_com_example_live.py',
-                          'desktop-menu': 'xdg_menu_live.py'}[name]
-                argv = [sys.executable, str(source / 'tests/live_x' / script),
+                          'desktop-menu': 'xdg_menu_live.py',
+                          'desktop-controller': 'desktop_live.py'}[name]
+                native_options = [] if name == 'desktop-controller' else [
                     '--fvwm', str(build / 'fvwm3'),
-                    '--mfl', str(build / 'modules/FvwmMFL/FvwmMFL'),
+                    '--mfl', str(build / 'modules/FvwmMFL/FvwmMFL')]
+                argv = [sys.executable, str(source / 'tests/live_x' / script),
+                    *native_options,
                     '--display', display, '--artifacts-dir',
                     str(artifacts / name), *extra]
                 child = runtime.start(name, argv, name + '.log', env)
-                status = child.wait_until_exit(time.monotonic() + 90)
+                timeout = 300 if name == 'desktop-controller' else 90
+                status = child.wait_until_exit(time.monotonic() + timeout)
                 evidence['fixtures'][name] = {'command': argv, 'status': status}
                 if status != 0:
                     raise RuntimeError(name + ' default-X fixture failed.')
@@ -306,6 +331,9 @@ if __name__ == '__main__':
                         help='Run only the installed Script communication example.')
     modes.add_argument('--desktop-menu-only', action='store_true',
                         help='Run only the installed XDG menu and native settings Form.')
+    modes.add_argument('--desktop-controller-only', action='store_true',
+                        help='Run installed desktop settings checks with '
+                             'staged configuration data.')
     modes.add_argument('--directory-only', action='store_true',
                         help='Run only the installed directory menu fixture.')
     modes.add_argument('--xlock-only', action='store_true',

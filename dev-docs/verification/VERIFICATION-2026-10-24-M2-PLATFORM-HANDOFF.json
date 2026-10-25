@@ -1,0 +1,2123 @@
+{
+  "checkpoint": "M2.7 combined affected-family platform/install handoff",
+  "branch": "codex/m2-platform-handoff",
+  "base": "c1605f7f2e9713466be2a2d68a51cbd72398737e",
+  "status": "selected acceptance passed; broad runtime/session and release qualification open",
+  "merge199": {
+    "sha": "c1605f7f2e9713466be2a2d68a51cbd72398737e",
+    "tree": "469c6a6e9556f6e0445d2b05401a62232119897b",
+    "signature_verified": true,
+    "dco_retained": true,
+    "runtime_inputs_match_pr199": 1597,
+    "completed_branch_removed": true
+  },
+  "input_scopes": {
+    "candidate-source.json": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+    "candidate-final-source.json": "e0a4d6a9894431160d4092f2673ddb4f7eb18cf5a6103a6b6ff284805474bae2",
+    "candidate-fix-source.json": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c"
+  },
+  "final_source_parity": {
+    "final_runtime_build_inputs_exact": 1185,
+    "native_run_scope": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+    "reviewed_after_run_changes": [
+      "README.md",
+      "dev-docs/ARCHITECTURE.md",
+      "dev-docs/PROJECT-TRACKER.md",
+      "tests/live_x/desktop_live.py"
+    ],
+    "observer_change": "Cancellation propagation and best-effort failure capture only; successful native path unchanged."
+  },
+  "source_changes_after_base_gate": [
+    "bin/FvwmPrompt/internal/runtimepath/executable.go",
+    "bin/FvwmPrompt/internal/runtimepath/executable_test.go",
+    "dev-docs/BSD.md",
+    "dev-docs/PROJECT-TRACKER.md",
+    "doc/FvwmDesktop.adoc",
+    "tests/live_x/desktop_live.py",
+    "tests/test_desktop_worker.py"
+  ],
+  "targets": {
+    "fvwm-x-linux-arm64-svg": {
+      "status": "selected scope passed by source-bound composition",
+      "base_policy_phase": "fvwm-x-linux-arm64-svg-base",
+      "lookup_phase": "fvwm-x-linux-arm64-svg-fix",
+      "final_installed_phase": "fvwm-x-linux-arm64-svg-fix2",
+      "base_cases": {
+        "top": 121,
+        "sub": 73,
+        "packages": 10
+      },
+      "current_lookup_cases": {
+        "top": 66,
+        "sub": 37,
+        "packages": 5
+      },
+      "composed_unique_cases": {
+        "top": 122,
+        "sub": 73,
+        "packages": 10
+      },
+      "final_installed_peers_per_profile": 7,
+      "default_and_reduced_helpers": true,
+      "native_core_configuration_MFL_Form_Buttons_exact": true,
+      "capture_phase": "fvwm-x-linux-arm64-svg-base",
+      "capture_rgb_depths": [
+        16,
+        24,
+        30
+      ],
+      "settings_X_phase": "fvwm-x-linux-arm64-svg-base",
+      "default_BSD_authentication": false,
+      "full_WM_or_release_matrix": false,
+      "native_CPU_qualification": false,
+      "installed_files": 110,
+      "native_identities": {
+        "fvwm3": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+        "config.h": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+        "modules/FvwmMFL/FvwmMFL": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+        "modules/FvwmForm/FvwmForm": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+        "modules/FvwmButtons/FvwmButtons": "f89f9b7f87b8517d0b8b452fbac2ae2257fa601b4eee15d33055d9152493e2bf"
+      },
+      "SDK": {
+        "sha256": "0e893a1a4ab5d00e64bcd9b22060a53377f90c076434ff0aa1bd2a330b657691",
+        "uname": [
+          "Linux",
+          "288f898505a4",
+          "6.18.10-200.fc43.aarch64",
+          "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+          "aarch64"
+        ]
+      },
+      "reduced_features_disabled": [
+        "png",
+        "svg",
+        "xpm",
+        "bidi",
+        "nls"
+      ],
+      "final_helper_identities": {
+        "default/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "670e7321d0a8c64b67694b6a2ceefe5968fb1ab042addda65e3e6c33e7143811",
+          "bytes": 3107769,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "98a948289db6f9950bc21ba40eb40332f506c9bedaea42d2b5426f815b5d556e",
+          "bytes": 5435490,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-file-browser": {
+          "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+          "bytes": 5623589,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487",
+          "bytes": 5289833,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb",
+          "bytes": 4947539,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+          "bytes": 98608,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "670e7321d0a8c64b67694b6a2ceefe5968fb1ab042addda65e3e6c33e7143811",
+          "bytes": 3107769,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "9d3cfed4de322eb35820aedc228965765d11c150bcbd99b909016b6f0ec2b6f7",
+          "bytes": 5435490,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-file-browser": {
+          "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+          "bytes": 5623589,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "621f2d4066444e4584e0495f378c46ffee84db304eb7c1bde1e5cd20108e51e7",
+          "bytes": 5289833,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb",
+          "bytes": 4947539,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "e48b1ce30874474bf0ae474d755a3041816a1f4de186ec7bd9a34c4653b365de",
+          "bytes": 81920,
+          "mode": 493
+        }
+      }
+    },
+    "linux-amd64": {
+      "status": "selected scope passed by source-bound composition",
+      "base_policy_phase": "linux-amd64-base",
+      "lookup_phase": "linux-amd64-fix",
+      "final_installed_phase": "linux-amd64-fix",
+      "base_cases": {
+        "top": 121,
+        "sub": 73,
+        "packages": 10
+      },
+      "current_lookup_cases": {
+        "top": 66,
+        "sub": 37,
+        "packages": 5
+      },
+      "composed_unique_cases": {
+        "top": 122,
+        "sub": 73,
+        "packages": 10
+      },
+      "final_installed_peers_per_profile": 7,
+      "default_and_reduced_helpers": true,
+      "native_core_configuration_MFL_Form_Buttons_exact": true,
+      "capture_phase": "linux-amd64-base",
+      "capture_rgb_depths": [
+        16,
+        24,
+        30
+      ],
+      "settings_X_phase": "linux-amd64-base",
+      "default_BSD_authentication": false,
+      "full_WM_or_release_matrix": false,
+      "native_CPU_qualification": false,
+      "installed_files": 110,
+      "native_identities": {
+        "fvwm3": "5cb750e1341f4de06db8f220b817cd540552ecb7f2ba610f259c19f760c90860",
+        "config.h": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+        "modules/FvwmMFL/FvwmMFL": "71d37664d317e4658665e23854e58d75cea8431c96d3a0bddc7075d6fbb0216a",
+        "modules/FvwmForm/FvwmForm": "63635f9b35a44db143d99abde98bf7a7538531c3a2c6f8c5395f6ef70790b761",
+        "modules/FvwmButtons/FvwmButtons": "da693a82e62c30e71b4a17b986f3a84c0ac457619daa3a81eace909764960b60"
+      },
+      "SDK": {
+        "sha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+        "uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.113+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+          "x86_64"
+        ]
+      },
+      "reduced_features_disabled": [
+        "png",
+        "svg",
+        "xpm",
+        "bidi",
+        "nls"
+      ],
+      "final_helper_identities": {
+        "default/usr/local/bin/fvwm-file-browser": {
+          "sha256": "d40131c586ddf95246d74c497c5fb5b718990640f49cb389e759e60dc3ed371e",
+          "bytes": 5945831,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "ae1e83495a0889fee876883ef2742ad259197e355bf651f06535c6e23d02d280",
+          "bytes": 3211296,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "b6e8eed34eca23570c300b815134a4700a67600089ab87171206bd0c840fadab",
+          "bytes": 5749012,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "aa32b5921b50166118d9203fc2ebb3f51f3f5979eb9dd7491811d420ff134ad9",
+          "bytes": 5586148,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "87958691398e6b4c5cf6e94eb81d213f83830cfd361932a0389ac7fc858e9db3",
+          "bytes": 51776,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "152428ca88d7287c8f905f43952866552a6b8b2210907d517fbd394a877b955a",
+          "bytes": 5232949,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-file-browser": {
+          "sha256": "d40131c586ddf95246d74c497c5fb5b718990640f49cb389e759e60dc3ed371e",
+          "bytes": 5945831,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "ae1e83495a0889fee876883ef2742ad259197e355bf651f06535c6e23d02d280",
+          "bytes": 3211296,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "6651c234ad4b4cefa0d6ddbd405045d6cdffe95879c4158afb47073ae5bb2d03",
+          "bytes": 5749012,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "4a374a24312362e1460f652fe91cbcbd970a2c2c52da1c954153f6b0fc4e9190",
+          "bytes": 5586148,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "c4ecb75ca2bcdbc2ed483019a197aa2a3daf9b58d0f4c2a78a5a0babdebfcb11",
+          "bytes": 23144,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "152428ca88d7287c8f905f43952866552a6b8b2210907d517fbd394a877b955a",
+          "bytes": 5232949,
+          "mode": 493
+        }
+      }
+    },
+    "freebsd-arm64": {
+      "status": "selected scope passed by source-bound composition",
+      "base_policy_phase": "freebsd-arm64-base",
+      "lookup_phase": "freebsd-arm64-fix",
+      "final_installed_phase": "freebsd-arm64-fix",
+      "base_cases": {
+        "top": 120,
+        "sub": 73,
+        "packages": 10
+      },
+      "current_lookup_cases": {
+        "top": 65,
+        "sub": 37,
+        "packages": 5
+      },
+      "composed_unique_cases": {
+        "top": 121,
+        "sub": 73,
+        "packages": 10
+      },
+      "final_installed_peers_per_profile": 7,
+      "default_and_reduced_helpers": true,
+      "native_core_configuration_MFL_Form_Buttons_exact": true,
+      "capture_phase": "freebsd-arm64-base",
+      "capture_rgb_depths": [
+        16,
+        24,
+        30
+      ],
+      "settings_X_phase": "freebsd-arm64-base",
+      "default_BSD_authentication": true,
+      "full_WM_or_release_matrix": false,
+      "native_CPU_qualification": false,
+      "installed_files": 110,
+      "native_identities": {
+        "fvwm3": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+        "config.h": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+        "modules/FvwmMFL/FvwmMFL": "2730a9a324fa8165fa65e544ffcb59b07e499e5d12532533875791ec01d6a577",
+        "modules/FvwmForm/FvwmForm": "3f9d04b481dbff5060b6474293f68caaeac7e879c5f3b0a4161ddf1a7d35510e",
+        "modules/FvwmButtons/FvwmButtons": "8c81ae89c562c2e2dd85637383692e286837bd4848b0b40ea2528a7155d16377"
+      },
+      "SDK": {
+        "sha256": "ffdf9f966da8b37903ac1d1f95dd5aa8c8ff2212e693a797d5076f4a42b5a64a",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ]
+      },
+      "reduced_features_disabled": [
+        "png",
+        "svg",
+        "xpm",
+        "bidi",
+        "nls"
+      ],
+      "final_helper_identities": {
+        "default/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "f6c97b045619b5dfaaa3c100d1eeb4bb37488c986a1a6e2c2d6cd93d6e098581",
+          "bytes": 3012030,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "3c22994fdf3d47719e36f69281c656118e993bc04489c4c1637143de2f4608cd",
+          "bytes": 5252891,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-file-browser": {
+          "sha256": "0020164629b3c1d668f31366d5b7559eccb17ffbb5ef3904fd59fe4e6cf2eeb7",
+          "bytes": 5515580,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "48bdae059e48c9a6c72aa80883e3a538ad1124147623f23a588f2c08d3002f1e",
+          "bytes": 5112960,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "2d94ee67503079f1aa3cea1e479146ccf92abb80dd929303247b73995ff37722",
+          "bytes": 4830576,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "93b9d3c0ab2604f3205c8e9f6a6f6a64d65609660e8b9cd3a2275c1a785f210c",
+          "bytes": 43248,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "f6c97b045619b5dfaaa3c100d1eeb4bb37488c986a1a6e2c2d6cd93d6e098581",
+          "bytes": 3012030,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "8f15c8114cd7f3f206302d64ec96c582c17b92a933adc85ea51b3d19ee845c38",
+          "bytes": 5252891,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-file-browser": {
+          "sha256": "0020164629b3c1d668f31366d5b7559eccb17ffbb5ef3904fd59fe4e6cf2eeb7",
+          "bytes": 5515580,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "da7477f7c68667dfe97c86d450a3fc6ab0f6891ce44dd64f10d75719585b0d1d",
+          "bytes": 5112960,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "2d94ee67503079f1aa3cea1e479146ccf92abb80dd929303247b73995ff37722",
+          "bytes": 4830576,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "a0c0ba19e29b2abbfb691f8868d6cc0f4e1ee69eb057e9eac1160aa77ad20a77",
+          "bytes": 19608,
+          "mode": 493
+        }
+      }
+    },
+    "freebsd-amd64": {
+      "status": "selected scope passed by source-bound composition",
+      "base_policy_phase": "freebsd-amd64-base",
+      "lookup_phase": "freebsd-amd64-fix",
+      "final_installed_phase": "freebsd-amd64-fix",
+      "base_cases": {
+        "top": 120,
+        "sub": 73,
+        "packages": 10
+      },
+      "current_lookup_cases": {
+        "top": 65,
+        "sub": 37,
+        "packages": 5
+      },
+      "composed_unique_cases": {
+        "top": 121,
+        "sub": 73,
+        "packages": 10
+      },
+      "final_installed_peers_per_profile": 7,
+      "default_and_reduced_helpers": true,
+      "native_core_configuration_MFL_Form_Buttons_exact": true,
+      "capture_phase": "freebsd-amd64-base",
+      "capture_rgb_depths": [
+        16,
+        24,
+        30
+      ],
+      "settings_X_phase": "freebsd-amd64-base",
+      "default_BSD_authentication": true,
+      "full_WM_or_release_matrix": false,
+      "native_CPU_qualification": false,
+      "installed_files": 110,
+      "native_identities": {
+        "fvwm3": "6533c371a472c3b77a7ef278827cfba0d9d912267e5312bbb6730d062c10a687",
+        "config.h": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+        "modules/FvwmMFL/FvwmMFL": "153ccec1fd142c482b45a0bd8de332926c96576338d1126070ddc05c314b55fe",
+        "modules/FvwmForm/FvwmForm": "ba5c4f07a6f4cd06c5e24f4dfc93771ede7c993ce37350dbba70ab90797a5925",
+        "modules/FvwmButtons/FvwmButtons": "a44ca6fcbde1ac0150bd86d2e4b7b30b4cc124f4e318c1cfe3a1a0d36e321568"
+      },
+      "SDK": {
+        "sha256": "7d519639b2c3582f3d9a8f3b38beb7d9b899c5282020fafe999a2631a51df06b",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "amd64"
+        ]
+      },
+      "reduced_features_disabled": [
+        "png",
+        "svg",
+        "xpm",
+        "bidi",
+        "nls"
+      ],
+      "final_helper_identities": {
+        "default/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "b71296b9cbb61f1681d4d82ae3ca86316e839edef3d9e66b41afdcc1b6bfd5b7",
+          "bytes": 3138484,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "6ab5132e065102da1de4fdf4bf6942983c8c99cdeb84b301f9c2409caf65c496",
+          "bytes": 5610786,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-file-browser": {
+          "sha256": "7ef8344eb9f23d81108afad96af08e2df5de4378b468d0117c168fbb6fa3a7d7",
+          "bytes": 5841441,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "5d5e1fefd3b76c0c56e43d21d4860c028f7119098679a13b557c657cd70aebbf",
+          "bytes": 5384930,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "3bbc0b9234be75fceb0d3e1faec9cc35da1ab768d03e02151be068c99e848201",
+          "bytes": 5099921,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "761607c993e87bec8b4cec9bff36b98f6c82dff1cc006cb6d079cca29706386b",
+          "bytes": 44752,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "b71296b9cbb61f1681d4d82ae3ca86316e839edef3d9e66b41afdcc1b6bfd5b7",
+          "bytes": 3138484,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "3b4e331dc201bed8b7ccea912951101d74967da0a0e0633e32ed7b11af106702",
+          "bytes": 5610786,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-file-browser": {
+          "sha256": "7ef8344eb9f23d81108afad96af08e2df5de4378b468d0117c168fbb6fa3a7d7",
+          "bytes": 5841441,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "d886eadf3b2c1fa6e51609407b06af83ba2047d748a2666ccaeffabee00489bd",
+          "bytes": 5384930,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "3bbc0b9234be75fceb0d3e1faec9cc35da1ab768d03e02151be068c99e848201",
+          "bytes": 5099921,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "949228bf97ea4c47a36bc156fa1d3e786d185b3ff4b451bf752efa827b69d342",
+          "bytes": 18840,
+          "mode": 493
+        }
+      }
+    },
+    "openbsd-arm64": {
+      "status": "selected scope passed by source-bound composition",
+      "base_policy_phase": "openbsd-arm64-policy",
+      "lookup_phase": "openbsd-arm64-fix",
+      "final_installed_phase": "openbsd-arm64-fix",
+      "base_cases": {
+        "top": 120,
+        "sub": 73,
+        "packages": 10
+      },
+      "current_lookup_cases": {
+        "top": 65,
+        "sub": 37,
+        "packages": 5
+      },
+      "composed_unique_cases": {
+        "top": 121,
+        "sub": 73,
+        "packages": 10
+      },
+      "final_installed_peers_per_profile": 7,
+      "default_and_reduced_helpers": true,
+      "native_core_configuration_MFL_Form_Buttons_exact": true,
+      "capture_phase": "openbsd-arm64-before",
+      "capture_rgb_depths": [
+        16,
+        24,
+        30
+      ],
+      "settings_X_phase": "openbsd-arm64-fix",
+      "default_BSD_authentication": true,
+      "full_WM_or_release_matrix": false,
+      "native_CPU_qualification": false,
+      "installed_files": 99,
+      "native_identities": {
+        "fvwm3": "ee54b0db11086e2848be4555b961d7eb85350e2d35c5ffe024d35807d7cf3c36",
+        "config.h": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+        "modules/FvwmMFL/FvwmMFL": "34c9e9528d13cd558092dda553f15040dd891bbace95f16a81dd4a663791ae5b",
+        "modules/FvwmForm/FvwmForm": "43fedc25ca3ec64d0bf5b6595029f05e16421622027bc87ec06d1c3b24348cfd",
+        "modules/FvwmButtons/FvwmButtons": "467ce638c2cf5ee3af69e2a5ae0f8c96e11256fd768b22703d906d3d7c41b14f"
+      },
+      "SDK": {
+        "sha256": "f99b830b964c9486ec0c52eedbfa5db227369b06874af8e2eaca8d36d64ae376",
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#1",
+          "arm64"
+        ]
+      },
+      "reduced_features_disabled": [
+        "png",
+        "svg",
+        "xpm",
+        "bidi",
+        "nls"
+      ],
+      "final_helper_identities": {
+        "default/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "9cf0a4763b6d7ff71f49d3e941fc02f724eee374cce915fcd7a2af695177b523",
+          "bytes": 3017473,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "aee6a9d67ad609bb2e9a8173eca83ee96abc2991f7727159800bdc82ec4fbb79",
+          "bytes": 5254268,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-file-browser": {
+          "sha256": "f652649c0f5b2ee2f85d8d2484a3493343735f9fc54e92eaee8376055dce7d8c",
+          "bytes": 5510216,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "30596c29094f189b671f24cca6e1e5cb226ef6fdbc7629d80ee4b03658ffb95d",
+          "bytes": 5111175,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "2ce8b6250d2102eeef93b4c3487cd305ab82b61a4491c7e19ae7379b722a909a",
+          "bytes": 4831878,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "bd872e2dc5eaf4829ff29e9cafe1997e894e70f8e4b4cfb57951cb6669e0d9e9",
+          "bytes": 37304,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "9cf0a4763b6d7ff71f49d3e941fc02f724eee374cce915fcd7a2af695177b523",
+          "bytes": 3017473,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "59f3135b467068fa0f31bef5e815473bbc087f9f321b857ff3c9e48561de2af9",
+          "bytes": 5254268,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-file-browser": {
+          "sha256": "f652649c0f5b2ee2f85d8d2484a3493343735f9fc54e92eaee8376055dce7d8c",
+          "bytes": 5510216,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "3be379b7eae0e5c6b0f080f1dcea88c334c4567be5c53b55bed4414d9a9e3d82",
+          "bytes": 5111175,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "2ce8b6250d2102eeef93b4c3487cd305ab82b61a4491c7e19ae7379b722a909a",
+          "bytes": 4831878,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "65554db164cf65cff82cfc90e81821946ac66544616977471fe3e6f51b85adee",
+          "bytes": 17376,
+          "mode": 493
+        }
+      }
+    },
+    "openbsd-amd64": {
+      "status": "selected scope passed by source-bound composition",
+      "base_policy_phase": "openbsd-amd64-base",
+      "lookup_phase": "openbsd-amd64-fix",
+      "final_installed_phase": "openbsd-amd64-fix",
+      "base_cases": {
+        "top": 120,
+        "sub": 73,
+        "packages": 10
+      },
+      "current_lookup_cases": {
+        "top": 65,
+        "sub": 37,
+        "packages": 5
+      },
+      "composed_unique_cases": {
+        "top": 121,
+        "sub": 73,
+        "packages": 10
+      },
+      "final_installed_peers_per_profile": 7,
+      "default_and_reduced_helpers": true,
+      "native_core_configuration_MFL_Form_Buttons_exact": true,
+      "capture_phase": "openbsd-amd64-base",
+      "capture_rgb_depths": [
+        16,
+        24,
+        30
+      ],
+      "settings_X_phase": "openbsd-amd64-fix",
+      "default_BSD_authentication": true,
+      "full_WM_or_release_matrix": false,
+      "native_CPU_qualification": false,
+      "installed_files": 99,
+      "native_identities": {
+        "fvwm3": "1c1cf13b99cb35b40bf32007884e313c020c28d9ee7fb8481b9919351ef38003",
+        "config.h": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+        "modules/FvwmMFL/FvwmMFL": "b5d0b1ce1d40d3b50c41c376335a7da4b9042ac1710c45b06e38fbae2b3a31d6",
+        "modules/FvwmForm/FvwmForm": "4df152444ec956d00d2437e1e0686c5ed6a5f170f28977c9c475d3c0741426b9",
+        "modules/FvwmButtons/FvwmButtons": "36a9c3771d673587f0ba12e3b63452bf536af1b7b61430aa465e9450ed48b1a7"
+      },
+      "SDK": {
+        "sha256": "d31495212ad7b67ee9044938f583ff3542756d87c60e6c7d73ef07ac26da4e66",
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#2",
+          "amd64"
+        ]
+      },
+      "reduced_features_disabled": [
+        "png",
+        "svg",
+        "xpm",
+        "bidi",
+        "nls"
+      ],
+      "final_helper_identities": {
+        "default/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "f8bda8da6718b31e7ff6ed2b1b5f4f61923b840137d78fa6d421ec7085aa8fc9",
+          "bytes": 3144359,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "20b7e84e3f1dbaeffbe02a18249fa1392d017d89095e77c2c9ad88fc9618426b",
+          "bytes": 5609289,
+          "mode": 493
+        },
+        "default/usr/local/bin/fvwm-file-browser": {
+          "sha256": "e8a376c9b741a466c05e7d1a96509ab190eccc376992d2b3a7fd484f83e2fd18",
+          "bytes": 5830309,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "be58296ffd74bcef196c70055fe860a5ece2b60f3b5f8237872d3f1f5ee01d24",
+          "bytes": 5381127,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "1d9ae626a651cd80e20e185cb9aab0e9f1f0ff5e2256462c9c7841d9b3bd635e",
+          "bytes": 5092741,
+          "mode": 493
+        },
+        "default/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "2d1138e17af1fb127b588a68a22aca8ae5047482c14cc0c40e30203e414b30f1",
+          "bytes": 37608,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-directory": {
+          "sha256": "f8bda8da6718b31e7ff6ed2b1b5f4f61923b840137d78fa6d421ec7085aa8fc9",
+          "bytes": 3144359,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-menu-desktop": {
+          "sha256": "70fff441132957e81aa3701f5573008481416626d7580afebc28a890f90d1452",
+          "bytes": 5609289,
+          "mode": 493
+        },
+        "reduced/usr/local/bin/fvwm-file-browser": {
+          "sha256": "e8a376c9b741a466c05e7d1a96509ab190eccc376992d2b3a7fd484f83e2fd18",
+          "bytes": 5830309,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+          "sha256": "f881ab9a7bbf0e20417a4f7c2aafd838e98ce8df24cb034b7535a67ae78c27cd",
+          "bytes": 5381127,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+          "sha256": "1d9ae626a651cd80e20e185cb9aab0e9f1f0ff5e2256462c9c7841d9b3bd635e",
+          "bytes": 5092741,
+          "mode": 493
+        },
+        "reduced/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+          "sha256": "a7403e2a6b3d2a2af5f9b50a7ae95404f93ba2d40469c283ab6249b1191bb746",
+          "bytes": 15584,
+          "mode": 493
+        }
+      }
+    }
+  },
+  "phases": {
+    "fvwm-x-linux-arm64-svg-base": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/fvwm-x-linux-arm64-svg-evidence.tgz",
+      "sha256": "5c6d52860c3b44fd4824c36bbe3872c6e2fbcb11ed3cbd3162a7ba0fe9331c57",
+      "bytes": 715928,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 50,
+      "capture_manifest_entries_verified": 49,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": {
+        "error": "CompletedProcess(args=['/tmp/fvwm-module-waits-20261015/m27-checkpoint/reduced-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture', '/tmp/fvwm-module-waits-20261015/m27-checkpoint/stub-must-not-create'], returncode=1, stdout='', stderr='fvwm-desktop-capture: PNG support is unavailable\\n')"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.004
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 0.901
+        },
+        {
+          "label": "default-build",
+          "status": 0,
+          "seconds": 0.421
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 1.968
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 0.115
+        },
+        {
+          "label": "go-new-branch-race",
+          "status": 0,
+          "seconds": 1.364
+        },
+        {
+          "label": "capture-policy",
+          "status": 0,
+          "seconds": 0.002
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 0.172
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 2.154
+        },
+        {
+          "label": "native-capture",
+          "status": 0,
+          "seconds": 0.455
+        },
+        {
+          "label": "installed-settings-x",
+          "status": 0,
+          "seconds": 23.181
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 0.971
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 0.569
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 0.12
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 2.144
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "top": 121,
+          "sub": 73,
+          "packages": 10,
+          "failed": []
+        },
+        "go-new-branch-race.log": {
+          "top": 1,
+          "sub": 0,
+          "packages": 1,
+          "failed": []
+        }
+      }
+    },
+    "fvwm-x-linux-arm64-svg-refusal": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/fvwm-x-linux-arm64-svg-refusal-evidence.tgz",
+      "sha256": "b530fc31e4fc2d49be655200999b285512a9cbb049c79c0a27b85358af145459",
+      "bytes": 7772,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 6,
+      "capture_manifest_entries_verified": 5,
+      "result": {
+        "status": "passed",
+        "target": "fvwm-x-linux-arm64-svg",
+        "scope": "Only corrected standalone stub expectation and linked reduced resident feature-flag refusal; earlier commands retained",
+        "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+        "prior_error": {
+          "error": "CompletedProcess(args=['/tmp/fvwm-module-waits-20261015/m27-checkpoint/reduced-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture', '/tmp/fvwm-module-waits-20261015/m27-checkpoint/stub-must-not-create'], returncode=1, stdout='', stderr='fvwm-desktop-capture: PNG support is unavailable\\n')"
+        }
+      },
+      "source_archive_sha256": null,
+      "error": null,
+      "commands": [],
+      "Go": {}
+    },
+    "fvwm-x-linux-arm64-svg-fix": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/fvwm-x-linux-arm64-svg-fix-evidence.tgz",
+      "sha256": "7ef814539b07eebd95d91b00457c61ed856cc9c3ad06ce93ef2fa3ce39001fe9",
+      "bytes": 135002,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 15,
+      "capture_manifest_entries_verified": 14,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+      "error": {
+        "error": "lookup-policy"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.002
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 0.932
+        },
+        {
+          "label": "affected-build",
+          "status": 0,
+          "seconds": 0.67
+        },
+        {
+          "label": "lookup-policy",
+          "status": 1,
+          "seconds": 2.031
+        }
+      ],
+      "Go": {
+        "lookup-policy.log": {
+          "top": 65,
+          "sub": 37,
+          "packages": 4,
+          "failed": [
+            {
+              "Time": "2026-10-25T01:09:32.993163447Z",
+              "Action": "fail",
+              "Package": "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+              "Test": "TestActionsValidateAndPassLiteralArguments",
+              "Elapsed": 0
+            },
+            {
+              "Time": "2026-10-25T01:09:34.096236868Z",
+              "Action": "fail",
+              "Package": "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+              "Elapsed": 1.172
+            }
+          ]
+        }
+      }
+    },
+    "fvwm-x-linux-arm64-svg-fix2": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/fvwm-x-linux-arm64-svg-fix2-evidence.tgz",
+      "sha256": "1c994c3be0a6a34b461c7547321528f3cf9fe6fb1f21a794f64bdbc1cdf4923d",
+      "bytes": 136042,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 20,
+      "capture_manifest_entries_verified": 19,
+      "result": {
+        "status": "passed",
+        "target": "fvwm-x-linux-arm64-svg",
+        "scope": "M2 scoped executable-alias repair: affected caller policies/builds/refreshed installs and OpenBSD default-X; original capture/other X checks retained",
+        "native_unchanged": true,
+        "commands": 11,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.004
+        },
+        {
+          "label": "lookup-failed-fixture-retry",
+          "status": 0,
+          "seconds": 0.166
+        },
+        {
+          "label": "lookup-vet",
+          "status": 0,
+          "seconds": 0.165
+        },
+        {
+          "label": "lookup-race",
+          "status": 0,
+          "seconds": 1.177
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 0.178
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 2.163
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 0.881
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 0.731
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 0.126
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 2.179
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 0.064
+        }
+      ],
+      "Go": {
+        "lookup-failed-fixture-retry.log": {
+          "top": 1,
+          "sub": 0,
+          "packages": 1,
+          "failed": []
+        },
+        "lookup-race.log": {
+          "top": 2,
+          "sub": 0,
+          "packages": 1,
+          "failed": []
+        }
+      }
+    },
+    "linux-amd64-base": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/linux-amd64-evidence.tgz",
+      "sha256": "4e747dc186c80fc5ca9b2f7f25b064ddd426364035e4b29e2496d763cd807cc3",
+      "bytes": 676018,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 54,
+      "capture_manifest_entries_verified": 53,
+      "result": {
+        "status": "passed",
+        "target": "linux-amd64",
+        "scope": "M2 combined affected-family/default install/native capture/default-X settings/reduced helper profiles",
+        "native_unchanged": true,
+        "commands": 15,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.285
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 24.902
+        },
+        {
+          "label": "default-build",
+          "status": 0,
+          "seconds": 27.108
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 32.338
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 5.49
+        },
+        {
+          "label": "capture-policy",
+          "status": 0,
+          "seconds": 0.011
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 2.586
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 3.573
+        },
+        {
+          "label": "native-capture",
+          "status": 0,
+          "seconds": 3.507
+        },
+        {
+          "label": "installed-settings-x",
+          "status": 0,
+          "seconds": 47.63
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 15.485
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 11.836
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 1.916
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 3.059
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 0.429
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "top": 121,
+          "sub": 73,
+          "packages": 10,
+          "failed": []
+        }
+      }
+    },
+    "linux-amd64-fix": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/linux-amd64-fix-evidence.tgz",
+      "sha256": "23cdfc392fe0be6f160b2946d4f3e27aed981925a8ca59b00e1918487b7912c4",
+      "bytes": 145412,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 21,
+      "capture_manifest_entries_verified": 20,
+      "result": {
+        "status": "passed",
+        "target": "linux-amd64",
+        "scope": "M2 scoped executable-alias repair: affected caller policies/builds/refreshed installs and OpenBSD default-X; original capture/other X checks retained",
+        "native_unchanged": true,
+        "commands": 12,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.228
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 19.076
+        },
+        {
+          "label": "affected-build",
+          "status": 0,
+          "seconds": 16.214
+        },
+        {
+          "label": "lookup-policy",
+          "status": 0,
+          "seconds": 16.327
+        },
+        {
+          "label": "lookup-vet",
+          "status": 0,
+          "seconds": 2.604
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 2.9
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 3.165
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 16.756
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 14.78
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 1.932
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 3.121
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 0.538
+        }
+      ],
+      "Go": {
+        "lookup-policy.log": {
+          "top": 66,
+          "sub": 37,
+          "packages": 5,
+          "failed": []
+        }
+      }
+    },
+    "freebsd-arm64-base": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/freebsd-arm64-evidence.tgz",
+      "sha256": "1a9e2499cbfd5ae2b610d6adc9ca5a741dafb66fd0e2049c9e7e116db7053146",
+      "bytes": 592675,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 52,
+      "capture_manifest_entries_verified": 51,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": {
+        "error": "CompletedProcess(args=['/root/fvwm-module-waits-20261015/m27-checkpoint/reduced-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture', '/root/fvwm-module-waits-20261015/m27-checkpoint/stub-must-not-create'], returncode=1, stdout='', stderr='fvwm-desktop-capture: PNG support is unavailable\\n')"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.074
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 1.281
+        },
+        {
+          "label": "default-build",
+          "status": 0,
+          "seconds": 1.367
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 4.336
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 0.27
+        },
+        {
+          "label": "capture-policy",
+          "status": 0,
+          "seconds": 0.003
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 0.168
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 2.201
+        },
+        {
+          "label": "native-capture",
+          "status": 0,
+          "seconds": 0.632
+        },
+        {
+          "label": "installed-settings-default-x",
+          "status": 0,
+          "seconds": 23.04
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 0.73
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 0.879
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 0.179
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 2.16
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "top": 120,
+          "sub": 73,
+          "packages": 10,
+          "failed": []
+        }
+      }
+    },
+    "freebsd-arm64-refusal": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/freebsd-arm64-refusal-evidence.tgz",
+      "sha256": "fad002e63a340ae106d5d81fed0cc1d7a148a3b60ccbf2fad501ffeba31c3c43",
+      "bytes": 7631,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 6,
+      "capture_manifest_entries_verified": 5,
+      "result": {
+        "status": "passed",
+        "target": "freebsd-arm64",
+        "scope": "Only corrected standalone stub expectation and linked reduced resident feature-flag refusal; earlier commands retained",
+        "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+        "prior_error": {
+          "error": "CompletedProcess(args=['/root/fvwm-module-waits-20261015/m27-checkpoint/reduced-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture', '/root/fvwm-module-waits-20261015/m27-checkpoint/stub-must-not-create'], returncode=1, stdout='', stderr='fvwm-desktop-capture: PNG support is unavailable\\n')"
+        }
+      },
+      "source_archive_sha256": null,
+      "error": null,
+      "commands": [],
+      "Go": {}
+    },
+    "freebsd-arm64-fix": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/freebsd-arm64-fix-evidence.tgz",
+      "sha256": "aed616b2134754dde22ddc9e8f0d4cf056d59033d1e77bfe00425c7c86ceb8c2",
+      "bytes": 145089,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 21,
+      "capture_manifest_entries_verified": 20,
+      "result": {
+        "status": "passed",
+        "target": "freebsd-arm64",
+        "scope": "M2 scoped executable-alias repair: affected caller policies/builds/refreshed installs and OpenBSD default-X; original capture/other X checks retained",
+        "native_unchanged": true,
+        "commands": 12,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.067
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 1.187
+        },
+        {
+          "label": "affected-build",
+          "status": 0,
+          "seconds": 1.206
+        },
+        {
+          "label": "lookup-policy",
+          "status": 0,
+          "seconds": 2.004
+        },
+        {
+          "label": "lookup-vet",
+          "status": 0,
+          "seconds": 0.221
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 0.174
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 2.241
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 0.755
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 0.732
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 0.136
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 2.203
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 0.068
+        }
+      ],
+      "Go": {
+        "lookup-policy.log": {
+          "top": 65,
+          "sub": 37,
+          "packages": 5,
+          "failed": []
+        }
+      }
+    },
+    "freebsd-amd64-base": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/freebsd-amd64-evidence.tgz",
+      "sha256": "766cdc2291e1e408755b8a1be341241ec7e556fc6daf0a23ecd98273d232a0dd",
+      "bytes": 621905,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 55,
+      "capture_manifest_entries_verified": 54,
+      "result": {
+        "status": "passed",
+        "target": "freebsd-amd64",
+        "scope": "M2 combined affected-family/default install/native capture/default-X settings/reduced helper profiles",
+        "native_unchanged": true,
+        "commands": 15,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.297
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 24.166
+        },
+        {
+          "label": "default-build",
+          "status": 0,
+          "seconds": 25.082
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 33.493
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 5.847
+        },
+        {
+          "label": "capture-policy",
+          "status": 0,
+          "seconds": 0.026
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 3.898
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 3.112
+        },
+        {
+          "label": "native-capture",
+          "status": 0,
+          "seconds": 4.437
+        },
+        {
+          "label": "installed-settings-default-x",
+          "status": 0,
+          "seconds": 47.461
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 15.536
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 11.226
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 2.393
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 3.13
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 0.547
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "top": 120,
+          "sub": 73,
+          "packages": 10,
+          "failed": []
+        }
+      }
+    },
+    "freebsd-amd64-fix": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/freebsd-amd64-fix-evidence.tgz",
+      "sha256": "6101fa17e409df5f143c6cfefd3701764da6bcbd031ae67bcb0a685a20c8c324",
+      "bytes": 144976,
+      "prefix": "evidence",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 21,
+      "capture_manifest_entries_verified": 20,
+      "result": {
+        "status": "passed",
+        "target": "freebsd-amd64",
+        "scope": "M2 scoped executable-alias repair: affected caller policies/builds/refreshed installs and OpenBSD default-X; original capture/other X checks retained",
+        "native_unchanged": true,
+        "commands": 12,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.246
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 21.028
+        },
+        {
+          "label": "affected-build",
+          "status": 0,
+          "seconds": 16.937
+        },
+        {
+          "label": "lookup-policy",
+          "status": 0,
+          "seconds": 18.705
+        },
+        {
+          "label": "lookup-vet",
+          "status": 0,
+          "seconds": 2.489
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 3.873
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 3.245
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 15.66
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 14.831
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 2.533
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 3.258
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 0.601
+        }
+      ],
+      "Go": {
+        "lookup-policy.log": {
+          "top": 65,
+          "sub": 37,
+          "packages": 5,
+          "failed": []
+        }
+      }
+    },
+    "openbsd-arm64-initial": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/bsd/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "66233430482616d4ba8aad82356912dd63702e04f54b87f8ea0c663191738130",
+      "bytes": 125008199,
+      "prefix": "builddir-bsd/m27-checkpoint",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 2682,
+      "capture_manifest_entries_verified": 7,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": {
+        "error": "default-configure"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.084
+        },
+        {
+          "label": "default-configure",
+          "status": 1,
+          "seconds": 1.662
+        }
+      ],
+      "Go": {}
+    },
+    "openbsd-arm64-policy": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/bsd-retry1/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "092bd40e98228b43c43b19ccb12256004b8078135cd16296135b999d1098c601",
+      "bytes": 161737643,
+      "prefix": "builddir-bsd/m27-checkpoint",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 3192,
+      "capture_manifest_entries_verified": 15,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": {
+        "error": "default-stage"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.072
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 3.207
+        },
+        {
+          "label": "default-build",
+          "status": 0,
+          "seconds": 4.998
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 4.987
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 0.879
+        },
+        {
+          "label": "capture-policy",
+          "status": 0,
+          "seconds": 0.02
+        },
+        {
+          "label": "default-stage",
+          "status": 1,
+          "seconds": 0.339
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "top": 120,
+          "sub": 73,
+          "packages": 10,
+          "failed": []
+        }
+      }
+    },
+    "openbsd-arm64-stage": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/bsd-resume/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "71724598de962dff487cd6fc8f840fc588b84c8718a32cd6c536858760a59002",
+      "bytes": 152973502,
+      "prefix": "builddir-bsd/m27-checkpoint",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 3184,
+      "capture_manifest_entries_verified": 9,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": {
+        "error": "default-stage"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.108
+        },
+        {
+          "label": "stage-prerequisite-build",
+          "status": 0,
+          "seconds": 1.064
+        },
+        {
+          "label": "default-stage",
+          "status": 2,
+          "seconds": 0.223
+        }
+      ],
+      "Go": {}
+    },
+    "openbsd-amd64-base": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/bsd/openbsd-amd64-job/guest-evidence.tgz",
+      "sha256": "c4ad621647f1f6e9d3e1787df52a0720cdb32e3a5cdfc0ee58da6d0a3d22e031",
+      "bytes": 188542618,
+      "prefix": "builddir-bsd/m27-checkpoint",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 3319,
+      "capture_manifest_entries_verified": 49,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "3837db22dfe219324decf1c87a77838dd972771f7d6584ae10ba8820d1dc0982",
+      "error": {
+        "error": "installed-settings-default-x"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.247
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 39.92
+        },
+        {
+          "label": "default-build",
+          "status": 0,
+          "seconds": 67.559
+        },
+        {
+          "label": "go-policy",
+          "status": 0,
+          "seconds": 47.857
+        },
+        {
+          "label": "go-vet",
+          "status": 0,
+          "seconds": 9.537
+        },
+        {
+          "label": "capture-policy",
+          "status": 0,
+          "seconds": 0.032
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 5.453
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 4.737
+        },
+        {
+          "label": "native-capture",
+          "status": 0,
+          "seconds": 7.81
+        },
+        {
+          "label": "installed-settings-default-x",
+          "status": 1,
+          "seconds": 108.501
+        }
+      ],
+      "Go": {
+        "go-policy.log": {
+          "top": 120,
+          "sub": 73,
+          "packages": 10,
+          "failed": []
+        }
+      }
+    },
+    "openbsd-arm64-before": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/bsd-final/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "2bff75d4c4d8490616cddbcb0d063ebe48d500b26c18542a33f00230f8ce0d25",
+      "bytes": 203890050,
+      "prefix": "builddir-bsd/m27-checkpoint",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 3481,
+      "capture_manifest_entries_verified": 42,
+      "result": {
+        "status": "failed"
+      },
+      "source_archive_sha256": "e0a4d6a9894431160d4092f2673ddb4f7eb18cf5a6103a6b6ff284805474bae2",
+      "error": {
+        "error": "installed-settings-default-x"
+      },
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.086
+        },
+        {
+          "label": "stage-prerequisite-build",
+          "status": 0,
+          "seconds": 0.992
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 0.399
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 2.44
+        },
+        {
+          "label": "native-capture",
+          "status": 0,
+          "seconds": 1.188
+        },
+        {
+          "label": "installed-settings-default-x",
+          "status": 1,
+          "seconds": 39.456
+        }
+      ],
+      "Go": {}
+    },
+    "openbsd-arm64-fix": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/bsd-final/openbsd-arm64-job/guest-evidence.tgz",
+      "sha256": "2bff75d4c4d8490616cddbcb0d063ebe48d500b26c18542a33f00230f8ce0d25",
+      "bytes": 203890050,
+      "prefix": "builddir-bsd/m27-fix-checkpoint",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 3481,
+      "capture_manifest_entries_verified": 44,
+      "result": {
+        "status": "passed",
+        "target": "openbsd-arm64",
+        "scope": "M2 scoped executable-alias repair: affected caller policies/builds/refreshed installs and OpenBSD default-X; original capture/other X checks retained",
+        "native_unchanged": true,
+        "commands": 13,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.022
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 2.019
+        },
+        {
+          "label": "affected-build",
+          "status": 0,
+          "seconds": 1.656
+        },
+        {
+          "label": "lookup-policy",
+          "status": 0,
+          "seconds": 2.798
+        },
+        {
+          "label": "lookup-vet",
+          "status": 0,
+          "seconds": 0.34
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 0.34
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 2.318
+        },
+        {
+          "label": "installed-settings-default-x",
+          "status": 0,
+          "seconds": 25.056
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 6.099
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 2.741
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 0.28
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 2.558
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 0.111
+        }
+      ],
+      "Go": {
+        "lookup-policy.log": {
+          "top": 65,
+          "sub": 37,
+          "packages": 5,
+          "failed": []
+        }
+      }
+    },
+    "openbsd-amd64-fix": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-platform-handoff/bsd-fixed-amd64/openbsd-amd64-job/guest-evidence.tgz",
+      "sha256": "419df42980a3877cd7873607a0992259bd95e6f2f73617b7ae620ade941aa5ca",
+      "bytes": 211013765,
+      "prefix": "builddir-bsd/m27-fix-checkpoint",
+      "gzip_crc_to_eof": true,
+      "regular_payloads_verified": 3441,
+      "capture_manifest_entries_verified": 44,
+      "result": {
+        "status": "passed",
+        "target": "openbsd-amd64",
+        "scope": "M2 scoped executable-alias repair: affected caller policies/builds/refreshed installs and OpenBSD default-X; original capture/other X checks retained",
+        "native_unchanged": true,
+        "commands": 13,
+        "reduced_scope": "Affected helper targets only; no full reduced WM suite."
+      },
+      "source_archive_sha256": "ba3902f952f252f93c90b060e4761f1e730c6f18585cad7c363cb38363122a3c",
+      "error": null,
+      "commands": [
+        {
+          "label": "sdk-version",
+          "status": 0,
+          "seconds": 0.249
+        },
+        {
+          "label": "default-configure",
+          "status": 0,
+          "seconds": 43.459
+        },
+        {
+          "label": "affected-build",
+          "status": 0,
+          "seconds": 30.942
+        },
+        {
+          "label": "lookup-policy",
+          "status": 0,
+          "seconds": 22.987
+        },
+        {
+          "label": "lookup-vet",
+          "status": 0,
+          "seconds": 4.536
+        },
+        {
+          "label": "default-stage",
+          "status": 0,
+          "seconds": 5.759
+        },
+        {
+          "label": "default-installed-peers",
+          "status": 0,
+          "seconds": 4.925
+        },
+        {
+          "label": "installed-settings-default-x",
+          "status": 0,
+          "seconds": 100.554
+        },
+        {
+          "label": "reduced-configure",
+          "status": 0,
+          "seconds": 79.909
+        },
+        {
+          "label": "reduced-build",
+          "status": 0,
+          "seconds": 37.957
+        },
+        {
+          "label": "reduced-stage",
+          "status": 0,
+          "seconds": 4.681
+        },
+        {
+          "label": "reduced-installed-peers",
+          "status": 0,
+          "seconds": 5.34
+        },
+        {
+          "label": "reduced-resident-refusal",
+          "status": 0,
+          "seconds": 1.324
+        }
+      ],
+      "Go": {
+        "lookup-policy.log": {
+          "top": 65,
+          "sub": 37,
+          "packages": 5,
+          "failed": []
+        }
+      }
+    }
+  },
+  "full_release_qualification": false,
+  "retained_context": {
+    "PR199": "Python-free root, three themes and matched session observations retain historical identity/scope; not fresh whole-session evidence for changed binaries.",
+    "native_C": "Unchanged core/config/modules and capture implementation; no new C sanitizer claim."
+  },
+  "remaining": [
+    "Native-CPU qualification",
+    "True scheduler wakeups",
+    "Transient/startup-peak memory",
+    "GC observations",
+    "Remaining full-session owner acceptance before M3",
+    "Physical hardware/toolkit/compositor/assistive qualification"
+  ],
+  "cleanup": {
+    "initial": {
+      "removed_files": 59,
+      "removed_bytes": 12719298,
+      "all_verified_before_unlink": true,
+      "preserved": "canonical host captures, source/build/cache/install stages, VM disks and other owners",
+      "free_bytes_after": 22859776
+    },
+    "repair_followup": {
+      "removed_files": 37,
+      "removed_bytes": 1261195,
+      "all_verified_before_unlink": true,
+      "preserved": "canonical host captures, source/build/cache/install stages, VM disks and other owners",
+      "free_bytes_after": 14327808
+    },
+    "removed_files": 96,
+    "removed_bytes": 13980493
+  },
+  "routing": {
+    "requested_implementer_reviewer": "gpt-6.1-sol/high",
+    "requested_analyst": "gpt-6-astra/high",
+    "observed_model_client_metadata": "unavailable; selection unverified",
+    "independent_human_approval": false,
+    "requested_workflow": "gpt-6-luna/medium"
+  },
+  "review": "Separate code/evidence/docs review resolves source-sequence binding, owned-job exception cleanup and cancellation-safe diagnostics; no remaining actionable findings.",
+  "portable_verification": {
+    "command": "make verify",
+    "status": 0,
+    "log_sha256": "930812227800aef03a879cead31a2db821f1909d6fccbf538751ed7aac976c96",
+    "scope": "Repository hygiene, lint and portable maintenance/gate contracts; no native WM/platform claim."
+  }
+}

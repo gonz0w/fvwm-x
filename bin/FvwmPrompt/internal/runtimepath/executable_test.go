@@ -12,9 +12,35 @@ import (
 	"testing"
 )
 
+func TestReportedImageResolvesSymlinks(t *testing.T) {
+	root, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	image, alias := filepath.Join(root, "image"), filepath.Join(root, "alias")
+	if err := os.WriteFile(image, nil, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(image, alias); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := resolve(alias, nil, "/unused"); err != nil || got != image {
+		t.Fatal(got, err)
+	}
+	if err := os.Remove(image); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := resolve(alias, nil, "/unused"); err == nil || got != "" {
+		t.Fatal(got, err)
+	}
+}
+
 func TestUnavailableProcfsUsesOnlyAbsoluteVerifiedInvocation(t *testing.T) {
 	unavailable := errors.New("procfs unavailable")
-	root := t.TempDir()
+	root, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
 	image, alias := filepath.Join(root, "image"), filepath.Join(root, "alias")
 	if err := os.WriteFile(image, nil, 0700); err != nil {
 		t.Fatal(err)

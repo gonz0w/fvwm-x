@@ -184,6 +184,23 @@ comparison uses signed system updates and an explicit verified reboot in a
 fresh owned image. It preserves retained guests, earlier failed evidence and
 the configured default driver. No FVWM configuration changes are needed.
 
+To check the installed desktop settings controller on that authenticated server,
+first stage the existing build under `builddir-bsd/install-stage`, then run:
+
+```sh
+python3 tests/run_bsd_default_x.py --desktop-controller-only \
+    --build-directory builddir-bsd --disposable-vm \
+    --artifacts-dir builddir-bsd/desktop-controller-default-x
+```
+
+This requires exactly one staged `FvwmDesktop` and the staged
+`share/fvwm3/default-config` assets. It uses the staged controller and adjacent
+helpers with build-tree core/modules. Settings, provider and preview checks run;
+launcher, screenshot actions and theme-profile checks remain separate. The
+driver preserves the existing private Xauthority, refused unauthenticated-client
+probe and owned server cleanup. This focused mode is not a full install or
+release gate.
+
 ## Coverage limits
 
 Linux Xorg dummy tests exercise actual monitor crossings at 1.25x, 1.5x,

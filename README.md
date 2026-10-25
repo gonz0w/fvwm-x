@@ -9,8 +9,9 @@ configuration/theme compatibility. No compositor or Wayland backend.
 **Status:** in-progress development. Features paused for source cleanup and
 dependency retirement. Builds require Go. Installed utilities need no
 Go compiler or Python packages. The pre-FVWM3 converter is retired.
-[Build/upgrade notes](INSTALL.md). Go owns desktop coordination; native Xlib/PNG
-capture removes its last Python runtime helper. Session qualification remains open.
+[Build/upgrade notes](INSTALL.md). Go coordinates the desktop; native Xlib/PNG
+capture replaces Python runtime helpers. Six-target controller checks pass;
+session qualification remains open.
 Recent work includes:
 
 - Atomic button updates, desktop settings/editor and configuration checking.

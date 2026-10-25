@@ -14,6 +14,7 @@ import unittest
 from unittest.mock import patch
 
 import run_bsd_default_x as driver
+import desktop_live
 from run_bsd_default_x import authority_record, preflight, query_ready
 from live_x_harness import HarnessCancelled, HarnessError
 from mfl_stream_live import Connection
@@ -94,7 +95,8 @@ class StartupEvidenceTests(unittest.TestCase):
         values = dict(build_directory=None, artifacts_dir=root / 'artifacts',
                       server_only=True, repeat=1, disposable_vm=True,
                       display_number=197, xlock_only=False, directory_only=False,
-                      script_com_only=False, desktop_menu_only=False)
+                      script_com_only=False, desktop_menu_only=False,
+                      desktop_controller_only=False)
         values.update(overrides)
         return argparse.Namespace(**values)
 
@@ -114,6 +116,120 @@ class StartupEvidenceTests(unittest.TestCase):
                     driver.run(self.args(Path('/unused'), repeat=count,
                                          server_only=server))
                 launch.assert_not_called()
+
+    def stage_desktop(self, build, version='fixture-version'):
+        prefix = build / 'install-stage/usr/local'
+        controller = prefix / 'libexec/fvwm3' / version / 'FvwmDesktop'
+        controller.parent.mkdir(parents=True, exist_ok=True)
+        controller.write_text('staged fixture')
+        data = prefix / 'share/fvwm3'
+        (data / 'default-config').mkdir(parents=True, exist_ok=True)
+        (data / 'default-config/config').write_text(
+            '# staged desktop sentinel\nRead $[FVWM_DATADIR]/default-config/theme\n')
+        return controller, data
+
+    def test_desktop_controller_rejects_missing_or_ambiguous_stage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            args = self.args(Path(directory), server_only=False,
+                             desktop_controller_only=True)
+            with self.assertRaisesRegex(RuntimeError, 'exactly one staged FvwmDesktop'):
+                driver.fixture_commands(args, build, Path('/source'))
+            self.stage_desktop(build, 'version-one')
+            self.stage_desktop(build, 'version-two')
+            with self.assertRaisesRegex(RuntimeError, 'exactly one staged FvwmDesktop'):
+                driver.fixture_commands(args, build, Path('/source'))
+
+    def test_desktop_controller_rejects_incomplete_or_escaped_stage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build = root / 'build'
+            controller, data = self.stage_desktop(build)
+            args = self.args(root, server_only=False,
+                             desktop_controller_only=True)
+            (data / 'default-config/config').unlink()
+            with self.assertRaisesRegex(RuntimeError,
+                                        'Missing staged desktop configuration'):
+                driver.fixture_commands(args, build, Path('/source'))
+            (data / 'default-config/config').write_text('staged configuration')
+            outside = root / 'unstaged-controller'
+            outside.write_text('outside the stage')
+            controller.unlink()
+            controller.symlink_to(outside)
+            with self.assertRaisesRegex(RuntimeError, 'inside the install stage'):
+                driver.fixture_commands(args, build, Path('/source'))
+
+    def test_desktop_controller_uses_authenticated_display_and_staged_data(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            build = root / 'build with spaces'
+            controller, data = self.stage_desktop(build)
+            args = self.args(root, build_directory=build, server_only=False,
+                             desktop_controller_only=True)
+            launches = []
+            class Child:
+                def poll(self):
+                    return None
+                def close(self, deadline):
+                    pass
+                def wait_until_exit(self, deadline):
+                    return 0
+            def launch(runtime, name, argv, log_name, env):
+                self.assertEqual(env['DISPLAY'], ':197')
+                authority = Path(env['XAUTHORITY'])
+                self.assertTrue(authority.is_file())
+                self.assertEqual(authority.stat().st_mode & 0o777, 0o600)
+                launches.append((name, argv))
+                child = Child()
+                runtime.processes.append(child)
+                return child
+            with patch.object(driver, 'preflight'), patch.object(
+                    driver.os, 'uname', return_value=os.uname_result(
+                        ('FreeBSD', 'fixture', '15.1', 'test', 'amd64'))), patch.object(
+                    driver, 'dependency_identity', return_value={}), patch.object(
+                    driver.HarnessRuntime, 'start', new=launch), patch.object(
+                    driver, 'wait_for_predicate', return_value='ready'), patch.object(
+                    driver.subprocess, 'run', return_value=subprocess.CompletedProcess([], 1)):
+                result = driver.run_once(args)
+            self.assertEqual([name for name, argv in launches],
+                             ['default-xorg', 'desktop-controller'])
+            self.assertEqual(launches[0][1][1:5],
+                             [':197', '-nolisten', 'tcp', '-noreset'])
+            argv = launches[1][1]
+            self.assertEqual(Path(argv[1]).name, 'desktop_live.py')
+            self.assertEqual(argv[2:], [
+                '--display', ':197', '--artifacts-dir',
+                str(args.artifacts_dir / 'desktop-controller'),
+                '--build', str(build), '--installed-desktop', str(controller),
+                '--installed-data', str(data), '--settings-only'])
+            self.assertEqual(result['status'], 'passed')
+            self.assertEqual(result['fixtures']['desktop-controller']['status'], 0)
+
+    def test_desktop_configuration_uses_staged_or_source_defaults(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            build = root / 'build'
+            (build / 'modules').mkdir(parents=True)
+            controller, data = self.stage_desktop(build)
+            source = Path(desktop_live.__file__).resolve().parents[2]
+            for installed in (data, None):
+                options = argparse.Namespace(build=build,
+                    artifacts_dir=root / 'artifacts', display=':197',
+                    installed_desktop=controller, installed_core=None,
+                    installed_modules=None, installed_data=installed)
+                expected = (data if installed else source) / 'default-config'
+                def launch(runtime, name, argv, log_name, env):
+                    self.assertEqual(name, 'fvwm')
+                    self.assertEqual(env['DISPLAY'], ':197')
+                    self.assertEqual(env['FVWM_DESKTOP_ROOT'], str(expected))
+                    config = Path(argv[argv.index('-f') + 1]).read_text()
+                    self.assertIn(str(expected), config)
+                    self.assertEqual('# staged desktop sentinel' in config,
+                                     installed is not None)
+                    raise HarnessError('stop before native launch')
+                with patch.object(desktop_live.HarnessRuntime, 'start', new=launch):
+                    with self.assertRaisesRegex(HarnessError, 'stop before native launch'):
+                        desktop_live.run(options)
 
     def test_successful_repetition_never_hides_an_earlier_failure(self):
         with tempfile.TemporaryDirectory() as directory:

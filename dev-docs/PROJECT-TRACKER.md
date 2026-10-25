@@ -94,15 +94,56 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 unused private helper retirement — 2026-10-25
+
+Owner: Cam; implementation lead, `codex/m5-private-helpers`; CLEAN-01 #34.
+Status: focused checks and separate final review pass; ready for signed PR
+delivery after merged PR244
+`55333b31a57b582e3ad269a01a9210421396348a`; canonical signature/DCO and
+reviewed tree `f071d4fe392eee4e280af79a03918f1cda1177c7` verified,
+completed branch retired and GitHub/Project Done.
+
+Finite scope: retire the unused four-function timeout subsystem and its private
+header/build entry, unused queue-tail operate wrapper, and unused getostype
+helper/declaration plus its exclusive uname probe/include. No tracked production
+or test consumers use these six private interfaces. Preserve all active queue
+operations, callback/deferred-retirement helpers, descriptor limits, file stamps,
+and every pathname implementation byte. The separately blocked environment/path
+proposal remains pending and is not retried. No active API redesign, runtime
+policy, configuration migration, new dependency or unrelated portability cleanup.
+
+Acceptance: exact tracked consumer and private/static packaging inventory;
+independently reconstruct only the named source/build removals. Capture baseline
+normal objects/configuration before edits. Use one incremental Linux core/module
+build and existing fqueue, fd-width, event-loop-policy and module-runtime tests.
+Verify the six retired definitions disappear, no retained definitions vanish,
+and establish retained active compiled input with exact preprocessing tokens.
+No new test is needed for the unused interfaces. The combined build exposes an
+existing module-runtime fixture link omission; its typed callback observer adds
+notification/lifetime assertions and preserves all sixteen old cases. Retain
+the completed core/twelve-module builds, continue only four test targets, and
+record both original link/config-comparator failures. All four units pass;
+79,171 System and 28,124 fqueue retained tokens match without normalization.
+The six retired definitions are absent; remaining object definitions are kept.
+No whole-object byte-equality, sanitizer campaign, runtime X fixture or OS/install
+matrix claim. [Report](verification/VERIFICATION-2026-10-25-M5-PRIVATE-HELPERS.md).
+Separate final source/evidence review is clear; signed author-DCO delivery
+follows. Broader #34 stays open; #35/#36 stay closed.
+
+Performance reference PR243 is 1/5 after PR244; no comparison is due. Review
+accumulated platform debt at its owning milestone/release boundary. No new UI,
+so theme/screenshot checks are not applicable. Canonical evidence survives the
+verified retirement of this batch's guest capture/archive duplicates.
+
 ## M5 unused event-interface retirement — 2026-10-25
 
 Owner: Cam; implementation lead, `codex/m5-library-retirement`.
-Status: focused retained-token/symbol checks, normal build and actual-X checks
-pass; ready for review after merged PR243
-`403c341a5c71249861f1ebcc75752d14a389fe2d`; canonical signature/DCO and
-reviewed tree `ae6915af9995f4a26edbad2274e5eda30d3e6b30` verified,
-completed branch retired and Project/labels Done. CLEAN-01 #34 owns this finite
-ordinary maintenance slice; completed #35/#36 stay closed.
+Status: merged in PR244 as `55333b31a57b582e3ad269a01a9210421396348a`;
+canonical signature/DCO and exact reviewed tree
+`f071d4fe392eee4e280af79a03918f1cda1177c7` verified; completed branch retired,
+GitHub/Project Done. The focused retained-token/symbol, normal build and actual-X
+checks passed after merged PR243. CLEAN-01 #34 owns this finite ordinary
+maintenance slice; completed #35/#36 stay closed.
 
 Retire the seven unused FEvent interfaces: six definitions/declarations
 (FWeedAndHandleIfEvents, FGetMotionEvents, FAllowEvents, FCheckWindowEvent,

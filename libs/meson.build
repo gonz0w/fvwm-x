@@ -84,7 +84,6 @@ libfvwm3_sources = files(
     'safemalloc.c',
     'setpgrp.c',
     'strtonum.c',
-    'timeout.c',
     'wcontext.c',
     'wild.c',
 )

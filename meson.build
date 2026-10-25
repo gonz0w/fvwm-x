@@ -227,7 +227,6 @@ functions = [
     'strtol',
     'sysconf',
     'intl',
-    'uname',
     'wait3',
     'waitpid',
 ]

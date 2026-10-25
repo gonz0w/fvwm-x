@@ -71,12 +71,6 @@ void fqueue_remove_or_operate_from_front(
 	operate_fqueue_object_t operate_func,
 	destroy_fqueue_object_t destroy_func,
 	void *operate_args);
-void fqueue_remove_or_operate_from_end(
-	fqueue *fq,
-	check_fqueue_object_t check_func,
-	operate_fqueue_object_t operate_func,
-	destroy_fqueue_object_t destroy_func,
-	void *operate_args);
 void fqueue_remove_or_operate_all(
 	fqueue *fq,
 	check_fqueue_object_t check_func,

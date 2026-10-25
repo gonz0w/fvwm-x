@@ -372,21 +372,6 @@ void fqueue_remove_or_operate_from_front(
 	return;
 }
 
-/* Same as above but operates on last record in queue */
-void fqueue_remove_or_operate_from_end(
-	fqueue *fq,
-	check_fqueue_object_t check_func,
-	operate_fqueue_object_t operate_func,
-	destroy_fqueue_object_t destroy_func,
-	void *operate_args)
-{
-	fqueue_lock_queue(fq);
-	fqueue_operate( fq, fq->last, check_func, operate_func, operate_args);
-	fqueue_unlock_queue(fq, destroy_func);
-
-	return;
-}
-
 /* Same as above but operates on all records in the queue. */
 void fqueue_remove_or_operate_all(
 	fqueue *fq,

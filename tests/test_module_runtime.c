@@ -1,5 +1,6 @@
 #include "config.h"
 #include "fvwm/module_records.h"
+#include "fvwm/appearance_preview.h"
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -9,6 +10,22 @@
 
 static Bool refuse_malloc;
 static unsigned allocation_attempts;
+static Bool observe_owner_notifications;
+static fmodule *expected_preview_owner;
+static unsigned owner_notifications;
+static Bool notified_owner_retired;
+
+/* The preview subsystem is omitted from this fixture. Observe only the
+ * runtime's owner notification and the owner's lifetime during the call. */
+void appearance_preview_owner_gone(struct fmodule *owner)
+{
+	if (observe_owner_notifications)
+	{
+		assert(owner == expected_preview_owner);
+		owner_notifications++;
+		notified_owner_retired = MOD_IS_RETIRED(owner);
+	}
+}
 
 void *__real_malloc(size_t size);
 void *__wrap_malloc(size_t size)
@@ -92,6 +109,39 @@ static void assert_fd_closed(int fd)
 	errno = 0;
 	assert(fcntl(fd, F_GETFD) == -1);
 	assert(errno == EBADF);
+}
+
+static void test_owner_notifications(void)
+{
+	fmodule *module = module_create();
+
+	module_register(module);
+	module->xinputRefs = 1;
+	expected_preview_owner = module;
+	owner_notifications = 0;
+	observe_owner_notifications = True;
+	module_kill(module);
+	assert(owner_notifications == 1 && !notified_owner_retired);
+	assert(MOD_IS_RETIRED(module));
+	module_kill(module);
+	assert(owner_notifications == 1);
+	module_cleanup();
+	assert(owner_notifications == 1);
+	module->xinputRefs = 0;
+	module_cleanup();
+	/* Final destruction notifies again; preview recovery handles duplicates. */
+	assert(owner_notifications == 2 && notified_owner_retired);
+	observe_owner_notifications = False;
+	expected_preview_owner = NULL;
+
+	module = module_create();
+	expected_preview_owner = module;
+	owner_notifications = 0;
+	observe_owner_notifications = True;
+	module_destroy(module);
+	assert(owner_notifications == 1 && !notified_owner_retired);
+	observe_owner_notifications = False;
+	expected_preview_owner = NULL;
 }
 
 static void test_fragmented_frame(void)
@@ -638,6 +688,7 @@ static void test_iterator_defers_new_registration(void)
 
 int main(void)
 {
+	test_owner_notifications();
 	test_iterator_skips_retired_successor();
 	test_nested_iterator_cleanup_and_finish();
 	test_iterator_defers_new_registration();

@@ -1,0 +1,336 @@
+{
+  "base": "55333b31a57b582e3ad269a01a9210421396348a",
+  "owner": "CLEAN-01 #34",
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "libs/System.c": {
+      "sha256": "ecd4bc129f25d24af5873fa390681065915e42363d13290b7a1771eca0b7f8ec",
+      "mode": 420
+    },
+    "libs/System.h": {
+      "sha256": "102c1bba25d5dbb8f8bf42db9636c5952b488939d1ec8779d1d1a16e9fcd8a58",
+      "mode": 420
+    },
+    "libs/fqueue.c": {
+      "sha256": "4ad65a86b3af307165607694c0dfae11f356efe69ee15051801465dcc0b30275",
+      "mode": 420
+    },
+    "libs/fqueue.h": {
+      "sha256": "7d9d495d5006f36338c1f7fdc704691e04ce63dfff3ad399372cf1e5efc241f2",
+      "mode": 420
+    },
+    "libs/meson.build": {
+      "sha256": "9d92b97dde01b48c44f2f20b7007e0962ce5e56057d9ce57aaf61eaac522b7b7",
+      "mode": 420
+    },
+    "meson.build": {
+      "sha256": "d9a4ed23808dd7a94a94806386d8d05eee93765ff18554fe94e9b70fcefd559a",
+      "mode": 420
+    },
+    "tests/test_module_runtime.c": {
+      "sha256": "3203dc1d60f47957b85e77c51386f694b69751b590cad0aa8c7bf223e43987db",
+      "mode": 420
+    }
+  },
+  "deleted": [
+    "libs/timeout.c",
+    "libs/timeout.h"
+  ],
+  "source_build_deletions": 205,
+  "fixture_additions": 51,
+  "before_inputs": 536,
+  "after_inputs": 534,
+  "source_parity": {
+    "edited": [
+      "libs/System.c",
+      "libs/System.h",
+      "libs/fqueue.c",
+      "libs/fqueue.h",
+      "libs/meson.build",
+      "meson.build"
+    ],
+    "deleted": [
+      "libs/timeout.c",
+      "libs/timeout.h"
+    ],
+    "retained_source_bytes_identical": true,
+    "interfaces": 6,
+    "source_build_deletions": 205
+  },
+  "preprocessing": {
+    "System": {
+      "retained_tokens": 79171,
+      "identical": true,
+      "removed": 4,
+      "diagnostic_normalization": false
+    },
+    "fqueue": {
+      "retained_tokens": 28124,
+      "identical": true,
+      "removed": 2,
+      "diagnostic_normalization": false
+    },
+    "config": {
+      "only_change": "remove #define HAVE_UNAME 1"
+    }
+  },
+  "config_exact_change": "remove newline separator and #define HAVE_UNAME 1 line only",
+  "symbols": {
+    "System": {
+      "removed": [
+        "getostype"
+      ],
+      "retained": [
+        "GetFdWidth",
+        "fvwm_mkstemp",
+        "fvwmlib_init_max_fd",
+        "fvwmlib_max_fd",
+        "getFileStamp",
+        "isFileStampChanged",
+        "searchPath",
+        "setFileStamp",
+        "setPath"
+      ]
+    },
+    "fqueue": {
+      "removed": [
+        "fqueue_remove_or_operate_from_end"
+      ],
+      "retained": [
+        "fqueue_add_at_end",
+        "fqueue_add_at_front",
+        "fqueue_add_inside",
+        "fqueue_get_first",
+        "fqueue_get_length",
+        "fqueue_init",
+        "fqueue_remove_or_operate_all",
+        "fqueue_remove_or_operate_from_front",
+        "fqueue_take_first",
+        "fqueue_try_add_at_end"
+      ]
+    },
+    "all_retired": [
+      "fqueue_remove_or_operate_from_end",
+      "getostype",
+      "timeout_create",
+      "timeout_destroy",
+      "timeout_rewind",
+      "timeout_tick"
+    ]
+  },
+  "focused_result": {
+    "status": "passed",
+    "commands": [
+      {
+        "label": "remaining-test-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "tests/test-fqueue",
+          "tests/test-fd-width",
+          "tests/test-event-loop-policy",
+          "tests/test-module-runtime"
+        ],
+        "status": 0,
+        "seconds": 0.17481267001130618
+      },
+      {
+        "label": "focused-units",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "fqueue",
+          "fd-width",
+          "event-loop-policy",
+          "module-runtime"
+        ],
+        "status": 0,
+        "seconds": 0.17607251202571206
+      },
+      {
+        "label": "retained-token-parity",
+        "command": [
+          "python3",
+          "/tmp/fvwm-m5-private-20261025/compare.py"
+        ],
+        "status": 0,
+        "seconds": 0.07439152200822718
+      }
+    ],
+    "modules": [
+      "modules/FvwmAnimate/FvwmAnimate",
+      "modules/FvwmAuto/FvwmAuto",
+      "modules/FvwmBacker/FvwmBacker",
+      "modules/FvwmButtons/FvwmButtons",
+      "modules/FvwmEvent/FvwmEvent",
+      "modules/FvwmForm/FvwmForm",
+      "modules/FvwmIconMan/FvwmIconMan",
+      "modules/FvwmIdent/FvwmIdent",
+      "modules/FvwmMFL/FvwmMFL",
+      "modules/FvwmPager/FvwmPager",
+      "modules/FvwmRearrange/FvwmRearrange",
+      "modules/FvwmScript/FvwmScript"
+    ],
+    "outputs": 17,
+    "final_inputs": 534,
+    "retired_definitions": [
+      "fqueue_remove_or_operate_from_end",
+      "getostype",
+      "timeout_create",
+      "timeout_destroy",
+      "timeout_rewind",
+      "timeout_tick"
+    ]
+  },
+  "original_build": [
+    {
+      "label": "normal-group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "fvwm3",
+        "modules/FvwmAnimate/FvwmAnimate",
+        "modules/FvwmAuto/FvwmAuto",
+        "modules/FvwmBacker/FvwmBacker",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmEvent/FvwmEvent",
+        "modules/FvwmForm/FvwmForm",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmMFL/FvwmMFL",
+        "modules/FvwmPager/FvwmPager",
+        "modules/FvwmRearrange/FvwmRearrange",
+        "modules/FvwmScript/FvwmScript",
+        "tests/test-fqueue",
+        "tests/test-fd-width",
+        "tests/test-event-loop-policy",
+        "tests/test-module-runtime"
+      ],
+      "status": 1,
+      "seconds": 12.687386510020588
+    }
+  ],
+  "outputs": {
+    "fvwm3": {
+      "sha256": "5d09202748558b27c5b63376d5ccb54eb18e236d476613a0b2b37d411f752835",
+      "bytes": 5454744
+    },
+    "modules/FvwmAnimate/FvwmAnimate": {
+      "sha256": "bc48172aaeb619f002f64380c42736929ae4f2a90eb00ed7fbf54d6cdefb09fa",
+      "bytes": 893256
+    },
+    "modules/FvwmAuto/FvwmAuto": {
+      "sha256": "e75b8559a0ed06ade2c40b223b7d99973341f1e328e6984a1e4f1e30a04b689c",
+      "bytes": 167168
+    },
+    "modules/FvwmBacker/FvwmBacker": {
+      "sha256": "e697350d1aa8e369952284e3c1a7323d1cecde014ec7610a99293baac2f50096",
+      "bytes": 1043976
+    },
+    "modules/FvwmButtons/FvwmButtons": {
+      "sha256": "e49155bd2dd75dfadd971a9a2e3fe783086f0a2a51bca0a3356817a659d39cfb",
+      "bytes": 1723296
+    },
+    "modules/FvwmEvent/FvwmEvent": {
+      "sha256": "3d056f6dc9c01103de9ad783dd8691bd2f7543e15827375afe7d30ce1db665a6",
+      "bytes": 170104
+    },
+    "modules/FvwmForm/FvwmForm": {
+      "sha256": "f45ceaf14b6650930a2fb2458cd6eae0346f385898ac1a2abe17c87dbf602361",
+      "bytes": 1619032
+    },
+    "modules/FvwmIconMan/FvwmIconMan": {
+      "sha256": "2330f4b900f4997735d1cf20337bdad7efd93324de8603bc6ce55a6557093eee",
+      "bytes": 1772904
+    },
+    "modules/FvwmIdent/FvwmIdent": {
+      "sha256": "8568772ab2eea730ab965f6e90ad27aa2662d04325fe88afae559e3278313231",
+      "bytes": 1411720
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+      "bytes": 444120
+    },
+    "modules/FvwmPager/FvwmPager": {
+      "sha256": "d3de85848da8d3b5133cef0cbd3645ddb50714b30ffe051d2c12e51dbecad4e2",
+      "bytes": 1635504
+    },
+    "modules/FvwmRearrange/FvwmRearrange": {
+      "sha256": "7818e0ebd95630b339c16ea239d1aece8d1a76f6097afe080c948ddb978b8b52",
+      "bytes": 471056
+    },
+    "modules/FvwmScript/FvwmScript": {
+      "sha256": "745294590b2aa7e795d41703e8391cf438f84131a0d898e2e1188cd36c4933e5",
+      "bytes": 2200920
+    },
+    "tests/test-fqueue": {
+      "sha256": "4ebf077ca600b652ccdc24368f40a99f631d960a71705425a7465dd21c3970c0",
+      "bytes": 113744
+    },
+    "tests/test-fd-width": {
+      "sha256": "8ee847b72a1f59d6ccba3396430191149e69176f229247a4f2935fbe955b11ac",
+      "bytes": 123008
+    },
+    "tests/test-event-loop-policy": {
+      "sha256": "8a45fafdb2bee83d14be6b32e67c5956ad8b3b3ce2939c387bf23327cd6b99fe",
+      "bytes": 125064
+    },
+    "tests/test-module-runtime": {
+      "sha256": "b30b4616c29fb93a655112e94f69f5ded46e5c151356efab430f126469ae603b",
+      "bytes": 153584
+    }
+  },
+  "archive": {
+    "payloads": 66,
+    "regular_files": 67,
+    "bytes": 448949,
+    "sha256": "109bcd3966bcfc8f5c25238ea017dbbdb2c335ca9d164c81a8e606f1d0a085ac"
+  },
+  "original_failures": [
+    "Original module-runtime unit link omitted existing appearance_preview_owner_gone callback; repair test-only observer and retain all16 old cases.13completed core/module builds are retained.",
+    "Private comparator expected only macro line, but generated config also removes adjacent blank separator. Exact config diff checked; original comparator/failure retained; retained-token logic unchanged and preprocessing not repeated."
+  ],
+  "review": "separate final integrated source/fixture/docs/evidence review CLEAR;66payload archive,536baseline/534final identities, retained source/tokens/symbols, raw build/unit outcomes and verified duplicate cleanup independently checked",
+  "routing": {
+    "analyst_requested": "gpt-6-astra/high",
+    "implementer_requested": "gpt-6.1-sol/high",
+    "reviewer_requested": "gpt-6.1-sol/high",
+    "observed_runtime": "unverified"
+  },
+  "merge244": {
+    "canonical": "55333b31a57b582e3ad269a01a9210421396348a",
+    "tree": "f071d4fe392eee4e280af79a03918f1cda1177c7",
+    "signature": "valid",
+    "DCO": "Cam <cam@fungalo.co>",
+    "branch": "retired",
+    "Project_labels": "Done"
+  },
+  "performance": {
+    "reference": "merged PR243",
+    "merged_since": 1,
+    "candidate_merge_count": 2,
+    "comparison_due": false
+  },
+  "limits": [
+    "No production behavior changes beyond unused interface removal",
+    "Fixture callback observes runtime lifetime/dispatch only; preview recovery is omitted",
+    "No fresh sanitizer/BSD/AMD64/OS-feature/install/X/theme or release qualification",
+    "No object/binary byte equality or speedup claim",
+    "Broader owner #34 remains open; separate blocked pathname proposal pending"
+  ],
+  "duplicate_cleanup": {
+    "status": "verified guest raw capture and duplicate archive retired",
+    "regular_files": 67,
+    "active_references": 0,
+    "canonical_archive_preserved": true,
+    "build_source_performance_references_preserved": true
+  }
+}

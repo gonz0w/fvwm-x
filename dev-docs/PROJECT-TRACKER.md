@@ -94,14 +94,62 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Script property replacement ownership — 2026-10-25
+
+Owner: Cam; `codex/m5-script-property-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
+Status: selected after merged PR248
+`b808a97dc75d94b5d49b44027dfe6d9db54616ce`; signature/DCO and reviewed tree
+`f430a8bce30d9a4808e59e73b259aa5dd81bc6f9` verified; branch retired,
+GitHub/Project Done. The due five-checkpoint performance observation is complete
+on preserved PR243/current PR248 binaries before this candidate was built.
+Focused checks and separate final source/raw-evidence review pass; ready for
+signed author-DCO PR delivery.
+
+Finite outcome: release overwritten owned header/widget property strings while
+preserving last-definition-wins and colorset precedence. Normalize localized
+header titles to exact owned copies before releasing scanner input; release
+localized widget-title input too. Retire old heap base font/color defaults when BuildGUI
+adopts parsed overrides, and free successful widget Type tokens after selection.
+Final widget strings still transfer to XObj; final base title remains live.
+No partial-parser/base-X/font teardown, locale-path internals, new property policy,
+configuration migration or blocked pathname retry.
+
+Acceptance: actual old parser control reproduces retained predecessor/input
+owners for all selected properties. Cover ordinary/localized title alternation,
+translated and untranslated results, repeated/empty strings and final survival.
+Production-object/X controls prove base-default and Type retirement, inheritance,
+explicit strings, colorset precedence, callbacks and startup refusal. One combined
+normal/scoped unit and relevant native-X checkpoint; pinned parser regeneration
+with identical scanner/header. No automatic OS/install/theme matrix or new UI.
+Separate final source/evidence review and signed author-DCO PR. Broader #4/#34
+remain open; #31/#35/#36 stay completed. Performance observations remain bounded
+to their workload/environment; no general speed/memory claim is assumed.
+
+The actual old parser retains 69 selected property/input owners; the candidate
+releases predecessors and preserves sixteen final values. All seven old/new
+module controls establish five default and successful Type retirements, inherited/
+explicit strings, colorset precedence and callbacks. Six normal units, the new
+property X cases, existing widget lifecycle X fixture and scoped ASan/UBSan pass
+in one 5.572-second combined checkpoint. Pinned regeneration preserves scanner/
+header bytes. Two fixture errors and two separate-review corrections are recorded
+with retained failed controls. [Property evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROPERTIES.md).
+
+Due [performance comparison](verification/PERFORMANCE-2026-10-25-PR248.md):
+controlled Script resident/private-dirty medians are 260 KiB lower versus PR243;
+ready-time ranges overlap, so no speed gain established. Browser bytes are
+identical. This measures accumulated PR243–248 on one workload, not general WM
+performance. PR248 reference resets to 0/5; this candidate merge makes 1/5.
+No OS/install/theme matrix was required by these portable ownership changes;
+remaining full owner/release gates stay pending. All canonical payloads are
+verified and duplicate guest captures retired; caches/reference binaries remain.
+
 ## M5 Script argument-value ownership — 2026-10-25
 
 Owner: Cam; `codex/m5-script-value-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
-Status: focused checks and separate final review pass; ready for PR delivery
-after merged PR247
-`af11b649aac8ee8463f33162da6940be8a958820`; signature/DCO and reviewed tree
-`4146383926cc5ac8effffd1c2ff6a2ee1df772df` verified; branch retired,
-GitHub/Project Done.
+Status: merged in PR248 as `b808a97dc75d94b5d49b44027dfe6d9db54616ce`;
+canonical signature/DCO and exact reviewed tree
+`f430a8bce30d9a4808e59e73b259aa5dd81bc6f9` verified; branch retired,
+GitHub/Project Done. Focused checks and separate review passed after PR247.
 
 Finite outcome: release scanner-owned VAR/STR/GSTR constructor tokens after the
 three successful argument grammar actions return. Keep borrowed-input AddVar/

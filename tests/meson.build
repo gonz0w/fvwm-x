@@ -2617,6 +2617,44 @@ script_value_owner_test = executable(
 )
 test('script-value-owner', script_value_owner_test, timeout: 60)
 
+script_property_owner_test = executable(
+    'test-script-property-owner',
+    ['test_script_property_owner.c', '../modules/FvwmScript/script.c',
+     '../modules/FvwmScript/scanner.c', '../modules/FvwmScript/libyywrap.c',
+     '../modules/FvwmScript/script_storage.c',
+     '../modules/FvwmScript/script_value.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+    link_args: ['-Wl,--wrap=free', '-Wl,--wrap=yylex',
+        '-Wl,--wrap=FGettext', '-Wl,--wrap=FGettextCopy',
+        '-Wl,--wrap=fxstrdup'],
+)
+test('script-property-owner', script_property_owner_test, timeout: 60)
+
+script_property_module_probe = executable(
+    'test-script-property-module-probe', 'test_script_property_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    c_args: ['-UNDEBUG', '-fno-builtin-free',
+        '-DSCRIPT_PROPERTY_MODULE_PROBE'],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=yyparse',
+        '-Wl,--wrap=ChooseFunction', '-Wl,--wrap=free'],
+)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-property-owner-xvfb', py,
+        args: [files('live_x/script_property_owner_live.py'), '--module',
+            script_property_module_probe, '--require-ownership',
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-property-owner'],
+        depends: script_property_module_probe,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 90)
+endif
+
 script_block_owner_test = executable(
     'test-script-block-owner',
     ['test_script_block_owner.c', '../modules/FvwmScript/script_block.c',

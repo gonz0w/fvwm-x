@@ -818,32 +818,32 @@ void BuildGUI(int IsFather, int argc, char **argv)
 
   if (scriptprop->font != NULL)
   {
-    /* leak! */
+    free(x11base->font);
     x11base->font = scriptprop->font;
   }
 
   if (scriptprop->forecolor != NULL)
   {
     x11base->colorset = -1;
-    /* leak! */
+    free(x11base->forecolor);
     x11base->forecolor = scriptprop->forecolor;
   }
   if (scriptprop->backcolor != NULL)
   {
     x11base->colorset = -1;
-    /* leak! */
+    free(x11base->backcolor);
     x11base->backcolor = scriptprop->backcolor;
   }
   if (scriptprop->shadcolor != NULL)
   {
     x11base->colorset=-1;
-    /* leak! */
+    free(x11base->shadcolor);
     x11base->shadcolor = scriptprop->shadcolor;
   }
   if (scriptprop->hilicolor != NULL)
   {
     x11base->colorset=-1;
-    /* leak! */
+    free(x11base->hilicolor);
     x11base->hilicolor = scriptprop->hilicolor;
   }
   if (scriptprop->colorset != -1)
@@ -944,6 +944,8 @@ void BuildGUI(int IsFather, int argc, char **argv)
 
 
     ChooseFunction(tabxobj[i],(*tabobj)[i].type);
+    free((*tabobj)[i].type);
+    (*tabobj)[i].type = NULL;
     tabxobj[i]->gc = x11base->gc;
     tabxobj[i]->ParentWin = &(x11base->win);
     tabxobj[i]->iconPixmap = None;

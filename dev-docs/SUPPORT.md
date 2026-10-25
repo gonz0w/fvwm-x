@@ -126,6 +126,45 @@ run directories and the source/compiler/dependency receipts for both builds.
 RSS is unavailable outside Linux `/proc`; CPU/memory and latency reflect the
 recorded environment. Physical hardware remains separate qualification.
 
+The installed-session observer is a separate opt-in acceptance tool:
+
+```sh
+python3 tests/live_x/desktop_session_live.py --observe-only \
+    --prefix /path/to/stage/usr/local --version VERSION \
+    --cgroup-parent /sys/fs/cgroup \
+    --trace-parent /sys/kernel/tracing/instances \
+    --artifacts-dir /path/to/new-session-observation
+```
+
+Use an owned Linux test guest and existing writable delegated cgroup/tracefs
+parents. Both kernel options are optional; unavailable accounting remains null
+with a reason. The helper creates fresh private resources and never mounts
+tracefs, enables controllers or changes global tracing. The observer and X
+server stay outside the measured cgroup. Preserve `ownership.json`, cleanup
+receipts, raw proc snapshots, phase boundaries and scheduler trace alongside
+`evidence.json` before retiring guest duplicates.
+
+Sampling starts just after core launch, covers readiness, twelve seconds of
+idle (including regular five-second desktop status work), settings editor/query
+activity and logout. PID/task start identities protect deltas and reparented
+children; missing fields, identity races, sample gaps and limits remain visible.
+RSS/PSS sums are samples across each poll, not simultaneous physical memory or
+an unsampled peak. CPU is counted once per process; context switches include
+all readable threads and are not wakeups. Optional cgroup CPU includes joined
+short-lived descendants; `memory.peak` is cumulative charged memory, including
+kernel/cache and excluding pages charged elsewhere, not RSS/PSS. Admission
+starts immediately before exec. Private scheduler fork/exit attribution counts
+selected-task wakeup tracepoint occurrences, separately from new-task wakeups;
+loss, truncation, ambiguous birth or parse failure refuses complete counts.
+
+`--gc-observe` selects a separate, longer resident `GODEBUG=gctrace=1` run.
+It does not force collection. Worker stderr is outside that GC scope; absent
+cycles are not zero pauses. Keep this instrumented workload out of the paired
+latency comparison. Synthetic XTest-to-core Echo timing excludes physical input
+and painting. These observations do not establish native-CPU or hardware/release
+qualification. Pure contracts run through `make verify`; no rebuild or OS matrix
+is implied by updating this observer.
+
 The [process/session startup checkpoint](verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md) records six-target/ten-profile constructor qualification, real session integration, scoped guest sanitizers and unchanged inherited OpenBSD gaps. Its source/profile scope does not establish native-CPU or physical/release acceptance.
 
 The [swallowed-client session checkpoint](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md) records composed six-target qualification, unchanged inherited OpenBSD gaps and scoped guest sanitizers. Native-CPU and physical/release acceptance remain separate.

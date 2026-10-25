@@ -7,6 +7,7 @@
 
 import argparse
 import ctypes as C
+from contextlib import ExitStack, contextmanager
 import json
 import os
 from pathlib import Path
@@ -21,60 +22,92 @@ from geometry_transition_live import Pointer
 from live_x_harness import HarnessRuntime, start_display_server, wait_for_predicate
 from mfl_stream_live import Connection
 from mfl_request_live import frame
+from session_observer import SessionObserver, parse_stat
+from session_kernel import KernelObservation
+from session_gc import parse_gc
+from session_x_errors import SessionXErrors
 
 
-def process_tree(pid):
-    parents = {}
-    for p in Path('/proc').glob('[0-9]*/stat'):
-        try:
-            tail = p.read_text().rsplit(')', 1)[1].split()
-            parents[int(p.parent.name)] = int(tail[1])
-        except (OSError, ValueError, IndexError):
-            pass
-    selected = {pid}
-    while True:
-        more = {p for p, parent in parents.items() if parent in selected}
-        if more <= selected:
-            return selected
-        selected |= more
+@contextmanager
+def session_runtime():
+    # On every failure, reap the session before removing its kernel resources.
+    with ExitStack() as owners:
+        with HarnessRuntime(prefix='fvwm-session-runtime-') as runtime:
+            yield runtime, owners
 
 
-def sample(pid):
-    records = {}
-    for item in process_tree(pid):
-        try:
-            root = Path('/proc') / str(item)
-            tail = (root / 'stat').read_text().rsplit(')', 1)[1].split()
-            status = dict(line.split(':', 1) for line in (root / 'status').read_text().splitlines())
-            records[item] = {'name': status['Name'].strip(),
-                'rss_kib': int(status.get('VmRSS', '0 kB').split()[0]),
-                'hwm_kib': int(status.get('VmHWM', '0 kB').split()[0]),
-                'cpu_ticks': int(tail[11]) + int(tail[12]),
-                'switches': int(status.get('voluntary_ctxt_switches', 0)) + int(status.get('nonvoluntary_ctxt_switches', 0))}
-        except (OSError, ValueError, KeyError, IndexError):
-            pass
-    return records
+def process_identity(pid):
+    try:
+        with (Path('/proc') / str(pid) / 'stat').open('r') as stream:
+            record = parse_stat(stream.read(65537))
+        return {'pid': pid, 'start_ticks': record['start_ticks']}
+    except (OSError, ValueError) as error:
+        return {'pid': pid, 'start_ticks': None, 'error': str(error)}
 
 
-def observe(pid, client, connection, evidence):
-    # Let initial discovery settle; neither profile starts external applications.
-    time.sleep(.7)
-    first = sample(pid)
-    peak = sum(r['rss_kib'] for r in first.values())
-    began = time.monotonic()
-    while time.monotonic() - began < 1.5:
-        time.sleep(.05)
-        peak = max(peak, sum(r['rss_kib'] for r in sample(pid).values()))
-    elapsed = time.monotonic() - began
-    last = sample(pid)
-    shared = first.keys() & last.keys()
-    evidence['observation'] = {'idle_seconds': elapsed, 'processes': last,
-        'steady_rss_sum_kib': sum(r['rss_kib'] for r in last.values()),
-        'sampled_idle_peak_rss_sum_kib': peak,
-        'retained_process_hwm_sum_kib': sum(r['hwm_kib'] for r in last.values()),
-        'retained_idle_cpu_ms': sum(last[p]['cpu_ticks'] - first[p]['cpu_ticks'] for p in shared) * 1000 / os.sysconf('SC_CLK_TCK'),
-        'retained_idle_context_switches': sum(last[p]['switches'] - first[p]['switches'] for p in shared),
-        'wakeups': None, 'wakeups_limit': 'Kernel scheduler tracing is not available; context switches are a separate proxy.'}
+def write_ownership(kernel, artifact, runtime, xserver, core=None):
+    boot = Path('/proc/sys/kernel/random/boot_id')
+    report = {'launch_state': 'running' if core else 'prepared',
+              'boot_identity': boot.read_text().strip() if boot.exists() else None,
+              'observer': process_identity(os.getpid()),
+              'runtime_root': str(runtime.root),
+              'xserver': process_identity(xserver.process.pid),
+              'core': process_identity(core.process.pid) if core else None,
+              'kernel': kernel.ownership() if kernel else {},
+              'cleanup': None}
+    path = artifact / 'ownership.json'
+    temporary = path.with_suffix('.part')
+    temporary.write_text(json.dumps(report, indent=2) + '\n')
+    temporary.replace(path)
+
+
+def close_kernel(kernel, artifact):
+    errors = kernel.close() if kernel else []
+    journal = artifact / 'ownership.json'
+    if journal.exists():
+        value = json.loads(journal.read_text())
+        value['cleanup'] = {'errors': list(errors), 'runtime_closed': True}
+        temporary = journal.with_suffix('.part')
+        temporary.write_text(json.dumps(value, indent=2) + '\n')
+        temporary.replace(journal)
+    (artifact / 'kernel-cleanup.json').write_text(json.dumps(
+        {'errors': errors, 'after_runtime_cleanup': True}, indent=2) + '\n')
+    if errors:
+        raise RuntimeError('Kernel observation cleanup failed: ' + '; '.join(errors))
+
+
+def resident_gc(log):
+    with log.open('rb') as stream:
+        text = stream.read(1024 * 1024 + 1).decode('utf-8', errors='replace')
+    return parse_gc(text)
+
+
+def observe(observer, kernel, client, connection, windows, process, evidence,
+            gc_observe=False):
+    # Cover two regular five-second status periods, identically in both profiles.
+    observer.mark_phase('idle')
+    kernel.mark_phase('idle')
+    time.sleep(12)
+    observer.mark_phase('activity')
+    kernel.mark_phase('activity')
+    iterations = 24 if gc_observe else 3
+    for iteration in range(iterations):
+        connection.send(b'SendToModule FvwmDesktop edit-settings all\n')
+        window = wait_for_predicate('observed settings editor',
+            lambda: windows().get('Desktop settings'),
+            time.monotonic() + 10, process=process)
+        for request in range(4):
+            identity = 'observe-%d-%d' % (iteration, request)
+            connection.send(frame(identity, resource='settings', scope='motion'))
+            reply = connection.record()['reply']
+            assert reply['id'] == identity and reply['status'] == 'ok', reply
+        connection.send(('WindowId %d Close\n' % window).encode())
+        wait_for_predicate('observed settings editor closes',
+            lambda: 'Desktop settings' not in windows(),
+            time.monotonic() + 10, process=process)
+    evidence['observation_workload'] = {
+        'idle_seconds_requested': 12, 'settings_editor_open_close': iterations,
+        'settings_queries': iterations * 4, 'gc_trace_separate_run': gc_observe}
     pointer = Pointer(client)
     client.x.XStringToKeysym.argtypes = [C.c_char_p]
     client.x.XStringToKeysym.restype = C.c_ulong
@@ -92,7 +125,7 @@ def observe(pid, client, connection, evidence):
         client.x.XSync(client.display, 0)
         connection.expect_echo('session-key-response')
         samples.append((time.monotonic() - start) * 1000)
-    evidence['observation']['xtest_key_to_core_echo_ms'] = samples
+    evidence['xtest_key_to_core_echo_ms'] = samples
 
 
 def run(options):
@@ -110,9 +143,10 @@ def run(options):
     libc.prctl.argtypes = [C.c_int, C.c_ulong, C.c_ulong, C.c_ulong, C.c_ulong]
     if libc.prctl(36, 1, 0, 0, 0) != 0:  # PR_SET_CHILD_SUBREAPER
         raise RuntimeError('Cannot own detached fixture children for cleanup')
-    evidence = {'root': str(root), 'prefix': str(prefix), 'python_free_namespace': bool(options.root)}
-    with HarnessRuntime(prefix='fvwm-session-runtime-') as runtime:
-        _, display = start_display_server(runtime, 'Xvfb',
+    observer = kernel = None
+    evidence = {'system': list(os.uname()), 'root': str(root), 'prefix': str(prefix), 'python_free_namespace': bool(options.root)}
+    with session_runtime() as (runtime, owners):
+        xserver, display = start_display_server(runtime, 'Xvfb',
             ['Xvfb', '-screen', '0', '1440x900x24', '-noreset'],
             'xserver.log', time.monotonic() + 10)
         # The root is disposable and owned by this test. The observer remains
@@ -166,11 +200,36 @@ def run(options):
             'PATH': str(tools) + ':' + str(prefix / 'bin') + ':/usr/bin:/bin', 'SESSION_MANAGER': ''})
         for name in ('FVWM_DESKTOP_WORKER', 'FVWM_DESKTOP_CAPTURE'):
             env.pop(name, None)
-        began = time.monotonic()
-        process = runtime.start('installed-core', execute([core, '-d', display, '-f', config,
-            '-v', '-o', inside / 'core.log']), 'core.log', env)
+        if options.gc_observe:
+            env['GODEBUG'] = 'gctrace=1'
+        if options.observe_only:
+            kernel = KernelObservation(cgroup_parent=options.cgroup_parent,
+                                       trace_parent=options.trace_parent)
+        owners.callback(close_kernel, kernel, artifact)
+        try:
+            if kernel:
+                kernel.prepare()
+                kernel.mark_phase('startup')
+            write_ownership(kernel, artifact, runtime, xserver)
+            began = time.monotonic()
+            argv = execute([core, '-d', display, '-f', config,
+                            '-v', '-o', inside / 'core.log'])
+            process = runtime.start('installed-core',
+                kernel.command(argv) if kernel else argv, 'module-stderr.log', env)
+            write_ownership(kernel, artifact, runtime, xserver, process)
+            if kernel:
+                kernel.attach(process.process.pid, os.getpid())
+                observer = SessionObserver(process.process.pid, began)
+                owners.callback(observer.stop)
+                observer.start()
+        except BaseException:
+            if observer:
+                observer.stop()
+            if kernel:
+                kernel.close()
+            raise
         endpoint = outside / ('fvwm_mfl_' + display.replace(':', '_') + '.sock')
-        connection = client = None
+        connection = client = x_errors = None
         retained_locker = None
         hold = outside / 'hold-locker'
         try:
@@ -190,31 +249,43 @@ def run(options):
                 time.monotonic() + 15, process=process)
             assert initial['settings']['motion']['effective'] is False, initial
             client = connect_client(display)
+            x_errors = SessionXErrors(client, evidence).install()
             client.x.XFetchName.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(C.c_void_p)]
             client.x.XFetchName.restype = C.c_int
             def windows():
-                found = {}
-                def visit(window):
+                found, pending, visited = {}, [client.root], set()
+                while pending:
+                    window = pending.pop()
+                    if window in visited:
+                        continue
+                    if len(visited) >= 4096:
+                        raise RuntimeError('Session observation window limit')
+                    visited.add(window)
                     name = C.c_void_p()
-                    if client.x.XFetchName(client.display, window, C.byref(name)) and name.value:
+                    named = x_errors.read(window, 20, lambda:
+                        client.x.XFetchName(client.display, window, C.byref(name)))
+                    if named and name.value:
                         found[C.string_at(name.value).decode(errors='replace')] = window
+                    if name.value:
                         client.x.XFree(name)
                     root_return, parent = C.c_ulong(), C.c_ulong()
                     items, count = C.POINTER(C.c_ulong)(), C.c_uint()
-                    if client.x.XQueryTree(client.display, window, C.byref(root_return),
-                            C.byref(parent), C.byref(items), C.byref(count)):
-                        children = [items[i] for i in range(min(count.value, 256))]
-                        if items:
-                            client.x.XFree(items)
-                        for child in children:
-                            visit(child)
-                visit(client.root)
+                    queried = x_errors.read(window, 15, lambda:
+                        client.x.XQueryTree(client.display, window,
+                            C.byref(root_return), C.byref(parent),
+                            C.byref(items), C.byref(count)))
+                    children = ([items[index] for index in range(min(count.value, 256))]
+                                if queried else [])
+                    if items:
+                        client.x.XFree(items)
+                    pending.extend(children)
                 return found
             wait_for_predicate('installed bar', lambda: windows().get('SlateBar'),
                 time.monotonic() + 10, process=process)
             evidence['startup_ready_ms'] = (time.monotonic() - began) * 1000
             if options.observe_only:
-                observe(process.process.pid, client, connection, evidence)
+                observe(observer, kernel, client, connection, windows, process,
+                        evidence, options.gc_observe)
             else:
                 connection.send(b'SendToModule FvwmDesktop volume up\nSendToModule FvwmDesktop session poweroff\n'
                                 b'SendToModule FvwmDesktop session reboot\n')
@@ -272,8 +343,9 @@ def run(options):
                     def notice_visible():
                         window = windows().get('FVWM-X')
                         attrs = WindowAttributes()
-                        return window and client.x.XGetWindowAttributes(client.display,
-                            window, C.byref(attrs)) and attrs.map_state == 2
+                        return window and x_errors.read(window, 3, lambda:
+                            client.x.XGetWindowAttributes(client.display, window,
+                                                          C.byref(attrs))) and attrs.map_state == 2
                     wait_for_predicate(profile + ' mapped locker notice', notice_visible,
                         time.monotonic() + 10, process=process)
                     time.sleep(.1)
@@ -302,6 +374,9 @@ def run(options):
                 assert locker_identity() == identity
                 evidence['controller_restart_without_power_replay'] = 'passed'
                 evidence['same_locker_survives_controller_restart'] = retained_locker
+            if observer:
+                observer.mark_phase('shutdown')
+                kernel.mark_phase('shutdown')
             connection.send(b'SendToModule FvwmDesktop session logout\n')
             assert process.wait_until_exit(time.monotonic() + 10) == 0
             evidence['existing_logout_core_quit'] = 'passed'
@@ -327,7 +402,9 @@ def run(options):
                         os.waitpid(retained_locker, 0)
                         raise AssertionError('fixture locker did not honor release')
                     time.sleep(.02)
-            if client:
+            if x_errors:
+                x_errors.close_display()
+            elif client:
                 client.close()
             if connection:
                 connection.close()
@@ -336,9 +413,35 @@ def run(options):
             core_log = outside / 'core.log'
             if core_log.exists():
                 shutil.copy2(core_log, artifact / 'installed-core.log')
+            cleanup_errors = []
+            if observer:
+                try:
+                    observer.stop()
+                except Exception as error:
+                    cleanup_errors.append(str(error))
+                evidence['observation'] = observer.report()
+            if kernel:
+                try:
+                    report = kernel.finish()
+                    raw = report.pop('raw_trace', '')
+                    if raw:
+                        (artifact / 'kernel-trace.txt').write_text(raw)
+                    evidence['kernel_observation'] = report
+                except Exception as error:
+                    cleanup_errors.append(str(error))
+            if options.gc_observe:
+                log = runtime.root / 'module-stderr.log'
+                evidence['resident_gc'] = (resident_gc(log) if log.exists()
+                                           else parse_gc(''))
+            evidence['observation_cleanup_errors'] = cleanup_errors
             evidence['core_exit'] = process.poll()
             (artifact / 'evidence.json').write_text(json.dumps(evidence, indent=2) + '\n')
-    print(json.dumps(evidence))
+            if cleanup_errors and sys.exc_info()[0] is None:
+                raise RuntimeError('Observation cleanup failed: ' +
+                                   '; '.join(cleanup_errors))
+    assert not evidence.get('observer_unexpected_x_errors'), evidence
+    print(json.dumps({key: value for key, value in evidence.items()
+                      if key not in ('observation', 'kernel_observation')}))
 
 
 if __name__ == '__main__':
@@ -347,5 +450,15 @@ if __name__ == '__main__':
     parser.add_argument('--version', required=True)
     parser.add_argument('--root', type=Path)
     parser.add_argument('--observe-only', action='store_true')
+    parser.add_argument('--cgroup-parent', type=Path,
+                        help='Existing writable delegated cgroup-v2 hierarchy.')
+    parser.add_argument('--trace-parent', type=Path,
+                        help='Existing mounted tracefs instances directory.')
+    parser.add_argument('--gc-observe', action='store_true',
+                        help='Separate longer resident GODEBUG=gctrace run.')
     parser.add_argument('--artifacts-dir', type=Path, required=True)
-    run(parser.parse_args())
+    options = parser.parse_args()
+    if not options.observe_only and any((options.gc_observe,
+            options.cgroup_parent, options.trace_parent)):
+        parser.error('Kernel/GC observation options require --observe-only')
+    run(options)

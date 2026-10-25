@@ -1,0 +1,1331 @@
+{
+  "checkpoint": "M2.8 session observation integrity and installed acceptance",
+  "base": {
+    "sha": "fdd396dd0b446ac60384583fc96f092e19026f8c",
+    "tree": "ddd7e955fbcc524830182985df64aa62295eefe1",
+    "signature_verified": true,
+    "author_DCO": true,
+    "exact_PR200_tree": true,
+    "remote_branch_auto_deleted": true,
+    "local_branch_removed": true
+  },
+  "status": "focused observer and installed-session checks passed; broad runtime/release acceptance remains open",
+  "native_environment": "Debian13 Linux6.12.113 AMD64 QEMU guest; new reference environment, not comparable to earlier ARM64 timings",
+  "runtime_build_inputs_exact": 1185,
+  "production_changes": 0,
+  "current_binaries": "Unchanged PR200 default installed prefix; no rebuild, OS matrix, Go race or C sanitizer repeat.",
+  "reference": {
+    "source_commit": "e7f790c2a746d11ae4412b1aade209abe9c39295",
+    "script_sha256": "15f6595193ce5599186cb6cdff854281fadf16b60b422797b37b852958992107",
+    "worker_sha256": "6a2c7bbae7849d17a66d30328e729bfc81f25ecc7804ceecf160eab8cd4f8c82",
+    "worker_original_scope": "compiled only; no execution claim",
+    "new_environment": "Debian13 Linux AMD64 QEMU; fresh reference execution, not comparison to historical ARM64 timings",
+    "samples_per_profile": 3
+  },
+  "input_scopes": {
+    "initial-source.json": "e6c72819c5fad3cd8f4b9f2d2df04e8f4d486587b126424fe0d3dadd05350db9",
+    "pre-x-source.json": "ba4094e5f649984b7f6f95fa61dbbad9a54ec2b6598d3ecc41f43389b4b76b3b",
+    "candidate-source.json": "755c2ada9933b0d93e83c46c1aac73008ca326cfc55688f2f0a9cea2abcf00c0"
+  },
+  "phases": {
+    "initial": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-session-acceptance/evidence.tgz",
+      "sha256": "19680733defcb1e7f2b16bd79d1a542b3ce84312f2c957b9fba42d4c89afc5af",
+      "bytes": 231726,
+      "gzip_crc_to_eof": true,
+      "payloads_verified": 40,
+      "manifest_entries_verified": 39,
+      "source_archive_sha256": "e6c72819c5fad3cd8f4b9f2d2df04e8f4d486587b126424fe0d3dadd05350db9",
+      "result": {
+        "status": "failed"
+      },
+      "commands": [
+        {
+          "label": "pure-observer",
+          "command": [
+            "python3",
+            "tests/test_session_observer.py"
+          ],
+          "status": 0,
+          "seconds": 0.991869964999978
+        },
+        {
+          "label": "pure-kernel",
+          "command": [
+            "python3",
+            "tests/test_session_kernel.py"
+          ],
+          "status": 0,
+          "seconds": 2.3726945189998787
+        },
+        {
+          "label": "pure-gc",
+          "command": [
+            "python3",
+            "tests/test_session_gc.py"
+          ],
+          "status": 0,
+          "seconds": 0.32995565300007
+        },
+        {
+          "label": "pure-lifecycle",
+          "command": [
+            "python3",
+            "tests/test_desktop_session_observation.py"
+          ],
+          "status": 0,
+          "seconds": 0.8430121159999544
+        },
+        {
+          "label": "current-python-free-session",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--root",
+            "/root/fvwm-module-waits-20261015/m28-python-free-gpnkhpoh",
+            "--prefix",
+            "/usr/local",
+            "--version",
+            "1.1.6",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-session/python-free-session"
+          ],
+          "status": 0,
+          "seconds": 11.335209562000045
+        },
+        {
+          "label": "session-reference-0",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m28-reference-lloqp613/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-session/session-reference-0"
+          ],
+          "status": 1,
+          "seconds": 9.46744707300013
+        }
+      ],
+      "error": {
+        "error": "session-reference-0"
+      }
+    },
+    "completion-": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-session-acceptance/completion-evidence.tgz",
+      "sha256": "5fcb0c30485e82c4078a79ed8ebbedbb5229feb237017826315a1c1ed30b82aa",
+      "bytes": 266717,
+      "gzip_crc_to_eof": true,
+      "payloads_verified": 16,
+      "manifest_entries_verified": 15,
+      "source_archive_sha256": "e6c72819c5fad3cd8f4b9f2d2df04e8f4d486587b126424fe0d3dadd05350db9",
+      "result": {
+        "status": "failed"
+      },
+      "commands": [
+        {
+          "label": "session-reference-0",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m28-reference-wztj5xcy/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-completion/session-reference-0"
+          ],
+          "status": 1,
+          "seconds": 29.672338011999955
+        }
+      ],
+      "error": {
+        "error": "session-reference-0"
+      }
+    },
+    "workload-": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-session-acceptance/workload-evidence.tgz",
+      "sha256": "acc6f6f9e840659ef472a8ec41371d74cf6d74d0193b8b9c8e51ce9e6426189b",
+      "bytes": 128517,
+      "gzip_crc_to_eof": true,
+      "payloads_verified": 9,
+      "manifest_entries_verified": 8,
+      "source_archive_sha256": "ba4094e5f649984b7f6f95fa61dbbad9a54ec2b6598d3ecc41f43389b4b76b3b",
+      "result": {
+        "status": "failed"
+      },
+      "commands": [
+        {
+          "label": "session-reference-0",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m28-reference-byt6bvkn/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-workload/session-reference-0"
+          ],
+          "status": 1,
+          "seconds": 16.887285019000046
+        }
+      ],
+      "error": {
+        "error": "session-reference-0"
+      }
+    },
+    "observed-": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-24/m2-session-acceptance/observed-evidence.tgz",
+      "sha256": "087c767c07a2e38bc1ad59f166e3c36fbfe4b98b5905d8ae0419370c901daf77",
+      "bytes": 1094847,
+      "gzip_crc_to_eof": true,
+      "payloads_verified": 76,
+      "manifest_entries_verified": 75,
+      "source_archive_sha256": "755c2ada9933b0d93e83c46c1aac73008ca326cfc55688f2f0a9cea2abcf00c0",
+      "result": {
+        "status": "passed",
+        "commands": 11,
+        "native_and_installed_unchanged": true,
+        "source_archive_sha256": "755c2ada9933b0d93e83c46c1aac73008ca326cfc55688f2f0a9cea2abcf00c0",
+        "scope": "M2.8 observer/kernel/GC fixtures, fresh installed interpreter-free session, three paired observations and separate GC run; no production rebuild/platform matrix"
+      },
+      "commands": [
+        {
+          "label": "native-x-error-policy",
+          "command": [
+            "python3",
+            "/root/fvwm-module-waits-20261015/m28-observed-inputs/x_probe.py"
+          ],
+          "status": 0,
+          "seconds": 1.4465623039999969
+        },
+        {
+          "label": "pure-x-errors",
+          "command": [
+            "python3",
+            "tests/test_session_x_errors.py"
+          ],
+          "status": 0,
+          "seconds": 0.3820678920000091
+        },
+        {
+          "label": "pure-kernel-journal",
+          "command": [
+            "python3",
+            "tests/test_session_kernel.py"
+          ],
+          "status": 0,
+          "seconds": 2.38975400999999
+        },
+        {
+          "label": "pure-lifecycle-journal",
+          "command": [
+            "python3",
+            "tests/test_desktop_session_observation.py"
+          ],
+          "status": 0,
+          "seconds": 0.7852611150000257
+        },
+        {
+          "label": "session-reference-0",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m28-reference-ngko2x4y/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-observed/session-reference-0"
+          ],
+          "status": 0,
+          "seconds": 19.160474192000038
+        },
+        {
+          "label": "session-current-0",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-observed/session-current-0"
+          ],
+          "status": 0,
+          "seconds": 17.717753636999987
+        },
+        {
+          "label": "session-current-1",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-observed/session-current-1"
+          ],
+          "status": 0,
+          "seconds": 17.658256051000023
+        },
+        {
+          "label": "session-reference-1",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m28-reference-ngko2x4y/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-observed/session-reference-1"
+          ],
+          "status": 0,
+          "seconds": 18.962846646999992
+        },
+        {
+          "label": "session-reference-2",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m28-reference-ngko2x4y/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-observed/session-reference-2"
+          ],
+          "status": 0,
+          "seconds": 19.084523552000007
+        },
+        {
+          "label": "session-current-2",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-observed/session-current-2"
+          ],
+          "status": 0,
+          "seconds": 17.666200378999974
+        },
+        {
+          "label": "resident-gc-observation",
+          "command": [
+            "python3",
+            "tests/live_x/desktop_session_live.py",
+            "--prefix",
+            "/root/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+            "--version",
+            "1.1.6",
+            "--observe-only",
+            "--cgroup-parent",
+            "/sys/fs/cgroup",
+            "--trace-parent",
+            "/sys/kernel/tracing/instances",
+            "--gc-observe",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m28-observed/resident-gc-observation"
+          ],
+          "status": 0,
+          "seconds": 27.776077708000003
+        }
+      ],
+      "error": null
+    }
+  },
+  "samples": [
+    {
+      "profile": "reference",
+      "pair": 0,
+      "startup_ready_ms": 2769.134145999999,
+      "idle_seconds": 12.111224402999994,
+      "idle_cpu_ms": 105.552,
+      "idle_wakeups": 199,
+      "idle_new_task_wakeups": 8,
+      "idle_wakeups_per_second": 16.431038958431568,
+      "idle_retained_rss_kib": 49036,
+      "idle_retained_pss_kib": 25116,
+      "sampled_startup_rss_peak_kib": 62688,
+      "startup_boundary_charged_peak_bytes": 36880384,
+      "session_charged_peak_bytes": 36880384,
+      "key_echo_median_ms": 3.0525435000186008,
+      "key_echo_raw_ms": [
+        8.096115000000736,
+        4.490064000037819,
+        2.9420420000292324,
+        4.290061000006062,
+        3.163045000007969,
+        1.7740249999746993,
+        1.41702000001942,
+        1.6970240000091508,
+        4.59206600004336,
+        2.507035000007818,
+        5.113073000018176,
+        2.562036000028911
+      ],
+      "first_sample_delay_seconds": 0.012393294999981208,
+      "max_sample_gap_seconds": 0.2039485950000426,
+      "partial_samples": 161,
+      "expected_window_retirements": 4,
+      "kernel_phase_counts": [
+        {
+          "name": "launch",
+          "start_monotonic_seconds": 275.604474574,
+          "end_monotonic_seconds": 275.768446483,
+          "wakeup_count": 0,
+          "wakeup_new_count": 0
+        },
+        {
+          "name": "startup",
+          "start_monotonic_seconds": 275.768446483,
+          "end_monotonic_seconds": 278.60702618,
+          "wakeup_count": 3200,
+          "wakeup_new_count": 66
+        },
+        {
+          "name": "idle",
+          "start_monotonic_seconds": 278.60702618,
+          "end_monotonic_seconds": 290.718250583,
+          "wakeup_count": 199,
+          "wakeup_new_count": 8
+        },
+        {
+          "name": "activity",
+          "start_monotonic_seconds": 290.718250583,
+          "end_monotonic_seconds": 292.787409224,
+          "wakeup_count": 2434,
+          "wakeup_new_count": 118
+        },
+        {
+          "name": "shutdown",
+          "start_monotonic_seconds": 292.787409224,
+          "end_monotonic_seconds": 293.017069481,
+          "wakeup_count": 67,
+          "wakeup_new_count": 0
+        }
+      ],
+      "kernel_cpu_delta": {
+        "usage_usec": 3723491,
+        "user_usec": 1781352,
+        "system_usec": 1942139,
+        "nice_usec": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "throttled_usec": 0,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "trace_loss_checks": {
+        "cpu0": {
+          "entries": "7449",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "299096",
+          "oldest event ts": "275.769357",
+          "now ts": "293.180472",
+          "dropped events": 0,
+          "read events": "0"
+        },
+        "cpu1": {
+          "entries": "7205",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "289548",
+          "oldest event ts": "275.776752",
+          "now ts": "293.181290",
+          "dropped events": 0,
+          "read events": "0"
+        }
+      },
+      "ownership": {
+        "launch_state": "running",
+        "boot_identity": "e8c3effe-3112-443e-a1b2-32925a576067",
+        "observer": {
+          "pid": 861,
+          "start_ticks": 27485
+        },
+        "runtime_root": "/tmp/fvwm-session-runtime-nv1zyoxg",
+        "xserver": {
+          "pid": 862,
+          "start_ticks": 27527
+        },
+        "core": {
+          "pid": 865,
+          "start_ticks": 27577
+        },
+        "kernel": {
+          "cgroup": {
+            "path": "/sys/fs/cgroup/fvwm-session-861-33762e15e83b4006bfdb616631b59587",
+            "device": 27,
+            "inode": 3530
+          },
+          "trace": {
+            "path": "/sys/kernel/tracing/instances/fvwm-session-861-cbf61b70137840338a0d1f7ded13899d",
+            "device": 13,
+            "inode": 7517
+          }
+        },
+        "cleanup": {
+          "errors": [],
+          "runtime_closed": true
+        }
+      }
+    },
+    {
+      "profile": "reference",
+      "pair": 1,
+      "startup_ready_ms": 2753.858448000017,
+      "idle_seconds": 12.047039899000026,
+      "idle_cpu_ms": 114.083,
+      "idle_wakeups": 219,
+      "idle_new_task_wakeups": 8,
+      "idle_wakeups_per_second": 18.178739494187138,
+      "idle_retained_rss_kib": 49252,
+      "idle_retained_pss_kib": 25105,
+      "sampled_startup_rss_peak_kib": 61728,
+      "startup_boundary_charged_peak_bytes": 33267712,
+      "session_charged_peak_bytes": 33267712,
+      "key_echo_median_ms": 2.625989999984313,
+      "key_echo_raw_ms": [
+        2.4559909999766205,
+        1.4269939999849157,
+        1.2999950000107674,
+        5.3229800000167415,
+        2.1889920000148777,
+        3.0589880000206904,
+        2.8059889999667575,
+        2.6379899999824374,
+        2.613989999986188,
+        2.723989999992682,
+        2.0009920000347847,
+        2.76898900000333
+      ],
+      "first_sample_delay_seconds": 0.009014002000014898,
+      "max_sample_gap_seconds": 0.13287996799999746,
+      "partial_samples": 24,
+      "expected_window_retirements": 6,
+      "kernel_phase_counts": [
+        {
+          "name": "launch",
+          "start_monotonic_seconds": 330.303142328,
+          "end_monotonic_seconds": 330.498937375,
+          "wakeup_count": 0,
+          "wakeup_new_count": 0
+        },
+        {
+          "name": "startup",
+          "start_monotonic_seconds": 330.498937375,
+          "end_monotonic_seconds": 333.306224801,
+          "wakeup_count": 3744,
+          "wakeup_new_count": 64
+        },
+        {
+          "name": "idle",
+          "start_monotonic_seconds": 333.306224801,
+          "end_monotonic_seconds": 345.3532647,
+          "wakeup_count": 219,
+          "wakeup_new_count": 8
+        },
+        {
+          "name": "activity",
+          "start_monotonic_seconds": 345.3532647,
+          "end_monotonic_seconds": 347.24220881,
+          "wakeup_count": 2529,
+          "wakeup_new_count": 119
+        },
+        {
+          "name": "shutdown",
+          "start_monotonic_seconds": 347.24220881,
+          "end_monotonic_seconds": 347.473573927,
+          "wakeup_count": 55,
+          "wakeup_new_count": 0
+        }
+      ],
+      "kernel_cpu_delta": {
+        "usage_usec": 3439335,
+        "user_usec": 1576193,
+        "system_usec": 1863141,
+        "nice_usec": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "throttled_usec": 0,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "trace_loss_checks": {
+        "cpu0": {
+          "entries": "8008",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "321420",
+          "oldest event ts": "330.504433",
+          "now ts": "347.636753",
+          "dropped events": 0,
+          "read events": "0"
+        },
+        "cpu1": {
+          "entries": "6762",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "271816",
+          "oldest event ts": "330.505195",
+          "now ts": "347.637201",
+          "dropped events": 0,
+          "read events": "0"
+        }
+      },
+      "ownership": {
+        "launch_state": "running",
+        "boot_identity": "e8c3effe-3112-443e-a1b2-32925a576067",
+        "observer": {
+          "pid": 1144,
+          "start_ticks": 32954
+        },
+        "runtime_root": "/tmp/fvwm-session-runtime-qmn98z01",
+        "xserver": {
+          "pid": 1145,
+          "start_ticks": 32996
+        },
+        "core": {
+          "pid": 1148,
+          "start_ticks": 33050
+        },
+        "kernel": {
+          "cgroup": {
+            "path": "/sys/fs/cgroup/fvwm-session-1144-f461c9b000ec43dabc2e3d9a06c978ea",
+            "device": 27,
+            "inode": 3665
+          },
+          "trace": {
+            "path": "/sys/kernel/tracing/instances/fvwm-session-1144-dfdcbca773ac483bb8c26952dfed39c8",
+            "device": 13,
+            "inode": 9238
+          }
+        },
+        "cleanup": {
+          "errors": [],
+          "runtime_closed": true
+        }
+      }
+    },
+    {
+      "profile": "reference",
+      "pair": 2,
+      "startup_ready_ms": 2673.1916649999903,
+      "idle_seconds": 12.043468601999962,
+      "idle_cpu_ms": 168.563,
+      "idle_wakeups": 249,
+      "idle_new_task_wakeups": 12,
+      "idle_wakeups_per_second": 20.675106834143328,
+      "idle_retained_rss_kib": 49136,
+      "idle_retained_pss_kib": 25220,
+      "sampled_startup_rss_peak_kib": 61528,
+      "startup_boundary_charged_peak_bytes": 33148928,
+      "session_charged_peak_bytes": 33148928,
+      "key_echo_median_ms": 2.772979500036854,
+      "key_echo_raw_ms": [
+        5.290961000014249,
+        2.530981999996129,
+        2.5339809999991303,
+        4.459967999991932,
+        2.5619809999852805,
+        2.9259789999969144,
+        2.7959790000409157,
+        3.1009780000204046,
+        2.7439799999910974,
+        2.2589829999901667,
+        2.9029789999981404,
+        2.7499800000327923
+      ],
+      "first_sample_delay_seconds": 0.008266965000018445,
+      "max_sample_gap_seconds": 0.1541992830000254,
+      "partial_samples": 26,
+      "expected_window_retirements": 6,
+      "kernel_phase_counts": [
+        {
+          "name": "launch",
+          "start_monotonic_seconds": 349.313487315,
+          "end_monotonic_seconds": 349.540841339,
+          "wakeup_count": 0,
+          "wakeup_new_count": 0
+        },
+        {
+          "name": "startup",
+          "start_monotonic_seconds": 349.540841339,
+          "end_monotonic_seconds": 352.284488661,
+          "wakeup_count": 3464,
+          "wakeup_new_count": 67
+        },
+        {
+          "name": "idle",
+          "start_monotonic_seconds": 352.284488661,
+          "end_monotonic_seconds": 364.327957263,
+          "wakeup_count": 249,
+          "wakeup_new_count": 12
+        },
+        {
+          "name": "activity",
+          "start_monotonic_seconds": 364.327957263,
+          "end_monotonic_seconds": 366.365097626,
+          "wakeup_count": 2486,
+          "wakeup_new_count": 115
+        },
+        {
+          "name": "shutdown",
+          "start_monotonic_seconds": 366.365097626,
+          "end_monotonic_seconds": 366.584344028,
+          "wakeup_count": 36,
+          "wakeup_new_count": 0
+        }
+      ],
+      "kernel_cpu_delta": {
+        "usage_usec": 3518644,
+        "user_usec": 1541462,
+        "system_usec": 1977182,
+        "nice_usec": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "throttled_usec": 0,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "trace_loss_checks": {
+        "cpu0": {
+          "entries": "7754",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "311532",
+          "oldest event ts": "349.546306",
+          "now ts": "366.750827",
+          "dropped events": 0,
+          "read events": "0"
+        },
+        "cpu1": {
+          "entries": "7121",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "286068",
+          "oldest event ts": "349.549541",
+          "now ts": "366.751581",
+          "dropped events": 0,
+          "read events": "0"
+        }
+      },
+      "ownership": {
+        "launch_state": "running",
+        "boot_identity": "e8c3effe-3112-443e-a1b2-32925a576067",
+        "observer": {
+          "pid": 1342,
+          "start_ticks": 34855
+        },
+        "runtime_root": "/tmp/fvwm-session-runtime-d3zp87ta",
+        "xserver": {
+          "pid": 1343,
+          "start_ticks": 34897
+        },
+        "core": {
+          "pid": 1346,
+          "start_ticks": 34954
+        },
+        "kernel": {
+          "cgroup": {
+            "path": "/sys/fs/cgroup/fvwm-session-1342-033ef972c498439ead390add78032d2c",
+            "device": 27,
+            "inode": 3710
+          },
+          "trace": {
+            "path": "/sys/kernel/tracing/instances/fvwm-session-1342-285ca6e7d37f40718c4183002f581053",
+            "device": 13,
+            "inode": 8705
+          }
+        },
+        "cleanup": {
+          "errors": [],
+          "runtime_closed": true
+        }
+      }
+    },
+    {
+      "profile": "current",
+      "pair": 0,
+      "startup_ready_ms": 2114.9319760000367,
+      "idle_seconds": 12.081821547000004,
+      "idle_cpu_ms": 123.828,
+      "idle_wakeups": 434,
+      "idle_new_task_wakeups": 8,
+      "idle_wakeups_per_second": 35.92173566805951,
+      "idle_retained_rss_kib": 34004,
+      "idle_retained_pss_kib": 19099,
+      "sampled_startup_rss_peak_kib": 44720,
+      "startup_boundary_charged_peak_bytes": 23830528,
+      "session_charged_peak_bytes": 23830528,
+      "key_echo_median_ms": 2.558017500035703,
+      "key_echo_raw_ms": [
+        5.942039999979443,
+        3.253022000023975,
+        3.423024000028363,
+        2.5060170000301696,
+        2.712018000011085,
+        2.9180200000382683,
+        2.6100180000412365,
+        2.338016000010157,
+        1.6040109999835295,
+        1.4640100000065104,
+        1.4730099999837876,
+        1.2240080000083253
+      ],
+      "first_sample_delay_seconds": 0.009533126000007996,
+      "max_sample_gap_seconds": 0.19120143599997164,
+      "partial_samples": 149,
+      "expected_window_retirements": 4,
+      "kernel_phase_counts": [
+        {
+          "name": "launch",
+          "start_monotonic_seconds": 294.836914565,
+          "end_monotonic_seconds": 295.006643811,
+          "wakeup_count": 0,
+          "wakeup_new_count": 0
+        },
+        {
+          "name": "startup",
+          "start_monotonic_seconds": 295.006643811,
+          "end_monotonic_seconds": 297.170658394,
+          "wakeup_count": 3599,
+          "wakeup_new_count": 23
+        },
+        {
+          "name": "idle",
+          "start_monotonic_seconds": 297.170658394,
+          "end_monotonic_seconds": 309.252479941,
+          "wakeup_count": 434,
+          "wakeup_new_count": 8
+        },
+        {
+          "name": "activity",
+          "start_monotonic_seconds": 309.252479941,
+          "end_monotonic_seconds": 310.524198696,
+          "wakeup_count": 2186,
+          "wakeup_new_count": 3
+        },
+        {
+          "name": "shutdown",
+          "start_monotonic_seconds": 310.524198696,
+          "end_monotonic_seconds": 310.761303239,
+          "wakeup_count": 78,
+          "wakeup_new_count": 0
+        }
+      ],
+      "kernel_cpu_delta": {
+        "usage_usec": 2048456,
+        "user_usec": 1179807,
+        "system_usec": 868649,
+        "nice_usec": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "throttled_usec": 0,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "trace_loss_checks": {
+        "cpu0": {
+          "entries": "9536",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "381728",
+          "oldest event ts": "295.008957",
+          "now ts": "310.919299",
+          "dropped events": 0,
+          "read events": "0"
+        },
+        "cpu1": {
+          "entries": "4876",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "195528",
+          "oldest event ts": "295.013138",
+          "now ts": "310.920019",
+          "dropped events": 0,
+          "read events": "0"
+        }
+      },
+      "ownership": {
+        "launch_state": "running",
+        "boot_identity": "e8c3effe-3112-443e-a1b2-32925a576067",
+        "observer": {
+          "pid": 1060,
+          "start_ticks": 29406
+        },
+        "runtime_root": "/tmp/fvwm-session-runtime-qa8598tw",
+        "xserver": {
+          "pid": 1061,
+          "start_ticks": 29450
+        },
+        "core": {
+          "pid": 1064,
+          "start_ticks": 29501
+        },
+        "kernel": {
+          "cgroup": {
+            "path": "/sys/fs/cgroup/fvwm-session-1060-8649772c099c4e40b122d68c1418a3ea",
+            "device": 27,
+            "inode": 3575
+          },
+          "trace": {
+            "path": "/sys/kernel/tracing/instances/fvwm-session-1060-b11d7d2817d3475490a5e5ccabd1f198",
+            "device": 13,
+            "inode": 7868
+          }
+        },
+        "cleanup": {
+          "errors": [],
+          "runtime_closed": true
+        }
+      }
+    },
+    {
+      "profile": "current",
+      "pair": 1,
+      "startup_ready_ms": 2048.3421430000135,
+      "idle_seconds": 12.045608629000014,
+      "idle_cpu_ms": 111.002,
+      "idle_wakeups": 415,
+      "idle_new_task_wakeups": 8,
+      "idle_wakeups_per_second": 34.45238947917336,
+      "idle_retained_rss_kib": 32052,
+      "idle_retained_pss_kib": 16959,
+      "sampled_startup_rss_peak_kib": 44640,
+      "startup_boundary_charged_peak_bytes": 23965696,
+      "session_charged_peak_bytes": 23965696,
+      "key_echo_median_ms": 2.4600019999923006,
+      "key_echo_raw_ms": [
+        5.405005000000074,
+        2.5140019999980723,
+        2.9080020000264994,
+        2.1060020000049917,
+        3.127002999974593,
+        2.2380009999665162,
+        1.488001999973676,
+        2.7360020000060103,
+        2.2870019999459146,
+        2.0950019999759206,
+        2.502001999971526,
+        2.4180020000130753
+      ],
+      "first_sample_delay_seconds": 0.008392048000018804,
+      "max_sample_gap_seconds": 0.18377405100000033,
+      "partial_samples": 154,
+      "expected_window_retirements": 4,
+      "kernel_phase_counts": [
+        {
+          "name": "launch",
+          "start_monotonic_seconds": 312.595753671,
+          "end_monotonic_seconds": 312.82450698,
+          "wakeup_count": 0,
+          "wakeup_new_count": 0
+        },
+        {
+          "name": "startup",
+          "start_monotonic_seconds": 312.82450698,
+          "end_monotonic_seconds": 314.923274378,
+          "wakeup_count": 3413,
+          "wakeup_new_count": 23
+        },
+        {
+          "name": "idle",
+          "start_monotonic_seconds": 314.923274378,
+          "end_monotonic_seconds": 326.968883007,
+          "wakeup_count": 415,
+          "wakeup_new_count": 8
+        },
+        {
+          "name": "activity",
+          "start_monotonic_seconds": 326.968883007,
+          "end_monotonic_seconds": 328.300512333,
+          "wakeup_count": 2163,
+          "wakeup_new_count": 3
+        },
+        {
+          "name": "shutdown",
+          "start_monotonic_seconds": 328.300512333,
+          "end_monotonic_seconds": 328.52547352,
+          "wakeup_count": 75,
+          "wakeup_new_count": 0
+        }
+      ],
+      "kernel_cpu_delta": {
+        "usage_usec": 1925008,
+        "user_usec": 960388,
+        "system_usec": 964619,
+        "nice_usec": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "throttled_usec": 0,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "trace_loss_checks": {
+        "cpu0": {
+          "entries": "5610",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "224780",
+          "oldest event ts": "312.830066",
+          "now ts": "328.681322",
+          "dropped events": 0,
+          "read events": "0"
+        },
+        "cpu1": {
+          "entries": "8752",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "350464",
+          "oldest event ts": "312.825811",
+          "now ts": "328.681833",
+          "dropped events": 0,
+          "read events": "0"
+        }
+      },
+      "ownership": {
+        "launch_state": "running",
+        "boot_identity": "e8c3effe-3112-443e-a1b2-32925a576067",
+        "observer": {
+          "pid": 1102,
+          "start_ticks": 31183
+        },
+        "runtime_root": "/tmp/fvwm-session-runtime-gra5hip7",
+        "xserver": {
+          "pid": 1103,
+          "start_ticks": 31225
+        },
+        "core": {
+          "pid": 1106,
+          "start_ticks": 31283
+        },
+        "kernel": {
+          "cgroup": {
+            "path": "/sys/fs/cgroup/fvwm-session-1102-0f4a2b8808744d72824af6d03ee1c684",
+            "device": 27,
+            "inode": 3620
+          },
+          "trace": {
+            "path": "/sys/kernel/tracing/instances/fvwm-session-1102-abc0b7da666c4939a4300df52160a0d9",
+            "device": 13,
+            "inode": 7160
+          }
+        },
+        "cleanup": {
+          "errors": [],
+          "runtime_closed": true
+        }
+      }
+    },
+    {
+      "profile": "current",
+      "pair": 2,
+      "startup_ready_ms": 2118.796283999984,
+      "idle_seconds": 12.080088888000034,
+      "idle_cpu_ms": 120.341,
+      "idle_wakeups": 463,
+      "idle_new_task_wakeups": 8,
+      "idle_wakeups_per_second": 38.32753254489121,
+      "idle_retained_rss_kib": 31908,
+      "idle_retained_pss_kib": 16973,
+      "sampled_startup_rss_peak_kib": 44540,
+      "startup_boundary_charged_peak_bytes": 23871488,
+      "session_charged_peak_bytes": 23871488,
+      "key_echo_median_ms": 1.3399869999943803,
+      "key_echo_raw_ms": [
+        3.6739639999723295,
+        1.5219850000107726,
+        1.6439839999975447,
+        1.0569890000056148,
+        1.4969859999496293,
+        1.334987000007004,
+        1.2269879999848854,
+        1.3109870000107549,
+        1.4109859999962282,
+        1.2689870000031078,
+        1.3449869999817565,
+        1.250988000037978
+      ],
+      "first_sample_delay_seconds": 0.009676925000007941,
+      "max_sample_gap_seconds": 0.1532638119999774,
+      "partial_samples": 157,
+      "expected_window_retirements": 6,
+      "kernel_phase_counts": [
+        {
+          "name": "launch",
+          "start_monotonic_seconds": 368.443013965,
+          "end_monotonic_seconds": 368.610896679,
+          "wakeup_count": 0,
+          "wakeup_new_count": 0
+        },
+        {
+          "name": "startup",
+          "start_monotonic_seconds": 368.610896679,
+          "end_monotonic_seconds": 370.805269352,
+          "wakeup_count": 3983,
+          "wakeup_new_count": 23
+        },
+        {
+          "name": "idle",
+          "start_monotonic_seconds": 370.805269352,
+          "end_monotonic_seconds": 382.88535824,
+          "wakeup_count": 463,
+          "wakeup_new_count": 8
+        },
+        {
+          "name": "activity",
+          "start_monotonic_seconds": 382.88535824,
+          "end_monotonic_seconds": 384.077588667,
+          "wakeup_count": 2136,
+          "wakeup_new_count": 3
+        },
+        {
+          "name": "shutdown",
+          "start_monotonic_seconds": 384.077588667,
+          "end_monotonic_seconds": 384.304769446,
+          "wakeup_count": 98,
+          "wakeup_new_count": 0
+        }
+      ],
+      "kernel_cpu_delta": {
+        "usage_usec": 1863033,
+        "user_usec": 1016147,
+        "system_usec": 846885,
+        "nice_usec": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "throttled_usec": 0,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "trace_loss_checks": {
+        "cpu0": {
+          "entries": "5087",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "203860",
+          "oldest event ts": "368.612717",
+          "now ts": "384.470133",
+          "dropped events": 0,
+          "read events": "0"
+        },
+        "cpu1": {
+          "entries": "9773",
+          "overrun": 0,
+          "commit overrun": 0,
+          "bytes": "391252",
+          "oldest event ts": "368.617800",
+          "now ts": "384.470854",
+          "dropped events": 0,
+          "read events": "0"
+        }
+      },
+      "ownership": {
+        "launch_state": "running",
+        "boot_identity": "e8c3effe-3112-443e-a1b2-32925a576067",
+        "observer": {
+          "pid": 1543,
+          "start_ticks": 36768
+        },
+        "runtime_root": "/tmp/fvwm-session-runtime-cj0s9pnv",
+        "xserver": {
+          "pid": 1544,
+          "start_ticks": 36810
+        },
+        "core": {
+          "pid": 1547,
+          "start_ticks": 36861
+        },
+        "kernel": {
+          "cgroup": {
+            "path": "/sys/fs/cgroup/fvwm-session-1543-52630f5aca674c3d8bea8374d97c9f10",
+            "device": 27,
+            "inode": 3755
+          },
+          "trace": {
+            "path": "/sys/kernel/tracing/instances/fvwm-session-1543-30f5c47b9fb648ab9ec4602cad54f57a",
+            "device": 13,
+            "inode": 9771
+          }
+        },
+        "cleanup": {
+          "errors": [],
+          "runtime_closed": true
+        }
+      }
+    }
+  ],
+  "medians": {
+    "reference": {
+      "startup_ready_ms": 2753.858448000017,
+      "idle_cpu_ms": 114.083,
+      "idle_wakeups_per_second": 18.178739494187138,
+      "idle_retained_rss_kib": 49136,
+      "idle_retained_pss_kib": 25116,
+      "sampled_startup_rss_peak_kib": 61728,
+      "startup_boundary_charged_peak_bytes": 33267712,
+      "session_charged_peak_bytes": 33267712,
+      "key_echo_median_ms": 2.772979500036854
+    },
+    "current": {
+      "startup_ready_ms": 2114.9319760000367,
+      "idle_cpu_ms": 120.341,
+      "idle_wakeups_per_second": 35.92173566805951,
+      "idle_retained_rss_kib": 32052,
+      "idle_retained_pss_kib": 16973,
+      "sampled_startup_rss_peak_kib": 44640,
+      "startup_boundary_charged_peak_bytes": 23871488,
+      "session_charged_peak_bytes": 23871488,
+      "key_echo_median_ms": 2.4600019999923006
+    }
+  },
+  "resident_gc": {
+    "scope": "Resident stderr only; worker stderr is not collected.",
+    "enabled": true,
+    "observed_cycles": 0,
+    "cycles": [],
+    "max_observed_stop_the_world_clock_ms": null,
+    "malformed_lines": [],
+    "input_truncated": false,
+    "complete_parse": true,
+    "limit": "No observed cycle does not establish zero GC pauses; this workload does not establish worst-case latency."
+  },
+  "fresh_python_free": {
+    "null_endpoint": "actual character device 1:3",
+    "evidence": {
+      "system": [
+        "Linux",
+        "fvwm-linux-amd64",
+        "6.12.113+deb13-cloud-amd64",
+        "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+        "x86_64"
+      ],
+      "root": "/root/fvwm-module-waits-20261015/m28-python-free-gpnkhpoh",
+      "prefix": "/usr/local",
+      "python_free_namespace": true,
+      "startup_ready_ms": 1903.9849910000157,
+      "safe_power_and_locker_peers": "passed",
+      "installed_utility_commands": "passed",
+      "locker_failure_theme_captures": {
+        "slate-dark": "slate-dark-locker-notice.png",
+        "dune-light": "dune-light-locker-notice.png",
+        "classic-large": "classic-large-locker-notice.png"
+      },
+      "controller_restart_without_power_replay": "passed",
+      "same_locker_survives_controller_restart": 1309,
+      "existing_logout_core_quit": "passed",
+      "same_locker_survives_core_retirement": 1309,
+      "fixture_locker_reaped": 0,
+      "observation_cleanup_errors": [],
+      "core_exit": 0
+    }
+  },
+  "cleanup": {
+    "removed_files": 157,
+    "removed_bytes": 94186188,
+    "verified_before_unlink": true,
+    "completed_kernel_journals_checked": 7,
+    "postrun_global_tracing_on": "1",
+    "postrun_subtree_control": "cpu memory pids",
+    "preserved": [
+      "canonical host evidence",
+      "source",
+      "builds/caches",
+      "install stages",
+      "VM disks",
+      "other owners"
+    ]
+  },
+  "VM_cleanup": [
+    {
+      "owned_pid": 76112,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    },
+    {
+      "owned_pid": 95975,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    }
+  ],
+  "limits": [
+    "No native-CPU/hardware/release qualification.",
+    "RSS/PSS sums are polls, not simultaneous physical memory; unobserved short-lived tasks and phase gaps remain explicit.",
+    "Cgroup memory.peak is charged memory, includes kernel/cache and excludes pages charged elsewhere; not RSS/PSS.",
+    "Kernel wakeup tracepoint occurrences are attributed tasks, not IRQs/timers/power.",
+    "Gctrace enabled; no cycles observed in resident stderr, so GC pauses remain unknown; worker stderr is outside scope.",
+    "Synthetic key-to-core Echo excludes physical input and paint.",
+    "Requested-theme capture filenames do not prove effective appearance or settled bar; mapped notice controls were inspected.",
+    "Private kernel resources need existing writable parents; no mounts/controller/global tracing or privilege changes.",
+    "XIO/native crash/SIGKILL can bypass Python cleanup; journal exact ownership supports operator recovery, not automatic process-name cleanup."
+  ],
+  "routing": {
+    "requested_analyst": "gpt-6-astra/high",
+    "requested_implementers_reviewer": "gpt-6.1-sol/high",
+    "observed_model_client_metadata": "Unavailable; requested selection unverified.",
+    "agent_review_not_independent_human_approval": true
+  },
+  "github_mirror": {
+    "issue23": "Manually closed by gonz0w on 2026-10-24T23:28:57Z; preserve state without inferring remaining tracker acceptance complete.",
+    "issue7": "open",
+    "issue15": "open"
+  }
+}

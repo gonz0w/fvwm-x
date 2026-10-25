@@ -1,12 +1,11 @@
 subdir('FvwmPrompt')
 
-# We should tighten up the dependencies here, but for now we'll just use all_found_deps.
 fvwm_root = executable(
     'fvwm-root',
     'fvwm-root.c',
     include_directories: includedirs,
     link_with: libfvwm3,
-    dependencies: all_found_deps,
+    dependencies: all_compile_deps + graphics_init_runtime_deps,
     install: true,
 )
 

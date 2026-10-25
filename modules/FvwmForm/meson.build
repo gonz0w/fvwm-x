@@ -25,11 +25,12 @@ fvwmform_sources = [
     'ParseCommand.c',
 ]
 
-# TODO: Tidy up the dependencies
 fvwm_form = executable(
     'FvwmForm',
     fvwmform_sources,
-    dependencies: [all_found_deps],
+    dependencies: all_compile_deps + localized_text_runtime_deps + [
+        summary_depvals['libevent'],
+    ],
     include_directories: includedirs,
     install_dir: fvwm_moduledir,
     install: true,

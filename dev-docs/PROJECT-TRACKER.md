@@ -582,7 +582,8 @@ the next periodic comparison is due then, with no reference reset here.
 ## M3.2 core and archive dependency ownership
 
 Owner: current M3 implementation chat; LINK-TARGETS-01 #184 / LINK-01 #49.
-Status: focused Linux/FreeBSD default/reduced checks passed; ready for review.
+Status: merged in PR205 as `7476fccc71799f26664f0226c91798fa6d054622`;
+canonical signature/DCO/tree verified; branch retired.
 Selected after merged PR204, 2026-10-25.
 Outcome: make the existing libfvwm3 archive's shared requirements compile-only,
 and declare explicit runtime dependencies for the core, FvwmAuto, FvwmEvent,
@@ -638,6 +639,70 @@ Next: remaining module ownership groups, then combined M3 six-target/default/
 reduced/optional/offline install/static acceptance. #184/#49 remain open;
 M4 renderer retirement and unrelated cleanup stay separately owned.
 
+## M3.3 remaining production module dependency owners
+
+Owner: current M3 implementation chat; LINK-TARGETS-01 #184 / LINK-01 #49.
+Status: focused Linux default staged-X and reduced link/load passed; ready for review.
+Selected after merged PR205, 2026-10-25.
+Outcome: replace broad link bags for FvwmAnimate, Backer, Buttons, Form,
+IconMan, Ident, Pager, Script and fvwm-root with their actual runtime owners.
+Make Script's private libWidgets compile requirements non-propagating too;
+preserve its existing source/archive structure and ordinary link_with. Reuse
+existing full dependency objects and all_compile_deps visibility. Prefer simple
+named shared groups where real extracted-object owners match; do not invent a
+framework, split archives, rename APIs or retire optional backends by inference.
+Acceptance: before/after compile commands, archive/object identity, link maps,
+undefined symbols, actual loader closure, install mapping and size for all nine
+production consumers. Rebuild changed consumers, preserve static/transitive
+requirements and supported legacy initialization. Run one coherent Linux default
+native-X module checkpoint and reduced-profile build/link/load checks. Use six
+existing font/widget/timer/layout/session fixture commands with isolated artifact
+paths and exact module copies staged at Meson's install mapping. One font driver
+covers all six text modules; Buttons/Script session checks retain real SM/ICE
+ownership. This is targeted copying, not a complete meson install. Distinguish
+instrumented probes and non-executed Animate/Backer/root targets from exercised
+production modules. No C/runtime/configuration change or test mirroring Meson text.
+Current Linux/BSD dependency objects already have focused M3.1/M3.2 evidence;
+this portable target-list batch does not boot BSD absent a changed platform
+contract or concrete failure. Full six-target/compiler/default/reduced/optional/
+offline install and remaining static coverage stays at combined M3 closure.
+No theme/screenshot repeat without changed UI. Due comparison completed at PR204;
+performance cadence is 1/5 after merged PR205, 2/5 on this implementation merge.
+Dependencies: accepted M2, merged M3.1/M3.2 and existing owner-controlled native
+caches. Non-goals: test-target dependency audit beyond affected widget consumers,
+M4 backend retirement, dependency/version/toolchain changes, features/tuning,
+M6/M7 or release. Lead owns tracker/native execution/integration/evidence;
+bounded analysis/implementation and separate final review follow PROJECT.md.
+Preserve other owners, builds, stages and VM disks. Retire only fully verified
+completed evidence duplicates; stop at one signed reviewable PR with honest
+focused results and remaining M3 closure gates.
+
+Outcome: all nine production consumers now use explicit image/graphics/text/
+localized/session owners; Script libWidgets is compile-only. Both Linux profiles
+retain every compile command, config, ninety shared archive and twenty-one widget
+object identities and both archive hashes. Exactly nine link commands change
+among 138/128 consumers; 129/119 other commands remain exact. Selected extraction,
+direct needed sets and controlled recursive paths stay identical; all sizes are
+neutral. Eighteen exact copies follow Meson's install mapping. Six default staged
+X contracts pass through font/widget/timer/layout/session fixtures. An initial
+four relative argv values used build binaries, so only those four repeat with
+absolute staged paths; original passes/mismatch and first two staged checks stay
+preserved. Ten total X invocations; no source/build correction or reduced X.
+Without LD_LIBRARY_PATH, reduced text modules resolve transitive PNG from the
+system path; private build-provider and ambient package versions stay distinct.
+Separate source/evidence review finds no actionable defect. Two full-CRC archives
+verify 241 manifest payloads plus two manifest-file hashes. Retire 251 completed
+guest duplicates (44,657,580 bytes); owned VM powers off normally, with source,
+builds/caches/existing stages/disks and canonical host archives preserved.
+[Report](verification/VERIFICATION-2026-10-25-M3-MODULE-LINKAGE.md),
+[machine inventory](verification/VERIFICATION-2026-10-25-M3-MODULE-LINKAGE.json).
+Next: combined M3 six-target/compiler/default/reduced/optional/offline install
+and remaining static/package acceptance. #184/#49 remain open. Animate, Backer
+and fvwm-root direct execution is not claimed by this group; retain that gap at
+the combined checkpoint. No new UI/theme/screenshot qualification, BSD boot,
+sanitizer matrix or performance comparison. PR204 reference stays 1/5 after
+PR205, 2/5 on this merge; M4 and unrelated cleanup remain separately owned.
+
 ## Current checkpoint status
 
 This table is the current summary for this thread. The dated entries below
@@ -673,8 +738,8 @@ in [PR199](https://github.com/gonz0w/fvwm-x/pull/199) and M2.7 in
 [PR201](https://github.com/gonz0w/fvwm-x/pull/201); M2.9 merged in
 [PR202](https://github.com/gonz0w/fvwm-x/pull/202). M2.10 merged in [PR203](https://github.com/gonz0w/fvwm-x/pull/203). Cam accepts
 M2 session evidence and documented limits on 2026-10-25. M2 is complete for this
-maintenance handoff; M3.1 merged in PR204 and M3.2 core/archive/module ownership
-is focused-qualified for review. Broader
+maintenance handoff; M3.1/M3.2 merged in PR204/205. M3.3 completes explicit
+production target declarations with focused checks passed, ready for review. Broader
 native/platform/physical/release gates retain their separate scope. #7/#15 stay
 open; GitHub #23 retains its closure with M2 owner acceptance now explicit. New feature pickup remains paused.
 
@@ -721,7 +786,7 @@ core/MFL/Form hashes and sizes remain exact. No consistent speed improvement
 or regression follows. This measures metadata scan/worker handoff in the
 previously exercised AppleHV AArch64 environment, not native UI latency or a new
 resident-controller acceptance. M2 owner acceptance remains complete. Preserve
-merged PR204 as the new reference at **0/5**, **1/5 on M3.2 merge**. Planning/docs
+merged PR204 as the new reference at **1/5 after merged PR205**, **2/5 on M3.3 merge**. Planning/docs
 and evidence-only checkpoints do not advance it; tuning stays deferred.
 [Current report](verification/PERFORMANCE-2026-10-25-PR204.md),
 [previous PR194 report](verification/PERFORMANCE-2026-10-24-PR194.md).
@@ -751,7 +816,8 @@ or release gates, or advance either verification counter.
 | --- | --- | --- |
 | M2.6 runtime/session actions | Merged PR199 | Power/locker ownership, retired policy RPC, shared self-worker resolution; Python-free installed proof, three themes and paired session observations. Full owner/platform acceptance remains. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md). |
 | M2.7 controller/platform handoff | Merged PR200 | Six-target default/reduced helpers, seven installed peers per final profile, native capture and Linux settings/four BSD default-X sessions. Fixes successful OpenBSD executable aliases and PNG-disabled admission; remaining full-session/native-CPU acceptance stays open. [Report](verification/VERIFICATION-2026-10-24-M2-PLATFORM-HANDOFF.md). |
-| M3.2 core/archive/four-module linkage | Focused checks passed; ready for review | Compile-only shared archive and explicit core/Auto/Event/MFL/Rearrange runtime dependencies. All compile/archive inputs and loaded library sets stay exact; 36 focused Linux/FreeBSD entries pass. Due performance comparison complete; full M3 qualification remains pending. [Report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md). |
+| M3.3 remaining production module linkage | Focused checks passed; ready for review | Nine production consumers and Script widget archive have explicit runtime/compile owners. Linux default staged-X and reduced link/load pass; source/archive/loaded closure unchanged, sizes neutral. Six staged fixture contracts compose ten X invocations after four scoped argv corrections. Full M3 qualification remains pending. [Report](verification/VERIFICATION-2026-10-25-M3-MODULE-LINKAGE.md). |
+| M3.2 core/archive/four-module linkage | Merged PR205; focused checks passed | Compile-only shared archive and explicit core/Auto/Event/MFL/Rearrange runtime dependencies. All compile/archive inputs and loaded library sets stay exact; 36 focused Linux/FreeBSD entries pass. Due performance comparison complete; full M3 qualification remains pending. [Report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md). |
 | M3.1 image-worker linkage | Merged PR204; focused checks passed | Named decoder/worker dependencies, narrow SVG header and measured symbol/link/runtime ownership. Four Linux/FreeBSD profiles and affected X checks pass; full M3 qualification remains pending. [Report](verification/VERIFICATION-2026-10-25-M3-WORKER-LINKAGE.md). |
 | M2.10 native ARM64 subset | Merged PR203; owner accepted M2 | Three existing installed X runs on verified AppleHV Linux ARM64, actual staged/live AArch64 identities and unchanged binaries/tests. Cam explicitly accepts accumulated session evidence/limits on 2026-10-25, authorizing M3. [Report](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md). |
 | M2.9 bounded workload/handoff | Merged PR202 | Eight discovery/search/files rounds per run, eight natural resident GC traces and synthetic input snapshots; no production build/matrix. Native-CPU/full owner acceptance remains before M3. [Acceptance map](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md). |
@@ -1399,7 +1465,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | XIO-01 | P2 / atom batching locally qualified; query work queued | Independent atom tables now use three batches for 100 core/ICCCM/EWMH names, with finite missing-entry fallback. Exact mappings, selection ownership and supported-property order pass actual Linux and native FreeBSD/OpenBSD ARM64 controls; Scoped pure leak-enabled and actual-core leak-disabled sanitizer checks pass. [Report](verification/VERIFICATION-2026-10-07-ATOM-BATCH.md). Combined atom/expose/icon qualification passes eight profiles/1096 entries, 120 installed identities, 52 default BSD X invocations, optional 142/122 and 21 scoped sanitizers. [Combined report](verification/VERIFICATION-2026-10-07-ATOM-EXPOSE.md). Highest-override query selection now scans the root snapshot from top to bottom, skips already-excluded internal windows and stops at the highest eligible sibling. The controlled 108-child fixture uses 3 attribute reads instead of 108; full current attributes remain queried for managed frames. Real override/InputOnly order, focus and popup teardown pass focused Linux/BSD ARM64/scoped sanitizer checks; combined qualification passes eight profiles/1144 entries, 120 installed identities, 72 default BSD X invocations, optional 148/128 and 27 scoped sanitizers from the exact 1301-file snapshot. Other query/barrier work remains queued. Batch independent atom tables and remove individually proven unnecessary XSync barriers. Profile root-tree plus per-child attribute queries in stacking; use STACK-01 identities to skip only known/current managed frames. Preserve unmanaged/InputOnly/hidden/destroyed-window behavior and error/order boundaries. A narrow bounded XCB experiment requires measured remaining query cost, LIB-07 and six-target review; retain Xlib event ownership. Whole-core migration and new mandatory packages are not approved. See optimization roadmap. |
 | BOX-01 | P2 / queued | Sandbox narrow helpers/modules first with OpenBSD pledge/unveil and FreeBSD Capsicum where appropriate; evaluate Linux helper restrictions. Preserve reload/spawn/font/theme access. Whole-core sandbox policy requires an explicit compatibility review. |
 | LIB-05 | P2 / Xlib requirement locally qualified; remaining floors queued | Unused direct libxkbcommon requirement removed and actual Xlib XKB header/symbol checked in PR144; six-target build/install/X checkpoint passes. Xt/Xtrans header consumers remain. Actual per-target dependency/interpreter floors and broader linkage review stay open; retain Xlib/libevent/Xft unless evidence justifies an approved change. [Report](verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md). |
-| LINK-01 | P2 / M3 active; core/archive and first module group focused checks passed | M3.1 merged PR204 gives worker/decoder explicit owners. M3.2 makes the shared archive compile-only and core/four modules explicit runtime owners; 36 Linux/FreeBSD default/reduced entries pass with unchanged archive/loaded closure. Remaining module groups and full six-target/default/reduced/optional/offline install acceptance stay at combined closure; #184/#49 remain open. [Core/archive report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md). Reuse PR144 xkbcommon removal. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
+| LINK-01 | P2 / M3 active; production target declarations focused-qualified | M3.1/M3.2 merged PR204/205; M3.3 narrows the remaining nine production consumers and widget archive. Linux default staged-X and reduced link/load retain compile/archive/loaded closure identities and neutral sizes. Full six-target/default/reduced/optional/offline install/static acceptance stays at combined closure; #184/#49 remain open. [Remaining module report](verification/VERIFICATION-2026-10-25-M3-MODULE-LINKAGE.md). Reuse PR144 xkbcommon removal. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | LIB-04 | P2 / Later; child #183 queued | Consolidate obsolete SVG backends against a maintained librsvg/Cairo floor; preserve SVG-disabled builds and rendering/worker contracts. LunaSVG comparison remains optional and separate; no adoption approved. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | LIB-06 | P2 / Later evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
@@ -3477,3 +3543,13 @@ reader results are separate from the subsequent interpreter/file work.
   browser comparison uses no builds, finds overlapping ranges and resets the
   reference to PR204 0/5 (1/5 on this implementation merge). Full M3/#184/#49
   platform/install/static acceptance remains open. [Report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md).
+
+- 2026-10-25: PR205 merges with canonical signature/DCO/tree verified and branch
+  retired. M3.3 batches the remaining nine production dependency owners and
+  compile-only libWidgets. Linux default/reduced builds/maps/load checks retain
+  exact compile/archive/config inputs and loaded sets; six default staged X
+  contracts compose ten invocations after four targeted argv corrections. No
+  source/build correction, reduced X, BSD boot or full matrix. Two full-CRC
+  archives precede 251 completed guest duplicate retirements and normal owned-VM
+  shutdown. Full M3/#184/#49 acceptance remains open; PR204 performance cadence
+  is 1/5, 2/5 on this implementation merge. [Report](verification/VERIFICATION-2026-10-25-M3-MODULE-LINKAGE.md).

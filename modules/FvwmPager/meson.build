@@ -20,7 +20,7 @@ fvwmpager_sources = [
 fvwm_pager = executable(
     'FvwmPager',
     sources: fvwmpager_sources,
-    dependencies: [all_found_deps],
+    dependencies: all_compile_deps + localized_text_runtime_deps,
     include_directories: includedirs,
     install_dir: fvwm_moduledir,
     install: true,

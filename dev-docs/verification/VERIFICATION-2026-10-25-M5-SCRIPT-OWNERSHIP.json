@@ -1,0 +1,297 @@
+{
+  "base": "1f80945c91e26cf39ece071ba3b338dba683f964",
+  "scope": "M5 Script outgoing-message ownership; stacking evidence reconciliation",
+  "final_source": {
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "e3bde57e36263daa0f3f6ff739c98c507ef980c348d1ef6134f59ff6d4646790",
+      "mode": 420
+    },
+    "modules/FvwmScript/Instructions.c": {
+      "sha256": "a0acced576aab562d3ed51163da08c89df6dc66e4583df781780cf6ea6edb2c6",
+      "mode": 420
+    },
+    "modules/FvwmScript/meson.build": {
+      "sha256": "cf7487dd356553f0876d8aa816cbbfa8dc02e130982a74c6670ba15887243418",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_delay.c": {
+      "sha256": "0addd3ca50d9d1e92156d125f6380412ca3cd6bc4c795e7e4d2c2fc678b5a592",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_delay.h": {
+      "sha256": "eb91c2aaca02a2ce0008a4a181726a6102776561c87e0692e067928348f5a836",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_message.c": {
+      "sha256": "2dc0ce09731a6d249cf5e4616126330f04e1fc23ec99708607c36497eacafd4b",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_message.h": {
+      "sha256": "55ab951cd0eb045d0878e45a75b832b245f064bc0f56dcc00dcf73d35c2cca4a",
+      "mode": 420
+    },
+    "modules/FvwmScript/types.h": {
+      "sha256": "98971446692d4f822b82e4ae905fc81e70c88696c9a40ba2eec1accdbd152703",
+      "mode": 420
+    },
+    "tests/live_x/script_message_live.py": {
+      "sha256": "13627a9d86e4a2bb29571927e77db0f91d9ff60b88e28a72eedeb80ed7ab3433",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "bfb7d7a602dd2e003ab18465c8c5142acff9e475c47e548afe92aee28a9fa6b1",
+      "mode": 420
+    },
+    "tests/test_script_delay.c": {
+      "sha256": "34c0e46b227b93c1b95ac0266c0d630a09ea3fdfff034986ebfe5d91f7efb990",
+      "mode": 420
+    },
+    "tests/test_script_message.c": {
+      "sha256": "7a18636913ba370290b4f090f30674961ef3bce273936b6853a37011c751ac70",
+      "mode": 420
+    }
+  },
+  "tested_binaries": {
+    "build-gcc": {
+      "sha256": "ec444498c0c9536ab8d1885a93dd03a5e4a1f20b7451f6a219ea2079b9751697",
+      "bytes": 2206896
+    },
+    "build-module-waits-asan": {
+      "sha256": "238a7e48037a66c0c830ada388651808e10d581d6ffd2090285fe8f1a5985813",
+      "bytes": 10691816
+    }
+  },
+  "commands": [
+    {
+      "label": "normal-configure",
+      "args": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc"
+      ],
+      "status": 0,
+      "seconds": 0.9298983430198859
+    },
+    {
+      "label": "normal-build",
+      "args": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmScript/FvwmScript",
+        "tests/test-script-message",
+        "tests/test-script-delay",
+        "tests/test-script-packet"
+      ],
+      "status": 0,
+      "seconds": 1.1838741170067806
+    },
+    {
+      "label": "normal-units",
+      "args": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "script-message",
+        "script-delay",
+        "script-packet"
+      ],
+      "status": 0,
+      "seconds": 1.5476413489959668
+    },
+    {
+      "label": "normal-x-message",
+      "args": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_message_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-script-20261025/final2/normal-x-message"
+      ],
+      "status": 0,
+      "seconds": 6.357325033022789
+    },
+    {
+      "label": "normal-x-packet",
+      "args": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_transport_live.py",
+        "--packet-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-script-20261025/final2/normal-x-packet"
+      ],
+      "status": 0,
+      "seconds": 0.5353375269914977
+    },
+    {
+      "label": "asan-configure",
+      "args": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+      ],
+      "status": 0,
+      "seconds": 1.0982211999944411
+    },
+    {
+      "label": "asan-build",
+      "args": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "modules/FvwmScript/FvwmScript",
+        "tests/test-script-message",
+        "tests/test-script-delay",
+        "tests/test-script-packet"
+      ],
+      "status": 0,
+      "seconds": 3.0714299510000274
+    },
+    {
+      "label": "asan-units",
+      "args": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "script-message",
+        "script-delay",
+        "script-packet"
+      ],
+      "status": 0,
+      "seconds": 1.5821185839886311
+    },
+    {
+      "label": "asan-x-message",
+      "args": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_message_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-script-20261025/final2/asan-x-message"
+      ],
+      "status": 0,
+      "seconds": 6.521222192008281
+    },
+    {
+      "label": "asan-x-packet",
+      "args": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_transport_live.py",
+        "--packet-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-script-20261025/final2/asan-x-packet"
+      ],
+      "status": 0,
+      "seconds": 0.5508473829831928
+    }
+  ],
+  "x_message": {
+    "normal": {
+      "silent-admitted": 40,
+      "silent": {
+        "status": "passed",
+        "seconds": 2.020878076989902
+      },
+      "drain-admitted": 40,
+      "drain": {
+        "status": "passed",
+        "seconds": 0.062007797008845955
+      },
+      "invalid-admitted": 40,
+      "invalid-refusals": 116,
+      "invalid": {
+        "status": "passed",
+        "seconds": 2.046951796975918
+      },
+      "cancel-admitted": 40,
+      "cancel": {
+        "status": "passed",
+        "seconds": 0.004242779017658904
+      },
+      "empty": {
+        "status": "passed",
+        "seconds": 0.05117747400072403
+      }
+    },
+    "asan": {
+      "silent-admitted": 40,
+      "silent": {
+        "status": "passed",
+        "seconds": 2.028487128991401
+      },
+      "drain-admitted": 40,
+      "drain": {
+        "status": "passed",
+        "seconds": 0.11217322401353158
+      },
+      "invalid-admitted": 40,
+      "invalid-refusals": 112,
+      "invalid": {
+        "status": "passed",
+        "seconds": 2.0465372940234374
+      },
+      "cancel-admitted": 40,
+      "cancel": {
+        "status": "passed",
+        "seconds": 0.05537721200380474
+      },
+      "empty": {
+        "status": "passed",
+        "seconds": 0.05604142398806289
+      }
+    }
+  },
+  "tightened_invalid": {
+    "normal": {
+      "invalid-admitted": 40,
+      "invalid-refusals": 115,
+      "invalid": {
+        "status": "passed",
+        "seconds": 2.0488592679903377
+      }
+    },
+    "asan": {
+      "invalid-admitted": 40,
+      "invalid-refusals": 111,
+      "invalid": {
+        "status": "passed",
+        "seconds": 2.053426799015142
+      }
+    }
+  },
+  "baseline": {
+    "silent_initial": "fixture assertion failure (expected root owner was incorrect)",
+    "silent_corrected": "passes old binary; indefinite hang not reproduced",
+    "drain": "fails selection delivery timeout",
+    "empty": "fails 1.5-second exit deadline"
+  },
+  "qualification": "Local Linux ARM64 guest; emulated passes do not establish native-CPU release qualification",
+  "review": "Independent source review: one refusal-test timeout finding corrected; no remaining findings",
+  "deferred": [
+    "six-target/install matrix (no changed OS/API/ABI/dependency contract)",
+    "native-CPU release sanitizer qualification",
+    "whole-Script resource budgets and child-constructor/module-termination work"
+  ],
+  "private_archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-streams/native-evidence.tgz",
+    "sha256": "b0e373fe273fe2832f6a49469a52151c4eeb217e455880874dfd09a3b5b9e8d5",
+    "bytes": 1032305,
+    "all_member_payloads_read": true
+  }
+}

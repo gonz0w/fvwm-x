@@ -118,7 +118,9 @@ corresponding script commands are not used in the script.
   commands, set an explicit larger limit before launching the module, for
   example `*FvwmScript: CommandTimeout 15000`. A timeout returns empty text,
   discards partial output and terminates the command's own process group,
-  allowing a brief cleanup interval. Commands remain trusted shell commands.
+  allowing a brief cleanup interval. Module termination also cancels an active
+  command, including one that has closed stdout. Commands remain trusted shell
+  commands.
 *FvwmScript: FIFOTimeout milliseconds::
   Limits each SendMsgAndGet call in modes 0 and 1 to 5000 milliseconds by
   default, including helper startup, command writing and reply collection.
@@ -565,7 +567,9 @@ ChangeWindowTitleFromArg numarg::
 ChangeLocaleTitle id1 id2::
   As ChangeTitle but use the locale catalog(s) defined with UseGettext.
 ChangeIcon id1 id2::
-  Set the icon of the widget numbered _id1_ to _id2_.
+  Set the icon of the widget numbered _id1_ to _id2_. If the file cannot
+  be found or decoded, the previous icon is removed. Repeat ChangeIcon
+  after the image becomes available to load it; retry is not automatic.
 ChangeForeColor id1 \{color}::
   Set the foreground color of the widget numbered _id1_ to {_color_}.
 ChangeBackColor id1 \{color}::
@@ -620,6 +624,12 @@ SendToScript id_script \{str11} \{str2} etc::
   Send a message to the script identified by id_script. The message is
   the concatenation of str1, str2... Invalid destinations are ignored;
   messages including their terminator must fit the 32 KiB selection limit.
+  At most 40 outgoing messages are queued. Each receiver collects its messages
+  in send order. On normal exit, the script keeps its selection available for
+  up to two seconds in total to deliver queued messages, then discards any
+  messages still pending. Unrelated requests do not extend this grace period;
+  termination or a connection error cancels it. An empty or drained queue
+  exits immediately. X server calls still require a responsive server.
 
 
 Key _Keyname_ _Modifier_ _id_ _sig_ _str1_ _str2_ etc::
@@ -675,7 +685,10 @@ Here is the complete list of arguments:
   positions return an empty string. Binary output containing NUL bytes and
   invalid numeric indices are rejected. Commands are limited to 64 KiB.
   Commands remain synchronous in the module process, with the CommandTimeout
-  deadline described above. A timeout does not publish a cache entry.
+  deadline described above. Timeout, module termination, child setup failure or failure
+  to start the shell return empty text without publishing a cache entry or
+  replacing the last successful cached command. An executed shell's nonzero exit
+  status, including 127, still permits collecting its stdout.
 (NumToHex int width)::
   Return the uppercase hexadecimal value of _int_, padded with leading
   zeroes to at least _width_ characters. Zero or negative widths use the

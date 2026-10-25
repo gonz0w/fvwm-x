@@ -149,7 +149,6 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-#ifdef HAVE_SIGACTION
 	{
 		struct sigaction  sigact;
 
@@ -172,30 +171,6 @@ int main(int argc, char **argv)
 		sigaction(SIGINT,  &sigact, NULL);
 		sigaction(SIGHUP,  &sigact, NULL);
 	}
-#else
-	/* We don't have sigaction(), so fall back to less robust methods.  */
-#ifdef USE_BSD_SIGNALS
-	fvwmSetSignalMask(sigmask(SIGPIPE) |
-			  sigmask(SIGTERM) |
-			  sigmask(SIGQUIT) |
-			  sigmask(SIGINT) |
-			  sigmask(SIGHUP));
-#endif
-
-	signal(SIGPIPE, TerminateHandler);
-	signal(SIGTERM, TerminateHandler);
-	signal(SIGQUIT, TerminateHandler);
-	signal(SIGINT,  TerminateHandler);
-	signal(SIGHUP,  TerminateHandler);
-
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGPIPE, 1);
-	siginterrupt(SIGTERM, 1);
-	siginterrupt(SIGQUIT, 1);
-	siginterrupt(SIGINT, 1);
-	siginterrupt(SIGHUP, 1);
-#endif
-#endif
 
 	/* Parse command line options */
 	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);

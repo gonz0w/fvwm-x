@@ -1,0 +1,118 @@
+{
+  "reference_checkpoint": "merged PR204 browser",
+  "candidate_checkpoint": "M5 process checkpoint; browser unchanged",
+  "method": "one warmup each then five alternating pairs, 4096 empty files, os.wait4; no build",
+  "reference_reconstruction": "Reference copy uses byte-identical preserved PR204-qualified browser SHA; no distinct browser implementation exists in this batch. Paired timings show scheduling variance, not code optimization.",
+  "binaries": {
+    "reference": {
+      "path": "/tmp/fvwm-m5-process-20261025/pr204-browser-reference",
+      "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+      "bytes": 5623589,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3594030\t  88707\t33805464\t37488201\t23c0649\t/tmp/fvwm-m5-process-20261025/pr204-browser-reference\n"
+    },
+    "current": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser",
+      "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+      "bytes": 5623589,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3594030\t  88707\t33805464\t37488201\t23c0649\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser\n"
+    }
+  },
+  "scan_observations": [
+    {
+      "binary": "reference",
+      "wall_seconds": 0.008629343006759882,
+      "user_seconds": 0.0032679999999999996,
+      "system_seconds": 0.006516999999999999,
+      "max_rss_kib": 25652,
+      "entries": 4096,
+      "repeat": 0
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.009392846986884251,
+      "user_seconds": 0.005879,
+      "system_seconds": 0.004896,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 0
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.0087653020163998,
+      "user_seconds": 0.003276,
+      "system_seconds": 0.006559,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 1
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.008935468998970464,
+      "user_seconds": 0.004698,
+      "system_seconds": 0.005621999999999999,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 1
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.009522056003334,
+      "user_seconds": 0.004229999999999999,
+      "system_seconds": 0.006332,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 2
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.008773218025453389,
+      "user_seconds": 0.00248,
+      "system_seconds": 0.007464999999999999,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 2
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.008550550002837554,
+      "user_seconds": 0.002542,
+      "system_seconds": 0.00763,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 3
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.009481513989157975,
+      "user_seconds": 0.003544,
+      "system_seconds": 0.007085999999999999,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 3
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.009452055994188413,
+      "user_seconds": 0.0026219999999999998,
+      "system_seconds": 0.007858,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 4
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.009015927993459627,
+      "user_seconds": 0.003067,
+      "system_seconds": 0.00716,
+      "max_rss_kib": 25952,
+      "entries": 4096,
+      "repeat": 4
+    }
+  ],
+  "guest_identity": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux\n",
+  "storage": "Filesystem      Size  Used Avail Use% Mounted on\noverlay         100G  100G  130M 100% /\n",
+  "baseline_commit": "b53609df8f67c37c358f2effe5a4a3d0f620290c",
+  "current_base": "0318fbbf51ed0548833b111d396133afd8fe1ddd",
+  "scope": "Byte-identical qualified PR204 browser; unchanged metadata worker, not new Script helper performance. Linux guest observations; no new native-CPU/release qualification.",
+  "runner_failure": "Initial warmup checked snapshot.entries instead of actual snapshot.items; corrected fixture field only and retained original failure log."
+}

@@ -96,7 +96,7 @@ Display *dpy;
 int screen;
 Window  Root;
 X11base *x11base;               /* For X server */
-TypeBuffSend BuffSend;          /* For inter script communications */
+script_message_queue BuffSend;          /* For inter script communications */
 int grab_server = 0;
 /* Opt-in keyboard focus leaves legacy scripts' pointer routing untouched. */
 static char *keyboard_focus_title = NULL;
@@ -128,10 +128,10 @@ static void
 ShutdownX(void)
 {
   int i;
-  static XEvent event;
+  XEvent event;
   struct pollfd ready;
+  struct timespec start, now;
   Atom MyAtom;
-  int NbEssai=0;
 
 #ifdef DEBUG                    /* For debugging */
   XSync(dpy,0);
@@ -142,44 +142,68 @@ ShutdownX(void)
     ExecBloc(x11base->quitfunc);
 
   if (is_dead_pipe)
+  {
+    script_message_clear(&BuffSend);
     return;
+  }
 
   /* We hide the window */
   if (x11base->win != None)
     XUnmapWindow(dpy,x11base->win);
   XFlush(dpy);
 
-  /* Script doesn't own the property anymore */
+  /* Keep the selection owned while receivers collect queued messages.
+   * One total monotonic grace period covers all requests and interruptions;
+   * Xlib calls themselves still depend on a responsive X server. */
+  if (clock_gettime(CLOCK_MONOTONIC, &start) < 0)
+    fvwm_debug(__func__, "Unable to initialize message shutdown clock");
+  else
+    while (!isTerminated && BuffSend.count > 0)
+    {
+      if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+      {
+        fvwm_debug(__func__, "Unable to read message shutdown clock");
+        break;
+      }
+      int timeout = script_shutdown_timeout_ms(&start, &now);
+      if (timeout == 0)
+        break;
+      if (FPending(dpy))
+      {
+        /* Consume unrelated events too: leaving them queued would spin.
+         * Recheck the deadline after each event, including refusals. */
+        FNextEvent(dpy, &event);
+        if (event.type == SelectionRequest)
+          SendMsgToScript(event);
+        continue;
+      }
+      ready = (struct pollfd){ x_fd, POLLIN, 0 };
+      int result = fvwmPoll(&ready, 1, timeout);
+      if (result < 0 && errno == EINTR)
+        continue;
+      if (result < 0 ||
+          (ready.revents & (POLLERR | POLLHUP | POLLNVAL)))
+      {
+        fvwm_debug(__func__, "Message shutdown X connection failed");
+        break;
+      }
+    }
+  script_message_clear(&BuffSend);
+
   MyAtom = XInternAtom(dpy, x11base->TabScriptId[1], False);
   XSetSelectionOwner(dpy, MyAtom, x11base->root, CurrentTime);
-
-  /* We check whether all messages have been sent */
-  while(!isTerminated && (BuffSend.NbMsg > 0) && (NbEssai < 10000) )
-  {
-    ready = (struct pollfd){ x_fd, POLLIN, 0 };
-    int result = fvwmPoll(&ready, 1, FPending(dpy) ? 0 : 1000);
-    if (result < 0 && errno != EINTR)
-      break;
-    if (ready.revents & (POLLERR | POLLHUP | POLLNVAL))
-      break;
-    if (!isTerminated && ((ready.revents & POLLIN) || FPending(dpy)))
-    {
-      if (FCheckTypedEvent(dpy, SelectionRequest, &event))
-        SendMsgToScript(event);
-      else
-        NbEssai++;
-    }
-  }
   XFlush(dpy);
 
-  /* Wait for 2 seconds, to be sure all */
-  /* messages are received */
-  /* Exiting cleanly the X server */
   for (i=0; i<initialized_widgets; i++)
     tabxobj[i]->DestroyObj(tabxobj[i]);
+  /* Allocation precedes icon loading and widget preparation.  Scan the
+   * fixed, initially NULL slots too: the current widget can own an icon
+   * even when preparation refused before initialized_widgets advanced. */
+  for (i=0; i<(int)(sizeof(tabxobj) / sizeof(tabxobj[0])); i++)
+    if (tabxobj[i] != NULL)
+      script_icon_clear(tabxobj[i]);
   XFlush(dpy);
   fsm_close();
-  sleep(2);
   XCloseDisplay(dpy);
 }
 
@@ -484,20 +508,8 @@ void Xinit(int IsFather)
   atexit(ShutdownX);
 }
 
-/*
- * Reading an icon
- */
-void LoadIcon(struct XObj *xobj)
+void script_icon_clear(struct XObj *xobj)
 {
-	char *path;
-	int depth;
-	FvwmPictureAttributes fpa;
-
-	fpa.mask = 0;
-	if (xobj->colorset >= 0 && GetColorset(xobj->colorset)->do_dither_icon)
-	{
-		fpa.mask |= FPAM_DITHER;
-	}
 	if (xobj->iconPixmap != None)
 	{
 		XFreePixmap(dpy, xobj->iconPixmap);
@@ -513,14 +525,35 @@ void LoadIcon(struct XObj *xobj)
 		XFreePixmap(dpy, xobj->icon_alphaPixmap);
 		xobj->icon_alphaPixmap = None;
 	}
-	if (xobj->alloc_pixels != NULL && xobj->nalloc_pixels > 0)
+	if (xobj->alloc_pixels != NULL)
 	{
-		PictureFreeColors(
-			dpy, Pcmap, xobj->alloc_pixels, xobj->nalloc_pixels, 0,
-			False);
+		if (xobj->nalloc_pixels > 0)
+		{
+			PictureFreeColors(
+				dpy, Pcmap, xobj->alloc_pixels,
+				xobj->nalloc_pixels, 0, False);
+		}
+		free(xobj->alloc_pixels);
 		xobj->alloc_pixels = NULL;
-		xobj->nalloc_pixels = 0;
 	}
+	xobj->nalloc_pixels = 0;
+	xobj->icon_w = 0;
+	xobj->icon_h = 0;
+}
+
+/* Reading an icon replaces the previous owner, including on refusal. */
+void LoadIcon(struct XObj *xobj)
+{
+	char *path;
+	int depth;
+	FvwmPictureAttributes fpa;
+
+	fpa.mask = 0;
+	if (xobj->colorset >= 0 && GetColorset(xobj->colorset)->do_dither_icon)
+	{
+		fpa.mask |= FPAM_DITHER;
+	}
+	script_icon_clear(xobj);
 	if ((xobj->icon) == NULL)
 		return;
 	if ((path = PictureFindImageFile(xobj->icon,imagePath,R_OK)) == NULL)
@@ -536,6 +569,7 @@ void LoadIcon(struct XObj *xobj)
 		fvwm_debug(__func__, "[%s][LoadIcon]: <<WARNING>> Unable to "
 			   "load pixmap %s\n",
 			   ScriptName,xobj->icon);
+		script_icon_clear(xobj);
 		free(path);
 		return;
 	}
@@ -998,7 +1032,7 @@ void SendMsgToScript(XEvent event)
   Atom sender;
   XEvent reply = {0};
   XSelectionRequestEvent *request = &event.xselectionrequest;
-  int i;
+  char *message;
 
   sender = XInternAtom(dpy, x11base->TabScriptId[1], True);
   reply.xselection.type = SelectionNotify;
@@ -1012,25 +1046,16 @@ void SendMsgToScript(XEvent event)
   if (sender != None && request->selection == sender &&
       request->target != None)
   {
-    for (i = 0; i < BuffSend.NbMsg; i++)
+    message = script_message_take(&BuffSend, request->target);
+    if (message != NULL)
     {
-      if (request->target != XInternAtom(dpy, BuffSend.TabMsg[i].R, True))
-        continue;
-
       /* ICCCM permits old requestors to omit the property atom. */
       reply.xselection.property = request->property != None ?
         request->property : request->target;
       XChangeProperty(dpy, request->requestor, reply.xselection.property,
                       request->target, 8, PropModeReplace,
-                      (unsigned char *)BuffSend.TabMsg[i].Msg,
-                      strlen(BuffSend.TabMsg[i].Msg) + 1);
-      free(BuffSend.TabMsg[i].Msg);
-      free(BuffSend.TabMsg[i].R);
-      BuffSend.NbMsg--;
-      if (i < BuffSend.NbMsg)
-        memmove(&BuffSend.TabMsg[i], &BuffSend.TabMsg[i + 1],
-                (BuffSend.NbMsg - i) * sizeof(TypeName));
-      break;
+                      (unsigned char *)message, strlen(message) + 1);
+      free(message);
     }
   }
   FSendEvent(dpy, request->requestor, False, 0, &reply);
@@ -1670,8 +1695,6 @@ static void ReadFvwmScriptArg(int argc, char **argv,int IsFather)
   int i;
   Atom myatom;
 
-  BuffSend.NbMsg=0;             /* No message in buffer */
-
   for (i=2; i<100; i++)
     x11base->TabScriptId[i]=NULL;
 
@@ -1777,7 +1800,6 @@ int main (int argc, char **argv)
   /* Initializing TabCom and TabFunc   */
   InitCom();
 
-#ifdef HAVE_SIGACTION
   {
     struct sigaction  sigact;
 
@@ -1799,27 +1821,6 @@ int main (int argc, char **argv)
     sigaction(SIGTERM, &sigact, NULL);
     sigaction(SIGQUIT, &sigact, NULL);
   }
-#else
-#ifdef USE_BSD_SIGNALS
-  fvwmSetSignalMask( sigmask(SIGPIPE) |
-		     sigmask(SIGINT) |
-		     sigmask(SIGHUP) |
-		     sigmask(SIGTERM) |
-		     sigmask(SIGQUIT) );
-#endif
-  signal (SIGPIPE, TerminateHandler);
-  signal (SIGINT, TerminateHandler);  /* cleanup on other ways of closing too */
-  signal (SIGHUP, TerminateHandler);
-  signal (SIGQUIT, TerminateHandler);
-  signal (SIGTERM, TerminateHandler);
-#ifdef HAVE_SIGINTERRUPT
-  siginterrupt(SIGPIPE, 1);
-  siginterrupt(SIGINT,  1);
-  siginterrupt(SIGHUP,  1);
-  siginterrupt(SIGQUIT, 1);
-  siginterrupt(SIGTERM, 1);
-#endif
-#endif
 
   /* Compute the Shift-Tab keysym */
   {

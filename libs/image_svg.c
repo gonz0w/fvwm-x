@@ -36,7 +36,6 @@
 static FRsvgHandle *
 image_svg_from_input(const image_input *source, const char *path)
 {
-#if LIBRSVG_CHECK_VERSION(2, 32, 0)
 	GFile *base = g_file_new_for_path(path);
 	GInputStream *stream = g_memory_input_stream_new_from_data(
 	    source->bytes, (gssize)source->length, NULL);
@@ -46,34 +45,6 @@ image_svg_from_input(const image_input *source, const char *path)
 	g_object_unref(stream);
 	g_object_unref(base);
 	return handle;
-#else
-	FRsvgHandle *handle = rsvg_handle_new();
-	char *directory = g_get_current_dir();
-	char *absolute = g_path_is_absolute(path) ?
-	    g_strdup(path) : g_build_filename(directory, path, NULL);
-	char *uri = g_filename_to_uri(absolute, NULL, NULL);
-
-	g_free(absolute);
-	g_free(directory);
-	if (handle == NULL || uri == NULL)
-	{
-		g_free(uri);
-		if (handle != NULL)
-		{
-			g_object_unref(handle);
-		}
-		return NULL;
-	}
-	rsvg_handle_set_base_uri(handle, uri);
-	g_free(uri);
-	if (!rsvg_handle_write(handle, source->bytes, source->length,
-	    NULL) || !rsvg_handle_close(handle, NULL))
-	{
-		g_object_unref(handle);
-		return NULL;
-	}
-	return handle;
-#endif
 }
 
 static bool
@@ -135,7 +106,12 @@ image_svg_render(const image_input *source, const char *filename,
 	char *options_end;
 	char *render_opts;
 	FRsvgHandle *rsvg;
-	FRsvgDimensionData dim;
+	struct image_svg_dimensions {
+		int width;
+		int height;
+		double em;
+		double ex;
+	} dim;
 	CARD32 *data;
 	Fcairo_surface_t *surface;
 	Fcairo_t *cr;
@@ -176,7 +152,6 @@ image_svg_render(const image_input *source, const char *filename,
 	{
 		return False;
 	}
-	Frsvg_init();
 	render_opts = path = allocated_path = strdup(filename);
 	if (allocated_path == NULL)
 	{
@@ -306,7 +281,6 @@ image_svg_render(const image_input *source, const char *filename,
 	free(allocated_path);
 
 	/* Keep the original aspect ratio when either w or h is 0 */
-#if LIBRSVG_CHECK_VERSION(2,52,0)
 	double		ddw = 0, ddh = 0;
 	gboolean	has_out_w, has_out_h, has_vb;
 	RsvgLength	out_w, out_h;
@@ -331,10 +305,6 @@ image_svg_render(const image_input *source, const char *filename,
 	if (has_out_h)
 		dim.ex = out_h.length <= dim.height ? dim.height : out_h.length;
 
-
-#else
-        Frsvg_handle_get_dimensions(rsvg, &dim);
-#endif
 	if (dim.width <= 0 || dim.height <= 0 || dim.em <= 0 || dim.ex <= 0 ||
 	    !isfinite(dim.em) || !isfinite(dim.ex))
 	{
@@ -454,7 +424,6 @@ image_svg_render(const image_input *source, const char *filename,
 		return False;
 	}
 
-#if LIBRSVG_CHECK_VERSION(2,52,0)
 	GError *err = NULL;
 	RsvgRectangle vp;
 
@@ -476,17 +445,6 @@ image_svg_render(const image_input *source, const char *filename,
 	{
 		g_error_free(err);
 	}
-#else
-	/* Affine transformations scale drawing ops, not a 1x raster. */
-	Fcairo_translate(cr, .5 * w, .5 * h);
-	Fcairo_scale(cr, w_sgn, h_sgn);
-	Fcairo_translate(cr, dw, dh);
-	Fcairo_rotate(cr, angle * M_PI / 180);
-	Fcairo_scale(cr, w_scale, h_scale);
-	Fcairo_translate(cr, -.5, -.5);
-	Fcairo_scale(cr, 1 / dim.em, 1 / dim.ex);
-	Frsvg_handle_render_cairo(rsvg, cr);
-#endif
 	Fg_object_unref(FG_OBJECT(rsvg));
 	Fcairo_destroy(cr);
 

@@ -20,8 +20,8 @@ and M3 target-owned dependency/linkage work. In particular, closed #23, #35,
 configuration-checker, IPC/preview and native collection/browser components
 remain accepted in their original source/profile scopes.
 
-Continue the remaining [maintenance batches](MAINTENANCE-FIRST-BATCHES-2026-10-23.md),
-starting with the accepted M3 handoff into M4 SVG consolidation (#183). Select
+Continue the remaining [maintenance batches](MAINTENANCE-FIRST-BATCHES-2026-10-23.md)
+without repeating accepted linkage, SVG or M5 component checkpoints. Select
 bounded remaining M5 source/ownership, M6 retirement, M7 tools and M8 distribution
 slices by their existing owners. Interleave **O1 measured optimization** under
 #29, #33, #37, #38 and #39; #34 remains the cleanup owner. #29 and #34 are P1;

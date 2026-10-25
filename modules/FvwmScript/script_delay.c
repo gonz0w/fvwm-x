@@ -21,31 +21,38 @@ void script_delay_duration(int ticks, struct timespec *duration)
 	duration->tv_nsec = (long)(microseconds % 1000000) * 1000;
 }
 
-int script_periodic_timeout_ms(const struct timespec *last,
-	const struct timespec *now)
+static int script_interval_timeout_ms(const struct timespec *last,
+	const struct timespec *now, int interval)
 {
-	long elapsed;
+	uintmax_t seconds;
+	int64_t remaining;
 
 	if (now->tv_sec < last->tv_sec ||
 		(now->tv_sec == last->tv_sec && now->tv_nsec < last->tv_nsec))
 	{
-		return 1000;
+		return interval * 1000;
 	}
-	if (now->tv_sec == last->tv_sec)
+	/* Unsigned subtraction also covers distant signed time_t endpoints. */
+	seconds = (uintmax_t)now->tv_sec - (uintmax_t)last->tv_sec;
+	if (seconds > (unsigned int)interval)
 	{
-		elapsed = now->tv_nsec - last->tv_nsec;
+		return 0;
 	}
-	else
-	{
-		/* Comparisons avoid subtracting distant time_t endpoints. */
-		if (last->tv_sec < now->tv_sec - 1 ||
-			now->tv_nsec >= last->tv_nsec)
-		{
-			return 0;
-		}
-		elapsed = 1000000000L + now->tv_nsec - last->tv_nsec;
-	}
-	return (int)((1000000000L - elapsed + 999999L) / 1000000L);
+	remaining = (interval - (int64_t)seconds) * 1000000000 +
+		last->tv_nsec - now->tv_nsec;
+	return remaining > 0 ? (int)((remaining + 999999) / 1000000) : 0;
+}
+
+int script_periodic_timeout_ms(const struct timespec *last,
+	const struct timespec *now)
+{
+	return script_interval_timeout_ms(last, now, 1);
+}
+
+int script_shutdown_timeout_ms(const struct timespec *start,
+	const struct timespec *now)
+{
+	return script_interval_timeout_ms(start, now, 2);
 }
 
 int script_readiness_timeout_ms(bool periodic, bool session_pending,

@@ -618,6 +618,13 @@ Meson finds *gzip* at build time. Use *-Dimage-gzip=/absolute/path/to/gzip* to
 select another trusted executable. Without *gzip*, uncompressed XPM files
 remain available. These options do not change FVWM configuration syntax.
 
+SVG support is optional at build time and uses librsvg 2.52 or newer with
+Cairo. This is an API minimum; use a maintained, patched distributor package.
+Builders select *-Dsvg=enabled* or *-Dsvg=disabled*. The former backend-selection
+Meson options *cairo*, *cairo-svg* and *libsvg-cairo* are retired. Existing Fvwm
+configuration files and SVG size, mirror, scale and rotation options are
+unchanged. PNG, XPM and bitmap support remain separately configured.
+
 SVG images are decoded in a separate worker process. The default total time
 limit is 5 seconds and the worker memory limit is 1024 MiB. A builder can set
 *-Dimage-svg-timeout=N* (1 to 60 seconds) and

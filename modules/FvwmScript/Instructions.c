@@ -67,7 +67,7 @@ extern char **TabVVar;
 extern int TabIdObj[1001];
 extern char *ScriptName;
 extern ModuleArgs *module;
-extern TypeBuffSend BuffSend;
+extern script_message_queue BuffSend;
 extern Atom propriete;
 extern char *LastString;
 char *FvwmUserDir = NULL;
@@ -1748,7 +1748,7 @@ done:
 /* SendToScript */
 static void SendToScript (int NbArg,long *TabArg)
 {
-  char *tempstr,*Msg,*R;
+  char *tempstr,*Msg;
   int dest;
   int j=0;
   size_t length = 0;
@@ -1796,18 +1796,11 @@ static void SendToScript (int NbArg,long *TabArg)
   }
 
   /* Compute Receiver */
-  R=fxstrdup(x11base->TabScriptId[dest]);
-  myatom=XInternAtom(dpy,R,True);
+  myatom=XInternAtom(dpy,x11base->TabScriptId[dest],True);
 
-  if ((BuffSend.NbMsg<40)&&(XGetSelectionOwner(dpy,myatom)!=None))
+  if (myatom != None && XGetSelectionOwner(dpy,myatom) != None &&
+      script_message_enqueue(&BuffSend, myatom, Msg))
   {
-    /* Storing into message buffer */
-    BuffSend.TabMsg[BuffSend.NbMsg].Msg=Msg;
-    /* Storing into receiver buffer */
-    BuffSend.TabMsg[BuffSend.NbMsg].R=R;
-    /* Storing the message */
-    BuffSend.NbMsg++;
-
     /* Waking the receiver up */
     XConvertSelection(dpy,
 		      XInternAtom(dpy,x11base->TabScriptId[dest],True),
@@ -1818,7 +1811,6 @@ static void SendToScript (int NbArg,long *TabArg)
     fvwm_debug(__func__, "[%s][SendToScript]: Too many messages sended\n",
                ScriptName);
     free(Msg);
-    free(R);
   }
 }
 

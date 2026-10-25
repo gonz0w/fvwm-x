@@ -29,6 +29,9 @@ system in use.
 
 ## Core dependencies
 
+The native C environment must declare and link POSIX `sigaction` and
+`sigemptyset`; configuration rejects environments missing either API.
+
 * meson (>= 1.5.1)
 * ninja-build
 * pkg-config
@@ -76,7 +79,7 @@ fixed checksum-verified SDKs; configure/build never performs that fetch.
 * libfribidi-dev
 * gettext runtime/development files and `msgfmt` (for NLS)
 * libpng-dev (>= 1.6.59, or a verified vendor security backport)
-* librsvg-dev
+* librsvg-dev (>= 2.52) and libcairo2-dev, for SVG support
 * libsm-dev
 * libxcursor-dev
 * libxfixes-dev
@@ -140,6 +143,15 @@ decompression deadline. Set `-Dimage-xpm-expanded-limit=N` (1–1024 MiB) and
 Meson resolves the existing system `gzip` executable. Use
 `-Dimage-gzip=/absolute/path/to/gzip` for an explicit trusted executable.
 Uncompressed XPM still works without it.
+
+SVG support uses librsvg >=2.52 with Cairo as its sole backend. This API floor
+selects the existing modern renderer; use distributor-supported, patched
+packages rather than treating the API minimum as a security baseline. Configure
+with `-Dsvg=enabled` to require it or `-Dsvg=disabled` to omit it. The retired
+`cairo`, `cairo-svg` and `libsvg-cairo` Meson options are no longer accepted;
+remove them from saved build invocations. Use a new build directory when an old
+Meson cache retains them. FVWM configuration and SVG rendering options do not
+change. There is no renderer download or additional desktop toolkit.
 
 SVG decoding uses the installed private `fvwm-image-svg-worker` executable.
 The default total deadline is 5 seconds and the worker memory limit is 1024

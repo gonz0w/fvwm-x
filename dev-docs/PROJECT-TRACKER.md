@@ -50,6 +50,240 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Script widget-icon ownership checkpoint — 2026-10-25
+
+Owner: Cam; implementation lead, `codex/m5-script-resources`.
+Status: focused normal/scoped sanitizer, owner and real-X checks pass;
+ready for review after authorized PR241 merge as
+`109facd8546439e6c8ba1cd85cc5c330996f48d0`; signature/DCO and exact
+reviewed tree `f869fa49a33e87c48f22fe02f8e7a10691e8e8da` verified.
+Completed branch retired and Project/labels Done. #35/#36 remain completed.
+
+Finite SCRIPT-01 #4 / CLEAN-01 #34 family: own the widget icon's three pixmaps,
+allocated-color references and heap pixel vector through replacement, missing/
+failed load, retry, normal shutdown and partial startup refusal. Share one reset
+operation, clear dimensions with resources and use loaded state for layout.
+Before repair, reproduce the actual LoadIcon allocation loss and stale dimensions.
+Preserve image lookup, bitmap conversion, config syntax, native loader policy,
+QuitFunc/message-drain order, swallow ownership and dead-pipe early exit.
+No whole-interpreter teardown, font/Form exit audit, new resource budgets,
+asynchronous loading, image cache or broad event-loop cleanup.
+
+Acceptance: actual production-object owner controls cover empty/populated/repeated
+release, replacement, color vector with zero cells, missing lookup, decoder
+refusal and successful retry; count exact releases and retain old-source failure.
+Run one reused Linux normal/scoped sanitizer checkpoint plus focused real-X icon
+replacement/redraw/refusal and affected layout/modal tests. Platform/install/
+architecture qualification remains accumulated for its owning boundary; no new
+OS API, feature/dependency, module ABI or GUI contract requires a fresh matrix.
+Record focused results and separate final review before signed author-DCO PR.
+Evidence: actual old-object vector/dimension failure, 100-cycle owner controls,
+three units per normal/scoped profile, nine real-X icon observations, partial
+startup refusal, geometry/widget/modal fixtures and three screenshots pass.
+Test include/grammar/bitmap/refusal-trigger errors remain recorded; successful
+compilation/units/replacement checks are retained without repeating them.
+[Report](verification/VERIFICATION-2026-10-25-M5-SCRIPT-ICONS.md).
+Broader #4/#34 remain open. Periodic reference PR238 is 3/5 after PR241,
+4/5 on this merge; no performance comparison due for this resource fix.
+
+## M5 POSIX handler installation checkpoint — 2026-10-25
+
+Owner: Cam; current implementation lead, `codex/m5-signal-install`.
+Status: merged in PR241 as `109facd8546439e6c8ba1cd85cc5c330996f48d0`;
+canonical signature/DCO/tree verified and branch retired. Selected after PR240 as
+`8602b3c42631ec16c313893b8dffc7962efdb8c5`; canonical signature/DCO and
+reviewed tree `89518690e32c2d0cc73370448d51f7f8d6d8b499` verified. Its
+completed branch is retired and Project/labels are Done. Broader #34/#7 stay open.
+
+Finite M5 family: retain the ten active POSIX installation bodies while retiring
+HAVE_SIGACTION fallback branches and their nested siginterrupt paths; replace
+optional selectors with one required declared/linkable sigaction/sigemptyset
+configure check. Include FvwmEvent explicitly. Preserve every handler/mask/flag,
+lexical block, install order, core deinstallation signal() calls and Buttons'
+separate SIGPIPE-ignore call. No signal error-policy rewrite, flag retirement,
+new shared installer or unrelated callback/geometry work.
+
+Acceptance: capture actual production-flag preprocessing before editing, then
+compare all ten consumers with only identified source-position diagnostics
+allowed. Required-API controls pass on declared/linkable APIs and reject missing
+header/declaration or renamed link symbols using the exact Meson block. Compile
+the group once with affected Linux units and Event/Script transport checks.
+Retain the accepted PR240 sanitizer evidence for unchanged ownership code and
+prior BSD evidence for token-identical inactive fallback removal. Run no new
+sanitizer or BSD matrix solely for this source/build-contract cleanup.
+No full OS/install/theme matrix or performance comparison is due.
+
+Evidence: all ten installers preserve active compiler tokens, with only one
+assertion diagnostic line shift. Five required-API configure controls pass;
+all ten consumers compile together, shared signal and Event transport units
+and one Script process X fixture pass. A config blank-line harness correction
+retains the successful build/controls and continues only pending checks.
+[Report](verification/VERIFICATION-2026-10-25-M5-SIGNAL-INSTALL.md).
+
+Do not reopen completed #35/#36 or unsupported #93. Independent source/evidence
+review and signed author-DCO PR required. Requested project model settings remain
+unverified. Periodic reference is PR238 at 2/5 after PR240, 3/5 on this merge.
+
+## M5 POSIX signal consumer checkpoint — 2026-10-25
+
+Owner: Cam; current implementation lead, `codex/m5-posix-signals`.
+Status: merged in PR240 as `8602b3c42631ec16c313893b8dffc7962efdb8c5`;
+canonical signature/DCO/tree verified and branch retired. Selected after PR239; canonical signature/DCO and
+reviewed tree `c95a1123c05a339f6ac4b563cd0fd856e2ed7c9d` verified. #36 is
+Closed/Completed; its branch is retired and Project/labels are Done.
+
+Finite #34/#7/#4 owner slice: retire the unreachable pre-POSIX mask shim/API,
+remove its nine guarded core/module registrations, and adopt the fixed shared
+wait helper in GetOutput instead of its temporary 100ms foreground poll bridge.
+Keep FreeBSD/OpenBSD support, active sigaction bodies/masks/flags, HAVE_SIGACTION
+and the FvwmEvent fallback, reaper errno, watched-child ownership and saved-mask
+ordering. Keep the raw TERM cleanup grace and 10ms closed-pipe completion check.
+No broad signal-installation rewrite or unrelated feature-probe retirement.
+
+Acceptance before editing: tracked caller/config inventory, actual-flag Linux
+preprocessing baseline for the nine consumers and shared helper, plus a focused
+foreground-routing/deadline regression. Guarded consumers must retain active
+preprocessed tokens; track source-position diagnostic metadata separately. The
+helper may lose only four empty macro statements.
+New GetOutput controls verify shared routing, no post-cancellation foreground
+syscall, remaining deadline, caller masks and existing cache/child cleanup.
+Run one reused Linux normal/scoped unit checkpoint, compile the affected group
+together, and one actual Script process X fixture. Reuse PR239's unchanged shared
+primitive/BSD evidence; do not boot BSD solely for inactive branch removal.
+
+Evidence: ten-unit preprocessing comparison preserves active tokens with only
+four empty helper statements and one IconMan assertion line-number adjustment.
+Normal/scoped profiles each pass four units; all nine consumers compile together,
+and one actual Script X fixture passes termination/cache cases. All checks pass
+in one combined checkpoint; no repeated OS/install matrix. [Report](verification/VERIFICATION-2026-10-25-M5-POSIX-CONSUMERS.md).
+
+Broader #34/#7/#4 remain open; do not reopen completed #35/#36 or unsupported
+7.9 investigation #93. Independent source/evidence review and signed author-DCO
+PR required. Requested project routing metadata remains unverified. Periodic
+reference is PR238 at 1/5 after PR239, 2/5 on this merge; no comparison due.
+
+## M5 shared wait ownership checkpoint — 2026-10-25
+
+Owner: Cam; current implementation lead, `codex/m5-readiness-lifetimes`.
+Status: merged in PR239 as `0aa3bd2bc4f7f917c31ec9dc3ac31200e0d644fc`;
+canonical signature/DCO/tree verified, branch retired and #36 completed.
+Selected after PR238 as
+`0c9a7d53f30db0170b38ba58944fe8d0ab988ee3`; canonical signature/DCO and
+reviewed tree `115b614aa9d3d89dbbfd20c8c05bdba7ab6633ce` verified; branch
+retired and Project Done. Broad prior owners remain open.
+
+Finite M5 slice: LOOP-01 #36 / CLEAN-01 #34, with FD-01 #7 signal-state
+ownership. Require POSIX saved-mask jumps in the shared read/write/poll waits;
+retire only the unused select adapter and its exclusive feature definitions;
+add actual-signal mask/lifetime regression coverage. Reconcile #36's original
+ordinary/interaction/synchronous consolidation against merged PR96/97 evidence.
+No core event-loop rewrite, generic fd-width removal, fio change or global API
+rename. Preserve volatile syscall results and arm/check/syscall/disarm ordering,
+partial I/O, high-fd poll, native barriers and existing termination semantics.
+
+Acceptance: actual signal cancellation restores the exact caller mask, including
+an unrelated blocked signal; explicit test-only reset permits repeated use with
+no stale armed jump. Preterminated calls skip I/O; success/partial/EOF/error,
+unrelated EINTR and timeout behavior stay intact. Whole tracked caller search
+must establish unused adapter/feature ownership before retirement. One reused
+Linux incremental checkpoint covers affected wrapper/transport/readiness paths;
+small actual wrapper checks on one FreeBSD and one OpenBSD target establish the
+changed saved-mask selection. No automatic architecture/renderer/install matrix.
+
+Evidence: five selected Linux units pass in each normal/scoped sanitizer profile;
+three normal actual-core X fixtures pass. Small standalone wrapper checks pass on
+FreeBSD 15.1/OpenBSD 8.0 ARM64 using preserved configurations. BSD setup/header
+packaging failures are retained and corrected without source or Linux reruns.
+Original #36 consolidation was already accepted in PR96/97; this PR closes it
+with finite reconciliation and the new shared-mask repair. [Report](verification/VERIFICATION-2026-10-25-M5-WAIT-OWNERSHIP.md).
+
+The prior mask failure was a recovery-test observation; production never resets
+termination. Do not claim a demonstrated live-X recovery failure. Retain prior
+accepted core qualification, source-bound evidence and separately owned descriptor,
+external-session, native-CPU/hardware/release criteria. Independent final review
+and signed author-DCO PR required. Requested routing follows project policy;
+runtime model metadata remains unavailable/unverified. Periodic reference is
+merged PR238 at 0/5; this checkpoint advances to 1/5 on merge, no comparison due.
+
+## M5 Script subprocess ownership checkpoint — 2026-10-25
+
+Owner: Cam; current implementation lead, `codex/m5-script-process`.
+Status: merged in PR238 as `0c9a7d53f30db0170b38ba58944fe8d0ab988ee3`;
+canonical signature/DCO/tree verified and branch retired. Selected after PR230 as
+`0318fbbf51ed0548833b111d396133afd8fe1ddd`. Canonical signature/DCO and
+reviewed tree `9da43a8393dd2f86abc414990df96106d4d32e72` verified; branch
+retired. #31 is Closed/Completed and Project Done; 82 issues remain open.
+
+Finite M5 slice: SCRIPT-01 #4, DATA-01 #6, FD-01 #7, PROC-01 #15 and
+CLEAN-01 #34. Batch GetOutput module-termination cancellation, explicit child
+setup/exec error reporting, constructor unwind/descriptor alias checks, and
+failure/cache retry ownership. Preserve trusted configured shell commands,
+32,000-byte stdout prefix, nonzero shell-exit output, fixed command deadline,
+caller-owned results, existing cache semantics and pinned child/group identity.
+
+Acceptance: cancellation before spawn and during open/closed stdout terminates
+and reaps the owned child/group promptly, clears partial outputs and publishes
+no failed cache replacement. Setup/exec failure returns explicit failure while
+a legitimately executed shell's exit 127/nonzero output remains accepted.
+Actual constructor fault controls verify owned-fd closure, restored signal
+state and successful retry; descriptor aliases/high descriptors stay usable.
+Real module termination/cache controls run under nested X. Reuse the normal
+Linux and scoped sanitizer incremental profiles in one combined focused gate;
+add affected-target coverage only for an actual OS/API/ABI/build contract.
+
+Verification: three affected units and three actual-module X cases pass in each
+reused profile, retaining valid earlier output/termination passes. The old module
+fails prompt cancellation; injected old-helper setup/mask controls fail and their
+repairs pass. Initial poll/wrapper and fixture wire/framing failures are preserved;
+only affected checks repeat. Six native inputs match host/guest hashes/modes.
+[Source-bound evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROCESS.md).
+
+Non-goals: asynchronous command execution, whole-Script resource ceilings,
+new global policy/caps, shell/configuration migration, M2 replay, Perl retirement
+or blanket #4/#6/#7/#15/#34 closure. Existing accepted components are retained.
+Independent final review and signed author-DCO PR required. PR204 periodic
+comparison was 4/5 after PR230; this fifth checkpoint completes the due
+[comparison](verification/PERFORMANCE-2026-10-25-M5-PROCESS.md) using unchanged
+browser bytes, without a build/matrix or speed claim. Reset to 0/5 on merge. Requested routing follows project
+policy; runtime model metadata remains unavailable/unverified.
+
+## M5 Script message ownership checkpoint — 2026-10-25
+
+Owner: Cam; implementation/integration lead in `codex/m5-stream-ownership`.
+Status: merged in PR230 as `0318fbbf51ed0548833b111d396133afd8fe1ddd`;
+canonical signature/DCO/tree verified, branch retired and #31 completed.
+The authorized PR229 merge completed #183.
+Owning maintenance slice: M5 / SCRIPT-01 #4 and CLEAN-01 #34. Reconcile
+STACK-01 #31 against its later accepted group/publication/retirement evidence.
+
+Outcome: bound Script outgoing-message teardown and make queue ownership explicit.
+Acceptance: preserve the 40-message cap, per-destination FIFO order and selection
+reply semantics; enforce one monotonic shutdown grace period despite silent peers,
+interruptions and unrelated requests; release pending messages exactly once on exit.
+A normal empty/drained queue must not incur the old unconditional two-second sleep.
+Keep existing configuration syntax, X ownership/order and termination behavior.
+The deadline bounds client-side service/waits; it cannot preempt one blocking X call.
+
+Non-goals: whole-Script memory/font budgets, TEXT-01, core event-loop changes,
+new features, release qualification or reopening accepted M2/M4 evidence. Broader
+#4/#34 remain open. Verification: attempt a silent-peer hang control with a real
+module under nested X; check delivery/refusal/order, queue cleanup and deadline
+policy; one reused Linux incremental profile with affected tests and scoped
+sanitizers where supported. No automatic multi-OS/install matrix for this portable
+owner slice. Independent final review and signed author-DCO PR remain required.
+
+Acceptance evidence: three units and two real-X fixtures pass in each reused
+normal/scoped sanitizer profile; all five message cases pass. The old module
+fails delivery/empty-exit controls, while a silent hang is not reproduced.
+Independent review tightens only the refusal fixture; its two affected reruns
+pass without rebuilding. Broader OS/install/theme gates are deferred by scope,
+not reported as passes. [Report](verification/VERIFICATION-2026-10-25-M5-SCRIPT-OWNERSHIP.md).
+Performance PR204 is 3/5 after PR229, 4/5 on this merge; no comparison is due.
+
+Requested routing: Astra/high closure analysis, Sol/high implementation and a
+separate Sol/high final reviewer. Runtime model metadata is unavailable, so routing
+is requested, not independently observed. The lead owns evidence and tracker writes.
+
 ## Agent Temper routing update — MAINT-02/TEMPER-02
 
 Owner: Cam; assigned fleet-adoption lead. Status: reviewed and owner-approved
@@ -733,12 +967,12 @@ PR205, 2/5 on this merge; M4 and unrelated cleanup remain separately owned.
 
 Owner: current M3 implementation chat. Selected 2026-10-25 after merged PR206
 and the user's request for completed issue outcomes rather than more partial PRs.
-Status: combined local acceptance passed; maintainer review/integration pending.
+Status: complete after authorized PR207 merge; canonical signature/DCO/tree verified.
 All fifteen profiles across six targets validate 99 pure entries, 105 staged
 real-X fixtures, 24 extra program checks and 240 native executable install
 identities. Fifteen complete installs, static archive/transitive metadata,
 selected package/license/size inventory and LIB-05 floors satisfy the finite
-#184/#49/#47 criteria; close them on this PR's merge. #35 is completed and #93
+#184/#49/#47 criteria; all three closed completed on merge. #35 is completed and #93
 is not planned, with 67 open issues confirmed after reconciliation. See the
 [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md) and its
 machine manifest/inventory. Separate review and signed delivery remain required.
@@ -778,6 +1012,50 @@ SVG/raster fallback, relative resources, scaling and worker limits together.
 of its optional renderer comparison; #8 retains wider image/release scope.
 No M4 removal starts before accepted M3, and this map closes no issue.
 
+## M4 SVG backend consolidation
+
+Current verification: all seven selected profiles pass: 62 units, 20 real-X
+fixtures, 144 exact worker-frame comparisons, 24 paired negatives, SVG-off
+refusal and seven full installs/native112 identities. The original OpenBSD
+AMD64 preparation reboot failure has zero native credit; its identical-input
+retry passes and cleans up normally. #183 completed when PR229 merged as
+`1f80945c91e26cf39ece071ba3b338dba683f964`; canonical signature/DCO and
+reviewed tree verified, branch retired and Project Done. #46's later renderer
+comparison stays open.
+[Source, scope and retained failures](verification/VERIFICATION-2026-10-25-M4-SVG.md).
+
+Owner: current implementation chat; selected 2026-10-25 after the authorized
+merge of PR207 (`14604024459b1504869d456d009433027f7f3b2a`). Canonical
+signature/DCO and exact reviewed tree pass. #184/#49/#47 are closed completed;
+64 open issues remain. M3's accepted dependency/profile evidence is retained.
+
+Outcome: finish SVG-CONSOLIDATE-01 #183 as one coherent removal batch. Use
+librsvg >=2.52's existing modern intrinsic-size/render-document API and Cairo;
+retire obsolete backend detection/options, pre-floor input/dimension/render
+branches, deprecated dimension aliases and old global initialization calls.
+Separate this API minimum from upstream maintenance/security policy: use vendor
+maintained patched packages; no new security certification or package upgrade.
+Use the real M3 link map when dropping initializer-only runtime edges; preserve
+full renderer dependencies and archive transitives. No new renderer, toolkit,
+C++ package, FVWM configuration migration or rendering algorithm change.
+
+Acceptance: trace callers and actual supported package versions before removal;
+configure refuses old enabled APIs/missing Cairo and honors SVG-disabled; keep
+relative resources, shipped artwork, raster/XPM fallback, alpha/geometry/scale,
+refusal/cancellation and worker bounds. Update options, package instructions,
+manuals, dependency/license/size inventory together. Run one combined affected
+Linux gate, early affected BSD configuration/link check, and required selected
+six-target SVG/fallback/worker acceptance using reused caches and exact valid
+M3 evidence where unchanged. Do not repeat the entire M3 fifteen-profile suite
+or qualify unrelated session/controller/Go code. Record missing coverage rather
+than closing #183 prematurely. #46's later alternative-renderer evaluation stays
+separate; no inferred LunaSVG adoption or blanket parent closure.
+
+Lead owns tracker, integration and native execution. Bounded native-source
+implementation and separate final review may use the selected routing policy;
+observed model metadata remains unverified when unavailable. Performance PR204
+is 3/5 after PR229; no benchmark or tuning is due.
+
 ## Current checkpoint status
 
 This table is the current summary for this thread. The dated entries below
@@ -816,8 +1094,9 @@ in [PR199](https://github.com/gonz0w/fvwm-x/pull/199) and M2.7 in
 [PR202](https://github.com/gonz0w/fvwm-x/pull/202). M2.10 merged in [PR203](https://github.com/gonz0w/fvwm-x/pull/203). Cam accepts
 M2 session evidence and documented limits on 2026-10-25. M2 is complete for this
 maintenance handoff; M3.1/M3.2 merged in PR204/205. M3.3 completes explicit
-production target declarations in merged PR206. M3.4's fifteen-profile combined
-acceptance now passes and is ready for review; #184/#49/#47 close on merge. Broader
+production target declarations in merged PR206. M3.4 merges in PR207 with
+fifteen-profile acceptance; #184/#49/#47 are closed completed. M4 now owns the
+selected SVG backend removal. Broader
 native/platform/physical/release gates retain their separate scope. #7/#15 stay
 open; GitHub #23 retains its closure with M2 owner acceptance now explicit. New feature pickup remains paused.
 
@@ -1189,9 +1468,6 @@ and #209 finite handoff supersede earlier tuning deferral below. Preserve the
 accepted M1/M2/M3 results and current maintenance owners; future waves add no
 release prerequisite.
 
-Current execution selection, 2026-10-25: cleanup and measured optimization
-supersede the feature-first cutoff and performance deferral below. Feature
-pickup stays queued behind #209. Preserve accepted checkpoints and plans.
 Use this ordered batch queue; the linked register contains exact issue mapping,
 prerequisites, exclusions and finite acceptance. Scope each implementation PR
 to a complete related owner slice; tests/docs do not inflate story counts.
@@ -1200,8 +1476,8 @@ to a complete related owner slice; tests/docs do not inflate story counts.
 | --- | --- | --- |
 | M1 — Done | Supported runtime baseline and replaced entry points | PR189 merged; #179/#180/#181 Done. Qualified required compiler/utility/profile/install contract retained. |
 | M2 — Accepted | Remaining first-party runtime controllers | M2.1–M2.10 merged through PR203. Cam explicitly accepts accumulated M2 session evidence and documented limits on 2026-10-25, authorizing M3. No controller port or observer expansion remains selected; broader native/hardware/release gates stay separate. |
-| M3 — Accepted | Target-owned linkage and dependency closure | PR204–PR207 are merged; #47/#49/#184 remain closed with their source-bound combined acceptance. Continue into M4 without redoing accepted linkage work. |
-| M4 | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
+| M3 — Done | Target-owned linkage and dependency closure | PR204–207 merged; #184/#49/#47 completed. Fifteen-profile source/install/X/static-transitive inventory acceptance is retained; separate #11/#13 advisory gates remain open. |
+| M4 — Active | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
 | M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
 | M6 | Perl framework retirement and scripting disposition | Qualify the bounded scripting migration floor, then retire FvwmPerl/perllib/fvwm-perllib and Perl-only build/templates. Keep unrelated FVWM3/FvwmScript behavior and user files. |
 | M7 | Owned build/generator/test tool retirement | Port first-party tools in build/source, generation/docs and independent test/VM-driver groups; remove predecessors only after parity, failure capture and offline/reproducibility checks. |
@@ -1528,7 +1804,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | MAINT-02 | P1 / partial adoption | Compatible build wrapper, shared Meson/manual tooling and modern GEN-01 parser/runtime and I18N-01 translation maintenance adopted, with BSD ports gettext discovery fixed. The tooling report records actual profiles, installs, documentation comparisons, source/mode provenance and historical Go gaps and separate native CI/release limits; the Prompt checkpoint now qualifies isolated native AMD64 Go/Meson builds. Public website migration is deferred to DOCS-01 and is not a maintenance blocker. Checked metadata is locally adopted with PERL-PROTO-01; source inventory/archive candidate memory and provenance are locally qualified in child #84/#85 ([report](verification/VERIFICATION-2026-10-13-SOURCE-TOOLS.md)); build reuse and consolidated PR cadence are locally qualified in child #87 ([report](verification/VERIFICATION-2026-10-13-BUILD-EFFICIENCY.md)); published referenced developer docs/evidence and current file-link checks are locally qualified in child #89 ([report](verification/VERIFICATION-2026-10-13-DOCUMENTATION-EVIDENCE.md)); source archive workflow adoption retains its separate release gates; utility ports and predecessor removal remain queued. The [preparation/evidence checkpoint](verification/VERIFICATION-2026-10-21-BSD-PREPARATION.md) passes affected native qualification; broader scope remains open. |
 | DATA-01 | P1 / in progress | Typed, capped EWMH acquisition and complete fixed records implemented. Motif/Open Look records and ICCCM MULTIPLE pairs validated before indexing, with native and real-X coverage. Legacy names/class/command/session strings, protocols and colormap lists are now capped; startup WM_STATE and root restart markers are validated. Standard text encodings, empty command arguments and Corel protocol types remain supported. Module selection/text readers now validate complete bounded properties; timed private selection requests isolate late replies, and root cut-buffer/title/pixmap replies have explicit ownership. The tree-query ownership follow-up now fixes stale failure output and parent-mismatch child-list leaks, with focused Linux/BSD ARM64/leak-enabled sanitizer coverage and the accepted 2026-10-07 combined Linux/BSD/default-X/optional/sanitizer checkpoint. [Report](verification/VERIFICATION-2026-10-06-TREE-QUERY.md). Active ancestor/pointer/frame bounds are qualified in PR131; the [visual-startup checkpoint](verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md) qualifies inherited ID admission, visual reply ownership and initial-color refusal. Swallow-proxy registration, pending-peer retention and property replies are qualified in the session-ownership checkpoint. Remaining: broader tree-walk inventory, icon acquisition/decoder stress and module interpreter value handling. Shared string copies are qualified in [PR #138](https://github.com/gonz0w/fvwm-x/pull/138); [report](verification/VERIFICATION-2026-10-21-STRING-COPIES.md). Broader owner scope stays open. |
 | IMAGE-01 | P1 / asynchronous core activation locally qualified; wider audit open | Regular bounded primary inputs, finite compressed-XPM transport and isolated SVG rendering retain approved limits. Normal startup now enables asynchronous completion and acknowledged immutable owners for colorsets/effects, decor, menus, icons, cursors and XOR tiles. Eight compiler profiles pass 908 entries, 120 staged identities and 52 default-BSD-X driver invocations; optional/scoped sanitizer coverage and all 1261 source identities are recorded. Wider decoder CPU/storage/permissions isolation and mixed-monitor/physical/release-CI checks remain open. [Activation report](verification/VERIFICATION-2026-10-06-IMAGE-ACTIVATION.md). |
-| FD-01 | P1 / partially implemented | Core module pipes get close-on-exec before fork; child keeps only protocol endpoints; failed exec uses _exit. Read/PipeRead streams fail closed on flag setup. MFL locks reject unsafe files, retain one inode across restart, and direct signals exit libevent. Native lifecycle and default-X restart tests pass. ICE listeners, accepted connections, authentication streams and core session connections now get checked close-on-exec before use. Literal iceauth argv removes shell interpretation of save-directory paths. Disconnect callbacks no longer leave freed watch/pending nodes; authenticated registration, early disconnect, shutdown and cleanup pass real-X tests. Six injected pipe/flag/stat failures now verify closed descriptors, reset outputs and preserved errors; the module selection helper also passes above the select descriptor ceiling. Native startup now validates decimal endpoints, applies checked close-on-exec and preserves borrowed ownership on failure; five legacy native modules adopt the shared parser. Listen-only incoming -1 remains supported. Four injected parser flag failures, high descriptors where permitted, fork/exec and actual Script subprocess checks pass. Module fork refusal cleanup, finite single-query descriptor width and ICE/session range admission plus watched-record cleanup are locally qualified in schema/descriptor checkpoints. Auto poll readiness is locally qualified in consumer1361. Ident poll/payload admission and Pager poll/configuration progression are locally qualified in popup1363; IconMan/Buttons/Script readiness and Script placeholder ownership are locally qualified in readiness1366; Form poll/timer/draw ownership is locally qualified in module-ui1370. Core Exec and session authentication/publication constructor failures are now locally qualified in the process-startup checkpoint. Swallow-proxy registration/refusal and pending-close ownership are qualified in the session-ownership checkpoint. Remaining: other actual helper/session/subprocess constructor failures, forced high live admission, wider readiness owners, Perl and broader descriptor ownership. Shared module logging descriptor remains intentional. [Follow-up](verification/VERIFICATION-2026-10-04-SCRIPT-BOUNDS.md). Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay open. [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
+| FD-01 | P1 / partially implemented | Core module pipes get close-on-exec before fork; child keeps only protocol endpoints; failed exec uses _exit. Read/PipeRead streams fail closed on flag setup. MFL locks reject unsafe files, retain one inode across restart, and direct signals exit libevent. Native lifecycle and default-X restart tests pass. ICE listeners, accepted connections, authentication streams and core session connections now get checked close-on-exec before use. Literal iceauth argv removes shell interpretation of save-directory paths. Disconnect callbacks no longer leave freed watch/pending nodes; authenticated registration, early disconnect, shutdown and cleanup pass real-X tests. Six injected pipe/flag/stat failures now verify closed descriptors, reset outputs and preserved errors; the module selection helper also passes above the select descriptor ceiling. Native startup now validates decimal endpoints, applies checked close-on-exec and preserves borrowed ownership on failure; five legacy native modules adopt the shared parser. Listen-only incoming -1 remains supported. Four injected parser flag failures, high descriptors where permitted, fork/exec and actual Script subprocess checks pass. Module fork refusal cleanup, finite single-query descriptor width and ICE/session range admission plus watched-record cleanup are locally qualified in schema/descriptor checkpoints. Auto poll readiness is locally qualified in consumer1361. Ident poll/payload admission and Pager poll/configuration progression are locally qualified in popup1363; IconMan/Buttons/Script readiness and Script placeholder ownership are locally qualified in readiness1366; Form poll/timer/draw ownership is locally qualified in module-ui1370. Core Exec and session authentication/publication constructor failures are now locally qualified in the process-startup checkpoint. Swallow-proxy registration/refusal and pending-close ownership are qualified in the session-ownership checkpoint. Remaining: other actual helper/session/subprocess constructor failures, forced high live admission, wider readiness owners, Perl and broader descriptor ownership. Shared module logging descriptor remains intentional. [Follow-up](verification/VERIFICATION-2026-10-04-SCRIPT-BOUNDS.md). Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay with #7/#15/#34. Original finite #36 is complete; see [M5 reconciliation](verification/VERIFICATION-2026-10-25-M5-WAIT-OWNERSHIP.md). [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
 | PROC-01 | P1 / partially implemented | Core Exec stdin/fork admission and non-flushing child failure exit, plus complete session-authentication preparation and publication rollback, are locally qualified in the process-startup checkpoint. Continue utility/dialog subprocess construction and descriptor ownership with FD-01; use literal argv where compatible and reproduce findings before asserting exploitability. See cleanup roadmap. Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay open. [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
 | INPUT-01 | P1 / partially implemented | Shared Move/Resize wait and cancellation state now holds IDs, retains lifecycle events for normal dispatch after return, and ends on client destruction/withdrawal or termination. Motion coalescing has a 32-event budget and release/key barriers. Client/titlebar and click-to-focus cancellation, real wireframe server-grab release, unrelated destruction and queue ordering pass native/real-X gates across all six platforms and four BSD default servers. The enclosing function resumes after a normal release or cancellation. Context clones now own triggering-event snapshots, and each module has a 256-command pending-input limit with independent lifetime pins. Audited direct commands and safe timer heads now run in bounded passes during held drags and continuous motion; independent producers can pass deferred work while each producer retains its active continuation and command order. Temporary execution restores both cached X events. Synchronous frame snapshots are owned, bounded and coalesced, then refreshed/delivered after outer unwind; intermediate replies cannot hold the grab open. Unsafe timer heads retain deadline order. The user approved common button-release servicing and 20-ms pointer/wait-cursor timing. Release-state policy, bounded readiness and the shared audited pump are implemented; local qualification passes eight profiles/924 entries, 120 installed identities, all default BSD X, optional profiles and five scoped sanitizer checks. Active viewport service is locally qualified: eight profiles/952 entries, 120 installed identities, 16 default-BSD-X drivers, optional 124/105 and nine scoped sanitizer checks. Active-menu servicing, bounded motion and monotonic submenu timing are locally qualified: eight profiles/984 entries, 120 installed identities, 12 default-BSD-X drivers, optional 128/108 and eight scoped sanitizer checks. [Release-wait report](verification/VERIFICATION-2026-10-06-BUTTON-RELEASE.md). Remaining: target lifetime pinning, arbitrary style/resource mutation, hints/topology and nested interactions. The selected function-wait lifetime family is locally qualified in [PR143](verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md); broader mutation/topology/nested owners remain open without silently expanding the finite closeout. |
 | PERL-PROTO-01 | P1 / repair strictly locally qualified | Ten extended event values, exact native mask, three-word Echo decoding and category-aware dispatch are repaired. Checked generation preserves exports/POD and emits provenance plus JSON companions. Six-target native/installed/default-BSD-X consumers pass. Perl retirement remains under COMPAT-02 with its own source/install/reference gates. See [current report](verification/VERIFICATION-2026-10-11-PROMPT-METADATA.md). |
@@ -1543,16 +1819,16 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | PERF-01 | P1 / current measured optimization; accepted improvements retained | Ordered/equal insertion is linear; adjacent size-only AutoDetect requests coalesce at most 32 queued records without crossing other events or removing synchronization. Isolated workload identities and final-log ownership improve measurements. The combined core milestone passes eight profiles, all six OS/architecture targets, four default BSD servers, installed identities, optional builds and scoped sanitizers. No timing ratio is an acceptance test. Remaining measured tuning is current under #29/#209 with finite workloads and acceptance. Physical-latency and timer-heap experiments retain separately selected scope; concrete availability regressions retain their safety owners and release physical checks remain required; one blocking handler cannot be preempted by a budget. [Combined report](verification/VERIFICATION-2026-10-11-CORE-PERFORMANCE.md). Periodic Linux paired observations and size/CPU/RSS tracking are established in the [2026-10-20 reference](verification/PERFORMANCE-2026-10-20.md); next regular comparison follows five merged implementation checkpoints. The earlier [PR132/138 comparison](verification/PERFORMANCE-2026-10-21.md) remains recorded. The current [PR144/149 observation](verification/PERFORMANCE-2026-10-22-PR149.md) establishes PR149 at 1/5 subsequent merged checkpoints after PR150. Observations remain lightweight/nonblocking for safety closeout; documentation-only changes do not increment the counter. |
 | DRAW-01 | P1 / bounded expose servicing locally qualified; broader dirty-state work queued | Actual-core synchronous expose control invalidates 1000 selected redraws with zero handler calls. [Proposal](decisions/EXPOSE-SERVICE-PROPOSAL.md) corrects delivery and bounds each service/merge to 32 queued records; the user approved large Read/Raise/Refresh asynchronous redraw completion timing on 2026-10-07. Queue/FIFO/cache policy, actual-core damage/retirement and real icon/tear-off pixels pass. The 1291-file atom/expose/icon checkpoint is locally qualified: 1096 standard entries/eight profiles, 120 installed identities, 52 default BSD X invocations, optional 142/122 and 21 scoped sanitizers. [Report](verification/VERIFICATION-2026-10-07-ATOM-EXPOSE.md). The [window-update contract](decisions/WINDOW-UPDATE-BARRIERS-2026-10-15.md) records current owners, explicit/outer-loop barriers, retirement and query/publication constraints; its actual-core fixture passes all six targets/ten profiles, four default BSD X displays and scoped sanitizer checks. Two unchanged full-suite timing gaps are retained separately. [Report](verification/VERIFICATION-2026-10-15-WINDOW-UPDATES.md). Broader dirty-state optimization remains queued. Defer redundant decoration/geometry work using explicit dirty state; skip no-op updates. Define shared ownership, flush points and observable ordering barriers before STYLE-01/STATE-01 add deferred work. Preserve resource generations and final geometry. Compare latency, CPU and X request counts under drag/title/resize floods. See optimization roadmap. |
 | STACK-02 | P1 / locally qualified | The baseline parent/child/grandchild fixture verified actual layers 6/2/4 and stable root stack order, while only the parent received ABOVE/BELOW EWMH updates; children retained stale states. Per-window EWMH publication and title-highlight identity are corrected; parent/child invocation, unrelated-window, actual stack/focus/decor and destroyed-parent survivor checks pass. Combined FIFO/stack/output qualification is locally accepted; STACK-01 identity work can follow. This is a desktop correctness finding, not a demonstrated security compromise. The baseline is separate from frozen INPUT-01 qualification; see optimization roadmap. |
-| STACK-01 | P1 / identity, guards, query, arithmetic and traversal locally qualified; parent continuation, initialized lists and Layer storage locally qualified; unmanaged correction/bounded restacks/sibling selection locally qualified; group cleanup, callback publication and retirement continuation locally qualified | Indexed parent identity remains locally qualified. The user approved the originally invoked window for cyclic Layer and Raise/Lower/RestackTransients redirection on 2026-10-07. Both guards reuse operation-local constant-space policy; hint validation also finishes on a pre-existing parent cycle, retaining existing rejection rules. Eight focused Linux checks pass, including two/three-node/prefixed cycles, direct-target equivalence with transient inclusion, authoritative ring/server order, acyclic ancestry, hints and retirement. The policy also has exact-byte six-target coverage; first three stories pass six focused BSD ARM64/scoped-sanitizer checks per environment. [Layer decision](decisions/TRANSIENT-PARENT-CYCLE-PROPOSAL.md) and [other redirection decision](decisions/STACK-REDIRECTION-CYCLE-PROPOSAL.md). The four-story combined stacking/query checkpoint is locally qualified (1144 entries/eight profiles, 120 installed identities, 72 default BSD X invocations, optional 148/128 and 27 scoped sanitizers; exact 1301-file snapshot). The subsequent four-story arithmetic checkpoint is locally qualified from 1306 files: 1168 entries/eight profiles, 120 installed identities, 80 default BSD X invocations, optional 151/131 and 30 scoped sanitizers. Stable sorting, parent-only worklist closure and inactive cleanup are locally qualified in the subsequent 1314-file checkpoint (1192 entries/eight profiles, 120 installed identities, 84 default BSD X invocations, optional 154/134 and 33 scoped sanitizers); group ordering is preserved. The user approved invoked-window fallback for deep-walk storage failure on 2026-10-07. Production now uses operation-local parent preparation and leaf-first continuation; pure ownership and 13 real-frame controls pass focused Linux/sanitizer and both native BSD ARM64 checks. The 1319-file parent-continuation checkpoint is locally qualified (1208 entries/eight profiles, 120 installed identities, 88 default BSD X drivers, optional 156/136 and 35 scoped sanitizers). The 1323-file initialized-list checkpoint is locally qualified (1224 standard entries, 120 installed identities, 92 default BSD X invocations, optional 158/138 and 37 scoped sanitizers). The approved Layer storage contract is locally qualified in a separate 1328-file checkpoint (1240 accepted entries, 120 installed identities, 96 default BSD X invocations, optional 160/140 and 39 scoped sanitizer checks); original failures and unchanged affected reruns are retained. RaiseOverUnmanaged storage handling proceeds under configuration-only compatibility; further group/retirement work remains queued. See [identity report](verification/VERIFICATION-2026-10-07-STACK-IDENTITY.md). |
+| STACK-01 | Done in PR230 / identity, guards, query, arithmetic and traversal locally qualified; parent continuation, initialized lists and Layer storage locally qualified; unmanaged correction/bounded restacks/sibling selection locally qualified; group cleanup, callback publication and retirement continuation locally qualified | Indexed parent identity remains locally qualified. The user approved the originally invoked window for cyclic Layer and Raise/Lower/RestackTransients redirection on 2026-10-07. Both guards reuse operation-local constant-space policy; hint validation also finishes on a pre-existing parent cycle, retaining existing rejection rules. Eight focused Linux checks pass, including two/three-node/prefixed cycles, direct-target equivalence with transient inclusion, authoritative ring/server order, acyclic ancestry, hints and retirement. The policy also has exact-byte six-target coverage; first three stories pass six focused BSD ARM64/scoped-sanitizer checks per environment. [Layer decision](decisions/TRANSIENT-PARENT-CYCLE-PROPOSAL.md) and [other redirection decision](decisions/STACK-REDIRECTION-CYCLE-PROPOSAL.md). The four-story combined stacking/query checkpoint is locally qualified (1144 entries/eight profiles, 120 installed identities, 72 default BSD X invocations, optional 148/128 and 27 scoped sanitizers; exact 1301-file snapshot). The subsequent four-story arithmetic checkpoint is locally qualified from 1306 files: 1168 entries/eight profiles, 120 installed identities, 80 default BSD X invocations, optional 151/131 and 30 scoped sanitizers. Stable sorting, parent-only worklist closure and inactive cleanup are locally qualified in the subsequent 1314-file checkpoint (1192 entries/eight profiles, 120 installed identities, 84 default BSD X invocations, optional 154/134 and 33 scoped sanitizers); group ordering is preserved. The user approved invoked-window fallback for deep-walk storage failure on 2026-10-07. Production now uses operation-local parent preparation and leaf-first continuation; pure ownership and 13 real-frame controls pass focused Linux/sanitizer and both native BSD ARM64 checks. The 1319-file parent-continuation checkpoint is locally qualified (1208 entries/eight profiles, 120 installed identities, 88 default BSD X drivers, optional 156/136 and 35 scoped sanitizers). The 1323-file initialized-list checkpoint is locally qualified (1224 standard entries, 120 installed identities, 92 default BSD X invocations, optional 158/138 and 37 scoped sanitizers). The approved Layer storage contract is locally qualified in a separate 1328-file checkpoint (1240 accepted entries, 120 installed identities, 96 default BSD X invocations, optional 160/140 and 39 scoped sanitizer checks); original failures and unchanged affected reruns are retained. RaiseOverUnmanaged storage handling, group cleanup, callback publication and retirement continuation were subsequently accepted; the original finite STACK-01 scope is complete. See [M5 reconciliation](verification/VERIFICATION-2026-10-25-M5-SCRIPT-OWNERSHIP.md), [lifecycle acceptance](verification/VERIFICATION-2026-10-07-MODULE-LIFECYCLE.md) and [identity report](verification/VERIFICATION-2026-10-07-STACK-IDENTITY.md). |
 | STYLE-01 | P2 / mutation checkpoint qualified; broader work open | Three typed mutations share one qualified checkpoint ready for review. [Mutation report](verification/VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md). The preceding flag-predicate checkpoint is merged in PR126. [Flag report](verification/VERIFICATION-2026-10-19-STYLE-FLAGS.md). The preceding matching checkpoint is merged in PR125. [Matching report](verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md). Three incremental style-index improvements pass a composed checkpoint: one original broad run across six targets/ten profiles (2019/2022 executed standard, 445/445 optional), followed by three unchanged isolated fixture controls. Fifteen actual-core index drivers retain zero selected lookup allocations after append, deletion and all three simplification paths. Three scoped sanitizers, nine fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. Existing update/grab barriers remain. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md). |
 | STATE-01 | P2 / tray checkpoint qualified; broader burst/coalescing open | Three existing legacy-tray insertion/retirement/publication operations share a qualified checkpoint merged in PR124. [Tray report](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md). Three earlier publication improvements share one qualified checkpoint: paired strut refresh, local permission reuse and converted-name length reuse. [Report](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md).  [Merged PR #112 atom batch](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md) adds duplicate-ID lower bounds, scoped/ALL name lookup and startup vector reuse. Broader burst/coalescing work remains open.  [PR #102](verification/VERIFICATION-2026-10-15-EWMH-STATE.md) implements inline client snapshots, paired work-area traversal and fixed scoped/ALL atom-ID indexes. Three related improvements share one checkpoint. Eight affected/retained entries pass ten profiles; core probes pass four default BSD X targets, and three scoped sanitizer entries pass. Original full runs pass 1990/1992 standard and 437/437 optional entries. Fresh 8 stages verify 120 code/77 catalog identities; 16 geometry invocations pass. Exact broader failures/install gaps remain in the report. Current publication/query points, original priority and configuration syntax remain unchanged. No persistent window cache or generic property-write coalescing is introduced; later dirty-state work requires separate measured invalidation/barrier evidence. |
 | CACHE-01 | P2 / variant lookup checkpoint locally qualified; broader profiling open | A 65-variant lookup now checks one file stamp instead of 65. Eight standard compiler profiles across six targets pass 1936 entries; optional profiles add 423, default BSD servers pass 12 cache/staged-WM fixtures, and instrumented cache checks pass. 150 installed code identities and 99 catalogs validate. Broader profiling and release/hardware gates remain open. Preserve path resolution, keys, generations and IMAGE-01 leases. [Report](verification/VERIFICATION-2026-10-14-PICTURE-CACHE.md). |
-| LOOP-01 | P2 / ordinary, interactive and synchronous core readiness locally qualified; wider audits remain | Unlock, blocked-output and startup waits use native poll with shared absolute-deadline conversion. Retained full coverage passes 1944 standard and 425 optional entries; the final timeout refinement passes 50 affected entries across the same profiles. 150 final installed code identities and 99 catalogs match. Default BSD X passes 20+8 fixtures; three scoped sanitizer entries pass. Broader admission/runtime/release audits remain open. Preserve ordinary-only session callbacks and INPUT-01/OUTPUT-01 ordering. [Latest report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md). Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay open. [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
+| LOOP-01 | Done in PR239 / original consolidation and shared-wait repair | Unlock, blocked-output and startup waits use native poll with shared absolute-deadline conversion. Retained full coverage passes 1944 standard and 425 optional entries; the final timeout refinement passes 50 affected entries across the same profiles. 150 final installed code identities and 99 catalogs match. Default BSD X passes 20+8 fixtures; three scoped sanitizer entries pass. Broader admission/runtime/release audits remain open. Preserve ordinary-only session callbacks and INPUT-01/OUTPUT-01 ordering. [Latest report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md). Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay open. [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
 | XIO-01 | P2 / atom batching locally qualified; query work queued | Independent atom tables now use three batches for 100 core/ICCCM/EWMH names, with finite missing-entry fallback. Exact mappings, selection ownership and supported-property order pass actual Linux and native FreeBSD/OpenBSD ARM64 controls; Scoped pure leak-enabled and actual-core leak-disabled sanitizer checks pass. [Report](verification/VERIFICATION-2026-10-07-ATOM-BATCH.md). Combined atom/expose/icon qualification passes eight profiles/1096 entries, 120 installed identities, 52 default BSD X invocations, optional 142/122 and 21 scoped sanitizers. [Combined report](verification/VERIFICATION-2026-10-07-ATOM-EXPOSE.md). Highest-override query selection now scans the root snapshot from top to bottom, skips already-excluded internal windows and stops at the highest eligible sibling. The controlled 108-child fixture uses 3 attribute reads instead of 108; full current attributes remain queried for managed frames. Real override/InputOnly order, focus and popup teardown pass focused Linux/BSD ARM64/scoped sanitizer checks; combined qualification passes eight profiles/1144 entries, 120 installed identities, 72 default BSD X invocations, optional 148/128 and 27 scoped sanitizers from the exact 1301-file snapshot. Other query/barrier work remains queued. Batch independent atom tables and remove individually proven unnecessary XSync barriers. Profile root-tree plus per-child attribute queries in stacking; use STACK-01 identities to skip only known/current managed frames. Preserve unmanaged/InputOnly/hidden/destroyed-window behavior and error/order boundaries. A narrow bounded XCB experiment requires measured remaining query cost, LIB-07 and six-target review; retain Xlib event ownership. Whole-core migration and new mandatory packages are not approved. See optimization roadmap. |
 | BOX-01 | P2 / queued | Sandbox narrow helpers/modules first with OpenBSD pledge/unveil and FreeBSD Capsicum where appropriate; evaluate Linux helper restrictions. Preserve reload/spawn/font/theme access. Whole-core sandbox policy requires an explicit compatibility review. |
-| LIB-05 | P2 / combined acceptance passed; review | PR144 removes unused xkbcommon. M3.4 completes actual target/dependency/interpreter-floor inventory, separating declared/exercised minima and unqualified legacy guards. Xt/Xtrans headers and real Xlib/libevent/Xft remain. #47 closes on merge; M4/M6/M7 retirements remain separate. [Floors](verification/DEPENDENCY-FLOORS-2026-10-25.md), [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
-| LINK-01 | P2 / combined acceptance passed; review | Production ownership merged in PR204–206. M3.4 validates default/reduced on six targets, both Linux Clang profiles and cairo-svg, full offline installs/staged identities, affected X and static archive/transitive/package-license-size records. No all-static ELF, package removal or speed claim. #184/#49 close on merge. [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
-| LIB-04 | P2 / Later; child #183 queued | Consolidate obsolete SVG backends against a maintained librsvg/Cairo floor; preserve SVG-disabled builds and rendering/worker contracts. LunaSVG comparison remains optional and separate; no adoption approved. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
+| LIB-05 | Done / PR207 | PR144 removes unused xkbcommon. M3.4 completes actual target/dependency/interpreter-floor inventory, separating declared/exercised minima and unqualified legacy guards. Xt/Xtrans headers and real Xlib/libevent/Xft remain. #47 closed completed; M4/M6/M7 retirements remain separate. [Floors](verification/DEPENDENCY-FLOORS-2026-10-25.md), [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
+| LINK-01 | Done / PR207 | Production ownership merged in PR204–206. M3.4 validates default/reduced on six targets, both Linux Clang profiles and cairo-svg, full offline installs/staged identities, affected X and static archive/transitive/package-license-size records. No all-static ELF, package removal or speed claim. #184/#49 closed completed. [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
+| LIB-04 | P2 / consolidation acceptance passed; review | Child #183 removes obsolete options/API branches and initializer-only dependency edges with seven affected profile passes, exact M3 worker comparisons and updated package/manual/license-size records. #183 closes on merge. The later LunaSVG comparison remains open under #46; no replacement adopted. [M4 report](verification/VERIFICATION-2026-10-25-M4-SVG.md). |
 | LIB-06 | P2 / Later evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | UTIL-01 | P2 / utility-family port milestone locally qualified | [Xlock checkpoint](verification/VERIFICATION-2026-10-12-XLOCK-PORT.md), [directory checkpoint](verification/VERIFICATION-2026-10-12-DIRECTORY-PORT.md) and [converter checkpoint](verification/VERIFICATION-2026-10-12-CONVERTER-PORT.md) install Go when enabled and retain disabled-Go Perl. The converter preserves ordinary heuristic bytes with finite input/reference work and atomic private outputs. [Consumer classification](verification/RECONCILIATION-2026-10-12-UTILITY-CONSUMERS.md) separates the installed Script FIFO example, development cursor generator, optional status recipes and full XDG provider/frontend. The [Script example checkpoint](verification/VERIFICATION-2026-10-12-SCRIPT-COM-PORT.md) qualifies stdlib Go/paired selection, bounded owned FIFOs, staged and actual native widget checks. Copied explicit Perl invocations remain usable. The [full XDG provider/frontend fixture checkpoint](verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md) now passes across six targets; its [inactive input-policy foundation](verification/VERIFICATION-2026-10-12-XDG-POLICY.md) is qualified at `d33f`, with [discovery/preference policy](verification/VERIFICATION-2026-10-12-XDG-DISCOVERY.md) qualified at `9337` and [ordered allocation](verification/VERIFICATION-2026-10-12-XDG-ALLOCATION.md) at `be8e`; the [full coordinated Go provider/native Form port](verification/VERIFICATION-2026-10-12-XDG-PORT.md) is now locally qualified and adopted at `04c1`. COMPAT-02 retirement remains a separate stage5 gate. This supersedes earlier Python port recommendations. Preserve applicable configured behavior. See [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
@@ -3679,3 +3955,13 @@ reader results are separate from the subsequent interpreter/file work.
   uncertainties and separate release/native/hardware/advisory gates remain
   explicit. Performance stays PR204 2/5; evidence-only closure advances no count.
   [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md).
+
+- 2026-10-25: PR207 merged with canonical signature/DCO/tree verified;
+  #184/#49/#47 closed completed, 64 open issues remain. M4 consolidates the
+  existing modern SVG renderer, removes three backend options/legacy APIs and
+  initializer-only dependency edges. Seven affected profiles pass; canonical M3
+  pixel comparisons retain a known clipped mask result and original helper
+  failures. One OpenBSD AMD64 preparation reboot retry passes without rerunning
+  six completed profiles. #183 awaits review/merge closure; #46 comparison and
+  broader image/advisory/release gates remain separate. Performance stays PR204
+  2/5, 3/5 on merge. [Report](verification/VERIFICATION-2026-10-25-M4-SVG.md).

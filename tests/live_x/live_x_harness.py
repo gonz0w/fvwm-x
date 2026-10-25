@@ -174,7 +174,7 @@ def check_live_x_workflow(workflow_path: Path) -> None:
         raise HarnessError("live-x job must install exactly the four audited X packages")
 
     commands = (
-        "meson setup builddir -Dlive-x-tests=true -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled -Dsvg=enabled -Dcairo=enabled",
+        "meson setup builddir -Dlive-x-tests=true -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled -Dsvg=enabled",
         "meson compile -C builddir",
         "meson test -C builddir --suite live-x --print-errorlogs",
     )

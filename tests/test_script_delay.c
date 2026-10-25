@@ -77,6 +77,32 @@ static void test_periodic_timeout(void)
 	assert(script_periodic_timeout_ms(&last, &now) == 0);
 }
 
+static void test_shutdown_timeout(void)
+{
+	struct timespec start = { 10, 900000000 };
+	struct timespec now = start;
+
+	assert(script_shutdown_timeout_ms(&start, &now) == 2000);
+	now.tv_nsec++;
+	assert(script_shutdown_timeout_ms(&start, &now) == 2000);
+	/* Repeated unrelated/refused requests and EINTR use this same start. */
+	for (int milliseconds = 1; milliseconds < 2000; milliseconds++)
+	{
+		now.tv_sec = 10 + (900 + milliseconds) / 1000;
+		now.tv_nsec = ((900 + milliseconds) % 1000) * 1000000L;
+		assert(script_shutdown_timeout_ms(&start, &now) ==
+			2000 - milliseconds);
+	}
+	now = (struct timespec){ 12, 899999999 };
+	assert(script_shutdown_timeout_ms(&start, &now) == 1);
+	now.tv_nsec++;
+	assert(script_shutdown_timeout_ms(&start, &now) == 0);
+	now = (struct timespec){ INT_MAX, 0 };
+	assert(script_shutdown_timeout_ms(&start, &now) == 0);
+	now = (struct timespec){ 10, 899999999 };
+	assert(script_shutdown_timeout_ms(&start, &now) == 2000);
+}
+
 static void test_readiness_timeout(void)
 {
 	struct timespec last = { 10, 0 };
@@ -286,6 +312,7 @@ int main(void)
 	test_duration();
 	test_periodic_timeout();
 	test_readiness_timeout();
+	test_shutdown_timeout();
 	test_interrupted_sleep_does_not_spin();
 	test_queued_and_arriving_cancellation();
 	test_other_input_keeps_deadline();

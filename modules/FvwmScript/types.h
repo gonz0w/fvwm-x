@@ -3,6 +3,7 @@
 #ifndef FVWMSCRIPT_TYPES_H
 #define FVWMSCRIPT_TYPES_H
 
+#include "script_message.h"
 #include "libs/fvwmlib.h"
 #include "libs/Module.h"
 #include "libs/Picture.h"
@@ -177,18 +178,6 @@ typedef struct
   Window swallower_win;
 } X11base ;
 
-typedef struct
-{
- char *Msg;
- char* R;
-} TypeName;
-
-typedef struct
-{
- int NbMsg;
- TypeName TabMsg[40];
-} TypeBuffSend ;
-
 struct XObj
 {
   int TypeWidget;
@@ -231,6 +220,9 @@ struct XObj
 };
 
 void ChooseFunction(struct XObj *xobj,char *type);
+
+/* Icon resources belong to the widget, independently of its initialization. */
+void script_icon_clear(struct XObj *xobj);
 
 void SendMsg(struct XObj *xobj,int TypeMsg);
 

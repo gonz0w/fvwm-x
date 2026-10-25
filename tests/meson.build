@@ -2612,6 +2612,35 @@ script_process_test = executable(
 )
 test('script-process', script_process_test, timeout: 60)
 
+if host_machine.system() == 'linux'
+    script_process_fault_test = executable(
+        'test-script-process-fault',
+        ['test_script_process_fault.c', '../modules/FvwmScript/script_process.c'],
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        c_args: ['-UNDEBUG'],
+        link_args: ['-Wl,--wrap=pipe', '-Wl,--wrap=fcntl',
+            '-Wl,--wrap=fcntl64', '-Wl,--wrap=sigprocmask', '-Wl,--wrap=sigaction',
+            '-Wl,--wrap=fork', '-Wl,--wrap=setpgid', '-Wl,--wrap=dup2',
+            '-Wl,--wrap=execl', '-Wl,--wrap=fvwmPoll', '-Wl,--wrap=poll'],
+    )
+    test('script-process-fault', script_process_fault_test, timeout: 60)
+endif
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test(
+        'script-process-xvfb',
+        py,
+        args: [files('live_x/script_process_live.py'), '--module', fvwm_script,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-process'],
+        depends: fvwm_script,
+        is_parallel: false,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        timeout: 90,
+    )
+endif
+
 script_value_test = executable(
     'test-script-value',
     ['test_script_value.c', '../modules/FvwmScript/script_value.c'],
@@ -2621,6 +2650,23 @@ script_value_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('script-value', script_value_test)
+
+script_message_test = executable(
+    'test-script-message',
+    ['test_script_message.c', '../modules/FvwmScript/script_message.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('script-message', script_message_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-message-xvfb', py,
+        args: [files('live_x/script_message_live.py'), '--module', fvwm_script,
+               '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-message'],
+        depends: fvwm_script,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60)
+endif
 
 script_message_owner_test = executable(
     'test-script-message-owner', 'test_script_message_owner.c',
@@ -2632,6 +2678,29 @@ script_message_owner_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('script-message-owner', script_message_owner_test)
+
+script_icon_owner_test = executable(
+    'test-script-icon-owner', 'test_script_icon_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=XFreePixmap', '-Wl,--wrap=PictureFreeColors',
+        '-Wl,--wrap=PictureFindImageFile',
+        '-Wl,--wrap=PImageLoadPixmapFromFile'],
+    c_args: ['-UNDEBUG'],
+)
+test('script-icon-owner', script_icon_owner_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-icon-xvfb', py,
+        args: [files('live_x/script_icon_live.py'), '--module', fvwm_script,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-icon'],
+        depends: fvwm_script,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60)
+endif
 
 
 script_execution_test = executable(
@@ -3067,6 +3136,14 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         timeout: 120, is_parallel: false,
     )
 endif
+
+fvwmsignal_test = executable(
+    'test-fvwmsignal',
+    ['test_fvwmsignal.c', '../libs/fvwmsignal.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('fvwmsignal', fvwmsignal_test, timeout: 15)
 
 image_async_wait_test = executable(
     'test-image-async-wait',

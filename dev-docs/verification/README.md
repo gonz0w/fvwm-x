@@ -2,6 +2,8 @@
 
 - [Modernization planning and issue reconciliation](MODERNIZATION-PLANNING-2026-10-25.md): twenty scoped issues, current cleanup/optimization priority, existing-owner updates and acyclic native dependencies; planning and documentation only.
 
+- [M4 SVG consolidation](VERIFICATION-2026-10-25-M4-SVG.md): existing modern renderer, retired backend/API branches, scoped native/X and exact worker comparisons; seven affected profiles pass with retained failures and separate wider gates.
+
 - [Combined M3 dependency acceptance](VERIFICATION-2026-10-25-M3-CLOSURE.md): fifteen profiles/six targets, full installs and staged X, exact static-transitive ownership, dependency/license/size inventory and reduced test-registration repair; #184/#49/#47 close on merge, with wider gates separate.
 
 - [Accepted issue reconciliation](ISSUE-CLOSURE-2026-10-25.md): DEAD-01 #35 completed from merged source evidence; unsupported OpenBSD 7.9 investigation #93 closed as not planned, with original failures and unmet cause/fix criteria preserved.

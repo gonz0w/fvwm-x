@@ -85,7 +85,7 @@ meson setup "$build_dir" "$@" --prefix=/usr/local \
     -Dxcursor=enabled -Dxrender=enabled -Dpng=enabled \
     -Dpkg_config_path="${PKG_CONFIG_PATH:-}" \
     -Dpng-security-backport="${FVWM_PNG_SECURITY_BACKPORT:-false}" \
-    -Dsvg=enabled -Dcairo=enabled
+    -Dsvg=enabled
 if [ "$profile" = go-clients ]; then
     exec sh tests/run_go_clients.sh "$build_dir" "$python_bin"
 fi

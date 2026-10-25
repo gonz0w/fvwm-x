@@ -45,7 +45,9 @@ On OpenBSD, install the compiler and all Xenocara sets during installation,
 then:
 
 ```sh
-pkg_add -I meson ninja libevent png librsvg
+pkg_add -I meson ninja libevent png librsvg cairo
+pkg-config --atleast-version=2.52 librsvg-2.0
+pkg-config --exists cairo
 ```
 
 OpenBSD supplies pkg-config and DejaVu fonts in its base/Xenocara sets.

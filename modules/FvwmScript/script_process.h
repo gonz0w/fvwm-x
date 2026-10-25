@@ -9,8 +9,9 @@
 
 /* Trusted script shell command; not a sandbox. Successful text is caller-owned.
  * Failure clears outputs. The deadline includes output and command completion;
- * Timeout discards partial output and terminates the command's process
- * group. */
+ * Timeout or module termination discards partial output and terminates the
+ * command's process group. Cancellation reports ECANCELED; child setup/exec
+ * failure reports its errno, independently of an executed shell's exit status. */
 bool script_process_read(const char *command, int timeout_ms, char **text,
 	size_t *length);
 

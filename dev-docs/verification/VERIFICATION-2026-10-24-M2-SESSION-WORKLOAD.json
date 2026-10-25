@@ -1,0 +1,426 @@
+{
+  "checkpoint": "M2.9 bounded session workload and acceptance handoff",
+  "merged_PR201": {
+    "merge": "28324d119e4f3d261984ec9a8cc8cf9341d8c297",
+    "tree": "0ebd1886a29844f285ba74cff5ad5bea8d908147",
+    "signature_verified": true,
+    "author_DCO": true,
+    "pr": {
+      "headRefName": "codex/m2-session-acceptance",
+      "headRefOid": "84b86c66aa5b7c2c5d043f200679952a9ef7da4a",
+      "mergeCommit": {
+        "oid": "28324d119e4f3d261984ec9a8cc8cf9341d8c297"
+      },
+      "state": "MERGED"
+    }
+  },
+  "status": "focused checks passed; native-CPU/full-session owner acceptance remains pending",
+  "production_changes": 0,
+  "runtime_build_files_exact": 1185,
+  "source_archive_sha256": "6da5e932073f6b30a27834d7f0d3f086ebb91845e79447c32d20aab7c4470156",
+  "executed_test_inputs": {
+    "Makefile": {
+      "sha256": "eece142b5ed069ea4678284a7099d83e500d10c93d40e287c9d7b8a990c89000",
+      "mode": 420
+    },
+    "tests/live_x/desktop_session_live.py": {
+      "sha256": "bd3842f8d0194f664291071e713233f75063ac0e66890034c71dc82c33fe063d",
+      "mode": 420
+    },
+    "tests/live_x/session_workload.py": {
+      "sha256": "b7cccec866bc521af4d26229c4eeaf926f15725475bd77e28e2ef63bb8ea6749",
+      "mode": 420
+    },
+    "tests/test_session_workload.py": {
+      "sha256": "47a8e526be2cae561e68dd6283d3296959307fdc406f091144903fefcceed83b",
+      "mode": 420
+    }
+  },
+  "archive": {
+    "sha256": "b78ecf41a2ef8cfcd4b6deae11969db407f926625c9038cfcb31a355c58d75c8",
+    "bytes": 1127453,
+    "gzip_crc_to_eof": true,
+    "payloads_verified": 32,
+    "manifest_entries_verified": 31
+  },
+  "commands": [
+    {
+      "label": "pure-workload",
+      "command": [
+        "python3",
+        "tests/test_session_workload.py"
+      ],
+      "status": 0,
+      "seconds": 1.6821857299999863
+    },
+    {
+      "label": "pure-session-integration",
+      "command": [
+        "python3",
+        "tests/test_desktop_session_observation.py"
+      ],
+      "status": 0,
+      "seconds": 1.05718359399998
+    },
+    {
+      "label": "workload",
+      "command": [
+        "python3",
+        "tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/root/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--observe-only",
+        "--workload-observe",
+        "--cgroup-parent",
+        "/sys/fs/cgroup",
+        "--trace-parent",
+        "/sys/kernel/tracing/instances",
+        "--artifacts-dir",
+        "/root/fvwm-module-waits-20261015/m29-session/workload"
+      ],
+      "status": 0,
+      "seconds": 34.66362608700001
+    },
+    {
+      "label": "workload-gc",
+      "command": [
+        "python3",
+        "tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/root/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--observe-only",
+        "--workload-observe",
+        "--cgroup-parent",
+        "/sys/fs/cgroup",
+        "--trace-parent",
+        "/sys/kernel/tracing/instances",
+        "--gc-observe",
+        "--artifacts-dir",
+        "/root/fvwm-module-waits-20261015/m29-session/workload-gc"
+      ],
+      "status": 0,
+      "seconds": 32.925379851
+    }
+  ],
+  "environment": {
+    "uname": [
+      "Linux",
+      "fvwm-linux-amd64",
+      "6.12.113+deb13-cloud-amd64",
+      "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+      "x86_64"
+    ],
+    "Go_environment_before_run": {
+      "GODEBUG": null,
+      "GOGC": null,
+      "GOMEMLIMIT": null
+    },
+    "prefix": "/root/fvwm-module-waits-20261015/m27-checkpoint/install-stage/usr/local",
+    "native_CPU_qualification": false,
+    "runtime": "Unchanged PR200 default installed stage; PR201 observer foundation",
+    "native_identities": {
+      "fvwm3": "5cb750e1341f4de06db8f220b817cd540552ecb7f2ba610f259c19f760c90860",
+      "config.h": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+      "modules/FvwmMFL/FvwmMFL": "71d37664d317e4658665e23854e58d75cea8431c96d3a0bddc7075d6fbb0216a",
+      "modules/FvwmForm/FvwmForm": "63635f9b35a44db143d99abde98bf7a7538531c3a2c6f8c5395f6ef70790b761",
+      "modules/FvwmButtons/FvwmButtons": "da693a82e62c30e71b4a17b986f3a84c0ac457619daa3a81eace909764960b60"
+    }
+  },
+  "runs": {
+    "workload": {
+      "inputs": {
+        "additional_applications": 512,
+        "application_desktop_files": 513,
+        "expected_discovered_applications": 512,
+        "private_directory_entries": 96,
+        "rounds": 8,
+        "operation_limit": 16,
+        "deadline_seconds": 10,
+        "max_attempts": 500,
+        "directory_prefix": "workload-directory-",
+        "search_command": "SendToModule FvwmDesktop search Workload application",
+        "files_command": "SendToModule FvwmDesktop files"
+      },
+      "completed_operations": 8,
+      "discovered_entries_each_round": [
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512
+      ],
+      "input_state_before_sample": [
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running"
+      ],
+      "input_at_admission_ms": {
+        "raw": [
+          10.778223999977854,
+          2.9370620000008785,
+          3.121066999995037,
+          3.162068999984058,
+          2.6010570000494226,
+          3.693082999973285,
+          3.6820830000010574,
+          2.379053999959524
+        ],
+        "median": 3.1415679999895474,
+        "min": 2.379053999959524,
+        "max": 10.778223999977854
+      },
+      "tail_input_raw_ms": [
+        2.5900589999992008,
+        1.6750379999734832,
+        1.6270380000378282,
+        1.7560410000214688,
+        1.467033000039919,
+        1.554035000026488,
+        1.5370350000125654,
+        1.6730390000248008,
+        1.390032000017527,
+        1.4430329999868263,
+        1.4650339999775497,
+        1.4400329999944006
+      ],
+      "resident_gc": null,
+      "sampled_activity_rss_peak_kib": 47380,
+      "charged_memory_peak_bytes": 29966336,
+      "kernel_cgroup_complete": true,
+      "kernel_trace_complete": true,
+      "observer_max_sample_gap_seconds": 0.24999230500003478,
+      "ownership_cleanup": {
+        "errors": [],
+        "runtime_closed": true
+      },
+      "screenshots": {
+        "search": "workload-search.png",
+        "files": "workload-files.png"
+      }
+    },
+    "workload-gc": {
+      "inputs": {
+        "additional_applications": 512,
+        "application_desktop_files": 513,
+        "expected_discovered_applications": 512,
+        "private_directory_entries": 96,
+        "rounds": 8,
+        "operation_limit": 16,
+        "deadline_seconds": 10,
+        "max_attempts": 500,
+        "directory_prefix": "workload-directory-",
+        "search_command": "SendToModule FvwmDesktop search Workload application",
+        "files_command": "SendToModule FvwmDesktop files"
+      },
+      "completed_operations": 8,
+      "discovered_entries_each_round": [
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512
+      ],
+      "input_state_before_sample": [
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running",
+        "running"
+      ],
+      "input_at_admission_ms": {
+        "raw": [
+          10.09562899997718,
+          2.9758960000094703,
+          3.64987799997607,
+          3.2288950000065597,
+          4.390865000004851,
+          3.69988900001772,
+          6.53480800002626,
+          3.09291100001019
+        ],
+        "median": 3.674883499996895,
+        "min": 2.9758960000094703,
+        "max": 10.09562899997718
+      },
+      "tail_input_raw_ms": [
+        3.3619089999774587,
+        2.5819300000193834,
+        2.9609200000209057,
+        2.6829280000129074,
+        6.912813000042206,
+        7.765790000007655,
+        2.1409420000395585,
+        3.791896999985056,
+        2.406935000010435,
+        3.472906000013154,
+        3.3269099999984064,
+        4.4608789999642795
+      ],
+      "resident_gc": {
+        "scope": "Resident stderr only; worker stderr is not collected.",
+        "enabled": true,
+        "observed_cycles": 8,
+        "cycles": [
+          {
+            "cycle": 1,
+            "at_seconds": 14.862,
+            "clock_phases_ms": [
+              0.08,
+              2.8,
+              0.16
+            ],
+            "stop_the_world_clock_ms": 0.24,
+            "forced": false
+          },
+          {
+            "cycle": 2,
+            "at_seconds": 17.298,
+            "clock_phases_ms": [
+              0.1,
+              2.9,
+              0.037
+            ],
+            "stop_the_world_clock_ms": 0.137,
+            "forced": false
+          },
+          {
+            "cycle": 3,
+            "at_seconds": 18.599,
+            "clock_phases_ms": [
+              1.0,
+              4.1,
+              0.57
+            ],
+            "stop_the_world_clock_ms": 1.5699999999999998,
+            "forced": false
+          },
+          {
+            "cycle": 4,
+            "at_seconds": 20.054,
+            "clock_phases_ms": [
+              0.89,
+              5.9,
+              1.7
+            ],
+            "stop_the_world_clock_ms": 2.59,
+            "forced": false
+          },
+          {
+            "cycle": 5,
+            "at_seconds": 21.34,
+            "clock_phases_ms": [
+              0.13,
+              8.0,
+              0.35
+            ],
+            "stop_the_world_clock_ms": 0.48,
+            "forced": false
+          },
+          {
+            "cycle": 6,
+            "at_seconds": 22.597,
+            "clock_phases_ms": [
+              0.13,
+              2.6,
+              0.15
+            ],
+            "stop_the_world_clock_ms": 0.28,
+            "forced": false
+          },
+          {
+            "cycle": 7,
+            "at_seconds": 23.917,
+            "clock_phases_ms": [
+              1.1,
+              9.1,
+              1.6
+            ],
+            "stop_the_world_clock_ms": 2.7,
+            "forced": false
+          },
+          {
+            "cycle": 8,
+            "at_seconds": 25.247,
+            "clock_phases_ms": [
+              2.1,
+              9.7,
+              0.097
+            ],
+            "stop_the_world_clock_ms": 2.197,
+            "forced": false
+          }
+        ],
+        "max_observed_stop_the_world_clock_ms": 2.7,
+        "malformed_lines": [],
+        "input_truncated": false,
+        "complete_parse": true,
+        "limit": "No observed cycle does not establish zero GC pauses; this workload does not establish worst-case latency."
+      },
+      "sampled_activity_rss_peak_kib": 43056,
+      "charged_memory_peak_bytes": 26189824,
+      "kernel_cgroup_complete": true,
+      "kernel_trace_complete": true,
+      "observer_max_sample_gap_seconds": 0.22648562399996308,
+      "ownership_cleanup": {
+        "errors": [],
+        "runtime_closed": true
+      },
+      "screenshots": {
+        "search": "workload-search.png",
+        "files": "workload-files.png"
+      }
+    }
+  },
+  "cleanup": {
+    "retired_files": 34,
+    "retired_bytes": 30442009,
+    "host_archives_verified": true,
+    "private_kernel_paths_absent": true,
+    "source_build_cache_stage_disks_preserved": true
+  },
+  "VM_cleanup": {
+    "owned_pid": 19163,
+    "qemu_status": 0,
+    "normal_poweroff_requested": true
+  },
+  "portable_checks": {
+    "new_pure_workload_cases": 11,
+    "session_pure_cases_total": 74,
+    "make_verify": "passed",
+    "new_build_or_matrix": false
+  },
+  "limits": [
+    "One uninstrumented and one separate resident-gctrace workload; no paired speed comparison.",
+    "TCG emulated Linux AMD64; not native-CPU/hardware or Ubuntu release qualification.",
+    "Pre-input operation state is a snapshot, not proof of execution overlap.",
+    "Synthetic input excludes physical input and paint.",
+    "GC first/final clock-phase sums are observed only, not worst-case pause bounds; worker stderr excluded.",
+    "RSS/PSS are polls; cgroup charged peak is not physical RSS/PSS.",
+    "Three captures show readable existing menu controls; plain-run files capture is unsettled and does not qualify rendering.",
+    "No new UI/theme, physical/toolkit/compositor/release acceptance."
+  ],
+  "routing": {
+    "analyst_requested": "gpt-6-astra/high",
+    "implementer_reviewer_requested": "gpt-6.1-sol/high",
+    "observed_model_client_metadata": "Unavailable; requested selection unverified.",
+    "agent_review_not_independent_human_approval": true
+  }
+}

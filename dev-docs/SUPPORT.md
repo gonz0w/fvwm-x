@@ -165,6 +165,24 @@ and painting. These observations do not establish native-CPU or hardware/release
 qualification. Pure contracts run through `make verify`; no rebuild or OS matrix
 is implied by updating this observer.
 
+Add `--workload-observe` for a fixed session activity checkpoint: 512 additional
+fixture applications (513 DesktopEntry files exercise the existing 512-result
+cap), 96 private HOME directories and eight discovery/search/files rounds.
+Each discovery must complete through the existing operation API; search and
+files menus must acquire and release their X grab. Three settings-editor cycles,
+twelve settings queries and twelve final key-to-core Echo samples remain.
+One input sample per discovery records the last observed operation state before
+input; that snapshot does not prove the worker was still running when input
+arrived. These synthetic timings exclude physical input and painting.
+
+Run this workload once normally and, separately, once with `--gc-observe`.
+Both use the same fixed activity. Keep the instrumented run out of latency
+comparisons; never force GC, tune GOGC or increase load after seeing the result.
+Zero observed resident cycles leaves pause latency unknown. Worker stderr stays
+outside scope. Menu captures show existing UI with the private dataset, not new
+theme qualification. The M2 acceptance handoff records existing qualified
+subsets and the remaining native-CPU/owner acceptance separately.
+
 The [process/session startup checkpoint](verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md) records six-target/ten-profile constructor qualification, real session integration, scoped guest sanitizers and unchanged inherited OpenBSD gaps. Its source/profile scope does not establish native-CPU or physical/release acceptance.
 
 The [swallowed-client session checkpoint](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md) records composed six-target qualification, unchanged inherited OpenBSD gaps and scoped guest sanitizers. Native-CPU and physical/release acceptance remain separate.

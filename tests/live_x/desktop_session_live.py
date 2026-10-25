@@ -26,6 +26,7 @@ from session_observer import SessionObserver, parse_stat
 from session_kernel import KernelObservation
 from session_gc import parse_gc
 from session_x_errors import SessionXErrors
+from session_workload import prepare_workload, run_workload
 
 
 @contextmanager
@@ -83,14 +84,14 @@ def resident_gc(log):
 
 
 def observe(observer, kernel, client, connection, windows, process, evidence,
-            gc_observe=False):
+            gc_observe=False, workload_observe=False, capture_menu=None):
     # Cover two regular five-second status periods, identically in both profiles.
     observer.mark_phase('idle')
     kernel.mark_phase('idle')
     time.sleep(12)
     observer.mark_phase('activity')
     kernel.mark_phase('activity')
-    iterations = 24 if gc_observe else 3
+    iterations = 24 if gc_observe and not workload_observe else 3
     for iteration in range(iterations):
         connection.send(b'SendToModule FvwmDesktop edit-settings all\n')
         window = wait_for_predicate('observed settings editor',
@@ -114,18 +115,41 @@ def observe(observer, kernel, client, connection, windows, process, evidence,
     client.x.XKeysymToKeycode.argtypes = [C.c_void_p, C.c_ulong]
     client.x.XKeysymToKeycode.restype = C.c_ubyte
     pointer.x.XTestFakeKeyEvent.argtypes = [C.c_void_p, C.c_uint, C.c_int, C.c_ulong]
-    code = client.x.XKeysymToKeycode(client.display, client.x.XStringToKeysym(b'F12'))
-    assert code
-    connection.echo('input-ready')
-    samples = []
-    for _ in range(12):
-        start = time.monotonic()
+    pointer.x.XTestFakeKeyEvent.restype = C.c_int
+    def key(name):
+        code = client.x.XKeysymToKeycode(client.display,
+                                       client.x.XStringToKeysym(name))
+        assert code
         for pressed in (1, 0):
-            pointer.x.XTestFakeKeyEvent(client.display, code, pressed, 0)
+            assert pointer.x.XTestFakeKeyEvent(client.display, code, pressed, 0)
         client.x.XSync(client.display, 0)
+
+    def input_sample(operation=None):
+        start = time.monotonic()
+        key(b'F12')
         connection.expect_echo('session-key-response')
-        samples.append((time.monotonic() - start) * 1000)
-    evidence['xtest_key_to_core_echo_ms'] = samples
+        return (time.monotonic() - start) * 1000
+
+    def show_menu(command, label):
+        assert not pointer.grabbed(), 'menu predecessor still owns the grab'
+        connection.send((command + '\n').encode())
+        wait_for_predicate(label + ' menu grab', pointer.grabbed,
+                           time.monotonic() + 10, process=process)
+        try:
+            if capture_menu:
+                capture_menu(label)
+        finally:
+            key(b'Escape')
+            wait_for_predicate(label + ' menu dismissal',
+                lambda: not pointer.grabbed(), time.monotonic() + 10,
+                process=process)
+        return {'grabbed': True, 'dismissed': True}
+
+    connection.echo('input-ready')
+    if workload_observe:
+        evidence['session_workload'] = run_workload(
+            connection, process, show_menu, input_sample)
+    evidence['xtest_key_to_core_echo_ms'] = [input_sample() for _ in range(12)]
 
 
 def run(options):
@@ -181,6 +205,9 @@ def run(options):
         path(inside / 'data/applications').mkdir(parents=True, exist_ok=True)
         path(inside / 'data/applications/fixture.desktop').write_text(
             '[Desktop Entry]\nType=Application\nName=Native test app\nExec=/bin/true\n')
+        if options.workload_observe:
+            evidence['session_workload_inputs'] = prepare_workload(
+                path(inside / 'data/applications'), outside)
         path(inside / 'configxdg/menus').mkdir(parents=True, exist_ok=True)
         path(inside / 'configxdg/menus/applications.menu').write_text(
             '<Menu><Name>Applications</Name><AppDir>' + str(inside / 'data/applications') +
@@ -284,8 +311,26 @@ def run(options):
                 time.monotonic() + 10, process=process)
             evidence['startup_ready_ms'] = (time.monotonic() - began) * 1000
             if options.observe_only:
+                captures = {}
+                def capture_menu(label):
+                    # Capture each existing menu once; never add another load
+                    # round merely because a trace or screenshot is absent.
+                    kind = label.rsplit('-', 1)[-1]
+                    if kind in captures:
+                        return
+                    result = subprocess.run(execute([capture, inside / 'review']),
+                        env=env, capture_output=True, text=True, timeout=10)
+                    assert result.returncode == 0, result.stderr
+                    filename = Path(result.stdout.strip().removeprefix(
+                        'Screenshot saved: '))
+                    target = 'workload-' + kind + '.png'
+                    shutil.copy2(path(filename), artifact / target)
+                    captures[kind] = target
                 observe(observer, kernel, client, connection, windows, process,
-                        evidence, options.gc_observe)
+                        evidence, options.gc_observe, options.workload_observe,
+                        capture_menu)
+                if captures:
+                    evidence['session_workload_captures'] = captures
             else:
                 connection.send(b'SendToModule FvwmDesktop volume up\nSendToModule FvwmDesktop session poweroff\n'
                                 b'SendToModule FvwmDesktop session reboot\n')
@@ -456,9 +501,12 @@ if __name__ == '__main__':
                         help='Existing mounted tracefs instances directory.')
     parser.add_argument('--gc-observe', action='store_true',
                         help='Separate longer resident GODEBUG=gctrace run.')
+    parser.add_argument('--workload-observe', action='store_true',
+                        help='Fixed application/search/directory activity; '
+                             'optionally combine with separate --gc-observe.')
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     options = parser.parse_args()
-    if not options.observe_only and any((options.gc_observe,
+    if not options.observe_only and any((options.gc_observe, options.workload_observe,
             options.cgroup_parent, options.trace_parent)):
         parser.error('Kernel/GC observation options require --observe-only')
     run(options)

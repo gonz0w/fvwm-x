@@ -20,6 +20,7 @@ test:
 	python3 tests/test_session_gc.py
 	python3 tests/test_session_x_errors.py
 	python3 tests/test_desktop_session_observation.py
+	python3 tests/test_session_workload.py
 	python3 tests/test_bsd_default_x.py
 	python3 tests/test_native_gate.py
 	python3 tests/test_ci_assets.py

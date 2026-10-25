@@ -1,0 +1,1563 @@
+{
+  "base": "9e3351103be2cfef13abea14de461360bee61e2d",
+  "owners": [
+    "CLEAN-01 #34",
+    "SCRIPT-01 #4 (Script portion)"
+  ],
+  "status": "focused checks passed after capacity recovery; broader qualification pending",
+  "source": {
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "f326499af7e34b185f5ec921b01d59803cb26e483702a042c0a13d560718c529",
+      "mode": 420
+    },
+    "modules/FvwmIdent/FvwmIdent.c": {
+      "sha256": "d9137b4468283deffdf1f599f592c93ad50a2bc8c28e85235308f21732346c90",
+      "mode": 420
+    },
+    "modules/FvwmIconMan/x.c": {
+      "sha256": "be12fb7b258847e074ec59b4fa3d9489896c796edf61c4cc0fa5bb61e933cacb",
+      "mode": 420
+    },
+    "tests/test_module_metadata_owner.c": {
+      "sha256": "421d10a1f1598ccadccaf8ef3703ff551be26dcf485cb4e8708623dc646b8522",
+      "mode": 420
+    },
+    "tests/live_x/module_metadata_owner_live.py": {
+      "sha256": "4812731a99b7a410e7630bf2bb9032f8e1ede96a2f6dced82e97e0cfd865469e",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "f56ab9b8bdbae5f1540d33ea8df388676df20166acd96341da4ad64602d6bdae",
+      "mode": 420
+    }
+  },
+  "baseline_inputs": 557,
+  "additional_unchanged_helpers": 2,
+  "final_inputs": 561,
+  "before_control": {
+    "script-success": {
+      "properties": {
+        "WM_NAME": "MetadataOwners",
+        "WM_ICON_NAME": "MetadataOwners",
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          316,
+          31,
+          47,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 3,
+        "released": 0,
+        "retained": 3,
+        "size_allocations": 1,
+        "wm_allocations": 1,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "script-default-position": {
+      "properties": {
+        "WM_NAME": "MetadataOwners",
+        "WM_ICON_NAME": "MetadataOwners",
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          312,
+          0,
+          0,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 3,
+        "released": 0,
+        "retained": 3,
+        "size_allocations": 1,
+        "wm_allocations": 1,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "ident-absent": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          265,
+          348,
+          265,
+          348,
+          265,
+          348,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          265,
+          348,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 2,
+        "released": 1,
+        "retained": 1,
+        "size_allocations": 1,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "ident-aspect": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          283,
+          374,
+          283,
+          374,
+          283,
+          374,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          283,
+          374,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 2,
+        "released": 2,
+        "retained": 0,
+        "size_allocations": 1,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 2,
+        "maximum_rows": 2
+      }
+    },
+    "ident-no-aspect": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          283,
+          374,
+          283,
+          374,
+          283,
+          374,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          283,
+          374,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 2,
+        "released": 2,
+        "retained": 0,
+        "size_allocations": 1,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 2,
+        "maximum_rows": 2
+      }
+    },
+    "iconman-success": {
+      "properties": {
+        "WM_NAME": "MetadataIconMan",
+        "WM_ICON_NAME": "MetadataIcon",
+        "WM_CLASS": "FvwmIconMan\u0000FvwmIconMan\u0000",
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": [
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 2,
+        "released": 2,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "iconman-first-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": null,
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 0,
+        "released": 0,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "iconman-second-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": null,
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 0,
+        "retained": 1,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    }
+  },
+  "normal_cases": {
+    "script-success": {
+      "properties": {
+        "WM_NAME": "MetadataOwners",
+        "WM_ICON_NAME": "MetadataOwners",
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          316,
+          31,
+          47,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "script-default-position": {
+      "properties": {
+        "WM_NAME": "MetadataOwners",
+        "WM_ICON_NAME": "MetadataOwners",
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          312,
+          0,
+          0,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "script-title-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          316,
+          31,
+          47,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 0,
+        "released": 0,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "ident-absent": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          265,
+          348,
+          265,
+          348,
+          265,
+          348,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          265,
+          348,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "ident-aspect": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          283,
+          374,
+          283,
+          374,
+          283,
+          374,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          283,
+          374,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 2,
+        "maximum_rows": 2
+      }
+    },
+    "ident-no-aspect": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          283,
+          374,
+          283,
+          374,
+          283,
+          374,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          283,
+          374,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 2,
+        "maximum_rows": 2
+      }
+    },
+    "iconman-success": {
+      "properties": {
+        "WM_NAME": "MetadataIconMan",
+        "WM_ICON_NAME": "MetadataIcon",
+        "WM_CLASS": "FvwmIconMan\u0000FvwmIconMan\u0000",
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": [
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 2,
+        "released": 2,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "iconman-first-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": null,
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 0,
+        "released": 0,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "iconman-second-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": null,
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    }
+  },
+  "scoped_cases": {
+    "script-success": {
+      "properties": {
+        "WM_NAME": "MetadataOwners",
+        "WM_ICON_NAME": "MetadataOwners",
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          316,
+          31,
+          47,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "script-default-position": {
+      "properties": {
+        "WM_NAME": "MetadataOwners",
+        "WM_ICON_NAME": "MetadataOwners",
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          312,
+          0,
+          0,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "script-title-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": "metadata-script\u0000FvwmScript\u0000",
+        "WM_NORMAL_HINTS": [
+          316,
+          31,
+          47,
+          260,
+          150,
+          260,
+          150,
+          260,
+          150,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "WM_HINTS": [
+          3,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 0,
+        "released": 0,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "ident-absent": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          265,
+          348,
+          265,
+          348,
+          265,
+          348,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          265,
+          348,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "ident-aspect": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          283,
+          374,
+          283,
+          374,
+          283,
+          374,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          283,
+          374,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 2,
+        "maximum_rows": 2
+      }
+    },
+    "ident-no-aspect": {
+      "properties": {
+        "WM_NAME": "FvwmIdent",
+        "WM_ICON_NAME": "FvwmIdent",
+        "WM_CLASS": "FvwmIdent\u0000FvwmIdent\u0000",
+        "WM_NORMAL_HINTS": [
+          883,
+          18446744073709519507,
+          18446744073709551612,
+          283,
+          374,
+          283,
+          374,
+          283,
+          374,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          283,
+          374,
+          7
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 1,
+        "minimum_rows": 2,
+        "maximum_rows": 2
+      }
+    },
+    "iconman-success": {
+      "properties": {
+        "WM_NAME": "MetadataIconMan",
+        "WM_ICON_NAME": "MetadataIcon",
+        "WM_CLASS": "FvwmIconMan\u0000FvwmIconMan\u0000",
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": [
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "ownership": {
+        "allocated": 2,
+        "released": 2,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 1,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "iconman-first-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": null,
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 0,
+        "released": 0,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    },
+    "iconman-second-refusal": {
+      "properties": {
+        "WM_NAME": null,
+        "WM_ICON_NAME": null,
+        "WM_CLASS": null,
+        "WM_NORMAL_HINTS": [
+          881,
+          18446744073709519507,
+          18446744073709551612,
+          0,
+          0,
+          0,
+          17,
+          800,
+          600,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "WM_HINTS": null
+      },
+      "ownership": {
+        "allocated": 1,
+        "released": 1,
+        "retained": 0,
+        "size_allocations": 0,
+        "wm_allocations": 0,
+        "publications": 0,
+        "queries": 0,
+        "minimum_rows": 0,
+        "maximum_rows": 0
+      }
+    }
+  },
+  "commands": [
+    {
+      "label": "normal-group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmScript/FvwmScript",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "tests/test-script-metadata-owner",
+        "tests/test-ident-metadata-owner",
+        "tests/test-iconman-metadata-owner",
+        "tests/ident-packet-fixture"
+      ],
+      "status": 0,
+      "seconds": 1.4782121680036653,
+      "extra_environment": {}
+    },
+    {
+      "label": "normal-metadata-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_metadata_owner_live.py",
+        "--script",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-metadata-owner",
+        "--ident",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-ident-metadata-owner",
+        "--iconman",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-iconman-metadata-owner",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-metadata-20261025/final/normal-x"
+      ],
+      "status": 0,
+      "seconds": 0.585172485007206,
+      "extra_environment": {}
+    },
+    {
+      "label": "scoped-group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "tests/test-script-metadata-owner",
+        "tests/test-ident-metadata-owner",
+        "tests/test-iconman-metadata-owner"
+      ],
+      "status": 1,
+      "seconds": 1.819377109000925,
+      "extra_environment": {}
+    },
+    {
+      "label": "scoped-group-build-retry",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "tests/test-script-metadata-owner",
+        "tests/test-ident-metadata-owner",
+        "tests/test-iconman-metadata-owner"
+      ],
+      "status": 0,
+      "seconds": 0.3785737630096264,
+      "extra_environment": {}
+    },
+    {
+      "label": "scoped-metadata-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_metadata_owner_live.py",
+        "--script",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-script-metadata-owner",
+        "--ident",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ident-metadata-owner",
+        "--iconman",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-iconman-metadata-owner",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-metadata-20261025/final/scoped-x"
+      ],
+      "status": 0,
+      "seconds": 0.6447244739974849,
+      "extra_environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      }
+    }
+  ],
+  "recorded_command_seconds_including_failed_link": 4.9060599990189075,
+  "profiles": {
+    "normal": {
+      "options": {
+        "buildtype": "debugoptimized",
+        "b_ndebug": "false",
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": []
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      },
+      "compile_commands": [
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/x.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/x.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/x.c.o -c ../source/modules/FvwmIconMan/x.c",
+          "file": "../source/modules/FvwmIconMan/x.c",
+          "output": "modules/FvwmIconMan/FvwmIconMan.p/x.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Imodules/FvwmIdent/FvwmIdent.p -Imodules/FvwmIdent -I../source/modules/FvwmIdent -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o -MF modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o.d -o modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o -c ../source/modules/FvwmIdent/FvwmIdent.c",
+          "file": "../source/modules/FvwmIdent/FvwmIdent.c",
+          "output": "modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Imodules/FvwmScript/FvwmScript.p -Imodules/FvwmScript -I../source/modules/FvwmScript -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -MF modules/FvwmScript/FvwmScript.p/FvwmScript.c.o.d -o modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -c ../source/modules/FvwmScript/FvwmScript.c",
+          "file": "../source/modules/FvwmScript/FvwmScript.c",
+          "output": "modules/FvwmScript/FvwmScript.p/FvwmScript.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-script-metadata-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -DMETADATA_SCRIPT -MD -MQ tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o -MF tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o.d -o tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o -c ../source/tests/test_module_metadata_owner.c",
+          "file": "../source/tests/test_module_metadata_owner.c",
+          "output": "tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-ident-metadata-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -DMETADATA_IDENT -MD -MQ tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o -MF tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o.d -o tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o -c ../source/tests/test_module_metadata_owner.c",
+          "file": "../source/tests/test_module_metadata_owner.c",
+          "output": "tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-iconman-metadata-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -DMETADATA_ICONMAN -MD -MQ tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o -MF tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o.d -o tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o -c ../source/tests/test_module_metadata_owner.c",
+          "file": "../source/tests/test_module_metadata_owner.c",
+          "output": "tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o"
+        }
+      ]
+    },
+    "scoped": {
+      "options": {
+        "buildtype": "debug",
+        "b_ndebug": "false",
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ]
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        }
+      },
+      "compile_commands": [
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/x.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/x.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/x.c.o -c ../source/modules/FvwmIconMan/x.c",
+          "file": "../source/modules/FvwmIconMan/x.c",
+          "output": "modules/FvwmIconMan/FvwmIconMan.p/x.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Imodules/FvwmIdent/FvwmIdent.p -Imodules/FvwmIdent -I../source/modules/FvwmIdent -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o -MF modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o.d -o modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o -c ../source/modules/FvwmIdent/FvwmIdent.c",
+          "file": "../source/modules/FvwmIdent/FvwmIdent.c",
+          "output": "modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Imodules/FvwmScript/FvwmScript.p -Imodules/FvwmScript -I../source/modules/FvwmScript -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -MF modules/FvwmScript/FvwmScript.p/FvwmScript.c.o.d -o modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -c ../source/modules/FvwmScript/FvwmScript.c",
+          "file": "../source/modules/FvwmScript/FvwmScript.c",
+          "output": "modules/FvwmScript/FvwmScript.p/FvwmScript.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-script-metadata-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -DMETADATA_SCRIPT -MD -MQ tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o -MF tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o.d -o tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o -c ../source/tests/test_module_metadata_owner.c",
+          "file": "../source/tests/test_module_metadata_owner.c",
+          "output": "tests/test-script-metadata-owner.p/test_module_metadata_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-ident-metadata-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -DMETADATA_IDENT -MD -MQ tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o -MF tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o.d -o tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o -c ../source/tests/test_module_metadata_owner.c",
+          "file": "../source/tests/test_module_metadata_owner.c",
+          "output": "tests/test-ident-metadata-owner.p/test_module_metadata_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-iconman-metadata-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -DMETADATA_ICONMAN -MD -MQ tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o -MF tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o.d -o tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o -c ../source/tests/test_module_metadata_owner.c",
+          "file": "../source/tests/test_module_metadata_owner.c",
+          "output": "tests/test-iconman-metadata-owner.p/test_module_metadata_owner.c.o"
+        }
+      ]
+    }
+  },
+  "outputs": {
+    "normal": {
+      "modules/FvwmScript/FvwmScript": {
+        "sha256": "478311ae7ab30086e68373fb5670447c67e718c523f4d6127e4ce146c8918e04",
+        "bytes": 2209104
+      },
+      "modules/FvwmIdent/FvwmIdent": {
+        "sha256": "6d209780e7cfb5378d2d7e21cd9904b1249325eb428f5d35a12a9b450a0fcbdf",
+        "bytes": 1411528
+      },
+      "modules/FvwmIconMan/FvwmIconMan": {
+        "sha256": "a774489292bfd48c0835ec4d28fd5560b3b395d0eddf70135afb0f038867748e",
+        "bytes": 1772944
+      },
+      "tests/test-script-metadata-owner": {
+        "sha256": "f2bf85d55087c357692fe70c3f322e1716b8dec9b58b92ec221d1a06946b7176",
+        "bytes": 2222784
+      },
+      "tests/test-ident-metadata-owner": {
+        "sha256": "6b1755af30b8189990aa8221cd9158f5a1f4b3bbd9877313f1bd091e27124601",
+        "bytes": 1426384
+      },
+      "tests/test-iconman-metadata-owner": {
+        "sha256": "ece7f3ef9810e705cc03584e0bb1180d7b4b251f3ed7f91adc302e2fc939191e",
+        "bytes": 1784536
+      },
+      "tests/ident-packet-fixture": {
+        "sha256": "81d2d0c45562d25afffca80a88521595b7f785d4a03cc8f6d974246ce88c6a08",
+        "bytes": 82168
+      }
+    },
+    "scoped": {
+      "tests/test-script-metadata-owner": {
+        "sha256": "559dbe3940e2ba0d529a5f1322b67f10a62bd286aefbd8da1286bbbd5270a32f",
+        "bytes": 10793472
+      },
+      "tests/test-ident-metadata-owner": {
+        "sha256": "42482d9867fb6b43c6eb9fc91d045a9e8ab6a736ccca7eaa0405da3350d52f9f",
+        "bytes": 7155808
+      },
+      "tests/test-iconman-metadata-owner": {
+        "sha256": "f86659dd1f2d6cb6d129021a53fe11527d1a1bf978f0094994119388da9ffa4b",
+        "bytes": 9213080
+      }
+    }
+  },
+  "sanitizer_scope": {
+    "asan": "invalid-access checks enabled on exercised real-module paths; no diagnostic",
+    "ubsan": "undefined-behavior checks enabled on exercised real-module paths; no diagnostic",
+    "leak_detection": false,
+    "reason": "whole-module/font/base owners remain out of scope; explicit wrappers assert all selected temporaries retire exactly once"
+  },
+  "failures_and_corrections": [
+    "Initial old-code fixture expected all IconMan properties absent after conversion refusal; create_manager already publishes WM_NORMAL_HINTS before set_window_properties. Correct oracle preserves it and requires four other properties absent.",
+    "Separate review found Ident XMapWindow readiness can precede Expose drawing; mapped-plus-complete-draw handshake now observes actual aspect label/value pairs without sleeps.",
+    "Candidate normal build and nine cases passed. First scoped link failed with No space left on device. No source changes; exact archived historical capture cleanup reclaimed327452893 bytes; only scoped build/runtime resumed and passed."
+  ],
+  "archive": {
+    "payloads": 181,
+    "regular_files": 182,
+    "bytes": 5267634,
+    "sha256": "d64525d4b289722f05eba538dd01a6adff0ee5eb93a95cadaf45fad55e2c780c",
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-wm-metadata/native-evidence.tgz"
+  },
+  "retirement": {
+    "status": "retired verified guest duplicate capture/archive",
+    "files": 182,
+    "active_references": [],
+    "archive_sha256": "d64525d4b289722f05eba538dd01a6adff0ee5eb93a95cadaf45fad55e2c780c",
+    "preserved": "canonical host archive, source/build caches, stages, VM disks, PR243/PR248 performance references"
+  },
+  "historical_capture_retirement": {
+    "status": "retired exact archived historical guest captures",
+    "items": [
+      {
+        "tree": "/tmp/fvwm-module-waits-20261015/style-subject-work-combined1",
+        "files": 462,
+        "bytes": 163656621,
+        "active_references": [],
+        "preserved_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-18/style-subject-work/qualification/fvwm-x-linux-arm64-svg.tgz",
+        "archive_sha256": "4034ce18a342292c5ebef3705fa76c7918b5362a64c9eec70a33a7f1bc870624"
+      },
+      {
+        "tree": "/tmp/fvwm-module-waits-20261015/style-wildcard-cursors-combined1",
+        "files": 462,
+        "bytes": 163796272,
+        "active_references": [],
+        "preserved_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-18/style-wildcard-cursors/qualification/fvwm-x-linux-arm64-svg.tgz",
+        "archive_sha256": "693970ec212129b9965c0f5235a1452da3e2269af1f4a83e15a728e72d8da5e8"
+      }
+    ],
+    "free_bytes_after": 341737472,
+    "preserved": "canonical host archives; all source/build caches; stages; VM disks; performance references"
+  },
+  "review": "separate final source/test/raw-evidence/report review passed with no remaining findings; all561inputs/181payloads/8baseline+9normal+9scoped cases, command/profile/output identities and cleanup inventories/archives independently checked",
+  "routing": {
+    "requested": [
+      {
+        "role": "temper_analyst",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      {
+        "role": "temper_implementer",
+        "model": "gpt-6.1-sol",
+        "effort": "high"
+      },
+      {
+        "role": "temper_reviewer",
+        "model": "gpt-6.1-sol",
+        "effort": "high"
+      }
+    ],
+    "actual_runtime_metadata": "unavailable; requested settings unverified"
+  },
+  "performance_counter": {
+    "reference": "PR248",
+    "merged_since": 1,
+    "candidate_merge_will_make": 2,
+    "due": false
+  },
+  "deferred": [
+    "BSD/AMD64/install/default-server/compiler-feature/release matrix",
+    "whole-module leak-clean and broad #4/#34 acceptance",
+    "separate native-CPU/hardware/toolkit/compositor qualification"
+  ],
+  "new_ui": false
+}

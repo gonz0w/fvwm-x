@@ -2655,6 +2655,54 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         is_parallel: false, timeout: 90)
 endif
 
+# Observe synchronous WM metadata ownership on actual production objects.
+metadata_owner_wraps = [
+    '-Wl,--wrap=main', '-Wl,--wrap=XAllocSizeHints',
+    '-Wl,--wrap=XAllocWMHints', '-Wl,--wrap=XStringListToTextProperty',
+    '-Wl,--wrap=XSetWMProperties', '-Wl,--wrap=XGetWMSizeHints',
+    '-Wl,--wrap=XFree', '-Wl,--wrap=XMapRaised', '-Wl,--wrap=XMapWindow',
+]
+script_metadata_owner_probe = executable(
+    'test-script-metadata-owner', 'test_module_metadata_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    c_args: ['-UNDEBUG', '-DMETADATA_SCRIPT'],
+    link_args: metadata_owner_wraps,
+)
+ident_metadata_owner_probe = executable(
+    'test-ident-metadata-owner', 'test_module_metadata_owner.c',
+    objects: fvwm_ident.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-DMETADATA_IDENT'],
+    link_args: metadata_owner_wraps + ['-Wl,--wrap=FlocaleDrawString'],
+)
+iconman_metadata_owner_probe = executable(
+    'test-iconman-metadata-owner', 'test_module_metadata_owner.c',
+    objects: fvwm_iconman.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-DMETADATA_ICONMAN'],
+    link_args: metadata_owner_wraps,
+)
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('module-metadata-owner-xvfb', py,
+        args: [files('live_x/module_metadata_owner_live.py'),
+            '--script', script_metadata_owner_probe,
+            '--ident', ident_metadata_owner_probe,
+            '--iconman', iconman_metadata_owner_probe,
+            '--fixture', ident_packet_fixture,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'module-metadata-owner'],
+        depends: [script_metadata_owner_probe, ident_metadata_owner_probe,
+            iconman_metadata_owner_probe, ident_packet_fixture],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 120)
+endif
+
 script_block_owner_test = executable(
     'test-script-block-owner',
     ['test_script_block_owner.c', '../modules/FvwmScript/script_block.c',

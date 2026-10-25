@@ -94,16 +94,52 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 temporary WM metadata ownership — 2026-10-25
+
+Owner: Cam; `codex/m5-wm-metadata-ownership`; CLEAN-01 #34 with SCRIPT-01 #4.
+Status: focused checks and separate final source/raw-evidence review pass after
+capacity recovery; ready for signed author-DCO PR delivery. Base is merged PR249.
+Finite outcome: bound synchronous temporary
+X WM metadata to its publishing/query call. Script uses zero-initialized local
+size/WM hints and releases converted title storage after XSetWMProperties; a
+failed title conversion supplies no uninitialized property. Ident uses local
+size hints for both successful and missing/failing WM_ZOOM_HINTS queries.
+IconMan releases its first text property if the second conversion refuses.
+Preserve configured title/icon/class/geometry/aspect values and ordering.
+No shared X helper rewrite, new UI/config syntax, base-X/font/parser teardown,
+blocked pathname retry or deferred Form font work.
+
+Acceptance: actual old-module controls reproduce selected retained temporaries;
+candidate success/refusal paths release each allocated text property once and
+avoid heap hint allocations. Check real published properties and Ident aspect
+rows with absent/present hints. Use one affected Linux incremental profile,
+scoped sanitizer ownership/failure controls and relevant nested-X fixtures, then
+separate final source/evidence review. No automatic OS/install/theme matrix.
+Broader #4/#34 remain open unless their independent complete criteria pass.
+PR248 performance reference is 1/5 after PR249; no new comparison due.
+
+Actual old-module controls reproduce three Script retained temporaries, one Ident
+missing-property hint and one IconMan second-conversion name. Eight baseline cases
+and nine candidate cases establish the owner boundaries and actual published X
+properties/aspect rows. Candidate normal and scoped ASan/UBSan pass; one scoped
+link first failed for disk capacity, with unchanged inputs and only the scoped
+continuation repeated. LSan is disabled for unrelated whole-module owners;
+selected XFree assertions remain. All 561 source identities and 181 canonical
+payloads are verified. [Metadata evidence](verification/VERIFICATION-2026-10-25-M5-WM-METADATA.md).
+Two archived historical captures (about 312 MiB) and this batch's duplicate guest
+evidence are retired after exact checks; source/build caches/references remain.
+Broader owner/release gates stay pending; no new issue closure is inferred from
+this slice alone. This candidate merge makes the PR248 performance counter 2/5.
+
 ## M5 Script property replacement ownership — 2026-10-25
 
 Owner: Cam; `codex/m5-script-property-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
-Status: selected after merged PR248
-`b808a97dc75d94b5d49b44027dfe6d9db54616ce`; signature/DCO and reviewed tree
-`f430a8bce30d9a4808e59e73b259aa5dd81bc6f9` verified; branch retired,
-GitHub/Project Done. The due five-checkpoint performance observation is complete
-on preserved PR243/current PR248 binaries before this candidate was built.
-Focused checks and separate final source/raw-evidence review pass; ready for
-signed author-DCO PR delivery.
+Status: merged in PR249 as `9e3351103be2cfef13abea14de461360bee61e2d`;
+canonical signature/DCO and reviewed tree
+`177ea1a66c682d970abe6e7e3c82764f787cb431` verified; branch retired,
+GitHub/Project Done. Focused checks and separate final review passed. The due
+performance observation ran on preserved PR243/PR248 before this candidate.
+PR248 is now the periodic reference at 1/5 after this merge.
 
 Finite outcome: release overwritten owned header/widget property strings while
 preserving last-definition-wins and colorset precedence. Normalize localized

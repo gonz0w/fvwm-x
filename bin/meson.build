@@ -42,7 +42,8 @@ fvwm_svg_worker = executable(
      '../libs/ImageSafety.c',
      '../libs/monitor_scale.c'],
     include_directories: includedirs,
-    dependencies: all_found_deps,
+    # The software effect path owns real X11 calls as well as renderer headers.
+    dependencies: image_renderer_deps + [summary_depvals['x11']],
     override_options: ['b_sanitize=none'],
     install: true,
     install_dir: fvwm_moduledir,

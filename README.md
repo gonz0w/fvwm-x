@@ -6,12 +6,12 @@ and OpenBSD Xenocara on AMD64 and ARM64.
 We target simpler code, responsive interaction, safer resources and FVWM 3.x
 configuration/theme compatibility. No compositor or Wayland backend.
 
-**Status:** in-progress development. Features paused for source cleanup and
-dependency retirement. Builds require Go. Installed utilities need no
-Go compiler or Python packages. The pre-FVWM3 converter is retired.
-[Build/upgrade notes](INSTALL.md). Go coordinates the desktop; native Xlib/PNG
-capture replaces Python runtime helpers. Six-target controller checks pass;
-session qualification remains open.
+**Status:** in-progress development; features paused for cleanup. Builds require
+Go; migrated utilities need no Go compiler or Python packages.
+[Build/upgrade notes](INSTALL.md).
+Go coordinates the desktop with native Xlib/PNG capture. M2 session evidence
+and limits are accepted; M3 dependency cleanup is underway. Hardware/release
+qualification remains open.
 Recent work includes:
 
 - Atomic button updates, desktop settings/editor and configuration checking.

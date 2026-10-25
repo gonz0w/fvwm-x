@@ -814,6 +814,16 @@ callback retains borrowed strings. [Retention checkpoint](verification/VERIFICAT
 
 ## Development build dependency boundaries
 
+The private `fvwm-image-svg-worker` and direct `test-image-svg-render` compile
+their decoder/scale sources without linking `libfvwm3`. `image_renderer_deps`
+supplies X11/XRandR headers only, plus full enabled librsvg and selected backend
+package dependencies. The worker adds actual X11 linkage for software effects;
+the direct decoder adds none. Keep package-declared static/transitive closure.
+`Fsvg.h` owns config/SVG wrappers; callers own X/Picture types, and the decoder
+includes `Xmd.h` explicitly for `CARD32`. Core/module dependency bags remain
+separate pending archive/object ownership mapping. These narrower link edges do
+not imply that Cairo's runtime libraries or full-project packages can be removed.
+
 `fvwm/fvwm.h` forward-declares borrowed `window_style` pointers. Complete rule
 and special-flag layouts live in `fvwm/style_types.h`, included by field/constant
 consumers and `style.h`. `fvwm/style_id.h` supplies selector IDs without shared

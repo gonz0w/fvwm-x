@@ -1,0 +1,3383 @@
+{
+  "checkpoint": "M3.1 image worker dependency ownership",
+  "status": "focused Linux/FreeBSD default/reduced checks passed; full M3 qualification pending",
+  "M2_acceptance_and_PR203_merge": {
+    "merge": "9b395cb49f14b460c5db80ebe9ae9576d69a3e5f",
+    "tree": "bea8062450c63e9e010709a12af4178c29bf4fde",
+    "signature_verified": true,
+    "author_DCO": true,
+    "M2_owner_acceptance": "Cam explicitly accepts M2 session evidence and documented limits, 2026-10-25; authorizes M3."
+  },
+  "source": {
+    "base": "9b395cb49f14b460c5db80ebe9ae9576d69a3e5f",
+    "files": {
+      "meson.build": {
+        "sha256": "8acfdfe2f1694ff71675e0b7258995fae9f95400dbad3addf5e03cffb031ef43",
+        "before_sha256": "e2bbc051c8f832a75f06393f51e1aeda0570ef5171cdb31438a2241e3af5750c",
+        "mode": 420
+      },
+      "bin/meson.build": {
+        "sha256": "489ee98a6be1e6d1a7115ee8c490674eca152c9e5ba8a161d346c9292ca882c0",
+        "before_sha256": "f8d8522c2a29035e3b31693235918c40a5f33838021a901e497006b10583d146",
+        "mode": 420
+      },
+      "tests/meson.build": {
+        "sha256": "36d1b241b6f30e1e364af0f7299feb6bdebc88706ebef119d6a2667b16436748",
+        "before_sha256": "c6765a852489fcf07b14890b21dad98b4178102c9322a4928a50a46effe5ca1b",
+        "mode": 420
+      },
+      "libs/Fsvg.h": {
+        "sha256": "6190fc56b6abc59e2bc8c414e41d893d4708238652abda7a4fbb04164a2a12a8",
+        "before_sha256": "80636d676057591ffa007b1362661107582f4b0078948ad500e6be24e33dec84",
+        "mode": 420
+      },
+      "libs/image_svg.c": {
+        "sha256": "288525ad1310e77c29a53f37ebaff736757feeec7173d33a637c08b598970608",
+        "before_sha256": "bd6951d70d871e9b8e66f10510f94a8f9df745d27652b04e2d8ee01d5ef6e6ad",
+        "mode": 420
+      }
+    },
+    "archive_sha256": "5209adc30a1ffbbe3dd81f48137bb615c120645530639bd849de5bff2bebf9e6"
+  },
+  "targets": {
+    "linux-amd64": {
+      "archive": {
+        "sha256": "c9aefe4eb66e5b745b69ae4c600f37df40a3ad6bcd1d7b7660cc1aba38af46e1",
+        "bytes": 166652,
+        "gzip_crc_to_eof": true,
+        "payloads_verified": 63,
+        "manifest_entries_verified": 62
+      },
+      "environment": {
+        "target": "linux-amd64",
+        "uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.113+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+          "x86_64"
+        ],
+        "private_png": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+        "sdk_sha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0"
+      },
+      "commands": [
+        {
+          "label": "pkg-runtime-metadata",
+          "command": [
+            "pkg-config",
+            "--libs",
+            "x11",
+            "xrandr",
+            "librsvg-2.0",
+            "cairo"
+          ],
+          "status": 0,
+          "seconds": 0.077418372000011
+        },
+        {
+          "label": "pkg-static-metadata",
+          "command": [
+            "pkg-config",
+            "--libs",
+            "--static",
+            "x11",
+            "xrandr",
+            "librsvg-2.0",
+            "cairo"
+          ],
+          "status": 0,
+          "seconds": 0.17505536299995583
+        },
+        {
+          "label": "default-fixture-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "-Dlive-x-tests=true",
+            "/root/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "status": 0,
+          "seconds": 21.652360885000064
+        },
+        {
+          "label": "default-baseline-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "2",
+            "bin/fvwm-image-svg-worker",
+            "tests/test-image-svg-render"
+          ],
+          "status": 0,
+          "seconds": 0.22626406300003055
+        },
+        {
+          "label": "default-before-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,-z,relro",
+            "-Wl,-z,now",
+            "-Wl,-z,noexecstack",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+            "-Wl,-rpath-link,/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+            "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+            "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+            "/usr/lib/x86_64-linux-gnu/libICE.so",
+            "/usr/lib/x86_64-linux-gnu/libevent.so",
+            "/usr/lib/x86_64-linux-gnu/libX11.so",
+            "/usr/lib/x86_64-linux-gnu/libXft.so",
+            "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+            "/usr/lib/x86_64-linux-gnu/libXt.so",
+            "/usr/lib/x86_64-linux-gnu/libXext.so",
+            "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+            "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+            "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+            "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libcairo.so",
+            "/usr/lib/x86_64-linux-gnu/libSM.so",
+            "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+            "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+            "/usr/lib/x86_64-linux-gnu/libXpm.so",
+            "/usr/lib/x86_64-linux-gnu/libXrender.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.5848442790000945
+        },
+        {
+          "label": "default-before-test-image-svg-render-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-test-image-svg-render-mapped",
+            "tests/test-image-svg-render.p/test_image_svg_render.c.o",
+            "tests/test-image-svg-render.p/.._libs_image_svg.c.o",
+            "tests/test-image-svg-render.p/.._libs_ImageSafety.c.o",
+            "tests/test-image-svg-render.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,-z,relro",
+            "-Wl,-z,now",
+            "-Wl,-z,noexecstack",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+            "-Wl,-rpath-link,/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+            "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+            "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+            "/usr/lib/x86_64-linux-gnu/libICE.so",
+            "/usr/lib/x86_64-linux-gnu/libevent.so",
+            "/usr/lib/x86_64-linux-gnu/libX11.so",
+            "/usr/lib/x86_64-linux-gnu/libXft.so",
+            "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+            "/usr/lib/x86_64-linux-gnu/libXt.so",
+            "/usr/lib/x86_64-linux-gnu/libXext.so",
+            "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+            "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+            "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+            "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libcairo.so",
+            "/usr/lib/x86_64-linux-gnu/libSM.so",
+            "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+            "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+            "/usr/lib/x86_64-linux-gnu/libXpm.so",
+            "/usr/lib/x86_64-linux-gnu/libXrender.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-test-image-svg-render.map"
+          ],
+          "status": 0,
+          "seconds": 0.42974344599997494
+        },
+        {
+          "label": "reduced-fixture-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "-Dlive-x-tests=true",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced"
+          ],
+          "status": 0,
+          "seconds": 20.359813702999986
+        },
+        {
+          "label": "reduced-baseline-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced",
+            "-j",
+            "2",
+            "bin/fvwm-image-svg-worker"
+          ],
+          "status": 0,
+          "seconds": 2.4439578129999973
+        },
+        {
+          "label": "reduced-before-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-before-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,-z,relro",
+            "-Wl,-z,now",
+            "-Wl,-z,noexecstack",
+            "-Wl,--start-group",
+            "-lm",
+            "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+            "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+            "/usr/lib/x86_64-linux-gnu/libICE.so",
+            "/usr/lib/x86_64-linux-gnu/libevent.so",
+            "/usr/lib/x86_64-linux-gnu/libX11.so",
+            "/usr/lib/x86_64-linux-gnu/libXft.so",
+            "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+            "/usr/lib/x86_64-linux-gnu/libXt.so",
+            "/usr/lib/x86_64-linux-gnu/libXext.so",
+            "/usr/lib/x86_64-linux-gnu/libSM.so",
+            "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+            "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+            "/usr/lib/x86_64-linux-gnu/libXrender.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-before-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.2296945749999395
+        },
+        {
+          "label": "default-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "status": 0,
+          "seconds": 20.503058313999986
+        },
+        {
+          "label": "default-affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-gcc",
+            "-j",
+            "2",
+            "fvwm3",
+            "bin/fvwm-root",
+            "bin/fvwm-image-svg-worker",
+            "tests/test-image-svg-protocol",
+            "tests/test-image-svg-client",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol",
+            "tests/test-image-effect-x",
+            "tests/test-image-input-x",
+            "tests/test-image-svg-render"
+          ],
+          "status": 0,
+          "seconds": 24.27651175899996
+        },
+        {
+          "label": "default-after-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,-z,relro",
+            "-Wl,-z,now",
+            "-Wl,-z,noexecstack",
+            "-Wl,--start-group",
+            "-lm",
+            "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+            "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libcairo.so",
+            "/usr/lib/x86_64-linux-gnu/libX11.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.4354667210000116
+        },
+        {
+          "label": "default-after-test-image-svg-render-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-test-image-svg-render-mapped",
+            "tests/test-image-svg-render.p/test_image_svg_render.c.o",
+            "tests/test-image-svg-render.p/.._libs_image_svg.c.o",
+            "tests/test-image-svg-render.p/.._libs_ImageSafety.c.o",
+            "tests/test-image-svg-render.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,-z,relro",
+            "-Wl,-z,now",
+            "-Wl,-z,noexecstack",
+            "-Wl,--start-group",
+            "-lm",
+            "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+            "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libcairo.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-test-image-svg-render.map"
+          ],
+          "status": 0,
+          "seconds": 0.38304912299997795
+        },
+        {
+          "label": "default-focused-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "--num-processes",
+            "1",
+            "image-svg-protocol",
+            "image-svg-client",
+            "image-effect",
+            "image-effect-protocol",
+            "image-svg-render"
+          ],
+          "status": 0,
+          "seconds": 2.581010178999918
+        },
+        {
+          "label": "default-staged-effect-x",
+          "command": [
+            "python3",
+            "tests/live_x/picture_async_live.py",
+            "--probe",
+            "/root/fvwm-module-waits-20261015/build-gcc/tests/test-image-effect-x",
+            "--worker",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-target-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-effect-x"
+          ],
+          "status": 0,
+          "seconds": 2.945121577000009
+        },
+        {
+          "label": "default-staged-svg-x",
+          "command": [
+            "python3",
+            "tests/live_x/image_svg_live.py",
+            "--probe",
+            "/root/fvwm-module-waits-20261015/build-gcc/tests/test-image-input-x",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-svg-x"
+          ],
+          "status": 0,
+          "seconds": 11.552733179000029
+        },
+        {
+          "label": "reduced-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced"
+          ],
+          "status": 0,
+          "seconds": 18.532896402000006
+        },
+        {
+          "label": "reduced-affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced",
+            "-j",
+            "2",
+            "fvwm3",
+            "bin/fvwm-root",
+            "bin/fvwm-image-svg-worker",
+            "tests/test-image-svg-protocol",
+            "tests/test-image-svg-client",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol",
+            "tests/test-image-effect-x",
+            "tests/test-image-input-x"
+          ],
+          "status": 0,
+          "seconds": 72.73042415500004
+        },
+        {
+          "label": "reduced-after-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-after-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,-z,relro",
+            "-Wl,-z,now",
+            "-Wl,-z,noexecstack",
+            "-Wl,--start-group",
+            "-lm",
+            "/usr/lib/x86_64-linux-gnu/libX11.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-after-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.17650335799999084
+        },
+        {
+          "label": "reduced-focused-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "--num-processes",
+            "1",
+            "image-svg-protocol",
+            "image-svg-client",
+            "image-effect",
+            "image-effect-protocol"
+          ],
+          "status": 0,
+          "seconds": 2.063992168000027
+        },
+        {
+          "label": "reduced-staged-effect-x",
+          "command": [
+            "python3",
+            "tests/live_x/picture_async_live.py",
+            "--probe",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced/tests/test-image-effect-x",
+            "--worker",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-target-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-effect-x"
+          ],
+          "status": 0,
+          "seconds": 2.1768961719999425
+        }
+      ],
+      "profiles": {
+        "default": {
+          "targets": {
+            "bin/fvwm-image-svg-worker": {
+              "before_bytes": 103000,
+              "after_bytes": 103000,
+              "bytes_delta": 0,
+              "before_sha256": "edc40fb7dcd2671d550074bff177868c0da2e6848f606a70caf02198684a7d0e",
+              "after_sha256": "407535b24eabb239dd11d9ea5d82e378695a81a859e89ea097f6b15f92b94aae",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so"
+              ],
+              "before_needed": [
+                "libX11.so.6",
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libcairo.so.2",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libcairo.so.2",
+                "libX11.so.6",
+                "libc.so.6"
+              ],
+              "before_runtime_closure": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "after_runtime_closure": {
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "before_runtime_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/lib/x86_64-linux-gnu/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "after_runtime_without_LD_LIBRARY_PATH": {
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/lib/x86_64-linux-gnu/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "config_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            },
+            "tests/test-image-svg-render": {
+              "before_bytes": 63528,
+              "after_bytes": 63528,
+              "bytes_delta": 0,
+              "before_sha256": "77711aeb41d93815fa21e4855e97a6ae014d247ccedc4448b79025a27d1cdb36",
+              "after_sha256": "b7a7b303d135c30e88e39d5bd89db35e4534cf89bcf53de51913b13e497e9868",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so"
+              ],
+              "before_needed": [
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libcairo.so.2",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libcairo.so.2",
+                "libc.so.6"
+              ],
+              "before_runtime_closure": {
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "after_runtime_closure": {
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "before_runtime_without_LD_LIBRARY_PATH": {
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/lib/x86_64-linux-gnu/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "after_runtime_without_LD_LIBRARY_PATH": {
+                "librsvg-2.so.2": "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+                "libgobject-2.0.so.0": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+                "libcairo.so.2": "/lib/x86_64-linux-gnu/libcairo.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libgdk_pixbuf-2.0.so.0": "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libgcc_s.so.1": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+                "libcairo-gobject.so.2": "/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+                "libdav1d.so.7": "/lib/x86_64-linux-gnu/libdav1d.so.7",
+                "libxml2.so.2": "/lib/x86_64-linux-gnu/libxml2.so.2",
+                "libpangocairo-1.0.so.0": "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+                "libgmodule-2.0.so.0": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libmount.so.1": "/lib/x86_64-linux-gnu/libmount.so.1",
+                "libselinux.so.1": "/lib/x86_64-linux-gnu/libselinux.so.1",
+                "libffi.so.8": "/lib/x86_64-linux-gnu/libffi.so.8",
+                "libatomic.so.1": "/lib/x86_64-linux-gnu/libatomic.so.1",
+                "libpcre2-8.so.0": "/lib/x86_64-linux-gnu/libpcre2-8.so.0",
+                "libpng16.so.16": "/lib/x86_64-linux-gnu/libpng16.so.16",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libxcb-render.so.0": "/lib/x86_64-linux-gnu/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/lib/x86_64-linux-gnu/libpixman-1.so.0",
+                "libjpeg.so.62": "/lib/x86_64-linux-gnu/libjpeg.so.62",
+                "liblzma.so.5": "/lib/x86_64-linux-gnu/liblzma.so.5",
+                "libpangoft2-1.0.so.0": "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libthai.so.0": "/lib/x86_64-linux-gnu/libthai.so.0",
+                "libblkid.so.1": "/lib/x86_64-linux-gnu/libblkid.so.1",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libgraphite2.so.3": "/lib/x86_64-linux-gnu/libgraphite2.so.3",
+                "libdatrie.so.1": "/lib/x86_64-linux-gnu/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "config_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb"
+            }
+          },
+          "focused_pure_tests": [
+            "fvwm3 / image-svg-protocol",
+            "fvwm3 / image-svg-render",
+            "fvwm3 / image-svg-client",
+            "fvwm3 / image-effect",
+            "fvwm3 / image-effect-protocol"
+          ],
+          "target_stage": {
+            "installed_path": "/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "sha256": "407535b24eabb239dd11d9ea5d82e378695a81a859e89ea097f6b15f92b94aae",
+            "bytes": 103000,
+            "scope": "Exact target copy following Meson install mapping; full meson install acceptance deferred."
+          }
+        },
+        "reduced": {
+          "targets": {
+            "bin/fvwm-image-svg-worker": {
+              "before_bytes": 56848,
+              "after_bytes": 56848,
+              "bytes_delta": 0,
+              "before_sha256": "e1d3235803894bc70f672392fe672de537a54861e4be71ddd089de0ce85ff707",
+              "after_sha256": "e1d3235803894bc70f672392fe672de537a54861e4be71ddd089de0ce85ff707",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libX11.so"
+              ],
+              "before_needed": [
+                "libX11.so.6",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libX11.so.6",
+                "libc.so.6"
+              ],
+              "before_runtime_closure": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              },
+              "after_runtime_closure": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              },
+              "before_runtime_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              },
+              "after_runtime_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              },
+              "config_sha256": "e76bf6f68acadcf304dba844b9bcb443fd70babd46dd62047cddbd4475a3639b"
+            }
+          },
+          "focused_pure_tests": [
+            "fvwm3 / image-svg-protocol",
+            "fvwm3 / image-svg-client",
+            "fvwm3 / image-effect",
+            "fvwm3 / image-effect-protocol"
+          ],
+          "target_stage": {
+            "installed_path": "/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "sha256": "e1d3235803894bc70f672392fe672de537a54861e4be71ddd089de0ce85ff707",
+            "bytes": 56848,
+            "scope": "Exact target copy following Meson install mapping; full meson install acceptance deferred."
+          }
+        }
+      },
+      "post_run_package_license_inventory": {
+        "libx11-6:amd64": {
+          "package_version": "2:1.8.12-1",
+          "copyright_sha256": "0b380a7fd5b2228f26e9585e56f14812efd3350f3df307507d2bc055dfd8de3e",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libX11.so.6",
+            "/usr/lib/x86_64-linux-gnu/libX11.so"
+          ]
+        },
+        "libxau6:amd64": {
+          "package_version": "1:1.0.11-1",
+          "copyright_sha256": "118dd263a7b91c8f21c489f949bf13281dff9e766deea92b829dac4dce66601a",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libXau.so.6"
+          ]
+        },
+        "libxdmcp6:amd64": {
+          "package_version": "1:1.1.5-1",
+          "copyright_sha256": "1bcbb50f8603fe8b86d330bfa460b772ea04fbd3c70e4499f0768b5340b9fd6e",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+          ]
+        },
+        "libxext6:amd64": {
+          "package_version": "2:1.3.4-1+b3",
+          "copyright_sha256": "bc57e445ca1d9fe082c8d54189dd411ff26caa8552c9c63d44ea06a982f32124",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libXext.so.6",
+            "/usr/lib/x86_64-linux-gnu/libXext.so"
+          ]
+        },
+        "libxrender1:amd64": {
+          "package_version": "1:0.9.12-1",
+          "copyright_sha256": "ed2a78123a5076b4f11da38cb1ffb85b5cb9fdc26b5746c517b1d7e7a9029704",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libXrender.so.1",
+            "/usr/lib/x86_64-linux-gnu/libXrender.so"
+          ]
+        },
+        "libatomic1:amd64": {
+          "package_version": "14.2.0-19",
+          "copyright_sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libatomic.so.1"
+          ]
+        },
+        "libblkid1:amd64": {
+          "package_version": "2.41.5-0+deb13u1",
+          "copyright_sha256": "56b67e2eb8bac5a15d91e261d558d73f1f029113cced229753138194997366b6",
+          "declared_license_labels": [
+            "BSD-2-clause",
+            "BSD-3-clause",
+            "BSD-4-clause",
+            "BSLA",
+            "Expat",
+            "GPL-2",
+            "GPL-2+",
+            "GPL-3+",
+            "ISC",
+            "LGPL",
+            "LGPL-2+",
+            "LGPL-2.1+",
+            "LGPL-3+",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libblkid.so.1"
+          ]
+        },
+        "libbrotli1:amd64": {
+          "package_version": "1.1.0-2+b7",
+          "copyright_sha256": "24a64e5bb83d0960d1835696a1e23c0896ad6055b0ca47c66ab0eb9a766324b1",
+          "declared_license_labels": [
+            "MIT"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libbrotlicommon.so.1",
+            "/lib/x86_64-linux-gnu/libbrotlidec.so.1"
+          ]
+        },
+        "libbz2-1.0:amd64": {
+          "package_version": "1.0.8-6",
+          "copyright_sha256": "832ed535ff3c3d025a8d2348eb1b697b89addcf2eaadbc17650262040b9145e2",
+          "declared_license_labels": [
+            "BSD-variant",
+            "GPL-2"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libbz2.so.1.0"
+          ]
+        },
+        "libc6:amd64": {
+          "package_version": "2.41-12+deb13u4",
+          "copyright_sha256": "f5788886720a2605a946e81d571e6c8162b09f58d2e2ceb8d36e5768fccd850d",
+          "declared_license_labels": [
+            "BSD-2-clause",
+            "BSD-2-clause or GPL-2",
+            "BSD-3-clause-Berkeley",
+            "BSD-3-clause-Berkeley and BSD-3-clause-WIDE",
+            "BSD-3-clause-Berkeley and DEC",
+            "BSD-3-clause-Berkeley and DEC and IBM and ISC",
+            "BSD-3-clause-Berkeley and DEC and ISC",
+            "BSD-3-clause-Berkeley and DEC and ISC and LGPL-2.1+",
+            "BSD-3-clause-Berkeley and DEC and LGPL-2.1+",
+            "BSD-3-clause-Berkeley and ISC",
+            "BSD-3-clause-Berkeley and LGPL-2.1+",
+            "BSD-3-clause-Berkeley and LGPL-2.1+ and Univ-Coimbra",
+            "BSD-3-clause-Carnegie",
+            "BSD-3-clause-Oracle",
+            "BSD-3-clause-WIDE",
+            "BSD-like-Spencer",
+            "BSL-1.0",
+            "CORE-MATH",
+            "Carnegie",
+            "Carnegie and LGPL-2.1+",
+            "DEC",
+            "FSFAP",
+            "GPL-2",
+            "GPL-2+",
+            "GPL-2+-with-link-exception",
+            "GPL-3+",
+            "IBM",
+            "IBM and ISC",
+            "ISC",
+            "ISC and LGPL-2.1+",
+            "Inner-Net",
+            "Inner-Net and LGPL-2.1+",
+            "LGPL-2+",
+            "LGPL-2.1+",
+            "LGPL-2.1+ and GPL-2",
+            "LGPL-2.1+ and SunPro",
+            "LGPL-2.1+-with-link-exception",
+            "LGPL-3+",
+            "MIT-like-Lord",
+            "PCRE",
+            "SunPro",
+            "Unicode-DFS-2016",
+            "Univ-Coimbra",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libc.so.6",
+            "/lib/x86_64-linux-gnu/libm.so.6"
+          ]
+        },
+        "libcairo-gobject2:amd64": {
+          "package_version": "1.18.4-1+b1",
+          "copyright_sha256": "408fb9e704e875cd42d432e7c9b3b378f568e3c89db2b5c5ef3d11c025319574",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libcairo-gobject.so.2"
+          ]
+        },
+        "libcairo2:amd64": {
+          "package_version": "1.18.4-1+b1",
+          "copyright_sha256": "408fb9e704e875cd42d432e7c9b3b378f568e3c89db2b5c5ef3d11c025319574",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libcairo.so.2",
+            "/usr/lib/x86_64-linux-gnu/libcairo.so"
+          ]
+        },
+        "libdatrie1:amd64": {
+          "package_version": "0.2.13-3+b1",
+          "copyright_sha256": "7c994f175cb0da0bbe158f729ca43bc6193bb99d3c8bc82b41c46d93904b584d",
+          "declared_license_labels": [
+            "GPL-2+",
+            "LGPL-2.1+"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libdatrie.so.1"
+          ]
+        },
+        "libdav1d7:amd64": {
+          "package_version": "1.5.1-1",
+          "copyright_sha256": "38aaebbbf5ab0c19a5d4029acb5ce6566f8bd95e07eff6f6472753f5bea83d97",
+          "declared_license_labels": [
+            "BSD-2-clause",
+            "ISC",
+            "ISC and BSD-2-clause",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libdav1d.so.7"
+          ]
+        },
+        "libexpat1:amd64": {
+          "package_version": "2.9.0-1~deb13u1",
+          "copyright_sha256": "60919fe1a156395ff14511bb6ff79756c50ade2fff59ac60c9bae1d8a7fe6292",
+          "declared_license_labels": [
+            "MIT"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libexpat.so.1"
+          ]
+        },
+        "libffi8:amd64": {
+          "package_version": "3.4.8-2",
+          "copyright_sha256": "25ee86cfccc2b7eb9a156a127f1e1b38c46c231f516ff201912223eaf62ee186",
+          "declared_license_labels": [
+            "Expat",
+            "GPL",
+            "GPL-2+",
+            "GPL-3+",
+            "MPL-1.1 or GPL-2+ or LGPL-2.1+",
+            "X11",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libffi.so.8"
+          ]
+        },
+        "libfontconfig1:amd64": {
+          "package_version": "2.15.0-2.3",
+          "copyright_sha256": "b215a61cdd3e62b5b17cc28b1852c78acb3dd38be0fb30706f7efc050dba91db",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+            "/usr/lib/x86_64-linux-gnu/libfontconfig.so"
+          ]
+        },
+        "libfreetype6:amd64": {
+          "package_version": "2.13.3+dfsg-1+deb13u1",
+          "copyright_sha256": "acdab1506824347784d2cc0a634cfa17dbf525c0d5b4902b4ac9d0d4e1fed6c7",
+          "declared_license_labels": [
+            "BSD-3-Clause",
+            "BSL-1.0",
+            "Expat",
+            "FSFAP",
+            "FTL",
+            "FTL and Expat",
+            "GPL-2+",
+            "GPL-3+",
+            "MIT-Modern-Variant",
+            "MIT-SMC",
+            "OpenGroup-MIT",
+            "Public-Domain",
+            "Zlib"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libfreetype.so.6",
+            "/usr/lib/x86_64-linux-gnu/libfreetype.so"
+          ]
+        },
+        "libfribidi0:amd64": {
+          "package_version": "1.0.16-1",
+          "copyright_sha256": "a9b76593ba12d42b47000f8779d0b631432147980e71464e8ba88238becbc038",
+          "declared_license_labels": [
+            "LGPL-2.1+"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libfribidi.so.0",
+            "/usr/lib/x86_64-linux-gnu/libfribidi.so"
+          ]
+        },
+        "libgcc-s1:amd64": {
+          "package_version": "14.2.0-19",
+          "copyright_sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libgcc_s.so.1"
+          ]
+        },
+        "libgdk-pixbuf-2.0-0:amd64": {
+          "package_version": "2.42.12+dfsg-4+deb13u1",
+          "copyright_sha256": "2b914b2304e7474aaa8108307b9e95c3f8345e0a4153c7bfa0ca9c48813cb406",
+          "declared_license_labels": [
+            "CC0-1.0",
+            "GPL-2+",
+            "LGPL-2+",
+            "LGPL-2+ and LGPL-2.1+ and CC0-1.0",
+            "LGPL-2.1+"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+            "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so"
+          ]
+        },
+        "libglib2.0-0t64:amd64": {
+          "package_version": "2.84.4-3~deb13u5",
+          "copyright_sha256": "b9fe78c8a0720c051c9ac8e8c6f25663b54f228e501d24fc0ba89c66cec7f7c1",
+          "declared_license_labels": [
+            "AFL-2.0",
+            "AFL-2.0 or LGPL-2.1+",
+            "Apache-2.0 with LLVM exception",
+            "CC-BY-SA-3.0",
+            "CC0-1.0",
+            "CC0-1.0 or Mingw-PD",
+            "Expat",
+            "FSFULLR",
+            "GPL-2+",
+            "Iconv-PD",
+            "Janik-permissive",
+            "Janik-permissive and old-glib-tests",
+            "Kuchling-PD",
+            "LGPL-2+",
+            "LGPL-2.1+",
+            "LGPL-2.1+ and Kuchling-PD and Plumb-PD",
+            "LGPL-3+",
+            "Mingw-PD",
+            "Plumb-PD",
+            "Unicode-DFS-2016",
+            "bzip2-1.0.6",
+            "cmph",
+            "old-glib-tests"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libgio-2.0.so.0",
+            "/lib/x86_64-linux-gnu/libglib-2.0.so.0",
+            "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0",
+            "/lib/x86_64-linux-gnu/libgobject-2.0.so.0",
+            "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+            "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so"
+          ]
+        },
+        "libgraphite2-3:amd64": {
+          "package_version": "1.3.14-2+deb13u1",
+          "copyright_sha256": "a33017ba0308c41bdbde4751bff349ab7b26af45fadbb1e3e7ac67c372985572",
+          "declared_license_labels": [
+            "Artistic",
+            "Artistic or GPL-1+",
+            "GPL-1+",
+            "GPL-2+",
+            "LGPL-2.1+",
+            "LGPL-2.1+ or GPL-2+ or MPL-1.1",
+            "LGPL-2.1+ or MPL-1.1 or GPL-2+",
+            "MPL-1.1",
+            "custom-sil-open-font-license",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libgraphite2.so.3"
+          ]
+        },
+        "libharfbuzz0b:amd64": {
+          "package_version": "10.2.0-1+deb13u1",
+          "copyright_sha256": "9295e101a07824e8ae77c448884bd357a64b831cd4c47f125bf4ac7ea0d8f911",
+          "declared_license_labels": [
+            "Apache-2.0",
+            "CC0-1.0",
+            "Expat",
+            "FSFAP",
+            "FSFUL",
+            "FSFULLR",
+            "GPL-2+ with AutoConf exception",
+            "GPL-2+ with Font exception",
+            "GPL-2+ with LibTool exception",
+            "GPL-3+",
+            "GPL-3+ with AutoConf exception",
+            "ISC",
+            "LGPL-2.1+",
+            "MIT",
+            "Monotype",
+            "OFL-1.1",
+            "UFL-1.0",
+            "Unicode"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libharfbuzz.so.0"
+          ]
+        },
+        "libjpeg62-turbo:amd64": {
+          "package_version": "1:2.1.5-4",
+          "copyright_sha256": "3821184e23385bf2cdc01f56bd999b34036fc3aa03d5135d41680374eb81bf8a",
+          "declared_license_labels": [
+            "BSD-3-clause",
+            "BSD-BY-LC-NE",
+            "Expat",
+            "NTP",
+            "Zlib",
+            "zlib"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libjpeg.so.62"
+          ]
+        },
+        "liblzma5:amd64": {
+          "package_version": "5.8.1-1+deb13u2",
+          "copyright_sha256": "d755588e2d89d7845d0d4e718ac45d49ae9fc53cec4540af105963c20598f9d7",
+          "declared_license_labels": [
+            "",
+            "0BSD",
+            "FSFUL",
+            "FSFULLR",
+            "GPL-2+",
+            "GPL-3.0-or-later-WITH-Autoconf-exception-macro",
+            "LGPL-2.1+",
+            "PD",
+            "PD-debian",
+            "noderivs",
+            "none",
+            "permissive-nowarranty"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/liblzma.so.5"
+          ]
+        },
+        "libmount1:amd64": {
+          "package_version": "2.41.5-0+deb13u1",
+          "copyright_sha256": "56b67e2eb8bac5a15d91e261d558d73f1f029113cced229753138194997366b6",
+          "declared_license_labels": [
+            "BSD-2-clause",
+            "BSD-3-clause",
+            "BSD-4-clause",
+            "BSLA",
+            "Expat",
+            "GPL-2",
+            "GPL-2+",
+            "GPL-3+",
+            "ISC",
+            "LGPL",
+            "LGPL-2+",
+            "LGPL-2.1+",
+            "LGPL-3+",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libmount.so.1"
+          ]
+        },
+        "libpango-1.0-0:amd64": {
+          "package_version": "1.56.3-1",
+          "copyright_sha256": "8d9dd932bc836ab2ea02e0b13c7cc1e9e5472a71008f0caa2a8793eb5780ee94",
+          "declared_license_labels": [
+            "Apache-2",
+            "Apache-2 and Bitstream-Vera and OFL-1.1",
+            "Bitstream-Vera",
+            "Chromium-BSD-style",
+            "Example",
+            "ICU",
+            "LGPL-2+",
+            "LGPL-2+ and ICU",
+            "LGPL-2+ and LGPL-2.1+",
+            "LGPL-2+ and TCL",
+            "LGPL-2.1+",
+            "OFL-1.1",
+            "TCL",
+            "Unicode"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libpango-1.0.so.0"
+          ]
+        },
+        "libpangocairo-1.0-0:amd64": {
+          "package_version": "1.56.3-1",
+          "copyright_sha256": "8d9dd932bc836ab2ea02e0b13c7cc1e9e5472a71008f0caa2a8793eb5780ee94",
+          "declared_license_labels": [
+            "Apache-2",
+            "Apache-2 and Bitstream-Vera and OFL-1.1",
+            "Bitstream-Vera",
+            "Chromium-BSD-style",
+            "Example",
+            "ICU",
+            "LGPL-2+",
+            "LGPL-2+ and ICU",
+            "LGPL-2+ and LGPL-2.1+",
+            "LGPL-2+ and TCL",
+            "LGPL-2.1+",
+            "OFL-1.1",
+            "TCL",
+            "Unicode"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0"
+          ]
+        },
+        "libpangoft2-1.0-0:amd64": {
+          "package_version": "1.56.3-1",
+          "copyright_sha256": "8d9dd932bc836ab2ea02e0b13c7cc1e9e5472a71008f0caa2a8793eb5780ee94",
+          "declared_license_labels": [
+            "Apache-2",
+            "Apache-2 and Bitstream-Vera and OFL-1.1",
+            "Bitstream-Vera",
+            "Chromium-BSD-style",
+            "Example",
+            "ICU",
+            "LGPL-2+",
+            "LGPL-2+ and ICU",
+            "LGPL-2+ and LGPL-2.1+",
+            "LGPL-2+ and TCL",
+            "LGPL-2.1+",
+            "OFL-1.1",
+            "TCL",
+            "Unicode"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0"
+          ]
+        },
+        "libpcre2-8-0:amd64": {
+          "package_version": "10.46-1~deb13u3",
+          "copyright_sha256": "e915cde4251f96ec6af107ecd2e194440a4e69440893b0c982802f8a1e4ae40a",
+          "declared_license_labels": [
+            "BSD-2-clause",
+            "BSD-3-clause",
+            "BSD-3-clause-Cambridge with BINARY LIBRARY-LIKE PACKAGES exception",
+            "X11",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libpcre2-8.so.0"
+          ]
+        },
+        "libpixman-1-0:amd64": {
+          "package_version": "0.44.0-3",
+          "copyright_sha256": "1b3fb5690861e15ca4fd6640fd4def4b2576617942eec04b6fcb7d8bc6c4c9da",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libpixman-1.so.0"
+          ]
+        },
+        "libpng16-16t64:amd64": {
+          "package_version": "1.6.48-1+deb13u6",
+          "copyright_sha256": "7e729164c60950b2b57f1712d82a051c9ba54f421c9b69815d9e4686ddc5709b",
+          "declared_license_labels": [
+            "Apache-2.0",
+            "BSD-3-clause",
+            "BSD-like-with-advertising-clause",
+            "GPL-2+",
+            "GPL-2+ or BSD-like-with-advertising-clause",
+            "expat",
+            "libpng",
+            "libpng OR Apache-2.0 OR BSD-3-clause"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libpng16.so.16"
+          ]
+        },
+        "librsvg2-2:amd64": {
+          "package_version": "2.60.0+dfsg-1+deb13u1",
+          "copyright_sha256": "2777f2b3753caf1e049a866d79a500467f2d0f066b576c1c754dd55cb38bb73b",
+          "declared_license_labels": [
+            "0BSD",
+            "Apache-2.0",
+            "Apache-2.0, and BSD-2-clause, and BSD-3-clause, and Expat, and Apache-2.0 or Expat or 0BSD, and Apache-2.0 or Boost-1.0, and Apache-2.0 or Expat, and Expat or Unlicense, and MPL-2.0, and Sun-permissive, and zlib",
+            "BSD-2-clause",
+            "BSD-3-clause",
+            "Boost-1.0",
+            "CC-zero-waive-1.0-us",
+            "Expat",
+            "FSFAP",
+            "LGPL-2+",
+            "MPL-2.0",
+            "OFL-1.1",
+            "Sun-permissive",
+            "Unlicense",
+            "zlib"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/librsvg-2.so.2",
+            "/usr/lib/x86_64-linux-gnu/librsvg-2.so"
+          ]
+        },
+        "libselinux1:amd64": {
+          "package_version": "3.8.1-1",
+          "copyright_sha256": "864f1bb189f609075d580b8c4aada16d85a44546884f1687989e1cacc8c56751",
+          "declared_license_labels": [
+            "GPL-2",
+            "public-domain"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libselinux.so.1"
+          ]
+        },
+        "libthai0:amd64": {
+          "package_version": "0.1.29-2+b1",
+          "copyright_sha256": "62d2835587b92a6abdbe62fe4524a7b6a59ac478df2c591eb98c3fbce6c3fa08",
+          "declared_license_labels": [
+            "GPL-2+",
+            "LGPL-2.1+"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libthai.so.0"
+          ]
+        },
+        "libxcb-render0:amd64": {
+          "package_version": "1.17.0-2+b1",
+          "copyright_sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libxcb-render.so.0"
+          ]
+        },
+        "libxcb-shm0:amd64": {
+          "package_version": "1.17.0-2+b1",
+          "copyright_sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libxcb-shm.so.0"
+          ]
+        },
+        "libxcb1:amd64": {
+          "package_version": "1.17.0-2+b1",
+          "copyright_sha256": "4f7cb9db6bf6542f5417e3d674c780d3a5fd12291a54d63054fb576ee0cfae80",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libxcb.so.1"
+          ]
+        },
+        "libxml2:amd64": {
+          "package_version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+          "copyright_sha256": "ee746b96cfa5be73c3ea3e4cfb1285e9b315d4c9267f99b2ee9c5d911d9fe3f4",
+          "declared_license_labels": [
+            "ISC",
+            "MIT-1"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libxml2.so.2"
+          ]
+        },
+        "zlib1g:amd64": {
+          "package_version": "1:1.3.dfsg+really1.3.1-1+b1",
+          "copyright_sha256": "9e5b96d63773a5d177ba264254390f792be07e41748ebd94730981c6cac31cc6",
+          "declared_license_labels": [
+            "Zlib"
+          ],
+          "library_paths": [
+            "/lib/x86_64-linux-gnu/libz.so.1"
+          ]
+        },
+        "qualified-private-provider-or-unowned-system-file": {
+          "library_paths": [
+            "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+            "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16"
+          ]
+        },
+        "libice6:amd64": {
+          "package_version": "2:1.1.1-1",
+          "copyright_sha256": "fc16500a74acc2d0a7bb2fa1005956a52551abdce2afe0642a9a8dc2b6af53c6",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libICE.so"
+          ]
+        },
+        "libsm6:amd64": {
+          "package_version": "2:1.2.6-1",
+          "copyright_sha256": "333d829128c80619625f7e43a0ff0e79f36812b2b7ba12696eec9b4b42ce729b",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libSM.so"
+          ]
+        },
+        "libxcursor1:amd64": {
+          "package_version": "1:1.2.3-1",
+          "copyright_sha256": "817abc0ccc9e2591057be256b0f6d80edb134221ced29dd545a9eafaf40b423c",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libXcursor.so"
+          ]
+        },
+        "libxfixes3:amd64": {
+          "package_version": "1:6.0.0-2+b4",
+          "copyright_sha256": "051ffe073ab38244c504bb379903b4ecda6081fb3d97d0d3dce44bc11712eef2",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libXfixes.so"
+          ]
+        },
+        "libxft2:amd64": {
+          "package_version": "2.3.6-1+b4",
+          "copyright_sha256": "5960983c962c864d7d73eae6bb9b3b06c1940a23fc6d22ce10ef0f0cde8fd48d",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libXft.so"
+          ]
+        },
+        "libxpm4:amd64": {
+          "package_version": "1:3.5.17-1+deb13u1",
+          "copyright_sha256": "60ff44bf6ae8fdc03aa67f4ebbc6e4bba30ac96938e55bc84b1777387a58992c",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libXpm.so"
+          ]
+        },
+        "libxrandr2:amd64": {
+          "package_version": "2:1.5.4-1+b3",
+          "copyright_sha256": "6d8e6239cfe9dd25bbeef06dcf0610d802ebbdc8968db87cf5adf00ff98927d4",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libXrandr.so"
+          ]
+        },
+        "libxt6t64:amd64": {
+          "package_version": "1:1.2.1-1.2+b2",
+          "copyright_sha256": "294382fd73d07b7b086c4829366bad834fc25cdf094400ec6ca4ff3b9ab73665",
+          "declared_license_labels": [],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libXt.so"
+          ]
+        },
+        "libevent-2.1-7t64:amd64": {
+          "package_version": "2.1.13-stable-1~deb13u1",
+          "copyright_sha256": "cc6deffa11bd148006f056eb28320a080a32e574993f5d44c591ad8849433201",
+          "declared_license_labels": [
+            "BSD-2-clause",
+            "BSD-3-clause",
+            "BSL",
+            "Expat",
+            "FSFUL",
+            "FSFULLR",
+            "FSFULLR-No-Warranty",
+            "GPL-2+",
+            "GPL-3+",
+            "ISC",
+            "curl"
+          ],
+          "library_paths": [
+            "/usr/lib/x86_64-linux-gnu/libevent.so"
+          ]
+        }
+      }
+    },
+    "freebsd-arm64": {
+      "archive": {
+        "sha256": "91c8cb2749b5a1215fffee5e471d88fcc50933c0f7bcc29effca97fe7794b574",
+        "bytes": 148440,
+        "gzip_crc_to_eof": true,
+        "payloads_verified": 63,
+        "manifest_entries_verified": 62
+      },
+      "environment": {
+        "target": "freebsd-arm64",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ],
+        "private_png": "/root/fvwm-deps/libpng-1.6.59/lib",
+        "sdk_sha256": "ffdf9f966da8b37903ac1d1f95dd5aa8c8ff2212e693a797d5076f4a42b5a64a"
+      },
+      "commands": [
+        {
+          "label": "pkg-runtime-metadata",
+          "command": [
+            "pkg-config",
+            "--libs",
+            "x11",
+            "xrandr",
+            "librsvg-2.0",
+            "cairo"
+          ],
+          "status": 0,
+          "seconds": 0.016805916999999226
+        },
+        {
+          "label": "pkg-static-metadata",
+          "command": [
+            "pkg-config",
+            "--libs",
+            "--static",
+            "x11",
+            "xrandr",
+            "librsvg-2.0",
+            "cairo"
+          ],
+          "status": 0,
+          "seconds": 0.004371875000003911
+        },
+        {
+          "label": "default-fixture-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "-Dlive-x-tests=true",
+            "/root/fvwm-module-waits-20261015/build-default"
+          ],
+          "status": 0,
+          "seconds": 1.2355215000000044
+        },
+        {
+          "label": "default-baseline-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-default",
+            "-j",
+            "2",
+            "bin/fvwm-image-svg-worker",
+            "tests/test-image-svg-render"
+          ],
+          "status": 0,
+          "seconds": 0.03521829100003515
+        },
+        {
+          "label": "default-before-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/usr/local/lib:/root/fvwm-deps/libpng-1.6.59/lib",
+            "/usr/local/lib/libfontconfig.so",
+            "/usr/local/lib/libICE.so",
+            "/usr/local/lib/libevent.so",
+            "/usr/local/lib/libX11.so",
+            "/usr/local/lib/libXft.so",
+            "/usr/local/lib/libXrandr.so",
+            "/usr/local/lib/libXt.so",
+            "/usr/local/lib/libXext.so",
+            "/usr/local/lib/libfreetype.so",
+            "/usr/local/lib/libfribidi.so",
+            "/usr/local/lib/libiconv.so",
+            "/usr/local/lib/libintl.so",
+            "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+            "/usr/local/lib/librsvg-2.so",
+            "/usr/local/lib/libgdk_pixbuf-2.0.so",
+            "/usr/local/lib/libgio-2.0.so",
+            "/usr/local/lib/libcairo.so",
+            "/usr/local/lib/libgobject-2.0.so",
+            "/usr/local/lib/libglib-2.0.so",
+            "/usr/local/lib/libSM.so",
+            "/usr/local/lib/libXcursor.so",
+            "/usr/local/lib/libXfixes.so",
+            "/usr/local/lib/libXrender.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.03357741600001418
+        },
+        {
+          "label": "default-before-test-image-svg-render-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-test-image-svg-render-mapped",
+            "tests/test-image-svg-render.p/test_image_svg_render.c.o",
+            "tests/test-image-svg-render.p/.._libs_image_svg.c.o",
+            "tests/test-image-svg-render.p/.._libs_ImageSafety.c.o",
+            "tests/test-image-svg-render.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/usr/local/lib:/root/fvwm-deps/libpng-1.6.59/lib",
+            "/usr/local/lib/libfontconfig.so",
+            "/usr/local/lib/libICE.so",
+            "/usr/local/lib/libevent.so",
+            "/usr/local/lib/libX11.so",
+            "/usr/local/lib/libXft.so",
+            "/usr/local/lib/libXrandr.so",
+            "/usr/local/lib/libXt.so",
+            "/usr/local/lib/libXext.so",
+            "/usr/local/lib/libfreetype.so",
+            "/usr/local/lib/libfribidi.so",
+            "/usr/local/lib/libiconv.so",
+            "/usr/local/lib/libintl.so",
+            "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+            "/usr/local/lib/librsvg-2.so",
+            "/usr/local/lib/libgdk_pixbuf-2.0.so",
+            "/usr/local/lib/libgio-2.0.so",
+            "/usr/local/lib/libcairo.so",
+            "/usr/local/lib/libgobject-2.0.so",
+            "/usr/local/lib/libglib-2.0.so",
+            "/usr/local/lib/libSM.so",
+            "/usr/local/lib/libXcursor.so",
+            "/usr/local/lib/libXfixes.so",
+            "/usr/local/lib/libXrender.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-before-test-image-svg-render.map"
+          ],
+          "status": 0,
+          "seconds": 0.03312316599999576
+        },
+        {
+          "label": "reduced-fixture-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "-Dlive-x-tests=true",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced"
+          ],
+          "status": 0,
+          "seconds": 0.8375816250000412
+        },
+        {
+          "label": "reduced-baseline-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced",
+            "-j",
+            "2",
+            "bin/fvwm-image-svg-worker"
+          ],
+          "status": 0,
+          "seconds": 0.21715775000001258
+        },
+        {
+          "label": "reduced-before-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-before-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/usr/local/lib",
+            "/usr/local/lib/libfontconfig.so",
+            "/usr/local/lib/libICE.so",
+            "/usr/local/lib/libevent.so",
+            "/usr/local/lib/libX11.so",
+            "/usr/local/lib/libXft.so",
+            "/usr/local/lib/libXrandr.so",
+            "/usr/local/lib/libXt.so",
+            "/usr/local/lib/libXext.so",
+            "/usr/local/lib/libfreetype.so",
+            "/usr/local/lib/libiconv.so",
+            "/usr/local/lib/libSM.so",
+            "/usr/local/lib/libXcursor.so",
+            "/usr/local/lib/libXfixes.so",
+            "/usr/local/lib/libXrender.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-before-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.03346599999997579
+        },
+        {
+          "label": "default-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/build-default"
+          ],
+          "status": 0,
+          "seconds": 0.8938182090000169
+        },
+        {
+          "label": "default-affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-default",
+            "-j",
+            "2",
+            "fvwm3",
+            "bin/fvwm-root",
+            "bin/fvwm-image-svg-worker",
+            "tests/test-image-svg-protocol",
+            "tests/test-image-svg-client",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol",
+            "tests/test-image-effect-x",
+            "tests/test-image-input-x",
+            "tests/test-image-svg-render"
+          ],
+          "status": 0,
+          "seconds": 1.2200157909999803
+        },
+        {
+          "label": "default-after-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/usr/local/lib",
+            "/usr/local/lib/librsvg-2.so",
+            "/usr/local/lib/libgdk_pixbuf-2.0.so",
+            "/usr/local/lib/libgio-2.0.so",
+            "/usr/local/lib/libcairo.so",
+            "/usr/local/lib/libgobject-2.0.so",
+            "/usr/local/lib/libglib-2.0.so",
+            "/usr/local/lib/libintl.so",
+            "/usr/local/lib/libX11.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.032650417000013476
+        },
+        {
+          "label": "default-after-test-image-svg-render-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-test-image-svg-render-mapped",
+            "tests/test-image-svg-render.p/test_image_svg_render.c.o",
+            "tests/test-image-svg-render.p/.._libs_image_svg.c.o",
+            "tests/test-image-svg-render.p/.._libs_ImageSafety.c.o",
+            "tests/test-image-svg-render.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/usr/local/lib",
+            "/usr/local/lib/librsvg-2.so",
+            "/usr/local/lib/libgdk_pixbuf-2.0.so",
+            "/usr/local/lib/libgio-2.0.so",
+            "/usr/local/lib/libcairo.so",
+            "/usr/local/lib/libgobject-2.0.so",
+            "/usr/local/lib/libglib-2.0.so",
+            "/usr/local/lib/libintl.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/default-after-test-image-svg-render.map"
+          ],
+          "status": 0,
+          "seconds": 0.0332834590000175
+        },
+        {
+          "label": "default-focused-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/build-default",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "--num-processes",
+            "1",
+            "image-svg-protocol",
+            "image-svg-client",
+            "image-effect",
+            "image-effect-protocol",
+            "image-svg-render"
+          ],
+          "status": 0,
+          "seconds": 0.23115983399998186
+        },
+        {
+          "label": "default-staged-effect-x",
+          "command": [
+            "python3",
+            "tests/live_x/picture_async_live.py",
+            "--probe",
+            "/root/fvwm-module-waits-20261015/build-default/tests/test-image-effect-x",
+            "--worker",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-target-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-effect-x"
+          ],
+          "status": 0,
+          "seconds": 0.5674277080000252
+        },
+        {
+          "label": "default-staged-svg-x",
+          "command": [
+            "python3",
+            "tests/live_x/image_svg_live.py",
+            "--probe",
+            "/root/fvwm-module-waits-20261015/build-default/tests/test-image-input-x",
+            "--fvwm",
+            "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+            "--mfl",
+            "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/default-svg-x"
+          ],
+          "status": 0,
+          "seconds": 10.568042084000012
+        },
+        {
+          "label": "reduced-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced"
+          ],
+          "status": 0,
+          "seconds": 0.9004760839999904
+        },
+        {
+          "label": "reduced-affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced",
+            "-j",
+            "2",
+            "fvwm3",
+            "bin/fvwm-root",
+            "bin/fvwm-image-svg-worker",
+            "tests/test-image-svg-protocol",
+            "tests/test-image-svg-client",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol",
+            "tests/test-image-effect-x",
+            "tests/test-image-input-x"
+          ],
+          "status": 0,
+          "seconds": 4.018172167000046
+        },
+        {
+          "label": "reduced-after-fvwm-image-svg-worker-map",
+          "command": [
+            "cc",
+            "-o",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-after-fvwm-image-svg-worker-mapped",
+            "bin/fvwm-image-svg-worker.p/fvwm-image-svg-worker.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_svg_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_protocol.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_image_effect_x.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_ImageSafety.c.o",
+            "bin/fvwm-image-svg-worker.p/.._libs_monitor_scale.c.o",
+            "-Wl,--as-needed",
+            "-Wl,--no-undefined",
+            "-pie",
+            "-Wl,--start-group",
+            "-lm",
+            "-Wl,-rpath,/usr/local/lib",
+            "/usr/local/lib/libX11.so",
+            "-Wl,--end-group",
+            "-Wl,-Map,/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-after-fvwm-image-svg-worker.map"
+          ],
+          "status": 0,
+          "seconds": 0.03421433299996579
+        },
+        {
+          "label": "reduced-focused-tests",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "--num-processes",
+            "1",
+            "image-svg-protocol",
+            "image-svg-client",
+            "image-effect",
+            "image-effect-protocol"
+          ],
+          "status": 0,
+          "seconds": 0.22374600000000555
+        },
+        {
+          "label": "reduced-staged-effect-x",
+          "command": [
+            "python3",
+            "tests/live_x/picture_async_live.py",
+            "--probe",
+            "/root/fvwm-module-waits-20261015/m1-build-reduced/tests/test-image-effect-x",
+            "--worker",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-target-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "--artifacts-dir",
+            "/root/fvwm-module-waits-20261015/m31-checkpoint/reduced-effect-x"
+          ],
+          "status": 0,
+          "seconds": 0.36809933300003195
+        }
+      ],
+      "profiles": {
+        "default": {
+          "targets": {
+            "bin/fvwm-image-svg-worker": {
+              "before_bytes": 102848,
+              "after_bytes": 102816,
+              "bytes_delta": -32,
+              "before_sha256": "04d8640a464aa8167636e7774d71e31b6b4e58401de2fbab14fe4cf310eab3ae",
+              "after_sha256": "23a858eb35e705547c6cd1b5ff1d96465b6ca61a7809ec3d19f76cdb4e18d21e",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libintl.so",
+                "/usr/local/lib/libX11.so"
+              ],
+              "before_needed": [
+                "libm.so.5",
+                "libX11.so.6",
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libcairo.so.2",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libm.so.5",
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libcairo.so.2",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libX11.so.6",
+                "libc.so.7"
+              ],
+              "before_runtime_closure": {
+                "libm.so.5": "/lib/libm.so.5",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "after_runtime_closure": {
+                "libm.so.5": "/lib/libm.so.5",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libc.so.7": "/lib/libc.so.7",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "before_runtime_without_LD_LIBRARY_PATH": {
+                "libm.so.5": "/lib/libm.so.5",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/usr/local/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "after_runtime_without_LD_LIBRARY_PATH": {
+                "libm.so.5": "/lib/libm.so.5",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libc.so.7": "/lib/libc.so.7",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/usr/local/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "config_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+            },
+            "tests/test-image-svg-render": {
+              "before_bytes": 66440,
+              "after_bytes": 66408,
+              "bytes_delta": -32,
+              "before_sha256": "d629c828aa3a51cd07872427d0611f01e98d0fbccbd155c7db620240deeb96e1",
+              "after_sha256": "50526711616c316dac14057c1e0c5893b0e1dc80283bfb1083c76f5c3f547056",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libintl.so"
+              ],
+              "before_needed": [
+                "libm.so.5",
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libcairo.so.2",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libm.so.5",
+                "librsvg-2.so.2",
+                "libgio-2.0.so.0",
+                "libcairo.so.2",
+                "libgobject-2.0.so.0",
+                "libglib-2.0.so.0",
+                "libc.so.7"
+              ],
+              "before_runtime_closure": {
+                "libm.so.5": "/lib/libm.so.5",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libc.so.7": "/lib/libc.so.7",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "after_runtime_closure": {
+                "libm.so.5": "/lib/libm.so.5",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libc.so.7": "/lib/libc.so.7",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "before_runtime_without_LD_LIBRARY_PATH": {
+                "libm.so.5": "/lib/libm.so.5",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libc.so.7": "/lib/libc.so.7",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/usr/local/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "after_runtime_without_LD_LIBRARY_PATH": {
+                "libm.so.5": "/lib/libm.so.5",
+                "librsvg-2.so.2": "/usr/local/lib/librsvg-2.so.2",
+                "libgio-2.0.so.0": "/usr/local/lib/libgio-2.0.so.0",
+                "libcairo.so.2": "/usr/local/lib/libcairo.so.2",
+                "libgobject-2.0.so.0": "/usr/local/lib/libgobject-2.0.so.0",
+                "libglib-2.0.so.0": "/usr/local/lib/libglib-2.0.so.0",
+                "libc.so.7": "/lib/libc.so.7",
+                "libgdk_pixbuf-2.0.so.0": "/usr/local/lib/libgdk_pixbuf-2.0.so.0",
+                "libdav1d.so.7": "/usr/local/lib/libdav1d.so.7",
+                "libxml2.so.16": "/usr/local/lib/libxml2.so.16",
+                "libpangocairo-1.0.so.0": "/usr/local/lib/libpangocairo-1.0.so.0",
+                "libpango-1.0.so.0": "/usr/local/lib/libpango-1.0.so.0",
+                "libgcc_s.so.1": "/lib/libgcc_s.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libgmodule-2.0.so.0": "/usr/local/lib/libgmodule-2.0.so.0",
+                "libz.so.6": "/lib/libz.so.6",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/usr/local/lib/libpng16.so.16",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libxcb-render.so.0": "/usr/local/lib/libxcb-render.so.0",
+                "libxcb-shm.so.0": "/usr/local/lib/libxcb-shm.so.0",
+                "libpixman-1.so.0": "/usr/local/lib/libpixman-1.so.0",
+                "libffi.so.8": "/usr/local/lib/libffi.so.8",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libpcre2-8.so.0": "/usr/local/lib/libpcre2-8.so.0",
+                "libutil.so.10": "/lib/libutil.so.10",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libpangoft2-1.0.so.0": "/usr/local/lib/libpangoft2-1.0.so.0",
+                "libharfbuzz.so.0": "/usr/local/lib/libharfbuzz.so.0",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libthai.so.0": "/usr/local/lib/libthai.so.0",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libgraphite2.so.3": "/usr/local/lib/libgraphite2.so.3",
+                "libdatrie.so.1": "/usr/local/lib/libdatrie.so.1",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1",
+                "libc++.so.1": "/lib/libc++.so.1",
+                "libcxxrt.so.1": "/lib/libcxxrt.so.1"
+              },
+              "config_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da"
+            }
+          },
+          "focused_pure_tests": [
+            "fvwm3:image-svg-protocol",
+            "fvwm3:image-svg-render",
+            "fvwm3:image-svg-client",
+            "fvwm3:image-effect",
+            "fvwm3:image-effect-protocol"
+          ],
+          "target_stage": {
+            "installed_path": "/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "sha256": "23a858eb35e705547c6cd1b5ff1d96465b6ca61a7809ec3d19f76cdb4e18d21e",
+            "bytes": 102816,
+            "scope": "Exact target copy following Meson install mapping; full meson install acceptance deferred."
+          }
+        },
+        "reduced": {
+          "targets": {
+            "bin/fvwm-image-svg-worker": {
+              "before_bytes": 64888,
+              "after_bytes": 64888,
+              "bytes_delta": 0,
+              "before_sha256": "8455c2f9b3260fa68ff01cee74be628fc24ac8af896589de25880b8c4703d80e",
+              "after_sha256": "8455c2f9b3260fa68ff01cee74be628fc24ac8af896589de25880b8c4703d80e",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libX11.so"
+              ],
+              "before_needed": [
+                "libX11.so.6",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libX11.so.6",
+                "libc.so.7"
+              ],
+              "before_runtime_closure": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              },
+              "after_runtime_closure": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              },
+              "before_runtime_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              },
+              "after_runtime_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              },
+              "config_sha256": "6dd835ba01ebd91f5c495d8c24a8d72146db1b511084d9e1e783aa9994d5d68a"
+            }
+          },
+          "focused_pure_tests": [
+            "fvwm3:image-svg-protocol",
+            "fvwm3:image-svg-client",
+            "fvwm3:image-effect",
+            "fvwm3:image-effect-protocol"
+          ],
+          "target_stage": {
+            "installed_path": "/usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker",
+            "sha256": "8455c2f9b3260fa68ff01cee74be628fc24ac8af896589de25880b8c4703d80e",
+            "bytes": 64888,
+            "scope": "Exact target copy following Meson install mapping; full meson install acceptance deferred."
+          }
+        }
+      },
+      "post_run_package_license_inventory": {
+        "FreeBSD-clibs-15.1p4": {
+          "package_license_record": "FreeBSD-clibs|15.1p4|BSD2CLAUSE",
+          "library_paths": [
+            "/lib/libc++.so.1",
+            "/lib/libc.so.7",
+            "/lib/libcxxrt.so.1",
+            "/lib/libgcc_s.so.1",
+            "/lib/libm.so.5",
+            "/lib/libsys.so.7",
+            "/lib/libthr.so.3"
+          ]
+        },
+        "FreeBSD-runtime-15.1p4": {
+          "package_license_record": "FreeBSD-runtime|15.1p4|BSD2CLAUSE",
+          "library_paths": [
+            "/lib/libutil.so.10"
+          ]
+        },
+        "FreeBSD-zlib-15.1": {
+          "package_license_record": "FreeBSD-zlib|15.1|Zlib",
+          "library_paths": [
+            "/lib/libz.so.6"
+          ]
+        },
+        "qualified-private-provider-or-unowned-system-file": {
+          "library_paths": [
+            "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+            "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16"
+          ]
+        },
+        "FreeBSD-bzip2-lib-15.1": {
+          "package_license_record": "FreeBSD-bzip2-lib|15.1|BSD2CLAUSE",
+          "library_paths": [
+            "/usr/lib/libbz2.so.4"
+          ]
+        },
+        "libICE-1.1.2,1": {
+          "package_license_record": "libICE|1.1.2,1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libICE.so"
+          ]
+        },
+        "libSM-1.2.6,1": {
+          "package_license_record": "libSM|1.2.6,1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libSM.so"
+          ]
+        },
+        "libX11-1.8.13_1,1": {
+          "package_license_record": "libX11|1.8.13_1,1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libX11.so",
+            "/usr/local/lib/libX11.so.6"
+          ]
+        },
+        "libXau-1.0.12": {
+          "package_license_record": "libXau|1.0.12|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXau.so.6"
+          ]
+        },
+        "libXcursor-1.2.3": {
+          "package_license_record": "libXcursor|1.2.3|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXcursor.so"
+          ]
+        },
+        "libXdmcp-1.1.5": {
+          "package_license_record": "libXdmcp|1.1.5|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXdmcp.so.6"
+          ]
+        },
+        "libXext-1.3.7,1": {
+          "package_license_record": "libXext|1.3.7,1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXext.so",
+            "/usr/local/lib/libXext.so.6"
+          ]
+        },
+        "libXfixes-6.0.1": {
+          "package_license_record": "libXfixes|6.0.1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXfixes.so"
+          ]
+        },
+        "libXft-2.3.8": {
+          "package_license_record": "libXft|2.3.8|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXft.so"
+          ]
+        },
+        "libXrandr-1.5.5": {
+          "package_license_record": "libXrandr|1.5.5|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXrandr.so"
+          ]
+        },
+        "libXrender-0.9.12": {
+          "package_license_record": "libXrender|0.9.12|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXrender.so",
+            "/usr/local/lib/libXrender.so.1"
+          ]
+        },
+        "libXt-1.3.1,1": {
+          "package_license_record": "libXt|1.3.1,1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libXt.so"
+          ]
+        },
+        "brotli-1.2.0,1": {
+          "package_license_record": "brotli|1.2.0,1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libbrotlicommon.so.1",
+            "/usr/local/lib/libbrotlidec.so.1"
+          ]
+        },
+        "cairo-1.18.2,3": {
+          "package_license_record": "cairo|1.18.2,3|LGPL21, MPL11",
+          "library_paths": [
+            "/usr/local/lib/libcairo.so",
+            "/usr/local/lib/libcairo.so.2"
+          ]
+        },
+        "libdatrie-0.2.14_1": {
+          "package_license_record": "libdatrie|0.2.14_1|LGPL21+",
+          "library_paths": [
+            "/usr/local/lib/libdatrie.so.1"
+          ]
+        },
+        "dav1d-1.5.4": {
+          "package_license_record": "dav1d|1.5.4|BSD2CLAUSE",
+          "library_paths": [
+            "/usr/local/lib/libdav1d.so.7"
+          ]
+        },
+        "libevent-2.1.13": {
+          "package_license_record": "libevent|2.1.13|BSD3CLAUSE",
+          "library_paths": [
+            "/usr/local/lib/libevent.so"
+          ]
+        },
+        "expat-2.8.2": {
+          "package_license_record": "expat|2.8.2|MIT",
+          "library_paths": [
+            "/usr/local/lib/libexpat.so.1"
+          ]
+        },
+        "libffi-3.6.0": {
+          "package_license_record": "libffi|3.6.0|MIT",
+          "library_paths": [
+            "/usr/local/lib/libffi.so.8"
+          ]
+        },
+        "fontconfig-2.17.1,1": {
+          "package_license_record": "fontconfig|2.17.1,1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libfontconfig.so",
+            "/usr/local/lib/libfontconfig.so.1"
+          ]
+        },
+        "freetype2-2.14.3": {
+          "package_license_record": "freetype2|2.14.3|GPLv2+, FTL",
+          "library_paths": [
+            "/usr/local/lib/libfreetype.so",
+            "/usr/local/lib/libfreetype.so.6"
+          ]
+        },
+        "fribidi-1.0.16": {
+          "package_license_record": "fribidi|1.0.16|LGPL21",
+          "library_paths": [
+            "/usr/local/lib/libfribidi.so",
+            "/usr/local/lib/libfribidi.so.0"
+          ]
+        },
+        "gdk-pixbuf2-2.44.1": {
+          "package_license_record": "gdk-pixbuf2|2.44.1|LGPL20+",
+          "library_paths": [
+            "/usr/local/lib/libgdk_pixbuf-2.0.so",
+            "/usr/local/lib/libgdk_pixbuf-2.0.so.0"
+          ]
+        },
+        "glib-2.86.4,2": {
+          "package_license_record": "glib|2.86.4,2|LGPL20",
+          "library_paths": [
+            "/usr/local/lib/libgio-2.0.so",
+            "/usr/local/lib/libgio-2.0.so.0",
+            "/usr/local/lib/libglib-2.0.so",
+            "/usr/local/lib/libglib-2.0.so.0",
+            "/usr/local/lib/libgmodule-2.0.so.0",
+            "/usr/local/lib/libgobject-2.0.so",
+            "/usr/local/lib/libgobject-2.0.so.0"
+          ]
+        },
+        "graphite2-1.3.15": {
+          "package_license_record": "graphite2|1.3.15|LGPL21, GPLv2, MPL20",
+          "library_paths": [
+            "/usr/local/lib/libgraphite2.so.3"
+          ]
+        },
+        "harfbuzz-14.2.1": {
+          "package_license_record": "harfbuzz|14.2.1|MIT",
+          "library_paths": [
+            "/usr/local/lib/libharfbuzz.so.0"
+          ]
+        },
+        "libiconv-1.18_1": {
+          "package_license_record": "libiconv|1.18_1|GPLv3",
+          "library_paths": [
+            "/usr/local/lib/libiconv.so",
+            "/usr/local/lib/libiconv.so.2"
+          ]
+        },
+        "gettext-runtime-1.0_1": {
+          "package_license_record": "gettext-runtime|1.0_1|GPLv3+, LGPL21+",
+          "library_paths": [
+            "/usr/local/lib/libintl.so",
+            "/usr/local/lib/libintl.so.8"
+          ]
+        },
+        "pango-1.57.1": {
+          "package_license_record": "pango|1.57.1|LGPL21+",
+          "library_paths": [
+            "/usr/local/lib/libpango-1.0.so.0",
+            "/usr/local/lib/libpangocairo-1.0.so.0",
+            "/usr/local/lib/libpangoft2-1.0.so.0"
+          ]
+        },
+        "pcre2-10.47_1": {
+          "package_license_record": "pcre2|10.47_1|BSD3CLAUSE",
+          "library_paths": [
+            "/usr/local/lib/libpcre2-8.so.0"
+          ]
+        },
+        "pixman-0.46.4": {
+          "package_license_record": "pixman|0.46.4|MIT",
+          "library_paths": [
+            "/usr/local/lib/libpixman-1.so.0"
+          ]
+        },
+        "png-1.6.58": {
+          "package_license_record": "png|1.6.58|Libpng",
+          "library_paths": [
+            "/usr/local/lib/libpng16.so.16"
+          ]
+        },
+        "librsvg2-rust-2.62.3": {
+          "package_license_record": "librsvg2-rust|2.62.3|LGPL20",
+          "library_paths": [
+            "/usr/local/lib/librsvg-2.so",
+            "/usr/local/lib/librsvg-2.so.2"
+          ]
+        },
+        "libthai-0.1.30": {
+          "package_license_record": "libthai|0.1.30|LGPL21+",
+          "library_paths": [
+            "/usr/local/lib/libthai.so.0"
+          ]
+        },
+        "libxcb-1.17.0": {
+          "package_license_record": "libxcb|1.17.0|MIT",
+          "library_paths": [
+            "/usr/local/lib/libxcb-render.so.0",
+            "/usr/local/lib/libxcb-shm.so.0",
+            "/usr/local/lib/libxcb.so.1"
+          ]
+        },
+        "libxml2-2.15.3": {
+          "package_license_record": "libxml2|2.15.3|MIT",
+          "library_paths": [
+            "/usr/local/lib/libxml2.so.16"
+          ]
+        }
+      }
+    }
+  },
+  "additional_header_consumer": {
+    "status": "passed",
+    "uname": [
+      "Linux",
+      "288f898505a4",
+      "6.18.10-200.fc43.aarch64",
+      "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+      "aarch64"
+    ],
+    "scope": "Additional Fsvg header consumer picture-cache unit, isolated header/source overlay and unchanged native archive; not worker graph qualification on ARM64.",
+    "header_sha256": "6190fc56b6abc59e2bc8c414e41d893d4708238652abda7a4fbb04164a2a12a8",
+    "test_source_sha256": "66e32ce92b5b7cb5f713ed6aabb29cbd9206e00e89fd808403d13a2d4822c0d0",
+    "compile": [
+      "cc",
+      "-I/tmp/fvwm-m31-header-vokgntdh",
+      "-Itests/test-picture-cache.p",
+      "-Itests",
+      "-I../source/tests",
+      "-I.",
+      "-I../source",
+      "-Ifvwm",
+      "-I../source/fvwm",
+      "-I/usr/include/freetype2",
+      "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+      "-I/usr/include/fribidi",
+      "-I/usr/include/librsvg-2.0",
+      "-I/usr/include/glib-2.0",
+      "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+      "-I/usr/include/libmount",
+      "-I/usr/include/blkid",
+      "-I/usr/include/gdk-pixbuf-2.0",
+      "-I/usr/include/aarch64-linux-gnu",
+      "-I/usr/include/webp",
+      "-I/usr/include/cairo",
+      "-I/usr/include/pixman-1",
+      "-fdiagnostics-color=always",
+      "-D_FILE_OFFSET_BITS=64",
+      "-Wall",
+      "-Winvalid-pch",
+      "-Wextra",
+      "-std=c11",
+      "-O2",
+      "-g",
+      "-fno-common",
+      "-Wno-sign-compare",
+      "-Wno-unused-parameter",
+      "-Werror=implicit-function-declaration",
+      "-Werror=incompatible-pointer-types",
+      "-fstack-protector-strong",
+      "-fstack-clash-protection",
+      "-D_FORTIFY_SOURCE=3",
+      "-fPIE",
+      "-pthread",
+      "-D_DEFAULT_SOURCE",
+      "-D_BSD_SOURCE",
+      "-DHAS_FCHOWN",
+      "-DHAS_STICKY_DIR_BIT",
+      "-UNDEBUG",
+      "-MD",
+      "-MQ",
+      "/tmp/fvwm-m31-header-vokgntdh/test.o",
+      "-MF",
+      "/tmp/fvwm-m31-header-vokgntdh/test.d",
+      "-o",
+      "/tmp/fvwm-m31-header-vokgntdh/test.o",
+      "-c",
+      "/tmp/fvwm-m31-header-vokgntdh/tests/test_picture_cache.c"
+    ],
+    "link": [
+      "cc",
+      "-o",
+      "/tmp/fvwm-m31-header-vokgntdh/test",
+      "/tmp/fvwm-m31-header-vokgntdh/test.o",
+      "-Wl,--as-needed",
+      "-Wl,--no-undefined",
+      "-pie",
+      "-Wl,-z,relro",
+      "-Wl,-z,now",
+      "-Wl,-z,noexecstack",
+      "-Wl,--start-group",
+      "-lm",
+      "-Wl,-rpath,/tmp/fvwm-deps/libpng-1.6.59/lib",
+      "-Wl,-rpath-link,/tmp/fvwm-deps/libpng-1.6.59/lib",
+      "libs/libfvwm3.a",
+      "-Wl,--wrap=PictureFindImageFile",
+      "-Wl,--wrap=isFileStampChanged",
+      "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+      "/usr/lib/aarch64-linux-gnu/libfreetype.so",
+      "/usr/lib/aarch64-linux-gnu/libICE.so",
+      "/usr/lib/aarch64-linux-gnu/libevent.so",
+      "/usr/lib/aarch64-linux-gnu/libX11.so",
+      "/usr/lib/aarch64-linux-gnu/libXft.so",
+      "/usr/lib/aarch64-linux-gnu/libXrandr.so",
+      "/usr/lib/aarch64-linux-gnu/libXt.so",
+      "/usr/lib/aarch64-linux-gnu/libXext.so",
+      "/usr/lib/aarch64-linux-gnu/libfribidi.so",
+      "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+      "/usr/lib/aarch64-linux-gnu/librsvg-2.so",
+      "/usr/lib/aarch64-linux-gnu/libgio-2.0.so",
+      "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so",
+      "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so",
+      "/usr/lib/aarch64-linux-gnu/libglib-2.0.so",
+      "/usr/lib/aarch64-linux-gnu/libcairo.so",
+      "/usr/lib/aarch64-linux-gnu/libSM.so",
+      "/usr/lib/aarch64-linux-gnu/libXcursor.so",
+      "/usr/lib/aarch64-linux-gnu/libXfixes.so",
+      "/usr/lib/aarch64-linux-gnu/libXpm.so",
+      "/usr/lib/aarch64-linux-gnu/libXrender.so",
+      "-Wl,--end-group"
+    ],
+    "stdout": "65 same-name variants: 1 stamp checks for one hit\n",
+    "stderr": "",
+    "temporary_copy_only": true
+  },
+  "cleanup": {
+    "linux-amd64": {
+      "retired_files": 65,
+      "retired_bytes": 1031549,
+      "source_build_stage_cache_disks_preserved": true
+    },
+    "freebsd-arm64": {
+      "retired_files": 65,
+      "retired_bytes": 915620,
+      "source_build_stage_cache_disks_preserved": true
+    }
+  },
+  "VM_cleanup": {
+    "linux": {
+      "owned_pid": 15721,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    },
+    "freebsd": {
+      "owned_pid": 17598,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    }
+  },
+  "qualification": {
+    "focused_two_OS_four_profiles": true,
+    "full_six_target_M3": false,
+    "actual_meson_install_acceptance": false,
+    "static_librsvg_binary": false,
+    "native_Linux_sanitizers": false,
+    "runtime_package_removal_or_speed_claim": false
+  },
+  "limits": [
+    "Core/module libfvwm3 static dependency propagation remains for later M3 groups.",
+    "Captured copies follow Meson install mapping; full default/reduced/optional offline installs remain at combined #184 acceptance.",
+    "pkg-config --static metadata is retained, not a static-link qualification.",
+    "Resolved runtime library paths/sets unchanged; version/license inventory is existing OS/provider metadata, not a new legal/security audit.",
+    "No new UI or rendering logic; no repeated theme/screenshot/sanitizer matrix.",
+    "M2 acceptance preserves its documented hardware/native/release limits."
+  ],
+  "routing": {
+    "analyst_requested": "gpt-6-astra/high",
+    "implementer_reviewer_requested": "gpt-6.1-sol/high",
+    "workflow_requested": "gpt-6-luna/medium",
+    "observed_model_client_metadata": "Unavailable; requested selection unverified.",
+    "agent_review_not_independent_human_approval": true
+  }
+}

@@ -10,8 +10,8 @@ configuration/theme compatibility. No compositor or Wayland backend.
 Go; migrated utilities need no Go compiler or Python packages.
 [Build/upgrade notes](INSTALL.md).
 Go coordinates native desktop capture. M2 session evidence/limits and M3
-dependency ownership are accepted. M4 removes obsolete SVG code; M5 bounds
-Script message and command lifetimes. Retirement and release work remain open.
+dependency ownership are accepted. M4 removes obsolete SVG code; M5 simplifies
+Script lifetimes and shared waits. Retirement and release work remain open.
 Recent work:
 
 - Atomic button updates, desktop settings/editor and configuration checking.

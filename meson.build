@@ -191,11 +191,6 @@ foreach h : headers
     endif
 endforeach
 
-if conf.has('HAVE_SYS_SELECT_H')
-    conf.set10('HAVE_SELECT', true)
-    conf.set('SELECT_FD_SET_CAST', '')
-endif
-
 # Function checks.
 functions = [
     'div',
@@ -211,8 +206,6 @@ functions = [
     'setvbuf',
     'sigaction',
     'siginterrupt',
-    'siglongjmp',
-    'sigsetjmp',
     'socket',
     'strchr',
     'strdup',

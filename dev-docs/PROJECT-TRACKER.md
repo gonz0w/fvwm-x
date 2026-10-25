@@ -94,11 +94,65 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 unused event-interface retirement — 2026-10-25
+
+Owner: Cam; implementation lead, `codex/m5-library-retirement`.
+Status: focused retained-token/symbol checks, normal build and actual-X checks
+pass; ready for review after merged PR243
+`403c341a5c71249861f1ebcc75752d14a389fe2d`; canonical signature/DCO and
+reviewed tree `ae6915af9995f4a26edbad2274e5eda30d3e6b30` verified,
+completed branch retired and Project/labels Done. CLEAN-01 #34 owns this finite
+ordinary maintenance slice; completed #35/#36 stay closed.
+
+Retire the seven unused FEvent interfaces: six definitions/declarations
+(FWeedAndHandleIfEvents, FGetMotionEvents, FAllowEvents, FCheckWindowEvent,
+FIfEvent, FPeekIfEvent), plus orphan FSelectInput declaration. The private static
+library has no installed header/export/plugin contract and tracked consumers
+have no calls. Preserve four raw-X compile guards, shared weed records/helpers,
+all active wrapper bodies, event caches/timestamps, queue order and config syntax.
+No event-dispatch redesign, new runtime API, source style sweep, timeout/helper
+padding, or implementation of the separately blocked environment/path proposal.
+
+Acceptance: exact tracked consumer/packaging inventory; capture actual-flag
+preprocessing before edits and compare retained tokens after removing only the
+named declarations/bodies (identified diagnostic line metadata separately).
+Use one incremental Linux normal build for affected core/modules and existing
+resize-merge-queue, expose-queue and fevent-hints checks plus relevant actual-X
+queue servicing. Verify retired symbols disappear and active interfaces remain.
+No new test implementation, fault harness, sanitizer or full OS/install matrix
+for an unused-interface deletion. All 82,633 retained tokens match after the
+thirteen retired items and only known assertion line metadata are removed.
+Core/twelve modules/four test fixtures build together; three units and the
+71-collection actual-X expose fixture pass. A comparator count correction
+retains the original failure and successful preprocessing without a rebuild
+repeat. [Report](verification/VERIFICATION-2026-10-25-M5-EVENT-INTERFACES.md). Prior ownership evidence stays source-bound,
+not a fresh pass. Separate final review and signed author-DCO PR required.
+
+Due performance comparison after the fifth implementation checkpoint is complete
+before source edits: PR238-identical browser bytes yield overlapping scan timings
+and equal RSS. Recorded Script text/read-only size falls 13,571 bytes with data
+112 bytes smaller, without an old-Script timing or WM speedup claim.
+[Comparison](verification/PERFORMANCE-2026-10-25-PR243.md). Preserved PR243 binaries
+become the next reference at 0/5; this merge is 1/5. Accumulated platform risk is
+reviewed here; no automatic matrix follows the counter. Broader #34 remains open.
+
+## Pending environment-expanded pathname construction — 2026-10-25
+
+Owner: Cam; DATA-01 #6 / CLEAN-01 #34. A proposed shared environment/path
+construction batch is pending: delegated implementation was blocked by a
+security-review message citing possible cybersecurity risk and Daybreak access.
+No source edits or runtime reproductions were performed for that proposal.
+Do not retry the blocked action through another executor. Source observations
+remain unvalidated; this is not a completed fix or a new exploit claim.
+Independent ordinary maintenance and the requested performance observation
+continue. The blocked family does not expand the active retirement scope.
+
 ## M5 Script common widget-resource ownership — 2026-10-25
 
 Owner: Cam; implementation lead, `codex/m5-widget-ownership`.
-Status: focused normal/scoped sanitizer, ownership and actual-X checks pass;
-ready for review after merging all prior open PRs: PR242 widget icons, PR228
+Status: merged in PR243 as `403c341a5c71249861f1ebcc75752d14a389fe2d`;
+canonical signature/DCO/tree verified and completed branch retired. Selected
+after merging all prior open PRs: PR242 widget icons, PR228
 modernization order and PR237 hardening/library scopes. Canonical heads are
 `5094080af751f99772d720ea5581018a7ecccd3c`,
 `389a02203f1c6a6fc3764f77d22d566a42ba5066` and

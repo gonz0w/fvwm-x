@@ -627,28 +627,6 @@ int FWeedIfEvents(
 	return weed_args.count;
 }
 
-int FWeedAndHandleIfEvents(
-	Display *display,
-	int (*weed_predicate) (Display *display, XEvent *event, XPointer arg),
-	int (*handler) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
-{
-	_fev_weed_args weed_args;
-	XEvent e;
-
-	assert(fev_is_invalid_event_type_set);
-	memset(&weed_args, 0, sizeof(weed_args));
-	weed_args.weed_predicate = weed_predicate;
-	weed_args.arg = arg;
-	if (FCheckPeekIfEvent(display, &e, _fev_pred_weed_if,
-			      (XPointer)&weed_args)) {
-		handler(display, &e, arg);
-	}
-	_fev_pred_weed_if_finish(&weed_args);
-
-	return weed_args.count;
-}
-
 int FWeedIfWindowEvents(
 	Display *display, Window window,
 	int (*weed_predicate) (
@@ -715,26 +693,6 @@ Bool FCheckPeekIfEvent(
 }
 
 /* ---------------------------- X event replacements ----------------------- */
-
-XTimeCoord *FGetMotionEvents(
-	Display *display, Window w, Time start, Time stop, int *nevents_return)
-{
-	XTimeCoord *rc;
-
-	rc = XGetMotionEvents(display, w, start, stop, nevents_return);
-
-	return rc;
-}
-
-int FAllowEvents(
-	Display *display, int event_mode, Time time)
-{
-	int rc;
-
-	rc = XAllowEvents(display, event_mode, time);
-
-	return rc;
-}
 
 Bool FCheckIfEvent(
 	Display *display, XEvent *event_return,
@@ -810,45 +768,12 @@ Bool FCheckTypedWindowEvent(
 	return rc;
 }
 
-Bool FCheckWindowEvent(
-	Display *display, Window w, long event_mask, XEvent *event_return)
-{
-	Bool rc;
-	XEvent new_ev;
-
-	rc = XCheckWindowEvent(display, w, event_mask, &new_ev);
-	if (rc == True)
-	{
-		fev_event_old = fev_event;
-		fev_event = new_ev;
-		*event_return = fev_event;
-		fev_update_last_timestamp(event_return);
-	}
-
-	return rc;
-}
-
 int FEventsQueued(
 	Display *display, int mode)
 {
 	int rc;
 
 	rc = XEventsQueued(display, mode);
-
-	return rc;
-}
-
-int FIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
-{
-	int rc;
-
-	fev_event_old = fev_event;
-	rc = XIfEvent(display, &fev_event, predicate, arg);
-	*event_return = fev_event;
-	fev_update_last_timestamp(event_return);
 
 	return rc;
 }
@@ -886,22 +811,6 @@ int FPeekEvent(
 
 	rc = XPeekEvent(display, event_return);
 	fev_update_last_timestamp(event_return);
-
-	return rc;
-}
-
-int FPeekIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg)
-{
-	int rc;
-
-	rc = XPeekIfEvent(display, event_return, predicate, arg);
-	if (rc == True)
-	{
-		fev_update_last_timestamp(event_return);
-	}
 
 	return rc;
 }

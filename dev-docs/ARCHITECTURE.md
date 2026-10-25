@@ -133,6 +133,12 @@ actions: the existing worker/snapshot/native publication path performs refresh.
 Manual fallback, supersession and reap ownership follow the
 [watch contract](decisions/BROWSER-DIRECTORY-WATCH-2026-10-23.md).
 
+The maintained [event wrapper layer](../libs/FEvent.h) exposes only consumed
+interfaces. The unused handler-weeding, motion-history and five legacy wrapper/
+declaration entries are retired under CLEAN-01; shared weed state and active
+queue/cache/timestamp bodies retain their original ordering. Four historical
+raw-X prohibition macros remain compile guards, not live wrapper aliases.
+
 ## Boundaries to strengthen within owning fixes
 
 1. Resolve window identity and lifetime through existing ownership mechanisms;

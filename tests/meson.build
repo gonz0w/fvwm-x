@@ -2928,7 +2928,7 @@ if librsvg.found()
         ['test_image_svg_render.c', '../libs/image_svg.c',
          '../libs/ImageSafety.c', '../libs/monitor_scale.c'],
         include_directories: includedirs,
-        dependencies: all_found_deps,
+        dependencies: image_renderer_deps,
         c_args: ['-UNDEBUG'],
     )
     test('image-svg-render', image_svg_render_test)

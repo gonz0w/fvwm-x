@@ -21,6 +21,7 @@
 #include "Fsvg.h"
 #include "ImageSafety.h"
 
+#include <X11/Xmd.h>
 #include <limits.h>
 #include <errno.h>
 #include <math.h>

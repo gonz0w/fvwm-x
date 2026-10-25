@@ -1,8 +1,7 @@
 #ifndef FVWMLIB_FSVG_H
 #define FVWMLIB_FSVG_H
 
-#include "fvwm_x11.h"
-#include "PictureBase.h"
+#include "config.h"
 
 #ifdef HAVE_RSVG
 #define USE_SVG 1

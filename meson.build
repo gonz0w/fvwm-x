@@ -478,6 +478,11 @@ else
     warning(png_msg)
 endif
 
+# Decoder/scale types need X headers, without X11/XRandR runtime linkage.
+image_renderer_deps = [
+    summary_depvals['x11'].partial_dependency(compile_args: true, includes: true),
+    summary_depvals['xrandr'].partial_dependency(compile_args: true, includes: true),
+]
 librsvg = dependency(
     'librsvg-2.0',
     version: '>=2.13.92',
@@ -510,6 +515,8 @@ if librsvg.found()
     else
         all_found_deps += svg_deps
     endif
+    # Retain each package's full transitive link requirements for SVG rendering.
+    image_renderer_deps += [librsvg] + svg_deps
 endif
 
 sm = dependency('sm', required: get_option('sm'))

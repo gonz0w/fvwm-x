@@ -1,0 +1,154 @@
+{
+  "binaries": {
+    "core": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+      "bytes": 5396632,
+      "sha256": "2e57270b49f2e864077b68c4332ed5eb0bb71689847f11dee02f9e99a05fe508",
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1097293\t  27380\t  39824\t1164497\t 11c4d1\t/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3\n"
+    },
+    "mfl": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+      "bytes": 445112,
+      "sha256": "5cd1340eca425fdbc3dd2dbf815f9fd61de675e8adc555a4623db786ae3a4547",
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 100231\t   2576\t   3736\t 106543\t  1a02f\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL\n"
+    },
+    "form": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+      "bytes": 1624952,
+      "sha256": "ff3895385a821c4acdabeca06f0f795d912a890b631b835dc01f5b84aa3972d6",
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 398442\t  14736\t  14048\t 427226\t  684da\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n"
+    },
+    "browser_reference": {
+      "path": "/tmp/fvwm-module-waits-20261015/m32-performance-inputs/browser_reference",
+      "bytes": 5620310,
+      "sha256": "1ac4e99e68ef00a8c815a85840d06b34afd14c057f9ecede8e3854bc16ff81cb",
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3590675\t  88707\t33805464\t37484846\t23bf92e\t/tmp/fvwm-module-waits-20261015/m32-performance-inputs/browser_reference\n",
+      "go_build": "/tmp/fvwm-module-waits-20261015/m32-performance-inputs/browser_reference: go1.27.2\n\tpath\tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser\n\tmod\tgithub.com/fvwmorg/FvwmPrompt\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,gotestjsonbuildtext=1,httpcookiemaxnum=0,httplaxcontentlength=1,httpmuxgo121=1,httpservecontentkeepheaders=1,httpservecontentmaxranges=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlmaxqueryparams=0,urlstrictcolons=0,winreadlinkvolume=0,winsymlink=0,x509negativeserial=1,x509rsacrt=0,x509sha256skid=0,x509sslcertoverrideplatform=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+    },
+    "browser_current": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser",
+      "bytes": 5623589,
+      "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3594030\t  88707\t33805464\t37488201\t23c0649\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser\n",
+      "go_build": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser: go1.27.2\n\tpath\tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser\n\tmod\tgithub.com/fvwmorg/FvwmPrompt\t(devel)\t\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,gotestjsonbuildtext=1,httpcookiemaxnum=0,httplaxcontentlength=1,httpmuxgo121=1,httpservecontentkeepheaders=1,httpservecontentmaxranges=1,multipathtcp=0,randseednop=0,rsa1024min=0,tlsmlkem=0,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlmaxqueryparams=0,urlstrictcolons=0,winreadlinkvolume=0,winsymlink=0,x509negativeserial=1,x509rsacrt=0,x509sha256skid=0,x509sslcertoverrideplatform=0,x509usepolicies=0\n\tbuild\tCGO_ENABLED=1\n\tbuild\tCGO_CFLAGS=\n\tbuild\tCGO_CPPFLAGS=\n\tbuild\tCGO_CXXFLAGS=\n\tbuild\tCGO_LDFLAGS=\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n"
+    }
+  },
+  "scan_observations": [
+    {
+      "repeat": 0,
+      "binary": "browser_reference",
+      "wall_seconds": 0.016668942000251263,
+      "user_seconds": 0.01078,
+      "system_seconds": 0.007509,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 0,
+      "binary": "browser_current",
+      "wall_seconds": 0.015885266999248415,
+      "user_seconds": 0.009392,
+      "system_seconds": 0.00895,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 1,
+      "binary": "browser_current",
+      "wall_seconds": 0.016062393988249823,
+      "user_seconds": 0.009694,
+      "system_seconds": 0.008986,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 1,
+      "binary": "browser_reference",
+      "wall_seconds": 0.015060298988828436,
+      "user_seconds": 0.012034999999999999,
+      "system_seconds": 0.005346,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 2,
+      "binary": "browser_reference",
+      "wall_seconds": 0.015511805017013103,
+      "user_seconds": 0.010804,
+      "system_seconds": 0.006693999999999999,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 2,
+      "binary": "browser_current",
+      "wall_seconds": 0.016169894981430843,
+      "user_seconds": 0.009035999999999999,
+      "system_seconds": 0.009235,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 3,
+      "binary": "browser_current",
+      "wall_seconds": 0.01575309899635613,
+      "user_seconds": 0.012799,
+      "system_seconds": 0.005338,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 3,
+      "binary": "browser_reference",
+      "wall_seconds": 0.015887474990449846,
+      "user_seconds": 0.012534,
+      "system_seconds": 0.005323,
+      "max_rss_kib": 29472,
+      "entries": 4096
+    },
+    {
+      "repeat": 4,
+      "binary": "browser_reference",
+      "wall_seconds": 0.016247979016043246,
+      "user_seconds": 0.009052,
+      "system_seconds": 0.00936,
+      "max_rss_kib": 29600,
+      "entries": 4096
+    },
+    {
+      "repeat": 4,
+      "binary": "browser_current",
+      "wall_seconds": 0.01633406401379034,
+      "user_seconds": 0.011798,
+      "system_seconds": 0.0065179999999999995,
+      "max_rss_kib": 29600,
+      "entries": 4096
+    }
+  ],
+  "native_cpu": true,
+  "scope": "Preserved PR194 and current PR204-qualified browser binaries; exercised AArch64 under existing AppleHV Linux, not bare metal; no benchmark build. Metadata scan/worker handoff only; not native UI latency.",
+  "storage": "Filesystem      Size  Used Avail Use% Mounted on\noverlay         100G  100G   58M 100% /\n",
+  "environment": {
+    "host_machine": "arm64",
+    "machine": {
+      "name": "podman-machine-default",
+      "state": "running",
+      "provider": "applehv",
+      "provider_config_path": "/Users/cam/.config/containers/podman/machine/applehv",
+      "rosetta": false,
+      "last_up": "2026-10-13T06:38:41.119413-06:00"
+    },
+    "guest_architecture": "arm64",
+    "guest_kernel": "6.18.10-200.fc43.aarch64",
+    "emulated_architectures_configured": [
+      "linux/386",
+      "linux/amd64",
+      "linux/arm64be"
+    ],
+    "guest_identity": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux\n90bf1d15-d764-47f5-9544-7c0e97d2b2f5\nPRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "native_execution_evidence": "M2.10 process/ELF/boot identity proof; current same machine and guest boot identity; not bare metal or native UI."
+  },
+  "reference_checkpoint": "PR194",
+  "candidate_checkpoint": "merged PR204; browser last changed by M2.7",
+  "method": "One warmup each, then five alternating pairs; 4096 empty files; os.wait4 CPU/RSS; no build. Outer signal alarm bounds total execution to 180 seconds."
+}

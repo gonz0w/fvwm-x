@@ -104,6 +104,6 @@ libfvwm3 = static_library(
     'fvwm3',
     sources: libfvwm3_sources,
     include_directories: includedirs,
-    dependencies: all_found_deps,
+    dependencies: all_compile_deps,
     install: false,
 )

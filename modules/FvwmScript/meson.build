@@ -35,6 +35,7 @@ libWidgets = static_library(
 
 fvwmscript_sources = [
     'FvwmScript.c',
+    'script_block.c',
     'Instructions.c',
     'script_file.c',
     'script_command.c',

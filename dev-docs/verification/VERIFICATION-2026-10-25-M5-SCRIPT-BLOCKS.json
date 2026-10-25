@@ -1,0 +1,366 @@
+{
+  "base": "9b8780be18f926bacd61734ba2fb977761b1d978",
+  "owner": [
+    "SCRIPT-01 #4",
+    "CLEAN-01 #34"
+  ],
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "598c7d1f3ce4400e7ae92bed4ff7129dccf00821efb51dfaa1a590684e17322c",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_block.c": {
+      "sha256": "582b6f7b2765518976e7fadea6ae2c0fb6d47fec483cae35e0d349e05a457c01",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_block.h": {
+      "sha256": "f61cbc0d415cc240cb59e139d3711521b4687d41e14e037af73994d2768585ca",
+      "mode": 420
+    },
+    "modules/FvwmScript/meson.build": {
+      "sha256": "6315283a7ab38aaed96712a44eb0509c7a525bca4e41a7ddaf3b3df516d49ce7",
+      "mode": 420
+    },
+    "tests/test_script_block_owner.c": {
+      "sha256": "a86d5fa970d4a585b1a536912e8b2b054e2f8feeccd0c04a2390121945384992",
+      "mode": 420
+    },
+    "tests/live_x/script_block_owner_live.py": {
+      "sha256": "ead7653f12167342b3cd875e6446d4e0f898f6877ae00be7ec0052af95f9942a",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "5713601c96bd10c8cd50f4be168c95b034c7bbb9cde6f01f316dfc6939fb2c09",
+      "mode": 420
+    }
+  },
+  "baseline_inputs": 536,
+  "final_inputs": 540,
+  "before_control": {
+    "old_parser_objects": true,
+    "old_BuildGUI_executed": false,
+    "cleanup": "exact old Init two-free operations on real parsed tree",
+    "owned": 21,
+    "freed": 2,
+    "retained": 19,
+    "invalid_prior_observations_preserved": true
+  },
+  "ownership_cases": {
+    "final-shutdown": {
+      "lifecycle": "passed",
+      "ownership": {
+        "owned": 34,
+        "freed": 34,
+        "retained": 0,
+        "init_released": true
+      }
+    },
+    "partial-startup": {
+      "lifecycle": "passed",
+      "ownership": {
+        "owned": 34,
+        "freed": 34,
+        "retained": 0,
+        "init_released": true
+      }
+    },
+    "dead-pipe": {
+      "lifecycle": "passed",
+      "ownership": {
+        "owned": 34,
+        "freed": 34,
+        "retained": 0,
+        "init_released": true
+      }
+    },
+    "init-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "owned": 34,
+        "freed": 0,
+        "retained": 34,
+        "init_released": false
+      }
+    },
+    "event-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "owned": 34,
+        "freed": 22,
+        "retained": 12,
+        "init_released": true
+      }
+    },
+    "periodic-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "owned": 34,
+        "freed": 22,
+        "retained": 12,
+        "init_released": true
+      }
+    }
+  },
+  "normal_units": {
+    "passed": [
+      "script-parser",
+      "script-execution",
+      "script-widget-owner",
+      "script-block-owner"
+    ],
+    "retained_first_passes": 3
+  },
+  "scoped_sanitizer": {
+    "unit": "script-block-owner",
+    "sanitizers": "address,undefined",
+    "leak_detection": true,
+    "limit": "Parsed child cases use _exit; scoped memory/explicit tree-free counts do not establish whole-parser/module leak qualification"
+  },
+  "profiles": {
+    "normal": {
+      "options": {
+        "buildtype": "debugoptimized",
+        "b_ndebug": "false",
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": []
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    },
+    "asan": {
+      "options": {
+        "buildtype": "debug",
+        "b_ndebug": "false",
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ]
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    }
+  },
+  "gate_records": {
+    "first": [
+      {
+        "label": "normal-group-build",
+        "status": 0,
+        "seconds": 1.458339867007453
+      },
+      {
+        "label": "normal-units",
+        "status": 1,
+        "seconds": 0.21990423600072972
+      }
+    ],
+    "continued": [
+      {
+        "label": "corrected-owner-build",
+        "status": 0,
+        "seconds": 0.1299491450190544
+      },
+      {
+        "label": "corrected-owner-unit",
+        "status": 0,
+        "seconds": 0.17773429199587554
+      },
+      {
+        "label": "probe-compile",
+        "status": 0,
+        "seconds": 0.06632781101507135
+      },
+      {
+        "label": "probe-link",
+        "status": 0,
+        "seconds": 0.06533442900399677
+      },
+      {
+        "label": "block-owner-x",
+        "status": 1,
+        "seconds": 0.11845402701874264
+      }
+    ],
+    "completion": [
+      {
+        "label": "block-owner-x",
+        "status": 0,
+        "seconds": 1.3505691169993952
+      },
+      {
+        "label": "execution-x",
+        "status": 0,
+        "seconds": 3.5297558839956764
+      },
+      {
+        "label": "asan-owner-build",
+        "status": 0,
+        "seconds": 3.1481698369898368
+      },
+      {
+        "label": "asan-owner-unit",
+        "status": 0,
+        "seconds": 0.1859197209996637
+      }
+    ]
+  },
+  "outputs": {
+    "normal": {
+      "modules/FvwmScript/FvwmScript": {
+        "sha256": "a239f5a07d6345a9d1b5f8fd8220904ec8f58f36dc139e8841c46f4a383e90a8",
+        "bytes": 2206208
+      },
+      "tests/test-script-block-owner": {
+        "sha256": "3f8b6c3770ca952fbff740a8dbde218b5677be079ef046137c47c8b0d78a022c",
+        "bytes": 882024
+      },
+      "tests/test-script-parser": {
+        "sha256": "6f2a187c75326d27c82c80e2b2da76037fabdcd3ebc47c671adc3bf3f7131acb",
+        "bytes": 873720
+      },
+      "tests/test-script-execution": {
+        "sha256": "19f142b1129e93a909bbdf4ef940d68e80e3bdb73615be759f2597edf57b8747",
+        "bytes": 78760
+      },
+      "tests/test-script-widget-owner": {
+        "sha256": "ce452c425e4c8309b25f00482ef0e9faa7a21d6ca889f2a89011ed34e84c90a3",
+        "bytes": 2237592
+      },
+      "fvwm3": {
+        "sha256": "5d09202748558b27c5b63376d5ccb54eb18e236d476613a0b2b37d411f752835",
+        "bytes": 5454744
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "bytes": 444120
+      }
+    },
+    "asan": {
+      "tests/test-script-block-owner": {
+        "sha256": "24220a9ce3ee0cec52990d43e6d472a954771fba9ebeb101906bef2d060c0be2",
+        "bytes": 5197272
+      }
+    }
+  },
+  "archive": {
+    "payloads": 138,
+    "regular_files": 139,
+    "bytes": 2988647,
+    "sha256": "25b78ba29fe7039b0c70b07f54f4b4e56528d85e38630512898d3cd32f9c57bf"
+  },
+  "original_failures": [
+    "Overlay sibling header include path missing; fixed private compiler include only",
+    "Direct free observer reads optimized despite no-builtin-free; volatile pointer ledger/counters restore original exact expectation, previous contradictory output invalid",
+    "Case labels required whitespace before colon; unit/live fixture corrected without grammar change",
+    "WriteToFile filename requires strarg, not brace gstrarg; live fixture corrected only",
+    "Metadata script quoting corrected without any runtime rerun"
+  ],
+  "review": "Separate final integrated production/test/docs/raw-evidence review passed with no actionable findings; archive138payloads,536baseline/540final identities, control/unit/sanitizer/X outputs and exact source snapshots independently verified",
+  "routing": {
+    "analysis_requested": "gpt-6-astra/high",
+    "implementation_requested": "gpt-6.1-sol/high",
+    "review_requested": "gpt-6.1-sol/high",
+    "runtime_metadata": "unverified"
+  },
+  "merge245": {
+    "sha": "9b8780be18f926bacd61734ba2fb977761b1d978",
+    "tree": "8d83a6cba86ce861fc75b91220dd77d5090b6011",
+    "signature": "valid",
+    "DCO": "Cam <cam@fungalo.co>",
+    "branch": "retired",
+    "Project_labels": "Done"
+  },
+  "performance": {
+    "reference": "PR243",
+    "merged_since": 2,
+    "candidate_merge_count": 3,
+    "comparison_due": false
+  },
+  "limits": [
+    "Complete parsed trees only; parser error stack/header/variables/string tables/bindings/base X/fonts excluded",
+    "Active execution retains trees for process reclamation; no unwinding or all-exit leak-clean claim",
+    "No new UI/theme/screenshot or fresh BSD/AMD64/install/full-default-X/release qualification",
+    "Separate blocked pathname proposal not retried",
+    "Broader #4/#34 remain open; completed #31/#35/#36 preserved"
+  ],
+  "duplicate_cleanup": {
+    "status": "verified guest capture and duplicate archive retired",
+    "regular_files": 139,
+    "active_references": 0,
+    "canonical_evidence_build_source_references": "preserved"
+  }
+}

@@ -1184,3 +1184,12 @@ All ten native handler installers use their existing POSIX bodies directly. The
 required Meson sigaction/sigemptyset header/link check replaces optional legacy
 selectors; active masks, flags, order and deinstallation remain module/core-owned.
 [Configure, token-parity and transport evidence](verification/VERIFICATION-2026-10-25-M5-SIGNAL-INSTALL.md).
+
+Complete parsed Script instruction trees belong to `script_block_owner` in
+[script_block.c](../modules/FvwmScript/script_block.c). Init retires after normal
+execution; Periodic/Quit and embedded widget-case blocks retire after callbacks
+and widgets only at zero execution depth. Active command exits retain trees for
+process reclamation. Empty case slots are skipped before pointer reads; parser
+scratch and runtime aliases clear with their ownership boundary. Parser error
+stacks, variable/string tables and base X resources remain separate.
+[Instruction-tree evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-BLOCKS.md).

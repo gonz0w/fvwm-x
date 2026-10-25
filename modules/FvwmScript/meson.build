@@ -27,7 +27,7 @@ libwidget_sources = [
 libWidgets = static_library(
     'Widgets',
     sources: libwidget_sources,
-    dependencies: all_found_deps,
+    dependencies: all_compile_deps,
     include_directories: includedirs,
     install_dir: get_option('libdir'),
     link_with: libfvwm3,
@@ -54,7 +54,8 @@ fvwmscript_sources = [
 fvwm_script = executable(
     'FvwmScript',
     sources: fvwmscript_sources,
-    dependencies: all_found_deps,
+    dependencies: all_compile_deps + localized_text_runtime_deps +
+        module_session_deps,
     include_directories: includedirs,
     install_dir: fvwm_moduledir,
     install: true,

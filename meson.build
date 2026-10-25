@@ -585,6 +585,42 @@ foreach dep : all_found_deps
     all_compile_deps += dep.partial_dependency(compile_args: true, includes: true)
 endforeach
 
+# Shared archive objects retain every enabled backend, even when a consumer
+# only uses one of their entry points. Keep full package dependencies here.
+image_runtime_deps = [summary_depvals['x11'], xext]
+foreach dep : [libpng, xcursor, xpm, xrender]
+    if dep.found()
+        image_runtime_deps += dep
+    endif
+endforeach
+
+# Graphics initialization also calls the supported legacy SVG initializer.
+graphics_init_runtime_deps = image_runtime_deps + [summary_depvals['xrandr']]
+if librsvg.found()
+    graphics_init_runtime_deps += [librsvg] + svg_deps
+endif
+
+text_runtime_deps = graphics_init_runtime_deps + [
+    summary_depvals['fontconfig'],
+    summary_depvals['xft'],
+]
+foreach dep : [fribidi, iconv]
+    if dep.found()
+        text_runtime_deps += dep
+    endif
+endforeach
+
+localized_text_runtime_deps = text_runtime_deps
+if nls_enabled
+    localized_text_runtime_deps += libintl
+endif
+
+# Only modules that extract fsm.c own its session transport dependencies.
+module_session_deps = []
+if sm.found()
+    module_session_deps += [sm, summary_depvals['ice']]
+endif
+
 # Hard-coded
 non_configurable_ops = [
     'FMiniIconsSupported',

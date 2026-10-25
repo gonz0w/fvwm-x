@@ -15,7 +15,7 @@ iconman_sources = [
 fvwm_iconman = executable(
     'FvwmIconMan',
     sources: iconman_sources,
-    dependencies: [all_found_deps],
+    dependencies: all_compile_deps + text_runtime_deps,
     include_directories: includedirs,
     install_dir: fvwm_moduledir,
     install: true,

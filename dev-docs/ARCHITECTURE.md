@@ -827,9 +827,16 @@ propagating runtime library requirements. The core owns `core_runtime_deps`,
 including enabled SM/ICE and supported legacy SVG initialization. FvwmAuto and
 FvwmEvent extract libc-only archive helpers; FvwmMFL adds full libevent and
 FvwmRearrange adds full X11/XRandR dependency objects. Global math policy stays
-shared. Other archive consumers retain their explicit `all_found_deps` until
-their own object/link ownership groups are qualified. Keep full package objects
-for runtime owners so static/transitive requirements survive. These narrower
+shared. The remaining production modules and fvwm-root use image, graphics-init,
+text and localized-text runtime groups. Image archive members retain every
+enabled decoder/cursor backend; graphics initialization adds XRandR and legacy
+SVG initialization. Text adds Fontconfig/Xft and enabled FriBidi/iconv. Form
+owns libevent; Form/Pager/Script own enabled gettext; Buttons/Script own SM/ICE
+through fsm.c. Script's libWidgets uses compile-only requirements and preserves
+its ordinary archive/link order. Test fixtures retain explicit broad requirements
+where not independently mapped. [Remaining production group](verification/VERIFICATION-2026-10-25-M3-MODULE-LINKAGE.md).
+Keep full package objects for runtime owners so static/transitive requirements
+survive. These narrower
 link edges do not imply that Cairo's runtime libraries or full-project packages
 can be removed. [Core/archive checkpoint](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md).
 

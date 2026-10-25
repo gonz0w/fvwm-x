@@ -16,7 +16,7 @@ module_sources = [
 fvwm_buttons = executable(
     'FvwmButtons',
     module_sources,
-    dependencies: all_found_deps,
+    dependencies: all_compile_deps + text_runtime_deps + module_session_deps,
     include_directories: includedirs,
     install_dir: fvwm_moduledir,
     install: true,

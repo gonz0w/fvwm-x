@@ -5,18 +5,6 @@ option(
     description: 'Enable fribidi support',
 )
 option(
-    'cairo',
-    type: 'feature',
-    value: 'auto',
-    description: 'Use Cairo as a librsvg backend',
-)
-option(
-    'cairo-svg',
-    type: 'feature',
-    value: 'auto',
-    description: 'Use CairoSVG as a librsvg backend',
-)
-option(
     'freetype',
     type: 'feature',
     value: 'auto',
@@ -38,12 +26,6 @@ option(
     type: 'feature',
     value: 'auto',
     description: 'Enable iconv support',
-)
-option(
-    'libsvg-cairo',
-    type: 'feature',
-    value: 'auto',
-    description: 'Use librsvg as a librsvg backend',
 )
 option(
     'live-x-tests',

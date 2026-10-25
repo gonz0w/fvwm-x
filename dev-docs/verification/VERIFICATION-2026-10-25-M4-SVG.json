@@ -1,0 +1,4197 @@
+{
+  "status": "passed",
+  "final_pass": true,
+  "generated_at_utc": "2026-10-25T17:21:11.129485+00:00",
+  "expected_matrix": {
+    "fvwm-x-linux-arm64-svg": [
+      "default",
+      "svg-off"
+    ],
+    "linux-amd64": [
+      "default"
+    ],
+    "freebsd-arm64": [
+      "default"
+    ],
+    "freebsd-amd64": [
+      "default"
+    ],
+    "openbsd-arm64": [
+      "default"
+    ],
+    "openbsd-amd64": [
+      "default"
+    ]
+  },
+  "profiles_validated": 7,
+  "intended_profiles": 7,
+  "profile_status_counts": {
+    "passed": 7
+  },
+  "totals": {
+    "pure": 62,
+    "x_fixtures": 20,
+    "native_targets": 112,
+    "installed_regular_files": 678,
+    "installed_bytes": 419547205,
+    "native_bytes": 130966832,
+    "artwork_byte_comparisons": 144,
+    "artwork_negative_pairs": 24,
+    "artwork_worker_invocations": 336,
+    "svg_off_refusals": 1
+  },
+  "source": {
+    "manifest": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/source.json",
+      "sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "bytes": 455304,
+      "mode": 420
+    },
+    "archive": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/source.tgz",
+      "sha256": "7bcd3d1a30cde75fdbf185c285c98db2e5814e53483a9698fb1651409f3a8d1a",
+      "bytes": 10785170,
+      "mode": 420
+    },
+    "base": "14604024459b1504869d456d009433027f7f3b2a",
+    "regular_files": 2476
+  },
+  "native_row_columns": [
+    "canonical_m3_installed_bytes",
+    "m4_installed_bytes",
+    "delta_bytes",
+    "m3_direct_needed_group",
+    "m4_direct_needed_group",
+    "loader_observation_group"
+  ],
+  "scope": "One M4 affected SVG checkpoint; no full regression, Go/race-suite, native-CPU, physical hardware, release, security or new dependency/license qualification. Loader sets are observed per canonical M3/current environment, not asserted invariant. Source/ELF/install/test counts grant credit only to fully validated profiles.",
+  "platform_retry_history": {
+    "selection": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/platform-retry-selection.json",
+      "sha256": "9433cef3db04de394ba16ac9c193c8e456cb825a06316ba5b871c23878e8e4de",
+      "bytes": 402,
+      "mode": 420
+    },
+    "selected_job": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-job",
+    "selected_runner_result": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-result.json",
+    "selected_collection": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-job/default-collection.json",
+    "selected_verified_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-job/default-verified.json",
+    "selected_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-job/m4-default-evidence.tgz",
+    "original_result": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/openbsd-amd64-result.json",
+      "sha256": "426f214333ed0d2566a9c0c5b3ad088862fbb948d253191875b0b8b1f2a93c16",
+      "bytes": 6455,
+      "mode": 420
+    },
+    "original_status": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/openbsd-amd64-job/status.json",
+      "sha256": "e8107be357d93cf8961f760ae06abaf275e7863c7aaba97728dc55e4359e68d0",
+      "bytes": 5318,
+      "mode": 384
+    },
+    "original_failure_phase": "prepare-reboot",
+    "original_error": "command deadline expired",
+    "original_qemu_exit_status": 0,
+    "original_keys_removed": true,
+    "original_native_tests_credited": 0,
+    "original_run_status_absent": true,
+    "exact_launch_uploads_pins_recipe_sdk_cache_and_hardware": true,
+    "original_launch": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/openbsd-amd64-launch.json",
+      "sha256": "97a52ecb10f7104d971f770421bfc5a7d7ad93152525ee38c73a08844c5f6b9e",
+      "bytes": 3450,
+      "mode": 420
+    },
+    "selected_launch": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-launch.json",
+      "sha256": "dbd103a95cfdda8a472a425e4939c6da7bc4c78104449a7e0e3d04e3a7f6743e",
+      "bytes": 3457,
+      "mode": 420
+    },
+    "retry_policy": "One fresh job with identical source/helper/recipe/SDK/cache/hardware inputs; original failure and key cleanup retained. No deadline/trust or product acceptance changes."
+  },
+  "costs": {
+    "command_seconds": 1362.433,
+    "archive_bytes": 225137619,
+    "monetary_cost": "unavailable"
+  },
+  "profiles": [
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "profile": "default",
+      "status": "passed",
+      "archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/fvwm-x-linux-arm64-svg/default-evidence.tgz",
+        "sha256": "ada2121059a3a872a07e0bf184bf2e2d49c22b3837bf69c427b6b2eba1018ddd",
+        "bytes": 33066678,
+        "mode": 420
+      },
+      "source_manifest_sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "capture": {
+        "files": 598,
+        "manifest_sha256": "2959e5685b56d93cea9a0d4dc997757a72409d589d6a925abe5a8fcf10be0a3e",
+        "expanded_bytes": 77231158,
+        "gzip_crc_to_eof": true,
+        "all_payload_sha256_modes_rechecked": true
+      },
+      "counts": {
+        "pure": 9,
+        "x_fixtures": 3,
+        "native_targets": 16,
+        "installed_regular_files": 100,
+        "installed_bytes": 61153446,
+        "native_bytes": 20246912,
+        "artwork_byte_comparisons": 24,
+        "artwork_negative_pairs": 4,
+        "artwork_worker_invocations": 56,
+        "svg_off_refusals": 0
+      },
+      "tests": {
+        "pure": [
+          "image-decompress",
+          "image-input",
+          "image-process",
+          "image-process-async",
+          "image-safety",
+          "image-svg-client",
+          "image-svg-protocol",
+          "image-svg-render",
+          "picture-cache"
+        ],
+        "x": [
+          "image-effect-xvfb",
+          "image-input-xvfb",
+          "image-svg-isolation-xvfb"
+        ],
+        "artwork": {
+          "positive_byte_comparisons": 24,
+          "negative_paired_controls": 4,
+          "worker_invocations": 56,
+          "shipped_svg_source_assets": 0,
+          "baseline_fully_clipped_case": [
+            "mask-filter",
+            "transform"
+          ],
+          "result_member": "evidence/artwork-v2/results.json"
+        }
+      },
+      "tools": {
+        "compiler": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        },
+        "sdk": {
+          "sha256": "0e893a1a4ab5d00e64bcd9b22060a53377f90c076434ff0aa1bd2a330b657691",
+          "bytes": 15795235,
+          "mode": 493
+        },
+        "uname": [
+          "Linux",
+          "288f898505a4",
+          "6.18.10-200.fc43.aarch64",
+          "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+          "aarch64"
+        ],
+        "sdk_version_command_member": "evidence/sdk-version.log",
+        "compiler_version_command_member": "evidence/compiler-c-version.log",
+        "package_versions": {
+          "cairo": "1.18.0",
+          "fontconfig": "2.15.0",
+          "freetype2": "26.1.20",
+          "fribidi": "1.0.13",
+          "ice": "1.0.10",
+          "libevent": "2.1.12-stable",
+          "libpng": "1.6.59",
+          "libpng16": "1.6.59",
+          "librsvg-2.0": "2.58.0",
+          "sm": "1.2.3",
+          "x11": "1.8.7",
+          "xcursor": "1.2.1",
+          "xext": "1.3.4",
+          "xfixes": "6.0.0",
+          "xft": "2.3.6",
+          "xpm": "3.5.17",
+          "xrandr": "1.5.2",
+          "xrender": "0.9.10",
+          "xt": "1.2.1",
+          "xtrans": "1.4.0"
+        },
+        "packages_unavailable": [
+          "dl",
+          "iconv",
+          "intl",
+          "m"
+        ]
+      },
+      "build": {
+        "config_sha256": "e69ac4f2f9841cd982f9e3793797e4a50c45e3df9bd74598bcba45be249985e4",
+        "compile_command_count": 645,
+        "commands": 255,
+        "actual_no_rebuild_full_install": true,
+        "selected_build_targets": 47
+      },
+      "costs": {
+        "command_seconds": 31.194,
+        "pure_test_seconds": 0.943,
+        "archive_bytes": 33066678
+      },
+      "canonical_m3": {
+        "baseline_record": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/baseline/fvwm-x-linux-arm64-svg/baseline.json",
+          "sha256": "c7a7e68ba1ea7612c159c0f600b93388a2971aaa140c96150dab086857825b73",
+          "bytes": 94654,
+          "mode": 420
+        },
+        "archive_sha256": "f4ab10e57e757959aa499b82c39bf421d5789b8d3ada2dd2f8c2a04cb0496787",
+        "worker_sha256": "e95069b2bf06a6fbf1ca9bedecf20937e5ea80b4cc56eef6c848f57449a342dd",
+        "native_bytes": 20247864,
+        "comparison": "Canonical M3 installed bytes/direct NEEDED/link commands/loader observations; cache-before-sync is not baseline provenance",
+        "feature_scope": "Like-profile enabled SVG comparison"
+      },
+      "native": {
+        "fvwm3": [
+          5396632,
+          5396280,
+          -352,
+          "g00",
+          "g00",
+          "g00"
+        ],
+        "modules/FvwmAnimate/FvwmAnimate": [
+          895368,
+          895368,
+          0,
+          "g01",
+          "g01",
+          "g01"
+        ],
+        "modules/FvwmAuto/FvwmAuto": [
+          168200,
+          168200,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmBacker/FvwmBacker": [
+          1049904,
+          1049880,
+          -24,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "modules/FvwmButtons/FvwmButtons": [
+          1729152,
+          1729136,
+          -16,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "modules/FvwmEvent/FvwmEvent": [
+          171112,
+          171112,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmForm/FvwmForm": [
+          1624952,
+          1624936,
+          -16,
+          "g05",
+          "g05",
+          "g04"
+        ],
+        "modules/FvwmIconMan/FvwmIconMan": [
+          1778856,
+          1778832,
+          -24,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmIdent/FvwmIdent": [
+          1417600,
+          1417576,
+          -24,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmMFL/FvwmMFL": [
+          445112,
+          445112,
+          0,
+          "g07",
+          "g07",
+          "g06"
+        ],
+        "modules/FvwmPager/FvwmPager": [
+          1641376,
+          1641360,
+          -16,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmRearrange/FvwmRearrange": [
+          475840,
+          475840,
+          0,
+          "g08",
+          "g08",
+          "g07"
+        ],
+        "modules/FvwmScript/FvwmScript": [
+          2203744,
+          2203720,
+          -24,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "bin/fvwm-root": [
+          1008232,
+          1007840,
+          -392,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "bin/fvwm-image-svg-worker": [
+          143176,
+          143112,
+          -64,
+          "g09",
+          "g09",
+          "g08"
+        ],
+        "bin/fvwm-desktop-capture": [
+          98608,
+          98608,
+          0,
+          "g10",
+          "g10",
+          "g09"
+        ]
+      },
+      "direct_needed_groups": {
+        "g00": [
+          "libm.so.6",
+          "libfontconfig.so.1",
+          "libX11.so.6",
+          "libXft.so.2",
+          "libXrandr.so.2",
+          "libXext.so.6",
+          "libfribidi.so.0",
+          "libpng16.so.16",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libXcursor.so.1",
+          "libXfixes.so.3",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g01": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g02": [
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g03": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g04": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g05": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libevent-2.1.so.7",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g06": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g07": [
+          "libevent-2.1.so.7",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g08": [
+          "libX11.so.6",
+          "libXrandr.so.2",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g09": [
+          "librsvg-2.so.2",
+          "libgio-2.0.so.0",
+          "libgobject-2.0.so.0",
+          "libglib-2.0.so.0",
+          "libcairo.so.2",
+          "libX11.so.6",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g10": [
+          "libX11.so.6",
+          "libpng16.so.16",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ]
+      },
+      "loaded_library_observation_groups": {
+        "g00": {
+          "before_count": 28,
+          "after_count": 28,
+          "before_set_sha256": "22c6e96fa8300aa4ddeac11539a5d5a6da081db44c8ad5a9a1a688b2696b2353",
+          "after_set_sha256": "22c6e96fa8300aa4ddeac11539a5d5a6da081db44c8ad5a9a1a688b2696b2353",
+          "removed": [],
+          "added": []
+        },
+        "g01": {
+          "before_count": 16,
+          "after_count": 16,
+          "before_set_sha256": "9ec1931373ebb546b760c52c8870179969695ce0b99f4395ec31de53fb979816",
+          "after_set_sha256": "9ec1931373ebb546b760c52c8870179969695ce0b99f4395ec31de53fb979816",
+          "removed": [],
+          "added": []
+        },
+        "g02": {
+          "before_count": 2,
+          "after_count": 2,
+          "before_set_sha256": "d6f192751d265b3a4621e72ec1b2c88cd8e579f542551d57060752e0e826c9b6",
+          "after_set_sha256": "d6f192751d265b3a4621e72ec1b2c88cd8e579f542551d57060752e0e826c9b6",
+          "removed": [],
+          "added": []
+        },
+        "g03": {
+          "before_count": 17,
+          "after_count": 17,
+          "before_set_sha256": "dd87599c05d9a18897e5ce5d2b6a59085400e6b86b799cc5159feb8e8ca328aa",
+          "after_set_sha256": "dd87599c05d9a18897e5ce5d2b6a59085400e6b86b799cc5159feb8e8ca328aa",
+          "removed": [],
+          "added": []
+        },
+        "g04": {
+          "before_count": 26,
+          "after_count": 26,
+          "before_set_sha256": "5d0dd028ac4e1c2ce30eb022a9de4ae30ce3218b4970ee2bc37992c6986a8683",
+          "after_set_sha256": "5d0dd028ac4e1c2ce30eb022a9de4ae30ce3218b4970ee2bc37992c6986a8683",
+          "removed": [],
+          "added": []
+        },
+        "g05": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "bdf452c21e1dec78233ea126c8480e986dc761c42fb84750e03f5de6004cf286",
+          "after_set_sha256": "bdf452c21e1dec78233ea126c8480e986dc761c42fb84750e03f5de6004cf286",
+          "removed": [],
+          "added": []
+        },
+        "g06": {
+          "before_count": 3,
+          "after_count": 3,
+          "before_set_sha256": "c25c161bae907751ec76f9b2d994e027a00b91b5e4acbc200dc8209e0bb07e63",
+          "after_set_sha256": "c25c161bae907751ec76f9b2d994e027a00b91b5e4acbc200dc8209e0bb07e63",
+          "removed": [],
+          "added": []
+        },
+        "g07": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "8079d838e5f50d944640965c51ac31b5e21a59979821b6c29946387a7655392e",
+          "after_set_sha256": "8079d838e5f50d944640965c51ac31b5e21a59979821b6c29946387a7655392e",
+          "removed": [],
+          "added": []
+        },
+        "g08": {
+          "before_count": 50,
+          "after_count": 50,
+          "before_set_sha256": "5099e33bd69460889229e852e739beed82b2768054ee0b1ec6b8a4839f8cff09",
+          "after_set_sha256": "5099e33bd69460889229e852e739beed82b2768054ee0b1ec6b8a4839f8cff09",
+          "removed": [],
+          "added": []
+        },
+        "g09": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "6819a044553b8b0f974aa7791468c12860797a5b6d7554acae81219bf0d7887a",
+          "after_set_sha256": "6819a044553b8b0f974aa7791468c12860797a5b6d7554acae81219bf0d7887a",
+          "removed": [],
+          "added": []
+        }
+      },
+      "loaded_file_records_sha256": "a13a4f719b449c60ef6b5fdb0c3c684952f1ea9130571dc5fd66dfeddd106439",
+      "loaded_file_identity_count": 314,
+      "native_maps": {
+        "count": 16,
+        "identities_sha256": "8d3998706bcc7fcb507a0b0291bc6c9a1609aba0ab1191550de1f930ef3a0440"
+      },
+      "elf_install_identity": {
+        "exact_bytes": 5,
+        "rpath_removal_only": 11
+      },
+      "static_archives": {
+        "libs/libfvwm3.a": {
+          "archive": {
+            "sha256": "7e84a837737b8d0cec87bc0ba654e85a95de640ead243c8d44586d802c27243f",
+            "bytes": 25816,
+            "mode": 420
+          },
+          "objects": 90,
+          "object_bytes": 3170632,
+          "objects_sha256": "f2a151ccaef119fbcfa196f8615c706a2054a1b3bee7420b40ce1e137a277c38",
+          "undefined_sha256": "3282fdd35d6cb69215616bf68b99c9685181724b8d82c83f80dc5c2f1be638c1"
+        },
+        "modules/FvwmScript/libWidgets.a": {
+          "archive": {
+            "sha256": "ef86f75157c58a1a9b348544efb58ff8bd899319ce9078eb094cc92514a88071",
+            "bytes": 5080,
+            "mode": 420
+          },
+          "objects": 21,
+          "object_bytes": 959768,
+          "objects_sha256": "2f1989959a7f763056f15297066dd375fb20da33b42880670b1319a5a681a603",
+          "undefined_sha256": "77e7db313b72778465b4fb797b32c81690b95d46cb8ca0f4d10d76724d8ce602"
+        }
+      },
+      "original_oracle_failure": {
+        "original_archive": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/fvwm-x-linux-arm64-svg/before-artwork-oracle-fix/default-evidence.tgz",
+          "sha256": "14a12f0102ecc9c63a56c9ceb35430c4024f1bdd3c262fe24c7a8b2ddcab6a7c",
+          "bytes": 32994987,
+          "mode": 420
+        },
+        "original_status": "failed",
+        "original_error": "RuntimeError('command failed: artwork-check')",
+        "resumed_only": "artwork-check-v2",
+        "retained_scope": "Same source/build/maps/full install/pure9/X3/native16; corrected private oracle only"
+      },
+      "expected_nonzero_observations": [
+        {
+          "label": "pkg-01-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-06-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-07-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-12-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "artwork-check",
+          "status": 1,
+          "category": "preserved corrected oracle failure"
+        }
+      ],
+      "cleanup": {
+        "status": "reused Linux ARM64 container; no held VM owned by this profile"
+      },
+      "proof_members": [
+        "evidence/source.json",
+        "evidence/commands.json",
+        "evidence/result.json",
+        "evidence/native-linkage.json",
+        "evidence/native-staged.json",
+        "evidence/installed-files.json",
+        "evidence/archives.json",
+        "evidence/package-metadata.json",
+        "evidence/compiler-introspection.log",
+        "evidence/pure-testlog.json",
+        "evidence/focused-tests.json",
+        "evidence/cache-before-sync.json"
+      ]
+    },
+    {
+      "target": "fvwm-x-linux-arm64-svg",
+      "profile": "svg-off",
+      "status": "passed",
+      "archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/fvwm-x-linux-arm64-svg/svg-off-evidence.tgz",
+        "sha256": "74c7f53905e7937f0e208e90cf92546203fde1143c83052d1769eb96dc340690",
+        "bytes": 29556930,
+        "mode": 420
+      },
+      "source_manifest_sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "capture": {
+        "files": 456,
+        "manifest_sha256": "74279040cd9422c661157239c47adb8285d1ee6914cf80703ddf3b144d1e5019",
+        "expanded_bytes": 68267807,
+        "gzip_crc_to_eof": true,
+        "all_payload_sha256_modes_rechecked": true
+      },
+      "counts": {
+        "pure": 8,
+        "x_fixtures": 2,
+        "native_targets": 16,
+        "installed_regular_files": 100,
+        "installed_bytes": 55948630,
+        "native_bytes": 15042096,
+        "artwork_byte_comparisons": 0,
+        "artwork_negative_pairs": 0,
+        "artwork_worker_invocations": 0,
+        "svg_off_refusals": 1
+      },
+      "tests": {
+        "pure": [
+          "image-decompress",
+          "image-input",
+          "image-process",
+          "image-process-async",
+          "image-safety",
+          "image-svg-client",
+          "image-svg-protocol",
+          "picture-cache"
+        ],
+        "x": [
+          "image-effect-xvfb",
+          "image-input-xvfb"
+        ],
+        "artwork": null
+      },
+      "tools": {
+        "compiler": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        },
+        "sdk": {
+          "sha256": "0e893a1a4ab5d00e64bcd9b22060a53377f90c076434ff0aa1bd2a330b657691",
+          "bytes": 15795235,
+          "mode": 493
+        },
+        "uname": [
+          "Linux",
+          "288f898505a4",
+          "6.18.10-200.fc43.aarch64",
+          "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+          "aarch64"
+        ],
+        "sdk_version_command_member": "evidence/sdk-version.log",
+        "compiler_version_command_member": "evidence/compiler-c-version.log",
+        "package_versions": {
+          "cairo": "1.18.0",
+          "fontconfig": "2.15.0",
+          "freetype2": "26.1.20",
+          "fribidi": "1.0.13",
+          "ice": "1.0.10",
+          "libevent": "2.1.12-stable",
+          "libpng": "1.6.59",
+          "libpng16": "1.6.59",
+          "librsvg-2.0": "2.58.0",
+          "sm": "1.2.3",
+          "x11": "1.8.7",
+          "xcursor": "1.2.1",
+          "xext": "1.3.4",
+          "xfixes": "6.0.0",
+          "xft": "2.3.6",
+          "xpm": "3.5.17",
+          "xrandr": "1.5.2",
+          "xrender": "0.9.10",
+          "xt": "1.2.1",
+          "xtrans": "1.4.0"
+        },
+        "packages_unavailable": [
+          "dl",
+          "iconv",
+          "intl",
+          "m"
+        ]
+      },
+      "build": {
+        "config_sha256": "1060726d2c22ec7969d3ed35f07bc4e55502a98700262bd7325bea2387edb8cf",
+        "compile_command_count": 630,
+        "commands": 253,
+        "actual_no_rebuild_full_install": true,
+        "selected_build_targets": 46
+      },
+      "costs": {
+        "command_seconds": 11.856,
+        "pure_test_seconds": 0.956,
+        "archive_bytes": 29556930
+      },
+      "canonical_m3": {
+        "baseline_record": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/baseline/fvwm-x-linux-arm64-svg/baseline.json",
+          "sha256": "c7a7e68ba1ea7612c159c0f600b93388a2971aaa140c96150dab086857825b73",
+          "bytes": 94654,
+          "mode": 420
+        },
+        "archive_sha256": "f4ab10e57e757959aa499b82c39bf421d5789b8d3ada2dd2f8c2a04cb0496787",
+        "worker_sha256": "e95069b2bf06a6fbf1ca9bedecf20937e5ea80b4cc56eef6c848f57449a342dd",
+        "native_bytes": 20247864,
+        "comparison": "Canonical M3 installed bytes/direct NEEDED/link commands/loader observations; cache-before-sync is not baseline provenance",
+        "feature_scope": "Source plus feature-selection comparison to M3 default; not a cleanup-only benefit"
+      },
+      "native": {
+        "fvwm3": [
+          5396632,
+          4148352,
+          -1248280,
+          "g00",
+          "g00",
+          "g00"
+        ],
+        "modules/FvwmAnimate/FvwmAnimate": [
+          895368,
+          618216,
+          -277152,
+          "g01",
+          "g01",
+          "g01"
+        ],
+        "modules/FvwmAuto/FvwmAuto": [
+          168200,
+          122912,
+          -45288,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmBacker/FvwmBacker": [
+          1049904,
+          788712,
+          -261192,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "modules/FvwmButtons/FvwmButtons": [
+          1729152,
+          1274000,
+          -455152,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "modules/FvwmEvent/FvwmEvent": [
+          171112,
+          124904,
+          -46208,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmForm/FvwmForm": [
+          1624952,
+          1197280,
+          -427672,
+          "g05",
+          "g05",
+          "g04"
+        ],
+        "modules/FvwmIconMan/FvwmIconMan": [
+          1778856,
+          1297992,
+          -480864,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmIdent/FvwmIdent": [
+          1417600,
+          992928,
+          -424672,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmMFL/FvwmMFL": [
+          445112,
+          340496,
+          -104616,
+          "g07",
+          "g07",
+          "g06"
+        ],
+        "modules/FvwmPager/FvwmPager": [
+          1641376,
+          1224512,
+          -416864,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmRearrange/FvwmRearrange": [
+          475840,
+          384048,
+          -91792,
+          "g08",
+          "g08",
+          "g07"
+        ],
+        "modules/FvwmScript/FvwmScript": [
+          2203744,
+          1636200,
+          -567544,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "bin/fvwm-root": [
+          1008232,
+          702416,
+          -305816,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "bin/fvwm-image-svg-worker": [
+          143176,
+          99584,
+          -43592,
+          "g09",
+          "g10",
+          "g08"
+        ],
+        "bin/fvwm-desktop-capture": [
+          98608,
+          89544,
+          -9064,
+          "g11",
+          "g11",
+          "g09"
+        ]
+      },
+      "direct_needed_groups": {
+        "g00": [
+          "libm.so.6",
+          "libfontconfig.so.1",
+          "libX11.so.6",
+          "libXft.so.2",
+          "libXrandr.so.2",
+          "libXext.so.6",
+          "libfribidi.so.0",
+          "libpng16.so.16",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libXcursor.so.1",
+          "libXfixes.so.3",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g01": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g02": [
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g03": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g04": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g05": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libevent-2.1.so.7",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g06": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g07": [
+          "libevent-2.1.so.7",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g08": [
+          "libX11.so.6",
+          "libXrandr.so.2",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g09": [
+          "librsvg-2.so.2",
+          "libgio-2.0.so.0",
+          "libgobject-2.0.so.0",
+          "libglib-2.0.so.0",
+          "libcairo.so.2",
+          "libX11.so.6",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g10": [
+          "libX11.so.6",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ],
+        "g11": [
+          "libX11.so.6",
+          "libpng16.so.16",
+          "libc.so.6",
+          "ld-linux-aarch64.so.1"
+        ]
+      },
+      "loaded_library_observation_groups": {
+        "g00": {
+          "before_count": 28,
+          "after_count": 28,
+          "before_set_sha256": "22c6e96fa8300aa4ddeac11539a5d5a6da081db44c8ad5a9a1a688b2696b2353",
+          "after_set_sha256": "22c6e96fa8300aa4ddeac11539a5d5a6da081db44c8ad5a9a1a688b2696b2353",
+          "removed": [],
+          "added": []
+        },
+        "g01": {
+          "before_count": 16,
+          "after_count": 16,
+          "before_set_sha256": "9ec1931373ebb546b760c52c8870179969695ce0b99f4395ec31de53fb979816",
+          "after_set_sha256": "9ec1931373ebb546b760c52c8870179969695ce0b99f4395ec31de53fb979816",
+          "removed": [],
+          "added": []
+        },
+        "g02": {
+          "before_count": 2,
+          "after_count": 2,
+          "before_set_sha256": "d6f192751d265b3a4621e72ec1b2c88cd8e579f542551d57060752e0e826c9b6",
+          "after_set_sha256": "d6f192751d265b3a4621e72ec1b2c88cd8e579f542551d57060752e0e826c9b6",
+          "removed": [],
+          "added": []
+        },
+        "g03": {
+          "before_count": 17,
+          "after_count": 17,
+          "before_set_sha256": "dd87599c05d9a18897e5ce5d2b6a59085400e6b86b799cc5159feb8e8ca328aa",
+          "after_set_sha256": "dd87599c05d9a18897e5ce5d2b6a59085400e6b86b799cc5159feb8e8ca328aa",
+          "removed": [],
+          "added": []
+        },
+        "g04": {
+          "before_count": 26,
+          "after_count": 26,
+          "before_set_sha256": "5d0dd028ac4e1c2ce30eb022a9de4ae30ce3218b4970ee2bc37992c6986a8683",
+          "after_set_sha256": "5d0dd028ac4e1c2ce30eb022a9de4ae30ce3218b4970ee2bc37992c6986a8683",
+          "removed": [],
+          "added": []
+        },
+        "g05": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "bdf452c21e1dec78233ea126c8480e986dc761c42fb84750e03f5de6004cf286",
+          "after_set_sha256": "bdf452c21e1dec78233ea126c8480e986dc761c42fb84750e03f5de6004cf286",
+          "removed": [],
+          "added": []
+        },
+        "g06": {
+          "before_count": 3,
+          "after_count": 3,
+          "before_set_sha256": "c25c161bae907751ec76f9b2d994e027a00b91b5e4acbc200dc8209e0bb07e63",
+          "after_set_sha256": "c25c161bae907751ec76f9b2d994e027a00b91b5e4acbc200dc8209e0bb07e63",
+          "removed": [],
+          "added": []
+        },
+        "g07": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "8079d838e5f50d944640965c51ac31b5e21a59979821b6c29946387a7655392e",
+          "after_set_sha256": "8079d838e5f50d944640965c51ac31b5e21a59979821b6c29946387a7655392e",
+          "removed": [],
+          "added": []
+        },
+        "g08": {
+          "before_count": 50,
+          "after_count": 8,
+          "before_set_sha256": "5099e33bd69460889229e852e739beed82b2768054ee0b1ec6b8a4839f8cff09",
+          "after_set_sha256": "d472fd75e4c5801976c0bb6882694633b09701ffbfb9f3d8670c4a71a18c2a13",
+          "removed": [
+            "/lib/aarch64-linux-gnu/libXext.so.6",
+            "/lib/aarch64-linux-gnu/libXrender.so.1",
+            "/lib/aarch64-linux-gnu/libblkid.so.1",
+            "/lib/aarch64-linux-gnu/libbrotlicommon.so.1",
+            "/lib/aarch64-linux-gnu/libbrotlidec.so.1",
+            "/lib/aarch64-linux-gnu/libbz2.so.1.0",
+            "/lib/aarch64-linux-gnu/libcairo-gobject.so.2",
+            "/lib/aarch64-linux-gnu/libcairo.so.2",
+            "/lib/aarch64-linux-gnu/libdatrie.so.1",
+            "/lib/aarch64-linux-gnu/libexpat.so.1",
+            "/lib/aarch64-linux-gnu/libffi.so.8",
+            "/lib/aarch64-linux-gnu/libfontconfig.so.1",
+            "/lib/aarch64-linux-gnu/libfreetype.so.6",
+            "/lib/aarch64-linux-gnu/libfribidi.so.0",
+            "/lib/aarch64-linux-gnu/libgcc_s.so.1",
+            "/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+            "/lib/aarch64-linux-gnu/libgio-2.0.so.0",
+            "/lib/aarch64-linux-gnu/libglib-2.0.so.0",
+            "/lib/aarch64-linux-gnu/libgmodule-2.0.so.0",
+            "/lib/aarch64-linux-gnu/libgobject-2.0.so.0",
+            "/lib/aarch64-linux-gnu/libgraphite2.so.3",
+            "/lib/aarch64-linux-gnu/libharfbuzz.so.0",
+            "/lib/aarch64-linux-gnu/libicudata.so.74",
+            "/lib/aarch64-linux-gnu/libicuuc.so.74",
+            "/lib/aarch64-linux-gnu/libjpeg.so.8",
+            "/lib/aarch64-linux-gnu/liblzma.so.5",
+            "/lib/aarch64-linux-gnu/libm.so.6",
+            "/lib/aarch64-linux-gnu/libmount.so.1",
+            "/lib/aarch64-linux-gnu/libpango-1.0.so.0",
+            "/lib/aarch64-linux-gnu/libpangocairo-1.0.so.0",
+            "/lib/aarch64-linux-gnu/libpangoft2-1.0.so.0",
+            "/lib/aarch64-linux-gnu/libpcre2-8.so.0",
+            "/lib/aarch64-linux-gnu/libpixman-1.so.0",
+            "/lib/aarch64-linux-gnu/librsvg-2.so.2",
+            "/lib/aarch64-linux-gnu/libselinux.so.1",
+            "/lib/aarch64-linux-gnu/libstdc++.so.6",
+            "/lib/aarch64-linux-gnu/libthai.so.0",
+            "/lib/aarch64-linux-gnu/libxcb-render.so.0",
+            "/lib/aarch64-linux-gnu/libxcb-shm.so.0",
+            "/lib/aarch64-linux-gnu/libxml2.so.2",
+            "/lib/aarch64-linux-gnu/libz.so.1",
+            "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16"
+          ],
+          "added": []
+        },
+        "g09": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "6819a044553b8b0f974aa7791468c12860797a5b6d7554acae81219bf0d7887a",
+          "after_set_sha256": "6819a044553b8b0f974aa7791468c12860797a5b6d7554acae81219bf0d7887a",
+          "removed": [],
+          "added": []
+        }
+      },
+      "loaded_file_records_sha256": "56c6badc7385230ef65693df0b59745a7e56084a2393205cadac06e9e636398c",
+      "loaded_file_identity_count": 272,
+      "native_maps": {
+        "count": 16,
+        "identities_sha256": "7bbcfe69f700cf1efe9ad647f6e697149a51be17b3f13403b819dcec60377bfc"
+      },
+      "elf_install_identity": {
+        "exact_bytes": 5,
+        "rpath_removal_only": 11
+      },
+      "static_archives": {
+        "libs/libfvwm3.a": {
+          "archive": {
+            "sha256": "2e6299df122221d1349904a03676416bf081d3d334323698deda83029b2fc1c8",
+            "bytes": 25816,
+            "mode": 420
+          },
+          "objects": 90,
+          "object_bytes": 2295312,
+          "objects_sha256": "e5c1e0a5a5f9283132d71a43171b81920b328a73ea6901438bafcc61bea3fde8",
+          "undefined_sha256": "b5fa27165010f67ee32217a51a99161ec79856869d251a3ac3f8fbdf25ac3516"
+        },
+        "modules/FvwmScript/libWidgets.a": {
+          "archive": {
+            "sha256": "3f5c2a30b6c4c847b3dfde6c30f916fea2619812adc5f26b53ce7233df5087a8",
+            "bytes": 5080,
+            "mode": 420
+          },
+          "objects": 21,
+          "object_bytes": 852680,
+          "objects_sha256": "1168a490018303db0f023d49d3596b2593eb7a06eb62664546092d55ff19f4e6",
+          "undefined_sha256": "acdbe5a1f7e9591fa4000a0efe622a7e622edcb41afe94308967857a141798a4"
+        }
+      },
+      "original_oracle_failure": null,
+      "expected_nonzero_observations": [
+        {
+          "label": "pkg-01-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-06-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-07-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-12-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "svg-disabled-worker-refusal",
+          "status": 2,
+          "category": "explicit expected observation"
+        }
+      ],
+      "cleanup": {
+        "status": "reused Linux ARM64 container; no held VM owned by this profile"
+      },
+      "proof_members": [
+        "evidence/source.json",
+        "evidence/commands.json",
+        "evidence/result.json",
+        "evidence/native-linkage.json",
+        "evidence/native-staged.json",
+        "evidence/installed-files.json",
+        "evidence/archives.json",
+        "evidence/package-metadata.json",
+        "evidence/compiler-introspection.log",
+        "evidence/pure-testlog.json",
+        "evidence/focused-tests.json",
+        "evidence/cache-before-sync.json"
+      ]
+    },
+    {
+      "target": "linux-amd64",
+      "profile": "default",
+      "status": "passed",
+      "archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/linux-amd64/default-evidence.tgz",
+        "sha256": "93b0f3e3a6fad4cfa4d3199d45834e5942d4b9d96e47fdbc639e46cac6d07df7",
+        "bytes": 35113666,
+        "mode": 420
+      },
+      "source_manifest_sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "capture": {
+        "files": 532,
+        "manifest_sha256": "07789e21d53614417287312f3bbce7be3106d3ec821b1209f5a8c1271817fd20",
+        "expanded_bytes": 79044526,
+        "gzip_crc_to_eof": true,
+        "all_payload_sha256_modes_rechecked": true
+      },
+      "counts": {
+        "pure": 9,
+        "x_fixtures": 3,
+        "native_targets": 16,
+        "installed_regular_files": 100,
+        "installed_bytes": 62508421,
+        "native_bytes": 19539352,
+        "artwork_byte_comparisons": 24,
+        "artwork_negative_pairs": 4,
+        "artwork_worker_invocations": 56,
+        "svg_off_refusals": 0
+      },
+      "tests": {
+        "pure": [
+          "image-decompress",
+          "image-input",
+          "image-process",
+          "image-process-async",
+          "image-safety",
+          "image-svg-client",
+          "image-svg-protocol",
+          "image-svg-render",
+          "picture-cache"
+        ],
+        "x": [
+          "image-effect-xvfb",
+          "image-input-xvfb",
+          "image-svg-isolation-xvfb"
+        ],
+        "artwork": {
+          "positive_byte_comparisons": 24,
+          "negative_paired_controls": 4,
+          "worker_invocations": 56,
+          "shipped_svg_source_assets": 0,
+          "baseline_fully_clipped_case": [
+            "mask-filter",
+            "transform"
+          ],
+          "result_member": "evidence/artwork/results.json"
+        }
+      },
+      "tools": {
+        "compiler": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "14.2.0",
+          "full_version": "cc (Debian 14.2.0-19) 14.2.0",
+          "linker_id": "ld.bfd"
+        },
+        "sdk": {
+          "sha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+          "bytes": 17164055,
+          "mode": 493
+        },
+        "uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.113+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+          "x86_64"
+        ],
+        "sdk_version_command_member": "evidence/sdk-version.log",
+        "compiler_version_command_member": "evidence/compiler-c-version.log",
+        "package_versions": {
+          "cairo": "1.18.4",
+          "fontconfig": "2.15.0",
+          "freetype2": "26.2.20",
+          "fribidi": "1.0.16",
+          "ice": "1.1.1",
+          "libevent": "2.1.13-stable",
+          "libpng": "1.6.59",
+          "libpng16": "1.6.59",
+          "librsvg-2.0": "2.60.0",
+          "sm": "1.2.6",
+          "x11": "1.8.12",
+          "xcursor": "1.2.3",
+          "xext": "1.3.4",
+          "xfixes": "6.0.0",
+          "xft": "2.3.6",
+          "xpm": "3.5.17",
+          "xrandr": "1.5.4",
+          "xrender": "0.9.12",
+          "xt": "1.2.1",
+          "xtrans": "1.4.0"
+        },
+        "packages_unavailable": [
+          "dl",
+          "iconv",
+          "intl",
+          "m"
+        ]
+      },
+      "build": {
+        "config_sha256": "e69ac4f2f9841cd982f9e3793797e4a50c45e3df9bd74598bcba45be249985e4",
+        "compile_command_count": 645,
+        "commands": 254,
+        "actual_no_rebuild_full_install": true,
+        "selected_build_targets": 47
+      },
+      "costs": {
+        "command_seconds": 375.757,
+        "pure_test_seconds": 1.756,
+        "archive_bytes": 35113666
+      },
+      "canonical_m3": {
+        "baseline_record": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/baseline/linux-amd64/baseline.json",
+          "sha256": "a4ab84f7096e68a0bf42df73d05385a86cd26dc3623f49f550288929ca8a06f2",
+          "bytes": 90789,
+          "mode": 420
+        },
+        "archive_sha256": "2cfb7e58433571e728eb273819c2bfad4bd161fc45e288fd341c4ad45098ec83",
+        "worker_sha256": "407535b24eabb239dd11d9ea5d82e378695a81a859e89ea097f6b15f92b94aae",
+        "native_bytes": 19540200,
+        "comparison": "Canonical M3 installed bytes/direct NEEDED/link commands/loader observations; cache-before-sync is not baseline provenance",
+        "feature_scope": "Like-profile enabled SVG comparison"
+      },
+      "native": {
+        "fvwm3": [
+          5426096,
+          5425752,
+          -344,
+          "g00",
+          "g00",
+          "g00"
+        ],
+        "modules/FvwmAnimate/FvwmAnimate": [
+          835104,
+          835104,
+          0,
+          "g01",
+          "g01",
+          "g01"
+        ],
+        "modules/FvwmAuto/FvwmAuto": [
+          136472,
+          136472,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmBacker/FvwmBacker": [
+          1026664,
+          1026656,
+          -8,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "modules/FvwmButtons/FvwmButtons": [
+          1688080,
+          1688072,
+          -8,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "modules/FvwmEvent/FvwmEvent": [
+          139568,
+          139568,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmForm/FvwmForm": [
+          1546400,
+          1546392,
+          -8,
+          "g05",
+          "g05",
+          "g04"
+        ],
+        "modules/FvwmIconMan/FvwmIconMan": [
+          1734760,
+          1734752,
+          -8,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmIdent/FvwmIdent": [
+          1351728,
+          1351720,
+          -8,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmMFL/FvwmMFL": [
+          407088,
+          407088,
+          0,
+          "g07",
+          "g07",
+          "g06"
+        ],
+        "modules/FvwmPager/FvwmPager": [
+          1557728,
+          1557720,
+          -8,
+          "g06",
+          "g06",
+          "g05"
+        ],
+        "modules/FvwmRearrange/FvwmRearrange": [
+          446024,
+          446024,
+          0,
+          "g08",
+          "g08",
+          "g07"
+        ],
+        "modules/FvwmScript/FvwmScript": [
+          2116856,
+          2116848,
+          -8,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "bin/fvwm-root": [
+          972856,
+          972472,
+          -384,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "bin/fvwm-image-svg-worker": [
+          103000,
+          102936,
+          -64,
+          "g09",
+          "g09",
+          "g08"
+        ],
+        "bin/fvwm-desktop-capture": [
+          51776,
+          51776,
+          0,
+          "g10",
+          "g10",
+          "g09"
+        ]
+      },
+      "direct_needed_groups": {
+        "g00": [
+          "libm.so.6",
+          "libfontconfig.so.1",
+          "libX11.so.6",
+          "libXft.so.2",
+          "libXrandr.so.2",
+          "libXext.so.6",
+          "libfribidi.so.0",
+          "libpng16.so.16",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libXcursor.so.1",
+          "libXfixes.so.3",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libc.so.6"
+        ],
+        "g01": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libc.so.6"
+        ],
+        "g02": [
+          "libc.so.6"
+        ],
+        "g03": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libc.so.6"
+        ],
+        "g04": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.6"
+        ],
+        "g05": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libevent-2.1.so.7",
+          "libc.so.6"
+        ],
+        "g06": [
+          "libm.so.6",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXpm.so.4",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libc.so.6"
+        ],
+        "g07": [
+          "libevent-2.1.so.7",
+          "libc.so.6"
+        ],
+        "g08": [
+          "libX11.so.6",
+          "libXrandr.so.2",
+          "libc.so.6"
+        ],
+        "g09": [
+          "librsvg-2.so.2",
+          "libgio-2.0.so.0",
+          "libgobject-2.0.so.0",
+          "libglib-2.0.so.0",
+          "libcairo.so.2",
+          "libX11.so.6",
+          "libc.so.6"
+        ],
+        "g10": [
+          "libX11.so.6",
+          "libpng16.so.16",
+          "libc.so.6"
+        ]
+      },
+      "loaded_library_observation_groups": {
+        "g00": {
+          "before_count": 26,
+          "after_count": 26,
+          "before_set_sha256": "33ea33138ed7af32f6a74bb38b78b608416d7ecba80cedfa748d24b7742579d8",
+          "after_set_sha256": "33ea33138ed7af32f6a74bb38b78b608416d7ecba80cedfa748d24b7742579d8",
+          "removed": [],
+          "added": []
+        },
+        "g01": {
+          "before_count": 14,
+          "after_count": 14,
+          "before_set_sha256": "60b3371f58fda6b992e9e3ff633b64dc732cbdb0db727a44632504005ffde40b",
+          "after_set_sha256": "60b3371f58fda6b992e9e3ff633b64dc732cbdb0db727a44632504005ffde40b",
+          "removed": [],
+          "added": []
+        },
+        "g02": {
+          "before_count": 2,
+          "after_count": 2,
+          "before_set_sha256": "6efae64c2aba68bb1c2f127d9a4eb89ded8401bb4c480f941d7d43923533646f",
+          "after_set_sha256": "6efae64c2aba68bb1c2f127d9a4eb89ded8401bb4c480f941d7d43923533646f",
+          "removed": [],
+          "added": []
+        },
+        "g03": {
+          "before_count": 15,
+          "after_count": 15,
+          "before_set_sha256": "084163707e59986538e92487145b062683e6afa7a5c5f2b6dfae148c615779ed",
+          "after_set_sha256": "084163707e59986538e92487145b062683e6afa7a5c5f2b6dfae148c615779ed",
+          "removed": [],
+          "added": []
+        },
+        "g04": {
+          "before_count": 24,
+          "after_count": 24,
+          "before_set_sha256": "737deae7dbf089e5f5323239dd2aca2d347ca34a9ba29cdae22c2a213ef8b12d",
+          "after_set_sha256": "737deae7dbf089e5f5323239dd2aca2d347ca34a9ba29cdae22c2a213ef8b12d",
+          "removed": [],
+          "added": []
+        },
+        "g05": {
+          "before_count": 23,
+          "after_count": 23,
+          "before_set_sha256": "07558988b602fe3b04f289ef3dea22c24c87d39ab9d8dd0be9fb0e9ff7fb024a",
+          "after_set_sha256": "07558988b602fe3b04f289ef3dea22c24c87d39ab9d8dd0be9fb0e9ff7fb024a",
+          "removed": [],
+          "added": []
+        },
+        "g06": {
+          "before_count": 3,
+          "after_count": 3,
+          "before_set_sha256": "13abb3dcab26ddddd63e40d8a20831db699f6767f7999a4de8ac886b302429ce",
+          "after_set_sha256": "13abb3dcab26ddddd63e40d8a20831db699f6767f7999a4de8ac886b302429ce",
+          "removed": [],
+          "added": []
+        },
+        "g07": {
+          "before_count": 9,
+          "after_count": 9,
+          "before_set_sha256": "6a9e31963c9f3ed8de292bcf7b9cbbfab11db6ea20be8d99c4092ca29dd45272",
+          "after_set_sha256": "6a9e31963c9f3ed8de292bcf7b9cbbfab11db6ea20be8d99c4092ca29dd45272",
+          "removed": [],
+          "added": []
+        },
+        "g08": {
+          "before_count": 47,
+          "after_count": 47,
+          "before_set_sha256": "2b4e514dc1b64426d455bdfec7eb9c88acf1e93eea980d6c248ba403f2dbaa41",
+          "after_set_sha256": "2b4e514dc1b64426d455bdfec7eb9c88acf1e93eea980d6c248ba403f2dbaa41",
+          "removed": [],
+          "added": []
+        },
+        "g09": {
+          "before_count": 9,
+          "after_count": 9,
+          "before_set_sha256": "14c570594b6595572c470be91542bea1afc723591908cca3a2a8534fea04d99c",
+          "after_set_sha256": "14c570594b6595572c470be91542bea1afc723591908cca3a2a8534fea04d99c",
+          "removed": [],
+          "added": []
+        }
+      },
+      "loaded_file_records_sha256": "743b29ecf4c505197c57a03af169832c59ed2f66b548ab4d7fac572c8ca3cf00",
+      "loaded_file_identity_count": 287,
+      "native_maps": {
+        "count": 16,
+        "identities_sha256": "918425cfa6c7ea780538ee562b505664c8ed7813de4e428e9c2c63de7a12ba55"
+      },
+      "elf_install_identity": {
+        "exact_bytes": 5,
+        "rpath_removal_only": 11
+      },
+      "static_archives": {
+        "libs/libfvwm3.a": {
+          "archive": {
+            "sha256": "ba7fef6636b3e227290935736fa1ab848b90086f2fddf9702ca6ca387dcdb77a",
+            "bytes": 25816,
+            "mode": 420
+          },
+          "objects": 90,
+          "object_bytes": 3109344,
+          "objects_sha256": "865e920c016102b3f846182af1f35a25ea43147e694b8e59a552ce41e9643f15",
+          "undefined_sha256": "42707beea830ae605787c206e0f40ca9328ba52396f3cd99f6c6bf050438ff47"
+        },
+        "modules/FvwmScript/libWidgets.a": {
+          "archive": {
+            "sha256": "657fd6f391d24785f7bff8eb803a924cb70f146eec058e4bcba5ab97e53cebf4",
+            "bytes": 5080,
+            "mode": 420
+          },
+          "objects": 21,
+          "object_bytes": 939736,
+          "objects_sha256": "b9ac1078b82f0b324587e78787d07bee7c69471b1f5088374649fd1514971b72",
+          "undefined_sha256": "bf5b32fdb86de89309608f0b8608287f0704e2bd0159c32085ed801a29970313"
+        }
+      },
+      "original_oracle_failure": null,
+      "expected_nonzero_observations": [
+        {
+          "label": "pkg-01-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-06-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-07-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "pkg-12-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        }
+      ],
+      "cleanup": {
+        "owned_pid": 88840,
+        "qemu_status": 0,
+        "normal_poweroff_requested": true
+      },
+      "proof_members": [
+        "evidence/source.json",
+        "evidence/commands.json",
+        "evidence/result.json",
+        "evidence/native-linkage.json",
+        "evidence/native-staged.json",
+        "evidence/installed-files.json",
+        "evidence/archives.json",
+        "evidence/package-metadata.json",
+        "evidence/compiler-introspection.log",
+        "evidence/pure-testlog.json",
+        "evidence/focused-tests.json",
+        "evidence/cache-before-sync.json"
+      ]
+    },
+    {
+      "target": "freebsd-arm64",
+      "profile": "default",
+      "status": "passed",
+      "archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/freebsd-arm64/default-evidence.tgz",
+        "sha256": "c49a64ef96eaa0fd0fd4c18968891e5b97df0ed86b3c3e45ce7af5af1b67212b",
+        "bytes": 31047462,
+        "mode": 420
+      },
+      "source_manifest_sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "capture": {
+        "files": 579,
+        "manifest_sha256": "a47e91b453c749f5c50e2e68bd9320f0fac37be84312bc9a6595f7a5c5e154cd",
+        "expanded_bytes": 75223099,
+        "gzip_crc_to_eof": true,
+        "all_payload_sha256_modes_rechecked": true
+      },
+      "counts": {
+        "pure": 9,
+        "x_fixtures": 3,
+        "native_targets": 16,
+        "installed_regular_files": 100,
+        "installed_bytes": 59447135,
+        "native_bytes": 19531712,
+        "artwork_byte_comparisons": 24,
+        "artwork_negative_pairs": 4,
+        "artwork_worker_invocations": 56,
+        "svg_off_refusals": 0
+      },
+      "tests": {
+        "pure": [
+          "image-decompress",
+          "image-input",
+          "image-process",
+          "image-process-async",
+          "image-safety",
+          "image-svg-client",
+          "image-svg-protocol",
+          "image-svg-render",
+          "picture-cache"
+        ],
+        "x": [
+          "image-effect-xvfb",
+          "image-input-xvfb",
+          "image-svg-isolation-xvfb"
+        ],
+        "artwork": {
+          "positive_byte_comparisons": 24,
+          "negative_paired_controls": 4,
+          "worker_invocations": 56,
+          "shipped_svg_source_assets": 0,
+          "baseline_fully_clipped_case": [
+            "mask-filter",
+            "transform"
+          ],
+          "result_member": "evidence/artwork-v2/results.json"
+        }
+      },
+      "tools": {
+        "compiler": {
+          "id": "clang",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "19.1.7",
+          "full_version": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+          "linker_id": "ld.lld"
+        },
+        "sdk": {
+          "sha256": "ffdf9f966da8b37903ac1d1f95dd5aa8c8ff2212e693a797d5076f4a42b5a64a",
+          "bytes": 15722528,
+          "mode": 493
+        },
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ],
+        "sdk_version_command_member": "evidence/sdk-version.log",
+        "compiler_version_command_member": "evidence/compiler-c-version.log",
+        "package_versions": {
+          "cairo": "1.18.2",
+          "fontconfig": "2.17.1",
+          "freetype2": "26.6.20",
+          "fribidi": "1.0.16",
+          "ice": "1.1.2",
+          "libevent": "2.1.13-stable",
+          "libpng": "1.6.59",
+          "libpng16": "1.6.59",
+          "librsvg-2.0": "2.62.3",
+          "sm": "1.2.6",
+          "x11": "1.8.13",
+          "xcursor": "1.2.3",
+          "xext": "1.3.7",
+          "xfixes": "6.0.1",
+          "xft": "2.3.8",
+          "xrandr": "1.5.5",
+          "xrender": "0.9.12",
+          "xt": "1.3.1",
+          "xtrans": "1.6.0"
+        },
+        "packages_unavailable": [
+          "xpm"
+        ]
+      },
+      "build": {
+        "config_sha256": "c2cc4d6c44ca460c35aad08e4f8482485f7467a7b29c2bd56435ab73f32d4974",
+        "compile_command_count": 641,
+        "commands": 247,
+        "actual_no_rebuild_full_install": true,
+        "selected_build_targets": 47
+      },
+      "costs": {
+        "command_seconds": 28.996,
+        "pure_test_seconds": 1.282,
+        "archive_bytes": 31047462
+      },
+      "canonical_m3": {
+        "baseline_record": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/baseline/freebsd-arm64/baseline.json",
+          "sha256": "69d4b8f30d640e5b03b1b81999db44fb01117628c9767d55b3473e421f0c902c",
+          "bytes": 82519,
+          "mode": 420
+        },
+        "archive_sha256": "45d42f3d8ebed86cb39d724b19a5b14e7f3ca8261843003b4de5fb241b531b8b",
+        "worker_sha256": "0c75814d71f23aacc18832253fb9c788f369b50f19d4c8d372fcbc742219f74d",
+        "native_bytes": 19531792,
+        "comparison": "Canonical M3 installed bytes/direct NEEDED/link commands/loader observations; cache-before-sync is not baseline provenance",
+        "feature_scope": "Like-profile enabled SVG comparison"
+      },
+      "native": {
+        "fvwm3": [
+          5139416,
+          5139416,
+          0,
+          "g00",
+          "g00",
+          "g00"
+        ],
+        "modules/FvwmAnimate/FvwmAnimate": [
+          808040,
+          808040,
+          0,
+          "g01",
+          "g01",
+          "g01"
+        ],
+        "modules/FvwmAuto/FvwmAuto": [
+          146512,
+          146512,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmBacker/FvwmBacker": [
+          1067200,
+          1067200,
+          0,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "modules/FvwmButtons/FvwmButtons": [
+          1731872,
+          1731872,
+          0,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "modules/FvwmEvent/FvwmEvent": [
+          151760,
+          151760,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmForm/FvwmForm": [
+          1573104,
+          1573104,
+          0,
+          "g05",
+          "g06",
+          "g04"
+        ],
+        "modules/FvwmIconMan/FvwmIconMan": [
+          1750872,
+          1750872,
+          0,
+          "g07",
+          "g07",
+          "g05"
+        ],
+        "modules/FvwmIdent/FvwmIdent": [
+          1374312,
+          1374312,
+          0,
+          "g07",
+          "g07",
+          "g05"
+        ],
+        "modules/FvwmMFL/FvwmMFL": [
+          440272,
+          440272,
+          0,
+          "g08",
+          "g08",
+          "g06"
+        ],
+        "modules/FvwmPager/FvwmPager": [
+          1573528,
+          1573528,
+          0,
+          "g09",
+          "g10",
+          "g05"
+        ],
+        "modules/FvwmRearrange/FvwmRearrange": [
+          491712,
+          491712,
+          0,
+          "g11",
+          "g11",
+          "g07"
+        ],
+        "modules/FvwmScript/FvwmScript": [
+          2120912,
+          2120912,
+          0,
+          "g12",
+          "g13",
+          "g00"
+        ],
+        "bin/fvwm-root": [
+          1016216,
+          1016216,
+          0,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "bin/fvwm-image-svg-worker": [
+          102816,
+          102736,
+          -80,
+          "g14",
+          "g14",
+          "g08"
+        ],
+        "bin/fvwm-desktop-capture": [
+          43248,
+          43248,
+          0,
+          "g15",
+          "g15",
+          "g09"
+        ]
+      },
+      "direct_needed_groups": {
+        "g00": [
+          "libm.so.5",
+          "libfontconfig.so.1",
+          "libX11.so.6",
+          "libXft.so.2",
+          "libXrandr.so.2",
+          "libXext.so.6",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libpng16.so.16",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libXcursor.so.1",
+          "libXfixes.so.3",
+          "libXrender.so.1",
+          "libc.so.7"
+        ],
+        "g01": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libc.so.7"
+        ],
+        "g02": [
+          "libc.so.7"
+        ],
+        "g03": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libc.so.7"
+        ],
+        "g04": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.7"
+        ],
+        "g05": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libintl.so.8",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libevent-2.1.so.7",
+          "libc.so.7"
+        ],
+        "g06": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libevent-2.1.so.7",
+          "libc.so.7"
+        ],
+        "g07": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libc.so.7"
+        ],
+        "g08": [
+          "libevent-2.1.so.7",
+          "libc.so.7"
+        ],
+        "g09": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libintl.so.8",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libc.so.7"
+        ],
+        "g10": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libc.so.7"
+        ],
+        "g11": [
+          "libX11.so.6",
+          "libXrandr.so.2",
+          "libc.so.7"
+        ],
+        "g12": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libintl.so.8",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.7"
+        ],
+        "g13": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.7"
+        ],
+        "g14": [
+          "libm.so.5",
+          "librsvg-2.so.2",
+          "libgio-2.0.so.0",
+          "libcairo.so.2",
+          "libgobject-2.0.so.0",
+          "libglib-2.0.so.0",
+          "libX11.so.6",
+          "libc.so.7"
+        ],
+        "g15": [
+          "libX11.so.6",
+          "libpng16.so.16",
+          "libc.so.7"
+        ]
+      },
+      "loaded_library_observation_groups": {
+        "g00": {
+          "before_count": 27,
+          "after_count": 27,
+          "before_set_sha256": "946834ebbb0332975cbc3cfae29436b5513adbd05369b5d7e7bee4b5b2aa120c",
+          "after_set_sha256": "946834ebbb0332975cbc3cfae29436b5513adbd05369b5d7e7bee4b5b2aa120c",
+          "removed": [],
+          "added": []
+        },
+        "g01": {
+          "before_count": 14,
+          "after_count": 14,
+          "before_set_sha256": "58c03c03ee7ee3689ee0bdf94db8433c6995f847866f5eccbbc712f8253f1b86",
+          "after_set_sha256": "58c03c03ee7ee3689ee0bdf94db8433c6995f847866f5eccbbc712f8253f1b86",
+          "removed": [],
+          "added": []
+        },
+        "g02": {
+          "before_count": 2,
+          "after_count": 2,
+          "before_set_sha256": "ed7ab2b4a9fbe3cee92ef88e4ff1aef354f08083605e1e99f03184d7a6a98e2a",
+          "after_set_sha256": "ed7ab2b4a9fbe3cee92ef88e4ff1aef354f08083605e1e99f03184d7a6a98e2a",
+          "removed": [],
+          "added": []
+        },
+        "g03": {
+          "before_count": 15,
+          "after_count": 15,
+          "before_set_sha256": "2ae2274f171a2e9ef2e57bb988ce8842526c412d3daf030969428ed0905e94ca",
+          "after_set_sha256": "2ae2274f171a2e9ef2e57bb988ce8842526c412d3daf030969428ed0905e94ca",
+          "removed": [],
+          "added": []
+        },
+        "g04": {
+          "before_count": 26,
+          "after_count": 26,
+          "before_set_sha256": "7cdb6808aed13a305de6f9ba65684efad672de49f93180d2ec666b24d6fedbcf",
+          "after_set_sha256": "7cdb6808aed13a305de6f9ba65684efad672de49f93180d2ec666b24d6fedbcf",
+          "removed": [],
+          "added": []
+        },
+        "g05": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "d78b3a90623dae851d9f6eb0fef085d2141730bf0868aade338ae3fcd1e135fa",
+          "after_set_sha256": "d78b3a90623dae851d9f6eb0fef085d2141730bf0868aade338ae3fcd1e135fa",
+          "removed": [],
+          "added": []
+        },
+        "g06": {
+          "before_count": 4,
+          "after_count": 4,
+          "before_set_sha256": "db773122a4dbf1a911eeb0c55a4a7b88a118737457df925774f1dd967939130e",
+          "after_set_sha256": "db773122a4dbf1a911eeb0c55a4a7b88a118737457df925774f1dd967939130e",
+          "removed": [],
+          "added": []
+        },
+        "g07": {
+          "before_count": 10,
+          "after_count": 10,
+          "before_set_sha256": "ae7da06c3ba6cbdd9d1cff8a6696e479494607da6160607e807e540f94ca7708",
+          "after_set_sha256": "ae7da06c3ba6cbdd9d1cff8a6696e479494607da6160607e807e540f94ca7708",
+          "removed": [],
+          "added": []
+        },
+        "g08": {
+          "before_count": 46,
+          "after_count": 46,
+          "before_set_sha256": "165cd0803ae1607aa69763da04ca2eed6774fe4288a2d794cfb30c18ab26b56e",
+          "after_set_sha256": "165cd0803ae1607aa69763da04ca2eed6774fe4288a2d794cfb30c18ab26b56e",
+          "removed": [],
+          "added": []
+        },
+        "g09": {
+          "before_count": 10,
+          "after_count": 10,
+          "before_set_sha256": "342912800f9c27f94595704cd353ee4e83b192bf57c52f0cd34d72d550652c4a",
+          "after_set_sha256": "342912800f9c27f94595704cd353ee4e83b192bf57c52f0cd34d72d550652c4a",
+          "removed": [],
+          "added": []
+        }
+      },
+      "loaded_file_records_sha256": "554a97310f44c442da884b74035c2ce1e44988fa01120009b14a3aee9d0848d8",
+      "loaded_file_identity_count": 300,
+      "native_maps": {
+        "count": 16,
+        "identities_sha256": "aa687a923e2b04706ea20dd37def898b05352256698544f8f9b25fac7711c94c"
+      },
+      "elf_install_identity": {
+        "exact_bytes": 2,
+        "rpath_removal_only": 14
+      },
+      "static_archives": {
+        "libs/libfvwm3.a": {
+          "archive": {
+            "sha256": "7f0885254cc456cef8fdad12bbd449646b79347290027c11d00a068d4b5632c6",
+            "bytes": 25816,
+            "mode": 420
+          },
+          "objects": 90,
+          "object_bytes": 2902904,
+          "objects_sha256": "23700f16489a249c2fa7626705e33f5c66d4bd7237c5ad4e6b6f568e0f970a33",
+          "undefined_sha256": "13c114ebb0dd3d583d927f49b4fa375f0b22000c143a6b6e2077aa5605bce5bb"
+        },
+        "modules/FvwmScript/libWidgets.a": {
+          "archive": {
+            "sha256": "be9f9df4ee263ef6480d6e0c3baf4318ca7685e554b04a9ceb78849791f4f94f",
+            "bytes": 5080,
+            "mode": 420
+          },
+          "objects": 21,
+          "object_bytes": 880416,
+          "objects_sha256": "817af276919e4433cc67f72cc373810c2c13ddf60f0ad5814d772d4f0025100e",
+          "undefined_sha256": "2eb440fd0e3d77f2294a9fadc21a71e5f1d886373ef2243ff95672835ad3133a"
+        }
+      },
+      "original_oracle_failure": {
+        "original_archive": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/freebsd-arm64/before-artwork-oracle-fix/default-evidence.tgz",
+          "sha256": "5fc7cc6a32df7875685050e9a19608691eefa57e022916ceff6062e73be6220d",
+          "bytes": 30978908,
+          "mode": 420
+        },
+        "original_status": "failed",
+        "original_error": "RuntimeError('command failed: artwork-check')",
+        "resumed_only": "artwork-check-v2",
+        "retained_scope": "Same source/build/maps/full install/pure9/X3/native16; corrected private oracle only"
+      },
+      "expected_nonzero_observations": [
+        {
+          "label": "pkg-15-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        },
+        {
+          "label": "artwork-check",
+          "status": 1,
+          "category": "preserved corrected oracle failure"
+        }
+      ],
+      "cleanup": {
+        "owned_pid": 84442,
+        "qemu_status": 0,
+        "normal_poweroff_requested": true
+      },
+      "proof_members": [
+        "evidence/source.json",
+        "evidence/commands.json",
+        "evidence/result.json",
+        "evidence/native-linkage.json",
+        "evidence/native-staged.json",
+        "evidence/installed-files.json",
+        "evidence/archives.json",
+        "evidence/package-metadata.json",
+        "evidence/compiler-introspection.log",
+        "evidence/pure-testlog.json",
+        "evidence/focused-tests.json",
+        "evidence/cache-before-sync.json"
+      ]
+    },
+    {
+      "target": "freebsd-amd64",
+      "profile": "default",
+      "status": "passed",
+      "archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/freebsd-amd64/default-evidence.tgz",
+        "sha256": "6aa38b2fddd0db960367aa6fd1507af2e49097d4a74e89d51b05cd6a03116f78",
+        "bytes": 33171232,
+        "mode": 420
+      },
+      "source_manifest_sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "capture": {
+        "files": 513,
+        "manifest_sha256": "c0cef9a6518960dde3443d445c917233aa17317893e20247e1a14cf2d46a6beb",
+        "expanded_bytes": 76778879,
+        "gzip_crc_to_eof": true,
+        "all_payload_sha256_modes_rechecked": true
+      },
+      "counts": {
+        "pure": 9,
+        "x_fixtures": 3,
+        "native_targets": 16,
+        "installed_regular_files": 100,
+        "installed_bytes": 61452469,
+        "native_bytes": 19501008,
+        "artwork_byte_comparisons": 24,
+        "artwork_negative_pairs": 4,
+        "artwork_worker_invocations": 56,
+        "svg_off_refusals": 0
+      },
+      "tests": {
+        "pure": [
+          "image-decompress",
+          "image-input",
+          "image-process",
+          "image-process-async",
+          "image-safety",
+          "image-svg-client",
+          "image-svg-protocol",
+          "image-svg-render",
+          "picture-cache"
+        ],
+        "x": [
+          "image-effect-xvfb",
+          "image-input-xvfb",
+          "image-svg-isolation-xvfb"
+        ],
+        "artwork": {
+          "positive_byte_comparisons": 24,
+          "negative_paired_controls": 4,
+          "worker_invocations": 56,
+          "shipped_svg_source_assets": 0,
+          "baseline_fully_clipped_case": [
+            "mask-filter",
+            "transform"
+          ],
+          "result_member": "evidence/artwork/results.json"
+        }
+      },
+      "tools": {
+        "compiler": {
+          "id": "clang",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "19.1.7",
+          "full_version": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+          "linker_id": "ld.lld"
+        },
+        "sdk": {
+          "sha256": "7d519639b2c3582f3d9a8f3b38beb7d9b899c5282020fafe999a2631a51df06b",
+          "bytes": 17088097,
+          "mode": 493
+        },
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "amd64"
+        ],
+        "sdk_version_command_member": "evidence/sdk-version.log",
+        "compiler_version_command_member": "evidence/compiler-c-version.log",
+        "package_versions": {
+          "cairo": "1.18.2",
+          "fontconfig": "2.17.1",
+          "freetype2": "26.6.20",
+          "fribidi": "1.0.16",
+          "ice": "1.1.2",
+          "libevent": "2.1.13-stable",
+          "libpng": "1.6.59",
+          "libpng16": "1.6.59",
+          "librsvg-2.0": "2.62.3",
+          "sm": "1.2.6",
+          "x11": "1.8.13",
+          "xcursor": "1.2.3",
+          "xext": "1.3.7",
+          "xfixes": "6.0.1",
+          "xft": "2.3.8",
+          "xrandr": "1.5.5",
+          "xrender": "0.9.12",
+          "xt": "1.3.1",
+          "xtrans": "1.6.0"
+        },
+        "packages_unavailable": [
+          "xpm"
+        ]
+      },
+      "build": {
+        "config_sha256": "c2cc4d6c44ca460c35aad08e4f8482485f7467a7b29c2bd56435ab73f32d4974",
+        "compile_command_count": 641,
+        "commands": 246,
+        "actual_no_rebuild_full_install": true,
+        "selected_build_targets": 47
+      },
+      "costs": {
+        "command_seconds": 335.342,
+        "pure_test_seconds": 2.001,
+        "archive_bytes": 33171232
+      },
+      "canonical_m3": {
+        "baseline_record": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/baseline/freebsd-amd64/baseline.json",
+          "sha256": "6932261c675bce51cc807330b5aa9bbb90b745a017080e42446f2df550f7ee34",
+          "bytes": 84072,
+          "mode": 420
+        },
+        "archive_sha256": "f2444a4515d6b401ae11052de4c28bd5619b3fec2f21771e24294c161a98c4e7",
+        "worker_sha256": "53de5480e4e78463b308de82c8ebfffaae7ad758ad034797e8c64fa755b8f09f",
+        "native_bytes": 19501088,
+        "comparison": "Canonical M3 installed bytes/direct NEEDED/link commands/loader observations; cache-before-sync is not baseline provenance",
+        "feature_scope": "Like-profile enabled SVG comparison"
+      },
+      "native": {
+        "fvwm3": [
+          5154440,
+          5154440,
+          0,
+          "g00",
+          "g00",
+          "g00"
+        ],
+        "modules/FvwmAnimate/FvwmAnimate": [
+          788408,
+          788408,
+          0,
+          "g01",
+          "g01",
+          "g01"
+        ],
+        "modules/FvwmAuto/FvwmAuto": [
+          146184,
+          146184,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmBacker/FvwmBacker": [
+          1058320,
+          1058320,
+          0,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "modules/FvwmButtons/FvwmButtons": [
+          1728936,
+          1728936,
+          0,
+          "g04",
+          "g04",
+          "g00"
+        ],
+        "modules/FvwmEvent/FvwmEvent": [
+          150464,
+          150464,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmForm/FvwmForm": [
+          1574024,
+          1574024,
+          0,
+          "g05",
+          "g06",
+          "g04"
+        ],
+        "modules/FvwmIconMan/FvwmIconMan": [
+          1750904,
+          1750904,
+          0,
+          "g07",
+          "g07",
+          "g05"
+        ],
+        "modules/FvwmIdent/FvwmIdent": [
+          1370824,
+          1370824,
+          0,
+          "g07",
+          "g07",
+          "g05"
+        ],
+        "modules/FvwmMFL/FvwmMFL": [
+          451760,
+          451760,
+          0,
+          "g08",
+          "g08",
+          "g06"
+        ],
+        "modules/FvwmPager/FvwmPager": [
+          1571176,
+          1571176,
+          0,
+          "g09",
+          "g10",
+          "g05"
+        ],
+        "modules/FvwmRearrange/FvwmRearrange": [
+          497032,
+          497032,
+          0,
+          "g11",
+          "g11",
+          "g07"
+        ],
+        "modules/FvwmScript/FvwmScript": [
+          2110248,
+          2110248,
+          0,
+          "g12",
+          "g13",
+          "g00"
+        ],
+        "bin/fvwm-root": [
+          1007096,
+          1007096,
+          0,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "bin/fvwm-image-svg-worker": [
+          96520,
+          96440,
+          -80,
+          "g14",
+          "g14",
+          "g08"
+        ],
+        "bin/fvwm-desktop-capture": [
+          44752,
+          44752,
+          0,
+          "g15",
+          "g15",
+          "g09"
+        ]
+      },
+      "direct_needed_groups": {
+        "g00": [
+          "libm.so.5",
+          "libfontconfig.so.1",
+          "libX11.so.6",
+          "libXft.so.2",
+          "libXrandr.so.2",
+          "libXext.so.6",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libpng16.so.16",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libXcursor.so.1",
+          "libXfixes.so.3",
+          "libXrender.so.1",
+          "libc.so.7"
+        ],
+        "g01": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libc.so.7"
+        ],
+        "g02": [
+          "libc.so.7"
+        ],
+        "g03": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libc.so.7"
+        ],
+        "g04": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.7"
+        ],
+        "g05": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libintl.so.8",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libevent-2.1.so.7",
+          "libc.so.7"
+        ],
+        "g06": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libevent-2.1.so.7",
+          "libc.so.7"
+        ],
+        "g07": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libc.so.7"
+        ],
+        "g08": [
+          "libevent-2.1.so.7",
+          "libc.so.7"
+        ],
+        "g09": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libintl.so.8",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libc.so.7"
+        ],
+        "g10": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libc.so.7"
+        ],
+        "g11": [
+          "libX11.so.6",
+          "libXrandr.so.2",
+          "libc.so.7"
+        ],
+        "g12": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libintl.so.8",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.7"
+        ],
+        "g13": [
+          "libm.so.5",
+          "libX11.so.6",
+          "libXext.so.6",
+          "libpng16.so.16",
+          "libXcursor.so.1",
+          "libXrender.so.1",
+          "libXrandr.so.2",
+          "libfontconfig.so.1",
+          "libXft.so.2",
+          "libfribidi.so.0",
+          "libiconv.so.2",
+          "libintl.so.8",
+          "libSM.so.6",
+          "libICE.so.6",
+          "libc.so.7"
+        ],
+        "g14": [
+          "libm.so.5",
+          "librsvg-2.so.2",
+          "libgio-2.0.so.0",
+          "libcairo.so.2",
+          "libgobject-2.0.so.0",
+          "libglib-2.0.so.0",
+          "libX11.so.6",
+          "libc.so.7"
+        ],
+        "g15": [
+          "libX11.so.6",
+          "libpng16.so.16",
+          "libc.so.7"
+        ]
+      },
+      "loaded_library_observation_groups": {
+        "g00": {
+          "before_count": 27,
+          "after_count": 27,
+          "before_set_sha256": "946834ebbb0332975cbc3cfae29436b5513adbd05369b5d7e7bee4b5b2aa120c",
+          "after_set_sha256": "946834ebbb0332975cbc3cfae29436b5513adbd05369b5d7e7bee4b5b2aa120c",
+          "removed": [],
+          "added": []
+        },
+        "g01": {
+          "before_count": 14,
+          "after_count": 14,
+          "before_set_sha256": "58c03c03ee7ee3689ee0bdf94db8433c6995f847866f5eccbbc712f8253f1b86",
+          "after_set_sha256": "58c03c03ee7ee3689ee0bdf94db8433c6995f847866f5eccbbc712f8253f1b86",
+          "removed": [],
+          "added": []
+        },
+        "g02": {
+          "before_count": 2,
+          "after_count": 2,
+          "before_set_sha256": "ed7ab2b4a9fbe3cee92ef88e4ff1aef354f08083605e1e99f03184d7a6a98e2a",
+          "after_set_sha256": "ed7ab2b4a9fbe3cee92ef88e4ff1aef354f08083605e1e99f03184d7a6a98e2a",
+          "removed": [],
+          "added": []
+        },
+        "g03": {
+          "before_count": 15,
+          "after_count": 15,
+          "before_set_sha256": "2ae2274f171a2e9ef2e57bb988ce8842526c412d3daf030969428ed0905e94ca",
+          "after_set_sha256": "2ae2274f171a2e9ef2e57bb988ce8842526c412d3daf030969428ed0905e94ca",
+          "removed": [],
+          "added": []
+        },
+        "g04": {
+          "before_count": 26,
+          "after_count": 26,
+          "before_set_sha256": "7cdb6808aed13a305de6f9ba65684efad672de49f93180d2ec666b24d6fedbcf",
+          "after_set_sha256": "7cdb6808aed13a305de6f9ba65684efad672de49f93180d2ec666b24d6fedbcf",
+          "removed": [],
+          "added": []
+        },
+        "g05": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "d78b3a90623dae851d9f6eb0fef085d2141730bf0868aade338ae3fcd1e135fa",
+          "after_set_sha256": "d78b3a90623dae851d9f6eb0fef085d2141730bf0868aade338ae3fcd1e135fa",
+          "removed": [],
+          "added": []
+        },
+        "g06": {
+          "before_count": 4,
+          "after_count": 4,
+          "before_set_sha256": "db773122a4dbf1a911eeb0c55a4a7b88a118737457df925774f1dd967939130e",
+          "after_set_sha256": "db773122a4dbf1a911eeb0c55a4a7b88a118737457df925774f1dd967939130e",
+          "removed": [],
+          "added": []
+        },
+        "g07": {
+          "before_count": 10,
+          "after_count": 10,
+          "before_set_sha256": "ae7da06c3ba6cbdd9d1cff8a6696e479494607da6160607e807e540f94ca7708",
+          "after_set_sha256": "ae7da06c3ba6cbdd9d1cff8a6696e479494607da6160607e807e540f94ca7708",
+          "removed": [],
+          "added": []
+        },
+        "g08": {
+          "before_count": 46,
+          "after_count": 46,
+          "before_set_sha256": "165cd0803ae1607aa69763da04ca2eed6774fe4288a2d794cfb30c18ab26b56e",
+          "after_set_sha256": "165cd0803ae1607aa69763da04ca2eed6774fe4288a2d794cfb30c18ab26b56e",
+          "removed": [],
+          "added": []
+        },
+        "g09": {
+          "before_count": 10,
+          "after_count": 10,
+          "before_set_sha256": "342912800f9c27f94595704cd353ee4e83b192bf57c52f0cd34d72d550652c4a",
+          "after_set_sha256": "342912800f9c27f94595704cd353ee4e83b192bf57c52f0cd34d72d550652c4a",
+          "removed": [],
+          "added": []
+        }
+      },
+      "loaded_file_records_sha256": "881476f1bc6b9e29dcfe14dc7bde023242c16faef0674323c2b455fec1e08064",
+      "loaded_file_identity_count": 300,
+      "native_maps": {
+        "count": 16,
+        "identities_sha256": "fb1f88b2b17dae8cbfa65960b19fdb21150efb698b114be2be32078bc846b198"
+      },
+      "elf_install_identity": {
+        "exact_bytes": 2,
+        "rpath_removal_only": 14
+      },
+      "static_archives": {
+        "libs/libfvwm3.a": {
+          "archive": {
+            "sha256": "6338b7f53ef9bb8ad6fdd5dff5d1f73e0dfda689bab7a211117b512dfa5090b4",
+            "bytes": 25816,
+            "mode": 420
+          },
+          "objects": 90,
+          "object_bytes": 2875912,
+          "objects_sha256": "a438f1bbe98a52f332c7658fc30eafbbc409beed453e6dee5bab9ea78cd1af10",
+          "undefined_sha256": "46374c3c4f4c0457d0cdd0d9f4ec9757f67da6213f92aab60c713a30890de011"
+        },
+        "modules/FvwmScript/libWidgets.a": {
+          "archive": {
+            "sha256": "4698d61143597c89d0ddc5118afa237cab9e78437c1b6c5d29e3ddc6ba62e8c4",
+            "bytes": 5080,
+            "mode": 420
+          },
+          "objects": 21,
+          "object_bytes": 873824,
+          "objects_sha256": "5929cee423cdf378bc350ea4aeb703724834884f4555f2113bc9440d1ccc95cd",
+          "undefined_sha256": "d4da542447f22f62d1c0f93fbdb85e023e384d0d5aa8bb67ee3ea9ff181105db"
+        }
+      },
+      "original_oracle_failure": null,
+      "expected_nonzero_observations": [
+        {
+          "label": "pkg-15-exists",
+          "status": 1,
+          "category": "explicit expected observation"
+        }
+      ],
+      "cleanup": {
+        "owned_pid": 88862,
+        "qemu_status": 0,
+        "normal_poweroff_requested": true
+      },
+      "proof_members": [
+        "evidence/source.json",
+        "evidence/commands.json",
+        "evidence/result.json",
+        "evidence/native-linkage.json",
+        "evidence/native-staged.json",
+        "evidence/installed-files.json",
+        "evidence/archives.json",
+        "evidence/package-metadata.json",
+        "evidence/compiler-introspection.log",
+        "evidence/pure-testlog.json",
+        "evidence/focused-tests.json",
+        "evidence/cache-before-sync.json"
+      ]
+    },
+    {
+      "target": "openbsd-arm64",
+      "profile": "default",
+      "status": "passed",
+      "archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/openbsd-arm64-job/m4-default-evidence.tgz",
+        "sha256": "10a7c931356356607c886c96324484f20564cebe8ed6a373d4a5c476ff3ad684",
+        "bytes": 30617917,
+        "mode": 420
+      },
+      "source_manifest_sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "capture": {
+        "files": 522,
+        "manifest_sha256": "9fb76e511498c58eb207cadbd19a62594fcb30e880edb8fc7874a57cf7ec2999",
+        "expanded_bytes": 75922447,
+        "gzip_crc_to_eof": true,
+        "all_payload_sha256_modes_rechecked": true
+      },
+      "counts": {
+        "pure": 9,
+        "x_fixtures": 3,
+        "native_targets": 16,
+        "installed_regular_files": 89,
+        "installed_bytes": 58827327,
+        "native_bytes": 18892856,
+        "artwork_byte_comparisons": 24,
+        "artwork_negative_pairs": 4,
+        "artwork_worker_invocations": 56,
+        "svg_off_refusals": 0
+      },
+      "tests": {
+        "pure": [
+          "image-decompress",
+          "image-input",
+          "image-process",
+          "image-process-async",
+          "image-safety",
+          "image-svg-client",
+          "image-svg-protocol",
+          "image-svg-render",
+          "picture-cache"
+        ],
+        "x": [
+          "image-effect-xvfb",
+          "image-input-xvfb",
+          "image-svg-isolation-xvfb"
+        ],
+        "artwork": {
+          "positive_byte_comparisons": 24,
+          "negative_paired_controls": 4,
+          "worker_invocations": 56,
+          "shipped_svg_source_assets": 0,
+          "baseline_fully_clipped_case": [
+            "mask-filter",
+            "transform"
+          ],
+          "result_member": "evidence/artwork/results.json"
+        }
+      },
+      "tools": {
+        "compiler": {
+          "id": "clang",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "22.1.6",
+          "full_version": "OpenBSD clang version 22.1.6",
+          "linker_id": "ld.lld"
+        },
+        "sdk": {
+          "sha256": "f99b830b964c9486ec0c52eedbfa5db227369b06874af8e2eaca8d36d64ae376",
+          "bytes": 15791960,
+          "mode": 448
+        },
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#1",
+          "arm64"
+        ],
+        "sdk_version_command_member": "evidence/sdk-version.log",
+        "compiler_version_command_member": "evidence/compiler-c-version.log",
+        "package_versions": {
+          "cairo": "1.18.6",
+          "fontconfig": "2.17.1",
+          "freetype2": "26.6.20",
+          "fribidi": "1.0.17",
+          "ice": "1.1.2",
+          "libevent": "2.1.13-stable",
+          "libpng": "1.6.59",
+          "libpng16": "1.6.59",
+          "librsvg-2.0": "2.63.2",
+          "sm": "1.2.6",
+          "x11": "1.8.13",
+          "xcursor": "1.2.3",
+          "xext": "1.3.7",
+          "xfixes": "6.0.2",
+          "xft": "2.3.9",
+          "xpm": "3.5.19",
+          "xrandr": "1.5.5",
+          "xrender": "0.9.12",
+          "xt": "1.3.1",
+          "xtrans": "1.6.0"
+        },
+        "packages_unavailable": []
+      },
+      "build": {
+        "config_sha256": "08914516cebff79e95582712729946dd86d0a031961ca8c7de7ae3b7f03e53d8",
+        "compile_command_count": 641,
+        "commands": 250,
+        "actual_no_rebuild_full_install": true,
+        "selected_build_targets": 36
+      },
+      "costs": {
+        "command_seconds": 56.7,
+        "pure_test_seconds": 1.645,
+        "archive_bytes": 30617917
+      },
+      "canonical_m3": {
+        "baseline_record": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/baseline/openbsd-arm64/baseline.json",
+          "sha256": "d7c5193eb33575f46c1ea7ff449de888932840a227d5424e2d000a099b659918",
+          "bytes": 104153,
+          "mode": 420
+        },
+        "archive_sha256": "b1f196dfb14c2a647c54711740eec42f0b0a82b383bab1ee6d720b64c42e77c1",
+        "worker_sha256": "1bb0b8058024e9a90f2575b85b882ec38088196c0f2118c65bab66c1a2e75f28",
+        "native_bytes": 18892976,
+        "comparison": "Canonical M3 installed bytes/direct NEEDED/link commands/loader observations; cache-before-sync is not baseline provenance",
+        "feature_scope": "Like-profile enabled SVG comparison"
+      },
+      "native": {
+        "fvwm3": [
+          4979664,
+          4979664,
+          0,
+          "g00",
+          "g00",
+          "g00"
+        ],
+        "modules/FvwmAnimate/FvwmAnimate": [
+          776872,
+          776872,
+          0,
+          "g01",
+          "g01",
+          "g01"
+        ],
+        "modules/FvwmAuto/FvwmAuto": [
+          132832,
+          132832,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmBacker/FvwmBacker": [
+          1057264,
+          1057248,
+          -16,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "modules/FvwmButtons/FvwmButtons": [
+          1663128,
+          1663128,
+          0,
+          "g04",
+          "g04",
+          "g04"
+        ],
+        "modules/FvwmEvent/FvwmEvent": [
+          137704,
+          137704,
+          0,
+          "g02",
+          "g02",
+          "g05"
+        ],
+        "modules/FvwmForm/FvwmForm": [
+          1512488,
+          1512488,
+          0,
+          "g05",
+          "g05",
+          "g06"
+        ],
+        "modules/FvwmIconMan/FvwmIconMan": [
+          1701536,
+          1701536,
+          0,
+          "g06",
+          "g06",
+          "g07"
+        ],
+        "modules/FvwmIdent/FvwmIdent": [
+          1344912,
+          1344912,
+          0,
+          "g06",
+          "g06",
+          "g08"
+        ],
+        "modules/FvwmMFL/FvwmMFL": [
+          413832,
+          413832,
+          0,
+          "g07",
+          "g07",
+          "g09"
+        ],
+        "modules/FvwmPager/FvwmPager": [
+          1519512,
+          1519512,
+          0,
+          "g06",
+          "g06",
+          "g10"
+        ],
+        "modules/FvwmRearrange/FvwmRearrange": [
+          492448,
+          492448,
+          0,
+          "g08",
+          "g08",
+          "g11"
+        ],
+        "modules/FvwmScript/FvwmScript": [
+          2016544,
+          2016544,
+          0,
+          "g04",
+          "g04",
+          "g12"
+        ],
+        "bin/fvwm-root": [
+          1012184,
+          1012168,
+          -16,
+          "g03",
+          "g03",
+          "g13"
+        ],
+        "bin/fvwm-image-svg-worker": [
+          94752,
+          94664,
+          -88,
+          "g09",
+          "g09",
+          "g14"
+        ],
+        "bin/fvwm-desktop-capture": [
+          37304,
+          37304,
+          0,
+          "g10",
+          "g10",
+          "g15"
+        ]
+      },
+      "direct_needed_groups": {
+        "g00": [
+          "libm.so.10.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libSM.so.9.0",
+          "/usr/X11R6/lib/libICE.so.12.0",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXfixes.so.6.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "libc.so.104.0"
+        ],
+        "g01": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "libc.so.104.0"
+        ],
+        "g02": [
+          "libc.so.104.0"
+        ],
+        "g03": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libc.so.104.0"
+        ],
+        "g04": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "/usr/X11R6/lib/libSM.so.9.0",
+          "/usr/X11R6/lib/libICE.so.12.0",
+          "libc.so.104.0"
+        ],
+        "g05": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "libevent_core.so.2.1",
+          "libc.so.104.0"
+        ],
+        "g06": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "libc.so.104.0"
+        ],
+        "g07": [
+          "libevent_core.so.2.1",
+          "libc.so.104.0"
+        ],
+        "g08": [
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libc.so.104.0"
+        ],
+        "g09": [
+          "librsvg-2.so.41.1",
+          "libgio-2.0.so.4200.23",
+          "libcairo.so.13.6",
+          "libgobject-2.0.so.4200.23",
+          "libglib-2.0.so.4201.16",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "libc.so.104.0"
+        ],
+        "g10": [
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "libpng16.so.18.2",
+          "libc.so.104.0"
+        ]
+      },
+      "loaded_library_observation_groups": {
+        "g00": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "52a1017220dd869e66ecbb0b2241ad0297442e132a2b8ddd41b564091fc5984f",
+          "after_set_sha256": "52a1017220dd869e66ecbb0b2241ad0297442e132a2b8ddd41b564091fc5984f",
+          "removed": [],
+          "added": []
+        },
+        "g01": {
+          "before_count": 16,
+          "after_count": 16,
+          "before_set_sha256": "ed05bfa24850beb0c5244a589b3d13fb4da88f2929523494f1b9d951ddf8929f",
+          "after_set_sha256": "ed05bfa24850beb0c5244a589b3d13fb4da88f2929523494f1b9d951ddf8929f",
+          "removed": [],
+          "added": []
+        },
+        "g02": {
+          "before_count": 3,
+          "after_count": 3,
+          "before_set_sha256": "f0cc8ca1a90b3d5021ce3f30aa79d9876c4f0300c1991c0b2f963140d668a71c",
+          "after_set_sha256": "f0cc8ca1a90b3d5021ce3f30aa79d9876c4f0300c1991c0b2f963140d668a71c",
+          "removed": [],
+          "added": []
+        },
+        "g03": {
+          "before_count": 17,
+          "after_count": 17,
+          "before_set_sha256": "c1198c36306cab0d69d9d5f7a949ffcd6d7ab7c93621a667b6751b70a7affdea",
+          "after_set_sha256": "c1198c36306cab0d69d9d5f7a949ffcd6d7ab7c93621a667b6751b70a7affdea",
+          "removed": [],
+          "added": []
+        },
+        "g04": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "8d7724ff96fc5f3490ef065d7b132fec524a254b92dc37f4036e7148d66ad3cf",
+          "after_set_sha256": "8d7724ff96fc5f3490ef065d7b132fec524a254b92dc37f4036e7148d66ad3cf",
+          "removed": [],
+          "added": []
+        },
+        "g05": {
+          "before_count": 3,
+          "after_count": 3,
+          "before_set_sha256": "98c201ae9f89ed7d293e6991f3b8f9c02007bce1a7cecd22e1dec7deb225fbcb",
+          "after_set_sha256": "98c201ae9f89ed7d293e6991f3b8f9c02007bce1a7cecd22e1dec7deb225fbcb",
+          "removed": [],
+          "added": []
+        },
+        "g06": {
+          "before_count": 24,
+          "after_count": 24,
+          "before_set_sha256": "4a600b5f1862b933980b2ba30dfb6d684e6413877293004496276af391f42e9d",
+          "after_set_sha256": "4a600b5f1862b933980b2ba30dfb6d684e6413877293004496276af391f42e9d",
+          "removed": [],
+          "added": []
+        },
+        "g07": {
+          "before_count": 23,
+          "after_count": 23,
+          "before_set_sha256": "1036f172018b5140926bdd4f0a77a519ecd2aa0c9d0140dfe2aae96ee9d68c5d",
+          "after_set_sha256": "1036f172018b5140926bdd4f0a77a519ecd2aa0c9d0140dfe2aae96ee9d68c5d",
+          "removed": [],
+          "added": []
+        },
+        "g08": {
+          "before_count": 23,
+          "after_count": 23,
+          "before_set_sha256": "c7d407da8f0583af3604b918f27c302ecf9f3a6cfedf20be4155b84bf17c01f9",
+          "after_set_sha256": "c7d407da8f0583af3604b918f27c302ecf9f3a6cfedf20be4155b84bf17c01f9",
+          "removed": [],
+          "added": []
+        },
+        "g09": {
+          "before_count": 5,
+          "after_count": 5,
+          "before_set_sha256": "2c973b5fc86d3496a26828134a37246bff9263932a185d8c16f844cb83c2fd0b",
+          "after_set_sha256": "2c973b5fc86d3496a26828134a37246bff9263932a185d8c16f844cb83c2fd0b",
+          "removed": [],
+          "added": []
+        },
+        "g10": {
+          "before_count": 23,
+          "after_count": 23,
+          "before_set_sha256": "d3cad16838f133ad9ab9d3fe4b4d019638f7cc918023869243ed73bfe0254cca",
+          "after_set_sha256": "d3cad16838f133ad9ab9d3fe4b4d019638f7cc918023869243ed73bfe0254cca",
+          "removed": [],
+          "added": []
+        },
+        "g11": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "30466fec8ae4896cc2e9a273db463d037fab393ecb57d131d47bc5a0aa702610",
+          "after_set_sha256": "30466fec8ae4896cc2e9a273db463d037fab393ecb57d131d47bc5a0aa702610",
+          "removed": [],
+          "added": []
+        },
+        "g12": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "8d794354dbb26c2149f2e3b0065f282fb76f6260bbbc5062ac994bedf0d64801",
+          "after_set_sha256": "8d794354dbb26c2149f2e3b0065f282fb76f6260bbbc5062ac994bedf0d64801",
+          "removed": [],
+          "added": []
+        },
+        "g13": {
+          "before_count": 17,
+          "after_count": 17,
+          "before_set_sha256": "52ecb23fb51d49ea04b87f7f5477cd3845bb1e11cf75113970bf13dd2983509c",
+          "after_set_sha256": "52ecb23fb51d49ea04b87f7f5477cd3845bb1e11cf75113970bf13dd2983509c",
+          "removed": [],
+          "added": []
+        },
+        "g14": {
+          "before_count": 41,
+          "after_count": 41,
+          "before_set_sha256": "7c335495a8763cefcee42a4127daed52882125f266bd075c919eb588435220ec",
+          "after_set_sha256": "7c335495a8763cefcee42a4127daed52882125f266bd075c919eb588435220ec",
+          "removed": [],
+          "added": []
+        },
+        "g15": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "b8b72094be139c05f1130f0c90068eb0edd4c6e3415d7a692168479fb3e39a80",
+          "after_set_sha256": "b8b72094be139c05f1130f0c90068eb0edd4c6e3415d7a692168479fb3e39a80",
+          "removed": [],
+          "added": []
+        }
+      },
+      "loaded_file_records_sha256": "26041233a6f4e23f1b651c5a747df722f525d076e4cf9bdccd4fb78273a563c4",
+      "loaded_file_identity_count": 292,
+      "native_maps": {
+        "count": 16,
+        "identities_sha256": "7c2e85d94a5f360530034df3511a1d61d6f908fa52d8e7a3deef6565f23bdc31"
+      },
+      "elf_install_identity": {
+        "exact_bytes": 2,
+        "rpath_removal_only": 14
+      },
+      "static_archives": {
+        "libs/libfvwm3.a": {
+          "archive": {
+            "sha256": "baf1fa36cc34ac1198da7a9f8124a1622fecb50207c78760a0fe419a0391f07b",
+            "bytes": 41840,
+            "mode": 420
+          },
+          "objects": 90,
+          "object_bytes": 2917592,
+          "objects_sha256": "2a2dbff02d278fed3b13b7c5ca80eaa18d848211babed83ee5171e405ff9031a",
+          "undefined_sha256": "290b4bffeb5dbc89619c14b71388626eefe84da9a910a27141cf72b08c20dbcf"
+        },
+        "modules/FvwmScript/libWidgets.a": {
+          "archive": {
+            "sha256": "64000f40998f552419a37716723a327a2a765d581b33cebd3b8454bdc65c9b4e",
+            "bytes": 7930,
+            "mode": 420
+          },
+          "objects": 21,
+          "object_bytes": 785448,
+          "objects_sha256": "efe7cee1094ef3b3c86927d620a2cfebffe9d9f7e95550b1d7b734b07857a84d",
+          "undefined_sha256": "144b770544ddf00c2bc045d492ee866cf5e58e1a7bfa86aef95c650839bed24f"
+        }
+      },
+      "original_oracle_failure": null,
+      "expected_nonzero_observations": [],
+      "cleanup": {
+        "status": "normal runner exit; ephemeral keys absent",
+        "qemu_exit_status": 0,
+        "runner_result": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/openbsd-arm64-result.json",
+        "selected_job": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/openbsd-arm64-job"
+      },
+      "proof_members": [
+        "evidence/source.json",
+        "evidence/commands.json",
+        "evidence/result.json",
+        "evidence/native-linkage.json",
+        "evidence/native-staged.json",
+        "evidence/installed-files.json",
+        "evidence/archives.json",
+        "evidence/package-metadata.json",
+        "evidence/compiler-introspection.log",
+        "evidence/pure-testlog.json",
+        "evidence/focused-tests.json",
+        "evidence/cache-before-sync.json"
+      ]
+    },
+    {
+      "target": "openbsd-amd64",
+      "profile": "default",
+      "status": "passed",
+      "archive": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-job/m4-default-evidence.tgz",
+        "sha256": "0b5e0f3000164377985be33938abf1411cd08887b14db265695c22d935af9b23",
+        "bytes": 32563734,
+        "mode": 420
+      },
+      "source_manifest_sha256": "eb1a512972102ddec9779616fbd50a7444e8332e38eaaa9cc86952e32ebf36ce",
+      "capture": {
+        "files": 522,
+        "manifest_sha256": "39d94299ac594e2b66c8e17084ae26ffcd76138835dd19e994f5e937b2989c3b",
+        "expanded_bytes": 76377091,
+        "gzip_crc_to_eof": true,
+        "all_payload_sha256_modes_rechecked": true
+      },
+      "counts": {
+        "pure": 9,
+        "x_fixtures": 3,
+        "native_targets": 16,
+        "installed_regular_files": 89,
+        "installed_bytes": 60209777,
+        "native_bytes": 18212896,
+        "artwork_byte_comparisons": 24,
+        "artwork_negative_pairs": 4,
+        "artwork_worker_invocations": 56,
+        "svg_off_refusals": 0
+      },
+      "tests": {
+        "pure": [
+          "image-decompress",
+          "image-input",
+          "image-process",
+          "image-process-async",
+          "image-safety",
+          "image-svg-client",
+          "image-svg-protocol",
+          "image-svg-render",
+          "picture-cache"
+        ],
+        "x": [
+          "image-effect-xvfb",
+          "image-input-xvfb",
+          "image-svg-isolation-xvfb"
+        ],
+        "artwork": {
+          "positive_byte_comparisons": 24,
+          "negative_paired_controls": 4,
+          "worker_invocations": 56,
+          "shipped_svg_source_assets": 0,
+          "baseline_fully_clipped_case": [
+            "mask-filter",
+            "transform"
+          ],
+          "result_member": "evidence/artwork/results.json"
+        }
+      },
+      "tools": {
+        "compiler": {
+          "id": "clang",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "22.1.6",
+          "full_version": "OpenBSD clang version 22.1.6",
+          "linker_id": "ld.lld"
+        },
+        "sdk": {
+          "sha256": "d31495212ad7b67ee9044938f583ff3542756d87c60e6c7d73ef07ac26da4e66",
+          "bytes": 17041868,
+          "mode": 448
+        },
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#2",
+          "amd64"
+        ],
+        "sdk_version_command_member": "evidence/sdk-version.log",
+        "compiler_version_command_member": "evidence/compiler-c-version.log",
+        "package_versions": {
+          "cairo": "1.18.6",
+          "fontconfig": "2.17.1",
+          "freetype2": "26.6.20",
+          "fribidi": "1.0.17",
+          "ice": "1.1.2",
+          "libevent": "2.1.13-stable",
+          "libpng": "1.6.59",
+          "libpng16": "1.6.59",
+          "librsvg-2.0": "2.63.2",
+          "sm": "1.2.6",
+          "x11": "1.8.13",
+          "xcursor": "1.2.3",
+          "xext": "1.3.7",
+          "xfixes": "6.0.2",
+          "xft": "2.3.9",
+          "xpm": "3.5.19",
+          "xrandr": "1.5.5",
+          "xrender": "0.9.12",
+          "xt": "1.3.1",
+          "xtrans": "1.6.0"
+        },
+        "packages_unavailable": []
+      },
+      "build": {
+        "config_sha256": "08914516cebff79e95582712729946dd86d0a031961ca8c7de7ae3b7f03e53d8",
+        "compile_command_count": 641,
+        "commands": 250,
+        "actual_no_rebuild_full_install": true,
+        "selected_build_targets": 36
+      },
+      "costs": {
+        "command_seconds": 522.588,
+        "pure_test_seconds": 3.153,
+        "archive_bytes": 32563734
+      },
+      "canonical_m3": {
+        "baseline_record": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/baseline/openbsd-amd64/baseline.json",
+          "sha256": "31a4267a5d82f1edaceee28ef5aa645d1660802dec894d86650361b2ff9bb14d",
+          "bytes": 104149,
+          "mode": 420
+        },
+        "archive_sha256": "e2b84268b94413243b1546a8dd06cb85652ab809f924f64690be8e9527b9c01f",
+        "worker_sha256": "1338a354570714129c404efb5a935cafe4737670ad66de531578ad570f77edda",
+        "native_bytes": 18213032,
+        "comparison": "Canonical M3 installed bytes/direct NEEDED/link commands/loader observations; cache-before-sync is not baseline provenance",
+        "feature_scope": "Like-profile enabled SVG comparison"
+      },
+      "native": {
+        "fvwm3": [
+          4848144,
+          4848136,
+          -8,
+          "g00",
+          "g00",
+          "g00"
+        ],
+        "modules/FvwmAnimate/FvwmAnimate": [
+          735128,
+          735128,
+          0,
+          "g01",
+          "g01",
+          "g01"
+        ],
+        "modules/FvwmAuto/FvwmAuto": [
+          128688,
+          128688,
+          0,
+          "g02",
+          "g02",
+          "g02"
+        ],
+        "modules/FvwmBacker/FvwmBacker": [
+          1006640,
+          1006624,
+          -16,
+          "g03",
+          "g03",
+          "g03"
+        ],
+        "modules/FvwmButtons/FvwmButtons": [
+          1601072,
+          1601072,
+          0,
+          "g04",
+          "g04",
+          "g04"
+        ],
+        "modules/FvwmEvent/FvwmEvent": [
+          132448,
+          132448,
+          0,
+          "g02",
+          "g02",
+          "g05"
+        ],
+        "modules/FvwmForm/FvwmForm": [
+          1453312,
+          1453312,
+          0,
+          "g05",
+          "g05",
+          "g06"
+        ],
+        "modules/FvwmIconMan/FvwmIconMan": [
+          1640160,
+          1640160,
+          0,
+          "g06",
+          "g06",
+          "g07"
+        ],
+        "modules/FvwmIdent/FvwmIdent": [
+          1292400,
+          1292400,
+          0,
+          "g06",
+          "g06",
+          "g08"
+        ],
+        "modules/FvwmMFL/FvwmMFL": [
+          407008,
+          407008,
+          0,
+          "g07",
+          "g07",
+          "g09"
+        ],
+        "modules/FvwmPager/FvwmPager": [
+          1462680,
+          1462680,
+          0,
+          "g06",
+          "g06",
+          "g10"
+        ],
+        "modules/FvwmRearrange/FvwmRearrange": [
+          473600,
+          473600,
+          0,
+          "g08",
+          "g08",
+          "g11"
+        ],
+        "modules/FvwmScript/FvwmScript": [
+          1944360,
+          1944360,
+          0,
+          "g04",
+          "g04",
+          "g12"
+        ],
+        "bin/fvwm-root": [
+          962568,
+          962552,
+          -16,
+          "g03",
+          "g03",
+          "g13"
+        ],
+        "bin/fvwm-image-svg-worker": [
+          87216,
+          87120,
+          -96,
+          "g09",
+          "g09",
+          "g14"
+        ],
+        "bin/fvwm-desktop-capture": [
+          37608,
+          37608,
+          0,
+          "g10",
+          "g10",
+          "g15"
+        ]
+      },
+      "direct_needed_groups": {
+        "g00": [
+          "libm.so.10.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libSM.so.9.0",
+          "/usr/X11R6/lib/libICE.so.12.0",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXfixes.so.6.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "libc.so.104.0"
+        ],
+        "g01": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "libc.so.104.0"
+        ],
+        "g02": [
+          "libc.so.104.0"
+        ],
+        "g03": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libc.so.104.0"
+        ],
+        "g04": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "/usr/X11R6/lib/libSM.so.9.0",
+          "/usr/X11R6/lib/libICE.so.12.0",
+          "libc.so.104.0"
+        ],
+        "g05": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "libevent_core.so.2.1",
+          "libc.so.104.0"
+        ],
+        "g06": [
+          "libm.so.10.1",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXext.so.13.0",
+          "libpng16.so.18.2",
+          "/usr/X11R6/lib/libXcursor.so.5.1",
+          "/usr/X11R6/lib/libXpm.so.10.0",
+          "/usr/X11R6/lib/libXrender.so.6.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libfontconfig.so.14.1",
+          "/usr/X11R6/lib/libXft.so.13.0",
+          "libfribidi.so.3.1",
+          "libiconv.so.7.2",
+          "libc.so.104.0"
+        ],
+        "g07": [
+          "libevent_core.so.2.1",
+          "libc.so.104.0"
+        ],
+        "g08": [
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "/usr/X11R6/lib/libXrandr.so.7.1",
+          "libc.so.104.0"
+        ],
+        "g09": [
+          "librsvg-2.so.41.1",
+          "libgio-2.0.so.4200.23",
+          "libcairo.so.13.6",
+          "libgobject-2.0.so.4200.23",
+          "libglib-2.0.so.4201.16",
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "libc.so.104.0"
+        ],
+        "g10": [
+          "/usr/X11R6/lib/libX11.so.19.0",
+          "libpng16.so.18.2",
+          "libc.so.104.0"
+        ]
+      },
+      "loaded_library_observation_groups": {
+        "g00": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "52a1017220dd869e66ecbb0b2241ad0297442e132a2b8ddd41b564091fc5984f",
+          "after_set_sha256": "52a1017220dd869e66ecbb0b2241ad0297442e132a2b8ddd41b564091fc5984f",
+          "removed": [],
+          "added": []
+        },
+        "g01": {
+          "before_count": 16,
+          "after_count": 16,
+          "before_set_sha256": "ed05bfa24850beb0c5244a589b3d13fb4da88f2929523494f1b9d951ddf8929f",
+          "after_set_sha256": "ed05bfa24850beb0c5244a589b3d13fb4da88f2929523494f1b9d951ddf8929f",
+          "removed": [],
+          "added": []
+        },
+        "g02": {
+          "before_count": 3,
+          "after_count": 3,
+          "before_set_sha256": "f0cc8ca1a90b3d5021ce3f30aa79d9876c4f0300c1991c0b2f963140d668a71c",
+          "after_set_sha256": "f0cc8ca1a90b3d5021ce3f30aa79d9876c4f0300c1991c0b2f963140d668a71c",
+          "removed": [],
+          "added": []
+        },
+        "g03": {
+          "before_count": 17,
+          "after_count": 17,
+          "before_set_sha256": "c1198c36306cab0d69d9d5f7a949ffcd6d7ab7c93621a667b6751b70a7affdea",
+          "after_set_sha256": "c1198c36306cab0d69d9d5f7a949ffcd6d7ab7c93621a667b6751b70a7affdea",
+          "removed": [],
+          "added": []
+        },
+        "g04": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "8d7724ff96fc5f3490ef065d7b132fec524a254b92dc37f4036e7148d66ad3cf",
+          "after_set_sha256": "8d7724ff96fc5f3490ef065d7b132fec524a254b92dc37f4036e7148d66ad3cf",
+          "removed": [],
+          "added": []
+        },
+        "g05": {
+          "before_count": 3,
+          "after_count": 3,
+          "before_set_sha256": "98c201ae9f89ed7d293e6991f3b8f9c02007bce1a7cecd22e1dec7deb225fbcb",
+          "after_set_sha256": "98c201ae9f89ed7d293e6991f3b8f9c02007bce1a7cecd22e1dec7deb225fbcb",
+          "removed": [],
+          "added": []
+        },
+        "g06": {
+          "before_count": 24,
+          "after_count": 24,
+          "before_set_sha256": "4a600b5f1862b933980b2ba30dfb6d684e6413877293004496276af391f42e9d",
+          "after_set_sha256": "4a600b5f1862b933980b2ba30dfb6d684e6413877293004496276af391f42e9d",
+          "removed": [],
+          "added": []
+        },
+        "g07": {
+          "before_count": 23,
+          "after_count": 23,
+          "before_set_sha256": "1036f172018b5140926bdd4f0a77a519ecd2aa0c9d0140dfe2aae96ee9d68c5d",
+          "after_set_sha256": "1036f172018b5140926bdd4f0a77a519ecd2aa0c9d0140dfe2aae96ee9d68c5d",
+          "removed": [],
+          "added": []
+        },
+        "g08": {
+          "before_count": 23,
+          "after_count": 23,
+          "before_set_sha256": "c7d407da8f0583af3604b918f27c302ecf9f3a6cfedf20be4155b84bf17c01f9",
+          "after_set_sha256": "c7d407da8f0583af3604b918f27c302ecf9f3a6cfedf20be4155b84bf17c01f9",
+          "removed": [],
+          "added": []
+        },
+        "g09": {
+          "before_count": 5,
+          "after_count": 5,
+          "before_set_sha256": "2c973b5fc86d3496a26828134a37246bff9263932a185d8c16f844cb83c2fd0b",
+          "after_set_sha256": "2c973b5fc86d3496a26828134a37246bff9263932a185d8c16f844cb83c2fd0b",
+          "removed": [],
+          "added": []
+        },
+        "g10": {
+          "before_count": 23,
+          "after_count": 23,
+          "before_set_sha256": "d3cad16838f133ad9ab9d3fe4b4d019638f7cc918023869243ed73bfe0254cca",
+          "after_set_sha256": "d3cad16838f133ad9ab9d3fe4b4d019638f7cc918023869243ed73bfe0254cca",
+          "removed": [],
+          "added": []
+        },
+        "g11": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "30466fec8ae4896cc2e9a273db463d037fab393ecb57d131d47bc5a0aa702610",
+          "after_set_sha256": "30466fec8ae4896cc2e9a273db463d037fab393ecb57d131d47bc5a0aa702610",
+          "removed": [],
+          "added": []
+        },
+        "g12": {
+          "before_count": 25,
+          "after_count": 25,
+          "before_set_sha256": "8d794354dbb26c2149f2e3b0065f282fb76f6260bbbc5062ac994bedf0d64801",
+          "after_set_sha256": "8d794354dbb26c2149f2e3b0065f282fb76f6260bbbc5062ac994bedf0d64801",
+          "removed": [],
+          "added": []
+        },
+        "g13": {
+          "before_count": 17,
+          "after_count": 17,
+          "before_set_sha256": "52ecb23fb51d49ea04b87f7f5477cd3845bb1e11cf75113970bf13dd2983509c",
+          "after_set_sha256": "52ecb23fb51d49ea04b87f7f5477cd3845bb1e11cf75113970bf13dd2983509c",
+          "removed": [],
+          "added": []
+        },
+        "g14": {
+          "before_count": 41,
+          "after_count": 41,
+          "before_set_sha256": "7c335495a8763cefcee42a4127daed52882125f266bd075c919eb588435220ec",
+          "after_set_sha256": "7c335495a8763cefcee42a4127daed52882125f266bd075c919eb588435220ec",
+          "removed": [],
+          "added": []
+        },
+        "g15": {
+          "before_count": 11,
+          "after_count": 11,
+          "before_set_sha256": "b8b72094be139c05f1130f0c90068eb0edd4c6e3415d7a692168479fb3e39a80",
+          "after_set_sha256": "b8b72094be139c05f1130f0c90068eb0edd4c6e3415d7a692168479fb3e39a80",
+          "removed": [],
+          "added": []
+        }
+      },
+      "loaded_file_records_sha256": "e58dddf7c25616041b41eeb59f7661899dc7809a95cd8070faeb02f8ed56caec",
+      "loaded_file_identity_count": 292,
+      "native_maps": {
+        "count": 16,
+        "identities_sha256": "f8f600a44a3510ca656e377243b789f0bccb9ed514eaff5138c8b15fe5b2f82c"
+      },
+      "elf_install_identity": {
+        "exact_bytes": 2,
+        "rpath_removal_only": 14
+      },
+      "static_archives": {
+        "libs/libfvwm3.a": {
+          "archive": {
+            "sha256": "438d419dd1c38f267b824a47fe82cd7915468b569ef730c2ab68720b5101cb37",
+            "bytes": 41840,
+            "mode": 420
+          },
+          "objects": 90,
+          "object_bytes": 2760504,
+          "objects_sha256": "85e6dad58a71c1d0ca25bce476c5658956f3e0f6b735e226785aeccfe9c24fe5",
+          "undefined_sha256": "c669ba1606df370a3f099d93e008c4091dbd00fbadc41308ade8c1cdf8f400bc"
+        },
+        "modules/FvwmScript/libWidgets.a": {
+          "archive": {
+            "sha256": "dfab96f383878d8f6787129c598b273b4131769095d11f1d2c04c28f8ff752b9",
+            "bytes": 7930,
+            "mode": 420
+          },
+          "objects": 21,
+          "object_bytes": 769040,
+          "objects_sha256": "2c0609ad8e20e120524d551c683ae0fb27728ba0ef769213d37e8d80c6610057",
+          "undefined_sha256": "144b770544ddf00c2bc045d492ee866cf5e58e1a7bfa86aef95c650839bed24f"
+        }
+      },
+      "original_oracle_failure": null,
+      "expected_nonzero_observations": [],
+      "cleanup": {
+        "status": "normal runner exit; ephemeral keys absent",
+        "qemu_exit_status": 0,
+        "runner_result": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-result.json",
+        "selected_job": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m4-svg/bsd/retry1/openbsd-amd64-job"
+      },
+      "proof_members": [
+        "evidence/source.json",
+        "evidence/commands.json",
+        "evidence/result.json",
+        "evidence/native-linkage.json",
+        "evidence/native-staged.json",
+        "evidence/installed-files.json",
+        "evidence/archives.json",
+        "evidence/package-metadata.json",
+        "evidence/compiler-introspection.log",
+        "evidence/pure-testlog.json",
+        "evidence/focused-tests.json",
+        "evidence/cache-before-sync.json"
+      ]
+    }
+  ]
+}

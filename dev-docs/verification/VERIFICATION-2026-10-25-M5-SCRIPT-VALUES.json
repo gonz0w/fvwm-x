@@ -1,0 +1,419 @@
+{
+  "base": "af11b649aac8ee8463f33162da6940be8a958820",
+  "owners": [
+    "SCRIPT-01 #4",
+    "CLEAN-01 #34"
+  ],
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "698c622fc008fb57c87da19627cf56d6abcaf1f3ce73d0dcfdbd635e314fb066",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_value_table.c": {
+      "sha256": "174610fdbae07a0d9039f7cebbf35f491e0dafc402664d50e333a858b8c278d8",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_value_table.h": {
+      "sha256": "0576eaff5089d0af41ab52e8d90440fa9b15360795d120309d7d7c9872c409d6",
+      "mode": 420
+    },
+    "modules/FvwmScript/script.y": {
+      "sha256": "8476e2b10614270562dd9da0c614b97a955310612f06d9cb764aa1ece365cedd",
+      "mode": 420
+    },
+    "modules/FvwmScript/script.c": {
+      "sha256": "672273e5cb6317446c09ca2d28976b7c3d1398075ccf8bc6a0e04bfd1ec4591c",
+      "mode": 420
+    },
+    "modules/FvwmScript/meson.build": {
+      "sha256": "e0e9e96362d0421a3e4a0faa176c11b9e1c3735638fe1989bfcaf0cc631881d9",
+      "mode": 420
+    },
+    "tests/test_script_value_owner.c": {
+      "sha256": "ef9779f64de8da1a959931ae4b3fab38171b9d029568e5762c45d2c2b651d02f",
+      "mode": 420
+    },
+    "tests/live_x/script_value_owner_live.py": {
+      "sha256": "3753b06fa91888749d73284f581a9012efb1443a8d9257fe2b5c72bd80a1bc86",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "6904cd08729c04fa2c3ce8e75fc15429669b4e6de50ff6d86fa0ccdb3e8d62a4",
+      "mode": 420
+    }
+  },
+  "baseline_initial_inputs": 542,
+  "additional_unchanged_regression_inputs": 2,
+  "final_inputs": 548,
+  "before_control": {
+    "actual_old_parser_scanner": true,
+    "new_private_helper_linked": true,
+    "retained_tokens": 8,
+    "token_kinds": {
+      "VAR": 5,
+      "STR": 1,
+      "GSTR": 2
+    },
+    "candidate_tokens_released": 8,
+    "constructors": "borrowed inputs/stored copies unchanged"
+  },
+  "generation": {
+    "command": [
+      "python3",
+      "/tmp/fvwm-module-waits-20261015/source/tools/maintenance/generate.py",
+      "parsers",
+      "--source",
+      "/tmp/fvwm-m5-values-20261025/grammar-source",
+      "--output",
+      "/tmp/fvwm-m5-values-20261025/generated"
+    ],
+    "generators": {
+      "bison": "bison (GNU Bison) 3.8.2",
+      "flex": "flex 2.6.4",
+      "input_sha256": {
+        "script.y": "8476e2b10614270562dd9da0c614b97a955310612f06d9cb764aa1ece365cedd",
+        "scanner.l": "828d8c3d33ac8e8d035843cf26b23199c50edec788225bc569b60218a5ec7da6"
+      },
+      "output_sha256": {
+        "script.c": "672273e5cb6317446c09ca2d28976b7c3d1398075ccf8bc6a0e04bfd1ec4591c",
+        "script.h": "984e4b2d9e99fd7cad767d128c6f12ebdd91a61055274632b4d3160760481206",
+        "scanner.c": "a020dcda1794a1f3816325b9b001f8f7ab1237d948301b87a48e074bf7d2aa0f"
+      }
+    },
+    "unchanged_outputs": [
+      "script.h",
+      "scanner.c"
+    ],
+    "parser_change": "exact three argument reductions release their consumed token after constructor returns"
+  },
+  "normal_units": [
+    "script-value-owner",
+    "script-parser",
+    "script-storage",
+    "script-execution",
+    "script-block-owner",
+    "script-binding-owner"
+  ],
+  "scoped_sanitizer": {
+    "unit": "script-value-owner",
+    "sanitizers": "address,undefined",
+    "leak_detection": true,
+    "whole_parser_module_leak_clean_claim": false
+  },
+  "profiles": {
+    "normal": {
+      "options": {
+        "buildtype": "debugoptimized",
+        "b_ndebug": "false",
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": []
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    },
+    "asan": {
+      "options": {
+        "buildtype": "debug",
+        "b_ndebug": "false",
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ]
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    }
+  },
+  "gate": [
+    {
+      "label": "normal-group-build",
+      "status": 0,
+      "seconds": 1.6135411009890959
+    },
+    {
+      "label": "normal-units",
+      "status": 0,
+      "seconds": 0.16484977398067713
+    },
+    {
+      "label": "probe-compile",
+      "status": 0,
+      "seconds": 0.06637122097890824
+    },
+    {
+      "label": "probe-link",
+      "status": 0,
+      "seconds": 0.06407753899111412
+    },
+    {
+      "label": "value-owner-x",
+      "status": 0,
+      "seconds": 1.3672028000000864
+    },
+    {
+      "label": "execution-x",
+      "status": 0,
+      "seconds": 3.4907001979881898
+    },
+    {
+      "label": "asan-owner-build",
+      "status": 0,
+      "seconds": 1.2985654390067793
+    },
+    {
+      "label": "asan-owner-unit",
+      "status": 0,
+      "seconds": 0.16972238998278044
+    }
+  ],
+  "command_seconds": 8.235030461917631,
+  "gate_first_combined_invocation": "all pass",
+  "lifecycle": {
+    "final-shutdown": {
+      "lifecycle": "passed",
+      "ownership": {
+        "entries": 15,
+        "names": 15,
+        "names_freed": 15,
+        "values": 19,
+        "values_freed": 19,
+        "arrays_freed": 2,
+        "retained": 0,
+        "clears": 1,
+        "used": 0
+      }
+    },
+    "partial-startup": {
+      "lifecycle": "passed",
+      "ownership": {
+        "entries": 15,
+        "names": 15,
+        "names_freed": 15,
+        "values": 15,
+        "values_freed": 15,
+        "arrays_freed": 2,
+        "retained": 0,
+        "clears": 1,
+        "used": 0
+      }
+    },
+    "dead-pipe": {
+      "lifecycle": "passed",
+      "ownership": {
+        "entries": 15,
+        "names": 15,
+        "names_freed": 15,
+        "values": 19,
+        "values_freed": 19,
+        "arrays_freed": 2,
+        "retained": 0,
+        "clears": 1,
+        "used": 0
+      }
+    },
+    "init-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "entries": 15,
+        "names": 15,
+        "names_freed": 0,
+        "values": 19,
+        "values_freed": 4,
+        "arrays_freed": 0,
+        "retained": 32,
+        "clears": 0,
+        "used": 203
+      }
+    },
+    "event-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "entries": 15,
+        "names": 15,
+        "names_freed": 0,
+        "values": 19,
+        "values_freed": 4,
+        "arrays_freed": 0,
+        "retained": 32,
+        "clears": 0,
+        "used": 205
+      }
+    },
+    "periodic-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "entries": 15,
+        "names": 15,
+        "names_freed": 0,
+        "values": 19,
+        "values_freed": 4,
+        "arrays_freed": 0,
+        "retained": 32,
+        "clears": 0,
+        "used": 211
+      }
+    }
+  },
+  "outputs": {
+    "normal": {
+      "modules/FvwmScript/FvwmScript": {
+        "sha256": "983dd0beb983ec64c4d4948efdccb1f3ede53fe7ab80a0247f72794326493224",
+        "bytes": 2208288
+      },
+      "tests/test-script-value-owner": {
+        "sha256": "baf7b1296f338da729747d3d1fe36d8361a770ca167f95462c6537f3902dff3a",
+        "bytes": 874208
+      },
+      "tests/test-script-parser": {
+        "sha256": "352725977f1ba32a9aadb7286b67ee151bcf4b71560f2200ef634cc755a38df9",
+        "bytes": 873856
+      },
+      "tests/test-script-storage": {
+        "sha256": "c9c63932217063b97dcc806e8f8cf4773674fb356f6423f94a54765215fc9dd6",
+        "bytes": 79872
+      },
+      "tests/test-script-execution": {
+        "sha256": "19f142b1129e93a909bbdf4ef940d68e80e3bdb73615be759f2597edf57b8747",
+        "bytes": 78760
+      },
+      "tests/test-script-block-owner": {
+        "sha256": "3b1dab20ccfd31cfc2cb4d7418d57136c839c81560bcb5df75d5d016a0bb159f",
+        "bytes": 882080
+      },
+      "tests/test-script-binding-owner": {
+        "sha256": "b58a2cc91efec13f73af3a48dc6049c74a4923b6e39c8d4502d2367f22e396da",
+        "bytes": 2218048
+      },
+      "fvwm3": {
+        "sha256": "5d09202748558b27c5b63376d5ccb54eb18e236d476613a0b2b37d411f752835",
+        "bytes": 5454744
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "bytes": 444120
+      }
+    },
+    "asan": {
+      "tests/test-script-value-owner": {
+        "sha256": "d8bea2c79dc40f4bf4422e73844f36a2da74b1df53d5a4cf51d58d9cc2dc55b7",
+        "bytes": 5184704
+      }
+    }
+  },
+  "archive": {
+    "payloads": 102,
+    "regular_files": 103,
+    "bytes": 1788150,
+    "sha256": "9f9ca0a6de306a3cab1b126fb64938bef517087fae4da245c5424faa913bf169"
+  },
+  "review": "Separate final integrated source/test/docs/raw-evidence review passed with no actionable findings;102payload archive,548tested identities, pinned generated files, actual old parser, normal/scoped units and six lifecycle/X outputs independently verified",
+  "routing": {
+    "analysis_requested": "gpt-6-astra/high",
+    "implementation_requested": "gpt-6.1-sol/high",
+    "review_requested": "gpt-6.1-sol/high",
+    "runtime_metadata": "unverified"
+  },
+  "merge247": {
+    "sha": "af11b649aac8ee8463f33162da6940be8a958820",
+    "tree": "4146383926cc5ac8effffd1c2ff6a2ee1df772df",
+    "signature": "valid",
+    "author_DCO": "Cam <cam@fungalo.co>",
+    "branch": "retired",
+    "GitHub_Project": "Done"
+  },
+  "performance": {
+    "reference": "PR243",
+    "merged_since": 4,
+    "candidate_merge_count": 5,
+    "comparison_due_now": false,
+    "next_regular_comparison": "after this candidate merges"
+  },
+  "limits": [
+    "Header/widget tokens and partial parser error ownership remain separate",
+    "Current replacement observations do not count every intermediate temporary or whole-module heap size",
+    "Active callbacks retain complete tables/accounting for process reclamation",
+    "No fresh BSD/AMD64/install/full-default-X/theme/screenshot/whole-parser-module-leak/native-CPU/release claim",
+    "Separate blocked pathname proposal not retried; broader #4/#34 remain open"
+  ],
+  "duplicate_cleanup": {
+    "status": "verified guest capture and duplicate archive retired",
+    "regular_files": 103,
+    "active_references": 0,
+    "canonical_evidence_build_source_performance_refs": "preserved"
+  }
+}

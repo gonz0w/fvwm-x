@@ -2602,6 +2602,21 @@ script_parser_test = executable(
 )
 test('script-parser', script_parser_test, timeout: 60)
 
+script_value_owner_test = executable(
+    'test-script-value-owner',
+    ['test_script_value_owner.c', '../modules/FvwmScript/script_value_table.c',
+     '../modules/FvwmScript/script.c', '../modules/FvwmScript/scanner.c',
+     '../modules/FvwmScript/libyywrap.c',
+     '../modules/FvwmScript/script_storage.c',
+     '../modules/FvwmScript/script_value.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+    link_args: ['-Wl,--wrap=free', '-Wl,--wrap=yylex'],
+)
+test('script-value-owner', script_value_owner_test, timeout: 60)
+
 script_block_owner_test = executable(
     'test-script-block-owner',
     ['test_script_block_owner.c', '../modules/FvwmScript/script_block.c',

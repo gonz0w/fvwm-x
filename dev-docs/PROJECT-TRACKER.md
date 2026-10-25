@@ -94,14 +94,55 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Script argument-value ownership — 2026-10-25
+
+Owner: Cam; `codex/m5-script-value-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
+Status: focused checks and separate final review pass; ready for PR delivery
+after merged PR247
+`af11b649aac8ee8463f33162da6940be8a958820`; signature/DCO and reviewed tree
+`4146383926cc5ac8effffd1c2ff6a2ee1df772df` verified; branch retired,
+GitHub/Project Done.
+
+Finite outcome: release scanner-owned VAR/STR/GSTR constructor tokens after the
+three successful argument grammar actions return. Keep borrowed-input AddVar/
+AddConstStr behavior and existing stored copies/IDs/accounting. Own complete
+named-variable/literal name/value tables after successful parsing; retirement
+observes current replaced values and occurs only at idle shutdown after callbacks.
+Active Init/event/Periodic exits retain tables and accounting. Reset accounting
+only upon complete table retirement. Header/widget tokens, partial parser/error
+stacks, base X/fonts, selection and blocked pathname work remain separate.
+No syntax/limit/ordering/budget/representation change or general parser rewrite.
+
+Acceptance: actual old parser control observes retained new/repeated-variable,
+plain/brace/empty-literal tokens; repaired grammar consumes each exactly once.
+Pure table ownership covers distinct empty fields, live value replacement, frozen
+count, repeated clear and active refusal. Existing parser/storage/execution limits
+remain; actual-module Init/event/Periodic/Quit and Loop/self-replacement keep values
+usable through callbacks. Idle exit/dead pipe/startup refusal retire current tables;
+active exits retain them. Regenerate parser through the pinned generator and prove
+scanner/header outputs unchanged. One combined affected Linux normal/scoped unit
+and actual-X checkpoint, with no automatic OS/install/theme matrix. Separate final
+source/evidence review and signed author-DCO PR. Broader #4/#34 remain open.
+Evidence: actual old parser retains eight argument tokens; candidate releases
+all eight while IDs/copies/accounting remain. Pinned generation changes only
+three parser actions, with identical scanner/header. Six normal units, scoped
+ASan/UBSan value owner, six actual-module value lifecycles and existing execution
+X checks pass on the first combined invocation. Current table replacement,
+self-Set/Loop, idle retirement/account reset and active retention are observed.
+Separate final source/test/evidence review is clear.
+[Report](verification/VERIFICATION-2026-10-25-M5-SCRIPT-VALUES.md).
+
+PR243 reference is 4/5 after PR247. This candidate makes 5/5 on merge; the next
+regular performance observation is then due. No new UI or screenshot/theme work.
+Verified guest duplicates are retired; canonical evidence and caches remain.
+
 ## M5 Script binding and message-string ownership — 2026-10-25
 
 Owner: Cam; `codex/m5-script-binding-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
-Status: focused checks and separate final review pass; ready for PR delivery
-after merged PR246
-`15feef97d6438c412a6e5381726b28aef195298d`; signature/DCO and reviewed tree
-`5f6e510e181931dfefe35db1211c19ba64a54058` verified, completed branch
-retired and GitHub/Project Done.
+Status: merged in PR247 as `af11b649aac8ee8463f33162da6940be8a958820`;
+canonical signature/DCO and exact reviewed tree
+`4146383926cc5ac8effffd1c2ff6a2ee1df772df` verified; branch retired,
+GitHub/Project Done. Focused checks and separate review passed after PR246.
 
 Finite outcome: release Key's constructor action after shared AddBinding copies
 it, including zero-match results; correct the shared ownership comment without

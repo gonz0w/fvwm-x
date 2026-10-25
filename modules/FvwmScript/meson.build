@@ -44,6 +44,7 @@ fvwmscript_sources = [
     'script_process.c',
     'script_fifo.c',
     'script_value.c',
+    'script_value_table.c',
     'script_execution.c',
     'script_storage.c',
     'script_packet.c',

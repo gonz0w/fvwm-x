@@ -833,11 +833,11 @@ headwhile: addlbuff arg addlbuff compare addlbuff arg DO	{ AddComBloc(16,3,1); }
 
 /* Command Argument */
 /* Elementary Argument */
-var	: VAR			{ AddVar($1); }
+var	: VAR			{ AddVar($1); free($1); }
 	;
-str	: STR			{ AddConstStr($1); }
+str	: STR			{ AddConstStr($1); free($1); }
 	;
-gstr	: GSTR			{ AddConstStr($1); }
+gstr	: GSTR			{ AddConstStr($1); free($1); }
 	;
 num	: NUMBER		{ AddConstNum($1); }
 	;

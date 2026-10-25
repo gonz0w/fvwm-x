@@ -7,6 +7,25 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+## Portable and OpenBSD hardening issue scope — 2026-10-25
+
+Owner: Cam. The user approved issue planning after reviewing accepted hardening,
+outstanding owners and OpenBSD guidance. HARDEN-01 #231 records measurable
+requirements; BOX-02/03/04 #232–#234 scope platform-specific image-worker
+containment under BOX-01 #41; VERIFY-02/03 #235–#236 add binary-protection and
+OpenBSD allocator-audit qualification under VERIFY-01 #5. All six are P2 Backlog.
+FD-01 #7 and PROC-01 #15 retain the file/execution trust-boundary inventory;
+IMAGE-01 #8 and BUILD-PROFILES-01 #226 link their affected contracts. FUZZ-01
+#227 already owns local fuzzing and is not duplicated.
+
+This is accepted issue scope, not implemented containment, a newly reproduced
+vulnerability, runtime qualification or comprehensive OpenBSD compliance.
+Preserve the current M5/GetOutput pickup and maintenance sequence. Each sandbox
+child follows its accepted finite platform policy; neither the whole profile
+nor every historical audit becomes a new prerequisite to current maintenance.
+No whole-core sandbox, configuration migration, new mandatory package or release
+publishing is selected. See the [scope and acceptance map](decisions/PORTABLE-OPENBSD-HARDENING-2026-10-25.md).
+
 ## Goals and constraints
 
 - A simpler codebase that runs existing FVWM 3.x configuration files. Compatibility
@@ -1263,6 +1282,10 @@ unchanged. Conditional qualification owners are consulted only for affected
 contracts; performance-only owners stay Later; new feature/polish owners are
 Backlog under their existing milestones. [Complete register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).
 
+The [2026-10-25 hardening follow-ups](decisions/PORTABLE-OPENBSD-HARDENING-2026-10-25.md)
+extend D3's scoped policy/worker lane and VERIFY-01's conditional qualification
+lane as P2 Backlog. They do not replace the selected implementation queue.
+
 Development cadence, revised by the user on 2026-10-23: combine larger sets of
 similar issues before one focused Linux checkpoint. Aim for six to ten related
 substantive improvements where useful, or a complete reviewable owner slice;
@@ -1562,6 +1585,12 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 
 | ID | Priority / status | Work and acceptance |
 | --- | --- | --- |
+| HARDEN-01 | P2 / backlog; issue scope approved | [#231](https://github.com/gonz0w/fvwm-x/issues/231): map applicable OpenBSD and portable hardening recommendations to component authority, platform/toolchain requirements, enforcement, evidence and justified exceptions. Distinguish application controls from OS/compiler defaults and retain the trusted-X11/configured-shell boundaries. No blanket compliance claim or new queue blocker. |
+| BOX-02 | P2 / backlog; child of BOX-01 | [#232](https://github.com/gonz0w/fvwm-x/issues/232): after the finite OpenBSD policy decision in #41, add staged pledge and locked unveil to existing image-worker modes. Separate decode/effects authority, preserve relative resources/fonts/themes and test denial, setup refusal and recovery on both architectures. No whole-core adoption. |
+| BOX-03 | P2 / backlog; child of BOX-01 | [#233](https://github.com/gonz0w/fvwm-x/issues/233): after the finite FreeBSD policy decision in #41, use capability mode and reduced descriptor/ioctl/fcntl rights for existing workers. Prepare required access explicitly, preserve rendering/lifetime contracts and qualify allowed/denied operations and recovery. |
+| BOX-04 | P2 / backlog; child of BOX-01 | [#234](https://github.com/gonz0w/fvwm-x/issues/234): after the finite Linux policy/support decision in #41, apply suitable seccomp/no_new_privs/Landlock controls with detected kernel/ABI support. Document effective protection and explicit refusal/reduced-profile policy; no silent full-containment claim or mandatory desktop package. |
+| VERIFY-02 | P2 / backlog; child of VERIFY-01 | [#235](https://github.com/gonz0w/fvwm-x/issues/235): inspect produced/installed C and Go binaries across supported platforms for applicable protections and exceptions, including OpenBSD native defenses. Reuse Linux C checks, add meaningful inspector controls, and distinguish metadata/defaults from observed enforcement. Coordinate #226. |
+| VERIFY-03 | P2 / backlog; child of VERIFY-01 | [#236](https://github.com/gonz0w/fvwm-x/issues/236): run a finite ownership/failure/teardown subset with OpenBSD MALLOC_OPTIONS=S on AMD64/ARM64. Retain findings and exact libc/source/profile identities; this is not a production default, Linux sanitizer substitute or whole-project safety claim. |
 | SCRIPT-01 | P1 / in progress | Bounded files/messages/commands/output, checked parser/widget arithmetic, literal tags and user-approved execution/storage/drawing policies are implemented. Shared sleeping delays and MiniScroll release cancellation preserve first action/held cadence. Sparse colorsets preserve large IDs with stable records, checked admission and ordered packets; approved limits are 4096 distinct sets/65536 override and zero cloning for undefined module IDs. SendMsgAndGet now uses checked owned FIFO endpoints, nonblocking transport, terminated replies and the approved five-second overall deadline with override. Latest full gates pass Linux 75/75 on three legs and BSD 64/64 on four targets; ten FIFO outcomes plus prior colorset/widget/storage/execution/selection checks pass on all four default BSD servers. Seven archives match 160 fingerprints/1159 modes and fresh tested-code installs. [FIFO report](verification/VERIFICATION-2026-10-05-SCRIPT-FIFO.md), [colorset report](verification/VERIFICATION-2026-10-05-COLORSETS.md). Text/list findings are now repaired and verified on Linux 77/77 and BSD 66/66 with staged default-server checks; see the [text/list report](verification/VERIFICATION-2026-10-05-SCRIPT-TEXT.md). The [interactive text budget](verification/VERIFICATION-2026-10-05-SCRIPT-TEXT-LIMIT.md) is approved and fully verified. The approved [geometry/font-layout checkpoint](verification/VERIFICATION-2026-10-06-SCRIPT-GEOMETRY.md) passes 586 full-suite executions, exact installs and all default BSD X checks. The approved [font-shadow checkpoint](verification/VERIFICATION-2026-10-06-FONT-SHADOW.md) passes 600 full-suite executions, exact installs and shared consumer recovery across Linux/default BSD X. Asynchronous core image activation is locally qualified; next, common button-release servicing is locally qualified; active viewport and menu follow-ups are locally qualified under their separate frozen checkpoints. Unicode/font-set measurement and bounded modal/descriptor service are strictly locally qualified under the [font/modal checkpoint](verification/VERIFICATION-2026-10-11-FONT-MODAL.md), including explicit resource revisions. Broader resource lifetime/budgets, TEXT-01 shaping/IME/font fallback and native Linux release sanitizer execution remain open. |
 | VERIFY-01 | P1 / release gate; broader native qualification open | Run actual native Linux ASan/UBSan and real-X checks locally; add bounded parser/protocol fuzz entry points, verify ELF hardening and preserve failures/skips. Emulated passes and configuration alone do not qualify native execution. No remote CI executor or GitHub Actions is required under the [local-review decision](decisions/LOCAL-REVIEW-GITHUB-2026-10-13.md). Reuse exact accepted profiles and continue affected local regressions; physical hardware/toolkit/compositor checks retain their own gates. The window-update checkpoint retains an unchanged Linux AMD64 GCC topology pressure-noise 100 ms xrandr failure after isolated/idle controls. [Evidence](verification/VERIFICATION-2026-10-15-WINDOW-UPDATES.md). The current style-filter full run passes that test but retains OpenBSD AMD64 desktop/MFL, harness readiness and verification-mock deadline failures after one unchanged control; its fresh install/staged geometry remain unperformed. [Current gaps](verification/VERIFICATION-2026-10-15-STYLE-FILTER.md). |
 | COMPAT-01 | P1 / configuration compatibility gate; scope clarified | Representative six-platform baseline is implemented. Check existing configuration syntax and useful configured command/binding/function/theme behavior with affected real-X fixtures. Module-protocol tests establish correctness of shipped consumers, not an unchanged external ABI promise. Exact legacy rendering and incidental behavior are not blanket release gates. Ask before deliberate configuration incompatibilities; approved Perl retirement remains recorded. Reconcile open compatibility-only work against the [clarified scope](decisions/CONFIG-COMPATIBILITY-SCOPE-2026-10-07.md); retain prior evidence and independent safety/platform gates. |

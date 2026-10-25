@@ -1,5 +1,12 @@
 # GitHub roadmap index
 
+Hardening scope approved 2026-10-25: six P2 Backlog additions below mirror the
+[tracker](PROJECT-TRACKER.md#portable-and-openbsd-hardening-issue-scope--2026-10-25)
+and [scope record](decisions/PORTABLE-OPENBSD-HARDENING-2026-10-25.md). #232–#234
+are native children of #41; #235–#236 are native children of #5. D3 owns scoped
+worker policy and Qualification owns the verification additions. Existing
+maintenance pickup, statuses and qualification evidence remain separately owned.
+
 Current priority, 2026-10-23: **maintenance first; new feature pickup paused**.
 The [batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md) reconciles
 all 73 open issues: 34 maintenance owners/children, 12 conditional qualification
@@ -24,6 +31,12 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 
 | Stage | Tracker ID | Issue |
 | --- | --- | --- |
+| 05 | HARDEN-01 | [#231 — Define measurable OpenBSD and portable hardening requirements](https://github.com/gonz0w/fvwm-x/issues/231) |
+| 05 | BOX-02 | [#232 — Sandbox OpenBSD image workers with pledge and locked unveil](https://github.com/gonz0w/fvwm-x/issues/232) |
+| 05 | BOX-03 | [#233 — Constrain FreeBSD image workers with Capsicum descriptor rights](https://github.com/gonz0w/fvwm-x/issues/233) |
+| 05 | BOX-04 | [#234 — Restrict Linux image workers with detected syscall and filesystem controls](https://github.com/gonz0w/fvwm-x/issues/234) |
+| 01 | VERIFY-02 | [#235 — Verify installed C and Go binary protections on Linux and BSD](https://github.com/gonz0w/fvwm-x/issues/235) |
+| 01 | VERIFY-03 | [#236 — Exercise ownership and failure paths with OpenBSD allocator auditing](https://github.com/gonz0w/fvwm-x/issues/236) |
 | 01 | IPC-01 | [#2 — Qualify the original module/IPC correctness repair](https://github.com/gonz0w/fvwm-x/issues/2) |
 | 01 | GEO-01 | [#1 — Qualify the original geometry correctness repair](https://github.com/gonz0w/fvwm-x/issues/1) |
 | 01 | SCRIPT-01 | [#4 — Complete Script ownership, resource and text/input work](https://github.com/gonz0w/fvwm-x/issues/4) |

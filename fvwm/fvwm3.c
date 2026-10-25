@@ -756,11 +756,6 @@ InstallSignals(void)
 	sigact.sa_handler = fvwmReapChildren;
 	sigaction(SIGCHLD, &sigact, NULL);
 #else
-#ifdef USE_BSD_SIGNALS
-	fvwmSetSignalMask(
-		sigmask(SIGUSR1) | sigmask(SIGUSR2) | sigmask(SIGINT) |
-		sigmask(SIGHUP)  | sigmask(SIGQUIT) | sigmask(SIGTERM) );
-#endif
 
 	/*
 	 * We don't have sigaction(), so fall back on

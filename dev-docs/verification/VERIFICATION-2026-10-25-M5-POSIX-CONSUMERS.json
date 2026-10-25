@@ -1,0 +1,426 @@
+{
+  "base": "0aa3bd2bc4f7f917c31ec9dc3ac31200e0d644fc",
+  "scope": "M5 pre-POSIX shim retirement and GetOutput shared-wait consumer adoption; #34/#7/#4 remain open",
+  "final_source_and_binaries": {
+    "source": {
+      "fvwm/fvwm3.c": {
+        "sha256": "4a1b4e67f1e6a60eb58922168422ff32473b66c384670d4804dc287bf285d987",
+        "mode": 420
+      },
+      "libs/fvwmsignal.c": {
+        "sha256": "3975545df239e51d9aff65f5dabe9cac0f14915f25a38a3b34135adcd320ae0a",
+        "mode": 420
+      },
+      "libs/fvwmsignal.h": {
+        "sha256": "c7eac0cde645f8befd4da5b16bd354c3a89ff9e1b036ac1059432a91338279d7",
+        "mode": 420
+      },
+      "modules/FvwmAnimate/FvwmAnimate.c": {
+        "sha256": "9c9154392a4a268a4501e53d0eccc82c870ccc3676df71b99240ddba950e93ba",
+        "mode": 420
+      },
+      "modules/FvwmAuto/FvwmAuto.c": {
+        "sha256": "9ae27f552d8c33b2ee5ecc87c147c10075bcba70f2c2f943dd85f22ffb40bd7f",
+        "mode": 420
+      },
+      "modules/FvwmButtons/FvwmButtons.c": {
+        "sha256": "7a54eabde026751e49991574da1e89bc0948f37f2904b5bb64e0200e5fd1be83",
+        "mode": 420
+      },
+      "modules/FvwmForm/FvwmForm.c": {
+        "sha256": "e419d00ce76a22e9ae316e6ab95ea4f0a2887fb0dd0432e6371e7deeea19321a",
+        "mode": 420
+      },
+      "modules/FvwmIconMan/FvwmIconMan.c": {
+        "sha256": "187c6d30e79cb780d0f5651fa866cb0f88caac3a66096f92199ac3e7b617ea0e",
+        "mode": 420
+      },
+      "modules/FvwmIdent/FvwmIdent.c": {
+        "sha256": "805f41303085c9d7059d9c1a9b637af4d6a846f3244343da00b54bf1f866a62a",
+        "mode": 420
+      },
+      "modules/FvwmPager/FvwmPager.c": {
+        "sha256": "a9538006a43669579fbfc3e44c0ccc9f8a9f3bc54c6159904ab0351a0f7cdbb5",
+        "mode": 420
+      },
+      "modules/FvwmScript/FvwmScript.c": {
+        "sha256": "e371554d65053b65b68e370a2e5269919fbf5e89ea69355cef5e93ea51f74ef2",
+        "mode": 420
+      },
+      "modules/FvwmScript/script_process.c": {
+        "sha256": "efd365911d10e9593225690c1fa543d573134a8d0db94c3283b6fe64cccb3c20",
+        "mode": 420
+      },
+      "tests/meson.build": {
+        "sha256": "09f6891275292995acdadf99ee711c9e8f51bcf2d4264d76482af5ffac7cb140",
+        "mode": 420
+      },
+      "tests/test_script_process.c": {
+        "sha256": "3eca5039212e384bfc76d9c4f9646185d944c17ac4defdf90a0e9d4925fa0803",
+        "mode": 420
+      },
+      "tests/test_script_process_fault.c": {
+        "sha256": "877d3c67f844bf40558cdabb796a7a1a23560f173561177b8fd61b6ac6092760",
+        "mode": 420
+      }
+    },
+    "binaries": {
+      "normal/tests/test-fvwmsignal": {
+        "sha256": "ccbe779a61e4b5c037a3089093d3896e03463ffa765974b36a86fb386aa40d69",
+        "bytes": 98424
+      },
+      "normal/tests/test-script-process": {
+        "sha256": "d28b9a07f2114e3d42ebfc50cfb92a8264c562d8f2e05614a9d1f91a786182dc",
+        "bytes": 131072
+      },
+      "normal/tests/test-script-process-fault": {
+        "sha256": "e6039540cf029ae6ae0f571974743de0d151661b105ffb2be8419cde53251ce9",
+        "bytes": 138144
+      },
+      "normal/tests/test-image-process-async": {
+        "sha256": "f3677b8ef3ab108b61758d7c04ece3b134cb74f8bdc3ba143dfe81c8b7197ca0",
+        "bytes": 149040
+      },
+      "normal/fvwm3": {
+        "sha256": "19bea9b02b17ba7b9d4abe380cf39aed50edc646183589f37191da9dfc9b67cf",
+        "bytes": 5395312
+      },
+      "normal/modules/FvwmAnimate/FvwmAnimate": {
+        "sha256": "b57f5d0372f2bdbdeab07ea65066c23851af96acccf25ce0cc8183dc919692ca",
+        "bytes": 894400
+      },
+      "normal/modules/FvwmAuto/FvwmAuto": {
+        "sha256": "3c28c9c4b68fc6068c878c7d43a7996051b135bce6e917b659a6bcbf20567b74",
+        "bytes": 167176
+      },
+      "normal/modules/FvwmButtons/FvwmButtons": {
+        "sha256": "acc178f36ad6c4af296d9307bd2621b61f6bd3f86f124ee391e0b89604a669ad",
+        "bytes": 1728224
+      },
+      "normal/modules/FvwmForm/FvwmForm": {
+        "sha256": "46a336f54b416e4c68b9730b8018507c8a7f8872cf0ffa1bb6988e0c8c908a96",
+        "bytes": 1623992
+      },
+      "normal/modules/FvwmIconMan/FvwmIconMan": {
+        "sha256": "9588472feac56ff9056a10483e3a5a7fd3b016fd42467d8f7fb5d931dbe4ec8a",
+        "bytes": 1777888
+      },
+      "normal/modules/FvwmIdent/FvwmIdent": {
+        "sha256": "6e6a88ed85427e281d6a1241187d028f93107ee6976a4d74b423034fb9306f2d",
+        "bytes": 1416648
+      },
+      "normal/modules/FvwmPager/FvwmPager": {
+        "sha256": "032f3df083a7a1a0b00f4f4bb2641e9c7dea09c59b5d9ff6d48e00f69a8ea905",
+        "bytes": 1640408
+      },
+      "normal/modules/FvwmScript/FvwmScript": {
+        "sha256": "add581ad8a751c62702262eb3a20162eef1d8d2e6d5ecd00d83b1b2897a2979b",
+        "bytes": 2208072
+      },
+      "asan/tests/test-fvwmsignal": {
+        "sha256": "2526ea8e8010fde91d234d5cb3192eaa9ad465df145b40efe134af22053ba50c",
+        "bytes": 1926624
+      },
+      "asan/tests/test-script-process": {
+        "sha256": "85993a92330b7e54656065af23abe9965e9825eb1e3e3e57b5ae89fb5857ac31",
+        "bytes": 2030840
+      },
+      "asan/tests/test-script-process-fault": {
+        "sha256": "5a16a06243ff41831be0ca36554dc39ba3c6271aa2d2024d1f06a67973d9623b",
+        "bytes": 2035744
+      },
+      "asan/tests/test-image-process-async": {
+        "sha256": "89e1e414d7cdb8d08c1d7e76367a7b16e1e0b87b6273e7ab5aca4886b8fdec04",
+        "bytes": 2046088
+      }
+    },
+    "asan_unit_details": [
+      {
+        "name": "fvwm3 / image-process-async",
+        "stdout": "incremental image transport preserves readiness and child ownership\n",
+        "result": "OK",
+        "starttime": 1792955475.5443876,
+        "returncode": 0
+      },
+      {
+        "name": "fvwm3 / fvwmsignal",
+        "stdout": "actual signals preserve wrapper masks, lifetimes and I/O results\n",
+        "result": "OK",
+        "starttime": 1792955475.5455313,
+        "returncode": 0
+      },
+      {
+        "name": "fvwm3 / script-process-fault",
+        "stdout": "",
+        "result": "OK",
+        "starttime": 1792955475.5434127,
+        "returncode": 0
+      },
+      {
+        "name": "fvwm3 / script-process",
+        "stdout": "",
+        "result": "OK",
+        "starttime": 1792955475.5422044,
+        "returncode": 0
+      }
+    ],
+    "descriptor_limit": [
+      524288,
+      524288
+    ]
+  },
+  "preprocessing": {
+    "config_sha256": "5e37f28ca76b1862dd175e489aa2661a4e16d3459e711a6d2ace1910761f4824",
+    "files": {
+      "libs/fvwmsignal.c": {
+        "tokens_equal": true,
+        "tokens": 31024,
+        "allowed_metadata": [
+          {
+            "removed_empty_statements": 4
+          }
+        ],
+        "baseline_preprocessed_sha256": "3b10e5dad54df1fa483fd5bf94c76e19fa18b7a1f32a13284ece3be45d188757",
+        "final_preprocessed_sha256": "e68a98432964ecfdd022c6ac536c7d163ee82a0cea6b09e9edf83bd6c341481b"
+      },
+      "fvwm/fvwm3.c": {
+        "tokens_equal": true,
+        "tokens": 109382,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "cbbab387b706402d79636d919114f472e432a6dbf0c1380f610fadc176f85eb5",
+        "final_preprocessed_sha256": "cbbab387b706402d79636d919114f472e432a6dbf0c1380f610fadc176f85eb5"
+      },
+      "modules/FvwmAnimate/FvwmAnimate.c": {
+        "tokens_equal": true,
+        "tokens": 106258,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "6b2687854b563c4f8c906ff8238ee7fdef77fb221fcff03962304aa33abd3b95",
+        "final_preprocessed_sha256": "6b2687854b563c4f8c906ff8238ee7fdef77fb221fcff03962304aa33abd3b95"
+      },
+      "modules/FvwmAuto/FvwmAuto.c": {
+        "tokens_equal": true,
+        "tokens": 83664,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "abce957227817f16847d4c89ac164a4b60aef7538df6566aafa15adc5ff60afc",
+        "final_preprocessed_sha256": "abce957227817f16847d4c89ac164a4b60aef7538df6566aafa15adc5ff60afc"
+      },
+      "modules/FvwmButtons/FvwmButtons.c": {
+        "tokens_equal": true,
+        "tokens": 107908,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "4d98f8c902d4100519710046aa664b947dd92e9cd1e4f244237267b0f320ef27",
+        "final_preprocessed_sha256": "4d98f8c902d4100519710046aa664b947dd92e9cd1e4f244237267b0f320ef27"
+      },
+      "modules/FvwmForm/FvwmForm.c": {
+        "tokens_equal": true,
+        "tokens": 118105,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "87dd0987391281799f4606adaf61d3ea3f46c975c3c0398732fdb8661df54045",
+        "final_preprocessed_sha256": "87dd0987391281799f4606adaf61d3ea3f46c975c3c0398732fdb8661df54045"
+      },
+      "modules/FvwmIconMan/FvwmIconMan.c": {
+        "tokens_equal": true,
+        "tokens": 93092,
+        "allowed_metadata": [
+          {
+            "assertion_diagnostic_lines": [
+              [
+                "311"
+              ],
+              [
+                "303"
+              ]
+            ]
+          }
+        ],
+        "baseline_preprocessed_sha256": "2d49499d36750adc00ea3314058ea22a189844cbcc6e46b798fc7094a045cc9f",
+        "final_preprocessed_sha256": "edc894c3d0b3e096af55bec46578fa090ee93e5e7311d4632a38886517f738eb"
+      },
+      "modules/FvwmIdent/FvwmIdent.c": {
+        "tokens_equal": true,
+        "tokens": 97162,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "103bb861cc7dfb1483a31dc54ab5338d7146a7b49c15b0ac6421fa12f6b9b8aa",
+        "final_preprocessed_sha256": "103bb861cc7dfb1483a31dc54ab5338d7146a7b49c15b0ac6421fa12f6b9b8aa"
+      },
+      "modules/FvwmPager/FvwmPager.c": {
+        "tokens_equal": true,
+        "tokens": 93564,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "b24b74e1e215eabd6cb511d4eedc0beda99e88b65f97f1d0eb5fe479996d7612",
+        "final_preprocessed_sha256": "b24b74e1e215eabd6cb511d4eedc0beda99e88b65f97f1d0eb5fe479996d7612"
+      },
+      "modules/FvwmScript/FvwmScript.c": {
+        "tokens_equal": true,
+        "tokens": 103558,
+        "allowed_metadata": [],
+        "baseline_preprocessed_sha256": "0399e14600f6a44b147a9e86639c733c929db597419dc644227df7166e9341e3",
+        "final_preprocessed_sha256": "0399e14600f6a44b147a9e86639c733c929db597419dc644227df7166e9341e3"
+      }
+    }
+  },
+  "commands": [
+    {
+      "label": "normal-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "tests/test-fvwmsignal",
+        "tests/test-script-process",
+        "tests/test-script-process-fault",
+        "tests/test-image-process-async",
+        "fvwm3",
+        "modules/FvwmAnimate/FvwmAnimate",
+        "modules/FvwmAuto/FvwmAuto",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmForm/FvwmForm",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmPager/FvwmPager",
+        "modules/FvwmScript/FvwmScript"
+      ],
+      "status": 0,
+      "seconds": 5.026802343985764
+    },
+    {
+      "label": "normal-units",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "fvwmsignal",
+        "script-process",
+        "script-process-fault",
+        "image-process-async"
+      ],
+      "status": 0,
+      "seconds": 4.939227152994135
+    },
+    {
+      "label": "normal-x-script",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_process_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-posix-20261025/final/script-process-x"
+      ],
+      "status": 0,
+      "seconds": 3.0122883729927707
+    },
+    {
+      "label": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "tests/test-fvwmsignal",
+        "tests/test-script-process",
+        "tests/test-script-process-fault",
+        "tests/test-image-process-async"
+      ],
+      "status": 0,
+      "seconds": 1.54094661999261
+    },
+    {
+      "label": "asan-units",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "fvwmsignal",
+        "script-process",
+        "script-process-fault",
+        "image-process-async"
+      ],
+      "status": 0,
+      "seconds": 5.000665592000587
+    }
+  ],
+  "script_x": {
+    "open-stdout-exit-seconds": 0.12838416299200617,
+    "open-stdout": "passed",
+    "closed-stdout-exit-seconds": 0.12427330200443976,
+    "closed-stdout": "passed",
+    "cache-retry": "passed"
+  },
+  "symbol_inventory": {
+    "baseline": {
+      "status": 0,
+      "references": [
+        "HEAD:fvwm/fvwm3.c:759:#ifdef USE_BSD_SIGNALS",
+        "HEAD:fvwm/fvwm3.c:760:\tfvwmSetSignalMask(",
+        "HEAD:libs/fvwmsignal.c:100:\tBSD_BLOCK_SIGNALS;",
+        "HEAD:libs/fvwmsignal.c:129:\tBSD_UNBLOCK_SIGNALS;",
+        "HEAD:libs/fvwmsignal.c:135:#ifdef USE_BSD_SIGNALS",
+        "HEAD:libs/fvwmsignal.c:139: * fvwmSetSignalMask - store the set of mutually exclusive signals",
+        "HEAD:libs/fvwmsignal.c:147:fvwmSetSignalMask(int sigmask)",
+        "HEAD:libs/fvwmsignal.c:154: * fvwmGetSignalMask - get the set of signals that will terminate fvwm",
+        "HEAD:libs/fvwmsignal.c:160:fvwmGetSignalMask(void)",
+        "HEAD:libs/fvwmsignal.c:180:\tBSD_BLOCK_SIGNALS;",
+        "HEAD:libs/fvwmsignal.c:199:\tBSD_UNBLOCK_SIGNALS;",
+        "HEAD:libs/fvwmsignal.h:26:    && defined(HAVE_SIGBLOCK) && defined(HAVE_SIGSETMASK)",
+        "HEAD:libs/fvwmsignal.h:27:#  define USE_BSD_SIGNALS",
+        "HEAD:libs/fvwmsignal.h:30:#ifdef USE_BSD_SIGNALS",
+        "HEAD:libs/fvwmsignal.h:31:#  define BSD_BLOCK_SIGNALS      int old_mask = sigblock( fvwmGetSignalMask() )",
+        "HEAD:libs/fvwmsignal.h:32:#  define BSB_BLOCK_ALL_SIGNALS  int old_mask = sigblock( ~0 )",
+        "HEAD:libs/fvwmsignal.h:33:#  define BSD_UNBLOCK_SIGNALS    sigsetmask( old_mask )",
+        "HEAD:libs/fvwmsignal.h:35:#  define BSD_BLOCK_SIGNALS",
+        "HEAD:libs/fvwmsignal.h:36:#  define BSD_BLOCK_ALL_SIGNALS",
+        "HEAD:libs/fvwmsignal.h:37:#  define BSD_UNBLOCK_SIGNALS",
+        "HEAD:libs/fvwmsignal.h:71:#ifdef USE_BSD_SIGNALS",
+        "HEAD:libs/fvwmsignal.h:72:extern void fvwmSetSignalMask(int);",
+        "HEAD:libs/fvwmsignal.h:73:extern int fvwmGetSignalMask(void);",
+        "HEAD:modules/FvwmAnimate/FvwmAnimate.c:751:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmAnimate/FvwmAnimate.c:752:  fvwmSetSignalMask( sigmask(SIGTERM) |",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:156:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmAuto/FvwmAuto.c:157:\tfvwmSetSignalMask( sigmask(SIGPIPE) |",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:648:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmButtons/FvwmButtons.c:649:\tfvwmSetSignalMask(",
+        "HEAD:modules/FvwmForm/FvwmForm.c:3188:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmForm/FvwmForm.c:3189:  fvwmSetSignalMask( sigmask(SIGPIPE) | sigmask(SIGTERM) | sigmask(SIGINT) );",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:281:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmIconMan/FvwmIconMan.c:282:\tfvwmSetSignalMask(",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:167:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmIdent/FvwmIdent.c:168:\tfvwmSetSignalMask( sigmask(SIGPIPE) |",
+        "HEAD:modules/FvwmPager/FvwmPager.c:177:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmPager/FvwmPager.c:178:\tfvwmSetSignalMask(sigmask(SIGPIPE) |",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1810:#ifdef USE_BSD_SIGNALS",
+        "HEAD:modules/FvwmScript/FvwmScript.c:1811:  fvwmSetSignalMask( sigmask(SIGPIPE) |"
+      ]
+    },
+    "current": {
+      "status": 1,
+      "references": []
+    }
+  },
+  "baseline_routing": {
+    "status": 134,
+    "command": "export PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:$PATH LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib PKG_CONFIG_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off; ulimit -c 0; ninja -C /tmp/fvwm-module-waits-20261015/build-gcc -j2 tests/test-script-process-fault && cp /tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-process-fault /tmp/fvwm-m5-posix-20261025/baseline-process-fault && /tmp/fvwm-m5-posix-20261025/baseline-process-fault"
+  },
+  "baseline_observation": "shared=0, foreground raw polls=3, longest open timeout=100ms; healthy old bridge fails new routing expectation, not a demonstrated live defect",
+  "archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-posix-signals/native-evidence.tgz",
+    "sha256": "75c233fae55062bf89b8a6ad5ac0c405b3874ef9d0c191c37ea6cef41a5d293c",
+    "bytes": 2004545,
+    "regular_payloads_read": 65,
+    "gzip_crc_to_eof": true
+  },
+  "limits": [
+    "Current Linux normal/scoped unit and normal Script X evidence only; unchanged PR239 BSD primitive checks retained as historical prerequisite",
+    "No new signal-installation policy, configuration syntax or packet layout",
+    "Production termination remains permanent; repeat/reset controls are fixture-only",
+    "No performance improvement claim or due benchmark; PR238 cadence1/5,2/5 on merge"
+  ],
+  "routing": "Requested Astra/high analysis, Sol/high implementation and separate Sol/high review; model metadata unavailable/unverified"
+}

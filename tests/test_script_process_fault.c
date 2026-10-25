@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "modules/FvwmScript/script_process.h"
+#include "libs/fvwmsignal.h"
 #include <assert.h>
 #include <dirent.h>
 #include <errno.h>
@@ -37,7 +38,12 @@ static enum fault_kind fault;
 static pid_t owner;
 static bool fail_child, high_pipes, fail_fork_restore;
 static int occurrence, calls;
+static bool monitor_waits, in_shared_wait, cancel_before_wait;
+static int shared_waits, foreground_polls, cleanup_polls;
+static int canceled_foreground_polls, longest_open_wait, closed_waits;
 
+int __real_fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms);
+int __real_poll(struct pollfd *fds, nfds_t count, int timeout_ms);
 int __real_pipe(int descriptors[2]);
 int __real_fcntl(int descriptor, int command, ...);
 int __real_sigprocmask(int how, const sigset_t *set, sigset_t *old);
@@ -47,6 +53,54 @@ pid_t __real_fork(void);
 int __real_setpgid(pid_t pid, pid_t group);
 int __real_dup2(int old, int new);
 int __real_execl(const char *path, const char *arg, ...);
+
+int __wrap_fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms)
+{
+	if (!monitor_waits || getpid() != owner)
+		return __real_fvwmPoll(fds, count, timeout_ms);
+	assert(fds != NULL && count == 2);
+	shared_waits++;
+	if (cancel_before_wait)
+	{
+		cancel_before_wait = false;
+		/* Hit the foreground check/enter boundary, before the real shared
+		 * helper arms its jump and checks the permanent termination flag. */
+		assert(raise(SIGTERM) == 0);
+	}
+	in_shared_wait = true;
+	int result = __real_fvwmPoll(fds, count, timeout_ms);
+	in_shared_wait = false;
+	return result;
+}
+
+int __wrap_poll(struct pollfd *fds, nfds_t count, int timeout_ms)
+{
+	if (monitor_waits && getpid() == owner)
+	{
+		if (fds == NULL)
+		{
+			/* TERM cleanup intentionally waits outside the shared helper. */
+			assert(count == 0);
+			assert(!in_shared_wait);
+			cleanup_polls++;
+		}
+		else
+		{
+			assert(count == 2);
+			foreground_polls++;
+			if (isTerminated)
+				canceled_foreground_polls++;
+			if (fds[0].fd < 0 && fds[1].fd < 0)
+			{
+				assert(timeout_ms > 0 && timeout_ms <= 10);
+				closed_waits++;
+			}
+			else if (timeout_ms > longest_open_wait)
+				longest_open_wait = timeout_ms;
+		}
+	}
+	return __real_poll(fds, count, timeout_ms);
+}
 
 static bool refuse(enum fault_kind kind)
 {
@@ -246,8 +300,73 @@ static void test_stdout_alias(bool close_stdin)
 	}
 }
 
+static void start_wait_monitor(void)
+{
+	owner = getpid();
+	shared_waits = foreground_polls = cleanup_polls = 0;
+	canceled_foreground_polls = longest_open_wait = closed_waits = 0;
+	monitor_waits = true;
+}
+
+static void test_foreground_routing(void)
+{
+	char *text;
+	size_t length;
+
+	start_wait_monitor();
+	assert(script_process_read("sleep 0.05; printf routed", 1000,
+		&text, &length));
+	assert(length == 6 && strcmp(text, "routed") == 0);
+	free(text);
+	monitor_waits = false;
+	if (shared_waits == 0 || longest_open_wait <= 100)
+		fprintf(stderr, "foreground shared waits=%d raw polls=%d "
+			"longest open timeout=%d ms\n", shared_waits,
+			foreground_polls, longest_open_wait);
+	assert(shared_waits > 0 && shared_waits == foreground_polls);
+	assert(longest_open_wait > 100 && longest_open_wait <= 1000);
+	assert(cleanup_polls == 0);
+
+	start_wait_monitor();
+	assert(script_process_read("exec 1>&-; sleep 0.1", 1000,
+		&text, &length));
+	assert(length == 0 && strcmp(text, "") == 0);
+	free(text);
+	monitor_waits = false;
+	assert(closed_waits > 0);
+	assert(shared_waits == foreground_polls && cleanup_polls == 0);
+}
+
+static void test_foreground_entry_cancellation(void)
+{
+	struct sigaction action = {0}, previous;
+	char *text = (char *)1;
+	size_t length = 99;
+	int descriptors = descriptor_count();
+
+	action.sa_handler = fvwmSetTerminate;
+	sigemptyset(&action.sa_mask);
+	assert(sigaction(SIGTERM, &action, &previous) == 0);
+	start_wait_monitor();
+	cancel_before_wait = true;
+	assert(!script_process_read("sleep 2", 1000, &text, &length));
+	assert(errno == ECANCELED && text == NULL && length == 0);
+	monitor_waits = false;
+	assert(shared_waits == 1 && !cancel_before_wait && isTerminated);
+	assert(foreground_polls == 0 && canceled_foreground_polls == 0);
+	assert(cleanup_polls > 0);
+	assert(descriptor_count() == descriptors);
+	assert(waitpid(-1, NULL, WNOHANG) < 0 && errno == ECHILD);
+	/* Production termination is permanent; only this fixture resets it. */
+	isTerminated = 0;
+	assert(sigaction(SIGTERM, &previous, NULL) == 0);
+	retry();
+}
+
 int main(void)
 {
+	test_foreground_routing();
+	test_foreground_entry_cancellation();
 	for (int nth = 1; nth <= 2; nth++)
 		test_fault(FAULT_PIPE, false, nth);
 	for (int nth = 1; nth <= 4; nth++)

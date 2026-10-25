@@ -2612,6 +2612,35 @@ script_process_test = executable(
 )
 test('script-process', script_process_test, timeout: 60)
 
+if host_machine.system() == 'linux'
+    script_process_fault_test = executable(
+        'test-script-process-fault',
+        ['test_script_process_fault.c', '../modules/FvwmScript/script_process.c'],
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        c_args: ['-UNDEBUG'],
+        link_args: ['-Wl,--wrap=pipe', '-Wl,--wrap=fcntl',
+            '-Wl,--wrap=fcntl64', '-Wl,--wrap=sigprocmask', '-Wl,--wrap=sigaction',
+            '-Wl,--wrap=fork', '-Wl,--wrap=setpgid', '-Wl,--wrap=dup2',
+            '-Wl,--wrap=execl'],
+    )
+    test('script-process-fault', script_process_fault_test, timeout: 60)
+endif
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test(
+        'script-process-xvfb',
+        py,
+        args: [files('live_x/script_process_live.py'), '--module', fvwm_script,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-process'],
+        depends: fvwm_script,
+        is_parallel: false,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        timeout: 90,
+    )
+endif
+
 script_value_test = executable(
     'test-script-value',
     ['test_script_value.c', '../modules/FvwmScript/script_value.c'],

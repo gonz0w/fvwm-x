@@ -5,6 +5,13 @@ planning graph as the project's entry point. Paths identify subsystem owners;
 the source, Meson graph and tests determine actual behavior. Update affected
 rows with an architectural change, rather than regenerating broad claims.
 
+The private static library no longer carries the unused timeout subsystem,
+queue-tail operate wrapper or OS-name helper. Active queue front/all callbacks
+and deferred retirement remain in `libs/fqueue.c`; descriptor limits and file
+stamps remain in `libs/System.c`. The module-runtime unit observes the existing
+preview-owner notification without linking the preview implementation.
+[Retirement evidence](verification/VERIFICATION-2026-10-25-M5-PRIVATE-HELPERS.md).
+
 ## Ownership and flow
 
 ```text

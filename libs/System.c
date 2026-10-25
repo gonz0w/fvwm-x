@@ -24,9 +24,6 @@
 #include "Strings.h"
 #include "log.h"
 
-#if HAVE_UNAME
-#include <sys/utsname.h>
-#endif
 #include "libs/fvwm_sys_stat.h"
 
 #if HAVE_SYS_SELECT_H
@@ -66,24 +63,6 @@ void fvwmlib_init_max_fd(void)
 	fvwmlib_max_fd = GetFdWidth();
 
 	return;
-}
-
-
-/* return a string indicating the OS type (i.e. "Linux", "SINIX-D", ... ) */
-int getostype(char *buf, int max)
-{
-#if HAVE_UNAME
-	struct utsname sysname;
-
-	if (uname( &sysname ) >= 0)
-	{
-		buf[0] = '\0';
-		strncat(buf, sysname.sysname, max);
-		return 0;
-	}
-#endif
-	strcpy (buf, "");
-	return -1;
 }
 
 

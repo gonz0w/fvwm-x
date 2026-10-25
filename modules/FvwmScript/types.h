@@ -221,6 +221,9 @@ struct XObj
 
 void ChooseFunction(struct XObj *xobj,char *type);
 
+/* Icon resources belong to the widget, independently of its initialization. */
+void script_icon_clear(struct XObj *xobj);
+
 void SendMsg(struct XObj *xobj,int TypeMsg);
 
 void ExecBloc(Bloc *bloc);

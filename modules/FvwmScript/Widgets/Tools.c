@@ -54,7 +54,8 @@ bool script_widget_layout(struct XObj *xobj, FlocaleFont *font,
 	input.y = xobj->y;
 	input.icon_width = xobj->icon_w;
 	input.icon_height = xobj->icon_h;
-	input.has_icon = xobj->icon != NULL;
+	input.has_icon = xobj->iconPixmap != None &&
+		xobj->icon_w > 0 && xobj->icon_h > 0;
 	input.has_title = xobj->title[0] != '\0';
 	input.menu_x = 2;
 	if (font != NULL)

@@ -264,6 +264,15 @@ all_found_deps += xext
 summary_depvals += {'xext': xext}
 conf.set10('SHAPE', true)
 
+# Runtime owners retain full package dependencies and their transitive links.
+core_runtime_deps = [
+    summary_depvals['fontconfig'],
+    summary_depvals['x11'],
+    summary_depvals['xft'],
+    summary_depvals['xrandr'],
+    xext,
+]
+
 # Begin Xlib XKB requirement.
 # XKB key translation is part of libX11, not libxkbcommon.  Refuse an
 # incomplete Xlib development package rather than advertising an unchecked
@@ -335,6 +344,7 @@ fribidi = dependency(
 )
 if fribidi.found()
     all_found_deps += fribidi
+    core_runtime_deps += fribidi
     conf.set10('HAVE_BIDI', true)
 endif
 
@@ -380,6 +390,7 @@ if iconv.found()
     endif
     conf.set10('HAVE_ICONV', true)
     all_found_deps += iconv
+    core_runtime_deps += iconv
 
     # Check if we have nl_langinfo function (typically glibc)
     if cc.has_function('nl_langinfo')
@@ -441,6 +452,7 @@ if nls_enabled
         error('The selected gettext header and library do not link together.')
     endif
     all_found_deps += libintl
+    core_runtime_deps += libintl
     conf.set10('HAVE_NLS', true)
 elif libintl.found()
     warning('NLS disabled: msgfmt is required to build translation catalogs.')
@@ -454,6 +466,7 @@ if libpng.found()
               'an audited patched package; -Dpng=disabled explicitly omits PNG support.')
     endif
     all_found_deps += libpng
+    core_runtime_deps += libpng
     conf.set10('HAVE_PNG', true)
 else
     # We only check for libpng, no automagic
@@ -517,23 +530,28 @@ if librsvg.found()
     endif
     # Retain each package's full transitive link requirements for SVG rendering.
     image_renderer_deps += [librsvg] + svg_deps
+    # Core initialization still supports the legacy rsvg_init/g_type_init path.
+    core_runtime_deps += [librsvg] + svg_deps
 endif
 
 sm = dependency('sm', required: get_option('sm'))
 if sm.found()
     all_found_deps += sm
+    core_runtime_deps += [sm, summary_depvals['ice']]
     conf.set10('SESSION', true)
 endif
 
 xcursor = dependency('xcursor', required: get_option('xcursor'))
 if xcursor.found()
     all_found_deps += xcursor
+    core_runtime_deps += xcursor
     conf.set10('HAVE_XCURSOR', true)
 endif
 
 xfixes = dependency('xfixes', required: get_option('xfixes'))
 if xfixes.found()
     all_found_deps += xfixes
+    core_runtime_deps += xfixes
     conf.set10('HAVE_XFIXES', true)
 endif
 
@@ -549,14 +567,23 @@ conf.set_quoted('FVWM_IMAGE_GZIP', image_gzip.found() ? image_gzip.full_path() :
 xpm = dependency('xpm', required: get_option('xpm'))
 if xpm.found()
     all_found_deps += xpm
+    core_runtime_deps += xpm
     conf.set10('XPM', true)
 endif
 
 xrender = dependency('xrender', required: get_option('xrender'))
 if xrender.found()
     all_found_deps += xrender
+    core_runtime_deps += xrender
     conf.set10('HAVE_XRENDER', true)
 endif
+
+# Legacy umbrella headers need broad compile visibility. The archive must not
+# pass package link requirements to consumers that do not extract their owners.
+all_compile_deps = []
+foreach dep : all_found_deps
+    all_compile_deps += dep.partial_dependency(compile_args: true, includes: true)
+endforeach
 
 # Hard-coded
 non_configurable_ops = [
@@ -646,7 +673,7 @@ fvwm3 = executable(
     meson.project_name(),
     fvwm_sources,
     include_directories: includedirs,
-    dependencies: all_found_deps,
+    dependencies: all_compile_deps + core_runtime_deps,
     link_with: libfvwm3,
     install: true,
 )

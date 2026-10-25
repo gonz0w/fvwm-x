@@ -3,7 +3,7 @@ module_sources = ['FvwmEvent.c']
 fvwm_event = executable(
     'FvwmEvent',
     module_sources,
-    dependencies: [all_found_deps],
+    dependencies: all_compile_deps,
     include_directories: includedirs,
     install_dir: fvwm_moduledir,
     install: true,

@@ -820,9 +820,18 @@ supplies X11/XRandR headers only, plus full enabled librsvg and selected backend
 package dependencies. The worker adds actual X11 linkage for software effects;
 the direct decoder adds none. Keep package-declared static/transitive closure.
 `Fsvg.h` owns config/SVG wrappers; callers own X/Picture types, and the decoder
-includes `Xmd.h` explicitly for `CARD32`. Core/module dependency bags remain
-separate pending archive/object ownership mapping. These narrower link edges do
-not imply that Cairo's runtime libraries or full-project packages can be removed.
+includes `Xmd.h` explicitly for `CARD32`.
+
+`libfvwm3` uses `all_compile_deps`, preserving umbrella-header visibility without
+propagating runtime library requirements. The core owns `core_runtime_deps`,
+including enabled SM/ICE and supported legacy SVG initialization. FvwmAuto and
+FvwmEvent extract libc-only archive helpers; FvwmMFL adds full libevent and
+FvwmRearrange adds full X11/XRandR dependency objects. Global math policy stays
+shared. Other archive consumers retain their explicit `all_found_deps` until
+their own object/link ownership groups are qualified. Keep full package objects
+for runtime owners so static/transitive requirements survive. These narrower
+link edges do not imply that Cairo's runtime libraries or full-project packages
+can be removed. [Core/archive checkpoint](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md).
 
 `fvwm/fvwm.h` forward-declares borrowed `window_style` pointers. Complete rule
 and special-flag layouts live in `fvwm/style_types.h`, included by field/constant

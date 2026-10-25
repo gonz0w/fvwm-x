@@ -1,0 +1,3065 @@
+{
+  "checkpoint": "M3.2 core/archive/four module dependency ownership",
+  "status": "focused Linux/FreeBSD default/reduced passed; full M3 qualification pending",
+  "PR204_merge": {
+    "sha": "b53609df8f67c37c358f2effe5a4a3d0f620290c",
+    "canonical_signature_DCO_tree_verified": true,
+    "branch_retired": true
+  },
+  "source": {
+    "base": "b53609df8f67c37c358f2effe5a4a3d0f620290c",
+    "files": {
+      "meson.build": {
+        "sha256": "39b6433f1995d174a8e3edc05ae990692be0d42f662cb6c1e62983299952a2aa",
+        "before_sha256": "8acfdfe2f1694ff71675e0b7258995fae9f95400dbad3addf5e03cffb031ef43",
+        "mode": 420
+      },
+      "libs/meson.build": {
+        "sha256": "801b76a9765fd48eafe03f23c8ef98b0af96d090657adc465dd542d8a546e71a",
+        "before_sha256": "cd9e9a378ca5b802ff2a7ee61bb11dab0bb84927d7e38a4bcc86deb45d10ebe0",
+        "mode": 420
+      },
+      "modules/FvwmAuto/meson.build": {
+        "sha256": "ce2fb778a6f51c4425cea69841bc24c0fbb0b63864c03b96d2e838530bb9ea20",
+        "before_sha256": "184dd8d51268f0c3f0b6a8f2de2907ec28692d49d12dcdf9bce47b3bc937ebb4",
+        "mode": 420
+      },
+      "modules/FvwmEvent/meson.build": {
+        "sha256": "ceb023f60389613034c3e5d87c4ef87d2f893a30ca3eb14af85787d6a2aeacd5",
+        "before_sha256": "e9266e598fed9df60c475fd960ca4b03d2e8843f895c69c50d30a3b270038c33",
+        "mode": 420
+      },
+      "modules/FvwmMFL/meson.build": {
+        "sha256": "9e4ab408ed3810a6f59b28715668d37a5c93ae71573ba0860fa1765e2ea19a1e",
+        "before_sha256": "53209a70d1ac42527936d41749a659aa27beb0d365a41b14fb1cc7dc38b2b228",
+        "mode": 420
+      },
+      "modules/FvwmRearrange/meson.build": {
+        "sha256": "3aa985acdcef13fc88d2a7d69fcd519aa95049ee3681e7d06a385c83a123c61d",
+        "before_sha256": "4b11d88e5ec013b71ce89d5b8c144e0345ae67aa2884daa55a9f710e988f7aeb",
+        "mode": 420
+      }
+    },
+    "archive_sha256": "ec39d834e0895d6f77623f1f1abcc68e86e20adf677e471316a252b443f9f861"
+  },
+  "targets": {
+    "linux-amd64": {
+      "archive": {
+        "sha256": "710115ac2e3bc15b56f61719ff6a514d26b9f75335485010447c0bafda455c9c",
+        "bytes": 659091,
+        "gzip_crc_to_eof": true,
+        "payloads_verified": 103,
+        "manifest_entries_verified": 102
+      },
+      "environment": {
+        "target": "linux-amd64",
+        "uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.113+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+          "x86_64"
+        ],
+        "private_png": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib",
+        "sdk_sha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0"
+      },
+      "profiles": {
+        "default": {
+          "archive_consumers": 138,
+          "changed_consumers": [
+            "fvwm3",
+            "modules/FvwmAuto/FvwmAuto",
+            "modules/FvwmEvent/FvwmEvent",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmRearrange/FvwmRearrange",
+            "tests/test-event-loop-policy",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol"
+          ],
+          "unchanged_consumer_commands": 130,
+          "all_compile_commands_exact": true,
+          "compile_command_count": 645,
+          "archive_objects_exact": 90,
+          "archive_sha256": "2ab92ef6cd9973d4c2e39a59fd57930b71542bf46b6fb5f9921d8dbc5caea0c8",
+          "config_sha256": "d414574190b5d2aa1fa5dc6988b6a62e716ce0df68c771933ebb183fbb4788cb",
+          "targets": {
+            "fvwm3": {
+              "before_bytes": 5426096,
+              "after_bytes": 5426096,
+              "bytes_delta": 0,
+              "before_sha256": "5cb750e1341f4de06db8f220b817cd540552ecb7f2ba610f259c19f760c90860",
+              "after_sha256": "9d867d11811f9c880d9ce4d7b48faf178cd5ee329ac56af2c96580e5bb897ccc",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "before_needed": [
+                "libm.so.6",
+                "libfontconfig.so.1",
+                "libICE.so.6",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libfribidi.so.0",
+                "libpng16.so.16",
+                "libSM.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXpm.so.4",
+                "libXrender.so.1",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libm.so.6",
+                "libfontconfig.so.1",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libfribidi.so.0",
+                "libpng16.so.16",
+                "libSM.so.6",
+                "libICE.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXpm.so.4",
+                "libXrender.so.1",
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXft.so.2": "/lib/x86_64-linux-gnu/libXft.so.2",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libpng16.so.16": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16",
+                "libSM.so.6": "/lib/x86_64-linux-gnu/libSM.so.6",
+                "libICE.so.6": "/lib/x86_64-linux-gnu/libICE.so.6",
+                "libXcursor.so.1": "/lib/x86_64-linux-gnu/libXcursor.so.1",
+                "libXfixes.so.3": "/lib/x86_64-linux-gnu/libXfixes.so.3",
+                "libXpm.so.4": "/lib/x86_64-linux-gnu/libXpm.so.4",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libuuid.so.1": "/lib/x86_64-linux-gnu/libuuid.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "extracted_archive_objects": [
+                "BidiJoin.c.o",
+                "Bindings.c.o",
+                "ClientMsg.c.o",
+                "ColorUtils.c.o",
+                "Colorset.c.o",
+                "CombineChars.c.o",
+                "Cursor.c.o",
+                "Event.c.o",
+                "FBidi.c.o",
+                "FEvent.c.o",
+                "FGettext.c.o",
+                "FImage.c.o",
+                "FProperty.c.o",
+                "FRender.c.o",
+                "FRenderInit.c.o",
+                "FScreen.c.o",
+                "FShape.c.o",
+                "Fft.c.o",
+                "Ficonv.c.o",
+                "Flocale.c.o",
+                "FlocaleCharset.c.o",
+                "Grab.c.o",
+                "Graphics.c.o",
+                "ImageSafety.c.o",
+                "Parse.c.o",
+                "Picture.c.o",
+                "PictureBase.c.o",
+                "PictureGraphics.c.o",
+                "PictureImageLoader.c.o",
+                "PictureUtils.c.o",
+                "Rectangles.c.o",
+                "Strings.c.o",
+                "System.c.o",
+                "Target.c.o",
+                "WinMagic.c.o",
+                "XError.c.o",
+                "XResource.c.o",
+                "atom_batch.c.o",
+                "cJSON.c.o",
+                "charmap.c.o",
+                "colorset_store.c.o",
+                "config_line.c.o",
+                "envvar.c.o",
+                "fd_safety.c.o",
+                "flist.c.o",
+                "font_shadow.c.o",
+                "fqueue.c.o",
+                "fvwmrect.c.o",
+                "fvwmsignal.c.o",
+                "geometry_transition.c.o",
+                "getpwuid.c.o",
+                "gravity.c.o",
+                "icccm_size_hints.c.o",
+                "image_decompress.c.o",
+                "image_effect_client.c.o",
+                "image_effect_protocol.c.o",
+                "image_input.c.o",
+                "image_process.c.o",
+                "image_svg_client.c.o",
+                "image_svg_protocol.c.o",
+                "image_xbm.c.o",
+                "log.c.o",
+                "modifiers.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_scale.c.o",
+                "monitor_topology.c.o",
+                "picture_argb.c.o",
+                "picture_async.c.o",
+                "picture_average.c.o",
+                "picture_color.c.o",
+                "picture_view.c.o",
+                "safemalloc.c.o",
+                "setpgrp.c.o",
+                "strlcat.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o",
+                "wcontext.c.o",
+                "wild.c.o",
+                "wm_ui_metrics.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/bin/fvwm3",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXft.so.2": "/lib/x86_64-linux-gnu/libXft.so.2",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libfribidi.so.0": "/lib/x86_64-linux-gnu/libfribidi.so.0",
+                "libpng16.so.16": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16",
+                "libSM.so.6": "/lib/x86_64-linux-gnu/libSM.so.6",
+                "libICE.so.6": "/lib/x86_64-linux-gnu/libICE.so.6",
+                "libXcursor.so.1": "/lib/x86_64-linux-gnu/libXcursor.so.1",
+                "libXfixes.so.3": "/lib/x86_64-linux-gnu/libXfixes.so.3",
+                "libXpm.so.4": "/lib/x86_64-linux-gnu/libXpm.so.4",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libuuid.so.1": "/lib/x86_64-linux-gnu/libuuid.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              }
+            },
+            "modules/FvwmAuto/FvwmAuto": {
+              "before_bytes": 136472,
+              "after_bytes": 136472,
+              "bytes_delta": 0,
+              "before_sha256": "780b8fcb77c0984f6822ad3dfd06c723b9878abed6a5d823db4263f88e52b024",
+              "after_sha256": "21039d5780a3a59759e801a95918e21ef5940d2076dadeffba24eec532a8103b",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "wild.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              }
+            },
+            "modules/FvwmEvent/FvwmEvent": {
+              "before_bytes": 139568,
+              "after_bytes": 139568,
+              "bytes_delta": 0,
+              "before_sha256": "c409eae66cea96dc189502d1adf023d728ddf5241a64c2fa7584b7af848f1ffc",
+              "after_sha256": "67ea178eda50d96d95a2cf5823b42e268fac0b743609e85b329dad4562c18efd",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              }
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "before_bytes": 407088,
+              "after_bytes": 407088,
+              "bytes_delta": 0,
+              "before_sha256": "71d37664d317e4658665e23854e58d75cea8431c96d3a0bddc7075d6fbb0216a",
+              "after_sha256": "721da9dcda39a53d289ff624c8e273a35bf115c3008cd175f77d9c64a8cbc0a9",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libevent.so"
+              ],
+              "before_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libevent-2.1.so.7": "/lib/x86_64-linux-gnu/libevent-2.1.so.7",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libevent-2.1.so.7": "/lib/x86_64-linux-gnu/libevent-2.1.so.7",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              }
+            },
+            "modules/FvwmRearrange/FvwmRearrange": {
+              "before_bytes": 446024,
+              "after_bytes": 446024,
+              "bytes_delta": 0,
+              "before_sha256": "04d307c4f95e3b7ea3a821c00cc74de2f09c095217bb18521b6cc6b228063af0",
+              "after_sha256": "63f332f4676d567ce208ca96846b0d098f017787cb689b0c2deeab3f5e1061d4",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so"
+              ],
+              "before_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              },
+              "extracted_archive_objects": [
+                "FEvent.c.o",
+                "FScreen.c.o",
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_topology.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              }
+            },
+            "tests/test-event-loop-policy": {
+              "before_bytes": 91592,
+              "after_bytes": 91592,
+              "bytes_delta": 0,
+              "before_sha256": "7b10e153000dd8564e15c2347bbafcca54a04257b7ac07b8106eff3e1a25ec72",
+              "after_sha256": "b92da2859900de606a1c240e2f99d34a8749cc5e2cdd9c69f6d932e96ed7e1d3",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "fqueue.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect": {
+              "before_bytes": 24000,
+              "after_bytes": 24000,
+              "bytes_delta": 0,
+              "before_sha256": "0d6df02e15c33f93e825c6a331b105e10e15558f3f4b26037708bb78477edda2",
+              "after_sha256": "cc4e97712b9c8286a36a8298111bfc69cbdce4397326b49796dcc742dec6b81d",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "image_effect.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect-protocol": {
+              "before_bytes": 45504,
+              "after_bytes": 45504,
+              "bytes_delta": 0,
+              "before_sha256": "c9718c46aca198d290c6c0da5e01c8bf48c4dde2872c03dfb1bf15df6d374d0c",
+              "after_sha256": "618d88b4a2a0156b6fc31023ce4668058d67627fdec9ba8a477299608418c84f",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libfribidi.so",
+                "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so",
+                "/usr/lib/x86_64-linux-gnu/librsvg-2.so",
+                "/usr/lib/x86_64-linux-gnu/libgio-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libglib-2.0.so",
+                "/usr/lib/x86_64-linux-gnu/libcairo.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXpm.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "ImageSafety.c.o",
+                "image_effect_protocol.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            }
+          },
+          "focused_tests": [
+            "fvwm3:live-x / rearrange-signal-xvfb",
+            "fvwm3:live-x / rearrange-monitor-xvfb",
+            "fvwm3 / event-transport",
+            "fvwm3 / event-loop-policy",
+            "fvwm3:live-x / mfl-request-xvfb",
+            "fvwm3:live-x / mfl-stream-xvfb",
+            "fvwm3 / image-effect",
+            "fvwm3 / image-effect-protocol",
+            "fvwm3 / auto-transport"
+          ]
+        },
+        "reduced": {
+          "archive_consumers": 128,
+          "changed_consumers": [
+            "fvwm3",
+            "modules/FvwmAuto/FvwmAuto",
+            "modules/FvwmEvent/FvwmEvent",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmRearrange/FvwmRearrange",
+            "tests/test-event-loop-policy",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol"
+          ],
+          "unchanged_consumer_commands": 120,
+          "all_compile_commands_exact": true,
+          "compile_command_count": 621,
+          "archive_objects_exact": 90,
+          "archive_sha256": "4f3066357e5e38bd26e1e7251e447338e3cc94d7ff4c893f5d6d917f3f92a527",
+          "config_sha256": "e76bf6f68acadcf304dba844b9bcb443fd70babd46dd62047cddbd4475a3639b",
+          "targets": {
+            "fvwm3": {
+              "before_bytes": 4029896,
+              "after_bytes": 4029896,
+              "bytes_delta": 0,
+              "before_sha256": "df2d46fc6c5835fbdb3c391bbcefed87be0210598ce0f32aac35b1b9b747557f",
+              "after_sha256": "e2f7c99b66804026f0863f6103aa6c042296000e14e89c87e0651de9c30b3fbf",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "before_needed": [
+                "libm.so.6",
+                "libfontconfig.so.1",
+                "libICE.so.6",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libSM.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXrender.so.1",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libm.so.6",
+                "libfontconfig.so.1",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libSM.so.6",
+                "libICE.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXrender.so.1",
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXft.so.2": "/lib/x86_64-linux-gnu/libXft.so.2",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libSM.so.6": "/lib/x86_64-linux-gnu/libSM.so.6",
+                "libICE.so.6": "/lib/x86_64-linux-gnu/libICE.so.6",
+                "libXcursor.so.1": "/lib/x86_64-linux-gnu/libXcursor.so.1",
+                "libXfixes.so.3": "/lib/x86_64-linux-gnu/libXfixes.so.3",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libuuid.so.1": "/lib/x86_64-linux-gnu/libuuid.so.1",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libpng16.so.16": "/root/fvwm-ci-png-linux-20261013/png-gcc/prefix/lib/libpng16.so.16",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              },
+              "extracted_archive_objects": [
+                "Bindings.c.o",
+                "ClientMsg.c.o",
+                "ColorUtils.c.o",
+                "Colorset.c.o",
+                "CombineChars.c.o",
+                "Cursor.c.o",
+                "Event.c.o",
+                "FEvent.c.o",
+                "FGettext.c.o",
+                "FImage.c.o",
+                "FProperty.c.o",
+                "FRender.c.o",
+                "FRenderInit.c.o",
+                "FScreen.c.o",
+                "FShape.c.o",
+                "Fft.c.o",
+                "Ficonv.c.o",
+                "Flocale.c.o",
+                "FlocaleCharset.c.o",
+                "Grab.c.o",
+                "Graphics.c.o",
+                "ImageSafety.c.o",
+                "Parse.c.o",
+                "Picture.c.o",
+                "PictureBase.c.o",
+                "PictureGraphics.c.o",
+                "PictureImageLoader.c.o",
+                "PictureUtils.c.o",
+                "Rectangles.c.o",
+                "Strings.c.o",
+                "System.c.o",
+                "Target.c.o",
+                "WinMagic.c.o",
+                "XError.c.o",
+                "XResource.c.o",
+                "atom_batch.c.o",
+                "cJSON.c.o",
+                "charmap.c.o",
+                "colorset_store.c.o",
+                "config_line.c.o",
+                "envvar.c.o",
+                "fd_safety.c.o",
+                "flist.c.o",
+                "font_shadow.c.o",
+                "fqueue.c.o",
+                "fvwmrect.c.o",
+                "fvwmsignal.c.o",
+                "geometry_transition.c.o",
+                "getpwuid.c.o",
+                "gravity.c.o",
+                "icccm_size_hints.c.o",
+                "image_decompress.c.o",
+                "image_effect_client.c.o",
+                "image_effect_protocol.c.o",
+                "image_input.c.o",
+                "image_process.c.o",
+                "image_svg_client.c.o",
+                "image_svg_protocol.c.o",
+                "image_xbm.c.o",
+                "log.c.o",
+                "modifiers.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_scale.c.o",
+                "monitor_topology.c.o",
+                "picture_argb.c.o",
+                "picture_async.c.o",
+                "picture_average.c.o",
+                "picture_color.c.o",
+                "picture_view.c.o",
+                "safemalloc.c.o",
+                "setpgrp.c.o",
+                "strlcat.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o",
+                "wcontext.c.o",
+                "wild.c.o",
+                "wm_ui_metrics.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/bin/fvwm3",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libm.so.6": "/lib/x86_64-linux-gnu/libm.so.6",
+                "libfontconfig.so.1": "/lib/x86_64-linux-gnu/libfontconfig.so.1",
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXft.so.2": "/lib/x86_64-linux-gnu/libXft.so.2",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libSM.so.6": "/lib/x86_64-linux-gnu/libSM.so.6",
+                "libICE.so.6": "/lib/x86_64-linux-gnu/libICE.so.6",
+                "libXcursor.so.1": "/lib/x86_64-linux-gnu/libXcursor.so.1",
+                "libXfixes.so.3": "/lib/x86_64-linux-gnu/libXfixes.so.3",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libfreetype.so.6": "/lib/x86_64-linux-gnu/libfreetype.so.6",
+                "libexpat.so.1": "/lib/x86_64-linux-gnu/libexpat.so.1",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libuuid.so.1": "/lib/x86_64-linux-gnu/libuuid.so.1",
+                "libz.so.1": "/lib/x86_64-linux-gnu/libz.so.1",
+                "libbz2.so.1.0": "/lib/x86_64-linux-gnu/libbz2.so.1.0",
+                "libpng16.so.16": "/lib/x86_64-linux-gnu/libpng16.so.16",
+                "libbrotlidec.so.1": "/lib/x86_64-linux-gnu/libbrotlidec.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+              }
+            },
+            "modules/FvwmAuto/FvwmAuto": {
+              "before_bytes": 96312,
+              "after_bytes": 96312,
+              "bytes_delta": 0,
+              "before_sha256": "df1c21876e437da16ad6e1436a0ee67b0a9f6e64f317a1c5c061aecec5140f4e",
+              "after_sha256": "df1c21876e437da16ad6e1436a0ee67b0a9f6e64f317a1c5c061aecec5140f4e",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "wild.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              }
+            },
+            "modules/FvwmEvent/FvwmEvent": {
+              "before_bytes": 98336,
+              "after_bytes": 98336,
+              "bytes_delta": 0,
+              "before_sha256": "66daf3b9e7d7b4b7353e8936dd23b0a997e38b77cecf0ed21c62db18153c0c33",
+              "after_sha256": "66daf3b9e7d7b4b7353e8936dd23b0a997e38b77cecf0ed21c62db18153c0c33",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              }
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "before_bytes": 277744,
+              "after_bytes": 277744,
+              "bytes_delta": 0,
+              "before_sha256": "58a5d1e09455a6a1a2b678ca494c146ad71f6f07a9920403c0d7cb5d7e64f76b",
+              "after_sha256": "58a5d1e09455a6a1a2b678ca494c146ad71f6f07a9920403c0d7cb5d7e64f76b",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libevent.so"
+              ],
+              "before_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libevent-2.1.so.7": "/lib/x86_64-linux-gnu/libevent-2.1.so.7",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libevent-2.1.so.7": "/lib/x86_64-linux-gnu/libevent-2.1.so.7",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              }
+            },
+            "modules/FvwmRearrange/FvwmRearrange": {
+              "before_bytes": 329296,
+              "after_bytes": 329296,
+              "bytes_delta": 0,
+              "before_sha256": "48861d89300222a90ffce9a20ffe973a7579c3bddaf657d62cf687b78fc6dccb",
+              "after_sha256": "48861d89300222a90ffce9a20ffe973a7579c3bddaf657d62cf687b78fc6dccb",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so"
+              ],
+              "before_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              },
+              "extracted_archive_objects": [
+                "FEvent.c.o",
+                "FScreen.c.o",
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_topology.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/lib/x86_64-linux-gnu/libX11.so.6",
+                "libXrandr.so.2": "/lib/x86_64-linux-gnu/libXrandr.so.2",
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6",
+                "libxcb.so.1": "/lib/x86_64-linux-gnu/libxcb.so.1",
+                "libXext.so.6": "/lib/x86_64-linux-gnu/libXext.so.6",
+                "libXrender.so.1": "/lib/x86_64-linux-gnu/libXrender.so.1",
+                "libXau.so.6": "/lib/x86_64-linux-gnu/libXau.so.6",
+                "libXdmcp.so.6": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+              }
+            },
+            "tests/test-event-loop-policy": {
+              "before_bytes": 65264,
+              "after_bytes": 65264,
+              "bytes_delta": 0,
+              "before_sha256": "dad17ee6f2c7c9c02c5d7191e7d5f630a4a3226772820a84f31848ffa94764ca",
+              "after_sha256": "dad17ee6f2c7c9c02c5d7191e7d5f630a4a3226772820a84f31848ffa94764ca",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "fqueue.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect": {
+              "before_bytes": 20576,
+              "after_bytes": 20576,
+              "bytes_delta": 0,
+              "before_sha256": "0b5311a3990a4143c7a682232e3bc58496e41019b06db677b1f67753ef44f97d",
+              "after_sha256": "0b5311a3990a4143c7a682232e3bc58496e41019b06db677b1f67753ef44f97d",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "image_effect.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect-protocol": {
+              "before_bytes": 37224,
+              "after_bytes": 37224,
+              "bytes_delta": 0,
+              "before_sha256": "960f26101c999f56b0af99ca5cb4aab4d502225d9d822b953dc6a6bd7d4d7b39",
+              "after_sha256": "960f26101c999f56b0af99ca5cb4aab4d502225d9d822b953dc6a6bd7d4d7b39",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/lib/x86_64-linux-gnu/libfontconfig.so",
+                "/usr/lib/x86_64-linux-gnu/libfreetype.so",
+                "/usr/lib/x86_64-linux-gnu/libICE.so",
+                "/usr/lib/x86_64-linux-gnu/libevent.so",
+                "/usr/lib/x86_64-linux-gnu/libX11.so",
+                "/usr/lib/x86_64-linux-gnu/libXft.so",
+                "/usr/lib/x86_64-linux-gnu/libXrandr.so",
+                "/usr/lib/x86_64-linux-gnu/libXt.so",
+                "/usr/lib/x86_64-linux-gnu/libXext.so",
+                "/usr/lib/x86_64-linux-gnu/libSM.so",
+                "/usr/lib/x86_64-linux-gnu/libXcursor.so",
+                "/usr/lib/x86_64-linux-gnu/libXfixes.so",
+                "/usr/lib/x86_64-linux-gnu/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.6"
+              ],
+              "after_needed": [
+                "libc.so.6"
+              ],
+              "runtime_closure": {
+                "libc.so.6": "/lib/x86_64-linux-gnu/libc.so.6"
+              },
+              "extracted_archive_objects": [
+                "ImageSafety.c.o",
+                "image_effect_protocol.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            }
+          },
+          "focused_tests": [
+            "fvwm3:live-x / rearrange-signal-xvfb",
+            "fvwm3:live-x / rearrange-monitor-xvfb",
+            "fvwm3 / event-transport",
+            "fvwm3 / event-loop-policy",
+            "fvwm3:live-x / mfl-request-xvfb",
+            "fvwm3:live-x / mfl-stream-xvfb",
+            "fvwm3 / image-effect",
+            "fvwm3 / image-effect-protocol",
+            "fvwm3 / auto-transport"
+          ]
+        }
+      },
+      "supplement_sha256": "f24d43bf5b275dc3862bddcf8f026498211ad3b08dad87a5ed29e6cb01fca68a",
+      "retained_package_license_inventory": {
+        "source": "VERIFICATION-2026-10-25-M3-WORKER-LINKAGE.json",
+        "scope": "Existing qualified package/license records retained; no package/version/payload changed by this Meson-only overlay. Current pkg-config versions recorded separately; no fresh legal or vulnerability assessment.",
+        "packages": [
+          "libx11-6:amd64",
+          "libxau6:amd64",
+          "libxdmcp6:amd64",
+          "libxext6:amd64",
+          "libxrender1:amd64",
+          "libatomic1:amd64",
+          "libblkid1:amd64",
+          "libbrotli1:amd64",
+          "libbz2-1.0:amd64",
+          "libc6:amd64",
+          "libcairo-gobject2:amd64",
+          "libcairo2:amd64",
+          "libdatrie1:amd64",
+          "libdav1d7:amd64",
+          "libexpat1:amd64",
+          "libffi8:amd64",
+          "libfontconfig1:amd64",
+          "libfreetype6:amd64",
+          "libfribidi0:amd64",
+          "libgcc-s1:amd64",
+          "libgdk-pixbuf-2.0-0:amd64",
+          "libglib2.0-0t64:amd64",
+          "libgraphite2-3:amd64",
+          "libharfbuzz0b:amd64",
+          "libjpeg62-turbo:amd64",
+          "liblzma5:amd64",
+          "libmount1:amd64",
+          "libpango-1.0-0:amd64",
+          "libpangocairo-1.0-0:amd64",
+          "libpangoft2-1.0-0:amd64",
+          "libpcre2-8-0:amd64",
+          "libpixman-1-0:amd64",
+          "libpng16-16t64:amd64",
+          "librsvg2-2:amd64",
+          "libselinux1:amd64",
+          "libthai0:amd64",
+          "libxcb-render0:amd64",
+          "libxcb-shm0:amd64",
+          "libxcb1:amd64",
+          "libxml2:amd64",
+          "zlib1g:amd64",
+          "qualified-private-provider-or-unowned-system-file",
+          "libice6:amd64",
+          "libsm6:amd64",
+          "libxcursor1:amd64",
+          "libxfixes3:amd64",
+          "libxft2:amd64",
+          "libxpm4:amd64",
+          "libxrandr2:amd64",
+          "libxt6t64:amd64",
+          "libevent-2.1-7t64:amd64"
+        ]
+      },
+      "command_summary": {
+        "count": 44,
+        "failed": 0,
+        "summed_seconds": 136.17296106099985
+      },
+      "system_pkg_config_versions": {
+        "x11": {
+          "status": 0,
+          "version": "1.8.12",
+          "diagnostic": ""
+        },
+        "ice": {
+          "status": 0,
+          "version": "1.1.1",
+          "diagnostic": ""
+        },
+        "xt": {
+          "status": 0,
+          "version": "1.2.1",
+          "diagnostic": ""
+        },
+        "xft": {
+          "status": 0,
+          "version": "2.3.6",
+          "diagnostic": ""
+        },
+        "xrandr": {
+          "status": 0,
+          "version": "1.5.4",
+          "diagnostic": ""
+        },
+        "freetype2": {
+          "status": 0,
+          "version": "26.2.20",
+          "diagnostic": ""
+        },
+        "fontconfig": {
+          "status": 0,
+          "version": "2.15.0",
+          "diagnostic": ""
+        },
+        "xext": {
+          "status": 0,
+          "version": "1.3.4",
+          "diagnostic": ""
+        },
+        "libevent": {
+          "status": 0,
+          "version": "2.1.13-stable",
+          "diagnostic": ""
+        },
+        "fribidi": {
+          "status": 0,
+          "version": "1.0.16",
+          "diagnostic": ""
+        },
+        "libpng": {
+          "status": 0,
+          "version": "1.6.48",
+          "diagnostic": ""
+        },
+        "librsvg-2.0": {
+          "status": 0,
+          "version": "2.60.0",
+          "diagnostic": ""
+        },
+        "cairo": {
+          "status": 0,
+          "version": "1.18.4",
+          "diagnostic": ""
+        },
+        "sm": {
+          "status": 0,
+          "version": "1.2.6",
+          "diagnostic": ""
+        },
+        "xcursor": {
+          "status": 0,
+          "version": "1.2.3",
+          "diagnostic": ""
+        },
+        "xfixes": {
+          "status": 0,
+          "version": "6.0.0",
+          "diagnostic": ""
+        },
+        "xpm": {
+          "status": 0,
+          "version": "3.5.17",
+          "diagnostic": ""
+        },
+        "xrender": {
+          "status": 0,
+          "version": "0.9.12",
+          "diagnostic": ""
+        }
+      },
+      "package_version_scope": "Supplement uses ambient system pkg-config paths. These are system package versions, not the private PNG build provider. The build environment records its qualified private PNG prefix separately; link maps/closures bind actual selected libraries."
+    },
+    "freebsd-arm64": {
+      "archive": {
+        "sha256": "8b4f5b2024cd7668b6c0d19a5bbe3f06ad774f87c4f8fabbfa3e176b09c5b636",
+        "bytes": 656848,
+        "gzip_crc_to_eof": true,
+        "payloads_verified": 103,
+        "manifest_entries_verified": 102
+      },
+      "environment": {
+        "target": "freebsd-arm64",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ],
+        "private_png": "/root/fvwm-deps/libpng-1.6.59/lib",
+        "sdk_sha256": "ffdf9f966da8b37903ac1d1f95dd5aa8c8ff2212e693a797d5076f4a42b5a64a"
+      },
+      "profiles": {
+        "default": {
+          "archive_consumers": 136,
+          "changed_consumers": [
+            "fvwm3",
+            "modules/FvwmAuto/FvwmAuto",
+            "modules/FvwmEvent/FvwmEvent",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmRearrange/FvwmRearrange",
+            "tests/test-event-loop-policy",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol"
+          ],
+          "unchanged_consumer_commands": 128,
+          "all_compile_commands_exact": true,
+          "compile_command_count": 641,
+          "archive_objects_exact": 90,
+          "archive_sha256": "7f0885254cc456cef8fdad12bbd449646b79347290027c11d00a068d4b5632c6",
+          "config_sha256": "b843f935324a5f1a240aca1392e963ade0f9cd25d6b7d7a184c6af327d25b5da",
+          "targets": {
+            "fvwm3": {
+              "before_bytes": 5139416,
+              "after_bytes": 5139416,
+              "bytes_delta": 0,
+              "before_sha256": "684753607bb30f342e33a5a83942ec289fb8fc659fc6d3f50b1326cbe88faeca",
+              "after_sha256": "6cc10981638b96672c7b0abdb0ab637831684c26a5568eff6886b4a216b7df4b",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "before_needed": [
+                "libm.so.5",
+                "libfontconfig.so.1",
+                "libICE.so.6",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libfribidi.so.0",
+                "libiconv.so.2",
+                "libintl.so.8",
+                "libpng16.so.16",
+                "libSM.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXrender.so.1",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libm.so.5",
+                "libfontconfig.so.1",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libfribidi.so.0",
+                "libiconv.so.2",
+                "libintl.so.8",
+                "libpng16.so.16",
+                "libSM.so.6",
+                "libICE.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXrender.so.1",
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libm.so.5": "/lib/libm.so.5",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXft.so.2": "/usr/local/lib/libXft.so.2",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16",
+                "libSM.so.6": "/usr/local/lib/libSM.so.6",
+                "libICE.so.6": "/usr/local/lib/libICE.so.6",
+                "libXcursor.so.1": "/usr/local/lib/libXcursor.so.1",
+                "libXfixes.so.3": "/usr/local/lib/libXfixes.so.3",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libc.so.7": "/lib/libc.so.7",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libz.so.6": "/lib/libz.so.6",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1"
+              },
+              "extracted_archive_objects": [
+                "BidiJoin.c.o",
+                "Bindings.c.o",
+                "ClientMsg.c.o",
+                "ColorUtils.c.o",
+                "Colorset.c.o",
+                "CombineChars.c.o",
+                "Cursor.c.o",
+                "Event.c.o",
+                "FBidi.c.o",
+                "FEvent.c.o",
+                "FGettext.c.o",
+                "FImage.c.o",
+                "FProperty.c.o",
+                "FRender.c.o",
+                "FRenderInit.c.o",
+                "FScreen.c.o",
+                "FShape.c.o",
+                "Fft.c.o",
+                "Ficonv.c.o",
+                "Flocale.c.o",
+                "FlocaleCharset.c.o",
+                "Grab.c.o",
+                "Graphics.c.o",
+                "ImageSafety.c.o",
+                "Parse.c.o",
+                "Picture.c.o",
+                "PictureBase.c.o",
+                "PictureGraphics.c.o",
+                "PictureImageLoader.c.o",
+                "PictureUtils.c.o",
+                "Rectangles.c.o",
+                "Strings.c.o",
+                "System.c.o",
+                "Target.c.o",
+                "WinMagic.c.o",
+                "XError.c.o",
+                "XResource.c.o",
+                "atom_batch.c.o",
+                "cJSON.c.o",
+                "charmap.c.o",
+                "colorset_store.c.o",
+                "config_line.c.o",
+                "envvar.c.o",
+                "fd_safety.c.o",
+                "flist.c.o",
+                "font_shadow.c.o",
+                "fqueue.c.o",
+                "fvwmrect.c.o",
+                "fvwmsignal.c.o",
+                "geometry_transition.c.o",
+                "getpwuid.c.o",
+                "gravity.c.o",
+                "icccm_size_hints.c.o",
+                "image_decompress.c.o",
+                "image_effect_client.c.o",
+                "image_effect_protocol.c.o",
+                "image_input.c.o",
+                "image_process.c.o",
+                "image_svg_client.c.o",
+                "image_svg_protocol.c.o",
+                "image_xbm.c.o",
+                "log.c.o",
+                "modifiers.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_scale.c.o",
+                "monitor_topology.c.o",
+                "picture_argb.c.o",
+                "picture_async.c.o",
+                "picture_average.c.o",
+                "picture_color.c.o",
+                "picture_view.c.o",
+                "safemalloc.c.o",
+                "setpgrp.c.o",
+                "strlcat.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o",
+                "wcontext.c.o",
+                "wild.c.o",
+                "wm_ui_metrics.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/bin/fvwm3",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libm.so.5": "/lib/libm.so.5",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXft.so.2": "/usr/local/lib/libXft.so.2",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libfribidi.so.0": "/usr/local/lib/libfribidi.so.0",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libpng16.so.16": "/usr/local/lib/libpng16.so.16",
+                "libSM.so.6": "/usr/local/lib/libSM.so.6",
+                "libICE.so.6": "/usr/local/lib/libICE.so.6",
+                "libXcursor.so.1": "/usr/local/lib/libXcursor.so.1",
+                "libXfixes.so.3": "/usr/local/lib/libXfixes.so.3",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libc.so.7": "/lib/libc.so.7",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libz.so.6": "/lib/libz.so.6",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1"
+              }
+            },
+            "modules/FvwmAuto/FvwmAuto": {
+              "before_bytes": 146656,
+              "after_bytes": 146512,
+              "bytes_delta": -144,
+              "before_sha256": "ce62d3790268b44f522326f8e2fddd4e1ac7f9be0c08b6589ba77883b91af70f",
+              "after_sha256": "691dd7d3831f13fa161774c73014eaa8650d205b65c1190d66f61f1692e04e11",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "wild.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              }
+            },
+            "modules/FvwmEvent/FvwmEvent": {
+              "before_bytes": 151920,
+              "after_bytes": 151760,
+              "bytes_delta": -160,
+              "before_sha256": "4effad0db2de3c0a268da7ab9934ca67dfa9d4e737177f77842da132eaa866a9",
+              "after_sha256": "ca8f197ec61fe7490bff2cc4035001557d4103f19065130fa67b172dea61c157",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              }
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "before_bytes": 440320,
+              "after_bytes": 440272,
+              "bytes_delta": -48,
+              "before_sha256": "2730a9a324fa8165fa65e544ffcb59b07e499e5d12532533875791ec01d6a577",
+              "after_sha256": "30f54c1b01a676ae03f8c1e34d491f63fe1689db24beb549fa47799a18eeb53b",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libevent.so"
+              ],
+              "before_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libevent-2.1.so.7": "/usr/local/lib/libevent-2.1.so.7",
+                "libc.so.7": "/lib/libc.so.7",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libevent-2.1.so.7": "/usr/local/lib/libevent-2.1.so.7",
+                "libc.so.7": "/lib/libc.so.7",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7"
+              }
+            },
+            "modules/FvwmRearrange/FvwmRearrange": {
+              "before_bytes": 491744,
+              "after_bytes": 491712,
+              "bytes_delta": -32,
+              "before_sha256": "55b7958d17577dbee65cae157d3b5a0b64f99c5e4bd90254c7b276f1fb164970",
+              "after_sha256": "6dc0ec81cd4d8e4e3eac41c62db384ca3c576e09f7b3947beee3300814af45a0",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXrandr.so"
+              ],
+              "before_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              },
+              "extracted_archive_objects": [
+                "FEvent.c.o",
+                "FScreen.c.o",
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_topology.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              }
+            },
+            "tests/test-event-loop-policy": {
+              "before_bytes": 85800,
+              "after_bytes": 85656,
+              "bytes_delta": -144,
+              "before_sha256": "d95dcf8ce5b8570395722e5a35c861ee2b8ec40df1a9a3de9893555b64709f84",
+              "after_sha256": "5f8698f222ac09bce253005dc9df9cc21f4731ffa6e9c5d882bfa6d795c06012",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "fqueue.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect": {
+              "before_bytes": 20144,
+              "after_bytes": 19984,
+              "bytes_delta": -160,
+              "before_sha256": "4f95c0ee106e91d1d13c2ce8823c23cf9653c23d77fdbdde684b542f1ed08840",
+              "after_sha256": "861054159abc179636cdf24d2bb300a97844bc1b0459819e6fa11d75e9a1e05c",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "image_effect.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect-protocol": {
+              "before_bytes": 43752,
+              "after_bytes": 43592,
+              "bytes_delta": -160,
+              "before_sha256": "adc7a388b6d7ab9a0d51bee3e6cd9ec71c046241fd95c34cc3241f56d43b0f91",
+              "after_sha256": "544f255dfaa7e2e09e150ef1e321c6fda11bb423750ac714d2545449b2953bd8",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libfribidi.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libintl.so",
+                "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+                "/usr/local/lib/librsvg-2.so",
+                "/usr/local/lib/libgdk_pixbuf-2.0.so",
+                "/usr/local/lib/libgio-2.0.so",
+                "/usr/local/lib/libcairo.so",
+                "/usr/local/lib/libgobject-2.0.so",
+                "/usr/local/lib/libglib-2.0.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "ImageSafety.c.o",
+                "image_effect_protocol.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            }
+          },
+          "focused_tests": [
+            "bsd-x - fvwm3:rearrange-signal-xvfb",
+            "bsd-x - fvwm3:rearrange-monitor-xvfb",
+            "fvwm3:event-transport",
+            "fvwm3:event-loop-policy",
+            "bsd-x - fvwm3:mfl-request-xvfb",
+            "bsd-x - fvwm3:mfl-stream-xvfb",
+            "fvwm3:image-effect",
+            "fvwm3:image-effect-protocol",
+            "fvwm3:auto-transport"
+          ]
+        },
+        "reduced": {
+          "archive_consumers": 126,
+          "changed_consumers": [
+            "fvwm3",
+            "modules/FvwmAuto/FvwmAuto",
+            "modules/FvwmEvent/FvwmEvent",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmRearrange/FvwmRearrange",
+            "tests/test-event-loop-policy",
+            "tests/test-image-effect",
+            "tests/test-image-effect-protocol"
+          ],
+          "unchanged_consumer_commands": 118,
+          "all_compile_commands_exact": true,
+          "compile_command_count": 617,
+          "archive_objects_exact": 90,
+          "archive_sha256": "baeaca1014987361d1b281ff2eb7c320955ef004af54f4ecf6cf3444c69e7bbb",
+          "config_sha256": "6dd835ba01ebd91f5c495d8c24a8d72146db1b511084d9e1e783aa9994d5d68a",
+          "targets": {
+            "fvwm3": {
+              "before_bytes": 4116088,
+              "after_bytes": 4116088,
+              "bytes_delta": 0,
+              "before_sha256": "43b2ddc8a36ecf520147e0943d6fee317817b1d5b8569053638a2305df8de8e4",
+              "after_sha256": "07472a0ed220356142812cc7710b24ffb285c86160a8ad2dd7ead486c4b16bba",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "before_needed": [
+                "libm.so.5",
+                "libfontconfig.so.1",
+                "libICE.so.6",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libiconv.so.2",
+                "libSM.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXrender.so.1",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libm.so.5",
+                "libfontconfig.so.1",
+                "libX11.so.6",
+                "libXft.so.2",
+                "libXrandr.so.2",
+                "libXext.so.6",
+                "libiconv.so.2",
+                "libSM.so.6",
+                "libICE.so.6",
+                "libXcursor.so.1",
+                "libXfixes.so.3",
+                "libXrender.so.1",
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libm.so.5": "/lib/libm.so.5",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXft.so.2": "/usr/local/lib/libXft.so.2",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libSM.so.6": "/usr/local/lib/libSM.so.6",
+                "libICE.so.6": "/usr/local/lib/libICE.so.6",
+                "libXcursor.so.1": "/usr/local/lib/libXcursor.so.1",
+                "libXfixes.so.3": "/usr/local/lib/libXfixes.so.3",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libc.so.7": "/lib/libc.so.7",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libpng16.so.16": "/root/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libz.so.6": "/lib/libz.so.6",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1"
+              },
+              "extracted_archive_objects": [
+                "Bindings.c.o",
+                "ClientMsg.c.o",
+                "ColorUtils.c.o",
+                "Colorset.c.o",
+                "CombineChars.c.o",
+                "Cursor.c.o",
+                "Event.c.o",
+                "FEvent.c.o",
+                "FGettext.c.o",
+                "FImage.c.o",
+                "FProperty.c.o",
+                "FRender.c.o",
+                "FRenderInit.c.o",
+                "FScreen.c.o",
+                "FShape.c.o",
+                "Fft.c.o",
+                "Ficonv.c.o",
+                "Flocale.c.o",
+                "FlocaleCharset.c.o",
+                "Grab.c.o",
+                "Graphics.c.o",
+                "ImageSafety.c.o",
+                "Parse.c.o",
+                "Picture.c.o",
+                "PictureBase.c.o",
+                "PictureGraphics.c.o",
+                "PictureImageLoader.c.o",
+                "PictureUtils.c.o",
+                "Rectangles.c.o",
+                "Strings.c.o",
+                "System.c.o",
+                "Target.c.o",
+                "WinMagic.c.o",
+                "XError.c.o",
+                "XResource.c.o",
+                "atom_batch.c.o",
+                "cJSON.c.o",
+                "charmap.c.o",
+                "colorset_store.c.o",
+                "config_line.c.o",
+                "envvar.c.o",
+                "fd_safety.c.o",
+                "flist.c.o",
+                "font_shadow.c.o",
+                "fqueue.c.o",
+                "fvwmrect.c.o",
+                "fvwmsignal.c.o",
+                "geometry_transition.c.o",
+                "getpwuid.c.o",
+                "gravity.c.o",
+                "icccm_size_hints.c.o",
+                "image_decompress.c.o",
+                "image_effect_client.c.o",
+                "image_effect_protocol.c.o",
+                "image_input.c.o",
+                "image_process.c.o",
+                "image_svg_client.c.o",
+                "image_svg_protocol.c.o",
+                "image_xbm.c.o",
+                "log.c.o",
+                "modifiers.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_scale.c.o",
+                "monitor_topology.c.o",
+                "picture_argb.c.o",
+                "picture_async.c.o",
+                "picture_average.c.o",
+                "picture_color.c.o",
+                "picture_view.c.o",
+                "safemalloc.c.o",
+                "setpgrp.c.o",
+                "strlcat.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o",
+                "wcontext.c.o",
+                "wild.c.o",
+                "wm_ui_metrics.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/bin/fvwm3",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libm.so.5": "/lib/libm.so.5",
+                "libfontconfig.so.1": "/usr/local/lib/libfontconfig.so.1",
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXft.so.2": "/usr/local/lib/libXft.so.2",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libiconv.so.2": "/usr/local/lib/libiconv.so.2",
+                "libSM.so.6": "/usr/local/lib/libSM.so.6",
+                "libICE.so.6": "/usr/local/lib/libICE.so.6",
+                "libXcursor.so.1": "/usr/local/lib/libXcursor.so.1",
+                "libXfixes.so.3": "/usr/local/lib/libXfixes.so.3",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libc.so.7": "/lib/libc.so.7",
+                "libfreetype.so.6": "/usr/local/lib/libfreetype.so.6",
+                "libexpat.so.1": "/usr/local/lib/libexpat.so.1",
+                "libintl.so.8": "/usr/local/lib/libintl.so.8",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libbz2.so.4": "/usr/lib/libbz2.so.4",
+                "libpng16.so.16": "/usr/local/lib/libpng16.so.16",
+                "libbrotlidec.so.1": "/usr/local/lib/libbrotlidec.so.1",
+                "libz.so.6": "/lib/libz.so.6",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6",
+                "libbrotlicommon.so.1": "/usr/local/lib/libbrotlicommon.so.1"
+              }
+            },
+            "modules/FvwmAuto/FvwmAuto": {
+              "before_bytes": 102072,
+              "after_bytes": 101960,
+              "bytes_delta": -112,
+              "before_sha256": "c2d8ed028c243105e511bfadc4cdefe3ee5ac024031b87100b593f3909eefb6b",
+              "after_sha256": "3dca8c988d6be69dcf19dabae1abea5ad765dbdee393f1747d5e6f953388480d",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "wild.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmAuto",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              }
+            },
+            "modules/FvwmEvent/FvwmEvent": {
+              "before_bytes": 106336,
+              "after_bytes": 106224,
+              "bytes_delta": -112,
+              "before_sha256": "69a7d5f33b587f4ada2b21b12f70ed663243b2d4f4560b9fbe88c1d8e064245c",
+              "after_sha256": "a7ad980fa56732394445652797c5c4c83db608936d654bbdcaaf2f37b6664119",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmEvent",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              }
+            },
+            "modules/FvwmMFL/FvwmMFL": {
+              "before_bytes": 303440,
+              "after_bytes": 303440,
+              "bytes_delta": 0,
+              "before_sha256": "b8aefb1b6376041efcd0b2f75d5b1f7111d5cc454d4364083e13dff64b87fd0f",
+              "after_sha256": "b8aefb1b6376041efcd0b2f75d5b1f7111d5cc454d4364083e13dff64b87fd0f",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libevent.so"
+              ],
+              "before_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libevent-2.1.so.7",
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libevent-2.1.so.7": "/usr/local/lib/libevent-2.1.so.7",
+                "libc.so.7": "/lib/libc.so.7",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libevent-2.1.so.7": "/usr/local/lib/libevent-2.1.so.7",
+                "libc.so.7": "/lib/libc.so.7",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libsys.so.7": "/lib/libsys.so.7"
+              }
+            },
+            "modules/FvwmRearrange/FvwmRearrange": {
+              "before_bytes": 352536,
+              "after_bytes": 352536,
+              "bytes_delta": 0,
+              "before_sha256": "109fc30bb476386784533bc156639a2e1dac7b4f9b94bd106ae2ef2033240e0f",
+              "after_sha256": "109fc30bb476386784533bc156639a2e1dac7b4f9b94bd106ae2ef2033240e0f",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXrandr.so"
+              ],
+              "before_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libX11.so.6",
+                "libXrandr.so.2",
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              },
+              "extracted_archive_objects": [
+                "FEvent.c.o",
+                "FScreen.c.o",
+                "Module.c.o",
+                "Parse.c.o",
+                "Strings.c.o",
+                "cJSON.c.o",
+                "fd_safety.c.o",
+                "fvwmsignal.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "module_monitor.c.o",
+                "monitor_ownership.c.o",
+                "monitor_topology.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o",
+                "strtonum.c.o"
+              ],
+              "archive_extraction_unchanged": true,
+              "installed_path": "/usr/local/libexec/fvwm3/1.1.6/FvwmRearrange",
+              "runtime_closure_without_LD_LIBRARY_PATH": {
+                "libX11.so.6": "/usr/local/lib/libX11.so.6",
+                "libXrandr.so.2": "/usr/local/lib/libXrandr.so.2",
+                "libc.so.7": "/lib/libc.so.7",
+                "libxcb.so.1": "/usr/local/lib/libxcb.so.1",
+                "libthr.so.3": "/lib/libthr.so.3",
+                "libXext.so.6": "/usr/local/lib/libXext.so.6",
+                "libXrender.so.1": "/usr/local/lib/libXrender.so.1",
+                "libsys.so.7": "/lib/libsys.so.7",
+                "libXau.so.6": "/usr/local/lib/libXau.so.6",
+                "libXdmcp.so.6": "/usr/local/lib/libXdmcp.so.6"
+              }
+            },
+            "tests/test-event-loop-policy": {
+              "before_bytes": 64952,
+              "after_bytes": 64840,
+              "bytes_delta": -112,
+              "before_sha256": "95b93d63429f6e232e20bd3fdfb36bc136f061716943576474006fe105bea2a6",
+              "after_sha256": "eb599c34bba713aba43e960e7e9e1348bb216670e22eef92214b87330299855e",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "fqueue.c.o",
+                "getpwuid.c.o",
+                "log.c.o",
+                "safemalloc.c.o",
+                "strlcpy.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect": {
+              "before_bytes": 18360,
+              "after_bytes": 18248,
+              "bytes_delta": -112,
+              "before_sha256": "11049996934c04b3ff1ae1f887445c9d74dfd0629bb80f620ee64a1ec16058e1",
+              "after_sha256": "c6df743c956f4e4ac1adee28354981f52e93f23c9d6945c7ac8a52764fdd615c",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "image_effect.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            },
+            "tests/test-image-effect-protocol": {
+              "before_bytes": 34992,
+              "after_bytes": 34880,
+              "bytes_delta": -112,
+              "before_sha256": "7057841029a3631d36082c7c6f17030d92ec7ed75c6ca1c05b390b32b10adcc1",
+              "after_sha256": "bd856e4781ab2a37eac3b4feea41891c147e9b40a13c499256bf1a26c515d817",
+              "before_link_libraries": [
+                "-lm",
+                "/usr/local/lib/libfontconfig.so",
+                "/usr/local/lib/libICE.so",
+                "/usr/local/lib/libevent.so",
+                "/usr/local/lib/libX11.so",
+                "/usr/local/lib/libXft.so",
+                "/usr/local/lib/libXrandr.so",
+                "/usr/local/lib/libXt.so",
+                "/usr/local/lib/libXext.so",
+                "/usr/local/lib/libfreetype.so",
+                "/usr/local/lib/libiconv.so",
+                "/usr/local/lib/libSM.so",
+                "/usr/local/lib/libXcursor.so",
+                "/usr/local/lib/libXfixes.so",
+                "/usr/local/lib/libXrender.so"
+              ],
+              "after_link_libraries": [
+                "-lm"
+              ],
+              "before_needed": [
+                "libc.so.7"
+              ],
+              "after_needed": [
+                "libc.so.7"
+              ],
+              "runtime_closure": {
+                "libc.so.7": "/lib/libc.so.7",
+                "libsys.so.7": "/lib/libsys.so.7"
+              },
+              "extracted_archive_objects": [
+                "ImageSafety.c.o",
+                "image_effect_protocol.c.o"
+              ],
+              "archive_extraction_unchanged": true
+            }
+          },
+          "focused_tests": [
+            "bsd-x - fvwm3:rearrange-signal-xvfb",
+            "bsd-x - fvwm3:rearrange-monitor-xvfb",
+            "fvwm3:event-transport",
+            "fvwm3:event-loop-policy",
+            "bsd-x - fvwm3:mfl-request-xvfb",
+            "bsd-x - fvwm3:mfl-stream-xvfb",
+            "fvwm3:image-effect",
+            "fvwm3:image-effect-protocol",
+            "fvwm3:auto-transport"
+          ]
+        }
+      },
+      "supplement_sha256": "c504a36629c222e682fbcd8b3e9bb156173cc20a8d6768271ee39a2a1c38e9b7",
+      "retained_package_license_inventory": {
+        "source": "VERIFICATION-2026-10-25-M3-WORKER-LINKAGE.json",
+        "scope": "Existing qualified package/license records retained; no package/version/payload changed by this Meson-only overlay. Current pkg-config versions recorded separately; no fresh legal or vulnerability assessment.",
+        "packages": [
+          "FreeBSD-clibs-15.1p4",
+          "FreeBSD-runtime-15.1p4",
+          "FreeBSD-zlib-15.1",
+          "qualified-private-provider-or-unowned-system-file",
+          "FreeBSD-bzip2-lib-15.1",
+          "libICE-1.1.2,1",
+          "libSM-1.2.6,1",
+          "libX11-1.8.13_1,1",
+          "libXau-1.0.12",
+          "libXcursor-1.2.3",
+          "libXdmcp-1.1.5",
+          "libXext-1.3.7,1",
+          "libXfixes-6.0.1",
+          "libXft-2.3.8",
+          "libXrandr-1.5.5",
+          "libXrender-0.9.12",
+          "libXt-1.3.1,1",
+          "brotli-1.2.0,1",
+          "cairo-1.18.2,3",
+          "libdatrie-0.2.14_1",
+          "dav1d-1.5.4",
+          "libevent-2.1.13",
+          "expat-2.8.2",
+          "libffi-3.6.0",
+          "fontconfig-2.17.1,1",
+          "freetype2-2.14.3",
+          "fribidi-1.0.16",
+          "gdk-pixbuf2-2.44.1",
+          "glib-2.86.4,2",
+          "graphite2-1.3.15",
+          "harfbuzz-14.2.1",
+          "libiconv-1.18_1",
+          "gettext-runtime-1.0_1",
+          "pango-1.57.1",
+          "pcre2-10.47_1",
+          "pixman-0.46.4",
+          "png-1.6.58",
+          "librsvg2-rust-2.62.3",
+          "libthai-0.1.30",
+          "libxcb-1.17.0",
+          "libxml2-2.15.3"
+        ]
+      },
+      "command_summary": {
+        "count": 44,
+        "failed": 0,
+        "summed_seconds": 31.311881372000045
+      },
+      "system_pkg_config_versions": {
+        "x11": {
+          "status": 0,
+          "version": "1.8.13",
+          "diagnostic": ""
+        },
+        "ice": {
+          "status": 0,
+          "version": "1.1.2",
+          "diagnostic": ""
+        },
+        "xt": {
+          "status": 0,
+          "version": "1.3.1",
+          "diagnostic": ""
+        },
+        "xft": {
+          "status": 0,
+          "version": "2.3.8",
+          "diagnostic": ""
+        },
+        "xrandr": {
+          "status": 0,
+          "version": "1.5.5",
+          "diagnostic": ""
+        },
+        "freetype2": {
+          "status": 0,
+          "version": "26.6.20",
+          "diagnostic": ""
+        },
+        "fontconfig": {
+          "status": 0,
+          "version": "2.17.1",
+          "diagnostic": ""
+        },
+        "xext": {
+          "status": 0,
+          "version": "1.3.7",
+          "diagnostic": ""
+        },
+        "libevent": {
+          "status": 0,
+          "version": "2.1.13-stable",
+          "diagnostic": ""
+        },
+        "fribidi": {
+          "status": 0,
+          "version": "1.0.16",
+          "diagnostic": ""
+        },
+        "libpng": {
+          "status": 0,
+          "version": "1.6.58",
+          "diagnostic": ""
+        },
+        "librsvg-2.0": {
+          "status": 0,
+          "version": "2.62.3",
+          "diagnostic": ""
+        },
+        "cairo": {
+          "status": 0,
+          "version": "1.18.2",
+          "diagnostic": ""
+        },
+        "sm": {
+          "status": 0,
+          "version": "1.2.6",
+          "diagnostic": ""
+        },
+        "xcursor": {
+          "status": 0,
+          "version": "1.2.3",
+          "diagnostic": ""
+        },
+        "xfixes": {
+          "status": 0,
+          "version": "6.0.1",
+          "diagnostic": ""
+        },
+        "xpm": {
+          "status": 1,
+          "version": "",
+          "diagnostic": "Package xpm was not found in the pkg-config search path.\nPerhaps you should add the directory containing `xpm.pc'\nto the PKG_CONFIG_PATH environment variable\nPackage 'xpm' not found\n"
+        },
+        "xrender": {
+          "status": 0,
+          "version": "0.9.12",
+          "diagnostic": ""
+        }
+      },
+      "package_version_scope": "Supplement uses ambient system pkg-config paths. These are system package versions, not the private PNG build provider. The build environment records its qualified private PNG prefix separately; link maps/closures bind actual selected libraries."
+    }
+  },
+  "cleanup": {
+    "linux-amd64": {
+      "retired_files": 105,
+      "retired_bytes": 8758082,
+      "source_build_stage_cache_disks_preserved": true
+    },
+    "freebsd-arm64": {
+      "retired_files": 105,
+      "retired_bytes": 8220058,
+      "source_build_stage_cache_disks_preserved": true
+    }
+  },
+  "VM_cleanup": {
+    "linux": {
+      "owned_pid": 79994,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    },
+    "freebsd": {
+      "owned_pid": 80006,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    }
+  },
+  "performance": {
+    "report": "PERFORMANCE-2026-10-25-PR204.md",
+    "reference": "merged PR204",
+    "counter": 0,
+    "on_M3_2_merge": 1,
+    "speed_claim": false,
+    "input_retirement": {
+      "retired_files": 2,
+      "retired_bytes": 5622994,
+      "candidate_source_build_cache_stages_preserved": true
+    }
+  },
+  "qualification": {
+    "registered_passes": 36,
+    "registered_failures": 0,
+    "focused_two_OS_four_profiles": true,
+    "real_X_invocations": 16,
+    "full_six_target_M3": false,
+    "fresh_full_install": false,
+    "static_executable": false,
+    "native_Linux_sanitizers": false,
+    "runtime_package_removal_or_speed_claim": false
+  },
+  "limits": [
+    "Other archive consumers retain explicit all_found_deps. The unchanged Rearrange probe runs selected X checks; other unchanged consumers retain coverage through exact commands/unchanged compile source/archive inputs, without fresh execution. Direct retained-consumer object/binary hashes were not captured.",
+    "Rearrange X tests run the existing broad-dependency probe; production minimal target is freshly linked and measured, but not executed by these probes.",
+    "Full six-target/default/reduced/optional/offline install acceptance remains at combined M3 closure.",
+    "Current and historical native/hardware/toolkit/compositor/release limits stay separately owned."
+  ],
+  "routing": {
+    "analyst": "/root/m32_archive_scope requested gpt-6-astra/high",
+    "implementer": "/root/m32_implement requested gpt-6.1-sol/high",
+    "reviewer": "/root/m32_review requested gpt-6.1-sol/high; source and final evidence no actionable findings",
+    "observed_model_client_metadata": "unavailable; requested routing unverified; no cost/speed claim"
+  },
+  "preparation_notes": [
+    "Initial sandbox QEMU socket/Podman network access failed; successful approved execution used existing resources and verified own listener PID. No trust/key/security configuration was changed.",
+    "An early host verification attempt preceded the Linux supplement capture; final verification passed after collection. No native test rerun followed."
+  ],
+  "canonical_local_evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m3-archive-linkage"
+}

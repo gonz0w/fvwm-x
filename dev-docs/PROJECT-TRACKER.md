@@ -521,7 +521,7 @@ no further controller port or observer expansion is selected.
 ## M3.1 image worker dependency ownership
 
 Owner: current M3 implementation chat; LINK-TARGETS-01 #184 / LINK-01 #49.
-Status: focused Linux/FreeBSD default/reduced checks passed; ready for review.
+Status: merged in PR204 as `b53609df8f67c37c358f2effe5a4a3d0f620290c`; canonical signature/DCO/tree verified.
 Selected after merged PR203 and explicit M2 owner acceptance, 2026-10-25.
 Outcome: replace the broad dependency bag for the private image worker and its
 independent direct SVG decoder test with their actual header/link owners. These
@@ -579,6 +579,65 @@ checkpoint does not claim a full Meson install, static SVG binary, native
 sanitizers or release qualification. Production cadence becomes 5/5 on merge;
 the next periodic comparison is due then, with no reference reset here.
 
+## M3.2 core and archive dependency ownership
+
+Owner: current M3 implementation chat; LINK-TARGETS-01 #184 / LINK-01 #49.
+Status: focused Linux/FreeBSD default/reduced checks passed; ready for review.
+Selected after merged PR204, 2026-10-25.
+Outcome: make the existing libfvwm3 archive's shared requirements compile-only,
+and declare explicit runtime dependencies for the core, FvwmAuto, FvwmEvent,
+FvwmMFL and FvwmRearrange. Keep full package dependencies for actual runtime
+owners, including enabled SM/ICE and supported librsvg initialization in core.
+Keep broad compile visibility where legacy umbrella headers require it. Other
+consumers retain their explicit dependency bag in this checkpoint. The simpler
+module-only edit leaves hidden archive link propagation and cannot establish
+consumer ownership; retain one archive and ordinary link_with rather than split
+objects or introduce a dependency framework.
+Acceptance: capture every archive consumer's before/after compile/link commands,
+archive/object identity and selected link maps/undefined symbols, loaded closure,
+package/static metadata and size. Rebuild all genuinely changed consumers and
+run the three archive-only pure tests. Retain unchanged consumers only when
+commands and object/archive inputs are exact. One combined focused Linux AMD64
+and early FreeBSD ARM64 default/reduced checkpoint exercises affected module/
+core native-X paths. No new test that merely mirrors Meson text. Generated config
+and configuration compatibility stay unchanged. Full six-target default/reduced/
+optional/offline install acceptance stays pending at combined M3 closure;
+#184/#49 remain open. Run the due PR194/current preserved-browser five-pair
+performance comparison without benchmark builds or tuning.
+Dependencies: accepted M2, merged M3.1 and existing owner-controlled caches and
+lab resources. Non-goals: M4 backend retirement, unrelated header/API rewrites,
+new dependencies/toolchains, features, performance tuning, M6/M7 and release.
+Lead owns native execution, source/evidence integration, tracker and GitHub
+reconciliation; bounded source-only implementation and separate read-only review
+follow PROJECT.md routing. Preserve other owners, caches, stages and disks;
+retire only fully verified completed evidence duplicates. Stop at one reviewable
+PR with documented focused results and remaining combined gates.
+
+Outcome: compile-only archive requirements and explicit core/four-module runtime
+owners pass one focused four-profile checkpoint. All compiler commands, ninety
+archive objects per profile, archive hash and config stay exact. Exactly eight
+link commands change among Linux 138/128 and FreeBSD 136/126 archive consumers;
+remaining commands stay exact. The unchanged Rearrange probe still runs selected
+X checks; other unchanged consumers retain prior coverage. Selected
+archive extraction, direct needed sets and recursive paths stay identical.
+Thirty-six registered entries pass (twenty policy/transport, sixteen X), with
+no C/test source changes. Rearrange X uses its existing broad-dependency probe;
+production minimal linkage has link/map/loader evidence, not probe execution.
+Linux file sizes are neutral; FreeBSD reductions are small. No package-removal
+or speed claim. Separate source/evidence review finds no actionable defect.
+Both full-CRC archives verify 204 manifest entries plus two manifest payloads.
+Retire 210 completed guest duplicates (16,978,140 bytes); owned VMs power off
+normally, preserving sources/builds/stages/disks and host evidence.
+[Source-bound report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md),
+[machine inventory](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.json).
+Due PR194/current browser comparison completes without builds: overlapping
+15.887/16.062 ms median wall samples and equal 29,472 KiB median peak RSS;
+browser file grows 3,279 bytes. Preserve merged PR204 as reference 0/5,
+1/5 on this implementation's merge. [Comparison](verification/PERFORMANCE-2026-10-25-PR204.md).
+Next: remaining module ownership groups, then combined M3 six-target/default/
+reduced/optional/offline install/static acceptance. #184/#49 remain open;
+M4 renderer retirement and unrelated cleanup stay separately owned.
+
 ## Current checkpoint status
 
 This table is the current summary for this thread. The dated entries below
@@ -614,7 +673,8 @@ in [PR199](https://github.com/gonz0w/fvwm-x/pull/199) and M2.7 in
 [PR201](https://github.com/gonz0w/fvwm-x/pull/201); M2.9 merged in
 [PR202](https://github.com/gonz0w/fvwm-x/pull/202). M2.10 merged in [PR203](https://github.com/gonz0w/fvwm-x/pull/203). Cam accepts
 M2 session evidence and documented limits on 2026-10-25. M2 is complete for this
-maintenance handoff; M3.1 image-worker dependency ownership is active. Broader
+maintenance handoff; M3.1 merged in PR204 and M3.2 core/archive/module ownership
+is focused-qualified for review. Broader
 native/platform/physical/release gates retain their separate scope. #7/#15 stay
 open; GitHub #23 retains its closure with M2 owner acceptance now explicit. New feature pickup remains paused.
 
@@ -653,17 +713,18 @@ Full install/default-X/compiler-feature and owner/milestone/release acceptance
 remain at their required boundary. Native-CPU/hardware/toolkit/compositor/
 assistive checks remain separate.
 
-The due PR186→PR194 periodic comparison is complete using preserved qualified
-Linux ARM64 binaries, without a benchmark build. Five alternating 4096-file scans
-have overlapping ranges, medians 16.332/16.041 ms and unchanged 29460 KiB peak RSS.
-Core/MFL/Form hashes and sizes stay exact; browser file bytes fall by 546.
-No consistent speed improvement or regression is established. This does not
-measure the new resident controller's startup/RSS/idle/input; those measurements
-remain at M2 closure. Preserve merged PR194 as the new reference at **4/5** after PR200. M2.8–M2.10 change only observers/evidence/docs and leave
-installed binaries exact; those checkpoints do not advance this production-change counter or
-repeat/reset the independent scan. M3.1 advances to 5/5 on merge, making the next
-comparison due without resetting the reference. Planning/documentation do not advance it; tuning
-stays deferred. [Report](verification/PERFORMANCE-2026-10-24-PR194.md).
+The due PR194→PR204 periodic comparison completes using existing qualified
+Linux ARM64 binaries without a benchmark build. Five alternating 4096-file scans
+have overlapping ranges, median wall 15.887/16.062 ms and equal median peak RSS
+29,472 KiB. Current browser bytes grow 3,279 after M2.7 runtime-path work;
+core/MFL/Form hashes and sizes remain exact. No consistent speed improvement
+or regression follows. This measures metadata scan/worker handoff in the
+previously exercised AppleHV AArch64 environment, not native UI latency or a new
+resident-controller acceptance. M2 owner acceptance remains complete. Preserve
+merged PR204 as the new reference at **0/5**, **1/5 on M3.2 merge**. Planning/docs
+and evidence-only checkpoints do not advance it; tuning stays deferred.
+[Current report](verification/PERFORMANCE-2026-10-25-PR204.md),
+[previous PR194 report](verification/PERFORMANCE-2026-10-24-PR194.md).
 
 Representative theme smoke checks **pass** on reused Linux native-X binaries:
 full shipped Slate dark, Dune light and a controlled classic/minimal configuration
@@ -690,7 +751,8 @@ or release gates, or advance either verification counter.
 | --- | --- | --- |
 | M2.6 runtime/session actions | Merged PR199 | Power/locker ownership, retired policy RPC, shared self-worker resolution; Python-free installed proof, three themes and paired session observations. Full owner/platform acceptance remains. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md). |
 | M2.7 controller/platform handoff | Merged PR200 | Six-target default/reduced helpers, seven installed peers per final profile, native capture and Linux settings/four BSD default-X sessions. Fixes successful OpenBSD executable aliases and PNG-disabled admission; remaining full-session/native-CPU acceptance stays open. [Report](verification/VERIFICATION-2026-10-24-M2-PLATFORM-HANDOFF.md). |
-| M3.1 image-worker linkage | Focused checks passed; ready for review | Named decoder/worker dependencies, narrow SVG header and measured symbol/link/runtime ownership. Four Linux/FreeBSD profiles and affected X checks pass; full M3 qualification remains pending. [Report](verification/VERIFICATION-2026-10-25-M3-WORKER-LINKAGE.md). |
+| M3.2 core/archive/four-module linkage | Focused checks passed; ready for review | Compile-only shared archive and explicit core/Auto/Event/MFL/Rearrange runtime dependencies. All compile/archive inputs and loaded library sets stay exact; 36 focused Linux/FreeBSD entries pass. Due performance comparison complete; full M3 qualification remains pending. [Report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md). |
+| M3.1 image-worker linkage | Merged PR204; focused checks passed | Named decoder/worker dependencies, narrow SVG header and measured symbol/link/runtime ownership. Four Linux/FreeBSD profiles and affected X checks pass; full M3 qualification remains pending. [Report](verification/VERIFICATION-2026-10-25-M3-WORKER-LINKAGE.md). |
 | M2.10 native ARM64 subset | Merged PR203; owner accepted M2 | Three existing installed X runs on verified AppleHV Linux ARM64, actual staged/live AArch64 identities and unchanged binaries/tests. Cam explicitly accepts accumulated session evidence/limits on 2026-10-25, authorizing M3. [Report](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md). |
 | M2.9 bounded workload/handoff | Merged PR202 | Eight discovery/search/files rounds per run, eight natural resident GC traces and synthetic input snapshots; no production build/matrix. Native-CPU/full owner acceptance remains before M3. [Acceptance map](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md). |
 | M2.8 session observations | Merged PR201 | Identity/all-thread/PSS startup sampling, private kernel charged-memory/CPU/wakeup attribution, bounded GC trace and X/lifetime ownership. Fresh installed interpreter-free smoke and three paired observations pass; GC pauses/native-CPU/full owner acceptance stay open. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-ACCEPTANCE.md). |
@@ -1337,7 +1399,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | XIO-01 | P2 / atom batching locally qualified; query work queued | Independent atom tables now use three batches for 100 core/ICCCM/EWMH names, with finite missing-entry fallback. Exact mappings, selection ownership and supported-property order pass actual Linux and native FreeBSD/OpenBSD ARM64 controls; Scoped pure leak-enabled and actual-core leak-disabled sanitizer checks pass. [Report](verification/VERIFICATION-2026-10-07-ATOM-BATCH.md). Combined atom/expose/icon qualification passes eight profiles/1096 entries, 120 installed identities, 52 default BSD X invocations, optional 142/122 and 21 scoped sanitizers. [Combined report](verification/VERIFICATION-2026-10-07-ATOM-EXPOSE.md). Highest-override query selection now scans the root snapshot from top to bottom, skips already-excluded internal windows and stops at the highest eligible sibling. The controlled 108-child fixture uses 3 attribute reads instead of 108; full current attributes remain queried for managed frames. Real override/InputOnly order, focus and popup teardown pass focused Linux/BSD ARM64/scoped sanitizer checks; combined qualification passes eight profiles/1144 entries, 120 installed identities, 72 default BSD X invocations, optional 148/128 and 27 scoped sanitizers from the exact 1301-file snapshot. Other query/barrier work remains queued. Batch independent atom tables and remove individually proven unnecessary XSync barriers. Profile root-tree plus per-child attribute queries in stacking; use STACK-01 identities to skip only known/current managed frames. Preserve unmanaged/InputOnly/hidden/destroyed-window behavior and error/order boundaries. A narrow bounded XCB experiment requires measured remaining query cost, LIB-07 and six-target review; retain Xlib event ownership. Whole-core migration and new mandatory packages are not approved. See optimization roadmap. |
 | BOX-01 | P2 / queued | Sandbox narrow helpers/modules first with OpenBSD pledge/unveil and FreeBSD Capsicum where appropriate; evaluate Linux helper restrictions. Preserve reload/spawn/font/theme access. Whole-core sandbox policy requires an explicit compatibility review. |
 | LIB-05 | P2 / Xlib requirement locally qualified; remaining floors queued | Unused direct libxkbcommon requirement removed and actual Xlib XKB header/symbol checked in PR144; six-target build/install/X checkpoint passes. Xt/Xtrans header consumers remain. Actual per-target dependency/interpreter floors and broader linkage review stay open; retain Xlib/libevent/Xft unless evidence justifies an approved change. [Report](verification/VERIFICATION-2026-10-21-XLIB-DEPENDENCY.md). |
-| LINK-01 | P2 / M3 active; worker group focused checks passed | M3.1 gives private image worker/direct decoder explicit header/link owners, with measured unchanged runtime closure and focused Linux/FreeBSD default/reduced checks. Core/module static propagation and full six-target default/reduced/optional install acceptance remain for combined closure; #184/#49 stay open. [Worker report](verification/VERIFICATION-2026-10-25-M3-WORKER-LINKAGE.md). Reuse PR144 xkbcommon removal. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
+| LINK-01 | P2 / M3 active; core/archive and first module group focused checks passed | M3.1 merged PR204 gives worker/decoder explicit owners. M3.2 makes the shared archive compile-only and core/four modules explicit runtime owners; 36 Linux/FreeBSD default/reduced entries pass with unchanged archive/loaded closure. Remaining module groups and full six-target/default/reduced/optional/offline install acceptance stay at combined closure; #184/#49 remain open. [Core/archive report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md). Reuse PR144 xkbcommon removal. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | LIB-04 | P2 / Later; child #183 queued | Consolidate obsolete SVG backends against a maintained librsvg/Cairo floor; preserve SVG-disabled builds and rendering/worker contracts. LunaSVG comparison remains optional and separate; no adoption approved. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | LIB-06 | P2 / Later evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
@@ -3404,3 +3466,14 @@ reader results are separate from the subsequent interpreter/file work.
   acceptance remains before M3; #23/#7/#15 remain open. Independent PR194 scan
   cadence is 2/5, 3/5 on merge. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md),
   [session observation](verification/PERFORMANCE-2026-10-24-M2-SESSION.md).
+
+- 2026-10-25: PR204 merges with canonical signature/DCO/tree verification; its
+  branch retires. M3.2 batches compile-only libfvwm3 requirements and explicit
+  core/Auto/Event/MFL/Rearrange runtime owners. Four focused Linux/FreeBSD
+  profiles pass 36 registered entries; all compile commands/archive objects and
+  selected runtime closure sets stay exact. Other consumer commands retain
+  unchanged coverage. Two full-CRC payload-verified archives precede 210 guest
+  duplicate retirements and normal owned-VM shutdown. Due PR194→PR204 preserved
+  browser comparison uses no builds, finds overlapping ranges and resets the
+  reference to PR204 0/5 (1/5 on this implementation merge). Full M3/#184/#49
+  platform/install/static acceptance remains open. [Report](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md).

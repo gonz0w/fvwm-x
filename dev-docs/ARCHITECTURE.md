@@ -1144,3 +1144,10 @@ preserve target FIFO and cleanup clears vacated slots. Shutdown retains selectio
 ownership through one monotonic grace period using `script_delay.c` policy, then
 releases pending messages. Xlib calls still require a responsive server.
 [Owner evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-OWNERSHIP.md).
+
+GetOutput keeps subprocess ownership in `script_process.c`: stdout and a private
+CLOEXEC setup-status pipe share one command deadline, while bounded polling
+observes the module termination flag. Failed construction/cancellation clears
+results and restores owned state; the child stays unreaped through group cleanup.
+The caller retains its successful cache on failure.
+[Owner evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROCESS.md).

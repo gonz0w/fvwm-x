@@ -116,7 +116,7 @@ execution separately from project-owned helper argument/environment policy.
 
 ## Scheduling and non-goals
 
-Preserve the current maintenance order and selected M5/GetOutput slice. The new
+Preserve the current maintenance order and separately owned M5 work. The new
 issues belong to D3's bounded policy/worker lane and VERIFY-01's conditional
 qualification lane. Issue planning authorizes the recorded scope; it does not
 select every implementation now, turn historical broad audits into new blockers,

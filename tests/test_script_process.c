@@ -7,6 +7,7 @@
 #include "config.h"
 #include "modules/FvwmScript/script_process.h"
 #include "modules/FvwmScript/script_output.h"
+#include "libs/fvwmsignal.h"
 #include <assert.h>
 #include <errno.h>
 #include <signal.h>
@@ -41,6 +42,10 @@ static void test_valid_output(void)
 	assert(script_process_read("printf 'first\\nsecond'; exit 3", 1000,
 		&text, &length));
 	assert(length == 12 && strcmp(text, "first\nsecond") == 0);
+	free(text);
+	assert(script_process_read("printf exit127; exit 127", 1000,
+		&text, &length));
+	assert(strcmp(text, "exit127") == 0);
 	free(text);
 	assert(script_process_read("printf ''", 1000, &text, &length));
 	assert(length == 0 && strcmp(text, "") == 0);
@@ -145,9 +150,53 @@ static void test_invalid_policy(void)
 	assert(sigaction(SIGCHLD, &previous, NULL) == 0);
 }
 
+static void test_cancellation(void)
+{
+	struct sigaction action = {0}, previous;
+	struct itimerval timer = {{0, 0}, {0, 50000}};
+	char *text = (char *)1;
+	size_t length = 99;
+	char path[] = "/tmp/fvwm-process-cancel-XXXXXX";
+	char command[512];
+	int descriptor = mkstemp(path);
+
+	assert(descriptor >= 0);
+	close(descriptor);
+	assert(unlink(path) == 0);
+	isTerminated = 1;
+	snprintf(command, sizeof(command), "printf spawned > %s", path);
+	assert(!script_process_read(command, 3000, &text, &length));
+	assert(errno == ECANCELED && text == NULL && length == 0);
+	assert(access(path, F_OK) < 0 && errno == ENOENT);
+	isTerminated = 0;
+	action.sa_handler = fvwmSetTerminate;
+	sigemptyset(&action.sa_mask);
+	assert(sigaction(SIGALRM, &action, &previous) == 0);
+	for (int closed = 0; closed < 2; closed++)
+	{
+		snprintf(command, sizeof(command),
+			"%s(sleep 1; printf late > %s) & wait",
+			closed ? "exec 1>&-; " : "printf partial; ", path);
+		assert(setitimer(ITIMER_REAL, &timer, NULL) == 0);
+		double started = monotonic_seconds();
+		assert(!script_process_read(command, 3000, &text, &length));
+		assert(errno == ECANCELED && text == NULL && length == 0);
+		assert(monotonic_seconds() - started < 1);
+		assert(waitpid(-1, NULL, WNOHANG) == -1 && errno == ECHILD);
+		isTerminated = 0;
+		assert(script_process_read("sleep 1.1; printf recovery", 3000,
+			&text, &length));
+		assert(strcmp(text, "recovery") == 0);
+		free(text);
+		assert(access(path, F_OK) < 0 && errno == ENOENT);
+	}
+	assert(sigaction(SIGALRM, &previous, NULL) == 0);
+}
+
 int main(void)
 {
 	test_invalid_policy();
+	test_cancellation();
 	test_valid_output();
 	test_output_prefix();
 	test_timeout("printf partial; sleep 2");

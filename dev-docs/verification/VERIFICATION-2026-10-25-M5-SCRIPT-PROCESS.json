@@ -1,0 +1,394 @@
+{
+  "base": "0318fbbf51ed0548833b111d396133afd8fe1ddd",
+  "scope": "M5 Script GetOutput subprocess ownership; broad #4/#6/#7/#15/#34 remain open",
+  "source": {
+    "modules/FvwmScript/script_process.c": {
+      "sha256": "45269ed780bbbc9f27c0198ab164f3b483fd15d72e27b78d4f6b2fe0aa881edb",
+      "mode": 420
+    },
+    "modules/FvwmScript/script_process.h": {
+      "sha256": "87ca84734d31a4c97222231ca6cc48dc2622f55803e97e6517bb81be5531c582",
+      "mode": 420
+    },
+    "tests/live_x/script_process_live.py": {
+      "sha256": "2e718dcfa6c2066b7f70493f73364d426e36567a4df725f970554216182ddcab",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "799b63ac32c459902160d77dea1c6fdd1354f0f9696a577fcb59475db545ef2d",
+      "mode": 420
+    },
+    "tests/test_script_process.c": {
+      "sha256": "2a1a6e0cf8d24c658687d335080c7f8e4323f61d40fe878a62e2a3e988c1ec27",
+      "mode": 420
+    },
+    "tests/test_script_process_fault.c": {
+      "sha256": "8e71610ef53ac924a2dbd09a8de0c3f26d14e4e160bd61c7b3cbda443e3feada",
+      "mode": 420
+    }
+  },
+  "binaries": {
+    "baseline": {
+      "sha256": "ec444498c0c9536ab8d1885a93dd03a5e4a1f20b7451f6a219ea2079b9751697",
+      "bytes": 2206896,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 524589\t  14624\t  25752\t 564965\t  89ee5\t/tmp/fvwm-m5-process-20261025/baseline-FvwmScript\n"
+    },
+    "normal": {
+      "sha256": "396951a609491906717d88a8f9eafc49578e9ed47fd3afd4bc52cfe1fb11cbcb",
+      "bytes": 2209168,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 533477\t  14624\t  25752\t 573853\t  8c19d\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript\n"
+    },
+    "asan": {
+      "sha256": "26e2a7caccd496e99b64cb637279ccb16a62507ed1d6fb2e9099405b58366acd",
+      "bytes": 10696136,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n6772382\t1288260\t10080716\t18141358\t114d0ae\t/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript\n"
+    }
+  },
+  "commands": {
+    "final": [
+      {
+        "label": "normal-configure",
+        "args": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-gcc"
+        ],
+        "status": 0,
+        "seconds": 0.9772211559757125
+      },
+      {
+        "label": "normal-build",
+        "args": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-script-process",
+          "tests/test-script-process-fault",
+          "tests/test-script-output"
+        ],
+        "status": 0,
+        "seconds": 0.5374103670183104
+      },
+      {
+        "label": "normal-units",
+        "args": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "script-process",
+          "script-process-fault",
+          "script-output"
+        ],
+        "status": 2,
+        "seconds": 2.5183520140126348
+      }
+    ],
+    "repair1": [
+      {
+        "label": "normal-build",
+        "args": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-script-process",
+          "tests/test-script-process-fault",
+          "tests/test-script-output"
+        ],
+        "status": 0,
+        "seconds": 1.0506407979992218
+      },
+      {
+        "label": "normal-units",
+        "args": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "script-process",
+          "script-process-fault"
+        ],
+        "status": 0,
+        "seconds": 4.972061382984975
+      },
+      {
+        "label": "normal-x-process",
+        "args": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_process_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-process-20261025/repair1/normal-x-process"
+        ],
+        "status": 1,
+        "seconds": 4.706391954008723
+      }
+    ],
+    "repair2": [
+      {
+        "label": "normal-x-process",
+        "args": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_process_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-process-20261025/repair2/normal-x-process",
+          "--case",
+          "cache-retry"
+        ],
+        "status": 1,
+        "seconds": 0.4221677739988081
+      }
+    ],
+    "repair3": [
+      {
+        "label": "normal-x-process",
+        "args": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_process_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-process-20261025/repair3/normal-x-process",
+          "--case",
+          "cache-retry"
+        ],
+        "status": 0,
+        "seconds": 0.3903481930028647
+      },
+      {
+        "label": "setup-probe-build",
+        "args": [
+          "cc",
+          "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-I/tmp/fvwm-module-waits-20261015/source",
+          "-I/tmp/fvwm-module-waits-20261015/source/modules/FvwmScript",
+          "/tmp/fvwm-module-waits-20261015/source/modules/FvwmScript/script_process.c",
+          "/tmp/fvwm-m5-process-20261025/setup_probe.c",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/libs/libfvwm3.a",
+          "-Wl,--wrap=execl",
+          "-o",
+          "/tmp/fvwm-m5-process-20261025/repair3/setup-probe"
+        ],
+        "status": 0,
+        "seconds": 0.06600255199009553
+      },
+      {
+        "label": "setup-probe",
+        "args": [
+          "/tmp/fvwm-m5-process-20261025/repair3/setup-probe"
+        ],
+        "status": 0,
+        "seconds": 0.11818993199267425
+      },
+      {
+        "label": "mask-probe-build",
+        "args": [
+          "cc",
+          "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-I/tmp/fvwm-module-waits-20261015/source",
+          "-I/tmp/fvwm-module-waits-20261015/source/modules/FvwmScript",
+          "/tmp/fvwm-module-waits-20261015/source/modules/FvwmScript/script_process.c",
+          "/tmp/fvwm-m5-process-20261025/mask_probe.c",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/libs/libfvwm3.a",
+          "-Wl,--wrap=sigprocmask",
+          "-o",
+          "/tmp/fvwm-m5-process-20261025/repair3/mask-probe"
+        ],
+        "status": 0,
+        "seconds": 0.06466296000871807
+      },
+      {
+        "label": "mask-probe",
+        "args": [
+          "/tmp/fvwm-m5-process-20261025/repair3/mask-probe"
+        ],
+        "status": 0,
+        "seconds": 0.11560141498921439
+      },
+      {
+        "label": "asan-configure",
+        "args": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+        ],
+        "status": 0,
+        "seconds": 0.9591332070122007
+      },
+      {
+        "label": "asan-build",
+        "args": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-script-process",
+          "tests/test-script-process-fault",
+          "tests/test-script-output"
+        ],
+        "status": 0,
+        "seconds": 0.4825757900252938
+      },
+      {
+        "label": "asan-units",
+        "args": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "script-process",
+          "script-process-fault",
+          "script-output"
+        ],
+        "status": 0,
+        "seconds": 4.977787191979587
+      },
+      {
+        "label": "asan-x-process",
+        "args": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_process_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-process-20261025/repair3/asan-x-process"
+        ],
+        "status": 0,
+        "seconds": 3.0112476579961367
+      }
+    ]
+  },
+  "accepted_units": {
+    "normal": [
+      "script-output (initial gate; unchanged source)",
+      "script-process (repair1)",
+      "script-process-fault (repair1)"
+    ],
+    "asan": [
+      "script-output",
+      "script-process",
+      "script-process-fault"
+    ]
+  },
+  "accepted_x": {
+    "normal_termination": {
+      "open-stdout-exit-seconds": 0.12747157498961315,
+      "open-stdout": "passed",
+      "closed-stdout-exit-seconds": 0.12311121300444938,
+      "closed-stdout": "passed"
+    },
+    "normal_cache": {
+      "cache-retry": "passed"
+    },
+    "asan": {
+      "open-stdout-exit-seconds": 0.12425153699587099,
+      "open-stdout": "passed",
+      "closed-stdout-exit-seconds": 0.12056013901019469,
+      "closed-stdout": "passed",
+      "cache-retry": "passed"
+    }
+  },
+  "baseline_controls": {
+    "module_termination": "Fails 0.8s exit deadline after SIGTERM while owning shell/descendant",
+    "execl_fault": "success=1 errno=0 length=0 output_null=0",
+    "parent_mask_restore_fault": "success=0 mask_restored=0 output_null=1 length=0"
+  },
+  "final_probes": {
+    "execl_fault": "success=0 errno=2 length=0 output_null=1",
+    "mask_restore_fault": "success=0 mask_restored=1 output_null=1 length=0"
+  },
+  "fault_cases": 28,
+  "qualification": "Local Linux ARM64 normal/scoped ASan/UBSan execution, not new release/native-CPU/hardware qualification",
+  "sanitizer_scope": {
+    "units": "detect_leaks=1:halt_on_error=1; UBSan halt_on_error=1",
+    "actual_module": "detect_leaks=0:halt_on_error=1; existing process-startup scope"
+  },
+  "remaining_limits": [
+    "detached descendants and successfully relinquished background commands are outside owned group cleanup",
+    "poll cancellation race bounded by 100ms; cleanup grace 100ms; kernel operations can delay completion",
+    "persistent OS failure restoring a valid signal mask cannot be repaired reliably",
+    "whole-Script resource budgets, other constructor/session/Perl ownership and release qualification remain separate"
+  ],
+  "routing": "Requested Astra/high analysis, Sol/high implementation and separate Sol/high review; runtime model metadata unavailable/unverified",
+  "private_archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-process/native-evidence.tgz",
+    "sha256": "df422c9176243bc43e3f2cae48d35e160110493f781248933fcbc27063753b48",
+    "bytes": 4213417,
+    "all_member_payloads_read": true
+  },
+  "native_unit_details": {
+    "observed_rlimit_nofile": [
+      524288,
+      524288
+    ],
+    "profiles": {
+      "build-gcc": {
+        "source_log_sha256": "b8b7a79f1b560c3c467ec766d0ec8c12a28161f7352c662ca51d52f2f8128540",
+        "records": [
+          {
+            "name": "fvwm3 / script-process-fault",
+            "stdout": "",
+            "result": "OK",
+            "starttime": 1792952080.5977538,
+            "duration": 1.266324758529663,
+            "returncode": 0
+          },
+          {
+            "name": "fvwm3 / script-process",
+            "stdout": "",
+            "result": "OK",
+            "starttime": 1792952080.5967078,
+            "duration": 4.789324760437012,
+            "returncode": 0
+          }
+        ]
+      },
+      "build-module-waits-asan": {
+        "source_log_sha256": "002caeb14400d2ca4c21f1b378c759c601cf04ff53dca734f40c0704a07c8726",
+        "records": [
+          {
+            "name": "fvwm3 / script-output",
+            "stdout": "",
+            "result": "OK",
+            "starttime": 1792952294.571303,
+            "duration": 0.004693269729614258,
+            "returncode": 0
+          },
+          {
+            "name": "fvwm3 / script-process-fault",
+            "stdout": "",
+            "result": "OK",
+            "starttime": 1792952294.573487,
+            "duration": 1.3369665145874023,
+            "returncode": 0
+          },
+          {
+            "name": "fvwm3 / script-process",
+            "stdout": "",
+            "result": "OK",
+            "starttime": 1792952294.5725312,
+            "duration": 4.786684989929199,
+            "returncode": 0
+          }
+        ]
+      }
+    }
+  },
+  "review": "Independent source/correction review clear; final fixture/evidence review verifies counts, source parity and recorded outcomes."
+}

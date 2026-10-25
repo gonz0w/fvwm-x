@@ -6,8 +6,8 @@ and OpenBSD Xenocara on AMD64 and ARM64.
 We target simpler code, responsiveness, safer resources and FVWM 3.x
 configuration/theme compatibility. No compositor or Wayland backend.
 
-**Status:** in-progress development; features paused for cleanup. Builds require
-Go; migrated utilities need no Go compiler or Python packages.
+**Status:** development; cleanup and measured optimization before features.
+Builds require Go; installed utilities need no compiler or Python packages.
 [Build/upgrade notes](INSTALL.md).
 Go coordinates native desktop capture. M2 session evidence/limits and M3
 dependency ownership are accepted. M4 removes obsolete SVG code; M5 simplifies
@@ -33,7 +33,7 @@ Full file-manager workflows, protected clipboard handoff, broader accessibility 
 remain open. Existing folder menus remain the default. OpenBSD follows new
 releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
 
-Next: [batched legacy, dependency and tooling cleanup](dev-docs/decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).
+Next: [cleanup, measured optimization and modernization order](dev-docs/decisions/MODERNIZATION-ORDER-2026-10-25.md).
 
 - [Install and build](INSTALL.md)
 - [Priorities and evidence](dev-docs/PROJECT-TRACKER.md)

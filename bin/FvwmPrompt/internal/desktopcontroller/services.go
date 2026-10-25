@@ -199,6 +199,10 @@ func (d *Controller) startCheck() error {
 	return nil
 }
 func (d *Controller) screenshot() {
+	if !d.png {
+		d.notice("Screenshot capture is unavailable: PNG support is disabled.")
+		return
+	}
 	helper := d.capture
 	home, _ := os.UserHomeDir()
 	directory := filepath.Join(home, "Pictures", "Screenshots")

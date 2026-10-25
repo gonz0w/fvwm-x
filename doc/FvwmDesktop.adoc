@@ -406,8 +406,8 @@ applications retain their existing lifetime across controller/WM retirement;
 there is no lock-before-sleep or full session-service readiness guarantee.
 
 Screenshots use Xlib and the configured libpng library in the separately
-supervised native capture helper. A PNG-disabled build reports capture as
-unavailable. Failed writes remove the helper's newly created partial file.
+supervised native capture helper. A PNG-disabled build immediately reports
+capture as unavailable. Failed writes remove the helper's newly created partial file.
 Print captures the root display to ~/Pictures/Screenshots with a unique,
 private filename. Capture supports TrueColor visuals and a maximum of 16
 megapixels. The capture runs independently of the WM and does not include the

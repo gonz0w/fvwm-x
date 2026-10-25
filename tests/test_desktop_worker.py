@@ -177,6 +177,20 @@ class ResidentController(unittest.TestCase):
         self.assertNotIn('\x1b', result.stdout)
         self.assertIn('\\u001b', result.stdout)
 
+    def test_installed_alias_finds_adjacent_worker(self):
+        alias = self.root / 'desktop alias'
+        alias.symlink_to(Path(CONTROLLER).resolve())
+        config = self.root / 'checked.config'
+        config.write_text('*FvwmDesktop: palette ink\n')
+        env = dict(self.env)
+        env.pop('DISPLAY', None)
+        env.pop('FVWM_DESKTOP_WORKER', None)
+        checked = subprocess.run([str(alias), '--check-config', str(config),
+                                  '--json'], env=env, capture_output=True,
+                                 text=True, timeout=8)
+        self.assertEqual(checked.returncode, 0, checked.stderr)
+        self.assertEqual(json.loads(checked.stdout)['errors'], 0)
+
 
 if __name__ == '__main__':
     if not CONTROLLER:

@@ -22,7 +22,8 @@ import zlib
 
 from native_capture import NativeCapture
 from geometry_transition_live import Client, Pointer
-from live_x_harness import HarnessError, HarnessRuntime, start_display_server, wait_for_predicate
+from live_x_harness import (HarnessCancelled, HarnessError, HarnessRuntime,
+                            start_display_server, wait_for_predicate)
 from mfl_stream_live import Connection
 from colorset_live import WindowAttributes
 from selection_live import Event
@@ -85,7 +86,8 @@ def run(options):
             _, display = start_display_server(runtime, 'Xvfb',
                 ['Xvfb', '-screen', '0', '1440x900x24', '-noreset'],
                 'xserver.log', time.monotonic() + 10)
-        root = source / 'default-config'
+        root = (options.installed_data.resolve() / 'default-config'
+                if options.installed_data else source / 'default-config')
         user = runtime.root / 'user'
         user.mkdir()
         data = runtime.root / 'data'
@@ -752,9 +754,21 @@ def run(options):
         assert first['included_from'][0]['path'] == str(local)
         assert first['included_from'][0]['line'] == 2
         connection.send(b'SendToModule FvwmDesktop check-config\n')
-        window = wait_for_predicate('native configuration report',
-            lambda: named_windows().get('Configuration check'),
-            time.monotonic() + 15, process=process)
+        try:
+            window = wait_for_predicate('native configuration report',
+                lambda: named_windows().get('Configuration check'),
+                time.monotonic() + 15, process=process)
+        except HarnessCancelled:
+            raise
+        except HarnessError:
+            try:
+                evidence['configuration_report_timeout_windows'] = named_windows()
+                capture('configuration-report-timeout.png')
+            except HarnessCancelled:
+                raise
+            except Exception as error:
+                evidence['configuration_report_timeout_capture_error'] = str(error)
+            raise
         capture('configuration-check.png')
         client.x.XSelectInput(client.display, window, 1 << 17)
         client.x.XSync(client.display, 0)
@@ -938,6 +952,9 @@ if __name__ == '__main__':
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--installed-modules', type=Path)
     parser.add_argument('--installed-desktop', type=Path)
+    parser.add_argument('--installed-data', type=Path,
+                        help='Installed share/fvwm3 directory for desktop '
+                             'configuration and assets.')
     parser.add_argument('--installed-core', type=Path)
     parser.add_argument('--display')
     parser.add_argument('--settings-only', action='store_true')

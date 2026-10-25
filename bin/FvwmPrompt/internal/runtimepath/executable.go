@@ -13,10 +13,11 @@ import (
 	"path/filepath"
 )
 
-// Executable prefers the OS-resolved image path. A minimal Linux root may lack
+// Executable prefers the OS-reported image path. A minimal Linux root may lack
 // procfs; then only an explicitly absolute invocation can identify the image.
-// Resolve its symlinks as the OS path normally does. Never guess through PATH
-// or a working directory that may have changed since process construction.
+// Resolve symlinks in either path: OpenBSD can report the invocation alias.
+// Never guess through PATH or a working directory that may have changed since
+// process construction.
 func Executable(invoked string) (string, error) {
 	image, err := os.Executable()
 	return resolve(image, err, invoked)
@@ -24,7 +25,7 @@ func Executable(invoked string) (string, error) {
 
 func resolve(image string, err error, invoked string) (string, error) {
 	if err == nil && image != "" {
-		return image, nil
+		return filepath.EvalSymlinks(image)
 	}
 	if err == nil {
 		err = errors.New("Executable path is unavailable")

@@ -110,3 +110,15 @@ func TestPowerPublicationNeverUsesAudioFallback(t *testing.T) {
 		t.Fatal("power response was not published")
 	}
 }
+
+func TestDisabledCaptureRefusesBeforeJobAdmission(t *testing.T) {
+	d, commands := fixture(t)
+	d.png = false
+	d.screenshot()
+	if len(d.jobs) != 0 || len(d.queue) != 0 {
+		t.Fatal("disabled capture started a helper job")
+	}
+	if !strings.Contains(strings.Join(*commands, "\n"), "PNG support is disabled") {
+		t.Fatal("disabled capture did not explain unavailability")
+	}
+}

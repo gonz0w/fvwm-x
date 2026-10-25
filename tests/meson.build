@@ -3114,6 +3114,14 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
     )
 endif
 
+fvwmsignal_test = executable(
+    'test-fvwmsignal',
+    ['test_fvwmsignal.c', '../libs/fvwmsignal.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('fvwmsignal', fvwmsignal_test, timeout: 15)
+
 image_async_wait_test = executable(
     'test-image-async-wait',
     ['test_image_async_wait.c', '../fvwm/image_async_wait.c',

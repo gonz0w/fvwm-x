@@ -1,0 +1,386 @@
+{
+  "archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-readiness/native-evidence.tgz",
+    "sha256": "e1ae09ddba78c294e118efe4bcd01f996593cdb1e5d39136db09a29c9a63dfee",
+    "bytes": 218513,
+    "regular_payloads_read": 95,
+    "gzip_crc_to_eof": true
+  },
+  "source_and_binaries": {
+    "source": {
+      "meson.build": {
+        "sha256": "75715525249b10a8c7efbf7d684c0e4b61cafba96b388f1d000cb608ccc9c6f4",
+        "mode": 420
+      },
+      "libs/fvwmsignal.c": {
+        "sha256": "68b9ea7c1a60a5718774ece6190e93a3de218671eb3e1c3371690619eb997dd7",
+        "mode": 420
+      },
+      "libs/fvwmsignal.h": {
+        "sha256": "650b07fb744516a7c8802f1a3f29ff837b47a807a92745e55ea05e99870b502a",
+        "mode": 420
+      },
+      "tests/meson.build": {
+        "sha256": "023dcb40076ee65a18c218f520eedd017a2a6f031c91e46fea317a89b7bb5f17",
+        "mode": 420
+      },
+      "tests/test_fvwmsignal.c": {
+        "sha256": "e844d935c407d6f76a12cd328f5ae0318577db277ab6a4910ffa38d70647152b",
+        "mode": 420
+      }
+    },
+    "binaries": {
+      "normal/tests/test-fvwmsignal": {
+        "sha256": "1ac2fbbc343584ccb4b3a70fc32e1b078236636767152df36c98d8eba32df84d",
+        "bytes": 98432
+      },
+      "normal/tests/test-module-packet-read": {
+        "sha256": "b7129afef6005eddc98d6c65367dce782baf569f90b792221dac0742df10dc49",
+        "bytes": 167416
+      },
+      "normal/tests/test-module-command-write": {
+        "sha256": "ee0836e8866b152632a1001613b266b48879c887fc1b09179177fd480e9feb86",
+        "bytes": 172120
+      },
+      "normal/tests/test-image-async-wait": {
+        "sha256": "7e59625f61ca4745f00bd83903bbd36434ad5e1bff25f9547514575b9e2d5287",
+        "bytes": 93632
+      },
+      "normal/tests/test-event-loop-policy": {
+        "sha256": "295070ac525f27343a4c7e05ca67d96f8da7955e55fc864da4d9868569f7dc5b",
+        "bytes": 126344
+      },
+      "normal/fvwm3": {
+        "sha256": "7d851b69384a47e8fcf0c17eb746bb79f40bd306b76b3b4199807d9279cffd60",
+        "bytes": 5395328
+      },
+      "normal/tests/fvwm-core-readiness-fixture": {
+        "sha256": "d68f6b00b747901131850bd21b5146d635d02000c717ec693a5f2f63220b14c4",
+        "bytes": 5488392
+      },
+      "normal/tests/fvwm-module-sync-fixture": {
+        "sha256": "a9f74f0f3c1e785e5b10f0c562f268d892e31f0e62707d0b32229ee81e9630eb",
+        "bytes": 5492928
+      },
+      "normal/tests/fvwm-module-startup-fixture": {
+        "sha256": "ac591ee07667fdfdacdde2121e7dc9cc85dbea7eda1466709d5cf111a2b03258",
+        "bytes": 5504656
+      },
+      "asan/tests/test-fvwmsignal": {
+        "sha256": "9ef048cc45dc2c5f92ab6a0a3526d2baf52761c1c8e0f83bad83d22794265c6b",
+        "bytes": 1926624
+      },
+      "asan/tests/test-module-packet-read": {
+        "sha256": "ba022608cf314600bd0d4d0854bcd5c62cd53549e215ea3c08ba5da246d22860",
+        "bytes": 2147312
+      },
+      "asan/tests/test-module-command-write": {
+        "sha256": "1d74c7d8980d38c049703c82ce373ea97569bd41ee5d45559ced24321e89d1b9",
+        "bytes": 2157768
+      },
+      "asan/tests/test-image-async-wait": {
+        "sha256": "9b841c31ffce2c9205e114431d7f140bc5599937089d85a0834a97b963b8ea28",
+        "bytes": 1924632
+      },
+      "asan/tests/test-event-loop-policy": {
+        "sha256": "cbc53d08bdfe0dadbff9d874848eb0d93350418f9a59680a97aa3f2e30247809",
+        "bytes": 2039032
+      }
+    }
+  },
+  "linux_commands": [
+    {
+      "label": "normal-configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc"
+      ],
+      "status": 0,
+      "seconds": 0.9776768639858346
+    },
+    {
+      "label": "normal-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "tests/test-fvwmsignal",
+        "tests/test-module-packet-read",
+        "tests/test-module-command-write",
+        "tests/test-image-async-wait",
+        "tests/test-event-loop-policy",
+        "fvwm3",
+        "tests/fvwm-core-readiness-fixture",
+        "tests/fvwm-module-sync-fixture",
+        "tests/fvwm-module-startup-fixture",
+        "tests/module-startup-producer"
+      ],
+      "status": 0,
+      "seconds": 13.967325267003616
+    },
+    {
+      "label": "normal-units",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "fvwmsignal",
+        "module-packet-read",
+        "module-command-write",
+        "image-async-wait",
+        "event-loop-policy"
+      ],
+      "status": 0,
+      "seconds": 0.49966848199255764
+    },
+    {
+      "label": "normal-x-core",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--num-processes",
+        "1",
+        "core-readiness-xvfb",
+        "module-sync-xvfb",
+        "module-startup-xvfb"
+      ],
+      "status": 0,
+      "seconds": 7.239573894010391
+    },
+    {
+      "label": "asan-configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+      ],
+      "status": 0,
+      "seconds": 1.0224928660027217
+    },
+    {
+      "label": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "tests/test-fvwmsignal",
+        "tests/test-module-packet-read",
+        "tests/test-module-command-write",
+        "tests/test-image-async-wait",
+        "tests/test-event-loop-policy"
+      ],
+      "status": 0,
+      "seconds": 2.3601192560163327
+    },
+    {
+      "label": "asan-units",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "fvwmsignal",
+        "module-packet-read",
+        "module-command-write",
+        "image-async-wait",
+        "event-loop-policy"
+      ],
+      "status": 0,
+      "seconds": 0.49025512899970636
+    }
+  ],
+  "linux_core_x": {
+    "core-readiness": {
+      "observations": [
+        "core high descriptor: real",
+        "ordinary partial continuation: passed",
+        "core high descriptor: real",
+        "interaction partial continuation: passed",
+        "ordinary order/retirement/EINTR: passed",
+        "interaction order/retirement/EINTR: passed",
+        "core readiness snapshot: passed"
+      ]
+    },
+    "module-sync": {
+      "activity-does-not-refresh-deadline": "passed",
+      "activity-total-deadline-real-clock": "passed",
+      "blocked-write-deadline": "passed",
+      "buffered-unlock-before-eof": "passed",
+      "clamped-read-wait-keeps-deadline": "passed",
+      "clamped-write-wait-keeps-deadline": "passed",
+      "clock-failure-retires-producer": "passed",
+      "clock-regression-retires-producer": "passed",
+      "command-retirement-pin": "passed",
+      "disconnected-input-retires-producer": "passed",
+      "final-command-retirement-pin": "passed",
+      "high-endpoint-write-and-unlock": "passed",
+      "idle-and-interrupted-wait": "passed",
+      "interrupted-read-deadline": "passed",
+      "interrupted-write-deadline": "passed",
+      "invalid-input-retires-producer": "passed",
+      "invalid-output-retires-producer": "passed",
+      "nested-deadline-preserves-parent": "passed",
+      "output-and-unlock-share-deadline": "passed",
+      "output-hangup-retires-producer": "passed",
+      "partial-read-deadline": "passed",
+      "partial-write-deadline": "passed",
+      "readiness-error-retires-producer": "passed",
+      "termination-cancels-wait": "passed",
+      "timely-unlock": "passed"
+    },
+    "module-startup": {
+      "activity-keeps-total-deadline": "passed",
+      "buffered-escape-ends-barrier": "passed",
+      "buffered-startup-before-eof": "passed",
+      "clock-failure-keeps-module-live": "passed",
+      "clock-regression-keeps-module-live": "passed",
+      "command-retirement-pin": "passed",
+      "complete-frame-at-deadline-resumes": "passed",
+      "custom-expect-and-inline-command": "passed",
+      "default-response-prefix": "passed",
+      "disconnection-retires-producer": "passed",
+      "explicit-positive-override": "passed",
+      "final-command-retirement-pin": "passed",
+      "final-frame-at-deadline-resumes": "passed",
+      "high-endpoint-startup": "passed",
+      "input-error-retires-producer": "passed",
+      "interrupted-input-resumes-after-timeout": "passed",
+      "interrupted-output-keeps-deadline": "passed",
+      "interrupted-wait-bounded": "passed",
+      "invalid-descriptor-ends-barrier": "passed",
+      "invalid-timeout-refused-before-launch": "passed",
+      "nested-startup-preserves-parent-deadline": "passed",
+      "omitted-timeout-captures-module-timeout": "passed",
+      "ordinary-x-event-remains-queued": "passed",
+      "partial-input-resumes-after-timeout": "passed",
+      "partial-output-keeps-deadline": "passed",
+      "real-explicit-timeout-asynchronous-continuation": "passed",
+      "real-timeout-then-asynchronous-continuation": "passed",
+      "startup-output-retains-pass-budget": "passed",
+      "terminal-poll-error-ends-barrier": "passed",
+      "termination-ends-barrier": "passed",
+      "thirty-second-default-finite-waits": "passed",
+      "x-readiness-escape-real-clock": "passed"
+    }
+  },
+  "bsd_input": {
+    "files": {
+      "libs/fvwmsignal.c": "68b9ea7c1a60a5718774ece6190e93a3de218671eb3e1c3371690619eb997dd7",
+      "libs/fvwmsignal.h": "650b07fb744516a7c8802f1a3f29ff837b47a807a92745e55ea05e99870b502a",
+      "libs/ftime.h": "db434f2a66fce4f2828a6952057ef94b311c7d11e7ce3b652f3a5604fd339e64",
+      "libs/strlcat.h": "7aaef52f964f08c0c33c2be295763f49e1189bc553f806abb321858e434aa3ef",
+      "libs/strlcpy.h": "b52ea4d4e980c8f68dcae31de0fb5308d07d6356820df595283ea1a8a7b450b3",
+      "tests/test_fvwmsignal.c": "e844d935c407d6f76a12cd328f5ae0318577db277ab6a4910ffa38d70647152b"
+    },
+    "openbsd_config_sha256": "89ec817696d361303c288e20fc40fde55fa74ce29e6628aa89ec9b6a367a6c9e",
+    "config_origin": "qualified OpenBSD ARM64 8.0 M2 resume-cache config.h",
+    "cache_manifest_sha256": "25c61b1036a6c4836416cbaa39cb8e5045568a223cc648cb14cc30ffc9e94936",
+    "packaging_correction": "Add strlcat/strlcpy headers referenced by preserved generated config; production/test bytes unchanged"
+  },
+  "freebsd": {
+    "version": "15.1-RELEASE-p4 arm64",
+    "compiler": "Clang19.1.7",
+    "status": {
+      "status": 0,
+      "command": "cd /root/fvwm-m5-wait-20261025 && cc -std=c11 -I. libs/fvwmsignal.c tests/test_fvwmsignal.c -o test-fvwmsignal && ./test-fvwmsignal && sha256 config.h libs/fvwmsignal.c libs/fvwmsignal.h libs/ftime.h libs/strlcat.h libs/strlcpy.h tests/test_fvwmsignal.c test-fvwmsignal"
+    },
+    "cleanup": {
+      "owned_pid": 87044,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    },
+    "config_sha256": "c2cc4d6c44ca460c35aad08e4f8482485f7467a7b29c2bd56435ab73f32d4974"
+  },
+  "openbsd": {
+    "openbsd-arm64-job": {
+      "profile": "openbsd-arm64",
+      "source": {
+        "sha256": "d53aa3853ae9a4c095f4c61bca183427e8582da6fc0e92c2674181c3750a1bb3",
+        "members": 5,
+        "expanded_bytes": 19989
+      },
+      "status": "failed",
+      "acceleration": "hvf",
+      "run_script": {
+        "sha256": "46dc96fe626ed755d9fc199bc181184e6fc0e8b80ad657922aaada551ab1ec0c",
+        "bytes": 595
+      },
+      "guest_release": [
+        "OpenBSD",
+        "8.0",
+        "arm64",
+        "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+      ],
+      "run_status": 1,
+      "error": "guest gate failed; run and collection logs retained",
+      "qemu_exit_status": 0
+    },
+    "openbsd-arm64-retry1-job": {
+      "profile": "openbsd-arm64",
+      "source": {
+        "sha256": "5d3919c26e7f4715e5d21e322c89eea7deab22e2027fe001117c00d5e0e05442",
+        "members": 7,
+        "expanded_bytes": 21981
+      },
+      "status": "passed",
+      "acceleration": "hvf",
+      "run_script": {
+        "sha256": "46dc96fe626ed755d9fc199bc181184e6fc0e8b80ad657922aaada551ab1ec0c",
+        "bytes": 595
+      },
+      "guest_release": [
+        "OpenBSD",
+        "8.0",
+        "arm64",
+        "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+      ],
+      "run_status": 0,
+      "qemu_exit_status": 0
+    }
+  },
+  "original_linux_control": {
+    "status": 134,
+    "command": "ulimit -c 0; cd /tmp/fvwm-module-waits-20261015; cc -std=c11 -Ibuild-gcc -Isource /tmp/fvwm-m5-wait-20261025/test_fvwmsignal.c source/libs/fvwmsignal.c -o /tmp/fvwm-m5-wait-20261025/baseline-fvwmsignal && /tmp/fvwm-m5-wait-20261025/baseline-fvwmsignal"
+  },
+  "retired_disposable_disks": [
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-readiness/openbsd-arm64-job/disk.qcow2",
+      "dev": 16777229,
+      "ino": 259070567,
+      "bytes": 3071737856,
+      "qemu_exit_status": 0,
+      "open_handles": false,
+      "explained_result": "failed"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-readiness/openbsd-arm64-retry1-job/disk.qcow2",
+      "dev": 16777229,
+      "ino": 259184133,
+      "bytes": 3071737856,
+      "qemu_exit_status": 0,
+      "open_handles": false,
+      "explained_result": "passed"
+    }
+  ],
+  "limits": [
+    "Only selected Linux units/core-X and standalone ARM64 BSD wrappers ran; no new six-target/full-install/default-BSD-X qualification",
+    "Production termination is permanent; repeated reset is regression-fixture behavior, not demonstrated live-X recovery",
+    "Existing volatile syscall results/errno and arm/check/syscall/disarm sequence remain unchanged",
+    "Other descriptor/session/resource/runtime/native-CPU/hardware/release owners remain open"
+  ],
+  "routing": "Requested Astra/high analysis, Sol/high implementation and separate Sol/high review; runtime model metadata unverified"
+}

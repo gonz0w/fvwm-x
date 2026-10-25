@@ -1151,3 +1151,10 @@ observes the module termination flag. Failed construction/cancellation clears
 results and restores owned state; the child stays unreaped through group cleanup.
 The caller retains its successful cache on failure.
 [Owner evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROCESS.md).
+
+Shared `fvwmRead`/`fvwmWrite`/`fvwmPoll` waits in `libs/fvwmsignal.c` use POSIX
+saved-mask jumps. The existing arm/check/syscall/disarm sequence and volatile
+result preserve cancellation and completed-I/O ownership. The unused select
+adapter and exclusive feature definitions are retired; generic descriptor types
+and the active owned core readiness/continuation policies remain.
+[Current evidence and LOOP-01 reconciliation](verification/VERIFICATION-2026-10-25-M5-WAIT-OWNERSHIP.md).

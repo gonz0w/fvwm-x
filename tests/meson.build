@@ -1485,6 +1485,10 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 60)
 
+endif
+
+# Module transport/UI coverage does not require session management.
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('script-packet-xvfb', py,
         args: [files('live_x/script_transport_live.py'), '--packet-only',
                '--module', fvwm_script,

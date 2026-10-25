@@ -246,9 +246,12 @@ The native NLS integration fixtures additionally require Meson, a C compiler,
 the gettext development library and msgfmt. All five fixtures pass on each of
 the six targets; host skips are recorded separately from native execution.
 
-The build-time `go_version.py` policy validates the selected optional compiler
-against the [approved stable patch baseline](../../dev-docs/decisions/GO-TOOLCHAIN-BASELINE-PROPOSAL.md).
+The build-time `go_version.py` policy validates the required compiler against
+the [approved stable patch baseline](../../dev-docs/decisions/GO-TOOLCHAIN-BASELINE-PROPOSAL.md):
+stable Go 1.26.9 or newer in the 1.26 series, or stable Go 1.27.2 or newer.
 It parses `GOVERSION` from the actual executable with automatic toolchain
-selection disabled. It is not an installer; Go-disabled configuration skips it.
+selection disabled. Missing, old or prerelease compilers fail configuration;
+the Go-disabled option was retired in M1. It is not an installer: builds use
+vendored inputs with module/toolchain downloads disabled.
 The separate [BSD verification SDK recipe](../../dev-docs/ci/bsd-go-sdk.sh) is
 explicit disposable-job preparation, with fixed official archive hashes.

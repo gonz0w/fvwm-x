@@ -838,7 +838,8 @@ where not independently mapped. [Remaining production group](verification/VERIFI
 Keep full package objects for runtime owners so static/transitive requirements
 survive. These narrower
 link edges do not imply that Cairo's runtime libraries or full-project packages
-can be removed. [Core/archive checkpoint](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md).
+can be removed. [Core/archive checkpoint](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md),
+[combined dependency acceptance](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md).
 
 `fvwm/fvwm.h` forward-declares borrowed `window_style` pointers. Complete rule
 and special-flag layouts live in `fvwm/style_types.h`, included by field/constant

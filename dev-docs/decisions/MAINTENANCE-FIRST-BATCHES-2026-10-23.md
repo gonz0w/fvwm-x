@@ -138,7 +138,7 @@ than reopened wholesale as another audit or feature implementation queue.
 | [#45](https://github.com/gonz0w/fvwm-x/issues/45), [#51](https://github.com/gonz0w/fvwm-x/issues/51), [#54](https://github.com/gonz0w/fvwm-x/issues/54) | Preserve existing catalogs, module scale and text/input behavior when retiring a consumer; new translation/shaping/UI expansion stays paused. |
 | [#56](https://github.com/gonz0w/fvwm-x/issues/56) | Existing menu/Desktop Entry/interoperability parity during runtime retirement; no new FileManager1/default-role feature. |
 | [#79](https://github.com/gonz0w/fvwm-x/issues/79) | Final release gate remains separately owned; this planning work does not publish a release. |
-| [#93](https://github.com/gonz0w/fvwm-x/issues/93) | Existing OpenBSD AMD64 VESA investigation retains original profile/evidence. Use current supported releases; do not resume retired 7.9 experiments or block portable cleanup without a current failure. |
+| [#93](https://github.com/gonz0w/fvwm-x/issues/93) | Closed not planned/superseded 2026-10-25: original 7.9 cause/fix is unfulfilled and preserved; 7.9 is out of support. No repair claim. Current supported-release failures need their own evidence. |
 
 ## Parked work
 
@@ -182,3 +182,11 @@ ownership remains. Promote maintenance issues previously in Later to milestone
 other maintenance work is Backlog until pickup. Preserve real native blocked-by
 and parent relations. Snapshot and readback belong to the
 [planning receipt](../verification/MAINTENANCE-PLANNING-2026-10-23.md).
+
+## M3 finite closure — 2026-10-25
+
+PR204–206 merge production target ownership. The combined fifteen-profile
+checkpoint completes selected LINK-TARGETS-01/LINK-01 and LIB-05 acceptance for
+review and closure on merge. #11/#13 retain distinct advisory/vendor gates;
+they are not closed by linkage records. M4 follows this accepted linkage
+checkpoint, not a restart of the wider audit. [Evidence and limits](../verification/VERIFICATION-2026-10-25-M3-CLOSURE.md).

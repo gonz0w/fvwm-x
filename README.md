@@ -1,18 +1,18 @@
 # FVWM-X
 
-FVWM-X is an X11 window manager derived from FVWM3, for Linux, FreeBSD Xorg
+FVWM-X is an X11 window manager from FVWM3, for Linux, FreeBSD Xorg
 and OpenBSD Xenocara on AMD64 and ARM64.
 
-We target simpler code, responsive interaction, safer resources and FVWM 3.x
+We target simpler code, responsiveness, safer resources and FVWM 3.x
 configuration/theme compatibility. No compositor or Wayland backend.
 
 **Status:** in-progress development; features paused for cleanup. Builds require
 Go; migrated utilities need no Go compiler or Python packages.
 [Build/upgrade notes](INSTALL.md).
 Go coordinates the desktop with native Xlib/PNG capture. M2 session evidence
-and limits are accepted; M3 now makes production linkage explicit. Broader
-dependency and hardware/release qualification remains open.
-Recent work includes:
+and limits are accepted. M3 production linkage and combined acceptance are
+ready for review; dependency retirement and release work remain open.
+Recent work:
 
 - Atomic button updates, desktop settings/editor and configuration checking.
 - Structured IPC queries/actions and scoped settings preview/recovery.
@@ -36,7 +36,7 @@ releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
 Next: [batched legacy, dependency and tooling cleanup](dev-docs/decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).
 
 - [Install and build](INSTALL.md)
-- [Current priorities and evidence](dev-docs/PROJECT-TRACKER.md)
+- [Priorities and evidence](dev-docs/PROJECT-TRACKER.md)
 - [Roadmap and review board](https://github.com/users/gonz0w/projects/6)
 - [Contribute and validate locally](CONTRIBUTING.md)
 

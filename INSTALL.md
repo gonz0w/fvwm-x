@@ -101,7 +101,9 @@ editor/preview lifetimes and native module publication. The adjacent private
 folder menus and read-only configuration checking. A separate C
 `fvwm-desktop-capture` owns its Xlib connection and uses the configured libpng;
 PNG-disabled profiles report capture as unavailable. Installed users need no Go
-compiler. Complete controller/session acceptance remains open.
+compiler. The owner accepted M2 controller/session evidence and its documented
+limits on 2026-10-25; broader native/hardware and release qualification remains
+separately owned. See the [current checkpoint](dev-docs/PROJECT-TRACKER.md).
 
 The pre-FVWM3 `fvwm-convert-2.6` converter is no longer built or installed.
 FVWM3 configuration files remain supported. Migrate older configuration with

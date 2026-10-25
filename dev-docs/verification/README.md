@@ -1,5 +1,11 @@
 # Verification reports
 
+- [Combined M3 dependency acceptance](VERIFICATION-2026-10-25-M3-CLOSURE.md): fifteen profiles/six targets, full installs and staged X, exact static-transitive ownership, dependency/license/size inventory and reduced test-registration repair; #184/#49/#47 close on merge, with wider gates separate.
+
+- [Accepted issue reconciliation](ISSUE-CLOSURE-2026-10-25.md): DEAD-01 #35 completed from merged source evidence; unsupported OpenBSD 7.9 investigation #93 closed as not planned, with original failures and unmet cause/fix criteria preserved.
+
+- [Dependency and interpreter floors](DEPENDENCY-FLOORS-2026-10-25.md): actual target ownership, declared versus exercised minima, retained Perl/build-tool requirements and two current-documentation corrections; no package upgrade or interpreter-free installation claim.
+
 - [Runtime/session action handoff](VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md): power/locker ownership, retired settings RPC, shared self-worker paths and Python-free installed execution; separate review, three themes and explicit remaining owner acceptance.
 
 - [Installed resident-session observation](PERFORMANCE-2026-10-24-M2-SESSION.md): three preserved-reference pairs, lower sampled startup/RSS and overlapping key timings; peak/wakeup/native-CPU limits remain.

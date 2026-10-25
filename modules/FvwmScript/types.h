@@ -3,6 +3,7 @@
 #ifndef FVWMSCRIPT_TYPES_H
 #define FVWMSCRIPT_TYPES_H
 
+#include "script_message.h"
 #include "libs/fvwmlib.h"
 #include "libs/Module.h"
 #include "libs/Picture.h"
@@ -176,18 +177,6 @@ typedef struct
   Bool swallowed;
   Window swallower_win;
 } X11base ;
-
-typedef struct
-{
- char *Msg;
- char* R;
-} TypeName;
-
-typedef struct
-{
- int NbMsg;
- TypeName TabMsg[40];
-} TypeBuffSend ;
 
 struct XObj
 {

@@ -9,9 +9,9 @@ configuration/theme compatibility. No compositor or Wayland backend.
 **Status:** in-progress development; features paused for cleanup. Builds require
 Go; migrated utilities need no Go compiler or Python packages.
 [Build/upgrade notes](INSTALL.md).
-Go coordinates the desktop with native Xlib/PNG capture. M2 session evidence
-and limits are accepted, as is M3 dependency ownership. M4 removes obsolete
-SVG code; retirement and release work remain open.
+Go coordinates native desktop capture. M2 session evidence/limits and M3
+dependency ownership are accepted. M4 removes obsolete SVG code; M5 bounds
+Script message shutdown. Retirement and release work remain open.
 Recent work:
 
 - Atomic button updates, desktop settings/editor and configuration checking.

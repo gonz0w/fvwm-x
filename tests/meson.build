@@ -2622,6 +2622,23 @@ script_value_test = executable(
 )
 test('script-value', script_value_test)
 
+script_message_test = executable(
+    'test-script-message',
+    ['test_script_message.c', '../modules/FvwmScript/script_message.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('script-message', script_message_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-message-xvfb', py,
+        args: [files('live_x/script_message_live.py'), '--module', fvwm_script,
+               '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-message'],
+        depends: fvwm_script,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60)
+endif
+
 script_message_owner_test = executable(
     'test-script-message-owner', 'test_script_message_owner.c',
     objects: fvwm_script.extract_all_objects(recursive: false),

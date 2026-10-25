@@ -126,10 +126,16 @@ static void ReadFvwmScriptArg(int argc, char **argv, int IsFather);
 
 char *default_cursor;
 
-/* Parser and callback fields borrow the complete owner's roots. Clear aliases
- * only when idle retirement succeeds; exit from a command retains live trees. */
-static void release_script_blocks(void)
+/* Callbacks borrow trees, binding actions and the latest message. Retire them
+ * only after callbacks finish; exit from a command retains active aliases. */
+static void release_script_resources(void)
 {
+  if (execution.depth != 0)
+    return;
+  FreeBindingList(BindingsList);
+  BindingsList = NULL;
+  free(LastString);
+  LastString = NULL;
   if (!script_blocks.published ||
       !script_block_owner_clear(&script_blocks, execution.depth))
     return;
@@ -166,7 +172,7 @@ ShutdownX(void)
   if (is_dead_pipe)
   {
     script_message_clear(&BuffSend);
-    release_script_blocks();
+    release_script_resources();
     return;
   }
 
@@ -223,7 +229,7 @@ ShutdownX(void)
    * separate pass so no callback can observe another widget's freed record. */
   for (i=0; i<(int)(sizeof(tabxobj) / sizeof(tabxobj[0])); i++)
     script_widget_release(&tabxobj[i], i < initialized_widgets);
-  release_script_blocks();
+  release_script_resources();
   XFlush(dpy);
   fsm_close();
   XCloseDisplay(dpy);

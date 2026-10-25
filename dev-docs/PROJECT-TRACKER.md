@@ -94,14 +94,51 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Script binding and message-string ownership — 2026-10-25
+
+Owner: Cam; `codex/m5-script-binding-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
+Status: focused checks and separate final review pass; ready for PR delivery
+after merged PR246
+`15feef97d6438c412a6e5381726b28aef195298d`; signature/DCO and reviewed tree
+`5f6e510e181931dfefe35db1211c19ba64a54058` verified, completed branch
+retired and GitHub/Project Done.
+
+Finite outcome: release Key's constructor action after shared AddBinding copies
+it, including zero-match results; correct the shared ownership comment without
+changing its implementation. Retire BindingsList and latest owned LastString
+once after QuitFunc/message/widget callbacks, using existing zero-execution-depth
+protection and FreeBindingList. Active Init/event/Periodic exits retain borrowed
+binding/message storage for process reclamation. Preserve key precedence,
+modifiers, duplicate definitions, copied actions and message text. No table/parser,
+base X/font/selection cleanup, new replacement policy or blocked pathname retry.
+
+Acceptance: old production Key control shows constructor retention for successful
+and zero-match outcomes. Observe exact original/copy lifetimes; cover invalid key/
+modifier and multiple copies. One combined affected normal/scoped sanitizer unit
+checkpoint and actual-module binding/message lifecycle X controls, reusing the
+existing text/list Key fixture. Preserve callback-readable LastString through
+QuitFunc and active exits. Reuse successful evidence; no automatic OS/install/
+theme matrix or new UI screenshots. Separate final source/evidence review and
+signed author-DCO delivery. Broader #4/#34 stay open; #31/#35/#36 stay closed.
+Evidence: actual old Key objects retain three constructor owners for controlled
+0/1/3-copy outcomes; repaired producer frees all. Three normal units, scoped
+ASan/UBSan owner checks, six real-module binding/message lifecycle controls and
+existing text/list X integration pass on the first combined invocation. Idle
+exit/dead pipe release 12 binding and three message allocations; active exits
+retain all bindings and at most one latest message. Review tightens exact active
+counts before execution; final source/evidence review is clear. [Report](verification/VERIFICATION-2026-10-25-M5-SCRIPT-BINDINGS.md).
+
+Performance reference PR243 is 3/5 after PR246; no comparison is due. Full release,
+platform/native-CPU and separately scoped owner acceptance remains pending.
+Verified duplicate guest evidence is retired; canonical archive and caches remain.
+
 ## M5 Script instruction-tree ownership — 2026-10-25
 
 Owner: Cam; `codex/m5-script-block-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
-Status: focused checks and separate final evidence review pass; ready for PR
-delivery after merged PR245
-`9b8780be18f926bacd61734ba2fb977761b1d978`; canonical signature/DCO and
-reviewed tree `8d83a6cba86ce861fc75b91220dd77d5090b6011` verified,
-completed branch retired and Project/labels Done.
+Status: merged in PR246 as `15feef97d6438c412a6e5381726b28aef195298d`;
+canonical signature/DCO and exact reviewed tree
+`5f6e510e181931dfefe35db1211c19ba64a54058` verified; branch retired,
+GitHub/Project Done. Focused checks and separate review passed after PR245.
 
 Finite outcome: release complete Init argument/nested-block trees after normal
 execution returns and own all complete parsed instruction roots through shutdown.

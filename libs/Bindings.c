@@ -122,9 +122,9 @@ void RemoveBinding(Binding **pblist, Binding *b, Binding *prev)
  *
  *  Actually adds a new binding to a list (pblist) of existing bindings.
  *  Specify either button or keysym/key_name, depending on type.
- *  The parameters action and action2 are assumed to reside in malloced memory
- *  that will be freed in RemoveBinding. The key_name is copied into private
- *  memory and has to be freed by the caller.
+ *  Each binding copies action, action2, windowName and key_name into private
+ *  memory. The caller retains ownership of all input strings, including when
+ *  no binding matches. FreeBindingList/RemoveBinding release the copies.
  *
  */
 int AddBinding(

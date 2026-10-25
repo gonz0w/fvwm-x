@@ -1193,3 +1193,11 @@ process reclamation. Empty case slots are skipped before pointer reads; parser
 scratch and runtime aliases clear with their ownership boundary. Parser error
 stacks, variable/string tables and base X resources remain separate.
 [Instruction-tree evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-BLOCKS.md).
+
+Script Key retains its constructor action through AddBinding, then frees it:
+each accepted shared binding owns its copied strings, including action/key name.
+The static Script runtime cleanup releases the binding list and latest owned
+message after callbacks only at zero interpreter depth. Active command exits
+retain borrowed aliases for process reclamation. Shared AddBinding behavior and
+key precedence/modifier rules remain unchanged.
+[Binding/message evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-BINDINGS.md).

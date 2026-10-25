@@ -94,14 +94,53 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Script instruction-tree ownership — 2026-10-25
+
+Owner: Cam; `codex/m5-script-block-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
+Status: focused checks and separate final evidence review pass; ready for PR
+delivery after merged PR245
+`9b8780be18f926bacd61734ba2fb977761b1d978`; canonical signature/DCO and
+reviewed tree `8d83a6cba86ce861fc75b91220dd77d5090b6011` verified,
+completed branch retired and Project/labels Done.
+
+Finite outcome: release complete Init argument/nested-block trees after normal
+execution returns and own all complete parsed instruction roots through shutdown.
+Use one typed record for Init/Periodic/Quit and embedded widget-case block arrays.
+Publish ownership only after successful parsing; preserve late callback activation,
+QuitFunc/widget/message order, empty inclusive-last-index conventions and slots
+not initialized by an empty Main. Retire only with zero active execution depth;
+Quit from Init/event/periodic retains active trees for process reclamation. Parser
+error-stack, variables/string tables, base X/fonts, bindings, storage budgets and
+representation redesign remain separate. No retry of the blocked pathname work.
+
+Acceptance: real parsed Init shows old shallow-release retention before repair;
+cover ordinary/empty/If/Else/Loop/While/mixed trees, embedded multiple/empty cases,
+repeat clearing, live-execution refusal, normal Init, Quit-from-Init, complete-parse
+startup refusal and dead pipe. One grouped affected Linux normal/scoped sanitizer
+unit checkpoint and actual-module execution/ownership X cases. Reuse existing
+builds; no automatic OS/install/theme matrix. No new UI, so screenshots/themes
+are not needed. Separate final source/evidence review and signed DCO delivery.
+Broader #4/#34 remain open; completed #31/#35/#36 remain closed.
+Evidence: old parsed Init control frees two of 21 owned allocations; nineteen
+remain. Normal four-unit checkpoint and scoped owner ASan/UBSan pass. Six actual
+module X cases free all 34 watched allocations on idle exit/refusal/dead pipe;
+active Init Quit retains 34, active event/Periodic Quit retains twelve after
+freeing 22 Init allocations. Existing execution/recovery X fixture passes.
+Preserve original observer/include/fixture failures and successful unaffected
+build/three-unit/probe results; no full repeat. Separate final source/test/evidence review is
+clear. [Report](verification/VERIFICATION-2026-10-25-M5-SCRIPT-BLOCKS.md).
+
+Performance reference PR243 is 2/5 after PR245; no comparison due. Full platform,
+native-CPU and release acceptance remains separately owned. Verified duplicate
+guest evidence is retired, preserving the canonical archive and reusable inputs.
+
 ## M5 unused private helper retirement — 2026-10-25
 
 Owner: Cam; implementation lead, `codex/m5-private-helpers`; CLEAN-01 #34.
-Status: focused checks and separate final review pass; ready for signed PR
-delivery after merged PR244
-`55333b31a57b582e3ad269a01a9210421396348a`; canonical signature/DCO and
-reviewed tree `f071d4fe392eee4e280af79a03918f1cda1177c7` verified,
-completed branch retired and GitHub/Project Done.
+Status: merged in PR245 as `9b8780be18f926bacd61734ba2fb977761b1d978`;
+canonical signature/DCO and reviewed tree
+`8d83a6cba86ce861fc75b91220dd77d5090b6011` verified; branch retired,
+GitHub/Project Done. Focused checks and separate review passed after PR244.
 
 Finite scope: retire the unused four-function timeout subsystem and its private
 header/build entry, unused queue-tail operate wrapper, and unused getostype

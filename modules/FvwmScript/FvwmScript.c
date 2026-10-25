@@ -23,6 +23,7 @@
 
 #include "types.h"
 #include "script_index.h"
+#include "script_block.h"
 #include "script_process.h"
 #include "script_fifo.h"
 #include "script_execution.h"
@@ -66,6 +67,7 @@ extern TabObj *tabobj;                  /* Object array, limit=1000 */
 extern char **TabVVar;                  /* Script variables array */
 extern int TabIdObj[1001];
 extern Bloc **TabIObj;
+extern Bloc *PileBloc[10];
 extern CaseObj *TabCObj;
 #ifdef MEMDEBUG
 extern int __bounds_debug_no_checking;
@@ -105,6 +107,7 @@ static script_execution execution = {
   .step_limit = SCRIPT_EXECUTION_DEFAULT_STEPS,
   .depth_limit = SCRIPT_EXECUTION_DEFAULT_DEPTH
 };
+static script_block_owner script_blocks;
 static unsigned int keyboard_lock_mask = LockMask;
 struct XObj *tabxobj[1000];
 char *Scrapt;
@@ -122,6 +125,25 @@ static void TryToFind(char *filename);
 static void ReadFvwmScriptArg(int argc, char **argv, int IsFather);
 
 char *default_cursor;
+
+/* Parser and callback fields borrow the complete owner's roots. Clear aliases
+ * only when idle retirement succeeds; exit from a command retains live trees. */
+static void release_script_blocks(void)
+{
+  if (!script_blocks.published ||
+      !script_block_owner_clear(&script_blocks, execution.depth))
+    return;
+  if (scriptprop != NULL)
+  {
+    scriptprop->initbloc = NULL;
+    scriptprop->periodictasks = NULL;
+    scriptprop->quitfunc = NULL;
+  }
+  x11base->periodictasks = NULL;
+  x11base->quitfunc = NULL;
+  TabIObj = NULL;
+  TabCObj = NULL;
+}
 
 /* Exit procedure - called whenever we call exit(), or when main() ends */
 static void
@@ -144,6 +166,7 @@ ShutdownX(void)
   if (is_dead_pipe)
   {
     script_message_clear(&BuffSend);
+    release_script_blocks();
     return;
   }
 
@@ -200,6 +223,7 @@ ShutdownX(void)
    * separate pass so no callback can observe another widget's freed record. */
   for (i=0; i<(int)(sizeof(tabxobj) / sizeof(tabxobj[0])); i++)
     script_widget_release(&tabxobj[i], i < initialized_widgets);
+  release_script_blocks();
   XFlush(dpy);
   fsm_close();
   XCloseDisplay(dpy);
@@ -252,6 +276,21 @@ void ReadConfig (char *ScriptName)
 	    module->name);
     exit(1);
   }
+  /* Own complete trees before any later startup refusal. Callback activation
+   * still waits until every widget has initialized in BuildGUI. */
+  script_blocks = (script_block_owner){
+    .init = scriptprop->initbloc,
+    .periodic = scriptprop->periodictasks,
+    .quit = scriptprop->quitfunc,
+    .object_blocks = TabIObj,
+    .object_cases = TabCObj,
+    .object_count = (size_t)(nbobj + 1),
+    .published = true
+  };
+  /* The parser stack is borrowed scratch state, no longer needed once the
+   * complete roots have been published. It may still alias nested Init blocks. */
+  for (int i = 0; i < 10; i++)
+    PileBloc[i] = NULL;
   /* Closing the script */
 
   fclose(yyin);
@@ -909,12 +948,13 @@ void BuildGUI(int IsFather, int argc, char **argv)
   if (scriptprop->initbloc != NULL)
   {
     ExecBloc(scriptprop->initbloc);
-    free(scriptprop->initbloc->TabInstr);
-    free(scriptprop->initbloc);
+    if (script_block_owner_release_init(&script_blocks, execution.depth))
+      scriptprop->initbloc = NULL;
   }
 
   free(tabobj);
   free(scriptprop);
+  scriptprop = NULL;
   XMapRaised(dpy,x11base->win);
   for (i=0; i<nbobj; i++)
     if (tabxobj[i]->flags[0] != True)

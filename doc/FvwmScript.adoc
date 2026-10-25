@@ -620,6 +620,12 @@ SendToScript id_script \{str11} \{str2} etc::
   Send a message to the script identified by id_script. The message is
   the concatenation of str1, str2... Invalid destinations are ignored;
   messages including their terminator must fit the 32 KiB selection limit.
+  At most 40 outgoing messages are queued. Each receiver collects its messages
+  in send order. On normal exit, the script keeps its selection available for
+  up to two seconds in total to deliver queued messages, then discards any
+  messages still pending. Unrelated requests do not extend this grace period;
+  termination or a connection error cancels it. An empty or drained queue
+  exits immediately. X server calls still require a responsive server.
 
 
 Key _Keyname_ _Modifier_ _id_ _sig_ _str1_ _str2_ etc::

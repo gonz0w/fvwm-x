@@ -96,7 +96,7 @@ Display *dpy;
 int screen;
 Window  Root;
 X11base *x11base;               /* For X server */
-TypeBuffSend BuffSend;          /* For inter script communications */
+script_message_queue BuffSend;          /* For inter script communications */
 int grab_server = 0;
 /* Opt-in keyboard focus leaves legacy scripts' pointer routing untouched. */
 static char *keyboard_focus_title = NULL;
@@ -128,10 +128,10 @@ static void
 ShutdownX(void)
 {
   int i;
-  static XEvent event;
+  XEvent event;
   struct pollfd ready;
+  struct timespec start, now;
   Atom MyAtom;
-  int NbEssai=0;
 
 #ifdef DEBUG                    /* For debugging */
   XSync(dpy,0);
@@ -142,44 +142,62 @@ ShutdownX(void)
     ExecBloc(x11base->quitfunc);
 
   if (is_dead_pipe)
+  {
+    script_message_clear(&BuffSend);
     return;
+  }
 
   /* We hide the window */
   if (x11base->win != None)
     XUnmapWindow(dpy,x11base->win);
   XFlush(dpy);
 
-  /* Script doesn't own the property anymore */
+  /* Keep the selection owned while receivers collect queued messages.
+   * One total monotonic grace period covers all requests and interruptions;
+   * Xlib calls themselves still depend on a responsive X server. */
+  if (clock_gettime(CLOCK_MONOTONIC, &start) < 0)
+    fvwm_debug(__func__, "Unable to initialize message shutdown clock");
+  else
+    while (!isTerminated && BuffSend.count > 0)
+    {
+      if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+      {
+        fvwm_debug(__func__, "Unable to read message shutdown clock");
+        break;
+      }
+      int timeout = script_shutdown_timeout_ms(&start, &now);
+      if (timeout == 0)
+        break;
+      if (FPending(dpy))
+      {
+        /* Consume unrelated events too: leaving them queued would spin.
+         * Recheck the deadline after each event, including refusals. */
+        FNextEvent(dpy, &event);
+        if (event.type == SelectionRequest)
+          SendMsgToScript(event);
+        continue;
+      }
+      ready = (struct pollfd){ x_fd, POLLIN, 0 };
+      int result = fvwmPoll(&ready, 1, timeout);
+      if (result < 0 && errno == EINTR)
+        continue;
+      if (result < 0 ||
+          (ready.revents & (POLLERR | POLLHUP | POLLNVAL)))
+      {
+        fvwm_debug(__func__, "Message shutdown X connection failed");
+        break;
+      }
+    }
+  script_message_clear(&BuffSend);
+
   MyAtom = XInternAtom(dpy, x11base->TabScriptId[1], False);
   XSetSelectionOwner(dpy, MyAtom, x11base->root, CurrentTime);
-
-  /* We check whether all messages have been sent */
-  while(!isTerminated && (BuffSend.NbMsg > 0) && (NbEssai < 10000) )
-  {
-    ready = (struct pollfd){ x_fd, POLLIN, 0 };
-    int result = fvwmPoll(&ready, 1, FPending(dpy) ? 0 : 1000);
-    if (result < 0 && errno != EINTR)
-      break;
-    if (ready.revents & (POLLERR | POLLHUP | POLLNVAL))
-      break;
-    if (!isTerminated && ((ready.revents & POLLIN) || FPending(dpy)))
-    {
-      if (FCheckTypedEvent(dpy, SelectionRequest, &event))
-        SendMsgToScript(event);
-      else
-        NbEssai++;
-    }
-  }
   XFlush(dpy);
 
-  /* Wait for 2 seconds, to be sure all */
-  /* messages are received */
-  /* Exiting cleanly the X server */
   for (i=0; i<initialized_widgets; i++)
     tabxobj[i]->DestroyObj(tabxobj[i]);
   XFlush(dpy);
   fsm_close();
-  sleep(2);
   XCloseDisplay(dpy);
 }
 
@@ -998,7 +1016,7 @@ void SendMsgToScript(XEvent event)
   Atom sender;
   XEvent reply = {0};
   XSelectionRequestEvent *request = &event.xselectionrequest;
-  int i;
+  char *message;
 
   sender = XInternAtom(dpy, x11base->TabScriptId[1], True);
   reply.xselection.type = SelectionNotify;
@@ -1012,25 +1030,16 @@ void SendMsgToScript(XEvent event)
   if (sender != None && request->selection == sender &&
       request->target != None)
   {
-    for (i = 0; i < BuffSend.NbMsg; i++)
+    message = script_message_take(&BuffSend, request->target);
+    if (message != NULL)
     {
-      if (request->target != XInternAtom(dpy, BuffSend.TabMsg[i].R, True))
-        continue;
-
       /* ICCCM permits old requestors to omit the property atom. */
       reply.xselection.property = request->property != None ?
         request->property : request->target;
       XChangeProperty(dpy, request->requestor, reply.xselection.property,
                       request->target, 8, PropModeReplace,
-                      (unsigned char *)BuffSend.TabMsg[i].Msg,
-                      strlen(BuffSend.TabMsg[i].Msg) + 1);
-      free(BuffSend.TabMsg[i].Msg);
-      free(BuffSend.TabMsg[i].R);
-      BuffSend.NbMsg--;
-      if (i < BuffSend.NbMsg)
-        memmove(&BuffSend.TabMsg[i], &BuffSend.TabMsg[i + 1],
-                (BuffSend.NbMsg - i) * sizeof(TypeName));
-      break;
+                      (unsigned char *)message, strlen(message) + 1);
+      free(message);
     }
   }
   FSendEvent(dpy, request->requestor, False, 0, &reply);
@@ -1669,8 +1678,6 @@ static void ReadFvwmScriptArg(int argc, char **argv,int IsFather)
 {
   int i;
   Atom myatom;
-
-  BuffSend.NbMsg=0;             /* No message in buffer */
 
   for (i=2; i<100; i++)
     x11base->TabScriptId[i]=NULL;

@@ -18,6 +18,10 @@ void script_delay_duration(int ticks, struct timespec *duration);
 /* Rounded-up remaining time in a one-second periodic interval. */
 int script_periodic_timeout_ms(const struct timespec *last,
 	const struct timespec *now);
+/* Rounded-up remaining time in the total two-second message shutdown grace.
+ * The caller retains the same start across input and interruptions. */
+int script_shutdown_timeout_ms(const struct timespec *start,
+	const struct timespec *now);
 /* Inactive periodic tasks never read clock state; pending sessions wake in
  * at most ten milliseconds. */
 int script_readiness_timeout_ms(bool periodic, bool session_pending,

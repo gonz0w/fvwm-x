@@ -1137,3 +1137,10 @@ Locate's lexical policy. Native publication followed by core-owned presentation
 keeps managed-window actions in the command engine. The optional Go profile's
 folder desktop entry does not select a default provider. See the
 [handoff contract](decisions/BROWSER-CONSUMER-HANDOFF-2026-10-23.md).
+
+Script outgoing messages use the bounded, module-owned `script_message.c` queue:
+literal target atom IDs and transferred text have one owner, matching takes
+preserve target FIFO and cleanup clears vacated slots. Shutdown retains selection
+ownership through one monotonic grace period using `script_delay.c` policy, then
+releases pending messages. Xlib calls still require a responsive server.
+[Owner evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-OWNERSHIP.md).

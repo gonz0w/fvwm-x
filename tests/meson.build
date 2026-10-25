@@ -2694,6 +2694,18 @@ script_message_owner_test = executable(
 )
 test('script-message-owner', script_message_owner_test)
 
+script_binding_owner_test = executable(
+    'test-script-binding-owner', 'test_script_binding_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=FvwmStringToKeysym', '-Wl,--wrap=AddBinding'],
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+)
+test('script-binding-owner', script_binding_owner_test)
+
 script_widget_owner_test = executable(
     'test-script-widget-owner', 'test_script_widget_owner.c',
     objects: fvwm_script.extract_all_objects(recursive: false),

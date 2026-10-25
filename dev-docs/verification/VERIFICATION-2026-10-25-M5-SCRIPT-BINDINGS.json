@@ -1,0 +1,352 @@
+{
+  "base": "15feef97d6438c412a6e5381726b28aef195298d",
+  "owners": [
+    "SCRIPT-01 #4",
+    "CLEAN-01 #34"
+  ],
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "libs/Bindings.c": {
+      "sha256": "e33a1c4fdd43d6c23b62758b6bc73762c51d8d0fc8c9331389ed7f0228f0e10b",
+      "mode": 420
+    },
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "618bbade7b043d978200aea683fa0981b85da256f7650230a61b06b7d091ba78",
+      "mode": 420
+    },
+    "modules/FvwmScript/Instructions.c": {
+      "sha256": "b11b20da986bd08f9f353a2d17d155318de9dc2afadd2625c8a7b2db47eb3ba7",
+      "mode": 420
+    },
+    "tests/test_script_binding_owner.c": {
+      "sha256": "44e8bd0a34de24838fafe7db3b6acaefb7def2192cf41c99f09ea6038072562c",
+      "mode": 420
+    },
+    "tests/live_x/script_binding_owner_live.py": {
+      "sha256": "5e60e7122dd5224ca116c808bcf31ab5c8b172c08f2500abeab0a72e7143cf3e",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "e420ba824a695fcd97ee042450774bddb71d868941e7efea70e163df806ad406",
+      "mode": 420
+    }
+  },
+  "baseline_inputs": 538,
+  "final_inputs": 540,
+  "baseline_control": {
+    "actual_old_Key_objects": true,
+    "controlled_AddBinding_copy_results": [
+      0,
+      1,
+      3
+    ],
+    "retained_constructors": 3,
+    "real_shared_destructor": true,
+    "real_shared_AddBinding": "exercised in actual-X probe, not producer unit"
+  },
+  "units": [
+    "script-binding-owner",
+    "script-block-owner",
+    "script-execution"
+  ],
+  "scoped_sanitizer": {
+    "unit": "script-binding-owner",
+    "sanitizers": "address,undefined",
+    "leak_detection": true,
+    "whole_module_leak_clean_claim": false
+  },
+  "profiles": {
+    "normal": {
+      "options": {
+        "buildtype": "debugoptimized",
+        "b_ndebug": "false",
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": []
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    },
+    "asan": {
+      "options": {
+        "buildtype": "debug",
+        "b_ndebug": "false",
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ]
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    }
+  },
+  "gate": [
+    {
+      "label": "normal-group-build",
+      "status": 0,
+      "seconds": 1.277135267999256
+    },
+    {
+      "label": "normal-units",
+      "status": 0,
+      "seconds": 0.17593396399752237
+    },
+    {
+      "label": "probe-compile",
+      "status": 0,
+      "seconds": 0.06505290701170452
+    },
+    {
+      "label": "probe-link",
+      "status": 0,
+      "seconds": 0.06421327599673532
+    },
+    {
+      "label": "binding-owner-x",
+      "status": 0,
+      "seconds": 1.6416438659944106
+    },
+    {
+      "label": "text-list-x",
+      "status": 0,
+      "seconds": 12.217466029018397
+    },
+    {
+      "label": "asan-owner-build",
+      "status": 0,
+      "seconds": 2.0231519560038578
+    },
+    {
+      "label": "asan-owner-unit",
+      "status": 0,
+      "seconds": 0.16894770701765083
+    }
+  ],
+  "gate_command_seconds": 17.633544973039534,
+  "gate_first_combined_invocation": "all pass",
+  "lifecycle": {
+    "final-shutdown": {
+      "lifecycle": "passed",
+      "ownership": {
+        "constructors": 4,
+        "constructors_freed": 4,
+        "binding_allocations": 12,
+        "bindings_freed": 12,
+        "messages": 3,
+        "messages_freed": 3,
+        "retained": 0
+      }
+    },
+    "partial-startup": {
+      "lifecycle": "passed",
+      "ownership": {
+        "constructors": 0,
+        "constructors_freed": 0,
+        "binding_allocations": 0,
+        "bindings_freed": 0,
+        "messages": 0,
+        "messages_freed": 0,
+        "retained": 0
+      }
+    },
+    "dead-pipe": {
+      "lifecycle": "passed",
+      "ownership": {
+        "constructors": 4,
+        "constructors_freed": 4,
+        "binding_allocations": 12,
+        "bindings_freed": 12,
+        "messages": 3,
+        "messages_freed": 3,
+        "retained": 0
+      }
+    },
+    "init-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "constructors": 4,
+        "constructors_freed": 4,
+        "binding_allocations": 12,
+        "bindings_freed": 0,
+        "messages": 0,
+        "messages_freed": 0,
+        "retained": 12
+      }
+    },
+    "event-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "constructors": 4,
+        "constructors_freed": 4,
+        "binding_allocations": 12,
+        "bindings_freed": 0,
+        "messages": 1,
+        "messages_freed": 0,
+        "retained": 13
+      }
+    },
+    "periodic-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "constructors": 4,
+        "constructors_freed": 4,
+        "binding_allocations": 12,
+        "bindings_freed": 0,
+        "messages": 1,
+        "messages_freed": 0,
+        "retained": 13
+      }
+    }
+  },
+  "outputs": {
+    "normal": {
+      "modules/FvwmScript/FvwmScript": {
+        "sha256": "7d438cf009450dd41687368a23b45668a5cf87599d0ba964bb360b27c9b34aff",
+        "bytes": 2206304
+      },
+      "tests/test-script-binding-owner": {
+        "sha256": "04608f8af13e6c191a9f6123713fd53c50ce3e5261aa94d63cf9a377a4d6f45c",
+        "bytes": 2216032
+      },
+      "tests/test-script-block-owner": {
+        "sha256": "3f8b6c3770ca952fbff740a8dbde218b5677be079ef046137c47c8b0d78a022c",
+        "bytes": 882024
+      },
+      "tests/test-script-execution": {
+        "sha256": "19f142b1129e93a909bbdf4ef940d68e80e3bdb73615be759f2597edf57b8747",
+        "bytes": 78760
+      },
+      "fvwm3": {
+        "sha256": "5d09202748558b27c5b63376d5ccb54eb18e236d476613a0b2b37d411f752835",
+        "bytes": 5454744
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "bytes": 444120
+      }
+    },
+    "asan": {
+      "tests/test-script-binding-owner": {
+        "sha256": "0da3ab0f500a979f5180d1e6e889c733b1b94e75a8c89423037f95db326bfa31",
+        "bytes": 10716576
+      }
+    }
+  },
+  "archive": {
+    "payloads": 103,
+    "regular_files": 104,
+    "bytes": 2204159,
+    "sha256": "8ed6d71cec9f4f42e79fb4dbee08b8a889200418ad02dda50f7753cf2e4692e7"
+  },
+  "pre_dispatch_review_fixes": [
+    "Active exits require zero binding frees and exact outstanding binding/latest-message counts",
+    "Fixture function token corrected to existing LastString grammar"
+  ],
+  "review": "Separate final integrated production/test/docs/raw-evidence review passed with no actionable findings;103payload archive and540tested identities, baseline/unit/sanitizer/Xresults and exact active-retention assertions independently verified",
+  "routing": {
+    "analyst_requested": "gpt-6-astra/high",
+    "implementer_requested": "gpt-6.1-sol/high",
+    "reviewer_requested": "gpt-6.1-sol/high",
+    "runtime_model_metadata": "unverified"
+  },
+  "merge246": {
+    "sha": "15feef97d6438c412a6e5381726b28aef195298d",
+    "tree": "5f6e510e181931dfefe35db1211c19ba64a54058",
+    "signature": "valid",
+    "author_DCO": "Cam <cam@fungalo.co>",
+    "branch": "retired",
+    "GitHub_Project": "Done"
+  },
+  "performance": {
+    "reference": "PR243",
+    "merged_since": 3,
+    "candidate_merge_count": 4,
+    "comparison_due": false
+  },
+  "limits": [
+    "Controlled producer match counts; actual shared-copy behavior verified separately on X",
+    "Active callback owners intentionally retained for process reclamation",
+    "No parser/variable/base X/font/selection/pathname scope expansion",
+    "No fresh BSD/AMD64/install/full-default-X/theme/screenshot/full-module-leak/native-CPU/release claim",
+    "Broader #4/#34 remain open; completed #31/#35/#36 stay closed"
+  ],
+  "duplicate_cleanup": {
+    "status": "verified guest capture and duplicate archive retired",
+    "regular_files": 104,
+    "active_references": 0,
+    "canonical_archive_build_source_reference": "preserved"
+  }
+}

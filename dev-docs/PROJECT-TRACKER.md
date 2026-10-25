@@ -410,8 +410,9 @@ is complete. This supersedes earlier issue-state references to #23 remaining ope
 
 ## M2.9 bounded session workload and acceptance handoff
 
-Owner: current M2 implementation chat. Status: focused checks passed; ready for
-review after merged PR201.
+Owner: current M2 implementation chat. Status: merged in PR202 as
+`cead217dbba5bb5f0d9862439b3f837e88553b8d`; canonical signature/DCO/tree verified
+and completed branch retired.
 Outcome: finish one finite natural-allocation session observation and map the
 remaining M2 acceptance to exact existing evidence. Inventory found no remaining
 runtime controller/action port; do not manufacture a production refactor.
@@ -459,6 +460,61 @@ owned release/hardware/toolkit/compositor/assistive gates. Worker GC/worst-case
 pauses remain outside the resident observation. No further observer expansion
 or tuning is selected by this completed bounded handoff.
 
+## M2.10 native ARM64 execution acceptance
+
+Owner: current M2 implementation chat. Status: focused native ARM64 subset passed;
+ready for review after merged PR202.
+Outcome: qualify the existing installed ARM64 controller family on the already
+running Linux lab under verified Apple hardware virtualization. This is an
+evidence checkpoint, not an observer expansion or new controller port.
+Bind macOS ARM64/provider/machine/container metadata, guest kernel/userspace,
+receipt-matched AArch64 ELF/interpreter identities and representative live
+process executable/maps/ancestry. Metadata or an available accelerator alone
+does not qualify execution. Preserve historical TCG qualification flags.
+Run existing fixed plain/GC workloads and the existing full safe session-action
+smoke once each, reusing the exact PR200 installed stage and PR202 test source.
+No rebuild, paired comparison, OS matrix, dependency install, privilege/mount/
+tracing-policy change or new VNC service. Unavailable kernel metrics remain
+unknown. This lab has a nearly full disk: retire only completed uploaded archives
+after full canonical-host CRC/payload hash/mode and exact guest SHA/size checks.
+Preserve source/build/cache/install stages/disks/other owners. Use a small frozen
+test-only upload rather than another complete source tree. Run the full action
+smoke in the existing installed environment with the real null device; retain
+PR201's separate Python-free namespace proof instead of copying a new root onto
+the nearly full filesystem. No fresh Python-free-root claim follows this smoke.
+Acceptance: three bounded installed X runs, native executable/process evidence,
+unchanged installed/native identities, source-bound archive/cleanup, separate
+review and reconciled handoff. Claim only exercised native AArch64 instruction
+execution in hardware-virtualized Linux; not bare metal, native AMD64, Ubuntu
+baseline, native sanitizers, native paired performance, physical UI or release.
+Safe backend peers do not qualify authentication or actual power/login behavior.
+Full-session owner review/explicit acceptance remains before M3. Do not infer it
+from agent review, merge authorization or successful automated tests.
+Dependencies: merged M2.1–M2.9 and the designated preserved ARM64 lab/stage.
+Non-goals: features/tuning, further observer changes, new machine/configuration,
+M3/M6/M7, broad release/hardware closure. Lead owns execution/evidence/tracker;
+delegated analysis/review is read-only. Stop after this finite native subset.
+
+Outcome: the three existing installed X checks pass once each on the preserved
+PR200 ARM64 stage: fixed plain workload, separate resident-GC workload and full
+safe session-action smoke. Bound AppleHV/macOS ARM64 metadata and matching guest
+boot identity, 25 staged AArch64 ELFs and 11/12/37 sampled live process/executable
+records support native AArch64 execution for exercised paths. All 100 staged
+files, native build identities, 1,185 runtime inputs and 124 test sources stay
+exact. Nine natural resident GC cycles are observed; no tuning, rebuild, matrix
+or test-logic change. Proc metrics remain partial and kernel counters unavailable.
+Eight existing-menu/notice captures are inspected; two published examples retain
+actual light and enlarged-font rendering. This is not full theme qualification.
+Seven fully verified old upload duplicates retire (53,412,419 bytes), followed
+by 59 completed new capture/archive duplicates (5,204,333 bytes). Exact owned
+process identities retire; the shared container/machine remains running.
+[Native subset and remaining acceptance](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md),
+[machine receipts](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.json).
+Remaining: Cam's explicit full-session acceptance of accumulated M2 evidence and
+limits before M3. Broader native AMD64/Ubuntu/sanitizer and physical/release gates
+remain separately owned. No further controller port or observer expansion is
+selected; successful tests/agent review/PR merge do not supply owner acceptance.
+
 ## Current checkpoint status
 
 This table is the current summary for this thread. The dated entries below
@@ -491,10 +547,11 @@ Current: M2.3 merged in [PR194](https://github.com/gonz0w/fvwm-x/pull/194).
 M2.5 merged in [PR198](https://github.com/gonz0w/fvwm-x/pull/198); M2.6 merged
 in [PR199](https://github.com/gonz0w/fvwm-x/pull/199) and M2.7 in
 [PR200](https://github.com/gonz0w/fvwm-x/pull/200); M2.8 merged in
-[PR201](https://github.com/gonz0w/fvwm-x/pull/201). M2.9's fixed natural workload
-and resident GC observations pass and are ready for review, with a complete
-acceptance evidence map. Native-CPU/full-session owner acceptance stays explicit
-before M3. #7/#15 and M2 remain open; manually closed
+[PR201](https://github.com/gonz0w/fvwm-x/pull/201); M2.9 merged in
+[PR202](https://github.com/gonz0w/fvwm-x/pull/202). M2.10's selected native ARM64
+execution subset passes and is ready for review, with actual ELF/process proof.
+Full-session owner acceptance stays explicit before M3; broader native/platform/
+physical/release gates retain their separate scope. #7/#15 and M2 remain open; manually closed
 GitHub #23 retains its state with remaining tracker acceptance explicit. New feature pickup remains paused.
 
 Verification cadence, revised by the user on 2026-10-23: implement larger
@@ -538,7 +595,7 @@ have overlapping ranges, medians 16.332/16.041 ms and unchanged 29460 KiB peak R
 Core/MFL/Form hashes and sizes stay exact; browser file bytes fall by 546.
 No consistent speed improvement or regression is established. This does not
 measure the new resident controller's startup/RSS/idle/input; those measurements
-remain at M2 closure. Preserve merged PR194 as the new reference at **4/5** after PR200. M2.8/M2.9 change only observers/docs and leave
+remain at M2 closure. Preserve merged PR194 as the new reference at **4/5** after PR200. M2.8–M2.10 change only observers/evidence/docs and leave
 installed binaries exact; it does not advance this production-change counter or
 repeat/reset the independent scan. Planning/documentation do not advance it; tuning
 stays deferred. [Report](verification/PERFORMANCE-2026-10-24-PR194.md).
@@ -568,7 +625,8 @@ or release gates, or advance either verification counter.
 | --- | --- | --- |
 | M2.6 runtime/session actions | Merged PR199 | Power/locker ownership, retired policy RPC, shared self-worker resolution; Python-free installed proof, three themes and paired session observations. Full owner/platform acceptance remains. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-RUNTIME.md). |
 | M2.7 controller/platform handoff | Merged PR200 | Six-target default/reduced helpers, seven installed peers per final profile, native capture and Linux settings/four BSD default-X sessions. Fixes successful OpenBSD executable aliases and PNG-disabled admission; remaining full-session/native-CPU acceptance stays open. [Report](verification/VERIFICATION-2026-10-24-M2-PLATFORM-HANDOFF.md). |
-| M2.9 bounded workload/handoff | Focused checks passed; ready for review | Eight discovery/search/files rounds per run, eight natural resident GC traces and synthetic input snapshots; no production build/matrix. Native-CPU/full owner acceptance remains before M3. [Acceptance map](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md). |
+| M2.10 native ARM64 subset | Focused checks passed; ready for review | Three existing installed X runs on verified AppleHV Linux ARM64, actual staged/live AArch64 identities and unchanged binaries/tests. Full-session owner acceptance remains before M3. [Report](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md). |
+| M2.9 bounded workload/handoff | Merged PR202 | Eight discovery/search/files rounds per run, eight natural resident GC traces and synthetic input snapshots; no production build/matrix. Native-CPU/full owner acceptance remains before M3. [Acceptance map](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md). |
 | M2.8 session observations | Merged PR201 | Identity/all-thread/PSS startup sampling, private kernel charged-memory/CPU/wakeup attribution, bounded GC trace and X/lifetime ownership. Fresh installed interpreter-free smoke and three paired observations pass; GC pauses/native-CPU/full owner acceptance stay open. [Report](verification/VERIFICATION-2026-10-24-M2-SESSION-ACCEPTANCE.md). |
 | M2.5 native capture | Merged PR198 | Last installed desktop Python helper retires; Linux/FreeBSD RGB/refusal/install dispatch, three-theme screenshots and scoped sanitizer pass. Full owner/session acceptance remains. [Report](verification/VERIFICATION-2026-10-24-M2-NATIVE-CAPTURE.md). |
 | M2.4 resident controller | Merged PR195 | One Go state/dispatch/lifetime owner; Linux/FreeBSD, race, installed peers, native-X and three-theme evidence. Native capture and full owner/session acceptance remain. [Report](verification/VERIFICATION-2026-10-24-M2-RESIDENT-CONTROLLER.md). |
@@ -863,7 +921,7 @@ to a complete related owner slice; tests/docs do not inflate story counts.
 | Order | Batch | Main outcome |
 | --- | --- | --- |
 | M1 — Done | Supported runtime baseline and replaced entry points | PR189 merged; #179/#180/#181 Done. Qualified required compiler/utility/profile/install contract retained. |
-| M2 — Active | Remaining first-party runtime controllers | M2.1–M2.8 merged through PR201. M2.9 fixed session workload and resident GC observations pass; acceptance handoff ready for review. Actual charged peak/task wakeups, sampled PSS/startup/input and eight natural resident GC cycles are recorded. Native-CPU/full-session owner acceptance precedes M3; no further observer expansion is selected. |
+| M2 — Active | Remaining first-party runtime controllers | M2.1–M2.9 merged through PR202. M2.10 native AArch64 execution subset passes with actual provider/ELF/process evidence and three existing installed X runs. Full-session owner acceptance of accumulated evidence/limits precedes M3; broader native/hardware/release gates remain separate. No controller port or observer expansion remains selected. |
 | M3 | Target-owned linkage and dependency closure | Map real symbols/static transitives and replace broad dependency bags by core/module/worker target groups. Remove only unused edges, with package/license/installed closure measurements. |
 | M4 | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
 | M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
@@ -1218,7 +1276,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | LIB-06 | P2 / Later evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | UTIL-01 | P2 / utility-family port milestone locally qualified | [Xlock checkpoint](verification/VERIFICATION-2026-10-12-XLOCK-PORT.md), [directory checkpoint](verification/VERIFICATION-2026-10-12-DIRECTORY-PORT.md) and [converter checkpoint](verification/VERIFICATION-2026-10-12-CONVERTER-PORT.md) install Go when enabled and retain disabled-Go Perl. The converter preserves ordinary heuristic bytes with finite input/reference work and atomic private outputs. [Consumer classification](verification/RECONCILIATION-2026-10-12-UTILITY-CONSUMERS.md) separates the installed Script FIFO example, development cursor generator, optional status recipes and full XDG provider/frontend. The [Script example checkpoint](verification/VERIFICATION-2026-10-12-SCRIPT-COM-PORT.md) qualifies stdlib Go/paired selection, bounded owned FIFOs, staged and actual native widget checks. Copied explicit Perl invocations remain usable. The [full XDG provider/frontend fixture checkpoint](verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md) now passes across six targets; its [inactive input-policy foundation](verification/VERIFICATION-2026-10-12-XDG-POLICY.md) is qualified at `d33f`, with [discovery/preference policy](verification/VERIFICATION-2026-10-12-XDG-DISCOVERY.md) qualified at `9337` and [ordered allocation](verification/VERIFICATION-2026-10-12-XDG-ALLOCATION.md) at `be8e`; the [full coordinated Go provider/native Form port](verification/VERIFICATION-2026-10-12-XDG-PORT.md) is now locally qualified and adopted at `04c1`. COMPAT-02 retirement remains a separate stage5 gate. This supersedes earlier Python port recommendations. Preserve applicable configured behavior. See [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
-| RUNTIME-GO-01 | P2 / M2 component/platform and focused session checks pass; owner acceptance pending | M2.1–M2.8 merged through PR201. M2.8 refreshes current interpreter-free installed execution, adds identity/all-thread/PSS startup sampling and complete private kernel CPU/charged-peak/wakeup observations for one Linux profile. Higher Go wakeups and overlapping CPU ranges remain visible; no tuning follows. M2.9 adds eight fixed discovery/search/files rounds and observes eight natural resident GC cycles (largest first+final clock sum 2.7 ms in TCG); no worst-case/worker/native-CPU pause claim. Native-CPU/full-session owner acceptance remains before M3; manually closed GitHub #23 does not complete the remaining tracker acceptance. [Acceptance handoff](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md), [session observations](verification/VERIFICATION-2026-10-24-M2-SESSION-ACCEPTANCE.md), [platform handoff](verification/VERIFICATION-2026-10-24-M2-PLATFORM-HANDOFF.md), [utility baseline](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md), [scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
+| RUNTIME-GO-01 | P2 / M2 component/platform and focused session checks pass; owner acceptance pending | M2.1–M2.9 merged through PR202. M2.8 refreshes current interpreter-free installed execution, adds identity/all-thread/PSS startup sampling and complete private kernel CPU/charged-peak/wakeup observations for one Linux profile. Higher Go wakeups and overlapping CPU ranges remain visible; no tuning follows. M2.9 adds eight fixed discovery/search/files rounds and observes eight natural resident GC cycles (largest first+final clock sum 2.7 ms in TCG); no worst-case/worker/native-CPU pause claim. M2.10 adds selected native ARM64 instruction execution proof and three installed session passes on AppleHV Linux; full-session owner acceptance remains before M3 and broader native/hardware/release gates stay separate. Manually closed GitHub #23 does not complete the remaining tracker acceptance. [Native acceptance subset](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md), [acceptance handoff](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md), [session observations](verification/VERIFICATION-2026-10-24-M2-SESSION-ACCEPTANCE.md), [platform handoff](verification/VERIFICATION-2026-10-24-M2-PLATFORM-HANDOFF.md), [utility baseline](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md), [scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | LUA-01 | P2 / Later; engine selection open | Deliver isolated Lua policies and Perl migration examples over shared typed primitives. Compare preferred Shopify/go-lua with official native Lua; decide version/coroutines, exact IDs, reload/shutdown and resource limits before adoption. No VM/blocking work in the C core; preserve FvwmScript. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | TOOLING-GO-01 | P2 / Later; child #182 queued | Remove all owned Python/Perl build/docs/metadata/artwork/test/maintenance tools in bounded parity groups after runtime qualification. Keep coverage and provenance. Compare Muon/CMake before separate adoption; distinguish installed runtime, owned tooling and whole-build/test interpreter closure. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | GEN-01 | P2 / modern runtime and developer wrapper locally adopted | Four related stories preserve grammar/token rules and normal generator-free builds. Frozen2514 passes eight clean compiler profiles/1816 standard entries,120 staged code identities,48 affected installed-module fixtures on four default BSD servers, optional232/212 suites and15 scoped sanitizer checks. All24 affected developer-tool checks pass; ten wider inventory errors from absent Git are retained separately. The original candidate Clang colorset timeout remains unexplained; unchanged control/retry and fresh full production suite pass at original deadlines. No configuration migration. [Report](verification/VERIFICATION-2026-10-11-PARSER-ADOPTION.md). |

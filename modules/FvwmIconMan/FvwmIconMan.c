@@ -253,7 +253,6 @@ main(int argc, char **argv)
 	fvwm_fd[1] = module->from_fvwm;
 	init_display();
 
-#ifdef HAVE_SIGACTION
 	{
 		struct sigaction  sigact;
 
@@ -276,21 +275,6 @@ main(int argc, char **argv)
 		sigaction(SIGTERM, &sigact, NULL);
 		sigaction(SIGQUIT, &sigact, NULL);
 	}
-#else
-	/* We don't have sigaction(), so fall back to less robust methods. */
-	signal(SIGPIPE, TerminateHandler);
-	signal(SIGINT,  TerminateHandler);
-	signal(SIGHUP,  TerminateHandler);
-	signal(SIGTERM, TerminateHandler);
-	signal(SIGQUIT, TerminateHandler);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGPIPE, 0);
-	siginterrupt(SIGINT, 0);
-	siginterrupt(SIGHUP, 0);
-	siginterrupt(SIGTERM, 0);
-	siginterrupt(SIGQUIT, 0);
-#endif
-#endif
 
 	read_in_resources();
 	FlocaleAllocateWinString(&FwinString);

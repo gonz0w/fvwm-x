@@ -191,6 +191,22 @@ foreach h : headers
     endif
 endforeach
 
+# POSIX signal installation requirement.
+if not cc.links('''
+#define _POSIX_C_SOURCE 200809L
+#include <signal.h>
+int main(void)
+{
+    struct sigaction action = {0};
+    action.sa_handler = SIG_DFL;
+    return (sigemptyset)(&action.sa_mask) ||
+        (sigaction)(SIGTERM, &action, 0);
+}
+''', dependencies: syslibs, name: 'POSIX signal installation')
+    error('FVWM-X requires POSIX sigaction and sigemptyset')
+endif
+# End POSIX signal installation requirement.
+
 # Function checks.
 functions = [
     'div',
@@ -204,8 +220,6 @@ functions = [
     'setpgid',
     'setpgrp',
     'setvbuf',
-    'sigaction',
-    'siginterrupt',
     'socket',
     'strchr',
     'strdup',

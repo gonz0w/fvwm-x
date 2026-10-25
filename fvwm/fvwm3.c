@@ -690,14 +690,12 @@ void Done(int restart, char *command)
 /***********************************************************************
  *
  *  Procedure:
- *      InstallSignals: install the signal handlers, using whatever
- *         means we have at our disposal. The more POSIXy, the better
+ *      InstallSignals: install the POSIX signal handlers.
  *
  ************************************************************************/
 static void
 InstallSignals(void)
 {
-#ifdef HAVE_SIGACTION
 	struct sigaction  sigact;
 
 	/*
@@ -755,41 +753,6 @@ InstallSignals(void)
 	sigact.sa_flags |= SA_NOCLDSTOP;
 	sigact.sa_handler = fvwmReapChildren;
 	sigaction(SIGCHLD, &sigact, NULL);
-#else
-
-	/*
-	 * We don't have sigaction(), so fall back on
-	 * less reliable methods ...
-	 */
-	signal(SIGPIPE, DeadPipe);
-	signal(SIGUSR1, Restart);
-	signal(SIGUSR2, ToggleLogging);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGUSR1, 0);
-	siginterrupt(SIGUSR2, 1);
-#endif
-
-	signal(SIGINT, SigDone);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGINT, 0);
-#endif
-	signal(SIGHUP, SigDone);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGHUP, 0);
-#endif
-	signal(SIGQUIT, SigDone);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGQUIT, 0);
-#endif
-	signal(SIGTERM, SigDone);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGTERM, 0);
-#endif
-	signal(SIGCHLD, fvwmReapChildren);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGCHLD, 0);
-#endif
-#endif
 
 	/* When fvwm restarts, the SIGCHLD handler is automatically reset
 	 * to the default handler. This means that Zombies left over from

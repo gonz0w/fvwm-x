@@ -29,6 +29,9 @@ system in use.
 
 ## Core dependencies
 
+The native C environment must declare and link POSIX `sigaction` and
+`sigemptyset`; configuration rejects environments missing either API.
+
 * meson (>= 1.5.1)
 * ninja-build
 * pkg-config

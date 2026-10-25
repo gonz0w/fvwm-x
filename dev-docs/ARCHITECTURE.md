@@ -1160,7 +1160,12 @@ and the active owned core readiness/continuation policies remain.
 [Current evidence and LOOP-01 reconciliation](verification/VERIFICATION-2026-10-25-M5-WAIT-OWNERSHIP.md).
 
 The obsolete signal-mask shim and its nine guarded registrations are retired;
-active POSIX handlers/masks and HAVE_SIGACTION ownership remain. GetOutput's
+active POSIX handler/mask ownership remains. GetOutput's
 foreground wait now reuses the fixed shared fvwmPoll with its remaining deadline.
 Closed-pipe completion keeps 10ms checks; cancellation cleanup keeps raw polling.
 [Source parity and focused evidence](verification/VERIFICATION-2026-10-25-M5-POSIX-CONSUMERS.md).
+
+All ten native handler installers use their existing POSIX bodies directly. The
+required Meson sigaction/sigemptyset header/link check replaces optional legacy
+selectors; active masks, flags, order and deinstallation remain module/core-owned.
+[Configure, token-parity and transport evidence](verification/VERIFICATION-2026-10-25-M5-SIGNAL-INSTALL.md).

@@ -708,12 +708,12 @@ PR205, 2/5 on this merge; M4 and unrelated cleanup remain separately owned.
 
 Owner: current M3 implementation chat. Selected 2026-10-25 after merged PR206
 and the user's request for completed issue outcomes rather than more partial PRs.
-Status: combined local acceptance passed; maintainer review/integration pending.
+Status: complete after authorized PR207 merge; canonical signature/DCO/tree verified.
 All fifteen profiles across six targets validate 99 pure entries, 105 staged
 real-X fixtures, 24 extra program checks and 240 native executable install
 identities. Fifteen complete installs, static archive/transitive metadata,
 selected package/license/size inventory and LIB-05 floors satisfy the finite
-#184/#49/#47 criteria; close them on this PR's merge. #35 is completed and #93
+#184/#49/#47 criteria; all three closed completed on merge. #35 is completed and #93
 is not planned, with 67 open issues confirmed after reconciliation. See the
 [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md) and its
 machine manifest/inventory. Separate review and signed delivery remain required.
@@ -753,6 +753,49 @@ SVG/raster fallback, relative resources, scaling and worker limits together.
 of its optional renderer comparison; #8 retains wider image/release scope.
 No M4 removal starts before accepted M3, and this map closes no issue.
 
+## M4 SVG backend consolidation
+
+Current verification: all seven selected profiles pass: 62 units, 20 real-X
+fixtures, 144 exact worker-frame comparisons, 24 paired negatives, SVG-off
+refusal and seven full installs/native112 identities. The original OpenBSD
+AMD64 preparation reboot failure has zero native credit; its identical-input
+retry passes and cleans up normally. #183 closes on PR merge; #46's later
+renderer comparison stays open. Source/evidence review and signed delivery
+remain required.
+[Source, scope and retained failures](verification/VERIFICATION-2026-10-25-M4-SVG.md).
+
+Owner: current implementation chat; selected 2026-10-25 after the authorized
+merge of PR207 (`14604024459b1504869d456d009433027f7f3b2a`). Canonical
+signature/DCO and exact reviewed tree pass. #184/#49/#47 are closed completed;
+64 open issues remain. M3's accepted dependency/profile evidence is retained.
+
+Outcome: finish SVG-CONSOLIDATE-01 #183 as one coherent removal batch. Use
+librsvg >=2.52's existing modern intrinsic-size/render-document API and Cairo;
+retire obsolete backend detection/options, pre-floor input/dimension/render
+branches, deprecated dimension aliases and old global initialization calls.
+Separate this API minimum from upstream maintenance/security policy: use vendor
+maintained patched packages; no new security certification or package upgrade.
+Use the real M3 link map when dropping initializer-only runtime edges; preserve
+full renderer dependencies and archive transitives. No new renderer, toolkit,
+C++ package, FVWM configuration migration or rendering algorithm change.
+
+Acceptance: trace callers and actual supported package versions before removal;
+configure refuses old enabled APIs/missing Cairo and honors SVG-disabled; keep
+relative resources, shipped artwork, raster/XPM fallback, alpha/geometry/scale,
+refusal/cancellation and worker bounds. Update options, package instructions,
+manuals, dependency/license/size inventory together. Run one combined affected
+Linux gate, early affected BSD configuration/link check, and required selected
+six-target SVG/fallback/worker acceptance using reused caches and exact valid
+M3 evidence where unchanged. Do not repeat the entire M3 fifteen-profile suite
+or qualify unrelated session/controller/Go code. Record missing coverage rather
+than closing #183 prematurely. #46's later alternative-renderer evaluation stays
+separate; no inferred LunaSVG adoption or blanket parent closure.
+
+Lead owns tracker, integration and native execution. Bounded native-source
+implementation and separate final review may use the selected routing policy;
+observed model metadata remains unverified when unavailable. Performance PR204
+stays 2/5 after M3 evidence-only closure; no benchmark or tuning is due.
+
 ## Current checkpoint status
 
 This table is the current summary for this thread. The dated entries below
@@ -789,8 +832,9 @@ in [PR199](https://github.com/gonz0w/fvwm-x/pull/199) and M2.7 in
 [PR202](https://github.com/gonz0w/fvwm-x/pull/202). M2.10 merged in [PR203](https://github.com/gonz0w/fvwm-x/pull/203). Cam accepts
 M2 session evidence and documented limits on 2026-10-25. M2 is complete for this
 maintenance handoff; M3.1/M3.2 merged in PR204/205. M3.3 completes explicit
-production target declarations in merged PR206. M3.4's fifteen-profile combined
-acceptance now passes and is ready for review; #184/#49/#47 close on merge. Broader
+production target declarations in merged PR206. M3.4 merges in PR207 with
+fifteen-profile acceptance; #184/#49/#47 are closed completed. M4 now owns the
+selected SVG backend removal. Broader
 native/platform/physical/release gates retain their separate scope. #7/#15 stay
 open; GitHub #23 retains its closure with M2 owner acceptance now explicit. New feature pickup remains paused.
 
@@ -1167,8 +1211,8 @@ to a complete related owner slice; tests/docs do not inflate story counts.
 | --- | --- | --- |
 | M1 — Done | Supported runtime baseline and replaced entry points | PR189 merged; #179/#180/#181 Done. Qualified required compiler/utility/profile/install contract retained. |
 | M2 — Accepted | Remaining first-party runtime controllers | M2.1–M2.10 merged through PR203. Cam explicitly accepts accumulated M2 session evidence and documented limits on 2026-10-25, authorizing M3. No controller port or observer expansion remains selected; broader native/hardware/release gates stay separate. |
-| M3 — Active | Target-owned linkage and dependency closure | Map real symbols/static transitives and replace broad dependency bags by core/module/worker target groups. Remove only unused edges, with package/license/installed closure measurements. |
-| M4 | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
+| M3 — Done | Target-owned linkage and dependency closure | PR204–207 merged; #184/#49/#47 completed. Fifteen-profile source/install/X/static-transitive inventory acceptance is retained; separate #11/#13 advisory gates remain open. |
+| M4 — Active | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
 | M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
 | M6 | Perl framework retirement and scripting disposition | Qualify the bounded scripting migration floor, then retire FvwmPerl/perllib/fvwm-perllib and Perl-only build/templates. Keep unrelated FVWM3/FvwmScript behavior and user files. |
 | M7 | Owned build/generator/test tool retirement | Port first-party tools in build/source, generation/docs and independent test/VM-driver groups; remove predecessors only after parity, failure capture and offline/reproducibility checks. |
@@ -1515,9 +1559,9 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | LOOP-01 | P2 / ordinary, interactive and synchronous core readiness locally qualified; wider audits remain | Unlock, blocked-output and startup waits use native poll with shared absolute-deadline conversion. Retained full coverage passes 1944 standard and 425 optional entries; the final timeout refinement passes 50 affected entries across the same profiles. 150 final installed code identities and 99 catalogs match. Default BSD X passes 20+8 fixtures; three scoped sanitizer entries pass. Broader admission/runtime/release audits remain open. Preserve ordinary-only session callbacks and INPUT-01/OUTPUT-01 ordering. [Latest report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md). Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay open. [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
 | XIO-01 | P2 / atom batching locally qualified; query work queued | Independent atom tables now use three batches for 100 core/ICCCM/EWMH names, with finite missing-entry fallback. Exact mappings, selection ownership and supported-property order pass actual Linux and native FreeBSD/OpenBSD ARM64 controls; Scoped pure leak-enabled and actual-core leak-disabled sanitizer checks pass. [Report](verification/VERIFICATION-2026-10-07-ATOM-BATCH.md). Combined atom/expose/icon qualification passes eight profiles/1096 entries, 120 installed identities, 52 default BSD X invocations, optional 142/122 and 21 scoped sanitizers. [Combined report](verification/VERIFICATION-2026-10-07-ATOM-EXPOSE.md). Highest-override query selection now scans the root snapshot from top to bottom, skips already-excluded internal windows and stops at the highest eligible sibling. The controlled 108-child fixture uses 3 attribute reads instead of 108; full current attributes remain queried for managed frames. Real override/InputOnly order, focus and popup teardown pass focused Linux/BSD ARM64/scoped sanitizer checks; combined qualification passes eight profiles/1144 entries, 120 installed identities, 72 default BSD X invocations, optional 148/128 and 27 scoped sanitizers from the exact 1301-file snapshot. Other query/barrier work remains queued. Batch independent atom tables and remove individually proven unnecessary XSync barriers. Profile root-tree plus per-child attribute queries in stacking; use STACK-01 identities to skip only known/current managed frames. Preserve unmanaged/InputOnly/hidden/destroyed-window behavior and error/order boundaries. A narrow bounded XCB experiment requires measured remaining query cost, LIB-07 and six-target review; retain Xlib event ownership. Whole-core migration and new mandatory packages are not approved. See optimization roadmap. |
 | BOX-01 | P2 / queued | Sandbox narrow helpers/modules first with OpenBSD pledge/unveil and FreeBSD Capsicum where appropriate; evaluate Linux helper restrictions. Preserve reload/spawn/font/theme access. Whole-core sandbox policy requires an explicit compatibility review. |
-| LIB-05 | P2 / combined acceptance passed; review | PR144 removes unused xkbcommon. M3.4 completes actual target/dependency/interpreter-floor inventory, separating declared/exercised minima and unqualified legacy guards. Xt/Xtrans headers and real Xlib/libevent/Xft remain. #47 closes on merge; M4/M6/M7 retirements remain separate. [Floors](verification/DEPENDENCY-FLOORS-2026-10-25.md), [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
-| LINK-01 | P2 / combined acceptance passed; review | Production ownership merged in PR204–206. M3.4 validates default/reduced on six targets, both Linux Clang profiles and cairo-svg, full offline installs/staged identities, affected X and static archive/transitive/package-license-size records. No all-static ELF, package removal or speed claim. #184/#49 close on merge. [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
-| LIB-04 | P2 / Later; child #183 queued | Consolidate obsolete SVG backends against a maintained librsvg/Cairo floor; preserve SVG-disabled builds and rendering/worker contracts. LunaSVG comparison remains optional and separate; no adoption approved. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
+| LIB-05 | Done / PR207 | PR144 removes unused xkbcommon. M3.4 completes actual target/dependency/interpreter-floor inventory, separating declared/exercised minima and unqualified legacy guards. Xt/Xtrans headers and real Xlib/libevent/Xft remain. #47 closed completed; M4/M6/M7 retirements remain separate. [Floors](verification/DEPENDENCY-FLOORS-2026-10-25.md), [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
+| LINK-01 | Done / PR207 | Production ownership merged in PR204–206. M3.4 validates default/reduced on six targets, both Linux Clang profiles and cairo-svg, full offline installs/staged identities, affected X and static archive/transitive/package-license-size records. No all-static ELF, package removal or speed claim. #184/#49 closed completed. [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
+| LIB-04 | P2 / consolidation acceptance passed; review | Child #183 removes obsolete options/API branches and initializer-only dependency edges with seven affected profile passes, exact M3 worker comparisons and updated package/manual/license-size records. #183 closes on merge. The later LunaSVG comparison remains open under #46; no replacement adopted. [M4 report](verification/VERIFICATION-2026-10-25-M4-SVG.md). |
 | LIB-06 | P2 / Later evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | UTIL-01 | P2 / utility-family port milestone locally qualified | [Xlock checkpoint](verification/VERIFICATION-2026-10-12-XLOCK-PORT.md), [directory checkpoint](verification/VERIFICATION-2026-10-12-DIRECTORY-PORT.md) and [converter checkpoint](verification/VERIFICATION-2026-10-12-CONVERTER-PORT.md) install Go when enabled and retain disabled-Go Perl. The converter preserves ordinary heuristic bytes with finite input/reference work and atomic private outputs. [Consumer classification](verification/RECONCILIATION-2026-10-12-UTILITY-CONSUMERS.md) separates the installed Script FIFO example, development cursor generator, optional status recipes and full XDG provider/frontend. The [Script example checkpoint](verification/VERIFICATION-2026-10-12-SCRIPT-COM-PORT.md) qualifies stdlib Go/paired selection, bounded owned FIFOs, staged and actual native widget checks. Copied explicit Perl invocations remain usable. The [full XDG provider/frontend fixture checkpoint](verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md) now passes across six targets; its [inactive input-policy foundation](verification/VERIFICATION-2026-10-12-XDG-POLICY.md) is qualified at `d33f`, with [discovery/preference policy](verification/VERIFICATION-2026-10-12-XDG-DISCOVERY.md) qualified at `9337` and [ordered allocation](verification/VERIFICATION-2026-10-12-XDG-ALLOCATION.md) at `be8e`; the [full coordinated Go provider/native Form port](verification/VERIFICATION-2026-10-12-XDG-PORT.md) is now locally qualified and adopted at `04c1`. COMPAT-02 retirement remains a separate stage5 gate. This supersedes earlier Python port recommendations. Preserve applicable configured behavior. See [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
@@ -3614,3 +3658,13 @@ reader results are separate from the subsequent interpreter/file work.
   uncertainties and separate release/native/hardware/advisory gates remain
   explicit. Performance stays PR204 2/5; evidence-only closure advances no count.
   [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md).
+
+- 2026-10-25: PR207 merged with canonical signature/DCO/tree verified;
+  #184/#49/#47 closed completed, 64 open issues remain. M4 consolidates the
+  existing modern SVG renderer, removes three backend options/legacy APIs and
+  initializer-only dependency edges. Seven affected profiles pass; canonical M3
+  pixel comparisons retain a known clipped mask result and original helper
+  failures. One OpenBSD AMD64 preparation reboot retry passes without rerunning
+  six completed profiles. #183 awaits review/merge closure; #46 comparison and
+  broader image/advisory/release gates remain separate. Performance stays PR204
+  2/5, 3/5 on merge. [Report](verification/VERIFICATION-2026-10-25-M4-SVG.md).

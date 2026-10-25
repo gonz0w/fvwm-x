@@ -496,42 +496,47 @@ image_renderer_deps = [
     summary_depvals['x11'].partial_dependency(compile_args: true, includes: true),
     summary_depvals['xrandr'].partial_dependency(compile_args: true, includes: true),
 ]
+# This is the API floor used by the existing modern renderer, not a claim
+# that every older upstream release remains maintained or security-patched.
 librsvg = dependency(
     'librsvg-2.0',
-    version: '>=2.13.92',
+    version: '>=2.52',
     required: get_option('svg'),
 )
 if librsvg.found()
-    all_found_deps += librsvg
-    conf.set10('HAVE_RSVG', true)
-    # We need at least one of these dependencies
-    svg_backends = ['cairo', 'cairo-svg', 'libsvg-cairo']
-    svg_deps = []
-    foreach d : svg_backends
-        # By treating these as features we can let automagic find one or more backends
-        # or we can explicitly set one or more backends as required, or disable ones we don't want to use.
-        svg_dep = dependency(d, required: get_option(d))
-        if svg_dep.found()
-            svg_deps += svg_dep
-            summary_depvals += {d: svg_dep}
-            conf.set10('HAVE_' + d.to_upper().underscorify(), true)
-            break
-        endif
-    endforeach
-    if svg_deps.length() == 0
-        # If everything is set to auto (or the user turns all the backends off) we need to explicitly fail here.
-        error(
-            'librsvg found but also require one of: '
-            + ', '.join(svg_backends)
-            + ' to build SVG support.',
-        )
-    else
-        all_found_deps += svg_deps
+    svg_cairo = dependency('cairo', required: true)
+    svg_api_code = '''#include <librsvg/rsvg.h>
+#include <cairo.h>
+#if !LIBRSVG_CHECK_VERSION(2, 52, 0)
+#error librsvg headers are older than the renderer API floor
+#endif
+int main(void)
+{
+    RsvgHandle *handle = rsvg_handle_new();
+    cairo_surface_t *surface = cairo_image_surface_create(
+        CAIRO_FORMAT_ARGB32, 1, 1);
+    cairo_t *cr = cairo_create(surface);
+    RsvgRectangle viewport = {0, 0, 1, 1};
+    double width, height;
+    rsvg_handle_get_intrinsic_size_in_pixels(handle, &width, &height);
+    gboolean ok = rsvg_handle_render_document(handle, cr, &viewport, NULL);
+    g_object_unref(handle);
+    cairo_destroy(cr);
+    cairo_surface_destroy(surface);
+    return !ok;
+}
+'''
+    # Link only: configuration never executes a renderer.
+    if not cc.links(svg_api_code, dependencies: [librsvg, svg_cairo],
+                    name: 'librsvg 2.52/Cairo renderer API')
+        error('SVG support requires matching librsvg >=2.52/Cairo headers ' +
+              'and libraries. Use -Dsvg=disabled to omit SVG support.')
     endif
-    # Retain each package's full transitive link requirements for SVG rendering.
-    image_renderer_deps += [librsvg] + svg_deps
-    # Core initialization still supports the legacy rsvg_init/g_type_init path.
-    core_runtime_deps += [librsvg] + svg_deps
+    all_found_deps += [librsvg, svg_cairo]
+    summary_depvals += {'cairo': svg_cairo}
+    conf.set10('HAVE_RSVG', true)
+    # Only the isolated renderer owns SVG/Cairo runtime and static transitives.
+    image_renderer_deps += [librsvg, svg_cairo]
 endif
 
 sm = dependency('sm', required: get_option('sm'))
@@ -594,11 +599,8 @@ foreach dep : [libpng, xcursor, xpm, xrender]
     endif
 endforeach
 
-# Graphics initialization also calls the supported legacy SVG initializer.
+# Graphics initialization owns X drawing; SVG executes in the worker.
 graphics_init_runtime_deps = image_runtime_deps + [summary_depvals['xrandr']]
-if librsvg.found()
-    graphics_init_runtime_deps += [librsvg] + svg_deps
-endif
 
 text_runtime_deps = graphics_init_runtime_deps + [
     summary_depvals['fontconfig'],

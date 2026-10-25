@@ -816,21 +816,21 @@ callback retains borrowed strings. [Retention checkpoint](verification/VERIFICAT
 
 The private `fvwm-image-svg-worker` and direct `test-image-svg-render` compile
 their decoder/scale sources without linking `libfvwm3`. `image_renderer_deps`
-supplies X11/XRandR headers only, plus full enabled librsvg and selected backend
+supplies X11/XRandR headers only, plus full enabled librsvg and Cairo
 package dependencies. The worker adds actual X11 linkage for software effects;
 the direct decoder adds none. Keep package-declared static/transitive closure.
-`Fsvg.h` owns config/SVG wrappers; callers own X/Picture types, and the decoder
+`Fsvg.h` owns the SVG feature flag and active renderer wrappers; callers own
+X/Picture types, and the decoder
 includes `Xmd.h` explicitly for `CARD32`.
 
 `libfvwm3` uses `all_compile_deps`, preserving umbrella-header visibility without
 propagating runtime library requirements. The core owns `core_runtime_deps`,
-including enabled SM/ICE and supported legacy SVG initialization. FvwmAuto and
+including enabled SM/ICE; SVG/Cairo belongs to the isolated renderer. FvwmAuto and
 FvwmEvent extract libc-only archive helpers; FvwmMFL adds full libevent and
 FvwmRearrange adds full X11/XRandR dependency objects. Global math policy stays
 shared. The remaining production modules and fvwm-root use image, graphics-init,
 text and localized-text runtime groups. Image archive members retain every
-enabled decoder/cursor backend; graphics initialization adds XRandR and legacy
-SVG initialization. Text adds Fontconfig/Xft and enabled FriBidi/iconv. Form
+enabled decoder/cursor backend; graphics initialization adds XRandR. Text adds Fontconfig/Xft and enabled FriBidi/iconv. Form
 owns libevent; Form/Pager/Script own enabled gettext; Buttons/Script own SM/ICE
 through fsm.c. Script's libWidgets uses compile-only requirements and preserves
 its ordinary archive/link order. Test fixtures retain explicit broad requirements
@@ -840,6 +840,9 @@ survive. These narrower
 link edges do not imply that Cairo's runtime libraries or full-project packages
 can be removed. [Core/archive checkpoint](verification/VERIFICATION-2026-10-25-M3-ARCHIVE-LINKAGE.md),
 [combined dependency acceptance](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md).
+M4 retains sole Cairo/librsvg runtime ownership in the worker/direct-render
+test, after removing obsolete initializer-only edges and API branches.
+[Consolidation evidence](verification/VERIFICATION-2026-10-25-M4-SVG.md).
 
 `fvwm/fvwm.h` forward-declares borrowed `window_style` pointers. Complete rule
 and special-flag layouts live in `fvwm/style_types.h`, included by field/constant

@@ -24,8 +24,9 @@ OpenBSD)
     sh dev-docs/ci/openbsd-package.sh meson
     meson --version > builddir-bsd/provider-meson.txt
     for attempt in 1 2 3; do
-        if pkg_add -I ninja libevent png librsvg &&
-            pkg-config --exists libpng librsvg-2.0 cairo; then
+        if pkg_add -I ninja libevent png librsvg cairo &&
+            pkg-config --exists libpng librsvg-2.0 cairo &&
+            pkg-config --atleast-version=2.52 librsvg-2.0; then
             break
         fi
         # Retry a missing dependency, never continue with a partial package.
@@ -42,6 +43,7 @@ OpenBSD)
 esac
 pkg-config --modversion libpng > builddir-bsd/provider-png.txt
 pkg-config --exists libpng librsvg-2.0 cairo
+pkg-config --atleast-version=2.52 librsvg-2.0
 python3 tools/maintenance/ci_png.py build \
     --source /root/fvwm-ci/png-source.tar \
     --output builddir-bsd/png-bootstrap

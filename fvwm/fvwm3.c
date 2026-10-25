@@ -45,7 +45,6 @@
 #include "libs/FEvent.h"
 #include "libs/PictureBase.h"
 #include "libs/PictureUtils.h"
-#include "libs/Fsvg.h"
 #include "libs/FRenderInit.h"
 #include "libs/charmap.h"
 #include "libs/wcontext.h"
@@ -2220,7 +2219,6 @@ int main(int argc, char **argv)
 	Scr.ColorLimit = PictureInitColors(
 		PICTURE_CALLED_BY_FVWM, True, &colorLimitop, True, True);
 
-	Frsvg_init();
 	FShapeInit(dpy);
 	FRenderInit(dpy);
 

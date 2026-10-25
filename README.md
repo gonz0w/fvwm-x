@@ -10,8 +10,8 @@ configuration/theme compatibility. No compositor or Wayland backend.
 Go; migrated utilities need no Go compiler or Python packages.
 [Build/upgrade notes](INSTALL.md).
 Go coordinates the desktop with native Xlib/PNG capture. M2 session evidence
-and limits are accepted. M3 production linkage and combined acceptance are
-ready for review; dependency retirement and release work remain open.
+and limits are accepted, as is M3 dependency ownership. M4 removes obsolete
+SVG code; retirement and release work remain open.
 Recent work:
 
 - Atomic button updates, desktop settings/editor and configuration checking.

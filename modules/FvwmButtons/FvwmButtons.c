@@ -620,7 +620,6 @@ int main(int argc, char **argv)
 
 	MyName = GetFileNameFromPath(argv[0]);
 
-#ifdef HAVE_SIGACTION
 	{
 		struct sigaction  sigact;
 
@@ -643,22 +642,6 @@ int main(int argc, char **argv)
 		sigaction(SIGQUIT, &sigact, NULL);
 		sigaction(SIGTERM, &sigact, NULL);
 	}
-#else
-	/* We don't have sigaction(), so fall back to less robust methods. */
-
-	signal(SIGPIPE, TerminateHandler);
-	signal(SIGINT,  TerminateHandler);
-	signal(SIGHUP,  TerminateHandler);
-	signal(SIGQUIT, TerminateHandler);
-	signal(SIGTERM, TerminateHandler);
-#ifdef HAVE_SIGINTERRUPT
-	siginterrupt(SIGPIPE, 1);
-	siginterrupt(SIGINT, 1);
-	siginterrupt(SIGHUP, 1);
-	siginterrupt(SIGQUIT, 1);
-	siginterrupt(SIGTERM, 1);
-#endif
-#endif
 
 	if (argc<6 || argc>10)
 	{

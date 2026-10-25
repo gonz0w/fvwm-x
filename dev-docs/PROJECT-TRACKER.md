@@ -25,11 +25,49 @@ Current findings and verification gaps are summarized in
   Local BSD verification uses QEMU. Keep the root-sized fallback for servers
   reporting no RandR monitors. No native Wayland backend or built-in compositor.
 
+## M5 POSIX handler installation checkpoint — 2026-10-25
+
+Owner: Cam; current implementation lead, `codex/m5-signal-install`.
+Status: focused build/configure/runtime checks and source review pass; ready
+for maintainer review after authorized merge of PR240 as
+`8602b3c42631ec16c313893b8dffc7962efdb8c5`; canonical signature/DCO and
+reviewed tree `89518690e32c2d0cc73370448d51f7f8d6d8b499` verified. Its
+completed branch is retired and Project/labels are Done. Broader #34/#7 stay open.
+
+Finite M5 family: retain the ten active POSIX installation bodies while retiring
+HAVE_SIGACTION fallback branches and their nested siginterrupt paths; replace
+optional selectors with one required declared/linkable sigaction/sigemptyset
+configure check. Include FvwmEvent explicitly. Preserve every handler/mask/flag,
+lexical block, install order, core deinstallation signal() calls and Buttons'
+separate SIGPIPE-ignore call. No signal error-policy rewrite, flag retirement,
+new shared installer or unrelated callback/geometry work.
+
+Acceptance: capture actual production-flag preprocessing before editing, then
+compare all ten consumers with only identified source-position diagnostics
+allowed. Required-API controls pass on declared/linkable APIs and reject missing
+header/declaration or renamed link symbols using the exact Meson block. Compile
+the group once with affected Linux units and Event/Script transport checks.
+Retain the accepted PR240 sanitizer evidence for unchanged ownership code and
+prior BSD evidence for token-identical inactive fallback removal. Run no new
+sanitizer or BSD matrix solely for this source/build-contract cleanup.
+No full OS/install/theme matrix or performance comparison is due.
+
+Evidence: all ten installers preserve active compiler tokens, with only one
+assertion diagnostic line shift. Five required-API configure controls pass;
+all ten consumers compile together, shared signal and Event transport units
+and one Script process X fixture pass. A config blank-line harness correction
+retains the successful build/controls and continues only pending checks.
+[Report](verification/VERIFICATION-2026-10-25-M5-SIGNAL-INSTALL.md).
+
+Do not reopen completed #35/#36 or unsupported #93. Independent source/evidence
+review and signed author-DCO PR required. Requested project model settings remain
+unverified. Periodic reference is PR238 at 2/5 after PR240, 3/5 on this merge.
+
 ## M5 POSIX signal consumer checkpoint — 2026-10-25
 
 Owner: Cam; current implementation lead, `codex/m5-posix-signals`.
-Status: focused checks and independent source review pass; ready for review
-after the authorized PR239 merge; canonical signature/DCO and
+Status: merged in PR240 as `8602b3c42631ec16c313893b8dffc7962efdb8c5`;
+canonical signature/DCO/tree verified and branch retired. Selected after PR239; canonical signature/DCO and
 reviewed tree `c95a1123c05a339f6ac4b563cd0fd856e2ed7c9d` verified. #36 is
 Closed/Completed; its branch is retired and Project/labels are Done.
 

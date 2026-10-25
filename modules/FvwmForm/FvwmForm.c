@@ -3165,7 +3165,6 @@ int main (int argc, char **argv)
 
   xasprintf(&mname, "*%s", module->name);
 
-#ifdef HAVE_SIGACTION
   {
     struct sigaction  sigact;
 
@@ -3184,16 +3183,6 @@ int main (int argc, char **argv)
     sigaction(SIGTERM, &sigact, NULL);
     sigaction(SIGINT, &sigact, NULL);
   }
-#else
-  signal(SIGPIPE, TerminateHandler);  /* Dead pipe == Fvwm died */
-  signal(SIGTERM, TerminateHandler);
-  signal(SIGINT, TerminateHandler);
-#ifdef HAVE_SIGINTERRUPT
-  siginterrupt(SIGPIPE, 1);
-  siginterrupt(SIGTERM, 1);
-  siginterrupt(SIGINT, 1);
-#endif
-#endif
 
   Channel[0] = module->to_fvwm;
   Channel[1] = module->from_fvwm;

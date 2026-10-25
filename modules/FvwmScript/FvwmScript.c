@@ -1784,7 +1784,6 @@ int main (int argc, char **argv)
   /* Initializing TabCom and TabFunc   */
   InitCom();
 
-#ifdef HAVE_SIGACTION
   {
     struct sigaction  sigact;
 
@@ -1806,20 +1805,6 @@ int main (int argc, char **argv)
     sigaction(SIGTERM, &sigact, NULL);
     sigaction(SIGQUIT, &sigact, NULL);
   }
-#else
-  signal (SIGPIPE, TerminateHandler);
-  signal (SIGINT, TerminateHandler);  /* cleanup on other ways of closing too */
-  signal (SIGHUP, TerminateHandler);
-  signal (SIGQUIT, TerminateHandler);
-  signal (SIGTERM, TerminateHandler);
-#ifdef HAVE_SIGINTERRUPT
-  siginterrupt(SIGPIPE, 1);
-  siginterrupt(SIGINT,  1);
-  siginterrupt(SIGHUP,  1);
-  siginterrupt(SIGQUIT, 1);
-  siginterrupt(SIGTERM, 1);
-#endif
-#endif
 
   /* Compute the Shift-Tab keysym */
   {

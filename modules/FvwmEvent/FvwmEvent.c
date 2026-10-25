@@ -245,7 +245,6 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-#ifdef HAVE_SIGACTION
 	{
 		struct sigaction    sigact;
 
@@ -262,11 +261,6 @@ int main(int argc, char **argv)
 		/* "polite" termination signal */
 		sigaction(SIGTERM,&sigact,NULL);
 	}
-#else
-	/* We don't have sigaction(), so fall back to less robust methods. */
-	signal(SIGPIPE, TerminateHandler);
-	signal(SIGTERM, TerminateHandler);
-#endif
 
 	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);
 	if (module == NULL)

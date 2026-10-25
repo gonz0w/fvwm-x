@@ -1,5 +1,12 @@
 # GitHub roadmap index
 
+Library evaluations approved 2026-10-25 reuse #48/#54/#211/#46/#212/#81/#66/
+#74/#77, with cost/profile coordination in #226. No duplicate issue or stable ID
+is created. Existing status, priority, stage, milestone, Work batch and native
+relationships remain unchanged. The [owner/comparison map](decisions/LIBRARY-EVALUATIONS-2026-10-25.md)
+requires simplicity, measured performance and complete dependency costs across
+Linux/FreeBSD/OpenBSD AMD64/ARM64; the tracker retains execution authority.
+
 Hardening scope approved 2026-10-25: six P2 Backlog additions below mirror the
 [tracker](PROJECT-TRACKER.md#portable-and-openbsd-hardening-issue-scope--2026-10-25)
 and [scope record](decisions/PORTABLE-OPENBSD-HARDENING-2026-10-25.md). #232–#234

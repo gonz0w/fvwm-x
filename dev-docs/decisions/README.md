@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Library evaluation comparisons](LIBRARY-EVALUATIONS-2026-10-25.md): approved issue updates reuse nine existing owners and #226; compare application simplicity, measured performance and full dependency costs across Linux/FreeBSD/OpenBSD AMD64/ARM64 before adopt/defer/reject decisions.
+
 - [Portable and OpenBSD hardening follow-ups](PORTABLE-OPENBSD-HARDENING-2026-10-25.md): approved issue scope for measurable requirements, per-platform worker sandboxes, installed C/Go protections and OpenBSD allocator auditing; existing file/process owners retain the bounded trust-boundary review.
 
 - [Maintenance-first batches](MAINTENANCE-FIRST-BATCHES-2026-10-23.md): pause new features, place all 73 open issues, promote the maintenance queue and define eight implementation batches/three decision lanes under risk-based testing.

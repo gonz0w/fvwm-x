@@ -7,6 +7,31 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+## Library evaluation issue scope — 2026-10-25
+
+Owner: Cam. The user approved recording the library comparisons and explicitly
+requires simplicity, performance and full dependency costs across Linux,
+FreeBSD and OpenBSD. Reuse nine existing owners: LIB-06 #48 (cJSON/yyjson),
+TEXT-01 #54 (utf8proc/libgrapheme and HarfBuzz/Pango), GRAPHICS-02 #211
+(Cairo), LIB-04 #46 (LunaSVG), LAYOUT-01 #212 (optional Clay), FILE-ADVANCED-01
+#81 (libarchive), FILE-DATA-01 #66 (SQLite/FTS5), STORE-01 #74 (libsodium)
+and SESSION-02 #77 (godbus/dbus). BUILD-PROFILES-01 #226 coordinates the
+shared cost/profile evidence. No new duplicate issues or tracker IDs are added.
+
+Each evaluation compares the current/no-new-dependency baseline, identifies
+code removed versus integration/ownership complexity added, measures matching
+FVWM-X workloads and records incremental and complete dependency costs. Its
+decision report covers all three OSes on AMD64/ARM64, distinguishing native,
+emulated, unavailable and deferred results, then records adopt/defer/reject.
+Use focused prototypes and early affected BSD checks before the relevant
+cross-platform decision checkpoint; no full matrix per small edit.
+
+Issue scope is approved; no library is adopted, benchmark executed or runtime
+changed. Preserve current issue metadata/relationships, accepted components,
+the maintenance-first queue and existing feature gates. SQLite remains outside
+the current browsing prerequisite; whole-core renderer/toolkit and dependency
+replacements remain unselected. See the [owner and comparison record](decisions/LIBRARY-EVALUATIONS-2026-10-25.md).
+
 ## Portable and OpenBSD hardening issue scope — 2026-10-25
 
 Owner: Cam. The user approved issue planning after reviewing accepted hardening,
@@ -1286,6 +1311,11 @@ The [2026-10-25 hardening follow-ups](decisions/PORTABLE-OPENBSD-HARDENING-2026-
 extend D3's scoped policy/worker lane and VERIFY-01's conditional qualification
 lane as P2 Backlog. They do not replace the selected implementation queue.
 
+The [library comparisons approved on 2026-10-25](decisions/LIBRARY-EVALUATIONS-2026-10-25.md)
+stay with their existing D2/dependency, text, graphics/layout and feature owners.
+They share the six-target simplicity/performance/dependency rubric under #226;
+planning does not advance their implementation or add a blanket queue blocker.
+
 Development cadence, revised by the user on 2026-10-23: combine larger sets of
 similar issues before one focused Linux checkpoint. Aim for six to ten related
 substantive improvements where useful, or a complete reviewable owner slice;
@@ -1628,7 +1658,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | LIB-05 | Done / PR207 | PR144 removes unused xkbcommon. M3.4 completes actual target/dependency/interpreter-floor inventory, separating declared/exercised minima and unqualified legacy guards. Xt/Xtrans headers and real Xlib/libevent/Xft remain. #47 closed completed; M4/M6/M7 retirements remain separate. [Floors](verification/DEPENDENCY-FLOORS-2026-10-25.md), [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
 | LINK-01 | Done / PR207 | Production ownership merged in PR204–206. M3.4 validates default/reduced on six targets, both Linux Clang profiles and cairo-svg, full offline installs/staged identities, affected X and static archive/transitive/package-license-size records. No all-static ELF, package removal or speed claim. #184/#49 closed completed. [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
 | LIB-04 | P2 / consolidation acceptance passed; review | Child #183 removes obsolete options/API branches and initializer-only dependency edges with seven affected profile passes, exact M3 worker comparisons and updated package/manual/license-size records. #183 closes on merge. The later LunaSVG comparison remains open under #46; no replacement adopted. [M4 report](verification/VERIFICATION-2026-10-25-M4-SVG.md). |
-| LIB-06 | P2 / Later evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md). |
+| LIB-06 | P2 / backlog evaluation | Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md) and the [shared six-target comparison](decisions/LIBRARY-EVALUATIONS-2026-10-25.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | UTIL-01 | P2 / utility-family port milestone locally qualified | [Xlock checkpoint](verification/VERIFICATION-2026-10-12-XLOCK-PORT.md), [directory checkpoint](verification/VERIFICATION-2026-10-12-DIRECTORY-PORT.md) and [converter checkpoint](verification/VERIFICATION-2026-10-12-CONVERTER-PORT.md) install Go when enabled and retain disabled-Go Perl. The converter preserves ordinary heuristic bytes with finite input/reference work and atomic private outputs. [Consumer classification](verification/RECONCILIATION-2026-10-12-UTILITY-CONSUMERS.md) separates the installed Script FIFO example, development cursor generator, optional status recipes and full XDG provider/frontend. The [Script example checkpoint](verification/VERIFICATION-2026-10-12-SCRIPT-COM-PORT.md) qualifies stdlib Go/paired selection, bounded owned FIFOs, staged and actual native widget checks. Copied explicit Perl invocations remain usable. The [full XDG provider/frontend fixture checkpoint](verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md) now passes across six targets; its [inactive input-policy foundation](verification/VERIFICATION-2026-10-12-XDG-POLICY.md) is qualified at `d33f`, with [discovery/preference policy](verification/VERIFICATION-2026-10-12-XDG-DISCOVERY.md) qualified at `9337` and [ordered allocation](verification/VERIFICATION-2026-10-12-XDG-ALLOCATION.md) at `be8e`; the [full coordinated Go provider/native Form port](verification/VERIFICATION-2026-10-12-XDG-PORT.md) is now locally qualified and adopted at `04c1`. COMPAT-02 retirement remains a separate stage5 gate. This supersedes earlier Python port recommendations. Preserve applicable configured behavior. See [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | RUNTIME-GO-01 | P2 / M2 handoff accepted; broader release gates separate | M2.1–M2.10 merged through PR203; Cam explicitly accepts the accumulated M2 session evidence and documented limits on 2026-10-25 and authorizes M3. M2.8 refreshes current interpreter-free installed execution, adds identity/all-thread/PSS startup sampling and complete private kernel CPU/charged-peak/wakeup observations for one Linux profile. Higher Go wakeups and overlapping CPU ranges remain visible; no tuning follows. M2.9 adds eight fixed discovery/search/files rounds and observes eight natural resident GC cycles (largest first+final clock sum 2.7 ms in TCG); no worst-case/worker/native-CPU pause claim. M2.10 adds selected native ARM64 instruction execution proof and three installed session passes on AppleHV Linux; owner acceptance is now complete and broader native/hardware/release gates stay separate. GitHub #23 retains its closure. [Native acceptance subset](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md), [acceptance handoff](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md), [session observations](verification/VERIFICATION-2026-10-24-M2-SESSION-ACCEPTANCE.md), [platform handoff](verification/VERIFICATION-2026-10-24-M2-PLATFORM-HANDOFF.md), [utility baseline](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md), [scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |

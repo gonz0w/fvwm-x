@@ -28,6 +28,7 @@
 #include "script_fifo.h"
 #include "script_execution.h"
 #include "script_storage.h"
+#include "script_value_table.h"
 #include "script_delay.h"
 #include "script_packet.h"
 #include <errno.h>
@@ -64,6 +65,8 @@ extern ScriptProp *scriptprop;
 extern int nbobj;                       /* Number of objects */
 extern int numligne;                    /* Line Number */
 extern TabObj *tabobj;                  /* Object array, limit=1000 */
+extern char **TabNVar;
+extern int NbVar;
 extern char **TabVVar;                  /* Script variables array */
 extern int TabIdObj[1001];
 extern Bloc **TabIObj;
@@ -108,6 +111,7 @@ static script_execution execution = {
   .depth_limit = SCRIPT_EXECUTION_DEFAULT_DEPTH
 };
 static script_block_owner script_blocks;
+static script_value_table script_values;
 static unsigned int keyboard_lock_mask = LockMask;
 struct XObj *tabxobj[1000];
 char *Scrapt;
@@ -126,8 +130,8 @@ static void ReadFvwmScriptArg(int argc, char **argv, int IsFather);
 
 char *default_cursor;
 
-/* Callbacks borrow trees, binding actions and the latest message. Retire them
- * only after callbacks finish; exit from a command retains active aliases. */
+/* Callbacks borrow trees, values, binding actions and the latest message.
+ * Retire them after callbacks finish; command exit retains active aliases. */
 static void release_script_resources(void)
 {
   if (execution.depth != 0)
@@ -136,6 +140,13 @@ static void release_script_resources(void)
   BindingsList = NULL;
   free(LastString);
   LastString = NULL;
+  if (script_values.published &&
+      script_value_table_clear(&script_values, execution.depth))
+  {
+    TabNVar = NULL;
+    TabVVar = NULL;
+    NbVar = -1;
+  }
   if (!script_blocks.published ||
       !script_block_owner_clear(&script_blocks, execution.depth))
     return;
@@ -291,6 +302,13 @@ void ReadConfig (char *ScriptName)
     .object_blocks = TabIObj,
     .object_cases = TabCObj,
     .object_count = (size_t)(nbobj + 1),
+    .published = true
+  };
+  script_values = (script_value_table){
+    .names = TabNVar,
+    .values = TabVVar,
+    .count = (size_t)(NbVar + 1),
+    .storage = script_storage_runtime(),
     .published = true
   };
   /* The parser stack is borrowed scratch state, no longer needed once the

@@ -1201,3 +1201,11 @@ message after callbacks only at zero interpreter depth. Active command exits
 retain borrowed aliases for process reclamation. Shared AddBinding behavior and
 key precedence/modifier rules remain unchanged.
 [Binding/message evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-BINDINGS.md).
+
+Script argument reductions release consumed VAR/STR/GSTR lexer tokens after the
+borrowed-input constructors copy them. `script_value_table.c` owns completed
+name/value arrays and frozen extent; runtime replacements remain in those arrays.
+Idle shutdown retires current entries after callbacks and resets logical storage
+accounting. Active exits preserve table/index lifetimes. Header/widget tokens and
+incomplete parser stacks retain their separate ownership.
+[Argument-value evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-VALUES.md).

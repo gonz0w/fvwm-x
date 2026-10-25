@@ -2748,19 +2748,19 @@ yyreduce:
 
   case 152: /* var: VAR  */
 #line 836 "script.y"
-                                { AddVar((yyvsp[0].str)); }
+                                { AddVar((yyvsp[0].str)); free((yyvsp[0].str)); }
 #line 2753 "script.c"
     break;
 
   case 153: /* str: STR  */
 #line 838 "script.y"
-                                { AddConstStr((yyvsp[0].str)); }
+                                { AddConstStr((yyvsp[0].str)); free((yyvsp[0].str)); }
 #line 2759 "script.c"
     break;
 
   case 154: /* gstr: GSTR  */
 #line 840 "script.y"
-                                { AddConstStr((yyvsp[0].str)); }
+                                { AddConstStr((yyvsp[0].str)); free((yyvsp[0].str)); }
 #line 2765 "script.c"
     break;
 

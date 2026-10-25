@@ -164,13 +164,6 @@ int main(int argc, char **argv)
 	}
 #else
 	/* We don't have sigaction(), so fall back to less robust methods.  */
-#ifdef USE_BSD_SIGNALS
-	fvwmSetSignalMask( sigmask(SIGPIPE) |
-			   sigmask(SIGTERM) |
-			   sigmask(SIGQUIT) |
-			   sigmask(SIGINT) |
-			   sigmask(SIGHUP) );
-#endif
 	signal(SIGPIPE, TerminateHandler);
 	signal(SIGTERM, TerminateHandler);
 	signal(SIGQUIT, TerminateHandler);

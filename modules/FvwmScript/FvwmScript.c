@@ -1807,13 +1807,6 @@ int main (int argc, char **argv)
     sigaction(SIGQUIT, &sigact, NULL);
   }
 #else
-#ifdef USE_BSD_SIGNALS
-  fvwmSetSignalMask( sigmask(SIGPIPE) |
-		     sigmask(SIGINT) |
-		     sigmask(SIGHUP) |
-		     sigmask(SIGTERM) |
-		     sigmask(SIGQUIT) );
-#endif
   signal (SIGPIPE, TerminateHandler);
   signal (SIGINT, TerminateHandler);  /* cleanup on other ways of closing too */
   signal (SIGHUP, TerminateHandler);

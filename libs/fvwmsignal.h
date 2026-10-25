@@ -10,32 +10,7 @@
  *
  * This module was written by Chris Rankin,  rankinc@zipworld.com.au
  */
-/* This module is intended to use POSIX.1 signal semantics, since most
- * modern systems can reasonably be expected to support POSIX and since
- * the semantics of the old "signal()" function vary from system to system.
- * If POSIX.1 is not available then the module can provide BSD signal
- * semantics, which can be summarised as follows:
- *  - the signal handler will NOT uninstall itself once it has been called
- *  - a signal will be temporarily blocked from further delivery so long
- *    as its handler is running
- *  - certain system calls will be automatically restarted if interrupted
- *    by a signal
- */
-
-#if !defined(HAVE_SIGACTION) \
-    && defined(HAVE_SIGBLOCK) && defined(HAVE_SIGSETMASK)
-#  define USE_BSD_SIGNALS
-#endif
-
-#ifdef USE_BSD_SIGNALS
-#  define BSD_BLOCK_SIGNALS      int old_mask = sigblock( fvwmGetSignalMask() )
-#  define BSB_BLOCK_ALL_SIGNALS  int old_mask = sigblock( ~0 )
-#  define BSD_UNBLOCK_SIGNALS    sigsetmask( old_mask )
-#else
-#  define BSD_BLOCK_SIGNALS
-#  define BSD_BLOCK_ALL_SIGNALS
-#  define BSD_UNBLOCK_SIGNALS
-#endif
+/* Supported hosts use POSIX.1 signal semantics. */
 
 #include <signal.h>
 #include <poll.h>
@@ -67,10 +42,5 @@ extern int fvwmPoll(struct pollfd *fds, nfds_t count, int timeout_ms);
 extern ssize_t fvwmRead(int fd, void *buffer, size_t count);
 /* Write with the same atomic termination check as fvwmRead. */
 extern ssize_t fvwmWrite(int fd, const void *buffer, size_t count);
-
-#ifdef USE_BSD_SIGNALS
-extern void fvwmSetSignalMask(int);
-extern int fvwmGetSignalMask(void);
-#endif
 
 #endif /* FVWMLIB_FVWMSIGNAL_H */

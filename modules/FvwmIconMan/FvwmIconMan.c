@@ -278,14 +278,6 @@ main(int argc, char **argv)
 	}
 #else
 	/* We don't have sigaction(), so fall back to less robust methods. */
-#ifdef USE_BSD_SIGNALS
-	fvwmSetSignalMask(
-		sigmask(SIGPIPE) |
-		sigmask(SIGINT) |
-		sigmask(SIGHUP) |
-		sigmask(SIGTERM) |
-		sigmask(SIGQUIT));
-#endif
 	signal(SIGPIPE, TerminateHandler);
 	signal(SIGINT,  TerminateHandler);
 	signal(SIGHUP,  TerminateHandler);

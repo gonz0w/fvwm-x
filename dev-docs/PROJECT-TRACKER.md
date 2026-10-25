@@ -25,11 +25,50 @@ Current findings and verification gaps are summarized in
   Local BSD verification uses QEMU. Keep the root-sized fallback for servers
   reporting no RandR monitors. No native Wayland backend or built-in compositor.
 
+## M5 POSIX signal consumer checkpoint — 2026-10-25
+
+Owner: Cam; current implementation lead, `codex/m5-posix-signals`.
+Status: focused checks and independent source review pass; ready for review
+after the authorized PR239 merge; canonical signature/DCO and
+reviewed tree `c95a1123c05a339f6ac4b563cd0fd856e2ed7c9d` verified. #36 is
+Closed/Completed; its branch is retired and Project/labels are Done.
+
+Finite #34/#7/#4 owner slice: retire the unreachable pre-POSIX mask shim/API,
+remove its nine guarded core/module registrations, and adopt the fixed shared
+wait helper in GetOutput instead of its temporary 100ms foreground poll bridge.
+Keep FreeBSD/OpenBSD support, active sigaction bodies/masks/flags, HAVE_SIGACTION
+and the FvwmEvent fallback, reaper errno, watched-child ownership and saved-mask
+ordering. Keep the raw TERM cleanup grace and 10ms closed-pipe completion check.
+No broad signal-installation rewrite or unrelated feature-probe retirement.
+
+Acceptance before editing: tracked caller/config inventory, actual-flag Linux
+preprocessing baseline for the nine consumers and shared helper, plus a focused
+foreground-routing/deadline regression. Guarded consumers must retain active
+preprocessed tokens; track source-position diagnostic metadata separately. The
+helper may lose only four empty macro statements.
+New GetOutput controls verify shared routing, no post-cancellation foreground
+syscall, remaining deadline, caller masks and existing cache/child cleanup.
+Run one reused Linux normal/scoped unit checkpoint, compile the affected group
+together, and one actual Script process X fixture. Reuse PR239's unchanged shared
+primitive/BSD evidence; do not boot BSD solely for inactive branch removal.
+
+Evidence: ten-unit preprocessing comparison preserves active tokens with only
+four empty helper statements and one IconMan assertion line-number adjustment.
+Normal/scoped profiles each pass four units; all nine consumers compile together,
+and one actual Script X fixture passes termination/cache cases. All checks pass
+in one combined checkpoint; no repeated OS/install matrix. [Report](verification/VERIFICATION-2026-10-25-M5-POSIX-CONSUMERS.md).
+
+Broader #34/#7/#4 remain open; do not reopen completed #35/#36 or unsupported
+7.9 investigation #93. Independent source/evidence review and signed author-DCO
+PR required. Requested project routing metadata remains unverified. Periodic
+reference is PR238 at 1/5 after PR239, 2/5 on this merge; no comparison due.
+
 ## M5 shared wait ownership checkpoint — 2026-10-25
 
 Owner: Cam; current implementation lead, `codex/m5-readiness-lifetimes`.
-Status: focused checks and independent source review pass; ready for review
-after authorized merge of PR238 as
+Status: merged in PR239 as `0aa3bd2bc4f7f917c31ec9dc3ac31200e0d644fc`;
+canonical signature/DCO/tree verified, branch retired and #36 completed.
+Selected after PR238 as
 `0c9a7d53f30db0170b38ba58944fe8d0ab988ee3`; canonical signature/DCO and
 reviewed tree `115b614aa9d3d89dbbfd20c8c05bdba7ab6633ce` verified; branch
 retired and Project Done. Broad prior owners remain open.
@@ -1678,7 +1717,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | STYLE-01 | P2 / mutation checkpoint qualified; broader work open | Three typed mutations share one qualified checkpoint ready for review. [Mutation report](verification/VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md). The preceding flag-predicate checkpoint is merged in PR126. [Flag report](verification/VERIFICATION-2026-10-19-STYLE-FLAGS.md). The preceding matching checkpoint is merged in PR125. [Matching report](verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md). Three incremental style-index improvements pass a composed checkpoint: one original broad run across six targets/ten profiles (2019/2022 executed standard, 445/445 optional), followed by three unchanged isolated fixture controls. Fifteen actual-core index drivers retain zero selected lookup allocations after append, deletion and all three simplification paths. Three scoped sanitizers, nine fresh stages and four authenticated BSD displays pass. Two known required OpenBSD AMD64 CI/SVG omissions and its install/staged-geometry gap remain without retries. Existing update/grab barriers remain. [Report](verification/VERIFICATION-2026-10-19-STYLE-INDEX-MAINTENANCE.md). |
 | STATE-01 | P2 / tray checkpoint qualified; broader burst/coalescing open | Three existing legacy-tray insertion/retirement/publication operations share a qualified checkpoint merged in PR124. [Tray report](verification/VERIFICATION-2026-10-19-EWMH-TRAY.md). Three earlier publication improvements share one qualified checkpoint: paired strut refresh, local permission reuse and converted-name length reuse. [Report](verification/VERIFICATION-2026-10-19-EWMH-PUBLICATION.md).  [Merged PR #112 atom batch](verification/VERIFICATION-2026-10-19-EWMH-ATOMS.md) adds duplicate-ID lower bounds, scoped/ALL name lookup and startup vector reuse. Broader burst/coalescing work remains open.  [PR #102](verification/VERIFICATION-2026-10-15-EWMH-STATE.md) implements inline client snapshots, paired work-area traversal and fixed scoped/ALL atom-ID indexes. Three related improvements share one checkpoint. Eight affected/retained entries pass ten profiles; core probes pass four default BSD X targets, and three scoped sanitizer entries pass. Original full runs pass 1990/1992 standard and 437/437 optional entries. Fresh 8 stages verify 120 code/77 catalog identities; 16 geometry invocations pass. Exact broader failures/install gaps remain in the report. Current publication/query points, original priority and configuration syntax remain unchanged. No persistent window cache or generic property-write coalescing is introduced; later dirty-state work requires separate measured invalidation/barrier evidence. |
 | CACHE-01 | P2 / variant lookup checkpoint locally qualified; broader profiling open | A 65-variant lookup now checks one file stamp instead of 65. Eight standard compiler profiles across six targets pass 1936 entries; optional profiles add 423, default BSD servers pass 12 cache/staged-WM fixtures, and instrumented cache checks pass. 150 installed code identities and 99 catalogs validate. Broader profiling and release/hardware gates remain open. Preserve path resolution, keys, generations and IMAGE-01 leases. [Report](verification/VERIFICATION-2026-10-14-PICTURE-CACHE.md). |
-| LOOP-01 | Original consolidation complete; M5 shared-wait repair qualified, pending merge | Unlock, blocked-output and startup waits use native poll with shared absolute-deadline conversion. Retained full coverage passes 1944 standard and 425 optional entries; the final timeout refinement passes 50 affected entries across the same profiles. 150 final installed code identities and 99 catalogs match. Default BSD X passes 20+8 fixtures; three scoped sanitizer entries pass. Broader admission/runtime/release audits remain open. Preserve ordinary-only session callbacks and INPUT-01/OUTPUT-01 ordering. [Latest report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md). Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay open. [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
+| LOOP-01 | Done in PR239 / original consolidation and shared-wait repair | Unlock, blocked-output and startup waits use native poll with shared absolute-deadline conversion. Retained full coverage passes 1944 standard and 425 optional entries; the final timeout refinement passes 50 affected entries across the same profiles. 150 final installed code identities and 99 catalogs match. Default BSD X passes 20+8 fixtures; three scoped sanitizer entries pass. Broader admission/runtime/release audits remain open. Preserve ordinary-only session callbacks and INPUT-01/OUTPUT-01 ordering. [Latest report](verification/VERIFICATION-2026-10-15-MODULE-WAITS.md). Stream construction/continuation and diagnostic adoption/failure contracts are locally qualified in PR141; remaining broad audit and descriptor-provenance review stay open. [Stream report](verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). |
 | XIO-01 | P2 / atom batching locally qualified; query work queued | Independent atom tables now use three batches for 100 core/ICCCM/EWMH names, with finite missing-entry fallback. Exact mappings, selection ownership and supported-property order pass actual Linux and native FreeBSD/OpenBSD ARM64 controls; Scoped pure leak-enabled and actual-core leak-disabled sanitizer checks pass. [Report](verification/VERIFICATION-2026-10-07-ATOM-BATCH.md). Combined atom/expose/icon qualification passes eight profiles/1096 entries, 120 installed identities, 52 default BSD X invocations, optional 142/122 and 21 scoped sanitizers. [Combined report](verification/VERIFICATION-2026-10-07-ATOM-EXPOSE.md). Highest-override query selection now scans the root snapshot from top to bottom, skips already-excluded internal windows and stops at the highest eligible sibling. The controlled 108-child fixture uses 3 attribute reads instead of 108; full current attributes remain queried for managed frames. Real override/InputOnly order, focus and popup teardown pass focused Linux/BSD ARM64/scoped sanitizer checks; combined qualification passes eight profiles/1144 entries, 120 installed identities, 72 default BSD X invocations, optional 148/128 and 27 scoped sanitizers from the exact 1301-file snapshot. Other query/barrier work remains queued. Batch independent atom tables and remove individually proven unnecessary XSync barriers. Profile root-tree plus per-child attribute queries in stacking; use STACK-01 identities to skip only known/current managed frames. Preserve unmanaged/InputOnly/hidden/destroyed-window behavior and error/order boundaries. A narrow bounded XCB experiment requires measured remaining query cost, LIB-07 and six-target review; retain Xlib event ownership. Whole-core migration and new mandatory packages are not approved. See optimization roadmap. |
 | BOX-01 | P2 / queued | Sandbox narrow helpers/modules first with OpenBSD pledge/unveil and FreeBSD Capsicum where appropriate; evaluate Linux helper restrictions. Preserve reload/spawn/font/theme access. Whole-core sandbox policy requires an explicit compatibility review. |
 | LIB-05 | Done / PR207 | PR144 removes unused xkbcommon. M3.4 completes actual target/dependency/interpreter-floor inventory, separating declared/exercised minima and unqualified legacy guards. Xt/Xtrans headers and real Xlib/libevent/Xft remain. #47 closed completed; M4/M6/M7 retirements remain separate. [Floors](verification/DEPENDENCY-FLOORS-2026-10-25.md), [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |

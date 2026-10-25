@@ -2623,7 +2623,7 @@ if host_machine.system() == 'linux'
         link_args: ['-Wl,--wrap=pipe', '-Wl,--wrap=fcntl',
             '-Wl,--wrap=fcntl64', '-Wl,--wrap=sigprocmask', '-Wl,--wrap=sigaction',
             '-Wl,--wrap=fork', '-Wl,--wrap=setpgid', '-Wl,--wrap=dup2',
-            '-Wl,--wrap=execl'],
+            '-Wl,--wrap=execl', '-Wl,--wrap=fvwmPoll', '-Wl,--wrap=poll'],
     )
     test('script-process-fault', script_process_fault_test, timeout: 60)
 endif

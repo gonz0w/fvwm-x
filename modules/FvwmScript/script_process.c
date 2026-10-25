@@ -210,14 +210,12 @@ bool script_process_read(const char *command, int timeout_ms, char **text,
 		}
 		struct pollfd inputs[2] = {
 			{pipes[0], POLLIN, 0}, {status_pipe[0], POLLIN, 0}};
-		int remaining = (int)(deadline - now);
-		int wait = remaining > 100 ? 100 : remaining;
+		int wait = (int)(deadline - now);
 		if (pipes[0] < 0 && status_pipe[0] < 0 && wait > 10)
 			wait = 10;
-		/* Bound the check/begin-wait race without a signal-handler jump:
-		 * every wait rechecks termination within 100 ms. Cleanup also
-		 * uses raw poll so an already-set flag cannot spin. */
-		int ready = poll(inputs, 2, wait);
+		/* The shared wait checks termination atomically. Closed pipes still
+		 * need a bounded child-completion check without a SIGCHLD handler. */
+		int ready = fvwmPoll(inputs, 2, wait);
 		if (ready < 0)
 		{
 			if (errno == EINTR)

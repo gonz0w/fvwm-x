@@ -97,7 +97,6 @@ fvwmReapChildren(int sig)
 	pid_t child;
 	(void)sig;
 
-	BSD_BLOCK_SIGNALS;
 	/*
 	 * This is a signal handler, AND SO MUST BE REENTRANT!
 	 * Now the wait() functions are safe here, but please don't
@@ -126,43 +125,10 @@ fvwmReapChildren(int sig)
 #else
 # error One of waitpid or wait3 is needed.
 #endif
-	BSD_UNBLOCK_SIGNALS;
 	errno = saved_errno;
 
 	SIGNAL_RETURN;
 }
-
-#ifdef USE_BSD_SIGNALS
-static int term_sigs;
-
-/*
- * fvwmSetSignalMask - store the set of mutually exclusive signals
- * away for future reference. This prevents different signals from
- * trying to access the same static data at the same time.
- *
- * NOTE: We don't need this if we have POSIX.1 since we can install
- *       a signal mask automatically using sigaction()
- */
-void
-fvwmSetSignalMask(int sigmask)
-{
-	term_sigs = sigmask;
-}
-
-
-/*
- * fvwmGetSignalMask - get the set of signals that will terminate fvwm
- *
- * NOTE: We don't need this if we have POSIX.1 since we can install
- *       a signal mask automatically using sigaction()
- */
-int
-fvwmGetSignalMask(void)
-{
-	return term_sigs;
-}
-
-#endif
 
 
 /*
@@ -177,8 +143,6 @@ fvwmGetSignalMask(void)
 void
 fvwmSetTerminate(int sig)
 {
-	BSD_BLOCK_SIGNALS;
-
 	isTerminated = true;
 
 	if (canJump)
@@ -195,8 +159,6 @@ fvwmSetTerminate(int sig)
 		 */
 		siglongjmp(deadJump, SIG_DONE);
 	}
-
-	BSD_UNBLOCK_SIGNALS;
 }
 
 

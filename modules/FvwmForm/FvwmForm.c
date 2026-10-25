@@ -3185,9 +3185,6 @@ int main (int argc, char **argv)
     sigaction(SIGINT, &sigact, NULL);
   }
 #else
-#ifdef USE_BSD_SIGNALS
-  fvwmSetSignalMask( sigmask(SIGPIPE) | sigmask(SIGTERM) | sigmask(SIGINT) );
-#endif
   signal(SIGPIPE, TerminateHandler);  /* Dead pipe == Fvwm died */
   signal(SIGTERM, TerminateHandler);
   signal(SIGINT, TerminateHandler);

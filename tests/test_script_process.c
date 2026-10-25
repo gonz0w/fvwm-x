@@ -150,8 +150,19 @@ static void test_invalid_policy(void)
 	assert(sigaction(SIGCHLD, &previous, NULL) == 0);
 }
 
+static void assert_mask(const sigset_t *expected)
+{
+	sigset_t actual;
+
+	assert(sigprocmask(SIG_SETMASK, NULL, &actual) == 0);
+	for (int number = 1; number < NSIG; number++)
+		assert(sigismember(&actual, number) ==
+			sigismember(expected, number));
+}
+
 static void test_cancellation(void)
 {
+	sigset_t blocked, original, expected;
 	struct sigaction action = {0}, previous;
 	struct itimerval timer = {{0, 0}, {0, 50000}};
 	char *text = (char *)1;
@@ -163,11 +174,16 @@ static void test_cancellation(void)
 	assert(descriptor >= 0);
 	close(descriptor);
 	assert(unlink(path) == 0);
+	sigemptyset(&blocked);
+	sigaddset(&blocked, SIGUSR2);
+	assert(sigprocmask(SIG_BLOCK, &blocked, &original) == 0);
+	assert(sigprocmask(SIG_SETMASK, NULL, &expected) == 0);
 	isTerminated = 1;
 	snprintf(command, sizeof(command), "printf spawned > %s", path);
 	assert(!script_process_read(command, 3000, &text, &length));
 	assert(errno == ECANCELED && text == NULL && length == 0);
 	assert(access(path, F_OK) < 0 && errno == ENOENT);
+	assert_mask(&expected);
 	isTerminated = 0;
 	action.sa_handler = fvwmSetTerminate;
 	sigemptyset(&action.sa_mask);
@@ -182,15 +198,18 @@ static void test_cancellation(void)
 		assert(!script_process_read(command, 3000, &text, &length));
 		assert(errno == ECANCELED && text == NULL && length == 0);
 		assert(monotonic_seconds() - started < 1);
+		assert_mask(&expected);
 		assert(waitpid(-1, NULL, WNOHANG) == -1 && errno == ECHILD);
 		isTerminated = 0;
 		assert(script_process_read("sleep 1.1; printf recovery", 3000,
 			&text, &length));
 		assert(strcmp(text, "recovery") == 0);
+		assert_mask(&expected);
 		free(text);
 		assert(access(path, F_OK) < 0 && errno == ENOENT);
 	}
 	assert(sigaction(SIGALRM, &previous, NULL) == 0);
+	assert(sigprocmask(SIG_SETMASK, &original, NULL) == 0);
 }
 
 int main(void)

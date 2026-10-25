@@ -1158,3 +1158,9 @@ result preserve cancellation and completed-I/O ownership. The unused select
 adapter and exclusive feature definitions are retired; generic descriptor types
 and the active owned core readiness/continuation policies remain.
 [Current evidence and LOOP-01 reconciliation](verification/VERIFICATION-2026-10-25-M5-WAIT-OWNERSHIP.md).
+
+The obsolete signal-mask shim and its nine guarded registrations are retired;
+active POSIX handlers/masks and HAVE_SIGACTION ownership remain. GetOutput's
+foreground wait now reuses the fixed shared fvwmPoll with its remaining deadline.
+Closed-pipe completion keeps 10ms checks; cancellation cleanup keeps raw polling.
+[Source parity and focused evidence](verification/VERIFICATION-2026-10-25-M5-POSIX-CONSUMERS.md).

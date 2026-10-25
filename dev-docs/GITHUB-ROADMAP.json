@@ -608,6 +608,42 @@
       "number": 227,
       "url": "https://github.com/gonz0w/fvwm-x/issues/227",
       "stage": 3
+    },
+    {
+      "tracker_id": "HARDEN-01",
+      "number": 231,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/231",
+      "stage": 5
+    },
+    {
+      "tracker_id": "BOX-02",
+      "number": 232,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/232",
+      "stage": 5
+    },
+    {
+      "tracker_id": "BOX-03",
+      "number": 233,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/233",
+      "stage": 5
+    },
+    {
+      "tracker_id": "BOX-04",
+      "number": 234,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/234",
+      "stage": 5
+    },
+    {
+      "tracker_id": "VERIFY-02",
+      "number": 235,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/235",
+      "stage": 1
+    },
+    {
+      "tracker_id": "VERIFY-03",
+      "number": 236,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/236",
+      "stage": 1
     }
   ],
   "subissues": [
@@ -785,6 +821,41 @@
       "url": "https://github.com/gonz0w/fvwm-x/issues/227",
       "stage": 3,
       "scope": "Extend existing local verification with focused optional fuzz targets for project-owned external-data boundaries."
+    },
+    {
+      "parent_tracker_id": "BOX-01",
+      "number": 232,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/232",
+      "stage": 5,
+      "scope": "Sandbox OpenBSD image workers with pledge and locked unveil."
+    },
+    {
+      "parent_tracker_id": "BOX-01",
+      "number": 233,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/233",
+      "stage": 5,
+      "scope": "Constrain FreeBSD image workers with Capsicum descriptor rights."
+    },
+    {
+      "parent_tracker_id": "BOX-01",
+      "number": 234,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/234",
+      "stage": 5,
+      "scope": "Restrict Linux image workers with detected syscall and filesystem controls."
+    },
+    {
+      "parent_tracker_id": "VERIFY-01",
+      "number": 235,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/235",
+      "stage": 1,
+      "scope": "Verify installed C and Go binary protections on Linux and BSD."
+    },
+    {
+      "parent_tracker_id": "VERIFY-01",
+      "number": 236,
+      "url": "https://github.com/gonz0w/fvwm-x/issues/236",
+      "stage": 1,
+      "scope": "Exercise ownership and failure paths with OpenBSD allocator auditing."
     }
   ]
 }

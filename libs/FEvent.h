@@ -129,14 +129,6 @@ int FWeedIfEvents(
 unsigned int FMergeQueuedResizeRequests(
 	Display *display, XEvent *current, unsigned int budget);
 
-/* Same as FWeedIfEvents but with a second callback out of XLockDisplay()
- * to handle events in a lock-safe manner */
-int FWeedAndHandleIfEvents(
-	Display *display,
-	int (*weed_predicate) (Display *display, XEvent *event, XPointer arg),
-	int (*handler) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg);
-
 /* Same as FWeedIfEvents but weeds only events for the given window.  The
  * weed_predicate is only called for events with a matching window.  */
 int FWeedIfWindowEvents(
@@ -160,10 +152,6 @@ int FCheckPeekIfEvent(
 /* ---------------------------- X event replacements ----------------------- */
 
 /* Replacements for X functions */
-XTimeCoord *FGetMotionEvents(
-	Display *display, Window w, Time start, Time stop, int *nevents_return);
-int FAllowEvents(
-	Display *display, int event_mode, Time time);
 Bool FCheckIfEvent(
 	Display *display, XEvent *event_return,
 	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
@@ -174,24 +162,14 @@ Bool FCheckTypedEvent(
 	Display *display, int event_type, XEvent *event_return);
 Bool FCheckTypedWindowEvent(
 	Display *display, Window w, int event_type, XEvent *event_return);
-Bool FCheckWindowEvent(
-	Display *display, Window w, long event_mask, XEvent *event_return);
 int FEventsQueued(
 	Display *display, int mode);
-int FIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg);
 int FMaskEvent(
 	Display *display, long event_mask, XEvent *event_return);
 int FNextEvent(
 	Display *display, XEvent *event_return);
 int FPeekEvent(
 	Display *display, XEvent *event_return);
-int FPeekIfEvent(
-	Display *display, XEvent *event_return,
-	Bool (*predicate) (Display *display, XEvent *event, XPointer arg),
-	XPointer arg);
 int FPending(
 	Display *display);
 int FPutBackEvent(
@@ -202,8 +180,6 @@ void FQueryPointer(
 	Display *display, Window w, Window *root_return, Window *child_return,
 	int *root_x_return, int *root_y_return, int *win_x_return,
 	int *win_y_return, unsigned int *mask_return);
-int FSelectInput(
-	Display *display, Window w, long event_mask);
 Status FSendEvent(
 	Display *display, Window w, Bool propagate, long event_mask,
 	XEvent *event_send);

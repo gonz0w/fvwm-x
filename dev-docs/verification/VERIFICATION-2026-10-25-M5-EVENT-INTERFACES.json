@@ -1,0 +1,437 @@
+{
+  "base": "403c341a5c71249861f1ebcc75752d14a389fe2d",
+  "owner": "CLEAN-01 #34",
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "libs/FEvent.c": {
+      "sha256": "e05f90fdb517be54854b34c470d20ed0402ed90d5db4de32da6e9098a327d011",
+      "mode": 420
+    },
+    "libs/FEvent.h": {
+      "sha256": "869b1f6cb11eef872906ab1d61d85a63f6b27d2edc8411bf4383c34dad49858b",
+      "mode": 420
+    }
+  },
+  "relevant_inputs": 527,
+  "extra_inputs": 10,
+  "reference_inventory": {
+    "FWeedAndHandleIfEvents": [
+      {
+        "path": "dev-docs/decisions/EXPOSE-SERVICE-PROPOSAL.md",
+        "line": 24,
+        "text": "FWeedAndHandleIfEvents supplies a predicate returning 1 for Expose. The library"
+      },
+      {
+        "path": "libs/FEvent.c",
+        "line": 630,
+        "text": "int FWeedAndHandleIfEvents("
+      },
+      {
+        "path": "libs/FEvent.h",
+        "line": 134,
+        "text": "int FWeedAndHandleIfEvents("
+      }
+    ],
+    "FGetMotionEvents": [
+      {
+        "path": "libs/FEvent.c",
+        "line": 719,
+        "text": "XTimeCoord *FGetMotionEvents("
+      },
+      {
+        "path": "libs/FEvent.h",
+        "line": 163,
+        "text": "XTimeCoord *FGetMotionEvents("
+      }
+    ],
+    "FAllowEvents": [
+      {
+        "path": "libs/FEvent.c",
+        "line": 729,
+        "text": "int FAllowEvents("
+      },
+      {
+        "path": "libs/FEvent.h",
+        "line": 165,
+        "text": "int FAllowEvents("
+      }
+    ],
+    "FCheckWindowEvent": [
+      {
+        "path": "libs/FEvent.c",
+        "line": 813,
+        "text": "Bool FCheckWindowEvent("
+      },
+      {
+        "path": "libs/FEvent.h",
+        "line": 177,
+        "text": "Bool FCheckWindowEvent("
+      }
+    ],
+    "FIfEvent": [
+      {
+        "path": "libs/FEvent.c",
+        "line": 841,
+        "text": "int FIfEvent("
+      },
+      {
+        "path": "libs/FEvent.h",
+        "line": 181,
+        "text": "int FIfEvent("
+      }
+    ],
+    "FPeekIfEvent": [
+      {
+        "path": "libs/FEvent.c",
+        "line": 893,
+        "text": "int FPeekIfEvent("
+      },
+      {
+        "path": "libs/FEvent.h",
+        "line": 191,
+        "text": "int FPeekIfEvent("
+      }
+    ],
+    "FSelectInput": [
+      {
+        "path": "libs/FEvent.h",
+        "line": 205,
+        "text": "int FSelectInput("
+      }
+    ]
+  },
+  "preprocessing": {
+    "removed_items": {
+      "FWeedAndHandleIfEvents": 2,
+      "FGetMotionEvents": 2,
+      "FAllowEvents": 2,
+      "FCheckWindowEvent": 2,
+      "FIfEvent": 2,
+      "FPeekIfEvent": 2,
+      "FSelectInput": 1
+    },
+    "remaining_tokens": 82633,
+    "remaining_tokens_equal": true,
+    "config_identical": true,
+    "assertion_diagnostic_lines": [
+      [
+        618,
+        661,
+        681
+      ],
+      [
+        618,
+        639,
+        659
+      ]
+    ]
+  },
+  "symbol_comparison": {
+    "removed": [
+      "FAllowEvents",
+      "FCheckWindowEvent",
+      "FGetMotionEvents",
+      "FIfEvent",
+      "FPeekIfEvent",
+      "FWeedAndHandleIfEvents"
+    ],
+    "old": [
+      "FAllowEvents",
+      "FCheckIfEvent",
+      "FCheckMaskEvent",
+      "FCheckPeekIfEvent",
+      "FCheckTypedEvent",
+      "FCheckTypedWindowEvent",
+      "FCheckWeedTypedWindowEvents",
+      "FCheckWindowEvent",
+      "FCollectQueuedExposes",
+      "FEventsQueued",
+      "FGetMotionEvents",
+      "FGetWMNormalHints",
+      "FIfEvent",
+      "FMaskEvent",
+      "FMergeQueuedResizeRequests",
+      "FNextEvent",
+      "FPeekEvent",
+      "FPeekIfEvent",
+      "FPending",
+      "FPutBackEvent",
+      "FQLength",
+      "FQueryPointer",
+      "FSendEvent",
+      "FWarpPointer",
+      "FWarpPointerUpdateEvpos",
+      "FWeedAndHandleIfEvents",
+      "FWeedIfEvents",
+      "FWeedIfWindowEvents",
+      "FWindowEvent",
+      "fev_copy_last_event",
+      "fev_fake_event",
+      "fev_get_evpos_or_query",
+      "fev_get_evtime",
+      "fev_get_last_event",
+      "fev_get_last_event_address",
+      "fev_init_invalid_event_type",
+      "fev_invalid_event_type",
+      "fev_is_invalid_event_type_set",
+      "fev_make_null_event",
+      "fev_restore_event",
+      "fev_sanitise_configure_notify",
+      "fev_sanitise_configure_request",
+      "fev_sanitize_size_hints",
+      "fev_save_event",
+      "fev_set_evpos"
+    ],
+    "new": [
+      "FCheckIfEvent",
+      "FCheckMaskEvent",
+      "FCheckPeekIfEvent",
+      "FCheckTypedEvent",
+      "FCheckTypedWindowEvent",
+      "FCheckWeedTypedWindowEvents",
+      "FCollectQueuedExposes",
+      "FEventsQueued",
+      "FGetWMNormalHints",
+      "FMaskEvent",
+      "FMergeQueuedResizeRequests",
+      "FNextEvent",
+      "FPeekEvent",
+      "FPending",
+      "FPutBackEvent",
+      "FQLength",
+      "FQueryPointer",
+      "FSendEvent",
+      "FWarpPointer",
+      "FWarpPointerUpdateEvpos",
+      "FWeedIfEvents",
+      "FWeedIfWindowEvents",
+      "FWindowEvent",
+      "fev_copy_last_event",
+      "fev_fake_event",
+      "fev_get_evpos_or_query",
+      "fev_get_evtime",
+      "fev_get_last_event",
+      "fev_get_last_event_address",
+      "fev_init_invalid_event_type",
+      "fev_invalid_event_type",
+      "fev_is_invalid_event_type_set",
+      "fev_make_null_event",
+      "fev_restore_event",
+      "fev_sanitise_configure_notify",
+      "fev_sanitise_configure_request",
+      "fev_sanitize_size_hints",
+      "fev_save_event",
+      "fev_set_evpos"
+    ],
+    "orphan_never_defined": true
+  },
+  "focused_gate": {
+    "status": "passed",
+    "commands": [
+      {
+        "label": "retained-token-parity",
+        "command": [
+          "python3",
+          "/tmp/fvwm-m5-events-20261025/compare.py"
+        ],
+        "status": 0,
+        "seconds": 0.06940953500452451
+      },
+      {
+        "label": "normal-group-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "fvwm3",
+          "modules/FvwmAnimate/FvwmAnimate",
+          "modules/FvwmAuto/FvwmAuto",
+          "modules/FvwmBacker/FvwmBacker",
+          "modules/FvwmButtons/FvwmButtons",
+          "modules/FvwmEvent/FvwmEvent",
+          "modules/FvwmForm/FvwmForm",
+          "modules/FvwmIconMan/FvwmIconMan",
+          "modules/FvwmIdent/FvwmIdent",
+          "modules/FvwmMFL/FvwmMFL",
+          "modules/FvwmPager/FvwmPager",
+          "modules/FvwmRearrange/FvwmRearrange",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-resize-merge-queue",
+          "tests/test-expose-queue",
+          "tests/test-fevent-hints",
+          "tests/fvwm-expose-service-fixture"
+        ],
+        "status": 0,
+        "seconds": 10.118425304011907
+      },
+      {
+        "label": "event-units",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "resize-merge-queue",
+          "expose-queue",
+          "fevent-hints"
+        ],
+        "status": 0,
+        "seconds": 0.17186053399927914
+      },
+      {
+        "label": "expose-service-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/expose_service_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/fvwm-expose-service-fixture",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-events-20261025/continued/expose-service-x"
+        ],
+        "status": 0,
+        "seconds": 0.06451750299311243
+      }
+    ],
+    "module_outputs": [
+      "modules/FvwmAnimate/FvwmAnimate",
+      "modules/FvwmAuto/FvwmAuto",
+      "modules/FvwmBacker/FvwmBacker",
+      "modules/FvwmButtons/FvwmButtons",
+      "modules/FvwmEvent/FvwmEvent",
+      "modules/FvwmForm/FvwmForm",
+      "modules/FvwmIconMan/FvwmIconMan",
+      "modules/FvwmIdent/FvwmIdent",
+      "modules/FvwmMFL/FvwmMFL",
+      "modules/FvwmPager/FvwmPager",
+      "modules/FvwmRearrange/FvwmRearrange",
+      "modules/FvwmScript/FvwmScript"
+    ],
+    "outputs": 17
+  },
+  "outputs": {
+    "fvwm3": {
+      "sha256": "5500abc7cb2f0f0998712c64368518cd0297090c3610cd39081b2214e3dd6dfe",
+      "bytes": 5391536
+    },
+    "modules/FvwmAnimate/FvwmAnimate": {
+      "sha256": "5e9229805edca648050bc985212effaff051b2e79c440e9eb7108cbc796fe91f",
+      "bytes": 894392
+    },
+    "modules/FvwmAuto/FvwmAuto": {
+      "sha256": "e75b8559a0ed06ade2c40b223b7d99973341f1e328e6984a1e4f1e30a04b689c",
+      "bytes": 167168
+    },
+    "modules/FvwmBacker/FvwmBacker": {
+      "sha256": "fad2fc9224ab7c9e8dc5021f80a649f3d849264372ca1feaf73c7af254c1cbf0",
+      "bytes": 1045160
+    },
+    "modules/FvwmButtons/FvwmButtons": {
+      "sha256": "4aa2712bfeacb2513311fed231ff7910aa3b02c79b4454955bcec62e8c1602eb",
+      "bytes": 1724456
+    },
+    "modules/FvwmEvent/FvwmEvent": {
+      "sha256": "3d056f6dc9c01103de9ad783dd8691bd2f7543e15827375afe7d30ce1db665a6",
+      "bytes": 170104
+    },
+    "modules/FvwmForm/FvwmForm": {
+      "sha256": "505470d020a4fafa5c67ac3bcaf3e8ab9748497ce3c176eef91ea61bf9c2e047",
+      "bytes": 1620216
+    },
+    "modules/FvwmIconMan/FvwmIconMan": {
+      "sha256": "2b0209d6ed871937088a043f29eb4de189cebdf1fecd6ceb3f1c98a994d645e8",
+      "bytes": 1774128
+    },
+    "modules/FvwmIdent/FvwmIdent": {
+      "sha256": "5db2aeb39d9c506850976e81531df6caeeeb728cffb869e65c31250a8723d412",
+      "bytes": 1412832
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+      "bytes": 444120
+    },
+    "modules/FvwmPager/FvwmPager": {
+      "sha256": "88fa9044cbdafbe4f7c4d2c3ca6c58a6e692cdd9e94941603a4b0d5a4f0d7d36",
+      "bytes": 1636688
+    },
+    "modules/FvwmRearrange/FvwmRearrange": {
+      "sha256": "7818e0ebd95630b339c16ea239d1aece8d1a76f6097afe080c948ddb978b8b52",
+      "bytes": 471056
+    },
+    "modules/FvwmScript/FvwmScript": {
+      "sha256": "182dd367a2d908f72b578e763c7948d8ebce931c9f2419ce74f8be98e0fa6cb0",
+      "bytes": 2202128
+    },
+    "tests/test-resize-merge-queue": {
+      "sha256": "d7211baa4563185e0430e8692f0edbfcee7d101dcf3253bfd9ccc47a3ed09ee3",
+      "bytes": 138048
+    },
+    "tests/test-expose-queue": {
+      "sha256": "8ddd07d5b1c7fed5e5c08873aca076161e3de61f51992e64ab5c8d79e6d58cb5",
+      "bytes": 137352
+    },
+    "tests/test-fevent-hints": {
+      "sha256": "e9a0d3af36457f39dceb694c43b9a987c2bba110c968172c50b89bd695ebea32",
+      "bytes": 124136
+    },
+    "tests/fvwm-expose-service-fixture": {
+      "sha256": "9059d64fbbdf72269d61f017d6e65a7b1904132da6d82fd2242e7940a962e8fc",
+      "bytes": 5486992
+    }
+  },
+  "original_comparison_failure": "Private comparator expected two retained assertion diagnostics; actual baseline has three after removing retired body. Correct to exact known triples and retain all remaining tokens unchanged. No source/test change or preprocessing repeat. Original failure log and script preserved.",
+  "original_commands": [
+    {
+      "label": "after-preprocessing",
+      "command": [
+        "python3",
+        "/tmp/fvwm-m5-events-preprocess-20261025.py",
+        "after"
+      ],
+      "status": 0,
+      "seconds": 0.06842094400781207
+    },
+    {
+      "label": "retained-token-parity",
+      "command": [
+        "python3",
+        "/tmp/fvwm-m5-events-20261025/compare.py"
+      ],
+      "status": 1,
+      "seconds": 0.07245468001929112
+    }
+  ],
+  "performance_reference": "merged PR243; five post-PR238 implementation checkpoints observed before source edits",
+  "performance_file": "PERFORMANCE-2026-10-25-PR243.json",
+  "performance_sha256": "ccc4e6e7e5f9029faa91a0a0188e05632dcac20b967978c3deb94544275b37f5",
+  "archive": {
+    "payloads": 45,
+    "bytes": 238443,
+    "sha256": "8cde06f85b133124a433f0f1bb0b57e3912568dcb01c5e6a75233d05611ebeef"
+  },
+  "archive_regular_payloads": 46,
+  "merge243": {
+    "canonical": "403c341a5c71249861f1ebcc75752d14a389fe2d",
+    "reviewed_tree": "ae6915af9995f4a26edbad2274e5eda30d3e6b30",
+    "signature_valid": true,
+    "author_dco": "Cam <cam@fungalo.co>",
+    "branch_retired": true,
+    "Project_labels": "Done",
+    "observation": "Lead checked canonical GitHub API and fetched local tree"
+  },
+  "review": {
+    "source": "separate reviewer clear; exact removal/retained guards reviewed",
+    "evidence": "separate final source/prose/evidence review clear; raw tokens/symbols/results, source identities, archive and limited performance claims verified"
+  },
+  "limits": [
+    "No fresh sanitizer/BSD/AMD64/install/compiler-feature/full-theme matrix for unused-interface deletion",
+    "Previous PR239 BSD shared-wait and PR242/243 normal/scoped/X ownership evidence retain historical scopes",
+    "No active queue/cache/timestamp body changes",
+    "No new UI; theme/screenshots not applicable",
+    "Whole release/native-CPU/physical/toolkit/compositor acceptance remains separate"
+  ],
+  "pending_separate_scope": "Environment/path proposal not implemented: delegated security review blocked it; no alternate execution or runtime reproduction. This interface retirement does not resolve that proposal.",
+  "routing": "Requested Astra/high analysis, Sol/high implementation, separate Sol/high review; runtime metadata unverified"
+}

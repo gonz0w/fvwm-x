@@ -1,0 +1,146 @@
+{
+  "reference_checkpoint": "merged PR238-qualified browser",
+  "candidate_checkpoint": "merged PR243 before next path family; browser unchanged",
+  "method": "one warmup each then five alternating pairs, 4096 empty files, os.wait4; no build",
+  "reference_reconstruction": "Reference copy uses byte-identical preserved PR238-qualified browser SHA; no distinct browser implementation exists in this batch. Paired timings show scheduling variance, not code optimization.",
+  "binaries": {
+    "reference": {
+      "path": "/tmp/fvwm-m5-paths-20261025/performance/pr238-browser-reference",
+      "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+      "bytes": 5623589,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3594030\t  88707\t33805464\t37488201\t23c0649\t/tmp/fvwm-m5-paths-20261025/performance/pr238-browser-reference\n"
+    },
+    "current": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser",
+      "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+      "bytes": 5623589,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3594030\t  88707\t33805464\t37488201\t23c0649\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser\n"
+    }
+  },
+  "scan_observations": [
+    {
+      "binary": "reference",
+      "wall_seconds": 0.00877663801657036,
+      "user_seconds": 0.002179,
+      "system_seconds": 0.007607999999999999,
+      "max_rss_kib": 25384,
+      "entries": 4096,
+      "repeat": 0
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.009231848991476,
+      "user_seconds": 0.006111,
+      "system_seconds": 0.004077,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 0
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.00877809600206092,
+      "user_seconds": 0.002502,
+      "system_seconds": 0.007515999999999999,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 1
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.008793096989393234,
+      "user_seconds": 0.003887,
+      "system_seconds": 0.005829,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 1
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.009682476986199617,
+      "user_seconds": 0.006318,
+      "system_seconds": 0.004223,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 2
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.00890843101660721,
+      "user_seconds": 0.004377,
+      "system_seconds": 0.005827,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 2
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.008596719999331981,
+      "user_seconds": 0.004495,
+      "system_seconds": 0.0051389999999999995,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 3
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.009536393015878275,
+      "user_seconds": 0.003836,
+      "system_seconds": 0.006715,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 3
+    },
+    {
+      "binary": "reference",
+      "wall_seconds": 0.008533135987818241,
+      "user_seconds": 0.004965,
+      "system_seconds": 0.004964,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 4
+    },
+    {
+      "binary": "current",
+      "wall_seconds": 0.008762053999816999,
+      "user_seconds": 0.006366,
+      "system_seconds": 0.003182,
+      "max_rss_kib": 25664,
+      "entries": 4096,
+      "repeat": 4
+    }
+  ],
+  "guest_identity": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux\n",
+  "storage": "Filesystem      Size  Used Avail Use% Mounted on\noverlay         100G  100G   87M 100% /\n",
+  "script": {
+    "current": {
+      "sha256": "44a18eff7982db75e39abd2a22c8ffcd6796da74c8ae8141a7dd4465e5e4d9a1",
+      "bytes": 2205840,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 519906\t  14512\t  25752\t 560170\t  88c2a\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript\n"
+    },
+    "recorded_pr238": {
+      "sha256": "396951a609491906717d88a8f9eafc49578e9ed47fd3afd4bc52cfe1fb11cbcb",
+      "bytes": 2209168,
+      "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 533477\t  14624\t  25752\t 573853\t  8c19d\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript\n"
+    },
+    "scope": "Recorded normal GCC executable size baseline versus current same cache; no old Script timing or total-WM improvement claim."
+  },
+  "core_current": {
+    "sha256": "c6a10b077d8c098f7c59ab79f6f76213a7e265b6d8022834e13c2443f57ee8b3",
+    "bytes": 5395312,
+    "allocated_sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1097130\t  27380\t  39824\t1164334\t 11c42e\t/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3\n"
+  },
+  "preserved_reference": {
+    "core": {
+      "path": "/tmp/fvwm-module-waits-20261015/m5-performance-pr243/core",
+      "sha256": "c6a10b077d8c098f7c59ab79f6f76213a7e265b6d8022834e13c2443f57ee8b3"
+    },
+    "script": {
+      "path": "/tmp/fvwm-module-waits-20261015/m5-performance-pr243/script",
+      "sha256": "44a18eff7982db75e39abd2a22c8ffcd6796da74c8ae8141a7dd4465e5e4d9a1"
+    },
+    "browser": {
+      "path": "/tmp/fvwm-module-waits-20261015/m5-performance-pr243/browser",
+      "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72"
+    }
+  }
+}

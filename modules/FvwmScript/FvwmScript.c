@@ -196,6 +196,12 @@ ShutdownX(void)
 
   for (i=0; i<initialized_widgets; i++)
     tabxobj[i]->DestroyObj(tabxobj[i]);
+  /* Allocation precedes icon loading and widget preparation.  Scan the
+   * fixed, initially NULL slots too: the current widget can own an icon
+   * even when preparation refused before initialized_widgets advanced. */
+  for (i=0; i<(int)(sizeof(tabxobj) / sizeof(tabxobj[0])); i++)
+    if (tabxobj[i] != NULL)
+      script_icon_clear(tabxobj[i]);
   XFlush(dpy);
   fsm_close();
   XCloseDisplay(dpy);
@@ -502,20 +508,8 @@ void Xinit(int IsFather)
   atexit(ShutdownX);
 }
 
-/*
- * Reading an icon
- */
-void LoadIcon(struct XObj *xobj)
+void script_icon_clear(struct XObj *xobj)
 {
-	char *path;
-	int depth;
-	FvwmPictureAttributes fpa;
-
-	fpa.mask = 0;
-	if (xobj->colorset >= 0 && GetColorset(xobj->colorset)->do_dither_icon)
-	{
-		fpa.mask |= FPAM_DITHER;
-	}
 	if (xobj->iconPixmap != None)
 	{
 		XFreePixmap(dpy, xobj->iconPixmap);
@@ -531,14 +525,35 @@ void LoadIcon(struct XObj *xobj)
 		XFreePixmap(dpy, xobj->icon_alphaPixmap);
 		xobj->icon_alphaPixmap = None;
 	}
-	if (xobj->alloc_pixels != NULL && xobj->nalloc_pixels > 0)
+	if (xobj->alloc_pixels != NULL)
 	{
-		PictureFreeColors(
-			dpy, Pcmap, xobj->alloc_pixels, xobj->nalloc_pixels, 0,
-			False);
+		if (xobj->nalloc_pixels > 0)
+		{
+			PictureFreeColors(
+				dpy, Pcmap, xobj->alloc_pixels,
+				xobj->nalloc_pixels, 0, False);
+		}
+		free(xobj->alloc_pixels);
 		xobj->alloc_pixels = NULL;
-		xobj->nalloc_pixels = 0;
 	}
+	xobj->nalloc_pixels = 0;
+	xobj->icon_w = 0;
+	xobj->icon_h = 0;
+}
+
+/* Reading an icon replaces the previous owner, including on refusal. */
+void LoadIcon(struct XObj *xobj)
+{
+	char *path;
+	int depth;
+	FvwmPictureAttributes fpa;
+
+	fpa.mask = 0;
+	if (xobj->colorset >= 0 && GetColorset(xobj->colorset)->do_dither_icon)
+	{
+		fpa.mask |= FPAM_DITHER;
+	}
+	script_icon_clear(xobj);
 	if ((xobj->icon) == NULL)
 		return;
 	if ((path = PictureFindImageFile(xobj->icon,imagePath,R_OK)) == NULL)
@@ -554,6 +569,7 @@ void LoadIcon(struct XObj *xobj)
 		fvwm_debug(__func__, "[%s][LoadIcon]: <<WARNING>> Unable to "
 			   "load pixmap %s\n",
 			   ScriptName,xobj->icon);
+		script_icon_clear(xobj);
 		free(path);
 		return;
 	}

@@ -2679,6 +2679,29 @@ script_message_owner_test = executable(
 )
 test('script-message-owner', script_message_owner_test)
 
+script_icon_owner_test = executable(
+    'test-script-icon-owner', 'test_script_icon_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=XFreePixmap', '-Wl,--wrap=PictureFreeColors',
+        '-Wl,--wrap=PictureFindImageFile',
+        '-Wl,--wrap=PImageLoadPixmapFromFile'],
+    c_args: ['-UNDEBUG'],
+)
+test('script-icon-owner', script_icon_owner_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-icon-xvfb', py,
+        args: [files('live_x/script_icon_live.py'), '--module', fvwm_script,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-icon'],
+        depends: fvwm_script,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60)
+endif
+
 
 script_execution_test = executable(
     'test-script-execution',

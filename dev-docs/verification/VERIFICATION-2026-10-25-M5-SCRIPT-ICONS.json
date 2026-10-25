@@ -1,0 +1,304 @@
+{
+  "base": "109facd8546439e6c8ba1cd85cc5c330996f48d0",
+  "owners": [
+    "SCRIPT-01 #4",
+    "CLEAN-01 #34"
+  ],
+  "status": "focused checks passed; wider qualification pending",
+  "source": {
+    "doc/FvwmScript.adoc": {
+      "sha256": "76dbd86c1ab4d1879cc793b5ef53eef443019c3605c181520b53bab162b89503",
+      "mode": 420
+    },
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "3883a47d7a13e4ffced48f6d6982ec2ef924e7343a0b3232fe4b2acfd7adba01",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/Tools.c": {
+      "sha256": "a6a5448a57158dddbf11282dcc5f4c34591754f6dffd8d43fda98cd1918d5770",
+      "mode": 420
+    },
+    "modules/FvwmScript/types.h": {
+      "sha256": "481aeafba23d696e02ea9efa39cab627757a18be617c08c22bede22fe57b90c2",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "c895db73fdf01eaec34ba115bbcd0437f7b2063917e430f5401030e49a7c6a93",
+      "mode": 420
+    },
+    "tests/test_script_icon_owner.c": {
+      "sha256": "f773c905c344e23c6afd0c0d640371087466210997e8f9de93fd5ba355fd0192",
+      "mode": 420
+    },
+    "tests/live_x/script_icon_live.py": {
+      "sha256": "c2b953c576816c993f84089c224a3dbf51938df000d700e8111b5b5e8dec0293",
+      "mode": 420
+    }
+  },
+  "relevant_inputs_count": 277,
+  "relevant_inputs_sha256": "ed5bf8d94248020acdeabf4ac0a9bc2a998bda7c8e9dcbf7b871172aff7f29b0",
+  "baseline": {
+    "inputs": {
+      "modules/FvwmScript/FvwmScript.c": "559309a9eaf081a76ed0dd40e7e850c1b8134b776f2234731d62ebd264751c24",
+      "modules/FvwmScript/Widgets/Tools.c": "04bc49cd8482cf40c28a1194dfa0ae852c78510f4f700e34404f82c73b16603e",
+      "tests/test_script_icon_owner.c": "b747662d881eb15734bbbd27ead7b1cece251c20334cf1204519be60b858a553",
+      "tests/meson.build": "c2805165829ded6d35580420a71e6dc70afbda95a92fd75445f0e3acef77e905"
+    },
+    "config": "085a23acb701ed570a30a99a1a38c0fe8147dfb04370ab45b86bc610bf6e4258",
+    "build": {
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "tests/test-script-icon-owner"
+      ],
+      "status": 0,
+      "seconds": 1.0335839469917119
+    },
+    "binary": "813922aa6a048a497d8d362bdd3898fd1a02fe4e24032ea62a28aa5d1ef5376f",
+    "owner": {
+      "command": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-icon-owner"
+      ],
+      "status": -6,
+      "seconds": 0.032169557991437614
+    }
+  },
+  "normal_build_and_units": [
+    {
+      "label": "normal-build-continued",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmScript/FvwmScript",
+        "tests/test-script-icon-owner",
+        "tests/test-script-geometry",
+        "tests/test-script-widget-math",
+        "tests/test-font-geometry-x",
+        "fvwm3",
+        "modules/FvwmMFL/FvwmMFL",
+        "bin/fvwm-desktop-capture"
+      ],
+      "status": 0,
+      "seconds": 0.21870438801124692
+    },
+    {
+      "label": "normal-units",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "script-icon-owner",
+        "script-geometry",
+        "script-widget-math"
+      ],
+      "status": 0,
+      "seconds": 0.17609565999009646
+    },
+    {
+      "label": "normal-icon-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_icon_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "--capture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-icons-20261025/final/icon-x"
+      ],
+      "status": 1,
+      "seconds": 0.11931184100103565
+    }
+  ],
+  "normal_icon_observations": {
+    "existing-text-rendering": "passed",
+    "initial-bitmap-conversion": "passed",
+    "replace-with-white-bitmap": "passed",
+    "missing-image-clears-pixels": "passed",
+    "decoder-refusal-clears-pixels": "passed",
+    "same-path-retry": "passed",
+    "expose-redraw": "passed",
+    "repeated-replacement": "passed",
+    "normal-shutdown": "passed"
+  },
+  "normal_icon_gate_status": 1,
+  "normal_icon_unresolved_at_gate": "partial-startup fixture Shadow font did not refuse; normal replacement/exit passes retained",
+  "partial_startup": {
+    "status": "passed",
+    "commands": [
+      {
+        "label": "partial-startup-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_icon_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--case",
+          "partial-startup",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-icons-20261025/partial/partial-x"
+        ],
+        "status": 0,
+        "seconds": 0.11962358499295078
+      }
+    ]
+  },
+  "remaining_gate": {
+    "status": "passed",
+    "commands": [
+      {
+        "label": "normal-geometry-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_geometry_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--script",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-icons-20261025/pending/geometry-x",
+          "--font-probe",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-font-geometry-x"
+        ],
+        "status": 0,
+        "seconds": 2.2129077979770955
+      },
+      {
+        "label": "normal-widgets-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_widgets_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--script",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-icons-20261025/pending/widgets-x"
+        ],
+        "status": 0,
+        "seconds": 3.0578161209996324
+      },
+      {
+        "label": "normal-modal-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_modal_live.py",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "--mfl",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "--script",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-icons-20261025/pending/modal-x"
+        ],
+        "status": 0,
+        "seconds": 16.691224212001543
+      },
+      {
+        "label": "asan-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "tests/test-script-icon-owner",
+          "tests/test-script-geometry",
+          "tests/test-script-widget-math"
+        ],
+        "status": 0,
+        "seconds": 4.126547040010337
+      },
+      {
+        "label": "asan-units",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "script-icon-owner",
+          "script-geometry",
+          "script-widget-math"
+        ],
+        "status": 0,
+        "seconds": 0.17631671199342236
+      },
+      {
+        "label": "manual",
+        "command": [
+          "asciidoctor",
+          "-b",
+          "manpage",
+          "-o",
+          "/tmp/fvwm-m5-icons-20261025/pending/FvwmScript.1",
+          "/tmp/fvwm-module-waits-20261015/source/doc/FvwmScript.adoc"
+        ],
+        "status": 0,
+        "seconds": 0.12065075698774308
+      }
+    ]
+  },
+  "outputs": {
+    "normal": {
+      "modules/FvwmScript/FvwmScript": "15b76f32656638b272555c40f3e05b69686b3420066ab9d692a562e2ace47547",
+      "tests/test-script-icon-owner": "1d9f14d33886cbf47b377f2031a63353e4484a0e4fa8e4b301e00fd3eb83548c",
+      "tests/test-script-geometry": "8c2faeb7c47acbff96693e330fb2b7422ab57791f0f9d8935d7be1ee545ece19",
+      "tests/test-script-widget-math": "9c06f3fd283678bb70e9ecb5c32405f7bb13a3265ab22a8df496faa5a0b0dfe8",
+      "tests/test-font-geometry-x": "ab14096b5c47a27a704dddd7e90c5549c02625873fc352be2b275f7694ff2c44",
+      "fvwm3": "c6a10b077d8c098f7c59ab79f6f76213a7e265b6d8022834e13c2443f57ee8b3",
+      "modules/FvwmMFL/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+      "bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+    },
+    "asan": {
+      "tests/test-script-icon-owner": "ed59b6d3861b03483cdede1e1f4078293a5c27c6d2c2ae1e740c01a7c6fb0589",
+      "tests/test-script-geometry": "cf9f5077ffa57d1e293c5821efefba8c08e13ecfb6a7c7f2e4e8564addbf58e2",
+      "tests/test-script-widget-math": "d416fbed2e33dac59cddc0325684a3728f0d0c5e703e3f503145e32f5d94e2a1"
+    }
+  },
+  "archive": {
+    "payloads": 177,
+    "archive_bytes": 706598,
+    "archive_sha256": "dcdc5f2432490a2e54925433d4f8358f6d6780160829a721ed2056076e7365e7"
+  },
+  "archive_regular_payloads": 178,
+  "sanitizer_environment": {
+    "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+    "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+  },
+  "normal_profile": "Linux ARM64 GCC13.3",
+  "scoped_profile": "Linux ARM64 Clang18.1.3 address,undefined",
+  "retained_failures": [
+    "test-only missing complete FlocaleFont include",
+    "braced initial Icon property rejected",
+    "braced ChangeIcon strarg rejected",
+    "one-line synthetic XBM unsupported by current loader; expected0 observed65280",
+    "diagnostic-only repeat to retain screenshot; pixel expectation unchanged",
+    "Shadow font did not produce intended startup refusal; deterministic12000-character title does"
+  ],
+  "review": {
+    "source": "separate reviewer reports no actionable findings",
+    "evidence": "separate final source/evidence review clear; source hashes, raw outcomes and archive payloads verified"
+  },
+  "qualification_limits": [
+    "No fresh BSD/AMD64/install/full feature matrix",
+    "No whole-module leak-clean claim: scoped owner controls only",
+    "No new primitive/theme set; controlled existing Script regression, prior theme evidence remains historical",
+    "No native-CPU or physical/toolkit/compositor/release qualification",
+    "No performance claim; PR238 reference3/5 after241,4/5 on merge"
+  ],
+  "requested_routing": "Astra/high analysis, Sol/high implementation and separate Sol/high review; runtime metadata unverified",
+  "captured_candidate_inputs_count": 9
+}

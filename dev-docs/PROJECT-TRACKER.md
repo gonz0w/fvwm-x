@@ -25,11 +25,47 @@ Current findings and verification gaps are summarized in
   Local BSD verification uses QEMU. Keep the root-sized fallback for servers
   reporting no RandR monitors. No native Wayland backend or built-in compositor.
 
+## M5 Script widget-icon ownership checkpoint — 2026-10-25
+
+Owner: Cam; implementation lead, `codex/m5-script-resources`.
+Status: focused normal/scoped sanitizer, owner and real-X checks pass;
+ready for review after authorized PR241 merge as
+`109facd8546439e6c8ba1cd85cc5c330996f48d0`; signature/DCO and exact
+reviewed tree `f869fa49a33e87c48f22fe02f8e7a10691e8e8da` verified.
+Completed branch retired and Project/labels Done. #35/#36 remain completed.
+
+Finite SCRIPT-01 #4 / CLEAN-01 #34 family: own the widget icon's three pixmaps,
+allocated-color references and heap pixel vector through replacement, missing/
+failed load, retry, normal shutdown and partial startup refusal. Share one reset
+operation, clear dimensions with resources and use loaded state for layout.
+Before repair, reproduce the actual LoadIcon allocation loss and stale dimensions.
+Preserve image lookup, bitmap conversion, config syntax, native loader policy,
+QuitFunc/message-drain order, swallow ownership and dead-pipe early exit.
+No whole-interpreter teardown, font/Form exit audit, new resource budgets,
+asynchronous loading, image cache or broad event-loop cleanup.
+
+Acceptance: actual production-object owner controls cover empty/populated/repeated
+release, replacement, color vector with zero cells, missing lookup, decoder
+refusal and successful retry; count exact releases and retain old-source failure.
+Run one reused Linux normal/scoped sanitizer checkpoint plus focused real-X icon
+replacement/redraw/refusal and affected layout/modal tests. Platform/install/
+architecture qualification remains accumulated for its owning boundary; no new
+OS API, feature/dependency, module ABI or GUI contract requires a fresh matrix.
+Record focused results and separate final review before signed author-DCO PR.
+Evidence: actual old-object vector/dimension failure, 100-cycle owner controls,
+three units per normal/scoped profile, nine real-X icon observations, partial
+startup refusal, geometry/widget/modal fixtures and three screenshots pass.
+Test include/grammar/bitmap/refusal-trigger errors remain recorded; successful
+compilation/units/replacement checks are retained without repeating them.
+[Report](verification/VERIFICATION-2026-10-25-M5-SCRIPT-ICONS.md).
+Broader #4/#34 remain open. Periodic reference PR238 is 3/5 after PR241,
+4/5 on this merge; no performance comparison due for this resource fix.
+
 ## M5 POSIX handler installation checkpoint — 2026-10-25
 
 Owner: Cam; current implementation lead, `codex/m5-signal-install`.
-Status: focused build/configure/runtime checks and source review pass; ready
-for maintainer review after authorized merge of PR240 as
+Status: merged in PR241 as `109facd8546439e6c8ba1cd85cc5c330996f48d0`;
+canonical signature/DCO/tree verified and branch retired. Selected after PR240 as
 `8602b3c42631ec16c313893b8dffc7962efdb8c5`; canonical signature/DCO and
 reviewed tree `89518690e32c2d0cc73370448d51f7f8d6d8b499` verified. Its
 completed branch is retired and Project/labels are Done. Broader #34/#7 stay open.

@@ -1209,3 +1209,11 @@ Idle shutdown retires current entries after callbacks and resets logical storage
 accounting. Active exits preserve table/index lifetimes. Header/widget tokens and
 incomplete parser stacks retain their separate ownership.
 [Argument-value evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-VALUES.md).
+
+Repeated Script header/widget properties retire superseded owned strings at the
+successful grammar reduction. Localized header titles own exact translated bytes;
+widget titles retain existing normalization. BuildGUI releases replaced base
+font/color defaults and consumes Type only after ChooseFunction returns. Final
+widget strings retain XObj ownership and final base strings stay live; partial
+parser/base-X/font teardown remains separate.
+[Property ownership evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROPERTIES.md).

@@ -1,0 +1,613 @@
+{
+  "base": "b808a97dc75d94b5d49b44027dfe6d9db54616ce",
+  "owners": [
+    "SCRIPT-01 #4",
+    "CLEAN-01 #34"
+  ],
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "91c7a5a8b06ce2f93598c5b86c01f30076d685bb6845d860f66d136c1e9f99bb",
+      "mode": 420
+    },
+    "modules/FvwmScript/script.y": {
+      "sha256": "3a415ae31832985ebde16ff0e0008f316f970d9a7394cefebd6da6d3ac30a679",
+      "mode": 420
+    },
+    "modules/FvwmScript/script.c": {
+      "sha256": "f83fa386dfa9490cbf582cc19a6531078b3fcb1808d7a1351b68043da860cca4",
+      "mode": 420
+    },
+    "tests/test_script_property_owner.c": {
+      "sha256": "825070253354ac5d71d8423fb0f44dedfb44ce0ed82b8d800e37d7269f7235ea",
+      "mode": 420
+    },
+    "tests/live_x/script_property_owner_live.py": {
+      "sha256": "0a96c8d4da07dc81131c6035a310c6a5af93a2240e245f4ccafc7d1a06028ccf",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "0eeda48e528c6aa5f535b20b237b723554e01f4d7d1355978236009fadcf3652",
+      "mode": 420
+    }
+  },
+  "baseline_inputs": 546,
+  "additional_unchanged_fixture_inputs": 4,
+  "final_inputs": 552,
+  "before_control": {
+    "parser": "actual old parser/scanner",
+    "retained_property_input_owners": 69,
+    "module": "actual old module objects with private observational wrappers",
+    "scenarios": {
+      "final-shutdown": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 0,
+          "types_freed": 0,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      },
+      "before-prepare": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 0,
+          "types_freed": 0,
+          "chosen": 3,
+          "widget_strings": 20,
+          "widget_strings_freed": 20,
+          "base_retained": 6
+        }
+      },
+      "prepare-refusal": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 0,
+          "types_freed": 0,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      },
+      "dead-pipe": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 0,
+          "types_freed": 0,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      },
+      "init-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 0,
+          "types_freed": 0,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      },
+      "event-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 0,
+          "types_freed": 0,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      },
+      "periodic-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 0,
+          "types_freed": 0,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      }
+    }
+  },
+  "generation": {
+    "generators": {
+      "bison": "bison (GNU Bison) 3.8.2",
+      "flex": "flex 2.6.4",
+      "input_sha256": {
+        "script.y": "3a415ae31832985ebde16ff0e0008f316f970d9a7394cefebd6da6d3ac30a679",
+        "scanner.l": "828d8c3d33ac8e8d035843cf26b23199c50edec788225bc569b60218a5ec7da6"
+      },
+      "output_sha256": {
+        "script.c": "f83fa386dfa9490cbf582cc19a6531078b3fcb1808d7a1351b68043da860cca4",
+        "script.h": "984e4b2d9e99fd7cad767d128c6f12ebdd91a61055274632b4d3160760481206",
+        "scanner.c": "a020dcda1794a1f3816325b9b001f8f7ab1237d948301b87a48e074bf7d2aa0f"
+      }
+    },
+    "unchanged_outputs": [
+      "script.h",
+      "scanner.c"
+    ],
+    "parser_change": "property replacement actions and exact owned localized header copy; parser tables/token IDs unchanged"
+  },
+  "commands": [
+    {
+      "label": "normal-group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmScript/FvwmScript",
+        "tests/test-script-property-module-probe",
+        "tests/test-script-property-owner",
+        "tests/test-script-parser",
+        "tests/test-script-value-owner",
+        "tests/test-script-widget-owner",
+        "tests/test-script-block-owner",
+        "tests/test-script-binding-owner"
+      ],
+      "status": 0,
+      "seconds": 1.8185583800077438
+    },
+    {
+      "label": "normal-units",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "script-property-owner",
+        "script-parser",
+        "script-value-owner",
+        "script-widget-owner",
+        "script-block-owner",
+        "script-binding-owner"
+      ],
+      "status": 0,
+      "seconds": 0.17014596401713789
+    },
+    {
+      "label": "property-owner-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_property_owner_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-property-module-probe",
+        "--require-ownership",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-properties-20261025/final/property-owner-x"
+      ],
+      "status": 0,
+      "seconds": 1.4341089499939699
+    },
+    {
+      "label": "widget-owner-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_widget_owner_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-properties-20261025/final/widget-owner-x"
+      ],
+      "status": 0,
+      "seconds": 0.6779014650091995
+    },
+    {
+      "label": "asan-owner-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "tests/test-script-property-owner"
+      ],
+      "status": 0,
+      "seconds": 1.304204877000302
+    },
+    {
+      "label": "asan-owner-unit",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "script-property-owner"
+      ],
+      "status": 0,
+      "seconds": 0.1667038580053486
+    }
+  ],
+  "profiles": {
+    "normal": {
+      "options": {
+        "buildtype": "debugoptimized",
+        "b_ndebug": "false",
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": []
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      },
+      "compile_commands": [
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Imodules/FvwmScript/FvwmScript.p -Imodules/FvwmScript -I../source/modules/FvwmScript -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -MF modules/FvwmScript/FvwmScript.p/FvwmScript.c.o.d -o modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -c ../source/modules/FvwmScript/FvwmScript.c",
+          "file": "../source/modules/FvwmScript/FvwmScript.c",
+          "output": "modules/FvwmScript/FvwmScript.p/FvwmScript.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Imodules/FvwmScript/FvwmScript.p -Imodules/FvwmScript -I../source/modules/FvwmScript -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmScript/FvwmScript.p/script.c.o -MF modules/FvwmScript/FvwmScript.p/script.c.o.d -o modules/FvwmScript/FvwmScript.p/script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "modules/FvwmScript/FvwmScript.p/script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-script-parser.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -MD -MQ tests/test-script-parser.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-parser.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-parser.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-parser.p/.._modules_FvwmScript_script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-script-value-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-script-property-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-property-owner.p/test_script_property_owner.c.o -MF tests/test-script-property-owner.p/test_script_property_owner.c.o.d -o tests/test-script-property-owner.p/test_script_property_owner.c.o -c ../source/tests/test_script_property_owner.c",
+          "file": "../source/tests/test_script_property_owner.c",
+          "output": "tests/test-script-property-owner.p/test_script_property_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-script-property-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-script-property-module-probe.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -DSCRIPT_PROPERTY_MODULE_PROBE -MD -MQ tests/test-script-property-module-probe.p/test_script_property_owner.c.o -MF tests/test-script-property-module-probe.p/test_script_property_owner.c.o.d -o tests/test-script-property-module-probe.p/test_script_property_owner.c.o -c ../source/tests/test_script_property_owner.c",
+          "file": "../source/tests/test_script_property_owner.c",
+          "output": "tests/test-script-property-module-probe.p/test_script_property_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "command": "cc -Itests/test-script-block-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o"
+        }
+      ]
+    },
+    "asan": {
+      "options": {
+        "buildtype": "debug",
+        "b_ndebug": "false",
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ]
+      },
+      "compiler": {
+        "host": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        }
+      },
+      "compile_commands": [
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Imodules/FvwmScript/FvwmScript.p -Imodules/FvwmScript -I../source/modules/FvwmScript -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -MF modules/FvwmScript/FvwmScript.p/FvwmScript.c.o.d -o modules/FvwmScript/FvwmScript.p/FvwmScript.c.o -c ../source/modules/FvwmScript/FvwmScript.c",
+          "file": "../source/modules/FvwmScript/FvwmScript.c",
+          "output": "modules/FvwmScript/FvwmScript.p/FvwmScript.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Imodules/FvwmScript/FvwmScript.p -Imodules/FvwmScript -I../source/modules/FvwmScript -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmScript/FvwmScript.p/script.c.o -MF modules/FvwmScript/FvwmScript.p/script.c.o.d -o modules/FvwmScript/FvwmScript.p/script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "modules/FvwmScript/FvwmScript.p/script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-script-parser.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -MD -MQ tests/test-script-parser.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-parser.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-parser.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-parser.p/.._modules_FvwmScript_script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-script-value-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-value-owner.p/.._modules_FvwmScript_script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-script-property-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-property-owner.p/test_script_property_owner.c.o -MF tests/test-script-property-owner.p/test_script_property_owner.c.o.d -o tests/test-script-property-owner.p/test_script_property_owner.c.o -c ../source/tests/test_script_property_owner.c",
+          "file": "../source/tests/test_script_property_owner.c",
+          "output": "tests/test-script-property-owner.p/test_script_property_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-script-property-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-property-owner.p/.._modules_FvwmScript_script.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-script-property-module-probe.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -DSCRIPT_PROPERTY_MODULE_PROBE -MD -MQ tests/test-script-property-module-probe.p/test_script_property_owner.c.o -MF tests/test-script-property-module-probe.p/test_script_property_owner.c.o.d -o tests/test-script-property-module-probe.p/test_script_property_owner.c.o -c ../source/tests/test_script_property_owner.c",
+          "file": "../source/tests/test_script_property_owner.c",
+          "output": "tests/test-script-property-module-probe.p/test_script_property_owner.c.o"
+        },
+        {
+          "directory": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "command": "clang -Itests/test-script-block-owner.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -fsanitize=address,undefined -fno-omit-frame-pointer -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O0 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -fno-builtin-free -MD -MQ tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o -MF tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o.d -o tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o -c ../source/modules/FvwmScript/script.c",
+          "file": "../source/modules/FvwmScript/script.c",
+          "output": "tests/test-script-block-owner.p/.._modules_FvwmScript_script.c.o"
+        }
+      ]
+    }
+  },
+  "outputs": {
+    "normal": {
+      "modules/FvwmScript/FvwmScript": {
+        "sha256": "d24ae355177035eb719b0a2fa64a017d2f054ec77cf4737c753142b244ba5adc",
+        "bytes": 2209160
+      },
+      "tests/test-script-property-module-probe": {
+        "sha256": "6d331bfad7ad5a64a21fc4d07c9ac6ded44f29759388d18cb4021f90ffbbdc31",
+        "bytes": 2226824
+      },
+      "tests/test-script-property-owner": {
+        "sha256": "c0f3d90e08231933b69a9ccbe129919911de7a6f0dbdfc8ab813e092fc6cc702",
+        "bytes": 878880
+      },
+      "tests/test-script-parser": {
+        "sha256": "018a5590d2b617d1d412ab29be686ebb122e41a0d8ad5e2b255fa2d8f3c832d2",
+        "bytes": 874608
+      },
+      "tests/test-script-value-owner": {
+        "sha256": "760aa86788f36b202c56a0b9ea439a60519f88c62ad4feedfea810c0ecee636f",
+        "bytes": 874888
+      },
+      "tests/test-script-widget-owner": {
+        "sha256": "3228c11fdfa46e4a948f2f6ea6f3f37ca12f82682de29272a81c83c694cab55f",
+        "bytes": 2240560
+      },
+      "tests/test-script-block-owner": {
+        "sha256": "b8032180fe0751960337f376184bc5fab301fbcae59a61a5cf43c8561f4b508e",
+        "bytes": 882768
+      },
+      "tests/test-script-binding-owner": {
+        "sha256": "2fe5eb4157a300fdb47b26d464f9da448d6ff455a1503c0ebc1285a22dbb9be9",
+        "bytes": 2218896
+      }
+    },
+    "asan": {
+      "tests/test-script-property-owner": {
+        "sha256": "12fb012ee100ee67679140aa3b3b62ca8fdb609ea6df0a8083910d09bf8f6958",
+        "bytes": 5193704
+      }
+    }
+  },
+  "new_x_scenarios": {
+    "final-shutdown": {
+      "lifecycle": "passed",
+      "ownership": {
+        "defaults_freed": 5,
+        "types_freed": 4,
+        "chosen": 4,
+        "widget_strings": 26,
+        "widget_strings_freed": 26,
+        "base_retained": 6
+      }
+    },
+    "before-prepare": {
+      "lifecycle": "passed",
+      "ownership": {
+        "defaults_freed": 5,
+        "types_freed": 3,
+        "chosen": 3,
+        "widget_strings": 20,
+        "widget_strings_freed": 20,
+        "base_retained": 6
+      }
+    },
+    "prepare-refusal": {
+      "lifecycle": "passed",
+      "ownership": {
+        "defaults_freed": 5,
+        "types_freed": 4,
+        "chosen": 4,
+        "widget_strings": 26,
+        "widget_strings_freed": 26,
+        "base_retained": 6
+      }
+    },
+    "dead-pipe": {
+      "lifecycle": "passed",
+      "ownership": {
+        "defaults_freed": 5,
+        "types_freed": 4,
+        "chosen": 4,
+        "widget_strings": 26,
+        "widget_strings_freed": 26,
+        "base_retained": 6
+      }
+    },
+    "init-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "defaults_freed": 5,
+        "types_freed": 4,
+        "chosen": 4,
+        "widget_strings": 26,
+        "widget_strings_freed": 26,
+        "base_retained": 6
+      }
+    },
+    "event-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "defaults_freed": 5,
+        "types_freed": 4,
+        "chosen": 4,
+        "widget_strings": 26,
+        "widget_strings_freed": 26,
+        "base_retained": 6
+      }
+    },
+    "periodic-quit": {
+      "lifecycle": "passed",
+      "ownership": {
+        "defaults_freed": 5,
+        "types_freed": 4,
+        "chosen": 4,
+        "widget_strings": 26,
+        "widget_strings_freed": 26,
+        "base_retained": 6
+      }
+    }
+  },
+  "failures_and_corrections": [
+    "Old-parser control first found Font braces retained literally; corrected fixture to bare font tokens.",
+    "Old-module control then refused invalid WriteToFile brace pathname before widgets; corrected fixture to initialize $file and use VAR pathname.",
+    "Separate source review caught FGettextCopy trimming new header copy: switched header only to exact fxstrdup(FGettext(input)); controlled catalog oracle preserves padded/newline bytes and widget oracle uses real CopyString semantics.",
+    "Private probe parser retirement made one-shot before real free to avoid address-reuse inspection.",
+    "Combined frozen candidate gate passed on first invocation; initial local repository check saw not-yet-written report link, repaired by completing report."
+  ],
+  "archive": {
+    "payloads": 192,
+    "regular_files": 193,
+    "bytes": 1918318,
+    "sha256": "e387bd6c2ddd7f5daa86fbc1e3b96470e19a35386f57a76fc51f6f34d19d61c1",
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-property-ownership/native-evidence.tgz"
+  },
+  "retirement": {
+    "status": "retired exact verified guest duplicates",
+    "retired": [
+      {
+        "tree": "/tmp/fvwm-m5-properties-20261025",
+        "files": 193,
+        "active_references": []
+      },
+      {
+        "tree": "/tmp/fvwm-m5-perf248-20261025",
+        "files": 25,
+        "active_references": []
+      }
+    ],
+    "archive_sha256": "e387bd6c2ddd7f5daa86fbc1e3b96470e19a35386f57a76fc51f6f34d19d61c1",
+    "preserved": "canonical host archive, source/build caches, PR243 and PR248 performance reference binaries"
+  },
+  "routing": {
+    "policy": "PROJECT.md Codex routing 2026-10-24",
+    "requested": [
+      {
+        "role": "temper_analyst",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      {
+        "role": "temper_implementer",
+        "model": "gpt-6.1-sol",
+        "effort": "high"
+      },
+      {
+        "role": "temper_reviewer",
+        "model": "gpt-6.1-sol",
+        "effort": "high"
+      }
+    ],
+    "actual_runtime_metadata": "not exposed; requested settings are unverified"
+  },
+  "performance": "PERFORMANCE-2026-10-25-PR248.json",
+  "deferred": [
+    "BSD/AMD64/compiler-feature-install/default-server matrices",
+    "whole parser/module leak-clean acceptance",
+    "native-CPU/hardware/toolkit/compositor/release qualification",
+    "broader #4/#34 acceptance"
+  ],
+  "review": "separate final source/raw-evidence/report review passed; all192 payloads/552 source identities, baseline/generation/profiles/commands/outcomes and performance calculations independently checked; no remaining actionable findings"
+}

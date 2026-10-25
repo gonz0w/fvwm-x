@@ -477,15 +477,19 @@ head:
 | head WINDOWTITLE GSTR
 {
 	/* Window Title */
+	free(scriptprop->titlewin);
 	scriptprop->titlewin=$3;
 }
 | head WINDOWLOCALETITLE GSTR
 {
 	/* Window Title */
-	scriptprop->titlewin=(char *)FGettext($3);
+	free(scriptprop->titlewin);
+	scriptprop->titlewin=fxstrdup(FGettext($3));
+	free($3);
 }
 | head ICON STR
 {
+	free(scriptprop->icon);
 	scriptprop->icon=$3;
 }
 | head WINDOWPOSITION NUMBER NUMBER
@@ -503,24 +507,28 @@ head:
 | head BACKCOLOR GSTR
 {
 	/* Background Color */
+	free(scriptprop->backcolor);
 	scriptprop->backcolor=$3;
 	scriptprop->colorset = -1;
 }
 | head FORECOLOR GSTR
 {
 	/* Foreground Color */
+	free(scriptprop->forecolor);
 	scriptprop->forecolor=$3;
 	scriptprop->colorset = -1;
 }
 | head SHADCOLOR GSTR
 {
 	/* Shaded Color */
+	free(scriptprop->shadcolor);
 	scriptprop->shadcolor=$3;
 	scriptprop->colorset = -1;
 }
 | head LICOLOR GSTR
 {
 	/* Highlighted Color */
+	free(scriptprop->hilicolor);
 	scriptprop->hilicolor=$3;
 	scriptprop->colorset = -1;
 }
@@ -533,6 +541,7 @@ head:
 }
 | head FONT
 {
+	free(scriptprop->font);
 	scriptprop->font=$2;
 }
 
@@ -581,6 +590,7 @@ id: NUMBER			{ nbobj++;
 
 init:				/* vide */
     | init TYPE STR		{
+				 free((*tabobj)[nbobj].type);
 				 (*tabobj)[nbobj].type=$3;
 				 HasType=1;
 				}
@@ -603,30 +613,39 @@ init:				/* vide */
 				 (*tabobj)[nbobj].value3=$3;
 				}
     | init TITLE GSTR		{
+				 free((*tabobj)[nbobj].title);
 				 (*tabobj)[nbobj].title= $3;
 				}
     | init LOCALETITLE GSTR     {
+				 free((*tabobj)[nbobj].title);
 				 (*tabobj)[nbobj].title= FGettextCopy($3);
+				 free($3);
 				}
     | init SWALLOWEXEC GSTR	{
+				 free((*tabobj)[nbobj].swallow);
 				 (*tabobj)[nbobj].swallow=$3;
 				}
     | init ICON STR		{
+				 free((*tabobj)[nbobj].icon);
 				 (*tabobj)[nbobj].icon=$3;
 				}
     | init BACKCOLOR GSTR	{
+				 free((*tabobj)[nbobj].backcolor);
 				 (*tabobj)[nbobj].backcolor=$3;
 				 (*tabobj)[nbobj].colorset = -1;
 				}
     | init FORECOLOR GSTR	{
+				 free((*tabobj)[nbobj].forecolor);
 				 (*tabobj)[nbobj].forecolor=$3;
 				 (*tabobj)[nbobj].colorset = -1;
 				}
     | init SHADCOLOR GSTR	{
+				 free((*tabobj)[nbobj].shadcolor);
 				 (*tabobj)[nbobj].shadcolor=$3;
 				 (*tabobj)[nbobj].colorset = -1;
 				}
     | init LICOLOR GSTR		{
+				 free((*tabobj)[nbobj].hilicolor);
 				 (*tabobj)[nbobj].hilicolor=$3;
 				 (*tabobj)[nbobj].colorset = -1;
 				}
@@ -637,6 +656,7 @@ init:				/* vide */
 	}
 				}
     | init FONT			{
+				 free((*tabobj)[nbobj].font);
 				 (*tabobj)[nbobj].font=$2;
 				}
     | init FLAGS flags

@@ -1095,28 +1095,28 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   458,   458,   461,   465,   466,   471,   477,   482,   487,
-     491,   497,   503,   509,   515,   521,   527,   534,   540,   541,
-     546,   547,   552,   553,   562,   563,   566,   582,   583,   587,
-     591,   596,   599,   602,   605,   608,   611,   614,   617,   621,
-     625,   629,   633,   639,   642,   644,   645,   648,   651,   654,
-     657,   660,   666,   677,   678,   681,   683,   684,   685,   688,
-     689,   692,   695,   700,   701,   702,   703,   704,   705,   706,
-     707,   708,   709,   710,   711,   712,   713,   714,   715,   716,
-     717,   718,   719,   720,   721,   722,   723,   724,   725,   726,
-     727,   731,   732,   733,   734,   735,   736,   737,   738,   739,
-     740,   741,   742,   743,   744,   745,   746,   747,   748,   749,
-     750,   751,   752,   753,   754,   755,   756,   759,   761,   763,
-     765,   767,   769,   771,   773,   775,   777,   779,   781,   783,
+       0,   458,   458,   461,   465,   466,   471,   477,   483,   490,
+     495,   501,   507,   514,   521,   528,   535,   542,   549,   550,
+     555,   556,   561,   562,   571,   572,   575,   591,   592,   597,
+     601,   606,   609,   612,   615,   619,   624,   628,   632,   637,
+     642,   647,   652,   658,   662,   664,   665,   668,   671,   674,
+     677,   680,   686,   697,   698,   701,   703,   704,   705,   708,
+     709,   712,   715,   720,   721,   722,   723,   724,   725,   726,
+     727,   728,   729,   730,   731,   732,   733,   734,   735,   736,
+     737,   738,   739,   740,   741,   742,   743,   744,   745,   746,
+     747,   751,   752,   753,   754,   755,   756,   757,   758,   759,
+     760,   761,   762,   763,   764,   765,   766,   767,   768,   769,
+     770,   771,   772,   773,   774,   775,   776,   779,   781,   783,
      785,   787,   789,   791,   793,   795,   797,   799,   801,   803,
-     805,   807,   811,   813,   814,   816,   818,   819,   822,   823,
-     827,   831,   836,   838,   840,   842,   844,   846,   848,   850,
-     851,   852,   853,   854,   855,   856,   857,   858,   859,   860,
-     861,   862,   863,   864,   865,   866,   867,   868,   869,   870,
-     871,   872,   873,   874,   875,   880,   881,   882,   883,   884,
-     885,   886,   887,   891,   892,   893,   894,   895,   896,   897,
-     901,   902,   903,   904,   905,   909,   910,   911,   915,   916,
-     917,   921,   925,   926,   927,   928,   929,   930
+     805,   807,   809,   811,   813,   815,   817,   819,   821,   823,
+     825,   827,   831,   833,   834,   836,   838,   839,   842,   843,
+     847,   851,   856,   858,   860,   862,   864,   866,   868,   870,
+     871,   872,   873,   874,   875,   876,   877,   878,   879,   880,
+     881,   882,   883,   884,   885,   886,   887,   888,   889,   890,
+     891,   892,   893,   894,   895,   900,   901,   902,   903,   904,
+     905,   906,   907,   911,   912,   913,   914,   915,   916,   917,
+     921,   922,   923,   924,   925,   929,   930,   931,   935,   936,
+     937,   941,   945,   946,   947,   948,   949,   950
 };
 #endif
 
@@ -2163,136 +2163,145 @@ yyreduce:
 #line 478 "script.y"
 {
 	/* Window Title */
+	free(scriptprop->titlewin);
 	scriptprop->titlewin=(yyvsp[0].str);
 }
-#line 2169 "script.c"
+#line 2170 "script.c"
     break;
 
   case 8: /* head: head WINDOWLOCALETITLE GSTR  */
-#line 483 "script.y"
+#line 484 "script.y"
 {
 	/* Window Title */
-	scriptprop->titlewin=(char *)FGettext((yyvsp[0].str));
+	free(scriptprop->titlewin);
+	scriptprop->titlewin=fxstrdup(FGettext((yyvsp[0].str)));
+	free((yyvsp[0].str));
 }
-#line 2178 "script.c"
+#line 2181 "script.c"
     break;
 
   case 9: /* head: head ICON STR  */
-#line 488 "script.y"
+#line 491 "script.y"
 {
+	free(scriptprop->icon);
 	scriptprop->icon=(yyvsp[0].str);
 }
-#line 2186 "script.c"
+#line 2190 "script.c"
     break;
 
   case 10: /* head: head WINDOWPOSITION NUMBER NUMBER  */
-#line 492 "script.y"
+#line 496 "script.y"
 {
 	/* Window Position and Size */
 	scriptprop->x=(yyvsp[-1].number);
 	scriptprop->y=(yyvsp[0].number);
 }
-#line 2196 "script.c"
+#line 2200 "script.c"
     break;
 
   case 11: /* head: head WINDOWSIZE NUMBER NUMBER  */
-#line 498 "script.y"
+#line 502 "script.y"
 {
 	/* Window Width and Height */
 	scriptprop->width=(yyvsp[-1].number);
 	scriptprop->height=(yyvsp[0].number);
 }
-#line 2206 "script.c"
+#line 2210 "script.c"
     break;
 
   case 12: /* head: head BACKCOLOR GSTR  */
-#line 504 "script.y"
+#line 508 "script.y"
 {
 	/* Background Color */
+	free(scriptprop->backcolor);
 	scriptprop->backcolor=(yyvsp[0].str);
 	scriptprop->colorset = -1;
 }
-#line 2216 "script.c"
+#line 2221 "script.c"
     break;
 
   case 13: /* head: head FORECOLOR GSTR  */
-#line 510 "script.y"
+#line 515 "script.y"
 {
 	/* Foreground Color */
+	free(scriptprop->forecolor);
 	scriptprop->forecolor=(yyvsp[0].str);
 	scriptprop->colorset = -1;
 }
-#line 2226 "script.c"
+#line 2232 "script.c"
     break;
 
   case 14: /* head: head SHADCOLOR GSTR  */
-#line 516 "script.y"
+#line 522 "script.y"
 {
 	/* Shaded Color */
+	free(scriptprop->shadcolor);
 	scriptprop->shadcolor=(yyvsp[0].str);
 	scriptprop->colorset = -1;
 }
-#line 2236 "script.c"
+#line 2243 "script.c"
     break;
 
   case 15: /* head: head LICOLOR GSTR  */
-#line 522 "script.y"
+#line 529 "script.y"
 {
 	/* Highlighted Color */
+	free(scriptprop->hilicolor);
 	scriptprop->hilicolor=(yyvsp[0].str);
 	scriptprop->colorset = -1;
 }
-#line 2246 "script.c"
+#line 2254 "script.c"
     break;
 
   case 16: /* head: head COLORSET NUMBER  */
-#line 528 "script.y"
+#line 536 "script.y"
 {
 	if ((yyvsp[0].number) < 0 || AllocColorset((yyvsp[0].number)))
 	{
 		scriptprop->colorset = (yyvsp[0].number);
 	}
 }
-#line 2257 "script.c"
-    break;
-
-  case 17: /* head: head FONT  */
-#line 535 "script.y"
-{
-	scriptprop->font=(yyvsp[0].str);
-}
 #line 2265 "script.c"
     break;
 
-  case 19: /* initbloc: INIT creerbloc BEG instr END  */
-#line 541 "script.y"
-                                       {
-				 scriptprop->initbloc=PileBloc[TopPileB];
-				 TopPileB--;
-				}
+  case 17: /* head: head FONT  */
+#line 543 "script.y"
+{
+	free(scriptprop->font);
+	scriptprop->font=(yyvsp[0].str);
+}
 #line 2274 "script.c"
     break;
 
-  case 21: /* periodictask: PERIODICTASK creerbloc BEG instr END  */
-#line 547 "script.y"
-                                                   {
-				 scriptprop->periodictasks=PileBloc[TopPileB];
+  case 19: /* initbloc: INIT creerbloc BEG instr END  */
+#line 550 "script.y"
+                                       {
+				 scriptprop->initbloc=PileBloc[TopPileB];
 				 TopPileB--;
 				}
 #line 2283 "script.c"
     break;
 
-  case 23: /* quitfunc: QUITFUNC creerbloc BEG instr END  */
-#line 553 "script.y"
-                                               {
-				 scriptprop->quitfunc=PileBloc[TopPileB];
+  case 21: /* periodictask: PERIODICTASK creerbloc BEG instr END  */
+#line 556 "script.y"
+                                                   {
+				 scriptprop->periodictasks=PileBloc[TopPileB];
 				 TopPileB--;
 				}
 #line 2292 "script.c"
     break;
 
+  case 23: /* quitfunc: QUITFUNC creerbloc BEG instr END  */
+#line 562 "script.y"
+                                               {
+				 scriptprop->quitfunc=PileBloc[TopPileB];
+				 TopPileB--;
+				}
+#line 2301 "script.c"
+    break;
+
   case 26: /* id: NUMBER  */
-#line 566 "script.y"
+#line 575 "script.y"
                                 { nbobj++;
 				  if (nbobj>=1000)
 				  { yyerror("Too many items\n");
@@ -2307,198 +2316,209 @@ yyreduce:
 				  (*tabobj)[nbobj].id=(yyvsp[0].number);
 				  (*tabobj)[nbobj].colorset = -1;
 				}
-#line 2311 "script.c"
-    break;
-
-  case 28: /* init: init TYPE STR  */
-#line 583 "script.y"
-                                {
-				 (*tabobj)[nbobj].type=(yyvsp[0].str);
-				 HasType=1;
-				}
 #line 2320 "script.c"
     break;
 
+  case 28: /* init: init TYPE STR  */
+#line 592 "script.y"
+                                {
+				 free((*tabobj)[nbobj].type);
+				 (*tabobj)[nbobj].type=(yyvsp[0].str);
+				 HasType=1;
+				}
+#line 2330 "script.c"
+    break;
+
   case 29: /* init: init SIZE NUMBER NUMBER  */
-#line 587 "script.y"
+#line 597 "script.y"
                                 {
 				 (*tabobj)[nbobj].width=(yyvsp[-1].number);
 				 (*tabobj)[nbobj].height=(yyvsp[0].number);
 				}
-#line 2329 "script.c"
+#line 2339 "script.c"
     break;
 
   case 30: /* init: init POSITION NUMBER NUMBER  */
-#line 591 "script.y"
+#line 601 "script.y"
                                   {
 				 (*tabobj)[nbobj].x=(yyvsp[-1].number);
 				 (*tabobj)[nbobj].y=(yyvsp[0].number);
 				 HasPosition=1;
 				}
-#line 2339 "script.c"
+#line 2349 "script.c"
     break;
 
   case 31: /* init: init VALUE NUMBER  */
-#line 596 "script.y"
+#line 606 "script.y"
                                 {
 				 (*tabobj)[nbobj].value=(yyvsp[0].number);
 				}
-#line 2347 "script.c"
+#line 2357 "script.c"
     break;
 
   case 32: /* init: init VALUEMIN NUMBER  */
-#line 599 "script.y"
+#line 609 "script.y"
                                         {
 				 (*tabobj)[nbobj].value2=(yyvsp[0].number);
 				}
-#line 2355 "script.c"
+#line 2365 "script.c"
     break;
 
   case 33: /* init: init VALUEMAX NUMBER  */
-#line 602 "script.y"
+#line 612 "script.y"
                                         {
 				 (*tabobj)[nbobj].value3=(yyvsp[0].number);
 				}
-#line 2363 "script.c"
+#line 2373 "script.c"
     break;
 
   case 34: /* init: init TITLE GSTR  */
-#line 605 "script.y"
+#line 615 "script.y"
                                 {
+				 free((*tabobj)[nbobj].title);
 				 (*tabobj)[nbobj].title= (yyvsp[0].str);
 				}
-#line 2371 "script.c"
+#line 2382 "script.c"
     break;
 
   case 35: /* init: init LOCALETITLE GSTR  */
-#line 608 "script.y"
+#line 619 "script.y"
                                 {
+				 free((*tabobj)[nbobj].title);
 				 (*tabobj)[nbobj].title= FGettextCopy((yyvsp[0].str));
+				 free((yyvsp[0].str));
 				}
-#line 2379 "script.c"
+#line 2392 "script.c"
     break;
 
   case 36: /* init: init SWALLOWEXEC GSTR  */
-#line 611 "script.y"
+#line 624 "script.y"
                                 {
+				 free((*tabobj)[nbobj].swallow);
 				 (*tabobj)[nbobj].swallow=(yyvsp[0].str);
 				}
-#line 2387 "script.c"
+#line 2401 "script.c"
     break;
 
   case 37: /* init: init ICON STR  */
-#line 614 "script.y"
+#line 628 "script.y"
                                 {
+				 free((*tabobj)[nbobj].icon);
 				 (*tabobj)[nbobj].icon=(yyvsp[0].str);
 				}
-#line 2395 "script.c"
+#line 2410 "script.c"
     break;
 
   case 38: /* init: init BACKCOLOR GSTR  */
-#line 617 "script.y"
+#line 632 "script.y"
                                 {
+				 free((*tabobj)[nbobj].backcolor);
 				 (*tabobj)[nbobj].backcolor=(yyvsp[0].str);
 				 (*tabobj)[nbobj].colorset = -1;
 				}
-#line 2404 "script.c"
+#line 2420 "script.c"
     break;
 
   case 39: /* init: init FORECOLOR GSTR  */
-#line 621 "script.y"
+#line 637 "script.y"
                                 {
+				 free((*tabobj)[nbobj].forecolor);
 				 (*tabobj)[nbobj].forecolor=(yyvsp[0].str);
 				 (*tabobj)[nbobj].colorset = -1;
 				}
-#line 2413 "script.c"
+#line 2430 "script.c"
     break;
 
   case 40: /* init: init SHADCOLOR GSTR  */
-#line 625 "script.y"
+#line 642 "script.y"
                                 {
+				 free((*tabobj)[nbobj].shadcolor);
 				 (*tabobj)[nbobj].shadcolor=(yyvsp[0].str);
 				 (*tabobj)[nbobj].colorset = -1;
 				}
-#line 2422 "script.c"
+#line 2440 "script.c"
     break;
 
   case 41: /* init: init LICOLOR GSTR  */
-#line 629 "script.y"
+#line 647 "script.y"
                                 {
+				 free((*tabobj)[nbobj].hilicolor);
 				 (*tabobj)[nbobj].hilicolor=(yyvsp[0].str);
 				 (*tabobj)[nbobj].colorset = -1;
 				}
-#line 2431 "script.c"
+#line 2450 "script.c"
     break;
 
   case 42: /* init: init COLORSET NUMBER  */
-#line 633 "script.y"
+#line 652 "script.y"
                                 {
 				 if ((yyvsp[0].number) < 0 || AllocColorset((yyvsp[0].number)))
 	{
 		(*tabobj)[nbobj].colorset = (yyvsp[0].number);
 	}
 				}
-#line 2442 "script.c"
+#line 2461 "script.c"
     break;
 
   case 43: /* init: init FONT  */
-#line 639 "script.y"
+#line 658 "script.y"
                                 {
+				 free((*tabobj)[nbobj].font);
 				 (*tabobj)[nbobj].font=(yyvsp[0].str);
 				}
-#line 2450 "script.c"
+#line 2470 "script.c"
     break;
 
   case 46: /* flags: flags HIDDEN  */
-#line 645 "script.y"
+#line 665 "script.y"
                                 {
 				 (*tabobj)[nbobj].flags[0]=True;
 				}
-#line 2458 "script.c"
+#line 2478 "script.c"
     break;
 
   case 47: /* flags: flags NORELIEFSTRING  */
-#line 648 "script.y"
+#line 668 "script.y"
                                 {
 				 (*tabobj)[nbobj].flags[1]=True;
 				}
-#line 2466 "script.c"
+#line 2486 "script.c"
     break;
 
   case 48: /* flags: flags NOFOCUS  */
-#line 651 "script.y"
+#line 671 "script.y"
                                 {
 				 (*tabobj)[nbobj].flags[2]=True;
 				}
-#line 2474 "script.c"
+#line 2494 "script.c"
     break;
 
   case 49: /* flags: flags CENTER  */
-#line 654 "script.y"
+#line 674 "script.y"
                                 {
 				 (*tabobj)[nbobj].flags[3]=TEXT_POS_CENTER;
 				}
-#line 2482 "script.c"
+#line 2502 "script.c"
     break;
 
   case 50: /* flags: flags LEFT  */
-#line 657 "script.y"
+#line 677 "script.y"
                                 {
 				 (*tabobj)[nbobj].flags[3]=TEXT_POS_LEFT;
 				}
-#line 2490 "script.c"
+#line 2510 "script.c"
     break;
 
   case 51: /* flags: flags RIGHT  */
-#line 660 "script.y"
+#line 680 "script.y"
                                 {
 				 (*tabobj)[nbobj].flags[3]=TEXT_POS_RIGHT;
 				}
-#line 2498 "script.c"
+#line 2518 "script.c"
     break;
 
   case 52: /* verify: %empty  */
-#line 666 "script.y"
+#line 686 "script.y"
                                  {
 				  if (!HasPosition)
 				   { yyerror("No position for object");
@@ -2509,485 +2529,485 @@ yyreduce:
 				  HasPosition=0;
 				  HasType=0;
 				 }
-#line 2513 "script.c"
+#line 2533 "script.c"
     break;
 
   case 53: /* mainloop: END  */
-#line 677 "script.y"
+#line 697 "script.y"
                                 { InitObjTabCase(0); }
-#line 2519 "script.c"
+#line 2539 "script.c"
     break;
 
   case 55: /* addtabcase: %empty  */
-#line 681 "script.y"
+#line 701 "script.y"
                                 { InitObjTabCase(1); }
-#line 2525 "script.c"
+#line 2545 "script.c"
     break;
 
   case 59: /* clic: SINGLECLIC  */
-#line 688 "script.y"
+#line 708 "script.y"
                         { InitCase(-1); }
-#line 2531 "script.c"
+#line 2551 "script.c"
     break;
 
   case 60: /* clic: DOUBLECLIC  */
-#line 689 "script.y"
+#line 709 "script.y"
                         { InitCase(-2); }
-#line 2537 "script.c"
+#line 2557 "script.c"
     break;
 
   case 61: /* number: NUMBER  */
-#line 692 "script.y"
+#line 712 "script.y"
                                 { InitCase((yyvsp[0].number)); }
-#line 2543 "script.c"
+#line 2563 "script.c"
     break;
 
   case 72: /* instr: instr CHWINDOWTITLE addlbuff gstrarg  */
-#line 709 "script.y"
+#line 729 "script.y"
                                            {AddCom(27,1);}
-#line 2549 "script.c"
+#line 2569 "script.c"
     break;
 
   case 73: /* instr: instr CHWINDOWTITLEFARG addlbuff numarg  */
-#line 710 "script.y"
+#line 730 "script.y"
                                               {AddCom(28,1);}
-#line 2555 "script.c"
+#line 2575 "script.c"
     break;
 
   case 99: /* oneinstr: CHWINDOWTITLE addlbuff gstrarg  */
-#line 739 "script.y"
+#line 759 "script.y"
                                          {AddCom(27,1);}
-#line 2561 "script.c"
+#line 2581 "script.c"
     break;
 
   case 100: /* oneinstr: CHWINDOWTITLEFARG addlbuff numarg  */
-#line 740 "script.y"
+#line 760 "script.y"
                                             {AddCom(28,1);}
-#line 2567 "script.c"
+#line 2587 "script.c"
     break;
 
   case 117: /* exec: addlbuff args  */
-#line 759 "script.y"
+#line 779 "script.y"
                                         { AddCom(1,1); }
-#line 2573 "script.c"
+#line 2593 "script.c"
     break;
 
   case 118: /* hide: addlbuff numarg  */
-#line 761 "script.y"
+#line 781 "script.y"
                                         { AddCom(2,1);}
-#line 2579 "script.c"
+#line 2599 "script.c"
     break;
 
   case 119: /* show: addlbuff numarg  */
-#line 763 "script.y"
+#line 783 "script.y"
                                         { AddCom(3,1);}
-#line 2585 "script.c"
+#line 2605 "script.c"
     break;
 
   case 120: /* chvalue: addlbuff numarg addlbuff numarg  */
-#line 765 "script.y"
+#line 785 "script.y"
                                                 { AddCom(4,2);}
-#line 2591 "script.c"
+#line 2611 "script.c"
     break;
 
   case 121: /* chvaluemax: addlbuff numarg addlbuff numarg  */
-#line 767 "script.y"
+#line 787 "script.y"
                                                 { AddCom(21,2);}
-#line 2597 "script.c"
+#line 2617 "script.c"
     break;
 
   case 122: /* chvaluemin: addlbuff numarg addlbuff numarg  */
-#line 769 "script.y"
+#line 789 "script.y"
                                                 { AddCom(22,2);}
-#line 2603 "script.c"
+#line 2623 "script.c"
     break;
 
   case 123: /* position: addlbuff numarg addlbuff numarg addlbuff numarg  */
-#line 771 "script.y"
+#line 791 "script.y"
                                                                 { AddCom(5,3);}
-#line 2609 "script.c"
+#line 2629 "script.c"
     break;
 
   case 124: /* size: addlbuff numarg addlbuff numarg addlbuff numarg  */
-#line 773 "script.y"
+#line 793 "script.y"
                                                                 { AddCom(6,3);}
-#line 2615 "script.c"
+#line 2635 "script.c"
     break;
 
   case 125: /* icon: addlbuff numarg addlbuff strarg  */
-#line 775 "script.y"
+#line 795 "script.y"
                                         { AddCom(7,2);}
-#line 2621 "script.c"
+#line 2641 "script.c"
     break;
 
   case 126: /* title: addlbuff numarg addlbuff gstrarg  */
-#line 777 "script.y"
+#line 797 "script.y"
                                         { AddCom(8,2);}
-#line 2627 "script.c"
+#line 2647 "script.c"
     break;
 
   case 127: /* font: addlbuff numarg addlbuff args  */
-#line 779 "script.y"
+#line 799 "script.y"
                                     { AddCom(9,2);}
-#line 2633 "script.c"
+#line 2653 "script.c"
     break;
 
   case 128: /* chforecolor: addlbuff numarg addlbuff gstrarg  */
-#line 781 "script.y"
+#line 801 "script.y"
                                                 { AddCom(10,2);}
-#line 2639 "script.c"
+#line 2659 "script.c"
     break;
 
   case 129: /* chbackcolor: addlbuff numarg addlbuff gstrarg  */
-#line 783 "script.y"
+#line 803 "script.y"
                                                 { AddCom(19,2);}
-#line 2645 "script.c"
+#line 2665 "script.c"
     break;
 
   case 130: /* chcolorset: addlbuff numarg addlbuff numarg  */
-#line 785 "script.y"
+#line 805 "script.y"
                                                 { AddCom(24,2);}
-#line 2651 "script.c"
+#line 2671 "script.c"
     break;
 
   case 131: /* set: addlbuff vararg GET addlbuff args  */
-#line 787 "script.y"
+#line 807 "script.y"
                                         { AddCom(11,2);}
-#line 2657 "script.c"
+#line 2677 "script.c"
     break;
 
   case 132: /* sendsign: addlbuff numarg addlbuff numarg  */
-#line 789 "script.y"
+#line 809 "script.y"
                                           { AddCom(12,2);}
-#line 2663 "script.c"
+#line 2683 "script.c"
     break;
 
   case 133: /* quit: %empty  */
-#line 791 "script.y"
+#line 811 "script.y"
                                         { AddCom(13,0);}
-#line 2669 "script.c"
+#line 2689 "script.c"
     break;
 
   case 134: /* warp: addlbuff numarg  */
-#line 793 "script.y"
+#line 813 "script.y"
                                         { AddCom(17,1);}
-#line 2675 "script.c"
+#line 2695 "script.c"
     break;
 
   case 135: /* sendtoscript: addlbuff numarg addlbuff args  */
-#line 795 "script.y"
+#line 815 "script.y"
                                                 { AddCom(23,2);}
-#line 2681 "script.c"
+#line 2701 "script.c"
     break;
 
   case 136: /* writetofile: addlbuff strarg addlbuff args  */
-#line 797 "script.y"
+#line 817 "script.y"
                                                 { AddCom(18,2);}
-#line 2687 "script.c"
+#line 2707 "script.c"
     break;
 
   case 137: /* key: addlbuff strarg addlbuff strarg addlbuff numarg addlbuff numarg addlbuff args  */
-#line 799 "script.y"
+#line 819 "script.y"
                                                                                    { AddCom(25,5);}
-#line 2693 "script.c"
+#line 2713 "script.c"
     break;
 
   case 138: /* localetitle: addlbuff numarg addlbuff gstrarg  */
-#line 801 "script.y"
+#line 821 "script.y"
                                                 { AddCom(26,2);}
-#line 2699 "script.c"
+#line 2719 "script.c"
     break;
 
   case 142: /* headif: addlbuff arg addlbuff compare addlbuff arg THEN  */
-#line 811 "script.y"
+#line 831 "script.y"
                                                                 { AddComBloc(14,3,2); }
-#line 2705 "script.c"
+#line 2725 "script.c"
     break;
 
   case 145: /* creerbloc: %empty  */
-#line 816 "script.y"
+#line 836 "script.y"
                                 { EmpilerBloc(); }
-#line 2711 "script.c"
+#line 2731 "script.c"
     break;
 
   case 146: /* bloc1: BEG instr END  */
-#line 818 "script.y"
+#line 838 "script.y"
                                 { DepilerBloc(2); }
-#line 2717 "script.c"
+#line 2737 "script.c"
     break;
 
   case 147: /* bloc1: oneinstr  */
-#line 819 "script.y"
+#line 839 "script.y"
                                 { DepilerBloc(2); }
-#line 2723 "script.c"
+#line 2743 "script.c"
     break;
 
   case 148: /* bloc2: BEG instr END  */
-#line 822 "script.y"
+#line 842 "script.y"
                                 { DepilerBloc(1); }
-#line 2729 "script.c"
+#line 2749 "script.c"
     break;
 
   case 149: /* bloc2: oneinstr  */
-#line 823 "script.y"
+#line 843 "script.y"
                                 { DepilerBloc(1); }
-#line 2735 "script.c"
+#line 2755 "script.c"
     break;
 
   case 150: /* headloop: addlbuff vararg GET addlbuff arg TO addlbuff arg DO  */
-#line 827 "script.y"
+#line 847 "script.y"
                                                                 { AddComBloc(15,3,1); }
-#line 2741 "script.c"
+#line 2761 "script.c"
     break;
 
   case 151: /* headwhile: addlbuff arg addlbuff compare addlbuff arg DO  */
-#line 831 "script.y"
+#line 851 "script.y"
                                                                 { AddComBloc(16,3,1); }
-#line 2747 "script.c"
+#line 2767 "script.c"
     break;
 
   case 152: /* var: VAR  */
-#line 836 "script.y"
+#line 856 "script.y"
                                 { AddVar((yyvsp[0].str)); free((yyvsp[0].str)); }
-#line 2753 "script.c"
+#line 2773 "script.c"
     break;
 
   case 153: /* str: STR  */
-#line 838 "script.y"
+#line 858 "script.y"
                                 { AddConstStr((yyvsp[0].str)); free((yyvsp[0].str)); }
-#line 2759 "script.c"
+#line 2779 "script.c"
     break;
 
   case 154: /* gstr: GSTR  */
-#line 840 "script.y"
+#line 860 "script.y"
                                 { AddConstStr((yyvsp[0].str)); free((yyvsp[0].str)); }
-#line 2765 "script.c"
+#line 2785 "script.c"
     break;
 
   case 155: /* num: NUMBER  */
-#line 842 "script.y"
+#line 862 "script.y"
                                 { AddConstNum((yyvsp[0].number)); }
-#line 2771 "script.c"
+#line 2791 "script.c"
     break;
 
   case 156: /* singleclic2: SINGLECLIC  */
-#line 844 "script.y"
+#line 864 "script.y"
                                 { AddConstNum(-1); }
-#line 2777 "script.c"
+#line 2797 "script.c"
     break;
 
   case 157: /* doubleclic2: DOUBLECLIC  */
-#line 846 "script.y"
+#line 866 "script.y"
                                 { AddConstNum(-2); }
-#line 2783 "script.c"
+#line 2803 "script.c"
     break;
 
   case 158: /* addlbuff: %empty  */
-#line 848 "script.y"
+#line 868 "script.y"
                                 { AddLevelBufArg(); }
-#line 2789 "script.c"
+#line 2809 "script.c"
     break;
 
   case 159: /* function: GETVALUE numarg  */
-#line 850 "script.y"
+#line 870 "script.y"
                                 { AddFunct(1,1); }
-#line 2795 "script.c"
+#line 2815 "script.c"
     break;
 
   case 160: /* function: GETTITLE numarg  */
-#line 851 "script.y"
+#line 871 "script.y"
                                 { AddFunct(2,1); }
-#line 2801 "script.c"
+#line 2821 "script.c"
     break;
 
   case 161: /* function: GETOUTPUT gstrarg numarg numarg  */
-#line 852 "script.y"
+#line 872 "script.y"
                                           { AddFunct(3,1); }
-#line 2807 "script.c"
+#line 2827 "script.c"
     break;
 
   case 162: /* function: NUMTOHEX numarg numarg  */
-#line 853 "script.y"
+#line 873 "script.y"
                                  { AddFunct(4,1); }
-#line 2813 "script.c"
+#line 2833 "script.c"
     break;
 
   case 163: /* function: HEXTONUM gstrarg  */
-#line 854 "script.y"
+#line 874 "script.y"
                                 { AddFunct(5,1); }
-#line 2819 "script.c"
+#line 2839 "script.c"
     break;
 
   case 164: /* function: ADD numarg numarg  */
-#line 855 "script.y"
+#line 875 "script.y"
                             { AddFunct(6,1); }
-#line 2825 "script.c"
+#line 2845 "script.c"
     break;
 
   case 165: /* function: MULT numarg numarg  */
-#line 856 "script.y"
+#line 876 "script.y"
                              { AddFunct(7,1); }
-#line 2831 "script.c"
+#line 2851 "script.c"
     break;
 
   case 166: /* function: DIV numarg numarg  */
-#line 857 "script.y"
+#line 877 "script.y"
                             { AddFunct(8,1); }
-#line 2837 "script.c"
+#line 2857 "script.c"
     break;
 
   case 167: /* function: STRCOPY gstrarg numarg numarg  */
-#line 858 "script.y"
+#line 878 "script.y"
                                         { AddFunct(9,1); }
-#line 2843 "script.c"
+#line 2863 "script.c"
     break;
 
   case 168: /* function: LAUNCHSCRIPT gstrarg  */
-#line 859 "script.y"
+#line 879 "script.y"
                                { AddFunct(10,1); }
-#line 2849 "script.c"
+#line 2869 "script.c"
     break;
 
   case 169: /* function: GETSCRIPTFATHER  */
-#line 860 "script.y"
+#line 880 "script.y"
                           { AddFunct(11,1); }
-#line 2855 "script.c"
+#line 2875 "script.c"
     break;
 
   case 170: /* function: RECEIVFROMSCRIPT numarg  */
-#line 861 "script.y"
+#line 881 "script.y"
                                   { AddFunct(12,1); }
-#line 2861 "script.c"
+#line 2881 "script.c"
     break;
 
   case 171: /* function: REMAINDEROFDIV numarg numarg  */
-#line 862 "script.y"
+#line 882 "script.y"
                                        { AddFunct(13,1); }
-#line 2867 "script.c"
+#line 2887 "script.c"
     break;
 
   case 172: /* function: GETTIME  */
-#line 863 "script.y"
+#line 883 "script.y"
                   { AddFunct(14,1); }
-#line 2873 "script.c"
+#line 2893 "script.c"
     break;
 
   case 173: /* function: GETSCRIPTARG numarg  */
-#line 864 "script.y"
+#line 884 "script.y"
                               { AddFunct(15,1); }
-#line 2879 "script.c"
+#line 2899 "script.c"
     break;
 
   case 174: /* function: GETFORE numarg  */
-#line 865 "script.y"
+#line 885 "script.y"
                          { AddFunct(16,1); }
-#line 2885 "script.c"
+#line 2905 "script.c"
     break;
 
   case 175: /* function: GETBACK numarg  */
-#line 866 "script.y"
+#line 886 "script.y"
                          { AddFunct(17,1); }
-#line 2891 "script.c"
+#line 2911 "script.c"
     break;
 
   case 176: /* function: GETHILIGHT numarg  */
-#line 867 "script.y"
+#line 887 "script.y"
                             { AddFunct(18,1); }
-#line 2897 "script.c"
+#line 2917 "script.c"
     break;
 
   case 177: /* function: GETSHADOW numarg  */
-#line 868 "script.y"
+#line 888 "script.y"
                            { AddFunct(19,1); }
-#line 2903 "script.c"
+#line 2923 "script.c"
     break;
 
   case 178: /* function: GETMINVALUE numarg  */
-#line 869 "script.y"
+#line 889 "script.y"
                              { AddFunct(20,1); }
-#line 2909 "script.c"
+#line 2929 "script.c"
     break;
 
   case 179: /* function: GETMAXVALUE numarg  */
-#line 870 "script.y"
+#line 890 "script.y"
                              { AddFunct(21,1); }
-#line 2915 "script.c"
+#line 2935 "script.c"
     break;
 
   case 180: /* function: GETPID  */
-#line 871 "script.y"
+#line 891 "script.y"
                  { AddFunct(22,1); }
-#line 2921 "script.c"
+#line 2941 "script.c"
     break;
 
   case 181: /* function: SENDMSGANDGET gstrarg gstrarg numarg  */
-#line 872 "script.y"
+#line 892 "script.y"
                                                { AddFunct(23,1); }
-#line 2927 "script.c"
+#line 2947 "script.c"
     break;
 
   case 182: /* function: PARSE gstrarg numarg  */
-#line 873 "script.y"
+#line 893 "script.y"
                                { AddFunct(24,1); }
-#line 2933 "script.c"
+#line 2953 "script.c"
     break;
 
   case 183: /* function: LASTSTRING  */
-#line 874 "script.y"
+#line 894 "script.y"
                      { AddFunct(25,1); }
-#line 2939 "script.c"
+#line 2959 "script.c"
     break;
 
   case 184: /* function: GETTEXT gstrarg  */
-#line 875 "script.y"
+#line 895 "script.y"
                           { AddFunct(26,1); }
-#line 2945 "script.c"
+#line 2965 "script.c"
     break;
 
   case 185: /* args: %empty  */
-#line 880 "script.y"
+#line 900 "script.y"
                                 { }
-#line 2951 "script.c"
+#line 2971 "script.c"
     break;
 
   case 212: /* compare: INF  */
-#line 925 "script.y"
+#line 945 "script.y"
                                  { l=1-250000; AddBufArg(&l,1); }
-#line 2957 "script.c"
+#line 2977 "script.c"
     break;
 
   case 213: /* compare: INFEQ  */
-#line 926 "script.y"
+#line 946 "script.y"
                                  { l=2-250000; AddBufArg(&l,1); }
-#line 2963 "script.c"
+#line 2983 "script.c"
     break;
 
   case 214: /* compare: EQUAL  */
-#line 927 "script.y"
+#line 947 "script.y"
                                  { l=3-250000; AddBufArg(&l,1); }
-#line 2969 "script.c"
+#line 2989 "script.c"
     break;
 
   case 215: /* compare: SUPEQ  */
-#line 928 "script.y"
+#line 948 "script.y"
                                  { l=4-250000; AddBufArg(&l,1); }
-#line 2975 "script.c"
+#line 2995 "script.c"
     break;
 
   case 216: /* compare: SUP  */
-#line 929 "script.y"
+#line 949 "script.y"
                                  { l=5-250000; AddBufArg(&l,1); }
-#line 2981 "script.c"
+#line 3001 "script.c"
     break;
 
   case 217: /* compare: DIFF  */
-#line 930 "script.y"
+#line 950 "script.y"
                                  { l=6-250000; AddBufArg(&l,1); }
-#line 2987 "script.c"
+#line 3007 "script.c"
     break;
 
 
-#line 2991 "script.c"
+#line 3011 "script.c"
 
       default: break;
     }
@@ -3180,5 +3200,5 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 933 "script.y"
+#line 953 "script.y"
 

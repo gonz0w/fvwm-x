@@ -43,7 +43,7 @@ The deadline bounds client-side service/waits; it cannot preempt one blocking X 
 
 Non-goals: whole-Script memory/font budgets, TEXT-01, core event-loop changes,
 new features, release qualification or reopening accepted M2/M4 evidence. Broader
-#4/#34 remain open. Verification: reproduce the silent-peer hang with a real
+#4/#34 remain open. Verification: attempt a silent-peer hang control with a real
 module under nested X; check delivery/refusal/order, queue cleanup and deadline
 policy; one reused Linux incremental profile with affected tests and scoped
 sanitizers where supported. No automatic multi-OS/install matrix for this portable

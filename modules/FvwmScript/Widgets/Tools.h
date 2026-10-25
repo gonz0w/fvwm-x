@@ -45,6 +45,9 @@ bool script_widget_next_event(struct XObj *object, XEvent *event);
 bool script_widget_wait_release(struct XObj *object, int ticks);
 
 /* helper functions */
+/* Call widget destructors for all completed initializers before releasing any
+ * slots.  The bool is the completed-InitObj boundary, not font preparation. */
+void script_widget_release(struct XObj **slot, bool initialized);
 /* Measure without mutating a live widget; font ownership stays with caller. */
 bool script_widget_layout(struct XObj *xobj, FlocaleFont *font,
 	script_layout_geometry *geometry);

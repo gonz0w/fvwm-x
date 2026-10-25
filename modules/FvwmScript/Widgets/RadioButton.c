@@ -56,6 +56,8 @@ void InitRadioButton(struct XObj *xobj)
 				CopyFromParent,InputOutput,CopyFromParent,
 				mask,&Attr);
 
+	if (mask & CWCursor)
+		XFreeCursor(dpy, Attr.cursor);
 	xobj->gc=fvwmlib_XCreateGC(dpy,xobj->win,0,NULL);
 	XSetForeground(dpy,xobj->gc,xobj->TabColor[fore]);
 
@@ -70,13 +72,6 @@ void InitRadioButton(struct XObj *xobj)
 			GetColorset(xobj->colorset), Pdepth, xobj->gc, True);
 
 	XSelectInput(dpy, xobj->win, ExposureMask);
-}
-
-void DestroyRadioButton(struct XObj *xobj)
-{
-	FlocaleUnloadFont(dpy,xobj->Ffont);
-	XFreeGC(dpy,xobj->gc);
-	XDestroyWindow(dpy,xobj->win);
 }
 
 void DrawRadioButton(struct XObj *xobj, XEvent *evp)

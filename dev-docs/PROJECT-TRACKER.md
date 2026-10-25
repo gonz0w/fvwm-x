@@ -94,11 +94,53 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Script common widget-resource ownership — 2026-10-25
+
+Owner: Cam; implementation lead, `codex/m5-widget-ownership`.
+Status: focused normal/scoped sanitizer, ownership and actual-X checks pass;
+ready for review after merging all prior open PRs: PR242 widget icons, PR228
+modernization order and PR237 hardening/library scopes. Canonical heads are
+`5094080af751f99772d720ea5581018a7ecccd3c`,
+`389a02203f1c6a6fc3764f77d22d566a42ba5066` and
+`d5187be3b8abe67c2dd62e7d818c6f45884b66fc` respectively; signatures/DCO
+and exact reviewed trees verified, completed branches retired. PR228/237
+integration keeps current maintenance evidence, removes obsolete pickup text
+and completes six JSON issue/five parent mirrors. Their changes are documentation
+only; local checks and separate final review pass without a native test repeat.
+
+Finite SCRIPT-01 #4 / CLEAN-01 #34 family: common teardown for all fifteen
+widget types, retained fonts including five non-font startup types, fourteen
+ordinary window/GC destructors, eight owned strings/record, named-color versus
+borrowed colorset references, prior icon owner and six temporary cursor refs.
+Keep Swallow's special client/placeholder behavior and borrowed base GC. Use the
+existing completed-initializer boundary for partial startup; finish callbacks
+before freeing records. Before repair, reproduce actual old destructor/font
+and cursor-reference counts. Document parser-to-widget string transfer.
+No whole interpreter/AST/base-resource teardown, font/Form cache audit, new
+resource budget, renderer, dependency or event-loop change.
+
+Acceptance: actual-object controls cover all fifteen types, exact release
+counts, empty/repeated cleanup, partial allocated/prepared state, borrowed GC/
+colorsets, shared/replaced/rejected fonts and Swallow variants. Exercise the
+actual six cursor initializers. One reused Linux normal/scoped sanitizer group
+plus focused real-X all-widget/font/colorset/startup-refusal and retained icon/
+geometry/modal checks; capture representative existing UI. Keep full OS/install/
+theme/release qualification separate; no automatic matrix. Broader #4/#34 stay
+open. Independent source/evidence review precedes signed author-DCO delivery.
+Evidence: old-object control reproduces five missed font unloads and six attached
+cursor references without caller release. The all-fifteen owner control, four
+units per normal/scoped profile, new all-widget X fixture and retained icon/
+geometry/modal fixtures pass on the first combined run (24.47 command-seconds).
+One native screenshot is captured and inspected; no extra OS/install matrix.
+[Report](verification/VERIFICATION-2026-10-25-M5-WIDGET-OWNERSHIP.md).
+Periodic reference PR238 is 4/5 after PR242; this merge reaches 5/5 and the next
+regular comparison follows. No performance improvement is assumed.
+
 ## M5 Script widget-icon ownership checkpoint — 2026-10-25
 
 Owner: Cam; implementation lead, `codex/m5-script-resources`.
-Status: focused normal/scoped sanitizer, owner and real-X checks pass;
-ready for review after authorized PR241 merge as
+Status: merged in PR242 as `5094080af751f99772d720ea5581018a7ecccd3c`;
+canonical signature/DCO/tree verified and branch retired. Selected after PR241 as
 `109facd8546439e6c8ba1cd85cc5c330996f48d0`; signature/DCO and exact
 reviewed tree `f869fa49a33e87c48f22fe02f8e7a10691e8e8da` verified.
 Completed branch retired and Project/labels Done. #35/#36 remain completed.

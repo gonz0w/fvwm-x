@@ -53,12 +53,6 @@ void InitRectangle(struct XObj *xobj)
 				mask,&Attr);
 }
 
-void DestroyRectangle(struct XObj *xobj)
-{
-	XFreeGC(dpy,xobj->gc);
-	XDestroyWindow(dpy,xobj->win);
-}
-
 void DrawRectangle(struct XObj *xobj, XEvent *evp)
 {
 	XSegment segm[4];

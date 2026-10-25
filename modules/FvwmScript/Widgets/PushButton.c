@@ -78,13 +78,6 @@ void InitPushButton(struct XObj *xobj)
 	XSelectInput(dpy, xobj->win, ExposureMask);
 }
 
-void DestroyPushButton(struct XObj *xobj)
-{
-	FlocaleUnloadFont(dpy, xobj->Ffont);
-	XFreeGC(dpy, xobj->gc);
-	XDestroyWindow(dpy, xobj->win);
-}
-
 
 void DrawPushButton(struct XObj *xobj, XEvent *evp)
 {

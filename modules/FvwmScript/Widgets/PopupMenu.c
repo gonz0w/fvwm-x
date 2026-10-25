@@ -80,13 +80,6 @@ void InitPopupMenu(struct XObj *xobj)
   XSelectInput(dpy, xobj->win, ExposureMask);
 }
 
-void DestroyPopupMenu(struct XObj *xobj)
-{
-  FlocaleUnloadFont(dpy, xobj->Ffont);
-  XFreeGC(dpy, xobj->gc);
-  XDestroyWindow(dpy, xobj->win);
-}
-
 void DrawPopupMenu(struct XObj *xobj, XEvent *evp)
 {
   XSegment segm[4];

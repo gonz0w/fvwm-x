@@ -73,12 +73,6 @@ void InitVDipstick(struct XObj *xobj)
 	XSelectInput(dpy, xobj->win, ExposureMask);
 }
 
-void DestroyVDipstick(struct XObj *xobj)
-{
-	XFreeGC(dpy,xobj->gc);
-	XDestroyWindow(dpy,xobj->win);
-}
-
 void DrawVDipstick(struct XObj *xobj, XEvent *evp)
 {
 	int  i;

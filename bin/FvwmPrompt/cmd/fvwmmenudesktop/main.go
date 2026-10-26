@@ -35,6 +35,7 @@ type options struct {
 	desktop, menuType, list, setMenus, regenerate                  string
 	all, dynamic, menuError, verbose, help, showVersion, configure bool
 	timeout                                                        time.Duration
+	iconScaleQuarters                                              int
 	formAction                                                     string
 	fields                                                         fieldFlags
 	resultToken, formResult                                        string
@@ -55,7 +56,7 @@ func (v toggleFlag) Set(text string) error {
 }
 
 func parseOptions(args []string, defaults xdgmenu.ProviderDefaults) (options, error) {
-	o := options{ProviderDefaults: defaults, regenerate: "PipeRead `fvwm-menu-desktop`"}
+	o := options{ProviderDefaults: defaults, regenerate: "PipeRead `fvwm-menu-desktop`", iconScaleQuarters: 4}
 	set := flag.NewFlagSet("fvwm-menu-desktop", flag.ContinueOnError)
 	set.SetOutput(io.Discard)
 	for _, name := range []string{"h", "help"} {
@@ -83,6 +84,8 @@ func parseOptions(args []string, defaults xdgmenu.ProviderDefaults) (options, er
 	set.StringVar(&o.desktop, "desktop", "", "desktop filter")
 	set.StringVar(&o.menuType, "menu-type", "", "menu type filter")
 	set.StringVar(&o.Theme, "theme", o.Theme, "icon theme")
+	iconScale := "1"
+	set.StringVar(&iconScale, "icon-scale", iconScale, "icon scale (quarter steps from 1 to 4)")
 	set.StringVar(&o.IconDir, "mini-icon-dir", o.IconDir, "icon output directory")
 	set.StringVar(&o.AppIcon, "app-icon", o.AppIcon, "application fallback icon")
 	set.StringVar(&o.DirIcon, "dir-icon", o.DirIcon, "directory fallback icon")
@@ -113,6 +116,10 @@ func parseOptions(args []string, defaults xdgmenu.ProviderDefaults) (options, er
 		set.StringVar(&ignored, name, "", "obsolete option")
 	}
 	if err := set.Parse(legacyShortOptions(args)); err != nil {
+		return o, err
+	}
+	o.iconScaleQuarters, err = xdgmenu.ParseIconScale(iconScale)
+	if err != nil {
 		return o, err
 	}
 	if len(set.Args()) != 0 {
@@ -184,7 +191,7 @@ func optionTakesValue(option string) bool {
 		return false
 	}
 	switch strings.TrimLeft(option, "-") {
-	case "s", "size", "t", "title", "install-prefix", "desktop", "menu-type", "theme", "mini-icon-dir", "app-icon", "dir-icon", "insert-in-menu", "get-menus", "set-menus", "include-items", "regen-cmd", "term-cmd", "timeout", "form-action", "field", "result-token", "form-result",
+	case "s", "size", "t", "title", "install-prefix", "desktop", "menu-type", "theme", "icon-scale", "mini-icon-dir", "app-icon", "dir-icon", "insert-in-menu", "get-menus", "set-menus", "include-items", "regen-cmd", "term-cmd", "timeout", "form-action", "field", "result-token", "form-result",
 		"check-icons", "check-mini-icon", "destroy-type", "dir", "icon-app", "icon-folder", "icon-style", "icon-title", "icon-toptitle", "icons-path", "lang", "menu-style", "name", "png-icons-path", "submenu-name-prefix", "time-limit", "tran-icons-path", "tran-mini-icons-path", "type", "uniconv-exec", "uniconv", "xterm":
 		return true
 	}

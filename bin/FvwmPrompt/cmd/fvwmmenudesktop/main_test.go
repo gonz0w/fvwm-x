@@ -159,3 +159,25 @@ func TestApplicationActionEncoding(t *testing.T) {
 		t.Fatal("accepted empty action")
 	}
 }
+
+func TestDesktopIconScaleOption(t *testing.T) {
+	defaults, _ := xdgmenu.DefaultsFromPreferences(nil)
+	for _, tc := range []struct {
+		text     string
+		quarters int
+	}{{"1", 4}, {"1.25", 5}, {"2.5", 10}, {"4.00", 16}} {
+		o, err := parseOptions([]string{"--icon-scale", tc.text}, defaults)
+		if err != nil || o.iconScaleQuarters != tc.quarters {
+			t.Fatal(tc, o.iconScaleQuarters, err)
+		}
+	}
+	for _, text := range []string{"", "0", "4.25", "1.1", "1e0", "-1", "NaN"} {
+		if _, err := parseOptions([]string{"--icon-scale", text}, defaults); err == nil {
+			t.Fatal("accepted", text)
+		}
+	}
+	o, err := parseOptions(nil, defaults)
+	if err != nil || o.iconScaleQuarters != 4 {
+		t.Fatal(o.iconScaleQuarters, err)
+	}
+}

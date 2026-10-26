@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Named menu icons](VERIFICATION-2026-10-26-NAMED-MENU-ICONS.md): five Go race packages, two native menu consumers, three theme configs and exact pixel scale/refresh/fallback; static costs and remaining ICON-01 acceptance are explicit.
+
 - [R1 resource references](VERIFICATION-2026-10-26-R1-REFERENCE-PROFILES.md): three desktop and three instrumented WM runs, exact artifact/cost receipts and proposed envelopes; incomplete session metrics are explicit gaps, not passing budgets.
 
 - [Modernization planning and issue reconciliation](MODERNIZATION-PLANNING-2026-10-25.md): twenty scoped issues, current cleanup/optimization priority, existing-owner updates and acyclic native dependencies; planning and documentation only.

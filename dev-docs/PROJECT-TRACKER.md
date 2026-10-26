@@ -34,7 +34,9 @@ older scheduling wording is superseded by this section and Execution order.
 ## R1 reference profiles and budget receipts — 2026-10-26
 
 Owner: Cam; `codex/r1-foundation-profiles`; #209/#29/#226. Status: reference
-subset implemented and separately reviewed, ready for PR review; broader owners
+subset merged in PR262 as `43b6343c81c282234d11890600cf0ea19253e44c`;
+reviewed tree `e844f6dabbcb7a2e879e2d2ec1ec747228c647f4`, canonical
+signature and author DCO verified; branch retired and Project Done. Broader owners
 remain In progress. [Profiles and handoff](decisions/R1-REFERENCE-PROFILES-2026-10-26.md),
 [source-bound evidence](verification/VERIFICATION-2026-10-26-R1-REFERENCE-PROFILES.md).
 Three related outcomes: freeze the minimal instrumented WM, shipped desktop,
@@ -71,6 +73,53 @@ process/geometry/redraw/profile/physical rows retain #29/#226/#5 ownership.
 No #209/#29/#226 closure or full budget acceptance is claimed. Host archive
 verification covers 157 files; about 99 MB of this batch's guest duplicates is
 retired, caches preserved and the owned lab restored stopped.
+
+## R1 named icon requests and menu consumers — 2026-10-26
+
+Owner: Cam; `codex/r1-named-icons`; ICON-01 #215. Status: four-story
+checkpoint implemented, focused checks and separate final review passed;
+ready for PR review.
+[Contract and boundaries](decisions/NAMED-MENU-ICONS-2026-10-26.md),
+[verification and costs](verification/VERIFICATION-2026-10-26-NAMED-MENU-ICONS.md).
+Four related stories: typed theme/name/nominal-size/quarter-scale/state/scoped
+override requests over the accepted Go resolver; shared bounded native-menu
+presentation with format gates/content identities; application-menu adoption;
+opt-in directory-menu adoption with finite isolated icon acquisition. Preserve
+legacy filename/default menu behavior and labels/actions when icons are absent.
+Use explicit request-scoped state overrides with normal-image fallback, not an
+invented XDG state-suffix convention. Replace Source/finder/cache together for a
+fresh acquisition generation; no core-thread filesystem scan or eager theme load.
+
+Dependencies: accepted #56 resolver, #183 image subset and merged PR262 reference
+definitions supply this checkpoint. #54 shaping/IME and a new Form picture
+protocol are not needed for existing menu text/picture rendering. No new default
+resident, library, artwork/theme package, decoder or global image-cache engine.
+No browser picture protocol, thumbnailing, personal config migration or R2/R3
+audit is selected. Lucide/Papirus evaluations remain unselected; #215 stays open
+for its remaining finite asset/profile acceptance.
+
+Acceptance: focused Go policy/consumer tests including quarter scales, competing
+scaled directories, state/override isolation, unavailable formats, cycle/hicolor
+fallback, generation refresh and bounds; one reused Linux build and actual-X
+application/directory consumer checks; three representative theme/config captures
+including enlarged text, with pixel inspection. Record matched binary-size and
+dependency costs; no automatic full support matrix or periodic WM comparison.
+Separate final source/evidence review. Existing whole-session metric gaps remain
+with #29/#226/#5; all parked Backer/pathname work remains excluded.
+
+Five affected Go packages pass native Linux race tests and native macOS tests.
+Actual-X application/directory regressions and pixel-checked scale, refresh and
+fallback pass. Slate/Dune palette configs and an enlarged 18pt classic config
+have inspected captures. Fixture-only modal-commit/inventory failures are
+preserved and corrected without rerunning unaffected passes. Manuals render
+with Asciidoctor and mandoc. Directory binary cost is +2,235,073 bytes; application
+menu +5,026 bytes, no new external dependency/resident. Go-only RSS is not
+established by the small launch-child observation. #215 remains open for asset
+evaluation/choice, wider profiles and old disk-generation retirement. PR253's
+periodic WM counter remains 3/5, becoming 4/5 on this implementation's merge.
+All 159 archived file identities verify; about 31 MB of this batch's guest
+duplicates and the failed fixture runtime are retired. The owned lab is restored
+stopped. Other owners' evidence, source/build caches and stages are preserved.
 
 ## Library evaluation issue scope — 2026-10-25
 

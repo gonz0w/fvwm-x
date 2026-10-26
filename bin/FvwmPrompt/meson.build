@@ -132,7 +132,10 @@ fvwm_menu_directory = custom_target(
         'env', 'GOCACHE=' + fvwmprompt_go_cache,
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
-        '-ldflags', '-X main.version=' + meson.project_version(),
+        '-ldflags', '-X main.version=' + meson.project_version()
+            + ' -X main.pngEnabled=' + (libpng.found() ? 'true' : 'false')
+            + ' -X main.svgEnabled=' + (librsvg.found() ? 'true' : 'false')
+            + ' -X main.xpmEnabled=' + (xpm.found() ? 'true' : 'false'),
         '-o', meson.current_build_dir() / 'fvwm-menu-directory',
         './cmd/fvwmmenudirectory',
     ],

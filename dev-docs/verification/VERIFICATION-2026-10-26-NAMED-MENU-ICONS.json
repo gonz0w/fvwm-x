@@ -1,0 +1,1043 @@
+{
+  "schema_version": 1,
+  "owner": 215,
+  "status": "four-story named-request/presentation/two-menu-consumer checkpoint; broader ICON-01 remains open",
+  "base": {
+    "sha": "43b6343c81c282234d11890600cf0ea19253e44c",
+    "tree": "e844f6dabbcb7a2e879e2d2ec1ec747228c647f4",
+    "signature_DCO_verified": true
+  },
+  "source_inputs": {
+    "bin/FvwmPrompt/cmd/fvwmmenudesktop/icons.go": "78a271880b659f4ac6b6e87f1653a039392d3e712df011c3a82b4fa77395d9ae",
+    "bin/FvwmPrompt/cmd/fvwmmenudesktop/icons_test.go": "170082aad7fe49540a82185bfe63268d8d7406778cc2ac72e97be224e7382680",
+    "bin/FvwmPrompt/cmd/fvwmmenudesktop/main.go": "5270cbe3fff39b5a81771bb009451a68091eefbebbfc78f8ee6c45095ae08d17",
+    "bin/FvwmPrompt/cmd/fvwmmenudesktop/main_test.go": "f985f76c73547f21d5e533bf50819b763ee9df570a5dc4a0d9f2ed117a2a3888",
+    "bin/FvwmPrompt/cmd/fvwmmenudirectory/help.go": "41211b138140e81f01e9b9dc97e7bd9d34bb23d157e7d6db1822858ab5a73c29",
+    "bin/FvwmPrompt/cmd/fvwmmenudirectory/icons.go": "fe50add0de3ab76223c1ef6ac6954faa0d92fa503f4a96ead69b7c65be8732d9",
+    "bin/FvwmPrompt/cmd/fvwmmenudirectory/icons_test.go": "b529d97e1f82fe90464a4734d239486dade38039714028ef52d5b85e7f69f15f",
+    "bin/FvwmPrompt/cmd/fvwmmenudirectory/main.go": "7c18e1dec0632ee078d9203f17e39f0b7895ddc81fec0d2dca27eb78c8282398",
+    "bin/FvwmPrompt/cmd/fvwmmenudirectory/render.go": "5a99e71fc6b95bc798ab65e8b325e81bb20d302562d1b49f95f929416efa3ee9",
+    "bin/FvwmPrompt/internal/iconrender/render.go": "9812e2493123a12ce65622d6b0ebd2d32e8c436da378e5a61961efbef25cb3c1",
+    "bin/FvwmPrompt/internal/iconrender/render_test.go": "dc6f0a2bc4ac74bb8b3c3640ae7e27478231ebee27aff02f7e1f61df54d45348",
+    "bin/FvwmPrompt/internal/xdgmenu/icon.go": "bcd05989563d8312ee8b3a800a35f01c66245199b1d4c1f1e276d810741161fa",
+    "bin/FvwmPrompt/internal/xdgmenu/icon_test.go": "32ccd1ca2720b18657f2c61e1037e3213f277c9afbf7cf79bf181eeab37c6dc6",
+    "bin/FvwmPrompt/internal/xdgsource/icons.go": "9386b3f4a62df6d8492542f803f17899502bc690188ebe34730c8bdd1048837e",
+    "bin/FvwmPrompt/internal/xdgsource/icons_test.go": "699ce222c70bb2741a8205066ec1f61702afe3a0cca5d5ac4ab038163506a9d2",
+    "bin/FvwmPrompt/meson.build": "6702065d9570cadbbd3d43e0970828e75b4174d76c45798554bcdc2a21840316",
+    "tests/live_x/named_menu_icons_live.py": "ed7c77808fbd1f676009693111bc7cf7a7ecf96edb30731109a9411fe71603bb",
+    "tests/meson.build": "26d0924caa2243a8c7a852642d9ffde480dc1b2146ee7d9eb8d103ac013d7d56",
+    "tests/test_profile_report.py": "ffce6a24c802cc67a943493a6fd3c864b94a37abc098b6caa0adb448405aa77c",
+    "tools/maintenance/profile_report.py": "f193bb0e0466d85bc690a7ee955904d382ee25e9e6bf4cddfcea22b2f52dbf25"
+  },
+  "profile": {
+    "system": "Linux ARM64 native instructions in existing AppleHV lab, same owned GCC normal cache",
+    "toolchain": {
+      "gcc --version": {
+        "status": 0,
+        "stdout": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+      },
+      "go version": {
+        "status": 0,
+        "stdout": "go version go1.27.2 linux/arm64\n"
+      },
+      "meson --version": {
+        "status": 0,
+        "stdout": "1.7.0\n"
+      }
+    },
+    "go_mod": "b7ab090a82e84684a6d95b78241823c36214f72034535d69612f46611c0dac31",
+    "go_sum": "2e7ddc025a143b92d14dee5db0a464101cb6f8763638d75c55fa8d7a7ff22a4a",
+    "effective_format_gates": {
+      "png": true,
+      "svg": true,
+      "xpm": true
+    },
+    "runtime_binaries": {
+      "fvwm3": {
+        "sha256": "52a02998a85777abdaa994c369bcac62555a790c1e62d5dbabe4ef86ef8f1952",
+        "bytes": 5387608
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "bytes": 444120
+      },
+      "modules/FvwmForm/FvwmForm": {
+        "sha256": "f45ceaf14b6650930a2fb2458cd6eae0346f385898ac1a2abe17c87dbf602361",
+        "bytes": 1619032
+      },
+      "bin/fvwm-image-svg-worker": {
+        "sha256": "e30cb8016ae8c67dafec1648feb93cb3c8a50eec5a2fe4a9bd8e069af131848d",
+        "bytes": 143112
+      },
+      "bin/fvwm-desktop-capture": {
+        "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+        "bytes": 98608
+      }
+    },
+    "C_runtime_changes": false,
+    "new_external_dependencies": [],
+    "new_resident_services": []
+  },
+  "commands": [
+    {
+      "name": "configure",
+      "argv": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "status": 0,
+      "seconds": 1.0125152170001002
+    },
+    {
+      "name": "build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "bin/FvwmPrompt/fvwm-menu-desktop",
+        "bin/FvwmPrompt/fvwm-menu-directory"
+      ],
+      "status": 0,
+      "seconds": 0.46669857099993806
+    },
+    {
+      "name": "go-race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./internal/xdgmenu",
+        "./internal/xdgsource",
+        "./internal/iconrender",
+        "./cmd/fvwmmenudesktop",
+        "./cmd/fvwmmenudirectory"
+      ],
+      "status": 0,
+      "seconds": 7.055848890999982
+    },
+    {
+      "name": "named-icons-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/named_menu_icons_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--desktop",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+        "--directory",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+        "--worker",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-image-svg-worker",
+        "--capture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-named-icons-20261026/named-icons-x"
+      ],
+      "status": 1,
+      "seconds": 5.302413816000012
+    },
+    {
+      "name": "named-icons-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/named_menu_icons_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--desktop",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+        "--directory",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+        "--worker",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-image-svg-worker",
+        "--capture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-named-icons-20261026/named-icons-x-corrected"
+      ],
+      "status": 1,
+      "seconds": 0.4239853530000346
+    },
+    {
+      "name": "named-icons-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/named_menu_icons_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--desktop",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+        "--directory",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+        "--worker",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-image-svg-worker",
+        "--capture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-named-icons-20261026/named-icons-x-final"
+      ],
+      "status": 0,
+      "seconds": 2.413928181000074
+    },
+    {
+      "name": "directory-regression",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/directory_menu_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--directory",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-named-icons-20261026/directory-regression"
+      ],
+      "status": 0,
+      "seconds": 0.5351692110000386
+    },
+    {
+      "name": "application-regression",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xdg_menu_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--form",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--provider",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-named-icons-20261026/application-regression"
+      ],
+      "status": 0,
+      "seconds": 0.3727326240000366
+    },
+    {
+      "name": "enlarged-theme",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/named_menu_icons_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--desktop",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+        "--directory",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+        "--worker",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-image-svg-worker",
+        "--capture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-named-icons-20261026/named-icons-enlarged",
+        "--themes",
+        "classic-large"
+      ],
+      "status": 0,
+      "seconds": 1.4797053369998139
+    }
+  ],
+  "costs": {
+    "baseline-fvwm-menu-desktop": {
+      "sha256": "98a948289db6f9950bc21ba40eb40332f506c9bedaea42d2b5426f815b5d556e",
+      "bytes": 5435490,
+      "size": {
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3443700\t  91539\t33806168\t37341407\t239c8df\t/tmp/fvwm-r1-named-icons-20261026/baseline-fvwm-menu-desktop\n",
+        "stderr": ""
+      },
+      "ldd": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "\tnot a dynamic executable\n"
+      }
+    },
+    "candidate-fvwm-menu-desktop": {
+      "sha256": "20e040f251006f673f9ffd2920d0c7e30422c15e81b882415c1ef62d30643328",
+      "bytes": 5440516,
+      "size": {
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3456861\t  91539\t33806168\t37354568\t239fc48\t/tmp/fvwm-r1-named-icons-20261026/candidate-fvwm-menu-desktop\n",
+        "stderr": ""
+      },
+      "ldd": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "\tnot a dynamic executable\n"
+      }
+    },
+    "baseline-fvwm-menu-directory": {
+      "sha256": "670e7321d0a8c64b67694b6a2ceefe5968fb1ab042addda65e3e6c33e7143811",
+      "bytes": 3107769,
+      "size": {
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1877853\t 115252\t 247032\t2240137\t 222e89\t/tmp/fvwm-r1-named-icons-20261026/baseline-fvwm-menu-directory\n",
+        "stderr": ""
+      },
+      "ldd": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "\tnot a dynamic executable\n"
+      }
+    },
+    "candidate-fvwm-menu-directory": {
+      "sha256": "5926171cc75e2821ed29481f079486931ec0ff0545093ab4e885f3f2c37089aa",
+      "bytes": 5342842,
+      "size": {
+        "status": 0,
+        "stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3375279\t 142019\t33806520\t37323818\t239842a\t/tmp/fvwm-r1-named-icons-20261026/candidate-fvwm-menu-directory\n",
+        "stderr": ""
+      },
+      "ldd": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "\tnot a dynamic executable\n"
+      }
+    },
+    "fvwm-menu-desktop_file_delta_bytes": 5026,
+    "fvwm-menu-directory_file_delta_bytes": 2235073
+  },
+  "legacy_directory_spot_observation": {
+    "scope": "Standalone legacy directory utility;32 files,no named icons;3 alternating pairs;Linux wait4 ru_maxrss KiB;not desktop profile or a periodic WM comparison",
+    "runs": [
+      {
+        "side": "baseline",
+        "repeat": 1,
+        "argv": [
+          "/tmp/fvwm-r1-named-icons-20261026/baseline-fvwm-menu-directory",
+          "--dir",
+          "/tmp/fvwm-r1-named-icons-20261026/cost-fixture",
+          "--title",
+          "",
+          "--command-file",
+          "Nop",
+          "--command-title",
+          "Nop"
+        ],
+        "elapsed_ms": 3.7855139999010134,
+        "peak_rss_kib": 15788,
+        "cpu_ms": 1.274,
+        "stdout_sha256": "a2c4980849ed1e621a481339848eeb388109010d3351b89e0189d3c89388da22"
+      },
+      {
+        "side": "candidate",
+        "repeat": 1,
+        "argv": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+          "--dir",
+          "/tmp/fvwm-r1-named-icons-20261026/cost-fixture",
+          "--title",
+          "",
+          "--command-file",
+          "Nop",
+          "--command-title",
+          "Nop"
+        ],
+        "elapsed_ms": 0.8712950000244746,
+        "peak_rss_kib": 15916,
+        "cpu_ms": 0.901,
+        "stdout_sha256": "a2c4980849ed1e621a481339848eeb388109010d3351b89e0189d3c89388da22"
+      },
+      {
+        "side": "baseline",
+        "repeat": 2,
+        "argv": [
+          "/tmp/fvwm-r1-named-icons-20261026/baseline-fvwm-menu-directory",
+          "--dir",
+          "/tmp/fvwm-r1-named-icons-20261026/cost-fixture",
+          "--title",
+          "",
+          "--command-file",
+          "Nop",
+          "--command-title",
+          "Nop"
+        ],
+        "elapsed_ms": 0.6722529999478866,
+        "peak_rss_kib": 15916,
+        "cpu_ms": 0.694,
+        "stdout_sha256": "a2c4980849ed1e621a481339848eeb388109010d3351b89e0189d3c89388da22"
+      },
+      {
+        "side": "candidate",
+        "repeat": 2,
+        "argv": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+          "--dir",
+          "/tmp/fvwm-r1-named-icons-20261026/cost-fixture",
+          "--title",
+          "",
+          "--command-file",
+          "Nop",
+          "--command-title",
+          "Nop"
+        ],
+        "elapsed_ms": 0.712212000053114,
+        "peak_rss_kib": 15916,
+        "cpu_ms": 0.767,
+        "stdout_sha256": "a2c4980849ed1e621a481339848eeb388109010d3351b89e0189d3c89388da22"
+      },
+      {
+        "side": "baseline",
+        "repeat": 3,
+        "argv": [
+          "/tmp/fvwm-r1-named-icons-20261026/baseline-fvwm-menu-directory",
+          "--dir",
+          "/tmp/fvwm-r1-named-icons-20261026/cost-fixture",
+          "--title",
+          "",
+          "--command-file",
+          "Nop",
+          "--command-title",
+          "Nop"
+        ],
+        "elapsed_ms": 0.6856279999283288,
+        "peak_rss_kib": 15916,
+        "cpu_ms": 0.724,
+        "stdout_sha256": "a2c4980849ed1e621a481339848eeb388109010d3351b89e0189d3c89388da22"
+      },
+      {
+        "side": "candidate",
+        "repeat": 3,
+        "argv": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+          "--dir",
+          "/tmp/fvwm-r1-named-icons-20261026/cost-fixture",
+          "--title",
+          "",
+          "--command-file",
+          "Nop",
+          "--command-title",
+          "Nop"
+        ],
+        "elapsed_ms": 0.6901700000980782,
+        "peak_rss_kib": 15916,
+        "cpu_ms": 0.718,
+        "stdout_sha256": "a2c4980849ed1e621a481339848eeb388109010d3351b89e0189d3c89388da22"
+      }
+    ],
+    "legacy_output_byte_identical": true,
+    "peak_rss_interpretation": "wait4 covers launch child including pre-exec launcher footprint;15788\u201315916KiB is not evidence of actual Go-only post-exec RSS. Treat Go-only/desktop memory comparison as unavailable.",
+    "timing_claim": "three small alternating process starts; ranges overlap; no performance improvement or WM budget inference."
+  },
+  "symbol_attribution": "  3b0340   33554432 B crypto/internal/fips140/drbg.memory\n  2ba7e0     251608 r go:func.*\n  3816a0     102296 B runtime.mheap_\n  39f340      69632 B runtime.cgroupScratch\n  379920      32128 B runtime.semtable\n   9ed20      11248 T unicode.map.init.2\n",
+  "native_archive": {
+    "sha256": "056fa72ce79bbb998dfc87ba489320b12f55806ba2a3392224e417feff879a43",
+    "bytes": 10993240,
+    "files": 159,
+    "verified_files": 159
+  },
+  "actual_x": {
+    "original_three_theme_receipt": {
+      "themes": {
+        "slate-dark": "Colorset 0 fg #e5edf0, bg #202a31\nColorset 1 fg #e5edf0, bg #63b7bb\nMenuStyle * Font \"xft:Sans:size=11\", MenuColorset 0, ActiveColorset 1\n",
+        "dune-light": "Colorset 0 fg #38302b, bg #faf6ee\nColorset 1 fg #38302b, bg #87583e\nMenuStyle * Font \"xft:Sans:size=11\", MenuColorset 0, ActiveColorset 1\n",
+        "classic-large": "Colorset 0 fg navy, bg wheat\nColorset 1 fg navy, bg ivory\nMenuStyle * Font \"9x15\", MenuColorset 0, ActiveColorset 1\n"
+      },
+      "cases": [
+        {
+          "name": "slate-dark-application",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            228,
+            167,
+            244,
+            76
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "4e281cfb840558df1aa79d096396b5eb078f3cb76a96f5326db2f5379f8545b8"
+        },
+        {
+          "name": "slate-dark-directory",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+            "--dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/listing",
+            "--title",
+            "",
+            "--command-title",
+            "Nop",
+            "--command-file",
+            "Nop",
+            "--icon-theme",
+            "fixture",
+            "--icon-size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            261,
+            153,
+            179,
+            103
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 4608,
+          "popup_attempts": 1,
+          "output_sha256": "552e73dde611714b669e3b8c797ca2cfd98b0c27ad381ad51e76e18485a6d3e1"
+        },
+        {
+          "name": "dune-light-application",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            228,
+            167,
+            244,
+            76
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "4e281cfb840558df1aa79d096396b5eb078f3cb76a96f5326db2f5379f8545b8"
+        },
+        {
+          "name": "dune-light-directory",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+            "--dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/listing",
+            "--title",
+            "",
+            "--command-title",
+            "Nop",
+            "--command-file",
+            "Nop",
+            "--icon-theme",
+            "fixture",
+            "--icon-size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            261,
+            153,
+            179,
+            103
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 4608,
+          "popup_attempts": 1,
+          "output_sha256": "552e73dde611714b669e3b8c797ca2cfd98b0c27ad381ad51e76e18485a6d3e1"
+        },
+        {
+          "name": "classic-large-application",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            218,
+            168,
+            264,
+            74
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "4e281cfb840558df1aa79d096396b5eb078f3cb76a96f5326db2f5379f8545b8"
+        },
+        {
+          "name": "classic-large-directory",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+            "--dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/listing",
+            "--title",
+            "",
+            "--command-title",
+            "Nop",
+            "--command-file",
+            "Nop",
+            "--icon-theme",
+            "fixture",
+            "--icon-size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            258,
+            153,
+            184,
+            103
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 4608,
+          "popup_attempts": 1,
+          "output_sha256": "552e73dde611714b669e3b8c797ca2cfd98b0c27ad381ad51e76e18485a6d3e1"
+        },
+        {
+          "name": "quarter-scale",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "1.25",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            227,
+            168,
+            246,
+            56
+          ],
+          "expected_color": 16711680,
+          "matching_pixels": 900,
+          "popup_attempts": 2,
+          "output_sha256": "f1f831f38bbe7fe3fbc9de43b7440b0d841472334f3632812defe594e41ef592"
+        },
+        {
+          "name": "before-refresh",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            218,
+            168,
+            264,
+            74
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "4e281cfb840558df1aa79d096396b5eb078f3cb76a96f5326db2f5379f8545b8"
+        },
+        {
+          "name": "after-refresh",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            218,
+            168,
+            264,
+            74
+          ],
+          "expected_color": 255,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "96b83d558bbf7c473b6051671fd60ea030307223e64a49ddd8ff1ec71f864a4f"
+        },
+        {
+          "name": "text-fallback",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-57xd_cyw/icons"
+          ],
+          "geometry": [
+            245,
+            168,
+            211,
+            44
+          ],
+          "expected_color": null,
+          "matching_pixels": null,
+          "popup_attempts": 1,
+          "output_sha256": "560f886fb943ba71ee523324ad74320b79299f2dd48312854e35e8a3c60aaa59"
+        }
+      ],
+      "product_actions_executed": false,
+      "observer_unexpected_x_errors": [],
+      "observer_retired_windows": 0,
+      "refreshed_content_identity": true,
+      "missing_icon_retains_label": true,
+      "source_hashes": {
+        "default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+        "tests/live_x/named_menu_icons_live.py": "425510ae9dc59b6bef7103d9fcd31401dbd9867398fffb7369c5f3a044615a40"
+      }
+    },
+    "enlarged_theme_receipt": {
+      "themes": {
+        "classic-large": "Colorset 0 fg navy, bg wheat\nColorset 1 fg navy, bg ivory\nMenuStyle * Font \"xft:DejaVu Sans Mono:size=18\", MenuColorset 0, ActiveColorset 1\n"
+      },
+      "cases": [
+        {
+          "name": "classic-large-application",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-eudfa3aq/icons"
+          ],
+          "geometry": [
+            152,
+            161,
+            396,
+            88
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "4967fa6ce2e5cede55366b7f356f2f75e40544fa32a73e1cc7926681052d4531"
+        },
+        {
+          "name": "classic-large-directory",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-directory",
+            "--dir",
+            "/tmp/fvwm-named-icons-eudfa3aq/listing",
+            "--title",
+            "",
+            "--command-title",
+            "Nop",
+            "--command-file",
+            "Nop",
+            "--icon-theme",
+            "fixture",
+            "--icon-size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-eudfa3aq/icons"
+          ],
+          "geometry": [
+            222,
+            153,
+            256,
+            103
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 4608,
+          "popup_attempts": 1,
+          "output_sha256": "46993940beafe414a724808a319a8cbde9816df27a961376e83421bb175bd28a"
+        },
+        {
+          "name": "quarter-scale",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "1.25",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-eudfa3aq/icons"
+          ],
+          "geometry": [
+            161,
+            161,
+            378,
+            72
+          ],
+          "expected_color": 16711680,
+          "matching_pixels": 900,
+          "popup_attempts": 2,
+          "output_sha256": "844a0edfd2fe7abe0905be14239f96aa58a4660bfbb8f343d10af37c7ff4b1ff"
+        },
+        {
+          "name": "before-refresh",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-eudfa3aq/icons"
+          ],
+          "geometry": [
+            152,
+            161,
+            396,
+            88
+          ],
+          "expected_color": 65280,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "4967fa6ce2e5cede55366b7f356f2f75e40544fa32a73e1cc7926681052d4531"
+        },
+        {
+          "name": "after-refresh",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-eudfa3aq/icons"
+          ],
+          "geometry": [
+            152,
+            161,
+            396,
+            88
+          ],
+          "expected_color": 255,
+          "matching_pixels": 2304,
+          "popup_attempts": 2,
+          "output_sha256": "725d447a7c42e18054bed1f7244a383488f07cdf29ba56b209ac4b1832ee2bbe"
+        },
+        {
+          "name": "text-fallback",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop",
+            "--title",
+            "IconApps",
+            "--include-items",
+            "none",
+            "--enable-mini-icons",
+            "--theme",
+            "fixture",
+            "--size",
+            "24",
+            "--icon-scale",
+            "2",
+            "--app-icon",
+            "fixture",
+            "--mini-icon-dir",
+            "/tmp/fvwm-named-icons-eudfa3aq/icons"
+          ],
+          "geometry": [
+            179,
+            161,
+            343,
+            72
+          ],
+          "expected_color": null,
+          "matching_pixels": null,
+          "popup_attempts": 1,
+          "output_sha256": "cbfa427d0967e8a47255e7bdcf85e2906dd3beb078776a5b4840c4e052485b8d"
+        }
+      ],
+      "product_actions_executed": false,
+      "observer_unexpected_x_errors": [],
+      "observer_retired_windows": 0,
+      "refreshed_content_identity": true,
+      "missing_icon_retains_label": true,
+      "source_hashes": {
+        "default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+        "tests/live_x/named_menu_icons_live.py": "ed7c77808fbd1f676009693111bc7cf7a7ecf96edb30731109a9411fe71603bb"
+      }
+    },
+    "composed_scope": "Use unchanged Slate/Dune cases from full run; classic repeated with18pt DejaVu Sans Mono. Product binaries unchanged. Quarter/refresh/fallback also pass in each receipt. Source hash in each receipt identifies its actual harness version.",
+    "screenshots_inspected": [
+      "slate-dark-application.png",
+      "dune-light-directory.png",
+      "classic-large-directory.png from enlarged repeat",
+      "quarter-scale.png"
+    ],
+    "fixtures": "Solid-color SVG squares are pixel/scale assertions, not a newly selected artwork set. Theme fixtures use shipped Slate/Dune palette data and a controlled classic config, not full desktop-session boots."
+  },
+  "failures_and_repairs": [
+    {
+      "scope": "transport preparation",
+      "failure": "Merged profile-test sources absent from guest at first reconfigure",
+      "repair": "Copied already-merged files; reconfigure succeeds; no runtime test ran before preparation fix."
+    },
+    {
+      "scope": "test fixture",
+      "failure": "Demanded repaint inside modal menu before pending-image commit",
+      "repair": "Close/reopen boundedly at existing normal commit boundary; production unchanged."
+    },
+    {
+      "scope": "test fixture",
+      "failure": "BadWindow from unprotected menu inventory; Xlib default exited before cleanup",
+      "repair": "Brief coherent X inventory plus existing owned SessionXErrors handler. Three exact fixture children identified by start ticks and retired via pidfds; no unowned process signaled."
+    },
+    {
+      "scope": "theme fixture",
+      "failure": "Initial classic bitmap font not sufficiently enlarged",
+      "repair": "Repeated only classic with known available18pt DejaVu Sans Mono; retain unchanged other passes."
+    }
+  ],
+  "review": {
+    "roles": "Astra/high read-only scope; Sol/high foundation and consumer implementation; separate Sol/high source review. Requested model metadata not independently attested.",
+    "resolved": [
+      "absolute backslash path regression",
+      "native image area assertion",
+      "aggregate published byte bound",
+      "new worker PID-lifetime signal race",
+      "legacy --icon-t alias ambiguity"
+    ],
+    "final_evidence_review": "Independent Sol/high read-only review verified20source identities,159archive files,4binary identities/cost deltas, exact native pixel counts and4captures; no implementation findings remain. Corrected report RSS wording from constant15916 to15788\u201315916KiB; no native rerun required."
+  },
+  "limits": [
+    "No browser/Form picture transport, theme package adoption, arbitrary client scaling or new decoder.",
+    "XPM retains natural source dimensions; PNG/SVG use explicit requested extent.",
+    "Per-job source/output/request limits and parent deadline do not retire old disk generations; automatic cache retirement remains an explicit ICON-01 remainder.",
+    "Full supported-target/optional-image-profile qualification, asset evaluation/choice and browser consumer remain open under owning contracts; no all-OS matrix or full issue closure here.",
+    "No new default resident or mandatory external dependency; full R1 budgets remain with #29/#226.",
+    "PR253 periodic WM reference remains3/5 afterPR256; developer-only PR262 does not advance it; this menu batch will be4/5 onmerge.",
+    "Native ASan/UBSan not selected for pure Go changes; five affected packages have native Linux race tests.",
+    "No security approval reroute or parked Backer/pathname source inspection/implementation."
+  ],
+  "guest_retirement": {
+    "verified_native_files": 159,
+    "guest_regular_bytes_retired": 30685975,
+    "retired_payload": "/tmp/fvwm-r1-named-icons-20261026",
+    "retired_failed_runtime": "/tmp/fvwm-named-icons-8u__i7a9",
+    "source_builds_other_stages_preserved": true,
+    "machine_restored_stopped": true
+  },
+  "late_failed_runtime_archive": {
+    "sha256": "13e69ee36b5594eed0d7845279986a146c47e7200b72215825f6e0f4070f7232",
+    "path": "late-retirement.tgz in canonical host directory",
+    "all_members_verified": true
+  }
+}

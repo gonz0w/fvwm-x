@@ -14,7 +14,6 @@ extern void draw_manager(WinManager *man);
 extern Bool draw_transparent_buttons(
 	WinManager *man, Bool only_moved, Bool clear_only);
 
-extern int which_box(WinManager *man, int x, int y);
 extern Button *xy_to_button(WinManager *man, int x, int y);
 
 extern void delete_windows_button(WinData *win);
@@ -23,14 +22,11 @@ extern void resort_windows_button(WinData *win);
 extern void size_manager(WinManager *man);
 extern void init_button_array(ButtonArray *array);
 extern void set_shape(WinManager *man);
-extern void draw_added_icon(WinManager *man);
-extern void draw_deleted_icon(WinManager *man);
 extern void move_highlight(WinManager *man, Button *button);
 extern void set_win_picture(
 	WinData *win, Pixmap picture, Pixmap mask, Pixmap alpha,
 	unsigned int depth, unsigned int width, unsigned int height);
 extern void set_win_iconified(WinData *win, int iconified);
-extern void set_win_state(WinData *win, int state);
 extern void add_win_state(WinData *win, int flag);
 extern void del_win_state(WinData *win, int flag);
 extern void set_win_displaystring(WinData *win);

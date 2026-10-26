@@ -51,6 +51,18 @@ test('native-gate-contract', py, args: [files('test_native_gate.py')],
 test('resource-profile-report', py, args: [files('test_profile_report.py')],
     timeout: 60)
 
+if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('theme-composition-xvfb', py,
+        args: [files('live_x/theme_composition_live.py'),
+            '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'theme-composition'],
+        depends: [fvwm3, fvwm_mfl, fvwm_desktop, fvwm_desktop_worker,
+            fvwm_form, fvwm_desktop_capture,
+            fvwm_backer, fvwm_buttons, fvwm_event, fvwm_pager, fvwm_iconman],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 180)
+endif
+
 if get_option('live-x-tests') and libpng.found() and librsvg.found() and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('named-menu-icons-xvfb', py,
         args: [files('live_x/named_menu_icons_live.py'),

@@ -59,6 +59,8 @@ Configuration examples for local.config:
 *FvwmDesktop: transparency on
 *FvwmDesktop: motion off
 *FvwmDesktop: keep_wallpaper off
+*FvwmDesktop: wallpaper_palette follow
+*FvwmDesktop: wallpaper_appearance follow
 *FvwmDesktop: terminal xterm
 ....
 
@@ -78,17 +80,26 @@ $FVWM_USERDIR/desktop-state.json. This file is data only, never executed as
 configuration. Palette choices preserve layout and bindings. Keep current
 wallpaper prevents palette and day/night changes from replacing the active
 wallpaper. The retained palette wallpaper choice survives session restarts.
+Wallpaper palette and appearance can also be chosen independently. For example,
+set wallpaper_palette to grove and wallpaper_appearance to light while keeping
+the UI palette slate and appearance dark. The follow defaults use the UI palette
+and its manual or scheduled appearance. Keep current wallpaper takes precedence:
+new wallpaper choices are saved but do not replace the retained image until
+retention is turned off. Custom image paths are not settings in this registry.
 Custom wallpaper persistence remains the user's local.config responsibility.
 
 == DESKTOP SETTINGS
 
 The Appearance menu's Desktop settings entry opens a native FVWM menu. The
 same registry supplies the menus, validation and settings queries. This first
-configuration-center covers these eight registered preferences:
+configuration-center covers these ten registered preferences:
 
 * *palette*, appearance group: slate; choices slate, dune, grove, ink.
 * *appearance*, appearance group: auto; choices light, dark, auto.
 * *keep_wallpaper*, appearance group: boolean, false.
+* *wallpaper_palette*, wallpaper group: follow; choices follow, slate, dune,
+  grove, ink.
+* *wallpaper_appearance*, wallpaper group: follow; choices follow, light, dark.
 * *day*, schedule group: local HH:MM, 07:00.
 * *night*, schedule group: local HH:MM, 19:00.
 * *transparency*, effects group: boolean, true.
@@ -111,8 +122,17 @@ The effective value includes explicit *FvwmDesktop options. Application status
 means the helper submitted its known commands to FVWM; it does not prove that
 other modules have repainted. Later personal Style or Colorset commands cannot
 be observed through this registry and are explicitly reported as unobserved.
-The helper never rewrites personal FVWM configuration. Preview is unavailable:
-timed confirmation, cancellation and restart recovery remain future work.
+The helper never rewrites personal FVWM configuration. Generic saved-setting
+preview remains unavailable; the native launcher-opacity preview has its own
+timed confirmation path described below.
+
+Wallpaper query metadata includes resolved, resolution and composition_version.
+Resolution is explicit, follow or retained. The resolved appearance can be auto:
+that describes schedule policy, not the currently painted light/dark phase.
+Retention reports wallpaper-retained as a runtime constraint. These fields remain
+stable for the preference generation; clock-dependent painting still follows the
+existing minute tick. Composition version 1 names the shared semantic color-role
+projection and is separate from the preference-file and IPC schema versions.
 
 Choose Edit saved preferences from Appearance or Desktop settings to open the
 native grouped editor. It presents the registry's choices and time fields, with
@@ -138,7 +158,7 @@ the editor to adopt them. Query generation is an opaque snapshot identity that
 changes on successful preference publication/reload and helper restart; it is
 not an X-server generation or evidence that arbitrary FVWM commands were observed.
 
-Reset accepts one setting ID, group:appearance, group:schedule, group:effects
+Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule, group:effects
 or all. It changes only those saved preferences to registered defaults. It
 retains explicit module overrides and the current wallpaper when the effective
 keep_wallpaper choice requests it. A reset that would make day and night equal
@@ -170,11 +190,12 @@ persistent private .desktop-state.lock is normal. Temporary files are removed
 on failure; source configuration and unrelated files are left alone.
 
 Unversioned JSON from earlier helpers is read using the original normalization
-rules. Complete schema_version 1 files load with launcher_opacity 94; no
-file is rewritten on read. The next successful save writes schema_version 2.
-Version 2 requires all eight preferences and retained wallpaper with valid
-types. Version 1 migration also requires its exact previous fields; incomplete
-or unknown fields are refused. Older helpers cannot read version 2. Unknown versions, duplicate fields, oversized
+rules. Complete schema_version 1 files load with launcher_opacity 94;
+complete version 1 and 2 files gain follow defaults for the two wallpaper choices.
+No file is rewritten on read. The next successful save writes schema_version 3.
+Version 3 requires all ten preferences and retained wallpaper with valid types.
+Versions 1 and 2 require their exact historical fields; incomplete or unknown
+fields are refused. Older helpers cannot read version 3. Unknown versions, duplicate fields, oversized
 or invalid files are preserved. Startup uses defaults and reports a persistence
 error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
@@ -269,7 +290,7 @@ the previous snapshot; callbacks from an older report cannot select its pages.
 
 The check never executes configuration, starts modules, applies preferences,
 expands variables or runs PipeRead, shell commands, functions or Lua. It checks
-only literal colon-form *FvwmDesktop options for the eight registered settings,
+only literal colon-form *FvwmDesktop options for the registered settings,
 plus literal Read filenames with optional Quiet. Boolean/time/enum validation
 uses the same preference registry as the running helper. Explicit day/night
 values must differ when both appear. Saved preferences are not loaded, so this
@@ -458,7 +479,9 @@ times 07:00 19:00
 toggle transparency
 toggle motion
 toggle keep_wallpaper
-settings [all|setting-ID|group:appearance|group:schedule|group:effects]
+set wallpaper_palette follow|slate|dune|grove|ink
+set wallpaper_appearance follow|light|dark
+settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects]
 preview-setting helper-instance opacity-percent
 edit-settings [scope]
 check-config

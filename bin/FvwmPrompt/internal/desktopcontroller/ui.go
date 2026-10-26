@@ -67,33 +67,43 @@ func (d *Controller) button(name, text string) {
 func (d *Controller) notice(text string) {
 	d.form("SlateNoticeForm", []string{`Title "FVWM-X"`, "Line left", "Text " + quote(text), "Line right", `Button quit "Dismiss" ^[`, "Command Nop", `Timeout 80 Nop ""`}, true)
 }
+
+// Build the whole projection before publication or retained-wallpaper mutation.
+// The first five key positions are also used by opacity preview confirmation.
+func (d *Controller) themePlan(settings values, minute int) ([]any, desktopsettings.ThemeProjection, values, error) {
+	wallpaper, err := desktopsettings.ResolveWallpaper(settings, minute)
+	if err != nil {
+		return nil, desktopsettings.ThemeProjection{}, nil, err
+	}
+	mode, err := desktopsettings.Appearance(settings, minute)
+	if err != nil {
+		return nil, desktopsettings.ThemeProjection{}, nil, err
+	}
+	palette := d.palettes[stringAt(settings, "palette")][mode]
+	projection, err := desktopsettings.ProjectTheme(palette)
+	if err != nil {
+		return nil, desktopsettings.ThemeProjection{}, nil, err
+	}
+	if _, err := desktopsettings.ProjectTheme(d.palettes[stringAt(wallpaper, "palette")][stringAt(wallpaper, "appearance")]); err != nil {
+		return nil, desktopsettings.ThemeProjection{}, nil, err
+	}
+	key := []any{settings["palette"], mode, settings["transparency"], settings["motion"], settings["launcher_opacity"], wallpaper["palette"], wallpaper["appearance"]}
+	return key, projection, wallpaper, nil
+}
 func (d *Controller) theme(force bool) error {
 	now := time.Now()
-	mode, err := desktopsettings.Appearance(d.effective, now.Hour()*60+now.Minute())
+	key, projection, selected, err := d.themePlan(d.effective, now.Hour()*60+now.Minute())
 	if err != nil {
 		return err
 	}
-	key := []any{d.effective["palette"], mode, d.effective["transparency"], d.effective["motion"], d.effective["launcher_opacity"]}
 	if !force && reflect.DeepEqual(key, d.lastTheme) {
 		return nil
 	}
-	palette := d.palettes[key[0].(string)][mode]
-	if len(palette) == 0 {
-		return errors.New("Missing desktop palette")
+	palette := d.palettes[key[0].(string)][key[1].(string)]
+	for _, role := range projection.Roles {
+		d.emit(fmt.Sprintf("Colorset %d Plain, fg %s, bg %s, hi %s, sh %s", role.Colorset, role.Foreground, role.Background, role.Highlight, role.Shadow))
 	}
-	roles := []struct {
-		number int
-		fg, bg string
-	}{{0, "text", "surface"}, {1, "muted", "surface"}, {2, "text", "raised"}, {3, "border", "border"},
-		{4, "accent", "accent"}, {5, "text", "surface"}, {6, "on_accent", "accent"}, {7, "muted", "surface"}, {8, "accent", "surface"},
-		{10, "text", "surface"}, {11, "on_accent", "accent"}, {12, "text", "raised"}, {13, "on_accent", "accent"}, {14, "muted", "surface"}}
-	for _, r := range roles {
-		d.emit(fmt.Sprintf("Colorset %d Plain, fg %s, bg %s, hi %s, sh %s", r.number, palette[r.fg], palette[r.bg], palette[r.bg], palette[r.bg]))
-	}
-	if d.effective["keep_wallpaper"] != true {
-		d.effective["wallpaper"] = values{"palette": key[0], "appearance": mode}
-	}
-	selected := d.effective["wallpaper"].(map[string]any)
+	d.effective["wallpaper"] = selected
 	wallpaper := [2]string{selected["palette"].(string), selected["appearance"].(string)}
 	if wallpaper != d.lastWallpaper {
 		background := d.palettes[wallpaper[0]][wallpaper[1]]["background"]

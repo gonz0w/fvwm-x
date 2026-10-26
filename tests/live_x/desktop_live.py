@@ -482,7 +482,10 @@ def run(options):
         capture('settings-editor.png')
         choices = sorted((client.geometry(w)[1], client.geometry(w)[0], w)
             for w in children(window) if client.geometry(w)[2] == client.geometry(w)[3])
-        assert len(choices) == 13, choices
+        metadata = settings_query()
+        expected_choices = sum(2 if item['type'] == 'boolean' else
+            len(item.get('choices', [])) for item in metadata.values())
+        assert len(choices) == expected_choices, (choices, expected_choices)
         choose(choices[1][2])  # Dune palette.
         choose(choices[4][2])  # Light appearance.
         capture('settings-draft.png')
@@ -653,7 +656,7 @@ def run(options):
                 lambda: json.loads(state.read_text())['launcher_opacity'] == 71,
                 time.monotonic() + 5, process=process)
             assert json.loads(state.read_text())['motion'] == old_motion
-            assert json.loads(state.read_text())['schema_version'] == 2
+            assert json.loads(state.read_text())['schema_version'] == 3
             window = wait_for_predicate('captured draft resumed', editor_window,
                 time.monotonic() + 5, process=process)
             capture('settings-opacity-resumed.png')
@@ -718,7 +721,7 @@ def run(options):
             connection.send(b'ModuleSynchronous Timeout 15 FvwmDesktop\n')
             barrier()
             assert launcher_opacity() == 71
-            evidence['saved_opacity_preview'] = dict(saved=71, schema=2,
+            evidence['saved_opacity_preview'] = dict(saved=71, schema=3,
                 scope_only=True, draft_transferred_and_resumed=True,
                 revert_no_write=True, writer_lock_refused=True,
                 partial_runtime_kept_file_unchanged=True, restart_persisted=True,

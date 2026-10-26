@@ -76,9 +76,10 @@ retired, caches preserved and the owned lab restored stopped.
 
 ## R1 named icon requests and menu consumers — 2026-10-26
 
-Owner: Cam; `codex/r1-named-icons`; ICON-01 #215. Status: four-story
-checkpoint implemented, focused checks and separate final review passed;
-ready for PR review.
+Owner: Cam; `codex/r1-named-icons`; ICON-01 #215. Status: merged in PR263
+as `794014e01e13f498539d64df9ec70426cc76a128`; reviewed tree
+`95fe8c5eb30bde13c454944fc28e76fa42a1a911`, canonical signature and
+author DCO verified; branch retired and Project Done. Broader #215 remains open.
 [Contract and boundaries](decisions/NAMED-MENU-ICONS-2026-10-26.md),
 [verification and costs](verification/VERIFICATION-2026-10-26-NAMED-MENU-ICONS.md).
 Four related stories: typed theme/name/nominal-size/quarter-scale/state/scoped
@@ -120,6 +121,49 @@ periodic WM counter remains 3/5, becoming 4/5 on this implementation's merge.
 All 159 archived file identities verify; about 31 MB of this batch's guest
 duplicates and the failed fixture runtime are retired. The owned lab is restored
 stopped. Other owners' evidence, source/build caches and stages are preserved.
+
+## R1 theme composition and independent wallpaper — 2026-10-26
+
+Owner: Cam; `codex/r1-theme-composition`; THEME-02 #214. Status: implemented and separately reviewed; PR ready.
+[Contract](decisions/THEME-COMPOSITION-2026-10-26.md),
+[focused results and limits](verification/VERIFICATION-2026-10-26-THEME-COMPOSITION.md).
+Three related stories: versioned pure semantic color-role projection preserving
+the existing palette/colorset mapping; independent wallpaper palette/appearance
+preferences with follow defaults and existing keep-wallpaper precedence; adoption
+in the existing editor, saved/effective/source metadata and native submission.
+Keep one store/registry/transport and explicit v1/v2-to-v3 preference migration.
+Loading old data does not rewrite it; retained wallpaper and module overrides
+remain authoritative. Wallpaper-only changes must trigger relevant invalidation.
+
+The query metadata describes generation-stable selection policy (including auto
+schedule), not a claimed current painted phase. Actual clock-dependent light/dark
+resolution belongs to the existing runtime tick. This adds no new resource/watch
+protocol or revision authority. Preserve positional opacity-preview ownership.
+Typography/density/geometry/high-contrast/icon-role ownership remain separate
+finite #214 work; no font/config migration or all-reload promise is selected.
+
+Acceptance: schema/validation/precedence/map-isolation and exact colorset policy
+tests; controller/IPC reload/reset/override/conflict/preview regressions; one
+reused Linux build and native composition/editor checks with three representative
+theme configs, enlarged text and screenshots. Validate roles before command
+publication; retain solid-background behavior without PNG. Separate final review,
+manuals and source-bound evidence; no automatic all-OS/install matrix. No new
+dependency/resident, personal config rewrite, image engine or asset package.
+PR253's periodic WM comparison is 4/5 after PR263 and becomes due after this
+runtime implementation merges; no new full comparison is required to start it.
+All Backer/pathname work and #215 disk/browser/asset remainders stay excluded.
+
+Focused Linux Go race, IPC, settings/opacity-preview and all three composition
+profiles pass. Final editor/retention screenshots are inspected in Slate, Dune
+and enlarged classic configuration. New rows fit; existing enlarged fixed-width
+bar captions clip, retaining #212/#214/#75 layout/theme ownership. Exact historical
+schema migration, preflight/invalidation and source precedence are covered.
+Manuals render; final test registration reconfigures. FvwmDesktop file cost is
++3,366 bytes, no new package/resident; no RSS or speed claim. Full support/profile
+qualification and the broader theme model remain open. All 97 archive identities
+verify; about 28 MB of guest duplicates are retired and the owned lab is stopped.
+Final separate source/evidence review has no unresolved findings; one stale IPC
+summary count was corrected without changing the passing runtime assertions.
 
 ## Library evaluation issue scope — 2026-10-25
 

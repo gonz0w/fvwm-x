@@ -12,6 +12,8 @@ import (
 	"unicode"
 )
 
+const wallpaperRetentionHint = "Wallpaper is retained; turn off Keep current wallpaper to apply."
+
 func label(value string, limit int) string {
 	var out []rune
 	for _, c := range value {
@@ -103,6 +105,9 @@ func Editor(s Snapshot,
 		}
 		if item.Group != previous {
 			lines = append(lines, "Line left", "Text "+quote(title(item.Group)))
+			if item.Group == "wallpaper" && s.Effective["keep_wallpaper"] == true {
+				lines = append(lines, "Line left", "Text "+quote(wallpaperRetentionHint))
+			}
 			previous = item.Group
 		}
 		lines = append(lines, "Line left", "Text "+quote(item.Description))
@@ -201,6 +206,12 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 				"Greyed"},
 			{"Source: " + text(item["source"]),
 				"Greyed"}}
+		if resolution, ok := item["resolution"].(string); ok {
+			options = append(options, Row{"Selection: " + text(item["resolved"]) + " (" + resolution + ")", "Greyed"})
+		}
+		if item["runtime_constraint"] == "wallpaper-retained" {
+			options = append(options, Row{wallpaperRetentionHint, "Greyed"})
+		}
 		if len(choices) > 0 {
 			for _, value := range choices {
 				options = append(options,

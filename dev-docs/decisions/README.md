@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Theme composition and wallpaper](THEME-COMPOSITION-2026-10-26.md): shared semantic colors, independent wallpaper precedence and explicit data migration; remaining typography/layout/assets stay scoped.
+
 - [Shared named menu icons](NAMED-MENU-ICONS-2026-10-26.md): quarter-scale requests, bounded content presentation and two menu consumers; no icon-package adoption or browser image protocol.
 
 - [R1 reference profiles](R1-REFERENCE-PROFILES-2026-10-26.md): finite supported-option recipes, identity-bound workloads and empirical budget proposals; complete resource/profile acceptance remains with #209/#29/#226.

@@ -200,7 +200,12 @@ func (d *Controller) prepare(changes values) (values, values, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	return result["candidate"].(map[string]any), result["effective"].(map[string]any), nil
+	candidate := result["candidate"].(map[string]any)
+	effective := result["effective"].(map[string]any)
+	if _, _, _, err := d.themePlan(effective, now.Hour()*60+now.Minute()); err != nil {
+		return nil, nil, err
+	}
+	return candidate, effective, nil
 }
 func (d *Controller) changeSettings(changes values) error {
 	if d.persistenceError != "" {
@@ -226,6 +231,10 @@ func (d *Controller) reloadSettings() error {
 	}
 	effective, err := desktopsettings.Checked(merged(saved, d.overrides))
 	if err != nil {
+		return err
+	}
+	now := time.Now()
+	if _, _, _, err := d.themePlan(effective, now.Hour()*60+now.Minute()); err != nil {
 		return err
 	}
 	generation := newID(16)

@@ -58,18 +58,16 @@ func Prepare(s Snapshot, changes Values, minute int) (Values, error) {
 	if err != nil {
 		return nil, err
 	}
-	mode, err := Appearance(effective, minute)
+	// Retention belongs to the current effective wallpaper, including one
+	// selected by an override, rather than the older saved wallpaper pair.
+	if effective["keep_wallpaper"] == true {
+		effective["wallpaper"] = s.Effective["wallpaper"]
+	}
+	wallpaper, err := ResolveWallpaper(effective, minute)
 	if err != nil {
 		return nil, err
 	}
-	if effective["keep_wallpaper"] == true {
-		wallpaper := s.Effective["wallpaper"].(map[string]any)
-		candidate["wallpaper"] = Values{"palette": wallpaper["palette"],
-			"appearance": wallpaper["appearance"]}
-	} else {
-		candidate["wallpaper"] = Values{"palette": effective["palette"], "appearance": mode}
-	}
-	wallpaper := candidate["wallpaper"].(map[string]any)
+	candidate["wallpaper"] = wallpaper
 	effective["wallpaper"] = Values{"palette": wallpaper["palette"],
 		"appearance": wallpaper["appearance"]}
 	return Values{"candidate": candidate, "effective": effective}, nil
@@ -104,6 +102,32 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		}
 		if item.Minimum != nil {
 			v["minimum"], v["maximum"] = item.Minimum, item.Maximum
+		}
+		if key == "wallpaper_palette" || key == "wallpaper_appearance" {
+			if _, err := Checked(s.Effective); err != nil {
+				return nil, err
+			}
+			resolved, resolution := s.Effective[key], "explicit"
+			if s.Effective["keep_wallpaper"] == true {
+				wallpaper, ok := s.Effective["wallpaper"].(map[string]any)
+				if !ok {
+					return nil, errors.New("Invalid retained wallpaper")
+				}
+				resolved = wallpaper[key[len("wallpaper_"):]]
+				resolution = "retained"
+				v["runtime_constraint"] = "wallpaper-retained"
+			} else if resolved == "follow" {
+				resolution = "follow"
+				if key == "wallpaper_palette" {
+					resolved = s.Effective["palette"]
+				} else {
+					// Auto remains schedule policy here. Query never reads a live
+					// clock or claims to observe the currently painted wallpaper.
+					resolved = s.Effective["appearance"]
+				}
+			}
+			v["resolved"], v["resolution"] = resolved, resolution
+			v["composition_version"] = themeCompositionVersion
 		}
 		if key == "launcher_opacity" && s.Effective["transparency"] == false {
 			v["runtime_constraint"] = "transparency-disabled"

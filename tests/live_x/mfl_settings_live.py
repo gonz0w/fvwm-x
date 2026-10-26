@@ -137,7 +137,12 @@ def run(args):
             snapshot = query()
             assert snapshot['owner'] == 'FvwmDesktop' and not snapshot['preview']
             assert query(provider=snapshot['provider'])['provider'] == snapshot['provider']
-            assert len(snapshot['settings']) == 8
+            assert len(snapshot['settings']) == 10
+            assert set(query(scope='group:wallpaper')['settings']) == {
+                'wallpaper_palette', 'wallpaper_appearance'}
+            assert snapshot['settings']['wallpaper_palette']['resolved'] == 'slate'
+            assert snapshot['settings']['wallpaper_appearance']['resolved'] == 'auto'
+            assert snapshot['settings']['wallpaper_palette']['composition_version'] == 1
             assert not snapshot['settings']['motion']['saved']
             assert snapshot['settings']['motion']['effective']
             assert snapshot['settings']['motion']['source'] == 'module-configuration'
@@ -213,7 +218,7 @@ def run(args):
 
             numeric = action('set', changed['generation'], values={'launcher_opacity': 73})
             assert numeric['settings']['launcher_opacity']['saved'] == 73
-            assert json.loads(state.read_text())['schema_version'] == 2
+            assert json.loads(state.read_text())['schema_version'] == 3
             before_numeric = state.read_bytes()
             for invalid in [True, 73.5, -1, 101, '73']:
                 action('set', numeric['generation'], values={'launcher_opacity': invalid},
@@ -221,7 +226,7 @@ def run(args):
                 assert state.read_bytes() == before_numeric
             action('reset', numeric['generation'], scope='launcher_opacity')
             changed = query(provider=snapshot['provider'])
-            evidence['typed_integer_setting'] = dict(saved=73, schema=2,
+            evidence['typed_integer_setting'] = dict(saved=73, schema=3,
                 malformed_refused=True, reset=94)
             saved = state.read_bytes()
             assert json.loads(saved)['palette'] == 'grove'
@@ -297,7 +302,8 @@ def run(args):
             restarted = query()
             assert restarted['generation'] != reloaded['generation']
             action('reset', reloaded['generation'], scope='all', expected='deadline_exceeded')
-            evidence['real_provider'] = dict(settings=8, scoped_queries=True,
+            evidence['real_provider'] = dict(
+                settings=len(snapshot['settings']), scoped_queries=True,
                 atomic_changes=True, targeted_multiple_owners=True,
                 readonly_validation=True, validation_no_mutation=True,
                 cancelled_write_still_commits=True, cancelled_id_reuse=True,

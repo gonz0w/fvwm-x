@@ -111,7 +111,7 @@ func saveSettings(path string, settings values, expected *string) (*string, erro
 	if err != nil {
 		return nil, err
 	}
-	checked["schema_version"] = 2
+	checked["schema_version"] = desktopsettings.StateVersion
 	data, err := json.MarshalIndent(checked, "", "  ")
 	if err != nil {
 		return nil, err

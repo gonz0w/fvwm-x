@@ -724,7 +724,7 @@ request {"version":1,"id":"schedule-1","method":"query","resource":"settings","s
 ....
 
 Optional `scope` defaults to `all`. It accepts one registered key or
-`group:appearance`, `group:schedule` and `group:effects`, matching FvwmDesktop's
+`group:appearance`, `group:wallpaper`, `group:schedule` and `group:effects`, matching FvwmDesktop's
 existing settings scopes. The result identifies `owner: "FvwmDesktop"`,
 `schema_version: 1`, opaque `provider` and `generation` tokens, `saved_revision`
 and a `settings`
@@ -734,6 +734,15 @@ The provider token identifies one helper incarnation. An optional `provider`
 field targets a query to that exact instance; omit it to discover an owner.
 The generation belongs to this helper's settings snapshot; it changes after
 accepted settings changes, reload or helper restart.
+
+The wallpaper group contains `wallpaper_palette` and `wallpaper_appearance`.
+Their `resolved` and `resolution` fields describe explicit, follow or retained
+selection policy; `composition_version: 1` identifies the shared color-role
+projection. A resolved appearance of `auto` remains schedule policy rather than
+the current painted light/dark phase. `runtime_constraint: "wallpaper-retained"`
+explains why a saved choice is masked by keep_wallpaper. These fields are stable
+for the preference generation; no clock revision or new resource is introduced.
+The IPC schema remains version 1, independently of the version 3 preference file.
 
 Typed actions use `method: "action"`, `resource: "settings"`, `operation` and
 the exact provider and generation returned by the preceding query:
@@ -749,7 +758,7 @@ Only the selected provider responds, so multiple FvwmDesktop instances cannot
 race another owner's refusal against a successful commit. If that provider
 exits/restarts, requests to its old identity reach the deadline: rediscover with
 an untargeted query before choosing the new owner. `set`
-accepts a nonempty `values` object with at most eight registered keys and
+accepts a nonempty `values` object with at most eight of the registered keys per request and
 typed string/boolean/integer values. Numeric transport values must be integral
 and fit signed 32-bit bounds; the owner enforces each setting's range.
 `launcher_opacity` accepts 0 through 100, default 94. It validates the complete combined change before

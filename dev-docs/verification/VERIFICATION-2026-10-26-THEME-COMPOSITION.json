@@ -1,0 +1,504 @@
+{
+  "owner": "THEME-02 #214",
+  "status": "focused qualification; broader issue open",
+  "base": {
+    "pr": 263,
+    "commit": "794014e01e13f498539d64df9ec70426cc76a128",
+    "tree": "95fe8c5eb30bde13c454944fc28e76fa42a1a911",
+    "canonical_signature_verified": true,
+    "author_DCO_verified": true
+  },
+  "native_final_inputs_sha256": {
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "827b2cc00406a4f0aac295a1663de50e74f68e3c2a13291e014b8389469698b5",
+    "bin/FvwmPrompt/internal/desktopcontroller/state.go": "330f98b869ec64951976176a45d83c96cf2e947274eb79561845f9da82b27552",
+    "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "5a766845c72340ab9f6fa94e9d1de07010707b88432fbe6aebfa838eaceffa0c",
+    "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "57c23e979fd7afe3365234f1a69db549c9cb5fabfe2919e2da6a5e37648b51c9",
+    "bin/FvwmPrompt/internal/desktopsettings/composition.go": "72e65ba2edb7d9535fffb65ed1e9dfb287f5368409300a2a92a4320458283ed9",
+    "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "1301364af3ee78ba88ea4009b78f53c2f9cb69657d9c50547e67f6abe3202738",
+    "bin/FvwmPrompt/internal/desktopsettings/policy.go": "59244c68a5255a82ca0e54421f0a9599f0114a706ec7f8092d5a9e67783445f8",
+    "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "754d639f1da2f6d9b8d766886dfb8229666d7c8812b1e5c6b050feacfa1ded01",
+    "bin/FvwmPrompt/internal/desktopsettings/request.go": "1e758be6061da8693b2dbfb93b50a01daa81bc7c2d243104944581c1ec1bd122",
+    "tests/live_x/desktop_live.py": "7ed3789de1d45cb15851b71de224ad7233bb11dd220e863bdaa746062e3a8cf4",
+    "tests/live_x/mfl_settings_live.py": "531137d18102c3937d7c6ede554f7a9b9b437bdf3e1bc90b4f951382f7b53afa",
+    "tests/live_x/theme_composition_live.py": "f84f245e933feeca0782b83e8eea22510ff982af6e0bf106e59d9b8b3d2f376f",
+    "tests/meson.build": "ad027328bd754ab5a33e571736f58000aaeb7c31b5ebf6187715d1d8e00abb8d",
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go": "ac4f63f6522324fe108b2dd8567b66087c7c15588a67c08b099cc73c0a7d827a"
+  },
+  "post_execution_test_registration": {
+    "source_sha256": "c48f8dcfbc87f3b0b1d875c10b800d2937185b804860c1deb390798c0ce788bd",
+    "status": 0,
+    "test": {
+      "cmd": [
+        "/workspace/meson-env/bin/python3",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/../source/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/live-x-artifacts/theme-composition"
+      ],
+      "env": {},
+      "name": "theme-composition-xvfb",
+      "workdir": null,
+      "timeout": 180,
+      "suite": [
+        "fvwm3:live-x"
+      ],
+      "is_parallel": false,
+      "priority": 0,
+      "protocol": "exitcode",
+      "depends": [
+        "5a0c99c@@FvwmBacker@exe",
+        "1c3f685@@FvwmEvent@exe",
+        "cc71424@@FvwmForm@exe",
+        "3d451e1@@FvwmDesktop@cus",
+        "51a1f05@@fvwm-desktop-capture@exe",
+        "457184d@@FvwmMFL@exe",
+        "8eebc20@@FvwmButtons@exe",
+        "3d451e1@@fvwm-desktop-worker@cus",
+        "0e4eca6@@FvwmPager@exe",
+        "fvwm3@exe",
+        "f525844@@FvwmIconMan@exe"
+      ],
+      "extra_paths": []
+    }
+  },
+  "manuals": {
+    "FvwmDesktop": {
+      "status": 0,
+      "stderr": "",
+      "source_sha256": "c0268a6bf9a37c332fcbdf6cce48cf35cea293372c442626f7ffa005827688b3"
+    },
+    "FvwmMFL": {
+      "status": 0,
+      "stderr": "",
+      "source_sha256": "1d7dc6d609f8c296cb68b10c4604cc9bab83019429a73f246d50ac77ef0389a2"
+    }
+  },
+  "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+  "toolchain": {
+    "gcc --version": {
+      "status": 0,
+      "stdout": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+    },
+    "go version": {
+      "status": 0,
+      "stdout": "go version go1.27.2 linux/arm64\n"
+    },
+    "meson --version": {
+      "status": 0,
+      "stdout": "1.7.0\n"
+    }
+  },
+  "binaries": {
+    "baseline-FvwmDesktop": {
+      "sha256": "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487",
+      "bytes": 5289833,
+      "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3279832\t 138659\t33804616\t37223107\t237fac3\t/tmp/fvwm-r1-theme-composition-20261026/baseline-FvwmDesktop\n",
+      "ldd": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "\tnot a dynamic executable\n"
+      }
+    },
+    "preview-qualified-FvwmDesktop": {
+      "sha256": "4c27bc7d43667c147a84b02c191c03ba597728c1a89c25eb68f09f151629c8b6",
+      "bytes": 5292167,
+      "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3286619\t 139075\t33804616\t37230310\t23816e6\t/tmp/fvwm-r1-theme-composition-20261026/preview-qualified-FvwmDesktop\n",
+      "ldd": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "\tnot a dynamic executable\n"
+      }
+    },
+    "candidate-FvwmDesktop": {
+      "sha256": "b83c896425e13d0b4c31e419afb7dd6d48dcda3683b7acb825e5523468ad2513",
+      "bytes": 5293199,
+      "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3287983\t 139075\t33804616\t37231674\t2381c3a\t/tmp/fvwm-r1-theme-composition-20261026/candidate-FvwmDesktop\n",
+      "ldd": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "\tnot a dynamic executable\n"
+      }
+    }
+  },
+  "C_binaries": {
+    "fvwm3": {
+      "sha256": "52a02998a85777abdaa994c369bcac62555a790c1e62d5dbabe4ef86ef8f1952",
+      "bytes": 5387608
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+      "bytes": 444120
+    },
+    "modules/FvwmForm/FvwmForm": {
+      "sha256": "f45ceaf14b6650930a2fb2458cd6eae0346f385898ac1a2abe17c87dbf602361",
+      "bytes": 1619032
+    },
+    "bin/fvwm-desktop-capture": {
+      "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+      "bytes": 98608
+    }
+  },
+  "config_h_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+  "unchanged_inputs": {
+    "bin/FvwmPrompt/go.mod": "b7ab090a82e84684a6d95b78241823c36214f72034535d69612f46611c0dac31",
+    "bin/FvwmPrompt/go.sum": "2e7ddc025a143b92d14dee5db0a464101cb6f8763638d75c55fa8d7a7ff22a4a",
+    "default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+  },
+  "commands": [
+    {
+      "name": "configure",
+      "argv": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "status": 0,
+      "seconds": 1.1613874829999986
+    },
+    {
+      "name": "build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "bin/FvwmPrompt/FvwmDesktop"
+      ],
+      "status": 0,
+      "seconds": 0.4234314750000294
+    },
+    {
+      "name": "go-race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./internal/desktopsettings",
+        "./internal/desktopcontroller",
+        "./internal/desktopcheck"
+      ],
+      "status": 0,
+      "seconds": 3.0654136729999664
+    },
+    {
+      "name": "settings-ipc",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--desktop",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-theme-composition-20261026/settings-ipc"
+      ],
+      "status": 0,
+      "seconds": 15.736206778999986
+    },
+    {
+      "name": "composition-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-theme-composition-20261026/composition-x"
+      ],
+      "status": 1,
+      "seconds": 2.4135082650000186
+    },
+    {
+      "name": "composition-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-theme-composition-20261026/composition-x-corrected"
+      ],
+      "status": 0,
+      "seconds": 6.6501231540000845
+    },
+    {
+      "name": "settings-preview",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/desktop_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--settings-only",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-theme-composition-20261026/settings-preview"
+      ],
+      "status": 1,
+      "seconds": 1.3795693299999812
+    },
+    {
+      "name": "settings-preview-corrected",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/desktop_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--settings-only",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-theme-composition-20261026/settings-preview-corrected"
+      ],
+      "status": 0,
+      "seconds": 23.58488841999997
+    },
+    {
+      "name": "ui-build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "bin/FvwmPrompt/FvwmDesktop"
+      ],
+      "status": 0,
+      "seconds": 0.31840542999998434
+    },
+    {
+      "name": "ui-policy-race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./internal/desktopsettings"
+      ],
+      "status": 0,
+      "seconds": 1.3768326879999222
+    },
+    {
+      "name": "composition-ui-final",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-theme-composition-20261026/composition-ui-final"
+      ],
+      "status": 0,
+      "seconds": 7.875237739999875
+    }
+  ],
+  "composed_evidence": {
+    "preview_and_IPC_candidate": "4c27bc7d43667c147a84b02c191c03ba597728c1a89c25eb68f09f151629c8b6",
+    "final_UI_candidate": "b83c896425e13d0b4c31e419afb7dd6d48dcda3683b7acb825e5523468ad2513",
+    "final_only_changes": "Wallpaper menu resolution rows and retained-editor hint; policy race and all three native composition profiles rerun. Earlier controller/IPC/preview passes retained.",
+    "registration_only_change": "Add existing desktop worker to Meson test dependencies after native runs; reconfigure and test introspection pass without another runtime rebuild."
+  },
+  "fixture_failures": [
+    {
+      "name": "composition-x",
+      "cause": "Assumed module directive could update the already-running helper; corrected to documented helper restart. Production unchanged."
+    },
+    {
+      "name": "settings-preview",
+      "cause": "Hard-coded 13-radio count was stale after eight additional enum choices; count now derives from settings registry query. Production unchanged."
+    }
+  ],
+  "profiles": {
+    "slate-dark": {
+      "paint_observations": {
+        "initial": 1846324,
+        "independent": 14476500,
+        "released": 3025189,
+        "base_bar": 2107953,
+        "wallpaper_only_preserves_bar": true,
+        "ui_change_preserves_explicit_wallpaper": true
+      },
+      "unexpected_x_errors": [],
+      "configuration_sha256": "911b7dd9ccc33ee0263c45b048164e5e9fe289d3cb34d5641f1e7a62eeb13a7d",
+      "palettes_sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "captures": {
+        "composition-editor.png": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/slate-dark/composition-editor.png",
+          "sha256": "06818e076e10cc59118eddb230afe55de2fcea4203a972d1247ed6a2e6409c1a",
+          "inspected": true
+        },
+        "composition-retained.png": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/slate-dark/composition-retained.png",
+          "sha256": "500046099ba7bd39cd413769394d5efb8e4360ac209f704178ac101afe22d2ad",
+          "inspected": true
+        }
+      },
+      "evidence_path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/slate-dark/evidence.json",
+      "evidence_sha256": "beb774274283f983cc74ce66d2b829663c306e14d659450e566a46c23463e670"
+    },
+    "dune-light": {
+      "paint_observations": {
+        "initial": 14997962,
+        "independent": 14476500,
+        "released": 3025189,
+        "base_bar": 16447214,
+        "wallpaper_only_preserves_bar": true,
+        "ui_change_preserves_explicit_wallpaper": true
+      },
+      "unexpected_x_errors": [],
+      "configuration_sha256": "6c5816d12e4febdd73695a65d44686bec0cd249c82802a25da3a1f7cdb844b41",
+      "palettes_sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "captures": {
+        "composition-editor.png": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/dune-light/composition-editor.png",
+          "sha256": "569a7d15d50c4d4a9abf3fcb246ccab85f8d4a78a7804b2f4bd41ea5f773a2ca",
+          "inspected": true
+        },
+        "composition-retained.png": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/dune-light/composition-retained.png",
+          "sha256": "2ad7eb4181e9d9da3b4d705e8fa595af4e0b7e61f6f0369e4ad946b7725d9078",
+          "inspected": true
+        }
+      },
+      "evidence_path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/dune-light/evidence.json",
+      "evidence_sha256": "229412154d2f6a7977d759f48e25fef9645bfc521949fa86f014fe62a37de6f0"
+    },
+    "classic-large": {
+      "paint_observations": {
+        "initial": 1846324,
+        "independent": 14476500,
+        "released": 3025189,
+        "base_bar": 2107953,
+        "wallpaper_only_preserves_bar": true,
+        "ui_change_preserves_explicit_wallpaper": true
+      },
+      "unexpected_x_errors": [],
+      "configuration_sha256": "510f16404abbcc9dd3d01cb7d8349ed3958ad4fcf47fcc6632647a7c7d75ceb2",
+      "palettes_sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+      "captures": {
+        "composition-editor.png": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/classic-large/composition-editor.png",
+          "sha256": "215a19c01411be802d6cf92c87ce0a67552a38cbd7ea757eac2f3de8ac5ee7ed",
+          "inspected": true
+        },
+        "composition-retained.png": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/classic-large/composition-retained.png",
+          "sha256": "bda3d78e2b233c51529eb44ce663b11699f70220528c93e06031e71849a7e073",
+          "inspected": true
+        }
+      },
+      "evidence_path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/raw/composition-ui-final/classic-large/evidence.json",
+      "evidence_sha256": "1cde86465fbdc8a5513f02a2aeb2e408a154321b9585150ca614d1cd93951312"
+    }
+  },
+  "contrast": {
+    "slate-dark": {
+      "text/surface": 12.320203839524467,
+      "muted/surface": 7.028552400017397,
+      "on_accent/accent": 7.081778770840406
+    },
+    "slate-light": {
+      "text/surface": 12.033020063231737,
+      "muted/surface": 5.328061517721497,
+      "on_accent/accent": 5.891925163399908
+    },
+    "dune-dark": {
+      "text/surface": 12.153537967982121,
+      "muted/surface": 6.975782135628268,
+      "on_accent/accent": 6.934119372988389
+    },
+    "dune-light": {
+      "text/surface": 11.98273654623892,
+      "muted/surface": 5.171547007955308,
+      "on_accent/accent": 6.00750275229465
+    },
+    "grove-dark": {
+      "text/surface": 11.314475731146086,
+      "muted/surface": 6.932862641853524,
+      "on_accent/accent": 8.172008490732818
+    },
+    "grove-light": {
+      "text/surface": 11.056097277659354,
+      "muted/surface": 4.7561707011126355,
+      "on_accent/accent": 6.020723833564123
+    },
+    "ink-dark": {
+      "text/surface": 11.826484773294624,
+      "muted/surface": 7.285482105889062,
+      "on_accent/accent": 8.224961731891169
+    },
+    "ink-light": {
+      "text/surface": 10.901891873635545,
+      "muted/surface": 4.645355057760436,
+      "on_accent/accent": 6.385495586014771
+    }
+  },
+  "archive": {
+    "sha256": "951021e664065474eaa7e8c0e11d9907b440d38d3788d95229ea294b1c8f91e5",
+    "bytes": 10177952,
+    "files": 97,
+    "verified_files": 97,
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-theme-composition/native-evidence.tgz"
+  },
+  "cleanup": {
+    "verified_files": 97,
+    "removed_bytes": 28003239,
+    "removed_paths": [
+      "/tmp/fvwm-r1-theme-composition-20261026",
+      "/tmp/fvwm-r1-theme-composition-20261026.tgz"
+    ],
+    "host_archive_preserved": true,
+    "source_build_cache_preserved": true
+  },
+  "limits": [
+    "Focused native Linux ARM64 only; no fresh six-target, install, C sanitizer or complete R1 qualification.",
+    "No new dependency or default resident. File/ELF sizes are not RSS or performance measurements.",
+    "Enlarged editor fits; existing fixed-width bar clips 18pt captions. Layout/typography and shipped-theme acceptance remain with #212/#214/#75.",
+    "No-image solid fallback uses unchanged controller branch; reduced-image profile not freshly executed.",
+    "No clock-specific metadata generation is added; resolved auto means schedule policy, not observed current pixels.",
+    "Fonts/density/geometry/icons/high-contrast/asset generations remain finite THEME-02 criteria.",
+    "Parked Backer/pathname ownership work not inspected or modified."
+  ],
+  "review": {
+    "initial": "Separate reviewer found no source findings before final wallpaper presentation changes.",
+    "final": {
+      "reviewer": "/root/r1_theme_review",
+      "requested_route": "gpt-6.1-sol/high; execution model/effort not independently attested",
+      "result": "No unresolved findings. Corrected stale IPC summary count, verified source/composed candidate scope, all 97 archive entries, manual/registration/final-fixture hashes, binary identities and six captures. Read-only; no native/resource operations.",
+      "checks": [
+        "Python AST",
+        "working whitespace"
+      ]
+    }
+  },
+  "periodic_performance": {
+    "reference_pr": 253,
+    "merged_count": 4,
+    "count_on_this_merge": 5,
+    "comparison_due_on_merge": true
+  },
+  "post_render_prose_clarifications": {
+    "doc/FvwmDesktop.adoc": {
+      "rendered_source_sha256": "c0268a6bf9a37c332fcbdf6cce48cf35cea293372c442626f7ffa005827688b3",
+      "final_source_sha256": "7ab3a1be876f63694964e89108bf56d0cd79afcd672f5d27be2b1da36d0b9ec2"
+    },
+    "doc/FvwmMFL.adoc": {
+      "rendered_source_sha256": "1d7dc6d609f8c296cb68b10c4604cc9bab83019429a73f246d50ac77ef0389a2",
+      "final_source_sha256": "24013841fba0b4ec70256e303254161e4a8def470fa5788b538e701174c0bcb3"
+    }
+  },
+  "post_execution_evidence_label_correction": {
+    "path": "tests/live_x/mfl_settings_live.py",
+    "executed_source_sha256": "531137d18102c3937d7c6ede554f7a9b9b437bdf3e1bc90b4f951382f7b53afa",
+    "final_source_sha256": "c7ac2b8f1d56da86b75f984d5a23fdcea53d9e5cf098ded275cbbf24a716d354",
+    "archive_real_provider_settings_label": 8,
+    "executed_all_settings_assertion": 10,
+    "final_label": "len(initial_snapshot[settings])",
+    "result": "Final review corrected the summary label only; assertions/control flow unchanged. Original archive preserved, no runtime rerun needed."
+  },
+  "repository_checks": [
+    "make check: repository and Markdown links pass",
+    "make lint: working/staged whitespace and helper syntax pass"
+  ]
+}

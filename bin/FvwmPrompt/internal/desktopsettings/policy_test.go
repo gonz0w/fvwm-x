@@ -14,7 +14,7 @@ import (
 
 func TestRegistryDomainsAndIndependentDefaults(t *testing.T) {
 	keys, _ := Scope("all")
-	if !reflect.DeepEqual(keys, []string{"palette", "appearance", "day", "night", "transparency", "motion", "keep_wallpaper", "launcher_opacity"}) {
+	if !reflect.DeepEqual(keys, []string{"palette", "appearance", "day", "night", "transparency", "motion", "keep_wallpaper", "launcher_opacity", "wallpaper_palette", "wallpaper_appearance"}) {
 		t.Fatal(keys)
 	}
 	for key, item := range Registry() {
@@ -36,7 +36,7 @@ func TestRegistryDomainsAndIndependentDefaults(t *testing.T) {
 	}
 }
 func TestStrictValuesAndTextOnlyConversion(t *testing.T) {
-	bad := map[string][]any{"palette": {"SLATE", "slate; Exec bad", true, nil}, "motion": {"true", 1, json.Number("1"), nil}, "launcher_opacity": {true, -1, 101, "94", json.Number("94.0"), json.Number("9e1")}, "day": {"7:00", "24:00", "10:60", "07:00\n"}}
+	bad := map[string][]any{"wallpaper_palette": {"auto", "SLATE", "slate;Exec bad", true, nil}, "wallpaper_appearance": {"auto", "LIGHT", "light;Exec bad", true, nil}, "palette": {"SLATE", "slate; Exec bad", true, nil}, "motion": {"true", 1, json.Number("1"), nil}, "launcher_opacity": {true, -1, 101, "94", json.Number("94.0"), json.Number("9e1")}, "day": {"7:00", "24:00", "10:60", "07:00\n"}}
 	for key, values := range bad {
 		for _, v := range values {
 			if _, err := Value(key, v, false); err == nil {
@@ -97,6 +97,8 @@ func TestSchedulesAndMigration(t *testing.T) {
 func TestStoredSchemaStrictnessAndDuplicateRejection(t *testing.T) {
 	d := Defaults()
 	delete(d, "launcher_opacity")
+	delete(d, "wallpaper_palette")
+	delete(d, "wallpaper_appearance")
 	d["schema_version"] = 1
 	data, _ := json.Marshal(d)
 	got, err := DecodeState(data)
@@ -233,13 +235,14 @@ func TestParallelPolicyResultsDoNotShareMutableState(t *testing.T) {
 			t.Parallel()
 			for j := 0; j < 20; j++ {
 				s := snapshotFixture()
-				q, err := Query(s, "palette", true)
+				q, err := Query(s, "all", true)
 				if err != nil {
 					t.Fatal(err)
 				}
 				q["palette"].(map[string]any)["choices"].([]string)[0] = "changed"
+				q["wallpaper_palette"].(map[string]any)["choices"].([]string)[0] = "changed"
 				r := Registry()
-				if r["palette"].Choices[0] != "slate" {
+				if r["palette"].Choices[0] != "slate" || r["wallpaper_palette"].Choices[0] != "follow" {
 					t.Fatal("shared registry")
 				}
 			}

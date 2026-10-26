@@ -1,0 +1,1566 @@
+{
+  "base": "965787c6b4e0da2f3115d3df724a0778609ed691",
+  "owners": [
+    "SCRIPT-01 #4",
+    "CLEAN-01 #34"
+  ],
+  "status": "composed focused checks and separate source/evidence/report review passed; broader qualification pending",
+  "source": {
+    "libs/ColorUtils.c": {
+      "sha256": "7294e1c9dff89b4636e540fa023c677b0abcbfa2eb4542150651d6d562ae6d65",
+      "mode": 420
+    },
+    "libs/ColorUtils.h": {
+      "sha256": "7df764069b16b1277d9a0a1815c57275afe2dc35be5a29904871787f9b2ce894",
+      "mode": 420
+    },
+    "modules/FvwmScript/FvwmScript.c": {
+      "sha256": "4cde847b488d27db305218d44117e9c9b946d2be3cd7478d77abeb9913da34ef",
+      "mode": 420
+    },
+    "modules/FvwmScript/Instructions.c": {
+      "sha256": "1ff2f0263b33f3e13a5fc17691d7b73ad09640ab2b8cdbf4a922d1ee49153b21",
+      "mode": 420
+    },
+    "modules/FvwmScript/types.h": {
+      "sha256": "2ecd05fb1eb1d9113a18eec9cdce4142828662429c354b419aa25ddd068ae272",
+      "mode": 420
+    },
+    "tests/live_x/script_property_owner_live.py": {
+      "sha256": "422a828331d840c1bd40ac7d920daf13f36c6e9a4805c8c23510d04213d31545",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "698c2ae9c21a05244429dc4ba2cfecc3130c18158d41e074e96165dd500cd13d",
+      "mode": 420
+    },
+    "tests/test_script_block_owner.c": {
+      "sha256": "b3761acce2b732706753163d701601e7763eb606ba577cfc9703dc11d09e203a",
+      "mode": 420
+    },
+    "tests/test_script_property_owner.c": {
+      "sha256": "e09457ad2b10097bd8b483e5028c7dd94ac54dccd0d6346c3b263f6da2df2e30",
+      "mode": 420
+    },
+    "tests/live_x/script_base_owner_live.py": {
+      "sha256": "199d2bb5a9ba50235288c56182cbb2625f08b6954885a04393b7a15a41a8439d",
+      "mode": 420
+    },
+    "tests/test_color_status.c": {
+      "sha256": "d0e01e391ac6f39f5ebd9becc3ea6ba576577290962635f12474c360f21f3ca4",
+      "mode": 420
+    },
+    "tests/test_script_base_lifecycle.c": {
+      "sha256": "3bee2732502acf1f1b78a1009ba2b3719baf4f3edea13ce92c4a9b2bea9d4c26",
+      "mode": 420
+    },
+    "tests/test_script_base_owner.c": {
+      "sha256": "b20b236d35f3e34fdb539947b2ee5657863e01610123a78505c1c67d0435100f",
+      "mode": 420
+    }
+  },
+  "baseline_inputs": 575,
+  "final_inputs": 580,
+  "added_input_names": [
+    "tests/live_x/script_base_owner_live.py",
+    "tests/live_x/script_message_live.py",
+    "tests/test_color_status.c",
+    "tests/test_script_base_lifecycle.c",
+    "tests/test_script_base_owner.c"
+  ],
+  "commands": {
+    "final": [
+      {
+        "label": "normal-group-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-color-status",
+          "tests/test-script-base-owner",
+          "tests/test-script-widget-owner",
+          "tests/test-script-property-owner",
+          "tests/test-script-message-owner",
+          "tests/test-script-binding-owner",
+          "tests/test-script-block-owner",
+          "tests/test-script-value-owner",
+          "tests/test-script-message",
+          "tests/test-script-packet",
+          "tests/test-script-base-lifecycle",
+          "tests/test-script-property-module-probe"
+        ],
+        "status": 0,
+        "seconds": 3.4563006839998707
+      },
+      {
+        "label": "normal-units",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "color-status",
+          "script-base-owner",
+          "script-widget-owner",
+          "script-property-owner",
+          "script-message-owner",
+          "script-binding-owner",
+          "script-block-owner",
+          "script-value-owner",
+          "script-message",
+          "script-packet"
+        ],
+        "status": 0,
+        "seconds": 0.17242162899992763
+      },
+      {
+        "label": "normal-base-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_base_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-base-lifecycle",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/final/normal-base-x"
+        ],
+        "status": 1,
+        "seconds": 0.370924185000149
+      }
+    ],
+    "continued": [
+      {
+        "label": "normal-property-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_property_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-property-module-probe",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/normal-property-x",
+          "--require-ownership"
+        ],
+        "status": 0,
+        "seconds": 1.367073234000145
+      },
+      {
+        "label": "normal-widget-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_widget_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/normal-widget-x"
+        ],
+        "status": 0,
+        "seconds": 0.5916174070000579
+      },
+      {
+        "label": "normal-message-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_message_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/normal-message-x"
+        ],
+        "status": 0,
+        "seconds": 6.305940324000176
+      },
+      {
+        "label": "normal-packet-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_transport_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/normal-packet-x"
+        ],
+        "status": 0,
+        "seconds": 1.1878848310000194
+      },
+      {
+        "label": "block-probe-compile",
+        "command": [
+          "cc",
+          "-Itests/test-script-block-owner.p",
+          "-Itests",
+          "-I../source/tests",
+          "-I.",
+          "-I../source",
+          "-Ifvwm",
+          "-I../source/fvwm",
+          "-I/usr/include/freetype2",
+          "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+          "-I/usr/include/fribidi",
+          "-I/usr/include/librsvg-2.0",
+          "-I/usr/include/glib-2.0",
+          "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+          "-I/usr/include/libmount",
+          "-I/usr/include/blkid",
+          "-I/usr/include/gdk-pixbuf-2.0",
+          "-I/usr/include/aarch64-linux-gnu",
+          "-I/usr/include/webp",
+          "-I/usr/include/cairo",
+          "-I/usr/include/pixman-1",
+          "-fdiagnostics-color=always",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Winvalid-pch",
+          "-Wextra",
+          "-std=c11",
+          "-O2",
+          "-g",
+          "-fno-common",
+          "-Wno-sign-compare",
+          "-Wno-unused-parameter",
+          "-Werror=implicit-function-declaration",
+          "-Werror=incompatible-pointer-types",
+          "-fstack-protector-strong",
+          "-fstack-clash-protection",
+          "-D_FORTIFY_SOURCE=3",
+          "-fPIE",
+          "-pthread",
+          "-D_DEFAULT_SOURCE",
+          "-D_BSD_SOURCE",
+          "-DHAS_FCHOWN",
+          "-DHAS_STICKY_DIR_BIT",
+          "-UNDEBUG",
+          "-fno-builtin-free",
+          "-c",
+          "-DSCRIPT_BLOCK_MODULE_PROBE",
+          "-o",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/block-probe.o",
+          "/tmp/fvwm-module-waits-20261015/source/tests/test_script_block_owner.c"
+        ],
+        "status": 0,
+        "seconds": 0.06456298500006596
+      },
+      {
+        "label": "block-probe-link",
+        "command": [
+          "cc",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/block-probe.o",
+          "-o",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/block-probe",
+          "modules/FvwmScript/FvwmScript.p/FvwmScript.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_block.c.o",
+          "modules/FvwmScript/FvwmScript.p/Instructions.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_file.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_command.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_output.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_index.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_process.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_fifo.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_value.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_value_table.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_execution.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_storage.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_packet.c.o",
+          "modules/FvwmScript/FvwmScript.p/script_message.c.o",
+          "modules/FvwmScript/FvwmScript.p/libyywrap.c.o",
+          "modules/FvwmScript/FvwmScript.p/scanner.c.o",
+          "modules/FvwmScript/FvwmScript.p/script.c.o",
+          "-Wl,--as-needed",
+          "-Wl,--no-undefined",
+          "-pie",
+          "-Wl,-z,relro",
+          "-Wl,-z,now",
+          "-Wl,-z,noexecstack",
+          "-Wl,--start-group",
+          "-lm",
+          "-Wl,-rpath,/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "-Wl,-rpath-link,/tmp/fvwm-deps/libpng-1.6.59/lib",
+          "libs/libfvwm3.a",
+          "modules/FvwmScript/libWidgets.a",
+          "/usr/lib/aarch64-linux-gnu/libX11.so",
+          "/usr/lib/aarch64-linux-gnu/libXext.so",
+          "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+          "/usr/lib/aarch64-linux-gnu/libXcursor.so",
+          "/usr/lib/aarch64-linux-gnu/libXpm.so",
+          "/usr/lib/aarch64-linux-gnu/libXrender.so",
+          "/usr/lib/aarch64-linux-gnu/libXrandr.so",
+          "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+          "/usr/lib/aarch64-linux-gnu/libfreetype.so",
+          "/usr/lib/aarch64-linux-gnu/libXft.so",
+          "/usr/lib/aarch64-linux-gnu/libfribidi.so",
+          "/usr/lib/aarch64-linux-gnu/libSM.so",
+          "/usr/lib/aarch64-linux-gnu/libICE.so",
+          "-Wl,--end-group",
+          "-Wl,--wrap=main",
+          "-Wl,--wrap=yyparse",
+          "-Wl,--wrap=free",
+          "-Wl,--wrap=SendFinishedStartupNotification"
+        ],
+        "status": 0,
+        "seconds": 0.06834049899998718
+      },
+      {
+        "label": "normal-block-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_block_owner_live.py",
+          "--module",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/block-probe",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/continued/normal-block-x",
+          "--require-ownership"
+        ],
+        "status": 0,
+        "seconds": 1.3630404699999872
+      },
+      {
+        "label": "asan-group-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-color-status",
+          "tests/test-script-base-owner",
+          "tests/test-script-widget-owner",
+          "tests/test-script-property-owner",
+          "tests/test-script-message-owner",
+          "tests/test-script-binding-owner",
+          "tests/test-script-block-owner",
+          "tests/test-script-value-owner",
+          "tests/test-script-message",
+          "tests/test-script-packet",
+          "tests/test-script-base-lifecycle",
+          "tests/test-script-property-module-probe"
+        ],
+        "status": 0,
+        "seconds": 3.3556429420000313
+      },
+      {
+        "label": "asan-units",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "color-status",
+          "script-base-owner",
+          "script-widget-owner",
+          "script-property-owner",
+          "script-message-owner",
+          "script-binding-owner",
+          "script-block-owner",
+          "script-value-owner",
+          "script-message",
+          "script-packet"
+        ],
+        "status": 0,
+        "seconds": 0.1660481889998664
+      }
+    ],
+    "completion": [
+      {
+        "label": "normal-affected-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "fvwm3",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-color-status",
+          "tests/test-script-base-lifecycle"
+        ],
+        "status": 0,
+        "seconds": 2.881911446999993
+      },
+      {
+        "label": "normal-color-status",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "color-status"
+        ],
+        "status": 0,
+        "seconds": 0.17487275300004512
+      },
+      {
+        "label": "normal-base-remaining-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_base_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-base-lifecycle",
+          "--color-probe",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-color-status",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/completion/normal-base-remaining-x",
+          "--case",
+          "partial-child-id",
+          "--case",
+          "partial-widget",
+          "--case",
+          "partial-prepare",
+          "--case",
+          "init-quit",
+          "--case",
+          "event-quit",
+          "--case",
+          "periodic-quit",
+          "--case",
+          "dead-pipe"
+        ],
+        "status": 0,
+        "seconds": 1.3267859689999568
+      },
+      {
+        "label": "asan-affected-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-color-status",
+          "tests/test-script-base-lifecycle"
+        ],
+        "status": 0,
+        "seconds": 1.326388801000121
+      },
+      {
+        "label": "asan-color-status",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "color-status"
+        ],
+        "status": 0,
+        "seconds": 0.17087760899994464
+      },
+      {
+        "label": "asan-base-full-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_base_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-script-base-lifecycle",
+          "--color-probe",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-color-status",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/completion/asan-base-full-x"
+        ],
+        "status": 0,
+        "seconds": 1.7794421749999856
+      }
+    ],
+    "late": [
+      {
+        "label": "normal-late-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-script-base-lifecycle"
+        ],
+        "status": 0,
+        "seconds": 1.2045475540001007
+      },
+      {
+        "label": "normal-late-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_base_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-base-lifecycle",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/late/normal-late-x",
+          "--case",
+          "father",
+          "--case",
+          "partial-child-base",
+          "--case",
+          "init-quit",
+          "--case",
+          "event-quit",
+          "--case",
+          "periodic-quit",
+          "--case",
+          "dead-pipe"
+        ],
+        "status": 0,
+        "seconds": 1.2645657519999531
+      },
+      {
+        "label": "asan-late-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmScript/FvwmScript",
+          "tests/test-script-base-lifecycle"
+        ],
+        "status": 0,
+        "seconds": 1.2688450400000875
+      },
+      {
+        "label": "asan-late-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_base_owner_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-script-base-lifecycle",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-base-owner-20261026/late/asan-late-x",
+          "--case",
+          "father",
+          "--case",
+          "partial-child-base",
+          "--case",
+          "init-quit",
+          "--case",
+          "event-quit",
+          "--case",
+          "periodic-quit",
+          "--case",
+          "dead-pipe"
+        ],
+        "status": 0,
+        "seconds": 1.2773790330002157
+      }
+    ]
+  },
+  "recorded_candidate_command_seconds": 31.145413512000687,
+  "outputs_by_phase": {
+    "continued": {
+      "normal": {
+        "modules/FvwmScript/FvwmScript": {
+          "sha256": "be3a6b9b6a42c6c5c7a3ef36f4b3ae538dd97024d1851a1f1e89c226aef82336",
+          "bytes": 2211072
+        },
+        "tests/test-color-status": {
+          "sha256": "0e7312fda79ec33225d3eee667e515808938cfff1753ffc6fd26080486ec1d93",
+          "bytes": 725424
+        },
+        "tests/test-script-base-owner": {
+          "sha256": "0762ac913fcf989d6db5a6a952b949ea970aa8633309d42000456cb41d0ca742",
+          "bytes": 2229720
+        },
+        "tests/test-script-widget-owner": {
+          "sha256": "05bbeb715e4fde6b88da343efd8acadb587e0d4eae4cf38752a8359c0d04f955",
+          "bytes": 2242464
+        },
+        "tests/test-script-property-owner": {
+          "sha256": "71934b3caa48dce4b4b74fa6a6220eae72614458df51962abdf4a5ec4ad0ff79",
+          "bytes": 879496
+        },
+        "tests/test-script-message-owner": {
+          "sha256": "0dad718444d12298d80428d26251f643d39af6051ba808e650ae43770b41c909",
+          "bytes": 2221456
+        },
+        "tests/test-script-binding-owner": {
+          "sha256": "a9275c00b3d8692cbd7289d1321e0e0bdfc0711d0cfbfaac8ab621813f5b7a43",
+          "bytes": 2220784
+        },
+        "tests/test-script-block-owner": {
+          "sha256": "dce60a69b372aed17df0edca944b06b2fb67b90b94237f7d43d10b1223e99028",
+          "bytes": 883376
+        },
+        "tests/test-script-value-owner": {
+          "sha256": "ffeb38da5498c222aed1fc28a5d9c72fe6ffe2fa0201aaef01561ffedb4117b6",
+          "bytes": 875496
+        },
+        "tests/test-script-message": {
+          "sha256": "69d852eb05ca58d224e204deb1c43b5192803e2bd59cb560b695d90324600c8a",
+          "bytes": 82280
+        },
+        "tests/test-script-packet": {
+          "sha256": "5330a43b6c59a3d57397452f8e8ad69bc582f517810a35d75726cdbefc412a80",
+          "bytes": 87816
+        },
+        "tests/test-script-base-lifecycle": {
+          "sha256": "f2511fa7c9d76cea3b9927f4f30d65ab68a06af240ae33335f2d1374b0c0e7b8",
+          "bytes": 2236264
+        },
+        "tests/test-script-property-module-probe": {
+          "sha256": "4797dd09187ee22cf917f5c1ecf75aadc9c58d46a50db140e6e552cb4227f564",
+          "bytes": 2230528
+        }
+      },
+      "asan": {
+        "modules/FvwmScript/FvwmScript": {
+          "sha256": "ecf1e0398535f7f98b14a55b5508428e781db3dd7c7a0e50dd0af51385733958",
+          "bytes": 10696640
+        },
+        "tests/test-color-status": {
+          "sha256": "18fef639ae89148a41d3d860d87c75023b3aebff098f5422f9ffd55659949118",
+          "bytes": 4497024
+        },
+        "tests/test-script-base-owner": {
+          "sha256": "a3674c9ebc53c127edf0d563007508409802e99fe40ba18bbc5a3f38826c85c3",
+          "bytes": 10718104
+        },
+        "tests/test-script-widget-owner": {
+          "sha256": "760cda731333227701e813446fde07956c218990e9546064ee6d40840a875b6a",
+          "bytes": 10808616
+        },
+        "tests/test-script-property-owner": {
+          "sha256": "1d151b7fe5df5e2dfb46df85ca99deb454836f22b84381e03000889b3d6b49d6",
+          "bytes": 5194552
+        },
+        "tests/test-script-message-owner": {
+          "sha256": "fce56c21878e14ea565fd72c28eb5673abcf27728a530eb0421e5573234e04e6",
+          "bytes": 10710048
+        },
+        "tests/test-script-binding-owner": {
+          "sha256": "fa59e9f43cd50104677854b47a694d723e343cf0817636137e06332abe1a7fb4",
+          "bytes": 10714584
+        },
+        "tests/test-script-block-owner": {
+          "sha256": "b5ec3dc0efa3db939de6370d9228bd823f04fe1782a6d0f463e135c7c572ecac",
+          "bytes": 5268424
+        },
+        "tests/test-script-value-owner": {
+          "sha256": "908fcd686c4daaa2080edd8ca15c1c7745148b9073fedb1845200381396915b4",
+          "bytes": 5189696
+        },
+        "tests/test-script-message": {
+          "sha256": "c3d2023803927eace7b3e3ae59ecf179f6567a8082481f5620f3f93b59d371b9",
+          "bytes": 1910944
+        },
+        "tests/test-script-packet": {
+          "sha256": "5966a0496a5836700aed2f2ca3a3b4ab3c970a405a8986e0b7874639bacfc14a",
+          "bytes": 1915200
+        },
+        "tests/test-script-base-lifecycle": {
+          "sha256": "80372e4f32683948b806d054696503163b5ccad55789bb54523675366f072ece",
+          "bytes": 10729624
+        },
+        "tests/test-script-property-module-probe": {
+          "sha256": "76a16ae50e62640c044a75066f7f3274fc872bdbdec913e4f439472c89a31d86",
+          "bytes": 10795256
+        }
+      }
+    },
+    "completion": {
+      "normal": {
+        "fvwm3": {
+          "sha256": "52a02998a85777abdaa994c369bcac62555a790c1e62d5dbabe4ef86ef8f1952",
+          "bytes": 5387608
+        },
+        "modules/FvwmScript/FvwmScript": {
+          "sha256": "1f7902dc9dab6f5dc02ed11353995b893bcebaae0b50964a85425909ce02acf6",
+          "bytes": 2211224
+        },
+        "tests/test-color-status": {
+          "sha256": "605f1fc05134a411ac7ad71a57792fe1280928c5f09c177dfd38d5fa053b35a0",
+          "bytes": 1001512
+        },
+        "tests/test-script-base-lifecycle": {
+          "sha256": "3dca80efa00eeebb49146bfad2cb8ca392d62a8f99ad3663cba6c72c8671f1e1",
+          "bytes": 2236416
+        }
+      },
+      "asan": {
+        "modules/FvwmScript/FvwmScript": {
+          "sha256": "f966951ed5c9707caa089216bc7de8463095413ccce91e8870f8607bb7893244",
+          "bytes": 10696880
+        },
+        "tests/test-color-status": {
+          "sha256": "4630c131f4cb127794f23fdf7b9a79c40380f9d5b456536b05ef14b71bb21ce0",
+          "bytes": 5748288
+        },
+        "tests/test-script-base-lifecycle": {
+          "sha256": "ccd8a244369b3ff79c015ea96d7696623576e7ececba1d73287547be930a98d4",
+          "bytes": 10729872
+        }
+      }
+    },
+    "late": {
+      "normal": {
+        "modules/FvwmScript/FvwmScript": {
+          "sha256": "92ecd6dda7a0dd1548ebe4703f1537cd7d627d30164165ee30127ae21ca7ce16",
+          "bytes": 2211368
+        },
+        "tests/test-script-base-lifecycle": {
+          "sha256": "30f59fde2607786324550cc82dd99b861b2d140110e50acb300bf6d47f60b88c",
+          "bytes": 2238616
+        }
+      },
+      "asan": {
+        "modules/FvwmScript/FvwmScript": {
+          "sha256": "5d1eaf501c9e64710cb0e097095c09f91bc2c06ae846322f40ebc228f6cbf62e",
+          "bytes": 10697048
+        },
+        "tests/test-script-base-lifecycle": {
+          "sha256": "238ff3b1e21f8a6046cd310157aef774789de7b959055805fc0d8c396c02fd45",
+          "bytes": 10799472
+        }
+      }
+    }
+  },
+  "x_observations": {
+    "final/normal-base-x/evidence.json": {
+      "father": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "child": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 20,
+          "freed": 20,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "invalid-cursor": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 0,
+          "cursor_free": 0,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "colorset": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "borrowed-colorset": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "partial-child-base": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 16,
+          "freed": 16,
+          "retained": 0,
+          "cursor_create": 0,
+          "cursor_free": 0,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0
+        }
+      }
+    },
+    "completion/normal-base-remaining-x/evidence.json": {
+      "colorset-rgb-values": "passed",
+      "partial-child-id": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 17,
+          "freed": 17,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 0
+        }
+      },
+      "partial-widget": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 18,
+          "freed": 18,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 1,
+          "selection_release": 0
+        }
+      },
+      "partial-prepare": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 18,
+          "freed": 18,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 1,
+          "selection_release": 0
+        }
+      },
+      "init-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "event-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "periodic-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "dead-pipe": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0
+        }
+      }
+    },
+    "completion/asan-base-full-x/evidence.json": {
+      "colorset-rgb-values": "passed",
+      "father": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "child": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 20,
+          "freed": 20,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "invalid-cursor": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 0,
+          "cursor_free": 0,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "colorset": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "borrowed-colorset": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "partial-child-base": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 16,
+          "freed": 16,
+          "retained": 0,
+          "cursor_create": 0,
+          "cursor_free": 0,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0
+        }
+      },
+      "partial-child-id": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 17,
+          "freed": 17,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 0
+        }
+      },
+      "partial-widget": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 18,
+          "freed": 18,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 1,
+          "selection_release": 0
+        }
+      },
+      "partial-prepare": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 18,
+          "freed": 18,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 1,
+          "selection_release": 0
+        }
+      },
+      "init-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "event-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "periodic-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1
+        }
+      },
+      "dead-pipe": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0
+        }
+      }
+    },
+    "late/normal-late-x/evidence.json": {
+      "father": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 0,
+          "fallback_error_labels": 1
+        }
+      },
+      "partial-child-base": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 16,
+          "freed": 16,
+          "retained": 0,
+          "cursor_create": 0,
+          "cursor_free": 0,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0,
+          "live_error_labels": 0,
+          "fallback_error_labels": 1
+        }
+      },
+      "init-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 1,
+          "fallback_error_labels": 0
+        }
+      },
+      "event-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 1,
+          "fallback_error_labels": 0
+        }
+      },
+      "periodic-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 1,
+          "fallback_error_labels": 0
+        }
+      },
+      "dead-pipe": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0,
+          "live_error_labels": 0,
+          "fallback_error_labels": 0
+        }
+      }
+    },
+    "late/asan-late-x/evidence.json": {
+      "father": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 1,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 0,
+          "fallback_error_labels": 1
+        }
+      },
+      "partial-child-base": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 16,
+          "freed": 16,
+          "retained": 0,
+          "cursor_create": 0,
+          "cursor_free": 0,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0,
+          "live_error_labels": 0,
+          "fallback_error_labels": 1
+        }
+      },
+      "init-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 1,
+          "fallback_error_labels": 0
+        }
+      },
+      "event-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 1,
+          "fallback_error_labels": 0
+        }
+      },
+      "periodic-quit": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 6,
+          "retained": 13,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 2,
+          "selection_release": 1,
+          "live_error_labels": 1,
+          "fallback_error_labels": 0
+        }
+      },
+      "dead-pipe": {
+        "lifecycle": "passed",
+        "owners": {
+          "allocated": 19,
+          "freed": 19,
+          "retained": 0,
+          "cursor_create": 1,
+          "cursor_free": 1,
+          "gc_free": 0,
+          "destroy_callbacks": 0,
+          "selection_release": 0,
+          "live_error_labels": 0,
+          "fallback_error_labels": 0
+        }
+      }
+    },
+    "continued/normal-property-x/evidence.json": {
+      "final-shutdown": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 5,
+          "types_freed": 4,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 0
+        }
+      },
+      "before-prepare": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 5,
+          "types_freed": 3,
+          "chosen": 3,
+          "widget_strings": 20,
+          "widget_strings_freed": 20,
+          "base_retained": 0
+        }
+      },
+      "prepare-refusal": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 5,
+          "types_freed": 4,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 0
+        }
+      },
+      "dead-pipe": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 5,
+          "types_freed": 4,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 0
+        }
+      },
+      "init-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 5,
+          "types_freed": 4,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      },
+      "event-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 5,
+          "types_freed": 4,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      },
+      "periodic-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "defaults_freed": 5,
+          "types_freed": 4,
+          "chosen": 4,
+          "widget_strings": 26,
+          "widget_strings_freed": 26,
+          "base_retained": 6
+        }
+      }
+    },
+    "continued/normal-widget-x/evidence.json": {
+      "all-fifteen-startup": "passed",
+      "all-fifteen-font-change": "passed",
+      "named-to-colorset": "passed",
+      "colorset-to-named": "passed",
+      "font-option-update": "passed",
+      "font-recovery": "passed",
+      "normal-exit": "passed",
+      "before-prepare": "passed",
+      "prepare-refusal": "passed"
+    },
+    "continued/normal-message-x/evidence.json": {
+      "silent-admitted": 40,
+      "silent": {
+        "status": "passed",
+        "seconds": 2.038003389000096
+      },
+      "drain-admitted": 40,
+      "drain": {
+        "status": "passed",
+        "seconds": 0.05671824799992464
+      },
+      "invalid-admitted": 40,
+      "invalid-refusals": 115,
+      "invalid": {
+        "status": "passed",
+        "seconds": 2.0526434419998623
+      },
+      "cancel-admitted": 40,
+      "cancel": {
+        "status": "passed",
+        "seconds": 0.0015935900000840775
+      },
+      "empty": {
+        "status": "passed",
+        "seconds": 0.05135393699993074
+      }
+    },
+    "continued/normal-block-x/evidence.json": {
+      "final-shutdown": {
+        "lifecycle": "passed",
+        "ownership": {
+          "owned": 34,
+          "freed": 34,
+          "retained": 0,
+          "init_released": true
+        }
+      },
+      "partial-startup": {
+        "lifecycle": "passed",
+        "ownership": {
+          "owned": 34,
+          "freed": 34,
+          "retained": 0,
+          "init_released": true
+        }
+      },
+      "dead-pipe": {
+        "lifecycle": "passed",
+        "ownership": {
+          "owned": 34,
+          "freed": 34,
+          "retained": 0,
+          "init_released": true
+        }
+      },
+      "init-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "owned": 34,
+          "freed": 0,
+          "retained": 34,
+          "init_released": false
+        }
+      },
+      "event-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "owned": 34,
+          "freed": 22,
+          "retained": 12,
+          "init_released": true
+        }
+      },
+      "periodic-quit": {
+        "lifecycle": "passed",
+        "ownership": {
+          "owned": 34,
+          "freed": 22,
+          "retained": 12,
+          "init_released": true
+        }
+      }
+    },
+    "continued/normal-packet-x/evidence.json": {
+      "popup-eof": "passed",
+      "popup-term": "passed",
+      "fragmented-packet": "passed",
+      "periodic-timer": "passed",
+      "swallow-empty": "passed",
+      "swallow-client": "passed",
+      "high-descriptor": "passed"
+    }
+  },
+  "compiler_profiles": {
+    "normal": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "asan": {
+      "host": {
+        "c": {
+          "id": "clang",
+          "exelist": [
+            "clang"
+          ],
+          "linker_exelist": [
+            "clang"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "18.1.3",
+          "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "clang",
+          "exelist": [
+            "clang"
+          ],
+          "linker_exelist": [
+            "clang"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "18.1.3",
+          "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "linker_id": "ld.bfd"
+        }
+      }
+    }
+  },
+  "baseline_control": {
+    "cursor": "actual unchanged production OpenWindow creates1 attaches1 frees0; expected assertion abort(-6)",
+    "child_first": "invalid brace Icon fixture: parse refusal1, not a product failure",
+    "child_second": "wrong32768 window-size boundary was valid; entered Init then exited-6; no selected refusal/crash claim",
+    "child_final": "65536 window-size refusal exits1 with geometry diagnostic, no Init; private anticipated-11 assertion failed; NO crash reproduced"
+  },
+  "corrections": {
+    "fixture": "WriteToFile metadata requires payload extraction; partial-child-id reaches QuitFunc but not Init; diagnostic is unavailable under /dev/null logging. Original failed observer retained,6passes reused,remaining7 run.",
+    "rgb": "separate review found zero/uninitialized RGB in colorset branch. Query selected pixel before allocation; unit and actual-X status/legacy four-color checks pass on both profiles.",
+    "late_error": "lead found diagnostic base dereference after release. Stable ScriptName fallback; actual installed handler synthetic BadValue observer passes six normal/scoped exits. Real fatal helper delegates outside injection."
+  },
+  "composed_coverage": {
+    "normal_units": 10,
+    "asan_units": 10,
+    "unit_composition": "nine unchanged-owner/non-colorset-name unit paths retained; corrected color-status rerun per profile supersedes initial color test",
+    "normal_base_lifecycle": 13,
+    "normal_base_composition": "six initial passing cases plus seven corrected continuation cases; unchanged ownership paths retained after isolated colorset query and late diagnostic fixes",
+    "asan_base_lifecycle": 13,
+    "real_color_profiles": 2,
+    "late_error_cases_per_profile": 6,
+    "retained_regressions": "normal property7,widget9,message5,packet7groups,block6; unchanged named-color/ownership paths do not exercise corrected colorset-reference allocation or late fatal-label branch"
+  },
+  "sanitizers": {
+    "units": "ASAN detect_leaks=1:halt_on_error=1; UBSAN halt_on_error=1:print_stacktrace=1",
+    "x": "ASAN detect_leaks=0:halt_on_error=1; sameUBSAN. Whole-module/font-cache leaks out of scope; exact selected owner assertions remain active."
+  },
+  "archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/m5-next/native-evidence.tgz",
+    "sha256": "3912f1318c805878dda205978dc242ec410723fa21bd6150e182f16638139ded",
+    "bytes": 3681706,
+    "payloads": 393,
+    "manifest": 1,
+    "all_payload_hash_size_mode_and_gzip_crc_verified": true
+  },
+  "review": {
+    "source": "independent source, raw-evidence and report review passed; no unresolved findings",
+    "requested_routing": "Astra/high analysis, Sol/high implementation and separate Sol/high review",
+    "runtime_model_metadata": "unavailable/unverified",
+    "verified": "all393native+23performance payload identities/modes;13source files;all22commands/totals,profiles,rawXcounts and performance medians",
+    "correction": "packet count corrected8to7 groups from raw evidence; no runtime repeat"
+  },
+  "limits": [
+    "No parser-wide/global font-cache/budget cleanup acceptance",
+    "XOpenDisplay failure before atexit registration outside scope",
+    "No new UI, configuration syntax, module protocol, dependency or install-rule change",
+    "No fresh BSD/AMD64/full compiler-feature-install-theme matrix",
+    "Guest execution is not native-CPU/hardware/toolkit/compositor/release qualification",
+    "Broad issues4,6,9,25,34 remain open;31,35,36 remain completed",
+    "Daybreak-blocked work parked; no implementation/diagnosis/test pickup",
+    "Periodic PR248-to-253 comparison complete before source upload;PR253reference0/5"
+  ],
+  "guest_duplicate_retirement": {
+    "status": "completed",
+    "payloads": 393,
+    "archive_verified_again_before_unlink": true,
+    "preserved": "canonical host archive, source/build caches, stages, VM disks and all performance references"
+  }
+}

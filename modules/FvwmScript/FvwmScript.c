@@ -128,7 +128,94 @@ extern void InitCom(void);
 static void TryToFind(char *filename);
 static void ReadFvwmScriptArg(int argc, char **argv, int IsFather);
 
+/* Kept as a borrowed alias only while parsing module defaults. */
 char *default_cursor;
+
+void script_base_colors_clear(X11base *base)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (base->color_owned[i])
+			PictureFreeColors(dpy, Pcmap, &base->TabColor[i],
+				1, 0, True);
+		base->color_owned[i] = False;
+	}
+}
+
+static void script_base_colors_init(X11base *base)
+{
+	char *names[] = {base->backcolor, base->forecolor,
+		base->shadcolor, base->hilicolor};
+
+	if (base->colorset >= 0)
+	{
+		base->TabColor[fore] = GetColorset(base->colorset)->fg;
+		base->TabColor[back] = GetColorset(base->colorset)->bg;
+		base->TabColor[shad] = GetColorset(base->colorset)->shadow;
+		base->TabColor[hili] = GetColorset(base->colorset)->hilite;
+	}
+	else
+		for (int i = 0; i < 4; i++)
+			base->color_owned[i] =
+				fvwmlib_get_color(names[i], &base->TabColor[i]);
+}
+
+/* Callers finish widget callbacks first: Swallow borrows the base GC.
+ * Active commands retain their base and parser aliases until process exit. */
+Bool script_base_release(unsigned int active_depth, Bool release_x)
+{
+	if (active_depth != 0)
+		return False;
+	if (x11base != NULL)
+	{
+		if (release_x)
+		{
+			script_base_colors_clear(x11base);
+			if (x11base->gc != NULL)
+				XFreeGC(dpy, x11base->gc);
+		}
+		free(x11base->font);
+		free(x11base->forecolor);
+		free(x11base->backcolor);
+		free(x11base->shadcolor);
+		free(x11base->hilicolor);
+		free(x11base->cursor);
+		free(x11base->icon);
+		free(x11base->title);
+		for (size_t i = 0; i < sizeof(x11base->TabScriptId) /
+		    sizeof(x11base->TabScriptId[0]); i++)
+			free(x11base->TabScriptId[i]);
+		free(x11base);
+		x11base = NULL;
+	}
+	/* Header strings that have not transferred during a partial BuildGUI. */
+	if (scriptprop != NULL)
+	{
+		free(scriptprop->font);
+		scriptprop->font = NULL;
+		free(scriptprop->forecolor);
+		scriptprop->forecolor = NULL;
+		free(scriptprop->backcolor);
+		scriptprop->backcolor = NULL;
+		free(scriptprop->shadcolor);
+		scriptprop->shadcolor = NULL;
+		free(scriptprop->hilicolor);
+		scriptprop->hilicolor = NULL;
+		free(scriptprop->icon);
+		scriptprop->icon = NULL;
+		free(scriptprop->titlewin);
+		scriptprop->titlewin = NULL;
+	}
+	default_cursor = NULL;
+	free(Scrapt);
+	Scrapt = NULL;
+	/* The record's strings, GC, colorset and clip region are borrowed. */
+	free(FwinString);
+	FwinString = NULL;
+	free(keyboard_focus_title);
+	keyboard_focus_title = NULL;
+	return True;
+}
 
 /* Callbacks borrow trees, values, binding actions and the latest message.
  * Retire them after callbacks finish; command exit retains active aliases. */
@@ -170,7 +257,6 @@ ShutdownX(void)
   XEvent event;
   struct pollfd ready;
   struct timespec start, now;
-  Atom MyAtom;
 
 #ifdef DEBUG                    /* For debugging */
   XSync(dpy,0);
@@ -184,6 +270,7 @@ ShutdownX(void)
   {
     script_message_clear(&BuffSend);
     release_script_resources();
+    script_base_release(execution.depth, False);
     return;
   }
 
@@ -230,8 +317,12 @@ ShutdownX(void)
     }
   script_message_clear(&BuffSend);
 
-  MyAtom = XInternAtom(dpy, x11base->TabScriptId[1], False);
-  XSetSelectionOwner(dpy, MyAtom, x11base->root, CurrentTime);
+  if (x11base->script_selection != None)
+  {
+    XSetSelectionOwner(dpy, x11base->script_selection,
+                      x11base->root, CurrentTime);
+    x11base->script_selection = None;
+  }
   XFlush(dpy);
 
   for (i=0; i<initialized_widgets; i++)
@@ -241,6 +332,7 @@ ShutdownX(void)
   for (i=0; i<(int)(sizeof(tabxobj) / sizeof(tabxobj[0])); i++)
     script_widget_release(&tabxobj[i], i < initialized_widgets);
   release_script_resources();
+  script_base_release(execution.depth, True);
   XFlush(dpy);
   fsm_close();
   XCloseDisplay(dpy);
@@ -510,7 +602,10 @@ static int myErrorHandler(Display *dpy, XErrorEvent *event)
      (event->error_code == FRenderGetErrorCodeBase() + FRenderBadPicture))
     return 0;
 
-  PrintXErrorAndCoredump(dpy, event, x11base->title);
+  /* Shutdown can dispatch a final error after the base owner has retired. */
+  PrintXErrorAndCoredump(dpy, event,
+                       x11base != NULL && x11base->title != NULL ?
+                       x11base->title : ScriptName);
 
   /* return (*oldErrorHandler)(dpy,event); */
   return 0;
@@ -666,20 +761,10 @@ void OpenWindow (void)
   unsigned long mask;
   XClassHint classHints;
   XSetWindowAttributes Attr;
+  Cursor cursor = None;
   int xcnum;
 
-  /* Allocation for colors */
-  if (x11base->colorset >= 0) {
-    x11base->TabColor[fore] = GetColorset(x11base->colorset)->fg;
-    x11base->TabColor[back] = GetColorset(x11base->colorset)->bg;
-    x11base->TabColor[shad] = GetColorset(x11base->colorset)->shadow;
-    x11base->TabColor[hili] = GetColorset(x11base->colorset)->hilite;
-  } else {
-    x11base->TabColor[fore] = GetColor(x11base->forecolor);
-    x11base->TabColor[back] = GetColor(x11base->backcolor);
-    x11base->TabColor[shad] = GetColor(x11base->shadcolor);
-    x11base->TabColor[hili] = GetColor(x11base->hilicolor);
-  }
+  script_base_colors_init(x11base);
 
   /* Window properties definition */
   mask = CWBackPixel | CWBorderPixel | CWColormap;
@@ -689,17 +774,19 @@ void OpenWindow (void)
 
   xcnum = fvwmCursorNameToIndex(default_cursor);
   if (xcnum != -1) {
-    Attr.cursor = XCreateFontCursor(dpy, xcnum);
+    cursor = XCreateFontCursor(dpy, xcnum);
+    Attr.cursor = cursor;
     mask |= CWCursor;
-  } else {
-    /* Bad name or value, clear the config slot. */
-    x11base->cursor = NULL;
   }
-  free(default_cursor);
+  free(x11base->cursor);
+  x11base->cursor = NULL;
+  default_cursor = NULL;
 
   x11base->win=XCreateWindow(
     dpy, x11base->root, x11base->size.x,x11base->size.y, x11base->size.width,
     x11base->size.height, 0, Pdepth, InputOutput, Pvisual, mask, &Attr);
+  if (cursor != None)
+    XFreeCursor(dpy, cursor);
   x11base->gc=fvwmlib_XCreateGC(dpy,x11base->win,0,NULL);
   if (x11base->colorset >= 0)
     SetWindowBackground(
@@ -823,6 +910,7 @@ void BuildGUI(int IsFather, int argc, char **argv)
   {
     free(x11base->font);
     x11base->font = scriptprop->font;
+    scriptprop->font = NULL;
   }
 
   if (scriptprop->forecolor != NULL)
@@ -830,29 +918,34 @@ void BuildGUI(int IsFather, int argc, char **argv)
     x11base->colorset = -1;
     free(x11base->forecolor);
     x11base->forecolor = scriptprop->forecolor;
+    scriptprop->forecolor = NULL;
   }
   if (scriptprop->backcolor != NULL)
   {
     x11base->colorset = -1;
     free(x11base->backcolor);
     x11base->backcolor = scriptprop->backcolor;
+    scriptprop->backcolor = NULL;
   }
   if (scriptprop->shadcolor != NULL)
   {
     x11base->colorset=-1;
     free(x11base->shadcolor);
     x11base->shadcolor = scriptprop->shadcolor;
+    scriptprop->shadcolor = NULL;
   }
   if (scriptprop->hilicolor != NULL)
   {
     x11base->colorset=-1;
     free(x11base->hilicolor);
     x11base->hilicolor = scriptprop->hilicolor;
+    scriptprop->hilicolor = NULL;
   }
   if (scriptprop->colorset != -1)
     x11base->colorset = scriptprop->colorset;
 
   x11base->icon = scriptprop->icon;
+  scriptprop->icon = NULL;
 
   {
     int sx;
@@ -874,6 +967,7 @@ void BuildGUI(int IsFather, int argc, char **argv)
   x11base->size.width = scriptprop->width;
   x11base->size.height = scriptprop->height;
   x11base->title = scriptprop->titlewin;
+  scriptprop->titlewin = NULL;
 
   /* Window initialization */
   OpenWindow();
@@ -1762,16 +1856,16 @@ void MainLoop (void)
 
 static void ReadFvwmScriptArg(int argc, char **argv,int IsFather)
 {
-  int i;
   Atom myatom;
-
-  for (i=2; i<100; i++)
-    x11base->TabScriptId[i]=NULL;
 
   if (IsFather)                 /* Father case */
   {
     myatom = XInternAtom(dpy,x11base->TabScriptId[1],True);
-    XSetSelectionOwner(dpy, myatom, x11base->win, CurrentTime);
+    if (myatom != None)
+    {
+      XSetSelectionOwner(dpy, myatom, x11base->win, CurrentTime);
+      x11base->script_selection = myatom;
+    }
   }
   else
   {                             /* Son case */
@@ -1787,9 +1881,14 @@ static void ReadFvwmScriptArg(int argc, char **argv,int IsFather)
     free(x11base->TabScriptId[0]);
     xasprintf(&x11base->TabScriptId[0], "%s", a7_cpy);
     free(a7_cpy);
-    x11base->TabScriptId[1] = argv[7];
+    free(x11base->TabScriptId[1]);
+    x11base->TabScriptId[1] = fxstrdup(argv[7]);
     myatom=XInternAtom(dpy, x11base->TabScriptId[1], True);
-    XSetSelectionOwner(dpy, myatom, x11base->win, CurrentTime);
+    if (myatom != None)
+    {
+      XSetSelectionOwner(dpy, myatom, x11base->win, CurrentTime);
+      x11base->script_selection = myatom;
+    }
   }
 }
 

@@ -448,10 +448,13 @@ static char *colorset_names[] =
 	NULL
 };
 
-Pixel GetSimpleColor(char *name)
+static Bool get_simple_color(char *name, Pixel *pixel)
 {
 	XColor color;
 	Bool is_illegal_rgb = False;
+	Bool allocated = False;
+
+	*pixel = 0;
 
 	memset(&color, 0, sizeof(color));
 	/* This is necessary because some X servers coredump when presented a
@@ -472,27 +475,34 @@ Pixel GetSimpleColor(char *name)
 
 	if (is_illegal_rgb)
 	{
-		fvwm_debug(__func__, "Illegal RGB format \"%s\"\n", name);
+		fvwm_debug("GetSimpleColor", "Illegal RGB format \"%s\"\n", name);
 	}
 	else if (!XParseColor (Pdpy, Pcmap, name, &color))
 	{
-		fvwm_debug(__func__, "Cannot parse color \"%s\"\n",
+		fvwm_debug("GetSimpleColor", "Cannot parse color \"%s\"\n",
 			   name ? name : "<blank>");
 	}
 	else if (!PictureAllocColor(Pdpy, Pcmap, &color, True))
 	{
-		fvwm_debug(__func__, "Cannot allocate color \"%s\"\n", name);
+		fvwm_debug("GetSimpleColor", "Cannot allocate color \"%s\"\n", name);
 	}
-	return color.pixel;
+	else
+	{
+		allocated = True;
+	}
+	*pixel = color.pixel;
+	return allocated;
 }
 
-Pixel GetColor(char *name)
+Bool fvwmlib_get_color(char *name, Pixel *pixel)
 {
 	int i;
 	int n;
 	int cs;
 	char *rest;
-	XColor color;
+	XColor color = {0};
+
+	*pixel = 0;
 
 	switch ((i = GetTokenIndex(name, colorset_names, -1, &rest)))
 	{
@@ -503,34 +513,34 @@ Pixel GetColor(char *name)
 		if (!isdigit(*rest) || (*rest == '0' && *(rest + 1) != 0))
 		{
 			/* not a non-negative integer without leading zeros */
-			fvwm_debug(__func__,
+			fvwm_debug("GetColor",
 				   "Invalid colorset number in color '%s'\n",
 				   name);
-			return 0;
+			return False;
 		}
 		char *end;
 		if (!ParseColorsetId(rest, &end, &cs))
 		{
-			return 0;
+			return False;
 		}
 		n = end - rest;
 		if (*(rest + n) != ']')
 		{
-			fvwm_debug(__func__,
+			fvwm_debug("GetColor",
 				   "No closing brace after '%d' in color '%s'\n",
 				   cs, name);
-			return 0;
+			return False;
 		}
 		if (*(rest + n + 1) != 0)
 		{
-			fvwm_debug(__func__,
+			fvwm_debug("GetColor",
 				   "Trailing characters after brace in"
 				   " color '%s'\n", name);
-			return 0;
+			return False;
 		}
 		if (!AllocColorset(cs))
 		{
-			return 0;
+			return False;
 		}
 		switch (i)
 		{
@@ -547,19 +557,44 @@ Pixel GetColor(char *name)
 			color.pixel = GetColorset(cs)->shadow;
 			break;
 		}
+		/* Colorsets lend a pixel, while PictureAllocColor consumes RGB.
+		 * Resolve the borrowed color before acquiring our own reference. */
+		if (!XQueryColor(Pdpy, Pcmap, &color))
+		{
+			fvwm_debug("GetColor", "Cannot query color %d from"
+				   " colorset %d\n", i, cs);
+			return False;
+		}
 		if (!PictureAllocColor(Pdpy, Pcmap, &color, True))
 		{
-			fvwm_debug(__func__, "Cannot allocate color %d from"
+			fvwm_debug("GetColor", "Cannot allocate color %d from"
 				   " colorset %d\n", i, cs);
-			return 0;
+			return False;
 		}
-		return color.pixel;
+		*pixel = color.pixel;
+		return True;
 
 	default:
 		break;
 	}
 
-	return GetSimpleColor(name);
+	return get_simple_color(name, pixel);
+}
+
+Pixel GetSimpleColor(char *name)
+{
+	Pixel pixel;
+
+	get_simple_color(name, &pixel);
+	return pixel;
+}
+
+Pixel GetColor(char *name)
+{
+	Pixel pixel;
+
+	fvwmlib_get_color(name, &pixel);
+	return pixel;
 }
 
 /* Allocates the color from the input Pixel again */

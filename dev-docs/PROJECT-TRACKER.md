@@ -1,6 +1,6 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-25. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-26. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
@@ -94,11 +94,55 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Script base-window/runtime ownership — 2026-10-26
+
+Owner: Cam; `codex/m5-script-base-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
+Status: composed focused checks and separate source/raw-evidence/report review
+pass; ready for signed author-DCO PR delivery.
+Complete the base-resource family explicitly excluded from prior widget teardown:
+cursor caller reference/config alias, initialized named colors versus borrowed
+colorsets, shared base GC, transferred defaults/parser strings, script identities
+and scratch records. Preserve widget-before-base destruction, callback retention,
+selection/message grace order, borrowed module arguments and dead-pipe X policy.
+Guard partial child startup before selection registration. Parser-wide errors,
+font caches, budgets, event-loop redesign and all Daybreak-blocked families are
+outside this checkpoint and are not inspected or advanced.
+
+Acceptance: actual-old-object controls before candidate upload; meaningful
+production-linked owner checks for exact-once release, partial/repeated cleanup,
+color transitions, father/child IDs and active callback retention; one incremental
+Linux profile, scoped ownership ASan/UBSan and affected actual-X lifecycle tests.
+One combined focused gate, no automatic OS/compiler/feature/install/theme matrix.
+No new UI or configuration behavior; screenshots apply only if presentation changes.
+Broader #4/#34 remain open; completed #31/#35/#36 remain closed.
+
+The exact old-object cursor control reproduces one create/attachment with zero
+caller-reference releases. Child refusal controls establish no crash. Explicit
+base ownership, parser transfers, registered selection cleanup and active/dead-pipe
+lifetimes pass composed normal/scoped units and 13 lifecycle cases per profile.
+Real X verifies four colorset RGB clones; source review resolved the RGB query
+contract, and six affected exits per profile check late error-label fallback.
+Successful unaffected checks are retained; original observer errors remain
+explicit. All 580 final identities and 393 canonical payloads are verified.
+Separate final review passes; verified guest duplicates are retired.
+[Base-owner evidence](verification/VERIFICATION-2026-10-26-M5-SCRIPT-BASE.md).
+
+Due [PR248–253 performance observation](verification/PERFORMANCE-2026-10-26-PR253.md)
+is complete before candidate upload with no rebuild: Script ready medians overlap,
+RSS +64 KiB, anonymous RSS unchanged and smaps private dirty +512 KiB. Aggregate
+memory fields do not identify allocation growth/leaks. Core section sum -13296 B;
+Script +7806 B. Browser bytes remain identical; no whole-WM speed claim.
+PR253 becomes the next preserved reference at 0/5. Scope/risk review retains focused
+coverage for portable private deletions/ownership; full milestone/release and
+native-CPU/hardware/toolkit/compositor gates stay pending. No counter-driven matrix.
+
 ## M5 core private focus/geometry interfaces — 2026-10-25
 
 Owner: Cam; `codex/m5-core-private-interfaces`; CLEAN-01 #34.
-Status: focused checks and separate final source/raw-evidence/report review pass;
-ready for signed author-DCO PR delivery.
+Status: merged in PR253 as `965787c6b4e0da2f3115d3df724a0778609ed691`;
+canonical signature/DCO and reviewed tree
+`660c3a6414b8a49eb700aae320f2e5d7713dc53b` verified; branch retired,
+GitHub/Project Done. Focused checks and separate final review passed.
 Finite outcome after merged PR252: remove uncalled
 _ForceDeleteFocus, focus_grab_buttons_on_pointer_window,
 get_shaded_client_window_pos and update_relative_geometry bodies/prototypes;

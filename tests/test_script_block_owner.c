@@ -381,7 +381,7 @@ static void report_module_ownership(void)
 	if (retained == 0)
 	{
 		assert(TabIObj == NULL && TabCObj == NULL);
-		assert(x11base->periodictasks == NULL && x11base->quitfunc == NULL);
+		assert(x11base == NULL);
 		if (scriptprop != NULL)
 			assert(scriptprop->initbloc == NULL &&
 				scriptprop->periodictasks == NULL &&

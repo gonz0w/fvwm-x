@@ -2807,6 +2807,65 @@ script_binding_owner_test = executable(
 )
 test('script-binding-owner', script_binding_owner_test)
 
+color_status_test = executable(
+    'test-color-status', 'test_color_status.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=XParseColor', '-Wl,--wrap=XQueryColor',
+        '-Wl,--wrap=PictureAllocColor'],
+    c_args: ['-UNDEBUG'],
+)
+test('color-status', color_status_test)
+
+script_base_owner_test = executable(
+    'test-script-base-owner', 'test_script_base_owner.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=XCreateFontCursor', '-Wl,--wrap=XFreeCursor',
+        '-Wl,--wrap=XCreateWindow', '-Wl,--wrap=fvwmlib_XCreateGC',
+        '-Wl,--wrap=XFreeGC', '-Wl,--wrap=fvwmlib_get_color',
+        '-Wl,--wrap=GetColor', '-Wl,--wrap=XSelectInput',
+        '-Wl,--wrap=XStringListToTextProperty', '-Wl,--wrap=XSetWMProperties',
+        '-Wl,--wrap=XInternAtom', '-Wl,--wrap=XSetWMProtocols',
+        '-Wl,--wrap=SetWindowBackground', '-Wl,--wrap=PictureFreeColors'],
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+)
+test('script-base-owner', script_base_owner_test)
+
+script_base_lifecycle_probe = executable(
+    'test-script-base-lifecycle', 'test_script_base_lifecycle.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=yyparse', '-Wl,--wrap=free',
+        '-Wl,--wrap=CopyStringWithQuotes', '-Wl,--wrap=ChooseFunction',
+        '-Wl,--wrap=XCreateFontCursor', '-Wl,--wrap=XFreeCursor',
+        '-Wl,--wrap=fvwmlib_XCreateGC', '-Wl,--wrap=XFreeGC',
+        '-Wl,--wrap=XInternAtom', '-Wl,--wrap=XSetSelectionOwner',
+        '-Wl,--wrap=script_widget_prepare', '-Wl,--wrap=SendText',
+        '-Wl,--wrap=SendFinishedStartupNotification', '-Wl,--wrap=XFlush',
+        '-Wl,--wrap=XUnmapWindow', '-Wl,--wrap=XCloseDisplay',
+        '-Wl,--wrap=XSetErrorHandler', '-Wl,--wrap=PrintXErrorAndCoredump',
+        '-Wl,--wrap=PictureFreeColors'],
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('script-base-owner-xvfb', py,
+        args: [files('live_x/script_base_owner_live.py'), '--module',
+            script_base_lifecycle_probe, '--color-probe', color_status_test,
+            '--artifacts-dir',
+            meson.current_build_dir() / 'live-x-artifacts' / 'script-base-owner'],
+        depends: [script_base_lifecycle_probe, color_status_test],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 120)
+endif
+
 script_widget_owner_test = executable(
     'test-script-widget-owner', 'test_script_widget_owner.c',
     objects: fvwm_script.extract_all_objects(recursive: false),

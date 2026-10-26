@@ -292,12 +292,22 @@ void __wrap_ChooseFunction(struct XObj *object, char *type)
 	assert(parsed && object->id == (int)chosen + 1 && type == property->type);
 	assert(watched(type) && strcmp(type, "ItemDraw") == 0);
 	assert(released[DEFAULT_OWNER] == (baseline ? 0 : 5));
-	assert(x11base->font == scriptprop->font &&
-		x11base->forecolor == scriptprop->forecolor &&
-		x11base->backcolor == scriptprop->backcolor &&
-		x11base->shadcolor == scriptprop->shadcolor &&
-		x11base->hilicolor == scriptprop->hilicolor &&
-		x11base->title == scriptprop->titlewin);
+	if (baseline)
+		assert(x11base->font == scriptprop->font &&
+			x11base->forecolor == scriptprop->forecolor &&
+			x11base->backcolor == scriptprop->backcolor &&
+			x11base->shadcolor == scriptprop->shadcolor &&
+			x11base->hilicolor == scriptprop->hilicolor &&
+			x11base->title == scriptprop->titlewin);
+	else
+	{
+		assert(scriptprop->font == NULL && scriptprop->forecolor == NULL &&
+			scriptprop->backcolor == NULL && scriptprop->shadcolor == NULL &&
+			scriptprop->hilicolor == NULL && scriptprop->titlewin == NULL);
+		assert(watched(x11base->font) && watched(x11base->forecolor) &&
+			watched(x11base->backcolor) && watched(x11base->shadcolor) &&
+			watched(x11base->hilicolor) && watched(x11base->title));
+	}
 	assert(x11base->colorset == 0);
 	assert(object->colorset == (chosen == 2 ? -1 : 0));
 	assert(strcmp(object->font, "fixed") == 0);
@@ -324,9 +334,17 @@ static void report_owners(void)
 	assert(released[DEFAULT_OWNER] == (baseline ? 0 : 5));
 	assert(released[TYPE_OWNER] == (baseline ? 0 : chosen));
 	assert(released[FINAL_OWNER] == allocated[FINAL_OWNER]);
-	assert(released[BASE_OWNER] == 0 && allocated[BASE_OWNER] == 6);
-	assert(strcmp(x11base->title, "PropertyOwners") == 0 &&
-		watched(x11base->title));
+	bool active = strcmp(scenario, "init-quit") == 0 ||
+		strcmp(scenario, "event-quit") == 0 ||
+		strcmp(scenario, "periodic-quit") == 0;
+
+	assert(allocated[BASE_OWNER] == 6);
+	assert(released[BASE_OWNER] == (baseline || active ? 0 : 6));
+	if (baseline || active)
+		assert(strcmp(x11base->title, "PropertyOwners") == 0 &&
+			watched(x11base->title));
+	else
+		assert(x11base == NULL);
 	report = fopen(path, "w");
 	assert(report != NULL);
 	fprintf(report, "{\"defaults_freed\":%zu,\"types_freed\":%zu,"

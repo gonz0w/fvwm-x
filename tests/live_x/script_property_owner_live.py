@@ -181,7 +181,9 @@ def run(args):
                             else observed['chosen'])
                         assert (observed['widget_strings_freed'] ==
                             observed['widget_strings'])
-                        assert observed['base_retained'] == 6
+                        active = label in ('init-quit', 'event-quit', 'periodic-quit')
+                        assert observed['base_retained'] == (
+                            6 if args.baseline or active else 0)
                         entry['ownership'] = observed
                     evidence[label] = entry
                 finally:

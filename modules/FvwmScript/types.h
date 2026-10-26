@@ -155,6 +155,8 @@ typedef struct
   Window win ;
   GC gc ;
   Pixel TabColor[4];
+  Bool color_owned[4];           /* Successful named-color allocations only. */
+  Atom script_selection;        /* None until communication is registered. */
   XSizeHints size;
   char *backcolor;
   char *forecolor;
@@ -168,12 +170,12 @@ typedef struct
   Bloc *periodictasks;
   Bloc *quitfunc;
   int HaveXSelection;
-  char* TabScriptId[999];
+  char* TabScriptId[999];        /* Every populated identifier is owned. */
   int NbChild;
   time_t BeginTime;
   int command_timeout_ms;
   int fifo_timeout_ms;
-  char *TabArg[20];
+  char *TabArg[20];              /* Borrowed module argument storage. */
   Bool swallowed;
   Window swallower_win;
 } X11base ;
@@ -223,6 +225,9 @@ void ChooseFunction(struct XObj *xobj,char *type);
 
 /* Icon resources belong to the widget, independently of its initialization. */
 void script_icon_clear(struct XObj *xobj);
+
+void script_base_colors_clear(X11base *base);
+Bool script_base_release(unsigned int active_depth, Bool release_x);
 
 void SendMsg(struct XObj *xobj,int TypeMsg);
 

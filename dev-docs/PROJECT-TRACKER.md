@@ -94,12 +94,48 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 module private drawing/keyboard interfaces — 2026-10-25
+
+Owner: Cam; `codex/m5-module-private-interfaces`; CLEAN-01 #34.
+Status: focused checks and separate final source/raw-evidence review pass;
+ready for signed author-DCO PR delivery. Finite outcome after merged PR251: remove unused Script
+DrawArrowE/W bodies/prototypes, the unused Buttons buttons_keyboard_enabled getter
+and prototype, and orphan Buttons expand_action / Ident change_defaults
+prototypes. These are three bodies and five declarations across six private
+source/header files. Preserve active DrawArrowN/S, widget registration, Buttons
+navigation/setter/event/focus/pressed/action expansion and Ident configuration.
+No configuration, installed API, layout/rendering policy or dependency changes.
+
+Acceptance: caller/config inventory and actual object/archive symbols prove the
+absence of consumers; exact deletion spans reconstruct retained source. Removed
+symbols disappear while all other definitions remain. One normal Linux
+incremental profile and existing Script widgets/text-list, Buttons keyboard and
+Ident config X checks; no new tests or automatic sanitizer/platform matrix.
+Separate final source/evidence review. Broader #34 stays open; PR248 reference
+3/5, 4/5 on this candidate merge. Parked Backer/pathname and deferred Form font
+work remain excluded and are not retried. Completed #31/#35/#36 stay closed.
+
+The source/object inventories prove three unused definitions and two orphan names;
+exact spans preserve retained source while removing 96 lines. Object/archive and
+executable defined-symbol comparisons remove exactly three text symbols, retaining
+all other names/types. All four existing X fixtures pass in one 31.508-second
+combined checkpoint. All 572 input identities and 107 canonical payloads are
+verified; duplicate guest captures are retired. [Module-interface evidence](verification/VERIFICATION-2026-10-25-M5-MODULE-INTERFACES.md).
+A host-only result filename assumption is corrected without rerunning runtime
+gates. Separate final source/raw-evidence review passes with no remaining findings.
+
+Closure audit: existing #6 DATA, #9 INPUT, #25 DRAW and #34 CLEAN records still
+state broader remaining acceptance; no new broad issue closure is justified by
+these completed private-interface slices. Preserve their accepted components.
+
 ## M5 IconMan private-interface retirement — 2026-10-25
 
 Owner: Cam; `codex/m5-iconman-private-interfaces`; CLEAN-01 #34.
-Status: focused checks and separate final source/raw-evidence review pass;
-ready for signed author-DCO PR delivery.
-Independent finite outcome after merged PR250: remove unused
+Status: merged in PR251 as `5093a0fa8aa6ff294545de2342519eace81d4530`;
+canonical signature/DCO and reviewed tree
+`6777adaa17929837f0cb3eb4554fe0cc8ea06009` verified; branch retired,
+GitHub/Project Done. Focused checks and separate review passed. PR248 periodic
+reference is 3/5 after this merge. Independent finite outcome after merged PR250: remove unused
 `unmap_manager` and `set_win_state` bodies/declarations plus five orphan private
 prototypes: `which_box`, `draw_added_icon`, `draw_deleted_icon`,
 `expand_weighted_sorts`, `update_window_stuff`. Keep all active mapping/state/

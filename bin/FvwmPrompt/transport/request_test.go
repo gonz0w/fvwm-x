@@ -3,6 +3,7 @@ package transport
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"net"
 	"os"
 	"path/filepath"
@@ -11,6 +12,14 @@ import (
 )
 
 func TestRequestCancellationClosesAndJoinsReader(t *testing.T) {
+	for _, test := range []struct {
+		name string
+		call func(context.Context, string, string) (json.RawMessage, error)
+	}{{"request", Request}, {"query", Query}} {
+		t.Run(test.name, func(t *testing.T) { requestCancellation(t, test.call) })
+	}
+}
+func requestCancellation(t *testing.T, call func(context.Context, string, string) (json.RawMessage, error)) {
 	root, err := os.MkdirTemp("", "mflrpc-")
 	if err != nil {
 		t.Fatal(err)
@@ -42,7 +51,7 @@ func TestRequestCancellationClosesAndJoinsReader(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	finished := make(chan error, 1)
 	go func() {
-		_, err := Request(ctx, endpoint, `{"version":1,"id":"cancel","method":"query","resource":"files"}`)
+		_, err := call(ctx, endpoint, `{"version":1,"id":"cancel","method":"query","resource":"files"}`)
 		finished <- err
 	}()
 	<-ready

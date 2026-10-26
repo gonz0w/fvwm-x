@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Native inspector inventory](VERIFICATION-2026-10-26-NATIVE-INSPECTOR.md): six sections, shared completion and literal Form lifecycle; focused race/sanitizer/native-X across three configs, nine captures and explicit provenance/qualification limits.
+
 - [High-contrast presentation](VERIFICATION-2026-10-26-HIGH-CONTRAST.md): race/IPC/preview and three native configurations, opaque pixels, existing Form recoloring and scoped captures.
 
 - [PR253→PR264 periodic observation](PERFORMANCE-2026-10-26-PR264.md): preserved five-pair telemetry, overlapping timings and distinct memory aggregates; no whole-session performance claim.

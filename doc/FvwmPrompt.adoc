@@ -50,6 +50,16 @@ or Ctrl-D to close it. Two consecutive Ctrl-C inputs also close it. The *Quit*
 command asks for confirmation in the prompt; enter *y* to send it to the window
 manager. Other answers keep the session open.
 
+== COMPLETION
+
+Tab completes core command names from metadata generated from FVWM's command
+table and embedded in the executable. It also completes the explicit
+*SendToModule FvwmDesktop set*, *toggle* and *reset* subset: registered setting
+names, enum/boolean choices, and reset scopes. It does not evaluate configuration,
+expand variables, inspect history for suggestions or parse arbitrary command
+arguments. Integer and time values remain manual input. Completion alone never
+sends a command; review the line before submitting it.
+
 == CONNECTION AND LIMITS
 
 Start *Module FvwmMFL* in the window manager. Set *FVWMMFL_SOCKET* to its socket

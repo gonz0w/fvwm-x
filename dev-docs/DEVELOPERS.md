@@ -75,6 +75,17 @@ handler; identify that limitation when changing scheduling.
   installed Perl metadata. Never infer native packet layout is a portable
   network format or bypass the shared command engine.
 
+## Shared command discovery metadata
+
+The native inspector and Prompt completion embed
+`bin/FvwmPrompt/internal/commandmeta/commands.json`, generated from the existing
+core function table extractor. When that table changes, run
+`python3 tools/maintenance/generate.py metadata --output /tmp/fvwm-command-metadata`
+with a fresh output directory, copy its `commands.json` to the embedded path,
+and run `python3 tests/test_command_catalog.py`. The parity check rejects drift;
+no runtime source-tree lookup or second command grammar is used. Literal setting
+completion uses the current Go registry and does not infer arbitrary arguments.
+
 ## Build and verification
 
 Follow [INSTALL.md](../INSTALL.md) for dependencies and supported options.

@@ -7,6 +7,7 @@ r = run_command('find-go-sources.sh', meson.current_source_dir(), check: true)
 fvwmprompt_files = r.stdout().strip().split()
 fvwmprompt_files += 'go.mod'
 fvwmprompt_files += 'go.sum'
+fvwmprompt_files += 'internal/commandmeta/commands.json'
 
 fvwmprompt_build = meson.current_source_dir()
 fvwmprompt_output = meson.current_build_dir() + '/FvwmPrompt'
@@ -44,6 +45,7 @@ fvwmprompt_test_binaries = custom_target(
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'transport.test',
         'fvwmfilebrowser.test', 'collection.test', 'filemodel.test',
+        'commandmeta.test', 'desktopinspect.test',
     ],
     input: fvwmprompt_files,
     command: [

@@ -91,6 +91,7 @@ typedef union _item {
     struct _head head;
     int n;                 /* string length */
     bool fixed;            /* named clipped Label; owns name and value */
+    bool value_owned;      /* literal TextHex owns its decoded value */
     char *value;           /* string to display */
     unsigned long color;                /* color of text */
   } text;
@@ -212,6 +213,7 @@ typedef struct _form {
   char *leading;                        /* part of command to match for data */
   char *file_to_read;                   /* file to read for data */
   char *title;                          /* form title, NULL, use alias */
+  char *close_command;                  /* literal WM_DELETE command, owned */
   char *expand_buffer;                  /* buffer to expand commands in */
   int expand_buffer_size;               /* current size */
   char have_env_var;                    /* at least one env var on cmd line */

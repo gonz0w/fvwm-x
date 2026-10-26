@@ -13,7 +13,7 @@ or Python packages. [Build/upgrade notes](INSTALL.md).
 Accepted runtime, linkage, SVG and ownership improvements remain.
 Recent work:
 
-- Named icons, fractional scaling, wallpaper choices, high contrast.
+- Icons, scaling, wallpapers, high contrast and configuration inspection.
 - Atomic button updates, desktop settings/editor and configuration checking.
 - Structured IPC queries/actions and scoped settings preview/recovery.
 - An optional native file-browser prototype: scrolling list/grid, multi-selection,

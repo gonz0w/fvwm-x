@@ -19,6 +19,7 @@ import (
 
 	"github.com/ergochat/readline"
 	"github.com/fatih/color"
+	"github.com/fvwmorg/FvwmPrompt/internal/commandmeta"
 	"github.com/fvwmorg/FvwmPrompt/transport"
 )
 
@@ -43,6 +44,12 @@ func profileEndError(ready <-chan struct{}, err error) error {
 	}
 }
 
+type commandCompletion struct{}
+
+func (commandCompletion) Do(line []rune, pos int) ([][]rune, int) {
+	return commandmeta.Complete(string(line), pos)
+}
+
 func run() error {
 	prompt := flag.String("p", ">>> ", "The prompt")
 	flag.Parse()
@@ -64,7 +71,7 @@ func run() error {
 	}
 	red := color.New(color.FgRed).SprintFunc()
 	rl, err := readline.NewFromConfig(&readline.Config{
-		Prompt: red(*prompt), HistoryFile: history,
+		Prompt: red(*prompt), HistoryFile: history, AutoComplete: commandCompletion{},
 	})
 	if err != nil {
 		return fmt.Errorf("initialise readline: %w", err)

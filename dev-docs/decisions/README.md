@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Native inspector inventory](NATIVE-INSPECTOR-2026-10-26.md): optional bounded viewer, shared command metadata, literal source candidates and stable view lifetimes; wider owner acceptance remains separate.
+
 - [High-contrast presentation](HIGH-CONTRAST-PRESENTATION-2026-10-26.md): guarded semantic colors, strongest opaque presentation and shared preview constraints; requested effects remain recoverable.
 
 - [Theme composition and wallpaper](THEME-COMPOSITION-2026-10-26.md): shared semantic colors, independent wallpaper precedence and explicit data migration; remaining typography/layout/assets stay scoped.

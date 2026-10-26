@@ -170,7 +170,10 @@ summary count was corrected without changing the passing runtime assertions.
 
 ## R1 high-contrast presentation — 2026-10-26
 
-Owner: Cam; `codex/r1-theme-contrast`; THEME-02 #214. Status: implemented and separately reviewed; PR ready.
+Owner: Cam; `codex/r1-theme-contrast`; THEME-02 #214. Status: merged in
+PR265 as `c540a99c810c02be1df62b7d4b22cf9dec929519`; reviewed tree
+`f2313fe52031371aa07a2849c2857417f6bdbd2e`, canonical signature and
+author DCO verified. Branch retired; broader theme owner remains open.
 [Contract](decisions/HIGH-CONTRAST-PRESENTATION-2026-10-26.md),
 [focused evidence](verification/VERIFICATION-2026-10-26-HIGH-CONTRAST.md).
 Four related outcomes: deterministic high-contrast semantic colors, opaque
@@ -217,6 +220,56 @@ at PR264 and becomes 1/5 on this feature's merge. Broader theme/profile/R1 owner
 remain open; no automatic matrix was repeated.
 Separate final source/evidence review verifies the archive, contrast/performance
 numbers and captures; corrected reference labels leave no unresolved findings.
+
+## R1 native inspector inventory — 2026-10-26
+
+Owner: Cam; `codex/r1-native-inspector`; INSPECT-01 #218 with CFG-02 #61 and
+IPC-02 #70. Status: ready for PR review; focused checkpoint and separate final review pass.
+Six related feature outcomes: registry-driven
+settings/constraints, theme roles/observed definitions, shortcut/command discovery,
+literal source/include observations, monitor/workspace actual-pixel bounds, and
+one opt-in native viewer with bounded page/filter/refresh and stale/loss handling.
+
+Reuse the accepted settings/query/source/worker/Form owners. A new inspector
+projection validates complete bounded results before publication; one view and
+one coalesced refresh retain callback/result identities. Separate domain snapshots
+are not an atomic desktop state. Last working data is visibly stale on failure;
+late jobs cannot reopen a closed/replaced view. Core binding and theme definitions
+carry no exact runtime file provenance; checked literal source locations remain
+candidates, including line spans/include chains and their limited traversal order.
+Free-form action arguments, window match text and home prefixes are redacted.
+No configuration is executed, inspected actions are never buttons, and missing
+MFL/providers or per-widget/per-window source details have explicit reasons.
+
+Shared generated core command metadata and registered setting choices supply
+native discovery and Prompt completion; there is no second grammar. Existing
+Check/result schema 1 remains unchanged; source observations share its walker.
+The existing worker/transport handles bounded read-only queries, with read-only
+admission on the same connection. No default MFL start or new resident/dependency.
+
+Native Form gains optional literal CloseCommand for accepted WM_DELETE only;
+other exit paths preserve existing behavior. Close is bound to the stable view
+identity, while page/filter operations bind the rendered frame. Review also
+requires InputHex/TextHex initializers so admitted filter/data bytes survive
+native rendering without FVWM expansion or quoted-string reinterpretation.
+These additive configuration directives retain legacy Input/Text behavior and
+use bounded native input helpers, not a new packet format or GUI toolkit.
+
+Acceptance: one combined affected Go/race and Form policy/native-X checkpoint;
+all sections/source overrides/redaction/large data, filtered discovery, stale/
+unavailable providers, late close/refresh ordering, literal field round trips,
+keyboard/focus return and unchanged effective settings. Inspect three actual
+configurations/screenshots including enlarged text. Reuse one Linux incremental
+cache, repeat affected failures only; no automatic six-OS/install campaign.
+PR264 performance reference is 1/5 after PR265, 2/5 on this implementation's merge;
+no comparison is due. #218/#61/#70 retain broader provenance/domain/profile gates;
+#217 transactional reload and parked Backer/pathname work are excluded.
+
+Passing combined native Linux policy/race, scoped sanitizer and all six sections
+across three configs; nine captures inspected. The initial fixture decoding and
+real focus replacement failure are corrected and retained. Exact source maps,
+static size growth and remaining scope are in the [report](verification/VERIFICATION-2026-10-26-NATIVE-INSPECTOR.md)
+and [decision](decisions/NATIVE-INSPECTOR-2026-10-26.md).
 
 ## Library evaluation issue scope — 2026-10-25
 

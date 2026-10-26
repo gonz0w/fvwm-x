@@ -114,6 +114,7 @@ static void AddItem(void);
 static void PutDataInForm(char *);
 static void ReadFormData(void);
 static void FormVarsCheck(char **);
+static bool form_native_cleanup_register(void);
 static void TimerHandler(evutil_socket_t, short int, void *);
 static int ErrorHandler(Display *dpy, XErrorEvent *error_event);
 static void cleanup_form_timer(void)
@@ -178,6 +179,7 @@ static void ct_ButtonPointer(char *);
 static void ct_ButtonPointerBack(char *);
 static void ct_ButtonPointerFore(char *);
 static void ct_Choice(char *);
+static void ct_close_command(char *);
 static void ct_Command(char *);
 static void ct_CommandAppend(char *);
 static void ct_Font(char *);
@@ -186,6 +188,7 @@ static void ct_GrabServer(char *);
 static void ct_Input(char *);
 static void ct_InputAppend(char *);
 static void ct_InputFont(char *);
+static void ct_input_hex(char *);
 static void ct_ItemBack(char *);
 static void ct_ItemFore(char *);
 static void ct_Line(char *);
@@ -213,6 +216,7 @@ static void ct_Read(char *);
 static void ct_Selection(char *);
 static void ct_Separator(char *);
 static void ct_Text(char *);
+static void ct_text_hex(char *);
 static void ct_InputPointer(char *);
 static void ct_InputPointerBack(char *);
 static void ct_InputPointerFore(char *);
@@ -239,6 +243,7 @@ static struct CommandTable ct_table[] =
   {"ButtonPointerBack",ct_ButtonPointerBack},
   {"ButtonPointerFore",ct_ButtonPointerFore},
   {"Choice",ct_Choice},
+  {"CloseCommand",ct_close_command},
   {"Colorset",ct_Colorset},
   {"Command",ct_Command},
   {"CommandAppend",ct_CommandAppend},
@@ -249,6 +254,7 @@ static struct CommandTable ct_table[] =
   {"Input",ct_Input},
   {"InputAppend",ct_InputAppend},
   {"InputFont",ct_InputFont},
+  {"InputHex",ct_input_hex},
   {"InputPointer",ct_InputPointer},
   {"InputPointerBack",ct_InputPointerBack},
   {"InputPointerFore",ct_InputPointerFore},
@@ -269,6 +275,7 @@ static struct CommandTable ct_table[] =
   {"Selection",ct_Selection},
   {"Separator",ct_Separator},
   {"Text",ct_Text},
+  {"TextHex",ct_text_hex},
   {"Timeout",ct_Timeout},
   {"TimeoutFont",ct_TimeoutFont},
   {"Title",ct_Title},
@@ -858,9 +865,8 @@ static void ct_Separator(char *cp)
   myfprintf((stderr, "ct_separator command set max width %d\n",(int)item->header.size_x));
 }
 
-static void ct_Text(char *cp)
+static void form_add_text(char *value, bool value_owned)
 {
-  /* syntax: *FFText "<text>" */
   AddItem();
   bg_state = 'u';			/* indicate b/g color now used. */
   item->type = I_TEXT;
@@ -868,10 +874,8 @@ static void ct_Text(char *cp)
      to the correct DrawTable. */
   AssignDrawTable(item);
   item->header.name = "";
-  if (*cp == '\"')
-    item->text.value = CopyQuotedString(++cp);
-  else
-    item->text.value = "";
+  item->text.value = value;
+  item->text.value_owned = value_owned;
   item->text.n = strlen(item->text.value);
 
   item->header.size_x = FlocaleTextWidth(item->header.dt_ptr->dt_Ffont,
@@ -882,6 +886,31 @@ static void ct_Text(char *cp)
   myfprintf((stderr, "Text \"%s\" [%d, %d]\n", item->text.value,
 	     item->header.size_x, item->header.size_y));
   AddToLine(item);
+}
+
+static void ct_Text(char *cp)
+{
+  char *value;
+
+  /* syntax: *FFText "<text>" */
+  if (*cp == '\"')
+    value = CopyQuotedString(++cp);
+  else
+    value = "";
+  form_add_text(value, false);
+}
+
+static void ct_text_hex(char *cp)
+{
+  char *value = form_decode_hex_text(cp);
+
+  if (value == NULL || !form_native_cleanup_register())
+  {
+    free(value);
+    fprintf(stderr, "%s: invalid TextHex literal\n", module->name);
+    return;
+  }
+  form_add_text(value, true);
 }
 /* Set the form's title.
    The default is the aliasname.
@@ -944,36 +973,32 @@ static void ct_padVText(char *cp)
   CF.padVText = atoi(cp);
   myfprintf((stderr, "Text Vertical Padding %d\n", CF.padVText));
 }
-static void ct_Input(char *cp)
+/* A supplied literal is owned here, including on geometry refusal. */
+static void form_add_input(const form_input_args *args, char *literal)
 {
   int size_x, size_y;
   Item prepared = {0};
-  form_input_args args;
+  char *cp;
 
-  /* syntax: *FFInput <name> <size> "<init_value>" */
-  if (!form_parse_input(cp, &args)) {
-    fprintf(stderr, "%s: Input needs a positive representable width\n",
-        module->name);
-    return;
-  }
   prepared.type = I_INPUT;
   AssignDrawTable(&prepared);
-  if (!form_input_geometry(args.width,
+  if (!form_input_geometry(args->width,
       prepared.header.dt_ptr->dt_Ffont->height,
       2 * TEXT_SPC + 2 * BOX_SPC, 3 * TEXT_SPC + 2 * BOX_SPC,
       &size_x, &size_y)) {
     fprintf(stderr, "%s: Input dimensions exceed the X11 range\n",
         module->name);
+    free(literal);
     return;
   }
   AddItem();
   item->type = I_INPUT;
   item->header.dt_ptr = prepared.header.dt_ptr;
-  item->header.name = CopySolidString((char *)args.name);
-  item->input.width = args.width;
-  cp = (char *)args.initial;
-  item->input.init_value = fxstrdup("");	    /* init */
-  if (*cp == '\"') {
+  item->header.name = CopySolidString((char *)args->name);
+  item->input.width = args->width;
+  cp = (char *)args->initial;
+  item->input.init_value = literal != NULL ? literal : fxstrdup("");
+  if (literal == NULL && *cp == '\"') {
     int num = -1, len;
     char *c;
     c = find_nth_UTF8_char(cp, NULL, &num, &len);
@@ -1008,6 +1033,33 @@ static void ct_Input(char *cp)
   myfprintf((stderr, "Input, %s, [%d], \"%s\"\n", item->header.name,
 	  item->input.width, item->input.init_value));
   AddToLine(item);
+}
+
+static void ct_Input(char *cp)
+{
+  form_input_args args;
+
+  /* syntax: *FFInput <name> <size> "<init_value>" */
+  if (!form_parse_input(cp, &args)) {
+    fprintf(stderr, "%s: Input needs a positive representable width\n",
+        module->name);
+    return;
+  }
+  form_add_input(&args, NULL);
+}
+
+static void ct_input_hex(char *cp)
+{
+  form_input_args args;
+  char *value;
+
+  if (!form_parse_input(cp, &args) ||
+      (value = form_decode_hex_text(args.initial)) == NULL)
+  {
+    fprintf(stderr, "%s: invalid InputHex name width literal\n", module->name);
+    return;
+  }
+  form_add_input(&args, value);
 }
 static void ct_Read(char *cp)
 {
@@ -1165,12 +1217,16 @@ static void form_native_cleanup(void)
 {
   Item *p;
 
+  free(CF.close_command);
+  CF.close_command = NULL;
   for (p = root_item_ptr; p != NULL; p = p->header.next)
   {
-    if (p->type == I_TEXT && p->text.fixed)
+    if (p->type == I_TEXT)
     {
-      free(p->text.value);
-      free(p->header.name);
+      if (p->text.fixed || p->text.value_owned)
+        free(p->text.value);
+      if (p->text.fixed)
+        free(p->header.name);
     }
     if (p->type != I_LIST)
       continue;
@@ -1458,6 +1514,17 @@ static void ct_Command(char *cp)
       &cur_button->button.button_array_size, cur_button->button.n, 1,
       BUTTON_COMMAND_EXPANSION, sizeof(*cur_button->button.commands));
   cur_button->button.commands[cur_button->button.n++] = fxstrdup(cp);
+}
+
+static void ct_close_command(char *cp)
+{
+  if (!form_native_cleanup_register())
+  {
+    fvwm_debug(__func__, "Unable to register Form close-command cleanup");
+    return;
+  }
+  if (!form_set_close_command(&CF.close_command, cp))
+    fvwm_debug(__func__, "Refusing empty or oversized Form CloseCommand");
 }
 
 static void ct_CommandAppend(char *cp)

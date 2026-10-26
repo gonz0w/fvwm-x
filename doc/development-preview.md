@@ -98,6 +98,32 @@ These two unmodified captures come from the source-bound
 Their [separate manifest](screenshots/watch-manifest.json) records the newer
 source/archive identity. The classic configuration passes the same cases.
 
+## Responsive panel and collection layout
+
+The newer native layout checkpoint adds measured panel captions and resize-aware
+collection viewports. Existing personal grids stay fixed unless they opt in.
+The shipped panel uses `Layout content`; its explicit height remains unchanged.
+This 18pt example fits the initial panel captions at 1440px:
+
+![Measured panel with enlarged text](screenshots/layout-classic-panel.png)
+
+The browser grid recalculates its columns and visible rows as the same native
+window resizes. Selection and focus survive; no entry snapshot is published just
+for geometry. This Dune capture shows the expanded viewport:
+
+![Dune browser after native viewport resize](screenshots/layout-dune-responsive.png)
+
+Enlarged text with explicit legacy Form colors uses the same collection contract.
+Controls fit the initial window; long fixed metadata labels still clip. Full
+multilingual, mixed-scale and assistive acceptance remains open.
+
+![Enlarged browser with legacy Form colors](screenshots/layout-classic-browser.png)
+
+These captures use 4096 synthetic entries and preserve their source identity in
+the [layout verification report](../dev-docs/verification/VERIFICATION-2026-10-26-NATIVE-LAYOUT.md).
+See the [Buttons](FvwmButtons.adoc) and [Form](FvwmForm.adoc) manuals for opt-in
+syntax, bounds and insufficient-space behavior.
+
 ## Try the optional browser
 
 Use an installed Go-enabled development build; see [INSTALL.md](../INSTALL.md)

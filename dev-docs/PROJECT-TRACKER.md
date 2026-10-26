@@ -224,7 +224,10 @@ numbers and captures; corrected reference labels leave no unresolved findings.
 ## R1 native inspector inventory — 2026-10-26
 
 Owner: Cam; `codex/r1-native-inspector`; INSPECT-01 #218 with CFG-02 #61 and
-IPC-02 #70. Status: ready for PR review; focused checkpoint and separate final review pass.
+IPC-02 #70. Status: merged in PR266 as
+`84fe2a3cb2c7d56652d671f37cb8296c4e9c79b4`; reviewed tree
+`8dec46b8c359adedc6a7bc29993d859aeb591dcd`, canonical signature and author DCO
+verified; branch retired and Project Done. Broader owners remain In progress.
 Six related feature outcomes: registry-driven
 settings/constraints, theme roles/observed definitions, shortcut/command discovery,
 literal source/include observations, monitor/workspace actual-pixel bounds, and
@@ -270,6 +273,48 @@ across three configs; nine captures inspected. The initial fixture decoding and
 real focus replacement failure are corrected and retained. Exact source maps,
 static size growth and remaining scope are in the [report](verification/VERIFICATION-2026-10-26-NATIVE-INSPECTOR.md)
 and [decision](decisions/NATIVE-INSPECTOR-2026-10-26.md).
+
+## R1 responsive native panel and collection layout — 2026-10-26
+
+Owner: Cam; `codex/r1-native-layout`; LAYOUT-01 #212, FILE-VIEW-01 #69 and
+THEME-01 #75 native adoption. Status: ready for PR review; focused checkpoint
+and separate final source/evidence review pass. Reuse existing
+font measurement, Buttons state/command ownership and Form collection identities.
+Five related outcomes: checked axis/grid policy; opt-in measured flat Buttons
+row; reflow after accepted single/grouped dynamic updates; one expanding native
+collection viewport with file-browser adoption; three actual theme/enlarged-text
+configurations with keyboard, resize and plain resource observations.
+
+`Layout content` applies to a flat single row. Measured minimum widths share
+remaining space by existing button weights; insufficient width clips content
+proportionally while retaining positive action rectangles. The configured row
+height remains authoritative, matching the shipped strut; larger fonts still
+need an appropriate configured height. Existing grid geometry remains default.
+`ListViewport minimum_cell_units max_columns` opts one dedicated-line Form list
+into bounded resize geometry (up to 8 columns/32 rows). Preserve selected IDs,
+focus, scroll anchor and snapshot generation; draw/hit/key use the prepared state.
+Existing list/grid behavior remains available. No general recursive layout engine,
+new toolkit/dependency/resident, personal theme migration or text-engine change.
+
+Acceptance: one combined affected Linux incremental checkpoint, pure layout/list
+policy, scoped native sanitizers, browser race and existing Buttons atomic/keyboard
+and Form/browser native regressions. Capture and inspect three configurations,
+including enlarged text. Record scoped latency/CPU/RSS/idle observations and static
+costs without a speed-gain or whole-session claim. Clay comparison, multilingual/
+IME/shaping, broad theme/accessibility and combined support/install acceptance
+remain finite open work; no whole #212/#69/#75 closure is inferred. Parked work
+remains excluded. PR264 periodic counter is 2/5 after PR266, 3/5 on this merge;
+no periodic comparison is due.
+
+Affected native builds, geometry/list policy, browser/collection race, scoped
+ASan/UBSan, legacy Buttons atomic/keyboard and Form/browser regressions pass.
+The final three-profile run verifies 4096 entries, resize bursts, stable native
+identities/state, fixed Choice controls, compressed actions and refresh. Twelve
+captures inspected; initial enlarged bar captions fit, with fixed-label clipping
+and the retained-position enlarged resize capture limit explicit. Exact failed
+fixture assumptions and corrected passes, costs and scoped observations are in
+the [report](verification/VERIFICATION-2026-10-26-NATIVE-LAYOUT.md) and
+[decision](decisions/NATIVE-LAYOUT-2026-10-26.md). No broader owner closure.
 
 ## Library evaluation issue scope — 2026-10-25
 

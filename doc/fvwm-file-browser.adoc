@@ -34,9 +34,13 @@ fvwm-file-browser - bounded native folder-browser foundations
 This optional Go helper presents local folders with existing FvwmForm controls
 and the current FvwmMFL connection. Start Module FvwmMFL first. No GUI toolkit,
 compositor, D-Bus service or background daemon is required. List and icon-grid
-presentations scroll locally through up to 4096 entries. The list has twelve
-visible rows; the grid has four rows of four cells. Only visible entries are
-drawn in one native window. Existing
+presentations scroll locally through up to 4096 entries. The initial list requests eight
+visible rows; the grid requests three rows. Resize the window to expand or
+shrink the collection: the grid fits up to eight columns and both views fit
+up to 32 visible rows. Only visible entries are drawn in one native window.
+Resizing keeps that window, selection, focused entry and snapshot generation;
+the first visible entry stays in the top visual row where possible. Fixed
+controls set the minimum window size. Existing
 folder menus and user configurations stay usable.
 
 The shared collection model separates stable item IDs from labels, preserves
@@ -60,7 +64,7 @@ budget; there is no silent truncation before sorting.
 
 Tab and Shift-Tab move among the filter, collection and path fields. In the list,
 Up/Down, Home/End and Page Up/Page Down move focus and reveal that entry.
-Grid Left/Right move one entry; Up/Down move four entries. Shift-navigation
+Grid Left/Right move one entry; Up/Down move one current visual row. Shift-navigation
 or Shift-click adds the inclusive range from the last ordinary focus position.
 An over-limit range leaves focus and selection unchanged. Space
 toggles its selection; clicking a row also toggles it. Wheel scrolling changes
@@ -77,7 +81,8 @@ IDs. `--view list|grid` chooses the initial presentation (default list); the
 choice lasts for this browser instance and is not saved. Native type marks
 identify directories, regular files, links and other entries; they are not
 thumbnails or externally loaded themed icons. Labels are clipped within grid
-cells; Properties exposes the observed name. Blank cells in the final row have
+cells; Properties exposes the observed name. Metadata labels use bounded
+widths, so long paths and status text clip instead of widening the window. Blank cells in the final row have
 no target.
 
 Home, Up and Back navigate; Back retains at most 32 successful locations. Path

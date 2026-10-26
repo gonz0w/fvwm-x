@@ -603,27 +603,34 @@ def run(args):
             # navigation adds a bounded anchor range before switching views.
             key(window,b'F7');callback();window=ready(window)
             capture('file-browser-grid.png')
+            # Responsive grids retain entry ordering, while their column count
+            # follows the actual native viewport rather than a fixed four.
+            enter_list();key(window,b'Home');key(window,b'Down')
+            key(window,b'F2');grid_columns=int.from_bytes(packet(callback())[:2],'big')
+            assert 2 <= grid_columns <= 8, grid_columns
+            window=ready(window)
             enter_list();key(window,b'Home')
             for _ in range(2):
                 pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Right');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
             box,control=widget()
             cx,cy,child=C.c_int(),C.c_int(),C.c_ulong()
-            cell_width=(box[2]-22)//4;cell_height=(box[3]-6)//4
+            cell_width=(box[2]-22)//grid_columns;cell_height=(box[3]-6)//3
             assert x.XTranslateCoordinates(d,control,client.root,3+2*cell_width+cell_width//2,3+cell_height+cell_height//2,C.byref(cx),C.byref(cy),C.byref(child))
             pointer.x.XTestFakeKeyEvent(d,shift,1,0);pointer.motion(cx.value,cy.value)
             pointer.button(True);time.sleep(0.05);pointer.button(False);pointer.x.XTestFakeKeyEvent(d,shift,0,0)
             key(window,b'F7');bits=packet(callback())
-            assert bits[:2]==bytes([0,6]) and bits[2]==127,bits
+            grid_target=grid_columns+2
+            assert int.from_bytes(bits[:2],'big')==grid_target and int.from_bytes(bits[2:],'little')==(1 << (grid_target+1))-1,bits
             window=ready(window);capture('file-browser-range-list.png')
             enter_list()
             for _ in range(2):
                 pointer.x.XTestFakeKeyEvent(d,shift,1,0);key(window,b'Down');pointer.x.XTestFakeKeyEvent(d,shift,0,0)
-            key(window,b'F2');bits=packet(callback());assert bits[:2]==bytes([0,8]) and bits[2:4]==bytes([255,1]),bits
+            key(window,b'F2');bits=packet(callback());assert int.from_bytes(bits[:2],'big')==grid_target+2 and int.from_bytes(bits[2:],'little')==(1 << (grid_target+3))-1,bits
             window=ready(window)
             click(row_groups()[0][1][1]);callback();window=ready(window)
             key(window,b'F7');callback();window=ready(window)
             enter_list();key(window,b'Home');key(window,b'Down');key(window,b'Right')
-            key(window,b'F7');bits=packet(callback());assert bits[:2]==bytes([0,5]) and not any(bits[2:]),bits
+            key(window,b'F7');bits=packet(callback());assert int.from_bytes(bits[:2],'big')==grid_columns+1 and not any(bits[2:]),bits
             window=ready(window)
             evidence['grid_icons_range_selection_and_view_identity']=True
             # Tab enters the list from the filter. Local motion/selection needs
@@ -992,7 +999,7 @@ def run(args):
             bits=packet(callback());assert bits[2]==1 and bits[-1]==128
             window=ready(window)
             enter_list();key(window,b'Home');key(window,b'Next');key(window,b'space');key(window,b'F2')
-            bits=packet(callback());assert bits[:2]==bytes([0,12]) and bits[2]==1 and bits[3]==16 and bits[-1]==128
+            bits=packet(callback());assert int.from_bytes(bits[:2],'big')==8 and int.from_bytes(bits[2:],'little')==1+(1 << 8)+(1 << 4095),bits
             window=ready(window)
             enter_list();key(window,b'End')
             box,control=widget()

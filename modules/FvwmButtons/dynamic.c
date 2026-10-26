@@ -316,6 +316,7 @@ static void change_buttons(const char *line)
 	const char *error;
 	size_t g, j, k;
 	button_info *focus;
+	Bool layout_changed = False, reflowed;
 
 	if (!buttons_parse_updates(line, &plan, &error))
 	{
@@ -409,10 +410,15 @@ static void change_buttons(const char *line)
 		{
 			commit_update(targets[g], plan.changes[j].option,
 				&prepared[j]);
+			if (plan.changes[j].option < BUTTONS_COLORSET)
+				layout_changed = True;
 		}
 	}
+	reflowed = layout_changed && buttons_layout_reflow(UberButton);
 	focus = buttons_group_state_changed();
-	for (g = 0; g < plan.group_count; g++)
+	if (reflowed)
+		RedrawWindow();
+	for (g = 0; !reflowed && g < plan.group_count; g++)
 	{
 		RedrawButton(targets[g], DRAW_FORCE, NULL);
 		if (targets[g] == focus)
@@ -420,7 +426,7 @@ static void change_buttons(const char *line)
 			focus = NULL;
 		}
 	}
-	if (focus)
+	if (focus && !reflowed)
 	{
 		RedrawButton(focus, DRAW_FORCE, NULL);
 	}
@@ -467,6 +473,7 @@ void parse_message_line(char *line)
 	char *act;
 	char *buttonn;
 	int mousebutton;
+	Bool layout_changed = False;
 
 	silent = False;
 	do
@@ -510,12 +517,8 @@ void parse_message_line(char *line)
 	{
 	case 2:
 		/* ChangeButton */
-		/* The dimensions of individual buttons (& the overall size of
-		 * the FvwmButtons window) is based on the initial
-		 * configuration for the module. In some configurations,
-		 * dynamically adding/changing a title/icon may mean it no
-		 * longer fits on a button. Currently, there are no checks for
-		 * this occurance. */
+		/* Grid geometry retains its initial dimensions. Content layout
+		 * measures once after all successful changes in this request. */
 		while (rest && rest[0] != '\0')
 		{
 			char *option_pair;
@@ -561,6 +564,7 @@ void parse_message_line(char *line)
 					free(b->title);
 				b->flags.b_Title = 1;
 				b->title = value;
+				layout_changed = True;
 				value = NULL;
 				break;
 			case 2:
@@ -569,6 +573,7 @@ void parse_message_line(char *line)
 					free(b->activeTitle);
 				b->flags.b_ActiveTitle = 1;
 				b->activeTitle = value;
+				layout_changed = True;
 				value = NULL;
 				break;
 			case 4:
@@ -577,6 +582,7 @@ void parse_message_line(char *line)
 					free(b->pressTitle);
 				b->flags.b_PressTitle = 1;
 				b->pressTitle = value;
+				layout_changed = True;
 				value = NULL;
 				break;
 			case 7: /* Enabled */
@@ -661,6 +667,7 @@ void parse_message_line(char *line)
 						b->icon_file = value;
 						value = NULL;
 						b->icon = icon;
+						layout_changed = True;
 						break;
 					case 3: /* ActiveIcon */
 						if (b->flags.b_ActiveIcon)
@@ -674,6 +681,7 @@ void parse_message_line(char *line)
 						b->active_icon_file = value;
 						value = NULL;
 						b->activeicon = icon;
+						layout_changed = True;
 						break;
 					case 5: /* PressIcon */
 						if (b->flags.b_PressIcon)
@@ -687,6 +695,7 @@ void parse_message_line(char *line)
 						b->press_icon_file = value;
 						value = NULL;
 						b->pressicon = icon;
+						layout_changed = True;
 						break;
 					}
 				}
@@ -699,7 +708,10 @@ void parse_message_line(char *line)
 		    }
 		}
 
-		RedrawButton(b, DRAW_FORCE, NULL);
+		if (layout_changed && buttons_layout_reflow(UberButton))
+			RedrawWindow();
+		else
+			RedrawButton(b, DRAW_FORCE, NULL);
 		if (UberButton->c->flags.b_TransBack)
 		{
 			SetTransparentBackground(UberButton, Width, Height);

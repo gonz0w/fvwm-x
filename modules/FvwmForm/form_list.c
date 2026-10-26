@@ -119,6 +119,19 @@ void form_list_scroll(form_list_state *s, int amount)
 	s->top = top * columns;
 }
 
+/* Keep the old first visible entry in the new first visual row where possible.
+ * A wheel-scrolled viewport may intentionally leave the focus offscreen. */
+bool form_list_viewport(form_list_state *s, int rows, int columns)
+{
+	if (s == NULL || rows < 1 || rows > 32 || columns < 1 || columns > 8)
+		return false;
+	s->rows = rows;
+	s->columns = columns;
+	s->top = s->top / columns * columns;
+	form_list_scroll(s, 0);
+	return true;
+}
+
 void form_list_focus(form_list_state *s, int index)
 {
 	int columns = form_list_columns(s);

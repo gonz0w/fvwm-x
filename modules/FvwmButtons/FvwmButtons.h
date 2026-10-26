@@ -118,6 +118,8 @@ struct container_info_struct
 	int ypos;
 	int width;
 	int height;
+	Bool layout_content;       /* Opt-in root measured row */
+	Bool layout_warning;       /* Avoid repeating resize diagnostics */
 
 	flags_type flags;          /* Which data is set in this container? */
 	byte justify;              /* b_Justify */
@@ -162,6 +164,8 @@ struct button_info_struct
 	unsigned int BWidth,BHeight;    /* width and height in button units  */
 	button_info *parent;
 	int n;                   /* number in parent */
+	Bool layout_prepared;
+	rectangle layout_geometry; /* Actual pixels shared by draw/hit/focus */
 
 	/* conditional fields */ /* applicable if these flags are set */
 	char *id;                /* b_Id */

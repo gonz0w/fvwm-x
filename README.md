@@ -10,11 +10,10 @@ configuration/theme compatibility. No compositor or Wayland backend.
 desktop lite. All currently planned features target R1; further maintenance
 is scoped into R2/R3. Builds require Go; installed utilities need no compiler
 or Python packages. [Build/upgrade notes](INSTALL.md).
-Accepted runtime, linkage, SVG and ownership improvements remain.
 Recent work:
 
 - Icons, scaling, wallpapers, high contrast and configuration inspection.
-- Atomic button updates, desktop settings/editor and configuration checking.
+- Atomic button updates, responsive layout, settings/editor and configuration checking.
 - Structured IPC queries/actions and scoped settings preview/recovery.
 - An optional native file-browser prototype: scrolling list/grid, multi-selection,
   filtering, sorting, observed properties and configured application actions.

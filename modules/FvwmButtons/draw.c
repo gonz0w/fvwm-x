@@ -541,9 +541,21 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 					int xx, yy, ww, hh;
 					GetIconPosition(b,
 						icon, &xx, &yy, &ww, &hh);
-					XCopyArea(Dpy, icon->mask, shapeMask,
-						transGC, 0, 0, icon->width,
-						icon->height, xx, yy);
+					if (b->layout_prepared)
+					{
+						/* Shape pixels follow the same clipped
+						 * icon rectangle as foreground paint. */
+						if (ww > 0 && hh > 0)
+							XCopyArea(Dpy, icon->mask,
+								shapeMask, transGC, 0, 0,
+								ww, hh, xx, yy);
+					}
+					else
+					{
+						XCopyArea(Dpy, icon->mask, shapeMask,
+							transGC, 0, 0, icon->width,
+							icon->height, xx, yy);
+					}
 				}
 				if (buttonTitle(b))
 				{
@@ -671,7 +683,13 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 		}
 	}
 
-	/* relief */
+	/* Keep relief within compressed content rectangles. */
+	if (b->layout_prepared)
+	{
+		int thickness = min(abs(of), min(BW, BH) / 2);
+
+		of = of < 0 ? -thickness : thickness;
+	}
 	RelieveButton(MyWindow,of,x,y,BW,BH,hc,sc,rev ^ rev_xor);
 	/* Focus is independent of hover and remains visible without a palette.
 	 * Keep marks inside the cleaned interior, including frameless buttons. */
@@ -710,6 +728,13 @@ void DrawTitle(button_info *b,Window win,GC gc, XEvent *pev)
 	unsigned short bIconFlagSet;
 
 	BH = buttonHeight(b);
+
+	/* A compressed content row can be narrower than its configured
+	 * padding. Do not place a one-pixel interior outside that button. */
+	if (b->layout_prepared &&
+		(buttonWidth(b) <= 2 * (buttonXPad(b) + buttonFrame(b)) ||
+		 BH <= 2 * (buttonYPad(b) + buttonFrame(b))))
+		return;
 
 	GetInternalSize(b,&ix,&iy,&iw,&ih);
 
@@ -814,11 +839,17 @@ void DrawTitle(button_info *b,Window win,GC gc, XEvent *pev)
 		clip.y = FwinString.y - Ffont->ascent;
 		clip.width = i;
 		clip.height = Ffont->height;
+		if (b->layout_prepared && !frect_get_intersection(
+			FwinString.x, FwinString.y - Ffont->ascent,
+			i, Ffont->height,
+			b->layout_geometry.x, b->layout_geometry.y,
+			b->layout_geometry.width, b->layout_geometry.height,
+			&clip))
+			return;
 		if (pev)
 		{
 			if (!frect_get_intersection(
-				FwinString.x, FwinString.y - Ffont->ascent,
-				i, Ffont->height,
+				clip.x, clip.y, clip.width, clip.height,
 				pev->xexpose.x, pev->xexpose.y,
 				pev->xexpose.width, pev->xexpose.height,
 				&clip))

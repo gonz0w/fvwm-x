@@ -58,6 +58,10 @@ button_info *select_button(button_info *, int, int);
 
 /* --------------------------- button geometry ----------------------------- */
 
+void buttons_layout_prepare(button_info *root);
+Bool buttons_layout_reflow(button_info *root);
+int buttons_layout_count(const button_info *root);
+
 int buttonXPos(const button_info *b, int i);
 int buttonYPos(const button_info *b, int i);
 int buttonWidth(const button_info *b);

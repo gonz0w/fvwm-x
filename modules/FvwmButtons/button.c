@@ -24,6 +24,9 @@
 #include "config.h"
 
 #include "libs/log.h"
+#include "libs/ui_layout.h"
+#include "libs/picture_types.h"
+#include <limits.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -36,7 +39,11 @@
 
 int buttonXPos(const button_info *b, int i)
 {
-  int column = i % b->parent->c->num_columns;
+  int column;
+
+  if (b->layout_prepared)
+    return b->layout_geometry.x;
+  column = i % b->parent->c->num_columns;
 
   return b->parent->c->xpos +
     (b->parent->c->width * column / b->parent->c->num_columns);
@@ -44,7 +51,11 @@ int buttonXPos(const button_info *b, int i)
 
 int buttonYPos(const button_info *b, int i)
 {
-  int row = i / b->parent->c->num_columns;
+  int row;
+
+  if (b->layout_prepared)
+    return b->layout_geometry.y;
+  row = i / b->parent->c->num_columns;
 
   return b->parent->c->ypos +
     (b->parent->c->height * row / b->parent->c->num_rows);
@@ -52,8 +63,12 @@ int buttonYPos(const button_info *b, int i)
 
 int buttonWidth(const button_info *b)
 {
-  int column = b->n % b->parent->c->num_columns;
-  int column2 = column + b->BWidth;
+  int column, column2;
+
+  if (b->layout_prepared)
+    return b->layout_geometry.width;
+  column = b->n % b->parent->c->num_columns;
+  column2 = column + b->BWidth;
 
   return (b->parent->c->width * column2 / b->parent->c->num_columns) -
     (b->parent->c->width * column / b->parent->c->num_columns);
@@ -61,11 +76,151 @@ int buttonWidth(const button_info *b)
 
 int buttonHeight(const button_info *b)
 {
-  int row = b->n / b->parent->c->num_columns;
-  int row2 = row + b->BHeight;
+  int row, row2;
+
+  if (b->layout_prepared)
+    return b->layout_geometry.height;
+  row = b->n / b->parent->c->num_columns;
+  row2 = row + b->BHeight;
 
   return (b->parent->c->height * row2 / b->parent->c->num_rows) -
     (b->parent->c->height * row / b->parent->c->num_rows);
+}
+
+/* Validate before the grid shuffle: weights still describe configured spans.
+ * Unsupported shapes retain the entire legacy configuration and geometry. */
+void buttons_layout_prepare(button_info *root)
+{
+	container_info *c = root->c;
+	int count = 0, columns = 0, i;
+
+	if (!c->layout_content)
+		return;
+	if (root->parent || c->num_rows < 0 || c->num_rows > 1)
+		goto unsupported;
+	for (i = 0; i < c->num_buttons; i++)
+	{
+		button_info *b = c->buttons[i];
+
+		if (!b || b->flags.b_Container || b->flags.b_Swallow ||
+			b->flags.b_Panel || b->flags.b_PosFixed ||
+			b->BHeight != 1 || b->BWidth < 1 || b->BWidth > 32767 ||
+			++count > 256 || columns > 32767 - (int)b->BWidth)
+			goto unsupported;
+		columns += b->BWidth;
+	}
+	if (count == 0)
+		goto unsupported;
+	c->num_rows = 1;
+	c->num_columns = columns;
+	return;
+
+unsupported:
+	fvwm_debug(MyName, "Layout content requires a flat root row of 1..256 "
+		"buttons without fixed positions, containers, swallow or "
+		"panel; using the configured grid");
+	c->layout_content = False;
+}
+
+int buttons_layout_count(const button_info *root)
+{
+	int count = 0, i;
+
+	for (i = 0; i < root->c->num_buttons; i++)
+		if (root->c->buttons[i])
+			count++;
+	return count;
+}
+
+static int buttons_content_width(button_info *b)
+{
+	const char *titles[] = {b->title, b->activeTitle, b->pressTitle};
+	FvwmPicture *icons[] = {b->icon, b->activeicon, b->pressicon};
+	FlocaleFont *font = buttonFont(b);
+	int text = 0, icon = 0, width, i;
+
+	/* Reserve the widest states together, including cross-state fallbacks.
+	 * Font measurement is the same backend used to render the caption. */
+	for (i = 0; i < 3; i++)
+	{
+		if (titles[i] && font)
+		{
+			size_t length = strlen(titles[i]);
+			int measured = length > INT_MAX ? 32767 :
+				FlocaleTextWidth(font, (char *)titles[i],
+					(int)length);
+
+			text = max(text, min(32767, measured));
+		}
+		if (icons[i])
+			icon = max(icon, (int)min(32767U, icons[i]->width));
+	}
+	width = max(text, icon);
+	if ((buttonJustify(b) & b_Horizontal) && icon && text)
+		width = text + icon + buttonXPad(b);
+	if (b->flags.b_Size)
+		width = max(width, min(32767, (int)b->minx));
+	width += 2 * (buttonFrame(b) + buttonXPad(b));
+	return max(1, min(32767, width));
+}
+
+Bool buttons_layout_reflow(button_info *root)
+{
+	button_info *buttons[256];
+	int minimum[256], widths[256];
+	unsigned weights[256];
+	container_info *c = root->c;
+	size_t count = 0, j;
+	int i, x = c->xpos;
+	bool clipped;
+
+	if (!c->layout_content)
+		return False;
+	for (i = 0; i < c->num_buttons; i++)
+	{
+		button_info *b = c->buttons[i];
+
+		if (!b)
+			continue;
+		if (count == 256)
+		{
+			fvwm_debug(MyName,
+				"Layout content button bound exceeded");
+			return False;
+		}
+		buttons[count] = b;
+		minimum[count] = buttons_content_width(b);
+		weights[count++] = b->BWidth;
+	}
+	/* Positive nonoverlapping rectangles require at least one pixel per
+	 * button. WM hints advertise this lower bound. A forced invalid size
+	 * keeps the last complete layout until a usable configure arrives. */
+	if (c->height < 1 || c->height > 32767 ||
+		!ui_layout_row(c->width, minimum, weights, count,
+			widths, &clipped))
+	{
+		if (!c->layout_warning)
+			fvwm_debug(MyName, "Layout content needs at least "
+				"one pixel per button and dimensions no larger "
+				"than 32767; retaining the last prepared layout");
+		c->layout_warning = True;
+		return False;
+	}
+	c->layout_warning = False;
+	/* Publish only once every measurement and allocation has succeeded.
+	 * Records, selectors, actions and focus retain their identity. */
+	for (j = 0; j < count; j++)
+	{
+		button_info *b = buttons[j];
+
+		b->layout_geometry.x = x;
+		b->layout_geometry.y = c->ypos;
+		b->layout_geometry.width = widths[j];
+		b->layout_geometry.height = c->height;
+		b->layout_prepared = True;
+		x += widths[j];
+	}
+	return True;
 }
 
 int buttonSwallowCount(button_info *b)
@@ -996,6 +1151,20 @@ button_info *select_button(button_info *ub,int x,int y)
 
   if (!ub->flags.b_Container)
     return ub;
+
+  if (ub->c->layout_content)
+  {
+    for (i = 0; i < ub->c->num_buttons; i++)
+    {
+      b = ub->c->buttons[i];
+      if (b && b->layout_prepared &&
+          x >= buttonXPos(b, b->n) && y >= buttonYPos(b, b->n) &&
+          x - buttonXPos(b, b->n) < buttonWidth(b) &&
+          y - buttonYPos(b, b->n) < buttonHeight(b))
+        return b;
+    }
+    return ub;
+  }
 
   x -= buttonXPad(ub) + buttonFrame(ub);
   y -= buttonYPad(ub) + buttonFrame(ub);

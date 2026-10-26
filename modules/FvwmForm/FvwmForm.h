@@ -117,6 +117,7 @@ typedef union _item {
     form_list_state *state, *initial;
     form_list_entry *entries;
     int capacity, row_height;
+    int viewport_cell, viewport_columns;
     form_list_update *update;
     form_list_entry *pending;
     int pending_capacity, update_serial;
@@ -200,6 +201,8 @@ typedef struct _form {
   int xneg, yneg;
   int warp_pointer;
   int max_width, total_height;          /* frame size */
+  Item *viewport;                      /* optional dedicated list line */
+  int viewport_fixed_height, viewport_min_width, viewport_min_height;
   unsigned long screen_background;
   Item *cur_list;
   Item *cur_input;                      /* current input during parse and run */
@@ -301,5 +304,6 @@ RETSIGTYPE DeadPipe(int nonsense);            /* FvwmForm.c */
 Bool form_list_key(KeySym key, unsigned int modifiers);
 void form_list_click(Item *item, XButtonEvent *event);
 void form_list_draw(Item *item);
+void form_viewport_resize(int width, int height);
 
 #endif

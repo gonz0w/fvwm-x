@@ -56,6 +56,7 @@
 #include "libs/Rectangles.h"
 
 #include "FvwmForm.h"
+#include "libs/ui_layout.h"
 #include "form_input.h"			/* common FvwmForm stuff */
 #include <limits.h>
 
@@ -196,6 +197,7 @@ static void ct_List(char *);
 static void ct_ListItem(char *);
 static void ct_ListFocus(char *);
 static void ct_ListGrid(char *);
+static void ct_list_viewport(char *);
 static void ct_list_versioned(char *);
 static void ct_list_notify(char *);
 static void ct_label(char *);
@@ -269,6 +271,7 @@ static struct CommandTable ct_table[] =
   {"ListItem",ct_ListItem},
   {"ListNotify",ct_list_notify},
   {"ListVersioned",ct_list_versioned},
+  {"ListViewport",ct_list_viewport},
   {"Message",ct_Message},
   {"PadVText",ct_padVText},
   {"Position",ct_Position},
@@ -1318,7 +1321,7 @@ static void ct_ListGrid(char *cp)
   int columns, height;
 
   if (list == NULL || list->list.line != cur_line ||
-      list->list.state->count != 0 ||
+      list->list.state->count != 0 || list->list.viewport_columns != 0 ||
       !form_list_number(cp, 8, &columns) || columns < 2 ||
       *form_next_argument(cp) != '\0' ||
       (list->header.size_x - 20) / columns < 64)
@@ -1339,6 +1342,43 @@ invalid:
   if (list != NULL)
     list->list.state->refused = list->list.initial->refused = true;
   fprintf(stderr, "%s: invalid ListGrid columns (2..8)\n", module->name);
+}
+
+/* One optional expansion point, rather than a second general Form layout. */
+static void ct_list_viewport(char *cp)
+{
+	Item *list = form_current_list;
+	int units, columns, width, height;
+	const char *tail = form_next_argument(cp);
+
+	if (list == NULL || CF.viewport != NULL || list->list.line != cur_line ||
+	    cur_line->n != 1 || list->list.state->count != 0 ||
+	    list->list.state->generation != 0 ||
+	    form_list_columns(list->list.state) != 1 ||
+	    !form_list_number(cp, 4096, &units) ||
+	    !form_list_number(tail, 8, &columns) ||
+	    *form_next_argument(tail) != '\0' ||
+	    !form_input_geometry(units, list->header.dt_ptr->dt_Ffont->height,
+		0, 0, &width, &height) || width > 32700)
+		goto invalid;
+	if (columns > 1)
+		height = 3 * list->header.dt_ptr->dt_Ffont->height + 4 * TEXT_SPC;
+	else
+		height = list->list.row_height;
+	if (height > (32760 - 2 * BOX_SPC) / list->list.state->rows)
+		goto invalid;
+	list->list.viewport_cell = width;
+	list->list.viewport_columns = columns;
+	list->list.row_height = height;
+	list->header.size_y = height * list->list.state->rows + 2 * BOX_SPC;
+	cur_line->size_y = list->header.size_y;
+	CF.viewport = list;
+	return;
+invalid:
+	if (list != NULL)
+		list->list.state->refused = list->list.initial->refused = true;
+	fprintf(stderr, "%s: invalid ListViewport cell-units columns (1..8)\n",
+		module->name);
 }
 
 static void ct_ListFocus(char *cp)
@@ -1721,6 +1761,127 @@ static void MassageConfig(void)
     }
     line = line->next;			/* go to next line */
   } while (line != &root_line);		 /* do all lines */
+}
+
+/* This path is called only for the opt-in dedicated viewport. Child geometry
+ * and policy publish together before repaint or the next input event. */
+void form_viewport_resize(int width, int height)
+{
+	Item *list = CF.viewport;
+	Line *line = &root_line;
+	ui_layout_grid_result grid;
+	int y = ITEM_VSPC, content_width, list_height;
+
+	if (list == NULL || width < 1 || height < 1 ||
+	    width > 32767 || height > 32767)
+		return;
+	if (width < CF.viewport_min_width)
+		width = CF.viewport_min_width;
+	if (height < CF.viewport_min_height)
+		height = CF.viewport_min_height;
+	content_width = width - 2 * ITEM_HSPC - 2 * BOX_SPC - 16;
+	list_height = height - CF.viewport_fixed_height;
+	if (!ui_layout_grid(content_width, list_height - 2 * BOX_SPC,
+		list->list.viewport_cell, list->list.row_height,
+		1, list->list.viewport_columns, 32, &grid))
+		return;
+	list->header.size_x = width - 2 * ITEM_HSPC;
+	list->header.size_y = list_height;
+	list->list.line->size_y = list_height;
+	form_list_viewport(list->list.state, grid.rows, grid.columns);
+	form_list_viewport(list->list.initial, grid.rows, grid.columns);
+	do
+	{
+		int line_width = (line->n + 1) * ITEM_HSPC;
+		int x = ITEM_HSPC, gap = ITEM_HSPC;
+
+		for (int i = 0; i < line->n; i++)
+			line_width += line->items[i]->header.size_x;
+		if (line != list->list.line)
+		{
+			if (line->justify == L_RIGHT)
+				x += width - line_width;
+			else if (line->justify == L_CENTER ||
+			    (line->justify == L_LEFTRIGHT && line->n == 1))
+				x += (width - line_width) / 2;
+			else if (line->justify == L_LEFTRIGHT && line->n > 1)
+				gap += (width - line_width) / (line->n - 1);
+		}
+		for (int i = 0; i < line->n; i++)
+		{
+			Item *p = line->items[i];
+
+			p->header.pos_x = x;
+			p->header.pos_y = y;
+			if (p->header.size_y < line->size_y)
+				p->header.pos_y +=
+					(line->size_y - p->header.size_y) / 2 + 1;
+			x += p->header.size_x + gap;
+			if (p->header.win != None)
+			{
+				if (p == list)
+					XMoveResizeWindow(dpy, p->header.win,
+						p->header.pos_x, p->header.pos_y,
+						p->header.size_x, p->header.size_y);
+				else
+					XMoveWindow(dpy, p->header.win,
+						p->header.pos_x, p->header.pos_y);
+			}
+		}
+		y += ITEM_VSPC + line->size_y;
+		line = line->next;
+	} while (line != &root_line);
+	/* Core-font text is painted on the parent, so its old positions need
+	 * clearing too; child moves alone would leave stale captions behind. */
+	if (CF.frame != None)
+		XClearWindow(dpy, CF.frame);
+}
+
+static void form_viewport_prepare(void)
+{
+	Item *list = CF.viewport;
+	Line *line = &root_line;
+	int minimum;
+
+	if (list == NULL)
+		return;
+	if (list->list.line->n != 1)
+	{
+		fprintf(stderr, "%s: ListViewport needs a dedicated Line\n",
+			module->name);
+		list->list.state->refused = list->list.initial->refused = true;
+		CF.viewport = NULL;
+		return;
+	}
+	minimum = list->list.viewport_cell + 2 * ITEM_HSPC + 2 * BOX_SPC + 16;
+	do
+	{
+		int fixed = (line->n + 1) * ITEM_HSPC;
+
+		if (line != list->list.line)
+		{
+			for (int i = 0; i < line->n; i++)
+				fixed += line->items[i]->header.size_x;
+			if (fixed > minimum)
+				minimum = fixed;
+		}
+		line = line->next;
+	} while (line != &root_line);
+	CF.viewport_fixed_height = CF.total_height - list->header.size_y;
+	CF.viewport_min_width = minimum;
+	CF.viewport_min_height = CF.viewport_fixed_height +
+		list->list.row_height + 2 * BOX_SPC;
+	if (minimum > 32767 || CF.viewport_min_height > 32767)
+	{
+		fprintf(stderr, "%s: ListViewport fixed controls exceed geometry\n",
+			module->name);
+		list->list.state->refused = list->list.initial->refused = true;
+		CF.viewport = NULL;
+		return;
+	}
+	if (CF.max_width < minimum)
+		CF.max_width = minimum;
+	form_viewport_resize(CF.max_width, CF.total_height);
 }
 
 /* Keep byte storage and the legacy UTF-8 character count distinct. */
@@ -2727,6 +2888,12 @@ static void OpenWindows(void)
   sh.width = CF.max_width;
   sh.height = CF.total_height;
   sh.win_gravity = gravity;
+  if (CF.viewport != NULL)
+  {
+    sh.flags |= PMinSize;
+    sh.min_width = CF.viewport_min_width;
+    sh.min_height = CF.viewport_min_height;
+  }
   XSetWMNormalHints(dpy, CF.frame, &sh);
 
   for (item = root_item_ptr; item != 0;
@@ -3296,6 +3463,7 @@ int main (int argc, char **argv)
   ReadConfig();				/* get config from fvwm */
 
   MassageConfig();			/* add data, calc window x/y */
+  form_viewport_prepare();
 
   /* tell fvwm about our mask */
   SetMessageMask(Channel, M_SENDCONFIG|M_CONFIG_INFO|M_ERROR|M_STRING);

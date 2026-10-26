@@ -99,7 +99,7 @@ void form_list_draw(Item *item)
 		str->len = strlen(str->str);
 		str->x = x + TEXT_SPC;
 		str->y = y + TEXT_SPC + dt->dt_Ffont->ascent;
-		if (columns > 1)
+		if (columns > 1 || item->list.viewport_columns > 1)
 		{
 			icon_size *= 2;
 			if (icon_size < 8)

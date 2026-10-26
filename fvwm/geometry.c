@@ -473,41 +473,6 @@ void get_unshaded_geometry(
 	return;
 }
 
-void get_shaded_client_window_pos(
-	FvwmWindow *fw, rectangle *ret_g)
-{
-	rectangle big_g;
-	size_borders b;
-
-	get_window_borders(fw, &b);
-	big_g = (IS_MAXIMIZED(fw)) ? fw->g.max : fw->g.normal;
-	get_relative_geometry(fw, &big_g, &big_g);
-	switch (SHADED_DIR(fw))
-	{
-	case DIR_S:
-	case DIR_SW:
-	case DIR_SE:
-		ret_g->y = 1 - big_g.height + b.total_size.height;
-		break;
-	default:
-		ret_g->y = 0;
-		break;
-	}
-	switch (SHADED_DIR(fw))
-	{
-	case DIR_E:
-	case DIR_NE:
-	case DIR_SE:
-		ret_g->x = 1 - big_g.width + b.total_size.width;
-		break;
-	default:
-		ret_g->x = 0;
-		break;
-	}
-
-	return;
-}
-
 /* returns the dimensions of the borders */
 void get_window_borders(
 	const FvwmWindow *fw, size_borders *borders)
@@ -602,22 +567,6 @@ void get_client_geometry(
 	ret_g->y += borders.top_left.height;
 	ret_g->width -= borders.total_size.width;
 	ret_g->height -= borders.total_size.height;
-
-	return;
-}
-
-/* update the frame_g according to the window's g.normal or g.max and shaded
- * state */
-void update_relative_geometry(FvwmWindow *fw)
-{
-	get_relative_geometry(fw,
-		&fw->g.frame,
-		(IS_MAXIMIZED(fw)) ? &fw->g.max : &fw->g.normal);
-	if (IS_SHADED(fw))
-	{
-		get_shaded_geometry(
-			fw, &fw->g.frame, &fw->g.frame);
-	}
 
 	return;
 }

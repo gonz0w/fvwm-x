@@ -456,6 +456,27 @@ List; existing forms retain their input/history traversal.
   encoded bitmap continue to use entry indices, independent of presentation.
   Invalid layout refuses the list result. Omit this directive for the list.
 
+**FvwmForm: ListViewport ``_minimum_cell_units_ _maximum_columns_``*::
+  Immediately after List, opt into one expanding collection line per Form.
+  The List must occupy its own Line, with no other items on that Line.
+  Minimum cell width uses 1..4096 ButtonFont units; maximum columns is 1..8.
+  Use maximum 1 for compact list rows, or 2..8 for icon-grid cells, retaining
+  grid presentation even when only one column fits. Do not combine ListGrid
+  and ListViewport. Existing forms without ListViewport keep fixed geometry.
++
+List width and rows establish the initial requested size. Resizing the Form
+reflows the existing list window into the available content width and height,
+with at most 32 visible rows and the configured column maximum. Padding and
+the scrollbar are excluded before calculating cells. Labels remain clipped.
+Fixed lines before and after the viewport retain their controls and move with
+the available space. Minimum size hints reserve room for those controls and
+one collection row; a window manager that overrides these hints can clip them.
+The same Form and list windows remain in use. Selection, focused entry,
+selection anchor and published snapshot generation do not change on resize.
+The old first visible entry remains in the first visual row where possible;
+the viewport clamps at the end of the collection. A wheel-scrolled viewport
+does not force the focused entry back onscreen during resize.
+
 **FvwmForm: ListItem on | off ``_string_`` [file | directory | link | other]*::
   Append one quoted presentation label (at most 1024 source bytes including
   quotes) to the preceding List. The optional literal type chooses a native

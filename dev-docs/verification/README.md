@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Responsive native panel and collection layout](VERIFICATION-2026-10-26-NATIVE-LAYOUT.md): measured rows, resize-aware grids and stable input identities; focused race/sanitizer/native checks, twelve inspected captures and scoped costs/limits.
+
 - [Native inspector inventory](VERIFICATION-2026-10-26-NATIVE-INSPECTOR.md): six sections, shared completion and literal Form lifecycle; focused race/sanitizer/native-X across three configs, nine captures and explicit provenance/qualification limits.
 
 - [High-contrast presentation](VERIFICATION-2026-10-26-HIGH-CONTRAST.md): race/IPC/preview and three native configurations, opaque pixels, existing Form recoloring and scoped captures.

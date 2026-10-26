@@ -55,6 +55,14 @@ test('resource-profile-report', py, args: [files('test_profile_report.py')],
     timeout: 60)
 
 if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('native-layout-xvfb', py,
+        args: [files('live_x/native_layout_live.py'), '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'native-layout'],
+        depends: [fvwm3, fvwm_mfl, fvwm_file_browser, fvwm_form,
+            fvwm_desktop, fvwm_desktop_worker, fvwm_desktop_capture,
+            fvwm_backer, fvwm_buttons, fvwm_event, fvwm_pager, fvwm_iconman],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 240)
     test('desktop-inspector-xvfb', py,
         args: [files('live_x/inspector_live.py'), '--build', meson.project_build_root(),
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'inspector'],
@@ -4271,3 +4279,10 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 120)
 endif
+
+ui_layout_test = executable(
+    'test-ui-layout', ['test_ui_layout.c', '../libs/ui_layout.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('ui-layout', ui_layout_test)

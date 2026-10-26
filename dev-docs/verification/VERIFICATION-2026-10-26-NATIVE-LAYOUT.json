@@ -1,0 +1,974 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "base_commit": "84fe2a3cb2c7d56652d671f37cb8296c4e9c79b4",
+  "base_tree": "8dec46b8c359adedc6a7bc29993d859aeb591dcd",
+  "scope": "bounded native layout baseline; focused Linux ARM64",
+  "issues": [
+    212,
+    69,
+    75
+  ],
+  "initial_inputs": {
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "021419519636d4d5745ea59acef9e29ddf5c035e0a559f152987fdba8b085967",
+    "default-config/desktop.fvwm": "68764867bffc40a3867494ede1e148c3f765eb41460687f0384aaac85f76239c",
+    "libs/meson.build": "ee46b21e1b47df684155ae61e3e0434d5af0a8bba1d167f1e80491c641708742",
+    "libs/ui_layout.c": "2b16ff9b6fbec1001ae92aab1718ca1002caa588f2f00c80dfc9e294d0c295bd",
+    "libs/ui_layout.h": "bde173eb2d9f68a3ab94ab7d6bff1a45130dad76a5f20dda1278cc91251ec994",
+    "modules/FvwmButtons/FvwmButtons.c": "251353a799d38c48edf4557a1cee0a1f825d765bd86e745e8ab680ced487ed5d",
+    "modules/FvwmButtons/FvwmButtons.h": "96560f7abf646eaace5d145f095ecd23cd4a359dbfd727cfefef6ea0c16e71f9",
+    "modules/FvwmButtons/button.c": "448407ad4cec3bdbe1f559f1e83f1e29b1607a8254dcfa845b1d17935d01cba9",
+    "modules/FvwmButtons/button.h": "98eb7b8d6eb68e0f17ee16877e88055bd5a84177a9d5e1e1ae5539709289a921",
+    "modules/FvwmButtons/draw.c": "258b520cffdb9063bb7345a6c7ae30022b6d834fe96de41eae2952195960bb35",
+    "modules/FvwmButtons/draw.h": "26d5455f7b1facf4322a6b78f7401bbdddf8709e5487ce8775b66c65966ef5f3",
+    "modules/FvwmButtons/dynamic.c": "22301993c1a632793031dcbe27c4cb92e51ddb8a93ab3f6221301797787fdc25",
+    "modules/FvwmButtons/parse.c": "f854ec35adda6d3dbc273deb6b4e43064a80a2c210ef8d82cc0cda97806a93dc",
+    "modules/FvwmForm/FvwmForm.c": "2b0ad2365615bd404926f3ce5e01bc020ab92e85c4adde5ddbb846525a3e9130",
+    "modules/FvwmForm/FvwmForm.h": "1ecb36dfcd91e2b2e45bb5acdf0f5db26bd3632d5b8248823c2fb4fe99320ef0",
+    "modules/FvwmForm/ReadXServer.c": "d9f2071196da90f5388eb5de8e1ddde132ef63cd37774b76c31be8f399bc19d6",
+    "modules/FvwmForm/form_list.c": "b250f0704ee3d59aa003154ef2d5ec082fb0a68c5c42b8fd08d92e86e9c3f026",
+    "modules/FvwmForm/form_list.h": "48086f492201d773f1896ad36914ef5a60687e52c7a8b59145c3d481f77d348b",
+    "modules/FvwmForm/list_widget.c": "0005887dc0501a0d7226380c655417bb14f71bfb45504dafc5a0104c0a8a3c84",
+    "tests/live_x/file_browser_live.py": "e99ac3f3ced94a1e78e2d67d36bed46a010b9f5a6a1e5366d5e5f1040f6f6820",
+    "tests/live_x/native_layout_live.py": "a0e3a38187165e166b86a2287cbce1bcf811cfdacc1b540a901e5d31aca3b3c8",
+    "tests/meson.build": "5ae43d70248f1175e06595276e00c3bdde25f4b8d7c1a22525b533ab06f2cfd7",
+    "tests/test_form_list.c": "44a31504c583623128cf0f00226cae8ed893e17575c3423046ac4a65dc018ad0",
+    "tests/test_ui_layout.c": "85c5ed7a171c65507137b7c1f8bc7e5c043c4cb875c290bfc790df0aa634af2a"
+  },
+  "final_inputs": {
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "021419519636d4d5745ea59acef9e29ddf5c035e0a559f152987fdba8b085967",
+    "default-config/desktop.fvwm": "68764867bffc40a3867494ede1e148c3f765eb41460687f0384aaac85f76239c",
+    "libs/meson.build": "ee46b21e1b47df684155ae61e3e0434d5af0a8bba1d167f1e80491c641708742",
+    "libs/ui_layout.c": "2b16ff9b6fbec1001ae92aab1718ca1002caa588f2f00c80dfc9e294d0c295bd",
+    "libs/ui_layout.h": "bde173eb2d9f68a3ab94ab7d6bff1a45130dad76a5f20dda1278cc91251ec994",
+    "modules/FvwmButtons/FvwmButtons.c": "251353a799d38c48edf4557a1cee0a1f825d765bd86e745e8ab680ced487ed5d",
+    "modules/FvwmButtons/FvwmButtons.h": "96560f7abf646eaace5d145f095ecd23cd4a359dbfd727cfefef6ea0c16e71f9",
+    "modules/FvwmButtons/button.c": "448407ad4cec3bdbe1f559f1e83f1e29b1607a8254dcfa845b1d17935d01cba9",
+    "modules/FvwmButtons/button.h": "98eb7b8d6eb68e0f17ee16877e88055bd5a84177a9d5e1e1ae5539709289a921",
+    "modules/FvwmButtons/draw.c": "258b520cffdb9063bb7345a6c7ae30022b6d834fe96de41eae2952195960bb35",
+    "modules/FvwmButtons/draw.h": "26d5455f7b1facf4322a6b78f7401bbdddf8709e5487ce8775b66c65966ef5f3",
+    "modules/FvwmButtons/dynamic.c": "22301993c1a632793031dcbe27c4cb92e51ddb8a93ab3f6221301797787fdc25",
+    "modules/FvwmButtons/parse.c": "f854ec35adda6d3dbc273deb6b4e43064a80a2c210ef8d82cc0cda97806a93dc",
+    "modules/FvwmForm/FvwmForm.c": "2b0ad2365615bd404926f3ce5e01bc020ab92e85c4adde5ddbb846525a3e9130",
+    "modules/FvwmForm/FvwmForm.h": "1ecb36dfcd91e2b2e45bb5acdf0f5db26bd3632d5b8248823c2fb4fe99320ef0",
+    "modules/FvwmForm/ReadXServer.c": "d9f2071196da90f5388eb5de8e1ddde132ef63cd37774b76c31be8f399bc19d6",
+    "modules/FvwmForm/form_list.c": "b250f0704ee3d59aa003154ef2d5ec082fb0a68c5c42b8fd08d92e86e9c3f026",
+    "modules/FvwmForm/form_list.h": "48086f492201d773f1896ad36914ef5a60687e52c7a8b59145c3d481f77d348b",
+    "modules/FvwmForm/list_widget.c": "0005887dc0501a0d7226380c655417bb14f71bfb45504dafc5a0104c0a8a3c84",
+    "tests/live_x/file_browser_live.py": "788352a4e38cf8a79275c2f5f90a1fd51a35cd37ec3d98807855f7d6fa8569dd",
+    "tests/live_x/native_layout_live.py": "4d9eaed1a4f44e8c1a0ff7328c3812f993d9cc5135fb89473fe81fb0789c464e",
+    "tests/meson.build": "5ae43d70248f1175e06595276e00c3bdde25f4b8d7c1a22525b533ab06f2cfd7",
+    "tests/test_form_list.c": "44a31504c583623128cf0f00226cae8ed893e17575c3423046ac4a65dc018ad0",
+    "tests/test_ui_layout.c": "85c5ed7a171c65507137b7c1f8bc7e5c043c4cb875c290bfc790df0aa634af2a"
+  },
+  "commands": [
+    {
+      "name": "ui-layout",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-ui-layout"
+      ],
+      "status": 0,
+      "seconds": 0.0016312679999828106
+    },
+    {
+      "name": "buttons-keyboard-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/buttons_keyboard_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/buttons-keyboard-x"
+      ],
+      "status": 0,
+      "seconds": 14.168952420999972
+    },
+    {
+      "name": "configure",
+      "argv": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "status": 0,
+      "seconds": 1.0129763520000097
+    },
+    {
+      "name": "build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "fvwm3",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmForm/FvwmForm",
+        "bin/FvwmPrompt/fvwm-file-browser",
+        "tests/test-ui-layout",
+        "tests/test-form-list",
+        "tests/test-form-input",
+        "tests/test-buttons-navigation",
+        "tests/test-buttons-updates"
+      ],
+      "status": 0,
+      "seconds": 0.8960264500000221
+    },
+    {
+      "name": "go-browser-race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./cmd/fvwmfilebrowser",
+        "./internal/collection"
+      ],
+      "status": 0,
+      "seconds": 8.854692489999934
+    },
+    {
+      "name": "form-list",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-form-list"
+      ],
+      "status": 0,
+      "seconds": 0.0017917239999860612
+    },
+    {
+      "name": "form-input",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-form-input"
+      ],
+      "status": 0,
+      "seconds": 0.0015934310000602636
+    },
+    {
+      "name": "buttons-navigation",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-buttons-navigation"
+      ],
+      "status": 0,
+      "seconds": 0.0014730540000300607
+    },
+    {
+      "name": "buttons-updates",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-buttons-updates"
+      ],
+      "status": 0,
+      "seconds": 0.001620181000021148
+    },
+    {
+      "name": "asan-configure",
+      "argv": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "status": 0,
+      "seconds": 1.1010420420000173
+    },
+    {
+      "name": "asan-build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "tests/test-ui-layout",
+        "tests/test-form-list"
+      ],
+      "status": 0,
+      "seconds": 0.17062303900002007
+    },
+    {
+      "name": "asan-ui-layout",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ui-layout"
+      ],
+      "status": 0,
+      "seconds": 0.008057987000029243
+    },
+    {
+      "name": "asan-form-list",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-form-list"
+      ],
+      "status": 0,
+      "seconds": 0.0037102830000321774
+    },
+    {
+      "name": "form-geometry-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--geometry-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/form-geometry-x"
+      ],
+      "status": 0,
+      "seconds": 2.262569739000014
+    },
+    {
+      "name": "browser-regression-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--form",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--browser",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/browser-regression-x"
+      ],
+      "status": 1,
+      "seconds": 9.233351063999976
+    },
+    {
+      "name": "browser-regression-x-corrected",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_browser_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--form",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--browser",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/browser-regression-x-corrected"
+      ],
+      "status": 0,
+      "seconds": 11.442443099000002
+    },
+    {
+      "name": "native-layout-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_layout_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/native-layout-x"
+      ],
+      "status": 1,
+      "seconds": 3.2901217800000495
+    },
+    {
+      "name": "native-layout-x-observed",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_layout_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/native-layout-x-observed"
+      ],
+      "status": 1,
+      "seconds": 3.2412345720001667
+    },
+    {
+      "name": "native-layout-x-padding",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_layout_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/native-layout-x-padding"
+      ],
+      "status": 1,
+      "seconds": 10.136303510000062
+    },
+    {
+      "name": "native-layout-x-refresh",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_layout_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-layout-20261026/native-layout-x-refresh"
+      ],
+      "status": 0,
+      "seconds": 11.846643951000033
+    }
+  ],
+  "archive": {
+    "sha256": "51f90148f0f05728f76746406419556f3929367ae412be794f45179b8261eff5",
+    "bytes": 1942806,
+    "files": 181,
+    "verified_files": 181,
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/native-evidence.tgz"
+  },
+  "provenance": {
+    "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+    "machine": "aarch64",
+    "config_h_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+    "registration": [
+      {
+        "cmd": [
+          "/workspace/meson-env/bin/python3",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/../source/tests/live_x/native_layout_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/live-x-artifacts/native-layout"
+        ],
+        "env": {},
+        "name": "native-layout-xvfb",
+        "workdir": null,
+        "timeout": 240,
+        "suite": [
+          "fvwm3:live-x"
+        ],
+        "is_parallel": false,
+        "priority": 0,
+        "protocol": "exitcode",
+        "depends": [
+          "cc71424@@FvwmForm@exe",
+          "3d451e1@@fvwm-desktop-worker@cus",
+          "fvwm3@exe",
+          "5a0c99c@@FvwmBacker@exe",
+          "0e4eca6@@FvwmPager@exe",
+          "f525844@@FvwmIconMan@exe",
+          "3d451e1@@fvwm-file-browser@cus",
+          "1c3f685@@FvwmEvent@exe",
+          "8eebc20@@FvwmButtons@exe",
+          "51a1f05@@fvwm-desktop-capture@exe",
+          "3d451e1@@FvwmDesktop@cus",
+          "457184d@@FvwmMFL@exe"
+        ],
+        "extra_paths": []
+      },
+      {
+        "cmd": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-form-list"
+        ],
+        "env": {},
+        "name": "form-list",
+        "workdir": null,
+        "timeout": 30,
+        "suite": [
+          "fvwm3"
+        ],
+        "is_parallel": true,
+        "priority": 0,
+        "protocol": "exitcode",
+        "depends": [
+          "59830eb@@test-form-list@exe"
+        ],
+        "extra_paths": []
+      },
+      {
+        "cmd": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-ui-layout"
+        ],
+        "env": {},
+        "name": "ui-layout",
+        "workdir": null,
+        "timeout": 30,
+        "suite": [
+          "fvwm3"
+        ],
+        "is_parallel": true,
+        "priority": 0,
+        "protocol": "exitcode",
+        "depends": [
+          "59830eb@@test-ui-layout@exe"
+        ],
+        "extra_paths": []
+      }
+    ],
+    "gcc --version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "go version": "go version go1.27.2 linux/arm64\n",
+    "meson --version": "1.7.0\n",
+    "bin/FvwmPrompt/go.mod": "b7ab090a82e84684a6d95b78241823c36214f72034535d69612f46611c0dac31",
+    "bin/FvwmPrompt/go.sum": "2e7ddc025a143b92d14dee5db0a464101cb6f8763638d75c55fa8d7a7ff22a4a",
+    "full_receipt": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/provenance.json",
+      "sha256": "441f8a1c752938941f0efdb3722f89a5c6e6a7cfef6b83d762e813b37316ec4e"
+    }
+  },
+  "binary_costs": {
+    "fvwm3": {
+      "before_bytes": 5387608,
+      "after_bytes": 5387608,
+      "delta_bytes": 0,
+      "before": {
+        "sha256": "52a02998a85777abdaa994c369bcac62555a790c1e62d5dbabe4ef86ef8f1952",
+        "bytes": 5387608,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1090473\t  27340\t  39824\t1157637\t 11aa05\t/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3\n"
+      },
+      "after": {
+        "sha256": "52a02998a85777abdaa994c369bcac62555a790c1e62d5dbabe4ef86ef8f1952",
+        "bytes": 5387608,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1090473\t  27340\t  39824\t1157637\t 11aa05\t/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffad13c000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffacf20000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffffaceb0000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffffacd50000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffffacd10000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffffacce0000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffffacca0000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffffacc60000)\n\tlibpng16.so.16 => /tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16 (0x0000ffffacc00000)\n\tlibSM.so.6 => /lib/aarch64-linux-gnu/libSM.so.6 (0x0000ffffacbd0000)\n\tlibICE.so.6 => /lib/aarch64-linux-gnu/libICE.so.6 (0x0000ffffacb90000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffffacb60000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffffacb30000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffffacb00000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffffacad0000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffac910000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffad100000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffffac820000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffffac7d0000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffffac780000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffffac740000)\n\tlibuuid.so.1 => /lib/aarch64-linux-gnu/libuuid.so.1 (0x0000ffffac710000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffffac6d0000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffffac6a0000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffffac670000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffffac640000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffffac610000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffffac5e0000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffffac5a0000)\n",
+          "stderr": ""
+        }
+      }
+    },
+    "modules/FvwmButtons/FvwmButtons": {
+      "before_bytes": 1724208,
+      "after_bytes": 1740048,
+      "delta_bytes": 15840,
+      "before": {
+        "sha256": "806baa88c33f7ff6278272d2161ca6e7ff1673ea6cafa79071cfa0f87b08a348",
+        "bytes": 1724208,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 427203\t  13624\t  13512\t 454339\t  6eec3\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons\n"
+      },
+      "after": {
+        "sha256": "2de3416b33dffa06007f001daa310642eca184e3e3c6d5e4a862b499dd2dd158",
+        "bytes": 1740048,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 431803\t  13656\t  13512\t 458971\t  700db\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffbca3c000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffbc8c0000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffffbc760000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffffbc720000)\n\tlibpng16.so.16 => /tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16 (0x0000ffffbc6c0000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffffbc690000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffffbc660000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffffbc630000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffffbc600000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffffbc590000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffffbc550000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffffbc510000)\n\tlibSM.so.6 => /lib/aarch64-linux-gnu/libSM.so.6 (0x0000ffffbc4e0000)\n\tlibICE.so.6 => /lib/aarch64-linux-gnu/libICE.so.6 (0x0000ffffbc4a0000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffbc2e0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffbca00000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffffbc290000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffffbc250000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffffbc220000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffffbc130000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffffbc0e0000)\n\tlibuuid.so.1 => /lib/aarch64-linux-gnu/libuuid.so.1 (0x0000ffffbc0b0000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffffbc070000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffffbc040000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffffbc010000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffffbbfe0000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffffbbfb0000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffffbbf80000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffffbbf40000)\n",
+          "stderr": ""
+        }
+      }
+    },
+    "modules/FvwmForm/FvwmForm": {
+      "before_bytes": 1627040,
+      "after_bytes": 1635872,
+      "delta_bytes": 8832,
+      "before": {
+        "sha256": "ae4217338002a5812dd6875e385b54546c3c2959cb3caf9183238f52887ef2c6",
+        "bytes": 1627040,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 403477\t  14744\t  14048\t 432269\t  6988d\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n"
+      },
+      "after": {
+        "sha256": "0b8df731374543c7c619f682453337ca4e0d053f1ae833e2dc92d9d43b0f8106",
+        "bytes": 1635872,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 402471\t  14776\t  14080\t 431327\t  694df\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffb0fa7000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffb0e20000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffffb0cc0000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffffb0c80000)\n\tlibpng16.so.16 => /tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16 (0x0000ffffb0c20000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffffb0bf0000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffffb0bc0000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffffb0b90000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffffb0b60000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffffb0af0000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffffb0ab0000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffffb0a70000)\n\tlibevent-2.1.so.7 => /lib/aarch64-linux-gnu/libevent-2.1.so.7 (0x0000ffffb09f0000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb0830000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffb0f60000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffffb07e0000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffffb07a0000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffffb0770000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffffb0680000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffffb0630000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffffb0600000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffffb05d0000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffffb05a0000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffffb0570000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffffb0530000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffffb04f0000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffffb04c0000)\n",
+          "stderr": ""
+        }
+      }
+    },
+    "bin/FvwmPrompt/fvwm-file-browser": {
+      "before_bytes": 5623589,
+      "after_bytes": 5623709,
+      "delta_bytes": 120,
+      "before": {
+        "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+        "bytes": 5623589,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3594030\t  88707\t33805464\t37488201\t23c0649\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser\n"
+      },
+      "after": {
+        "sha256": "e67e8795283078ba6a02c9d5cdb71df484a89e8341cd473546ea42b722e08f75",
+        "bytes": 5623709,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3596628\t  88707\t33805464\t37490799\t23c106f\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffa77c7000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffa75c0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffa7780000)\n",
+          "stderr": ""
+        }
+      }
+    }
+  },
+  "profiles": {
+    "slate-dark": {
+      "status": "passed",
+      "profile": "slate-dark",
+      "entries": 4096,
+      "font": "xft:Sans:size=10:antialias=True",
+      "configuration_sha256": {
+        "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "68764867bffc40a3867494ede1e148c3f765eb41460687f0384aaac85f76239c",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "fixture_overrides": [
+        "bar keyboard navigation and variable size/focus",
+        "collection placement",
+        "classic-large: 18pt font and legacy Form colors"
+      ],
+      "browser_initial_geometry": [
+        0,
+        0,
+        552,
+        636
+      ],
+      "browser_minimum_size": [
+        552,
+        516
+      ],
+      "process_observations": {
+        "buttons": [
+          {
+            "pid": 1457,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6412,
+            "high_water_kib": 6412
+          },
+          {
+            "pid": 1457,
+            "cpu_ticks": 1,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6416,
+            "high_water_kib": 6416
+          }
+        ],
+        "browser-form": [
+          {
+            "pid": 1500,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6772,
+            "high_water_kib": 6772
+          },
+          {
+            "pid": 1500,
+            "cpu_ticks": 5,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 7068,
+            "high_water_kib": 7068
+          },
+          {
+            "pid": 1500,
+            "retired_after_owned_browser_close": true
+          }
+        ],
+        "browser-owner": [
+          {
+            "pid": 1480,
+            "cpu_ticks": 2,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 11504,
+            "high_water_kib": 12244
+          },
+          {
+            "pid": 1480,
+            "cpu_ticks": 5,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 13192,
+            "high_water_kib": 14712
+          }
+        ]
+      },
+      "form_idle_observation": {
+        "seconds": 0.4,
+        "before": {
+          "pid": 1500,
+          "cpu_ticks": 5,
+          "clock_ticks_per_second": 100,
+          "rss_kib": 7068,
+          "high_water_kib": 7068
+        },
+        "after": {
+          "pid": 1500,
+          "cpu_ticks": 5,
+          "clock_ticks_per_second": 100,
+          "rss_kib": 7068,
+          "high_water_kib": 7068
+        },
+        "stable_cpu_ticks": true
+      },
+      "browser_native_generation": [
+        1,
+        2
+      ],
+      "observer_unexpected_x_errors": [],
+      "full_receipt": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/slate-dark/result.json",
+        "sha256": "2e3e462b630586440bbec4ad71894a1f3889eb80c717a45311dd3b34e28e64ed"
+      },
+      "outcomes": {
+        "bar_refused_group_and_single_title_reflow": true,
+        "bar_native_click_keyboard_and_title_identity": true,
+        "browser_resize_preserves_state_and_refresh_publishes": true,
+        "four_column_primitive_state_and_keyboard": true
+      },
+      "latency_ms_summary": {
+        "bar-pointer-action": {
+          "count": 7,
+          "minimum": 31.686641000078453,
+          "median": 36.23198300010699,
+          "maximum": 36.39260899990404
+        },
+        "burst-resize": {
+          "count": 2,
+          "minimum": 52.908439000020735,
+          "median": 54.55063300007623,
+          "maximum": 56.19282700013173
+        },
+        "resize": {
+          "count": 10,
+          "minimum": 50.801518000071155,
+          "median": 54.14253399999325,
+          "maximum": 66.7552769998565
+        }
+      }
+    },
+    "dune-light": {
+      "status": "passed",
+      "profile": "dune-light",
+      "entries": 4096,
+      "font": "xft:Sans:size=10:antialias=True",
+      "configuration_sha256": {
+        "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "68764867bffc40a3867494ede1e148c3f765eb41460687f0384aaac85f76239c",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "fixture_overrides": [
+        "bar keyboard navigation and variable size/focus",
+        "collection placement",
+        "classic-large: 18pt font and legacy Form colors"
+      ],
+      "browser_initial_geometry": [
+        0,
+        0,
+        552,
+        636
+      ],
+      "browser_minimum_size": [
+        552,
+        516
+      ],
+      "process_observations": {
+        "buttons": [
+          {
+            "pid": 1526,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6416,
+            "high_water_kib": 6416
+          },
+          {
+            "pid": 1526,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6420,
+            "high_water_kib": 6420
+          }
+        ],
+        "browser-form": [
+          {
+            "pid": 1572,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6772,
+            "high_water_kib": 6772
+          },
+          {
+            "pid": 1572,
+            "cpu_ticks": 5,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 7064,
+            "high_water_kib": 7064
+          },
+          {
+            "pid": 1572,
+            "retired_after_owned_browser_close": true
+          }
+        ],
+        "browser-owner": [
+          {
+            "pid": 1550,
+            "cpu_ticks": 1,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 12052,
+            "high_water_kib": 12052
+          },
+          {
+            "pid": 1550,
+            "cpu_ticks": 4,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 12360,
+            "high_water_kib": 14448
+          }
+        ]
+      },
+      "form_idle_observation": {
+        "seconds": 0.4,
+        "before": {
+          "pid": 1572,
+          "cpu_ticks": 5,
+          "clock_ticks_per_second": 100,
+          "rss_kib": 7064,
+          "high_water_kib": 7064
+        },
+        "after": {
+          "pid": 1572,
+          "cpu_ticks": 5,
+          "clock_ticks_per_second": 100,
+          "rss_kib": 7064,
+          "high_water_kib": 7064
+        },
+        "stable_cpu_ticks": true
+      },
+      "browser_native_generation": [
+        1,
+        2
+      ],
+      "observer_unexpected_x_errors": [],
+      "full_receipt": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/dune-light/result.json",
+        "sha256": "ac0986d80f6499b0c5279a4e6cf7647f2eb6c0a4c9589d92104fafb4d6c1a22d"
+      },
+      "outcomes": {
+        "bar_refused_group_and_single_title_reflow": true,
+        "bar_native_click_keyboard_and_title_identity": true,
+        "browser_resize_preserves_state_and_refresh_publishes": true,
+        "four_column_primitive_state_and_keyboard": true
+      },
+      "latency_ms_summary": {
+        "bar-pointer-action": {
+          "count": 7,
+          "minimum": 31.973842000070363,
+          "median": 36.222841000153494,
+          "maximum": 36.903304999896136
+        },
+        "burst-resize": {
+          "count": 2,
+          "minimum": 51.958612999897014,
+          "median": 55.08841350001603,
+          "maximum": 58.21821400013505
+        },
+        "resize": {
+          "count": 10,
+          "minimum": 51.56869300003564,
+          "median": 54.656179999938104,
+          "maximum": 69.21310899997479
+        }
+      }
+    },
+    "classic-large": {
+      "status": "passed",
+      "profile": "classic-large",
+      "entries": 4096,
+      "font": "xft:DejaVu Sans Mono:size=18:antialias=True",
+      "configuration_sha256": {
+        "config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "68764867bffc40a3867494ede1e148c3f765eb41460687f0384aaac85f76239c",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "fixture_overrides": [
+        "bar keyboard navigation and variable size/focus",
+        "collection placement",
+        "classic-large: 18pt font and legacy Form colors"
+      ],
+      "browser_initial_geometry": [
+        0,
+        0,
+        938,
+        974
+      ],
+      "browser_minimum_size": [
+        938,
+        776
+      ],
+      "process_observations": {
+        "buttons": [
+          {
+            "pid": 1597,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6288,
+            "high_water_kib": 6288
+          },
+          {
+            "pid": 1597,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6292,
+            "high_water_kib": 6292
+          }
+        ],
+        "browser-form": [
+          {
+            "pid": 1642,
+            "cpu_ticks": 0,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6712,
+            "high_water_kib": 6712
+          },
+          {
+            "pid": 1642,
+            "cpu_ticks": 5,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 6940,
+            "high_water_kib": 6940
+          },
+          {
+            "pid": 1642,
+            "retired_after_owned_browser_close": true
+          }
+        ],
+        "browser-owner": [
+          {
+            "pid": 1622,
+            "cpu_ticks": 1,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 11340,
+            "high_water_kib": 11472
+          },
+          {
+            "pid": 1622,
+            "cpu_ticks": 5,
+            "clock_ticks_per_second": 100,
+            "rss_kib": 12588,
+            "high_water_kib": 14644
+          }
+        ]
+      },
+      "form_idle_observation": {
+        "seconds": 0.4,
+        "before": {
+          "pid": 1642,
+          "cpu_ticks": 5,
+          "clock_ticks_per_second": 100,
+          "rss_kib": 6940,
+          "high_water_kib": 6940
+        },
+        "after": {
+          "pid": 1642,
+          "cpu_ticks": 5,
+          "clock_ticks_per_second": 100,
+          "rss_kib": 6940,
+          "high_water_kib": 6940
+        },
+        "stable_cpu_ticks": true
+      },
+      "browser_native_generation": [
+        1,
+        2
+      ],
+      "observer_unexpected_x_errors": [],
+      "full_receipt": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/classic-large/result.json",
+        "sha256": "0a5b29b68bbb8b1f4a9309eafd32784cddb820241e7e1214a4fff80f9d88e8a8"
+      },
+      "outcomes": {
+        "bar_refused_group_and_single_title_reflow": true,
+        "bar_native_click_keyboard_and_title_identity": true,
+        "browser_resize_preserves_state_and_refresh_publishes": true,
+        "four_column_primitive_state_and_keyboard": true
+      },
+      "latency_ms_summary": {
+        "bar-pointer-action": {
+          "count": 7,
+          "minimum": 31.73083999990922,
+          "median": 33.81006799986608,
+          "maximum": 36.13050600006318
+        },
+        "burst-resize": {
+          "count": 2,
+          "minimum": 53.479669000125796,
+          "median": 54.062070500094705,
+          "maximum": 54.644472000063615
+        },
+        "resize": {
+          "count": 10,
+          "minimum": 51.62590200006889,
+          "median": 55.4705010000589,
+          "maximum": 69.45898699996178
+        }
+      }
+    }
+  },
+  "screenshots": [
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/slate-dark/native-bar.png",
+      "sha256": "3209d4670b82f2c87345a817ff59764effb8cebdda82aa5ed0a158962021ba47"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/slate-dark/native-browser-4096.png",
+      "sha256": "ecbba13ea5c0dc2d52914e3ae1af5df78f709a23ea9dfaaaf164d281f3ac98fd"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/slate-dark/native-browser-resized.png",
+      "sha256": "dfe3189b6edb7404cf0ec20018a0490263f218a064d76aa53804f8f26adb081a"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/slate-dark/native-collection-choice-resized.png",
+      "sha256": "1f478a6f96b8eb373573cce53619d6d5a7c4205d87c0653c14c0218dd60cfe1c"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/dune-light/native-bar.png",
+      "sha256": "9d79984835cb9f2cc4f01d53d6acbd6c3d33b7ce0e520f100dd92da6c50de333"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/dune-light/native-browser-4096.png",
+      "sha256": "6b60a22057b22eba2ce5370aca710781ce858077f6f5f7c0a0b7fd0d26aa4e24"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/dune-light/native-browser-resized.png",
+      "sha256": "81cf67b13f01bf7c2aadc67f4c4579e90bd36c2e0a22191a7fb15e7b2f3d3ad1"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/dune-light/native-collection-choice-resized.png",
+      "sha256": "5a2df8fa60aa19443a78f097af8c4ec6b00430a5b5e6c9b66cdc36faf4d3c533"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/classic-large/native-bar.png",
+      "sha256": "6be19a8080376fa75d562414780a39fae7af2a984fc4f57cc1efcfd45cb5b946"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/classic-large/native-browser-4096.png",
+      "sha256": "d0db8b9a27bf423f9641c11fff48eb70928b4a71cf5e87aa01da28cd9c281ed2"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/classic-large/native-browser-resized.png",
+      "sha256": "9abe9a6c5dbdd3faae3de05c507075dcf41c9363c4cd3b765c3e74668e2ec841"
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-layout/raw/native-layout-x-refresh/classic-large/native-collection-choice-resized.png",
+      "sha256": "6c1640a118e00d35d426ea0b5984e9c542cd0f93abea600d09dc57b960b15540"
+    }
+  ],
+  "review": {
+    "reviewer": "/root/r1_layout_review",
+    "requested_model": "gpt-6.1-sol",
+    "requested_effort": "high",
+    "effective_runtime_settings": "unverified",
+    "base": "84fe2a3cb2c7d56652d671f37cb8296c4e9c79b4",
+    "final_map_sha256": "de53416f1aa60f537d9e4decc5d0808b3ae870b52423c430065a8f5bc2400f96",
+    "result": "no unresolved actionable findings; both initial resize findings resolved",
+    "verified": "24 source hashes, unchanged production, 181 payloads/archive, commands/failures/manuals/costs/telemetry/capture provenance and three visually inspected published images",
+    "execution": "read-only review, no suites/native/network/resource controls/edits"
+  },
+  "cleanup": {
+    "verified_files": 181,
+    "removed_bytes": 4826090,
+    "removed_paths": [
+      "/tmp/fvwm-r1-layout-20261026",
+      "/tmp/fvwm-r1-layout-20261026.tgz"
+    ],
+    "host_archive_preserved": true,
+    "source_build_cache_and_performance_references_preserved": true,
+    "owned_container_stopped": true,
+    "both_connections_running_containers": 0,
+    "owned_vm_stopped": true
+  },
+  "limits": [
+    "not whole owner or release acceptance",
+    "no Clay/shaping/IME/assistive or mixed-scale qualification",
+    "no full compiler/feature/install/default-BSD-X matrix",
+    "static file/ELF sizes and short observations are not a before/after RSS or speed claim",
+    "fixed labels clip; enlarged resized screenshot bottom leaves 1200px capture due retained position",
+    "only native geometry/list policy sanitizer coverage, not full ASan modules/native release CI"
+  ]
+}

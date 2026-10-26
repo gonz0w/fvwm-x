@@ -1,5 +1,9 @@
 # FVWM-X architecture
 
+Native layout uses `libs/ui_layout.c` for bounded row/grid policy. Opt-in Buttons
+content rows and Form collection viewports publish prepared native rectangles;
+legacy geometry remains with each module.
+
 This is the maintained source-navigation map, replacing the old generated
 planning graph as the project's entry point. Paths identify subsystem owners;
 the source, Meson graph and tests determine actual behavior. Update affected

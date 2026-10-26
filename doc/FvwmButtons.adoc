@@ -166,6 +166,34 @@ button records or change layout.
   columns allow for, the columns specification is ignored unless the
   _BoxSize_ option is _fixed_.
 
+*FvwmButtons: Layout grid|content::
+  Selects button sizing. _grid_ is the default and retains the configured
+  rows, columns and spans. _content_ opts the root into one measured row.
+  It supports 1 to 256 ordinary buttons with height one, without explicit
+  positions, nested containers, swallowed windows or panels. Unsupported
+  configurations produce a diagnostic and use the configured grid.
++
+The measured row reserves the widest normal, active and pressed title and icon
+using the configured font, justification, padding and frame. A configured Size
+is an additional minimum. Remaining width is divided according to each button's
+configured width span (for example, _3x1_ receives three times the spare width of
+_1x1_). _Columns_ does not constrain this measured row. When space is insufficient,
+all buttons receive proportional smaller rectangles; labels and icons can clip,
+but no action is removed. Captions fit horizontally when the measured minima
+fit the available width. The row supports interior dimensions up to 32767 pixels
+and advertises a minimum width of one pixel per button plus root borders. A
+forced window size below that bound retains the last complete layout and emits
+a diagnostic until the window has usable dimensions again.
++
+Painting, pointer selection and keyboard focus use the same prepared rectangles.
+Resizing or successfully changing a title or icon remeasures the row. A
+_ChangeButtons_ group publishes all changes before one reflow and repaint;
+refused groups leave titles and geometry unchanged. Existing selectors, action
+bindings and focused button identity are preserved. _Layout content_ never
+changes the outer window height or desktop struts. Set a sufficient explicit
+_Geometry_ height for the font and icons, including padding and frames. The
+shipped SlateBar opts in; its _slate_height_ setting remains authoritative.
+
 *FvwmButtons: File filename::
   Specifies that the configuration for this button is found in the file
   _filename_. _Filename_ can be a full pathname, or is assumed to be in

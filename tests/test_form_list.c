@@ -7,6 +7,40 @@
 #include <string.h>
 #include "modules/FvwmForm/form_list.h"
 
+static void test_viewport(void)
+{
+	form_list_state s = {.rows = 4, .columns = 4, .generation = 7};
+	form_list_state before;
+	unsigned char packet[FORM_LIST_PACKET_MAX], after[FORM_LIST_PACKET_MAX];
+	size_t length;
+
+	for (int i = 0; i < 100; i++)
+		assert(form_list_add(&s, i == 12 || i == 99));
+	form_list_focus(&s, 45);
+	assert(form_list_extend(&s, 47));
+	form_list_scroll(&s, -3);
+	before = s;
+	length = form_list_packet(&s, packet);
+	assert(form_list_viewport(&s, 6, 3));
+	assert(s.top == before.top / 3 * 3 && s.rows == 6 && s.columns == 3);
+	assert(s.focus == before.focus && s.anchor == before.anchor);
+	assert(form_list_packet(&s, after) == length);
+	assert(memcmp(packet, after, length) == 0);
+	before = s;
+	assert(!form_list_viewport(&s, 0, 3));
+	assert(!form_list_viewport(&s, 33, 3));
+	assert(!form_list_viewport(&s, 3, 0));
+	assert(!form_list_viewport(&s, 3, 9));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	form_list_scroll(&s, INT_MAX);
+	assert(form_list_viewport(&s, 32, 8) && s.top == 0);
+	assert(s.focus == before.focus && s.anchor == before.anchor);
+	s = (form_list_state){.rows = 1};
+	assert(form_list_viewport(&s, 32, 8));
+	assert(s.top == 0 && s.count == 0 && s.generation == 0);
+	assert(!form_list_viewport(NULL, 1, 1));
+}
+
 static void test_versioned_focus(void)
 {
 	form_list_state s = {.rows = 4, .columns = 4, .generation = 7};
@@ -167,6 +201,7 @@ static void test_live_choices_and_status(void)
 
 int main(void)
 {
+	test_viewport();
 	test_grid_ranges();
 	test_versioned_focus();
 	test_updates();

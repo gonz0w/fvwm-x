@@ -1870,6 +1870,7 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		"keyboardnavigation",
 		"focuscolorset",
 		"disabledcolorset",
+		"layout",
 		NULL
 	};
 	int i, j, k, option;
@@ -2058,6 +2059,20 @@ static void ParseConfigLine(button_info **ubb, char *s)
 			}
 		}
 		break;
+	case 19: /* Layout: root only, explicit opt-in. */
+	{
+		char *layouts[] = {"grid", "content", NULL};
+		char *tail;
+		int layout = GetTokenIndex(trimleft(s), layouts, -1, &tail);
+
+		if (ub->parent || layout < 0 || *trimleft(tail))
+			fvwm_debug(MyName,
+				"Layout requires grid or content at root");
+		else
+			ub->c->layout_content = layout == 1;
+		break;
+	}
+
 	case 15: /* WindowName */
 	{
 		i = sscanf(s, "%126[^\n]", windowname);

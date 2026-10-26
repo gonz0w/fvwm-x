@@ -136,6 +136,11 @@ void ReadXServer (void)
 	      {
 		      serviced++;
 		      fev_sanitise_configure_notify(&tmpe.xconfigure);
+		      if (CF.viewport != NULL)
+		      {
+			      event.xconfigure.width = tmpe.xconfigure.width;
+			      event.xconfigure.height = tmpe.xconfigure.height;
+		      }
 		      if (!tmpe.xconfigure.send_event)
 			      continue;
 		      event.xconfigure.x = tmpe.xconfigure.x;
@@ -146,6 +151,8 @@ void ReadXServer (void)
 		  CF.total_height != event.xconfigure.height)
 	      {
 		      /* adjust yourself... do noting */
+		      form_viewport_resize(event.xconfigure.width,
+			      event.xconfigure.height);
 		      ResizeFrame();
 		      CF.max_width = event.xconfigure.width;
 		      CF.total_height = event.xconfigure.height;

@@ -439,6 +439,11 @@ void SetButtonSize(button_info *ub, int w, int h)
 		ub->c->xpos = buttonXPos(ub, i);
 		ub->c->ypos = buttonYPos(ub, i);
 	}
+	if (!ub->parent && ub->c->layout_content)
+	{
+		ub->c->xpos = 0;
+		ub->c->ypos = 0;
+	}
 	dx = buttonXPad(ub) + buttonFrame(ub);
 	dy = buttonYPad(ub) + buttonFrame(ub);
 	ub->c->xpos += dx;
@@ -447,6 +452,8 @@ void SetButtonSize(button_info *ub, int w, int h)
 	h -= 2 * dy;
 	ub->c->width = w;
 	ub->c->height = h;
+	if (ub->c->layout_content)
+		buttons_layout_reflow(ub);
 
 	i = 0;
 	while (i < ub->c->num_buttons)
@@ -799,6 +806,7 @@ int main(int argc, char **argv)
 	fvwm_debug(MyName, "OK\n%s: Shuffling...", __func__);
 #endif
 
+	buttons_layout_prepare(UberButton);
 	ShuffleButtons(UberButton);
 	NumberButtons(UberButton);
 
@@ -2183,6 +2191,15 @@ void CreateUberButtonWindow(button_info *ub, int maxx, int maxy)
 	mysizehints.base_height = 0;
 	mysizehints.width  = mysizehints.base_width + maxx;
 	mysizehints.height = mysizehints.base_height + maxy;
+
+	if (ub->c->layout_content)
+	{
+		mysizehints.flags |= PMinSize;
+		mysizehints.min_width = buttons_layout_count(ub) +
+			2 * (buttonXPad(ub) + buttonFrame(ub));
+		mysizehints.min_height = 1 +
+			2 * (buttonYPad(ub) + buttonFrame(ub));
+	}
 
 	if (w>-1) /* from geometry */
 	{

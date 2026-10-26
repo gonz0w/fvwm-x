@@ -1439,11 +1439,10 @@ void MakeList(void)
 			/* flags hints that were supplied */
 			long supplied_return;
 			int getrc;
-			XSizeHints *size_hints =
-				XAllocSizeHints(); /* the size hints */
+			XSizeHints size_hints = {0};
 			if ((getrc = XGetWMSizeHints(
 				dpy,target.id, /* get size hints */
-				size_hints,    /* Hints */
+				&size_hints,   /* Hints */
 				&supplied_return,
 				XA_WM_ZOOM_HINTS)))
 			{
@@ -1451,20 +1450,19 @@ void MakeList(void)
 				{ /* if window has a aspect ratio */
 					snprintf(mymin_aspect, sizeof(mymin_aspect),
 						"%d/%d",
-						size_hints->min_aspect.x,
-						size_hints->min_aspect.y);
+						size_hints.min_aspect.x,
+						size_hints.min_aspect.y);
 					AddToList(
 						"Minimum aspect ratio:",
 						mymin_aspect);
 					snprintf(max_aspect, sizeof(max_aspect),
 						"%d/%d",
-						size_hints->max_aspect.x,
-						size_hints->max_aspect.y);
+						size_hints.max_aspect.x,
+						size_hints.max_aspect.y);
 					AddToList(
 						"Maximum aspect ratio:",
 						max_aspect);
 				} /* end aspect ratio */
-				XFree(size_hints);
 			} /* end getsizehints worked */
 		}
 	}

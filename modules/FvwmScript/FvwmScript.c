@@ -659,9 +659,10 @@ void LoadIcon(struct XObj *xobj)
 /* Opening a GUI window */
 void OpenWindow (void)
 {
-  XTextProperty Name;
-  XWMHints *IndicWM;
-  XSizeHints *IndicNorm;
+  XTextProperty Name = {0};
+  XTextProperty *name_property = NULL;
+  XWMHints IndicWM = {0};
+  XSizeHints IndicNorm = {0};
   unsigned long mask;
   XClassHint classHints;
   XSetWindowAttributes Attr;
@@ -716,31 +717,33 @@ void OpenWindow (void)
     fvwm_debug(__func__,
                "[%s][OpenWindow]: <<WARNING>> Can't use icon name\n",
                ScriptName);
-  IndicNorm = XAllocSizeHints();
+  else
+    name_property = &Name;
   if (x11base->size.x!=-1)
   {
-    IndicNorm->x = x11base->size.x;
-    IndicNorm->y = x11base->size.y;
-    IndicNorm->flags = PSize|PMinSize|PMaxSize|PBaseSize|PPosition;
+    IndicNorm.x = x11base->size.x;
+    IndicNorm.y = x11base->size.y;
+    IndicNorm.flags = PSize|PMinSize|PMaxSize|PBaseSize|PPosition;
   }
   else
-    IndicNorm->flags = PSize|PMinSize|PMaxSize|PBaseSize;
-  IndicNorm->width = x11base->size.width;
-  IndicNorm->height = x11base->size.height;
-  IndicNorm->min_width = x11base->size.width;
-  IndicNorm->min_height = x11base->size.height;
-  IndicNorm->max_width = x11base->size.width;
-  IndicNorm->max_height = x11base->size.height;
-  IndicWM = XAllocWMHints();
-  IndicWM->input = True;
-  IndicWM->initial_state = NormalState;
-  IndicWM->flags = InputHint|StateHint;
+    IndicNorm.flags = PSize|PMinSize|PMaxSize|PBaseSize;
+  IndicNorm.width = x11base->size.width;
+  IndicNorm.height = x11base->size.height;
+  IndicNorm.min_width = x11base->size.width;
+  IndicNorm.min_height = x11base->size.height;
+  IndicNorm.max_width = x11base->size.width;
+  IndicNorm.max_height = x11base->size.height;
+  IndicWM.input = True;
+  IndicWM.initial_state = NormalState;
+  IndicWM.flags = InputHint|StateHint;
 
   classHints.res_name = fxstrdup(ScriptBaseName);
   classHints.res_class = fxstrdup(module->name);
 
-  XSetWMProperties(dpy, x11base->win, &Name,
-		   &Name, NULL, 0, IndicNorm, IndicWM, &classHints);
+  XSetWMProperties(dpy, x11base->win, name_property,
+		   name_property, NULL, 0, &IndicNorm, &IndicWM, &classHints);
+  if (name_property != NULL)
+    XFree(Name.value);
   Scrapt = fxcalloc(sizeof(char), 1);
 
   /* Build atoms for inter application communication */

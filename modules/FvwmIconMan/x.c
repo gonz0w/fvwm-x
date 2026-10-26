@@ -569,6 +569,7 @@ static void set_window_properties (Window win, char *name, char *icon,
   }
   if (XStringListToTextProperty (&icon, 1, &win_icon) == 0) {
     ConsoleMessage ("%s: cannot allocate window icon.\n", MyName);
+    XFree (win_name.value);
     return;
   }
 

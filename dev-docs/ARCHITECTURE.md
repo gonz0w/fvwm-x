@@ -1217,3 +1217,9 @@ font/color defaults and consumes Type only after ChooseFunction returns. Final
 widget strings retain XObj ownership and final base strings stay live; partial
 parser/base-X/font teardown remains separate.
 [Property ownership evidence](verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROPERTIES.md).
+
+Script WM publication and Ident aspect-hint queries use local initialized hint
+records. Script converted title storage ends after synchronous property publication;
+IconMan unwinds its first converted text property if the second conversion fails.
+These temporary owners do not extend into the event loop or shared base-X/font
+teardown. [WM metadata evidence](verification/VERIFICATION-2026-10-25-M5-WM-METADATA.md).

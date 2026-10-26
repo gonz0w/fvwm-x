@@ -1237,3 +1237,14 @@ strings after existing detach operations. These are local owners, not a shared
 teardown framework. The [actual-module observer](../tests/live_x/module_resource_owner_live.py)
 and [ownership evidence](verification/VERIFICATION-2026-10-26-M5-MODULE-OWNERS.md)
 cover their selected replacement/retarget/terminal paths.
+
+
+Pager's [local drawing owner](../modules/FvwmPager/FvwmPager.c) acquires one
+reference per inherited style picture slot and clears pictures, per-style/global
+GCs and the borrowed-text scratch container at normal and explicit terminal
+paths. Other teardown retains its existing routes. Animate's
+[GC/tile pair](../modules/FvwmAnimate/FvwmAnimate.c) retires before replacement
+and after final unlock/Stop processing, followed by owned configuration strings.
+Event's [action storage](../modules/FvwmEvent/FvwmEvent.c) stays live through
+shutdown dispatch and then retires. These local helpers introduce no shared
+teardown authority. [Actual-module ownership evidence](verification/VERIFICATION-2026-10-26-M5-MODULE-LIFECYCLE.md).

@@ -4164,3 +4164,62 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 120)
 endif
+
+# Link the same module objects used by the installed executables. The pure
+# Event record test runs with leak detection; actual-X observers assert only
+# selected owners because shared graphics/font caches have separate lifetimes.
+event_action_owner_test = executable(
+    'test-event-action-owner', 'test_event_action_owner.c',
+    objects: fvwm_event.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=fxmalloc', '-Wl,--wrap=fxstrdup',
+        '-Wl,--wrap=GetNextSimpleOption', '-Wl,--wrap=ParseModuleArgs',
+        '-Wl,--wrap=InitGetConfigLine', '-Wl,--wrap=GetConfigLine',
+        '-Wl,--wrap=ReadFvwmPacket', '-Wl,--wrap=SendText',
+        '-Wl,--wrap=SetMessageMask', '-Wl,--wrap=SetSyncMask',
+        '-Wl,--wrap=SendFinishedStartupNotification',
+        '-Wl,--wrap=SendUnlockNotification'],
+)
+test('event-action-owner', event_action_owner_test)
+
+pager_drawing_owner_probe = executable(
+    'test-pager-drawing-owner', 'test_pager_drawing_owner.c',
+    objects: fvwm_pager.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=PCacheFvwmPicture', '-Wl,--wrap=PCloneFvwmPicture',
+        '-Wl,--wrap=PDestroyFvwmPicture', '-Wl,--wrap=XFreeGC',
+        '-Wl,--wrap=module_packet_reader_init',
+        '-Wl,--wrap=SendFinishedStartupNotification'],
+)
+animate_drawing_owner_probe = executable(
+    'test-animate-drawing-owner', 'test_animate_drawing_owner.c',
+    objects: fvwm_animate.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=InitGetConfigLine', '-Wl,--wrap=PGetFvwmPicture',
+        '-Wl,--wrap=XCreatePixmap', '-Wl,--wrap=XFreePixmap',
+        '-Wl,--wrap=fvwmlib_XCreateGC', '-Wl,--wrap=XFreeGC',
+        '-Wl,--wrap=SendText', '-Wl,--wrap=SendUnlockNotification',
+        '-Wl,--wrap=SendFinishedStartupNotification'],
+)
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('module-drawing-owner-xvfb', py,
+        args: [files('live_x/module_drawing_owner_live.py'),
+            '--pager', pager_drawing_owner_probe,
+            '--animate', animate_drawing_owner_probe,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'module-drawing-owner'],
+        depends: [pager_drawing_owner_probe, animate_drawing_owner_probe],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 120)
+endif

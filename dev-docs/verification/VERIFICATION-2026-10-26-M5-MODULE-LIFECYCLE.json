@@ -1,0 +1,545 @@
+{
+  "base": "46d45b52a1415f2e277c66cced1f5bda613c7a37",
+  "base_tree": "ac47a7b4325edc6b9542bc7945235226a1e7eaa9",
+  "owners": [
+    "CLEAN-01 #34"
+  ],
+  "status": "composed focused gate and separate source/test/raw/report review passed; broader qualification pending",
+  "source": {
+    "modules/FvwmPager/FvwmPager.c": {
+      "sha256": "36ef66ed0987897acc900045ad9ee8b16529b8d1f332ece5c15d5783bcdceae1",
+      "mode": 420
+    },
+    "modules/FvwmAnimate/FvwmAnimate.c": {
+      "sha256": "f316815cf6e948029f42ea640a415c171a95d9520367e244c65c518708b04e09",
+      "mode": 420
+    },
+    "modules/FvwmAnimate/meson.build": {
+      "sha256": "8304eebd073d56502027bfc5d899498b559c5d79203e83f6dda5c1185b6f5c17",
+      "mode": 420
+    },
+    "modules/FvwmEvent/FvwmEvent.c": {
+      "sha256": "7867f4e0bcbf1a3513f16dd6e0c04052c6e673fd18f37ef563d8f9c651166b49",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "ee01b4cf16e8c93e088d220ec8151b510b49dcd96e47433eb56b3e94453b6d15",
+      "mode": 420
+    },
+    "tests/test_event_action_owner.c": {
+      "sha256": "78ae2b5f794fee5fc6ededb6cb41da6e0a1548d1ac6740cf6eeed9b0660d2660",
+      "mode": 420
+    },
+    "tests/test_pager_drawing_owner.c": {
+      "sha256": "0cd030fe8a7dd01033e3365e7db9122d6e4a2f2b6d4f13cd7cbd7eb0e779a86c",
+      "mode": 420
+    },
+    "tests/test_animate_drawing_owner.c": {
+      "sha256": "d4976be03e6243b36ed28651a028f50171242ec0f2596e815790bc6cae4bc632",
+      "mode": 420
+    },
+    "tests/live_x/module_drawing_owner_live.py": {
+      "sha256": "24e443c0654f75dd8cd819ffec2dcb41a3af6b6a23032708b1293224ded61083",
+      "mode": 420
+    }
+  },
+  "baseline_inputs": 584,
+  "final_inputs": 592,
+  "commands": {
+    "candidate": [
+      {
+        "label": "normal-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmPager/FvwmPager",
+          "modules/FvwmAnimate/FvwmAnimate",
+          "modules/FvwmEvent/FvwmEvent",
+          "tests/test-event-action-owner",
+          "tests/test-pager-drawing-owner",
+          "tests/test-animate-drawing-owner",
+          "tests/ident-packet-fixture"
+        ],
+        "status": 0,
+        "seconds": 1.7725198560000308
+      },
+      {
+        "label": "normal-event-unit",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "event-action-owner"
+        ],
+        "status": 0,
+        "seconds": 0.12531744000000344
+      },
+      {
+        "label": "normal-owner-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_drawing_owner_live.py",
+          "--pager",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-pager-drawing-owner",
+          "--animate",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-animate-drawing-owner",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/candidate/normal-owner-x"
+        ],
+        "status": 1,
+        "seconds": 0.1699532159999535
+      }
+    ],
+    "diagnostic": [
+      {
+        "label": "build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "tests/test-pager-drawing-owner"
+        ],
+        "status": 0,
+        "seconds": 0.10109275299998899
+      },
+      {
+        "label": "pager-aliases",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_drawing_owner_live.py",
+          "--pager",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-pager-drawing-owner",
+          "--animate",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-animate-drawing-owner",
+          "--case",
+          "pager-aliases-eof",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/diagnostic/pager-aliases"
+        ],
+        "status": 1,
+        "seconds": 0.17184844199994131
+      }
+    ],
+    "candidate-continued": [
+      {
+        "label": "corrected-pager-probe-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "tests/test-pager-drawing-owner"
+        ],
+        "status": 0,
+        "seconds": 0.10244176199989852
+      },
+      {
+        "label": "normal-owner-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_drawing_owner_live.py",
+          "--pager",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-pager-drawing-owner",
+          "--animate",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-animate-drawing-owner",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/candidate-continued/normal-owner-x"
+        ],
+        "status": 0,
+        "seconds": 0.36927250400003686
+      },
+      {
+        "label": "event-transport",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/test_event_transport.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmEvent/FvwmEvent"
+        ],
+        "status": 0,
+        "seconds": 0.2665441169999667
+      },
+      {
+        "label": "pager-startup",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/pager_startup_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmPager/FvwmPager",
+          "--limit",
+          "4096",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/candidate-continued/pager-startup"
+        ],
+        "status": 0,
+        "seconds": 0.33187283999996
+      },
+      {
+        "label": "pager-layout",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/pager_layout_live.py",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmPager/FvwmPager",
+          "--fixture",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/candidate-continued/pager-layout"
+        ],
+        "status": 0,
+        "seconds": 1.1264564279999831
+      },
+      {
+        "label": "pager-transport",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/ident_transport_live.py",
+          "--pager",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmPager/FvwmPager",
+          "--fixture",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/candidate-continued/pager-transport"
+        ],
+        "status": 0,
+        "seconds": 0.16839282099999764
+      },
+      {
+        "label": "pager-service",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_partial_live.py",
+          "--kind",
+          "pager",
+          "--service-only",
+          "--module",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmPager/FvwmPager",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/candidate-continued/pager-service"
+        ],
+        "status": 0,
+        "seconds": 0.13881621599989558
+      },
+      {
+        "label": "sanitizer-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmPager/FvwmPager",
+          "modules/FvwmAnimate/FvwmAnimate",
+          "modules/FvwmEvent/FvwmEvent",
+          "tests/test-event-action-owner",
+          "tests/test-pager-drawing-owner",
+          "tests/test-animate-drawing-owner",
+          "tests/ident-packet-fixture"
+        ],
+        "status": 0,
+        "seconds": 1.7012686250000115
+      },
+      {
+        "label": "sanitizer-event-unit",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-event-action-owner"
+        ],
+        "status": 0,
+        "seconds": 0.003435298999875158
+      },
+      {
+        "label": "sanitizer-owner-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_drawing_owner_live.py",
+          "--pager",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-pager-drawing-owner",
+          "--animate",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-animate-drawing-owner",
+          "--artifacts-dir",
+          "/tmp/fvwm-m5-lifecycle-20261026/candidate-continued/sanitizer-owner-x"
+        ],
+        "status": 0,
+        "seconds": 0.4038579960001698
+      }
+    ]
+  },
+  "recorded_command_seconds": 6.953090314999713,
+  "old_event": "seven selected owners retained after shutdown; fixture drains them",
+  "old_pager": {
+    "pager-aliases-eof": {
+      "acquired": 8,
+      "destroyed": 8,
+      "excess": 6,
+      "clones": 0,
+      "gcs": 43,
+      "gc_frees": 0,
+      "scratch_frees": 0
+    },
+    "pager-distinct-signal": {
+      "acquired": 8,
+      "destroyed": 8,
+      "excess": 6,
+      "clones": 0,
+      "gcs": 43,
+      "gc_frees": 0,
+      "scratch_frees": 0
+    },
+    "pager-exit": {
+      "acquired": 8,
+      "destroyed": 8,
+      "excess": 6,
+      "clones": 0,
+      "gcs": 43,
+      "gc_frees": 0,
+      "scratch_frees": 0
+    },
+    "pager-partial": {
+      "acquired": 8,
+      "destroyed": 8,
+      "excess": 6,
+      "clones": 0,
+      "gcs": 43,
+      "gc_frees": 0,
+      "scratch_frees": 0
+    }
+  },
+  "old_animate": {
+    "animate-tiled-stop": {
+      "tiles": 6,
+      "tile_frees": 2,
+      "gcs": 9,
+      "gc_frees": 8,
+      "active_strings": 2,
+      "refusals": 1,
+      "unlocks": 1,
+      "stop_commands": 1
+    },
+    "animate-tiled-eof": {
+      "tiles": 6,
+      "tile_frees": 2,
+      "gcs": 9,
+      "gc_frees": 8,
+      "active_strings": 2,
+      "refusals": 1,
+      "unlocks": 1,
+      "stop_commands": 0
+    },
+    "animate-missing-signal": {
+      "tiles": 0,
+      "tile_frees": 0,
+      "gcs": 2,
+      "gc_frees": 1,
+      "active_strings": 2,
+      "refusals": 2,
+      "unlocks": 0,
+      "stop_commands": 0
+    }
+  },
+  "superseded_old_pager": "Initial four Pager controls counted disabled Balloon.gc as owner; corrected controls enable balloons and require43 non-NULLGCs",
+  "owner_cases": {
+    "normal-owner-x": {
+      "pager-aliases-eof": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "pager-distinct-signal": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "pager-exit": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "pager-partial": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "animate-tiled-stop": {
+        "tiles": 6,
+        "tile_frees": 6,
+        "gcs": 9,
+        "gc_frees": 9,
+        "active_strings": 0,
+        "refusals": 1,
+        "unlocks": 1,
+        "stop_commands": 1
+      },
+      "animate-tiled-eof": {
+        "tiles": 6,
+        "tile_frees": 6,
+        "gcs": 9,
+        "gc_frees": 9,
+        "active_strings": 0,
+        "refusals": 1,
+        "unlocks": 1,
+        "stop_commands": 0
+      },
+      "animate-missing-signal": {
+        "tiles": 0,
+        "tile_frees": 0,
+        "gcs": 2,
+        "gc_frees": 2,
+        "active_strings": 0,
+        "refusals": 2,
+        "unlocks": 0,
+        "stop_commands": 0
+      }
+    },
+    "sanitizer-owner-x": {
+      "pager-aliases-eof": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "pager-distinct-signal": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "pager-exit": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "pager-partial": {
+        "acquired": 14,
+        "destroyed": 14,
+        "excess": 0,
+        "clones": 6,
+        "gcs": 43,
+        "gc_frees": 43,
+        "scratch_frees": 1
+      },
+      "animate-tiled-stop": {
+        "tiles": 6,
+        "tile_frees": 6,
+        "gcs": 9,
+        "gc_frees": 9,
+        "active_strings": 0,
+        "refusals": 1,
+        "unlocks": 1,
+        "stop_commands": 1
+      },
+      "animate-tiled-eof": {
+        "tiles": 6,
+        "tile_frees": 6,
+        "gcs": 9,
+        "gc_frees": 9,
+        "active_strings": 0,
+        "refusals": 1,
+        "unlocks": 1,
+        "stop_commands": 0
+      },
+      "animate-missing-signal": {
+        "tiles": 0,
+        "tile_frees": 0,
+        "gcs": 2,
+        "gc_frees": 2,
+        "active_strings": 0,
+        "refusals": 2,
+        "unlocks": 0,
+        "stop_commands": 0
+      }
+    }
+  },
+  "regressions": {
+    "pager-startup": {
+      "configured-cap": "passed",
+      "arithmetic-cap": "passed",
+      "integer-overflow": "passed",
+      "ordinary": "passed",
+      "high-desk-ids": "passed",
+      "missing-desktop-size": "passed"
+    },
+    "pager-layout": {
+      "shaped-empty-grid": "passed",
+      "extreme-empty-grid": "passed",
+      "invalid-scale-preserves-default": "passed",
+      "invalid-grid-preserves-default": "passed",
+      "window-projection": "passed",
+      "invalid-window-metrics": "passed"
+    },
+    "pager-transport": {
+      "popup-eof": "passed",
+      "popup-term": "passed",
+      "empty-config": "passed",
+      "high-descriptor": "passed"
+    },
+    "pager-service": {
+      "x-service": {
+        "queued-keys": 257,
+        "queued-exposes": 80,
+        "keys-before-pipe-eof": 0,
+        "bounded-eof-service": "passed"
+      }
+    }
+  },
+  "event_transport": "ten actual-pipe cases pass; raw candidate-continued/event-transport.log",
+  "archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/m5-follow-on/native-evidence.tgz",
+    "sha256": "4856b9bb44ae6a12fe208668ade21493fe44c4f4cadafb3142fba3c5e122e325",
+    "bytes": 3880063,
+    "payloads": 328,
+    "manifest": 1,
+    "all_payload_hash_size_mode_and_gzip_crc_verified": true
+  },
+  "guest_retirement": {
+    "payloads": 328,
+    "manifest": 1,
+    "duplicate_archive": 1,
+    "reclaimed_bytes": 16386386,
+    "canonical_host_preserved": true
+  },
+  "sanitizer": {
+    "event": "ASan/UBSan detect_leaks=1:halt_on_error=1; four scripted actual-main cycles",
+    "drawing_x": "ASan/UBSan detect_leaks=0:halt_on_error=1; selected owner assertions"
+  },
+  "performance": "PR253 reference2/5 after PR255; nextmerge3/5; no comparison due",
+  "routing": "Requested Astra/high analyst, Sol/high implementer and separate reviewer; runtime metadata unavailable/unverified",
+  "limits": [
+    "No whole-module/font/cache leak-free claim",
+    "No fresh BSD/AMD64/full compiler/feature/install/theme/hardware or release qualification",
+    "No dead-X-server recovery or new UI/protocol/dependency",
+    "Parked Backer/pathname and deferred Form font cleanup excluded"
+  ],
+  "portable_checks": "make check lint, staged/working whitespace and all592 source identity checks pass"
+}

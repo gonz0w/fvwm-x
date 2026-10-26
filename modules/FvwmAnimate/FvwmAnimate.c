@@ -140,6 +140,8 @@ static void Loop(void);
 static void ParseOptions(void);
 static void ParseConfigLine(char *);
 static void CreateDrawGC(void);
+static void free_draw_resources(void);
+static void cleanup_animate(void);
 static void DefineMe(void);
 static void SaveConfig(void);
 static void StopCmd(void);
@@ -703,6 +705,7 @@ static void AnimateResizeNone(
 void
 DeadPipe(int arg) {
   myfprintf((stderr,"Dead Pipe, arg %d\n",arg));
+  cleanup_animate();
   exit(0);
   SIGNAL_RETURN;
 }
@@ -753,6 +756,7 @@ int main(int argc, char **argv) {
   dpy = XOpenDisplay("");
   if (dpy==NULL) {
     fprintf(stderr,"%s: can not open display\n",module->name);
+    cleanup_animate();
     exit(1);
   }
   /* FvwmAnimate must use the root visuals so do not call
@@ -776,6 +780,7 @@ int main(int argc, char **argv) {
   SetSyncMask(Channel,M_ICONIFY|M_DEICONIFY|M_STRING); /* lock on send mask */
   SetNoGrabMask(Channel,M_ICONIFY|M_DEICONIFY|M_STRING);
   Loop();                               /* start running */
+  cleanup_animate();
   return 0;
 }
 
@@ -1086,10 +1091,6 @@ void ParseConfigLine(char *buf) {
 	}
 	free(Animate.pixmap);
 	Animate.pixmap = 0;
-	if (pixmap) {
-	  XFreePixmap(dpy, pixmap);
-	  pixmap = None;
-	}
 	CreateDrawGC();                /* update GC */
 	break;
       case Pixmap_arg:
@@ -1097,10 +1098,6 @@ void ParseConfigLine(char *buf) {
 	Animate.pixmap = 0;
 	if (strcasecmp(q,"None") != 0) { /* If not pixmap "none"  */
 	  Animate.pixmap = fxstrdup(q); /* make copy of name */
-	}
-	if (pixmap) {
-	  XFreePixmap(dpy, pixmap);
-	  pixmap = None;
 	}
 	CreateDrawGC();                 /* update GC */
 	break;
@@ -1161,15 +1158,38 @@ void ParseConfigLine(char *buf) {
   } /* config line for me */
 } /* end function */
 
+static void free_draw_resources(void)
+{
+	/* The GC borrows the tile; release the pair before replacing either. */
+	if (gc != NULL)
+	{
+		XFreeGC(dpy, gc);
+		gc = NULL;
+	}
+	if (pixmap != None)
+	{
+		XFreePixmap(dpy, pixmap);
+		pixmap = None;
+	}
+}
+
+static void cleanup_animate(void)
+{
+	free_draw_resources();
+	free(Animate.color);
+	Animate.color = NULL;
+	free(Animate.pixmap);
+	Animate.pixmap = NULL;
+	free(mname);
+	mname = NULL;
+}
+
 /* create GC for drawing the various animations */
 /* Called during start-up, and whenever the color or line width changes. */
 static void CreateDrawGC(void) {
 
 	myfprintf((stderr,"Creating GC\n"));
-	if (gc != NULL)
-	{
-		XFreeGC(dpy,gc);                /* free old GC */
-	}
+	free_draw_resources();
 	/* From builtins.c: */
 	color = (PictureBlackPixel() ^ PictureWhitePixel());
 	pixmap = None;

@@ -94,11 +94,39 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 Pager, Animate and Event lifecycle owners — 2026-10-26
+
+Owner: Cam; `codex/m5-module-lifecycle-cleanup`; CLEAN-01 #34.
+Status: implemented four related resource-lifetime stories after merged PR255;
+composed focused gate and separate review pass; ready for PR review. Pager styles must
+own acquired inherited background/highlight picture references, then retire
+per-style/global drawing GCs and the scratch container at terminal paths.
+Animate owns one GC/tile pair across replacement and shutdown. Event retires
+its three action tables, command prefix and module name after shutdown dispatch.
+Preserve configuration, borrowed strings/font/color lifetimes, drawing/layout,
+per-slot cache references and unlock/Stop/shutdown ordering. No generic cleanup
+framework or broad module/error-loop rewrite is selected.
+
+Acceptance: preserve accepted old source/objects before candidate upload;
+production-linked before/after owner assertions, partial/repeated cleanup and
+actual X replacement/termination where relevant. One combined incremental Linux
+profile, scoped ownership ASan/UBSan and affected existing module regressions;
+separate source/evidence review. Retain unaffected passes after corrections.
+No automatic all-OS/compiler/feature/install/theme matrix. No new UI is selected.
+Backer/pathname and deferred Form font cleanup remain parked and excluded.
+Broad #6/#9/#25/#34 remain open; PR253 performance reference is 2/5 after PR255,
+so no regular comparison is due.
+Old-object controls establish all four gaps. Seven actual-X owner cases and four
+Event owner cycles pass per profile; five existing normal regression groups pass.
+[Evidence and limits](verification/VERIFICATION-2026-10-26-M5-MODULE-LIFECYCLE.md).
+
 ## M5 related module resource owners — 2026-10-26
 
 Owner: Cam; `codex/m5-related-owner-cleanup`; CLEAN-01 #34.
-Status: implemented coherent three-module ownership batch after merged PR254;
-composed focused gate and separate review pass; ready for PR review.
+Status: merged in PR255 as `46d45b52a1415f2e277c66cced1f5bda613c7a37`;
+canonical signature/DCO and reviewed tree
+`ac47a7b4325edc6b9542bc7945235226a1e7eaa9` verified; branch retired,
+GitHub/Project Done. Composed focused gate and separate review pass.
 Complete Ident's repeated
 font/foreground/background configuration and monitor replacement, per-popup
 font/GC/named-color retirement and terminal scratch/list/string ownership;
@@ -116,7 +144,7 @@ ASan/UBSan; exact selected ownership counts distinguish full-module/cache limits
 Separate source/evidence review. No automatic all-OS/compiler/feature/install/theme
 matrix, and no broad #34/#6/#9/#25 closure from these finite owner families.
 All Backer/pathname work and deferred Form font cleanup remain outside this batch.
-The PR253 performance reference is 1/5 after PR254; no regular comparison is due.
+The PR253 performance reference is 2/5 after PR255; no regular comparison is due.
 Old-object controls establish all three owner gaps. Both profiles pass the record
 unit and eleven actual-X owner cases; seven existing normal X regression groups
 pass. [Evidence and limits](verification/VERIFICATION-2026-10-26-M5-MODULE-OWNERS.md).

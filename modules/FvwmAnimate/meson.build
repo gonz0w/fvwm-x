@@ -1,6 +1,6 @@
 module_fvwmanimate = ['FvwmAnimate.c']
 
-executable(
+fvwm_animate = executable(
     'FvwmAnimate',
     module_fvwmanimate,
     dependencies: all_compile_deps + image_runtime_deps,

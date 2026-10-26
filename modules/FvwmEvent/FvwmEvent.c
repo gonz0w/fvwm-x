@@ -78,6 +78,7 @@ typedef struct
 void execute_event(event_entry*, short, unsigned long*, const char*);
 void config(void);
 static RETSIGTYPE TerminateHandler(int);
+static void cleanup_event(void);
 
 /* ---------------------------- local variables ----------------------------- */
 
@@ -242,7 +243,8 @@ int main(int argc, char **argv)
 	{
 		fprintf(stderr, "%s Version "VERSION" should only be "
 			   "executed by fvwm!\n", MyName+1);
-		exit(1);
+		cleanup_event();
+		return 1;
 	}
 
 	{
@@ -266,6 +268,7 @@ int main(int argc, char **argv)
 	if (module == NULL)
 	{
 		fprintf(stderr, "%s: invalid module descriptors\n", argv[0]);
+		cleanup_event();
 		return 1;
 	}
 	fd[0] = module->to_fvwm;
@@ -384,10 +387,28 @@ int main(int argc, char **argv)
 		unlock_event(packet->type);
 	} /* while */
 	execute_event(builtin_event_table, BUILTIN_SHUTDOWN, NULL, "");
+	cleanup_event();
 
 	return 0;
 }
 
+
+static void cleanup_event(void)
+{
+	/* Actions stay live through the last callback, including shutdown. */
+	for (event_entry **table = event_tables; *table != NULL; table++)
+	{
+		for (event_entry *entry = *table; entry->name != NULL; entry++)
+		{
+			free(entry->action.action);
+			entry->action.action = NULL;
+		}
+	}
+	free(cmd_line);
+	cmd_line = NULL;
+	free(MyName);
+	MyName = NULL;
+}
 
 /*
  *

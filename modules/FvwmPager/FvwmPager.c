@@ -135,6 +135,8 @@ static module_packet_reader pager_packet_reader;
 static void Loop(int *fd);
 static RETSIGTYPE TerminateHandler(int);
 static int My_XNextEvent(Display *dpy, XEvent *event);
+static void cleanup_pager_drawing(void);
+static void free_pager_gc(GC *gc);
 
 /* Procedure: main - start of module */
 int main(int argc, char **argv)
@@ -276,6 +278,7 @@ int main(int argc, char **argv)
 	if (!module_packet_reader_init(&pager_packet_reader, fd[1]))
 	{
 		fvwm_debug(__func__, "cannot initialize runtime packet reader");
+		cleanup_pager_drawing();
 		return 1;
 	}
 
@@ -290,6 +293,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "%s: Received signal: exiting...\n", MyName);
 #endif
 
+	cleanup_pager_drawing();
 	return 0;
 }
 
@@ -469,6 +473,9 @@ DeskStyle *FindDeskStyle(int desk)
 
 	style = fxcalloc(1, sizeof(DeskStyle));
 	memcpy(style, default_style, sizeof *style);
+	/* Every style owns a reference, including inherited cached aliases. */
+	style->bgPixmap = PCloneFvwmPicture(default_style->bgPixmap);
+	style->hiPixmap = PCloneFvwmPicture(default_style->hiPixmap);
 
 	style->desk = desk;
 	xasprintf(&style->label, _("Desk %d"), desk);
@@ -478,12 +485,50 @@ DeskStyle *FindDeskStyle(int desk)
 	return style;
 }
 
+static void free_pager_gc(GC *gc)
+{
+	if (*gc != NULL)
+	{
+		XFreeGC(dpy, *gc);
+		*gc = NULL;
+	}
+}
+
+static void cleanup_pager_drawing(void)
+{
+	DeskStyle *style;
+
+	TAILQ_FOREACH(style, &desk_style_q, entry)
+	{
+		PDestroyFvwmPicture(dpy, style->bgPixmap);
+		style->bgPixmap = NULL;
+		PDestroyFvwmPicture(dpy, style->hiPixmap);
+		style->hiPixmap = NULL;
+		free_pager_gc(&style->label_gc);
+		free_pager_gc(&style->dashed_gc);
+		free_pager_gc(&style->hi_bg_gc);
+		free_pager_gc(&style->hi_fg_gc);
+		free_pager_gc(&style->win_hi_gc);
+		free_pager_gc(&style->win_sh_gc);
+		free_pager_gc(&style->focus_hi_gc);
+		free_pager_gc(&style->focus_sh_gc);
+	}
+	free_pager_gc(&Scr.NormalGC);
+	free_pager_gc(&Scr.MiniIconGC);
+	free_pager_gc(&Balloon.gc);
+	/* Drawing scratch borrows its strings, font, colorset and windows. */
+	free(FwinString);
+	FwinString = NULL;
+}
+
 void ExitPager(void)
 {
 	int i;
 	DeskStyle *style, *style2;
 	struct fpmonitor *fp, *fp1;
 	PagerWindow *t, *t2;
+
+	cleanup_pager_drawing();
 
 	/* Balloons */
 	free(Balloon.label);
@@ -504,8 +549,6 @@ void ExitPager(void)
 	/* DeskStyles */
 	TAILQ_FOREACH_SAFE(style, &desk_style_q, entry, style2) {
 		TAILQ_REMOVE(&desk_style_q, style, entry);
-		PDestroyFvwmPicture(dpy, style->bgPixmap);
-		PDestroyFvwmPicture(dpy, style->hiPixmap);
 		free(style->label);
 		free(style);
 	}

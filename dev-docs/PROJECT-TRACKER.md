@@ -18,7 +18,8 @@ New feature requests enter later intake unless the owner explicitly changes R1.
 
 [Release plan](decisions/RELEASE-PLAN-2026-10-26.md) and
 [finite issue contracts](decisions/RELEASE-CONTRACTS-2026-10-26.json) replace the
-old cleanup-first scheduling. Each issue has a release, Major/Minor work class,
+old cleanup-first scheduling. [Publication and mirror evidence](verification/VERIFICATION-2026-10-26-RELEASE-ROADMAP.md)
+records all 91 contracts and native metadata checks. Each issue has a release, Major/Minor work class,
 end result, acceptance checks and exclusions. Native milestones mirror release;
 stages remain technical ownership. Dates/public version are not yet selected.
 PR256 remains the finite existing-code foundation checkpoint in Review; its
@@ -1697,6 +1698,10 @@ observed model metadata remains unverified when unavailable. Performance PR204
 is 3/5 after PR229; no benchmark or tuning is due.
 
 ## Current checkpoint status
+
+Current release scheduling is the [three-release plan](decisions/RELEASE-PLAN-2026-10-26.md)
+and Execution order above. The table below preserves accepted source/evidence
+components; it does not restore the superseded maintenance-first queue.
 
 This table is the current summary for this thread. The dated entries below
 retain earlier development states; a historical "pending" entry does not

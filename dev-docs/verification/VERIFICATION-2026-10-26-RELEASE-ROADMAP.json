@@ -1,0 +1,101 @@
+{
+  "original_open_issues": 87,
+  "rewritten_existing_issues": 87,
+  "new_scoped_issues": [
+    257,
+    258,
+    259,
+    260
+  ],
+  "total_open_contracts": 91,
+  "release_counts": {
+    "R1": 65,
+    "R2": 22,
+    "R3": 4
+  },
+  "work_size_counts": {
+    "Major": 82,
+    "Minor": 9
+  },
+  "major_minor_by_release": {
+    "R1": {
+      "Major": 60,
+      "Minor": 5
+    },
+    "R2": {
+      "Major": 18,
+      "Minor": 4
+    },
+    "R3": {
+      "Major": 4
+    }
+  },
+  "issue_body_title_labels_milestone_matches": 91,
+  "project_size_batch_status_priority_stage_matches": 91,
+  "native_blocker_edges": 151,
+  "native_new_blocker_edges": 93,
+  "native_parent_additions": 4,
+  "blocked_by_graph_acyclic": true,
+  "parent_hierarchy_acyclic": true,
+  "r1_later_release_blockers": 0,
+  "retired_legacy_milestones": 10,
+  "open_release_milestones": {
+    "R1": {
+      "number": 11,
+      "title": "R1 \u2014 Configurable Desktop Lite",
+      "url": "https://github.com/gonz0w/fvwm-x/milestone/11"
+    },
+    "R2": {
+      "number": 12,
+      "title": "R2 \u2014 Maintenance and Runtime Simplification",
+      "url": "https://github.com/gonz0w/fvwm-x/milestone/12"
+    },
+    "R3": {
+      "number": 13,
+      "title": "R3 \u2014 Developer Tooling and Deferred Work",
+      "url": "https://github.com/gonz0w/fvwm-x/milestone/13"
+    }
+  },
+  "no_due_dates_invented": true,
+  "original_clean_body_utf8_bytes": 65584,
+  "original_clean_body_sha256": "f6a90bb42de2fda1ad6cd141f2b151f0f53923f1444b716acf7180ee0b700f21",
+  "accepted_work_and_closed_issues_preserved": true,
+  "runtime_changes_or_test_qualification_claims": false,
+  "current_feature_and_evaluation_targets_verified": 44,
+  "snapshot_sha256": {
+    "after-issues.json": "74e43fe7d1dba2be99dc50dd848a9917a8f592d545a418bd898f4157e749dad0",
+    "after-project-items.json": "19ce1b9887f96c7a1dc1ca683ecb37d82ddccfb3faf06fbb8481b247a390fc12",
+    "after-milestones.json": "8ddc3362b2d0f7dca516e9e94030a929a5ea9d0d3483b38f15b9ea879591385c",
+    "after-relationships.json": "ddb3a44cbd3b1584e81ac2a7d4624a443866984f74694f20ea56d3832ac0a8bd"
+  },
+  "date": "2026-10-26",
+  "status": "all contract/live mirror checks and independent final publication review passed",
+  "scope_base": "cf37865e4fee0ca48cad27fd6b5587c0541849d6",
+  "planning_pr": "https://github.com/gonz0w/fvwm-x/pull/261",
+  "parent_pr": "https://github.com/gonz0w/fvwm-x/pull/256",
+  "parent_pr_state": "OPEN; source head unchanged; no merge performed",
+  "contracts_sha256": "4f597ad6c663b0b559342291424e8a353531e6ae03e8a402525a57d98b7a1f94",
+  "metadata_recovery": [
+    "Label description HTTP422 setup failures retained; descriptions validated against100-character API limit before successful creation.",
+    "One issue57 connector internal error resumed using fresh read before retry; final exact body/title/label/milestone readback passed.",
+    "Initial Project readback found four missing new-card priority values; those four fields were filled and final readback passed."
+  ],
+  "status_dispositions": {
+    "4": "Moved Review to Backlog for the newly frozen R2 remainder: PR254 is merged and its Script base-owner evidence remains accepted; no active R2 implementation is claimed.",
+    "6": "Moved Review to Backlog for the newly frozen R2 remainder: PR238 is merged and its subprocess/checked-output evidence remains accepted. The parked pathname proposal is a separate R3 child.",
+    "7": "Moved In progress to Backlog for the newly frozen R2 constructor/admission remainder: the POSIX consumer/installation family through PR241 is merged and accepted; R1 feature work now has priority.",
+    "15": "Moved Review to Backlog for the newly frozen R2 process-constructor remainder: PR238 is merged and its accepted subprocess checkpoint is preserved.",
+    "34": "Moved Review to Backlog for the unimplemented R2 remaining ownership manifest. PR256 remains open in R1 Review and is explicitly owned by the finite #209 foundation handoff; its component evidence is not lost or claimed merged."
+  },
+  "local_checks": [
+    "make check lint",
+    "Ruby YAML parse of both GitHub issue forms",
+    "91-record unique/coverage/evaluation-target validation",
+    "Exact issue and Project readback",
+    "Native dependency and parent hierarchy validation"
+  ],
+  "runtime_test_runs": 0,
+  "no_issue_closed_or_reopened": true,
+  "no_release_tag_or_publication_created": true,
+  "requested_agent_routing": "Astra/high analysis and Sol/high drafting/separate review; actual runtime model metadata unavailable/unverified"
+}

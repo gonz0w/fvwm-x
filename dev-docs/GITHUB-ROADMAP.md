@@ -213,4 +213,12 @@ Core record dependency checkpoint: MAINT-02 #14 / CLEAN-01 #34; Three module/ico
 
 ## Release-specific finite owners — 2026-10-26
 
-See the release contract manifest for pending new parked/acceptance owner identities.
+The release contract manifest contains these finite parked/acceptance owners.
+
+- [RELEASE-02: Accept the R2 maintenance and runtime-simplification candidate — #259](https://github.com/gonz0w/fvwm-x/issues/259): R2, Major.
+
+- [DATA-PATH-01: Resolve the parked pathname-construction proposal — #257](https://github.com/gonz0w/fvwm-x/issues/257): R3, Major.
+
+- [MODULE-BACKER-01: Resolve the parked admission and ownership checkpoint — #258](https://github.com/gonz0w/fvwm-x/issues/258): R3, Major.
+
+- [RELEASE-03: Accept the R3 developer-tooling and deferred-work candidate — #260](https://github.com/gonz0w/fvwm-x/issues/260): R3, Major.

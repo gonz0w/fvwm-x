@@ -7,6 +7,9 @@ Describe the concrete problem, final behavior and bounded scope.
 Refs gonz0w/fvwm-x#N for broader/partial work. Use Closes only when every
 criterion of that issue is satisfied on merge. Link tracker IDs and decisions.
 State whether supported configuration names, arguments or formats change.
+Name the R1/R2/R3 target, Major/Minor work breadth and exact acceptance criteria
+completed. New feature scope needs an explicit later target or approved R1 scope
+change; a broad later-release audit is not an automatic prerequisite.
 
 ## Local validation
 

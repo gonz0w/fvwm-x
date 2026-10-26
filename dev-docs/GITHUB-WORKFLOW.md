@@ -85,3 +85,12 @@ Versioned main/tag rules are policy inputs, not enforcement evidence by themselv
 The [setup report](verification/VERIFICATION-2026-10-13-GITHUB-FOUNDATION.md)
 records observed remote settings and local checks. Maintain the brief README
 when scope or milestone status changes; keep details in tracker and reports.
+
+## Future feature intake
+
+The roadmap issue form records the proposed release, Major/Minor breadth, finite
+outcome/acceptance, actual prerequisite contracts and resource/dependency impact.
+New feature requests enter R2/R3 intake unless the owner approves an R1 scope
+change. Triage applies the real milestone, work label and matching Project fields;
+a form selection alone does not assign them. Add accepted release scope to the
+versioned manifest and its release gate. Never expand a closed audit implicitly.

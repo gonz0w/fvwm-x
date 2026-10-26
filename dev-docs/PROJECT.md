@@ -49,7 +49,8 @@ requirements migration; it is not another backlog.
   first-party Python runtime helpers and portable Perl utilities with Go, and
   add optional isolated Lua policies over shared primitives. The user
   explicitly approves future retirement of FvwmPerl/perllib and Perl-specific
-  APIs; unrelated FVWM/FvwmScript contracts remain. Accepted Go runtime/controller ports remain accepted; isolated Lua targets R1,
+  APIs; unrelated FVWM/FvwmScript contracts remain. Accepted Go runtime/controller
+  ports remain accepted; isolated Lua targets R1,
   Perl framework retirement R2 and full first-party build/test tooling R3.
   See the [component audit and scope](decisions/RUNTIME-GO-LUA-2026-10-06.md).
 - The default desktop uses existing FVWM components and base-system capabilities;

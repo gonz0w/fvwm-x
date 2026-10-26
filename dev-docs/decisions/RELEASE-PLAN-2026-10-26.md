@@ -103,6 +103,16 @@ release exclusion is a documented deferral, never a passing test. Future feature
 intake receives its own finite contract and target; it does not silently extend
 R1 or perpetually reopen a closed audit.
 
+## Status dispositions
+
+The new R2 remainder for #4/#6/#7/#15/#34 is Backlog. Their former Review/In
+progress labels described older component work: PR238, PR241 and PR254 are
+merged and remain accepted. PR256 remains open in R1 Review under #209, while
+#34 now describes unimplemented remaining R2 work. Each of the five contracts
+records its specific reason. No issue is closed, reopened or claimed completed
+by this status change. Other existing statuses are retained; #208 records the
+active planning/review handoff.
+
 ## Completion and verification rules
 
 Every issue below has one target release, Major/Minor class, concrete outcome,
@@ -221,13 +231,13 @@ folded in GitHub; the original near-limit CLEAN issue is preserved in
 | [#233](https://github.com/gonz0w/fvwm-x/issues/233) | Major | Implement and qualify finite FreeBSD image-worker Capsicum descriptor policies. |
 | [#234](https://github.com/gonz0w/fvwm-x/issues/234) | Major | Implement and qualify finite detected Linux worker restrictions with truthful support reporting. |
 | [#236](https://github.com/gonz0w/fvwm-x/issues/236) | Minor | Complete a bounded OpenBSD allocator-audit qualification profile. |
-| release-r2 (new scoped issue) | Major | Record a finite acceptance decision for the R2 candidate and its frozen maintenance manifest, preserving the shipped R1 desktop features. |
+| [#259](https://github.com/gonz0w/fvwm-x/issues/259) | Major | Record a finite acceptance decision for the R2 candidate and its frozen maintenance manifest, preserving the shipped R1 desktop features. |
 
 ## R3 — Developer Tooling and Deferred Work manifest
 
 | Issue | Work | End result |
 | --- | --- | --- |
 | [#55](https://github.com/gonz0w/fvwm-x/issues/55) | Major | Finish the finite first-party build/docs/generator/test/VM tooling language-retirement manifest after the R2 runtime retirement. |
-| parked-backer (new scoped issue) | Major | Resolve the preserved finite Backer admission/ownership checkpoint and its failing combined valid-input control after a supported review route is available. |
-| parked-pathname (new scoped issue) | Major | Resolve the preserved, bounded pathname-construction proposal with supported review access, evidence-backed changes and matching caller tests, or an explicit evidenced no-change disposition. |
-| release-r3 (new scoped issue) | Major | Record a finite acceptance decision for the R3 developer-tooling/deferred-work candidate without reopening accepted desktop features. |
+| [#257](https://github.com/gonz0w/fvwm-x/issues/257) | Major | Resolve the preserved, bounded pathname-construction proposal with supported review access, evidence-backed changes and matching caller tests, or an explicit evidenced no-change disposition. |
+| [#258](https://github.com/gonz0w/fvwm-x/issues/258) | Major | Resolve the preserved finite Backer admission/ownership checkpoint and its failing combined valid-input control after a supported review route is available. |
+| [#260](https://github.com/gonz0w/fvwm-x/issues/260) | Major | Record a finite acceptance decision for the R3 developer-tooling/deferred-work candidate without reopening accepted desktop features. |

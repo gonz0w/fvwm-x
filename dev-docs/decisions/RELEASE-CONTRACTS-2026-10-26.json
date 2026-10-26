@@ -1649,7 +1649,8 @@
         34
       ],
       "wave": "R2 bounded Script owner pass",
-      "original_body_sha256": "4972a7e8e8be0f7344033f9013d800dd2109ccf31e089a3c108ab744061f6304"
+      "original_body_sha256": "4972a7e8e8be0f7344033f9013d800dd2109ccf31e089a3c108ab744061f6304",
+      "status_disposition": "Moved Review to Backlog for the newly frozen R2 remainder: PR254 is merged and its Script base-owner evidence remains accepted; no active R2 implementation is claimed."
     },
     {
       "number": 6,
@@ -1677,7 +1678,8 @@
         34
       ],
       "wave": "R2 finite data review; two parked metadata-only R3 handoffs",
-      "original_body_sha256": "ae6ce74fc2f0a3df28216243d3cb90467759cf3b72dec55c15f21c3740869491"
+      "original_body_sha256": "ae6ce74fc2f0a3df28216243d3cb90467759cf3b72dec55c15f21c3740869491",
+      "status_disposition": "Moved Review to Backlog for the newly frozen R2 remainder: PR238 is merged and its subprocess/checked-output evidence remains accepted. The parked pathname proposal is a separate R3 child."
     },
     {
       "number": 7,
@@ -1703,7 +1705,8 @@
         231
       ],
       "wave": "R2 finite constructor/descriptor pass",
-      "original_body_sha256": "c9f9f9cea1fde7f4008f03f5dccdf60461f79fd384b4ea7470a8c0f2e44dc679"
+      "original_body_sha256": "c9f9f9cea1fde7f4008f03f5dccdf60461f79fd384b4ea7470a8c0f2e44dc679",
+      "status_disposition": "Moved In progress to Backlog for the newly frozen R2 constructor/admission remainder: the POSIX consumer/installation family through PR241 is merged and accepted; R1 feature work now has priority."
     },
     {
       "number": 8,
@@ -1802,7 +1805,8 @@
         231
       ],
       "wave": "R2 finite process review",
-      "original_body_sha256": "87be3adbc683f803f70fb6d537ad700ea3c092c5f1f636246a0aacb018d553cd"
+      "original_body_sha256": "87be3adbc683f803f70fb6d537ad700ea3c092c5f1f636246a0aacb018d553cd",
+      "status_disposition": "Moved Review to Backlog for the newly frozen R2 process-constructor remainder: PR238 is merged and its accepted subprocess checkpoint is preserved."
     },
     {
       "number": 25,
@@ -1878,7 +1882,8 @@
         9
       ],
       "wave": "R2 finite cleanup pass; two parked metadata-only R3 handoffs",
-      "original_body_sha256": "f6a90bb42de2fda1ad6cd141f2b151f0f53923f1444b716acf7180ee0b700f21"
+      "original_body_sha256": "f6a90bb42de2fda1ad6cd141f2b151f0f53923f1444b716acf7180ee0b700f21",
+      "status_disposition": "Moved Review to Backlog for the unimplemented R2 remaining ownership manifest. PR256 remains open in R1 Review and is explicitly owned by the finite #209 foundation handoff; its component evidence is not lost or claimed merged."
     },
     {
       "number": 37,
@@ -2152,7 +2157,7 @@
     },
     {
       "key": "release-r2",
-      "number": null,
+      "number": 259,
       "title": "RELEASE-02: Accept the R2 maintenance and runtime-simplification candidate",
       "release": "R2",
       "work_size": "Major",
@@ -2201,32 +2206,8 @@
       "original_body_sha256": "bda5187abecadf50052ce9d0dd8d8bb9a484ea98b6fffcb22a6e1ee807a18832"
     },
     {
-      "key": "parked-backer",
-      "number": null,
-      "title": "MODULE-BACKER-01: Resolve the parked admission and ownership checkpoint",
-      "release": "R3",
-      "work_size": "Major",
-      "parent": 34,
-      "parked": true,
-      "end_goal": "Resolve the preserved finite Backer admission/ownership checkpoint and its failing combined valid-input control after a supported review route is available.",
-      "acceptance": [
-        "Record a supported authorized review route before source/runtime pickup; preserve original refusal notices without inventing a keyword, function or classification rationale.",
-        "Retain unpublished/unaccepted WIP a4c0933c0 and canonical old evidence; establish the actual combined/valid ownership failure and separate rejection controls before claiming a root cause.",
-        "Freeze the original admission/prepare/commit/retire command family and producers; preserve supported configuration and command ordering. Do not turn this into a whole-module redesign.",
-        "Implement the evidenced repair without weakening the original oracle; pass the combined valid ownership and affected rejection cases, relevant actual-X behavior and scoped ownership sanitizers in one focused checkpoint.",
-        "Publish exact before/after results and independent review, preserving failures and unavailable qualification. Close only the frozen checkpoint, without claiming all module ownership clean."
-      ],
-      "non_goals": [
-        "No parked source inspection, diagnosis, tests or alternate-executor retry is authorized by this administrative split. This child is outside #34 R2 acceptance."
-      ],
-      "accepted_work": "WIP is not accepted or published; original combined/valid unit failed and X/sanitizer/manual acceptance is unestablished.",
-      "coordination": [],
-      "wave": "R3 parked",
-      "original_body_sha256": null
-    },
-    {
       "key": "parked-pathname",
-      "number": null,
+      "number": 257,
       "title": "DATA-PATH-01: Resolve the parked pathname-construction proposal",
       "release": "R3",
       "work_size": "Major",
@@ -2249,8 +2230,32 @@
       "original_body_sha256": null
     },
     {
+      "key": "parked-backer",
+      "number": 258,
+      "title": "MODULE-BACKER-01: Resolve the parked admission and ownership checkpoint",
+      "release": "R3",
+      "work_size": "Major",
+      "parent": 34,
+      "parked": true,
+      "end_goal": "Resolve the preserved finite Backer admission/ownership checkpoint and its failing combined valid-input control after a supported review route is available.",
+      "acceptance": [
+        "Record a supported authorized review route before source/runtime pickup; preserve original refusal notices without inventing a keyword, function or classification rationale.",
+        "Retain unpublished/unaccepted WIP a4c0933c0 and canonical old evidence; establish the actual combined/valid ownership failure and separate rejection controls before claiming a root cause.",
+        "Freeze the original admission/prepare/commit/retire command family and producers; preserve supported configuration and command ordering. Do not turn this into a whole-module redesign.",
+        "Implement the evidenced repair without weakening the original oracle; pass the combined valid ownership and affected rejection cases, relevant actual-X behavior and scoped ownership sanitizers in one focused checkpoint.",
+        "Publish exact before/after results and independent review, preserving failures and unavailable qualification. Close only the frozen checkpoint, without claiming all module ownership clean."
+      ],
+      "non_goals": [
+        "No parked source inspection, diagnosis, tests or alternate-executor retry is authorized by this administrative split. This child is outside #34 R2 acceptance."
+      ],
+      "accepted_work": "WIP is not accepted or published; original combined/valid unit failed and X/sanitizer/manual acceptance is unestablished.",
+      "coordination": [],
+      "wave": "R3 parked",
+      "original_body_sha256": null
+    },
+    {
       "key": "release-r3",
-      "number": null,
+      "number": 260,
       "title": "RELEASE-03: Accept the R3 developer-tooling and deferred-work candidate",
       "release": "R3",
       "work_size": "Major",

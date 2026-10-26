@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "context": {
+    "profile": "development/desktop-feature-build",
+    "workload": "minimal-instrumented-v1",
+    "workload_version": "r1-reference-2026-10-26.1",
+    "config": "sha256:f67936222d88be43201a8ddeb7979dfc58d8fd8e22bbfd02dd288f64b31be611",
+    "source_scope": "accepted production core/modules/Go runtime; developer tooling excluded",
+    "artifact_scope": "identity-bound measurement prefix; normal debugoptimized binaries",
+    "platform": "sha256:9012aed803499a279093208270b1ed19685c05d8a96a2931147dfc7e41153482",
+    "compiler": "sha256:5d73c35c06d7bb696877012842ceaaec6c197b8cdb643de048ed3c0324d11dc3",
+    "instrumentation": "sha256:5cbb649ecbeba6dcd3c3305e521dc024f18e15f4e088b3244c9d4158c65177c6",
+    "effective_features": {
+      "bidi": "enabled",
+      "freetype": "enabled",
+      "iconv": "enabled",
+      "nls": "enabled",
+      "png": "enabled",
+      "sm": "enabled",
+      "svg": "enabled",
+      "xcursor": "enabled",
+      "xfixes": "enabled",
+      "xpm": "enabled",
+      "xrender": "enabled"
+    }
+  },
+  "source_revision": "1748e2f41199d996c97f47f84e047249fdec3394",
+  "artifact_identity": "sha256:e426bb0b24cdb559691f58c1030286df8658a54652a8cf43f2321456007eb756",
+  "metrics": {
+    "idle_command_median_ms": {
+      "unit": "ms",
+      "scope": "core command/Echo median; 128 samples; idle",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "idle_command_p95_ms": {
+      "unit": "ms",
+      "scope": "core command/Echo p95; 128 samples; idle",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "idle_scheduled_10ms_median_ms": {
+      "unit": "ms",
+      "scope": "scheduled command/Echo median including requested 10 ms delay; idle",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "idle_core_cpu_seconds": {
+      "unit": "seconds",
+      "scope": "core CPU ticks during fixed case, excluding transport/client/server/observer; idle",
+      "coverage": "complete",
+      "quantum": 0.01
+    },
+    "idle_core_hwm_kib": {
+      "unit": "KiB",
+      "scope": "core process lifetime VmHWM through case completion; idle",
+      "coverage": "complete",
+      "quantum": 4
+    },
+    "title_command_median_ms": {
+      "unit": "ms",
+      "scope": "core command/Echo median; 128 samples; title",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "title_command_p95_ms": {
+      "unit": "ms",
+      "scope": "core command/Echo p95; 128 samples; title",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "title_scheduled_10ms_median_ms": {
+      "unit": "ms",
+      "scope": "scheduled command/Echo median including requested 10 ms delay; title",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "title_core_cpu_seconds": {
+      "unit": "seconds",
+      "scope": "core CPU ticks during fixed case, excluding transport/client/server/observer; title",
+      "coverage": "complete",
+      "quantum": 0.01
+    },
+    "title_core_hwm_kib": {
+      "unit": "KiB",
+      "scope": "core process lifetime VmHWM through case completion; title",
+      "coverage": "complete",
+      "quantum": 4
+    },
+    "resize_command_median_ms": {
+      "unit": "ms",
+      "scope": "core command/Echo median; 128 samples; resize",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "resize_command_p95_ms": {
+      "unit": "ms",
+      "scope": "core command/Echo p95; 128 samples; resize",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "resize_scheduled_10ms_median_ms": {
+      "unit": "ms",
+      "scope": "scheduled command/Echo median including requested 10 ms delay; resize",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "resize_core_cpu_seconds": {
+      "unit": "seconds",
+      "scope": "core CPU ticks during fixed case, excluding transport/client/server/observer; resize",
+      "coverage": "complete",
+      "quantum": 0.01
+    },
+    "resize_core_hwm_kib": {
+      "unit": "KiB",
+      "scope": "core process lifetime VmHWM through case completion; resize",
+      "coverage": "complete",
+      "quantum": 4
+    }
+  },
+  "runs": [
+    {
+      "id": "minimal-instrumented-1",
+      "metrics": {
+        "idle_command_median_ms": 0.3323135,
+        "idle_command_p95_ms": 0.44971,
+        "idle_scheduled_10ms_median_ms": 14.348443499999998,
+        "idle_core_cpu_seconds": 0.04,
+        "idle_core_hwm_kib": 7236,
+        "title_command_median_ms": 0.3163135,
+        "title_command_p95_ms": 0.46446,
+        "title_scheduled_10ms_median_ms": 12.242062,
+        "title_core_cpu_seconds": 0.10999999999999999,
+        "title_core_hwm_kib": 7236,
+        "resize_command_median_ms": 0.2642715,
+        "resize_command_p95_ms": 0.338793,
+        "resize_scheduled_10ms_median_ms": 12.370458,
+        "resize_core_cpu_seconds": 0.19000000000000003,
+        "resize_core_hwm_kib": 7236
+      }
+    },
+    {
+      "id": "minimal-instrumented-2",
+      "metrics": {
+        "idle_command_median_ms": 0.297043,
+        "idle_command_p95_ms": 0.453043,
+        "idle_scheduled_10ms_median_ms": 14.2384225,
+        "idle_core_cpu_seconds": 0.03,
+        "idle_core_hwm_kib": 7216,
+        "title_command_median_ms": 0.3621675,
+        "title_command_p95_ms": 0.741294,
+        "title_scheduled_10ms_median_ms": 12.2962285,
+        "title_core_cpu_seconds": 0.14000000000000004,
+        "title_core_hwm_kib": 7216,
+        "resize_command_median_ms": 0.274314,
+        "resize_command_p95_ms": 0.352376,
+        "resize_scheduled_10ms_median_ms": 12.473938,
+        "resize_core_cpu_seconds": 0.18999999999999997,
+        "resize_core_hwm_kib": 7216
+      }
+    },
+    {
+      "id": "minimal-instrumented-3",
+      "metrics": {
+        "idle_command_median_ms": 0.3667305,
+        "idle_command_p95_ms": 0.459377,
+        "idle_scheduled_10ms_median_ms": 14.534882,
+        "idle_core_cpu_seconds": 0.04,
+        "idle_core_hwm_kib": 7236,
+        "title_command_median_ms": 0.34150100000000005,
+        "title_command_p95_ms": 0.47271,
+        "title_scheduled_10ms_median_ms": 12.3358955,
+        "title_core_cpu_seconds": 0.12,
+        "title_core_hwm_kib": 7236,
+        "resize_command_median_ms": 0.267063,
+        "resize_command_p95_ms": 0.372585,
+        "resize_scheduled_10ms_median_ms": 12.491771,
+        "resize_core_cpu_seconds": 0.2,
+        "resize_core_hwm_kib": 7236
+      }
+    }
+  ]
+}

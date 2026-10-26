@@ -11,8 +11,11 @@ explicitly changes frozen R1 scope.
 This decision and the [finite issue contracts](RELEASE-CONTRACTS-2026-10-26.json)
 supersede cleanup-first scheduling in the October 23/25 plans. Accepted M1-M4,
 settings/IPC/browser and other source-bound components remain accepted. PR256
-is the existing finite R1 foundation checkpoint in review, not a new whole-M5
-audit. No release publication, tag, credential or upstream notification is
+is merged as `b263edf8fdf744fe545fa9af6d9685cf2b705375`, followed by this
+roadmap in PR261 (`1748e2f41199d996c97f47f84e047249fdec3394`, closing #208).
+The next finite #209/#29/#226 checkpoint freezes
+[reference profiles](R1-REFERENCE-PROFILES-2026-10-26.md). These merges do not
+claim a whole-M5 audit. No release publication, tag, credential or upstream notification is
 selected by this roadmap.
 
 ## Release targets and work classification
@@ -107,11 +110,12 @@ R1 or perpetually reopen a closed audit.
 
 The new R2 remainder for #4/#6/#7/#15/#34 is Backlog. Their former Review/In
 progress labels described older component work: PR238, PR241 and PR254 are
-merged and remain accepted. PR256 remains open in R1 Review under #209, while
-#34 now describes unimplemented remaining R2 work. Each of the five contracts
+merged and remain accepted. PR256 and PR261 are now merged/Done; #209/#29/#226
+are In progress for the finite reference checkpoint, while
+#34 describes unimplemented remaining R2 work. Each of the five contracts
 records its specific reason. No issue is closed, reopened or claimed completed
 by this status change. Other existing statuses are retained; #208 records the
-active planning/review handoff.
+completed planning handoff.
 
 ## Completion and verification rules
 

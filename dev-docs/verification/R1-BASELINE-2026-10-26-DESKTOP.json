@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "context": {
+    "profile": "development/desktop-feature-build",
+    "workload": "desktop-session-v1",
+    "workload_version": "r1-reference-2026-10-26.1",
+    "config": "sha256:f67936222d88be43201a8ddeb7979dfc58d8fd8e22bbfd02dd288f64b31be611",
+    "source_scope": "accepted production core/modules/Go runtime; developer tooling excluded",
+    "artifact_scope": "identity-bound measurement prefix; normal debugoptimized binaries",
+    "platform": "sha256:9012aed803499a279093208270b1ed19685c05d8a96a2931147dfc7e41153482",
+    "compiler": "sha256:5d73c35c06d7bb696877012842ceaaec6c197b8cdb643de048ed3c0324d11dc3",
+    "instrumentation": "sha256:5cbb649ecbeba6dcd3c3305e521dc024f18e15f4e088b3244c9d4158c65177c6",
+    "effective_features": {
+      "bidi": "enabled",
+      "freetype": "enabled",
+      "iconv": "enabled",
+      "nls": "enabled",
+      "png": "enabled",
+      "sm": "enabled",
+      "svg": "enabled",
+      "xcursor": "enabled",
+      "xfixes": "enabled",
+      "xpm": "enabled",
+      "xrender": "enabled"
+    }
+  },
+  "source_revision": "1748e2f41199d996c97f47f84e047249fdec3394",
+  "artifact_identity": "sha256:e426bb0b24cdb559691f58c1030286df8658a54652a8cf43f2321456007eb756",
+  "metrics": {
+    "startup_ready_ms": {
+      "unit": "ms",
+      "scope": "launch to settings-reply/bar-title readiness; not paint",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "synthetic_key_echo_median_ms": {
+      "unit": "ms",
+      "scope": "median of 12 final XTEST key/core Echo samples per run",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "synthetic_key_echo_max_ms": {
+      "unit": "ms",
+      "scope": "maximum of 12 final XTEST key/core Echo samples per run",
+      "coverage": "complete",
+      "quantum": 0
+    },
+    "idle_sampled_rss_peak_kib": {
+      "unit": "KiB",
+      "scope": "sum across observed core descendant tree at 50 ms samples",
+      "coverage": "partial",
+      "quantum": 4
+    },
+    "idle_sampled_pss_peak_kib": {
+      "unit": "KiB",
+      "scope": "sum across observed core descendant tree at 50 ms samples",
+      "coverage": "partial",
+      "quantum": 1
+    },
+    "idle_observed_cpu_ms": {
+      "unit": "ms",
+      "scope": "observed core descendant tree over requested 12-second idle phase",
+      "coverage": "partial",
+      "quantum": 10
+    },
+    "true_idle_wakeups": {
+      "unit": "events",
+      "scope": "scheduler wakeups of selected session tasks",
+      "coverage": "unavailable",
+      "quantum": 0
+    },
+    "kernel_charged_peak_bytes": {
+      "unit": "bytes",
+      "scope": "fresh cgroup charged-memory peak, not RSS/PSS",
+      "coverage": "unavailable",
+      "quantum": 0
+    }
+  },
+  "runs": [
+    {
+      "id": "desktop-1",
+      "metrics": {
+        "startup_ready_ms": 118.26739599996472,
+        "synthetic_key_echo_median_ms": 0.3677720000041518,
+        "synthetic_key_echo_max_ms": 0.46450100001038663,
+        "idle_sampled_rss_peak_kib": 29416,
+        "idle_sampled_pss_peak_kib": 16574,
+        "idle_observed_cpu_ms": 30.0,
+        "true_idle_wakeups": null,
+        "kernel_charged_peak_bytes": null
+      }
+    },
+    {
+      "id": "desktop-2",
+      "metrics": {
+        "startup_ready_ms": 108.34640500002024,
+        "synthetic_key_echo_median_ms": 0.31735500010654505,
+        "synthetic_key_echo_max_ms": 0.8798359999673266,
+        "idle_sampled_rss_peak_kib": 29288,
+        "idle_sampled_pss_peak_kib": 16441,
+        "idle_observed_cpu_ms": 20.0,
+        "true_idle_wakeups": null,
+        "kernel_charged_peak_bytes": null
+      }
+    },
+    {
+      "id": "desktop-3",
+      "metrics": {
+        "startup_ready_ms": 108.32965499980673,
+        "synthetic_key_echo_median_ms": 0.31831400008286437,
+        "synthetic_key_echo_max_ms": 0.8092939999642113,
+        "idle_sampled_rss_peak_kib": 29464,
+        "idle_sampled_pss_peak_kib": 16626,
+        "idle_observed_cpu_ms": 10.0,
+        "true_idle_wakeups": null,
+        "kernel_charged_peak_bytes": null
+      }
+    }
+  ]
+}

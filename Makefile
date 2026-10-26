@@ -15,6 +15,7 @@ lint:
 
 test:
 	python3 -m unittest discover -s tools/maintenance/tests -v
+	python3 tests/test_profile_report.py
 	python3 tests/test_session_observer.py
 	python3 tests/test_session_kernel.py
 	python3 tests/test_session_gc.py

@@ -48,6 +48,9 @@ endif
 test('native-gate-contract', py, args: [files('test_native_gate.py')],
     timeout: 180)
 
+test('resource-profile-report', py, args: [files('test_profile_report.py')],
+    timeout: 60)
+
 test('xlib-requirement-contract', py,
     args: [files('../tools/maintenance/tests/test_xlib_requirement.py')],
     timeout: 180,

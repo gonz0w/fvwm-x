@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "version": "r1-reference-2026-10-26.1",
+  "owners": [
+    209,
+    29,
+    226
+  ],
+  "status": "reference definition and empirical proposal; full budgets and release qualification pending",
+  "source_baseline": "1748e2f41199d996c97f47f84e047249fdec3394",
+  "authority": "dev-docs/PROJECT-TRACKER.md",
+  "rules": [
+    "Reference recipes use supported Meson options; they do not add a build profile selector or change defaults.",
+    "Requested auto is not enabled proof. Every executed target records effective enabled/disabled/unavailable features from configure results.",
+    "Build features, all installed artifacts, resident processes and transient workers are separate populations. Common install bytes are not minimal runtime cost.",
+    "No profile automatically starts a new optional service. Each future optional extra needs an owning issue, supported implementation, parent identity and finite workload.",
+    "Compare only identical workload/config/environment/compiler/effective-feature/instrumentation populations; retain revision and artifact identities separately.",
+    "Linux/BSD AMD64/ARM64 are supported targets, not six passing measurements. The current receipt covers Linux ARM64 native instructions in an AppleHV VM only.",
+    "Numbers from different architectures, historical installs or GC-instrumented runs are never pooled.",
+    "No new default resident or mandatory dependency is accepted until its applicable numeric costs/envelopes have reviewed dispositions. Complete all budget rows before RC."
+  ],
+  "profiles": [
+    {
+      "id": "minimal-build",
+      "requested_meson_options": {
+        "buildtype": "debugoptimized",
+        "b_lto": false,
+        "b_pgo": "off",
+        "b_sanitize": "none",
+        "mandoc": false,
+        "htmldoc": false,
+        "bidi": "disabled",
+        "freetype": "disabled",
+        "iconv": "disabled",
+        "nls": "disabled",
+        "png": "disabled",
+        "sm": "disabled",
+        "svg": "disabled",
+        "xcursor": "disabled",
+        "xfixes": "disabled",
+        "xpm": "disabled",
+        "xrender": "disabled",
+        "live-x-tests": false
+      },
+      "process_boundary": {
+        "resident": [
+          "fvwm3"
+        ],
+        "transient": [],
+        "excluded": [
+          "X server",
+          "client applications",
+          "observer"
+        ]
+      },
+      "qualification": "Recipe frozen; reduced build and core-only startup/resource qualification remain with #226/#29. Current minimal-instrumented observations use the desktop-feature build, not this reduced build.",
+      "workload": "minimal-instrumented-v1 when enabled for comparison; core-only process costs need a separately named observer scope"
+    },
+    {
+      "id": "desktop",
+      "requested_meson_options": {
+        "buildtype": "debugoptimized",
+        "b_lto": false,
+        "b_pgo": "off",
+        "b_sanitize": "none",
+        "mandoc": false,
+        "htmldoc": false,
+        "bidi": "auto",
+        "freetype": "auto",
+        "iconv": "auto",
+        "nls": "auto",
+        "png": "enabled",
+        "sm": "auto",
+        "svg": "enabled",
+        "xcursor": "enabled",
+        "xfixes": "auto",
+        "xpm": "auto",
+        "xrender": "enabled",
+        "live-x-tests": false
+      },
+      "process_boundary": {
+        "resident": "PID/start tree sampled from the launched core; exact executable-to-PID mapping is not emitted by this observer. Launch binaries and installed config are identity-bound separately.",
+        "transient": "fixed settings/application/search/directory workload workers",
+        "excluded": [
+          "Xvfb",
+          "Python observer",
+          "synthetic workload clients outside session tree"
+        ],
+        "services": "shipped configuration only; safe fixture commands replace power/audio/lock system actions"
+      },
+      "qualification": "Three plain native ARM64 reference runs; cache additionally enables noninstalled live-X test targets. Complete coverage is metric-specific. Other targets and clean-install/offline profiles remain with #226.",
+      "workload": "desktop-session-v1"
+    },
+    {
+      "id": "optional-extra",
+      "requested_meson_options": {
+        "buildtype": "debugoptimized",
+        "b_lto": false,
+        "b_pgo": "off",
+        "b_sanitize": "none",
+        "mandoc": false,
+        "htmldoc": false,
+        "bidi": "auto",
+        "freetype": "auto",
+        "iconv": "auto",
+        "nls": "auto",
+        "png": "enabled",
+        "sm": "auto",
+        "svg": "enabled",
+        "xcursor": "enabled",
+        "xfixes": "auto",
+        "xpm": "auto",
+        "xrender": "enabled",
+        "live-x-tests": false
+      },
+      "process_boundary": {
+        "resident": "desktop parent plus one named optional service, only if explicitly enabled",
+        "transient": "one finite service-specific workload",
+        "excluded": [
+          "unrelated optional services"
+        ]
+      },
+      "qualification": "Per-extra increments unavailable until the owning feature exists and an exact parent/extra pair is selected. No blanket optional-service pass.",
+      "workload": "Three alternating matched parent/extra pairs; owner freezes fixed input and process boundary before measurement."
+    },
+    {
+      "id": "development",
+      "requested_meson_options": {
+        "buildtype": "debugoptimized",
+        "b_lto": false,
+        "b_pgo": "off",
+        "b_sanitize": "none",
+        "mandoc": false,
+        "htmldoc": false,
+        "bidi": "auto",
+        "freetype": "auto",
+        "iconv": "auto",
+        "nls": "auto",
+        "png": "enabled",
+        "sm": "auto",
+        "svg": "enabled",
+        "xcursor": "enabled",
+        "xfixes": "auto",
+        "xpm": "auto",
+        "xrender": "enabled",
+        "live-x-tests": true
+      },
+      "process_boundary": {
+        "resident": "same selected minimal-instrumented or desktop workload",
+        "transient": "noninstalled test/observation tooling",
+        "excluded": [
+          "sanitizers/GC traces from plain reference observations"
+        ]
+      },
+      "qualification": "Current normal GCC cache; noninstalled test targets enabled. Diagnostic sanitizer profiles are separate observations, never pooled with normal timings.",
+      "workload": "minimal-instrumented-v1 and desktop-session-v1"
+    }
+  ],
+  "workloads": {
+    "minimal-instrumented-v1": {
+      "runner": "tests/live_x/responsiveness_profile.py",
+      "args": [
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--cases",
+        "idle",
+        "title",
+        "resize"
+      ],
+      "processes": [
+        "fvwm3 measured CPU and peak RSS",
+        "FvwmMFL transport",
+        "one managed fixture client"
+      ],
+      "outside_processes": [
+        "Xvfb",
+        "Python observer",
+        "title/resize load producer"
+      ],
+      "display": "1280x720x24 Xvfb",
+      "config": "DejaVu Sans size=10; TileCascadePlacement; generated fixed harness config",
+      "repetitions": 3,
+      "meaning": "Command/Echo and scheduled-command latency; core proc CPU ticks and VmHWM. Synthetic X workload, not physical input-to-photon or redraw/X-request counts."
+    },
+    "desktop-session-v1": {
+      "runner": "tests/live_x/desktop_session_live.py",
+      "args": [
+        "--observe-only",
+        "--workload-observe"
+      ],
+      "repetitions": 3,
+      "idle_seconds": 12,
+      "observer_interval_ms": 50,
+      "work": "Three editor open/close cycles, twelve settings queries, fixed application/search/files fixtures and menu/input exercise; see exact source hash and argv receipts.",
+      "meaning": "Ready = settings reply and bar window title, not completed first paint. Synthetic key/Echo timing, not physical input-to-photon. PID/start/executable tree coverage is partial when reported.",
+      "display": "1440x900x24 Xvfb"
+    }
+  },
+  "budget_policy": {
+    "status": "proposed empirical method for maintainer review; no automatic acceptance",
+    "minimum_repetitions": 3,
+    "formula": "max + max(observed range, recorded counter quantum)",
+    "rationale": "One observed repeat range, or one measured counter quantum when larger, gives an explicit empirical allowance. This is not a confidence interval or a universal percentage. Three repeats give a small reference, not a population tail bound.",
+    "incomplete": "Missing value or partial/unavailable coverage yields no numeric envelope. Context-switch counts do not substitute for wakeups.",
+    "disposition": "Above-envelope cost needs an attributed bounded fix, explicit reviewed budget revision, or release-blocking disposition. The helper reports observations only."
+  },
+  "remaining_budget_rows": [
+    {
+      "metric": "steady and peak complete session RSS/PSS",
+      "owner": 29,
+      "gap": "proc tree sampling may be partial; no complete total inferred; kernel charged peak is a different metric"
+    },
+    {
+      "metric": "idle wakeups and charged-memory peak",
+      "owner": 29,
+      "gap": "existing delegated cgroup/trace endpoints required; no privilege/policy change in this batch"
+    },
+    {
+      "metric": "core-only startup, geometry and redraw/X-request counts",
+      "owner": 29,
+      "gap": "selected current observers do not supply all of these exact metrics"
+    },
+    {
+      "metric": "physical input/paint latency",
+      "owner": 5,
+      "gap": "requires physical hardware check; synthetic Echo is separate"
+    },
+    {
+      "metric": "reduced profile, other targets, clean archive/install/offline and per-extra complete costs",
+      "owner": 226,
+      "gap": "current single-cache measurement prefix is not clean source/install qualification"
+    }
+  ],
+  "accepted_components": {
+    "foundation": "PR256 b263edf8fdf744fe545fa9af6d9685cf2b705375",
+    "prior_scope": "Retain accepted M1-M4, settings/IPC/browser components in PROJECT-TRACKER.md and their source-bound verification; no new broad requalification or R2/R3 audit prerequisite."
+  }
+}

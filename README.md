@@ -32,7 +32,8 @@ Full file-manager workflows, protected clipboard handoff, broader accessibility 
 remain open. Existing folder menus remain the default. OpenBSD follows new
 releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
 
-Next: [three-release scope, Major/Minor work and acceptance goals](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
+Next: [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)
+and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
 
 - [Install and build](INSTALL.md)
 - [Priorities and evidence](dev-docs/PROJECT-TRACKER.md)

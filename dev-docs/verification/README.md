@@ -1,5 +1,7 @@
 # Verification reports
 
+- [R1 resource references](VERIFICATION-2026-10-26-R1-REFERENCE-PROFILES.md): three desktop and three instrumented WM runs, exact artifact/cost receipts and proposed envelopes; incomplete session metrics are explicit gaps, not passing budgets.
+
 - [Modernization planning and issue reconciliation](MODERNIZATION-PLANNING-2026-10-25.md): twenty scoped issues, current cleanup/optimization priority, existing-owner updates and acyclic native dependencies; planning and documentation only.
 
 - [M4 SVG consolidation](VERIFICATION-2026-10-25-M4-SVG.md): existing modern renderer, retired backend/API branches, scoped native/X and exact worker comparisons; seven affected profiles pass with retained failures and separate wider gates.

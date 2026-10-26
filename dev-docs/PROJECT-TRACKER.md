@@ -22,12 +22,55 @@ old cleanup-first scheduling. [Publication and mirror evidence](verification/VER
 records all 91 contracts and native metadata checks. Each issue has a release, Major/Minor work class,
 end result, acceptance checks and exclusions. Native milestones mirror release;
 stages remain technical ownership. Dates/public version are not yet selected.
-PR256 remains the finite existing-code foundation checkpoint in Review; its
-pending merge is not general R2 M5 acceptance. Required R1 feature contracts,
+PR256 is merged as `b263edf8fdf744fe545fa9af6d9685cf2b705375`; PR261's
+roadmap is merged as `1748e2f41199d996c97f47f84e047249fdec3394`, closing
+#208. Reviewed trees, canonical signatures and author DCOs are verified. These
+merges do not imply general R2 M5 acceptance. Required R1 feature contracts,
 measured profile budgets and candidate quality gates block only their actual
 consumers/support claims. Broad R2/R3 owners are not blanket feature blockers.
 Dated entries below preserve their source-bound evidence and historical scope;
 older scheduling wording is superseded by this section and Execution order.
+
+## R1 reference profiles and budget receipts — 2026-10-26
+
+Owner: Cam; `codex/r1-foundation-profiles`; #209/#29/#226. Status: reference
+subset implemented and separately reviewed, ready for PR review; broader owners
+remain In progress. [Profiles and handoff](decisions/R1-REFERENCE-PROFILES-2026-10-26.md),
+[source-bound evidence](verification/VERIFICATION-2026-10-26-R1-REFERENCE-PROFILES.md).
+Three related outcomes: freeze the minimal instrumented WM, shipped desktop,
+individual optional-extra and development reference profiles; bind repeated
+resource observations to exact inputs and publish their available cost rows;
+provide a small read-only receipt checker that rejects mismatched comparisons
+and never promotes missing/partial data into passing numeric budgets.
+
+Reuse accepted Linux build caches and existing observation runners. Keep build
+features, installed files and started processes distinct. Record requested and
+effective feature states separately. A measurement prefix assembled from cached
+outputs has exact artifact identities; it is not a fresh install qualification.
+Historic session/performance receipts retain their actual source/platform scope.
+Proposed empirical envelopes are evidence for review, not statistical confidence
+or automatic acceptance. New default residents/mandatory dependencies still need
+applicable accepted budgets; #29/#226 retain complete RC and profile qualification.
+
+Acceptance: three independent plain repetitions of each selected available
+workload, immutable input/output receipts, explicit unavailable metric owners,
+focused helper validation and separate source/evidence review. One combined Linux
+observation checkpoint; no BSD/feature/install/theme matrix for developer tooling.
+No new runtime service, sampler, build backend, UI or optional dependency is
+adopted. Backer/pathname work and R2/R3 audits remain outside this batch.
+PR253's periodic performance reference is 3/5 after PR256; PR261 is planning-only
+and does not advance that counter. This foundation observation has a separate
+purpose and does not claim a periodic before/after improvement.
+
+All six reference runs pass (about 68 seconds total), as do ten focused helper
+tests, repository/link/whitespace checks and separate code/evidence review.
+Empirical startup/synthetic-response/core CPU/HWM envelopes are published for
+review. Whole-session coverage is partial in two idle runs, so those rows have
+no envelope; true wakeups/charged peak were not collected. The finite remaining
+process/geometry/redraw/profile/physical rows retain #29/#226/#5 ownership.
+No #209/#29/#226 closure or full budget acceptance is claimed. Host archive
+verification covers 157 files; about 99 MB of this batch's guest duplicates is
+retired, caches preserved and the owned lab restored stopped.
 
 ## Library evaluation issue scope — 2026-10-25
 
@@ -119,8 +162,10 @@ Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 ## M5 Pager, Animate and Event lifecycle owners — 2026-10-26
 
 Owner: Cam; `codex/m5-module-lifecycle-cleanup`; CLEAN-01 #34.
-Status: implemented four related resource-lifetime stories after merged PR255;
-composed focused gate and separate review pass; ready for PR review. Pager styles must
+Status: merged in PR256 as `b263edf8fdf744fe545fa9af6d9685cf2b705375`;
+reviewed tree `4f2f1bcfedbd449e7e2173a25b35b8c741027325`, canonical
+signature and author DCO verified. Composed focused gate and separate review pass.
+Pager styles must
 own acquired inherited background/highlight picture references, then retire
 per-style/global drawing GCs and the scratch container at terminal paths.
 Animate owns one GC/tile pair across replacement and shutdown. Event retires
@@ -2116,7 +2161,7 @@ and supersedes the old M1-M8/O1-before-features schedule.
 
 | Order | Outcome |
 | --- | --- |
-| R1 foundation | Accept the roadmap/PR256 handoff under #208/#209; freeze profiles/workloads/numeric resource envelopes with #29/#226. Start bounded evaluations early. No all-audits gate. |
+| R1 foundation | Roadmap/PR256 merged; #208 closed. Reference profiles, repeat observations and empirical envelope proposals are prepared under #209/#29/#226; complete only their named handoff/metric gaps. Start bounded evaluations early. No all-audits gate. |
 | R1 shared contracts | Reuse accepted CFG/IPC/browser work; complete native text/graphics/layout/theme/icon/binding, data/action/content, protocol/monitor and Lua contracts needed by consumers. |
 | R1 desktop and workspace | Batch related settings/browser/jobs/clipboard/session/service and workspace consumers on actual prerequisites. Optional capabilities retain optional startup/cost. |
 | R1 release qualification | Complete theme/accessibility/language/manual/package/dependency/native evidence, enforce frozen budgets and record #79 acceptance. No publication is implied. |

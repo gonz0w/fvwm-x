@@ -1,0 +1,2130 @@
+{
+  "schema_version": 1,
+  "owners": [
+    209,
+    29,
+    226
+  ],
+  "status": "reference subset complete; empirical envelopes proposed; R1 foundation/RC/profile acceptance remains open",
+  "merges": {
+    "pr256": "b263edf8fdf744fe545fa9af6d9685cf2b705375",
+    "pr261": "1748e2f41199d996c97f47f84e047249fdec3394",
+    "reviewed_plan_tree": "cf98af06d06f19ab4a2cd63138254506d821537b",
+    "signatures_dco_verified": true
+  },
+  "profile_manifest": {
+    "path": "dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.json",
+    "sha256": "f67936222d88be43201a8ddeb7979dfc58d8fd8e22bbfd02dd288f64b31be611"
+  },
+  "context_digest_inputs": {
+    "config": {
+      "method": "SHA256 of exact checked-in profile manifest bytes",
+      "path": "dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.json"
+    },
+    "platform": {
+      "uname": [
+        "Linux",
+        "288f898505a4",
+        "6.18.10-200.fc43.aarch64",
+        "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "aarch64",
+        "aarch64"
+      ],
+      "clock_ticks": 100,
+      "page_bytes": 4096,
+      "provider": {
+        "Name": "podman-machine-default",
+        "State": "running",
+        "VMType": null,
+        "ConfigDir": {
+          "Path": "/Users/cam/.config/containers/podman/machine/applehv"
+        },
+        "Resources": {
+          "CPUs": 9,
+          "DiskSize": 100,
+          "Memory": 2048,
+          "USBs": []
+        },
+        "host_machine": "arm64"
+      }
+    },
+    "compiler": {
+      "C": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      },
+      "Go": {
+        "status": 0,
+        "stdout": "go version go1.27.2 linux/arm64\n",
+        "stderr": ""
+      },
+      "resolved_dso_files": {
+        "/usr/lib/aarch64-linux-gnu/libm.so.6": {
+          "sha256": "5e0391562de36de323fb9cb0f2c1b6bd6d034c840b1dac018499f5fe4ded1b4a",
+          "bytes": 591800
+        },
+        "/usr/lib/aarch64-linux-gnu/libfontconfig.so.1.12.1": {
+          "sha256": "82c60a33531ebcbc55bb09f6ceab408347c22298f4564d9412cbe0f883254ce7",
+          "bytes": 395120
+        },
+        "/usr/lib/aarch64-linux-gnu/libX11.so.6.4.0": {
+          "sha256": "8e4b164809fe69ddfa317340c23cddc7b66963413ba2b224bec5da79496c0c12",
+          "bytes": 1390984
+        },
+        "/usr/lib/aarch64-linux-gnu/libXft.so.2.3.6": {
+          "sha256": "36e080baabeeaa6304d1ef303af522350b658506f0ad66143e07f9e122c9e27d",
+          "bytes": 134344
+        },
+        "/usr/lib/aarch64-linux-gnu/libXrandr.so.2.2.0": {
+          "sha256": "15d767d672acc63335db50327129668d858261f88773d6f4d630a2b3a55f8a4a",
+          "bytes": 67752
+        },
+        "/usr/lib/aarch64-linux-gnu/libXext.so.6.4.0": {
+          "sha256": "9201e1e51d6dccd7934d4e74883e9c5fa8628c332ae79fbe163e40d73825bb6e",
+          "bytes": 134600
+        },
+        "/usr/lib/aarch64-linux-gnu/libfribidi.so.0.4.0": {
+          "sha256": "f25617883b0c10df0f143174c49454ca61c571a1051b5480070341223f95fbdb",
+          "bytes": 133200
+        },
+        "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16.59.0": {
+          "sha256": "6e9f232bc83d828ef9aca8b1e6747a250d58f1801b8245d2a0f635764d3bf198",
+          "bytes": 951320
+        },
+        "/usr/lib/aarch64-linux-gnu/libSM.so.6.0.1": {
+          "sha256": "62178daaeb4564067ca8dd7b65d8c522e226616d8b15de0c41b84cb56190dc0e",
+          "bytes": 67744
+        },
+        "/usr/lib/aarch64-linux-gnu/libICE.so.6.3.0": {
+          "sha256": "5f5f2a62a7be5f5868fe60e6e223b4348f49cfc4a4955fcf8d0a5f4d90596a7e",
+          "bytes": 134536
+        },
+        "/usr/lib/aarch64-linux-gnu/libXcursor.so.1.0.2": {
+          "sha256": "b6b7d3d4ef3783743131510469170957994d34bfe1c0b344107e5b29dbc68b91",
+          "bytes": 67840
+        },
+        "/usr/lib/aarch64-linux-gnu/libXfixes.so.3.1.0": {
+          "sha256": "9648a5d60429081376126a707a342ebf83c0df535aa99eb56e77327a071dbf0d",
+          "bytes": 67624
+        },
+        "/usr/lib/aarch64-linux-gnu/libXpm.so.4.11.0": {
+          "sha256": "0b60dcdbd057b8f6b1239f75904b19fe40af93476cf24139c304e9a11dbd2017",
+          "bytes": 133648
+        },
+        "/usr/lib/aarch64-linux-gnu/libXrender.so.1.3.0": {
+          "sha256": "ec225f2428e5759c5087c0b3fd7233256935da1c2a7dcc2a0e6c3f9b25a44979",
+          "bytes": 67952
+        },
+        "/usr/lib/aarch64-linux-gnu/libc.so.6": {
+          "sha256": "0f1905dc27dbc6715875c70527bc8da846a10084c9c483e9d8ff76dce8d69d0e",
+          "bytes": 1722920
+        },
+        "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1": {
+          "sha256": "390027e5f45f236bd1838bc54bf464c5ff01d260ab9f8b415ea8276641bce505",
+          "bytes": 203968
+        },
+        "/usr/lib/aarch64-linux-gnu/libfreetype.so.6.20.1": {
+          "sha256": "d629d0df3685cf861742ad105df9d823d3becda22c21a0c63a674c9fb13497b5",
+          "bytes": 854104
+        },
+        "/usr/lib/aarch64-linux-gnu/libexpat.so.1.9.1": {
+          "sha256": "b4b445a092ad711e535cfa7241974f709b716194c58227abc75b05e3a3bec7f7",
+          "bytes": 198712
+        },
+        "/usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0": {
+          "sha256": "cc570b1aff9e2ffe32c1add5aa23cb65b041a3615810566bb32efcc0c3f83f28",
+          "bytes": 199048
+        },
+        "/usr/lib/aarch64-linux-gnu/libz.so.1.3": {
+          "sha256": "e3bc90ee8cce46778c2f46c2a3e580d3b930f7b455910f25ea400a0b797fb9dc",
+          "bytes": 133272
+        },
+        "/usr/lib/aarch64-linux-gnu/libuuid.so.1.3.0": {
+          "sha256": "c5e4db4464688e9fa7a67c7219a478927de65450bcb2815fec10cb3e1b5bfc0d",
+          "bytes": 67576
+        },
+        "/usr/lib/aarch64-linux-gnu/libbsd.so.0.12.1": {
+          "sha256": "6c5348ee0e1777f13e148b7492fa311b6f65adb0dc21a001a67ebc18948e6b3e",
+          "bytes": 133944
+        },
+        "/usr/lib/aarch64-linux-gnu/libbz2.so.1.0.4": {
+          "sha256": "ac19913f44443f68f2e3ca29d79caaa785cd257bb424b028234bb4a2e8745c07",
+          "bytes": 70504
+        },
+        "/usr/lib/aarch64-linux-gnu/libbrotlidec.so.1.1.0": {
+          "sha256": "b7895f0fd4ad47408cb01fcb959ae6792804c15512526166f9bf48358714d0b5",
+          "bytes": 67688
+        },
+        "/usr/lib/aarch64-linux-gnu/libXau.so.6.0.0": {
+          "sha256": "6fff1a9d4b5bc4d91df752b12600f8aedcd8ac33ea01a48295326675243d68c0",
+          "bytes": 67640
+        },
+        "/usr/lib/aarch64-linux-gnu/libXdmcp.so.6.0.0": {
+          "sha256": "84b6623297efd8eb43f98af678acbb68ca31de7617dab042a1dcc7c6feb8a2ea",
+          "bytes": 67528
+        },
+        "/usr/lib/aarch64-linux-gnu/libmd.so.0.1.0": {
+          "sha256": "30d117046ce9405745e0d0d4722cff121f532913180bbb9425b38d076319ac08",
+          "bytes": 67584
+        },
+        "/usr/lib/aarch64-linux-gnu/libbrotlicommon.so.1.1.0": {
+          "sha256": "016600f673a5d1a565cf98f608d8425033593ab78827eccc3384596f70386c8c",
+          "bytes": 198784
+        },
+        "/usr/lib/aarch64-linux-gnu/libevent-2.1.so.7.0.1": {
+          "sha256": "930690b0f2a219ccf09574c0edcc1c2dbfcfb2775f0fb3184d07331277891a1d",
+          "bytes": 395568
+        },
+        "/usr/lib/aarch64-linux-gnu/librsvg-2.so.2.50.0": {
+          "sha256": "9e3995ed5ff0226c204a88635cc4a301d2856f121936ec6555a8b53715b3b4c0",
+          "bytes": 6162696
+        },
+        "/usr/lib/aarch64-linux-gnu/libgio-2.0.so.0.8000.0": {
+          "sha256": "bd460cbc01b68777901408ad8c7c110365d7d740e8e43486a8789955769a5867",
+          "bytes": 2100760
+        },
+        "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so.0.8000.0": {
+          "sha256": "fe41448f7b832ffcb460035d5b92cfdd29125d2b45766e23774a33390d145d79",
+          "bytes": 462704
+        },
+        "/usr/lib/aarch64-linux-gnu/libglib-2.0.so.0.8000.0": {
+          "sha256": "75df2de8cef893e4ae32dd151eda7f4f23587fbb18d3c19cb33615d964db1ecd",
+          "bytes": 1445440
+        },
+        "/usr/lib/aarch64-linux-gnu/libcairo.so.2.11800.0": {
+          "sha256": "32a3c098b31f6d579ce25c11a95c93e39b1f53732884626c700943c44ed0dbb4",
+          "bytes": 1382904
+        },
+        "/usr/lib/aarch64-linux-gnu/libcairo-gobject.so.2.11800.0": {
+          "sha256": "b7d71ef24618dc54d6885a940c61568e1f68c5d429388a37dfb99aaece19b965",
+          "bytes": 67272
+        },
+        "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so.0.4200.10": {
+          "sha256": "364892c377f8d37bea42bc88147b6d1de88f48e09fccc59fe96f1dc2526d09a0",
+          "bytes": 198768
+        },
+        "/usr/lib/aarch64-linux-gnu/libxml2.so.2.9.14": {
+          "sha256": "c28701d60a2eee773def3d2673c3fd93952cf9c7470fbdd4d1a81ce7fc46d7d8",
+          "bytes": 2102064
+        },
+        "/usr/lib/aarch64-linux-gnu/libpangocairo-1.0.so.0.5200.1": {
+          "sha256": "e8323166521d5403e91ab9343b3f7866bc1ee619d1aaf6a3f8f879b74518fa6c",
+          "bytes": 67472
+        },
+        "/usr/lib/aarch64-linux-gnu/libpango-1.0.so.0.5200.1": {
+          "sha256": "0d415ac1755564b0d2faac683bc2d715b166aad96ed2b93d8dcdc42083545e0f",
+          "bytes": 462192
+        },
+        "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1": {
+          "sha256": "f2d3ad2bf0b61f6bc944cc37d7b6ab7f88d2582b41ff989ca164803f56cc5f20",
+          "bytes": 133696
+        },
+        "/usr/lib/aarch64-linux-gnu/libgmodule-2.0.so.0.8000.0": {
+          "sha256": "a625ea5d90693e73966b93a1f8776cbf208a48babfb2e17f1443c01fd0ab4b64",
+          "bytes": 67584
+        },
+        "/usr/lib/aarch64-linux-gnu/libmount.so.1.1.0": {
+          "sha256": "cfa453687fb8eee3c6f8e06de6ab2c1f9dfc59b94d05477593fae99fe7fe1e6d",
+          "bytes": 330272
+        },
+        "/usr/lib/aarch64-linux-gnu/libselinux.so.1": {
+          "sha256": "bc36fbbc9f066f882948ba3429f272cc75840a096e0a3e3461c3badaed18c5ba",
+          "bytes": 198800
+        },
+        "/usr/lib/aarch64-linux-gnu/libffi.so.8.1.4": {
+          "sha256": "9dd873a938c4d7df76912d01f6a28aa4aa73d583bd20485a0dbfe5aa9673a191",
+          "bytes": 67944
+        },
+        "/usr/lib/aarch64-linux-gnu/libpcre2-8.so.0.11.2": {
+          "sha256": "aa4e91ff910dbb8e40472ed4fcaaeebfef19ad13fe925d9ed8e22e87d45ce13b",
+          "bytes": 592328
+        },
+        "/usr/lib/aarch64-linux-gnu/libxcb-render.so.0.0.0": {
+          "sha256": "1b242446c7e12f5026ef2fa9d56494e476d6b33f673bb61ac1b18262634cf7a2",
+          "bytes": 67592
+        },
+        "/usr/lib/aarch64-linux-gnu/libxcb-shm.so.0.0.0": {
+          "sha256": "340bbe21b876a3900cf9ba0687b070765c166ce23e1e57b08e13fb15ad46fdc7",
+          "bytes": 67576
+        },
+        "/usr/lib/aarch64-linux-gnu/libpixman-1.so.0.42.2": {
+          "sha256": "363ba9156d08a0064be9445c0576ca920cc7c2cb9325a106285a03e20e64ff5b",
+          "bytes": 657360
+        },
+        "/usr/lib/aarch64-linux-gnu/libjpeg.so.8.2.2": {
+          "sha256": "d45014b67ae6df2f15c8fb3e86d37b78375deede47ef73b7c61e8b6b28c8223f",
+          "bytes": 395264
+        },
+        "/usr/lib/aarch64-linux-gnu/libicuuc.so.74.2": {
+          "sha256": "9d58137df08c36a03417445cc39576b0a95b538bdf0733f5455d2255deb9b799",
+          "bytes": 2230272
+        },
+        "/usr/lib/aarch64-linux-gnu/liblzma.so.5.4.5": {
+          "sha256": "47ea0f43683ef829cda43bfe1862c1b06f085fbd813bb58d2d142477f5380139",
+          "bytes": 198584
+        },
+        "/usr/lib/aarch64-linux-gnu/libpangoft2-1.0.so.0.5200.1": {
+          "sha256": "3718f1e9f4711d681f4c3b90eb3be1b3c0ab1bb48fb1f7b12c59c4b9c4209e4a",
+          "bytes": 132888
+        },
+        "/usr/lib/aarch64-linux-gnu/libharfbuzz.so.0.60830.0": {
+          "sha256": "a59db36b314e8b9d03c59c587fe6651c8b46bd4736091f9d6784f5e0166a5907",
+          "bytes": 1117936
+        },
+        "/usr/lib/aarch64-linux-gnu/libthai.so.0.3.1": {
+          "sha256": "9cf008340f19f4ac8007be768a0619d2c496ebee5afd8bbfd3eeabfe0821d41b",
+          "bytes": 69560
+        },
+        "/usr/lib/aarch64-linux-gnu/libblkid.so.1.1.0": {
+          "sha256": "4b0c0835eecf17b9b900f02f7ed76352b7746de7c63ca3e027cbb9df44868dfb",
+          "bytes": 265064
+        },
+        "/usr/lib/aarch64-linux-gnu/libicudata.so.74.2": {
+          "sha256": "96b1154b9ab94cfc908c0fe745edc128ee3f67e444c66e2d7a9cf06664df9255",
+          "bytes": 30803584
+        },
+        "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33": {
+          "sha256": "6e3112d35cfc86db7ee85b27e1746f67408e2837ff8628b46386c3eabd5682a4",
+          "bytes": 2633224
+        },
+        "/usr/lib/aarch64-linux-gnu/libgraphite2.so.3.2.1": {
+          "sha256": "26d512d2a2ca2a524def93057c46e2aa759d5e31990142ea8485e0cf167e87d8",
+          "bytes": 133200
+        },
+        "/usr/lib/aarch64-linux-gnu/libdatrie.so.1.4.0": {
+          "sha256": "50d72d9d48dc691fc4e1b0707991185304619a0c5f09801c0f2fcdf1abcb9aa8",
+          "bytes": 67432
+        }
+      }
+    },
+    "instrumentation": {
+      "observer_sources": {
+        "tests/live_x/atom_batch_live.py": "b4babd17327ce9fbae9c6f41067a5cbdcd304964142a5155808cd0c0ea751f6d",
+        "tests/live_x/backer_signal_live.py": "40780d279db65f6f7e71d7069fb70c7615ef611deec5a82dbc0d712eeebe46a6",
+        "tests/live_x/button_release_live.py": "7d2dc1888ce876a2281567517939145bbf5d32a94d783107111c67f7e77b20c5",
+        "tests/live_x/buttons_keyboard_live.py": "5e222cc40c6f791324e936d17112b62fe2262ec4ac0f9e9190d565df400fad76",
+        "tests/live_x/buttons_transport_live.py": "293c38ee1dc5793c1d20531338977cc66559b0f358820e2c716a2b6760c161ce",
+        "tests/live_x/capture_live.py": "24237a1c19cb5fa4340ec6dc09302e461a1f58f3756038d88c534a0c1c99862b",
+        "tests/live_x/client_identity_live.py": "daf030fc5a7158228190ed5cf723d1b24afd01ae50483e96ea93a1bbe356b00a",
+        "tests/live_x/colorset_live.py": "6a7653c9a20de1513b0ba2cf4f41712caca3c76755d9fd9d6981a979ce8a665c",
+        "tests/live_x/command_client_live.py": "12bd470c5964b9c6086ba4daf36b19f6cf5b96524cbeededb5d460955db290bb",
+        "tests/live_x/compatibility_live.py": "28c72c63388fc97a56c0df33cae91d7407a79283f5006737f845a8c190689529",
+        "tests/live_x/configure_merge_live.py": "caeb43a637edc09c4c3b89c59d0368427bb02ef4e2b363c81c7ae7b3cfef6f27",
+        "tests/live_x/core_readiness_live.py": "4234d7ef5423f0acc4859eedb2fcd841ca712751dd1bd671191f5bb30279441e",
+        "tests/live_x/desktop_live.py": "efe2220797fab2f32b53c9ce6a2451542724ccd9c44a6736a8413d3f537bd994",
+        "tests/live_x/desktop_publication_live.py": "0f3960d0113c021d54c543fe13da2eca1acb255ff7f645ba6720cf059bcf9ace",
+        "tests/live_x/desktop_session_live.py": "bd3842f8d0194f664291071e713233f75063ac0e66890034c71dc82c33fe063d",
+        "tests/live_x/directory_menu_live.py": "e1ddd3e3b28e2189ea91c10ec9ee8b63e505871c7d3e0884c59015007302869d",
+        "tests/live_x/display_ownership_live.py": "e93a1cdb0bb95854eb767ab87ac4bde5a225044d53b63c53e3ed501c8b7d076f",
+        "tests/live_x/ewmh_inventory_live.py": "d2af32a5e812adb5b592243d66ba5cf3c6f0d810b692b41c2703e086429837cd",
+        "tests/live_x/ewmh_state_live.py": "8fad33d88c821a1dc4da8504ef527efe8ab205eca58e10338e2cc4a54da5d39b",
+        "tests/live_x/expose_redraw_live.py": "a64afdae9a4f42099d4f31395594f81796ff09cde34491cc763b4b94f72cc826",
+        "tests/live_x/expose_service_live.py": "ee044ce56b9da7001b88e911b5fd53c8f44d0b68defb2aaab7826c7fad3bcd3f",
+        "tests/live_x/file_browser_live.py": "79192ab561af23c543f7ce6f9ecd152eb5a86ad80f3e32330e80a8655131d869",
+        "tests/live_x/font_shadow_live.py": "156d1a71e5d7745ffcbbd62c5d0fbe922148ec2bbc4772634c592c268faa89e0",
+        "tests/live_x/form_transport_live.py": "bce107233d65e16c13a4e1ba28fa2c6e399f8b337011e8eed8cb5942a7a563e6",
+        "tests/live_x/frame_sync_live.py": "9a4a616c1fc5ff62da6dd121dcb4c73ce2dd6bb9a10180029b518b784d4bd23d",
+        "tests/live_x/function_lifetime_live.py": "b75c054f52dc0854ba82c3e12bd0967d4d229e03e1ed84cdf5f654c3c1ff2204",
+        "tests/live_x/geometry_transition_live.py": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357",
+        "tests/live_x/hardening_live.py": "d265ea5962976d60384dca647b4fe16c04107ec3ba28de446f4a2033b90f0623",
+        "tests/live_x/harness_teardown_test.py": "40ca932b6ca1c064ea8b388744cf3c54a4da8a76bfe367bea1b0fce38af91aaf",
+        "tests/live_x/iconman_transport_live.py": "34ac8ab1b40c9bb908a7d81a3e4825eec3a64f10b3309c8b077e69ad3b7691f6",
+        "tests/live_x/ident_config_live.py": "e7a6e4aa935189f5af49456ed8a04c30226d5832f472d46a37590decb311c7d4",
+        "tests/live_x/ident_transport_live.py": "c554adb6a17fa885efb4aa94134486232e5d9ebad74cc9ba6bf9f16dfed06d28",
+        "tests/live_x/image_colorset_effects_live.py": "1aa9cd05efecd83dc3147ee930b2249082a290d4e4d28a4aa84163795f84a00e",
+        "tests/live_x/image_colorsets_live.py": "806ad97fa5d2d1094ed0d1c9f479067174d51b262c9aab673c39a73c11cb2bef",
+        "tests/live_x/image_decor_live.py": "f35f55f5520a6a022b7bb0577eb374d161a5f1d39ccb9df0797c856a6f9dae67",
+        "tests/live_x/image_input_live.py": "0c6eb41d6541db2470da6bbe813e6078b4f7e491e6db21bf084a85d5fca4f5f6",
+        "tests/live_x/image_menu_live.py": "9b2c4d9ce01dfb554e5dff3e76eba20cd33d66888a6ef190f75cf9b047e1672a",
+        "tests/live_x/image_mini_live.py": "21db762f0ba1656d97c646f7c2436a7cf991ca313e85e03d64c405d84d30959c",
+        "tests/live_x/image_owners_live.py": "46c2610cae24f32e24b61f4c044e266c8c19e901aa8d0fc83c5671936d322582",
+        "tests/live_x/image_startup_live.py": "bbde6451536f2019554139209b351e75caa1e93e3bb2d58005e77a5b953ac75e",
+        "tests/live_x/image_svg_live.py": "e89e2a84009da323eb6a30bad3c1fbb630968efac694d3983e73f45cb7c185b4",
+        "tests/live_x/interaction_cancel_live.py": "b2ef32b47ac120ddaaa75205b260bbc5ce61141d460f21ae6aa12f34a866226e",
+        "tests/live_x/interaction_profile.py": "700eebd3e564e0a6991118b46ec2724176475d0509b916b95077389573e6ad72",
+        "tests/live_x/interaction_service_live.py": "b410e97cf35814ee3eaec57e4f7f4f9bb709b80221a6508df4a68a2a88dc1d43",
+        "tests/live_x/json_utf8_live.py": "d8d1007beccdc844f487226241491928ee698a8f4ee12731e3e72b757e7628f6",
+        "tests/live_x/layer_boundary_live.py": "a7510c951c0cefe96fff97ee38f83ff6adfa90d79eb75d22034cd0a44c5a2d48",
+        "tests/live_x/legacy_property_live.py": "f1e32ab8dff05bf5b198d0084e90cd2e358353fba0a1d3306c2790a4f7e44168",
+        "tests/live_x/live_x_harness.py": "bd7394064346c8806d72248bb4a013e9d2e4c7133db0bcbdb53907b05f55555e",
+        "tests/live_x/manager_handoff_live.py": "46e398f17004e010a27aba6ace081ba259d37fce0c5442d61e5b0f846bb94529",
+        "tests/live_x/manager_targets_live.py": "1458e605b931998b1887c4b3ef6feb3ef6fdf9980e51e47b1343b6a38ef4dc0d",
+        "tests/live_x/menu_interaction_live.py": "08d72eaf6f988729337a8d6112395bc931abe5a93be1aec8a01797510b33d25b",
+        "tests/live_x/mfl_core_state_live.py": "03e39864868b5640bedbdcfa489f9b099932d0e14e6c61ecee9aa5b45728d8d5",
+        "tests/live_x/mfl_operations_live.py": "96815d8cec9bd0834096554231baf3404e6da0f75ad667c8de6a438f4c0f09f9",
+        "tests/live_x/mfl_preview_live.py": "dbcbfdd2e951e0a33988eb3ddec0e9db339493e1e70863e3ff2b282d8f2e3b8b",
+        "tests/live_x/mfl_request_live.py": "c5c3a562dd1343751c117c1dfe0971cdf8c41b913ce8fe4dbcec9fd2c897460e",
+        "tests/live_x/mfl_settings_live.py": "61a84a0c6f758139ea900abfe1e59c6c5591eb9d978e9b0f701b5fa3bb829026",
+        "tests/live_x/mfl_stream_live.py": "216d70660ee42a840da133f5c457a30b6a0f1413693a5dddcb2912cd84c3104e",
+        "tests/live_x/module_constructor_live.py": "ee38dcf80b5ac0807fa069af0db5c7f66a1a10a7ee13ab0f05fa9222b99fbf5a",
+        "tests/live_x/module_drawing_owner_live.py": "24e443c0654f75dd8cd819ffec2dcb41a3af6b6a23032708b1293224ded61083",
+        "tests/live_x/module_iteration_live.py": "e308695450e4b3f29879afa64525d69dbe1c6a44ca22e6f5d50ace79a72e0846",
+        "tests/live_x/module_logging_live.py": "1a771a394434d5a3e17942dfe894f1ead416b837ad7455021000b124866e9f37",
+        "tests/live_x/module_metadata_owner_live.py": "4812731a99b7a410e7630bf2bb9032f8e1ede96a2f6dced82e97e0cfd865469e",
+        "tests/live_x/module_output_live.py": "3d4c86384d6d278c1ab5b0e5024ac9851326df2f125c5a63cf941eacdf2ae536",
+        "tests/live_x/module_packet_live.py": "d732f4b8d2e01102e389388f860b31f08cf41c48aab43f1d89609720f802754a",
+        "tests/live_x/module_partial_live.py": "ab7debbaef1ab7b604e39d2440a534a819789f0b75f84403801c91a3b0bfbc87",
+        "tests/live_x/module_queue_limits.c": "598eef080fab0689fea18f615160457737b6f08ba03adf05eec814974e06681a",
+        "tests/live_x/module_queue_live.py": "f45069a67297eb9653741c12a8d9686608b27652eb0f361df61eb20776c6493b",
+        "tests/live_x/module_resource_owner_live.py": "43584bee15c50229794f20eda6073d8557473befeb64ead7004f4c10c70f91a9",
+        "tests/live_x/module_startup_live.py": "f41b73a828271bdea8c0de0b314b7a6a3a9fa70f3182343131798a18884355fe",
+        "tests/live_x/module_storage_live.py": "ef9db14bd20932a6692d5099fa42eec9ab552e3ff664c126a9f2ff40aec827ac",
+        "tests/live_x/module_sync_live.py": "995240e344d9e3521c8338c3a314f3b757de3faaba21c18909f63a57c7bb3c90",
+        "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+        "tests/live_x/pager_layout_live.py": "f14f6f8742050aae65a53ea07ed992ef814132906329300df5727f90d01168c1",
+        "tests/live_x/pager_startup_live.py": "776f81364332c29bc7ef5b337eeb765b6cd96c922ba28842d937067ccb61c3fe",
+        "tests/live_x/parent_chain_live.py": "6618053ce0e6d23389eef58e7978129bc3d5a67872d862a5c08955ca89211137",
+        "tests/live_x/parent_layer_live.py": "68f125dac84d75a8b71fd4667ef02acaf5d897728f955a9c7b2f53ff65f78f17",
+        "tests/live_x/picture_argb_live.py": "9e0c748a916c60aa0613847503bb1e65b7619511451a5399fb4969314e0192f5",
+        "tests/live_x/picture_async_live.py": "be66e7287fe4cc9adaefc3f763178f221fed71ed46a8b596f90151c3aca2eea0",
+        "tests/live_x/picture_visual_live.py": "32f1135704531c19f0a11771d5c51067ad2eb6f3f02b56911ea3f9078aa3cc74",
+        "tests/live_x/prompt_protocol_live.py": "16dee7f27ff030ba91429430c5bf5eb36ab9eb29f10a1c21d4d736e542129969",
+        "tests/live_x/raise_unmanaged_live.py": "0d667d85a416676aaff769570525749031879bd4a36fc24dd52111c99d07e4ef",
+        "tests/live_x/rearrange_monitor_live.py": "f0f8091c3a2b74e146369e61c17b2a59fc0530f845f689dbb5a6bd1c921d99fe",
+        "tests/live_x/rearrange_signal_live.py": "ff1ecea9975749fcb9ea546375dad420da09fd192a337e25dda247694e1e98aa",
+        "tests/live_x/resource_cache_live.py": "db42024175d02c418f85ca095ebae606c986465809232a86fa051cd042b86b48",
+        "tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e",
+        "tests/live_x/scheduler_live.py": "f64162dad05f54f2296d5600cd39637ef5e533630d325d18da517e39dc674df9",
+        "tests/live_x/script_base_owner_live.py": "199d2bb5a9ba50235288c56182cbb2625f08b6954885a04393b7a15a41a8439d",
+        "tests/live_x/script_binding_owner_live.py": "5e60e7122dd5224ca116c808bcf31ab5c8b172c08f2500abeab0a72e7143cf3e",
+        "tests/live_x/script_block_owner_live.py": "ead7653f12167342b3cd875e6446d4e0f898f6877ae00be7ec0052af95f9942a",
+        "tests/live_x/script_com_example_live.py": "46401e6d5667fa2b48fd08d28e15bceb77130aa68a4440b0b74aa03e858e7065",
+        "tests/live_x/script_execution_live.py": "c6af1406a1813ee505d103b39efcc1cbb8c07b309d5e899249d1ef6d92b03b61",
+        "tests/live_x/script_fifo_live.py": "40844e088d11b9f518d185a5771a54d5e783aea152564aa51783e5145ad6a08c",
+        "tests/live_x/script_geometry_live.py": "d7454423583367982bb3e8d5e2cde11d03ea23034f77c27687b4f7c9c6242d8e",
+        "tests/live_x/script_icon_live.py": "c2b953c576816c993f84089c224a3dbf51938df000d700e8111b5b5e8dec0293",
+        "tests/live_x/script_message_live.py": "13627a9d86e4a2bb29571927e77db0f91d9ff60b88e28a72eedeb80ed7ab3433",
+        "tests/live_x/script_modal_live.py": "1fba5415a46220a46b8f2284dd4cfb9985f999a0df5f2d258f6ae12813618312",
+        "tests/live_x/script_process_live.py": "2e718dcfa6c2066b7f70493f73364d426e36567a4df725f970554216182ddcab",
+        "tests/live_x/script_property_owner_live.py": "422a828331d840c1bd40ac7d920daf13f36c6e9a4805c8c23510d04213d31545",
+        "tests/live_x/script_storage_live.py": "30dd45c8c8540a01b19e59a6e0680a753f551bd69e96e2c073041218d5b26ca3",
+        "tests/live_x/script_text_list_live.py": "52a724f05c38f08a553e5cc47cc0510e3fb0b4a26c4f3d986e3b0eb1c7346155",
+        "tests/live_x/script_transport_live.py": "b08e2496e8aca9fe7f6e4e9597ebc47804d357497569b7ab3024a44e68f5eb17",
+        "tests/live_x/script_value_owner_live.py": "3753b06fa91888749d73284f581a9012efb1443a8d9257fe2b5c72bd80a1bc86",
+        "tests/live_x/script_widget_owner_live.py": "9b9414a49ff7991dbd48a7798b57935c81d2b0545bf818ef112fd6cae29ba49e",
+        "tests/live_x/script_widgets_live.py": "de518f5277ccbb2cc9fc7cc883f15ef338184420fb6610c9b805459b5ed7d4ad",
+        "tests/live_x/selection_live.py": "96e1a93ee362ffee6f7cb7b61bee09483dd24f9e5b1db3fdc8f13297de87ee32",
+        "tests/live_x/session_gc.py": "353b731d5c89dc7203ecdeb29ef7833832d3297118d49129771b2af7d5ca58bf",
+        "tests/live_x/session_kernel.py": "487594c9ef6c7ea453b8ddbcdb645e8a2f73419fe907c09b4963e7910b70adc5",
+        "tests/live_x/session_live.py": "48a1a7071844672c2d2bc0e926998d5b4b6fe09a69d923aa872bc5bba3914b83",
+        "tests/live_x/session_observer.py": "c630284924ff3b948432c5cc31b319b7bd67aa0d500f1e759ff9bd229a2b8446",
+        "tests/live_x/session_workload.py": "b7cccec866bc521af4d26229c4eeaf926f15725475bd77e28e2ef63bb8ea6749",
+        "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+        "tests/live_x/stack_batch_live.py": "800e714c21c52c6ad7ea2dbb36893f00f7c51d64b9b6acfb1cc11e3090d6be56",
+        "tests/live_x/stack_layer_live.py": "3fc34537ac041bd7bcffabffc54c9c4a8186f256e268d2a425d7005a51381858",
+        "tests/live_x/stack_layer_storage_live.py": "9ba03bcfffceba3d332ed85a87fc682d5acc75d3d9f0a9938241b4c6cc12f4f7",
+        "tests/live_x/stack_override_storage_live.py": "de03f45901c5c5c041f2fb967016b16060bfaa477349da89de661ff3055845b5",
+        "tests/live_x/stack_parent_live.py": "81c46fbdc8a82d376027cb1ecd64111a36dc96354edd1e3ce6db6e1901757deb",
+        "tests/live_x/stack_query_live.py": "7d73b01a36b8cf890677789a2601ca1b2ee9fa8b17e170c8303637af1d849a9f",
+        "tests/live_x/stack_rank_live.py": "76e9d9131d916eaaeff90d0ed8801018a8f8a8bcf2cb5737d68b2bf576647588",
+        "tests/live_x/stack_redirection_live.py": "48805b7ea049ec0358f33668e38485a66e7bbfbf8870599a9fdda8c47ee0373a",
+        "tests/live_x/stack_restack_live.py": "0d496b55af433d2454090edfac5e59f933baac663adbde715a7208e8a7a2cfcf",
+        "tests/live_x/stack_retirement_live.py": "8ead4406bfb98c9685ab1a827ff61e5c815da4cac71fc01791a63bc5e55ff795",
+        "tests/live_x/stack_subtree_live.py": "0f97b35cbdd5860ce997c536e9e10a47749433219bb3065e97fd9e6af75d675e",
+        "tests/live_x/stack_window_list_live.py": "07e10e3b428cb2f74f7674c628f3ec6a2c3b1a2c1e25b556790aee635e65077a",
+        "tests/live_x/status_stream_live.py": "32433e1bfb9c9dfac640fb5a3606882c5b4e31dfcaa3019c87ccf66f0bd80011",
+        "tests/live_x/style_command_owner_live.py": "06ac8763e8c58a3b2f2ebc36a53a98a50355b8a4f432e5be552e5a465adde97b",
+        "tests/live_x/style_index_maintenance_live.py": "a736e0754b6502b17764852950a1fd6e5bef0cee870c5fb782afcf8d2ae1b159",
+        "tests/live_x/style_index_retention_live.py": "1cc5ef8223b7c9f575145d54b24610f772f3a06284cce5be9831f60db80e9dfa",
+        "tests/live_x/style_profile_live.py": "d496b24e64c67c896c08112190db2dc23363a08bd2f3634f55faa361c3acaa9a",
+        "tests/live_x/style_update_work_live.py": "bcd7c0baed3cb88697439f47b7057d85050c1de081298cae139baedcb2922599",
+        "tests/live_x/style_wildcard_live.py": "ac295cd356e68b92944ab3774e1c8b7ad87d4afc8ffe571af43722d3b746305a",
+        "tests/live_x/viewport_live.py": "8081891f8ba6774490e7b440b447ac77e5fd09c63eb344bb779b63cfde580905",
+        "tests/live_x/window_tree_live.py": "04a1fc53e90a3a8577fe848ed984cb55fccb088fe202052f4934c6e60a0e6492",
+        "tests/live_x/window_update_live.py": "9cc33c1902da278f971fa1eb95505efbe3c00a21c07a3913ac200d7617ceaadb",
+        "tests/live_x/workarea_live.py": "6f4af822cb8e5ced5fac311ce62639400370085a488797dbdaa2ce8103143b58",
+        "tests/live_x/x_error_handler_live.py": "ffec2baf8278ecc7e30012e471e7f221433b1ab5c30a048980962c5d9f14510f",
+        "tests/live_x/xdg_menu_live.py": "a0f79548ee32c280263f6431309943aa3041671cdd1c063beb6768a19b59b014",
+        "tests/live_x/xlock_menu_live.py": "176fb7daa08b37f44cf8b72626f133bcced564de993801edb0b52e6d7328f7d2",
+        "tests/live_x/xorg-dummy.conf": "af9d9ff9259ae0fd043489fe9f469077709a2034abbf53174440f6d705d849b9",
+        "tests/live_x/xrr_query_fault.c": "80d882d97655b118c528771df56f4562d66833e4a6a85425fe99f570f7214cf0"
+      },
+      "plain": true,
+      "repetitions": 3,
+      "interval_ms": 50,
+      "order": "desktop,minimal x3",
+      "Xvfb": {
+        "minimal": "1280x720x24",
+        "desktop": "1440x900x24"
+      },
+      "environment": "LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib; normal GCC cache; GODEBUG tracing absent"
+    },
+    "artifact_identity": {
+      "usr/local/bin/fvwm3": {
+        "sha256": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "bytes": 5387608
+      },
+      "usr/local/bin/FvwmPrompt": {
+        "sha256": "7fd3dfe7aaa175b701f20272de195299ed8ef7da2b69b08b75688fcf86ee9ae7",
+        "bytes": 5066806
+      },
+      "usr/local/bin/FvwmCommand": {
+        "sha256": "6e3b1e047fe5db826e3d45e1652bcd200e1c9e12a54959a5ee56708df02db4e5",
+        "bytes": 4690217
+      },
+      "usr/local/bin/fvwm-menu-xlock": {
+        "sha256": "b8797eef32946786345ee0ba3905138546667eb026f6ebba79d0e40b5201a35f",
+        "bytes": 3395358
+      },
+      "usr/local/bin/fvwm-menu-directory": {
+        "sha256": "670e7321d0a8c64b67694b6a2ceefe5968fb1ab042addda65e3e6c33e7143811",
+        "bytes": 3107769
+      },
+      "usr/local/bin/fvwm-menu-desktop": {
+        "sha256": "98a948289db6f9950bc21ba40eb40332f506c9bedaea42d2b5426f815b5d556e",
+        "bytes": 5435490
+      },
+      "usr/local/bin/fvwm-file-browser": {
+        "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+        "bytes": 5623589
+      },
+      "usr/local/bin/fvwm-root": {
+        "sha256": "054475318dda7e65386bf77d4a6e2313d2b10af287bd3c1443c00e7623031657",
+        "bytes": 1007840
+      },
+      "usr/local/bin/fvwm-perllib": {
+        "sha256": "b0ecd4f57a5498ee90d4472c2d105c35ff72545a75f8eefc0a2dbd51f119b101",
+        "bytes": 15953
+      },
+      "usr/local/share/fvwm3/fvwm-script-ComExample": {
+        "sha256": "8440faa4575c01aaa888c017252707dbe262a2dc01dc1a78d3f15e3c31fe90bc",
+        "bytes": 2758878
+      },
+      "usr/local/share/fvwm3/ConfigFvwmDefaults": {
+        "sha256": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+        "bytes": 6141
+      },
+      "usr/local/share/fvwm3/ConfigFvwmBacker": {
+        "sha256": "b8c8bc8a07f1f5b32ccfbe7290f1339fca21bfd091623f13c4c6239dc3a0412d",
+        "bytes": 281
+      },
+      "usr/local/share/fvwm3/ConfigFvwmButtons": {
+        "sha256": "24e20a6cb135d5e8005bab8f9ad8e1987789a4c2de043f112b40bf107d5491d1",
+        "bytes": 1873
+      },
+      "usr/local/share/fvwm3/FvwmForm-Form": {
+        "sha256": "2c81986161f22a21cc24e2011a948a7e4b28fbab98a6e252ad34727da679124a",
+        "bytes": 4524
+      },
+      "usr/local/share/fvwm3/FvwmForm-Capture": {
+        "sha256": "767c2626009d57160ab51386c4a9c5631106a5dcf6aa09bea18f2356c7aa5166",
+        "bytes": 1547
+      },
+      "usr/local/share/fvwm3/FvwmForm-Desktop": {
+        "sha256": "a12909ba5c27088da021ab50cdb4f60697ff04bfa5bc8618be245de23a5a9d94",
+        "bytes": 2526
+      },
+      "usr/local/share/fvwm3/FvwmForm-QuitVerify": {
+        "sha256": "705a26cc9bc3b294e08f34d5326cbb67aa1a39a5b3381c1634800dacde565c8c",
+        "bytes": 663
+      },
+      "usr/local/share/fvwm3/FvwmForm-Rlogin": {
+        "sha256": "b3f9cf7760d25e3a41ae4a13414855b06f08ee79854b52f2707cb6bba8b47aa5",
+        "bytes": 1753
+      },
+      "usr/local/share/fvwm3/FvwmForm-RootCursor": {
+        "sha256": "c6b85c8b5c911204756733c7e68cc6f14bff1eab07d3a70039c2072ddc824ccc",
+        "bytes": 10179
+      },
+      "usr/local/share/fvwm3/FvwmForm-Talk": {
+        "sha256": "e108ece6858d191194eec9121b985d5343f5ed090cfdffb4c4052d7814c3f4a4",
+        "bytes": 887
+      },
+      "usr/local/share/fvwm3/FvwmForm-TalkHelp": {
+        "sha256": "de81a375705de240b0f7ec2665f483aa2f23cdb382132fb5beafaa4c5dd255cc",
+        "bytes": 1139
+      },
+      "usr/local/share/fvwm3/FvwmForm-XDGOptionsHelp": {
+        "sha256": "688d37e84210009d90e9982f375a519a8ba39f8ea4c48cb420c7e97e9ac2a8ea",
+        "bytes": 8767
+      },
+      "usr/local/share/fvwm3/FvwmForm-XDGMenuHelp": {
+        "sha256": "7c4ec35c5751fc46ddc66308cf9e8724057612563bcdcbf18d4ddf81b7ec6231",
+        "bytes": 4178
+      },
+      "usr/local/share/fvwm3/ConfigFvwmIconMan": {
+        "sha256": "c514a86b4c0156a2c3a5694323f677b428f3827fe0f64de92c9278f73281563d",
+        "bytes": 1056
+      },
+      "usr/local/share/fvwm3/ConfigFvwmIdent": {
+        "sha256": "af59f8df02a4d150e5aa65deb279c58ee4f30d026c94f5c1daf246669cd3232f",
+        "bytes": 259
+      },
+      "usr/local/share/fvwm3/ConfigFvwmPager": {
+        "sha256": "450b0cd942d007040b805e48e32b3857fbaafd38a8d4749b2f07df0156b7ebcb",
+        "bytes": 772
+      },
+      "usr/local/share/fvwm3/FvwmScript-BaseConfig": {
+        "sha256": "23073db6f4dc8002bde69cb742bc72d817a5e8ec9cf6637b0552e56f5662585d",
+        "bytes": 26722
+      },
+      "usr/local/share/fvwm3/FvwmScript-BellSetup": {
+        "sha256": "2215f3fad7670667560434a77d719994290f61288ba34a0d9046990badcbe622",
+        "bytes": 3267
+      },
+      "usr/local/share/fvwm3/FvwmScript-Buttons": {
+        "sha256": "ded19e25c9298a1e828b30a16d3b15adec93e1214b043cd1fe574b0ecffc2ee0",
+        "bytes": 4911
+      },
+      "usr/local/share/fvwm3/FvwmScript-Colorset": {
+        "sha256": "bfea6fd7226a9ae235f6d044ec30c6fc9fdd2c4327e695081ecb48c31e3fd244",
+        "bytes": 6178
+      },
+      "usr/local/share/fvwm3/FvwmScript-Date": {
+        "sha256": "8b54f5c1684366334e01c8f87a975889f33c6a3a53f280cf9dd8e2fe400c24ab",
+        "bytes": 6198
+      },
+      "usr/local/share/fvwm3/FvwmScript-FileBrowser": {
+        "sha256": "2b3d10b39788898045d1643d5f19e4cb9debdb650680668eedd7975568c8cb3a",
+        "bytes": 4269
+      },
+      "usr/local/share/fvwm3/FvwmScript-Find": {
+        "sha256": "ebd4561320eb968be985ec89ff40310fa44bd7e0d15ebfe35da93e1971a29a25",
+        "bytes": 3163
+      },
+      "usr/local/share/fvwm3/FvwmScript-KeyboardSetup": {
+        "sha256": "720a0ac1b869310726bace64a9e8abdf27efeaceba271276986a76622f7d2752",
+        "bytes": 3233
+      },
+      "usr/local/share/fvwm3/FvwmScript-PointerSetup": {
+        "sha256": "c3810b0403161826305a40ebc783ab52ea4cd6ab03757cbf7d266ad1882a8c6a",
+        "bytes": 3258
+      },
+      "usr/local/share/fvwm3/FvwmScript-Quit": {
+        "sha256": "1b88439660c77bfbaafd25ec98af11737626449384250a39d99f94b83b4ef1bc",
+        "bytes": 3097
+      },
+      "usr/local/share/fvwm3/FvwmScript-ScreenDump": {
+        "sha256": "08ce1bf2927c8fe645b22308db273da97306918cc6a7797c0eebda18def6831d",
+        "bytes": 4054
+      },
+      "usr/local/share/fvwm3/FvwmScript-ScreenSetup": {
+        "sha256": "e11df9b6d1ea8ae1339007f0e3225ac504a7c9512f967b44a2bfc6986af5a351",
+        "bytes": 12633
+      },
+      "usr/local/share/fvwm3/FvwmScript-WidgetDemo": {
+        "sha256": "7b67ad8f2d029ad883c525a7e03545ff16849e7baecb17393d1505a59cfcc410",
+        "bytes": 3908
+      },
+      "usr/local/share/fvwm3/FvwmScript-ComExample": {
+        "sha256": "7d10b58db134058c7c8a87f331e7dfcc1fcbe53fa847600049a4d74d9e661571",
+        "bytes": 3392
+      },
+      "usr/local/share/fvwm3/fvwm-menu-desktop-config.fpl": {
+        "sha256": "663bb6cdf80b88557de738d193d094aeaf303c0b1697043ef87bbde81fba6f71",
+        "bytes": 481
+      },
+      "usr/local/share/applications/fvwm-file-browser.desktop": {
+        "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c",
+        "bytes": 335
+      },
+      "usr/local/share/xsessions/fvwm3.desktop": {
+        "sha256": "5f70cfbdd362570dbd2585dbd46e1183ac38aa03ff322f432ae70478c9aa89ba",
+        "bytes": 213
+      },
+      "usr/local/share/locale/ar/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "3ce214bf10685640d0f97df99db042934203caf3ed0855c441a267af2175479c",
+        "bytes": 656
+      },
+      "usr/local/share/locale/da/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "04bc0c6bd297a402747b2af24af3df0d6bf1261249dd14c8a2abc5597a77e6da",
+        "bytes": 6321
+      },
+      "usr/local/share/locale/de/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "7be21d6e02d704a018e12eb34b02a156ea625e97f8928b4d2f89d910c1936c8f",
+        "bytes": 6410
+      },
+      "usr/local/share/locale/es/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "0486ea5f14a13b109a61fb63a25493eb223e3810ee66e5f8ee6f3274ec04e91e",
+        "bytes": 3937
+      },
+      "usr/local/share/locale/fr/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "9189a2c0aadfb1c9b56452b830fdcbdab9190f4dabab0ab7ca1d8b20d355af6d",
+        "bytes": 6749
+      },
+      "usr/local/share/locale/ka/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "424fcdcee1f9af8dd0a7d0833198d4e0115a69f354e680c3eb77d82d75cb1adf",
+        "bytes": 22722
+      },
+      "usr/local/share/locale/ru/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "fafa996bb868cf7d634f9bd29c491bae72d590ffb34d753e0bc1fcd16c954030",
+        "bytes": 3258
+      },
+      "usr/local/share/locale/sv_SE/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "3a6e6cdc6c8ec4410f80e937866289547fc10d7838acce32344422d51515584f",
+        "bytes": 2899
+      },
+      "usr/local/share/locale/uk/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "aac1803c92bd064be5088607990b7ac1e0daf90e1678fb2d2b83a0583702ddf8",
+        "bytes": 17216
+      },
+      "usr/local/share/locale/zh_CN/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "5ff4ef36a6ee1c75573ebaa1ee849b039e31a51257839225756a00df7310d7ca",
+        "bytes": 2720
+      },
+      "usr/local/share/locale/zh_TW/LC_MESSAGES/fvwm3.mo": {
+        "sha256": "09980ba87ca28b05c7c8d0ff5efbd0c598028bb49df1c79fd258c093cfab1d87",
+        "bytes": 13343
+      },
+      "usr/local/share/fvwm3/default-config/config": {
+        "sha256": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "bytes": 1849
+      },
+      "usr/local/share/fvwm3/default-config/desktop.fvwm": {
+        "sha256": "c2e900833ab94ad92dd6484be0655ddb8077178a10b4222904bd0430a1f39be2",
+        "bytes": 9044
+      },
+      "usr/local/share/fvwm3/default-config/palettes.json": {
+        "sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96",
+        "bytes": 1504
+      },
+      "usr/local/share/fvwm3/default-config/fvwm-x.png": {
+        "sha256": "3046077cb00db0a262ce3e3afd13559c4075bb52164dad7a296fb4288568a322",
+        "bytes": 277
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/slate-light.png": {
+        "sha256": "7760289ba08357ecfef329ca6fd5ebec56c2bcc826361be1af644bbdbfd8e9bf",
+        "bytes": 16879
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/slate-dark.png": {
+        "sha256": "662a472394348a9a0c717035e770109a784991d7149a03146a7e76aa2a59ff87",
+        "bytes": 16880
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/dune-light.png": {
+        "sha256": "3bdc776292b00122746304285ac11356866675dcccd787029aea6e30adb9163a",
+        "bytes": 16847
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/dune-dark.png": {
+        "sha256": "731d2ff23975ec4f2eedb5d4c39b9549703782f1cd419f2ea238e0191eacbda1",
+        "bytes": 16845
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/grove-light.png": {
+        "sha256": "b6971b15450a89c8ab4148784a039fd7471b9e2f73b37c7c1e5bfcd16470c4b2",
+        "bytes": 16881
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/grove-dark.png": {
+        "sha256": "d9ca2fa1c1589c4243a25b7f324f2f8e22e3dc0f91b551dc81c12dc04d11fa1b",
+        "bytes": 16880
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/ink-light.png": {
+        "sha256": "ea82f72c1782e3f3ce36cc5f2f0a10e573a0ca00078c30d5163be0c17d8cea66",
+        "bytes": 16882
+      },
+      "usr/local/share/fvwm3/default-config/wallpapers/ink-dark.png": {
+        "sha256": "9b0820261bf4a04beeb35cf3aeee7688772db19da283d39c3d63b92411115f4b",
+        "bytes": 16883
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Module.pm": {
+        "sha256": "13781efbd0d24a38f5cb2b082c7588da218925d5bc6d2f959b57d56a42e7dd00",
+        "bytes": 35793
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Constants.pm": {
+        "sha256": "31f01afecebaf07db2bcaabb0694ee38602be100a4376d1fae4b94ff5c54667a",
+        "bytes": 4677
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Event.pm": {
+        "sha256": "972112e51a206aa8012e12d4f20aca7a0093af026eeb862c1eaef2ef7b74f090",
+        "bytes": 8101
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/EventNames.pm": {
+        "sha256": "a3a5f887952b7d21d4191f2ca1257715ce5e5682daeabb62a7b598d18486b1c7",
+        "bytes": 19212
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Tracker.pm": {
+        "sha256": "af975b89d3f52e471c972f31a5c424092a3be2f9a3af7956563990636c6c73b1",
+        "bytes": 11587
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Commands.pm": {
+        "sha256": "253ad838bccf7ff68bdb15005dc0d68164b2d0e4dbaaa4e7c3f13a9ff96fbbaa",
+        "bytes": 20748
+      },
+      "usr/local/share/fvwm3/perllib/General/FileSystem.pm": {
+        "sha256": "ddce93c5fb8cd9183ecf869cd4b6f5eeddaf588286fc3e7cf90d9ecb6b1c4d1d",
+        "bytes": 24370
+      },
+      "usr/local/share/fvwm3/perllib/General/Parse.pm": {
+        "sha256": "bd8654c8929cdb269ccd99cfc4fcfda2f561c336bc26d0cf3c8e9c847d8ae7f1",
+        "bytes": 5299
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Module/Terminal.pm": {
+        "sha256": "3b9f869ada6154b44cd7cd527aa7f376ce0774f4093ddedc5526264975b788e9",
+        "bytes": 5876
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Module/Toolkit.pm": {
+        "sha256": "8c766650d9f67dc8b282aa0af9f1027cadf7fd31e0fd3a59dafe7c1574fa738f",
+        "bytes": 7843
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Tracker/Colorsets.pm": {
+        "sha256": "e4f751c393a4db52eee4da79d08aec35ced7e7a68f79d42324e335cad9b1d05a",
+        "bytes": 4859
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Tracker/GlobalConfig.pm": {
+        "sha256": "fbed356dc39eead66fdf32672ed7f43baeb6f49fdd72cee84ee555719b3673cd",
+        "bytes": 3018
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Tracker/ModuleConfig.pm": {
+        "sha256": "33c3f2a8923b9a85c1edd6657f2a3d0f99fc4baaa7e13fb3c00b9973f3b6abd9",
+        "bytes": 5341
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Tracker/PageInfo.pm": {
+        "sha256": "1d5af52fdd3887e5121654d105d5d54be5080c322e8359fdc1f85582728a4384",
+        "bytes": 3563
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Tracker/Scheduler.pm": {
+        "sha256": "b54bf8a89faeea2109f6b8c71f1fe4fa3f7d21c000d15aa63b0003adde0d4e9c",
+        "bytes": 7192
+      },
+      "usr/local/share/fvwm3/perllib/FVWM/Tracker/WindowList.pm": {
+        "sha256": "241dd4b1515fbb4c08ffc5738f1080d5dfce920ebe3c66896055aa520a98fc5f",
+        "bytes": 9989
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+        "sha256": "1c317f948ced86616f265398fff823dbe7dc1cb432dca0bc184b6f896875955b",
+        "bytes": 894560
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+        "sha256": "e75b8559a0ed06ade2c40b223b7d99973341f1e328e6984a1e4f1e30a04b689c",
+        "bytes": 167168
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+        "sha256": "34174d4319a7ba4f8293c2f5dfb1f87068465e99b70bb5a4cfa7be2a416f3ec7",
+        "bytes": 1044344
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+        "sha256": "99179338b12c610784747e4d36ca0324019efdc8336c806966884ac898988e82",
+        "bytes": 1724208
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+        "sha256": "ac963b11b2fe7d253ec24f71037314078571398ac85c991409cc80be73a0933b",
+        "bytes": 170400
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+        "sha256": "8ed7a863b71692dd5f6ce1418a40c768d76e7456f805abd0a19809eeede2bc93",
+        "bytes": 1619032
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+        "sha256": "4363ea49c729f6b187b66bc22a005da9e3ce6a46fc95ed430f0f940251aae076",
+        "bytes": 1773312
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+        "sha256": "5e80633e4fbe89b926f14caa6324a5c9cfb36ed6af7813d3c4e47e902dd8a438",
+        "bytes": 1413400
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+        "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "bytes": 444120
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+        "sha256": "d9000a8220bb5ff2689389452d8ae632795a252fceece7e52dbeab054c9a1c9b",
+        "bytes": 1637768
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+        "sha256": "7818e0ebd95630b339c16ea239d1aece8d1a76f6097afe080c948ddb978b8b52",
+        "bytes": 471056
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+        "sha256": "232560411702d9db55e29a44726c95bbfe2d42855aa51224c0c25a19c04d06fd",
+        "bytes": 2211368
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+        "sha256": "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487",
+        "bytes": 5289833
+      },
+      "usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+        "sha256": "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb",
+        "bytes": 4947539
+      },
+      "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+        "sha256": "e30cb8016ae8c67dafec1648feb93cb3c8a50eec5a2fe4a9bd8e069af131848d",
+        "bytes": 143112
+      },
+      "usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+        "sha256": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+        "bytes": 98608
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmTalk": {
+        "sha256": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+        "bytes": 154
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmPerl": {
+        "sha256": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+        "bytes": 27741
+      }
+    }
+  },
+  "context_digest_canonicalization": "For platform/compiler/instrumentation/artifact_identity: SHA256 UTF-8 json.dumps(object,sort_keys=True,separators=(comma,colon),ensure_ascii=True); config hashes exact file bytes. Python separators are (\",\",\":\").",
+  "normalized_receipts": {
+    "DESKTOP": {
+      "path": "dev-docs/verification/R1-BASELINE-2026-10-26-DESKTOP.json",
+      "sha256": "49b6f3b5d1f1572cfaa5cc2cc758e8fbffffdd4c55a9d75306bc03cc48f1aa6d"
+    },
+    "MINIMAL": {
+      "path": "dev-docs/verification/R1-BASELINE-2026-10-26-MINIMAL.json",
+      "sha256": "2c80b2d8dff6056a75e6357fdc772ea273eccde17b19c0116dc001399dcc007c"
+    }
+  },
+  "reports": {
+    "DESKTOP": {
+      "schema_version": 1,
+      "policy": "Proposed empirical reference policy: max + max(range, quantum); no statistical confidence and no automatic acceptance.",
+      "candidate": {
+        "context": {
+          "profile": "development/desktop-feature-build",
+          "workload": "desktop-session-v1",
+          "workload_version": "r1-reference-2026-10-26.1",
+          "config": "sha256:f67936222d88be43201a8ddeb7979dfc58d8fd8e22bbfd02dd288f64b31be611",
+          "source_scope": "accepted production core/modules/Go runtime; developer tooling excluded",
+          "artifact_scope": "identity-bound measurement prefix; normal debugoptimized binaries",
+          "platform": "sha256:9012aed803499a279093208270b1ed19685c05d8a96a2931147dfc7e41153482",
+          "compiler": "sha256:5d73c35c06d7bb696877012842ceaaec6c197b8cdb643de048ed3c0324d11dc3",
+          "instrumentation": "sha256:5cbb649ecbeba6dcd3c3305e521dc024f18e15f4e088b3244c9d4158c65177c6",
+          "effective_features": {
+            "bidi": "enabled",
+            "freetype": "enabled",
+            "iconv": "enabled",
+            "nls": "enabled",
+            "png": "enabled",
+            "sm": "enabled",
+            "svg": "enabled",
+            "xcursor": "enabled",
+            "xfixes": "enabled",
+            "xpm": "enabled",
+            "xrender": "enabled"
+          }
+        },
+        "source_revision": "1748e2f41199d996c97f47f84e047249fdec3394",
+        "artifact_identity": "sha256:e426bb0b24cdb559691f58c1030286df8658a54652a8cf43f2321456007eb756",
+        "run_ids": [
+          "desktop-1",
+          "desktop-2",
+          "desktop-3"
+        ],
+        "metrics": {
+          "startup_ready_ms": {
+            "unit": "ms",
+            "scope": "launch to settings-reply/bar-title readiness; not paint",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 118.26739599996472,
+            "proposed_envelope": 128.2051370001227
+          },
+          "synthetic_key_echo_median_ms": {
+            "unit": "ms",
+            "scope": "median of 12 final XTEST key/core Echo samples per run",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.3677720000041518,
+            "proposed_envelope": 0.4181889999017585
+          },
+          "synthetic_key_echo_max_ms": {
+            "unit": "ms",
+            "scope": "maximum of 12 final XTEST key/core Echo samples per run",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.8798359999673266,
+            "proposed_envelope": 1.2951709999242667
+          },
+          "idle_sampled_rss_peak_kib": {
+            "unit": "KiB",
+            "scope": "sum across observed core descendant tree at 50 ms samples",
+            "coverage": "partial",
+            "quantum": 4,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 29464,
+            "proposed_envelope": null
+          },
+          "idle_sampled_pss_peak_kib": {
+            "unit": "KiB",
+            "scope": "sum across observed core descendant tree at 50 ms samples",
+            "coverage": "partial",
+            "quantum": 1,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 16626,
+            "proposed_envelope": null
+          },
+          "idle_observed_cpu_ms": {
+            "unit": "ms",
+            "scope": "observed core descendant tree over requested 12-second idle phase",
+            "coverage": "partial",
+            "quantum": 10,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 30.0,
+            "proposed_envelope": null
+          },
+          "true_idle_wakeups": {
+            "unit": "events",
+            "scope": "scheduler wakeups of selected session tasks",
+            "coverage": "unavailable",
+            "quantum": 0,
+            "available_runs": 0,
+            "total_runs": 3,
+            "observed_max": null,
+            "proposed_envelope": null
+          },
+          "kernel_charged_peak_bytes": {
+            "unit": "bytes",
+            "scope": "fresh cgroup charged-memory peak, not RSS/PSS",
+            "coverage": "unavailable",
+            "quantum": 0,
+            "available_runs": 0,
+            "total_runs": 3,
+            "observed_max": null,
+            "proposed_envelope": null
+          }
+        }
+      }
+    },
+    "MINIMAL": {
+      "schema_version": 1,
+      "policy": "Proposed empirical reference policy: max + max(range, quantum); no statistical confidence and no automatic acceptance.",
+      "candidate": {
+        "context": {
+          "profile": "development/desktop-feature-build",
+          "workload": "minimal-instrumented-v1",
+          "workload_version": "r1-reference-2026-10-26.1",
+          "config": "sha256:f67936222d88be43201a8ddeb7979dfc58d8fd8e22bbfd02dd288f64b31be611",
+          "source_scope": "accepted production core/modules/Go runtime; developer tooling excluded",
+          "artifact_scope": "identity-bound measurement prefix; normal debugoptimized binaries",
+          "platform": "sha256:9012aed803499a279093208270b1ed19685c05d8a96a2931147dfc7e41153482",
+          "compiler": "sha256:5d73c35c06d7bb696877012842ceaaec6c197b8cdb643de048ed3c0324d11dc3",
+          "instrumentation": "sha256:5cbb649ecbeba6dcd3c3305e521dc024f18e15f4e088b3244c9d4158c65177c6",
+          "effective_features": {
+            "bidi": "enabled",
+            "freetype": "enabled",
+            "iconv": "enabled",
+            "nls": "enabled",
+            "png": "enabled",
+            "sm": "enabled",
+            "svg": "enabled",
+            "xcursor": "enabled",
+            "xfixes": "enabled",
+            "xpm": "enabled",
+            "xrender": "enabled"
+          }
+        },
+        "source_revision": "1748e2f41199d996c97f47f84e047249fdec3394",
+        "artifact_identity": "sha256:e426bb0b24cdb559691f58c1030286df8658a54652a8cf43f2321456007eb756",
+        "run_ids": [
+          "minimal-instrumented-1",
+          "minimal-instrumented-2",
+          "minimal-instrumented-3"
+        ],
+        "metrics": {
+          "idle_command_median_ms": {
+            "unit": "ms",
+            "scope": "core command/Echo median; 128 samples; idle",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.3667305,
+            "proposed_envelope": 0.43641800000000003
+          },
+          "idle_command_p95_ms": {
+            "unit": "ms",
+            "scope": "core command/Echo p95; 128 samples; idle",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.459377,
+            "proposed_envelope": 0.46904399999999996
+          },
+          "idle_scheduled_10ms_median_ms": {
+            "unit": "ms",
+            "scope": "scheduled command/Echo median including requested 10 ms delay; idle",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 14.534882,
+            "proposed_envelope": 14.831341499999999
+          },
+          "idle_core_cpu_seconds": {
+            "unit": "seconds",
+            "scope": "core CPU ticks during fixed case, excluding transport/client/server/observer; idle",
+            "coverage": "complete",
+            "quantum": 0.01,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.04,
+            "proposed_envelope": 0.05
+          },
+          "idle_core_hwm_kib": {
+            "unit": "KiB",
+            "scope": "core process lifetime VmHWM through case completion; idle",
+            "coverage": "complete",
+            "quantum": 4,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 7236,
+            "proposed_envelope": 7256
+          },
+          "title_command_median_ms": {
+            "unit": "ms",
+            "scope": "core command/Echo median; 128 samples; title",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.3621675,
+            "proposed_envelope": 0.4080214999999999
+          },
+          "title_command_p95_ms": {
+            "unit": "ms",
+            "scope": "core command/Echo p95; 128 samples; title",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.741294,
+            "proposed_envelope": 1.018128
+          },
+          "title_scheduled_10ms_median_ms": {
+            "unit": "ms",
+            "scope": "scheduled command/Echo median including requested 10 ms delay; title",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 12.3358955,
+            "proposed_envelope": 12.429728999999998
+          },
+          "title_core_cpu_seconds": {
+            "unit": "seconds",
+            "scope": "core CPU ticks during fixed case, excluding transport/client/server/observer; title",
+            "coverage": "complete",
+            "quantum": 0.01,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.14000000000000004,
+            "proposed_envelope": 0.1700000000000001
+          },
+          "title_core_hwm_kib": {
+            "unit": "KiB",
+            "scope": "core process lifetime VmHWM through case completion; title",
+            "coverage": "complete",
+            "quantum": 4,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 7236,
+            "proposed_envelope": 7256
+          },
+          "resize_command_median_ms": {
+            "unit": "ms",
+            "scope": "core command/Echo median; 128 samples; resize",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.274314,
+            "proposed_envelope": 0.2843565
+          },
+          "resize_command_p95_ms": {
+            "unit": "ms",
+            "scope": "core command/Echo p95; 128 samples; resize",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.372585,
+            "proposed_envelope": 0.406377
+          },
+          "resize_scheduled_10ms_median_ms": {
+            "unit": "ms",
+            "scope": "scheduled command/Echo median including requested 10 ms delay; resize",
+            "coverage": "complete",
+            "quantum": 0,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 12.491771,
+            "proposed_envelope": 12.613084
+          },
+          "resize_core_cpu_seconds": {
+            "unit": "seconds",
+            "scope": "core CPU ticks during fixed case, excluding transport/client/server/observer; resize",
+            "coverage": "complete",
+            "quantum": 0.01,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 0.2,
+            "proposed_envelope": 0.21000000000000005
+          },
+          "resize_core_hwm_kib": {
+            "unit": "KiB",
+            "scope": "core process lifetime VmHWM through case completion; resize",
+            "coverage": "complete",
+            "quantum": 4,
+            "available_runs": 3,
+            "total_runs": 3,
+            "observed_max": 7236,
+            "proposed_envelope": 7256
+          }
+        }
+      }
+    }
+  },
+  "provenance": [
+    {
+      "run": "desktop-1",
+      "archive_member": "desktop-1/evidence.json",
+      "sha256": "ee662981dd52ba162f9d4ba76f467728a7e822b516fb49711cb6fe6a3dc874bf",
+      "idle_sample_count": 206,
+      "idle_partial_samples": 0,
+      "idle_partial_intervals": 0,
+      "max_sample_gap_seconds": 0.0653740940000489,
+      "metric_mapping": {
+        "startup_ready_ms": "startup_ready_ms",
+        "synthetic_key_echo_median_ms": "median(xtest_key_to_core_echo_ms)",
+        "synthetic_key_echo_max_ms": "max(xtest_key_to_core_echo_ms)",
+        "idle_sampled_rss_peak_kib": "observation.phases.idle.sampled_rss_peak_kib",
+        "idle_sampled_pss_peak_kib": "observation.phases.idle.sampled_pss_peak_kib",
+        "idle_observed_cpu_ms": "observation.phases.idle.cpu_ms"
+      }
+    },
+    {
+      "run": "desktop-2",
+      "archive_member": "desktop-2/evidence.json",
+      "sha256": "c59c1b32e04e9519b52469ecb5e337ba517b8a53746c3e62b9d61b567e2de2c3",
+      "idle_sample_count": 208,
+      "idle_partial_samples": 208,
+      "idle_partial_intervals": 207,
+      "max_sample_gap_seconds": 0.06498242600014237,
+      "metric_mapping": {
+        "startup_ready_ms": "startup_ready_ms",
+        "synthetic_key_echo_median_ms": "median(xtest_key_to_core_echo_ms)",
+        "synthetic_key_echo_max_ms": "max(xtest_key_to_core_echo_ms)",
+        "idle_sampled_rss_peak_kib": "observation.phases.idle.sampled_rss_peak_kib",
+        "idle_sampled_pss_peak_kib": "observation.phases.idle.sampled_pss_peak_kib",
+        "idle_observed_cpu_ms": "observation.phases.idle.cpu_ms"
+      }
+    },
+    {
+      "run": "desktop-3",
+      "archive_member": "desktop-3/evidence.json",
+      "sha256": "202f0e6b1e7356a0eb418237603e40f3e5cc13e56e4e37489da3fada738e75f2",
+      "idle_sample_count": 207,
+      "idle_partial_samples": 207,
+      "idle_partial_intervals": 206,
+      "max_sample_gap_seconds": 0.0655355530000179,
+      "metric_mapping": {
+        "startup_ready_ms": "startup_ready_ms",
+        "synthetic_key_echo_median_ms": "median(xtest_key_to_core_echo_ms)",
+        "synthetic_key_echo_max_ms": "max(xtest_key_to_core_echo_ms)",
+        "idle_sampled_rss_peak_kib": "observation.phases.idle.sampled_rss_peak_kib",
+        "idle_sampled_pss_peak_kib": "observation.phases.idle.sampled_pss_peak_kib",
+        "idle_observed_cpu_ms": "observation.phases.idle.cpu_ms"
+      }
+    },
+    {
+      "run": "minimal-instrumented-1",
+      "archive_member": "minimal-instrumented-1/run-xt09aitg/profile.json",
+      "sha256": "406e50500ce1872e3d761c620b741ebb7c8d1680691cd5b37ca4195f75a394e5",
+      "metric_mapping": "cases[mode]: commands.median_ms/p95_ms; scheduled_10ms.median_ms; wm_cpu_percent*elapsed_seconds/100; wm_peak_rss_kib"
+    },
+    {
+      "run": "minimal-instrumented-2",
+      "archive_member": "minimal-instrumented-2/run-6fyaagro/profile.json",
+      "sha256": "54b49f064a51f65b33d57816abde517ccc98c459af045a6978ea6380ca03bf28",
+      "metric_mapping": "cases[mode]: commands.median_ms/p95_ms; scheduled_10ms.median_ms; wm_cpu_percent*elapsed_seconds/100; wm_peak_rss_kib"
+    },
+    {
+      "run": "minimal-instrumented-3",
+      "archive_member": "minimal-instrumented-3/run-g5meq98d/profile.json",
+      "sha256": "160f2013ce4336141335800c457e9c91e5f6fc255dcf2c52d2d47fedabd2e890",
+      "metric_mapping": "cases[mode]: commands.median_ms/p95_ms; scheduled_10ms.median_ms; wm_cpu_percent*elapsed_seconds/100; wm_peak_rss_kib"
+    }
+  ],
+  "minimal_case_context": [
+    {
+      "run": "minimal-instrumented-1",
+      "mode": "idle",
+      "elapsed_seconds": 1.8267057450000266,
+      "achieved_requests_per_second": null,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-1",
+      "mode": "title",
+      "elapsed_seconds": 1.609259517000055,
+      "achieved_requests_per_second": 9992.65288971735,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-1",
+      "mode": "resize",
+      "elapsed_seconds": 1.6185763810000253,
+      "achieved_requests_per_second": 9998.849936967514,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-2",
+      "mode": "idle",
+      "elapsed_seconds": 1.8220709790000456,
+      "achieved_requests_per_second": null,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-2",
+      "mode": "title",
+      "elapsed_seconds": 1.6155545380001968,
+      "achieved_requests_per_second": 9991.335979829577,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-2",
+      "mode": "resize",
+      "elapsed_seconds": 1.6195828419999998,
+      "achieved_requests_per_second": 9993.500815937188,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-3",
+      "mode": "idle",
+      "elapsed_seconds": 1.835932608999883,
+      "achieved_requests_per_second": null,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-3",
+      "mode": "title",
+      "elapsed_seconds": 1.6186422979999406,
+      "achieved_requests_per_second": 9990.807096079741,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    },
+    {
+      "run": "minimal-instrumented-3",
+      "mode": "resize",
+      "elapsed_seconds": 1.632712262000041,
+      "achieved_requests_per_second": 9995.056703996072,
+      "file_sha256": {
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py": "205d2c9d190c772290e5e6bc22b6a8c7dda7bd0c2cd544a04b2f92f1e0834c6e"
+      }
+    }
+  ],
+  "raw_archive": {
+    "sha256": "dcc88b0d1ca194ddfd91c9b0482b51bc693986043b3c30b55c146b06ad680ecf",
+    "bytes": 32542618,
+    "files": 157,
+    "verified_files": 157,
+    "canonical": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-foundation/native-reference.tgz",
+    "raw_without_prefix": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-foundation/raw"
+  },
+  "provider": {
+    "Name": "podman-machine-default",
+    "State": "running",
+    "VMType": null,
+    "ConfigDir": {
+      "Path": "/Users/cam/.config/containers/podman/machine/applehv"
+    },
+    "Resources": {
+      "CPUs": 9,
+      "DiskSize": 100,
+      "Memory": 2048,
+      "USBs": []
+    },
+    "host_machine": "arm64"
+  },
+  "native_scope": "aarch64 Linux binaries in ARM64 AppleHV Linux VM on ARM64 macOS; native instructions, not bare-metal/physical testing",
+  "source_inputs": {
+    "path": "runtime-inputs.json inside raw archive",
+    "sha256": "cf7647f5663cfa8e939ce6285547ce010d8719dbfe7047ace26ed739a4da2afe",
+    "checked_before_after": 1329,
+    "mismatches": [],
+    "base": "1748e2f41199d996c97f47f84e047249fdec3394",
+    "limits": "Hash-only identity checks include unchanged parked files; no semantic parked-work inspection or implementation."
+  },
+  "build": {
+    "options": {
+      "build.cmake_prefix_path": [],
+      "build.pkg_config_path": [
+        "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      ],
+      "auto_features": "auto",
+      "backend": "ninja",
+      "buildtype": "debugoptimized",
+      "cmake_prefix_path": [],
+      "debug": true,
+      "default_both_libraries": "shared",
+      "default_library": "shared",
+      "force_fallback_for": [],
+      "genvslite": "vs2022",
+      "install_umask": 18,
+      "layout": "mirror",
+      "optimization": "2",
+      "pkg_config_path": [
+        "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+      ],
+      "pkgconfig.relocatable": false,
+      "prefer_static": false,
+      "python.allow_limited_api": true,
+      "python.bytecompile": 0,
+      "python.install_env": "prefix",
+      "python.platlibdir": "",
+      "python.purelibdir": "",
+      "strip": false,
+      "unity": "off",
+      "unity_size": 4,
+      "vsenv": false,
+      "warning_level": "2",
+      "werror": false,
+      "wrap_mode": "default",
+      "b_asneeded": true,
+      "b_colorout": "always",
+      "b_coverage": false,
+      "b_lto": false,
+      "b_lto_threads": 0,
+      "b_lundef": true,
+      "b_ndebug": "false",
+      "b_pch": true,
+      "b_pgo": "off",
+      "b_pie": true,
+      "b_sanitize": "none",
+      "b_staticpic": true,
+      "bidi": "auto",
+      "colorset-limit": 4096,
+      "docdir": "",
+      "font-shadow-limit": 4096,
+      "freetype": "auto",
+      "htmldoc": false,
+      "iconv": "auto",
+      "image-decompress-timeout": 5,
+      "image-effect-memory-limit": 1024,
+      "image-effect-timeout": 5,
+      "image-gzip": "",
+      "image-input-limit": 128,
+      "image-svg-memory-limit": 1024,
+      "image-svg-timeout": 5,
+      "image-xpm-expanded-limit": 128,
+      "live-x-tests": true,
+      "mandoc": false,
+      "nls": "auto",
+      "pager-max-desks": 4096,
+      "png": "enabled",
+      "png-security-backport": false,
+      "python": "",
+      "sm": "auto",
+      "svg": "enabled",
+      "xcursor": "enabled",
+      "xfixes": "auto",
+      "xpm": "auto",
+      "xrender": "enabled"
+    },
+    "toolchain": {
+      "gcc --version": {
+        "status": 0,
+        "stdout": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+        "stderr": ""
+      },
+      "go version": {
+        "status": 0,
+        "stdout": "go version go1.27.2 linux/arm64\n",
+        "stderr": ""
+      },
+      "meson --version": {
+        "status": 0,
+        "stdout": "1.7.0\n",
+        "stderr": ""
+      },
+      "ninja --version": {
+        "status": 0,
+        "stdout": "1.11.1\n",
+        "stderr": ""
+      },
+      "uname -a": {
+        "status": 0,
+        "stdout": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux\n",
+        "stderr": ""
+      },
+      "intro-compilers.json": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      },
+      "intro-machines.json": {
+        "host": {
+          "system": "linux",
+          "cpu_family": "aarch64",
+          "cpu": "aarch64",
+          "endian": "little",
+          "kernel": "linux",
+          "subsystem": "linux",
+          "is_64_bit": true,
+          "exe_suffix": "",
+          "object_suffix": "o"
+        },
+        "build": {
+          "system": "linux",
+          "cpu_family": "aarch64",
+          "cpu": "aarch64",
+          "endian": "little",
+          "kernel": "linux",
+          "subsystem": "linux",
+          "is_64_bit": true,
+          "exe_suffix": "",
+          "object_suffix": "o"
+        },
+        "target": {
+          "system": "linux",
+          "cpu_family": "aarch64",
+          "cpu": "aarch64",
+          "endian": "little",
+          "kernel": "linux",
+          "subsystem": "linux",
+          "is_64_bit": true,
+          "exe_suffix": "",
+          "object_suffix": "o"
+        }
+      },
+      "effective_macros": [
+        "#define HAVE_BIDI 1",
+        "#define HAVE_CLOSEFROM 1",
+        "#define HAVE_CODESET 1",
+        "#define HAVE_DIV 1",
+        "#define HAVE_FCNTL_H 1",
+        "#define HAVE_FLOAT_H 1",
+        "#define HAVE_FONTCONFIG 1",
+        "#define HAVE_FREETYPE 1",
+        "#define HAVE_GETOPT_H 1",
+        "#define HAVE_GETPWUID 1",
+        "#define HAVE_GETTIMEOFDAY 1",
+        "#define HAVE_ICE 1",
+        "#define HAVE_ICONV 1",
+        "#define HAVE_INTTYPES_H 1",
+        "#define HAVE_LIBEVENT 1",
+        "#define HAVE_LIMITS_H 1",
+        "#define HAVE_LSTAT 1",
+        "#define HAVE_MALLOC_H 1",
+        "#define HAVE_MEMCPY 1",
+        "#define HAVE_MEMMOVE 1",
+        "#define HAVE_MEMORY_H 1",
+        "#define HAVE_MKFIFO 1",
+        "#define HAVE_NLS 1",
+        "#define HAVE_PNG 1",
+        "#define HAVE_PUTENV 1",
+        "#define HAVE_RSVG 1",
+        "#define HAVE_SAFETY_MKSTEMP 1",
+        "#define HAVE_SETPGID 1",
+        "#define HAVE_SETPGRP 1",
+        "#define HAVE_SETVBUF 1",
+        "#define HAVE_SOCKET 1",
+        "#define HAVE_STDARG_H 1",
+        "#define HAVE_STDINT_H 1",
+        "#define HAVE_STDLIB_H 1",
+        "#define HAVE_STRCHR 1",
+        "#define HAVE_STRDUP 1",
+        "#define HAVE_STRINGS_H 1",
+        "#define HAVE_STRING_H 1",
+        "#define HAVE_STRSTR 1",
+        "#define HAVE_STRTOL 1",
+        "#define HAVE_SYSCONF 1",
+        "#define HAVE_SYS_SELECT_H 1",
+        "#define HAVE_SYS_STAT_H 1",
+        "#define HAVE_SYS_TIME_H 1",
+        "#define HAVE_SYS_WAIT_H 1",
+        "#define HAVE_UNISTD_H 1",
+        "#define HAVE_WAIT3 1",
+        "#define HAVE_WAITPID 1",
+        "#define HAVE_X11 1",
+        "#define HAVE_X11_FD 1",
+        "#define HAVE_X11_XKBLIB_H 1",
+        "#define HAVE_XCURSOR 1",
+        "#define HAVE_XFIXES 1",
+        "#define HAVE_XFT 1",
+        "#define HAVE_XOUTPUT_METHOD 1",
+        "#define HAVE_XRANDR 1",
+        "#define HAVE_XRENDER 1",
+        "#define HAVE_XSHM 1",
+        "#define HAVE_XT 1",
+        "#define HAVE_XTRANS 1",
+        "#define DO_USE_LSTAT 1",
+        "#define DO_USE_LSTAT 0"
+      ]
+    },
+    "native_identity_sha256": "04a48ea06bf907322f4a042b4fff55e153c05d656e70bc7bf23879bf90bea4c3",
+    "installed_artifact_map_digest": "sha256:e426bb0b24cdb559691f58c1030286df8658a54652a8cf43f2321456007eb756",
+    "effective_features": {
+      "bidi": "enabled",
+      "freetype": "enabled",
+      "iconv": "enabled",
+      "nls": "enabled",
+      "png": "enabled",
+      "sm": "enabled",
+      "svg": "enabled",
+      "xcursor": "enabled",
+      "xfixes": "enabled",
+      "xpm": "enabled",
+      "xrender": "enabled"
+    },
+    "effective_feature_evidence": "intro-dependencies found feature libraries plus config.h HAVE_BIDI/FREETYPE/ICONV/NLS/PNG/RSVG/XCURSOR/XFIXES/XRENDER; Meson maps found sm/xpm to SESSION/XPM. Full generated config hash bound by native identity.",
+    "rebuilt_targets": [
+      "fvwm3",
+      "modules/FvwmMFL/FvwmMFL",
+      "modules/FvwmScript/FvwmScript",
+      "modules/FvwmButtons/FvwmButtons",
+      "modules/FvwmPager/FvwmPager",
+      "modules/FvwmIconMan/FvwmIconMan",
+      "modules/FvwmEvent/FvwmEvent",
+      "bin/FvwmPrompt/FvwmDesktop",
+      "bin/FvwmPrompt/fvwm-desktop-worker",
+      "bin/FvwmPrompt/fvwm-file-browser",
+      "bin/FvwmPrompt/fvwm-menu-desktop",
+      "bin/FvwmPrompt/fvwm-menu-directory"
+    ],
+    "actually_rebuilt": "Only FvwmMFL relink; other selected workload targets current. Fresh no-rebuild measurement prefix copies unselected cached outputs; not full fresh-install qualification."
+  },
+  "costs": {
+    "population": "common complete measurement install payload, not minimal runtime or stripped release",
+    "regular_files": 100,
+    "regular_file_bytes": 61114438,
+    "symlinks_and_directory_metadata_excluded": true,
+    "elf": {
+      "usr/local/bin/fvwm3": {
+        "sha256": "57031a77f8be3048aa44f3524b6b1bfc6df243ab39931438d8d7e01ac886673f",
+        "file_bytes": 5387608,
+        "text_bytes": 1090473,
+        "data_bytes": 27340,
+        "bss_bytes": 39824
+      },
+      "usr/local/bin/FvwmPrompt": {
+        "sha256": "7fd3dfe7aaa175b701f20272de195299ed8ef7da2b69b08b75688fcf86ee9ae7",
+        "file_bytes": 5066806,
+        "text_bytes": 3177665,
+        "data_bytes": 95444,
+        "bss_bytes": 249272
+      },
+      "usr/local/bin/FvwmCommand": {
+        "sha256": "6e3b1e047fe5db826e3d45e1652bcd200e1c9e12a54959a5ee56708df02db4e5",
+        "file_bytes": 4690217,
+        "text_bytes": 2982855,
+        "data_bytes": 75092,
+        "bss_bytes": 248536
+      },
+      "usr/local/bin/fvwm-menu-xlock": {
+        "sha256": "b8797eef32946786345ee0ba3905138546667eb026f6ebba79d0e40b5201a35f",
+        "file_bytes": 3395358,
+        "text_bytes": 2075325,
+        "data_bytes": 120116,
+        "bss_bytes": 247592
+      },
+      "usr/local/bin/fvwm-menu-directory": {
+        "sha256": "670e7321d0a8c64b67694b6a2ceefe5968fb1ab042addda65e3e6c33e7143811",
+        "file_bytes": 3107769,
+        "text_bytes": 1877853,
+        "data_bytes": 115252,
+        "bss_bytes": 247032
+      },
+      "usr/local/bin/fvwm-menu-desktop": {
+        "sha256": "98a948289db6f9950bc21ba40eb40332f506c9bedaea42d2b5426f815b5d556e",
+        "file_bytes": 5435490,
+        "text_bytes": 3443700,
+        "data_bytes": 91539,
+        "bss_bytes": 33806168
+      },
+      "usr/local/bin/fvwm-file-browser": {
+        "sha256": "c1a424baded9a1b1a90c6d1d46cb878f03a01df93068b29a157efd73583dac72",
+        "file_bytes": 5623589,
+        "text_bytes": 3594030,
+        "data_bytes": 88707,
+        "bss_bytes": 33805464
+      },
+      "usr/local/bin/fvwm-root": {
+        "sha256": "054475318dda7e65386bf77d4a6e2313d2b10af287bd3c1443c00e7623031657",
+        "file_bytes": 1007840,
+        "text_bytes": 243299,
+        "data_bytes": 5608,
+        "bss_bytes": 7408
+      },
+      "usr/local/share/fvwm3/fvwm-script-ComExample": {
+        "sha256": "8440faa4575c01aaa888c017252707dbe262a2dc01dc1a78d3f15e3c31fe90bc",
+        "file_bytes": 2758878,
+        "text_bytes": 1719589,
+        "data_bytes": 50404,
+        "bss_bytes": 247432
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmAnimate": {
+        "sha256": "1c317f948ced86616f265398fff823dbe7dc1cb432dca0bc184b6f896875955b",
+        "file_bytes": 894560,
+        "text_bytes": 214397,
+        "data_bytes": 5580,
+        "bss_bytes": 9288
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmAuto": {
+        "sha256": "e75b8559a0ed06ade2c40b223b7d99973341f1e328e6984a1e4f1e30a04b689c",
+        "file_bytes": 167168,
+        "text_bytes": 30799,
+        "data_bytes": 1392,
+        "bss_bytes": 3528
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmBacker": {
+        "sha256": "34174d4319a7ba4f8293c2f5dfb1f87068465e99b70bb5a4cfa7be2a416f3ec7",
+        "file_bytes": 1044344,
+        "text_bytes": 253141,
+        "data_bytes": 5760,
+        "bss_bytes": 9608
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmButtons": {
+        "sha256": "99179338b12c610784747e4d36ca0324019efdc8336c806966884ac898988e82",
+        "file_bytes": 1724208,
+        "text_bytes": 427203,
+        "data_bytes": 13624,
+        "bss_bytes": 13512
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmEvent": {
+        "sha256": "ac963b11b2fe7d253ec24f71037314078571398ac85c991409cc80be73a0933b",
+        "file_bytes": 170400,
+        "text_bytes": 32413,
+        "data_bytes": 2584,
+        "bss_bytes": 3592
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmForm": {
+        "sha256": "8ed7a863b71692dd5f6ce1418a40c768d76e7456f805abd0a19809eeede2bc93",
+        "file_bytes": 1619032,
+        "text_bytes": 396381,
+        "data_bytes": 14680,
+        "bss_bytes": 14048
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmIconMan": {
+        "sha256": "4363ea49c729f6b187b66bc22a005da9e3ce6a46fc95ed430f0f940251aae076",
+        "file_bytes": 1773312,
+        "text_bytes": 424275,
+        "data_bytes": 12936,
+        "bss_bytes": 18640
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmIdent": {
+        "sha256": "5e80633e4fbe89b926f14caa6324a5c9cfb36ed6af7813d3c4e47e902dd8a438",
+        "file_bytes": 1413400,
+        "text_bytes": 345284,
+        "data_bytes": 11696,
+        "bss_bytes": 15136
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmMFL": {
+        "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "file_bytes": 444120,
+        "text_bytes": 99961,
+        "data_bytes": 2552,
+        "bss_bytes": 3736
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmPager": {
+        "sha256": "d9000a8220bb5ff2689389452d8ae632795a252fceece7e52dbeab054c9a1c9b",
+        "file_bytes": 1637768,
+        "text_bytes": 390027,
+        "data_bytes": 12192,
+        "bss_bytes": 13448
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmRearrange": {
+        "sha256": "7818e0ebd95630b339c16ea239d1aece8d1a76f6097afe080c948ddb978b8b52",
+        "file_bytes": 471056,
+        "text_bytes": 101213,
+        "data_bytes": 2048,
+        "bss_bytes": 4376
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmScript": {
+        "sha256": "232560411702d9db55e29a44726c95bbfe2d42855aa51224c0c25a19c04d06fd",
+        "file_bytes": 2211368,
+        "text_bytes": 528662,
+        "data_bytes": 14464,
+        "bss_bytes": 25848
+      },
+      "usr/local/libexec/fvwm3/1.1.6/FvwmDesktop": {
+        "sha256": "8a39b2776652aa0cfaa4fa1f74548eff85bde1682784aea0ac63a1bba5801487",
+        "file_bytes": 5289833,
+        "text_bytes": 3279832,
+        "data_bytes": 138659,
+        "bss_bytes": 33804616
+      },
+      "usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker": {
+        "sha256": "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb",
+        "file_bytes": 4947539,
+        "text_bytes": 3100772,
+        "data_bytes": 138611,
+        "bss_bytes": 33804264
+      },
+      "usr/local/libexec/fvwm3/1.1.6/fvwm-image-svg-worker": {
+        "sha256": "e30cb8016ae8c67dafec1648feb93cb3c8a50eec5a2fe4a9bd8e069af131848d",
+        "file_bytes": 143112,
+        "text_bytes": 23577,
+        "data_bytes": 1216,
+        "bss_bytes": 8
+      },
+      "usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture": {
+        "sha256": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+        "file_bytes": 98608,
+        "text_bytes": 9337,
+        "data_bytes": 1024,
+        "bss_bytes": 8
+      }
+    },
+    "configured_c_dependency_versions": [
+      {
+        "name": "fontconfig",
+        "version": "2.15.0"
+      },
+      {
+        "name": "ice",
+        "version": "1.0.10"
+      },
+      {
+        "name": "libevent",
+        "version": "2.1.12-stable"
+      },
+      {
+        "name": "x11",
+        "version": "1.8.7"
+      },
+      {
+        "name": "xft",
+        "version": "2.3.6"
+      },
+      {
+        "name": "xrandr",
+        "version": "1.5.2"
+      },
+      {
+        "name": "xt",
+        "version": "1.2.1"
+      },
+      {
+        "name": "xtrans",
+        "version": "1.4.0"
+      },
+      {
+        "name": "xext",
+        "version": "1.3.4"
+      },
+      {
+        "name": "freetype2",
+        "version": "26.1.20"
+      },
+      {
+        "name": "fribidi",
+        "version": "1.0.13"
+      },
+      {
+        "name": "iconv",
+        "version": "unknown"
+      },
+      {
+        "name": "intl",
+        "version": "unknown"
+      },
+      {
+        "name": "libpng",
+        "version": "1.6.59"
+      },
+      {
+        "name": "librsvg-2.0",
+        "version": "2.58.0"
+      },
+      {
+        "name": "cairo",
+        "version": "1.18.0"
+      },
+      {
+        "name": "sm",
+        "version": "1.2.3"
+      },
+      {
+        "name": "xcursor",
+        "version": "1.2.1"
+      },
+      {
+        "name": "xfixes",
+        "version": "6.0.0"
+      },
+      {
+        "name": "xpm",
+        "version": "3.5.17"
+      },
+      {
+        "name": "xrender",
+        "version": "0.9.10"
+      },
+      {
+        "name": "m",
+        "version": "unknown"
+      },
+      {
+        "name": "dl",
+        "version": "unknown"
+      }
+    ],
+    "all_installed_elf_resolved_dso_union": {
+      "objects": 59,
+      "file_bytes": 63469736,
+      "semantics": "Deduplicated resolved ldd file closure of all 25 installed ELF artifacts; not actual process mappings, total system RAM or all build-tool dependencies. Includes dependencies of unstarted installed programs."
+    },
+    "per_extra_increments": null,
+    "per_extra_reason": "No newly implemented opt-in service selected; #226 owns matched parent/extra costs."
+  },
+  "commands": [
+    {
+      "profile": "desktop",
+      "repeat": 1,
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--observe-only",
+        "--workload-observe",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-foundation-20261026/desktop-1"
+      ],
+      "status": 0,
+      "seconds": 17.169895314999962
+    },
+    {
+      "profile": "minimal-instrumented",
+      "repeat": 1,
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--cases",
+        "idle",
+        "title",
+        "resize",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-foundation-20261026/minimal-instrumented-1"
+      ],
+      "status": 0,
+      "seconds": 5.388858595999977
+    },
+    {
+      "profile": "desktop",
+      "repeat": 2,
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--observe-only",
+        "--workload-observe",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-foundation-20261026/desktop-2"
+      ],
+      "status": 0,
+      "seconds": 17.22366612099995
+    },
+    {
+      "profile": "minimal-instrumented",
+      "repeat": 2,
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--cases",
+        "idle",
+        "title",
+        "resize",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-foundation-20261026/minimal-instrumented-2"
+      ],
+      "status": 0,
+      "seconds": 5.389044555000055
+    },
+    {
+      "profile": "desktop",
+      "repeat": 3,
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/desktop_session_live.py",
+        "--prefix",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local",
+        "--version",
+        "1.1.6",
+        "--observe-only",
+        "--workload-observe",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-foundation-20261026/desktop-3"
+      ],
+      "status": 0,
+      "seconds": 17.284183782000127
+    },
+    {
+      "profile": "minimal-instrumented",
+      "repeat": 3,
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/responsiveness_profile.py",
+        "--fvwm",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/bin/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-r1-foundation-20261026/measurement-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL",
+        "--samples",
+        "128",
+        "--rate",
+        "10000",
+        "--cases",
+        "idle",
+        "title",
+        "resize",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-foundation-20261026/minimal-instrumented-3"
+      ],
+      "status": 0,
+      "seconds": 5.423554628999909
+    }
+  ],
+  "limits": [
+    "No native BSD/AMD64/reduced-profile/physical/compositor qualification in this developer-tooling checkpoint.",
+    "Desktop idle tree coverage is complete in one run, partial in two; activity may be partial. All normalized whole-tree rows are conservatively partial.",
+    "Observer has PID/start records but no executable-to-PID map; binary/config identities and process-tree identities are separate evidence.",
+    "Cgroup/trace endpoints were not requested; no kernel-policy change. True wakeups/charged peak unavailable, never zero.",
+    "Unseen ephemeral children are outside proc sampling. No sum of per-process HWM as session peak.",
+    "Complete reduced-profile, dependency/build costs, steady/peak complete process totals, geometry/redraw/physical metrics and RC acceptance remain with #29/#226/#5.",
+    "No feature, performance improvement, all-OS qualification or accepted budget is claimed; historical receipts are not pooled."
+  ],
+  "guest_retirement": {
+    "guest_payload_retired": "/tmp/fvwm-r1-foundation-20261026",
+    "guest_archive_retired": "/tmp/fvwm-r1-foundation-20261026.tgz",
+    "regular_bytes_released": 99288590,
+    "verified_files": 157,
+    "source_builds_other_stages_preserved": true,
+    "machine_restored_stopped": true,
+    "initial_stop_wrong_connection_no_mutation": true
+  },
+  "review": {
+    "implementation_role": "temper_implementer gpt-6.1-sol/high requested",
+    "review_role": "temper_reviewer gpt-6.1-sol/high requested",
+    "model_metadata_independently_attested": false,
+    "helper_sha256": "f193bb0e0466d85bc690a7ee955904d382ee25e9e6bf4cddfcea22b2f52dbf25",
+    "tests_sha256": "ffce6a24c802cc67a943493a6fd3c864b94a37abc098b6caa0adb448405aa77c",
+    "tests_passed": 10,
+    "final_review": "No remaining actionable findings after complete context digest inputs/canonicalization published and independently reproduced. Raw values, source/input hashes, costs, units and archive verified.",
+    "initial_failures": [
+      "Implementation agent capacity failure; same-model retry succeeded without prior source edits.",
+      "Initial README exceeds 250 words; shortened link text passes repository check."
+    ],
+    "qualification": "focused helper + repository checks; six reference observations; broader native/platform/profile and RC acceptance remains open"
+  }
+}

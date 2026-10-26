@@ -21,6 +21,10 @@ Run from the repository root:
 
 ```sh
 python3 -m unittest discover -s tools/maintenance/tests -v
+python3 tests/test_profile_report.py
+
+# Read-only empirical resource report; no measurement or automatic acceptance.
+python3 tools/maintenance/profile_report.py dev-docs/verification/R1-BASELINE-2026-10-26-DESKTOP.json
 
 # Review the plan first; the default builddir is separate from ./build's.
 python3 tools/maintenance/build.py --dry-run --test
@@ -57,6 +61,15 @@ python3 tools/maintenance/source.py inventory --untracked --dependencies --outpu
 # Source archives require a clean, committed snapshot by default.
 python3 tools/maintenance/source.py archive --ref HEAD --epoch 0 --output /tmp/fvwm-source-1
 ```
+
+`profile_report.py` validates small normalized resource receipts and optionally
+compares a candidate with `--baseline` naming a frozen receipt. Exact context,
+metric scope/unit/coverage and quantum must match. Missing or partial metrics
+produce no envelope. Three or more distinct run IDs assert independent runs;
+the helper cannot prove their provenance. The empirical method, collection
+commands and current qualification gaps are documented in
+[R1 reference profiles](../../dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md).
+It starts no processes and changes no build, baseline, default or installed CLI.
 
 `build.py` uses argv subprocess calls, drains diagnostic output in bounded
 chunks, and returns the failed command's exit status even in verbose mode.

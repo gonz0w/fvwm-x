@@ -1,0 +1,431 @@
+Current checkpoint: [PR #256](https://github.com/gonz0w/fvwm-x/pull/256).
+
+## M5 WM metadata — PR #250
+
+[PR #250](https://github.com/gonz0w/fvwm-x/pull/250) fixes temporary WM metadata ownership in Script/Ident/IconMan. Normal/scoped X cases and separate review pass; disk-full link/recovery evidence is in PR. PR249 merged/Done. Broader #34 stays open; PR248 reference 1/5.
+
+## M5 property ownership ready — PR #249
+
+[PR #249](https://github.com/gonz0w/fvwm-x/pull/249) releases replaced Script header/widget strings, localized-title inputs, five replaced base defaults and successful Type tokens. Exact header text, existing widget normalization, colorset order and callback/final lifetimes remain. Six units, seven property X cases, existing widget X and scoped ASan/UBSan pass in one 5.572-second candidate gate; separate source/raw-evidence review passes. [Evidence and limits](https://github.com/gonz0w/fvwm-x/blob/0bdbf2b8a54a16df7fa23c7933e57c534011fbc4/dev-docs/verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROPERTIES.md).
+
+PR248 is merged/cleaned. Due PR243–248 comparison: selected Script RSS −260 KiB (~4.8%); timing overlaps, no speed claim. PR248 is next reference (0/5). Broader acceptance stays open; completed #31/#35/#36 remain closed. Canonical evidence verified; guest duplicates retired. Requested Temper routing follows PROJECT.md; actual runtime model metadata unavailable.
+
+## M5 Script argument values ready — PR #248
+
+[PR #248](https://github.com/gonz0w/fvwm-x/pull/248) releases consumed argument lexer tokens after borrowed-input constructors copy them, and owns completed name/value tables through idle shutdown. The actual old parser retains eight tokens (new/repeated variables, plain/brace/empty literals); the candidate releases all eight. Stored copies/IDs, limits, callback order and active table lifetimes remain. Pinned Bison/Flex generation changes exactly three actions; scanner/header outputs are identical.
+
+Six normal units, scoped ASan/UBSan owner checks, six real-module value lifecycle cases and existing execution X checks pass on the first combined invocation (8.235 recorded command-seconds). Self-Set/Loop and callback reads pass; idle paths retire current entries and reset accounting, active exits retain all fifteen names/current values/two arrays. Separate final review and signed author-DCO pass. [Source-bound evidence and limits](https://github.com/gonz0w/fvwm-x/blob/4aa913a92cd52bc7962c867e947f85b3c7bbe16d/dev-docs/verification/VERIFICATION-2026-10-25-M5-SCRIPT-VALUES.md).
+
+PR247 is merged; signature/tree/branch/Project cleanup is verified. Guest duplicates are retired, preserving canonical evidence, caches and PR243 references. The reference is 4/5; this merge makes the next regular performance comparison due (5/5). No new UI or fresh OS/install/theme/full-parser-module-leak/native-CPU/release claim. Broader scope stays open; #31/#35/#36 remain completed and #93 not planned. Header/widget tokens, partial parser state and blocked pathname work stay separate. Requested Astra/high analysis and Sol/high implementation/review; runtime-model/client-version metadata unavailable, unverified. All previous handoffs below remain preserved.
+
+---
+
+## M5 Script binding/message ownership ready — PR #247
+
+[PR #247](https://github.com/gonz0w/fvwm-x/pull/247) releases Key's constructor action after AddBinding copies it and retires BindingsList/latest LastString at idle shutdown. Shared binding behavior, duplicates/modifiers/message text and callback order remain. Active execution retains all borrowed owners. Actual old Key objects retain three constructors for controlled 0/1/3-copy results; repaired producer releases all. The real shared copying API is separately exercised on X.
+
+Three normal units, scoped ASan/UBSan owner checks, six actual-module lifecycle cases and the existing text/list X fixture pass on the first combined invocation (17.634 recorded command-seconds). Idle final/dead-pipe exits retire twelve binding and three message allocations; active Init retains twelve, event/Periodic retain thirteen including latest message. Exact active retention, QuitFunc access/binding creation and copied action use pass. Separate final review and signed author-DCO pass. [Source-bound report and limits](https://github.com/gonz0w/fvwm-x/blob/771e15515ff70fb6d362eeb5f742c1b2311fd559/dev-docs/verification/VERIFICATION-2026-10-25-M5-SCRIPT-BINDINGS.md).
+
+PR246 is merged; signature/tree/branch/Project cleanup verified. Duplicate guest evidence is retired with canonical archive, source/build and PR243 references preserved. Performance reference is 3/5 (4/5 after this merge); no comparison due. No new UI or fresh OS/install/theme/full-module-leak/native-CPU/release claim. Broader scope stays open and all earlier handoffs below remain; #31/#35/#36 remain completed and #93 not planned. Requested Astra/high analysis and Sol/high implementation/review; Codex desktop version/runtime-model metadata unavailable, unverified. Parser/tables/base X/fonts/selection and separate blocked pathname work remain outside this slice.
+
+---
+
+## M5 Script instruction trees ready — PR #246
+
+[PR #246](https://github.com/gonz0w/fvwm-x/pull/246) fixes resident Init argument/nested-block retention and centralizes complete parsed-tree ownership for Init, Periodic/Quit and embedded widget cases. Exact old shallow cleanup on real parsed output frees 2 of 21 allocations, retaining 19. Ownership publishes only after parse success; empty slots and frozen counts are explicit. Callback/message/widget ordering is preserved. Retirement requires zero execution depth; active command exits retain trees for process reclamation.
+
+Four normal units, scoped Clang ASan/UBSan ownership checks, six actual-module lifecycle/free-count cases and the existing production execution X fixture pass. Idle final exit/startup refusal/dead pipe free all 34 watched allocations; Init Quit retains 34 and event/Periodic Quit retain 12 after releasing 22 Init allocations. Original observer/include/fixture failures and successful unaffected results are preserved; only affected/unfinished checks repeat. Separate final review and signed author-DCO pass. [Exact source-bound evidence and limits](https://github.com/gonz0w/fvwm-x/blob/2cd5e5bee4589b4ec7b58a77b8cae26a60f7faa6/dev-docs/verification/VERIFICATION-2026-10-25-M5-SCRIPT-BLOCKS.md).
+
+PR245 is merged; branch/signature/tree/Project cleanup is verified. Guest evidence duplicates are retired with canonical archive/build/source/performance references preserved. The PR243 reference is 2/5 (3/5 after this candidate merges); no comparison due. No new UI or fresh OS/install/theme/full-module-leak/release claim. Parser error stacks, variables/string tables/base X/fonts and the separately blocked pathname work remain outside this slice. This broader owner stays open; completed #31/#35/#36 and not-planned #93 remain closed. Routing requested Astra/high analysis and Sol/high implementation/separate review; Codex desktop version/runtime-model metadata unavailable, unverified. Existing scope/metadata/handoffs below are preserved.
+
+---
+
+## M5 unused private helpers ready — PR #245
+
+[PR #245](https://github.com/gonz0w/fvwm-x/pull/245) retires six uncalled private interfaces: the four-function timeout subsystem, queue-tail wrapper and getostype, including their exclusive source/header/build/probe entries (205 source/build lines). Exact retained source and 79,171 System/28,124 fqueue preprocessing tokens match. The original combined build completed core/twelve modules before exposing an existing unit callback-stub omission; the bounded fixture repair adds notification/lifetime assertions and preserves sixteen cases. Continue only unfinished test targets: four units pass. Original failures, seventeen output identities and separate final review remain in the [source-bound report](https://github.com/gonz0w/fvwm-x/blob/f925261da68d136525fb996111f29e22727ec6e0/dev-docs/verification/VERIFICATION-2026-10-25-M5-PRIVATE-HELPERS.md).
+
+PR244 is merged; canonical signature/DCO/tree and branch/Project cleanup are verified. The PR243 performance reference is 1/5 after PR244 (2/5 after this candidate merges); no comparison is due. Verified duplicate guest evidence is retired, preserving canonical evidence/build/source/reference data. No fresh OS/install/X/theme/sanitizer or release claim. This finite slice leaves the broader owner open and preserves completed #35/#36 and not-planned #93. The separate blocked pathname proposal remains pending. Routing requested Astra/high analysis and Sol/high implementation/separate review; Codex desktop version/runtime-model metadata unavailable, not verified. Existing metadata and all handoffs below are preserved.
+
+---
+
+## M5 unused event interfaces ready — PR #244
+
+[PR #244](https://github.com/gonz0w/fvwm-x/pull/244) removes six uncalled private FEvent definitions/declarations and the orphan FSelectInput declaration (115 source lines). Exact retained source, 82,633 preprocessing tokens and the complete raw-X prohibition block are preserved. One grouped Linux core/twelve-module build, three event units, the actual-core expose fixture and independent source/evidence review pass. [Source-bound report and limits](https://github.com/gonz0w/fvwm-x/blob/043e612f7c3079dcbc148628692092adea5f2300/dev-docs/verification/VERIFICATION-2026-10-25-M5-EVENT-INTERFACES.md).
+
+PR243 is merged and its branch cleaned up. The due periodic comparison is complete: identical browser bytes show overlapping timings and equal RSS, establishing no speed gain; recorded Script text/read-only is 13,571 bytes smaller than PR238. The exact PR243 reference copies are retained. No fresh OS/install/full-theme matrix is claimed. This finite retirement does not close the broader owner; all prior accepted components and handoffs remain below. Completed #35/#36 and superseded #93 retain their dispositions. The independent environment-expanded pathname proposal remains pending after a delegated security-review block, without source/runtime changes.
+
+---
+
+## M5 common widget-resource family ready — PR #243
+
+[PR #243](https://github.com/gonz0w/fvwm-x/pull/243) consolidates fourteen ordinary destructors and the common resource release for all fifteen Script widget types. It fixes five retained-font gaps, six temporary cursor references and owned widget string/record/named-color retirement while preserving two-phase callbacks, Swallow behavior, borrowed resources and partial-startup state. The old actual-object control reproduces the font/cursor gaps. Normal/scoped ASan/UBSan each pass four units and focused all-widget, icon, geometry and modal X fixtures pass on the first combined invocation (24.47 recorded command-seconds).
+
+[Source-bound report and limits](https://github.com/gonz0w/fvwm-x/blob/f5fa6eebf5715e2701273b206f66723d369027f3/dev-docs/verification/VERIFICATION-2026-10-25-M5-WIDGET-OWNERSHIP.md). Exact release controls, screenshot, separate final review and signed author-DCO delivery pass; canonical evidence survives verified duplicate retirement. No whole-interpreter leak-clean, fresh OS/install/full-theme or release claim. All earlier PRs228/237/242 are merged and cleaned up. This finite family does not close this broader owner; all accepted components, planning handoffs and completed #35/#36 remain preserved.
+
+---
+
+## Active M5 common widget-resource owner — 2026-10-25
+
+PR242 is merged, along with the remaining planning PRs228/237. The next finite #4/#34 family covers all fifteen Script widget resource lifecycles: common ordinary destructors, retained fonts including non-font startup types, six temporary cursor references, owned widget strings/records and named-color versus borrowed colorset references. Preserve special Swallow client/placeholder behavior, borrowed base GC, existing icon cleanup and callback-before-record-retirement order. Reproduce old destructor/cursor counts before repair, then use one combined affected Linux normal/scoped-sanitizer and actual-X checkpoint. No whole AST/interpreter/base-resource teardown, new renderer/dependency/budget or automatic OS/install matrix. This broader owner remains open; accepted components and all existing handoffs below are preserved.
+
+---
+
+## M5 Script widget-icon family ready — PR #242
+
+[PR #242](https://github.com/gonz0w/fvwm-x/pull/242) fixes the reproduced icon pixel-vector loss, clears loaded geometry on refusal, shares replacement/teardown cleanup and includes the partially prepared startup widget. Active image loading/conversion, configuration syntax, borrowed widget resources and shutdown order remain. Normal/scoped ASan/UBSan each pass three units including 100 owner cycles; focused real-X replacement/refusal/retry/redraw/normal exit and partial-startup controls, existing geometry/widget/modal cases, changed manual rendering and three native captures complete the checkpoint.
+
+[Exact source, evidence and limits](https://github.com/gonz0w/fvwm-x/blob/3daae861833837dcd4df4b7a3d95081b3e123fc3/dev-docs/verification/VERIFICATION-2026-10-25-M5-SCRIPT-ICONS.md). Retain original fixture failures and successful unaffected checks; only missing/affected work continues. Separate final source/evidence review and signed author-DCO delivery pass. Verified raw capture duplicates retire after canonical archive validation. No fresh OS/install/full-theme matrix or whole-module exit-leak claim. This finite family does not close this broader owner; all accepted components and handoffs below remain preserved. PR241 is merged and cleaned up; completed #35/#36 and superseded #93 retain their dispositions.
+
+---
+
+## Active M5 Script widget-icon ownership — 2026-10-25
+
+PR241 is merged. The next finite #4/#34 family owns Script widget icon pixmaps, color cells and the heap pixel vector through replacement, failed load/retry, normal shutdown and partial startup refusal. Actual LoadIcon controls will reproduce the lost vector/stale dimensions before repair. One combined affected Linux normal/scoped-sanitizer and real-X checkpoint covers this source family; no automatic platform/install matrix. Preserve broader duties and all accepted components/handoffs below; no whole-interpreter or font/Form exit cleanup is selected.
+
+---
+
+## M5 POSIX installation family ready — PR #241
+
+[PR #241](https://github.com/gonz0w/fvwm-x/pull/241) removes the ten inactive signal/siginterrupt installer fallback families and their exclusive optional selectors, retaining all active POSIX bodies. A required declared/linkable sigaction/sigemptyset configure check and five real refusal/presence controls make the native contract explicit. One grouped Linux build, ten production preprocessing comparisons, signal/Event transport units and three actual Script cases pass. Independent source/evidence review and signed author-DCO delivery pass.
+
+[Exact source, evidence and limits](https://github.com/gonz0w/fvwm-x/blob/308186ff3349c0ee2469c965217f0641dac408d4/dev-docs/verification/VERIFICATION-2026-10-25-M5-SIGNAL-INSTALL.md). Unchanged PR240 sanitizer and PR239 BSD evidence is retained as historical, not fresh qualification. Verified duplicate captures are retired. PR240 is merged and its branch/Project state cleaned up. This broader owner remains open; all accepted components and handoffs below are preserved. Completed #35/#36 and superseded #93 retain their dispositions.
+
+---
+
+## Active M5 POSIX installation family — 2026-10-25
+
+PR240 is merged. The next finite family retains all ten active POSIX handler bodies while removing their inactive signal/siginterrupt fallbacks and exclusive selector probes. An actual-header link check makes sigaction/sigemptyset requirements explicit; five real configure controls cover presence/refusal. Before/after compiler-token parity, a grouped Linux build and focused signal/Event/Script transport checks cover the change. Accepted unchanged sanitizer and BSD primitive evidence stays source-bound; no automatic fresh matrix. Broader obligations and all existing handoffs below stay open/preserved.
+
+---
+
+## M5 POSIX signal consumer slice ready — PR #240
+
+[PR #240](https://github.com/gonz0w/fvwm-x/pull/240) retires the unreachable pre-POSIX mask shim/API and its nine guarded registrations, then routes GetOutput foreground waits through the fixed shared helper. Active handlers/masks/flags, cleanup grace, child/status/output/cache ownership and supported BSD systems remain. Ten-unit source-token parity records only four empty helper statements and one assertion diagnostic line change. All nine consumers compile together; four units in each normal/scoped sanitizer profile and one three-case Script X fixture pass in one combined checkpoint.
+
+[Exact source, baseline, parity and limits](https://github.com/gonz0w/fvwm-x/blob/ec3793b0470c8eaac09b8496fdd91fd2bbabf4b4/dev-docs/verification/VERIFICATION-2026-10-25-M5-POSIX-CONSUMERS.md). Separate source/evidence review and signed author-DCO delivery pass. PR239 is merged and #36 completed. This finite slice does not close this broader owner; preserve all accepted components and modernization/hardening handoffs below. No automatic OS/install matrix or new speed claim.
+
+---
+
+## Active M5 POSIX signal consumer slice — 2026-10-25
+
+PR239 is merged and #36 is completed. This batch retires only the unreachable pre-POSIX mask shim/API and its nine guarded registrations, then adopts the fixed shared wait in GetOutput instead of its temporary 100ms foreground bridge. Keep active signal handlers/masks/flags, child/status/output/cache ownership, raw cleanup grace, 10ms completion checks and supported BSD systems. One grouped Linux compile/unit/X checkpoint plus source-token parity replaces automatic repeated OS/install runs. This broader owner stays open; accepted components and all modernization/hardening handoffs below are preserved.
+
+---
+
+## M5 shared wait slice ready for review — PR #239
+
+[PR #239](https://github.com/gonz0w/fvwm-x/pull/239) requires POSIX saved-mask jumps in the shared waits, removes the proven unused select adapter/exclusive definitions, and adds actual-signal state/ownership controls. It also reconciles the completed original LOOP-01 #36 consolidation. This is a finite source/signal slice; this broader owner remains open and all modernization/hardening handoffs below remain preserved. PR238 is merged and its accepted GetOutput behavior remains unchanged.
+
+Five units per Linux normal/scoped sanitizer profile, three actual-core X fixtures and small FreeBSD 15.1/OpenBSD 8.0 ARM64 wrapper checks pass. Old Linux source reproduces the mask failure; original BSD packaging failures and corrected-only checks are retained. No historical full matrix reruns or live-X recovery claim. Canonical source/signature/DCO and separate source/evidence review pass. [Exact report](https://github.com/gonz0w/fvwm-x/blob/8c91b9882816a4ed2afc027f16b17d1bafaf3ec3/dev-docs/verification/VERIFICATION-2026-10-25-M5-WAIT-OWNERSHIP.md).
+
+---
+
+## Active M5 shared-wait ownership slice — 2026-10-25
+
+PR #238 is merged and its GetOutput slice is accepted. Next, require POSIX saved-mask jumps in the shared read/write/poll adapters, retire the proven unused select adapter and its exclusive feature definitions, and add actual-signal mask/ownership regressions. Preserve volatile I/O results, cancellation ordering, partial packets and high-descriptor poll behavior. Reconcile #36's completed original core consolidation against merged PR96/97 rather than restarting its historical six-target qualification. Focused Linux tests plus small FreeBSD/OpenBSD wrapper checks cover the changed signal selection; broader owners and modernization/hardening handoffs below remain preserved.
+
+---
+
+## M5 subprocess owner slice ready for review — PR #238
+
+[PR #238](https://github.com/gonz0w/fvwm-x/pull/238) batches GetOutput cancellation, explicit child setup/exec errno, common descriptor/signal unwind and constructor/cache recovery checks. Both reused Linux normal/scoped sanitizer profiles pass the three affected units and three actual-module cases. The fault test covers 28 refusals, two stdout aliases and actual high-fd pipes; old-helper fault/cancellation controls and original gate/fixture failures are retained. Only affected checks repeat. The periodic browser observation uses unchanged bytes and makes no optimization claim.
+
+This completes the selected GetOutput slice, not this broader owner. Other Script resources, helper/session constructors, shared readiness and Perl/release scope retain their owners and all modernization/hardening handoffs below. PR230 is merged and #31 completed.
+
+[Source-bound acceptance, costs and limits](https://github.com/gonz0w/fvwm-x/blob/7197447c8d0fc0e9287d0b59d253128318c625c6/dev-docs/verification/VERIFICATION-2026-10-25-M5-SCRIPT-PROCESS.md).
+
+---
+
+## Active M5 GetOutput ownership slice — 2026-10-25
+
+PR #230 is merged and #31 completed. The next bounded checkpoint batches Script GetOutput termination/child lifetime, explicit child-setup errors, actual constructor unwind/descriptor edge checks and failure/cache recovery. Preserve trusted configured shell commands, the 32,000-byte prefix, nonzero shell-exit output, fixed deadline and existing accepted ownership. Use one reused Linux normal/scoped-sanitizer checkpoint plus actual-module controls; no automatic full platform/install matrix. This finite slice does not close this broader owner. Existing modernization handoffs below are preserved.
+
+---
+
+## M5 message ownership ready for review — PR #230
+
+[PR #230](https://github.com/gonz0w/fvwm-x/pull/230) bounds Script shutdown, retains selection ownership through drain, preserves the 40-message/FIFO/reply contract and centralizes explicit queue ownership/cleanup. One reused Linux normal/scoped sanitizer gate passes; the strengthened refusal-only controls pass without another rebuild/full matrix. Broader resource budgets and actual helper construction/module-termination lifetimes remain open. This issue is not closed by the finite slice; accepted repairs and all modernization handoffs below remain preserved.
+
+[Source-bound evidence and next finite M5 pickup](https://github.com/gonz0w/fvwm-x/blob/dbe58df197b952f95b27e2c94ada8d40cac2744a/dev-docs/verification/VERIFICATION-2026-10-25-M5-SCRIPT-OWNERSHIP.md).
+
+---
+
+## Active M5 message-ownership slice — 2026-10-25
+
+PR #229 is merged and #183 completed. The next finite maintenance checkpoint bounds FvwmScript outgoing-message teardown, retains selection ownership while draining, preserves FIFO/refusal/cap semantics and releases pending queue storage exactly once. One reused Linux incremental profile, affected policy/X controls and scoped sanitizers replace another automatic full matrix. Broader original owner scope and the modernization handoffs below remain open. No configuration migration or new global resource cap is proposed.
+
+---
+
+## Current scheduling and modernization handoff — 2026-10-25
+
+Cleanup and measured optimization are the current priority; new feature pickup stays Backlog behind #209. This supersedes earlier performance-only deferral and feature-first scheduling, without restarting accepted components. #208 is the modernization index; shared contracts stay with their existing owners.
+
+Cleanup and measured optimization are the current priority. Freeze named remaining ownership/duplication/unwind slices; retain accepted M1/M2/M3 and core checkpoints. #209 records a finite handoff before feature pickup. Shared helpers serve #210–#225 only when a concrete existing contract warrants extraction; do not build speculative feature frameworks during cleanup.
+
+This is a scope/dependency update, not runtime implementation or a new release acceptance claim. Preserve source-bound evidence, native relationships, local verification and the existing batch cadence.
+
+---
+## Historical scheduling — 2026-10-23
+
+M5 — Core/module source and ownership cleanup. Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring.
+
+Remaining work is backlog in the maintenance queue. Preserve accepted component checkpoints; do not restart the whole audit or interpret planning as implementation. This scheduling supersedes earlier Later/feature-first notes. Stages, priorities and native parent/blocked-by relationships remain owned; no issue is closed by this reordering.
+
+[Maintenance batch register](https://github.com/gonz0w/fvwm-x/blob/codex/maintenance-batch-plan/dev-docs/decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md) · [Planning PR #188](https://github.com/gonz0w/fvwm-x/pull/188). Use larger related batches and one combined focused Linux gate; add target/install/server checks when their contract changes, not after every small edit.
+
+---
+
+## Current function-lifetime checkpoint: PR #143 (2026-10-21)
+
+[PR #143](https://github.com/gonz0w/fvwm-x/pull/143) is locally qualified for maintainer review: selection shutdown, held-classification shutdown and conditional actions after target retirement. Two command-owned wait paths reuse the existing cancellation helper and cleanup; covered lifetime guards are retained without a broad rewrite.
+
+One six-target checkpoint passes 2276 standard / 47 selected optional entries, five scoped guest sanitizer entries, ten installs and 32 fixture groups on four authenticated default BSD displays. Controls reproduce the preceding failures; original orchestration errors and same-job recovery remain in the [report](https://github.com/gonz0w/fvwm-x/blob/79333dca68de27ca446e02e553fcadbe796a4517/dev-docs/verification/VERIFICATION-2026-10-21-FUNCTION-LIFETIMES.md). Portable: 177 passes / eleven capability skips.
+
+This gives the selected finite stream/input/lifetime closeout fixed/verified or already-covered dispositions. After PR review/merge, advance approved feature dependencies in tracker order. This broad owner stays open; native-CPU/physical/provider/release acceptance remains separate. Performance-only work stays deferred; PR138 reference is 3/5 after merged PR139/141/142, with no comparison due for this unmerged checkpoint.
+
+---
+
+## Current module/input checkpoint: PR #142 (2026-10-21)
+
+[PR #142](https://github.com/gonz0w/fvwm-x/pull/142) is locally qualified for maintainer review: fork-time/once-only logging, terminal packet framing, Script token ownership and missing module-recipient refusal. Four related failure/ownership repairs use existing helpers and explicit already-covered dispositions. No broad rewrite or mechanical API rename.
+
+One composed six-target checkpoint passes 2252 standard / 117 affected optional entries, five scoped guest sanitizer entries, ten final install stages and final context checks on four authenticated default BSD displays. Original failures and affected-only completions are explicit in the [report](https://github.com/gonz0w/fvwm-x/blob/58691cc32a82c72995c615f7f13668da74be9ae5/dev-docs/verification/VERIFICATION-2026-10-21-MODULE-INPUT-OWNERSHIP.md). Portable 177 passes / 11 capability skips. Native-CPU, physical/toolkit/compositor and final release acceptance remain open.
+
+This is a component checkpoint, not closure of this broad owner. The tracker advances to pending interaction lifetimes. Performance-only tuning stays deferred; PR138 reference remains 2/5 after merged PR139/141, with no comparison due for this unmerged PR.
+
+---
+
+## Current stream checkpoint: PR #141 (2026-10-21)
+
+[PR #141](https://github.com/gonz0w/fvwm-x/pull/141) is locally qualified and ready for maintainer review: four FIFO construction, bounded Status continuation, transactional logging adoption and log-failure containment repairs. Four related ownership/failure contracts are simplified and qualified without a broad rewrite; remaining cleanup stays tied to named safety or feature contracts.
+
+One composed six-target checkpoint passes 2236 standard / 58 affected optional entries, four scoped sanitizer entries with leak detection, ten install stages and twenty fixture invocations on four authenticated default BSD displays. Original fault-probe/private-auditor/manual assertion failures and their affected continuations are preserved in the [report](https://github.com/gonz0w/fvwm-x/blob/fdd4976e5fb5bdfd69ce2bde1b3858ffa983ac0b/dev-docs/verification/VERIFICATION-2026-10-21-STREAM-OWNERSHIP.md). Portable: 177 passes / eleven capability skips. Existing manual lint messages are unchanged; native-CPU/physical/toolkit/compositor/release acceptance remains open.
+
+This is a component checkpoint, not closure of this broad owner or the whole safety closeout. Selected input and pending-lifetime reviews follow the authoritative tracker; performance-only tuning stays deferred. PR138 reference remains at 1/5 after merged139; no comparison is due while this PR is unmerged.
+
+---
+
+## Current priority: safety closeout (2026-10-21)
+
+The user prioritizes high-impact safety/maintainability and defers remaining performance-only tuning to the next release. [PR #140](https://github.com/gonz0w/fvwm-x/pull/140) records the [finite entry-point reviews and feature-handoff criteria](https://github.com/gonz0w/fvwm-x/blob/26c17beb541cb7800bdf751fbdb50201338d3968/dev-docs/PROJECT-TRACKER.md#hardening-closeout); implementation/qualification is pending. This current selection supersedes older pickup instructions below. Accepted component evidence remains source-scoped and broad owners remain open.
+
+Attach cleanup to a concrete ownership/error contract in the finite stream, input or pending-lifetime families, or a named upcoming feature prerequisite. Prefer explicit results/ownership and shared cleanup. Generic API renames, formatting and speculative dependency/fanout work do not extend foundation closeout.
+
+---
+
+## Outcome and scope
+
+Simplify verified core/module code and ownership. Tracker ID: `CLEAN-01`; stage 04 Responsiveness.
+
+## Accepted UI record checkpoint status — 2026-10-19
+
+After merged [PR #122](https://github.com/gonz0w/fvwm-x/pull/122), the three-story font/picture/monitor dependency batch is qualified and merged in [PR #123](https://github.com/gonz0w/fvwm-x/pull/123). ARM GCC layout fanout falls from 252/289/226 to 49/66/92 objects. All 170 affected entries pass across six targets/ten profiles; exact code/data parity over 5874 object pairs and ten WM executables retains PR122's broader runtime evidence. Field types/order, runtime/configuration behavior and build/test registrations remain unchanged. Required gaps retain their source/profile scope.
+
+This UI boundary component is merged in PR123; CLEAN-01 remains In progress for its wider ownership/simplification scope. The maintainer reaffirmed the broad quality/performance program; no stage is shortened or closed by this upkeep.
+
+## Current tracker scope and evidence
+
+Extract tested pure protocol/geometry/ownership policy and consolidate duplicated cleanup within affected fixes. Own command-event snapshots; audit remaining borrowed window/module/resource references. Establish window identity/lifetime, pure policy, X reads/commit writes and shared readiness boundaries; replace typeless scratch state within its owning fix. Document reply waits, callback mutation and borrowed lifetimes. Avoid a separate broad rewrite, mechanical renaming or style-only churn. See optimization roadmap.
+
+Tracker status at import: **P2 / cross-cutting, partially implemented**.
+
+## Acceptance
+
+- [ ] Complete only the remaining owning tracker scope, or confirm its already accepted scoped checkpoint.
+- [ ] Preserve configuration contracts and approved dependency/limit decisions.
+- [ ] Attach exact source/platform and affected local test, install/X11 and native evidence as required. Preserve failures/skips.
+- [ ] Reconcile tracker, issue labels, milestone and Project fields before closure.
+
+## Relationships and tracking boundary
+
+Accepted component evidence stays accepted. Finish only the remaining owned scope; do not redo prior work or infer release completion.
+
+[Authoritative execution order](https://github.com/gonz0w/fvwm-x/blob/main/dev-docs/PROJECT-TRACKER.md#execution-order). All review/tests/lint/validation run locally; Actions is disabled. Broad planning is split into bounded reviewable stories at pickup.
+
+The initial qualified import retains legacy/generated whitespace findings. `seed-whitespace.log` in the local repository-setup evidence records them; clean up only under the owning source/generator contracts, not by restyling the imported checkpoint.
+
+## Accepted style dependency component
+
+Merged [PR #119](https://github.com/gonz0w/fvwm-x/pull/119) isolates style record/ID/list dependencies with unchanged field layouts and native production sections. All 70 focused native entries pass six targets/ten profiles; source-bound evidence retains broader PR118 runtime gaps. [Report](https://github.com/gonz0w/fvwm-x/blob/4f80f04a4299b14a91bd76dba4423420865e15e2/dev-docs/verification/VERIFICATION-2026-10-19-STYLE-TYPE-BOUNDARIES.md). This partial component leaves CLEAN-01's broader audit and in-progress status open.
+
+## Accepted command/update dependency component
+
+[PR #121](https://github.com/gonz0w/fvwm-x/pull/121) is merged after merged PR120. Three related changes narrow parser context, complex-function record and update-plan layout dependencies to six/four/four compilation tasks. Record field types/order and runtime/configuration behavior remain unchanged.
+
+One affected six-target/ten-profile checkpoint passes 100/100 native entries. All 5864 object pairs, ten WM executables and 249 install-output pairs retain exact allocated sections/non-ELF bytes; ten scoped stages verify 249 identities. All 2479 test registrations remain. Portable verification passes once (166 passes / 11 native-Meson skips). The initial unavailable test selector was refused before execution; completed compilation is reused and the corrected selection passes. No full runtime matrix repeats. [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/c7097c16ca8e66f46838e37284731692d6f9e25d/dev-docs/verification/VERIFICATION-2026-10-19-COMMAND-TYPE-BOUNDARIES.md).
+
+Broader runtime/default-X/sanitizer evidence stays with PR120, retaining its original legacy-property refusal/single unchanged control, required OpenBSD AMD64 CI/SVG omissions and broader install/staged-geometry gap. Scoped install identities do not close that gate. Native-CPU/hardware/release work and the broad owners remain open; VESA #93 is deferred. Actions remains disabled.
+
+This component leaves CLEAN-01’s broader audit and in-progress status open.
+
+## Accepted UI record dependency component
+
+[PR #123](https://github.com/gonz0w/fvwm-x/pull/123) is merged after PR122. Three related font/picture/monitor record boundaries reduce ARM GCC layout recompilations from 252/289/226 to 49/66/92 objects. Tags, fields/order, C runtime statements, configuration and build/test registrations remain unchanged.
+
+One affected six-target/ten-profile checkpoint passes 170/170 native entries: 17 focused entries retained by exact 18-binary/source checks, 153 fresh. All 5874 object pairs, ten WM executables and 249 install-output pairs retain exact allocated code/data or non-ELF bytes. Ten scoped stages verify 249 code/catalog identities; all 2479 test registrations remain. Portable verification runs once (166 passes / 11 native-Meson skips). [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/1a442837adefec5479beb75229b9a8af293beb55/dev-docs/verification/VERIFICATION-2026-10-19-UI-TYPE-BOUNDARIES.md).
+
+Strict code/data parity retains PR122's broader runtime/default-X/sanitizer evidence; those suites do not repeat for this declaration/include-only batch. Three required OpenBSD AMD64 omissions and its broader full-install/staged-geometry gap remain without retries. Native-CPU/hardware/release work and broad owners stay open; VESA #93 remains deferred; Actions disabled.
+
+The user reports PR122's interactive WM is fast and working well. Its review-only QEMU/VNC session is closed on request, with disk/logs and original qualification guest preserved; this feedback is not release/hardware qualification.
+
+CLEAN-01’s broader audit remains open and in progress.
+
+## Accepted legacy-tray cleanup component
+
+[PR #124](https://github.com/gonz0w/fvwm-x/pull/124) is merged after PR123. Three existing legacy-tray operations reuse the insertion search link, retire through the already found link after the existing selection/flush, and publish one bounded inline snapshot. Source structure removes duplicate searches/walks; selected 64-window add/remove snapshot heap requests each fall one to zero. Ordered membership/properties, fixed-marker validation, event-mask/flush/publication order and empty output remain. Refused publication retains the property while membership commits and a later actual mutation repairs it.
+
+One combined six-target/ten-profile checkpoint passes 2029/2029 standard scope (2025 fresh / four focused results retained by exact non-Markdown source and six binary identities), plus 447/447 optional entries. Actual-core probes verify 4350 tray cases / 60 refusal repairs. Four scoped guest sanitizers, 9 fresh full stages (135 code/88 catalogs), four authenticated BSD displays and 18 staged geometry invocations pass. Portable verification runs once (166 passes / 11 native-Meson skips). [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/6d18d485f477460c37c8f34ca1f3f0975051a405/dev-docs/verification/VERIFICATION-2026-10-19-EWMH-TRAY.md).
+
+The first baseline probe incorrectly expected empty marker acceptance; the existing fixed four-byte policy rejected it. The corrected unchanged-production baseline passes; all original logs/source remain. No deadline changes or repeat full suites for publication. Search-pass savings are source-structural, snapshot requests instrumented. Inline owner storage is transient; geometric spills can allocate more than the prior exact buffer. No persistent cache, configuration/native-packet migration or new later-stage TRAY-01 feature is added.
+
+Three required OpenBSD AMD64 worker/SVG/legacy-property omissions and its broader full-install/two staged-geometry gap retain their original source/profile scope without retries. Native-CPU/hardware/toolkit/compositor/release checks and broad owners remain open. VESA #93 stays deferred; Actions disabled.
+
+CLEAN-01’s wider ownership/audit scope stays open and In progress.
+
+## Accepted style-matching cleanup component
+
+[PR #125](https://github.com/gonz0w/fvwm-x/pull/125) is merged after PR124. Three related style-matching operations reuse verified prefixes during selector metadata classification, omit already-true universal explicit predicates and merge ordered candidate streams through a bounded operation-local heap. NULL/escape/legacy wildcard behavior, exact precedence, selector/subject layouts and existing update/grab/error barriers remain. No configuration migration or persistent match cache is added.
+
+One combined six-target/ten-profile checkpoint passes 2029/2029 standard results (2021 fresh / eight focused results retained through exact source and ten binary identities), plus 447/447 optional entries. 180 actual-core merge cases compare exact visits and complete styles against independent linear traversal, including grouped/interleaved, collisions, retirement/append gaps and all nine synthetic slots. 132 preparation cases make zero escape scans; the measured twelve-case baseline made eight. Four scoped guest sanitizers, nine fresh full stages, four authenticated BSD displays and 18 staged geometry invocations pass. Portable verification runs once (166 passes / 11 native-Meson skips). [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/005b6dce56a31d9559025900f9d3ad0e9ab54917/dev-docs/verification/VERIFICATION-2026-10-19-STYLE-MATCH-WORK.md).
+
+The initial unchanged-production probe incorrectly expected repeated stars to match empty text. The corrected literal-tail workload passes; original failed/diagnostic evidence remains. Source bounds and controlled guest timings have explicit limits; there is no portable/native-CPU latency guarantee. Fresh tests request prerequisite builds and installation uses `--no-rebuild`; prior tray-report command wording is corrected without historical reruns or relabelling. No matrix repeats for publication.
+
+Three required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap retain their original scope without retries. Native-CPU/hardware/toolkit/compositor/release acceptance and broad owners remain open. VESA #93 stays deferred; Actions disabled.
+
+CLEAN-01’s broader ownership and simplification scope stays open and In progress.
+
+## Accepted flag-predicate cleanup component
+
+[PR #126](https://github.com/gonz0w/fvwm-x/pull/126) is merged after PR125. Three read-only style flag operations use bounded memcpy word loads: subset for list selection/simplification, intersection for simplification and masked equality for window conditions. Four-byte IDs, 48-byte style/window records, unaligned/read-only overlapping spans, high bits, zero/negative lengths and public Bool semantics retain their contracts. Mutable operations, configuration, record layout and update/grab/error barriers stay unchanged.
+
+One combined six-target/ten-profile checkpoint passes 2037 standard entries (2028 fresh / nine focused results retained through exact source and eleven binaries) plus 449 optional entries. Eleven pure drivers compare 14,864,729 reference cases; fifteen actual-core drivers verify 17,310 wrapper cases and 1,920 parsed conditions. Four guest sanitizers, nine fresh stages, four authenticated BSD displays and 18 staged geometry invocations pass. Portable verification runs once (166 passes / eleven native-Meson skips). [Report and receipt](https://github.com/gonz0w/fvwm-x/blob/b41e59e2d8a8b31556e862281955bfef7c0f4348/dev-docs/verification/VERIFICATION-2026-10-19-STYLE-FLAGS.md).
+
+Selected paired guest full/late 48-byte scans improve to roughly 19–21% of byte-reference time; first-byte differences are slower (roughly 1.26–1.75 times). Production callers may specialize; no universal or whole-WM latency claim. Original registered names remain, with only one new style-flags entry per profile. Fresh tests retain prerequisite builds; install uses --no-rebuild. Publication repeats no matrix.
+
+Three known required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. Native CPU sanitizer, hardware/toolkit/compositor and release gates remain separate. VESA #93 deferred; Actions disabled. Broad owners stay open.
+
+CLEAN-01’s broader ownership and simplification scope stays open and In progress.
+
+## Accepted typed-mutation cleanup component
+
+[PR #127](https://github.com/gonz0w/fvwm-x/pull/127) is merged after PR126. Three typed complete-record flag operations replace generic mutable byte helpers: union for simplification, intersection for selected-field cleanup and clearing for explicit/default/change masks and normalization. The destination is disjoint or exactly aliases an input; all shipped callers preserve their original operand expressions/order. Configuration, record layout, default-summary expressions, resource ownership and update/grab/error barriers retain existing behavior. Unused private return reductions and generic length/casts are removed.
+
+One combined six-target/ten-profile checkpoint passes 2045 standard results (2035 fresh / ten focused results retained through exact source and twelve binaries) plus 451 optional results. Eleven mutation drivers verify 10,982,730 independent reference cases, including all five alias partitions and guarded-page/read-only inputs. Existing actual-core style-order/simplification/ownership/update fixtures remain. Four guest sanitizers, nine fresh stages, four authenticated BSD displays and 18 staged geometry invocations pass. Portable verification runs once (166 passes / eleven native-Meson skips). [Report and receipt](https://github.com/gonz0w/fvwm-x/blob/4c77eb61a12bfbf29d8b3df00a73393b91a6880e/dev-docs/verification/VERIFICATION-2026-10-20-STYLE-FLAG-MUTATIONS.md).
+
+Selected paired opaque-call guest operation ratios are 0.112–0.190 of byte-reference time; the ARM GCC production style object is 32 executable bytes smaller. Inlined callers may already optimize; no whole-WM/native-CPU latency claim. All prior registered names remain, with only style-flags-mutate added once per profile. Fresh tests retain prerequisite builds; install uses --no-rebuild. Publication repeats no matrix.
+
+Three known required OpenBSD AMD64 omissions and its full-install/two staged-geometry gap remain without retries. Native-CPU sanitizer, hardware/toolkit/compositor and release gates remain separate. VESA #93 stays deferred; Actions disabled. Broad owners remain open.
+
+CLEAN-01’s broader ownership and simplification scope stays open and In progress.
+
+## Accepted private-record cleanup component
+
+[PR #128](https://github.com/gonz0w/fvwm-x/pull/128) is merged after PR127. Three private layouts narrow condition-name, initial-window option and monitor-refresh adapter dependencies. ARM GCC layout fanout falls 214/214/230 to 2/22/2 compilation tasks; links remain. All eighteen C deltas are include/blank-separator only with unchanged line counts; fields/order, runtime statements, configuration, callbacks, ownership and error barriers remain.
+
+One affected six-target/ten-profile checkpoint passes 149 native entries (15 focused retained by exact source/18-binary/testlog identities, 134 fresh). The minimal build intentionally disables session management and registers fourteen affected tests; others register fifteen. All 5914 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten fresh scoped stages verify 249 identities; all 2499 test registrations and compile-command databases remain unchanged. Portable verification runs once: 166 passes / eleven native-Meson skips. [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/69c6d2bea384e01c7c7f37613d5969c70320cdfc/dev-docs/verification/VERIFICATION-2026-10-20-PRIVATE-RECORD-BOUNDARIES.md).
+
+PR127's broader runtime/default-X/sanitizer evidence is retained in its original scope by strict native code/data parity. An initial minimal-registration harness assertion is retained; a minimal-only continuation finishes remaining checks without repeating successful work. No native test failed. Three required OpenBSD AMD64 omissions and its broader full-install/two staged-geometry gap remain without retries. Native-CPU/hardware/toolkit/compositor/release acceptance and broad owners remain open; VESA #93 deferred; Actions disabled.
+
+CLEAN-01 remains In progress for its broader scope.
+
+## Accepted picture-cache cleanup component
+
+[PR #129](https://github.com/gonz0w/fvwm-x/pull/129) is merged after PR128. Three cache operations reject incompatible variants before pathname bytes, use lazy name fingerprints for later candidates with full equality/stamp checks, and unlink final releases through explicit incoming links before resource/view teardown. Selected same-probe production pathname comparisons fall 65 to one/two; predecessor visits fall 16,384/32,385 to zero. Counts are instrumented operation witnesses, not whole-WM/native-CPU latency claims. Two fields add sixteen bytes per record without a separate allocation/index; existing fields/order, module packets, path resolution/reload, retained references/pixels and async acknowledgement remain.
+
+One combined six-target/ten-profile checkpoint passes 2045 standard results (2038 fresh / seven focused retained by exact source/nine binaries), plus 451 optional results. All 2499 prior registrations retain order. Cache tests force hash collision, check four retirement sequences/516 retirements/33,024 survivor lookups per unit, raw/pixmap cleanup, references and recursive view release. Five scoped guest sanitizers, nine fresh full stages, four authenticated default BSD displays with affected reload/ARGB/async probes and eighteen staged geometry invocations pass. Portable verification runs once (166 passes / eleven native-Meson skips). [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/0cb41f1ff340f4dd032367ed8e12147ea385f8bc/dev-docs/verification/VERIFICATION-2026-10-20-PICTURE-CACHE-WORK.md).
+
+Three required OpenBSD AMD64 CI/SVG/legacy-property omissions and its full-install/two staged-geometry gap remain without retries. Native-CPU sanitizers, hardware/toolkit/compositor and release acceptance stay separate. VESA #93 deferred; Actions disabled. Broader cache/path/population and cleanup scopes remain open.
+
+CLEAN-01 remains In progress for its broader scope.
+
+## Accepted donated-icon cleanup component
+
+[PR #130](https://github.com/gonz0w/fvwm-x/pull/130) is merged after PR129. Three related operations check complete first-exact retained icon records, bound donated geometry/combined packed-property output before X reads/allocation, and publish an existing owned reply span synchronously during partial deletion. The selected normal original-core deletion uses three project allocations; the candidate uses two, removing one retained-record copy while retaining LP64 publication conversion. Counts are operation witnesses, not whole-WM/native-CPU latency claims. Existing configuration, first-match precedence, ordinary pixels/metadata, acknowledgement and X/property barriers remain; refused replacement preserves the original list/count/property for the other donation owner. The manual documents limits/refusal.
+
+One combined six-target/ten-profile checkpoint passes 2045 standard results (2037 fresh / eight focused retained by unchanged production/test/build inputs and nine binaries), plus 451 optional results; all 2499 registrations retain order. Fifteen actual-core drivers verify 510 icon cases. Pure boundaries, real-X pixels/refusals/ownership, 24/8-bit file icons, four scoped guest sanitizers, nine fresh stages, four authenticated default BSD displays and eighteen staged geometry probes pass. Portable verification runs once: 166 passes / eleven capability skips. [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/be28fc1ada763d556a148babd3c43b93ecb328dd/dev-docs/verification/VERIFICATION-2026-10-20-EWMH-ICON-RETENTION.md). Two baseline probe corrections and a guarded storage-preparation refusal remain documented; production is unchanged for those baseline controls.
+
+Three known required OpenBSD AMD64 CI/SVG/legacy-property omissions and its full-install/two staged-geometry gap remain without retries. Native-CPU, physical hardware/toolkit/compositor and release gates remain separate. VESA #93 deferred; Actions disabled; broader DATA/IMAGE/CLEAN audits stay open.
+
+CLEAN-01 remains In progress for its broader scope.
+
+## Accepted window-tree walk component
+
+[PR #131](https://github.com/gonz0w/fvwm-x/pull/131) is merged after PR130. Three active ancestor/pointer/IconMan frame operations share finite operation-local parent-query ownership, preserve context-before-query order, and commit only complete representable frame offsets. No configuration syntax, hierarchy cache, server grab or X/error/publication barrier changes. A 4096-query budget cannot interrupt one blocking X request or make racing snapshots transactional. The uncalled recursive client-window helper remains outside this batch.
+
+One combined six-target/ten-profile checkpoint passes 2061 standard results (2055 fresh / six focused retained by unchanged runtime/test/build inputs and eight binary identities), plus 455 optional results. All 2499 predecessor registrations retain relative order with exactly two additions per profile (2519 total). Fifteen real-X drivers verify 45 tree/pointer/reparent observations. Boundary policy, three scoped guest ASan/UBSan checks, nine fresh stages, four authenticated default BSD displays and eighteen staged geometry invocations pass. Portable verification runs once: 166 passes / eleven capability skips. [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/1c2abdef302065a86bc108d2e6e500360dda9b31/dev-docs/verification/VERIFICATION-2026-10-20-WINDOW-TREE-WALKS.md). No matrix repeats for publication.
+
+Three inherited required OpenBSD AMD64 CI/SVG/legacy-property omissions and its full-install/two staged-geometry gap remain without retries. Native-CPU, physical hardware/toolkit/compositor and release acceptance stay separate. VESA #93 remains deferred; Actions disabled; broad owners remain open.
+
+CLEAN-01 remains In progress for its broader scope.
+
+## Accepted visual-startup ownership component
+
+[PR #132](https://github.com/gonz0w/fvwm-x/pull/132) is merged after PR131. Three related visual-startup operations validate the complete inherited hexadecimal pair, own/release the screen-local visual-query reply, and commit white/black allocation together. Native modules save complete defaults on refusal; core startup stops explicitly. Existing config syntax, packets, dependencies and X ordering/error policy remain. Well-formed stale/mismatched colormap resources still follow existing X error handling.
+
+One combined six-target/ten-profile checkpoint passes 2077 standard results (2071 fresh / six retained by exact source and six binary identities), plus 459 optional results. Eleven policy drivers verify 352 cases; fifteen real-X drivers verify 60 cases. Three scoped guest ASan/UBSan checks, nine fresh stages, four authenticated default BSD displays and eighteen staged geometry invocations pass. Portable verification runs once (166 passes / eleven capability skips). [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/2f8d2646e560465bb5c8120db5f124b3ac4a74c0/dev-docs/verification/VERIFICATION-2026-10-20-VISUAL-STARTUP.md). No matrix repeats for publication.
+
+[Periodic performance tracking](https://github.com/gonz0w/fvwm-x/blob/2f8d2646e560465bb5c8120db5f124b3ac4a74c0/dev-docs/verification/PERFORMANCE-2026-10-20.md) reuses existing binaries on one Linux profile, alternates three paired idle/title/resize runs and records latency/CPU/Linux RSS/executable size. Next regular comparison: five subsequent merged implementation checkpoints (0/5 after this reference merges), or earlier for an expected hot-path/memory change. No per-batch benchmark/build or timing gate. First observations show no established steady-state speedup for startup ownership; executable growth is recorded.
+
+Three inherited required OpenBSD AMD64 CI/SVG/legacy-property omissions and its full-install/two staged-geometry gap remain without retries. Native-CPU, hardware/toolkit/compositor and release gates stay separate. Broad owners remain open, Actions disabled and VESA #93 deferred.
+
+## Accepted process/session startup component
+
+[PR #133](https://github.com/gonz0w/fvwm-x/pull/133) is merged after PR132. Three related constructor repairs check core Exec stdin/fork and non-flushing failure exit; prepare all session authentication strings/cookies before credentials are published; and check network/environment publication with watch/resource rollback and clean retry. Existing configuration syntax and configured shell behavior remain usable. One duplicate command-string allocation per Exec launch is removed.
+
+One composed six-target/ten-profile checkpoint after a single full matrix passes 2141 standard results (2116 original fresh passes / 24 retained / one corrected Exec probe by exact relevant inputs and eight binaries per target), plus 468 optional results. Nine scoped guest ASan/UBSan checks, nine fresh stages, four authenticated BSD displays and nineteen real session integrations pass. Portable verification runs once (166 passes / eleven native-tool skips); all 26 manuals render once. Final line wrapping is verified by 33 identical production preprocessing pairs; 70 session and 11 final Exec entries pass. The Clang AMD64 fixture missed fortified open, then passes with corrected hooks and unchanged production hardening. Its 273 other results and withheld fresh install/staged checks are composed without a matrix rerun; frozen native sources/builds are preserved. [Source-bound report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/a4de23ee73ed024750e45248de8b4e125c2416eb/dev-docs/verification/VERIFICATION-2026-10-20-PROCESS-STARTUP.md). No matrix repeat for publication.
+
+Three inherited required OpenBSD AMD64 CI/SVG/legacy-property omissions and its full-install/two staged-geometry gap remain without retries. Native CPU, physical hardware/toolkit/compositor and release gates stay separate. Accepted performance reference PR132: 0/5 subsequent merged implementation checkpoints; no comparison due. Broad owners remain open; Actions disabled and VESA #93 deferred.
+
+## Accepted swallowed-client session replies
+
+[PR #134](https://github.com/gonz0w/fvwm-x/pull/134) is merged after PR133. Three related swallow-session repairs reject/free unrestored IDs and guard failed ID generation; preserve other pending peers during close callbacks/status sweeps; and answer property queries under the existing discard policy. The no-automatic-save policy and configuration syntax are preserved.
+
+One original full six-target/ten-profile run plus affected correction qualifies 2197 standard and 475 optional results: 2516 unaffected original passes plus 156 affected entries (122 fresh / 34 exact-input/eleven-binary focused results retained). Fifty callback entries, twenty pending-peer entries, nineteen real-session drivers with 57 clients and 171 property replies, fifteen scoped guest sanitizer entries, nine final stages and four final authenticated default BSD session displays pass. Five unchanged-main controls reproduce the defects. An initial-save proposal was withdrawn to avoid unmanaged checkpoint files; all original evidence is retained. No full matrix repeat. Portable verification runs once (166 passes / eleven skips); only affected manual pages receive scoped corrections after the original full render. [Report and receipt](https://github.com/gonz0w/fvwm-x/blob/0ec5fe18bdc2ca79616f33d9be5c2e49e131d12f/dev-docs/verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md).
+
+Three inherited required OpenBSD AMD64 omissions and its install/two staged-geometry gap remain without retries. Native CPU, physical hardware/toolkit/compositor and release gates remain separate. Performance reference PR132: 1/5 merged implementation checkpoints; no comparison due. Verified completed guest capture duplicates are retired, preserving canonical evidence/builds/stages/VMs. Broad owners stay open; Actions disabled and VESA #93 deferred.
+
+## Current core record dependency checkpoint
+
+[PR #135](https://github.com/gonz0w/fvwm-x/pull/135) is ready for review after merged PR134. Three module/icon-box/event-filter record boundaries reduce ARM GCC layout fanout from 68/216/37 to 30/6/2 objects, preserving exact record bodies, public APIs, all 24 include-only C statement/line counts and compiled behavior.
+
+One affected six-target/ten-profile checkpoint passes 185 native checks (19 focused retained / 166 fresh); 5981 object pairs, ten WM executables and 249 install-output pairs preserve allocated code/data or non-ELF bytes. Ten fresh scoped stages verify 249 identities. Registrations/order and compiler options remain unchanged. Portable verification runs once: 166 passes / eleven skips. Compile-only preparation attempts and BSD Linux-only-registration selection failures remain recorded; affected BSD continuations retain completed builds. [Report and receipt](https://github.com/gonz0w/fvwm-x/blob/09804e97a219968e731ad997e150c181ef4dfe51/dev-docs/verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md).
+
+PR134 broader runtime/default-X/scoped-sanitizer evidence retains its original source/profile scope without a full runtime repeat. Inherited OpenBSD omissions/full-install/geometry gaps and native CPU/hardware/toolkit/compositor/release gates remain open. Guest capture duplicates retire after canonical validation, preserving source/build/install/VM data. Performance reference PR132: 2/5 merged checkpoints; no comparison due. Actions disabled; VESA #93 deferred. Broad owners stay open.
+
+## Shared string copy component (PR #138)
+
+[PR #138](https://github.com/gonz0w/fvwm-x/pull/138) is ready for review after merged PR136. Three shared first-line/multiline/quoted-copy operations use checked size_t indices, retain distinct owned empty results and remove one quoted strlen rescan while preserving configuration bytes and newline/quote admission. An independent oracle exercises 9,602 inputs through all three operations per locale, plus NULL/ownership controls.
+
+One composed six-target checkpoint passes 2,208 standard entries across eight compiler profiles, 28 affected optional entries and one scoped guest ASan/UBSan driver with leaks enabled. Ten installs, twenty staged geometry probes, ten real-style probes and four authenticated default BSD displays pass, including both current OpenBSD 8.0 architectures. Original preparation/verifier failures remain recorded; successful full native results are retained, with only missing verification/display work continued. [Report and machine receipt](https://github.com/gonz0w/fvwm-x/blob/55438f753e9ad4048d19cfa35700f7a70c96a1cb/dev-docs/verification/VERIFICATION-2026-10-21-STRING-COPIES.md).
+
+Portable verification runs once: 169 passes / eleven native-capability skips. The final test formatting preserves tokens/assertion lines and all 22 allocated code/data sections. Verified guest capture duplicates are retired; canonical evidence, sources, reusable builds, stages and VM disks remain. Performance reference PR132 is at 4/5 merged implementation checkpoints; merging PR138 makes the next paired comparison due. This is a source-bound component result; broader audits, native-CPU/hardware/toolkit/compositor and release gates remain open. Historical 7.9 evidence retains its old scope; 7.9 is out of scope and VESA cause investigation stays deferred. Actions remains disabled.
+
+## Preparation evidence and due performance comparison (PR #139)
+
+[PR #139](https://github.com/gonz0w/fvwm-x/pull/139) is ready for review after merged #138. Three related CI/maintenance repairs preserve source archive modes under the private umask, publish atomic live and failed-phase status, and separate built/installed PNG loader proofs with a fresh-output option for repeated observations. Existing logs, loader assertions and ephemeral-key cleanup remain intact.
+
+One affected checkpoint passes 282 native policy cases across six targets, two fresh OpenBSD 8.0 runner cases and six real loader invocations / 20 consumer observations. AMD64 deliberately exits 23 after successful checks to verify failed-phase ownership, collection and teardown; ARM64 is the positive control. All 684 C/header inputs are unchanged from merged PR138. Both OpenBSD continuations preserve 807 original ELF outputs and 85 staged regular files. PR138's full WM qualification retains its exact source/profile scope without a rebuild or matrix rerun. Portable verification runs once: 177 passes / eleven native-capability skips. [Report and receipt](https://github.com/gonz0w/fvwm-x/blob/18e05e8db53ce639f696b0b6ad17b45be4e0c937/dev-docs/verification/VERIFICATION-2026-10-21-BSD-PREPARATION.md).
+
+The due five-checkpoint [PR132/138 performance comparison](https://github.com/gonz0w/fvwm-x/blob/18e05e8db53ce639f696b0b6ad17b45be4e0c937/dev-docs/verification/PERFORMANCE-2026-10-21.md) reuses existing Linux ARM64 GCC binaries. Timing ranges overlap, peak RSS matches and GNU text/read-only size falls 8 KiB, largely consistent with layout/fill rather than less executed work. The measured PR138 core/MFL are preserved as the next reference at 0/5 subsequent merged checkpoints; this tooling PR is unmerged. Canonical raw samples and size/source diagnostics are retained. Verified completed guest evidence duplicates are removed; source/build/install/performance references and VM disks remain. Broader owner, native-CPU/hardware/toolkit/compositor and release gates stay open; Actions remains disabled.
+
+
+## Deferred native Form exit cleanup, 2026-10-22
+
+This additional finding is **Later / future release** under the finite feature
+cutoff. It does not reopen or invalidate the earlier qualified component scope.
+The broad owner's existing project/milestone fields stay unchanged.
+
+The CFG-01 grouped-editor exercise reports fontconfig/Xft allocations at native
+Form process exit (3080 bytes / 67 allocations per exiting settings/notice Form).
+An independent existing native Form, without FvwmDesktop or new editor callbacks,
+reproduces the same allocation family (3048 bytes / 66 allocations). Native C
+and executable inputs are unchanged. The leak-enabled gate is not clean; no
+ASan memory-access or UBSan diagnostic occurs in that scoped capture. No
+suppression is added and no detector is disabled.
+
+Preserve the standalone reproducer and captures for the native Form/Flocale/Fft
+exit-cleanup owner. Keep this process-exit finding out of the current feature
+batch; a wider font ownership/runtime-growth audit is not established by it.
+Physical/native-CPU/release acceptance remains separate.
+
+[PR152 source-bound report](https://github.com/gonz0w/fvwm-x/blob/codex/grouped-desktop-settings/dev-docs/verification/VERIFICATION-2026-10-22-SETTINGS-EDITOR.md).

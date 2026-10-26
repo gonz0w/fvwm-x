@@ -6,12 +6,11 @@ and OpenBSD Xenocara on AMD64 and ARM64.
 We target simpler code, responsiveness, safer resources and FVWM 3.x
 configuration/theme compatibility. No compositor or Wayland backend.
 
-**Status:** development; cleanup and measured optimization before features.
-Builds require Go; installed utilities need no compiler or Python packages.
-[Build/upgrade notes](INSTALL.md).
-Go coordinates native desktop capture. M2 session evidence/limits and M3
-dependency ownership are accepted. M4 removes obsolete SVG code; M5 simplifies
-Script lifetimes and shared waits. Retirement and release work remain open.
+**Status:** in development toward R1, a highly configurable, fast, low-memory
+desktop lite. All currently planned features target R1; further maintenance
+is scoped into R2/R3. Builds require Go; installed utilities need no compiler
+or Python packages. [Build/upgrade notes](INSTALL.md).
+Accepted runtime, linkage, SVG and source-ownership improvements are retained.
 Recent work:
 
 - Atomic button updates, desktop settings/editor and configuration checking.
@@ -33,7 +32,7 @@ Full file-manager workflows, protected clipboard handoff, broader accessibility 
 remain open. Existing folder menus remain the default. OpenBSD follows new
 releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
 
-Next: [cleanup, measured optimization and modernization order](dev-docs/decisions/MODERNIZATION-ORDER-2026-10-25.md).
+Next: [three-release scope, Major/Minor work and acceptance goals](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
 
 - [Install and build](INSTALL.md)
 - [Priorities and evidence](dev-docs/PROJECT-TRACKER.md)

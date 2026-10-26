@@ -14,18 +14,13 @@ are native children of #41; #235–#236 are native children of #5. D3 owns scope
 worker policy and Qualification owns the verification additions. Existing
 maintenance pickup, statuses and qualification evidence remain separately owned.
 
-Current priority, 2026-10-25: **cleanup and measured optimization first**.
-The [modernization decision](decisions/MODERNIZATION-ORDER-2026-10-25.md) and
-[program #208](https://github.com/gonz0w/fvwm-x/issues/208) map twenty new issues
-and affected shared owners. #209 is the finite foundation handoff before feature
-pickup. Preserve completed M1/M2/M3 and accepted UI/IPC/browser components.
-
-The Project Work batch field retains M1–M8 and decision lanes, renames deferred
-performance to **O1 Measured optimization**, and organizes **F1 Shared contracts**,
-**F2 Native UI**, **F3 Workspace tools** and **F4 Services and effects**. Existing
-paused cards become **Future features**. Status remains Backlog for queued work;
-#29/#34 are P1 and the five performance owners return to milestone 04. Preserve
-native parent/blocker links and accepted evidence; no runtime work is claimed.
+Current release authority, 2026-10-26: the [three-release plan](decisions/RELEASE-PLAN-2026-10-26.md)
+and [finite contracts](decisions/RELEASE-CONTRACTS-2026-10-26.json) assign every
+open owner to R1/R2/R3 and Major/Minor breadth. R1 includes all currently planned
+features and evaluations; R2/R3 hold explicitly deferred maintenance. Milestones
+are releases; Stage below is technical ownership, not the release target.
+Old maintenance-first/modernization scheduling is historical. Closed components
+remain closed, and current statuses remain in the authoritative tracker/mirror.
 
 Stable ID mapping imported on 2026-10-13. This is not a second live backlog.
 The [tracker](PROJECT-TRACKER.md#execution-order) owns scope/execution;
@@ -35,66 +30,66 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 
 | Stage | Tracker ID | Issue |
 | --- | --- | --- |
-| 05 | HARDEN-01 | [#231 — Define measurable OpenBSD and portable hardening requirements](https://github.com/gonz0w/fvwm-x/issues/231) |
+| 05 | HARDEN-01 | [#231 — Publish the R1 hardening evidence matrix](https://github.com/gonz0w/fvwm-x/issues/231) |
 | 05 | BOX-02 | [#232 — Sandbox OpenBSD image workers with pledge and locked unveil](https://github.com/gonz0w/fvwm-x/issues/232) |
 | 05 | BOX-03 | [#233 — Constrain FreeBSD image workers with Capsicum descriptor rights](https://github.com/gonz0w/fvwm-x/issues/233) |
 | 05 | BOX-04 | [#234 — Restrict Linux image workers with detected syscall and filesystem controls](https://github.com/gonz0w/fvwm-x/issues/234) |
-| 01 | VERIFY-02 | [#235 — Verify installed C and Go binary protections on Linux and BSD](https://github.com/gonz0w/fvwm-x/issues/235) |
-| 01 | VERIFY-03 | [#236 — Exercise ownership and failure paths with OpenBSD allocator auditing](https://github.com/gonz0w/fvwm-x/issues/236) |
+| 01 | VERIFY-02 | [#235 — Verify installed R1 C and Go binary protections](https://github.com/gonz0w/fvwm-x/issues/235) |
+| 01 | VERIFY-03 | [#236 — Qualify the R2 OpenBSD allocator profile](https://github.com/gonz0w/fvwm-x/issues/236) |
 | 01 | IPC-01 | [#2 — Qualify the original module/IPC correctness repair](https://github.com/gonz0w/fvwm-x/issues/2) |
 | 01 | GEO-01 | [#1 — Qualify the original geometry correctness repair](https://github.com/gonz0w/fvwm-x/issues/1) |
-| 01 | SCRIPT-01 | [#4 — Complete Script ownership, resource and text/input work](https://github.com/gonz0w/fvwm-x/issues/4) |
-| 01 | VERIFY-01 | [#5 — Qualify remaining native and release checks locally](https://github.com/gonz0w/fvwm-x/issues/5) |
-| 01 | COMPAT-01 | [#3 — Maintain FVWM 3.x configuration compatibility](https://github.com/gonz0w/fvwm-x/issues/3) |
-| 02 | LIB-02 | [#11 — Review image and transitive dependency boundaries](https://github.com/gonz0w/fvwm-x/issues/11) |
-| 02 | LIB-07 | [#13 — Qualify X11, server and font dependencies](https://github.com/gonz0w/fvwm-x/issues/13) |
+| 01 | SCRIPT-01 | [#4 — Close the R2 Script resource and unwind manifest](https://github.com/gonz0w/fvwm-x/issues/4) |
+| 01 | VERIFY-01 | [#5 — Qualify the frozen R1 candidate](https://github.com/gonz0w/fvwm-x/issues/5) |
+| 01 | COMPAT-01 | [#3 — Qualify the R1 configuration corpus](https://github.com/gonz0w/fvwm-x/issues/3) |
+| 02 | LIB-02 | [#11 — Verify the R1 image and transitive dependency closure](https://github.com/gonz0w/fvwm-x/issues/11) |
+| 02 | LIB-07 | [#13 — Verify the R1 X11 and font dependency manifest](https://github.com/gonz0w/fvwm-x/issues/13) |
 | 02 | LIB-01 | [#10 — Qualify JSON import and encoding boundaries](https://github.com/gonz0w/fvwm-x/issues/10) |
 | 02 | LIB-03 | [#12 — Review optional Go dependency/toolchain reachability](https://github.com/gonz0w/fvwm-x/issues/12) |
-| 02 | MAINT-02 | [#14 — Complete verified maintenance-tool adoption](https://github.com/gonz0w/fvwm-x/issues/14) |
-| 02 | DATA-01 | [#6 — Complete checked data ownership and allocation work](https://github.com/gonz0w/fvwm-x/issues/6) |
-| 02 | IMAGE-01 | [#8 — Complete asynchronous image/resource ownership audit](https://github.com/gonz0w/fvwm-x/issues/8) |
-| 02 | FD-01 | [#7 — Complete descriptor admission and ownership audit](https://github.com/gonz0w/fvwm-x/issues/7) |
-| 02 | PROC-01 | [#15 — Audit owned subprocess construction and cleanup](https://github.com/gonz0w/fvwm-x/issues/15) |
-| 02 | INPUT-01 | [#9 — Complete bounded interaction and target-lifetime work](https://github.com/gonz0w/fvwm-x/issues/9) |
-| 02 | STANDARDS-01 | [#16 — Audit adopted protocol and UI requirements](https://github.com/gonz0w/fvwm-x/issues/16) |
+| 02 | MAINT-02 | [#14 — Finish the R2 adopted-tool manifest](https://github.com/gonz0w/fvwm-x/issues/14) |
+| 02 | DATA-01 | [#6 — Close the R2 checked-input ownership manifest](https://github.com/gonz0w/fvwm-x/issues/6) |
+| 02 | IMAGE-01 | [#8 — Close the R2 image-worker boundary manifest](https://github.com/gonz0w/fvwm-x/issues/8) |
+| 02 | FD-01 | [#7 — Close the R2 descriptor-constructor manifest](https://github.com/gonz0w/fvwm-x/issues/7) |
+| 02 | PROC-01 | [#15 — Close the R2 helper-process constructor manifest](https://github.com/gonz0w/fvwm-x/issues/15) |
+| 02 | INPUT-01 | [#9 — Close the R2 interaction-lifetime manifest](https://github.com/gonz0w/fvwm-x/issues/9) |
+| 02 | STANDARDS-01 | [#16 — Qualify the R1 adopted requirements matrix](https://github.com/gonz0w/fvwm-x/issues/16) |
 | 03 | PERL-PROTO-01 | [#20 — Qualify native Perl packet metadata and transport repair](https://github.com/gonz0w/fvwm-x/issues/20) |
 | 03 | PROMPT-01 | [#21 — Qualify Prompt/Command transport and installed clients](https://github.com/gonz0w/fvwm-x/issues/21) |
-| 03 | CI-01 | [#17 — Maintain local verification and source-bound repository review](https://github.com/gonz0w/fvwm-x/issues/17) |
+| 03 | CI-01 | [#17 — Publish the R1 local verification and review recipe](https://github.com/gonz0w/fvwm-x/issues/17) |
 | 03 | UTIL-01 | [#24 — Qualify standalone utility and XDG provider ports](https://github.com/gonz0w/fvwm-x/issues/24) |
 | 04 | QUEUE-01 | [#30 — Qualify constant-time queue drain ownership](https://github.com/gonz0w/fvwm-x/issues/30) |
 | 04 | OUTPUT-01 | [#26 — Qualify bounded asynchronous module output](https://github.com/gonz0w/fvwm-x/issues/26) |
 | 04 | OUTPUT-02 | [#27 — Qualify one total synchronous-output deadline](https://github.com/gonz0w/fvwm-x/issues/27) |
 | 04 | OUTPUT-03 | [#28 — Qualify bounded synchronous module startup](https://github.com/gonz0w/fvwm-x/issues/28) |
-| 04 | PERF-01 | [#29 — Measure and optimize the foundation before new features](https://github.com/gonz0w/fvwm-x/issues/29) |
-| 04 | DRAW-01 | [#25 — Complete bounded redraw and dirty-state ownership](https://github.com/gonz0w/fvwm-x/issues/25) |
+| 04 | PERF-01 | [#29 — Freeze and enforce R1 speed and memory budgets](https://github.com/gonz0w/fvwm-x/issues/29) |
+| 04 | DRAW-01 | [#25 — Decide the R2 dirty-state experiment](https://github.com/gonz0w/fvwm-x/issues/25) |
 | 04 | STACK-02 | [#32 — Qualify per-window stacking state publication](https://github.com/gonz0w/fvwm-x/issues/32) |
 | 04 | STACK-01 | [#31 — Complete stacking identity, walks and retirement work](https://github.com/gonz0w/fvwm-x/issues/31) |
-| 04 | CLEAN-01 | [#34 — Simplify verified core/module code and ownership](https://github.com/gonz0w/fvwm-x/issues/34) |
+| 04 | CLEAN-01 | [#34 — Close the R2 core/module ownership manifest](https://github.com/gonz0w/fvwm-x/issues/34) |
 | 04 | DEAD-01 | [#35 — Retire verified unused code and fallbacks](https://github.com/gonz0w/fvwm-x/issues/35) |
-| 04 | STYLE-01 | [#38 — Profile and simplify style application](https://github.com/gonz0w/fvwm-x/issues/38) |
-| 04 | STATE-01 | [#37 — Measure and bound state-burst processing](https://github.com/gonz0w/fvwm-x/issues/37) |
-| 04 | CACHE-01 | [#33 — Measure and improve shared resource caches](https://github.com/gonz0w/fvwm-x/issues/33) |
+| 04 | STYLE-01 | [#38 — Decide the R2 style-application optimization](https://github.com/gonz0w/fvwm-x/issues/38) |
+| 04 | STATE-01 | [#37 — Decide the R2 state-burst optimization](https://github.com/gonz0w/fvwm-x/issues/37) |
+| 04 | CACHE-01 | [#33 — Decide the R2 cache-cost experiment](https://github.com/gonz0w/fvwm-x/issues/33) |
 | 04 | LOOP-01 | [#36 — Consolidate core readiness and event-loop servicing](https://github.com/gonz0w/fvwm-x/issues/36) |
-| 04 | XIO-01 | [#39 — Reduce measured X11 query and synchronization costs](https://github.com/gonz0w/fvwm-x/issues/39) |
-| 05 | MONITOR-01 | [#19 — Close reconciled monitor and HiDPI runtime gaps](https://github.com/gonz0w/fvwm-x/issues/19) |
-| 05 | EWMH-01 | [#18 — Adopt verified EWMH correctness gaps](https://github.com/gonz0w/fvwm-x/issues/18) |
-| 05 | SELECTION-01 | [#22 — Complete selection role and transfer contracts](https://github.com/gonz0w/fvwm-x/issues/22) |
-| 05 | MODULE-SCALE-01 | [#51 — Audit native module scale consumers](https://github.com/gonz0w/fvwm-x/issues/51) |
-| 05 | BOX-01 | [#41 — Evaluate isolated helper sandbox boundaries](https://github.com/gonz0w/fvwm-x/issues/41) |
+| 04 | XIO-01 | [#39 — Decide the R2 X-query and barrier experiment](https://github.com/gonz0w/fvwm-x/issues/39) |
+| 05 | MONITOR-01 | [#19 — Qualify R1 hotplug, monitor roles and scale behavior](https://github.com/gonz0w/fvwm-x/issues/19) |
+| 05 | EWMH-01 | [#18 — Finish the R1 ICCCM/EWMH conformance rows](https://github.com/gonz0w/fvwm-x/issues/18) |
+| 05 | SELECTION-01 | [#22 — Qualify R1 selection transfer contracts](https://github.com/gonz0w/fvwm-x/issues/22) |
+| 05 | MODULE-SCALE-01 | [#51 — Qualify R1 native module scaling](https://github.com/gonz0w/fvwm-x/issues/51) |
+| 05 | BOX-01 | [#41 — Accept R2 per-mode worker capability policies](https://github.com/gonz0w/fvwm-x/issues/41) |
 | 05 | LIB-05 | [#47 — Review library boundaries and duplication](https://github.com/gonz0w/fvwm-x/issues/47) |
 | 05 | LINK-01 | [#49 — Declare target-owned dependencies and qualify reduced profiles](https://github.com/gonz0w/fvwm-x/issues/49) |
-| 05 | LIB-04 | [#46 — Consolidate SVG backends and evaluate renderer alternatives](https://github.com/gonz0w/fvwm-x/issues/46) |
-| 05 | LIB-06 | [#48 — Compare cJSON and yyjson on FVWM-X workloads](https://github.com/gonz0w/fvwm-x/issues/48) |
-| 05 | COMPAT-02 | [#42 — Remove Perl and retire replaced runtime components](https://github.com/gonz0w/fvwm-x/issues/42) |
+| 05 | LIB-04 | [#46 — Decide LunaSVG versus the R1 SVG baseline](https://github.com/gonz0w/fvwm-x/issues/46) |
+| 05 | LIB-06 | [#48 — Decide the R1 status serializer](https://github.com/gonz0w/fvwm-x/issues/48) |
+| 05 | COMPAT-02 | [#42 — Retire the R2 Perl runtime framework](https://github.com/gonz0w/fvwm-x/issues/42) |
 | 05 | RUNTIME-GO-01 | [#23 — Require Go and complete the Python-free runtime](https://github.com/gonz0w/fvwm-x/issues/23) |
-| 05 | LUA-01 | [#50 — Deliver Lua scripting and Perl migration examples](https://github.com/gonz0w/fvwm-x/issues/50) |
-| 05 | TOOLING-GO-01 | [#55 — Remove first-party Python and Perl tooling](https://github.com/gonz0w/fvwm-x/issues/55) |
+| 05 | LUA-01 | [#50 — Ship R1 isolated Lua and migration examples](https://github.com/gonz0w/fvwm-x/issues/50) |
+| 05 | TOOLING-GO-01 | [#55 — Retire the R3 first-party Python and Perl helper manifest](https://github.com/gonz0w/fvwm-x/issues/55) |
 | 05 | GEN-01 | [#44 — Qualify modern parser/scanner generation](https://github.com/gonz0w/fvwm-x/issues/44) |
-| 05 | PORT-01 | [#52 — Complete Linux/BSD portability and packaging](https://github.com/gonz0w/fvwm-x/issues/52) |
-| 05 | I18N-01 | [#45 — Extend qualified catalog maintenance to UI coverage](https://github.com/gonz0w/fvwm-x/issues/45) |
-| 05 | REPRO-01 | [#53 — Make development and source builds reproducible](https://github.com/gonz0w/fvwm-x/issues/53) |
-| 05 | DOCS-01 | [#43 — Improve installed manuals and defer website redesign](https://github.com/gonz0w/fvwm-x/issues/43) |
-| 05 | ARCHIVE-01 | [#40 — Retire predecessors only after verified replacement](https://github.com/gonz0w/fvwm-x/issues/40) |
+| 05 | PORT-01 | [#52 — Qualify the R1 Linux/BSD package manifest](https://github.com/gonz0w/fvwm-x/issues/52) |
+| 05 | I18N-01 | [#45 — Finish R1 source/catalog coverage](https://github.com/gonz0w/fvwm-x/issues/45) |
+| 05 | REPRO-01 | [#53 — Qualify reproducible offline R1 source builds](https://github.com/gonz0w/fvwm-x/issues/53) |
+| 05 | DOCS-01 | [#43 — Qualify installed R1 manuals and examples](https://github.com/gonz0w/fvwm-x/issues/43) |
+| 05 | ARCHIVE-01 | [#40 — Retire the qualified R2 predecessor manifest](https://github.com/gonz0w/fvwm-x/issues/40) |
 | 05 | XDG-01 | [#56 — Complete desktop/application interoperability](https://github.com/gonz0w/fvwm-x/issues/56) |
 | 05 | TEXT-01 | [#54 — Establish native text, shaping and input contracts](https://github.com/gonz0w/fvwm-x/issues/54) |
 | 06 | BUTTON-01 | [#58 — Add native button keyboard focus and navigation](https://github.com/gonz0w/fvwm-x/issues/58) |
@@ -119,9 +114,9 @@ Update mappings when IDs or owning stages change. See [workflow](GITHUB-WORKFLOW
 | 07 | SESSION-02 | [#77 — Extend the portable session with optional bus integration](https://github.com/gonz0w/fvwm-x/issues/77) |
 | 07 | NOTIFY-01 | [#76 — Add isolated optional native notifications](https://github.com/gonz0w/fvwm-x/issues/76) |
 | 07 | TRAY-01 | [#78 — Add native tray protocol integration](https://github.com/gonz0w/fvwm-x/issues/78) |
-| 08 | RELEASE-01 | [#79 — Review final release acceptance when requested](https://github.com/gonz0w/fvwm-x/issues/79) |
-| 09 | I18N-02 | [#80 — Polish all supported languages after the existing program](https://github.com/gonz0w/fvwm-x/issues/80) |
-| Later | FILE-ADVANCED-01 | [#81 — Evaluate deferred advanced file-manager candidates](https://github.com/gonz0w/fvwm-x/issues/81) |
+| 08 | RELEASE-01 | [#79 — Accept the R1 Configurable Desktop Lite candidate](https://github.com/gonz0w/fvwm-x/issues/79) |
+| 09 | I18N-02 | [#80 — Complete R1 localization for all eleven existing languages](https://github.com/gonz0w/fvwm-x/issues/80) |
+| 06 | FILE-ADVANCED-01 | [#81 — Decide and deliver accepted R1 file-manager candidates](https://github.com/gonz0w/fvwm-x/issues/81) |
 
 The bounded [repository-foundation review](https://github.com/gonz0w/fvwm-x/issues/82)
 is a child of CI-01. Twelve imported issues backfill accepted local components;
@@ -195,23 +190,35 @@ Core record dependency checkpoint: MAINT-02 #14 / CLEAN-01 #34; Three module/ico
 
 | Stage | Tracker ID | Issue |
 | --- | --- | --- |
-| later | MODERNIZE-01 | [#208 — Organize modernization behind cleanup and measured optimization](https://github.com/gonz0w/fvwm-x/issues/208) |
-| 04 | FOUNDATION-READY-01 | [#209 — Accept a bounded cleanup and optimization handoff before new features](https://github.com/gonz0w/fvwm-x/issues/209) |
-| later | GRAPHICS-01 | [#210 — Qualify shared native XRender drawing and resource contracts](https://github.com/gonz0w/fvwm-x/issues/210) |
-| later | GRAPHICS-02 | [#211 — Evaluate direct Cairo drawing and bounded native effects](https://github.com/gonz0w/fvwm-x/issues/211) |
-| later | LAYOUT-01 | [#212 — Build reusable responsive native panel and collection layouts](https://github.com/gonz0w/fvwm-x/issues/212) |
-| later | BIND-01 | [#213 — Reuse typed revisions and event-driven bindings across native views](https://github.com/gonz0w/fvwm-x/issues/213) |
-| later | THEME-02 | [#214 — Add composable semantic theme roles and independent appearance choices](https://github.com/gonz0w/fvwm-x/issues/214) |
-| later | ICON-01 | [#215 — Share named icon lookup and scalable icon-theme assets](https://github.com/gonz0w/fvwm-x/issues/215) |
-| later | ICON-02 | [#216 — Add explicit icon-font runs with named icons and reliable fallback](https://github.com/gonz0w/fvwm-x/issues/216) |
-| later | RELOAD-01 | [#217 — Reload supported components with last-working-state retention](https://github.com/gonz0w/fvwm-x/issues/217) |
-| later | INSPECT-01 | [#218 — Inspect effective configuration, bindings and theme provenance](https://github.com/gonz0w/fvwm-x/issues/218) |
-| later | ACTIONS-01 | [#219 — Build a shared command palette for windows, apps and actions](https://github.com/gonz0w/fvwm-x/issues/219) |
-| later | WORKSPACE-01 | [#220 — Add configurable hybrid layouts and snapping policies](https://github.com/gonz0w/fvwm-x/issues/220) |
-| later | WORKSPACE-02 | [#221 — Add named scratchpads with predictable summon and focus behavior](https://github.com/gonz0w/fvwm-x/issues/221) |
-| later | WORKSPACE-03 | [#222 — Remember monitor roles and restore scoped docking profiles](https://github.com/gonz0w/fvwm-x/issues/222) |
-| later | WORKSPACE-04 | [#223 — Add a keyboard-accessible workspace and window overview](https://github.com/gonz0w/fvwm-x/issues/223) |
-| later | EFFECTS-01 | [#224 — Prototype optional compositor-assisted workspace transitions](https://github.com/gonz0w/fvwm-x/issues/224) |
-| later | LOCK-01 | [#225 — Integrate qualified locker readiness, idle locking and suspend coordination](https://github.com/gonz0w/fvwm-x/issues/225) |
-| 05 | BUILD-PROFILES-01 | [#226 — Document portable build profiles and explain effective feature cost](https://github.com/gonz0w/fvwm-x/issues/226) |
-| 03 | FUZZ-01 | [#227 — Add bounded local fuzzing for owned parsers and transport boundaries](https://github.com/gonz0w/fvwm-x/issues/227) |
+| 08 | MODERNIZE-01 | [#208 — Accept the three-release roadmap and issue contracts](https://github.com/gonz0w/fvwm-x/issues/208) |
+| 01 | FOUNDATION-READY-01 | [#209 — Accept the finite R1 feature foundation](https://github.com/gonz0w/fvwm-x/issues/209) |
+| 06 | GRAPHICS-01 | [#210 — Qualify shared native XRender drawing and resource contracts](https://github.com/gonz0w/fvwm-x/issues/210) |
+| 06 | GRAPHICS-02 | [#211 — Evaluate direct Cairo drawing and bounded native effects](https://github.com/gonz0w/fvwm-x/issues/211) |
+| 06 | LAYOUT-01 | [#212 — Build reusable responsive native panel and collection layouts](https://github.com/gonz0w/fvwm-x/issues/212) |
+| 06 | BIND-01 | [#213 — Reuse typed revisions and event-driven bindings across native views](https://github.com/gonz0w/fvwm-x/issues/213) |
+| 06 | THEME-02 | [#214 — Add composable semantic theme roles and independent appearance choices](https://github.com/gonz0w/fvwm-x/issues/214) |
+| 06 | ICON-01 | [#215 — Share named icon lookup and scalable icon-theme assets](https://github.com/gonz0w/fvwm-x/issues/215) |
+| 06 | ICON-02 | [#216 — Add explicit icon-font runs with named icons and reliable fallback](https://github.com/gonz0w/fvwm-x/issues/216) |
+| 06 | RELOAD-01 | [#217 — Reload supported components with last-working-state retention](https://github.com/gonz0w/fvwm-x/issues/217) |
+| 06 | INSPECT-01 | [#218 — Inspect effective configuration, bindings and theme provenance](https://github.com/gonz0w/fvwm-x/issues/218) |
+| 06 | ACTIONS-01 | [#219 — Build a shared command palette for windows, apps and actions](https://github.com/gonz0w/fvwm-x/issues/219) |
+| 06 | WORKSPACE-01 | [#220 — Add configurable hybrid layouts and snapping policies](https://github.com/gonz0w/fvwm-x/issues/220) |
+| 06 | WORKSPACE-02 | [#221 — Add named scratchpads with predictable summon and focus behavior](https://github.com/gonz0w/fvwm-x/issues/221) |
+| 06 | WORKSPACE-03 | [#222 — Remember monitor roles and restore scoped docking profiles](https://github.com/gonz0w/fvwm-x/issues/222) |
+| 06 | WORKSPACE-04 | [#223 — Add a keyboard-accessible workspace and window overview](https://github.com/gonz0w/fvwm-x/issues/223) |
+| 07 | EFFECTS-01 | [#224 — Prototype optional compositor-assisted workspace transitions](https://github.com/gonz0w/fvwm-x/issues/224) |
+| 07 | LOCK-01 | [#225 — Integrate qualified locker readiness, idle locking and suspend coordination](https://github.com/gonz0w/fvwm-x/issues/225) |
+| 05 | BUILD-PROFILES-01 | [#226 — Publish R1 profiles and resource costs](https://github.com/gonz0w/fvwm-x/issues/226) |
+| 03 | FUZZ-01 | [#227 — Qualify the finite R2 local fuzz corpus](https://github.com/gonz0w/fvwm-x/issues/227) |
+
+## Release-specific finite owners — 2026-10-26
+
+The release contract manifest contains these finite parked/acceptance owners.
+
+- [RELEASE-02: Accept the R2 maintenance and runtime-simplification candidate — #259](https://github.com/gonz0w/fvwm-x/issues/259): R2, Major.
+
+- [DATA-PATH-01: Resolve the parked pathname-construction proposal — #257](https://github.com/gonz0w/fvwm-x/issues/257): R3, Major.
+
+- [MODULE-BACKER-01: Resolve the parked admission and ownership checkpoint — #258](https://github.com/gonz0w/fvwm-x/issues/258): R3, Major.
+
+- [RELEASE-03: Accept the R3 developer-tooling and deferred-work candidate — #260](https://github.com/gonz0w/fvwm-x/issues/260): R3, Major.

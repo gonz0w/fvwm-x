@@ -1,5 +1,13 @@
 # Final public-release gate
 
+Current release structure: [R1/R2/R3 plan](decisions/RELEASE-PLAN-2026-10-26.md).
+#79 owns R1 acceptance; later releases have their own finite candidate gates.
+The user authorized planning, not publication.
+R1 uses the accepted applicable MAINT-02/ARCHIVE-01 subsets plus #52/#53/#43;
+required artifact/install/contributor rows do not require whole R2 #14/#40
+closure or R3 #55 migration. The actual R1 package/manual/source contracts
+remain required.
+
 Recorded 2026-10-05 at the user's request. RELEASE-01 is the last execution
 stage in [PROJECT-TRACKER.md](PROJECT-TRACKER.md#execution-order). Activate it
 after the planned coding work has reached its required verified checkpoints

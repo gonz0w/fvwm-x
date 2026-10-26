@@ -2,6 +2,27 @@ name: Roadmap work item
 description: Scope a change or qualification outcome against the project tracker.
 labels: ["type:tracking", "status:backlog"]
 body:
+  - type: dropdown
+    id: release
+    attributes:
+      label: Proposed target release
+      description: New feature intake starts after frozen R1 unless the owner approves a scope change. Triage assigns the actual milestone.
+      options:
+        - R2 - next release intake
+        - R3 - later scoped work
+        - R1 - approved scope change or release blocker
+    validations:
+      required: true
+  - type: dropdown
+    id: work_size
+    attributes:
+      label: Work breadth
+      description: Independent of priority, severity and estimated days.
+      options:
+        - Major - capability, migration, cross-component contract or broad qualification
+        - Minor - bounded cleanup, documentation, polish or local profile/test work
+    validations:
+      required: true
   - type: input
     id: tracker
     attributes:
@@ -12,18 +33,27 @@ body:
     id: outcome
     attributes:
       label: Outcome and boundaries
+      description: Define one deliverable, its finite source/workload/consumer manifest, exclusions and stopping point. Preserve accepted components.
     validations:
       required: true
   - type: textarea
     id: acceptance
     attributes:
       label: Acceptance criteria and local verification
+      description: List observable checks and result artifacts needed to close. Avoid open-ended audits or requiring every broad owner to finish.
     validations:
       required: true
   - type: textarea
     id: dependencies
     attributes:
       label: Prerequisites, decisions and existing evidence
-      description: Link actual blockers and preserve configuration/dependency decisions.
+      description: Link actual prerequisite contracts and accepted evidence. A later-release umbrella is not automatically a blocker.
+    validations:
+      required: true
+  - type: textarea
+    id: resource_cost
+    attributes:
+      label: Speed, memory and dependency impact
+      description: Identify reference profiles, enabled processes, idle behavior, resource budgets and new dependency costs. For non-runtime work, explain why this is inapplicable.
     validations:
       required: true

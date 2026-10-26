@@ -1,0 +1,2280 @@
+{
+  "schema_version": 1,
+  "decision_date": "2026-10-26",
+  "purpose": "Frozen three-release issue contracts. PROJECT-TRACKER.md owns live execution; GitHub mirrors these approved finite outcomes. This record is not a second independent status queue.",
+  "releases": {
+    "R1": {
+      "title": "R1 — Configurable Desktop Lite",
+      "goal": "Ship all currently planned desktop features, finish existing evaluations and implement accepted choices, with bounded resource use and required release quality."
+    },
+    "R2": {
+      "title": "R2 — Maintenance and Runtime Simplification",
+      "goal": "Finish the finite remaining source/runtime legacy cleanup, measured optimization and worker-hardening contracts, preserving R1 features."
+    },
+    "R3": {
+      "title": "R3 — Developer Tooling and Deferred Work",
+      "goal": "Complete the finite first-party developer-tool migration and eligible parked followups; later new features enter only through explicit finite intake."
+    }
+  },
+  "classification": {
+    "Major": "Substantive feature, cross-component/native-contract change, migration or broad qualification. This is work breadth, not severity or a time estimate.",
+    "Minor": "Bounded local cleanup, documentation, polish or test/profile task with no broad architecture migration. R1 Minor tasks are still release requirements."
+  },
+  "evaluation_policy": "Finish each existing evaluation in R1. Adopt requires qualified accepted integration before the affected R1 contract closes; defer/reject may retain the current baseline with explicit rationale and finite followup. No dependency is adopted merely by scheduling.",
+  "issues": [
+    {
+      "number": 3,
+      "key": "3",
+      "title": "COMPAT-01: Qualify the R1 configuration corpus",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Qualify the R1 release candidate against a frozen representative FVWM 3.x configuration corpus.",
+      "acceptance": [
+        "Freeze named configurations covering command/directive names and arguments, bindings, functions, theme directives and configured native-module behavior, with expected observable results.",
+        "Run affected syntax/runtime and independent real-X checks for the six supported OS/architecture targets; map every corpus row to source-bound pass, reproduced defect or explicitly accepted exception.",
+        "Resolve configuration breaks or record the required explicit compatibility decision and migration before accepting a changed row.",
+        "Publish the completed corpus/evidence register and reconcile release-facing compatibility documentation."
+      ],
+      "non_goals": [
+        "No unchanged internal ABI/protocol, exact legacy pixels or incidental timing guarantee; no reopening accepted components. Approved Perl retirement is a separate R2 exception."
+      ],
+      "accepted_work": "Representative six-platform baseline and clarified configuration-only compatibility scope remain accepted; reuse exact applicable evidence.",
+      "coordination": [
+        5,
+        16,
+        18,
+        19,
+        22,
+        51
+      ],
+      "wave": "R1 release qualification after affected features",
+      "original_body_sha256": "10cec30bf2f50a6575807e6c96a8a1bc302fef685d6d7173907417783a023ea5"
+    },
+    {
+      "number": 5,
+      "key": "5",
+      "title": "VERIFY-01: Qualify the frozen R1 candidate",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete the finite R1 local native and release verification register for the exact release candidate.",
+      "acceptance": [
+        "Freeze a manifest of required R1 policy, nested-X, installed-artifact and six-target acceptance entries, with exact sources, profiles and dependencies.",
+        "Execute required native Linux ASan/UBSan and real-X coverage; distinguish native CPU, emulated, physical hardware/toolkit/compositor and unsupported results per row.",
+        "Retain original failed/skipped/omitted results and give every required gap a repaired owner result or explicit release disposition; never count a retry as erasing its original failure.",
+        "Compose accepted unchanged evidence and affected completions into one release register; verify identities before reusing results.",
+        "Link #235 installed protection evidence and #29 budget outcomes; keep optional #227 fuzzing and #236 allocator expansion outside this finite R1 blocker set."
+      ],
+      "non_goals": [
+        "No hosted runners, status publishers, automatic full matrix per story, unbounded audit, publication or claim that emulation establishes native execution."
+      ],
+      "accepted_work": "Existing local profiles, source-bound composed checkpoints and newer OpenBSD 8.0 baseline remain accepted within their recorded limits; historical 7.9 gaps are not fresh baseline defects.",
+      "coordination": [
+        3,
+        17,
+        29,
+        52,
+        53,
+        235
+      ],
+      "wave": "R1 accumulated acceptance checkpoint",
+      "original_body_sha256": "c705faa6c0ba9db1a2c7994cef0381c74f5ae50d99ee74daeca5c1ed59cd644c"
+    },
+    {
+      "number": 11,
+      "key": "11",
+      "title": "LIB-02: Verify the R1 image and transitive dependency closure",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Qualify the exact image/transitive dependency closure shipped by R1.",
+      "acceptance": [
+        "Freeze installed image-worker/core dependency manifests for supported minimal, desktop and opt-in graphics profiles on all six targets, including static and transitive components.",
+        "Perform one advisory/patch-provenance reconciliation at the candidate snapshot; record package/source identities, applicable fixes, unknowns and owning dispositions.",
+        "Confirm the already approved patched PNG baseline and optional-format guards remain effective in supported build/install profiles.",
+        "Test dependency-affecting changes with relevant malformed/refusal and installed image consumers; record platform availability and full incremental/runtime cost.",
+        "Publish candidate dependency requirements and unresolved release decisions without treating version strings or backport assertions as vulnerability proof."
+      ],
+      "non_goals": [
+        "No unbounded transitive audit, replacement decoder/library adoption or mandatory new package by inference."
+      ],
+      "accepted_work": "Six-target image inventories, PNG recovery and approved patched PNG qualification remain accepted; reuse unchanged artifacts with exact identity.",
+      "coordination": [
+        8,
+        13,
+        226
+      ],
+      "wave": "R1 dependency/package qualification",
+      "original_body_sha256": "4eaef38d34cae33cf897a1954398b7c24d60a9985c2df9329d3b057cc357ec17"
+    },
+    {
+      "number": 13,
+      "key": "13",
+      "title": "LIB-07: Verify the R1 X11 and font dependency manifest",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Qualify the R1 X11/server/font dependency and platform support manifest.",
+      "acceptance": [
+        "Freeze actual X11/XPM/font/server package and binary identities for Linux, FreeBSD Xorg and current OpenBSD Xenocara on AMD64/ARM64.",
+        "Reconcile applicable adopted dependency requirements/advisories and vendor patch proof once at the release snapshot; disposition every manifest row.",
+        "Run affected server/font/configuration and installed native-X consumers where the selected package or platform contract changes.",
+        "Publish supported baselines, required packages, unavailable features and retained physical/toolkit/compositor gaps.",
+        "Link dependency/protection evidence to #11/#235 without assuming an OS default or package version proves runtime enforcement."
+      ],
+      "non_goals": [
+        "No server/compositor rewrite, toolkit replacement, native Wayland or repeated historical 7.9 qualification."
+      ],
+      "accepted_work": "Reviewed XPM fixes, signed OpenBSD source/update proof and accepted OpenBSD 8.0 baseline remain source-scoped accepted evidence.",
+      "coordination": [
+        11,
+        52,
+        235
+      ],
+      "wave": "R1 platform/dependency qualification",
+      "original_body_sha256": "65237f53d4f2fdd2c3668484801b87038b4dcad8ace934006d812dfca3207bd5"
+    },
+    {
+      "number": 16,
+      "key": "16",
+      "title": "STANDARDS-01: Qualify the R1 adopted requirements matrix",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Close the finite R1 adopted-protocol requirement register with truthful advertised capabilities.",
+      "acceptance": [
+        "Freeze the existing forty protocol requirements plus named R1 additions, pinning specification revisions, owner, required/optional status and independent oracle.",
+        "Map accepted evidence once and assign each remaining required row to its actual #18/#19/#22 or feature owner.",
+        "Complete required adopted rows with independent client/native-X results or explicit release disposition; advertised atoms/capabilities must match observed implementation.",
+        "Publish the final requirement/evidence register with optional/unimplemented clauses and coverage limitations explicit."
+      ],
+      "non_goals": [
+        "No whole-standard compliance badge, requirement inventory restart or expansion into unrelated optional protocol families."
+      ],
+      "accepted_work": "PR137 fixed forty-requirement inventory, first-icon WM_STATE fix and accepted stage3 role/atom evidence remain accepted.",
+      "coordination": [
+        18,
+        19,
+        22,
+        51
+      ],
+      "wave": "R1 protocol closure after feature adoption",
+      "original_body_sha256": "e526f50531b68b7e492626350bdfe6f6fe3ee7bf3183e23a3bbca2e4d5f15925"
+    },
+    {
+      "number": 17,
+      "key": "17",
+      "title": "CI-01: Publish the R1 local verification and review recipe",
+      "release": "R1",
+      "work_size": "Minor",
+      "end_goal": "Leave one usable local, source-bound verification and repository review recipe for the R1 candidate.",
+      "acceptance": [
+        "Freeze local profile/asset/source-manifest entry points needed by the R1 required register and document exact invocations and prerequisites.",
+        "Validate asset preflight, source/binary/install identity checks and failed/skipped result capture using meaningful positive and negative controls.",
+        "Compose existing accepted receipts with affected results; retain broader historical failures rather than rerunning unchanged suites to obtain green output.",
+        "Reconcile local review/evidence links, issue/Project mirror state and signing/DCO delivery instructions for the candidate."
+      ],
+      "non_goals": [
+        "No GitHub Actions, hosted/self-hosted runner, success-status publisher, repeated matrix for PR creation or new tool-language migration."
+      ],
+      "accepted_work": "Local setup, fixed input preflight, owned QEMU runner, source-bound evidence and accepted profile checkpoints remain accepted; native execution remains #5.",
+      "coordination": [
+        5,
+        53,
+        226
+      ],
+      "wave": "R1 verification infrastructure readiness",
+      "original_body_sha256": "e1e991cb8e55fd87df2665d6855cae3150b32739c89b74e0c4d33ec523f9146c"
+    },
+    {
+      "number": 18,
+      "key": "18",
+      "title": "EWMH-01: Finish the R1 ICCCM/EWMH conformance rows",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Finish the adopted R1 ICCCM/EWMH correctness rows and advertise only supported behavior.",
+      "acceptance": [
+        "Freeze unresolved EWMH rows from the accepted requirement register, including required work-area/strut and multi-monitor fullscreen behavior selected for R1.",
+        "Map already qualified atoms, desktop/window state and client-order/extents evidence; implement only verified remaining gaps under existing geometry/state owners.",
+        "Use independent clients to verify request validation, advertised atoms, observer-visible publication and client destruction/error paths.",
+        "Qualify affected native-X and supported six-target behavior, preserving actual-pixel geometry and command ordering.",
+        "Close each frozen row with evidence or an explicit release disposition and update installed protocol documentation."
+      ],
+      "non_goals": [
+        "No speculative defect claim, second geometry/state authority, optional unselected EWMH expansion or generic burst optimization."
+      ],
+      "accepted_work": "Accepted atom/WM_STATE/state publication components and fixed protocol inventory remain accepted; initial empty work-area evidence is retained with its actual repair owner.",
+      "coordination": [
+        16,
+        19,
+        25
+      ],
+      "wave": "R1 protocol/monitor adoption",
+      "original_body_sha256": "eb7165d544fa4b87be410c764249238f5b24d4278a321372a33a63a4303b7e48"
+    },
+    {
+      "number": 19,
+      "key": "19",
+      "title": "MONITOR-01: Qualify R1 hotplug, monitor roles and scale behavior",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver the reconciled monitor/HiDPI runtime behavior promised by the R1 desktop.",
+      "acceptance": [
+        "Freeze the existing twelve monitor requirement rows and identified runtime gaps, retaining historical namespace and evidence links.",
+        "Complete selected selective scale reload, hotplug/removal/output-loss recovery and diagnostics/simulation rows using existing topology/transition policies.",
+        "Test single/mixed-scale monitors, removal during interactions, zero-monitor root fallback and scale/cache generation invalidation with actual-X and relevant physical checks.",
+        "Qualify supported targets and document native/emulated/physical limits without inferring hardware acceptance from simulation.",
+        "Publish per-row results and installed configuration guidance without scaling arbitrary client pixels."
+      ],
+      "non_goals": [
+        "No restart of completed geometry work, native Wayland, compositor or parallel monitor authority."
+      ],
+      "accepted_work": "Existing topology/transition/output-loss and completed geometry checkpoints remain accepted; use fixed reconciliation rows rather than archived plan scope as new tasks.",
+      "coordination": [
+        16,
+        18,
+        51
+      ],
+      "wave": "R1 monitor foundation before scale-dependent features",
+      "original_body_sha256": "efce333719ffc338538abc6947804c711abbd1f71875b212ddadd641fe8cce35"
+    },
+    {
+      "number": 22,
+      "key": "22",
+      "title": "SELECTION-01: Qualify R1 selection transfer contracts",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete the finite selection transfer contracts required by native R1 clipboard/desktop consumers.",
+      "acceptance": [
+        "Freeze participating core/Script/Form and R1 clipboard/XDND role/target rows from the accepted role register, including manager/SAVE_TARGETS where adopted.",
+        "Implement unresolved required transfer rows through existing bounded property/selection transport and explicit asynchronous owners.",
+        "Use independent clients to verify target negotiation, timestamps, INCR chunks, cancellation/owner death, malformed lengths and flood bounds.",
+        "Qualify actual native-X consumers and document each participating target, refusal behavior and resource limit.",
+        "Close the frozen transfer register with source-bound evidence; link clipboard-manager and dropped-file actions to their separate feature owners."
+      ],
+      "non_goals": [
+        "No generic WM drag interception, daemon implied by an audit, dropped-file autorun or duplicate clipboard/transport authority."
+      ],
+      "accepted_work": "Stage3 role reconciliation, bounded DATA selection transport and PR145 startup handoff subset remain accepted.",
+      "coordination": [
+        16,
+        18
+      ],
+      "wave": "R1 selection foundation before clipboard/desktop consumers",
+      "original_body_sha256": "d1adbe5a9393b0164b210c4602ea2d1df6b47098ae87431da2cc11de7989fe69"
+    },
+    {
+      "number": 29,
+      "key": "29",
+      "title": "PERF-01: Freeze and enforce R1 speed and memory budgets",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Freeze and enforce a finite release performance/resource budget for minimal, desktop and opt-in extras profiles.",
+      "acceptance": [
+        "Before feature pickup, freeze a versioned budget manifest naming exact profile manifests, core-plus-module/service process sets, workload inputs, host/OS/compiler identity, sampling method and repeat policy.",
+        "Populate and accept measurable numeric caps for steady/peak RSS, idle wakeups/CPU, startup, input/geometry latency, redraw/X requests, installed code/data and dependency costs from recorded baseline evidence; do not invent measurements, dates or arbitrary caps in planning.",
+        "Measure the same frozen minimal, desktop and each opt-in-extra workload at baseline and the R1 feature/release checkpoints; publish distributions/raw receipts and per-feature incremental plus complete cost.",
+        "Assign each exceeded cap a bounded owning fix, explicit accepted budget revision with rationale, or release-blocking disposition; complete the finite budget table before release acceptance.",
+        "Reuse the existing periodic comparison cadence and accepted optimizations; reserve optional cache/state/style/X-query hypotheses for R2 unless a measured R1 cap violation selects a specific fix."
+      ],
+      "non_goals": [
+        "No endless optimization programme, timing-ratio acceptance test, mandatory library/backend replacement or assumption a time budget preempts a blocking handler."
+      ],
+      "accepted_work": "Accepted queue/output/core-performance improvements and periodic source-bound references remain accepted; latest PR253 reference and checkpoint counts must be retained from the tracker, without inventing speed gains.",
+      "coordination": [
+        226,
+        5
+      ],
+      "wave": "R1 foundation budget freeze; per-feature checkpoints; final release budget",
+      "original_body_sha256": "f81f53b6d496072147cbf9e1ccc8d9531b8eb42ac7579230ec166f8ba1653e5e"
+    },
+    {
+      "number": 43,
+      "key": "43",
+      "title": "DOCS-01: Qualify installed R1 manuals and examples",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship accurate installed R1 manuals, examples and package documentation.",
+      "acceptance": [
+        "Freeze the R1 command/module/feature/profile/manual manifest and map each shipped interface to one reviewed AsciiDoc source and installed man page.",
+        "Update feature/options/limits, configuration examples, supported platforms, dependency costs and migration notices to match implemented behavior.",
+        "Render/lint affected roff pages, check references and readable examples, and verify exact staged package inclusion across supported packaging profiles.",
+        "Keep optional lightweight HTML derived from the same sources and record unavailable render/lint tooling and unresolved manual defects.",
+        "Publish the finite manual coverage/results register and user onboarding/install/trial/upgrade instructions for #79."
+      ],
+      "non_goals": [
+        "No website redesign/framework, mandatory HTML, blanket ASD-STE100 claim or unrelated developer-doc rewrite."
+      ],
+      "accepted_work": "Existing shared manual tooling and developer documentation migration remain accepted; they do not imply a completed installed-manual rewrite.",
+      "coordination": [
+        3,
+        52,
+        226
+      ],
+      "wave": "R1 documentation alongside features; final package checkpoint",
+      "original_body_sha256": "18edd4fbf62b12d1c5a6e25442eeae7b13b35b150eec0679605342ab0adcc5e7"
+    },
+    {
+      "number": 45,
+      "key": "45",
+      "title": "I18N-01: Finish R1 source/catalog coverage",
+      "release": "R1",
+      "work_size": "Minor",
+      "end_goal": "Complete a finite localization/UI coverage pass for the R1 shipped interface manifest.",
+      "acceptance": [
+        "Freeze shipped R1 UI string surfaces and named representative locale/font/input cases; reuse the accepted catalog extraction/selection pipeline.",
+        "Extract new first-party strings and verify catalogs reflect current sources without reopening accepted Language-header/export tooling.",
+        "Test selected translated/native-X surfaces for layout, Unicode/font fallback, input and missing-translation behavior with the owning TEXT/UI contracts.",
+        "Publish every manifest row as covered, intentionally untranslated/fallback or explicitly deferred with impact, and verify installed selected catalogs.",
+        "Keep language polish separate from required functional locale/input defects and record exact platform/font limitations."
+      ],
+      "non_goals": [
+        "No translation of every language, whole catalog-tool rewrite, implicit font/shaping dependency adoption or claim catalog extraction proves UI behavior."
+      ],
+      "accepted_work": "Qualified LINGUAS/catalog maintenance, approved header corrections, deterministic export and staged catalog evidence remain accepted.",
+      "coordination": [
+        43,
+        51
+      ],
+      "wave": "R1 UI/localization checkpoint after text consumers",
+      "original_body_sha256": "1a5b2047ef9628beaf68e09d2f086ff488a8725a9da39804f596f1089bb8a879"
+    },
+    {
+      "number": 46,
+      "key": "46",
+      "title": "LIB-04: Decide LunaSVG versus the R1 SVG baseline",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete the bounded LunaSVG comparison and qualify an adopted R1 choice, or retain the baseline with an explicit defer/reject decision.",
+      "acceptance": [
+        "Freeze current librsvg/Cairo and LunaSVG variants plus a representative finite SVG/SVGZ, relative-resource/font, alpha/options and scale corpus.",
+        "Compare visual/feature/refusal behavior through an isolated prototype while preserving the maintained production worker and SVG-disabled baseline.",
+        "Measure decode latency/CPU/RSS, output/install size and complete direct/transitive/toolchain/license cost for Linux/FreeBSD/OpenBSD AMD64/ARM64, marking unavailable/emulated results.",
+        "Report code removed versus integration/ownership complexity added and issue an adopt/defer/reject decision with finite migration gaps; defer/reject retains the maintained baseline and names any later follow-up.",
+        "If adopted, implement the selected renderer at a separate bounded R1 integration checkpoint and qualify supported formats/resources/fonts, worker limits/ownership, scale/alpha, disabled/raster fallback, installed consumers and six-target costs before switching the production default."
+      ],
+      "non_goals": [
+        "No automatic replacement before the measured decision, blanket C++/mandatory dependency adoption, whole-core renderer rewrite or whole-theme matrix after every prototype edit. Accepted integration receives its affected combined qualification."
+      ],
+      "accepted_work": "M4 obsolete-backend consolidation under #183 is separately qualified/accepted and must not be restarted; existing modern path remains authoritative.",
+      "coordination": [
+        8,
+        11,
+        226
+      ],
+      "wave": "R1 bounded renderer evaluation; accepted integration before dependent feature/release acceptance",
+      "original_body_sha256": "061ab0f8573dea8c9f4d3fe229d4cc58b77ef317eb97c08afd1897c7dbc072a2"
+    },
+    {
+      "number": 48,
+      "key": "48",
+      "title": "LIB-06: Decide the R1 status serializer",
+      "release": "R1",
+      "work_size": "Minor",
+      "end_goal": "Complete the bounded status-serializer comparison and qualify an adopted R1 choice, or retain patched cJSON with explicit defer/reject.",
+      "acceptance": [
+        "Freeze current patched cJSON and yyjson variants plus ordinary/stress MFL status output and refusal corpus identities.",
+        "Compare observable keys/order, Unicode replacement/escaping, numeric extremes, allocation failure and finite output bounds with independent expected outputs.",
+        "Measure allocation/peak memory, CPU/latency, encoded/installed bytes and full dependency/license/maintenance/source cost across six targets, distinguishing unavailable/emulated results.",
+        "Publish code simplification versus added integration cost and adopt/defer/reject; defer/reject retains the current serializer and names any finite later follow-up.",
+        "If adopted, integrate the selected serializer during R1, update shipped consumers/build/license/dependency metadata and qualify exact bounded status outputs, failure/refusal behavior and all six supported targets before retiring the reference."
+      ],
+      "non_goals": [
+        "No automatic JSON replacement before the decision, broadened IPC schema or age-based defect claim; accepted integration remains bounded to the existing serializer contract."
+      ],
+      "accepted_work": "Current bounded status serializer and accepted IPC consumers remain baseline; evaluation scope is approved, runtime adoption is not.",
+      "coordination": [
+        226,
+        29
+      ],
+      "wave": "R1 bounded JSON dependency evaluation; accepted integration before dependent feature/release acceptance",
+      "original_body_sha256": "2783303bacc96894c7576cf81a51291460c005279121bae970440ebfc9c7196e"
+    },
+    {
+      "number": 50,
+      "key": "50",
+      "title": "LUA-01: Ship R1 isolated Lua and migration examples",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship an isolated, bounded Lua scripting host with working event automation, configurable policy and a Perl-to-Lua migration guide.",
+      "acceptance": [
+        "Compare Shopify/go-lua and maintained official Lua against the same language/library/coroutine/identity workload; record maintenance, licenses, embedding/FFI cost, instruction/memory/host-call limits and an explicit pinned engine decision.",
+        "Implement versioned typed actions/events/settings using accepted IPC with opaque IDs, serial execution, bounded requests/callbacks, cancellation, reload generations and clean shutdown.",
+        "Install a useful event automation and configurable policy example that run without Perl; document migration of the selected former Perl extension use cases and unsupported cases.",
+        "Prove malformed input, exhaustion, stale/reloaded/failed callbacks and teardown cannot strand work or leak protected plaintext/keys into script payloads.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence. Qualify at least one useful real-X consumer."
+      ],
+      "non_goals": [
+        "No script execution inside the authoritative X thread; no Perl emulation, replacement of FVWM/FvwmScript syntax or automatic native embedding. Additional scripting APIs require a new bounded contract."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use the accepted #70 action/event subset and #60 settings schema; #42 owns Perl retirement. Optional bus scripting consumes only the selected #77 contract, not all session services."
+      ],
+      "wave": "R1-W3 scripting",
+      "original_body_sha256": "7800b44b04eec74d15d4dddbd8f046a6f1dc7f4d3ae01a909dfe2a4f92378896"
+    },
+    {
+      "number": 51,
+      "key": "51",
+      "title": "MODULE-SCALE-01: Qualify R1 native module scaling",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Qualify native module scale consumers promised by the R1 desktop.",
+      "acceptance": [
+        "Freeze the shipped native-module UI/geometry consumer list with each monitor/scale packet field, logical UI owner and actual-pixel boundary.",
+        "Map accepted monitor/scale behavior and identify only concrete missing R1 consumer behavior; implement gaps through existing metadata/generation owners.",
+        "Test 1x/fractional/mixed scale, monitor movement/removal and reload with relevant actual-X native modules, preserving client and packet geometry in actual pixels.",
+        "Qualify affected six-target consumers and document configuration semantics, supported fallback behavior and physical gaps.",
+        "Complete every consumer manifest row with evidence or explicit release disposition, coordinating Perl metadata while it remains installed until R2 retirement."
+      ],
+      "non_goals": [
+        "No new parallel protocol/monitor authority, arbitrary client-pixel scaling or reopening completed monitor geometry work."
+      ],
+      "accepted_work": "Existing additive metadata, core geometry/generations and accepted module font/modal/readiness work remain accepted; public installed consumers change together.",
+      "coordination": [
+        19,
+        16,
+        3
+      ],
+      "wave": "R1 shared scale contracts before new native UI",
+      "original_body_sha256": "5528963283f67d51444426654d60c4082c66d47098f27179f13c9de37479b6dd"
+    },
+    {
+      "number": 52,
+      "key": "52",
+      "title": "PORT-01: Qualify the R1 Linux/BSD package manifest",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship a finite qualified Linux/BSD source/install package set for R1.",
+      "acceptance": [
+        "Freeze supported OS/architecture/profile package manifests, required dependencies, installed programs/data/manuals and active platform branches used by R1.",
+        "Build/test/stage/install from the candidate source archive and verify contents, modes, RPATH/linkage, license/provenance and no implicit downloads.",
+        "Qualify affected native default-server startup/restart and installed consumers on all six targets, preserving explicit native CPU/physical limits.",
+        "Classify only the frozen manifest's obsolete/orphaned installed entries; remove only accepted replacements and leave broad source cleanup to R2.",
+        "Publish per-target package receipts, unsupported features and install/trial/upgrade instructions with reproducible commands."
+      ],
+      "non_goals": [
+        "No universal portability audit, platform-default redesign, deletion of historical evidence/user data or release publishing."
+      ],
+      "accepted_work": "Accepted six-target build/install profiles, current OpenBSD 8.0 and M1-M4 baseline/tool/runtime consolidation remain accepted within exact source scope.",
+      "coordination": [
+        11,
+        13,
+        43,
+        53,
+        226
+      ],
+      "wave": "R1 distribution checkpoint",
+      "original_body_sha256": "6fec0b1971b399ed039924fe872bad9435d0e26e6fc417d6bd18939f107c63ad"
+    },
+    {
+      "number": 53,
+      "key": "53",
+      "title": "REPRO-01: Qualify reproducible offline R1 source builds",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Make the frozen R1 source and documented development profiles reproducible and offline-capable.",
+      "acceptance": [
+        "Freeze refreshable source/generator/toolchain/package inputs for the selected native/container/Nix development recipes, including identities and licenses.",
+        "Produce a candidate source archive with deterministic membership/modes/generated outputs and no hidden local or network-required input.",
+        "Exercise clean offline configure/build/test/staged install for named minimal/desktop/opt-in profiles and compare relevant generated/installed outputs with documented nondeterministic exceptions.",
+        "Document input refresh and platform-native package paths without replacing Meson or forcing container/Nix use.",
+        "Publish exact reproducibility receipts and link #226 effective feature/cost manifests; keep language/backend retirement independent."
+      ],
+      "non_goals": [
+        "No bit-identical binary claim without measurement, implicit downloads, mandatory container stack or dependency on #182 alternative-backend adoption."
+      ],
+      "accepted_work": "Existing deterministic provenance/source archive and adopted tool checkpoints remain accepted; refresh only changed required inputs.",
+      "coordination": [
+        226,
+        17
+      ],
+      "wave": "R1 reproducible baseline before package/release receipts",
+      "original_body_sha256": "8996cc452712410b8f5ffc1f3a716d6bfcbb05431e1707d662e4687ee26442be"
+    },
+    {
+      "number": 54,
+      "key": "54",
+      "title": "TEXT-01: Establish native text, shaping and input contracts",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver one qualified shared text/input path for FVWM-owned labels and editable controls, including graphemes, shaping/bidi, fallback and composed input.",
+      "acceptance": [
+        "Freeze Unicode/version, malformed-input, grapheme editing, normalization/matching and legacy-encoding rules; preserve original filename/config bytes and actual client pixels.",
+        "Compare checked current helpers/x/text with utf8proc and libgrapheme; compare Xft/Fontconfig/FreeType/FriBidi with direct HarfBuzz and Pango/PangoCairo on the same multilingual/emoji/bidi/edit workload.",
+        "Record adopt/defer/reject separately for Unicode and shaping alternatives; implement accepted choices and expose shared measured text runs, wrapping/ellipsis/hit testing and fallback without duplicate text engines.",
+        "Qualify XIM/IME preedit/commit/cancel, font loss, long input, teardown, mixed scales and mixed text/icon runs in real editable controls.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence. Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No mandatory toolkit or automatic adoption of every candidate; no normalization of filesystem identity; no arbitrary client scaling. Additional Unicode extensions outside the frozen control workload are separate follow-ups."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Consume existing font/locale helpers and input lifetime contracts; publish the text-run/input subset needed by #212/#216/#218/#219 without waiting for unrelated Unicode extensions."
+      ],
+      "wave": "R1-W1 text and shared foundations",
+      "original_body_sha256": "3e599441a40cbad75a0191cc147b6a47f14a1e4171831f5de75da6a3c1360384"
+    },
+    {
+      "number": 56,
+      "key": "56",
+      "title": "XDG-01: Complete desktop/application interoperability",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Provide correct installed desktop-entry, launch, MIME-role and icon interoperability while retaining legacy FVWM paths.",
+      "acceptance": [
+        "Implement the adopted Desktop Entry lookup/visibility/localization/actions and exact Exec field-code grammar; independent fixtures prove literal arguments and rejected malformed entries.",
+        "Qualify base-directory precedence, MIME application roles and startup-notification success/failure with absent/competing providers.",
+        "Expose the existing inherited icon resolver to #215 with theme/hicolor/scale and missing-icon semantics; remove parallel discovery paths only through their existing ownership.",
+        "Install documented entry points and test discovery/launch/roles in Linux/FreeBSD/OpenBSD profiles without silently overwriting personal defaults."
+      ],
+      "non_goals": [
+        "No second XDG icon implementation, retired Python/converter resurrection, shell evaluation of labels or ownership of autostart."
+      ],
+      "accepted_work": "Preserve the accepted Go XDG icon resolver and prior runtime utility ports; finish desktop-entry/launch/MIME outcomes around them.",
+      "coordination": [
+        "Use qualified launcher/parser/process primitives; #215 extends the accepted Go resolver; #72 owns XDG autostart."
+      ],
+      "wave": "R1-W1 interoperability",
+      "original_body_sha256": "b6336fe13e7d347b23c18979e4a65fa720cfdce3a253b0a5665722a83c9629bd"
+    },
+    {
+      "number": 57,
+      "key": "57",
+      "title": "A11Y-01: Improve native keyboard and accessibility contracts",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Make the selected native desktop controls fully keyboard operable and expose truthful accessible names, roles, states and actions.",
+      "acceptance": [
+        "Freeze a control inventory covering buttons/settings, file and clipboard collection views, palette/overview and inspector; map each action to a keyboard path, visible focus and predictable focus return.",
+        "Implement native accessible labels/text icon fallback, state changes, high contrast and enlarged-text behavior using shared button/text/layout contracts.",
+        "Define and implement the accepted optional AT-SPI export profile for the selected controls; report unavailable assistive services honestly without preventing ordinary operation.",
+        "Qualify real keyboard navigation and available assistive-client observations, including stale/destroyed controls, scale changes and service absence.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No mandatory GUI toolkit, automatic system bus or claim of universal toolkit accessibility. Additional third-party application controls are outside this inventory."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use #54 and existing BUTTON-01/02 controls; portable keyboard acceptance proceeds independently of optional #77 bus export. Each new UI owner must supply its own accessibility evidence."
+      ],
+      "wave": "R1-W5 accessibility integration",
+      "original_body_sha256": "430657f7400be228e44146dad1f80efb29226244de1af3f1472a3e129ba76187"
+    },
+    {
+      "number": 60,
+      "key": "60",
+      "title": "CFG-01: Build typed settings and native configuration UI",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete the native typed settings center with safe preview, confirmation and saved preferences for a frozen set of reversible appearance/layout settings.",
+      "acceptance": [
+        "Freeze the owned setting registry for R1 with type/range/default/capability/source/override metadata; retain private atomic data-only persistence, scoped reset and saved/effective separation.",
+        "Extend accepted opacity preview to the named remaining appearance/layout settings and owned image/resource snapshots; use generation-checked prepare/apply/confirm/cancel/timeout.",
+        "Prove consumer loss/restart, failed save, stale external edits and resource preparation failure recover or refuse explicitly; persistence never claims success before runtime confirmation.",
+        "Install the configuration-center/manual contract and demonstrate independent palette/font/icon/layout choices through shared theme roles without rewriting personal config.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No unbounded registration of every possible preference, second preference store, arbitrary config rewrite or rollback of shell actions/display backends. The frozen R1 registry defines closure."
+      ],
+      "accepted_work": "Keep PR151/152 registry, persistence and grouped editing; PR163 runtime-opacity recovery; PR164 saved-opacity, draft transfer and explicit runtime-kept/save-failed outcomes; preserve accepted Go ports and their evidence.",
+      "coordination": [
+        "#70 supplies the missing owned-resource/freshness results; #214 consumes this registry rather than blocking existing settings. Use accepted subsets, not whole session/file/clipboard completion."
+      ],
+      "wave": "R1-W1 settings completion",
+      "original_body_sha256": "b6b3034e6ec655b51d889b83a4e271e9a4ad3dc14711274a64ab1e0447e23178"
+    },
+    {
+      "number": 61,
+      "key": "61",
+      "title": "CFG-02: Add non-executing configuration diagnostics",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Add accurate source-aware runtime diagnostics and a finite non-executing declarative checker that clearly reports unchecked constructs.",
+      "acceptance": [
+        "Carry filename, logical/continued line spans and nested include chain into unknown-command, malformed argument/option and selected module-configuration runtime errors.",
+        "Freeze the supported declarative checking grammar around registered desktop settings and literal Read, adding only named declarative forms selected for R1.",
+        "Keep dynamic commands/functions/expansions/generated config visibly unchecked; negative fixtures prove checks never run Read actions, PipeRead, Exec, shell commands or modules.",
+        "Bound bytes/include depth/diagnostic counts and retain offline text/JSON plus native paged reports with accurate source links.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No full FVWM-language interpreter, execution-based validation or rejection solely because a dynamic form is unchecked. No configuration migration or competing completion grammar."
+      ],
+      "accepted_work": "Preserve PR153 literal settings/Read checker, source spans/includes, offline text/JSON and native paged consumer with source-bound qualification.",
+      "coordination": [
+        "Retain accepted checker and Go port; #218 consumes shared source/command metadata, #217 consumes failed-reload diagnostics. Runtime error provenance can ship before either full UI."
+      ],
+      "wave": "R1-W1 diagnostics completion",
+      "original_body_sha256": "20294978fc9b0cd455401977224eb7b0999711b5dcfe0f9b47b3302b121cb436"
+    },
+    {
+      "number": 62,
+      "key": "62",
+      "title": "CLIPBOARD-01: Deliver text/image clipboard consumer handoff",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver a documented configurable text/image clipboard consumer over protected content and retention primitives, with a working in-memory handoff and qualified optional persistence.",
+      "acceptance": [
+        "Install an in-memory clipboard example with bounded text/image list/search/selection/actions and native syntax/capability/manual contracts reusable by a configuration/theme consumer.",
+        "Use opaque content handles and private typed transfer; never route protected clipboard bytes through file paths, ordinary labels, generic IPC logs or ordinary collection indexes.",
+        "Qualify independent X11 selection clients, ownership loss, incremental/large transfers, image decoding bounds, expiry/clear/lock, cancellation and stale selection refusal.",
+        "Integrate optional encrypted persistence only after #74 protection/key/default decisions; expose unavailable or refused protection without plaintext fallback.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint. Retain required scoped native sanitizer and supported-target install evidence."
+      ],
+      "non_goals": [
+        "No implied password-history default, confidentiality claim against hostile X11 display clients, new file-manager implementation or mandatory persistent history. Consumer handoff is a finite installed product contract, not an endless separate UI project."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Needs #63 content, #71 retention, #74 protected-memory subset and qualified SELECTION-01 plus #69 collection/actions. File mutation, SQLite and #77 D-Bus are not in-memory handoff prerequisites."
+      ],
+      "wave": "R1-W4 clipboard consumer",
+      "original_body_sha256": "50d4ae48323324f4987a112d7ae3c22b7cb58d577a190d20d93768a90c32a7bc"
+    },
+    {
+      "number": 63,
+      "key": "63",
+      "title": "CONTENT-01: Build typed clipboard content and transfer primitives",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Provide bounded typed content items and safe text/image/URI representation transfer with explicit identity, leases and sensitivity.",
+      "acceptance": [
+        "Define stable domain IDs/generations and original-byte representations separately from display labels/previews; cap items, representations and decoded/encoded sizes before allocation.",
+        "Implement lease acquire/release, replacement and stale-reference refusal, preserving lifetime and sensitivity through selection transfer, actions and callbacks.",
+        "Implement bounded deduplication and pinning without evading retention/protection budgets; pending work is cancelled or retired safely when content expires.",
+        "Prove type/length/arithmetic boundaries, partial/malformed transfers, ref reuse, late callbacks and repeated teardown in policy and independent real-X selection tests."
+      ],
+      "non_goals": [
+        "No path impersonation for content IDs, arbitrary database framework, unprotected payload copies into generic Go/Lua metadata or automatic persistence."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Reuse qualified SELECTION-01 and #65/#69 typed action/collection metadata; #74 supplies protected-memory policy and #71 retention semantics. Publish an in-memory subset before encrypted storage."
+      ],
+      "wave": "R1-W3 clipboard primitives",
+      "original_body_sha256": "2c34481085629b5a0f5f1b23ea916a6489606ea8b685b2515a6ae95c8971011a"
+    },
+    {
+      "number": 64,
+      "key": "64",
+      "title": "DESKTOP-ICONS-01: Add an optional desktop pinboard",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship an opt-in persistent desktop pinboard with accessible movable references and safe monitor-aware placement.",
+      "acceptance": [
+        "Implement data-only pin creation/move/remove/reload with stable target references; removing a pin never deletes or mutates its target.",
+        "Expose keyboard navigation/actions, labels/icons and configurable layout through qualified collection/actions and named icon/theme contracts.",
+        "Handle monitor/work-area/scale/workspace changes, restart, missing targets and conflicting desktop ownership while keeping pins reachable.",
+        "Qualify root menu/wallpaper/stacking coexistence and opt-in install/unavailable behavior; actual Desktop-directory mutations route through #68.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No forced desktop ownership, mandatory file mutation, second wallpaper manager or deletion through unpin. Additional shell/portal integrations need separate scope."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Consume the accepted #69/#66/#65 browser contracts, #215 icon requests and committed monitor geometry; only real filesystem mutations depend on the relevant #68 operation."
+      ],
+      "wave": "R1-W5 desktop consumer",
+      "original_body_sha256": "147d9faef72272c1bb263a59d269218df2b109e40cfa10233049baa8943e8934"
+    },
+    {
+      "number": 65,
+      "key": "65",
+      "title": "FILE-ACTION-01: Build typed file and collection actions",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete typed file/collection navigation and launch actions with correlated final results and a reusable installed browser handoff.",
+      "acceptance": [
+        "Freeze navigation/open/terminal/context action schemas for selected IDs, byte paths and URIs; keep display labels distinct from literal typed arguments.",
+        "Revalidate request/view/target generations at execution; refuse stale, mixed, malformed or unavailable targets with correlated admitted/running/started/failed/cancelled/superseded results.",
+        "Bound worker slots and queues; cancellation retains ownership until reap and started external handoffs report their actual non-rollback boundary.",
+        "Install the documented configuration/theme consumer using navigation, open, reveal and observed properties; verify selection preservation, no duplicate launches and missing programs.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No label-derived FVWM/shell evaluation, silent job mutation, default application override or attempt to undo an already started external process. #68 owns mutation jobs."
+      ],
+      "accepted_work": "Retain PR165–187 supporting collection/action work, isolated byte-preserving browser actions/reveal/properties, generation-aware requests and --reuse consumer/present handoff; complete broader owner acceptance without reimplementation.",
+      "coordination": [
+        "Use accepted #70 operation envelopes, PROC-01 and #56 launch semantics with #66 data/#69 views; optional FileManager1 remains #67/#77-owned."
+      ],
+      "wave": "R1-W3 browser handoff",
+      "original_body_sha256": "cbafb2ee61103ebfbe5d2f6adaa930428c65d5d17abf29e710089345346283b0"
+    },
+    {
+      "number": 66,
+      "key": "66",
+      "title": "FILE-DATA-01: Build reusable directory and collection data",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete bounded byte-preserving directory data/watch contracts and decide the finite metadata/indexed-search backend comparison, implementing accepted outcomes.",
+      "acceptance": [
+        "Publish the general structured directory provider contract: cancellable enumeration/metadata, stable IDs/generations, Home/Up/Back/path entry, sorting/hidden/filter and explicit stale/unavailable/manual-refresh states.",
+        "Qualify existing native watch/coalescing/reconciliation/manual fallback on supported filesystems and OSes; bound registrations/work and keep slow filesystem/database calls outside core dispatch.",
+        "Compare bounded in-memory/file-snapshot baselines with SQLite/FTS5 on a named non-sensitive metadata/query/update/cache dataset; test busy/full/read-only/corrupt/restart and FTS5 availability.",
+        "Record adopt/defer/reject for this backend and implement the accepted scoped outcome, including migrations/invalidation/recovery only if adopted; live browsing stays database-independent and domain IDs never become row keys.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence."
+      ],
+      "non_goals": [
+        "No automatic database/schema adoption, mandatory database for browsing/palette, search daemon or sensitive clipboard indexing/plaintext persistence. New persistence consumers need their own finite schemas and privacy contract."
+      ],
+      "accepted_work": "Preserve PR165–187 directory snapshots, byte-preserving navigation, refresh/filter/sort, bounded native watching/manual fallback, read-only queries, general provider controls and reuse handoff; retain their accepted theme/platform evidence.",
+      "coordination": [
+        "Reuse accepted #69/#65 browser generations/watch/action ownership. Coordinate optional accepted storage with #74 and advanced search with #81; completion of all those consumers is not a directory-provider blocker."
+      ],
+      "wave": "R1-W3 directory and storage decision",
+      "original_body_sha256": "94dee7eca9e68e1368692b35aa81e08e3fc9d8e6d588afbbf1354a7fa4a4e635"
+    },
+    {
+      "number": 67,
+      "key": "67",
+      "title": "FILE-INTEGRATION-01: Add portable file-manager interoperability",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Provide installed portable folder/reveal/properties interoperability and an opt-in FileManager1 adapter using the same typed browser operations.",
+      "acceptance": [
+        "Install folder/reveal/properties commands and directory/application-role metadata; handle missing/mixed-parent/malformed targets without executing reveal subjects or overwriting defaults.",
+        "Use existing browser reuse/present and action-result contracts so ambiguous submissions cannot launch duplicate consumers.",
+        "Implement and document optional FileManager1 ShowFolders/ShowItems/ShowItemProperties using the shared selected session bus, respecting competing owners and no-bus behavior.",
+        "Qualify independent clients, literal URI/byte-path conversion, startup/restart/teardown, unavailable services and installed target profiles; file clipboard/XDND uses qualified selection ownership."
+      ],
+      "non_goals": [
+        "No Open/Save portal backend, implicit default-role takeover, new bus stack or treating properties/reveal targets as executable actions."
+      ],
+      "accepted_work": "Retain existing installed browser/reveal/properties requests and --reuse consumer handoff from PR167/178/186 and associated provider cleanup; finish role/adapter acceptance around those components.",
+      "coordination": [
+        "Portable entry points consume accepted #65/#66/#69 and #56 role parsing. Only FileManager1 waits for the finite #77 bus adapter contract, not every optional session service."
+      ],
+      "wave": "R1-W5 application integration",
+      "original_body_sha256": "a2142bc7a015ff3c101bd91fe912545666d49c358de0f1945e6c40cb3ec06250"
+    },
+    {
+      "number": 68,
+      "key": "68",
+      "title": "FILE-JOBS-01: Add reliable bounded file-operation jobs",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver reliable bounded file-operation jobs with explicit progress, conflict, cancellation and partial outcomes.",
+      "acceptance": [
+        "Implement create-folder, rename, copy, move, link, trash/restore and explicit permanent-delete with typed targets and generation/identity checks before mutation.",
+        "Define and test cross-filesystem behavior, symlink treatment, metadata guarantees, conflict/overwrite decisions and trash capability/refusal; unavailable trash never silently becomes delete.",
+        "Bound queued/active jobs, per-item work/progress/decision retention and helper ownership; report known/unknown totals, final per-item outcomes and partial cancellation/cleanup honestly.",
+        "Qualify native filesystem race/failure/full/read-only/interruption cases, job consumer teardown and real-X input responsiveness on supported OSes.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No implied undo, atomicity across filesystems, silent permanent deletion fallback, archive engine or global task daemon. Additional operations require explicit guarantees."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use #65/#66 byte-preserving targets, PROC-01 lifetimes and accepted #70 progress/cancellation subset. Basic browsing/clipboard can complete without all jobs."
+      ],
+      "wave": "R1-W4 file jobs",
+      "original_body_sha256": "120465e8e23f3561159813766a5d71c2f0ac098ef80914725b5f86fd57fa67bb"
+    },
+    {
+      "number": 69,
+      "key": "69",
+      "title": "FILE-VIEW-01: Build a configurable native file browser view",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete a reusable configurable native list/grid collection view and qualify the installed browser handoff.",
+      "acceptance": [
+        "Publish stable ID/generation collection schemas with bounded virtualized list/grid rendering, incremental snapshots and sort/filter supersession.",
+        "Preserve focus, multiple/range/hidden selection, scroll and unsent drafts across refresh/view switching; stale callbacks cannot act on replaced projections.",
+        "Complete keyboard, enlarged-text, clipping, scale and accessibility acceptance plus a documented configuration/theme browser using #66/#65 providers/actions.",
+        "Qualify large collections, producer loss/restart, repeated update/teardown and unchanged-client compatibility; render visible entries without per-entry X-resource growth.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No parallel file-manager, mandatory storage engine, private clipboard bytes in ordinary collection callbacks or dependency on file mutation. Domain adapters retain their own privacy and action policies."
+      ],
+      "accepted_work": "Retain PR165–187 list/grid, selection, atomic versioned snapshots, live refresh/filter/sort adoption, directory-watch UI, provider queries/actions and reuse handoff; retain existing Slate/Dune/enlarged-classic screenshots and accepted checkpoint evidence.",
+      "coordination": [
+        "Use existing BUTTON/text/image/scale primitives and #54 text subset. #66/#65 provide concrete browser handoff; #213/#212 may reuse accepted collections while their broader work continues."
+      ],
+      "wave": "R1-W3 collection and browser handoff",
+      "original_body_sha256": "71a1f062c008677eb0456317207d711ec63dd2551cfcb08a84bfd01263bd8e8b"
+    },
+    {
+      "number": 70,
+      "key": "70",
+      "title": "IPC-02: Add structured state queries and operation results",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Finish one bounded versioned state/action/operation contract for R1 settings, files, clipboard and session consumers over the accepted transport.",
+      "acceptance": [
+        "Freeze provider capability/state, opaque target-generation, typed action/result and progress/decision/cancellation schemas for the named R1 domains; domain owners retain payload authority.",
+        "Implement missing saved-preference confirmation and owned image/resource snapshot operations, preserving command order and accepted/applied/failed distinctions.",
+        "Bound messages, outstanding requests, watches, queues, waits and terminal retention; prove stale/reused targets, partial packets, slow readers, loss/reconnect and producer continuations.",
+        "Qualify one real consumer in settings, file, clipboard and session domains, including unknown totals, partial cancellation and unavailable/denied outcomes, without duplicating transport or core X state.",
+        "Retain native protocol/real-X regression and scoped sanitizer evidence; install schemas/examples/manuals and preserve existing legacy command/config consumers."
+      ],
+      "non_goals": [
+        "No network listener, privilege broker, second state authority, arbitrary plugin framework or promise of common rollback. Closure covers the enumerated R1 domains, not every future adapter."
+      ],
+      "accepted_work": "Preserve accepted bounded correlation/read-only queries, settings/provider watches, topology/workspace/binding/placement/colorset inspection, operation status/cancellation and PR163/164 opacity preview/save recovery. Preserve their exact source/profile limits.",
+      "coordination": [
+        "Accepted IPC framing/read-only queries/typed actions are usable now; add only missing contracts for #60/#65/#63/#72. Each domain supplies its own lifecycle/security evidence; optional bus is #77-owned."
+      ],
+      "wave": "R1-W1 typed domain contracts",
+      "original_body_sha256": "1dd03876a46501250d7bb8b419282692d148c0146c2d7be9c7326be45fe0cebe"
+    },
+    {
+      "number": 71,
+      "key": "71",
+      "title": "RETENTION-01: Define bounded clipboard retention and history",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship configurable bounded clipboard capture/history policy with explicit secret, expiry, clear and lock behavior.",
+      "acceptance": [
+        "Define and expose CFG-controlled capture/pause, formats/source exclusions, item/byte/age caps, pinning, clear and lock policy; distinguish current selection, history and persistence.",
+        "Honor supported secret/sensitive hints before retention/preview/action; propagate sensitivity to derivatives, pending transfers and provider metadata.",
+        "On expiry/clear/lock cancel or retire derivatives and pending work safely, without clearing a newer clipboard owner or allowing pinning/dedup to bypass budgets.",
+        "Resolve password-history and persistence-default decisions explicitly; qualify policy boundaries plus independent real-X lifecycle/owner-loss/restart/failure cases."
+      ],
+      "non_goals": [
+        "No implied password retention or persistent-history default; no guarantee that hostile X11 clients cannot observe selections; no generic clipboard indexing of protected data."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use #63 IDs/leases and #74 protection outcomes with accepted #60 settings; #62 consumes the policy. In-memory retention is independent of encrypted-persistence adoption."
+      ],
+      "wave": "R1-W3 clipboard policy",
+      "original_body_sha256": "e8d70c3ef8c37533eaa534dcf7809afff10d70f0279a6d2db66a29be72080908"
+    },
+    {
+      "number": 72,
+      "key": "72",
+      "title": "SESSION-01: Build the portable default session foundation",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship the portable default session manager with bounded lifecycle, controlled autostart, honest service capabilities and installed native configuration.",
+      "acceptance": [
+        "Implement environment and controlled XDG autostart with explicit owned/borrowed services, bounded startup/readiness/recovery and useful unavailable/failure states.",
+        "Distinguish restart from cooperative logout; preserve direct FVWM/custom/XSMP entry paths and avoid duplicate/orphan services through crash/restart/timeout.",
+        "Expose OS capability/power/locker coordination through shared typed settings/actions, using real readiness acknowledgments where providers support them.",
+        "Install commented examples and man pages; qualify login/restart/logout, missing optional packages, stalled services and competing owners on Linux/FreeBSD/OpenBSD.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No D-Bus login requirement, new authentication implementation, mandatory desktop packages, system-bus creation or file-manager dependency in session startup."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use accepted #60/#70 settings/results and process/readiness helpers. #225 qualifies secure lock providers; #77 extends this same lifecycle after its optional bus decision."
+      ],
+      "wave": "R1-W3 portable session",
+      "original_body_sha256": "ec3ecffafc258cc1d3ea22f2a29940e1d63920c3a729d695da3f066bb5c9831b"
+    },
+    {
+      "number": 73,
+      "key": "73",
+      "title": "SETTINGS-01: Add a shared native preference bridge",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Expose supported desktop preferences through one native XSETTINGS/X-resource bridge and a qualified optional portal path.",
+      "acceptance": [
+        "Freeze supported key/type mappings from #60, precedence and single-owner discovery; implement bounded serialized updates, ownership loss/restart and stale generation refusal.",
+        "Publish native XSETTINGS/X resources without rewriting personal configuration or creating a second preference store.",
+        "Implement the selected optional settings portal path through #77, reporting unavailable services rather than inventing toolkit compliance.",
+        "Observe actual supported toolkit/browser effects and non-effects across restart, enlarged text/scale and enabled/disabled installs; document profile-specific limits."
+      ],
+      "non_goals": [
+        "No GTK/Qt theme creation, blanket every-toolkit guarantee, mandatory portal/bus or overwriting unrelated X resources. Additional preference keys need explicit ownership/mapping."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Native bridge needs accepted #60 schema and #72 lifecycle; only portal support needs the finite #77 bus/settings adapter."
+      ],
+      "wave": "R1-W5 preference interoperability",
+      "original_body_sha256": "6ab4cfcd917444eaa51dfe06b85326fa5c654f67cf58b788708d6998d9d4de93"
+    },
+    {
+      "number": 74,
+      "key": "74",
+      "title": "STORE-01: Review protected clipboard storage and defaults",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver protected clipboard memory and an evidence-based optional authenticated-persistence contract with explicit failure and key/default policies.",
+      "acceptance": [
+        "Freeze sensitive content/key ownership, allowed copies, locking/wiping/dump requirements and numeric budgets; protect required memory or refuse explicitly across native/Go/UI/decoder/transport boundaries.",
+        "Compare libsodium protected allocation/encryption with existing C/base-OS and relevant Go crypto APIs on that contract; record adopt/defer/reject and implement accepted choices without custom crypto.",
+        "Implement optional versioned authenticated persistence only after key/unlock/recovery/migration/default decisions; use safe private files and no plaintext fallback.",
+        "Qualify lock/dump/init refusal, tamper/wrong key/truncation/interruption, image expansion, cleanup/recovery and protected preview/index exclusion; document honest deletion and X11 confidentiality limits.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence. Retain security review and native protection/failure evidence."
+      ],
+      "non_goals": [
+        "No mandatory keyring, custom cryptography, automatic SQLite encryption, implicit secret-history/persistence defaults or claim that Go GC/encryption protects every plaintext copy."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Provide the protected-memory subset before #62 delivery; coordinate #63 leases/#71 retention. Ordinary #66/#81 indexes must exclude protected data and cannot block the in-memory handoff."
+      ],
+      "wave": "R1-W4 protected storage",
+      "original_body_sha256": "76d04f17a82c469b2b0a1f5a2e31f3d9128f17b3fcf9e3b9f4bdf18f2f913977"
+    },
+    {
+      "number": 75,
+      "key": "75",
+      "title": "THEME-01: Qualify shipped theme roles, states and interaction",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Qualify all shipped theme palettes, modes and interaction states for R1, including the completed SVG artwork and new native UI consumers.",
+      "acceptance": [
+        "Freeze the shipped palette/mode/state/control inventory; apply numeric role contrast, focus/disabled/error states, target density/spacing and opacity/enlarged-text checks.",
+        "Preserve Slate layout and scoped personal overrides; qualify SVG-rendered assets and minimal SVG/raster-disabled labeled/plain-background fallbacks.",
+        "Capture keyboard/interaction and native visual evidence for settings, collections, session and new palette/overview/inspection controls in 2–3 materially different theme/configurations.",
+        "Complete affected six-target install/default-X and required physical/assistive observations before claiming theme/release acceptance; retain unavailable/native-execution gaps explicitly."
+      ],
+      "non_goals": [
+        "No rewriting arbitrary personal themes, automatic closure from numeric contrast alone, or reassignment of asynchronous image/cache implementation. A named shipped inventory defines closure."
+      ],
+      "accepted_work": "Retain accepted geometric SVG replacement, Linux ARM64 render/install/scale/glyph-contrast evidence and disabled-profile fallback; retain earlier text/disabled-role standards review without treating it as complete six-target/physical acceptance.",
+      "coordination": [
+        "#214 supplies semantic-role implementation; each UI owner supplies its screenshots/state tests. IMAGE-01 retains asynchronous image activation; broad source cleanup is not a theme prerequisite."
+      ],
+      "wave": "R1-W6 visual acceptance",
+      "original_body_sha256": "7b16c956bd2e280f306a55153115f91c4e816259907e7e975fa35ff81d316208"
+    },
+    {
+      "number": 76,
+      "key": "76",
+      "title": "NOTIFY-01: Add isolated optional native notifications",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship opt-in isolated native freedesktop notifications with bounded history/actions and shared live desktop settings.",
+      "acceptance": [
+        "Implement the adopted freedesktop notification contract in an isolated process with capped input/popups/history/actions and explicit replacement/expiry/close outcomes.",
+        "Expose do-not-disturb, palette/scale/settings updates and accessible keyboard actions using existing CFG/IPC/native primitives.",
+        "Respect competing notification servers and the selected optional bus ownership; absent bus/provider or service exit leaves the portable desktop usable.",
+        "Qualify malformed/oversized messages, producer churn, callback teardown/restart, slow consumers and enabled/disabled installed profiles; document complete runtime/dependency cost.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No mandatory bus/notification server, implicit package installation, unbounded retained message bodies or second settings store. Additional protocol extensions need bounded scope."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Adopt only after #77 shared bus/dependency decision; use accepted #60/#70 primitives and #214 roles/#215 icons as available. Other optional session services need not finish first."
+      ],
+      "wave": "R1-W5 optional services",
+      "original_body_sha256": "7464a4085c3f763f9e2b88e0a9e957ed2d15125d6390886954212ad37d15a0e6"
+    },
+    {
+      "number": 77,
+      "key": "77",
+      "title": "SESSION-02: Extend the portable session with optional bus integration",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship a single opt-in D-Bus extension of the portable session with qualified shared adapters and truthful no-bus behavior.",
+      "acceptance": [
+        "Compare godbus/dbus against no-bus/current implementation and a narrowly justified native binding alternative on one finite consumer; decide and implement the accepted library contract.",
+        "Reuse an existing bus or explicitly create an owned session bus before child startup; define authentication, bounded calls/signals/queues/deadlines, reconnect and teardown.",
+        "Provide accepted per-OS login1/elogind/inhibitor adapters plus shared notification/tray and already-installed selected agent/portal configuration; report unsupported services independently of library portability.",
+        "Qualify owned/borrowed/competing buses, absence/loss/restart/logout, goroutine/queue/wakeup bounds and enabled/disabled installs without preventing login or locking.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence."
+      ],
+      "non_goals": [
+        "No mandatory D-Bus/systemd/toolkit, system-bus startup, separate settings store, custom D-Bus stack or implicit agent/portal package installation. Freeze the named adapter inventory for closure."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Consume #72 portable lifecycle/#60 settings/#70 operations. Publish the finite bus/protocol contract before #76/#78 and optional #67/#73 adapters; do not require every consumer for library selection."
+      ],
+      "wave": "R1-W5 optional bus integration",
+      "original_body_sha256": "2435db6be9724b011866c47b0d1977b2c0ac269dc8860eb66bba6c010f3fda77"
+    },
+    {
+      "number": 78,
+      "key": "78",
+      "title": "TRAY-01: Add native tray protocol integration",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver configurable native XEmbed and opt-in StatusNotifier/application-menu tray integration.",
+      "acceptance": [
+        "Implement and qualify XEmbed ownership/docking/lifetime first, preserving foreign-client pixel/protocol boundaries and competing tray ownership.",
+        "Implement the selected StatusNotifier/application-menu checkpoint using #77 shared bus with bounded foreign icon/menu/message data and explicit absence/restart behavior.",
+        "Expose dynamic icon/layout/visibility and adaptive bar settings through the shared theme/icon/settings model, retaining text and accessible keyboard fallback.",
+        "Qualify foreign-client destruction/reparenting, malformed data, scale/layout changes and enabled/disabled installs with complete dependency/runtime costs.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No arbitrary foreign-pixel scaling, mandatory modern bus path, second icon resolver or dependency on compositor effects. Further tray protocols are outside the two frozen checkpoints."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Reuse qualified #76 protocol/service conventions and #77 bus contract; #215 icons/#214 theme roles serve native assets. Portable XEmbed can proceed independently of all optional session adapters."
+      ],
+      "wave": "R1-W5 tray integration",
+      "original_body_sha256": "1fe844fbc5faa9a8df5f60303f2f5a3cd5232518897652528f1af2718af76f32"
+    },
+    {
+      "number": 79,
+      "key": "79",
+      "title": "RELEASE-01: Accept the R1 Configurable Desktop Lite candidate",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Record a concrete final acceptance decision for the completed R1 candidate when release preparation is requested.",
+      "acceptance": [
+        "Freeze the candidate source/artifact identities and required #3/#5/#29/#43/#52/#53/#226/#231/#235 evidence checklist after coding is complete.",
+        "Check identity/attribution, real README/demo, contributor/community/security files, owned reporting/support channels, licenses and provenance against the candidate.",
+        "Exercise documented installed trial/upgrade/onboarding and customization examples, retaining exact results and unresolved defects with owning issues.",
+        "Publish a reviewable accept/block decision with performance/cost results, optional diagnostic disposition, physical/toolkit/compositor/native gaps and public roadmap.",
+        "Return new code defects to their owner and repeat only affected release checks after repair; publication remains a separately owned action."
+      ],
+      "non_goals": [
+        "No release publishing, credential work, upstream notification or automatic assertion that issue closure equals public-launch approval."
+      ],
+      "accepted_work": "Reuse accepted release gate and source-bound owner evidence; this is the final R1 checkpoint, not a restart of all historical checks.",
+      "coordination": [
+        3,
+        5,
+        29,
+        43,
+        52,
+        53,
+        226,
+        231,
+        235
+      ],
+      "wave": "R1 final acceptance only after feature and qualification completion",
+      "original_body_sha256": "2eafd6c0fbe74067ad6a8171e11f441a3d9695d41e27563578ee02a6a435eec3"
+    },
+    {
+      "number": 80,
+      "key": "80",
+      "title": "I18N-02: Complete R1 localization for all eleven existing languages",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete reviewed offline localization of R1 first-party UI, manuals and shipped configuration comments for all eleven existing catalog languages.",
+      "acceptance": [
+        "Freeze the R1 string/document/comment inventory for ar, da, de, es, fr, ka, ru, sv_SE, uk, zh_CN and zh_TW; record reviewed coverage with no silently dropped language.",
+        "Evaluate Git-owned PO and AsciiDoc extraction plus optional Weblate/AI drafting; select a maintainable workflow with language review and offline shipped translations.",
+        "Preserve executable command/config syntax, identifiers, examples and user files; translate comments and prose without creating a configuration migration.",
+        "Qualify locale lookup/fallback, RTL/bidi/font/input, long/enlarged labels and native layout; render translated manuals/derived HTML from the same approved sources.",
+        "Retain representative screenshots in 2–3 theme/configurations for affected UI and six-target offline install/catalog validation; all feature string additions are reconciled before RC."
+      ],
+      "non_goals": [
+        "No mandatory hosted translation service, unreviewed AI output acceptance, user-config rewrites or new supported languages beyond the eleven-language closure inventory."
+      ],
+      "accepted_work": "Preserve existing eleven-language catalogs and their accepted translations; only new/missing/incorrect UI, manual and shipped-comment coverage is revised.",
+      "coordination": [
+        "Runs late in R1 after the frozen feature-string inventory, consuming #54 text/input and existing I18N-01/DOCS-01/tooling. Features qualify their strings during development; final language polish remains an explicit R1 deliverable."
+      ],
+      "wave": "R1-W6 language polish",
+      "original_body_sha256": "45762421715d914e21b3ce25f394a5415ce634892e26e040a21f04123f51407d"
+    },
+    {
+      "number": 81,
+      "key": "81",
+      "title": "FILE-ADVANCED-01: Decide and deliver accepted R1 file-manager candidates",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete finite decisions for the existing advanced file-manager candidates and implement every accepted R1 choice using qualified primitives.",
+      "acceptance": [
+        "Freeze and assess thumbnails/previews, tabs/dual panes, search, bulk rename, archives, devices, remote locations and undo individually; record adopt/defer/reject, rationale, prerequisites and exact accepted deliverables for each.",
+        "Compare bounded libarchive list/create/extract with Go tar/zip and qualified utility/process baselines for named formats/metadata; decide before production archive/UI integration.",
+        "Implement accepted choices with #68 mutation/identity/progress/conflict policy and existing collection/image/process providers; qualify cancellation, stale data, permissions and unsupported-provider behavior.",
+        "For accepted archive work prove traversal/absolute-path/symlink/hardlink/metadata/expansion/count/output limits, overwrite decisions and partial cleanup; for other accepted candidates publish their finite failure/resource oracles.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence. Record matching implementation and installed consumer evidence for accepted choices; defer/reject is a completed evaluation outcome, not a claim of implemented functionality."
+      ],
+      "non_goals": [
+        "No obligation to adopt every candidate, autorun, mandatory desktop stack, search daemon or aggregate file-manager rewrite. No live mutation/archive UI is implied solely by an evaluation; only explicitly accepted contracts are implemented."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Evaluate after #68 job safety where mutation applies; reuse accepted #69/#66/#65. Optional search/storage follows the scoped #66 decision, previews the qualified image contracts; initial browser handoff does not wait for this issue."
+      ],
+      "wave": "R1-W4 advanced-file decisions and accepted implementation",
+      "original_body_sha256": "d6b1f2b820dba7bb9f11cc33c1b99ef1e6d89341159487deb79b809a607bdd1b"
+    },
+    {
+      "number": 182,
+      "key": "182",
+      "title": "BUILD-EVAL-01: Decide the R1 build backend",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Decide the bounded Muon/CMake comparison and complete an adopted R1 backend integration, or explicitly retain/defer the authoritative backend.",
+      "acceptance": [
+        "Freeze actual Meson features/probes, Go/generation/catalog/manual/install/RPATH/test prerequisites in a finite compatibility manifest.",
+        "Exercise isolated Muon and representative CMake/Ninja prototypes for the WM, one native module, one Go utility, configuration, test and staged installation.",
+        "Compare Linux/FreeBSD/OpenBSD and both architecture availability/bootstrap, cold/no-op/incremental/dependency correctness, offline/source archive and packager workflows.",
+        "Publish measured complexity/tool/dependency/license costs and concrete adopt/defer/reject gaps; defer/reject retains Meson and names finite later follow-up rather than implying a migration.",
+        "If adopted, complete a separately qualified bounded R1 production migration covering the frozen native/Go/probe/generation/manual/catalog/test/install/RPATH/source/archive/offline manifest and supported targets before changing authority; a prototype or decision alone does not qualify the backend.",
+        "Record achieved build/tooling dependency states honestly: the backend decision or adoption does not remove remaining first-party Python/Perl helpers and does not close #55 or establish a Python-free full build/test."
+      ],
+      "non_goals": [
+        "No custom build engine, implicit tool download, unqualified production switch or forced Python-free claim. Full first-party development-tool language retirement remains R3 #55."
+      ],
+      "accepted_work": "Meson/native targets remain authoritative; accepted wrappers, profile semantics and tool adoptions are reused rather than implemented twice.",
+      "coordination": [
+        226
+      ],
+      "wave": "R1 bounded build-backend evaluation; accepted integration before dependent feature/release acceptance",
+      "original_body_sha256": "08dc65c9e138b3f938cfb09197414c2c21633dfe123fab534d0b14a391ae0ab3"
+    },
+    {
+      "number": 208,
+      "key": "208",
+      "title": "MODERNIZE-01: Accept the three-release roadmap and issue contracts",
+      "release": "R1",
+      "work_size": "Minor",
+      "end_goal": "Close the finite R1 program index once all existing planned feature contracts, release placement and dependency waves are mapped and accepted.",
+      "acceptance": [
+        "Inventory every currently planned feature owner, including language polish and evaluation tickets, and map each to R1 with a finite end goal; classify follow-up cleanup/hardening separately into R2/R3 without moving feature deliverables there.",
+        "Publish the wave/dependency map with existing accepted components, actual subset prerequisites and the bounded #209 handoff; parent/index links remain organizational.",
+        "Mirror the approved tracker scope, issue release/work-class fields and native relationships; verify no cycles and no blanket dependency on all broad audits.",
+        "Record maintainer acceptance of the mapped release plan and close this planning index; runtime implementation and R1 acceptance remain with their finite owners."
+      ],
+      "non_goals": [
+        "No perpetual index that stays open for every future idea, runtime implementation, feature deletion disguised as cleanup or planning-based release qualification. New scope requires a separately owned decision."
+      ],
+      "accepted_work": "Preserve the existing owner/dependency matrix, accepted Go/settings/IPC/browser checkpoints and modernization coverage; update their release disposition, not their implementation status.",
+      "coordination": [
+        "Uses accepted R1 owner contracts and #209 finite handoff; does not block on implementation of all #210–225."
+      ],
+      "wave": "R1-W0 release contract",
+      "original_body_sha256": "fc78256f4df100334bfd63dc9b3becc75563a85b634fb1c16aa1119d74aec379"
+    },
+    {
+      "number": 209,
+      "key": "209",
+      "title": "FOUNDATION-READY-01: Accept the finite R1 feature foundation",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Accept a finite R1 foundation handoff after the currently owned PR256 checkpoint, with scope and numeric performance/resource budgets recorded before RC.",
+      "acceptance": [
+        "After PR256 is accepted, record its exact source/evidence and accepted M1/M2/M3/settings/IPC/browser subsets; freeze only concrete R1 foundation gaps that directly block named feature contracts.",
+        "Freeze minimal, shipped-desktop and opt-in reference profiles, workloads, source/artifact baseline IDs and numeric regression envelopes before accepting a new default resident service or mandatory dependency; #29 verifies the final RC against the frozen budgets. Do not invent passing measurements in this planning task.",
+        "Publish the finite R1 scope and numeric budget manifest before the first RC: representative core/enabled-module startup, idle wakeups/CPU, latency, RSS, redraw and installed dependency bytes, measurement workloads and allowed thresholds/variance.",
+        "Use existing qualified binaries/evidence for a bounded baseline and required comparison; resolve any specifically selected release-blocking regression or record an explicit accepted scoped disposition.",
+        "Record the accepted feature handoff and remaining R2/R3 maintenance risks, then unblock feature waves on their actual contracts; no requirement to finish all audits, experiments or later cleanup.",
+        "Keep focused checks per coherent batch and one required combined release checkpoint, with native/emulated/physical gaps distinct; this handoff does not itself claim release qualification."
+      ],
+      "non_goals": [
+        "No cleanup-first M4–M8 catch-all, hidden gate on every R2 audit, unbounded measured-optimization program or repeat of accepted PR256 work. Later budget measurements belong to the frozen manifest, not a new feature veto by inference."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "The current owner completes and accepts PR256 before handoff. Existing #29/#34/#226 measurements supply bounded evidence only where named; broad owner closure is not a blocker."
+      ],
+      "wave": "R1-W0 foundation handoff",
+      "original_body_sha256": "add707e64d9944313d0c14fcf571d3f27cabfe2bb00a3f6365d1371b2c3d54c7"
+    },
+    {
+      "number": 210,
+      "key": "210",
+      "title": "GRAPHICS-01: Qualify shared native XRender drawing and resource contracts",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Publish qualified reusable native XRender drawing/resource operations and fallback behavior for representative R1 module consumers.",
+      "acceptance": [
+        "Audit actual module clipping/alpha/image leases/scale/cache use, then extract only named proven common operations with documented ownership and error barriers.",
+        "Implement the shared drawing contract preserving DRAW ordering, IMAGE/CACHE generations and deferred resource teardown; retain XRender-disabled native fallback.",
+        "Qualify two representative native consumers for resize/unmap/destroy, mixed scale, clipping and pending-resource users in real X.",
+        "Measure matching redraw/input latency, X requests/round trips, idle work, CPU and memory against the accepted baseline; no idle repaint loop.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No core renderer replacement, built-in compositor, mandatory GPU/toolkit or removal of X ordering/error barriers by cleanup. Future drawing operations need proof of reuse."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use #209 accepted handoff and #183 qualified target-owned image/linkage subset; #25/#29/#33/#39 supply relevant contracts/measurements without blanket owner completion."
+      ],
+      "wave": "R1-W2 native graphics",
+      "original_body_sha256": "ce670c4bc950d6d541a8eba198a8ee9f44d966d25cd90ba40911051c5d3a8fe0"
+    },
+    {
+      "number": 211,
+      "key": "211",
+      "title": "GRAPHICS-02: Evaluate direct Cairo drawing and bounded native effects",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Finish the direct Cairo native-module comparison and implement the accepted bounded drawing/effects outcome.",
+      "acceptance": [
+        "Prototype vector paths, antialiased shapes, gradients and local control transitions against the same #210 native workload and fallback.",
+        "Preserve shared draw/hit regions, scale/palette/resource generations and teardown; changing visible content alone schedules animation, with idle sleep and reduced-motion support.",
+        "Publish adopt/defer/reject before production renderer integration; if adopted, implement only the named operations/consumer and retained fallback, otherwise retain the qualified baseline.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint. Include interruption, resize/unmap/destroy and input-latency observations."
+      ],
+      "non_goals": [
+        "No renderer/compositor replacement, automatic Cairo adoption from existing SVG linkage, mandatory toolkit/GPU or continuing animation when idle. Unselected effects remain outside the accepted finite workload."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "#210 supplies the stable native drawing/resource baseline; #54 provides shared text runs where needed. No dependency on all later workspace tools."
+      ],
+      "wave": "R1-W2 Cairo decision and accepted implementation",
+      "original_body_sha256": "b724ca631950c297d1249cf4cafcb6a7843c8ad1e8e182dae73aef3f4d6c7b05"
+    },
+    {
+      "number": 212,
+      "key": "212",
+      "title": "LAYOUT-01: Build reusable responsive native panel and collection layouts",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship reusable responsive native layout for two representative panel/collection consumers and complete the bounded optional Clay comparison.",
+      "acceptance": [
+        "Define bounded alignment/spacing/sizing/overflow/virtualization policies; preserve configured legacy geometry and use one prepared result for draw and hit testing.",
+        "Implement translated/long/enlarged text and mixed-scale layout while preserving keyboard/focus/selection/clipping through resize and provider changes.",
+        "Qualify two named native consumers and report redraw/input latency, CPU/RSS/idle work on the same bounded workloads.",
+        "Compare one optional isolated Clay consumer with the native layout baseline, including text/input/accessibility/lifetime and complete dependency costs; record adopt/defer/reject and implement only accepted scoped integration.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No mandatory Clay/layout engine, toolkit replacement, automatic legacy geometry migration or requirement to adopt the experiment before native consumers ship."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "#209 handoff and accepted button/text/collection/scale contracts are sufficient for baseline layout; use #54 measurement subset. #210/#211 comparisons inform Clay where relevant, not unrelated baseline consumers."
+      ],
+      "wave": "R1-W2 responsive layouts",
+      "original_body_sha256": "5b2baaf4796bba82a73a932848f4eb91c18c44a230f967622fc266b2dd4ce22e"
+    },
+    {
+      "number": 213,
+      "key": "213",
+      "title": "BIND-01: Reuse typed revisions and event-driven bindings across native views",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver reusable bounded event-driven native model/view bindings for two independent existing consumers.",
+      "acceptance": [
+        "Inventory accepted #60/#70 query/watch/settings/operation authority; define typed committed-revision bindings without a new store or transport.",
+        "Bound subscriptions/dependency edges/coalescing and define cycles, stale results, producer loss, reconnect and lifetime cancellation.",
+        "Bind labels, collections, progress and enabled actions without per-control polling shells or treating incoming data as arbitrary commands.",
+        "Qualify two independent consumers under event pressure, slow/lost producer, reload and destroy; demonstrate bounded retained memory/queues and idle wakeups.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No second state authority, arbitrary command binding, polling shell per control or general plugin framework. More consumers reuse the published contract."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use accepted #60/#70 subset after #209; no wait for every session/file/clipboard adapter. #69 collections are an available existing consumer."
+      ],
+      "wave": "R1-W1 shared bindings",
+      "original_body_sha256": "0c785c146e29db4fa647581283e31d52d4d5aa0330c07a0841d03a03027aad6e"
+    },
+    {
+      "number": 214,
+      "key": "214",
+      "title": "THEME-02: Add composable semantic theme roles and independent appearance choices",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Provide a composable semantic theme model with independent appearance choices and deterministic scoped overrides using existing native configuration.",
+      "acceptance": [
+        "Define versioned roles for palette/states, typography, spacing/density, border/corner geometry, named icons and reduced motion/high contrast.",
+        "Allow independent palette, component/layout style, fonts, icons and wallpaper choices; make scoped personal override precedence and fallbacks deterministic.",
+        "Map roles into existing colorsets/modules and #60/#70 effective/source metadata; keep private atomic data-only preferences and preserve legacy directives/paths.",
+        "Bound local assets and generation invalidation; qualify missing/invalid assets, reload/conflict and reduced/disabled image profiles.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint. Publish user syntax/examples and numeric native state/contrast evidence; #75 completes shipped-theme acceptance."
+      ],
+      "non_goals": [
+        "No second settings store, executable theme metadata, arbitrary personal config rewrite, mandatory toolkit or automatic replacement of existing configuration syntax."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use accepted #60 registry/#70 results after #209; #215 supplies named icons independently. #217/#218 consume the resulting source/generation contract, not all optional service completion."
+      ],
+      "wave": "R1-W1 semantic themes",
+      "original_body_sha256": "3fce6b27d1231454c3bd34cd87d3911934e9add10baf6a06b13b93aeb59e2c65"
+    },
+    {
+      "number": 215,
+      "key": "215",
+      "title": "ICON-01: Share named icon lookup and scalable icon-theme assets",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Expose one bounded named icon resolver to at least two native consumers with scalable assets and reliable fallback.",
+      "acceptance": [
+        "Define theme/name/nominal-size/scale/state/scoped-override requests over the accepted Go XDG resolver, retaining inheritance, hicolor and legacy path behavior.",
+        "Qualify installed/user themes, scaled directories, cycles, missing names and invalidation across SVG/raster-enabled and disabled profiles.",
+        "Reuse isolated image worker/cache generations with capped lookups/resources; avoid eager whole-theme loads and core-thread filesystem scanning.",
+        "Evaluate a small consistent bundled SVG UI set and optional application themes, document licenses/attribution/install costs and implement the explicitly accepted asset choice; Lucide/Papirus remain candidates.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint. Demonstrate at least two existing consumers and text fallback."
+      ],
+      "non_goals": [
+        "No second icon discovery/decoder/cache engine, mandatory system icon package or ownership of desktop pinboard semantics. No automatic adoption of Lucide/Papirus."
+      ],
+      "accepted_work": "Preserve accepted Go inherited-theme/hicolor resolver and existing isolated image worker; extend their request/consumer contract rather than resurrecting Python paths.",
+      "coordination": [
+        "Use accepted #56 resolver and #183 qualified image/linkage subset after #209; #214 roles and #69 collections are consumers, not blanket owner gates."
+      ],
+      "wave": "R1-W1 named icons",
+      "original_body_sha256": "bf2c2e29d6015a7b81e5566a50cc1048e8d162d7b8fb7e381832ce126a09e1d9"
+    },
+    {
+      "number": 216,
+      "key": "216",
+      "title": "ICON-02: Add explicit icon-font runs with named icons and reliable fallback",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Support configurable named icon-font runs alongside SVG/application icons with shared text measurement and dependable accessible fallback.",
+      "acceptance": [
+        "Define explicit per-icon font selection, glyph/name mapping, size/baseline/alignment and missing-font/glyph behavior; stable config uses names rather than private-use codepoints.",
+        "Implement mixed label/icon runs using #54 font fallback, measurement and generations; use shaping/ligatures only on the qualified text path.",
+        "Retain ordinary labels/fonts and accessible text names; optional user fonts and any shipped subset have explicit license/attribution and installed/runtime costs.",
+        "Qualify absent fonts/glyphs, multilingual labels, supported scales, focus/disabled states and font/cache invalidation.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No required Font Awesome/icon-font package, second text engine, private codepoints as stable public identifiers or assumption that icon glyphs substitute for accessible labels."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Needs #215 named requests and the qualified #54 font/text-run subset; does not wait for every optional Unicode extension."
+      ],
+      "wave": "R1-W2 icon fonts",
+      "original_body_sha256": "4a7eb139e3b02481243a65e502bbfffc7aee50d64e0ddd21dcbb4af644795b55"
+    },
+    {
+      "number": 217,
+      "key": "217",
+      "title": "RELOAD-01: Reload supported components with last-working-state retention",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Reload a finite set of supported theme/native components transactionally while retaining the last working state and surviving UI identity.",
+      "acceptance": [
+        "Freeze supported components and bounded parse/validate/prepare/publish stages with generation/resource ownership; retire replaced resources only after pending users release them.",
+        "On invalid input, missing asset or failed preparation retain the last working supported component and emit source-aware errors.",
+        "Preserve focus/selection/scroll/drafts for surviving identities; reuse #60 preview/recovery/#70 freshness rather than replaying arbitrary user configuration.",
+        "Qualify partial/repeated/conflicting reloads, callback/provider loss, stale generations and teardown with real-X observations.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No rollback of shell actions/arbitrary legacy commands, global config replay, unbounded supported-domain expansion or freeing resources retained by pending work."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Consume #214 role/generation contract, accepted #61 source diagnostics and #60/#70 ownership/recovery. Existing browser snapshots can serve as consumers without reopening them."
+      ],
+      "wave": "R1-W2 live authoring",
+      "original_body_sha256": "d1755a6f1d797490c6691ccc717183fb874a6cc6ef9d358a7c6cddba7f5364ef"
+    },
+    {
+      "number": 218,
+      "key": "218",
+      "title": "INSPECT-01: Inspect effective configuration, bindings and theme provenance",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship an opt-in read-only native inspector for effective settings, theme/rule provenance, bindings and layout bounds.",
+      "acceptance": [
+        "Extend accepted #61/#70 reports with owning file/line/include, override/effective-rule explanations, layout bounds and capability/unavailable reasons for the frozen R1 settings/theme/binding inventory.",
+        "Generate command/binding completion and shortcut discovery from shared supported metadata; never execute configuration to inspect or complete it.",
+        "Bound snapshots/query work and redact sensitive data; accurately report stale/unavailable providers and source metadata gaps.",
+        "Qualify large state, source/override accuracy, keyboard navigation/focus return and producer loss without changing effective configuration.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No executable validation, second hand-maintained grammar, arbitrary config mutation or false exact provenance for unchecked dynamic constructs. Additional domains need bounded metadata owners."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use accepted #61 checker/source metadata/#70 inspection and #214 role provenance. #54 text/layout subset supports native presentation; broad diagnostics owner closure is unnecessary."
+      ],
+      "wave": "R1-W2 inspection",
+      "original_body_sha256": "4ab965fc83dce00ebae017fe42c6977ca49af43995906fd445146c17dc1fa1af"
+    },
+    {
+      "number": 219,
+      "key": "219",
+      "title": "ACTIONS-01: Build a shared command palette for windows, apps and actions",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Deliver a keyboard-first shared native command palette for windows, applications, desktops and registered actions.",
+      "acceptance": [
+        "Implement the four baseline providers with opaque identity/generation and honest capability/coverage; files/notes enter only through already qualified provider contracts.",
+        "Bound/cancel/filter queries and discard superseded results while retaining text matching/localization semantics and responsive large-result handling.",
+        "Invoke literal typed actions, revalidate selected targets and route managed-window operations through the shared command engine.",
+        "Provide accessible labels/icons, predictable focus restoration and missing-provider behavior without a search daemon or mandatory database for the baseline palette.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No parallel file/notes backend, label-derived shell commands, automatic storage/search daemon or dependency on unaccepted advanced-file features. Closure covers the four baseline providers plus explicitly accepted adapters."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use #213 committed-revision bindings and #212 prepared layouts plus accepted #70/#56 providers. Qualified file/notes adapters are optional additions, not base-palette blockers."
+      ],
+      "wave": "R1-W4 action palette",
+      "original_body_sha256": "1052a9060ffd5c703daffee0ef2983dc5228256b110bc72aafe648296e84b30b"
+    },
+    {
+      "number": 220,
+      "key": "220",
+      "title": "WORKSPACE-01: Add configurable hybrid layouts and snapping policies",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Provide configurable per-desktop floating, columns/master-stack and snapping policies through the existing FVWM command engine.",
+      "acceptance": [
+        "Audit existing placement/functions and freeze small pure layout policies with explicit user/rule precedence and exclusions.",
+        "Implement actual-pixel ICCCM/work-area/committed-topology geometry while preserving client pixels and command order.",
+        "Handle transient/fullscreen/sticky windows, destruction, exceptions and topology/scale changes; reverse only owned layout changes without overwriting newer user placement.",
+        "Qualify native geometry policy and nested-X keyboard/pointer behavior with representative clients and measured input/CPU/memory costs.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No mandatory layout engine, alternate core state authority, native Wayland or implicit client-pixel rescaling. Additional layout algorithms require a finite follow-up."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "After #209 use existing placement/topology/command contracts and accepted #70 snapshots; independent of scratchpads, compositor and advanced UI renderer decisions."
+      ],
+      "wave": "R1-W4 hybrid window policy",
+      "original_body_sha256": "d0a0b1fc1771c83eb97641e512a49df03e823a8377c14a341363be68964ab281"
+    },
+    {
+      "number": 221,
+      "key": "221",
+      "title": "WORKSPACE-02: Add named scratchpads with predictable summon and focus behavior",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship named configurable scratchpads with predictable launch, summon, placement and focus return independently of tiling/compositing.",
+      "acceptance": [
+        "Define name/match/launch/claim/toggle/placement/focus-return policy using typed targets and literal user-chosen application arguments.",
+        "Handle multiple matches, delayed startup and repeated rapid toggles with bounded pending launch/claim state and no duplicate launches.",
+        "Qualify destroy/restart/identity reuse, sticky/fullscreen targets, missing applications and monitor/workspace/mixed-scale changes.",
+        "Preserve existing bindings/functions and demonstrate keyboard summon/dismiss/focus return with representative terminal and application choices.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No fixed terminal/app dependency, alternate window authority, mandatory tiling/compositor or uncontrolled duplicate process spawning. New matching semantics require an explicit contract."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use #209 handoff, existing command/process lifetime and #70 typed window identities. This lane is independent of #220 layouts/#223 overview/#224 effects."
+      ],
+      "wave": "R1-W4 scratchpads",
+      "original_body_sha256": "f21eaa2c509b5185ede6178cd1a112ba9b2fac921347fc00641d93e702071488"
+    },
+    {
+      "number": 222,
+      "key": "222",
+      "title": "WORKSPACE-03: Remember monitor roles and restore scoped docking profiles",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Restore user-owned monitor-role docking profiles without overwriting newer changes or making windows unreachable.",
+      "acceptance": [
+        "Define stable role matching, explicit overrides and bounded private data-only persistence with ambiguous/missing-monitor fallback.",
+        "Reuse committed topology/work-area/scale and owned setting generations; refuse stale restores and preserve newer user placement/settings.",
+        "Implement scoped panel/workspace/window-placement restore across dock/unplug/restart with reachable fallback geometry and no arbitrary client-pixel scaling.",
+        "Qualify synthetic/nested-X hotplug/mixed-scale/source-conflict scenarios and record physical docking evidence separately before making hardware claims.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "non_goals": [
+        "No implicit display mode/backend management, general session snapshot replacement, arbitrary window resizing or silently overwriting manual changes. Scope is the named panel/workspace/placement fields."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use #19 committed topology and accepted #60/#70 freshness after #209. Profiles do not require effects, overview or complete session bus integration."
+      ],
+      "wave": "R1-W4 docking profiles",
+      "original_body_sha256": "e8ffdf2c4d4f7bf366b9483920538a7d0efeaf55223a3add539132902f483ec8"
+    },
+    {
+      "number": 223,
+      "key": "223",
+      "title": "WORKSPACE-04: Add a keyboard-accessible workspace and window overview",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship a bounded searchable keyboard-accessible workspace/window overview that works without a compositor.",
+      "acceptance": [
+        "Consume committed window/workspace snapshots and updates with desk/page/sticky/monitor semantics and generation-checked targets.",
+        "Implement keyboard search/switch/move, focus restoration and selected pointer drag actions through the shared command engine.",
+        "Virtualize large collections; handle disappearing windows and topology/scale changes with bounded CPU/RSS/update work.",
+        "Use native labels/icons first; evaluate optional thumbnails separately and implement only accepted capture/refresh/memory/privacy/extension contracts.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint. Qualify compositor-free operation, stale targets and producer teardown."
+      ],
+      "non_goals": [
+        "No dependency on animations/docking profiles/compositor, mandatory thumbnail capture or protected-content previews. New capture features require their own explicit adoption and limits."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Consume #213 revisions, #212 layout, #215 icons and accepted #70 snapshots. #224 compositor outcome is independent."
+      ],
+      "wave": "R1-W4 overview",
+      "original_body_sha256": "48b8211943e329a5c30ac2bea24ad68c88e1478acc96f2baefdbf1d79d19150d"
+    },
+    {
+      "number": 224,
+      "key": "224",
+      "title": "EFFECTS-01: Prototype optional compositor-assisted workspace transitions",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Complete the cooperative external-compositor workspace-transition evaluation and implement the explicitly accepted optional outcome.",
+      "acceptance": [
+        "Prototype a named upstream X11 compositor build against actual desk/page/sticky/panel/multi-monitor behavior; distinguish coherent workspace transitions from simple show/hide effects.",
+        "Record existing/missing protocol semantics and adopt/defer/reject before production interface work; implement the finite selected integration if accepted.",
+        "Isolate optional compositor ownership/startup/exit recovery; ordinary input/focus/geometry and complete compositor-free operation remain usable.",
+        "Measure interrupted rapid switching, frame behavior, input latency, CPU/RSS/GPU and idle/battery costs; honor reduced motion and configurable duration/direction.",
+        "Qualify the selected hardware/compositor profiles separately from nested-X; document supported/unavailable behavior and complete package/runtime cost."
+      ],
+      "non_goals": [
+        "No built-in compositor, native Wayland, mandatory blur/GPU package, XCB migration or forced adoption when the evaluation rejects/defers. Effects do not gate ordinary workspace tools."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Use the qualified #210 drawing/resource baseline and existing committed workspace command semantics; #220/#221/#223 do not depend on this outcome."
+      ],
+      "wave": "R1-W5 optional effects decision",
+      "original_body_sha256": "4da0d14c904c0b76028fd9665d155449a58ffd939e6673d6176e5d3142f910ba"
+    },
+    {
+      "number": 225,
+      "key": "225",
+      "title": "LOCK-01: Integrate qualified locker readiness, idle locking and suspend coordination",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Integrate qualified per-OS external locker readiness, manual/idle locking and suspend coordination without moving authentication into the core.",
+      "acceptance": [
+        "Inventory xlock/slock and maintained per-OS candidates; select supported providers and truthful readiness/failure capabilities using actual acknowledgments where available, never spawn alone.",
+        "Implement manual/idle lock and display-power/suspend coordination using the shared session/typed operation lifecycle and explicit success/refusal states.",
+        "Qualify provider/authentication death, retry, competing ownership, multi-monitor/hotplug coverage and suspend/resume; document provider/platform limitations.",
+        "Keep optional bus/inhibitor extensions on the same #72 lifecycle, preserve login when unavailable and separate secure readiness from themed presentation.",
+        "Publish independent security/readiness evidence and complete dependency/runtime costs for supported Linux/FreeBSD/OpenBSD provider profiles; inspect new native UI in 2–3 theme/configurations."
+      ],
+      "non_goals": [
+        "No new authentication implementation, mandatory PAM on BSD, bundled locker default or mandatory desktop package. No secure-lock claim inferred from process launch, screenshots or theme appearance."
+      ],
+      "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
+      "coordination": [
+        "Needs #72 portable lifecycle and accepted #60/#70 capability/settings/results after #209; only optional inhibitors need the finite #77 contract."
+      ],
+      "wave": "R1-W5 qualified locking",
+      "original_body_sha256": "dc4fc825f124f9b5e1a1eb3764266849fc73c2b1150dd083c83dcd99f8cb28df"
+    },
+    {
+      "number": 226,
+      "key": "226",
+      "title": "BUILD-PROFILES-01: Publish R1 profiles and resource costs",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Ship portable effective-feature and complete-cost manifests for R1 build profiles.",
+      "acceptance": [
+        "Freeze minimal, desktop, graphics/other opt-in extras and development profiles mapped to actual supported options and target-specific availability.",
+        "Report enabled/disabled/unavailable features with direct/runtime/transitive/build dependency, installed code/data and process/resource costs; include per-feature increments and complete profile totals.",
+        "Qualify clean source-archive configure/build/test/staged install, incremental reuse and offline no-download behavior for the affected profiles.",
+        "Bind cost/profile results to #29 measurable release caps and exact source/toolchain/platform identities; publish reproducible commands and limitations.",
+        "Keep optional LTO/PGO as measured adopt/defer/no-change experiments before any default change; update provenance and manuals together."
+      ],
+      "non_goals": [
+        "No alternate backend prerequisite, invented measurements/caps, automatic LTO/PGO default or mandatory extra dependency."
+      ],
+      "accepted_work": "Accepted native target linkage, M1-M4 and deterministic source/tooling evidence remain accepted; Meson stays authoritative.",
+      "coordination": [
+        29,
+        53,
+        43
+      ],
+      "wave": "R1 foundation profile freeze and feature/release cost checkpoints",
+      "original_body_sha256": "d6ec7d0bab70f54328a5c1b4b3a20cc8755220f4faec3315daeca85476aab15e"
+    },
+    {
+      "number": 231,
+      "key": "231",
+      "title": "HARDEN-01: Publish the R1 hardening evidence matrix",
+      "release": "R1",
+      "work_size": "Minor",
+      "end_goal": "Publish a truthful finite hardening requirement/evidence profile for the R1 candidate.",
+      "acceptance": [
+        "Freeze the R1 core/MFL/worker/native-module/Go service manifest and map external inputs, descriptors, filesystem/network/exec authority and current process/resource limits.",
+        "Give adopted requirements stable IDs, owners, applicable OS/architecture/toolchain, enforcement points and exact existing or required R1 evidence.",
+        "Distinguish code/config/default/observed enforcement/unavailable support/accepted exception; record current worker isolation limits honestly and mark #41/#232-#234 containment as deferred R2 scope.",
+        "Cover current input/lifetime/bounded work, file/descriptor/env/exec, dependency patch proof and #235 installed protection evidence, with refresh rules for changed source/profile/toolchain/platform.",
+        "Publish explicit trusted-X11-client and intentional configured-shell boundaries and reconcile tracker/issue links without claiming comprehensive compliance."
+      ],
+      "non_goals": [
+        "No new whole-core sandbox, generic all-source audit, claim shared X clients gain confidentiality isolation or automatic R1 dependency on every proposed hardening child."
+      ],
+      "accepted_work": "Existing resource/process/transport hardening and accepted platform evidence remain accepted; approved issue scope is not implemented sandboxing or a new reproduced vulnerability.",
+      "coordination": [
+        7,
+        15,
+        235,
+        226
+      ],
+      "wave": "R1 current-control inventory and release evidence profile",
+      "original_body_sha256": "4f7a8dadef888c0233bafd138ab9b4f6c2007ae5c5ea67f7da8e215c0fb1c0b2"
+    },
+    {
+      "number": 235,
+      "key": "235",
+      "title": "VERIFY-02: Verify installed R1 C and Go binary protections",
+      "release": "R1",
+      "work_size": "Major",
+      "end_goal": "Verify platform-appropriate protections on the exact installed R1 C and Go artifacts.",
+      "acceptance": [
+        "Freeze installed executable and relevant static/loaded dependency manifests for required release profiles, binding OS/architecture/compiler/linker/source/artifact identities.",
+        "Define applicable C/Go/Linux/BSD checks for PIE/ASLR eligibility, writable-executable mappings/stack, relocation/binding and supported stack/return/branch/fortification properties; mark inapplicable checks explicitly.",
+        "Inspect actual installed artifacts with meaningful negative controls, including applicable OpenBSD RETGUARD/execute-only/branch defaults and disabling markings.",
+        "Distinguish emitted metadata, configured defaults and observed runtime enforcement; disposition every row as pass, justified exception, unavailable evidence or release-blocking gap.",
+        "Publish reproducible commands and the completed per-profile matrix without changing distributor flags/defaults absent a separately qualified decision."
+      ],
+      "non_goals": [
+        "No universal Linux ELF tag requirement for BSD/Go, compliance certification, blanket hardening flags or inferred runtime enforcement from configure flags."
+      ],
+      "accepted_work": "Existing Linux C ELF hardening checks remain accepted and reused; they do not establish current BSD/Go coverage.",
+      "coordination": [
+        5,
+        226,
+        231
+      ],
+      "wave": "R1 installed-artifact release qualification",
+      "original_body_sha256": "2304b3d5fde4c03ebd4d8008b1cc90267f8d509a427a6b38528cd85e28a87aa0"
+    },
+    {
+      "number": 4,
+      "key": "4",
+      "title": "SCRIPT-01: Close the R2 Script resource and unwind manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Finish one finite remaining FvwmScript ownership review and disposition checkpoint.",
+      "acceptance": [
+        "Freeze a source-snapshot manifest restricted to partial interpreter-startup/error unwind, remaining retained font-cache owners and resource-budget admission records; enumerate each record and terminal path once.",
+        "Exclude already accepted instruction trees, bindings/messages, property/value strings, widget/icon and base-window owner families from new implementation work; record their evidence links.",
+        "Classify every manifest entry as accepted unchanged, reproduced repair with regression, or explicitly deferred follow-up with owner and reason; finish the one-pass register.",
+        "For selected repairs, use production-linked partial/repeated cleanup and failure/retry oracles, relevant actual-module/X checks and scoped ownership sanitizers.",
+        "Publish bounded completion and remaining limitations, separating TEXT-01 feature adoption and native release qualification."
+      ],
+      "non_goals": [
+        "No whole-interpreter rewrite, generated-parser restart, new global resource cap or automatic all-platform matrix. Deferred Form font cleanup belongs to #34, not this Script scope."
+      ],
+      "accepted_work": "Preserve accepted bounded parsing/text/geometry/FIFO/modal work and M5 Script instruction/value/binding/property/widget/icon/base-resource checkpoints, including PR254; completed #31/#35/#36 stay closed.",
+      "coordination": [
+        34
+      ],
+      "wave": "R2 bounded Script owner pass",
+      "original_body_sha256": "4972a7e8e8be0f7344033f9013d800dd2109ccf31e089a3c108ab744061f6304",
+      "status_disposition": "Moved Review to Backlog for the newly frozen R2 remainder: PR254 is merged and its Script base-owner evidence remains accepted; no active R2 implementation is claimed."
+    },
+    {
+      "number": 6,
+      "key": "6",
+      "title": "DATA-01: Close the R2 checked-input ownership manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Close a one-pass checked-data ownership register for the remaining named input families.",
+      "acceptance": [
+        "Freeze snapshot entries for remaining tree-walk admission, donated/icon decoder ingress and module-interpreter external-value boundaries; enumerate lengths/types/arithmetic, owner and failure outputs for each.",
+        "Reuse accepted tree-walk, donated-icon, property, selection and startup repairs; inspect only manifest entries with an unresolved contract.",
+        "Disposition every entry once as accepted unchanged, reproduced defect with bounded regression, or named deferred issue; attach exact source and evidence.",
+        "Test selected overflow/length/refusal and partial-state recovery using independent policy or actual-owner oracles, preserving output initialization and single cleanup.",
+        "Record environment-expanded pathname construction and Backer admission only as two separate parked R3 child metadata handoffs, preserving existing incomplete evidence and unknown request-filter rationale."
+      ],
+      "non_goals": [
+        "No source inspection, diagnosis, implementation, runtime work or alternate-agent/model/executor retry for either parked family. No endless all-code audit or reopening accepted property/tree/icon checkpoints.",
+        "The parked pathname/Backer scope is transferred to its separate R3 child. Completing this R2 register does not claim that parked work complete."
+      ],
+      "accepted_work": "Accepted typed/capped property work, tree-query/walk, donated-icon, process/session and Script ownership repairs stay accepted; planning does not assert a new defect.",
+      "coordination": [
+        4,
+        7,
+        8,
+        34
+      ],
+      "wave": "R2 finite data review; two parked metadata-only R3 handoffs",
+      "original_body_sha256": "ae6ce74fc2f0a3df28216243d3cb90467759cf3b72dec55c15f21c3740869491",
+      "status_disposition": "Moved Review to Backlog for the newly frozen R2 remainder: PR238 is merged and its subprocess/checked-output evidence remains accepted. The parked pathname proposal is a separate R3 child."
+    },
+    {
+      "number": 7,
+      "key": "7",
+      "title": "FD-01: Close the R2 descriptor-constructor manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Finish a snapshot-bounded descriptor ownership and admission pass for remaining constructors.",
+      "acceptance": [
+        "Freeze entries for remaining helper/session/subprocess constructors, inherited descriptor sets and live high-descriptor admission; record create, flag, transfer and terminal owners.",
+        "Reuse accepted core/module/ICE/MFL admission, poll/readiness and POSIX signal work; enumerate only unresolved entries.",
+        "Run one refusal/unwind/high-descriptor review per manifest entry and disposition every result as accepted, reproduced repair or explicit defer with owner.",
+        "For changes, verify descriptor closure, initialized outputs/error preservation, borrowed endpoint survival and failure/retry with actual constructor/fork/exec controls.",
+        "Publish the completed descriptor register and exact affected local evidence, linking process and platform containment owners without duplicating them."
+      ],
+      "non_goals": [
+        "No generic transport/readiness rewrite, blanket descriptor cap, whole-runtime sandbox or mandatory completion before an unrelated R1 feature."
+      ],
+      "accepted_work": "Core/ICE/module endpoint admission, high-fd helpers, module readiness and POSIX installer/consumer/shared-wait checkpoints remain accepted; #35/#36 stay complete.",
+      "coordination": [
+        15,
+        34,
+        231
+      ],
+      "wave": "R2 finite constructor/descriptor pass",
+      "original_body_sha256": "c9f9f9cea1fde7f4008f03f5dccdf60461f79fd384b4ea7470a8c0f2e44dc679",
+      "status_disposition": "Moved In progress to Backlog for the newly frozen R2 constructor/admission remainder: the POSIX consumer/installation family through PR241 is merged and accepted; R1 feature work now has priority."
+    },
+    {
+      "number": 8,
+      "key": "8",
+      "title": "IMAGE-01: Close the R2 image-worker boundary manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Disposition the remaining asynchronous image boundary risks in one frozen image-worker review.",
+      "acceptance": [
+        "Freeze a finite manifest of primary/secondary input, decoder CPU/storage access, permission/refusal and immutable-result ownership boundaries for current supported modes.",
+        "Map each entry to accepted behavior, a reproduced missing check with regression, or an explicit containment/deferred owner; complete one review pass.",
+        "For selected repairs, test bounded input/output/deadline, cancellation, partial result, owner destruction and later recovery through actual worker/core consumers.",
+        "Publish current limits and distinguish process/resource isolation from the later OS sandbox policies in #41/#232-#234.",
+        "Retain installed format, relative-resource/font/theme and scale/cache-generation coverage without adding another decoder."
+      ],
+      "non_goals": [
+        "No general decoder replacement, unsupported-format purge, whole image-library security claim or R1-wide source audit. R1 feature-specific image correctness remains with its feature owner.",
+        "No R1 feature waits for this whole audit: reuse accepted image transport/limits and qualify each changed R1 consumer under its own contract; reproduced shipping defects still block their affected release claim."
+      ],
+      "accepted_work": "Primary/compressed inputs, isolated SVG transport, async activation, effects and immutable resource owners remain accepted; M4 maintained SVG consolidation is not restarted.",
+      "coordination": [
+        11,
+        34,
+        41
+      ],
+      "wave": "R2 image boundary pass after R1 feature qualification",
+      "original_body_sha256": "cbbed1a537169537dada546aba4ff09414e4c3cdae22edd690e468758cb798cc"
+    },
+    {
+      "number": 9,
+      "key": "9",
+      "title": "INPUT-01: Close the R2 interaction-lifetime manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Close one finite interaction lifetime and mutation review for existing interaction modes.",
+      "acceptance": [
+        "Freeze a matrix limited to Move/Resize, active viewport, menu and nested-interaction target lifetime; enumerate destruction, style/resource mutation and hints/topology transitions for each.",
+        "Map existing cancellation/release/motion/pump evidence onto the matrix; review only unresolved cells once.",
+        "For reproduced gaps, use bounded target-identity/lifetime policy and actual-X destruction/mutation/cancellation tests with independent input and ordered producer continuation.",
+        "Disposition all matrix cells as accepted, repaired with evidence or explicitly deferred with owner; retain physical latency limitations.",
+        "Publish the completed interaction contract for later consumers without changing the single-threaded X authority."
+      ],
+      "non_goals": [
+        "No broad event-loop redesign, arbitrary mutator audit outside this matrix, new global interaction cap or blanket timing guarantee. R1 layout/overview/animation owners must still qualify their actual interactions."
+      ],
+      "accepted_work": "Move/Resize lifetime snapshots, bounded motion, producer continuation, common release, viewport/menu and modal servicing remain accepted.",
+      "coordination": [
+        34
+      ],
+      "wave": "R2 existing-interaction review",
+      "original_body_sha256": "fcda1ece866917bab1050e5e05bbf40eefcfdf1941309d1c5ac47dc548ae5368"
+    },
+    {
+      "number": 14,
+      "key": "14",
+      "title": "MAINT-02: Finish the R2 adopted-tool manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Complete the finite R2 maintenance-tool adoption manifest without expanding into the R3 full developer-tool rewrite.",
+      "acceptance": [
+        "Freeze the finite R2 adoption list for already selected maintenance replacements and their command/output/failure contracts; explicitly exclude the remaining full build/docs/generator/test/VM language-retirement work owned by R3 #55.",
+        "Map completed parser/catalog/metadata/Go utility adoptions as accepted and exclude them from replacement work.",
+        "For each unresolved tool, demonstrate reference output, errors, modes, offline operation and install/distribution parity before adoption.",
+        "Adopt related tools in finite groups and retain predecessor/reference evidence until #40 retirement checks pass.",
+        "Publish one completed disposition register and the exact remaining Python/Perl/build-backend distinctions."
+      ],
+      "non_goals": [
+        "No reopening M1-M4/parser/catalog/Go ports, generic toolchain rewrite, automatic build-backend migration or R1 feature blocker. R3 #55 full language retirement does not block this narrower R2 closeout."
+      ],
+      "accepted_work": "Compatible build wrapper/manual tooling, metadata, parser/catalog maintenance and qualified Go utility/XDG ports remain accepted.",
+      "coordination": [],
+      "wave": "R2 tooling adoption",
+      "original_body_sha256": "467cd1d7a2b234b55243a64225b1e27112eee259cadfcc316b30834fe609c068"
+    },
+    {
+      "number": 15,
+      "key": "15",
+      "title": "PROC-01: Close the R2 helper-process constructor manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Complete a one-pass process construction and cleanup audit for an enumerated helper set.",
+      "acceptance": [
+        "Freeze current utility/dialog/session helper launch sites and configured-shell boundaries into a source-snapshot manifest with argv/env/descriptors/child/status owners.",
+        "Exclude accepted GetOutput and process/session constructor repairs; review remaining manifest entries once for setup failure, cancellation and terminal cleanup.",
+        "Disposition every entry as accepted, reproduced repair with retained control, or explicit deferred follow-up; do not assert exploitability without evidence.",
+        "For changes, verify literal argv where compatible, intentional configured shells, setup/exec errno, bounded waits/output, child reaping and refusal/retry using actual constructors.",
+        "Publish current execution trust/limit evidence for #231 and map descriptor repairs to #7."
+      ],
+      "non_goals": [
+        "No blanket configured-shell removal, arbitrary user-program translation, whole process framework or broad R1 audit prerequisite."
+      ],
+      "accepted_work": "Qualified process/session startup and M5 GetOutput cancellation/setup/exec/unwind repairs remain accepted; #31 stays complete.",
+      "coordination": [
+        7,
+        34,
+        231
+      ],
+      "wave": "R2 finite process review",
+      "original_body_sha256": "87be3adbc683f803f70fb6d537ad700ea3c092c5f1f636246a0aacb018d553cd",
+      "status_disposition": "Moved Review to Backlog for the newly frozen R2 process-constructor remainder: PR238 is merged and its accepted subprocess checkpoint is preserved."
+    },
+    {
+      "number": 25,
+      "key": "25",
+      "title": "DRAW-01: Decide the R2 dirty-state experiment",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Complete one measured dirty-state optimization experiment for a frozen redraw workload set.",
+      "acceptance": [
+        "Freeze drag/title/resize flood workloads and the existing ownership/flush/observer barriers; identify at most one related dirty-region or no-op update family.",
+        "Record baseline latency, CPU and X request counts plus retained resource cost before selecting an implementation.",
+        "Adopt only a measured improvement preserving final pixels/geometry, cache generations and explicit/outer-loop ordering; otherwise record no-change/defer.",
+        "Use actual-core/real-X final-pixel and destruction/retirement controls, then publish before/after costs and the finite decision."
+      ],
+      "non_goals": [
+        "No renderer/event-loop rewrite, permanently ticking redraw loop, generalized all-window audit or R1 feature prerequisite beyond its existing correctness contract."
+      ],
+      "accepted_work": "Bounded expose servicing and PR98 explicit/outer-loop window-update contract remain accepted; source-scoped unrelated timing failures stay with #5/#17.",
+      "coordination": [
+        29
+      ],
+      "wave": "R2 measured redraw slice",
+      "original_body_sha256": "52a5850f7ca76d1fc6478882f51f895d9011d2dab0cc37269c7cdaf55a6e8fc6"
+    },
+    {
+      "number": 33,
+      "key": "33",
+      "title": "CACHE-01: Decide the R2 cache-cost experiment",
+      "release": "R2",
+      "work_size": "Minor",
+      "end_goal": "Finish one bounded cache-cost experiment with an adopt/defer/no-change result.",
+      "acceptance": [
+        "Freeze a representative resource population and lookup/reload/scale workload tied to current cache keys and generations.",
+        "Measure retained bytes, hit/miss lookup/path/stat work and invalidation cost before selecting at most one remaining cache optimization family.",
+        "Compare the candidate with the baseline using independent identity/lifetime/reload oracles; preserve variant separation and mixed-DPI ownership.",
+        "Publish cost tradeoffs and adopt/defer/no-change; disposition any reproduced correctness issue separately."
+      ],
+      "non_goals": [
+        "No cache rewrite, new global index absent measured need, decoder prerequisite or restarting accepted pathname/cache optimizations. Parked pathname family excluded."
+      ],
+      "accepted_work": "PR129 picture-cache variant/name/retirement improvements and existing resource generation ownership stay accepted.",
+      "coordination": [
+        29,
+        8
+      ],
+      "wave": "R2 bounded cache experiment",
+      "original_body_sha256": "9023cb644a37bd07fff1281b7f8cc110292b04feb1a2a6a6f0e5d91b86a3ef56"
+    },
+    {
+      "number": 34,
+      "key": "34",
+      "title": "CLEAN-01: Close the R2 core/module ownership manifest",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Finish a one-pass finite remaining core/module cleanup register with selected ownership repairs.",
+      "acceptance": [
+        "Freeze snapshot entries for remaining borrowed window/module/resource references, callback/deferred retirement and deferred Form font acquisition/replacement/terminal cleanup; enumerate owners and terminal paths.",
+        "Mark completed core interfaces, private helper/event/keyboard/drawing retirements, Script and module resource families accepted; retain active PR256 disposition without claiming it merged.",
+        "Review each unresolved manifest entry once; close as accepted unchanged, reproduced bounded repair with regression, or explicitly deferred issue and reason.",
+        "For selected repairs, use production-linked old/candidate ownership controls, partial/repeated cleanup, relevant actual-X lifecycle checks and scoped sanitizers; keep one combined affected gate.",
+        "Create metadata-only R3 handoff records for the separately parked environment-expanded pathname and Backer admission families, preserving incomplete canonical evidence and unknown refusal cause.",
+        "Publish the completed finite cleanup register and stop; no broad owner closure is inferred from one resource slice."
+      ],
+      "non_goals": [
+        "No source inspection/diagnosis/runtime work/retry for either parked family, broad rewrite, mechanical API rename, generic teardown framework or reopening completed M1-M4. Form font cleanup stays bounded R2 work.",
+        "The parked pathname/Backer scope is transferred to its separate R3 child. Completing this R2 register does not claim that parked work complete."
+      ],
+      "accepted_work": "Preserve all accepted M5 owners including merged PR254/255 and prior Script/widget/property/value/interface/metadata work; PR256 is review-ready in current tracker, not accepted by this draft.",
+      "coordination": [
+        4,
+        6,
+        7,
+        9
+      ],
+      "wave": "R2 finite cleanup pass; two parked metadata-only R3 handoffs",
+      "original_body_sha256": "f6a90bb42de2fda1ad6cd141f2b151f0f53923f1444b716acf7180ee0b700f21",
+      "status_disposition": "Moved Review to Backlog for the unimplemented R2 remaining ownership manifest. PR256 remains open in R1 Review and is explicitly owned by the finite #209 foundation handoff; its component evidence is not lost or claimed merged."
+    },
+    {
+      "number": 37,
+      "key": "37",
+      "title": "STATE-01: Decide the R2 state-burst optimization",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Resolve one measured state-burst processing hypothesis against a frozen observer contract.",
+      "acceptance": [
+        "Freeze state/property burst workloads, per-producer order, invalidators, observer publication barriers and allowed final-state equivalence.",
+        "Measure service latency, work/allocations and retained bytes; select at most one remaining burst/coalescing family.",
+        "Validate accepted events, intermediate required observations, destruction and independent-input fairness with actual-core/native-X controls.",
+        "Publish before/after costs and adopt/defer/no-change with all frozen workloads dispositioned."
+      ],
+      "non_goals": [
+        "No generic publication coalescing, second state authority, queue reorder or R1 requirement to close all tuning hypotheses."
+      ],
+      "accepted_work": "Merged EWMH state/atom/name/index/ownership checkpoints remain accepted, including their source-scoped omissions.",
+      "coordination": [
+        29,
+        18,
+        25
+      ],
+      "wave": "R2 bounded state experiment",
+      "original_body_sha256": "dca89d71163cff6585725353f539e8fd8c321cec239d68c45c2853628c5de5c8"
+    },
+    {
+      "number": 38,
+      "key": "38",
+      "title": "STYLE-01: Decide the R2 style-application optimization",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Resolve one remaining style-application cost hypothesis with preserved configuration precedence.",
+      "acceptance": [
+        "Freeze representative style rule/update populations, matching semantics, invalidators, grabs and observer publication barriers.",
+        "Measure remaining update-plan/consumer cost and retained bytes before selecting at most one related optimization family.",
+        "Differentially compare final initialized style results and precedence against existing reference behavior; verify actual frame/client geometry and EWMH extents.",
+        "Publish costs and adopt/defer/no-change; keep independent-input and lifetime/error controls for any changed update path."
+      ],
+      "non_goals": [
+        "No style-language replacement, generic matching rewrite, reset of accepted optimizations or unbounded shared-glob audit."
+      ],
+      "accepted_work": "PR100–118 filter/matching/wildcard/index/update/command ownership components and accepted memory/cost tradeoffs remain accepted.",
+      "coordination": [
+        29,
+        25,
+        37
+      ],
+      "wave": "R2 bounded style experiment",
+      "original_body_sha256": "a40ca43b9de743a9e9bd59dacbed35180ab54f4855d431af98cf9024c12acd0a"
+    },
+    {
+      "number": 39,
+      "key": "39",
+      "title": "XIO-01: Decide the R2 X-query and barrier experiment",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Finish one measured X-query/barrier reduction decision without changing Xlib event ownership.",
+      "acceptance": [
+        "Freeze at most one remaining root-tree/attribute query or synchronization family with exact error/order requirements and workload inputs.",
+        "Count actual round trips/X requests, latency and CPU before choosing a candidate; document why each removed query/barrier is redundant.",
+        "Test unmanaged/InputOnly/hidden/destroyed windows, concurrent mutations and observer/error ordering using independent real-X controls.",
+        "Publish baseline/candidate costs and adopt/defer/no-change; any narrow XCB prototype requires a separately bounded evidence-backed decision."
+      ],
+      "non_goals": [
+        "No broad Xlib-to-XCB migration, speculative XSync deletion, new mandatory package or cache of unvalidated window state."
+      ],
+      "accepted_work": "Accepted three-batch atom interning and highest-override query reductions remain accepted; synthetic workload counts are not universal latency claims.",
+      "coordination": [
+        29,
+        13,
+        25
+      ],
+      "wave": "R2 bounded X-I/O experiment",
+      "original_body_sha256": "ccc3e76327d859e1999b40caf27c35a9f2a7bab8ffe664bcd69ec8c68fafff8d"
+    },
+    {
+      "number": 40,
+      "key": "40",
+      "title": "ARCHIVE-01: Retire the qualified R2 predecessor manifest",
+      "release": "R2",
+      "work_size": "Minor",
+      "end_goal": "Retire the finite R2 predecessor list whose replacements are already qualified.",
+      "acceptance": [
+        "Freeze the finite R2 predecessor/reference manifest and identify each accepted replacement and shipped reference/install/archive consumer; exclude R3 #55 full tooling-language migration.",
+        "Confirm output/error/offline/install/distribution parity and any explicit retirement exception before removing each predecessor.",
+        "Update affected examples/manuals/manifests/license references and verify staged/source archive contents and broken-link/reference checks.",
+        "Publish removal hashes/evidence and dispositions for all manifest entries, retaining history and user-owned data."
+      ],
+      "non_goals": [
+        "No deletion of ignored build trees, VM disks, evidence archives or user configurations; no restarting accepted runtime/Go migrations. No dependency on completion of R3 #55; its future predecessor removals belong to that later checkpoint."
+      ],
+      "accepted_work": "Historical planning/report relocation, disabled graph automation and accepted M1 replaced entrypoint retirements stay accepted.",
+      "coordination": [
+        14,
+        42
+      ],
+      "wave": "R2 after each replacement acceptance",
+      "original_body_sha256": "ee56af034c290a17195b05dd970c2e2144cd39f7ff2b6e6aa967aa6072baafb0"
+    },
+    {
+      "number": 41,
+      "key": "41",
+      "title": "BOX-01: Accept R2 per-mode worker capability policies",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Accept a finite per-mode worker capability policy and platform feasibility decision.",
+      "acceptance": [
+        "Freeze current image decode/effects modes and their startup/lazy library, font/relative-resource, descriptor, X/network/exec and output authority manifest.",
+        "Define least-authority goals, enforcement boundary and unavailable-support/fail-closed or explicit reduced-profile behavior separately for each OS/mode.",
+        "Compare OpenBSD pledge/unveil, FreeBSD Capsicum and Linux no_new_privs/seccomp/Landlock against those requirements without equating their guarantees.",
+        "Publish adopt/defer/reject policy results and precise acceptance inputs for #232/#233/#234, including X-connected effects limits."
+      ],
+      "non_goals": [
+        "No whole-core sandbox, broker framework, mandatory package, arbitrary configured command policy change or R1 blocker absent a specific feature requirement."
+      ],
+      "accepted_work": "Existing process transport, deadlines, memory/output bounds and async owners remain accepted; current process isolation is not filesystem/syscall containment.",
+      "coordination": [
+        8,
+        231
+      ],
+      "wave": "R2 sandbox policy before platform children",
+      "original_body_sha256": "5826a5ee33cf196a57223bb6a6ba5b20bf5b828949afe80c88a2dd4c1e443008"
+    },
+    {
+      "number": 42,
+      "key": "42",
+      "title": "COMPAT-02: Retire the R2 Perl runtime framework",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Complete the approved finite Perl framework retirement and migration floor.",
+      "acceptance": [
+        "Freeze the remaining FvwmPerl/perllib/fvwm-perllib and Perl-only build/template/install/reference manifest, excluding already retired entrypoints.",
+        "Qualify the selected Lua/Go use-case migration floor and document explicitly unsupported arbitrary Perl APIs; preserve unrelated FVWM3/Script behavior.",
+        "Remove only qualified manifest entries and update install/source archives, manuals, examples, license and dependency references together.",
+        "Verify Perl-free first-party installed runtime/framework and the explicitly selected runtime build/configuration paths; document remaining R3 developer-tool/backend dependencies instead of claiming every development/test path is Perl/Python-free.",
+        "Publish migration/retirement notices and the completed disposition list; preserve user programs and configuration files."
+      ],
+      "non_goals": [
+        "No automatic translation/deletion of arbitrary user Perl, new programmable-UI scope or reopening approved retirement permission. R1 Lua features are independently owned."
+      ],
+      "accepted_work": "Explicit Perl retirement exception, accepted native/Go utilities and M1-M3 adoption remain accepted; retirement is distinct from port implementation.",
+      "coordination": [],
+      "wave": "R2 scripting/retirement checkpoint",
+      "original_body_sha256": "d7ea93be022a41f0042e4aaf3ed4dae47e0d3ba3cd1ab9583d92a1bdbf277e45"
+    },
+    {
+      "number": 227,
+      "key": "227",
+      "title": "FUZZ-01: Qualify the finite R2 local fuzz corpus",
+      "release": "R2",
+      "work_size": "Minor",
+      "end_goal": "Deliver a finite optional local fuzz target/corpus set for selected owned boundaries.",
+      "acceptance": [
+        "Freeze a small named parser/packet/image-boundary target set and fixed malformed corpus identities, reusing production pure policy and current sanitizer tooling.",
+        "Bound input, memory, runtime and iteration budgets; verify harness setup and meaningful corpus rejection/crash oracles without duplicate parser implementations.",
+        "Run the selected local campaign and retain minimized reproducers with exact source/corpus/host/toolchain identities; assign concrete findings to their existing owner.",
+        "Publish reproducible optional invocations and final campaign dispositions, separating native/emulated and sanitizer coverage."
+      ],
+      "non_goals": [
+        "No endless fuzzing obligation, mandatory fuzz toolchain, hosted runner/status publisher or blocker for every R1 feature."
+      ],
+      "accepted_work": "Existing independent parser/transport tests and local verification tooling remain accepted; a campaign is not a whole-code security claim.",
+      "coordination": [
+        5
+      ],
+      "wave": "R2 optional bounded verification expansion",
+      "original_body_sha256": "541db1c46ddd56895c9028d448ccd7a0b8bb95baf880d2bd409c5cbbb6f9c851"
+    },
+    {
+      "number": 232,
+      "key": "232",
+      "title": "BOX-02: Sandbox OpenBSD image workers with pledge and locked unveil",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Implement and qualify the accepted finite OpenBSD image-worker pledge/unveil policies.",
+      "acceptance": [
+        "Freeze accepted #41 decode/effects startup, lazy library/font/relative-resource, descriptor and X authority manifests for supported OpenBSD modes.",
+        "Establish staged least-authority pledge and locked unveil at the approved boundary using current supported semantics; document X authority retained by effects.",
+        "Preserve SVG/SVGZ/relative-file/font/theme/reload/scale behavior, current limits and async owners; required setup failure refuses protected work with normal later recovery.",
+        "Test permitted operations and forbidden unrelated read/write/network/X/exec operations per mode, plus partial output, timeout, cancellation and failure/retry.",
+        "Qualify affected OpenBSD AMD64/ARM64 installed/Xenocara consumers and publish exact effective restrictions, native/emulated limits and exceptions."
+      ],
+      "non_goals": [
+        "No whole-core pledge/unveil, general broker, silent unprotected retry, broad root access or R1 blocker absent a named feature requirement."
+      ],
+      "accepted_work": "Existing qualified worker transport, memory/deadline/output bounds and async owners remain accepted; current lack of OS containment is not a demonstrated compromise.",
+      "coordination": [
+        41,
+        8,
+        231
+      ],
+      "wave": "R2 after accepted OpenBSD mode policy",
+      "original_body_sha256": "33e20eab0a72dfe75abf78ddad75ad3012241560c5c73bb2dbd9bac63c164b92"
+    },
+    {
+      "number": 233,
+      "key": "233",
+      "title": "BOX-03: Constrain FreeBSD image workers with Capsicum descriptor rights",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Implement and qualify finite FreeBSD image-worker Capsicum descriptor policies.",
+      "acceptance": [
+        "Freeze accepted #41 per-mode prepared descriptor/font/resource/X/lazy-library manifests and capability-entry boundary.",
+        "Enter capability mode and reduce descriptor rights/ioctl/fcntl access to the approved needs, documenting authority retained by each open descriptor.",
+        "Preserve configured formats/fonts/relative resources, result validation, limits and async ownership; reject required-policy setup failures explicitly.",
+        "Test ordinary rendering and denied global path/excess descriptor/exec/network authority, setup refusal, partial output, timeout, cancellation and recovery.",
+        "Qualify affected FreeBSD AMD64/ARM64 installed/native-X consumers and publish effective limits and evidence identities."
+      ],
+      "non_goals": [
+        "No whole-core capability mode, generic broker, second decoder, new mandatory package or R1 blocker without a specific feature requirement."
+      ],
+      "accepted_work": "Existing bounded worker process/transport ownership remains accepted; prepared descriptors retain authority and are not automatically safe by capability entry alone.",
+      "coordination": [
+        41,
+        8,
+        231
+      ],
+      "wave": "R2 after accepted FreeBSD mode policy",
+      "original_body_sha256": "a58c2007d4bd499dd48475961409754b0ee9dff565e10ceaa326b1d4b5e2755e"
+    },
+    {
+      "number": 234,
+      "key": "234",
+      "title": "BOX-04: Restrict Linux image workers with detected syscall and filesystem controls",
+      "release": "R2",
+      "work_size": "Major",
+      "end_goal": "Implement and qualify finite detected Linux worker restrictions with truthful support reporting.",
+      "acceptance": [
+        "Freeze accepted #41 per-mode syscall/filesystem/font/resource/descriptor/X manifests and required versus explicit reduced-profile behavior.",
+        "Apply no_new_privs and approved syscall restrictions at the accepted boundary; use Landlock only where detected ABI/security properties meet the chosen requirement.",
+        "Detect kernel/architecture support and report effective protections; required unsupported/setup failure refuses work without silent weakening.",
+        "Test valid rendering and forbidden unrelated file/network/X/child-exec operations, unsupported ABIs, policy failure, partial output, timeout/cancellation and later recovery.",
+        "Qualify affected Linux AMD64/ARM64 installed/nested-X profiles and publish kernel/toolchain/native-sanitizer limits without equating controls to BSD mechanisms."
+      ],
+      "non_goals": [
+        "No whole-core filter, privileged namespace setup, new mandatory desktop package, second decoder or R1 blocker absent an explicit feature requirement."
+      ],
+      "accepted_work": "Existing worker limits/transport and asynchronous ownership remain accepted; seccomp alone is not filesystem confinement and existing descriptors retain authority.",
+      "coordination": [
+        41,
+        8,
+        231
+      ],
+      "wave": "R2 after accepted Linux mode/unavailable-support policy",
+      "original_body_sha256": "5333f9114945d3822c8945827a71e61d2c267e7e6e31b744be1278dbab9898f1"
+    },
+    {
+      "number": 236,
+      "key": "236",
+      "title": "VERIFY-03: Qualify the R2 OpenBSD allocator profile",
+      "release": "R2",
+      "work_size": "Minor",
+      "end_goal": "Complete a bounded OpenBSD allocator-audit qualification profile.",
+      "acceptance": [
+        "Freeze a finite existing allocation/lifetime/teardown test set covering growth/movement, repeated cleanup, refusal and recovery; record why each oracle is meaningful.",
+        "Run ordinary and MALLOC_OPTIONS=S selected profiles on supported OpenBSD AMD64/ARM64 with exact OS/libc/compiler/source/binary and inherited allocator settings.",
+        "Retain crashes/leaks/findings and map each to its existing owner with reproducers; do not weaken limits, disable auditing silently or suppress failures.",
+        "Publish invocation, resource/timing effects and final test dispositions, distinguishing allocator auditing from injected failures, Linux sanitizers, Go runtime and native/physical release acceptance."
+      ],
+      "non_goals": [
+        "No new production allocator default, third-party defect-free guarantee, whole-audit restart or additional R1 blocker."
+      ],
+      "accepted_work": "Existing ownership/failure tests and accepted component results remain accepted; this is a separate optional defense-in-depth profile.",
+      "coordination": [
+        5,
+        231
+      ],
+      "wave": "R2 bounded verification profile",
+      "original_body_sha256": "1919c0cffb486a9283979434a923ca6d86f7e16be463e8fc9d1397eafcc739a1"
+    },
+    {
+      "key": "release-r2",
+      "number": 259,
+      "title": "RELEASE-02: Accept the R2 maintenance and runtime-simplification candidate",
+      "release": "R2",
+      "work_size": "Major",
+      "parent": 208,
+      "end_goal": "Record a finite acceptance decision for the R2 candidate and its frozen maintenance manifest, preserving the shipped R1 desktop features.",
+      "acceptance": [
+        "Freeze the R2 issue/source/profile manifest and candidate; later feature intake requires an explicit scoped plan change, not an endless release gate.",
+        "Complete each selected R2 contract or record an explicit maintainer-approved release exclusion linked to its next finite owner; never label a blocked or untested item passed.",
+        "Qualify affected R1 desktop/configuration behavior, runtime retirement migration, package/install/manual changes and source provenance using reused applicable evidence plus one combined affected release checkpoint.",
+        "Compare the same R1 reference workloads and resource budgets, attribute changed costs and resolve blocking regressions; refresh support and compatibility documentation.",
+        "Publish the candidate report and obtain explicit maintainer release acceptance; tags, credentials, uploads and notifications retain separate authorization."
+      ],
+      "non_goals": [
+        "No automatic publication, all-future-feature gate, first-party developer-tool language migration (#55 R3), or retry of parked R3 work."
+      ],
+      "accepted_work": "All accepted R1 evidence remains valid in its exact source/profile scope.",
+      "coordination": [],
+      "wave": "R2 acceptance",
+      "original_body_sha256": null
+    },
+    {
+      "number": 55,
+      "key": "55",
+      "title": "TOOLING-GO-01: Retire the R3 first-party Python and Perl helper manifest",
+      "release": "R3",
+      "work_size": "Major",
+      "end_goal": "Finish the finite first-party build/docs/generator/test/VM tooling language-retirement manifest after the R2 runtime retirement.",
+      "acceptance": [
+        "Freeze remaining first-party build/source, generation/docs/artwork and independent test/VM-driver helpers with CLI, output, offline, failure and distribution contracts.",
+        "Reuse adopted parser/catalog/metadata behavior and existing Go ports as reference contracts; port still-Python/Perl first-party orchestration listed in the frozen manifest without reimplementing the accepted algorithms or reopening adoption.",
+        "Qualify Go replacements with independent references, malformed/failure inputs, modes, offline execution and staged/source-archive consumers before switching.",
+        "Own removal of the qualified R3 predecessors in this issue, using the accepted #40 retirement method/evidence without reopening or waiting for closed R2 #40. Every active first-party Python/Perl entry point in the frozen manifest is migrated or retired with qualified parity; no deferred row is reported as language retirement.",
+        "Document separate achieved states for Python-free installed runtime, no first-party Python/Perl helpers, and Python-free full build/test; Meson Python remains until a separate backend adoption."
+      ],
+      "non_goals": [
+        "No reopening completed ports, automatic build-backend rewrite, removing references before parity or R1 feature dependency. R2 #14/#40 close only their narrower adopted-tool manifests; this R3 checkpoint owns the remaining full developer-tool language rewrite."
+      ],
+      "accepted_work": "Accepted tool algorithms and Go runtime/utility ports remain accepted. #182 owns the separate backend evaluation and any accepted R1 integration; it does not close this R3 helper-retirement manifest.",
+      "coordination": [
+        14,
+        40,
+        42,
+        182
+      ],
+      "wave": "R3 full developer-tool language retirement after R2 runtime/framework closeout",
+      "original_body_sha256": "bda5187abecadf50052ce9d0dd8d8bb9a484ea98b6fffcb22a6e1ee807a18832"
+    },
+    {
+      "key": "parked-pathname",
+      "number": 257,
+      "title": "DATA-PATH-01: Resolve the parked pathname-construction proposal",
+      "release": "R3",
+      "work_size": "Major",
+      "parent": 6,
+      "parked": true,
+      "end_goal": "Resolve the preserved, bounded pathname-construction proposal with supported review access, evidence-backed changes and matching caller tests, or an explicit evidenced no-change disposition.",
+      "acceptance": [
+        "Record a supported authorized review route before source inspection or execution; preserve the original unknown request-filter rationale. A different executor, model or rephrased rejected action is not a completion route.",
+        "Freeze the original envvar/System path-construction and PictureBase caller set from the preserved proposal; no whole-repository path rewrite or new configuration syntax.",
+        "Establish before/after controls for the selected existing path semantics, checked size arithmetic, ownership, initialized failure outputs and allocation/refusal behavior. No previous implementation or reproduced defect is claimed.",
+        "Complete the selected corrections without new mandatory dependencies; preserve callers and configuration behavior, then run affected native policy/caller tests and scoped ownership checks once for the combined slice.",
+        "Publish source-bound results and exact remaining limits. Close only this frozen proposal; new findings receive separate finite issues."
+      ],
+      "non_goals": [
+        "Administrative creation grants no source inspection, diagnosis, implementation or retry of the parked task now. This child is outside #6 R2 acceptance."
+      ],
+      "accepted_work": "The original proposal has no completed implementation/reproduction. Unknown trigger and original evidence remain preserved.",
+      "coordination": [],
+      "wave": "R3 parked",
+      "original_body_sha256": null
+    },
+    {
+      "key": "parked-backer",
+      "number": 258,
+      "title": "MODULE-BACKER-01: Resolve the parked admission and ownership checkpoint",
+      "release": "R3",
+      "work_size": "Major",
+      "parent": 34,
+      "parked": true,
+      "end_goal": "Resolve the preserved finite Backer admission/ownership checkpoint and its failing combined valid-input control after a supported review route is available.",
+      "acceptance": [
+        "Record a supported authorized review route before source/runtime pickup; preserve original refusal notices without inventing a keyword, function or classification rationale.",
+        "Retain unpublished/unaccepted WIP a4c0933c0 and canonical old evidence; establish the actual combined/valid ownership failure and separate rejection controls before claiming a root cause.",
+        "Freeze the original admission/prepare/commit/retire command family and producers; preserve supported configuration and command ordering. Do not turn this into a whole-module redesign.",
+        "Implement the evidenced repair without weakening the original oracle; pass the combined valid ownership and affected rejection cases, relevant actual-X behavior and scoped ownership sanitizers in one focused checkpoint.",
+        "Publish exact before/after results and independent review, preserving failures and unavailable qualification. Close only the frozen checkpoint, without claiming all module ownership clean."
+      ],
+      "non_goals": [
+        "No parked source inspection, diagnosis, tests or alternate-executor retry is authorized by this administrative split. This child is outside #34 R2 acceptance."
+      ],
+      "accepted_work": "WIP is not accepted or published; original combined/valid unit failed and X/sanitizer/manual acceptance is unestablished.",
+      "coordination": [],
+      "wave": "R3 parked",
+      "original_body_sha256": null
+    },
+    {
+      "key": "release-r3",
+      "number": 260,
+      "title": "RELEASE-03: Accept the R3 developer-tooling and deferred-work candidate",
+      "release": "R3",
+      "work_size": "Major",
+      "parent": 208,
+      "end_goal": "Record a finite acceptance decision for the R3 developer-tooling/deferred-work candidate without reopening accepted desktop features.",
+      "acceptance": [
+        "Freeze the selected developer-tool migration and eligible deferred-work manifest; keep parked items blocked until a supported review route or explicit owner disposition exists.",
+        "Complete #55 output/install/offline/source-release parity and the selected backend decision contract; distinguish Python-free installed runtime, first-party tooling retirement and the full third-party build/test toolchain.",
+        "Complete eligible selected parked checkpoints or record explicit maintainer-approved exclusion with a next owner; do not reinterpret inability to execute as acceptance.",
+        "Qualify affected build profiles, installed desktop behavior and reproducible artifacts using accepted earlier evidence and one combined affected checkpoint; compare resource/cost budgets.",
+        "Publish source-bound acceptance and maintainer disposition. Release publishing remains separately authorized."
+      ],
+      "non_goals": [
+        "No blanket source rewrite, implicit new feature, forced backend/library adoption, blocked-task workaround or automatic release publication."
+      ],
+      "accepted_work": "R1/R2 accepted component evidence remains accepted; optional backend implementation follows its actual adopted decision.",
+      "coordination": [],
+      "wave": "R3 acceptance",
+      "original_body_sha256": null
+    }
+  ]
+}

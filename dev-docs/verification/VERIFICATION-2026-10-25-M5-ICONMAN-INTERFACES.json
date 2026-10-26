@@ -1,0 +1,345 @@
+{
+  "base": "ba52057e7364ee26987477572d18ce8b08282d5f",
+  "owner": "CLEAN-01 #34",
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "modules/FvwmIconMan/x.c": {
+      "sha256": "ef0e8ed3ed3fb66861d01c14792593f547876e1ec599c35892f0bafccb2aec53",
+      "mode": 420
+    },
+    "modules/FvwmIconMan/xmanager.c": {
+      "sha256": "0f3a6ee19f59359c589051396d194e466eee9038d63b2c2301790739ac7f503a",
+      "mode": 420
+    },
+    "modules/FvwmIconMan/x.h": {
+      "sha256": "1d5aa4116b149d164ff6daf5554164cc71b1f0f31e3ee4be7d0dd76e59872711",
+      "mode": 420
+    },
+    "modules/FvwmIconMan/xmanager.h": {
+      "sha256": "249eb707730e6acb63def10d62b5f3e8567ba901452635d0881ef9681f2c7176",
+      "mode": 420
+    },
+    "modules/FvwmIconMan/FvwmIconMan.h": {
+      "sha256": "e69590554a1c190c5ff07389182b040eb379ff99fb55f75e20a01c1adec8b08c",
+      "mode": 420
+    }
+  },
+  "removed_spans": {
+    "modules/FvwmIconMan/x.c": [
+      "void unmap_manager (WinManager *man)\n{\n  if (man->window_mapped == 1) {\n    XUnmapWindow (theDisplay, man->theWindow);\n    set_manager_window_mapping (man, 0);\n    XFlush (theDisplay);\n  }\n}\n\n"
+    ],
+    "modules/FvwmIconMan/xmanager.c": [
+      "void set_win_state(WinData *win, int state)\n{\n\tif (win->button && win->state != state)\n\t\twin->button->drawn_state.dirty_flags |= STATE_CHANGED;\n\twin->state = state;\n}\n\n"
+    ],
+    "modules/FvwmIconMan/x.h": [
+      "extern void unmap_manager (WinManager *man);\n"
+    ],
+    "modules/FvwmIconMan/xmanager.h": [
+      "extern int which_box(WinManager *man, int x, int y);\n",
+      "extern void draw_added_icon(WinManager *man);\n",
+      "extern void draw_deleted_icon(WinManager *man);\n",
+      "extern void set_win_state(WinData *win, int state);\n"
+    ],
+    "modules/FvwmIconMan/FvwmIconMan.h": [
+      "extern int expand_weighted_sorts (void);\n",
+      "extern void update_window_stuff (WinManager *man);\n"
+    ]
+  },
+  "baseline_inputs": 565,
+  "additional_unchanged_helpers": 3,
+  "final_inputs": 568,
+  "source_inventory": {
+    "before": "HEAD:modules/FvwmIconMan/FvwmIconMan.h:400:extern int expand_weighted_sorts (void);\nHEAD:modules/FvwmIconMan/FvwmIconMan.h:415:extern void update_window_stuff (WinManager *man);\nHEAD:modules/FvwmIconMan/x.c:624:void unmap_manager (WinManager *man)\nHEAD:modules/FvwmIconMan/x.h:10:extern void unmap_manager (WinManager *man);\nHEAD:modules/FvwmIconMan/xmanager.c:879:void set_win_state(WinData *win, int state)\nHEAD:modules/FvwmIconMan/xmanager.h:17:extern int which_box(WinManager *man, int x, int y);\nHEAD:modules/FvwmIconMan/xmanager.h:26:extern void draw_added_icon(WinManager *man);\nHEAD:modules/FvwmIconMan/xmanager.h:27:extern void draw_deleted_icon(WinManager *man);\nHEAD:modules/FvwmIconMan/xmanager.h:33:extern void set_win_state(WinData *win, int state);\n",
+    "after_active_references": 0,
+    "private_headers_installed": false
+  },
+  "symbols": {
+    "old_definitions": 116,
+    "new_definitions": 114,
+    "removed": [
+      [
+        "set_win_state",
+        "T"
+      ],
+      [
+        "unmap_manager",
+        "T"
+      ]
+    ],
+    "added": [],
+    "remaining_definitions_preserved": true,
+    "retired_undefined_references": 0
+  },
+  "commands": [
+    {
+      "label": "normal-group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "tests/test-ui-packet",
+        "tests/ident-packet-fixture"
+      ],
+      "status": 0,
+      "seconds": 0.7787024370045401
+    },
+    {
+      "label": "ui-packet-unit",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "ui-packet"
+      ],
+      "status": 0,
+      "seconds": 0.17006865699659102
+    },
+    {
+      "label": "service-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_partial_live.py",
+        "--kind",
+        "iconman",
+        "--service-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIconMan/FvwmIconMan",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-iconman-20261025/final/service-x"
+      ],
+      "status": 0,
+      "seconds": 0.26560731400968507
+    },
+    {
+      "label": "transport-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/iconman_transport_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIconMan/FvwmIconMan",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-iconman-20261025/final/transport-x"
+      ],
+      "status": 0,
+      "seconds": 0.3730028760037385
+    }
+  ],
+  "command_seconds": 1.5873812840145547,
+  "profile": {
+    "options": {
+      "buildtype": "debugoptimized",
+      "b_ndebug": "false",
+      "b_sanitize": "none",
+      "c_args": [],
+      "c_link_args": []
+    },
+    "compiler": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "compile_commands": [
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/FvwmIconMan.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/FvwmIconMan.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/FvwmIconMan.c.o -c ../source/modules/FvwmIconMan/FvwmIconMan.c",
+        "file": "../source/modules/FvwmIconMan/FvwmIconMan.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/FvwmIconMan.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/debug.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/debug.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/debug.c.o -c ../source/modules/FvwmIconMan/debug.c",
+        "file": "../source/modules/FvwmIconMan/debug.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/debug.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/functions.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/functions.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/functions.c.o -c ../source/modules/FvwmIconMan/functions.c",
+        "file": "../source/modules/FvwmIconMan/functions.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/functions.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/fvwm.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/fvwm.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/fvwm.c.o -c ../source/modules/FvwmIconMan/fvwm.c",
+        "file": "../source/modules/FvwmIconMan/fvwm.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/fvwm.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/iconman_packet.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/iconman_packet.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/iconman_packet.c.o -c ../source/modules/FvwmIconMan/iconman_packet.c",
+        "file": "../source/modules/FvwmIconMan/iconman_packet.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/iconman_packet.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/globals.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/globals.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/globals.c.o -c ../source/modules/FvwmIconMan/globals.c",
+        "file": "../source/modules/FvwmIconMan/globals.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/globals.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/readconfig.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/readconfig.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/readconfig.c.o -c ../source/modules/FvwmIconMan/readconfig.c",
+        "file": "../source/modules/FvwmIconMan/readconfig.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/readconfig.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/winlist.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/winlist.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/winlist.c.o -c ../source/modules/FvwmIconMan/winlist.c",
+        "file": "../source/modules/FvwmIconMan/winlist.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/winlist.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/x.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/x.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/x.c.o -c ../source/modules/FvwmIconMan/x.c",
+        "file": "../source/modules/FvwmIconMan/x.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/x.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIconMan/FvwmIconMan.p -Imodules/FvwmIconMan -I../source/modules/FvwmIconMan -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIconMan/FvwmIconMan.p/xmanager.c.o -MF modules/FvwmIconMan/FvwmIconMan.p/xmanager.c.o.d -o modules/FvwmIconMan/FvwmIconMan.p/xmanager.c.o -c ../source/modules/FvwmIconMan/xmanager.c",
+        "file": "../source/modules/FvwmIconMan/xmanager.c",
+        "output": "modules/FvwmIconMan/FvwmIconMan.p/xmanager.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Itests/test-ui-packet.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -MD -MQ tests/test-ui-packet.p/.._modules_FvwmIconMan_iconman_packet.c.o -MF tests/test-ui-packet.p/.._modules_FvwmIconMan_iconman_packet.c.o.d -o tests/test-ui-packet.p/.._modules_FvwmIconMan_iconman_packet.c.o -c ../source/modules/FvwmIconMan/iconman_packet.c",
+        "file": "../source/modules/FvwmIconMan/iconman_packet.c",
+        "output": "tests/test-ui-packet.p/.._modules_FvwmIconMan_iconman_packet.c.o"
+      }
+    ]
+  },
+  "outputs": {
+    "modules/FvwmIconMan/FvwmIconMan": {
+      "sha256": "7b523ff4d81230f477b58bc0668b45c278deab3baba56a02262c482818699bf7",
+      "bytes": 1772512
+    },
+    "tests/test-ui-packet": {
+      "sha256": "2d31c4cf80b2c88a438ec0c48556007c67ceaab89952aafe2dea79adc5300de9",
+      "bytes": 92320
+    },
+    "tests/ident-packet-fixture": {
+      "sha256": "81d2d0c45562d25afffca80a88521595b7f785d4a03cc8f6d974246ce88c6a08",
+      "bytes": 82168
+    }
+  },
+  "service_x": {
+    "x-service": {
+      "queued-keys": 257,
+      "queued-exposes": 80,
+      "keys-before-pipe-command": 0,
+      "service-seconds": 0.04822204101947136,
+      "queued-X-continuation-without-new-input": "passed"
+    }
+  },
+  "transport_x": {
+    "popup-eof": "passed",
+    "popup-term": "passed",
+    "fragmented-packet": "passed",
+    "tooltip-delay": "passed",
+    "long-tooltip-term": "passed",
+    "high-descriptor": "passed"
+  },
+  "archive": {
+    "payloads": 54,
+    "regular_files": 55,
+    "bytes": 337070,
+    "sha256": "122886e4ead0e8ae1189f2aa3e60ed1e6062f8396e6e99812b1a36408f389035",
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-iconman-interfaces/native-evidence.tgz"
+  },
+  "retirement": {
+    "status": "retired exact verified guest duplicates",
+    "items": [
+      {
+        "tree": "/tmp/fvwm-m5-iconman-20261025",
+        "files": 55,
+        "active_references": [],
+        "archive_sha256": "122886e4ead0e8ae1189f2aa3e60ed1e6062f8396e6e99812b1a36408f389035"
+      },
+      {
+        "tree": "/tmp/fvwm-m5-backer-20261025",
+        "files": 61,
+        "active_references": [],
+        "archive_sha256": "d590d39371a67e0115737dc5f90ce375c0462df2f921a8a2136e37e07bb8ad17"
+      }
+    ],
+    "preserved": "canonical host archives, local parked WIP, source/build caches, stages, VM disks, performance references"
+  },
+  "review": "separate final source/caller/exact-span/raw-evidence/report review passed; all568identities/54payloads, exactsymbolsets, profile/output/commands and passingunit/service/transport independently verified; no remaining findings",
+  "routing": {
+    "analysis_requested": {
+      "role": "temper_analyst",
+      "model": "gpt-6-astra",
+      "effort": "high"
+    },
+    "review_requested": {
+      "role": "temper_reviewer",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    "implementation": "lead exact deletions; tiny coupled work kept with lead under local policy",
+    "actual_runtime_metadata": "unavailable; requested delegated settings unverified"
+  },
+  "parked_separate_work": {
+    "branch": "codex/m5-backer-command-admission",
+    "local_wip": "a4c0933c0",
+    "status": "incomplete/unaccepted/unpublished; delegated diagnosis blocked by security/Daybreak filter; not retried through another executor",
+    "raw_archive_sha256": "d590d39371a67e0115737dc5f90ce375c0462df2f921a8a2136e37e07bb8ad17",
+    "source_restored_to_merged_base_before_independent_work": true,
+    "included_in_this_patch": false
+  },
+  "deferred": [
+    "BSD/AMD64/install/compiler-feature/default-server/release matrix",
+    "native-CPU/hardware/toolkit/compositor qualification",
+    "broad #34 completion"
+  ],
+  "performance": {
+    "reference": "PR248",
+    "merged_since": 2,
+    "candidate_merge_will_make": 3,
+    "comparison_due": false
+  },
+  "not_applicable_to_this_slice": [
+    "new fixture or sanitizer campaign for exact unreferenced-code deletion"
+  ]
+}

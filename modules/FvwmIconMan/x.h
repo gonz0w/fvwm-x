@@ -7,7 +7,6 @@
 extern Window theRoot;
 extern int theScreen;
 
-extern void unmap_manager (WinManager *man);
 extern void map_manager (WinManager *man);
 
 extern Window find_frame_window (Window win, int *off_x, int *off_y);

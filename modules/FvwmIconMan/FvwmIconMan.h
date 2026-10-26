@@ -397,7 +397,6 @@ extern char *copy_string (char **target, const char *src);
 
 extern void init_globals (void);
 extern int allocate_managers (int num);
-extern int expand_weighted_sorts (void);
 
 extern WinData *new_windata (void);
 extern void free_windata (WinData *p);
@@ -412,7 +411,6 @@ extern void walk_hashtab (void (*func)(void *));
 extern int accumulate_walk_hashtab (int (*func)(void *));
 extern void print_stringlist (StringList *list);
 extern void add_to_stringlist (StringList *list, char *s);
-extern void update_window_stuff (WinManager *man);
 extern void print_managers (void);
 
 extern WinManager *find_windows_manager (Window win);

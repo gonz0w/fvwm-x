@@ -876,13 +876,6 @@ void set_win_iconified(WinData *win, int iconified)
 	}
 }
 
-void set_win_state(WinData *win, int state)
-{
-	if (win->button && win->state != state)
-		win->button->drawn_state.dirty_flags |= STATE_CHANGED;
-	win->state = state;
-}
-
 /* this is "broken" */
 void add_win_state(WinData *win, int flag)
 {

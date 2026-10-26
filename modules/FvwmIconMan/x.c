@@ -621,15 +621,6 @@ void map_manager (WinManager *man)
   }
 }
 
-void unmap_manager (WinManager *man)
-{
-  if (man->window_mapped == 1) {
-    XUnmapWindow (theDisplay, man->theWindow);
-    set_manager_window_mapping (man, 0);
-    XFlush (theDisplay);
-  }
-}
-
 void X_init_manager (int man_id)
 {
   WinManager *man;

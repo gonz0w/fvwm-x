@@ -94,11 +94,49 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 IconMan private-interface retirement — 2026-10-25
+
+Owner: Cam; `codex/m5-iconman-private-interfaces`; CLEAN-01 #34.
+Status: focused checks and separate final source/raw-evidence review pass;
+ready for signed author-DCO PR delivery.
+Independent finite outcome after merged PR250: remove unused
+`unmap_manager` and `set_win_state` bodies/declarations plus five orphan private
+prototypes: `which_box`, `draw_added_icon`, `draw_deleted_icon`,
+`expand_weighted_sorts`, `update_window_stuff`. Keep all active mapping/state/
+button/drawing paths, configuration and installed contracts unchanged.
+Acceptance: source/config/caller inventory and existing object symbols prove
+absence of consumers; delete exactly the named spans; all other compiled
+function definitions survive. One incremental Linux IconMan build and existing
+service/transport X fixtures, no new tests or automatic sanitizer/platform matrix.
+Separate final source/evidence review. Broad #34 stays open; PR248 reference is
+2/5 and this candidate merge makes 3/5; no benchmark due.
+
+The actual-object inventory has no consumers of the retired names. After deletion,
+exact span reconstruction preserves retained source, all remaining 114 global
+symbol names/types survive, and the two retired text definitions disappear.
+UI packet, service X and six-case transport X pass in one 1.587-second focused
+checkpoint. All 568 source identities and 54 canonical payloads are verified;
+verified guest duplicates are retired. [IconMan evidence](verification/VERIFICATION-2026-10-25-M5-ICONMAN-INTERFACES.md).
+
+The separate Backer admission candidate is **parked, incomplete and unpublished**
+on local branch `codex/m5-backer-command-admission`, WIP
+`a4c0933c0`. Its combined/valid unit terminal assertion failed; individual
+rejection cases passed. A delegated diagnosis request was blocked by the
+security/Daybreak filter; it was not retried through another executor. No Backer
+X/sanitizer/manual completion or acceptance is claimed. Existing raw evidence is
+preserved in the private October 25 `m5-backer-admission/parked-native-evidence.tgz`
+(60 payloads, 2,367,386 bytes, SHA256
+`d590d39371a67e0115737dc5f90ce375c0462df2f921a8a2136e37e07bb8ad17`).
+This independent IconMan work contains no parked Backer source or test changes.
+
 ## M5 temporary WM metadata ownership — 2026-10-25
 
 Owner: Cam; `codex/m5-wm-metadata-ownership`; CLEAN-01 #34 with SCRIPT-01 #4.
-Status: focused checks and separate final source/raw-evidence review pass after
-capacity recovery; ready for signed author-DCO PR delivery. Base is merged PR249.
+Status: merged in PR250 as `ba52057e7364ee26987477572d18ce8b08282d5f`;
+canonical signature/DCO and reviewed tree
+`2bec13b66367b6c9f99a3f971ed2150b1966f04e` verified; branch retired,
+GitHub/Project Done. Focused checks and separate final review passed.
+PR248 periodic reference is 2/5 after this merge.
 Finite outcome: bound synchronous temporary
 X WM metadata to its publishing/query call. Script uses zero-initialized local
 size/WM hints and releases converted title storage after XSetWMProperties; a

@@ -1,0 +1,357 @@
+{
+  "base": "987cdcf34a287bffa30c432f043241a7f6dd34a6",
+  "owner": "CLEAN-01 #34",
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "fvwm/focus.c": {
+      "sha256": "dde1a6a0538bc3549a9e8195e08ee8bf999e46219988003a0c34e7049eb7bd82",
+      "mode": 420
+    },
+    "fvwm/geometry.c": {
+      "sha256": "3391dd5cb12cb8d3b1e7df9e90f1f7e9979ef3838eba22cc4174a3d85b007cf1",
+      "mode": 420
+    },
+    "fvwm/focus.h": {
+      "sha256": "e9d9edbde399d54964d1650459ea75db2686c01ecd55679efd23fe6fa814564e",
+      "mode": 420
+    },
+    "fvwm/geometry.h": {
+      "sha256": "d475937fbfbd2396c7bab76acf7a4b1607ab61f9548920e7446ba20ec89c33d3",
+      "mode": 420
+    }
+  },
+  "removed_spans": {
+    "fvwm/focus.c": [
+      "void _ForceDeleteFocus(void)\n{\n\tsftfwin_args_t sf_args;\n\n\tmemset(&sf_args, 0, sizeof(sf_args));\n\tsf_args.do_allow_force_broadcast = 1;\n\tsf_args.is_focus_by_flip_focus_cmd = 0;\n\tsf_args.do_forbid_warp = 0;\n        sf_args.client_entered = 0;\n\tsf_args.do_force = 1;\n\tsf_args.set_by = FOCUS_SET_FORCE;\n\tset_focus_to_fwin(Scr.NoFocusWin, NULL, &sf_args);\n\n\treturn;\n}\n\n",
+      "/* same as above, but forces to regrab buttons on the window under the pointer\n * if necessary */\nvoid focus_grab_buttons_on_pointer_window(void)\n{\n\tWindow w;\n\tFvwmWindow *fw;\n\n\tFQueryPointer(\n\t\t    dpy, Scr.Root, &JunkRoot, &w, &JunkX, &JunkY, &JunkX,\n\t\t    &JunkY, &JunkMask);\n\tif (XFindContext(dpy, w, FvwmContext, (caddr_t *) &fw) == XCNOENT)\n\t{\n\t\t/* pointer is not over a window */\n\t\treturn;\n\t}\n\tfocus_grab_buttons(fw);\n\n\treturn;\n}\n\n"
+    ],
+    "fvwm/geometry.c": [
+      "void get_shaded_client_window_pos(\n\tFvwmWindow *fw, rectangle *ret_g)\n{\n\trectangle big_g;\n\tsize_borders b;\n\n\tget_window_borders(fw, &b);\n\tbig_g = (IS_MAXIMIZED(fw)) ? fw->g.max : fw->g.normal;\n\tget_relative_geometry(fw, &big_g, &big_g);\n\tswitch (SHADED_DIR(fw))\n\t{\n\tcase DIR_S:\n\tcase DIR_SW:\n\tcase DIR_SE:\n\t\tret_g->y = 1 - big_g.height + b.total_size.height;\n\t\tbreak;\n\tdefault:\n\t\tret_g->y = 0;\n\t\tbreak;\n\t}\n\tswitch (SHADED_DIR(fw))\n\t{\n\tcase DIR_E:\n\tcase DIR_NE:\n\tcase DIR_SE:\n\t\tret_g->x = 1 - big_g.width + b.total_size.width;\n\t\tbreak;\n\tdefault:\n\t\tret_g->x = 0;\n\t\tbreak;\n\t}\n\n\treturn;\n}\n\n",
+      "/* update the frame_g according to the window's g.normal or g.max and shaded\n * state */\nvoid update_relative_geometry(FvwmWindow *fw)\n{\n\tget_relative_geometry(fw,\n\t\t&fw->g.frame,\n\t\t(IS_MAXIMIZED(fw)) ? &fw->g.max : &fw->g.normal);\n\tif (IS_SHADED(fw))\n\t{\n\t\tget_shaded_geometry(\n\t\t\tfw, &fw->g.frame, &fw->g.frame);\n\t}\n\n\treturn;\n}\n\n"
+    ],
+    "fvwm/focus.h": [
+      "#define SetFocusWindowClientEntered(a, b, c) _SetFocusWindow(a, b, c, True);\n",
+      "#define ForceDeleteFocus() _ForceDeleteFocus();\n",
+      "void _ForceDeleteFocus(void);\n",
+      "void focus_grab_buttons_on_pointer_window(void);\n",
+      "FvwmWindow *focus_get_transientfor_fwin(const FvwmWindow *fw);\n"
+    ],
+    "fvwm/geometry.h": [
+      "int get_title_gravity(\n\tFvwmWindow *fw);\n",
+      "void get_shaded_client_window_pos(\n\tFvwmWindow *fw, rectangle *ret_g);\n",
+      "void update_relative_geometry(FvwmWindow *fw);\n"
+    ]
+  },
+  "removed_source_lines": 97,
+  "baseline_inputs": 575,
+  "final_inputs": 575,
+  "source_inventory": {
+    "before": "HEAD:fvwm/focus.c:990:void _ForceDeleteFocus(void)\nHEAD:fvwm/focus.c:1039:void focus_grab_buttons_on_pointer_window(void)\nHEAD:fvwm/focus.h:17:#define SetFocusWindowClientEntered(a, b, c) _SetFocusWindow(a, b, c, True);\nHEAD:fvwm/focus.h:20:#define ForceDeleteFocus() _ForceDeleteFocus();\nHEAD:fvwm/focus.h:49:void _ForceDeleteFocus(void);\nHEAD:fvwm/focus.h:61:void focus_grab_buttons_on_pointer_window(void);\nHEAD:fvwm/focus.h:70:FvwmWindow *focus_get_transientfor_fwin(const FvwmWindow *fw);\nHEAD:fvwm/geometry.c:476:void get_shaded_client_window_pos(\nHEAD:fvwm/geometry.c:611:void update_relative_geometry(FvwmWindow *fw)\nHEAD:fvwm/geometry.h:22:int get_title_gravity(\nHEAD:fvwm/geometry.h:42:void get_shaded_client_window_pos(\nHEAD:fvwm/geometry.h:54:void update_relative_geometry(FvwmWindow *fw);\n",
+    "after_active_references": 0,
+    "headers_installed": false
+  },
+  "symbols": {
+    "object-defined": {
+      "before": 1721,
+      "after": 1717,
+      "removed": [
+        [
+          "_ForceDeleteFocus",
+          "T"
+        ],
+        [
+          "focus_grab_buttons_on_pointer_window",
+          "T"
+        ],
+        [
+          "get_shaded_client_window_pos",
+          "T"
+        ],
+        [
+          "update_relative_geometry",
+          "T"
+        ]
+      ],
+      "added": [],
+      "remaining_preserved": true
+    },
+    "binary-defined": {
+      "before": 1699,
+      "after": 1695,
+      "removed": [
+        [
+          "_ForceDeleteFocus",
+          "T"
+        ],
+        [
+          "focus_grab_buttons_on_pointer_window",
+          "T"
+        ],
+        [
+          "get_shaded_client_window_pos",
+          "T"
+        ],
+        [
+          "update_relative_geometry",
+          "T"
+        ]
+      ],
+      "added": [],
+      "remaining_preserved": true
+    }
+  },
+  "commands": [
+    {
+      "label": "normal-group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "fvwm3",
+        "modules/FvwmMFL/FvwmMFL",
+        "tests/test-geometry-transition"
+      ],
+      "status": 0,
+      "seconds": 3.4950713140133303
+    },
+    {
+      "label": "geometry-unit",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "geometry-transition"
+      ],
+      "status": 0,
+      "seconds": 0.16817789600463584
+    },
+    {
+      "label": "geometry-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/geometry_transition_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--xorg-config",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-core-interfaces-20261025/final/geometry-x"
+      ],
+      "status": 0,
+      "seconds": 47.0347977890051
+    },
+    {
+      "label": "stack-layer-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/stack_layer_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-core-interfaces-20261025/final/stack-layer-x"
+      ],
+      "status": 0,
+      "seconds": 0.4314855760021601
+    }
+  ],
+  "command_seconds": 51.12953257502522,
+  "profile": {
+    "options": {
+      "buildtype": "debugoptimized",
+      "b_ndebug": "false",
+      "b_sanitize": "none",
+      "c_args": [],
+      "c_link_args": []
+    },
+    "compiler": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "compile_commands": [
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Ifvwm3.p -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ fvwm3.p/fvwm_focus.c.o -MF fvwm3.p/fvwm_focus.c.o.d -o fvwm3.p/fvwm_focus.c.o -c ../source/fvwm/focus.c",
+        "file": "../source/fvwm/focus.c",
+        "output": "fvwm3.p/fvwm_focus.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Ifvwm3.p -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ fvwm3.p/fvwm_geometry.c.o -MF fvwm3.p/fvwm_geometry.c.o.d -o fvwm3.p/fvwm_geometry.c.o -c ../source/fvwm/geometry.c",
+        "file": "../source/fvwm/geometry.c",
+        "output": "fvwm3.p/fvwm_geometry.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Itests/test-geometry-transition.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -MD -MQ tests/test-geometry-transition.p/test_geometry_transition.c.o -MF tests/test-geometry-transition.p/test_geometry_transition.c.o.d -o tests/test-geometry-transition.p/test_geometry_transition.c.o -c ../source/tests/test_geometry_transition.c",
+        "file": "../source/tests/test_geometry_transition.c",
+        "output": "tests/test-geometry-transition.p/test_geometry_transition.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Itests/fvwm-module-output-fixture.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -MD -MQ tests/fvwm-module-output-fixture.p/.._fvwm_focus.c.o -MF tests/fvwm-module-output-fixture.p/.._fvwm_focus.c.o.d -o tests/fvwm-module-output-fixture.p/.._fvwm_focus.c.o -c ../source/fvwm/focus.c",
+        "file": "../source/fvwm/focus.c",
+        "output": "tests/fvwm-module-output-fixture.p/.._fvwm_focus.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Itests/fvwm-module-output-fixture.p -Itests -I../source/tests -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -UNDEBUG -MD -MQ tests/fvwm-module-output-fixture.p/.._fvwm_geometry.c.o -MF tests/fvwm-module-output-fixture.p/.._fvwm_geometry.c.o.d -o tests/fvwm-module-output-fixture.p/.._fvwm_geometry.c.o -c ../source/fvwm/geometry.c",
+        "file": "../source/fvwm/geometry.c",
+        "output": "tests/fvwm-module-output-fixture.p/.._fvwm_geometry.c.o"
+      }
+    ]
+  },
+  "outputs": {
+    "fvwm3": {
+      "sha256": "c148e0f4aaf441856d9e1c75d131bd478e93b1264ffaf29aa6cb1b9f4b2e84bb",
+      "bytes": 5386800
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+      "bytes": 444120
+    },
+    "tests/test-geometry-transition": {
+      "sha256": "46ede25a3ced03b09110c205b37b22a09692b14fec1dd2127c8b009b69126233",
+      "bytes": 190152
+    }
+  },
+  "geometry_scenarios": [
+    {
+      "raw_record": "geometry-x-5-o3x0gj2j-scenario.json",
+      "sha256": "f49c9b1a8aa51ddfcc89308ed90bfb573665ab87294ce1f38401b5643322e715",
+      "quarters": 5,
+      "smoke": false,
+      "cases": 34,
+      "states": [
+        "fixed",
+        "fullscreen",
+        "maximized",
+        "normal",
+        "workarea"
+      ],
+      "mfl_echo_round_trip": true
+    },
+    {
+      "raw_record": "geometry-x-6-czdxuizy-scenario.json",
+      "sha256": "35e022b5db6b10d6846ac1ac6bf8f885701fbf71fb794a20814aa98b734eb737",
+      "quarters": 6,
+      "smoke": false,
+      "cases": 34,
+      "states": [
+        "fixed",
+        "fullscreen",
+        "maximized",
+        "normal",
+        "workarea"
+      ],
+      "mfl_echo_round_trip": true
+    },
+    {
+      "raw_record": "geometry-x-8-_btu2boc-scenario.json",
+      "sha256": "379342e7ab06b55c9db690ec73c93bb047f68fb1b8d9baf46f7c2bbdb6e68d10",
+      "quarters": 8,
+      "smoke": false,
+      "cases": 34,
+      "states": [
+        "fixed",
+        "fullscreen",
+        "maximized",
+        "normal",
+        "workarea"
+      ],
+      "mfl_echo_round_trip": true
+    }
+  ],
+  "stack_layer_results": {
+    "parent-child-state-stack-focus-and-unrelated-window": "passed",
+    "destroyed-parent-survivor-publication": "passed"
+  },
+  "archive": {
+    "payloads": 71,
+    "regular_files": 72,
+    "bytes": 421787,
+    "sha256": "28a1f78ec0e20c878ddc3e14f361d105fde0e2c724aa28958de72226d76f07d6",
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-core-interfaces/native-evidence.tgz"
+  },
+  "retirement": {
+    "status": "retired verified guest duplicate capture/archive",
+    "files": 72,
+    "active_references": [],
+    "archive_sha256": "28a1f78ec0e20c878ddc3e14f361d105fde0e2c724aa28958de72226d76f07d6",
+    "preserved": "canonical host archive, source/build caches, stages, VM disks, PR243/PR248 performance references"
+  },
+  "review": "separate final source/caller/exact-span/raw-evidence/report review passed; no remaining findings",
+  "review_scope": "independent selected four-file bytes/spans, selected unchanged fixture hashes, all 71 payload identities, object/library/binary sets and passing logs; 575-entry baseline/final maps differing only in the four selected core files and executed pre/post hash-check scripts checked without opening excluded source contents",
+  "routing": {
+    "analysis_requested": {
+      "role": "temper_analyst",
+      "model": "gpt-6-astra",
+      "effort": "high"
+    },
+    "review_requested": {
+      "role": "temper_reviewer",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    "implementation": "lead exact deletion under local tiny/coupled-work policy",
+    "actual_runtime_metadata": "unavailable; requested delegated settings unverified"
+  },
+  "parked_work": "user explicitly keeps Daybreak-blocked families parked; no diagnosis/execution/edits included",
+  "not_applicable": [
+    "new test or sanitizer campaign for exact unreferenced-code deletion",
+    "new UI/theme/screenshot or performance benchmark"
+  ],
+  "deferred": [
+    "broader BSD/AMD64/compiler-feature/install/default-server/release qualification",
+    "native-CPU/hardware/toolkit/compositor qualification",
+    "broad #34 acceptance"
+  ],
+  "performance": {
+    "reference": "PR248",
+    "merged_since": 4,
+    "candidate_merge_will_make": 5,
+    "comparison_due_now": false,
+    "next_observation": "due after candidate merge, using preserved references before next implementation"
+  }
+}

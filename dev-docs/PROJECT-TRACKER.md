@@ -94,11 +94,45 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 core private focus/geometry interfaces — 2026-10-25
+
+Owner: Cam; `codex/m5-core-private-interfaces`; CLEAN-01 #34.
+Status: focused checks and separate final source/raw-evidence/report review pass;
+ready for signed author-DCO PR delivery.
+Finite outcome after merged PR252: remove uncalled
+_ForceDeleteFocus, focus_grab_buttons_on_pointer_window,
+get_shaded_client_window_pos and update_relative_geometry bodies/prototypes;
+remove unused SetFocusWindowClientEntered / ForceDeleteFocus macros and orphan
+focus_get_transientfor_fwin / get_title_gravity prototypes. Four bodies, six
+prototypes and two macros across four private core files. Preserve active focus
+set/return/delete/client-enter/grab/restore and geometry conversions, including
+_SetFocusWindow's current signature and client_entered parameter.
+
+Acceptance: full source/config/address inventory and actual core/library object
+symbols prove no consumers. Exact deletion spans preserve retained source; only
+four text symbols disappear, all other definitions survive. One normal Linux
+incremental core profile, existing geometry unit plus geometry-transition Xorg
+dummy and stack-layer X fixtures; no new tests or automatic sanitizer/platform
+matrix. Separate final source/evidence review. Broad #34 stays open; PR248 is
+4/5, next regular performance observation becomes due after this candidate merges.
+All Daybreak-blocked work stays parked and is neither inspected nor advanced.
+
+Exact source/object proof removes four bodies, six prototypes and two macros
+(97 lines) with no consumers. All remaining object/library/executable symbol
+names/types survive. The geometry unit, 102-case geometry integration and two
+layer/focus observations pass in one 51.130-second focused checkpoint. All 575
+input identities and 71 canonical payloads are verified; duplicate guest captures
+are retired. Separate final source/raw-evidence/report review passes with no
+remaining findings. [Core-interface evidence](verification/VERIFICATION-2026-10-25-M5-CORE-INTERFACES.md).
+
 ## M5 module private drawing/keyboard interfaces — 2026-10-25
 
 Owner: Cam; `codex/m5-module-private-interfaces`; CLEAN-01 #34.
-Status: focused checks and separate final source/raw-evidence review pass;
-ready for signed author-DCO PR delivery. Finite outcome after merged PR251: remove unused Script
+Status: merged in PR252 as `987cdcf34a287bffa30c432f043241a7f6dd34a6`;
+canonical signature/DCO and reviewed tree
+`47801c6b63af23143e39e84ca47689f33de1e8c6` verified; branch retired,
+GitHub/Project Done. Focused checks and separate review passed. PR248 reference
+is 4/5 after this merge. Finite outcome after merged PR251: remove unused Script
 DrawArrowE/W bodies/prototypes, the unused Buttons buttons_keyboard_enabled getter
 and prototype, and orphan Buttons expand_action / Ident change_defaults
 prototypes. These are three bodies and five declarations across six private

@@ -19,8 +19,6 @@ void gravity_translate_to_northwest_geometry_no_bw(
 	int gravity, FvwmWindow *t, rectangle *dest_g, rectangle *orig_g);
 void get_title_geometry(
 	FvwmWindow *fw, rectangle *ret_g);
-int get_title_gravity(
-	FvwmWindow *fw);
 void get_title_gravity_factors(
 	FvwmWindow *fw, int *ret_fx, int *ret_fy);
 Bool get_title_button_geometry(
@@ -39,8 +37,6 @@ void get_shaded_geometry_with_dir(
 	direction_t shade_dir);
 void get_unshaded_geometry(
 	FvwmWindow *fw, rectangle *ret_g);
-void get_shaded_client_window_pos(
-	FvwmWindow *fw, rectangle *ret_g);
 void get_client_geometry(
 	FvwmWindow *fw, rectangle *ret_g);
 void get_window_borders(
@@ -51,7 +47,6 @@ void set_window_border_size(
 	FvwmWindow *fw, int used_width);
 Bool is_window_border_minimal(
 	FvwmWindow *fw);
-void update_relative_geometry(FvwmWindow *fw);
 void update_absolute_geometry(FvwmWindow *fw);
 void maximize_adjust_offset(FvwmWindow *fw);
 void constrain_size(

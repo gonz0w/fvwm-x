@@ -4111,3 +4111,56 @@ if libpng.found() and get_option('live-x-tests')
         is_parallel: false,
     )
 endif
+
+# Observe the actual module owners; the record test also runs with LSan enabled.
+iconman_record_owner_test = executable(
+    'test-iconman-record-owner', 'test_iconman_record_owner.c',
+    objects: fvwm_iconman.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free'],
+)
+test('iconman-record-owner', iconman_record_owner_test)
+
+ident_resource_owner_probe = executable(
+    'test-ident-resource-owner', 'test_ident_resource_owner.c',
+    objects: fvwm_ident.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG', '-fno-builtin-free'],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=free',
+        '-Wl,--wrap=CopyString', '-Wl,--wrap=CopyStringWithQuotes',
+        '-Wl,--wrap=fxstrdup', '-Wl,--wrap=FlocaleAllocateWinString',
+        '-Wl,--wrap=FlocaleTextWidth', '-Wl,--wrap=fxmalloc',
+        '-Wl,--wrap=FlocaleLoadFont', '-Wl,--wrap=FlocaleUnloadFont',
+        '-Wl,--wrap=fvwmlib_XCreateGC', '-Wl,--wrap=XFreeGC',
+        '-Wl,--wrap=fvwmlib_get_color', '-Wl,--wrap=GetColor',
+        '-Wl,--wrap=PictureFreeColors', '-Wl,--wrap=XMapWindow',
+        '-Wl,--wrap=monitor_by_output',
+        '-Wl,--wrap=fvwmlib_get_target_window'],
+)
+buttons_picture_owner_probe = executable(
+    'test-buttons-picture-owner', 'test_buttons_picture_owner.c',
+    objects: fvwm_buttons.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=PCacheFvwmPicture',
+        '-Wl,--wrap=PDestroyFvwmPicture', '-Wl,--wrap=XMapWindow'],
+)
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('module-resource-owner-xvfb', py,
+        args: [files('live_x/module_resource_owner_live.py'),
+            '--ident', ident_resource_owner_probe,
+            '--buttons', buttons_picture_owner_probe,
+            '--fixture', ident_packet_fixture,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'module-resource-owner'],
+        depends: [ident_resource_owner_probe, buttons_picture_owner_probe,
+            ident_packet_fixture],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 120)
+endif

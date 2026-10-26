@@ -292,6 +292,9 @@ void free_windata (WinData *p)
   Free (p->iconname);
   Free (p->titlename);
   Free (p->display_string);
+  Free (p->visible_name);
+  Free (p->visible_icon_name);
+  Free (p->monitor);
   Free (p);
 }
 

@@ -1224,3 +1224,16 @@ records. Script converted title storage ends after synchronous property publicat
 IconMan unwinds its first converted text property if the second conversion fails.
 These temporary owners do not extend into the event loop or shared base-X/font
 teardown. [WM metadata evidence](verification/VERIFICATION-2026-10-25-M5-WM-METADATA.md).
+
+
+Ident's [module-local popup/terminal cleanup](../modules/FvwmIdent/FvwmIdent.c)
+retires borrowed list/drawing aliases before GC/font/owned named colors and
+configuration storage; colorset pixels remain borrowed. Buttons'
+[picture-slot cleanup](../modules/FvwmButtons/FvwmButtons.c) releases each acquired
+cache reference, including equal pointers and the root container omitted by the
+button iterator. Transparent backgrounds remain borrowed. IconMan's
+[record destructor](../modules/FvwmIconMan/winlist.c) releases all eight copied
+strings after existing detach operations. These are local owners, not a shared
+teardown framework. The [actual-module observer](../tests/live_x/module_resource_owner_live.py)
+and [ownership evidence](verification/VERIFICATION-2026-10-26-M5-MODULE-OWNERS.md)
+cover their selected replacement/retarget/terminal paths.

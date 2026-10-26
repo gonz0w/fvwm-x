@@ -44,6 +44,8 @@
 #include "libs/module_packet_reader.h"
 #include "libs/module_x_service.h"
 #include "libs/Colorset.h"
+#include "libs/ColorUtils.h"
+#include "libs/PictureUtils.h"
 #include "libs/fvwmsignal.h"
 #include "libs/flocale_font_types.h"
 #include "libs/Parse.h"
@@ -80,12 +82,13 @@ static char *mname;
 /* default colorset to use, set to -1 when explicitly setting colors */
 static int colorset = 0;
 
-static char *BackColor = "white";
-static char *ForeColor = "black";
+static char *BackColor;
+static char *ForeColor;
 static char *font_string = NULL;
 
 static Pixel fore_pix;
 static Pixel back_pix;
+static Bool fore_pix_owned, back_pix_owned;
 static Window main_win;
 static Bool UsePixmapDrawing = False; /* if True draw everything in a pixmap
 				       * and set the window background. Use
@@ -115,6 +118,55 @@ static char ewmh_init_state[512];
 static int minimal_layer = default_layer;
 static int my_layer = default_layer;
 
+/* List columns and drawing strings borrow the target/configuration storage.
+ * Retire them before their font, colors and backing strings are replaced. */
+static void ident_popup_release(void)
+{
+	if (main_win != None)
+	{
+		XDestroyWindow(dpy, main_win);
+		main_win = None;
+	}
+	DestroyList();
+	if (FwinString != NULL)
+	{
+		FwinString->str = NULL;
+		FwinString->gc = NULL;
+	}
+	if (gc != NULL)
+	{
+		XFreeGC(dpy, gc);
+		gc = NULL;
+	}
+	if (Ffont != NULL)
+	{
+		FlocaleUnloadFont(dpy, Ffont);
+		Ffont = NULL;
+	}
+	if (fore_pix_owned)
+		PictureFreeColors(dpy, Pcmap, &fore_pix, 1, 0, True);
+	if (back_pix_owned)
+		PictureFreeColors(dpy, Pcmap, &back_pix, 1, 0, True);
+	fore_pix_owned = back_pix_owned = False;
+}
+
+static void ident_resources_release(void)
+{
+	ident_popup_release();
+	free(target.monitor);
+	target.monitor = NULL;
+	free(font_string);
+	font_string = NULL;
+	free(ForeColor);
+	ForeColor = NULL;
+	free(BackColor);
+	BackColor = NULL;
+	free(FwinString);
+	FwinString = NULL;
+	free(mname);
+	mname = NULL;
+}
+
 /*
  *
  *  Procedure:
@@ -137,6 +189,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
+	atexit(ident_resources_release);
 	xasprintf(&mname, "*%s", module->name);
 
 	{
@@ -203,15 +256,18 @@ int main(int argc, char **argv)
 			tline += (module->namelen +1);
 			if (strncasecmp(tline, "Font", 4) == 0)
 			{
+				free(font_string);
 				CopyStringWithQuotes(&font_string, &tline[4]);
 			}
 			else if (strncasecmp(tline, "Fore", 4) == 0)
 			{
+				free(ForeColor);
 				CopyString(&ForeColor, &tline[4]);
 				colorset = -1;
 			}
 			else if (strncasecmp(tline, "Back", 4) == 0)
 			{
+				free(BackColor);
 				CopyString(&BackColor, &tline[4]);
 				colorset = -1;
 			}
@@ -437,12 +493,9 @@ void list_configure(unsigned long *body)
 		target.id = cfgpacket->w;
 
 		target.monitor_id = cfgpacket->monitor_id;
-		target.monitor = fxstrdup("unknown");
-		{
-			free(target.monitor);
-			target.monitor = fxstrdup(
-				monitor_by_output((int)target.monitor_id)->si->name);
-		}
+		free(target.monitor);
+		target.monitor = fxstrdup(
+			monitor_by_output((int)target.monitor_id)->si->name);
 		target.frame = cfgpacket->frame;
 		target.frame_x = cfgpacket->frame_x;
 		target.frame_y = cfgpacket->frame_y;
@@ -730,8 +783,7 @@ int ProcessXEvent(int x, int y)
 						M_END_CONFIG_INFO|
 						M_SENDCONFIG);
 					SendText(fd, "Send_WindowList", 0);
-					XDestroyWindow(dpy, main_win);
-					DestroyList();
+					ident_popup_release();
 					fvwmlib_get_target_window(
 						dpy, screen, module->name,
 						 &(module->window), True);
@@ -916,15 +968,23 @@ void list_end(void)
 
 	if (Pdepth < 2)
 	{
-		back_pix = GetColor("white");
-		fore_pix = GetColor("black");
+		back_pix_owned = fvwmlib_get_color("white", &back_pix);
+		fore_pix_owned = fvwmlib_get_color("black", &fore_pix);
 	}
 	else
 	{
-		back_pix = (colorset < 0)?
-			GetColor(BackColor) : GetColorset(colorset)->bg;
-		fore_pix = (colorset < 0)?
-			GetColor(ForeColor) : GetColorset(colorset)->fg;
+		if (colorset < 0)
+		{
+			back_pix_owned = fvwmlib_get_color(
+				BackColor ? BackColor : "white", &back_pix);
+			fore_pix_owned = fvwmlib_get_color(
+				ForeColor ? ForeColor : "black", &fore_pix);
+		}
+		else
+		{
+			back_pix = GetColorset(colorset)->bg;
+			fore_pix = GetColorset(colorset)->fg;
+		}
 	}
 
 	attributes.colormap = Pcmap;

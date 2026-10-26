@@ -1,0 +1,607 @@
+{
+  "base": "546a7acf506b4082ea45891ec2458b20e52010b0",
+  "owners": [
+    "CLEAN-01 #34"
+  ],
+  "status": "composed focused gate and separate source/raw/report review passed; broader qualification pending",
+  "source": {
+    "modules/FvwmButtons/FvwmButtons.c": {
+      "sha256": "8232b287889dc861f3f394f0e94d8b945cfa27d09d731083d6d2d669b997085c",
+      "mode": 420
+    },
+    "modules/FvwmIconMan/winlist.c": {
+      "sha256": "d53f7e0a8f54fb309c27ba7db87d24a1a10a11a9a827d9d8d9307b1f83ffa376",
+      "mode": 420
+    },
+    "modules/FvwmIdent/FvwmIdent.c": {
+      "sha256": "ee9c220a0e88e5ed78ac5090d4fe922bd2815d791e6593530cb49362e35ef9ac",
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "6e386fc5481602f56406b99c16e64490f30d3f85933fe0a90888ca0a20f55339",
+      "mode": 420
+    },
+    "tests/test_ident_resource_owner.c": {
+      "sha256": "09fa0f21d2cc8e3df8348f6bbbbee3618545602dcdf09cce14b340a50c9df734",
+      "mode": 420
+    },
+    "tests/test_buttons_picture_owner.c": {
+      "sha256": "c9a979c6458807e02f637b9780c07910fb8ceae01ad8b8bcf7d33509d9cdcf8a",
+      "mode": 420
+    },
+    "tests/test_iconman_record_owner.c": {
+      "sha256": "60b28ab7ede55cb291ea80fed61b3dbd75bd0f4440262d5bd243bbf3f3acf510",
+      "mode": 420
+    },
+    "tests/live_x/module_resource_owner_live.py": {
+      "sha256": "43584bee15c50229794f20eda6073d8557473befeb64ead7004f4c10c70f91a9",
+      "mode": 420
+    }
+  },
+  "baseline_inputs": 580,
+  "final_inputs": 584,
+  "candidate_commands": [
+    {
+      "label": "normal-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "tests/test-iconman-record-owner",
+        "tests/test-ident-resource-owner",
+        "tests/test-buttons-picture-owner",
+        "tests/ident-packet-fixture",
+        "tests/session-probe"
+      ],
+      "status": 0,
+      "seconds": 0.2523756629998388
+    },
+    {
+      "label": "normal-iconman-unit",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "iconman-record-owner"
+      ],
+      "status": 0,
+      "seconds": 0.1349078929999905
+    },
+    {
+      "label": "normal-owner-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_resource_owner_live.py",
+        "--ident",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-ident-resource-owner",
+        "--buttons",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-buttons-picture-owner",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/normal-owner-x"
+      ],
+      "status": 0,
+      "seconds": 1.5357550669998545
+    },
+    {
+      "label": "ident-config",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/ident_config_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIdent/FvwmIdent",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/ident-config"
+      ],
+      "status": 0,
+      "seconds": 0.059921387000031245
+    },
+    {
+      "label": "ident-transport",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/ident_transport_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIdent/FvwmIdent",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/ident-transport"
+      ],
+      "status": 0,
+      "seconds": 0.1284137949999149
+    },
+    {
+      "label": "ident-service",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/ident_transport_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIdent/FvwmIdent",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--service-only",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/ident-service"
+      ],
+      "status": 0,
+      "seconds": 0.0632615199999691
+    },
+    {
+      "label": "iconman-transport",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/iconman_transport_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIconMan/FvwmIconMan",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/iconman-transport"
+      ],
+      "status": 0,
+      "seconds": 0.3246133289999307
+    },
+    {
+      "label": "iconman-service",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_partial_live.py",
+        "--kind",
+        "iconman",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIconMan/FvwmIconMan",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--service-only",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/iconman-service"
+      ],
+      "status": 0,
+      "seconds": 0.20977181500006736
+    },
+    {
+      "label": "buttons-keyboard",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/buttons_keyboard_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/buttons-keyboard"
+      ],
+      "status": 0,
+      "seconds": 13.456096511999931
+    },
+    {
+      "label": "buttons-session",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/buttons_transport_live.py",
+        "--session-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons",
+        "--session-probe",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-probe",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/buttons-session"
+      ],
+      "status": 0,
+      "seconds": 0.455457129000024
+    },
+    {
+      "label": "sanitizer-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "tests/test-iconman-record-owner",
+        "tests/test-ident-resource-owner",
+        "tests/test-buttons-picture-owner",
+        "tests/ident-packet-fixture"
+      ],
+      "status": 0,
+      "seconds": 2.3309024340001088
+    },
+    {
+      "label": "sanitizer-iconman-unit",
+      "command": [
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-iconman-record-owner"
+      ],
+      "status": 0,
+      "seconds": 0.004769053000018175
+    },
+    {
+      "label": "sanitizer-owner-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/module_resource_owner_live.py",
+        "--ident",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-ident-resource-owner",
+        "--buttons",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-buttons-picture-owner",
+        "--fixture",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/ident-packet-fixture",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-owners-20261026/candidate-corrected/sanitizer-owner-x"
+      ],
+      "status": 0,
+      "seconds": 1.6216370549998373
+    }
+  ],
+  "initial_failed_build": [
+    {
+      "label": "normal-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "tests/test-iconman-record-owner",
+        "tests/test-ident-resource-owner",
+        "tests/test-buttons-picture-owner",
+        "tests/ident-packet-fixture",
+        "tests/session-probe"
+      ],
+      "status": 1,
+      "seconds": 1.5259071689999928
+    }
+  ],
+  "owner_cases": {
+    "normal-owner-x": {
+      "ident-named": {
+        "active": 0,
+        "strings": 6,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-colorset": {
+        "active": 0,
+        "strings": 6,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 0,
+        "color_frees": 0,
+        "nodes": 15
+      },
+      "buttons-distinct": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 0,
+        "unique_pictures": 7
+      },
+      "buttons-aliases": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 0,
+        "unique_pictures": 1
+      },
+      "ident-defaults": {
+        "active": 0,
+        "strings": 2,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-fore-only": {
+        "active": 0,
+        "strings": 4,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-back-only": {
+        "active": 0,
+        "strings": 4,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-early-eof": {
+        "active": 0,
+        "strings": 6,
+        "monitors": 0,
+        "maps": 0,
+        "fonts": 0,
+        "font_frees": 0,
+        "gcs": 0,
+        "gc_frees": 0,
+        "colors": 0,
+        "color_frees": 0,
+        "nodes": 0
+      },
+      "buttons-distinct-actual": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 1,
+        "unique_pictures": 7
+      },
+      "buttons-aliases-actual": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 1,
+        "unique_pictures": 1
+      },
+      "buttons-missing-actual": {
+        "acquired": 6,
+        "released": 6,
+        "excess": 0,
+        "retained": 0,
+        "refused": 1,
+        "actual_release": 1,
+        "unique_pictures": 6
+      }
+    },
+    "sanitizer-owner-x": {
+      "ident-named": {
+        "active": 0,
+        "strings": 6,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-colorset": {
+        "active": 0,
+        "strings": 6,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 0,
+        "color_frees": 0,
+        "nodes": 15
+      },
+      "buttons-distinct": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 0,
+        "unique_pictures": 7
+      },
+      "buttons-aliases": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 0,
+        "unique_pictures": 1
+      },
+      "ident-defaults": {
+        "active": 0,
+        "strings": 2,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-fore-only": {
+        "active": 0,
+        "strings": 4,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-back-only": {
+        "active": 0,
+        "strings": 4,
+        "monitors": 6,
+        "maps": 3,
+        "fonts": 3,
+        "font_frees": 3,
+        "gcs": 3,
+        "gc_frees": 3,
+        "colors": 6,
+        "color_frees": 6,
+        "nodes": 15
+      },
+      "ident-early-eof": {
+        "active": 0,
+        "strings": 6,
+        "monitors": 0,
+        "maps": 0,
+        "fonts": 0,
+        "font_frees": 0,
+        "gcs": 0,
+        "gc_frees": 0,
+        "colors": 0,
+        "color_frees": 0,
+        "nodes": 0
+      },
+      "buttons-distinct-actual": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 1,
+        "unique_pictures": 7
+      },
+      "buttons-aliases-actual": {
+        "acquired": 7,
+        "released": 7,
+        "excess": 0,
+        "retained": 0,
+        "refused": 0,
+        "actual_release": 1,
+        "unique_pictures": 1
+      },
+      "buttons-missing-actual": {
+        "acquired": 6,
+        "released": 6,
+        "excess": 0,
+        "retained": 0,
+        "refused": 1,
+        "actual_release": 1,
+        "unique_pictures": 6
+      }
+    }
+  },
+  "existing_x_regressions": {
+    "ident-config": {
+      "empty": "passed",
+      "single-byte": "passed",
+      "whitespace": "passed",
+      "multiple": "passed",
+      "configuration-term": "passed"
+    },
+    "ident-transport": {
+      "popup-eof": "passed",
+      "popup-term": "passed",
+      "packet-bounds": "passed",
+      "high-descriptor": "passed"
+    },
+    "ident-service": {
+      "queued-x-eof": {
+        "queued-events": 257,
+        "events-before-pipe-eof": 31,
+        "bounded-eof-service": "passed"
+      }
+    },
+    "iconman-transport": {
+      "popup-eof": "passed",
+      "popup-term": "passed",
+      "fragmented-packet": "passed",
+      "tooltip-delay": "passed",
+      "long-tooltip-term": "passed",
+      "high-descriptor": "passed"
+    },
+    "iconman-service": {
+      "x-service": {
+        "queued-keys": 257,
+        "queued-exposes": 80,
+        "keys-before-pipe-command": 0,
+        "service-seconds": 0.04346539099992697,
+        "queued-X-continuation-without-new-input": "passed"
+      }
+    },
+    "buttons-keyboard": {
+      "status": "passed",
+      "tab-wrap-reverse-arrows-nested-grid-and-label-skip": "passed",
+      "focus-hover-pressed-palettes-and-single-autorepeat-action": "passed",
+      "disabled-all-entry-points-cancel-reenable-and-selected-state": "passed",
+      "atomic-invalid-first-middle-last-and-duplicates-rollback": "passed",
+      "atomic-icons-titles-all-palettes-owned-prepare-and-commit": "passed",
+      "atomic-held-key-cancel-final-focus-recovery-stable-window-action": "passed",
+      "legacy-incremental-changebutton-preserved": "passed",
+      "live-titles-stable-action-and-focus-loss-cancellation": "passed",
+      "unrelated-client-200-rapid-keys-no-grab-or-focus-theft": "passed",
+      "legacy-return-under-pointer-and-opt-in-only-traversal": "passed"
+    },
+    "buttons-session": {
+      "session-readiness": "passed"
+    }
+  },
+  "archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/m5-next-batch/native-evidence.tgz",
+    "sha256": "a9709a47884b8c3e9087e34ee46c0bb5a5e7e48564cc989d12cf01a122c444a7",
+    "bytes": 7821174,
+    "payloads": 382,
+    "manifest": 1,
+    "all_payload_hash_size_mode_and_gzip_crc_verified": true
+  },
+  "sanitizer": {
+    "pure_record_unit": "ASan/UBSan; detect_leaks=1:halt_on_error=1",
+    "actual_x_modules": "ASan/UBSan; detect_leaks=0:halt_on_error=1; selected exact ownership assertions"
+  },
+  "limits": [
+    "No whole-module/cache leak-free claim",
+    "No fresh BSD/AMD64/full compiler/feature/install/theme or physical-hardware qualification",
+    "No native-CPU performance result or speed claim",
+    "Parked pathname/Backer and deferred Form font cleanup excluded",
+    "Ident list-node allocation heuristic is a selected sample, not exhaustive Item tracking; full-list retirement source-reviewed"
+  ],
+  "performance_reference": "PR253; 1/5 after PR254; next merge 2/5; comparison not due",
+  "routing": "Requested Astra/high analyst, Sol/high implementer and independent reviewer; runtime model metadata unavailable/unverified",
+  "guest_duplicate_cleanup": {
+    "retired_payloads": 382,
+    "manifest": 1,
+    "duplicate_archive": 1,
+    "reclaimed_bytes": 29045007,
+    "canonical_host_archive_preserved": true
+  },
+  "portable_checks": "make check lint and source identity checks passed"
+}

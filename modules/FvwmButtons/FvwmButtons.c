@@ -283,6 +283,36 @@ TerminateHandler(int sig)
 	SIGNAL_RETURN;
 }
 
+/* Each populated slot owns one picture-cache reference. Equal pointers in
+ * different slots still require one release for each acquisition. Colorset
+ * backgrounds use NULL; transparent container backgrounds are borrowed. */
+static void button_release_pictures(button_info *b)
+{
+	FvwmPicture **slots[4];
+
+	if (b == NULL)
+		return;
+	slots[0] = &b->icon;
+	slots[1] = &b->activeicon;
+	slots[2] = &b->pressicon;
+	slots[3] = &b->backicon;
+
+	for (unsigned int i = 0; i < sizeof(slots) / sizeof(slots[0]); i++)
+	{
+		if (*slots[i] != NULL)
+		{
+			PDestroyFvwmPicture(Dpy, *slots[i]);
+			*slots[i] = NULL;
+		}
+	}
+	if (b->flags.b_Container && b->c != NULL &&
+	    !b->c->flags.b_TransBack && b->c->backicon != NULL)
+	{
+		PDestroyFvwmPicture(Dpy, b->c->backicon);
+		b->c->backicon = NULL;
+	}
+}
+
 /**
 *** DeadPipeCleanup()
 *** Remove all the windows from the Button-Bar, and close them as necessary
@@ -370,27 +400,12 @@ static void DeadPipeCleanup(void)
 	XSync(Dpy, 0);
 
 	fsm_close();
-	/* Hey, we have to free the pictures too! */
+	/* The iterator excludes UberButton, which owns the root background. */
+	button_release_pictures(UberButton);
 	button = -1;
 	ub = UberButton;
 	while (NextButton(&ub, &b, &button, 1))
-	{
-		/* The picture pointer is NULL if the pixmap came from a
-		 * colorset. */
-		if (b->flags.b_Icon && b->icon != NULL)
-		{
-			PDestroyFvwmPicture(Dpy, b->icon);
-		}
-		if (b->flags.b_IconBack && b->backicon != NULL)
-		{
-			PDestroyFvwmPicture(Dpy, b->icon);
-		}
-		if (b->flags.b_Container && b->c->flags.b_IconBack &&
-			!(b->c->flags.b_TransBack) && b->c->backicon != NULL)
-		{
-			PDestroyFvwmPicture(Dpy, b->c->backicon);
-		}
-	}
+		button_release_pictures(b);
 }
 
 /**

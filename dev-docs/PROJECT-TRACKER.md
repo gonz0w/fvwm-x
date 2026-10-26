@@ -94,11 +94,68 @@ decoder/state authority is selected. Build profiles (#226) and optional fuzzing
 (#227) remain bounded maintenance children. No new release prerequisite,
 Wayland backend, built-in compositor or mandatory GUI toolkit/package is added.
 
+## M5 related module resource owners — 2026-10-26
+
+Owner: Cam; `codex/m5-related-owner-cleanup`; CLEAN-01 #34.
+Status: implemented coherent three-module ownership batch after merged PR254;
+composed focused gate and separate review pass; ready for PR review.
+Complete Ident's repeated
+font/foreground/background configuration and monitor replacement, per-popup
+font/GC/named-color retirement and terminal scratch/list/string ownership;
+complete Buttons normal/active/pressed/background/root-container picture-slot
+retirement per acquired cache reference; release IconMan's three omitted owned
+visible-name/visible-icon-name/monitor strings after its existing detach sequence.
+Preserve configuration bytes, widget presentation/layout, dispatch/matching,
+borrowed resources, cached-picture alias counts and swallow/session ordering.
+No global teardown framework, library/toolchain change or new feature is selected.
+
+Acceptance: preserve actual old source/objects and establish selected owner gaps
+with production-linked observers before candidate upload. One combined Linux
+incremental profile, relevant existing X regressions and scoped ownership
+ASan/UBSan; exact selected ownership counts distinguish full-module/cache limits.
+Separate source/evidence review. No automatic all-OS/compiler/feature/install/theme
+matrix, and no broad #34/#6/#9/#25 closure from these finite owner families.
+All Backer/pathname work and deferred Form font cleanup remain outside this batch.
+The PR253 performance reference is 1/5 after PR254; no regular comparison is due.
+Old-object controls establish all three owner gaps. Both profiles pass the record
+unit and eleven actual-X owner cases; seven existing normal X regression groups
+pass. [Evidence and limits](verification/VERIFICATION-2026-10-26-M5-MODULE-OWNERS.md).
+
+## Parked request-filter clarification — 2026-10-26
+
+Owner: Cam; DATA-01 #6 / CLEAN-01 #34. The owner requests recording the
+available facts and continuing independent related maintenance batches. Both
+pathname construction and Backer admission work remain parked and unresolved.
+The saved delegated-agent notice says "This content was flagged for possible
+cybersecurity risk" and supplies no particular keyword/function/line or
+classification rationale. A separate advisory check reports no Daybreak access;
+it does not establish the cause of either refusal. These are not GitHub test
+failures or automatic tool-approval rejections. The notice does not establish a
+blanket prohibition on ordinary maintenance across the entire code families.
+
+The pathname proposal has no completed implementation/reproduction. The Backer
+WIP remains unaccepted/unpublished with a failed combined/valid ownership unit;
+no root cause or X/sanitizer/manual acceptance is established. Preserve its
+branch and canonical evidence. Requirements-only alternatives were considered,
+but no materially different implementation has been validated. No rejected
+action is retried through another agent/model/executor in this checkpoint.
+
+Feedback text reached support chat, then email/sign-in was required; no completed
+ticket or escalation was confirmed. The owner cancelled that effort. Do not
+restart it automatically or record it as successfully filed. Future pickup must
+retain the original scope/evidence, the unknown trigger and supported review
+boundaries; no issue closes from this administrative clarification.
+[DATA issue record](https://github.com/gonz0w/fvwm-x/issues/6#issuecomment-6414441843)
+and [CLEAN issue record](https://github.com/gonz0w/fvwm-x/issues/34#issuecomment-6414442255).
+
 ## M5 Script base-window/runtime ownership — 2026-10-26
 
 Owner: Cam; `codex/m5-script-base-ownership`; SCRIPT-01 #4 / CLEAN-01 #34.
-Status: composed focused checks and separate source/raw-evidence/report review
-pass; ready for signed author-DCO PR delivery.
+Status: merged in PR254 as `546a7acf506b4082ea45891ec2458b20e52010b0`;
+canonical signature/DCO and reviewed tree
+`0caf8644e8c523df7e225cc8c8e0e32ebc1434c0` verified; branch retired,
+GitHub/Project Done. Composed focused checks and separate review passed.
+PR253 performance reference is 1/5 after this merge.
 Complete the base-resource family explicitly excluded from prior widget teardown:
 cursor caller reference/config alias, initialized named colors versus borrowed
 colorsets, shared base GC, transferred defaults/parser strings, script identities

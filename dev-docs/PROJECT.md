@@ -10,18 +10,14 @@ requirements migration; it is not another backlog.
 
 ## Product constraints
 
-- User direction, 2026-10-23: pause new features and prioritize source cleanup,
-  legacy retirement, dependency reduction and maintenance. The
-  [maintenance-first batch register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md)
-  supersedes the earlier feature-first cutoff. Preserve accepted improvements,
-  existing configuration/platform scope and risk-based focused testing.
-  On 2026-10-25 the user restored measured optimization alongside cleanup;
-  new feature pickup remains behind the finite #209 handoff. The approved
-  [modernization scope/order](decisions/MODERNIZATION-ORDER-2026-10-25.md)
-  records composable themes/icons/fonts, native graphics/layout, live tooling,
-  workspace tools, qualified external locker integration and build/verification
-  improvements. These are queued scope, not library/default adoption or new
-  release prerequisites; separate release qualification remains.
+- User direction, 2026-10-26: target a highly configurable, fast, low-memory
+  desktop lite. All currently planned features target R1; finite remaining
+  maintenance moves to R2/R3. Existing evaluations finish in R1 and implement
+  accepted choices. Follow the [three-release plan](decisions/RELEASE-PLAN-2026-10-26.md)
+  and tracker execution order instead of older cleanup-first scheduling.
+  Major/Minor describes work breadth, not urgency. Preserve accepted components,
+  platform/configuration scope and the risk-based testing cadence. Future feature
+  intake goes to later releases unless R1 scope is explicitly changed.
 - X11/XRandR 1.5+; no native Wayland backend or built-in compositor.
 - OpenBSD follows new releases on AMD64 and ARM64, with 8.0 the current
   qualified baseline and 7.9 out of scope. Refresh fixed inputs and qualify
@@ -45,15 +41,16 @@ requirements migration; it is not another backlog.
   complete first-party Perl/Python retirement, FVWM 3.x-only compatibility,
   obsolete converter/backend removal and target-owned linkage. Keep Meson until
   the bounded Muon/CMake evaluation produces a separate adoption decision.
-  These are now selected maintenance batches, not already implemented build
-  changes. Lua engine selection remains open. See the
+  Accepted runtime/linkage/backend cleanup remains accepted; remaining Perl
+  runtime retirement targets R2 and full first-party developer-tool migration R3.
+  Backend/library decisions and the isolated Lua feature target R1. See the
   [decision and issue ownership](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md).
 - Approved runtime language direction: retain C core/native primitives, replace
   first-party Python runtime helpers and portable Perl utilities with Go, and
   add optional isolated Lua policies over shared primitives. The user
   explicitly approves future retirement of FvwmPerl/perllib and Perl-specific
-  APIs; unrelated FVWM/FvwmScript contracts remain. Runtime ports/removal and
-  Lua engine selection/adoption are queued; first-party build/test tooling follows separately.
+  APIs; unrelated FVWM/FvwmScript contracts remain. Accepted Go runtime/controller ports remain accepted; isolated Lua targets R1,
+  Perl framework retirement R2 and full first-party build/test tooling R3.
   See the [component audit and scope](decisions/RUNTIME-GO-LUA-2026-10-06.md).
 - The default desktop uses existing FVWM components and base-system capabilities;
   unavailable services are reported honestly. No additional desktop framework

@@ -10,15 +10,22 @@ outcome from the current tracker batch, inspect open PRs and read its decisions/
 Split broad planning into reviewed implementation slices when picked up. Do not
 restart accepted work or interpret a local checkpoint as physical/release acceptance.
 
-## Modernization queue
+## Release roadmap
 
-The [2026-10-25 decision](decisions/MODERNIZATION-ORDER-2026-10-25.md) restores
-measured optimization alongside cleanup and keeps new features Backlog behind
-#209. Preserve M1–M8/decision-lane ownership and use O1/F1–F4 Work batch fields.
-Parent links organize scope; native blockers express actual prerequisites or
-the explicit scheduling gate. Use accepted subsets of broad owners without
-waiting for unrelated optional work. Keep the graph acyclic and preserve closed
-components, existing links and unrelated PR status.
+The [2026-10-26 release plan](decisions/RELEASE-PLAN-2026-10-26.md) supersedes
+cleanup-first scheduling. Milestones are R1 Configurable Desktop Lite, R2
+Maintenance and Runtime Simplification, and R3 Developer Tooling and Deferred
+Work. Retired stage milestones retain completed history. Stage labels/field
+remain technical ownership; an old Later stage for an R1 feature is replaced by
+its actual subsystem stage. Each open issue has exactly one Major/Minor work
+size label and matching Work size Project field, independently of priority.
+
+All current feature/evaluation contracts target R1. Later-release audit parents
+or children do not block an accepted R1 subset. Keep actual native prerequisites
+acyclic and preserve accepted evidence. Coordination references are not blanket
+blockers. New features enter later release intake unless the owner explicitly
+changes frozen R1 scope. Finish evaluation decisions and accepted integrations;
+no candidate is forced merely because it was evaluated.
 
 ## Status and priority
 
@@ -37,12 +44,13 @@ in Backlog; maintainer triage supplies priority/stage before pickup.
 
 P0 is a reproduced critical defect; P1 is important current foundation work;
 P2 is normal planned work. Current user-selected batch order precedes ordinary
-stage/priority sorting; a new serious defect jumps ahead. Stage remains stable
-ownership, not permission to bypass the maintenance-first queue. The Project's
+stage/priority sorting; a new serious defect jumps ahead. Stage remains technical
+ownership, not a release-order field. The Project's
 Work batch field mirrors the current batch register. Update positions manually when ownership/order changes.
-Milestones follow stages1–9 plus Later, without invented due dates. Remaining
-monitor/protocol gaps and runtime-controller ports belong to stage5; their
-accepted stage3 audit/utility checkpoints are not repeated.
+Milestones follow the three scoped releases; calendar dates remain unset.
+Major/Minor measures breadth, not estimated days or severity. Each issue has a
+concrete end result, testable acceptance, exclusions and accepted-work notes in
+the versioned release contract. Do not reopen accepted audit/utility checkpoints.
 
 Use native blocked-by links for actual prerequisites, not every cross-reference.
 A prerequisite contract within a broad owner need not wait for that owner's

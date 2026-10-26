@@ -7,6 +7,7 @@ verification checkbox does not govern current development.
 
 | Archive | Origin and use |
 | --- | --- |
+| [issue snapshots](issue-snapshots/README.md) | Byte-exact superseded issue scope retained during release restructuring |
 | [planning](planning/README.md) | Former `.planning/`: milestone requirements, codebase snapshots, phase plans and research |
 | [gsd](gsd) | Former `.gsd/`: retired dispatch sentinel |
 | [upstream](upstream) | Inherited FVWM developer/parser/command brainstorm notes |

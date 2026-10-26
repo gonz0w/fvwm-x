@@ -13,6 +13,7 @@ restoring that documentation does not publish or requalify its runtime inputs.
 | --- | --- |
 | [Project](PROJECT.md) | Product scope, compatibility and migrated monitor/HiDPI requirements |
 | [Project tracker](PROJECT-TRACKER.md) | Authoritative execution order, backlog, decisions and evidence |
+| [Three-release plan](decisions/RELEASE-PLAN-2026-10-26.md) | R1 features and finite R2/R3 maintenance contracts with Major/Minor scope |
 | [Final release gate](RELEASE-GATE.md) | Public-launch review after coding checkpoints and the user's release decision |
 | [Development](DEVELOPERS.md) | Coding, ownership, bounded work and change verification |
 | [Architecture](ARCHITECTURE.md) | Maintained subsystem/source map |

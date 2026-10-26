@@ -49,15 +49,12 @@ work complete.
 
 ## Implementation batches and test cadence
 
-User direction, 2026-10-23: new feature pickup is paused while source cleanup,
-legacy retirement, dependency reduction and maintenance are organized and
-implemented. Follow the [maintenance-first batches](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md)
-and the tracker queue. This supersedes the earlier feature-first handoff and
-future-release-only placement of general cleanup. Preserve accepted component
-work. The [October 25 modernization order](decisions/MODERNIZATION-ORDER-2026-10-25.md)
-restores bounded measured optimization alongside cleanup; #209 records the finite
-accepted handoff before new feature pickup. Existing-behavior parity for a named
-removal remains maintenance.
+User direction, 2026-10-26: use the [three-release plan](decisions/RELEASE-PLAN-2026-10-26.md)
+and finite issue contracts. R1 delivers all currently planned desktop features
+with required profile/quality acceptance; R2/R3 carry explicitly deferred
+maintenance. #209 is a finite foundation handoff, not closure of all cleanup.
+New feature requests receive later targets unless the owner changes frozen R1
+scope. Preserve the existing coherent-batch and risk-based cadence below.
 
 Group related ownership/error/unwind, dependency, predecessor and tool changes.
 Choose finite source/behavior acceptance at pickup rather than reopening a whole

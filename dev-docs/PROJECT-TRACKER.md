@@ -7,6 +7,27 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+## Three-release target — 2026-10-26
+
+Owner: Cam. Current goal: a highly configurable, fast, low-memory desktop lite.
+R1 contains all currently planned issue-defined features and required quality;
+R2 contains finite remaining source/runtime maintenance; R3 contains developer
+tooling migration and explicitly parked work. Existing evaluations finish in R1
+and implement accepted choices; no candidate dependency is forced by scheduling.
+New feature requests enter later intake unless the owner explicitly changes R1.
+
+[Release plan](decisions/RELEASE-PLAN-2026-10-26.md) and
+[finite issue contracts](decisions/RELEASE-CONTRACTS-2026-10-26.json) replace the
+old cleanup-first scheduling. Each issue has a release, Major/Minor work class,
+end result, acceptance checks and exclusions. Native milestones mirror release;
+stages remain technical ownership. Dates/public version are not yet selected.
+PR256 remains the finite existing-code foundation checkpoint in Review; its
+pending merge is not general R2 M5 acceptance. Required R1 feature contracts,
+measured profile budgets and candidate quality gates block only their actual
+consumers/support claims. Broad R2/R3 owners are not blanket feature blockers.
+Dated entries below preserve their source-bound evidence and historical scope;
+older scheduling wording is superseded by this section and Execution order.
+
 ## Library evaluation issue scope — 2026-10-25
 
 Owner: Cam. The user approved recording the library comparisons and explicitly
@@ -2081,45 +2102,30 @@ FileManager1/default-role contracts retain their separate acceptance gates.
 
 ## Execution order
 
-Current selection, 2026-10-25: cleanup and measured optimization before new
-feature pickup. The [modernization decision](decisions/MODERNIZATION-ORDER-2026-10-25.md)
-and #209 finite handoff supersede earlier tuning deferral below. Preserve the
-accepted M1/M2/M3 results and current maintenance owners; future waves add no
-release prerequisite.
+Current user selection, 2026-10-26: deliver the currently planned desktop
+capabilities in R1 with speed/low-memory profile acceptance. Complete only finite
+prerequisite cleanup; remaining maintenance is explicitly assigned R2/R3. Preserve
+all accepted M1-M4 and later component evidence. The
+[release plan](decisions/RELEASE-PLAN-2026-10-26.md) defines all 91 issue contracts
+and supersedes the old M1-M8/O1-before-features schedule.
 
-Use this ordered batch queue; the linked register contains exact issue mapping,
-prerequisites, exclusions and finite acceptance. Scope each implementation PR
-to a complete related owner slice; tests/docs do not inflate story counts.
+| Order | Outcome |
+| --- | --- |
+| R1 foundation | Accept the roadmap/PR256 handoff under #208/#209; freeze profiles/workloads/numeric resource envelopes with #29/#226. Start bounded evaluations early. No all-audits gate. |
+| R1 shared contracts | Reuse accepted CFG/IPC/browser work; complete native text/graphics/layout/theme/icon/binding, data/action/content, protocol/monitor and Lua contracts needed by consumers. |
+| R1 desktop and workspace | Batch related settings/browser/jobs/clipboard/session/service and workspace consumers on actual prerequisites. Optional capabilities retain optional startup/cost. |
+| R1 release qualification | Complete theme/accessibility/language/manual/package/dependency/native evidence, enforce frozen budgets and record #79 acceptance. No publication is implied. |
+| R2 | Finish its finite source/runtime/tool-adoption/Perl retirement, measured optimization and worker-hardening manifests, then its release gate. |
+| R3 | Finish #55 developer-tool language retirement and eligible explicitly parked checkpoints, then its release gate. |
 
-| Order | Batch | Main outcome |
-| --- | --- | --- |
-| M1 — Done | Supported runtime baseline and replaced entry points | PR189 merged; #179/#180/#181 Done. Qualified required compiler/utility/profile/install contract retained. |
-| M2 — Accepted | Remaining first-party runtime controllers | M2.1–M2.10 merged through PR203. Cam explicitly accepts accumulated M2 session evidence and documented limits on 2026-10-25, authorizing M3. No controller port or observer expansion remains selected; broader native/hardware/release gates stay separate. |
-| M3 — Done | Target-owned linkage and dependency closure | PR204–207 merged; #184/#49/#47 completed. Fifteen-profile source/install/X/static-transitive inventory acceptance is retained; separate #11/#13 advisory gates remain open. |
-| M4 — Active | Obsolete SVG backend removal | Consolidate the maintained librsvg/Cairo path and remove obsolete backend detection/options/branches; retain SVG-disabled, raster/XPM, scale/alpha and bounded worker behavior. |
-| M5 | Core/module source and ownership cleanup | Batch named ownership/error/unwind families and shared readiness consumers. Preserve accepted fixes and single-thread dispatch/order; no global rewrite or performance-only restructuring. |
-| M6 | Perl framework retirement and scripting disposition | Qualify the bounded scripting migration floor, then retire FvwmPerl/perllib/fvwm-perllib and Perl-only build/templates. Keep unrelated FVWM3/FvwmScript behavior and user files. |
-| M7 | Owned build/generator/test tool retirement | Port first-party tools in build/source, generation/docs and independent test/VM-driver groups; remove predecessors only after parity, failure capture and offline/reproducibility checks. |
-| O1 / finite handoff | Measured optimization and #209 | Select bounded #29/#33/#37/#38/#39 workloads alongside cleanup; accept exact remaining maintenance dispositions and a measured checkpoint before feature pickup. |
-| M8 | Distribution, portability and documentation closure | Reconcile install/source archives, manuals/examples, package/license references and platform branches; complete accumulated required maintenance qualification once, with release/hardware gaps explicit. |
-
-D1 build-backend, D2 JSON and D3 helper-sandbox evaluations are bounded decision
-lanes, not automatic adoption or full source rewrites. Source removal requires
-an exact disposition/replacement list. #41's old geometry title is corrected to
-its existing helper-sandbox scope. Existing native relations are preserved;
-new shared-contract blockers and the #209 scheduling gate organize future work.
-Conditional qualification owners are consulted only for affected contracts;
-measured performance owners return to milestone 04, while new features stay
-Backlog under their owning milestones. [Complete register](decisions/MAINTENANCE-FIRST-BATCHES-2026-10-23.md).
-
-The [2026-10-25 hardening follow-ups](decisions/PORTABLE-OPENBSD-HARDENING-2026-10-25.md)
-extend D3's scoped policy/worker lane and VERIFY-01's conditional qualification
-lane as P2 Backlog. They do not replace the selected implementation queue.
-
-The [library comparisons approved on 2026-10-25](decisions/LIBRARY-EVALUATIONS-2026-10-25.md)
-stay with their existing D2/dependency, text, graphics/layout and feature owners.
-They share the six-target simplicity/performance/dependency rubric under #226;
-planning does not advance their implementation or add a blanket queue blocker.
+All currently defined feature/evaluation contracts target R1; future requests
+receive a later target unless explicitly accepted into changed R1 scope. Each
+contract states Major/Minor breadth independently of priority. #208 is plan/mirror
+acceptance; #209 is the finite foundation handoff. Neither requires closure of
+all later maintenance, optional experiments or physical/release gates to begin
+unrelated feature work. Reproduced blocking defects still advance with exact
+scope and regression. No new mandatory toolkit/database/compositor/bus follows
+from this plan; adopted choices require their actual evidence.
 
 Development cadence, revised by the user on 2026-10-23: combine larger sets of
 similar issues before one focused Linux checkpoint. Aim for six to ten related

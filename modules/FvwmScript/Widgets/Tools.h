@@ -99,10 +99,6 @@ void DrawArrowN(struct XObj *xobj,int x,int y,int Press);
 
 void DrawArrowS(struct XObj *xobj,int x,int y,int Press);
 
-void DrawArrowE(struct XObj *xobj,int x,int y,int Press);
-
-void DrawArrowW(struct XObj *xobj,int x,int y,int Press);
-
 int PtInRect(XPoint pt,XRectangle rect);
 
 #endif /* FVWMSCRIPT_WIDGETS_TOOLS_H */

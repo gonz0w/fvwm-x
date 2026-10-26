@@ -59,7 +59,6 @@ void DestroyList(void);
 void AddToList(char *, char *);
 void MakeList(void);
 
-void change_defaults(char *body);
 void list_configure(unsigned long *body);
 void list_window_name(unsigned long *body);
 void list_icon_name(unsigned long *body);

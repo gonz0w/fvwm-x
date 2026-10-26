@@ -1,0 +1,439 @@
+{
+  "base": "5093a0fa8aa6ff294545de2342519eace81d4530",
+  "owner": "CLEAN-01 #34",
+  "status": "focused checks passed; broader qualification pending",
+  "source": {
+    "modules/FvwmScript/Widgets/Tools.c": {
+      "sha256": "d082bb2ff2a789a54d5114e1238c6c0e4cd24413b87a7499ec4845b85d0c6c85",
+      "mode": 420
+    },
+    "modules/FvwmScript/Widgets/Tools.h": {
+      "sha256": "6e487420d22f8015a101e1a7ea963ec8fd19a37a39404c9820bb2a15e11e6ef5",
+      "mode": 420
+    },
+    "modules/FvwmButtons/keyboard.c": {
+      "sha256": "6d2f15e8c21d3ca827604d935e51efc8c2e80e0af78663fda499cc8cc578e0b4",
+      "mode": 420
+    },
+    "modules/FvwmButtons/keyboard.h": {
+      "sha256": "8ddca682afdcd6d99e6862890ed8516d1cd9157741ac05b5329b5e411e348a80",
+      "mode": 420
+    },
+    "modules/FvwmButtons/parse.h": {
+      "sha256": "bf61d50e3158dbf8face1c0b833f416cf81e5b0f4bb3fc07fecd99cc2ff7587a",
+      "mode": 420
+    },
+    "modules/FvwmIdent/FvwmIdent.h": {
+      "sha256": "6673b43acd44efbb0839e0add1f1ebe6e516bf6dcf8ab45835d2aa3f1542f41f",
+      "mode": 420
+    }
+  },
+  "removed_spans": {
+    "modules/FvwmScript/Widgets/Tools.c": [
+      "void DrawArrowE(struct XObj *xobj, int x, int y, int Press)\n{\n\tXSegment segm[4];\n\n\tsegm[0].x1 = 12+x;\n\tsegm[0].y1 = 6+y;\n\tsegm[0].x2 = 1+x;\n\tsegm[0].y2 = 12+y;\n\tsegm[1].x1 = 10+x;\n\tsegm[1].y1 = 6+y;\n\tsegm[1].x2 = 2+x;\n\tsegm[1].y2 = 10+y;\n\tif (Press == 1)\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[hili]);\n\telse\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[shad]);\n\tXDrawSegments(dpy, xobj->win, xobj->gc, segm, 2);\n\n\tsegm[0].x1 = 0+x;\n\tsegm[0].y1 = 0+y;\n\tsegm[0].x2 = 0+x;\n\tsegm[0].y2 = 12+y;\n\tsegm[1].x1 = 1+x;\n\tsegm[1].y1 = 0+y;\n\tsegm[1].x2 = 1+x;\n\tsegm[1].y2 = 11+y;\n\n\tsegm[2].x1 = 0+x;\n\tsegm[2].y1 = 0+y;\n\tsegm[2].x2 = 11+x;\n\tsegm[2].y2 = 5+y;\n\tsegm[3].x1 = 0+x;\n\tsegm[3].y1 = 1+y;\n\tsegm[3].x2 = 9+x;\n\tsegm[3].y2 = 5+y;\n\tif (Press == 1)\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[shad]);\n\telse\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[hili]);\n\tXDrawSegments(dpy, xobj->win, xobj->gc, segm, 4);\n}\n\n",
+      "void DrawArrowW(struct XObj *xobj, int x, int y, int Press)\n{\n\tXSegment segm[4];\n\n\tsegm[0].x1 = 2+x;\n\tsegm[0].y1 = 5+y;\n\tsegm[0].x2 = 12+x;\n\tsegm[0].y2 = 0+y;\n\tsegm[1].x1 = 4+x;\n\tsegm[1].y1 = 5+y;\n\tsegm[1].x2 = 10+x;\n\tsegm[1].y2 = 2+y;\n\tif (Press == 1)\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[shad]);\n\telse\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[hili]);\n\tXDrawSegments(dpy, xobj->win, xobj->gc, segm, 2);\n\n\tsegm[0].x1 = 0+x;\n\tsegm[0].y1 = 6+y;\n\tsegm[0].x2 = 12+x;\n\tsegm[0].y2 = 12+y;\n\tsegm[1].x1 = 2+x;\n\tsegm[1].y1 = 6+y;\n\tsegm[1].x2 = 11+x;\n\tsegm[1].y2 = 10+y;\n\n\tsegm[2].x1 = 12+x;\n\tsegm[2].y1 = 1+y;\n\tsegm[2].x2 = 12+x;\n\tsegm[2].y2 = 12+y;\n\tsegm[3].x1 = 11+x;\n\tsegm[3].y1 = 2+y;\n\tsegm[3].x2 = 11+x;\n\tsegm[3].y2 = 11+y;\n\tif (Press == 1)\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[hili]);\n\telse\n\t\tXSetForeground(dpy, xobj->gc, xobj->TabColor[shad]);\n\tXDrawSegments(dpy, xobj->win, xobj->gc, segm, 4);\n}\n\n"
+    ],
+    "modules/FvwmScript/Widgets/Tools.h": [
+      "void DrawArrowE(struct XObj *xobj,int x,int y,int Press);\n\n",
+      "void DrawArrowW(struct XObj *xobj,int x,int y,int Press);\n\n"
+    ],
+    "modules/FvwmButtons/keyboard.c": [
+      "Bool buttons_keyboard_enabled(void)\n{\n\treturn navigation_enabled;\n}\n\n"
+    ],
+    "modules/FvwmButtons/keyboard.h": [
+      "Bool buttons_keyboard_enabled(void);\n"
+    ],
+    "modules/FvwmButtons/parse.h": [
+      "char *expand_action(char *in_action, button_info *b);\n"
+    ],
+    "modules/FvwmIdent/FvwmIdent.h": [
+      "void change_defaults(char *body);\n"
+    ]
+  },
+  "removed_source_lines": 96,
+  "baseline_inputs": 572,
+  "final_inputs": 572,
+  "source_inventory": {
+    "before": "HEAD:modules/FvwmButtons/keyboard.c:30:Bool buttons_keyboard_enabled(void)\nHEAD:modules/FvwmButtons/keyboard.h:5:Bool buttons_keyboard_enabled(void);\nHEAD:modules/FvwmButtons/parse.h:31:char *expand_action(char *in_action, button_info *b);\nHEAD:modules/FvwmIdent/FvwmIdent.h:62:void change_defaults(char *body);\nHEAD:modules/FvwmScript/Widgets/Tools.c:874:void DrawArrowE(struct XObj *xobj, int x, int y, int Press)\nHEAD:modules/FvwmScript/Widgets/Tools.c:916:void DrawArrowW(struct XObj *xobj, int x, int y, int Press)\nHEAD:modules/FvwmScript/Widgets/Tools.h:102:void DrawArrowE(struct XObj *xobj,int x,int y,int Press);\nHEAD:modules/FvwmScript/Widgets/Tools.h:104:void DrawArrowW(struct XObj *xobj,int x,int y,int Press);\n",
+    "after_active_references": 0,
+    "private_headers_installed": false
+  },
+  "symbols": {
+    "FvwmScript": {
+      "object-defined": {
+        "before": 288,
+        "after": 286,
+        "removed": [
+          [
+            "DrawArrowE",
+            "T"
+          ],
+          [
+            "DrawArrowW",
+            "T"
+          ]
+        ],
+        "added": [],
+        "remaining_preserved": true
+      },
+      "binary-defined": {
+        "before": 962,
+        "after": 960,
+        "removed": [
+          [
+            "DrawArrowE",
+            "T"
+          ],
+          [
+            "DrawArrowW",
+            "T"
+          ]
+        ],
+        "added": [],
+        "remaining_preserved": true
+      }
+    },
+    "FvwmButtons": {
+      "object-defined": {
+        "before": 119,
+        "after": 118,
+        "removed": [
+          [
+            "buttons_keyboard_enabled",
+            "T"
+          ]
+        ],
+        "added": [],
+        "remaining_preserved": true
+      },
+      "binary-defined": {
+        "before": 775,
+        "after": 774,
+        "removed": [
+          [
+            "buttons_keyboard_enabled",
+            "T"
+          ]
+        ],
+        "added": [],
+        "remaining_preserved": true
+      }
+    },
+    "FvwmIdent": {
+      "object-defined": {
+        "before": 18,
+        "after": 18,
+        "removed": [],
+        "added": [],
+        "remaining_preserved": true
+      },
+      "binary-defined": {
+        "before": 655,
+        "after": 655,
+        "removed": [],
+        "added": [],
+        "remaining_preserved": true
+      }
+    }
+  },
+  "commands": [
+    {
+      "label": "normal-group-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmScript/FvwmScript",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmIdent/FvwmIdent",
+        "fvwm3",
+        "modules/FvwmMFL/FvwmMFL"
+      ],
+      "status": 0,
+      "seconds": 1.670239876024425
+    },
+    {
+      "label": "script_widgets-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_widgets_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--script",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-interfaces-20261025/final/script_widgets"
+      ],
+      "status": 0,
+      "seconds": 3.1746788849995937
+    },
+    {
+      "label": "script_text_list-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_text_list_live.py",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--script",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-interfaces-20261025/final/script_text_list"
+      ],
+      "status": 0,
+      "seconds": 12.466141540004173
+    },
+    {
+      "label": "buttons-keyboard-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/buttons_keyboard_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "--mfl",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-interfaces-20261025/final/buttons-keyboard"
+      ],
+      "status": 0,
+      "seconds": 14.076170259999344
+    },
+    {
+      "label": "ident-config-x",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/ident_config_live.py",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmIdent/FvwmIdent",
+        "--artifacts-dir",
+        "/tmp/fvwm-m5-module-interfaces-20261025/final/ident-config"
+      ],
+      "status": 0,
+      "seconds": 0.12105248399893753
+    }
+  ],
+  "command_seconds": 31.508283045026474,
+  "profile": {
+    "options": {
+      "buildtype": "debugoptimized",
+      "b_ndebug": "false",
+      "b_sanitize": "none",
+      "c_args": [],
+      "c_link_args": []
+    },
+    "compiler": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "compile_commands": [
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmButtons/FvwmButtons.p -Imodules/FvwmButtons -I../source/modules/FvwmButtons -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmButtons/FvwmButtons.p/keyboard.c.o -MF modules/FvwmButtons/FvwmButtons.p/keyboard.c.o.d -o modules/FvwmButtons/FvwmButtons.p/keyboard.c.o -c ../source/modules/FvwmButtons/keyboard.c",
+        "file": "../source/modules/FvwmButtons/keyboard.c",
+        "output": "modules/FvwmButtons/FvwmButtons.p/keyboard.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmIdent/FvwmIdent.p -Imodules/FvwmIdent -I../source/modules/FvwmIdent -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o -MF modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o.d -o modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o -c ../source/modules/FvwmIdent/FvwmIdent.c",
+        "file": "../source/modules/FvwmIdent/FvwmIdent.c",
+        "output": "modules/FvwmIdent/FvwmIdent.p/FvwmIdent.c.o"
+      },
+      {
+        "directory": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "command": "cc -Imodules/FvwmScript/libWidgets.a.p -Imodules/FvwmScript -I../source/modules/FvwmScript -I. -I../source -Ifvwm -I../source/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIC -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -MD -MQ modules/FvwmScript/libWidgets.a.p/Widgets_Tools.c.o -MF modules/FvwmScript/libWidgets.a.p/Widgets_Tools.c.o.d -o modules/FvwmScript/libWidgets.a.p/Widgets_Tools.c.o -c ../source/modules/FvwmScript/Widgets/Tools.c",
+        "file": "../source/modules/FvwmScript/Widgets/Tools.c",
+        "output": "modules/FvwmScript/libWidgets.a.p/Widgets_Tools.c.o"
+      }
+    ]
+  },
+  "raw_full_profile": "capture/final/profile.json in canonical archive",
+  "outputs": {
+    "modules/FvwmScript/FvwmScript": {
+      "sha256": "4c1d98f7f4a3d21a736b49eea86b1dde2a8b7181e7cfb37f4ef8ee7adc980d5a",
+      "bytes": 2207672
+    },
+    "modules/FvwmButtons/FvwmButtons": {
+      "sha256": "fb078ca52c4edd5e85325894cd24cb9ee6ebaaddd8fe6edc8861b303a9954604",
+      "bytes": 1723152
+    },
+    "modules/FvwmIdent/FvwmIdent": {
+      "sha256": "e12d403cde402743ee5b88dc93d547fa30d01d6cd2075768dc5a4e41fb91026c",
+      "bytes": 1411504
+    },
+    "fvwm3": {
+      "sha256": "5d09202748558b27c5b63376d5ccb54eb18e236d476613a0b2b37d411f752835",
+      "bytes": 5454744
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+      "bytes": 444120
+    }
+  },
+  "x_results": {
+    "script_widgets": {
+      "startup-overflow-fallback-and-inherited-descriptors": "passed",
+      "clamped-pixels-preserve-stored-values": "passed",
+      "tiny-progress-fill-does-not-wrap-unsigned": "passed",
+      "equal-and-inverted-runtime-ranges-remain-usable": "passed",
+      "full-signed-range-proportions": "passed",
+      "overflow-refusal-and-prefix-compatible-mutations": "passed",
+      "full-signed-literals-and-comparison": "passed",
+      "mini-scroll-ordinary-and-extreme-wrap": "passed",
+      "mini-scroll-return-selects-once": "passed",
+      "scrollbar-extreme-key-increment": "passed",
+      "mini-scroll-release-cancels-pending-repeat": "passed",
+      "unrelated-x-input-preserves-held-repeat-cadence": "passed",
+      "mini-scroll-queued-release-restores-arrow-pixels": "passed",
+      "return-selects-once-with-legacy-pointer-rounding": "passed",
+      "queued-release-and-high-descriptor-mouse-completion": "passed",
+      "mini-scroll-held-repeat-termination": "passed"
+    },
+    "script_text_list": {
+      "legacy-insert-arrows-backspace-and-delete": "passed",
+      "legacy-mouse-selection-cut-buffer-and-middle-paste": "passed",
+      "list-viewport-clamping-page-navigation-and-row-selection": "passed",
+      "TextListLegacy-index-and-degenerate-list-recovery": "passed",
+      "opt-in-selection-replacement-home-end-and-forward-delete": "passed",
+      "truncated-multibyte-paste-and-bounded-backspace": "passed",
+      "TextListFocus-index-and-degenerate-list-recovery": "passed",
+      "TextListLegacy128-exact-refusal-selection-credit-and-recovery": "passed",
+      "TextListLegacy128-index-and-degenerate-list-recovery": "passed",
+      "TextListFocus128-exact-refusal-selection-credit-and-recovery": "passed",
+      "TextListFocus128-index-and-degenerate-list-recovery": "passed",
+      "TextListLegacy256-exact-refusal-selection-credit-and-recovery": "passed",
+      "TextListLegacy256-index-and-degenerate-list-recovery": "passed",
+      "TextListFocus256-exact-refusal-selection-credit-and-recovery": "passed",
+      "TextListFocus256-index-and-degenerate-list-recovery": "passed",
+      "partial-list-expose-and-core-recovery": "passed"
+    },
+    "buttons_keyboard": {
+      "status": "passed",
+      "tab-wrap-reverse-arrows-nested-grid-and-label-skip": "passed",
+      "focus-hover-pressed-palettes-and-single-autorepeat-action": "passed",
+      "disabled-all-entry-points-cancel-reenable-and-selected-state": "passed",
+      "atomic-invalid-first-middle-last-and-duplicates-rollback": "passed",
+      "atomic-icons-titles-all-palettes-owned-prepare-and-commit": "passed",
+      "atomic-held-key-cancel-final-focus-recovery-stable-window-action": "passed",
+      "legacy-incremental-changebutton-preserved": "passed",
+      "live-titles-stable-action-and-focus-loss-cancellation": "passed",
+      "unrelated-client-200-rapid-keys-no-grab-or-focus-theft": "passed",
+      "legacy-return-under-pointer-and-opt-in-only-traversal": "passed"
+    },
+    "ident_config": {
+      "empty": "passed",
+      "single-byte": "passed",
+      "whitespace": "passed",
+      "multiple": "passed",
+      "configuration-term": "passed"
+    }
+  },
+  "archive": {
+    "payloads": 107,
+    "regular_files": 108,
+    "bytes": 238737,
+    "sha256": "b91c4ba2fdbff94fd8305a0729d0397d1a7001edb6a00337a4ff8b5fdb9f9a11",
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-25/m5-module-interfaces/native-evidence.tgz"
+  },
+  "retirement": {
+    "status": "retired verified guest duplicate capture/archive",
+    "files": 108,
+    "active_references": [],
+    "archive_sha256": "b91c4ba2fdbff94fd8305a0729d0397d1a7001edb6a00337a4ff8b5fdb9f9a11",
+    "preserved": "canonical host archive, source/build caches, stages, VM disks, PR243/PR248 performance references"
+  },
+  "collection_only_correction": {
+    "initial": "Host convenience extraction assumed script_widgets/evidence.json; that member does not exist.",
+    "correction": "Use existing script_widgets/results.json and script_text_list/results.json. Canonical archive and all107payloads already verified; runtime passes retained without repeat."
+  },
+  "review": "separate final source/caller/exact-span/raw-evidence/report review passed; six changed source identities/all572map keys, all107payloads, object/archive/binary symbol sets, unchangedfixtures/profile/output/commands and 16/16/10/5 passing observations independently verified; no remaining findings",
+  "closure_audit": {
+    "new_broad_closures": [],
+    "remain_open": [
+      6,
+      9,
+      25,
+      34
+    ],
+    "completed_scopes_stay_closed": [
+      31,
+      35,
+      36
+    ],
+    "basis": "current owners explicitly retain remaining acceptance; do not infer whole-owner completion from this slice"
+  },
+  "routing": {
+    "analysis_requested": {
+      "role": "temper_analyst",
+      "model": "gpt-6-astra",
+      "effort": "high"
+    },
+    "closure_audit_requested": {
+      "role": "temper_workflow",
+      "model": "gpt-6-luna",
+      "effort": "medium"
+    },
+    "review_requested": {
+      "role": "temper_reviewer",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+    },
+    "implementation": "lead exact deletions; tiny coupled work under local policy",
+    "actual_runtime_metadata": "unavailable; requested delegated settings unverified"
+  },
+  "parked_work": "user explicitly keeps Daybreak-blocked families parked; no diagnosis, execution or edits included",
+  "not_applicable": [
+    "new fixture/sanitizer campaign for exact unreferenced-code deletion",
+    "new UI/theme/screenshot or performance benchmark"
+  ],
+  "deferred": [
+    "broader BSD/AMD64/compiler-feature/install/default-server/release qualification",
+    "native-CPU/hardware/toolkit/compositor qualification",
+    "broad #34 acceptance"
+  ],
+  "performance": {
+    "reference": "PR248",
+    "merged_since": 3,
+    "candidate_merge_will_make": 4,
+    "comparison_due": false
+  }
+}

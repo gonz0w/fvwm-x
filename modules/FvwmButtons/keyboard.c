@@ -27,11 +27,6 @@ static Bool eligible(const button_info *b)
 		  (b->action[0] || b->action[1])));
 }
 
-Bool buttons_keyboard_enabled(void)
-{
-	return navigation_enabled;
-}
-
 void buttons_set_keyboard_navigation(Bool enabled)
 {
 	navigation_enabled = enabled;

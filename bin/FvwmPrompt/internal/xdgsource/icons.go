@@ -85,13 +85,19 @@ func (f *IconFinder) theme(name string) (*xdgmenu.IconTheme, error) {
 		if err != nil {
 			return nil, err
 		}
+		if len(f.themes) >= xdgmenu.MaxItems {
+			return nil, errors.New("too many icon themes")
+		}
 		f.themes[name] = theme
 		return theme, nil
+	}
+	if len(f.themes) >= xdgmenu.MaxItems {
+		return nil, errors.New("too many icon themes")
 	}
 	f.themes[name] = nil
 	return nil, nil
 }
-func (f *IconFinder) lookup(name, themeName string, visited map[string]bool, depth int) (string, error) {
+func (f *IconFinder) lookup(name, themeName string, size, scaleQuarters int64, visited map[string]bool, depth int) (string, error) {
 	if depth >= xdgmenu.MaxDepth {
 		return "", errors.New("icon inheritance exceeds depth")
 	}
@@ -106,7 +112,7 @@ func (f *IconFinder) lookup(name, themeName string, visited map[string]bool, dep
 	best := ""
 	distance := int64(math.MaxInt64)
 	for _, directory := range theme.Directories {
-		delta, err := directory.Distance(int64(f.Size), 1)
+		delta, err := directory.DistanceQuarters(size, scaleQuarters)
 		if err != nil {
 			return "", err
 		}
@@ -120,7 +126,7 @@ func (f *IconFinder) lookup(name, themeName string, visited map[string]bool, dep
 				if !found {
 					continue
 				}
-				if delta == 0 && directory.Scale == 1 {
+				if exact, _ := directory.MatchQuarters(size, scaleQuarters); exact {
 					return filename, nil
 				}
 				if delta < distance {
@@ -133,7 +139,7 @@ func (f *IconFinder) lookup(name, themeName string, visited map[string]bool, dep
 		return best, nil
 	}
 	for _, parent := range theme.Inherits {
-		found, err := f.lookup(name, parent, visited, depth+1)
+		found, err := f.lookup(name, parent, size, scaleQuarters, visited, depth+1)
 		if err != nil || found != "" {
 			return found, err
 		}
@@ -141,13 +147,39 @@ func (f *IconFinder) lookup(name, themeName string, visited map[string]bool, dep
 	return "", nil
 }
 
+// Find retains the legacy default-theme/default-size entry point.
 func (f *IconFinder) Find(name string) (string, error) {
-	if name == "" {
+	if name == "" || f.Size < 1 || f.Size > 65535 {
 		return "", nil
 	}
-	if f.Size < 1 || f.Size > 65535 {
+	return f.find(name, f.Theme, int64(f.Size), 4)
+}
+
+// Resolve uses only the supplied request. Finder defaults remain available to
+// legacy callers and cannot leak between differently scaled or themed requests.
+func (f *IconFinder) Resolve(request xdgmenu.IconRequest) (string, error) {
+	if _, err := request.PhysicalSize(); err != nil {
+		return "", err
+	}
+	if err := f.charge(); err != nil {
+		return "", err
+	}
+	if len(f.Extensions) == 0 {
 		return "", nil
 	}
+	for _, name := range []string{request.Override, request.Name, request.Fallback} {
+		if name == "" {
+			continue
+		}
+		found, err := f.find(name, request.Theme, int64(request.Size), int64(request.ScaleQuarters))
+		if err != nil || found != "" {
+			return found, err
+		}
+	}
+	return "", nil
+}
+
+func (f *IconFinder) find(name, theme string, size, scaleQuarters int64) (string, error) {
 	if filepath.IsAbs(name) {
 		supported := false
 		for _, extension := range f.Extensions {
@@ -175,14 +207,14 @@ func (f *IconFinder) Find(name string) (string, error) {
 		}
 	}
 	visited := make(map[string]bool)
-	if f.Theme != "" {
-		found, err := f.lookup(name, f.Theme, visited, 0)
+	if theme != "" {
+		found, err := f.lookup(name, theme, size, scaleQuarters, visited, 0)
 		if err != nil || found != "" {
 			return found, err
 		}
 	}
 	if !visited["hicolor"] {
-		found, err := f.lookup(name, "hicolor", visited, 0)
+		found, err := f.lookup(name, "hicolor", size, scaleQuarters, visited, 0)
 		if err != nil || found != "" {
 			return found, err
 		}

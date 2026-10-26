@@ -9,7 +9,7 @@ fvwm-menu-desktop - Reads XDG menu files and creates Fvwm menus
 fvwm-menu-desktop [ *--help*|*-h* ] [ *--version* ] [
 *--install-prefix* _DIR_ ] [ *--desktop* _NAME_ ] [ *--menu-type* _NAME_
 ] [ *--theme* _NAME_ ] [ *--with-titles*|*-w* ] [ *--without-titles* ]
-[ *--enable-mini-icons* ] [ *--size*|*-s* _NUM_ ] [ *--mini-icon-dir*
+[ *--enable-mini-icons* ] [ *--size*|*-s* _NUM_ ] [ *--icon-scale* _FACTOR_ ] [ *--mini-icon-dir*
 _DIR_ ] [ *--app-icon* _NAME_ ] [ *--dir-icon* _NAME_ ] [
 *--title*|*-t* _NAME_ ] [ *--insert-in-menu* _NAME_ ] [ *--get-menus*
 _all_|_desktop_ ] [ *--set-menus* _menu_paths_ ] [ *--all-menus* ] [
@@ -137,28 +137,36 @@ enable mini-icons use the following options.
 The Go provider uses native SVG size qualifiers and a simple PNG conversion.
 PNG conversion keeps alpha and uses nearest-neighbor scaling. XPM images
 keep their original size. The build's enabled image formats control lookup.
-Converted PNG files use content-based names in the configured icon directory,
-so a changed image does not reuse an old core cache entry.
+All enabled formats use private content-based copies in the configured icon
+directory, so a changed image in a new acquisition does not reuse an old core
+cache entry. Earlier generations keep their immutable copies. The resolver and
+request cache live for one bounded acquisition; regeneration reads fresh theme
+metadata and assets. Automatic retirement of older disk copies is not provided.
 
 *--enable-mini-icons*::
   This option enables mini-icons in the menus. If set, 24x24 mini-icons
-  are used. Converted PNG files are saved in $HOME/.fvwm/icons or the
-  directory specified with --mini-icon-dir. Conversion is bounded to a
-  4096-pixel requested size; larger requests use the original PNG size.
+  are used at scale 1. Private image copies are saved in $HOME/.fvwm/icons or the
+  directory specified with --mini-icon-dir. Requested physical extent is
+  bounded to 4096 pixels; unsupported sizes leave the menu label usable without
+  an image.
   With most distributions, all the
   menu entries will have mini-icons appropriate to the application.
 *--theme* _NAME_::
-  Defines the used icon theme. Default is _gnome_ but all others found
-  in /usr/share/icons could be used except the _hicolor_ theme because
-  it's the default fallback theme if no icon is found.
+  Defines the icon theme. Default is _gnome_. User and system themes,
+  inheritance and _hicolor_ fallback use the shared bounded resolver.
+  _hicolor_ can also be selected explicitly.
 *--size*|*-s* _NUM_::
-  If --enable-mini-icons is used the _size_ of the icons can changed
-  with this parameter. Default is 24.
+  Nominal icon size before the explicit icon scale. Default is 24.
+*--icon-scale* _FACTOR_::
+  Explicit icon scale from 1 through 4 in quarter steps, such as 1.25, 1.5 or 2.
+  Default is 1. Lookup distinguishes nominal size and theme-directory scale;
+  SVG and PNG presentation uses the rounded-up physical size. For example,
+  size 17 at scale 1.25 requests 22 pixels. XPM retains its source dimensions.
+  This option does not change monitor scaling or arbitrary client pixels.
 *--mini-icon-dir* _DIR_::
-  When the right size mini-icon isn't available, fvwm-menu-desktop
-  creates icons with the right size in $HOME/.fvwm/icons. If you don't
-  want to use the default directory, $HOME/.fvwm/icons, use this option
-  to specify a different folder.
+  Directory for private content-based image copies. Default is
+  $HOME/.fvwm/icons. Keep it writable for enabled icons. Missing requested
+  and fallback images retain ordinary labels; disabled build formats are skipped.
 *--app-icon* _NAME_::
   Sets the default application icon if no others are found. Default is
   'gnome-applications'.

@@ -15,6 +15,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 )
 
 var version = "unknown"
@@ -28,6 +30,9 @@ type options struct {
 	order                                                    int64
 	specialDirs                                              *string
 	menuStyle, funcName                                      string
+	iconTheme, iconDir                                       string
+	iconSize, iconScaleQuarters                              int
+	pictures                                                 [4]string
 }
 
 func valueOr(key, fallback string) string {
@@ -46,7 +51,7 @@ func defaults(program string) options {
 	}
 	return options{name: "MenuBrowser", title: "%*-40p", item: "%n", dir: home, home: home,
 		userDir: userDir, program: program, xterm: "xterm -e", execTitle: valueOr("SHELL", "/bin/sh"),
-		execFile: valueOr("EDITOR", "vi"), order: 5, funcName: "FuncFvwmMenuDirectory"}
+		execFile: valueOr("EDITOR", "vi"), order: 5, funcName: "FuncFvwmMenuDirectory", iconSize: 24, iconScaleQuarters: 4, iconDir: "~/.fvwm/icons"}
 }
 
 func parse(args []string, out, diagnostic io.Writer, program string) (options, bool, int) {
@@ -54,12 +59,12 @@ func parse(args []string, out, diagnostic io.Writer, program string) (options, b
 	stringsOptions := map[string]*string{"name": &o.name, "title": &o.title, "item": &o.item,
 		"icon-title": &o.titleIcon, "icon-dir": &o.dirIcon, "icon-file": &o.fileIcon, "icon-app": &o.appIcon,
 		"dir": &o.dir, "xterm": &o.xterm, "exec-title": &o.execTitle, "exec-file": &o.execFile,
-		"menu-style": &o.menuStyle, "func-name": &o.funcName}
+		"menu-style": &o.menuStyle, "func-name": &o.funcName, "icon-theme": &o.iconTheme, "mini-icon-dir": &o.iconDir}
 	pointers := map[string]**string{"exec-app": &o.execApp, "command-title": &o.commandTitle,
 		"command-file": &o.commandFile, "command-app": &o.commandApp, "special-dirs": &o.specialDirs}
 	booleans := map[string]*bool{"all": &o.all, "links": &o.links, "reuse": &o.reuse,
 		"check-subdirs": &o.checkSubdirs, "memory-for-speed": &o.memoryForSpeed, "wm-icons": &o.wmIcons}
-	names := []string{"help", "version", "order"}
+	names := []string{"help", "version", "order", "icon-size", "icon-scale"}
 	for name := range stringsOptions {
 		names = append(names, name)
 	}
@@ -88,6 +93,10 @@ func parse(args []string, out, diagnostic io.Writer, program string) (options, b
 		}
 		if key == "v" {
 			key = "version"
+		}
+		// Keep the documented title-icon abbreviation after adding theme.
+		if key == "icon-t" {
+			key = "icon-title"
 		}
 		negative := false
 		lookup := key
@@ -151,6 +160,22 @@ func parse(args []string, out, diagnostic io.Writer, program string) (options, b
 		case "version":
 			fmt.Fprintln(out, version)
 			return o, true, 0
+		case "icon-size":
+			n, err := strconv.Atoi(v)
+			if err != nil || n < 1 || n > 4096 {
+				fmt.Fprintln(diagnostic, "--icon-size must be between 1 and 4096")
+				invalid = true
+			} else {
+				o.iconSize = n
+			}
+		case "icon-scale":
+			n, err := xdgmenu.ParseIconScale(v)
+			if err != nil {
+				fmt.Fprintln(diagnostic, err)
+				invalid = true
+			} else {
+				o.iconScaleQuarters = n
+			}
 		case "order":
 			n, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
@@ -163,10 +188,35 @@ func parse(args []string, out, diagnostic io.Writer, program string) (options, b
 			if p := booleans[resolved]; p != nil {
 				*p = !negative
 			} else if p := stringsOptions[resolved]; p != nil {
+				if (resolved == "icon-theme" || resolved == "mini-icon-dir") && v == "" {
+					fmt.Fprintf(diagnostic, "Option %s requires a nonempty argument\n", key)
+					invalid = true
+				}
 				*p = v
 			} else {
 				copy := v
 				*pointers[resolved] = &copy
+			}
+		}
+	}
+	if o.iconSize*o.iconScaleQuarters > 4096*4 {
+		fmt.Fprintln(diagnostic, "scaled icon extent exceeds 4096 pixels")
+		invalid = true
+	}
+	for _, value := range []string{o.iconTheme, o.iconDir} {
+		if !validIconValue(value) {
+			fmt.Fprintln(diagnostic, "invalid icon theme or cache directory")
+			invalid = true
+		}
+	}
+	if o.iconTheme != "" {
+		for _, value := range []string{o.titleIcon, o.dirIcon, o.fileIcon, o.appIcon} {
+			_, err := (xdgmenu.IconRequest{Name: "folder", Theme: o.iconTheme, Size: o.iconSize,
+				ScaleQuarters: o.iconScaleQuarters, Override: value}).PhysicalSize()
+			if err != nil {
+				fmt.Fprintln(diagnostic, err)
+				invalid = true
+				break
 			}
 		}
 	}
@@ -178,6 +228,10 @@ func parse(args []string, out, diagnostic io.Writer, program string) (options, b
 }
 
 func run(args []string, out, diagnostic io.Writer, program string) int {
+	if len(args) > 0 && args[0] == "--_icons" {
+		return iconWorker(args[1:], out, diagnostic, program)
+	}
+
 	if len(args) > 0 && args[0] == "--fvwm-remember" {
 		if len(args) != 4 || !singleLine(args[3]) {
 			fmt.Fprintln(diagnostic, "fvwm-menu-directory: invalid navigation request")
@@ -228,6 +282,13 @@ func run(args []string, out, diagnostic io.Writer, program string) int {
 	if err != nil {
 		fmt.Fprintln(diagnostic, "fvwm-menu-directory:", err)
 		return 1
+	}
+	if o.iconTheme != "" {
+		pictures, iconErr := acquireIcons(o)
+		if iconErr != nil {
+			fmt.Fprintln(diagnostic, "fvwm-menu-directory: icons:", iconErr)
+		}
+		o.pictures = pictures
 	}
 	entries, err := listing(base, o)
 	if err == nil {

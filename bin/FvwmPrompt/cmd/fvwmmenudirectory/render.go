@@ -324,6 +324,11 @@ func icon(value string) string {
 }
 
 func menu(out io.Writer, o options, entries []entry) error {
+	// Presentation is local to this emission. Keep the original scoped options
+	// intact for callers regenerating submenus through their configured callback.
+	if o.iconTheme != "" {
+		o.titleIcon, o.dirIcon, o.fileIcon, o.appIcon = o.pictures[0], o.pictures[1], o.pictures[2], o.pictures[3]
+	}
 	if !singleLine(o.name) || !singleLine(o.dir) {
 		return errors.New("directory/menu name contains a line break or NUL")
 	}
@@ -335,7 +340,7 @@ func menu(out io.Writer, o options, entries []entry) error {
 	if err != nil {
 		return err
 	}
-	if o.wmIcons {
+	if o.wmIcons && o.iconTheme == "" {
 		for _, pair := range []struct {
 			value    *string
 			fallback string
@@ -374,7 +379,7 @@ func menu(out io.Writer, o options, entries []entry) error {
 		}
 	}
 	if o.title != "" {
-		if err := write("+ \"%s", icon(o.titleIcon)); err != nil {
+		if err := write("+ \"%s", menuIcon(o, o.titleIcon)); err != nil {
 			return err
 		}
 		if err := formatted(out, title, map[string]string{"d": filepath.Base(o.dir), "p": o.dir}, true); err != nil {
@@ -394,7 +399,7 @@ func menu(out io.Writer, o options, entries []entry) error {
 		}
 	}
 	folder := func(e entry) error {
-		if err := write("+ \"%s", icon(o.dirIcon)); err != nil {
+		if err := write("+ \"%s", menuIcon(o, o.dirIcon)); err != nil {
 			return err
 		}
 		if e.info == nil || o.item == "%f" {
@@ -482,12 +487,12 @@ func menu(out io.Writer, o options, entries []entry) error {
 		}
 		im, action := o.fileIcon, fileAct
 		if e.executable {
-			if icon(o.appIcon) != "" {
+			if o.iconTheme != "" || icon(o.appIcon) != "" {
 				im = o.appIcon
 			}
 			action = appAct
 		}
-		if err := write("+ \"%s", icon(im)); err != nil {
+		if err := write("+ \"%s", menuIcon(o, im)); err != nil {
 			return err
 		}
 		if o.item == "%f" {

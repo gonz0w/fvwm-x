@@ -13,6 +13,78 @@ import (
 	"unicode/utf8"
 )
 
+// IconRequest describes one menu picture without changing resolver defaults.
+// ScaleQuarters is the nominal UI scale in quarter steps, from 4 through 16.
+// Override is an explicit state/role image; absence falls back to Name, then
+// Fallback. States never imply a filename suffix.
+type IconRequest struct {
+	Name, Theme, State, Override, Fallback string
+	Size, ScaleQuarters                    int
+}
+
+// ParseIconScale accepts the supported decimal quarter steps without floating
+// point rounding or accepting exponents, signs, or non-quarter values.
+func ParseIconScale(value string) (int, error) {
+	if len(value) < 1 || len(value) > 4 {
+		return 0, errors.New("icon scale must use a bounded decimal quarter step")
+	}
+	parts := strings.Split(value, ".")
+	if len(parts) > 2 || len(parts[0]) != 1 || parts[0][0] < '1' || parts[0][0] > '4' {
+		return 0, errors.New("icon scale must be 1 through 4 in quarter steps")
+	}
+	quarters := int(parts[0][0]-'0') * 4
+	if len(parts) == 2 {
+		switch parts[1] {
+		case "0", "00":
+		case "25":
+			quarters++
+		case "5", "50":
+			quarters += 2
+		case "75":
+			quarters += 3
+		default:
+			return 0, errors.New("icon scale must use decimal quarter steps")
+		}
+	}
+	if quarters > 16 {
+		return 0, errors.New("icon scale exceeds 4")
+	}
+	return quarters, nil
+}
+
+// PhysicalSize validates the complete request before any filesystem work.
+func (request IconRequest) PhysicalSize() (int, error) {
+	if request.Size < 1 || request.Size > 4096 || request.ScaleQuarters < 4 || request.ScaleQuarters > 16 {
+		return 0, errors.New("invalid icon request geometry")
+	}
+	physical := (int64(request.Size)*int64(request.ScaleQuarters) + 3) / 4
+	if physical > 4096 {
+		return 0, errors.New("icon request exceeds physical geometry limit")
+	}
+	if request.Theme != "" && !ValidIconTheme(request.Theme) {
+		return 0, errors.New("invalid icon request theme")
+	}
+	switch request.State {
+	case "", "normal", "selected", "disabled":
+	default:
+		return 0, errors.New("invalid icon request state")
+	}
+	for _, name := range []string{request.Name, request.Override, request.Fallback} {
+		if len(name) > MaxValueBytes || !utf8.ValidString(name) {
+			return 0, errors.New("invalid icon request name")
+		}
+		for _, c := range name {
+			if c < 32 || c == 127 || c == '\\' && !path.IsAbs(name) {
+				return 0, errors.New("invalid icon request name")
+			}
+		}
+		if strings.Contains(name, "/") && (!path.IsAbs(name) || path.Clean(name) != name) {
+			return 0, errors.New("invalid icon request path")
+		}
+	}
+	return int(physical), nil
+}
+
 type IconDirectory struct {
 	Path                                     string
 	Size, Scale, Minimum, Maximum, Threshold int64
@@ -160,4 +232,39 @@ func (directory IconDirectory) Distance(size, scale int64) (int64, error) {
 		return actual - high, nil
 	}
 	return 0, nil
+}
+
+// DistanceQuarters compares physical extents in quarter-pixel units. Keeping
+// the numerator avoids rounding fractional requests before choosing a source.
+func (directory IconDirectory) DistanceQuarters(size, scaleQuarters int64) (int64, error) {
+	if scaleQuarters < 4 || scaleQuarters > 16 {
+		return 0, errors.New("invalid icon lookup scale")
+	}
+	if _, err := directory.Distance(size, 1); err != nil {
+		return 0, err
+	}
+	low, high := directory.Size, directory.Size
+	switch directory.Type {
+	case "Scalable":
+		low, high = directory.Minimum, directory.Maximum
+	case "Threshold":
+		low, high = directory.Size-directory.Threshold, directory.Size+directory.Threshold
+	}
+	actual := size * scaleQuarters
+	low *= directory.Scale * 4
+	high *= directory.Scale * 4
+	if actual < low {
+		return low - actual, nil
+	}
+	if actual > high {
+		return actual - high, nil
+	}
+	return 0, nil
+}
+
+// MatchQuarters distinguishes nominal size/scale matches from equally sized
+// images in a different scale directory, before physical-distance fallback.
+func (directory IconDirectory) MatchQuarters(size, scaleQuarters int64) (bool, error) {
+	distance, err := directory.DistanceQuarters(size, scaleQuarters)
+	return err == nil && directory.Scale*4 == scaleQuarters && distance == 0, err
 }

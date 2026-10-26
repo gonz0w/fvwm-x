@@ -29,6 +29,9 @@ int pixel_to_color_string(
 Pixel GetSimpleColor(char *name);
 /* handles colorset color names too */
 Pixel GetColor(char *name);
+/* Same color policy; True means the caller owns an allocated reference.
+ * The output is initialized, including failure and valid pixel zero. */
+Bool fvwmlib_get_color(char *name, Pixel *pixel);
 
 /* duplicate an already allocated color */
 Pixel fvwmlib_clone_color(Pixel p);

@@ -1343,13 +1343,7 @@ static void ChangeMainColorset (int i)
   {
     return;
   }
- /* Free color */
-  if (x11base->colorset < 0) {
-    PictureFreeColors(dpy,Pcmap,&x11base->TabColor[fore],1,0,True);
-    PictureFreeColors(dpy,Pcmap,&x11base->TabColor[back],1,0,True);
-    PictureFreeColors(dpy,Pcmap,&x11base->TabColor[hili],1,0,True);
-    PictureFreeColors(dpy,Pcmap,&x11base->TabColor[shad],1,0,True);
-  }
+  script_base_colors_clear(x11base);
   x11base->colorset = i;
   x11base->TabColor[fore] = GetColorset(i)->fg;
   x11base->TabColor[back] = GetColorset(i)->bg;

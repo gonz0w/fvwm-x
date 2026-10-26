@@ -54,6 +54,7 @@ Configuration examples for local.config:
 ....
 *FvwmDesktop: palette slate
 *FvwmDesktop: appearance auto
+*FvwmDesktop: contrast normal
 *FvwmDesktop: day 07:00
 *FvwmDesktop: night 19:00
 *FvwmDesktop: transparency on
@@ -88,14 +89,37 @@ new wallpaper choices are saved but do not replace the retained image until
 retention is turned off. Custom image paths are not settings in this registry.
 Custom wallpaper persistence remains the user's local.config responsibility.
 
+Select *contrast high* for opaque high-contrast FVWM-owned controls. Dark
+appearance uses black surfaces and white normal/disabled text and borders;
+light appearance reverses them. The selected palette supplies the accent when
+its contrast against the projected surface is at least 4.5:1; otherwise the
+opposite black/white color is used. Selected text uses whichever of black or
+white has greater contrast against that accent. Wallpaper and motion remain
+independent. This mode does not recolor application contents or promise complete
+accessibility support.
+
+High contrast overrides presentation after module options are resolved. It
+forces panels and menus opaque, retaining the requested transparency and launcher
+opacity preferences. Selecting *contrast normal* restores those requests. For
+example, these options keep a light Grove wallpaper with dark high-contrast UI:
+
+....
+*FvwmDesktop: appearance dark
+*FvwmDesktop: contrast high
+*FvwmDesktop: wallpaper_palette grove
+*FvwmDesktop: wallpaper_appearance light
+....
+
+
 == DESKTOP SETTINGS
 
 The Appearance menu's Desktop settings entry opens a native FVWM menu. The
 same registry supplies the menus, validation and settings queries. This first
-configuration-center covers these ten registered preferences:
+configuration-center covers these registered preferences:
 
 * *palette*, appearance group: slate; choices slate, dune, grove, ink.
 * *appearance*, appearance group: auto; choices light, dark, auto.
+* *contrast*, appearance group: normal; choices normal, high.
 * *keep_wallpaper*, appearance group: boolean, false.
 * *wallpaper_palette*, wallpaper group: follow; choices follow, slate, dune,
   grove, ink.
@@ -131,8 +155,16 @@ Resolution is explicit, follow or retained. The resolved appearance can be auto:
 that describes schedule policy, not the currently painted light/dark phase.
 Retention reports wallpaper-retained as a runtime constraint. These fields remain
 stable for the preference generation; clock-dependent painting still follows the
-existing minute tick. Composition version 1 names the shared semantic color-role
-projection and is separate from the preference-file and IPC schema versions.
+existing minute tick. Composition version 2 names the shared semantic color-role
+projection, including high-contrast policy and is separate from the preference-file and IPC schema versions.
+Transparency and launcher-opacity entries also expose resolved presentation and
+resolution. Under high contrast they resolve to false and 100 respectively, with
+resolution and runtime_constraint high-contrast. Their saved, effective and source
+fields still describe the requested preferences and module overrides. In normal
+mode, resolution requested uses the requested value; disabled transparency masks
+launcher opacity with resolution/runtime_constraint transparency-disabled. These
+fields describe the owner's submitted policy rather than an observed final paint.
+
 
 Choose Edit saved preferences from Appearance or Desktop settings to open the
 native grouped editor. It presents the registry's choices and time fields, with
@@ -192,10 +224,11 @@ on failure; source configuration and unrelated files are left alone.
 Unversioned JSON from earlier helpers is read using the original normalization
 rules. Complete schema_version 1 files load with launcher_opacity 94;
 complete version 1 and 2 files gain follow defaults for the two wallpaper choices.
-No file is rewritten on read. The next successful save writes schema_version 3.
-Version 3 requires all ten preferences and retained wallpaper with valid types.
-Versions 1 and 2 require their exact historical fields; incomplete or unknown
-fields are refused. Older helpers cannot read version 3. Unknown versions, duplicate fields, oversized
+Complete versions 1 through 3 gain contrast normal. No file is rewritten on read.
+The next successful save writes schema_version 4. Version 4 requires all eleven
+preferences and retained wallpaper with valid types. Versions 1 through 3 require
+their exact historical fields; incomplete or unknown fields are refused. Older
+helpers cannot read version 4. Unknown versions, duplicate fields, oversized
 or invalid files are preserved. Startup uses defaults and reports a persistence
 error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
@@ -234,7 +267,11 @@ Desktop settings offers *Preview launcher opacity...*, with 70%, 85%, 94% and
 100% choices. The saved-value editor also accepts any integer 0 through 100.
 Module configuration accepts *FvwmDesktop: launcher_opacity 94. A module override
 or disabled transparency refuses saved-setting preview; change that source
-first. Other menus retain their existing opacity policy.
+first. High contrast refuses both saved-setting and runtime-only opacity preview,
+including an editor draft selecting high contrast. A successfully saved/reloaded
+high-contrast choice retires active or pending preview work before submitting
+opaque presentation; failed validation or persistence preserves existing preview
+state. Other menus retain their existing opacity policy.
 
 The preview opens a native confirmation dialog. Open Applications to view the
 candidate; close and reopen an already visible menu to sample its new opacity.
@@ -480,6 +517,7 @@ toggle transparency
 toggle motion
 toggle keep_wallpaper
 set wallpaper_palette follow|slate|dune|grove|ink
+set contrast normal|high
 set wallpaper_appearance follow|light|dark
 settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects]
 preview-setting helper-instance opacity-percent

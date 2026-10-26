@@ -71,6 +71,10 @@ func (d *Controller) notice(text string) {
 // Build the whole projection before publication or retained-wallpaper mutation.
 // The first five key positions are also used by opacity preview confirmation.
 func (d *Controller) themePlan(settings values, minute int) ([]any, desktopsettings.ThemeProjection, values, error) {
+	presentation, err := desktopsettings.ResolvePresentation(settings)
+	if err != nil {
+		return nil, desktopsettings.ThemeProjection{}, nil, err
+	}
 	wallpaper, err := desktopsettings.ResolveWallpaper(settings, minute)
 	if err != nil {
 		return nil, desktopsettings.ThemeProjection{}, nil, err
@@ -80,14 +84,14 @@ func (d *Controller) themePlan(settings values, minute int) ([]any, desktopsetti
 		return nil, desktopsettings.ThemeProjection{}, nil, err
 	}
 	palette := d.palettes[stringAt(settings, "palette")][mode]
-	projection, err := desktopsettings.ProjectTheme(palette)
+	projection, err := desktopsettings.ProjectTheme(palette, mode, presentation.Contrast)
 	if err != nil {
 		return nil, desktopsettings.ThemeProjection{}, nil, err
 	}
-	if _, err := desktopsettings.ProjectTheme(d.palettes[stringAt(wallpaper, "palette")][stringAt(wallpaper, "appearance")]); err != nil {
+	if _, err := desktopsettings.ProjectTheme(d.palettes[stringAt(wallpaper, "palette")][stringAt(wallpaper, "appearance")], stringAt(wallpaper, "appearance"), "normal"); err != nil {
 		return nil, desktopsettings.ThemeProjection{}, nil, err
 	}
-	key := []any{settings["palette"], mode, settings["transparency"], settings["motion"], settings["launcher_opacity"], wallpaper["palette"], wallpaper["appearance"]}
+	key := []any{settings["palette"], mode, settings["transparency"], settings["motion"], settings["launcher_opacity"], wallpaper["palette"], wallpaper["appearance"], presentation.Contrast}
 	return key, projection, wallpaper, nil
 }
 func (d *Controller) theme(force bool) error {
@@ -98,6 +102,10 @@ func (d *Controller) theme(force bool) error {
 	}
 	if !force && reflect.DeepEqual(key, d.lastTheme) {
 		return nil
+	}
+	presentation, err := desktopsettings.ResolvePresentation(d.effective)
+	if err != nil {
+		return err
 	}
 	palette := d.palettes[key[0].(string)][key[1].(string)]
 	for _, role := range projection.Roles {
@@ -113,7 +121,7 @@ func (d *Controller) theme(force bool) error {
 		}
 		d.lastWallpaper = wallpaper
 	}
-	if key[2] == true {
+	if presentation.Transparency {
 		d.emit("Colorset 10 RootTransparent buffer, Tint " + palette["surface"] + " 88")
 		d.emit("MenuStyle * Translucent 94")
 	} else {
@@ -125,8 +133,8 @@ func (d *Controller) theme(force bool) error {
 	}
 	d.emit("MenuStyle * " + animation)
 	d.emit("CopyMenuStyle * SlateLauncherStyle")
-	if key[2] == true {
-		d.emit("MenuStyle SlateLauncherStyle Translucent " + fmt.Sprint(key[4]))
+	if presentation.Transparency {
+		d.emit("MenuStyle SlateLauncherStyle Translucent " + strconv.Itoa(presentation.LauncherOpacity))
 	}
 	d.emit(`MenuStyle SlateLauncherStyle ItemFormat "%24p%l%80p%>%24p"`)
 	d.emit("Style * WindowShadeSteps " + steps)

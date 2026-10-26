@@ -14,7 +14,7 @@ import (
 
 func TestRegistryDomainsAndIndependentDefaults(t *testing.T) {
 	keys, _ := Scope("all")
-	if !reflect.DeepEqual(keys, []string{"palette", "appearance", "day", "night", "transparency", "motion", "keep_wallpaper", "launcher_opacity", "wallpaper_palette", "wallpaper_appearance"}) {
+	if !reflect.DeepEqual(keys, []string{"palette", "appearance", "day", "night", "transparency", "motion", "keep_wallpaper", "launcher_opacity", "wallpaper_palette", "wallpaper_appearance", "contrast"}) {
 		t.Fatal(keys)
 	}
 	for key, item := range Registry() {
@@ -36,7 +36,7 @@ func TestRegistryDomainsAndIndependentDefaults(t *testing.T) {
 	}
 }
 func TestStrictValuesAndTextOnlyConversion(t *testing.T) {
-	bad := map[string][]any{"wallpaper_palette": {"auto", "SLATE", "slate;Exec bad", true, nil}, "wallpaper_appearance": {"auto", "LIGHT", "light;Exec bad", true, nil}, "palette": {"SLATE", "slate; Exec bad", true, nil}, "motion": {"true", 1, json.Number("1"), nil}, "launcher_opacity": {true, -1, 101, "94", json.Number("94.0"), json.Number("9e1")}, "day": {"7:00", "24:00", "10:60", "07:00\n"}}
+	bad := map[string][]any{"contrast": {"HIGH", "high;Exec bad", true, nil}, "wallpaper_palette": {"auto", "SLATE", "slate;Exec bad", true, nil}, "wallpaper_appearance": {"auto", "LIGHT", "light;Exec bad", true, nil}, "palette": {"SLATE", "slate; Exec bad", true, nil}, "motion": {"true", 1, json.Number("1"), nil}, "launcher_opacity": {true, -1, 101, "94", json.Number("94.0"), json.Number("9e1")}, "day": {"7:00", "24:00", "10:60", "07:00\n"}}
 	for key, values := range bad {
 		for _, v := range values {
 			if _, err := Value(key, v, false); err == nil {
@@ -99,6 +99,7 @@ func TestStoredSchemaStrictnessAndDuplicateRejection(t *testing.T) {
 	delete(d, "launcher_opacity")
 	delete(d, "wallpaper_palette")
 	delete(d, "wallpaper_appearance")
+	delete(d, "contrast")
 	d["schema_version"] = 1
 	data, _ := json.Marshal(d)
 	got, err := DecodeState(data)
@@ -175,7 +176,7 @@ func TestEditorAndMenuPlansKeepScopedCallbacks(t *testing.T) {
 		t.Fatal(plan.Keys)
 	}
 	lines := strings.Join(plan.Lines, "\n")
-	for _, required := range []string{"Input launcher_opacity 3 \"94\"", "Command SendToModule FvwmDesktop apply-settings " + token + " $(transparency) $(motion) $(launcher_opacity)", "Timeout 3000", "Preview opacity (F4)", "Effective: true (module configuration override)"} {
+	for _, required := range []string{"Input launcher_opacity 3 \"94\"", "Command SendToModule FvwmDesktop apply-settings " + token + " $(transparency) $(motion) $(launcher_opacity)", "Timeout 3000", "Preview opacity (F4)", "Effective request: true (module configuration override)"} {
 		if !strings.Contains(lines, required) {
 			t.Fatalf("missing %q", required)
 		}

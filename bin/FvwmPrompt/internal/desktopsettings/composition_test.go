@@ -34,7 +34,7 @@ func TestThemeProjectionPreservesEveryShippedColorset(t *testing.T) {
 		for _, appearance := range []string{"light", "dark"} {
 			t.Run(name+"/"+appearance, func(t *testing.T) {
 				colors := palettes[name][appearance]
-				projection, err := ProjectTheme(colors)
+				projection, err := ProjectTheme(colors, appearance, "normal")
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -59,7 +59,7 @@ func TestThemeProjectionPreservesEveryShippedColorset(t *testing.T) {
 					{13, "panel.selected", "on_accent", "accent"},
 					{14, "panel.muted", "muted", "surface"},
 				}
-				if projection.Version != 1 || len(projection.Roles) != len(want) {
+				if projection.Version != 2 || len(projection.Roles) != len(want) {
 					t.Fatal(projection)
 				}
 				for i, expected := range want {
@@ -75,7 +75,7 @@ func TestThemeProjectionPreservesEveryShippedColorset(t *testing.T) {
 				if projection.Roles[0].Foreground != original {
 					t.Fatal("projection borrowed palette")
 				}
-				second, _ := ProjectTheme(colors)
+				second, _ := ProjectTheme(colors, appearance, "normal")
 				projection.Roles[0].Name = "changed"
 				if second.Roles[0].Name != "surface" {
 					t.Fatal("shared projection roles")
@@ -94,19 +94,19 @@ func TestThemeProjectionRejectsMalformedColorsBeforeReturningRoles(t *testing.T)
 				copy[k] = v
 			}
 			copy[key] = invalid
-			projection, err := ProjectTheme(copy)
+			projection, err := ProjectTheme(copy, "dark", "normal")
 			if err == nil || projection.Version != 0 || projection.Roles != nil {
 				t.Fatalf("accepted %s=%q: %#v, %v", key, invalid, projection, err)
 			}
 		}
 	}
-	if projection, err := ProjectTheme(nil); err == nil || projection.Roles != nil {
+	if projection, err := ProjectTheme(nil, "dark", "normal"); err == nil || projection.Roles != nil {
 		t.Fatal(projection, err)
 	}
 	for key := range colors {
 		colors[key] = "#aBcD09"
 	}
-	if _, err := ProjectTheme(colors); err != nil {
+	if _, err := ProjectTheme(colors, "dark", "normal"); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -199,6 +199,9 @@ func versionedFixture(version int) Values {
 	settings["palette"], settings["appearance"] = "dune", "light"
 	settings["keep_wallpaper"] = true
 	settings["wallpaper"] = Values{"palette": "ink", "appearance": "dark"}
+	if version < 4 {
+		delete(settings, "contrast")
+	}
 	if version < 3 {
 		delete(settings, "wallpaper_palette")
 		delete(settings, "wallpaper_appearance")
@@ -212,19 +215,19 @@ func versionedFixture(version int) Values {
 }
 
 func TestExactStoredSchemasAndMigration(t *testing.T) {
-	if StateVersion != 3 {
+	if StateVersion != 4 {
 		t.Fatal(StateVersion)
 	}
-	for _, version := range []int{1, 2, 3} {
+	for _, version := range []int{1, 2, 3, 4} {
 		settings := versionedFixture(version)
-		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12}[version] {
+		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12, 4: 13}[version] {
 			t.Fatal(settings)
 		}
 		data, _ := json.Marshal(settings)
 		before := append([]byte(nil), data...)
 		got, err := DecodeState(data)
 		if err != nil || got["palette"] != "dune" || got["appearance"] != "light" || got["keep_wallpaper"] != true ||
-			got["wallpaper_palette"] != "follow" || got["wallpaper_appearance"] != "follow" ||
+			got["wallpaper_palette"] != "follow" || got["wallpaper_appearance"] != "follow" || got["contrast"] != "normal" ||
 			!reflect.DeepEqual(got["wallpaper"], Values{"palette": "ink", "appearance": "dark"}) {
 			t.Fatal(version, got, err)
 		}
@@ -262,7 +265,7 @@ func TestExactStoredSchemasAndMigration(t *testing.T) {
 	if err != nil || got["wallpaper_palette"] != "grove" || got["wallpaper_appearance"] != "light" {
 		t.Fatal(got, err)
 	}
-	for _, version := range []any{0, 4, -1, true, "3", 3.5, nil} {
+	for _, version := range []any{0, 5, -1, true, "4", 4.5, nil} {
 		bad := versionedFixture(3)
 		bad["schema_version"] = version
 		data, _ := json.Marshal(bad)
@@ -270,9 +273,9 @@ func TestExactStoredSchemasAndMigration(t *testing.T) {
 			t.Fatal(version, got, err)
 		}
 	}
-	for _, version := range []int{1, 2} {
-		for _, key := range []string{"wallpaper_palette", "wallpaper_appearance", "launcher_opacity"} {
-			if version == 2 && key == "launcher_opacity" {
+	for _, version := range []int{1, 2, 3} {
+		for _, key := range []string{"contrast", "wallpaper_palette", "wallpaper_appearance", "launcher_opacity"} {
+			if version >= 2 && key == "launcher_opacity" || version >= 3 && strings.HasPrefix(key, "wallpaper_") {
 				continue
 			}
 			bad := versionedFixture(version)
@@ -342,7 +345,7 @@ func TestWallpaperRegistryEditorAndStableMetadata(t *testing.T) {
 		t.Fatal(keys, err)
 	}
 	appearance, _ := Scope("group:appearance")
-	if !reflect.DeepEqual(appearance, []string{"palette", "appearance", "keep_wallpaper"}) {
+	if !reflect.DeepEqual(appearance, []string{"palette", "appearance", "keep_wallpaper", "contrast"}) {
 		t.Fatal(appearance)
 	}
 	s := snapshotFixture()
@@ -385,7 +388,7 @@ func TestWallpaperRegistryEditorAndStableMetadata(t *testing.T) {
 				want = mode
 			}
 			if item["saved"] != "follow" || item["effective"] != "follow" || item["resolution"] != "follow" ||
-				item["resolved"] != want || item["composition_version"] != 1 || item["generation"] != s.Generation || item["runtime_constraint"] != nil {
+				item["resolved"] != want || item["composition_version"] != 2 || item["generation"] != s.Generation || item["runtime_constraint"] != nil {
 				t.Fatal(item)
 			}
 		}

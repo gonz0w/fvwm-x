@@ -5,10 +5,14 @@
 // the Free Software Foundation; either version 2, or any later version.
 package desktopsettings
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+	"strconv"
+)
 
 // The color-role projection evolves independently of the preference file schema.
-const themeCompositionVersion = 1
+const themeCompositionVersion = 2
 
 type ColorRole struct {
 	Name                                      string
@@ -23,7 +27,11 @@ type ThemeProjection struct {
 
 // ProjectTheme validates the complete palette before producing a projection.
 // It returns operation-owned values and has no command-publication authority.
-func ProjectTheme(colors map[string]string) (ThemeProjection, error) {
+func ProjectTheme(colors map[string]string, appearance, contrast string) (ThemeProjection, error) {
+	if len(colors) != 8 || !has([]string{"light", "dark"}, appearance) ||
+		!has([]string{"normal", "high"}, contrast) {
+		return ThemeProjection{}, fmt.Errorf("Invalid desktop theme composition")
+	}
 	for _, key := range []string{"background", "surface", "raised", "text",
 		"muted", "border", "accent", "on_accent"} {
 		value := colors[key]
@@ -35,6 +43,28 @@ func ProjectTheme(colors map[string]string) (ThemeProjection, error) {
 				return ThemeProjection{}, fmt.Errorf("Invalid desktop color: %s", key)
 			}
 		}
+	}
+	if contrast == "high" {
+		// Own the adjusted palette; callers retain their requested source colors.
+		adjusted := make(map[string]string, len(colors))
+		for key, value := range colors {
+			adjusted[key] = value
+		}
+		surface, text := "#000000", "#ffffff"
+		if appearance == "light" {
+			surface, text = text, surface
+		}
+		adjusted["surface"], adjusted["raised"] = surface, surface
+		adjusted["text"], adjusted["muted"], adjusted["border"] = text, text, text
+		if contrastRatio(adjusted["accent"], surface) < 4.5 {
+			adjusted["accent"] = text
+		}
+		adjusted["on_accent"] = "#000000"
+		if contrastRatio("#ffffff", adjusted["accent"]) >
+			contrastRatio("#000000", adjusted["accent"]) {
+			adjusted["on_accent"] = "#ffffff"
+		}
+		colors = adjusted
 	}
 	projection := ThemeProjection{Version: themeCompositionVersion}
 	for _, role := range []struct {
@@ -64,6 +94,54 @@ func ProjectTheme(colors map[string]string) (ThemeProjection, error) {
 			Shadow: colors[role.bg]})
 	}
 	return projection, nil
+}
+
+// contrastRatio uses sRGB relative luminance after validated #RRGGBB input.
+func contrastRatio(first, second string) float64 {
+	luminance := func(color string) float64 {
+		var linear [3]float64
+		for i := range linear {
+			component, _ := strconv.ParseUint(color[1+i*2:3+i*2], 16, 8)
+			value := float64(component) / 255
+			linear[i] = value / 12.92
+			if value > 0.04045 {
+				linear[i] = math.Pow((value+0.055)/1.055, 2.4)
+			}
+		}
+		return 0.2126*linear[0] + 0.7152*linear[1] + 0.0722*linear[2]
+	}
+	a, b := luminance(first), luminance(second)
+	if a < b {
+		a, b = b, a
+	}
+	return (a + 0.05) / (b + 0.05)
+}
+
+type Presentation struct {
+	Contrast        string
+	Transparency    bool
+	LauncherOpacity int
+	Constraint      string
+}
+
+// ResolvePresentation preserves requested preferences while resolving the
+// strongest opaque presentation. It validates even settings hidden by a constraint.
+func ResolvePresentation(settings Values) (Presentation, error) {
+	checked, err := Checked(settings)
+	if err != nil {
+		return Presentation{}, err
+	}
+	result := Presentation{Contrast: checked["contrast"].(string),
+		Transparency:    checked["transparency"].(bool),
+		LauncherOpacity: checked["launcher_opacity"].(int)}
+	if result.Contrast == "high" {
+		result.Transparency, result.LauncherOpacity = false, 100
+		result.Constraint = "high-contrast"
+	} else if !result.Transparency {
+		result.LauncherOpacity = 100
+		result.Constraint = "transparency-disabled"
+	}
+	return result, nil
 }
 
 // ResolveWallpaper applies retention before independent wallpaper selections.

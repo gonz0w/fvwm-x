@@ -191,6 +191,7 @@ func (d *Controller) finishConfiguration() error {
 	}
 	d.changed(newID(16))
 	d.ready = true
+	d.preview.constrain()
 	d.announceSettings()
 	return d.fatal
 }
@@ -222,6 +223,7 @@ func (d *Controller) changeSettings(changes values) error {
 	}
 	d.saved, d.effective, d.revision = candidate, effective, revision
 	d.changed(generation)
+	d.preview.constrain()
 	return d.theme(true)
 }
 func (d *Controller) reloadSettings() error {
@@ -241,6 +243,7 @@ func (d *Controller) reloadSettings() error {
 	d.saved, d.effective, d.revision = saved, effective, revision
 	d.persistenceError = ""
 	d.changed(generation)
+	d.preview.constrain()
 	return d.theme(true)
 }
 func (d *Controller) resetSettings(scope string) error {

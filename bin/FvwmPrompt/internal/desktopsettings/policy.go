@@ -20,7 +20,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 3
+const StateVersion = 4
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -105,6 +105,12 @@ var registry = []Setting{
 		Choices:     []string{"follow", "light", "dark"},
 		Group:       "wallpaper",
 		Description: "Wallpaper appearance (follow uses the desktop schedule)"},
+	{Key: "contrast",
+		Type:        "enum",
+		Default:     "normal",
+		Choices:     []string{"normal", "high"},
+		Group:       "appearance",
+		Description: "Normal or high contrast desktop presentation"},
 }
 
 func Registry() map[string]Setting {
@@ -398,31 +404,31 @@ func DecodeState(data []byte) (Values, error) {
 		return Migrate(values), nil
 	}
 	n, ok := integer(version)
-	if !ok || (n != 1 && n != 2 && n != StateVersion) {
+	if !ok || n < 1 || n > StateVersion {
 		return nil, errors.New("Unsupported settings schema; file was preserved")
 	}
 	delete(values, "schema_version")
-	if n < StateVersion {
-		// Historical versions have exact field sets. Validate those sets before
-		// adding defaults; an old version cannot smuggle in newer preferences.
-		expected := 9
-		if n == 1 {
-			expected = 8
-		}
-		if len(values) != expected {
-			return nil, errors.New("Invalid legacy settings fields")
-		}
-		for _, key := range []string{"wallpaper_palette", "wallpaper_appearance"} {
-			if _, exists := values[key]; exists {
+	// Validate the historical field count before supplying only the defaults
+	// absent in that schema. Checked then rejects unknown, missing or bad fields.
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12}[n]
+	if len(values) != expected {
+		return nil, errors.New("Invalid settings fields")
+	}
+	for _, field := range []struct {
+		key     string
+		version int
+		value   any
+	}{
+		{"launcher_opacity", 2, 94},
+		{"wallpaper_palette", 3, "follow"},
+		{"wallpaper_appearance", 3, "follow"},
+		{"contrast", 4, "normal"},
+	} {
+		if n < field.version {
+			if _, exists := values[field.key]; exists {
 				return nil, errors.New("Invalid legacy settings fields")
 			}
-			values[key] = "follow"
-		}
-		if n == 1 {
-			if _, exists := values["launcher_opacity"]; exists {
-				return nil, errors.New("Invalid legacy settings fields")
-			}
-			values["launcher_opacity"] = 94
+			values[field.key] = field.value
 		}
 	}
 	return Checked(values)

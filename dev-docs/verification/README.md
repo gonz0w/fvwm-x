@@ -1,5 +1,9 @@
 # Verification reports
 
+- [High-contrast presentation](VERIFICATION-2026-10-26-HIGH-CONTRAST.md): race/IPC/preview and three native configurations, opaque pixels, existing Form recoloring and scoped captures.
+
+- [PR253→PR264 periodic observation](PERFORMANCE-2026-10-26-PR264.md): preserved five-pair telemetry, overlapping timings and distinct memory aggregates; no whole-session performance claim.
+
 - [Theme composition](VERIFICATION-2026-10-26-THEME-COMPOSITION.md): focused race/IPC/preview and three native configurations, inspected editor/retention captures and explicit enlarged-bar/profile gaps.
 
 - [Named menu icons](VERIFICATION-2026-10-26-NAMED-MENU-ICONS.md): five Go race packages, two native menu consumers, three theme configs and exact pixel scale/refresh/fallback; static costs and remaining ICON-01 acceptance are explicit.

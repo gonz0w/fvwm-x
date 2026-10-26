@@ -124,7 +124,10 @@ stopped. Other owners' evidence, source/build caches and stages are preserved.
 
 ## R1 theme composition and independent wallpaper — 2026-10-26
 
-Owner: Cam; `codex/r1-theme-composition`; THEME-02 #214. Status: implemented and separately reviewed; PR ready.
+Owner: Cam; `codex/r1-theme-composition`; THEME-02 #214. Status: merged in
+PR264 as `c40b27c2c40cfda3eb5f3b6fd6817f8ccf90c9ec`; reviewed tree
+`b0c5c180182a865ba5341b80804eaf6fd7ed2116`, canonical signature and
+author DCO verified. Branch retired; broader #214 remains open.
 [Contract](decisions/THEME-COMPOSITION-2026-10-26.md),
 [focused results and limits](verification/VERIFICATION-2026-10-26-THEME-COMPOSITION.md).
 Three related stories: versioned pure semantic color-role projection preserving
@@ -164,6 +167,56 @@ qualification and the broader theme model remain open. All 97 archive identities
 verify; about 28 MB of guest duplicates are retired and the owned lab is stopped.
 Final separate source/evidence review has no unresolved findings; one stale IPC
 summary count was corrected without changing the passing runtime assertions.
+
+## R1 high-contrast presentation — 2026-10-26
+
+Owner: Cam; `codex/r1-theme-contrast`; THEME-02 #214. Status: implemented and separately reviewed; PR ready.
+[Contract](decisions/HIGH-CONTRAST-PRESENTATION-2026-10-26.md),
+[focused evidence](verification/VERIFICATION-2026-10-26-HIGH-CONTRAST.md).
+Four related outcomes: deterministic high-contrast semantic colors, opaque
+presentation precedence with preserved requests, safe opacity-preview admission
+and recovery, and complete registry/editor/menu/IPC adoption. One `contrast`
+preference (`normal`/`high`, default `normal`) uses the existing appearance group,
+store and transport. Composition version 2 preserves exact normal-mode roles;
+private schema 4 loads exact historical schemas 1–3 without rewriting on read.
+
+High dark/light use black/white surfaces and opposite text/borders. Retain the
+selected accent only at 4.5:1 against the projected surface; otherwise use its
+opposite. Choose black/white selected text by greatest contrast. Publish numeric
+role evidence; this does not close #75 or qualify every control/native state.
+High contrast forces panel/menus opaque while retaining requested transparency
+and launcher opacity. Wallpaper and motion remain independent. Module overrides
+resolve first; presentation constraints then apply. No new assets/dependency,
+resident, toolkit, C protocol or config migration is selected.
+
+Native opacity previews refuse current or drafted high contrast, recheck delayed
+admission/replies and retire existing work before a successfully committed opaque
+theme. Failed preparation/persistence preserves current preview state. Existing
+core lease generations/recovery remain authoritative; scalar opacity confirmation
+must not replay a whole theme. Fonts/density/reflow remain #212/#214 work.
+
+Acceptance: one affected Go/race and native Linux checkpoint for exact normal
+mapping, contrast pairs, schema/refusal/ownership, command ordering/preview races,
+opaque pixels and Form recoloring, settings/reset/reload and independent wallpaper.
+Inspect screenshots in three configurations including enlarged text. Reuse the
+normal incremental cache; no automatic all-OS/install matrix. Run the due preserved
+PR253→PR264 periodic observation separately from feature claims (counter 5/5).
+No parked Backer/pathname work or unrelated R2/R3 audit is included.
+
+Affected native Go/race, IPC, preview and normal-wallpaper gates pass. All three
+contrast configurations pass opaque bar/menu/Form pixels, stable Form identity,
+preview retirement/refusal/lease release and restoration/reload/reset. Eighteen
+captures are retained; new editor/menu content fits at 18pt, with the existing
+fixed-width bar caption clipping still scoped to layout/theme owners. Manuals
+render and all 113 archive identities verify. FvwmDesktop file cost is +7,165 B,
+no new dependency/resident. About 20.7 MB of guest duplicates are retired and
+caches/references preserved; owned lab stopped. The due
+[PR253→PR264 observation](verification/PERFORMANCE-2026-10-26-PR264.md) establishes
+no speed gain; memory aggregates remain distinct. Periodic counter resets to 0/5
+at PR264 and becomes 1/5 on this feature's merge. Broader theme/profile/R1 owners
+remain open; no automatic matrix was repeated.
+Separate final source/evidence review verifies the archive, contrast/performance
+numbers and captures; corrected reference labels leave no unresolved findings.
 
 ## Library evaluation issue scope — 2026-10-25
 
@@ -2675,8 +2728,8 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | GRAPHICS-02 | P2 / Backlog; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). Compare a bounded direct Cairo module prototype with GRAPHICS-01. Existing SVG/Cairo linkage is not proof of a general UI renderer. |
 | LAYOUT-01 | P2 / Backlog; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Deliver the existing native-layout-first direction for panels and collection consumers; preserve configured legacy geometry. |
 | BIND-01 | P2 / Backlog; F1 Shared contracts | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
-| THEME-02 | P2 / Backlog; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
-| ICON-01 | P2 / Backlog; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |
+| THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
+| ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |
 | ICON-02 | P2 / Backlog; F2 Native UI | [#216](https://github.com/gonz0w/fvwm-x/issues/216). Support configurable font icons alongside SVG/application icons using the existing font stack and named icon contract. |
 | RELOAD-01 | P2 / Backlog; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
 | INSPECT-01 | P2 / Backlog; F2 Native UI | [#218](https://github.com/gonz0w/fvwm-x/issues/218). Extend accepted IPC binding/colorset/appearance inspection into a native opt-in configuration authoring tool. |

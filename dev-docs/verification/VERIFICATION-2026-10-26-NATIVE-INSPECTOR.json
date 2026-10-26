@@ -1,0 +1,1498 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "focused native inspector inventory checkpoint",
+  "base_commit": "c540a99c810c02be1df62b7d4b22cf9dec929519",
+  "issues": [
+    218,
+    61,
+    70
+  ],
+  "final_inputs": {
+    "bin/FvwmPrompt/FvwmPrompt.go": "ab251f45f0cd76bf6f3882eb590377749e9a66be9f32c23c87cf29ce6a232acd",
+    "bin/FvwmPrompt/internal/desktopcheck/check.go": "2493233976c8a47e2398358b815313e1f190a6009a8eb0f135ce8994becd4abd",
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "6e2e02ad505bfaec528748b053f99e91de32c7ed94a7f7543c9fbb68e9a9173a",
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8fdd60111bd744e46b1f8ab401cedb09540814b5b6f077da57acc639909de4c4",
+    "bin/FvwmPrompt/internal/desktopcontroller/services.go": "7ed25ee95674e0cef90d05d8110f2557fcc24087ed9f764c6fefac598e7cc956",
+    "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "a66acb80e5e323566224800028b4b6618b2bbca48c1d16cda0b745db89fbdfdd",
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go": "2b68d0ab8ce57ac4720eb9b440e5bdd51e09eedc1e84f69ba6672775f99bbb33",
+    "bin/FvwmPrompt/internal/desktopworker/worker.go": "f3385b21bf7ad043853ae2f0702d6603eafc9e843f3e43b48449e15eed399355",
+    "bin/FvwmPrompt/meson.build": "5e71032de50b239948cd7f7abcc63f21daa34e28af725339c21187680b849203",
+    "bin/FvwmPrompt/transport/request.go": "c1dfc9317ac00497949890ff762af023d953c2881bf14781e056d5139b5deb16",
+    "bin/FvwmPrompt/transport/request_test.go": "d8e294441c659382eedce102139310b378616244d4f67a0ce8ca2961a618eae0",
+    "modules/FvwmForm/FvwmForm.c": "9546b6b4744d45432dbaa8a757914e92d9993fb751d657aa76c278f4ddb820ca",
+    "modules/FvwmForm/FvwmForm.h": "b2068157e0f10795717e739adc9745925c3f9482f9e2a45d0da2f82189f36d08",
+    "modules/FvwmForm/ReadXServer.c": "51ac1a3ecfd3d5033032e2beec628fcee6acc2e6485548b96c398034590a6bc2",
+    "modules/FvwmForm/form_input.c": "b9806eace705f0356cac9513ab9ad39ed5221a6cbbe47c2082f42c6dea097450",
+    "modules/FvwmForm/form_input.h": "e2704dc691bde6794949d801f54f4b8188fde9c1bf78c764030627138022edcb",
+    "tests/meson.build": "cf3b0ba1c1d8348d2d5d1c57c10b2db514ad240633c97f0c745407016b7d3713",
+    "tests/test_form_input.c": "eae68fb2fcacfe9a40a84daa2926dfc4ea8fd7442ab085dde2a3584550183be9",
+    "bin/FvwmPrompt/internal/commandmeta/catalog.go": "bcfe73faca599454da74ed0a39542288ff8ae6e16d63aa1fbeab9ca5393ee13f",
+    "bin/FvwmPrompt/internal/commandmeta/catalog_test.go": "262cf07b6fe0bf81115963a2e524b875a52610c9c1f14b309b17f1827d6dbed9",
+    "bin/FvwmPrompt/internal/commandmeta/commands.json": "89db86431147bbb712872fd330254add6530baa58e23f9fc02bc1d99016f2f45",
+    "bin/FvwmPrompt/internal/desktopcheck/observe.go": "a0ae32409fa05e17ce024e06eaa5dcddfc0dfd9f1991928525c9c3b9793f7658",
+    "bin/FvwmPrompt/internal/desktopcheck/observe_test.go": "a22aeb68c83ca52368b0016670f47a2de8607b8f6d87db9b922e29893e2a4679",
+    "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "ae262a8f4502cc2a1c27eff5b6f8751b85ea158cff9e46b3fb6048c9f35db431",
+    "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "823fd5a30b5f6d984f016b99e66a03132fb56c7c6b366cc02ff42b0852ba52d8",
+    "bin/FvwmPrompt/internal/desktopinspect/collect.go": "16f5a6f8291e3346207588a6898a9c76356a422ae1353632ae10b69e4df35984",
+    "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "a5e2e007a4bcf84a1690d797feb846078b29664c35bcfae5283ae1b3249d2fb6",
+    "bin/FvwmPrompt/internal/desktopinspect/domains.go": "ce49211c8e09bbdf37a981059c3a9adc0334280043f1d40079a86f2b9b388950",
+    "bin/FvwmPrompt/internal/desktopinspect/model.go": "345552bd6834220d6bfe8a7d26563c2697809c8858e30d4334f67fa157f17863",
+    "bin/FvwmPrompt/internal/desktopinspect/model_test.go": "4c96bbbcac7be36f5741b459c6c211660c6e3aa65aa2e457d3d472a5e8bc3017",
+    "bin/FvwmPrompt/internal/desktopworker/inspect_test.go": "92e0ec201421275f74da0db6f0a7d0f471bf9db378c9685c9a57a2d6ab690a6c",
+    "bin/FvwmPrompt/transport/query_test.go": "35fbfacae08f49fcd8cc9942e5750ec568e9414081e0cebdbfaba3fc07c20693",
+    "tests/live_x/inspector_live.py": "145ca7565aecb873d17e8e5ebb6708c5da536e58e76e9c8e2edd4775dd2d764a",
+    "tests/test_command_catalog.py": "1a37700a141c864e270dde36e5b97237db14a2cd24ea1d641ac688f556488378"
+  },
+  "pre_focus_inputs": {
+    "bin/FvwmPrompt/FvwmPrompt.go": "ab251f45f0cd76bf6f3882eb590377749e9a66be9f32c23c87cf29ce6a232acd",
+    "bin/FvwmPrompt/internal/desktopcheck/check.go": "2493233976c8a47e2398358b815313e1f190a6009a8eb0f135ce8994becd4abd",
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "129e9eacdbc93e3d681a657d91397c07d1df3deb193adc3d91ec0510d5fa2491",
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8fdd60111bd744e46b1f8ab401cedb09540814b5b6f077da57acc639909de4c4",
+    "bin/FvwmPrompt/internal/desktopcontroller/services.go": "7ed25ee95674e0cef90d05d8110f2557fcc24087ed9f764c6fefac598e7cc956",
+    "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "a66acb80e5e323566224800028b4b6618b2bbca48c1d16cda0b745db89fbdfdd",
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go": "2b68d0ab8ce57ac4720eb9b440e5bdd51e09eedc1e84f69ba6672775f99bbb33",
+    "bin/FvwmPrompt/internal/desktopworker/worker.go": "f3385b21bf7ad043853ae2f0702d6603eafc9e843f3e43b48449e15eed399355",
+    "bin/FvwmPrompt/meson.build": "5e71032de50b239948cd7f7abcc63f21daa34e28af725339c21187680b849203",
+    "bin/FvwmPrompt/transport/request.go": "c1dfc9317ac00497949890ff762af023d953c2881bf14781e056d5139b5deb16",
+    "bin/FvwmPrompt/transport/request_test.go": "d8e294441c659382eedce102139310b378616244d4f67a0ce8ca2961a618eae0",
+    "modules/FvwmForm/FvwmForm.c": "9546b6b4744d45432dbaa8a757914e92d9993fb751d657aa76c278f4ddb820ca",
+    "modules/FvwmForm/FvwmForm.h": "b2068157e0f10795717e739adc9745925c3f9482f9e2a45d0da2f82189f36d08",
+    "modules/FvwmForm/ReadXServer.c": "51ac1a3ecfd3d5033032e2beec628fcee6acc2e6485548b96c398034590a6bc2",
+    "modules/FvwmForm/form_input.c": "b9806eace705f0356cac9513ab9ad39ed5221a6cbbe47c2082f42c6dea097450",
+    "modules/FvwmForm/form_input.h": "e2704dc691bde6794949d801f54f4b8188fde9c1bf78c764030627138022edcb",
+    "tests/meson.build": "cf3b0ba1c1d8348d2d5d1c57c10b2db514ad240633c97f0c745407016b7d3713",
+    "tests/test_form_input.c": "eae68fb2fcacfe9a40a84daa2926dfc4ea8fd7442ab085dde2a3584550183be9",
+    "bin/FvwmPrompt/internal/commandmeta/catalog.go": "bcfe73faca599454da74ed0a39542288ff8ae6e16d63aa1fbeab9ca5393ee13f",
+    "bin/FvwmPrompt/internal/commandmeta/catalog_test.go": "262cf07b6fe0bf81115963a2e524b875a52610c9c1f14b309b17f1827d6dbed9",
+    "bin/FvwmPrompt/internal/commandmeta/commands.json": "89db86431147bbb712872fd330254add6530baa58e23f9fc02bc1d99016f2f45",
+    "bin/FvwmPrompt/internal/desktopcheck/observe.go": "a0ae32409fa05e17ce024e06eaa5dcddfc0dfd9f1991928525c9c3b9793f7658",
+    "bin/FvwmPrompt/internal/desktopcheck/observe_test.go": "a22aeb68c83ca52368b0016670f47a2de8607b8f6d87db9b922e29893e2a4679",
+    "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "a91c158ee4e54150bab4008f4b9bc3dec55fab7e80fcc99cdba0257b3d1a51ef",
+    "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "46b88aad8429fd0a0c2b0ce65b480f2d17969162609ecdcddb403524606b041d",
+    "bin/FvwmPrompt/internal/desktopinspect/collect.go": "16f5a6f8291e3346207588a6898a9c76356a422ae1353632ae10b69e4df35984",
+    "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "a5e2e007a4bcf84a1690d797feb846078b29664c35bcfae5283ae1b3249d2fb6",
+    "bin/FvwmPrompt/internal/desktopinspect/domains.go": "ce49211c8e09bbdf37a981059c3a9adc0334280043f1d40079a86f2b9b388950",
+    "bin/FvwmPrompt/internal/desktopinspect/model.go": "345552bd6834220d6bfe8a7d26563c2697809c8858e30d4334f67fa157f17863",
+    "bin/FvwmPrompt/internal/desktopinspect/model_test.go": "4c96bbbcac7be36f5741b459c6c211660c6e3aa65aa2e457d3d472a5e8bc3017",
+    "bin/FvwmPrompt/internal/desktopworker/inspect_test.go": "92e0ec201421275f74da0db6f0a7d0f471bf9db378c9685c9a57a2d6ab690a6c",
+    "bin/FvwmPrompt/transport/query_test.go": "35fbfacae08f49fcd8cc9942e5750ec568e9414081e0cebdbfaba3fc07c20693",
+    "tests/live_x/inspector_live.py": "c8d447967aa6d7d4f056ca8d26137c1b619883716f42820046d2e793bab38ae8",
+    "tests/test_command_catalog.py": "1a37700a141c864e270dde36e5b97237db14a2cd24ea1d641ac688f556488378"
+  },
+  "initial_inputs": {
+    "bin/FvwmPrompt/FvwmPrompt.go": "ab251f45f0cd76bf6f3882eb590377749e9a66be9f32c23c87cf29ce6a232acd",
+    "bin/FvwmPrompt/internal/desktopcheck/check.go": "2493233976c8a47e2398358b815313e1f190a6009a8eb0f135ce8994becd4abd",
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "129e9eacdbc93e3d681a657d91397c07d1df3deb193adc3d91ec0510d5fa2491",
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8fdd60111bd744e46b1f8ab401cedb09540814b5b6f077da57acc639909de4c4",
+    "bin/FvwmPrompt/internal/desktopcontroller/services.go": "7ed25ee95674e0cef90d05d8110f2557fcc24087ed9f764c6fefac598e7cc956",
+    "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "a66acb80e5e323566224800028b4b6618b2bbca48c1d16cda0b745db89fbdfdd",
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go": "2b68d0ab8ce57ac4720eb9b440e5bdd51e09eedc1e84f69ba6672775f99bbb33",
+    "bin/FvwmPrompt/internal/desktopworker/worker.go": "f3385b21bf7ad043853ae2f0702d6603eafc9e843f3e43b48449e15eed399355",
+    "bin/FvwmPrompt/meson.build": "5e71032de50b239948cd7f7abcc63f21daa34e28af725339c21187680b849203",
+    "bin/FvwmPrompt/transport/request.go": "c1dfc9317ac00497949890ff762af023d953c2881bf14781e056d5139b5deb16",
+    "bin/FvwmPrompt/transport/request_test.go": "d8e294441c659382eedce102139310b378616244d4f67a0ce8ca2961a618eae0",
+    "modules/FvwmForm/FvwmForm.c": "9546b6b4744d45432dbaa8a757914e92d9993fb751d657aa76c278f4ddb820ca",
+    "modules/FvwmForm/FvwmForm.h": "b2068157e0f10795717e739adc9745925c3f9482f9e2a45d0da2f82189f36d08",
+    "modules/FvwmForm/ReadXServer.c": "51ac1a3ecfd3d5033032e2beec628fcee6acc2e6485548b96c398034590a6bc2",
+    "modules/FvwmForm/form_input.c": "b9806eace705f0356cac9513ab9ad39ed5221a6cbbe47c2082f42c6dea097450",
+    "modules/FvwmForm/form_input.h": "e2704dc691bde6794949d801f54f4b8188fde9c1bf78c764030627138022edcb",
+    "tests/meson.build": "cf3b0ba1c1d8348d2d5d1c57c10b2db514ad240633c97f0c745407016b7d3713",
+    "tests/test_form_input.c": "eae68fb2fcacfe9a40a84daa2926dfc4ea8fd7442ab085dde2a3584550183be9",
+    "bin/FvwmPrompt/internal/commandmeta/catalog.go": "bcfe73faca599454da74ed0a39542288ff8ae6e16d63aa1fbeab9ca5393ee13f",
+    "bin/FvwmPrompt/internal/commandmeta/catalog_test.go": "262cf07b6fe0bf81115963a2e524b875a52610c9c1f14b309b17f1827d6dbed9",
+    "bin/FvwmPrompt/internal/commandmeta/commands.json": "89db86431147bbb712872fd330254add6530baa58e23f9fc02bc1d99016f2f45",
+    "bin/FvwmPrompt/internal/desktopcheck/observe.go": "a0ae32409fa05e17ce024e06eaa5dcddfc0dfd9f1991928525c9c3b9793f7658",
+    "bin/FvwmPrompt/internal/desktopcheck/observe_test.go": "a22aeb68c83ca52368b0016670f47a2de8607b8f6d87db9b922e29893e2a4679",
+    "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "a91c158ee4e54150bab4008f4b9bc3dec55fab7e80fcc99cdba0257b3d1a51ef",
+    "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "46b88aad8429fd0a0c2b0ce65b480f2d17969162609ecdcddb403524606b041d",
+    "bin/FvwmPrompt/internal/desktopinspect/collect.go": "16f5a6f8291e3346207588a6898a9c76356a422ae1353632ae10b69e4df35984",
+    "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "a5e2e007a4bcf84a1690d797feb846078b29664c35bcfae5283ae1b3249d2fb6",
+    "bin/FvwmPrompt/internal/desktopinspect/domains.go": "ce49211c8e09bbdf37a981059c3a9adc0334280043f1d40079a86f2b9b388950",
+    "bin/FvwmPrompt/internal/desktopinspect/model.go": "345552bd6834220d6bfe8a7d26563c2697809c8858e30d4334f67fa157f17863",
+    "bin/FvwmPrompt/internal/desktopinspect/model_test.go": "4c96bbbcac7be36f5741b459c6c211660c6e3aa65aa2e457d3d472a5e8bc3017",
+    "bin/FvwmPrompt/internal/desktopworker/inspect_test.go": "92e0ec201421275f74da0db6f0a7d0f471bf9db378c9685c9a57a2d6ab690a6c",
+    "bin/FvwmPrompt/transport/query_test.go": "35fbfacae08f49fcd8cc9942e5750ec568e9414081e0cebdbfaba3fc07c20693",
+    "tests/live_x/inspector_live.py": "ac39781e4148e264f799d9ba1b5c2755324e8b0adc8fa87a07481deac004cffb",
+    "tests/test_command_catalog.py": "1a37700a141c864e270dde36e5b97237db14a2cd24ea1d641ac688f556488378"
+  },
+  "commands": [
+    {
+      "name": "configure",
+      "argv": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "status": 0,
+      "seconds": 1.1439632600000778
+    },
+    {
+      "name": "build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "modules/FvwmForm/FvwmForm",
+        "bin/FvwmPrompt/FvwmDesktop",
+        "bin/FvwmPrompt/fvwm-desktop-worker",
+        "bin/FvwmPrompt/FvwmPrompt",
+        "tests/test-form-input"
+      ],
+      "status": 0,
+      "seconds": 1.0524497669999846
+    },
+    {
+      "name": "go-race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./transport",
+        "./internal/commandmeta",
+        "./internal/desktopcheck",
+        "./internal/desktopinspect",
+        "./internal/desktopworker",
+        "./internal/desktopcontroller",
+        "."
+      ],
+      "status": 0,
+      "seconds": 6.0730493480000405
+    },
+    {
+      "name": "form-input",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-form-input"
+      ],
+      "status": 0,
+      "seconds": 0.0019521259999919494
+    },
+    {
+      "name": "command-catalog",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/test_command_catalog.py"
+      ],
+      "status": 0,
+      "seconds": 0.06952027599993471
+    },
+    {
+      "name": "asan-form-build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "-j2",
+        "tests/test-form-input"
+      ],
+      "status": 0,
+      "seconds": 1.2361421690000043
+    },
+    {
+      "name": "asan-form-input",
+      "argv": [
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-form-input"
+      ],
+      "status": 0,
+      "seconds": 0.007908585999985007
+    },
+    {
+      "name": "inspector-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/inspector_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-inspector-20261026/inspector-x"
+      ],
+      "status": 1,
+      "seconds": 10.530723050999995
+    },
+    {
+      "name": "inspector-x-corrected",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/inspector_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-inspector-20261026/inspector-x-corrected"
+      ],
+      "status": 1,
+      "seconds": 1.9118021470001167
+    },
+    {
+      "name": "focus-build",
+      "argv": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "-j2",
+        "bin/FvwmPrompt/FvwmDesktop"
+      ],
+      "status": 0,
+      "seconds": 0.2661792730000343
+    },
+    {
+      "name": "focus-controller-race",
+      "argv": [
+        "go",
+        "test",
+        "-race",
+        "-count=1",
+        "./internal/desktopcontroller"
+      ],
+      "status": 0,
+      "seconds": 3.07170611499987
+    },
+    {
+      "name": "inspector-x-focus",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/inspector_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-inspector-20261026/inspector-x-focus"
+      ],
+      "status": 0,
+      "seconds": 27.883184462999907
+    },
+    {
+      "name": "form-input-x",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--input-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/tmp/fvwm-r1-inspector-20261026/form-input-x"
+      ],
+      "status": 0,
+      "seconds": 2.213523806000012
+    },
+    {
+      "name": "prompt-client",
+      "argv": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/test_prompt_client.py",
+        "--prompt",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmPrompt"
+      ],
+      "status": 0,
+      "seconds": 0.03209155200011082
+    }
+  ],
+  "archive": {
+    "sha256": "4b8d779733f5b9b2f87a5a13cc1b2e7c8bbc14dcb4f5c2927a093ab719af8ecb",
+    "bytes": 1145970,
+    "files": 944,
+    "verified_files": 944,
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/native-evidence.tgz"
+  },
+  "binary_costs": {
+    "modules/FvwmForm/FvwmForm": {
+      "before_bytes": 1619032,
+      "after_bytes": 1627040,
+      "delta_bytes": 8008,
+      "before": {
+        "sha256": "f45ceaf14b6650930a2fb2458cd6eae0346f385898ac1a2abe17c87dbf602361",
+        "bytes": 1619032,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 396381\t  14680\t  14048\t 425109\t  67c95\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n"
+      },
+      "after": {
+        "sha256": "ae4217338002a5812dd6875e385b54546c3c2959cb3caf9183238f52887ef2c6",
+        "bytes": 1627040,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 403477\t  14744\t  14048\t 432269\t  6988d\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffb6c16000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffb6a90000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffffb6930000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffffb68f0000)\n\tlibpng16.so.16 => /tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16 (0x0000ffffb6890000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffffb6860000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffffb6830000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffffb6800000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffffb67d0000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffffb6760000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffffb6720000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffffb66e0000)\n\tlibevent-2.1.so.7 => /lib/aarch64-linux-gnu/libevent-2.1.so.7 (0x0000ffffb6660000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb64a0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffb6bd0000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffffb6450000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffffb6410000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffffb63e0000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffffb62f0000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffffb62a0000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffffb6270000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffffb6240000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffffb6210000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffffb61e0000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffffb61a0000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffffb6160000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffffb6130000)\n",
+          "stderr": ""
+        }
+      }
+    },
+    "bin/FvwmPrompt/FvwmDesktop": {
+      "before_bytes": 5300364,
+      "after_bytes": 5557105,
+      "delta_bytes": 256741,
+      "before": {
+        "sha256": "9fac5c8e2de295581c298507fae42a1db805ab0f98a4205064dabbe42723e829",
+        "bytes": 5300364,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3305275\t 139267\t33804616\t37249158\t2386086\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop\n"
+      },
+      "after": {
+        "sha256": "ffed5854ca95854d4ddb42caaec6f00ce09c8c624184e9ed48f5eee7d06407b6",
+        "bytes": 5557105,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3438081\t 140811\t33805144\t37384036\t23a6f64\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffb2eec000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb2cf0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffb2eb0000)\n",
+          "stderr": ""
+        }
+      }
+    },
+    "bin/FvwmPrompt/fvwm-desktop-worker": {
+      "before_bytes": 4947539,
+      "after_bytes": 5810081,
+      "delta_bytes": 862542,
+      "before": {
+        "sha256": "939e3f08919cb8921064e75a2eed8179e2616ae26fd6d23000b6ca0c2122d4eb",
+        "bytes": 4947539,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3100772\t 138611\t33804264\t37043647\t2353dbf\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker\n"
+      },
+      "after": {
+        "sha256": "4fc1b84dbc7f26d507290684a91d142febd00da4f527a3a5fa51600afb7ab9ea",
+        "bytes": 5810081,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3695257\t 164467\t33805272\t37664996\t23eb8e4\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffb0589000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb0380000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffb0540000)\n",
+          "stderr": ""
+        }
+      }
+    },
+    "bin/FvwmPrompt/FvwmPrompt": {
+      "before_bytes": 5066806,
+      "after_bytes": 5071777,
+      "delta_bytes": 4971,
+      "before": {
+        "sha256": "7fd3dfe7aaa175b701f20272de195299ed8ef7da2b69b08b75688fcf86ee9ae7",
+        "bytes": 5066806,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3177665\t  95444\t 249272\t3522381\t 35bf4d\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmPrompt\n"
+      },
+      "after": {
+        "sha256": "84bd08e82f6fc7538fe87094e0a2acb3170c89b22e73d1c782ef89ff8b957ca9",
+        "bytes": 5071777,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3190605\t 118987\t 249304\t3558896\t 364df0\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmPrompt\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffff8eacc000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff8e8d0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffff8ea90000)\n",
+          "stderr": ""
+        }
+      }
+    }
+  },
+  "provenance": {
+    "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+    "machine": "aarch64",
+    "toolchain": {
+      "gcc --version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "go version": "go version go1.27.2 linux/arm64\n",
+      "meson --version": "1.7.0\n"
+    },
+    "build_options": [
+      {
+        "name": "build.cmake_prefix_path",
+        "value": [],
+        "section": "core",
+        "machine": "build",
+        "type": "array",
+        "description": "List of additional prefixes for cmake to search"
+      },
+      {
+        "name": "build.pkg_config_path",
+        "value": [
+          "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+        ],
+        "section": "core",
+        "machine": "build",
+        "type": "array",
+        "description": "List of additional paths for pkg-config to search"
+      },
+      {
+        "name": "auto_features",
+        "value": "auto",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Override value of all 'auto' features"
+      },
+      {
+        "name": "backend",
+        "value": "ninja",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "ninja",
+          "vs",
+          "vs2010",
+          "vs2012",
+          "vs2013",
+          "vs2015",
+          "vs2017",
+          "vs2019",
+          "vs2022",
+          "xcode",
+          "none"
+        ],
+        "type": "combo",
+        "description": "Backend to use"
+      },
+      {
+        "name": "buildtype",
+        "value": "debugoptimized",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "plain",
+          "debug",
+          "debugoptimized",
+          "release",
+          "minsize",
+          "custom"
+        ],
+        "type": "combo",
+        "description": "Build type to use"
+      },
+      {
+        "name": "cmake_prefix_path",
+        "value": [],
+        "section": "core",
+        "machine": "host",
+        "type": "array",
+        "description": "List of additional prefixes for cmake to search"
+      },
+      {
+        "name": "debug",
+        "value": true,
+        "section": "core",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Enable debug symbols and other information"
+      },
+      {
+        "name": "default_both_libraries",
+        "value": "shared",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "shared",
+          "static",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Default library type for both_libraries"
+      },
+      {
+        "name": "default_library",
+        "value": "shared",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "shared",
+          "static",
+          "both"
+        ],
+        "type": "combo",
+        "description": "Default library type"
+      },
+      {
+        "name": "force_fallback_for",
+        "value": [],
+        "section": "core",
+        "machine": "any",
+        "type": "array",
+        "description": "Force fallback for those subprojects"
+      },
+      {
+        "name": "genvslite",
+        "value": "vs2022",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "vs2022"
+        ],
+        "type": "combo",
+        "description": "Setup multiple buildtype-suffixed ninja-backend build directories, and a [builddir]_vs containing a Visual Studio meta-backend with multiple configurations that calls into them"
+      },
+      {
+        "name": "install_umask",
+        "value": 18,
+        "section": "core",
+        "machine": "any",
+        "type": "integer",
+        "description": "Default umask to apply on permissions of installed files"
+      },
+      {
+        "name": "layout",
+        "value": "mirror",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "mirror",
+          "flat"
+        ],
+        "type": "combo",
+        "description": "Build directory layout"
+      },
+      {
+        "name": "optimization",
+        "value": "2",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "plain",
+          "0",
+          "g",
+          "1",
+          "2",
+          "3",
+          "s"
+        ],
+        "type": "combo",
+        "description": "Optimization level"
+      },
+      {
+        "name": "pkg_config_path",
+        "value": [
+          "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig"
+        ],
+        "section": "core",
+        "machine": "host",
+        "type": "array",
+        "description": "List of additional paths for pkg-config to search"
+      },
+      {
+        "name": "pkgconfig.relocatable",
+        "value": false,
+        "section": "core",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Generate pkgconfig files as relocatable"
+      },
+      {
+        "name": "prefer_static",
+        "value": false,
+        "section": "core",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Whether to try static linking before shared linking"
+      },
+      {
+        "name": "python.allow_limited_api",
+        "value": true,
+        "section": "core",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Whether to allow use of the Python Limited API"
+      },
+      {
+        "name": "python.bytecompile",
+        "value": 0,
+        "section": "core",
+        "machine": "any",
+        "type": "integer",
+        "description": "Whether to compile bytecode"
+      },
+      {
+        "name": "python.install_env",
+        "value": "prefix",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "auto",
+          "prefix",
+          "system",
+          "venv"
+        ],
+        "type": "combo",
+        "description": "Which python environment to install to"
+      },
+      {
+        "name": "python.platlibdir",
+        "value": "",
+        "section": "core",
+        "machine": "any",
+        "type": "string",
+        "description": "Directory for site-specific, platform-specific files."
+      },
+      {
+        "name": "python.purelibdir",
+        "value": "",
+        "section": "core",
+        "machine": "any",
+        "type": "string",
+        "description": "Directory for site-specific, non-platform-specific files."
+      },
+      {
+        "name": "strip",
+        "value": false,
+        "section": "core",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Strip targets on install"
+      },
+      {
+        "name": "unity",
+        "value": "off",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "on",
+          "off",
+          "subprojects"
+        ],
+        "type": "combo",
+        "description": "Unity build"
+      },
+      {
+        "name": "unity_size",
+        "value": 4,
+        "section": "core",
+        "machine": "any",
+        "type": "integer",
+        "description": "Unity block size"
+      },
+      {
+        "name": "vsenv",
+        "value": false,
+        "section": "core",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Activate Visual Studio environment"
+      },
+      {
+        "name": "warning_level",
+        "value": "2",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "everything"
+        ],
+        "type": "combo",
+        "description": "Compiler warning level to use"
+      },
+      {
+        "name": "werror",
+        "value": false,
+        "section": "core",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Treat warnings as errors"
+      },
+      {
+        "name": "wrap_mode",
+        "value": "default",
+        "section": "core",
+        "machine": "any",
+        "choices": [
+          "default",
+          "nofallback",
+          "nodownload",
+          "forcefallback",
+          "nopromote"
+        ],
+        "type": "combo",
+        "description": "Wrap mode"
+      },
+      {
+        "name": "backend_max_links",
+        "value": 0,
+        "section": "backend",
+        "machine": "any",
+        "type": "integer",
+        "description": "Maximum number of linker processes to run or 0 for no limit"
+      },
+      {
+        "name": "b_asneeded",
+        "value": true,
+        "section": "base",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Use -Wl,--as-needed when linking"
+      },
+      {
+        "name": "b_colorout",
+        "value": "always",
+        "section": "base",
+        "machine": "any",
+        "choices": [
+          "auto",
+          "always",
+          "never"
+        ],
+        "type": "combo",
+        "description": "Use colored output"
+      },
+      {
+        "name": "b_coverage",
+        "value": false,
+        "section": "base",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Enable coverage tracking."
+      },
+      {
+        "name": "b_lto",
+        "value": false,
+        "section": "base",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Use link time optimization"
+      },
+      {
+        "name": "b_lto_threads",
+        "value": 0,
+        "section": "base",
+        "machine": "any",
+        "type": "integer",
+        "description": "Use multiple threads for Link Time Optimization"
+      },
+      {
+        "name": "b_lundef",
+        "value": true,
+        "section": "base",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Use -Wl,--no-undefined when linking"
+      },
+      {
+        "name": "b_ndebug",
+        "value": "false",
+        "section": "base",
+        "machine": "any",
+        "choices": [
+          "true",
+          "false",
+          "if-release"
+        ],
+        "type": "combo",
+        "description": "Disable asserts"
+      },
+      {
+        "name": "b_pch",
+        "value": true,
+        "section": "base",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Use precompiled headers"
+      },
+      {
+        "name": "b_pgo",
+        "value": "off",
+        "section": "base",
+        "machine": "any",
+        "choices": [
+          "off",
+          "generate",
+          "use"
+        ],
+        "type": "combo",
+        "description": "Use profile guided optimization"
+      },
+      {
+        "name": "b_pie",
+        "value": true,
+        "section": "base",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Build executables as position independent"
+      },
+      {
+        "name": "b_sanitize",
+        "value": "none",
+        "section": "base",
+        "machine": "any",
+        "choices": [
+          "none",
+          "address",
+          "thread",
+          "undefined",
+          "memory",
+          "leak",
+          "address,undefined"
+        ],
+        "type": "combo",
+        "description": "Code sanitizer to use"
+      },
+      {
+        "name": "b_staticpic",
+        "value": true,
+        "section": "base",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Build static libraries as position independent"
+      },
+      {
+        "name": "build.c_args",
+        "value": [],
+        "section": "compiler",
+        "machine": "build",
+        "type": "array",
+        "description": "Extra arguments passed to the c compiler"
+      },
+      {
+        "name": "build.c_link_args",
+        "value": [],
+        "section": "compiler",
+        "machine": "build",
+        "type": "array",
+        "description": "Extra arguments passed to the c linker"
+      },
+      {
+        "name": "build.c_std",
+        "value": "c11",
+        "section": "compiler",
+        "machine": "build",
+        "choices": [
+          "none",
+          "c89",
+          "c99",
+          "c11",
+          "c17",
+          "c18",
+          "c2x",
+          "gnu89",
+          "gnu99",
+          "gnu11",
+          "gnu17",
+          "gnu18",
+          "gnu2x"
+        ],
+        "type": "combo",
+        "description": "C language standard to use"
+      },
+      {
+        "name": "c_args",
+        "value": [],
+        "section": "compiler",
+        "machine": "host",
+        "type": "array",
+        "description": "Extra arguments passed to the c compiler"
+      },
+      {
+        "name": "c_link_args",
+        "value": [],
+        "section": "compiler",
+        "machine": "host",
+        "type": "array",
+        "description": "Extra arguments passed to the c linker"
+      },
+      {
+        "name": "c_std",
+        "value": "c11",
+        "section": "compiler",
+        "machine": "host",
+        "choices": [
+          "none",
+          "c89",
+          "c99",
+          "c11",
+          "c17",
+          "c18",
+          "c2x",
+          "gnu89",
+          "gnu99",
+          "gnu11",
+          "gnu17",
+          "gnu18",
+          "gnu2x"
+        ],
+        "type": "combo",
+        "description": "C language standard to use"
+      },
+      {
+        "name": "bindir",
+        "value": "bin",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Executable directory"
+      },
+      {
+        "name": "datadir",
+        "value": "share",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Data file directory"
+      },
+      {
+        "name": "includedir",
+        "value": "include",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Header file directory"
+      },
+      {
+        "name": "infodir",
+        "value": "share/info",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Info page directory"
+      },
+      {
+        "name": "libdir",
+        "value": "lib/aarch64-linux-gnu",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Library directory"
+      },
+      {
+        "name": "libexecdir",
+        "value": "libexec",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Library executable directory"
+      },
+      {
+        "name": "licensedir",
+        "value": "",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Licenses directory"
+      },
+      {
+        "name": "localedir",
+        "value": "share/locale",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Locale data directory"
+      },
+      {
+        "name": "localstatedir",
+        "value": "/var/local",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Localstate data directory"
+      },
+      {
+        "name": "mandir",
+        "value": "share/man",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Manual page directory"
+      },
+      {
+        "name": "prefix",
+        "value": "/usr/local",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Installation prefix"
+      },
+      {
+        "name": "sbindir",
+        "value": "sbin",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "System executable directory"
+      },
+      {
+        "name": "sharedstatedir",
+        "value": "/var/local/lib",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Architecture-independent data directory"
+      },
+      {
+        "name": "sysconfdir",
+        "value": "etc",
+        "section": "directory",
+        "machine": "any",
+        "type": "string",
+        "description": "Sysconf data directory"
+      },
+      {
+        "name": "bidi",
+        "value": "auto",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable fribidi support"
+      },
+      {
+        "name": "colorset-limit",
+        "value": 4096,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Maximum distinct colorsets per core/module process, including default zero"
+      },
+      {
+        "name": "docdir",
+        "value": "",
+        "section": "user",
+        "machine": "any",
+        "type": "string",
+        "description": "Directory to install documentation"
+      },
+      {
+        "name": "font-shadow-limit",
+        "value": 4096,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Maximum shadow positions per text draw, excluding foreground"
+      },
+      {
+        "name": "freetype",
+        "value": "auto",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable freetype support"
+      },
+      {
+        "name": "htmldoc",
+        "value": false,
+        "section": "user",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Enable generation of HTML man pages"
+      },
+      {
+        "name": "iconv",
+        "value": "auto",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable iconv support"
+      },
+      {
+        "name": "image-decompress-timeout",
+        "value": 5,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Overall compressed XPM decompression deadline in seconds"
+      },
+      {
+        "name": "image-effect-memory-limit",
+        "value": 1024,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Software effect worker address/data allocation limit in MiB"
+      },
+      {
+        "name": "image-effect-timeout",
+        "value": 5,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Isolated software colorset effect deadline in seconds"
+      },
+      {
+        "name": "image-gzip",
+        "value": "",
+        "section": "user",
+        "machine": "any",
+        "type": "string",
+        "description": "Trusted gzip-compatible executable; empty resolves gzip at configure time"
+      },
+      {
+        "name": "image-input-limit",
+        "value": 128,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Maximum regular-file image source bytes in MiB"
+      },
+      {
+        "name": "image-svg-memory-limit",
+        "value": 1024,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "SVG worker address/data allocation limit in MiB"
+      },
+      {
+        "name": "image-svg-timeout",
+        "value": 5,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Overall isolated SVG decoder deadline in seconds"
+      },
+      {
+        "name": "image-xpm-expanded-limit",
+        "value": 128,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Maximum expanded compressed XPM bytes in MiB"
+      },
+      {
+        "name": "live-x-tests",
+        "value": true,
+        "section": "user",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Build non-installed live-X integration test targets"
+      },
+      {
+        "name": "mandoc",
+        "value": false,
+        "section": "user",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Enable generation of man pages"
+      },
+      {
+        "name": "nls",
+        "value": "auto",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable NLS"
+      },
+      {
+        "name": "pager-max-desks",
+        "value": 4096,
+        "section": "user",
+        "machine": "any",
+        "type": "integer",
+        "description": "Maximum displayed desks per Pager instance"
+      },
+      {
+        "name": "png",
+        "value": "enabled",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable png support"
+      },
+      {
+        "name": "png-security-backport",
+        "value": false,
+        "section": "user",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Assert that an older libpng has verified vendor security backports; not a vulnerability check"
+      },
+      {
+        "name": "python",
+        "value": "",
+        "section": "user",
+        "machine": "any",
+        "type": "string",
+        "description": "Select python implementation"
+      },
+      {
+        "name": "sm",
+        "value": "auto",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable session management support"
+      },
+      {
+        "name": "svg",
+        "value": "enabled",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable svg support"
+      },
+      {
+        "name": "xcursor",
+        "value": "enabled",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable Xcursor support"
+      },
+      {
+        "name": "xfixes",
+        "value": "auto",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable XFixes support"
+      },
+      {
+        "name": "xpm",
+        "value": "auto",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable X PixMap (xpm) support"
+      },
+      {
+        "name": "xrender",
+        "value": "enabled",
+        "section": "user",
+        "machine": "any",
+        "choices": [
+          "enabled",
+          "disabled",
+          "auto"
+        ],
+        "type": "combo",
+        "description": "Enable XRender support"
+      },
+      {
+        "name": "errorlogs",
+        "value": true,
+        "section": "test",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Whether to print the logs from failing tests"
+      },
+      {
+        "name": "stdsplit",
+        "value": true,
+        "section": "test",
+        "machine": "any",
+        "type": "boolean",
+        "description": "Split stdout and stderr in test logs"
+      }
+    ],
+    "config_h_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+    "binaries": {
+      "fvwm3": {
+        "sha256": "52a02998a85777abdaa994c369bcac62555a790c1e62d5dbabe4ef86ef8f1952",
+        "bytes": 5387608,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n1090473\t  27340\t  39824\t1157637\t 11aa05\t/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffff8ee9f000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff8ec70000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffff8ec00000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffff8eaa0000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffff8ea60000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffff8ea30000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffff8e9f0000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffff8e9b0000)\n\tlibpng16.so.16 => /tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16 (0x0000ffff8e950000)\n\tlibSM.so.6 => /lib/aarch64-linux-gnu/libSM.so.6 (0x0000ffff8e920000)\n\tlibICE.so.6 => /lib/aarch64-linux-gnu/libICE.so.6 (0x0000ffff8e8e0000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffff8e8b0000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffff8e880000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffff8e850000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffff8e820000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff8e660000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffff8ee50000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffff8e570000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffff8e520000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffff8e4d0000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffff8e490000)\n\tlibuuid.so.1 => /lib/aarch64-linux-gnu/libuuid.so.1 (0x0000ffff8e460000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffff8e420000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffff8e3f0000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffff8e3c0000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffff8e390000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffff8e360000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffff8e330000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffff8e2f0000)\n",
+          "stderr": ""
+        }
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "sha256": "c2c67060b11d59413402b6fd6ebe3919cd7c38d471ab8eb85039b0ab042878b8",
+        "bytes": 444120,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n  99961\t   2552\t   3736\t 106249\t  19f09\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffa45ca000)\n\tlibevent-2.1.so.7 => /lib/aarch64-linux-gnu/libevent-2.1.so.7 (0x0000ffffa44c0000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffa4300000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffa4580000)\n",
+          "stderr": ""
+        }
+      },
+      "modules/FvwmForm/FvwmForm": {
+        "sha256": "ae4217338002a5812dd6875e385b54546c3c2959cb3caf9183238f52887ef2c6",
+        "bytes": 1627040,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 403477\t  14744\t  14048\t 432269\t  6988d\t/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffb6c16000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffb6a90000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffffb6930000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffffb68f0000)\n\tlibpng16.so.16 => /tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16 (0x0000ffffb6890000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffffb6860000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffffb6830000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffffb6800000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffffb67d0000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffffb6760000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffffb6720000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffffb66e0000)\n\tlibevent-2.1.so.7 => /lib/aarch64-linux-gnu/libevent-2.1.so.7 (0x0000ffffb6660000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb64a0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffb6bd0000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffffb6450000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffffb6410000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffffb63e0000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffffb62f0000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffffb62a0000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffffb6270000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffffb6240000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffffb6210000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffffb61e0000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffffb61a0000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffffb6160000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffffb6130000)\n",
+          "stderr": ""
+        }
+      },
+      "bin/FvwmPrompt/FvwmDesktop": {
+        "sha256": "ffed5854ca95854d4ddb42caaec6f00ce09c8c624184e9ed48f5eee7d06407b6",
+        "bytes": 5557105,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3438081\t 140811\t33805144\t37384036\t23a6f64\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffb2eec000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb2cf0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffb2eb0000)\n",
+          "stderr": ""
+        }
+      },
+      "bin/FvwmPrompt/fvwm-desktop-worker": {
+        "sha256": "4fc1b84dbc7f26d507290684a91d142febd00da4f527a3a5fa51600afb7ab9ea",
+        "bytes": 5810081,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3695257\t 164467\t33805272\t37664996\t23eb8e4\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffffb0589000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb0380000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffb0540000)\n",
+          "stderr": ""
+        }
+      },
+      "bin/FvwmPrompt/FvwmPrompt": {
+        "sha256": "84bd08e82f6fc7538fe87094e0a2acb3170c89b22e73d1c782ef89ff8b957ca9",
+        "bytes": 5071777,
+        "size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n3190605\t 118987\t 249304\t3558896\t 364df0\t/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmPrompt\n",
+        "ldd": {
+          "status": 0,
+          "stdout": "\tlinux-vdso.so.1 (0x0000ffff8eacc000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff8e8d0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffff8ea90000)\n",
+          "stderr": ""
+        }
+      }
+    },
+    "registration": [
+      {
+        "cmd": [
+          "/workspace/meson-env/bin/python3",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/../source/tests/test_command_catalog.py"
+        ],
+        "env": {},
+        "name": "command-catalog-contract",
+        "workdir": null,
+        "timeout": 30,
+        "suite": [
+          "fvwm3"
+        ],
+        "is_parallel": true,
+        "priority": 0,
+        "protocol": "exitcode",
+        "depends": [],
+        "extra_paths": []
+      },
+      {
+        "cmd": [
+          "/workspace/meson-env/bin/python3",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/../source/tests/live_x/inspector_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/live-x-artifacts/inspector"
+        ],
+        "env": {},
+        "name": "desktop-inspector-xvfb",
+        "workdir": null,
+        "timeout": 300,
+        "suite": [
+          "fvwm3:live-x"
+        ],
+        "is_parallel": false,
+        "priority": 0,
+        "protocol": "exitcode",
+        "depends": [
+          "fvwm3@exe",
+          "5a0c99c@@FvwmBacker@exe",
+          "1c3f685@@FvwmEvent@exe",
+          "cc71424@@FvwmForm@exe",
+          "3d451e1@@fvwm-desktop-worker@cus",
+          "51a1f05@@fvwm-desktop-capture@exe",
+          "0e4eca6@@FvwmPager@exe",
+          "3d451e1@@FvwmDesktop@cus",
+          "457184d@@FvwmMFL@exe",
+          "f525844@@FvwmIconMan@exe",
+          "8eebc20@@FvwmButtons@exe"
+        ],
+        "extra_paths": []
+      },
+      {
+        "cmd": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-form-input"
+        ],
+        "env": {},
+        "name": "form-input",
+        "workdir": null,
+        "timeout": 30,
+        "suite": [
+          "fvwm3"
+        ],
+        "is_parallel": true,
+        "priority": 0,
+        "protocol": "exitcode",
+        "depends": [
+          "59830eb@@test-form-input@exe"
+        ],
+        "extra_paths": []
+      }
+    ],
+    "bin/FvwmPrompt/go.mod": "b7ab090a82e84684a6d95b78241823c36214f72034535d69612f46611c0dac31",
+    "bin/FvwmPrompt/go.sum": "2e7ddc025a143b92d14dee5db0a464101cb6f8763638d75c55fa8d7a7ff22a4a",
+    "fvwm/functable.c": "7e790342ecb5393fc29cf869131bbd27e85437d9dea30e7106b0492c13fe5c93",
+    "default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+  },
+  "profiles": [
+    "slate-dark",
+    "dune-light",
+    "classic-large"
+  ],
+  "screenshots": [
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/slate-dark/inspector-settings.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/slate-dark/inspector-theme.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/slate-dark/inspector-layout.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/dune-light/inspector-settings.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/dune-light/inspector-theme.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/dune-light/inspector-layout.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/classic-large/inspector-settings.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/classic-large/inspector-theme.png",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-inspector/raw/inspector-x-focus/classic-large/inspector-layout.png"
+  ],
+  "qualification": "focused Linux ARM64 native execution in Podman VM; not full six-target/install/release acceptance",
+  "review": {
+    "reviewer": "/root/r1_inspector_review",
+    "requested_model": "gpt-6.1-sol",
+    "requested_effort": "high",
+    "effective_runtime_settings": "unverified",
+    "base": "c540a99c810c02be1df62b7d4b22cf9dec929519",
+    "final_map_sha256": "62bfd6080a02634685028268e4a51244375de3ce931dacfc3399ce4c0c7574a3",
+    "result": "no unresolved findings; both initial P2 findings resolved",
+    "scope": "complete working-tree batch; all34 input hashes, archive944 payloads, docs/receipts and three representative captures; no tests/native/network/resource control/edits"
+  },
+  "cleanup": {
+    "verified_files": 944,
+    "removed_bytes": 5605821,
+    "removed_paths": [
+      "/tmp/fvwm-r1-inspector-20261026",
+      "/tmp/fvwm-r1-inspector-20261026.tgz"
+    ],
+    "host_archive_preserved": true,
+    "source_build_cache_and_performance_references_preserved": true,
+    "owned_container_stopped": true,
+    "both_connections_running_containers": 0,
+    "owned_vm_stopped": true
+  }
+}

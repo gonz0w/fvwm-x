@@ -23,6 +23,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
+	"github.com/fvwmorg/FvwmPrompt/internal/desktopinspect"
+	"github.com/fvwmorg/FvwmPrompt/transport"
 )
 
 const RequestLimit = 64 * 1024
@@ -38,6 +40,7 @@ type Request struct {
 	Action      string          `json:"action,omitempty"`
 	Directories []string        `json:"directories,omitempty"`
 	Check       json.RawMessage `json:"check,omitempty"`
+	Inspect     json.RawMessage `json:"inspect,omitempty"`
 	Path        string          `json:"path,omitempty"`
 }
 
@@ -60,7 +63,7 @@ func Decode(data []byte) (Request, error) {
 		return request, errors.New("expected request object")
 	}
 	seen := map[string]bool{}
-	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "check": true, "path": true}
+	allowed := map[string]bool{"version": true, "operation": true, "system": true, "action": true, "directories": true, "check": true, "inspect": true, "path": true}
 	for decoder.More() {
 		token, err = decoder.Token()
 		key, ok := token.(string)
@@ -88,6 +91,9 @@ func Decode(data []byte) (Request, error) {
 	if err = decoder.Decode(&request); err != nil {
 		return request, err
 	}
+	if request.Operation == "inspect" && (len(seen) != 3 || !seen["version"] || !seen["operation"] || !seen["inspect"]) {
+		return request, errors.New("unexpected inspector worker field")
+	}
 	return validateRequest(request)
 }
 
@@ -104,6 +110,17 @@ func validateRequest(request Request) (Request, error) {
 		if len(value) > 4096 || strings.ContainsRune(value, 0) {
 			return request, errors.New("invalid request value")
 		}
+	}
+
+	if request.Operation == "inspect" {
+		if request.System != "" || request.Action != "" || request.Path != "" || len(request.Directories) != 0 || request.Check != nil || request.Inspect == nil {
+			return request, errors.New("invalid inspector request")
+		}
+		_, err := desktopinspect.DecodeRequest(request.Inspect)
+		return request, err
+	}
+	if request.Inspect != nil {
+		return request, errors.New("unexpected inspector payload")
 	}
 
 	if request.System == "" {
@@ -163,10 +180,15 @@ type Environment struct {
 	LookPath func(string) (string, error)
 	Read     func(string) ([]byte, error)
 	Entries  func(string) ([]string, error)
+	Query    func(context.Context, string) (json.RawMessage, error)
 }
 
 func NativeEnvironment() Environment {
-	return Environment{Run: command, LookPath: exec.LookPath, Read: readBounded, Entries: entryNames}
+	endpoint := transport.SocketPath("", os.Getenv, os.Getuid())
+	return Environment{Run: command, LookPath: exec.LookPath, Read: readBounded, Entries: entryNames,
+		Query: func(ctx context.Context, text string) (json.RawMessage, error) {
+			return transport.Query(ctx, endpoint, text)
+		}}
 }
 
 var errOutputLimit = errors.New("desktop command output exceeds limit")
@@ -226,6 +248,9 @@ func Run(ctx context.Context, request Request, env Environment) (any, error) {
 	}
 	var value any
 	switch request.Operation {
+	case "inspect":
+		inspection, _ := desktopinspect.DecodeRequest(request.Inspect)
+		value, err = desktopinspect.Collect(ctx, inspection, env.Query)
 	case "files":
 		value, err = fileMenu(ctx, request.Path)
 	case "check":

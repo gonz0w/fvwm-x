@@ -51,6 +51,11 @@ type Controller struct {
 	ready                                    bool
 	editor                                   *editor
 	preview                                  preview
+	inspection                               *inspection
+	inspectionJob                            *inspectionWork
+	inspectionFocusConfigured                bool
+	lastThemeColors                          map[string]string
+	lastThemeAppearance                      string
 	report                                   *report
 	palettes                                 map[string]map[string]map[string]string
 	lastTheme                                []any
@@ -160,6 +165,7 @@ func (d *Controller) retireEditor() {
 func (d *Controller) changed(generation string) {
 	d.generation = generation
 	d.retireEditor()
+	d.staleInspection("Settings changed; refresh to collect the current generation.")
 	if d.ready {
 		d.announceSettings()
 	}
@@ -178,6 +184,7 @@ func (d *Controller) configure(key, text string) error {
 func (d *Controller) finishConfiguration() error {
 	d.emit("KillModule FvwmForm SlateSettingsForm")
 	d.emit("KillModule FvwmForm SlateConfigCheckForm")
+	d.closeInspection()
 	var err error
 	d.effective, err = desktopsettings.Checked(merged(d.saved, d.overrides))
 	if err != nil {

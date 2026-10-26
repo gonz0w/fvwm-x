@@ -6,6 +6,8 @@
 
 #include "config.h"
 #include "form_input.h"
+#include "libs/defaults.h"
+#include "libs/font_text.h"
 #include "libs/Module.h"
 #include "libs/safemalloc.h"
 #include <ctype.h>
@@ -28,6 +30,74 @@ bool form_append_text(char **owned, const char *tail, size_t limit)
 	free(*owned);
 	*owned = copy;
 	return true;
+}
+
+bool form_set_close_command(char **owned, const char *command)
+{
+	size_t length = strnlen(command, MAX_MODULE_INPUT_TEXT_LEN + 1);
+	const char *text = command;
+	char *copy;
+
+	if (length == 0 || length > MAX_MODULE_INPUT_TEXT_LEN)
+		return false;
+	while (isspace((unsigned char)*text))
+		text++;
+	if (*text == '\0')
+		return false;
+	copy = fxmalloc(length + 1);
+	memcpy(copy, command, length + 1);
+	free(*owned);
+	*owned = copy;
+	return true;
+}
+
+static int form_hex_digit(unsigned char digit)
+{
+	if (digit >= '0' && digit <= '9')
+		return digit - '0';
+	if (digit >= 'a' && digit <= 'f')
+		return digit - 'a' + 10;
+	if (digit >= 'A' && digit <= 'F')
+		return digit - 'A' + 10;
+	return -1;
+}
+
+char *form_decode_hex_text(const char *text)
+{
+	size_t length = strnlen(text, 2 * FORM_HEX_TEXT_MAX + 2);
+	size_t bytes;
+	char *copy;
+
+	if (length == 0 || text[0] != 'x' || length % 2 != 1 ||
+		length > 2 * FORM_HEX_TEXT_MAX + 1)
+		return NULL;
+	bytes = (length - 1) / 2;
+	copy = fxmalloc(bytes + 1);
+	for (size_t i = 0; i < bytes; i++)
+	{
+		int high = form_hex_digit(text[2 * i + 1]);
+		int low = form_hex_digit(text[2 * i + 2]);
+
+		if (high < 0 || low < 0)
+			goto invalid;
+		copy[i] = (char)((high << 4) | low);
+	}
+	copy[bytes] = '\0';
+	for (size_t i = 0; i < bytes;)
+	{
+		uint32_t scalar;
+		size_t count = font_text_utf8((unsigned char *)copy + i,
+			bytes - i, &scalar);
+
+		if ((count == 1 && scalar == 0xfffd) || scalar < 0x20 ||
+			(scalar >= 0x7f && scalar <= 0x9f))
+			goto invalid;
+		i += count;
+	}
+	return copy;
+invalid:
+	free(copy);
+	return NULL;
 }
 
 bool form_input_width(const char *text, int *width)

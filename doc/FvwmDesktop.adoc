@@ -316,6 +316,58 @@ resource remain runtime-only. Registry `preview: false` still declines generic
 IPC saved-preference preview; `native_preview: true` identifies the opacity
 consumer. General appearance/image-resource preview remains open.
 
+== CONFIGURATION INSPECTOR
+
+Choose *Configuration inspector...* from Appearance or Desktop settings, or use:
+
+....
+SendToModule FvwmDesktop inspect all
+SendToModule FvwmDesktop inspect settings
+....
+
+The opt-in native viewer is read-only. Its scopes are *all*, *settings*, *theme*,
+*bindings*, *layout*, *sources* and *commands*. Select a scope and enter a literal
+case-insensitive filter, then Apply (Enter). F1/F2 move between pages, F5 refreshes,
+and Escape or the titlebar close button closes the view. Its own Form requests
+keyboard focus and releases it on close; normal FVWM focus override policy still
+applies. Closing retires its view
+identity; a delayed worker response cannot reopen it. Paging does not recollect
+or execute an inspected action.
+
+Settings come from the current registry and owner snapshot, including saved and
+requested effective values, source class, high-contrast/retained-wallpaper
+constraints and known submitted state. Theme rows distinguish the provider's
+semantic role projection from the core's observed colorset, menu and decor
+definitions. Scheduled appearance is captured provider policy, not a claim about
+current painted pixels. Bindings show bounded active global, menu, fallback,
+placement and modifier/context policy. Their free-form action arguments and
+window match text are hidden. Commands use the same generated core inventory as
+FvwmPrompt completion; arbitrary command argument grammar is not inferred.
+
+Layout coverage is monitor/workspace/work-area and scale metadata in actual X11
+pixels. Per-widget bounds and effective per-window style attribution are
+unavailable here. Literal source observations reuse the configuration checker's
+Read/include traversal and setting registry. They show bounded file/line spans
+and include context; home paths are shortened. Traversal order and matching
+values do not prove which file supplied runtime state. Dynamic constructs remain
+unchecked. The ordinary configuration-check JSON schema is unchanged.
+
+The viewer does not start FvwmMFL. Without it, local settings/source/command
+inventory remains available while core-query sections explain their missing
+provider. Each collection uses bounded read-only requests, with read-only mode
+admitted on the same connection before a query. Separate sections are
+point-in-time observations, not an atomic desktop snapshot. Provider loss and
+changed generations are reported on refresh; the viewer does not continuously
+watch every domain.
+
+A refresh replaces the displayed snapshot only after validation. Failure retains
+the previous data with a stale notice; one running collection can coalesce one
+additional refresh. Filters are limited to 128 UTF-8 bytes. Collected rows and
+query work are capped, with explicit truncation/partial reasons. Filtering a
+bounded core inventory cannot establish absence outside its collected range;
+command-name filtering searches the generated command inventory before its row
+cap. No personal configuration, preference file or inspected command is changed.
+
 == CONFIGURATION CHECK
 
 Desktop settings offers Check local.config. It reads

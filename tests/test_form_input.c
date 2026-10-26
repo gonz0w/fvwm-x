@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "modules/FvwmForm/form_input.h"
+#include "libs/defaults.h"
 #include "libs/Module.h"
 #include "libs/safemalloc.h"
 #include <assert.h>
@@ -352,9 +353,85 @@ static void test_label_text(void)
 	assert(!form_label_text(text));
 }
 
+static void test_close_command(void)
+{
+	char *command = NULL;
+	const char literal[] = "SendToModule Owner close $(field)";
+	char boundary[MAX_MODULE_INPUT_TEXT_LEN + 2];
+	char *previous;
+
+	assert(!form_set_close_command(&command, ""));
+	assert(!form_set_close_command(&command, " \t\r\n"));
+	assert(command == NULL);
+	assert(form_set_close_command(&command, literal));
+	assert(strcmp(command, literal) == 0);
+	previous = command;
+	assert(!form_set_close_command(&command, " \t"));
+	assert(command == previous);
+	memset(boundary, 'x', sizeof(boundary));
+	boundary[MAX_MODULE_INPUT_TEXT_LEN + 1] = '\0';
+	assert(!form_set_close_command(&command, boundary));
+	assert(command == previous && strcmp(command, literal) == 0);
+	boundary[MAX_MODULE_INPUT_TEXT_LEN] = '\0';
+	assert(form_set_close_command(&command, boundary));
+	assert(strlen(command) == MAX_MODULE_INPUT_TEXT_LEN);
+	assert(allocated_copy_size == MAX_MODULE_INPUT_TEXT_LEN + 1);
+	assert(form_set_close_command(&command, "!literal $(field)"));
+	assert(strcmp(command, "!literal $(field)") == 0);
+	free(command);
+}
+
+static void test_hex_text(void)
+{
+	const char *invalid[] = {
+		"", "X41", "41", "x0", "xgg", "x41 trailing", "x41 ",
+		"x00", "x09", "x0a", "x1f", "x7f", "xc280", "xc29f",
+		"x80", "xc0af", "xc2", "xe080af", "xedA080", "xf4908080"
+	};
+	const char literal[] = "  %\"\\$()& café 日本 😀  ";
+	const char digits[] = "0123456789abcdef";
+	char hex[2 * FORM_HEX_TEXT_MAX + 4];
+	char *copy;
+
+	for (size_t i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
+		assert(form_decode_hex_text(invalid[i]) == NULL);
+	copy = form_decode_hex_text("x");
+	assert(copy != NULL && strcmp(copy, "") == 0);
+	free(copy);
+	hex[0] = 'x';
+	for (size_t i = 0; i < strlen(literal); i++)
+	{
+		unsigned char byte = (unsigned char)literal[i];
+
+		hex[2 * i + 1] = digits[byte >> 4];
+		hex[2 * i + 2] = digits[byte & 15];
+	}
+	hex[2 * strlen(literal) + 1] = '\0';
+	copy = form_decode_hex_text(hex);
+	assert(copy != NULL && strcmp(copy, literal) == 0);
+	free(copy);
+	copy = form_decode_hex_text("xEfBfBd");
+	assert(copy != NULL && strcmp(copy, "\xef\xbf\xbd") == 0);
+	free(copy);
+	for (size_t i = 0; i < FORM_HEX_TEXT_MAX + 1; i++)
+	{
+		hex[2 * i + 1] = '2';
+		hex[2 * i + 2] = '0';
+	}
+	hex[2 * FORM_HEX_TEXT_MAX + 3] = '\0';
+	assert(form_decode_hex_text(hex) == NULL);
+	hex[2 * FORM_HEX_TEXT_MAX + 1] = '\0';
+	copy = form_decode_hex_text(hex);
+	assert(copy != NULL && strlen(copy) == FORM_HEX_TEXT_MAX);
+	assert(allocated_copy_size == FORM_HEX_TEXT_MAX + 1);
+	free(copy);
+}
+
 int main(void)
 {
 	test_label_text();
+	test_close_command();
+	test_hex_text();
 	char *joined = fxmalloc(5);
 	memcpy(joined, "base", 5);
 	assert(form_append_text(&joined, " tail", 9));

@@ -67,6 +67,25 @@ var errReplyComplete = errors.New("request reply complete")
 // its sole reader on every exit. Sensitive content needs its separate owner.
 // A terminal domain refusal is returned as JSON; only transport/framing fails.
 func Request(parent context.Context, endpoint, text string) (json.RawMessage, error) {
+	return request(parent, endpoint, text, false)
+}
+
+// Query admits read-only mode on the same connection before sending a query.
+// It never sends caller text until that admission succeeds.
+func Query(parent context.Context, endpoint, text string) (json.RawMessage, error) {
+	if _, err := RequestID(text); err != nil {
+		return nil, err
+	}
+	var header struct {
+		Method string `json:"method"`
+	}
+	if json.Unmarshal([]byte(text), &header) != nil || header.Method != "query" {
+		return nil, errors.New("read-only requests require method query")
+	}
+	return request(parent, endpoint, text, true)
+}
+
+func request(parent context.Context, endpoint, text string, readonly bool) (json.RawMessage, error) {
 	id, err := RequestID(text)
 	if err != nil {
 		return nil, err
@@ -82,6 +101,11 @@ func Request(parent context.Context, endpoint, text string) (json.RawMessage, er
 	defer stop()
 	finished := make(chan error, 1)
 	var reply json.RawMessage
+	modePending := readonly
+	modeID := "readonly"
+	if id == modeID {
+		modeID = "readonly-mode"
+	}
 	go func() {
 		finished <- session.Read(func(record json.RawMessage) error {
 			var envelope struct {
@@ -94,14 +118,29 @@ func Request(parent context.Context, endpoint, text string) (json.RawMessage, er
 				return nil
 			}
 			var details struct {
-				Version int     `json:"version"`
-				ID      *string `json:"id"`
-				Status  string  `json:"status"`
+				Version int             `json:"version"`
+				ID      *string         `json:"id"`
+				Status  string          `json:"status"`
+				Result  json.RawMessage `json:"result"`
+			}
+			expectedID := id
+			if modePending {
+				expectedID = modeID
 			}
 			if json.Unmarshal(envelope.Reply, &details) != nil || details.Version != 1 ||
-				(details.ID != nil && *details.ID != id) || (details.Status != "ok" && details.Status != "error") ||
+				(details.ID != nil && *details.ID != expectedID) || (details.Status != "ok" && details.Status != "error") ||
 				details.ID == nil && details.Status != "error" {
 				return errors.New("invalid or mismatched request reply")
+			}
+			if modePending {
+				var admission struct {
+					ReadOnly bool `json:"read_only"`
+				}
+				if details.Status != "ok" || json.Unmarshal(details.Result, &admission) != nil || !admission.ReadOnly {
+					return errors.New("FvwmMFL refused read-only admission")
+				}
+				modePending = false
+				return session.Send("request " + text)
 			}
 			reply = append(json.RawMessage(nil), record...)
 			return errReplyComplete
@@ -114,7 +153,13 @@ func Request(parent context.Context, endpoint, text string) (json.RawMessage, er
 			<-finished
 		}
 	}()
-	if err := session.Send("request " + text); err != nil {
+	first := text
+	if readonly {
+		data, _ := json.Marshal(map[string]any{"version": 1, "id": modeID,
+			"method": "set_mode", "mode": "read-only"})
+		first = string(data)
+	}
+	if err := session.Send("request " + first); err != nil {
 		if ctx.Err() != nil {
 			return nil, ctx.Err()
 		}

@@ -193,6 +193,7 @@ The following commands are accepted before the form is displayed:
  ButtonPointerFore
  ButtonPointerBack
  Choice
+ CloseCommand
  Command
  CommandAppend
  Colorset
@@ -202,6 +203,7 @@ The following commands are accepted before the form is displayed:
  Input
  InputAppend
  InputFont
+ InputHex
  InputPointer
  ItemBack
  ItemColorset
@@ -215,6 +217,7 @@ The following commands are accepted before the form is displayed:
  Selection
  Separator
  Text
+ TextHex
  Timeout
  TimeoutFont
  Title
@@ -342,6 +345,19 @@ currently be changed with commands.)
   multiple *FvwmForm: Line and *FvwmForm: Text options. Blanks may be
   used to provide extra padding between items.
 
+**FvwmForm: TextHex ``_xhexbytes_``*::
+  Display literal text encoded as an `x` prefix followed by hexadecimal byte
+  pairs. `x` alone displays empty text. Both uppercase and lowercase hex digits
+  are accepted. At most 1000 decoded bytes are allowed; the complete directive
+  must also fit FVWM's module configuration record limit. Malformed hex,
+  invalid UTF-8, NUL and C0/C1 control characters are refused before an item
+  is added. Use multiple Line/TextHex directives for separate lines.
++
+Decoding preserves spaces, quotes, backslashes, percent signs, dollar signs
+and other admitted UTF-8 text exactly. The decoded text is data: FvwmForm does
+not evaluate field substitutions or interpret quoted-string escapes in it.
+For example, `TextHex x24286669656c64292025` displays `$(field) %` literally.
+
 **FvwmForm: Label ``_name_ _width_ _string_``*::
   Create a named, fixed-size text area using Font and text colors. Name is
   1..64 ASCII letters/digits, hyphen or underscore; keep names unique. Width is
@@ -362,6 +378,14 @@ currently be changed with commands.)
   in double quotes. Using this command with anything other than a string
   enclosed in quotes creates a blank title. If this command is not used,
   the window title is the form alias.
+
+**FvwmForm: InputHex ``_name_ _size_ _xhexbytes_``*::
+  Create an Input with a literal initial value using the same hex encoding,
+  1000 decoded-byte limit and validation as TextHex. The size and geometry
+  rules are the same as Input. `InputHex filter 40 x` creates an empty field;
+  `InputHex filter 40 x61202262225c` initializes it to `a "b"\` exactly.
+  The decoded value is not processed as a quoted string or executable command.
+  Restart restores that exact initial value. Invalid input adds no field.
 
 **FvwmForm: Input ``_name_ _size_ _init_string_``*::
   Specifies a text input item with name _name_. A sub window of _size_
@@ -624,6 +648,24 @@ restart:::
   initial ones, and then continues execution.
 quit:::
   FvwmForm quits after sending the commands.
+
+**FvwmForm: CloseCommand ``_command_``*::
+  Send one literal FVWM command when the form accepts a WM_DELETE_WINDOW
+  request, then exit. There is no close command by default. The command must
+  contain non-whitespace text and fit the module command limit of 1000 bytes.
+  An invalid replacement leaves the previous close command in effect.
++
+The command is sent through FVWM's command engine without FvwmForm field
+substitution or special handling of a leading exclamation mark. Do not quote
+the complete command. For example:
++
+....
+*MyForm: CloseCommand SendToModule MyController form-closed
+....
++
+This option does not change quit-button actions. It does not run for
+KillModule, provider loss, signals or transport errors, and is not a general
+shutdown cleanup hook.
 
 **FvwmForm: Command ``_command_``*::
   This option specifies an Fvwm command associated with the current

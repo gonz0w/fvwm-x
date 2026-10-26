@@ -272,6 +272,7 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 			"SendToModule FvwmDesktop reload-settings"},
 		Row{"Check local.config...",
 			"SendToModule FvwmDesktop check-config"},
+		Row{"Configuration inspector...", "SendToModule FvwmDesktop inspect all"},
 		Row{"FVWM commands submitted; external Style/Colorset overrides are unobserved",
 			"Greyed"})
 	if s.PersistenceError != nil {
@@ -320,6 +321,7 @@ func AppearanceMenu(settings Values) Menu {
 		rows = append(rows, Row{pair[1] + state, "SendToModule FvwmDesktop toggle " + pair[0]})
 	}
 	rows = append(rows,
+		Row{"Configuration inspector...", "SendToModule FvwmDesktop inspect all"},
 		Row{"Refresh application list",
 			"SendToModule FvwmDesktop discover"},
 		Row{"Desktop settings...",

@@ -190,13 +190,21 @@ func (d *Controller) startCheck() error {
 	if _, ok := d.jobs["configuration"]; ok || len(d.jobs) >= 4 {
 		return errors.New("Desktop service is busy; try the configuration check again")
 	}
-	cwd, err := os.Getwd()
+	request, err := d.literalSourceRequest()
 	if err != nil {
 		return err
 	}
-	request := desktopcheck.Request{Path: filepath.Join(filepath.Dir(d.statePath), "local.config"), Userdir: filepath.Dir(d.statePath), Datadir: filepath.Dir(d.root), Cwd: cwd}
 	d.workerJob("configuration", "check", values{"check": request})
 	return nil
+}
+
+// Check and inspector use the same literal source root and Read search scope.
+func (d *Controller) literalSourceRequest() (desktopcheck.Request, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return desktopcheck.Request{}, err
+	}
+	return desktopcheck.Request{Path: filepath.Join(filepath.Dir(d.statePath), "local.config"), Userdir: filepath.Dir(d.statePath), Datadir: filepath.Dir(d.root), Cwd: cwd}, nil
 }
 func (d *Controller) screenshot() {
 	if !d.png {
@@ -402,6 +410,10 @@ func (d *Controller) pollJobs() {
 		case result := <-d.completed:
 			d.active--
 			delete(d.jobs, result.key)
+			if result.key == "inspection" {
+				d.finishInspection(result)
+				continue
+			}
 			record := d.operationJobs[result.key]
 			delete(d.operationJobs, result.key)
 			if record != nil && record.cancelRequested {

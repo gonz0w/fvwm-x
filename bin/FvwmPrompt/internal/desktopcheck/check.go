@@ -78,15 +78,19 @@ type scheduleValue struct {
 	location Location
 }
 type checker struct {
-	ctx                  context.Context
-	deadline             time.Time
-	limits               limits
-	search               []string
-	bytes, lines, visits int
-	result               Result
-	active               map[inode]bool
-	schedule             map[string]scheduleValue
-	stopped              bool
+	ctx                   context.Context
+	deadline              time.Time
+	limits                limits
+	search                []string
+	bytes, lines, visits  int
+	result                Result
+	active                map[inode]bool
+	schedule              map[string]scheduleValue
+	stopped               bool
+	observing             bool
+	observations          []Observation
+	observationCount      int
+	observationsTruncated bool
 }
 
 // Validate bounds paths before any filesystem operation, also for direct
@@ -145,8 +149,22 @@ func Check(ctx context.Context, r Request) (Result, error) {
 	return check(ctx, r, defaultLimits()), nil
 }
 func check(ctx context.Context, r Request, l limits) Result {
+	return walk(ctx, r, l, false).Report
+}
+
+// Observe shares the literal checker traversal without changing Check schema 1.
+// Last describes only a complete checked literal traversal, never runtime origin.
+func Observe(ctx context.Context, r Request) (ObservationResult, error) {
+	if err := r.Validate(); err != nil {
+		return ObservationResult{}, err
+	}
+	return walk(ctx, r, defaultLimits(), true), nil
+}
+
+func walk(ctx context.Context, r Request, l limits, observing bool) ObservationResult {
 	c := checker{ctx: ctx, deadline: time.Now().Add(l.duration), limits: l,
 		active: map[inode]bool{}, schedule: map[string]scheduleValue{},
+		observing: observing, observations: []Observation{},
 		result: Result{SchemaVersion: 1, Coverage: "desktop-settings-literals-and-Read-v1",
 			Files: []File{}, Diagnostics: []Diagnostic{}}}
 	for _, root := range []string{r.Userdir, r.Datadir, r.Cwd} {
@@ -182,7 +200,16 @@ func check(ctx context.Context, r Request, l limits) Result {
 	if c.result.Errors != 0 {
 		c.result.Status = "errors"
 	}
-	return c.result
+	if observing && !c.observationsTruncated && c.result.Status == "checked-subset" {
+		last := map[string]int{}
+		for i, observation := range c.observations {
+			last[observation.Key] = i
+		}
+		for _, i := range last {
+			c.observations[i].Last = true
+		}
+	}
+	return ObservationResult{c.result, c.observations, c.observationsTruncated}
 }
 func (c *checker) expired() bool {
 	return c.ctx.Err() != nil || !time.Now().Before(c.deadline)
@@ -424,6 +451,18 @@ func (c *checker) line(data []byte, loc Location) {
 			return
 		}
 		c.result.CheckedDirectives++
+		if c.observing {
+			c.observationCount++
+			if len(c.observations) < 128 {
+				// Include chains must outlive the recursive walk's local slice.
+				location := loc
+				location.IncludedFrom = append([]Source{}, loc.IncludedFrom...)
+				c.observations = append(c.observations,
+					Observation{location, key, parsed, c.observationCount, false})
+			} else {
+				c.observationsTruncated = true
+			}
+		}
 		if key == "day" || key == "night" {
 			c.schedule[key] = scheduleValue{parsed, loc}
 		}

@@ -46,6 +46,7 @@
 #include "libs/FProperty.h"
 #include "libs/fvwmsignal.h"
 #include "libs/log.h"
+#include "libs/Module.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -118,6 +119,9 @@ void ReadXServer (void)
 	      if(event.xclient.format == 32 &&
 		 event.xclient.data.l[0] == wm_del_win)
 	      {
+		      /* Only an accepted window close runs this literal hook. */
+		      if (CF.close_command != NULL)
+			      SendText(Channel, CF.close_command, ref);
 		      exit(0);
 	      }
       }

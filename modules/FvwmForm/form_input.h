@@ -8,6 +8,7 @@
 
 #define FORM_X_EVENT_BUDGET MODULE_X_EVENT_BUDGET
 #define FORM_X_SERVICE_NS MODULE_X_SERVICE_NS
+#define FORM_HEX_TEXT_MAX 1000
 
 typedef struct
 {
@@ -46,6 +47,10 @@ bool form_packet_is_valid(unsigned long type, const unsigned long *body,
 bool form_command_begin(void);
 /* Append literal text with a finite bound; leave owned storage on refusal. */
 bool form_append_text(char **owned, const char *tail, size_t limit);
+/* Store a nonempty literal transport command; retain owned storage on refusal. */
+bool form_set_close_command(char **owned, const char *command);
+/* Own literal UTF-8 decoded from x-prefixed hex, or NULL on refusal. */
+char *form_decode_hex_text(const char *text);
 bool form_chomp_line(char *line);
 /* Returned copies are owned by the caller. A final backslash is literal. */
 char *form_copy_quoted(const char *text);

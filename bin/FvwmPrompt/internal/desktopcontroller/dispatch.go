@@ -175,6 +175,10 @@ func (d *Controller) handle(command, argument string) error {
 		return d.changeSettings(values{"day": words[0], "night": words[1]})
 	case "schedule":
 		d.form("SlateScheduleForm", desktopsettings.Schedule(d.effective), false)
+	case "inspect":
+		return d.startInspection(argument)
+	case "inspect-control":
+		return d.inspectionControl(argument)
 	case "check-config":
 		if argument != "" {
 			return errors.New("check-config takes no module arguments; it checks local.config")

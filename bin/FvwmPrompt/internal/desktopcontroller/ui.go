@@ -139,7 +139,15 @@ func (d *Controller) theme(force bool) error {
 	d.emit(`MenuStyle SlateLauncherStyle ItemFormat "%24p%l%80p%>%24p"`)
 	d.emit("Style * WindowShadeSteps " + steps)
 	d.button("appearance", title(key[0].(string)))
+	if !reflect.DeepEqual(d.lastTheme, key) {
+		d.staleInspection("Theme policy changed; refresh to collect the current policy.")
+	}
 	d.lastTheme = key
+	d.lastThemeAppearance = key[1].(string)
+	d.lastThemeColors = make(map[string]string, len(palette))
+	for name, color := range palette {
+		d.lastThemeColors[name] = color
+	}
 	d.menu(desktopsettings.AppearanceMenu(d.effective))
 	if err := d.settingsMenu("all"); err != nil {
 		return err

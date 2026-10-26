@@ -12,6 +12,8 @@ import (
 	"unicode"
 )
 
+const highContrastHint = "High contrast uses opaque surfaces; requested transparency and opacity are retained."
+
 const wallpaperRetentionHint = "Wallpaper is retained; turn off Keep current wallpaper to apply."
 
 func label(value string, limit int) string {
@@ -64,6 +66,10 @@ func Editor(s Snapshot,
 	if err != nil {
 		return plan, err
 	}
+	presentation, err := ResolvePresentation(s.Effective)
+	if err != nil {
+		return plan, err
+	}
 	groups := []string{}
 	for _, key := range keys {
 		item, _ := find(key)
@@ -94,6 +100,9 @@ func Editor(s Snapshot,
 		"ItemColorset 12",
 		"Line left",
 		`Text "Edit saved preferences. Apply saves them together."`}
+	if presentation.Contrast == "high" || has(keys, "contrast") {
+		lines = append(lines, "Line left", "Text "+quote(highContrastHint))
+	}
 	previous := ""
 	for _, key := range plan.Keys {
 		item, _ := find(key)
@@ -145,7 +154,7 @@ func Editor(s Snapshot,
 		if _, ok := s.Overrides[key]; ok {
 			lines = append(lines,
 				"Line left",
-				"Text "+quote("Effective: "+text(s.Effective[key])+" (module configuration override)"))
+				"Text "+quote("Effective request: "+text(s.Effective[key])+" (module configuration override)"))
 		}
 	}
 	if s.PersistenceError != nil {
@@ -174,6 +183,7 @@ func Editor(s Snapshot,
 		lines = append(lines,
 			"Line left",
 			`Text "Preview tests opacity only, then returns to this captured draft."`,
+			`Text "Opacity preview is unavailable while high contrast is selected."`,
 			`Button continue "Preview opacity (F4)" F4`,
 			"Command "+action+"preview-editor "+arguments)
 	}
@@ -212,6 +222,9 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 		if item["runtime_constraint"] == "wallpaper-retained" {
 			options = append(options, Row{wallpaperRetentionHint, "Greyed"})
 		}
+		if item["runtime_constraint"] == "high-contrast" {
+			options = append(options, Row{highContrastHint, "Greyed"})
+		}
 		if len(choices) > 0 {
 			for _, value := range choices {
 				options = append(options,
@@ -227,10 +240,20 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 		}
 		options = append(options, Row{"Reset this setting", "SendToModule FvwmDesktop reset " + key})
 		menus = append(menus, Menu{name, key, options})
-		rows = append(rows, Row{key + ": " + text(s.Effective[key]), "Popup " + name})
+		caption := key + ": " + text(s.Effective[key])
+		if item["runtime_constraint"] == "high-contrast" {
+			caption = key + ": " + text(item["resolved"]) + " (high contrast; requested " + text(s.Effective[key]) + ")"
+		}
+		rows = append(rows, Row{caption, "Popup " + name})
 	}
 	opacity := []Row{}
+	if s.Effective["contrast"] == "high" {
+		opacity = append(opacity, Row{"Opacity preview is unavailable in high contrast.", "Greyed"})
+	}
 	for _, n := range []int{70, 85, 94, 100} {
+		if s.Effective["contrast"] == "high" {
+			break
+		}
 		opacity = append(opacity,
 			Row{fmt.Sprint(n) + "%",
 				"SendToModule FvwmDesktop preview-setting " + s.Instance + " " + fmt.Sprint(n)})
@@ -291,6 +314,9 @@ func AppearanceMenu(settings Values) Menu {
 		if settings[pair[0]] == true {
 			state = "  On"
 		}
+		if pair[0] == "transparency" && settings["contrast"] == "high" {
+			state = "  Off (high contrast; requested " + text(settings[pair[0]]) + ")"
+		}
 		rows = append(rows, Row{pair[1] + state, "SendToModule FvwmDesktop toggle " + pair[0]})
 	}
 	rows = append(rows,
@@ -300,6 +326,17 @@ func AppearanceMenu(settings Values) Menu {
 			"SendToModule FvwmDesktop settings"},
 		Row{"Edit saved preferences...",
 			"SendToModule FvwmDesktop edit-settings"})
+	rows = append(rows, Row{"", "Nop"})
+	for _, contrast := range []string{"normal", "high"} {
+		caption := "  " + title(contrast) + " contrast"
+		if settings["contrast"] == contrast {
+			caption = "* " + title(contrast) + " contrast"
+		}
+		rows = append(rows, Row{caption, "SendToModule FvwmDesktop set contrast " + contrast})
+	}
+	if settings["contrast"] == "high" {
+		rows = append(rows, Row{highContrastHint, "Greyed"})
+	}
 	return Menu{"SlateAppearance", "Appearance", rows}
 }
 

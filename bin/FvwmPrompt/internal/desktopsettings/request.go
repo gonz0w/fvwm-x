@@ -78,6 +78,10 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 	if err != nil {
 		return nil, err
 	}
+	presentation, err := ResolvePresentation(s.Effective)
+	if err != nil {
+		return nil, err
+	}
 	result := Values{}
 	for _, key := range keys {
 		item, _ := find(key)
@@ -129,8 +133,17 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 			v["resolved"], v["resolution"] = resolved, resolution
 			v["composition_version"] = themeCompositionVersion
 		}
-		if key == "launcher_opacity" && s.Effective["transparency"] == false {
-			v["runtime_constraint"] = "transparency-disabled"
+		if key == "transparency" || key == "launcher_opacity" {
+			v["resolved"], v["resolution"] = presentation.Transparency, "requested"
+			v["composition_version"] = themeCompositionVersion
+			if key == "launcher_opacity" {
+				v["resolved"] = presentation.LauncherOpacity
+			}
+			if presentation.Constraint == "high-contrast" ||
+				key == "launcher_opacity" && presentation.Constraint != "" {
+				v["resolution"] = presentation.Constraint
+				v["runtime_constraint"] = presentation.Constraint
+			}
 		}
 		if _, found := s.Overrides[key]; found {
 			v["source"] = "module-configuration"

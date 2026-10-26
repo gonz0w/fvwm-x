@@ -62,7 +62,11 @@ func (d *Controller) handle(command, argument string) error {
 		if !ok {
 			return errors.New("This editor has no launcher opacity draft")
 		}
-		if _, _, err := d.prepare(changes); err != nil {
+		_, effective, err := d.prepare(changes)
+		if err != nil {
+			return err
+		}
+		if err := previewPresentation(effective); err != nil {
 			return err
 		}
 		if err := d.preview.start(raw.(int), true, &draft{e.scope, e.generation, changes}); err != nil {

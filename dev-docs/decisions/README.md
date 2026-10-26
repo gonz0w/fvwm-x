@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [High-contrast presentation](HIGH-CONTRAST-PRESENTATION-2026-10-26.md): guarded semantic colors, strongest opaque presentation and shared preview constraints; requested effects remain recoverable.
+
 - [Theme composition and wallpaper](THEME-COMPOSITION-2026-10-26.md): shared semantic colors, independent wallpaper precedence and explicit data migration; remaining typography/layout/assets stay scoped.
 
 - [Shared named menu icons](NAMED-MENU-ICONS-2026-10-26.md): quarter-scale requests, bounded content presentation and two menu consumers; no icon-package adoption or browser image protocol.

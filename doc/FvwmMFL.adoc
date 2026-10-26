@@ -737,12 +737,12 @@ accepted settings changes, reload or helper restart.
 
 The wallpaper group contains `wallpaper_palette` and `wallpaper_appearance`.
 Their `resolved` and `resolution` fields describe explicit, follow or retained
-selection policy; `composition_version: 1` identifies the shared color-role
+selection policy; `composition_version: 2` identifies the shared color-role
 projection. A resolved appearance of `auto` remains schedule policy rather than
 the current painted light/dark phase. `runtime_constraint: "wallpaper-retained"`
 explains why a saved choice is masked by keep_wallpaper. These fields are stable
 for the preference generation; no clock revision or new resource is introduced.
-The IPC schema remains version 1, independently of the version 3 preference file.
+The IPC schema remains version 1, independently of the version 4 preference file.
 
 Typed actions use `method: "action"`, `resource: "settings"`, `operation` and
 the exact provider and generation returned by the preceding query:
@@ -786,6 +786,17 @@ Saved-preference preview remains unavailable (`preview: false`). The separate
 core `preview` resource changes only runtime menu opacity. The opacity registry
 entry reports `native_preview: true` for its native Keep and save consumer;
 `runtime_constraint: "transparency-disabled"` explains opaque-mode masking.
+The `contrast` enum accepts `normal` (default) and `high` in the appearance group.
+High contrast resolves transparency to false and launcher opacity to 100 while
+preserving their requested `saved`, `effective` and `source` values. Both entries
+expose `resolved`, `resolution: "high-contrast"`,
+`runtime_constraint: "high-contrast"` and `composition_version: 2`.
+In normal contrast, resolution is `requested`, except that disabled transparency
+masks launcher opacity with resolution `transparency-disabled`. Wallpaper policy
+remains independent. These generation-stable fields describe submitted
+presentation, not a repaint acknowledgement. High contrast blocks the owner's
+native opacity-preview consumer; `native_preview` remains a capability flag.
+
 This adds no generic IPC saved-preview operation. See FvwmDesktop for file
 schema migration and separate runtime-confirmation/persistence outcomes.
 

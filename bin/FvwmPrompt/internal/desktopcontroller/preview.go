@@ -42,7 +42,46 @@ type preview struct {
 	nextPoll time.Time
 }
 
+func previewPresentation(settings values) error {
+	presentation, err := desktopsettings.ResolvePresentation(settings)
+	if err != nil {
+		return err
+	}
+	if presentation.Contrast == "high" {
+		return errors.New("High contrast requires opaque menus; disable high contrast before previewing launcher opacity")
+	}
+	return nil
+}
+
+// The event loop may receive a settings transition between any two core
+// replies. Recheck both current policy and a transferred editor candidate.
+func (p *preview) allowed(e *draft) error {
+	if err := previewPresentation(p.desktop.effective); err != nil {
+		return err
+	}
+	if e != nil {
+		_, effective, err := p.desktop.prepare(e.values)
+		if err != nil {
+			return err
+		}
+		return previewPresentation(effective)
+	}
+	return nil
+}
+
+// Run only after a validated settings transition has committed. Abandon uses
+// the existing core recovery path and must precede opaque theme publication.
+func (p *preview) constrain() {
+	presentation, err := desktopsettings.ResolvePresentation(p.desktop.effective)
+	if err == nil && p.control != nil && presentation.Contrast == "high" {
+		p.finish("High contrast enabled; launcher opacity preview ended.", true, false)
+	}
+}
+
 func (d *Controller) preparePreview(opacity int) (*previewSnapshot, error) {
+	if err := previewPresentation(d.effective); err != nil {
+		return nil, err
+	}
 	if d.persistenceError != "" {
 		return nil, errors.New(d.persistenceError)
 	}
@@ -115,6 +154,11 @@ func (p *preview) request(op string) error {
 	if item == nil {
 		return errors.New("Preview controls are stale")
 	}
+	if op == "confirm" || op == "save" {
+		if err := p.allowed(item.editor); err != nil {
+			return err
+		}
+	}
 	if op == "save" {
 		if err := p.desktop.checkPreview(item); err != nil {
 			return err
@@ -137,6 +181,9 @@ func (p *preview) start(opacity int, saved bool, e *draft) error {
 	if opacity < 0 || opacity > 100 {
 		return errors.New("Invalid menu opacity")
 	}
+	if err := p.allowed(e); err != nil {
+		return err
+	}
 	var snapshot *previewSnapshot
 	var err error
 	if saved {
@@ -151,6 +198,11 @@ func (p *preview) start(opacity int, saved bool, e *draft) error {
 func (p *preview) action(view, op string) error {
 	if p.control == nil || p.control.view != view || p.control.lease == "" || (op != "confirm" && op != "revert" && op != "save") {
 		return errors.New("Preview controls are stale")
+	}
+	if op != "revert" {
+		if err := p.allowed(p.control.editor); err != nil {
+			return err
+		}
 	}
 	if op == "save" {
 		if err := p.desktop.checkPreview(p.control); err != nil {
@@ -228,6 +280,11 @@ func (p *preview) acceptReply(fields []string) error {
 		return errors.New("Invalid preview response")
 	}
 	p.pending = nil
+	if pending.phase != "revert" && pending.phase != "abandon" {
+		if err := p.allowed(p.control.editor); err != nil {
+			return err
+		}
+	}
 	if exact(response, "error") {
 		details, _ := response["error"].(map[string]any)
 		if pending.phase == "start" && details["code"] == "stale_generation" && p.control.retries > 0 {

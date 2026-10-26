@@ -218,7 +218,7 @@ func TestWallpaperEditorRegistryAndIPCMetadata(t *testing.T) {
 	settings := response["result"].(map[string]any)["settings"].(map[string]any)
 	for key, resolved := range map[string]string{"wallpaper_palette": "grove", "wallpaper_appearance": "light"} {
 		item := settings[key].(map[string]any)
-		if item["source"] != "module-configuration" || item["resolution"] != "explicit" || item["resolved"] != resolved || item["composition_version"] != 1 {
+		if item["source"] != "module-configuration" || item["resolution"] != "explicit" || item["resolved"] != resolved || item["composition_version"] != 2 {
 			t.Fatal("override metadata", item)
 		}
 	}
@@ -257,8 +257,8 @@ func TestWallpaperEditorRegistryAndIPCMetadata(t *testing.T) {
 		t.Fatal(err)
 	}
 	state, err := desktopsettings.DecodeJSON(data)
-	if err != nil || state.(map[string]any)["schema_version"] != json.Number("3") {
-		t.Fatal("saved schema was not version 3", string(data), err)
+	if err != nil || state.(map[string]any)["schema_version"] != json.Number("4") {
+		t.Fatal("saved schema was not version 4", string(data), err)
 	}
 }
 
@@ -274,7 +274,7 @@ func TestWallpaperQuerySelectionPolicyAndPreviewPosition(t *testing.T) {
 		t.Fatal(err)
 	}
 	replyTo(&d.preview, success(values{"scope": "menu-opacity", "state": "confirmed"}))
-	if len(d.lastTheme) != 7 || d.lastTheme[4] != 63 || d.lastTheme[5] != "dune" || d.lastTheme[6] != "dark" {
+	if len(d.lastTheme) != 8 || d.lastTheme[4] != 63 || d.lastTheme[5] != "dune" || d.lastTheme[6] != "dark" || d.lastTheme[7] != "normal" {
 		t.Fatal("opacity preview changed wallpaper cache ownership", d.lastTheme)
 	}
 	*commands = nil

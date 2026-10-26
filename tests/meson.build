@@ -61,6 +61,15 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
             fvwm_backer, fvwm_buttons, fvwm_event, fvwm_pager, fvwm_iconman],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 180)
+    test('theme-contrast-xvfb', py,
+        args: [files('live_x/theme_composition_live.py'),
+            '--contrast', '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'theme-contrast'],
+        depends: [fvwm3, fvwm_mfl, fvwm_desktop, fvwm_desktop_worker,
+            fvwm_form, fvwm_desktop_capture,
+            fvwm_backer, fvwm_buttons, fvwm_event, fvwm_pager, fvwm_iconman],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 300)
 endif
 
 if get_option('live-x-tests') and libpng.found() and librsvg.found() and host_machine.system() in ['linux', 'freebsd', 'openbsd']

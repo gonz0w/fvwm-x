@@ -645,6 +645,18 @@ atomic consumer publication and uses existing monitor ownership for selection.
 The existing 14-value `Monitor` record remains unchanged. Consumers must opt in
 to scale their own UI; this metadata does not scale client pixels.
 
+[FvwmForm](../modules/FvwmForm/FvwmForm.c) owns the startup-only `UIScale monitor`
+consumer for one dedicated collection viewport and its supported controls.
+It stages fonts and geometry from retained logical metrics, selects ownership
+from actual root-pixel window geometry, and publishes complete in-place reflows
+without changing collection generations. Insufficient actual parent size or a
+pending list snapshot defers publication; unsupported compositions retain 1x.
+The [browser renderer](../bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go) opts in on
+each Form creation. Core MonitorUI remains the scale authority; native Form
+owns reflow, draft/anchor preservation and status. Fixed bitmap font fallback
+does not promise scalable glyphs. Other module consumers and qualification
+remain with their owning tracker contracts.
+
 Pager monitor hit testing uses wide endpoints and excludes disabled regions.
 IconMan numeric/property fields and Pager desk/style selectors use checked
 conversion before publication. Pager style setters accept local size_t/offsetof

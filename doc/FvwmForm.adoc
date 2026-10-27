@@ -221,6 +221,7 @@ The following commands are accepted before the form is displayed:
  Timeout
  TimeoutFont
  Title
+ UIScale
  UseData
  WarpPointer
 
@@ -259,6 +260,42 @@ of items on a form, or number of fonts or colors used.
   right (bottom) of the screen.
 +
 If this option is omitted, FvwmForm starts at the center of the screen.
+
+**FvwmForm: UIScale monitor | off*::
+  Startup-only policy for the Form's own UI. The default is off, preserving
+  existing geometry and fonts at 1x. Put `UIScale monitor` before the controls
+  to follow the core's effective monitor scale, including fractional factors.
+  The monitor is chosen from the Form's actual root-pixel window rectangle
+  using the shared ownership policy. Client pixels, module packet geometry
+  and the actual parent window size are not multiplied by the scale factor.
++
+This bounded opt-in requires one List on its own Line with ListViewport.
+Supported items are Text/TextHex, fixed-width Label, Input/InputHex, Button,
+List and Timeout. The timeout's remaining ticks and renewal cadence are
+preserved, including an empty countdown label used only for idle close.
+Forms containing selection/choice controls, Message fields, Separator items,
+swallowing or multiple Lists keep the complete 1x view and report a diagnostic.
+Existing personal Forms remain unchanged unless they opt in.
++
+The module prepares fonts and geometry from retained logical metrics before
+publishing an in-place reflow. It retains the Form and child windows, input
+drafts and active control, collection focus, selection/range anchor and
+viewport anchor. A focused entry intentionally scrolled offscreen is not
+revealed. Resizing and scale changes leave the native collection generation
+unchanged; ListLayout still uses its separate publication handshake.
++
+If the actual window cannot contain the prepared minimum, the module requests
+the required absolute window size and retains its previous complete view
+until an actual resize provides enough space. Minimum-size hints alone do
+not establish a resize. A pending list snapshot defers scale publication until
+ListCommit or ListAbort. Failed preparation retains the preceding resources
+and view. Missing initial monitor metadata retains the 1x fallback; incomplete
+or malformed metadata does not replace an accepted monitor snapshot.
++
+Actual returned font metrics determine layout. A fixed bitmap font alias may
+keep its native glyph size while UI spacing grows. Use scalable fonts when
+fractional glyph sizing is needed; this option does not guarantee that every
+configured alias has a scalable font variant.
 
 **FvwmForm: Colorset ``_n_``*::
   Tells the module to use colorset _n_.
@@ -596,6 +633,32 @@ published state, pending transaction and controls unchanged.
   acknowledges core command processing, not native publication. Unknown or
   ambiguous names and malformed commands produce diagnostics; a consumer must
   bound its wait and handle missing replies/module death.
+
+**FvwmForm: UIScaleStatus ``_token_``*::
+  Query native scale state without changing the view, for example
+  `SendToModule MyFiles UIScaleStatus scale_1`. Token is 1..64 ASCII
+  letters/digits, hyphen or underscore, as for ListStatus. The native reply
+  is one line with these fields in order:
++
+....
+FVWM_FORM_UI_SCALE token enabled state current_q desired_q current_epoch desired_epoch current_atom desired_atom resource_gen min_w min_h required_w required_h
+....
++
+Enabled reports whether the opt-in composition was admitted, as 0 or 1. State is one of disabled,
+unsupported, waiting, deferred, refused or ready. Current and desired factors
+are expressed in quarters: 4 is 1x, 5 is 1.25x, 6 is 1.5x and 8 is 2x.
+Epochs are 16 lowercase hexadecimal digits, or all zeros when unavailable;
+atoms identify the selected monitor. Resource_gen is the existing font/cache
+resource generation, separate from the scale factor; moving between monitors
+does not imply that it increments. Min_w/min_h describe the current minimum,
+and required_w/required_h the prepared minimum, in actual pixels. Required
+values are zero when the desired target has not completed geometry preparation.
++
+The current fields describe the retained view. Desired fields alone do not
+establish publication: a deferred or refused update can retain the preceding
+complete view. This status is separate from ListStatus and its native
+collection generation; consumers must keep the existing list acknowledgement
+rules. Bound waits and handle module loss or missing replies explicitly.
 
 **FvwmForm: RenewTimeout ``_ticks_``*::
   Renew an already active Timeout through `SendToModule MyForm RenewTimeout 3000`.

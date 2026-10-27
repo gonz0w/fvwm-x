@@ -20,6 +20,8 @@ fvwmform_sources = [
     'FvwmForm.c',
     'form_input.c',
     'form_list.c',
+    'form_scale.c',
+    'form_scale_policy.c',
     'list_widget.c',
     'ReadXServer.c',
     'ParseCommand.c',

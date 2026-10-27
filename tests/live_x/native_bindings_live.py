@@ -105,7 +105,11 @@ def module_proxy(real, directory, arguments):
                             length = 3 * WORD + size
                             if len(parsing) < length:
                                 break
-                            assert struct.unpack('@L', parsing[length-WORD:length])[0] == 1
+                            continuation = struct.unpack('@L', parsing[length-WORD:length])[0]
+                            # SendQuitNotification uses the native terminal
+                            # continuation 0. Relay it unchanged and drain the
+                            # ordinary EOF path; other values are malformed.
+                            assert continuation in (0, 1)
                             text = bytes(parsing[2 * WORD:2 * WORD + size])
                             kind = None
                         else:
@@ -121,7 +125,8 @@ def module_proxy(real, directory, arguments):
                         del parsing[:length]
                         if text is not None:
                             row = json.dumps({'time': time.monotonic(), 'direction': direction,
-                                'kind': kind, 'text': text.decode('utf-8', 'replace')}) + '\n'
+                                'kind': kind, 'text': text.decode('utf-8', 'replace'),
+                                **({'continuation': continuation} if direction == 'out' else {})}) + '\n'
                             recorded += len(row.encode())
                             assert recorded <= MAX_RECORD_BYTES
                             log.write(row)

@@ -11,6 +11,7 @@
  */
 
 #include "form_list.h"
+#include "form_scale.h"
 #include "libs/Flocale.h"               /* for font definition stuff */
 #include "libs/FGettext.h"              /* for localization of messages */
 /*
@@ -18,15 +19,16 @@
  * For example padVText (above) was one of the things TXT_SPC
  * controlled. (dje)
  */
-#define TEXT_SPC    3
+#define TEXT_SPC (CF.ui_metrics.text ? CF.ui_metrics.text : 3)
 /* This one, box_spc would have to be saved as part of an "item".
    It's used for input boxes, buttons, and I think, choices.
    dje */
-#define BOX_SPC     3
+#define BOX_SPC (CF.ui_metrics.box ? CF.ui_metrics.box : 3)
 /* Item_hspc is only used during the "massage phase"
    has to be saved in items. */
-#define ITEM_HSPC   10
-#define ITEM_VSPC   5
+#define ITEM_HSPC (CF.ui_metrics.horizontal ? CF.ui_metrics.horizontal : 10)
+#define ITEM_VSPC (CF.ui_metrics.vertical ? CF.ui_metrics.vertical : 5)
+#define LIST_GUTTER (CF.ui_metrics.gutter ? CF.ui_metrics.gutter : 16)
 
 /* Control the areas that are realloced in chunks: */
 #define ITEMS_PER_EXPANSION 32
@@ -117,7 +119,7 @@ typedef union _item {
     form_list_state *state, *initial;
     form_list_entry *entries;
     int capacity, row_height;
-    int viewport_cell, viewport_columns;
+    int viewport_cell, viewport_columns, viewport_units;
     form_list_update *update;
     form_list_entry *pending;
     int pending_capacity, update_serial;
@@ -203,6 +205,8 @@ typedef struct _form {
   int max_width, total_height;          /* frame size */
   Item *viewport;                      /* optional dedicated list line */
   int viewport_fixed_height, viewport_min_width, viewport_min_height;
+  form_scale_metrics ui_metrics;
+  bool ui_scale_enabled, ui_scale_resize_all;
   unsigned long screen_background;
   Item *cur_list;
   Item *cur_input;                      /* current input during parse and run */
@@ -305,5 +309,6 @@ Bool form_list_key(KeySym key, unsigned int modifiers);
 void form_list_click(Item *item, XButtonEvent *event);
 void form_list_draw(Item *item);
 void form_viewport_resize(int width, int height);
+void form_viewport_set_minimum(int width, int height);
 
 #endif

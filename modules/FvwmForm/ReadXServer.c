@@ -168,20 +168,24 @@ void ReadXServer (void)
 		  CF.total_height != event.xconfigure.height)
 	      {
 		      /* adjust yourself... do noting */
-		      form_viewport_resize(event.xconfigure.width,
-			      event.xconfigure.height);
-		      ResizeFrame();
 		      CF.max_width = event.xconfigure.width;
 		      CF.total_height = event.xconfigure.height;
+		      form_scale_retry();
+		      if (!form_scale_holds_view())
+			      form_viewport_resize(event.xconfigure.width,
+				      event.xconfigure.height);
+		      ResizeFrame();
 		      UpdateRootTransapency(False, True);
 		      if (!CSET_IS_TRANSPARENT(colorset))
 		      {
 			  RedrawFrame(NULL);
 		      }
 	      }
-	      else if (event.xconfigure.send_event)
+	      else
 	      {
-		      UpdateRootTransapency(False, True);
+		      form_scale_retry();
+		      if (event.xconfigure.send_event)
+			      UpdateRootTransapency(False, True);
 	      }
       }
       break;

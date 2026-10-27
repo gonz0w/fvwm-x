@@ -43,6 +43,20 @@ the first visible entry stays in the top visual row where possible. Fixed
 controls set the minimum window size. Existing
 folder menus and user configurations stay usable.
 
+Every browser Form opts into FvwmForm's `UIScale monitor` policy. Its controls,
+collection cells and spacing follow the core's effective monitor scale using
+the window's actual position, without scaling file content or client pixels.
+Moving between monitors or receiving a committed monitor update reflows the
+existing native view while retaining input drafts, active control, selection,
+focus, range and viewport anchors. Automatic scaling does not advance the
+collection generation or replace F7's native layout acknowledgement.
+If a larger minimum needs more room, the current complete view remains until
+the requested window resize actually arrives; list transactions also defer
+scale publication until they finish. Font preparation failure retains the
+previous view. Fixed bitmap font aliases may keep their native glyph size;
+use scalable fonts for fractional text sizing. See FvwmForm(1) for the scale
+policy, fallback and native status query.
+
 The shared collection model separates stable item IDs from labels, preserves
 surviving selections across refresh and admits at most 4096 entries and 256
 selected items. Filesystem names remain original bytes, including non-UTF-8

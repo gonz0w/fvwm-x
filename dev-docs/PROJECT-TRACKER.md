@@ -419,11 +419,45 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 viewport Form/browser scale adoption — 2026-10-27
+
+Owner: Cam; `codex/r1-viewport-scaling`; #51/#69. Status: focused Linux consumer
+checkpoint ready for review. [Accepted outcome](decisions/VIEWPORT-SCALE-2026-10-27.md),
+[results and limits](verification/VERIFICATION-2026-10-27-VIEWPORT-SCALE.md).
+Batch native opt-in viewport scaling, stable logical metrics/font ownership,
+atomic real-geometry publication, minimum-size deferral/recovery, browser
+adoption and scale/collection/input continuity. Preserve ordinary Form defaults,
+core-owned actual-pixel geometry, exact ListLayout generations and the existing
+idle-close timer. No parent dimension double scaling or new polling source.
+Use one combined affected Linux gate and actual RandR/theme/capture checkpoint;
+only affected checks repeat after corrections. #51's broader consumers and six-
+target qualification remain open; no #69 closure without all frozen rows.
+PR269's performance reference is 3/5 after PR275, becoming 4/5 on this merge.
+Terra is at capacity; the recorded Sol implementer fallback handles bounded
+browser/docs work explicitly. Core/native fixture implementation and separate
+review retain their configured routes; backend identities are not attested.
+One affected incremental build/policy/Go/vet/scoped sanitizer gate and four
+legacy actual-X Form regressions pass. Final actual RandR checks pass across
+Slate, Dune and enlarged Classic, including staged font refusal/recovery,
+minimum deferral, exact grid refusal/enlarge/retry, drafts/cursor/selection,
+mixed-monitor movement, removal and fresh provider lifetimes. All 39 real module
+child Wait receipts and direct children exit zero; no final observer/cleanup
+failure. Separate final source/native/pixel review finds no remaining scoped
+blocker. Four unmodified captures are published in the
+[development preview](../doc/development-preview.md#native-monitor-scaling).
+Original product/fixture failures are retained; passed unrelated phases are
+not repeated. Byte-verified guest evidence duplicates are retired; caches/disks
+and the performance reference stay intact. The owned lab is stopped. Both
+parent issues remain open for their broader frozen consumer/accessibility and
+release qualification; no release closure is inferred from this checkpoint.
+
 ## R1 native module scale handoff — 2026-10-27
 
 Owner: Cam; `codex/r1-form-scaling`; MODULE-SCALE-01 #51, dependent
-FILE-VIEW-01 #69. Status: focused foundation checks passed; neither owner is
-closed. [Accepted handoff](decisions/MODULE-UI-SCALE-HANDOFF-2026-10-27.md).
+FILE-VIEW-01 #69. Status: merged in PR275 as
+`db0175ce848b2b22c8965cbd5365ebc255e024d4`; exact reviewed tree
+`fec579ced88ff110ce6ba1a84f19b14d60169cc3`, canonical signature and
+author DCO verified. Branch retired and Project Done; neither owner is closed. [Accepted handoff](decisions/MODULE-UI-SCALE-HANDOFF-2026-10-27.md).
 The legacy Monitor record has no effective scale or committed topology epoch;
 a module-local RandR query cannot recover core scale overrides. Publish bounded
 versioned core-owned snapshots over existing configuration packets, prepare the
@@ -443,7 +477,7 @@ foundation. #51's affected six-target consumer acceptance remains open. Actual
 Form/browser scaling needs staged fonts/retained logical metrics and atomic
 in-place reflow in its dependent batch; enlarged text is not substituted for it.
 Physical display and broader release gates retain their owners. PR269's periodic
-performance counter is 2/5 after PR271; this runtime batch becomes 3/5 on merge,
+performance counter is now 3/5 after PR275,
 so no performance comparison is due. Parked #257/#258 work stays excluded.
 One reused Linux build, six policies, scoped ASan/UBSan, changed-manual rendering
 and actual Xorg-dummy fractional/DPI/movement/removal/replay/restart/sync checks

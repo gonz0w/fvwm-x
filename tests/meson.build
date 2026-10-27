@@ -3949,6 +3949,16 @@ module_ui_scale_test = executable(
 )
 test('module-ui-scale', module_ui_scale_test)
 
+form_scale_test = executable(
+    'test-form-scale',
+    ['test_form_scale.c', '../modules/FvwmForm/form_scale_policy.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('form-scale', form_scale_test)
+
 pager_monitor_test = executable(
     'test-pager-monitor',
     ['test_pager_monitor.c', '../modules/FvwmPager/fpmonitor.c'],
@@ -4381,5 +4391,30 @@ if get_option('live-x-tests') and host_machine.system() == 'linux'
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'module-ui-scale'],
         depends: [fvwm3, fvwm_mfl, module_ui_scale_probe],
         suite: 'live-x', is_parallel: false, timeout: 180,
+    )
+endif
+
+# Test-only acquisition refusal with the production Form event/ownership paths.
+form_scale_refuse_probe = executable(
+    'form-scale-refuse-probe', 'form_scale_refuse_probe.c',
+    objects: fvwm_form.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+    link_args: ['-Wl,--wrap=FlocaleLoadFontAtScale'],
+)
+
+if get_option('live-x-tests') and host_machine.system() == 'linux' and libpng.found()
+    test('viewport-scale-xorg-dummy', py,
+        args: [files('live_x/viewport_scale_live.py'),
+            '--build', meson.project_build_root(),
+            '--fault-form', form_scale_refuse_probe,
+            '--xorg-config', files('live_x/xorg-dummy.conf'),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'viewport-scale'],
+        depends: [fvwm3, fvwm_mfl, fvwm_form, fvwm_file_browser,
+            fvwm_desktop, fvwm_desktop_worker, fvwm_backer, fvwm_buttons,
+            fvwm_event, form_scale_refuse_probe, fvwm_desktop_capture],
+        suite: 'live-x', is_parallel: false, timeout: 360,
     )
 endif

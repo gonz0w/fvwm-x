@@ -131,3 +131,11 @@ delegate bounded inspection to `temper_workflow`, accepted implementation to
 review to `temper_reviewer`. Supply the work item/comments, policy, relevant
 files, acceptance, checks and edit boundaries. Follow local escalation, fallback,
 resource and execution limits; the lead owns integration and verifies evidence.
+
+## Terra product role
+
+Under the routing policy in dev-docs/PROJECT.md, assign accepted bounded product
+documentation, visual inspection, explicitly authorized browser tasks and small
+specified UI fixes to `temper_product`. Keep existing role assignments and all
+local execution/risk/review limits. The lead may select the recorded Sol
+implementer fallback explicitly; missing tools or authority remain blockers.

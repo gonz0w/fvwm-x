@@ -2212,8 +2212,7 @@ static int form_label_measure(void *context, const char *text, int length)
 	return FlocaleTextWidth(context, (char *)text, length);
 }
 
-/* Filled rectangles leave the shared GC line attributes untouched. Both the
- * input redraw and incremental key path use the same bounded interior stroke. */
+/* Filled rectangles leave the shared GC line attributes untouched. */
 void form_draw_caret(Item *item, int x)
 {
 	form_caret_rectangle rectangle;
@@ -2368,6 +2367,62 @@ void RedrawTimeout(Item *item)
   return;
 }
 
+/* Character indices own navigation; actual font metrics keep the caret inside
+ * the painted interior. Binary search bounds measurement work for wide glyphs.
+ * Inactive fields retain their viewport without borrowing the active cursor. */
+static void form_input_view(Item *item, char **begin, char **end)
+{
+	int cursor = item == CF.cur_input ? CF.rel_cursor : item->input.left;
+	int visible, index;
+
+	form_input_cursor(item->input.n, item->input.width, &cursor,
+		&item->input.left, &visible);
+	index = cursor;
+	*end = find_nth_UTF8_char(item->input.value, NULL, &index, NULL);
+	index = item->input.left;
+	*begin = find_nth_UTF8_char(item->input.value, NULL, &index, NULL);
+	if (item == CF.cur_input)
+	{
+		form_caret_rectangle caret;
+		int available = 0;
+
+		if (form_caret_geometry(0, item->header.size_x,
+			item->header.size_y, BOX_SPC, CF.ui_metrics.stroke, &caret))
+		{
+			available = item->header.size_x - 2 * BOX_SPC -
+				TEXT_SPC + 1 - caret.width;
+			if (available < 0)
+				available = 0;
+		}
+		if (FlocaleTextWidth(item->header.dt_ptr->dt_Ffont, *begin,
+			(int)(*end - *begin)) > available)
+		{
+			int low = item->input.left, high = cursor;
+
+			while (low < high)
+			{
+				int middle = low + (high - low) / 2;
+				char *text;
+
+				index = middle;
+				text = find_nth_UTF8_char(item->input.value,
+					NULL, &index, NULL);
+				if (FlocaleTextWidth(item->header.dt_ptr->dt_Ffont,
+					text, (int)(*end - text)) > available)
+					low = middle + 1;
+				else
+					high = middle;
+			}
+			item->input.left = low;
+			index = low;
+			*begin = find_nth_UTF8_char(item->input.value, NULL,
+				&index, NULL);
+		}
+		CF.rel_cursor = cursor;
+		CF.abs_cursor = cursor - item->input.left;
+	}
+}
+
 /* redraw an item */
 void RedrawItem (Item *item, int click, XEvent *pev)
 {
@@ -2377,7 +2432,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
   XRectangle r,inter;
   Region region = None;
   Bool text_inter = True;
-  Bool readonly_input, saved_clip = False;
+  Bool input_item, saved_clip = False;
   Region saved_region = None;
   DrawTable *dt_ptr;
 
@@ -2389,14 +2444,14 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     return;
   }
   dt_ptr = item->header.dt_ptr;
-  readonly_input = item->type == I_INPUT && item->input.read_only;
+  input_item = item->type == I_INPUT;
 
   /* Init intersection to size of the item. */
   inter.x = BOX_SPC + TEXT_SPC - 1;
   inter.y = BOX_SPC;
   inter.width = item->header.size_x - (2 * BOX_SPC) - 2 - TEXT_SPC;
   inter.height = (item->header.size_y - 1) - 2 * BOX_SPC + 1;
-  if (readonly_input)
+  if (input_item)
   {
     /* Clear and clip the same complete interior, including the caret's
      * rightmost stroke. Repaint it once even for a partial expose. */
@@ -2412,7 +2467,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
 	     (int)pev->xexpose.height));
 
   /* This is a slightly altered expose event from ReadXServer. */
-  if (pev && !readonly_input)
+  if (pev && !input_item)
   {
 	  r.x = pev->xexpose.x;
 	  r.y =	 pev->xexpose.y;
@@ -2432,7 +2487,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
 	  r.width = inter.width;
 	  r.height = inter.height;
   }
-  if (pev && !readonly_input && text_inter && dt_ptr && dt_ptr->dt_Fstr)
+  if (pev && !input_item && text_inter && dt_ptr && dt_ptr->dt_Fstr)
   {
 	  region = XCreateRegion();
 	  XUnionRectWithRegion (&r, region, region);
@@ -2496,7 +2551,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     XDrawSegments(dpy, item->header.win, item->header.dt_ptr->dt_item_GC,
 		  xsegs, 4);
 
-    if (readonly_input)
+    if (input_item)
     {
       saved_clip = dt_ptr->dt_Fstr->flags.has_clip_region;
       saved_region = dt_ptr->dt_Fstr->clip_region;
@@ -2508,20 +2563,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
       dt_ptr->dt_Fstr->flags.has_clip_region = True;
       dt_ptr->dt_Fstr->clip_region = region;
     }
-    len = item->input.left;
-    bstr = find_nth_UTF8_char(item->input.value, NULL, &len, NULL);
-    len = CF.abs_cursor;
-    estr = find_nth_UTF8_char(bstr, NULL, &len, NULL);
-    len = (int)(estr - bstr);
-    if (click) {
-      x = BOX_SPC + TEXT_SPC +
-	      FlocaleTextWidth(item->header.dt_ptr->dt_Ffont, bstr, len) - 1;
-      XSetForeground(dpy, item->header.dt_ptr->dt_item_GC,
-		     item->header.dt_ptr->dt_colors[c_item_bg]);
-      form_draw_caret(item, x);
-      myfprintf((stderr,"Line %d/%d - %d/%d (first)\n",
-		     x, BOX_SPC, x, dy - BOX_SPC));
-    }
+    form_input_view(item, &bstr, &estr);
     XSetForeground(dpy, item->header.dt_ptr->dt_item_GC,
 		   item->header.dt_ptr->dt_colors[c_item_fg]);
     item->header.dt_ptr->dt_Fstr->win = item->header.win;
@@ -2532,15 +2574,6 @@ void RedrawItem (Item *item, int click, XEvent *pev)
       item->header.dt_ptr->dt_Fstr->colorset = GetColorset(itemcolorset);
       item->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
     }
-
-    item->header.dt_ptr->dt_Fstr->str = item->input.blanks;
-    item->header.dt_ptr->dt_Fstr->x = BOX_SPC + TEXT_SPC;
-    item->header.dt_ptr->dt_Fstr->y = BOX_SPC + TEXT_SPC
-		+ item->header.dt_ptr->dt_Ffont->ascent;
-    item->header.dt_ptr->dt_Fstr->len = item->input.width;
-    FlocaleDrawString(dpy,
-		item->header.dt_ptr->dt_Ffont,
-		item->header.dt_ptr->dt_Fstr, FWS_HAVE_LENGTH);
 
     item->header.dt_ptr->dt_Fstr->str = bstr;
     item->header.dt_ptr->dt_Fstr->x   = BOX_SPC + TEXT_SPC;
@@ -2681,7 +2714,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     RedrawSeparator(item);
     break;
   }
-  if (readonly_input)
+  if (input_item)
   {
     XSetClipMask(dpy, dt_ptr->dt_item_GC, None);
     dt_ptr->dt_Fstr->flags.has_clip_region = saved_clip;

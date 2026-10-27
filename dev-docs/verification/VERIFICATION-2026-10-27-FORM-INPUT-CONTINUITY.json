@@ -1,0 +1,1455 @@
+{
+  "base": "8554ff704cb4c186f4eaf06a8106598e8b2f2760",
+  "scope": "Focused editable Form input continuity; broader #51/#69 remain open",
+  "status": "passed-focused-linux",
+  "source": {
+    "count": 1546,
+    "aggregate_sha256": "961f86d236ebfee31c2d047973f2ccc88526345483cbf53b5b35d4ca1ee7a5a3",
+    "changed_compiled_inputs": {
+      "doc/FvwmForm.adoc": {
+        "sha256": "cbd67ecc3a90577aac6a88b57bf757ffc5443788ad5c3dcb1aeb9cb99014f092",
+        "bytes": 59410,
+        "mode": 420
+      },
+      "modules/FvwmForm/FvwmForm.c": {
+        "sha256": "c68c3a7b4a189f2dd641fdfe60f7dae058c628d4528c317e1ffdb378791e9346",
+        "bytes": 131439,
+        "mode": 420
+      },
+      "modules/FvwmForm/FvwmForm.h": {
+        "sha256": "b5d730d3cefca93d8c1f499ada914729ac3ca974cc78a125e7d13bf523174310",
+        "bytes": 12295,
+        "mode": 420
+      },
+      "modules/FvwmForm/ReadXServer.c": {
+        "sha256": "d165bdb450a12c9bf9f7c2bb6e52d0ebc09ca4ba77df27d9c5775c6fce35e5ba",
+        "bytes": 23874,
+        "mode": 420
+      },
+      "modules/FvwmForm/form_input.c": {
+        "sha256": "d6b9caad8608f0405f53abd9958508e469b99cf4914e2712cfd51666402434b4",
+        "bytes": 12185,
+        "mode": 420
+      },
+      "modules/FvwmForm/form_input.h": {
+        "sha256": "685a0d2e39891c53dfde25101aee9b9fed531dc6e42c9ce48dcaefd72ad6bf3e",
+        "bytes": 3694,
+        "mode": 420
+      },
+      "tests/test_form_input.c": {
+        "sha256": "8f3634a2819edd1a698859dc7f4679c2a013f55c6c9c6493f06f52aae0ea3652",
+        "bytes": 19517,
+        "mode": 420
+      }
+    }
+  },
+  "drivers": {
+    "tests/live_x/form_transport_live.py": {
+      "sha256": "9c7e6fa5f7f1442518e71457517b86e9d51ffe0d0643d9cd254c0ffc026f9d3e",
+      "bytes": 49858
+    },
+    "tests/live_x/form_input_continuity_live.py": {
+      "sha256": "a775cc7d77a76fb07c241ec80b9139488fe82dc8d9a0453b54aeacbad9222b73",
+      "bytes": 14321
+    },
+    "tests/live_x/browser_disclosure_live.py": {
+      "sha256": "9df9d73b0a813998401db18715e6f600f0fe1c173e75a4e1013e59d8bc679734",
+      "bytes": 93207
+    }
+  },
+  "profiles": {
+    "build-gcc": {
+      "config_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+      "config_bytes": 4473,
+      "selected_options": {
+        "buildtype": "debugoptimized",
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": [],
+        "png": "enabled",
+        "svg": "enabled"
+      },
+      "compilers": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    },
+    "build-module-waits-asan": {
+      "config_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+      "config_bytes": 4473,
+      "selected_options": {
+        "buildtype": "debug",
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ],
+        "png": "auto",
+        "svg": "auto"
+      },
+      "compilers": {
+        "host": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    }
+  },
+  "result": {
+    "status": "passed",
+    "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+    "architecture": "aarch64",
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+        "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "bytes": 5539656
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+        "sha256": "ee65826bc8b2836a9fee5bad0f53da63ecdfb750a0ab79ee4c4c50111e960b6f",
+        "bytes": 1797528
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+        "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87",
+        "bytes": 5720923
+      }
+    },
+    "source_after": "all runtime frozen bytes exact",
+    "commands": 14
+  },
+  "asan_binary": {
+    "path": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmForm/FvwmForm",
+    "sha256": "0e992d254710fa82022c90b66ab1849795d2169328c31c4936aa6b546d6a3b7a",
+    "bytes": 9328688,
+    "native_status": "passed",
+    "leak_detection": false
+  },
+  "commands": [
+    {
+      "name": "build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "modules/FvwmForm/FvwmForm",
+        "tests/test-form-input"
+      ],
+      "seconds": 0.6917640990000109,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "build.log"
+    },
+    {
+      "name": "policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-form-followthrough-checkpoint/policy",
+        "form-input"
+      ],
+      "seconds": 0.20364497600002096,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "policy.log"
+    },
+    {
+      "name": "editable-core-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--input-font",
+        "fixed",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/core-request"
+      ],
+      "seconds": 1.6229506610000044,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "editable-core-request.log"
+    },
+    {
+      "name": "editable-fontset-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--input-font",
+        "fixed,*",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/fontset-request"
+      ],
+      "seconds": 0.544927886000039,
+      "exit": 1,
+      "env_overrides": {},
+      "log": "editable-fontset-request.log"
+    },
+    {
+      "name": "editable-fontset-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--input-font",
+        "fixed,*",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/fontset-request"
+      ],
+      "seconds": 1.7247147020000284,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "editable-fontset-request-attempt1.log"
+    },
+    {
+      "name": "editable-xft-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--input-font",
+        "xft:DejaVu Sans Mono:size=12",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/xft-request"
+      ],
+      "seconds": 1.6845419940000284,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "editable-xft-request.log"
+    },
+    {
+      "name": "native-input",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--input-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/input"
+      ],
+      "seconds": 2.231156431000045,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "native-input.log"
+    },
+    {
+      "name": "native-fields",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--fields-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/fields"
+      ],
+      "seconds": 2.252637060999973,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "native-fields.log"
+    },
+    {
+      "name": "native-readonly",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--readonly-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/readonly"
+      ],
+      "seconds": 1.3375364290000107,
+      "exit": 1,
+      "env_overrides": {},
+      "log": "native-readonly.log"
+    },
+    {
+      "name": "native-readonly",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--readonly-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/readonly"
+      ],
+      "seconds": 1.724103252999953,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "native-readonly-attempt1.log"
+    },
+    {
+      "name": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "modules/FvwmForm/FvwmForm",
+        "tests/test-form-input"
+      ],
+      "seconds": 0.5572423480000452,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-build.log"
+    },
+    {
+      "name": "sanitizer-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-form-followthrough-checkpoint/sanitizer",
+        "form-input"
+      ],
+      "seconds": 0.14430351700002575,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer-policy.log"
+    },
+    {
+      "name": "sanitizer-editable",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-followthrough-legacy/asan-editable"
+      ],
+      "seconds": 1.7894486870000037,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer-editable.log"
+    },
+    {
+      "name": "manual",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/r1-form-followthrough-checkpoint/FvwmForm.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/FvwmForm.adoc"
+      ],
+      "seconds": 0.11112565099995209,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "manual.log"
+    }
+  ],
+  "archives": {
+    "baseline-evidence": {
+      "status": "passed",
+      "files": 11,
+      "archive": {
+        "sha256": "fa6b3a4e945743d8fcca16cd1afaa448222b2d5a5297ce16d5b20ccb9dc04685",
+        "bytes": 3119
+      },
+      "source_root": "/dev/shm/form-followthrough-baseline",
+      "gzip_crc": true
+    },
+    "native-fontset-first": {
+      "status": "passed",
+      "files": 20,
+      "archive": {
+        "sha256": "fb28d59042f055f91a7120f7ab115b893266090ef4b33812e22c40e22829a354",
+        "bytes": 7980
+      },
+      "source_root": "/dev/shm/form-followthrough-legacy",
+      "gzip_crc": true
+    },
+    "native-readonly-transition-first": {
+      "status": "passed",
+      "files": 59,
+      "archive": {
+        "sha256": "0a493c37b367700c55094c49597cae1580d946fa43016e083a69766dfb86ae60",
+        "bytes": 17791
+      },
+      "source_root": "/dev/shm/form-followthrough-legacy",
+      "gzip_crc": true
+    },
+    "native-scale-generation-first": {
+      "status": "passed",
+      "files": 39,
+      "archive": {
+        "sha256": "47da83c68e1a6b7365b9f89d7ea3cbbeb506983127635ac77b38d66fa984eba6",
+        "bytes": 165535
+      },
+      "source_root": "/dev/shm/form-followthrough-native",
+      "gzip_crc": true
+    },
+    "native-final": {
+      "status": "passed",
+      "files": 132,
+      "archive": {
+        "sha256": "0fefab034cd24b24771626958cd3ad692867f1d52bc7ec9a1468451515c4a686",
+        "bytes": 1280320
+      },
+      "source_root": "/dev/shm/form-followthrough-native",
+      "gzip_crc": true
+    },
+    "legacy-final": {
+      "status": "passed",
+      "files": 38,
+      "archive": {
+        "sha256": "4fe9a791077f6c1feb63b03251ccb3e271e2524af2328046c928eff2e7df2157",
+        "bytes": 7746
+      },
+      "source_root": "/dev/shm/form-followthrough-legacy",
+      "gzip_crc": true
+    },
+    "checkpoint-final": {
+      "status": "passed",
+      "files": 36,
+      "archive": {
+        "sha256": "73d99ce7f556f32184ea37fafa1de1f9daeed399b6a8a05df4f916025cba28ff",
+        "bytes": 226460
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/r1-form-followthrough-checkpoint",
+      "gzip_crc": true
+    }
+  },
+  "themes": [
+    {
+      "status": "passed",
+      "profile": "dune-light",
+      "requested_scale": "1",
+      "font": "Sans 10",
+      "config_sha256": "0d041df89502ea2c3323b0aea7cc08868209b288e07e686973e3681911c88f23",
+      "editable_scale_continuity": {
+        "before": {
+          "raw": "FVWM_FORM_UI_SCALE startup0754be2666964246 1 ready 4 4 0000000000000001 0000000000000001 230 230 1 614 552 614 552",
+          "window": 12582919,
+          "alias": "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-2-ready",
+          "state": "ready",
+          "current_q": 4,
+          "desired_q": 4,
+          "current_epoch": "0000000000000001",
+          "desired_epoch": "0000000000000001",
+          "current_atom": 230,
+          "desired_atom": 230,
+          "resource_generation": 1,
+          "minimum": [
+            614,
+            552
+          ],
+          "required": [
+            614,
+            552
+          ],
+          "client": [
+            977,
+            762,
+            614,
+            699
+          ]
+        },
+        "transitions": [
+          {
+            "requested_q": 5,
+            "requested_mm": [
+              542,
+              458
+            ],
+            "randr_monitor": {
+              "name": "DUMMY0",
+              "primary": true,
+              "width": 2560,
+              "mm_width": 542,
+              "height": 2160,
+              "mm_height": 458,
+              "x": 0,
+              "y": 0,
+              "output_names": [
+                "DUMMY0"
+              ]
+            },
+            "before": {
+              "raw": "FVWM_FORM_UI_SCALE startup0754be2666964246 1 ready 4 4 0000000000000001 0000000000000001 230 230 1 614 552 614 552",
+              "window": 12582919,
+              "alias": "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-2-ready",
+              "state": "ready",
+              "current_q": 4,
+              "desired_q": 4,
+              "current_epoch": "0000000000000001",
+              "desired_epoch": "0000000000000001",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                614,
+                552
+              ],
+              "required": [
+                614,
+                552
+              ],
+              "client": [
+                977,
+                762,
+                614,
+                699
+              ]
+            },
+            "after": {
+              "raw": "FVWM_FORM_UI_SCALE startup4c5871ba411de5f4 1 ready 5 5 0000000000000002 0000000000000002 230 230 1 776 698 776 698",
+              "window": 12582919,
+              "alias": "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-2-ready",
+              "state": "ready",
+              "current_q": 5,
+              "desired_q": 5,
+              "current_epoch": "0000000000000002",
+              "desired_epoch": "0000000000000002",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                776,
+                698
+              ],
+              "required": [
+                776,
+                698
+              ],
+              "client": [
+                977,
+                762,
+                776,
+                699
+              ]
+            }
+          },
+          {
+            "requested_q": 4,
+            "requested_mm": [
+              677,
+              572
+            ],
+            "randr_monitor": {
+              "name": "DUMMY0",
+              "primary": true,
+              "width": 2560,
+              "mm_width": 677,
+              "height": 2160,
+              "mm_height": 572,
+              "x": 0,
+              "y": 0,
+              "output_names": [
+                "DUMMY0"
+              ]
+            },
+            "before": {
+              "raw": "FVWM_FORM_UI_SCALE startup4c5871ba411de5f4 1 ready 5 5 0000000000000002 0000000000000002 230 230 1 776 698 776 698",
+              "window": 12582919,
+              "alias": "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-2-ready",
+              "state": "ready",
+              "current_q": 5,
+              "desired_q": 5,
+              "current_epoch": "0000000000000002",
+              "desired_epoch": "0000000000000002",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                776,
+                698
+              ],
+              "required": [
+                776,
+                698
+              ],
+              "client": [
+                977,
+                762,
+                776,
+                699
+              ]
+            },
+            "after": {
+              "raw": "FVWM_FORM_UI_SCALE startup5157edebe73f5f26 1 ready 4 4 0000000000000003 0000000000000003 230 230 1 614 552 614 552",
+              "window": 12582919,
+              "alias": "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-2-ready",
+              "state": "ready",
+              "current_q": 4,
+              "desired_q": 4,
+              "current_epoch": "0000000000000003",
+              "desired_epoch": "0000000000000003",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                614,
+                552
+              ],
+              "required": [
+                614,
+                552
+              ],
+              "client": [
+                977,
+                762,
+                776,
+                699
+              ]
+            }
+          }
+        ],
+        "after": {
+          "raw": "FVWM_FORM_UI_SCALE startup5157edebe73f5f26 1 ready 4 4 0000000000000003 0000000000000003 230 230 1 614 552 614 552",
+          "window": 12582919,
+          "alias": "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-2-ready",
+          "state": "ready",
+          "current_q": 4,
+          "desired_q": 4,
+          "current_epoch": "0000000000000003",
+          "desired_epoch": "0000000000000003",
+          "current_atom": 230,
+          "desired_atom": 230,
+          "resource_generation": 1,
+          "minimum": [
+            614,
+            552
+          ],
+          "required": [
+            614,
+            552
+          ],
+          "client": [
+            977,
+            762,
+            776,
+            699
+          ]
+        }
+      },
+      "editable_draft_callbacks": {
+        "filter": "Echo FVWM_FILES_3 61581d7eb5cd5f8a7fdaffaba04a783c 2 filter xaGV4YWQtZmlsdGVyLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLWZpbHRlcg xAAAAAwAAAAAAAAAAAAAAAAAAAAAAAA 0000000000000004",
+        "wrap_filter": "Echo FVWM_FILES_3 61581d7eb5cd5f8a7fdaffaba04a783c 2 filter xeGhleGFkLWZpbHRlci1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtdGFpbC1maWx0ZXI xAAAABAAA 0000000000000005",
+        "path": "Echo FVWM_FILES_3 61581d7eb5cd5f8a7fdaffaba04a783c 2 path xaGV4YWQtcGF0aC1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLXBhdGg xAAAABAAA 0000000000000006",
+        "operations": [
+          "view",
+          "view",
+          "filter",
+          "filter",
+          "path"
+        ],
+        "filter_bytes": "68657861642d66696c7465722d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d7461696c2d66696c746572",
+        "path_bytes": "68657861642d706174682d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d7461696c2d70617468"
+      },
+      "children_after_cleanup": {
+        "Xorg-dummy": 0,
+        "xrandr": 0,
+        "core": 0,
+        "browser": 0
+      },
+      "module_cleanup": {
+        "modules": [
+          {
+            "proxy": 455,
+            "child": 456,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 1030.435278972,
+            "waited": {
+              "child": 456,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 491,
+            "child": 492,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-1-ready"
+            ],
+            "started": 1030.681465588,
+            "waited": {
+              "child": 492,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 493,
+            "child": 494,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-61581d7eb5cd5f8a7fdaffaba04a783c-2-ready"
+            ],
+            "started": 1030.765076232,
+            "waited": {
+              "child": 494,
+              "returncode": 0
+            }
+          }
+        ],
+        "seconds": 0.00035250199994152354
+      },
+      "observer_unexpected_x_errors": [],
+      "cleanup_failures": []
+    },
+    {
+      "status": "passed",
+      "profile": "slate-dark",
+      "requested_scale": "1.25",
+      "font": "Sans 10",
+      "config_sha256": "a0b3ee426994c12cb3b30da3b89a8724ba604ed02c852c73183de2fbb8289c93",
+      "editable_scale_continuity": {
+        "before": {
+          "raw": "FVWM_FORM_UI_SCALE startup07634c18693f2dad 1 ready 5 5 0000000000000001 0000000000000001 230 230 1 776 698 776 698",
+          "window": 12582919,
+          "alias": "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-2-ready",
+          "state": "ready",
+          "current_q": 5,
+          "desired_q": 5,
+          "current_epoch": "0000000000000001",
+          "desired_epoch": "0000000000000001",
+          "current_atom": 230,
+          "desired_atom": 230,
+          "resource_generation": 1,
+          "minimum": [
+            776,
+            698
+          ],
+          "required": [
+            776,
+            698
+          ],
+          "client": [
+            978,
+            770,
+            776,
+            887
+          ]
+        },
+        "transitions": [
+          {
+            "requested_q": 4,
+            "requested_mm": [
+              677,
+              572
+            ],
+            "randr_monitor": {
+              "name": "DUMMY0",
+              "primary": true,
+              "width": 2560,
+              "mm_width": 677,
+              "height": 2160,
+              "mm_height": 572,
+              "x": 0,
+              "y": 0,
+              "output_names": [
+                "DUMMY0"
+              ]
+            },
+            "before": {
+              "raw": "FVWM_FORM_UI_SCALE startup07634c18693f2dad 1 ready 5 5 0000000000000001 0000000000000001 230 230 1 776 698 776 698",
+              "window": 12582919,
+              "alias": "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-2-ready",
+              "state": "ready",
+              "current_q": 5,
+              "desired_q": 5,
+              "current_epoch": "0000000000000001",
+              "desired_epoch": "0000000000000001",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                776,
+                698
+              ],
+              "required": [
+                776,
+                698
+              ],
+              "client": [
+                978,
+                770,
+                776,
+                887
+              ]
+            },
+            "after": {
+              "raw": "FVWM_FORM_UI_SCALE startup2f2498de7d01b13a 1 ready 4 4 0000000000000002 0000000000000002 230 230 1 614 552 614 552",
+              "window": 12582919,
+              "alias": "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-2-ready",
+              "state": "ready",
+              "current_q": 4,
+              "desired_q": 4,
+              "current_epoch": "0000000000000002",
+              "desired_epoch": "0000000000000002",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                614,
+                552
+              ],
+              "required": [
+                614,
+                552
+              ],
+              "client": [
+                978,
+                770,
+                776,
+                887
+              ]
+            }
+          },
+          {
+            "requested_q": 5,
+            "requested_mm": [
+              542,
+              458
+            ],
+            "randr_monitor": {
+              "name": "DUMMY0",
+              "primary": true,
+              "width": 2560,
+              "mm_width": 542,
+              "height": 2160,
+              "mm_height": 458,
+              "x": 0,
+              "y": 0,
+              "output_names": [
+                "DUMMY0"
+              ]
+            },
+            "before": {
+              "raw": "FVWM_FORM_UI_SCALE startup2f2498de7d01b13a 1 ready 4 4 0000000000000002 0000000000000002 230 230 1 614 552 614 552",
+              "window": 12582919,
+              "alias": "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-2-ready",
+              "state": "ready",
+              "current_q": 4,
+              "desired_q": 4,
+              "current_epoch": "0000000000000002",
+              "desired_epoch": "0000000000000002",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                614,
+                552
+              ],
+              "required": [
+                614,
+                552
+              ],
+              "client": [
+                978,
+                770,
+                776,
+                887
+              ]
+            },
+            "after": {
+              "raw": "FVWM_FORM_UI_SCALE startupbc5cfbce86785cdd 1 ready 5 5 0000000000000003 0000000000000003 230 230 1 776 698 776 698",
+              "window": 12582919,
+              "alias": "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-2-ready",
+              "state": "ready",
+              "current_q": 5,
+              "desired_q": 5,
+              "current_epoch": "0000000000000003",
+              "desired_epoch": "0000000000000003",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                776,
+                698
+              ],
+              "required": [
+                776,
+                698
+              ],
+              "client": [
+                978,
+                770,
+                776,
+                887
+              ]
+            }
+          }
+        ],
+        "after": {
+          "raw": "FVWM_FORM_UI_SCALE startupbc5cfbce86785cdd 1 ready 5 5 0000000000000003 0000000000000003 230 230 1 776 698 776 698",
+          "window": 12582919,
+          "alias": "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-2-ready",
+          "state": "ready",
+          "current_q": 5,
+          "desired_q": 5,
+          "current_epoch": "0000000000000003",
+          "desired_epoch": "0000000000000003",
+          "current_atom": 230,
+          "desired_atom": 230,
+          "resource_generation": 1,
+          "minimum": [
+            776,
+            698
+          ],
+          "required": [
+            776,
+            698
+          ],
+          "client": [
+            978,
+            770,
+            776,
+            887
+          ]
+        }
+      },
+      "editable_draft_callbacks": {
+        "filter": "Echo FVWM_FILES_3 5ff00f2bd8e421f99ebf0105f7e51c6f 2 filter xaGV4YWQtZmlsdGVyLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLWZpbHRlcg xAAAAAwAAAAAAAAAAAAAAAAAAAAAAAA 0000000000000004",
+        "wrap_filter": "Echo FVWM_FILES_3 5ff00f2bd8e421f99ebf0105f7e51c6f 2 filter xeGhleGFkLWZpbHRlci1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtdGFpbC1maWx0ZXI xAAAABAAA 0000000000000005",
+        "path": "Echo FVWM_FILES_3 5ff00f2bd8e421f99ebf0105f7e51c6f 2 path xaGV4YWQtcGF0aC1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLXBhdGg xAAAABAAA 0000000000000006",
+        "operations": [
+          "view",
+          "view",
+          "filter",
+          "filter",
+          "path"
+        ],
+        "filter_bytes": "68657861642d66696c7465722d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d7461696c2d66696c746572",
+        "path_bytes": "68657861642d706174682d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d7461696c2d70617468"
+      },
+      "children_after_cleanup": {
+        "Xorg-dummy": 0,
+        "xrandr": 0,
+        "core": 0,
+        "browser": 0
+      },
+      "module_cleanup": {
+        "modules": [
+          {
+            "proxy": 374,
+            "child": 375,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 982.260926626,
+            "waited": {
+              "child": 375,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 409,
+            "child": 410,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-1-ready"
+            ],
+            "started": 982.444326133,
+            "waited": {
+              "child": 410,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 411,
+            "child": 412,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-5ff00f2bd8e421f99ebf0105f7e51c6f-2-ready"
+            ],
+            "started": 982.53376002,
+            "waited": {
+              "child": 412,
+              "returncode": 0
+            }
+          }
+        ],
+        "seconds": 0.0003266689999463779
+      },
+      "observer_unexpected_x_errors": [],
+      "cleanup_failures": []
+    },
+    {
+      "status": "passed",
+      "profile": "classic-large",
+      "requested_scale": "2",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "864a0608102895cea312c2cf33f47c95d38b22b0115eebf35ee54a5919fe8bc0",
+      "editable_scale_continuity": {
+        "before": {
+          "raw": "FVWM_FORM_UI_SCALE startup9e0bbb4472e22600 1 ready 8 8 0000000000000001 0000000000000001 230 230 1 2284 1676 2284 1676",
+          "window": 12582919,
+          "alias": "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-2-ready",
+          "state": "ready",
+          "current_q": 8,
+          "desired_q": 8,
+          "current_epoch": "0000000000000001",
+          "desired_epoch": "0000000000000001",
+          "current_atom": 230,
+          "desired_atom": 230,
+          "resource_generation": 1,
+          "minimum": [
+            2284,
+            1676
+          ],
+          "required": [
+            2284,
+            1676
+          ],
+          "client": [
+            268,
+            106,
+            2284,
+            2046
+          ]
+        },
+        "transitions": [
+          {
+            "requested_q": 5,
+            "requested_mm": [
+              542,
+              458
+            ],
+            "randr_monitor": {
+              "name": "DUMMY0",
+              "primary": true,
+              "width": 2560,
+              "mm_width": 542,
+              "height": 2160,
+              "mm_height": 458,
+              "x": 0,
+              "y": 0,
+              "output_names": [
+                "DUMMY0"
+              ]
+            },
+            "before": {
+              "raw": "FVWM_FORM_UI_SCALE startup9e0bbb4472e22600 1 ready 8 8 0000000000000001 0000000000000001 230 230 1 2284 1676 2284 1676",
+              "window": 12582919,
+              "alias": "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-2-ready",
+              "state": "ready",
+              "current_q": 8,
+              "desired_q": 8,
+              "current_epoch": "0000000000000001",
+              "desired_epoch": "0000000000000001",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                2284,
+                1676
+              ],
+              "required": [
+                2284,
+                1676
+              ],
+              "client": [
+                268,
+                106,
+                2284,
+                2046
+              ]
+            },
+            "after": {
+              "raw": "FVWM_FORM_UI_SCALE startup83535f592a45baca 1 ready 5 5 0000000000000002 0000000000000002 230 230 1 1430 1050 1430 1050",
+              "window": 12582919,
+              "alias": "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-2-ready",
+              "state": "ready",
+              "current_q": 5,
+              "desired_q": 5,
+              "current_epoch": "0000000000000002",
+              "desired_epoch": "0000000000000002",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                1430,
+                1050
+              ],
+              "required": [
+                1430,
+                1050
+              ],
+              "client": [
+                268,
+                106,
+                2284,
+                2046
+              ]
+            }
+          },
+          {
+            "requested_q": 8,
+            "requested_mm": [
+              339,
+              286
+            ],
+            "randr_monitor": {
+              "name": "DUMMY0",
+              "primary": true,
+              "width": 2560,
+              "mm_width": 339,
+              "height": 2160,
+              "mm_height": 286,
+              "x": 0,
+              "y": 0,
+              "output_names": [
+                "DUMMY0"
+              ]
+            },
+            "before": {
+              "raw": "FVWM_FORM_UI_SCALE startup83535f592a45baca 1 ready 5 5 0000000000000002 0000000000000002 230 230 1 1430 1050 1430 1050",
+              "window": 12582919,
+              "alias": "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-2-ready",
+              "state": "ready",
+              "current_q": 5,
+              "desired_q": 5,
+              "current_epoch": "0000000000000002",
+              "desired_epoch": "0000000000000002",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                1430,
+                1050
+              ],
+              "required": [
+                1430,
+                1050
+              ],
+              "client": [
+                268,
+                106,
+                2284,
+                2046
+              ]
+            },
+            "after": {
+              "raw": "FVWM_FORM_UI_SCALE startup57249680e4fce620 1 ready 8 8 0000000000000003 0000000000000003 230 230 1 2284 1676 2284 1676",
+              "window": 12582919,
+              "alias": "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-2-ready",
+              "state": "ready",
+              "current_q": 8,
+              "desired_q": 8,
+              "current_epoch": "0000000000000003",
+              "desired_epoch": "0000000000000003",
+              "current_atom": 230,
+              "desired_atom": 230,
+              "resource_generation": 1,
+              "minimum": [
+                2284,
+                1676
+              ],
+              "required": [
+                2284,
+                1676
+              ],
+              "client": [
+                268,
+                106,
+                2284,
+                2046
+              ]
+            }
+          }
+        ],
+        "after": {
+          "raw": "FVWM_FORM_UI_SCALE startup57249680e4fce620 1 ready 8 8 0000000000000003 0000000000000003 230 230 1 2284 1676 2284 1676",
+          "window": 12582919,
+          "alias": "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-2-ready",
+          "state": "ready",
+          "current_q": 8,
+          "desired_q": 8,
+          "current_epoch": "0000000000000003",
+          "desired_epoch": "0000000000000003",
+          "current_atom": 230,
+          "desired_atom": 230,
+          "resource_generation": 1,
+          "minimum": [
+            2284,
+            1676
+          ],
+          "required": [
+            2284,
+            1676
+          ],
+          "client": [
+            268,
+            106,
+            2284,
+            2046
+          ]
+        }
+      },
+      "editable_draft_callbacks": {
+        "filter": "Echo FVWM_FILES_3 45bb87a937413debfd3b4a4347c11c99 2 filter xaGV4YWQtZmlsdGVyLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLWZpbHRlcg xAAAAAwAAAAAAAAAAAAAAAAAAAAAAAA 0000000000000004",
+        "wrap_filter": "Echo FVWM_FILES_3 45bb87a937413debfd3b4a4347c11c99 2 filter xeGhleGFkLWZpbHRlci1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtdGFpbC1maWx0ZXI xAAAABAAA 0000000000000005",
+        "path": "Echo FVWM_FILES_3 45bb87a937413debfd3b4a4347c11c99 2 path xaGV4YWQtcGF0aC1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLXBhdGg xAAAABAAA 0000000000000006",
+        "operations": [
+          "view",
+          "view",
+          "filter",
+          "filter",
+          "path"
+        ],
+        "filter_bytes": "68657861642d66696c7465722d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d7461696c2d66696c746572",
+        "path_bytes": "68657861642d706174682d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d6d6964646c652d7461696c2d70617468"
+      },
+      "children_after_cleanup": {
+        "Xorg-dummy": 0,
+        "xrandr": 0,
+        "core": 0,
+        "browser": 0
+      },
+      "module_cleanup": {
+        "modules": [
+          {
+            "proxy": 537,
+            "child": 538,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 1033.426502949,
+            "waited": {
+              "child": 538,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 572,
+            "child": 573,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-1-ready"
+            ],
+            "started": 1033.606203976,
+            "waited": {
+              "child": 573,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 574,
+            "child": 575,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-45bb87a937413debfd3b4a4347c11c99-2-ready"
+            ],
+            "started": 1033.693202765,
+            "waited": {
+              "child": 575,
+              "returncode": 0
+            }
+          }
+        ],
+        "seconds": 0.000288959999807048
+      },
+      "observer_unexpected_x_errors": [],
+      "cleanup_failures": []
+    }
+  ],
+  "oracle_proof": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-27/r1-form-followthrough/prefix-oracle-offline.json",
+    "sha256": "efff8e65a2ca69bfd220b070a0719f5b945753e1134947ff198d15d52e899012"
+  },
+  "cleanup": {
+    "retired": [
+      {
+        "retired": "/dev/shm/form-followthrough-baseline",
+        "files": 11,
+        "bytes": 35290
+      },
+      {
+        "retired": "/tmp/fvwm-module-waits-20261015/r1-form-followthrough-checkpoint",
+        "files": 36,
+        "bytes": 807657
+      },
+      {
+        "retired": "/dev/shm/form-followthrough-legacy",
+        "files": 38,
+        "bytes": 131983
+      },
+      {
+        "retired": "/dev/shm/form-followthrough-native",
+        "files": 132,
+        "bytes": 5071813
+      },
+      {
+        "retired": "/dev/shm/form-followthrough-legacy",
+        "files": 20,
+        "bytes": 224166
+      },
+      {
+        "retired": "/dev/shm/form-followthrough-legacy",
+        "files": 59,
+        "bytes": 496859
+      },
+      {
+        "retired": "/dev/shm/form-followthrough-native",
+        "files": 39,
+        "bytes": 872550
+      }
+    ],
+    "lab_state": "stopped"
+  },
+  "host_checks": {
+    "passed": [
+      "make check: Repository foundation passes; native/product checks are separate.",
+      "git diff --check",
+      "git diff --cached --check",
+      "Exact extracted form_input_cursor + test_input_cursor compile/run on macOS: see isolated-cursor-policy.json"
+    ],
+    "unavailable": [
+      {
+        "check": "Complete test_form_input/form_input host syntax compilation",
+        "reason": "Default include lookup lacks X11/Xlib.h; /opt/homebrew/include locates Xlib but lacks X11/Intrinsic.h. No complete test run occurred."
+      },
+      {
+        "check": "Manual render",
+        "reason": "asciidoctor absent on host"
+      }
+    ],
+    "not_run_by_implementer": [
+      "Linux build and full policy tests",
+      "Native-X regression and three-theme screenshots",
+      "Linux scoped ASan/UBSan",
+      "Required separate reviewer"
+    ],
+    "routing": "Named Sol/high requested; backend identity remains unattested"
+  },
+  "limits": [
+    "Local ARM64 VM/container actual-X execution is not physical or native-runner release qualification",
+    "No full six-target/install/consumer qualification repeated",
+    "No IME, grapheme, shaping, assistive-technology or broad multilingual claim",
+    "Actual font backend identity not independently introspected",
+    "Native ASan editing uses detect_leaks=0; no leak-free claim",
+    "No runtime speed or RSS claim; comparison counter 4/5 on merge",
+    "Issues #51/#69 remain open; #257/#258 parked"
+  ],
+  "routing": "Named Temper workflow/analyst/implementer/reviewer loader requests accepted; configured models requested, backend identity unattested"
+}

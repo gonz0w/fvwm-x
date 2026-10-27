@@ -71,6 +71,7 @@ def run(args, profile, run_root):
                       build / 'bin/FvwmPrompt/fvwm-file-browser',
                       build / 'bin/fvwm-desktop-capture')},
         operations=[], requested_scale=args.scale, startup_continuity=args.startup_continuity,
+        editable_continuity_only=args.editable_continuity_only,
         startup_workarea=args.startup_workarea, startup_monitor=args.startup_monitor,
         startup_oversized=args.startup_oversized,
         limits={'entries': ENTRIES, 'native_children': 64,
@@ -324,7 +325,7 @@ def run(args, profile, run_root):
                     outer = parent
                 raise AssertionError('explicit Form parent depth')
 
-            def scale_ready(target, name):
+            def scale_ready(target, name, expected_q=None):
                 def observed():
                     token = 'startup' + os.urandom(8).hex()
                     control.send(('SendToModule ' + name + ' UIScaleStatus ' + token + '\n').encode())
@@ -343,6 +344,9 @@ def run(args, profile, run_root):
                     assert len(samples) < 4096
                     samples.append(value)
                     if value['state'] != 'ready':
+                        return None
+                    if expected_q is not None and (value['current_q'] != expected_q or
+                            value['desired_q'] != expected_q):
                         return None
                     assert value['current_q'] == value['desired_q'] == int(float(args.scale)*4), value
                     assert value['current_epoch'] == value['desired_epoch'] and int(value['current_epoch'], 16) > 0, value
@@ -746,7 +750,7 @@ def run(args, profile, run_root):
                 # observation after XTest's server sync. They are not a
                 # universal ordering fence between independent channels.
                 for _ in range(2):
-                    status(page['alias'], list_name='sections')
+                    status(page['alias'], list_name=page.get('list_name', 'sections'))
                 target = page['input']
                 previous, since, latest_raster = None, time.monotonic(), None
 
@@ -821,6 +825,173 @@ def run(args, profile, run_root):
             def detail_callbacks(after=0):
                 return [r['text'] for r in rows(native) if r['time'] >= after and
                     r['direction'] == 'out' and r['text'].startswith('Echo FVWM_FILES_DETAILS_1 ')]
+
+            if args.editable_continuity_only:
+                # This mode shares the actual browser/session setup but runs
+                # only this checkpoint's editing and reflow scenes.
+                draft_started = time.monotonic()
+                path_draft = 'head-path-' + 'middle-' * 24 + 'tail-path'
+                filter_draft = 'head-filter-' + 'middle-' * 10 + 'tail-filter'
+
+                def type_draft(target, text):
+                    click(target)
+                    focused()
+                    view.key('u', control=True)
+                    for char in text:
+                        key('minus' if char == '-' else char)
+                    key('Home')
+                    key('Right')
+                    key('Right')
+
+                def parent_pixels(target, label, expected=None):
+                    return input_pixels(dict(alias=alias, input=target, list_name='picks'),
+                        expected=expected, label=label)
+
+                type_draft(path_input, path_draft)
+                type_draft(filter_input, filter_draft)
+                packet_before = status()
+                before_scale = scale_ready(window, alias)
+                original_size = geometry(window)[2:]
+                filter_head = parent_pixels(filter_input, 'editable-filter-head')
+                path_head = parent_pixels(path_input, 'editable-path-unfocused-head')
+                capture('editable-long-drafts-home.png')
+
+                def identity_and_selection(before, label, generation_delta=0):
+                    after = status()
+                    same_identity()
+                    assert after['generation'] == before['generation'] + generation_delta, (label, before, after)
+                    assert after['packet'][8:] == before['packet'][8:], (label, before, after)
+                    evidence.setdefault('editable_native_continuity', []).append(
+                        dict(label=label, before=before, after=after, children=view.children(window)))
+                    return after
+
+                # Resize away and back without touching either input. A real
+                # native status plus positional samples observes the paint.
+                enlarged = [original_size[0] + 40, original_size[1] + 40]
+                x.XResizeWindow(d, window, *enlarged)
+                x.XSync(d, 0)
+                wait_for_predicate('editable browser enlarged',
+                    lambda: geometry(window)[2:] == enlarged,
+                    time.monotonic() + 5, process=browser)
+                identity_and_selection(packet_before, 'resize-enlarged')
+                x.XResizeWindow(d, window, *original_size)
+                x.XSync(d, 0)
+                wait_for_predicate('editable browser size restored',
+                    lambda: geometry(window)[2:] == original_size,
+                    time.monotonic() + 5, process=browser)
+                parent_pixels(filter_input, 'editable-filter-after-resize', filter_head)
+                parent_pixels(path_input, 'editable-path-after-resize', path_head)
+
+                packet = status()
+                for index in range(2):
+                    wanted = 'grid' if state()['view'] == 'list' else 'list'
+                    focused()
+                    key('F7')
+                    wait_for_predicate('editable draft real ' + wanted + ' view',
+                        lambda: (v if v['view'] == wanted else None)
+                            if (v := ready_state()) else None,
+                        time.monotonic() + 8, process=browser)
+                    packet = identity_and_selection(packet, 'view-' + wanted, 1)
+                    parent_pixels(filter_input, 'editable-filter-view-' + str(index), filter_head)
+                    parent_pixels(path_input, 'editable-path-view-' + str(index), path_head)
+
+                if args.xorg_config:
+                    original_scale = args.scale
+                    alternate = '1.25' if original_scale != '1.25' else '1'
+                    previous_scale = before_scale
+                    transitions = []
+                    evidence['editable_scale_continuity'] = dict(before=before_scale,
+                        transitions=transitions)
+                    for requested in (alternate, original_scale):
+                        mm = {'1': (677, 572), '1.25': (542, 458), '2': (339, 286)}[requested]
+                        run_required_xrandr(runtime, display, ['--output', 'DUMMY0',
+                            '--set', 'WIDTH_MM', str(mm[0]), '--set', 'HEIGHT_MM', str(mm[1])],
+                            'editable-scale-' + requested, evidence['operations'])
+                        randr = wait_for_authoritative_state(runtime, display, 'editable actual scale metadata',
+                            lambda v: v['monitors'].get('DUMMY0', {}).get('mm_width') == mm[0] and
+                                v['monitors']['DUMMY0']['mm_height'] == mm[1],
+                            time.monotonic() + 6, 'editable-scale-' + requested)
+                        args.scale = requested
+                        try:
+                            observed_scale = scale_ready(window, alias, int(float(requested)*4))
+                        finally:
+                            args.scale = original_scale
+                        transitions.append(dict(requested_q=int(float(requested)*4),
+                            requested_mm=list(mm), randr_monitor=randr['monitors']['DUMMY0'],
+                            before=previous_scale, after=observed_scale))
+                        assert observed_scale['current_q'] == observed_scale['desired_q'] == int(float(requested)*4)
+                        assert observed_scale['current_q'] != previous_scale['current_q']
+                        assert int(observed_scale['current_epoch'], 16) > int(previous_scale['current_epoch'], 16)
+                        assert int(observed_scale['desired_epoch'], 16) > int(previous_scale['desired_epoch'], 16)
+                        assert observed_scale['current_atom'] == previous_scale['current_atom']
+                        # Quarter factors and topology epochs are distinct
+                        # from resource invalidation. This scene changes only
+                        # RandR millimetres; the font cache key includes its
+                        # factor separately from the retained resource owner.
+                        assert observed_scale['resource_generation'] == previous_scale['resource_generation'] >= 1
+                        identity_and_selection(packet, 'scale-' + requested)
+                        previous_scale = observed_scale
+                    evidence['editable_scale_continuity']['after'] = observed_scale
+                else:
+                    evidence['editable_scale_continuity'] = 'unavailable: real RandR configuration not supplied'
+
+                # Preserve the non-tail cursor through all of the above. Read
+                # bytes only through actual configured native callbacks.
+                focused()
+                key('x')
+                submitted = time.monotonic()
+                key('f', alt=True)
+
+                def draft_callback(operation):
+                    def observed():
+                        found = [r['text'] for r in rows(native) if r['time'] >= submitted and
+                            r['direction'] == 'out' and r['text'].startswith('Echo FVWM_FILES_3 ' + provider + ' ')
+                            and r['text'].split()[4] == operation]
+                        return found[-1] if found else None
+                    return wait_for_predicate('editable native ' + operation + ' bytes', observed,
+                        time.monotonic() + 6, process=browser)
+
+                filter_callback = draft_callback('filter')
+                expected_filter = filter_draft[:2] + 'x' + filter_draft[2:]
+                assert base64.urlsafe_b64decode(filter_callback.split()[5][1:] + '==') == expected_filter.encode()
+                wait_for_predicate('real long filter draft applied',
+                    lambda: (v if v['filter'] == expected_filter else None)
+                        if (v := ready_state()) else None,
+                    time.monotonic() + 8, process=browser)
+                click(path_input)
+                focused()
+                # Browser Return may activate Open. Down traverses from the
+                # last field to the first without firing that action.
+                key('End')
+                key('Down')
+                key('BackSpace')
+                key('Home')
+                key('x')
+                submitted = time.monotonic()
+                key('f', alt=True)
+                wrap_callback = draft_callback('filter')
+                assert base64.urlsafe_b64decode(wrap_callback.split()[5][1:] + '==') == ('x' + expected_filter).encode()
+                click(path_input)
+                focused()
+                key('Home')
+                key('Right')
+                key('Right')
+                key('x')
+                capture('editable-drafts-after-reflow.png')
+                submitted = time.monotonic()
+                key('g', alt=True)
+                path_callback = draft_callback('path')
+                expected_path = path_draft[:2] + 'x' + path_draft[2:]
+                assert base64.urlsafe_b64decode(path_callback.split()[5][1:] + '==') == expected_path.encode()
+                same_identity()
+                actual_callbacks = [r['text'].split()[4] for r in rows(native) if r['time'] >= draft_started and
+                    r['direction'] == 'out' and r['text'].startswith('Echo FVWM_FILES_3 ' + provider + ' ')]
+                assert actual_callbacks == ['view', 'view', 'filter', 'filter', 'path'], actual_callbacks
+                evidence['editable_draft_callbacks'] = dict(filter=filter_callback,
+                    wrap_filter=wrap_callback, path=path_callback, operations=actual_callbacks,
+                    filter_bytes=expected_filter.encode().hex(), path_bytes=expected_path.encode().hex())
+                evidence['status'] = 'passed'
+                return
 
             if args.startup_continuity:
                 page = open_details()
@@ -1362,6 +1533,11 @@ def run(args, profile, run_root):
             if evidence['cleanup_failures'] or evidence.get('observer_unexpected_x_errors'):
                 evidence['status'] = 'failed'
             atomic_json(out / 'evidence.json', evidence)
+            if args.editable_continuity_only and evidence['status'] == 'passed':
+                assert not evidence['cleanup_failures'], evidence['cleanup_failures']
+                assert not evidence.get('observer_unexpected_x_errors'), evidence.get('observer_unexpected_x_errors')
+                assert all(code is not None for code in evidence['children_after_cleanup'].values())
+                print('native browser editable continuity ' + profile + ' passed: ' + str(out))
     assert not evidence['cleanup_failures'], evidence['cleanup_failures']
     assert not evidence.get('observer_unexpected_x_errors'), evidence.get('observer_unexpected_x_errors')
     assert all(code is not None for code in evidence['children_after_cleanup'].values())
@@ -1377,6 +1553,8 @@ def main():
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
     parser.add_argument('--xorg-config', type=Path)
     parser.add_argument('--scale', choices=('1', '1.25', '2'), default='1')
+    parser.add_argument('--editable-continuity-only', action='store_true',
+        help='only run long editable drafts, resize/view/scale and native byte callbacks')
     parser.add_argument('--startup-continuity', action='store_true',
         help='also check startup sizing, containment and viewport continuity')
     parser.add_argument('--startup-workarea', action='store_true',
@@ -1386,6 +1564,9 @@ def main():
     parser.add_argument('--startup-oversized', action='store_true',
         help='also check a genuine reserved area smaller than the readable Form minimum')
     args = parser.parse_args()
+    if args.editable_continuity_only and (args.startup_continuity or args.startup_workarea or
+            args.startup_monitor != 'DUMMY0' or args.startup_oversized):
+        parser.error('--editable-continuity-only cannot combine with startup scenarios')
     if args.scale != '1' and not args.xorg_config:
         parser.error('--scale requires --xorg-config for real RandR millimetres')
     if args.startup_monitor == 'DUMMY1' and not (args.xorg_config and args.startup_workarea):

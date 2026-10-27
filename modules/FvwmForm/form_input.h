@@ -79,6 +79,10 @@ bool form_input_geometry(int width, int font_height, int horizontal_padding,
 /* Navigate the existing recall ring; empty storage has no successor. */
 bool form_history_position(char *const *values, int slots, int current,
 	int direction, int *position);
+/* Reconcile character indices before editing or painting; bytes stay separate.
+ * Keep the cursor inside the existing viewport unless it must move to fit. */
+void form_input_cursor(int characters, int width, int *cursor, int *left,
+	int *visible);
 /* Prepare insertion counts/capacity before changing the owned input value. */
 bool form_input_growth(int capacity, int bytes, int characters,
 	size_t added_bytes, int added_characters, int *new_capacity,

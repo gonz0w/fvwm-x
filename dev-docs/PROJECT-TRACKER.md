@@ -448,10 +448,54 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 editable Form input continuity — 2026-10-27
+
+Owner: Cam; `codex/r1-form-input`; #51/#69. Status: implemented and focused Linux-qualified;
+separate final review before the next PR. Three related outcomes: keep long editable drafts'
+Home/End/arrow cursor and viewport consistent; reconcile cursor/scroll state on
+field transitions before editing a shorter value; use one bounded clipped Input
+painter for keyboard and expose/reflow paths, including editable and read-only
+fields. Remove the duplicated editable key redraw once the shared path qualifies.
+
+Source findings: editable redraw currently forces a long value's tail after Home;
+last-to-first legacy traversal retains the preceding cursor, permitting Backspace
+to decrement character count without removing bytes. Establish these defects
+against retained PR286 binaries before claiming runtime repair. Preserve supported
+bindings, Unicode character boundaries, complete byte drafts, field/action
+ordering, native window/list generations and scale/cache ownership. Keep existing
+button priority and browser list focus-ring semantics. Explicitly exclude paste
+Tab fallthrough, new clipboard transfer/storage, IME/typeahead/assistive services,
+new dependencies, work-area generation/race extensions and broad UI rewrites.
+
+Acceptance: pure cursor/viewport and boundary regressions; actual-X long-value
+navigation/editing, forward/backward and wrap transitions, UTF-8, deterministic
+keyboard/expose paint restoration and read-only bytes/navigation with documented destination-Home traversal. One affected
+incremental Linux checkpoint with scoped sanitizers for changed editing paths;
+three-theme screenshots from the same native run. Retain successful unchanged
+checks, repeat only affected phases after concrete corrections. No Go/race or
+all-OS/install repeat for this portable native control slice. Consumer/six-target,
+physical/assistive/multilingual/release acceptance stays explicit; #51/#69 remain
+open and #257/#258 parked.
+
+PR281 performance reference is 3/5 after PR286, 4/5 on this merge; no comparison
+due. Lead owns resources/tracker/integration and separate final review. Named
+Temper workflow/analyst/implementer/reviewer requests use their selected mappings;
+backend identity remains unattested.
+
+[Completed checkpoint and limits](verification/VERIFICATION-2026-10-27-FORM-INPUT-CONTINUITY.md)
+and [three-theme screenshots](../doc/development-preview.md#editable-input-continuity)
+record both PR286 defects, twelve successful named phases, three corrected fixture
+expectations and final source/binary rechecks. Successful checks were retained;
+no product source changed after freeze. All owned guests are stopped after verified
+retrieval; exact evidence duplicates retired. Broad #51/#69 acceptance remains open.
+
 ## R1 Form reserved-area startup — 2026-10-27
 
-Owner: Cam; `codex/r1-form-workarea`; #51/#69. Status: implemented; combined
-focused Linux and three-theme/nonzero-monitor checkpoint passed after PR285. Complete one bounded startup slice: size preferred
+Owner: Cam; `codex/r1-form-workarea`; #51/#69. Status: merged in
+[PR286](https://github.com/gonz0w/fvwm-x/pull/286) at
+`8554ff704cb4c186f4eaf06a8106598e8b2f2760`; canonical signature, author DCO
+and exact reviewed tree verified; branch retired and Project Done. Combined
+focused Linux and three-theme/nonzero-monitor checkpoint passed. Complete one bounded startup slice: size preferred
 viewport geometry within the selected monitor's available area; place the managed
 outer frame inside that same area once; validate/reconcile existing reservation
 metadata and retain a safe physical fallback when usable reservations are missing

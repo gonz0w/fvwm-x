@@ -38,6 +38,23 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Editable input continuity
+
+Long Path and filter drafts now keep Home/End and editing aligned with the visible
+cursor. Field traversal starts at Home, including wrap into short or empty fields.
+Drafts and cursor survive resize, list/grid switches and scale changes. These
+unmodified native captures show Slate 1.25x, Dune 1x and enlarged Classic 2x:
+
+![Slate browser with long editable drafts](screenshots/input-slate.png)
+![Dune browser with long editable drafts](screenshots/input-dune.png)
+![Classic browser with long editable drafts](screenshots/input-classic.png)
+
+The Classic control palette is deliberately distinct from its Slate desktop.
+[Capture identities](screenshots/input-manifest.json) and
+[focused verification](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-INPUT-CONTINUITY.md)
+record the resize/scale and exact editing checks. Development remains in progress;
+these scenes do not qualify IME, shaping or assistive technology.
+
 ## Reserved-area startup
 
 Automatic scaled Forms now use the selected monitor's available area when valid

@@ -668,7 +668,12 @@ without changing collection generations. Insufficient actual parent size or a
 pending list snapshot defers publication; unsupported compositions retain 1x.
 The [browser renderer](../bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go) opts in on
 each Form creation. Core MonitorUI remains the scale authority; native Form
-owns reflow, draft/anchor preservation and status. Its bounded Form-local
+owns reflow, draft/anchor preservation and status. Editable and read-only Inputs
+share the complete-interior painter for keyboard, expose and reflow. The pure
+`form_input_cursor` helper reconciles character indices before mutation and on
+field transitions; pixel measurement can adjust the visible start while preserving
+the logical cursor. This does not add grapheme/IME or clipboard-service semantics.
+Its bounded Form-local
 `form_workarea.h` policy associates existing Monitor14 reservation samples with
 the published MonitorUI topology for automatic startup sizing and frame placement.
 New topology discards those samples; missing or invalid data retains checked

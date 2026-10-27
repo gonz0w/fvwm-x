@@ -107,6 +107,26 @@ static Bool form_activate_button_key(int keypress)
 	return False;
 }
 
+/* Reconcile before mutation, including destinations reached during a paste. */
+static void form_sync_input_cursor(void)
+{
+	if (CF.cur_input != NULL)
+		form_input_cursor(CF.cur_input->input.n,
+			CF.cur_input->input.width, &CF.rel_cursor,
+			&CF.cur_input->input.left, &CF.abs_cursor);
+}
+
+static void form_focus_input(Item *item)
+{
+	Item *old = CF.cur_input;
+
+	CF.cur_input = item;
+	CF.rel_cursor = CF.abs_cursor = 0;
+	item->input.left = 0;
+	form_sync_input_cursor();
+	RedrawItem(old, 1, NULL);
+}
+
 /* read an X event */
 void ReadXServer (void)
 {
@@ -327,6 +347,7 @@ void ReadXServer (void)
 	    break;
 	  } /* end switch */
 	} /* end one input field */
+	form_sync_input_cursor();
 	switch (buf[0]) {
 	case '\001':  /* ^A */
 	  CF.rel_cursor = 0;
@@ -336,33 +357,16 @@ void ReadXServer (void)
 	  break;
 	case '\005':  /* ^E */
 	  CF.rel_cursor = CF.cur_input->input.n;
-	  if ((CF.cur_input->input.left =
-	       CF.rel_cursor - CF.cur_input->input.width) < 0)
-	    CF.cur_input->input.left = 0;
-	  CF.abs_cursor = CF.rel_cursor - CF.cur_input->input.left;
 	  goto redraw_newcursor;
 	  break;
 	case '\002':  /* ^B */
-	  if (CF.rel_cursor > 0) {
+	  if (CF.rel_cursor > 0)
 	    CF.rel_cursor--;
-	    CF.abs_cursor--;
-	    if (CF.abs_cursor <= 0 && CF.rel_cursor > 0) {
-	      CF.abs_cursor++;
-	      CF.cur_input->input.left--;
-	    }
-	  }
 	  goto redraw_newcursor;
 	  break;
 	case '\006':  /* ^F */
-	  if (CF.rel_cursor < CF.cur_input->input.n) {
+	  if (CF.rel_cursor < CF.cur_input->input.n)
 	    CF.rel_cursor++;
-	    CF.abs_cursor++;
-	    if (CF.abs_cursor >= CF.cur_input->input.width &&
-		CF.rel_cursor < CF.cur_input->input.n) {
-	      CF.abs_cursor--;
-	      CF.cur_input->input.left++;
-	    }
-	  }
 	  goto redraw_newcursor;
 	  break;
 	case '\010':  /* ^H */
@@ -377,14 +381,6 @@ void ReadXServer (void)
 	    for (; *dp = *sp, *sp != '\0'; dp++, sp++);
 	    CF.cur_input->input.n--;
 	    CF.rel_cursor--;
-	    if (CF.rel_cursor < CF.abs_cursor) {
-	      CF.abs_cursor--;
-	      if (CF.abs_cursor <= 0 && CF.rel_cursor > 0) {
-		CF.abs_cursor++;
-		CF.cur_input->input.left--;
-	      }
-	    } else
-	      CF.cur_input->input.left--;
 	  }
 	  goto redraw_newcursor;
 	  break;
@@ -423,10 +419,7 @@ void ReadXServer (void)
 	  CF.rel_cursor = CF.abs_cursor = 0;
 	  goto redraw_newcursor;
 	case '\020':                    /* ^P previous field */
-	  old_item = CF.cur_input;
-	  CF.cur_input = old_item->input.prev_input; /* new current input fld */
-	  RedrawItem(old_item, 1, NULL);
-	  CF.rel_cursor = CF.abs_cursor = 0; /* home cursor in new input field */
+	  form_focus_input(CF.cur_input->input.prev_input);
 	  goto redraw;
 	  break;
 	case '\t':
@@ -451,80 +444,9 @@ void ReadXServer (void)
 	  break;
 	}
       redraw_newcursor:
-	if (CF.cur_input->input.read_only)
-	  goto redraw;
-	{
-	  XSetForeground(dpy, CF.cur_input->header.dt_ptr->dt_item_GC,
-			 CF.cur_input->header.dt_ptr->dt_colors[c_item_bg]);
-	  /* Since DrawString is being used, I changed this to clear the
-	     entire input field.  dje 10/24/99. */
-	  XClearArea(dpy, CF.cur_input->header.win,
-		     BOX_SPC + TEXT_SPC - 1, BOX_SPC,
-		     CF.cur_input->header.size_x
-		     - (2 * BOX_SPC) - 2 - TEXT_SPC,
-		     (CF.cur_input->header.size_y - 1)
-		     - 2 * BOX_SPC + 1, False);
-	}
       redraw:
-	{
-	  int len, cn, x;
-	  char *bstr, *estr;
-	  if (CF.cur_input->input.read_only) {
-	    /* Inspect from the cursor, rather than forcing the value's tail.
-	     * Field traversal may reset or retain another field's cursor. */
-	    if (CF.rel_cursor < 0)
-	      CF.rel_cursor = 0;
-	    else if (CF.rel_cursor > CF.cur_input->input.n)
-	      CF.rel_cursor = CF.cur_input->input.n;
-	    if (CF.rel_cursor < CF.cur_input->input.left)
-	      CF.cur_input->input.left = CF.rel_cursor;
-	    else if (CF.rel_cursor - CF.cur_input->input.left >
-	        CF.cur_input->input.width)
-	      CF.cur_input->input.left =
-	        CF.rel_cursor - CF.cur_input->input.width;
-	    CF.abs_cursor = CF.rel_cursor - CF.cur_input->input.left;
-	    RedrawItem(CF.cur_input, 0, NULL);
-	    goto no_redraw;
-	  } else if (CF.cur_input->input.n - CF.cur_input->input.left >
-	    CF.cur_input->input.width) {
-	      CF.cur_input->input.left =
-	        CF.cur_input->input.n - CF.cur_input->input.width;
-	  }
-	  cn = CF.cur_input->input.left;
-	  bstr = find_nth_UTF8_char(CF.cur_input->input.value, NULL, &cn, NULL);
-	  len = strlen(bstr);
-	  XSetForeground(dpy, CF.cur_input->header.dt_ptr->dt_item_GC,
-			 CF.cur_input->header.dt_ptr->dt_colors[c_item_fg]);
-	  CF.cur_input->header.dt_ptr->dt_Fstr->win = CF.cur_input->header.win;
-	  CF.cur_input->header.dt_ptr->dt_Fstr->gc  =
-	    CF.cur_input->header.dt_ptr->dt_item_GC;
-	  CF.cur_input->header.dt_ptr->dt_Fstr->flags.has_colorset = False;
-	  if (itemcolorset >= 0)
-	  {
-	    CF.cur_input->header.dt_ptr->dt_Fstr->colorset =
-		    GetColorset(itemcolorset);
-	    CF.cur_input->header.dt_ptr->dt_Fstr->flags.has_colorset = True;
-	  }
-	  CF.cur_input->header.dt_ptr->dt_Fstr->str = bstr;
-	  CF.cur_input->header.dt_ptr->dt_Fstr->x   = BOX_SPC + TEXT_SPC;
-	  CF.cur_input->header.dt_ptr->dt_Fstr->y   = BOX_SPC + TEXT_SPC
-	    + CF.cur_input->header.dt_ptr->dt_Ffont->ascent;
-	  CF.cur_input->header.dt_ptr->dt_Fstr->len = len;
-	  FlocaleDrawString(dpy,
-			    CF.cur_input->header.dt_ptr->dt_Ffont,
-			    CF.cur_input->header.dt_ptr->dt_Fstr,
-			    FWS_HAVE_LENGTH);
-	  cn = CF.abs_cursor;
-	  estr = find_nth_UTF8_char(bstr, NULL, &cn, NULL);
-	  len = (int)(estr - bstr);
-	  x = BOX_SPC + TEXT_SPC +
-		  FlocaleTextWidth(CF.cur_input->header.dt_ptr->dt_Ffont,
-				   bstr, len)
-		  - 1;
-	  form_draw_caret(CF.cur_input, x);
-	  myfprintf((stderr,"Line %d/%d - %d/%d (char)\n",
-		     x, BOX_SPC, x, CF.cur_input->header.size_y - 1 - BOX_SPC));
-	}
+	form_sync_input_cursor();
+	RedrawItem(CF.cur_input, 0, NULL);
       no_redraw:
 	break;  /* end of case KeyPress */
       }  /* end of switch (event.type) */
@@ -594,12 +516,7 @@ void ReadXServer (void)
 	    CF.rel_cursor = CF.abs_cursor + item->input.left;
 	    if (CF.rel_cursor > item->input.n)
 	      CF.rel_cursor = item->input.n;
-	    /* if (CF.rel_cursor > 0 && CF.rel_cursor == item->input.left)
-	      item->input.left--;
-	    if (CF.rel_cursor < item->input.n &&
-		CF.rel_cursor == item->input.left + item->input.width)
-	      item->input.left++; */
-	    CF.abs_cursor = CF.rel_cursor - item->input.left;
+	    form_sync_input_cursor();
 	    if (event.xbutton.button == Button2) { /* if paste request */
 	      process_paste_request (&event, item);
 	    }
@@ -693,7 +610,7 @@ static void process_history(int direction) {
 
    Return 1 to redraw, 0 for no redraw */
 static int process_tabtypes(unsigned char * buf) {
-  Item *item, *old_item;
+  Item *item;
   /* Note: the input field ring used with ^P above
 	     could probably make this a lot simpler. dje 12/20/98 */
 	  /* Code tracks cursor. */
@@ -704,10 +621,7 @@ static int process_tabtypes(unsigned char * buf) {
   for ( ; item != 0;
 	item = item->header.next) {/* find next input item */
     if (item->type == I_INPUT) {
-      old_item = CF.cur_input;
-      CF.cur_input = item;
-      RedrawItem(old_item, 1, NULL);
-      CF.rel_cursor = CF.abs_cursor = 0; /* home cursor in new input field */
+      form_focus_input(item);
       return (1);                       /* cause redraw */
     }
   }
@@ -718,10 +632,7 @@ static int process_tabtypes(unsigned char * buf) {
   for (item = root_item_ptr; item != 0;
        item = item->header.next) {/* all items */
     if (item->type == I_INPUT) {
-      old_item = CF.cur_input;
-      CF.cur_input = item;
-      RedrawItem(old_item, 1, NULL);
-      CF.abs_cursor = CF.rel_cursor - item->input.left;
+      form_focus_input(item);
       return (1);                       /* goto redraw */
     }
   }
@@ -734,6 +645,7 @@ static void process_regular_char_input(unsigned char *buf, int num, size_t len) 
   /* Recheck the current destination, including fields reached during paste. */
   if (CF.cur_input == NULL || CF.cur_input->input.read_only)
     return;
+  form_sync_input_cursor();
   /* size is the space actually used
      buf is the size of the buffer in bytes
      width is the size of the field on the screen */
@@ -757,14 +669,7 @@ static void process_regular_char_input(unsigned char *buf, int num, size_t len) 
   sp = (char*) buf + len - 1; dp--;
   for (; *dp = *sp, dp != ep; sp--, dp--);
   CF.rel_cursor += num;
-  CF.abs_cursor += num;
-  if (CF.abs_cursor >= CF.cur_input->input.width) {
-    if (CF.rel_cursor < CF.cur_input->input.n)
-      CF.abs_cursor = CF.cur_input->input.width - 1;
-    else
-      CF.abs_cursor = CF.cur_input->input.width;
-    CF.cur_input->input.left = CF.rel_cursor - CF.abs_cursor;
-  }
+  form_sync_input_cursor();
 }
 /* Read one complete bounded cut buffer before changing any input fields. */
 static void process_paste_request (XEvent *event, Item *item) {

@@ -25,6 +25,7 @@ from colorset_live import WindowAttributes
 from live_x_harness import HarnessRuntime, start_display_server, wait_for_predicate
 from script_transport_live import packet, WORD
 from selection_live import Event, Key
+from form_input_continuity_live import continuity_config, check_continuity
 
 
 class FormExpose(ctypes.Structure):
@@ -168,6 +169,8 @@ def run(args):
                         '*FormTransportCommand Nop form-history-saved',
                         '*FormTransportButton continue "Read" F12',
                         '*FormTransportCommand Nop form-history:$(first)/$(second)'])
+                if args.editable_only:
+                    config.extend(continuity_config(args.input_font))
                 if args.command_only:
                     config.extend(['*FormTransportInputFont fixed',
                         '*FormTransportInput ' + command_name + ' 10 "ready"',
@@ -272,6 +275,9 @@ def run(args):
                 shown = mapped_frame()
                 assert shown is not None
                 timer_start = time.monotonic()
+                if args.editable_only:
+                    check_continuity(x, connection, root, shown, process,
+                        config, commands, receive, args, results)
                 if args.partial_only:
                     x.XKeysymToKeycode.argtypes = [P, W]
                     x.XKeysymToKeycode.restype = ctypes.c_uint
@@ -511,7 +517,10 @@ def run(args):
                         key(0xff57)
                         key(0xff09)
                         observe()
-                        assert pixels() == tail, 'long editable wrap retained out-of-range cursor'
+                        assert pixels() == head, 'readonly wrap did not start at Home'
+                        key(0xff57)  # Explicit End after destination-Home traversal.
+                        observe()
+                        assert pixels() == tail, 'readonly End after wrap did not restore tail'
                     key(0xff51)
                     key(0xff53)
                     observe()
@@ -805,6 +814,9 @@ if __name__ == '__main__':
     parser.add_argument('--geometry-only', action='store_true')
     parser.add_argument('--command-only', action='store_true')
     parser.add_argument('--history-only', action='store_true')
+    parser.add_argument('--editable-only', action='store_true')
+    parser.add_argument('--editable-case', choices=('home', 'wrap', 'all'), default='all')
+    parser.add_argument('--input-font', default='fixed')
     parser.add_argument('--readonly-only', action='store_true')
     parser.add_argument('--service-only', action='store_true')
     parser.add_argument('--partial-only', action='store_true')
@@ -813,8 +825,8 @@ if __name__ == '__main__':
     can_high = old_limit[1] == resource.RLIM_INFINITY or old_limit[1] > 4096
     summary = {}
     try:
-        labels = ['readonly-single', 'readonly-multi', 'readonly-short'] if args.readonly_only else ['partial-idle', 'partial-timer'] if args.partial_only else ['service-idle', 'service-timer'] if args.service_only else ['history'] if args.history_only else ['command'] if args.command_only else ['geometry'] if args.geometry_only else ['arrays'] if args.arrays_only else ['data'] if args.data_only else ['fields'] if args.fields_only else ['button'] if args.button_only else ['input'] if args.input_only else ['timer'] if args.legacy_timer_control else ['timer', 'idle-eof', 'idle-term']
-        if not args.legacy_timer_control and not args.input_only and not args.button_only and not args.fields_only and not args.data_only and not args.arrays_only and not args.geometry_only and not args.command_only and not args.history_only and not args.service_only and not args.partial_only and not args.readonly_only:
+        labels = ['editable'] if args.editable_only else ['readonly-single', 'readonly-multi', 'readonly-short'] if args.readonly_only else ['partial-idle', 'partial-timer'] if args.partial_only else ['service-idle', 'service-timer'] if args.service_only else ['history'] if args.history_only else ['command'] if args.command_only else ['geometry'] if args.geometry_only else ['arrays'] if args.arrays_only else ['data'] if args.data_only else ['fields'] if args.fields_only else ['button'] if args.button_only else ['input'] if args.input_only else ['timer'] if args.legacy_timer_control else ['timer', 'idle-eof', 'idle-term']
+        if not args.legacy_timer_control and not args.input_only and not args.button_only and not args.fields_only and not args.data_only and not args.arrays_only and not args.geometry_only and not args.command_only and not args.history_only and not args.service_only and not args.partial_only and not args.readonly_only and not args.editable_only:
             if can_high:
                 if old_limit[0] <= 4096:
                     resource.setrlimit(resource.RLIMIT_NOFILE, (4097, old_limit[1]))

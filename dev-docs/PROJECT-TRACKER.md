@@ -451,7 +451,12 @@ speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged
 ## R1 browser full-text disclosure — 2026-10-27
 
 Owner: Cam; `codex/r1-browser-disclosure`; #51/#69. Status: implemented; focused
-Linux and three-theme checkpoint passed, preparing final reviewed PR. Complete clipped-value inspection with four related
+Linux and three-theme checkpoint passed; [PR284](https://github.com/gonz0w/fvwm-x/pull/284)
+ready for maintainer review. Signed implementation
+`e4ff4b2a6f4cd50ac75fa0bf5607496f45d5e382`, tree
+`50d06b2a10a521c4998135b10a07c957073d3282`, canonical signature/author DCO
+verified. Replayed onto merged PR283 policy/docs with all1544 qualified input
+bytes/sizes/modes unchanged; no native rebuild for that integration. Complete clipped-value inspection with four related
 outcomes: an additive opt-in native read-only Input using existing horizontal
 navigation; an F1 Details snapshot of complete browser values through literal
 fields; bounded section/chunk navigation without rewriting browser picks/drafts;

@@ -100,3 +100,10 @@ Configured Temper routes are requested; native named-role loading is unavailable
 and backend identity is unattested. Agent review is not human approval.
 #51/#69 retain other consumer, affected six-target, physical/assistive and release
 acceptance. Parked #257/#258 remain excluded.
+
+Integration replays the accepted feature onto merged PR283 policy/documentation
+base `0849d6c4e12884169e99c52ae10d122d77168af3`. All1544 qualified input
+bytes/sizes/modes stay exact. Repository/link/whitespace and the manually invoked
+selection checker pass; that checker does not establish policy meaning or
+authority. Its new tooling is outside product qualification; no native gate
+repeats for this documentation-only integration.

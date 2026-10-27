@@ -1,5 +1,8 @@
 # FVWM-X development instructions
 
+Read root [policy.toml](policy.toml), every selected module and its prerequisites
+before work. PROJECT remains the policy entry point; selection grants no authority.
+
 Read the pinned [Agent Temper method](.agent-temper/METHOD.md),
 [local project policy](dev-docs/PROJECT.md) and the selected owning work item first.
 Only the Codex profile is selected in local project policy. Product/platform rules below are local

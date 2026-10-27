@@ -7,6 +7,35 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+## Modular policy and selection checker — MAINT-02/TEMPER-05
+
+Owner: the finite Temper adoption lead; mirror [issue #282](https://github.com/gonz0w/fvwm-x/issues/282).
+Status: source acceptance complete after checks and separate review. The owner
+selected this bounded adoption on 2026-10-27 under agent-temper#32; it does not
+change R1/R2/R3 product scope or advance a runtime/performance checkpoint.
+
+Outcome: extract existing PROJECT clauses into selected canonical local modules,
+retain prior heading anchors, adopt root `policy.toml` as the sole selection record,
+and retain the unchanged pinned upstream manual checker with source/hash/license.
+Preserve all local platform, configuration, review, model/resource and authority
+contracts, all five role files and Actions-disabled local review. No CI, hooks,
+validator behavior, VM/native execution or product changes are included.
+
+Acceptance: exact extraction/link/anchor and selected-graph preservation; unchanged
+upstream checker/license and bundle provenance; actual six-case checker adoption
+red/green, applicable source gates and separate exact-candidate review. The lead
+ran pre-copy RED before helper installation; missing-helper failures are new-tool
+adoption evidence, not a product regression. All six external contract cases then
+passed GREEN: valid, missing dependency, conflict, cycle, expired date and unsafe
+path. The actual selected manifest reports no errors and leaves authority unverified.
+`make check`, affected source/link/anchor and working-diff whitespace checks pass;
+separate final source review and staged checks pass. Runtime/build/platform
+qualification remains separate.
+Integration requires the owner-authorized reviewed PR and existing signature/DCO
+and canonical-source gates. [PR #283](https://github.com/gonz0w/fvwm-x/pull/283)
+delivers this checkpoint; issue #282 records the canonical source/signature/DCO
+receipt after merge. This source record does not claim an unobserved merge.
+
 ## Three-release target — 2026-10-26
 
 Owner: Cam. Current goal: a highly configurable, fast, low-memory desktop lite.

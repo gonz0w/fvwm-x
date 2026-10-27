@@ -217,8 +217,8 @@ typedef struct _form {
   Item *first_input;                    /* forms first input item during parse*/
   Item *last_error;                     /* fvwm error message display area */
   DrawTable *roots_dt;                  /* root draw tables linklist */
-  int abs_cursor;
-  int rel_cursor;
+  int abs_cursor;                      /* character offset within viewport */
+  int rel_cursor;                      /* character index in current value */
   Window frame;
   int padVText;                         /* vert space for text item */
   char *leading;                        /* part of command to match for data */

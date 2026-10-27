@@ -451,6 +451,26 @@ bool form_history_position(char *const *values, int slots, int current,
 	return false;
 }
 
+void form_input_cursor(int characters, int width, int *cursor, int *left,
+	int *visible)
+{
+	if (characters < 0)
+		characters = 0;
+	if (width < 0)
+		width = 0;
+	if (*cursor < 0)
+		*cursor = 0;
+	else if (*cursor > characters)
+		*cursor = characters;
+	if (*left < 0)
+		*left = 0;
+	else if (*left > *cursor)
+		*left = *cursor;
+	if (*cursor - *left > width)
+		*left = *cursor - width;
+	*visible = *cursor - *left;
+}
+
 bool form_input_growth(int capacity, int bytes, int characters,
 	size_t added_bytes, int added_characters, int *new_capacity,
 	int *new_bytes, int *new_characters)

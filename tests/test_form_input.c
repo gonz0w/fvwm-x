@@ -347,6 +347,84 @@ static void test_history_navigation(void)
 	assert(position == 49);
 }
 
+static void test_input_cursor(void)
+{
+	const struct
+	{
+		int characters, width, cursor, left;
+		int expected_cursor, expected_left, expected_visible;
+	} cases[] = {
+		/* Home must reveal the beginning of a long editable value. */
+		{80, 8, 0, 72, 0, 0, 0},
+		{80, 8, 80, 0, 80, 72, 8},
+		{80, 8, 79, 72, 79, 72, 7},
+		{80, 8, 71, 72, 71, 71, 0},
+		{80, 8, 9, 0, 9, 1, 8},
+		/* A shorter/empty destination cannot inherit an edit past NUL. */
+		{3, 8, 80, 72, 3, 3, 0},
+		{0, 8, 80, 72, 0, 0, 0},
+		{3, 8, 0, 72, 0, 0, 0},
+		{3, 8, 0, 0, 0, 0, 0},
+		{3, 8, 3, 0, 3, 0, 3},
+		{3, 8, -1, -1, 0, 0, 0},
+		{3, 8, 3, -1, 3, 0, 3},
+		{INT_MAX, 1, INT_MAX, 0, INT_MAX, INT_MAX - 1, 1},
+		{INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX, 0},
+		{0, 1, INT_MIN, INT_MAX, 0, 0, 0},
+		{-1, 8, 1, 1, 0, 0, 0},
+		{3, 0, 3, 0, 3, 3, 0},
+	};
+
+	for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
+	{
+		int cursor = cases[i].cursor, left = cases[i].left, visible = -1;
+
+		form_input_cursor(cases[i].characters, cases[i].width,
+			&cursor, &left, &visible);
+		assert(cursor == cases[i].expected_cursor);
+		assert(left == cases[i].expected_left);
+		assert(visible == cases[i].expected_visible);
+		form_input_cursor(cases[i].characters, cases[i].width,
+			&cursor, &left, &visible);
+		assert(cursor == cases[i].expected_cursor);
+		assert(left == cases[i].expected_left);
+		assert(visible == cases[i].expected_visible);
+	}
+	for (int characters = 0; characters <= 16; characters++)
+	{
+		for (int width = 1; width <= 8; width++)
+		{
+			for (int initial = -2; initial <= characters + 2; initial++)
+			{
+				for (int origin = -2; origin <= characters + 2; origin++)
+				{
+					int cursor = initial, left = origin, visible;
+
+					form_input_cursor(characters, width, &cursor,
+						&left, &visible);
+					assert(cursor >= 0 && cursor <= characters);
+					assert(left >= 0 && left <= cursor);
+					assert(visible == cursor - left);
+					assert(visible >= 0 && visible <= width);
+					if (initial >= 0 && initial <= characters)
+						assert(cursor == initial);
+				}
+			}
+		}
+	}
+	/* Character positions are independent of complete UTF-8 byte storage. */
+	const char value[] = "a\xc3\xa9\xe6\x97\xa5\xf0\x9f\x98\x80";
+	int cursor = 4, left = 0, visible = -1;
+
+	assert(strlen(value) == 10);
+	form_input_cursor(4, 2, &cursor, &left, &visible);
+	assert(cursor == 4 && left == 2 && visible == 2);
+	cursor = 0;
+	form_input_cursor(4, 2, &cursor, &left, &visible);
+	assert(cursor == 0 && left == 0 && visible == 0);
+	assert(strlen(value) == 10);
+}
+
 static void test_input_insertion_capacity(void)
 {
 	int capacity, bytes, characters;
@@ -495,6 +573,7 @@ int main(void)
 	test_array_capacity();
 	test_input_dimensions();
 	test_history_navigation();
+	test_input_cursor();
 	test_input_insertion_capacity();
 	assert(form_readiness_timeout(false, false) == -1);
 	assert(form_readiness_timeout(false, true) == 100);

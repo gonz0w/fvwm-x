@@ -524,6 +524,13 @@ Control-d and Delete delete the next character in an input field.
 Control-k erases from the cursor to the end of an input field. Control-u
 erases the entire input field.
 +
+Long values scroll horizontally to keep the cursor visible. Home reveals the
+beginning and End reveals the end without changing the value. Moving between
+fields starts the cursor at the beginning of the destination, including when
+navigation wraps from the last field to the first. Editing uses character
+boundaries while retaining the complete value, even when only part is visible.
+Configured button shortcuts keep their usual priority at the end of the form.
++
 When a restart button runs, each nonempty changed input value is saved in
 that field's history. Each field can store 50 values. The fields then
 return to their initial values. Clear, truncate and recall leave the field

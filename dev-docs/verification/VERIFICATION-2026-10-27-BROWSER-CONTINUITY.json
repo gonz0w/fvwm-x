@@ -1,0 +1,781 @@
+{
+  "owner": "Cam",
+  "base": "fe6318d1d032a1b726eef060aa1b78f8f22cc3c6",
+  "candidate": "codex/r1-browser-continuity",
+  "closes_on_merge": [
+    65
+  ],
+  "refs_remain_open": [
+    69,
+    51,
+    66
+  ],
+  "status": "all five #65 criteria qualified; closes on merge; #69 remains open",
+  "criteria65": {
+    "1": "passed; corresponding frozen acceptance map row",
+    "2": "passed; corresponding frozen acceptance map row",
+    "3": "passed; corresponding frozen acceptance map row",
+    "4": "passed; corresponding frozen acceptance map row",
+    "5": "passed; corresponding frozen acceptance map row"
+  },
+  "criteria69": {
+    "continuity": "passed",
+    "keyboard": "configured24actions and actual representative mnemonics",
+    "automatic_module_scale": "not qualified; #51/#69 remain open",
+    "physical_assistive": "separate qualification; not claimed"
+  },
+  "linux": {
+    "status": "passed",
+    "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+    "architecture": "aarch64",
+    "binaries": {
+      "fvwm3": {
+        "sha256": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "bytes": 5521504
+      },
+      "modules/FvwmForm/FvwmForm": {
+        "sha256": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bytes": 1643048
+      },
+      "bin/FvwmPrompt/fvwm-file-browser": {
+        "sha256": "a761f6ce7c80d2a8525549b8207639bb29cc61c59af93a7102ec59691acde94f",
+        "bytes": 5637354
+      }
+    },
+    "source_after": "all runtime frozen bytes exact",
+    "commands": 20
+  },
+  "commands": [
+    {
+      "name": "sdk-version",
+      "command": [
+        "go",
+        "version"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.005275804999996581,
+      "exit": 0,
+      "env_overrides": {}
+    },
+    {
+      "name": "compiler-version",
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.004089459000056195,
+      "exit": 0,
+      "env_overrides": {}
+    },
+    {
+      "name": "configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.6749986689999332,
+      "exit": 1,
+      "env_overrides": {}
+    },
+    {
+      "name": "sdk-version",
+      "command": [
+        "go",
+        "version"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.0020046030001594772,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "sdk-version-attempt1.log"
+    },
+    {
+      "name": "compiler-version",
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.0006090479998874798,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "compiler-version-attempt1.log"
+    },
+    {
+      "name": "configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.977617974000168,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "configure-attempt1.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "modules/FvwmForm/FvwmForm",
+        "bin/FvwmPrompt/fvwm-file-browser",
+        "tests/test-form-list",
+        "tests/test-form-input",
+        "tests/test-ui-layout",
+        "tests/test-form-command"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.6715074919998187,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "build.log"
+    },
+    {
+      "name": "policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-browser-continuity-checkpoint/policy",
+        "form-list",
+        "form-input",
+        "ui-layout",
+        "form-command"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.13903368000001137,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "policy.log"
+    },
+    {
+      "name": "go-policy",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-exec",
+        "python3 /tmp/browser-continuity-test-exec.py",
+        "./cmd/fvwmfilebrowser",
+        "./internal/collection",
+        "./internal/filemodel",
+        "./internal/viewbinding",
+        "./transport"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+      "seconds": 2.1775599019999845,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "go-policy.log"
+    },
+    {
+      "name": "go-race",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-race",
+        "-exec",
+        "python3 /tmp/browser-continuity-test-exec.py",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+      "seconds": 21.403131349999967,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "go-race.log"
+    },
+    {
+      "name": "go-vet",
+      "command": [
+        "go",
+        "vet",
+        "./cmd/fvwmfilebrowser",
+        "./internal/collection",
+        "./internal/filemodel",
+        "./internal/viewbinding",
+        "./transport"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+      "seconds": 0.1473925989998861,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "go-vet.log"
+    },
+    {
+      "name": "asan-configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 1.1052880369998093,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-configure.log"
+    },
+    {
+      "name": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "tests/test-form-list",
+        "tests/test-form-input",
+        "tests/test-ui-layout"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.20666275100006715,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-build.log"
+    },
+    {
+      "name": "sanitizer",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-browser-continuity-checkpoint/sanitizer",
+        "form-list",
+        "form-input",
+        "ui-layout"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.15786129100001745,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer.log"
+    },
+    {
+      "name": "legacy-native-input",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--input-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/browser-continuity-legacy/input"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.263297825000109,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-input.log"
+    },
+    {
+      "name": "legacy-native-button",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--button-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/browser-continuity-legacy/button"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.1454630709999947,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-button.log"
+    },
+    {
+      "name": "legacy-native-fields",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--fields-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/browser-continuity-legacy/fields"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.134147913000106,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-fields.log"
+    },
+    {
+      "name": "legacy-native-geometry",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--geometry-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/browser-continuity-legacy/geometry"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.1633310890001667,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-geometry.log"
+    },
+    {
+      "name": "manual-FvwmForm",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/r1-browser-continuity-checkpoint/FvwmForm.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/FvwmForm.adoc"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.11112643499996011,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "manual-FvwmForm.log"
+    },
+    {
+      "name": "manual-fvwm-file-browser",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/r1-browser-continuity-checkpoint/fvwm-file-browser.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/fvwm-file-browser.adoc"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.05752038399987214,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "manual-fvwm-file-browser.log"
+    }
+  ],
+  "environment": {
+    "overrides": {
+      "PATH": "/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:/workspace/meson-env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "LD_LIBRARY_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib",
+      "PKG_CONFIG_PATH": "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig",
+      "GOTOOLCHAIN": "local",
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOCACHE": "/tmp/fvwm-go-baseline-20261014/go-cache",
+      "GOTMPDIR": "/dev/shm/fvwm-browser-continuity-tmp",
+      "TMPDIR": "/dev/shm/fvwm-browser-continuity-tmp",
+      "GOFLAGS": "-p=1"
+    },
+    "sdk_sha256": "0e893a1a4ab5d00e64bcd9b22060a53377f90c076434ff0aa1bd2a330b657691"
+  },
+  "input_equivalence": {
+    "status": "all compiled C/Go/build/policy inputs exact",
+    "original_manifest": "f14e97210c6aecfa0b42642f78decac9f9b358be1c4075f01784f4792a6a2cdf",
+    "unchanged": 1528,
+    "fixture_delta": {
+      "path": "tests/live_x/native_bindings_live.py",
+      "before": "ad8c34022ebad053de8ec462baa5cd8db3c1f228710aaba64e18844252c7b082",
+      "after": "9926ca2f40194c7f138c71abe820093dced4ef31ff72d9b95337c4b2ba5d9cb0",
+      "reason": "bounded real child-wait receipt critical section; separately exercised in current native run"
+    }
+  },
+  "native": [
+    {
+      "profile": "classic-large",
+      "font": "DejaVu Sans Mono 18",
+      "status": "passed",
+      "source_sha256": {
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/native_bindings_live.py": "9926ca2f40194c7f138c71abe820093dced4ef31ff72d9b95337c4b2ba5d9cb0",
+        "modules/FvwmForm/FvwmForm.c": "f7e4424f1127b8bd26fe486cfed3638696dd2d538e5067bc07fab71bb6fc0652",
+        "modules/FvwmForm/form_list.c": "0085875d4b11be2540df49fdedbdf97eccdcfe1a78336da601f144a6a56f9934",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "47b170d23a5832e34eecbeeba77a2d08f43ec495cdabc44831fb90052067809f",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "649119ddadaea861ba509f74f4cca3736c4fe854419c8b175c4af513fb677acd"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "modules/FvwmForm/FvwmForm": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bin/FvwmPrompt/fvwm-file-browser": "a761f6ce7c80d2a8525549b8207639bb29cc61c59af93a7102ec59691acde94f"
+      },
+      "config_sha256": "486a73e85fdbc59d54f479e0d2cd211b1fdaf1b7f359943c9b23db25a3059e47",
+      "display_geometry": "1920x1800x24",
+      "children": 27,
+      "switches": 14,
+      "keyboard_actions": 24,
+      "actual_module_waits": 6,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xvfb": 0,
+        "core": 0,
+        "browser": 0,
+        "browser-successor": 0
+      },
+      "limits": {
+        "entries": 4096,
+        "native_children": 64,
+        "worker_gate_seconds": 1.5,
+        "physical_display_or_assistive_technology_qualified": false,
+        "automatic_module_scaling_qualified": false
+      },
+      "evidence_sha256": "ef9031edd22cc765162a34ea40adc5b593459d04e52700e50c722acb5fd2b7d8",
+      "screenshots": [
+        "continuity-list-4096.png",
+        "continuity-grid-range.png",
+        "continuity-resized.png",
+        "continuity-small-layout-refused.png",
+        "continuity-unavailable.png",
+        "continuity-recovered.png",
+        "continuity-successor.png"
+      ],
+      "scenarios": [
+        "range_anchor_survives",
+        "top_grid_to_list",
+        "top_list_to_grid",
+        "generation_bound_target_pages",
+        "hidden_multiple_selection",
+        "resize_then_f7",
+        "small_layout_refusal_retry",
+        "unsubmitted_drafts_and_input_focus",
+        "failure_recovery",
+        "missing_custom_program",
+        "incremental_vanished_entry",
+        "refused_browser_layouts",
+        "pending_layout_refusal",
+        "layout_during_refresh",
+        "producer_teardown_restart"
+      ]
+    },
+    {
+      "profile": "dune-light",
+      "font": "Sans 10",
+      "status": "passed",
+      "source_sha256": {
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/native_bindings_live.py": "9926ca2f40194c7f138c71abe820093dced4ef31ff72d9b95337c4b2ba5d9cb0",
+        "modules/FvwmForm/FvwmForm.c": "f7e4424f1127b8bd26fe486cfed3638696dd2d538e5067bc07fab71bb6fc0652",
+        "modules/FvwmForm/form_list.c": "0085875d4b11be2540df49fdedbdf97eccdcfe1a78336da601f144a6a56f9934",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "47b170d23a5832e34eecbeeba77a2d08f43ec495cdabc44831fb90052067809f",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "649119ddadaea861ba509f74f4cca3736c4fe854419c8b175c4af513fb677acd"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "modules/FvwmForm/FvwmForm": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bin/FvwmPrompt/fvwm-file-browser": "a761f6ce7c80d2a8525549b8207639bb29cc61c59af93a7102ec59691acde94f"
+      },
+      "config_sha256": "eef31524a0b841cccebff1f9c3e5243d5139fa5c79405f74db0417689d9d8266",
+      "display_geometry": "1920x1800x24",
+      "children": 27,
+      "switches": 14,
+      "keyboard_actions": 24,
+      "actual_module_waits": 6,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xvfb": 0,
+        "core": 0,
+        "browser": 0,
+        "browser-successor": 0
+      },
+      "limits": {
+        "entries": 4096,
+        "native_children": 64,
+        "worker_gate_seconds": 1.5,
+        "physical_display_or_assistive_technology_qualified": false,
+        "automatic_module_scaling_qualified": false
+      },
+      "evidence_sha256": "5fa8befff1ab5019fe4c6f27451d063e65154ecfc5945ca49395f42df501ed3e",
+      "screenshots": [
+        "continuity-list-4096.png",
+        "continuity-grid-range.png",
+        "continuity-resized.png",
+        "continuity-small-layout-refused.png",
+        "continuity-unavailable.png",
+        "continuity-recovered.png",
+        "continuity-successor.png"
+      ],
+      "scenarios": [
+        "range_anchor_survives",
+        "top_grid_to_list",
+        "top_list_to_grid",
+        "generation_bound_target_pages",
+        "hidden_multiple_selection",
+        "resize_then_f7",
+        "small_layout_refusal_retry",
+        "unsubmitted_drafts_and_input_focus",
+        "failure_recovery",
+        "missing_custom_program",
+        "incremental_vanished_entry",
+        "refused_browser_layouts",
+        "pending_layout_refusal",
+        "layout_during_refresh",
+        "producer_teardown_restart"
+      ]
+    },
+    {
+      "profile": "slate-dark",
+      "font": "Sans 10",
+      "status": "passed",
+      "source_sha256": {
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/native_bindings_live.py": "9926ca2f40194c7f138c71abe820093dced4ef31ff72d9b95337c4b2ba5d9cb0",
+        "modules/FvwmForm/FvwmForm.c": "f7e4424f1127b8bd26fe486cfed3638696dd2d538e5067bc07fab71bb6fc0652",
+        "modules/FvwmForm/form_list.c": "0085875d4b11be2540df49fdedbdf97eccdcfe1a78336da601f144a6a56f9934",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "47b170d23a5832e34eecbeeba77a2d08f43ec495cdabc44831fb90052067809f",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "649119ddadaea861ba509f74f4cca3736c4fe854419c8b175c4af513fb677acd"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "modules/FvwmForm/FvwmForm": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bin/FvwmPrompt/fvwm-file-browser": "a761f6ce7c80d2a8525549b8207639bb29cc61c59af93a7102ec59691acde94f"
+      },
+      "config_sha256": "1083989d8828958554d6885e6270e5c1139a7e2588ffb1267f97f6d85e889f89",
+      "display_geometry": "1920x1800x24",
+      "children": 27,
+      "switches": 14,
+      "keyboard_actions": 24,
+      "actual_module_waits": 6,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xvfb": 0,
+        "core": 0,
+        "browser": 0,
+        "browser-successor": 0
+      },
+      "limits": {
+        "entries": 4096,
+        "native_children": 64,
+        "worker_gate_seconds": 1.5,
+        "physical_display_or_assistive_technology_qualified": false,
+        "automatic_module_scaling_qualified": false
+      },
+      "evidence_sha256": "08d307443cb62178d2f633daed1e566b69ebc88ecd2d144d4db9c9c8b1e4a7d8",
+      "screenshots": [
+        "continuity-list-4096.png",
+        "continuity-grid-range.png",
+        "continuity-resized.png",
+        "continuity-small-layout-refused.png",
+        "continuity-unavailable.png",
+        "continuity-recovered.png",
+        "continuity-successor.png"
+      ],
+      "scenarios": [
+        "range_anchor_survives",
+        "top_grid_to_list",
+        "top_list_to_grid",
+        "generation_bound_target_pages",
+        "hidden_multiple_selection",
+        "resize_then_f7",
+        "small_layout_refusal_retry",
+        "unsubmitted_drafts_and_input_focus",
+        "failure_recovery",
+        "missing_custom_program",
+        "incremental_vanished_entry",
+        "refused_browser_layouts",
+        "pending_layout_refusal",
+        "layout_during_refresh",
+        "producer_teardown_restart"
+      ]
+    }
+  ],
+  "archives": {
+    "native-final": {
+      "status": "passed",
+      "files": 135,
+      "archive": {
+        "sha256": "872acc10bb1677b053a2da3ad64521a3d454cfbe6b1fd80eda55d2078493c4f6",
+        "bytes": 5090035
+      },
+      "source_root": "/dev/shm/browser-continuity-final",
+      "gzip_crc": true
+    },
+    "legacy-final": {
+      "status": "passed",
+      "files": 20,
+      "archive": {
+        "sha256": "1cf533c0b96a092b47d87de4891a28ef424315f6cb6f2ec967ad7a7e251c2eb3",
+        "bytes": 1846
+      },
+      "source_root": "/dev/shm/browser-continuity-legacy",
+      "gzip_crc": true
+    },
+    "linux-final": {
+      "status": "passed",
+      "files": 38,
+      "archive": {
+        "sha256": "df25ff4ee19826282fca2e0ad2eaeb624ed359dc4ea82e5eda19b6730dba8c6e",
+        "bytes": 4014927
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/r1-browser-continuity-checkpoint",
+      "gzip_crc": true
+    },
+    "native-initial-failure": {
+      "status": "passed",
+      "files": 18,
+      "archive": {
+        "sha256": "905e4f1fdd150bc9f62314d9e4b7ccbdc3c1f1d0c4d14e0cb6f79cdb5bf32c53",
+        "bytes": 286538
+      },
+      "source_root": "/dev/shm/browser-continuity-final",
+      "gzip_crc": true
+    },
+    "native-second-failure": {
+      "status": "passed",
+      "files": 19,
+      "archive": {
+        "sha256": "7a16e2be2513f14d6bfd630cff6af457d48f9a564eaf3e955fe41de8ad2f186f",
+        "bytes": 382360
+      },
+      "source_root": "/dev/shm/browser-continuity-final",
+      "gzip_crc": true
+    },
+    "old-module-qualification": {
+      "status": "passed",
+      "files": 181,
+      "archive": {
+        "sha256": "1e82f300d4c554858f035eb570dc608e01386f75315536b4ca269c798641d386",
+        "bytes": 33839758
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/qualification-evidence",
+      "gzip_crc": true
+    }
+  },
+  "cleanup": {
+    "status": "passed",
+    "retired": [
+      {
+        "root": "/dev/shm/browser-continuity-final/browser-continuity-77cvxz9y",
+        "files": 135,
+        "archive": {
+          "sha256": "872acc10bb1677b053a2da3ad64521a3d454cfbe6b1fd80eda55d2078493c4f6",
+          "bytes": 5090035
+        }
+      },
+      {
+        "root": "/dev/shm/browser-continuity-legacy/input",
+        "files": 5,
+        "archive": {
+          "sha256": "1cf533c0b96a092b47d87de4891a28ef424315f6cb6f2ec967ad7a7e251c2eb3",
+          "bytes": 1846
+        }
+      },
+      {
+        "root": "/dev/shm/browser-continuity-legacy/button",
+        "files": 5,
+        "archive": {
+          "sha256": "1cf533c0b96a092b47d87de4891a28ef424315f6cb6f2ec967ad7a7e251c2eb3",
+          "bytes": 1846
+        }
+      },
+      {
+        "root": "/dev/shm/browser-continuity-legacy/fields",
+        "files": 5,
+        "archive": {
+          "sha256": "1cf533c0b96a092b47d87de4891a28ef424315f6cb6f2ec967ad7a7e251c2eb3",
+          "bytes": 1846
+        }
+      },
+      {
+        "root": "/dev/shm/browser-continuity-legacy/geometry",
+        "files": 5,
+        "archive": {
+          "sha256": "1cf533c0b96a092b47d87de4891a28ef424315f6cb6f2ec967ad7a7e251c2eb3",
+          "bytes": 1846
+        }
+      },
+      {
+        "root": "/tmp/fvwm-module-waits-20261015/r1-browser-continuity-checkpoint",
+        "files": 38,
+        "archive": {
+          "sha256": "df25ff4ee19826282fca2e0ad2eaeb624ed359dc4ea82e5eda19b6730dba8c6e",
+          "bytes": 4014927
+        }
+      }
+    ],
+    "preserved": "source, reusable builds, SDK/cache, VM disks, stages, performance references and canonical host archives"
+  },
+  "older_guest_retirement": {
+    "result": {
+      "root": "/tmp/fvwm-module-waits-20261015/qualification-evidence",
+      "files": 181,
+      "bytes": 76575601,
+      "deleted": true
+    },
+    "preserved_archive": {
+      "sha256": "1e82f300d4c554858f035eb570dc608e01386f75315536b4ca269c798641d386",
+      "bytes": 33839758
+    },
+    "preserved": "source, all reusable build directories, VM disks, SDK/cache and all other evidence"
+  },
+  "review": {
+    "source": "P2 undersized-parent publication repaired and independently reconfirmed before gate",
+    "fixture": "strict final oracles and actual child Wait receipts independently reviewed",
+    "visual": "all21 actual captures independently reviewed; six published; enlarged fixed-label tails and refusal shortcut suffix clip, controls remain readable",
+    "final": "no remaining source, fixture or #65 closure blocker"
+  },
+  "cost": {
+    "baseline_form_bytes": 1636240,
+    "final_form_bytes": 1643048,
+    "form_delta_bytes": 6808,
+    "baseline_browser_bytes": 5634701,
+    "final_browser_bytes": 5637354,
+    "browser_delta_bytes": 2653,
+    "new_dependencies": 0,
+    "new_residents": 0,
+    "new_installed_executables": 0,
+    "claim": "unstripped file size only; no RSS/latency/kernel-wakeup or paired speed claim"
+  },
+  "cadence": {
+    "reference": 269,
+    "merged": 1,
+    "count_after_merge": 2,
+    "performance_comparison_due": false,
+    "full_platform_install_defaultX": "not repeated; prior exact receipts retain historic scope"
+  },
+  "resources": "owned Linux container and VM stopped; no BSD runner started; source/build/SDK/cache/stages/disks/performance references preserved",
+  "limits": [
+    "#69 automatic module-scale acceptance remains #51-owned",
+    "1920x1800 enlarged-text captures are not automatic scale qualification",
+    "long status/properties/count tails clip",
+    "refusal shortcut suffix clips; separate View(F7) remains visible",
+    "no fresh full OS/install/default-X/release or physical/AT/nativeCPU qualification"
+  ]
+}

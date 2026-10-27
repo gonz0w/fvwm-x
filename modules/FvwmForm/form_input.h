@@ -9,6 +9,7 @@
 #define FORM_X_EVENT_BUDGET MODULE_X_EVENT_BUDGET
 #define FORM_X_SERVICE_NS MODULE_X_SERVICE_NS
 #define FORM_HEX_TEXT_MAX 1000
+#define FORM_BUTTON_ALT_BASE 1024
 
 typedef struct
 {
@@ -59,6 +60,10 @@ char *form_copy_token(const char *text);
 bool form_parse_timeout(const char *text, form_timeout_args *args);
 /* Key arguments refer to the source tail, before translation/unescaping. */
 bool form_parse_button(const char *text, form_button_args *args);
+/* ASCII letter/digit shortcuts occupy a separate domain from legacy keys. */
+int form_button_alt_code(unsigned long key);
+/* One Alt-X token plus optional whitespace; failure initializes key to -1. */
+bool form_button_alt_key(const char *text, int *key);
 /* Skip a whitespace-delimited field and borrow its next argument or NUL. */
 const char *form_next_argument(const char *text);
 bool form_parse_data(const char *text, form_data_args *args);

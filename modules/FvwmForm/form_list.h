@@ -30,6 +30,9 @@ bool form_list_focus_version(form_list_state *state, int generation, int index);
 void form_list_scroll(form_list_state *state, int amount);
 /* Reflow preserves entry identity, selection, focus and snapshot generation. */
 bool form_list_viewport(form_list_state *state, int rows, int columns);
+/* Publish layout under the same generation rules as a snapshot update. */
+bool form_list_layout(form_list_state *state, int expected, int generation,
+	int rows, int columns);
 size_t form_list_packet(const form_list_state *state,
 	unsigned char packet[FORM_LIST_PACKET_MAX]);
 

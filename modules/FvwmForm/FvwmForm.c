@@ -107,6 +107,8 @@ const struct timeval tv_100ms = {0L, 100000L};
 static struct event *pev;
 static struct event_base *form_timer_base;
 static module_packet_reader form_packet_reader;
+/* Retain the original gravity/position flags when live layout changes minima. */
+static XSizeHints form_size_hints;
 
 /* prototypes */
 static void RedrawSeparator(Item *item);
@@ -210,6 +212,7 @@ static void am_list_commit(char *);
 static void am_list_abort(char *);
 static void am_list_status(char *);
 static void am_list_focus(char *);
+static void am_list_layout(char *);
 static Item *form_current_list;
 static void ct_Message(char *);
 static void ct_Geometry(char *);
@@ -1505,10 +1508,16 @@ static void ct_Choice(char *cp)
 static void ct_Button(char *cp)
 {
   form_button_args args;
+  int alt_key = -1;
 
   /* syntax: *FFButton continue | restart | quit "<text>" */
   if (!form_parse_button(cp, &args)) {
     fprintf(stderr, "%s: incomplete Button arguments\n", module->name);
+    return;
+  }
+  if (strncasecmp(args.key, "Alt-", 4) == 0 &&
+      !form_button_alt_key(args.key, &alt_key)) {
+    fprintf(stderr, "%s: invalid Button Alt shortcut\n", module->name);
     return;
   }
   cp = (char *)args.mode;
@@ -1528,7 +1537,9 @@ static void ct_Button(char *cp)
   else
     item->button.text = "";
   cp = (char *)args.key;
-  if (*cp == '^')
+  if (alt_key >= 0)
+    item->button.keypress = alt_key;
+  else if (*cp == '^')
     item->button.keypress = *(++cp) - '@';
   else if (*cp == 'F')
     item->button.keypress = 256 + atoi(++cp);
@@ -1763,33 +1774,77 @@ static void MassageConfig(void)
   } while (line != &root_line);		 /* do all lines */
 }
 
-/* This path is called only for the opt-in dedicated viewport. Child geometry
- * and policy publish together before repaint or the next input event. */
-void form_viewport_resize(int width, int height)
+/* Resize and explicit live layout share preparation and child positioning.
+ * No state or X request changes until all candidate geometry is validated. */
+static bool form_viewport_reflow(int width, int height, int cell,
+	int row_height, int columns, int expected, int generation)
 {
 	Item *list = CF.viewport;
 	Line *line = &root_line;
 	ui_layout_grid_result grid;
-	int y = ITEM_VSPC, content_width, list_height;
+	form_list_state state, initial;
+	int y = ITEM_VSPC, content_width, list_height, minimum, min_height;
 
 	if (list == NULL || width < 1 || height < 1 ||
-	    width > 32767 || height > 32767)
-		return;
-	if (width < CF.viewport_min_width)
-		width = CF.viewport_min_width;
-	if (height < CF.viewport_min_height)
-		height = CF.viewport_min_height;
+	    width > 32767 || height > 32767 || cell < 1 || cell > 32700 ||
+	    row_height < 1 || row_height > 32767 ||
+	    columns < 1 || columns > 8)
+		return false;
+	minimum = cell + 2 * ITEM_HSPC + 2 * BOX_SPC + 16;
+	do
+	{
+		int fixed = (line->n + 1) * ITEM_HSPC;
+
+		if (line != list->list.line)
+		{
+			for (int i = 0; i < line->n; i++)
+				fixed += line->items[i]->header.size_x;
+			if (fixed > minimum)
+				minimum = fixed;
+		}
+		line = line->next;
+	} while (line != &root_line);
+	min_height = CF.viewport_fixed_height + row_height + 2 * BOX_SPC;
+	if (minimum > 32767 || min_height > 32767)
+		return false;
+	/* Size hints cannot synchronously enlarge the actual parent. A live
+	 * publication must fit it before acknowledging the new generation. */
+	if (generation != 0 && (width < minimum || height < min_height))
+		return false;
+	if (width < minimum)
+		width = minimum;
+	if (height < min_height)
+		height = min_height;
 	content_width = width - 2 * ITEM_HSPC - 2 * BOX_SPC - 16;
 	list_height = height - CF.viewport_fixed_height;
 	if (!ui_layout_grid(content_width, list_height - 2 * BOX_SPC,
-		list->list.viewport_cell, list->list.row_height,
-		1, list->list.viewport_columns, 32, &grid))
-		return;
+		cell, row_height, 1, columns, 32, &grid))
+		return false;
+	state = *list->list.state;
+	initial = *list->list.initial;
+	if (generation != 0)
+	{
+		if (!form_list_layout(&state, expected, generation,
+			grid.rows, grid.columns))
+			return false;
+		initial = state;
+	}
+	else if (!form_list_viewport(&state, grid.rows, grid.columns) ||
+	    !form_list_viewport(&initial, grid.rows, grid.columns))
+		return false;
+	/* Everything below publishes one admitted layout in this event turn. */
+	*list->list.state = state;
+	*list->list.initial = initial;
+	list->list.viewport_cell = cell;
+	list->list.viewport_columns = columns;
+	list->list.row_height = row_height;
+	CF.viewport_min_width = minimum;
+	CF.viewport_min_height = min_height;
+	if (generation != 0)
+		list->list.update_serial = generation;
 	list->header.size_x = width - 2 * ITEM_HSPC;
 	list->header.size_y = list_height;
 	list->list.line->size_y = list_height;
-	form_list_viewport(list->list.state, grid.rows, grid.columns);
-	form_list_viewport(list->list.initial, grid.rows, grid.columns);
 	do
 	{
 		int line_width = (line->n + 1) * ITEM_HSPC;
@@ -1835,6 +1890,17 @@ void form_viewport_resize(int width, int height)
 	 * clearing too; child moves alone would leave stale captions behind. */
 	if (CF.frame != None)
 		XClearWindow(dpy, CF.frame);
+	return true;
+}
+
+void form_viewport_resize(int width, int height)
+{
+	Item *list = CF.viewport;
+
+	if (list != NULL)
+		form_viewport_reflow(width, height, list->list.viewport_cell,
+			list->list.row_height,
+			list->list.viewport_columns, 0, 0);
 }
 
 static void form_viewport_prepare(void)
@@ -2895,6 +2961,7 @@ static void OpenWindows(void)
     sh.min_height = CF.viewport_min_height;
   }
   XSetWMNormalHints(dpy, CF.frame, &sh);
+  form_size_hints = sh;
 
   for (item = root_item_ptr; item != 0;
        item = item->header.next) {	/* all items */
@@ -3093,6 +3160,7 @@ static struct CommandTable am_table[] =
   {"ListCommit",am_list_commit},
   {"ListEntry",am_list_entry},
   {"ListFocus",am_list_focus},
+  {"ListLayout",am_list_layout},
   {"ListStatus",am_list_status},
   {"Map",am_Map},
   {"RenewTimeout",am_renew_timeout},
@@ -3108,6 +3176,7 @@ static bool form_native_message(char *buf)
 		{"ListAbort", am_list_abort}, {"ListBegin", am_list_begin},
 		{"ListCommit", am_list_commit}, {"ListEntry", am_list_entry},
 		{"ListFocus", am_list_focus},
+		{"ListLayout", am_list_layout},
 		{"ListStatus", am_list_status},
 		{"RenewTimeout", am_renew_timeout}, {"SetLabel", am_set_label}
 	};
@@ -3687,6 +3756,45 @@ static void am_list_focus(char *cp)
 	return;
 invalid:
 	fprintf(stderr, "%s: refused ListFocus\n", module->name);
+}
+
+static void am_list_layout(char *cp)
+{
+	const char *tail, *next, *cell_text, *columns_text;
+	Item *p = form_update_target(cp, &tail);
+	int expected, generation, units, columns, cell, row_height;
+
+	if (p == NULL || p != CF.viewport || CF.frame == None ||
+	    p->header.win == None || p->list.viewport_columns == 0 ||
+	    p->list.line->n != 1 || p->list.update != NULL ||
+	    !form_list_number(tail, INT_MAX, &expected))
+		goto invalid;
+	next = form_next_argument(tail);
+	cell_text = form_next_argument(next);
+	columns_text = form_next_argument(cell_text);
+	if (!form_list_number(next, INT_MAX, &generation) ||
+	    !form_list_number(cell_text, 4096, &units) ||
+	    !form_list_number(columns_text, 8, &columns) ||
+	    *form_next_argument(columns_text) != '\0' ||
+	    generation <= p->list.update_serial ||
+	    !form_input_geometry(units, p->header.dt_ptr->dt_Ffont->height,
+		0, 2 * TEXT_SPC, &cell, &row_height) || cell > 32700)
+		goto invalid;
+	if (columns > 1)
+		row_height = 3 * p->header.dt_ptr->dt_Ffont->height +
+			4 * TEXT_SPC;
+	if (!form_viewport_reflow(CF.max_width, CF.total_height,
+		cell, row_height, columns, expected, generation))
+		goto invalid;
+	form_size_hints.flags |= PMinSize;
+	form_size_hints.min_width = CF.viewport_min_width;
+	form_size_hints.min_height = CF.viewport_min_height;
+	XSetWMNormalHints(dpy, CF.frame, &form_size_hints);
+	RedrawFrame(NULL);
+	RedrawItem(p, 0, NULL);
+	return;
+invalid:
+	fprintf(stderr, "%s: refused ListLayout\n", module->name);
 }
 
 static void am_list_abort(char *cp)

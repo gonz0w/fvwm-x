@@ -67,6 +67,13 @@ func (b *browser) sendCommands(commands []string) error {
 	return nil
 }
 func (b *browser) waitNative(token string, published uint32, pending uint32) ([]byte, error) {
+	packet, _, err := b.waitNativeGeneration(token, published, pending, 0)
+	return packet, err
+}
+
+// Only layout observations admit an unchanged generation as an atomic refusal.
+// Other transactions still require their exact published/pending pair.
+func (b *browser) waitNativeGeneration(token string, published, pending, unchanged uint32) ([]byte, uint32, error) {
 	deadline := time.NewTimer(time.Until(b.renderDeadline))
 	defer deadline.Stop()
 	for {
@@ -76,23 +83,38 @@ func (b *browser) waitNative(token string, published uint32, pending uint32) ([]
 			if len(fields) < 2 || fields[1] != token {
 				continue
 			}
-			if len(fields) != 6 || fields[0] != "FVWM_FORM_LIST" || fields[2] != strconv.FormatUint(uint64(published), 10) || fields[3] != strconv.FormatUint(uint64(pending), 10) || fields[4] != "0" {
-				return nil, errors.New("native collection publication refused")
+			if len(fields) != 6 || fields[0] != "FVWM_FORM_LIST" || fields[3] != strconv.FormatUint(uint64(pending), 10) || fields[4] != "0" {
+				return nil, 0, errors.New("native collection publication refused")
 			}
-			return nativePacket(fields[5], published)
+			observed := published
+			if unchanged != 0 && fields[2] == strconv.FormatUint(uint64(unchanged), 10) {
+				observed = unchanged
+			} else if fields[2] != strconv.FormatUint(uint64(published), 10) {
+				return nil, 0, errors.New("native collection publication refused")
+			}
+			packet, err := nativePacket(fields[5], observed)
+			return packet, observed, err
 		case <-b.session.Done():
-			return nil, net.ErrClosed
+			return nil, 0, net.ErrClosed
 		case <-deadline.C:
-			return nil, errors.New("native collection publication timed out")
+			return nil, 0, errors.New("native collection publication timed out")
 		}
 	}
 }
 func (b *browser) snapshotNative(phase string, published, pending uint32) ([]byte, error) {
-	tag := b.nativeTag(phase)
-	if err := b.session.Send("SendToModule " + b.alias + " ListStatus picks " + tag + " selection"); err != nil {
+	tag, err := b.requestNativeSnapshot(phase)
+	if err != nil {
 		return nil, err
 	}
 	return b.waitNative(tag, published, pending)
+}
+
+func (b *browser) requestNativeSnapshot(phase string) (string, error) {
+	tag := b.nativeTag(phase)
+	if err := b.session.Send("SendToModule " + b.alias + " ListStatus picks " + tag + " selection"); err != nil {
+		return "", err
+	}
+	return tag, nil
 }
 func entryIDs(entries []collection.Entry) []string {
 	ids := make([]string, 0, len(entries))
@@ -122,6 +144,55 @@ func iconName(kind string) string {
 		return "other"
 	}
 }
+
+func (b *browser) updateLayout() (err error) {
+	const refused = "View unchanged: enlarge the browser window and retry View (F7)."
+	mode := b.requestedView()
+	if mode == b.renderView {
+		return nil
+	}
+	defer func() {
+		if err != nil {
+			b.view = b.renderView
+		}
+	}()
+	if b.nativeGeneration >= 2147483647 {
+		return errors.New("native collection generation exhausted")
+	}
+	columns := 1
+	if mode == "grid" {
+		columns = 8
+	}
+	next := b.nativeGeneration + 1
+	if err = b.session.Send(fmt.Sprintf("SendToModule %s ListLayout picks %d %d 18 %d", b.alias, b.nativeGeneration, next, columns)); err != nil {
+		return err
+	}
+	tag, err := b.requestNativeSnapshot("layout")
+	if err != nil {
+		return err
+	}
+	packet, observed, err := b.waitNativeGeneration(tag, next, 0, b.nativeGeneration)
+	if err != nil {
+		return err
+	}
+	if err = b.model.SelectNative(b.model.Generation, packet); err != nil {
+		return err
+	}
+	if observed == b.nativeGeneration {
+		b.view = b.renderView
+		b.status = refused
+		return nil
+	}
+	// This changes only viewport geometry: do not replay ListFocus, entries or
+	// input controls. Native range/scroll anchors and unsent drafts stay owned
+	// by the existing Form, including an intentionally offscreen focus.
+	b.nativeGeneration, b.renderView = next, mode
+	if b.status == refused {
+		b.status = "View changed to " + mode + "."
+	}
+	return nil
+}
+
 func (b *browser) update() error {
 	if err := b.session.Send("SendToModule " + b.alias + " RenewTimeout 3000"); err != nil {
 		return err
@@ -209,6 +280,9 @@ func (b *browser) update() error {
 			return b.render()
 		}
 	}
+	if err := b.updateLayout(); err != nil {
+		return err
+	}
 	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.status}, {"watcher", b.watchText()}, {"projection", b.projectionText()}, {"counts", b.countText()}, {"progress", b.progressText()}, {"readiness", b.readinessText()}}
 	labels = append(labels, b.inspectorLabels()...)
 	commands := make([]string, 0, len(labels))
@@ -251,7 +325,12 @@ func (b *browser) show() (err error) {
 	}
 	b.renderSerial++
 	b.renderDeadline = time.Now().Add(workerLimit)
-	if b.alias == "" || b.native == nil || b.renderPath != b.currentPath() || b.renderView != b.viewing() || b.nativeGeneration >= 2147483647 {
+	// Content and layout publications each consume a generation. Keep the
+	// existing explicit rebuild boundary when either would exhaust it.
+	exhausted := b.nativeGeneration >= 2147483647 ||
+		b.nativeGeneration == 2147483646 && b.renderView != b.requestedView() &&
+			(!entriesEqual(b.model.VisibleEntries(), b.viewEntries) || b.replaceSelection)
+	if b.alias == "" || b.native == nil || b.renderPath != b.currentPath() || exhausted {
 		err = b.render()
 	} else {
 		err = b.update()
@@ -273,11 +352,15 @@ func (b *browser) show() (err error) {
 type nativeLabel struct{ name, value string }
 
 func (b *browser) projectionText() string {
+	return b.projectionTextMode(b.viewing())
+}
+
+func (b *browser) projectionTextMode(mode string) string {
 	direction := "ascending"
 	if b.reverse {
 		direction = "descending"
 	}
-	return fmt.Sprintf("Filter: %s; sort: %s %s", b.model.Filter(), b.ordering(), direction)
+	return fmt.Sprintf("View: %s; filter: %s; sort: %s %s", mode, b.model.Filter(), b.ordering(), direction)
 }
 func (b *browser) countText() string {
 	return fmt.Sprintf("%d/%d visible; %d selected (%d filtered out, limit %d)", b.model.VisibleCount(), len(b.model.Entries), len(b.model.Selected), b.model.HiddenSelectedCount(), collection.MaxSelected)

@@ -89,8 +89,12 @@ with one literal absolute-path argument; no shell evaluates a filename.
 Application started means process creation succeeded, not that the application
 opened a window or finished.
 
-View (F7) switches list/grid without changing the model, focused ID or selected
-IDs. `--view list|grid` chooses the initial presentation (default list); the
+View (F7) switches the existing native list/grid viewport without changing the
+model, focused ID, selection, range anchor or unsent Path/filter drafts. The
+projection label shows the mode after the native collection acknowledges it.
+The old top entry stays in the first visual row where geometry permits; edges
+clamp to a legal row. Switching does not reveal a wheel-scrolled offscreen
+focus. `--view list|grid` chooses the initial presentation (default list); the
 choice lasts for this browser instance and is not saved. Native type marks
 identify directories, regular files, links and other entries; they are not
 thumbnails or externally loaded themed icons. Labels are clipped within grid
@@ -115,6 +119,17 @@ runs. Clear filter restores all loaded entries without discarding the input
 draft; the applied filter is shown separately. Ctrl-U clears the focused input.
 Applying an empty input also clears the filter. The filter persists across refresh and folder navigation.
 
+Every browser action has a keyboard shortcut, including while Path/filter input
+is focused. Alt-F applies the filter, Alt-C clears the applied filter, Alt-S
+cycles sort and Alt-R reverses direction. Alt-A selects visible entries and
+Alt-D clears the complete selection. Alt-H, Alt-U and Alt-B navigate Home, Up
+and Back; Alt-G submits Path and Alt-X cancels current work. Configured actions
+use Alt-1 through Alt-4 in their displayed order. The labels show these keys;
+F2 through F8, Enter and Escape retain their displayed actions. Alt shortcuts
+perform actions without inserting their letter/digit into an input. Alt-F and
+Alt-G submit their respective draft; other shortcuts preserve unsent input
+drafts when the resulting operation retains the current folder/view.
+
 Sort cycles through name, kind, size and modified time. The direction button
 toggles ascending/descending. Directories remain first in both directions;
 primary-key ties use raw filename byte order in the chosen direction. Size is
@@ -125,11 +140,17 @@ when the old focus is excluded. Refresh retains surviving focus and selection,
 including filtered-out selections. If focus disappears, the next surviving
 visible old neighbor receives focus, then the previous one, otherwise the first
 new visible item. Same-folder refresh, filtering, sorting, selection controls,
-properties and worker-status updates retain the same Form/native child and
-unsent input drafts. Surviving viewport/range anchors follow entry identity;
-a wheel-scrolled focus does not force scrolling during live publication.
-Navigation to another folder and list/grid layout changes create a new native
-view and reveal the focused item; input drafts reset at those boundaries.
+properties, list/grid switches and worker-status updates retain the same
+Form/native child and unsent input drafts. Surviving viewport/range anchors
+follow entry identity; a wheel-scrolled focus does not force scrolling during
+live publication.
+Navigation to another folder creates a new native view and reveals the focused
+item; input drafts reset at that boundary. Exhausting the native generation
+counter also requires a new view. If the actual window is too small for the
+requested layout, the browser keeps its observed mode, controls and drafts and
+asks you to enlarge the window and retry View (F7). It does not report that
+requested mode as applied. A malformed, stale or lost native observation retires
+the browser lifetime and requires a fresh browser instance.
 
 Refresh reports added, updated and removed entry counts and the number of
 selected entries that disappeared. Counts compare directory-entry identities
@@ -442,9 +463,13 @@ and stale state refuse the whole requested edit. See FvwmMFL(1) for exact schema
 
 These controls use the existing native publication handshake. Success means the
 native view was published; interrupted client waits do not undo submitted work.
-Selection/filter/sort/properties updates retain native windows and input drafts;
-view changes can recreate the layout. Accepted controls renew the idle limit.
+Selection/filter/sort/properties and list/grid updates retain native windows
+and input drafts. Accepted controls renew the idle limit.
 Properties use admitted observations, with no recursive scan or link following.
+If the actual window is too small for a requested view, the correlated control
+returns `operation_refused` and retains the current mode and usable browser.
+Enlarge the window and submit a fresh view request. Requesting the already
+current mode succeeds without changing the native generation.
 
 Queries read only the admitted snapshot. Writable clients can also submit typed
 Home/Up/Back/item/path navigation, refresh, open, terminal and configured-selection

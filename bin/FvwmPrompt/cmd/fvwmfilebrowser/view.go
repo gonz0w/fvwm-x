@@ -19,7 +19,7 @@ func (b *browser) render() error {
 	alias := "FvwmFiles-" + b.instance + "-" + strconv.FormatUint(b.form, 10) + "-ready"
 	b.alias = alias
 	b.lastControl = 0
-	b.nativeGeneration = 1
+	mode := b.requestedView()
 	callback := "Command Echo FVWM_FILES_3 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " "
 	commands := []string{}
 	if oldAlias != "" {
@@ -42,21 +42,21 @@ func (b *browser) render() error {
 	line(`Line left`)
 	line(`Label watcher 56 "` + displayText(b.watchText(), 120) + `"`)
 	line(`Line left`)
-	line(`Label projection 56 "` + displayText(b.projectionText(), 120) + `"`)
+	line(`Label projection 56 "` + displayText(b.projectionTextMode(mode), 120) + `"`)
 	line(`Line left`)
 	line(`Label progress 56 "` + displayText(b.progressText(), 120) + `"`)
 	line(`Line left`)
 	line(`Label readiness 56 "` + displayText(b.readinessText(), 120) + `"`)
 	line("Line left")
 	line(`Input filter 24 ""`)
-	button("Filter", "", "filter", "x$(filter:Base64)")
-	button("Clear", "", "unfilter", "-")
+	button("Filter (Alt-F)", "Alt-F", "filter", "x$(filter:Base64)")
+	button("Clear (Alt-C)", "Alt-C", "unfilter", "-")
 	line(`Line left`)
-	button("Sort", "", "sort", "-")
-	button("Reverse", "", "reverse", "-")
-	button("View: "+b.viewing()+" (F7)", "F7", "view", "-")
+	button("Sort (Alt-S)", "Alt-S", "sort", "-")
+	button("Reverse (Alt-R)", "Alt-R", "reverse", "-")
+	button("View (F7)", "F7", "view", "-")
 	line("Line left")
-	if b.viewing() == "grid" {
+	if mode == "grid" {
 		line("List picks 56 3")
 		line("ListViewport 18 8")
 	} else {
@@ -87,17 +87,18 @@ func (b *browser) render() error {
 	line("Line left")
 	line(`Label counts 56 "` + b.countText() + `"`)
 	line("Line left")
-	button("Select visible", "", "select-visible", "-")
-	button("Clear selection", "", "clear-selection", "-")
+	button("Select visible (Alt-A)", "Alt-A", "select-visible", "-")
+	button("Clear selection (Alt-D)", "Alt-D", "clear-selection", "-")
 	button("Properties (F2)", "F2", "properties", "-")
 	for _, label := range b.inspectorLabels() {
 		line("Line left")
 		line("Label " + label.name + " 56 \"" + displayText(label.value, 120) + "\"")
 	}
 	line("Line left")
-	button("Home", "", "home", "-")
-	button("Up", "", "up", "-")
-	button("Back", "", "back", "-")
+	button("Home (Alt-H)", "Alt-H", "home", "-")
+	button("Up (Alt-U)", "Alt-U", "up", "-")
+	button("Back (Alt-B)", "Alt-B", "back", "-")
+	line("Line left")
 	button("Refresh (F5)", "F5", "refresh", "-")
 	button("Hidden (F6)", "F6", "hidden", "-")
 	button("Watch (F8)", "F8", "watch", "-")
@@ -108,15 +109,18 @@ func (b *browser) render() error {
 	line("Line left")
 	line(`Text "Path:"`)
 	line(`Input path 32 ""`)
-	button("Go", "", "path", "x$(path:Base64)")
-	button("Cancel", "", "cancel", "-")
+	button("Go (Alt-G)", "Alt-G", "path", "x$(path:Base64)")
+	button("Cancel (Alt-X)", "Alt-X", "cancel", "-")
 	button("Close (Esc)", "^[", "close", "-")
 	for index, action := range b.actions {
 		line("Line left")
-		button(displayText(action.Label, 32), "", "custom", strconv.Itoa(index))
+		key := "Alt-" + strconv.Itoa(index+1)
+		button(displayText(action.Label, 32)+" ("+key+")", key, "custom", strconv.Itoa(index))
 	}
 	line(`Line left`)
 	line(`Text "Arrows/PgUp/PgDn: move; Shift: extend; Space: select."`)
+	line(`Line left`)
+	line(`Text "Alt-letter/digit: labeled actions; Ctrl-U: clear input."`)
 	line(`Line left`)
 	line(`Text "Wheel: scroll; Tab: fields. Idle close: 5 minutes."`)
 	line("Timeout 3000 \"Echo FVWM_FILES_3 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x timeout\" \"\"")
@@ -124,9 +128,6 @@ func (b *browser) render() error {
 	if err := b.sendCommands(commands); err != nil {
 		return err
 	}
-	b.viewEntries = entries
-	b.renderPath, b.renderView = b.currentPath(), b.viewing()
-	b.replaceSelection = false
 	if b.native != nil {
 		packet, err := b.waitNative(b.nativeTag("start"), 1, 0)
 		if err != nil {
@@ -136,5 +137,9 @@ func (b *browser) render() error {
 			return err
 		}
 	}
+	b.nativeGeneration = 1
+	b.viewEntries = entries
+	b.renderPath, b.renderView = b.currentPath(), mode
+	b.replaceSelection = false
 	return nil
 }

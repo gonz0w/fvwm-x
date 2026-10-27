@@ -63,6 +63,15 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
             fvwm_event, fvwm_pager, fvwm_iconman],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 240)
+    test('browser-continuity-xvfb', py,
+        args: [files('live_x/browser_continuity_live.py'),
+            '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'browser-continuity'],
+        depends: [fvwm3, fvwm_mfl, fvwm_file_browser, fvwm_form,
+            fvwm_desktop, fvwm_desktop_worker, fvwm_desktop_capture,
+            fvwm_backer, fvwm_buttons, fvwm_event],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 480)
     test('native-layout-xvfb', py,
         args: [files('live_x/native_layout_live.py'), '--build', meson.project_build_root(),
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'native-layout'],

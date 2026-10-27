@@ -494,8 +494,8 @@ does not force the focused entry back onscreen during resize.
   After List and before its entries, opt into live updates and a generation
   prefix in the encoded list callback. Initial generation is 1. Omit this
   directive to keep the original immutable list/callback format. Use unique,
-  unquoted, whitespace-free list names for live commands. Layout and geometry
-  stay fixed; only the entry snapshot changes.
+  unquoted, whitespace-free list names for live commands. Fixed lists retain
+  their layout; an opted-in ListViewport also accepts live ListLayout changes.
 
 Send the following runtime commands directly to the running form's exact
 alias, for example `SendToModule MyFiles ListBegin picks 1 2`.
@@ -551,6 +551,32 @@ candidate is drawn or substituted into commands.
   Send through `SendToModule Alias ListFocus picks 2 32` and observe native
   `ListStatus picks token selection` before releasing the old identity map.
 
+**FvwmForm: ListLayout ``_name_ _expected_ _next_ _cell_units_ _maximum_columns_``*::
+  Change the prepared, versioned ListViewport's presentation in the running
+  Form. Expected must equal its positive published generation. Next must be
+  greater than every admitted snapshot or layout generation, including aborted
+  snapshots, and at most 2147483647. Cell units use the same 1..4096 ButtonFont
+  units as ListViewport; maximum columns is 1..8. Maximum 1 chooses compact
+  list rows, while 2..8 chooses icon-grid cells even when one column fits.
+  Fixed lists, unversioned lists, pending snapshot updates, stale generations,
+  malformed arguments and unrepresentable geometry refuse the entire operation.
++
+Reflow keeps the current Form size and refuses if it cannot contain the new
+minimum cell width, fixed controls and one complete row. Enlarge the Form and
+retry with the unchanged expected generation after such a refusal. Minimum
+size hints change with the admitted cell width and row height.
+The Form, collection child and controls retain their X windows. Entry content,
+input drafts, active input/list focus, focused entry, range anchor and selection
+remain. The old top entry stays in the first visual row where possible, with
+edge clamping; an intentionally offscreen focused entry stays offscreen.
+The complete admitted layout advances the published generation, so callbacks
+from the preceding layout are stale. Restart restores this accepted state.
+For example, send `SendToModule MyFiles ListLayout picks 2 3 18 8`, then
+`SendToModule MyFiles ListStatus picks layout_3 selection`. Wait for the actual
+native reply reporting published 3, pending 0 and its generation-3 selection
+packet before advancing the consumer's mode/generation. Refusal leaves the
+published state, pending transaction and controls unchanged.
+
 **FvwmForm: ListAbort ``_name_ _generation_``*::
   Discard the matching pending snapshot and free its labels. A discarded
   generation cannot be reused. Pending resources are also freed on module exit.
@@ -565,7 +591,7 @@ candidate is drawn or substituted into commands.
   append `x` followed by the current versioned list's URL-base64 packet. This
   observes native input made during staging without changing it. The original
   five-field reply remains unchanged when that word is omitted.
-  Wait for this native reply after Commit or
+  Wait for this native reply after Commit, ListLayout or
   Abort before advancing the consumer's published mapping. A core Echo alone
   acknowledges core command processing, not native publication. Unknown or
   ambiguous names and malformed commands produce diagnostics; a consumer must
@@ -648,12 +674,23 @@ selected.
   commands are the following *FvwmForm: Commands.
 +
 The optional _key_ specifies a keyboard shortcut that activates the
-button. It is in either a control character, specified as ^@, ^A, ...,
-^_, or a function key, specified as F1, F2, ..., F35. Control keys that
+button. It can be a control character, specified as ^@, ^A, ...,
+^_, a function key, specified as F1, F2, ..., F35, or an Alt shortcut,
+specified as Alt-F or Alt-1. Alt shortcuts accept exactly one ASCII letter
+or digit; letters and the Alt prefix are case-insensitive. An invalid Alt-
+shortcut ignores the button with a diagnostic. Control keys that
 are used for cursor movement in text input fields cannot activate any
 buttons, with the exception of TAB (^I), RETURN (^M), LINEFEED (^J),
 which can activate a button when the cursor is in the last text input
 field.
++
+Configured Alt shortcuts work while either a text input or collection has
+focus. They require the X11 Mod1 modifier and no Control or Mod4 (the usual
+Super modifier). Shift and Caps Lock can change a letter's case. The first
+defined matching button activates through its ordinary command path, without
+inserting the shortcut into a draft or changing collection focus/selection.
+Unmatched Alt keys retain the existing text-input and collection behavior.
+Show the shortcut in the button's label when users need to discover it.
 +
 Put the label in double quotes.
 Use a backslash before a double quote to include it in the label.

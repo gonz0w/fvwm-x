@@ -372,6 +372,36 @@ bool form_parse_button(const char *text, form_button_args *args)
 	return true;
 }
 
+int form_button_alt_code(unsigned long key)
+{
+	if (key >= 'A' && key <= 'Z')
+		key += 'a' - 'A';
+	if ((key >= 'a' && key <= 'z') || (key >= '0' && key <= '9'))
+		return FORM_BUTTON_ALT_BASE + (int)key;
+	return -1;
+}
+
+bool form_button_alt_key(const char *text, int *key)
+{
+	int candidate;
+
+	*key = -1;
+	if (text == NULL || (text[0] != 'A' && text[0] != 'a') ||
+	    (text[1] != 'L' && text[1] != 'l') ||
+	    (text[2] != 'T' && text[2] != 't') || text[3] != '-')
+		return false;
+	candidate = form_button_alt_code((unsigned char)text[4]);
+	if (candidate < 0)
+		return false;
+	text += 5;
+	while (isspace((unsigned char)*text))
+		text++;
+	if (*text != '\0')
+		return false;
+	*key = candidate;
+	return true;
+}
+
 int form_readiness_timeout(bool queued_x, bool timer_pending)
 {
 	return queued_x ? 0 : timer_pending ? 100 : -1;

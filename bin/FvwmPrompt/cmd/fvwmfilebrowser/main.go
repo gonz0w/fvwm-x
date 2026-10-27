@@ -93,6 +93,15 @@ type browser struct {
 }
 
 func (b *browser) viewing() string {
+	// Provider state describes the observed projection. A requested mode is
+	// private until Form acknowledges its native layout generation.
+	if b.renderView != "" {
+		return b.renderView
+	}
+	return b.requestedView()
+}
+
+func (b *browser) requestedView() string {
 	if b.view == "grid" {
 		return "grid"
 	}

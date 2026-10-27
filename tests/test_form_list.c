@@ -66,6 +66,61 @@ static void test_versioned_focus(void)
 	assert(!form_list_focus_version(&s, 7, 0));
 }
 
+static void test_live_layout(void)
+{
+	form_list_state s = {.rows = 4, .columns = 1, .generation = 7};
+	form_list_state before, expected;
+	unsigned char packet[FORM_LIST_PACKET_MAX];
+
+	for (int i = 0; i < 100; i++)
+		assert(form_list_add(&s, i == 12 || i == 99));
+	form_list_focus(&s, 45);
+	assert(form_list_extend(&s, 47));
+	form_list_scroll(&s, INT_MIN);
+	before = s;
+	assert(form_list_layout(&s, 7, 8, 6, 3));
+	expected = before;
+	expected.rows = 6;
+	expected.columns = 3;
+	expected.generation = 8;
+	assert(memcmp(&s, &expected, sizeof(s)) == 0);
+	/* A wheel-scrolled focus stays offscreen; its range anchor survives. */
+	assert(s.focus == 47 && s.anchor == 45 && s.top == 0);
+	assert(form_list_packet(&s, packet) == 19 && packet[3] == 8);
+	assert(!form_list_focus_version(&s, 7, 0));
+	form_list_scroll(&s, 5);
+	assert(s.top == 15);
+	assert(form_list_layout(&s, 8, 9, 4, 1) && s.top == 15);
+	assert(form_list_layout(&s, 9, 10, 4, 8) && s.top == 8);
+	assert(s.focus == 47 && s.anchor == 45 &&
+		memcmp(s.bits, before.bits, sizeof(s.bits)) == 0);
+	form_list_scroll(&s, INT_MAX);
+	assert(form_list_layout(&s, 10, 11, 32, 8) && s.top == 0);
+	before = s;
+	assert(!form_list_layout(NULL, 11, 12, 1, 1));
+	assert(!form_list_layout(&s, 0, 12, 1, 1));
+	assert(!form_list_layout(&s, 10, 12, 1, 1));
+	assert(!form_list_layout(&s, 11, 11, 1, 1));
+	assert(!form_list_layout(&s, 11, 10, 1, 1));
+	assert(!form_list_layout(&s, 11, 12, 0, 1));
+	assert(!form_list_layout(&s, 11, 12, 33, 1));
+	assert(!form_list_layout(&s, 11, 12, 1, 0));
+	assert(!form_list_layout(&s, 11, 12, 1, 9));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	s.refused = true;
+	before = s;
+	assert(!form_list_layout(&s, 11, 12, 1, 1));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+	s = (form_list_state){.rows = 1};
+	assert(!form_list_layout(&s, 0, 1, 1, 1));
+	s.generation = 1;
+	assert(form_list_layout(&s, 1, INT_MAX, 32, 8));
+	assert(s.count == 0 && s.top == 0 && s.generation == INT_MAX);
+	before = s;
+	assert(!form_list_layout(&s, INT_MAX, INT_MAX, 1, 1));
+	assert(memcmp(&s, &before, sizeof(s)) == 0);
+}
+
 static void test_grid_ranges(void)
 {
 	form_list_state s = {.rows = 4, .columns = 4};
@@ -204,6 +259,7 @@ int main(void)
 	test_viewport();
 	test_grid_ranges();
 	test_versioned_focus();
+	test_live_layout();
 	test_updates();
 	test_live_choices_and_status();
 	form_list_state s = {.rows = 12};

@@ -36,6 +36,47 @@ closes after five minutes without a callback or accepted external control. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Browser view continuity and keyboard actions
+
+F7 now switches the same native browser between list and grid. The Form, input
+and collection windows stay in place, retaining both unsent drafts, selection,
+focus, range and viewport anchors. The View label describes the observed mode
+after a real native acknowledgement. Folder navigation can still rebuild.
+
+![Slate grid in the same browser with keyboard mnemonics](screenshots/continuity-slate-grid.png)
+
+Every browser button has a documented keyboard action: existing F2–F8/Enter/Escape
+plus visible Alt-letter shortcuts and Alt-1..4 for configured selection actions.
+The four Missing buttons are synthetic configured examples used to test an
+unavailable program; they are not default desktop applications.
+
+![Enlarged native browser with list controls and keyboard help](screenshots/continuity-large-resized.png)
+
+A grid that cannot fit the current window refuses the switch and keeps the old
+view usable. Enlarge and retry F7. The one-row minimum-height capture below
+retains both draft fields; the real callback checks verify their complete bytes.
+Long status/properties/count tails can clip, especially with enlarged text;
+the readable View button remains available when the status suffix clips.
+
+![Dune browser retaining its old mode and drafts after an undersized grid refusal](screenshots/continuity-dune-refused.png)
+
+Provider loss retains last-good rows and refuses their effects; refresh recovers.
+Missing/non-executable programs report failed, never a successful launch.
+
+![Slate browser retaining unavailable data](screenshots/continuity-slate-unavailable.png)
+
+![Dune browser recovered with retained drafts and selection](screenshots/continuity-dune-recovered.png)
+
+![Enlarged successor browser after producer teardown and a fresh lifetime](screenshots/continuity-large-successor.png)
+
+All six unmodified captures come from one source-bound three-theme checkpoint,
+with a 1920×1800 nested display and 4,096 synthetic entries. They demonstrate
+configured 18pt text, not automatic UI scaling. #69 remains open for that actual
+scale work; #65 action acceptance is complete on the associated PR's merge.
+[Capture manifest](screenshots/continuity-manifest.json),
+[manual](fvwm-file-browser.adoc),
+[results and limits](../dev-docs/verification/VERIFICATION-2026-10-27-BROWSER-CONTINUITY.md).
+
 ## Shared action palette
 
 Super+A opens one optional native palette for windows, applications, advertised

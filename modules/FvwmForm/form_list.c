@@ -132,6 +132,22 @@ bool form_list_viewport(form_list_state *s, int rows, int columns)
 	return true;
 }
 
+bool form_list_layout(form_list_state *s, int expected, int generation,
+	int rows, int columns)
+{
+	form_list_state candidate;
+
+	if (s == NULL || s->refused || s->generation <= 0 ||
+	    expected != s->generation || generation <= expected)
+		return false;
+	candidate = *s;
+	if (!form_list_viewport(&candidate, rows, columns))
+		return false;
+	candidate.generation = generation;
+	*s = candidate;
+	return true;
+}
+
 void form_list_focus(form_list_state *s, int index)
 {
 	int columns = form_list_columns(s);

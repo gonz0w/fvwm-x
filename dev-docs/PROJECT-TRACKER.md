@@ -1,6 +1,6 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-26. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-27. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
@@ -419,10 +419,57 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 browser view continuity — 2026-10-27
+
+Owner: Cam; `codex/r1-browser-continuity`; FILE-VIEW-01 #69, related #65.
+Status: all five #65 criteria qualified for review; closes on merge. #69
+continuity/keyboard slice is qualified; automatic module-scale acceptance remains.
+Fix the explicit remaining list/grid switch gap: native Form currently rebuilds
+and discards unsubmitted Path/filter drafts and viewport position. Add a bounded
+generation-checked live collection layout command, preserve Form/child identity,
+native focus/selection/range/scroll and drafts, then adopt it in the browser with
+real native ACKs and truthful mode/readiness. Add explicit Alt-letter/digit native
+shortcuts and complete browser keyboard-action discovery without changing legacy
+editing or button traversal. Exercise missing/non-executable action programs on
+valid targets, correlated failures, no duplicate handoffs and refresh recovery. Preserve stale callback refusal,
+layout sizing bounds and fixed personal Form behavior. Folder navigation may
+still rebuild its view; no alternate browser/provider or new core packet ABI.
+
+Reuse accepted #212 layout, #213 binding, #65 action and #66 data/watch contracts.
+Audit all frozen #69/#65 criteria against actual accepted receipts; close only
+owners with complete linked outcomes. #65 is the conditional closure target.
+#69 remains open for its actual automatic module-scale acceptance under #51;
+enlarged text is not substituted for 1.25/1.5/2 scale-path evidence. No criterion narrowing, hidden deferral or
+full-audit prerequisite. Related gaps found during this finite closeout stay with
+their real owner. One combined Linux Form/browser policy/native checkpoint,
+three theme configurations including enlarged text, screenshots and affected
+sanitizers/race as warranted. No automatic support/install matrix; native packet
+ABI and OS APIs remain unchanged. PR269 comparison stays 1/5 after PR270,
+becoming 2/5 on this runtime merge; no periodic comparison due. Parked work stays
+excluded. Lead owns resources, tracker, evidence and signed delivery; bounded
+implementation and separate review follow selected project routing, whose actual
+model execution is not independently attested.
+
+Combined affected checkpoint passes four C policies, five Go package outcomes,
+browser race/vet, three scoped leak-enabled sanitizer tests, four legacy Form X
+clients and both manuals. Actual Slate/Dune/enlarged profiles pass with 14 layout
+switches and 27 unchanged children at 4096 entries each; all 21 captures reviewed,
+six published. Minimum-size refusal/retry, real byte drafts, keyboard actions,
+correlated missing-program failure and loss/restart cleanup pass. One pre-gate
+review geometry repair and original fixture/configure failures remain recorded;
+no product change follows qualification. Prior support/install receipts keep
+original scope; no fresh all-OS/default-X/full install claim. All owned resources
+are stopped; exact byte-verified capture duplicates retired, caches/disks kept.
+[Results/criterion map](verification/VERIFICATION-2026-10-27-BROWSER-CONTINUITY.md),
+[contract](decisions/BROWSER-CONTINUITY-2026-10-27.md),
+[gallery](../doc/development-preview.md#browser-view-continuity-and-keyboard-actions).
+
 ## R1 shared action palette — 2026-10-27
 
-Owner: Cam; `codex/r1-action-palette`; ACTIONS-01 #219. Status: all five criteria
-qualified for review; #219 closes on merge. Batch eight
+Owner: Cam; ACTIONS-01 #219. Status: merged in [PR #270](https://github.com/gonz0w/fvwm-x/pull/270)
+as `fe6318d1d032a1b726eef060aa1b78f8f22cc3c6`; reviewed tree
+`c2e040b6a0ddd4aa1555bd0400beb610f9ef8d31`, canonical signature
+and author DCO verified. #219 closed; branch retired and Project Done. Batch eight
 related stories: bounded typed provider rows; guarded managed-window inventory;
 existing application catalog; advertised desktops; finite registered actions;
 cancellable/coalesced queries; keyboard native collection/focus; stale/loss and
@@ -443,8 +490,8 @@ One combined incremental Linux policy/native checkpoint and actual Slate dark,
 Dune light and enlarged-text screenshots. Add scoped C lifetime/policy sanitizer
 checks and relevant affected-target checks for the new core boundary; avoid
 repeating unaffected full installs/OS suites. Preserve all original failures and
-state missing release evidence explicitly. #269 is performance reference 0/5,
-becoming 1/5 on this runtime merge; no periodic comparison is due. Lead owns
+state missing release evidence explicitly. #269 is performance reference 1/5 after PR270;
+no periodic comparison is due. Lead owns
 integration/resources/tracker/GitHub. Requested bounded Sol/high implementation,
 Astra/high scope analysis and separate Sol/high review use the selected project
 routing; actual model execution is not independently attested. Parked Backer and
@@ -2930,9 +2977,9 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | SESSION-02 | P2 / queued, optional contribution scope approved | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | NOTIFY-01 | P2 / queued, roadmap scope approved | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
-| FILE-VIEW-01 | P2 / queued, scope approved | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
+| FILE-VIEW-01 | P2 / In progress; continuity/keyboard checkpoint, scale remains | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
-| FILE-ACTION-01 | P2 / queued, scope approved | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
+| FILE-ACTION-01 | P2 / Review; all five criteria qualified, closes on merge | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
 | FILE-JOBS-01 | P2 / queued, scope approved | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
 | DESKTOP-ICONS-01 | P2 / queued, scope approved | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
 | FILE-INTEGRATION-01 | P2 / queued, scope approved | Fourth checkpoint: portable installed folder/reveal/properties entry point and XDG directory/application roles, then optional FileManager1 ShowFolders/ShowItems/ShowItemProperties adapter under SESSION-02. Design request contracts with the first browser; do not overwrite defaults or execute reveal targets. Reuse SELECTION-01 for file clipboard/XDND. Portable portion in stage 6; optional adapter in stage 7 after the common bus contract. Independent-client, competing-owner/no-bus and installed-platform gates; a new Open/Save portal backend is separate scope. See file-manager scope. |
@@ -2976,7 +3023,7 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | ICON-02 | P2 / Backlog; F2 Native UI | [#216](https://github.com/gonz0w/fvwm-x/issues/216). Support configurable font icons alongside SVG/application icons using the existing font stack and named icon contract. |
 | RELOAD-01 | P2 / Backlog; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
 | INSPECT-01 | P2 / Backlog; F2 Native UI | [#218](https://github.com/gonz0w/fvwm-x/issues/218). Extend accepted IPC binding/colorset/appearance inspection into a native opt-in configuration authoring tool. |
-| ACTIONS-01 | P2 / Review; all five criteria qualified; F3 Workspace tools | [#219](https://github.com/gonz0w/fvwm-x/issues/219). Deliver the approved discoverable action palette through existing native collection views, structured queries and command ownership. |
+| ACTIONS-01 | P2 / Done; merged PR270; F3 Workspace tools | [#219](https://github.com/gonz0w/fvwm-x/issues/219). Deliver the approved discoverable action palette through existing native collection views, structured queries and command ownership. |
 | WORKSPACE-01 | P2 / Backlog; F3 Workspace tools | [#220](https://github.com/gonz0w/fvwm-x/issues/220). Package reusable per-desktop floating, columns/master-stack and snapping policies while retaining FVWM command/configuration flexibility. |
 | WORKSPACE-02 | P2 / Backlog; F3 Workspace tools | [#221](https://github.com/gonz0w/fvwm-x/issues/221). Provide configurable reusable scratchpad behavior for terminals, notes and other chosen applications, independently of tiling or compositing. |
 | WORKSPACE-03 | P2 / Backlog; F3 Workspace tools | [#222](https://github.com/gonz0w/fvwm-x/issues/222). Build user-owned monitor/workspace/panel placement profiles on existing MONITOR/CFG contracts, without resizing arbitrary client pixels. |

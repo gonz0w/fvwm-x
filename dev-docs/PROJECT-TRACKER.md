@@ -422,7 +422,12 @@ speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged
 ## R1 continuous native collection feedback — 2026-10-27
 
 Owner: Cam; `codex/r1-form-feedback`; #51/#69. Status: finite batch implemented,
-focused checkpoint passed; preparing reviewed PR. Four related outcomes: opt-in native interactive change
+focused checkpoint passed; [PR281](https://github.com/gonz0w/fvwm-x/pull/281)
+ready for maintainer review. Implementation `282081b4746d01ee689eac711f12fe8a7997c9a2`,
+tree `9437f41f7729fe4945b257b53c69844bcbc9dbb1`, canonical signature/author DCO
+verified. Separate source/evidence/pixel/final-document review has no remaining
+actionable finding. Owned lab stopped and verified guest duplicates retired;
+canonical evidence, builds/disks and performance references retained. Four related outcomes: opt-in native interactive change
 notification with one outstanding latch; exact atomic acknowledge-and-snapshot;
 browser label-only feedback via a distinct bounded/coalescing ingress; continuity
 and stale/lost producer recovery. Preserve startup-only ListNotify and ordinary

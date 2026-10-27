@@ -37,6 +37,30 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Scaled Form startup
+
+Scaled Forms now retain their configured startup row count when it fits, while
+still allowing a one-row viewport when resized smaller. Reflow keeps an already
+visible focused entry in view; deliberate wheel scrolling can leave it offscreen.
+Drafts, selections and native windows survive those changes.
+
+![Slate at 1.25x with four visible Details fields](screenshots/startup-slate.png)
+
+![Dune at 1x with four visible Details fields](screenshots/startup-dune.png)
+
+![Enlarged Classic at 2x with four visible Details fields](screenshots/startup-classic.png)
+
+Automatic initial sizing measures the managed frame and keeps fitting Forms
+inside the physical monitor, without a screenshot-fixture move. Later user
+movement and explicit Position/Geometry remain authoritative. The enlarged
+Classic browser reaches the physical top edge and can overlap the desktop panel;
+reserved work-area placement remains unqualified. First-ready geometry can follow
+the first mapped frame; this remains in-progress development.
+
+[Unmodified capture/source manifest](screenshots/startup-manifest.json),
+[Form configuration](FvwmForm.adoc) and
+[verification and limits](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-STARTUP.md).
+
 ## Complete value details
 
 Details (F1) opens a read-only snapshot of the browser's complete admitted
@@ -61,8 +85,9 @@ read-only scrolling.
 These unmodified captures use Slate, Dune and an enlarged 18pt Classic config
 with actual RandR scales. The fixture moves fitting Classic windows into the
 capture area without changing font, scale, dimensions or IDs; this does not
-qualify default placement on every screen. The chooser viewport can compress
-to one visible row; arrows still reach every field.
+qualify default placement on every screen. These earlier captures predate the startup sizing
+correction above: their chooser viewport can compress to one visible row; arrows
+still reach every field.
 [Capture/source manifest](screenshots/details-manifest.json),
 [manual](fvwm-file-browser.adoc#complete-value-details) and
 [results/remaining acceptance](../dev-docs/verification/VERIFICATION-2026-10-27-BROWSER-DISCLOSURE.md).

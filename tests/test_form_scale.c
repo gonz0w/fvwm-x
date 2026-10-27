@@ -8,6 +8,61 @@
 #include <limits.h>
 #include <string.h>
 
+static void test_initial_size(void)
+{
+	form_scale_size minimum = {150, 80}, available = {800, 600}, size;
+
+	assert(form_scale_initial_size(400, 8, 6, 50, 30, 6,
+		&minimum, &available, &size));
+	assert(size.width == 600 && size.height == 296);
+	/* Legal minima remain independent of the preferred dimensions. */
+	assert(minimum.width == 150 && minimum.height == 80);
+	available = (form_scale_size){200, 100};
+	assert(form_scale_initial_size(400, 8, 6, 50, 30, 6,
+		&minimum, &available, &size));
+	assert(size.width == 200 && size.height == 100);
+	available = (form_scale_size){100, 60};
+	assert(form_scale_initial_size(400, 8, 6, 50, 30, 6,
+		&minimum, &available, &size));
+	assert(size.width == 150 && size.height == 80);
+	assert(form_scale_initial_size(100, 1, 4, 50, 20, 6,
+		&minimum, NULL, &size));
+	assert(size.width == 150 && size.height == 80);
+	assert(!form_scale_initial_size(INT_MAX, 8, 16, 50, 30, 6,
+		&minimum, NULL, &size));
+	assert(size.width == 0 && size.height == 0);
+	assert(!form_scale_initial_size(400, 33, 6, 50, 30, 6,
+		&minimum, NULL, &size));
+	assert(!form_scale_initial_size(400, 32, 6, 50, 32767, 6,
+		&minimum, NULL, &size));
+	assert(!form_scale_initial_size(400, 8, 6, INT_MAX, 30, 6,
+		&minimum, NULL, &size));
+	minimum.height = 32768;
+	assert(!form_scale_initial_size(400, 8, 6, 50, 30, 6,
+		&minimum, NULL, &size));
+}
+
+static void test_startup_position(void)
+{
+	int position;
+
+	assert(form_scale_startup_axis(700, 300, 100, 800, &position));
+	assert(position == 600);
+	assert(form_scale_startup_axis(200, 300, 100, 800, &position));
+	assert(position == 200);
+	assert(form_scale_startup_axis(-1100, 300, -1000, 800, &position));
+	assert(position == -1000);
+	assert(form_scale_startup_axis(-300, 300, -1000, 800, &position));
+	assert(position == -500);
+	/* Oversized frames anchor the readable top/left without retry loops. */
+	assert(form_scale_startup_axis(300, 1000, 100, 800, &position));
+	assert(position == 100);
+	assert(!form_scale_startup_axis(0, 32768, 0, 800, &position));
+	assert(!form_scale_startup_axis(0, 300, INT_MAX, 800, &position));
+	assert(!form_scale_startup_axis(0, 300, 0, 0, &position));
+	assert(position == 0);
+}
+
 static void test_metrics(void)
 {
 	form_scale_metrics metrics, before;
@@ -249,6 +304,8 @@ static void test_focus_geometry(void)
 
 int main(void)
 {
+	test_initial_size();
+	test_startup_position();
 	test_metrics();
 	test_cells();
 	test_label_geometry();

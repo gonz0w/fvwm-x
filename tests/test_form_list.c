@@ -42,6 +42,36 @@ static void test_viewport(void)
 	assert(!form_list_viewport(NULL, 1, 1));
 }
 
+static void test_visible_focus_reflow(void)
+{
+	form_list_state s = {.rows = 4, .columns = 4, .generation = 7};
+	form_list_state before;
+
+	for (int i = 0; i < 100; i++)
+		assert(form_list_add(&s, i == 12));
+	form_list_focus(&s, 45);
+	assert(form_list_extend(&s, 47));
+	before = s;
+	assert(form_list_viewport(&s, 2, 4));
+	assert(s.top == 40 && s.focus == 47 && s.anchor == 45);
+	assert(s.selected == before.selected && s.generation == 7 &&
+		memcmp(s.bits, before.bits, sizeof(s.bits)) == 0);
+	assert(form_list_viewport(&s, 2, 1));
+	assert(s.top == 46 && s.focus == 47 && s.anchor == 45);
+	/* Top-row alignment can put the same focus beyond the last row. */
+	assert(form_list_viewport(&s, 1, 3));
+	assert(s.top == 45 && s.focus == 47 && s.anchor == 45);
+	assert(form_list_layout(&s, 7, 8, 1, 2));
+	assert(s.top == 46 && s.focus == 47 && s.anchor == 45);
+	/* Intentional wheel scrolling relinquishes focus visibility. */
+	form_list_scroll(&s, -4);
+	assert(s.top == 38);
+	assert(form_list_viewport(&s, 1, 1));
+	assert(s.top == 38 && s.focus == 47 && s.anchor == 45);
+	assert(s.generation == 8 && s.selected == before.selected &&
+		memcmp(s.bits, before.bits, sizeof(s.bits)) == 0);
+}
+
 static void test_versioned_focus(void)
 {
 	form_list_state s = {.rows = 4, .columns = 4, .generation = 7};
@@ -399,6 +429,7 @@ int main(void)
 	test_watch_validation();
 	test_watch_mutations();
 	test_viewport();
+	test_visible_focus_reflow();
 	test_grid_ranges();
 	test_versioned_focus();
 	test_live_layout();

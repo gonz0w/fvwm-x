@@ -55,14 +55,16 @@ def run(args, profile, run_root):
     out.mkdir()
     inputs = ['tests/live_x/browser_disclosure_live.py', 'tests/live_x/native_bindings_live.py', 'bin/FvwmPrompt/cmd/fvwmfilebrowser/details.go',
         'modules/FvwmForm/FvwmForm.c', 'modules/FvwmForm/ReadXServer.c',
-        'modules/FvwmForm/form_list.c', 'bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go',
+        'modules/FvwmForm/form_list.c', 'modules/FvwmForm/form_scale.c',
+        'modules/FvwmForm/form_scale_policy.c', 'bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go',
         'bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go']
     evidence = dict(status='running', profile=profile, screenshots=[], failures=[], cleanup_failures=[],
         source_sha256={name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in inputs},
         binary_sha256={str(p.relative_to(build)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in (build / 'fvwm3', build / 'modules/FvwmForm/FvwmForm',
-                      build / 'bin/FvwmPrompt/fvwm-file-browser')},
-        operations=[], requested_scale=args.scale,
+                      build / 'bin/FvwmPrompt/fvwm-file-browser',
+                      build / 'bin/fvwm-desktop-capture')},
+        operations=[], requested_scale=args.scale, startup_continuity=args.startup_continuity,
         limits={'entries': ENTRIES, 'native_children': 64,
                 'physical_display_or_assistive_technology_qualified': False,
                 'automatic_module_scaling_qualified': bool(args.xorg_config)}, display_geometry='1920x1800x24')
@@ -255,6 +257,8 @@ def run(args, profile, run_root):
                 if hint.name: x.XFree(hint.name)
                 if hint.class_: x.XFree(hint.class_)
             assert alias.startswith('FvwmFiles-' + provider + '-') and alias.endswith('-ready'), alias
+            capture_titles = {'File browser', 'File browser details'}
+
             def geometry(target):
                 a = view.attributes(target)
                 assert a and a.map_state == 2
@@ -268,6 +272,79 @@ def run(args, profile, run_root):
                     C.byref(rx), C.byref(ry), C.byref(child))
                 return [rx.value-a.border_width, ry.value-a.border_width,
                     a.width+2*a.border_width, a.height+2*a.border_width]
+
+            def frame_origin(target):
+                outer = target
+                for _ in range(8):
+                    parent = client.parent(outer)
+                    if parent == client.root:
+                        return root_rectangle(outer)[:2]
+                    outer = parent
+                raise AssertionError('explicit Form parent depth')
+
+            def scale_ready(target, name):
+                def observed():
+                    token = 'startup' + os.urandom(8).hex()
+                    control.send(('SendToModule ' + name + ' UIScaleStatus ' + token + '\n').encode())
+                    raw = receipt('FVWM_FORM_UI_SCALE ' + token + ' ')
+                    fields = raw.split()
+                    assert len(fields) == 15, raw
+                    value = dict(raw=raw, state=fields[3], current_q=int(fields[4]),
+                        desired_q=int(fields[5]), current_epoch=fields[6], desired_epoch=fields[7],
+                        current_atom=int(fields[8]), desired_atom=int(fields[9]),
+                        resource_generation=int(fields[10]),
+                        minimum=[int(fields[11]), int(fields[12])],
+                        required=[int(fields[13]), int(fields[14])],
+                        client=root_rectangle(target))
+                    samples = evidence.setdefault('scale_samples', [])
+                    assert len(samples) < 4096
+                    samples.append(value)
+                    if value['state'] != 'ready':
+                        return None
+                    assert value['current_q'] == value['desired_q'] == int(float(args.scale)*4), value
+                    assert value['current_epoch'] == value['desired_epoch'] and int(value['current_epoch'], 16) > 0, value
+                    assert value['current_atom'] == value['desired_atom'] != 0, value
+                    assert all(actual >= minimum > 0 for actual, minimum in
+                        zip(value['client'][2:], value['minimum'])), value
+                    return value
+                return wait_for_predicate('first actual native ready scale', observed,
+                    time.monotonic() + 8, process=browser)
+
+            def native_capture(name):
+                previous = os.environ.get('DISPLAY')
+                os.environ['DISPLAY'] = display
+                try:
+                    path = Path(NativeCapture(build / 'bin/fvwm-desktop-capture').screenshot(out)
+                        .removeprefix('Screenshot saved: '))
+                    path.replace(out / name)
+                    evidence['screenshots'].append(name)
+                    image = (out / name).read_bytes()
+                    assert image[:8] == b'\x89PNG\r\n\x1a\n'
+                    manifest = evidence.setdefault('screenshot_manifest', [])
+                    assert len(manifest) < 64
+                    actual = {}
+                    for title in sorted(capture_titles):
+                        target = view.named(title)
+                        if not target:
+                            continue
+                        outer = target
+                        for _ in range(8):
+                            parent = client.parent(outer)
+                            if parent == client.root:
+                                break
+                            outer = parent
+                        else:
+                            raise AssertionError('captured Form parent depth')
+                        actual[title] = dict(window=target,
+                            client=root_rectangle(target), frame=root_rectangle(outer))
+                    manifest.append(dict(path=str(out / name), windows=actual,
+                        sha256=hashlib.sha256(image).hexdigest(),
+                        pixels=list(struct.unpack('!II', image[16:24])),
+                        published_rectangles=dict(evidence.get('published_view_rectangles', {}))))
+                    atomic_json(out / 'screenshot-manifest.json', manifest)
+                finally:
+                    if previous is None: os.environ.pop('DISPLAY', None)
+                    else: os.environ['DISPLAY'] = previous
 
             def published_view_contained(target, name):
                 monitor = evidence.get('randr', {}).get('monitors', {}).get('DUMMY0')
@@ -292,44 +369,21 @@ def run(args, profile, run_root):
                         box[1]+box[3] <= bounds[1]+bounds[3]
                         for box in (value['client'], value['frame']))
 
-                # Preserve an actual failure before any observer-only placement
-                # correction. Module position hints can override fixture Style.
+                # Capture the actual automatic placement before asserting it.
+                # No fixture Move can qualify product startup containment.
                 published = evidence.setdefault('published_view_rectangles', {})
                 assert len(published) < 64 or name in published
                 published[name] = rectangles
                 atomic_json(out / 'published-view-rectangles.json', published)
                 if not contained(rectangles):
-                    before = rectangles
-                    assert before['frame'][2] <= bounds[2] and \
-                        before['frame'][3] <= bounds[3], before
-                    move = 'WindowId %d Move 80p 80p' % target
-                    correction = dict(before=before, command=move)
-                    corrections = evidence.setdefault('placement_corrections', [])
-                    assert len(corrections) < 64
-                    corrections.append(correction)
-                    atomic_json(out / 'placement-corrections.json', corrections)
-                    command(move)
-
-                    def moved():
-                        actual = dict(client=root_rectangle(target), frame=root_rectangle(outer),
-                            monitor=bounds, window=target, alias=name)
-                        assert actual['client'][2:] == before['client'][2:] and \
-                            actual['frame'][2:] == before['frame'][2:], (before, actual)
-                        correction['after'] = actual
-                        return actual if contained(actual) else None
-
-                    try:
-                        rectangles = wait_for_predicate('owned Form moved inside same monitor',
-                            moved, time.monotonic() + 5, process=core)
-                    finally:
-                        atomic_json(out / 'placement-corrections.json', corrections)
-                    published[name] = rectangles
-                    atomic_json(out / 'published-view-rectangles.json', published)
+                    native_capture('automatic-containment-failed.png')
                 assert contained(rectangles), rectangles
                 return rectangles
 
+            evidence['browser_first_ready'] = scale_ready(window, alias)
             published_view_contained(window, alias)
-            children = sorted(view.children(window))
+            ordered_children = view.children(window)
+            children = sorted(ordered_children)
             assert 3 <= len(children) <= 64, children
             boxes = {child: geometry(child) for child in children}
             # A legal viewport can have only one row, whose height can tie
@@ -341,7 +395,7 @@ def run(args, profile, run_root):
             controls = [line.split()[:2] for line in configuration if
                 line.split()[0] in ('Input', 'InputHex', 'Button', 'List')]
             assert len(controls) == len(children), (controls, children)
-            named_controls = {parts[1]: target for parts, target in zip(controls, children)
+            named_controls = {parts[1]: target for parts, target in zip(controls, ordered_children)
                 if parts[0] in ('Input', 'InputHex', 'List')}
             list_window = named_controls['picks']
             filter_input, path_input = named_controls['filter'], named_controls['path']
@@ -453,17 +507,10 @@ def run(args, profile, run_root):
                     time.monotonic() + 3, process=browser)
 
             def capture(name):
+                # Quiet output is diagnostic only. Neither core Nop nor the
+                # observer's XSync is a cross-channel native paint fence.
                 producer_quiet()
-                previous = os.environ.get('DISPLAY')
-                os.environ['DISPLAY'] = display
-                try:
-                    path = Path(NativeCapture(build / 'bin/fvwm-desktop-capture').screenshot(out)
-                        .removeprefix('Screenshot saved: '))
-                    path.replace(out / name)
-                    evidence['screenshots'].append(name)
-                finally:
-                    if previous is None: os.environ.pop('DISPLAY', None)
-                    else: os.environ['DISPLAY'] = previous
+                native_capture(name)
 
             def same_identity():
                 assert view.named('File browser') == window
@@ -509,9 +556,9 @@ def run(args, profile, run_root):
                     label = next(c for c in lines if c.startswith('Text "Field: '))
                     matched = re.fullmatch(r'Text "Field: (.*); Part (\d+)/(\d+)"', label)
                     assert matched, label
+                    ready = scale_ready(target, name)
                     controls = view.children(target)
                     assert 3 <= len(controls) <= 10
-                    controls.sort()
                     owners.update({child: target for child in controls})
                     schema = [line.split()[:2] for line in lines if
                         line.split()[0] in ('Input', 'InputHex', 'Button', 'List')]
@@ -524,7 +571,7 @@ def run(args, profile, run_root):
                     published_view_contained(target, name)
                     return dict(alias=name, window=target, value=value,
                         field=matched[1], part=int(matched[2]), parts=int(matched[3]),
-                        sections=sections, list=collection, input=value_input, lines=lines)
+                        sections=sections, list=collection, input=value_input, lines=lines, ready=ready)
                 return wait_for_predicate('actual disclosure page', current,
                     time.monotonic() + 8, process=browser)
 
@@ -652,6 +699,215 @@ def run(args, profile, run_root):
             def detail_callbacks(after=0):
                 return [r['text'] for r in rows(native) if r['time'] >= after and
                     r['direction'] == 'out' and r['text'].startswith('Echo FVWM_FILES_DETAILS_1 ')]
+
+            if args.startup_continuity:
+                page = open_details()
+                first = dict(page['ready'], list=geometry(page['list']),
+                    input=geometry(page['input']), children=view.children(page['window']))
+                evidence['details_first_ready'] = first
+                atomic_json(out / 'startup-geometry.json', first)
+                capture('startup-details-first-ready.png')
+                hints, supplied = SizeHints(), C.c_long()
+                assert x.XGetWMNormalHints(d, page['window'], C.byref(hints), C.byref(supplied))
+                minimum = [hints.min_width, hints.min_height]
+                x.XResizeWindow(d, page['window'], *minimum)
+                x.XSync(d, 0)
+                wait_for_predicate('actual legal one-row minimum Configure',
+                    lambda: geometry(page['window'])[2:] == minimum and
+                        geometry(page['list'])[3] == first['list'][3] + minimum[1] - first['client'][3],
+                    time.monotonic() + 6, process=browser)
+                minimum_list = geometry(page['list'])
+                box = (3 * int(float(args.scale)*4) + 2) // 4
+                row_height = minimum_list[3] - 2 * box
+                expected_height = 4 * row_height + 2 * box
+                evidence['startup_preferred_rows'] = dict(first=first,
+                    minimum=minimum, minimum_list=minimum_list,
+                    scaled_box=box, row_height=row_height,
+                    configured_rows=4, expected_list_height=expected_height)
+                atomic_json(out / 'startup-geometry.json', evidence['startup_preferred_rows'])
+                assert row_height > 0 and (first['list'][3] - 2 * box) // row_height == 4, \
+                    evidence['startup_preferred_rows']
+                assert first['list'][2] >= first['input'][2], first
+                capture('startup-details-one-row-minimum.png')
+                parent_before, packet_before = ready_state(), status()
+                close_details(page)
+                assert ready_state()['bindings'] == parent_before['bindings']
+                assert status()['packet'] == packet_before['packet']
+                same_identity()
+
+                def configured_form(name, placement=(), enabled=True):
+                    lines = ['Title "' + name + '"',
+                        'UIScale ' + ('monitor' if enabled else 'off'), *placement,
+                        'Line left', 'Input draft 40 "draft"',
+                        'Button continue "Observe" F12',
+                        'Command Echo STARTUP_DRAFT ' + name + ' x$(draft:Base64) x$(picks:Base64)',
+                        'Button quit "Close" F11', 'Line left',
+                        'List picks 40 4', 'ListViewport 18 1', 'ListVersioned',
+                        *['ListItem ' + ('on' if i == 7 else 'off') +
+                            ' "row-%02d"' % i for i in range(32)], 'ListFocus 8']
+                    for line in lines:
+                        control.send(('*' + name + ': ' + line + '\n').encode())
+                    command('Module FvwmForm ' + name)
+                    target = view.wait(name)
+                    capture_titles.add(name)
+                    ids = view.children(target)
+                    schema = [line.split()[:2] for line in lines if
+                        line.split()[0] in ('Input', 'Button', 'List')]
+                    assert len(ids) == len(schema) == 4, (ids, schema)
+                    mapping = [dict(kind=parts[0], name=parts[1], window=child)
+                        for parts, child in zip(schema, ids)]
+                    named = {item['name']: item['window'] for item in mapping
+                        if item['kind'] in ('Input', 'List')}
+                    owners.update({child: target for child in ids})
+                    value = scale_ready(target, name) if enabled else None
+                    return dict(alias=name, window=target, children=ids,
+                        input=named['draft'], list=named['picks'], ready=value,
+                        control_mapping=mapping, placement=list(placement))
+
+                def form_status(form):
+                    return status(form['alias'])
+
+                def resize_form(form, size):
+                    before = geometry(form['window'])
+                    before_list = geometry(form['list'])
+                    x.XResizeWindow(d, form['window'], *size)
+                    x.XSync(d, 0)
+                    def reflowed():
+                        actual = geometry(form['window'])
+                        collection = geometry(form['list'])
+                        if actual[2:] != size or collection[3] != before_list[3] + size[1] - before[3]:
+                            return None
+                        return dict(client=root_rectangle(form['window']), list=collection)
+                    return wait_for_predicate('actual Configure and child viewport reflow',
+                        reflowed, time.monotonic() + 6, process=core)
+
+                def settled_packet(form, predicate):
+                    return wait_for_predicate('actual native input result',
+                        lambda: (v if predicate(v) else None) if (v := form_status(form)) else None,
+                        time.monotonic() + 6, process=core)
+
+                def close_form(form):
+                    focused(form['window'])
+                    key('F11')
+                    wait_for_predicate('owned startup Form closed',
+                        lambda: not view.named(form['alias']), time.monotonic() + 5, process=core)
+                    capture_titles.discard(form['alias'])
+
+                probe = configured_form('StartupContinuity')
+                published_view_contained(probe['window'], probe['alias'])
+                original = dict(packet=form_status(probe),
+                    client=geometry(probe['window']), list=geometry(probe['list']),
+                    scale=probe['ready'], children=probe['children'])
+                assert original['packet']['focus'] == 7 and original['packet']['selected'] == [7], original
+                capture('startup-nonzero-focus-first-ready.png')
+                assert (original['list'][3] - 2 * box) // row_height == 4, original
+                click(probe['list'], box + 2, box + 3 * row_height + 2)
+                initial_hit = settled_packet(probe, lambda v: v['focus'] == 7 and not v['selected'])
+                click(probe['list'], box + 2, box + 3 * row_height + 2)
+                settled_packet(probe, lambda v: v['packet'] == original['packet']['packet'])
+                click(probe['input'])
+                focused(probe['window'])
+                key('Home')
+                key('Right')
+                key('Right')
+                minimum = probe['ready']['minimum']
+                shrunk = resize_form(probe, minimum)
+                unchanged = form_status(probe)
+                assert unchanged['packet'] == original['packet']['packet'], (original, unchanged)
+                assert view.children(probe['window']) == probe['children']
+                assert scale_ready(probe['window'], probe['alias'])['resource_generation'] == \
+                    original['scale']['resource_generation']
+                # No field traversal or click occurs between the cursor setup,
+                # native Configure/reflow and inserted byte.
+                key('x')
+                key('F12')
+                draft = receipt('STARTUP_DRAFT ' + probe['alias'] + ' ')
+                assert base64.urlsafe_b64decode(draft.split()[2][1:] + '==') == b'drxaft', draft
+                assert base64.urlsafe_b64decode(draft.split()[3][1:] + '==').hex() == unchanged['packet'], draft
+                # A one-row actual hit proves the preserved focus is visible;
+                # toggling the same identity twice restores the exact packet.
+                click(probe['list'], box + 2, box + 2)
+                hit = settled_packet(probe, lambda v: v['focus'] == 7 and not v['selected'])
+                click(probe['list'], box + 2, box + 2)
+                restored = settled_packet(probe, lambda v: v['packet'] == unchanged['packet'])
+                capture('startup-visible-focus-after-shrink.png')
+                def first_row_pixel():
+                    width, height = geometry(probe['list'])[2:]
+                    image = x.XGetImage(d, probe['list'], width // 2,
+                        box + row_height // 2, 1, 1, C.c_ulong(-1).value, 2)
+                    assert image and height > box + row_height // 2
+                    try:
+                        return x.XGetPixel(image, 0, 0)
+                    finally:
+                        x.XDestroyImage(image)
+
+                # A changed actual selected-row background proves the wheel
+                # reached and painted the Form before the independent resize.
+                selected_pixel = first_row_pixel()
+                # One real wheel event scrolls three rows without moving focus.
+                click(probe['list'], box + 2, box + 2, button=5)
+                wheel_pixel = wait_for_predicate('actual wheel row background changes',
+                    lambda: (dict(pixel=p) if (p := first_row_pixel()) != selected_pixel else None),
+                    time.monotonic() + 6, process=core)
+                wheel = form_status(probe)
+                assert wheel['packet'] == restored['packet'], (wheel, restored)
+                reflow = resize_form(probe, [original['client'][2], minimum[1] + row_height])
+                after_wheel_reflow = form_status(probe)
+                assert after_wheel_reflow['packet'] == restored['packet']
+                capture('startup-wheel-focus-remains-offscreen.png')
+                click(probe['list'], box + 2, box + 2)
+                offscreen = settled_packet(probe, lambda v: v['focus'] == 10 and v['selected'] == [7, 10])
+                evidence['viewport_continuity'] = dict(form=probe, before=original,
+                    shrunk=shrunk, unchanged=unchanged, draft_callback=draft, initial_visible_hit=initial_hit,
+                    visible_hit=hit, restored=restored, wheel=wheel,
+                    wheel_pixels=dict(before=selected_pixel, after=wheel_pixel),
+                    wheel_reflow=reflow, after_wheel_reflow=after_wheel_reflow,
+                    first_visible_after_wheel_reflow=offscreen,
+                    visible_focus_retained=True, deliberate_offscreen_focus_retained=True)
+                # Startup containment and every screenshot above have already
+                # passed. This explicit command is intentional user movement,
+                # never a placement correction for a startup overhang.
+                command('WindowId %d Move 100p 120p' % probe['window'])
+                moved_origin = wait_for_predicate('intentional managed user movement',
+                    lambda: (p if (p := frame_origin(probe['window'])) == [100, 120] else None),
+                    time.monotonic() + 6, process=core)
+                user_resize = resize_form(probe,
+                    [original['client'][2], minimum[1] + 2 * row_height])
+                assert frame_origin(probe['window']) == moved_origin
+                assert form_status(probe)['packet'] == offscreen['packet']
+                assert view.children(probe['window']) == probe['children']
+                evidence['post_startup_user_ownership'] = dict(command='Move 100p 120p',
+                    moved_origin=moved_origin, after_resize=user_resize,
+                    after_resize_origin=frame_origin(probe['window']))
+                close_form(probe)
+
+                # Compare actual managed frame origins against an unscaled
+                # twin with the identical explicit directive. Decorations are
+                # measured, rather than inferred from core/theme constants.
+                explicit = []
+                for index, directive in enumerate(('Position 2400 1800', 'Geometry +2400+1800')):
+                    reference = configured_form('StartupExplicitOff%d' % index,
+                        [directive], enabled=False)
+                    origin = frame_origin(reference['window'])
+                    reference_rect = root_rectangle(reference['window'])
+                    close_form(reference)
+                    placed = configured_form('StartupExplicitOn%d' % index, [directive])
+                    actual = frame_origin(placed['window'])
+                    record = dict(directive=directive, reference_origin=origin,
+                        reference_client=reference_rect, scaled_origin=actual,
+                        scaled_client=root_rectangle(placed['window']), scale=placed['ready'])
+                    explicit.append(record)
+                    assert actual == origin, record
+                    initial_size = geometry(placed['window'])[2:]
+                    resize_form(placed, [initial_size[0], initial_size[1] + row_height])
+                    record['after_resize_origin'] = frame_origin(placed['window'])
+                    assert record['after_resize_origin'] == origin, record
+                    close_form(placed)
+                evidence['explicit_placement'] = explicit
+                evidence['negative_explicit_placement_freshly_qualified'] = False
+                # Continue the existing complete disclosure contract below
+                # on the retained original browser and native child identities.
+                same_identity()
 
             # The actual item contains bytes the normal 120-byte label omits.
             # Properties takes the real selected/focused filename through its
@@ -949,6 +1205,8 @@ def main():
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
     parser.add_argument('--xorg-config', type=Path)
     parser.add_argument('--scale', choices=('1', '1.25', '2'), default='1')
+    parser.add_argument('--startup-continuity', action='store_true',
+        help='also check startup sizing, containment and viewport continuity')
     args = parser.parse_args()
     if args.scale != '1' and not args.xorg_config:
         parser.error('--scale requires --xorg-config for real RandR millimetres')

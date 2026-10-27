@@ -119,15 +119,27 @@ void form_list_scroll(form_list_state *s, int amount)
 	s->top = top * columns;
 }
 
-/* Keep the old first visible entry in the new first visual row where possible.
- * A wheel-scrolled viewport may intentionally leave the focus offscreen. */
+/* Keep the old first visible entry where possible, revealing only a focus
+ * which was visible before reflow. Wheel scrolling may hide it deliberately. */
 bool form_list_viewport(form_list_state *s, int rows, int columns)
 {
+	bool visible;
+	int row, top;
+
 	if (s == NULL || rows < 1 || rows > 32 || columns < 1 || columns > 8)
 		return false;
+	visible = s->count > 0 && s->focus >= s->top &&
+		s->focus / form_list_columns(s) -
+		s->top / form_list_columns(s) < s->rows;
 	s->rows = rows;
 	s->columns = columns;
-	s->top = s->top / columns * columns;
+	top = s->top / columns;
+	row = s->focus / columns;
+	if (visible && row < top)
+		top = row;
+	if (visible && row >= top + rows)
+		top = row - rows + 1;
+	s->top = top * columns;
 	form_list_scroll(s, 0);
 	return true;
 }

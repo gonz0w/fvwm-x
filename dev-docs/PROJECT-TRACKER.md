@@ -448,11 +448,57 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 Form startup and viewport continuity — 2026-10-27
+
+Owner: Cam; `codex/r1-form-startup`; #51/#69. Status: implemented; combined focused Linux
+and three-theme startup checkpoint passed after merged PR284. Three related outcomes: preserve already
+visible list focus across viewport/layout reflow without undoing intentional
+wheel scrolling; retain configured preferred rows and width at the first ready
+scaled startup view while keeping one-row resize minima; keep ordinary automatic
+startup contained after initial scaled sizing when its managed frame fits.
+
+Use existing Form/scale/monitor/core geometry owners, actual-pixel geometry and
+asynchronous resize admission. Initial preferred size is distinct from legal
+minimum size and later user-owned resizing. Preserve focus/range anchor/selection,
+Input bytes/cursors, native identities and list generations. Explicit Position
+and Geometry remain authoritative; no ongoing recentering after user movement.
+Containment acceptance is against selected physical monitor bounds; reserved
+work-area/nonzero-origin claims require corresponding actual evidence. Oversized
+frames retain readable minima with bounded anchored fallback. No core placement
+rewrite, new protocol metadata, toolkit, polling or feature-owner closure.
+
+Establish behavior with policy regressions and the existing actual-X startup/
+scale/browser fixtures. One affected incremental Linux build and combined policy/
+native checkpoint; three theme screenshots from that run. Scope sanitizers to
+changed lifetime/resource code; unchanged Go needs no repeated race suite. Keep
+full consumer/six-target/physical/assistive/release gates separate, #257/#258
+parked. PR281 performance reference is 1/5 after PR284, 2/5 on this merge; no
+comparison due. Lead owns tracker/resources/integration and separate final
+review. Configured workflow/analyst/implementer/reviewer mappings are requested;
+native role loading and backend identity remain unattested.
+
+Completed [focused report](verification/VERIFICATION-2026-10-27-FORM-STARTUP.md),
+[receipts](verification/VERIFICATION-2026-10-27-FORM-STARTUP.json) and
+[three-theme screenshots](../doc/development-preview.md#scaled-form-startup)
+record reproduced PR284 one-row/overhang failures and the final corrections.
+Four policies, two scoped sanitizer policies, legacy geometry/fields/read-only,
+manual and final startup/Details checks pass. The narrow source ordering fix
+repeats only affected compilation/manual; custom fixture shortcut correction
+repeats only native Slate. Final three themes provide 24 captures, 84 module Wait0
+and 12 direct zero exits. Physical containment is observed without fixture Move;
+Classic panel overlap/work-area and broader support/physical/assistive/release
+limits remain explicit. No broad owner closes. Separate source/evidence/pixel
+review finds no remaining actionable finding; final candidate retains ordinary
+maintainer review. Owned lab stopped and controller released; only verified guest
+evidence duplicates retired, preserving canonical host archives and reusable
+source/build/stages/caches/disks/performance references.
+
 ## R1 browser full-text disclosure — 2026-10-27
 
 Owner: Cam; `codex/r1-browser-disclosure`; #51/#69. Status: implemented; focused
 Linux and three-theme checkpoint passed; [PR284](https://github.com/gonz0w/fvwm-x/pull/284)
-ready for maintainer review. Signed implementation
+merged at `48eff197b9390901cf80ea7a49e789a4c3642e82`; canonical
+signature, author DCO and exact reviewed tree verified; branch retired. Signed implementation
 `e4ff4b2a6f4cd50ac75fa0bf5607496f45d5e382`, tree
 `50d06b2a10a521c4998135b10a07c957073d3282`, canonical signature/author DCO
 verified. Replayed onto merged PR283 policy/docs with all1544 qualified input

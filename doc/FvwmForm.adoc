@@ -281,14 +281,33 @@ Existing personal Forms remain unchanged unless they opt in.
 The module prepares fonts and geometry from retained logical metrics before
 publishing an in-place reflow. It retains the Form and child windows, input
 drafts and active control, collection focus, selection/range anchor and
-viewport anchor. A focused entry intentionally scrolled offscreen is not
-revealed. Resizing and scale changes leave the native collection generation
-unchanged; ListLayout still uses its separate publication handshake.
+viewport anchor. Reflow keeps an already visible focused entry visible,
+including when fewer rows or columns fit. A focused entry intentionally scrolled
+offscreen is not revealed. Resizing and scale changes leave the native collection
+generation unchanged; ListLayout still uses its separate publication handshake.
 +
-If the actual window cannot contain the prepared minimum, the module requests
+At the first ready scaled view, the configured List width and row count establish
+the preferred size with the prepared fonts and controls. Legal minimum-size hints
+still reserve only one row. Later user resizing, ListLayout and monitor-scale
+changes use the actual window size without restoring the startup preference.
++
+Automatic startup placement uses the physical monitor selected for initial
+centering. The module measures the managed outer frame, reduces the preferred
+size to fit that monitor where possible, and moves an overhanging frame inside
+it once. Readable control and one-row minima take precedence: an oversized frame
+anchors at the monitor's top or left edge on each oversized axis. Explicit
+Position and Geometry placement remain authoritative. An independently observed
+move during initial admission relinquishes automatic placement. This starts with
+the first managed-frame observation; earlier moves are treated as initial
+window-manager placement. After the first ready view, layout and scale changes
+never recenter the Form. Placement is checked against physical monitor bounds,
+without a reserved work-area guarantee.
++
+If the actual window cannot contain the prepared size, the module requests
 the required absolute window size and retains its previous complete view
-until an actual resize provides enough space. Minimum-size hints alone do
-not establish a resize. A pending list snapshot defers scale publication until
+until an actual resize provides enough space. Duplicate resize and startup move
+requests are bounded; readiness waits for observed geometry. Minimum-size hints
+alone do not establish a resize. A pending list snapshot defers scale publication until
 ListCommit or ListAbort. Failed preparation retains the preceding resources
 and view. Missing initial monitor metadata retains the 1x fallback; incomplete
 or malformed metadata does not replace an accepted monitor snapshot.
@@ -648,7 +667,8 @@ size hints change with the admitted cell width and row height.
 The Form, collection child and controls retain their X windows. Entry content,
 input drafts, active input/list focus, focused entry, range anchor and selection
 remain. The old top entry stays in the first visual row where possible, with
-edge clamping; an intentionally offscreen focused entry stays offscreen.
+edge clamping. An already visible focused entry remains visible when rows or
+columns change; an intentionally offscreen focused entry stays offscreen.
 The complete admitted layout advances the published generation, so callbacks
 from the preceding layout are stale. Restart restores this accepted state.
 For example, send `SendToModule MyFiles ListLayout picks 2 3 18 8`, then

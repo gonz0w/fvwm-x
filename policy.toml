@@ -1,0 +1,57 @@
+# Sole selected-module record adopted by PROJECT. No active exception is declared.
+# Historical finite decisions remain expired and are retained in their local module.
+schema_version = 1
+
+[[modules]]
+id = "temper-core"
+path = ".agent-temper/METHOD.md"
+owner = "Cam (@gonz0w)"
+requires = []
+
+[[modules]]
+id = "temper-codex"
+path = ".agent-temper/profiles/codex.md"
+owner = "Cam (@gonz0w)"
+requires = ["temper-core"]
+
+[[modules]]
+id = "project"
+path = "dev-docs/PROJECT.md"
+owner = "Cam (@gonz0w)"
+requires = ["temper-core", "temper-codex"]
+
+[[modules]]
+id = "product"
+path = "dev-docs/policy/product.md"
+owner = "Cam (@gonz0w)"
+requires = ["project"]
+
+[[modules]]
+id = "documentation"
+path = "dev-docs/policy/documentation.md"
+owner = "Cam (@gonz0w)"
+requires = ["project"]
+
+[[modules]]
+id = "work"
+path = "dev-docs/policy/work.md"
+owner = "Cam (@gonz0w)"
+requires = ["project"]
+
+[[modules]]
+id = "verification"
+path = "dev-docs/policy/verification.md"
+owner = "Cam (@gonz0w)"
+requires = ["project", "work", "product"]
+
+[[modules]]
+id = "authority"
+path = "dev-docs/policy/authority.md"
+owner = "Cam (@gonz0w)"
+requires = ["project", "work", "verification"]
+
+[[modules]]
+id = "routing"
+path = "dev-docs/policy/routing.md"
+owner = "Cam (@gonz0w)"
+requires = ["project", "temper-codex"]

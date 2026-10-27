@@ -1,0 +1,119 @@
+{
+  "base": "35f37736806bfb9c8766231328bc363d4b0aa618",
+  "source_aggregate_sha256": "55a1feda29279b02e07a11d5a3087236320d1f9bd68614451683a0633d8222b9",
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+      "bytes": 5539656
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "889289decc71b773b6c4f76591018b29130f20f15bcf3347bcc70e605d88d998",
+      "bytes": 1800376
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+      "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87",
+      "bytes": 5720923
+    }
+  },
+  "images": [
+    {
+      "path": "pointer-classic.png",
+      "profile": "classic-large",
+      "scale": "2",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "c0d25f24759590506f6796099f7cad54c75ee78a0dba6db7df93ec006df155c5",
+      "driver_sha256": "811129baa49adfbd472e11237358f563007c66bb4bbce1f277b1f3a9ed9eb76d",
+      "evidence_sha256": "b494cba346d3add6e4ab980dab0cc20e8439e1ff37a10be4539c6a727a94ee2b",
+      "archive_sha256": "8eeb42b0c02423e13cd8a1cf84c4ba84a9288fec3c3a3ab7097d6920f7c70b6b",
+      "sha256": "61867cc0b702d8698e334779014b727320283b2ea92f48d01ff54408e20faa6e",
+      "pixels": [
+        2560,
+        2160
+      ],
+      "windows": {
+        "File browser": {
+          "window": 12582919,
+          "client": [
+            268,
+            106,
+            2284,
+            2046
+          ],
+          "frame": [
+            260,
+            36,
+            2300,
+            2124
+          ]
+        }
+      },
+      "unmodified": true
+    },
+    {
+      "path": "pointer-dune.png",
+      "profile": "dune-light",
+      "scale": "1",
+      "font": "Sans 10",
+      "config_sha256": "b9b0615fc540c621ec6be78a7bb5e1b3d5b14156f82b8489f719e27ee499fc25",
+      "driver_sha256": "811129baa49adfbd472e11237358f563007c66bb4bbce1f277b1f3a9ed9eb76d",
+      "evidence_sha256": "7f0aac075c91e0a02a5d68218b3e9eb8ccd5df19683c881c42079a36da0ede10",
+      "archive_sha256": "8eeb42b0c02423e13cd8a1cf84c4ba84a9288fec3c3a3ab7097d6920f7c70b6b",
+      "sha256": "71423671de7aeb215542ce74e89e89da84cdefc90d3db585eb956f605aeebb72",
+      "pixels": [
+        2560,
+        2160
+      ],
+      "windows": {
+        "File browser": {
+          "window": 12582919,
+          "client": [
+            977,
+            762,
+            776,
+            699
+          ],
+          "frame": [
+            973,
+            730,
+            784,
+            735
+          ]
+        }
+      },
+      "unmodified": true
+    },
+    {
+      "path": "pointer-slate.png",
+      "profile": "slate-dark",
+      "scale": "1.25",
+      "font": "Sans 10",
+      "config_sha256": "54da30ed3147c6a8f880920bc48f623769e6b081e48f46349d315ff18e8d3757",
+      "driver_sha256": "811129baa49adfbd472e11237358f563007c66bb4bbce1f277b1f3a9ed9eb76d",
+      "evidence_sha256": "e07215ba6ad53db5ebe22f7ce32c781fc3d16afce868a18f84fba99c0ac383d7",
+      "archive_sha256": "8eeb42b0c02423e13cd8a1cf84c4ba84a9288fec3c3a3ab7097d6920f7c70b6b",
+      "sha256": "c397b135e63122c436f654165af8bf370a01ac41757f8ee1182af1a5f952ab32",
+      "pixels": [
+        2560,
+        2160
+      ],
+      "windows": {
+        "File browser": {
+          "window": 12582919,
+          "client": [
+            978,
+            770,
+            776,
+            887
+          ],
+          "frame": [
+            973,
+            730,
+            786,
+            932
+          ]
+        }
+      },
+      "unmodified": true
+    }
+  ]
+}

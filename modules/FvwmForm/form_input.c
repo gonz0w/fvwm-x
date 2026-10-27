@@ -471,6 +471,34 @@ void form_input_cursor(int characters, int width, int *cursor, int *left,
 	*visible = *cursor - *left;
 }
 
+int form_input_hit(int characters, int pointer, int available,
+	int (*measure)(void *context, int characters), void *context)
+{
+	int low = 0, high = characters;
+	int before, after;
+
+	if (characters <= 0 || pointer <= 0 || available <= 0 || measure == NULL)
+		return 0;
+	if (pointer > available)
+		pointer = available;
+	while (low < high)
+	{
+		int middle = low + (high - low) / 2 + 1;
+
+		if (measure(context, middle) <= pointer)
+			low = middle;
+		else
+			high = middle - 1;
+	}
+	if (low == characters)
+		return low;
+	after = measure(context, low + 1);
+	if (after > available)
+		return low;
+	before = low == 0 ? 0 : measure(context, low);
+	return pointer - before < after - pointer ? low : low + 1;
+}
+
 bool form_input_growth(int capacity, int bytes, int characters,
 	size_t added_bytes, int added_characters, int *new_capacity,
 	int *new_bytes, int *new_characters)

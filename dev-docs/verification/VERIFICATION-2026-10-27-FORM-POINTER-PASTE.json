@@ -1,0 +1,1059 @@
+{
+  "base": "35f37736806bfb9c8766231328bc363d4b0aa618",
+  "status": "passed-focused-linux",
+  "source": {
+    "count": 1546,
+    "aggregate_sha256": "55a1feda29279b02e07a11d5a3087236320d1f9bd68614451683a0633d8222b9",
+    "changed_compiled_inputs": {
+      "doc/FvwmForm.adoc": {
+        "sha256": "864831e93415f50a72ed68c2bea750c114dd58276b204316b218a1f80c355d9c",
+        "bytes": 59834,
+        "mode": 420
+      },
+      "modules/FvwmForm/FvwmForm.c": {
+        "sha256": "84d32f32c57321695692bb0b9ec31475b321f2a3fb4e94518d90b858973cc62e",
+        "bytes": 132584,
+        "mode": 420
+      },
+      "modules/FvwmForm/FvwmForm.h": {
+        "sha256": "cae8b00ec6d6ffc443c4b835aa89e10b650151d569dabc78cd66a05651ac5519",
+        "bytes": 12337,
+        "mode": 420
+      },
+      "modules/FvwmForm/ReadXServer.c": {
+        "sha256": "ee3058fa75083d0b6c10b0b45b6205fd71dd1127143f6fb1c0e97b86cf1678bb",
+        "bytes": 23127,
+        "mode": 420
+      },
+      "modules/FvwmForm/form_input.c": {
+        "sha256": "3fdaf1b28f855992bb3c9bdf030f89e4109260d9e2f9e5697d332c2fac9528b2",
+        "bytes": 12885,
+        "mode": 420
+      },
+      "modules/FvwmForm/form_input.h": {
+        "sha256": "86492956acc8ebde2efe767da50514019e76082ecdea507755e58c71b2aa6f26",
+        "bytes": 3979,
+        "mode": 420
+      },
+      "tests/test_form_input.c": {
+        "sha256": "07e95d567f49aaf5f3e343c776f714c86926000c562662c4a3276f2d69d464c9",
+        "bytes": 20974,
+        "mode": 420
+      }
+    }
+  },
+  "drivers": {
+    "tests/live_x/form_transport_live.py": {
+      "sha256": "5af4d2fe273c5781756f2301ca74ffb5a2bc0070f66ecbe54c6ca2da77cab147",
+      "bytes": 49796
+    },
+    "tests/live_x/form_input_continuity_live.py": {
+      "sha256": "4ffe212c2fd39e7e2e6d4b61ce91d61b70e15d40dc3615e35f1f89c9673c8394",
+      "bytes": 20955
+    },
+    "tests/live_x/browser_disclosure_live.py": {
+      "sha256": "811129baa49adfbd472e11237358f563007c66bb4bbce1f277b1f3a9ed9eb76d",
+      "bytes": 99669
+    }
+  },
+  "profiles": {
+    "build-gcc": {
+      "config_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+      "config_bytes": 4473,
+      "selected_options": {
+        "buildtype": "debugoptimized",
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": [],
+        "png": "enabled",
+        "svg": "enabled"
+      },
+      "compilers": {
+        "host": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "gcc",
+            "exelist": [
+              "cc"
+            ],
+            "linker_exelist": [
+              "cc"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "13.3.0",
+            "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    },
+    "build-module-waits-asan": {
+      "config_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+      "config_bytes": 4473,
+      "selected_options": {
+        "buildtype": "debug",
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ],
+        "png": "auto",
+        "svg": "auto"
+      },
+      "compilers": {
+        "host": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        },
+        "build": {
+          "c": {
+            "id": "clang",
+            "exelist": [
+              "clang"
+            ],
+            "linker_exelist": [
+              "clang"
+            ],
+            "file_suffixes": [
+              "c"
+            ],
+            "default_suffix": "c",
+            "version": "18.1.3",
+            "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+            "linker_id": "ld.bfd"
+          }
+        }
+      }
+    }
+  },
+  "result": {
+    "status": "passed",
+    "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+    "architecture": "aarch64",
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+        "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "bytes": 5539656
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+        "sha256": "889289decc71b773b6c4f76591018b29130f20f15bcf3347bcc70e605d88d998",
+        "bytes": 1800376
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+        "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87",
+        "bytes": 5720923
+      }
+    },
+    "source_after": "all runtime frozen bytes exact",
+    "commands": 13
+  },
+  "asan_binary": {
+    "path": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmForm/FvwmForm",
+    "sha256": "4a61d4c60331c2761b53d6c1a9ec289fa874e4223c8b7dd0460a0ce7dce5753d",
+    "bytes": 9396552,
+    "native_status": "passed",
+    "leak_detection": false
+  },
+  "commands": [
+    {
+      "name": "build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "modules/FvwmForm/FvwmForm",
+        "tests/test-form-input"
+      ],
+      "seconds": 0.6950688129999776,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "build.log"
+    },
+    {
+      "name": "policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/policy",
+        "form-input"
+      ],
+      "seconds": 0.1959142869999937,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "policy.log"
+    },
+    {
+      "name": "editable-core-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--input-font",
+        "fixed",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/core-request"
+      ],
+      "seconds": 3.04178684499999,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "editable-core-request.log"
+    },
+    {
+      "name": "editable-fontset-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--input-font",
+        "fixed,*",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/fontset-request"
+      ],
+      "seconds": 3.225082543000042,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "editable-fontset-request.log"
+    },
+    {
+      "name": "editable-xft-request",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--input-font",
+        "xft:DejaVu Sans Mono:size=12",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/xft-request"
+      ],
+      "seconds": 3.1173804219999965,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "editable-xft-request.log"
+    },
+    {
+      "name": "paste-single",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "paste-single",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/single"
+      ],
+      "seconds": 0.35734942499999534,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "paste-single.log"
+    },
+    {
+      "name": "legacy-input",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--input-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/input"
+      ],
+      "seconds": 2.152979433999974,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-input.log"
+    },
+    {
+      "name": "legacy-history",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--history-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/history"
+      ],
+      "seconds": 2.608457630000032,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-history.log"
+    },
+    {
+      "name": "legacy-readonly",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--readonly-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/readonly"
+      ],
+      "seconds": 1.656830565000007,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-readonly.log"
+    },
+    {
+      "name": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "modules/FvwmForm/FvwmForm",
+        "tests/test-form-input"
+      ],
+      "seconds": 0.5141285139999923,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-build.log"
+    },
+    {
+      "name": "sanitizer-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/sanitizer",
+        "form-input"
+      ],
+      "seconds": 0.1380260600000156,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer-policy.log"
+    },
+    {
+      "name": "sanitizer-editable",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "all",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-next-legacy/asan-editable"
+      ],
+      "seconds": 3.2832749819999663,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=0:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer-editable.log"
+    },
+    {
+      "name": "manual",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/FvwmForm.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/FvwmForm.adoc"
+      ],
+      "seconds": 0.09212845799999059,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "manual.log"
+    }
+  ],
+  "archives": {
+    "baseline-first": {
+      "status": "passed",
+      "files": 19,
+      "archive": {
+        "sha256": "94273ebaf7f09d47ec2d7bfb9e582797b417a159b15cb67e3e5ebd52d005e64f",
+        "bytes": 3060
+      },
+      "source_root": "/dev/shm/form-next-baseline",
+      "gzip_crc": true
+    },
+    "baseline-pointer-corrected": {
+      "status": "passed",
+      "files": 6,
+      "archive": {
+        "sha256": "0d5b931663e7719a5ba886a685c13c62c92c4a4c88dde540d3579571d6055aa8",
+        "bytes": 2138
+      },
+      "source_root": "/dev/shm/form-next-baseline",
+      "gzip_crc": true
+    },
+    "native-first": {
+      "status": "passed",
+      "files": 45,
+      "archive": {
+        "sha256": "f79651288566a33a46655f5fde9608b282fe1a11967e5387880bd2ab869a9ba0",
+        "bytes": 178885
+      },
+      "source_root": "/dev/shm/form-next-native",
+      "gzip_crc": true
+    },
+    "native-path-restore-first": {
+      "status": "passed",
+      "files": 43,
+      "archive": {
+        "sha256": "9c800e61d9b93e39ea5dd2abe4657739e73a12cd921da77304e8d096b21e89d3",
+        "bytes": 169643
+      },
+      "source_root": "/dev/shm/form-next-native",
+      "gzip_crc": true
+    },
+    "native-final": {
+      "status": "passed",
+      "files": 150,
+      "archive": {
+        "sha256": "8eeb42b0c02423e13cd8a1cf84c4ba84a9288fec3c3a3ab7097d6920f7c70b6b",
+        "bytes": 1369287
+      },
+      "source_root": "/dev/shm/form-next-native",
+      "gzip_crc": true
+    },
+    "legacy-final": {
+      "status": "passed",
+      "files": 127,
+      "archive": {
+        "sha256": "498f8073315f9375494387edb9341555beb880fbc4e65ebf556f713dae24a4d8",
+        "bytes": 43953
+      },
+      "source_root": "/dev/shm/form-next-legacy",
+      "gzip_crc": true
+    },
+    "checkpoint-final": {
+      "status": "passed",
+      "files": 53,
+      "archive": {
+        "sha256": "485e5f97e03b2d3965222c389b9b7e14fa97805b12c56a249e467205a56761f2",
+        "bytes": 918895
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint",
+      "gzip_crc": true
+    }
+  },
+  "themes": [
+    {
+      "status": "passed",
+      "profile": "classic-large",
+      "requested_scale": "2",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "c0d25f24759590506f6796099f7cad54c75ee78a0dba6db7df93ec006df155c5",
+      "pointer_input_boundary": {
+        "home": {
+          "window": 12582922,
+          "width": 696,
+          "height": 86,
+          "sha256": "f59d81f998f8e6b3af69ad674fd6b112554b3b5e46bc2076fcdf35b45aef1662"
+        },
+        "first": {
+          "window": 12582922,
+          "width": 696,
+          "height": 86,
+          "sha256": "30fc30d7d96a8afe94c1615e581e0e8e9af1f43a847851504e529ed17f22820e"
+        },
+        "changed_column_groups": [
+          [
+            11,
+            12
+          ],
+          [
+            40,
+            41
+          ]
+        ],
+        "clicked_x": 41,
+        "expected_index": 1,
+        "callback": "Echo FVWM_FILES_3 0a8c4e9cc6992b2ecde98201b4a665ff 2 filter xYXhiYw xAAAABAAA 0000000000000008"
+      },
+      "pointer_paste_callbacks": {
+        "filter": "Echo FVWM_FILES_3 0a8c4e9cc6992b2ecde98201b4a665ff 2 filter xYXhiYw xAAAABAAA 0000000000000008",
+        "paste_filter": "Echo FVWM_FILES_3 0a8c4e9cc6992b2ecde98201b4a665ff 2 filter xQmRlZg xAAAABAAA 0000000000000009",
+        "paste_path": "Echo FVWM_FILES_3 0a8c4e9cc6992b2ecde98201b4a665ff 2 path xQWhlYWQtcGF0aC1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLXBhdGg xAAAABAAA 000000000000000a",
+        "operations": [
+          "view",
+          "view",
+          "filter",
+          "filter",
+          "path",
+          "refresh",
+          "filter",
+          "filter",
+          "path"
+        ],
+        "pasted_bytes": "410942",
+        "expected_filter": "Bdef",
+        "expected_path": "Ahead-path-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-tail-path",
+        "immediate_paint_matches_expose": true
+      },
+      "children_after_cleanup": {
+        "Xorg-dummy": 0,
+        "xrandr": 0,
+        "core": 0,
+        "browser": 0
+      },
+      "module_cleanup": {
+        "modules": [
+          {
+            "proxy": 764,
+            "child": 765,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 627.128735667,
+            "waited": {
+              "child": 765,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 800,
+            "child": 801,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-0a8c4e9cc6992b2ecde98201b4a665ff-1-ready"
+            ],
+            "started": 627.302079791,
+            "waited": {
+              "child": 801,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 802,
+            "child": 803,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-0a8c4e9cc6992b2ecde98201b4a665ff-2-ready"
+            ],
+            "started": 627.385626072,
+            "waited": {
+              "child": 803,
+              "returncode": 0
+            }
+          }
+        ],
+        "seconds": 0.00032112799999595154
+      },
+      "observer_unexpected_x_errors": [],
+      "cleanup_failures": []
+    },
+    {
+      "status": "passed",
+      "profile": "dune-light",
+      "requested_scale": "1",
+      "font": "Sans 10",
+      "config_sha256": "b9b0615fc540c621ec6be78a7bb5e1b3d5b14156f82b8489f719e27ee499fc25",
+      "pointer_input_boundary": {
+        "home": {
+          "window": 12582922,
+          "width": 192,
+          "height": 30,
+          "sha256": "1992ac3ba60fb2677bcf7b24d2389645398ac0123827ad3259047bf0d9365a9d"
+        },
+        "first": {
+          "window": 12582922,
+          "width": 192,
+          "height": 30,
+          "sha256": "5c6f22c3dbef60e0ef9d46f5f01fcc4ae3ddd0efa5fa2dca567019223d60713c"
+        },
+        "changed_column_groups": [
+          [
+            5
+          ],
+          [
+            13
+          ]
+        ],
+        "clicked_x": 14,
+        "expected_index": 1,
+        "callback": "Echo FVWM_FILES_3 db189e2e651ac429274eb6304a38a5e4 2 filter xYXhiYw xAAAABAAA 0000000000000008"
+      },
+      "pointer_paste_callbacks": {
+        "filter": "Echo FVWM_FILES_3 db189e2e651ac429274eb6304a38a5e4 2 filter xYXhiYw xAAAABAAA 0000000000000008",
+        "paste_filter": "Echo FVWM_FILES_3 db189e2e651ac429274eb6304a38a5e4 2 filter xQmRlZg xAAAABAAA 0000000000000009",
+        "paste_path": "Echo FVWM_FILES_3 db189e2e651ac429274eb6304a38a5e4 2 path xQWhlYWQtcGF0aC1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLXBhdGg xAAAABAAA 000000000000000a",
+        "operations": [
+          "view",
+          "view",
+          "filter",
+          "filter",
+          "path",
+          "refresh",
+          "filter",
+          "filter",
+          "path"
+        ],
+        "pasted_bytes": "410942",
+        "expected_filter": "Bdef",
+        "expected_path": "Ahead-path-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-tail-path",
+        "immediate_paint_matches_expose": true
+      },
+      "children_after_cleanup": {
+        "Xorg-dummy": 0,
+        "xrandr": 0,
+        "core": 0,
+        "browser": 0
+      },
+      "module_cleanup": {
+        "modules": [
+          {
+            "proxy": 671,
+            "child": 672,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 623.388785046,
+            "waited": {
+              "child": 672,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 706,
+            "child": 707,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-db189e2e651ac429274eb6304a38a5e4-1-ready"
+            ],
+            "started": 623.616496872,
+            "waited": {
+              "child": 707,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 708,
+            "child": 709,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-db189e2e651ac429274eb6304a38a5e4-2-ready"
+            ],
+            "started": 623.703442436,
+            "waited": {
+              "child": 709,
+              "returncode": 0
+            }
+          }
+        ],
+        "seconds": 0.000319253000043318
+      },
+      "observer_unexpected_x_errors": [],
+      "cleanup_failures": []
+    },
+    {
+      "status": "passed",
+      "profile": "slate-dark",
+      "requested_scale": "1.25",
+      "font": "Sans 10",
+      "config_sha256": "54da30ed3147c6a8f880920bc48f623769e6b081e48f46349d315ff18e8d3757",
+      "pointer_input_boundary": {
+        "home": {
+          "window": 12582922,
+          "width": 244,
+          "height": 39,
+          "sha256": "683df5e3a2d3b3648a6fccaac8243d524b5ee94771837d4f1403291ba25765c5"
+        },
+        "first": {
+          "window": 12582922,
+          "width": 244,
+          "height": 39,
+          "sha256": "5ae2d41d699faf3ec44bc3958ae9d57df44beb24fee70c0cc7fa9084fd65493a"
+        },
+        "changed_column_groups": [
+          [
+            7
+          ],
+          [
+            17
+          ]
+        ],
+        "clicked_x": 18,
+        "expected_index": 1,
+        "callback": "Echo FVWM_FILES_3 6c3d095acd181139dbcc29edfbbc516b 2 filter xYXhiYw xAAAABAAA 0000000000000008"
+      },
+      "pointer_paste_callbacks": {
+        "filter": "Echo FVWM_FILES_3 6c3d095acd181139dbcc29edfbbc516b 2 filter xYXhiYw xAAAABAAA 0000000000000008",
+        "paste_filter": "Echo FVWM_FILES_3 6c3d095acd181139dbcc29edfbbc516b 2 filter xQmRlZg xAAAABAAA 0000000000000009",
+        "paste_path": "Echo FVWM_FILES_3 6c3d095acd181139dbcc29edfbbc516b 2 path xQWhlYWQtcGF0aC1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS1taWRkbGUtbWlkZGxlLW1pZGRsZS10YWlsLXBhdGg xAAAABAAA 000000000000000a",
+        "operations": [
+          "view",
+          "view",
+          "filter",
+          "filter",
+          "path",
+          "refresh",
+          "filter",
+          "filter",
+          "path"
+        ],
+        "pasted_bytes": "410942",
+        "expected_filter": "Bdef",
+        "expected_path": "Ahead-path-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-middle-tail-path",
+        "immediate_paint_matches_expose": true
+      },
+      "children_after_cleanup": {
+        "Xorg-dummy": 0,
+        "xrandr": 0,
+        "core": 0,
+        "browser": 0
+      },
+      "module_cleanup": {
+        "modules": [
+          {
+            "proxy": 580,
+            "child": 595,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 619.761004279,
+            "waited": {
+              "child": 595,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 613,
+            "child": 614,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-6c3d095acd181139dbcc29edfbbc516b-1-ready"
+            ],
+            "started": 619.926412741,
+            "waited": {
+              "child": 614,
+              "returncode": 0
+            }
+          },
+          {
+            "proxy": 615,
+            "child": 616,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "arguments": [
+              "none",
+              "0",
+              "8",
+              "FvwmFiles-6c3d095acd181139dbcc29edfbbc516b-2-ready"
+            ],
+            "started": 620.01023915,
+            "waited": {
+              "child": 616,
+              "returncode": 0
+            }
+          }
+        ],
+        "seconds": 0.00022825200005627266
+      },
+      "observer_unexpected_x_errors": [],
+      "cleanup_failures": []
+    }
+  ],
+  "baseline_commands": [
+    {
+      "mode": "pointer",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "pointer",
+        "--input-font",
+        "fixed",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/before/form",
+        "--artifacts-dir",
+        "/dev/shm/form-next-baseline/pointer"
+      ],
+      "exit": 1,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 842, in <module>\n    run(args)\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 279, in run\n    check_continuity(x, connection, root, shown, process,\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 364, in check_continuity\n    start = caret_boundary(names['first'], 'pointer-start-boundary')\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 203, in caret_boundary\n    assert columns and columns == list(range(min(columns), max(columns)+1))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "mode": "paste",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "paste",
+        "--input-font",
+        "fixed",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/before/form",
+        "--artifacts-dir",
+        "/dev/shm/form-next-baseline/paste"
+      ],
+      "exit": 1,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 842, in <module>\n    run(args)\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 279, in run\n    check_continuity(x, connection, root, shown, process,\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 406, in check_continuity\n    observe(expected, 'paste-tab-one-destination')\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 141, in observe\n    assert actual == expected, (label, actual, expected)\n           ^^^^^^^^^^^^^^^^^^\nAssertionError: ('paste-tab-one-destination', ['Aabc', '', 'LOCKED', 'HEADMARKABCD', 'HEADMARKABCD-middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle-zzzzTAILzzzz'], ['Aabc', 'B', 'LOCKED', 'HEADMARKABCD', 'HEADMARKABCD-middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle-zzzzTAILzzzz'])\n"
+    },
+    {
+      "mode": "paste-paint",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "paste-paint",
+        "--input-font",
+        "fixed",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/before/form",
+        "--artifacts-dir",
+        "/dev/shm/form-next-baseline/paste-paint"
+      ],
+      "exit": 1,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 842, in <module>\n    run(args)\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 279, in run\n    check_continuity(x, connection, root, shown, process,\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 422, in check_continuity\n    expose_equal(names['empty'], 'paste-final-destination')\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 226, in expose_equal\n    assert equal, label + ': immediate paste pixels differ from Expose'\n           ^^^^^\nAssertionError: paste-final-destination: immediate paste pixels differ from Expose\n"
+    },
+    {
+      "mode": "paste-single",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "paste-single",
+        "--input-font",
+        "fixed",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/before/form",
+        "--artifacts-dir",
+        "/dev/shm/form-next-baseline/paste-single"
+      ],
+      "exit": 1,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 842, in <module>\n    run(args)\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 279, in run\n    check_continuity(x, connection, root, shown, process,\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 430, in check_continuity\n    assert commands.count('Nop paste-tab-action') == before, commands\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ['Send_ConfigInfo *FvwmFormDefault', 'read FormTransport Quiet', 'Send_ConfigInfo *FormTransport', 'SET_MASK 139329536', 'SET_MASK 2147483664', 'NOP FINISHED STARTUP', 'Nop input-restarted', 'Nop input-values xYWJj', 'Nop paste-tab-action', 'Nop input-values xQSBCYWJj']\n"
+    }
+  ],
+  "corrected_pointer_baseline": [
+    {
+      "mode": "pointer",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--editable-only",
+        "--editable-case",
+        "pointer",
+        "--input-font",
+        "fixed",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint/before/form",
+        "--artifacts-dir",
+        "/dev/shm/form-next-baseline/pointer"
+      ],
+      "exit": 1,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 842, in <module>\n    run(args)\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py\", line 279, in run\n    check_continuity(x, connection, root, shown, process,\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 380, in check_continuity\n    observe(['abc'[:index] + 'x' + 'abc'[index:]] + initial[1:], label)\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_input_continuity_live.py\", line 141, in observe\n    assert actual == expected, (label, actual, expected)\n           ^^^^^^^^^^^^^^^^^^\nAssertionError: ('exact-first-edge', ['xabc', '', 'LOCKED', 'HEADMARKABCD', 'HEADMARKABCD-middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle-zzzzTAILzzzz'], ['axbc', '', 'LOCKED', 'HEADMARKABCD', 'HEADMARKABCD-middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle--middle-zzzzTAILzzzz'])\n"
+    }
+  ],
+  "cleanup": {
+    "retired": [
+      {
+        "retired": "/dev/shm/form-next-baseline",
+        "files": 19,
+        "bytes": 41147
+      },
+      {
+        "retired": "/dev/shm/form-next-baseline",
+        "files": 6,
+        "bytes": 22081
+      },
+      {
+        "retired": "/tmp/fvwm-module-waits-20261015/r1-form-next-checkpoint",
+        "files": 53,
+        "bytes": 2330891
+      },
+      {
+        "retired": "/dev/shm/form-next-legacy",
+        "files": 127,
+        "bytes": 1362177
+      },
+      {
+        "retired": "/dev/shm/form-next-native",
+        "files": 150,
+        "bytes": 7108251
+      },
+      {
+        "retired": "/dev/shm/form-next-native",
+        "files": 45,
+        "bytes": 1137885
+      },
+      {
+        "retired": "/dev/shm/form-next-native",
+        "files": 43,
+        "bytes": 932477
+      }
+    ],
+    "lab_state": "stopped"
+  },
+  "host_checks": {
+    "passed": [
+      "make check",
+      "git diff --check",
+      "Exact extracted form_input_hit + test_input_pointer_boundary host C11 compile/run with -Wall/-Wextra/-Werror"
+    ],
+    "not_run": [
+      {
+        "check": "Complete host module/unit compilation",
+        "reason": "Known missing X11/Intrinsic host headers; lead owns complete Linux builds"
+      },
+      {
+        "check": "Host manual rendering",
+        "reason": "Known unavailable Asciidoctor; lead owns Linux manual render"
+      },
+      {
+        "check": "Linux policy/native/scoped sanitizer and three-theme checks",
+        "reason": "Lead-owned runtime gate"
+      },
+      {
+        "check": "Separate review",
+        "reason": "Lead-owned reviewer required"
+      }
+    ],
+    "routing": "temper_implementer named role requested; loader accepted; actual backend execution identity is not independently attested"
+  },
+  "performance": "PERFORMANCE-2026-10-27-FORM-POINTER.json",
+  "limits": [
+    "#51/#69 broader consumer, six-target, physical/assistive and release acceptance open",
+    "#257/#258 parked",
+    "Actual font/backend identity unattested; no IME/grapheme/shaping claim",
+    "Local ARM64 VM/container is not native-runner release qualification",
+    "Native editing sanitizer disables leak detection; no leak-free claim"
+  ],
+  "routing": "Named Temper roles accepted; configured models requested, backend identity unattested",
+  "offline_recovery_observations": [
+    {
+      "profile": "slate-dark",
+      "member": "./browser-disclosure-sc51092o/slate-dark/native-records/module-580.jsonl",
+      "sha256": "51ebc263154a0ebe0209271c106dc4c1f48636d65b72335e7e472ef143d1cbee",
+      "zero_based_recovery_lines": [
+        526,
+        542,
+        546,
+        547
+      ],
+      "sequence": [
+        "Loading",
+        "Refreshed",
+        "complete128",
+        "ready"
+      ],
+      "scope": "Retrospective raw sequence after Refresh; fixture has no explicit intent publication fence"
+    },
+    {
+      "profile": "dune-light",
+      "member": "./browser-disclosure-nixj3ba5/dune-light/native-records/module-671.jsonl",
+      "sha256": "5a025a6967d7c480b24d4f5519068fca0e4f901aaf1666414d99b4e723a85eae",
+      "zero_based_recovery_lines": [
+        526,
+        542,
+        546,
+        547
+      ],
+      "sequence": [
+        "Loading",
+        "Refreshed",
+        "complete128",
+        "ready"
+      ],
+      "scope": "Retrospective raw sequence after Refresh; fixture has no explicit intent publication fence"
+    },
+    {
+      "profile": "classic-large",
+      "member": "./browser-disclosure-huou57_d/classic-large/native-records/module-764.jsonl",
+      "sha256": "fb3e581fe8db46ce38bd3fbf790c01054072101e58428888588918a69296e905",
+      "zero_based_recovery_lines": [
+        524,
+        540,
+        544,
+        545
+      ],
+      "sequence": [
+        "Loading",
+        "Refreshed",
+        "complete128",
+        "ready"
+      ],
+      "scope": "Retrospective raw sequence after Refresh; fixture has no explicit intent publication fence"
+    }
+  ]
+}

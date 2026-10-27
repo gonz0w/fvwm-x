@@ -170,7 +170,7 @@ def run(args):
                         '*FormTransportButton continue "Read" F12',
                         '*FormTransportCommand Nop form-history:$(first)/$(second)'])
                 if args.editable_only:
-                    config.extend(continuity_config(args.input_font))
+                    config.extend(continuity_config(args.input_font, args.editable_case))
                 if args.command_only:
                     config.extend(['*FormTransportInputFont fixed',
                         '*FormTransportInput ' + command_name + ' 10 "ready"',
@@ -543,12 +543,10 @@ def run(args):
                         key(ord('u'), 4)
                         key(ord('z'))
                         observe('z')
-                        # Existing paste Tab falls through and traverses two
-                        # fields per byte: editable(1) -> duplicate(3) ->
-                        # readonly(0), in the five-input ring. Home below must
-                        # act on that actual readonly destination.
+                        # Each Tab traverses once: editable -> three locked
+                        # duplicates -> original readonly in the five-input ring.
                         paste(editable, 'a\rMUST-NOT-PASTE' if args.readonly_short
-                            else 'a\tb\tMUST-NOT-PASTE')
+                            else 'a\tb\tc\td\tMUST-NOT-PASTE')
                         observe('za')
                         key(0xff50)
                         observe('za')
@@ -815,7 +813,7 @@ if __name__ == '__main__':
     parser.add_argument('--command-only', action='store_true')
     parser.add_argument('--history-only', action='store_true')
     parser.add_argument('--editable-only', action='store_true')
-    parser.add_argument('--editable-case', choices=('home', 'wrap', 'all'), default='all')
+    parser.add_argument('--editable-case', choices=('home', 'wrap', 'pointer', 'paste', 'paste-paint', 'paste-single', 'all'), default='all')
     parser.add_argument('--input-font', default='fixed')
     parser.add_argument('--readonly-only', action='store_true')
     parser.add_argument('--service-only', action='store_true')

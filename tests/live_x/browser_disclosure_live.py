@@ -977,7 +977,6 @@ def run(args, profile, run_root):
                 key('Right')
                 key('Right')
                 key('x')
-                capture('editable-drafts-after-reflow.png')
                 submitted = time.monotonic()
                 key('g', alt=True)
                 path_callback = draft_callback('path')
@@ -990,6 +989,110 @@ def run(args, profile, run_root):
                 evidence['editable_draft_callbacks'] = dict(filter=filter_callback,
                     wrap_filter=wrap_callback, path=path_callback, operations=actual_callbacks,
                     filter_bytes=expected_filter.encode().hex(), path_bytes=expected_path.encode().hex())
+                # The preceding exact-byte probe deliberately submitted a
+                # nonexistent Path. The provider retains the admitted snapshot;
+                # normal F5 Refresh reloads that exact real directory before
+                # the next scenes require a loaded/current projection. Its path
+                # exceeds the native callback payload bound, so do not retype
+                # the whole disclosure-path fixture through a Path callback.
+                submitted = time.monotonic()
+                focused()
+                key('F5')
+                restore_callback = draft_callback('refresh')
+                restored = wait_for_predicate('real directory restored before pointer/paste',
+                    lambda: (v if base64.b64decode(v['path_bytes']) == str(folder).encode()
+                        and v['loaded'] == ENTRIES else None)
+                        if (v := ready_state()) else None,
+                    time.monotonic() + 8, process=browser)
+                same_identity()
+                evidence['pointer_paste_ready_restore'] = dict(method='native-F5-refresh',
+                    callback=restore_callback,
+                    path_bytes=restored['path_bytes'], loaded=restored['loaded'],
+                    busy=restored['busy'], availability=restored['availability'],
+                    projection=restored['bindings']['projection'])
+                # Pointer mapping is measured from the two actual painted
+                # carets, rather than guessed from a requested font/backend.
+                type_draft(filter_input, 'abc')
+                key('Home')
+                pointer_home = parent_pixels(filter_input, 'pointer-filter-home')
+                key('Right')
+                pointer_first = parent_pixels(filter_input, 'pointer-filter-first')
+                old_pixels = input_rasters[pointer_home['sha256']]
+                new_pixels = input_rasters[pointer_first['sha256']]
+                assert pointer_home['width'] == pointer_first['width']
+                inner_width = pointer_home['width'] - 4
+                columns = sorted({i % inner_width + 2
+                    for i, (old, new) in enumerate(zip(old_pixels, new_pixels)) if old != new})
+                groups = []
+                for px in columns:
+                    if not groups or px != groups[-1][-1] + 1:
+                        groups.append([])
+                    groups[-1].append(px)
+                assert len(groups) == 2 and len(groups[0]) == len(groups[1]), groups
+                assert 1 <= len(groups[1]) <= 4, groups
+                # The painter's filled caret starts one pixel before the
+                # measured text boundary, independent of its stroke width.
+                boundary_x = groups[1][0] + 1
+                click(filter_input, px=boundary_x)
+                focused()
+                key('x')
+                submitted = time.monotonic()
+                key('f', alt=True)
+                pointer_callback = draft_callback('filter')
+                assert base64.urlsafe_b64decode(pointer_callback.split()[5][1:] + '==') == b'axbc'
+                wait_for_predicate('pointer-edited real filter applied',
+                    lambda: (v if v['filter'] == 'axbc' else None)
+                        if (v := ready_state()) else None,
+                    time.monotonic() + 8, process=browser)
+                evidence['pointer_input_boundary'] = dict(home=pointer_home,
+                    first=pointer_first, changed_column_groups=groups,
+                    clicked_x=boundary_x, expected_index=1, callback=pointer_callback)
+
+                type_draft(filter_input, 'def')
+                type_draft(path_input, path_draft)
+                key('Home')
+                x.XStoreBuffer.argtypes = [C.c_void_p, C.c_char_p, C.c_int, C.c_int]
+                paste_bytes = b'A\tB'
+                x.XStoreBuffer(d, paste_bytes, len(paste_bytes), 0)
+                x.XSync(d, 0)
+                # Path is the last Input. One real pasted Tab must wrap once
+                # into filter, without firing a configured action or returning
+                # to Path. The left border click clamps to the visible start.
+                click(path_input, px=2, button=2)
+                focused()
+                pasted_filter = parent_pixels(filter_input, 'paste-filter-immediate')
+                pasted_path = parent_pixels(path_input, 'paste-path-immediate')
+                capture('pointer-paste-drafts-after-reflow.png')
+                x.XClearArea.argtypes = [C.c_void_p, C.c_ulong, C.c_int,
+                    C.c_int, C.c_uint, C.c_uint, C.c_int]
+                for target in (filter_input, path_input):
+                    x.XClearArea(d, target, 0, 0, 0, 0, 1)
+                x.XSync(d, 0)
+                parent_pixels(filter_input, 'paste-filter-after-expose', pasted_filter)
+                parent_pixels(path_input, 'paste-path-after-expose', pasted_path)
+                submitted = time.monotonic()
+                key('f', alt=True)
+                paste_filter_callback = draft_callback('filter')
+                assert base64.urlsafe_b64decode(paste_filter_callback.split()[5][1:] + '==') == b'Bdef'
+                wait_for_predicate('pasted real filter applied',
+                    lambda: (v if v['filter'] == 'Bdef' else None)
+                        if (v := ready_state()) else None,
+                    time.monotonic() + 8, process=browser)
+                submitted = time.monotonic()
+                key('g', alt=True)
+                paste_path_callback = draft_callback('path')
+                assert base64.urlsafe_b64decode(paste_path_callback.split()[5][1:] + '==') == ('A' + path_draft).encode()
+                same_identity()
+                all_callbacks = [r['text'].split()[4] for r in rows(native)
+                    if r['time'] >= draft_started and r['direction'] == 'out'
+                    and r['text'].startswith('Echo FVWM_FILES_3 ' + provider + ' ')]
+                assert all_callbacks == ['view', 'view', 'filter', 'filter', 'path',
+                    'refresh', 'filter', 'filter', 'path'], all_callbacks
+                evidence['pointer_paste_callbacks'] = dict(filter=pointer_callback,
+                    paste_filter=paste_filter_callback, paste_path=paste_path_callback,
+                    operations=all_callbacks, pasted_bytes=paste_bytes.hex(),
+                    expected_filter='Bdef', expected_path='A' + path_draft,
+                    immediate_paint_matches_expose=True)
                 evidence['status'] = 'passed'
                 return
 
@@ -1554,7 +1657,7 @@ def main():
     parser.add_argument('--xorg-config', type=Path)
     parser.add_argument('--scale', choices=('1', '1.25', '2'), default='1')
     parser.add_argument('--editable-continuity-only', action='store_true',
-        help='only run long editable drafts, resize/view/scale and native byte callbacks')
+        help='run editable drafts, pointer/paste, resize/view/scale and native byte callbacks')
     parser.add_argument('--startup-continuity', action='store_true',
         help='also check startup sizing, containment and viewport continuity')
     parser.add_argument('--startup-workarea', action='store_true',

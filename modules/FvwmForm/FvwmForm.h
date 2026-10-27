@@ -294,6 +294,7 @@ void ReadXServer(void);                  /* ReadXServer.c */
 char *form_encoded_value(const Item *item);
 void RedrawText(Item *item);             /* FvwmForm.c */
 void form_draw_caret(Item *item, int x);
+void form_input_click(Item *item, int x);
 void RedrawTimeout(Item *item);          /* FvwmForm.c */
 void RedrawItem (
 	Item *item, int click, XEvent *pev); /* FvwmForm.c */

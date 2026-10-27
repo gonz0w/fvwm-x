@@ -81,6 +81,14 @@ guidance precede variable detail where applicable. The progress label reports an
 enumerates a target. A successful snapshot reports the loaded entry count;
 there is no estimated percentage. The action-readiness label reports openable
 visible items and observed properties, terminal and configured-action readiness.
+Interactive list focus, selection and scrolling trigger a coalesced native
+snapshot; the selection, hidden count and readiness labels update without a
+button callback. The browser resolves that snapshot through the current
+acknowledged mapping. If the combined hidden and visible selection exceeds 256,
+it retains the last admitted model and native selection and reports selection
+unavailable. A later valid interaction can recover. Feedback updates labels only;
+it does not launch an action or replace the collection. Readiness remains
+advisory and each action is validated separately.
 These labels describe the current admitted model and provider generation.
 Buttons retain their existing appearance; readiness is enforced again by the
 backend, including current filesystem identity/type checks before a file action.
@@ -277,7 +285,8 @@ Form. Inspection (`--inspect`) remains a one-shot snapshot without watching.
 Cancel work invalidates the pending result, disables watching and requests
 worker/observer termination.
 Close (Escape) exits the helper and closes its Form. The prototype closes after
-five minutes without a callback; it also has an independent native Form timer.
+five minutes without an accepted callback, control or current-Form feedback;
+it also has an independent native Form timer.
 Closing through the window manager can leave the helper until its idle deadline.
 SIGINT/SIGTERM cancel work and close the owned Form. Connection loss ends the
 helper; a remaining Form expires independently. This is a bounded example
@@ -406,6 +415,14 @@ The collection package owns metadata/selection only. The file adapter owns raw
 names, directory observations and actions. Reusable metadata policy does not
 qualify clipboard payload lifetime or protection. Sensitive clipboard data must
 not be routed through ordinary Form command expansion or MFL Echo broadcasts.
+
+Native change markers use a separate bounded, coalescing mailbox from correlated
+replies. The browser requests a fresh snapshot for its current Form and ignores
+retired Form markers. Missing or invalid snapshots leave selection unavailable;
+transport loss can end the session. A current-Form feedback transaction can renew
+the existing idle deadline, while automatic publication and scale changes do not
+count as user activity. Markers and their tokens provide freshness, not access
+control or permission to perform file actions.
 
 Native callbacks use Echo/MFL version 3 with an instance/frame identity, known
 action and monotonically increasing native invocation ticket. The URL-base64

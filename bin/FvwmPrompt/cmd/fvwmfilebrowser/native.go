@@ -74,11 +74,15 @@ func (b *browser) waitNative(token string, published uint32, pending uint32) ([]
 // Only layout observations admit an unchanged generation as an atomic refusal.
 // Other transactions still require their exact published/pending pair.
 func (b *browser) waitNativeGeneration(token string, published, pending, unchanged uint32) ([]byte, uint32, error) {
+	return b.waitNativeReply(b.native, token, published, pending, unchanged)
+}
+
+func (b *browser) waitNativeReply(replies <-chan string, token string, published, pending, unchanged uint32) ([]byte, uint32, error) {
 	deadline := time.NewTimer(time.Until(b.renderDeadline))
 	defer deadline.Stop()
 	for {
 		select {
-		case reply := <-b.native:
+		case reply := <-replies:
 			fields := strings.Fields(reply)
 			if len(fields) < 2 || fields[1] != token {
 				continue
@@ -194,9 +198,6 @@ func (b *browser) updateLayout() (err error) {
 }
 
 func (b *browser) update() error {
-	if err := b.session.Send("SendToModule " + b.alias + " RenewTimeout 3000"); err != nil {
-		return err
-	}
 	entries := b.model.VisibleEntries()
 	if !entriesEqual(entries, b.viewEntries) || b.replaceSelection {
 		next := b.nativeGeneration + 1
@@ -283,7 +284,7 @@ func (b *browser) update() error {
 	if err := b.updateLayout(); err != nil {
 		return err
 	}
-	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.status}, {"watcher", b.watchText()}, {"projection", b.projectionText()}, {"counts", b.countText()}, {"progress", b.progressText()}, {"readiness", b.readinessText()}}
+	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.feedbackStatus()}, {"watcher", b.watchText()}, {"projection", b.projectionText()}, {"counts", b.countText()}, {"progress", b.progressText()}, {"readiness", b.readinessText()}}
 	labels = append(labels, b.inspectorLabels()...)
 	commands := make([]string, 0, len(labels))
 	for _, label := range labels {
@@ -293,6 +294,11 @@ func (b *browser) update() error {
 		return err
 	}
 	_, err := b.snapshotNative("painted", b.nativeGeneration, 0)
+	if err == nil {
+		for _, label := range labels {
+			b.rememberFeedbackLabel(label)
+		}
+	}
 	return err
 }
 func (b *browser) show() (err error) {

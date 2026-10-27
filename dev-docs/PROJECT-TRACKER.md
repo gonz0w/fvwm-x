@@ -5186,3 +5186,18 @@ Status: candidate prepared. This checkpoint completes only when its reviewed PR
 merges after the applicable checks and canonical source verification; until then,
 integration is pending. Issue #272 records exact evidence and canonical identity.
 This finite owner-requested workflow update does not reorder product work.
+
+## Agent Temper guidance refresh — MAINT-02/TEMPER-04
+
+Owner-selected on 2026-10-27; GitHub mirror [issue #277](https://github.com/gonz0w/fvwm-x/issues/277)
+owns check/review evidence and canonical identity for this checkpoint.
+Source: `fcfb819f62d1a1091010db1df8fc5b7560cd1b8a` to
+`4e6804a2c10be6e9ffc9fd057a7d109dcc167504`; exact upstream diff changes only
+verification/workflow/Codex efficiency prose. Scope is retained bundle/provenance,
+with all five local role files, models, product contracts, CI/hooks and other work
+preserved. Follow documentation-only make check, staged/working whitespace,
+exact bundle/manifest/links/auditor, signed actual-author DCO and separate final
+review before owner-authorized PR merge. Stop on source drift or failed gates.
+No guest/build/matrix, protection change or runtime qualification is authorized.
+State: in progress. Completion requires canonical source verification after merge.
+This finite method update does not reorder product work.

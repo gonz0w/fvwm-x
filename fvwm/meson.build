@@ -60,6 +60,8 @@ fvwm_sources = [
     'fvwm/query_json.c',
     'fvwm/preview_policy.c',
     'fvwm/appearance_preview.c',
+    'fvwm/palette_policy.c',
+    'fvwm/action_palette.c',
     'fvwm/schedule.c',
     'fvwm/session.c',
     'fvwm/stack.c',

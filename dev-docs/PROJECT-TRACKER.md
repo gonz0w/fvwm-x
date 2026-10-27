@@ -372,8 +372,10 @@ No broader #218/#60/#70, full R1 or physical/assistive/release closure is claime
 
 ## R1 committed native view bindings — 2026-10-26
 
-Owner: Cam; `codex/r1-native-bindings`; BIND-01 #213. Status: ready for review;
-all five frozen criteria qualified, closes on candidate merge. This checkpoint
+Owner: Cam; BIND-01 #213. Status: merged in PR269 as
+`842758f682ad529651e2aea230c4c64fe55ebc6e`; reviewed/merged tree
+`a9090393416c5c8f2b9737fd82d519c5d7fe9834`, canonical signature and author DCO
+verified. #213 is closed, completed branch retired, Project Done. This checkpoint
 batches shared committed-revision/lifetime policy, bounded refresh coalescing,
 desktop menu actions, browser collection/progress/readiness and combined evidence.
 Two independent existing consumers adopt the same pure bounded policy. Existing
@@ -414,9 +416,50 @@ evidence duplicates are retired, retaining caches/disks/performance references.
 
 The due [PR264 comparison](verification/PERFORMANCE-2026-10-26-NATIVE-BINDINGS.md)
 is complete with preserved binaries and alternating pairs. It establishes no
-speed gain and keeps memory aggregates separate. Counter is 4/5 after merged
-PR268 and resets to 0/5 on this candidate's merge. Preserve the actual
+speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
+
+## R1 shared action palette — 2026-10-27
+
+Owner: Cam; `codex/r1-action-palette`; ACTIONS-01 #219. Status: all five criteria
+qualified for review; #219 closes on merge. Batch eight
+related stories: bounded typed provider rows; guarded managed-window inventory;
+existing application catalog; advertised desktops; finite registered actions;
+cancellable/coalesced queries; keyboard native collection/focus; stale/loss and
+teardown recovery. Actual accepted #212 Form layout and #213 revision/lifetime
+contracts are sufficient; optional file/notes and broad theme/graphics owners
+are not blanket prerequisites. No frozen criterion is reduced for closure.
+
+Reuse the existing FvwmDesktop resident, native Form collection/layout, app
+catalog and native chunk reply transport. A bounded core snapshot/action bridge
+supplies window allocation identity and current desktop/topology validation;
+all managed effects use the shared command engine. No new daemon/database,
+toolkit, executable metadata or packet types. Lazy snapshot copies have a
+1 MiB/four-owner global bound and explicit matching-lifetime close/teardown.
+Application actions revalidate committed full-data identity; registered actions
+come from a finite typed catalog, never arbitrary completed command text.
+
+One combined incremental Linux policy/native checkpoint and actual Slate dark,
+Dune light and enlarged-text screenshots. Add scoped C lifetime/policy sanitizer
+checks and relevant affected-target checks for the new core boundary; avoid
+repeating unaffected full installs/OS suites. Preserve all original failures and
+state missing release evidence explicitly. #269 is performance reference 0/5,
+becoming 1/5 on this runtime merge; no periodic comparison is due. Lead owns
+integration/resources/tracker/GitHub. Requested bounded Sol/high implementation,
+Astra/high scope analysis and separate Sol/high review use the selected project
+routing; actual model execution is not independently attested. Parked Backer and
+pathname work remain excluded.
+
+Combined results: four Linux C tests, five Go package outcomes, two race packages,
+scoped vet/catalog, three leak-enabled sanitizer tests and three native themes
+pass. All 21 captures were independently inspected; six are published. Five
+additional scoped Linux/FreeBSD/OpenBSD AMD64/ARM64 gates pass against identical
+runtime bytes. Original environment/fixture/cache failures remain retained; no
+fresh full install/default-X/release or physical accessibility claim. All owned
+VMs stopped; byte-verified guest capture duplicates retired. Separate source and
+evidence review has no blocker. [Report](verification/VERIFICATION-2026-10-27-ACTION-PALETTE.md),
+[contract](decisions/ACTION-PALETTE-2026-10-27.md),
+[gallery](../doc/development-preview.md#shared-action-palette).
 
 ## Library evaluation issue scope — 2026-10-25
 
@@ -2927,13 +2970,13 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | GRAPHICS-01 | P2 / Backlog; F2 Native UI | [#210](https://github.com/gonz0w/fvwm-x/issues/210). Implement the already approved native graphics baseline using existing X11 drawing/resource owners, before adding another direct renderer. |
 | GRAPHICS-02 | P2 / Backlog; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). Compare a bounded direct Cairo module prototype with GRAPHICS-01. Existing SVG/Cairo linkage is not proof of a general UI renderer. |
 | LAYOUT-01 | P2 / Backlog; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Deliver the existing native-layout-first direction for panels and collection consumers; preserve configured legacy geometry. |
-| BIND-01 | P2 / Review; closes on candidate merge; F1 Shared contracts | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
+| BIND-01 | Done / #213 closed by merged PR269 | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
 | THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
 | ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |
 | ICON-02 | P2 / Backlog; F2 Native UI | [#216](https://github.com/gonz0w/fvwm-x/issues/216). Support configurable font icons alongside SVG/application icons using the existing font stack and named icon contract. |
 | RELOAD-01 | P2 / Backlog; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
 | INSPECT-01 | P2 / Backlog; F2 Native UI | [#218](https://github.com/gonz0w/fvwm-x/issues/218). Extend accepted IPC binding/colorset/appearance inspection into a native opt-in configuration authoring tool. |
-| ACTIONS-01 | P2 / Backlog; F3 Workspace tools | [#219](https://github.com/gonz0w/fvwm-x/issues/219). Deliver the approved discoverable action palette through existing native collection views, structured queries and command ownership. |
+| ACTIONS-01 | P2 / Review; all five criteria qualified; F3 Workspace tools | [#219](https://github.com/gonz0w/fvwm-x/issues/219). Deliver the approved discoverable action palette through existing native collection views, structured queries and command ownership. |
 | WORKSPACE-01 | P2 / Backlog; F3 Workspace tools | [#220](https://github.com/gonz0w/fvwm-x/issues/220). Package reusable per-desktop floating, columns/master-stack and snapping policies while retaining FVWM command/configuration flexibility. |
 | WORKSPACE-02 | P2 / Backlog; F3 Workspace tools | [#221](https://github.com/gonz0w/fvwm-x/issues/221). Provide configurable reusable scratchpad behavior for terminals, notes and other chosen applications, independently of tiling or compositing. |
 | WORKSPACE-03 | P2 / Backlog; F3 Workspace tools | [#222](https://github.com/gonz0w/fvwm-x/issues/222). Build user-owned monitor/workspace/panel placement profiles on existing MONITOR/CFG contracts, without resizing arbitrary client pixels. |

@@ -141,6 +141,7 @@ $TIME = 0;
     {name => 'Schedule', cursor => '', window => 0, descr => 'Run an fvwm command after a delay'},
     {name => 'Scroll', cursor => '', window => 0, descr => 'Scroll the desktop viewport'},
     {name => 'Send_ConfigInfo', cursor => '', window => 0, descr => 'Internal, used for module communication'},
+    {name => 'Send_Palette', cursor => '', window => 0, descr => 'Internal, guarded palette actions and snapshot release'},
     {name => 'Send_Preview', cursor => '', window => 0, descr => 'Internal, bounded scalar preview leases'},
     {name => 'Send_Query', cursor => '', window => 0, descr => 'Internal, bounded directed state queries'},
     {name => 'Send_Reply', cursor => '', window => 0, descr => 'Internal, used for module communication'},

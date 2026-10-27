@@ -1,0 +1,263 @@
+{
+  "issue": 219,
+  "base": "842758f682ad529651e2aea230c4c64fe55ebc6e",
+  "native_archive": {
+    "sha256": "9d133fc1fbdedc8f36b2b3015f1ee60f1c6031c79ecb43f804963c1be35aa76e",
+    "bytes": 2386855
+  },
+  "fixture_sha256": "de000ebdec2f0b42432bf6488f5e90eedf00f068db3032c5a38eb7df45cc4dd1",
+  "profiles": [
+    {
+      "profile": "classic-large",
+      "font": "DejaVu Sans Mono 18",
+      "status": "passed",
+      "config_sha256": "aa97a3c245952e0081139f54879934396889359ca622a4bb78406cee40e5d4db",
+      "source_sha256": {
+        "tests/live_x/action_palette_live.py": "de000ebdec2f0b42432bf6488f5e90eedf00f068db3032c5a38eb7df45cc4dd1",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "fvwm/module_interface.c": "e7b5d4d0b5c786c12a3ad650d1cb1d762214172a891a27a04ee9a4036ee3f527",
+        "fvwm/palette_policy.c": "f561ce466aa2cd8b1b698cc02f54b5693e2f0f5db9d7866d4605a4b474b3c4f7"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "bin/FvwmPrompt/FvwmDesktop": "24ab8c7835e684543885ebdcf4a8fe2cefb8c8c00f1a008ad065aedb7969ccb8"
+      },
+      "initial_counts": [
+        4,
+        6,
+        3,
+        8
+      ],
+      "pressure_delta": {
+        "invalidations": 16,
+        "started": 2,
+        "published": 1,
+        "rejected": 1
+      },
+      "idle_seconds": 3,
+      "idle_binding_unchanged": true,
+      "closed_unsolicited": [],
+      "native_command_bounds": {
+        "count": 4055,
+        "maximum_bytes": 167,
+        "limit": 1000
+      },
+      "cleanup_fences": [
+        {
+          "phase": "before-core-replacement",
+          "status": "passed",
+          "seconds": 0.2787955939998028,
+          "module_wait_receipts": 16,
+          "probe_exit_receipts": 4
+        },
+        {
+          "phase": "final-runtime-cleanup",
+          "status": "passed",
+          "seconds": 0.16600749200006248,
+          "module_wait_receipts": 17,
+          "probe_exit_receipts": 5
+        }
+      ],
+      "children_after_cleanup": {
+        "Xvfb": 0,
+        "core": 0,
+        "core-restarted": 0
+      },
+      "actual_xid_reuse": false,
+      "evidence_sha256": "8aef355e9dc9aeb6d6fed442014881f7cf824545565d6f7537e62c6b088bdc04",
+      "screenshots": [
+        "palette-ready.png",
+        "palette-filtered.png",
+        "palette-localized.png",
+        "palette-settings-action.png",
+        "palette-unavailable.png",
+        "palette-recovered.png",
+        "palette-bounded.png"
+      ]
+    },
+    {
+      "profile": "dune-light",
+      "font": "Sans 10",
+      "status": "passed",
+      "config_sha256": "5e9ee30eec80b76cdb03690f34d3c3291d2093d497e873aab1cf61b513413cad",
+      "source_sha256": {
+        "tests/live_x/action_palette_live.py": "de000ebdec2f0b42432bf6488f5e90eedf00f068db3032c5a38eb7df45cc4dd1",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "fvwm/module_interface.c": "e7b5d4d0b5c786c12a3ad650d1cb1d762214172a891a27a04ee9a4036ee3f527",
+        "fvwm/palette_policy.c": "f561ce466aa2cd8b1b698cc02f54b5693e2f0f5db9d7866d4605a4b474b3c4f7"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "bin/FvwmPrompt/FvwmDesktop": "24ab8c7835e684543885ebdcf4a8fe2cefb8c8c00f1a008ad065aedb7969ccb8"
+      },
+      "initial_counts": [
+        4,
+        6,
+        3,
+        8
+      ],
+      "pressure_delta": {
+        "invalidations": 16,
+        "started": 2,
+        "published": 1,
+        "rejected": 1
+      },
+      "idle_seconds": 3,
+      "idle_binding_unchanged": true,
+      "closed_unsolicited": [],
+      "native_command_bounds": {
+        "count": 4055,
+        "maximum_bytes": 167,
+        "limit": 1000
+      },
+      "cleanup_fences": [
+        {
+          "phase": "before-core-replacement",
+          "status": "passed",
+          "seconds": 0.2169107869999607,
+          "module_wait_receipts": 16,
+          "probe_exit_receipts": 4
+        },
+        {
+          "phase": "final-runtime-cleanup",
+          "status": "passed",
+          "seconds": 0.15763740900001721,
+          "module_wait_receipts": 17,
+          "probe_exit_receipts": 5
+        }
+      ],
+      "children_after_cleanup": {
+        "Xvfb": 0,
+        "core": 0,
+        "core-restarted": 0
+      },
+      "actual_xid_reuse": false,
+      "evidence_sha256": "f725447d6c28bd84874ac5ccec20654bee82a3d9fc2228dc902743b2a1217d1e",
+      "screenshots": [
+        "palette-ready.png",
+        "palette-filtered.png",
+        "palette-localized.png",
+        "palette-settings-action.png",
+        "palette-unavailable.png",
+        "palette-recovered.png",
+        "palette-bounded.png"
+      ]
+    },
+    {
+      "profile": "slate-dark",
+      "font": "Sans 10",
+      "status": "passed",
+      "config_sha256": "fed636beb3a36f322503a05f77a30620d0c8cffd90dfec3688c4ffb30a612524",
+      "source_sha256": {
+        "tests/live_x/action_palette_live.py": "de000ebdec2f0b42432bf6488f5e90eedf00f068db3032c5a38eb7df45cc4dd1",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "fvwm/module_interface.c": "e7b5d4d0b5c786c12a3ad650d1cb1d762214172a891a27a04ee9a4036ee3f527",
+        "fvwm/palette_policy.c": "f561ce466aa2cd8b1b698cc02f54b5693e2f0f5db9d7866d4605a4b474b3c4f7"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "bin/FvwmPrompt/FvwmDesktop": "24ab8c7835e684543885ebdcf4a8fe2cefb8c8c00f1a008ad065aedb7969ccb8"
+      },
+      "initial_counts": [
+        4,
+        6,
+        3,
+        8
+      ],
+      "pressure_delta": {
+        "invalidations": 16,
+        "started": 2,
+        "published": 1,
+        "rejected": 1
+      },
+      "idle_seconds": 3,
+      "idle_binding_unchanged": true,
+      "closed_unsolicited": [],
+      "native_command_bounds": {
+        "count": 4055,
+        "maximum_bytes": 167,
+        "limit": 1000
+      },
+      "cleanup_fences": [
+        {
+          "phase": "before-core-replacement",
+          "status": "passed",
+          "seconds": 0.21852658699981475,
+          "module_wait_receipts": 16,
+          "probe_exit_receipts": 4
+        },
+        {
+          "phase": "final-runtime-cleanup",
+          "status": "passed",
+          "seconds": 0.1595415429997047,
+          "module_wait_receipts": 17,
+          "probe_exit_receipts": 5
+        }
+      ],
+      "children_after_cleanup": {
+        "Xvfb": 0,
+        "core": 0,
+        "core-restarted": 0
+      },
+      "actual_xid_reuse": false,
+      "evidence_sha256": "ad23b677515bd7736756ee9ece4a92efe850141405e2cee7c19f3d8c639d7e8b",
+      "screenshots": [
+        "palette-ready.png",
+        "palette-filtered.png",
+        "palette-localized.png",
+        "palette-settings-action.png",
+        "palette-unavailable.png",
+        "palette-recovered.png",
+        "palette-bounded.png"
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "doc/screenshots/palette-slate-ready.png",
+      "profile": "slate-dark",
+      "source": "palette-ready.png",
+      "sha256": "ab75ddf3366d1d70bab14f7c63762560120568b14647f5948154d70d28d14405",
+      "bytes": 75439
+    },
+    {
+      "file": "doc/screenshots/palette-dune-filtered.png",
+      "profile": "dune-light",
+      "source": "palette-filtered.png",
+      "sha256": "d3135da9bf457dd575ab13b70dc2c9a159daf247e1c965a17fd885980f06acf2",
+      "bytes": 54259
+    },
+    {
+      "file": "doc/screenshots/palette-large-localized.png",
+      "profile": "classic-large",
+      "source": "palette-localized.png",
+      "sha256": "d20648c4ee6cb36a91b3185b1cf3031e1e63b94c5bcf2467fdc6a6151fb3bb7a",
+      "bytes": 94012
+    },
+    {
+      "file": "doc/screenshots/palette-dune-settings.png",
+      "profile": "dune-light",
+      "source": "palette-settings-action.png",
+      "sha256": "831ce81c84d6fea83fceffed5f7fffc79c03bc390ac0166ac3bdf224488c70f6",
+      "bytes": 58849
+    },
+    {
+      "file": "doc/screenshots/palette-large-unavailable.png",
+      "profile": "classic-large",
+      "source": "palette-unavailable.png",
+      "sha256": "eec3f700008c592b3f9f289f85ef470c160e0eb963f814b7927ae41ac4a303fe",
+      "bytes": 141396
+    },
+    {
+      "file": "doc/screenshots/palette-slate-bounded.png",
+      "profile": "slate-dark",
+      "source": "palette-bounded.png",
+      "sha256": "a1c9162243e558e3ff40853870ada28379f0a098ad61a1650258c4287e7a4041",
+      "bytes": 93199
+    }
+  ],
+  "scope": "Unmodified Xvfb captures of actual native UI; synthetic clients/applications; not physical/assistive/multimonitor qualification"
+}

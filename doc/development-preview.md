@@ -36,6 +36,51 @@ closes after five minutes without a callback or accepted external control. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Shared action palette
+
+Super+A opens one optional native palette for windows, applications, advertised
+desktops and eight registered desktop actions. Super+P still opens Run. Type a
+literal query, press F3 to filter, use Tab/arrows/Space to select and Enter to
+activate; F5 refreshes and Escape closes with focus recovery. Existing native
+Form controls, application discovery and the shared command engine provide the
+behavior without an added daemon, database or GUI toolkit.
+
+![Slate dark action palette with four provider counts](screenshots/palette-slate-ready.png)
+
+![Dune light palette filtered to a managed window](screenshots/palette-dune-filtered.png)
+
+Printable localized names remain visible with enlarged text. Native configuration
+metacharacters use visible escapes; original labels and literal action data are
+kept separately.
+
+![Enlarged palette showing a localized literal result](screenshots/palette-large-localized.png)
+
+Registered Settings opens the existing desktop settings menu. The menu is not a
+new editor, and the example application/window names are synthetic fixtures.
+
+![Dune light existing settings menu opened from the palette](screenshots/palette-dune-settings.png)
+
+Provider loss retains last-good rows with unavailable state and refuses their
+actions; the other providers remain usable. Explicit refresh recovers the source.
+Long details/reasons can clip, especially with enlarged text. The existing worker
+failure notice may temporarily cover result rows in loss/recovery captures.
+
+![Enlarged palette retaining unavailable application results](screenshots/palette-large-unavailable.png)
+
+Windows stop at 512 retained entries after a bounded scan; desktops stop at 128,
+applications at 500 and registered actions at 16. Omitted inventory is disclosed.
+The core's aggregate truncation flag appears on both window and desktop labels,
+even when only the window inventory exceeded its limit.
+
+![Slate dark palette disclosing the bounded 512-window inventory](screenshots/palette-slate-bounded.png)
+
+These unmodified captures are from the same three-profile native checkpoint.
+[Source and capture manifest](screenshots/palette-manifest.json),
+[manual](FvwmDesktop.adoc#action-palette) and
+[results/limits](../dev-docs/verification/VERIFICATION-2026-10-27-ACTION-PALETTE.md).
+The desktop is still in development; optional file/notes palette adapters,
+physical accessibility and release resource qualification remain separate.
+
 ## Committed native bindings and recovery
 
 BIND-01 adds shared bounded revision/lifetime policy for desktop menus and the

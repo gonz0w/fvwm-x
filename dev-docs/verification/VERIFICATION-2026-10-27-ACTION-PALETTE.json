@@ -1,0 +1,2077 @@
+{
+  "owner": "Cam",
+  "issue": 219,
+  "base": "842758f682ad529651e2aea230c4c64fe55ebc6e",
+  "candidate": "codex/r1-action-palette",
+  "status": "all five finite criteria qualified; closes on merge",
+  "criteria": {
+    "1": "passed; corresponding frozen acceptance report row",
+    "2": "passed; corresponding frozen acceptance report row",
+    "3": "passed; corresponding frozen acceptance report row",
+    "4": "passed; corresponding frozen acceptance report row",
+    "5": "passed; three-theme native/21 inspected captures and scoped six-target support gates"
+  },
+  "linux": {
+    "status": "passed",
+    "policy_tests": [
+      "palette-policy",
+      "action-palette-snapshots",
+      "core-query-json",
+      "module-runtime"
+    ],
+    "go_packages": [
+      "internal/actionpalette",
+      "internal/desktopcontroller",
+      "internal/collection",
+      "internal/viewbinding",
+      "cmd/fvwmdesktop"
+    ],
+    "race": [
+      "internal/actionpalette",
+      "internal/desktopcontroller"
+    ],
+    "asan_ubsan_leak": [
+      "palette-policy",
+      "action-palette-snapshots",
+      "module-runtime"
+    ],
+    "vet": "passed",
+    "catalog": "passed",
+    "compiled_input_files": 805,
+    "compiled_input_manifest_sha256": "23038c74a3000d69f221ef694284a67278362e06c66b6f3b20c15483b93505c8",
+    "binaries": {
+      "build-gcc/fvwm3": {
+        "sha256": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "bytes": 5521504
+      },
+      "build-gcc/bin/FvwmPrompt/FvwmDesktop": {
+        "sha256": "24ab8c7835e684543885ebdcf4a8fe2cefb8c8c00f1a008ad065aedb7969ccb8",
+        "bytes": 5739035
+      }
+    },
+    "manual": {
+      "sha256": "61017aafe44024b7e096b6a2978d833ebc09fe8a40413d53987cd340bc39f607",
+      "bytes": 47855
+    },
+    "core_first_freeze": "c56754c7711af5ea6dada12d2abe9d2dd28618bed0b55a95f9e407bb08a3c145",
+    "core_freeze_delta": {
+      "tests/meson.build": "later native test registration; all production C and C tests exact"
+    },
+    "native_profiles": [
+      {
+        "profile": "classic-large",
+        "font": "DejaVu Sans Mono 18",
+        "status": "passed",
+        "config_sha256": "aa97a3c245952e0081139f54879934396889359ca622a4bb78406cee40e5d4db",
+        "source_sha256": {
+          "tests/live_x/action_palette_live.py": "de000ebdec2f0b42432bf6488f5e90eedf00f068db3032c5a38eb7df45cc4dd1",
+          "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+          "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+          "fvwm/module_interface.c": "e7b5d4d0b5c786c12a3ad650d1cb1d762214172a891a27a04ee9a4036ee3f527",
+          "fvwm/palette_policy.c": "f561ce466aa2cd8b1b698cc02f54b5693e2f0f5db9d7866d4605a4b474b3c4f7"
+        },
+        "binary_sha256": {
+          "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+          "bin/FvwmPrompt/FvwmDesktop": "24ab8c7835e684543885ebdcf4a8fe2cefb8c8c00f1a008ad065aedb7969ccb8"
+        },
+        "initial_counts": [
+          4,
+          6,
+          3,
+          8
+        ],
+        "pressure_delta": {
+          "invalidations": 16,
+          "started": 2,
+          "published": 1,
+          "rejected": 1
+        },
+        "idle_seconds": 3,
+        "idle_binding_unchanged": true,
+        "closed_unsolicited": [],
+        "native_command_bounds": {
+          "count": 4055,
+          "maximum_bytes": 167,
+          "limit": 1000
+        },
+        "cleanup_fences": [
+          {
+            "phase": "before-core-replacement",
+            "status": "passed",
+            "seconds": 0.2787955939998028,
+            "module_wait_receipts": 16,
+            "probe_exit_receipts": 4
+          },
+          {
+            "phase": "final-runtime-cleanup",
+            "status": "passed",
+            "seconds": 0.16600749200006248,
+            "module_wait_receipts": 17,
+            "probe_exit_receipts": 5
+          }
+        ],
+        "children_after_cleanup": {
+          "Xvfb": 0,
+          "core": 0,
+          "core-restarted": 0
+        },
+        "actual_xid_reuse": false,
+        "evidence_sha256": "8aef355e9dc9aeb6d6fed442014881f7cf824545565d6f7537e62c6b088bdc04",
+        "screenshots": [
+          "palette-ready.png",
+          "palette-filtered.png",
+          "palette-localized.png",
+          "palette-settings-action.png",
+          "palette-unavailable.png",
+          "palette-recovered.png",
+          "palette-bounded.png"
+        ]
+      },
+      {
+        "profile": "dune-light",
+        "font": "Sans 10",
+        "status": "passed",
+        "config_sha256": "5e9ee30eec80b76cdb03690f34d3c3291d2093d497e873aab1cf61b513413cad",
+        "source_sha256": {
+          "tests/live_x/action_palette_live.py": "de000ebdec2f0b42432bf6488f5e90eedf00f068db3032c5a38eb7df45cc4dd1",
+          "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+          "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+          "fvwm/module_interface.c": "e7b5d4d0b5c786c12a3ad650d1cb1d762214172a891a27a04ee9a4036ee3f527",
+          "fvwm/palette_policy.c": "f561ce466aa2cd8b1b698cc02f54b5693e2f0f5db9d7866d4605a4b474b3c4f7"
+        },
+        "binary_sha256": {
+          "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+          "bin/FvwmPrompt/FvwmDesktop": "24ab8c7835e684543885ebdcf4a8fe2cefb8c8c00f1a008ad065aedb7969ccb8"
+        },
+        "initial_counts": [
+          4,
+          6,
+          3,
+          8
+        ],
+        "pressure_delta": {
+          "invalidations": 16,
+          "started": 2,
+          "published": 1,
+          "rejected": 1
+        },
+        "idle_seconds": 3,
+        "idle_binding_unchanged": true,
+        "closed_unsolicited": [],
+        "native_command_bounds": {
+          "count": 4055,
+          "maximum_bytes": 167,
+          "limit": 1000
+        },
+        "cleanup_fences": [
+          {
+            "phase": "before-core-replacement",
+            "status": "passed",
+            "seconds": 0.2169107869999607,
+            "module_wait_receipts": 16,
+            "probe_exit_receipts": 4
+          },
+          {
+            "phase": "final-runtime-cleanup",
+            "status": "passed",
+            "seconds": 0.15763740900001721,
+            "module_wait_receipts": 17,
+            "probe_exit_receipts": 5
+          }
+        ],
+        "children_after_cleanup": {
+          "Xvfb": 0,
+          "core": 0,
+          "core-restarted": 0
+        },
+        "actual_xid_reuse": false,
+        "evidence_sha256": "f725447d6c28bd84874ac5ccec20654bee82a3d9fc2228dc902743b2a1217d1e",
+        "screenshots": [
+          "palette-ready.png",
+          "palette-filtered.png",
+          "palette-localized.png",
+          "palette-settings-action.png",
+          "palette-unavailable.png",
+          "palette-recovered.png",
+          "palette-bounded.png"
+        ]
+      },
+      {
+        "profile": "slate-dark",
+        "font": "Sans 10",
+        "status": "passed",
+        "config_sha256": "fed636beb3a36f322503a05f77a30620d0c8cffd90dfec3688c4ffb30a612524",
+        "source_sha256": {
+          "tests/live_x/action_palette_live.py": "de000ebdec2f0b42432bf6488f5e90eedf00f068db3032c5a38eb7df45cc4dd1",
+          "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+          "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+          "fvwm/module_interface.c": "e7b5d4d0b5c786c12a3ad650d1cb1d762214172a891a27a04ee9a4036ee3f527",
+          "fvwm/palette_policy.c": "f561ce466aa2cd8b1b698cc02f54b5693e2f0f5db9d7866d4605a4b474b3c4f7"
+        },
+        "binary_sha256": {
+          "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+          "bin/FvwmPrompt/FvwmDesktop": "24ab8c7835e684543885ebdcf4a8fe2cefb8c8c00f1a008ad065aedb7969ccb8"
+        },
+        "initial_counts": [
+          4,
+          6,
+          3,
+          8
+        ],
+        "pressure_delta": {
+          "invalidations": 16,
+          "started": 2,
+          "published": 1,
+          "rejected": 1
+        },
+        "idle_seconds": 3,
+        "idle_binding_unchanged": true,
+        "closed_unsolicited": [],
+        "native_command_bounds": {
+          "count": 4055,
+          "maximum_bytes": 167,
+          "limit": 1000
+        },
+        "cleanup_fences": [
+          {
+            "phase": "before-core-replacement",
+            "status": "passed",
+            "seconds": 0.21852658699981475,
+            "module_wait_receipts": 16,
+            "probe_exit_receipts": 4
+          },
+          {
+            "phase": "final-runtime-cleanup",
+            "status": "passed",
+            "seconds": 0.1595415429997047,
+            "module_wait_receipts": 17,
+            "probe_exit_receipts": 5
+          }
+        ],
+        "children_after_cleanup": {
+          "Xvfb": 0,
+          "core": 0,
+          "core-restarted": 0
+        },
+        "actual_xid_reuse": false,
+        "evidence_sha256": "ad23b677515bd7736756ee9ece4a92efe850141405e2cee7c19f3d8c639d7e8b",
+        "screenshots": [
+          "palette-ready.png",
+          "palette-filtered.png",
+          "palette-localized.png",
+          "palette-settings-action.png",
+          "palette-unavailable.png",
+          "palette-recovered.png",
+          "palette-bounded.png"
+        ]
+      }
+    ]
+  },
+  "archives": {
+    "native-final": {
+      "status": "passed",
+      "files": 1511,
+      "archive": {
+        "sha256": "9d133fc1fbdedc8f36b2b3015f1ee60f1c6031c79ecb43f804963c1be35aa76e",
+        "bytes": 2386855
+      },
+      "source_root": "/dev/shm/palette-native-final",
+      "gzip_crc": true
+    },
+    "native-observer-failure": {
+      "status": "passed",
+      "files": 481,
+      "archive": {
+        "sha256": "50d8f7ea9ce4cd1a56e87d9af271b08ff4f9e9e5bae4c39b55a714a7e0b7090f",
+        "bytes": 527336
+      },
+      "source_root": "/dev/shm/palette-native-slate-1",
+      "gzip_crc": true
+    },
+    "native-cleanup-failure": {
+      "status": "passed",
+      "files": 518,
+      "archive": {
+        "sha256": "ef95656ac3572f470205a0462e4016342472acbef573486ccf40fc40c87381c5",
+        "bytes": 665173
+      },
+      "source_root": "/dev/shm/palette-native-slate-2",
+      "gzip_crc": true
+    },
+    "linux-final-complete": {
+      "status": "passed",
+      "files": 43,
+      "archive": {
+        "sha256": "5abfd4d8c3c99f051cfda1f03045da967064cb87ce3207558a06b988d5b489a9",
+        "bytes": 72458
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/r1-palette-checkpoint",
+      "gzip_crc": true
+    },
+    "native-failure3": {
+      "status": "passed",
+      "files": 125,
+      "archive": {
+        "sha256": "31910fe23f108476d0a952fc3c09a38eb9d90f88465115106a85b31dd569c85c",
+        "bytes": 219388
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/r1-palette-checkpoint/native/action-palette-7a2rtk7a",
+      "gzip_crc": true
+    }
+  },
+  "initial_native_failure_archive": {
+    "status": "passed",
+    "files": 149,
+    "archive": {
+      "sha256": "607a12883d8a4023a5ecef57d65f5ca77672720c31f55528a163525a82e09dd0",
+      "bytes": 312450
+    }
+  },
+  "cleanup": {
+    "status": "passed",
+    "retired": [
+      {
+        "root": "/dev/shm/palette-native-final",
+        "files": 1511,
+        "archive": {
+          "sha256": "9d133fc1fbdedc8f36b2b3015f1ee60f1c6031c79ecb43f804963c1be35aa76e",
+          "bytes": 2386855
+        }
+      },
+      {
+        "root": "/dev/shm/palette-native-slate-1",
+        "files": 481,
+        "archive": {
+          "sha256": "50d8f7ea9ce4cd1a56e87d9af271b08ff4f9e9e5bae4c39b55a714a7e0b7090f",
+          "bytes": 527336
+        }
+      },
+      {
+        "root": "/dev/shm/palette-native-slate-2",
+        "files": 518,
+        "archive": {
+          "sha256": "ef95656ac3572f470205a0462e4016342472acbef573486ccf40fc40c87381c5",
+          "bytes": 665173
+        }
+      },
+      {
+        "root": "/tmp/fvwm-module-waits-20261015/r1-palette-checkpoint",
+        "files": 43,
+        "archive": {
+          "sha256": "5abfd4d8c3c99f051cfda1f03045da967064cb87ce3207558a06b988d5b489a9",
+          "bytes": 72458
+        }
+      }
+    ],
+    "preserved": "source, incremental builds, VM disks, performance references and host canonical evidence"
+  },
+  "support": {
+    "status": "passed",
+    "scope": "Five default support targets: affected core/Desktop and four C probes; four C policies plus command-catalog parity; three Go packages. No full install/all-module/default-X matrix.",
+    "tested_source_archive_sha256": "ce3b0052398213571bedd946b01823f0f9cd75c058c76adde5cb37d5fd33fc58",
+    "runtime_build_inventory_sha256": "956149ac17b7983ab09fd5fca277c9cfea10ae986af3f20484d5ba31f1c6ed77",
+    "targets": {
+      "linux-amd64": {
+        "status": "passed",
+        "actual_os_uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.113+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+          "x86_64"
+        ],
+        "sdk_version": "go version go1.27.2 linux/amd64",
+        "sdk_binary": {
+          "sha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+          "bytes": 17164055,
+          "mode": 493
+        },
+        "compilers": {
+          "host": {
+            "c": {
+              "id": "gcc",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "14.2.0",
+              "full_version": "cc (Debian 14.2.0-19) 14.2.0",
+              "linker_id": "ld.bfd"
+            }
+          },
+          "build": {
+            "c": {
+              "id": "gcc",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "14.2.0",
+              "full_version": "cc (Debian 14.2.0-19) 14.2.0",
+              "linker_id": "ld.bfd"
+            }
+          }
+        },
+        "options": {
+          "buildtype": "debugoptimized",
+          "optimization": "2",
+          "b_sanitize": "none",
+          "bidi": "auto",
+          "live-x-tests": true,
+          "nls": "auto",
+          "png": "enabled",
+          "svg": "enabled",
+          "xpm": "auto"
+        },
+        "selected_build": {
+          "path": "/root/fvwm-module-waits-20261015/build-gcc",
+          "profile": "default",
+          "incremental_cache_retained": true,
+          "full_install": false,
+          "default_x": false
+        },
+        "binaries": {
+          "fvwm3": {
+            "sha256": "f6e748757ac4502ca6454ca68629cd00886453a8dcb7f65e2c93110b93c450de",
+            "bytes": 5493160,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "sha256": "02eae1b353660c61206b79d5bf9c7c1a7724127996455fa850c525133f05b4e8",
+            "bytes": 6037552,
+            "mode": 493
+          }
+        },
+        "probes": {
+          "test-palette-policy": {
+            "sha256": "e28e2fd4ad5fcf66d4da2723c86a904956ff775d8356710baef597e1d5bb0f1f",
+            "bytes": 45944,
+            "mode": 493
+          },
+          "test-action-palette": {
+            "sha256": "fdb0ae55cd52ba3ea99bd2b2b42431f84c015398d373369b67d6e6ef0c6e4ac1",
+            "bytes": 231696,
+            "mode": 493
+          },
+          "test-module-runtime": {
+            "sha256": "f6f892cb8a571151652412daf912a14a02301c454b2c3fd83ceefc7715d1abae",
+            "bytes": 125792,
+            "mode": 493
+          },
+          "test-query-json": {
+            "sha256": "fbb2d663d922e5a1d5fbfca831141780ec18330cea23b67a770615f3be581c08",
+            "bytes": 404152,
+            "mode": 493
+          }
+        },
+        "policies": [
+          {
+            "name": "fvwm3 / palette-policy",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.030201196670532227,
+            "stdout": "palette policy: passed\n"
+          },
+          {
+            "name": "fvwm3 / action-palette-snapshots",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.08305478096008301,
+            "stdout": "action palette snapshots and guards: passed\n"
+          },
+          {
+            "name": "fvwm3 / core-query-json",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.047354936599731445,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3 / module-runtime",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.031044721603393555,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3 / command-catalog-contract",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.39294862747192383,
+            "stdout": ""
+          }
+        ],
+        "go_policy_log": "ok  \tgithub.com/fvwmorg/FvwmPrompt/internal/actionpalette\t0.103s\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t3.651s\nok  \tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop\t0.114s\n",
+        "commands": [
+          {
+            "label": "sdk-version",
+            "command": [
+              "go",
+              "version"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.124
+          },
+          {
+            "label": "meson-version",
+            "command": [
+              "meson",
+              "--version"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.861
+          },
+          {
+            "label": "ninja-version",
+            "command": [
+              "ninja",
+              "--version"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.04
+          },
+          {
+            "label": "configure",
+            "command": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/root/fvwm-module-waits-20261015/build-gcc",
+              "/root/fvwm-module-waits-20261015/source",
+              "-Dlive-x-tests=true"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 19.941
+          },
+          {
+            "label": "options",
+            "command": [
+              "meson",
+              "introspect",
+              "--buildoptions",
+              "/root/fvwm-module-waits-20261015/build-gcc"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.25
+          },
+          {
+            "label": "compilers",
+            "command": [
+              "meson",
+              "introspect",
+              "--compilers",
+              "/root/fvwm-module-waits-20261015/build-gcc"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.257
+          },
+          {
+            "label": "tests",
+            "command": [
+              "meson",
+              "introspect",
+              "--tests",
+              "/root/fvwm-module-waits-20261015/build-gcc"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.255
+          },
+          {
+            "label": "installed",
+            "command": [
+              "meson",
+              "introspect",
+              "--installed",
+              "/root/fvwm-module-waits-20261015/build-gcc"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.202
+          },
+          {
+            "label": "build",
+            "command": [
+              "ninja",
+              "-C",
+              "/root/fvwm-module-waits-20261015/build-gcc",
+              "-j2",
+              "fvwm3",
+              "bin/FvwmPrompt/FvwmDesktop",
+              "tests/test-palette-policy",
+              "tests/test-action-palette",
+              "tests/test-module-runtime",
+              "tests/test-query-json"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 109.247
+          },
+          {
+            "label": "policy-catalog",
+            "command": [
+              "meson",
+              "test",
+              "-C",
+              "/root/fvwm-module-waits-20261015/build-gcc",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "--logbase",
+              "/root/fvwm-module-waits-20261015/r1-action-palette-default-checkpoint/policy-testlog",
+              "palette-policy",
+              "action-palette-snapshots",
+              "module-runtime",
+              "core-query-json",
+              "command-catalog-contract"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 2.329
+          },
+          {
+            "label": "go-policy",
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/actionpalette",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmdesktop"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 14.609
+          }
+        ],
+        "option_migration": {
+          "explicitly_authorized": false,
+          "migrations": []
+        },
+        "archive": {
+          "sha256": "e3b49f6151cd49840aa1bbfc89315a2c57be99920733b15c664084cbf7b154c9",
+          "bytes": 6654120,
+          "mode": 420
+        },
+        "verified_payloads": 40,
+        "gzip_crc_to_eof": true,
+        "lifecycle": {
+          "owned_pid": 13762,
+          "qemu_status": 0,
+          "normal_poweroff_requested": true
+        }
+      },
+      "freebsd-arm64": {
+        "status": "passed",
+        "actual_os_uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ],
+        "sdk_version": "go version go1.27.2 freebsd/arm64",
+        "sdk_binary": {
+          "sha256": "ffdf9f966da8b37903ac1d1f95dd5aa8c8ff2212e693a797d5076f4a42b5a64a",
+          "bytes": 15722528,
+          "mode": 493
+        },
+        "compilers": {
+          "host": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "19.1.7",
+              "full_version": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+              "linker_id": "ld.lld"
+            }
+          },
+          "build": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "19.1.7",
+              "full_version": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+              "linker_id": "ld.lld"
+            }
+          }
+        },
+        "options": {
+          "buildtype": "debugoptimized",
+          "optimization": "2",
+          "b_sanitize": [],
+          "bidi": "auto",
+          "live-x-tests": true,
+          "nls": "auto",
+          "png": "enabled",
+          "svg": "enabled",
+          "xpm": "disabled"
+        },
+        "selected_build": {
+          "path": "/root/fvwm-module-waits-20261015/build-default",
+          "profile": "default",
+          "incremental_cache_retained": true,
+          "full_install": false,
+          "default_x": false
+        },
+        "binaries": {
+          "fvwm3": {
+            "sha256": "1d4ecc0480db8adfa4ac4c2c77360aa25ce66f0d53778bc03c432a26b4ad3d73",
+            "bytes": 5201352,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "sha256": "93f9d28d1ce3d8213970036047b89eaaea49178abdd148f108c369798367e1ef",
+            "bytes": 5579264,
+            "mode": 493
+          }
+        },
+        "probes": {
+          "test-palette-policy": {
+            "sha256": "9174a574f76d0e386459f95d544c191d6f2d4bba6f93a418de3c8e00ba5913a8",
+            "bytes": 39752,
+            "mode": 493
+          },
+          "test-action-palette": {
+            "sha256": "ae5ead728ec2cd2affdb7a0f802b3672d70aae72d6afeba2e8070c671e16cec2",
+            "bytes": 247216,
+            "mode": 493
+          },
+          "test-module-runtime": {
+            "sha256": "97c9d94098effc7c4e5c7e1641f82c1d2a644de361b172dab2ffac6502b4aa10",
+            "bytes": 125136,
+            "mode": 493
+          },
+          "test-query-json": {
+            "sha256": "5b8eb1c3742d7b61f7119e48efa7bf4049ee78fb857266a35b09c91ff90f8259",
+            "bytes": 467264,
+            "mode": 493
+          }
+        },
+        "policies": [
+          {
+            "name": "fvwm3:palette-policy",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.0028963088989257812,
+            "stdout": "palette policy: passed\n"
+          },
+          {
+            "name": "fvwm3:action-palette-snapshots",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.004534244537353516,
+            "stdout": "action palette snapshots and guards: passed\n"
+          },
+          {
+            "name": "fvwm3:core-query-json",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.004767894744873047,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:module-runtime",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.0026557445526123047,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:command-catalog-contract",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.03274130821228027,
+            "stdout": ""
+          }
+        ],
+        "go_policy_log": "ok  \tgithub.com/fvwmorg/FvwmPrompt/internal/actionpalette\t0.004s\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t2.479s\nok  \tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop\t0.002s\n",
+        "commands": [
+          {
+            "label": "sdk-version",
+            "command": [
+              "go",
+              "version"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.005
+          },
+          {
+            "label": "meson-version",
+            "command": [
+              "meson",
+              "--version"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.166
+          },
+          {
+            "label": "ninja-version",
+            "command": [
+              "ninja",
+              "--version"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.005
+          },
+          {
+            "label": "configure",
+            "command": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/root/fvwm-module-waits-20261015/build-default",
+              "/root/fvwm-module-waits-20261015/source",
+              "-Dlive-x-tests=true"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 1.154
+          },
+          {
+            "label": "options",
+            "command": [
+              "meson",
+              "introspect",
+              "--buildoptions",
+              "/root/fvwm-module-waits-20261015/build-default"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.139
+          },
+          {
+            "label": "compilers",
+            "command": [
+              "meson",
+              "introspect",
+              "--compilers",
+              "/root/fvwm-module-waits-20261015/build-default"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.139
+          },
+          {
+            "label": "tests",
+            "command": [
+              "meson",
+              "introspect",
+              "--tests",
+              "/root/fvwm-module-waits-20261015/build-default"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.141
+          },
+          {
+            "label": "installed",
+            "command": [
+              "meson",
+              "introspect",
+              "--installed",
+              "/root/fvwm-module-waits-20261015/build-default"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.122
+          },
+          {
+            "label": "build",
+            "command": [
+              "ninja",
+              "-C",
+              "/root/fvwm-module-waits-20261015/build-default",
+              "-j2",
+              "fvwm3",
+              "bin/FvwmPrompt/FvwmDesktop",
+              "tests/test-palette-policy",
+              "tests/test-action-palette",
+              "tests/test-module-runtime",
+              "tests/test-query-json"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 4.54
+          },
+          {
+            "label": "policy-catalog",
+            "command": [
+              "meson",
+              "test",
+              "-C",
+              "/root/fvwm-module-waits-20261015/build-default",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "--logbase",
+              "/root/fvwm-module-waits-20261015/r1-action-palette-default-checkpoint/policy-testlog",
+              "palette-policy",
+              "action-palette-snapshots",
+              "module-runtime",
+              "core-query-json",
+              "command-catalog-contract"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 0.188
+          },
+          {
+            "label": "go-policy",
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/actionpalette",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmdesktop"
+            ],
+            "cwd": "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 3.107
+          }
+        ],
+        "option_migration": {
+          "explicitly_authorized": true,
+          "migrations": []
+        },
+        "archive": {
+          "sha256": "725fe47bfeecec999fb851f757cf33f0255651c1f2f690978b1a5a016d347b72",
+          "bytes": 5734148,
+          "mode": 420
+        },
+        "verified_payloads": 40,
+        "gzip_crc_to_eof": true,
+        "lifecycle": {
+          "owned_pid": 14355,
+          "qemu_status": 0,
+          "normal_poweroff_requested": true
+        }
+      },
+      "freebsd-amd64": {
+        "status": "passed",
+        "actual_os_uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "amd64"
+        ],
+        "sdk_version": "go version go1.27.2 freebsd/amd64",
+        "sdk_binary": {
+          "sha256": "7d519639b2c3582f3d9a8f3b38beb7d9b899c5282020fafe999a2631a51df06b",
+          "bytes": 17088097,
+          "mode": 493
+        },
+        "compilers": {
+          "host": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "19.1.7",
+              "full_version": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+              "linker_id": "ld.lld"
+            }
+          },
+          "build": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "19.1.7",
+              "full_version": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+              "linker_id": "ld.lld"
+            }
+          }
+        },
+        "options": {
+          "buildtype": "debugoptimized",
+          "optimization": "2",
+          "b_sanitize": [],
+          "bidi": "auto",
+          "live-x-tests": true,
+          "nls": "auto",
+          "png": "enabled",
+          "svg": "enabled",
+          "xpm": "disabled"
+        },
+        "selected_build": {
+          "path": "/root/fvwm-style-simplification-recovery-20261016/build-default",
+          "profile": "default",
+          "incremental_cache_retained": true,
+          "full_install": false,
+          "default_x": false
+        },
+        "binaries": {
+          "fvwm3": {
+            "sha256": "2e15ec7c4099a1f14fc50cdf32827c491d35682057248b209b15959e5c745d3c",
+            "bytes": 5215976,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "sha256": "632b2dd5733fc697ab9ba82cf07e09ef201e1d8581113844a78b8010c89d6448",
+            "bytes": 5897376,
+            "mode": 493
+          }
+        },
+        "probes": {
+          "test-palette-policy": {
+            "sha256": "4c0dd0d4de2c85166b288febc0c8d2c5ed2c96aea94fa777fd0cbaf8e6f5e1ef",
+            "bytes": 39832,
+            "mode": 493
+          },
+          "test-action-palette": {
+            "sha256": "80a05dffd8cfb7b4ed09c7eb4ba153a90f8f981fe3c3f910b59888e41995e188",
+            "bytes": 252152,
+            "mode": 493
+          },
+          "test-module-runtime": {
+            "sha256": "8ddd2d7e5bbae9b4383d97f0baa91c56228d2b1f17e328709d78045b1a8dc9db",
+            "bytes": 121024,
+            "mode": 493
+          },
+          "test-query-json": {
+            "sha256": "4d3552ea871d7c0b039fe103a6b975b16af9e36efd2dd5f02a349b2ee003d83e",
+            "bytes": 477832,
+            "mode": 493
+          }
+        },
+        "policies": [
+          {
+            "name": "fvwm3:palette-policy",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.04657602310180664,
+            "stdout": "palette policy: passed\n"
+          },
+          {
+            "name": "fvwm3:action-palette-snapshots",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.07324695587158203,
+            "stdout": "action palette snapshots and guards: passed\n"
+          },
+          {
+            "name": "fvwm3:core-query-json",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.06607699394226074,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:module-runtime",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.043618202209472656,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:command-catalog-contract",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.6348919868469238,
+            "stdout": ""
+          }
+        ],
+        "go_policy_log": "ok  \tgithub.com/fvwmorg/FvwmPrompt/internal/actionpalette\t0.108s\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t3.889s\nok  \tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop\t0.135s\n",
+        "commands": [
+          {
+            "label": "sdk-version",
+            "command": [
+              "go",
+              "version"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.361
+          },
+          {
+            "label": "meson-version",
+            "command": [
+              "meson",
+              "--version"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 2.187
+          },
+          {
+            "label": "ninja-version",
+            "command": [
+              "ninja",
+              "--version"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.029
+          },
+          {
+            "label": "configure",
+            "command": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/root/fvwm-style-simplification-recovery-20261016/build-default",
+              "/root/fvwm-style-simplification-recovery-20261016/source",
+              "-Dlive-x-tests=true"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 23.352
+          },
+          {
+            "label": "options",
+            "command": [
+              "meson",
+              "introspect",
+              "--buildoptions",
+              "/root/fvwm-style-simplification-recovery-20261016/build-default"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.93
+          },
+          {
+            "label": "compilers",
+            "command": [
+              "meson",
+              "introspect",
+              "--compilers",
+              "/root/fvwm-style-simplification-recovery-20261016/build-default"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.981
+          },
+          {
+            "label": "tests",
+            "command": [
+              "meson",
+              "introspect",
+              "--tests",
+              "/root/fvwm-style-simplification-recovery-20261016/build-default"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.882
+          },
+          {
+            "label": "installed",
+            "command": [
+              "meson",
+              "introspect",
+              "--installed",
+              "/root/fvwm-style-simplification-recovery-20261016/build-default"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 1.833
+          },
+          {
+            "label": "build",
+            "command": [
+              "ninja",
+              "-C",
+              "/root/fvwm-style-simplification-recovery-20261016/build-default",
+              "-j2",
+              "fvwm3",
+              "bin/FvwmPrompt/FvwmDesktop",
+              "tests/test-palette-policy",
+              "tests/test-action-palette",
+              "tests/test-module-runtime",
+              "tests/test-query-json"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 109.842
+          },
+          {
+            "label": "policy-catalog",
+            "command": [
+              "meson",
+              "test",
+              "-C",
+              "/root/fvwm-style-simplification-recovery-20261016/build-default",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "--logbase",
+              "/root/fvwm-style-simplification-recovery-20261016/r1-action-palette-default-checkpoint/policy-testlog",
+              "palette-policy",
+              "action-palette-snapshots",
+              "module-runtime",
+              "core-query-json",
+              "command-catalog-contract"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 3.829
+          },
+          {
+            "label": "go-policy",
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/actionpalette",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmdesktop"
+            ],
+            "cwd": "/root/fvwm-style-simplification-recovery-20261016/source/bin/FvwmPrompt",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 15.816
+          }
+        ],
+        "option_migration": {
+          "explicitly_authorized": true,
+          "migrations": []
+        },
+        "archive": {
+          "sha256": "268531c267525ca51cfb9560feb917ed50654b7d015131f88d4512fbfafb334b",
+          "bytes": 6090602,
+          "mode": 420
+        },
+        "verified_payloads": 40,
+        "gzip_crc_to_eof": true,
+        "lifecycle": {
+          "owned_pid": 16723,
+          "qemu_status": 0,
+          "normal_poweroff_requested": true
+        }
+      },
+      "openbsd-arm64": {
+        "status": "passed",
+        "actual_os_uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#1",
+          "arm64"
+        ],
+        "sdk_version": "go version go1.27.2 openbsd/arm64",
+        "sdk_binary": {
+          "sha256": "f99b830b964c9486ec0c52eedbfa5db227369b06874af8e2eaca8d36d64ae376",
+          "bytes": 15791960,
+          "mode": 448
+        },
+        "compilers": {
+          "host": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "22.1.6",
+              "full_version": "OpenBSD clang version 22.1.6",
+              "linker_id": "ld.lld"
+            }
+          },
+          "build": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "22.1.6",
+              "full_version": "OpenBSD clang version 22.1.6",
+              "linker_id": "ld.lld"
+            }
+          }
+        },
+        "options": {
+          "buildtype": "debugoptimized",
+          "optimization": "2",
+          "b_sanitize": [],
+          "bidi": "auto",
+          "live-x-tests": true,
+          "nls": "auto",
+          "png": "enabled",
+          "svg": "enabled",
+          "xpm": "auto"
+        },
+        "selected_build": {
+          "path": "/home/fvwm-ci/source/builddir-bsd",
+          "profile": "default",
+          "incremental_cache_retained": true,
+          "full_install": false,
+          "default_x": false
+        },
+        "binaries": {
+          "fvwm3": {
+            "sha256": "4955aec87a2dd7cdd470888af08207fbfd4416900b9eabb39f990a39bfd9a9c1",
+            "bytes": 5040488,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "sha256": "7c5ca37d33ff390f1f51658eb54c9fa9c9a8ed67c7536c80b140916d09119654",
+            "bytes": 5645541,
+            "mode": 493
+          }
+        },
+        "probes": {
+          "test-palette-policy": {
+            "sha256": "0e4f95bcb95a81cc4a4fc8656be63df8fe3ac5589e44d192849c3ba215a5fe83",
+            "bytes": 33872,
+            "mode": 493
+          },
+          "test-action-palette": {
+            "sha256": "464f8c785cd35c2beb01a939b683f0df7b5055311b7ca72add2fdeb26badc3c4",
+            "bytes": 253240,
+            "mode": 493
+          },
+          "test-module-runtime": {
+            "sha256": "4614e7fa515eb54687b50362491043703c9996ec04b3788a0a8585a885d1dffa",
+            "bytes": 118168,
+            "mode": 493
+          },
+          "test-query-json": {
+            "sha256": "b0005b020ffca9d78d694f56dd149fd6920273b207e54dfa9f7f03758ed35d50",
+            "bytes": 471000,
+            "mode": 493
+          }
+        },
+        "policies": [
+          {
+            "name": "fvwm3:palette-policy",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.014948606491088867,
+            "stdout": "palette policy: passed\n"
+          },
+          {
+            "name": "fvwm3:action-palette-snapshots",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.035249948501586914,
+            "stdout": "action palette snapshots and guards: passed\n"
+          },
+          {
+            "name": "fvwm3:command-catalog-contract",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.10587787628173828,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:core-query-json",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.05529379844665527,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:module-runtime",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.019196748733520508,
+            "stdout": ""
+          }
+        ],
+        "go_policy_log": "ok  \tgithub.com/fvwmorg/FvwmPrompt/internal/actionpalette\t0.011s\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t1.962s\nok  \tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop\t0.011s\n",
+        "commands": [
+          {
+            "label": "sdk-version",
+            "command": [
+              "go",
+              "version"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.026
+          },
+          {
+            "label": "meson-version",
+            "command": [
+              "meson",
+              "--version"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.28
+          },
+          {
+            "label": "ninja-version",
+            "command": [
+              "ninja",
+              "--version"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.018
+          },
+          {
+            "label": "configure",
+            "command": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/home/fvwm-ci/source/builddir-bsd",
+              "/home/fvwm-ci/source",
+              "-Dlive-x-tests=true"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 2.756
+          },
+          {
+            "label": "options",
+            "command": [
+              "meson",
+              "introspect",
+              "--buildoptions",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.28
+          },
+          {
+            "label": "compilers",
+            "command": [
+              "meson",
+              "introspect",
+              "--compilers",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.277
+          },
+          {
+            "label": "tests",
+            "command": [
+              "meson",
+              "introspect",
+              "--tests",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.279
+          },
+          {
+            "label": "installed",
+            "command": [
+              "meson",
+              "introspect",
+              "--installed",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.217
+          },
+          {
+            "label": "build",
+            "command": [
+              "ninja",
+              "-C",
+              "/home/fvwm-ci/source/builddir-bsd",
+              "-j2",
+              "fvwm3",
+              "bin/FvwmPrompt/FvwmDesktop",
+              "tests/test-palette-policy",
+              "tests/test-action-palette",
+              "tests/test-module-runtime",
+              "tests/test-query-json"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 14.986
+          },
+          {
+            "label": "policy-catalog",
+            "command": [
+              "meson",
+              "test",
+              "-C",
+              "/home/fvwm-ci/source/builddir-bsd",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "--logbase",
+              "/home/fvwm-ci/r1-action-palette-default-checkpoint/policy-testlog",
+              "palette-policy",
+              "action-palette-snapshots",
+              "module-runtime",
+              "core-query-json",
+              "command-catalog-contract"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 0.521
+          },
+          {
+            "label": "go-policy",
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/actionpalette",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmdesktop"
+            ],
+            "cwd": "/home/fvwm-ci/source/bin/FvwmPrompt",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 3.23
+          }
+        ],
+        "option_migration": {
+          "explicitly_authorized": true,
+          "migrations": [
+            {
+              "path": "/home/fvwm-ci/source/builddir-bsd/meson-private/cmd_line.txt",
+              "removed": {
+                "cairo": "enabled"
+              },
+              "allowed_retired_keys": [
+                "cairo",
+                "cairo-svg",
+                "libsvg-cairo"
+              ],
+              "other_options_equal": true,
+              "before_sha256": "00841379061092f7ec1f4ebfe902dd4e6ebc083af2035097a9746ae15305d740",
+              "after_sha256": "159864b6cfdc6c2380c634920674ef6e49bb7c08122d0562a7da27e16d7888c3",
+              "applied": true
+            }
+          ]
+        },
+        "archive": {
+          "sha256": "7047d443413169231b9091d33fd13672afab099a6f61d969bdc231b0a4fe7576",
+          "bytes": 5566537,
+          "mode": 420
+        },
+        "verified_payloads": 42,
+        "gzip_crc_to_eof": true,
+        "lifecycle": {
+          "runner_returncode": 0,
+          "qemu_exit_status": 0,
+          "ephemeral_keys_absent": true,
+          "canonical_outer_archive": {
+            "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-27/r1-next-features/platform/openbsd-retired-cache-retry1/bsd/openbsd-arm64-job/guest-evidence.tgz",
+            "sha256": "6861fd0e771d379ceb21e27211b915e43e8a841ff79487c0f384beb517a00c35",
+            "bytes": 163653892,
+            "mode": 420
+          },
+          "outer_scope": "Runner capture retained; nested profile payloads fully manifest verified; restored old compile cache is not a new native test pass."
+        }
+      },
+      "openbsd-amd64": {
+        "status": "passed",
+        "actual_os_uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#2",
+          "amd64"
+        ],
+        "sdk_version": "go version go1.27.2 openbsd/amd64",
+        "sdk_binary": {
+          "sha256": "d31495212ad7b67ee9044938f583ff3542756d87c60e6c7d73ef07ac26da4e66",
+          "bytes": 17041868,
+          "mode": 448
+        },
+        "compilers": {
+          "host": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "22.1.6",
+              "full_version": "OpenBSD clang version 22.1.6",
+              "linker_id": "ld.lld"
+            }
+          },
+          "build": {
+            "c": {
+              "id": "clang",
+              "exelist": [
+                "cc"
+              ],
+              "linker_exelist": [
+                "cc"
+              ],
+              "file_suffixes": [
+                "c"
+              ],
+              "default_suffix": "c",
+              "version": "22.1.6",
+              "full_version": "OpenBSD clang version 22.1.6",
+              "linker_id": "ld.lld"
+            }
+          }
+        },
+        "options": {
+          "buildtype": "debugoptimized",
+          "optimization": "2",
+          "b_sanitize": [],
+          "bidi": "auto",
+          "live-x-tests": true,
+          "nls": "auto",
+          "png": "enabled",
+          "svg": "enabled",
+          "xpm": "auto"
+        },
+        "selected_build": {
+          "path": "/home/fvwm-ci/source/builddir-bsd",
+          "profile": "default",
+          "incremental_cache_retained": true,
+          "full_install": false,
+          "default_x": false
+        },
+        "binaries": {
+          "fvwm3": {
+            "sha256": "96655268437998664a54cbdcb035cd3cdf3dd074b26b562a1237b6543d54bd1e",
+            "bytes": 4907024,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "sha256": "c48e35d58c0cd471ac93c7ab0952722325012b81a586eb0a48ee870e7dc78719",
+            "bytes": 5902253,
+            "mode": 493
+          }
+        },
+        "probes": {
+          "test-palette-policy": {
+            "sha256": "3e21ded533259ba9e4b24aeb3488a78905c5bf057bd2823579883c8d1213a969",
+            "bytes": 32968,
+            "mode": 493
+          },
+          "test-action-palette": {
+            "sha256": "f633f90ce53a65f14ed4df2bdb6037241b65ad9f7b6b4b2386824999a75e0346",
+            "bytes": 245032,
+            "mode": 493
+          },
+          "test-module-runtime": {
+            "sha256": "31946a8e8058f1d68b9fc401dba6f161c534741f198761b4d1850fb369cb10ad",
+            "bytes": 109496,
+            "mode": 493
+          },
+          "test-query-json": {
+            "sha256": "d281e0196d0ad6f32fcbb709dd67c3344108d9d23e829c2a59f94d7b372f9741",
+            "bytes": 458880,
+            "mode": 493
+          }
+        },
+        "policies": [
+          {
+            "name": "fvwm3:palette-policy",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.15469956398010254,
+            "stdout": "palette policy: passed\n"
+          },
+          {
+            "name": "fvwm3:action-palette-snapshots",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.17193245887756348,
+            "stdout": "action palette snapshots and guards: passed\n"
+          },
+          {
+            "name": "fvwm3:core-query-json",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.13303065299987793,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:module-runtime",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.10751175880432129,
+            "stdout": ""
+          },
+          {
+            "name": "fvwm3:command-catalog-contract",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 1.4834864139556885,
+            "stdout": ""
+          }
+        ],
+        "go_policy_log": "ok  \tgithub.com/fvwmorg/FvwmPrompt/internal/actionpalette\t0.163s\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t4.747s\nok  \tgithub.com/fvwmorg/FvwmPrompt/cmd/fvwmdesktop\t0.167s\n",
+        "commands": [
+          {
+            "label": "sdk-version",
+            "command": [
+              "go",
+              "version"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.264
+          },
+          {
+            "label": "meson-version",
+            "command": [
+              "meson",
+              "--version"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 4.554
+          },
+          {
+            "label": "ninja-version",
+            "command": [
+              "ninja",
+              "--version"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 0.07
+          },
+          {
+            "label": "configure",
+            "command": [
+              "meson",
+              "setup",
+              "--reconfigure",
+              "/home/fvwm-ci/source/builddir-bsd",
+              "/home/fvwm-ci/source",
+              "-Dlive-x-tests=true"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 41.204
+          },
+          {
+            "label": "options",
+            "command": [
+              "meson",
+              "introspect",
+              "--buildoptions",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 4.039
+          },
+          {
+            "label": "compilers",
+            "command": [
+              "meson",
+              "introspect",
+              "--compilers",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 4.039
+          },
+          {
+            "label": "tests",
+            "command": [
+              "meson",
+              "introspect",
+              "--tests",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 4.1
+          },
+          {
+            "label": "installed",
+            "command": [
+              "meson",
+              "introspect",
+              "--installed",
+              "/home/fvwm-ci/source/builddir-bsd"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 900,
+            "status": 0,
+            "seconds": 4.036
+          },
+          {
+            "label": "build",
+            "command": [
+              "ninja",
+              "-C",
+              "/home/fvwm-ci/source/builddir-bsd",
+              "-j2",
+              "fvwm3",
+              "bin/FvwmPrompt/FvwmDesktop",
+              "tests/test-palette-policy",
+              "tests/test-action-palette",
+              "tests/test-module-runtime",
+              "tests/test-query-json"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 228.768
+          },
+          {
+            "label": "policy-catalog",
+            "command": [
+              "meson",
+              "test",
+              "-C",
+              "/home/fvwm-ci/source/builddir-bsd",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "--logbase",
+              "/home/fvwm-ci/r1-action-palette-default-checkpoint/policy-testlog",
+              "palette-policy",
+              "action-palette-snapshots",
+              "module-runtime",
+              "core-query-json",
+              "command-catalog-contract"
+            ],
+            "cwd": "/home/fvwm-ci/source",
+            "timeout": 360,
+            "status": 0,
+            "seconds": 7.717
+          },
+          {
+            "label": "go-policy",
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/actionpalette",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmdesktop"
+            ],
+            "cwd": "/home/fvwm-ci/source/bin/FvwmPrompt",
+            "timeout": 1200,
+            "status": 0,
+            "seconds": 22.437
+          }
+        ],
+        "option_migration": {
+          "explicitly_authorized": true,
+          "migrations": [
+            {
+              "path": "/home/fvwm-ci/source/builddir-bsd/meson-private/cmd_line.txt",
+              "removed": {
+                "cairo": "enabled"
+              },
+              "allowed_retired_keys": [
+                "cairo",
+                "cairo-svg",
+                "libsvg-cairo"
+              ],
+              "other_options_equal": true,
+              "before_sha256": "00841379061092f7ec1f4ebfe902dd4e6ebc083af2035097a9746ae15305d740",
+              "after_sha256": "159864b6cfdc6c2380c634920674ef6e49bb7c08122d0562a7da27e16d7888c3",
+              "applied": true
+            }
+          ]
+        },
+        "archive": {
+          "sha256": "6a1f72c8b6dd2d24d29464487bf95387a5ea82cce13d33850e15c02177060693",
+          "bytes": 5869920,
+          "mode": 420
+        },
+        "verified_payloads": 42,
+        "gzip_crc_to_eof": true,
+        "lifecycle": {
+          "runner_returncode": 0,
+          "qemu_exit_status": 0,
+          "ephemeral_keys_absent": true,
+          "canonical_outer_archive": {
+            "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-27/r1-next-features/platform/openbsd-retired-cache-retry1/bsd/openbsd-amd64-job/guest-evidence.tgz",
+            "sha256": "c56b720ee9048b235ba6c40ce8a750ede91564ca12e19d16718a059ea49144f3",
+            "bytes": 171197403,
+            "mode": 420
+          },
+          "outer_scope": "Runner capture retained; nested profile payloads fully manifest verified; restored old compile cache is not a new native test pass."
+        }
+      }
+    },
+    "initial_openbsd_cache_stop": {
+      "archive": {
+        "sha256": "eedfafabb46392e869a33bb563d641ed77a08988771d79c994dd39b16db63256",
+        "bytes": 139085,
+        "mode": 420
+      },
+      "verification": {
+        "result": {
+          "status": "failed",
+          "target": "openbsd-arm64",
+          "profile": "default",
+          "error": "RuntimeError('retired cache options need recorded owner authorization; use --migrate-retired-options after reviewing option-migration.json')"
+        },
+        "files_verified": 14,
+        "gzip_crc_to_eof": true,
+        "symlinks": {},
+        "commands": 3
+      },
+      "reason": "Stopped before configure because restored cache contained retired cairo=enabled; no runtime checks attempted.",
+      "qemu_exit_status": 0,
+      "subsequent_authorization": {
+        "authority": "Explicit lead instruction in this task",
+        "scope": "Only present retired cairo/cairo-svg/libsvg-cairo keys in cached Meson cmd_line options sections; preserve every other byte/key/value.",
+        "source": "Current meson.options authoritative; no runtime/dependency decision/cache wipe.",
+        "receipt_contract": "Original file, proposed/applied bytes, before/after SHA256 and parsed other_options_equal retained by base_gate.migrate_options.",
+        "first_stop_preserved": "bsd/openbsd-arm64-job verified failed capture and stopped runner; not overwritten."
+      }
+    },
+    "runtime_source_equivalence": "passed; compiled C/Go exact; docs, gallery, actual-X fixture and build registrations assessed separately",
+    "resources": "all owned runners stopped; ephemeral keys absent; assigned ports/disks unused",
+    "limits": [
+      "Emulated passes do not assert native CPU sanitizer execution.",
+      "No non-Linux native-X focus/rendering or physical hardware acceptance.",
+      "Unchanged packet/MFL/X server/effect contracts retain original source/profile receipts."
+    ]
+  },
+  "reviews": {
+    "source": "separate source review; temporary candidate validation before ticket completion repaired and verified",
+    "visual": "all21 captures independently reviewed; six published",
+    "limits": [
+      "long details/reasons clip, especially enlarged",
+      "existing worker notice overlaps some rows",
+      "aggregate core truncation appears on windows and desktops",
+      "native desktop action is single-screen global mode",
+      "no actual native XID reuse; forced reuse covered by C fixture",
+      "no IME/shaping, assistive, physical or kernel wakeup qualification"
+    ],
+    "requested_routing": "Sol/high implementation/review; Astra/high scope; actual model execution unverified",
+    "final": "separate reviewer confirms all five #219 criteria qualified; no closure blocker"
+  },
+  "cadence": {
+    "performance_reference": 269,
+    "merged_count": 0,
+    "count_after_merge": 1,
+    "comparison_due": false
+  },
+  "resource_state": {
+    "linux_container": "stopped",
+    "linux_vm": "stopped",
+    "builds_and_disks": "preserved"
+  }
+}

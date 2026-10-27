@@ -51,6 +51,7 @@ type Controller struct {
 	ready                                    bool
 	editor                                   *editor
 	preview                                  preview
+	palette                                  *paletteView
 	inspection                               *inspection
 	inspectionJob                            *inspectionWork
 	inspectionFocusConfigured                bool
@@ -124,6 +125,7 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 	return d, nil
 }
 func (d *Controller) Close() {
+	d.closePalette()
 	d.closed = true
 	d.settingsBinding.policy.Close()
 	d.appBinding.policy.Close()
@@ -180,6 +182,7 @@ func (d *Controller) changed(generation string) {
 	d.generation = generation
 	d.retireEditor()
 	d.staleInspection("Settings changed; refresh to collect the current generation.")
+	_ = d.paletteProviders()
 	if d.ready {
 		d.announceSettings()
 	}
@@ -199,6 +202,7 @@ func (d *Controller) finishConfiguration() error {
 	d.emit("KillModule FvwmForm SlateSettingsForm")
 	d.emit("KillModule FvwmForm SlateConfigCheckForm")
 	d.closeInspection()
+	d.closePalette()
 	var err error
 	d.effective, err = desktopsettings.Checked(merged(d.saved, d.overrides))
 	if err != nil {
@@ -263,6 +267,7 @@ func (d *Controller) reloadSettings() error {
 	generation := newID(16)
 	d.saved, d.effective, d.revision = saved, effective, revision
 	d.persistenceError = ""
+	d.closePalette()
 	d.resetWorkerMenus()
 	d.changed(generation)
 	d.preview.constrain()

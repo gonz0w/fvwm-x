@@ -53,6 +53,15 @@ func (d *Controller) Handle(message string) {
 }
 func (d *Controller) handle(command, argument string) error {
 	switch command {
+	case "palette":
+		if argument != "" {
+			return errors.New("palette takes no arguments")
+		}
+		return d.startPalette()
+	case "palette-control":
+		return d.paletteControl(argument)
+	case "palette-state":
+		return d.paletteState(argument)
 	case "preview-editor":
 		e, changes, err := d.editorValues(argument)
 		if err != nil {
@@ -318,6 +327,7 @@ func (d *Controller) handle(command, argument string) error {
 func (d *Controller) tick() {
 	d.pollLocker()
 	d.preview.tick()
+	d.paletteTick()
 	if d.editor != nil && !time.Now().Before(d.editor.deadline) {
 		d.retireEditor()
 	}

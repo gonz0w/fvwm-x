@@ -613,6 +613,7 @@ Super+Space:: Centered application launcher.
 Super+Enter:: Terminal.
 Super+D:: Files.
 Super+P:: Run command.
+Super+A:: Action palette.
 Super+L:: Request secure screen lock.
 Super+1 through Super+4:: Select workspace.
 Ctrl+F1 through Ctrl+F4:: Select workspace.
@@ -645,6 +646,8 @@ settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:e
 preview-setting helper-instance opacity-percent
 edit-settings [scope]
 check-config
+palette
+palette-state token
 query-settings token [scope]
 reset scope
 reload-settings
@@ -714,3 +717,64 @@ state, retains bounded results across view disconnects, and can discard a
 cancelled scan's eventual output. This is separate from cancellation of a reply
 wait and does not stop a blocking backend call. See *FvwmMFL*(1) for typed
 admission, generations, retention, notifications and explicit partial outcomes.
+
+== ACTION PALETTE
+
+*Super+A* opens the Action palette in the shipped desktop. The
+*SlatePalette* function and *SendToModule FvwmDesktop palette* open the same
+optional native Form. Super+P continues to open Run. The launcher also has an
+Action palette entry. No extra process remains resident when the view closes.
+
+The four labeled providers are managed windows, advertised desktops,
+applications from the existing discovery owner, and eight registered actions:
+Settings, Appearance, Configuration inspector, Check configuration, Refresh
+applications, Terminal, Files and Run command. Windows marked SkipWindowList
+are excluded. Desktops follow the core's advertised desktop inventory, rather
+than the four default bar buttons. Provider availability is independent; a
+failed core query leaves available applications and registered actions usable.
+Each provider displays its state, retained count and failure or truncation
+reason. Refresh (F5) requests a fresh core snapshot and application discovery.
+While the view is open, native window add/configure/destroy/name and desk/page
+events coalesce into refreshes. Its own Form updates are excluded. Closing
+restores the ordinary desktop subscriptions. An unchanged palette does not poll
+windows.
+
+Type a query and press Filter (F3). Matching is literal and case insensitive
+using the shared collection policy, with a maximum of 128 UTF-8 bytes. It is
+not fuzzy matching or Unicode normalization. Tab and Shift-Tab move between
+query and list. Arrows, Home/End and Page Up/Page Down move list focus; Enter
+activates the focused result. Space toggles selection, but activation always
+uses the focused row. Escape or Close returns focus through the normal FVWM
+focus policy. Activating an action disables that Form's later focus return
+before dispatch, so Form teardown cannot override the requested focus.
+
+The native list reuses its windows during filtering and refresh, preserving the
+query draft and surviving row selection, focus and scroll anchors. Native type
+marks and explicit Window/Desktop/Application/Action text labels require no
+image service or icon font. Printable Unicode labels are retained. Native configuration metacharacters
+and controls are shown as [U+XXXX]; identity and filtering use the original
+admitted text. Display labels
+never become commands. A delayed callback from an older Form or list generation
+is refused. Application activation rechecks its complete committed data identity
+and generation; registered actions recheck current capabilities; core actions
+revalidate the managed-window incarnation or advertised desktop before dispatch.
+
+A bounded snapshot retains at most 512 windows, 128 desktops, 500 applications
+and sixteen registered actions (eight currently). The core scans at most 4096
+managed records and reports omitted inventory explicitly. Application discovery
+can retain more entries for the ordinary launcher; the palette reports its own
+500-entry cap. Core metadata is fetched in pages of at most sixteen rows.
+Requests coalesce to one active and one latest pending refresh. Chunked replies,
+query waits and native list publication are bounded. Missing native replies
+close the view after five seconds; a core timeout marks its providers unavailable
+and permits Refresh. The view closes after five minutes without a refresh.
+Closing or reloading retires callbacks and releases the palette's core snapshot.
+Submitting an action does not certify that a client has repainted.
+
+For troubleshooting, *SendToModule FvwmDesktop palette-state token* emits
+*Echo FVWM_PALETTE_STATE token hex-json* with open state, provider counts and
+states, binding counters, native readiness and visible count. While open it
+also emits *Echo FVWM_PALETTE_VIEW token hex-json* with query, view token,
+native generation and total retained rows. Tokens follow the same bounded
+identifier syntax as barrier. Every record fits the 1000-byte native command
+limit; reading diagnostics neither refreshes nor activates the palette.

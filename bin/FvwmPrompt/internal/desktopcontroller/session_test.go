@@ -60,7 +60,7 @@ func TestLockerExitIsOwnedByEventLoopAndAllowsRetry(t *testing.T) {
 	t.Cleanup(func() { _ = os.WriteFile(gate, nil, 0600) })
 	_ = d.handle("lock", "")
 	if !d.lockerPending {
-		t.Fatal("locker lifetime not retained")
+		t.Fatalf("locker lifetime not retained: %s", literalCommands(t, *commands))
 	}
 	before := len(*commands)
 	_ = d.handle("lock", "")

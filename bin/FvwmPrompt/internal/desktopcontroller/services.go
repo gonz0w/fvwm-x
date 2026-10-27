@@ -349,6 +349,7 @@ func (d *Controller) publishJob(result job) error {
 		}
 		d.appBinding.known, d.appBinding.lost = true, false
 		d.apps = apps
+		_ = d.paletteProviders()
 		d.applicationMenu(nil)
 	case "status":
 		status, err := checkedStatus(result.result)

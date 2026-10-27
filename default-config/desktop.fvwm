@@ -45,6 +45,9 @@ MenuStyle SlateLauncherStyle ItemFormat "%24p%l%80p%>%24p"
 DestroyFunc SlateLauncher
 AddToFunc SlateLauncher
 + I Menu SlateLauncherMenu Monitor c c
+DestroyFunc SlatePalette
+AddToFunc SlatePalette
++ I SendToModule FvwmDesktop palette
 DestroyFunc SlateMove
 AddToFunc SlateMove
 + I Raise
@@ -132,6 +135,7 @@ Style FvwmIdent WindowListSkip
 # Bootstrap menus remain usable before background discovery finishes.
 DestroyMenu SlateLauncherMenu
 AddToMenu SlateLauncherMenu "Applications" Title
++ "Action palette..." SlatePalette
 + "Terminal" SendToModule FvwmDesktop terminal
 + "Search applications..." Module FvwmForm SlateSearchForm
 + "Run command..." Module FvwmForm SlateRunForm
@@ -171,6 +175,7 @@ AddToMenu SlateWindow "Window" Title
 # Super+Space: launcher; Super+Enter: terminal; Super+D: files; Super+P: run.
 # Ctrl+F1..F4 and Super+1..4 switch workspaces; Alt+Tab selects a window.
 Silent Key Space A 4 SlateLauncher
+Silent Key a A 4 SlatePalette
 Silent Key Return A 4 SendToModule FvwmDesktop terminal
 Silent Key d A 4 SendToModule FvwmDesktop files
 Silent Key p A 4 Module FvwmForm SlateRunForm

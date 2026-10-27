@@ -17,13 +17,23 @@ import (
 )
 
 const (
+	newPage             = 1
 	newDesk             = 1 << 1
+	paletteDestroy      = 1 << 7
+	paletteWindowName   = 1 << 10
+	paletteResName      = 1 << 13
+	paletteVisibleName  = 1 << 26
+	paletteAdd          = 1 << 29
+	paletteConfigure    = 1 << 30
 	configInfo          = 1 << 18
 	endConfigInfo       = 1 << 19
 	stringMessage       = 1 << 22
 	sendConfig          = 1 << 27
+	nativeEcho          = (1 << 31) | (1 << 9)
 	coreReply           = (1 << 31) | (1 << 10)
 	configSourceMessage = (1 << 31) | (1 << 11)
+	regularDesktopMask  = stringMessage | newDesk | configInfo | endConfigInfo | sendConfig
+	paletteEventMask    = newPage | paletteDestroy | paletteWindowName | paletteResName | paletteVisibleName | paletteAdd | paletteConfigure
 	queueLimit          = 1024 * 1024
 )
 
@@ -84,7 +94,7 @@ func Run(options Options) error {
 		return err
 	}
 	defer d.Close()
-	d.emit(fmt.Sprintf("SET_MASK %d", stringMessage|newDesk|configInfo|endConfigInfo|sendConfig))
+	d.emit(fmt.Sprintf("SET_MASK %d", regularDesktopMask))
 	d.emit(fmt.Sprintf("SET_MASK %d", coreReply|configSourceMessage))
 	d.emit("Send_ConfigInfo *FvwmDesktop")
 	buffer := []byte{}
@@ -152,7 +162,7 @@ func Run(options Options) error {
 			}
 			context := source.consume(packet)
 			switch packet.kind {
-			case stringMessage, configInfo, coreReply:
+			case stringMessage, configInfo, coreReply, nativeEcho:
 				if len(packet.body) < 24 {
 					return errors.New("Truncated FVWM string packet")
 				}
@@ -160,8 +170,12 @@ func Run(options Options) error {
 				text = strings.ToValidUTF8(text, "\uFFFD")
 				if packet.kind == stringMessage {
 					d.Handle(text)
+				} else if packet.kind == nativeEcho {
+					d.paletteNativeReply(text)
 				} else if packet.kind == coreReply {
-					d.preview.reply(text)
+					if !d.paletteReply(text) {
+						d.preview.reply(text)
+					}
 				} else {
 					mode := validateConfiguration
 					if !started {
@@ -169,7 +183,10 @@ func Run(options Options) error {
 					}
 					d.configureMessage(text, context, mode)
 				}
+			case newPage, paletteDestroy, paletteWindowName, paletteResName, paletteVisibleName, paletteAdd, paletteConfigure:
+				d.paletteEvent(packet)
 			case newDesk:
+				d.paletteEvent(packet)
 				if len(packet.body) >= 8 {
 					d.desk = int(binary.NativeEndian.Uint64(packet.body))
 					d.highlightDesk()

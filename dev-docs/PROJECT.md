@@ -256,9 +256,22 @@ select a new product/platform/toolchain or expand other-resource authority.
 | Role | Assignment | Model | Effort |
 | --- | --- | --- | --- |
 | `temper_workflow` | Bounded read-only inspection and evidence summaries | `gpt-6-luna` | `medium` |
+| `temper_product` | Bounded documentation, visual/browser tasks and small specified UI fixes | `gpt-6.1-terra` | `medium` |
 | `temper_implementer` | Accepted implementation, tests and ordinary debugging | `gpt-6.1-sol` | `high` |
 | `temper_analyst` | Difficult analysis or separate complex review | `gpt-6-astra` | `high` |
 | `temper_reviewer` | Separate final review of work it did not author | `gpt-6.1-sol` | `high` |
+
+On 2026-10-27 the owner requested the Terra model update. Adopt the optional
+`temper_product` role from the pinned upstream Codex profile, supplementing the
+four existing routes without retargeting them. Give it supplied facts, clear
+requirements, explicit ownership and observable acceptance. Substantial coding
+stays with the implementer; ambiguous design stays with the analyst. Product work
+still requires separate final review. If Terra or required tools are unavailable,
+the lead may explicitly assign the same bounded task to `temper_implementer`
+with Sol/high, retaining permissions and resource limits and recording the fallback.
+The product role must not change models or delegate its fallback. Model access
+does not install tools or grant browser, external-write or operational permission.
+[Update evidence](verification/VERIFICATION-2026-10-27-TEMPER-TERRA.md).
 
 The lead owns tracker writes, integration and returned-evidence verification.
 Use at most three concurrent delegated agents, excluding the lead, within existing

@@ -126,8 +126,9 @@ instructions; retired GSD plans and graph data are historical references.
   upstream notifications have separate ownership from build/test work.
 
 Apply the Codex routing profile selected in local project policy. When useful,
-delegate bounded inspection to `temper_workflow`, accepted implementation to
-`temper_implementer`, difficult analysis to `temper_analyst`, and separate final
-review to `temper_reviewer`. Supply the work item/comments, policy, relevant
+delegate bounded inspection to `temper_workflow`, specified documentation/visual/
+small UI work to `temper_product`, accepted implementation to `temper_implementer`,
+difficult analysis to `temper_analyst`, and separate final review to
+`temper_reviewer`. Supply the work item/comments, policy, relevant
 files, acceptance, checks and edit boundaries. Follow local escalation, fallback,
 resource and execution limits; the lead owns integration and verifies evidence.

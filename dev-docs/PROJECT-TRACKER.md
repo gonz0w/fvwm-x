@@ -1,11 +1,40 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-26. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-27. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
+
+## Temper Terra product routing — TEMPER-03
+
+Owner: Cam; user-requested 2026-10-27; `codex/temper-terra-product`.
+Status: qualified for review; separate source/policy review has no blocker. Pin the nine-file
+upstream bundle to immutable `fcfb819f62d1a1091010db1df8fc5b7560cd1b8a`,
+retaining exact upstream bytes, license and complete inventory/hash evidence.
+Adopt additive `temper_product` at `gpt-6.1-terra`/medium for bounded documentation,
+visual/browser tasks and small specified UI fixes. Preserve the four existing
+routes, separate review, lead authority, resource limits and explicit Sol fallback.
+
+Acceptance: review the immutable upstream semantic diff and canonical source;
+validate TOML/name/model/effort consistency, all bundle bytes/checksums/inventory,
+local policy/link compatibility, a bounded explicit Terra assignment, and separate
+review. Native named-role selection remains unavailable in this session; use the
+project's explicit model/instruction fallback and distinguish requested routing
+from independently attested backend identity. No runtime code, WM build/test/VM,
+product release scope, dependency, signing key or security setting changes. Keep
+PR271's feature branch untouched; this update needs its own signed author-DCO PR
+and maintainer merge approval. Planning/configuration-only; performance counters
+do not advance. [Evidence](verification/VERIFICATION-2026-10-27-TEMPER-TERRA.md).
+
+All five TOMLs and model/effort policy rows validate. Nine immutable upstream
+files and all eleven bundle inventory/checksum entries match; the four original
+role definitions are unchanged. An explicit Terra/medium product assignment
+completed the bounded documentation task without a model-unavailable error.
+Backend identity and native role loading remain unverified. `make check lint`
+and local link/whitespace checks pass; separate Sol/high review has no blocker.
+No WM tests, build, VM or broader matrix is repeated for this update.
 
 ## Three-release target — 2026-10-26
 

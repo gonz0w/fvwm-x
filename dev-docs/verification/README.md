@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Temper Terra product routing](VERIFICATION-2026-10-27-TEMPER-TERRA.md): immutable profile/template adoption, five consistent local roles, preserved existing mappings and explicit availability limits; documentation/configuration checks only.
+
 - [Shared native action palette](VERIFICATION-2026-10-27-ACTION-PALETTE.md): four typed providers, bounded native refresh/actions, three themes/21 captures and scoped affected support; #219 closes on merge.
 
 - [Configuration diagnostics closeout](VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md): owned runtime source spans, selected module error provenance, complete paged reports and actual-theme captures; all eight affected profiles across six targets pass; #61 closes on merge, with wider qualification and manual-lint limits explicit.

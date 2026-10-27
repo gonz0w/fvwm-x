@@ -18,8 +18,8 @@ GUI toolkit. It supports local folders, list/grid views, keyboard navigation,
 range/multiple selection, label filtering, metadata sorting, observed properties,
 reveal requests and configured application actions. Same-folder refresh,
 filtering, sorting and status/property updates preserve the native window,
-unsubmitted input drafts and surviving selection. Changing folders or switching
-list/grid layout can rebuild the view and reset drafts.
+unsubmitted input drafts and surviving selection. Changing folders can rebuild
+the view and reset drafts; list/grid switches keep the existing controls.
 
 Newer development adds opt-in directory watching (`--watch auto`, or F8), with
 coalesced native invalidations, periodic reconciliation and explicit manual
@@ -35,6 +35,38 @@ they do not read file contents or calculate recursive folder sizes. The prototyp
 closes after five minutes without a callback or accepted external control. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
+
+## Native monitor scaling
+
+The browser now follows committed per-monitor UI scales, including fractional
+scales. Single-viewport personal Forms may opt into `UIScale monitor`; ordinary
+Forms keep their existing default. Fonts and control geometry update together
+while native windows, selection, anchors, cursor and unsent text stay in place.
+The core continues to own actual-pixel parent geometry.
+
+These captures use actual RandR outputs at 1.25x, 1.5x and 2x, with Slate dark,
+Dune light and enlarged Classic configurations. Each is an unmodified desktop
+capture; open the full image to inspect the second monitor and controls.
+
+![Slate browser first mapped on a monitor at 1.25x](screenshots/scale-slate-first-1.25.png)
+
+![Dune browser on a monitor at 1.5x](screenshots/scale-dune-1.5.png)
+
+![Enlarged Classic browser with a scaled grid](screenshots/scale-classic-grid-2.png)
+
+If a scaled minimum cannot fit, Form retains its last complete view until real
+geometry permits adoption. A grid that needs more room retains the list view;
+enlarge and retry F7. Unsupported opt-in Form compositions retain their complete
+1x view with a diagnostic. Bitmap font fallback uses the returned glyph metrics;
+it does not invent larger bitmap glyphs. Long fixed labels can still clip.
+
+![Slate browser after grid enlargement and a real native refresh](screenshots/scale-slate-grid-2.png)
+
+[Capture/source manifest](screenshots/scale-manifest.json),
+[Form manual](FvwmForm.adoc), [browser manual](fvwm-file-browser.adoc) and
+[results/limits](../dev-docs/verification/VERIFICATION-2026-10-27-VIEWPORT-SCALE.md).
+This consumer checkpoint keeps #51 and #69 open for their remaining acceptance;
+physical displays, accessibility and the six-target release gates remain separate.
 
 ## Browser view continuity and keyboard actions
 
@@ -71,8 +103,9 @@ Missing/non-executable programs report failed, never a successful launch.
 
 All six unmodified captures come from one source-bound three-theme checkpoint,
 with a 1920×1800 nested display and 4,096 synthetic entries. They demonstrate
-configured 18pt text, not automatic UI scaling. #69 remains open for that actual
-scale work; #65 action acceptance is complete on the associated PR's merge.
+configured 18pt text; the newer actual monitor-scale checkpoint appears above.
+#69 remains open for broader acceptance; #65 action acceptance is complete on
+the associated PR's merge.
 [Capture manifest](screenshots/continuity-manifest.json),
 [manual](fvwm-file-browser.adoc),
 [results and limits](../dev-docs/verification/VERIFICATION-2026-10-27-BROWSER-CONTINUITY.md).

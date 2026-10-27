@@ -53,8 +53,8 @@ static void list_thumb(Item *item, int *top, int *height)
 	if (lines <= s->rows)
 		return;
 	*height = track * s->rows / lines;
-	if (*height < 4)
-		*height = 4;
+	if (*height < (CF.ui_metrics.thumb_min ? CF.ui_metrics.thumb_min : 4))
+		*height = CF.ui_metrics.thumb_min ? CF.ui_metrics.thumb_min : 4;
 	*top += (track - *height) * (s->top / form_list_columns(s)) /
 		(lines - s->rows);
 }
@@ -68,7 +68,7 @@ void form_list_draw(Item *item)
 	int height = item->list.row_height;
 	int width = item->header.size_x;
 	int columns = form_list_columns(s);
-	int cell_width = (width - 2 * BOX_SPC - 16) / columns;
+	int cell_width = (width - 2 * BOX_SPC - LIST_GUTTER) / columns;
 
 	XClearWindow(dpy, item->header.win);
 	str->flags.has_colorset = False;
@@ -101,7 +101,7 @@ void form_list_draw(Item *item)
 		str->y = y + TEXT_SPC + dt->dt_Ffont->ascent;
 		if (columns > 1 || item->list.viewport_columns > 1)
 		{
-			icon_size *= 2;
+			icon_size = height - 4 * TEXT_SPC - dt->dt_Ffont->height;
 			if (icon_size < 8)
 				icon_size = 8;
 			if (icon_size > cell_width - 2 * TEXT_SPC)
@@ -116,6 +116,7 @@ void form_list_draw(Item *item)
 		}
 		else if (entry->icon != FORM_ICON_NONE)
 		{
+			icon_size = height - 2 * TEXT_SPC;
 			list_icon(item, entry->icon, x + TEXT_SPC,
 				y + TEXT_SPC, icon_size);
 			str->x += icon_size + TEXT_SPC;
@@ -137,7 +138,10 @@ void form_list_draw(Item *item)
 
 		list_thumb(item, &top, &thumb);
 		XFillRectangle(dpy, item->header.win, dt->dt_item_GC,
-			width - 14, top, 10, thumb);
+			width - LIST_GUTTER +
+			(CF.ui_metrics.thumb_inset ? CF.ui_metrics.thumb_inset : 2),
+			top, CF.ui_metrics.thumb_width ? CF.ui_metrics.thumb_width : 10,
+			thumb);
 	}
 }
 
@@ -247,7 +251,8 @@ void form_list_click(Item *item, XButtonEvent *event)
 {
 	form_list_state *s = item->list.state;
 	int columns = form_list_columns(s);
-	int cell_width = (item->header.size_x - 2 * BOX_SPC - 16) / columns;
+	int cell_width = (item->header.size_x - 2 * BOX_SPC -
+		LIST_GUTTER) / columns;
 	int row = (event->y - BOX_SPC) / item->list.row_height;
 	int column = (event->x - BOX_SPC) / cell_width;
 	int index = s->top + row * columns + column;
@@ -257,7 +262,8 @@ void form_list_click(Item *item, XButtonEvent *event)
 	else if (event->button == Button1)
 	{
 		list_focus_item(item);
-		if (event->x >= item->header.size_x - 18)
+		if (event->x >= item->header.size_x - LIST_GUTTER -
+		    (CF.ui_metrics.thumb_inset ? CF.ui_metrics.thumb_inset : 2))
 		{
 			int top, thumb;
 

@@ -1,0 +1,1239 @@
+{
+  "owner": "Cam",
+  "base": "db0175ce848b2b22c8965cbd5365ebc255e024d4",
+  "candidate": "codex/r1-viewport-scaling",
+  "status": "focused Linux consumer checkpoint passed; broader acceptance pending",
+  "references_remain_open": [
+    51,
+    69
+  ],
+  "closes": [],
+  "source": {
+    "frozen_files": 1541,
+    "aggregate_sha256": "0ea3b1d986ccc144a875ce526559c8a86042109281fde76e7316a05825bd8432",
+    "compiled_sha256": {
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "7dc885454e103864f2a91786fa7a876f853d735c4427e8e925045b56afd3bce3",
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/view_scale_test.go": "3b0f87029df213241905f1062949ff124dfd9d33075863b628dc397b129ef8ca",
+      "doc/FvwmForm.adoc": "a77f2b0c768d022df9e70dd60f1e822b888d9b41b10f877c96d5c1760f6d54f5",
+      "doc/fvwm-file-browser.adoc": "1c275a89266509198efcb9f86397d76a1000eec5438db24c604bc899ee6647a1",
+      "modules/FvwmForm/FvwmForm.c": "37e3c17beef32733fb65a27054415f6af4048b235400f51d9e32e30207dc166d",
+      "modules/FvwmForm/FvwmForm.h": "285800d981ae43f833a10a1e0a0f44bf6bae8fc5049b001c4f027572af566789",
+      "modules/FvwmForm/ParseCommand.c": "65a97344b00b0875c9bfba2dfebc947475b8addfa65b668aa00f68e958690d8a",
+      "modules/FvwmForm/ReadXServer.c": "436e7f475532ed54f0a2140445df38a64b4621c16ec159f9d1eac12e911d8efd",
+      "modules/FvwmForm/form_input.c": "40d12ead34ef1a3c7d3db3d514bf04500d080613a23573f25c7e515b010a62b3",
+      "modules/FvwmForm/form_input.h": "5de5a056b97168348f048450843f4c01a67ce0fcf4745e00c492adb23a6b8251",
+      "modules/FvwmForm/form_list.c": "0085875d4b11be2540df49fdedbdf97eccdcfe1a78336da601f144a6a56f9934",
+      "modules/FvwmForm/form_list.h": "2515e776daab4910b0543f90b2d270e0838be5b0b3b67ada796eb5ed1f7273ca",
+      "modules/FvwmForm/form_scale.c": "4281cbad78c72957b3907b2ad45769536e7ca199e86e9ce4cf03f9697d4f0eaf",
+      "modules/FvwmForm/form_scale.h": "ec83cb90a5a875e6163b41e0792094bf10d14f34f706346dda816faa886cf1e3",
+      "modules/FvwmForm/form_scale_policy.c": "051578cd804e81b7c13978bc31796b7221ddbd5ac6989fa82a406dee14180cdf",
+      "modules/FvwmForm/list_widget.c": "ed3bdd1b13a5b43cae3b9a0e1b0e8456ef907205d369c2856ead2aa0187b9bad",
+      "modules/FvwmForm/meson.build": "f2d0c5abb2eb2d03401e1d779ec97087d251f36a9712bd6bd64fd82840e0117c",
+      "tests/form_scale_refuse_probe.c": "d10780ab274dbba4df12d4db8953e0852df648ce452aa15e5f66b39e6fd35e30",
+      "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+      "tests/meson.build": "f60dbd058b232fbf799131f44e533cc1a53e1d4d9e790fad6bc587e00472a64d",
+      "tests/test_form_scale.c": "433c4ff0b8cee0433eadcb98931ad1520beb1b2a2f1f734e69bfc0e5e43eb586"
+    },
+    "final_driver": {
+      "driver": "tests/live_x/viewport_scale_live.py",
+      "sha256": "a76b3587d68fd0f621ee4c1acd2a823191a757e8781d68434426b26ca27f573c"
+    },
+    "all_expected_equal": true
+  },
+  "focused_commands": [
+    {
+      "name": "sdk-version",
+      "command": [
+        "go",
+        "version"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.005006390000005467,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "sdk-version.log"
+    },
+    {
+      "name": "compiler-version",
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.0034791069999755564,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "compiler-version.log"
+    },
+    {
+      "name": "configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 1.0907633230000044,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "configure.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "modules/FvwmForm/FvwmForm",
+        "bin/FvwmPrompt/fvwm-file-browser",
+        "tests/test-form-list",
+        "tests/test-form-input",
+        "tests/test-ui-layout",
+        "tests/test-form-scale",
+        "tests/form-scale-refuse-probe"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.654519252,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "build.log"
+    },
+    {
+      "name": "policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-viewport-scale-checkpoint/policy",
+        "form-list",
+        "form-input",
+        "ui-layout",
+        "form-scale"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.13300488100000507,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "policy.log"
+    },
+    {
+      "name": "go-policy",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-exec",
+        "python3 /tmp/viewport-scale-test-exec.py",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+      "seconds": 0.4768237739999961,
+      "exit": 1,
+      "env_overrides": {},
+      "log": "go-policy.log"
+    },
+    {
+      "name": "go-policy",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-exec",
+        "python3 /tmp/viewport-scale-test-exec.py",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+      "seconds": 0.1356473509999887,
+      "exit": 1,
+      "env_overrides": {},
+      "log": "go-policy-attempt1.log"
+    },
+    {
+      "name": "go-policy",
+      "command": [
+        "go",
+        "test",
+        "-count=1",
+        "-exec",
+        "python3 /tmp/viewport-scale-test-exec.py",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+      "seconds": 1.3054865820000146,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "go-policy-attempt2.log"
+    },
+    {
+      "name": "go-vet",
+      "command": [
+        "go",
+        "vet",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+      "seconds": 0.11572707200002696,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "go-vet.log"
+    },
+    {
+      "name": "asan-configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 1.072098557000004,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-configure.log"
+    },
+    {
+      "name": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "tests/test-form-scale",
+        "tests/form-scale-refuse-probe"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.4771276559999933,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-build.log"
+    },
+    {
+      "name": "sanitizer",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-viewport-scale-checkpoint/sanitizer",
+        "form-scale"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.13295065600004818,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer.log"
+    },
+    {
+      "name": "legacy-native-input",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--input-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/viewport-scale-legacy/input"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.2123720719999938,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-input.log"
+    },
+    {
+      "name": "legacy-native-button",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--button-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/viewport-scale-legacy/button"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.180444535999982,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-button.log"
+    },
+    {
+      "name": "legacy-native-fields",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--fields-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/viewport-scale-legacy/fields"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.205072346999998,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-fields.log"
+    },
+    {
+      "name": "legacy-native-geometry",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--geometry-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/viewport-scale-legacy/geometry"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 2.1883258479999768,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "legacy-native-geometry.log"
+    },
+    {
+      "name": "manual-FvwmForm",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/r1-viewport-scale-checkpoint/FvwmForm.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/FvwmForm.adoc"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.0930318509999779,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "manual-FvwmForm.log"
+    },
+    {
+      "name": "manual-fvwm-file-browser",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/r1-viewport-scale-checkpoint/fvwm-file-browser.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/fvwm-file-browser.adoc"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.05561984299998812,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "manual-fvwm-file-browser.log"
+    }
+  ],
+  "final_affected_builds": {
+    "status": "passed",
+    "commands": [
+      {
+        "name": "final-form-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "modules/FvwmForm/FvwmForm",
+          "tests/form-scale-refuse-probe"
+        ],
+        "seconds": 0.14870229799998924,
+        "exit": 0
+      },
+      {
+        "name": "final-asan-form-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "tests/form-scale-refuse-probe"
+        ],
+        "seconds": 0.180475319000152,
+        "exit": 0
+      }
+    ],
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+        "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "bytes": 5539656
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+        "sha256": "3cd1f65e801c8aaa16da16e362591e14a7025b4f6d29caf6dea795e8ecb6d821",
+        "bytes": 1748344
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+        "sha256": "b01d9cef1297f71e3f23e77185f4ab9f468e309181bd9dea6082681605ca7569",
+        "bytes": 5637426
+      },
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe": {
+        "sha256": "47c4baf1323da7cb7e1a5946b8d5d30ae232b4461d6643f6ddd56caa699cd861",
+        "bytes": 9194024
+      }
+    }
+  },
+  "final_manual": {
+    "command": [
+      "asciidoctor",
+      "-b",
+      "manpage",
+      "-o",
+      "/tmp/fvwm-module-waits-20261015/r1-viewport-scale-checkpoint/FvwmForm-final.1",
+      "/tmp/fvwm-module-waits-20261015/source/doc/FvwmForm.adoc"
+    ],
+    "exit": 0,
+    "seconds": 0.06776198999978078,
+    "source_sha256": "a77f2b0c768d022df9e70dd60f1e822b888d9b41b10f877c96d5c1760f6d54f5",
+    "diagnostics": ""
+  },
+  "profiles": [
+    {
+      "profile": "classic-large",
+      "status": "passed",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "deacf237266d409415d8b3c547b9ed297afbba64e95943e5defa24be560a66fe",
+      "source_sha256": {
+        "tests/live_x/viewport_scale_live.py": "a76b3587d68fd0f621ee4c1acd2a823191a757e8781d68434426b26ca27f573c",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "tests/live_x/module_ui_scale_live.py": "49e97f7a64082bc80e79b7c833c310e9b38d55811d1fb70eed2738e2a64b1812",
+        "modules/FvwmForm/FvwmForm.c": "37e3c17beef32733fb65a27054415f6af4048b235400f51d9e32e30207dc166d",
+        "modules/FvwmForm/ReadXServer.c": "436e7f475532ed54f0a2140445df38a64b4621c16ec159f9d1eac12e911d8efd",
+        "modules/FvwmForm/form_scale.c": "4281cbad78c72957b3907b2ad45769536e7ca199e86e9ce4cf03f9697d4f0eaf",
+        "tests/form_scale_refuse_probe.c": "d10780ab274dbba4df12d4db8953e0852df648ce452aa15e5f66b39e6fd35e30",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "7dc885454e103864f2a91786fa7a876f853d735c4427e8e925045b56afd3bce3"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "modules/FvwmForm/FvwmForm": "3cd1f65e801c8aaa16da16e362591e14a7025b4f6d29caf6dea795e8ecb6d821",
+        "bin/FvwmPrompt/fvwm-file-browser": "b01d9cef1297f71e3f23e77185f4ab9f468e309181bd9dea6082681605ca7569"
+      },
+      "fault_binary_sha256": "47c4baf1323da7cb7e1a5946b8d5d30ae232b4461d6643f6ddd56caa699cd861",
+      "evidence_sha256": "af7636ab0fb88e1e3234cc7f61bdfba85870bff242839b24b51ab697a5975a3c",
+      "evidence_payload_sha256": "44a1b4f39146ab6c726958fc6af3b04b40abf79c42db7afb63dacb9424a06a71",
+      "display_geometry": "5120x2160x24 (two 2560x2160 actual outputs)",
+      "screenshots": [
+        "scale-pending-latest.png",
+        "scale-minimum-real-configure.png",
+        "ScaleUnsupported-fallback.png",
+        "ScaleBitmap-fallback.png",
+        "scale-font-refused.png",
+        "scale-font-recovered.png",
+        "browser-first-map-1.25.png",
+        "browser-scale-6-2.png",
+        "browser-scale-8-3.png",
+        "browser-scale-8-5.png",
+        "browser-scaled-grid-refresh.png",
+        "browser-after-removal.png"
+      ],
+      "actual_module_waits": 13,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xorg-dummy-2763": 0,
+        "xrandr-2767": 0,
+        "xrandr-2768": 0,
+        "xrandr-2769": 0,
+        "xrandr-2770": 0,
+        "xrandr-2771": 0,
+        "xrandr-2772": 0,
+        "core-2774": 0,
+        "xrandr-2809": 0,
+        "xrandr-2810": 0,
+        "xrandr-2811": 0,
+        "xrandr-2812": 0,
+        "xrandr-2814": 0,
+        "xrandr-2821": 0,
+        "xrandr-2822": 0,
+        "xrandr-2823": 0,
+        "xrandr-2828": 0,
+        "xrandr-2829": 0,
+        "xrandr-2830": 0,
+        "xrandr-2831": 0,
+        "xrandr-2834": 0,
+        "xrandr-2835": 0,
+        "xrandr-2836": 0,
+        "xrandr-2837": 0,
+        "browser-2853": 0,
+        "xrandr-2878": 0,
+        "xrandr-2879": 0,
+        "xrandr-2880": 0,
+        "xrandr-2881": 0,
+        "xrandr-2889": 0,
+        "xrandr-2890": 0,
+        "xrandr-2891": 0,
+        "xrandr-2892": 0,
+        "xrandr-2895": 0,
+        "xrandr-2896": 0,
+        "xrandr-2897": 0,
+        "xrandr-2898": 0,
+        "xrandr-2901": 0,
+        "xrandr-2902": 0,
+        "xrandr-2903": 0,
+        "xrandr-2904": 0,
+        "xrandr-2906": 0,
+        "xrandr-2907": 0,
+        "xrandr-2908": 0,
+        "xrandr-2909": 0,
+        "xrandr-2944": 0,
+        "xrandr-2945": 0,
+        "xrandr-2946": 0,
+        "xrandr-2947": 0,
+        "browser-successor-2951": 0
+      },
+      "input_heights": {
+        "4": 43,
+        "5": 55,
+        "6": 67,
+        "8": 86
+      },
+      "limits": {
+        "entries": 4096,
+        "children": 64,
+        "physical_or_assistive_qualified": false
+      },
+      "restart_xid_reused": true
+    },
+    {
+      "profile": "dune-light",
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "7bf67dc911130fc29ae6f82c62c1164972fa2cd3d89663ae54b8206429d6bac3",
+      "source_sha256": {
+        "tests/live_x/viewport_scale_live.py": "a76b3587d68fd0f621ee4c1acd2a823191a757e8781d68434426b26ca27f573c",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "tests/live_x/module_ui_scale_live.py": "49e97f7a64082bc80e79b7c833c310e9b38d55811d1fb70eed2738e2a64b1812",
+        "modules/FvwmForm/FvwmForm.c": "37e3c17beef32733fb65a27054415f6af4048b235400f51d9e32e30207dc166d",
+        "modules/FvwmForm/ReadXServer.c": "436e7f475532ed54f0a2140445df38a64b4621c16ec159f9d1eac12e911d8efd",
+        "modules/FvwmForm/form_scale.c": "4281cbad78c72957b3907b2ad45769536e7ca199e86e9ce4cf03f9697d4f0eaf",
+        "tests/form_scale_refuse_probe.c": "d10780ab274dbba4df12d4db8953e0852df648ce452aa15e5f66b39e6fd35e30",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "7dc885454e103864f2a91786fa7a876f853d735c4427e8e925045b56afd3bce3"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "modules/FvwmForm/FvwmForm": "3cd1f65e801c8aaa16da16e362591e14a7025b4f6d29caf6dea795e8ecb6d821",
+        "bin/FvwmPrompt/fvwm-file-browser": "b01d9cef1297f71e3f23e77185f4ab9f468e309181bd9dea6082681605ca7569"
+      },
+      "fault_binary_sha256": "47c4baf1323da7cb7e1a5946b8d5d30ae232b4461d6643f6ddd56caa699cd861",
+      "evidence_sha256": "f0da48282c9acddce8d9ad465fe4500e86ac32a7420e7f480260a1c6fdb7f829",
+      "evidence_payload_sha256": "0939505390d46e182cb162c0a8951ba06356174ab12369c88e7abf9f74adf255",
+      "display_geometry": "5120x2160x24 (two 2560x2160 actual outputs)",
+      "screenshots": [
+        "scale-pending-latest.png",
+        "scale-minimum-real-configure.png",
+        "ScaleUnsupported-fallback.png",
+        "ScaleBitmap-fallback.png",
+        "scale-font-refused.png",
+        "scale-font-recovered.png",
+        "browser-first-map-1.25.png",
+        "browser-scale-6-2.png",
+        "browser-scale-8-3.png",
+        "browser-scale-8-5.png",
+        "browser-scaled-grid-refresh.png",
+        "browser-after-removal.png"
+      ],
+      "actual_module_waits": 13,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xorg-dummy-2553": 0,
+        "xrandr-2557": 0,
+        "xrandr-2558": 0,
+        "xrandr-2559": 0,
+        "xrandr-2560": 0,
+        "xrandr-2561": 0,
+        "xrandr-2562": 0,
+        "core-2564": 0,
+        "xrandr-2599": 0,
+        "xrandr-2600": 0,
+        "xrandr-2601": 0,
+        "xrandr-2602": 0,
+        "xrandr-2604": 0,
+        "xrandr-2611": 0,
+        "xrandr-2612": 0,
+        "xrandr-2613": 0,
+        "xrandr-2618": 0,
+        "xrandr-2619": 0,
+        "xrandr-2620": 0,
+        "xrandr-2621": 0,
+        "xrandr-2624": 0,
+        "xrandr-2625": 0,
+        "xrandr-2626": 0,
+        "xrandr-2627": 0,
+        "browser-2643": 0,
+        "xrandr-2673": 0,
+        "xrandr-2674": 0,
+        "xrandr-2675": 0,
+        "xrandr-2676": 0,
+        "xrandr-2678": 0,
+        "xrandr-2679": 0,
+        "xrandr-2680": 0,
+        "xrandr-2681": 0,
+        "xrandr-2684": 0,
+        "xrandr-2685": 0,
+        "xrandr-2686": 0,
+        "xrandr-2687": 0,
+        "xrandr-2690": 0,
+        "xrandr-2691": 0,
+        "xrandr-2692": 0,
+        "xrandr-2693": 0,
+        "xrandr-2695": 0,
+        "xrandr-2696": 0,
+        "xrandr-2697": 0,
+        "xrandr-2698": 0,
+        "xrandr-2731": 0,
+        "xrandr-2732": 0,
+        "xrandr-2733": 0,
+        "xrandr-2734": 0,
+        "browser-successor-2738": 0
+      },
+      "input_heights": {
+        "4": 30,
+        "5": 39,
+        "6": 48,
+        "8": 60
+      },
+      "limits": {
+        "entries": 4096,
+        "children": 64,
+        "physical_or_assistive_qualified": false
+      },
+      "restart_xid_reused": true
+    },
+    {
+      "profile": "slate-dark",
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "a98e4f4a224611baf1a55410f1132acd1ff274419d3e748fad866e44ec4372b5",
+      "source_sha256": {
+        "tests/live_x/viewport_scale_live.py": "a76b3587d68fd0f621ee4c1acd2a823191a757e8781d68434426b26ca27f573c",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "tests/live_x/module_ui_scale_live.py": "49e97f7a64082bc80e79b7c833c310e9b38d55811d1fb70eed2738e2a64b1812",
+        "modules/FvwmForm/FvwmForm.c": "37e3c17beef32733fb65a27054415f6af4048b235400f51d9e32e30207dc166d",
+        "modules/FvwmForm/ReadXServer.c": "436e7f475532ed54f0a2140445df38a64b4621c16ec159f9d1eac12e911d8efd",
+        "modules/FvwmForm/form_scale.c": "4281cbad78c72957b3907b2ad45769536e7ca199e86e9ce4cf03f9697d4f0eaf",
+        "tests/form_scale_refuse_probe.c": "d10780ab274dbba4df12d4db8953e0852df648ce452aa15e5f66b39e6fd35e30",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "7dc885454e103864f2a91786fa7a876f853d735c4427e8e925045b56afd3bce3"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "modules/FvwmForm/FvwmForm": "3cd1f65e801c8aaa16da16e362591e14a7025b4f6d29caf6dea795e8ecb6d821",
+        "bin/FvwmPrompt/fvwm-file-browser": "b01d9cef1297f71e3f23e77185f4ab9f468e309181bd9dea6082681605ca7569"
+      },
+      "fault_binary_sha256": "47c4baf1323da7cb7e1a5946b8d5d30ae232b4461d6643f6ddd56caa699cd861",
+      "evidence_sha256": "7cc3a08e61bab5331ac33e04b8a75be25a45c1a7fb9d61d63d3e3b48c768c233",
+      "evidence_payload_sha256": "782bea92e4d11495a9555a93fd8ac28978097d1db699cb0479e4258cbf5f4beb",
+      "display_geometry": "5120x2160x24 (two 2560x2160 actual outputs)",
+      "screenshots": [
+        "scale-pending-latest.png",
+        "scale-minimum-real-configure.png",
+        "ScaleUnsupported-fallback.png",
+        "ScaleBitmap-fallback.png",
+        "scale-font-refused.png",
+        "scale-font-recovered.png",
+        "browser-first-map-1.25.png",
+        "browser-scale-6-2.png",
+        "browser-scale-8-3.png",
+        "browser-scale-8-5.png",
+        "browser-scaled-grid-refresh.png",
+        "browser-after-removal.png"
+      ],
+      "actual_module_waits": 13,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xorg-dummy-2341": 0,
+        "xrandr-2345": 0,
+        "xrandr-2346": 0,
+        "xrandr-2347": 0,
+        "xrandr-2348": 0,
+        "xrandr-2349": 0,
+        "xrandr-2350": 0,
+        "core-2352": 0,
+        "xrandr-2387": 0,
+        "xrandr-2388": 0,
+        "xrandr-2389": 0,
+        "xrandr-2390": 0,
+        "xrandr-2392": 0,
+        "xrandr-2399": 0,
+        "xrandr-2400": 0,
+        "xrandr-2401": 0,
+        "xrandr-2406": 0,
+        "xrandr-2407": 0,
+        "xrandr-2408": 0,
+        "xrandr-2409": 0,
+        "xrandr-2412": 0,
+        "xrandr-2413": 0,
+        "xrandr-2414": 0,
+        "xrandr-2415": 0,
+        "browser-2431": 0,
+        "xrandr-2456": 0,
+        "xrandr-2457": 0,
+        "xrandr-2458": 0,
+        "xrandr-2459": 0,
+        "xrandr-2467": 0,
+        "xrandr-2468": 0,
+        "xrandr-2469": 0,
+        "xrandr-2470": 0,
+        "xrandr-2473": 0,
+        "xrandr-2474": 0,
+        "xrandr-2475": 0,
+        "xrandr-2476": 0,
+        "xrandr-2479": 0,
+        "xrandr-2480": 0,
+        "xrandr-2481": 0,
+        "xrandr-2482": 0,
+        "xrandr-2484": 0,
+        "xrandr-2485": 0,
+        "xrandr-2486": 0,
+        "xrandr-2487": 0,
+        "xrandr-2521": 0,
+        "xrandr-2522": 0,
+        "xrandr-2523": 0,
+        "xrandr-2524": 0,
+        "browser-successor-2528": 0
+      },
+      "input_heights": {
+        "4": 30,
+        "5": 39,
+        "6": 48,
+        "8": 60
+      },
+      "limits": {
+        "entries": 4096,
+        "children": 64,
+        "physical_or_assistive_qualified": false
+      },
+      "restart_xid_reused": true
+    }
+  ],
+  "native_attempts": [
+    {
+      "record": "native-slate-dark-attempt1.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark\n",
+      "exit": 1,
+      "seconds": 17.092987084004562
+    },
+    {
+      "record": "native-slate-dark-attempt2.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark\n",
+      "exit": 1,
+      "seconds": 20.552130500000203
+    },
+    {
+      "record": "native-slate-dark-attempt3.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark\n",
+      "exit": 1,
+      "seconds": 14.460359500008053
+    },
+    {
+      "record": "native-slate-dark-attempt4.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark\n",
+      "exit": 1,
+      "seconds": 15.596565624990035
+    },
+    {
+      "record": "native-slate-dark-attempt5.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark\n",
+      "exit": 1,
+      "seconds": 25.973468124997453
+    },
+    {
+      "record": "native-slate-dark-dune-light-classic-large-attempt1.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark dune-light classic-large\n",
+      "exit": 1,
+      "seconds": 17.085983416996896
+    },
+    {
+      "record": "native-slate-dark-dune-light-classic-large-attempt2.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark dune-light classic-large\n",
+      "exit": 1,
+      "seconds": 18.531401749991346
+    },
+    {
+      "record": "native-slate-dark-dune-light-classic-large-attempt3.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark dune-light classic-large\n",
+      "exit": 0,
+      "seconds": 55.75387408300594
+    },
+    {
+      "record": "native-slate-dark-dune-light-classic-large.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark dune-light classic-large\n",
+      "exit": 1,
+      "seconds": 21.34373391600093
+    },
+    {
+      "record": "native-slate-dark.json",
+      "command": "set -eu\nexport PATH=/tmp/fvwm-go-baseline-20261014/sdk/go/bin:/workspace/meson-env/bin:$PATH\nexport LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib\nexport PYTHONDONTWRITEBYTECODE=1\npython3 /tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_live.py --build /tmp/fvwm-module-waits-20261015/build-gcc --fault-form /tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/form-scale-refuse-probe --artifacts-dir /dev/shm/viewport-scale-final --profiles slate-dark\n",
+      "exit": 1,
+      "seconds": 5.131697000004351
+    }
+  ],
+  "archives": [
+    {
+      "tag": "focused-final",
+      "integrity": {
+        "status": "passed",
+        "files": 41,
+        "archive": {
+          "sha256": "b607132ad89e8d5cc0377b6f036629bde715ceeb163fd6fa99f2f65d22b7ea07",
+          "bytes": 222325
+        },
+        "source_root": "/tmp/fvwm-module-waits-20261015/r1-viewport-scale-checkpoint",
+        "gzip_crc": true
+      },
+      "observed_scope": "final qualification"
+    },
+    {
+      "tag": "legacy-final",
+      "integrity": {
+        "status": "passed",
+        "files": 20,
+        "archive": {
+          "sha256": "c98242d9a8a05aba5d30c80d303635cbf61607a991d1fa2a290ae1e50324dae0",
+          "bytes": 1846
+        },
+        "source_root": "/dev/shm/viewport-scale-legacy",
+        "gzip_crc": true
+      },
+      "observed_scope": "final qualification"
+    },
+    {
+      "tag": "native-clock-failure",
+      "integrity": {
+        "status": "passed",
+        "files": 20,
+        "archive": {
+          "sha256": "8f2d9fc55b0a9a9ec5094c7ff44f73ef1a3950999e640c2b7ce17f32a9fd58da",
+          "bytes": 16114
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-control-identity-failure",
+      "integrity": {
+        "status": "passed",
+        "files": 75,
+        "archive": {
+          "sha256": "f68281cbe25becb2e6c932c58a8b9778cccc5d367d5ce59cf1fdea4f126d8006",
+          "bytes": 859072
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-final",
+      "integrity": {
+        "status": "passed",
+        "files": 264,
+        "archive": {
+          "sha256": "49763c8996456864458b59bbb17de9278a7beab8988e68e7c26becfc75fc30ec",
+          "bytes": 5064198
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "final qualification"
+    },
+    {
+      "tag": "native-focus-diagnostic",
+      "integrity": {
+        "status": "passed",
+        "files": 25,
+        "archive": {
+          "sha256": "76f0f9ab1e1a5faea1e8333b7ef66963c4c12190b99203de9cededb91e7b0065",
+          "bytes": 192296
+        },
+        "source_root": "/dev/shm/viewport-focus-debug",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-focus-order-failure",
+      "integrity": {
+        "status": "passed",
+        "files": 67,
+        "archive": {
+          "sha256": "b4e5e054b3a39e6d60c29b1aa06d1b1d5c6de3e3f8de5b57355feeb2a4fe4ef0",
+          "bytes": 410005
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-grid-minimum-refusal",
+      "integrity": {
+        "status": "passed",
+        "files": 75,
+        "archive": {
+          "sha256": "fa7fb5cb37c7939c5848494761e47e7194e2977bba783ffd2847157ea1c28346",
+          "bytes": 955112
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-grid-scroll-expectation",
+      "integrity": {
+        "status": "passed",
+        "files": 75,
+        "archive": {
+          "sha256": "a1a24171169c2ff888d35ba44682a1b0822c335d7cee488bcf7b30d86e5807a3",
+          "bytes": 960282
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-placement-failure",
+      "integrity": {
+        "status": "passed",
+        "files": 66,
+        "archive": {
+          "sha256": "db6fc96f1054ff73cb65daa6fc0bb4aa11d84507cda624c44b7ec67a7cc0f4b4",
+          "bytes": 311022
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-removal-observation-race",
+      "integrity": {
+        "status": "passed",
+        "files": 80,
+        "archive": {
+          "sha256": "6b786296c6e1f78a6c9fb2247154d4516254e1ca51c3a8e8e41513ae28529659",
+          "bytes": 1247278
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-successor-xid-reuse",
+      "integrity": {
+        "status": "passed",
+        "files": 88,
+        "archive": {
+          "sha256": "665196f5d07c486edccc9c6823920ec1df9dec27a77c7fd37116b8ebff8421ec",
+          "bytes": 1402388
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-unsupported-asan",
+      "integrity": {
+        "status": "passed",
+        "files": 36,
+        "archive": {
+          "sha256": "922888a1dd5b0fac6d4547a61bf1ea56f75385a42fa65d465ef019fff83c4799",
+          "bytes": 56549
+        },
+        "source_root": "/dev/shm/viewport-scale-debug",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    },
+    {
+      "tag": "native-unsupported-failure",
+      "integrity": {
+        "status": "passed",
+        "files": 35,
+        "archive": {
+          "sha256": "5db39ce11d3ee86618dcebab43b308368c19cf50b44578b84e4c9a9a90fbc5cf",
+          "bytes": 56157
+        },
+        "source_root": "/dev/shm/viewport-scale-final",
+        "gzip_crc": true
+      },
+      "observed_scope": "preserved original failure or diagnostic, not qualification pass"
+    }
+  ],
+  "costs": {
+    "focused_success_seconds": 13.925029972999994,
+    "focused_failed_launcher_seconds": 0.6124711249999848,
+    "native_final_seconds": [
+      55.75387408300594
+    ],
+    "native_failed_attempt_seconds": 155.76832691699383,
+    "core_delta_bytes": 0,
+    "form_delta_bytes": 105296,
+    "performance_comparison_due": false,
+    "performance_counter_after_merge": "4/5"
+  },
+  "sanitizer_scope": {
+    "policy": "ASan/UBSan with leak detection",
+    "native_fault": "ASan/UBSan with leak detection disabled; bounds/UB, not whole legacy Form leak freedom",
+    "native_cpu_release_qualified": false
+  },
+  "review": {
+    "role": "temper_reviewer",
+    "selected_model": "gpt-6.1-sol",
+    "reasoning": "high",
+    "backend_identity_attested": false,
+    "independent_of_authors": true,
+    "source_review": {
+      "status": "no remaining scoped blocker",
+      "runtime_manifest": "final-runtime-freeze.json",
+      "aggregate_sha256": "0ea3b1d986ccc144a875ce526559c8a86042109281fde76e7316a05825bd8432",
+      "scope": [
+        "staged font references and release",
+        "atomic publish",
+        "Configure hold and resize tuple deduplication",
+        "zero unprepared minima",
+        "legacy/defaultoff/unsupported",
+        "Selection-first drawable GC",
+        "unchanged native generation contract",
+        "15field manual grammar"
+      ]
+    },
+    "fixture_review": {
+      "status": "no unjustified weakening",
+      "reviewed_sha256": "07b0d03c7d102f598d5da1f521e529fe5aa2eac1bd0a8838a166121a9e927591",
+      "scope": [
+        "actual refused layout ACK plus wholeview retention",
+        "real enlargement and exact generationretry",
+        "grid Home/Right/click focus oracles"
+      ]
+    },
+    "native_pixel_final": {
+      "status": "no remaining scoped blocker",
+      "driver_sha256": "a76b3587d68fd0f621ee4c1acd2a823191a757e8781d68434426b26ca27f573c",
+      "native_archive_sha256": "49763c8996456864458b59bbb17de9278a7beab8988e68e7c26becfc75fc30ec",
+      "profiles_passed": 3,
+      "actual_module_waits_zero": 39,
+      "published_pngs_inspected_and_archive_equal": 4,
+      "limits": [
+        "Fixed-label tail clipping remains, especially Classic.",
+        "Broader #51/#69 acceptance remains open."
+      ],
+      "source_bytes_modes_hashes_verified": 1541,
+      "review_is_not_human_acceptance": true
+    }
+  },
+  "cleanup": {
+    "status": "passed",
+    "retirements": [
+      {
+        "record": "retired-clock-failure.json",
+        "status": "passed",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 20,
+        "bytes": 108521,
+        "archive": "native-clock-failure/evidence.tgz"
+      },
+      {
+        "record": "retired-control-identity-failure.json",
+        "status": "passed",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 75,
+        "bytes": 3148607
+      },
+      {
+        "record": "retired-focus-failures.json",
+        "status": "passed",
+        "retired": [
+          "/dev/shm/viewport-scale-final",
+          "/dev/shm/viewport-focus-debug"
+        ],
+        "files": 92,
+        "bytes": 4224456
+      },
+      {
+        "record": "retired-focused-final.json",
+        "retired": "/tmp/fvwm-module-waits-20261015/r1-viewport-scale-checkpoint",
+        "files": 41,
+        "bytes": 744197
+      },
+      {
+        "record": "retired-grid-minimum-refusal.json",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 75,
+        "bytes": 4827830
+      },
+      {
+        "record": "retired-legacy-final.json",
+        "retired": "/dev/shm/viewport-scale-legacy",
+        "files": 20,
+        "bytes": 9397
+      },
+      {
+        "record": "retired-native-final.json",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 264,
+        "bytes": 24950668
+      },
+      {
+        "record": "retired-native-grid-scroll-expectation.json",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 75,
+        "bytes": 4741899
+      },
+      {
+        "record": "retired-native-removal-observation-race.json",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 80,
+        "bytes": 6425953
+      },
+      {
+        "record": "retired-native-successor-xid-reuse.json",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 88,
+        "bytes": 8018799
+      },
+      {
+        "record": "retired-placement-failure.json",
+        "status": "passed",
+        "retired": "/dev/shm/viewport-scale-final",
+        "files": 66,
+        "bytes": 2456453
+      },
+      {
+        "record": "retired-private-helpers.json",
+        "status": "passed",
+        "retired_private_helpers": [
+          {
+            "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_scale_debug.py",
+            "sha256": "0f7ea20ae04e336513a031ac6afcc69ac92b3daf4d37b59a04b34348b222ffb8",
+            "host": "preserved-private-viewport_scale_debug.py"
+          },
+          {
+            "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/viewport_focus_debug.py",
+            "sha256": "a97ba0975ee3cdbd5b4a16acbaff767dba0d426b896a7aa2f2fae23c516d6358",
+            "host": "preserved-private-viewport_focus_debug.py"
+          }
+        ]
+      },
+      {
+        "record": "retired-unsupported-failures.json",
+        "status": "passed",
+        "retired": [
+          "/dev/shm/viewport-scale-final",
+          "/dev/shm/viewport-scale-debug"
+        ],
+        "files": 71,
+        "bytes": 610455
+      }
+    ],
+    "retired_evidence_bytes": 60267235,
+    "retired_evidence_files": 967,
+    "final_guest_source_check": {
+      "status": "passed",
+      "files": 1541,
+      "aggregate_sha256": "0ea3b1d986ccc144a875ce526559c8a86042109281fde76e7316a05825bd8432",
+      "final_driver_sha256": "a76b3587d68fd0f621ee4c1acd2a823191a757e8781d68434426b26ca27f573c",
+      "owned_native_processes": []
+    },
+    "lab": {
+      "status": "passed",
+      "records": [
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "stop",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "machine",
+            "stop",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+          "stderr": ""
+        }
+      ],
+      "preserved": [
+        "source",
+        "incremental build caches",
+        "stages",
+        "VM disk",
+        "PR269 performance reference"
+      ]
+    },
+    "controlling_session_released": true
+  },
+  "pending": [
+    "Full #51 consumer dispositions and six-target acceptance",
+    "Remaining #69 frozen accessibility/scale/clipping/release rows",
+    "Physical/compositor/toolkit/assistive checks as required"
+  ],
+  "parked": [
+    257,
+    258
+  ]
+}

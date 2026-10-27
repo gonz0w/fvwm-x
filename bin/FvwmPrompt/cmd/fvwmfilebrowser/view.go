@@ -30,6 +30,7 @@ func (b *browser) render() error {
 		line("Button continue \"" + label + "\" " + key)
 		line(callback + action + " " + argument + " x$(picks:Base64) $(FormJob:Token)")
 	}
+	line("UIScale monitor")
 	line(`Title "File browser"`)
 	line(`Line left`)
 	path := "Loading folder"

@@ -285,6 +285,7 @@ static struct CommandTable ct_table[] =
   {"Timeout",ct_Timeout},
   {"TimeoutFont",ct_TimeoutFont},
   {"Title",ct_Title},
+  {"UIScale",form_scale_configure},
   {"UseData",ct_UseData},
   {"WarpPointer",ct_WarpPointer}
 };
@@ -339,6 +340,8 @@ static void ParseDefaults(char *buf)
 {
   char *p;
   struct CommandTable *e;
+  if (form_scale_message(buf))
+    return;
   if (!form_chomp_line(buf)) {
     return;
   }
@@ -363,6 +366,8 @@ static void ParseConfigLine(char *buf)
 {
   char *p;
   struct CommandTable *e;
+  if (form_scale_message(buf))
+    return;
   if (!form_chomp_line(buf)) {
     return;
   }
@@ -1106,11 +1111,14 @@ static void ReadFormData(void)
   leading_len = strlen(CF.leading);
   InitGetConfigLine(Channel, CF.leading); /* ask for certain lines */
   while (GetConfigLine(Channel,&line_buf),line_buf) { /* while there is some */
+    if (form_scale_message(line_buf))
+      continue;
     if (strncasecmp(line_buf, CF.leading, leading_len) == 0) { /* leading = */
       form_chomp_line(line_buf);
       PutDataInForm(line_buf+leading_len); /* pass arg, space, value */
     } /* end match on arg 2, "leading" */
   } /* end while there is config data */
+  form_scale_end_config();
   free(CF.file_to_read);		/* dont need it anymore */
   free(CF.leading);
   CF.file_to_read = 0;
@@ -1371,6 +1379,7 @@ static void ct_list_viewport(char *cp)
 	if (height > (32760 - 2 * BOX_SPC) / list->list.state->rows)
 		goto invalid;
 	list->list.viewport_cell = width;
+	list->list.viewport_units = units;
 	list->list.viewport_columns = columns;
 	list->list.row_height = height;
 	list->header.size_y = height * list->list.state->rows + 2 * BOX_SPC;
@@ -1658,6 +1667,7 @@ static void ReadDefaults(void)
   while (GetConfigLine(Channel,&line_buf),line_buf) { /* get config from fvwm */
     ParseDefaults(line_buf);		 /* process default config lines 1st */
   }
+  form_scale_end_config();
   if (endDefaultsRead == 'y') {		/* defaults read already */
     myfprintf((stderr,"Defaults read, no need to read file.\n"));
     return;
@@ -1669,6 +1679,7 @@ static void ReadDefaults(void)
   while (GetConfigLine(Channel,&line_buf),line_buf) { /* get config from fvwm */
     ParseDefaults(line_buf);		 /* process default config lines 1st */
   }
+  form_scale_end_config();
 } /* done */
 
 static void ReadConfig(void)
@@ -1679,6 +1690,7 @@ static void ReadConfig(void)
   while (GetConfigLine(Channel,&line_buf),line_buf) { /* get config from fvwm */
     ParseConfigLine(line_buf);		/* process config lines */
   }
+  form_scale_end_config();
 } /* done */
 
 /* After this config is read, figure it out */
@@ -1790,7 +1802,7 @@ static bool form_viewport_reflow(int width, int height, int cell,
 	    row_height < 1 || row_height > 32767 ||
 	    columns < 1 || columns > 8)
 		return false;
-	minimum = cell + 2 * ITEM_HSPC + 2 * BOX_SPC + 16;
+	minimum = cell + 2 * ITEM_HSPC + 2 * BOX_SPC + LIST_GUTTER;
 	do
 	{
 		int fixed = (line->n + 1) * ITEM_HSPC;
@@ -1815,7 +1827,7 @@ static bool form_viewport_reflow(int width, int height, int cell,
 		width = minimum;
 	if (height < min_height)
 		height = min_height;
-	content_width = width - 2 * ITEM_HSPC - 2 * BOX_SPC - 16;
+	content_width = width - 2 * ITEM_HSPC - 2 * BOX_SPC - LIST_GUTTER;
 	list_height = height - CF.viewport_fixed_height;
 	if (!ui_layout_grid(content_width, list_height - 2 * BOX_SPC,
 		cell, row_height, 1, columns, 32, &grid))
@@ -1874,7 +1886,7 @@ static bool form_viewport_reflow(int width, int height, int cell,
 			x += p->header.size_x + gap;
 			if (p->header.win != None)
 			{
-				if (p == list)
+				if (p == list || CF.ui_scale_resize_all)
 					XMoveResizeWindow(dpy, p->header.win,
 						p->header.pos_x, p->header.pos_y,
 						p->header.size_x, p->header.size_y);
@@ -1903,6 +1915,14 @@ void form_viewport_resize(int width, int height)
 			list->list.viewport_columns, 0, 0);
 }
 
+void form_viewport_set_minimum(int width, int height)
+{
+	form_size_hints.flags |= PMinSize;
+	form_size_hints.min_width = width;
+	form_size_hints.min_height = height;
+	XSetWMNormalHints(dpy, CF.frame, &form_size_hints);
+}
+
 static void form_viewport_prepare(void)
 {
 	Item *list = CF.viewport;
@@ -1919,7 +1939,8 @@ static void form_viewport_prepare(void)
 		CF.viewport = NULL;
 		return;
 	}
-	minimum = list->list.viewport_cell + 2 * ITEM_HSPC + 2 * BOX_SPC + 16;
+	minimum = list->list.viewport_cell + 2 * ITEM_HSPC +
+		2 * BOX_SPC + LIST_GUTTER;
 	do
 	{
 		int fixed = (line->n + 1) * ITEM_HSPC;
@@ -2246,9 +2267,11 @@ void RedrawTimeout(Item *item)
   *tmpbptr = '\0';
 
   reallen = strlen(tmpbuf);
-  item->header.size_x = FlocaleTextWidth(item->header.dt_ptr->dt_Ffont,
-				   tmpbuf, reallen) + 2 * TEXT_SPC;
-  item->header.size_y = item->header.dt_ptr->dt_Ffont->height + CF.padVText;
+  if (!CF.ui_scale_enabled) {
+    item->header.size_x = FlocaleTextWidth(item->header.dt_ptr->dt_Ffont,
+				     tmpbuf, reallen) + 2 * TEXT_SPC;
+    item->header.size_y = item->header.dt_ptr->dt_Ffont->height + CF.padVText;
+  }
 
   CheckAlloc(item,item->header.dt_ptr); /* alloc colors and fonts needed */
   item->header.dt_ptr->dt_Fstr->len = reallen;
@@ -2577,6 +2600,21 @@ void RedrawItem (Item *item, int click, XEvent *pev)
   XFlush(dpy);
 }
 
+/* Selection records own configuration state, not drawing resources. The
+ * parent can borrow the first drawable item's GC without reordering items. */
+static GC form_background_gc(void)
+{
+	for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
+	{
+		if (p->header.dt_ptr != NULL)
+		{
+			CheckAlloc(p, p->header.dt_ptr);
+			return p->header.dt_ptr->dt_GC;
+		}
+	}
+	return None;
+}
+
 /* update transparency if background colorset is transparent */
 /* window has moved redraw the background if it is transparent */
 void UpdateRootTransapency(Bool pr_only, Bool do_draw)
@@ -2595,10 +2633,13 @@ void UpdateRootTransapency(Bool pr_only, Bool do_draw)
 		}
 		else if (!pr_only || CSET_IS_TRANSPARENT_PR(colorset))
 		{
-			SetWindowBackground(
-				dpy, CF.frame, CF.max_width, CF.total_height,
-				GetColorset((colorset)), Pdepth,
-				root_item_ptr->header.dt_ptr->dt_GC, False);
+			GC background_gc = form_background_gc();
+
+			if (background_gc != None)
+				SetWindowBackground(dpy, CF.frame,
+					CF.max_width, CF.total_height,
+					GetColorset((colorset)), Pdepth,
+					background_gc, False);
 			if (do_draw)
 			{
 				XClearArea(dpy, CF.frame, 0,0,0,0, False);
@@ -2606,7 +2647,8 @@ void UpdateRootTransapency(Bool pr_only, Bool do_draw)
 			}
 		}
 	}
-	if (!root_item_ptr->header.next || !CSET_IS_TRANSPARENT(itemcolorset))
+	if (root_item_ptr == NULL || !root_item_ptr->header.next ||
+	    !CSET_IS_TRANSPARENT(itemcolorset))
 	{
 		return;
 	}
@@ -3054,10 +3096,11 @@ static void OpenWindows(void)
   Restart();
   if (colorset >= 0)
   {
-    CheckAlloc(root_item_ptr,root_item_ptr->header.dt_ptr);
-    SetWindowBackground(dpy, CF.frame, CF.max_width, CF.total_height,
-			GetColorset((colorset)), Pdepth,
-			root_item_ptr->header.dt_ptr->dt_GC, True);
+    GC background_gc = form_background_gc();
+
+    if (background_gc != None)
+      SetWindowBackground(dpy, CF.frame, CF.max_width, CF.total_height,
+			  GetColorset((colorset)), Pdepth, background_gc, True);
   }
   if (preload_yorn != 'y') {		/* if not a preload */
     XMapRaised(dpy, CF.frame);
@@ -3101,7 +3144,12 @@ static void process_message(unsigned long type, unsigned long *body)
   if (type == M_STRING && form_native_message((char *)&body[3]))
     return;
   switch (type) {
+  case M_END_CONFIG_INFO:
+    form_scale_end_config();
+    break;
   case M_CONFIG_INFO:			/* any module config command */
+    if (form_scale_message((char *)&body[3]))
+      break;
     myfprintf((stderr,"process_message: Got command: %s\n", (char *)&body[3]));
     ParseActiveMessage((char *)&body[3]);
     break;
@@ -3166,6 +3214,7 @@ static struct CommandTable am_table[] =
   {"RenewTimeout",am_renew_timeout},
   {"SetLabel",am_set_label},
   {"Stop",am_Stop},
+  {"UIScaleStatus",form_scale_status},
   {"UnMap",am_UnMap}
 };
 
@@ -3178,7 +3227,8 @@ static bool form_native_message(char *buf)
 		{"ListFocus", am_list_focus},
 		{"ListLayout", am_list_layout},
 		{"ListStatus", am_list_status},
-		{"RenewTimeout", am_renew_timeout}, {"SetLabel", am_set_label}
+		{"RenewTimeout", am_renew_timeout}, {"SetLabel", am_set_label},
+		{"UIScaleStatus", form_scale_status}
 	};
 	struct CommandTable *entry = FindToken(buf, table, struct CommandTable);
 	char *p;
@@ -3242,15 +3292,17 @@ static void ParseActiveMessage(char *buf)
 			}
 			if (colorset >= 0)
 			{
-				SetWindowBackground(
-					dpy, CF.frame, CF.max_width,
-					CF.total_height,
-					GetColorset((colorset)), Pdepth,
-					root_item_ptr->header.dt_ptr->dt_GC,
-					False);
+				GC background_gc = form_background_gc();
+
+				if (background_gc != None)
+					SetWindowBackground(dpy, CF.frame,
+						CF.max_width, CF.total_height,
+						GetColorset((colorset)), Pdepth,
+						background_gc, False);
 				RedrawFrame(NULL);
 			}
-			for (item = root_item_ptr->header.next; item != 0;
+			for (item = root_item_ptr != NULL ?
+			     root_item_ptr->header.next : NULL; item != NULL;
 			     item = item->header.next)
 			{
 				DrawTable *dt_ptr = item->header.dt_ptr;
@@ -3531,11 +3583,14 @@ int main (int argc, char **argv)
 
   ReadConfig();				/* get config from fvwm */
 
+  form_scale_capture(module->name);
   MassageConfig();			/* add data, calc window x/y */
   form_viewport_prepare();
+  form_scale_initialize(module->name);
 
   /* tell fvwm about our mask */
-  SetMessageMask(Channel, M_SENDCONFIG|M_CONFIG_INFO|M_ERROR|M_STRING);
+  SetMessageMask(Channel,
+    M_SENDCONFIG|M_CONFIG_INFO|M_END_CONFIG_INFO|M_ERROR|M_STRING);
   SetMessageMask(Channel, MX_PROPERTY_CHANGE);
   XSetErrorHandler(ErrorHandler);
   if (!module_packet_reader_init(&form_packet_reader, Channel[1])) {
@@ -3544,6 +3599,7 @@ int main (int argc, char **argv)
     return 1;
   }
   OpenWindows();			/* create initial window */
+  form_scale_retry();
   SendFinishedStartupNotification(Channel);/* tell fvwm we're running */
   for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
     if (p->type == I_LIST && p->list.notify[0])
@@ -3732,6 +3788,7 @@ static void am_list_commit(char *cp)
 		free(old[i].label);
 	free(old);
 	RedrawItem(p, 0, NULL);
+	form_scale_retry();
 	return;
 invalid:
 	fprintf(stderr, "%s: refused ListCommit\n", module->name);
@@ -3783,15 +3840,20 @@ static void am_list_layout(char *cp)
 	if (columns > 1)
 		row_height = 3 * p->header.dt_ptr->dt_Ffont->height +
 			4 * TEXT_SPC;
+	if (CF.ui_scale_enabled &&
+	    !form_scale_list_geometry(units, columns, &cell, &row_height))
+		goto invalid;
 	if (!form_viewport_reflow(CF.max_width, CF.total_height,
 		cell, row_height, columns, expected, generation))
 		goto invalid;
+	p->list.viewport_units = units;
 	form_size_hints.flags |= PMinSize;
 	form_size_hints.min_width = CF.viewport_min_width;
 	form_size_hints.min_height = CF.viewport_min_height;
 	XSetWMNormalHints(dpy, CF.frame, &form_size_hints);
 	RedrawFrame(NULL);
 	RedrawItem(p, 0, NULL);
+	form_scale_retry();
 	return;
 invalid:
 	fprintf(stderr, "%s: refused ListLayout\n", module->name);
@@ -3812,6 +3874,7 @@ static void am_list_abort(char *cp)
 		return;
 	}
 	form_list_abort(p);
+	form_scale_retry();
 }
 
 

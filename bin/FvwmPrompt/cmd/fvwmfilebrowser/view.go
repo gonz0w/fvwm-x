@@ -37,11 +37,13 @@ func (b *browser) render() error {
 	if b.snapshot != nil {
 		path = string(b.snapshot.Path)
 	}
+	b.feedbackLabels = make(map[string]string)
 	label := func(name, value string) {
+		b.feedbackLabels[name] = value
 		line(`Label ` + name + ` 56 "` + displayText(value, 120) + `"`)
 		line("LabelViewport " + name)
 	}
-	label("status", b.status)
+	label("status", b.feedbackStatus())
 	line(`Line left`)
 	label("watcher", b.watchText())
 	line(`Line left`)
@@ -71,6 +73,7 @@ func (b *browser) render() error {
 		line("ListViewport 18 1")
 	}
 	line("ListVersioned")
+	line("ListWatch " + b.nativeWatchToken())
 	entries := b.model.VisibleEntries()
 	for _, item := range entries {
 		selected := "off"

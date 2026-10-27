@@ -52,6 +52,20 @@ bool form_list_update_add(form_list_update *update, int source);
 bool form_list_update_add_choice(form_list_update *update, int source,
 	enum form_list_choice choice);
 bool form_list_status_token(const char *text, char token[65], bool *selection);
+/* A watch is list-local and survives silent publication/layout changes. */
+typedef struct {
+	char token[65];
+	bool outstanding;
+} form_list_watch;
+bool form_list_watch_begin(form_list_watch *watch,
+	const form_list_state *state, const char *text);
+/* Call only around interactive operations; compare fields, never padding. */
+bool form_list_watch_changed(form_list_watch *watch,
+	const form_list_state *before, const form_list_state *after);
+/* Validate an exact subscription and request without rearming it. The owner
+ * clears outstanding only after reporting the current snapshot successfully. */
+bool form_list_watch_request(const form_list_watch *watch,
+	const form_list_state *state, const char *text, char request[65]);
 bool form_list_update_commit(form_list_state *state,
 	const form_list_update *update);
 #endif

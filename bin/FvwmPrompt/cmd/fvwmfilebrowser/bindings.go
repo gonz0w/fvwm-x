@@ -145,6 +145,9 @@ func (b *browser) availability() browserAvailability {
 }
 
 func (b *browser) readinessText() string {
+	if b.feedbackError != "" {
+		return "Selection unavailable; adjust selection or retry an action."
+	}
 	a := b.availability()
 	if !a.Ready {
 		return "Actions: unavailable; Refresh after work stops."

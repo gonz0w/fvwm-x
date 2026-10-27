@@ -28,7 +28,7 @@ func layoutBrowser(t *testing.T, mode string) (*browser, net.Conn) {
 	left, right := net.Pipe()
 	t.Cleanup(func() { left.Close(); right.Close() })
 	b := &browser{session: transport.New(left), instance: "layout", alias: "same-form",
-		form: 3, nativeGeneration: 7, native: make(chan string, 1), view: mode,
+		form: 3, nativeGeneration: 7, native: make(chan string, 1), nativeWatchReplies: &nativeWatchReplyGate{}, view: mode,
 		renderPath: "/fixture", renderView: mode, renderSerial: 12,
 		snapshot: &filemodel.Snapshot{Schema: 1, Path: []byte("/fixture")}}
 	if err := b.model.Replace([]collection.Entry{
@@ -97,7 +97,9 @@ func layoutScript(t *testing.T, b *browser, peer net.Conn, run func() error, rep
 		case command := <-commands:
 			observed = append(observed, command)
 			if response := reply(command); response != "" {
-				b.native <- response
+				if err := b.routeNativeReply(response); err != nil {
+					t.Fatal("production reply routing refused scripted response", err)
+				}
 			}
 		case err := <-done:
 			return observed, err

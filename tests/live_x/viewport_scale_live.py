@@ -69,6 +69,7 @@ def run(args, profile, destination):
              'modules/FvwmForm/form_scale.c', 'modules/FvwmForm/form_scale_policy.c',
              'modules/FvwmForm/list_widget.c', 'tests/form_scale_refuse_probe.c',
              'bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go',
+             'bin/FvwmPrompt/cmd/fvwmfilebrowser/native_feedback.go',
              'bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go']},
         binary_sha256={str(p.relative_to(build)): hashlib.sha256(p.read_bytes()).hexdigest() for p in
             [build/'fvwm3', build/'modules/FvwmForm/FvwmForm', build/'bin/FvwmPrompt/fvwm-file-browser']})
@@ -247,19 +248,31 @@ def run(args, profile, destination):
                     return dict(value,root_rect=rect)
                 return wait_for_predicate('actual ready scale '+str(q),observed,time.monotonic()+10,process=core)
 
+            def list_reply(raw,token):
+                f=raw.split()
+                assert len(f)==6 and f[:2]==['FVWM_FORM_LIST',token] and f[4]=='0',raw
+                packet=base64.urlsafe_b64decode(f[5][1:]+'==')
+                assert int.from_bytes(packet[:4],'big')==int(f[2]),raw
+                return dict(generation=int(f[2]),pending=int(f[3]),packet=packet.hex(),
+                    focus=int.from_bytes(packet[4:6],'big'),selected=[i for i in range((len(packet)-6)*8)
+                        if packet[6+i//8] & (1 << (i%8))],raw=raw)
+
             def list_status(alias,pending=False):
                 def observed():
                     token = 'l'+os.urandom(8).hex()
                     control.send(('SendToModule '+alias+' ListStatus picks '+token+' selection\n').encode())
-                    raw = receipt('FVWM_FORM_LIST '+token+' '); f=raw.split()
-                    assert len(f)==6 and f[4]=='0',raw
-                    packet = base64.urlsafe_b64decode(f[5][1:]+'==')
-                    assert int.from_bytes(packet[:4],'big')==int(f[2]),raw
-                    if not pending and int(f[3]): return None
-                    return dict(generation=int(f[2]),pending=int(f[3]),packet=packet.hex(),
-                        focus=int.from_bytes(packet[4:6],'big'),selected=[i for i in range((len(packet)-6)*8)
-                            if packet[6+i//8] & (1 << (i%8))],raw=raw)
+                    value=list_reply(receipt('FVWM_FORM_LIST '+token+' '),token)
+                    return None if not pending and value['pending'] else value
                 return wait_for_predicate('actual native collection state',observed,time.monotonic()+8,process=core)
+
+            def changed(token,since=0):
+                return [r for r in rows(native) if r['time']>=since and r['direction']=='out' and
+                    r['text']=='Echo FVWM_FORM_CHANGED '+token]
+
+            def watch_status(alias,watch):
+                token='a'+os.urandom(8).hex()
+                control.send(('SendToModule '+alias+' ListWatchStatus picks '+watch+' '+token+'\n').encode())
+                return list_reply(receipt('FVWM_FORM_LIST '+token+' '),token)
 
             def focus_owner(window,force=False):
                 owner=owners.get(window,window)
@@ -401,7 +414,7 @@ def run(args, profile, destination):
                 assert list_status(alias)['packet']==initial['packet']
                 return samples
 
-            def form(alias,extra=(),enabled=True,binary='FvwmForm',label_viewport=False):
+            def form(alias,extra=(),enabled=True,binary='FvwmForm',label_viewport=False,watch=None):
                 lines=['Title "'+alias+'"']+(['UIScale monitor'] if enabled else [])+list(extra)+[
                     'Line left','Label title 32 "Literal viewport scale test"',
                     *(['LabelViewport title'] if label_viewport else []),'Line left',
@@ -409,6 +422,7 @@ def run(args, profile, destination):
                     'Command Echo VIEWPORT_DRAFT '+alias+' x$(draft:Base64) x$(picks:Base64)',
                     'Button continue "Replay (F9)" F9','Command Send_ConfigInfo',
                     'Line left','List picks 40 4','ListViewport 18 1','ListVersioned',
+                    *(['ListWatch '+watch,'ListNotify '+watch+'_start'] if watch else []),
                     *['ListItem off "entry-%02d" file' % i for i in range(32)]]
                 for line in lines: control.send(('*'+alias+': '+line+'\n').encode())
                 command('Module '+binary+' '+alias)
@@ -425,9 +439,15 @@ def run(args, profile, destination):
                     # coordinates, including its old blank area; held fonts
                     # and child geometry must not follow the parent's size.
                     assert actual_width>=width and height==committed['height']
-                return dict(width=width,height=height,sha256=hashlib.sha256(
-                    b''.join(int(p).to_bytes(8,'little')
-                        for p in pixels(window,0,0,width,height))).hexdigest())
+                # Enlarged browser headers span several fixed label lines.
+                # Hash the identical committed coordinates in bounded strips;
+                # do not expand an old crop to a newly enlarged parent.
+                assert 0<height<=2160
+                digest=hashlib.sha256()
+                for top in range(0,height,128):
+                    digest.update(b''.join(int(p).to_bytes(8,'little')
+                        for p in pixels(window,0,top,width,min(128,height-top))))
+                return dict(width=width,height=height,sha256=digest.hexdigest())
 
             def label_pixels(window,field):
                 width=geometry(window)[2]; height=geometry(field)[1]
@@ -470,6 +490,80 @@ def run(args, profile, destination):
                 assert waited['child']==started[0]['child'] and waited['returncode']==0,waited
                 evidence.setdefault('generic_child_cleanup',[]).append(dict(alias=alias,
                     proxy=started[0]['proxy'],waited=waited))
+
+            # Native wakeups are opt-in and remain latched until the exact
+            # subscription ACK. Ordinary status is an observer/barrier only.
+            watch='viewport_'+profile.replace('-','_')
+            watched,watched_ids=form('ScaleWatched',watch=watch)
+            ready('ScaleWatched',watched,4,'DUMMY0')
+            initial_watch=list_status('ScaleWatched')
+            notify=[r for r in rows(native) if r['direction']=='out' and
+                r['text'].startswith('Echo FVWM_FORM_LIST '+watch+'_start ')]
+            assert len(notify)==1 and not changed(watch),notify
+            watched_field=view.children(watched)[0]
+            watched_list=view.children(watched)[-1]
+            click(watched_field); key(watched,'Tab'); key(watched,'Home')
+            assert not changed(watch)
+            key(watched,'Down'); key(watched,'space'); key(watched,'Down',shift=True)
+            burst=list_status('ScaleWatched')
+            assert burst['focus']==2 and burst['selected']==[1,2],burst
+            assert len(changed(watch))==1
+            key(watched,'Down'); observed_only=list_status('ScaleWatched')
+            assert observed_only['focus']==3 and len(changed(watch))==1
+            wrong_request='wrong_'+os.urandom(4).hex()
+            command('SendToModule ScaleWatched ListWatchStatus picks '+watch+'_retired '+wrong_request)
+            key(watched,'Down'); wrong_watch=list_status('ScaleWatched')
+            assert wrong_watch['focus']==4 and len(changed(watch))==1
+            assert not any(r['direction']=='out' and r['text'].startswith(
+                'Echo FVWM_FORM_LIST '+wrong_request+' ') for r in rows(native))
+            command('SendToModule ScaleWatched ListWatchStatus picks '+watch+' invalid.request')
+            key(watched,'Down'); malformed_watch=list_status('ScaleWatched')
+            assert malformed_watch['focus']==5 and len(changed(watch))==1
+            assert not any(r['direction']=='out' and r['text'].startswith(
+                'Echo FVWM_FORM_LIST invalid.request ') for r in rows(native))
+            acknowledged=watch_status('ScaleWatched',watch)
+            assert acknowledged['packet']==malformed_watch['packet']
+            key(watched,'Down'); after_ack=list_status('ScaleWatched')
+            assert after_ack['focus']==6 and len(changed(watch))==2
+            # Publishing a new generation while dirty keeps the latch and
+            # reports the latest snapshot, without manufacturing interaction.
+            command('SendToModule ScaleWatched ListBegin picks 1 2')
+            for index in range(32):
+                command('SendToModule ScaleWatched ListEntry picks 2 %d "entry-%02d" file keep' %
+                    (index+1,index))
+            command('SendToModule ScaleWatched ListCommit picks 2')
+            command('SendToModule ScaleWatched ListFocus picks 2 1')
+            published=list_status('ScaleWatched')
+            assert published['generation']==2 and published['focus']==0
+            assert published['selected']==[1,2] and len(changed(watch))==2
+            current_ack=watch_status('ScaleWatched',watch)
+            assert current_ack['packet']==published['packet']
+            # Clamped Home and metadata replay/redraw cannot dirty the list.
+            key(watched,'Home'); key(watched,'F9'); list_status('ScaleWatched')
+            assert len(changed(watch))==2
+            assert len([r for r in rows(native) if r['direction']=='out' and
+                r['text'].startswith('Echo FVWM_FORM_LIST '+watch+'_start ')])==1
+            click(watched_list,button=5); wheel_watch=list_status('ScaleWatched')
+            assert wheel_watch['packet']==published['packet'] and len(changed(watch))==3
+            watch_status('ScaleWatched',watch)
+            assert sorted(view.children(watched))==watched_ids
+            evidence['native_change_latch']=dict(initial=initial_watch,notify=notify,burst=burst,
+                observer_only=observed_only,wrong_watch=wrong_watch,malformed_watch=malformed_watch,
+                acknowledged=acknowledged,
+                post_ack=after_ack,published=published,current_ack=current_ack,wheel=wheel_watch,
+                markers=changed(watch),children=watched_ids)
+            kill_form('ScaleWatched')
+            legacy_started=time.monotonic()
+            legacy,legacy_ids=form('ScaleWatchOff')
+            click(view.children(legacy)[0]); key(legacy,'Tab'); key(legacy,'Down'); key(legacy,'space')
+            legacy_packet=list_status('ScaleWatchOff')
+            assert legacy_packet['focus']==1 and legacy_packet['selected']==[1]
+            assert sorted(view.children(legacy))==legacy_ids
+            # A new opt-out lifetime cannot acquire another list's watch.
+            assert not any(r['time']>=legacy_started and r['direction']=='out' and
+                r['text'].startswith('Echo FVWM_FORM_CHANGED ') for r in rows(native))
+            evidence['native_change_latch']['legacy_off']=legacy_packet
+            kill_form('ScaleWatchOff')
 
             # An empty timeout's live clock must not restart during adoption.
             clock_token='VIEWPORT_CLOCK_'+profile
@@ -854,14 +948,153 @@ def run(args, profile, destination):
             evidence['browser_first_map_scaled']=dict(status=first_map,window=window,children=ids,
                 control_declaration_mapping=mapping,
                 mapping_basis='original native config declaration order and XQueryTree child creation order')
+            lifetime=int(alias.rsplit('-',2)[1])
+            browser_watch=provider+'_f'+format(lifetime,'x')
+            assert any(r['direction']=='out' and r['text']=='*'+alias+': ListWatch '+browser_watch
+                for r in rows(native))
+
+            def feedback_roundtrip(since,packet):
+                def observed():
+                    actual=[r for r in rows(native) if r['time']>=since and r['direction']=='out']
+                    markers=changed(browser_watch,since)
+                    requests=[r for r in actual if r['text'].startswith('SendToModule '+alias+
+                        ' ListWatchStatus picks '+browser_watch+' ')]
+                    completed=[]
+                    for request in requests:
+                        token=request['text'].split()[-1]
+                        assert re.fullmatch(re.escape(provider)+r'_w[1-9a-f][0-9a-f]*',token),request
+                        replies=[r for r in actual if r['time']>=request['time'] and
+                            r['text'].startswith('Echo FVWM_FORM_LIST '+token+' ')]
+                        if not replies: continue
+                        reply=list_reply(replies[-1]['text'][5:],token)
+                        causal=[m for m in markers if m['time']<=request['time']]
+                        renewed=[r for r in actual if r['time']>=replies[-1]['time'] and
+                            r['text']=='SendToModule '+alias+' RenewTimeout 3000']
+                        # The post-snapshot renewal proves the consumer has
+                        # finished this ACK, rather than exposing an older
+                        # dirty ACK still racing a later input/observer.
+                        if causal and renewed and reply['packet']==packet:
+                            completed.append(dict(marker=causal[-1],request=request,
+                                reply=reply,renewed=renewed[0]))
+                    return completed[-1] if completed else None
+                return wait_for_predicate('native interaction wakeup and exact watch snapshot',observed,
+                    time.monotonic()+8,process=browser)
+
+            def feedback_only(since,before,selected=None,hidden=0,visible=ENTRIES,
+                    unavailable=False,readiness=False):
+                # Observe public labels BEFORE querying the provider: a query
+                # itself snapshots native state and cannot prove notification.
+                expected={}
+                if selected is not None:
+                    expected['counts']='Selected %d; hidden %d; limit 256; visible %d/%d' % (
+                        selected,hidden,visible,ENTRIES)
+                if unavailable:
+                    expected['readiness']='Selection unavailable; adjust selection or retry an action.'
+                    expected['status']='Selection unavailable: native selection exceeds limit'
+                elif readiness:
+                    expected['readiness']='Open %d; Properties %s; Terminal yes; Custom no' % (
+                        visible,'yes' if selected else 'no')
+                def labels_observed():
+                    actual=[r for r in rows(native) if r['time']>=since and r['direction']=='out']
+                    found={name:[r for r in actual if r['text']=='SendToModule '+alias+
+                        ' SetLabel '+name+' "'+value+'"'] for name,value in expected.items()}
+                    return {name:items[-1] for name,items in found.items()} if all(found.values()) else None
+                labels=wait_for_predicate('immediate native selection feedback labels',labels_observed,
+                    time.monotonic()+8,process=browser) if expected else {}
+                after=list_status(alias)
+                transaction=feedback_roundtrip(since,after['packet'])
+                assert after['generation']==before['generation']
+                assert sorted(view.children(window))==ids
+                actual=[r for r in rows(native) if r['time']>=since and r['direction']=='out']
+                forbidden=[r for r in actual if r['text'].startswith((
+                    'Echo FVWM_FILES_3 '+provider+' ', 'Echo FVWM_FILES_RENDER '+provider+' ',
+                    'Echo FVWM_FILES_WATCH '+provider+' ', 'Module FvwmForm '+alias,
+                    'KillModule FvwmForm '+alias, 'SendToModule '+alias+' ListBegin ',
+                    'SendToModule '+alias+' ListCommit ', 'SendToModule '+alias+' ListLayout ',
+                    'SendToModule '+alias+' ListFocus '))]
+                assert not forbidden,forbidden
+                label_commands=[r for r in actual if r['text'].startswith('SendToModule '+alias+' SetLabel ')]
+                assert all(r['text'].split()[3] in ('counts','readiness','status') for r in label_commands)
+                result=dict(since=since,transaction=transaction,labels=labels,all_labels=label_commands,
+                    before=before,after=after,children=ids,no_action_or_publication=True,
+                    provider_queried_before_label_observation=False)
+                evidence.setdefault('immediate_feedback',[]).append(result)
+                return result
+
+            def feedback_capture(name):
+                if profile!='classic-large':
+                    capture(name)
+                    return
+                unfenced_status=scale(alias)
+                time.sleep(.05)
+                unfenced=label_raster(window,filter_input)
+                unfenced_name=name.removesuffix('.png')+'-before-fence.png'
+                capture(unfenced_name)
+                initial=ready(alias,window,8,'DUMMY1')
+                packet=list_status(alias)
+                transitions=[]
+                previous=initial
+                for width in (338,339):
+                    mutate(['--output','DUMMY1','--set','WIDTH_MM',str(width)],
+                        'classic-feedback-paint-fence-'+str(width)+'-'+str(len(evidence['operations'])))
+                    server=wait_for_authoritative_state(runtime,display,
+                        'actual same-factor paint-fence millimetres',lambda s:
+                            s['monitors']['DUMMY1']['mm_width']==width and
+                            s['monitors']['DUMMY1']['mm_height']==286,
+                        time.monotonic()+6,'paint-fence-'+str(width))
+                    def observed_epoch():
+                        current=ready(alias,window,8,'DUMMY1')
+                        return current if (int(current['current_epoch'],16)>
+                            int(previous['current_epoch'],16)) else None
+                    current=wait_for_predicate('producer round trip before newer same-factor epoch',
+                        observed_epoch,time.monotonic()+10,process=browser)
+                    assert current['resource_gen']==initial['resource_gen']
+                    assert list_status(alias)['packet']==packet['packet']
+                    assert sorted(view.children(window))==ids
+                    transitions.append(dict(server=server,status=current))
+                    previous=current
+                # Same-factor adoption takes form_scale_retry's observed path:
+                # its producer X round trips flush preceding label drawing,
+                # without replacing fonts or repairing the frame by redraw.
+                first=label_raster(window,filter_input)
+                capture(name)
+                time.sleep(.05)
+                second=label_raster(window,filter_input)
+                quiet_name=name.removesuffix('.png')+'-quiet.png'
+                capture(quiet_name)
+                evidence.setdefault('feedback_paint_fences',[]).append(dict(
+                    screenshots=[unfenced_name,name,quiet_name],unfenced_status=unfenced_status,
+                    unfenced_quiet_raster=unfenced,initial=initial,native_packet=packet,
+                    transitions=transitions,first_header=first,quiet_header=second,
+                    quiet_seconds=.05,children=ids))
+                assert unfenced==first==second,(unfenced,first,second)
+
             capture('browser-first-map-1.25.png')
             move(window,'DUMMY0'); baseline_scale=ready(alias,window,4,'DUMMY0')
             click(filter_input); key(window,'Tab'); key(window,'Home')
+            single_before=list_status(alias); single_started=time.monotonic(); key(window,'space')
+            single=feedback_only(single_started,single_before,1,readiness=True)
+            selected_state=rpc(provider=provider)
+            assert selected_state['selected']==1 and selected_state['availability']['properties']
+            assert selected_state['progress']==state['progress'] and selected_state['bindings']==state['bindings']
+            evidence['immediate_feedback'][-1]['provider_after_labels']=selected_state
+            capture('browser-immediate-selection-available.png')
+            clear_started=time.monotonic(); key(window,'space')
+            empty_selection=feedback_only(clear_started,single['after'],0,readiness=True)
+            empty_state=rpc(provider=provider)
+            assert empty_state['selected']==0 and not empty_state['availability']['properties']
+            evidence['immediate_feedback'][-1]['provider_after_labels']=empty_state
+            range_started=time.monotonic()
             for _ in range(3): key(window,'Down',shift=True)
             key(window,'space')
             before_range=wait_for_predicate('native range setup',lambda:
                 (s if s['focus']==3 and s['selected']==[0,1,2] else None)
                 if (s:=list_status(alias)) else None,time.monotonic()+5,process=browser)
+            feedback_only(range_started,empty_selection['after'],3)
+            range_state=rpc(provider=provider)
+            assert range_state['selected']==3 and range_state['availability']['properties']
+            evidence['immediate_feedback'][-1]['provider_after_labels']=range_state
+            capture('browser-immediate-range-counts.png')
             heights={4:geometry(filter_input)[3]}
             for q in (5,6,8,5,8):
                 move(window,'DUMMY0'); ready(alias,window,4,'DUMMY0')
@@ -898,19 +1131,24 @@ def run(args, profile, destination):
                     assert list_status(alias)['packet']==before_range['packet']
                 if q in (6,8): capture('browser-scale-'+str(q)+'-'+str(len(evidence['browser_moves']))+'.png')
             assert heights[4]<heights[5]<heights[6]<heights[8],heights
-            key(window,'Up',shift=True)
+            range_after_started=time.monotonic(); key(window,'Up',shift=True)
             range_after=wait_for_predicate('range anchor after scaling',lambda:
                 (s if s['focus']==2 and s['selected']==[0,1,2] else None)
                 if (s:=list_status(alias)) else None,time.monotonic()+5,process=browser)
+            feedback_only(range_after_started,before_range)
             evidence['range_focus_geometry']=dict(before=before_range,after=range_after,input_heights=heights)
-            key(window,'Home')
+            home_started=time.monotonic(); key(window,'Home')
+            feedback_only(home_started,range_after)
+            wheel_started=time.monotonic()
             for _ in range(6): click(list_window,button=5)
+            feedback_only(wheel_started,range_after)
             before_top=list_status(alias); move(window,'DUMMY0'); ready(alias,window,4,'DUMMY0')
             assert list_status(alias)['packet']==before_top['packet']
-            click(list_window)
+            top_started=time.monotonic(); click(list_window)
             top=wait_for_predicate('same first visible identity after scale',lambda:
                 (s if s['focus']==18 else None) if (s:=list_status(alias)) else None,
                 time.monotonic()+5,process=browser)
+            feedback_only(top_started,before_top,4)
             evidence['top_identity']=dict(before=before_top,observed=top,
                 measurement='post-scale first-cell click changes focus/selection/anchor')
 
@@ -923,6 +1161,14 @@ def run(args, profile, destination):
                 move(window,monitor); ready(alias,window,q,monitor)
                 assert list_status(alias)['packet']==draft_packet['packet']
                 assert sorted(view.children(window))==ids
+            # Wheel input changes top without transferring input focus. Its
+            # feedback must retain both unsent drafts and the insertion cursor
+            # at index three; the existing literal callback proves them below.
+            draft_feedback_started=time.monotonic(); click(list_window,button=5)
+            feedback_only(draft_feedback_started,draft_packet)
+            restore_feedback_started=time.monotonic(); click(list_window,button=4)
+            feedback_only(restore_feedback_started,draft_packet)
+            assert list_status(alias)['packet']==draft_packet['packet']
             key(window,'x'); key(window,'f',alt=True)
             def browser_callback(operation):
                 prefix='Echo FVWM_FILES_3 '+provider+' '
@@ -945,6 +1191,67 @@ def run(args, profile, destination):
             wait_for_predicate('clear native filter',lambda:
                 (s if s and s['visible']==ENTRIES else None) if (s:=browser_ready()) else None,
                 time.monotonic()+10,process=browser)
+
+            # Preserve 157 hidden identities, then select 100 visible rows in
+            # one actual range input. The native packet is legal (100 <= 256)
+            # but the combined model must refuse 257 without rewriting it.
+            key(window,'d',alt=True)
+            wait_for_predicate('clear selection before hidden limit setup',lambda:
+                (s if s and s['selected']==0 else None) if (s:=browser_ready()) else None,
+                time.monotonic()+8,process=browser)
+            click(filter_input); key(window,'Tab'); key(window,'Home')
+            hidden_before=list_status(alias); hidden_started=time.monotonic()
+            for _ in range(156): key(window,'Down',shift=True)
+            hidden_selected=feedback_only(hidden_started,hidden_before,157)
+            assert hidden_selected['after']['selected']==list(range(157))
+            type_text(window,filter_input,'entry-03'); key(window,'f',alt=True)
+            hidden_state=wait_for_predicate('hidden selections survive filter publication',lambda:
+                (s if s and s['visible']==100 and s['selected']==157 else None)
+                if (s:=browser_ready()) else None,time.monotonic()+10,process=browser)
+            click(filter_input); key(window,'Tab'); key(window,'Home')
+            overflow_before=list_status(alias)
+            assert not overflow_before['selected']
+            overflow_started=time.monotonic(); key(window,'End',shift=True)
+            overflow=feedback_only(overflow_started,overflow_before,unavailable=True)
+            assert overflow['after']['focus']==99 and overflow['after']['selected']==list(range(100))
+            assert not any(r['text'].startswith('SendToModule '+alias+' SetLabel counts ')
+                for r in overflow['all_labels']),overflow
+            feedback_capture('browser-immediate-selection-unavailable.png')
+            recovery_started=time.monotonic(); key(window,'space')
+            recovery=feedback_only(recovery_started,overflow['after'],256,hidden=157,visible=100,readiness=True)
+            assert recovery['after']['selected']==list(range(99))
+            recovered_state=rpc(provider=provider)
+            assert recovered_state['selected']==256 and recovered_state['visible']==100
+            assert recovered_state['availability']['properties'] and not recovered_state['busy']
+            evidence['hidden_selection_refusal']=dict(hidden_state=hidden_state,overflow=overflow,
+                recovery=recovery,recovered_state=recovered_state,combined_refused=257,combined_admitted=256,
+                native_limit=256,provider_queries_during_refusal=0)
+            feedback_capture('browser-immediate-selection-recovered.png')
+            # Clear publishes a new packet generation. Wait for that action's
+            # actual native publication/render before emitting Unfilter; an
+            # earlier callback correctly retains its old, now stale packet.
+            clear_setup_started=time.monotonic(); key(window,'d',alt=True)
+            def cleared_selection_settled():
+                observed=browser_ready()
+                if not observed or observed['visible']!=100 or observed['selected']!=0:
+                    return None
+                packet=list_status(alias)
+                generation=recovery['after']['generation']+1
+                if packet['generation']!=generation or packet['selected']:
+                    return None
+                renders=[r for r in rows(native) if r['time']>=clear_setup_started and
+                    r['direction']=='out' and r['text'].startswith('Echo FVWM_FILES_RENDER '+provider+' ')
+                    and (fields:=r['text'].split())[3]==str(lifetime) and
+                    fields[5:]==[str(generation),'0']]
+                return dict(state=observed,native_packet=packet,render=renders[-1]) if renders else None
+            evidence['hidden_selection_refusal']['cleared_setup']=wait_for_predicate(
+                'selection clear native generation and completed render',cleared_selection_settled,
+                time.monotonic()+10,process=browser)
+            key(window,'c',alt=True)
+            wait_for_predicate('selection limit setup clears without replacing Form',lambda:
+                (s if s and s['visible']==ENTRIES and s['selected']==0 else None)
+                if (s:=browser_ready()) else None,time.monotonic()+10,process=browser)
+            assert sorted(view.children(window))==ids
             before_layout=list_status(alias); font_before=scale(alias)
             before_boxes={i:geometry(i) for i in ids}; before_size=geometry(window)[2:]
             started=time.monotonic(); key(window,'F7')
@@ -1070,6 +1377,17 @@ def run(args, profile, destination):
                 time.monotonic()+10,process=browser)
             successor_packet=list_status(successor_alias)
             assert successor_packet['generation']>0 and successor_state['generation']
+            retired_started=time.monotonic()
+            command('Echo FVWM_FORM_CHANGED '+browser_watch)
+            command('Echo FVWM_FORM_CHANGED '+identity[1]+'_f01')
+            retired_state=rpc(provider=identity[1])
+            retired_packet=list_status(successor_alias)
+            assert retired_packet['packet']==successor_packet['packet']
+            assert retired_state['generation']==successor_state['generation']
+            retired_commands=[r for r in rows(native) if r['time']>=retired_started and
+                r['direction']=='out' and r['text'].startswith('SendToModule '+successor_alias+' ')]
+            assert not any(' ListWatchStatus ' in r['text'] or ' SetLabel ' in r['text']
+                for r in retired_commands),retired_commands
             new_owners=[json.loads(p.read_text()) for p in native.glob('module-*.json')
                 if successor_alias in json.loads(p.read_text())['arguments']]
             assert len(new_owners)==1 and new_owners[0]['child']!=old_owners[0]['child'],new_owners
@@ -1080,7 +1398,9 @@ def run(args, profile, destination):
                 xid_reused=successor==window,xid_reuse_allowed=True,old_browser_pid=old_browser_pid,
                 new_browser_pid=browser.process.pid,old_alias=alias,new_alias=successor_alias,
                 old_form_owner=old_owners[0],old_form_wait=old_wait,new_form_owner=new_owners[0],
-                provider_state=successor_state,native_packet=successor_packet)
+                provider_state=successor_state,native_packet=successor_packet,
+                retired_watch_token=browser_watch,retired_marker_state=retired_state,
+                retired_marker_packet=retired_packet,retired_marker_commands=retired_commands)
             key(successor,'Escape'); assert browser.wait_until_exit(time.monotonic()+5)==0
             evidence['status']='passed'
         except BaseException as failure:

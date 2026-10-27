@@ -7748,6 +7748,12 @@ Scale configuration is finalized after startup configuration has run.
 Later *MonitorScale* and *MonitorScaleFallback* commands are rejected and
 leave both policy and effective results unchanged; runtime scale reload is
 not provided by this initial-only contract.
++
+Native modules can receive versioned *MonitorUI* metadata with the effective
+scale and committed monitor geometry in actual pixels.  A module must opt in
+to use that metadata for its own UI; it does not scale arbitrary client pixels.
+Effective factors are recomputed when RandR topology is committed, using the
+initial scale configuration.
 
 *MonitorScaleFallback* _factor_::
 	Sets the initial global fallback, using the same canonical factor

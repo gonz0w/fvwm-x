@@ -419,11 +419,52 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 native module scale handoff — 2026-10-27
+
+Owner: Cam; `codex/r1-form-scaling`; MODULE-SCALE-01 #51, dependent
+FILE-VIEW-01 #69. Status: focused foundation checks passed; neither owner is
+closed. [Accepted handoff](decisions/MODULE-UI-SCALE-HANDOFF-2026-10-27.md).
+The legacy Monitor record has no effective scale or committed topology epoch;
+a module-local RandR query cannot recover core scale overrides. Publish bounded
+versioned core-owned snapshots over existing configuration packets, prepare the
+whole bundle before module callbacks, and provide a strict atomic native
+receiver plus shared actual-pixel monitor ownership selection. Retain last-good
+state on malformed, interrupted, stale or conflicting input; identical complete
+replay is unchanged. No new packet type, resident, dependency or live scale
+configuration command. Existing Monitor geometry fields remain actual pixels.
+
+Freeze the shipped consumer/field inventory and explicitly mark remaining
+adoption and qualification. Prove startup, effective quarter factors, mixed
+monitor selection from real window geometry, topology change/removal, replay
+and fresh consumer lifetimes with one affected incremental Linux build, policy
+and scoped sanitizer checks plus a real RandR native checkpoint. No Go or
+existing UI rendering changes: no race/theme/install matrix is required for this
+foundation. #51's affected six-target consumer acceptance remains open. Actual
+Form/browser scaling needs staged fonts/retained logical metrics and atomic
+in-place reflow in its dependent batch; enlarged text is not substituted for it.
+Physical display and broader release gates retain their owners. PR269's periodic
+performance counter is 2/5 after PR271; this runtime batch becomes 3/5 on merge,
+so no performance comparison is due. Parked #257/#258 work stays excluded.
+One reused Linux build, six policies, scoped ASan/UBSan, changed-manual rendering
+and actual Xorg-dummy fractional/DPI/movement/removal/replay/restart/sync checks
+pass. All 11 actual module children exit zero; no final observer/cleanup failure.
+An original interactive-placement fixture failure remains preserved; only its
+Python driver changes and reruns, with compiled/policy bytes exact. Separate final source/evidence review finds no remaining scoped blocker. Host
+archives verify 151 files; 6.93 MB of guest duplicates are retired and the lab is
+stopped.
+[Results and limits](verification/VERIFICATION-2026-10-27-MODULE-UI-SCALE.md).
+Lead owns resource control, tracker, integration and evidence; selected Temper
+roles use explicit model/instructions routing because native named-role loading
+is unavailable. Backend model identity is not independently attested.
+
 ## R1 browser view continuity — 2026-10-27
 
 Owner: Cam; `codex/r1-browser-continuity`; FILE-VIEW-01 #69, related #65.
-Status: all five #65 criteria qualified for review; closes on merge. #69
-continuity/keyboard slice is qualified; automatic module-scale acceptance remains.
+Status: merged in PR271 as `69dda71d290c8a02842ab27b7d326a64136615b3`;
+reviewed combined tree `aaa0f3cfa87869999c3a105d775badfb7f88003c`, canonical
+signature and author DCO verified. #65 closed; completed branch retired and
+Project Done. #69 continuity/keyboard slice is qualified; automatic module-scale
+acceptance remains.
 Fix the explicit remaining list/grid switch gap: native Form currently rebuilds
 and discards unsubmitted Path/filter drafts and viewport position. Add a bounded
 generation-checked live collection layout command, preserve Form/child identity,
@@ -445,7 +486,7 @@ their real owner. One combined Linux Form/browser policy/native checkpoint,
 three theme configurations including enlarged text, screenshots and affected
 sanitizers/race as warranted. No automatic support/install matrix; native packet
 ABI and OS APIs remain unchanged. PR269 comparison stays 1/5 after PR270,
-becoming 2/5 on this runtime merge; no periodic comparison due. Parked work stays
+now 2/5 after this runtime merge; no periodic comparison due. Parked work stays
 excluded. Lead owns resources, tracker, evidence and signed delivery; bounded
 implementation and separate review follow selected project routing, whose actual
 model execution is not independently attested.

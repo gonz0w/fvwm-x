@@ -638,6 +638,13 @@ Pager retains derived desktop policy, and Rearrange prepares checked inset geome
 before publishing its area/desk. Disabled Pager selections use active fallbacks.
 [Development evidence](verification/VERIFICATION-2026-10-08-MODULE-MONITOR.md).
 
+The core-owned `MonitorUI` v1 snapshot carries a committed topology epoch,
+effective quarter factors, monitor identity and actual-pixel rectangles over
+`M_CONFIG_INFO`. `libs/module_ui_scale.c/h` bounds and stages the snapshot for
+atomic consumer publication and uses existing monitor ownership for selection.
+The existing 14-value `Monitor` record remains unchanged. Consumers must opt in
+to scale their own UI; this metadata does not scale client pixels.
+
 Pager monitor hit testing uses wide endpoints and excludes disabled regions.
 IconMan numeric/property fields and Pager desk/style selectors use checked
 conversion before publication. Pager style setters accept local size_t/offsetof

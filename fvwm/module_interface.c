@@ -30,6 +30,7 @@
 #include "libs/Parse.h"
 #include "libs/Strings.h"
 #include "libs/module_monitor.h"
+#include "libs/module_ui_scale.h"
 #include "libs/wild.h"
 #include "libs/FEvent.h"
 #include "fvwm.h"
@@ -43,6 +44,7 @@
 #include "screen.h"
 #include "module_interface.h"
 #include "module_list.h"
+#include "monitor_scale_config.h"
 #include "event_loop_policy.h"
 #include "events.h"
 #include "geometry.h"
@@ -370,12 +372,119 @@ void send_monitor_info(fmodule *send)
 	}
 }
 
+/* Copy authoritative facts and effective policy before the first synchronous
+ * module callback can replace topology or retire a runtime monitor. */
+static module_ui_scale_bundle *prepare_monitor_ui_scale(void)
+{
+	const monitor_topology_snapshot *topology = FScreenGetTopologySnapshot();
+	module_ui_scale_snapshot *snapshot;
+	module_ui_scale_bundle *bundle;
+
+	if (topology == NULL || topology->epoch == 0 ||
+	    topology->monitor_count < 1 ||
+	    topology->monitor_count > MODULE_UI_SCALE_MAX ||
+	    topology->monitors == NULL ||
+	    !monitor_scale_config_is_finalized(monitor_scale_config_get()))
+		return NULL;
+	snapshot = fxcalloc(1, sizeof(*snapshot));
+	snapshot->epoch = topology->epoch;
+	snapshot->count = topology->monitor_count;
+	snapshot->root_fallback = topology->root_fallback;
+	for (unsigned int i = 0; i < snapshot->count; i++)
+	{
+		const monitor_topology_monitor *fact = &topology->monitors[i];
+		module_ui_scale_row *row = &snapshot->rows[i];
+		struct monitor *runtime = NULL, *m;
+		size_t length;
+
+		if (fact->name == NULL)
+			goto invalid;
+		length = strnlen(fact->name, MODULE_UI_SCALE_NAME_MAX + 1);
+		if (length == 0 || length > MODULE_UI_SCALE_NAME_MAX)
+			goto invalid;
+		RB_FOREACH(m, monitors, &monitor_q)
+		{
+			if (m->si == NULL || m->si->name == NULL ||
+			    strcmp(m->si->name, fact->name) != 0 ||
+			    (m->si->name_atom != None &&
+			     m->si->name_atom != fact->name_atom))
+				continue;
+			if (runtime != NULL)
+				goto invalid;
+			runtime = m;
+		}
+		if (runtime == NULL)
+			goto invalid;
+		row->name_atom = fact->name_atom;
+		row->quarters = runtime->effective_scale.factor.quarters;
+		row->primary = fact->primary;
+		row->rect = (rectangle){fact->x, fact->y,
+			fact->width, fact->height};
+		memcpy(row->name, fact->name, length + 1);
+	}
+	bundle = fxmalloc(sizeof(*bundle));
+	if (!module_ui_scale_format(snapshot, bundle))
+	{
+		free(bundle);
+		goto invalid;
+	}
+	free(snapshot);
+	return bundle;
+invalid:
+	free(snapshot);
+	return NULL;
+}
+
+static void send_monitor_ui_scale(fmodule *module,
+	const module_ui_scale_bundle *bundle)
+{
+	unsigned long packet[FvwmPacketMaxSize];
+
+	_Static_assert(MODULE_UI_SCALE_LINE_MAX <=
+		(FvwmPacketBodyMaxSize - 3) * sizeof(unsigned long),
+		"MonitorUI records must fit the existing native packet");
+	if (bundle == NULL)
+		return;
+	/* Keep each existing M_CONFIG_INFO synchronization barrier. A nested
+	 * refresh may interleave complete copied transactions; the consumer stages
+	 * and validates their epochs before replacing its last good publication. */
+	for (unsigned int i = 0; i < bundle->count; i++)
+	{
+		int length = make_named_packet(packet, M_CONFIG_INFO,
+			bundle->lines[i], 3, 0UL, 0UL, 0UL);
+
+		PositiveWrite(module, packet, length * sizeof(*packet));
+	}
+}
+
+void broadcast_monitor_ui_scale(void)
+{
+	module_ui_scale_bundle *bundle = prepare_monitor_ui_scale();
+	fmodule_list_itr iterator;
+	fmodule *module;
+
+	if (bundle == NULL)
+	{
+		fvwm_debug(__func__, "MonitorUI unavailable; retaining module scale");
+		return;
+	}
+	module_list_itr_init(&iterator);
+	while ((module = module_list_itr_next(&iterator)) != NULL)
+		send_monitor_ui_scale(module, bundle);
+	module_list_itr_finish(&iterator);
+	free(bundle);
+}
+
 void BroadcastMonitorList(fmodule *this)
 {
 	char action[256];
 	struct monitor	*m;
 	fmodule_list_itr moditr;
 	fmodule *module;
+	module_ui_scale_bundle *ui_scale = prepare_monitor_ui_scale();
+
+	if (ui_scale == NULL)
+		fvwm_debug(__func__, "MonitorUI unavailable; retaining module scale");
 
 	module_list_itr_init(&moditr);
 
@@ -384,17 +493,20 @@ void BroadcastMonitorList(fmodule *this)
 		 * We've been requested to send this information to a specific
 		 * module only.
 		 */
+		send_monitor_ui_scale(this, ui_scale);
 		send_monitor_info(this);
 		BroadcastDesktopConfiguration(this);
 		goto out;
 	}
 
 	while ((module = module_list_itr_next(&moditr)) != NULL) {
+		send_monitor_ui_scale(module, ui_scale);
 		send_monitor_info(module);
 		BroadcastDesktopConfiguration(module);
 	}
 out:
 	module_list_itr_finish(&moditr);
+	free(ui_scale);
 	/* Reissue the DesktopSize command here, rather than sending
 	 * down the DesktopSize -- we want FvwmPager in particular to
 	 * react to a M_NEW_PAGE event, which DesktopSize will do; and
@@ -405,6 +517,8 @@ out:
 	 * the fist entry in our list.
 	 */
 	m = RB_MIN(monitors, &monitor_q);
+	if (m == NULL)
+		return;
 
 	snprintf(action, sizeof(action), "DesktopSize %dx%d", m->dx, m->dy);
 	execute_function_override_window(NULL, NULL, action, NULL, 0, NULL);

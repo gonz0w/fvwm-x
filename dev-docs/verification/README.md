@@ -1,5 +1,7 @@
 # Verification reports
 
+- [2026-10-27 native module scale handoff](VERIFICATION-2026-10-27-MODULE-UI-SCALE.md) — focused Linux policy/native metadata foundation; #51/#69 consumer acceptance remains open.
+
 - [Browser continuity and action closeout](VERIFICATION-2026-10-27-BROWSER-CONTINUITY.md): in-place list/grid, native keyboard actions, atomic size refusal/retry and explicit missing-program recovery; current Linux/three-theme checks and retained support/install scope. #65 closes on merge; #69 scale work remains.
 
 - [Shared native action palette](VERIFICATION-2026-10-27-ACTION-PALETTE.md): four typed providers, bounded native refresh/actions, three themes/21 captures and scoped affected support; #219 closes on merge.
